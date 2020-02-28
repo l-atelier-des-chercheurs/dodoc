@@ -69,26 +69,40 @@
         :disabled="!new_layer_name"
       />
     </form>
-    <div
+
+    <SlickList
       v-else-if="show_layers"
-      v-for="layer in layers.slice().reverse()"
-      :key="layer.id"
-      class="m_layerPanel--layer"
-      :class="{
-        'is--active': layer.id === $root.settings.current_publication.layer_id
-      }"
-      @click.stop="toggleActiveLayer(layer.id)"
+      v-model="sorted_layers"
+      lockAxis="y"
+      axis="y"
+      :useDragHandle="true"
     >
-      <div class="_vignette" :class="['_vignette_' + layer.type]">
-        <input
-          v-if="layer.type === 'drawing'"
-          type="color"
-          @click.stop
-          :value="layer.color"
-          @change="updateLayerColor({ $event, id: layer.id })"
-        />
-      </div>
-      <!-- <button
+      <SlickItem
+        v-for="(layer, index) in sorted_layers"
+        :key="layer.id"
+        :index="index"
+        style="z-index: 1;"
+      >
+        <div
+          @click="toggleActiveLayer(layer.id)"
+          class="m_layerPanel--layer"
+          :class="{
+            'is--active':
+              layer.id === $root.settings.current_publication.layer_id
+          }"
+        >
+          <div class="_vignette" :class="['_vignette_' + layer.type]">
+            <input
+              v-if="layer.type === 'drawing'"
+              type="color"
+              @click.stop="
+                $root.settings.current_publication.layer_id = layer.id
+              "
+              :value="layer.color"
+              @change="updateLayerColor({ $event, id: layer.id })"
+            />
+          </div>
+          <!-- <button
         type="button"
         class="buttonLink _no_underline"
         @click.stop="toggleActiveLayer(layer.id)"
@@ -116,66 +130,72 @@
           />
         </svg>
       </button>-->
-      <div class>
-        <span class="text-ellipsis">{{ layer.name }}</span>
-        <br />
-        <span class="label">
-          <template v-if="layer.type === 'drawing'">{{
-            $t("drawing")
-          }}</template>
-          <template v-if="layer.type === 'medias'">
-            <template v-if="!mediasFromLayer(layer.id)">{{
-              $t("media")
-            }}</template>
-            <template v-else>
-              <template v-if="mediasFromLayer(layer.id).length === 1">
-                {{
-                  mediasFromLayer(layer.id).length +
-                    " " +
-                    $t("media").toLowerCase()
-                }}
+          <div class>
+            <span class="text-ellipsis">{{ layer.name }}</span>
+            <br />
+            <span class="label">
+              <template v-if="layer.type === 'drawing'">{{
+                $t("drawing")
+              }}</template>
+              <template v-if="layer.type === 'medias'">
+                <template v-if="!mediasFromLayer(layer.id)">{{
+                  $t("media")
+                }}</template>
+                <template v-else>
+                  <template v-if="mediasFromLayer(layer.id).length === 1">
+                    {{
+                      mediasFromLayer(layer.id).length +
+                        " " +
+                        $t("media").toLowerCase()
+                    }}
+                  </template>
+                  <template v-else>
+                    {{
+                      mediasFromLayer(layer.id).length +
+                        " " +
+                        $t("medias").toLowerCase()
+                    }}
+                  </template>
+                </template>
               </template>
-              <template v-else>
-                {{
-                  mediasFromLayer(layer.id).length +
-                    " " +
-                    $t("medias").toLowerCase()
-                }}
-              </template>
-            </template>
-          </template>
-        </span>
-      </div>
-      <button
-        v-if="layer.id === $root.settings.current_publication.layer_id"
-        type="button"
-        class="buttonLink _no_underline"
-        @click.stop="removeLayer(layer.id)"
-        :disabled="read_only"
-      >
-        <svg
-          version="1.1"
-          class="inline-svg"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          width="91.6px"
-          height="95px"
-          viewBox="0 0 91.6 95"
-          style="enable-background:new 0 0 91.6 95;"
-          xml:space="preserve"
-        >
-          <path
-            d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+            </span>
+          </div>
+          <button
+            v-if="layer.id === $root.settings.current_publication.layer_id"
+            type="button"
+            class="buttonLink _no_underline"
+            @click.stop="removeLayer(layer.id)"
+            :disabled="read_only"
+          >
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="91.6px"
+              height="95px"
+              viewBox="0 0 91.6 95"
+              style="enable-background:new 0 0 91.6 95;"
+              xml:space="preserve"
+            >
+              <path
+                d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
             l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
-          />
-        </svg>
-      </button>
-    </div>
+              />
+            </svg>
+          </button>
+
+          <div v-handle class="_handle" />
+        </div>
+      </SlickItem>
+    </SlickList>
   </div>
 </template>
 <script>
+import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
+
 export default {
   props: {
     layers: Array,
@@ -183,7 +203,11 @@ export default {
     slugPubliName: String,
     publication: Object
   },
-  components: {},
+  components: {
+    SlickItem,
+    SlickList
+  },
+  directives: { handle: HandleDirective },
   data() {
     return {
       show_create_layer_modal: false,
@@ -232,6 +256,22 @@ export default {
     }
   },
   computed: {
+    sorted_layers: {
+      get() {
+        return this.layers.slice().reverse();
+      },
+      set(new_layers) {
+        const layers = new_layers.reverse();
+        this.layers = layers;
+        this.$root.editFolder({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          data: {
+            layers
+          }
+        });
+      }
+    },
     current_layer() {
       if (
         !this.$root.settings.current_publication.layer_id ||
