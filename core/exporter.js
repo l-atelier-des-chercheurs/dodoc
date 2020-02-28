@@ -240,28 +240,11 @@ module.exports = (function() {
 
               const { BrowserWindow } = require("electron");
 
-              const number_of_pages =
-                publiData.hasOwnProperty("pages") &&
-                Array.isArray(publiData.pages)
-                  ? publiData.pages.length
-                  : 1;
-
-              const browser_size = {
-                width: Math.floor(publiData.width * 3.78),
-                height: Math.floor(publiData.height * 3.78) + 25 // totally arbitrary value… will have to find better
-              };
-
-              dev.logverbose(
-                `EXPORTER — makePDFForPubli : will create browser window with size ${JSON.stringify(
-                  browser_size
-                )}`
-              );
-
               let win = new BrowserWindow({
                 // width: 800,
                 // height: 600,
-                width: browser_size.width,
-                height: browser_size.height,
+                width: Math.floor(publiData.width * 3.78),
+                height: Math.floor(publiData.height * 3.78) + 25, // totally arbitrary value… will have to find better
                 show: false
               });
               win.loadURL(urlToPubli);
