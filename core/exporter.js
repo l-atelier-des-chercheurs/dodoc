@@ -251,8 +251,8 @@ module.exports = (function() {
                 })
                 .then(page => {
                   page.setViewport({
-                    width: Math.floor(publiData.width * 3.78),
-                    height: Math.floor(publiData.height * 3.78) + 25, // totally arbitrary value… will have to find better
+                    width: Math.floor(publiData.width * 3.7795),
+                    height: Math.floor(publiData.height * 3.7795), // totally arbitrary value… will have to find better
                     deviceScaleFactor: 1
                   });
                   page
@@ -306,9 +306,17 @@ module.exports = (function() {
                           ".png";
                         const docPath = path.join(cachePath, imageName);
 
-                        page.screenshot(image_data => {
-                          fs.writeFile(docPath, image_data, error => {
-                            if (error) throw error;
+                        page
+                          .screenshot({
+                            clip: {
+                              x: 0,
+                              y: 0,
+                              width: Math.floor(publiData.width * 3.7795),
+                              height: Math.floor(publiData.height * 3.7795) // totally arbitrary value… will have to find better
+                            },
+                            path: docPath
+                          })
+                          .then(() => {
                             dev.logverbose(
                               `EXPORTER — makePDFForPubli : created image at ${docPath}`
                             );
@@ -318,7 +326,6 @@ module.exports = (function() {
                               imageName
                             });
                           });
-                        });
                       }
                     });
                 });
