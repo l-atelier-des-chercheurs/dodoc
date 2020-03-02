@@ -39,7 +39,9 @@
           :key="project.slugFolderName"
           :value="project.slugFolderName"
         >
-          {{ project.name }}
+          {{ project.name }} ({{
+            recipes_for_this_project(project.slugFolderName).length
+          }})
         </option>
       </select>
     </div>
@@ -472,6 +474,13 @@ export default {
     }
   },
   methods: {
+    recipes_for_this_project(slugProjectName) {
+      if (this.publications && Object.values(this.publications).length === 0)
+        return [];
+      return Object.values(this.publications).filter(
+        r => r.attached_to_project === slugProjectName
+      );
+    },
     all_recipes_of_this_template(template_key) {
       const filtered_recipes = Object.values(this.publications).filter(
         r => r.template === template_key
