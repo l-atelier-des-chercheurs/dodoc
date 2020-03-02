@@ -988,6 +988,15 @@ export default {
           removed_pages
         }
       });
+
+      this.publication_medias[id].map(m => {
+        if (!m.hasOwnProperty("publi_meta")) return;
+        this.$root.removeMedia({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          slugMediaName: m.publi_meta.metaFileName
+        });
+      });
     },
     navPage(relative_index) {
       const new_index = this.opened_page_index + relative_index;
