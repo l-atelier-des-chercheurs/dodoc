@@ -29,7 +29,16 @@
       "
     >
       <button
+        v-if="!contact_sheet_mode"
         class="margin-vert-verysmall font-verysmall"
+        @mousedown.stop.prevent="createPubliText"
+        @touchstart.stop.prevent="createPubliText"
+      >
+        + text
+      </button>
+
+      <button
+        class="margin-vert-verysmall font-verysmall _preview_button"
         :class="{ 'is--active': !preview_mode }"
         @mousedown.stop.prevent="preview_mode = !preview_mode"
         @touchstart.stop.prevent="preview_mode = !preview_mode"
@@ -456,7 +465,7 @@
             type="button"
             class="m_publicationview--pages--contactSheet--pages--page m_publicationview--pages--contactSheet--pages--page_create"
             :key="'create_page'"
-            @click="insertPageAtIndex(publication.pages.length + 1)"
+            @click="insertPageAtIndex(pagesWithDefault.length + 1)"
           >
             {{ $t("create_empty_page") }}
           </button>
@@ -1010,7 +1019,12 @@ export default {
 
       this.openPage(this.pagesWithDefault[new_index].id);
     },
-    addMedia({ slugProjectName, metaFileName }) {
+    createPubliText() {
+      // ajouter du text dans la publi
+      // qui ne possède pas de lien
+      this.addMedia({ type: "text" });
+    },
+    addMedia({ slugProjectName, metaFileName, type }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
@@ -1033,20 +1047,25 @@ export default {
         this.getHighestZNumberAmongstMedias(this.publication_medias[page_id]) +
         1;
 
-      const newMediaMeta = {
-        slugProjectName,
-        desired_filename: metaFileName,
-        slugMediaName: metaFileName,
+      let additionalMeta = {
         page_id,
         x,
         y,
         z_index
       };
 
+      if (slugProjectName && metaFileName) {
+        additionalMeta.slugProjectName = slugProjectName;
+        additionalMeta.desired_filename = metaFileName;
+        additionalMeta.slugMediaName = metaFileName;
+      }
+
+      if (type) additionalMeta.type = type;
+
       this.$root.createMedia({
         slugFolderName: this.slugPubliName,
         type: "publications",
-        additionalMeta: newMediaMeta
+        additionalMeta
       });
     },
     printThisPublication() {
@@ -1161,6 +1180,7 @@ export default {
       ) {
         pages = this.publication.pages.slice();
       }
+
       pages.splice(index, 0, {
         id: this.generateID()
       });
