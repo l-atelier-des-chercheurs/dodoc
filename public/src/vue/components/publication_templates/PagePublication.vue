@@ -25,7 +25,7 @@
         @mousedown.stop.prevent="createPubliText"
         @touchstart.stop.prevent="createPubliText"
       >
-        create text
+        {{ $t("create_text") }}
       </button>
     </div>
 
