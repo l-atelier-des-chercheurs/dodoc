@@ -2001,6 +2001,7 @@ small {
       &.type-document {
         .margin-verysmall;
         .font-verysmall;
+        .bg-blanc;
       }
     }
 
@@ -2129,7 +2130,7 @@ small {
   align-items: flex-end;
 
   color: @c-noir;
-  border-bottom: 1px dashed @c-gris;
+  border-bottom: 1px dashed @c-border;
   border-radius: 2px;
 
   .margin-bottom-small;
@@ -3962,6 +3963,33 @@ small {
     }
   }
 
+  .m_publicationButtons {
+    position: absolute;
+    bottom: 0px;
+    left: 40px;
+    width: 50%;
+    max-width: 200px;
+    z-index: 1001;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-top: 0;
+    // .padding-bottom-verysmall;
+
+    .font-verysmall;
+    box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
+    max-height: 320px;
+    .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
+    overflow: auto;
+    overscroll-behavior-y: contain;
+
+    > button {
+      display: block;
+      pointer-events: auto;
+    }
+  }
+
   .m_publicationSettings {
     position: absolute;
     bottom: 20px;
@@ -4067,6 +4095,7 @@ small {
     border-radius: 0 0 10px 10px;
     margin: 0 0 0 ~"calc(var(--spacing) * .8)";
     background-color: white;
+    margin-bottom: 3px;
 
     // .boxs-card-1;
     box-shadow: 0 4px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -4865,6 +4894,14 @@ small {
     }
   }
 
+  .m_mediaPublication--floatingSaveButton {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    .padding-bottom-verysmall;
+  }
+
   .m_mediaPublication--edit_styles {
     position: absolute;
     bottom: 100%;
@@ -4932,6 +4969,12 @@ small {
   .mediaCaption {
     margin-top: 0;
     font-size: 85%;
+  }
+
+  .ql-editor.ql-editor {
+    padding: 0;
+    min-height: auto;
+    border: none;
   }
 
   .controlFrame {
@@ -5591,13 +5634,18 @@ small {
   .ql-toolbar button {
     min-height: 0;
   }
-  .ql-toolbar.ql-snow {
+  .ql-toolbar {
     .bg-blanc;
     font-family: inherit;
     border-color: @c-gris_clair;
     border-top: none;
     border-left: none;
     border-right: none;
+  }
+
+  .ql-container.ql-bubble {
+    .ql-tooltip {
+    }
   }
 
   > * {

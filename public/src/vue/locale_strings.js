@@ -236,6 +236,10 @@ module.exports = (function() {
       fr: "Regrouper",
       en: "Group"
     },
+    no_text_content: {
+      fr: "Champ texte vide…",
+      en: "Text field is empty…"
+    },
     ungroup: {
       fr: "Dégrouper",
       en: "Ungroup"

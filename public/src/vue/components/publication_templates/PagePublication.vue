@@ -18,6 +18,17 @@
       :slugPubliName="slugPubliName"
     />
 
+    <div class="m_publicationButtons">
+      <button
+        v-if="!contact_sheet_mode"
+        class="buttonLink"
+        @mousedown.stop.prevent="createPubliText"
+        @touchstart.stop.prevent="createPubliText"
+      >
+        create text
+      </button>
+    </div>
+
     <div
       class="m_publicationSettings"
       v-if="
@@ -28,15 +39,6 @@
         ].includes($root.state.mode)
       "
     >
-      <button
-        v-if="!contact_sheet_mode"
-        class="margin-vert-verysmall font-verysmall"
-        @mousedown.stop.prevent="createPubliText"
-        @touchstart.stop.prevent="createPubliText"
-      >
-        + text
-      </button>
-
       <button
         class="margin-vert-verysmall font-verysmall _preview_button"
         :class="{ 'is--active': !preview_mode }"

@@ -18,8 +18,9 @@
       'is--inline_edited': inline_edit_mode
     }"
   >
+    <!-- if media is link -->
     <MediaContent
-      v-if="!media.publi_meta.hasOwnProperty('type') || preview_mode"
+      v-if="!media.publi_meta.hasOwnProperty('type')"
       :context="preview_mode && mode !== 'contact_sheet' ? 'full' : 'preview'"
       :slugFolderName="media.slugProjectName"
       :media="media"
@@ -28,27 +29,43 @@
       v-model="media.content"
       :style="media.publi_meta.custom_css"
     />
+    <!-- if not -->
     <div class="mediaContainer" v-else>
       <template v-if="media.publi_meta.type === 'text'">
         <CollaborativeEditor
           v-if="inline_edit_mode"
           v-model="htmlForEditor"
           :media="media.publi_meta"
+          :theme="'bubble'"
           :slugFolderName="media.publi_meta.slugFolderName"
           ref="textField"
         />
         <div v-else class="mediaTextContent">
           <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />
-          <p v-else v-html="'…'" />
+          <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
         </div>
       </template>
     </div>
+
+    <div class="m_mediaPublication--floatingSaveButton" v-if="inline_edit_mode">
+      <button
+        type="button"
+        class="button button-bg_rounded bg-bleuvert "
+        @click="saveTextMedia"
+      >
+        <img src="/images/i_enregistre.svg" draggable="false" />
+        <span class="text-cap font-verysmall">
+          <slot name="submit_button">{{ $t("save") }}</slot>
+        </span>
+      </button>
+    </div>
+
     <!-- <p class="mediaCaption">{{ media.caption }}</p> -->
 
     <button
       class="m_mediaPublication--overflowing_sign"
       type="button"
-      v-if="media.type === 'text' && is_text_overflowing && !preview_mode"
+      v-if="is_text_overflowing && !preview_mode"
       @mousedown.stop.prevent="setMediaHeightToContent"
       @touchstart.stop.prevent="setMediaHeightToContent"
       :content="$t('text_overflow')"
@@ -456,20 +473,31 @@ export default {
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
-        z-index: ${this.mediaZIndex};
       `;
       return mediaStyles;
+    },
+    text_is_overflowing() {
+      const el = this.$refs.media;
+      return el.offsetHeight + 15 < el.scrollHeight;
     }
-    // text_is_overflowing() {
-    //   const el = this.$refs.media;
-    //   return (el.offsetHeight + 15 < el.scrollHeight);
-    // }
   },
   methods: {
     newMediaSelected(mediaID) {
       if (mediaID !== this.mediaID) {
         this.is_selected = false;
       }
+    },
+    saveTextMedia() {
+      const val = {
+        content: this.htmlForEditor
+      };
+
+      this.$emit("editPubliMedia", {
+        slugMediaName: this.media.publi_meta.metaFileName,
+        val
+      });
+
+      this.inline_edit_mode = false;
     },
     editButtonClicked() {
       if (this.media.slugProjectName)
@@ -547,7 +575,7 @@ export default {
         ? this.media.publi_meta.z_index
         : 0;
 
-      if (this.media.type === "text") {
+      if (this.media.type === "text" || this.media.publi_meta.type === "text") {
         this.$nextTick(() => {
           const el = this.$refs.media;
           this.is_text_overflowing =
