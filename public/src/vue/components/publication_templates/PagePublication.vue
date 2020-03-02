@@ -1090,69 +1090,44 @@ export default {
       }
 
       // get list of publications items
-      let medias_paginated = {};
       let missingMedias = [];
 
-      Object.keys(this.publication.medias).map(metaFileName => {
-        const _media = this.publication.medias[metaFileName];
+      const medias_paginated = Object.values(this.publication.medias).reduce(
+        (acc, publi_media) => {
+          let meta = {};
 
-        // for each, get slugFolderName and metaFileName
-        if (
-          !_media.hasOwnProperty("slugProjectName") ||
-          !_media.hasOwnProperty("metaFileName")
-        ) {
-          return;
-        }
-
-        const slugProjectName = _media.slugProjectName;
-        const slugMediaName = _media.slugMediaName;
-
-        // find in store if slugFolderName exists
-        if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
-          console.error(
-            `Missing project in store — not expected : ${slugProjectName}`
-          );
-          console.error(
-            `Medias from project was probably added to the publication before it was removed altogether.`
-          );
-          return;
-        }
-
-        // find in store if metaFileName exists
-        const project_medias = this.$root.store.projects[slugProjectName]
-          .medias;
-        if (!project_medias.hasOwnProperty(slugMediaName)) {
-          console.log(`Some medias missing from client`);
-          missingMedias.push({
-            slugFolderName: slugProjectName,
-            metaFileName: slugMediaName
-          });
-        } else {
-          let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
-
-          if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
-            console.error(
-              `Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`
-            );
-            console.error(
-              `Media was probably added to the publication before it was removed.`
-            );
-            return;
-          }
-
-          meta.slugProjectName = slugProjectName;
-          meta.publi_meta = JSON.parse(JSON.stringify(_media));
-
-          if (_media.hasOwnProperty("page_id")) {
-            if (!medias_paginated.hasOwnProperty(_media.page_id)) {
-              medias_paginated[_media.page_id] = [];
+          if (
+            publi_media.hasOwnProperty("slugProjectName") &&
+            publi_media.hasOwnProperty("metaFileName")
+          ) {
+            const original_media_meta = this.getOriginalMediaMeta(publi_media);
+            // case of missing project media locally
+            if (!original_media_meta) return acc;
+            if (Object.keys(original_media_meta).length === 0) {
+              console.log(`Some medias missing from client`);
+              missingMedias.push({
+                slugFolderName: publi_media.slugProjectName,
+                metaFileName: publi_media.slugMediaName
+              });
+              return acc;
             }
 
-            medias_paginated[_media.page_id].push(meta);
+            meta = original_media_meta;
+            meta.slugProjectName = publi_media.slugProjectName;
           }
-          return;
-        }
-      });
+
+          meta.publi_meta = JSON.parse(JSON.stringify(publi_media));
+
+          if (publi_media.hasOwnProperty("page_id")) {
+            if (!acc.hasOwnProperty(publi_media.page_id)) {
+              acc[publi_media.page_id] = [];
+            }
+            acc[publi_media.page_id].push(meta);
+          }
+          return acc;
+        },
+        []
+      );
 
       console.log(
         `Finished building media list. Missing medias: ${missingMedias.length}`
@@ -1168,6 +1143,41 @@ export default {
 
       this.publication_medias = medias_paginated;
     },
+    getOriginalMediaMeta(publi_media) {
+      const slugProjectName = publi_media.slugProjectName;
+      const slugMediaName = publi_media.slugMediaName;
+
+      // find in store if slugFolderName exists
+      if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
+        console.error(
+          `Missing project in store — not expected : ${slugProjectName}`
+        );
+        console.error(
+          `Medias from project was probably added to the publication before it was removed altogether.`
+        );
+        return;
+      }
+
+      // find in store if metaFileName exists
+      const project_medias = this.$root.store.projects[slugProjectName].medias;
+
+      if (!project_medias.hasOwnProperty(slugMediaName)) {
+        return {};
+      } else {
+        let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
+        if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
+          console.error(
+            `Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`
+          );
+          console.error(
+            `Media was probably added to the publication before it was removed.`
+          );
+          return false;
+        }
+        return meta;
+      }
+    },
+
     insertPageAtIndex(index) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • Publication: insertPageAtIndex ${index}`);

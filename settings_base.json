@@ -287,6 +287,13 @@
           "layer_id": {
             "type": "string"
           },
+          "type": {
+            "type": "string",
+            "options": ["text"]
+          },
+          "media_filename": {
+            "type": "string"
+          },
           "duration": {
             "type": "number",
             "clip": {

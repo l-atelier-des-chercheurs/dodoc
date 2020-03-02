@@ -4836,6 +4836,11 @@ small {
     transition: none ease-out;
     z-index: 2;
   }
+  &:not(.is--previewed) {
+    // background-color: fade(@c-orange, 50%);
+    // border: 2px solid @c-orange;
+  }
+
   .m_mediaPublication--overflowing_sign {
     position: absolute;
     bottom: 2px;
@@ -4962,7 +4967,7 @@ small {
     }
     .is--hovered&,
     .is--dragged& {
-      background-color: fade(@c-orange, 10%);
+      background-color: fade(@c-orange, 20%);
     }
 
     .is--waitingForServerResponse& {

@@ -425,6 +425,10 @@ module.exports = (function() {
       oc: "Modificar lo contengut",
       de: "Inhalt bearbeiten"
     },
+    edit_original_media: {
+      fr: "Modifier le média original",
+      en: "Edit original media content"
+    },
     adjust: {
       fr: "Ajuster",
       en: "Adjust",
