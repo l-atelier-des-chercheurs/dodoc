@@ -18,6 +18,17 @@
       :slugPubliName="slugPubliName"
     />
 
+    <div class="m_publicationButtons">
+      <button
+        v-if="!contact_sheet_mode"
+        class="buttonLink"
+        @mousedown.stop.prevent="createPubliText"
+        @touchstart.stop.prevent="createPubliText"
+      >
+        {{ $t("create_text") }}
+      </button>
+    </div>
+
     <div
       class="m_publicationSettings"
       v-if="
@@ -29,7 +40,7 @@
       "
     >
       <button
-        class="margin-vert-verysmall font-verysmall"
+        class="margin-vert-verysmall font-verysmall _preview_button"
         :class="{ 'is--active': !preview_mode }"
         @mousedown.stop.prevent="preview_mode = !preview_mode"
         @touchstart.stop.prevent="preview_mode = !preview_mode"
@@ -456,7 +467,7 @@
             type="button"
             class="m_publicationview--pages--contactSheet--pages--page m_publicationview--pages--contactSheet--pages--page_create"
             :key="'create_page'"
-            @click="insertPageAtIndex(publication.pages.length + 1)"
+            @click="insertPageAtIndex(pagesWithDefault.length + 1)"
           >
             {{ $t("create_empty_page") }}
           </button>
@@ -988,6 +999,15 @@ export default {
           removed_pages
         }
       });
+
+      this.publication_medias[id].map(m => {
+        if (!m.hasOwnProperty("publi_meta")) return;
+        this.$root.removeMedia({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          slugMediaName: m.publi_meta.metaFileName
+        });
+      });
     },
     navPage(relative_index) {
       const new_index = this.opened_page_index + relative_index;
@@ -1001,7 +1021,12 @@ export default {
 
       this.openPage(this.pagesWithDefault[new_index].id);
     },
-    addMedia({ slugProjectName, metaFileName }) {
+    createPubliText() {
+      // ajouter du text dans la publi
+      // qui ne possède pas de lien
+      this.addMedia({ type: "text" });
+    },
+    addMedia({ slugProjectName, metaFileName, type }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
@@ -1024,20 +1049,25 @@ export default {
         this.getHighestZNumberAmongstMedias(this.publication_medias[page_id]) +
         1;
 
-      const newMediaMeta = {
-        slugProjectName,
-        desired_filename: metaFileName,
-        slugMediaName: metaFileName,
+      let additionalMeta = {
         page_id,
         x,
         y,
         z_index
       };
 
+      if (slugProjectName && metaFileName) {
+        additionalMeta.slugProjectName = slugProjectName;
+        additionalMeta.desired_filename = metaFileName;
+        additionalMeta.slugMediaName = metaFileName;
+      }
+
+      if (type) additionalMeta.type = type;
+
       this.$root.createMedia({
         slugFolderName: this.slugPubliName,
         type: "publications",
-        additionalMeta: newMediaMeta
+        additionalMeta
       });
     },
     printThisPublication() {
@@ -1062,69 +1092,44 @@ export default {
       }
 
       // get list of publications items
-      let medias_paginated = {};
       let missingMedias = [];
 
-      Object.keys(this.publication.medias).map(metaFileName => {
-        const _media = this.publication.medias[metaFileName];
+      const medias_paginated = Object.values(this.publication.medias).reduce(
+        (acc, publi_media) => {
+          let meta = {};
 
-        // for each, get slugFolderName and metaFileName
-        if (
-          !_media.hasOwnProperty("slugProjectName") ||
-          !_media.hasOwnProperty("metaFileName")
-        ) {
-          return;
-        }
-
-        const slugProjectName = _media.slugProjectName;
-        const slugMediaName = _media.slugMediaName;
-
-        // find in store if slugFolderName exists
-        if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
-          console.error(
-            `Missing project in store — not expected : ${slugProjectName}`
-          );
-          console.error(
-            `Medias from project was probably added to the publication before it was removed altogether.`
-          );
-          return;
-        }
-
-        // find in store if metaFileName exists
-        const project_medias = this.$root.store.projects[slugProjectName]
-          .medias;
-        if (!project_medias.hasOwnProperty(slugMediaName)) {
-          console.log(`Some medias missing from client`);
-          missingMedias.push({
-            slugFolderName: slugProjectName,
-            metaFileName: slugMediaName
-          });
-        } else {
-          let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
-
-          if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
-            console.error(
-              `Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`
-            );
-            console.error(
-              `Media was probably added to the publication before it was removed.`
-            );
-            return;
-          }
-
-          meta.slugProjectName = slugProjectName;
-          meta.publi_meta = JSON.parse(JSON.stringify(_media));
-
-          if (_media.hasOwnProperty("page_id")) {
-            if (!medias_paginated.hasOwnProperty(_media.page_id)) {
-              medias_paginated[_media.page_id] = [];
+          if (
+            publi_media.hasOwnProperty("slugProjectName") &&
+            publi_media.hasOwnProperty("metaFileName")
+          ) {
+            const original_media_meta = this.getOriginalMediaMeta(publi_media);
+            // case of missing project media locally
+            if (!original_media_meta) return acc;
+            if (Object.keys(original_media_meta).length === 0) {
+              console.log(`Some medias missing from client`);
+              missingMedias.push({
+                slugFolderName: publi_media.slugProjectName,
+                metaFileName: publi_media.slugMediaName
+              });
+              return acc;
             }
 
-            medias_paginated[_media.page_id].push(meta);
+            meta = original_media_meta;
+            meta.slugProjectName = publi_media.slugProjectName;
           }
-          return;
-        }
-      });
+
+          meta.publi_meta = JSON.parse(JSON.stringify(publi_media));
+
+          if (publi_media.hasOwnProperty("page_id")) {
+            if (!acc.hasOwnProperty(publi_media.page_id)) {
+              acc[publi_media.page_id] = [];
+            }
+            acc[publi_media.page_id].push(meta);
+          }
+          return acc;
+        },
+        []
+      );
 
       console.log(
         `Finished building media list. Missing medias: ${missingMedias.length}`
@@ -1140,6 +1145,41 @@ export default {
 
       this.publication_medias = medias_paginated;
     },
+    getOriginalMediaMeta(publi_media) {
+      const slugProjectName = publi_media.slugProjectName;
+      const slugMediaName = publi_media.slugMediaName;
+
+      // find in store if slugFolderName exists
+      if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
+        console.error(
+          `Missing project in store — not expected : ${slugProjectName}`
+        );
+        console.error(
+          `Medias from project was probably added to the publication before it was removed altogether.`
+        );
+        return;
+      }
+
+      // find in store if metaFileName exists
+      const project_medias = this.$root.store.projects[slugProjectName].medias;
+
+      if (!project_medias.hasOwnProperty(slugMediaName)) {
+        return {};
+      } else {
+        let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
+        if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
+          console.error(
+            `Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`
+          );
+          console.error(
+            `Media was probably added to the publication before it was removed.`
+          );
+          return false;
+        }
+        return meta;
+      }
+    },
+
     insertPageAtIndex(index) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • Publication: insertPageAtIndex ${index}`);
@@ -1152,6 +1192,7 @@ export default {
       ) {
         pages = this.publication.pages.slice();
       }
+
       pages.splice(index, 0, {
         id: this.generateID()
       });

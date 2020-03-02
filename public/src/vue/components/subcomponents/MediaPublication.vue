@@ -14,10 +14,13 @@
       'is--waitingForServerResponse': is_waitingForServer,
       'is--hovered': is_hovered,
       'is--previewed': preview_mode,
-      'is--overflowing': is_text_overflowing
+      'is--overflowing': is_text_overflowing,
+      'is--inline_edited': inline_edit_mode
     }"
   >
+    <!-- if media is link -->
     <MediaContent
+      v-if="!media.publi_meta.hasOwnProperty('type')"
       :context="preview_mode && mode !== 'contact_sheet' ? 'full' : 'preview'"
       :slugFolderName="media.slugProjectName"
       :media="media"
@@ -26,12 +29,43 @@
       v-model="media.content"
       :style="media.publi_meta.custom_css"
     />
+    <!-- if not -->
+    <div class="mediaContainer" v-else>
+      <template v-if="media.publi_meta.type === 'text'">
+        <CollaborativeEditor
+          v-if="inline_edit_mode"
+          v-model="htmlForEditor"
+          :media="media.publi_meta"
+          :theme="'bubble'"
+          :slugFolderName="media.publi_meta.slugFolderName"
+          ref="textField"
+        />
+        <div v-else class="mediaTextContent">
+          <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />
+          <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
+        </div>
+      </template>
+    </div>
+
+    <div class="m_mediaPublication--floatingSaveButton" v-if="inline_edit_mode">
+      <button
+        type="button"
+        class="button button-bg_rounded bg-bleuvert "
+        @click="saveTextMedia"
+      >
+        <img src="/images/i_enregistre.svg" draggable="false" />
+        <span class="text-cap font-verysmall">
+          <slot name="submit_button">{{ $t("save") }}</slot>
+        </span>
+      </button>
+    </div>
+
     <!-- <p class="mediaCaption">{{ media.caption }}</p> -->
 
     <button
       class="m_mediaPublication--overflowing_sign"
       type="button"
-      v-if="media.type === 'text' && is_text_overflowing && !preview_mode"
+      v-if="is_text_overflowing && !preview_mode"
       @mousedown.stop.prevent="setMediaHeightToContent"
       @touchstart.stop.prevent="setMediaHeightToContent"
       :content="$t('text_overflow')"
@@ -70,7 +104,11 @@
 
     <!-- <transition name="fade_fast" :duration="150"> -->
     <div
-      v-if="(is_selected || is_hovered || is_touch) && !preview_mode"
+      v-if="
+        (is_selected || is_hovered || is_touch) &&
+          !preview_mode &&
+          !inline_edit_mode
+      "
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
@@ -123,7 +161,11 @@
 
     <transition name="fade_fast" :duration="150">
       <div
-        v-if="(is_selected || is_hovered || is_touch) && !preview_mode"
+        v-if="
+          (is_selected || is_hovered || is_touch) &&
+            !preview_mode &&
+            !inline_edit_mode
+        "
         class="m_mediaPublication--buttons"
       >
         <button
@@ -209,28 +251,54 @@
           {{ $t("css") }}
           <sup v-if="custom_css">*</sup>
         </button>
+
         <button
           type="button"
           class="buttonLink _no_underline"
-          @mousedown.stop.prevent="
-            $root.openMedia({
-              slugProjectName: media.slugProjectName,
-              metaFileName: media.metaFileName
-            })
+          @mousedown.stop.prevent="editButtonClicked"
+          @touchstart.stop.prevent="editButtonClicked"
+          :content="
+            media.slugProjectName
+              ? $t('edit_original_media')
+              : $t('edit_content')
           "
-          @touchstart.stop.prevent="
-            $root.openMedia({
-              slugProjectName: media.slugProjectName,
-              metaFileName: media.metaFileName
-            })
-          "
-          :content="$t('edit_content')"
           v-tippy="{
             placement: 'top',
             delay: [600, 0]
           }"
         >
           <svg
+            v-if="media.slugProjectName"
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="40.9px"
+            height="40.9px"
+            viewBox="0 0 37.9 37.9"
+            style="enable-background:new 0 0 37.9 37.9;"
+            xml:space="preserve"
+          >
+            <defs></defs>
+            <g>
+              <path
+                d="M3,35c4,3.9,10.4,3.9,14.3,0l5.6-5.6c-0.4,0-0.9,0.1-1.4,0.1c-1.4,0-2.8-0.2-4.1-0.7l-3.2,3.2c-1.1,1.1-2.6,1.7-4.1,1.7
+		c-1.6,0-3-0.6-4.1-1.7c-1.1-1.1-1.7-2.6-1.7-4.1c0-1.6,0.6-3,1.7-4.1l6.3-6.3c1.1-1.1,2.6-1.7,4.1-1.7c1.6,0,3,0.6,4.1,1.7
+		c0.5,0.5,1,1.2,1.2,1.8c0.7,0,3.6-2.5,3.6-2.5c-0.5-0.8-1-1.6-1.8-2.4c-3.9-3.9-10.4-3.9-14.3,0L3,20.7C-1,24.6-1,31,3,35z"
+              />
+              <path
+                d="M16.3,8.5c1.4,0,2.8,0.2,4.2,0.7L23.7,6c1.1-1.1,2.6-1.7,4.1-1.7c1.6,0,3,0.6,4.1,1.7c1.1,1.1,1.7,2.6,1.7,4.1
+		c0,1.6-0.6,3-1.7,4.1l-6.3,6.3c-1.1,1.1-2.6,1.7-4.1,1.7c-1.6,0-3-0.6-4.1-1.7c-0.5-0.5-1-1.2-1.2-1.8c-0.7,0-1.4,0.3-1.9,0.8
+		l-1.7,1.7c0.5,0.8,1,1.6,1.8,2.4c3.9,3.9,10.4,3.9,14.3,0l6.3-6.3c4-3.9,4-10.4,0-14.3C31-1,24.6-1,20.7,3L15,8.6
+		C15.4,8.6,15.9,8.5,16.3,8.5L16.3,8.5L16.3,8.5z"
+              />
+            </g>
+          </svg>
+
+          <svg
+            v-else
             version="1.1"
             class="inline-svg"
             xmlns="http://www.w3.org/2000/svg"
@@ -289,6 +357,7 @@
 import MediaContent from "./MediaContent.vue";
 import PrismEditor from "vue-prism-editor";
 import debounce from "debounce";
+import CollaborativeEditor from "./CollaborativeEditor.vue";
 
 export default {
   props: {
@@ -302,7 +371,8 @@ export default {
   },
   components: {
     MediaContent,
-    PrismEditor
+    PrismEditor,
+    CollaborativeEditor
   },
   data() {
     return {
@@ -315,12 +385,17 @@ export default {
       is_touch: Modernizr.touchevents,
       is_text_overflowing: false,
 
+      inline_edit_mode: false,
+
       custom_css: this.media.publi_meta.hasOwnProperty("custom_css")
         ? this.media.publi_meta.custom_css
         : "",
       show_edit_styles_window: false,
 
       limit_media_to_page: true,
+      htmlForEditor: this.media.publi_meta.content
+        ? this.media.publi_meta.content
+        : "",
 
       mediaID: `${(Math.random().toString(36) + "00000000000000000").slice(
         2,
@@ -398,20 +473,39 @@ export default {
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
-        z-index: ${this.mediaZIndex};
       `;
       return mediaStyles;
+    },
+    text_is_overflowing() {
+      const el = this.$refs.media;
+      return el.offsetHeight + 15 < el.scrollHeight;
     }
-    // text_is_overflowing() {
-    //   const el = this.$refs.media;
-    //   return (el.offsetHeight + 15 < el.scrollHeight);
-    // }
   },
   methods: {
     newMediaSelected(mediaID) {
       if (mediaID !== this.mediaID) {
         this.is_selected = false;
       }
+    },
+    saveTextMedia() {
+      const val = {
+        content: this.htmlForEditor
+      };
+
+      this.$emit("editPubliMedia", {
+        slugMediaName: this.media.publi_meta.metaFileName,
+        val
+      });
+
+      this.inline_edit_mode = false;
+    },
+    editButtonClicked() {
+      if (this.media.slugProjectName)
+        this.$root.openMedia({
+          slugProjectName: this.media.slugProjectName,
+          metaFileName: this.media.metaFileName
+        });
+      else this.inline_edit_mode = true;
     },
     editZIndex(val) {
       this.updateMediaPubliMeta({
@@ -481,7 +575,7 @@ export default {
         ? this.media.publi_meta.z_index
         : 0;
 
-      if (this.media.type === "text") {
+      if (this.media.type === "text" || this.media.publi_meta.type === "text") {
         this.$nextTick(() => {
           const el = this.$refs.media;
           this.is_text_overflowing =

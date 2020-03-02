@@ -18,7 +18,11 @@ export default {
       default: "…"
     },
     media: Object,
-    slugFolderName: String
+    slugFolderName: String,
+    theme: {
+      type: String,
+      default: "snow"
+    }
   },
   components: {},
   data() {
@@ -49,7 +53,8 @@ export default {
       modules: {
         toolbar: this.custom_toolbar
       },
-      theme: "snow",
+      bounds: this.$refs.editor,
+      theme: this.theme,
       formats: [
         "bold",
         "italic",
@@ -162,7 +167,7 @@ export default {
 </script>
 <style>
 .ql-toolbar .ql-formats:first-child::before {
-  content: "options :";
+  content: "options";
   position: relative;
   display: inline-block;
   float: left;

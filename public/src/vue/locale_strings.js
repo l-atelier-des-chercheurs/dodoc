@@ -236,6 +236,10 @@ module.exports = (function() {
       fr: "Regrouper",
       en: "Group"
     },
+    no_text_content: {
+      fr: "Champ texte vide…",
+      en: "Text field is empty…"
+    },
     ungroup: {
       fr: "Dégrouper",
       en: "Ungroup"
@@ -424,6 +428,10 @@ module.exports = (function() {
       nl: "Inhoud wijzigen ",
       oc: "Modificar lo contengut",
       de: "Inhalt bearbeiten"
+    },
+    edit_original_media: {
+      fr: "Modifier le média original",
+      en: "Edit original media content"
     },
     adjust: {
       fr: "Ajuster",
