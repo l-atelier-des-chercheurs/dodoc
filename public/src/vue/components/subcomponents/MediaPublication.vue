@@ -30,7 +30,7 @@
       :style="media.publi_meta.custom_css"
     />
     <!-- if not -->
-    <div class="mediaContainer" v-else>
+    <div class="mediaContainer" v-else :style="media.publi_meta.custom_css">
       <template v-if="media.publi_meta.type === 'text'">
         <CollaborativeEditor
           v-if="inline_edit_mode"
@@ -48,11 +48,7 @@
     </div>
 
     <div class="m_mediaPublication--floatingSaveButton" v-if="inline_edit_mode">
-      <button
-        type="button"
-        class="button button-bg_rounded bg-bleuvert "
-        @click="saveTextMedia"
-      >
+      <button type="button" class="button button-bg_rounded bg-bleuvert" @click="saveTextMedia">
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
           <slot name="submit_button">{{ $t("save") }}</slot>
@@ -92,14 +88,8 @@
         v-tippy="{
           delay: [600, 0]
         }"
-      >
-        ?
-      </button>
-      <PrismEditor
-        v-model="custom_css"
-        @change="setCSSForMedia"
-        language="css"
-      />
+      >?</button>
+      <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
     </div>
 
     <!-- <transition name="fade_fast" :duration="150"> -->
@@ -131,14 +121,11 @@
           style="enable-background:new 0 0 77.5 77.5;"
           xml:space="preserve"
         >
-          <defs />
-          <g>
-            <path
-              d="M42.5,0l0.4,12.6l-9.3,0.1c-2.8,0-5.1,0-6.9-0.2c-1.8-0.2-3.6-0.6-5.7-1.2l45.3,45.3c-0.6-2-1-3.9-1.2-5.7
+          <path
+            d="M42.5,0l0.4,12.6l-9.3,0.1c-2.8,0-5.1,0-6.9-0.2c-1.8-0.2-3.6-0.6-5.7-1.2l45.3,45.3c-0.6-2-1-3.9-1.2-5.7
               c-0.2-1.8-0.3-4-0.2-6.9v-9.4l12.6,0.4l-1.3,41.2l-41.2,1.3l-0.4-12.6l9.5,0c2.9,0,5.2,0.1,7,0.3c1.8,0.2,3.6,0.5,5.4,1.1
             L11.3,21.1c0.5,1.8,0.9,3.6,1.1,5.4c0.2,1.8,0.3,4.1,0.3,7l-0.1,9.4L0,42.5L1.3,1.3L42.5,0z"
-            />
-          </g>
+          />
         </svg>
       </div>
       <!-- <div class="handle handle_rotateMedia"
@@ -281,20 +268,17 @@
             style="enable-background:new 0 0 37.9 37.9;"
             xml:space="preserve"
           >
-            <defs></defs>
-            <g>
-              <path
-                d="M3,35c4,3.9,10.4,3.9,14.3,0l5.6-5.6c-0.4,0-0.9,0.1-1.4,0.1c-1.4,0-2.8-0.2-4.1-0.7l-3.2,3.2c-1.1,1.1-2.6,1.7-4.1,1.7
+            <path
+              d="M3,35c4,3.9,10.4,3.9,14.3,0l5.6-5.6c-0.4,0-0.9,0.1-1.4,0.1c-1.4,0-2.8-0.2-4.1-0.7l-3.2,3.2c-1.1,1.1-2.6,1.7-4.1,1.7
 		c-1.6,0-3-0.6-4.1-1.7c-1.1-1.1-1.7-2.6-1.7-4.1c0-1.6,0.6-3,1.7-4.1l6.3-6.3c1.1-1.1,2.6-1.7,4.1-1.7c1.6,0,3,0.6,4.1,1.7
 		c0.5,0.5,1,1.2,1.2,1.8c0.7,0,3.6-2.5,3.6-2.5c-0.5-0.8-1-1.6-1.8-2.4c-3.9-3.9-10.4-3.9-14.3,0L3,20.7C-1,24.6-1,31,3,35z"
-              />
-              <path
-                d="M16.3,8.5c1.4,0,2.8,0.2,4.2,0.7L23.7,6c1.1-1.1,2.6-1.7,4.1-1.7c1.6,0,3,0.6,4.1,1.7c1.1,1.1,1.7,2.6,1.7,4.1
+            />
+            <path
+              d="M16.3,8.5c1.4,0,2.8,0.2,4.2,0.7L23.7,6c1.1-1.1,2.6-1.7,4.1-1.7c1.6,0,3,0.6,4.1,1.7c1.1,1.1,1.7,2.6,1.7,4.1
 		c0,1.6-0.6,3-1.7,4.1l-6.3,6.3c-1.1,1.1-2.6,1.7-4.1,1.7c-1.6,0-3-0.6-4.1-1.7c-0.5-0.5-1-1.2-1.2-1.8c-0.7,0-1.4,0.3-1.9,0.8
 		l-1.7,1.7c0.5,0.8,1,1.6,1.8,2.4c3.9,3.9,10.4,3.9,14.3,0l6.3-6.3c4-3.9,4-10.4,0-14.3C31-1,24.6-1,20.7,3L15,8.6
 		C15.4,8.6,15.9,8.5,16.3,8.5L16.3,8.5L16.3,8.5z"
-              />
-            </g>
+            />
           </svg>
 
           <svg
