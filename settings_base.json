@@ -326,6 +326,9 @@
           "fit_mode": {
             "type": "string"
           },
+          "lock_original_ratio": {
+            "type": "boolean"
+          },
           "z_index": {
             "type": "number",
             "clip": {

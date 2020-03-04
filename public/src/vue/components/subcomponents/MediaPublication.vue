@@ -467,7 +467,8 @@ export default {
 
       mediaZIndex: 0,
 
-      fit_mode: "cover"
+      fit_mode: "cover",
+      lock_original_ratio: true
     };
   },
 
@@ -619,6 +620,11 @@ export default {
       this.fit_mode = this.media.publi_meta.hasOwnProperty("fit_mode")
         ? this.media.publi_meta.fit_mode
         : "cover";
+      this.lock_original_ratio = this.media.publi_meta.hasOwnProperty(
+        "lock_original_ratio"
+      )
+        ? this.media.publi_meta.lock_original_ratio
+        : true;
 
       if (this.media.type === "text" || this.media.publi_meta.type === "text") {
         this.$nextTick(() => {
@@ -769,10 +775,15 @@ export default {
         let newWidth = this.mediaSize.pwidth + deltaX;
         this.mediaSize.width = this.limitMediaWidth(newWidth);
 
-        const deltaY =
-          (pageY_mm - this.resizeOffset.y) / this.$root.settings.publi_zoom;
-        let newHeight = this.mediaSize.pheight + deltaY;
-        this.mediaSize.height = this.limitMediaHeight(newHeight);
+        if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
+          this.mediaSize.height = this.mediaSize.width * this.media.ratio;
+        else {
+          const deltaY =
+            (pageY_mm - this.resizeOffset.y) / this.$root.settings.publi_zoom;
+          let newHeight = this.mediaSize.pheight + deltaY;
+
+          this.mediaSize.height = this.limitMediaHeight(newHeight);
+        }
       }
     },
     resizeUp(event) {
@@ -783,7 +794,9 @@ export default {
       }
       if (this.is_resized) {
         this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
-        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
+        if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
+          this.mediaSize.height = this.mediaSize.width * this.media.ratio;
+        else this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
 
         this.updateMediaPubliMeta({
           width: this.mediaSize.width,
