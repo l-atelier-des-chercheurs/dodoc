@@ -4956,19 +4956,32 @@ small {
     }
 
     .prism-editor__code {
+      .bg-noir;
       min-height: 3.5em;
       max-height: 200px;
       .custom_scrollbar(8px, 5px, 6px, transparent, @c-blanc);
       overflow: auto;
       overscroll-behavior-y: contain;
+      margin-bottom: -1px;
     }
 
     pre {
       margin: 0;
-      border: 3px solid transparent;
+      border: 3px solid @c-noir;
       &:focus {
         outline: 0;
         border-color: @c-orange;
+      }
+    }
+
+    .m_mediaPublication--edit_styles--sendButton {
+      text-align: center;
+      .bg-noir;
+
+      button {
+        // .label;
+        .button-small;
+        .bg-bleuvert;
       }
     }
   }

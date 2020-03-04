@@ -18,6 +18,7 @@
       'is--inline_edited': inline_edit_mode
     }"
   >
+    {{ media.publi_meta.custom_css }}
     <!-- if media is link -->
     <MediaContent
       v-if="!media.publi_meta.hasOwnProperty('type')"
@@ -89,7 +90,10 @@
           delay: [600, 0]
         }"
       >?</button>
-      <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
+      <PrismEditor v-model="custom_css" @change="/* setCSSForMedia */" language="css" />
+      <div class="m_mediaPublication--edit_styles--sendButton">
+        <button type="button" class @click="setCSSForMedia">{{ $t('send') }}</button>
+      </div>
     </div>
 
     <!-- <transition name="fade_fast" :duration="150"> -->
@@ -526,7 +530,7 @@ export default {
           slugMediaName: this.media.publi_meta.metaFileName,
           val
         });
-      }, 500);
+      }, 0);
     },
     updateMediaStyles() {
       this.rotate = this.media.publi_meta.hasOwnProperty("rotate")
@@ -903,4 +907,3 @@ export default {
   }
 };
 </script>
-<style></style>
