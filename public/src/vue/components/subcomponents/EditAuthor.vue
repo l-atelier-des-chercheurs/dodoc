@@ -1,10 +1,5 @@
 <template>
-  <form
-    class
-    @close="$emit('close')"
-    v-on:submit.prevent="editAuthor"
-    :read_only="read_only"
-  >
+  <form class @close="$emit('close')" v-on:submit.prevent="editAuthor" :read_only="read_only">
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
     <!-- Human name -->
@@ -44,9 +39,7 @@
       <input type="text" v-model="authordata.nfc_tag" />
     </div>
 
-    <button type="button" class="button-thin" @click="$emit('close')">
-      {{ $t("cancel") }}
-    </button>
+    <button type="button" class="button-small" @click="$emit('close')">{{ $t("cancel") }}</button>
     <button type="submit" class="button-greenthin">{{ $t("save") }}</button>
   </form>
 </template>

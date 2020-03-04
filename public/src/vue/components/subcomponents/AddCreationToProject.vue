@@ -15,7 +15,7 @@
           @click="addTempMediaToFolder()"
           :disabled="upload_to_folder === ''"
           v-html="$t('send')"
-          class="bg-bleuvert button-thin"
+          class="bg-bleuvert button-small"
         />
       </div>
     </div>
