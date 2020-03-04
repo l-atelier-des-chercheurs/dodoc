@@ -1,5 +1,7 @@
 <template>
   <div class="m_layerOptions">
+    <div class="m_layerOptions--layerName">{{ current_layer.name }}</div>
+
     <button type="button" class="buttonLink _no_underline" @click.stop="removeLayer">
       <svg
         version="1.1"
@@ -72,4 +74,11 @@ export default {
   }
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.m_layerOptions {
+  padding: calc(var(--spacing) / 4);
+}
+
+.m_layerOptions--layerName {
+}
+</style>
