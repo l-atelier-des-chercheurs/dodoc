@@ -1586,6 +1586,10 @@ module.exports = (function() {
       fr: "Êtes-vous sûr de vouloir supprimer cette page ?",
       en: "Do you really want to delete this page?"
     },
+    sureToRemoveLayer: {
+      fr: "Êtes-vous sûr de vouloir supprimer ce calque ?",
+      en: "Do you really want to delete this layer?"
+    },
     edit_the_media: {
       fr: "Éditer le média",
       en: "Edit media",

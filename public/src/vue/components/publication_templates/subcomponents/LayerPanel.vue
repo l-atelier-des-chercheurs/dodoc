@@ -339,16 +339,25 @@ export default {
 
       let layers = this.publication.layers.filter(l => l.id !== id);
 
-      if (id === this.$root.settings.current_publication.layer_id)
-        this.$root.settings.current_publication.layer_id = false;
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sureToRemoveLayer"),
+          () => {
+            if (id === this.$root.settings.current_publication.layer_id)
+              this.$root.settings.current_publication.layer_id = false;
 
-      this.$root.editFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        data: {
-          layers
-        }
-      });
+            this.$root.editFolder({
+              type: "publications",
+              slugFolderName: this.slugPubliName,
+              data: {
+                layers
+              }
+            });
+          },
+          () => {}
+        );
     }
   }
 };
