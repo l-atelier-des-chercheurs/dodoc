@@ -222,6 +222,8 @@
             :slugPubliName="slugPubliName"
             :pixelsPerMillimeters="pixelsPerMillimeters"
             :layer_options="layerOptions(layer)"
+            :is_active="$root.settings.current_publication.layer_id &&
+                layer.id === $root.settings.current_publication.layer_id"
             :media="getDrawingLayerReferenceMedia(layer.id)"
             :drawing_options="drawing_options"
             :zoom="zoom"

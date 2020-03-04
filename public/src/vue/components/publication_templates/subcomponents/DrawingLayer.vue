@@ -17,6 +17,7 @@ export default {
     layer_options: Object,
     media: Object,
     drawing_options: Object,
+    is_active: Boolean,
     zoom: Number
   },
   components: {},
@@ -146,7 +147,11 @@ export default {
   },
   methods: {
     captureKeyListener(event) {
-      if (this.drawing_options.mode === "select" && event.key === "Backspace") {
+      if (
+        this.is_active &&
+        this.drawing_options.mode === "select" &&
+        event.key === "Backspace"
+      ) {
         this.removeSelection();
       }
     },
