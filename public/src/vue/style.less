@@ -5104,6 +5104,30 @@ small {
         // transform: scale(1.2);
       }
     }
+    .handle_resizeMedia_bottom {
+      bottom: -@t-handleSize / 2;
+      left: ~"calc(50% - @{t-handleSize} / 2)";
+      cursor: ns-resize;
+      color: @c-noir;
+
+      transition: transform 0.2s;
+      &:hover {
+        color: @c-orange;
+        // transform: scale(1.2);
+      }
+    }
+    .handle_resizeMedia_right {
+      right: -@t-handleSize / 2;
+      top: ~"calc(50% - @{t-handleSize} / 2)";
+      cursor: ew-resize;
+      color: @c-noir;
+
+      transition: transform 0.2s;
+      &:hover {
+        color: @c-orange;
+        // transform: scale(1.2);
+      }
+    }
     .handle_rotateMedia {
       top: -@t-handleSize / 2;
       right: -@t-handleSize / 2;
