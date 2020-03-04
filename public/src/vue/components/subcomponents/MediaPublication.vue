@@ -7,16 +7,19 @@
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
     @mousedown.stop="is_selected = true"
-    :class="[{
-      'is--dragged': is_dragged,
-      'is--resized': is_resized,
-      'is--rotated': is_rotated,
-      'is--waitingForServerResponse': is_waitingForServer,
-      'is--hovered': is_hovered,
-      'is--previewed': preview_mode,
-      'is--overflowing': is_text_overflowing,
-      'is--inline_edited': inline_edit_mode,
-    }, 'is--fit_mode_' + fit_mode]"
+    :class="[
+      {
+        'is--dragged': is_dragged,
+        'is--resized': is_resized,
+        'is--rotated': is_rotated,
+        'is--waitingForServerResponse': is_waitingForServer,
+        'is--hovered': is_hovered,
+        'is--previewed': preview_mode,
+        'is--overflowing': is_text_overflowing,
+        'is--inline_edited': inline_edit_mode
+      },
+      'is--fit_mode_' + fit_mode
+    ]"
   >
     <!-- if media is link -->
     <MediaContent
@@ -48,7 +51,11 @@
     </div>
 
     <div class="m_mediaPublication--floatingSaveButton" v-if="inline_edit_mode">
-      <button type="button" class="button button-bg_rounded bg-bleuvert" @click="saveTextMedia">
+      <button
+        type="button"
+        class="button button-bg_rounded bg-bleuvert"
+        @click="saveTextMedia"
+      >
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
           <slot name="submit_button">{{ $t("save") }}</slot>
@@ -88,10 +95,18 @@
         v-tippy="{
           delay: [600, 0]
         }"
-      >?</button>
-      <PrismEditor v-model="custom_css" @change="/* setCSSForMedia */" language="css" />
+      >
+        ?
+      </button>
+      <PrismEditor
+        v-model="custom_css"
+        @change="/* setCSSForMedia */"
+        language="css"
+      />
       <div class="m_mediaPublication--edit_styles--sendButton">
-        <button type="button" class @click="setCSSForMedia">{{ $t('send') }}</button>
+        <button type="button" class @click="setCSSForMedia">
+          {{ $t("send") }}
+        </button>
       </div>
     </div>
 
@@ -339,12 +354,18 @@
               />
             </g>
             <g>
-              <path d="M125.4,106.4h-12v-9.2h7v-6.4h10v11C130.4,104.3,128.2,106.4,125.4,106.4z" />
-              <path d="M93.8,106.4H75v-9.2h18.8V106.4z M55.4,106.4H36.6v-9.2h18.8V106.4z" />
+              <path
+                d="M125.4,106.4h-12v-9.2h7v-6.4h10v11C130.4,104.3,128.2,106.4,125.4,106.4z"
+              />
+              <path
+                d="M93.8,106.4H75v-9.2h18.8V106.4z M55.4,106.4H36.6v-9.2h18.8V106.4z"
+              />
               <path d="M17,106.4H5c-2.8,0-5-2.1-5-4.6v-11h10v6.4h7V106.4z" />
               <rect y="56.9" width="10" height="16.6" />
               <path d="M10,39.6H0v-11C0,26.1,2.2,24,5,24h12v9.2h-7V39.6z" />
-              <path d="M93.8,33.2H75V24h18.8V33.2z M55.4,33.2H36.6V24h18.8V33.2z" />
+              <path
+                d="M93.8,33.2H75V24h18.8V33.2z M55.4,33.2H36.6V24h18.8V33.2z"
+              />
               <path d="M130.4,39.6h-10v-6.4h-7V24h12c2.8,0,5,2.1,5,4.6V39.6z" />
               <rect x="120.4" y="56.9" width="10" height="16.6" />
             </g>
@@ -504,12 +525,12 @@ export default {
   },
   computed: {
     mediaStyles() {
-      let mediaStyles = `
+      return `
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
+        z-index: ${this.media.publi_meta.z_index};
       `;
-      return mediaStyles;
     },
     text_is_overflowing() {
       const el = this.$refs.media;
