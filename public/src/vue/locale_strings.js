@@ -2335,6 +2335,16 @@ module.exports = (function() {
         oc: "Las modofocacions e los apondons seràn pas pus pres en compte.",
         de: "Änderungen und Ergänzungen werden nicht mehr berücksichtigt."
       },
+      failed_to_save_media: {
+        fr:
+          "Les modifications du média n’ont pas pu avoir lieu, vérifiez que votre connexion est toujours active et rééssayez.",
+        en:
+          "Changes to this media couldn’t be saved, check that the connection is active and try again."
+      },
+      successfully_saved_media: {
+        fr: "Les modifications ont bien été enregistrées.",
+        en: "Changes were successfully saved."
+      },
       connection_error: {
         fr: "La connexion au serveur n’a pu se faire.",
         en: "The connection to the server could not be established.",
