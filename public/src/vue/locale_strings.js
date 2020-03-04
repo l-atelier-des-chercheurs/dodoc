@@ -1611,6 +1611,10 @@ module.exports = (function() {
       oc: "Editar la recèpta",
       de: "Rezept bearbeiten"
     },
+    switch_fit_mode: {
+      fr: "Change le mode de remplissage",
+      en: "Switch fit mode"
+    },
     drop_here_to_import: {
       fr: "Déposez vos contenus ici pour les importer",
       en: "Drop your content here to import",
