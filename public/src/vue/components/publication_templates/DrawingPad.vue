@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="m_publicationview"
-    :class="{ 'is--preview': preview_mode }"
-    ref="panel"
-  >
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -29,7 +25,7 @@
       "
     >
       <button
-        class="margin-vert-verysmall font-verysmall"
+        class="margin-vert-verysmall font-verysmall _preview_button"
         :class="{ 'is--active': !preview_mode }"
         @mousedown.stop.prevent="preview_mode = !preview_mode"
         @touchstart.stop.prevent="preview_mode = !preview_mode"
@@ -75,22 +71,13 @@
           style="enable-background:new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
-          <polygon
-            class="st0"
-            points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"
-          />
+          <polygon class="st0" points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	" />
           <polygon
             class="st0"
             points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
           />
-          <polygon
-            class="st0"
-            points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
-          />
-          <polygon
-            class="st0"
-            points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
-          />
+          <polygon class="st0" points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	" />
+          <polygon class="st0" points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	" />
         </svg>
         <svg
           version="1.1"
@@ -106,22 +93,13 @@
           style="enable-background:new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
-          <polygon
-            class="st0"
-            points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"
-          />
+          <polygon class="st0" points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	" />
           <polygon
             class="st0"
             points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
           />
-          <polygon
-            class="st0"
-            points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
-          />
-          <polygon
-            class="st0"
-            points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
-          />
+          <polygon class="st0" points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	" />
+          <polygon class="st0" points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	" />
         </svg>
       </button>
       <button
@@ -145,9 +123,7 @@
           xml:space="preserve"
         >
           <defs />
-          <path
-            d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"
-          />
+          <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
         </svg>
       </button>
       <button
@@ -188,19 +164,13 @@
       :publication="publication"
       :slugPubliName="slugPubliName"
       :medias="publication.medias"
-    />
-    <DrawingOptions
-      v-if="selected_layer && selected_layer.type === 'drawing'"
       :drawing_options="drawing_options"
       @updateDrawingOptions="v => (drawing_options = v)"
     />
 
     <div class="m_drawingPad" ref="current_page">
       <div class="m_drawingPad--content" :style="pad_size">
-        <div
-          :key="'background'"
-          class="m_drawingPad--layer m_drawingPad--layer_background"
-        >
+        <div :key="'background'" class="m_drawingPad--layer m_drawingPad--layer_background">
           <div
             class="m_drawingPad--layer--backgroundContainer"
             :style="
@@ -252,6 +222,8 @@
             :slugPubliName="slugPubliName"
             :pixelsPerMillimeters="pixelsPerMillimeters"
             :layer_options="layerOptions(layer)"
+            :is_active="$root.settings.current_publication.layer_id &&
+                layer.id === $root.settings.current_publication.layer_id"
             :media="getDrawingLayerReferenceMedia(layer.id)"
             :drawing_options="drawing_options"
             :zoom="zoom"
@@ -271,7 +243,6 @@ import ExportPagePubli from "../modals/ExportPagePubli.vue";
 import DrawingLayer from "./subcomponents/DrawingLayer.vue";
 import PagePublicationSinglePage from "./PagePublicationSinglePage.vue";
 import LayerPanel from "./subcomponents/LayerPanel.vue";
-import DrawingOptions from "./subcomponents/DrawingOptions.vue";
 
 export default {
   props: {
@@ -284,8 +255,7 @@ export default {
     ExportPagePubli,
     DrawingLayer,
     PagePublicationSinglePage,
-    LayerPanel,
-    DrawingOptions
+    LayerPanel
   },
   data() {
     return {
@@ -404,16 +374,15 @@ export default {
       ) {
         return `width: ${this.publication.width}mm; height: ${this.publication.height}mm;`;
       }
-    },
-    selected_layer() {
-      if (!this.$root.settings.current_publication.layer_id) return false;
-      return this.layers.find(
-        l => l.id === this.$root.settings.current_publication.layer_id
-      );
     }
   },
   methods: {
-    addMedia({ slugProjectName, metaFileName }) {
+    createPubliText() {
+      // ajouter du text dans la publi
+      // qui ne possède pas de lien
+      this.addMedia({ type: "text" });
+    },
+    addMedia({ slugProjectName, metaFileName, type }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • DrawingPad: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
@@ -428,18 +397,25 @@ export default {
         this.getHighestZNumberAmongstMedias(this.publication_medias[layer_id]) +
         1;
 
+      let additionalMeta = {
+        layer_id,
+        x,
+        y,
+        z_index
+      };
+
+      if (slugProjectName && metaFileName) {
+        additionalMeta.slugProjectName = slugProjectName;
+        additionalMeta.desired_filename = metaFileName;
+        additionalMeta.slugMediaName = metaFileName;
+      }
+
+      if (type) additionalMeta.type = type;
+
       this.$root.createMedia({
         slugFolderName: this.slugPubliName,
         type: "publications",
-        additionalMeta: {
-          slugProjectName,
-          desired_filename: metaFileName,
-          slugMediaName: metaFileName,
-          layer_id,
-          x,
-          y,
-          z_index
-        }
+        additionalMeta
       });
     },
     layerOptions(layer) {

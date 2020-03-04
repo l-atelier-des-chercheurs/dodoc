@@ -148,7 +148,7 @@
                     <div>{{ $t("project_name_to_find") }}</div>
 
                     <div class="input-group">
-                      <input type="text" class="" v-model="debounce_search_project_name" />
+                      <input type="text" class v-model="debounce_search_project_name" />
                       <span class="input-addon" v-if="debounce_search_project_name.length > 0">
                         <button
                           type="button"
@@ -628,26 +628,20 @@ export default {
       return this.presentationMD;
     },
     allMedias: function() {
-      let allMedias = [];
-      if (
-        this.projects === undefined ||
-        Object.keys(this.projects).length === 0
-      ) {
-        return [];
-      }
-      Object.keys(this.projects).map(slugProjectName => {
-        const folder = this.projects[slugProjectName];
-        if (!folder.hasOwnProperty("medias")) {
-          return;
+      const allMedias = this.sortedProjects.reduce((acc, project) => {
+        if (!project.hasOwnProperty("medias")) {
+          return acc;
         }
-        const folder_medias = folder.medias;
 
-        Object.keys(folder_medias).map(slugMediaName => {
-          let media = JSON.parse(JSON.stringify(folder_medias[slugMediaName]));
-          media.slugProjectName = slugProjectName;
-          allMedias.push(media);
+        debugger;
+
+        Object.values(project.medias).map(media => {
+          media.slugProjectName = project.slugFolderName;
+          acc.push(media);
         });
-      });
+
+        return acc;
+      }, []);
       return allMedias;
     },
     filteredMedias: function() {

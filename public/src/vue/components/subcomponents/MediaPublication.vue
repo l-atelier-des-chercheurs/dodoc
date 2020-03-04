@@ -7,7 +7,7 @@
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
     @mousedown.stop="is_selected = true"
-    :class="{
+    :class="[{
       'is--dragged': is_dragged,
       'is--resized': is_resized,
       'is--rotated': is_rotated,
@@ -15,8 +15,8 @@
       'is--hovered': is_hovered,
       'is--previewed': preview_mode,
       'is--overflowing': is_text_overflowing,
-      'is--inline_edited': inline_edit_mode
-    }"
+      'is--inline_edited': inline_edit_mode,
+    }, 'is--fit_mode_' + fit_mode]"
   >
     <!-- if media is link -->
     <MediaContent
@@ -89,7 +89,10 @@
           delay: [600, 0]
         }"
       >?</button>
-      <PrismEditor v-model="custom_css" @change="setCSSForMedia" language="css" />
+      <PrismEditor v-model="custom_css" @change="/* setCSSForMedia */" language="css" />
+      <div class="m_mediaPublication--edit_styles--sendButton">
+        <button type="button" class @click="setCSSForMedia">{{ $t('send') }}</button>
+      </div>
     </div>
 
     <!-- <transition name="fade_fast" :duration="150"> -->
@@ -257,34 +260,34 @@
           <svg
             v-if="media.slugProjectName"
             version="1.1"
-            class="inline-svg"
+            class="inline-svg inline-svg-larger"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             x="0px"
             y="0px"
-            width="40.9px"
-            height="40.9px"
-            viewBox="0 0 37.9 37.9"
-            style="enable-background:new 0 0 37.9 37.9;"
+            width="113.5px"
+            height="113.5px"
+            viewBox="0 0 113.5 113.5"
+            style="enable-background:new 0 0 113.5 113.5;"
             xml:space="preserve"
           >
             <path
-              d="M3,35c4,3.9,10.4,3.9,14.3,0l5.6-5.6c-0.4,0-0.9,0.1-1.4,0.1c-1.4,0-2.8-0.2-4.1-0.7l-3.2,3.2c-1.1,1.1-2.6,1.7-4.1,1.7
-		c-1.6,0-3-0.6-4.1-1.7c-1.1-1.1-1.7-2.6-1.7-4.1c0-1.6,0.6-3,1.7-4.1l6.3-6.3c1.1-1.1,2.6-1.7,4.1-1.7c1.6,0,3,0.6,4.1,1.7
-		c0.5,0.5,1,1.2,1.2,1.8c0.7,0,3.6-2.5,3.6-2.5c-0.5-0.8-1-1.6-1.8-2.4c-3.9-3.9-10.4-3.9-14.3,0L3,20.7C-1,24.6-1,31,3,35z"
+              d="M8.9,104.6c11.8,11.8,31,11.8,42.8,0l16.9-16.9c-1.3,0.1-2.7,0.2-4,0.2c-4.3,0-8.4-0.7-12.4-2l-9.6,9.6
+		c-3.3,3.3-7.7,5.1-12.3,5.1c-4.6,0-9-1.8-12.3-5.1c-3.3-3.3-5.1-7.6-5.1-12.3c0-4.6,1.8-9,5.1-12.3l18.7-18.7
+		c3.3-3.3,7.7-5.1,12.3-5.1c4.7,0,9,1.8,12.3,5.1c1.6,1.6,2.8,3.4,3.7,5.5c2.1-0.1,10.6-7.5,10.6-7.5c-1.4-2.5-3.1-4.9-5.3-7.1
+		c-11.8-11.8-31-11.8-42.8,0L8.9,61.8C-3,73.6-3,92.8,8.9,104.6z"
             />
             <path
-              d="M16.3,8.5c1.4,0,2.8,0.2,4.2,0.7L23.7,6c1.1-1.1,2.6-1.7,4.1-1.7c1.6,0,3,0.6,4.1,1.7c1.1,1.1,1.7,2.6,1.7,4.1
-		c0,1.6-0.6,3-1.7,4.1l-6.3,6.3c-1.1,1.1-2.6,1.7-4.1,1.7c-1.6,0-3-0.6-4.1-1.7c-0.5-0.5-1-1.2-1.2-1.8c-0.7,0-1.4,0.3-1.9,0.8
-		l-1.7,1.7c0.5,0.8,1,1.6,1.8,2.4c3.9,3.9,10.4,3.9,14.3,0l6.3-6.3c4-3.9,4-10.4,0-14.3C31-1,24.6-1,20.7,3L15,8.6
-		C15.4,8.6,15.9,8.5,16.3,8.5L16.3,8.5L16.3,8.5z"
+              d="M48.8,25.5c4.3,0,8.5,0.7,12.5,2.1l9.6-9.6c3.3-3.3,7.7-5.1,12.3-5.1s9,1.8,12.3,5.1c3.3,3.3,5.1,7.7,5.1,12.3
+		s-1.8,9-5.1,12.3L76.8,61.3c-3.3,3.3-7.7,5.1-12.3,5.1c-4.7,0-9-1.8-12.3-5.1c-1.6-1.6-2.9-3.5-3.7-5.5c-2.1,0.1-4.1,1-5.7,2.5
+		l-5,5c1.4,2.5,3.1,4.9,5.3,7.1c11.8,11.8,31,11.8,42.8,0l18.7-18.7c11.8-11.8,11.8-31,0-42.8C92.8-3,73.7-3,61.8,8.9L45,25.7
+		C46.2,25.6,47.5,25.5,48.8,25.5L48.8,25.5L48.8,25.5z"
             />
           </svg>
-
           <svg
             v-else
             version="1.1"
-            class="inline-svg"
+            class="inline-svg inline-svg-larger"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             x="0px"
@@ -303,6 +306,51 @@
           </svg>
           <!-- {{ $t('edit') }} -->
         </button>
+
+        <button
+          type="button"
+          class="buttonLink _no_underline"
+          @click.stop.prevent="toggleImageFillMode"
+          :content="$t('switch_fit_mode')"
+          v-tippy="{
+            placement: 'top',
+            delay: [600, 0]
+          }"
+        >
+          <!-- Generator: Adobe Illustrator 24.0.0, SVG Export Plug-In  -->
+          <svg
+            class="inline-svg inline-svg-larger"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="130.4px"
+            height="130.4px"
+            viewBox="0 0 130.4 130.4"
+            style="enable-background:new 0 0 130.4 130.4;"
+            xml:space="preserve"
+          >
+            <defs />
+            <g>
+              <path
+                d="M100.3,130.4H30.1c-2.4,0-4.4-2.2-4.4-5V5c0-2.8,2-5,4.4-5h70.1c2.4,0,4.4,2.2,4.4,5v120.4
+		C104.7,128.2,102.7,130.4,100.3,130.4z M34.5,120.4h61.3V10H34.5V120.4z"
+              />
+            </g>
+            <g>
+              <path d="M125.4,106.4h-12v-9.2h7v-6.4h10v11C130.4,104.3,128.2,106.4,125.4,106.4z" />
+              <path d="M93.8,106.4H75v-9.2h18.8V106.4z M55.4,106.4H36.6v-9.2h18.8V106.4z" />
+              <path d="M17,106.4H5c-2.8,0-5-2.1-5-4.6v-11h10v6.4h7V106.4z" />
+              <rect y="56.9" width="10" height="16.6" />
+              <path d="M10,39.6H0v-11C0,26.1,2.2,24,5,24h12v9.2h-7V39.6z" />
+              <path d="M93.8,33.2H75V24h18.8V33.2z M55.4,33.2H36.6V24h18.8V33.2z" />
+              <path d="M130.4,39.6h-10v-6.4h-7V24h12c2.8,0,5,2.1,5,4.6V39.6z" />
+              <rect x="120.4" y="56.9" width="10" height="16.6" />
+            </g>
+          </svg>
+        </button>
+
         <button
           type="button"
           class="buttonLink _no_underline"
@@ -417,7 +465,10 @@ export default {
         pheight: 0
       },
 
-      mediaZIndex: 0
+      mediaZIndex: 0,
+
+      fit_mode: "cover",
+      lock_original_ratio: true
     };
   },
 
@@ -526,7 +577,15 @@ export default {
           slugMediaName: this.media.publi_meta.metaFileName,
           val
         });
-      }, 500);
+      }, 0);
+    },
+    toggleImageFillMode() {
+      if (this.fit_mode === "cover") this.fit_mode = "contain";
+      else if (this.fit_mode === "contain") this.fit_mode = "cover";
+
+      this.updateMediaPubliMeta({
+        fit_mode: this.fit_mode
+      });
     },
     updateMediaStyles() {
       this.rotate = this.media.publi_meta.hasOwnProperty("rotate")
@@ -558,6 +617,14 @@ export default {
       this.mediaZIndex = this.media.publi_meta.hasOwnProperty("z_index")
         ? this.media.publi_meta.z_index
         : 0;
+      this.fit_mode = this.media.publi_meta.hasOwnProperty("fit_mode")
+        ? this.media.publi_meta.fit_mode
+        : "cover";
+      this.lock_original_ratio = this.media.publi_meta.hasOwnProperty(
+        "lock_original_ratio"
+      )
+        ? this.media.publi_meta.lock_original_ratio
+        : true;
 
       if (this.media.type === "text" || this.media.publi_meta.type === "text") {
         this.$nextTick(() => {
@@ -708,10 +775,15 @@ export default {
         let newWidth = this.mediaSize.pwidth + deltaX;
         this.mediaSize.width = this.limitMediaWidth(newWidth);
 
-        const deltaY =
-          (pageY_mm - this.resizeOffset.y) / this.$root.settings.publi_zoom;
-        let newHeight = this.mediaSize.pheight + deltaY;
-        this.mediaSize.height = this.limitMediaHeight(newHeight);
+        if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
+          this.mediaSize.height = this.mediaSize.width * this.media.ratio;
+        else {
+          const deltaY =
+            (pageY_mm - this.resizeOffset.y) / this.$root.settings.publi_zoom;
+          let newHeight = this.mediaSize.pheight + deltaY;
+
+          this.mediaSize.height = this.limitMediaHeight(newHeight);
+        }
       }
     },
     resizeUp(event) {
@@ -722,7 +794,9 @@ export default {
       }
       if (this.is_resized) {
         this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
-        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
+        if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
+          this.mediaSize.height = this.mediaSize.width * this.media.ratio;
+        else this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
 
         this.updateMediaPubliMeta({
           width: this.mediaSize.width,
@@ -903,4 +977,3 @@ export default {
   }
 };
 </script>
-<style></style>

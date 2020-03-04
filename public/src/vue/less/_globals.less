@@ -98,7 +98,7 @@ button,
     .font-verysmall;
     // background-color: @c-rouge;
     // color: white;
-    border-radius: @t-skipline;
+    border-radius: @t-buttonradius;
   }
 
   &.button-redthin {
@@ -109,7 +109,7 @@ button,
     .text-cap;
     .font-verysmall;
     background-color: @c-rouge;
-    border-radius: @t-skipline;
+    border-radius: @t-buttonradius;
     color: white;
   }
   &.button-greenthin {
@@ -120,7 +120,7 @@ button,
     .text-cap;
     .font-verysmall;
     background-color: @c-bleuvert;
-    border-radius: @t-skipline;
+    border-radius: @t-buttonradius;
     color: white;
   }
 
@@ -208,7 +208,7 @@ button,
       }
 
       &:hover {
-        .bg-gris_tresclair;
+        .bg-transparent;
       }
     }
   }
@@ -883,6 +883,11 @@ svg.inline-svg {
   display: inline-block;
   width: 1em;
   height: 1em;
+
+  &.inline-svg-larger {
+    width: 1.4em;
+    height: 1.4em;
+  }
 
   > * {
     fill: currentColor;
