@@ -1,199 +1,153 @@
 <template>
   <div class="m_layerPanel">
-    <div class="m_layerPanel--topbar">
-      <label v-if="!show_create_layer_modal">
+    <div class="m_layerPanel--layerList">
+      <div class="m_layerPanel--layerList--topbar">
+        <label v-if="!show_create_layer_modal">
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle padding-verysmall"
+            :class="{ 'is--active': show_layers }"
+            @click="show_layers = !show_layers"
+          >
+            {{ $t("layers") }}
+            <template v-if="layers.length > 0">– {{ layers.length }}</template>
+          </button>
+        </label>
         <button
           type="button"
-          class="button-nostyle text-uc button-triangle padding-verysmall"
-          :class="{ 'is--active': show_layers }"
-          @click="show_layers = !show_layers"
-        >
-          {{ $t("layers") }}
-          <template v-if="layers.length > 0">– {{ layers.length }}</template>
-        </button>
-      </label>
-      <button
-        type="button"
-        class="buttonLink"
-        @click="show_create_layer_modal = false"
-        v-else
-      >
-        {{ $t("cancel") }}
-      </button>
+          class="buttonLink"
+          @click="show_create_layer_modal = false"
+          v-else
+        >{{ $t("cancel") }}</button>
 
-      <button
-        type="button"
-        class="buttonLink"
-        :class="{ 'is--active': show_create_layer_modal }"
-        @click="show_create_layer_modal = !show_create_layer_modal"
-      >
-        {{ $t("create") }}
-      </button>
-    </div>
+        <button
+          type="button"
+          class="buttonLink"
+          :class="{ 'is--active': show_create_layer_modal }"
+          @click="show_create_layer_modal = !show_create_layer_modal"
+        >{{ $t("create") }}</button>
+      </div>
 
-    <form
-      v-if="show_create_layer_modal"
-      class="m_layerPanel--createLayer padding-verysmall"
-      @submit.prevent="createLayer"
-    >
-      <div class="margin-bottom-small">
-        <label>{{ $t("layer_name") }}</label>
+      <form
+        v-if="show_create_layer_modal"
+        class="m_layerPanel--layerList--createLayer padding-verysmall"
+        @submit.prevent="createLayer"
+      >
+        <div class="margin-bottom-small">
+          <label>{{ $t("layer_name") }}</label>
+          <input type="text" required autofocus ref="newLayerInputName" v-model="new_layer_name" />
+        </div>
+
+        <div class="margin-bottom-small">
+          <label>{{ $t("layer_type") }}</label>
+          <select v-model="new_layer_type">
+            <option value="drawing">{{ $t("drawing") }}</option>
+            <option value="medias">{{ $t("medias") }}</option>
+          </select>
+          <small>
+            <template v-if="new_layer_type === 'drawing'">
+              {{
+              $t("drawing_layer_instructions")
+              }}
+            </template>
+            <template v-else-if="new_layer_type === 'medias'">
+              {{
+              $t("medias_layer_instructions")
+              }}
+            </template>
+          </small>
+        </div>
+
         <input
-          type="text"
-          required
-          autofocus
-          ref="newLayerInputName"
-          v-model="new_layer_name"
+          type="submit"
+          class="button button-bg_rounded bg-bleuvert margin-top-small"
+          :disabled="!new_layer_name"
         />
-      </div>
+      </form>
 
-      <div class="margin-bottom-small">
-        <label>{{ $t("layer_type") }}</label>
-        <select v-model="new_layer_type">
-          <option value="drawing">{{ $t("drawing") }}</option>
-          <option value="medias">{{ $t("medias") }}</option>
-        </select>
-        <small>
-          <template v-if="new_layer_type === 'drawing'">{{
-            $t("drawing_layer_instructions")
-          }}</template>
-          <template v-else-if="new_layer_type === 'medias'">{{
-            $t("medias_layer_instructions")
-          }}</template>
-        </small>
-      </div>
-
-      <input
-        type="submit"
-        class="button button-bg_rounded bg-bleuvert margin-top-small"
-        :disabled="!new_layer_name"
-      />
-    </form>
-
-    <SlickList
-      v-else-if="show_layers"
-      v-model="sorted_layers"
-      lockAxis="y"
-      axis="y"
-      :useDragHandle="true"
-    >
-      <SlickItem
-        v-for="(layer, index) in sorted_layers"
-        :key="layer.id"
-        :index="index"
-        style="z-index: 1;"
+      <SlickList
+        v-else-if="show_layers"
+        v-model="sorted_layers"
+        lockAxis="y"
+        axis="y"
+        :useDragHandle="true"
       >
-        <div
-          @click="toggleActiveLayer(layer.id)"
-          class="m_layerPanel--layer"
-          :class="{
+        <SlickItem
+          v-for="(layer, index) in sorted_layers"
+          :key="layer.id"
+          :index="index"
+          style="z-index: 1;"
+        >
+          <div
+            @click="toggleActiveLayer(layer.id)"
+            class="m_layerPanel--layerList--layer"
+            :class="{
             'is--active':
               layer.id === $root.settings.current_publication.layer_id
           }"
-        >
-          <div class="_vignette" :class="['_vignette_' + layer.type]">
-            <input
-              v-if="layer.type === 'drawing'"
-              type="color"
-              @click.stop="
+          >
+            <div class="_vignette" :class="['_vignette_' + layer.type]">
+              <input
+                v-if="layer.type === 'drawing'"
+                type="color"
+                @click.stop="
                 $root.settings.current_publication.layer_id = layer.id
               "
-              :value="layer.color"
-              @change="updateLayerColor({ $event, id: layer.id })"
-            />
-          </div>
-          <!-- <button
-        type="button"
-        class="buttonLink _no_underline"
-        @click.stop="toggleActiveLayer(layer.id)"
-        :class="{
-          'is--active': layer.id === $root.settings.current_publication.layer_id
-        }"
-      >
-        <svg
-          version="1.1"
-          class="inline-svg"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          width="100.7px"
-          height="101px"
-          viewBox="0 0 100.7 101"
-          style="enable-background:new 0 0 100.7 101;"
-          xml:space="preserve"
-        >
-          <path
-            class="st0"
-            d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
-              L19.1,91.5z"
-          />
-        </svg>
-      </button>-->
-          <div class>
-            <span class="text-ellipsis">{{ layer.name }}</span>
-            <br />
-            <span class="label">
-              <template v-if="layer.type === 'drawing'">{{
-                $t("drawing")
-              }}</template>
-              <template v-if="layer.type === 'medias'">
-                <template v-if="!mediasFromLayer(layer.id)">{{
-                  $t("media")
-                }}</template>
-                <template v-else>
-                  <template v-if="mediasFromLayer(layer.id).length === 1">
+                :value="layer.color"
+                @change="updateLayerColor({ $event, id: layer.id })"
+              />
+            </div>
+            <div class>
+              <span class="text-ellipsis">{{ layer.name }}</span>
+              <br />
+              <span class="label">
+                <template v-if="layer.type === 'drawing'">
+                  {{
+                  $t("drawing")
+                  }}
+                </template>
+                <template v-if="layer.type === 'medias'">
+                  <template v-if="!mediasFromLayer(layer.id)">
                     {{
-                      mediasFromLayer(layer.id).length +
-                        " " +
-                        $t("media").toLowerCase()
+                    $t("media")
                     }}
                   </template>
                   <template v-else>
-                    {{
+                    <template v-if="mediasFromLayer(layer.id).length === 1">
+                      {{
                       mediasFromLayer(layer.id).length +
-                        " " +
-                        $t("medias").toLowerCase()
-                    }}
+                      " " +
+                      $t("media").toLowerCase()
+                      }}
+                    </template>
+                    <template v-else>
+                      {{
+                      mediasFromLayer(layer.id).length +
+                      " " +
+                      $t("medias").toLowerCase()
+                      }}
+                    </template>
                   </template>
                 </template>
-              </template>
-            </span>
+              </span>
+            </div>
+            <div v-handle class="_handle" />
           </div>
-          <button
-            v-if="layer.id === $root.settings.current_publication.layer_id"
-            type="button"
-            class="buttonLink _no_underline"
-            @click.stop="removeLayer(layer.id)"
-            :disabled="read_only"
-          >
-            <svg
-              version="1.1"
-              class="inline-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="91.6px"
-              height="95px"
-              viewBox="0 0 91.6 95"
-              style="enable-background:new 0 0 91.6 95;"
-              xml:space="preserve"
-            >
-              <path
-                d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
-            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
-              />
-            </svg>
-          </button>
+        </SlickItem>
+      </SlickList>
+    </div>
 
-          <div v-handle class="_handle" />
-        </div>
-      </SlickItem>
-    </SlickList>
+    <LayerOptions
+      v-if="current_layer"
+      :current_layer="current_layer"
+      :drawing_options="drawing_options"
+      @updateDrawingOptions="v => $emit('updateDrawingOptions', v)"
+      @removeLayer="id => removeLayer(id)"
+    />
   </div>
 </template>
 <script>
+import LayerOptions from "./LayerOptions.vue";
 import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 
 export default {
@@ -201,9 +155,11 @@ export default {
     layers: Array,
     medias: Object,
     slugPubliName: String,
-    publication: Object
+    publication: Object,
+    drawing_options: Object
   },
   components: {
+    LayerOptions,
     SlickItem,
     SlickList
   },
@@ -219,6 +175,8 @@ export default {
   created() {},
   mounted() {
     this.$root.settings.current_publication.layer_id = false;
+    if (this.sorted_layers.length > 0)
+      this.toggleActiveLayer(this.sorted_layers[0].id);
   },
   beforeDestroy() {
     this.$root.settings.current_publication.layer_id = false;

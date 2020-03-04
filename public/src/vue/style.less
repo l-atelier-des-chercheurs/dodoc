@@ -4034,29 +4034,42 @@ small {
     }
   }
 
-  .m_layerPanel,
-  .m_drawingOptions {
+  .m_layerPanel {
     position: absolute;
     bottom: 0px;
     left: 40px;
-    width: 50%;
-    max-width: 200px;
+    width: auto;
     z-index: 1001;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 10px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
     padding-top: 0;
     // .padding-bottom-verysmall;
-
     .font-verysmall;
-    box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
-    max-height: 320px;
-    .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
-    overflow: auto;
-    overscroll-behavior-y: contain;
 
-    .m_layerPanel--topbar {
+    display: flex;
+    flex-flow: row nowrap;
+
+    > * {
+      border-radius: 5px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      background-color: rgba(255, 255, 255, 0.75);
+      max-width: 220px;
+      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
+      max-height: 320px;
+      .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+    }
+
+    .m_layerPanel--layerList {
+      flex: 0 0 200px;
+    }
+
+    .m_layerOptions {
+      flex: 0 0 200px;
+    }
+
+    .m_layerPanel--layerList--topbar {
       margin-bottom: 0;
 
       display: flex;
@@ -4077,10 +4090,6 @@ small {
     > button {
       pointer-events: auto;
     }
-  }
-
-  .m_drawingOptions {
-    left: 300px;
   }
 
   .m_publicationNavMenu {
@@ -4669,7 +4678,7 @@ small {
 
     &.is--inactive {
       pointer-events: none;
-      opacity: 0.2;
+      // opacity: 0.2;
     }
     &.is--noteditable {
       &.m_drawingPad--layer_drawing {
@@ -4683,6 +4692,7 @@ small {
         position: relative;
         transform-origin: top left;
         margin: 0 auto;
+        box-shadow: none;
         background-color: transparent;
         transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
       }
@@ -4699,11 +4709,11 @@ small {
   }
 }
 
-.m_layerPanel--layer {
+.m_layerPanel--layerList--layer {
   // border: 2px solid @c-gris;
   // height: 4em;
   // border-radius: 4em;
-
+  position: relative;
   display: flex;
   align-items: center;
   .padding-verysmall;
@@ -4734,6 +4744,19 @@ small {
 
     ._handle::before {
       background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><path d="M0 7.5v5h50v-5H0zm0 15v5h50v-5H0zm0 15v5h50v-5H0z" fill="%23fff"/></svg>');
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 100%;
+
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+
+      border-left: 5px solid @c-noir;
     }
   }
 
@@ -4787,7 +4810,8 @@ small {
     }
 
     &._vignette_medias {
-      background-color: @c-orange;
+      border: 2px solid @c-orange;
+      // background-color: @c-noir;
       border-radius: 0;
     }
   }
