@@ -1269,6 +1269,10 @@ module.exports = (function() {
                 overwrite: true
               });
             })
+            .catch(err => {
+              dev.error(`Failed to delete/move media: ${err}`);
+              return;
+            })
             .then(() => {
               cache.del({
                 type: type + "/" + "medias",
@@ -1282,9 +1286,6 @@ module.exports = (function() {
             })
             .then(() => {
               resolve();
-            })
-            .catch(err => {
-              reject(err);
             });
         });
       });

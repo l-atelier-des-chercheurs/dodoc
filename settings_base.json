@@ -323,6 +323,9 @@
           "height": {
             "type": "number"
           },
+          "fit_mode": {
+            "type": "string"
+          },
           "z_index": {
             "type": "number",
             "clip": {
