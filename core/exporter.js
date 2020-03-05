@@ -356,7 +356,7 @@ module.exports = (function() {
           "_publications"
         );
 
-        let type_of_publication = "";
+        let publication_meta = "";
 
         let resolution = {
           width: 1280,
@@ -375,8 +375,7 @@ module.exports = (function() {
 
         loadPublication(slugPubliName, {})
           .then(pageData => {
-            type_of_publication =
-              pageData.publiAndMediaData[slugPubliName].template;
+            publication_meta = pageData.publiAndMediaData[slugPubliName];
             return _loadMediaFilenameFromPublicationSlugs(
               slugPubliName,
               pageData
@@ -384,7 +383,7 @@ module.exports = (function() {
           })
           .then(medias_with_original_filepath => {
             fs.mkdirp(cachePath, function() {
-              if (type_of_publication === "video_assemblage") {
+              if (publication_meta.template === "video_assemblage") {
                 _makeVideoAssemblage({
                   medias_with_original_filepath,
                   cachePath,
@@ -399,7 +398,7 @@ module.exports = (function() {
                   .catch(err => {
                     return reject(err.message);
                   });
-              } else if (type_of_publication === "mix_audio_and_video") {
+              } else if (publication_meta.template === "mix_audio_and_video") {
                 // merge audio and video
                 // see https://stackoverflow.com/questions/30595594/fluent-ffmpeg-merging-video-and-audio-wrong-frames
                 _mixAudioAndVideo({
@@ -414,7 +413,7 @@ module.exports = (function() {
                   .catch(err => {
                     return reject(`${err}`);
                   });
-              } else if (type_of_publication === "mix_audio_and_image") {
+              } else if (publication_meta.template === "mix_audio_and_image") {
                 // merge audio and image
                 _mixAudioAndImage({
                   medias_with_original_filepath,
@@ -427,6 +426,25 @@ module.exports = (function() {
                   })
                   .catch(err => {
                     return reject(`Failed to make a video: ${err}`);
+                  });
+              } else if (publication_meta.template === "video_effects") {
+                if (!publication_meta.effect)
+                  return reject("Missing effect field");
+
+                _applyVideoEffects({
+                  medias_with_original_filepath,
+                  effect: publication_meta.effect,
+                  cachePath,
+                  videoName,
+                  resolution,
+                  bitrate,
+                  socket
+                })
+                  .then(() => {
+                    return resolve(videoName);
+                  })
+                  .catch(err => {
+                    return reject(err.message);
                   });
               }
             });
@@ -797,6 +815,82 @@ module.exports = (function() {
       Promise.all(tasks)
         .then(() => resolve(cachePath))
         .catch(err => reject(err));
+    });
+  }
+
+  function _applyVideoEffects({
+    medias_with_original_filepath,
+    effect,
+    cachePath,
+    videoName,
+    resolution,
+    bitrate,
+    socket
+  }) {
+    return new Promise(function(resolve, reject) {
+      dev.logfunction("EXPORTER — _makeVideoAssemblage");
+
+      const videoPath = path.join(cachePath, videoName);
+      const vm = medias_with_original_filepath[0];
+
+      ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
+        const ffmpeg_cmd = new ffmpeg().renice(renice);
+
+        ffmpeg_cmd.input(vm.full_path);
+
+        if (vm.duration) {
+          ffmpeg_cmd.duration(vm.duration);
+        }
+
+        // check if has audio track or not
+        if (
+          !err &&
+          metadata &&
+          metadata.streams.filter(s => s.codec_type === "audio").length === 0
+        ) {
+          ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+        }
+
+        let temp_video_volume;
+        if (vm.type === "video" && vm.publi_meta.hasOwnProperty("volume"))
+          temp_video_volume = vm.publi_meta.volume / 100;
+
+        if (temp_video_volume)
+          ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
+        else ffmpeg_cmd.addOptions(["-af apad"]);
+
+        ffmpeg_cmd
+          .native()
+          .outputFPS(30)
+          .withVideoCodec("libx264")
+          .withVideoBitrate(bitrate)
+          .withAudioCodec("aac")
+          .withAudioBitrate("128k")
+          .videoFilter([
+            `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
+          ])
+          .addOptions(["-crf 22", "-preset fast", "-shortest"])
+          .videoFilter(["setsar=1/1"])
+          .toFormat("mp4")
+          .output(videoPath)
+          .on("start", function(commandLine) {
+            dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
+          })
+          .on("progress", progress => {
+            _notifyFfmpegProgress({ socket, progress });
+          })
+          .on("end", () => {
+            return resolve(videoPath);
+          })
+          .on("error", function(err, stdout, stderr) {
+            dev.error("An error happened: " + err.message);
+            dev.error("ffmpeg standard output:\n" + stdout);
+            dev.error("ffmpeg standard error:\n" + stderr);
+            throw err;
+          })
+          .run();
+        global.ffmpeg_processes.push(ffmpeg_cmd);
+      });
     });
   }
 

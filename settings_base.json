@@ -202,7 +202,8 @@
             "stopmotion_animation",
             "mix_audio_and_video",
             "mix_audio_and_image",
-            "drawing_pad"
+            "drawing_pad",
+            "video_effects"
           ],
           "default": "page_by_page"
         },
@@ -255,6 +256,9 @@
         },
         "medias_slugs": {
           "type": "array"
+        },
+        "effect": {
+          "type": "string"
         }
       },
       "medias": {

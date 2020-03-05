@@ -122,9 +122,69 @@
       @touchstart.stop.prevent="dragMedia('touch')"
     >
       <div
+        class="handle handle_resizeMedia_bottom"
+        @mousedown.stop.prevent="
+          event => resizeMedia({ event, type: 'mouse', origin: 'bottom' })
+        "
+        @touchstart.stop.prevent="
+          event => resizeMedia({ event, type: 'touch', origin: 'bottom' })
+        "
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="60px"
+          height="106px"
+          viewBox="0 0 60 106"
+          style="enable-background:new 0 0 60 106;"
+          xml:space="preserve"
+        >
+          <path
+            d="M0,77.8l8.6-9.2l6.6,6.5c2,2,3.6,3.6,4.7,5c1.1,1.4,2.2,3,3.2,4.8l0-64.1c-1,1.8-2.1,3.4-3.2,4.8c-1.1,1.4-2.7,3.1-4.7,5
+		l-6.6,6.6L0,28.2L30,0l30,28.2l-8.6,9.2l-6.7-6.7c-2-2-3.6-3.7-4.7-5.1c-1.1-1.4-2.1-2.9-3-4.5l0,63.9c0.9-1.6,1.9-3.2,3-4.5
+		c1.1-1.4,2.7-3.1,4.7-5.1l6.7-6.6l8.6,9.2L30,106L0,77.8z"
+          />
+        </svg>
+      </div>
+      <div
+        class="handle handle_resizeMedia_right"
+        @mousedown.stop.prevent="
+          event => resizeMedia({ event, type: 'mouse', origin: 'right' })
+        "
+        @touchstart.stop.prevent="
+          event => resizeMedia({ event, type: 'touch', origin: 'right' })
+        "
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="106px"
+          height="60px"
+          viewBox="0 0 106 60"
+          style="enable-background:new 0 0 106 60;"
+          xml:space="preserve"
+        >
+          <path
+            d="M28.1,0l9.2,8.6l-6.5,6.6c-2,2-3.6,3.6-5,4.7c-1.4,1.1-3,2.2-4.8,3.2l64.1,0c-1.8-1-3.4-2.1-4.8-3.2
+		c-1.4-1.1-3.1-2.7-5-4.7l-6.6-6.6L77.7,0L106,30L77.7,60l-9.2-8.6l6.7-6.7c2-2,3.7-3.6,5.1-4.7c1.4-1.1,2.9-2.1,4.5-3l-63.9,0
+		c1.6,0.9,3.2,1.9,4.5,3c1.4,1.1,3.1,2.7,5.1,4.7l6.6,6.7L28.1,60L0,30L28.1,0z"
+          />
+        </svg>
+      </div>
+      <div
         class="handle handle_resizeMedia"
-        @mousedown.stop.prevent="resizeMedia('mouse', 'bottomright')"
-        @touchstart.stop.prevent="resizeMedia('touch', 'bottomright')"
+        @mousedown.stop.prevent="
+          event => resizeMedia({ event, type: 'mouse', origin: 'bottomright' })
+        "
+        @touchstart.stop.prevent="
+          event => resizeMedia({ event, type: 'touch', origin: 'bottomright' })
+        "
       >
         <svg
           version="1.1"
@@ -322,17 +382,17 @@
           <!-- {{ $t('edit') }} -->
         </button>
 
-        <button
+        <!-- <button
+          v-if="!!media.ratio && !lock_original_ratio"
           type="button"
           class="buttonLink _no_underline"
-          @click.stop.prevent="toggleImageFillMode"
+          @click.stop.prevent="toggleImageFitMode"
           :content="$t('switch_fit_mode')"
           v-tippy="{
             placement: 'top',
             delay: [600, 0]
           }"
         >
-          <!-- Generator: Adobe Illustrator 24.0.0, SVG Export Plug-In  -->
           <svg
             class="inline-svg inline-svg-larger"
             version="1.1"
@@ -370,7 +430,7 @@
               <rect x="120.4" y="56.9" width="10" height="16.6" />
             </g>
           </svg>
-        </button>
+        </button> -->
 
         <button
           type="button"
@@ -470,6 +530,7 @@ export default {
         x: 0,
         y: 0
       },
+      resize_origin: "",
 
       rotateOffset: {
         x: 0,
@@ -528,13 +589,18 @@ export default {
       return `
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
-        height: ${this.mediaSize.height}mm;
+        height: ${this.auto_height}mm;
         z-index: ${this.media.publi_meta.z_index};
       `;
     },
     text_is_overflowing() {
       const el = this.$refs.media;
       return el.offsetHeight + 15 < el.scrollHeight;
+    },
+    auto_height() {
+      if (this.lock_original_ratio)
+        return this.mediaSize.width * this.media.ratio;
+      else return this.mediaSize.height;
     }
   },
   methods: {
@@ -600,7 +666,7 @@ export default {
         });
       }, 0);
     },
-    toggleImageFillMode() {
+    toggleImageFitMode() {
       if (this.fit_mode === "cover") this.fit_mode = "contain";
       else if (this.fit_mode === "contain") this.fit_mode = "cover";
 
@@ -738,13 +804,24 @@ export default {
         slugMediaName: this.media.publi_meta.metaFileName
       });
     },
-    resizeMedia(type, origin) {
+    resizeMedia({ event, type, origin }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
           `METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`
         );
       }
+
       if (!this.read_only) {
+        this.resize_origin = origin;
+
+        if (this.resize_origin === "bottomright" && !this.lock_original_ratio)
+          this.enableLock();
+        else if (
+          this.resize_origin !== "bottomright" &&
+          this.lock_original_ratio
+        )
+          this.disableLock();
+
         if (type === "mouse") {
           window.addEventListener("mousemove", this.resizeMove);
           window.addEventListener("mouseup", this.resizeUp);
@@ -794,25 +871,35 @@ export default {
         const deltaX =
           (pageX_mm - this.resizeOffset.x) / this.$root.settings.publi_zoom;
         let newWidth = this.mediaSize.pwidth + deltaX;
-        this.mediaSize.width = this.limitMediaWidth(newWidth);
 
+        if (
+          this.resize_origin === "right" ||
+          this.resize_origin === "bottomright"
+        )
+          this.mediaSize.width = this.limitMediaWidth(newWidth);
+
+        let new_height;
         if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
-          this.mediaSize.height = this.mediaSize.width * this.media.ratio;
+          new_height = this.mediaSize.width * this.media.ratio;
         else {
           const deltaY =
             (pageY_mm - this.resizeOffset.y) / this.$root.settings.publi_zoom;
-          let newHeight = this.mediaSize.pheight + deltaY;
-
-          this.mediaSize.height = this.limitMediaHeight(newHeight);
+          new_height = this.mediaSize.pheight + deltaY;
         }
+
+        if (
+          this.resize_origin === "bottom" ||
+          this.resize_origin === "bottomright"
+        )
+          this.mediaSize.height = this.limitMediaHeight(new_height);
       }
     },
     resizeUp(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: resizeUp with is_resized = ${this.is_resized}`
         );
-      }
+
       if (this.is_resized) {
         this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
         if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
@@ -994,6 +1081,16 @@ export default {
       if (!this.is_touch) {
         this.is_hovered = false;
       }
+    },
+    enableLock() {
+      this.updateMediaPubliMeta({
+        lock_original_ratio: true
+      });
+    },
+    disableLock() {
+      this.updateMediaPubliMeta({
+        lock_original_ratio: false
+      });
     }
   }
 };

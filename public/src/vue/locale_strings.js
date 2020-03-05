@@ -548,13 +548,19 @@ module.exports = (function() {
     add_multiple_videos_files: {
       fr:
         "Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> en cliquant sur la flèche verte. Les vidéos seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.",
-      en: "Add multiple <b>video</b> medias to create a new video.",
+      en:
+        "Add multiple <b>videos</b> or <b>images</b> from a project to create a new video.",
       nl:
         "Open een project en voeg meerdere <b>video</b>bestanden toe door op de groene pijl te klikken . Video’s worden in volgorde van toevoeging na elkaar geplaatst.<br>Als u exporteert, wordt een nieuwe video gemaakt .<br> Ondersteunde bestandstypen : alleen video’s van hetzelfde formaat.",
       oc:
         "Dubrissètz un projècte e apondètz mantunes mèdias <b>vidèo</b> en cliquant sus la sageta verda. Las vidèos seràn mesas bout à bout dins l’òrdre d’apondon.<br>L’exportacion crearà una nouvèla vidèo.<br>mèdias acceptats : unicament de vidèos de meteissa talha.",
       de:
         "Öffnen Sie ein Projekt und fügen Sie mehrere Medien hinzu<b> Video </b>durch Klicken auf den grünen Pfeil.<br>Beim Export wird ein neues Video erstellt.<br> Akzeptierte Medien: nur Videos der gleichen Größe."
+    },
+    add_one_video_file: {
+      fr:
+        "Ouvrez un projet et ajoutez un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.",
+      en: "Add a single <b>video</b> and select a filter or an effect to mix."
     },
     add_multiple_images: {
       fr:
@@ -2129,10 +2135,6 @@ module.exports = (function() {
       de:
         "Dieses Rezept nimmt eine Video und eine Tonspur.  Er fügt die Tonspur des Videos hinzu oder ersetzt ihn durch der ausgewählten Tonspur.<br> Zulässige Medien : ein Video und eine Tonspur.<br> Wird ein neues Video mit der längsten Medienlänge erstellen."
     },
-    drawing_pad_summary: {
-      fr: "Bloc à dessin",
-      en: "Drawing pad"
-    },
     drawing_pad: {
       fr: "Bloc dessin",
       en: "Drawing pad"
@@ -2163,6 +2165,20 @@ module.exports = (function() {
         "Aquesta recèpta pren un imatge e una p ista audio. Permet de crear d'<i>imatges parlantas<i>.<br> Mèdias acceptats : un imatge e una pista sonora.<br>Crearà una vidèo de la durada de la pista sonora.",
       de:
         "Dieses Rezept nimmt ein Bild und eine Audiospur auf.  Es erlaubt Ihnen, <i>sprechende Bilder zu erstellen</i>.<br> Zulässige Medien : ein Bild und eine Tonspur.<br>Wird ein Video über die Dauer der Tonspur  erstellen."
+    },
+    video_effects: {
+      fr: "Effets vidéo",
+      en: "Video effects"
+    },
+    video_effects_summary: {
+      fr: "Appliquer des effets et filtres sur une vidéo.",
+      en: "Apply video effects and filters to a video."
+    },
+    video_effects_instructions: {
+      fr:
+        "Liste des effets et filtres disponibles : noir et blanc, ralenti, accéléré, inversion de la lecture, rotation et miroir.<br>Média accepté : une seule vidéo.",
+      en:
+        "Video effects and filters available: black and white, speed up, slow down, play backwards, rotate and miroir.<br>Accepted media: a single video."
     },
     carreau_summary: {
       fr: "Empiler des médias pour créer en temps réel des présentations.",

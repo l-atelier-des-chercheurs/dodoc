@@ -4877,7 +4877,7 @@ small {
   z-index: 0;
 
   transform-origin: top left;
-  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 
   &.is--hovered {
   }
@@ -5096,6 +5096,30 @@ small {
       bottom: -@t-handleSize / 2;
       right: -@t-handleSize / 2;
       cursor: nwse-resize;
+      color: @c-noir;
+
+      transition: transform 0.2s;
+      &:hover {
+        color: @c-orange;
+        // transform: scale(1.2);
+      }
+    }
+    .handle_resizeMedia_bottom {
+      bottom: -@t-handleSize / 2;
+      left: ~"calc(50% - @{t-handleSize} / 2)";
+      cursor: ns-resize;
+      color: @c-noir;
+
+      transition: transform 0.2s;
+      &:hover {
+        color: @c-orange;
+        // transform: scale(1.2);
+      }
+    }
+    .handle_resizeMedia_right {
+      right: -@t-handleSize / 2;
+      top: ~"calc(50% - @{t-handleSize} / 2)";
+      cursor: ew-resize;
       color: @c-noir;
 
       transition: transform 0.2s;
