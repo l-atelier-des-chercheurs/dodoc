@@ -240,13 +240,16 @@ module.exports = (function() {
                 `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
               );
 
+              let browser;
+
               puppeteer
                 .launch({
                   headless: true,
                   ignoreHTTPSErrors: true,
                   args: ["--no-sandbox", "--font-render-hinting=none"]
                 })
-                .then(browser => {
+                .then(_browser => {
+                  browser = _browser;
                   return browser.newPage();
                 })
                 .then(page => {
@@ -289,6 +292,8 @@ module.exports = (function() {
                               `EXPORTER — makePDFForPubli : created PDF at ${docPath}`
                             );
 
+                            browser.close();
+
                             resolve({
                               pdfName,
                               docPath
@@ -320,6 +325,8 @@ module.exports = (function() {
                             dev.logverbose(
                               `EXPORTER — makePDFForPubli : created image at ${docPath}`
                             );
+
+                            browser.close();
 
                             resolve({
                               docPath,
