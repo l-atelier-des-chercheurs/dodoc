@@ -2180,6 +2180,34 @@ module.exports = (function() {
       en:
         "Video effects and filters available: black and white, speed up, slow down, play backwards, rotate and miroir.<br>Accepted media: a single video."
     },
+    effect: {
+      fr: "Effet",
+      en: "Effect"
+    },
+    black_and_white: {
+      fr: "Noir et blanc",
+      en: "Black and white"
+    },
+    slow_down: {
+      fr: "Ralentir",
+      en: "Slow down"
+    },
+    speed_up: {
+      fr: "Accélérer",
+      en: "Speed up"
+    },
+    reverse: {
+      fr: "Inverser le début et la fin",
+      en: "Reverse"
+    },
+    rotate: {
+      fr: "Pivoter",
+      en: "Rotate"
+    },
+    mirror: {
+      fr: "Mirroir",
+      en: "Mirror"
+    },
     carreau_summary: {
       fr: "Empiler des médias pour créer en temps réel des présentations.",
       en: "Stack multiple medias on a single surface to project content.",

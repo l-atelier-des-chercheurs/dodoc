@@ -20,41 +20,41 @@
       :instructions="$t('export_video_instructions')"
     />
 
-    <div class="m_videoPublication">
-      <div class="margin-medium" v-if="publication_medias.length === 0">
+    <div class="m_videoEffects">
+      <div class="" v-if="publication_medias.length === 0">
         <p>
           <small v-html="$t('add_one_video_file')" />
         </p>
       </div>
 
-      <div class="margin-bottom-small ">
-        <label class="c-white">{{ $t("effect") }}</label>
-        <select v-model="effect">
-          <option value="">— </option>
-          <option value="black_and_white">
-            {{ $t("black_and_white") }}
-          </option>
-          <option value="slow_down" disabled>
-            {{ $t("slow_down") }}
-          </option>
-          <option value="speed_up" disabled>
-            {{ $t("speed_up") }}
-          </option>
-          <option value="reverse" disabled>
-            {{ $t("reverse") }}
-          </option>
-          <option value="rotate" disabled>
-            {{ $t("rotate") }}
-          </option>
-          <option value="mirror" disabled>
-            {{ $t("mirror") }}
-          </option>
-        </select>
-      </div>
+      <template v-else>
+        <div class="m_videoEffects--options">
+          <label class="c-white">{{ $t("effect") }}</label>
+          <select v-model="effect">
+            <option value="">— </option>
+            <option value="black_and_white">
+              {{ $t("black_and_white") }}
+            </option>
+            <option value="slow_down" disabled>
+              {{ $t("slow_down") }}
+            </option>
+            <option value="speed_up" disabled>
+              {{ $t("speed_up") }}
+            </option>
+            <option value="reverse">
+              {{ $t("reverse") }}
+            </option>
+            <option value="rotate" disabled>
+              {{ $t("rotate") }}
+            </option>
+            <option value="mirror" disabled>
+              {{ $t("mirror") }}
+            </option>
+          </select>
+        </div>
 
-      <transition-group name="list-complete" :duration="300">
         <div
-          class="m_videoPublication--media"
+          class="m_videoEffects--media"
           v-for="(media, index) in publication_medias"
           :key="media.publi_meta.metaFileName"
         >
@@ -75,7 +75,7 @@
             "
           />
         </div>
-      </transition-group>
+      </template>
     </div>
   </div>
 </template>

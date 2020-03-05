@@ -845,6 +845,9 @@ module.exports = (function() {
           ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
         else ffmpeg_cmd.addOptions(["-af apad"]);
 
+        if (effect === "black_and_white") ffmpeg_cmd.videoFilter(["hue=s=0"]);
+        if (effect === "reverse") ffmpeg_cmd.videoFilter(["reverse"]);
+
         ffmpeg_cmd
           .native()
           .outputFPS(30)
