@@ -382,7 +382,7 @@
           <!-- {{ $t('edit') }} -->
         </button>
 
-        <button
+        <!-- <button
           v-if="!!media.ratio && !lock_original_ratio"
           type="button"
           class="buttonLink _no_underline"
@@ -393,7 +393,6 @@
             delay: [600, 0]
           }"
         >
-          <!-- Generator: Adobe Illustrator 24.0.0, SVG Export Plug-In  -->
           <svg
             class="inline-svg inline-svg-larger"
             version="1.1"
@@ -431,7 +430,7 @@
               <rect x="120.4" y="56.9" width="10" height="16.6" />
             </g>
           </svg>
-        </button>
+        </button> -->
 
         <button
           type="button"
@@ -815,7 +814,12 @@ export default {
       if (!this.read_only) {
         this.resize_origin = origin;
 
-        if (this.resize_origin !== "bottomright" && this.lock_original_ratio)
+        if (this.resize_origin === "bottomright" && !this.lock_original_ratio)
+          this.enableLock();
+        else if (
+          this.resize_origin !== "bottomright" &&
+          this.lock_original_ratio
+        )
           this.disableLock();
 
         if (type === "mouse") {
@@ -1077,6 +1081,11 @@ export default {
       if (!this.is_touch) {
         this.is_hovered = false;
       }
+    },
+    enableLock() {
+      this.updateMediaPubliMeta({
+        lock_original_ratio: true
+      });
     },
     disableLock() {
       this.updateMediaPubliMeta({
