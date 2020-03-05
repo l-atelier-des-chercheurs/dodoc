@@ -531,6 +531,7 @@ export default {
         x: 0,
         y: 0
       },
+      resize_origin: "",
 
       rotateOffset: {
         x: 0,
@@ -810,11 +811,11 @@ export default {
           `METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`
         );
       }
-      debugger;
 
       if (!this.read_only) {
-        event.target.setAttribute("data-origin", origin);
-        if (origin !== "bottomright" && this.lock_original_ratio)
+        this.resize_origin = origin;
+
+        if (this.resize_origin !== "bottomright" && this.lock_original_ratio)
           this.disableLock();
 
         if (type === "mouse") {
@@ -849,8 +850,6 @@ export default {
         );
       }
 
-      const origin = event.target.getAttribute("data-origin");
-
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
 
@@ -869,7 +868,10 @@ export default {
           (pageX_mm - this.resizeOffset.x) / this.$root.settings.publi_zoom;
         let newWidth = this.mediaSize.pwidth + deltaX;
 
-        if (origin === "right" || origin === "bottomright")
+        if (
+          this.resize_origin === "right" ||
+          this.resize_origin === "bottomright"
+        )
           this.mediaSize.width = this.limitMediaWidth(newWidth);
 
         let new_height;
@@ -881,7 +883,10 @@ export default {
           new_height = this.mediaSize.pheight + deltaY;
         }
 
-        if (origin === "bottom" || origin === "bottomright")
+        if (
+          this.resize_origin === "bottom" ||
+          this.resize_origin === "bottomright"
+        )
           this.mediaSize.height = this.limitMediaHeight(new_height);
       }
     },
