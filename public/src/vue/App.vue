@@ -196,6 +196,21 @@
                     "
                     :read_only="!$root.state.connected"
                   />
+                  <VideoEffects
+                    v-else-if="
+                      $root.settings.current_publication.slug !== false &&
+                        $root.store.publications[
+                          $root.settings.current_publication.slug
+                        ].template === 'video_effects'
+                    "
+                    :slugPubliName="$root.settings.current_publication.slug"
+                    :publication="
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ]
+                    "
+                    :read_only="!$root.state.connected"
+                  />
                   <DrawingPad
                     v-else-if="
                       $root.settings.current_publication.slug !== false &&
@@ -323,6 +338,7 @@ import PagePublication from "./components/publication_templates/PagePublication.
 import Carreau from "./components/publication_templates/Carreau.vue";
 import VideoPublication from "./components/publication_templates/VideoPublication.vue";
 import DrawingPad from "./components/publication_templates/DrawingPad.vue";
+import VideoEffects from "./components/publication_templates/VideoEffects.vue";
 import StopmotionAnimation from "./components/publication_templates/StopmotionAnimation.vue";
 import MixAudioAndVideo from "./components/publication_templates/MixAudioAndVideo.vue";
 import MixAudioAndImage from "./components/publication_templates/MixAudioAndImage.vue";
@@ -345,6 +361,7 @@ export default {
     Carreau,
     VideoPublication,
     DrawingPad,
+    VideoEffects,
     StopmotionAnimation,
     MixAudioAndVideo,
     MixAudioAndImage,
