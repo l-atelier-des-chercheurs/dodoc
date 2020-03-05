@@ -8,6 +8,7 @@
       :slugPubliName="slugPubliName"
       :publication="publication"
       :publication_medias="publication_medias"
+      :enable_export_button="!!publication.effect"
       @export="show_export_modal = true"
     />
 
@@ -24,6 +25,31 @@
         <p>
           <small v-html="$t('add_one_video_file')" />
         </p>
+      </div>
+
+      <div class="margin-bottom-small ">
+        <label class="c-white">{{ $t("effect") }}</label>
+        <select v-model="effect">
+          <option value="">— </option>
+          <option value="black_and_white">
+            {{ $t("black_and_white") }}
+          </option>
+          <option value="slow_down" disabled>
+            {{ $t("slow_down") }}
+          </option>
+          <option value="speed_up" disabled>
+            {{ $t("speed_up") }}
+          </option>
+          <option value="reverse" disabled>
+            {{ $t("reverse") }}
+          </option>
+          <option value="rotate" disabled>
+            {{ $t("rotate") }}
+          </option>
+          <option value="mirror" disabled>
+            {{ $t("mirror") }}
+          </option>
+        </select>
       </div>
 
       <transition-group name="list-complete" :duration="300">
@@ -133,7 +159,24 @@ export default {
       this.updateMediasPubli();
     }
   },
-  computed: {},
+  computed: {
+    effect: {
+      get: function() {
+        if (!!this.publication.effect) return this.publication.effect;
+        return "";
+      },
+      set: function(val) {
+        // } else if (val === "custom") return "custom";
+        const data = { effect: val };
+
+        this.$root.editFolder({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          data
+        });
+      }
+    }
+  },
   methods: {
     addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === "debug") {

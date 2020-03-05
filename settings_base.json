@@ -256,6 +256,9 @@
         },
         "medias_slugs": {
           "type": "array"
+        },
+        "effect": {
+          "type": "string"
         }
       },
       "medias": {

@@ -183,6 +183,10 @@ export default {
     show_export_button: {
       type: Boolean,
       default: true
+    },
+    enable_export_button: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
@@ -203,6 +207,8 @@ export default {
   watch: {},
   computed: {
     export_button_is_disabled() {
+      if (!this.enable_export_button) return true;
+
       if (Object.values(this.publication_medias).length < 1) return true;
 
       if (

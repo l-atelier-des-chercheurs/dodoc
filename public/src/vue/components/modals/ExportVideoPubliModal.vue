@@ -254,6 +254,7 @@ export default {
       } else {
         options.resolution = this.resolution;
       }
+
       this.$eventHub.$once(
         "socketio.publication.videoIsGenerated",
         this.videoPubliIsGenerated
