@@ -37,41 +37,43 @@
               <option value="black_and_white">
                 {{ $t("black_and_white") }}
               </option>
-              <option value="slow_down">
-                {{ $t("slow_down") }}
-              </option>
-              <option value="speed_up">
-                {{ $t("speed_up") }}
-              </option>
+              <option value="slow_down"> {{ $t("slow_down") }}… </option>
+              <option value="speed_up"> {{ $t("speed_up") }}… </option>
               <option value="reverse">
                 {{ $t("reverse") }}
               </option>
-              <option value="rotate" disabled>
-                {{ $t("rotate") }}
-              </option>
+              <option value="rotate"> {{ $t("rotate") }}… </option>
               <option value="mirror" disabled>
                 {{ $t("mirror") }}
               </option>
             </select>
           </div>
 
-          <div v-if="effect === 'slow_down'" class="margin-bottom-small">
+          <div v-if="effect === 'slow_down'" class="margin-bottom-small ta-ri">
             <select v-model.number="effect_detail">
               <option value="0.75">
-                {{ $t("a_little") }}
+                {{ $t("a_little").toLowerCase() }}
               </option>
-              <option value="0.5">
-                {{ $t("a_lot") }}
-              </option>
+              <option value="0.5"> {{ $t("a_lot").toLowerCase() }} </option>
             </select>
+            <small class="ta-ri">× {{ effect_detail }}</small>
           </div>
-          <div v-if="effect === 'speed_up'" class="margin-bottom-small">
+          <div v-if="effect === 'speed_up'" class="margin-bottom-small ta-ri">
             <select v-model.number="effect_detail">
               <option value="1.5">
-                {{ $t("a_little") }}
+                {{ $t("a_little").toLowerCase() }}
               </option>
               <option value="4">
-                {{ $t("a_lot") }}
+                {{ $t("a_lot").toLowerCase() }}
+              </option>
+            </select>
+            <small>× {{ effect_detail }}</small>
+          </div>
+          <div v-if="effect === 'rotate'" class="margin-bottom-small ta-ri">
+            <select v-model.number="effect_detail">
+              <option value="1"> {{ $t("clockwise").toLowerCase() }} </option>
+              <option value="2">
+                {{ $t("counterclockwise").toLowerCase() }}
               </option>
             </select>
           </div>
@@ -195,6 +197,7 @@ export default {
 
         if (val === "slow_down") data.effect_detail = 0.75;
         else if (val === "speed_up") data.effect_detail = 1.5;
+        else if (val === "rotate") data.effect_detail = 1;
 
         this.$root.editFolder({
           type: "publications",

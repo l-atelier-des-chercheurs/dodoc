@@ -857,6 +857,8 @@ module.exports = (function() {
         ) {
           ffmpeg_cmd.videoFilter(`setpts=${1 / effect_detail}\*PTS`);
           ffmpeg_cmd.audioFilter(`atempo=${effect_detail}`);
+        } else if (effect === "rotate") {
+          ffmpeg_cmd.videoFilter([`transpose=${effect_detail}`]);
         }
 
         ffmpeg_cmd

@@ -938,7 +938,7 @@ module.exports = (function() {
     },
     video_export_draft_instructions: {
       fr:
-        "Ce mode permet de rapidement tester le rendu d’un recette pour tester le rythme et les niveaux sonores, au détriment de la qualité de l’image. La vidéo résultante ne pourra pas être enregistré.",
+        "Ce mode permet de rapidement créer le résultat d’un recette pour tester le rythme et les niveaux sonores, au détriment de la qualité de l’image. La vidéo résultante ne pourra pas être enregistré.",
       en:
         "This mode is the most convenient to test the rythm and the audio levels, with a mediocre image quality. The resulting video cannot be saved."
     },
@@ -2203,6 +2203,14 @@ module.exports = (function() {
     a_lot: {
       fr: "Beaucoup",
       en: "A lot"
+    },
+    clockwise: {
+      fr: "Dans le sens des aiguilles d’une montre",
+      en: "Clockwise"
+    },
+    counterclockwise: {
+      fr: "Dans le sens inverse des aiguilles d’une montre",
+      en: "Counterclockwise"
     },
     reverse: {
       fr: "Inverser le début et la fin",
