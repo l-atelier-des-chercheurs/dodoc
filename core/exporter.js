@@ -842,11 +842,14 @@ module.exports = (function() {
           temp_video_volume = vm.publi_meta.volume / 100;
 
         if (temp_video_volume)
-          ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
-        else ffmpeg_cmd.addOptions(["-af apad"]);
+          ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume]);
+        // We may need apad at this point, but it conflicts with the reverse effect.
+        // please post on github with the video file if you get audio error with this recipe (and read this message…)
 
         if (effect === "black_and_white") ffmpeg_cmd.videoFilter(["hue=s=0"]);
-        if (effect === "reverse") ffmpeg_cmd.videoFilter(["reverse"]);
+        else if (effect === "reverse")
+          ffmpeg_cmd.videoFilter(["reverse"]).audioFilter(["areverse"]);
+        }
 
         ffmpeg_cmd
           .native()
