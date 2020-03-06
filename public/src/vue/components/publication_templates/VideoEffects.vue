@@ -30,27 +30,51 @@
       <template v-else>
         <div class="m_videoEffects--options">
           <label class="c-white">{{ $t("effect") }}</label>
-          <select v-model="effect">
-            <option value="">— </option>
-            <option value="black_and_white">
-              {{ $t("black_and_white") }}
-            </option>
-            <option value="slow_down" disabled>
-              {{ $t("slow_down") }}
-            </option>
-            <option value="speed_up" disabled>
-              {{ $t("speed_up") }}
-            </option>
-            <option value="reverse">
-              {{ $t("reverse") }}
-            </option>
-            <option value="rotate" disabled>
-              {{ $t("rotate") }}
-            </option>
-            <option value="mirror" disabled>
-              {{ $t("mirror") }}
-            </option>
-          </select>
+
+          <div class="margin-bottom-small">
+            <select v-model="effect">
+              <option value="">— </option>
+              <option value="black_and_white">
+                {{ $t("black_and_white") }}
+              </option>
+              <option value="slow_down">
+                {{ $t("slow_down") }}
+              </option>
+              <option value="speed_up">
+                {{ $t("speed_up") }}
+              </option>
+              <option value="reverse">
+                {{ $t("reverse") }}
+              </option>
+              <option value="rotate" disabled>
+                {{ $t("rotate") }}
+              </option>
+              <option value="mirror" disabled>
+                {{ $t("mirror") }}
+              </option>
+            </select>
+          </div>
+
+          <div v-if="effect === 'slow_down'" class="margin-bottom-small">
+            <select v-model.number="effect_detail">
+              <option value="0.75">
+                {{ $t("a_little") }}
+              </option>
+              <option value="0.5">
+                {{ $t("a_lot") }}
+              </option>
+            </select>
+          </div>
+          <div v-if="effect === 'speed_up'" class="margin-bottom-small">
+            <select v-model.number="effect_detail">
+              <option value="1.5">
+                {{ $t("a_little") }}
+              </option>
+              <option value="4">
+                {{ $t("a_lot") }}
+              </option>
+            </select>
+          </div>
         </div>
 
         <div
@@ -169,6 +193,24 @@ export default {
         // } else if (val === "custom") return "custom";
         const data = { effect: val };
 
+        if (val === "slow_down") data.effect_detail = 0.75;
+        else if (val === "speed_up") data.effect_detail = 1.5;
+
+        this.$root.editFolder({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          data
+        });
+      }
+    },
+    effect_detail: {
+      get: function() {
+        if (!!this.publication.effect_detail)
+          return this.publication.effect_detail;
+        return "";
+      },
+      set: function(val) {
+        const data = { effect_detail: val };
         this.$root.editFolder({
           type: "publications",
           slugFolderName: this.slugPubliName,

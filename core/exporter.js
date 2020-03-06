@@ -420,6 +420,7 @@ module.exports = (function() {
                 _applyVideoEffects({
                   medias_with_original_filepath,
                   effect: publication_meta.effect,
+                  effect_detail: publication_meta.effect_detail,
                   cachePath,
                   videoName,
                   resolution,
@@ -807,6 +808,7 @@ module.exports = (function() {
   function _applyVideoEffects({
     medias_with_original_filepath,
     effect,
+    effect_detail,
     cachePath,
     videoName,
     resolution,
@@ -849,6 +851,12 @@ module.exports = (function() {
         if (effect === "black_and_white") ffmpeg_cmd.videoFilter(["hue=s=0"]);
         else if (effect === "reverse")
           ffmpeg_cmd.videoFilter(["reverse"]).audioFilter(["areverse"]);
+        else if (
+          (effect === "slow_down" || effect === "speed_up") &&
+          !isNaN(effect_detail)
+        ) {
+          ffmpeg_cmd.videoFilter(`setpts=${1 / effect_detail}\*PTS`);
+          ffmpeg_cmd.audioFilter(`atempo=${effect_detail}`);
         }
 
         ffmpeg_cmd

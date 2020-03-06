@@ -2196,6 +2196,14 @@ module.exports = (function() {
       fr: "Accélérer",
       en: "Speed up"
     },
+    a_little: {
+      fr: "Un peu",
+      en: "A little"
+    },
+    a_lot: {
+      fr: "Beaucoup",
+      en: "A lot"
+    },
     reverse: {
       fr: "Inverser le début et la fin",
       en: "Reverse"

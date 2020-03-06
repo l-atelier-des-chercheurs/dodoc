@@ -259,6 +259,9 @@
         },
         "effect": {
           "type": "string"
+        },
+        "effect_detail": {
+          "type": "string"
         }
       },
       "medias": {
