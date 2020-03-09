@@ -8,7 +8,7 @@
       :slugPubliName="slugPubliName"
       :publication="publication"
       :publication_medias="publication_medias"
-      :enable_export_button="!!publication.effect"
+      :enable_export_button="export_button_enabled"
       @export="show_export_modal = true"
     />
 
@@ -37,6 +37,9 @@
               <option value="black_and_white">
                 {{ $t("black_and_white") }}
               </option>
+              <option value="colored_filter">
+                {{ $t("colored_filter") }}
+              </option>
               <option value="slow_down"> {{ $t("slow_down") }}… </option>
               <option value="speed_up"> {{ $t("speed_up") }}… </option>
               <option value="reverse">
@@ -49,7 +52,16 @@
             </select>
           </div>
 
-          <div v-if="effect === 'slow_down'" class="margin-bottom-small ta-ri">
+          <div v-if="effect === 'colored_filter'" class="margin-bottom-small">
+            <label>
+              {{ $t("filters_color") }}
+              <input type="color" v-model="effect_detail" />
+            </label>
+          </div>
+          <div
+            v-else-if="effect === 'slow_down'"
+            class="margin-bottom-small ta-ri"
+          >
             <select v-model.number="effect_detail">
               <option value="0.75">
                 {{ $t("a_little").toLowerCase() }}
@@ -58,7 +70,10 @@
             </select>
             <small class="ta-ri">× {{ effect_detail }}</small>
           </div>
-          <div v-if="effect === 'speed_up'" class="margin-bottom-small ta-ri">
+          <div
+            v-else-if="effect === 'speed_up'"
+            class="margin-bottom-small ta-ri"
+          >
             <select v-model.number="effect_detail">
               <option value="1.5">
                 {{ $t("a_little").toLowerCase() }}
@@ -69,7 +84,10 @@
             </select>
             <small>× {{ effect_detail }}</small>
           </div>
-          <div v-if="effect === 'rotate'" class="margin-bottom-small ta-ri">
+          <div
+            v-else-if="effect === 'rotate'"
+            class="margin-bottom-small ta-ri"
+          >
             <select v-model.number="effect_detail">
               <option value="1"> {{ $t("clockwise").toLowerCase() }} </option>
               <option value="2">
@@ -81,7 +99,7 @@
 
         <div
           class="m_videoEffects--media"
-          v-for="(media, index) in publication_medias"
+          v-for="media in publication_medias"
           :key="media.publi_meta.metaFileName"
         >
           <MediaMontagePublication
@@ -195,7 +213,8 @@ export default {
         // } else if (val === "custom") return "custom";
         const data = { effect: val };
 
-        if (val === "slow_down") data.effect_detail = 0.75;
+        if (val === "colored_filter") data.effect_detail = "#FC4B60";
+        else if (val === "slow_down") data.effect_detail = 0.75;
         else if (val === "speed_up") data.effect_detail = 1.5;
         else if (val === "rotate") data.effect_detail = 1;
 
@@ -220,12 +239,22 @@ export default {
           data
         });
       }
+    },
+    export_button_enabled() {
+      if (!this.publication.effect) return false;
+
+      if (this.publication.effect === "colored_filter")
+        return (
+          this.effect_detail.startsWith("#") && this.effect_detail.length === 7
+        );
+
+      return true;
     }
   },
   methods: {
     addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: addMedia with 
+        console.log(`METHODS • Publication: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
       }
 

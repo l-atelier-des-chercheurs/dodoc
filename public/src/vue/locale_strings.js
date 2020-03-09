@@ -2188,6 +2188,14 @@ module.exports = (function() {
       fr: "Noir et blanc",
       en: "Black and white"
     },
+    colored_filter: {
+      fr: "Filtre coloré",
+      en: "Colored filter"
+    },
+    filters_color: {
+      fr: "Couleur du filtre",
+      en: "Filter’s color"
+    },
     slow_down: {
       fr: "Ralentir",
       en: "Slow down"

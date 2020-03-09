@@ -883,21 +883,13 @@ module.exports = (function() {
             effect_detail.startsWith("#")
           ) {
             ffmpeg_cmd
-              // .videoFilters({
-              //   filter: "filter2",
-              //   options: {
-              //     w: resolution.width,
-              //     h: resolution.height,
-              //     x: 0,
-              //     y: 00,
-              //     color: "violet"
-              //   }
-              // });
               .input(`color=red:s=${resolution.width}x${resolution.height}`)
-              .inputFormat("lavfi")
-              .complexFilter([
-                "blend=shortest=1:all_mode=overlay:all_opacity=0.7"
-              ]);
+              .inputFormat("lavfi");
+            complexFilters.push({
+              filter: "blend=shortest=1:all_mode=overlay:all_opacity=0.7",
+              inputs: "output",
+              outputs: "output"
+            });
             // .complexFilter(["color[c];[0:v][c]overlay=shortest=1"]);
             ffmpeg_cmd.withAudioCodec("copy");
           } else {
