@@ -4,6 +4,7 @@
     :class="{ 'is--preview': preview_mode }"
     ref="panel"
   >
+    {{ effect_detail }}
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -46,13 +47,17 @@
                 {{ $t("reverse") }}
               </option>
               <option value="rotate"> {{ $t("rotate") }}… </option>
-              <option value="mirror" disabled>
+              <option value="mirror">
                 {{ $t("mirror") }}
               </option>
             </select>
           </div>
 
-          <div v-if="effect === 'colored_filter'" class="margin-bottom-small">
+          <div
+            v-if="effect === 'colored_filter'"
+            class="margin-bottom-small"
+            :key="'colored_filter'"
+          >
             <label>
               {{ $t("filters_color") }}
               <input type="color" v-model="effect_detail" />
@@ -61,6 +66,7 @@
           <div
             v-else-if="effect === 'slow_down'"
             class="margin-bottom-small ta-ri"
+            :key="'slow_down'"
           >
             <select v-model.number="effect_detail">
               <option value="0.75">
@@ -73,6 +79,7 @@
           <div
             v-else-if="effect === 'speed_up'"
             class="margin-bottom-small ta-ri"
+            :key="'speed_up'"
           >
             <select v-model.number="effect_detail">
               <option value="1.5">
@@ -87,11 +94,29 @@
           <div
             v-else-if="effect === 'rotate'"
             class="margin-bottom-small ta-ri"
+            :key="'rotate'"
           >
             <select v-model.number="effect_detail">
-              <option value="1"> {{ $t("clockwise").toLowerCase() }} </option>
-              <option value="2">
+              <option :value="1"> {{ $t("clockwise").toLowerCase() }} </option>
+              <option :value="2">
                 {{ $t("counterclockwise").toLowerCase() }}
+              </option>
+            </select>
+          </div>
+          <div
+            v-else-if="effect === 'mirror'"
+            class="margin-bottom-small ta-ri"
+            :key="'mirror'"
+          >
+            <select v-model="effect_detail">
+              <option value="vflip">
+                {{ $t("vertical_flip").toLowerCase() }}
+              </option>
+              <option value="hflip">
+                {{ $t("horizontal_flip").toLowerCase() }}
+              </option>
+              <option value="hflip, vflip">
+                {{ $t("both").toLowerCase() }}
               </option>
             </select>
           </div>
@@ -217,6 +242,7 @@ export default {
         else if (val === "slow_down") data.effect_detail = 0.75;
         else if (val === "speed_up") data.effect_detail = 1.5;
         else if (val === "rotate") data.effect_detail = 1;
+        else if (val === "mirror") data.effect_detail = "vflip";
 
         this.$root.editFolder({
           type: "publications",
@@ -246,6 +272,13 @@ export default {
       if (this.publication.effect === "colored_filter")
         return (
           this.effect_detail.startsWith("#") && this.effect_detail.length === 7
+        );
+
+      if (this.publication.effect === "mirror")
+        return (
+          this.effect_detail === "hflip" ||
+          this.effect_detail === "vflip" ||
+          this.effect_detail === "hflip, vflip"
         );
 
       return true;

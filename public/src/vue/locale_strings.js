@@ -2232,6 +2232,18 @@ module.exports = (function() {
       fr: "Mirroir",
       en: "Mirror"
     },
+    horizontal_flip: {
+      fr: "Retournement horizontal",
+      en: "Horizontal flip"
+    },
+    vertical_flip: {
+      fr: "Retournement vertical",
+      en: "Vertical flip"
+    },
+    both: {
+      fr: "Les deux",
+      en: "Both"
+    },
     carreau_summary: {
       fr: "Empiler des médias pour créer en temps réel des présentations.",
       en: "Stack multiple medias on a single surface to project content.",
