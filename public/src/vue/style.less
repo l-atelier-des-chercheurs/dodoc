@@ -5188,15 +5188,28 @@ small {
     right: 0;
     width: 100%;
     z-index: 2;
-    overflow: hidden;
+    // overflow: hidden;
     pointer-events: none;
     .padding-verysmall;
 
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-end;
+    ._advanced_menu_button {
+      width: 24px;
+      height: 24px;
+      border: 3px solid @c-noir;
+    }
 
-    > * {
+    ._advanced_menu {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-around;
+      background-color: @c-noir;
+
+      padding: 0;
+      width: 240px;
+      .margin-verysmall;
+      border: 0;
+    }
+    button {
       display: block;
       color: inherit;
       .bg-orange;
