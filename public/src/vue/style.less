@@ -4905,8 +4905,8 @@ small {
   -moz-user-select: none;
   user-select: none;
 
-  min-width: 20mm;
-  min-height: 20mm;
+  min-width: 10mm;
+  min-height: 10mm;
   z-index: 0;
 
   transform-origin: top left;
@@ -4933,6 +4933,12 @@ small {
   }
   &.is--fit_mode_contain .mediaContainer img {
     object-fit: contain;
+  }
+  &.is--inline_edited {
+    outline: 2px solid @c-bleuvert;
+    .ql-editor {
+      background-color: @c-gris_tresclair;
+    }
   }
 
   .m_mediaPublication--overflowing_sign {
@@ -4961,10 +4967,15 @@ small {
 
   .m_mediaPublication--floatingSaveButton {
     position: absolute;
-    bottom: 0;
+    top: 100%;
     width: 100%;
     text-align: center;
     .padding-bottom-verysmall;
+    pointer-events: none;
+
+    > * {
+      pointer-events: auto;
+    }
   }
 
   .m_mediaPublication--edit_styles {

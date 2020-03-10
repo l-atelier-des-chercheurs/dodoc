@@ -178,6 +178,7 @@
         </svg>
       </div>
       <div
+        v-if="media.type !== 'text' && media.publi_meta.type !== 'text'"
         class="handle handle_resizeMedia"
         @mousedown.stop.prevent="
           event => resizeMedia({ event, type: 'mouse', origin: 'bottomright' })
@@ -473,7 +474,7 @@
               delay: [600, 0]
             }"
           >
-            <svg
+            <!-- <svg
               version="1.1"
               class="inline-svg"
               xmlns="http://www.w3.org/2000/svg"
@@ -491,7 +492,8 @@
                 points="37.2,30.6 30.6,37.2 18.6,25.2 6.6,37.2 0,30.6 12,18.6 0,6.6 6.6,0 18.6,12 30.6,0 37.2,6.6 
             25.2,18.6 "
               />
-            </svg>
+            </svg> -->
+            {{ $t("withdraw") }}
           </button>
         </div>
       </div>
@@ -631,7 +633,11 @@ export default {
       return el.offsetHeight + 15 < el.scrollHeight;
     },
     auto_height() {
-      if (this.lock_original_ratio)
+      if (
+        this.lock_original_ratio &&
+        this.media.type !== "text" &&
+        this.media.publi_meta.type !== "text"
+      )
         return this.mediaSize.width * this.media.ratio;
       else return this.mediaSize.height;
     }
@@ -912,7 +918,12 @@ export default {
           this.mediaSize.width = this.limitMediaWidth(newWidth);
 
         let new_height;
-        if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
+        if (
+          this.lock_original_ratio &&
+          this.media.hasOwnProperty("ratio") &&
+          this.media.type !== "text" &&
+          this.media.publi_meta.type !== "text"
+        )
           new_height = this.mediaSize.width * this.media.ratio;
         else {
           const deltaY =
