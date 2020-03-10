@@ -883,10 +883,12 @@ module.exports = (function() {
             effect_detail.startsWith("#")
           ) {
             ffmpeg_cmd
-              .input(`color=red:s=${resolution.width}x${resolution.height}`)
+              .input(
+                `color=${effect_detail}:s=${resolution.width}x${resolution.height}`
+              )
               .inputFormat("lavfi");
             complexFilters.push({
-              filter: "blend=shortest=1:all_mode=overlay:all_opacity=0.7",
+              filter: "blend=shortest=1:all_mode=overlay:all_opacity=1",
               inputs: "output",
               outputs: "output"
             });

@@ -4,7 +4,6 @@
     :class="{ 'is--preview': preview_mode }"
     ref="panel"
   >
-    {{ effect_detail }}
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
