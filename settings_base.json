@@ -114,6 +114,15 @@
           "ratio": {
             "type": "number"
           },
+          "_ratio": {
+            "type": "number"
+          },
+          "_width": {
+            "type": "number"
+          },
+          "_height": {
+            "type": "number"
+          },
           "duration": {
             "type": "number"
           },

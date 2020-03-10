@@ -24,7 +24,7 @@ module.exports = (function() {
       removeFolderThumbs(slugFolderName, type),
 
     getEXIFData: mediaPath => getEXIFData(mediaPath),
-    getRatioFromEXIF: mediaPath => getRatioFromEXIF(mediaPath),
+    getDimensionsFromEXIF: mediaPath => getDimensionsFromEXIF(mediaPath),
     getTimestampFromEXIF: mediaPath => getTimestampFromEXIF(mediaPath),
 
     getMediaDuration: mediaPath => getMediaDuration(mediaPath),
@@ -157,7 +157,7 @@ module.exports = (function() {
     });
   }
 
-  function getRatioFromEXIF(mediaPath) {
+  function getDimensionsFromEXIF(mediaPath) {
     return new Promise(function(resolve, reject) {
       getEXIFData(mediaPath)
         .then(exifdata => {
@@ -170,7 +170,11 @@ module.exports = (function() {
             dev.log(`Media is portrait. Inverting ratio`);
             mediaRatio = 1 / mediaRatio;
           }
-          resolve(mediaRatio);
+          resolve({
+            ratio: mediaRatio,
+            width: exifdata.width,
+            height: exifdata.height
+          });
         })
         .catch(err => reject());
     });
@@ -526,7 +530,11 @@ module.exports = (function() {
             ) {
               let ratio =
                 metadata.streams[0].height / metadata.streams[0].width;
-              resolve(ratio);
+              resolve({
+                ratio,
+                width: metadata.streams[0].width,
+                height: metadata.streams[0].height
+              });
             }
           }
           reject();

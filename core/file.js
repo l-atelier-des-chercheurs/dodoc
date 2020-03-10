@@ -829,11 +829,16 @@ module.exports = (function() {
             if (mdata.type === "image") {
               let getEXIFRatio = new Promise((resolve, reject) => {
                 thumbs
-                  .getRatioFromEXIF(mediaPath)
-                  .then(mediaRatio => {
-                    dev.log(`getEXIFData mediaRatio : ${mediaRatio}`);
+                  .getDimensionsFromEXIF(mediaPath)
+                  .then(({ ratio, width, height }) => {
+                    dev.log(
+                      `getEXIFData mediaRatio : ${ratio}, ${width}, ${height}`
+                    );
                     if (mediaRatio !== undefined) {
-                      mdata.ratio = mediaRatio;
+                      mdata.ratio = ratio;
+                      mdata._ratio = ratio;
+                      mdata._width = width;
+                      mdata._height = height;
                     }
                     resolve();
                   })
@@ -847,10 +852,13 @@ module.exports = (function() {
               let getMediaRatio = new Promise((resolve, reject) => {
                 thumbs
                   .getMediaRatio(mediaPath)
-                  .then(mediaRatio => {
-                    dev.log(`getMediaRatio : ${mediaRatio}`);
-                    if (mediaRatio !== undefined) {
-                      mdata.ratio = mediaRatio;
+                  .then(({ ratio, width, height }) => {
+                    dev.log(`getMediaRatio : ${ratio}`);
+                    if (ratio !== undefined) {
+                      mdata.ratio = ratio;
+                      mdata._ratio = ratio;
+                      mdata._width = width;
+                      mdata._height = height;
                     }
                     resolve();
                   })
