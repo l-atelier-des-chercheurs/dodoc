@@ -246,8 +246,17 @@ export default {
         ];
         publidata.width = 200;
         publidata.height = 150;
+      } else if (publidata.template === "video_effects") {
+        publidata.effects = [
+          {
+            type: "",
+            id:
+              +new Date() +
+              "_" +
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+          }
+        ];
       }
-
       this.$eventHub.$on(
         "socketio.folder_created_or_updated",
         this.newPublicationCreated

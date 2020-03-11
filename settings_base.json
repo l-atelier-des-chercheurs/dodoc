@@ -266,11 +266,8 @@
         "medias_slugs": {
           "type": "array"
         },
-        "effect": {
-          "type": "string"
-        },
-        "effect_detail": {
-          "type": "string"
+        "effects": {
+          "type": "array"
         }
       },
       "medias": {

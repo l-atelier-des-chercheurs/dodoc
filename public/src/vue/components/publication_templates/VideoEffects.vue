@@ -29,110 +29,145 @@
 
       <template v-else>
         <div class="m_videoEffects--options">
-          <label class="c-white">{{ $t("effect") }}</label>
-
-          <div class="margin-bottom-small">
-            <select v-model="effect">
-              <option value="">— </option>
-              <option value="watermark"> {{ $t("watermark") }}… </option>
-              <option value="black_and_white">
-                {{ $t("black_and_white") }}
-              </option>
-              <option value="colored_filter">
-                {{ $t("colored_filter") }}…
-              </option>
-              <option value="slow_down"> {{ $t("slow_down") }}… </option>
-              <option value="speed_up"> {{ $t("speed_up") }}… </option>
-              <option value="reverse">
-                {{ $t("reverse") }}
-              </option>
-              <option value="rotate"> {{ $t("rotate") }}… </option>
-              <option value="mirror">
-                {{ $t("mirror") }}
-              </option>
-            </select>
-          </div>
-
           <div
-            v-if="effect === 'watermark'"
-            class="margin-bottom-small"
-            :key="'colored_filter'"
+            class="m_videoEffects--options--effect"
+            v-for="(effect, index) in effects"
+            :key="index"
           >
-            <label>
-              {{ $t("image") }}
-            </label>
-            <div v-if="!effect_detail">
-              <small>{{ $t("watermark_instructions") }}</small>
+            <label class="c-white">{{ $t("effect") }}</label>
+
+            <div class="margin-bottom-small">
+              <select
+                :value="effect.type"
+                @change="setEffectType({ $event, id: effect.id })"
+              >
+                <option value="">— </option>
+                <option value="watermark"> {{ $t("watermark") }}… </option>
+                <option value="black_and_white">
+                  {{ $t("black_and_white") }}
+                </option>
+                <option value="colored_filter">
+                  {{ $t("colored_filter") }}…
+                </option>
+                <option value="slow_down"> {{ $t("slow_down") }}… </option>
+                <option value="speed_up"> {{ $t("speed_up") }}… </option>
+                <option value="reverse">
+                  {{ $t("reverse") }}
+                </option>
+                <option value="rotate"> {{ $t("rotate") }}… </option>
+                <option value="mirror">
+                  {{ $t("mirror") }}
+                </option>
+              </select>
             </div>
-            <input type="text" />
-          </div>
 
-          <div
-            v-if="effect === 'colored_filter'"
-            class="margin-bottom-small"
-            :key="'colored_filter'"
-          >
-            <label>
-              {{ $t("filters_color") }}
-              <input type="color" v-model="effect_detail" />
-            </label>
-          </div>
-          <div
-            v-else-if="effect === 'slow_down'"
-            class="margin-bottom-small ta-ri"
-            :key="'slow_down'"
-          >
-            <select v-model.number="effect_detail">
-              <option value="0.75">
-                {{ $t("a_little").toLowerCase() }}
-              </option>
-              <option value="0.5"> {{ $t("a_lot").toLowerCase() }} </option>
-            </select>
-            <small class="ta-ri">× {{ effect_detail }}</small>
-          </div>
-          <div
-            v-else-if="effect === 'speed_up'"
-            class="margin-bottom-small ta-ri"
-            :key="'speed_up'"
-          >
-            <select v-model.number="effect_detail">
-              <option value="1.5">
-                {{ $t("a_little").toLowerCase() }}
-              </option>
-              <option value="4">
-                {{ $t("a_lot").toLowerCase() }}
-              </option>
-            </select>
-            <small>× {{ effect_detail }}</small>
-          </div>
-          <div
-            v-else-if="effect === 'rotate'"
-            class="margin-bottom-small ta-ri"
-            :key="'rotate'"
-          >
-            <select v-model.number="effect_detail">
-              <option :value="1"> {{ $t("clockwise").toLowerCase() }} </option>
-              <option :value="2">
-                {{ $t("counterclockwise").toLowerCase() }}
-              </option>
-            </select>
-          </div>
-          <div
-            v-else-if="effect === 'mirror'"
-            class="margin-bottom-small ta-ri"
-            :key="'mirror'"
-          >
-            <select v-model="effect_detail">
-              <option value="vflip">
-                {{ $t("vertical_flip").toLowerCase() }}
-              </option>
-              <option value="hflip">
-                {{ $t("horizontal_flip").toLowerCase() }}
-              </option>
-              <option value="hflip, vflip">
-                {{ $t("both").toLowerCase() }}
-              </option>
-            </select>
+            <div
+              v-if="effect.type === 'watermark'"
+              class="margin-bottom-small"
+              :key="'watermark'"
+            >
+              <label>
+                {{ $t("image") }}
+              </label>
+              <div v-if="!effect.image">
+                <small>{{ $t("watermark_instructions") }}</small>
+              </div>
+              <input type="text" />
+            </div>
+
+            <div
+              v-if="effect.type === 'colored_filter'"
+              class="margin-bottom-small"
+              :key="'colored_filter'"
+            >
+              <label>
+                {{ $t("filters_color") }}
+                <input
+                  type="color"
+                  :value="effect.color"
+                  @change="
+                    setEffectProp({ $event, id: effect.id, prop: 'color' })
+                  "
+                />
+              </label>
+            </div>
+            <div
+              v-else-if="effect.type === 'slow_down'"
+              class="margin-bottom-small ta-ri"
+              :key="'slow_down'"
+            >
+              <select
+                :value="effect.speed"
+                @change="
+                  setEffectProp({ $event, id: effect.id, prop: 'speed' })
+                "
+              >
+                <option value="0.75">
+                  {{ $t("a_little").toLowerCase() }}
+                </option>
+                <option value="0.5"> {{ $t("a_lot").toLowerCase() }} </option>
+              </select>
+              <small class="ta-ri">× {{ effect.speed }}</small>
+            </div>
+            <div
+              v-else-if="effect.type === 'speed_up'"
+              class="margin-bottom-small ta-ri"
+              :key="'speed_up'"
+            >
+              <select
+                :value="effect.speed"
+                @change="
+                  setEffectProp({ $event, id: effect.id, prop: 'speed' })
+                "
+              >
+                <option value="1.5">
+                  {{ $t("a_little").toLowerCase() }}
+                </option>
+                <option value="4">
+                  {{ $t("a_lot").toLowerCase() }}
+                </option>
+              </select>
+              <small>× {{ effect.speed }}</small>
+            </div>
+            <div
+              v-else-if="effect.type === 'rotate'"
+              class="margin-bottom-small ta-ri"
+              :key="'rotate'"
+            >
+              <select
+                :value="effect.rotation"
+                @change="
+                  setEffectProp({ $event, id: effect.id, prop: 'rotation' })
+                "
+              >
+                <option :value="1">
+                  {{ $t("clockwise").toLowerCase() }}
+                </option>
+                <option :value="2">
+                  {{ $t("counterclockwise").toLowerCase() }}
+                </option>
+              </select>
+            </div>
+            <div
+              v-else-if="effect.type === 'mirror'"
+              class="margin-bottom-small ta-ri"
+              :key="'mirror'"
+            >
+              <select
+                :value="effect.flip"
+                @change="setEffectProp({ $event, id: effect.id, prop: 'flip' })"
+              >
+                <option value="vflip">
+                  {{ $t("vertical_flip").toLowerCase() }}
+                </option>
+                <option value="hflip">
+                  {{ $t("horizontal_flip").toLowerCase() }}
+                </option>
+                <option value="hflip, vflip">
+                  {{ $t("both").toLowerCase() }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -243,63 +278,66 @@ export default {
     }
   },
   computed: {
-    effect: {
-      get: function() {
-        if (!!this.publication.effect) return this.publication.effect;
-        return "";
-      },
-      set: function(val) {
-        // } else if (val === "custom") return "custom";
-        const data = { effect: val };
-
-        if (val === "colored_filter") data.effect_detail = "#FC4B60";
-        else if (val === "watermark") data.effect_detail = "";
-        else if (val === "slow_down") data.effect_detail = 0.75;
-        else if (val === "speed_up") data.effect_detail = 1.5;
-        else if (val === "rotate") data.effect_detail = 1;
-        else if (val === "mirror") data.effect_detail = "vflip";
-
-        this.$root.editFolder({
-          type: "publications",
-          slugFolderName: this.slugPubliName,
-          data
-        });
-      }
-    },
-    effect_detail: {
-      get: function() {
-        if (!!this.publication.effect_detail)
-          return this.publication.effect_detail;
-        return "";
-      },
-      set: function(val) {
-        const data = { effect_detail: val };
-        this.$root.editFolder({
-          type: "publications",
-          slugFolderName: this.slugPubliName,
-          data
-        });
-      }
+    effects() {
+      if (!!this.publication.effects && Array.isArray(this.publication.effects))
+        return this.publication.effects;
+      return [];
     },
     export_button_enabled() {
-      if (!this.publication.effect) return false;
-
-      if (this.publication.effect === "colored_filter")
-        return (
-          this.effect_detail.startsWith("#") && this.effect_detail.length === 7
-        );
-
-      if (this.publication.effect === "mirror")
-        return (
-          this.effect_detail === "hflip" ||
-          this.effect_detail === "vflip" ||
-          this.effect_detail === "hflip, vflip"
-        );
+      if (
+        !this.publication.effects ||
+        !Array.isArray(this.publication.effects) ||
+        this.publication.effects.length === 0
+      )
+        return false;
 
       return true;
     }
   },
   methods: {
+    setEffectType({ $event, id }) {
+      const new_type = $event.target.value;
+      const effects = this.publication.effects.map(e => {
+        if (e.id === id && e.type !== new_type) {
+          e.type = new_type;
+
+          if (new_type === "colored_filter") e.color = "#FC4B60";
+          else if (new_type === "watermark") e.image = {};
+          else if (new_type === "slow_down") e.speed = 0.75;
+          else if (new_type === "speed_up") e.speed = 1.5;
+          else if (new_type === "rotate") e.rotation = 1;
+          else if (new_type === "mirror") e.flip = "vflip";
+        }
+        return e;
+      });
+
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
+          effects
+        }
+      });
+    },
+    setEffectProp({ $event, id, prop }) {
+      const new_value = $event.target.value;
+
+      const effects = this.publication.effects.map(e => {
+        if (e.id === id && e[prop] !== new_value) {
+          e[prop] = new_value;
+        }
+        return e;
+      });
+
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
+          effects
+        }
+      });
+    },
+
     addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: addMedia with

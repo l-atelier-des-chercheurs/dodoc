@@ -414,13 +414,12 @@ module.exports = (function() {
                     return reject(`Failed to make a video: ${err}`);
                   });
               } else if (publication_meta.template === "video_effects") {
-                if (!publication_meta.effect)
-                  return reject("Missing effect field");
+                if (!publication_meta.effects)
+                  return reject("Missing effects field");
 
                 _applyVideoEffects({
                   medias_with_original_filepath,
-                  effect: publication_meta.effect,
-                  effect_detail: publication_meta.effect_detail,
+                  effects: publication_meta.effects,
                   cachePath,
                   videoName,
                   resolution,
@@ -807,8 +806,7 @@ module.exports = (function() {
 
   function _applyVideoEffects({
     medias_with_original_filepath,
-    effect,
-    effect_detail,
+    effects,
     cachePath,
     videoName,
     resolution,
@@ -869,7 +867,10 @@ module.exports = (function() {
           }
         ];
 
-        if (effect === "black_and_white") {
+        // just handle a single effect for now — will handle multiple simultaneous effects at once later
+        const effect = effects[0];
+
+        if (effect.type === "black_and_white") {
           complexFilters.push({
             filter: "hue",
             options: "s=0",
@@ -877,14 +878,15 @@ module.exports = (function() {
             outputs: "output"
           });
           ffmpeg_cmd.withAudioCodec("copy");
-        } else if (effect === "colored_filter") {
+        } else if (effect.type === "colored_filter") {
           if (
-            typeof effect_detail === "string" &&
-            effect_detail.startsWith("#")
+            !!effect.color &&
+            typeof effect.color === "string" &&
+            effect.color.startsWith("#")
           ) {
             ffmpeg_cmd
               .input(
-                `color=${effect_detail}:s=${resolution.width}x${resolution.height}`
+                `color=${effect.color}:s=${resolution.width}x${resolution.height}`
               )
               .inputFormat("lavfi");
             complexFilters.push({
@@ -899,7 +901,7 @@ module.exports = (function() {
               `Failed to create video for filter: color is not set correctly`
             );
           }
-        } else if (effect === "reverse") {
+        } else if (effect.type === "reverse") {
           complexFilters.push(
             {
               filter: "reverse",
@@ -911,18 +913,18 @@ module.exports = (function() {
             }
           );
           ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
-        } else if (effect === "slow_down" || effect === "speed_up") {
-          if (!isNaN(effect_detail)) {
+        } else if (effect.type === "slow_down" || effect.type === "speed_up") {
+          if (!isNaN(effect.speed)) {
             complexFilters.push(
               {
                 filter: "setpts",
-                options: `${1 / effect_detail}\*PTS`,
+                options: `${1 / effect.speed}\*PTS`,
                 inputs: "output",
                 outputs: "output"
               },
               {
                 filter: "atempo",
-                options: effect_detail
+                options: effect.speed
               }
             );
             ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
@@ -931,22 +933,28 @@ module.exports = (function() {
               `Failed to create video for filter: speed is not set correctly`
             );
           }
-        } else if (effect === "rotate") {
-          complexFilters.push({
-            filter: "transpose",
-            options: effect_detail,
-            inputs: "output",
-            outputs: "output"
-          });
-          ffmpeg_cmd.withAudioCodec("copy");
-        } else if (effect === "mirror") {
+        } else if (effect.type === "rotate") {
+          if (effect.rotation === "1" || effect.rotation === "2") {
+            complexFilters.push({
+              filter: "transpose",
+              options: effect.rotation,
+              inputs: "output",
+              outputs: "output"
+            });
+            ffmpeg_cmd.withAudioCodec("copy");
+          } else {
+            reject(
+              `Failed to create video for filter: flip is not set correctly`
+            );
+          }
+        } else if (effect.type === "mirror") {
           if (
-            effect_detail === "hflip" ||
-            effect_detail === "vflip" ||
-            effect_detail === "hflip, vflip"
+            effect.flip === "hflip" ||
+            effect.flip === "vflip" ||
+            effect.flip === "hflip, vflip"
           ) {
             complexFilters.push({
-              filter: effect_detail,
+              filter: effect.flip,
               inputs: "output",
               outputs: "output"
             });
