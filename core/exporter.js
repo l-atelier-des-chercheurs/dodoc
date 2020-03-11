@@ -817,7 +817,8 @@ module.exports = (function() {
       dev.logfunction("EXPORTER — _makeVideoAssemblage");
 
       const videoPath = path.join(cachePath, videoName);
-      const vm = medias_with_original_filepath[0];
+
+      const vm = medias_with_original_filepath.find(m => m.type === "video");
 
       ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
         const ffmpeg_cmd = new ffmpeg().renice(renice);
@@ -850,7 +851,7 @@ module.exports = (function() {
           {
             filter: "scale",
             options: `${resolution.width}:${resolution.height}:force_original_aspect_ratio=1`,
-            // inputs: "[0]",
+            inputs: "[0]",
             outputs: "scaled"
           },
           {
@@ -962,6 +963,73 @@ module.exports = (function() {
           } else {
             reject(
               `Failed to create video for filter: flip is not set correctly`
+            );
+          }
+        } else if (effect.type === "watermark") {
+          const im = medias_with_original_filepath.find(
+            m => m.type === "image"
+          );
+          if (im) {
+            // ffmpeg_cmd.input(im.full_path);
+
+            complexFilters.push(
+              {
+                filter: "movie",
+                options: im.full_path,
+                outputs: "watermark"
+              },
+
+              {
+                filter: "scale",
+                options: `${resolution.width / 4}:${resolution.height /
+                  4}:force_original_aspect_ratio=1`,
+                inputs: "watermark",
+                outputs: "swatermark"
+              },
+              {
+                filter: "setsar=sar=1",
+                inputs: "swatermark",
+                outputs: "swatermark"
+              },
+              // {
+              //   filter: "format=argb,colorchannelmixer=aa",
+              //   options: 0.5,
+              //   inputs: "swatermark",
+              //   outputs: "swatermark"
+              // },
+              // {
+              //   filter: "format=rgba",
+              //   inputs: "swatermark",
+              //   outputs: "swatermark"
+              // },
+              // {
+              //   filter: "setsar=sar=1,format=rgba",
+              //   inputs: "output",
+              //   outputs: "output"
+              // },
+              {
+                // filter:   "overlay=36:main_h-overlay_h-45, blend=all_mode='overlay':all_opacity=0.7",
+                filter: "overlay",
+                // "blend:all_mode=overlay:all_opacity=0.7",
+                // filter: "blend=all_mode='addition':repeatlast=1:all_opacity=1",
+                // filter: "blend=all_mode=multiply",
+                //
+                options: "x=10:y=10",
+                // options: "W-w-5:H-h-5",
+                inputs: ["output", "swatermark"],
+                // inputs: "output",
+                outputs: "output"
+              }
+              // {
+              //   filter: "blend=shortest=1:all_mode=overlay:all_opacity=1",
+              //   inputs: "output",
+              //   outputs: "output"
+              // }
+            );
+            ffmpeg_cmd.withAudioCodec("copy");
+          } else {
+            reject(
+              `Failed to create video for filter: image is not set correctly`
             );
           }
         }

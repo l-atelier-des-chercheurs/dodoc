@@ -69,10 +69,21 @@
               <label>
                 {{ $t("image") }}
               </label>
-              <div v-if="!effect.image">
+              <div v-if="!watermark_media">
                 <small>{{ $t("watermark_instructions") }}</small>
               </div>
-              <input type="text" />
+              <div class="_watermark_media" v-else="watermark_media">
+                <MediaMontagePublication
+                  :media="watermark_media"
+                  :preview_mode="false"
+                  :read_only="read_only"
+                  @removePubliMedia="
+                    values => {
+                      removePubliMedia(values);
+                    }
+                  "
+                />
+              </div>
             </div>
 
             <div
@@ -171,13 +182,9 @@
           </div>
         </div>
 
-        <div
-          class="m_videoEffects--media"
-          v-for="media in publication_medias"
-          :key="media.publi_meta.metaFileName"
-        >
+        <div class="m_videoEffects--media">
           <MediaMontagePublication
-            :media="media"
+            :media="video_media"
             :preview_mode="false"
             :read_only="read_only"
             :enable_set_video_volume="true"
@@ -218,8 +225,7 @@ export default {
       show_export_modal: false,
       publication_medias: [],
       medias_slugs_in_order: [],
-      accepted_media_type: ["video"],
-      number_of_medias_required: 2
+      number_of_medias_required: 1
     };
   },
   created() {},
@@ -283,6 +289,15 @@ export default {
         return this.publication.effects;
       return [];
     },
+    accepted_media_type() {
+      if (
+        this.effects.length > 0 &&
+        this.effects.some(e => e.type === "watermark")
+      ) {
+        return ["video", "image"];
+      }
+      return ["video"];
+    },
     export_button_enabled() {
       if (
         !this.publication.effects ||
@@ -292,6 +307,12 @@ export default {
         return false;
 
       return true;
+    },
+    watermark_media() {
+      return this.publication_medias.find(m => m.type === "image");
+    },
+    video_media() {
+      return this.publication_medias.find(m => m.type === "video");
     }
   },
   methods: {
