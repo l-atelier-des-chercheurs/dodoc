@@ -2238,7 +2238,7 @@ module.exports = (function() {
       en: "Rotate"
     },
     mirror: {
-      fr: "Mirroir",
+      fr: "Miroir",
       en: "Mirror"
     },
     horizontal_flip: {
