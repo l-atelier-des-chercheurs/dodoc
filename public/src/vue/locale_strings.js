@@ -2188,6 +2188,15 @@ module.exports = (function() {
       fr: "Noir et blanc",
       en: "Black and white"
     },
+    watermark: {
+      fr: "Habillage",
+      en: "Watermark"
+    },
+    watermark_instructions: {
+      fr:
+        "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
+      en: "Choose an image to place in the top-right corner of the video."
+    },
     colored_filter: {
       fr: "Filtre coloré",
       en: "Colored filter"

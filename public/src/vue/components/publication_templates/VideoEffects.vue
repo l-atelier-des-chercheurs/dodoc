@@ -34,11 +34,12 @@
           <div class="margin-bottom-small">
             <select v-model="effect">
               <option value="">— </option>
+              <option value="watermark"> {{ $t("watermark") }}… </option>
               <option value="black_and_white">
                 {{ $t("black_and_white") }}
               </option>
               <option value="colored_filter">
-                {{ $t("colored_filter") }}
+                {{ $t("colored_filter") }}…
               </option>
               <option value="slow_down"> {{ $t("slow_down") }}… </option>
               <option value="speed_up"> {{ $t("speed_up") }}… </option>
@@ -50,6 +51,20 @@
                 {{ $t("mirror") }}
               </option>
             </select>
+          </div>
+
+          <div
+            v-if="effect === 'watermark'"
+            class="margin-bottom-small"
+            :key="'colored_filter'"
+          >
+            <label>
+              {{ $t("image") }}
+            </label>
+            <div v-if="!effect_detail">
+              <small>{{ $t("watermark_instructions") }}</small>
+            </div>
+            <input type="text" />
           </div>
 
           <div
@@ -238,6 +253,7 @@ export default {
         const data = { effect: val };
 
         if (val === "colored_filter") data.effect_detail = "#FC4B60";
+        else if (val === "watermark") data.effect_detail = "";
         else if (val === "slow_down") data.effect_detail = 0.75;
         else if (val === "speed_up") data.effect_detail = 1.5;
         else if (val === "rotate") data.effect_detail = 1;
