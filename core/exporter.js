@@ -1330,6 +1330,7 @@ module.exports = (function() {
         .addOptions(["-shortest"])
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
+        .addOptions(["-tune stillimage"])
         .videoFilters(
           `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=increase`
         )
