@@ -46,7 +46,7 @@
             :disabled="doc_request_status !== false"
             @click="downloadDoc"
           >
-            <template v-if="!doc_request_status">{{ $t("download") }}</template>
+            <template v-if="!doc_request_status">{{ $t("create") }}</template>
             <template v-else-if="doc_request_status === 'waiting_for_server'">
               <span class="loader loader-xs" />
               {{ $t("notifications.creation_in_progress") }}
