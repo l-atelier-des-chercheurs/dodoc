@@ -137,7 +137,8 @@
                 v-for="project in all_projects"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-              >{{ project.name }}</option>
+                >{{ project.name }}</option
+              >
             </select>
             <button
               type="button"
@@ -152,6 +153,7 @@
         <button
           type="button"
           class="buttonLink"
+          :class="{ 'is--active': show_edit_media_options }"
           @click="show_edit_media_options = !show_edit_media_options"
           v-if="media.type === 'image' || media.type === 'video'"
         >
@@ -189,25 +191,55 @@
           </svg>
           {{ $t("adjust") }}
         </button>
-        <div v-if="show_edit_media_options" class="bg-creme">
+        <div v-if="show_edit_media_options" class="bg-gris_tresclair border">
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('rotate_image', { angle: 90 })"
             v-if="media.type === 'image'"
-          >{{ $t("rotate_clockwise") }}</button>
+          >
+            {{ $t("rotate_clockwise") }}
+          </button>
           <button
             type="button"
-            class="buttonLink"
+            class="buttonLink "
             @click="editRawMedia('optimize_video')"
             v-if="media.type === 'video'"
-          >{{ $t("convert_video_for_the_web") }}</button>
+          >
+            {{ $t("optimize_video") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
-          >{{ $t("revert_to_original") }}</button>
+          >
+            {{ $t("revert_to_original") }}
+          </button>
+          <button
+            type="button"
+            class="buttonLink"
+            :class="{ 'is--active': trim_mode }"
+            @click="trim_mode = !trim_mode"
+            v-if="media.type === 'video'"
+          >
+            {{ $t("trim_video") }}
+          </button>
+
+          <div v-if="trim_mode">
+            <small>{{ $t("trim_video_instructions") }}</small>
+
+            <div class="">
+              <label>{{ $t("beginning") }}</label>
+              <div class="input-group padding-sides-medium">
+                <input type="text" class="bg-blanc" />
+                <button type="button">Set</button>
+              </div>
+            </div>
+            <div class="">
+              <label>{{ $t("end") }}</label>
+            </div>
+          </div>
         </div>
 
         <button
@@ -252,7 +284,10 @@
               v-model="mediadata.fav"
               :readonly="read_only"
             />
-            <label for="favswitch_editmedia" :class="{ 'c-rouge': mediadata.fav }">
+            <label
+              for="favswitch_editmedia"
+              :class="{ 'c-rouge': mediadata.fav }"
+            >
               {{ $t("fav") }}
               <svg
                 version="1.1"
@@ -327,10 +362,16 @@
         <DateField :title="'edited'" :date="media.date_modified" />
 
         <!-- Caption -->
-        <div v-if="!read_only || !!mediadata.caption" class="margin-bottom-small">
+        <div
+          v-if="!read_only || !!mediadata.caption"
+          class="margin-bottom-small"
+        >
           <label>{{ $t("caption") }}</label>
           <br />
-          <textarea v-model="mediadata.caption" :readonly="read_only"></textarea>
+          <textarea
+            v-model="mediadata.caption"
+            :readonly="read_only"
+          ></textarea>
         </div>
 
         <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -362,7 +403,10 @@
         </div>
 
         <!-- Author(s) -->
-        <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
+        <div
+          v-if="!read_only || !!mediadata.authors"
+          class="margin-bottom-small"
+        >
           <label>{{ $t("author") }}</label>
 
           <AuthorsInput
@@ -438,6 +482,8 @@ export default {
       },
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
       askBeforeClosingModal: false,
+
+      trim_mode: false,
 
       is_ready: false
     };

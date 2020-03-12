@@ -450,11 +450,19 @@ module.exports = (function() {
       oc: "Virar cap a drecha",
       de: "Nach Rechts einschwenken"
     },
-    convert_video_for_the_web: {
+    optimize_video: {
       fr: "Optimiser la vidéo",
       en: "Optimize video",
       oc: "Optimizar la vidèo",
       de: "Optimieren Sie das Video"
+    },
+    trim_video: {
+      fr: "Raccourcir la vidéo",
+      en: "Trim video"
+    },
+    trim_video_instructions: {
+      fr: "Indiquez le début et la fin souhaité pour cette vidéo.",
+      en: "Input the beginning and end to trim the video."
     },
     revert_to_original: {
       fr: "Revenir à l’original",
