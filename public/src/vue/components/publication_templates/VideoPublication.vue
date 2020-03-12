@@ -49,6 +49,9 @@
               }
             "
           />
+          <span class="m_videoPublication--media--mediaNumber"
+            >{{ index + 1 }}
+          </span>
           <div class="m_videoPublication--media--moveItemButtons">
             <button
               type="button"

@@ -338,8 +338,8 @@
             />
             <span
               class="m_publicationview--pages--contactSheet--pages--page--pageNumber"
-              >{{ pageNumber + 1 }}</span
-            >
+              >{{ pageNumber + 1 }}
+            </span>
 
             <transition name="fade_fast" :duration="150">
               <div

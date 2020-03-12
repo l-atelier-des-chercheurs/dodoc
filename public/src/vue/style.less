@@ -4299,7 +4299,7 @@ small {
             width: 1.5em;
             height: 1.5em;
             z-index: 100;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 1);
             border-radius: 50%;
             .font-verysmall;
             .margin-verysmall;
@@ -4580,7 +4580,7 @@ small {
       position: relative;
       max-width: 400px;
       height: auto;
-      .padding-small;
+      .padding-verysmall;
       .margin-small;
       .bg-blanc;
       .boxs-card-1;
@@ -4588,6 +4588,27 @@ small {
 
       .m_metaField {
         .margin-vert-verysmall;
+      }
+
+      .m_videoPublication--media--mediaNumber {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1.5em;
+        height: 1.5em;
+        z-index: 100;
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 50%;
+        .font-verysmall;
+        .margin-small;
+        // .padding-sides-verysmall;
+        // font-weight: bold;
+        .label;
+        color: #000;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .m_videoPublication--media--moveItemButtons {
@@ -5435,8 +5456,11 @@ small {
 }
 .m_mediaMontagePublication--withdraw {
   position: absolute;
-  top: -1.25em;
-  right: -1.25em;
+  // top: ~"calc(-.5 * var(--spacing))";
+  // right: ~"calc(-.5 * var(--spacing))";
+  top: 0;
+  right: 0;
+  .margin-verysmall;
 
   display: flex;
   color: inherit;
