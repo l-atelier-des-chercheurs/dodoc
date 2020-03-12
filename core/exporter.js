@@ -1570,7 +1570,7 @@ module.exports = (function() {
                 .withVideoBitrate(bitrate)
                 .withAudioCodec("aac")
                 .withAudioBitrate("128k")
-                .addOptions(["-af apad"])
+                .addOptions(["-af apad", "-tune stillimage"])
                 .size(`${resolution.width}x${resolution.height}`)
                 .autopad()
                 .videoFilter(["setsar=1/1"])

@@ -113,10 +113,8 @@
                   setEffectProp({ $event, id: effect.id, prop: 'speed' })
                 "
               >
-                <option value="0.75">
-                  {{ $t("a_little").toLowerCase() }}
-                </option>
-                <option value="0.5"> {{ $t("a_lot").toLowerCase() }} </option>
+                <option value="0.75">{{ $t("a_little").toLowerCase() }}</option>
+                <option value="0.5">{{ $t("a_lot").toLowerCase() }}</option>
               </select>
               <small class="ta-ri">× {{ effect.speed }}</small>
             </div>
