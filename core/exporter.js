@@ -898,7 +898,7 @@ module.exports = (function() {
             // .complexFilter(["color[c];[0:v][c]overlay=shortest=1"]);
             ffmpeg_cmd.withAudioCodec("copy");
           } else {
-            reject(
+            return reject(
               `Failed to create video for filter: color is not set correctly`
             );
           }
@@ -915,22 +915,30 @@ module.exports = (function() {
           );
           ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
         } else if (effect.type === "slow_down" || effect.type === "speed_up") {
-          if (!isNaN(effect.speed)) {
-            complexFilters.push(
-              {
-                filter: "setpts",
-                options: `${1 / effect.speed}\*PTS`,
-                inputs: "output",
-                outputs: "output"
-              },
-              {
+          if (
+            (effect.speed !== "custom" && !isNaN(effect.speed)) ||
+            (effect.speed === "custom" && !isNaN(effect.custom_speed))
+          ) {
+            let speed =
+              effect.speed === "custom" ? effect.custom_speed : effect.speed;
+            complexFilters.push({
+              filter: "setpts",
+              options: `${1 / speed}\*PTS`,
+              inputs: "output",
+              outputs: "output"
+            });
+
+            if (speed >= 0.5) {
+              complexFilters.push({
                 filter: "atempo",
-                options: effect.speed
-              }
-            );
-            ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
+                options: speed
+              });
+              ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
+            } else {
+              ffmpeg_cmd.noAudio();
+            }
           } else {
-            reject(
+            return reject(
               `Failed to create video for filter: speed is not set correctly`
             );
           }
@@ -944,7 +952,7 @@ module.exports = (function() {
             });
             ffmpeg_cmd.withAudioCodec("copy");
           } else {
-            reject(
+            return reject(
               `Failed to create video for filter: flip is not set correctly`
             );
           }
@@ -961,7 +969,7 @@ module.exports = (function() {
             });
             ffmpeg_cmd.withAudioCodec("copy");
           } else {
-            reject(
+            return reject(
               `Failed to create video for filter: flip is not set correctly`
             );
           }
@@ -1014,7 +1022,7 @@ module.exports = (function() {
                 // filter: "blend=all_mode='addition':repeatlast=1:all_opacity=1",
                 // filter: "blend=all_mode=multiply",
                 //
-                options: "x=10:y=10",
+                options: "x=20:y=20",
                 // options: "W-w-5:H-h-5",
                 inputs: ["output", "swatermark"],
                 // inputs: "output",
@@ -1028,7 +1036,7 @@ module.exports = (function() {
             );
             ffmpeg_cmd.withAudioCodec("copy");
           } else {
-            reject(
+            return reject(
               `Failed to create video for filter: image is not set correctly`
             );
           }

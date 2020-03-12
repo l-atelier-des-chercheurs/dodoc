@@ -104,7 +104,7 @@
             </div>
             <div
               v-else-if="effect.type === 'slow_down'"
-              class="margin-bottom-small ta-ri"
+              class="margin-bottom-small"
               :key="'slow_down'"
             >
               <select
@@ -115,8 +115,36 @@
               >
                 <option value="0.75">{{ $t("a_little").toLowerCase() }}</option>
                 <option value="0.5">{{ $t("a_lot").toLowerCase() }}</option>
+                <option value="custom">{{ $t("custom").toLowerCase() }}</option>
               </select>
-              <small class="ta-ri">× {{ effect.speed }}</small>
+              <input
+                v-if="effect.speed === 'custom'"
+                type="number"
+                min="0.1"
+                max="1"
+                step="0.1"
+                :value="effect.custom_speed"
+                @change="
+                  setEffectProp({ $event, id: effect.id, prop: 'custom_speed' })
+                "
+              />
+              <div class="ta-ri">
+                <small
+                  >×
+                  {{
+                    effect.speed !== "custom"
+                      ? effect.speed
+                      : effect.custom_speed
+                  }}
+                </small>
+              </div>
+              <div>
+                <small
+                  v-if="effect.speed === 'custom' && effect.custom_speed < 0.5"
+                >
+                  {{ $t("slowing_video_down_limit") }}
+                </small>
+              </div>
             </div>
             <div
               v-else-if="effect.type === 'speed_up'"
@@ -135,8 +163,25 @@
                 <option value="4">
                   {{ $t("a_lot").toLowerCase() }}
                 </option>
+                <option value="custom">{{ $t("custom").toLowerCase() }}</option>
               </select>
-              <small>× {{ effect.speed }}</small>
+              <input
+                v-if="effect.speed === 'custom'"
+                type="number"
+                min="1"
+                max="100"
+                step="0.1"
+                :value="effect.custom_speed"
+                @change="
+                  setEffectProp({ $event, id: effect.id, prop: 'custom_speed' })
+                "
+              />
+              <small class="ta-ri"
+                >×
+                {{
+                  effect.speed !== "custom" ? effect.speed : effect.custom_speed
+                }}
+              </small>
             </div>
             <div
               v-else-if="effect.type === 'rotate'"
@@ -322,9 +367,13 @@ export default {
 
           if (new_type === "colored_filter") e.color = "#FC4B60";
           // else if (new_type === "watermark") e.image = {};
-          else if (new_type === "slow_down") e.speed = 0.75;
-          else if (new_type === "speed_up") e.speed = 1.5;
-          else if (new_type === "rotate") e.rotation = 1;
+          else if (new_type === "slow_down") {
+            e.speed = 0.75;
+            e.custom_speed = 0.6;
+          } else if (new_type === "speed_up") {
+            e.speed = 1.5;
+            e.custom_speed = 6;
+          } else if (new_type === "rotate") e.rotation = 1;
           else if (new_type === "mirror") e.flip = "vflip";
         }
         return e;

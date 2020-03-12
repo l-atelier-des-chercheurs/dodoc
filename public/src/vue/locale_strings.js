@@ -2217,6 +2217,12 @@ module.exports = (function() {
       fr: "Ralentir",
       en: "Slow down"
     },
+    slowing_video_down_limit: {
+      fr:
+        "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
+      en:
+        "Warning! The audio track will be removed (if it exists) because the slow down is too low. To keep the audio track select a value between 0.5 and 1."
+    },
     speed_up: {
       fr: "Accélérer",
       en: "Speed up"
