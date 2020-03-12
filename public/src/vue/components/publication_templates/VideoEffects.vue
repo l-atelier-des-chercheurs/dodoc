@@ -21,7 +21,7 @@
     />
 
     <div class="m_videoEffects">
-      <div class="" v-if="publication_medias.length === 0">
+      <div class="" v-if="!video_media">
         <p>
           <small v-html="$t('add_one_video_file')" />
         </p>
@@ -323,7 +323,7 @@ export default {
           e.type = new_type;
 
           if (new_type === "colored_filter") e.color = "#FC4B60";
-          else if (new_type === "watermark") e.image = {};
+          // else if (new_type === "watermark") e.image = {};
           else if (new_type === "slow_down") e.speed = 0.75;
           else if (new_type === "speed_up") e.speed = 1.5;
           else if (new_type === "rotate") e.rotation = 1;
