@@ -165,7 +165,6 @@
           type="button"
           class="m_project--presentation--buttons--openButton"
           @click.exact="openProject"
-          @touchstart.stop.exact="openProject"
           @click.shift.left.exact="$emit('toggleSelect')"
           @click.meta.left.exact="$emit('toggleSelect')"
         >

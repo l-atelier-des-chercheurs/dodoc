@@ -63,7 +63,7 @@
       </button>
     </div>
 
-    <!-- <p class="mediaCaption">{{ media.caption }}</p> -->
+    <p class="mediaCaption">{{ media.caption }}</p>
 
     <button
       class="m_mediaPublication--overflowing_sign"
@@ -83,9 +83,7 @@
     <div
       class="m_mediaPublication--edit_styles"
       v-if="
-        (is_selected || is_hovered || is_touch) &&
-          !preview_mode &&
-          show_edit_styles_window
+        (is_selected || is_hovered) && !preview_mode && show_edit_styles_window
       "
     >
       <button
@@ -112,11 +110,7 @@
 
     <!-- <transition name="fade_fast" :duration="150"> -->
     <div
-      v-if="
-        (is_selected || is_hovered || is_touch) &&
-          !preview_mode &&
-          !inline_edit_mode
-      "
+      v-if="(is_selected || is_hovered) && !preview_mode && !inline_edit_mode"
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
@@ -227,17 +221,14 @@
 
     <transition name="fade_fast" :duration="150">
       <div
-        v-if="
-          (is_selected || is_hovered || is_touch) &&
-            !preview_mode &&
-            !inline_edit_mode
-        "
+        v-if="(is_selected || is_hovered) && !preview_mode && !inline_edit_mode"
         class="m_mediaPublication--buttons"
       >
         <button
           type="button"
           class="_advanced_menu_button buttonLink _no_underline"
-          @click.stop="show_advanced_menu = !show_advanced_menu"
+          @mousedown.stop.prevent="show_advanced_menu = !show_advanced_menu"
+          @touchstart.stop.prevent="show_advanced_menu = !show_advanced_menu"
         >
           <svg
             version="1.1"
