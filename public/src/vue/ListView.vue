@@ -416,6 +416,8 @@ export default {
         this.$eventHub.$once("socketio.has_finished_loading_all_medias", () => {
           this.is_loading_all_medias = false;
         });
+      } else {
+        this.show_filters = false;
       }
 
       this.selected_projects = [];
