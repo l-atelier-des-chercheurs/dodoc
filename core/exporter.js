@@ -989,8 +989,8 @@ module.exports = (function() {
 
               {
                 filter: "scale",
-                options: `${resolution.width / 4}:${resolution.height /
-                  4}:force_original_aspect_ratio=1`,
+                options: `${resolution.width / 8}:${resolution.height /
+                  8}:force_original_aspect_ratio=1`,
                 inputs: "watermark",
                 outputs: "swatermark"
               },
