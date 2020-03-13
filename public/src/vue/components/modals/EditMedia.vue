@@ -231,13 +231,22 @@
 
             <div class="">
               <label>{{ $t("beginning") }}</label>
-              <div class="input-group padding-sides-medium">
-                <input type="text" class="bg-blanc" />
-                <button type="button">Set</button>
+              <div class="padding-sides-medium">
+                <input type="time" class="bg-blanc" />
+                <button type="button"></button>
               </div>
             </div>
-            <div class="">
+            <!-- <div class="">
               <label>{{ $t("end") }}</label>
+              <div class="padding-sides-medium">
+                <button type="button">Set</button>
+                <input type="time" class="bg-blanc" />
+                <input type="text" class="bg-blanc" />
+              </div>
+            </div> -->
+
+            <div class="">
+              <label>{{ $t("duration") }}</label>
             </div>
           </div>
         </div>
