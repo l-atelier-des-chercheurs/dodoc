@@ -678,6 +678,10 @@ module.exports = (function() {
       oc: "Durada",
       de: "Dauer"
     },
+    new_duration: {
+      fr: "Nouvelle durée",
+      en: "New duration"
+    },
     send: {
       fr: "Envoyer",
       en: "Send",

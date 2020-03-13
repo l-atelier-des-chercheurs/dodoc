@@ -138,6 +138,23 @@
                   }}
                 </small>
               </div>
+              <div v-if="video_media && video_media.duration">
+                <hr />
+                <div class="m_metaField">
+                  <div>{{ $t("duration") }}</div>
+                  <div>
+                    {{
+                      $root.formatDurationToMinuteHours(
+                        video_media.duration * 1000
+                      )
+                    }}
+                  </div>
+                </div>
+                <div class="m_metaField">
+                  <div>{{ $t("new_duration") }}</div>
+                  <div>{{ getVideomedaiNewDuration(effect) }}</div>
+                </div>
+              </div>
               <div>
                 <small
                   v-if="effect.speed === 'custom' && effect.custom_speed < 0.5"
@@ -176,12 +193,33 @@
                   setEffectProp({ $event, id: effect.id, prop: 'custom_speed' })
                 "
               />
-              <small class="ta-ri"
-                >×
-                {{
-                  effect.speed !== "custom" ? effect.speed : effect.custom_speed
-                }}
-              </small>
+              <div class="ta-ri">
+                <small
+                  >×
+                  {{
+                    effect.speed !== "custom"
+                      ? effect.speed
+                      : effect.custom_speed
+                  }}
+                </small>
+              </div>
+              <div v-if="video_media && video_media.duration">
+                <hr />
+                <div class="m_metaField">
+                  <div>{{ $t("duration") }}</div>
+                  <div>
+                    {{
+                      $root.formatDurationToMinuteHours(
+                        video_media.duration * 1000
+                      )
+                    }}
+                  </div>
+                </div>
+                <div class="m_metaField">
+                  <div>{{ $t("new_duration") }}</div>
+                  <div>{{ getVideomedaiNewDuration(effect) }}</div>
+                </div>
+              </div>
             </div>
             <div
               v-else-if="effect.type === 'rotate'"
@@ -359,6 +397,13 @@ export default {
     }
   },
   methods: {
+    getVideomedaiNewDuration(effect) {
+      return this.$root.formatDurationToMinuteHours(
+        (this.video_media.duration * 1000) /
+          (effect.speed !== "custom" ? effect.speed : effect.custom_speed)
+      );
+    },
+
     setEffectType({ $event, id }) {
       const new_type = $event.target.value;
       const effects = this.publication.effects.map(e => {

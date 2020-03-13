@@ -1173,6 +1173,9 @@ let vm = new Vue({
     formatDateToPrecise(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");
     },
+    formatDurationToMinuteHours(date) {
+      return this.$moment.utc(date).format("mm:ss");
+    },
     updateNetworkInfos() {
       this.$socketio.updateNetworkInfos();
     },
