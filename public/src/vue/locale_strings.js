@@ -195,6 +195,14 @@ module.exports = (function() {
       fr: "Tailles et marges",
       en: "Sizes and margins"
     },
+    size: {
+      fr: "Taille",
+      en: "Size"
+    },
+    dimensions: {
+      fr: "Résolution",
+      en: "Resolution"
+    },
     onion_skin: {
       fr: "Pelure d’oignon",
       en: "Onion skin",
@@ -450,11 +458,19 @@ module.exports = (function() {
       oc: "Virar cap a drecha",
       de: "Nach Rechts einschwenken"
     },
-    convert_video_for_the_web: {
+    optimize_video: {
       fr: "Optimiser la vidéo",
       en: "Optimize video",
       oc: "Optimizar la vidèo",
       de: "Optimieren Sie das Video"
+    },
+    trim_video: {
+      fr: "Raccourcir la vidéo",
+      en: "Trim video"
+    },
+    trim_video_instructions: {
+      fr: "Indiquez le début et la fin souhaité pour cette vidéo.",
+      en: "Input the beginning and end to trim the video."
     },
     revert_to_original: {
       fr: "Revenir à l’original",
@@ -669,6 +685,10 @@ module.exports = (function() {
       nl: "Duur",
       oc: "Durada",
       de: "Dauer"
+    },
+    new_duration: {
+      fr: "Nouvelle durée",
+      en: "New duration"
     },
     send: {
       fr: "Envoyer",
@@ -938,7 +958,7 @@ module.exports = (function() {
     },
     video_export_draft_instructions: {
       fr:
-        "Ce mode permet de rapidement tester le rendu d’un recette pour tester le rythme et les niveaux sonores, au détriment de la qualité de l’image. La vidéo résultante ne pourra pas être enregistré.",
+        "Ce mode permet de rapidement créer le résultat d’un recette pour tester le rythme et les niveaux sonores, au détriment de la qualité de l’image. La vidéo résultante ne pourra pas être enregistré.",
       en:
         "This mode is the most convenient to test the rythm and the audio levels, with a mediocre image quality. The resulting video cannot be saved."
     },
@@ -2179,6 +2199,85 @@ module.exports = (function() {
         "Liste des effets et filtres disponibles : noir et blanc, ralenti, accéléré, inversion de la lecture, rotation et miroir.<br>Média accepté : une seule vidéo.",
       en:
         "Video effects and filters available: black and white, speed up, slow down, play backwards, rotate and miroir.<br>Accepted media: a single video."
+    },
+    effect: {
+      fr: "Effet",
+      en: "Effect"
+    },
+    black_and_white: {
+      fr: "Noir et blanc",
+      en: "Black and white"
+    },
+    watermark: {
+      fr: "Habillage",
+      en: "Watermark"
+    },
+    watermark_instructions: {
+      fr:
+        "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
+      en: "Choose an image to place in the top-right corner of the video."
+    },
+    colored_filter: {
+      fr: "Filtre coloré",
+      en: "Colored filter"
+    },
+    filters_color: {
+      fr: "Couleur du filtre",
+      en: "Filter’s color"
+    },
+    slow_down: {
+      fr: "Ralentir",
+      en: "Slow down"
+    },
+    slowing_video_down_limit: {
+      fr:
+        "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
+      en:
+        "Warning! The audio track will be removed (if it exists) because the slow down is too low. To keep the audio track select a value between 0.5 and 1."
+    },
+    speed_up: {
+      fr: "Accélérer",
+      en: "Speed up"
+    },
+    a_little: {
+      fr: "Un peu",
+      en: "A little"
+    },
+    a_lot: {
+      fr: "Beaucoup",
+      en: "A lot"
+    },
+    clockwise: {
+      fr: "Dans le sens des aiguilles d’une montre",
+      en: "Clockwise"
+    },
+    counterclockwise: {
+      fr: "Dans le sens inverse des aiguilles d’une montre",
+      en: "Counterclockwise"
+    },
+    reverse: {
+      fr: "Inverser le début et la fin",
+      en: "Reverse"
+    },
+    rotate: {
+      fr: "Pivoter",
+      en: "Rotate"
+    },
+    mirror: {
+      fr: "Miroir",
+      en: "Mirror"
+    },
+    horizontal_flip: {
+      fr: "Retournement horizontal",
+      en: "Horizontal flip"
+    },
+    vertical_flip: {
+      fr: "Retournement vertical",
+      en: "Vertical flip"
+    },
+    both: {
+      fr: "Les deux",
+      en: "Both"
     },
     carreau_summary: {
       fr: "Empiler des médias pour créer en temps réel des présentations.",

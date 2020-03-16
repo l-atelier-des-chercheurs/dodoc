@@ -140,7 +140,7 @@
           @click="$emit('export')"
           :class="{ 'is--disabled': export_button_is_disabled }"
         >
-          {{ $t("export") }}
+          {{ $t("create") }}
         </button>
 
         <button type="button" class="buttonLink" @click="removePublication">

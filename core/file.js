@@ -778,22 +778,26 @@ module.exports = (function() {
               mdata.date_created = api.convertDate(
                 additionalMeta.fileCreationDate
               );
-            } else {
-              if (mediaName !== undefined) {
-                dev.logverbose(`Setting created from file birthtime`);
-                let getFileCreationDate = new Promise((resolve, reject) => {
-                  fs.stat(mediaPath, function(err, stats) {
-                    if (err) {
-                      return resolve();
-                    }
+            }
+
+            if (mediaName !== undefined) {
+              let getFileCreationDate = new Promise((resolve, reject) => {
+                fs.stat(mediaPath, function(err, stats) {
+                  if (err) {
+                    return resolve();
+                  }
+                  if (!mdata.hasOwnProperty("date_created")) {
+                    dev.logverbose(`Setting created from file birthtime`);
                     mdata.date_created = api.convertDate(
                       new Date(stats.birthtime)
                     );
-                    return resolve();
-                  });
+                  }
+                  if (!mdata.hasOwnProperty("file_meta")) mdata.file_meta = [];
+                  mdata.file_meta.push({ size: stats.size });
+                  return resolve();
                 });
-                tasks.push(getFileCreationDate);
-              }
+              });
+              tasks.push(getFileCreationDate);
             }
 
             if (mdata.type === "image") {
@@ -807,7 +811,7 @@ module.exports = (function() {
                     } else {
                       let localTS = api.parseUTCDate(ts);
                       dev.logverbose(
-                        `getEXIFData timestamp to date : ${api.convertDate(
+                        `getTimestampFromEXIF timestamp to date : ${api.convertDate(
                           localTS
                         )}`
                       );
@@ -823,80 +827,30 @@ module.exports = (function() {
               tasks.push(getEXIFTimestamp);
             }
 
-            /***************************************************************************
-                RATIO
-            ***************************************************************************/
-            if (mdata.type === "image") {
-              let getEXIFRatio = new Promise((resolve, reject) => {
-                thumbs
-                  .getRatioFromEXIF(mediaPath)
-                  .then(mediaRatio => {
-                    dev.log(`getEXIFData mediaRatio : ${mediaRatio}`);
-                    if (mediaRatio !== undefined) {
-                      mdata.ratio = mediaRatio;
-                    }
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`No EXIF data to read from: ${err}`);
-                    resolve();
-                  });
-              });
-              tasks.push(getEXIFRatio);
-            } else if (mdata.type === "video" || mdata.type === "audio") {
-              let getMediaRatio = new Promise((resolve, reject) => {
-                thumbs
-                  .getMediaRatio(mediaPath)
-                  .then(mediaRatio => {
-                    dev.log(`getMediaRatio : ${mediaRatio}`);
-                    if (mediaRatio !== undefined) {
-                      mdata.ratio = mediaRatio;
-                    }
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`No probe data to read from: ${err}`);
-                    resolve();
-                  });
-              });
-              tasks.push(getMediaRatio);
-            }
+            let getEXIFData = new Promise((resolve, reject) => {
+              thumbs
+                .getMediaEXIF({ type: mdata.type, mediaPath })
+                .then(exif_meta => {
+                  dev.logverbose(`exif_meta = ${JSON.stringify(exif_meta)}}`);
 
-            /***************************************************************************
-                DURATION
-            ***************************************************************************/
-            if (mdata.type === "video" || mdata.type === "audio") {
-              // get video or audio duration
-              let getMediaDuration = new Promise((resolve, reject) => {
-                dev.logverbose(`Will attempt to get media duration.`);
-                thumbs.getMediaDuration(mediaPath).then(duration => {
-                  dev.log(`getMediaDuration: ${duration}`);
-                  if (duration) {
-                    mdata.duration = duration;
-                  }
-                  resolve();
+                  if (!mdata.hasOwnProperty("file_meta")) mdata.file_meta = [];
+                  Object.entries(exif_meta).map(([key, value]) => {
+                    mdata.file_meta.push({ [key]: value });
+                  });
+
+                  if (exif_meta.hasOwnProperty("duration"))
+                    mdata.duration = exif_meta.duration;
+                  if (exif_meta.hasOwnProperty("ratio"))
+                    mdata.ratio = exif_meta.ratio;
+
+                  return resolve();
+                })
+                .catch(err => {
+                  dev.error(`No EXIF data to read from: ${err}`);
+                  return resolve();
                 });
-              });
-              tasks.push(getMediaDuration);
-            }
-
-            /***************************************************************************
-                DURATION
-            ***************************************************************************/
-            if (mdata.type === "image") {
-              let getFullEXIF = new Promise((resolve, reject) => {
-                thumbs
-                  .getEXIFData(mediaPath)
-                  .then(exifdata => {
-                    if (exifdata) {
-                      // mdata.exif = validator.escape(JSON.stringify(exifdata));
-                    }
-                    resolve();
-                  })
-                  .catch(err => resolve());
-              });
-              tasks.push(getFullEXIF);
-            }
+            });
+            tasks.push(getEXIFData);
 
             /***************************************************************************
                 DO IT ALL

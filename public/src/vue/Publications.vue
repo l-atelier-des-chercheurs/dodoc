@@ -505,10 +505,23 @@ export default {
   },
   computed: {
     createPubliDefaultName() {
-      const number_of_recipes =
+      let number_of_recipes =
         this.all_recipes_of_this_template(this.createPubliTemplateKey).length +
         1;
-      return this.$t(this.createPubliTemplateKey) + " Nº" + number_of_recipes;
+
+      let name =
+        this.$t(this.createPubliTemplateKey) + " Nº" + number_of_recipes;
+
+      while (
+        this.all_recipes_of_this_template(this.createPubliTemplateKey).some(
+          r => r.name === name
+        )
+      ) {
+        number_of_recipes++;
+        name = this.$t(this.createPubliTemplateKey) + " Nº" + number_of_recipes;
+      }
+
+      return name;
     }
   },
   methods: {

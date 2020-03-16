@@ -1173,6 +1173,9 @@ let vm = new Vue({
     formatDateToPrecise(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");
     },
+    formatDurationToMinuteHours(date) {
+      return this.$moment.utc(date).format("mm:ss");
+    },
     updateNetworkInfos() {
       this.$socketio.updateNetworkInfos();
     },
@@ -1182,6 +1185,26 @@ let vm = new Vue({
       } else if (this.do_navigation.view === "ProjectView") {
         this.closeProject();
       }
+    },
+    formatBytes(a, b) {
+      if (0 == a) return `0 ${this.$t("bytes")}`;
+
+      var e = [
+        this.$t("bytes"),
+        this.$t("kb"),
+        this.$t("mb"),
+        this.$t("gb"),
+        "TB",
+        "PB",
+        "EB",
+        "ZB",
+        "YB"
+      ];
+
+      var c = 1024,
+        d = b || 2,
+        f = Math.floor(Math.log(a) / Math.log(c));
+      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f];
     }
   }
 });

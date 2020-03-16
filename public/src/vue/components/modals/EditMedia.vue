@@ -152,6 +152,7 @@
         <button
           type="button"
           class="buttonLink"
+          :class="{ 'is--active': show_edit_media_options }"
           @click="show_edit_media_options = !show_edit_media_options"
           v-if="media.type === 'image' || media.type === 'video'"
         >
@@ -189,7 +190,7 @@
           </svg>
           {{ $t("adjust") }}
         </button>
-        <div v-if="show_edit_media_options" class="bg-creme">
+        <div v-if="show_edit_media_options" class="bg-gris_tresclair border">
           <button
             type="button"
             class="buttonLink"
@@ -201,13 +202,44 @@
             class="buttonLink"
             @click="editRawMedia('optimize_video')"
             v-if="media.type === 'video'"
-          >{{ $t("convert_video_for_the_web") }}</button>
+          >{{ $t("optimize_video") }}</button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
           >{{ $t("revert_to_original") }}</button>
+          <button
+            type="button"
+            class="buttonLink"
+            :class="{ 'is--active': trim_mode }"
+            @click="trim_mode = !trim_mode"
+            v-if="media.type === 'video'"
+          >{{ $t("trim_video") }}</button>
+
+          <div v-if="trim_mode">
+            <small>{{ $t("trim_video_instructions") }}</small>
+
+            <div class>
+              <label>{{ $t("beginning") }}</label>
+              <div class="padding-sides-medium">
+                <input type="time" class="bg-blanc" />
+                <button type="button"></button>
+              </div>
+            </div>
+            <!-- <div class="">
+              <label>{{ $t("end") }}</label>
+              <div class="padding-sides-medium">
+                <button type="button">Set</button>
+                <input type="time" class="bg-blanc" />
+                <input type="text" class="bg-blanc" />
+              </div>
+            </div>-->
+
+            <div class>
+              <label>{{ $t("duration") }}</label>
+            </div>
+          </div>
         </div>
 
         <button
@@ -280,11 +312,17 @@
 
         <div class="m_metaField" v-if="!!media.type">
           <div>{{ $t("type") }}</div>
-          <div>
-            {{ $t(media.type) }}
-            <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
-          </div>
+          <div>{{ $t(media.type) }}</div>
         </div>
+        <div class="m_metaField" v-if="media_size">
+          <div>{{ $t("size") }}</div>
+          <div>{{ $root.formatBytes(media_size) }}</div>
+        </div>
+        <div class="m_metaField" v-if="media_dimensions">
+          <div>{{ $t("dimensions") }}</div>
+          <div>{{ media_dimensions }}</div>
+        </div>
+
         <div
           class="m_metaField"
           v-if="!!project_name && $root.do_navigation.view !== 'ProjectView'"
@@ -439,6 +477,8 @@ export default {
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
       askBeforeClosingModal: false,
 
+      trim_mode: false,
+
       is_ready: false
     };
   },
@@ -478,6 +518,27 @@ export default {
         return false;
       }
       return this.$root.store.projects[this.slugProjectName].name;
+    },
+    media_size() {
+      if (
+        !this.media.file_meta ||
+        !this.media.file_meta.find(m => m.hasOwnProperty("size"))
+      )
+        return false;
+      return this.media.file_meta.find(m => m.hasOwnProperty("size")).size;
+    },
+    media_dimensions() {
+      if (
+        !this.media.file_meta ||
+        !this.media.file_meta.find(m => m.hasOwnProperty("width")) ||
+        !this.media.file_meta.find(m => m.hasOwnProperty("height"))
+      )
+        return false;
+      return (
+        this.media.file_meta.find(m => m.hasOwnProperty("width")).width +
+        " × " +
+        this.media.file_meta.find(m => m.hasOwnProperty("height")).height
+      );
     }
   },
   methods: {

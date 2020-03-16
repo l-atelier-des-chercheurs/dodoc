@@ -1793,6 +1793,7 @@ small {
   z-index: 1;
   .padding-sides-verysmall;
   border-radius: 4px;
+  user-select: none;
 
   transition: opacity 0.4s;
 
@@ -1919,7 +1920,9 @@ small {
     .mediaContainer {
       position: relative;
       // .margin-verysmall;
-      .bg-gris_tresclair;
+      // .bg-gris_tresclair;
+      // .bg-gris_fonce;
+      .bg-blanc;
       overflow: hidden;
 
       &::after {
@@ -4299,7 +4302,7 @@ small {
             width: 1.5em;
             height: 1.5em;
             z-index: 100;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 1);
             border-radius: 50%;
             .font-verysmall;
             .margin-verysmall;
@@ -4580,7 +4583,7 @@ small {
       position: relative;
       max-width: 400px;
       height: auto;
-      .padding-small;
+      .padding-verysmall;
       .margin-small;
       .bg-blanc;
       .boxs-card-1;
@@ -4588,6 +4591,27 @@ small {
 
       .m_metaField {
         .margin-vert-verysmall;
+      }
+
+      .m_videoPublication--media--mediaNumber {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1.5em;
+        height: 1.5em;
+        z-index: 100;
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 50%;
+        .font-verysmall;
+        .margin-small;
+        // .padding-sides-verysmall;
+        // font-weight: bold;
+        .label;
+        color: #000;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .m_videoPublication--media--moveItemButtons {
@@ -4623,6 +4647,44 @@ small {
         }
       }
     }
+  }
+}
+
+.m_videoEffects {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-content: flex-start;
+  align-items: flex-start;
+  .padding-small;
+
+  .m_videoEffects--options {
+    flex: 0 0 auto;
+    max-width: 320px;
+    .bg-blanc;
+    .padding-small;
+    padding-bottom: 0;
+    .margin-small;
+    // .margin-top-medium;
+
+    border-radius: 10px;
+  }
+
+  .m_videoEffects--media {
+    flex: 1 1 200px;
+
+    position: relative;
+    max-width: 400px;
+    height: auto;
+    .padding-small;
+    .margin-small;
+    .bg-blanc;
+    .boxs-card-1;
+    border-radius: 4px;
+  }
+
+  ._watermark_media {
+    width: 100%;
   }
 }
 
@@ -4872,8 +4934,8 @@ small {
   -moz-user-select: none;
   user-select: none;
 
-  min-width: 20mm;
-  min-height: 20mm;
+  min-width: 10mm;
+  min-height: 10mm;
   z-index: 0;
 
   transform-origin: top left;
@@ -4900,6 +4962,12 @@ small {
   }
   &.is--fit_mode_contain .mediaContainer img {
     object-fit: contain;
+  }
+  &.is--inline_edited {
+    outline: 2px solid @c-bleuvert;
+    .ql-editor {
+      background-color: @c-gris_tresclair;
+    }
   }
 
   .m_mediaPublication--overflowing_sign {
@@ -4928,10 +4996,15 @@ small {
 
   .m_mediaPublication--floatingSaveButton {
     position: absolute;
-    bottom: 0;
+    top: 100%;
     width: 100%;
     text-align: center;
     .padding-bottom-verysmall;
+    pointer-events: none;
+
+    > * {
+      pointer-events: auto;
+    }
   }
 
   .m_mediaPublication--edit_styles {
@@ -5155,15 +5228,28 @@ small {
     right: 0;
     width: 100%;
     z-index: 2;
-    overflow: hidden;
+    // overflow: hidden;
     pointer-events: none;
     .padding-verysmall;
 
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-end;
+    ._advanced_menu_button {
+      width: 24px;
+      height: 24px;
+      border: 3px solid @c-noir;
+    }
 
-    > * {
+    ._advanced_menu {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-around;
+      background-color: @c-noir;
+
+      padding: 0;
+      width: 240px;
+      .margin-verysmall;
+      border: 0;
+    }
+    button {
       display: block;
       color: inherit;
       .bg-orange;
@@ -5373,8 +5459,11 @@ small {
 }
 .m_mediaMontagePublication--withdraw {
   position: absolute;
-  top: -1.25em;
-  right: -1.25em;
+  // top: ~"calc(-.5 * var(--spacing))";
+  // right: ~"calc(-.5 * var(--spacing))";
+  top: 0;
+  right: 0;
+  .margin-verysmall;
 
   display: flex;
   color: inherit;

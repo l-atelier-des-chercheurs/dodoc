@@ -125,6 +125,10 @@
           },
           "caption": {
             "type": "string"
+          },
+          "file_meta": {
+            "type": "array",
+            "read_only": true
           }
         }
       }
@@ -257,8 +261,8 @@
         "medias_slugs": {
           "type": "array"
         },
-        "effect": {
-          "type": "string"
+        "effects": {
+          "type": "array"
         }
       },
       "medias": {
@@ -343,6 +347,10 @@
           "canvas_information": {
             "type": "string",
             "escape": false
+          },
+          "file_meta": {
+            "type": "array",
+            "read_only": true
           }
         }
       }
@@ -387,6 +395,10 @@
           },
           "authors": {
             "type": "array"
+          },
+          "file_meta": {
+            "type": "array",
+            "read_only": true
           }
         }
       }

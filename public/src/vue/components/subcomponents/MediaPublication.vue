@@ -63,7 +63,7 @@
       </button>
     </div>
 
-    <!-- <p class="mediaCaption">{{ media.caption }}</p> -->
+    <p class="mediaCaption">{{ media.caption }}</p>
 
     <button
       class="m_mediaPublication--overflowing_sign"
@@ -83,9 +83,7 @@
     <div
       class="m_mediaPublication--edit_styles"
       v-if="
-        (is_selected || is_hovered || is_touch) &&
-          !preview_mode &&
-          show_edit_styles_window
+        (is_selected || is_hovered) && !preview_mode && show_edit_styles_window
       "
     >
       <button
@@ -112,11 +110,7 @@
 
     <!-- <transition name="fade_fast" :duration="150"> -->
     <div
-      v-if="
-        (is_selected || is_hovered || is_touch) &&
-          !preview_mode &&
-          !inline_edit_mode
-      "
+      v-if="(is_selected || is_hovered) && !preview_mode && !inline_edit_mode"
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
@@ -178,6 +172,7 @@
         </svg>
       </div>
       <div
+        v-if="media.type !== 'text' && media.publi_meta.type !== 'text'"
         class="handle handle_resizeMedia"
         @mousedown.stop.prevent="
           event => resizeMedia({ event, type: 'mouse', origin: 'bottomright' })
@@ -226,163 +221,191 @@
 
     <transition name="fade_fast" :duration="150">
       <div
-        v-if="
-          (is_selected || is_hovered || is_touch) &&
-            !preview_mode &&
-            !inline_edit_mode
-        "
+        v-if="(is_selected || is_hovered) && !preview_mode && !inline_edit_mode"
         class="m_mediaPublication--buttons"
       >
         <button
           type="button"
-          class="buttonLink _no_underline"
-          @mousedown.stop.prevent="editZIndex(+1)"
-          @touchstart.stop.prevent="editZIndex(+1)"
-          :content="
-            $t('move_to_foreground') + '<br>' + $t('layer:') + ' ' + mediaZIndex
-          "
-          v-tippy="{
-            placement: 'top',
-            delay: [600, 0]
-          }"
+          class="_advanced_menu_button buttonLink _no_underline"
+          @mousedown.stop.prevent="show_advanced_menu = !show_advanced_menu"
+          @touchstart.stop.prevent="show_advanced_menu = !show_advanced_menu"
         >
           <svg
             version="1.1"
-            class="inline-svg"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             x="0px"
             y="0px"
-            width="40.3px"
-            height="59.6px"
-            viewBox="0 0 40.3 59.6"
-            style="enable-background:new 0 0 40.3 59.6;"
+            width="168px"
+            height="168px"
+            viewBox="0 0 168 168"
+            style="enable-background:new 0 0 168 168;"
             xml:space="preserve"
           >
-            <path
-              class="st0"
-              d="M35,24.4l-4.6-4.2c-2.7-2.5-4.8-4.7-6.4-7.3l0,46.7l-7.7,0l0-46.6c-1.7,2.5-3.8,4.7-6.4,7.1l-4.6,4.2L0,18.1
+            <rect x="73.5" y="37" class="st0" width="21" height="21" />
+            <rect x="73.5" y="73.5" class="st0" width="21" height="21" />
+            <rect x="73.5" y="110" class="st0" width="21" height="21" />
+          </svg>
+        </button>
+
+        <div v-if="show_advanced_menu" class="_advanced_menu" @click.stop>
+          <button
+            type="button"
+            class="buttonLink _no_underline"
+            @mousedown.stop.prevent="editZIndex(+1)"
+            @touchstart.stop.prevent="editZIndex(+1)"
+            :content="
+              $t('move_to_foreground') +
+                '<br>' +
+                $t('layer:') +
+                ' ' +
+                mediaZIndex
+            "
+            v-tippy="{
+              placement: 'top',
+              delay: [600, 0]
+            }"
+          >
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="40.3px"
+              height="59.6px"
+              viewBox="0 0 40.3 59.6"
+              style="enable-background:new 0 0 40.3 59.6;"
+              xml:space="preserve"
+            >
+              <path
+                class="st0"
+                d="M35,24.4l-4.6-4.2c-2.7-2.5-4.8-4.7-6.4-7.3l0,46.7l-7.7,0l0-46.6c-1.7,2.5-3.8,4.7-6.4,7.1l-4.6,4.2L0,18.1
               L20.2,0l20.2,18.1L35,24.4z"
-            />
-          </svg>
-        </button>
+              />
+            </svg>
+          </button>
 
-        <button
-          type="button"
-          class="buttonLink _no_underline"
-          @mousedown.stop.prevent="editZIndex(-1)"
-          @touchstart.stop.prevent="editZIndex(-1)"
-          :content="
-            $t('move_to_background') + '<br>' + $t('layer:') + ' ' + mediaZIndex
-          "
-          v-tippy="{
-            placement: 'top',
-            delay: [600, 0]
-          }"
-        >
-          <svg
-            version="1.1"
-            class="inline-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="40.3px"
-            height="59.6px"
-            viewBox="0 0 40.3 59.6"
-            style="enable-background:new 0 0 40.3 59.6;"
-            xml:space="preserve"
+          <button
+            type="button"
+            class="buttonLink _no_underline"
+            @mousedown.stop.prevent="editZIndex(-1)"
+            @touchstart.stop.prevent="editZIndex(-1)"
+            :content="
+              $t('move_to_background') +
+                '<br>' +
+                $t('layer:') +
+                ' ' +
+                mediaZIndex
+            "
+            v-tippy="{
+              placement: 'top',
+              delay: [600, 0]
+            }"
           >
-            <path
-              class="st0"
-              d="M5.3,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7L24,0l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="40.3px"
+              height="59.6px"
+              viewBox="0 0 40.3 59.6"
+              style="enable-background:new 0 0 40.3 59.6;"
+              xml:space="preserve"
+            >
+              <path
+                class="st0"
+                d="M5.3,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7L24,0l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
               L20.2,59.6L0,41.5L5.3,35.2z"
-            />
-          </svg>
-        </button>
+              />
+            </svg>
+          </button>
 
-        <button
-          type="button"
-          class="buttonLink _no_underline"
-          @mousedown.stop.prevent="toggleEditWindow()"
-          @touchstart.stop.prevent="toggleEditWindow()"
-          :class="{ 'is--active': show_edit_styles_window }"
-          :content="$t('css_settings')"
-          v-tippy="{
-            placement: 'top',
-            delay: [600, 0]
-          }"
-        >
-          {{ $t("css") }}
-          <sup v-if="custom_css">*</sup>
-        </button>
-
-        <button
-          type="button"
-          class="buttonLink _no_underline"
-          @mousedown.stop.prevent="editButtonClicked"
-          @touchstart.stop.prevent="editButtonClicked"
-          :content="
-            media.slugProjectName
-              ? $t('edit_original_media')
-              : $t('edit_content')
-          "
-          v-tippy="{
-            placement: 'top',
-            delay: [600, 0]
-          }"
-        >
-          <svg
-            v-if="media.slugProjectName"
-            version="1.1"
-            class="inline-svg inline-svg-larger"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="113.5px"
-            height="113.5px"
-            viewBox="0 0 113.5 113.5"
-            style="enable-background:new 0 0 113.5 113.5;"
-            xml:space="preserve"
+          <button
+            type="button"
+            class="buttonLink _no_underline"
+            @mousedown.stop.prevent="toggleEditWindow()"
+            @touchstart.stop.prevent="toggleEditWindow()"
+            :class="{ 'is--active': show_edit_styles_window }"
+            :content="$t('css_settings')"
+            v-tippy="{
+              placement: 'top',
+              delay: [600, 0]
+            }"
           >
-            <path
-              d="M8.9,104.6c11.8,11.8,31,11.8,42.8,0l16.9-16.9c-1.3,0.1-2.7,0.2-4,0.2c-4.3,0-8.4-0.7-12.4-2l-9.6,9.6
+            {{ $t("css") }}<sup v-if="custom_css">*</sup>
+          </button>
+
+          <button
+            type="button"
+            class="buttonLink _no_underline"
+            @mousedown.stop.prevent="editButtonClicked"
+            @touchstart.stop.prevent="editButtonClicked"
+            :content="
+              media.slugProjectName
+                ? $t('edit_original_media')
+                : $t('edit_content')
+            "
+            v-tippy="{
+              placement: 'top',
+              delay: [600, 0]
+            }"
+          >
+            <svg
+              v-if="media.slugProjectName"
+              version="1.1"
+              class="inline-svg inline-svg-larger"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="113.5px"
+              height="113.5px"
+              viewBox="0 0 113.5 113.5"
+              style="enable-background:new 0 0 113.5 113.5;"
+              xml:space="preserve"
+            >
+              <path
+                d="M8.9,104.6c11.8,11.8,31,11.8,42.8,0l16.9-16.9c-1.3,0.1-2.7,0.2-4,0.2c-4.3,0-8.4-0.7-12.4-2l-9.6,9.6
 		c-3.3,3.3-7.7,5.1-12.3,5.1c-4.6,0-9-1.8-12.3-5.1c-3.3-3.3-5.1-7.6-5.1-12.3c0-4.6,1.8-9,5.1-12.3l18.7-18.7
 		c3.3-3.3,7.7-5.1,12.3-5.1c4.7,0,9,1.8,12.3,5.1c1.6,1.6,2.8,3.4,3.7,5.5c2.1-0.1,10.6-7.5,10.6-7.5c-1.4-2.5-3.1-4.9-5.3-7.1
 		c-11.8-11.8-31-11.8-42.8,0L8.9,61.8C-3,73.6-3,92.8,8.9,104.6z"
-            />
-            <path
-              d="M48.8,25.5c4.3,0,8.5,0.7,12.5,2.1l9.6-9.6c3.3-3.3,7.7-5.1,12.3-5.1s9,1.8,12.3,5.1c3.3,3.3,5.1,7.7,5.1,12.3
+              />
+              <path
+                d="M48.8,25.5c4.3,0,8.5,0.7,12.5,2.1l9.6-9.6c3.3-3.3,7.7-5.1,12.3-5.1s9,1.8,12.3,5.1c3.3,3.3,5.1,7.7,5.1,12.3
 		s-1.8,9-5.1,12.3L76.8,61.3c-3.3,3.3-7.7,5.1-12.3,5.1c-4.7,0-9-1.8-12.3-5.1c-1.6-1.6-2.9-3.5-3.7-5.5c-2.1,0.1-4.1,1-5.7,2.5
 		l-5,5c1.4,2.5,3.1,4.9,5.3,7.1c11.8,11.8,31,11.8,42.8,0l18.7-18.7c11.8-11.8,11.8-31,0-42.8C92.8-3,73.7-3,61.8,8.9L45,25.7
 		C46.2,25.6,47.5,25.5,48.8,25.5L48.8,25.5L48.8,25.5z"
-            />
-          </svg>
-          <svg
-            v-else
-            version="1.1"
-            class="inline-svg inline-svg-larger"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="100.7px"
-            height="101px"
-            viewBox="0 0 100.7 101"
-            style="enable-background:new 0 0 100.7 101;"
-            xml:space="preserve"
-          >
-            <path
-              class="st0"
-              d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
+              />
+            </svg>
+            <svg
+              v-else
+              version="1.1"
+              class="inline-svg inline-svg-larger"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="100.7px"
+              height="101px"
+              viewBox="0 0 100.7 101"
+              style="enable-background:new 0 0 100.7 101;"
+              xml:space="preserve"
+            >
+              <path
+                class="st0"
+                d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
               L19.1,91.5z"
-            />
-          </svg>
-          <!-- {{ $t('edit') }} -->
-        </button>
+              />
+            </svg>
+            <!-- {{ $t('edit') }} -->
+          </button>
 
-        <!-- <button
+          <!-- <button
           v-if="!!media.ratio && !lock_original_ratio"
           type="button"
           class="buttonLink _no_underline"
@@ -432,36 +455,38 @@
           </svg>
         </button> -->
 
-        <button
-          type="button"
-          class="buttonLink _no_underline"
-          @click.stop.prevent="removePubliMedia()"
-          :content="$t('withdraw')"
-          v-tippy="{
-            placement: 'top',
-            delay: [600, 0]
-          }"
-        >
-          <svg
-            version="1.1"
-            class="inline-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="37.2px"
-            height="37.2px"
-            viewBox="0 0 37.2 37.2"
-            style="enable-background:new 0 0 37.2 37.2;"
-            xml:space="preserve"
+          <button
+            type="button"
+            class="buttonLink _no_underline"
+            @click.stop.prevent="removePubliMedia()"
+            :content="$t('withdraw')"
+            v-tippy="{
+              placement: 'top',
+              delay: [600, 0]
+            }"
           >
-            <polygon
-              class="st0"
-              points="37.2,30.6 30.6,37.2 18.6,25.2 6.6,37.2 0,30.6 12,18.6 0,6.6 6.6,0 18.6,12 30.6,0 37.2,6.6 
+            <!-- <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="37.2px"
+              height="37.2px"
+              viewBox="0 0 37.2 37.2"
+              style="enable-background:new 0 0 37.2 37.2;"
+              xml:space="preserve"
+            >
+              <polygon
+                class="st0"
+                points="37.2,30.6 30.6,37.2 18.6,25.2 6.6,37.2 0,30.6 12,18.6 0,6.6 6.6,0 18.6,12 30.6,0 37.2,6.6 
             25.2,18.6 "
-            />
-          </svg>
-        </button>
+              />
+            </svg> -->
+            {{ $t("withdraw") }}
+          </button>
+        </div>
       </div>
     </transition>
   </div>
@@ -499,6 +524,7 @@ export default {
       is_text_overflowing: false,
 
       inline_edit_mode: false,
+      show_advanced_menu: false,
 
       custom_css: this.media.publi_meta.hasOwnProperty("custom_css")
         ? this.media.publi_meta.custom_css
@@ -598,7 +624,11 @@ export default {
       return el.offsetHeight + 15 < el.scrollHeight;
     },
     auto_height() {
-      if (this.lock_original_ratio)
+      if (
+        this.lock_original_ratio &&
+        this.media.type !== "text" &&
+        this.media.publi_meta.type !== "text"
+      )
         return this.mediaSize.width * this.media.ratio;
       else return this.mediaSize.height;
     }
@@ -879,7 +909,12 @@ export default {
           this.mediaSize.width = this.limitMediaWidth(newWidth);
 
         let new_height;
-        if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
+        if (
+          this.lock_original_ratio &&
+          this.media.hasOwnProperty("ratio") &&
+          this.media.type !== "text" &&
+          this.media.publi_meta.type !== "text"
+        )
           new_height = this.mediaSize.width * this.media.ratio;
         else {
           const deltaY =

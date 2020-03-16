@@ -428,12 +428,12 @@ module.exports = (function() {
                     return reject(`Failed to make a video: ${err}`);
                   });
               } else if (publication_meta.template === "video_effects") {
-                if (!publication_meta.effect)
-                  return reject("Missing effect field");
+                if (!publication_meta.effects)
+                  return reject("Missing effects field");
 
                 _applyVideoEffects({
                   medias_with_original_filepath,
-                  effect: publication_meta.effect,
+                  effects: publication_meta.effects,
                   cachePath,
                   videoName,
                   resolution,
@@ -549,7 +549,7 @@ module.exports = (function() {
                     .toFormat("mp4")
                     .on("start", function(commandLine) {
                       dev.logverbose(
-                        "Spawned Ffmpeg with command: " + commandLine
+                        "Spawned Ffmpeg with command: \n" + commandLine
                       );
                     })
                     .on("progress", progress => {
@@ -820,7 +820,7 @@ module.exports = (function() {
 
   function _applyVideoEffects({
     medias_with_original_filepath,
-    effect,
+    effects,
     cachePath,
     videoName,
     resolution,
@@ -831,16 +831,17 @@ module.exports = (function() {
       dev.logfunction("EXPORTER — _makeVideoAssemblage");
 
       const videoPath = path.join(cachePath, videoName);
-      const vm = medias_with_original_filepath[0];
+
+      const vm = medias_with_original_filepath.find(m => m.type === "video");
 
       ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
         const ffmpeg_cmd = new ffmpeg().renice(renice);
 
         ffmpeg_cmd.input(vm.full_path);
 
-        if (vm.duration) {
-          ffmpeg_cmd.duration(vm.duration);
-        }
+        // if (vm.duration) {
+        //   ffmpeg_cmd.duration(vm.duration);
+        // }
 
         // check if has audio track or not
         if (
@@ -856,25 +857,216 @@ module.exports = (function() {
           temp_video_volume = vm.publi_meta.volume / 100;
 
         if (temp_video_volume)
-          ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
-        else ffmpeg_cmd.addOptions(["-af apad"]);
+          ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume]);
+        // We may need apad at this point, but it conflicts with the reverse effect.
+        // please post on github with the video file if you get audio error with this recipe (and read this message…)
+
+        let complexFilters = [
+          {
+            filter: "scale",
+            options: `${resolution.width}:${resolution.height}:force_original_aspect_ratio=1`,
+            inputs: "[0]",
+            outputs: "scaled"
+          },
+          {
+            filter: "setsar=sar",
+            options: 1,
+            inputs: "scaled",
+            outputs: "aspect"
+          },
+          {
+            filter: "pad",
+            options: `${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
+            inputs: "aspect",
+            outputs: "output"
+          }
+        ];
+
+        // just handle a single effect for now — will handle multiple simultaneous effects at once later
+        const effect = effects[0];
+
+        if (effect.type === "black_and_white") {
+          complexFilters.push({
+            filter: "hue",
+            options: "s=0",
+            inputs: "output",
+            outputs: "output"
+          });
+          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+        } else if (effect.type === "colored_filter") {
+          if (
+            !!effect.color &&
+            typeof effect.color === "string" &&
+            effect.color.startsWith("#")
+          ) {
+            ffmpeg_cmd
+              .input(
+                `color=${effect.color}:s=${resolution.width}x${resolution.height}`
+              )
+              .inputFormat("lavfi");
+            complexFilters.push({
+              filter: "blend=shortest=1:all_mode=overlay:all_opacity=1",
+              inputs: "output",
+              outputs: "output"
+            });
+            // .complexFilter(["color[c];[0:v][c]overlay=shortest=1"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+          } else {
+            return reject(
+              `Failed to create video for filter: color is not set correctly`
+            );
+          }
+        } else if (effect.type === "reverse") {
+          complexFilters.push(
+            {
+              filter: "reverse",
+              inputs: "output",
+              outputs: "output"
+            },
+            {
+              filter: "areverse"
+            }
+          );
+          ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
+        } else if (effect.type === "slow_down" || effect.type === "speed_up") {
+          if (
+            (effect.speed !== "custom" && !isNaN(effect.speed)) ||
+            (effect.speed === "custom" && !isNaN(effect.custom_speed))
+          ) {
+            let speed =
+              effect.speed === "custom" ? effect.custom_speed : effect.speed;
+            complexFilters.push({
+              filter: "setpts",
+              options: `${1 / speed}\*PTS`,
+              inputs: "output",
+              outputs: "output"
+            });
+
+            if (speed >= 0.5) {
+              complexFilters.push({
+                filter: "atempo",
+                options: speed
+              });
+              ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
+            } else {
+              ffmpeg_cmd.noAudio();
+            }
+          } else {
+            return reject(
+              `Failed to create video for filter: speed is not set correctly`
+            );
+          }
+        } else if (effect.type === "rotate") {
+          if (effect.rotation === "1" || effect.rotation === "2") {
+            complexFilters.push({
+              filter: "transpose",
+              options: effect.rotation,
+              inputs: "output",
+              outputs: "output"
+            });
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+          } else {
+            return reject(
+              `Failed to create video for filter: flip is not set correctly`
+            );
+          }
+        } else if (effect.type === "mirror") {
+          if (
+            effect.flip === "hflip" ||
+            effect.flip === "vflip" ||
+            effect.flip === "hflip, vflip"
+          ) {
+            complexFilters.push({
+              filter: effect.flip,
+              inputs: "output",
+              outputs: "output"
+            });
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+          } else {
+            return reject(
+              `Failed to create video for filter: flip is not set correctly`
+            );
+          }
+        } else if (effect.type === "watermark") {
+          const im = medias_with_original_filepath.find(
+            m => m.type === "image"
+          );
+          if (im) {
+            // ffmpeg_cmd.input(im.full_path);
+
+            complexFilters.push(
+              {
+                filter: "movie",
+                options: im.full_path,
+                outputs: "watermark"
+              },
+
+              {
+                filter: "scale",
+                options: `${resolution.width / 8}:${resolution.height /
+                  8}:force_original_aspect_ratio=1`,
+                inputs: "watermark",
+                outputs: "swatermark"
+              },
+              {
+                filter: "setsar=sar=1",
+                inputs: "swatermark",
+                outputs: "swatermark"
+              },
+              // {
+              //   filter: "format=argb,colorchannelmixer=aa",
+              //   options: 0.5,
+              //   inputs: "swatermark",
+              //   outputs: "swatermark"
+              // },
+              // {
+              //   filter: "format=rgba",
+              //   inputs: "swatermark",
+              //   outputs: "swatermark"
+              // },
+              // {
+              //   filter: "setsar=sar=1,format=rgba",
+              //   inputs: "output",
+              //   outputs: "output"
+              // },
+              {
+                // filter:   "overlay=36:main_h-overlay_h-45, blend=all_mode='overlay':all_opacity=0.7",
+                filter: "overlay",
+                // "blend:all_mode=overlay:all_opacity=0.7",
+                // filter: "blend=all_mode='addition':repeatlast=1:all_opacity=1",
+                // filter: "blend=all_mode=multiply",
+                //
+                options: "x=20:y=20",
+                // options: "W-w-5:H-h-5",
+                inputs: ["output", "swatermark"],
+                // inputs: "output",
+                outputs: "output"
+              }
+              // {
+              //   filter: "blend=shortest=1:all_mode=overlay:all_opacity=1",
+              //   inputs: "output",
+              //   outputs: "output"
+              // }
+            );
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+          } else {
+            return reject(
+              `Failed to create video for filter: image is not set correctly`
+            );
+          }
+        }
 
         ffmpeg_cmd
           .native()
           .outputFPS(30)
           .withVideoCodec("libx264")
           .withVideoBitrate(bitrate)
-          .withAudioCodec("aac")
-          .withAudioBitrate("128k")
-          .videoFilter([
-            `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
-          ])
+          .complexFilter(complexFilters, "output")
           .addOptions(["-crf 22", "-preset fast", "-shortest"])
-          .videoFilter(["setsar=1/1"])
           .toFormat("mp4")
           .output(videoPath)
           .on("start", function(commandLine) {
-            dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
+            dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
           .on("progress", progress => {
             _notifyFfmpegProgress({ socket, progress });
@@ -889,6 +1081,7 @@ module.exports = (function() {
             throw err;
           })
           .run();
+
         global.ffmpeg_processes.push(ffmpeg_cmd);
       });
     });
@@ -1001,7 +1194,7 @@ module.exports = (function() {
         ffmpeg_cmd
           // .complexFilter(['gltransition'])
           .on("start", function(commandLine) {
-            dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
+            dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
           .on("progress", progress => {
             _notifyFfmpegProgress({ socket, progress });
@@ -1095,7 +1288,7 @@ module.exports = (function() {
         .addOptions(["-map 0:v:0", "-map 1:a:0"])
         .toFormat("mp4")
         .on("start", function(commandLine) {
-          dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
+          dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
         })
         .on("progress", progress => {
           _notifyFfmpegProgress({ socket, progress });
@@ -1159,13 +1352,14 @@ module.exports = (function() {
         .addOptions(["-shortest"])
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
+        .addOptions(["-tune stillimage"])
         .videoFilters(
           `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=increase`
         )
         .outputFPS(30)
         .toFormat("mp4")
         .on("start", function(commandLine) {
-          dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
+          dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
         })
         .on("progress", progress => {
           _notifyFfmpegProgress({ socket, progress });
@@ -1298,7 +1492,7 @@ module.exports = (function() {
               .toFormat("mpegts")
               .output(temp_video_path)
               .on("start", function(commandLine) {
-                dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
+                dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
               })
               .on("progress", progress => {
                 _notifyFfmpegProgress({ socket, progress });
@@ -1398,7 +1592,7 @@ module.exports = (function() {
                 .withVideoBitrate(bitrate)
                 .withAudioCodec("aac")
                 .withAudioBitrate("128k")
-                .addOptions(["-af apad"])
+                .addOptions(["-af apad", "-tune stillimage"])
                 .size(`${resolution.width}x${resolution.height}`)
                 .autopad()
                 .videoFilter(["setsar=1/1"])
@@ -1406,7 +1600,9 @@ module.exports = (function() {
                 .toFormat("mpegts")
                 .output(temp_video_path)
                 .on("start", function(commandLine) {
-                  dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
+                  dev.logverbose(
+                    "Spawned Ffmpeg with command: \n" + commandLine
+                  );
                 })
                 .on("progress", progress => {
                   _notifyFfmpegProgress({ socket, progress });

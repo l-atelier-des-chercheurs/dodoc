@@ -20,7 +20,7 @@
 
     <div class="margin-medium" v-if="publication_medias.length === 0">
       <p>
-        <small v-html="$t('add_multiple_images')" />
+        <small class="c-blanc" v-html="$t('add_multiple_images')" />
       </p>
     </div>
     <transition-group
