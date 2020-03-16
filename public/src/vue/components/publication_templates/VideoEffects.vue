@@ -141,7 +141,7 @@
               <div
                 v-if="
                   (video_media && video_media.duration) ||
-                    video_media.file_meta.duration
+                    (video_media.file_meta && video_media.file_meta.duration)
                 "
               >
                 <hr />
