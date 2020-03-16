@@ -807,7 +807,7 @@ module.exports = (function() {
                     } else {
                       let localTS = api.parseUTCDate(ts);
                       dev.logverbose(
-                        `getEXIFData timestamp to date : ${api.convertDate(
+                        `getTimestampFromEXIF timestamp to date : ${api.convertDate(
                           localTS
                         )}`
                       );
@@ -823,88 +823,20 @@ module.exports = (function() {
               tasks.push(getEXIFTimestamp);
             }
 
-            /***************************************************************************
-                RATIO
-            ***************************************************************************/
-            if (mdata.type === "image") {
-              let getEXIFRatio = new Promise((resolve, reject) => {
-                thumbs
-                  .getDimensionsFromEXIF(mediaPath)
-                  .then(({ ratio, width, height }) => {
-                    dev.log(
-                      `getEXIFData mediaRatio : ${ratio}, ${width}, ${height}`
-                    );
-                    if (mediaRatio !== undefined) {
-                      mdata.ratio = ratio;
-                      mdata._ratio = ratio;
-                      mdata._width = width;
-                      mdata._height = height;
-                    }
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`No EXIF data to read from: ${err}`);
-                    resolve();
-                  });
-              });
-              tasks.push(getEXIFRatio);
-            } else if (mdata.type === "video" || mdata.type === "audio") {
-              let getMediaRatio = new Promise((resolve, reject) => {
-                thumbs
-                  .getMediaRatio(mediaPath)
-                  .then(({ ratio, width, height }) => {
-                    dev.log(`getMediaRatio : ${ratio}`);
-                    if (ratio !== undefined) {
-                      mdata.ratio = ratio;
-                      mdata._ratio = ratio;
-                      mdata._width = width;
-                      mdata._height = height;
-                    }
-                    resolve();
-                  })
-                  .catch(err => {
-                    dev.error(`No probe data to read from: ${err}`);
-                    resolve();
-                  });
-              });
-              tasks.push(getMediaRatio);
-            }
-
-            /***************************************************************************
-                DURATION
-            ***************************************************************************/
-            if (mdata.type === "video" || mdata.type === "audio") {
-              // get video or audio duration
-              let getMediaDuration = new Promise((resolve, reject) => {
-                dev.logverbose(`Will attempt to get media duration.`);
-                thumbs.getMediaDuration(mediaPath).then(duration => {
-                  dev.log(`getMediaDuration: ${duration}`);
-                  if (duration) {
-                    mdata.duration = duration;
-                  }
-                  resolve();
+            let getEXIFData = new Promise((resolve, reject) => {
+              thumbs
+                .getMediaEXIF({ type: mdata.type, mediaPath })
+                .then(exif_meta => {
+                  dev.logverbose(`exif_meta = ${JSON.stringify(exif_meta)}}`);
+                  Object.assign(mdata, exif_meta);
+                  return resolve();
+                })
+                .catch(err => {
+                  dev.error(`No EXIF data to read from: ${err}`);
+                  return resolve();
                 });
-              });
-              tasks.push(getMediaDuration);
-            }
-
-            /***************************************************************************
-                DURATION
-            ***************************************************************************/
-            if (mdata.type === "image") {
-              let getFullEXIF = new Promise((resolve, reject) => {
-                thumbs
-                  .getEXIFData(mediaPath)
-                  .then(exifdata => {
-                    if (exifdata) {
-                      // mdata.exif = validator.escape(JSON.stringify(exifdata));
-                    }
-                    resolve();
-                  })
-                  .catch(err => resolve());
-              });
-              tasks.push(getFullEXIF);
-            }
+            });
+            tasks.push(getEXIFData);
 
             /***************************************************************************
                 DO IT ALL

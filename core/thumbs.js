@@ -23,12 +23,9 @@ module.exports = (function() {
     removeFolderThumbs: (slugFolderName, type) =>
       removeFolderThumbs(slugFolderName, type),
 
-    getEXIFData: mediaPath => getEXIFData(mediaPath),
-    getDimensionsFromEXIF: mediaPath => getDimensionsFromEXIF(mediaPath),
-    getTimestampFromEXIF: mediaPath => getTimestampFromEXIF(mediaPath),
-
-    getMediaDuration: mediaPath => getMediaDuration(mediaPath),
-    getMediaRatio: mediaPath => getMediaRatio(mediaPath)
+    getEXIFDataForImage: mediaPath => getEXIFDataForImage(mediaPath),
+    getMediaEXIF: d => getMediaEXIF(d),
+    getTimestampFromEXIF: mediaPath => getTimestampFromEXIF(mediaPath)
   };
 
   // this function is used both when creating a media and when all medias are listed.
@@ -157,32 +154,79 @@ module.exports = (function() {
     });
   }
 
-  function getDimensionsFromEXIF(mediaPath) {
+  function getMediaEXIF({ type, mediaPath }) {
     return new Promise(function(resolve, reject) {
-      getEXIFData(mediaPath)
-        .then(exifdata => {
-          let mediaRatio;
-          mediaRatio = exifdata.height / exifdata.width;
-          if (
-            exifdata.orientation &&
-            (exifdata.orientation === 8 || exifdata.orientation === 6)
-          ) {
-            dev.log(`Media is portrait. Inverting ratio`);
-            mediaRatio = 1 / mediaRatio;
-          }
-          resolve({
-            ratio: mediaRatio,
-            width: exifdata.width,
-            height: exifdata.height
+      if (type === "image") {
+        getEXIFDataForImage(mediaPath)
+          .then(exifdata => {
+            let values = {
+              file_meta: []
+            };
+            const ratio = exifdata.height / exifdata.width;
+            if (
+              exifdata.orientation &&
+              (exifdata.orientation === 8 || exifdata.orientation === 6)
+            ) {
+              dev.log(`Media is portrait. Inverting ratio`);
+              ratio = 1 / ratio;
+            }
+
+            values.ratio = ratio;
+            values.file_meta.push({ ratio });
+            values.file_meta.push({ width: exifdata.width });
+            values.file_meta.push({ height: exifdata.height });
+            return resolve(values);
+          })
+          .catch(err => reject());
+      } else if (type === "video" || type === "audio") {
+        getEXIFDataForVideoAndAudio(mediaPath)
+          .then(metadata => {
+            let values = {
+              file_meta: []
+            };
+
+            if (
+              metadata &&
+              metadata.hasOwnProperty("format") &&
+              metadata.format.hasOwnProperty("duration")
+            ) {
+              values.duration = metadata.format.duration;
+              values.file_meta.push({ duration: metadata.format.duration });
+            }
+
+            if (
+              metadata.streams !== undefined &&
+              typeof Array.isArray(metadata.streams)
+            ) {
+              if (
+                metadata.streams[0].height !== undefined &&
+                metadata.streams[0].width !== undefined
+              ) {
+                let ratio =
+                  metadata.streams[0].height / metadata.streams[0].width;
+
+                values.ratio = ratio;
+                values.file_meta.push({ ratio });
+                values.file_meta.push({ width: metadata.streams[0].width });
+                values.file_meta.push({ height: metadata.streams[0].height });
+              }
+            }
+
+            return resolve(values);
+          })
+          .catch(err => {
+            dev.error(`No probe data to read from: ${err}`);
+            return reject();
           });
-        })
-        .catch(err => reject());
+      } else {
+        return reject();
+      }
     });
   }
 
   function getTimestampFromEXIF(mediaPath) {
     return new Promise(function(resolve, reject) {
-      getEXIFData(mediaPath)
+      getEXIFDataForImage(mediaPath)
         .then(exifdata => {
           let ts = _extractImageTimestamp(exifdata);
           dev.logverbose(`TS is ${ts}`);
@@ -192,7 +236,7 @@ module.exports = (function() {
     });
   }
 
-  function getEXIFData(mediaPath) {
+  function getEXIFDataForImage(mediaPath) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`THUMBS — readEXIFData — for: ${mediaPath}`);
 
@@ -496,48 +540,15 @@ module.exports = (function() {
     });
   }
 
-  function getMediaDuration(mediaPath) {
+  function getEXIFDataForVideoAndAudio(mediaPath) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction(`getMediaDuration: ${mediaPath}`);
+      dev.logfunction(`getEXIFDataForVideoAndAudio: ${mediaPath}`);
       ffmpeg.ffprobe(mediaPath, function(err, metadata) {
         if (err || typeof metadata === "undefined") {
-          dev.log(`getMediaDuration: PROBE DATA isn’t valid`);
-          resolve(false);
+          dev.log(`getEXIFDataForVideoAndAudio: PROBE DATA isn’t valid`);
+          return reject();
         } else {
-          // dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
-          resolve(metadata.format.duration);
-        }
-      });
-    });
-  }
-
-  function getMediaRatio(mediaPath) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction(`getMediaRatio: ${mediaPath}`);
-      ffmpeg.ffprobe(mediaPath, function(err, metadata) {
-        if (err || typeof metadata === "undefined") {
-          dev.log(`getMediaRatio: PROBE DATA isn’t valid`);
-          reject();
-        } else {
-          // dev.log(`PROBE DATA : ${JSON.stringify(metadata, null, 4)}`);
-          if (
-            metadata.streams !== undefined &&
-            typeof Array.isArray(metadata.streams)
-          ) {
-            if (
-              metadata.streams[0].height !== undefined &&
-              metadata.streams[0].width !== undefined
-            ) {
-              let ratio =
-                metadata.streams[0].height / metadata.streams[0].width;
-              resolve({
-                ratio,
-                width: metadata.streams[0].width,
-                height: metadata.streams[0].height
-              });
-            }
-          }
-          reject();
+          return resolve(metadata);
         }
       });
     });
