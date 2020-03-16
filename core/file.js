@@ -838,6 +838,11 @@ module.exports = (function() {
                     mdata.file_meta.push({ [key]: value });
                   });
 
+                  if (exif_meta.hasOwnProperty("duration"))
+                    mdata.duration = exif_meta.duration;
+                  if (exif_meta.hasOwnProperty("ratio"))
+                    mdata.ratio = exif_meta.ratio;
+
                   return resolve();
                 })
                 .catch(err => {

@@ -138,7 +138,12 @@
                   }}
                 </small>
               </div>
-              <div v-if="video_media && video_media.duration">
+              <div
+                v-if="
+                  (video_media && video_media.duration) ||
+                    video_media.file_meta.duration
+                "
+              >
                 <hr />
                 <div class="m_metaField">
                   <div>{{ $t("duration") }}</div>
