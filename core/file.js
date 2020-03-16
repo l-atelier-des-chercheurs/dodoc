@@ -778,22 +778,26 @@ module.exports = (function() {
               mdata.date_created = api.convertDate(
                 additionalMeta.fileCreationDate
               );
-            } else {
-              if (mediaName !== undefined) {
-                dev.logverbose(`Setting created from file birthtime`);
-                let getFileCreationDate = new Promise((resolve, reject) => {
-                  fs.stat(mediaPath, function(err, stats) {
-                    if (err) {
-                      return resolve();
-                    }
+            }
+
+            if (mediaName !== undefined) {
+              let getFileCreationDate = new Promise((resolve, reject) => {
+                fs.stat(mediaPath, function(err, stats) {
+                  if (err) {
+                    return resolve();
+                  }
+                  if (!mdata.hasOwnProperty("date_created")) {
+                    dev.logverbose(`Setting created from file birthtime`);
                     mdata.date_created = api.convertDate(
                       new Date(stats.birthtime)
                     );
-                    return resolve();
-                  });
+                  }
+                  if (!mdata.hasOwnProperty("file_meta")) mdata.file_meta = [];
+                  mdata.file_meta.push({ size: stats.size });
+                  return resolve();
                 });
-                tasks.push(getFileCreationDate);
-              }
+              });
+              tasks.push(getFileCreationDate);
             }
 
             if (mdata.type === "image") {
@@ -828,7 +832,12 @@ module.exports = (function() {
                 .getMediaEXIF({ type: mdata.type, mediaPath })
                 .then(exif_meta => {
                   dev.logverbose(`exif_meta = ${JSON.stringify(exif_meta)}}`);
-                  Object.assign(mdata, exif_meta);
+
+                  if (!mdata.hasOwnProperty("file_meta")) mdata.file_meta = [];
+                  Object.entries(exif_meta).map(([key, value]) => {
+                    mdata.file_meta.push({ [key]: value });
+                  });
+
                   return resolve();
                 })
                 .catch(err => {

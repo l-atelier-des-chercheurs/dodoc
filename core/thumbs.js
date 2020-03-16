@@ -156,13 +156,13 @@ module.exports = (function() {
 
   function getMediaEXIF({ type, mediaPath }) {
     return new Promise(function(resolve, reject) {
+      dev.logfunction(
+        `THUMBS — getMediaEXIF for type = ${type} and mediaPath = ${mediaPath}`
+      );
       if (type === "image") {
         getEXIFDataForImage(mediaPath)
           .then(exifdata => {
-            let values = {
-              file_meta: []
-            };
-            const ratio = exifdata.height / exifdata.width;
+            let ratio = exifdata.height / exifdata.width;
             if (
               exifdata.orientation &&
               (exifdata.orientation === 8 || exifdata.orientation === 6)
@@ -171,19 +171,17 @@ module.exports = (function() {
               ratio = 1 / ratio;
             }
 
-            values.ratio = ratio;
-            values.file_meta.push({ ratio });
-            values.file_meta.push({ width: exifdata.width });
-            values.file_meta.push({ height: exifdata.height });
-            return resolve(values);
+            return resolve({
+              ratio: Number.parseFloat(ratio).toPrecision(4),
+              width: exifdata.width,
+              height: exifdata.height
+            });
           })
           .catch(err => reject());
       } else if (type === "video" || type === "audio") {
         getEXIFDataForVideoAndAudio(mediaPath)
           .then(metadata => {
-            let values = {
-              file_meta: []
-            };
+            let values = {};
 
             if (
               metadata &&
@@ -191,7 +189,6 @@ module.exports = (function() {
               metadata.format.hasOwnProperty("duration")
             ) {
               values.duration = metadata.format.duration;
-              values.file_meta.push({ duration: metadata.format.duration });
             }
 
             if (
@@ -205,10 +202,9 @@ module.exports = (function() {
                 let ratio =
                   metadata.streams[0].height / metadata.streams[0].width;
 
-                values.ratio = ratio;
-                values.file_meta.push({ ratio });
-                values.file_meta.push({ width: metadata.streams[0].width });
-                values.file_meta.push({ height: metadata.streams[0].height });
+                (values.ratio = Number.parseFloat(ratio).toPrecision(4)),
+                  (values.width = metadata.streams[0].width);
+                values.height = metadata.streams[0].height;
               }
             }
 
