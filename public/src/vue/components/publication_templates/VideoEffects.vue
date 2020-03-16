@@ -23,7 +23,7 @@
     <div class="m_videoEffects">
       <div class="" v-if="!video_media">
         <p>
-          <small v-html="$t('add_one_video_file')" />
+          <small class="c-blanc" v-html="$t('add_one_video_file')" />
         </p>
       </div>
 

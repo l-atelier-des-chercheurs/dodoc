@@ -22,7 +22,7 @@
     <div class="m_videoPublication">
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
-          <small v-html="$t('add_multiple_videos_files')" />
+          <small class="c-blanc" v-html="$t('add_multiple_videos_files')" />
         </p>
       </div>
 

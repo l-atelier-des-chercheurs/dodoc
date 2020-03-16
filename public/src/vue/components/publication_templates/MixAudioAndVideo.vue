@@ -23,7 +23,7 @@
     <div class="m_mixAudioAndImagePublication">
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
-          <small v-html="$t('add_sound_video_file')" />
+          <small class="c-blanc" v-html="$t('add_sound_video_file')" />
         </p>
       </div>
 
