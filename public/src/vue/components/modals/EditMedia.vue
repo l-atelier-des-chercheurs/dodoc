@@ -318,6 +318,10 @@
           <div>{{ $t("size") }}</div>
           <div>{{ $root.formatBytes(media_size) }}</div>
         </div>
+        <div class="m_metaField" v-if="media_dimensions">
+          <div>{{ $t("dimensions") }}</div>
+          <div>{{ media_dimensions }}</div>
+        </div>
 
         <div
           class="m_metaField"
@@ -522,6 +526,19 @@ export default {
       )
         return false;
       return this.media.file_meta.find(m => m.hasOwnProperty("size")).size;
+    },
+    media_dimensions() {
+      if (
+        !this.media.file_meta ||
+        !this.media.file_meta.find(m => m.hasOwnProperty("width")) ||
+        !this.media.file_meta.find(m => m.hasOwnProperty("height"))
+      )
+        return false;
+      return (
+        this.media.file_meta.find(m => m.hasOwnProperty("width")).width +
+        " × " +
+        this.media.file_meta.find(m => m.hasOwnProperty("height")).height
+      );
     }
   },
   methods: {
