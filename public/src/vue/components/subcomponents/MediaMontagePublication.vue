@@ -26,10 +26,7 @@
         <div>{{ $t("project") }}</div>
         <div>{{ $root.store.projects[media.slugProjectName].name }}</div>
       </div>
-      <div
-        class="m_metaField"
-        v-if="original_media_duration || enable_image_timer"
-      >
+      <div class="m_metaField" v-if="original_media_duration || enable_image_timer">
         <div>{{ $t("duration") }}</div>
         <div v-if="original_media_duration">{{ original_media_duration }}</div>
         <div
@@ -40,15 +37,14 @@
           <span>{{ $t("seconds") }}</span>
         </div>
       </div>
+      <div class="m_metaField" v-if="media_dimensions">
+        <div>{{ $t("dimensions") }}</div>
+        <div>{{ media_dimensions }}</div>
+      </div>
 
-      <div
-        class="m_metaField"
-        v-if="enable_set_video_volume && media.type === 'video'"
-      >
+      <div class="m_metaField" v-if="enable_set_video_volume && media.type === 'video'">
         <div>{{ $t("volume") }}</div>
-        <div class="m_mediaMontagePublication--set_props">
-          {{ volume }} / 100
-        </div>
+        <div class="m_mediaMontagePublication--set_props">{{ volume }} / 100</div>
       </div>
     </div>
 
@@ -160,6 +156,19 @@ export default {
         return this.$moment.utc(this.media.duration * 1000).format("mm:ss");
       }
       return false;
+    },
+    media_dimensions() {
+      if (
+        !this.media.file_meta ||
+        !this.media.file_meta.find(m => m.hasOwnProperty("width")) ||
+        !this.media.file_meta.find(m => m.hasOwnProperty("height"))
+      )
+        return false;
+      return (
+        this.media.file_meta.find(m => m.hasOwnProperty("width")).width +
+        " × " +
+        this.media.file_meta.find(m => m.hasOwnProperty("height")).height
+      );
     }
   },
   methods: {

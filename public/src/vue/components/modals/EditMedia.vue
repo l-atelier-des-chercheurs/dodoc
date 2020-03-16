@@ -137,8 +137,7 @@
                 v-for="project in all_projects"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-                >{{ project.name }}</option
-              >
+              >{{ project.name }}</option>
             </select>
             <button
               type="button"
@@ -197,39 +196,31 @@
             class="buttonLink"
             @click="editRawMedia('rotate_image', { angle: 90 })"
             v-if="media.type === 'image'"
-          >
-            {{ $t("rotate_clockwise") }}
-          </button>
+          >{{ $t("rotate_clockwise") }}</button>
           <button
             type="button"
-            class="buttonLink "
+            class="buttonLink"
             @click="editRawMedia('optimize_video')"
             v-if="media.type === 'video'"
-          >
-            {{ $t("optimize_video") }}
-          </button>
+          >{{ $t("optimize_video") }}</button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
-          >
-            {{ $t("revert_to_original") }}
-          </button>
+          >{{ $t("revert_to_original") }}</button>
           <button
             type="button"
             class="buttonLink"
             :class="{ 'is--active': trim_mode }"
             @click="trim_mode = !trim_mode"
             v-if="media.type === 'video'"
-          >
-            {{ $t("trim_video") }}
-          </button>
+          >{{ $t("trim_video") }}</button>
 
           <div v-if="trim_mode">
             <small>{{ $t("trim_video_instructions") }}</small>
 
-            <div class="">
+            <div class>
               <label>{{ $t("beginning") }}</label>
               <div class="padding-sides-medium">
                 <input type="time" class="bg-blanc" />
@@ -243,9 +234,9 @@
                 <input type="time" class="bg-blanc" />
                 <input type="text" class="bg-blanc" />
               </div>
-            </div> -->
+            </div>-->
 
-            <div class="">
+            <div class>
               <label>{{ $t("duration") }}</label>
             </div>
           </div>
@@ -293,10 +284,7 @@
               v-model="mediadata.fav"
               :readonly="read_only"
             />
-            <label
-              for="favswitch_editmedia"
-              :class="{ 'c-rouge': mediadata.fav }"
-            >
+            <label for="favswitch_editmedia" :class="{ 'c-rouge': mediadata.fav }">
               {{ $t("fav") }}
               <svg
                 version="1.1"
@@ -324,11 +312,13 @@
 
         <div class="m_metaField" v-if="!!media.type">
           <div>{{ $t("type") }}</div>
-          <div>
-            {{ $t(media.type) }}
-            <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
-          </div>
+          <div>{{ $t(media.type) }}</div>
         </div>
+        <div class="m_metaField" v-if="media_size">
+          <div>{{ $t("size") }}</div>
+          <div>{{ $root.formatBytes(media_size) }}</div>
+        </div>
+
         <div
           class="m_metaField"
           v-if="!!project_name && $root.do_navigation.view !== 'ProjectView'"
@@ -371,16 +361,10 @@
         <DateField :title="'edited'" :date="media.date_modified" />
 
         <!-- Caption -->
-        <div
-          v-if="!read_only || !!mediadata.caption"
-          class="margin-bottom-small"
-        >
+        <div v-if="!read_only || !!mediadata.caption" class="margin-bottom-small">
           <label>{{ $t("caption") }}</label>
           <br />
-          <textarea
-            v-model="mediadata.caption"
-            :readonly="read_only"
-          ></textarea>
+          <textarea v-model="mediadata.caption" :readonly="read_only"></textarea>
         </div>
 
         <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -412,10 +396,7 @@
         </div>
 
         <!-- Author(s) -->
-        <div
-          v-if="!read_only || !!mediadata.authors"
-          class="margin-bottom-small"
-        >
+        <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
           <label>{{ $t("author") }}</label>
 
           <AuthorsInput
@@ -533,6 +514,14 @@ export default {
         return false;
       }
       return this.$root.store.projects[this.slugProjectName].name;
+    },
+    media_size() {
+      if (
+        !this.media.file_meta ||
+        !this.media.file_meta.find(m => m.hasOwnProperty("size"))
+      )
+        return false;
+      return this.media.file_meta.find(m => m.hasOwnProperty("size")).size;
     }
   },
   methods: {

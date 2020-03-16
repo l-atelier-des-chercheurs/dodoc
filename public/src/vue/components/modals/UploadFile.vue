@@ -36,11 +36,8 @@
           <div class="m_uploadFile--image" />
 
           <div class="m_uploadFile--filename">{{ f.name }}</div>
-          <div class="m_uploadFile--size">{{ formatBytes(f.size) }}</div>
-          <div
-            class="m_uploadFile--action"
-            v-if="files_to_upload_meta.hasOwnProperty(f.name)"
-          >
+          <div class="m_uploadFile--size">{{ $root.formatBytes(f.size) }}</div>
+          <div class="m_uploadFile--action" v-if="files_to_upload_meta.hasOwnProperty(f.name)">
             <button
               type="button"
               class="buttonLink"
@@ -51,17 +48,17 @@
                     files_to_upload_meta[f.name].status === 'success')
               "
             >
-              <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">{{
+              <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">
+                {{
                 $t("import")
-              }}</template>
+                }}
+              </template>
               <template
                 v-else-if="files_to_upload_meta[f.name].status === 'success'"
-                >{{ $t("sent") }}</template
-              >
+              >{{ $t("sent") }}</template>
               <template
                 v-else-if="files_to_upload_meta[f.name].status === 'failed'"
-                >{{ $t("retry") }}</template
-              >
+              >{{ $t("retry") }}</template>
             </button>
           </div>
         </div>
@@ -215,26 +212,6 @@ export default {
       //     await sendThisFile(task);
       //   }
       // }
-    },
-    formatBytes(a, b) {
-      if (0 == a) return `0 ${this.$t("bytes")}`;
-
-      var e = [
-        this.$t("bytes"),
-        this.$t("kb"),
-        this.$t("mb"),
-        this.$t("gb"),
-        "TB",
-        "PB",
-        "EB",
-        "ZB",
-        "YB"
-      ];
-
-      var c = 1024,
-        d = b || 2,
-        f = Math.floor(Math.log(a) / Math.log(c));
-      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f];
     },
     getImgPreview(file) {
       return URL.createObjectURL(file);

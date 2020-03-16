@@ -195,6 +195,14 @@ module.exports = (function() {
       fr: "Tailles et marges",
       en: "Sizes and margins"
     },
+    size: {
+      fr: "Taille",
+      en: "Size"
+    },
+    dimensions: {
+      fr: "Résolution",
+      en: "Resolution"
+    },
     onion_skin: {
       fr: "Pelure d’oignon",
       en: "Onion skin",
