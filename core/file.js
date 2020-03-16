@@ -1,9 +1,6 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  validator = require("validator"),
-  ffmpegstatic = require("ffmpeg-static"),
-  ffprobestatic = require("ffprobe-static"),
-  ffmpeg = require("fluent-ffmpeg");
+  validator = require("validator");
 
 const sharp = require("sharp");
 
@@ -12,9 +9,6 @@ const dev = require("./dev-log"),
   thumbs = require("./thumbs"),
   cache = require("./cache"),
   recipe = require("./recipe");
-
-// ffmpeg.setFfmpegPath(ffmpegstatic.path);
-// ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
   const API = {
