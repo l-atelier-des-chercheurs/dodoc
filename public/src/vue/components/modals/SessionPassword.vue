@@ -1,5 +1,3 @@
-
-
 <template>
   <Modal
     @close="$emit('close')"
@@ -9,12 +7,12 @@
     :prevent_close="true"
   >
     <template slot="header">
-      <span class>{{ $t('connect_to_dodoc') }}</span>
+      <span class>{{ $t("connect_to_dodoc") }}</span>
     </template>
 
     <template slot="sidebar">
       <div class="margin-bottom-small">
-        <label>{{ $t('password') }}</label>
+        <label>{{ $t("password") }}</label>
         <input type="password" v-model="pwd" required autofocus autoselect />
       </div>
 
@@ -24,11 +22,13 @@
           type="checkbox"
           v-model="remember_password_on_this_device"
         />
-        <label for="remember_password_on_this_device">{{ $t('remember_password_on_this_device') }}</label>
+        <label for="remember_password_on_this_device">{{
+          $t("remember_password_on_this_device")
+        }}</label>
       </span>
     </template>
 
-    <template slot="submit_button">{{ $t('send') }}</template>
+    <template slot="submit_button">{{ $t("send") }}</template>
   </Modal>
 </template>
 <script>
@@ -47,7 +47,10 @@ export default {
   },
 
   created() {},
-  mounted() {},
+  mounted() {
+    const el = this.$el.querySelector("[autofocus]");
+    el.focus();
+  },
   beforeDestroy() {},
 
   watch: {},
@@ -64,5 +67,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>
