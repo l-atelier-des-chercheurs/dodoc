@@ -1,5 +1,5 @@
 const path = require("path"),
-  ffmpegstatic = require("ffmpeg-static"),
+  pathToFfmpeg = require("ffmpeg-static"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   fs = require("fs-extra"),
@@ -13,7 +13,7 @@ const dev = require("./dev-log"),
   file = require("./file"),
   thumbs = require("./thumbs");
 
-ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfmpegPath(pathToFfmpeg);
 ffmpeg.setFfprobePath(ffprobestatic.path);
 
 const renice = 0;

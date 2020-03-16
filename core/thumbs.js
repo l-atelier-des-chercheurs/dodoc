@@ -1,6 +1,6 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  ffmpegstatic = require("ffmpeg-static"),
+  pathToFfmpeg = require("ffmpeg-static"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader");
@@ -11,7 +11,7 @@ sharp.cache(false);
 const dev = require("./dev-log"),
   api = require("./api");
 
-ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfmpegPath(pathToFfmpeg);
 ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function() {
