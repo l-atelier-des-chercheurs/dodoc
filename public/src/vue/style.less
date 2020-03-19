@@ -4975,7 +4975,7 @@ small {
     // border: 2px solid @c-orange;
   }
 
-  &.is--fit_mode_cover .mediaContainer img {
+  &.is--fit_mode_cover .mediaContainer.type-image img {
     object-fit: cover;
   }
   &.is--fit_mode_contain .mediaContainer img {
@@ -5099,6 +5099,13 @@ small {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    &.type-video {
+      background-color: #000;
+      img {
+        object-fit: contain;
+      }
     }
   }
 
