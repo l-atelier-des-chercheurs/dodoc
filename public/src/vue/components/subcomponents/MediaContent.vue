@@ -263,9 +263,7 @@ export default {
       )
         return false;
 
-      debugger;
-
-      const duration = this.media.duration
+      const duration = this.media.hasOwnProperty("duration")
         ? this.media.duration
         : this.media.file_meta.find(f => f.hasOwnProperty("duration")).duration;
       return duration;
