@@ -199,6 +199,10 @@ module.exports = (function() {
       fr: "Taille",
       en: "Size"
     },
+    volume: {
+      fr: "Volume",
+      en: "Sound level"
+    },
     dimensions: {
       fr: "Résolution",
       en: "Resolution"
