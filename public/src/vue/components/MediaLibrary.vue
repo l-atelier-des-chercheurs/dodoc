@@ -62,11 +62,7 @@
           :selected_files="selected_files"
         />
 
-        <button
-          type="button"
-          class="barButton barButton_text"
-          @click="createTextMedia"
-        >
+        <button type="button" class="barButton barButton_text" @click="createTextMedia">
           <span>{{ $t("create_text") }}</span>
         </button>
       </div>
@@ -85,9 +81,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_filters }"
             @click="show_filters = !show_filters"
-          >
-            {{ $t("filters") }}
-          </button>
+          >{{ $t("filters") }}</button>
         </template>
 
         <template v-if="!show_medias_instead_of_projects && show_filters">
@@ -114,9 +108,7 @@
       <div v-for="item in groupedMedias" :key="item[0]">
         <h3
           class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-        >
-          {{ $root.formatDateToHuman(item[0]) }}
-        </h3>
+        >{{ $root.formatDateToHuman(item[0]) }}</h3>
 
         <div class="m_mediaShowAll">
           <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -127,7 +119,8 @@
               :slugProjectName="slugProjectName"
               :preview_size="180"
               :class="{
-                'is--just_added': last_media_added.includes(media.metaFileName)
+                'is--just_added': last_media_added.includes(media.metaFileName),
+                'is--opened_in_media_modal': $root.media_modal.current_slugProjectName === slugProjectName && media.metaFileName === $root.media_modal.current_metaFileName
               }"
               :is_selected="
                 mediaIsSelected({
