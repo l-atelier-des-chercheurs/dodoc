@@ -197,8 +197,12 @@ button,
       transition: transform 0.5s, color 0.5s;
     }
 
-    &:hover::after {
-      .c-rouge;
+    &:hover {
+      .bg-transparent;
+
+      &::after {
+        .c-rouge;
+      }
     }
 
     &.is--active {
