@@ -825,10 +825,6 @@ module.exports = (function() {
 
         ffmpeg_cmd.input(vm.full_path);
 
-        // if (vm.duration) {
-        //   ffmpeg_cmd.duration(vm.duration);
-        // }
-
         // check if has audio track or not
         if (
           !err &&
@@ -979,7 +975,6 @@ module.exports = (function() {
           );
           if (im) {
             // ffmpeg_cmd.input(im.full_path);
-
             complexFilters.push(
               {
                 filter: "movie",
@@ -1035,6 +1030,8 @@ module.exports = (function() {
               // }
             );
             ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            // if (metadata && metadata.format && metadata.format.duration)
+            //   ffmpeg_cmd.duration(metadata.format.duration);
           } else {
             return reject(
               `Failed to create video for filter: image is not set correctly`
@@ -1048,7 +1045,7 @@ module.exports = (function() {
           .withVideoCodec("libx264")
           .withVideoBitrate(bitrate)
           .complexFilter(complexFilters, "output")
-          .addOptions(["-crf 22", "-preset fast", "-shortest"])
+          .addOptions(["-crf 22", "-preset fast"])
           .toFormat("mp4")
           .output(videoPath)
           .on("start", function(commandLine) {
