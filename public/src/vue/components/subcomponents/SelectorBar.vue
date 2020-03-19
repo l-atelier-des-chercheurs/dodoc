@@ -1,19 +1,18 @@
 <template>
   <div class="m_selector">
     <div class="m_selector--content">
-      <div v-if="selected_medias.length > 0" class="m_selector--content--title">
-        {{ selected_medias.length }} {{ $t("medias_selected") }}
-      </div>
+      <div
+        v-if="selected_medias.length > 0"
+        class="m_selector--content--title"
+      >{{ selected_medias.length }} {{ $t("medias_selected") }}</div>
       <div
         v-if="selected_projects.length > 0"
         class="m_selector--content--title"
-      >
-        {{ selected_projects.length }} {{ $t("projects_selected") }}
-      </div>
+      >{{ selected_projects.length }} {{ $t("projects_selected") }}</div>
       <div class="m_selector--content--buttons">
         <button
           type="button"
-          class="buttonLink"
+          class="buttonLink bg-noir"
           v-if="selected_projects.length"
           @click="groupButtonClicked"
           :class="{ 'is--active': show_options === 'group' }"
@@ -31,17 +30,14 @@
             style="enable-background:new 0 0 94 87.7;"
             xml:space="preserve"
           >
-            <path
-              class="st0"
-              d="M94,87.7H0v-74h94V87.7z M10,77.7h74v-54H10V77.7z"
-            />
+            <path class="st0" d="M94,87.7H0v-74h94V87.7z M10,77.7h74v-54H10V77.7z" />
             <rect class="st0" width="40.3" height="13.7" />
           </svg>
           <span class>{{ $t("group") }}</span>
         </button>
         <button
           type="button"
-          class="buttonLink"
+          class="buttonLink bg-noir"
           v-if="selected_projects.length && some_projects_are_in_folders"
           @click="ungroupButtonClicked"
         >
@@ -58,10 +54,7 @@
             style="enable-background:new 0 0 94 87.7;"
             xml:space="preserve"
           >
-            <path
-              class="st0"
-              d="M94,87.7H0v-74h94V87.7z M10,77.7h74v-54H10V77.7z"
-            />
+            <path class="st0" d="M94,87.7H0v-74h94V87.7z M10,77.7h74v-54H10V77.7z" />
             <polygon
               class="st0"
               points="69,63.8 55,50.7 69,37.7 61.8,30 61.6,29.7 47,43.3 32.4,29.7 32.2,30 25,37.7 39,50.7 25,63.8 
@@ -73,7 +66,7 @@
         </button>
         <button
           type="button"
-          class="buttonLink"
+          class="buttonLink bg-noir"
           @click="duplicateButtonClicked"
           :class="{ 'is--active': show_options === 'duplicate' }"
         >
@@ -101,11 +94,7 @@
           </svg>
           <span class>{{ $t("duplicate") }}</span>
         </button>
-        <button
-          type="button"
-          class="buttonLink"
-          @click="confirmRemoveSelection"
-        >
+        <button type="button" class="buttonLink bg-noir" @click="confirmRemoveSelection">
           <svg
             version="1.1"
             class="inline-svg"
@@ -127,7 +116,7 @@
           </svg>
           <span class>{{ $t("remove") }}</span>
         </button>
-        <button type="button" class="buttonLink" @click="$emit('deselect')">
+        <button type="button" class="buttonLink bg-noir" @click="$emit('deselect')">
           <svg
             version="1.1"
             class="inline-svg"
@@ -141,26 +130,14 @@
             style="enable-background:new 0 0 80 80;"
             xml:space="preserve"
           >
-            <polygon
-              class="st0"
-              points="10,60 0,60 0,70 0,80 10,80 20,80 20,70 10,70 	"
-            />
+            <polygon class="st0" points="10,60 0,60 0,70 0,80 10,80 20,80 20,70 10,70 	" />
             <rect y="30" class="st0" width="10" height="20" />
-            <polygon
-              class="st0"
-              points="70,70 60,70 60,80 70,80 80,80 80,70 80,60 70,60 	"
-            />
+            <polygon class="st0" points="70,70 60,70 60,80 70,80 80,80 80,70 80,60 70,60 	" />
             <rect x="70" y="30" class="st0" width="10" height="20" />
             <rect x="30" y="70" class="st0" width="20" height="10" />
-            <polygon
-              class="st0"
-              points="0,0 0,10 0,20 10,20 10,10 20,10 20,0 10,0 	"
-            />
+            <polygon class="st0" points="0,0 0,10 0,20 10,20 10,10 20,10 20,0 10,0 	" />
             <rect x="30" class="st0" width="20" height="10" />
-            <polygon
-              class="st0"
-              points="70,0 60,0 60,10 70,10 70,20 80,20 80,10 80,0 	"
-            />
+            <polygon class="st0" points="70,0 60,0 60,10 70,10 70,20 80,20 80,10 80,0 	" />
             <polygon
               class="st0"
               points="62,53.1 48,40 62,26.9 54.8,19.2 54.6,19 40,32.5 25.4,19 25.2,19.2 18,26.9 32,40 18,53.1 25.4,61 
@@ -179,8 +156,7 @@
                 v-for="project in $root.projects_that_are_accessible"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-                >{{ project.name }}</option
-              >
+              >{{ project.name }}</option>
             </select>
             <button
               type="button"
@@ -191,23 +167,17 @@
             />
           </div>
         </template>
-        <form
-          v-else-if="show_options === 'group'"
-          @submit.prevent="groupProjects"
-        >
+        <form v-else-if="show_options === 'group'" @submit.prevent="groupProjects">
           <template>
             <label v-html="$t('add_to_existing_folder')" />
             <div class="input-group">
               <select v-model="existing_group_name">
-                <option :key="'create'" :value="''"
-                  >** {{ $t("create_new") }} **</option
-                >
+                <option :key="'create'" :value="''">** {{ $t("create_new") }} **</option>
                 <option
                   v-for="folder in $root.all_folders"
                   :key="folder"
                   :value="folder"
-                  >{{ folder }}</option
-                >
+                >{{ folder }}</option>
               </select>
             </div>
           </template>
