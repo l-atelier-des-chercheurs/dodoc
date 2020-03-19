@@ -1142,6 +1142,7 @@ small {
       display: flex;
       flex-flow: row nowrap;
       align-content: flex-end;
+      justify-content: space-between;
 
       label {
         position: relative;
@@ -1169,7 +1170,7 @@ small {
 
           box-shadow: 0px 0px 0px 10px var(--color-folder);
           clip: rect(0px, 6px, 10px, 0px);
-          display: block;
+          display: none;
         }
 
         &::after {
@@ -1178,9 +1179,19 @@ small {
         }
 
         &::before {
-          display: none;
           right: 100%;
           border-bottom-right-radius: 100%;
+        }
+
+        &:first-child {
+          &::after {
+            display: block;
+          }
+        }
+        &:last-child {
+          &::before {
+            display: block;
+          }
         }
 
         button {
@@ -1198,7 +1209,10 @@ small {
         }
         .input-selector {
           margin: 0;
-          .padding-verysmall;
+          padding: 0;
+        }
+
+        &:last-child {
         }
       }
 
@@ -1218,6 +1232,7 @@ small {
       background-color: var(--color-folder);
       border-radius: var(--folder_border_radius);
       border-top-left-radius: 0;
+      border-top-right-radius: 0;
 
       // .margin-right-small;
       .padding-top-small;
