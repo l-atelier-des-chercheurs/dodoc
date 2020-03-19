@@ -1985,6 +1985,7 @@ small {
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-flow: column nowrap;
 
         svg {
           width: 20px;
@@ -1995,7 +1996,24 @@ small {
           background-color: @c-orange;
           fill: white;
           border-radius: 10px;
-          filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
+          filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+        }
+
+        ._duration {
+          background-color: #fff;
+
+          // margin: 2px;
+          padding: 1px 3px;
+          // border-radius: 10px;
+          // filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+          .label;
+          font-size: 60%;
+          font-weight: 400;
+          color: black;
+
+          position: absolute;
+          bottom: 0;
+          right: 0;
         }
       }
 

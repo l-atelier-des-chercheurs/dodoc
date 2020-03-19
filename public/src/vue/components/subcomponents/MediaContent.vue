@@ -47,6 +47,11 @@
               d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
             />
           </svg>
+
+          <div v-if="media_duration" class="_duration">
+            {{ $root.formatDurationToMinuteHours(
+            media_duration * 1000) }}
+          </div>
         </div>
       </template>
       <template v-else>
@@ -247,6 +252,23 @@ export default {
       return this.context === "preview"
         ? this.preview_size
         : this.available_resolutions.default;
+    },
+    media_duration: function() {
+      if (
+        !this.media.hasOwnProperty("duration") &&
+        !(
+          this.media.hasOwnProperty("file_meta") &&
+          this.media.file_meta.some(f => f.hasOwnProperty("duration"))
+        )
+      )
+        return false;
+
+      debugger;
+
+      const duration = this.media.duration
+        ? this.media.duration
+        : this.media.file_meta.find(f => f.hasOwnProperty("duration")).duration;
+      return duration;
     },
     thumbResHovered: function() {
       return this.available_resolutions.preview_hovered;
