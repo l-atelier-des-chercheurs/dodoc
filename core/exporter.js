@@ -814,7 +814,7 @@ module.exports = (function() {
     socket
   }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction("EXPORTER — _makeVideoAssemblage");
+      dev.logfunction("EXPORTER — _applyVideoEffects");
 
       const videoPath = path.join(cachePath, videoName);
 
