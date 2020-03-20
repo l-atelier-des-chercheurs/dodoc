@@ -1111,7 +1111,7 @@ module.exports = (function() {
             bitrate,
             socket
           })
-            .then(temp_video_path => {
+            .then(({ temp_video_path, duration }) => {
               require("./sockets").notify({
                 socket,
                 localized_string: `preparing_video_from_montage`,
@@ -1121,7 +1121,7 @@ module.exports = (function() {
               });
 
               index++;
-              temp_videos_array.push({ full_path: temp_video_path });
+              temp_videos_array.push({ temp_video_path, duration });
 
               return media_files_to_process.length == 0
                 ? ""
@@ -1138,7 +1138,7 @@ module.exports = (function() {
             bitrate,
             socket
           })
-            .then(temp_video_path => {
+            .then(({ temp_video_path, duration }) => {
               require("./sockets").notify({
                 socket,
                 localized_string: `preparing_video_from_montage`,
@@ -1148,7 +1148,7 @@ module.exports = (function() {
               });
 
               index++;
-              temp_videos_array.push({ full_path: temp_video_path });
+              temp_videos_array.push({ temp_video_path, duration });
 
               return media_files_to_process.length == 0
                 ? ""
@@ -1164,14 +1164,59 @@ module.exports = (function() {
         if (err) return reject(err);
 
         dev.logverbose(
-          `EXPORTER — _makeVideoAssemblage : finished preparing videos`
+          `EXPORTER — _makeVideoAssemblage : finished preparing videos, now for the concat with ${JSON.stringify(
+            temp_videos_array
+          )}`
         );
 
         const ffmpeg_cmd = new ffmpeg().renice(renice);
 
-        temp_videos_array.map(v => ffmpeg_cmd.addInput(v.full_path));
+        temp_videos_array.map(v => {
+          ffmpeg_cmd.addInput(v.temp_video_path);
+          // ffmpeg_cmd.addInput(v.duration)
+        });
+
+        let complexFilters = [];
+        let each_video_outputs = [];
+
+        temp_videos_array.map((v, index) => {
+          const output = "trim" + index;
+          const video_output = "v_" + output;
+          const audio_output = "a_" + output;
+
+          complexFilters.push(
+            {
+              filter: "trim",
+              options: {
+                duration: v.duration
+              },
+              inputs: index + ":v",
+              outputs: video_output
+            },
+            {
+              filter: "atrim",
+              options: {
+                duration: v.duration
+              },
+              inputs: index + ":a",
+              outputs: audio_output
+            }
+          );
+          each_video_outputs.push(video_output, audio_output);
+        });
 
         ffmpeg_cmd.withVideoBitrate(bitrate);
+
+        complexFilters.push({
+          filter: "concat",
+          options: {
+            n: temp_videos_array.length,
+            v: 1,
+            a: 1
+          },
+          inputs: each_video_outputs,
+          outputs: "output"
+        });
 
         // let time_since_last_report = 0;
         ffmpeg_cmd
@@ -1201,7 +1246,10 @@ module.exports = (function() {
             dev.error("ffmpeg standard error:\n" + stderr);
             return reject(err);
           })
-          .mergeToFile(videoPath, cachePath);
+          // .mergeToFile(videoPath, cachePath);
+          .complexFilter(complexFilters, "output")
+          .output(videoPath)
+          .run();
 
         global.ffmpeg_processes.push(ffmpeg_cmd);
 
@@ -1383,30 +1431,10 @@ module.exports = (function() {
         "_br=" +
         bitrate +
         ".ts";
-      let temp_video_duration;
+
       let temp_video_volume;
 
-      if (vm.type === "image") {
-        // insert duration in filename to make sure the cache uses the right version
-        if (vm.publi_meta.hasOwnProperty("duration")) {
-          temp_video_duration = vm.publi_meta.duration;
-        } else {
-          temp_video_duration = 1;
-        }
-        temp_video_name =
-          vm.media_filename +
-          "_dur=" +
-          temp_video_duration +
-          "_res=" +
-          resolution.width +
-          "x" +
-          resolution.height +
-          "_br=" +
-          bitrate +
-          ".ts";
-      }
-
-      if (vm.type === "video" && vm.publi_meta.hasOwnProperty("volume")) {
+      if (vm.publi_meta.hasOwnProperty("volume")) {
         temp_video_volume = vm.publi_meta.volume / 100;
         temp_video_name =
           vm.media_filename +
@@ -1423,20 +1451,14 @@ module.exports = (function() {
 
       const temp_video_path = path.join(cachePath, temp_video_name);
 
-      fs.access(temp_video_path, fs.F_OK, function(err) {
-        if (err) {
-          ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
+      ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
+        fs.access(temp_video_path, fs.F_OK, function(err) {
+          if (err) {
             const ffmpeg_cmd = new ffmpeg().renice(renice);
 
             ffmpeg_cmd.input(vm.full_path);
 
-            if (vm.type === "image" && temp_video_duration) {
-              ffmpeg_cmd.duration(temp_video_duration).loop();
-            } else if (
-              metadata &&
-              metadata.format &&
-              metadata.format.duration
-            ) {
+            if (metadata && metadata.format && metadata.format.duration) {
               dev.logverbose(
                 "Setting output to duration: " + metadata.format.duration
               );
@@ -1487,7 +1509,10 @@ module.exports = (function() {
                 _notifyFfmpegProgress({ socket, progress });
               })
               .on("end", () => {
-                return resolve(temp_video_path);
+                return resolve({
+                  temp_video_path,
+                  duration: metadata.format.duration
+                });
               })
               .on("error", function(err, stdout, stderr) {
                 dev.error("An error happened: " + err.message);
@@ -1497,10 +1522,13 @@ module.exports = (function() {
               })
               .run();
             global.ffmpeg_processes.push(ffmpeg_cmd);
-          });
-        } else {
-          return resolve(temp_video_path);
-        }
+          } else {
+            return resolve({
+              temp_video_path,
+              duration: metadata.format.duration
+            });
+          }
+        });
       });
     });
   }
@@ -1597,7 +1625,10 @@ module.exports = (function() {
                   _notifyFfmpegProgress({ socket, progress });
                 })
                 .on("end", () => {
-                  return resolve(temp_video_path);
+                  return resolve({
+                    temp_video_path,
+                    duration: temp_video_duration
+                  });
                 })
                 .on("error", function(err, stdout, stderr) {
                   dev.error("An error happened: " + err.message);
@@ -1610,10 +1641,10 @@ module.exports = (function() {
             })
             .catch(err => {
               dev.error(`Failed to sharp create image for montage.`);
-              reject(err);
+              return reject(err);
             });
         } else {
-          return resolve(temp_video_path);
+          return resolve({ temp_video_path, temp_video_duration });
         }
       });
     });
