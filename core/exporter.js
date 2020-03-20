@@ -1432,9 +1432,15 @@ module.exports = (function() {
 
             if (vm.type === "image" && temp_video_duration) {
               ffmpeg_cmd.duration(temp_video_duration).loop();
-            } else if (vm.duration) {
-              dev.logverbose("Setting output to duration: " + vm.duration);
-              ffmpeg_cmd.duration(vm.duration);
+            } else if (
+              metadata &&
+              metadata.format &&
+              metadata.format.duration
+            ) {
+              dev.logverbose(
+                "Setting output to duration: " + metadata.format.duration
+              );
+              ffmpeg_cmd.duration(metadata.format.duration);
             }
 
             // check if has audio track or not
