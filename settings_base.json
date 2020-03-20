@@ -297,7 +297,11 @@
           },
           "type": {
             "type": "string",
-            "options": ["text"]
+            "options": ["text", "solid_color"]
+          },
+          "color": {
+            "type": "string",
+            "default": "#000000"
           },
           "media_filename": {
             "type": "string"

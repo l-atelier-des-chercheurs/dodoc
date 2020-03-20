@@ -1263,23 +1263,15 @@ module.exports = (function() {
           );
 
           if (index === 0) {
-            all_video_outputs.push(
-              "vtrim_start_" + index,
-              "vtrim_mid_" + index
-            );
-            all_audio_outputs.push(
-              "atrim_start_" + index,
-              "atrim_mid_" + index
-            );
+            all_video_outputs.push("vtrim_start_" + index);
+            all_audio_outputs.push("atrim_start_" + index);
           } else {
             // if there are videos before
             // we get vtrim_end_(index - 1) and vtrim_start_(index) and merge them
 
-            // [fadeinsrc]format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1[fadein]; \
-            // [fadeoutsrc]format=pix_fmts=yuva420p,fade=t=out:st=0:d=1:alpha=1[fadeout]; \
-            // [fadein]fifo[fadeinfifo]; \
-            // [fadeout]fifo[fadeoutfifo]; \
-            // [fadeoutfifo][fadeinfifo]overlay[crossfade]; \
+            // some great docs :
+            // -- https://superuser.com/questions/1001039/what-is-an-efficient-way-to-do-a-video-crossfade-with-ffmpeg
+            // -- https://video.stackexchange.com/questions/23006/how-to-concatenate-multiple-videos-with-fades-from-and-to-black-in-between
             complexFilters.push(
               // video
               {
@@ -1335,58 +1327,17 @@ module.exports = (function() {
                 outputs: "acrossfade_" + index
               }
             );
-            all_video_outputs.push("vcrossfade_" + index, "vtrim_mid_" + index);
-            all_audio_outputs.push("acrossfade_" + index, "atrim_mid_" + index);
-
-            if (index === temp_videos_array.length - 1) {
-              all_video_outputs.push("vtrim_end_" + index);
-              all_audio_outputs.push("atrim_end_" + index);
-            }
+            all_video_outputs.push("vcrossfade_" + index);
+            all_audio_outputs.push("acrossfade_" + index);
           }
 
-          // complexFilters.push(
-          //   {
-          //     filter: "fade",
-          //     options: {
-          //       type: "in",
-          //       start_time: 0,
-          //       duration: 1
-          //     },
-          //     inputs: index + ":v",
-          //     outputs: video_output
-          //   },
-          //   {
-          //     filter: "fade",
-          //     options: {
-          //       type: "out",
-          //       start_time: v.duration - 1,
-          //       duration: 1
-          //     },
-          //     inputs: video_output,
-          //     outputs: video_output
-          //   },
-          //   {
-          //     filter: "afade",
-          //     options: {
-          //       type: "in",
-          //       start_time: 0,
-          //       duration: 1
-          //     },
-          //     inputs: index + ":a",
-          //     outputs: audio_output
-          //   },
-          //   {
-          //     filter: "afade",
-          //     options: {
-          //       type: "out",
-          //       start_time: v.duration - 1,
-          //       duration: 1
-          //     },
-          //     inputs: audio_output,
-          //     outputs: audio_output
-          //   }
-          // );
-          // each_outputs.push(video_output, audio_output);
+          all_video_outputs.push("vtrim_mid_" + index);
+          all_audio_outputs.push("atrim_mid_" + index);
+
+          if (index === temp_videos_array.length - 1) {
+            all_video_outputs.push("vtrim_end_" + index);
+            all_audio_outputs.push("atrim_end_" + index);
+          }
         });
 
         ffmpeg_cmd.withVideoBitrate(bitrate);

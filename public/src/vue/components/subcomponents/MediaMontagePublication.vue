@@ -2,59 +2,70 @@
   <div
     class="m_mediaMontagePublication"
     ref="media"
-    :style="mediaStyles"
-    :data-media_type="media.type"
     :class="{
       'is--waitingForServerResponse': is_waitingForServer
     }"
   >
-    <MediaContent
-      ref="mediaContent"
-      :context="'full'"
-      :slugFolderName="media.slugProjectName"
-      :media="media"
-      :read_only="read_only"
-      v-model="media.content"
-      :audio_volume="volume"
-      @volumeChanged="volumeChanged"
-    />
+    <template v-if="media.hasOwnProperty('type')">
+      <MediaContent
+        ref="mediaContent"
+        :context="'full'"
+        :slugFolderName="media.slugProjectName"
+        :media="media"
+        :read_only="read_only"
+        v-model="media.content"
+        :audio_volume="volume"
+        @volumeChanged="volumeChanged"
+      />
 
-    <p class="mediaCaption">{{ media.caption }}</p>
+      <p class="mediaCaption">{{ media.caption }}</p>
 
-    <div class="margin-top-small">
-      <div class="m_metaField">
-        <div>{{ $t("project") }}</div>
-        <div>{{ $root.store.projects[media.slugProjectName].name }}</div>
-      </div>
-      <div
-        class="m_metaField"
-        v-if="original_media_duration || enable_image_timer"
-      >
-        <div>{{ $t("duration") }}</div>
-        <div v-if="original_media_duration">{{ original_media_duration }}</div>
+      <div class="margin-top-small">
+        <div class="m_metaField">
+          <div>{{ $t("project") }}</div>
+          <div>{{ $root.store.projects[media.slugProjectName].name }}</div>
+        </div>
         <div
-          v-else-if="enable_image_timer && media.type === 'image'"
-          class="m_mediaMontagePublication--set_props"
+          class="m_metaField"
+          v-if="original_media_duration || enable_image_timer"
         >
-          <input type="number" v-model.number="seconds_per_image" step="1" />
-          <span>{{ $t("seconds") }}</span>
+          <div>{{ $t("duration") }}</div>
+          <div v-if="original_media_duration">
+            {{ original_media_duration }}
+          </div>
+          <div
+            v-else-if="enable_image_timer && media.type === 'image'"
+            class="m_mediaMontagePublication--set_props"
+          >
+            <input type="number" v-model.number="seconds_per_image" step="1" />
+            <span>{{ $t("seconds") }}</span>
+          </div>
         </div>
-      </div>
-      <div class="m_metaField" v-if="media_dimensions">
-        <div>{{ $t("dimensions") }}</div>
-        <div>{{ media_dimensions }}</div>
-      </div>
+        <div class="m_metaField" v-if="media_dimensions">
+          <div>{{ $t("dimensions") }}</div>
+          <div>{{ media_dimensions }}</div>
+        </div>
 
-      <div
-        class="m_metaField"
-        v-if="enable_set_video_volume && media.type === 'video'"
-      >
-        <div>{{ $t("volume") }}</div>
-        <div class="m_mediaMontagePublication--set_props">
-          {{ volume }} / 100
+        <div
+          class="m_metaField"
+          v-if="enable_set_video_volume && media.type === 'video'"
+        >
+          <div>{{ $t("volume") }}</div>
+          <div class="m_mediaMontagePublication--set_props">
+            {{ volume }} / 100
+          </div>
         </div>
       </div>
-    </div>
+    </template>
+
+    <div
+      v-else-if="
+        media.publi_meta.hasOwnProperty('type') &&
+          media.publi_meta.type === 'solid_color'
+      "
+      class="m_mediaMontagePublication--solidColor"
+      :style="solid_color_background"
+    ></div>
 
     <button
       type="button"
@@ -159,6 +170,11 @@ export default {
     }
   },
   computed: {
+    solid_color_background() {
+      if (this.media.publi_meta.color)
+        return `background-color: ${this.media.publi_meta.color}`;
+      return `background-color: #000`;
+    },
     original_media_duration() {
       if (this.media.duration) {
         return this.$moment.utc(this.media.duration * 1000).format("mm:ss");
