@@ -1798,14 +1798,13 @@ module.exports = (function() {
               ffmpeg_cmd.duration(temp_video_duration).loop();
 
               ffmpeg_cmd
+                // .input(`aevalsrc=0:d=${temp_video_duration}`)
                 .input("anullsrc")
                 .inputFormat("lavfi")
                 .native()
                 .outputFPS(30)
                 .withVideoCodec("libx264")
                 .withVideoBitrate(bitrate)
-                .withAudioCodec("aac")
-                .withAudioBitrate("128k")
                 .addOptions(["-af apad", "-tune stillimage"])
                 .size(`${resolution.width}x${resolution.height}`)
                 .autopad()
@@ -1841,7 +1840,7 @@ module.exports = (function() {
               return reject(err);
             });
         } else {
-          return resolve({ temp_video_path, temp_video_duration });
+          return resolve({ temp_video_path, duration: temp_video_duration });
         }
       });
     });
