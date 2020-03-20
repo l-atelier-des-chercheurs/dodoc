@@ -344,7 +344,7 @@ module.exports = (function() {
       oc: "Camerà arrièra",
       de: "Rückfahrkamera"
     },
-    "Entire screen": {
+    "Entire Screen": {
       fr: "Écran de l’ordinateur",
       en: "Computer screen"
     },

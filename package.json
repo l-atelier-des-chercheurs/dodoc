@@ -27,11 +27,11 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
-    "node": "8.9.3",
+    "node": "12.13.1",
     "npm": "*"
   },
   "build": {
-    "electronVersion": "2.0.16",
+    "electronVersion": "8.1.1",
     "appId": "dodoc2",
     "productName": "do•doc",
     "asar": false,
@@ -58,6 +58,7 @@
     "gulp-util": "^3.0.8",
     "memory-cache": "^0.2.0",
     "moment": "^2.24.0",
+    "node-abi": "^2.15.0",
     "node-localstorage": "^2.1.5",
     "pad-left": "^2.1.0",
     "parser-readline": "^1.0.2",
@@ -81,7 +82,7 @@
     "ws": "^7.2.1"
   },
   "devDependencies": {
-    "electron": "^2.0.18",
+    "electron": "^8.1.1",
     "electron-builder": "^21.2.0",
     "electron-packager": "^14.1.1",
     "electron-prebuilt": "^1.4.13",
