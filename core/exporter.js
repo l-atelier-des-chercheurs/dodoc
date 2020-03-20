@@ -1180,25 +1180,51 @@ module.exports = (function() {
         let each_video_outputs = [];
 
         temp_videos_array.map((v, index) => {
+          const original_media = medias_with_original_filepath[index];
+
           const output = "trim" + index;
           const video_output = "v_" + output;
           const audio_output = "a_" + output;
 
           complexFilters.push(
             {
-              filter: "trim",
+              filter: "fade",
               options: {
-                duration: v.duration
+                type: "in",
+                start_time: 0,
+                duration: 1
               },
               inputs: index + ":v",
               outputs: video_output
             },
             {
-              filter: "atrim",
+              filter: "fade",
               options: {
-                duration: v.duration
+                type: "out",
+                start_time: v.duration - 1,
+                duration: 1
+              },
+              inputs: video_output,
+              outputs: video_output
+            },
+            {
+              filter: "afade",
+              options: {
+                type: "in",
+                start_time: 0,
+                duration: 1
               },
               inputs: index + ":a",
+              outputs: audio_output
+            },
+            {
+              filter: "afade",
+              options: {
+                type: "out",
+                start_time: v.duration - 1,
+                duration: 1
+              },
+              inputs: audio_output,
               outputs: audio_output
             }
           );
