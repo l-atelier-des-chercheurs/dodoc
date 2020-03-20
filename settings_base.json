@@ -316,6 +316,12 @@
               "max": 100
             }
           },
+          "fade_in": {
+            "type": "boolean"
+          },
+          "fade_out": {
+            "type": "boolean"
+          },
           "x": {
             "type": "number"
           },

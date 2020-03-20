@@ -1177,72 +1177,242 @@ module.exports = (function() {
         });
 
         let complexFilters = [];
-        let each_video_outputs = [];
+        let all_video_outputs = [];
+        let all_audio_outputs = [];
+        const transition_duration = 1;
 
         temp_videos_array.map((v, index) => {
           const original_media = medias_with_original_filepath[index];
 
           const output = "trim" + index;
-          const video_output = "v_" + output;
+          // const video_output = "v_" + output;
           const audio_output = "a_" + output;
 
+          // pour chaque extrait, créer plusieurs pistes :
+          // une piste du début, TRIM +
+
+          /* 
+    [0:v]trim=start=0:end=9,setpts=PTS-STARTPTS[firstclip]; \
+    [1:v]trim=start=1,setpts=PTS-STARTPTS[secondclip]; \
+    [0:v]trim=start=9:end=10,setpts=PTS-STARTPTS[fadeoutsrc]; \
+    [1:v]trim=start=0:end=1,setpts=PTS-STARTPTS[fadeinsrc]; \
+    [fadeinsrc]format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1[fadein]; \
+    [fadeoutsrc]format=pix_fmts=yuva420p,fade=t=out:st=0:d=1:alpha=1[fadeout]; \
+    [fadein]fifo[fadeinfifo]; \
+    [fadeout]fifo[fadeoutfifo]; \
+    [fadeoutfifo][fadeinfifo]overlay[crossfade]; \
+    [firstclip][crossfade][secondclip]concat=n=3[output] \
+          */
+
+          // si vidéo est la première
+          // -- on créé deux flux : de 0 à (duration - 1) et de (duration - 1) à duration
+          // si vidéo est pas la première ni la dernière
+          // -- on créé trois flux : de 0 à 1
+
+          // on créé trois flux : de 0 à 1, de 1 à duration - 1, de duration - 1 à 1
           complexFilters.push(
+            // video
             {
-              filter: "fade",
-              options: {
-                type: "in",
-                start_time: 0,
-                duration: 1
-              },
+              filter: "split=3",
               inputs: index + ":v",
-              outputs: video_output
+              outputs: ["v_start_" + index, "v_mid_" + index, "v_end_" + index]
             },
             {
-              filter: "fade",
-              options: {
-                type: "out",
-                start_time: v.duration - 1,
-                duration: 1
-              },
-              inputs: video_output,
-              outputs: video_output
+              filter: `trim=start=${0}:end=${transition_duration},setpts=PTS-STARTPTS`,
+              inputs: "v_start_" + index,
+              outputs: "vtrim_start_" + index
             },
             {
-              filter: "afade",
-              options: {
-                type: "in",
-                start_time: 0,
-                duration: 1
-              },
+              filter: `trim=start=${transition_duration}:end=${v.duration -
+                transition_duration},setpts=PTS-STARTPTS`,
+              inputs: "v_mid_" + index,
+              outputs: "vtrim_mid_" + index
+            },
+            {
+              filter: `trim=start=${v.duration - transition_duration}:end=${
+                v.duration
+              },setpts=PTS-STARTPTS`,
+              inputs: "v_end_" + index,
+              outputs: "vtrim_end_" + index
+            },
+
+            // audio
+            {
+              filter: "asplit=3",
               inputs: index + ":a",
-              outputs: audio_output
+              outputs: ["a_start_" + index, "a_mid_" + index, "a_end_" + index]
             },
             {
-              filter: "afade",
-              options: {
-                type: "out",
-                start_time: v.duration - 1,
-                duration: 1
-              },
-              inputs: audio_output,
-              outputs: audio_output
+              filter: `atrim=start=${0}:end=${transition_duration},asetpts=PTS-STARTPTS`,
+              inputs: "a_start_" + index,
+              outputs: "atrim_start_" + index
+            },
+            {
+              filter: `atrim=start=${transition_duration}:end=${v.duration -
+                transition_duration},asetpts=PTS-STARTPTS`,
+              inputs: "a_mid_" + index,
+              outputs: "atrim_mid_" + index
+            },
+            {
+              filter: `atrim=start=${v.duration - transition_duration}:end=${
+                v.duration
+              },asetpts=PTS-STARTPTS`,
+              inputs: "a_end_" + index,
+              outputs: "atrim_end_" + index
             }
           );
-          each_video_outputs.push(video_output, audio_output);
+
+          if (index === 0) {
+            all_video_outputs.push(
+              "vtrim_start_" + index,
+              "vtrim_mid_" + index
+            );
+            all_audio_outputs.push(
+              "atrim_start_" + index,
+              "atrim_mid_" + index
+            );
+          } else {
+            // if there are videos before
+            // we get vtrim_end_(index - 1) and vtrim_start_(index) and merge them
+
+            // [fadeinsrc]format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1[fadein]; \
+            // [fadeoutsrc]format=pix_fmts=yuva420p,fade=t=out:st=0:d=1:alpha=1[fadeout]; \
+            // [fadein]fifo[fadeinfifo]; \
+            // [fadeout]fifo[fadeoutfifo]; \
+            // [fadeoutfifo][fadeinfifo]overlay[crossfade]; \
+            complexFilters.push(
+              // video
+              {
+                filter: `format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1`,
+                inputs: "vtrim_start_" + index,
+                outputs: "fadein_" + index
+              },
+              {
+                filter: `format=pix_fmts=yuva420p,fade=t=out:st=0:d=1:alpha=1`,
+                inputs: "vtrim_end_" + (index - 1),
+                outputs: "fadeout_" + index
+              },
+              {
+                filter: `fifo`,
+                inputs: "fadein_" + index,
+                outputs: "fadeinfifo_" + index
+              },
+              {
+                filter: `fifo`,
+                inputs: "fadeout_" + index,
+                outputs: "fadeoutfifo_" + index
+              },
+              {
+                filter: "overlay",
+                inputs: ["fadeinfifo_" + index, "fadeoutfifo_" + index],
+                outputs: "vcrossfade_" + index
+              },
+
+              // audio
+              {
+                filter: "afade",
+                options: {
+                  type: "in",
+                  start_time: 0,
+                  duration: transition_duration
+                },
+                inputs: "atrim_start_" + index,
+                outputs: "afade_start_" + index
+              },
+              {
+                filter: "afade",
+                options: {
+                  type: "out",
+                  start_time: 0,
+                  duration: transition_duration
+                },
+                inputs: "atrim_end_" + (index - 1),
+                outputs: "afade_end_" + (index - 1)
+              },
+              {
+                filter: "amix=inputs=2",
+                inputs: ["afade_start_" + index, "afade_end_" + (index - 1)],
+                outputs: "acrossfade_" + index
+              }
+            );
+            all_video_outputs.push("vcrossfade_" + index, "vtrim_mid_" + index);
+            all_audio_outputs.push("acrossfade_" + index, "atrim_mid_" + index);
+
+            if (index === temp_videos_array.length - 1) {
+              all_video_outputs.push("vtrim_end_" + index);
+              all_audio_outputs.push("atrim_end_" + index);
+            }
+          }
+
+          // complexFilters.push(
+          //   {
+          //     filter: "fade",
+          //     options: {
+          //       type: "in",
+          //       start_time: 0,
+          //       duration: 1
+          //     },
+          //     inputs: index + ":v",
+          //     outputs: video_output
+          //   },
+          //   {
+          //     filter: "fade",
+          //     options: {
+          //       type: "out",
+          //       start_time: v.duration - 1,
+          //       duration: 1
+          //     },
+          //     inputs: video_output,
+          //     outputs: video_output
+          //   },
+          //   {
+          //     filter: "afade",
+          //     options: {
+          //       type: "in",
+          //       start_time: 0,
+          //       duration: 1
+          //     },
+          //     inputs: index + ":a",
+          //     outputs: audio_output
+          //   },
+          //   {
+          //     filter: "afade",
+          //     options: {
+          //       type: "out",
+          //       start_time: v.duration - 1,
+          //       duration: 1
+          //     },
+          //     inputs: audio_output,
+          //     outputs: audio_output
+          //   }
+          // );
+          // each_outputs.push(video_output, audio_output);
         });
 
         ffmpeg_cmd.withVideoBitrate(bitrate);
 
-        complexFilters.push({
-          filter: "concat",
-          options: {
-            n: temp_videos_array.length,
-            v: 1,
-            a: 1
+        complexFilters.push(
+          {
+            filter: "concat",
+            options: {
+              n: all_video_outputs.length,
+              v: 1,
+              a: 0
+            },
+            inputs: all_video_outputs,
+            outputs: "outv"
           },
-          inputs: each_video_outputs,
-          outputs: "output"
-        });
+          {
+            filter: "concat",
+            options: {
+              n: all_audio_outputs.length,
+              v: 0,
+              a: 1
+            },
+            inputs: all_audio_outputs,
+            outputs: "outa"
+          }
+        );
 
         // let time_since_last_report = 0;
         ffmpeg_cmd
@@ -1273,7 +1443,8 @@ module.exports = (function() {
             return reject(err);
           })
           // .mergeToFile(videoPath, cachePath);
-          .complexFilter(complexFilters, "output")
+          .complexFilter(complexFilters)
+          .addOptions(["-map [outv]", "-map [outa]"])
           .output(videoPath)
           .run();
 
