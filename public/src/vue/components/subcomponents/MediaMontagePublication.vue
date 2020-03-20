@@ -26,7 +26,10 @@
         <div>{{ $t("project") }}</div>
         <div>{{ $root.store.projects[media.slugProjectName].name }}</div>
       </div>
-      <div class="m_metaField" v-if="original_media_duration || enable_image_timer">
+      <div
+        class="m_metaField"
+        v-if="original_media_duration || enable_image_timer"
+      >
         <div>{{ $t("duration") }}</div>
         <div v-if="original_media_duration">{{ original_media_duration }}</div>
         <div
@@ -42,9 +45,14 @@
         <div>{{ media_dimensions }}</div>
       </div>
 
-      <div class="m_metaField" v-if="enable_set_video_volume && media.type === 'video'">
+      <div
+        class="m_metaField"
+        v-if="enable_set_video_volume && media.type === 'video'"
+      >
         <div>{{ $t("volume") }}</div>
-        <div class="m_mediaMontagePublication--set_props">{{ volume }} / 100</div>
+        <div class="m_mediaMontagePublication--set_props">
+          {{ volume }} / 100
+        </div>
       </div>
     </div>
 

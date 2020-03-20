@@ -316,11 +316,11 @@
               "max": 100
             }
           },
-          "fade_in": {
-            "type": "boolean"
+          "transition_in": {
+            "type": "string"
           },
-          "fade_out": {
-            "type": "boolean"
+          "transition_out": {
+            "type": "string"
           },
           "x": {
             "type": "number"

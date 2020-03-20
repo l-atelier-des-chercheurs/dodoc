@@ -28,47 +28,86 @@
 
       <transition-group name="list-complete" :duration="300">
         <div
-          class="m_videoPublication--media"
           v-for="(media, index) in publication_medias"
           :key="media.publi_meta.metaFileName"
         >
-          <MediaMontagePublication
-            :media="media"
-            :preview_mode="false"
-            :read_only="read_only"
-            :enable_image_timer="true"
-            :enable_set_video_volume="true"
-            @removePubliMedia="
-              values => {
-                removePubliMedia(values);
-              }
-            "
-            @editPubliMedia="
-              values => {
-                editPubliMedia(values);
-              }
-            "
-          />
-          <span class="m_videoPublication--media--mediaNumber"
-            >{{ index + 1 }}
-          </span>
-          <div class="m_videoPublication--media--moveItemButtons">
-            <button
-              type="button"
-              class="m_videoPublication--media--moveItemButton--before"
-              v-show="index > 0"
-              @click="move(media.publi_meta.metaFileName, -1)"
-            >
-              <img src="/images/i_arrow_left.svg" draggable="false" />
-            </button>
-            <button
-              type="button"
-              class="m_videoPublication--media--moveItemButton--after"
-              v-show="index < publication_medias.length - 1"
-              @click="move(media.publi_meta.metaFileName, +1)"
-            >
-              <img src="/images/i_arrow_right.svg" draggable="false" />
-            </button>
+          <div>
+            <span class="switch switch-xs">
+              <input
+                class="switch"
+                :id="'transition_in_' + media.publi_meta.metaFileName"
+                type="checkbox"
+                :checked="media.publi_meta.transition_in === 'fade'"
+                @change="
+                  toggleTransition({
+                    position: 'transition_in',
+                    metaFileName: media.publi_meta.metaFileName
+                  })
+                "
+              />
+              <label :for="'transition_in_' + media.publi_meta.metaFileName"
+                >{{ $t("transition") }}
+              </label>
+            </span>
+          </div>
+          <div class="m_videoPublication--media">
+            <MediaMontagePublication
+              :media="media"
+              :preview_mode="false"
+              :read_only="read_only"
+              :enable_image_timer="true"
+              :enable_set_video_volume="true"
+              @removePubliMedia="
+                values => {
+                  removePubliMedia(values);
+                }
+              "
+              @editPubliMedia="
+                values => {
+                  editPubliMedia(values);
+                }
+              "
+            />
+            <span class="m_videoPublication--media--mediaNumber"
+              >{{ index + 1 }}
+            </span>
+            <div class="m_videoPublication--media--moveItemButtons">
+              <button
+                type="button"
+                class="m_videoPublication--media--moveItemButton--before"
+                v-show="index > 0"
+                @click="move(media.publi_meta.metaFileName, -1)"
+              >
+                <img src="/images/i_arrow_left.svg" draggable="false" />
+              </button>
+              <button
+                type="button"
+                class="m_videoPublication--media--moveItemButton--after"
+                v-show="index < publication_medias.length - 1"
+                @click="move(media.publi_meta.metaFileName, +1)"
+              >
+                <img src="/images/i_arrow_right.svg" draggable="false" />
+              </button>
+            </div>
+          </div>
+          <div>
+            <span class="switch switch-xs">
+              <input
+                class="switch"
+                :id="'transition_out_' + media.publi_meta.metaFileName"
+                type="checkbox"
+                :checked="media.publi_meta.transition_out === 'fade'"
+                @change="
+                  toggleTransition({
+                    position: 'transition_out',
+                    metaFileName: media.publi_meta.metaFileName
+                  })
+                "
+              />
+              <label :for="'transition_out_' + media.publi_meta.metaFileName"
+                >{{ $t("transition") }}
+              </label>
+            </span>
           </div>
         </div>
       </transition-group>
@@ -164,7 +203,7 @@ export default {
   methods: {
     addMedia({ slugProjectName, metaFileName }) {
       if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: addMedia with 
+        console.log(`METHODS • Publication: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
       }
 
@@ -240,6 +279,28 @@ export default {
         slugMediaName,
         data: val
       });
+    },
+    toggleTransition({ position, metaFileName }) {
+      console.log(
+        `METHODS • VideoPublication: toggleTransition for metaFileName = ${metaFileName} and position = ${position}`
+      );
+
+      let val = {};
+
+      const media = this.publication_medias.find(
+        m => m.publi_meta.metaFileName === metaFileName
+      );
+
+      if (
+        media.publi_meta.hasOwnProperty(position) &&
+        media.publi_meta[position] === "fade"
+      ) {
+        val[position] = "none";
+      } else {
+        val[position] = "fade";
+      }
+
+      this.editPubliMedia({ slugMediaName: metaFileName, val });
     },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === "debug") {
