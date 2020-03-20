@@ -1179,7 +1179,7 @@ module.exports = (function() {
         let complexFilters = [];
         let all_video_outputs = [];
         let all_audio_outputs = [];
-        const transition_duration = 1;
+        const transition_duration = 0.5;
 
         temp_videos_array.map((v, index) => {
           const original_media = medias_with_original_filepath[index];
@@ -1283,12 +1283,12 @@ module.exports = (function() {
             complexFilters.push(
               // video
               {
-                filter: `format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1`,
+                filter: `format=pix_fmts=yuva420p,fade=t=in:st=0:d=${transition_duration}:alpha=1`,
                 inputs: "vtrim_start_" + index,
                 outputs: "fadein_" + index
               },
               {
-                filter: `format=pix_fmts=yuva420p,fade=t=out:st=0:d=1:alpha=1`,
+                filter: `format=pix_fmts=yuva420p,fade=t=out:st=0:d=${transition_duration}:alpha=1`,
                 inputs: "vtrim_end_" + (index - 1),
                 outputs: "fadeout_" + index
               },
