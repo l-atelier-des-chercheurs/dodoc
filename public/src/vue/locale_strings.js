@@ -320,6 +320,18 @@ module.exports = (function() {
       oc: "Aparelh",
       de: "Gerät"
     },
+    audioinput: {
+      fr: "Entrée audio",
+      en: "Audio input"
+    },
+    videoinput: {
+      fr: "Entrée vidéo",
+      en: "Video input"
+    },
+    audiooutput: {
+      fr: "Sortie audio",
+      en: "Audio output"
+    },
     "camera2 1, facing front": {
       fr: "Caméra frontale",
       nl: "Camera naar voren gericht ",
@@ -331,6 +343,10 @@ module.exports = (function() {
       nl: "Camera naar achteren gericht ",
       oc: "Camerà arrièra",
       de: "Rückfahrkamera"
+    },
+    "Entire screen": {
+      fr: "Écran de l’ordinateur",
+      en: "Computer screen"
     },
     very_slow: {
       fr: "Très lent",
