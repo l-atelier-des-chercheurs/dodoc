@@ -25,14 +25,9 @@
           <div>{{ $t("project") }}</div>
           <div>{{ $root.store.projects[media.slugProjectName].name }}</div>
         </div>
-        <div
-          class="m_metaField"
-          v-if="original_media_duration || enable_image_timer"
-        >
+        <div class="m_metaField" v-if="original_media_duration || enable_image_timer">
           <div>{{ $t("duration") }}</div>
-          <div v-if="original_media_duration">
-            {{ original_media_duration }}
-          </div>
+          <div v-if="original_media_duration">{{ original_media_duration }}</div>
           <div
             v-else-if="enable_image_timer && media.type === 'image'"
             class="m_mediaMontagePublication--set_props"
@@ -46,14 +41,9 @@
           <div>{{ media_dimensions }}</div>
         </div>
 
-        <div
-          class="m_metaField"
-          v-if="enable_set_video_volume && media.type === 'video'"
-        >
+        <div class="m_metaField" v-if="enable_set_video_volume && media.type === 'video'">
           <div>{{ $t("volume") }}</div>
-          <div class="m_mediaMontagePublication--set_props">
-            {{ volume }} / 100
-          </div>
+          <div class="m_mediaMontagePublication--set_props">{{ volume }} / 100</div>
         </div>
       </div>
     </template>
@@ -64,8 +54,19 @@
           media.publi_meta.type === 'solid_color'
       "
       class="m_mediaMontagePublication--solidColor"
-      :style="solid_color_background"
-    ></div>
+    >
+      <div
+        class="m_mediaMontagePublication--solidColor--colorPreview"
+        :style="solid_color_background"
+      ></div>
+      <div class="m_metaField">
+        <div>{{ $t("duration") }}</div>
+        <div class="m_mediaMontagePublication--set_props">
+          <input type="number" v-model.number="seconds_per_image" step="1" />
+          <span>{{ $t("seconds") }}</span>
+        </div>
+      </div>
+    </div>
 
     <button
       type="button"

@@ -661,9 +661,11 @@ module.exports = (function() {
         })
         .map(n => publiMedias[n]);
 
-      let mediasAndMetaInOrder = mediasMetaInOrder
+      let medias_with_original_filepath = mediasMetaInOrder
         .filter(m => {
-          return (
+          if (!m.slugProjectName && !m.slugMediaName) return true;
+
+          if (
             pageData.folderAndMediaData.hasOwnProperty(m.slugProjectName) &&
             pageData.folderAndMediaData[
               m.slugProjectName
@@ -671,23 +673,31 @@ module.exports = (function() {
             !pageData.folderAndMediaData[m.slugProjectName].medias[
               m.slugMediaName
             ].hasOwnProperty("_isAbsent")
-          );
+          )
+            return true;
+          return false;
         })
         .map(m => {
           let videomediameta =
-            pageData.folderAndMediaData[m.slugProjectName].medias[
-              m.slugMediaName
-            ];
+            m.slugProjectName && m.slugMediaName
+              ? pageData.folderAndMediaData[m.slugProjectName].medias[
+                  m.slugMediaName
+                ]
+              : {};
+
           videomediameta.publi_meta = m;
+
+          if (m.slugProjectName && m.slugMediaName) {
+            const pathToProject = api.getFolderPath(
+              videomediameta.publi_meta.slugProjectName
+            );
+            videomediameta.full_path = path.join(
+              pathToProject,
+              videomediameta.media_filename
+            );
+          }
           return videomediameta;
         });
-
-      // return only media_filename
-      const medias_with_original_filepath = mediasAndMetaInOrder.map(m => {
-        const pathToProject = api.getFolderPath(m.publi_meta.slugProjectName);
-        m.full_path = path.join(pathToProject, m.media_filename);
-        return m;
-      });
 
       return resolve(medias_with_original_filepath);
     });
@@ -1083,8 +1093,10 @@ module.exports = (function() {
 
       const videoPath = path.join(cachePath, videoName);
 
-      let media_files_to_process = medias_with_original_filepath.filter(m =>
-        ["video", "image"].includes(m.type)
+      let media_files_to_process = medias_with_original_filepath.filter(
+        m =>
+          ["video", "image"].includes(m.type) ||
+          m.publi_meta.type === "solid_color"
       );
       if (media_files_to_process.length === 0)
         return reject(`No files to process`);
@@ -1157,6 +1169,33 @@ module.exports = (function() {
             .catch(err => {
               return err;
             });
+        } else if (vm.publi_meta.type === "solid_color") {
+          return _prepareSolidColorForMontageAndWeb({
+            vm,
+            cachePath,
+            resolution,
+            bitrate,
+            socket
+          })
+            .then(({ temp_video_path, duration }) => {
+              require("./sockets").notify({
+                socket,
+                localized_string: `preparing_video_from_montage`,
+                not_localized_string: `
+              ${index + 1}/${index + media_files_to_process.length + 1}
+              `
+              });
+
+              index++;
+              temp_videos_array.push({ temp_video_path, duration });
+
+              return media_files_to_process.length == 0
+                ? ""
+                : executeSequentially(media_files_to_process);
+            })
+            .catch(err => {
+              return err;
+            });
         }
       };
 
@@ -1179,7 +1218,7 @@ module.exports = (function() {
         let complexFilters = [];
         let all_video_outputs = [];
         let all_audio_outputs = [];
-        const transition_duration = 0.5;
+        const transition_duration = 0.4;
 
         temp_videos_array.map((v, index) => {
           const original_media = medias_with_original_filepath[index];
@@ -1606,7 +1645,12 @@ module.exports = (function() {
 
             ffmpeg_cmd.input(vm.full_path);
 
-            if (metadata && metadata.format && metadata.format.duration) {
+            if (
+              metadata &&
+              metadata.format &&
+              metadata.format.duration &&
+              metadata.format.duration !== "N/A"
+            ) {
               dev.logverbose(
                 "Setting output to duration: " + metadata.format.duration
               );
@@ -1620,7 +1664,11 @@ module.exports = (function() {
               metadata.streams.filter(s => s.codec_type === "audio").length ===
                 0
             ) {
+              dev.logverbose("Has no audio track, adding anullsrc");
               ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+            } else {
+              dev.logverbose("Has audio track");
+              ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
             }
 
             if (temp_video_volume) {
@@ -1636,8 +1684,6 @@ module.exports = (function() {
               .outputFPS(30)
               .withVideoCodec("libx264")
               .withVideoBitrate(bitrate)
-              .withAudioCodec("aac")
-              .withAudioBitrate("128k")
               .videoFilter([
                 `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
               ])
@@ -1657,9 +1703,11 @@ module.exports = (function() {
                 _notifyFfmpegProgress({ socket, progress });
               })
               .on("end", () => {
-                return resolve({
-                  temp_video_path,
-                  duration: metadata.format.duration
+                ffmpeg.ffprobe(temp_video_path, function(err, _metadata) {
+                  return resolve({
+                    temp_video_path,
+                    duration: _metadata.format.duration
+                  });
                 });
               })
               .on("error", function(err, stdout, stderr) {
@@ -1693,18 +1741,15 @@ module.exports = (function() {
 
       dev.logfunction("EXPORTER — _prepareImageForMontageAndWeb");
 
-      let temp_image_name = vm.media_filename + ".jpeg";
-      let temp_video_name = vm.media_filename + ".ts";
       let temp_video_duration;
-      let temp_video_volume;
 
       // insert duration in filename to make sure the cache uses the right version
-      if (vm.publi_meta.hasOwnProperty("duration")) {
-        temp_video_duration = vm.publi_meta.duration;
-      } else {
-        temp_video_duration = 1;
-      }
-      temp_video_name =
+      temp_video_duration = vm.publi_meta.hasOwnProperty("duration")
+        ? vm.publi_meta.duration
+        : 1;
+
+      let temp_image_name = vm.media_filename + ".jpeg";
+      let temp_video_name =
         vm.media_filename +
         "_dur=" +
         temp_video_duration +
@@ -1729,7 +1774,6 @@ module.exports = (function() {
       fs.access(temp_video_path, fs.F_OK, function(err) {
         if (err) {
           sharp(vm.full_path)
-            .rotate()
             .resize(resolution.width, resolution.height, {
               fit: "contain",
               withoutEnlargement: false,
@@ -1741,6 +1785,126 @@ module.exports = (function() {
             .then(() => {
               dev.logverbose(
                 `EXPORTER — _prepareImageForMontageAndWeb: created temp image`
+              );
+              const ffmpeg_cmd = new ffmpeg().renice(renice);
+
+              ffmpeg_cmd.input(temp_image_path);
+
+              ffmpeg_cmd.duration(temp_video_duration).loop();
+
+              ffmpeg_cmd
+                // .input(`aevalsrc=0:d=${temp_video_duration}`)
+                .input("anullsrc=channel_layout=stereo:sample_rate=44100")
+                .inputFormat("lavfi")
+                .outputFPS(30)
+                .withVideoCodec("libx264")
+                .withVideoBitrate(bitrate)
+                .addOptions(["-af apad", "-tune stillimage"])
+                .size(`${resolution.width}x${resolution.height}`)
+                .autopad()
+                .videoFilter(["setsar=1/1"])
+                .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
+                .toFormat("mpegts")
+                .output(temp_video_path)
+                .on("start", function(commandLine) {
+                  dev.logverbose(
+                    "Spawned Ffmpeg with command: \n" + commandLine
+                  );
+                })
+                .on("progress", progress => {
+                  _notifyFfmpegProgress({ socket, progress });
+                })
+                .on("end", () => {
+                  ffmpeg.ffprobe(temp_video_path, function(err, _metadata) {
+                    debugger;
+                    return resolve({
+                      temp_video_path,
+                      duration: temp_video_duration
+                    });
+                  });
+                })
+                .on("error", function(err, stdout, stderr) {
+                  dev.error("An error happened: " + err.message);
+                  dev.error("ffmpeg standard output:\n" + stdout);
+                  dev.error("ffmpeg standard error:\n" + stderr);
+                  throw err;
+                })
+                .run();
+              global.ffmpeg_processes.push(ffmpeg_cmd);
+            })
+            .catch(err => {
+              dev.error(`Failed to sharp create image for montage.`);
+              return reject(err);
+            });
+        } else {
+          return resolve({ temp_video_path, duration: temp_video_duration });
+        }
+      });
+    });
+  }
+
+  function _prepareSolidColorForMontageAndWeb({
+    vm,
+    cachePath,
+    resolution,
+    bitrate,
+    socket
+  }) {
+    return new Promise(function(resolve, reject) {
+      // used to process videos / images before merging them
+
+      dev.logfunction("EXPORTER — _prepareSolidColorForMontageAndWeb");
+
+      const solid_color_bg = vm.publi_meta.color
+        ? vm.publi_meta.color
+        : "#000000";
+
+      let temp_image_name = solid_color_bg + ".jpeg";
+      let temp_video_name = solid_color_bg + ".ts";
+      let temp_video_duration;
+      let temp_video_volume;
+
+      // insert duration in filename to make sure the cache uses the right version
+      temp_video_duration = vm.publi_meta.hasOwnProperty("duration")
+        ? vm.publi_meta.duration
+        : 1;
+
+      temp_video_name =
+        solid_color_bg +
+        "_dur=" +
+        temp_video_duration +
+        "_res=" +
+        resolution.width +
+        "x" +
+        resolution.height +
+        "_br=" +
+        bitrate +
+        ".ts";
+
+      const temp_video_path = path.join(cachePath, temp_video_name);
+      const temp_image_path = path.join(cachePath, temp_image_name);
+
+      dev.logverbose(
+        `EXPORTER — _prepareSolidColorForMontageAndWeb: will store temp image in ${temp_image_path}`
+      );
+      dev.logverbose(
+        `EXPORTER — _prepareSolidColorForMontageAndWeb: will store temp video in ${temp_video_path}`
+      );
+
+      fs.access(temp_video_path, fs.F_OK, function(err) {
+        if (err) {
+          sharp({
+            create: {
+              width: resolution.width,
+              height: resolution.height,
+              channels: 3,
+              background: solid_color_bg
+            }
+          })
+            .toFile(temp_image_path)
+            .then(() => {
+              dev.logverbose(
+                `EXPORTER — _prepareSolidColorForMontageAndWeb: created temp image`
               );
               const ffmpeg_cmd = new ffmpeg().renice(renice);
 

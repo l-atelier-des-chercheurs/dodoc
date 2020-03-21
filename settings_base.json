@@ -300,8 +300,7 @@
             "options": ["text", "solid_color"]
           },
           "color": {
-            "type": "string",
-            "default": "#000000"
+            "type": "string"
           },
           "media_filename": {
             "type": "string"
