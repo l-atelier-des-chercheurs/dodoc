@@ -1221,7 +1221,7 @@ module.exports = (function() {
         let complexFilters = [];
         let all_video_outputs = [];
         let all_audio_outputs = [];
-        const transition_duration = 0.4;
+        const transition_duration = 0.48;
 
         temp_videos_array.map((v, index) => {
           const original_media = medias_with_original_filepath[index];
@@ -1305,8 +1305,37 @@ module.exports = (function() {
           );
 
           if (index === 0) {
-            all_video_outputs.push("vtrim_start_" + index);
-            all_audio_outputs.push("atrim_start_" + index);
+            if (original_media.publi_meta.transition_in === "fade") {
+              complexFilters.push(
+                // video
+                {
+                  filter: `fade`,
+                  options: {
+                    type: "in",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "vtrim_start_" + index,
+                  outputs: "fadein_start_" + index
+                },
+                // audio
+                {
+                  filter: "afade",
+                  options: {
+                    type: "in",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "atrim_start_" + index,
+                  outputs: "afade_start_" + index
+                }
+              );
+              all_video_outputs.push("fadein_start_" + index);
+              all_audio_outputs.push("afade_start_" + index);
+            } else {
+              all_video_outputs.push("vtrim_start_" + index);
+              all_audio_outputs.push("atrim_start_" + index);
+            }
           } else {
             // if there are videos before
             // we get vtrim_end_(index - 1) and vtrim_start_(index) and merge them
@@ -1314,71 +1343,108 @@ module.exports = (function() {
             // some great docs :
             // -- https://superuser.com/questions/1001039/what-is-an-efficient-way-to-do-a-video-crossfade-with-ffmpeg
             // -- https://video.stackexchange.com/questions/23006/how-to-concatenate-multiple-videos-with-fades-from-and-to-black-in-between
-            complexFilters.push(
-              // video
-              {
-                filter: `format=pix_fmts=yuva420p,fade=t=in:st=0:d=${transition_duration}:alpha=1`,
-                inputs: "vtrim_start_" + index,
-                outputs: "fadein_" + index
-              },
-              {
-                filter: `format=pix_fmts=yuva420p,fade=t=out:st=0:d=${transition_duration}:alpha=1`,
-                inputs: "vtrim_end_" + (index - 1),
-                outputs: "fadeout_" + index
-              },
-              {
-                filter: `fifo`,
-                inputs: "fadein_" + index,
-                outputs: "fadeinfifo_" + index
-              },
-              {
-                filter: `fifo`,
-                inputs: "fadeout_" + index,
-                outputs: "fadeoutfifo_" + index
-              },
-              {
-                filter: "overlay",
-                inputs: ["fadeinfifo_" + index, "fadeoutfifo_" + index],
-                outputs: "vcrossfade_" + index
-              },
 
-              // audio
-              {
-                filter: "afade",
-                options: {
-                  type: "in",
-                  start_time: 0,
-                  duration: transition_duration
+            // if that media has "transition_in"
+            if (original_media.publi_meta.transition_in === "fade") {
+              // we grab the previous media and crossfade with it
+              complexFilters.push(
+                // video
+                {
+                  filter: `format=pix_fmts=yuva420p,fade=t=in:st=0:d=${transition_duration}:alpha=1`,
+                  inputs: "vtrim_start_" + index,
+                  outputs: "fadein_" + index
                 },
-                inputs: "atrim_start_" + index,
-                outputs: "afade_start_" + index
-              },
-              {
-                filter: "afade",
-                options: {
-                  type: "out",
-                  start_time: 0,
-                  duration: transition_duration
+                {
+                  filter: `format=pix_fmts=yuva420p,fade=t=out:st=0:d=${transition_duration}:alpha=1`,
+                  inputs: "vtrim_end_" + (index - 1),
+                  outputs: "fadeout_" + index
                 },
-                inputs: "atrim_end_" + (index - 1),
-                outputs: "afade_end_" + (index - 1)
-              },
-              {
-                filter: "amix=inputs=2",
-                inputs: ["afade_start_" + index, "afade_end_" + (index - 1)],
-                outputs: "acrossfade_" + index
-              }
-            );
-            all_video_outputs.push("vcrossfade_" + index);
-            all_audio_outputs.push("acrossfade_" + index);
+                {
+                  filter: `fifo`,
+                  inputs: "fadein_" + index,
+                  outputs: "fadeinfifo_" + index
+                },
+                {
+                  filter: `fifo`,
+                  inputs: "fadeout_" + index,
+                  outputs: "fadeoutfifo_" + index
+                },
+                {
+                  filter: "overlay",
+                  inputs: ["fadeinfifo_" + index, "fadeoutfifo_" + index],
+                  outputs: "vcrossfade_" + index
+                },
+
+                // audio
+                {
+                  filter: "afade",
+                  options: {
+                    type: "in",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "atrim_start_" + index,
+                  outputs: "afade_start_" + index
+                },
+                {
+                  filter: "afade",
+                  options: {
+                    type: "out",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "atrim_end_" + (index - 1),
+                  outputs: "afade_end_" + (index - 1)
+                },
+                {
+                  filter: "amix=inputs=2",
+                  inputs: ["afade_start_" + index, "afade_end_" + (index - 1)],
+                  outputs: "acrossfade_" + index
+                }
+              );
+              all_video_outputs.push("vcrossfade_" + index);
+              all_audio_outputs.push("acrossfade_" + index);
+            } else {
+              all_video_outputs.push("vtrim_end_" + (index - 1));
+              all_audio_outputs.push("atrim_end_" + (index - 1));
+              all_video_outputs.push("vtrim_start_" + index);
+              all_audio_outputs.push("atrim_start_" + index);
+            }
           }
 
           all_video_outputs.push("vtrim_mid_" + index);
           all_audio_outputs.push("atrim_mid_" + index);
 
           if (index === temp_videos_array.length - 1) {
-            all_video_outputs.push("vtrim_end_" + index);
-            all_audio_outputs.push("atrim_end_" + index);
+            if (original_media.publi_meta.transition_out === "fade") {
+              complexFilters.push(
+                {
+                  filter: `fade`,
+                  options: {
+                    type: "out",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "vtrim_end_" + index,
+                  outputs: "fadeout_end_" + index
+                },
+                {
+                  filter: "afade",
+                  options: {
+                    type: "out",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "atrim_end_" + index,
+                  outputs: "afadeout_end_" + index
+                }
+              );
+              all_video_outputs.push("fadeout_end_" + index);
+              all_audio_outputs.push("afadeout_end_" + index);
+            } else {
+              all_video_outputs.push("vtrim_end_" + index);
+              all_audio_outputs.push("atrim_end_" + index);
+            }
           }
         });
 

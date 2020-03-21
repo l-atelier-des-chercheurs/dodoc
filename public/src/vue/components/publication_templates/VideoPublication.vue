@@ -24,7 +24,7 @@
 
       <transition-group name="list-complete" :duration="300">
         <div v-for="(media, index) in publication_medias" :key="media.publi_meta.metaFileName">
-          <div v-if="index === 0">
+          <div>
             <span class="switch switch-xs">
               <input
                 class="switch"
@@ -79,7 +79,7 @@
               </button>
             </div>
           </div>
-          <div>
+          <div v-if="index === publication_medias.length - 1">
             <span class="switch switch-xs">
               <input
                 class="switch"
@@ -371,7 +371,7 @@ export default {
               console.error(
                 `Media was probably added to the publication before it was removed.`
               );
-              return;
+              return acc;
             }
 
             meta.slugProjectName = slugProjectName;
