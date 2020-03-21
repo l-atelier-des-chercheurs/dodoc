@@ -58,7 +58,13 @@
       <div
         class="m_mediaMontagePublication--solidColor--colorPreview"
         :style="solid_color_background"
-      ></div>
+      >
+        <input
+          type="color"
+          :value="media.publi_meta.color"
+          @change="updateMediaPubliMeta({ color: $event.target.value })"
+        />
+      </div>
       <div class="m_metaField">
         <div>{{ $t("duration") }}</div>
         <div class="m_mediaMontagePublication--set_props">

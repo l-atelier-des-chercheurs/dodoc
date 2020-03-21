@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="m_publicationview"
-    :class="{ 'is--preview': preview_mode }"
-    ref="panel"
-  >
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -27,10 +23,7 @@
       </div>
 
       <transition-group name="list-complete" :duration="300">
-        <div
-          v-for="(media, index) in publication_medias"
-          :key="media.publi_meta.metaFileName"
-        >
+        <div v-for="(media, index) in publication_medias" :key="media.publi_meta.metaFileName">
           <div v-if="index === 0">
             <span class="switch switch-xs">
               <input
@@ -45,9 +38,7 @@
                   })
                 "
               />
-              <label :for="'transition_in_' + media.publi_meta.metaFileName"
-                >{{ $t("transition") }}
-              </label>
+              <label :for="'transition_in_' + media.publi_meta.metaFileName">{{ $t("transition") }}</label>
             </span>
           </div>
           <div class="m_videoPublication--media">
@@ -68,9 +59,7 @@
                 }
               "
             />
-            <span class="m_videoPublication--media--mediaNumber"
-              >{{ index + 1 }}
-            </span>
+            <span class="m_videoPublication--media--mediaNumber">{{ index + 1 }}</span>
             <div class="m_videoPublication--media--moveItemButtons">
               <button
                 type="button"
@@ -104,9 +93,7 @@
                   })
                 "
               />
-              <label :for="'transition_out_' + media.publi_meta.metaFileName"
-                >{{ $t("transition") }}
-              </label>
+              <label :for="'transition_out_' + media.publi_meta.metaFileName">{{ $t("transition") }}</label>
             </span>
           </div>
         </div>
@@ -116,9 +103,7 @@
     <div>
       <div>
         <!-- <input type="color" ref="solidColorPicker" /> -->
-        <button type="button" @click="addMedia({ type: 'solid_color' })">
-          Create solid color
-        </button>
+        <button type="button" @click="addMedia({ type: 'solid_color' })">Create solid color</button>
       </div>
     </div>
   </div>
