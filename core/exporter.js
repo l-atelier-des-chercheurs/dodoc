@@ -841,6 +841,7 @@ module.exports = (function() {
           metadata &&
           metadata.streams.filter(s => s.codec_type === "audio").length === 0
         ) {
+          dev.logverbose("Has no audio track, adding anullsrc");
           ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
         }
 
@@ -1204,7 +1205,9 @@ module.exports = (function() {
 
         dev.logverbose(
           `EXPORTER — _makeVideoAssemblage : finished preparing videos, now for the concat with ${JSON.stringify(
-            temp_videos_array
+            temp_videos_array,
+            null,
+            4
           )}`
         );
 
@@ -1638,9 +1641,9 @@ module.exports = (function() {
 
       const temp_video_path = path.join(cachePath, temp_video_name);
 
-      ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
-        fs.access(temp_video_path, fs.F_OK, function(err) {
-          if (err) {
+      fs.access(temp_video_path, fs.F_OK, function(err) {
+        if (err) {
+          ffmpeg.ffprobe(vm.full_path, function(err, metadata) {
             const ffmpeg_cmd = new ffmpeg().renice(renice);
 
             ffmpeg_cmd.input(vm.full_path);
@@ -1661,14 +1664,13 @@ module.exports = (function() {
             if (
               !err &&
               metadata &&
-              metadata.streams.filter(s => s.codec_type === "audio").length ===
-                0
+              metadata.streams.filter(s => s.codec_type === "audio").length > 0
             ) {
-              dev.logverbose("Has no audio track, adding anullsrc");
-              ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
-            } else {
               dev.logverbose("Has audio track");
               ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
+            } else {
+              dev.logverbose("Has no audio track, adding anullsrc");
+              ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
             }
 
             if (temp_video_volume) {
@@ -1718,13 +1720,15 @@ module.exports = (function() {
               })
               .run();
             global.ffmpeg_processes.push(ffmpeg_cmd);
-          } else {
+          });
+        } else {
+          ffmpeg.ffprobe(temp_video_path, function(err, metadata) {
             return resolve({
               temp_video_path,
               duration: metadata.format.duration
             });
-          }
-        });
+          });
+        }
       });
     });
   }
