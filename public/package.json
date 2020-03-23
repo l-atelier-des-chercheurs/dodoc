@@ -43,6 +43,7 @@
     "slugg": "^1.2.1",
     "socket.io": "^2.3.0",
     "spark-md5": "^3.0.0",
+    "splitpanes": "^2.2.1",
     "store": "^2.0.12",
     "underscore": "^1.9.1",
     "vue": "^2.6.11",

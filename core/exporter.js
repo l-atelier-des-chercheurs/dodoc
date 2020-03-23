@@ -1886,7 +1886,6 @@ module.exports = (function() {
                 })
                 .on("end", () => {
                   ffmpeg.ffprobe(temp_video_path, function(err, _metadata) {
-                    debugger;
                     return resolve({
                       temp_video_path,
                       duration: temp_video_duration

@@ -9,6 +9,7 @@
 @import (inline) "less/shoelace/switches.css";
 
 @import (inline) "node_modules/vue-plyr/dist/vue-plyr.css";
+@import (inline) "../../node_modules/splitpanes/dist/splitpanes.css";
 
 @import "less/_code_highlight";
 
@@ -785,6 +786,7 @@ body {
 .m_activitiesPanel {
   position: relative;
   width: 100%;
+  height: 100%;
 
   html.touchevents & {
   }
@@ -5683,37 +5685,6 @@ small {
   }
 }
 
-.splitter-pane {
-}
-
-.splitter-pane.vertical.splitter-paneL {
-  position: absolute;
-  left: 0px;
-  height: 100%;
-  // padding-right: 3px;
-}
-
-.splitter-pane.vertical.splitter-paneR {
-  position: absolute;
-  right: 0px;
-  height: 100%;
-  z-index: 1;
-  // padding-left: 3px;
-}
-
-.splitter-pane.horizontal.splitter-paneL {
-  position: absolute;
-  top: 0px;
-  width: 100%;
-}
-
-.splitter-pane.horizontal.splitter-paneR {
-  position: absolute;
-  bottom: 0px;
-  width: 100%;
-  padding-top: 3px;
-}
-
 .alertify {
   z-index: 20000;
   background-color: fade(#333, 86%);
@@ -5805,6 +5776,121 @@ small {
     width: 100px;
     border-top: 2px solid @c-gris_clair;
   }
+}
+
+.splitpanes__pane {
+  // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+  // border-radius: 4px;
+  // overflow: hidden;
+}
+
+.splitpanes .splitpanes__splitter {
+  position: relative;
+  background-color: transparent;
+  // border-left: 1px solid #eee;
+  cursor: pointer;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  z-index: 100;
+}
+.splitpanes--dragging .splitpanes__splitter {
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+}
+
+.splitpanes--vertical > .splitpanes__splitter {
+  width: 1px;
+  margin-left: -1px;
+  // border-right: 1px solid black;
+}
+.splitpanes--horizontal > .splitpanes__splitter {
+  height: 1px;
+  // border-bottom: 1px solid black;
+}
+
+.splitpanes__splitter:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: opacity 0.4s;
+  background-color: rgba(255, 255, 255, 1);
+  opacity: 0;
+  z-index: 10;
+}
+.splitpanes__splitter:hover:before {
+  // opacity: 1;
+}
+.splitpanes--vertical > .splitpanes__splitter::before {
+  left: -10px;
+  right: -10px;
+  height: 100%;
+}
+.splitpanes--horizontal > .splitpanes__splitter::before {
+  top: -10px;
+  bottom: -10px;
+  width: 100%;
+}
+
+.splitpanes__splitter {
+  &:after {
+    content: "";
+
+    position: absolute;
+    top: auto;
+    top: 30px;
+    right: 0;
+    z-index: 100;
+
+    @t-button_size: 3em;
+    width: @t-button_size;
+    height: @t-button_size;
+
+    border-radius: @t-button_size 0 0 @t-button_size;
+    // box-shadow: 2px 3px 10px fade(@c-bleuvert, 50%);
+    // box-shadow: inset 5px 0 5px fade(@c-bleuvert_fonce, 50%);
+    .bg-bleuvert;
+    .padding-verysmall;
+
+    background-image: url("/images/i_marmite.svg");
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+
+    background-size: 3em 3em;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  &:hover:after {
+    .bg-bleuvert_fonce;
+  }
+
+  ~ .splitpanes__splitter:after {
+    top: 120px;
+    .bg-rouge;
+    // box-shadow: 2px 3px 10px fade(@c-rouge, 50%);
+    background-image: url("/images/i_chat.svg");
+
+    &:hover:after {
+      .bg-rouge_fonce;
+    }
+  }
+}
+
+.splitpanes--vertical > .splitpanes__splitter:after {
+  // left: -10px;
+  // right: -10px;
+  // height: 100%;
+}
+.splitpanes--horizontal > .splitpanes__splitter:after {
+  transform: rotate(135deg);
+  left: 50%;
+  // top: -10px;
+  // bottom: -10px;
+  // width: 100%;
+}
+.splitpanes--horizontal > .splitpanes__splitter:hover:after {
+  transform: rotate(180deg);
 }
 
 .tippy-popper.tippy-popper {
