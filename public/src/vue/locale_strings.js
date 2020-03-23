@@ -2184,7 +2184,7 @@ module.exports = (function() {
       en: "Drawing"
     },
     drawing_pad_summary: {
-      fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables",
+      fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables.",
       en: "Draw, annotate, mind map, etc."
     },
     mix_audio_and_image_summary: {
