@@ -49,7 +49,7 @@
           >
             <div
               class="m_activitiesPanel--do"
-              :class="{ 'is--large': activitiesPanel_is_comfortable }"
+              :class="{ 'is--large': activitiesPanel_is_large }"
             >
               <div
                 style="position: relative; width: 100%; height: 100%; overflow: hidden"
@@ -396,7 +396,7 @@ export default {
     cursor() {
       return this.is_dragged ? "col-resize" : "";
     },
-    activitiesPanel_is_comfortable() {
+    activitiesPanel_is_large() {
       if ((this.percent / 100) * this.$root.settings.windowWidth < 850) {
         return false;
       }
