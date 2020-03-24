@@ -483,7 +483,8 @@ export default {
     setPaneSize() {
       Object.entries(this.panels_width).map(([key, width]) => {
         if (this.$refs.hasOwnProperty(key)) {
-          console.log(`setPaneSize • setting ${key} to ${width}`);
+          if (this.$root.state.dev_mode === "debug")
+            console.log(`setPaneSize • setting ${key} to ${width}`);
           this.$refs[key].$el.style.width = width + "%";
         }
       });

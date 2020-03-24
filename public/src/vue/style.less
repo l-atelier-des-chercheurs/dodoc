@@ -582,6 +582,7 @@ body {
 
     .m_authorsList--author--name {
       .font-large;
+      font-weight: 200;
       line-height: 1.1;
       max-width: 15ch;
     }
@@ -4037,10 +4038,41 @@ small {
   }
 
   .m_chat--content--discussion {
+    position: relative;
     flex: 1 1 0;
     // .bg-gris_clair;
     overflow-y: auto;
+    scroll-behavior: smooth;
+
+    .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
+
     .padding-verysmall;
+  }
+  .m_chat--content--scrollToBottom {
+    pointer-events: none;
+    position: relative;
+    // position: absolute;
+
+    > button {
+      position: absolute;
+      display: block;
+      bottom: 0;
+      right: 0;
+      .margin-small;
+      .bg-rouge;
+      pointer-events: auto;
+      border-radius: 50%;
+      transform: rotate(90deg);
+
+      width: 3em;
+      height: 3em;
+
+      padding: 0;
+
+      svg {
+        // width: 100%;
+      }
+    }
   }
 
   .m_chat--content--post {
@@ -4090,7 +4122,9 @@ small {
       margin-right: @t-skipline / 4 !important;
       padding: 0.2rem 0.4rem 0.2rem 0.2rem;
       color: @c-gris_fonce;
-      border-radius: 4px !important;
+      border-radius: 4px;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
 
       .is--currentauthor& {
         background-color: @c-bleumarine_clair !important;
