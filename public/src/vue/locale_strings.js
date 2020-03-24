@@ -404,6 +404,11 @@ module.exports = (function() {
       oc: "L'ola",
       de: "Der Topf"
     },
+    channels_instructions: {
+      fr:
+        "Espaces de discussion : échangez avec les autres utilisateurs en créant un sujet !",
+      en: ""
+    },
     copy_of: {
       fr: "Copie de",
       en: "Copy of",
