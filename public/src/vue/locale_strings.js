@@ -1378,6 +1378,10 @@ module.exports = (function() {
       oc: "Amagar",
       de: "Ausblenden"
     },
+    transition_fade: {
+      fr: "Transition : fondu enchaîné",
+      en: "Transition: fade"
+    },
     protected_by_pass: {
       fr: "protégé par mot de passe",
       en: "protected by password",
@@ -1948,6 +1952,14 @@ module.exports = (function() {
       nl: "Maak een video",
       oc: "Fargar una vidèo",
       de: "Ein Video erstellen"
+    },
+    add_solid_color: {
+      fr: "Ajouter un aplat de couleur",
+      en: "Add solid color"
+    },
+    select_color: {
+      fr: "Changer la couleur",
+      en: "change the color"
     },
     interval_between_pictures: {
       fr: "Intervalle entre chaque photo",

@@ -4806,7 +4806,35 @@ small {
 
     .padding-vert-small;
     .padding-sides-medium;
+    text-align: center;
     // max-width: 1024px;
+
+    .m_videoPublication--transitionToggle {
+      display: inline-block;
+      .padding-sides-small;
+      .padding-vert-verysmall;
+      .boxs-card-1;
+      border-radius: 4px;
+
+      background-color: @c-noir;
+
+      label {
+        color: @c-gris;
+        display: block;
+        margin-bottom: 0;
+
+        --switch-bg-color: @c-gris_fonce;
+      }
+      input:checked + label {
+        color: white;
+      }
+    }
+
+    .m_videoPublication--addSolidColor {
+      // padding: 0;
+      margin: 0;
+      color: white;
+    }
 
     .m_videoPublication--media {
       position: relative;
@@ -4814,9 +4842,15 @@ small {
       height: auto;
       .padding-verysmall;
       .margin-small;
+      margin-left: auto;
+      margin-right: auto;
       .bg-blanc;
       .boxs-card-1;
       border-radius: 4px;
+
+      &[data-type="solid_color"] {
+        max-width: 220px;
+      }
 
       .m_metaField {
         .margin-vert-verysmall;
@@ -4865,18 +4899,25 @@ small {
           }
         }
 
-        .m_videoPublication--media--moveItemButton--before {
+        .m_videoPublication--media--moveItemButton--before,
+        .m_videoPublication--media--moveItemButton--after {
           transform: rotate(90deg);
           position: absolute;
-          top: 0;
+          right: 0;
+          width: 100%;
           padding: 0;
+          border-radius: 50%;
+
+          &:hover {
+            background-color: @c-bleuvert_fonce;
+          }
+        }
+
+        .m_videoPublication--media--moveItemButton--before {
+          top: 0;
         }
         .m_videoPublication--media--moveItemButton--after {
-          position: absolute;
-          top: auto;
           bottom: 0;
-          padding: 0;
-          transform: rotate(90deg);
         }
       }
     }
@@ -5683,6 +5724,20 @@ small {
   .m_mediaMontagePublication--solidColor {
     .m_mediaMontagePublication--solidColor--colorPreview {
       height: 200px;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+
+      input {
+        display: block;
+        width: 3em;
+        height: 3em;
+      }
+      label {
+        .padding-small;
+        mix-blend-mode: difference;
+      }
     }
   }
 
@@ -5712,8 +5767,7 @@ small {
   .margin-verysmall;
 
   display: flex;
-  color: inherit;
-  // .bg-orange;
+  background-color: rgba(255, 255, 255, 0.4);
   color: @c-noir;
   font-weight: bold;
   pointer-events: auto;
