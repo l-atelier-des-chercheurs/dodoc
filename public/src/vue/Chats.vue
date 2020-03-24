@@ -1,31 +1,36 @@
 <template>
-  <div class="m_chats">
-    <div class="m_chats--topbar">
-      Créer un canal de discussion
-      <button
-        type="button"
-        class="buttonLink"
-        @click="show_create_channel_modal = !show_create_channel_modal"
-      >
-        {{ $t("create") }}
-      </button>
+  <div class="m_chatsview">
+    <div class="m_actionbar">
+      <div class="m_actionbar--buttonBar"></div>
+      <div class="m_actionbar--text">{{ $t('channels_instructions') }}</div>
+    </div>
 
-      <form
-        v-if="show_create_channel_modal"
-        @submit.prevent="createChannel()"
-        class="input-group"
-      >
-        <input type="text" v-model.trim="new_channel_name" required autofocus />
+    <div class="m_channels">
+      <h3 class="font-folder_title">Liste des discussions</h3>
+      <div class="margin-vert-small">
         <button
-          type="submit"
-          :disabled="new_channel_name === ''"
-          v-html="$t('create')"
-          class="bg-bleuvert"
-        />
-      </form>
+          type="button"
+          class="barButton barButton_createChannel"
+          @click="show_create_channel_modal = !show_create_channel_modal"
+        >
+          <span>{{ $t("create") }}</span>
+        </button>
+      </div>
 
       <div>
-        <h3>Liste des discussions</h3>
+        <form
+          v-if="show_create_channel_modal"
+          @submit.prevent="createChannel()"
+          class="input-group"
+        >
+          <input type="text" v-model.trim="new_channel_name" required autofocus />
+          <button
+            type="submit"
+            :disabled="new_channel_name === ''"
+            v-html="$t('create')"
+            class="bg-bleuvert"
+          />
+        </form>
       </div>
       <div class="m_chats--list">
         <div
@@ -37,10 +42,12 @@
           }"
           @click="openChat(chat.slugFolderName)"
         >
-          {{ chat.name }}
-          <button type="button" @click.stop="openChat(chat.slugFolderName)">
-            {{ $t("open") }}
-          </button>
+          <span class="m_chats--list--item--name">{{ chat.name }}</span>
+          <button
+            type="button"
+            class="buttonLink bg-rouge"
+            @click.stop="openChat(chat.slugFolderName)"
+          >{{ $t("open") }}</button>
         </div>
       </div>
     </div>

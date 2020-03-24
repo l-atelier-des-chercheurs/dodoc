@@ -21,26 +21,22 @@
           :read_only="read_only"
         />
       </div>
-      <div class="m_actionbar--text">
-        {{ $t("cooking_pot") }}: {{ $t("cooking_pot_instructions") }}
-      </div>
+      <div
+        class="m_actionbar--text"
+      >{{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}</div>
     </div>
 
     <div class="m_publiFilter">
-      <label>
-        {{ $t("show_recipes_for_project_first") }}
-      </label>
+      <label>{{ $t("show_recipes_for_project_first") }}</label>
       <select v-model="slugProjectName_to_filter">
-        <option key="'all'" value=""
-          >** {{ $t("all").toLowerCase() }} **</option
-        >
+        <option key="'all'" value>** {{ $t("all").toLowerCase() }} **</option>
         <option
           v-for="project in $root.projects_that_are_accessible"
           :key="project.slugFolderName"
           :value="project.slugFolderName"
         >
           {{ project.name }} ({{
-            recipes_for_this_project(project.slugFolderName).length
+          recipes_for_this_project(project.slugFolderName).length
           }})
         </option>
       </select>
@@ -49,11 +45,7 @@
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
-      <div
-        class="m_recipes--recipe"
-        v-for="recipe in recipes"
-        :key="recipe.key"
-      >
+      <div class="m_recipes--recipe" v-for="recipe in recipes" :key="recipe.key">
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2 class>{{ $t(recipe.key) }}</h2>
@@ -65,9 +57,7 @@
               type="button"
               class="buttonLink margin-left-none padding-left-none"
               @click="recipe.show_instructions = !recipe.show_instructions"
-            >
-              + {{ $t("more_informations") }}
-            </button>
+            >+ {{ $t("more_informations") }}</button>
           </p>
           <template v-if="recipe.show_instructions">
             <hr />
@@ -117,9 +107,7 @@
                 class="m_recipes--recipe--mealList--meal"
               >
                 <td colspan="4">
-                  <button type="button" class="buttonLink margin-none">
-                    {{ $t("show_all") }}
-                  </button>
+                  <button type="button" class="buttonLink margin-none">{{ $t("show_all") }}</button>
                 </td>
               </tr>
             </tbody>

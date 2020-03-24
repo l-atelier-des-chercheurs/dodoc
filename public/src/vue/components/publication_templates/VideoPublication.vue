@@ -1,5 +1,9 @@
 <template>
-  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
+  <div
+    class="m_publicationview"
+    :class="{ 'is--preview': preview_mode }"
+    ref="panel"
+  >
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -23,25 +27,45 @@
       </div>
 
       <transition-group name="list-complete" :duration="300">
-        <div v-for="(media, index) in publication_medias" :key="media.publi_meta.metaFileName">
-          <div>
-            <span class="switch switch-xs">
-              <input
-                class="switch"
-                :id="'transition_in_' + media.publi_meta.metaFileName"
-                type="checkbox"
-                :checked="media.publi_meta.transition_in === 'fade'"
-                @change="
-                  toggleTransition({
-                    position: 'transition_in',
-                    metaFileName: media.publi_meta.metaFileName
-                  })
-                "
-              />
-              <label :for="'transition_in_' + media.publi_meta.metaFileName">{{ $t("transition") }}</label>
-            </span>
+        <div
+          v-for="(media, index) in publication_medias"
+          :key="media.publi_meta.metaFileName"
+        >
+          <div class="switch switch-xs m_videoPublication--transitionToggle">
+            <input
+              class="switch"
+              :id="'transition_in_' + media.publi_meta.metaFileName"
+              type="checkbox"
+              :checked="media.publi_meta.transition_in === 'fade'"
+              @change="
+                toggleTransition({
+                  position: 'transition_in',
+                  metaFileName: media.publi_meta.metaFileName
+                })
+              "
+            />
+            <label :for="'transition_in_' + media.publi_meta.metaFileName">{{
+              $t("transition_fade")
+            }}</label>
+            <button
+              type="button"
+              v-if="media.publi_meta.type !== 'solid_color'"
+              class="m_videoPublication--addSolidColor buttonLink bg-noir"
+              @click="
+                addMedia({
+                  type: 'solid_color',
+                  right_after: media.publi_meta.metaFileName
+                })
+              "
+            >
+              {{ $t("add_solid_color") }}
+            </button>
           </div>
-          <div class="m_videoPublication--media">
+
+          <div
+            class="m_videoPublication--media"
+            :data-type="media.publi_meta.type"
+          >
             <MediaMontagePublication
               :media="media"
               :preview_mode="false"
@@ -59,7 +83,9 @@
                 }
               "
             />
-            <span class="m_videoPublication--media--mediaNumber">{{ index + 1 }}</span>
+            <span class="m_videoPublication--media--mediaNumber">{{
+              index + 1
+            }}</span>
             <div class="m_videoPublication--media--moveItemButtons">
               <button
                 type="button"
@@ -79,22 +105,37 @@
               </button>
             </div>
           </div>
-          <div v-if="index === publication_medias.length - 1">
-            <span class="switch switch-xs">
-              <input
-                class="switch"
-                :id="'transition_out_' + media.publi_meta.metaFileName"
-                type="checkbox"
-                :checked="media.publi_meta.transition_out === 'fade'"
-                @change="
-                  toggleTransition({
-                    position: 'transition_out',
-                    metaFileName: media.publi_meta.metaFileName
-                  })
-                "
-              />
-              <label :for="'transition_out_' + media.publi_meta.metaFileName">{{ $t("transition") }}</label>
-            </span>
+          <div
+            v-if="index === publication_medias.length - 1"
+            class="switch switch-xs m_videoPublication--transitionToggle margin-bottom-medium"
+          >
+            <input
+              class="switch"
+              :id="'transition_out_' + media.publi_meta.metaFileName"
+              type="checkbox"
+              :checked="media.publi_meta.transition_out === 'fade'"
+              @change="
+                toggleTransition({
+                  position: 'transition_out',
+                  metaFileName: media.publi_meta.metaFileName
+                })
+              "
+            />
+            <label :for="'transition_out_' + media.publi_meta.metaFileName">
+              {{ $t("transition_fade") }}
+            </label>
+            <button
+              type="button"
+              class="m_videoPublication--addSolidColor buttonLink bg-noir"
+              @click="
+                addMedia({
+                  type: 'solid_color',
+                  right_after: media.publi_meta.metaFileName
+                })
+              "
+            >
+              {{ $t("add_solid_color") }}
+            </button>
           </div>
         </div>
       </transition-group>
@@ -103,7 +144,6 @@
     <div>
       <div>
         <!-- <input type="color" ref="solidColorPicker" /> -->
-        <button type="button" @click="addMedia({ type: 'solid_color' })">Create solid color</button>
       </div>
     </div>
   </div>
@@ -195,7 +235,7 @@ export default {
   },
   computed: {},
   methods: {
-    addMedia({ slugProjectName, metaFileName, type }) {
+    addMedia({ slugProjectName, metaFileName, type, right_after }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
@@ -213,9 +253,21 @@ export default {
       this.$eventHub.$on("socketio.media_created_or_updated", d => {
         this.$eventHub.$off("socketio.media_created_or_updated");
 
-        this.medias_slugs_in_order.push({
-          slugMediaName: d.metaFileName
-        });
+        if (!!right_after) {
+          // this is much more complex than it could be because of possible missing medias
+          // in medias_slugs_in_order: medias that were added and then removed or part
+          // of a removed project
+          const index = this.medias_slugs_in_order.findIndex(
+            s => s.slugMediaName === right_after
+          );
+          this.medias_slugs_in_order.splice(index, 0, {
+            slugMediaName: d.metaFileName
+          });
+        } else {
+          this.medias_slugs_in_order.push({
+            slugMediaName: d.metaFileName
+          });
+        }
 
         this.$root.editFolder({
           type: "publications",

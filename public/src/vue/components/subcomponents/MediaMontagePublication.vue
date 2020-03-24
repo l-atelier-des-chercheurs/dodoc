@@ -25,9 +25,14 @@
           <div>{{ $t("project") }}</div>
           <div>{{ $root.store.projects[media.slugProjectName].name }}</div>
         </div>
-        <div class="m_metaField" v-if="original_media_duration || enable_image_timer">
+        <div
+          class="m_metaField"
+          v-if="original_media_duration || enable_image_timer"
+        >
           <div>{{ $t("duration") }}</div>
-          <div v-if="original_media_duration">{{ original_media_duration }}</div>
+          <div v-if="original_media_duration">
+            {{ original_media_duration }}
+          </div>
           <div
             v-else-if="enable_image_timer && media.type === 'image'"
             class="m_mediaMontagePublication--set_props"
@@ -41,9 +46,14 @@
           <div>{{ media_dimensions }}</div>
         </div>
 
-        <div class="m_metaField" v-if="enable_set_video_volume && media.type === 'video'">
+        <div
+          class="m_metaField"
+          v-if="enable_set_video_volume && media.type === 'video'"
+        >
           <div>{{ $t("volume") }}</div>
-          <div class="m_mediaMontagePublication--set_props">{{ volume }} / 100</div>
+          <div class="m_mediaMontagePublication--set_props">
+            {{ volume }} / 100
+          </div>
         </div>
       </div>
     </template>
@@ -61,9 +71,13 @@
       >
         <input
           type="color"
+          :id="`solidcolor + ${media.publi_meta.metaFileName}`"
           :value="media.publi_meta.color"
           @change="updateMediaPubliMeta({ color: $event.target.value })"
         />
+        <label :for="`solidcolor + ${media.publi_meta.metaFileName}`">{{
+          $t("select_color")
+        }}</label>
       </div>
       <div class="m_metaField">
         <div>{{ $t("duration") }}</div>
