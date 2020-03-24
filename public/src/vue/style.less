@@ -1857,8 +1857,17 @@ small {
     }
   }
 
-  &.is--opened_in_media_modal figure {
-    border: 2px solid @c-gris_fonce;
+  &.is--opened_in_media_modal {
+    .m_media--topbar {
+      span {
+        color: white;
+      }
+    }
+    figure {
+      border: 2px solid @c-gris_fonce;
+      border-top: 0;
+      background-color: @c-gris_fonce;
+    }
   }
 
   &.is--inPubli {
