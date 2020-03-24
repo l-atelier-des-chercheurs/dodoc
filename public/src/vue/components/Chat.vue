@@ -1,23 +1,18 @@
 <template>
   <div class="m_chat" @click.self="$root.settings.current_chat.slug = false">
     <div class="m_chat--content">
-      <div class="m_chat--content--name ">
+      <div class="m_chat--content--name">
         {{ chat.name }}
-
         <button
           type="button"
-          class="buttonLink"
+          class="buttonLink bg-rouge"
           @click="$root.settings.current_chat.slug = false"
-        >
-          {{ $t("back") }}
-        </button>
+        >{{ $t("back") }}</button>
       </div>
 
       <div class="m_chat--content--discussion" ref="chat_content">
         <div v-for="item in grouped_messages" :key="item[0]">
-          <h3 class="label c-noir margin-small">
-            {{ $root.formatDateToHuman(item[0]) }}
-          </h3>
+          <h3 class="label c-noir margin-small">{{ $root.formatDateToHuman(item[0]) }}</h3>
           <div
             v-for="message in item[1]"
             :key="message.metaFileName"
@@ -32,23 +27,16 @@
               <div class="m_message--meta--author">
                 <span>{{ message.authors[0].name }}</span>
               </div>
-              <div class="m_message--meta--date">
-                {{ $moment(message.date_created).format("HH:mm") }}
-              </div>
+              <div class="m_message--meta--date">{{ $moment(message.date_created).format("HH:mm") }}</div>
             </div>
 
-            <div class="m_message--text">
-              {{ message.text }}
-            </div>
+            <div class="m_message--text">{{ message.text }}</div>
           </div>
         </div>
       </div>
 
       <transition name="fade_fast" :duration="400">
-        <div
-          class="m_chat--content--scrollToBottom"
-          v-if="!is_scrolled_to_bottom"
-        >
+        <div class="m_chat--content--scrollToBottom" v-if="!is_scrolled_to_bottom">
           <button type="button" @click="scrollToBottom()">
             <img src="/images/i_arrow_right.svg" draggable="false" />
           </button>
@@ -60,12 +48,7 @@
           <label>Envoyer un message</label>
           <form @submit.prevent="postNewMessage()" class="input-group">
             <input type="text" v-model.trim="new_message" required autofocus />
-            <button
-              type="submit"
-              :disabled="!new_message"
-              v-html="$t('send')"
-              class="bg-rouge"
-            />
+            <button type="submit" :disabled="!new_message" v-html="$t('send')" class="bg-rouge" />
           </form>
         </template>
         <template v-else>
@@ -74,9 +57,7 @@
               type="button"
               class="button-thin bg-bleumarine"
               @click="$root.showAuthorsListModal = true"
-            >
-              Identifiez-vous pour poster
-            </button>
+            >Identifiez-vous pour poster</button>
           </div>
         </template>
       </div>

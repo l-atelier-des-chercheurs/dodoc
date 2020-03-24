@@ -42,7 +42,7 @@
           }"
           @click="openChat(chat.slugFolderName)"
         >
-          {{ chat.name }}
+          <span class="m_chats--list--item--name">{{ chat.name }}</span>
           <button
             type="button"
             class="buttonLink bg-rouge"
