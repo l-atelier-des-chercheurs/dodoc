@@ -199,6 +199,10 @@ module.exports = (function() {
       fr: "Taille",
       en: "Size"
     },
+    volume: {
+      fr: "Volume",
+      en: "Sound level"
+    },
     dimensions: {
       fr: "Résolution",
       en: "Resolution"
@@ -316,6 +320,18 @@ module.exports = (function() {
       oc: "Aparelh",
       de: "Gerät"
     },
+    audioinput: {
+      fr: "Entrée audio",
+      en: "Audio input"
+    },
+    videoinput: {
+      fr: "Entrée vidéo",
+      en: "Video input"
+    },
+    audiooutput: {
+      fr: "Sortie audio",
+      en: "Audio output"
+    },
     "camera2 1, facing front": {
       fr: "Caméra frontale",
       nl: "Camera naar voren gericht ",
@@ -327,6 +343,10 @@ module.exports = (function() {
       nl: "Camera naar achteren gericht ",
       oc: "Camerà arrièra",
       de: "Rückfahrkamera"
+    },
+    "Entire screen": {
+      fr: "Écran de l’ordinateur",
+      en: "Computer screen"
     },
     very_slow: {
       fr: "Très lent",
@@ -2164,7 +2184,7 @@ module.exports = (function() {
       en: "Drawing"
     },
     drawing_pad_summary: {
-      fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables",
+      fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables.",
       en: "Draw, annotate, mind map, etc."
     },
     mix_audio_and_image_summary: {
@@ -2745,6 +2765,11 @@ module.exports = (function() {
       enter_password_to_select: {
         fr: "Renseignez le mot de passe du projet pour pouvoir le sélectionner",
         en: "Enter this project’s password to select it"
+      },
+      need_to_be_author_to_post: {
+        fr:
+          "Identifiez-vous en tant qu’auteur pour pouvoir poster dans le chat.",
+        en: "Login as an author to post in the chat."
       }
     }
   };

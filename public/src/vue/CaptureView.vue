@@ -106,7 +106,7 @@
                     v-for="(currentId, kind) in selected_devicesId"
                     :key="kind"
                   >
-                    <span class="font-verysmall">{{ kind }}</span>
+                    <span class="font-verysmall">{{ $t(kind) }}</span>
                     <select
                       v-if="sorted_available_devices.hasOwnProperty(kind)"
                       v-model="selected_devicesId[kind]"
@@ -133,11 +133,11 @@
                   </div>
 
                   <div v-if="actual_current_video_resolution">
-                    <span class="font-verysmall"
-                      >{{ $t("current") }}&nbsp;:
+                    <span class="font-verysmall">
+                      {{ $t("current") }}&nbsp;:
                       {{ actual_current_video_resolution.width }} x
-                      {{ actual_current_video_resolution.height }}</span
-                    >
+                      {{ actual_current_video_resolution.height }}
+                    </span>
                   </div>
                   <div
                     v-for="res in available_camera_resolutions"
@@ -348,9 +348,9 @@
                       </li>
                     </ul>
                   </template>
-                  <template v-else>{{
-                    $t("no_stopmotion_created_yet")
-                  }}</template>
+                  <template v-else>
+                    {{ $t("no_stopmotion_created_yet") }}
+                  </template>
                 </div>
               </div>
             </transition>
@@ -731,8 +731,8 @@ export default {
   created() {
     console.log("CREATED • CaptureView");
 
-    navigator.mediaDevices.enumerateDevices().then(deviceInfos => {
-      this.available_devices = deviceInfos;
+    this.listAllDevices().then(all_device_infos => {
+      this.available_devices = all_device_infos;
 
       // SOURCES (device_id)
       Object.keys(this.selected_devicesId).map(kind => {
@@ -911,6 +911,59 @@ export default {
     }
   },
   methods: {
+    listAllDevices() {
+      return new Promise((resolve, reject) => {
+        let tasks = [];
+
+        tasks.push(
+          new Promise((resolve, reject) => {
+            navigator.mediaDevices.enumerateDevices().then(device_infos => {
+              return resolve(device_infos);
+            });
+          })
+        );
+
+        if (this.$root.state.is_electron) {
+          tasks.push(
+            new Promise((resolve, reject) => {
+              const { desktopCapturer } = window.require("electron");
+              desktopCapturer.getSources(
+                { types: ["window", "screen"] },
+                (error, sources) => {
+                  const screen_infos = sources.reduce((acc, source) => {
+                    acc.push(source);
+                    return acc;
+                  }, []);
+                  return resolve(screen_infos);
+                }
+              );
+            })
+          );
+        }
+
+        Promise.all(tasks).then(d_array => {
+          const all_devices = d_array.reduce((acc, devices) => {
+            devices.map(device => {
+              const _device = JSON.parse(JSON.stringify(device));
+              if (!_device.hasOwnProperty("kind")) {
+                if (_device.name === "Entire screen") {
+                  _device.label = _device.name;
+                  _device.deviceId = _device.id;
+                  // _device.deviceId = "Entire screen";
+                  _device.kind = "videoinput";
+                  acc.push(_device);
+                }
+              } else {
+                acc.push(_device);
+              }
+            });
+            return acc;
+          }, []);
+
+          return resolve(all_devices);
+        });
+      });
+    },
     startMode() {
       console.log("METHODS • CaptureView: startMode");
 
@@ -1093,36 +1146,55 @@ export default {
       return new Promise((resolve, reject) => {
         console.log("METHODS • CaptureView: getCameraFeed");
 
-        const constraints = {
-          video: {
-            /* old syntax, with webrtc-adapter */
-            // optional: [{ sourceId: this.selected_devicesId.videoinput }],
-            // mandatory: {
-            //   // minWidth:"1280","maxWidth":"1280","minHeight":"720","maxHeight":"720"
-            //   // minWidth:"640","maxWidth":"640","minHeight":"480","maxHeight":"480"
-            //   minWidth: this.ideal_camera_resolution.width,
-            //   maxWidth: this.ideal_camera_resolution.width,
-            //   minHeight: this.ideal_camera_resolution.height,
-            //   maxHeight: this.ideal_camera_resolution.height
-            // }
+        let constraints = {};
 
-            deviceId: this.selected_devicesId.videoinput
-              ? { exact: this.selected_devicesId.videoinput }
-              : undefined,
-            // minHeight: this.ideal_camera_resolution.height
-            width: {
-              min: 640,
-              ideal: this.ideal_camera_resolution.width,
-              max: 1920
-            },
-            height: {
-              min: 480,
-              ideal: this.ideal_camera_resolution.height,
-              max: 1080
+        if (this.selected_devicesId.videoinput.startsWith("screen:")) {
+          constraints = {
+            audio: false,
+            video: {
+              mandatory: {
+                chromeMediaSource: "desktop",
+                // chromeMediaSourceId: this.selected_devicesId.videoinput,
+                minWidth: this.ideal_camera_resolution.width,
+                maxWidth: this.ideal_camera_resolution.width,
+                minHeight: this.ideal_camera_resolution.height,
+                maxHeight: this.ideal_camera_resolution.height
+              }
             }
-          },
-          audio: withAudio
-        };
+          };
+          // if (withAudio) {}
+        } else {
+          constraints = {
+            video: {
+              /* old syntax, with webrtc-adapter */
+              // optional: [{ sourceId: this.selected_devicesId.videoinput }],
+              // mandatory: {
+              //   // minWidth:"1280","maxWidth":"1280","minHeight":"720","maxHeight":"720"
+              //   // minWidth:"640","maxWidth":"640","minHeight":"480","maxHeight":"480"
+              //   minWidth: this.ideal_camera_resolution.width,
+              //   maxWidth: this.ideal_camera_resolution.width,
+              //   minHeight: this.ideal_camera_resolution.height,
+              //   maxHeight: this.ideal_camera_resolution.height
+              // }
+              deviceId: this.selected_devicesId.videoinput
+                ? { exact: this.selected_devicesId.videoinput }
+                : undefined,
+              // minHeight: this.ideal_camera_resolution.height
+              width: {
+                min: 640,
+                ideal: this.ideal_camera_resolution.width,
+                max: 1920
+              },
+              height: {
+                min: 480,
+                ideal: this.ideal_camera_resolution.height,
+                max: 1080
+              }
+            },
+            audio: withAudio
+          };
+        }
+
         navigator.getUserMedia(
           constraints,
           stream => {

@@ -8,9 +8,7 @@
         @click="removeTag(tag.text)"
         class="can_be_removed"
         :class="['tagcolorid_' + (parseInt(tag.text, 36) % 2)]"
-      >
-        {{ tag.text }}
-      </button>
+      >{{ tag.text }}</button>
 
       <div class="new-tag-input-wrapper" :key="'new-tag-input'">
         <input
@@ -25,16 +23,10 @@
           @click="createTag"
           :disabled="disableAddButton"
           v-if="tag.length > 0"
-        >
-          +
-        </button>
+        >+</button>
       </div>
 
-      <div
-        v-if="matchingKeywords.length > 0"
-        class="autocomplete"
-        :key="'autocomplete'"
-      >
+      <div v-if="matchingKeywords.length > 0" class="autocomplete" :key="'autocomplete'">
         <label>{{ $t("suggestion") }}</label>
         <div>
           <button
@@ -43,9 +35,7 @@
             :key="keyword.text"
             class="tag"
             @click="createTagFromAutocomplete(keyword.text)"
-          >
-            {{ keyword.text }}
-          </button>
+          >{{ keyword.text }}</button>
         </div>
       </div>
     </transition-group>
@@ -54,18 +44,15 @@
       <button
         type="button"
         key="show_all_keywords"
+        v-if="allKeywordsExceptCurrent.length > 0"
         @click="show_all_keywords = !show_all_keywords"
         class="m_keywordField--show_all_keywords"
       >
-        <template v-if="!show_all_keywords">
-          {{ $t("show_all_keywords") }}
-        </template>
-        <template v-else>
-          {{ $t("hide_all_keywords") }}
-        </template>
+        <template v-if="!show_all_keywords">{{ $t("show_all_keywords") }}</template>
+        <template v-else>{{ $t("hide_all_keywords") }}</template>
       </button>
 
-      <div v-if="show_all_keywords" class="autocomplete">
+      <div v-if="allKeywordsExceptCurrent.length > 0" class="autocomplete">
         <label>{{ $t("all_tags") }}</label>
         <div>
           <button
@@ -74,9 +61,7 @@
             :key="keyword.text"
             class="tag"
             @click="createTagFromAutocomplete(keyword.text)"
-          >
-            {{ keyword.text }}
-          </button>
+          >{{ keyword.text }}</button>
         </div>
       </div>
     </div>

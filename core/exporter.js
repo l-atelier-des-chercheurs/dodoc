@@ -675,9 +675,11 @@ module.exports = (function() {
         })
         .map(n => publiMedias[n]);
 
-      let mediasAndMetaInOrder = mediasMetaInOrder
+      let medias_with_original_filepath = mediasMetaInOrder
         .filter(m => {
-          return (
+          if (!m.slugProjectName && !m.slugMediaName) return true;
+
+          if (
             pageData.folderAndMediaData.hasOwnProperty(m.slugProjectName) &&
             pageData.folderAndMediaData[
               m.slugProjectName
@@ -685,23 +687,31 @@ module.exports = (function() {
             !pageData.folderAndMediaData[m.slugProjectName].medias[
               m.slugMediaName
             ].hasOwnProperty("_isAbsent")
-          );
+          )
+            return true;
+          return false;
         })
         .map(m => {
           let videomediameta =
-            pageData.folderAndMediaData[m.slugProjectName].medias[
-              m.slugMediaName
-            ];
+            m.slugProjectName && m.slugMediaName
+              ? pageData.folderAndMediaData[m.slugProjectName].medias[
+                  m.slugMediaName
+                ]
+              : {};
+
           videomediameta.publi_meta = m;
+
+          if (m.slugProjectName && m.slugMediaName) {
+            const pathToProject = api.getFolderPath(
+              videomediameta.publi_meta.slugProjectName
+            );
+            videomediameta.full_path = path.join(
+              pathToProject,
+              videomediameta.media_filename
+            );
+          }
           return videomediameta;
         });
-
-      // return only media_filename
-      const medias_with_original_filepath = mediasAndMetaInOrder.map(m => {
-        const pathToProject = api.getFolderPath(m.publi_meta.slugProjectName);
-        m.full_path = path.join(pathToProject, m.media_filename);
-        return m;
-      });
 
       return resolve(medias_with_original_filepath);
     });
@@ -828,7 +838,7 @@ module.exports = (function() {
     socket
   }) {
     return new Promise(function(resolve, reject) {
-      dev.logfunction("EXPORTER — _makeVideoAssemblage");
+      dev.logfunction("EXPORTER — _applyVideoEffects");
 
       const videoPath = path.join(cachePath, videoName);
 
@@ -839,16 +849,13 @@ module.exports = (function() {
 
         ffmpeg_cmd.input(vm.full_path);
 
-        // if (vm.duration) {
-        //   ffmpeg_cmd.duration(vm.duration);
-        // }
-
         // check if has audio track or not
         if (
           !err &&
           metadata &&
           metadata.streams.filter(s => s.codec_type === "audio").length === 0
         ) {
+          dev.logverbose("Has no audio track, adding anullsrc");
           ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
         }
 
@@ -993,7 +1000,6 @@ module.exports = (function() {
           );
           if (im) {
             // ffmpeg_cmd.input(im.full_path);
-
             complexFilters.push(
               {
                 filter: "movie",
@@ -1049,6 +1055,8 @@ module.exports = (function() {
               // }
             );
             ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            // if (metadata && metadata.format && metadata.format.duration)
+            //   ffmpeg_cmd.duration(metadata.format.duration);
           } else {
             return reject(
               `Failed to create video for filter: image is not set correctly`
@@ -1062,7 +1070,7 @@ module.exports = (function() {
           .withVideoCodec("libx264")
           .withVideoBitrate(bitrate)
           .complexFilter(complexFilters, "output")
-          .addOptions(["-crf 22", "-preset fast", "-shortest"])
+          .addOptions(["-crf 22", "-preset fast"])
           .toFormat("mp4")
           .output(videoPath)
           .on("start", function(commandLine) {
@@ -1100,8 +1108,10 @@ module.exports = (function() {
 
       const videoPath = path.join(cachePath, videoName);
 
-      let media_files_to_process = medias_with_original_filepath.filter(m =>
-        ["video", "image"].includes(m.type)
+      let media_files_to_process = medias_with_original_filepath.filter(
+        m =>
+          ["video", "image"].includes(m.type) ||
+          m.publi_meta.type === "solid_color"
       );
       if (media_files_to_process.length === 0)
         return reject(`No files to process`);
@@ -1128,7 +1138,7 @@ module.exports = (function() {
             bitrate,
             socket
           })
-            .then(temp_video_path => {
+            .then(({ temp_video_path, duration }) => {
               require("./sockets").notify({
                 socket,
                 localized_string: `preparing_video_from_montage`,
@@ -1138,7 +1148,7 @@ module.exports = (function() {
               });
 
               index++;
-              temp_videos_array.push({ full_path: temp_video_path });
+              temp_videos_array.push({ temp_video_path, duration });
 
               return media_files_to_process.length == 0
                 ? ""
@@ -1155,7 +1165,7 @@ module.exports = (function() {
             bitrate,
             socket
           })
-            .then(temp_video_path => {
+            .then(({ temp_video_path, duration }) => {
               require("./sockets").notify({
                 socket,
                 localized_string: `preparing_video_from_montage`,
@@ -1165,7 +1175,34 @@ module.exports = (function() {
               });
 
               index++;
-              temp_videos_array.push({ full_path: temp_video_path });
+              temp_videos_array.push({ temp_video_path, duration });
+
+              return media_files_to_process.length == 0
+                ? ""
+                : executeSequentially(media_files_to_process);
+            })
+            .catch(err => {
+              return err;
+            });
+        } else if (vm.publi_meta.type === "solid_color") {
+          return _prepareSolidColorForMontageAndWeb({
+            vm,
+            cachePath,
+            resolution,
+            bitrate,
+            socket
+          })
+            .then(({ temp_video_path, duration }) => {
+              require("./sockets").notify({
+                socket,
+                localized_string: `preparing_video_from_montage`,
+                not_localized_string: `
+              ${index + 1}/${index + media_files_to_process.length + 1}
+              `
+              });
+
+              index++;
+              temp_videos_array.push({ temp_video_path, duration });
 
               return media_files_to_process.length == 0
                 ? ""
@@ -1181,14 +1218,274 @@ module.exports = (function() {
         if (err) return reject(err);
 
         dev.logverbose(
-          `EXPORTER — _makeVideoAssemblage : finished preparing videos`
+          `EXPORTER — _makeVideoAssemblage : finished preparing videos, now for the concat with ${JSON.stringify(
+            temp_videos_array,
+            null,
+            4
+          )}`
         );
 
         const ffmpeg_cmd = new ffmpeg().renice(renice);
 
-        temp_videos_array.map(v => ffmpeg_cmd.addInput(v.full_path));
+        temp_videos_array.map(v => {
+          ffmpeg_cmd.addInput(v.temp_video_path);
+          // ffmpeg_cmd.addInput(v.duration)
+        });
+
+        let complexFilters = [];
+        let all_video_outputs = [];
+        let all_audio_outputs = [];
+        const transition_duration = 0.48;
+
+        temp_videos_array.map((v, index) => {
+          const original_media = medias_with_original_filepath[index];
+
+          const output = "trim" + index;
+          // const video_output = "v_" + output;
+          const audio_output = "a_" + output;
+
+          // pour chaque extrait, créer plusieurs pistes :
+          // une piste du début, TRIM +
+
+          /* 
+    [0:v]trim=start=0:end=9,setpts=PTS-STARTPTS[firstclip]; \
+    [1:v]trim=start=1,setpts=PTS-STARTPTS[secondclip]; \
+    [0:v]trim=start=9:end=10,setpts=PTS-STARTPTS[fadeoutsrc]; \
+    [1:v]trim=start=0:end=1,setpts=PTS-STARTPTS[fadeinsrc]; \
+    [fadeinsrc]format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1[fadein]; \
+    [fadeoutsrc]format=pix_fmts=yuva420p,fade=t=out:st=0:d=1:alpha=1[fadeout]; \
+    [fadein]fifo[fadeinfifo]; \
+    [fadeout]fifo[fadeoutfifo]; \
+    [fadeoutfifo][fadeinfifo]overlay[crossfade]; \
+    [firstclip][crossfade][secondclip]concat=n=3[output] \
+          */
+
+          // si vidéo est la première
+          // -- on créé deux flux : de 0 à (duration - 1) et de (duration - 1) à duration
+          // si vidéo est pas la première ni la dernière
+          // -- on créé trois flux : de 0 à 1
+
+          // on créé trois flux : de 0 à 1, de 1 à duration - 1, de duration - 1 à 1
+          complexFilters.push(
+            // video
+            {
+              filter: "split=3",
+              inputs: index + ":v",
+              outputs: ["v_start_" + index, "v_mid_" + index, "v_end_" + index]
+            },
+            {
+              filter: `trim=start=${0}:end=${transition_duration},setpts=PTS-STARTPTS`,
+              inputs: "v_start_" + index,
+              outputs: "vtrim_start_" + index
+            },
+            {
+              filter: `trim=start=${transition_duration}:end=${v.duration -
+                transition_duration},setpts=PTS-STARTPTS`,
+              inputs: "v_mid_" + index,
+              outputs: "vtrim_mid_" + index
+            },
+            {
+              filter: `trim=start=${v.duration - transition_duration}:end=${
+                v.duration
+              },setpts=PTS-STARTPTS`,
+              inputs: "v_end_" + index,
+              outputs: "vtrim_end_" + index
+            },
+
+            // audio
+            {
+              filter: "asplit=3",
+              inputs: index + ":a",
+              outputs: ["a_start_" + index, "a_mid_" + index, "a_end_" + index]
+            },
+            {
+              filter: `atrim=start=${0}:end=${transition_duration},asetpts=PTS-STARTPTS`,
+              inputs: "a_start_" + index,
+              outputs: "atrim_start_" + index
+            },
+            {
+              filter: `atrim=start=${transition_duration}:end=${v.duration -
+                transition_duration},asetpts=PTS-STARTPTS`,
+              inputs: "a_mid_" + index,
+              outputs: "atrim_mid_" + index
+            },
+            {
+              filter: `atrim=start=${v.duration - transition_duration}:end=${
+                v.duration
+              },asetpts=PTS-STARTPTS`,
+              inputs: "a_end_" + index,
+              outputs: "atrim_end_" + index
+            }
+          );
+
+          if (index === 0) {
+            if (original_media.publi_meta.transition_in === "fade") {
+              complexFilters.push(
+                // video
+                {
+                  filter: `fade`,
+                  options: {
+                    type: "in",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "vtrim_start_" + index,
+                  outputs: "fadein_start_" + index
+                },
+                // audio
+                {
+                  filter: "afade",
+                  options: {
+                    type: "in",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "atrim_start_" + index,
+                  outputs: "afade_start_" + index
+                }
+              );
+              all_video_outputs.push("fadein_start_" + index);
+              all_audio_outputs.push("afade_start_" + index);
+            } else {
+              all_video_outputs.push("vtrim_start_" + index);
+              all_audio_outputs.push("atrim_start_" + index);
+            }
+          } else {
+            // if there are videos before
+            // we get vtrim_end_(index - 1) and vtrim_start_(index) and merge them
+
+            // some great docs :
+            // -- https://superuser.com/questions/1001039/what-is-an-efficient-way-to-do-a-video-crossfade-with-ffmpeg
+            // -- https://video.stackexchange.com/questions/23006/how-to-concatenate-multiple-videos-with-fades-from-and-to-black-in-between
+
+            // if that media has "transition_in"
+            if (original_media.publi_meta.transition_in === "fade") {
+              // we grab the previous media and crossfade with it
+              complexFilters.push(
+                // video
+                {
+                  filter: `format=pix_fmts=yuva420p,fade=t=in:st=0:d=${transition_duration}:alpha=1`,
+                  inputs: "vtrim_start_" + index,
+                  outputs: "fadein_" + index
+                },
+                {
+                  filter: `format=pix_fmts=yuva420p,fade=t=out:st=0:d=${transition_duration}:alpha=1`,
+                  inputs: "vtrim_end_" + (index - 1),
+                  outputs: "fadeout_" + index
+                },
+                {
+                  filter: `fifo`,
+                  inputs: "fadein_" + index,
+                  outputs: "fadeinfifo_" + index
+                },
+                {
+                  filter: `fifo`,
+                  inputs: "fadeout_" + index,
+                  outputs: "fadeoutfifo_" + index
+                },
+                {
+                  filter: "overlay",
+                  inputs: ["fadeinfifo_" + index, "fadeoutfifo_" + index],
+                  outputs: "vcrossfade_" + index
+                },
+
+                // audio
+                {
+                  filter: "afade",
+                  options: {
+                    type: "in",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "atrim_start_" + index,
+                  outputs: "afade_start_" + index
+                },
+                {
+                  filter: "afade",
+                  options: {
+                    type: "out",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "atrim_end_" + (index - 1),
+                  outputs: "afade_end_" + (index - 1)
+                },
+                {
+                  filter: "amix=inputs=2",
+                  inputs: ["afade_start_" + index, "afade_end_" + (index - 1)],
+                  outputs: "acrossfade_" + index
+                }
+              );
+              all_video_outputs.push("vcrossfade_" + index);
+              all_audio_outputs.push("acrossfade_" + index);
+            } else {
+              all_video_outputs.push("vtrim_end_" + (index - 1));
+              all_audio_outputs.push("atrim_end_" + (index - 1));
+              all_video_outputs.push("vtrim_start_" + index);
+              all_audio_outputs.push("atrim_start_" + index);
+            }
+          }
+
+          all_video_outputs.push("vtrim_mid_" + index);
+          all_audio_outputs.push("atrim_mid_" + index);
+
+          if (index === temp_videos_array.length - 1) {
+            if (original_media.publi_meta.transition_out === "fade") {
+              complexFilters.push(
+                {
+                  filter: `fade`,
+                  options: {
+                    type: "out",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "vtrim_end_" + index,
+                  outputs: "fadeout_end_" + index
+                },
+                {
+                  filter: "afade",
+                  options: {
+                    type: "out",
+                    start_time: 0,
+                    duration: transition_duration
+                  },
+                  inputs: "atrim_end_" + index,
+                  outputs: "afadeout_end_" + index
+                }
+              );
+              all_video_outputs.push("fadeout_end_" + index);
+              all_audio_outputs.push("afadeout_end_" + index);
+            } else {
+              all_video_outputs.push("vtrim_end_" + index);
+              all_audio_outputs.push("atrim_end_" + index);
+            }
+          }
+        });
 
         ffmpeg_cmd.withVideoBitrate(bitrate);
+
+        complexFilters.push(
+          {
+            filter: "concat",
+            options: {
+              n: all_video_outputs.length,
+              v: 1,
+              a: 0
+            },
+            inputs: all_video_outputs,
+            outputs: "outv"
+          },
+          {
+            filter: "concat",
+            options: {
+              n: all_audio_outputs.length,
+              v: 0,
+              a: 1
+            },
+            inputs: all_audio_outputs,
+            outputs: "outa"
+          }
+        );
 
         // let time_since_last_report = 0;
         ffmpeg_cmd
@@ -1218,7 +1515,11 @@ module.exports = (function() {
             dev.error("ffmpeg standard error:\n" + stderr);
             return reject(err);
           })
-          .mergeToFile(videoPath, cachePath);
+          // .mergeToFile(videoPath, cachePath);
+          .complexFilter(complexFilters)
+          .addOptions(["-map [outv]", "-map [outa]"])
+          .output(videoPath)
+          .run();
 
         global.ffmpeg_processes.push(ffmpeg_cmd);
 
@@ -1400,30 +1701,10 @@ module.exports = (function() {
         "_br=" +
         bitrate +
         ".ts";
-      let temp_video_duration;
+
       let temp_video_volume;
 
-      if (vm.type === "image") {
-        // insert duration in filename to make sure the cache uses the right version
-        if (vm.publi_meta.hasOwnProperty("duration")) {
-          temp_video_duration = vm.publi_meta.duration;
-        } else {
-          temp_video_duration = 1;
-        }
-        temp_video_name =
-          vm.media_filename +
-          "_dur=" +
-          temp_video_duration +
-          "_res=" +
-          resolution.width +
-          "x" +
-          resolution.height +
-          "_br=" +
-          bitrate +
-          ".ts";
-      }
-
-      if (vm.type === "video" && vm.publi_meta.hasOwnProperty("volume")) {
+      if (vm.publi_meta.hasOwnProperty("volume")) {
         temp_video_volume = vm.publi_meta.volume / 100;
         temp_video_name =
           vm.media_filename +
@@ -1447,20 +1728,28 @@ module.exports = (function() {
 
             ffmpeg_cmd.input(vm.full_path);
 
-            if (vm.type === "image" && temp_video_duration) {
-              ffmpeg_cmd.duration(temp_video_duration).loop();
-            } else if (vm.duration) {
-              dev.logverbose("Setting output to duration: " + vm.duration);
-              ffmpeg_cmd.duration(vm.duration);
+            if (
+              metadata &&
+              metadata.format &&
+              metadata.format.duration &&
+              metadata.format.duration !== "N/A"
+            ) {
+              dev.logverbose(
+                "Setting output to duration: " + metadata.format.duration
+              );
+              ffmpeg_cmd.duration(metadata.format.duration);
             }
 
             // check if has audio track or not
             if (
               !err &&
               metadata &&
-              metadata.streams.filter(s => s.codec_type === "audio").length ===
-                0
+              metadata.streams.filter(s => s.codec_type === "audio").length > 0
             ) {
+              dev.logverbose("Has audio track");
+              ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("128k");
+            } else {
+              dev.logverbose("Has no audio track, adding anullsrc");
               ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
             }
 
@@ -1477,8 +1766,6 @@ module.exports = (function() {
               .outputFPS(30)
               .withVideoCodec("libx264")
               .withVideoBitrate(bitrate)
-              .withAudioCodec("aac")
-              .withAudioBitrate("128k")
               .videoFilter([
                 `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
               ])
@@ -1498,7 +1785,12 @@ module.exports = (function() {
                 _notifyFfmpegProgress({ socket, progress });
               })
               .on("end", () => {
-                return resolve(temp_video_path);
+                ffmpeg.ffprobe(temp_video_path, function(err, _metadata) {
+                  return resolve({
+                    temp_video_path,
+                    duration: _metadata.format.duration
+                  });
+                });
               })
               .on("error", function(err, stdout, stderr) {
                 dev.error("An error happened: " + err.message);
@@ -1510,7 +1802,12 @@ module.exports = (function() {
             global.ffmpeg_processes.push(ffmpeg_cmd);
           });
         } else {
-          return resolve(temp_video_path);
+          ffmpeg.ffprobe(temp_video_path, function(err, metadata) {
+            return resolve({
+              temp_video_path,
+              duration: metadata.format.duration
+            });
+          });
         }
       });
     });
@@ -1528,18 +1825,15 @@ module.exports = (function() {
 
       dev.logfunction("EXPORTER — _prepareImageForMontageAndWeb");
 
-      let temp_image_name = vm.media_filename + ".jpeg";
-      let temp_video_name = vm.media_filename + ".ts";
       let temp_video_duration;
-      let temp_video_volume;
 
       // insert duration in filename to make sure the cache uses the right version
-      if (vm.publi_meta.hasOwnProperty("duration")) {
-        temp_video_duration = vm.publi_meta.duration;
-      } else {
-        temp_video_duration = 1;
-      }
-      temp_video_name =
+      temp_video_duration = vm.publi_meta.hasOwnProperty("duration")
+        ? vm.publi_meta.duration
+        : 1;
+
+      let temp_image_name = vm.media_filename + ".jpeg";
+      let temp_video_name =
         vm.media_filename +
         "_dur=" +
         temp_video_duration +
@@ -1564,7 +1858,6 @@ module.exports = (function() {
       fs.access(temp_video_path, fs.F_OK, function(err) {
         if (err) {
           sharp(vm.full_path)
-            .rotate()
             .resize(resolution.width, resolution.height, {
               fit: "contain",
               withoutEnlargement: false,
@@ -1584,14 +1877,12 @@ module.exports = (function() {
               ffmpeg_cmd.duration(temp_video_duration).loop();
 
               ffmpeg_cmd
-                .input("anullsrc")
+                // .input(`aevalsrc=0:d=${temp_video_duration}`)
+                .input("anullsrc=channel_layout=stereo:sample_rate=44100")
                 .inputFormat("lavfi")
-                .native()
                 .outputFPS(30)
                 .withVideoCodec("libx264")
                 .withVideoBitrate(bitrate)
-                .withAudioCodec("aac")
-                .withAudioBitrate("128k")
                 .addOptions(["-af apad", "-tune stillimage"])
                 .size(`${resolution.width}x${resolution.height}`)
                 .autopad()
@@ -1608,7 +1899,12 @@ module.exports = (function() {
                   _notifyFfmpegProgress({ socket, progress });
                 })
                 .on("end", () => {
-                  return resolve(temp_video_path);
+                  ffmpeg.ffprobe(temp_video_path, function(err, _metadata) {
+                    return resolve({
+                      temp_video_path,
+                      duration: temp_video_duration
+                    });
+                  });
                 })
                 .on("error", function(err, stdout, stderr) {
                   dev.error("An error happened: " + err.message);
@@ -1621,10 +1917,128 @@ module.exports = (function() {
             })
             .catch(err => {
               dev.error(`Failed to sharp create image for montage.`);
-              reject(err);
+              return reject(err);
             });
         } else {
-          return resolve(temp_video_path);
+          return resolve({ temp_video_path, duration: temp_video_duration });
+        }
+      });
+    });
+  }
+
+  function _prepareSolidColorForMontageAndWeb({
+    vm,
+    cachePath,
+    resolution,
+    bitrate,
+    socket
+  }) {
+    return new Promise(function(resolve, reject) {
+      // used to process videos / images before merging them
+
+      dev.logfunction("EXPORTER — _prepareSolidColorForMontageAndWeb");
+
+      const solid_color_bg = vm.publi_meta.color
+        ? vm.publi_meta.color
+        : "#000000";
+
+      let temp_image_name = solid_color_bg + ".jpeg";
+      let temp_video_name = solid_color_bg + ".ts";
+      let temp_video_duration;
+      let temp_video_volume;
+
+      // insert duration in filename to make sure the cache uses the right version
+      temp_video_duration = vm.publi_meta.hasOwnProperty("duration")
+        ? vm.publi_meta.duration
+        : 1;
+
+      temp_video_name =
+        solid_color_bg +
+        "_dur=" +
+        temp_video_duration +
+        "_res=" +
+        resolution.width +
+        "x" +
+        resolution.height +
+        "_br=" +
+        bitrate +
+        ".ts";
+
+      const temp_video_path = path.join(cachePath, temp_video_name);
+      const temp_image_path = path.join(cachePath, temp_image_name);
+
+      dev.logverbose(
+        `EXPORTER — _prepareSolidColorForMontageAndWeb: will store temp image in ${temp_image_path}`
+      );
+      dev.logverbose(
+        `EXPORTER — _prepareSolidColorForMontageAndWeb: will store temp video in ${temp_video_path}`
+      );
+
+      fs.access(temp_video_path, fs.F_OK, function(err) {
+        if (err) {
+          sharp({
+            create: {
+              width: resolution.width,
+              height: resolution.height,
+              channels: 3,
+              background: solid_color_bg
+            }
+          })
+            .toFile(temp_image_path)
+            .then(() => {
+              dev.logverbose(
+                `EXPORTER — _prepareSolidColorForMontageAndWeb: created temp image`
+              );
+              const ffmpeg_cmd = new ffmpeg().renice(renice);
+
+              ffmpeg_cmd.input(temp_image_path);
+
+              ffmpeg_cmd.duration(temp_video_duration).loop();
+
+              ffmpeg_cmd
+                // .input(`aevalsrc=0:d=${temp_video_duration}`)
+                .input("anullsrc")
+                .inputFormat("lavfi")
+                .native()
+                .outputFPS(30)
+                .withVideoCodec("libx264")
+                .withVideoBitrate(bitrate)
+                .addOptions(["-af apad", "-tune stillimage"])
+                .size(`${resolution.width}x${resolution.height}`)
+                .autopad()
+                .videoFilter(["setsar=1/1"])
+                .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
+                .toFormat("mpegts")
+                .output(temp_video_path)
+                .on("start", function(commandLine) {
+                  dev.logverbose(
+                    "Spawned Ffmpeg with command: \n" + commandLine
+                  );
+                })
+                .on("progress", progress => {
+                  _notifyFfmpegProgress({ socket, progress });
+                })
+                .on("end", () => {
+                  return resolve({
+                    temp_video_path,
+                    duration: temp_video_duration
+                  });
+                })
+                .on("error", function(err, stdout, stderr) {
+                  dev.error("An error happened: " + err.message);
+                  dev.error("ffmpeg standard output:\n" + stdout);
+                  dev.error("ffmpeg standard error:\n" + stderr);
+                  throw err;
+                })
+                .run();
+              global.ffmpeg_processes.push(ffmpeg_cmd);
+            })
+            .catch(err => {
+              dev.error(`Failed to sharp create image for montage.`);
+              return reject(err);
+            });
+        } else {
+          return resolve({ temp_video_path, duration: temp_video_duration });
         }
       });
     });

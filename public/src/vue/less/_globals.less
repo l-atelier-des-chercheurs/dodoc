@@ -75,6 +75,7 @@ button,
     }
   }
   &.bg-bleumarine {
+    color: #fff;
     &:hover,
     &:active {
       background-color: @c-bleumarine_fonce;
@@ -197,8 +198,12 @@ button,
       transition: transform 0.5s, color 0.5s;
     }
 
-    &:hover::after {
-      .c-rouge;
+    &:hover {
+      .bg-transparent;
+
+      &::after {
+        .c-rouge;
+      }
     }
 
     &.is--active {
@@ -250,6 +255,12 @@ button,
     background-color: @c-gris_tresclair;
     &::after {
       // border-bottom-width: 2px;
+    }
+  }
+
+  &.bg-noir {
+    &:hover {
+      background-color: @c-gris_fonce;
     }
   }
 }
@@ -481,7 +492,6 @@ b {
 .font-normal {
   font-weight: 400;
 }
-
 .text-centered {
   text-align: center;
 }
@@ -880,6 +890,10 @@ label,
   font-weight: 500;
   letter-spacing: 0.05em;
   color: @c-gris_fonce;
+
+  &.c-noir {
+    color: @c-noir;
+  }
 }
 
 svg.inline-svg {

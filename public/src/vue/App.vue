@@ -33,23 +33,18 @@
         :has_back_button="$root.do_navigation.view !== 'ListView'"
         :slugProjectName="$root.do_navigation.current_slugProjectName"
         :project="$root.currentProject"
-        :authors="$root.store.authors"
       />
 
       <div class="m_activitiesPanel">
-        <div
-          :style="{ cursor, userSelect }"
-          class="vue-splitter-container clearfix"
+        <splitpanes
+          watch-slots
+          @resized="resized()"
+          @splitter-click="splitterClicked($event)"
         >
-          <pane
-            class="splitter-pane splitter-paneL"
-            :class="{ 'is--dragged': is_dragged }"
-            :split="split"
-            :style="{ [type]: activity_panel_percent + '%' }"
-          >
+          <pane class="splitter-pane" ref="doPane" min-size="5">
             <div
               class="m_activitiesPanel--do"
-              :class="{ 'is--large': activitiesPanel_is_comfortable }"
+              :class="{ 'is--large': activitiesPanel_is_large }"
             >
               <div
                 style="position: relative; width: 100%; height: 100%; overflow: hidden"
@@ -91,27 +86,17 @@
               </div>
             </div>
           </pane>
-
-          <Resizer
-            :class="{ 'is--dragged': is_dragged }"
-            :className="className"
-            :style="{ [resizeType]: activity_panel_percent + '%' }"
-            :split="split"
-            @mousedown.native="onMouseDown"
-            @click.native="onClick"
-          />
-
           <pane
-            class="splitter-pane splitter-paneR"
+            class="splitter-pane"
             :class="{ 'is--dragged': is_dragged }"
-            :split="split"
-            :style="{ [type]: 100 - activity_panel_percent + '%' }"
+            ref="docPane"
+            size="0"
           >
             <div
               class="m_activitiesPanel--doc"
               :class="{ 'is--open': $root.settings.show_publi_panel }"
             >
-              <button
+              <!-- <button
                 v-if="$root.screen_is_wide"
                 class="publiButton"
                 :content="$t('mix_medias')"
@@ -128,7 +113,6 @@
                 @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
                 :key="'openPubli'"
               >
-                <!-- v-if="$root.do_navigation.view !== 'CaptureView'" -->
                 <img
                   src="/images/i_marmite.svg"
                   width="48"
@@ -136,7 +120,7 @@
                   draggable="false"
                 />
                 <span class="margin-small">{{ $t("publication") }}</span>
-              </button>
+              </button> -->
 
               <div style="position: relative; height: 100%; overflow: hidden">
                 <transition name="ListView" :duration="500">
@@ -275,7 +259,21 @@
               </div>
             </div>
           </pane>
-        </div>
+          <pane class="splitter-pane" ref="chatPane" size="0">
+            <div
+              class="m_activitiesPanel--chat"
+              :class="{ 'is--open': $root.settings.show_chat_panel }"
+            >
+              <transition name="ListView" :duration="500">
+                <Chats
+                  v-if="$root.settings.show_chat_panel"
+                  :read_only="!$root.state.connected"
+                  :chats="$root.store.chats"
+                />
+              </transition>
+            </div>
+          </pane>
+        </splitpanes>
       </div>
       <EditMedia
         v-if="$root.media_modal.open"
@@ -291,7 +289,12 @@
         "
         @close="$root.closeMedia()"
         :read_only="!$root.state.connected"
-      ></EditMedia>
+      />
+      <AuthorsList
+        v-if="$root.showAuthorsListModal"
+        :authors="$root.store.authors"
+        @close="$root.showAuthorsListModal = false"
+      />
     </template>
     <template
       v-else-if="
@@ -326,9 +329,11 @@
 import SystemBar from "./SystemBar.vue";
 import TopBar from "./TopBar.vue";
 import ListView from "./ListView.vue";
+import Chats from "./Chats.vue";
 import ProjectView from "./ProjectView.vue";
 import CaptureView from "./CaptureView.vue";
 import EditMedia from "./components/modals/EditMedia.vue";
+import AuthorsList from "./components/modals/AuthorsList.vue";
 import SessionPassword from "./components/modals/SessionPassword.vue";
 
 import MediaContent from "./components/subcomponents/MediaContent.vue";
@@ -343,8 +348,7 @@ import StopmotionAnimation from "./components/publication_templates/StopmotionAn
 import MixAudioAndVideo from "./components/publication_templates/MixAudioAndVideo.vue";
 import MixAudioAndImage from "./components/publication_templates/MixAudioAndImage.vue";
 
-import Resizer from "./components/splitpane/Resizer.vue";
-import Pane from "./components/splitpane/Pane.vue";
+import { Splitpanes, Pane } from "splitpanes";
 
 export default {
   name: "app",
@@ -352,9 +356,11 @@ export default {
     SystemBar,
     TopBar,
     ListView,
+    Chats,
     ProjectView,
     CaptureView,
     EditMedia,
+    AuthorsList,
     SessionPassword,
     Publications,
     PagePublication,
@@ -365,8 +371,9 @@ export default {
     StopmotionAnimation,
     MixAudioAndVideo,
     MixAudioAndImage,
-    Resizer,
+    Splitpanes,
     Pane,
+
     MediaContent
   },
   props: {},
@@ -380,23 +387,48 @@ export default {
       height: null,
       percent: 100,
       type: "width",
-      resizeType: "left"
+      resizeType: "left",
+
+      panels_width: {
+        doPane: 100,
+        docPane: 0,
+        chatPane: 0
+      }
     };
   },
   watch: {
-    activity_panel_percent() {
-      this.$eventHub.$emit(`activity_panels_resized`);
+    panels_width: {
+      handler() {
+        if (
+          this.panels_width.docPane > 0 &&
+          !this.$root.settings.show_publi_panel
+        ) {
+          this.$root.openPubliPanel();
+        } else if (
+          this.panels_width.docPane === 0 &&
+          this.$root.settings.show_publi_panel
+        ) {
+          this.$root.closePubliPanel();
+        }
+
+        if (
+          this.panels_width.chatPane > 0 &&
+          !this.$root.settings.show_chat_panel
+        ) {
+          this.$root.openChatPanel();
+        } else if (
+          this.panels_width.chatPane === 0 &&
+          this.$root.settings.show_chat_panel
+        ) {
+          this.$root.closeChatPanel();
+        }
+      },
+      deep: true
     }
   },
   created() {},
   computed: {
-    userSelect() {
-      return this.is_dragged ? "none" : "";
-    },
-    cursor() {
-      return this.is_dragged ? "col-resize" : "";
-    },
-    activitiesPanel_is_comfortable() {
+    activitiesPanel_is_large() {
       if ((this.percent / 100) * this.$root.settings.windowWidth < 850) {
         return false;
       }
@@ -404,103 +436,59 @@ export default {
         return false;
       }
       return true;
-    },
-    activity_panel_percent() {
-      if (!this.$root.screen_is_wide) {
-        return 100;
-      }
-      return this.percent;
     }
   },
   methods: {
-    // stopDragtogglePubli() {
-    //   console.log('METHODS • App: stopDragtogglePubli');
-    //   this.is_dragged = false;
-    //   if(!this.$root.settings.show_publi_panel) {
-    //     this.percent = 50;
-    //     this.$root.openPubliPanel();
-    //   } else {
-    //     this.percent = 100;
-    //     this.$root.closePubliPanel();
-    //   }
-    // },
-    dragPubliPanel(event, type) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(
-          `METHODS • App: dragPubliPanel with type = ${type} and is_dragged = ${this.is_dragged}`
-        );
-      }
+    resized() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • App: splitpanes resized`);
 
-      this.drag_offset = -event.target.offsetWidth + event.offsetX;
-      if (!this.drag_offset) {
-        this.drag_offset = 0;
-      }
+      this.$eventHub.$emit(`activity_panels_resized`);
 
-      if (type === "mouse") {
-        window.addEventListener("mousemove", this.dragMove);
-        window.addEventListener("mouseup", this.dragUp);
-      } else if (type === "touch") {
-        window.addEventListener("touchmove", this.dragMove);
-        window.addEventListener("touchend", this.dragUp);
-      }
+      this.updatePanelsSize();
     },
-    dragMove(event) {
-      console.log("METHODS • App: dragMove");
-
-      if (!this.is_dragged) {
-        this.is_dragged = true;
-      } else {
-        let pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
-        pageX = pageX - this.drag_offset;
-
-        const percent =
-          Math.floor((pageX / this.$root.settings.windowWidth) * 10000) / 100;
-
-        if (percent > this.minPercent && percent < 100 - this.minPercent) {
-          this.percent = percent;
-        }
-
-        this.$emit("resize");
-        this.hasMoved = true;
-      }
-    },
-    dragUp(event) {
-      if (this.$root.state.dev_mode === "debug") {
+    splitterClicked(e) {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
-          `METHODS • App: dragUp with is_dragged = ${this.is_dragged}`
+          `METHODS • App: splitpanes splitterClicked with e.index = ${e.index}`
         );
-      }
-      window.removeEventListener("mousemove", this.dragMove);
-      window.removeEventListener("mouseup", this.dragUp);
-      window.removeEventListener("touchmove", this.dragMove);
-      window.removeEventListener("touchend", this.dragUp);
 
-      if (this.is_dragged) {
-        this.is_dragged = false;
-
-        if (this.percent >= 90) {
-          this.percent = 100;
-          this.$root.closePubliPanel();
-          return;
-        }
-
-        if (this.$root.settings.show_publi_panel === false) {
-          this.$root.openPubliPanel();
-        }
-        if (this.percent <= 10) {
-          this.percent = 0;
-        }
-      } else {
+      if (e.index === 1) {
         if (!this.$root.settings.show_publi_panel) {
-          this.percent = 50;
-          this.$root.openPubliPanel();
+          this.panels_width.docPane = 50;
         } else {
-          this.percent = 100;
-          this.$root.closePubliPanel();
+          this.panels_width.doPane += e.size;
+          this.panels_width.docPane = 0;
         }
+        this.setPaneSize();
+      } else if (e.index === 2) {
+        if (!this.$root.settings.show_chat_panel) {
+          this.panels_width.chatPane = 50;
+        } else {
+          this.panels_width.doPane += e.size;
+          this.panels_width.chatPane = 0;
+        }
+        this.setPaneSize();
       }
+    },
+    updatePanelsSize() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • App: updatePanelsSize`);
 
-      return false;
+      Object.entries(this.$refs).map(([key, $el]) => {
+        const _width = parseInt($el.style.width);
+        this.panels_width[key] = _width;
+      });
+    },
+    setPaneSize() {
+      Object.entries(this.panels_width).map(([key, width]) => {
+        if (this.$refs.hasOwnProperty(key)) {
+          console.log(`setPaneSize • setting ${key} to ${width}`);
+          this.$refs[key].$el.style.width = width + "%";
+        }
+      });
+
+      this.$eventHub.$emit(`activity_panels_resized`);
     }
   }
 };

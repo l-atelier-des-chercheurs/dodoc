@@ -297,7 +297,10 @@
           },
           "type": {
             "type": "string",
-            "options": ["text"]
+            "options": ["text", "solid_color"]
+          },
+          "color": {
+            "type": "string"
           },
           "media_filename": {
             "type": "string"
@@ -315,6 +318,12 @@
               "min": 0,
               "max": 100
             }
+          },
+          "transition_in": {
+            "type": "string"
+          },
+          "transition_out": {
+            "type": "string"
           },
           "x": {
             "type": "number"
@@ -399,6 +408,45 @@
           "file_meta": {
             "type": "array",
             "read_only": true
+          }
+        }
+      }
+    },
+    "chats": {
+      "path": "_chats",
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified": {
+          "type": "date",
+          "default": "current",
+          "override": true
+        },
+        "authors": {
+          "type": "array"
+        }
+      },
+      "medias": {
+        "fields": {
+          "date_created": {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
+          "text": {
+            "type": "string"
+          },
+          "authors": {
+            "type": "array"
           }
         }
       }

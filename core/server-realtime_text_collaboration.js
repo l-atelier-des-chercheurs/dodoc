@@ -1,17 +1,17 @@
 // var share = require('./sharedb-server');
 // var ShareDB_logger = require('sharedb-logger');
-var ShareDB = require('sharedb');
-ShareDB.types.register(require('rich-text').type);
+var ShareDB = require("sharedb");
+ShareDB.types.register(require("rich-text").type);
 
-const WebSocket = require('ws');
-const WebSocketJSONStream = require('websocket-json-stream');
-const http = require('http');
-const uuid = require('uuid');
-const url = require('url');
-const { URLSearchParams } = require('url');
+const WebSocket = require("ws");
+const WebSocketJSONStream = require("websocket-json-stream");
+const http = require("http");
+const uuid = require("uuid");
+const url = require("url");
+const { URLSearchParams } = require("url");
 
-const dev = require('./dev-log'),
-  file = require('./file');
+const dev = require("./dev-log"),
+  file = require("./file");
 
 module.exports = function(server) {
   dev.log(`server-realtime_text_collaboration • init`);
@@ -31,7 +31,7 @@ module.exports = function(server) {
 
   const sharewss = new WebSocket.Server({ noServer: true });
 
-  sharewss.on('connection', client => {
+  sharewss.on("connection", client => {
     dev.logfunction(
       `server-realtime_text_collaboration • sharewss new client connection`
     );
@@ -40,9 +40,7 @@ module.exports = function(server) {
     client.isAlive = true;
 
     dev.logverbose(
-      `server-realtime_text_collaboration • sharewss: a new client ${
-        client.id
-      } connected.`
+      `server-realtime_text_collaboration • sharewss: a new client ${client.id} connected.`
     );
 
     // "?type=projects&slugFolderName=publi&metaFileName=text-20181228_122605-shl.md.txt"
@@ -108,40 +106,34 @@ module.exports = function(server) {
 
     share.listen(new WebSocketJSONStream(client));
 
-    client.on('message', function(data, flags) {
+    client.on("message", function(data, flags) {
       dev.logverbose(
-        `server-realtime_text_collaboration • sharewss: message for ${
-          client.id
-        }`
+        `server-realtime_text_collaboration • sharewss: message for ${client.id}`
       );
     });
 
-    client.on('pong', function(data, flags) {
+    client.on("pong", function(data, flags) {
       dev.logverbose(
-        `server-realtime_text_collaboration • sharewss: pong received for ${
-          client.id
-        }`
+        `server-realtime_text_collaboration • sharewss: pong received for ${client.id}`
       );
       client.isAlive = true;
     });
 
-    client.on('message', function() {});
+    client.on("message", function() {});
 
-    client.on('error', function(error) {
+    client.on("error", function(error) {
       dev.error(
-        `server-realtime_text_collaboration • sharewss: client connection errored for ${
-          client.id
-        } with error = ${error}`
+        `server-realtime_text_collaboration • sharewss: client connection errored for ${client.id} with error = ${error}`
       );
     });
   });
 
-  server.on('upgrade', function upgrade(request, socket, head) {
+  server.on("upgrade", function upgrade(request, socket, head) {
     const pathname = url.parse(request.url).pathname;
 
-    if (pathname === '/sharedb') {
+    if (pathname === "/sharedb") {
       sharewss.handleUpgrade(request, socket, head, function done(ws) {
-        sharewss.emit('connection', ws, request);
+        sharewss.emit("connection", ws, request);
       });
     }
   });
@@ -153,9 +145,7 @@ module.exports = function(server) {
       client.isAlive = false;
       client.ping();
       dev.logverbose(
-        `server-realtime_text_collaboration • sharewss: ping sent for ${
-          client.id
-        }`
+        `server-realtime_text_collaboration • sharewss: ping sent for ${client.id}`
       );
     });
   }, 5000);
