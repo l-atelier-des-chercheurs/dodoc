@@ -844,7 +844,7 @@ module.exports = (function() {
                   return resolve();
                 });
             });
-            tasks.push(getEXIFData);
+            if (mediaName !== undefined) tasks.push(getEXIFData);
 
             /***************************************************************************
                 DO IT ALL
