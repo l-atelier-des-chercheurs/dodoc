@@ -13,7 +13,7 @@
         </button>
       </div>
 
-      <div class="m_chat--content--discussion">
+      <div class="m_chat--content--discussion" ref="chat_content">
         <div v-for="item in grouped_messages" :key="item[0]">
           <h3 class="label c-noir margin-small">
             {{ $root.formatDateToHuman(item[0]) }}
@@ -43,6 +43,17 @@
           </div>
         </div>
       </div>
+
+      <transition name="fade_fast" :duration="400">
+        <div
+          class="m_chat--content--scrollToBottom"
+          v-if="!is_scrolled_to_bottom"
+        >
+          <button type="button" @click="scrollToBottom()">
+            <img src="/images/i_arrow_right.svg" draggable="false" />
+          </button>
+        </div>
+      </transition>
 
       <div class="m_chat--content--post">
         <template v-if="$root.settings.current_author.hasOwnProperty('name')">
@@ -80,11 +91,11 @@ export default {
   components: {},
   data() {
     return {
-      new_message: ""
+      new_message: "",
+      is_scrolled_to_bottom: false
     };
   },
-  created() {},
-  mounted() {
+  created() {
     this.$socketio.listFolder({
       type: "chats",
       slugFolderName: this.chat.slugFolderName
@@ -93,9 +104,35 @@ export default {
       type: "chats",
       slugFolderName: this.chat.slugFolderName
     });
+    this.$eventHub.$once("socketio.chats.listMedias", () => {
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+    });
+  },
+  mounted() {
+    setInterval(() => {
+      if (
+        this.$refs.chat_content &&
+        this.$refs.chat_content.scrollTop +
+          this.$refs.chat_content.offsetHeight +
+          30 >=
+          this.$refs.chat_content.scrollHeight
+      )
+        this.is_scrolled_to_bottom = true;
+      else this.is_scrolled_to_bottom = false;
+    }, 1000);
   },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    grouped_messages() {
+      if (this.is_scrolled_to_bottom) {
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+      }
+    }
+  },
   computed: {
     sorted_messages: function() {
       if (typeof this.chat.medias !== "object") return [];
@@ -124,6 +161,10 @@ export default {
     }
   },
   methods: {
+    scrollToBottom() {
+      this.$refs.chat_content.scrollTop = this.$refs.chat_content.scrollHeight;
+      this.is_scrolled_to_bottom = true;
+    },
     postNewMessage() {
       if (!this.$root.settings.current_author.hasOwnProperty("name")) {
         this.$alertify
