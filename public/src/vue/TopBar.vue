@@ -98,7 +98,7 @@
         <button
           type="button"
           class="m_topbar--center--authors--currentAuthor"
-          @click="showAuthorsListModal = true"
+          @click="$root.showAuthorsListModal = true"
           :content="$t('login')"
           v-tippy="{
             placement: 'bottom',
@@ -125,7 +125,9 @@
                 draggable="false"
               />
             </div>
-            <div class="m_topbar--center--authors--name">{{ $root.settings.current_author.name }}</div>
+            <div class="m_topbar--center--authors--name">
+              {{ $root.settings.current_author.name }}
+            </div>
           </template>
           <template v-else>
             <div class="font-medium">({{ $t("authors") }})</div>
@@ -133,12 +135,6 @@
         </button>
 
         <Clients />
-
-        <AuthorsList
-          v-if="showAuthorsListModal"
-          :authors="authors"
-          @close="showAuthorsListModal = false"
-        ></AuthorsList>
       </div>
     </div>
 
@@ -174,7 +170,11 @@
           </svg>
         </button>
 
-        <QRCode v-if="showQRModal" :slugProjectName="slugProjectName" @close="showQRModal = false" />
+        <QRCode
+          v-if="showQRModal"
+          :slugProjectName="slugProjectName"
+          @close="showQRModal = false"
+        />
 
         <a
           class="js--openInBrowser"
@@ -246,7 +246,10 @@
           </svg>
         </button>
 
-        <SettingsModal v-if="showSettingsModal" @close="showSettingsModal = false" />
+        <SettingsModal
+          v-if="showSettingsModal"
+          @close="showSettingsModal = false"
+        />
 
         <!-- <button type="button">
           <svg version="1.1"
@@ -268,7 +271,6 @@
 <script>
 import QRCode from "./components/modals/QRCode.vue";
 import SettingsModal from "./components/modals/SettingsModal.vue";
-import AuthorsList from "./components/modals/AuthorsList.vue";
 import Clients from "./components/Clients.vue";
 
 export default {
@@ -276,14 +278,12 @@ export default {
   components: {
     QRCode,
     SettingsModal,
-    AuthorsList,
     Clients
   },
   data() {
     return {
       showQRModal: false,
       showSettingsModal: false,
-      showAuthorsListModal: false,
       show_menu: false
     };
   },

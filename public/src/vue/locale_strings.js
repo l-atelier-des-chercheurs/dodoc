@@ -2765,6 +2765,11 @@ module.exports = (function() {
       enter_password_to_select: {
         fr: "Renseignez le mot de passe du projet pour pouvoir le sélectionner",
         en: "Enter this project’s password to select it"
+      },
+      need_to_be_author_to_post: {
+        fr:
+          "Identifiez-vous en tant qu’auteur pour pouvoir poster dans le chat.",
+        en: "Login as an author to post in the chat."
       }
     }
   };

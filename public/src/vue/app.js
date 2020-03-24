@@ -248,6 +248,7 @@ let vm = new Vue({
       current_metaFileName: false
     },
     showSessionPasswordModal: false,
+    showAuthorsListModal: false,
 
     // persistant, par device (dans le localstorage)
     settings: {
@@ -288,11 +289,17 @@ let vm = new Vue({
         accepted_media_type: []
       },
 
+      current_chat: {
+        slug: false
+      },
+
       current_author: false,
 
       publi_zoom: 0.8,
 
       show_publi_panel: false,
+      show_chat_panel: false,
+
       enable_system_bar: window.state.is_electron && window.state.is_darwin,
 
       project_filter: {
@@ -997,11 +1004,26 @@ let vm = new Vue({
       this.$socketio.listFolders({ type: "publications" });
     },
     closePubliPanel: function() {
-      if (window.state.dev_mode === "debug") {
+      if (window.state.dev_mode === "debug")
         console.log(`ROOT EVENT: closePubliPanel`);
-      }
+
       this.settings.show_publi_panel = false;
       this.settings.current_publication.slug = false;
+    },
+
+    openChatPanel: function() {
+      if (window.state.dev_mode === "debug")
+        console.log(`ROOT EVENT: openChatPanel`);
+
+      this.settings.show_chat_panel = true;
+
+      this.$socketio.listFolders({ type: "chats" });
+    },
+    closeChatPanel: function() {
+      if (window.state.dev_mode === "debug")
+        console.log(`ROOT EVENT: closeChatPanel`);
+
+      this.settings.show_chat_panel = false;
     },
 
     openPublication(slugPubliName) {

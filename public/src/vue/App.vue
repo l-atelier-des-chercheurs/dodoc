@@ -33,7 +33,6 @@
         :has_back_button="$root.do_navigation.view !== 'ListView'"
         :slugProjectName="$root.do_navigation.current_slugProjectName"
         :project="$root.currentProject"
-        :authors="$root.store.authors"
       />
 
       <div class="m_activitiesPanel">
@@ -97,7 +96,7 @@
               class="m_activitiesPanel--doc"
               :class="{ 'is--open': $root.settings.show_publi_panel }"
             >
-              <button
+              <!-- <button
                 v-if="$root.screen_is_wide"
                 class="publiButton"
                 :content="$t('mix_medias')"
@@ -121,7 +120,7 @@
                   draggable="false"
                 />
                 <span class="margin-small">{{ $t("publication") }}</span>
-              </button>
+              </button> -->
 
               <div style="position: relative; height: 100%; overflow: hidden">
                 <transition name="ListView" :duration="500">
@@ -260,13 +259,19 @@
               </div>
             </div>
           </pane>
-          <pane
-            class="splitter-pane"
-            :class="{ 'is--dragged': is_dragged }"
-            ref="chatPane"
-            size="0"
-          >
-            Chat chat chat
+          <pane class="splitter-pane" ref="chatPane" size="0">
+            <div
+              class="m_activitiesPanel--chat"
+              :class="{ 'is--open': $root.settings.show_chat_panel }"
+            >
+              <transition name="ListView" :duration="500">
+                <Chats
+                  v-if="$root.settings.show_chat_panel"
+                  :read_only="!$root.state.connected"
+                  :chats="$root.store.chats"
+                />
+              </transition>
+            </div>
           </pane>
         </splitpanes>
       </div>
@@ -284,7 +289,12 @@
         "
         @close="$root.closeMedia()"
         :read_only="!$root.state.connected"
-      ></EditMedia>
+      />
+      <AuthorsList
+        v-if="$root.showAuthorsListModal"
+        :authors="$root.store.authors"
+        @close="$root.showAuthorsListModal = false"
+      />
     </template>
     <template
       v-else-if="
@@ -319,9 +329,11 @@
 import SystemBar from "./SystemBar.vue";
 import TopBar from "./TopBar.vue";
 import ListView from "./ListView.vue";
+import Chats from "./Chats.vue";
 import ProjectView from "./ProjectView.vue";
 import CaptureView from "./CaptureView.vue";
 import EditMedia from "./components/modals/EditMedia.vue";
+import AuthorsList from "./components/modals/AuthorsList.vue";
 import SessionPassword from "./components/modals/SessionPassword.vue";
 
 import MediaContent from "./components/subcomponents/MediaContent.vue";
@@ -344,9 +356,11 @@ export default {
     SystemBar,
     TopBar,
     ListView,
+    Chats,
     ProjectView,
     CaptureView,
     EditMedia,
+    AuthorsList,
     SessionPassword,
     Publications,
     PagePublication,
@@ -390,8 +404,23 @@ export default {
           !this.$root.settings.show_publi_panel
         ) {
           this.$root.openPubliPanel();
-        } else if (this.$root.settings.show_publi_panel) {
+        } else if (
+          this.panels_width.docPane === 0 &&
+          this.$root.settings.show_publi_panel
+        ) {
           this.$root.closePubliPanel();
+        }
+
+        if (
+          this.panels_width.chatPane > 0 &&
+          !this.$root.settings.show_chat_panel
+        ) {
+          this.$root.openChatPanel();
+        } else if (
+          this.panels_width.chatPane === 0 &&
+          this.$root.settings.show_chat_panel
+        ) {
+          this.$root.closeChatPanel();
         }
       },
       deep: true
@@ -416,19 +445,28 @@ export default {
 
       this.$eventHub.$emit(`activity_panels_resized`);
 
-      setTimeout(() => {
-        this.updatePanelsSize();
-      }, 500);
+      this.updatePanelsSize();
     },
     splitterClicked(e) {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • App: splitpanes splitterClicked`);
+        console.log(
+          `METHODS • App: splitpanes splitterClicked with e.index = ${e.index}`
+        );
 
       if (e.index === 1) {
         if (!this.$root.settings.show_publi_panel) {
           this.panels_width.docPane = 50;
         } else {
+          this.panels_width.doPane += e.size;
           this.panels_width.docPane = 0;
+        }
+        this.setPaneSize();
+      } else if (e.index === 2) {
+        if (!this.$root.settings.show_chat_panel) {
+          this.panels_width.chatPane = 50;
+        } else {
+          this.panels_width.doPane += e.size;
+          this.panels_width.chatPane = 0;
         }
         this.setPaneSize();
       }
@@ -446,13 +484,11 @@ export default {
       Object.entries(this.panels_width).map(([key, width]) => {
         if (this.$refs.hasOwnProperty(key)) {
           console.log(`setPaneSize • setting ${key} to ${width}`);
-          this.$refs[key].$el.style.width = width;
+          this.$refs[key].$el.style.width = width + "%";
         }
       });
 
-      setTimeout(() => {
-        this.$eventHub.$emit(`activity_panels_resized`);
-      }, 500);
+      this.$eventHub.$emit(`activity_panels_resized`);
     }
   }
 };
