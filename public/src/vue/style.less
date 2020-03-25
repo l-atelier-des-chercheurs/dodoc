@@ -1900,7 +1900,12 @@ small {
     figure {
       border: 2px solid @c-gris_fonce;
       border-top: 0;
-      background-color: @c-gris_fonce;
+
+      .m_media--topbar {
+        background-color: @c-gris_fonce;
+        border-bottom: 0;
+        border-radius: 0;
+      }
     }
   }
 
@@ -4100,7 +4105,6 @@ small {
     flex: 1 1 0;
     // .bg-gris_clair;
     overflow-y: auto;
-    
 
     .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
 

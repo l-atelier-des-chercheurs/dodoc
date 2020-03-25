@@ -2797,6 +2797,10 @@ module.exports = (function() {
         fr:
           "Identifiez-vous en tant qu’auteur pour pouvoir poster dans le chat.",
         en: "Login as an author to post in the chat."
+      },
+      new_chat_posted_in: {
+        fr: "Nouveau message publié dans le sujet ",
+        en: "New message in chat "
       }
     }
   };

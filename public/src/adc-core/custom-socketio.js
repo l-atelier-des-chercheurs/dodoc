@@ -182,7 +182,7 @@ module.exports = (function() {
               }
             }
 
-            this.$eventHub.$emit(`socketio.${type}.listMedia`);
+            this.$eventHub.$emit(`socketio.${type}.listMedia`, data);
           },
 
           _onListMedias(data) {

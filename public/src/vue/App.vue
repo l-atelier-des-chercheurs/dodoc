@@ -35,8 +35,6 @@
         :project="$root.currentProject"
       />
 
-      {{ panels_width }}
-
       <div class="m_activitiesPanel">
         <splitpanes
           watch-slots
@@ -440,7 +438,12 @@ export default {
       deep: true
     }
   },
-  created() {},
+  created() {
+    this.$eventHub.$on("socketio.chats.listMedia", this.newChatPosted);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("socketio.chats.listMedia", this.newChatPosted);
+  },
   computed: {
     activitiesPanel_is_large() {
       if ((this.percent / 100) * this.$root.settings.windowWidth < 850) {
@@ -458,8 +461,6 @@ export default {
         console.log(`METHODS • App: splitpanes resized`);
 
       this.$eventHub.$emit(`activity_panels_resized`);
-
-      // this.updatePanelsSize();
     },
     splitterClicked(e) {
       if (this.$root.state.dev_mode === "debug")
@@ -498,14 +499,22 @@ export default {
         }
       }
     },
-    updatePanelsSize() {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • App: updatePanelsSize`);
+    newChatPosted(m) {
+      // const chatroom =
+      const type = Object.keys(m)[0];
+      const content = Object.values(m)[0];
 
-      Object.entries(this.$refs).map(([key, $el]) => {
-        const _width = parseInt($el.style.width);
-        this.panels_width[key] = _width;
-      });
+      const chat_name = Object.values(content)[0].name;
+
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .log(
+          this.$t("notifications.new_chat_posted_in") +
+            "<b>" +
+            chat_name +
+            "</b>"
+        );
     }
   }
 };
