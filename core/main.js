@@ -92,6 +92,12 @@ module.exports = function({ router }) {
 
                   global.session_password = auth.hashCode(pass);
                 }
+                global.force_login =
+                  !!sessionMeta &&
+                  sessionMeta.hasOwnProperty("force_login") &&
+                  sessionMeta.force_login === "true";
+                dev.log("Force login is set to " + global.force_login);
+
                 portscanner
                   .findAPortNotInUse(
                     global.settings.desired_port,
