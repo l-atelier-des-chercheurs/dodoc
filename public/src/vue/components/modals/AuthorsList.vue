@@ -131,7 +131,7 @@
                 <button
                   type="button"
                   class="m_authorsList--author--card"
-                  @click="setAuthor(author)"
+                  @click.stop="setAuthor(author)"
                 >
                   <img
                     v-if="!!author.preview"
