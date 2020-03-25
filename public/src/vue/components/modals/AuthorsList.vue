@@ -1,5 +1,10 @@
 <template>
-  <Modal ref="modal" @close="$emit('close')" :typeOfModal="'LargeAndScroll'">
+  <Modal
+    ref="modal"
+    @close="$emit('close')"
+    :typeOfModal="'LargeAndScroll'"
+    :prevent_close="prevent_close"
+  >
     <template slot="header">
       <span class>{{ $t("authors_list") }}</span>
     </template>
@@ -165,6 +170,10 @@ export default {
     authors: {
       type: Object,
       default: {}
+    },
+    prevent_close: {
+      type: Boolean,
+      default: false
     }
   },
   components: {

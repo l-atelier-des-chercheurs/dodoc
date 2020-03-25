@@ -291,8 +291,14 @@
         :read_only="!$root.state.connected"
       />
       <AuthorsList
-        v-if="$root.showAuthorsListModal"
+        v-if="
+          $root.showAuthorsListModal ||
+            ($root.state.force_login && !$root.settings.current_author)
+        "
         :authors="$root.store.authors"
+        :prevent_close="
+          $root.state.force_login && !$root.settings.current_author
+        "
         @close="$root.showAuthorsListModal = false"
       />
     </template>
