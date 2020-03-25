@@ -12,6 +12,10 @@
     <template slot="preview">
       <div class>
         <div class="margin-sides-medium margin-vert-small">
+          <div v-if="$root.state.force_login && !$root.settings.current_author">
+            <strong>{{ $t("login_to_access") }} </strong>
+          </div>
+
           <small>{{
             $t("when_logged_as_author_content_will_be_tagged")
           }}</small>

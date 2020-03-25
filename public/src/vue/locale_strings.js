@@ -747,6 +747,12 @@ module.exports = (function() {
       oc: "S'identificar",
       de: "Anmeldung"
     },
+    login_to_access: {
+      fr:
+        "Identifiez vous en créant un auteur ou en cliquant sur votre nom si c’est déjà fait !",
+      en:
+        "Login by creating an author or clicking or your name to access do•doc."
+    },
     adding_password_warning: {
       fr:
         "Attention ! Si vous ajoutez ou modifiez un mot de passe tous les utilisateurs qui y sont actuellement connectés devront le renseigner avant de pouvoir continuer à contribuer.",
