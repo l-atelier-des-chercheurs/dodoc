@@ -414,24 +414,24 @@ export default {
     panels_width: {
       handler() {
         if (
-          this.panels_width.docPane > 0 &&
+          this.panels_width.docPane > 0.01 &&
           !this.$root.settings.show_publi_panel
         ) {
           this.$root.openPubliPanel();
         } else if (
-          this.panels_width.docPane === 0 &&
+          this.panels_width.docPane <= 0.01 &&
           this.$root.settings.show_publi_panel
         ) {
           this.$root.closePubliPanel();
         }
 
         if (
-          this.panels_width.chatPane > 0 &&
+          this.panels_width.chatPane > 0.01 &&
           !this.$root.settings.show_chat_panel
         ) {
           this.$root.openChatPanel();
         } else if (
-          this.panels_width.chatPane === 0 &&
+          this.panels_width.chatPane <= 0.01 &&
           this.$root.settings.show_chat_panel
         ) {
           this.$root.closeChatPanel();
