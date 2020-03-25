@@ -407,7 +407,11 @@ module.exports = (function() {
     channels_instructions: {
       fr:
         "Espaces de discussion : échangez avec les autres utilisateurs en créant un sujet !",
-      en: ""
+      en: "Chat rooms: share with other users by creating a topic!"
+    },
+    channels_list: {
+      fr: "Liste des discussions",
+      en: "List of topics"
     },
     copy_of: {
       fr: "Copie de",
