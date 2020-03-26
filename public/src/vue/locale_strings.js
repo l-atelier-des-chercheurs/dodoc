@@ -407,7 +407,11 @@ module.exports = (function() {
     channels_instructions: {
       fr:
         "Espaces de discussion : échangez avec les autres utilisateurs en créant un sujet !",
-      en: ""
+      en: "Chat rooms: share with other users by creating a topic!"
+    },
+    channels_list: {
+      fr: "Liste des discussions",
+      en: "List of topics"
     },
     copy_of: {
       fr: "Copie de",
@@ -742,6 +746,12 @@ module.exports = (function() {
       nl: "Inloggen ",
       oc: "S'identificar",
       de: "Anmeldung"
+    },
+    login_to_access: {
+      fr:
+        "Identifiez vous en créant un auteur ou en cliquant sur votre nom si c’est déjà fait !",
+      en:
+        "Login by creating an author or clicking or your name to access do•doc."
     },
     adding_password_warning: {
       fr:
@@ -2787,6 +2797,10 @@ module.exports = (function() {
         fr:
           "Identifiez-vous en tant qu’auteur pour pouvoir poster dans le chat.",
         en: "Login as an author to post in the chat."
+      },
+      new_chat_posted_in: {
+        fr: "Nouveau message publié dans le sujet ",
+        en: "New message in chat "
       }
     }
   };

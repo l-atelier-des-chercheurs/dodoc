@@ -38,10 +38,16 @@
       <div class="m_activitiesPanel">
         <splitpanes
           watch-slots
+          @resize="resize($event)"
           @resized="resized()"
           @splitter-click="splitterClicked($event)"
         >
-          <pane class="splitter-pane" ref="doPane" min-size="5">
+          <pane
+            class="splitter-pane"
+            ref="doPane"
+            min-size="5"
+            :size="panels_width.doPane"
+          >
             <div
               class="m_activitiesPanel--do"
               :class="{ 'is--large': activitiesPanel_is_large }"
@@ -88,9 +94,8 @@
           </pane>
           <pane
             class="splitter-pane"
-            :class="{ 'is--dragged': is_dragged }"
             ref="docPane"
-            size="0"
+            :size="panels_width.docPane"
           >
             <div
               class="m_activitiesPanel--doc"
@@ -106,7 +111,6 @@
                 }"
                 :class="{
                   'is--open': $root.settings.show_publi_panel,
-                  'is--dragged': is_dragged,
                   'is--allthewaytotheleft': activity_panel_percent === 0
                 }"
                 @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
@@ -259,7 +263,11 @@
               </div>
             </div>
           </pane>
-          <pane class="splitter-pane" ref="chatPane" size="0">
+          <pane
+            class="splitter-pane"
+            ref="chatPane"
+            :size="panels_width.chatPane"
+          >
             <div
               class="m_activitiesPanel--chat"
               :class="{ 'is--open': $root.settings.show_chat_panel }"
@@ -387,7 +395,6 @@ export default {
     return {
       minPercent: 0,
       split: "vertical",
-      is_dragged: false,
       drag_offset: 0,
       hasMoved: false,
       height: null,
@@ -406,24 +413,24 @@ export default {
     panels_width: {
       handler() {
         if (
-          this.panels_width.docPane > 0 &&
+          this.panels_width.docPane > 0.01 &&
           !this.$root.settings.show_publi_panel
         ) {
           this.$root.openPubliPanel();
         } else if (
-          this.panels_width.docPane === 0 &&
+          this.panels_width.docPane <= 0.01 &&
           this.$root.settings.show_publi_panel
         ) {
           this.$root.closePubliPanel();
         }
 
         if (
-          this.panels_width.chatPane > 0 &&
+          this.panels_width.chatPane > 0.01 &&
           !this.$root.settings.show_chat_panel
         ) {
           this.$root.openChatPanel();
         } else if (
-          this.panels_width.chatPane === 0 &&
+          this.panels_width.chatPane <= 0.01 &&
           this.$root.settings.show_chat_panel
         ) {
           this.$root.closeChatPanel();
@@ -432,7 +439,12 @@ export default {
       deep: true
     }
   },
-  created() {},
+  created() {
+    this.$eventHub.$on("socketio.chats.listMedia", this.newChatPosted);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("socketio.chats.listMedia", this.newChatPosted);
+  },
   computed: {
     activitiesPanel_is_large() {
       if ((this.percent / 100) * this.$root.settings.windowWidth < 850) {
@@ -445,13 +457,17 @@ export default {
     }
   },
   methods: {
+    resize($event) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • App: splitpanes resize`);
+      this.panels_width.doPane = $event[0].size;
+      this.panels_width.docPane = $event[1].size;
+      this.panels_width.chatPane = $event[2].size;
+    },
     resized() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • App: splitpanes resized`);
-
       this.$eventHub.$emit(`activity_panels_resized`);
-
-      this.updatePanelsSize();
     },
     splitterClicked(e) {
       if (this.$root.state.dev_mode === "debug")
@@ -460,42 +476,52 @@ export default {
         );
 
       if (e.index === 1) {
-        if (!this.$root.settings.show_publi_panel) {
-          this.panels_width.docPane = 50;
+        if (this.panels_width.docPane <= 0.01) {
+          if (this.panels_width.chatPane <= 0.01) this.panels_width.doPane = 70;
+          else {
+            this.panels_width.chatPane = 35;
+            this.panels_width.doPane = 35;
+          }
+          this.panels_width.docPane = 30;
         } else {
-          this.panels_width.doPane += e.size;
-          this.panels_width.docPane = 0;
+          if (this.panels_width.chatPane <= 0.01)
+            this.panels_width.doPane = 100;
+          else
+            this.panels_width.doPane =
+              this.panels_width.docPane + this.panels_width.doPane;
+          this.panels_width.docPane = 0.01;
         }
-        this.setPaneSize();
       } else if (e.index === 2) {
-        if (!this.$root.settings.show_chat_panel) {
-          this.panels_width.chatPane = 50;
+        if (this.panels_width.chatPane <= 0.01) {
+          if (this.panels_width.docPane <= 0.01) this.panels_width.doPane = 70;
+          else {
+            this.panels_width.docPane = 35;
+            this.panels_width.doPane = 35;
+          }
+          this.panels_width.chatPane = 30;
         } else {
-          this.panels_width.doPane += e.size;
-          this.panels_width.chatPane = 0;
+          this.panels_width.doPane =
+            this.panels_width.chatPane + this.panels_width.doPane;
+          this.panels_width.chatPane = 0.01;
         }
-        this.setPaneSize();
       }
     },
-    updatePanelsSize() {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • App: updatePanelsSize`);
+    newChatPosted(m) {
+      // const chatroom =
+      const type = Object.keys(m)[0];
+      const content = Object.values(m)[0];
 
-      Object.entries(this.$refs).map(([key, $el]) => {
-        const _width = parseInt($el.style.width);
-        this.panels_width[key] = _width;
-      });
-    },
-    setPaneSize() {
-      Object.entries(this.panels_width).map(([key, width]) => {
-        if (this.$refs.hasOwnProperty(key)) {
-          if (this.$root.state.dev_mode === "debug")
-            console.log(`setPaneSize • setting ${key} to ${width}`);
-          this.$refs[key].$el.style.width = width + "%";
-        }
-      });
+      const chat_name = Object.values(content)[0].name;
 
-      this.$eventHub.$emit(`activity_panels_resized`);
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .log(
+          this.$t("notifications.new_chat_posted_in") +
+            "<b>" +
+            chat_name +
+            "</b>"
+        );
     }
   }
 };

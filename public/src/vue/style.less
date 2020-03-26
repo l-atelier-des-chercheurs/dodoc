@@ -1900,7 +1900,12 @@ small {
     figure {
       border: 2px solid @c-gris_fonce;
       border-top: 0;
-      background-color: @c-gris_fonce;
+
+      .m_media--topbar {
+        background-color: @c-gris_fonce;
+        border-bottom: 0;
+        border-radius: 0;
+      }
     }
   }
 
@@ -3765,13 +3770,14 @@ small {
 
 .m_recipes {
   .padding-small;
-  // .margin-bottom-medium;
+  .margin-right-verysmall;
   overflow-y: auto;
-  .custom_scrollbar(8px, 5px, 6px);
+  .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
 }
 .m_recipes--recipe {
   border: 4px solid @c-bleuvert;
   .margin-small;
+  margin-right: 0;
   .bg-bleuvert;
 
   border-radius: @t-buttonradius;
@@ -4100,7 +4106,6 @@ small {
     flex: 1 1 0;
     // .bg-gris_clair;
     overflow-y: auto;
-    scroll-behavior: smooth;
 
     .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
 
@@ -4116,16 +4121,25 @@ small {
       display: block;
       bottom: 0;
       right: 0;
-      .margin-small;
-      .bg-rouge;
+      .margin-medium;
+      .bg-blanc;
+      border: 4px solid @c-rouge;
       pointer-events: auto;
       border-radius: 50%;
       transform: rotate(90deg);
 
-      width: 3em;
-      height: 3em;
+      width: 48px;
+      height: 48px;
 
       padding: 0;
+
+      box-sizing: content-box;
+
+      transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+      &:hover {
+        transform: scale(1.1) rotate(90deg);
+      }
 
       svg {
         // width: 100%;
@@ -6122,9 +6136,6 @@ small {
   opacity: 0;
   z-index: 10;
 }
-.splitpanes__splitter:hover:before {
-  // opacity: 1;
-}
 .splitpanes--vertical > .splitpanes__splitter::before {
   left: -10px;
   right: -10px;
@@ -6165,8 +6176,11 @@ small {
     background-repeat: no-repeat;
   }
 
-  &:hover:after {
-    .bg-bleuvert_fonce;
+  &:hover {
+    .bg-bleuvert;
+    &:after {
+      .bg-bleuvert_fonce;
+    }
   }
 
   ~ .splitpanes__splitter:after {

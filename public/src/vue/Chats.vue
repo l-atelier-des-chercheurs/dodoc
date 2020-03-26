@@ -2,11 +2,11 @@
   <div class="m_chatsview">
     <div class="m_actionbar">
       <div class="m_actionbar--buttonBar"></div>
-      <div class="m_actionbar--text">{{ $t('channels_instructions') }}</div>
+      <div class="m_actionbar--text">{{ $t("channels_instructions") }}</div>
     </div>
 
     <div class="m_channels">
-      <h3 class="font-folder_title">Liste des discussions</h3>
+      <h3 class="font-folder_title">{{ $t("channels_list") }}</h3>
       <div class="margin-vert-small">
         <button
           type="button"
@@ -23,7 +23,12 @@
           @submit.prevent="createChannel()"
           class="input-group"
         >
-          <input type="text" v-model.trim="new_channel_name" required autofocus />
+          <input
+            type="text"
+            v-model.trim="new_channel_name"
+            required
+            autofocus
+          />
           <button
             type="submit"
             :disabled="new_channel_name === ''"
@@ -47,7 +52,9 @@
             type="button"
             class="buttonLink bg-rouge"
             @click.stop="openChat(chat.slugFolderName)"
-          >{{ $t("open") }}</button>
+          >
+            {{ $t("open") }}
+          </button>
         </div>
       </div>
     </div>
