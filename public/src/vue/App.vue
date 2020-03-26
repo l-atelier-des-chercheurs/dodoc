@@ -38,6 +38,7 @@
       <div class="m_activitiesPanel">
         <splitpanes
           watch-slots
+          @resize="resize($event)"
           @resized="resized()"
           @splitter-click="splitterClicked($event)"
         >
@@ -456,10 +457,16 @@ export default {
     }
   },
   methods: {
+    resize($event) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • App: splitpanes resize`);
+      this.panels_width.doPane = $event[0].size;
+      this.panels_width.docPane = $event[1].size;
+      this.panels_width.chatPane = $event[2].size;
+    },
     resized() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • App: splitpanes resized`);
-
       this.$eventHub.$emit(`activity_panels_resized`);
     },
     splitterClicked(e) {
