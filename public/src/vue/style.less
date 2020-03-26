@@ -3770,13 +3770,14 @@ small {
 
 .m_recipes {
   .padding-small;
-  // .margin-bottom-medium;
+  .margin-right-verysmall;
   overflow-y: auto;
-  .custom_scrollbar(8px, 5px, 6px);
+  .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
 }
 .m_recipes--recipe {
   border: 4px solid @c-bleuvert;
   .margin-small;
+  margin-right: 0;
   .bg-bleuvert;
 
   border-radius: @t-buttonradius;
@@ -6135,9 +6136,6 @@ small {
   opacity: 0;
   z-index: 10;
 }
-.splitpanes__splitter:hover:before {
-  // opacity: 1;
-}
 .splitpanes--vertical > .splitpanes__splitter::before {
   left: -10px;
   right: -10px;
@@ -6178,8 +6176,11 @@ small {
     background-repeat: no-repeat;
   }
 
-  &:hover:after {
-    .bg-bleuvert_fonce;
+  &:hover {
+    .bg-bleuvert;
+    &:after {
+      .bg-bleuvert_fonce;
+    }
   }
 
   ~ .splitpanes__splitter:after {
