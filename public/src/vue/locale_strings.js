@@ -753,6 +753,18 @@ module.exports = (function() {
       en:
         "Login by creating an author or clicking or your name to access do•doc."
     },
+    login_to_post: {
+      fr: "Identifiez-vous pour envoyer un message",
+      en: "Login to send a message"
+    },
+    post_a_message: {
+      fr: "Envoyez un message",
+      en: "Send a message"
+    },
+    login_to_create_channel: {
+      fr: "Identifiez-vous pour créer un sujet",
+      en: "Login to create a topic"
+    },
     adding_password_warning: {
       fr:
         "Attention ! Si vous ajoutez ou modifiez un mot de passe tous les utilisateurs qui y sont actuellement connectés devront le renseigner avant de pouvoir continuer à contribuer.",
@@ -843,6 +855,10 @@ module.exports = (function() {
       oc:
         "Sètz segur de voler suprimir aqueste autor ? Totes los mèdias, projèctes e recèptas associadas seràn servadas.",
       de: "Sind Sie sicher, dass Sie diesen Autor löschen wollen?"
+    },
+    sure_to_remove_chat: {
+      fr: "Êtes-vous sûr de vouloir supprimer ce sujet et tout son contenu ?",
+      en: "Do you really want to delete this topic and all its content?"
     },
     sureToRemoveSelection: {
       fr: "Êtes-vous sûr de vouloir supprimer cette sélection ?",
@@ -1647,6 +1663,10 @@ module.exports = (function() {
       oc: "Sètz segur de voler suprimir aqueste mèdia ?",
       de: "Sind Sie sicher, dass Sie dieses  Medium zu entfernen?"
     },
+    sure_to_remove_chat: {
+      fr: "Êtes-vous sûr de vouloir supprimer ce message ?",
+      en: "Do you really want to delete this message?"
+    },
     sureToRemovePage: {
       fr: "Êtes-vous sûr de vouloir supprimer cette page ?",
       en: "Do you really want to delete this page?"
@@ -2211,6 +2231,10 @@ module.exports = (function() {
       en: "Drawing"
     },
     drawing_pad_summary: {
+      fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables.",
+      en: "Draw, annotate, mind map, etc."
+    },
+    drawing_pad_instructions: {
       fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables.",
       en: "Draw, annotate, mind map, etc."
     },
