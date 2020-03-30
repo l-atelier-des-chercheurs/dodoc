@@ -6,55 +6,73 @@
     </div>
 
     <div class="m_channels">
-      <h3 class="font-folder_title">{{ $t("channels_list") }}</h3>
-      <div class="margin-vert-small">
-        <button
-          type="button"
-          class="barButton barButton_createChannel"
-          @click="show_create_channel_modal = !show_create_channel_modal"
-        >
-          <span>{{ $t("create") }}</span>
-        </button>
-      </div>
+      <div class="m_channels--content">
+        <h3 class="font-folder_title">{{ $t("channels_list") }}</h3>
+        <div class="margin-vert-small">
+          <template v-if="$root.settings.current_author.hasOwnProperty('name')">
+            <button
+              type="button"
+              class="barButton barButton_createChannel"
+              @click="show_create_channel_modal = !show_create_channel_modal"
+            >
+              <span>{{ $t("create") }}</span>
+            </button>
 
-      <div>
-        <form
-          v-if="show_create_channel_modal"
-          @submit.prevent="createChannel()"
-          class="input-group"
-        >
-          <input
-            type="text"
-            v-model.trim="new_channel_name"
-            required
-            autofocus
-          />
-          <button
-            type="submit"
-            :disabled="new_channel_name === ''"
-            v-html="$t('create')"
-            class="bg-bleuvert"
-          />
-        </form>
-      </div>
-      <div class="m_chats--list">
-        <div
-          v-for="(chat, index) in chats"
-          :key="index"
-          class="m_chats--list--item"
-          :class="{
-            'is--open': $root.settings.current_chat.slug === chat.slugFolderName
-          }"
-          @click="openChat(chat.slugFolderName)"
-        >
-          <span class="m_chats--list--item--name">{{ chat.name }}</span>
-          <button
-            type="button"
-            class="buttonLink bg-rouge"
-            @click.stop="openChat(chat.slugFolderName)"
+            <div>
+              <form
+                v-if="show_create_channel_modal"
+                @submit.prevent="createChannel()"
+                class="input-group"
+              >
+                <input
+                  type="text"
+                  v-model.trim="new_channel_name"
+                  required
+                  autofocus
+                />
+                <button
+                  type="submit"
+                  :disabled="new_channel_name === ''"
+                  v-html="$t('create')"
+                  class="bg-bleuvert"
+                />
+              </form>
+            </div>
+          </template>
+          <template v-else>
+            <div>
+              <button
+                type="button"
+                class="button-thin bg-bleumarine margin-left-none"
+                @click="$root.showAuthorsListModal = true"
+              >
+                {{ $t("login_to_create_channel") }}
+              </button>
+            </div>
+          </template>
+        </div>
+
+        <div class="m_chats--list">
+          <div
+            v-for="(chat, index) in chats"
+            :key="index"
+            class="m_chats--list--item"
+            :class="{
+              'is--open':
+                $root.settings.current_chat.slug === chat.slugFolderName
+            }"
+            @click="openChat(chat.slugFolderName)"
           >
-            {{ $t("open") }}
-          </button>
+            <span class="m_chats--list--item--name">{{ chat.name }}</span>
+            <button
+              type="button"
+              class="buttonLink bg-rouge"
+              @click.exact.stop="openChat(chat.slugFolderName)"
+              @click.shift="removeChat(chat.slugFolderName)"
+            >
+              {{ $t("open") }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -109,7 +127,10 @@ export default {
         return false;
       }
       const data = {
-        name: this.new_channel_name
+        name: this.new_channel_name,
+        authors: this.$root.settings.current_author.hasOwnProperty("name")
+          ? [{ name: this.$root.settings.current_author.name }]
+          : ""
       };
 
       this.show_create_channel_modal = false;
@@ -119,6 +140,21 @@ export default {
     },
     openChat(slug) {
       this.$root.settings.current_chat.slug = slug;
+    },
+    removeChat(slugFolderName) {
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sure_to_remove_chat"),
+          () => {
+            this.$root.removeFolder({
+              type: "chats",
+              slugFolderName
+            });
+          },
+          () => {}
+        );
     }
   }
 };

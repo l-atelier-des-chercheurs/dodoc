@@ -1,7 +1,10 @@
 <template>
   <div class="m_chat" @click.self="$root.settings.current_chat.slug = false">
     <div class="m_chat--content">
-      <div class="m_chat--content--name">
+      <div
+        class="m_chat--content--name"
+        :class="{ 'has--content_hidden_behind': !is_scrolled_to_top }"
+      >
         {{ chat.name }}
         <button
           type="button"
@@ -14,7 +17,7 @@
 
       <div class="m_chat--content--discussion" ref="chat_content">
         <div v-for="item in grouped_messages" :key="item[0]">
-          <h3 class="label c-noir margin-small">
+          <h3 class="label c-noir margin-small text-centered">
             {{ $root.formatDateToHuman(item[0]) }}
           </h3>
           <div
@@ -22,9 +25,7 @@
             :key="message.metaFileName"
             class="m_message"
             :class="{
-              'is--currentauthor':
-                Array.isArray(message.authors) &&
-                message.authors[0].name === $root.settings.current_author.name
+              'is--currentauthor': isCurrentAuthor(message)
             }"
           >
             <div class="m_message--meta" v-if="message.authors">
@@ -32,7 +33,33 @@
                 <span>{{ message.authors[0].name }}</span>
               </div>
               <div class="m_message--meta--date">
-                {{ $moment(message.date_created).format("HH:mm") }}
+                <span>{{ $moment(message.date_created).format("HH:mm") }}</span>
+                <button
+                  type="button"
+                  v-if="isCurrentAuthor(message)"
+                  class="button-nostyle padding-top-verysmall"
+                  @click="removeChat(message)"
+                >
+                  <svg
+                    version="1.1"
+                    class="inline-svg"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    x="0px"
+                    y="0px"
+                    width="91.6px"
+                    height="95px"
+                    viewBox="0 0 91.6 95"
+                    style="enable-background:new 0 0 91.6 95;"
+                    xml:space="preserve"
+                  >
+                    <path
+                      class="st0"
+                      d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
 
@@ -52,9 +79,12 @@
         </div>
       </transition>
 
-      <div class="m_chat--content--post">
+      <div
+        class="m_chat--content--post"
+        :class="{ 'has--hidden_content_above': !is_scrolled_to_bottom }"
+      >
         <template v-if="$root.settings.current_author.hasOwnProperty('name')">
-          <label>Envoyer un message</label>
+          <label>{{ $t("post_a_message") }}</label>
           <form @submit.prevent="postNewMessage()" class="input-group">
             <input type="text" v-model.trim="new_message" required autofocus />
             <button
@@ -72,7 +102,7 @@
               class="button-thin bg-bleumarine"
               @click="$root.showAuthorsListModal = true"
             >
-              Identifiez-vous pour poster
+              {{ $t("login_to_post") }}
             </button>
           </div>
         </template>
@@ -89,7 +119,8 @@ export default {
   data() {
     return {
       new_message: "",
-      is_scrolled_to_bottom: true
+      is_scrolled_to_bottom: true,
+      is_scrolled_to_top: false
     };
   },
   created() {
@@ -110,16 +141,25 @@ export default {
   },
   mounted() {
     setInterval(() => {
+      if (!this.$refs.chat_content) return;
+
+      if (this.$refs.chat_content.scrollTop === 0) {
+        this.is_scrolled_to_top = true;
+        this.is_scrolled_to_bottom = false;
+        return;
+      } else {
+        this.is_scrolled_to_top = false;
+      }
+
       if (
-        this.$refs.chat_content &&
         this.$refs.chat_content.scrollTop +
           this.$refs.chat_content.offsetHeight +
           30 >=
-          this.$refs.chat_content.scrollHeight
+        this.$refs.chat_content.scrollHeight
       )
         this.is_scrolled_to_bottom = true;
       else this.is_scrolled_to_bottom = false;
-    }, 500);
+    }, 200);
 
     setTimeout(() => {}, 500);
   },
@@ -164,6 +204,32 @@ export default {
     scrollToBottom() {
       this.$refs.chat_content.scrollTop = this.$refs.chat_content.scrollHeight;
       // this.is_scrolled_to_bottom = true;
+    },
+    isCurrentAuthor(message) {
+      return (
+        Array.isArray(message.authors) &&
+        message.authors[0].name === this.$root.settings.current_author.name
+      );
+    },
+    removeChat(message) {
+      if (this.$root.state.dev_mode === "debug") {
+        console.log("METHODS • Chat: removeMedia");
+      }
+
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sure_to_remove_chat"),
+          () => {
+            this.$root.removeMedia({
+              type: "chats",
+              slugFolderName: this.chat.slugFolderName,
+              slugMediaName: message.metaFileName
+            });
+          },
+          () => {}
+        );
     },
     postNewMessage() {
       if (!this.$root.settings.current_author.hasOwnProperty("name")) {
