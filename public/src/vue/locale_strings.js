@@ -1663,7 +1663,7 @@ module.exports = (function() {
       oc: "Sètz segur de voler suprimir aqueste mèdia ?",
       de: "Sind Sie sicher, dass Sie dieses  Medium zu entfernen?"
     },
-    sure_to_remove_chat: {
+    sure_to_remove_message: {
       fr: "Êtes-vous sûr de vouloir supprimer ce message ?",
       en: "Do you really want to delete this message?"
     },

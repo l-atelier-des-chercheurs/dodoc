@@ -38,7 +38,7 @@
                   type="button"
                   v-if="isCurrentAuthor(message)"
                   class="button-nostyle padding-top-verysmall"
-                  @click="removeChat(message)"
+                  @click="removeMessage(message)"
                 >
                   <svg
                     version="1.1"
@@ -211,7 +211,7 @@ export default {
         message.authors[0].name === this.$root.settings.current_author.name
       );
     },
-    removeChat(message) {
+    removeMessage(message) {
       if (this.$root.state.dev_mode === "debug") {
         console.log("METHODS • Chat: removeMedia");
       }
@@ -220,7 +220,7 @@ export default {
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
         .confirm(
-          this.$t("sure_to_remove_chat"),
+          this.$t("sure_to_remove_message"),
           () => {
             this.$root.removeMedia({
               type: "chats",
