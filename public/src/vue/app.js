@@ -1019,8 +1019,6 @@ let vm = new Vue({
         console.log(`ROOT EVENT: openChatPanel`);
 
       this.settings.show_chat_panel = true;
-
-      this.$socketio.listFolders({ type: "chats" });
     },
     closeChatPanel: function() {
       if (window.state.dev_mode === "debug")
