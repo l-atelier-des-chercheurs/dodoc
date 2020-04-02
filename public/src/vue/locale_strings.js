@@ -88,6 +88,10 @@ module.exports = (function() {
       fr: "Messages",
       en: "Messages"
     },
+    unread_messages: {
+      fr: "Messages non-lus",
+      en: "Unread messages"
+    },
     no_media_on_this_page: {
       fr: "Aucun média à afficher sur cette page",
       en: "No media on this page"

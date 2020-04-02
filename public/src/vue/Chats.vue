@@ -8,7 +8,6 @@
     <div class="m_channels">
       <div class="m_channels--content">
         <h3 class="font-folder_title">{{ $t("channels_list") }}</h3>
-        {{ $root.current_author }}
         <div class="margin-vert-small">
           <template v-if="$root.current_author">
             <button
@@ -64,7 +63,15 @@
             }"
             @click="openChat(chat.slugFolderName)"
           >
-            <span>
+            <span
+              v-if="unreadMessages(chat)"
+              class="m_chats--list--item--unreadCounter"
+              :content="$t('unread_messages')"
+              v-tippy="{
+                placement: 'bottom',
+                delay: [600, 0]
+              }"
+            >
               {{ unreadMessages(chat) }}
             </span>
             <span class="m_chats--list--item--name">{{ chat.name }} </span>
@@ -132,10 +139,12 @@ export default {
       this.$eventHub.$once("socketio.chats.folders_listed", () => {
         Object.keys(this.$root.store.chats).forEach(slugChatName => {
           const project_meta = this.$root.store.chats[slugChatName];
-          this.$socketio.listMedias({
-            type: "chats",
-            slugFolderName: slugChatName
-          });
+          setTimeout(() => {
+            this.$socketio.listMedias({
+              type: "chats",
+              slugFolderName: slugChatName
+            });
+          }, 1000);
         });
       });
     },

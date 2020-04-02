@@ -142,7 +142,11 @@ export default {
     setInterval(() => {
       if (!this.$refs.chat_content) return;
 
-      if (this.$refs.chat_content.scrollTop === 0) {
+      if (
+        this.$refs.chat_content.scrollTop === 0 &&
+        this.$refs.chat_content.offsetHeight >
+          this.$refs.chat_content.scrollHeight
+      ) {
         this.is_scrolled_to_top = true;
         this.is_scrolled_to_bottom = false;
         return;
@@ -229,9 +233,11 @@ export default {
         const channel_info_in_author = last_messages_read_in_channels.find(
           c => c.channel === last_message_channel.channel
         );
-        if (channel_info_in_author.msg === last_message_channel.msg) {
+        if (
+          channel_info_in_author &&
+          channel_info_in_author.msg === last_message_channel.msg
+        ) {
           // already up to date, do nothing
-          console.log("plip");
           return;
         }
 
@@ -241,6 +247,7 @@ export default {
         );
 
         last_messages_read_in_channels.push(last_message_channel);
+        debugger;
 
         this.$root.editFolder({
           type: "authors",
