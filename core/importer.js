@@ -76,11 +76,6 @@ module.exports = (function() {
 
         // once all the files have been uploaded
         form.on("end", function() {
-          let msg = {};
-          msg.msg = "success";
-          // msg.medias = JSON.stringify(allFilesMeta);
-          res.end(JSON.stringify(msg));
-
           if (allFilesMeta.length > 0) {
             var m = [];
             for (var i in allFilesMeta) {
@@ -94,7 +89,11 @@ module.exports = (function() {
                 })
               );
             }
-            Promise.all(m).then(() => {
+            Promise.all(m).then(medias_filenames => {
+              let msg = {};
+              msg.msg = "success";
+              msg.medias_filenames = medias_filenames;
+              res.end(JSON.stringify(msg));
               resolve();
             });
           }
@@ -145,7 +144,7 @@ module.exports = (function() {
                 slugFolderName,
                 additionalMeta: fileMeta.additionalMeta
               });
-              resolve();
+              resolve(newFileName);
             })
             .catch(err => {
               dev.error(err);

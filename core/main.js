@@ -70,7 +70,7 @@ module.exports = function({ router }) {
         cache.enable();
       }
 
-      dev.log(`——— Starting dodoc2 app version ${global.appInfos.version}`);
+      dev.log(`——— Starting app version ${global.appInfos.version}`);
 
       cleanCacheFolder().then(
         () => {
