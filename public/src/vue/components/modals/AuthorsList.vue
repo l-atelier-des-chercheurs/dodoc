@@ -12,7 +12,7 @@
     <template slot="preview">
       <div class>
         <div class="margin-sides-medium margin-vert-small">
-          <div v-if="$root.state.force_login && !$root.settings.current_author">
+          <div v-if="$root.state.force_login && !$root.current_author">
             <strong>{{ $t("login_to_access") }} </strong>
           </div>
 
@@ -69,8 +69,7 @@
                 :key="author.slugFolderName"
                 class="m_authorsList--author"
                 :class="{
-                  'is--selected':
-                    author.name === $root.settings.current_author.name
+                  'is--selected': author.name === $root.current_author.name
                 }"
                 @click="setAuthor(author)"
               >
@@ -143,14 +142,14 @@
                   <div class="m_authorsList--author--name">
                     {{ author.name }}
                   </div>
-                  <!-- <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
+                  <!-- <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.current_author.name">
                       {{ $t('select') }}
                   </button>-->
                   <button
                     type="button"
                     class="buttonLink"
                     @click.stop="unsetAuthor()"
-                    v-if="author.name === $root.settings.current_author.name"
+                    v-if="author.name === $root.current_author.name"
                   >
                     {{ $t("unselect") }}
                   </button>

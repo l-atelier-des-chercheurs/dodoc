@@ -293,7 +293,7 @@ let vm = new Vue({
         slug: false
       },
 
-      current_author: false,
+      current_author_slug: false,
 
       publi_zoom: 0.8,
 
@@ -518,13 +518,11 @@ let vm = new Vue({
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: var has changed: store.authors`);
       }
-      // check if, when store.authors refresh, the current_author is still there
+      // check if, when store.authors refresh, the current_author_slug is still there
       // delog if not
       if (
-        this.settings.current_author &&
-        !this.store.authors.hasOwnProperty(
-          this.settings.current_author.slugFolderName
-        )
+        this.settings.current_author_slug &&
+        !this.store.authors.hasOwnProperty(this.settings.current_author_slug)
       ) {
         this.unsetAuthor();
       }
@@ -550,6 +548,12 @@ let vm = new Vue({
         this.closeProject();
         return {};
       }
+    },
+    current_author() {
+      if (!this.settings.current_author_slug) return false;
+      if (!this.store.authors.hasOwnProperty(this.settings.current_author_slug))
+        return false;
+      return this.store.authors[this.settings.current_author_slug];
     },
     current_publication() {
       if (this.settings.current_publication.slug) {
@@ -764,13 +768,11 @@ let vm = new Vue({
           .toString(36)
           .substring(2, 15);
 
-      if (this.settings.current_author.hasOwnProperty("name")) {
+      if (this.current_author) {
         if (!mdata.hasOwnProperty("additionalMeta")) {
           mdata.additionalMeta = {};
         }
-        mdata.additionalMeta.authors = [
-          { name: this.settings.current_author.name }
-        ];
+        mdata.additionalMeta.authors = [{ name: this.current_author.name }];
       }
 
       this.$nextTick(() => {
@@ -978,11 +980,12 @@ let vm = new Vue({
       localstore.set("language", newLangCode);
     },
     setAuthor: function(author) {
-      this.settings.current_author = author;
+      this.settings.current_author_slug = author.slugFolderName;
       this.$socketio.socket.emit("updateClientInfo", { author });
     },
     unsetAuthor: function() {
-      this.settings.current_author = false;
+      this.settings.current_author_slug = false;
+      this.$socketio.socket.emit("updateClientInfo", {});
     },
     togglePubliPanel: function() {
       if (window.state.dev_mode === "debug") {

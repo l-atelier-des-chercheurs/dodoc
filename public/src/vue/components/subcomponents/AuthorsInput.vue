@@ -4,16 +4,21 @@
       v-for="author in allAuthors"
       type="button"
       :key="author.name"
-      :class="{ 
+      :class="{
         'is--active': authors.filter(a => a.name === author.name).length > 0,
-        'is--loggedInAuthor': $root.settings.current_author.name === author.name
+        'is--loggedInAuthor':
+          $root.current_author && $root.current_author.name === author.name
       }"
       @click="toggleAuthorName(author.name)"
-    >{{ author.name }}</button>
+    >
+      {{ author.name }}
+    </button>
     <button
       type="button"
       @click="show_all_authors = true"
-      v-if="max_authors_displayed_at_first <= allAuthors.length && !show_all_authors"
+      v-if="
+        max_authors_displayed_at_first <= allAuthors.length && !show_all_authors
+      "
       class="m_authorField--show_all_authors"
       v-html="$t('show_all_authors')"
     />
@@ -46,9 +51,8 @@ export default {
       const allAuthors = this.authors.concat(this.$root.allAuthors);
       let nameList = [];
 
-      if (this.$root.settings.current_author.hasOwnProperty("name")) {
-        allAuthors.unshift(this.$root.settings.current_author);
-      }
+      if (this.$root.current_author)
+        allAuthors.unshift(this.$root.current_author);
 
       let unique_authors = allAuthors.filter(a => {
         if (nameList.indexOf(a.name) === -1) {
@@ -91,5 +95,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

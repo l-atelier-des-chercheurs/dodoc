@@ -8,7 +8,8 @@
             v-for="project in all_projects"
             :key="project.slugFolderName"
             :value="project.slugFolderName"
-          >{{ project.name }}</option>
+            >{{ project.name }}</option
+          >
         </select>
         <button
           type="button"
@@ -70,8 +71,8 @@ export default {
         },
         additionalMeta: {
           caption,
-          authors: this.$root.settings.current_author.hasOwnProperty("name")
-            ? [{ name: this.$root.settings.current_author.name }]
+          authors: this.$root.current_author
+            ? [{ name: this.$root.current_author.name }]
             : ""
         }
       });
@@ -94,5 +95,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

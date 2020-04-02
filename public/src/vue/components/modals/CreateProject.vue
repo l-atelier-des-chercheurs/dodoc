@@ -179,8 +179,8 @@ export default {
       projectdata: {
         name: "",
         password: "",
-        authors: this.$root.settings.current_author.hasOwnProperty("name")
-          ? [{ name: this.$root.settings.current_author.name }]
+        authors: this.$root.current_author
+          ? [{ name: this.$root.current_author.name }]
           : [],
         keywords: []
       },

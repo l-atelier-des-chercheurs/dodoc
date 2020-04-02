@@ -155,8 +155,8 @@ export default {
         password: "",
         template: this.default_template,
         keywords: [],
-        authors: this.$root.settings.current_author.hasOwnProperty("name")
-          ? [{ name: this.$root.settings.current_author.name }]
+        authors: this.$root.current_author
+          ? [{ name: this.$root.current_author.name }]
           : [],
         attached_to_project: this.$root.do_navigation.current_slugProjectName
       },

@@ -301,12 +301,10 @@
       <AuthorsList
         v-if="
           $root.showAuthorsListModal ||
-            ($root.state.force_login && !$root.settings.current_author)
+            ($root.state.force_login && !$root.current_author)
         "
         :authors="$root.store.authors"
-        :prevent_close="
-          $root.state.force_login && !$root.settings.current_author
-        "
+        :prevent_close="$root.state.force_login && !$root.current_author"
         @close="$root.showAuthorsListModal = false"
       />
     </template>
