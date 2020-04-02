@@ -2350,6 +2350,10 @@ module.exports = (function() {
       fr: "Les deux",
       en: "Both"
     },
+    last_message: {
+      fr: "Dernier message",
+      en: "Last message"
+    },
     carreau_summary: {
       fr: "Empiler des médias pour créer en temps réel des présentations.",
       en: "Stack multiple medias on a single surface to project content.",

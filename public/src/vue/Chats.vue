@@ -63,7 +63,12 @@
             }"
             @click="openChat(chat.slugFolderName)"
           >
-            <span class="m_chats--list--item--name">{{ chat.name }}</span>
+            <span class="m_chats--list--item--name">{{ chat.name }} </span>
+            <small class="c-blanc">
+              {{ $t("last_message") }}<br />{{
+                $root.formatDateToPrecise(chat.date_modified)
+              }}
+            </small>
             <button
               type="button"
               class="buttonLink bg-rouge"
