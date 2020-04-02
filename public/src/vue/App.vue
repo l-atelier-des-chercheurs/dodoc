@@ -439,6 +439,11 @@ export default {
   },
   created() {
     this.$eventHub.$on("socketio.chats.listMedia", this.newChatPosted);
+
+    if (this.$root.state.force_login) {
+      this.panels_width.chatPane = 30;
+      this.panels_width.doPane = 70;
+    }
   },
   beforeDestroy() {
     this.$eventHub.$off("socketio.chats.listMedia", this.newChatPosted);
