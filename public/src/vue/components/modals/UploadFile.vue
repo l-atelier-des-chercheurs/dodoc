@@ -37,7 +37,10 @@
 
           <div class="m_uploadFile--filename">{{ f.name }}</div>
           <div class="m_uploadFile--size">{{ $root.formatBytes(f.size) }}</div>
-          <div class="m_uploadFile--action" v-if="files_to_upload_meta.hasOwnProperty(f.name)">
+          <div
+            class="m_uploadFile--action"
+            v-if="files_to_upload_meta.hasOwnProperty(f.name)"
+          >
             <button
               type="button"
               class="buttonLink"
@@ -49,16 +52,16 @@
               "
             >
               <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">
-                {{
-                $t("import")
-                }}
+                {{ $t("import") }}
               </template>
               <template
                 v-else-if="files_to_upload_meta[f.name].status === 'success'"
-              >{{ $t("sent") }}</template>
+                >{{ $t("sent") }}</template
+              >
               <template
                 v-else-if="files_to_upload_meta[f.name].status === 'failed'"
-              >{{ $t("retry") }}</template>
+                >{{ $t("retry") }}</template
+              >
             </button>
           </div>
         </div>
@@ -124,8 +127,8 @@ export default {
         formData.append("files", f, filename);
         const meta = {
           fileCreationDate: modified,
-          authors: this.$root.settings.current_author_name
-            ? [{ name: this.$root.settings.current_author_name }]
+          authors: this.$root.current_author
+            ? [{ name: this.$root.current_author.name }]
             : ""
         };
         formData.append(filename, JSON.stringify(meta));

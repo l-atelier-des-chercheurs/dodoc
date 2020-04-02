@@ -158,7 +158,7 @@ module.exports = (function() {
       }
     );
   }
-  function onEditFolder(socket, { type, slugFolderName, data }) {
+  function onEditFolder(socket, { type, slugFolderName, data, id }) {
     dev.logfunction(
       `EVENT - onEditFolder for type = ${type}, slugFolderName = ${slugFolderName}, data = ${JSON.stringify(
         data
@@ -218,7 +218,7 @@ module.exports = (function() {
               });
             }
 
-            sendFolders({ type, slugFolderName });
+            sendFolders({ type, slugFolderName, id });
           })
           .catch(err => {
             dev.error(`Error on editFolder: ${err}`);
@@ -301,6 +301,7 @@ module.exports = (function() {
             additionalMeta: _additionalMeta
           })
           .then(metaFileName => {
+            onEditFolder(socket, { type, slugFolderName, data: {} });
             sendMedias({
               type,
               slugFolderName,
@@ -327,6 +328,7 @@ module.exports = (function() {
     file
       .createMediaMeta({ type, slugFolderName, additionalMeta })
       .then(metaFileName => {
+        onEditFolder(undefined, { type, slugFolderName, data: {} });
         sendMedias({
           type,
           slugFolderName,
@@ -362,6 +364,7 @@ module.exports = (function() {
       })
       .then(
         slugFolderName => {
+          onEditFolder(socket, { type, slugFolderName, data: {} });
           sendMedias({ type, slugFolderName, metaFileName: slugMediaName });
         },
         function(err) {
@@ -457,6 +460,7 @@ module.exports = (function() {
       .removeMedia({ type, slugFolderName, metaFileName: slugMediaName })
       .then(
         () => {
+          onEditFolder(socket, { type, slugFolderName, data: {} });
           sendMedias({ type, slugFolderName });
         },
         function(err, p) {

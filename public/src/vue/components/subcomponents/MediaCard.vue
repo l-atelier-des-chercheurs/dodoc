@@ -42,9 +42,7 @@
                 <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
               </svg>
               <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">
-                {{
-                $t(media.type)
-                }}
+                {{ $t(media.type) }}
               </span>
               <label
                 :for="is_selected + id"
@@ -194,12 +192,12 @@ export default {
       if (!this.media.authors || typeof this.media.authors !== "object") {
         return false;
       }
-      if (!this.$root.settings.current_author) {
+      if (!this.$root.current_author) {
         return false;
       }
       return (
         this.media.authors.filter(
-          a => a.name === this.$root.settings.current_author.name
+          a => a.name === this.$root.current_author.name
         ).length > 0
       );
     }

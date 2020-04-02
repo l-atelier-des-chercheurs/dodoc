@@ -105,19 +105,19 @@
             delay: [600, 0]
           }"
         >
-          <template v-if="!!$root.settings.current_author">
+          <template v-if="$root.current_author">
             <div
               class="m_topbar--center--authors--portrait"
               v-if="
-                $root.settings.current_author.hasOwnProperty('preview') &&
-                  $root.settings.current_author.preview.length !== ''
+                $root.current_author.hasOwnProperty('preview') &&
+                  $root.current_author.preview.length !== ''
               "
             >
               <img
                 :src="
                   urlToPortrait(
-                    $root.settings.current_author.slugFolderName,
-                    $root.settings.current_author.preview
+                    $root.current_author.slugFolderName,
+                    $root.current_author.preview
                   )
                 "
                 width="100"
@@ -126,7 +126,7 @@
               />
             </div>
             <div class="m_topbar--center--authors--name">
-              {{ $root.settings.current_author.name }}
+              {{ $root.current_author.name }}
             </div>
           </template>
           <template v-else>

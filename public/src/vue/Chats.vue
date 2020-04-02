@@ -9,7 +9,7 @@
       <div class="m_channels--content">
         <h3 class="font-folder_title">{{ $t("channels_list") }}</h3>
         <div class="margin-vert-small">
-          <template v-if="$root.settings.current_author.hasOwnProperty('name')">
+          <template v-if="$root.current_author">
             <button
               type="button"
               class="barButton barButton_createChannel"
@@ -63,7 +63,23 @@
             }"
             @click="openChat(chat.slugFolderName)"
           >
-            <span class="m_chats--list--item--name">{{ chat.name }}</span>
+            <span
+              v-if="unreadMessages(chat)"
+              class="m_chats--list--item--unreadCounter"
+              :content="$t('unread_messages')"
+              v-tippy="{
+                placement: 'bottom',
+                delay: [600, 0]
+              }"
+            >
+              {{ unreadMessages(chat) }}
+            </span>
+            <span class="m_chats--list--item--name">{{ chat.name }} </span>
+            <small class="c-blanc">
+              {{ $t("last_message") }}<br />{{
+                $root.formatDateToPrecise(chat.date_modified)
+              }}
+            </small>
             <button
               type="button"
               class="buttonLink bg-rouge"
@@ -100,8 +116,13 @@ export default {
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.reloadChats();
+    this.$eventHub.$on("socketio.reconnect", this.reloadChats);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("socketio.reconnect", this.reloadChats);
+  },
   watch: {},
   computed: {
     current_chat() {
@@ -113,6 +134,51 @@ export default {
     }
   },
   methods: {
+    reloadChats() {
+      this.$socketio.listFolders({ type: "chats" });
+      this.$eventHub.$once("socketio.chats.folders_listed", () => {
+        Object.keys(this.$root.store.chats).forEach(slugChatName => {
+          const project_meta = this.$root.store.chats[slugChatName];
+          setTimeout(() => {
+            this.$socketio.listMedias({
+              type: "chats",
+              slugFolderName: slugChatName
+            });
+          }, 1000);
+        });
+      });
+    },
+    unreadMessages(chat) {
+      if (
+        typeof chat.medias !== "object" ||
+        Object.keys(chat.medias).length === 0 ||
+        !this.$root.current_author
+      )
+        return false;
+
+      const total_number_of_messages_in_chat = Object.keys(chat.medias).length;
+
+      // find media with meta
+      const last_messages_read_in_channels = this.$root.current_author
+        .last_messages_read_in_channels;
+
+      if (last_messages_read_in_channels) {
+        const existing_info = last_messages_read_in_channels.find(
+          c => c.channel === chat.slugFolderName
+        );
+        if (existing_info) {
+          const last_message_metaFileName = existing_info.metaFileName;
+          const index_of_past_message_read = Object.values(
+            chat.medias
+          ).findIndex(m => m.metaFileName === existing_info.msg);
+          return (
+            total_number_of_messages_in_chat - index_of_past_message_read - 1
+          );
+        }
+      }
+
+      return total_number_of_messages_in_chat;
+    },
     createChannel() {
       if (
         Object.values(this.$root.store.chats).find(
@@ -128,8 +194,8 @@ export default {
       }
       const data = {
         name: this.new_channel_name,
-        authors: this.$root.settings.current_author.hasOwnProperty("name")
-          ? [{ name: this.$root.settings.current_author.name }]
+        authors: this.$root.current_author
+          ? [{ name: this.$root.current_author.name }]
           : ""
       };
 

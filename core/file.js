@@ -455,27 +455,17 @@ module.exports = (function() {
 
           fs.copy(oldFolderPath, newFolderPath)
             .then(() => {
-              const metaFolderPath = path.join(
-                newFolderPath,
-                global.settings.folderMetaFilename + global.settings.metaFileext
-              );
-
-              readMetaFile(metaFolderPath).then(meta => {
-                if (meta.hasOwnProperty("name")) {
-                  meta.name = new_folder_name;
-                }
-
-                // update
-                meta = _updateCurrentFields({ type, meta });
-
-                api
-                  .storeData(metaFolderPath, meta)
-                  .then(() => {
-                    return resolve(new_slugFolderName);
-                  })
-                  .catch(err => {
-                    return reject(err);
-                  });
+              API.getFolder({ type, new_slugFolderName }).then(foldersData => {
+                API.editFolder({
+                  type,
+                  slugFolderName: new_slugFolderName,
+                  foldersData,
+                  newFoldersData: {
+                    name: new_folder_name
+                  }
+                }).then(() => {
+                  return resolve(new_slugFolderName);
+                });
               });
             })
             .catch(err => {
@@ -1779,6 +1769,7 @@ module.exports = (function() {
       resolve(metaFileContentParsed);
     });
   }
+
   function _getFolderSlugs(mainFolderPath) {
     return new Promise(function(resolve, reject) {
       dev.logfunction(`COMMON — _getFolderSlugs in ${mainFolderPath}`);

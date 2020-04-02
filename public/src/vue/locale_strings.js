@@ -84,6 +84,14 @@ module.exports = (function() {
       oc: "Importacion",
       de: "Import"
     },
+    messages: {
+      fr: "Messages",
+      en: "Messages"
+    },
+    unread_messages: {
+      fr: "Messages non-lus",
+      en: "Unread messages"
+    },
     no_media_on_this_page: {
       fr: "Aucun média à afficher sur cette page",
       en: "No media on this page"
@@ -2349,6 +2357,10 @@ module.exports = (function() {
     both: {
       fr: "Les deux",
       en: "Both"
+    },
+    last_message: {
+      fr: "Dernier message",
+      en: "Last message"
     },
     carreau_summary: {
       fr: "Empiler des médias pour créer en temps réel des présentations.",

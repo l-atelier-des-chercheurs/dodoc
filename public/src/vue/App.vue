@@ -301,12 +301,10 @@
       <AuthorsList
         v-if="
           $root.showAuthorsListModal ||
-            ($root.state.force_login && !$root.settings.current_author)
+            ($root.state.force_login && !$root.current_author)
         "
         :authors="$root.store.authors"
-        :prevent_close="
-          $root.state.force_login && !$root.settings.current_author
-        "
+        :prevent_close="$root.state.force_login && !$root.current_author"
         @close="$root.showAuthorsListModal = false"
       />
     </template>
@@ -441,6 +439,11 @@ export default {
   },
   created() {
     this.$eventHub.$on("socketio.chats.listMedia", this.newChatPosted);
+
+    if (this.$root.state.force_login) {
+      this.panels_width.chatPane = 30;
+      this.panels_width.doPane = 70;
+    }
   },
   beforeDestroy() {
     this.$eventHub.$off("socketio.chats.listMedia", this.newChatPosted);

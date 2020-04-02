@@ -83,7 +83,7 @@
         class="m_chat--content--post"
         :class="{ 'has--hidden_content_above': !is_scrolled_to_bottom }"
       >
-        <template v-if="$root.settings.current_author.hasOwnProperty('name')">
+        <template v-if="$root.current_author">
           <label>{{ $t("post_a_message") }}</label>
           <form @submit.prevent="postNewMessage()" class="input-group">
             <input type="text" v-model.trim="new_message" required autofocus />
@@ -124,26 +124,29 @@ export default {
     };
   },
   created() {
-    this.$socketio.listFolder({
-      type: "chats",
-      slugFolderName: this.chat.slugFolderName
-    });
     this.$socketio.listMedias({
       type: "chats",
       slugFolderName: this.chat.slugFolderName
     });
+
     this.$eventHub.$once("socketio.chats.listMedias", () => {
       this.$nextTick(() => {
         this.scrollToBottom();
         this.$refs.chat_content.style.scrollBehavior = "smooth";
       });
     });
+
+    // this.$eventHub.$on("socketio.reconnect", this.reloadChat);
   },
   mounted() {
     setInterval(() => {
       if (!this.$refs.chat_content) return;
 
-      if (this.$refs.chat_content.scrollTop === 0) {
+      if (
+        this.$refs.chat_content.scrollTop === 0 &&
+        this.$refs.chat_content.offsetHeight >
+          this.$refs.chat_content.scrollHeight
+      ) {
         this.is_scrolled_to_top = true;
         this.is_scrolled_to_bottom = false;
         return;
@@ -156,14 +159,15 @@ export default {
           this.$refs.chat_content.offsetHeight +
           30 >=
         this.$refs.chat_content.scrollHeight
-      )
+      ) {
         this.is_scrolled_to_bottom = true;
-      else this.is_scrolled_to_bottom = false;
-    }, 200);
-
-    setTimeout(() => {}, 500);
+        this.setReadMessageToLast();
+      } else this.is_scrolled_to_bottom = false;
+    }, 1000);
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off("socketio.reconnect", this.loadChat);
+  },
   watch: {
     grouped_messages() {
       if (this.is_scrolled_to_bottom) {
@@ -202,13 +206,62 @@ export default {
   },
   methods: {
     scrollToBottom() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log("METHODS • Chat: scrollToBottom");
+
       this.$refs.chat_content.scrollTop = this.$refs.chat_content.scrollHeight;
-      // this.is_scrolled_to_bottom = true;
+    },
+    setReadMessageToLast() {
+      // if logged in, set author last_messages_read_in_channels to metaFileName of chat
+      if (this.$root.current_author && this.sorted_messages.length > 0) {
+        const last_message_channel = {
+          channel: this.chat.slugFolderName,
+          msg: this.sorted_messages[this.sorted_messages.length - 1]
+            .metaFileName
+        };
+
+        let last_messages_read_in_channels = Array.isArray(
+          this.$root.current_author.last_messages_read_in_channels
+        )
+          ? JSON.parse(
+              JSON.stringify(
+                this.$root.current_author.last_messages_read_in_channels
+              )
+            )
+          : [];
+
+        const channel_info_in_author = last_messages_read_in_channels.find(
+          c => c.channel === last_message_channel.channel
+        );
+        if (
+          channel_info_in_author &&
+          channel_info_in_author.msg === last_message_channel.msg
+        ) {
+          // already up to date, do nothing
+          return;
+        }
+
+        // remove existing prop
+        last_messages_read_in_channels = last_messages_read_in_channels.filter(
+          c => c.channel !== last_message_channel.channel
+        );
+
+        last_messages_read_in_channels.push(last_message_channel);
+        debugger;
+
+        this.$root.editFolder({
+          type: "authors",
+          slugFolderName: this.$root.current_author.slugFolderName,
+          data: {
+            last_messages_read_in_channels
+          }
+        });
+      }
     },
     isCurrentAuthor(message) {
       return (
         Array.isArray(message.authors) &&
-        message.authors[0].name === this.$root.settings.current_author.name
+        message.authors[0].name === this.$root.current_author.name
       );
     },
     removeMessage(message) {
@@ -232,12 +285,11 @@ export default {
         );
     },
     postNewMessage() {
-      if (!this.$root.settings.current_author.hasOwnProperty("name")) {
+      if (!this.$root.current_author) {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t("notifications.need_to_be_author_to_post"));
-
         return false;
       }
 
@@ -246,7 +298,7 @@ export default {
         slugFolderName: this.chat.slugFolderName,
         additionalMeta: {
           text: this.new_message,
-          authors: [{ name: this.$root.settings.current_author.name }]
+          authors: [{ name: this.$root.current_author.name }]
         }
       });
 
