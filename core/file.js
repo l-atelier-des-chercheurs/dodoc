@@ -727,6 +727,9 @@ module.exports = (function() {
                 case ".avi":
                   additionalMeta.type = "video";
                   break;
+                case ".stl":
+                  additionalMeta.type = "stl";
+                  break;
                 case ".mp3":
                 case ".wav":
                 case ".m4a":

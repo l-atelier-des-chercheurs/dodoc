@@ -104,7 +104,15 @@
           },
           "type": {
             "type": "string",
-            "options": ["image", "video", "audio", "text", "document", "other"],
+            "options": [
+              "image",
+              "video",
+              "audio",
+              "text",
+              "stl",
+              "document",
+              "other"
+            ],
             "default": "other"
           },
           "fav": {
