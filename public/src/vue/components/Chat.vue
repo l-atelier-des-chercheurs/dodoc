@@ -247,7 +247,6 @@ export default {
         );
 
         last_messages_read_in_channels.push(last_message_channel);
-        debugger;
 
         this.$root.editFolder({
           type: "authors",

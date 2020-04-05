@@ -3,7 +3,8 @@ const path = require("path"),
   pathToFfmpeg = require("ffmpeg-static"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
-  exifReader = require("exif-reader");
+  exifReader = require("exif-reader"),
+  StlThumbnailer = require("node-stl-to-thumbnail");
 
 const sharp = require("sharp");
 sharp.cache(false);
@@ -35,7 +36,7 @@ module.exports = (function() {
       dev.logfunction(
         `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType}, type: ${type}, subtype: ${subtype}`
       );
-      if (!["image", "video"].includes(mediaType)) {
+      if (!["image", "video", "stl"].includes(mediaType)) {
         dev.logverbose(
           `THUMBS — makeMediaThumbs — media is not of type image or video`
         );
@@ -140,6 +141,58 @@ module.exports = (function() {
                 });
             });
             makeThumbs.push(makeScreenshot);
+          });
+        }
+
+        if (mediaType === "stl") {
+          let screenshotsAngles = [0];
+          screenshotsAngles.forEach(angle => {
+            let makeSTLScreenshot = new Promise((resolve, reject) => {
+              _makeSTLScreenshot(mediaPath, thumbFolderPath, filename, angle)
+                .then(({ screenshotPath, screenshotName }) => {
+                  // make screenshot, then make thumbs out of each screenshot and push this to thumbs
+                  // naming :
+                  // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
+                  // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
+
+                  let makeThumbsFromScreenshot = [];
+
+                  thumbResolutions.forEach(thumbRes => {
+                    let makeThumbFromScreenshot = new Promise(
+                      (resolve, reject) => {
+                        _makeImageThumb(
+                          api.getFolderPath(screenshotPath),
+                          thumbFolderPath,
+                          screenshotName,
+                          thumbRes
+                        )
+                          .then(thumbPath => {
+                            let thumbMeta = {
+                              path: thumbPath,
+                              size: thumbRes
+                            };
+                            resolve(thumbMeta);
+                          })
+                          .catch(err => {
+                            dev.error(
+                              `makeMediaThumbs / Failed to make stl thumbs with error ${err}`
+                            );
+                            resolve();
+                          });
+                      }
+                    );
+                    makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
+                  });
+                  Promise.all(makeThumbsFromScreenshot).then(thumbsData => {
+                    resolve({ angle, thumbsData });
+                  });
+                })
+                .catch(err => {
+                  dev.error(`Couldn’t make stl screenshots.`);
+                  resolve();
+                });
+            });
+            makeThumbs.push(makeSTLScreenshot);
           });
         }
 
@@ -526,6 +579,49 @@ module.exports = (function() {
               filename: screenshotName,
               folder: api.getFolderPath(thumbFolderPath)
             });
+        } else {
+          dev.logverbose(
+            `Screenshots already exist at path ${fullScreenshotPath}`
+          );
+          resolve({ screenshotPath, screenshotName });
+        }
+      });
+    });
+  }
+
+  function _makeSTLScreenshot(mediaPath, thumbFolderPath, filename, angle) {
+    return new Promise(function(resolve, reject) {
+      dev.logverbose(`Looking to make a STL screenshot for ${mediaPath}`);
+
+      // todo : use angle to get screenshots all around an stl
+
+      let screenshotName = `${filename}.${angle}.png`;
+      let screenshotPath = path.join(thumbFolderPath, screenshotName);
+      let fullScreenshotPath = api.getFolderPath(screenshotPath);
+
+      // check first if it exists, resolve if it does
+      fs.access(fullScreenshotPath, fs.F_OK, function(err) {
+        // if userDir folder doesn't exist yet at destination
+        if (err) {
+          var thumbnailer = new StlThumbnailer({
+            filePath: mediaPath,
+            requestThumbnails: [
+              {
+                width: 1800,
+                height: 1800
+              }
+            ]
+          }).then(function(thumbnails) {
+            // thumbnails is an array (in matching order to your requests) of Canvas objects
+            // you can write them to disk, return them to web users, etc
+            // see node-canvas documentation at https://github.com/Automattic/node-canvas
+            thumbnails[0].toBuffer(function(err, buf) {
+              if (err) return reject();
+
+              fs.writeFileSync(fullScreenshotPath, buf);
+              return resolve({ screenshotPath, screenshotName });
+            });
+          });
         } else {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`

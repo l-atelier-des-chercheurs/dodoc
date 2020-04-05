@@ -24,9 +24,9 @@
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
         <img
-          :srcset="videostillSrcSetAttr"
+          :srcset="complexMediaSrcSetAttr({ opt: 'timeMark' })"
           :sizes="imageSizesAttr"
-          :src="linkToVideoThumb"
+          :src="linkToComplexMediaThumb({ opt: 'timeMark' })"
           draggable="false"
         />
         <div class="play_picto">
@@ -49,8 +49,7 @@
           </svg>
 
           <div v-if="media_duration" class="_duration">
-            {{ $root.formatDurationToMinuteHours(
-            media_duration * 1000) }}
+            {{ $root.formatDurationToMinuteHours(media_duration * 1000) }}
           </div>
         </div>
       </template>
@@ -61,8 +60,47 @@
           :emit="['volumechange']"
           @volumechange="volumeChanged"
         >
-          <video :poster="linkToVideoThumb" :src="mediaURL" preload="none" :autoplay="autoplay" />
+          <video
+            :poster="linkToComplexMediaThumb({ opt: 'timeMark' })"
+            :src="mediaURL"
+            preload="none"
+            :autoplay="autoplay"
+          />
         </vue-plyr>
+      </template>
+    </template>
+
+    <template v-else-if="media.type === 'stl'">
+      <template v-if="context === 'preview'">
+        <img
+          :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
+          :sizes="imageSizesAttr"
+          :src="linkToComplexMediaThumb({ opt: 'angle' })"
+          draggable="false"
+        />
+        <!-- // TODO : set STL/3d picto -->
+      </template>
+      <template v-else>
+        <!-- // TODO : load STL in viewer, maybe behind a button in case it is too heavy -->
+        <!-- like a video tag: show image by default, and a button to go "interactive" -->
+        <img
+          v-if="!interactive_stl_mode"
+          :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
+          :sizes="imageSizesAttr"
+          :src="linkToComplexMediaThumb({ opt: 'angle' })"
+          draggable="false"
+        />
+        <iframe v-else :src="`/libs/stl/show_stl.html?mediaURL=${mediaURL}`" />
+
+        <div class="mediaContainer--buttons">
+          <button
+            type="button"
+            class="button button-bg_rounded bg-orange"
+            @click="interactive_stl_mode = !interactive_stl_mode"
+          >
+            {{ $t("interactive_preview") }}
+          </button>
+        </div>
       </template>
     </template>
 
@@ -138,8 +176,12 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
-      <div v-if="context !== 'edit' && context !== 'full'" class="padding-small font-verysmall">
-        <pre>{{ media.media_filename }}
+      <div
+        v-if="context !== 'edit' && context !== 'full'"
+        class="padding-small font-verysmall"
+      >
+        <pre
+          >{{ media.media_filename }}
         </pre>
       </div>
       <iframe v-else :src="mediaURL" />
@@ -208,6 +250,7 @@ export default {
         default: 1600
       },
       htmlForEditor: this.value,
+      interactive_stl_mode: false,
 
       plyr_options: {
         controls: [
@@ -240,7 +283,8 @@ export default {
   watch: {
     htmlForEditor: function() {
       this.$emit("input", this.htmlForEditor);
-    }
+    },
+    interactive_stl_mode: function() {}
   },
   computed: {
     mediaURL: function() {
@@ -318,30 +362,6 @@ export default {
       }, []);
       return img_srcset.join(", ");
     },
-    videostillSrcSetAttr: function() {
-      if (this.element_width_for_sizes === 0) {
-        return;
-      }
-
-      let timeMark = 0;
-      let timeMarkThumbs = this.media.thumbs.filter(
-        t => !!t && t.timeMark === 0
-      );
-
-      if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
-        return;
-      }
-
-      // get all available sizes
-      const img_srcset = timeMarkThumbs[0].thumbsData.reduce((acc, t) => {
-        if (t.hasOwnProperty("path")) {
-          acc.push(t.path + " " + t.size + "w");
-        }
-        return acc;
-      }, []);
-
-      return img_srcset.join(", ");
-    },
     imageSizesAttr: function() {
       if (this.element_width_for_sizes === 0) {
         return;
@@ -358,34 +378,6 @@ export default {
           ? "./" + pathToSmallestThumb
           : "/" + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
-    },
-    linkToVideoThumb: function() {
-      if (
-        !this.media["thumbs"] ||
-        (typeof this.media.thumbs === "object" &&
-          this.media.thumbs.length === 0)
-      ) {
-        return this.mediaURL;
-      }
-
-      let timeMark = 0;
-      let timeMarkThumbs = this.media.thumbs.filter(
-        t => !!t && t.timeMark === 0
-      );
-
-      if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
-        return this.mediaURL;
-      }
-
-      let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(
-        m => m.size === this.thumbRes
-      )[0].path;
-
-      let url =
-        this.$root.state.mode === "export_publication"
-          ? "./" + pathToSmallestThumb
-          : "/" + pathToSmallestThumb;
-      return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     }
   },
   methods: {
@@ -397,6 +389,46 @@ export default {
       if (this.$refs.hasOwnProperty("plyr")) {
         this.$refs.plyr.player.volume = val / 100;
       }
+    },
+    linkToComplexMediaThumb: function({ opt }) {
+      if (
+        !this.media["thumbs"] ||
+        (typeof this.media.thumbs === "object" &&
+          this.media.thumbs.length === 0)
+      ) {
+        return this.mediaURL;
+      }
+
+      let firstThumbs = this.media.thumbs.filter(t => !!t && t[opt] === 0);
+      if (!firstThumbs || firstThumbs.length === 0) return;
+
+      let pathToSmallestThumb = firstThumbs[0].thumbsData.filter(
+        m => m.size === this.thumbRes
+      )[0].path;
+
+      let url =
+        this.$root.state.mode === "export_publication"
+          ? "./" + pathToSmallestThumb
+          : "/" + pathToSmallestThumb;
+      return pathToSmallestThumb !== undefined ? url : this.mediaURL;
+    },
+    complexMediaSrcSetAttr: function({ opt }) {
+      if (this.element_width_for_sizes === 0) {
+        return;
+      }
+
+      let firstThumbs = this.media.thumbs.filter(t => !!t && t[opt] === 0);
+      if (!firstThumbs || firstThumbs.length === 0) return;
+
+      // get all available sizes
+      const img_srcset = firstThumbs[0].thumbsData.reduce((acc, t) => {
+        if (t.hasOwnProperty("path")) {
+          acc.push(t.path + " " + t.size + "w");
+        }
+        return acc;
+      }, []);
+
+      return img_srcset.join(", ");
     }
   }
 };

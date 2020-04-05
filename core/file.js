@@ -722,9 +722,13 @@ module.exports = (function() {
                   break;
                 case ".mp4":
                 case ".flv":
+                case ".mov":
                 case ".webm":
                 case ".avi":
                   additionalMeta.type = "video";
+                  break;
+                case ".stl":
+                  additionalMeta.type = "stl";
                   break;
                 case ".mp3":
                 case ".wav":
