@@ -90,7 +90,7 @@
           :src="linkToComplexMediaThumb({ opt: 'angle' })"
           draggable="false"
         />
-        <STLpreview v-else :mediaURL="mediaURL" />
+        <iframe v-else :src="`/libs/stl/show_stl.html?mediaURL=${mediaURL}`" />
 
         <div class="mediaContainer--buttons">
           <button
@@ -196,7 +196,6 @@
 </template>
 <script>
 import CollaborativeEditor from "./CollaborativeEditor.vue";
-import STLpreview from "./STLpreview.vue";
 
 export default {
   props: {
@@ -242,8 +241,7 @@ export default {
     }
   },
   components: {
-    CollaborativeEditor,
-    STLpreview
+    CollaborativeEditor
   },
   data() {
     return {
