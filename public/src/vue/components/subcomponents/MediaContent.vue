@@ -84,14 +84,23 @@
         <!-- // TODO : load STL in viewer, maybe behind a button in case it is too heavy -->
         <!-- like a video tag: show image by default, and a button to go "interactive" -->
         <img
+          v-if="!interactive_stl_mode"
           :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
           :sizes="imageSizesAttr"
           :src="linkToComplexMediaThumb({ opt: 'angle' })"
           draggable="false"
         />
+        <STLpreview v-else :mediaURL="mediaURL" />
 
-        <div>{{ mediaURL }}</div>
-        <div>{{ linkToComplexMediaThumb({ opt: "angle" }) }}</div>
+        <div class="mediaContainer--buttons">
+          <button
+            type="button"
+            class="button button-bg_rounded bg-orange"
+            @click="interactive_stl_mode = !interactive_stl_mode"
+          >
+            {{ $t("interactive_preview") }}
+          </button>
+        </div>
       </template>
     </template>
 
@@ -187,6 +196,7 @@
 </template>
 <script>
 import CollaborativeEditor from "./CollaborativeEditor.vue";
+import STLpreview from "./STLpreview.vue";
 
 export default {
   props: {
@@ -232,7 +242,8 @@ export default {
     }
   },
   components: {
-    CollaborativeEditor
+    CollaborativeEditor,
+    STLpreview
   },
   data() {
     return {
@@ -241,6 +252,7 @@ export default {
         default: 1600
       },
       htmlForEditor: this.value,
+      interactive_stl_mode: false,
 
       plyr_options: {
         controls: [
@@ -273,7 +285,8 @@ export default {
   watch: {
     htmlForEditor: function() {
       this.$emit("input", this.htmlForEditor);
-    }
+    },
+    interactive_stl_mode: function() {}
   },
   computed: {
     mediaURL: function() {
@@ -402,7 +415,6 @@ export default {
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
     complexMediaSrcSetAttr: function({ opt }) {
-      debugger;
       if (this.element_width_for_sizes === 0) {
         return;
       }

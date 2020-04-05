@@ -3666,6 +3666,20 @@ small {
 
 .mediaContainer {
   position: relative;
+
+  .mediaContainer--buttons {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 1em;
+    .margin-small;
+
+    > button {
+      pointer-events: auto;
+    }
+  }
 }
 
 .mediaContainer--videoPlay {
