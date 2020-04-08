@@ -3,26 +3,26 @@ const SparkMD5 = require("spark-md5");
 const dev = require("./dev-log"),
   file = require("./file");
 
-module.exports = (function() {
+module.exports = (function () {
   const API = {
-    setAuthenticate: folder_passwords => setAuthenticate(folder_passwords),
+    setAuthenticate: (folder_passwords) => setAuthenticate(folder_passwords),
     canAdminFolder: (socket, foldersData, type) =>
       canAdminFolder(socket, foldersData, type),
     filterFolders: (socket, type, foldersData) =>
       filterFolders(socket, type, foldersData),
     filterMedias: (socket, type, folders_and_medias) =>
       filterMedias(socket, type, folders_and_medias),
-    removeNonPublicMediasFromAllFolders: folders_and_medias =>
+    removeNonPublicMediasFromAllFolders: (folders_and_medias) =>
       removeNonPublicMediasFromAllFolders(folders_and_medias),
 
-    isSubmittedSessionPasswordValid: pwd =>
+    isSubmittedSessionPasswordValid: (pwd) =>
       isSubmittedSessionPasswordValid(pwd),
 
-    hashCode: code => hashCode(code)
+    hashCode: (code) => hashCode(code),
   };
 
   function setAuthenticate(folder_passwords) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       dev.logfunction(
         `AUTH — setAuthenticate with ${JSON.stringify(
           folder_passwords,
@@ -42,7 +42,7 @@ module.exports = (function() {
 
       let tasks = [];
 
-      Object.keys(folder_passwords).map(type => {
+      Object.keys(folder_passwords).map((type) => {
         // get all folders slugs and passwords
         if (
           typeof folder_passwords[type] !== "object" ||
@@ -55,7 +55,7 @@ module.exports = (function() {
         let myPromise = new Promise((resolve, reject) => {
           file
             .getFolder({ type })
-            .then(foldersData => {
+            .then((foldersData) => {
               dev.logverbose(
                 `AUTH — setAuthenticate : got folder data, now checking against folder_passwords[${type}]`
               );
@@ -89,18 +89,18 @@ module.exports = (function() {
 
               resolve({ type, allowed_slugFolderNames });
             })
-            .catch(err => {
+            .catch((err) => {
               dev.error(`Failed to get folder data: ${err}`);
               resolve([]);
             });
         });
         tasks.push(myPromise);
       });
-      Promise.all(tasks).then(d_array => {
+      Promise.all(tasks).then((d_array) => {
         if (d_array.length === 0) {
           resolve([]);
         }
-        d_array = d_array.filter(i => !!i);
+        d_array = d_array.filter((i) => !!i);
         resolve(d_array);
       });
     });
@@ -125,7 +125,7 @@ module.exports = (function() {
 
     if (socket.hasOwnProperty("_is_authorized_for_folders")) {
       const _is_authorized_for_this_folder = socket._is_authorized_for_folders.filter(
-        i => {
+        (i) => {
           return (
             i.hasOwnProperty("type") &&
             i.type === type &&
@@ -180,10 +180,10 @@ module.exports = (function() {
     let filtered_folders_and_medias = JSON.parse(
       JSON.stringify(folders_and_medias)
     );
-    Object.keys(filtered_folders_and_medias).map(slugFolderName => {
+    Object.keys(filtered_folders_and_medias).map((slugFolderName) => {
       const folders_data = filtered_folders_and_medias[slugFolderName];
       if (folders_data.hasOwnProperty("medias")) {
-        Object.keys(folders_data.medias).map(slugMediaName => {
+        Object.keys(folders_data.medias).map((slugMediaName) => {
           if (
             !folders_data.medias[slugMediaName].hasOwnProperty("public") ||
             folders_data.medias[slugMediaName].public === false
@@ -217,7 +217,7 @@ module.exports = (function() {
   }
 
   function hashCode(s) {
-    return s.split("").reduce(function(a, b) {
+    return s.split("").reduce(function (a, b) {
       a = (a << 5) - a + b.charCodeAt(0);
       return a & a;
     }, 0);

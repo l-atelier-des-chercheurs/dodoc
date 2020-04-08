@@ -1,6 +1,6 @@
 var gutil = require("gulp-util");
 
-module.exports = dev = (function() {
+module.exports = dev = (function () {
   let isDebugMode = false;
   let isVerboseMode = false;
   let logToFile = false;
@@ -15,7 +15,7 @@ module.exports = dev = (function() {
     logfunction: logfunction,
     error: error,
     performance: performance,
-    isDebug: () => isDebugMode
+    isDebug: () => isDebugMode,
   };
 
   function initModule(d, v, l) {

@@ -11,10 +11,10 @@ const electronPDFWindow = require("electron-pdf-window");
 const { dialog } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 
-module.exports = (function() {
+module.exports = (function () {
   return {
     init: () => {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         global.sourcePathInApp = path.join(
           `${global.appRoot.replace(`${path.sep}app.asar`, "")}`,
           `${global.settings.contentDirname}`
@@ -27,7 +27,7 @@ module.exports = (function() {
         // Some APIs can only be used after this event occurs.
         app.on("ready", () => {
           console.log(`ELECTRON — init : ready`);
-          createWindow().then(_win => {
+          createWindow().then((_win) => {
             console.log(`ELECTRON — init : ready / window created`);
             win = _win;
             return resolve(win);
@@ -40,7 +40,7 @@ module.exports = (function() {
           // On macOS it is common for applications and their menu bar
           // to stay active until the user quits explicitly with Cmd + Q
           // if (process.platform !== 'darwin') {
-          global.ffmpeg_processes.map(f => f.kill());
+          global.ffmpeg_processes.map((f) => f.kill());
           app.quit();
           // }
         });
@@ -50,7 +50,7 @@ module.exports = (function() {
           // On macOS it's common to re-create a window in the app when the
           // dock icon is clicked and there are no other windows open.
           if (win === null) {
-            createWindow().then(_win => {
+            createWindow().then((_win) => {
               win = _win;
               return resolve(win);
             });
@@ -69,16 +69,16 @@ module.exports = (function() {
           }
         );
       });
-    }
+    },
   };
 
   function createWindow() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       console.log(`ELECTRON — createWindow`);
 
       let mainWindowState = windowStateKeeper({
         defaultWidth: 1000,
-        defaultHeight: 800
+        defaultHeight: 800,
       });
 
       // Create the browser window.
@@ -94,8 +94,8 @@ module.exports = (function() {
         webPreferences: {
           allowRunningInsecureContent: true,
           nodeIntegration: true,
-          plugins: true
-        }
+          plugins: true,
+        },
       });
 
       mainWindowState.manage(win);
@@ -105,7 +105,7 @@ module.exports = (function() {
         app.setAboutPanelOptions({
           applicationName: global.appInfos.name,
           applicationVersion: app.getVersion(),
-          copyright: "Released under the Creative Commons license."
+          copyright: "Released under the Creative Commons license.",
         });
       }
 
@@ -120,7 +120,7 @@ module.exports = (function() {
         win = null;
       });
 
-      win.on("ready-to-show", function() {
+      win.on("ready-to-show", function () {
         console.log(`ELECTRON — createWindow : ready-to-show`);
         win.show();
         win.focus();
@@ -138,44 +138,44 @@ module.exports = (function() {
         submenu: [
           {
             label: `À propos ${global.appInfos.productName}`,
-            selector: "orderFrontStandardAboutPanel:"
+            selector: "orderFrontStandardAboutPanel:",
           },
           {
-            type: "separator"
+            type: "separator",
           },
           {
             label: "Services",
-            submenu: []
+            submenu: [],
           },
           {
-            type: "separator"
+            type: "separator",
           },
           {
             label: `Cacher ${global.appInfos.productName}`,
             accelerator: "Command+H",
-            selector: "hide:"
+            selector: "hide:",
           },
           {
             label: "Cacher les autres",
             accelerator: "Command+Shift+H",
-            selector: "hideOtherApplications:"
+            selector: "hideOtherApplications:",
           },
           {
             label: "Montrer tout",
-            selector: "unhideAllApplications:"
+            selector: "unhideAllApplications:",
           },
           {
-            type: "separator"
+            type: "separator",
           },
           {
             label: "Quitter",
             accelerator: "Command+Q",
-            click: function() {
-              global.ffmpeg_processes.map(f => f.kill());
+            click: function () {
+              global.ffmpeg_processes.map((f) => f.kill());
               app.quit();
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       {
         label: "Edition",
@@ -183,37 +183,37 @@ module.exports = (function() {
           {
             label: "Annuler",
             accelerator: "Command+Z",
-            selector: "undo:"
+            selector: "undo:",
           },
           {
             label: "Rétablir",
             accelerator: "Shift+Command+Z",
-            selector: "redo:"
+            selector: "redo:",
           },
           {
-            type: "separator"
+            type: "separator",
           },
           {
             label: "Couper",
             accelerator: "Command+X",
-            selector: "cut:"
+            selector: "cut:",
           },
           {
             label: "Copier",
             accelerator: "Command+C",
-            selector: "copy:"
+            selector: "copy:",
           },
           {
             label: "Coller",
             accelerator: "Command+V",
-            selector: "paste:"
+            selector: "paste:",
           },
           {
             label: "Sélectionner tout",
             accelerator: "Command+A",
-            selector: "selectAll:"
-          }
-        ]
+            selector: "selectAll:",
+          },
+        ],
       },
       {
         label: "Affichage",
@@ -221,18 +221,18 @@ module.exports = (function() {
           {
             label: "Recharger",
             accelerator: "Command+R",
-            click: function() {
+            click: function () {
               BrowserWindow.getFocusedWindow().reload();
-            }
+            },
           },
           {
             label: "Afficher les outils de développement",
             accelerator: "Alt+Command+I",
-            click: function() {
+            click: function () {
               BrowserWindow.getFocusedWindow().toggleDevTools();
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       {
         label: "Fenêtre",
@@ -240,26 +240,26 @@ module.exports = (function() {
           {
             label: "Réduire",
             accelerator: "Command+M",
-            selector: "performMiniaturize:"
+            selector: "performMiniaturize:",
           },
           {
             label: "Fermer",
             accelerator: "Command+W",
-            selector: "performClose:"
+            selector: "performClose:",
           },
           {
-            type: "separator"
+            type: "separator",
           },
           {
             label: "Mettre tout au premier plan",
-            selector: "arrangeInFront:"
-          }
-        ]
+            selector: "arrangeInFront:",
+          },
+        ],
       },
       {
         label: "Aide",
-        submenu: []
-      }
+        submenu: [],
+      },
     ];
 
     menu = Menu.buildFromTemplate(template);

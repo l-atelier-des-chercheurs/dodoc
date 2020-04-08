@@ -12,7 +12,7 @@ var dev = require("./dev-log");
 const sockets = require("./sockets"),
   setup_realtime_collaboration = require("./server-realtime_text_collaboration.js");
 
-module.exports = function(router) {
+module.exports = function (router) {
   dev.logverbose("Starting server 1");
 
   const app = express();
@@ -30,7 +30,7 @@ module.exports = function(router) {
 
   const options = {
     key: fs.readFileSync(privateKeyPath),
-    cert: fs.readFileSync(certificatePath)
+    cert: fs.readFileSync(certificatePath),
   };
 
   if (
@@ -41,7 +41,7 @@ module.exports = function(router) {
     http
       .createServer((req, res) => {
         res.writeHead(301, {
-          Location: "https://" + req.headers["host"] + req.url
+          Location: "https://" + req.headers["host"] + req.url,
         });
         res.end();
       })
@@ -64,7 +64,7 @@ module.exports = function(router) {
   app.set("views", global.appRoot); //Specify the views folder
   app.set("view engine", "pug"); //View engine is Pug
 
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     if (isURLToForbiddenFiles(req.url)) {
       res.status(404).send(`Access not allowed.`);
     } else {
