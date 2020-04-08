@@ -1,5 +1,3 @@
-const SparkMD5 = require("spark-md5");
-
 const dev = require("./dev-log"),
   file = require("./file");
 

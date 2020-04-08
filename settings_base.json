@@ -109,6 +109,7 @@
               "video",
               "audio",
               "text",
+              "code",
               "stl",
               "document",
               "other"
@@ -157,6 +158,19 @@
         "password": {
           "type": "string",
           "read_only": true
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "id": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "options": ["contributor", "admin"],
+          "default": "contributor"
         },
         "description": {
           "type": "string"

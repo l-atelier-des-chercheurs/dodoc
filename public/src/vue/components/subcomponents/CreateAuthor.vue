@@ -8,33 +8,73 @@
       <input type="text" v-model.trim="authordata.name" required autofocus />
     </div>
 
-    <!-- Preview -->
+    <!-- Password -->
     <div class="margin-bottom-small">
-      <label>{{ $t("portrait") }}</label>
-      <br />
-      <ImageSelect
-        @newPreview="
-          value => {
-            preview = value;
-          }
-        "
-        :instructions="$t('select_portrait_image')"
-        :load_from_projects_medias="true"
-      />
+      <label>{{ $t("password") }}</label>
+      <template v-if="show_password">
+        <input
+          type="password"
+          :required="$root.state.force_author_password ? true : false"
+          v-model="authordata.password"
+          autocomplete="new-password"
+        />
+        <small>{{ $t("password_instructions") }}</small>
+      </template>
     </div>
 
-    <!-- Password -->
-    <!-- <div class="margin-bottom-small">
-      <label>{{ $t('password') }}</label>
-      <input type="password" v-model="authordata.password">
-      <small>{{ $t('password_instructions') }}</small>
-    </div>-->
+    <!-- Preview -->
+    <div class="margin-bottom-small">
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_image }"
+          @click="show_image = !show_image"
+        >{{ $t("portrait") }}</button>
+      </label>
+      <template v-if="show_image">
+        <ImageSelect
+          @newPreview="
+            (value) => {
+              preview = value;
+            }
+          "
+          :instructions="$t('select_portrait_image')"
+          :load_from_projects_medias="true"
+        />
+      </template>
+    </div>
+
+    <!-- Role -->
+    <div class="margin-bottom-small">
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_role }"
+          @click="show_role = !show_role"
+        >{{ $t("role") }}</button>
+      </label>
+      <template v-if="show_role">
+        <select v-model="authordata.role">
+          <option v-for="role in possible_roles" :value="role" :key="role">{{ $t(role) }}</option>
+        </select>
+      </template>
+    </div>
 
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
-      <label>{{ $t("nfc_tag") }}</label>
-      <br />
-      <input type="text" v-model="authordata.nfc_tag" />
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_nfc }"
+          @click="show_nfc = !show_nfc"
+        >{{ $t("nfc_tag") }}</button>
+      </label>
+      <template v-if="show_nfc">
+        <input type="text" v-model="authordata.nfc_tag" />
+      </template>
     </div>
 
     <button type="button" class="button-small" @click="$emit('close')">{{ $t("cancel") }}</button>
@@ -53,9 +93,16 @@ export default {
   },
   data() {
     return {
+      show_password: true,
+      show_image: false,
+      show_role: true,
+      show_nfc: false,
+      possible_roles: ["contributor", "admin"],
+
       authordata: {
         name: "",
         password: "",
+        role: "contributor",
         nfc_tag: ""
       },
       preview: undefined
@@ -87,6 +134,11 @@ export default {
       if (!!this.preview) {
         this.authordata.preview_rawdata = this.preview;
       }
+
+      if (!!this.authordata.password)
+        this.authordata.password = this.$auth.hashCode(
+          this.authordata.password
+        );
 
       this.$root.createFolder({ type: "authors", data: this.authordata });
 

@@ -506,115 +506,124 @@ body {
   .margin-small;
 
   > * {
-    .padding-small;
-    .margin-small;
     // .margin-sides-small;
     // .margin-small;
-    flex: 0 0 200px;
+    flex: 0 0 240px;
+    min-height: 200px;
     // max-width: 160px;
-    min-height: 160px;
   }
 
   .m_authorsList--createAuthor,
   .m_authorsList--editAuthor {
+    .padding-small;
+    .margin-small;
     position: relative;
-    border: 4px solid @c-gris_tresclair;
+    border: 4px dashed @c-bleumarine_clair;
+    background-color: #fff;
     // border: 4px solid @c-gris_clair;
     border-radius: @t-buttonradius;
     .font-small;
 
     display: flex;
+    flex-flow: none;
     align-items: center;
     justify-content: center;
     max-width: none;
 
     .m_authorsList--createAuthor--createButton {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
       max-height: none;
       display: block;
       border: none;
       .padding-sides-small;
-      .bg-gris_tresclair;
+
+      // .bg-gris_tresclair;
     }
 
     > form {
       width: 265px;
     }
   }
+}
 
-  .m_authorsList--author {
-    position: relative;
+.m_author {
+  position: relative;
+  .padding-small;
+  .margin-small;
+  min-height: 200px;
 
-    .bg-gris_tresclair;
-    border-radius: @t-buttonradius;
-    text-align: center;
+  .bg-gris_tresclair;
+  border-radius: @t-buttonradius;
+  text-align: center;
+  text-transform: initial;
+
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+
+  input {
+    background-color: white;
+  }
+
+  .m_author--card {
     text-transform: initial;
+    font-weight: normal;
+    background-color: transparent;
+    font-weight: 200;
+    .font-large;
+    letter-spacing: -0.01em;
 
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: center;
-    align-items: center;
-
-    .m_authorsList--author--card {
-      text-transform: initial;
-      font-weight: normal;
-      background-color: transparent;
-      font-weight: 200;
-      .font-large;
-      letter-spacing: -0.01em;
+    > * {
+      .margin-bottom-small;
     }
+  }
 
-    &.is--selected {
-      color: @c-bleumarine_fonce;
-      background-color: @c-bleumarine_clair;
-
-      hr {
-        border-color: currentColor;
-      }
-      .buttonLink {
-        color: currentColor;
-      }
-    }
-
-    .m_authorsList--author--name {
-      .font-large;
-      font-weight: 200;
-      line-height: 1.1;
-      max-width: 15ch;
-    }
-
-    .m_authorsList--author--removeButton {
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
-    .m_authorsList--author--editButton {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    img {
-      display: inline-block;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      .margin-vert-verysmall;
-    }
+  &.is--selected {
+    color: @c-bleumarine_fonce;
+    background-color: @c-bleumarine_clair;
 
     hr {
-      margin: 0;
-      border-color: @c-bleumarine;
+      border-color: currentColor;
     }
+    .buttonLink {
+      color: currentColor;
+    }
+  }
 
-    button {
-      margin: 0;
-    }
+  .m_author--name {
+    .font-large;
+    font-weight: 200;
+    line-height: 1.1;
+    max-width: 15ch;
+  }
+
+  .m_author--removeButton {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .m_author--editButton {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  img {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    .margin-vert-verysmall;
+  }
+
+  hr {
+    margin: 0;
+    border-color: @c-bleumarine;
+  }
+
+  button {
+    margin: 0;
   }
 }
 
@@ -3775,10 +3784,11 @@ small {
   .m_authorsList & {
     .m_imageselect--image {
       img {
-        width: 240px;
-        height: 240px;
+        width: 150px;
+        height: 150px;
         border-radius: 50%;
         object-fit: cover;
+        margin: 0 auto;
         // margin-bottom: @t-skipline;
       }
     }
@@ -4273,6 +4283,30 @@ small {
     padding-right: var(--spacing);
     flex: 1 1 auto;
     .padding-verysmall;
+  }
+}
+
+.m_sinceLastVisit {
+  position: relative;
+  margin: 0 var(--spacing);
+  width: ~"calc(100% - var(--spacing) * 2)";
+  .font-verysmall;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid @c-noir;
+    position: absolute;
+  }
+  span {
+    position: relative;
+    background-color: @c-rouge;
+    padding: 0 ~"calc( var(--spacing) / 4)";
   }
 }
 
