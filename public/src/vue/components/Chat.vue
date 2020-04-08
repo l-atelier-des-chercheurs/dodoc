@@ -20,51 +20,67 @@
           <h3 class="label c-noir margin-small text-centered">
             {{ $root.formatDateToHuman(item[0]) }}
           </h3>
-          <div
-            v-for="message in item[1]"
-            :key="message.metaFileName"
-            class="m_message"
-            :class="{
-              'is--currentauthor': isCurrentAuthor(message)
-            }"
-          >
-            <div class="m_message--meta" v-if="message.authors">
-              <div class="m_message--meta--author">
-                <span>{{ message.authors[0].name }}</span>
-              </div>
-              <div class="m_message--meta--date">
-                <span>{{ $moment(message.date_created).format("HH:mm") }}</span>
-                <button
-                  type="button"
-                  v-if="isCurrentAuthor(message)"
-                  class="button-nostyle padding-top-verysmall"
-                  @click="removeMessage(message)"
-                >
-                  <svg
-                    version="1.1"
-                    class="inline-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    x="0px"
-                    y="0px"
-                    width="91.6px"
-                    height="95px"
-                    viewBox="0 0 91.6 95"
-                    style="enable-background:new 0 0 91.6 95;"
-                    xml:space="preserve"
+          <template v-for="(message, index) in item[1]">
+            <div
+              :key="message.metaFileName"
+              class="m_message"
+              :class="{
+                'is--currentauthor': isCurrentAuthor(message),
+                'is--lastReadMessage':
+                  message.metaFileName === last_read_message_on_opening,
+              }"
+            >
+              <div class="m_message--meta" v-if="message.authors">
+                <div class="m_message--meta--author">
+                  <span>{{ message.authors[0].name }}</span>
+                </div>
+                <div class="m_message--meta--date">
+                  <span>{{
+                    $moment(message.date_created).format("HH:mm")
+                  }}</span>
+                  <button
+                    type="button"
+                    v-if="isCurrentAuthor(message)"
+                    class="button-nostyle padding-top-verysmall"
+                    @click="removeMessage(message)"
                   >
-                    <path
-                      class="st0"
-                      d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+                    <svg
+                      version="1.1"
+                      class="inline-svg"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      x="0px"
+                      y="0px"
+                      width="91.6px"
+                      height="95px"
+                      viewBox="0 0 91.6 95"
+                      style="enable-background: new 0 0 91.6 95;"
+                      xml:space="preserve"
+                    >
+                      <path
+                        class="st0"
+                        d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
             l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
-                    />
-                  </svg>
-                </button>
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div class="m_message--text">{{ message.text }}</div>
-          </div>
+              <div class="m_message--text">{{ message.text }}</div>
+            </div>
+            <div
+              v-if="
+                message.metaFileName === last_read_message_on_opening &&
+                index < item[1].length - 1
+              "
+              class="m_sinceLastVisit"
+              ref="sinceLastVisit"
+              :key="'unread-notif_' + message.metaFileName"
+            >
+              <span>{{ $t("last_read_message") }}</span>
+            </div>
+          </template>
         </div>
       </div>
 
@@ -113,32 +129,63 @@
 <script>
 export default {
   props: {
-    chat: Object
+    chat: Object,
   },
   components: {},
   data() {
     return {
       new_message: "",
-      is_scrolled_to_bottom: true,
-      is_scrolled_to_top: false
+      is_scrolled_to_bottom: false,
+      is_scrolled_to_top: false,
+      last_read_message_on_opening: false,
     };
   },
   created() {
     this.$socketio.listMedias({
       type: "chats",
-      slugFolderName: this.chat.slugFolderName
-    });
-
-    this.$eventHub.$once("socketio.chats.listMedias", () => {
-      this.$nextTick(() => {
-        this.scrollToBottom();
-        this.$refs.chat_content.style.scrollBehavior = "smooth";
-      });
+      slugFolderName: this.chat.slugFolderName,
     });
 
     // this.$eventHub.$on("socketio.reconnect", this.reloadChat);
   },
   mounted() {
+    this.$eventHub.$once("socketio.chats.listMedias", () => {
+      const last_messages_read_in_channels = this.$root.current_author
+        .last_messages_read_in_channels;
+
+      if (
+        last_messages_read_in_channels &&
+        last_messages_read_in_channels.some(
+          (c) => c.channel === this.chat.slugFolderName
+        )
+      ) {
+        const last_message_read_for_this_channel = last_messages_read_in_channels.find(
+          (c) => c.channel === this.chat.slugFolderName
+        );
+
+        // check if some unread messages
+        this.$nextTick(() => {
+          if (
+            last_message_read_for_this_channel.msg !==
+            this.sorted_messages[this.sorted_messages.length - 1].metaFileName
+          ) {
+            this.last_read_message_on_opening =
+              last_message_read_for_this_channel.msg;
+
+            this.$nextTick(() => {
+              if (this.$refs.sinceLastVisit) {
+                this.scrollToMessage(this.$refs.sinceLastVisit[0]);
+                this.$refs.chat_content.style.scrollBehavior = "smooth";
+              }
+            });
+          } else {
+            this.scrollToBottom();
+            this.$refs.chat_content.style.scrollBehavior = "smooth";
+          }
+        });
+      }
+    });
+
     setInterval(() => {
       if (!this.$refs.chat_content) return;
 
@@ -175,15 +222,15 @@ export default {
           this.scrollToBottom();
         });
       }
-    }
+    },
   },
   computed: {
-    sorted_messages: function() {
+    sorted_messages: function () {
       if (typeof this.chat.medias !== "object") return [];
       return this.$_.sortBy(this.chat.medias, "date_created");
     },
-    grouped_messages: function() {
-      let message_group = this.$_.groupBy(this.sorted_messages, message => {
+    grouped_messages: function () {
+      let message_group = this.$_.groupBy(this.sorted_messages, (message) => {
         let _date;
 
         if (
@@ -202,14 +249,18 @@ export default {
       message_group = this.$_.sortBy(message_group);
       // message_group = message_group.reverse();
       return message_group;
-    }
+    },
   },
   methods: {
     scrollToBottom() {
       if (this.$root.state.dev_mode === "debug")
         console.log("METHODS • Chat: scrollToBottom");
-
       this.$refs.chat_content.scrollTop = this.$refs.chat_content.scrollHeight;
+    },
+    scrollToMessage($el) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log("METHODS • Chat: scrollToMessage");
+      this.$refs.chat_content.scrollTop = $el.offsetTop - 100;
     },
     setReadMessageToLast() {
       // if logged in, set author last_messages_read_in_channels to metaFileName of chat
@@ -217,7 +268,7 @@ export default {
         const last_message_channel = {
           channel: this.chat.slugFolderName,
           msg: this.sorted_messages[this.sorted_messages.length - 1]
-            .metaFileName
+            .metaFileName,
         };
 
         let last_messages_read_in_channels = Array.isArray(
@@ -231,7 +282,7 @@ export default {
           : [];
 
         const channel_info_in_author = last_messages_read_in_channels.find(
-          c => c.channel === last_message_channel.channel
+          (c) => c.channel === last_message_channel.channel
         );
         if (
           channel_info_in_author &&
@@ -243,7 +294,7 @@ export default {
 
         // remove existing prop
         last_messages_read_in_channels = last_messages_read_in_channels.filter(
-          c => c.channel !== last_message_channel.channel
+          (c) => c.channel !== last_message_channel.channel
         );
 
         last_messages_read_in_channels.push(last_message_channel);
@@ -252,8 +303,8 @@ export default {
           type: "authors",
           slugFolderName: this.$root.current_author.slugFolderName,
           data: {
-            last_messages_read_in_channels
-          }
+            last_messages_read_in_channels,
+          },
         });
       }
     },
@@ -277,7 +328,7 @@ export default {
             this.$root.removeMedia({
               type: "chats",
               slugFolderName: this.chat.slugFolderName,
-              slugMediaName: message.metaFileName
+              slugMediaName: message.metaFileName,
             });
           },
           () => {}
@@ -297,13 +348,13 @@ export default {
         slugFolderName: this.chat.slugFolderName,
         additionalMeta: {
           text: this.new_message,
-          authors: [{ name: this.$root.current_author.name }]
-        }
+          authors: [{ name: this.$root.current_author.name }],
+        },
       });
 
       this.new_message = "";
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss"></style>

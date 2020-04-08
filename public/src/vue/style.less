@@ -4276,6 +4276,30 @@ small {
   }
 }
 
+.m_sinceLastVisit {
+  position: relative;
+  margin: 0 var(--spacing);
+  width: ~"calc(100% - var(--spacing) * 2)";
+  .font-verysmall;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid @c-noir;
+    position: absolute;
+  }
+  span {
+    position: relative;
+    background-color: @c-rouge;
+    padding: 0 ~"calc( var(--spacing) / 4)";
+  }
+}
+
 .m_publicationview {
   // padding-left: @t-skipline/2;
   // .padding-sides-small;
