@@ -1,16 +1,15 @@
-const SparkMD5 = require('spark-md5');
-import localstore from 'store';
+import localstore from "store";
 
-module.exports = (function() {
+module.exports = (function () {
   let session_password;
   let folder_passwords;
 
   const API = {
     init: () => init(),
-    setSessionPassword: session_password =>
+    setSessionPassword: (session_password) =>
       setSessionPassword(session_password),
-    updateFoldersPasswords: folderPass => updateFoldersPasswords(folderPass),
-    removeFolderPassword: d => removeFolderPassword(d),
+    updateFoldersPasswords: (folderPass) => updateFoldersPasswords(folderPass),
+    removeFolderPassword: (d) => removeFolderPassword(d),
 
     getSessionPassword: () => getSessionPassword(),
     getFoldersPasswords: () => getFoldersPasswords(),
@@ -18,17 +17,17 @@ module.exports = (function() {
     getSessionPasswordFromLocalStorage: () =>
       getSessionPasswordFromLocalStorage(),
 
-    saveSessionPasswordToLocalStorage: pwd =>
+    saveSessionPasswordToLocalStorage: (pwd) =>
       saveSessionPasswordToLocalStorage(pwd),
 
     emptySessionPasswordInLocalStorage: () =>
       emptySessionPasswordInLocalStorage(),
 
-    hashCode: code => hashCode(code)
+    hashCode: (code) => hashCode(code),
   };
 
   function init() {
-    folder_passwords = localstore.get('folder_passwords') || {};
+    folder_passwords = localstore.get("folder_passwords") || {};
   }
 
   function setSessionPassword(_session_password) {
@@ -50,7 +49,7 @@ module.exports = (function() {
         );
       }
     }
-    localstore.set('folder_passwords', folder_passwords);
+    localstore.set("folder_passwords", folder_passwords);
   }
 
   function removeFolderPassword({ type, slugFolderName }) {
@@ -59,7 +58,7 @@ module.exports = (function() {
         delete folder_passwords[type][slugFolderName];
       }
     }
-    localstore.set('folder_passwords', folder_passwords);
+    localstore.set("folder_passwords", folder_passwords);
   }
 
   function getFoldersPasswords() {
@@ -67,19 +66,19 @@ module.exports = (function() {
   }
 
   function getSessionPasswordFromLocalStorage() {
-    return localstore.get('session_password');
+    return localstore.get("session_password");
   }
 
   function saveSessionPasswordToLocalStorage(pwd) {
-    localstore.set('session_password', pwd);
+    localstore.set("session_password", pwd);
   }
 
   function emptySessionPasswordInLocalStorage() {
-    localstore.set('session_password', '');
+    localstore.set("session_password", "");
   }
 
   function hashCode(s) {
-    return s.split('').reduce(function(a, b) {
+    return s.split("").reduce(function (a, b) {
       a = (a << 5) - a + b.charCodeAt(0);
       return a & a;
     }, 0);

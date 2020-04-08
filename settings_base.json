@@ -164,6 +164,9 @@
           "default": "current",
           "read_only": true
         },
+        "id": {
+          "type": "string"
+        },
         "description": {
           "type": "string"
         },
