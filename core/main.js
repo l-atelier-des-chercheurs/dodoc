@@ -10,7 +10,7 @@ const dev = require("./dev-log"),
   cache = require("./cache"),
   auth = require("./auth");
 
-module.exports = function({ router }) {
+module.exports = function ({ router }) {
   const is_electron = process.versions.hasOwnProperty("electron");
 
   console.log(`App is electron : ${is_electron}`);
@@ -32,7 +32,7 @@ module.exports = function({ router }) {
   if (is_electron) {
     require("./electron")
       .init()
-      .then(win => {
+      .then((win) => {
         setupApp().then(() => {
           server(router);
           dev.log(
@@ -41,7 +41,7 @@ module.exports = function({ router }) {
           win.loadURL(global.appInfos.homeURL);
         });
       })
-      .catch(err => {
+      .catch((err) => {
         dev.error(`Error code: ${err}`);
       });
   } else {
@@ -53,13 +53,13 @@ module.exports = function({ router }) {
       .then(() => {
         server(router);
       })
-      .catch(err => {
+      .catch((err) => {
         dev.error(`Error code: ${err}`);
       });
   }
 
   function setupApp() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       global.tempStorage = getPath.getCacheFolder();
       global.ffmpeg_processes = [];
 
@@ -75,11 +75,11 @@ module.exports = function({ router }) {
       cleanCacheFolder().then(
         () => {
           copyAndRenameUserFolder().then(
-            function(pathToUserContent) {
+            function (pathToUserContent) {
               global.pathToUserContent = pathToUserContent;
               dev.log("Will store contents in: " + global.pathToUserContent);
 
-              readSessionMetaFile().then(sessionMeta => {
+              readSessionMetaFile().then((sessionMeta) => {
                 if (
                   !!sessionMeta &&
                   sessionMeta.hasOwnProperty("session_password") &&
@@ -104,19 +104,19 @@ module.exports = function({ router }) {
                     global.settings.desired_port + 20
                   )
                   .then(
-                    port => {
+                    (port) => {
                       global.appInfos.port = port;
                       global.appInfos.homeURL = `${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`;
 
                       dev.log(`main.js - Found available port: ${port}`);
                       return resolve();
                     },
-                    function(err) {
+                    function (err) {
                       dev.error("Failed to find available port: " + err);
                       return reject(err);
                     }
                   )
-                  .catch(err => {
+                  .catch((err) => {
                     dev.error(`err ${err}`);
                     if (is_electron)
                       dev.showErrorBox(
@@ -126,13 +126,13 @@ module.exports = function({ router }) {
                   });
               });
             },
-            function(err) {
+            function (err) {
               dev.error("Failed to check existing content folder: " + err);
               return reject(err);
             }
           );
         },
-        function(err) {
+        function (err) {
           dev.error("Failed to clean cache folder: " + err);
           return reject(err);
         }
@@ -141,14 +141,14 @@ module.exports = function({ router }) {
   }
 
   function copyAndRenameUserFolder() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       const userDirPath = getPath.getDocumentsFolder();
 
       const pathToUserContent = path.join(
         userDirPath,
         global.settings.userDirname
       );
-      fs.access(pathToUserContent, fs.F_OK, function(err) {
+      fs.access(pathToUserContent, fs.F_OK, function (err) {
         // if userDir folder doesn't exist yet at destination
         if (err) {
           dev.log(
@@ -158,7 +158,7 @@ module.exports = function({ router }) {
             `->duplicating ${global.settings.contentDirname} to create a new one`
           );
 
-          fs.copy(global.sourcePathInApp, pathToUserContent, function(err) {
+          fs.copy(global.sourcePathInApp, pathToUserContent, function (err) {
             if (err) {
               dev.error(`Failed to copy: ${err}`);
               reject(err);
@@ -177,7 +177,7 @@ module.exports = function({ router }) {
   }
 
   function cleanCacheFolder() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       let cachePath = path.join(
         global.tempStorage,
         global.settings.cacheDirname
@@ -187,7 +187,7 @@ module.exports = function({ router }) {
         .then(() => {
           resolve();
         })
-        .catch(err => {
+        .catch((err) => {
           dev.error(err);
           return reject(err);
         });
@@ -195,7 +195,7 @@ module.exports = function({ router }) {
   }
 
   function readSessionMetaFile() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       var pathToSessionMeta = api.getFolderPath("meta.txt");
       try {
         var metaFileContent = fs.readFileSync(

@@ -37,10 +37,7 @@
 
           <div class="m_uploadFile--filename">{{ f.name }}</div>
           <div class="m_uploadFile--size">{{ $root.formatBytes(f.size) }}</div>
-          <div
-            class="m_uploadFile--action"
-            v-if="files_to_upload_meta.hasOwnProperty(f.name)"
-          >
+          <div class="m_uploadFile--action" v-if="files_to_upload_meta.hasOwnProperty(f.name)">
             <button
               type="button"
               class="buttonLink"
@@ -51,17 +48,13 @@
                     files_to_upload_meta[f.name].status === 'success')
               "
             >
-              <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">
-                {{ $t("import") }}
-              </template>
+              <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">{{ $t("import") }}</template>
               <template
                 v-else-if="files_to_upload_meta[f.name].status === 'success'"
-                >{{ $t("sent") }}</template
-              >
+              >{{ $t("sent") }}</template>
               <template
                 v-else-if="files_to_upload_meta[f.name].status === 'failed'"
-                >{{ $t("retry") }}</template
-              >
+              >{{ $t("retry") }}</template>
             </button>
           </div>
         </div>
@@ -99,7 +92,6 @@ export default {
   },
   watch: {},
   mounted() {
-    console.log("MOUNTED • TimeLineView: onScroll");
     this.sendAllFiles();
   },
   beforeDestroy() {},

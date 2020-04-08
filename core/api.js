@@ -15,7 +15,7 @@ const dev = require("./dev-log");
 
 ffmpeg.setFfmpegPath(pathToFfmpeg);
 
-module.exports = (function() {
+module.exports = (function () {
   const API = {
     getFolderPath: (slugFolderName = "") => getFolderPath(slugFolderName),
     findFirstFilenameNotTaken: (thisPath, fileName) =>
@@ -24,25 +24,25 @@ module.exports = (function() {
       getCurrentDate(format),
     convertDate: (date, format = global.settings.metaDateFormat) =>
       convertDate(date, format),
-    parseUTCDate: date => parseUTCDate(date),
+    parseUTCDate: (date) => parseUTCDate(date),
     parseDate: (date, format = global.settings.metaDateFormat) =>
       parseDate(date, format),
     storeData: (mpath, d, e) => storeData(mpath, d, e),
-    parseData: d => parseData(d),
+    parseData: (d) => parseData(d),
     eventAndContent: (sendEvent, objectJson) =>
       eventAndContent(sendEvent, objectJson),
     sendEventWithContent: (sendEvent, objectContent, io, socket) =>
       sendEventWithContent(sendEvent, objectContent, io, socket),
     getNetworkInfos: () => getNetworkInfos(),
-    removePasswordFromFoldersMeta: d => removePasswordFromFoldersMeta(d),
-    slug: term => slug(term),
+    removePasswordFromFoldersMeta: (d) => removePasswordFromFoldersMeta(d),
+    slug: (term) => slug(term),
     clip: (value, min, max) => clip(value, min, max),
-    decodeBase64Image: dataString => decodeBase64Image(dataString),
+    decodeBase64Image: (dataString) => decodeBase64Image(dataString),
     writeAudioToDisk: (slugFolderName, mediaName, dataURL) =>
       writeAudioToDisk(slugFolderName, mediaName, dataURL),
     writeVideoToDisk: (slugFolderName, mediaName, dataURL) =>
       writeVideoToDisk(slugFolderName, mediaName, dataURL),
-    makeStopmotionFromImageSequence: d => makeStopmotionFromImageSequence(d)
+    makeStopmotionFromImageSequence: (d) => makeStopmotionFromImageSequence(d),
   };
 
   function _getUserPath() {
@@ -75,7 +75,7 @@ module.exports = (function() {
 
   // check whether media (such as 'hello-world.mp4') already exists in the folder
   function findFirstFilenameNotTaken(thisPath, fileName) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       // let's find the extension if it exists
       var fileExtension = new RegExp(
         global.settings.regexpGetFileExtension,
@@ -128,13 +128,13 @@ module.exports = (function() {
   }
 
   function storeData(mpath, d, e) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       dev.logfunction(`COMMON — storeData at path ${mpath}`);
       //       dev.logfunction(`with content ${d}`);
       if (typeof d === "object") {
         d = parsedown.textify(d);
       }
-      writeFileAtomic(mpath, d, err => {
+      writeFileAtomic(mpath, d, (err) => {
         if (err) {
           reject(err);
         }
@@ -146,7 +146,7 @@ module.exports = (function() {
   function eventAndContent(sendEvent, objectJson) {
     var eventContentJSON = {
       socketevent: sendEvent,
-      content: objectJson
+      content: objectJson,
     };
     return eventContentJSON;
   }
@@ -193,11 +193,11 @@ module.exports = (function() {
 
   // from http://stackoverflow.com/a/8440736
   function getLocalIP() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       const ifaces = os.networkInterfaces();
       let ip_adresses = {};
-      Object.keys(ifaces).forEach(function(ifname) {
-        ifaces[ifname].forEach(function(iface) {
+      Object.keys(ifaces).forEach(function (ifname) {
+        ifaces[ifname].forEach(function (iface) {
           if ("IPv4" === iface.family && iface.internal === false) {
             ip_adresses[ifname] = iface.address;
           }
@@ -208,18 +208,18 @@ module.exports = (function() {
   }
 
   function getNetworkInfos() {
-    return new Promise(function(resolve, reject) {
-      getLocalIP().then(ip_adresses => {
+    return new Promise(function (resolve, reject) {
+      getLocalIP().then((ip_adresses) => {
         resolve({
           ip: Object.values(ip_adresses),
-          port: global.appInfos.port
+          port: global.appInfos.port,
         });
       });
     });
   }
 
   function removePasswordFromFoldersMeta(foldersData) {
-    Object.keys(foldersData).map(s => {
+    Object.keys(foldersData).map((s) => {
       if (
         foldersData[s].hasOwnProperty("password") &&
         foldersData[s].password !== ""
@@ -257,7 +257,7 @@ module.exports = (function() {
   }
 
   function writeAudioToDisk(slugFolderName, mediaName, dataURL) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       dev.logfunction("COMMON — writeAudioToDisk");
       if (dataURL === undefined) {
         dev.error("No media data content gotten for " + mediaName);
@@ -271,17 +271,17 @@ module.exports = (function() {
         global.settings.cacheDirname,
         "_medias"
       );
-      fs.mkdirp(cachePath, function() {
+      fs.mkdirp(cachePath, function () {
         let pathToTempMedia = path.join(cachePath, mediaName);
 
-        fs.writeFile(pathToTempMedia, fileBuffer, function(err) {
+        fs.writeFile(pathToTempMedia, fileBuffer, function (err) {
           if (err) reject(err);
 
           let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
           const ffmpeg_cmd = new ffmpeg(pathToTempMedia)
             .audioCodec("aac")
             .save(pathToMedia)
-            .on("end", function() {
+            .on("end", function () {
               console.log("Processing finished !");
               resolve();
             });
@@ -292,7 +292,7 @@ module.exports = (function() {
   }
 
   function writeVideoToDisk(slugFolderName, mediaName, dataURL) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       dev.logfunction("COMMON — writeVideoToDisk");
       if (dataURL === undefined) {
         dev.error("No media data content gotten for " + mediaName);
@@ -306,9 +306,9 @@ module.exports = (function() {
         global.settings.cacheDirname,
         "_medias"
       );
-      fs.mkdirp(cachePath, function() {
+      fs.mkdirp(cachePath, function () {
         let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
-        fs.writeFile(pathToMedia, fileBuffer, function(err) {
+        fs.writeFile(pathToMedia, fileBuffer, function (err) {
           if (err) reject(err);
           resolve();
         });
@@ -339,19 +339,19 @@ module.exports = (function() {
     images,
     slugStopmotionName,
     frameRate,
-    socket
+    socket,
   }) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       dev.logfunction("COMMON — makeStopmotionFromImageSequence");
 
       const numberOfImagesToProcess = images.length;
 
       _getImageResolution({
         slugStopmotionName,
-        image_filename: images[0]
-      }).then(resolution => {
+        image_filename: images[0],
+      }).then((resolution) => {
         _copyToTempAndRenameImages({ slugStopmotionName, images })
-          .then(tempFolder => {
+          .then((tempFolder) => {
             // ask ffmpeg to make a video from the cache images
             const ffmpeg_cmd = new ffmpeg()
               .input(path.join(tempFolder, "img-%04d.jpeg"))
@@ -366,22 +366,22 @@ module.exports = (function() {
               .autopad()
               .addOptions(["-preset slow", "-tune animation"])
               .toFormat("mp4")
-              .on("start", function(commandLine) {
+              .on("start", function (commandLine) {
                 dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
               })
-              .on("progress", progress => {
+              .on("progress", (progress) => {
                 require("./sockets").notify({
                   socket,
                   localized_string: `creating_video`,
                   not_localized_string:
-                    Number.parseFloat(progress.percent).toFixed(1) + "%"
+                    Number.parseFloat(progress.percent).toFixed(1) + "%",
                 });
               })
               .on("end", () => {
                 dev.logverbose(`Stopmotion has been completed`);
                 resolve();
               })
-              .on("error", function(err, stdout, stderr) {
+              .on("error", function (err, stdout, stderr) {
                 dev.error("An error happened: " + err.message);
                 dev.error("ffmpeg standard output:\n" + stdout);
                 dev.error("ffmpeg standard error:\n" + stderr);
@@ -390,13 +390,13 @@ module.exports = (function() {
               .save(pathToMedia);
             global.ffmpeg_processes.push(ffmpeg_cmd);
           })
-          .catch(err => reject(err));
+          .catch((err) => reject(err));
       });
     });
   }
 
   function _copyToTempAndRenameImages({ slugStopmotionName, images }) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       let cacheFolderName =
         getCurrentDate(global.settings.metaDateFormat) +
         slugStopmotionName +
@@ -411,7 +411,7 @@ module.exports = (function() {
 
       fs.mkdirp(
         cachePath,
-        function() {
+        function () {
           let slugStopmotionPath = getFolderPath(
             path.join(
               global.settings.structure["stopmotions"].path,
@@ -435,7 +435,7 @@ module.exports = (function() {
                   .then(() => {
                     resolve();
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     dev.error(`Failed to copy image to cache with seq name.`);
                     reject(err);
                   });
@@ -444,10 +444,10 @@ module.exports = (function() {
 
             Promise.all(tasks)
               .then(() => resolve(cachePath))
-              .catch(err => reject(err));
+              .catch((err) => reject(err));
           });
         },
-        function(err, p) {
+        function (err, p) {
           dev.error(`Failed to create cache folder: ${err}`);
           reject(err);
         }
@@ -456,7 +456,7 @@ module.exports = (function() {
   }
 
   function _getImageResolution({ slugStopmotionName, image_filename }) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       let slugStopmotionPath = getFolderPath(
         path.join(
           global.settings.structure["stopmotions"].path,
@@ -470,7 +470,7 @@ module.exports = (function() {
         if (err) return reject(err);
         return resolve({
           width: info.width,
-          height: info.height
+          height: info.height,
         });
       });
     });
