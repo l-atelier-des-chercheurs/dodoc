@@ -37,6 +37,32 @@ export default {
         [{ header: [false, 1, 2, 3] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ["bold", "italic", "underline", "link", "blockquote"],
+        [
+          {
+            color: [
+              "#353535",
+              "#757575",
+              "#b9b9b9",
+              "#1d327f",
+              "#52c5b9",
+              "#ffbe32",
+              "#fc4b60"
+            ]
+          }
+        ],
+        [
+          {
+            background: [
+              "transparent",
+              "#f1f1f1",
+              "#b9b9b9",
+              "#bec6e5",
+              "#a5e5da",
+              "#ffd892",
+              "#ff808c"
+            ]
+          }
+        ],
         [{ list: "ordered" }, { list: "bullet" }],
         ["clean"]
       ],
@@ -62,9 +88,12 @@ export default {
         "link",
         "header",
         "blockquote",
-        "list"
+        "list",
+        "color",
+        "background"
       ]
     });
+
     this.editor.root.innerHTML = this.value;
 
     this.$nextTick(() => {
