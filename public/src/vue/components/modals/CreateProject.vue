@@ -26,24 +26,15 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_folder }"
             @click="show_folder = !show_folder"
-          >
-            {{ $t("folder") }}
-          </button>
+          >{{ $t("folder") }}</button>
         </label>
         <div v-if="show_folder">
           <!-- <label v-html="$t('add_to_existing_folder')" /> -->
           <div class="input-group margin-bottom-none">
             <select v-model="existing_group_name">
               <option :key="'none'" :value="'_none'">{{ $t("none") }}</option>
-              <option :key="'create'" :value="''"
-                >** {{ $t("create_new") }} **</option
-              >
-              <option
-                v-for="folder in $root.all_folders"
-                :key="folder"
-                :value="folder"
-                >{{ folder }}</option
-              >
+              <option :key="'create'" :value="''">** {{ $t("create_new") }} **</option>
+              <option v-for="folder in $root.all_folders" :key="folder" :value="folder">{{ folder }}</option>
             </select>
           </div>
 
@@ -62,9 +53,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_image }"
             @click="show_image = !show_image"
-          >
-            {{ $t("cover_image") }}
-          </button>
+          >{{ $t("cover_image") }}</button>
         </label>
         <template v-if="show_image">
           <ImageSelect
@@ -86,16 +75,10 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_password }"
             @click="show_password = !show_password"
-          >
-            {{ $t("password") }}
-          </button>
+          >{{ $t("password") }}</button>
         </label>
         <template v-if="show_password">
-          <input
-            type="password"
-            v-model="projectdata.password"
-            autocomplete="new-password"
-          />
+          <input type="password" v-model="projectdata.password" autocomplete="new-password" />
           <small>{{ $t("password_instructions") }}</small>
         </template>
       </div>
@@ -108,14 +91,10 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_keywords }"
             @click="show_keywords = !show_keywords"
-          >
-            {{ $t("keywords") }}
-          </button>
+          >{{ $t("keywords") }}</button>
         </label>
         <template v-if="show_keywords">
-          <TagsInput
-            @tagsChanged="newTags => (projectdata.keywords = newTags)"
-          />
+          <TagsInput @tagsChanged="newTags => (projectdata.keywords = newTags)" />
         </template>
       </div>
 
@@ -127,9 +106,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_authors }"
             @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
+          >{{ $t("author") }}</button>
         </label>
 
         <template v-if="show_authors">
