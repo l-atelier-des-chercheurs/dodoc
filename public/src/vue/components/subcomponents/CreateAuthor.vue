@@ -1,5 +1,9 @@
 <template>
-  <form @close="$emit('close')" v-on:submit.prevent="newAuthor" :read_only="read_only">
+  <form
+    @close="$emit('close')"
+    v-on:submit.prevent="newAuthor"
+    :read_only="read_only"
+  >
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
     <!-- Human name -->
@@ -8,57 +12,93 @@
       <input type="text" v-model.trim="authordata.name" required autofocus />
     </div>
 
-    <!-- Preview -->
+    <!-- Password -->
     <div class="margin-bottom-small">
-      <label>{{ $t("portrait") }}</label>
-      <br />
-      <ImageSelect
-        @newPreview="
-          value => {
-            preview = value;
-          }
-        "
-        :instructions="$t('select_portrait_image')"
-        :load_from_projects_medias="true"
-      />
+      <label>
+        {{ $t("password") }}
+      </label>
+      <template v-if="show_password">
+        <input
+          type="password"
+          :required="$root.state.force_author_password ? true : false"
+          v-model="authordata.password"
+          autocomplete="new-password"
+        />
+        <small>{{ $t("password_instructions") }}</small>
+      </template>
     </div>
 
-    <!-- Password -->
-    <!-- <div class="margin-bottom-small">
-      <label>{{ $t('password') }}</label>
-      <input type="password" v-model="authordata.password">
-      <small>{{ $t('password_instructions') }}</small>
-    </div>-->
+    <!-- Preview -->
+    <div class="margin-bottom-small">
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_image }"
+          @click="show_image = !show_image"
+        >
+          {{ $t("portrait") }}
+        </button>
+      </label>
+      <template v-if="show_image">
+        <ImageSelect
+          @newPreview="
+            (value) => {
+              preview = value;
+            }
+          "
+          :instructions="$t('select_portrait_image')"
+          :load_from_projects_medias="true"
+        />
+      </template>
+    </div>
 
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
-      <label>{{ $t("nfc_tag") }}</label>
-      <br />
-      <input type="text" v-model="authordata.nfc_tag" />
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_nfc }"
+          @click="show_nfc = !show_nfc"
+        >
+          {{ $t("nfc_tag") }}
+        </button>
+      </label>
+      <template v-if="show_nfc">
+        <input type="text" v-model="authordata.nfc_tag" />
+      </template>
     </div>
 
-    <button type="button" class="button-small" @click="$emit('close')">{{ $t("cancel") }}</button>
+    <button type="button" class="button-small" @click="$emit('close')">
+      {{ $t("cancel") }}
+    </button>
     <button type="submit" class="button-greenthin">{{ $t("create") }}</button>
   </form>
 </template>
 <script>
 import ImageSelect from "../subcomponents/ImageSelect.vue";
+import SparkMD5 from "SparkMD5";
 
 export default {
   props: {
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
-    ImageSelect
+    ImageSelect,
   },
   data() {
     return {
+      show_password: true,
+      show_image: false,
+      show_nfc: false,
+
       authordata: {
         name: "",
         password: "",
-        nfc_tag: ""
+        nfc_tag: "",
       },
-      preview: undefined
+      preview: undefined,
     };
   },
   computed: {},
@@ -69,9 +109,11 @@ export default {
     }
   },
   methods: {
-    newAuthor: function(event) {
+    newAuthor: function (event) {
       console.log("newAuthor");
-      let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
+      let allAuthorsName = this.$root.allAuthors.map((a) =>
+        a.name.toLowerCase()
+      );
 
       // check if project name (not slug) already exists
       if (allAuthorsName.includes(this.authordata.name.toLowerCase())) {
@@ -88,11 +130,14 @@ export default {
         this.authordata.preview_rawdata = this.preview;
       }
 
+      if (!!this.authordata.password)
+        this.authordata.password = SparkMD5.hash(this.authordata.password);
+
       this.$root.createFolder({ type: "authors", data: this.authordata });
 
       this.$emit("close", "");
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

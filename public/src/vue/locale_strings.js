@@ -1479,7 +1479,7 @@ module.exports = (function () {
     },
     when_logged_as_author_content_will_be_tagged: {
       fr:
-        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes porteront votre nom.",
+        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
       en:
         "When logged in as an author all projects, medias and recipes will be saved with your name.",
       oc:
