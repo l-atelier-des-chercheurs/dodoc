@@ -167,6 +167,11 @@
         "id": {
           "type": "string"
         },
+        "role": {
+          "type": "string",
+          "options": ["contributor", "admin"],
+          "default": "contributor"
+        },
         "description": {
           "type": "string"
         },

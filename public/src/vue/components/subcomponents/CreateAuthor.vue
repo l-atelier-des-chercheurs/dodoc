@@ -45,6 +45,23 @@
       </template>
     </div>
 
+    <!-- Role -->
+    <div class="margin-bottom-small">
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_role }"
+          @click="show_role = !show_role"
+        >{{ $t("role") }}</button>
+      </label>
+      <template v-if="show_role">
+        <select v-model="authordata.role">
+          <option v-for="role in possible_roles" :value="role" :key="role">{{ $t(role) }}</option>
+        </select>
+      </template>
+    </div>
+
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
       <label>
@@ -78,11 +95,14 @@ export default {
     return {
       show_password: true,
       show_image: false,
+      show_role: true,
       show_nfc: false,
+      possible_roles: ["contributor", "admin"],
 
       authordata: {
         name: "",
         password: "",
+        role: "contributor",
         nfc_tag: ""
       },
       preview: undefined
@@ -116,7 +136,9 @@ export default {
       }
 
       if (!!this.authordata.password)
-        this.authordata.password = auth.hashCode(this.authordata.password);
+        this.authordata.password = this.$auth.hashCode(
+          this.authordata.password
+        );
 
       this.$root.createFolder({ type: "authors", data: this.authordata });
 

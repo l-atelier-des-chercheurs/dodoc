@@ -163,6 +163,18 @@ module.exports = (function () {
       oc: "Autor",
       de: "Autor(en)",
     },
+    role: {
+      fr: "Rôle",
+      en: "Role",
+    },
+    admin: {
+      fr: "Admin",
+      en: "Admin",
+    },
+    contributor: {
+      fr: "Contributeur",
+      en: "Contributor",
+    },
     download: {
       fr: "Télécharger",
       en: "Download",
@@ -758,6 +770,10 @@ module.exports = (function () {
       nl: "Inloggen ",
       oc: "S'identificar",
       de: "Anmeldung",
+    },
+    logout: {
+      fr: "Se déconnecter",
+      en: "Log-out",
     },
     login_to_access: {
       fr:
@@ -1446,14 +1462,9 @@ module.exports = (function () {
     },
     author_instructions: {
       fr:
-        "Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
-      en: "To create authors, close this window and click on (AUTHORS).",
-      nl:
-        "Om auteurs aan te maken, sluit dit venster en klik op de knop (AUTEURS).",
-      oc:
-        "Per crear d'autors, clavatz aquesta fenèstra e clicatz sul boton (AUTORS).",
-      de:
-        "Um Autoren  zu erstellen, schliessen Sie dieses Fenster und klicken Sie auf die Schaltfläche (Autoren).",
+        "Si un ou plusieurs auteurs sont indiqués, alors ils seront les seuls à pouvoir modifier ou supprimer ce contenu. Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
+      en:
+        "If one or more authors are tagged, they will be the only ones that will be able to edit this content. To create authors, close this window and click on (AUTHORS).",
     },
     attached_to_project_instructions: {
       fr:

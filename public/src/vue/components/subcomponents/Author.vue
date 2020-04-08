@@ -77,6 +77,9 @@
           draggable="false"
         />
         <div class="m_author--name">{{ author.name }}</div>
+        <div class="m_author--role" v-if="author.role">
+          <label>{{ author.role }}</label>
+        </div>
 
         <div
           class
@@ -132,7 +135,7 @@
           class="buttonLink"
           @click.stop="unsetAuthor()"
           v-if="author.name === $root.current_author.name"
-        >{{ $t("unselect") }}</button>
+        >{{ $t("logout") }}</button>
       </div>
     </div>
   </div>
@@ -156,7 +159,15 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    show_input_password_field: function() {
+      if (this.show_input_password_field) {
+        this.$nextTick(() => {
+          this.$refs.passwordField.focus();
+        });
+      }
+    }
+  },
   computed: {
     can_login_as_author() {
       return this.$root.canAccessFolder({
@@ -169,9 +180,11 @@ export default {
     submitPassword() {
       console.log("METHODS • Author: submitPassword");
 
+      const pass = this.$auth.hashCode(this.$refs.passwordField.value);
+
       this.$auth.updateFoldersPasswords({
         authors: {
-          [this.author.slugFolderName]: this.$refs.passwordField.value
+          [this.author.slugFolderName]: pass
         }
       });
 
