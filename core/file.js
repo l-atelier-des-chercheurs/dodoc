@@ -741,9 +741,9 @@ module.exports = (function () {
                 case ".rtf":
                   additionalMeta.type = "text";
                   break;
-                case ".ino":
-                  additionalMeta.type = "code";
-                  break;
+                // case ".ino":
+                //   additionalMeta.type = "code";
+                //   break;
                 case ".pdf":
                   additionalMeta.type = "document";
                   break;
