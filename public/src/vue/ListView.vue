@@ -1,8 +1,14 @@
 <template>
-  <div class="m_listview" :class="{ 'is--folder': !!$root.settings.opened_folder }">
+  <div
+    class="m_listview"
+    :class="{ 'is--folder': !!$root.settings.opened_folder }"
+  >
     <main class="m_projects main_scroll_panel">
       <transition name="fade_fast" :duration="150">
-        <div class="m_listview--openedFolderLabel" v-if="!!$root.settings.opened_folder">
+        <div
+          class="m_listview--openedFolderLabel"
+          v-if="!!$root.settings.opened_folder"
+        >
           <div>
             <button
               class="m_listview--openedFolderLabel--backButton"
@@ -53,7 +59,11 @@
             <label for="media_switch" class="cursor-pointer">
               <span class>{{ $t("projects") }}</span>
             </label>
-            <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
+            <input
+              type="checkbox"
+              id="media_switch"
+              v-model="show_medias_instead_of_projects"
+            />
             <label for="media_switch">
               <span class>{{ $t("medias") }}</span>
             </label>
@@ -68,7 +78,7 @@
                     :class="{
                       'c-rouge':
                         Object.keys(sortedProjects).length !==
-                        Object.keys(projects).length
+                        Object.keys(projects).length,
                     }"
                   >
                     {{ sortedProjects.length }}
@@ -76,7 +86,8 @@
                       v-if="
                         sortedProjects.length === Object.keys(projects).length
                       "
-                    >{{ $t("projects") }}</template>
+                      >{{ $t("projects") }}</template
+                    >
                     <template v-else>
                       {{ $t("projects_of") }}
                       {{ Object.keys(projects).length }}
@@ -85,7 +96,7 @@
                   <template
                     v-if="
                       $root.allKeywords.length > 0 ||
-                        $root.allAuthors.length > 0
+                      $root.allAuthors.length > 0
                     "
                   >
                     —
@@ -94,7 +105,9 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >{{ $t("filters") }}</button>
+                    >
+                      {{ $t("filters") }}
+                    </button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -102,8 +115,8 @@
                     :allAuthors="projectsAuthors"
                     :keywordFilter="$root.settings.project_filter.keyword"
                     :authorFilter="$root.settings.project_filter.author"
-                    @setKeywordFilter="a => $root.setProjectKeywordFilter(a)"
-                    @setAuthorFilter="a => $root.setProjectAuthorFilter(a)"
+                    @setKeywordFilter="(a) => $root.setProjectKeywordFilter(a)"
+                    @setAuthorFilter="(a) => $root.setProjectAuthorFilter(a)"
                   />
                 </div>
                 <div class="m_searchProject">
@@ -113,7 +126,7 @@
                     :class="{
                       'is--active':
                         show_search ||
-                        $root.settings.project_filter.name.length > 0
+                        $root.settings.project_filter.name.length > 0,
                     }"
                     @click="show_search = !show_search"
                   >
@@ -148,13 +161,22 @@
                     <div>{{ $t("project_name_to_find") }}</div>
 
                     <div class="input-group">
-                      <input type="text" class v-model="debounce_search_project_name" />
-                      <span class="input-addon" v-if="debounce_search_project_name.length > 0">
+                      <input
+                        type="text"
+                        class
+                        v-model="debounce_search_project_name"
+                      />
+                      <span
+                        class="input-addon"
+                        v-if="debounce_search_project_name.length > 0"
+                      >
                         <button
                           type="button"
                           :disabled="debounce_search_project_name.length === 0"
                           @click="debounce_search_project_name = ''"
-                        >×</button>
+                        >
+                          ×
+                        </button>
                       </span>
                     </div>
                   </div>
@@ -166,7 +188,7 @@
                   :class="{
                     'c-rouge':
                       Object.keys(sortedMedias).length !==
-                      Object.keys(allMedias).length
+                      Object.keys(allMedias).length,
                   }"
                 >
                   {{ Object.keys(sortedMedias).length }}
@@ -184,7 +206,9 @@
                     class="button-nostyle text-uc button-triangle"
                     :class="{ 'is--active': show_filters }"
                     @click="show_filters = !show_filters"
-                  >{{ $t("filters") }}</button>
+                  >
+                    {{ $t("filters") }}
+                  </button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -194,10 +218,10 @@
                   :keywordFilter="$root.settings.media_filter.keyword"
                   :authorFilter="$root.settings.media_filter.author"
                   :favFilter="$root.settings.media_filter.fav"
-                  @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
-                  @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
-                  @setFavFilter="a => $root.setFavAuthorFilter(a)"
-                  @setTypeFilter="a => $root.setTypeFilter(a)"
+                  @setKeywordFilter="(a) => $root.setMediaKeywordFilter(a)"
+                  @setAuthorFilter="(a) => $root.setMediaAuthorFilter(a)"
+                  @setFavFilter="(a) => $root.setFavAuthorFilter(a)"
+                  @setTypeFilter="(a) => $root.setTypeFilter(a)"
                 />
               </template>
             </template>
@@ -219,9 +243,7 @@
                 <button
                   type="button"
                   class="button-nostyle"
-                  @click="
-                                        toggleAllInFolder({ $event, folder_name: item.name })
-"
+                  @click="toggleAllInFolder({ $event, folder_name: item.name })"
                 >
                   {{ item.name }} ({{ item.content.length }})
                   <label
@@ -246,7 +268,9 @@
                   type="button"
                   class="button-nostyle"
                   @click="toggleFolder(item.name)"
-                >{{ $t('open') }}</button>
+                >
+                  {{ $t("open") }}
+                </button>
               </label>
               <!-- v-if="(is_hovered || is_selected)" -->
             </div>
@@ -282,7 +306,9 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >{{ $root.formatDateToHuman(item[0]) }}</h3>
+          >
+            {{ $root.formatDateToHuman(item[0]) }}
+          </h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -295,13 +321,13 @@
                 :is_selected="
                   mediaIsSelected({
                     slugFolderName: media.slugProjectName,
-                    metaFileName: media.metaFileName
+                    metaFileName: media.metaFileName,
                   })
                 "
                 @toggleSelect="
                   toggleSelectMedia({
                     slugFolderName: media.slugProjectName,
-                    metaFileName: media.metaFileName
+                    metaFileName: media.metaFileName,
                   })
                 "
               ></MediaCard>
@@ -338,7 +364,7 @@ export default {
   props: {
     presentationMD: Object,
     read_only: Boolean,
-    projects: Object
+    projects: Object,
   },
   components: {
     CreateProject,
@@ -346,7 +372,7 @@ export default {
     BottomFooter,
     MediaCard,
     SelectorBar,
-    TagsAndAuthorFilters
+    TagsAndAuthorFilters,
   },
   data() {
     return {
@@ -359,7 +385,7 @@ export default {
       currentSort: {
         field: "date_created",
         type: "date",
-        order: "descending"
+        order: "descending",
       },
 
       show_filters: false,
@@ -368,7 +394,7 @@ export default {
       selected_projects: [],
 
       debounce_search_project_name: this.$root.settings.project_filter.name,
-      debounce_search_project_name_function: undefined
+      debounce_search_project_name_function: undefined,
     };
   },
   mounted() {
@@ -386,10 +412,10 @@ export default {
     this.$eventHub.$off("modal.next_media", this.nextMedia);
   },
   watch: {
-    currentLang: function() {
+    currentLang: function () {
       this.$root.updateLocalLang(this.currentLang);
     },
-    show_medias_instead_of_projects: function() {
+    show_medias_instead_of_projects: function () {
       // load all projects’ medias if it isn’t there
       if (this.show_medias_instead_of_projects) {
         this.$root.loadAllProjectsMedias();
@@ -406,7 +432,7 @@ export default {
       this.selected_projects = [];
       this.selected_medias = [];
     },
-    show_filters: function() {
+    show_filters: function () {
       if (!this.show_filters) {
         this.$root.settings.project_filter.keyword = "";
         this.$root.settings.project_filter.author = "";
@@ -418,34 +444,34 @@ export default {
         this.$root.settings.media_filter.type = false;
       }
     },
-    debounce_search_project_name: function() {
+    debounce_search_project_name: function () {
       if (this.debounce_tweet_filter_function)
         clearTimeout(this.debounce_tweet_filter_function);
       this.debounce_tweet_filter_function = setTimeout(() => {
         this.$root.settings.project_filter.name = this.debounce_search_project_name;
       }, 340);
-    }
+    },
   },
   computed: {
-    projectsKeywords: function() {
+    projectsKeywords: function () {
       return this.$root.getAllKeywordsFrom(this.projects);
     },
-    projectsAuthors: function() {
+    projectsAuthors: function () {
       return this.$root.getAllAuthorsFrom(this.projects);
     },
-    mediasKeywords: function() {
+    mediasKeywords: function () {
       return this.$root.getAllKeywordsFrom(this.filteredMedias);
     },
-    mediasAuthors: function() {
+    mediasAuthors: function () {
       return this.$root.getAllAuthorsFrom(this.filteredMedias);
     },
     mediaTypes() {
       return this.$root.getAllTypesFrom(this.filteredMedias);
     },
-    sortedProjects: function() {
+    sortedProjects: function () {
       var sortable = [];
 
-      if (!this.projects || this.projects.length === 0) {
+      if (!this.projects || Object.keys(this.projects).length === 0) {
         return [];
       }
 
@@ -497,14 +523,14 @@ export default {
             project.hasOwnProperty("keywords") &&
             typeof project.keywords === "object" &&
             project.keywords.filter(
-              k => k.title === this.$root.settings.project_filter.keyword
+              (k) => k.title === this.$root.settings.project_filter.keyword
             ).length > 0
           ) {
             if (
               project.hasOwnProperty("authors") &&
               typeof project.authors === "object" &&
               project.authors.filter(
-                k => k.name === this.$root.settings.project_filter.author
+                (k) => k.name === this.$root.settings.project_filter.author
               ).length > 0
             ) {
               sortable.push({ project, orderBy });
@@ -519,7 +545,7 @@ export default {
             project.hasOwnProperty("keywords") &&
             typeof project.keywords === "object" &&
             project.keywords.filter(
-              k => k.title === this.$root.settings.project_filter.keyword
+              (k) => k.title === this.$root.settings.project_filter.keyword
             ).length > 0
           ) {
             sortable.push({ project, orderBy });
@@ -533,7 +559,7 @@ export default {
             project.hasOwnProperty("authors") &&
             typeof project.authors === "object" &&
             project.authors.filter(
-              k => k.name === this.$root.settings.project_filter.author
+              (k) => k.name === this.$root.settings.project_filter.author
             ).length > 0
           ) {
             sortable.push({ project, orderBy });
@@ -551,7 +577,7 @@ export default {
         });
       }
 
-      let sortedProjects = sortable.sort(function(a, b) {
+      let sortedProjects = sortable.sort(function (a, b) {
         let valA = a.orderBy;
         let valB = b.orderBy;
         if (typeof a.orderBy === "string" && typeof b.orderBy === "string") {
@@ -570,10 +596,10 @@ export default {
       if (this.currentSort.order === "descending") {
         sortedProjects.reverse();
       }
-      sortedProjects = sortedProjects.map(sp => sp.project);
+      sortedProjects = sortedProjects.map((sp) => sp.project);
       return sortedProjects;
     },
-    sortedFoldersAndProjects: function() {
+    sortedFoldersAndProjects: function () {
       //  [
       //     {
       //       type: "folder",
@@ -598,7 +624,7 @@ export default {
 
       const projects_sorted_by_folder = this.$_.groupBy(
         this.sortedProjects,
-        p => {
+        (p) => {
           return !!p.folder ? p.folder : "znot-groupped";
         }
       );
@@ -618,13 +644,13 @@ export default {
             acc.push({
               type: "folder",
               name,
-              content
+              content,
             });
           } else {
-            content = content.map(p => {
+            content = content.map((p) => {
               acc.push({
                 type: "project",
-                content: p
+                content: p,
               });
             });
           }
@@ -634,7 +660,7 @@ export default {
 
       return folders_and_projects;
     },
-    presentationText: function() {
+    presentationText: function () {
       if (this.presentationMD.hasOwnProperty(this.currentLang)) {
         return this.presentationMD[this.currentLang];
       } else if (this.presentationMD.hasOwnProperty("content")) {
@@ -642,12 +668,12 @@ export default {
       }
       return this.presentationMD;
     },
-    allMedias: function() {
+    allMedias: function () {
       const allMedias = this.sortedProjects.reduce((acc, project) => {
         if (!project.hasOwnProperty("medias")) {
           return acc;
         }
-        Object.values(project.medias).map(media => {
+        Object.values(project.medias).map((media) => {
           media.slugProjectName = project.slugFolderName;
           acc.push(media);
         });
@@ -656,15 +682,15 @@ export default {
       }, []);
       return allMedias;
     },
-    filteredMedias: function() {
-      return this.allMedias.filter(m => this.$root.filterMedia(m));
+    filteredMedias: function () {
+      return this.allMedias.filter((m) => this.$root.filterMedia(m));
     },
-    sortedMedias: function() {
+    sortedMedias: function () {
       let sortedMedias = this.$_.sortBy(this.filteredMedias, "date_created");
       return sortedMedias.reverse();
     },
-    groupedMedias: function() {
-      let mediaGroup = this.$_.groupBy(this.sortedMedias, media => {
+    groupedMedias: function () {
+      let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
         let _date;
 
         if (media.hasOwnProperty("date_created") && !!media.date_created) {
@@ -685,7 +711,7 @@ export default {
       mediaGroup = this.$_.sortBy(mediaGroup);
       mediaGroup = mediaGroup.reverse();
       return mediaGroup;
-    }
+    },
   },
   methods: {
     setSort(newSort) {
@@ -695,7 +721,7 @@ export default {
     toggleSelectMedia({ slugFolderName, metaFileName }) {
       if (this.mediaIsSelected({ slugFolderName, metaFileName })) {
         this.selected_medias = this.selected_medias.filter(
-          m =>
+          (m) =>
             !(
               m.slugFolderName === slugFolderName &&
               m.metaFileName === metaFileName
@@ -704,20 +730,20 @@ export default {
       } else {
         this.selected_medias.push({
           slugFolderName,
-          metaFileName
+          metaFileName,
         });
       }
     },
     mediaIsSelected({ slugFolderName, metaFileName }) {
       return this.selected_medias.some(
-        m =>
+        (m) =>
           m.metaFileName === metaFileName && m.slugFolderName === slugFolderName
       );
     },
 
     toggleAllInFolder({ $event, folder_name }) {
       const folder = this.sortedFoldersAndProjects.find(
-        fp => fp.type === "folder" && fp.name === folder_name
+        (fp) => fp.type === "folder" && fp.name === folder_name
       );
 
       if (
@@ -728,12 +754,14 @@ export default {
         return false;
 
       // check si les projets sont tous select
-      if (folder.content.some(p => !this.projectIsSelected(p.slugFolderName))) {
+      if (
+        folder.content.some((p) => !this.projectIsSelected(p.slugFolderName))
+      ) {
         // si non, on les select tous
-        folder.content.map(p => this.selectProject(p.slugFolderName));
+        folder.content.map((p) => this.selectProject(p.slugFolderName));
       } else {
         // si oui, on les unselect
-        folder.content.map(p => this.unselectProject(p.slugFolderName));
+        folder.content.map((p) => this.unselectProject(p.slugFolderName));
       }
 
       // this.$nextTick(() => {
@@ -750,7 +778,7 @@ export default {
     },
     allProjectFromThatFolderAreSelected(folder_name) {
       const folder = this.sortedFoldersAndProjects.find(
-        fp => fp.type === "folder" && fp.name === folder_name
+        (fp) => fp.type === "folder" && fp.name === folder_name
       );
 
       if (
@@ -761,7 +789,7 @@ export default {
         return false;
 
       return !folder.content.some(
-        p => this.projectIsSelected(p.slugFolderName) === false
+        (p) => this.projectIsSelected(p.slugFolderName) === false
       );
     },
 
@@ -769,7 +797,7 @@ export default {
       if (
         !this.$root.canAccessFolder({
           type: "projects",
-          slugFolderName
+          slugFolderName,
         })
       ) {
         this.$alertify
@@ -781,19 +809,19 @@ export default {
 
       if (!this.projectIsSelected(slugFolderName)) {
         this.selected_projects.push({
-          slugFolderName
+          slugFolderName,
         });
       }
     },
     unselectProject(slugFolderName) {
       this.selected_projects = this.selected_projects.filter(
-        m => !(m.slugFolderName === slugFolderName)
+        (m) => !(m.slugFolderName === slugFolderName)
       );
     },
 
     projectIsSelected(slugFolderName) {
       return this.selected_projects.some(
-        m => m.slugFolderName === slugFolderName
+        (m) => m.slugFolderName === slugFolderName
       );
     },
 
@@ -822,7 +850,7 @@ export default {
       }
 
       const current_media_index = this.sortedMedias.findIndex(
-        m => m.metaFileName === this.$root.media_modal.current_metaFileName
+        (m) => m.metaFileName === this.$root.media_modal.current_metaFileName
       );
       const new_media = this.sortedMedias[current_media_index + relative_index];
       this.$root.closeMedia();
@@ -831,12 +859,12 @@ export default {
         this.$nextTick(() => {
           this.$root.openMedia({
             slugProjectName: new_media.slugProjectName,
-            metaFileName: new_media.metaFileName
+            metaFileName: new_media.metaFileName,
           });
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss"></style>
