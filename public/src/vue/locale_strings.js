@@ -73,6 +73,10 @@ module.exports = (function () {
       fr: "aucun",
       en: "none",
     },
+    interactive_preview: {
+      fr: "Aperçu interactif",
+      en: "Interactive preview",
+    },
     advanced_options: {
       fr: "Options avancées",
       en: "Advanced options",
