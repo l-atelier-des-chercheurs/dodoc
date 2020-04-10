@@ -202,13 +202,7 @@ export default {
 
       projectdata: {
         name: this.project.name,
-        authors:
-          typeof this.project.authors === "string" &&
-          this.project.authors !== ""
-            ? this.project.authors.split(",").map((a) => {
-                return { name: a };
-              })
-            : this.project.authors,
+        authors: this.project.authors,
         keywords: this.project.keywords,
         password: this.project_password ? this.project_password : "",
       },

@@ -11,7 +11,6 @@
     <div class="margin-bottom-small">
       <label>{{ $t("name") }}</label>
       <input type="text" v-model.trim="authordata.name" required autofocus />
-      <small v-html="$t('author_name_editing_instructions')" />
     </div>
 
     <!-- Preview -->

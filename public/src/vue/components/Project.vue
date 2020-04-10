@@ -57,21 +57,24 @@
           <div class="m_metaField" v-if="!!project.authors">
             <div>{{ $t("author") }}</div>
             <div class="m_authorField">
-              <span v-if="typeof project.authors === 'string'">{{
-                project.authors
-              }}</span>
               <span
-                v-else-if="typeof project.authors === 'object'"
                 v-for="author in project.authors"
+                v-if="author.slugFolderName"
                 :key="author.slugFolderName"
                 class="is--active"
+                :class="{
+                  'is--loggedInAuthor':
+                    $root.current_author &&
+                    $root.current_author.slugFolderName ===
+                      author.slugFolderName,
+                }"
               >
                 <template v-if="$root.getAuthor(author.slugFolderName)">
                   {{ $root.getAuthor(author.slugFolderName).name }}
                 </template>
-                <template v-else>
+                <!-- <template v-else>
                   {{ author.slugFolderName }}
-                </template>
+                </template> -->
               </span>
             </div>
           </div>

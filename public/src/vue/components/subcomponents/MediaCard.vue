@@ -5,7 +5,7 @@
       'is--inPubli': is_media_in_publi,
       'is--fav': media.fav,
       'is--ownMedia': media_made_by_current_author,
-      'is--selected': is_selected
+      'is--selected': is_selected,
     }"
   >
     <div>
@@ -32,7 +32,7 @@
                 width="78.5px"
                 height="106.4px"
                 viewBox="0 0 78.5 106.4"
-                style="enable-background:new 0 0 78.5 106.4;"
+                style="enable-background: new 0 0 78.5 106.4;"
                 xml:space="preserve"
               >
                 <polygon
@@ -74,9 +74,9 @@
             <div
               v-if="
                 $root.settings.current_publication.slug &&
-                  $root.settings.current_publication.accepted_media_type.includes(
-                    media.type
-                  )
+                $root.settings.current_publication.accepted_media_type.includes(
+                  media.type
+                )
               "
               class="m_media--add_to_recipe"
               @click.stop="addToCurrentPubli()"
@@ -88,7 +88,7 @@
                 @click.stop="addToCurrentPubli()"
                 v-tippy="{
                   placement: 'left',
-                  delay: [600, 0]
+                  delay: [600, 0],
                 }"
               >
                 <template v-if="!is_media_in_publi">→</template>
@@ -133,10 +133,10 @@ export default {
     slugProjectName: String,
     metaFileName: String,
     preview_size: Number,
-    is_selected: Boolean
+    is_selected: Boolean,
   },
   components: {
-    MediaContent
+    MediaContent,
   },
   data() {
     return {
@@ -145,10 +145,10 @@ export default {
         image: "/images/i_icone-dodoc_image.svg",
         video: "/images/i_icone-dodoc_video.svg",
         stopmotion: "/images/i_icone-dodoc_anim.svg",
-        audio: "/images/i_icone-dodoc_audio.svg"
+        audio: "/images/i_icone-dodoc_audio.svg",
       },
       local_is_selected: false,
-      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5)
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
     };
   },
 
@@ -156,15 +156,15 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
-    is_selected: function() {
+    is_selected: function () {
       this.local_is_selected = this.is_selected;
-    }
+    },
   },
   computed: {
     is_media_in_publi() {
       return (
         Object.values(this.$root.current_publication_medias).findIndex(
-          s => s.slugMediaName === this.metaFileName
+          (s) => s.slugMediaName === this.metaFileName
         ) > -1
       );
 
@@ -197,10 +197,10 @@ export default {
       }
       return (
         this.media.authors.filter(
-          a => a.name === this.$root.current_author.name
+          (a) => a.slugFolderName === this.$root.current_author.slugFolderName
         ).length > 0
       );
-    }
+    },
   },
   methods: {
     openMediaModal() {
@@ -211,7 +211,7 @@ export default {
       }
       this.$root.openMedia({
         slugProjectName: this.slugProjectName,
-        metaFileName: this.metaFileName
+        metaFileName: this.metaFileName,
       });
     },
     removeMedia() {
@@ -236,10 +236,10 @@ export default {
       }
       this.$eventHub.$emit("publication.addMedia", {
         slugProjectName: this.slugProjectName,
-        metaFileName: this.metaFileName
+        metaFileName: this.metaFileName,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

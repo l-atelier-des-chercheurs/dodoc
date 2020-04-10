@@ -311,7 +311,9 @@ export default {
     isCurrentAuthor(message) {
       return (
         Array.isArray(message.authors) &&
-        message.authors[0].name === this.$root.current_author.name
+        (message.authors[0].name === this.$root.current_author.name ||
+          message.authors[0].slugFolderName ===
+            this.$root.current_author.slugFolderName)
       );
     },
     removeMessage(message) {
@@ -348,7 +350,9 @@ export default {
         slugFolderName: this.chat.slugFolderName,
         additionalMeta: {
           text: this.new_message,
-          authors: [{ name: this.$root.current_author.name }],
+          authors: [
+            { slugFolderName: this.$root.current_author.slugFolderName },
+          ],
         },
       });
 

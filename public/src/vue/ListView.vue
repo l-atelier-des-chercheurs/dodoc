@@ -530,7 +530,8 @@ export default {
               project.hasOwnProperty("authors") &&
               typeof project.authors === "object" &&
               project.authors.filter(
-                (k) => k.name === this.$root.settings.project_filter.author
+                (k) =>
+                  k.slugFolderName === this.$root.settings.project_filter.author
               ).length > 0
             ) {
               sortable.push({ project, orderBy });
@@ -559,7 +560,8 @@ export default {
             project.hasOwnProperty("authors") &&
             typeof project.authors === "object" &&
             project.authors.filter(
-              (k) => k.name === this.$root.settings.project_filter.author
+              (k) =>
+                k.slugFolderName === this.$root.settings.project_filter.author
             ).length > 0
           ) {
             sortable.push({ project, orderBy });

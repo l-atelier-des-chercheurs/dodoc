@@ -12,11 +12,13 @@
       v-else
       class="m_author"
       :class="{
-        'is--selected': author.name === $root.current_author.name,
+        'is--selected':
+          author.slugFolderName === $root.current_author.slugFolderName,
         'is--editMode': edit_author_mode,
       }"
       @click.stop="
-        author.name !== $root.current_author.name && can_login_as_author
+        author.slugFolderName !== $root.current_author.slugFolderName &&
+        can_login_as_author
           ? setAuthorWithoutPassword()
           : (show_input_password_field = true)
       "
@@ -139,19 +141,20 @@
 
         <button
           type="button"
+          v-if="
+            author.slugFolderName !== $root.current_author.slugFolderName &&
+            can_login_as_author
+          "
           class="buttonLink"
           @click.stop="setAuthorWithoutPassword()"
-          v-if="
-            author.name !== $root.current_author.name && can_login_as_author
-          "
         >
           {{ $t("login") }}
         </button>
         <button
           type="button"
+          v-if="author.slugFolderName === $root.current_author.slugFolderName"
           class="buttonLink"
           @click.stop="unsetAuthor()"
-          v-if="author.name === $root.current_author.name"
         >
           {{ $t("logout") }}
         </button>

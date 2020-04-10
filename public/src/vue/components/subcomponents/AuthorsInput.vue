@@ -1,26 +1,25 @@
 <template>
   <div class="m_authorField">
     <button
-      v-for="author in allAuthors"
+      v-for="author_slug in all_authors_slugs"
       type="button"
-      :key="author.slugFolderName"
+      :key="author_slug"
       :class="{
-        'is--active':
-          authors.filter((a) => a.slugFolderName === author.slugFolderName)
-            .length > 0,
+        'is--active': authors.some((a) => a.slugFolderName === author_slug),
         'is--loggedInAuthor':
           $root.current_author &&
-          $root.current_author.slugFolderName === author.slugFolderName,
+          $root.current_author.slugFolderName === author_slug,
       }"
-      @click="toggleAuthorName(author.slugFolderName)"
+      @click="toggleAuthorName(author_slug)"
     >
-      {{ author.name }}
+      {{ $root.getAuthor(author_slug).name }}
     </button>
     <button
       type="button"
       @click="show_all_authors = true"
       v-if="
-        max_authors_displayed_at_first <= allAuthors.length && !show_all_authors
+        max_authors_displayed_at_first <= all_authors_slugs.length &&
+        !show_all_authors
       "
       class="m_authorField--show_all_authors"
       v-html="$t('show_all_authors')"
@@ -47,40 +46,39 @@ export default {
 
   watch: {},
   computed: {
-    allAuthors() {
-      const allAuthors = this.authors.concat(this.$root.allAuthors);
-      let nameList = [];
+    all_authors_slugs() {
+      let _all_authors_slugs = [];
 
       if (this.$root.current_author)
-        allAuthors.unshift(this.$root.current_author);
+        _all_authors_slugs.push(this.$root.current_author.slugFolderName);
 
-      let unique_authors = allAuthors.filter((a) => {
-        if (nameList.indexOf(a.slugFolderName) === -1) {
-          nameList.push(a.slugFolderName);
-          return true;
-        }
-        return false;
+      this.authors.map((acc, a) => {
+        if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
+          _all_authors_slugs.push(a.slugFolderName);
+      });
+
+      this.$root.allAuthors.map((a) => {
+        if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
+          _all_authors_slugs.push(a.slugFolderName);
       });
 
       if (this.show_all_authors) {
-        return unique_authors;
+        return _all_authors_slugs;
       } else {
-        return unique_authors.slice(0, this.max_authors_displayed_at_first);
+        return _all_authors_slugs.slice(0, this.max_authors_displayed_at_first);
       }
     },
   },
   methods: {
-    toggleAuthorName: function (authorName) {
-      // authorName is already in authors, then remove it
-      if (
-        this.authors.filter((a) => a.slugFolderName === authorName).length > 0
-      ) {
+    toggleAuthorName: function (author_slug) {
+      // author_slug is already in authors, then remove it
+      if (this.authors.some((a) => a.slugFolderName === author_slug)) {
         this.authors = this.authors.filter(
-          (a) => a.slugFolderName !== authorName
+          (a) => a.slugFolderName !== author_slug
         );
       } else {
         this.authors.push({
-          name: authorName,
+          slugFolderName: author_slug,
         });
       }
       this.$emit("authorsChanged", this.authors);

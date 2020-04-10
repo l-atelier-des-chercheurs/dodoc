@@ -606,14 +606,7 @@ let vm = new Vue({
     },
     allAuthors() {
       let allAuthors = [];
-      for (let slugAuthorName in this.store.authors) {
-        let authorName = this.store.authors[slugAuthorName];
-        allAuthors.push(authorName);
-      }
-      allAuthors = allAuthors.filter(function (item, pos) {
-        return allAuthors.indexOf(item) == pos;
-      });
-      return allAuthors;
+      return Object.values(this.store.authors);
     },
     allKeywords() {
       let allKeywords = [];
@@ -770,7 +763,9 @@ let vm = new Vue({
         if (!mdata.hasOwnProperty("additionalMeta")) {
           mdata.additionalMeta = {};
         }
-        mdata.additionalMeta.authors = [{ name: this.current_author.name }];
+        mdata.additionalMeta.authors = [
+          { slugFolderName: this.current_author.slugFolderName },
+        ];
       }
 
       this.$nextTick(() => {

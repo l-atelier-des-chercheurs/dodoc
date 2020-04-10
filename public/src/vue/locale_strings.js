@@ -1486,16 +1486,6 @@ module.exports = (function () {
       en:
         "To translate do•doc, consult the following <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum post (in french)</a> or get in touch via email: <a href='mailto:info@latelier-des-chercheurs.fr?subject=translate%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
     },
-    author_name_editing_instructions: {
-      fr:
-        "Attention&nbsp;! Si vous modifiez ce nom tous les médias, projets et recettes resteront associés au nom précédent.",
-      en:
-        "Warning! All existing medias, projects and recipes will still be associated to the previous name.",
-      oc:
-        "Avisa ! Si modificatz aqueste nom totes los mèdias, projèctes e recèptas demoraràn associats al nom precedent.",
-      de:
-        "Achtung! Wenn Sie diesen Namen ändern, bleiben alle Medien, Projekte und Rezepte mit dem bisherigen Namen verbunden.",
-    },
     when_logged_as_author_content_will_be_tagged: {
       fr:
         "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes que vous créez porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
