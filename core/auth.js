@@ -111,6 +111,46 @@ module.exports = (function () {
       `AUTH — canAdminFolder with slugFolderName = ${slugFolderName}, type = ${type}`
     );
 
+    // let’s check if only_authors_can_edit_own_content is set to true
+    if (global.only_authors_can_edit_own_content) {
+      // this means that only authors can edit the content
+      if (
+        foldersData[slugFolderName].authors &&
+        Array.isArray(foldersData[slugFolderName].authors) &&
+        foldersData[slugFolderName].authors.length > 0 &&
+        foldersData[slugFolderName].authors.some((a) => !!a.slugFolderName)
+      ) {
+        // if folder has authors, then we need to check whether this socket has author as well
+
+        // legacy: in the past authors were tagged with their name (and not their slugs… stupid decision…)
+        // so we need to only get authors that have their slugs
+        const allowed_authors_slugs = foldersData[
+          slugFolderName
+        ].authors.reduce((acc, a) => {
+          if (a.slugFolderName) acc.push(a.slugFolderName);
+          return acc;
+        }, []);
+
+        const socket_has_author_that_is_allowed = allowed_authors_slugs.some(
+          (allowed_author_slug) => {
+            return socket._is_authorized_for_folders.some(
+              (f) =>
+                f.type === "authors" &&
+                f.allowed_slugFolderNames &&
+                f.allowed_slugFolderNames.includes(allowed_author_slug)
+            );
+          }
+        );
+        return socket_has_author_that_is_allowed;
+      } else {
+        // if folder has no author then we’re good
+        dev.logverbose(
+          `AUTH — canAdminFolder: no author for folder --> authorized`
+        );
+      }
+    }
+
+    // let’s check whether the folder has a password
     if (
       !foldersData[slugFolderName].hasOwnProperty("password") ||
       foldersData[slugFolderName].password === ""
@@ -119,27 +159,17 @@ module.exports = (function () {
       return true;
     }
 
-    // socket._is_authorized_for_folders.filter();
-
-    if (socket.hasOwnProperty("_is_authorized_for_folders")) {
-      const _is_authorized_for_this_folder = socket._is_authorized_for_folders.filter(
-        (i) => {
-          return (
-            i.hasOwnProperty("type") &&
-            i.type === type &&
-            i.hasOwnProperty("allowed_slugFolderNames") &&
-            i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
-          );
-        }
+    if (isSocketAuthorizedForFolders({ socket, type, slugFolderName })) {
+      dev.logverbose(
+        `AUTH — canAdminFolder: socket has password --> authorized`
       );
-
-      if (_is_authorized_for_this_folder.length > 0) {
-        dev.logverbose(`AUTH — canAdminFolder: authorized`);
-        return true;
-      }
+      return true;
+    } else {
+      dev.logverbose(
+        `AUTH — canAdminFolder: socket doesn’t have password --> refused`
+      );
+      return false;
     }
-    dev.logverbose(`AUTH — canAdminFolder: refused`);
-    return false;
   }
 
   function filterFolders(socket, type, foldersData) {
@@ -219,6 +249,19 @@ module.exports = (function () {
       a = (a << 5) - a + b.charCodeAt(0);
       return a & a;
     }, 0);
+  }
+
+  function isSocketAuthorizedForFolders({ socket, type, slugFolderName }) {
+    if (!socket.hasOwnProperty("_is_authorized_for_folders")) return false;
+
+    return socket._is_authorized_for_folders.some((i) => {
+      return (
+        i.hasOwnProperty("type") &&
+        i.type === type &&
+        i.hasOwnProperty("allowed_slugFolderNames") &&
+        i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
+      );
+    });
   }
 
   return API;

@@ -174,7 +174,9 @@ module.exports = (function () {
           notify({
             socket,
             socketid: socket.id,
-            not_localized_string: `Not allowed to edit`,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: editing this content is not allowed.`,
+            type: "error",
           });
           return;
         }
@@ -240,7 +242,9 @@ module.exports = (function () {
           notify({
             socket,
             socketid: socket.id,
-            not_localized_string: `Not allowed to remove`,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: removing this content is not allowed.`,
+            type: "error",
           });
           return;
         }
@@ -399,7 +403,9 @@ module.exports = (function () {
           notify({
             socket,
             socketid: socket.id,
-            not_localized_string: `Not allowed to edit from folder ${from_slugFolderName}`,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: origin folder can’t be edited ${to_slugFolderName}`,
+            type: "error",
           });
         } else {
           return;
@@ -413,7 +419,9 @@ module.exports = (function () {
               notify({
                 socket,
                 socketid: socket.id,
-                not_localized_string: `Not allowed to edit destination folder ${to_slugFolderName}`,
+                localized_string: `action_not_allowed`,
+                not_localized_string: `Error: destination folder can’t be edited ${to_slugFolderName}`,
+                type: "error",
               });
             }
             return;
@@ -446,6 +454,7 @@ module.exports = (function () {
               socket,
               socketid: socket.id,
               not_localized_string: `Copy failed with error: ${err}`,
+              type: "error",
             });
 
             dev.error(`Failed to copy media to another folder: ${err}`);

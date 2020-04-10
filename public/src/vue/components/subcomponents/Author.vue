@@ -1,22 +1,31 @@
 <template>
   <div>
     <div v-if="edit_author_mode" class="m_authorsList--editAuthor">
-      <EditAuthor :author="author" @close="edit_author_mode = false" :read_only="read_only" />
+      <EditAuthor
+        :author="author"
+        @close="edit_author_mode = false"
+        :read_only="read_only"
+      />
     </div>
 
     <div
       v-else
       class="m_author"
       :class="{
-                    'is--selected': author.name === $root.current_author.name,
-                    'is--editMode': edit_author_mode
-                  }"
+        'is--selected': author.name === $root.current_author.name,
+        'is--editMode': edit_author_mode,
+      }"
+      @click.stop="
+        author.name !== $root.current_author.name && can_login_as_author
+          ? setAuthorWithoutPassword()
+          : (show_input_password_field = true)
+      "
     >
       <button
         v-if="can_login_as_author"
         type="button"
         class="buttonLink m_author--editButton"
-        @click.stop="edit_author_mode  = !edit_author_mode"
+        @click.stop="edit_author_mode = !edit_author_mode"
       >
         <svg
           version="1.1"
@@ -28,7 +37,7 @@
           width="100.7px"
           height="101px"
           viewBox="0 0 100.7 101"
-          style="enable-background:new 0 0 100.7 101;"
+          style="enable-background: new 0 0 100.7 101;"
           xml:space="preserve"
         >
           <path
@@ -37,7 +46,7 @@
                 L19.1,91.5z"
           />
         </svg>
-        <span class style="display: none">{{ $t("edit") }}</span>
+        <span class style="display: none;">{{ $t("edit") }}</span>
       </button>
 
       <button
@@ -56,7 +65,7 @@
           width="91.6px"
           height="95px"
           viewBox="0 0 91.6 95"
-          style="enable-background:new 0 0 91.6 95;"
+          style="enable-background: new 0 0 91.6 95;"
           xml:space="preserve"
         >
           <path
@@ -65,7 +74,7 @@
                     l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
           />
         </svg>
-        <span class style="display: none">{{ $t("remove") }}</span>
+        <span class style="display: none;">{{ $t("remove") }}</span>
       </button>
 
       <div class="m_author--card">
@@ -84,10 +93,10 @@
         <div
           class
           v-if="
-              can_login_as_author &&
-                author.password === 'has_pass' &&
-                context !== 'full'
-            "
+            can_login_as_author &&
+            author.password === 'has_pass' &&
+            context !== 'full'
+          "
         >
           <label>{{ $t("protected_by_pass") }}</label>
         </div>
@@ -99,7 +108,9 @@
           style
           :readonly="read_only"
           @click.stop="show_input_password_field = !show_input_password_field"
-        >{{ $t("password_required_to_open") }}</button>
+        >
+          {{ $t("password_required_to_open") }}
+        </button>
 
         <div
           class="padding-verysmall _pwd_input"
@@ -121,21 +132,29 @@
             type="button"
             class="button bg-bleuvert button-thin"
             @click="submitPassword"
-          >{{ $t("send") }}</button>
+          >
+            {{ $t("send") }}
+          </button>
         </div>
 
         <button
           type="button"
           class="buttonLink"
-          @click.stop="setAuthor()"
-          v-if="author.name !== $root.current_author.name && can_login_as_author"
-        >{{ $t('login') }}</button>
+          @click.stop="setAuthorWithoutPassword()"
+          v-if="
+            author.name !== $root.current_author.name && can_login_as_author
+          "
+        >
+          {{ $t("login") }}
+        </button>
         <button
           type="button"
           class="buttonLink"
           @click.stop="unsetAuthor()"
           v-if="author.name === $root.current_author.name"
-        >{{ $t("logout") }}</button>
+        >
+          {{ $t("logout") }}
+        </button>
       </div>
     </div>
   </div>
@@ -145,47 +164,66 @@ import EditAuthor from "./../subcomponents/EditAuthor.vue";
 
 export default {
   props: {
-    author: Object
+    author: Object,
   },
   components: {
-    EditAuthor
+    EditAuthor,
   },
   data() {
     return {
       edit_author_mode: false,
-      show_input_password_field: false
+      show_input_password_field: false,
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {
-    show_input_password_field: function() {
+    show_input_password_field: function () {
       if (this.show_input_password_field) {
         this.$nextTick(() => {
           this.$refs.passwordField.focus();
         });
       }
-    }
+    },
   },
   computed: {
     can_login_as_author() {
       return this.$root.canAccessFolder({
         type: "authors",
-        slugFolderName: this.author.slugFolderName
+        slugFolderName: this.author.slugFolderName,
       });
-    }
+    },
   },
   methods: {
+    setAuthorWithoutPassword() {
+      this.$auth.removeAllFoldersPassword({
+        type: "authors",
+      });
+
+      this.$auth.updateFoldersPasswords({
+        authors: {
+          [this.author.slugFolderName]: "",
+        },
+      });
+
+      this.$socketio.sendAuth();
+      this.setAuthor();
+    },
+
     submitPassword() {
       console.log("METHODS • Author: submitPassword");
 
       const pass = this.$auth.hashCode(this.$refs.passwordField.value);
 
+      this.$auth.removeAllFoldersPassword({
+        type: "authors",
+      });
+
       this.$auth.updateFoldersPasswords({
         authors: {
-          [this.author.slugFolderName]: pass
-        }
+          [this.author.slugFolderName]: pass,
+        },
       });
 
       this.$socketio.sendAuth();
@@ -193,7 +231,7 @@ export default {
       // check if password matches or not
       this.$eventHub.$once("socketio.authentificated", () => {
         const has_passworded_folder = window.state.list_authorized_folders.filter(
-          f =>
+          (f) =>
             f.type === "authors" &&
             f.allowed_slugFolderNames.includes(this.author.slugFolderName)
         );
@@ -222,7 +260,7 @@ export default {
           () => {
             this.$root.removeFolder({
               type: "authors",
-              slugFolderName: this.author.slugFolderName
+              slugFolderName: this.author.slugFolderName,
             });
           },
           () => {}
@@ -239,9 +277,8 @@ export default {
       }
     },
     unsetAuthor() {
-      this.$auth.removeFolderPassword({
+      this.$auth.removeAllFoldersPassword({
         type: "authors",
-        slugFolderName: this.author.slugFolderName
       });
       this.$socketio.sendAuth();
 
@@ -249,10 +286,10 @@ export default {
     },
     urlToPortrait(slug, preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.filter(m => m.size === 180)[0].path;
+      let pathToSmallestThumb = preview.filter((m) => m.size === 180)[0].path;
       return pathToSmallestThumb;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss"></style>

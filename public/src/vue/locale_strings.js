@@ -1498,11 +1498,9 @@ module.exports = (function () {
     },
     when_logged_as_author_content_will_be_tagged: {
       fr:
-        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
+        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes que vous créez porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
       en:
-        "When logged in as an author all projects, medias and recipes will be saved with your name.",
-      oc:
-        "Quand seretz identificats coma autor totes los mèdias, projèctes e recèptas portaràn vòstre nom.",
+        "When logged in as an author all projects, medias and recipes you create will be tagged with your name.",
     },
     more_informations_on_authors: {
       fr:
@@ -2508,6 +2506,12 @@ module.exports = (function () {
         de:
           "Verwenden Sie stattdessen Die Importfunktion oben , um Fotos und Videos aufzunehmen oder von Ihrer Kamera zu importieren.",
       },
+      action_not_allowed: {
+        fr:
+          "Cette action n’est pas permise. Êtes-vous bien auteur de ce contenu et/ou possédez-vous le mot de passe associé ?",
+        en:
+          "This action was blocked. Are you the author of this content and/or do you have the password?",
+      },
       media_was_sent: {
         fr: "Le média a été enregistré.",
         en: "The media was sent.",
@@ -2532,13 +2536,7 @@ module.exports = (function () {
         oc: "Lo mèdia es estat enregistrat",
         de: "Die Datei wurde gespeichert.",
       },
-      file_upload_not_allowed: {
-        fr: "Votre navigateur web ne prend pas en charge l’envoi de fichiers.",
-        en: "File upload is not allowed by this browser.",
-        nl: "Uw webbrowser ondersteunt het verzenden van bestanden niet.",
-        oc: "Vòstre navigador web pren pas en carga la mandadís de fichièrs.",
-        de: "Ihr Webbrowser unterstützt das Senden von Dateien nicht.",
-      },
+
       connection_active: {
         fr: "La connexion au serveur est active.",
         en: "The connection to the server is active.",

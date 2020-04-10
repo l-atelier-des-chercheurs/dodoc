@@ -96,15 +96,28 @@ module.exports = function ({ router }) {
                   !!sessionMeta &&
                   sessionMeta.hasOwnProperty("force_login") &&
                   sessionMeta.force_login === "true";
-                dev.log("Force login is set to " + global.force_login);
+                dev.log(
+                  "LOCAL OPTIONS: Force login is set to " + global.force_login
+                );
 
                 global.force_author_password =
                   !!sessionMeta &&
                   sessionMeta.hasOwnProperty("force_author_password") &&
                   sessionMeta.force_author_password === "true";
                 dev.log(
-                  "Force author password is set to " +
+                  "LOCAL OPTIONS: Force author password is set to " +
                     global.force_author_password
+                );
+
+                global.only_authors_can_edit_own_content =
+                  !!sessionMeta &&
+                  sessionMeta.hasOwnProperty(
+                    "only_authors_can_edit_own_content"
+                  ) &&
+                  sessionMeta.only_authors_can_edit_own_content === "true";
+                dev.log(
+                  "LOCAL OPTIONS: Only authors can edit own content is set to " +
+                    global.only_authors_can_edit_own_content
                 );
 
                 portscanner

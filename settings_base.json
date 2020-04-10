@@ -164,9 +164,6 @@
           "default": "current",
           "read_only": true
         },
-        "id": {
-          "type": "string"
-        },
         "role": {
           "type": "string",
           "options": ["contributor", "admin"],

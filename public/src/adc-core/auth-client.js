@@ -10,6 +10,7 @@ module.exports = (function () {
       setSessionPassword(session_password),
     updateFoldersPasswords: (folderPass) => updateFoldersPasswords(folderPass),
     removeFolderPassword: (d) => removeFolderPassword(d),
+    removeAllFoldersPassword: (d) => removeAllFoldersPassword(d),
 
     getSessionPassword: () => getSessionPassword(),
     getFoldersPasswords: () => getFoldersPasswords(),
@@ -39,15 +40,13 @@ module.exports = (function () {
 
   function updateFoldersPasswords(_folder_passwords) {
     for (var folder_type in _folder_passwords) {
-      if (_folder_passwords.hasOwnProperty(folder_type)) {
-        if (!folder_passwords.hasOwnProperty(folder_type)) {
-          folder_passwords[folder_type] = {};
-        }
-        folder_passwords[folder_type] = Object.assign(
-          folder_passwords[folder_type],
-          _folder_passwords[folder_type]
-        );
+      if (!folder_passwords.hasOwnProperty(folder_type)) {
+        folder_passwords[folder_type] = {};
       }
+      folder_passwords[folder_type] = Object.assign(
+        folder_passwords[folder_type],
+        _folder_passwords[folder_type]
+      );
     }
     localstore.set("folder_passwords", folder_passwords);
   }
@@ -58,6 +57,11 @@ module.exports = (function () {
         delete folder_passwords[type][slugFolderName];
       }
     }
+    localstore.set("folder_passwords", folder_passwords);
+  }
+
+  function removeAllFoldersPassword({ type }) {
+    if (folder_passwords.hasOwnProperty(type)) delete folder_passwords[type];
     localstore.set("folder_passwords", folder_passwords);
   }
 

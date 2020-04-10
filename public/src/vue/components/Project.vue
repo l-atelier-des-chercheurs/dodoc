@@ -4,7 +4,7 @@
     :class="{
       'is--hovered': is_hovered && can_access_project,
       'is--selected': is_selected,
-      'is--accessible': can_access_project
+      'is--accessible': can_access_project,
     }"
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
@@ -13,12 +13,17 @@
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
-      <div v-else-if="context === 'full'" class="m_project--presentation--novignette">
+      <div
+        v-else-if="context === 'full'"
+        class="m_project--presentation--novignette"
+      >
         <button
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
-        >{{ $t("add_a_cover_image") }}</button>
+        >
+          {{ $t("add_a_cover_image") }}
+        </button>
       </div>
 
       <div class="m_project--presentation--text">
@@ -28,9 +33,11 @@
           v-tippy="{
             placement: 'bottom-start',
             delay: [600, 0],
-            interactive: true
+            interactive: true,
           }"
-        >{{ project.name }}</h2>
+        >
+          {{ project.name }}
+        </h2>
 
         <div class="m_project--presentation--text--infos">
           <div class="m_keywordField">
@@ -41,25 +48,38 @@
                 'tagcolorid_' + (parseInt(keyword.title, 36) % 2),
                 {
                   'is--active':
-                    $root.settings.project_filter.keyword === keyword.title
-                }
+                    $root.settings.project_filter.keyword === keyword.title,
+                },
               ]"
-            >{{ keyword.title }}</span>
+              >{{ keyword.title }}</span
+            >
           </div>
           <div class="m_metaField" v-if="!!project.authors">
             <div>{{ $t("author") }}</div>
             <div class="m_authorField">
-              <span v-if="typeof project.authors === 'string'">{{ project.authors }}</span>
+              <span v-if="typeof project.authors === 'string'">{{
+                project.authors
+              }}</span>
               <span
                 v-else-if="typeof project.authors === 'object'"
                 v-for="author in project.authors"
-                :key="author.name"
+                :key="author.slugFolderName"
                 class="is--active"
-              >{{ author.name }}</span>
+              >
+                <template v-if="$root.getAuthor(author.slugFolderName)">
+                  {{ $root.getAuthor(author.slugFolderName).name }}
+                </template>
+                <template v-else>
+                  {{ author.slugFolderName }}
+                </template>
+              </span>
             </div>
           </div>
 
-          <div class="m_metaField" v-if="!!project.folder && context === 'full'">
+          <div
+            class="m_metaField"
+            v-if="!!project.folder && context === 'full'"
+          >
             <div>{{ $t("folder") }}</div>
             <div class="m_folderField">
               <span>{{ project.folder }}</span>
@@ -74,8 +94,8 @@
             class="m_metaField"
             v-if="
               can_access_project &&
-                project.password === 'has_pass' &&
-                context !== 'full'
+              project.password === 'has_pass' &&
+              context !== 'full'
             "
           >
             <label>{{ $t("protected_by_pass") }}</label>
@@ -88,7 +108,9 @@
             style
             :readonly="read_only"
             @click="showInputPasswordField = !showInputPasswordField"
-          >{{ $t("password_required_to_open") }}</button>
+          >
+            {{ $t("password_required_to_open") }}
+          </button>
 
           <div
             class="padding-verysmall _pwd_input"
@@ -121,7 +143,9 @@
               type="button"
               class="button bg-bleuvert button-thin"
               @click="submitPassword"
-            >{{ $t("send") }}</button>
+            >
+              {{ $t("send") }}
+            </button>
           </div>
 
           <div
@@ -134,7 +158,9 @@
               @click="showCurrentPassword = !showCurrentPassword"
               v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
             />
-            <div v-if="showCurrentPassword && can_access_project">{{ project_password }}</div>
+            <div v-if="showCurrentPassword && can_access_project">
+              {{ project_password }}
+            </div>
           </div>
         </div>
       </div>
@@ -184,7 +210,7 @@
             width="100.7px"
             height="101px"
             viewBox="0 0 100.7 101"
-            style="enable-background:new 0 0 100.7 101;"
+            style="enable-background: new 0 0 100.7 101;"
             xml:space="preserve"
           >
             <path
@@ -213,7 +239,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95;"
             xml:space="preserve"
           >
             <path
@@ -242,7 +268,7 @@
             width="77.6px"
             height="85.4px"
             viewBox="0 0 77.6 85.4"
-            style="enable-background:new 0 0 77.6 85.4;"
+            style="enable-background: new 0 0 77.6 85.4;"
             xml:space="preserve"
           >
             <defs />
@@ -273,7 +299,9 @@
             type="button"
             class="_button_forgetpassword"
             @click="forgetPassword"
-          >{{ $t("forget_password_and_close") }}</button>
+          >
+            {{ $t("forget_password_and_close") }}
+          </button>
 
           <button
             v-if="can_access_project && context === 'full'"
@@ -293,7 +321,7 @@
                 width="46.7px"
                 height="70px"
                 viewBox="0 0 46.7 70"
-                style="enable-background:new 0 0 46.7 70;"
+                style="enable-background: new 0 0 46.7 70;"
                 xml:space="preserve"
               >
                 <g>
@@ -304,7 +332,10 @@
 			L23.3,59.6L3.2,41.5L8.5,35.2z"
                     />
                   </g>
-                  <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
+                  <polygon
+                    class="st0"
+                    points="46.7,70 0,70 0,62.4 46.6,62.4 	"
+                  />
                 </g>
               </svg>
             </template>
@@ -332,7 +363,7 @@
               width="91.6px"
               height="95px"
               viewBox="0 0 91.6 95"
-              style="enable-background:new 0 0 91.6 95;"
+              style="enable-background: new 0 0 91.6 95;"
               xml:space="preserve"
             >
               <polygon
@@ -350,7 +381,12 @@
           <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
             <label v-html="$t('name_of_copy')" />
             <form @submit.prevent="duplicateWithNewName()" class="input-group">
-              <input type="text" v-model.trim="copy_project_name" required autofocus />
+              <input
+                type="text"
+                v-model.trim="copy_project_name"
+                required
+                autofocus
+              />
               <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
             </form>
           </div>
@@ -384,12 +420,12 @@ export default {
     project: Object,
     read_only: Boolean,
     context: String,
-    is_selected: Boolean
+    is_selected: Boolean,
   },
   components: {
     EditProject,
     MediaLibrary,
-    MediaCard
+    MediaCard,
   },
   data() {
     return {
@@ -406,7 +442,7 @@ export default {
 
       showDuplicateProjectMenu: false,
       copy_project_name: this.$t("copy_of") + " " + this.project.name,
-      zip_export_started: false
+      zip_export_started: false,
     };
   },
   watch: {
@@ -439,9 +475,9 @@ export default {
         });
       }
     },
-    is_selected: function() {
+    is_selected: function () {
       this.local_is_selected = this.is_selected;
-    }
+    },
   },
   mounted() {},
   beforeDestroy() {},
@@ -453,7 +489,7 @@ export default {
       ) {
         return false;
       }
-      const thumb = this.project.preview.filter(p => p.size === 640);
+      const thumb = this.project.preview.filter((p) => p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }
@@ -462,7 +498,7 @@ export default {
     can_access_project() {
       return this.$root.canAccessFolder({
         type: "projects",
-        slugFolderName: this.slugProjectName
+        slugFolderName: this.slugProjectName,
       });
     },
     project_password() {
@@ -475,7 +511,7 @@ export default {
         return projects_password["projects"][this.slugProjectName];
       }
       return "";
-    }
+    },
   },
   methods: {
     openProject() {
@@ -495,7 +531,7 @@ export default {
           () => {
             this.$root.removeFolder({
               type: "projects",
-              slugFolderName: this.slugProjectName
+              slugFolderName: this.slugProjectName,
             });
             this.closeProject();
           },
@@ -529,7 +565,7 @@ export default {
       this.$socketio.copyFolder({
         type: "projects",
         slugFolderName: this.slugProjectName,
-        new_folder_name: this.copy_project_name
+        new_folder_name: this.copy_project_name,
       });
       this.showDuplicateProjectMenu = false;
 
@@ -550,8 +586,8 @@ export default {
 
       this.$auth.updateFoldersPasswords({
         projects: {
-          [this.slugProjectName]: this.$refs.passwordField.value
-        }
+          [this.slugProjectName]: this.$refs.passwordField.value,
+        },
       });
 
       this.$socketio.sendAuth();
@@ -559,7 +595,7 @@ export default {
       // check if password matches or not
       this.$eventHub.$once("socketio.authentificated", () => {
         const has_passworded_folder = window.state.list_authorized_folders.filter(
-          f =>
+          (f) =>
             f.type === "projects" &&
             f.allowed_slugFolderNames.includes(this.slugProjectName)
         );
@@ -581,7 +617,7 @@ export default {
     forgetPassword() {
       this.$auth.removeFolderPassword({
         type: "projects",
-        slugFolderName: this.slugProjectName
+        slugFolderName: this.slugProjectName,
       });
       this.$socketio.sendAuth();
 
@@ -609,8 +645,8 @@ export default {
         );
 
       window.location.replace(query_url);
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
