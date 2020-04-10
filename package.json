@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "9.0.2-dev",
+  "version": "9.0.5-dev",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -60,6 +60,7 @@
     "moment": "^2.24.0",
     "node-abi": "^2.15.0",
     "node-localstorage": "^2.1.5",
+    "node-stl-to-thumbnail": "github:louis-ev/node-stl-to-thumbnail#develop",
     "pad-left": "^2.1.0",
     "parser-readline": "^1.0.2",
     "path": "^0.12.7",

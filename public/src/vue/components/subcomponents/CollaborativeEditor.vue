@@ -15,14 +15,14 @@ export default {
   props: {
     value: {
       type: String,
-      default: "…"
+      default: "…",
     },
     media: Object,
     slugFolderName: String,
     theme: {
       type: String,
-      default: "snow"
-    }
+      default: "snow",
+    },
   },
   components: {},
   data() {
@@ -37,13 +37,59 @@ export default {
         [{ header: [false, 1, 2, 3] }],
         // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ["bold", "italic", "underline", "link", "blockquote"],
+        [
+          {
+            color: [
+              "#353535",
+              "#b9b9b9",
+              "#fff",
+              "#1d327f",
+              "#52c5b9",
+              "#ffbe32",
+              "#fc4b60",
+
+              "#ff3333",
+              "#08cc11",
+              "#1c52ee",
+              "#ff9c33",
+              "#000000",
+              "#bdb3b3",
+              "#ae1cee",
+              "#fff933",
+              "#a54a0f",
+            ],
+          },
+        ],
+        [
+          {
+            background: [
+              "transparent",
+              "#f1f1f1",
+              "#b9b9b9",
+              "#bec6e5",
+              "#a5e5da",
+              "#ffd892",
+              "#ff808c",
+
+              "#ff3333",
+              "#08cc11",
+              "#1c52ee",
+              "#ff9c33",
+              "#000000",
+              "#bdb3b3",
+              "#ae1cee",
+              "#fff933",
+              "#a54a0f",
+            ],
+          },
+        ],
         [{ list: "ordered" }, { list: "bullet" }],
-        ["clean"]
+        ["clean"],
       ],
 
       socket: null,
       connection_state: undefined,
-      requested_resource_url: undefined
+      requested_resource_url: undefined,
     };
   },
 
@@ -51,7 +97,7 @@ export default {
   mounted() {
     this.editor = new Quill(this.$refs.editor, {
       modules: {
-        toolbar: this.custom_toolbar
+        toolbar: this.custom_toolbar,
       },
       bounds: this.$refs.editor,
       theme: this.theme,
@@ -62,9 +108,12 @@ export default {
         "link",
         "header",
         "blockquote",
-        "list"
-      ]
+        "list",
+        "color",
+        "background",
+      ],
     });
+
     this.editor.root.innerHTML = this.value;
 
     this.$nextTick(() => {
@@ -90,7 +139,7 @@ export default {
       const params = new URLSearchParams({
         type: "projects",
         slugFolderName: this.slugFolderName,
-        metaFileName: this.media.metaFileName
+        metaFileName: this.media.metaFileName,
       });
 
       const requested_querystring = "?" + params.toString();
@@ -111,7 +160,7 @@ export default {
 
       const doc = connection.get("textMedias", requested_querystring);
 
-      doc.subscribe(err => {
+      doc.subscribe((err) => {
         if (err) {
           console.error(`ON • CollaborativeEditor: err ${err}`);
         }
@@ -161,8 +210,8 @@ export default {
       );
       this.connection_state = state.toString();
       // 'connecting' 'connected' 'disconnected' 'closed' 'stopped'
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

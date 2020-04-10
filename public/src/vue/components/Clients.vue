@@ -1,5 +1,5 @@
 <template>
-  <div class="m_clientsList" v-if="uniqueClients.length > 1">
+  <div class="m_clientsList" v-if="uniqueClients.length">
     <button
       type="button"
       class="m_clientsList--indicator"
@@ -7,10 +7,10 @@
       :content="$t('other_users_connected')"
       v-tippy="{
         placement: 'bottom',
-        delay: [600, 0]
+        delay: [600, 0],
       }"
     >
-      <span>{{ uniqueClients.length - 1 }}</span>
+      <span>{{ uniqueClients.length }}</span>
     </button>
     <div class="m_clientsList--list" v-if="showClientList">
       <button
@@ -27,7 +27,6 @@
         class="m_clientsList--list--client"
         :key="client.id"
         v-for="client in uniqueClients"
-        v-if="client.id !== $root.$socketio.socket.id"
       >
         <template v-if="client.data.hasOwnProperty('author')">{{
           client.data.author.name
@@ -43,7 +42,7 @@ export default {
   components: {},
   data() {
     return {
-      showClientList: false
+      showClientList: false,
     };
   },
   created() {},
@@ -52,10 +51,20 @@ export default {
   watch: {},
   computed: {
     uniqueClients() {
-      return this.$root.state.clients;
-    }
+      return this.$root.state.clients.filter((client) => {
+        if (client.id === this.$root.$socketio.socket.id) return false;
+
+        if (
+          this.$root.state.local_options.force_login &&
+          !client.data.hasOwnProperty("author")
+        )
+          return false;
+
+        return true;
+      });
+    },
   },
-  methods: {}
+  methods: {},
 };
 </script>
 <style></style>

@@ -28,50 +28,123 @@
 
       <transition-group name="list-complete" :duration="300">
         <div
-          class="m_videoPublication--media"
           v-for="(media, index) in publication_medias"
           :key="media.publi_meta.metaFileName"
         >
-          <MediaMontagePublication
-            :media="media"
-            :preview_mode="false"
-            :read_only="read_only"
-            :enable_image_timer="true"
-            :enable_set_video_volume="true"
-            @removePubliMedia="
-              values => {
-                removePubliMedia(values);
-              }
-            "
-            @editPubliMedia="
-              values => {
-                editPubliMedia(values);
-              }
-            "
-          />
-          <span class="m_videoPublication--media--mediaNumber"
-            >{{ index + 1 }}
-          </span>
-          <div class="m_videoPublication--media--moveItemButtons">
+          <div class="switch switch-xs m_videoPublication--transitionToggle">
+            <input
+              class="switch"
+              :id="'transition_in_' + media.publi_meta.metaFileName"
+              type="checkbox"
+              :checked="media.publi_meta.transition_in === 'fade'"
+              @change="
+                toggleTransition({
+                  position: 'transition_in',
+                  metaFileName: media.publi_meta.metaFileName
+                })
+              "
+            />
+            <label :for="'transition_in_' + media.publi_meta.metaFileName">{{
+              $t("transition_fade")
+            }}</label>
             <button
               type="button"
-              class="m_videoPublication--media--moveItemButton--before"
-              v-show="index > 0"
-              @click="move(media.publi_meta.metaFileName, -1)"
+              v-if="media.publi_meta.type !== 'solid_color'"
+              class="m_videoPublication--addSolidColor buttonLink bg-noir"
+              @click="
+                addMedia({
+                  type: 'solid_color',
+                  right_after: media.publi_meta.metaFileName
+                })
+              "
             >
-              <img src="/images/i_arrow_left.svg" draggable="false" />
+              {{ $t("add_solid_color") }}
             </button>
+          </div>
+
+          <div
+            class="m_videoPublication--media"
+            :data-type="media.publi_meta.type"
+          >
+            <MediaMontagePublication
+              :media="media"
+              :preview_mode="false"
+              :read_only="read_only"
+              :enable_image_timer="true"
+              :enable_set_video_volume="true"
+              @removePubliMedia="
+                values => {
+                  removePubliMedia(values);
+                }
+              "
+              @editPubliMedia="
+                values => {
+                  editPubliMedia(values);
+                }
+              "
+            />
+            <span class="m_videoPublication--media--mediaNumber">{{
+              index + 1
+            }}</span>
+            <div class="m_videoPublication--media--moveItemButtons">
+              <button
+                type="button"
+                class="m_videoPublication--media--moveItemButton--before"
+                v-show="index > 0"
+                @click="move(media.publi_meta.metaFileName, -1)"
+              >
+                <img src="/images/i_arrow_left.svg" draggable="false" />
+              </button>
+              <button
+                type="button"
+                class="m_videoPublication--media--moveItemButton--after"
+                v-show="index < publication_medias.length - 1"
+                @click="move(media.publi_meta.metaFileName, +1)"
+              >
+                <img src="/images/i_arrow_right.svg" draggable="false" />
+              </button>
+            </div>
+          </div>
+          <div
+            v-if="index === publication_medias.length - 1"
+            class="switch switch-xs m_videoPublication--transitionToggle margin-bottom-medium"
+          >
+            <input
+              class="switch"
+              :id="'transition_out_' + media.publi_meta.metaFileName"
+              type="checkbox"
+              :checked="media.publi_meta.transition_out === 'fade'"
+              @change="
+                toggleTransition({
+                  position: 'transition_out',
+                  metaFileName: media.publi_meta.metaFileName
+                })
+              "
+            />
+            <label :for="'transition_out_' + media.publi_meta.metaFileName">
+              {{ $t("transition_fade") }}
+            </label>
             <button
               type="button"
-              class="m_videoPublication--media--moveItemButton--after"
-              v-show="index < publication_medias.length - 1"
-              @click="move(media.publi_meta.metaFileName, +1)"
+              class="m_videoPublication--addSolidColor buttonLink bg-noir"
+              @click="
+                addMedia({
+                  type: 'solid_color',
+                  right_after: media.publi_meta.metaFileName
+                })
+              "
             >
-              <img src="/images/i_arrow_right.svg" draggable="false" />
+              {{ $t("add_solid_color") }}
             </button>
           </div>
         </div>
       </transition-group>
+    </div>
+
+    <div>
+      <div>
+        <!-- <input type="color" ref="solidColorPicker" /> -->
+      </div>
     </div>
   </div>
 </template>
@@ -162,20 +235,39 @@ export default {
   },
   computed: {},
   methods: {
-    addMedia({ slugProjectName, metaFileName }) {
+    addMedia({ slugProjectName, metaFileName, type, right_after }) {
       if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: addMedia with 
+        console.log(`METHODS • Publication: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
       }
 
-      const desired_filename = metaFileName;
+      let additionalMeta = {};
+
+      if (slugProjectName && metaFileName) {
+        additionalMeta.slugProjectName = slugProjectName;
+        additionalMeta.desired_filename = metaFileName;
+        additionalMeta.slugMediaName = metaFileName;
+      }
+      if (type) additionalMeta.type = type;
 
       this.$eventHub.$on("socketio.media_created_or_updated", d => {
         this.$eventHub.$off("socketio.media_created_or_updated");
 
-        this.medias_slugs_in_order.push({
-          slugMediaName: d.metaFileName
-        });
+        if (!!right_after) {
+          // this is much more complex than it could be because of possible missing medias
+          // in medias_slugs_in_order: medias that were added and then removed or part
+          // of a removed project
+          const index = this.medias_slugs_in_order.findIndex(
+            s => s.slugMediaName === right_after
+          );
+          this.medias_slugs_in_order.splice(index, 0, {
+            slugMediaName: d.metaFileName
+          });
+        } else {
+          this.medias_slugs_in_order.push({
+            slugMediaName: d.metaFileName
+          });
+        }
 
         this.$root.editFolder({
           type: "publications",
@@ -189,11 +281,7 @@ export default {
       this.$root.createMedia({
         slugFolderName: this.slugPubliName,
         type: "publications",
-        additionalMeta: {
-          slugProjectName,
-          desired_filename,
-          slugMediaName: metaFileName
-        }
+        additionalMeta
       });
     },
     removePubliMedia({ slugMediaName }) {
@@ -241,6 +329,28 @@ export default {
         data: val
       });
     },
+    toggleTransition({ position, metaFileName }) {
+      console.log(
+        `METHODS • VideoPublication: toggleTransition for metaFileName = ${metaFileName} and position = ${position}`
+      );
+
+      let val = {};
+
+      const media = this.publication_medias.find(
+        m => m.publi_meta.metaFileName === metaFileName
+      );
+
+      if (
+        media.publi_meta.hasOwnProperty(position) &&
+        media.publi_meta[position] === "fade"
+      ) {
+        val[position] = "none";
+      } else {
+        val[position] = "fade";
+      }
+
+      this.editPubliMedia({ slugMediaName: metaFileName, val });
+    },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: updateMediasPubli`);
@@ -255,7 +365,6 @@ export default {
       }
 
       // get list of publications items
-      let publi_medias = [];
       let missingMedias = [];
 
       if (this.medias_slugs_in_order.length === 0) {
@@ -263,7 +372,7 @@ export default {
         return;
       }
 
-      this.medias_slugs_in_order.map(item => {
+      const publi_medias = this.medias_slugs_in_order.reduce((acc, item) => {
         const metaFileName = item.slugMediaName;
 
         if (!this.publication.medias.hasOwnProperty(metaFileName)) {
@@ -273,57 +382,65 @@ export default {
 
         const _media = this.publication.medias[metaFileName];
 
-        // for each, get slugFolderName and metaFileName
+        // for each, check if it is a reference to a project’s media
         if (
-          !_media.hasOwnProperty("slugProjectName") ||
-          !_media.hasOwnProperty("metaFileName")
+          _media.hasOwnProperty("slugProjectName") &&
+          _media.hasOwnProperty("metaFileName")
         ) {
-          return;
-        }
+          const slugProjectName = _media.slugProjectName;
+          const slugMediaName = _media.slugMediaName;
 
-        const slugProjectName = _media.slugProjectName;
-        const slugMediaName = _media.slugMediaName;
-
-        // find in store if slugFolderName exists
-        if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
-          console.error(
-            `Missing project in store — not expected : ${slugProjectName}`
-          );
-          console.error(
-            `Medias from project was probably added to the publication before it was removed altogether.`
-          );
-          return;
-        }
-
-        // find in store if metaFileName exists
-        const project_medias = this.$root.store.projects[slugProjectName]
-          .medias;
-        if (!project_medias.hasOwnProperty(slugMediaName)) {
-          console.log(`Some medias missing from client`);
-          missingMedias.push({
-            slugFolderName: slugProjectName,
-            metaFileName: slugMediaName
-          });
-        } else {
-          let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
-
-          if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
+          // find in store if slugFolderName exists
+          if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
             console.error(
-              `Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`
+              `Missing project in store — not expected : ${slugProjectName}`
             );
             console.error(
-              `Media was probably added to the publication before it was removed.`
+              `Medias from project was probably added to the publication before it was removed altogether.`
             );
             return;
           }
 
-          meta.slugProjectName = slugProjectName;
-          meta.publi_meta = JSON.parse(JSON.stringify(_media));
+          // find in store if metaFileName exists
+          const project_medias = this.$root.store.projects[slugProjectName]
+            .medias;
+          if (!project_medias.hasOwnProperty(slugMediaName)) {
+            console.log(`Some medias missing from client`);
+            missingMedias.push({
+              slugFolderName: slugProjectName,
+              metaFileName: slugMediaName
+            });
+            return acc;
+          } else {
+            let meta = JSON.parse(
+              JSON.stringify(project_medias[slugMediaName])
+            );
 
-          publi_medias.push(meta);
-          return;
+            if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
+              console.error(
+                `Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`
+              );
+              console.error(
+                `Media was probably added to the publication before it was removed.`
+              );
+              return acc;
+            }
+
+            meta.slugProjectName = slugProjectName;
+            meta.publi_meta = JSON.parse(JSON.stringify(_media));
+
+            acc.push(meta);
+            return acc;
+          }
+        } else {
+          // not a reference to a project’s media : most probably a solid color
+          let meta = {
+            publi_meta: JSON.parse(JSON.stringify(_media))
+          };
+          acc.push(meta);
+          return acc;
         }
-      });
+      }, []);
 
       console.log(
         `Finished building media list. Missing medias: ${missingMedias.length}`

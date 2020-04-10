@@ -1,15 +1,15 @@
-const formidable = require('formidable'),
-  path = require('path');
+const formidable = require("formidable"),
+  path = require("path");
 
-const api = require('./api'),
-  file = require('./file'),
-  sockets = require('./sockets'),
-  dev = require('./dev-log');
+const api = require("./api"),
+  file = require("./file"),
+  sockets = require("./sockets"),
+  dev = require("./dev-log");
 
-module.exports = (function() {
+module.exports = (function () {
   const API = {
     handleForm: ({ req, res, type, slugFolderName }) => {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         dev.logfunction(
           `IMPORTER — handleForm : type = ${type}, slugFolderName = ${slugFolderName}`
         );
@@ -20,7 +20,7 @@ module.exports = (function() {
         // specify that we want to allow the user to upload multiple files in a single request
         form.multiples = false;
         form.maxFileSize = global.settings.maxFileSizeForUpload * 1024 * 1024;
-        let socketid = '';
+        let socketid = "";
 
         // store all uploads in the folder directory
         let slugFolderPath = api.getFolderPath(
@@ -31,9 +31,9 @@ module.exports = (function() {
         let allFilesMeta = [];
 
         let fieldValues = {};
-        form.on('field', function(name, value) {
+        form.on("field", function (name, value) {
           console.log(`Got field with name = ${name} and value = ${value}.`);
-          if (name === 'socketid') {
+          if (name === "socketid") {
             socketid = value;
           }
 
@@ -45,7 +45,7 @@ module.exports = (function() {
         });
 
         // every time a file has been uploaded successfully,
-        form.on('file', function(field, uploadedFile) {
+        form.on("file", function (field, uploadedFile) {
           dev.logverbose(
             `File uploaded:\nfield: ${field}\nfile: ${JSON.stringify(
               uploadedFile,
@@ -58,7 +58,7 @@ module.exports = (function() {
           for (let fileName in fieldValues) {
             if (fileName === newFile.name) {
               newFile = Object.assign({}, newFile, {
-                additionalMeta: fieldValues[fileName]
+                additionalMeta: fieldValues[fileName],
               });
             }
           }
@@ -67,20 +67,15 @@ module.exports = (function() {
         });
 
         // log any errors that occur
-        form.on('error', function(err) {
+        form.on("error", function (err) {
           console.log(`An error has happened: ${err}`);
         });
-        form.on('aborted', function(err) {
+        form.on("aborted", function (err) {
           console.log(`File upload aborted: ${err}`);
         });
 
         // once all the files have been uploaded
-        form.on('end', function() {
-          let msg = {};
-          msg.msg = 'success';
-          // msg.medias = JSON.stringify(allFilesMeta);
-          res.end(JSON.stringify(msg));
-
+        form.on("end", function () {
           if (allFilesMeta.length > 0) {
             var m = [];
             for (var i in allFilesMeta) {
@@ -90,11 +85,15 @@ module.exports = (function() {
                   slugFolderName,
                   fileMeta: allFilesMeta[i],
                   socketid,
-                  type
+                  type,
                 })
               );
             }
-            Promise.all(m).then(() => {
+            Promise.all(m).then((medias_filenames) => {
+              let msg = {};
+              msg.msg = "success";
+              msg.medias_filenames = medias_filenames;
+              res.end(JSON.stringify(msg));
               resolve();
             });
           }
@@ -103,7 +102,7 @@ module.exports = (function() {
         // parse the incoming request containing the form data
         form.parse(req);
       });
-    }
+    },
   };
 
   function renameAndConvertMediaAndCreateMeta({
@@ -111,15 +110,15 @@ module.exports = (function() {
     slugFolderName,
     fileMeta,
     socketid,
-    type
+    type,
   }) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction('IMPORTER — renameAndConvertMediaAndCreateMeta');
+    return new Promise(function (resolve, reject) {
+      dev.logfunction("IMPORTER — renameAndConvertMediaAndCreateMeta");
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
-        function(newFileName) {
+        function (newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);
 
-          if (fileMeta.hasOwnProperty('additionalMeta')) {
+          if (fileMeta.hasOwnProperty("additionalMeta")) {
             dev.logverbose(
               `Has additional meta: ${JSON.stringify(
                 fileMeta.additionalMeta,
@@ -136,29 +135,29 @@ module.exports = (function() {
               uploadDir,
               tempPath: fileMeta.path,
               newFileName,
-              socketid
+              socketid,
             })
-            .then(newFileName => {
+            .then((newFileName) => {
               fileMeta.additionalMeta.media_filename = newFileName;
               sockets.createMediaMeta({
                 type,
                 slugFolderName,
-                additionalMeta: fileMeta.additionalMeta
+                additionalMeta: fileMeta.additionalMeta,
               });
-              resolve();
+              resolve(newFileName);
             })
-            .catch(err => {
+            .catch((err) => {
               dev.error(err);
               fileMeta.additionalMeta.media_filename = newFileName;
               sockets.createMediaMeta({
                 type,
                 slugFolderName,
-                additionalMeta: fileMeta.additionalMeta
+                additionalMeta: fileMeta.additionalMeta,
               });
               resolve();
             });
         },
-        function(err) {
+        function (err) {
           reject(err);
         }
       );

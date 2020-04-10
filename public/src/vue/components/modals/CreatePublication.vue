@@ -96,7 +96,9 @@
           </button>
         </label>
         <template v-if="show_keywords">
-          <TagsInput @tagsChanged="newTags => (publidata.keywords = newTags)" />
+          <TagsInput
+            @tagsChanged="(newTags) => (publidata.keywords = newTags)"
+          />
         </template>
       </div>
 
@@ -116,7 +118,7 @@
         <template v-if="show_authors">
           <AuthorsInput
             :currentAuthors="publidata.authors"
-            @authorsChanged="newAuthors => (publidata.authors = newAuthors)"
+            @authorsChanged="(newAuthors) => (publidata.authors = newAuthors)"
           />
           <small>{{ $t("author_instructions") }}</small>
         </template>
@@ -136,17 +138,17 @@ export default {
     read_only: Boolean,
     default_name: {
       default: "",
-      type: String
+      type: String,
     },
     default_template: {
       default: "page_by_page",
-      type: String
-    }
+      type: String,
+    },
   },
   components: {
     Modal,
     TagsInput,
-    AuthorsInput
+    AuthorsInput,
   },
   data() {
     return {
@@ -155,30 +157,30 @@ export default {
         password: "",
         template: this.default_template,
         keywords: [],
-        authors: this.$root.settings.current_author.hasOwnProperty("name")
-          ? [{ name: this.$root.settings.current_author.name }]
+        authors: this.$root.current_author
+          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
           : [],
-        attached_to_project: this.$root.do_navigation.current_slugProjectName
+        attached_to_project: this.$root.do_navigation.current_slugProjectName,
       },
 
       show_attached_project: this.$root.do_navigation.current_slugProjectName,
       show_password: false,
       show_keywords: false,
-      show_authors: false
+      show_authors: false,
     };
   },
   watch: {
     publidata: {
-      handler: function() {
+      handler: function () {
         this.askBeforeClosingModal = true;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {},
   computed: {},
   methods: {
-    newPublication: function(event) {
+    newPublication: function (event) {
       if (this.$root.state.dev_mode === "debug") {
         console.log("METHODS • CreatePublication: newPublication");
       }
@@ -211,7 +213,7 @@ export default {
         template: this.publidata.template,
         authors: this.publidata.authors,
         keywords: this.publidata.keywords,
-        attached_to_project: this.publidata.attached_to_project
+        attached_to_project: this.publidata.attached_to_project,
       };
 
       if (publidata.template === "page_by_page") {
@@ -220,8 +222,8 @@ export default {
             id:
               +new Date() +
               "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
-          }
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3),
+          },
         ];
         publidata.width = 210;
         publidata.height = 297;
@@ -241,8 +243,8 @@ export default {
             id:
               +new Date() +
               "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
-          }
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3),
+          },
         ];
         publidata.width = 200;
         publidata.height = 150;
@@ -253,8 +255,8 @@ export default {
             id:
               +new Date() +
               "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
-          }
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3),
+          },
         ];
       }
       this.$eventHub.$on(
@@ -263,7 +265,7 @@ export default {
       );
       this.$root.createFolder({ type: "publications", data: publidata });
     },
-    newPublicationCreated: function(pdata) {
+    newPublicationCreated: function (pdata) {
       if (pdata.id === this.$root.justCreatedFolderID) {
         this.$eventHub.$off(
           "socketio.folder_created_or_updated",
@@ -274,8 +276,8 @@ export default {
         if (pdata.password === "has_pass") {
           this.$auth.updateFoldersPasswords({
             publications: {
-              [pdata.slugFolderName]: this.publidata.password
-            }
+              [pdata.slugFolderName]: this.publidata.password,
+            },
           });
           this.$socketio.sendAuth();
 
@@ -290,7 +292,7 @@ export default {
           });
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>

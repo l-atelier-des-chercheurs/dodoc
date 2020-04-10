@@ -44,7 +44,8 @@ html
         projects: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
         authors: {},
         publications: !{ !!publiAndMediaData ? JSON.stringify(publiAndMediaData) : "{}" },
-        stopmotions: {}
+        stopmotions: {},
+        chats: {}
       };
 
       /* state contains settings data, time and client specific data */
@@ -55,6 +56,13 @@ html
         protocol: "!{protocol}",
         connected: false,
         authentificated: false,
+
+        local_options: {
+          force_login: !{global.force_login},
+          force_author_password: !{global.force_author_password},
+          only_authors_can_edit_own_content: !{global.only_authors_can_edit_own_content},
+        },
+
         localNetworkInfos: {},
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",

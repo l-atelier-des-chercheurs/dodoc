@@ -85,7 +85,7 @@
             :load_from_projects_medias="true"
             :slugProjectName="slugProjectName"
             @newPreview="
-              value => {
+              (value) => {
                 preview_rawdata = value;
               }
             "
@@ -136,7 +136,7 @@
         <template v-if="show_keywords">
           <TagsInput
             :keywords="projectdata.keywords"
-            @tagsChanged="newTags => (projectdata.keywords = newTags)"
+            @tagsChanged="(newTags) => (projectdata.keywords = newTags)"
           />
         </template>
       </div>
@@ -157,7 +157,7 @@
         <template v-if="show_authors">
           <AuthorsInput
             :currentAuthors="projectdata.authors"
-            @authorsChanged="newAuthors => (projectdata.authors = newAuthors)"
+            @authorsChanged="(newAuthors) => (projectdata.authors = newAuthors)"
           />
           <small>{{ $t("author_instructions") }}</small>
         </template>
@@ -179,13 +179,13 @@ export default {
     slugProjectName: String,
     project_password: String,
     project: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     Modal,
     ImageSelect,
     TagsInput,
-    AuthorsInput
+    AuthorsInput,
   },
   data() {
     return {
@@ -202,19 +202,13 @@ export default {
 
       projectdata: {
         name: this.project.name,
-        authors:
-          typeof this.project.authors === "string" &&
-          this.project.authors !== ""
-            ? this.project.authors.split(",").map(a => {
-                return { name: a };
-              })
-            : this.project.authors,
+        authors: this.project.authors,
         keywords: this.project.keywords,
-        password: this.project_password ? this.project_password : ""
+        password: this.project_password ? this.project_password : "",
       },
       tag: "",
       preview_rawdata: undefined,
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
     };
   },
   watch: {
@@ -222,11 +216,11 @@ export default {
       handler() {
         this.askBeforeClosingModal = true;
       },
-      deep: true
+      deep: true,
     },
-    preview_rawdata: function() {
+    preview_rawdata: function () {
       this.askBeforeClosingModal = true;
-    }
+    },
   },
   mounted() {},
   computed: {
@@ -237,15 +231,15 @@ export default {
       ) {
         return "";
       }
-      const thumb = this.project.preview.filter(p => p.size === 640);
+      const thumb = this.project.preview.filter((p) => p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }
       return "";
-    }
+    },
   },
   methods: {
-    editThisProject: function(event) {
+    editThisProject: function (event) {
       console.log("editThisProject");
 
       // only if user changed the name of this folder
@@ -280,8 +274,8 @@ export default {
       if (this.projectdata.password) {
         this.$auth.updateFoldersPasswords({
           projects: {
-            [this.slugProjectName]: this.projectdata.password
-          }
+            [this.slugProjectName]: this.projectdata.password,
+          },
         });
       }
 
@@ -297,12 +291,12 @@ export default {
       this.$root.editFolder({
         type: "projects",
         slugFolderName: this.slugProjectName,
-        data: this.projectdata
+        data: this.projectdata,
       });
 
       this.$emit("close", "");
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

@@ -70,7 +70,7 @@
           <ImageSelect
             :load_from_projects_medias="true"
             @newPreview="
-              value => {
+              (value) => {
                 preview = value;
               }
             "
@@ -114,7 +114,7 @@
         </label>
         <template v-if="show_keywords">
           <TagsInput
-            @tagsChanged="newTags => (projectdata.keywords = newTags)"
+            @tagsChanged="(newTags) => (projectdata.keywords = newTags)"
           />
         </template>
       </div>
@@ -135,7 +135,7 @@
         <template v-if="show_authors">
           <AuthorsInput
             :currentAuthors="projectdata.authors"
-            @authorsChanged="newAuthors => (projectdata.authors = newAuthors)"
+            @authorsChanged="(newAuthors) => (projectdata.authors = newAuthors)"
           />
           <small>{{ $t("author_instructions") }}</small>
         </template>
@@ -153,13 +153,13 @@ import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 
 export default {
   props: {
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     Modal,
     ImageSelect,
     TagsInput,
-    AuthorsInput
+    AuthorsInput,
   },
   data() {
     return {
@@ -167,7 +167,7 @@ export default {
       show_image: false,
       show_password: false,
       show_keywords: false,
-      show_authors: false,
+      show_authors: this.$root.current_author,
 
       is_sending_content_to_server: false,
 
@@ -179,34 +179,34 @@ export default {
       projectdata: {
         name: "",
         password: "",
-        authors: this.$root.settings.current_author.hasOwnProperty("name")
-          ? [{ name: this.$root.settings.current_author.name }]
+        authors: this.$root.current_author
+          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
           : [],
-        keywords: []
+        keywords: [],
       },
       preview: undefined,
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
     };
   },
   watch: {
-    "projectdata.name": function() {
+    "projectdata.name": function () {
       if (this.projectdata.name.length > 0) {
         this.askBeforeClosingModal = true;
       } else {
         this.askBeforeClosingModal = false;
       }
     },
-    preview: function() {
+    preview: function () {
       if (!!this.preview) {
         this.askBeforeClosingModal = true;
       } else {
         this.askBeforeClosingModal = false;
       }
-    }
+    },
   },
   computed: {},
   methods: {
-    newProject: function(event) {
+    newProject: function (event) {
       console.log("newProject");
 
       function getAllProjectNames() {
@@ -249,7 +249,7 @@ export default {
 
       this.$root.createFolder({ type: "projects", data: this.projectdata });
     },
-    newFolderCreated: function(fdata) {
+    newFolderCreated: function (fdata) {
       if (fdata.id === this.$root.justCreatedFolderID) {
         this.$eventHub.$off(
           "socketio.folder_created_or_updated",
@@ -260,8 +260,8 @@ export default {
         if (fdata.password === "has_pass") {
           this.$auth.updateFoldersPasswords({
             projects: {
-              [fdata.slugFolderName]: this.projectdata.password
-            }
+              [fdata.slugFolderName]: this.projectdata.password,
+            },
           });
           this.$socketio.sendAuth();
 
@@ -276,8 +276,8 @@ export default {
           });
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

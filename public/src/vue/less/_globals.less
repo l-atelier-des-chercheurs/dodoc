@@ -75,6 +75,7 @@ button,
     }
   }
   &.bg-bleumarine {
+    color: #fff;
     &:hover,
     &:active {
       background-color: @c-bleumarine_fonce;
@@ -260,6 +261,11 @@ button,
   &.bg-noir {
     &:hover {
       background-color: @c-gris_fonce;
+    }
+  }
+  &.bg-rouge {
+    &:hover {
+      background-color: @c-rouge_fonce;
     }
   }
 }
@@ -491,7 +497,6 @@ b {
 .font-normal {
   font-weight: 400;
 }
-
 .text-centered {
   text-align: center;
 }
@@ -890,6 +895,10 @@ label,
   font-weight: 500;
   letter-spacing: 0.05em;
   color: @c-gris_fonce;
+
+  &.c-noir {
+    color: @c-noir;
+  }
 }
 
 svg.inline-svg {
