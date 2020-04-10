@@ -170,16 +170,25 @@ module.exports = (function () {
     file
       .getFolder({ type, slugFolderName })
       .then((foldersData) => {
-        if (!auth.canAdminFolder(socket, foldersData, type)) {
-          notify({
-            socket,
-            socketid: socket.id,
-            localized_string: `action_not_allowed`,
-            not_localized_string: `Error: editing this content is not allowed.`,
-            type: "error",
+        auth
+          .canAdminFolder(socket, foldersData, type)
+          .catch(() => {
+            notify({
+              socket,
+              socketid: socket.id,
+              localized_string: `action_not_allowed`,
+              not_localized_string: `Error: editing this content is not allowed.`,
+              type: "error",
+            });
+          })
+          .then(() => {
+            notify({
+              socket,
+              socketid: socket.id,
+              localized_string: `YES`,
+              type: "success",
+            });
           });
-          return;
-        }
 
         file
           .editFolder({
