@@ -448,8 +448,8 @@ export default {
     this.$eventHub.$on("socketio.chats.listMedia", this.newChatPosted);
 
     if (this.$root.state.local_options.force_login) {
-      this.panels_width.chatPane = 30;
-      this.panels_width.doPane = 70;
+      // this.panels_width.chatPane = 30;
+      // this.panels_width.doPane = 70;
     }
   },
   beforeDestroy() {

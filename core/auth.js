@@ -1,9 +1,16 @@
+const bcrypt = require("bcrypt");
+
 const dev = require("./dev-log"),
   file = require("./file");
 
 module.exports = (function () {
   const API = {
-    setAuthenticate: (folder_passwords) => setAuthenticate(folder_passwords),
+    setAuthenticate: (user_folder_passwords) =>
+      new Promise((resolve, reject) =>
+        setAuthenticate(user_folder_passwords)
+          .then((d) => resolve(d))
+          .catch((e) => reject(e))
+      ),
     canAdminFolder: (socket, foldersData, type) =>
       new Promise((resolve, reject) =>
         canAdminFolder(socket, foldersData, type)
@@ -21,91 +28,102 @@ module.exports = (function () {
       isSubmittedSessionPasswordValid(pwd),
 
     hashCode: (code) => hashCode(code),
+    encrypt: (code) => encrypt(code),
   };
 
-  function setAuthenticate(folder_passwords) {
-    return new Promise(function (resolve, reject) {
-      dev.logfunction(
-        `AUTH — setAuthenticate with ${JSON.stringify(
-          folder_passwords,
-          null,
-          4
-        )}`
-      );
+  async function setAuthenticate(user_folder_passwords) {
+    dev.logfunction(
+      `AUTH — setAuthenticate with ${JSON.stringify(
+        user_folder_passwords,
+        null,
+        4
+      )}`
+    );
 
-      // todo : if session_password, a user has to auth before getting any info
+    if (
+      typeof user_folder_passwords !== "object" ||
+      Object.keys(user_folder_passwords).length === 0
+    ) {
+      return [];
+    }
 
-      if (
-        folder_passwords === undefined ||
-        Object.keys(folder_passwords).length === 0
-      ) {
-        resolve([]);
-      }
-
-      let tasks = [];
-
-      Object.keys(folder_passwords).map((type) => {
-        // get all folders slugs and passwords
+    let tasks = Object.entries(user_folder_passwords).reduce(
+      (acc, [type, foldertype_passwords]) => {
         if (
-          typeof folder_passwords[type] !== "object" ||
-          Object.keys(folder_passwords[type]).length === 0
+          typeof foldertype_passwords !== "object" ||
+          Object.keys(foldertype_passwords).length === 0
         ) {
           dev.log(`AUTH — setAuthenticate : no usable content for ${type}`);
-          return;
+          return acc;
         }
 
-        let myPromise = new Promise((resolve, reject) => {
-          file
-            .getFolder({ type })
-            .then((foldersData) => {
-              dev.logverbose(
-                `AUTH — setAuthenticate : got folder data, now checking against folder_passwords[${type}]`
-              );
-              const foldertype_passwords = folder_passwords[type];
+        acc.push(async () => {
+          // get all folders slugs and passwords
+          const foldersData = await file.getFolder({ type }).catch((err) => {
+            dev.error(`Failed to get folder data: ${err}`);
+            return [];
+          });
 
-              let allowed_slugFolderNames = [];
-              // compare with data we received
-              for (let slugFolderName in foldertype_passwords) {
-                dev.logverbose(
-                  `AUTH — setAuthenticate : checking for ${slugFolderName}`
+          dev.logverbose(
+            `AUTH — setAuthenticate : got folder data, now checking against user_folder_passwords[${type}]`
+          );
+
+          let allowed_slugFolderNames = [];
+
+          // compare with data we received
+          for (let slugFolderName in foldertype_passwords) {
+            dev.logverbose(
+              `AUTH — setAuthenticate : checking for ${slugFolderName}`
+            );
+            if (
+              foldersData.hasOwnProperty(slugFolderName) &&
+              foldersData[slugFolderName].hasOwnProperty("password")
+            ) {
+              const password_field_options =
+                global.settings.structure[type].fields.password;
+
+              let match = false;
+              const submitted_password = foldertype_passwords[slugFolderName];
+
+              if (
+                password_field_options.hasOwnProperty("transform") &&
+                password_field_options.transform === "crypt"
+              ) {
+                match = await bcrypt.compare(
+                  submitted_password,
+                  foldersData[slugFolderName].password
                 );
-                if (
-                  foldersData.hasOwnProperty(slugFolderName) &&
-                  foldersData[slugFolderName].hasOwnProperty("password")
-                ) {
-                  if (
-                    foldertype_passwords[slugFolderName] ===
-                    // SparkMD5.hash(foldersData[slugFolderName].password)
-                    foldersData[slugFolderName].password
-                  ) {
-                    dev.logverbose(`Password fit for ${slugFolderName}.`);
-                    allowed_slugFolderNames.push(slugFolderName);
-                  } else {
-                    dev.error(`Password is wrong for ${slugFolderName}.`);
-                    dev.error(
-                      `Submitted: ${foldertype_passwords[slugFolderName]}\nShould be: ${foldersData[slugFolderName].password}`
-                    );
-                  }
-                }
+              } else {
+                match =
+                  submitted_password === foldersData[slugFolderName].password;
               }
 
-              resolve({ type, allowed_slugFolderNames });
-            })
-            .catch((err) => {
-              dev.error(`Failed to get folder data: ${err}`);
-              resolve([]);
-            });
+              if (match) {
+                dev.logverbose(`Password fit for ${slugFolderName}.`);
+                allowed_slugFolderNames.push(slugFolderName);
+              } else {
+                dev.error(`Password is wrong for ${slugFolderName}.`);
+                dev.error(`Submitted password is ${submitted_password}.`);
+              }
+            }
+          }
+
+          return { type, allowed_slugFolderNames };
         });
-        tasks.push(myPromise);
-      });
-      Promise.all(tasks).then((d_array) => {
-        if (d_array.length === 0) {
-          resolve([]);
-        }
-        d_array = d_array.filter((i) => !!i);
-        resolve(d_array);
-      });
-    });
+
+        return acc;
+      },
+      []
+    );
+
+    let d_array = await Promise.all(tasks.map((p) => p()));
+
+    if (d_array.length === 0) {
+      return [];
+    }
+
+    d_array = d_array.filter((i) => !!i);
+    return d_array;
   }
 
   async function canAdminFolder(socket, foldersData, type) {
@@ -242,7 +260,9 @@ module.exports = (function () {
       // no session password
       dev.logverbose(`No session password`);
       return true;
-    } else if (!!pwd && String(pwd) === String(global.session_password)) {
+    }
+
+    if (!!pwd && String(pwd) === String(global.session_password)) {
       // has session password, is good
       dev.logverbose(`Has session password, is valid`);
       return true;

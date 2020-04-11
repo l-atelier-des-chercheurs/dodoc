@@ -83,22 +83,27 @@ module.exports = (function () {
   }
 
   /**************************************************************** UTIL ********************************/
-  function onAuthenticate(socket, d) {
+  async function onAuthenticate(socket, d) {
     dev.logfunction(`EVENT - onAuthenticate for ${JSON.stringify(d, null, 4)}`);
-    auth
-      .setAuthenticate(d.folder_passwords)
-      .then((list_of_authorized_folders) => {
-        socket._is_authorized_for_folders = list_of_authorized_folders;
-        api.sendEventWithContent(
-          "authentificated",
-          list_of_authorized_folders,
-          io,
-          socket
-        );
-      })
-      .catch((err) => {
-        dev.error(`Failed to auth: ${err}`);
-      });
+
+    const hrstart = process.hrtime();
+
+    const list_of_authorized_folders = await auth.setAuthenticate(
+      d.folder_passwords
+    );
+    socket._is_authorized_for_folders = list_of_authorized_folders;
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(
+      `PERFORMANCE — setAuthenticate : ${hrend[0]}s ${hrend[1] / 1000000}ms`
+    );
+
+    api.sendEventWithContent(
+      "authentificated",
+      list_of_authorized_folders,
+      io,
+      socket
+    );
   }
 
   function notify({

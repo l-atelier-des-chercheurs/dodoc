@@ -95,11 +95,7 @@ module.exports = (function () {
           "base64"
         ).toString("binary");
 
-        if (
-          !auth.isSubmittedSessionPasswordValid(
-            auth.hashCode(request_session_password)
-          )
-        ) {
+        if (!auth.isSubmittedSessionPasswordValid(request_session_password)) {
           dev.error("REMOTE_API — _sessionPasswordCheck : wrong password");
           dev.error(
             `Submitted: "${auth.hashCode(

@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const path = require("path"),
   fs = require("fs-extra"),
   validator = require("validator");
@@ -8,7 +9,8 @@ const dev = require("./dev-log"),
   api = require("./api"),
   thumbs = require("./thumbs"),
   cache = require("./cache"),
-  recipe = require("./recipe");
+  recipe = require("./recipe"),
+  auth = require("./auth");
 
 module.exports = (function () {
   const API = {
@@ -2008,7 +2010,14 @@ module.exports = (function () {
           (!val.hasOwnProperty("override") || val.override === false) &&
           existing.hasOwnProperty(key)
         ) {
-          if (val.hasOwnProperty("options")) {
+          if (val.hasOwnProperty("transform")) {
+            if (val.transform === "crypt") {
+              output_obj[key] = bcrypt.hashSync(
+                validator.escape(existing[key] + ""),
+                10
+              );
+            }
+          } else if (val.hasOwnProperty("options")) {
             let new_val = validator.escape(existing[key] + "");
             if (val.options.includes(new_val)) {
               output_obj[key] = new_val;

@@ -87,9 +87,7 @@ module.exports = function ({ router }) {
                   typeof sessionMeta.session_password === "string"
                 ) {
                   const pass = sessionMeta.session_password.trim();
-
                   dev.log("Found session password in meta.txt set to: " + pass);
-
                   global.session_password = auth.hashCode(pass);
                 }
                 global.force_login =
