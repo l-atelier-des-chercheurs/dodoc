@@ -108,84 +108,78 @@ module.exports = (function () {
     });
   }
 
-  function canAdminFolder(socket, foldersData, type) {
-    return new Promise(function (resolve, reject) {
-      const slugFolderName = Object.keys(foldersData)[0];
+  async function canAdminFolder(socket, foldersData, type) {
+    const slugFolderName = Object.keys(foldersData)[0];
 
-      dev.logfunction(
-        `AUTH — canAdminFolder with slugFolderName = ${slugFolderName}, type = ${type}`
+    dev.logfunction(
+      `AUTH — canAdminFolder with slugFolderName = ${slugFolderName}, type = ${type}`
+    );
+
+    // check if account is admin
+    // if it is then it can see everything
+    const is_admin = await isSocketLoggedInAsAdmin(socket);
+    dev.logverbose(`AUTH — canAdminFolder: is_admin = ${is_admin}`);
+    if (is_admin) return true;
+
+    // let’s check if only_authors_can_edit_own_content is set to true
+    if (global.only_authors_can_edit_own_content) {
+      // this means that only authors can edit the content
+      if (
+        foldersData[slugFolderName].authors &&
+        Array.isArray(foldersData[slugFolderName].authors) &&
+        foldersData[slugFolderName].authors.length > 0 &&
+        foldersData[slugFolderName].authors.some((a) => !!a.slugFolderName)
+      ) {
+        // if folder has authors, then we need to check whether this socket has author as well
+
+        // legacy: in the past authors were tagged with their name (and not their slugs… stupid decision…)
+        // so we need to only get authors that have their slugs
+        const allowed_authors_slugs = foldersData[
+          slugFolderName
+        ].authors.reduce((acc, a) => {
+          if (a.slugFolderName) acc.push(a.slugFolderName);
+          return acc;
+        }, []);
+
+        const socket_has_author_that_is_allowed = allowed_authors_slugs.some(
+          (allowed_author_slug) => {
+            return socket._is_authorized_for_folders.some(
+              (f) =>
+                f.type === "authors" &&
+                f.allowed_slugFolderNames &&
+                f.allowed_slugFolderNames.includes(allowed_author_slug)
+            );
+          }
+        );
+        return socket_has_author_that_is_allowed;
+      } else {
+        // if folder has no author then we’re good
+        dev.logverbose(
+          `AUTH — canAdminFolder: no author for folder --> authorized`
+        );
+      }
+    }
+
+    // let’s check whether the folder has a password
+    if (
+      !foldersData[slugFolderName].hasOwnProperty("password") ||
+      foldersData[slugFolderName].password === ""
+    ) {
+      dev.logverbose(`AUTH — canAdminFolder: no password --> authorized`);
+      return true;
+    }
+
+    if (isSocketAuthorizedForFolders({ socket, type, slugFolderName })) {
+      dev.logverbose(
+        `AUTH — canAdminFolder: socket has password --> authorized`
       );
-
-      // check if account is admin
-      // if it is then it can see everything
-
-      isSocketLoggedInAsAdmin(socket)
-        .catch(() => reject())
-        .then(() => {
-          // let’s check if only_authors_can_edit_own_content is set to true
-          if (global.only_authors_can_edit_own_content) {
-            // this means that only authors can edit the content
-            if (
-              foldersData[slugFolderName].authors &&
-              Array.isArray(foldersData[slugFolderName].authors) &&
-              foldersData[slugFolderName].authors.length > 0 &&
-              foldersData[slugFolderName].authors.some(
-                (a) => !!a.slugFolderName
-              )
-            ) {
-              // if folder has authors, then we need to check whether this socket has author as well
-
-              // legacy: in the past authors were tagged with their name (and not their slugs… stupid decision…)
-              // so we need to only get authors that have their slugs
-              const allowed_authors_slugs = foldersData[
-                slugFolderName
-              ].authors.reduce((acc, a) => {
-                if (a.slugFolderName) acc.push(a.slugFolderName);
-                return acc;
-              }, []);
-
-              const socket_has_author_that_is_allowed = allowed_authors_slugs.some(
-                (allowed_author_slug) => {
-                  return socket._is_authorized_for_folders.some(
-                    (f) =>
-                      f.type === "authors" &&
-                      f.allowed_slugFolderNames &&
-                      f.allowed_slugFolderNames.includes(allowed_author_slug)
-                  );
-                }
-              );
-              return socket_has_author_that_is_allowed;
-            } else {
-              // if folder has no author then we’re good
-              dev.logverbose(
-                `AUTH — canAdminFolder: no author for folder --> authorized`
-              );
-            }
-          }
-
-          // let’s check whether the folder has a password
-          if (
-            !foldersData[slugFolderName].hasOwnProperty("password") ||
-            foldersData[slugFolderName].password === ""
-          ) {
-            dev.logverbose(`AUTH — canAdminFolder: no password --> authorized`);
-            return resolve();
-          }
-
-          if (isSocketAuthorizedForFolders({ socket, type, slugFolderName })) {
-            dev.logverbose(
-              `AUTH — canAdminFolder: socket has password --> authorized`
-            );
-            return resolve();
-          } else {
-            dev.logverbose(
-              `AUTH — canAdminFolder: socket doesn’t have password --> refused`
-            );
-            return reject();
-          }
-        })
-        .then(() => {});
-    });
+      return true;
+    } else {
+      dev.logverbose(
+        `AUTH — canAdminFolder: socket doesn’t have password --> refused`
+      );
+      return false;
+    }
   }
 
   function filterFolders(socket, type, foldersData) {
@@ -280,25 +274,39 @@ module.exports = (function () {
     });
   }
 
-  function isSocketLoggedInAsAdmin(socket) {
-    return new Promise(function (resolve, reject) {
-      if (!socket || !socket.hasOwnProperty("_is_authorized_for_folders"))
-        return reject();
+  async function isSocketLoggedInAsAdmin(socket) {
+    dev.logfunction(`AUTH — isSocketLoggedInAsAdmin`);
 
-      // get all authors
-      file.getFolder({ type: "authors" }).then((all_authors_informations) => {
-        // debugger;
-      });
+    if (!socket || !socket.hasOwnProperty("_is_authorized_for_folders"))
+      return false;
 
-      return reject();
+    // get sockets authors
+    const sockets_authors = socket._is_authorized_for_folders.find(
+      (f) =>
+        f.type === "authors" &&
+        f.allowed_slugFolderNames &&
+        f.allowed_slugFolderNames.length > 0
+    );
+    if (!sockets_authors) return false;
 
-      // return socket._is_authorized_for_folders.some(
-      //   (f) =>
-      //     f.type === "authors" &&
-      //     f.allowed_slugFolderNames &&
-      //     f.allowed_slugFolderNames.includes(allowed_author_slug)
-      // );
-    });
+    // get all session authors
+    const all_authors_informations = await file.getFolder({ type: "authors" });
+    const admins_slugs = Object.values(all_authors_informations).reduce(
+      (acc, a) => {
+        if (a.role === "admin") acc.push(a.slugFolderName);
+        return acc;
+      },
+      []
+    );
+
+    if (
+      admins_slugs.length > 0 &&
+      admins_slugs.some((a) =>
+        sockets_authors.allowed_slugFolderNames.includes(a)
+      )
+    )
+      return true;
+    return false;
   }
 
   return API;

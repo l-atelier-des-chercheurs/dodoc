@@ -160,85 +160,68 @@ module.exports = (function () {
       }
     );
   }
-  function onEditFolder(socket, { type, slugFolderName, data, id }) {
+  async function onEditFolder(socket, { type, slugFolderName, data, id }) {
     dev.logfunction(
       `EVENT - onEditFolder for type = ${type}, slugFolderName = ${slugFolderName}, data = ${JSON.stringify(
         data
       )}`
     );
 
+    const foldersData = await file.getFolder({ type, slugFolderName });
+
+    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: editing this content is not allowed.`,
+        type: "error",
+      });
+      return;
+    }
+
     file
-      .getFolder({ type, slugFolderName })
-      .then((foldersData) => {
-        auth
-          .canAdminFolder(socket, foldersData, type)
-          .catch(() => {
-            notify({
-              socket,
-              socketid: socket.id,
-              localized_string: `action_not_allowed`,
-              not_localized_string: `Error: editing this content is not allowed.`,
-              type: "error",
-            });
-          })
-          .then(() => {
-            notify({
-              socket,
-              socketid: socket.id,
-              localized_string: `YES`,
-              type: "success",
-            });
-          });
+      .editFolder({
+        type,
+        slugFolderName,
+        foldersData: Object.values(foldersData)[0],
+        newFoldersData: data,
+      })
+      .then(({ slugFolderName, meta }) => {
+        // if password was changed
+        if (
+          Object.values(foldersData)[0].hasOwnProperty("password") &&
+          Object.values(foldersData)[0].password !== meta.password
+        ) {
+          Object.keys(io.sockets.connected).forEach((sid) => {
+            let this_socket = io.sockets.connected[sid];
 
-        file
-          .editFolder({
-            type,
-            slugFolderName,
-            foldersData: Object.values(foldersData)[0],
-            newFoldersData: data,
-          })
-          .then(({ slugFolderName, meta }) => {
-            // if password was changed
-            if (
-              Object.values(foldersData)[0].hasOwnProperty("password") &&
-              Object.values(foldersData)[0].password !== meta.password
-            ) {
-              Object.keys(io.sockets.connected).forEach((sid) => {
-                let this_socket = io.sockets.connected[sid];
-
-                if (this_socket === socket) {
-                  return;
-                }
-
-                this_socket._is_authorized_for_folders.map((i) => {
-                  if (i.type === type) {
-                    if (i.allowed_slugFolderNames.includes(slugFolderName)) {
-                      // remove slug from list
-                      i.allowed_slugFolderNames = i.allowed_slugFolderNames.filter(
-                        (s) => s !== slugFolderName
-                      );
-                    }
-                  }
-                });
-
-                // refresh auth
-                api.sendEventWithContent(
-                  "authentificated",
-                  this_socket._is_authorized_for_folders,
-                  io,
-                  this_socket
-                );
-              });
+            if (this_socket === socket) {
+              return;
             }
 
-            sendFolders({ type, slugFolderName, id });
-          })
-          .catch((err) => {
-            dev.error(`Error on editFolder: ${err}`);
+            this_socket._is_authorized_for_folders.map((i) => {
+              if (i.type === type) {
+                if (i.allowed_slugFolderNames.includes(slugFolderName)) {
+                  // remove slug from list
+                  i.allowed_slugFolderNames = i.allowed_slugFolderNames.filter(
+                    (s) => s !== slugFolderName
+                  );
+                }
+              }
+            });
+
+            // refresh auth
+            api.sendEventWithContent(
+              "authentificated",
+              this_socket._is_authorized_for_folders,
+              io,
+              this_socket
+            );
           });
-      })
-      .catch((err) => {
-        dev.error(`No folder found: ${err}`);
+        }
+
+        sendFolders({ type, slugFolderName, id });
       });
   }
 
