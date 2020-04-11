@@ -180,84 +180,76 @@ module.exports = (function () {
       return;
     }
 
-    file
-      .editFolder({
-        type,
-        slugFolderName,
-        foldersData: Object.values(foldersData)[0],
-        newFoldersData: data,
-      })
-      .then(({ slugFolderName, meta }) => {
-        // if password was changed
-        if (
-          Object.values(foldersData)[0].hasOwnProperty("password") &&
-          Object.values(foldersData)[0].password !== meta.password
-        ) {
-          Object.keys(io.sockets.connected).forEach((sid) => {
-            let this_socket = io.sockets.connected[sid];
+    const { meta } = await file.editFolder({
+      type,
+      slugFolderName,
+      foldersData: Object.values(foldersData)[0],
+      newFoldersData: data,
+    });
 
-            if (this_socket === socket) {
-              return;
-            }
+    // if password was changed
+    if (
+      Object.values(foldersData)[0].hasOwnProperty("password") &&
+      Object.values(foldersData)[0].password !== meta.password
+    ) {
+      Object.keys(io.sockets.connected).forEach((sid) => {
+        let this_socket = io.sockets.connected[sid];
 
-            this_socket._is_authorized_for_folders.map((i) => {
-              if (i.type === type) {
-                if (i.allowed_slugFolderNames.includes(slugFolderName)) {
-                  // remove slug from list
-                  i.allowed_slugFolderNames = i.allowed_slugFolderNames.filter(
-                    (s) => s !== slugFolderName
-                  );
-                }
-              }
-            });
-
-            // refresh auth
-            api.sendEventWithContent(
-              "authentificated",
-              this_socket._is_authorized_for_folders,
-              io,
-              this_socket
-            );
-          });
-        }
-
-        sendFolders({ type, slugFolderName, id });
-      });
-  }
-
-  function onRemoveFolder(socket, { type, slugFolderName }) {
-    dev.logfunction(`EVENT - onRemoveFolder for ${slugFolderName}`);
-    file
-      .getFolder({ type, slugFolderName })
-      .then((foldersData) => {
-        if (!auth.canAdminFolder(socket, foldersData, type)) {
-          notify({
-            socket,
-            socketid: socket.id,
-            localized_string: `action_not_allowed`,
-            not_localized_string: `Error: removing this content is not allowed.`,
-            type: "error",
-          });
+        if (this_socket === socket) {
           return;
         }
-        file
-          .removeFolder({
-            type,
-            slugFolderName,
-          })
-          .then(
-            () => {
-              sendFolders({ type });
-            },
-            function (err, p) {
-              dev.error(`Failed to remove folder: ${err}`);
-              reject(err);
+
+        this_socket._is_authorized_for_folders.map((i) => {
+          if (i.type === type) {
+            if (i.allowed_slugFolderNames.includes(slugFolderName)) {
+              // remove slug from list
+              i.allowed_slugFolderNames = i.allowed_slugFolderNames.filter(
+                (s) => s !== slugFolderName
+              );
             }
-          );
+          }
+        });
+
+        // refresh auth
+        api.sendEventWithContent(
+          "authentificated",
+          this_socket._is_authorized_for_folders,
+          io,
+          this_socket
+        );
+      });
+    }
+
+    sendFolders({ type, slugFolderName, id });
+  }
+
+  async function onRemoveFolder(socket, { type, slugFolderName }) {
+    dev.logfunction(`EVENT - onRemoveFolder for ${slugFolderName}`);
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+
+    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: editing this content is not allowed.`,
+        type: "error",
+      });
+      return;
+    }
+
+    await file
+      .removeFolder({
+        type,
+        slugFolderName,
       })
       .catch((err) => {
-        dev.error(`No folder found: ${err}`);
+        dev.error(`Failed to remove folder: ${err}`);
+        reject(err);
       });
+
+    sendFolders({ type });
   }
 
   /**************************************************************** MEDIA ********************************/
