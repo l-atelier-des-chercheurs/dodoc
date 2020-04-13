@@ -816,6 +816,28 @@ let vm = new Vue({
       }
       return false;
     },
+    canEditFolder: function ({ type, slugFolderName }) {
+      if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
+
+      const folder = this.store[type][slugFolderName];
+
+      // check if folder has authors
+      if (!this.state.local_options.only_authors_can_edit_own_content)
+        return this.canAccessFolder({ type, slugFolderName });
+
+      const folder_authors = folder.authors;
+      if (!folder_authors || folder_authors.length === 0) return true;
+
+      if (!this.current_author) return false;
+
+      debugger;
+
+      if (this.current_author.role === "admin") return true;
+
+      return folder_authors.some(
+        (a) => a.slugFolderName === this.current_author.slugFolderName
+      );
+    },
     openProject: function (slugProjectName) {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: openProject: ${slugProjectName}`);

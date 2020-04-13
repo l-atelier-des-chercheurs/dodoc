@@ -31,6 +31,7 @@
             multiple
             id="add_file"
             name="file"
+            :disabled="read_only"
             @change="updateInputFiles($event)"
             accept=""
             style="width: 1px; height: 1px; overflow: hidden;"
@@ -63,6 +64,7 @@
           type="button"
           class="barButton barButton_text"
           @click="createTextMedia"
+          :disabled="read_only"
         >
           <span>{{ $t("create_text") }}</span>
         </button>

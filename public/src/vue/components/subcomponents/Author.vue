@@ -248,11 +248,6 @@ export default {
           this.$refs.passwordField.value = "";
           this.$refs.passwordField.focus();
         } else {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .success(this.$t("notifications.connected_as") + this.author.name);
-
           this.show_input_password_field = false;
           this.setAuthor();
         }
@@ -276,6 +271,11 @@ export default {
     },
     setAuthor() {
       if (this.can_login_as_author) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(this.$t("notifications.connected_as") + this.author.name);
+
         this.$root.setAuthor(this.author);
         setTimeout(() => {
           this.$emit("close");
