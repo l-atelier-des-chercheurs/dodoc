@@ -874,7 +874,8 @@ module.exports = (function () {
     const connected_clients = [];
     Object.entries(io.sockets.connected).forEach(([id, this_socket]) => {
       connected_clients.push({
-        id,
+        // not sending socketio ID in full — we use it to check incoming REST request
+        id: id.substring(0, 4),
         data: this_socket._data,
       });
     });

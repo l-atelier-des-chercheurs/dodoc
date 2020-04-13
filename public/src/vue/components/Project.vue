@@ -640,7 +640,7 @@ export default {
         window.location.origin +
         "/_archives/projects/" +
         this.slugProjectName +
-        `?pwd=${pwd}`;
+        `?socketid=${this.$root.$socketio.socket.id}`;
 
       if (this.$root.state.dev_mode === "debug")
         console.log(

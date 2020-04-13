@@ -52,7 +52,8 @@ export default {
   computed: {
     uniqueClients() {
       return this.$root.state.clients.filter((client) => {
-        if (client.id === this.$root.$socketio.socket.id) return false;
+        if (client.id === this.$root.$socketio.socket.id.substring(0, 4))
+          return false;
 
         if (
           this.$root.state.local_options.force_login &&

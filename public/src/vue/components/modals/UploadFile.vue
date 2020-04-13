@@ -102,7 +102,7 @@ export default {
   beforeDestroy() {},
   computed: {
     uriToUploadMedia: function () {
-      return `_file-upload/${this.type}/${this.slugFolderName}`;
+      return `_file-upload/${this.type}/${this.slugFolderName}/?socketid=${this.$root.$socketio.socket.id}`;
     },
   },
   methods: {
