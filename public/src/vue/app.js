@@ -680,7 +680,8 @@ let vm = new Vue({
           meta.authors = [{ name: meta.authors }];
         }
         meta.authors.map((k) => {
-          if (uniqueAuthors.indexOf(k.name) == -1) uniqueAuthors.push(k.name);
+          if (uniqueAuthors.indexOf(k.slugFolderName) == -1)
+            uniqueAuthors.push(k.slugFolderName);
         });
       });
       uniqueAuthors = uniqueAuthors.sort(function (a, b) {
@@ -688,15 +689,16 @@ let vm = new Vue({
       });
       return uniqueAuthors.map((kw) => {
         return {
-          name: kw,
+          slugFolderName: kw,
         };
       });
     },
     getAuthor(slugFolderName) {
       if (Object.keys(this.store.authors).length === 0) return false;
-      return Object.values(this.store.authors).find(
+      const author = Object.values(this.store.authors).find(
         (a) => a.slugFolderName === slugFolderName
       );
+      return author;
     },
     getAllTypesFrom(base) {
       let uniquetTypes = [];
@@ -938,7 +940,7 @@ let vm = new Vue({
           media.hasOwnProperty("authors") &&
           typeof media.authors === "object" &&
           media.authors.filter(
-            (k) => k.name === this.settings.media_filter.author
+            (k) => k.slugFolderName === this.settings.media_filter.author
           ).length > 0
         );
       };

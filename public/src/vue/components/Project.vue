@@ -93,16 +93,12 @@
 
           <DateField :title="'edited'" :date="project.date_modified" />
 
-          <div
+          <!-- <div
             class="m_metaField"
-            v-if="
-              can_access_project &&
-              project.password === 'has_pass' &&
-              context !== 'full'
-            "
+            v-if="can_access_project && project.password === 'has_pass'"
           >
             <label>{{ $t("protected_by_pass") }}</label>
-          </div>
+          </div> -->
           <button
             v-if="!can_access_project"
             type="button"

@@ -166,7 +166,7 @@ export default {
       show_attached_project: this.$root.do_navigation.current_slugProjectName,
       show_password: false,
       show_keywords: false,
-      show_authors: false,
+      show_authors: this.$root.current_author,
     };
   },
   watch: {
