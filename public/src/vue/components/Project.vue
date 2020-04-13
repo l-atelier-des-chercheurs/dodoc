@@ -72,9 +72,9 @@
                 <template v-if="$root.getAuthor(author.slugFolderName)">
                   {{ $root.getAuthor(author.slugFolderName).name }}
                 </template>
-                <!-- <template v-else>
+                <template v-else>
                   {{ author.slugFolderName }}
-                </template> -->
+                </template>
               </span>
             </div>
           </div>

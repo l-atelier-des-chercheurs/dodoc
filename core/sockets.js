@@ -336,7 +336,7 @@ module.exports = (function () {
       });
   }
 
-  function onEditMedia(
+  async function onEditMedia(
     socket,
     { type, slugFolderName, slugMediaName, data, recipe_with_data }
   ) {
@@ -347,6 +347,18 @@ module.exports = (function () {
         4
       )}`
     );
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be edited ${slugFolderName}`,
+        type: "error",
+      });
+      return;
+    }
 
     file
       .editMedia({
@@ -367,7 +379,7 @@ module.exports = (function () {
         }
       );
   }
-  function onCopyMediaToFolder(
+  async function onCopyMediaToFolder(
     socket,
     {
       type,
@@ -385,89 +397,110 @@ module.exports = (function () {
       with new meta_to_edit = ${meta_to_edit}`
     );
 
-    file
-      .getFolder({ type, slugFolderName: from_slugFolderName })
-      .then((foldersData) => {
-        if (!auth.canAdminFolder(socket, foldersData, type)) {
-          notify({
-            socket,
-            socketid: socket.id,
-            localized_string: `action_not_allowed`,
-            not_localized_string: `Error: origin folder can’t be edited ${to_slugFolderName}`,
-            type: "error",
-          });
-        } else {
-          return;
-        }
-      })
-      .then(() => {
-        file
-          .getFolder({ type, slugFolderName: to_slugFolderName })
-          .then((foldersData) => {
-            if (!auth.canAdminFolder(socket, foldersData, type)) {
-              notify({
-                socket,
-                socketid: socket.id,
-                localized_string: `action_not_allowed`,
-                not_localized_string: `Error: destination folder can’t be edited ${to_slugFolderName}`,
-                type: "error",
-              });
-            }
-            return;
-          });
-      })
-      .then(() => {
-        file
-          .copyMediaToAnotherFolder({
-            type,
-            from_slugFolderName,
-            to_slugFolderName,
-            metaFileName: slugMediaName,
-            meta_to_edit,
-          })
-          .then((newMetaFileName) => {
-            notify({
-              socket,
-              localized_string: `media_copied_successfully`,
-              type: "success",
-            });
+    const from_foldersData = await file.getFolder({
+      type,
+      slugFolderName: from_slugFolderName,
+    });
 
-            sendMedias({
-              type,
-              slugFolderName: to_slugFolderName,
-              metaFileName: newMetaFileName,
-            });
-          })
-          .catch((err, p) => {
-            notify({
-              socket,
-              socketid: socket.id,
-              not_localized_string: `Copy failed with error: ${err}`,
-              type: "error",
-            });
-
-            dev.error(`Failed to copy media to another folder: ${err}`);
-            reject(err);
-          });
+    if (!(await auth.canAdminFolder(socket, from_foldersData, type))) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: origin folder ${to_slugFolderName} can’t be edited `,
+        type: "error",
       });
+      return;
+    }
+
+    const to_foldersData = await file.getFolder({
+      type,
+      slugFolderName: to_slugFolderName,
+    });
+
+    if (!(await auth.canAdminFolder(socket, to_foldersData, type))) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: destination folder ${to_slugFolderName} can’t be edited`,
+        type: "error",
+      });
+      return;
+    }
+
+    const newMetaFileName = await file
+      .copyMediaToAnotherFolder({
+        type,
+        from_slugFolderName,
+        to_slugFolderName,
+        metaFileName: slugMediaName,
+        meta_to_edit,
+      })
+      .catch((err, p) => {
+        notify({
+          socket,
+          socketid: socket.id,
+          not_localized_string: `Copy failed with error: ${err}`,
+          type: "error",
+        });
+
+        dev.error(`Failed to copy media to another folder: ${err}`);
+        reject(err);
+      });
+
+    notify({
+      socket,
+      socketid: socket.id,
+      localized_string: `media_copied_successfully`,
+      type: "success",
+    });
+
+    sendMedias({
+      type,
+      slugFolderName: to_slugFolderName,
+      metaFileName: newMetaFileName,
+    });
   }
 
-  function onRemoveMedia(socket, { type, slugFolderName, slugMediaName }) {
+  async function onRemoveMedia(
+    socket,
+    { type, slugFolderName, slugMediaName }
+  ) {
     dev.logfunction(
       `EVENT - onRemoveMedia for type = ${type}, slugFolderName = ${slugFolderName}, and slugMediaName = ${slugMediaName}`
     );
-    file
-      .removeMedia({ type, slugFolderName, metaFileName: slugMediaName })
-      .then(
-        () => {
-          onEditFolder(socket, { type, slugFolderName, data: {} });
-          sendMedias({ type, slugFolderName });
-        },
-        function (err, p) {
-          dev.error(`Failed to remove media: ${err}`);
-          reject(err);
-        }
-      );
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be edited ${slugFolderName}`,
+        type: "error",
+      });
+      return;
+    }
+
+    await file
+      .removeMedia({
+        type,
+        slugFolderName,
+        metaFileName: slugMediaName,
+      })
+      .catch((err, p) => {
+        notify({
+          socket,
+          socketid: socket.id,
+          not_localized_string: `Failed to remove media: ${err}`,
+          type: "error",
+        });
+        reject(err);
+      });
+
+    await onEditFolder(socket, { type, slugFolderName, data: {} });
+    await sendMedias({ type, slugFolderName });
   }
 
   function onListSpecificMedias(socket, { type, medias_list }) {

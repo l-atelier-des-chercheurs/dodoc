@@ -2010,12 +2010,14 @@ module.exports = (function () {
           (!val.hasOwnProperty("override") || val.override === false) &&
           existing.hasOwnProperty(key)
         ) {
-          if (val.hasOwnProperty("transform")) {
-            if (val.transform === "crypt") {
+          if (val.hasOwnProperty("transform") && val.transform === "crypt") {
+            if (!!existing[key]) {
               output_obj[key] = bcrypt.hashSync(
                 validator.escape(existing[key] + ""),
                 10
               );
+            } else {
+              output_obj[key] = "";
             }
           } else if (val.hasOwnProperty("options")) {
             let new_val = validator.escape(existing[key] + "");

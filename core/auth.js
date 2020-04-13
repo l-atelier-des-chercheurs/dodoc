@@ -77,7 +77,8 @@ module.exports = (function () {
             );
             if (
               foldersData.hasOwnProperty(slugFolderName) &&
-              foldersData[slugFolderName].hasOwnProperty("password")
+              foldersData[slugFolderName].hasOwnProperty("password") &&
+              !!foldersData[slugFolderName].password
             ) {
               const password_field_options =
                 global.settings.structure[type].fields.password;
@@ -105,6 +106,11 @@ module.exports = (function () {
                 dev.error(`Password is wrong for ${slugFolderName}.`);
                 dev.error(`Submitted password is ${submitted_password}.`);
               }
+            } else {
+              dev.logverbose(
+                `No password for folder = ${slugFolderName}, adding it to allowed.`
+              );
+              allowed_slugFolderNames.push(slugFolderName);
             }
           }
 
@@ -168,6 +174,9 @@ module.exports = (function () {
                 f.allowed_slugFolderNames.includes(allowed_author_slug)
             );
           }
+        );
+        dev.logverbose(
+          `AUTH — canAdminFolder: has author, is socket author --> ${socket_has_author_that_is_allowed}`
         );
         return socket_has_author_that_is_allowed;
       } else {

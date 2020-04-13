@@ -2739,6 +2739,10 @@ module.exports = (function () {
         oc: "Mot de Santa Clara erronèu per",
         de: "Falsches Passwort für",
       },
+      connected_as: {
+        fr: "Connecté comme  ",
+        en: "Connected as ",
+      },
       creating_video: {
         fr: "En cours de création de la vidéo…",
         en: "Creating video…",

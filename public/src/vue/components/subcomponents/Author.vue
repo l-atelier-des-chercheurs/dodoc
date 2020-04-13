@@ -248,6 +248,11 @@ export default {
           this.$refs.passwordField.value = "";
           this.$refs.passwordField.focus();
         } else {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(this.$t("notifications.connected_as") + this.author.name);
+
           this.show_input_password_field = false;
           this.setAuthor();
         }
