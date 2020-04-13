@@ -630,19 +630,35 @@ module.exports = (function () {
       });
   }
 
-  function onCopyFolder(socket, { type, slugFolderName, new_folder_name, id }) {
+  async function onCopyFolder(
+    socket,
+    { type, slugFolderName, new_folder_name, id }
+  ) {
     dev.logfunction(
       `EVENT - onCopyFolder with 
       type = ${type} and slugFolderName = ${slugFolderName}, for name = ${new_folder_name}`
     );
-    file.copyFolder({ type, slugFolderName, new_folder_name }).then(
-      (new_slugFolderName) => {
-        sendFolders({ type, slugFolderName: new_slugFolderName, id });
-      },
-      function (err) {
-        dev.error(`Failed to copy folder! Error: ${err}`);
-      }
-    );
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+
+    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: editing this content is not allowed.`,
+        type: "error",
+      });
+      return;
+    }
+
+    const new_slugFolderName = await file.copyFolder({
+      type,
+      slugFolderName,
+      new_folder_name,
+    });
+
+    await sendFolders({ type, slugFolderName: new_slugFolderName, id });
   }
 
   function onUpdateNetworkInfos() {
