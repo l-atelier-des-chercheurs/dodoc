@@ -73,8 +73,8 @@ module.exports = (function () {
         onAddTempMediaToFolder(socket, d)
       );
       socket.on("copyFolder", (d) => onCopyFolder(socket, d));
-      socket.on("updateNetworkInfos", (d) => onUpdateNetworkInfos(socket, d));
 
+      socket.on("updateNetworkInfos", (d) => onUpdateNetworkInfos(socket, d));
       socket.on("updateClientInfo", (d) => onUpdateClientInfo(socket, d));
       socket.on("listClientsInfo", (d) => onListClientsInfo(socket, d));
 
@@ -606,21 +606,26 @@ module.exports = (function () {
       });
   }
 
-  function onAddTempMediaToFolder(socket, { from, to, additionalMeta }) {
+  async function onAddTempMediaToFolder(socket, { from, to, additionalMeta }) {
     dev.logfunction(
       `EVENT - onAddTempMediaToFolder with 
       from = ${JSON.stringify(from)} and to = ${JSON.stringify(to)}`
     );
 
-    file
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be edited ${slugFolderName}`,
+        type: "error",
+      });
+      return;
+    }
+
+    await file
       .addTempMediaToFolder({ from, to, additionalMeta })
-      .then(() => {
-        notify({
-          socket,
-          socketid: socket.id,
-          localized_string: `media_has_been_added_successfully`,
-        });
-      })
       .catch((err) => {
         notify({
           socket,
@@ -628,6 +633,12 @@ module.exports = (function () {
           not_localized_string: `Error adding temp media to folder: ${err}`,
         });
       });
+
+    notify({
+      socket,
+      socketid: socket.id,
+      localized_string: `media_has_been_added_successfully`,
+    });
   }
 
   async function onCopyFolder(
