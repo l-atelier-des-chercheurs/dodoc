@@ -1161,12 +1161,19 @@ small {
 
 .m_projects--list {
   position: relative;
-  .padding-bottom-medium;
-  .padding-top-medium;
 
   .flex-wrap;
   .flex-horizontally-start;
   align-items: flex-start;
+
+  &::before,
+  &::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    grid-column: ~"1 / -1";
+  }
 
   @supports (display: grid) {
     display: grid;

@@ -259,60 +259,50 @@ module.exports = (function () {
 
   /**************************************************************** MEDIA ********************************/
 
-  function onListMedias(socket, { type, slugFolderName }) {
+  async function onListMedias(socket, { type, slugFolderName }) {
     dev.logfunction(
       `EVENT - onListMedias : type = ${type}, slugProjectName = ${slugFolderName}`
     );
 
     const hrstart = process.hrtime();
-    sendMedias({ type, slugFolderName, socket }).then(() => {
-      let hrend = process.hrtime(hrstart);
-      dev.performance(
-        `PERFORMANCE — listMedias : ${hrend[0]}s ${hrend[1] / 1000000}ms`
-      );
-    });
+    await sendMedias({ type, slugFolderName, socket });
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(
+      `PERFORMANCE — listMedias : ${hrend[0]}s ${hrend[1] / 1000000}ms`
+    );
   }
 
-  function onCreateMedia(
+  async function onCreateMedia(
     socket,
     { type, id, slugFolderName, additionalMeta, rawData = "" }
   ) {
     dev.logfunction(
       `EVENT - onCreateMedia : slugFolderName = ${slugFolderName} and type = ${type} and rawData.length = ${rawData.length}`
     );
-    file
-      .createMedia({
-        type,
-        rawData,
-        slugFolderName,
-        additionalMeta,
-        socket,
-      })
-      .then((_additionalMeta) => {
-        file
-          .createMediaMeta({
-            type,
-            slugFolderName,
-            additionalMeta: _additionalMeta,
-          })
-          .then((metaFileName) => {
-            onEditFolder(socket, { type, slugFolderName, data: {} });
-            sendMedias({
-              type,
-              slugFolderName,
-              metaFileName,
-              id,
-            });
-          })
-          .catch((err) => {
-            dev.error(`Couldn’t create captured media meta: ${err}`);
-            reject(err);
-          });
-      })
-      .catch((err) => {
-        dev.error(`Couldn’t create captured media: ${err}`);
-        reject(err);
-      });
+
+    const _additionalMeta = await file.createMedia({
+      type,
+      rawData,
+      slugFolderName,
+      additionalMeta,
+      socket,
+    });
+
+    const metaFileName = await file.createMediaMeta({
+      type,
+      slugFolderName,
+      additionalMeta: _additionalMeta,
+    });
+
+    onEditFolder(socket, { type, slugFolderName, data: {} });
+
+    await sendMedias({
+      type,
+      slugFolderName,
+      metaFileName,
+      id,
+    });
   }
 
   function createMediaMeta({ type, slugFolderName, additionalMeta }) {
@@ -758,92 +748,83 @@ module.exports = (function () {
     });
   }
 
-  function sendMedias({ type, slugFolderName, metaFileName, socket, id }) {
-    return new Promise(function (resolve, reject) {
-      dev.logfunction(
-        `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
+  async function sendMedias({
+    type,
+    slugFolderName,
+    metaFileName,
+    socket,
+    id,
+  }) {
+    dev.logfunction(
+      `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
+    );
+
+    const foldersData = await file
+      .getFolder({ type, slugFolderName })
+      .catch((err) => {
+        dev.error(`No folder found: ${err}`);
+        return reject(err);
+      });
+
+    if (foldersData === undefined) {
+      return;
+    }
+
+    const list_metaFileName = await file.getMediaMetaNames({
+      type,
+      slugFolderName,
+      metaFileName,
+    });
+
+    let medias_list = list_metaFileName.map((_metaFileName) => {
+      return {
+        slugFolderName,
+        metaFileName: _metaFileName,
+      };
+    });
+    let folders_and_medias = await file.readMediaList({ type, medias_list });
+
+    dev.logverbose(`Got medias, now sending to the right clients`);
+
+    if (
+      folders_and_medias !== undefined &&
+      Object.keys(folders_and_medias).length
+    ) {
+      if (metaFileName && id) {
+        folders_and_medias[slugFolderName].medias[metaFileName].id = id;
+      }
+
+      if (
+        foldersData[slugFolderName].hasOwnProperty("password") &&
+        foldersData[slugFolderName].password !== ""
+      ) {
+        foldersData[slugFolderName].password = "has_pass";
+      }
+
+      foldersData[slugFolderName].medias =
+        folders_and_medias[slugFolderName].medias;
+    }
+
+    for (sid in io.sockets.connected) {
+      if (!!socket && socket.id !== sid) {
+        continue;
+      }
+
+      let thisSocket = socket || io.sockets.connected[sid];
+
+      let filtered_folders_and_medias = await auth.filterMedias(
+        thisSocket,
+        type,
+        foldersData
       );
 
-      file
-        .getFolder({ type, slugFolderName })
-        .then((foldersData) => {
-          if (foldersData === undefined) {
-            return reject();
-          }
-          file
-            .getMediaMetaNames({
-              type,
-              slugFolderName,
-              metaFileName,
-            })
-            .then((list_metaFileName) => {
-              let medias_list = list_metaFileName.map((_metaFileName) => {
-                return {
-                  slugFolderName,
-                  metaFileName: _metaFileName,
-                };
-              });
-              file
-                .readMediaList({ type, medias_list })
-                .then((folders_and_medias) => {
-                  dev.logverbose(
-                    `Got medias, now sending to the right clients`
-                  );
-
-                  if (
-                    folders_and_medias !== undefined &&
-                    Object.keys(folders_and_medias).length
-                  ) {
-                    if (metaFileName && id) {
-                      folders_and_medias[slugFolderName].medias[
-                        metaFileName
-                      ].id = id;
-                    }
-
-                    if (
-                      foldersData[slugFolderName].hasOwnProperty("password") &&
-                      foldersData[slugFolderName].password !== ""
-                    ) {
-                      foldersData[slugFolderName].password = "has_pass";
-                    }
-
-                    foldersData[slugFolderName].medias =
-                      folders_and_medias[slugFolderName].medias;
-                  }
-
-                  Object.keys(io.sockets.connected).forEach((sid) => {
-                    if (!!socket && socket.id !== sid) {
-                      return;
-                    }
-
-                    let thisSocket = socket || io.sockets.connected[sid];
-
-                    let filtered_folders_and_medias = auth.filterMedias(
-                      thisSocket,
-                      type,
-                      foldersData
-                    );
-
-                    api.sendEventWithContent(
-                      !!metaFileName ? "listMedia" : "listMedias",
-                      { [type]: filtered_folders_and_medias },
-                      io,
-                      thisSocket
-                    );
-                    return resolve();
-                  });
-                });
-            })
-            .catch((err) => {
-              dev.error(`Failed to list medias! Error: ${err}`);
-              return reject(err);
-            });
-        })
-        .catch((err) => {
-          dev.error(`No folder found: ${err}`);
-          return reject(err);
-        });
-    });
+      api.sendEventWithContent(
+        !!metaFileName ? "listMedia" : "listMedias",
+        { [type]: filtered_folders_and_medias },
+        io,
+        thisSocket
+      );
+    }
   }
 
   // only for one user at a time

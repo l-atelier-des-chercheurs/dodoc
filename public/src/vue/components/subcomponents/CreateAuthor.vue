@@ -113,7 +113,7 @@ export default {
       show_image: false,
       show_role: true,
       show_nfc: false,
-      possible_roles: ["contributor", "admin"],
+      possible_roles: ["contributor"],
 
       authordata: {
         name: "",

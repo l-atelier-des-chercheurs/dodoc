@@ -17,10 +17,20 @@ module.exports = (function () {
           .then((d) => resolve(d))
           .catch((e) => reject(e))
       ),
+    canSeeFolder: (socket, foldersData, type) =>
+      new Promise((resolve, reject) =>
+        canSeeFolder(socket, foldersData, type)
+          .then((d) => resolve(d))
+          .catch((e) => reject(e))
+      ),
     filterFolders: (socket, type, foldersData) =>
       filterFolders(socket, type, foldersData),
     filterMedias: (socket, type, folders_and_medias) =>
-      filterMedias(socket, type, folders_and_medias),
+      new Promise((resolve, reject) =>
+        filterMedias(socket, type, folders_and_medias)
+          .then((d) => resolve(d))
+          .catch((e) => reject(e))
+      ),
     removeNonPublicMediasFromAllFolders: (folders_and_medias) =>
       removeNonPublicMediasFromAllFolders(folders_and_medias),
 
@@ -209,6 +219,16 @@ module.exports = (function () {
     }
   }
 
+  async function canSeeFolder(socket, foldersData, type) {
+    const slugFolderName = Object.keys(foldersData)[0];
+
+    dev.logfunction(
+      `AUTH — canSeeFolder with slugFolderName = ${slugFolderName}, type = ${type}`
+    );
+
+    return await canAdminFolder(socket, foldersData, type);
+  }
+
   function filterFolders(socket, type, foldersData) {
     dev.logfunction(`AUTH — filterFolders`);
 
@@ -230,10 +250,12 @@ module.exports = (function () {
     return filteredFoldersData;
   }
 
-  function filterMedias(socket, type, folders_and_medias) {
+  async function filterMedias(socket, type, folders_and_medias) {
     dev.logfunction(`AUTH — filterMedias`);
 
-    if (canAdminFolder(socket, folders_and_medias, type)) {
+    const can_see_folder = await canSeeFolder(socket, folders_and_medias, type);
+
+    if (can_see_folder) {
       return folders_and_medias;
     } else {
       // check for each media if hasownproperty 'public' and if public is set to true
