@@ -149,23 +149,53 @@ module.exports = (function () {
       `AUTH — canAdminFolder with slugFolderName = ${slugFolderName}, type = ${type}`
     );
 
+    const sockets_authors =
+      socket &&
+      socket._is_authorized_for_folders &&
+      socket._is_authorized_for_folders.length > 0
+        ? socket._is_authorized_for_folders.find(
+            (f) =>
+              f.type === "authors" &&
+              f.allowed_slugFolderNames &&
+              f.allowed_slugFolderNames.length > 0
+          )
+        : false;
+    let sockets_authors_slugs = [];
+
+    // socket has no authors, but might be able to access if no authors on folder, and no password
+    if (!sockets_authors)
+      dev.logfunction(`AUTH — canAdminFolder : socket has no authors`);
+    else {
+      sockets_authors_slugs = sockets_authors.allowed_slugFolderNames;
+      dev.logverbose(
+        `AUTH — canAdminFolder: socket authors are ${sockets_authors_slugs.join(
+          ","
+        )}`
+      );
+    }
+
     // check if account is admin
     // if it is then it can see everything
-    const is_admin = await isSocketLoggedInAsAdmin(socket);
-    dev.logverbose(`AUTH — canAdminFolder: is_admin = ${is_admin}`);
-    if (is_admin) return true;
+    if (sockets_authors) {
+      const is_admin = await isSocketLoggedInAsAdmin(sockets_authors_slugs);
+      dev.logverbose(`AUTH — canAdminFolder: is_admin = ${is_admin}`);
+      if (is_admin) return true;
+    }
 
     // let’s check if only_authors_can_edit_own_content is set to true
+    // if folder has author, then socket has to have authors aswell
     if (global.only_authors_can_edit_own_content) {
-      // this means that only authors can edit the content
+      // return there if socket has no authorized list
+      if (!sockets_authors) return false;
+
       if (
         foldersData[slugFolderName].authors &&
         Array.isArray(foldersData[slugFolderName].authors) &&
         foldersData[slugFolderName].authors.length > 0 &&
         foldersData[slugFolderName].authors.some((a) => !!a.slugFolderName)
       ) {
+        // this means that only authors can edit the content
         // if folder has authors, then we need to check whether this socket has author as well
-
         // legacy: in the past authors were tagged with their name (and not their slugs… stupid decision…)
         // so we need to only get authors that have their slugs
         const allowed_authors_slugs = foldersData[
@@ -175,16 +205,16 @@ module.exports = (function () {
           return acc;
         }, []);
 
-        const socket_has_author_that_is_allowed = allowed_authors_slugs.some(
-          (allowed_author_slug) => {
-            return socket._is_authorized_for_folders.some(
-              (f) =>
-                f.type === "authors" &&
-                f.allowed_slugFolderNames &&
-                f.allowed_slugFolderNames.includes(allowed_author_slug)
-            );
-          }
+        dev.logverbose(
+          `AUTH — canAdminFolder: folder has authors: allowed_authors_slugs = ${allowed_authors_slugs.join(
+            " - "
+          )}`
         );
+        const socket_has_author_that_is_allowed = allowed_authors_slugs.some(
+          (allowed_author_slug) =>
+            sockets_authors_slugs.includes(allowed_author_slug)
+        );
+
         dev.logverbose(
           `AUTH — canAdminFolder: has author, is socket author --> ${socket_has_author_that_is_allowed}`
         );
@@ -325,20 +355,8 @@ module.exports = (function () {
     });
   }
 
-  async function isSocketLoggedInAsAdmin(socket) {
+  async function isSocketLoggedInAsAdmin(sockets_authors_slugs) {
     dev.logfunction(`AUTH — isSocketLoggedInAsAdmin`);
-
-    if (!socket || !socket.hasOwnProperty("_is_authorized_for_folders"))
-      return false;
-
-    // get sockets authors
-    const sockets_authors = socket._is_authorized_for_folders.find(
-      (f) =>
-        f.type === "authors" &&
-        f.allowed_slugFolderNames &&
-        f.allowed_slugFolderNames.length > 0
-    );
-    if (!sockets_authors) return false;
 
     // get all session authors
     const all_authors_informations = await file.getFolder({ type: "authors" });
@@ -352,9 +370,7 @@ module.exports = (function () {
 
     if (
       admins_slugs.length > 0 &&
-      admins_slugs.some((a) =>
-        sockets_authors.allowed_slugFolderNames.includes(a)
-      )
+      admins_slugs.some((a) => sockets_authors_slugs.includes(a))
     )
       return true;
     return false;
