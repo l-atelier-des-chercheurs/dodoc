@@ -1168,13 +1168,13 @@ module.exports = (function () {
       fr: "Qui peut contribuer",
       en: "Who can contribute",
     },
-    read_only: {
-      fr: "Consultation seule",
-      en: "Show content",
+    consultation: {
+      fr: "Consultation",
+      en: "Consultation",
     },
     visible_to_all: {
-      fr: "Visible pour tout le monde",
-      en: "Visible to everyone",
+      fr: "Visible par tout le monde",
+      en: "Visible for everyone",
     },
     only_authors: {
       fr: "Seulement les auteurs",

@@ -495,6 +495,13 @@ let vm = new Vue({
       this.$eventHub.$once("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "projects" });
+
+        if (this.current_project) {
+          this.$socketio.listMedias({
+            type: "projects",
+            slugFolderName: this.current_project.slugFolderName,
+          });
+        }
       });
     }
   },
@@ -529,7 +536,7 @@ let vm = new Vue({
     },
   },
   computed: {
-    currentProject: function () {
+    current_project() {
       if (
         !this.store.hasOwnProperty("projects") ||
         Object.keys(this.store.projects).length === 0
@@ -578,7 +585,7 @@ let vm = new Vue({
     projects_that_are_accessible() {
       const type = "projects";
       return Object.values(this.store[type]).filter((p) =>
-        this.canAccessFolder({ type, slugFolderName: p.slugFolderName })
+        this.canSeeFolder({ type, slugFolderName: p.slugFolderName })
       );
     },
     current_publication_medias() {
@@ -789,10 +796,20 @@ let vm = new Vue({
       }
       this.$socketio.editMedia(mdata);
     },
-    canAccessFolder: function ({ type, slugFolderName }) {
+    canSeeFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
       // if folder has pass, and user doesn’t have it
+      const folder = this.store[type][slugFolderName];
+
+      if (
+        !folder.hasOwnProperty("viewing_limited_to") ||
+        folder.viewing_limited_to === "everybody"
+      )
+        return true;
+
+      if (this.current_author.role === "admin") return true;
+
       if (
         this.store[type][slugFolderName].password === "has_pass" &&
         !this.userHasPasswordSaved({ type, slugFolderName })
@@ -819,29 +836,55 @@ let vm = new Vue({
 
       const folder = this.store[type][slugFolderName];
 
-      // if folder has editing_limited_to set to only_authors, we’ll check if
+      // if no password && no editing limits
+      if (
+        folder.password !== "has_pass" &&
+        (!folder.hasOwnProperty("editing_limited_to") ||
+          folder.editing_limited_to === "with_password")
+      )
+        return true;
 
-      // check if folder has authors
+      // if explicit edit authorized
+      if (
+        folder.hasOwnProperty("editing_limited_to") &&
+        folder.editing_limited_to === "everybody"
+      )
+        return true;
+
+      // if admin
+      if (this.current_author && this.current_author.role === "admin")
+        return true;
+
+      // if password is set
+      if (
+        folder.password === "has_pass" &&
+        (!folder.hasOwnProperty("editing_limited_to") ||
+          folder.editing_limited_to === "with_password")
+      ) {
+        return this.state.list_authorized_folders.some((i) => {
+          return (
+            !!i &&
+            i.hasOwnProperty("type") &&
+            i.type === type &&
+            i.hasOwnProperty("allowed_slugFolderNames") &&
+            i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
+          );
+        });
+      }
+
+      // if editing_limited_to === 'only_authors'
       if (
         folder.hasOwnProperty("editing_limited_to") &&
         folder.editing_limited_to === "only_authors"
       ) {
+        if (!folder.authors || folder.authors.length === 0) return true;
+
+        return folder.authors.some(
+          (a) => a.slugFolderName === this.current_author.slugFolderName
+        );
       }
 
-      return this.canAccessFolder({ type, slugFolderName });
-
-      const folder_authors = folder.authors;
-      if (!folder_authors || folder_authors.length === 0) return true;
-
-      if (!this.current_author) return false;
-
-      debugger;
-
-      if (this.current_author.role === "admin") return true;
-
-      return folder_authors.some(
-        (a) => a.slugFolderName === this.current_author.slugFolderName
-      );
+      return false;
     },
     openProject: function (slugProjectName) {
       if (window.state.dev_mode === "debug") {
@@ -849,7 +892,7 @@ let vm = new Vue({
       }
       if (
         !this.store.projects.hasOwnProperty(slugProjectName) ||
-        !this.canAccessFolder({
+        !this.canSeeFolder({
           type: "projects",
           slugFolderName: slugProjectName,
         })
@@ -1006,6 +1049,11 @@ let vm = new Vue({
       this.$socketio.socket.emit("updateClientInfo", { author });
     },
     unsetAuthor: function () {
+      this.$auth.removeAllFoldersPassword({
+        type: "authors",
+      });
+      this.$socketio.sendAuth();
+
       this.settings.current_author_slug = false;
       this.$socketio.socket.emit("updateClientInfo", {});
     },

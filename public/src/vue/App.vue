@@ -32,7 +32,7 @@
       <TopBar
         :has_back_button="$root.do_navigation.view !== 'ListView'"
         :slugProjectName="$root.do_navigation.current_slugProjectName"
-        :project="$root.currentProject"
+        :project="$root.current_project"
       />
 
       <div class="m_activitiesPanel">
@@ -79,7 +79,7 @@
                     :slugProjectName="
                       $root.do_navigation.current_slugProjectName
                     "
-                    :project="$root.currentProject"
+                    :project="$root.current_project"
                     :read_only="!$root.state.connected"
                   />
                 </transition>
@@ -90,7 +90,7 @@
                     :slugProjectName="
                       $root.do_navigation.current_slugProjectName
                     "
-                    :project="$root.currentProject"
+                    :project="$root.current_project"
                     :read_only="!$root.state.connected"
                   />
                 </transition>

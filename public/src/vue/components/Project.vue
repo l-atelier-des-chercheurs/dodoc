@@ -102,11 +102,11 @@
 
           <div
             class="m_metaField"
-            v-if="!!project.editing_limited_to && context === 'full'"
+            v-if="!!_editing_limited_to && context === 'full'"
           >
             <div>{{ $t("who_can_edit") }}</div>
             <div class="">
-              <span>{{ $t(project.editing_limited_to) }}</span>
+              <span>{{ $t(_editing_limited_to) }}</span>
             </div>
           </div>
 
@@ -114,10 +114,8 @@
             class="m_metaField"
             v-if="!!project.viewing_limited_to && context === 'full'"
           >
-            <div>{{ $t("who_can_view") }}</div>
-            <div class="">
-              <span>{{ $t(project.viewing_limited_to) }}</span>
-            </div>
+            <div>{{ $t("consultation") }}</div>
+            <div>{{ $t("visible_to_all") }}</div>
           </div>
 
           <button
@@ -503,10 +501,21 @@ export default {
     is_selected: function () {
       this.local_is_selected = this.is_selected;
     },
+    "project.viewing_limited_to": function () {
+      this.$socketio.listMedias({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
+    },
   },
   mounted() {},
   beforeDestroy() {},
   computed: {
+    _editing_limited_to() {
+      if (!!this.project.editing_limited_to)
+        return this.project.editing_limited_to;
+      else return false;
+    },
     previewURL() {
       if (
         !this.project.hasOwnProperty("preview") ||
@@ -521,7 +530,7 @@ export default {
       return false;
     },
     can_access_project() {
-      return this.$root.canAccessFolder({
+      return this.$root.canSeeFolder({
         type: "projects",
         slugFolderName: this.slugProjectName,
       });

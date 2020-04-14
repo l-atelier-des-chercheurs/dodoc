@@ -49,48 +49,82 @@
       <!-- Access control -->
       <div class="margin-bottom-small">
         <label>
-          {{ $t("who_can_edit") }}
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_access_control }"
+            @click="show_access_control = !show_access_control"
+          >
+            {{ $t("manage_access") }}
+          </button>
         </label>
 
-        <div class="flex-nowrap">
-          <div v-for="mode in ['only_authors', 'everybody']" :key="mode">
-            <input
-              class="custom_radio"
-              type="radio"
-              :id="`editing_limited_to-${mode}`"
-              :name="`editing_limited_to-${mode}`"
-              :value="mode"
-              v-model="projectdata.editing_limited_to"
-            />
-            <label :for="`editing_limited_to-${mode}`">
-              <span>{{ $t(mode) }}</span>
+        <div v-if="show_access_control">
+          <div class="">
+            <label>
+              {{ $t("who_can_edit") }}
             </label>
+
+            <div class="">
+              <div
+                v-for="mode in ['only_authors', 'with_password', 'everybody']"
+                v-if="mode !== 'only_authors' || projectdata.authors.length > 0"
+                :key="mode"
+              >
+                <input
+                  class="custom_radio"
+                  type="radio"
+                  :id="`editing_limited_to-${mode}`"
+                  :name="`editing_limited_to-${mode}`"
+                  :value="mode"
+                  v-model="projectdata.editing_limited_to"
+                />
+                <label class="text-lc" :for="`editing_limited_to-${mode}`">
+                  <span>{{ $t(mode) }}</span>
+                </label>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div class="margin-bottom-small">
-        <label>
-          {{ $t("who_can_view") }}
-        </label>
-
-        <div class="flex-nowrap">
-          <div v-for="mode in ['only_authors', 'everybody']" :key="mode">
-            <input
-              class="custom_radio"
-              type="radio"
-              :id="`viewing_limited_to-${mode}`"
-              :name="`viewing_limited_to-${mode}`"
-              :value="mode"
-              :disabled="
-                projectdata.editing_limited_to === 'everybody' &&
-                mode === 'only_authors'
-              "
-              v-model="projectdata.viewing_limited_to"
-            />
-            <label :for="`viewing_limited_to-${mode}`">
-              <span>{{ $t(mode) }}</span>
+          <!-- Password -->
+          <div
+            class="margin-top-small"
+            v-if="projectdata.editing_limited_to === 'with_password'"
+          >
+            <label>
+              {{ $t("password") }}
             </label>
+            <div>
+              <input
+                type="password"
+                v-model="projectdata.password"
+                autocomplete="new-password"
+                required
+                :readonly="read_only"
+              />
+            </div>
+          </div>
+
+          <div
+            class="margin-top-small"
+            v-if="projectdata.editing_limited_to !== 'everybody'"
+          >
+            <div class="">
+              <input
+                class=""
+                type="checkbox"
+                id="visible_to_all"
+                name="visible_to_all"
+                v-model="projectdata.viewing_limited_to"
+                true-value="everybody"
+                false-value=""
+              />
+              <label for="visible_to_all">
+                <span>
+                  {{ $t("visible_to_all") }}
+                </span>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -164,34 +198,6 @@
         </div>
       </div>
 
-      <!-- Password -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_password }"
-            @click="show_password = !show_password"
-          >
-            {{ $t("password") }}
-          </button>
-        </label>
-        <template v-if="show_password">
-          <input
-            type="password"
-            v-model="projectdata.password"
-            :readonly="read_only"
-          />
-          <small>
-            <template
-              v-if="!!project_password && projectdata.password === ''"
-              >{{ $t("removing_password_warning") }}</template
-            >
-            <template v-else>{{ $t("adding_password_warning") }}</template>
-          </small>
-        </template>
-      </div>
-
       <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>
@@ -243,6 +249,7 @@ export default {
       show_password: !!this.project_password,
       show_keywords: !!this.project.keywords,
       show_authors: !!this.project.authors,
+      show_access_control: !!this.project.editing_limited_to,
 
       is_sending_content_to_server: false,
 
@@ -278,7 +285,11 @@ export default {
         this.projectdata.viewing_limited_to = "everybody";
     },
   },
-  mounted() {},
+  mounted() {
+    this.projectdata.editing_limited_to = !!this.project.editing_limited_to
+      ? this.project.editing_limited_to
+      : "everybody";
+  },
   computed: {
     previewURL() {
       if (

@@ -174,7 +174,9 @@ module.exports = (function () {
 
     const foldersData = await file.getFolder({ type, slugFolderName });
 
-    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
       notify({
         socket,
         socketid: socket.id,
@@ -233,7 +235,9 @@ module.exports = (function () {
 
     const foldersData = await file.getFolder({ type, slugFolderName });
 
-    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
       notify({
         socket,
         socketid: socket.id,
@@ -280,6 +284,20 @@ module.exports = (function () {
     dev.logfunction(
       `EVENT - onCreateMedia : slugFolderName = ${slugFolderName} and type = ${type} and rawData.length = ${rawData.length}`
     );
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: media can’t be created for protected folder ${slugFolderName}`,
+        type: "error",
+      });
+      return;
+    }
 
     const _additionalMeta = await file.createMedia({
       type,
@@ -339,7 +357,9 @@ module.exports = (function () {
     );
 
     const foldersData = await file.getFolder({ type, slugFolderName });
-    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
       notify({
         socket,
         socketid: socket.id,
@@ -392,7 +412,13 @@ module.exports = (function () {
       slugFolderName: from_slugFolderName,
     });
 
-    if (!(await auth.canAdminFolder(socket, from_foldersData, type))) {
+    if (
+      !(await auth.canEditFolder(
+        socket,
+        from_foldersData[from_slugFolderName],
+        type
+      ))
+    ) {
       notify({
         socket,
         socketid: socket.id,
@@ -408,7 +434,13 @@ module.exports = (function () {
       slugFolderName: to_slugFolderName,
     });
 
-    if (!(await auth.canAdminFolder(socket, to_foldersData, type))) {
+    if (
+      !(await auth.canEditFolder(
+        socket,
+        to_foldersData[to_slugFolderName],
+        type
+      ))
+    ) {
       notify({
         socket,
         socketid: socket.id,
@@ -462,7 +494,9 @@ module.exports = (function () {
     );
 
     const foldersData = await file.getFolder({ type, slugFolderName });
-    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
       notify({
         socket,
         socketid: socket.id,
@@ -603,7 +637,9 @@ module.exports = (function () {
     );
 
     const foldersData = await file.getFolder({ type, slugFolderName });
-    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
       notify({
         socket,
         socketid: socket.id,
@@ -642,7 +678,9 @@ module.exports = (function () {
 
     const foldersData = await file.getFolder({ type, slugFolderName });
 
-    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
       notify({
         socket,
         socketid: socket.id,
@@ -783,7 +821,6 @@ module.exports = (function () {
       };
     });
     let folders_and_medias = await file.readMediaList({ type, medias_list });
-
     dev.logverbose(`Got medias, now sending to the right clients`);
 
     if (

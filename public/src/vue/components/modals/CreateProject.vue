@@ -91,6 +91,7 @@
             <div>
               <input
                 type="password"
+                required
                 v-model="projectdata.password"
                 autocomplete="new-password"
               />
@@ -102,40 +103,22 @@
             v-if="projectdata.editing_limited_to !== 'everybody'"
           >
             <div class="">
-              <input class="" type="checkbox" id="public" name="public" />
-              <label for="public">
+              <input
+                class=""
+                type="checkbox"
+                id="visible_to_all"
+                name="visible_to_all"
+                v-model="projectdata.viewing_limited_to"
+                true-value="everybody"
+                false-value=""
+              />
+              <label for="visible_to_all">
                 <span>
                   {{ $t("visible_to_all") }}
                 </span>
               </label>
             </div>
           </div>
-
-          <!-- <div class="margin-bottom-small">
-            <label>
-              {{ $t("who_can_view") }}
-            </label>
-
-            <div class="">
-              <div v-for="mode in ['only_authors', 'everybody']" :key="mode">
-                <input
-                  class="custom_radio"
-                  type="radio"
-                  :id="`viewing_limited_to-${mode}`"
-                  :name="`viewing_limited_to-${mode}`"
-                  :value="mode"
-                  :disabled="
-                    projectdata.editing_limited_to === 'everybody' &&
-                    mode === 'only_authors'
-                  "
-                  v-model="projectdata.viewing_limited_to"
-                />
-                <label :for="`viewing_limited_to-${mode}`">
-                  <span>{{ $t(mode) }}</span>
-                </label>
-              </div>
-            </div> 
-          </div>-->
         </div>
       </div>
 
@@ -253,6 +236,7 @@ export default {
         ? this.$root.settings.opened_folder
         : "_none",
       new_group_name: "",
+      enable_visible_to_all: false,
 
       projectdata: {
         name: "",

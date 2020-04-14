@@ -260,7 +260,9 @@ module.exports = function (app) {
     }
 
     const foldersData = await file.getFolder({ type, slugFolderName });
-    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
       sockets.notify({
         socket,
         socketid: socket.id,
@@ -319,7 +321,9 @@ module.exports = function (app) {
     }
 
     const foldersData = await file.getFolder({ type, slugFolderName });
-    if (!(await auth.canAdminFolder(socket, foldersData, type))) {
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
       sockets.notify({
         socket,
         socketid: socket.id,

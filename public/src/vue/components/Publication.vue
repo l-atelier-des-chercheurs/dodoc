@@ -71,12 +71,12 @@
 <script>
 export default {
   props: {
-    publication: Object
+    publication: Object,
   },
   components: {},
   data() {
     return {
-      show_input_pwd: false
+      show_input_pwd: false,
     };
   },
   created() {},
@@ -89,21 +89,21 @@ export default {
           if (!!this.$refs.passwordField) this.$refs.passwordField.focus();
         });
       }
-    }
+    },
   },
   computed: {
     attached_project() {
       return Object.values(this.$root.store.projects).find(
-        _p => _p.slugFolderName === this.publication.attached_to_project
+        (_p) => _p.slugFolderName === this.publication.attached_to_project
       );
     },
     slugPubliName() {
       return this.publication.slugFolderName;
     },
     can_access_publi() {
-      return this.$root.canAccessFolder({
+      return this.$root.canSeeFolder({
         type: "publications",
-        slugFolderName: this.slugPubliName
+        slugFolderName: this.slugPubliName,
       });
     },
     publi_password() {
@@ -116,7 +116,7 @@ export default {
         return pwds["publications"][this.slugPubliName];
       }
       return "";
-    }
+    },
   },
   methods: {
     openPublication(slugPubliName) {
@@ -132,8 +132,8 @@ export default {
 
       this.$auth.updateFoldersPasswords({
         publications: {
-          [this.slugPubliName]: this.$refs.passwordField.value
-        }
+          [this.slugPubliName]: this.$refs.passwordField.value,
+        },
       });
 
       this.$socketio.sendAuth();
@@ -141,7 +141,7 @@ export default {
       // check if password matches or not
       this.$eventHub.$once("socketio.authentificated", () => {
         const has_passworded_folder = window.state.list_authorized_folders.filter(
-          f =>
+          (f) =>
             f.type === "publications" &&
             f.allowed_slugFolderNames.includes(this.slugPubliName)
         );
@@ -163,13 +163,13 @@ export default {
     forgetPassword() {
       this.$auth.removeFolderPassword({
         type: "publications",
-        slugFolderName: this.slugPubliName
+        slugFolderName: this.slugPubliName,
       });
       this.$socketio.sendAuth();
 
       this.closeProject();
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
