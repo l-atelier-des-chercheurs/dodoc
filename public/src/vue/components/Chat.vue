@@ -31,8 +31,11 @@
               }"
             >
               <div class="m_message--meta" v-if="message.authors">
-                <div class="m_message--meta--author">
-                  <span>{{ message.authors[0].name }}</span>
+                <div
+                  class="m_message--meta--author"
+                  v-if="getMessageAuthor(message)"
+                >
+                  <span>{{ getMessageAuthor(message) }}</span>
                 </div>
                 <div class="m_message--meta--date">
                   <span>{{
@@ -315,6 +318,15 @@ export default {
           message.authors[0].slugFolderName ===
             this.$root.current_author.slugFolderName)
       );
+    },
+    getMessageAuthor(message) {
+      if (message.authors && message.authors.length > 0) {
+        const first_author = message.authors[0];
+        if (first_author.hasOwnProperty("slugFolderName"))
+          return this.$root.getAuthor(first_author.slugFolderName).name;
+        else return first_author.name;
+      }
+      return false;
     },
     removeMessage(message) {
       if (this.$root.state.dev_mode === "debug") {
