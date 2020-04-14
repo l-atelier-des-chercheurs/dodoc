@@ -107,17 +107,6 @@ module.exports = function ({ router }) {
                     global.force_author_password
                 );
 
-                global.only_authors_can_edit_own_content =
-                  !!sessionMeta &&
-                  sessionMeta.hasOwnProperty(
-                    "only_authors_can_edit_own_content"
-                  ) &&
-                  sessionMeta.only_authors_can_edit_own_content === "true";
-                dev.log(
-                  "LOCAL OPTIONS: Only authors can edit own content is set to " +
-                    global.only_authors_can_edit_own_content
-                );
-
                 portscanner
                   .findAPortNotInUse(
                     global.settings.desired_port,

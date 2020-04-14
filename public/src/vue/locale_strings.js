@@ -41,6 +41,10 @@ module.exports = (function () {
       fr: "créer un nouveau dossier",
       en: "create new folder",
     },
+    manage_access: {
+      fr: "Gérer l’accès au contenu",
+      en: "Manage access",
+    },
     publication: {
       fr: "Recette",
       en: "Recipe",
@@ -1164,13 +1168,21 @@ module.exports = (function () {
       fr: "Qui peut contribuer",
       en: "Who can contribute",
     },
-    who_can_view: {
-      fr: "Qui peut consulter",
-      en: "Who can view",
+    read_only: {
+      fr: "Consultation seule",
+      en: "Show content",
+    },
+    visible_to_all: {
+      fr: "Visible pour tout le monde",
+      en: "Visible to everyone",
     },
     only_authors: {
       fr: "Seulement les auteurs",
       en: "Only authors",
+    },
+    with_password: {
+      fr: "Avec un mot de passe",
+      en: "With a password",
     },
     everybody: {
       fr: "Tout le monde",

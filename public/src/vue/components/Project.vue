@@ -95,6 +95,13 @@
 
           <div
             class="m_metaField"
+            v-if="can_access_project && project.password === 'has_pass'"
+          >
+            <label>{{ $t("protected_by_pass") }}</label>
+          </div>
+
+          <div
+            class="m_metaField"
             v-if="!!project.editing_limited_to && context === 'full'"
           >
             <div>{{ $t("who_can_edit") }}</div>

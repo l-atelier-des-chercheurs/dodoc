@@ -792,38 +792,43 @@ let vm = new Vue({
     canAccessFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
+      // if folder has pass, and user doesn’t have it
+      if (
+        this.store[type][slugFolderName].password === "has_pass" &&
+        !this.userHasPasswordSaved({ type, slugFolderName })
+      ) {
+        return false;
+      }
+
+      return true;
+    },
+    userHasPasswordSaved: function ({ type, slugFolderName }) {
       // if folder doesn’t have a password set
-      if (this.store[type][slugFolderName].password !== "has_pass") {
-        return true;
-      }
-
-      const has_reference_to_folder = this.state.list_authorized_folders.filter(
-        (i) => {
-          if (
-            !!i &&
-            i.hasOwnProperty("type") &&
-            i.type === type &&
-            i.hasOwnProperty("allowed_slugFolderNames") &&
-            i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
-          )
-            return true;
-          return false;
-        }
-      );
-
-      if (has_reference_to_folder.length > 0) {
-        return true;
-      }
-      return false;
+      return this.state.list_authorized_folders.some((i) => {
+        return (
+          !!i &&
+          i.hasOwnProperty("type") &&
+          i.type === type &&
+          i.hasOwnProperty("allowed_slugFolderNames") &&
+          i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
+        );
+      });
     },
     canEditFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
       const folder = this.store[type][slugFolderName];
 
+      // if folder has editing_limited_to set to only_authors, we’ll check if
+
       // check if folder has authors
-      if (!this.state.local_options.only_authors_can_edit_own_content)
-        return this.canAccessFolder({ type, slugFolderName });
+      if (
+        folder.hasOwnProperty("editing_limited_to") &&
+        folder.editing_limited_to === "only_authors"
+      ) {
+      }
+
+      return this.canAccessFolder({ type, slugFolderName });
 
       const folder_authors = folder.authors;
       if (!folder_authors || folder_authors.length === 0) return true;
