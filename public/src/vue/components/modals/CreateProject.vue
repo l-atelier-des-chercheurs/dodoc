@@ -240,7 +240,7 @@ export default {
 
       projectdata: {
         name: "",
-        editing_limited_to: "only_authors",
+        editing_limited_to: "everybody",
         viewing_limited_to: "everybody",
         password: "",
         authors: this.$root.current_author
