@@ -93,12 +93,26 @@
 
           <DateField :title="'edited'" :date="project.date_modified" />
 
-          <!-- <div
+          <div
             class="m_metaField"
-            v-if="can_access_project && project.password === 'has_pass'"
+            v-if="!!project.editing_limited_to && context === 'full'"
           >
-            <label>{{ $t("protected_by_pass") }}</label>
-          </div> -->
+            <div>{{ $t("who_can_edit") }}</div>
+            <div class="">
+              <span>{{ $t(project.editing_limited_to) }}</span>
+            </div>
+          </div>
+
+          <div
+            class="m_metaField"
+            v-if="!!project.viewing_limited_to && context === 'full'"
+          >
+            <div>{{ $t("who_can_view") }}</div>
+            <div class="">
+              <span>{{ $t(project.viewing_limited_to) }}</span>
+            </div>
+          </div>
+
           <button
             v-if="!can_access_project"
             type="button"
@@ -567,7 +581,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.project_name_exists"));
+          .error(this.$t("notifications.name_already_exists"));
 
         return false;
       }

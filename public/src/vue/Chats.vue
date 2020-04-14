@@ -18,26 +18,7 @@
               <span>{{ $t("create") }}</span>
             </button>
 
-            <div>
-              <form
-                v-if="show_create_channel_modal"
-                @submit.prevent="createChannel()"
-                class="input-group"
-              >
-                <input
-                  type="text"
-                  v-model.trim="new_channel_name"
-                  required
-                  autofocus
-                />
-                <button
-                  type="submit"
-                  :disabled="new_channel_name === ''"
-                  v-html="$t('create')"
-                  class="bg-bleuvert"
-                />
-              </form>
-            </div>
+            <CreateChat v-if="show_create_channel_modal" />
           </template>
           <template v-else>
             <div>
@@ -99,6 +80,7 @@
   </div>
 </template>
 <script>
+import CreateChat from "./components/modals/CreateChat.vue";
 import Chat from "./components/Chat.vue";
 
 export default {
@@ -107,6 +89,7 @@ export default {
     chats: Object,
   },
   components: {
+    CreateChat,
     Chat,
   },
   data() {
@@ -178,31 +161,6 @@ export default {
       }
 
       return total_number_of_messages_in_chat;
-    },
-    createChannel() {
-      if (
-        Object.values(this.$root.store.chats).find(
-          ({ name }) => name === this.new_channel_name
-        )
-      ) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("notifications.channel_name_exists"));
-
-        return false;
-      }
-      const data = {
-        name: this.new_channel_name,
-        authors: this.$root.current_author
-          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
-          : "",
-      };
-
-      this.show_create_channel_modal = false;
-      this.new_channel_name = "";
-
-      this.$root.createFolder({ type: "chats", data });
     },
     openChat(slug) {
       this.$root.settings.current_chat.slug = slug;

@@ -29,7 +29,15 @@ module.exports = (function () {
       oc: "Crear una recepta",
       de: "Eine Publikation erstellen",
     },
-    create_new: {
+    create_a_chat: {
+      fr: "Créer une discussion",
+      en: "Create a room",
+    },
+    chat_name: {
+      fr: "Nom du sujet",
+      en: "Topic",
+    },
+    create_new_folder: {
       fr: "créer un nouveau dossier",
       en: "create new folder",
     },
@@ -1152,6 +1160,22 @@ module.exports = (function () {
       oc: "Crear un autor",
       de: "einen Autor erstellen",
     },
+    who_can_edit: {
+      fr: "Qui peut contribuer",
+      en: "Who can contribute",
+    },
+    who_can_view: {
+      fr: "Qui peut consulter",
+      en: "Who can view",
+    },
+    only_authors: {
+      fr: "Seulement les auteurs",
+      en: "Only authors",
+    },
+    everybody: {
+      fr: "Tout le monde",
+      en: "Everybody",
+    },
     favorite_medias: {
       fr: "Média favoris",
       en: "Favorite medias",
@@ -1470,9 +1494,16 @@ module.exports = (function () {
     },
     author_instructions: {
       fr:
-        "Si un ou plusieurs auteurs sont indiqués, alors ils seront les seuls à pouvoir modifier ou supprimer ce contenu. Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
-      en:
-        "If one or more authors are tagged, they will be the only ones that will be able to edit this content. To create authors, close this window and click on (AUTHORS).",
+        "Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
+      en: "To create authors, close this window and click on (AUTHORS).",
+      nl:
+        "Om auteurs aan te maken, sluit dit venster en klik op de knop (AUTEURS).",
+      oc:
+        "Per crear d'autors, clavatz aquesta fenèstra e clicatz sul boton (AUTORS).",
+    },
+    access_control: {
+      fr: "Collaboration",
+      en: "Collaboration",
     },
     attached_to_project_instructions: {
       fr:
@@ -2602,29 +2633,12 @@ module.exports = (function () {
         oc: "Creacion o edicion d'un mèdia pel dorsièr:",
         de: "Erstellen oder Bearbeiten von Medien für die Datei.",
       },
-      project_name_exists: {
-        fr: "Ce nom de projet existe déjà, utilisez-en un autre.",
-        en: "This project name already exists. Please use another.",
-        nl: "Deze projectnaam bestaat al, gebruik een andere.",
-        oc: "Aqueste nom de projècte existís ja, utilisatz ne un autre.",
-        de:
-          "Dieser Projektname existiert bereits, verwenden Sie einen anderen.",
-      },
-      publi_name_exists: {
-        fr: "Ce nom de recette existe déjà, utilisez-en un autre.",
-        en: "This recipe name already exists. Please use another.",
-        nl: "Deze publicatienaam bestaat al, gebruik een andere.",
-        oc: "Aqueste nom de recèptas existís ja, utilisatz ne un autre.",
-        de:
-          "Dieser Publikationsname existiert bereits, verwenden Sie einen anderen.",
-      },
-      author_name_exists: {
-        fr: "Ce nom d’auteur existe déjà, utilisez-en un autre.",
-        en: "This author name already exists. Please use another.",
-        nl: "Deze auteursnaam bestaat al, gebruik een andere.",
-        oc: "Aqueste nom d'autor existís ja, utilisatz ne un autre.",
-        de:
-          "Dieser Autorenname existiert bereits, verwenden Sie einen anderen.",
+      name_already_exists: {
+        fr: "Ce nom existe déjà, utilisez-en un autre.",
+        en: "This name already exists. Please use another.",
+        nl: "Deze naam bestaat al, gebruik een andere.",
+        oc: "Aqueste nom existís ja, utilisatz ne un autre.",
+        de: "Dieser Name existiert bereits, verwenden Sie einen anderen.",
       },
       folder_name_needs_alphanumeric_characters: {
         fr:

@@ -144,7 +144,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.author_name_exists"));
+          .error(this.$t("notifications.name_already_exists"));
 
         return false;
       }

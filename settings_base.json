@@ -74,6 +74,12 @@
         },
         "folder": {
           "type": "string"
+        },
+        "editing_limited_to": {
+          "type": "string"
+        },
+        "viewing_limited_to": {
+          "type": "string"
         }
       },
       "medias": {

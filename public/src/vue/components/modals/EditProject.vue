@@ -24,45 +24,73 @@
         />
       </div>
 
-      <!-- Folder -->
+      <!-- Author(s) -->
       <div class="margin-bottom-small">
         <label>
           <button
             type="button"
             class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_folder }"
-            @click="show_folder = !show_folder"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
           >
-            {{ $t("folder") }}
+            {{ $t("author") }}
           </button>
         </label>
-        <div v-if="show_folder">
-          <template v-if="$root.all_folders.length">
-            <!-- <label v-html="$t('add_to_existing_folder')" /> -->
-            <div class="input-group margin-bottom-none">
-              <select v-model="existing_group_name">
-                <option
-                  v-if="!!project.folder"
-                  :key="'none'"
-                  :value="'_none'"
-                  >{{ $t("none") }}</option
-                >
-                <option :key="'create'" :value="''"
-                  >** {{ $t("create_new") }} **</option
-                >
-                <option
-                  v-for="folder in $root.all_folders"
-                  :key="folder"
-                  :value="folder"
-                  >{{ folder }}</option
-                >
-              </select>
-            </div>
-          </template>
 
-          <div v-if="existing_group_name === ''">
-            <label v-html="$t('new_folder_name')" />
-            <input type="text" class="text-uc" v-model.trim="new_group_name" />
+        <template v-if="show_authors">
+          <AuthorsInput
+            :currentAuthors="projectdata.authors"
+            @authorsChanged="(newAuthors) => (projectdata.authors = newAuthors)"
+          />
+          <small>{{ $t("author_instructions") }}</small>
+        </template>
+      </div>
+
+      <!-- Access control -->
+      <div class="margin-bottom-small">
+        <label>
+          {{ $t("who_can_edit") }}
+        </label>
+
+        <div class="flex-nowrap">
+          <div v-for="mode in ['only_authors', 'everybody']" :key="mode">
+            <input
+              class="custom_radio"
+              type="radio"
+              :id="`editing_limited_to-${mode}`"
+              :name="`editing_limited_to-${mode}`"
+              :value="mode"
+              v-model="projectdata.editing_limited_to"
+            />
+            <label :for="`editing_limited_to-${mode}`">
+              <span>{{ $t(mode) }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="margin-bottom-small">
+        <label>
+          {{ $t("who_can_view") }}
+        </label>
+
+        <div class="flex-nowrap">
+          <div v-for="mode in ['only_authors', 'everybody']" :key="mode">
+            <input
+              class="custom_radio"
+              type="radio"
+              :id="`viewing_limited_to-${mode}`"
+              :name="`viewing_limited_to-${mode}`"
+              :value="mode"
+              :disabled="
+                projectdata.editing_limited_to === 'everybody' &&
+                mode === 'only_authors'
+              "
+              v-model="projectdata.viewing_limited_to"
+            />
+            <label :for="`viewing_limited_to-${mode}`">
+              <span>{{ $t(mode) }}</span>
+            </label>
           </div>
         </div>
       </div>
@@ -91,6 +119,49 @@
             "
           />
         </template>
+      </div>
+
+      <!-- Folder -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_folder }"
+            @click="show_folder = !show_folder"
+          >
+            {{ $t("folder") }}
+          </button>
+        </label>
+        <div v-if="show_folder">
+          <template v-if="$root.all_folders.length">
+            <!-- <label v-html="$t('add_to_existing_folder')" /> -->
+            <div class="input-group margin-bottom-none">
+              <select v-model="existing_group_name">
+                <option
+                  v-if="!!project.folder"
+                  :key="'none'"
+                  :value="'_none'"
+                  >{{ $t("none") }}</option
+                >
+                <option :key="'create'" :value="''"
+                  >** {{ $t("create_new_folder") }} **</option
+                >
+                <option
+                  v-for="folder in $root.all_folders"
+                  :key="folder"
+                  :value="folder"
+                  >{{ folder }}</option
+                >
+              </select>
+            </div>
+          </template>
+
+          <div v-if="existing_group_name === ''">
+            <label v-html="$t('new_folder_name')" />
+            <input type="text" class="text-uc" v-model.trim="new_group_name" />
+          </div>
+        </div>
       </div>
 
       <!-- Password -->
@@ -140,28 +211,6 @@
           />
         </template>
       </div>
-
-      <!-- Author(s) -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_authors }"
-            @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
-        </label>
-
-        <template v-if="show_authors">
-          <AuthorsInput
-            :currentAuthors="projectdata.authors"
-            @authorsChanged="(newAuthors) => (projectdata.authors = newAuthors)"
-          />
-          <small>{{ $t("author_instructions") }}</small>
-        </template>
-      </div>
     </template>
 
     <template slot="submit_button">{{ $t("save") }}</template>
@@ -203,9 +252,12 @@ export default {
       projectdata: {
         name: this.project.name,
         authors: this.project.authors,
+        editing_limited_to: this.project.editing_limited_to,
+        viewing_limited_to: this.project.viewing_limited_to,
         keywords: this.project.keywords,
         password: this.project_password ? this.project_password : "",
       },
+
       tag: "",
       preview_rawdata: undefined,
       askBeforeClosingModal: false,
@@ -220,6 +272,10 @@ export default {
     },
     preview_rawdata: function () {
       this.askBeforeClosingModal = true;
+    },
+    "projectdata.editing_limited_to": function () {
+      if (this.projectdata.editing_limited_to === "everybody")
+        this.projectdata.viewing_limited_to = "everybody";
     },
   },
   mounted() {},
@@ -260,7 +316,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t("notifications.project_name_exists"));
+            .error(this.$t("notifications.name_already_exists"));
 
           return false;
         }

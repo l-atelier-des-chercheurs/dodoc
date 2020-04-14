@@ -82,7 +82,7 @@
         <template v-if="show_keywords">
           <TagsInput
             :keywords="publidata.keywords"
-            @tagsChanged="newTags => (publidata.keywords = newTags)"
+            @tagsChanged="(newTags) => (publidata.keywords = newTags)"
           />
         </template>
       </div>
@@ -103,7 +103,7 @@
         <template v-if="show_authors">
           <AuthorsInput
             :currentAuthors="publidata.authors"
-            @authorsChanged="newAuthors => (publidata.authors = newAuthors)"
+            @authorsChanged="(newAuthors) => (publidata.authors = newAuthors)"
           />
           <small>{{ $t("author_instructions") }}</small>
         </template>
@@ -124,13 +124,13 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     Modal,
     ImageSelect,
     TagsInput,
-    AuthorsInput
+    AuthorsInput,
   },
   data() {
     return {
@@ -142,11 +142,11 @@ export default {
         authors:
           typeof this.publication.authors === "string" &&
           this.publication.authors !== ""
-            ? this.publication.authors.split(",").map(a => {
+            ? this.publication.authors.split(",").map((a) => {
                 return { name: a };
               })
             : this.publication.authors,
-        keywords: this.publication.keywords
+        keywords: this.publication.keywords,
       },
       tag: "",
       preview: undefined,
@@ -154,7 +154,7 @@ export default {
 
       show_attached_project: !!this.publication.attached_to_project,
       show_keywords: !!this.publication.keywords,
-      show_authors: !!this.publication.authors
+      show_authors: !!this.publication.authors,
     };
   },
   watch: {
@@ -162,13 +162,13 @@ export default {
       handler() {
         this.askBeforeClosingModal = true;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {},
   computed: {},
   methods: {
-    editThisPublication: function(event) {
+    editThisPublication: function (event) {
       console.log("editThisPublication");
 
       // only if user changed the name of this folder
@@ -189,7 +189,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t("notifications.publi_name_exists"));
+            .error(this.$t("notifications.name_already_exists"));
 
           return false;
         }
@@ -202,12 +202,12 @@ export default {
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        data: this.publidata
+        data: this.publidata,
       });
 
       this.$emit("close", "");
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>
