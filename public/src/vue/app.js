@@ -803,7 +803,8 @@ let vm = new Vue({
       const folder = this.store[type][slugFolderName];
 
       if (
-        !folder.hasOwnProperty("viewing_limited_to") ||
+        (!folder.hasOwnProperty("viewing_limited_to") &&
+          folder.password !== "has_pass") ||
         folder.viewing_limited_to === "everybody"
       )
         return true;
@@ -811,7 +812,7 @@ let vm = new Vue({
       if (this.current_author.role === "admin") return true;
 
       if (
-        this.store[type][slugFolderName].password === "has_pass" &&
+        folder.password === "has_pass" &&
         !this.userHasPasswordSaved({ type, slugFolderName })
       ) {
         return false;
