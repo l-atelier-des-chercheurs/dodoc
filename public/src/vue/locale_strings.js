@@ -2881,6 +2881,11 @@ module.exports = (function () {
         fr: "Nouveau message publié dans le sujet ",
         en: "New message in chat ",
       },
+      if_only_authors_select_authors: {
+        fr: "Sélectionnez au moins un auteur qui pourra accéder à ce contenu",
+        en:
+          "Select at least one author that will be able to access that content",
+      },
     },
   };
 
