@@ -119,7 +119,7 @@
           </div>
 
           <button
-            v-if="!can_access_project"
+            v-if="!can_access_project && project.password === 'has_pass'"
             type="button"
             class="buttonLink _open_pwd_input"
             :class="{ 'is--active': showInputPasswordField }"
@@ -128,6 +128,15 @@
             @click="showInputPasswordField = !showInputPasswordField"
           >
             {{ $t("password_required_to_open") }}
+          </button>
+          <button
+            v-if="!can_access_project && project.password !== 'has_pass'"
+            type="button"
+            class="buttonLink"
+            style
+            :readonly="read_only"
+          >
+            {{ $t("only_authors_can_open") }}
           </button>
 
           <div
@@ -185,7 +194,7 @@
 
       <div class="m_project--presentation--buttons">
         <button
-          v-if="context !== 'full'"
+          v-if="context !== 'full' && can_access_project"
           type="button"
           class="m_project--presentation--buttons--openButton"
           @click.exact="openProject"

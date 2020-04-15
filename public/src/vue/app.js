@@ -803,22 +803,13 @@ let vm = new Vue({
       const folder = this.store[type][slugFolderName];
 
       if (
-        (!folder.hasOwnProperty("viewing_limited_to") &&
-          folder.password !== "has_pass") ||
+        folder.hasOwnProperty("viewing_limited_to") &&
         folder.viewing_limited_to === "everybody"
-      )
-        return true;
-
-      if (this.current_author.role === "admin") return true;
-
-      if (
-        folder.password === "has_pass" &&
-        !this.userHasPasswordSaved({ type, slugFolderName })
       ) {
-        return false;
+        return true;
       }
 
-      return true;
+      return this.canEditFolder({ type, slugFolderName });
     },
     userHasPasswordSaved: function ({ type, slugFolderName }) {
       // if folder doesn’t have a password set
