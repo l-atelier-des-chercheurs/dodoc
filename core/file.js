@@ -2012,10 +2012,15 @@ module.exports = (function () {
         ) {
           if (val.hasOwnProperty("transform") && val.transform === "crypt") {
             if (!!existing[key]) {
-              output_obj[key] = bcrypt.hashSync(
-                validator.escape(existing[key] + ""),
-                10
-              );
+              // do not re-hash if pass is already hashed
+              if (existing[key].startsWith("$")) {
+                output_obj[key] = validator.escape(existing[key] + "");
+              } else {
+                output_obj[key] = bcrypt.hashSync(
+                  validator.escape(existing[key] + ""),
+                  10
+                );
+              }
             } else {
               output_obj[key] = "";
             }
