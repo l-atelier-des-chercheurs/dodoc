@@ -68,7 +68,6 @@
             <div class="">
               <div
                 v-for="mode in ['only_authors', 'with_password', 'everybody']"
-                v-if="mode !== 'only_authors' || projectdata.authors.length > 0"
                 :key="mode"
               >
                 <input
@@ -97,10 +96,9 @@
             <div>
               <input
                 type="password"
+                required
                 v-model="projectdata.password"
                 autocomplete="new-password"
-                required
-                :readonly="read_only"
               />
             </div>
           </div>
@@ -283,6 +281,8 @@ export default {
     "projectdata.editing_limited_to": function () {
       if (this.projectdata.editing_limited_to === "everybody")
         this.projectdata.viewing_limited_to = "everybody";
+      else if (this.projectdata.editing_limited_to === "only_authors")
+        this.show_authors = true;
     },
   },
   mounted() {
@@ -351,6 +351,18 @@ export default {
         else this.projectdata.folder = this.existing_group_name;
       } else if (!!this.new_group_name) {
         this.projectdata.folder = this.new_group_name.toUpperCase();
+      }
+
+      if (
+        this.projectdata.editing_limited_to === "only_authors" &&
+        this.projectdata.authors.length === 0
+      ) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.if_only_authors_select_authors"));
+
+        return false;
       }
 
       this.is_sending_content_to_server = true;
