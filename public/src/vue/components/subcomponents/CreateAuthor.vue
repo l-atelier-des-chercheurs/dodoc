@@ -1,9 +1,5 @@
 <template>
-  <form
-    @close="$emit('close')"
-    v-on:submit.prevent="newAuthor"
-    :read_only="read_only"
-  >
+  <form @close="$emit('close')" v-on:submit.prevent="newAuthor" :read_only="read_only">
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
     <!-- Human name -->
@@ -36,9 +32,7 @@
           class="button-nostyle text-uc button-triangle"
           :class="{ 'is--active': show_image }"
           @click="show_image = !show_image"
-        >
-          {{ $t("portrait") }}
-        </button>
+        >{{ $t("portrait") }}</button>
       </label>
       <template v-if="show_image">
         <ImageSelect
@@ -61,15 +55,15 @@
           class="button-nostyle text-uc button-triangle"
           :class="{ 'is--active': show_role }"
           @click="show_role = !show_role"
-        >
-          {{ $t("role") }}
-        </button>
+        >{{ $t("role") }}</button>
       </label>
       <template v-if="show_role">
         <select v-model="authordata.role">
-          <option v-for="role in possible_roles" :value="role" :key="role">{{
+          <option v-for="role in possible_roles" :value="role" :key="role">
+            {{
             $t(role)
-          }}</option>
+            }}
+          </option>
         </select>
       </template>
     </div>
@@ -82,18 +76,14 @@
           class="button-nostyle text-uc button-triangle"
           :class="{ 'is--active': show_nfc }"
           @click="show_nfc = !show_nfc"
-        >
-          {{ $t("nfc_tag") }}
-        </button>
+        >{{ $t("nfc_tag") }}</button>
       </label>
       <template v-if="show_nfc">
         <input type="text" v-model="authordata.nfc_tag" />
       </template>
     </div>
 
-    <button type="button" class="button-small" @click="$emit('close')">
-      {{ $t("cancel") }}
-    </button>
+    <button type="button" class="button-small" @click="$emit('close')">{{ $t("cancel") }}</button>
     <button type="submit" class="button-greenthin">{{ $t("create") }}</button>
   </form>
 </template>
@@ -102,10 +92,10 @@ import ImageSelect from "../subcomponents/ImageSelect.vue";
 
 export default {
   props: {
-    read_only: Boolean,
+    read_only: Boolean
   },
   components: {
-    ImageSelect,
+    ImageSelect
   },
   data() {
     return {
@@ -119,9 +109,9 @@ export default {
         name: "",
         password: "",
         role: "contributor",
-        nfc_tag: "",
+        nfc_tag: ""
       },
-      preview: undefined,
+      preview: undefined
     };
   },
   computed: {},
@@ -132,14 +122,15 @@ export default {
     }
   },
   methods: {
-    newAuthor: function (event) {
+    newAuthor: function(event) {
       console.log("newAuthor");
-      let allAuthorsName = this.$root.allAuthors.map((a) =>
-        a.name.toLowerCase()
-      );
+
+      let data = JSON.parse(JSON.stringify(this.authordata));
+
+      let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
 
       // check if project name (not slug) already exists
-      if (allAuthorsName.includes(this.authordata.name.toLowerCase())) {
+      if (allAuthorsName.includes(data.name.toLowerCase())) {
         // invalidate if it does
         this.$alertify
           .closeLogOnClick(true)
@@ -150,19 +141,16 @@ export default {
       }
 
       if (!!this.preview) {
-        this.authordata.preview_rawdata = this.preview;
+        data.preview_rawdata = this.preview;
       }
 
-      if (!!this.authordata.password)
-        this.authordata.password = this.$auth.hashCode(
-          this.authordata.password
-        );
+      if (!!data.password) data.password = this.$auth.hashCode(data.password);
 
-      this.$root.createFolder({ type: "authors", data: this.authordata });
+      this.$root.createFolder({ type: "authors", data });
 
       this.$emit("close", "");
-    },
-  },
+    }
+  }
 };
 </script>
 <style></style>
