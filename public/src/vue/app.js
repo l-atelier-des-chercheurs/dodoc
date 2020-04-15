@@ -463,6 +463,11 @@ let vm = new Vue({
         });
       }
 
+      // remove auth inbetween reloads
+      this.$auth.removeAllFoldersPassword({
+        type: "authors",
+      });
+
       if (this.$root.state.session_password === "has_pass") {
         var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
         if (session_storage_pwd) {
