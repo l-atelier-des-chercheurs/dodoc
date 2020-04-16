@@ -29,9 +29,21 @@ module.exports = (function () {
       oc: "Crear una recepta",
       de: "Eine Publikation erstellen",
     },
-    create_new: {
+    create_a_chat: {
+      fr: "Créer une discussion",
+      en: "Create a room",
+    },
+    chat_name: {
+      fr: "Nom du sujet",
+      en: "Topic",
+    },
+    create_new_folder: {
       fr: "créer un nouveau dossier",
       en: "create new folder",
+    },
+    manage_access: {
+      fr: "Gérer l’accès au contenu",
+      en: "Manage access",
     },
     publication: {
       fr: "Recette",
@@ -1152,6 +1164,30 @@ module.exports = (function () {
       oc: "Crear un autor",
       de: "einen Autor erstellen",
     },
+    who_can_edit: {
+      fr: "Qui peut contribuer",
+      en: "Who can contribute",
+    },
+    consultation: {
+      fr: "Consultation",
+      en: "Consultation",
+    },
+    visible_to_all: {
+      fr: "Visible par tout le monde",
+      en: "Visible for everyone",
+    },
+    only_authors: {
+      fr: "Seulement les auteurs",
+      en: "Only authors",
+    },
+    with_password: {
+      fr: "Avec un mot de passe",
+      en: "With a password",
+    },
+    everybody: {
+      fr: "Tout le monde",
+      en: "Everybody",
+    },
     favorite_medias: {
       fr: "Média favoris",
       en: "Favorite medias",
@@ -1470,9 +1506,16 @@ module.exports = (function () {
     },
     author_instructions: {
       fr:
-        "Si un ou plusieurs auteurs sont indiqués, alors ils seront les seuls à pouvoir modifier ou supprimer ce contenu. Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
-      en:
-        "If one or more authors are tagged, they will be the only ones that will be able to edit this content. To create authors, close this window and click on (AUTHORS).",
+        "Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
+      en: "To create authors, close this window and click on (AUTHORS).",
+      nl:
+        "Om auteurs aan te maken, sluit dit venster en klik op de knop (AUTEURS).",
+      oc:
+        "Per crear d'autors, clavatz aquesta fenèstra e clicatz sul boton (AUTORS).",
+    },
+    access_control: {
+      fr: "Collaboration",
+      en: "Collaboration",
     },
     attached_to_project_instructions: {
       fr:
@@ -1486,23 +1529,11 @@ module.exports = (function () {
       en:
         "To translate do•doc, consult the following <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum post (in french)</a> or get in touch via email: <a href='mailto:info@latelier-des-chercheurs.fr?subject=translate%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
     },
-    author_name_editing_instructions: {
-      fr:
-        "Attention&nbsp;! Si vous modifiez ce nom tous les médias, projets et recettes resteront associés au nom précédent.",
-      en:
-        "Warning! All existing medias, projects and recipes will still be associated to the previous name.",
-      oc:
-        "Avisa ! Si modificatz aqueste nom totes los mèdias, projèctes e recèptas demoraràn associats al nom precedent.",
-      de:
-        "Achtung! Wenn Sie diesen Namen ändern, bleiben alle Medien, Projekte und Rezepte mit dem bisherigen Namen verbunden.",
-    },
     when_logged_as_author_content_will_be_tagged: {
       fr:
-        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
+        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes que vous créez porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
       en:
-        "When logged in as an author all projects, medias and recipes will be saved with your name.",
-      oc:
-        "Quand seretz identificats coma autor totes los mèdias, projèctes e recèptas portaràn vòstre nom.",
+        "When logged in as an author all projects, medias and recipes you create will be tagged with your name.",
     },
     more_informations_on_authors: {
       fr:
@@ -2508,6 +2539,12 @@ module.exports = (function () {
         de:
           "Verwenden Sie stattdessen Die Importfunktion oben , um Fotos und Videos aufzunehmen oder von Ihrer Kamera zu importieren.",
       },
+      action_not_allowed: {
+        fr:
+          "Cette action n’est pas permise. Êtes-vous bien auteur de ce contenu et/ou possédez-vous le mot de passe associé ?",
+        en:
+          "This action was blocked. Are you the author of this content and/or do you have the password?",
+      },
       media_was_sent: {
         fr: "Le média a été enregistré.",
         en: "The media was sent.",
@@ -2532,13 +2569,7 @@ module.exports = (function () {
         oc: "Lo mèdia es estat enregistrat",
         de: "Die Datei wurde gespeichert.",
       },
-      file_upload_not_allowed: {
-        fr: "Votre navigateur web ne prend pas en charge l’envoi de fichiers.",
-        en: "File upload is not allowed by this browser.",
-        nl: "Uw webbrowser ondersteunt het verzenden van bestanden niet.",
-        oc: "Vòstre navigador web pren pas en carga la mandadís de fichièrs.",
-        de: "Ihr Webbrowser unterstützt das Senden von Dateien nicht.",
-      },
+
       connection_active: {
         fr: "La connexion au serveur est active.",
         en: "The connection to the server is active.",
@@ -2614,29 +2645,12 @@ module.exports = (function () {
         oc: "Creacion o edicion d'un mèdia pel dorsièr:",
         de: "Erstellen oder Bearbeiten von Medien für die Datei.",
       },
-      project_name_exists: {
-        fr: "Ce nom de projet existe déjà, utilisez-en un autre.",
-        en: "This project name already exists. Please use another.",
-        nl: "Deze projectnaam bestaat al, gebruik een andere.",
-        oc: "Aqueste nom de projècte existís ja, utilisatz ne un autre.",
-        de:
-          "Dieser Projektname existiert bereits, verwenden Sie einen anderen.",
-      },
-      publi_name_exists: {
-        fr: "Ce nom de recette existe déjà, utilisez-en un autre.",
-        en: "This recipe name already exists. Please use another.",
-        nl: "Deze publicatienaam bestaat al, gebruik een andere.",
-        oc: "Aqueste nom de recèptas existís ja, utilisatz ne un autre.",
-        de:
-          "Dieser Publikationsname existiert bereits, verwenden Sie einen anderen.",
-      },
-      author_name_exists: {
-        fr: "Ce nom d’auteur existe déjà, utilisez-en un autre.",
-        en: "This author name already exists. Please use another.",
-        nl: "Deze auteursnaam bestaat al, gebruik een andere.",
-        oc: "Aqueste nom d'autor existís ja, utilisatz ne un autre.",
-        de:
-          "Dieser Autorenname existiert bereits, verwenden Sie einen anderen.",
+      name_already_exists: {
+        fr: "Ce nom existe déjà, utilisez-en un autre.",
+        en: "This name already exists. Please use another.",
+        nl: "Deze naam bestaat al, gebruik een andere.",
+        oc: "Aqueste nom existís ja, utilisatz ne un autre.",
+        de: "Dieser Name existiert bereits, verwenden Sie einen anderen.",
       },
       folder_name_needs_alphanumeric_characters: {
         fr:
@@ -2751,6 +2765,10 @@ module.exports = (function () {
         oc: "Mot de Santa Clara erronèu per",
         de: "Falsches Passwort für",
       },
+      connected_as: {
+        fr: "Connecté comme  ",
+        en: "Connected as ",
+      },
       creating_video: {
         fr: "En cours de création de la vidéo…",
         en: "Creating video…",
@@ -2862,6 +2880,11 @@ module.exports = (function () {
       new_chat_posted_in: {
         fr: "Nouveau message publié dans le sujet ",
         en: "New message in chat ",
+      },
+      if_only_authors_select_authors: {
+        fr: "Sélectionnez au moins un auteur qui pourra accéder à ce contenu",
+        en:
+          "Select at least one author that will be able to access that content",
       },
     },
   };

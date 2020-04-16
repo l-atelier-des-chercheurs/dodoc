@@ -1,14 +1,15 @@
 <template>
   <div class="m_selector">
     <div class="m_selector--content">
-      <div
-        v-if="selected_medias.length > 0"
-        class="m_selector--content--title"
-      >{{ selected_medias.length }} {{ $t("medias_selected") }}</div>
+      <div v-if="selected_medias.length > 0" class="m_selector--content--title">
+        {{ selected_medias.length }} {{ $t("medias_selected") }}
+      </div>
       <div
         v-if="selected_projects.length > 0"
         class="m_selector--content--title"
-      >{{ selected_projects.length }} {{ $t("projects_selected") }}</div>
+      >
+        {{ selected_projects.length }} {{ $t("projects_selected") }}
+      </div>
       <div class="m_selector--content--buttons">
         <button
           type="button"
@@ -27,10 +28,13 @@
             width="94px"
             height="87.7px"
             viewBox="0 0 94 87.7"
-            style="enable-background:new 0 0 94 87.7;"
+            style="enable-background: new 0 0 94 87.7;"
             xml:space="preserve"
           >
-            <path class="st0" d="M94,87.7H0v-74h94V87.7z M10,77.7h74v-54H10V77.7z" />
+            <path
+              class="st0"
+              d="M94,87.7H0v-74h94V87.7z M10,77.7h74v-54H10V77.7z"
+            />
             <rect class="st0" width="40.3" height="13.7" />
           </svg>
           <span class>{{ $t("group") }}</span>
@@ -51,10 +55,13 @@
             width="94px"
             height="87.7px"
             viewBox="0 0 94 87.7"
-            style="enable-background:new 0 0 94 87.7;"
+            style="enable-background: new 0 0 94 87.7;"
             xml:space="preserve"
           >
-            <path class="st0" d="M94,87.7H0v-74h94V87.7z M10,77.7h74v-54H10V77.7z" />
+            <path
+              class="st0"
+              d="M94,87.7H0v-74h94V87.7z M10,77.7h74v-54H10V77.7z"
+            />
             <polygon
               class="st0"
               points="69,63.8 55,50.7 69,37.7 61.8,30 61.6,29.7 47,43.3 32.4,29.7 32.2,30 25,37.7 39,50.7 25,63.8 
@@ -80,7 +87,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95;"
             xml:space="preserve"
           >
             <polygon
@@ -94,7 +101,11 @@
           </svg>
           <span class>{{ $t("duplicate") }}</span>
         </button>
-        <button type="button" class="buttonLink bg-noir" @click="confirmRemoveSelection">
+        <button
+          type="button"
+          class="buttonLink bg-noir"
+          @click="confirmRemoveSelection"
+        >
           <svg
             version="1.1"
             class="inline-svg"
@@ -105,7 +116,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95;"
             xml:space="preserve"
           >
             <path
@@ -116,7 +127,11 @@
           </svg>
           <span class>{{ $t("remove") }}</span>
         </button>
-        <button type="button" class="buttonLink bg-noir" @click="$emit('deselect')">
+        <button
+          type="button"
+          class="buttonLink bg-noir"
+          @click="$emit('deselect')"
+        >
           <svg
             version="1.1"
             class="inline-svg"
@@ -127,17 +142,29 @@
             width="80px"
             height="80px"
             viewBox="0 0 80 80"
-            style="enable-background:new 0 0 80 80;"
+            style="enable-background: new 0 0 80 80;"
             xml:space="preserve"
           >
-            <polygon class="st0" points="10,60 0,60 0,70 0,80 10,80 20,80 20,70 10,70 	" />
+            <polygon
+              class="st0"
+              points="10,60 0,60 0,70 0,80 10,80 20,80 20,70 10,70 	"
+            />
             <rect y="30" class="st0" width="10" height="20" />
-            <polygon class="st0" points="70,70 60,70 60,80 70,80 80,80 80,70 80,60 70,60 	" />
+            <polygon
+              class="st0"
+              points="70,70 60,70 60,80 70,80 80,80 80,70 80,60 70,60 	"
+            />
             <rect x="70" y="30" class="st0" width="10" height="20" />
             <rect x="30" y="70" class="st0" width="20" height="10" />
-            <polygon class="st0" points="0,0 0,10 0,20 10,20 10,10 20,10 20,0 10,0 	" />
+            <polygon
+              class="st0"
+              points="0,0 0,10 0,20 10,20 10,10 20,10 20,0 10,0 	"
+            />
             <rect x="30" class="st0" width="20" height="10" />
-            <polygon class="st0" points="70,0 60,0 60,10 70,10 70,20 80,20 80,10 80,0 	" />
+            <polygon
+              class="st0"
+              points="70,0 60,0 60,10 70,10 70,20 80,20 80,10 80,0 	"
+            />
             <polygon
               class="st0"
               points="62,53.1 48,40 62,26.9 54.8,19.2 54.6,19 40,32.5 25.4,19 25.2,19.2 18,26.9 32,40 18,53.1 25.4,61 
@@ -156,7 +183,8 @@
                 v-for="project in $root.projects_that_are_accessible"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-              >{{ project.name }}</option>
+                >{{ project.name }}</option
+              >
             </select>
             <button
               type="button"
@@ -167,17 +195,23 @@
             />
           </div>
         </template>
-        <form v-else-if="show_options === 'group'" @submit.prevent="groupProjects">
+        <form
+          v-else-if="show_options === 'group'"
+          @submit.prevent="groupProjects"
+        >
           <template>
             <label v-html="$t('add_to_existing_folder')" />
             <div class="input-group">
               <select v-model="existing_group_name">
-                <option :key="'create'" :value="''">** {{ $t("create_new") }} **</option>
+                <option :key="'create'" :value="''"
+                  >** {{ $t("create_new_folder") }} **</option
+                >
                 <option
                   v-for="folder in $root.all_folders"
                   :key="folder"
                   :value="folder"
-                >{{ folder }}</option>
+                  >{{ folder }}</option
+                >
               </select>
             </div>
           </template>
@@ -201,13 +235,13 @@ export default {
   props: {
     selected_medias: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     selected_projects: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
-    slugFolderName: String
+    slugFolderName: String,
   },
   components: {},
   data() {
@@ -219,7 +253,7 @@ export default {
         : "",
 
       existing_group_name: "",
-      new_group_name: ""
+      new_group_name: "",
     };
   },
   created() {},
@@ -228,14 +262,14 @@ export default {
   watch: {},
   computed: {
     some_projects_are_in_folders() {
-      return this.selected_projects.some(p => {
+      return this.selected_projects.some((p) => {
         const corresponding_project = this.$root.projects_that_are_accessible.find(
-          _p => _p.slugFolderName === p.slugFolderName
+          (_p) => _p.slugFolderName === p.slugFolderName
         );
         if (corresponding_project) return !!corresponding_project.folder;
         return false;
       });
-    }
+    },
   },
   methods: {
     groupButtonClicked() {
@@ -244,13 +278,13 @@ export default {
       }
     },
     ungroupButtonClicked() {
-      this.selected_projects.map(m => {
+      this.selected_projects.map((m) => {
         this.$root.editFolder({
           type: "projects",
           slugFolderName: m.slugFolderName,
           data: {
-            folder: ""
-          }
+            folder: "",
+          },
         });
       });
 
@@ -269,13 +303,13 @@ export default {
         folder_name = this.new_group_name;
       }
 
-      this.selected_projects.map(m => {
+      this.selected_projects.map((m) => {
         this.$root.editFolder({
           type: "projects",
           slugFolderName: m.slugFolderName,
           data: {
-            folder: folder_name
-          }
+            folder: folder_name,
+          },
         });
       });
 
@@ -289,11 +323,11 @@ export default {
         this.show_options =
           this.show_options === "duplicate" ? false : "duplicate";
       } else if (this.selected_projects.length > 0) {
-        this.selected_projects.map(m => {
+        this.selected_projects.map((m) => {
           let new_folder_name = this.$t("copy_of") + " " + m.slugFolderName;
 
           const corresponding_project = this.$root.projects_that_are_accessible.find(
-            p => p.slugFolderName === m.slugFolderName
+            (p) => p.slugFolderName === m.slugFolderName
           );
           if (corresponding_project.hasOwnProperty("name"))
             new_folder_name =
@@ -302,7 +336,7 @@ export default {
           this.$socketio.copyFolder({
             type: "projects",
             slugFolderName: m.slugFolderName,
-            new_folder_name
+            new_folder_name,
           });
 
           this.$alertify
@@ -328,18 +362,18 @@ export default {
         .confirm(
           this.$t("sureToRemoveSelection"),
           () => {
-            this.selected_medias.map(m => {
+            this.selected_medias.map((m) => {
               this.$root.removeMedia({
                 type: "projects",
                 slugFolderName: m.slugFolderName,
-                slugMediaName: m.metaFileName
+                slugMediaName: m.metaFileName,
               });
             });
 
-            this.selected_projects.map(m => {
+            this.selected_projects.map((m) => {
               this.$root.removeFolder({
                 type: "projects",
-                slugFolderName: m.slugFolderName
+                slugFolderName: m.slugFolderName,
               });
             });
 
@@ -351,19 +385,19 @@ export default {
     copyMediasToProject() {
       console.log("copyMediaToProject " + this.slugProjectName_to_copy_to);
 
-      this.selected_medias.map(m => {
+      this.selected_medias.map((m) => {
         this.$socketio.copyMediaToFolder({
           type: "projects",
           from_slugFolderName: m.slugFolderName,
           to_slugFolderName: this.slugProjectName_to_copy_to,
-          slugMediaName: m.metaFileName
+          slugMediaName: m.metaFileName,
         });
       });
       this.show_options = false;
 
       this.$emit("deselect");
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

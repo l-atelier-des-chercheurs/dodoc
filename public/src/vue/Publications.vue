@@ -182,7 +182,7 @@ export default {
   props: ["publications", "read_only"],
   components: {
     CreatePublication,
-    Publication
+    Publication,
   },
   data() {
     return {
@@ -218,7 +218,7 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "drawing_pad",
@@ -245,7 +245,7 @@ export default {
   </g>
 </svg>
 
-          `
+          `,
         },
         {
           key: "video_assemblage",
@@ -276,7 +276,7 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "video_effects",
@@ -314,7 +314,7 @@ export default {
     <rect width="201" height="201" style="fill: none"/>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "stopmotion_animation",
@@ -392,7 +392,7 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "mix_audio_and_video",
@@ -430,7 +430,7 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "mix_audio_and_image",
@@ -465,8 +465,8 @@ export default {
     </g>
   </g>
 </svg>
-          `
-        }
+          `,
+        },
         // {
         //   key: "carreau",
         //   summary: "carreau_summary",
@@ -477,7 +477,7 @@ export default {
 
         //   `
         // }
-      ]
+      ],
     };
   },
 
@@ -486,18 +486,18 @@ export default {
   beforeDestroy() {},
 
   watch: {
-    "$root.do_navigation.current_slugProjectName": function() {
+    "$root.do_navigation.current_slugProjectName": function () {
       this.slugProjectName_to_filter = !!this.$root.do_navigation
         .current_slugProjectName
         ? this.$root.do_navigation.current_slugProjectName
         : "";
     },
-    slugProjectName_to_filter: function() {
-      this.recipes = this.recipes.map(r => {
+    slugProjectName_to_filter: function () {
+      this.recipes = this.recipes.map((r) => {
         r.show_all_recipes = false;
         return r;
       });
-    }
+    },
   },
   computed: {
     createPubliDefaultName() {
@@ -510,7 +510,7 @@ export default {
 
       while (
         this.all_recipes_of_this_template(this.createPubliTemplateKey).some(
-          r => r.name === name
+          (r) => r.name === name
         )
       ) {
         number_of_recipes++;
@@ -518,19 +518,19 @@ export default {
       }
 
       return name;
-    }
+    },
   },
   methods: {
     recipes_for_this_project(slugProjectName) {
       if (this.publications && Object.values(this.publications).length === 0)
         return [];
       return Object.values(this.publications).filter(
-        r => r.attached_to_project === slugProjectName
+        (r) => r.attached_to_project === slugProjectName
       );
     },
     all_recipes_of_this_template(template_key) {
       const filtered_recipes = Object.values(this.publications).filter(
-        r => r.template === template_key
+        (r) => r.template === template_key
       );
 
       let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
@@ -540,13 +540,13 @@ export default {
     recipe_of_this_template(template_key) {
       const recipes = this.all_recipes_of_this_template(template_key);
 
-      if (!this.recipes.find(r => r.key === template_key).show_all_recipes) {
+      if (!this.recipes.find((r) => r.key === template_key).show_all_recipes) {
         // if show only part of it
 
         // if project filter, show only those of that project
         if (!!this.slugProjectName_to_filter)
           return recipes.filter(
-            r => r.attached_to_project === this.slugProjectName_to_filter
+            (r) => r.attached_to_project === this.slugProjectName_to_filter
           );
         else return recipes.slice(0, 3);
       }
@@ -575,8 +575,8 @@ export default {
         slugFolderName,
         template,
         authors: this.$root.current_author
-          ? [{ name: this.$root.current_author.name }]
-          : []
+          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
+          : [],
       };
 
       if (template === "page_by_page") {
@@ -585,14 +585,14 @@ export default {
             id:
               +new Date() +
               "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
-          }
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3),
+          },
         ];
         publication_data.width = 210;
         publication_data.height = 297;
       }
 
-      this.$eventHub.$on("socketio.folder_created_or_updated", fdata => {
+      this.$eventHub.$on("socketio.folder_created_or_updated", (fdata) => {
         if (fdata.id === this.$root.justCreatedFolderID) {
           this.$eventHub.$off("socketio.folder_created_or_updated");
           this.openPublication(fdata.slugFolderName);
@@ -601,10 +601,10 @@ export default {
 
       this.$root.createFolder({
         type: "publications",
-        data: publication_data
+        data: publication_data,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

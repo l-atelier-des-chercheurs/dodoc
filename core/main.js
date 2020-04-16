@@ -87,23 +87,23 @@ module.exports = function ({ router }) {
                   typeof sessionMeta.session_password === "string"
                 ) {
                   const pass = sessionMeta.session_password.trim();
-
                   dev.log("Found session password in meta.txt set to: " + pass);
-
                   global.session_password = auth.hashCode(pass);
                 }
                 global.force_login =
                   !!sessionMeta &&
                   sessionMeta.hasOwnProperty("force_login") &&
                   sessionMeta.force_login === "true";
-                dev.log("Force login is set to " + global.force_login);
+                dev.log(
+                  "LOCAL OPTIONS: Force login is set to " + global.force_login
+                );
 
                 global.force_author_password =
                   !!sessionMeta &&
                   sessionMeta.hasOwnProperty("force_author_password") &&
                   sessionMeta.force_author_password === "true";
                 dev.log(
-                  "Force author password is set to " +
+                  "LOCAL OPTIONS: Force author password is set to " +
                     global.force_author_password
                 );
 

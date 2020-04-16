@@ -14,7 +14,9 @@
       <template v-if="show_password">
         <input
           type="password"
-          :required="$root.state.force_author_password ? true : false"
+          :required="
+            $root.state.local_options.force_author_password ? true : false
+          "
           v-model="authordata.password"
           autocomplete="new-password"
         />
@@ -57,7 +59,11 @@
       </label>
       <template v-if="show_role">
         <select v-model="authordata.role">
-          <option v-for="role in possible_roles" :value="role" :key="role">{{ $t(role) }}</option>
+          <option v-for="role in possible_roles" :value="role" :key="role">
+            {{
+            $t(role)
+            }}
+          </option>
         </select>
       </template>
     </div>
@@ -97,7 +103,7 @@ export default {
       show_image: false,
       show_role: true,
       show_nfc: false,
-      possible_roles: ["contributor", "admin"],
+      possible_roles: ["contributor"],
 
       authordata: {
         name: "",
@@ -118,29 +124,29 @@ export default {
   methods: {
     newAuthor: function(event) {
       console.log("newAuthor");
+
+      let data = JSON.parse(JSON.stringify(this.authordata));
+
       let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
 
       // check if project name (not slug) already exists
-      if (allAuthorsName.includes(this.authordata.name.toLowerCase())) {
+      if (allAuthorsName.includes(data.name.toLowerCase())) {
         // invalidate if it does
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.author_name_exists"));
+          .error(this.$t("notifications.name_already_exists"));
 
         return false;
       }
 
       if (!!this.preview) {
-        this.authordata.preview_rawdata = this.preview;
+        data.preview_rawdata = this.preview;
       }
 
-      if (!!this.authordata.password)
-        this.authordata.password = this.$auth.hashCode(
-          this.authordata.password
-        );
+      if (!!data.password) data.password = this.$auth.hashCode(data.password);
 
-      this.$root.createFolder({ type: "authors", data: this.authordata });
+      this.$root.createFolder({ type: "authors", data });
 
       this.$emit("close", "");
     }

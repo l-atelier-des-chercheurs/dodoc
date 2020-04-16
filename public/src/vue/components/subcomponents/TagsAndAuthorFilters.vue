@@ -23,7 +23,7 @@
             width="78.5px"
             height="106.4px"
             viewBox="0 0 78.5 106.4"
-            style="enable-background:new 0 0 78.5 106.4;"
+            style="enable-background: new 0 0 78.5 106.4;"
             xml:space="preserve"
           >
             <polygon
@@ -59,21 +59,26 @@
           :key="keyword.text"
           :class="[
             keyword.classes,
-            { 'is--active': keywordFilter === keyword.text }
+            { 'is--active': keywordFilter === keyword.text },
           ]"
           @click="$emit('setKeywordFilter', keyword.text)"
-        >{{ keyword.text }}</button>
+        >
+          {{ keyword.text }}
+        </button>
       </div>
     </div>
     <div v-if="allAuthors.length > 0" class="padding-sides-small">
       <label>{{ $t("authors") }}</label>
       <div class="m_authorField margin-bottom-none">
         <button
-          v-for="author in allAuthors"
-          :key="author.name"
-          :class="{ 'is--active': authorFilter === author.name }"
-          @click="$emit('setAuthorFilter', author.name)"
-        >{{ author.name }}</button>
+          v-for="{ slugFolderName: author_slug } in allAuthors"
+          v-if="$root.getAuthor(author_slug)"
+          :key="author_slug"
+          :class="{ 'is--active': authorFilter === author_slug }"
+          @click="$emit('setAuthorFilter', author_slug)"
+        >
+          {{ $root.getAuthor(author_slug).name }}
+        </button>
       </div>
     </div>
   </div>
@@ -85,19 +90,19 @@ export default {
     authorFilter: String,
     favFilter: {
       type: Boolean,
-      default: false
+      default: false,
     },
     allKeywords: Array,
     allAuthors: Array,
     allTypes: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   components: {},
   data() {
     return {
-      enabled_types: []
+      enabled_types: [],
     };
   },
 
@@ -109,9 +114,9 @@ export default {
   computed: {
     has_fav_toggle() {
       return this.$listeners && this.$listeners.setFavFilter;
-    }
+    },
   },
-  methods: {}
+  methods: {},
 };
 </script>
 <style></style>

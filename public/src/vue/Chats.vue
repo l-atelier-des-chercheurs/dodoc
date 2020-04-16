@@ -18,26 +18,7 @@
               <span>{{ $t("create") }}</span>
             </button>
 
-            <div>
-              <form
-                v-if="show_create_channel_modal"
-                @submit.prevent="createChannel()"
-                class="input-group"
-              >
-                <input
-                  type="text"
-                  v-model.trim="new_channel_name"
-                  required
-                  autofocus
-                />
-                <button
-                  type="submit"
-                  :disabled="new_channel_name === ''"
-                  v-html="$t('create')"
-                  class="bg-bleuvert"
-                />
-              </form>
-            </div>
+            <CreateChat v-if="show_create_channel_modal" />
           </template>
           <template v-else>
             <div>
@@ -59,7 +40,7 @@
             class="m_chats--list--item"
             :class="{
               'is--open':
-                $root.settings.current_chat.slug === chat.slugFolderName
+                $root.settings.current_chat.slug === chat.slugFolderName,
             }"
             @click="openChat(chat.slugFolderName)"
           >
@@ -69,7 +50,7 @@
               :content="$t('unread_messages')"
               v-tippy="{
                 placement: 'bottom',
-                delay: [600, 0]
+                delay: [600, 0],
               }"
             >
               {{ unreadMessages(chat) }}
@@ -99,20 +80,22 @@
   </div>
 </template>
 <script>
+import CreateChat from "./components/modals/CreateChat.vue";
 import Chat from "./components/Chat.vue";
 
 export default {
   props: {
     read_only: Boolean,
-    chats: Object
+    chats: Object,
   },
   components: {
-    Chat
+    CreateChat,
+    Chat,
   },
   data() {
     return {
       show_create_channel_modal: false,
-      new_channel_name: ""
+      new_channel_name: "",
     };
   },
   created() {},
@@ -129,20 +112,20 @@ export default {
       if (!this.$root.settings.current_chat.slug) return false;
 
       return Object.values(this.$root.store.chats).find(
-        c => c.slugFolderName === this.$root.settings.current_chat.slug
+        (c) => c.slugFolderName === this.$root.settings.current_chat.slug
       );
-    }
+    },
   },
   methods: {
     reloadChats() {
       this.$socketio.listFolders({ type: "chats" });
       this.$eventHub.$once("socketio.chats.folders_listed", () => {
-        Object.keys(this.$root.store.chats).forEach(slugChatName => {
+        Object.keys(this.$root.store.chats).forEach((slugChatName) => {
           const project_meta = this.$root.store.chats[slugChatName];
           setTimeout(() => {
             this.$socketio.listMedias({
               type: "chats",
-              slugFolderName: slugChatName
+              slugFolderName: slugChatName,
             });
           }, 1000);
         });
@@ -164,13 +147,13 @@ export default {
 
       if (last_messages_read_in_channels) {
         const existing_info = last_messages_read_in_channels.find(
-          c => c.channel === chat.slugFolderName
+          (c) => c.channel === chat.slugFolderName
         );
         if (existing_info) {
           const last_message_metaFileName = existing_info.metaFileName;
           const index_of_past_message_read = Object.values(
             chat.medias
-          ).findIndex(m => m.metaFileName === existing_info.msg);
+          ).findIndex((m) => m.metaFileName === existing_info.msg);
           return (
             total_number_of_messages_in_chat - index_of_past_message_read - 1
           );
@@ -178,31 +161,6 @@ export default {
       }
 
       return total_number_of_messages_in_chat;
-    },
-    createChannel() {
-      if (
-        Object.values(this.$root.store.chats).find(
-          ({ name }) => name === this.new_channel_name
-        )
-      ) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("notifications.channel_name_exists"));
-
-        return false;
-      }
-      const data = {
-        name: this.new_channel_name,
-        authors: this.$root.current_author
-          ? [{ name: this.$root.current_author.name }]
-          : ""
-      };
-
-      this.show_create_channel_modal = false;
-      this.new_channel_name = "";
-
-      this.$root.createFolder({ type: "chats", data });
     },
     openChat(slug) {
       this.$root.settings.current_chat.slug = slug;
@@ -216,13 +174,13 @@ export default {
           () => {
             this.$root.removeFolder({
               type: "chats",
-              slugFolderName
+              slugFolderName,
             });
           },
           () => {}
         );
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss"></style>

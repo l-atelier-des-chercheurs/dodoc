@@ -18,13 +18,11 @@
           :key="f.name"
           class="m_uploadFile"
           :class="cssStatus(f)"
-          :style="
-            `--progress-percent: ${
-              files_to_upload_meta.hasOwnProperty(f.name)
-                ? files_to_upload_meta[f.name].upload_percentages / 100
-                : 0
-            }`
-          "
+          :style="`--progress-percent: ${
+            files_to_upload_meta.hasOwnProperty(f.name)
+              ? files_to_upload_meta[f.name].upload_percentages / 100
+              : 0
+          }`"
         >
           <div class="m_uploadFile--progressBar"></div>
           <!-- too heavy on memory on mobile devices -->
@@ -37,24 +35,31 @@
 
           <div class="m_uploadFile--filename">{{ f.name }}</div>
           <div class="m_uploadFile--size">{{ $root.formatBytes(f.size) }}</div>
-          <div class="m_uploadFile--action" v-if="files_to_upload_meta.hasOwnProperty(f.name)">
+          <div
+            class="m_uploadFile--action"
+            v-if="files_to_upload_meta.hasOwnProperty(f.name)"
+          >
             <button
               type="button"
               class="buttonLink"
               @click="sendThisFile(f)"
               :disabled="
                 read_only ||
-                  (files_to_upload_meta.hasOwnProperty(f.name) &&
-                    files_to_upload_meta[f.name].status === 'success')
+                (files_to_upload_meta.hasOwnProperty(f.name) &&
+                  files_to_upload_meta[f.name].status === 'success')
               "
             >
-              <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">{{ $t("import") }}</template>
+              <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">{{
+                $t("import")
+              }}</template>
               <template
                 v-else-if="files_to_upload_meta[f.name].status === 'success'"
-              >{{ $t("sent") }}</template>
+                >{{ $t("sent") }}</template
+              >
               <template
                 v-else-if="files_to_upload_meta[f.name].status === 'failed'"
-              >{{ $t("retry") }}</template>
+                >{{ $t("retry") }}</template
+              >
             </button>
           </div>
         </div>
@@ -78,16 +83,16 @@ export default {
     read_only: Boolean,
     slugFolderName: String,
     type: String,
-    selected_files: Array
+    selected_files: Array,
   },
   components: {
-    Modal
+    Modal,
   },
   data() {
     return {
       files_to_upload: this.selected_files,
       files_to_upload_meta: {},
-      upload_percentages: 0
+      upload_percentages: 0,
     };
   },
   watch: {},
@@ -96,9 +101,9 @@ export default {
   },
   beforeDestroy() {},
   computed: {
-    uriToUploadMedia: function() {
-      return `_file-upload/${this.type}/${this.slugFolderName}`;
-    }
+    uriToUploadMedia: function () {
+      return `_file-upload/${this.type}/${this.slugFolderName}/?socketid=${this.$root.$socketio.socket.id}`;
+    },
   },
   methods: {
     sendThisFile(f) {
@@ -112,7 +117,7 @@ export default {
 
         this.$set(this.files_to_upload_meta, filename, {
           upload_percentages: 0,
-          status: "sending"
+          status: "sending",
         });
 
         let formData = new FormData();
@@ -120,8 +125,8 @@ export default {
         const meta = {
           fileCreationDate: modified,
           authors: this.$root.current_author
-            ? [{ name: this.$root.current_author.name }]
-            : ""
+            ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
+            : "",
         };
         formData.append(filename, JSON.stringify(meta));
 
@@ -140,14 +145,14 @@ export default {
         axios
           .post(this.uriToUploadMedia, formData, {
             headers: { "Content-Type": "multipart/form-data" },
-            onUploadProgress: function(progressEvent) {
+            onUploadProgress: function (progressEvent) {
               this.files_to_upload_meta[filename].upload_percentages = parseInt(
                 Math.round((progressEvent.loaded * 100) / progressEvent.total)
               );
-            }.bind(this)
+            }.bind(this),
           })
-          .then(x => x.data)
-          .then(x => {
+          .then((x) => x.data)
+          .then((x) => {
             if (this.$root.state.dev_mode === "debug") {
               console.log(
                 `METHODS • sendThisFile: name = ${filename} / success uploading`
@@ -160,7 +165,7 @@ export default {
             resolve(filename);
             // resolve(x.map(img => Object.assign({}, img, { url: `${BASE_URL}/images/${img.id}` })));
           })
-          .catch(err => {
+          .catch((err) => {
             if (this.$root.state.dev_mode === "debug") {
               console.log(
                 `METHODS • sendThisFile: name = ${filename} / failed uploading`
@@ -180,9 +185,9 @@ export default {
       });
     },
     sendAllFiles() {
-      const executeSequentially = array => {
+      const executeSequentially = (array) => {
         return this.sendThisFile(this.files_to_upload[array.shift()]).then(
-          filename => {
+          (filename) => {
             // bug : removes files before uploads
             // setTimeout(() => {
             //   this.files_to_upload = this.files_to_upload.filter(x => x.name !== filename);
@@ -198,7 +203,7 @@ export default {
       };
       executeSequentially(
         Array.from(Array(this.files_to_upload.length).keys())
-      ).then(x => {
+      ).then((x) => {
         this.$emit("close");
       });
 
@@ -215,8 +220,8 @@ export default {
       if (this.files_to_upload_meta.hasOwnProperty(f.name)) {
         return "is--" + this.files_to_upload_meta[f.name].status;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

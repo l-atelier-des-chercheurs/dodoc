@@ -74,6 +74,12 @@
         },
         "folder": {
           "type": "string"
+        },
+        "editing_limited_to": {
+          "type": "string"
+        },
+        "viewing_limited_to": {
+          "type": "string"
         }
       },
       "medias": {
@@ -157,15 +163,13 @@
         },
         "password": {
           "type": "string",
-          "read_only": true
+          "read_only": true,
+          "transform": "crypt"
         },
         "date_created": {
           "type": "date",
           "default": "current",
           "read_only": true
-        },
-        "id": {
-          "type": "string"
         },
         "role": {
           "type": "string",

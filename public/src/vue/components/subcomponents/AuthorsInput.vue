@@ -1,23 +1,25 @@
 <template>
   <div class="m_authorField">
     <button
-      v-for="author in allAuthors"
+      v-for="author_slug in all_authors_slugs"
       type="button"
-      :key="author.name"
+      :key="author_slug"
       :class="{
-        'is--active': authors.filter(a => a.name === author.name).length > 0,
+        'is--active': authors.some((a) => a.slugFolderName === author_slug),
         'is--loggedInAuthor':
-          $root.current_author && $root.current_author.name === author.name
+          $root.current_author &&
+          $root.current_author.slugFolderName === author_slug,
       }"
-      @click="toggleAuthorName(author.name)"
+      @click="toggleAuthorName(author_slug)"
     >
-      {{ author.name }}
+      {{ $root.getAuthor(author_slug).name }}
     </button>
     <button
       type="button"
       @click="show_all_authors = true"
       v-if="
-        max_authors_displayed_at_first <= allAuthors.length && !show_all_authors
+        max_authors_displayed_at_first <= all_authors_slugs.length &&
+        !show_all_authors
       "
       class="m_authorField--show_all_authors"
       v-html="$t('show_all_authors')"
@@ -30,12 +32,9 @@ export default {
   components: {},
   data() {
     return {
-      authors:
-        this.currentAuthors !== undefined && this.currentAuthors !== ""
-          ? this.currentAuthors.slice()
-          : [],
+      authors: !!this.currentAuthors ? this.currentAuthors.slice() : [],
       show_all_authors: false,
-      max_authors_displayed_at_first: 8
+      max_authors_displayed_at_first: 8,
     };
   },
 
@@ -47,52 +46,44 @@ export default {
 
   watch: {},
   computed: {
-    allAuthors() {
-      const allAuthors = this.authors.concat(this.$root.allAuthors);
-      let nameList = [];
+    all_authors_slugs() {
+      let _all_authors_slugs = [];
 
       if (this.$root.current_author)
-        allAuthors.unshift(this.$root.current_author);
+        _all_authors_slugs.push(this.$root.current_author.slugFolderName);
 
-      let unique_authors = allAuthors.filter(a => {
-        if (nameList.indexOf(a.name) === -1) {
-          nameList.push(a.name);
-          return true;
-        }
-        return false;
+      this.authors.map((acc, a) => {
+        if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
+          _all_authors_slugs.push(a.slugFolderName);
+      });
+
+      this.$root.allAuthors.map((a) => {
+        if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
+          _all_authors_slugs.push(a.slugFolderName);
       });
 
       if (this.show_all_authors) {
-        return unique_authors;
+        return _all_authors_slugs;
       } else {
-        return unique_authors.slice(0, this.max_authors_displayed_at_first);
+        return _all_authors_slugs.slice(0, this.max_authors_displayed_at_first);
       }
-    }
+    },
   },
   methods: {
-    // getAllUniqueAuthors() {
-    //   const allAuthors = this.authors.concat(this.$root.allAuthors);
-    //   let nameList = [];
-    //   return allAuthors.filter(a => {
-    //     if(nameList.indexOf(a.name) === -1) {
-    //       nameList.push(a.name);
-    //       return true;
-    //     }
-    //     return false;
-    //   });
-    // },
-    toggleAuthorName: function(authorName) {
-      // authorName is already in authors, then remove it
-      if (this.authors.filter(a => a.name === authorName).length > 0) {
-        this.authors = this.authors.filter(a => a.name !== authorName);
+    toggleAuthorName: function (author_slug) {
+      // author_slug is already in authors, then remove it
+      if (this.authors.some((a) => a.slugFolderName === author_slug)) {
+        this.authors = this.authors.filter(
+          (a) => a.slugFolderName !== author_slug
+        );
       } else {
         this.authors.push({
-          name: authorName
+          slugFolderName: author_slug,
         });
       }
       this.$emit("authorsChanged", this.authors);
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

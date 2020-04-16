@@ -220,7 +220,7 @@
                   :favFilter="$root.settings.media_filter.fav"
                   @setKeywordFilter="(a) => $root.setMediaKeywordFilter(a)"
                   @setAuthorFilter="(a) => $root.setMediaAuthorFilter(a)"
-                  @setFavFilter="(a) => $root.setFavAuthorFilter(a)"
+                  @setFavFilter="(a) => $root.setFavFilter(a)"
                   @setTypeFilter="(a) => $root.setTypeFilter(a)"
                 />
               </template>
@@ -530,7 +530,8 @@ export default {
               project.hasOwnProperty("authors") &&
               typeof project.authors === "object" &&
               project.authors.filter(
-                (k) => k.name === this.$root.settings.project_filter.author
+                (k) =>
+                  k.slugFolderName === this.$root.settings.project_filter.author
               ).length > 0
             ) {
               sortable.push({ project, orderBy });
@@ -559,7 +560,8 @@ export default {
             project.hasOwnProperty("authors") &&
             typeof project.authors === "object" &&
             project.authors.filter(
-              (k) => k.name === this.$root.settings.project_filter.author
+              (k) =>
+                k.slugFolderName === this.$root.settings.project_filter.author
             ).length > 0
           ) {
             sortable.push({ project, orderBy });
@@ -795,7 +797,7 @@ export default {
 
     selectProject(slugFolderName) {
       if (
-        !this.$root.canAccessFolder({
+        !this.$root.canEditFolder({
           type: "projects",
           slugFolderName,
         })

@@ -7,7 +7,7 @@
       :content="$t('other_users_connected')"
       v-tippy="{
         placement: 'bottom',
-        delay: [600, 0]
+        delay: [600, 0],
       }"
     >
       <span>{{ uniqueClients.length }}</span>
@@ -42,7 +42,7 @@ export default {
   components: {},
   data() {
     return {
-      showClientList: false
+      showClientList: false,
     };
   },
   created() {},
@@ -51,24 +51,21 @@ export default {
   watch: {},
   computed: {
     uniqueClients() {
-      return this.$root.state.clients.filter(client => {
-        if (client.id === this.$root.$socketio.socket.id) return false;
+      return this.$root.state.clients.filter((client) => {
+        if (client.id === this.$root.$socketio.socket.id.substring(0, 4))
+          return false;
 
         if (
-          this.$root.state.force_login &&
+          this.$root.state.local_options.force_login &&
           !client.data.hasOwnProperty("author")
         )
           return false;
 
         return true;
-        // return (
-        //   client.id !== this.$root.$socketio.socket.id &&
-        //   (!$root.state.force_login || !client.data.hasOwnProperty("author"))
-        // );
       });
-    }
+    },
   },
-  methods: {}
+  methods: {},
 };
 </script>
 <style></style>

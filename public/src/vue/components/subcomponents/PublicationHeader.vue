@@ -21,14 +21,14 @@
             ![
               'export_publication',
               'print_publication',
-              'link_publication'
+              'link_publication',
             ].includes($root.state.mode)
           "
           @click="closePublication()"
           :content="$t('close')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           ‹
@@ -40,7 +40,7 @@
           v-tippy="{
             placement: 'bottom-start',
             delay: [600, 0],
-            interactive: true
+            interactive: true,
           }"
         >
           {{ publication.name }}
@@ -51,7 +51,7 @@
           ![
             'export_publication',
             'print_publication',
-            'link_publication'
+            'link_publication',
           ].includes($root.state.mode)
         "
       >
@@ -70,7 +70,7 @@
             width="100.7px"
             height="101px"
             viewBox="0 0 100.7 101"
-            style="enable-background:new 0 0 100.7 101;"
+            style="enable-background: new 0 0 100.7 101;"
             xml:space="preserve"
           >
             <path
@@ -105,7 +105,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95;"
             xml:space="preserve"
           >
             <polygon
@@ -154,7 +154,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95;"
             xml:space="preserve"
           >
             <path
@@ -178,25 +178,25 @@ export default {
     publication_medias: [Boolean, Array, Object],
     number_of_medias_required: {
       type: Number,
-      default: -1
+      default: -1,
     },
     show_export_button: {
       type: Boolean,
-      default: true
+      default: true,
     },
     enable_export_button: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   components: {
-    EditPublication
+    EditPublication,
   },
   data() {
     return {
       show_edit_publication: false,
       show_copy_options: false,
-      copy_publi_name: this.$t("copy_of") + " " + this.publication.name
+      copy_publi_name: this.$t("copy_of") + " " + this.publication.name,
     };
   },
 
@@ -219,7 +219,7 @@ export default {
         return true;
 
       return false;
-    }
+    },
   },
   methods: {
     closePublication() {
@@ -240,7 +240,7 @@ export default {
             }
             this.$root.removeFolder({
               type: "publications",
-              slugFolderName: this.slugPubliName
+              slugFolderName: this.slugPubliName,
             });
             this.closePublication();
           },
@@ -266,7 +266,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.publi_name_exists"));
+          .error(this.$t("notifications.name_already_exists"));
 
         return false;
       }
@@ -274,7 +274,7 @@ export default {
       this.$socketio.copyFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        new_folder_name: this.copy_publi_name
+        new_folder_name: this.copy_publi_name,
       });
       this.show_copy_options = false;
 
@@ -289,8 +289,8 @@ export default {
           .delay(4000)
           .success(this.$t("notifications.copy_completed"));
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

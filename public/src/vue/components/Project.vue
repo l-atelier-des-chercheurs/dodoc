@@ -4,7 +4,7 @@
     :class="{
       'is--hovered': is_hovered && can_access_project,
       'is--selected': is_selected,
-      'is--accessible': can_access_project
+      'is--accessible': can_access_project,
     }"
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
@@ -13,12 +13,17 @@
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
-      <div v-else-if="context === 'full'" class="m_project--presentation--novignette">
+      <div
+        v-else-if="context === 'full' && can_edit_project"
+        class="m_project--presentation--novignette"
+      >
         <button
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
-        >{{ $t("add_a_cover_image") }}</button>
+        >
+          {{ $t("add_a_cover_image") }}
+        </button>
       </div>
 
       <div class="m_project--presentation--text">
@@ -28,9 +33,11 @@
           v-tippy="{
             placement: 'bottom-start',
             delay: [600, 0],
-            interactive: true
+            interactive: true,
           }"
-        >{{ project.name }}</h2>
+        >
+          {{ project.name }}
+        </h2>
 
         <div class="m_project--presentation--text--infos">
           <div class="m_keywordField">
@@ -41,25 +48,41 @@
                 'tagcolorid_' + (parseInt(keyword.title, 36) % 2),
                 {
                   'is--active':
-                    $root.settings.project_filter.keyword === keyword.title
-                }
+                    $root.settings.project_filter.keyword === keyword.title,
+                },
               ]"
-            >{{ keyword.title }}</span>
+              >{{ keyword.title }}</span
+            >
           </div>
           <div class="m_metaField" v-if="!!project.authors">
             <div>{{ $t("author") }}</div>
             <div class="m_authorField">
-              <span v-if="typeof project.authors === 'string'">{{ project.authors }}</span>
               <span
-                v-else-if="typeof project.authors === 'object'"
                 v-for="author in project.authors"
-                :key="author.name"
+                v-if="author.slugFolderName"
+                :key="author.slugFolderName"
                 class="is--active"
-              >{{ author.name }}</span>
+                :class="{
+                  'is--loggedInAuthor':
+                    $root.current_author &&
+                    $root.current_author.slugFolderName ===
+                      author.slugFolderName,
+                }"
+              >
+                <template v-if="$root.getAuthor(author.slugFolderName)">
+                  {{ $root.getAuthor(author.slugFolderName).name }}
+                </template>
+                <template v-else>
+                  {{ author.slugFolderName }}
+                </template>
+              </span>
             </div>
           </div>
 
-          <div class="m_metaField" v-if="!!project.folder && context === 'full'">
+          <div
+            class="m_metaField"
+            v-if="!!project.folder && context === 'full'"
+          >
             <div>{{ $t("folder") }}</div>
             <div class="m_folderField">
               <span>{{ project.folder }}</span>
@@ -74,21 +97,59 @@
             class="m_metaField"
             v-if="
               can_access_project &&
-                project.password === 'has_pass' &&
-                context !== 'full'
+              project.password === 'has_pass' &&
+              project.editing_limited_to !== 'only_authors'
             "
           >
             <label>{{ $t("protected_by_pass") }}</label>
           </div>
+
+          <div
+            class="m_metaField"
+            v-if="!!_editing_limited_to && context === 'full'"
+          >
+            <div>{{ $t("who_can_edit") }}</div>
+            <div class="">
+              <span>{{ $t(_editing_limited_to) }}</span>
+            </div>
+          </div>
+
+          <div
+            class="m_metaField"
+            v-if="!!project.viewing_limited_to && context === 'full'"
+          >
+            <div>{{ $t("consultation") }}</div>
+            <div>{{ $t("visible_to_all") }}</div>
+          </div>
+
           <button
-            v-if="!can_access_project"
+            v-if="
+              !can_access_project &&
+              project.password === 'has_pass' &&
+              project.editing_limited_to !== 'only_authors'
+            "
             type="button"
             class="buttonLink _open_pwd_input"
             :class="{ 'is--active': showInputPasswordField }"
             style
             :readonly="read_only"
             @click="showInputPasswordField = !showInputPasswordField"
-          >{{ $t("password_required_to_open") }}</button>
+          >
+            {{ $t("password_required_to_open") }}
+          </button>
+          <button
+            v-if="
+              !can_access_project &&
+              project.editing_limited_to === 'only_authors'
+            "
+            type="button"
+            class="buttonLink"
+            style
+            :readonly="read_only"
+            @click="$root.showAuthorsListModal = true"
+          >
+            {{ $t("only_authors_can_open") }}
+          </button>
 
           <div
             class="padding-verysmall _pwd_input"
@@ -121,11 +182,18 @@
               type="button"
               class="button bg-bleuvert button-thin"
               @click="submitPassword"
-            >{{ $t("send") }}</button>
+            >
+              {{ $t("send") }}
+            </button>
           </div>
 
           <div
-            v-if="can_access_project && project_password && context === 'full'"
+            v-if="
+              can_access_project &&
+              project_password &&
+              context === 'full' &&
+              project.editing_limited_to !== 'only_authors'
+            "
             class="m_metaField"
           >
             <div
@@ -134,14 +202,16 @@
               @click="showCurrentPassword = !showCurrentPassword"
               v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
             />
-            <div v-if="showCurrentPassword && can_access_project">{{ project_password }}</div>
+            <div v-if="showCurrentPassword && can_access_project">
+              {{ project_password }}
+            </div>
           </div>
         </div>
       </div>
 
       <div class="m_project--presentation--buttons">
         <button
-          v-if="context !== 'full'"
+          v-if="context !== 'full' && can_access_project"
           type="button"
           class="m_project--presentation--buttons--openButton"
           @click.exact="openProject"
@@ -162,13 +232,13 @@
             type="checkbox"
             v-model="local_is_selected"
             @change="$emit('toggleSelect')"
-            :class="{ disabled: !can_access_project }"
+            :class="{ disabled: !can_access_project || !can_edit_project }"
           />
           <!-- :disabled="!can_access_project" -->
         </label>
 
         <button
-          v-if="can_access_project && context === 'full'"
+          v-if="can_access_project && can_edit_project && context === 'full'"
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
@@ -184,7 +254,7 @@
             width="100.7px"
             height="101px"
             viewBox="0 0 100.7 101"
-            style="enable-background:new 0 0 100.7 101;"
+            style="enable-background: new 0 0 100.7 101;"
             xml:space="preserve"
           >
             <path
@@ -197,7 +267,7 @@
         </button>
 
         <button
-          v-if="can_access_project && context === 'full'"
+          v-if="can_access_project && can_edit_project && context === 'full'"
           type="button"
           class="buttonLink"
           @click="removeProject()"
@@ -213,7 +283,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95;"
             xml:space="preserve"
           >
             <path
@@ -226,7 +296,7 @@
         </button>
 
         <button
-          v-if="can_access_project && context === 'full'"
+          v-if="can_access_project && can_edit_project && context === 'full'"
           type="button"
           class="buttonLink"
           :class="{ 'is--active': show_advanced_options }"
@@ -242,7 +312,7 @@
             width="77.6px"
             height="85.4px"
             viewBox="0 0 77.6 85.4"
-            style="enable-background:new 0 0 77.6 85.4;"
+            style="enable-background: new 0 0 77.6 85.4;"
             xml:space="preserve"
           >
             <defs />
@@ -269,14 +339,22 @@
 
         <div v-if="show_advanced_options">
           <button
-            v-if="can_access_project && project_password && context === 'full'"
+            v-if="
+              can_access_project &&
+              can_edit_project &&
+              project_password &&
+              context === 'full' &&
+              project.editing_limited_to !== 'only_authors'
+            "
             type="button"
             class="_button_forgetpassword"
             @click="forgetPassword"
-          >{{ $t("forget_password_and_close") }}</button>
+          >
+            {{ $t("forget_password_and_close") }}
+          </button>
 
           <button
-            v-if="can_access_project && context === 'full'"
+            v-if="can_access_project && can_edit_project && context === 'full'"
             type="button"
             class="buttonLink"
             @click="downloadProjectArchive"
@@ -293,18 +371,20 @@
                 width="46.7px"
                 height="70px"
                 viewBox="0 0 46.7 70"
-                style="enable-background:new 0 0 46.7 70;"
+                style="enable-background: new 0 0 46.7 70;"
                 xml:space="preserve"
               >
                 <g>
                   <g>
                     <path
                       class="st0"
-                      d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
-			L23.3,59.6L3.2,41.5L8.5,35.2z"
+                      d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2 L23.3,59.6L3.2,41.5L8.5,35.2z"
                     />
                   </g>
-                  <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
+                  <polygon
+                    class="st0"
+                    points="46.7,70 0,70 0,62.4 46.6,62.4 	"
+                  />
                 </g>
               </svg>
             </template>
@@ -315,7 +395,7 @@
           </button>
 
           <button
-            v-if="can_access_project && context === 'full'"
+            v-if="can_access_project && can_edit_project && context === 'full'"
             type="button"
             class="buttonLink"
             :class="{ 'is--active': showDuplicateProjectMenu }"
@@ -332,7 +412,7 @@
               width="91.6px"
               height="95px"
               viewBox="0 0 91.6 95"
-              style="enable-background:new 0 0 91.6 95;"
+              style="enable-background: new 0 0 91.6 95;"
               xml:space="preserve"
             >
               <polygon
@@ -350,7 +430,12 @@
           <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
             <label v-html="$t('name_of_copy')" />
             <form @submit.prevent="duplicateWithNewName()" class="input-group">
-              <input type="text" v-model.trim="copy_project_name" required autofocus />
+              <input
+                type="text"
+                v-model.trim="copy_project_name"
+                required
+                autofocus
+              />
               <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
             </form>
           </div>
@@ -371,7 +456,8 @@
       :slugProjectName="slugProjectName"
       :project="project"
       :read_only="read_only"
-    ></MediaLibrary>
+      :can_edit_project="can_edit_project"
+    />
   </div>
 </template>
 <script>
@@ -384,12 +470,12 @@ export default {
     project: Object,
     read_only: Boolean,
     context: String,
-    is_selected: Boolean
+    is_selected: Boolean,
   },
   components: {
     EditProject,
     MediaLibrary,
-    MediaCard
+    MediaCard,
   },
   data() {
     return {
@@ -406,7 +492,7 @@ export default {
 
       showDuplicateProjectMenu: false,
       copy_project_name: this.$t("copy_of") + " " + this.project.name,
-      zip_export_started: false
+      zip_export_started: false,
     };
   },
   watch: {
@@ -439,13 +525,24 @@ export default {
         });
       }
     },
-    is_selected: function() {
+    is_selected: function () {
       this.local_is_selected = this.is_selected;
-    }
+    },
+    "project.viewing_limited_to": function () {
+      this.$socketio.listMedias({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
+    },
   },
   mounted() {},
   beforeDestroy() {},
   computed: {
+    _editing_limited_to() {
+      if (!!this.project.editing_limited_to)
+        return this.project.editing_limited_to;
+      else return false;
+    },
     previewURL() {
       if (
         !this.project.hasOwnProperty("preview") ||
@@ -453,16 +550,22 @@ export default {
       ) {
         return false;
       }
-      const thumb = this.project.preview.filter(p => p.size === 640);
+      const thumb = this.project.preview.filter((p) => p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }
       return false;
     },
     can_access_project() {
-      return this.$root.canAccessFolder({
+      return this.$root.canSeeFolder({
         type: "projects",
-        slugFolderName: this.slugProjectName
+        slugFolderName: this.slugProjectName,
+      });
+    },
+    can_edit_project() {
+      return this.$root.canEditFolder({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
       });
     },
     project_password() {
@@ -475,7 +578,7 @@ export default {
         return projects_password["projects"][this.slugProjectName];
       }
       return "";
-    }
+    },
   },
   methods: {
     openProject() {
@@ -495,7 +598,7 @@ export default {
           () => {
             this.$root.removeFolder({
               type: "projects",
-              slugFolderName: this.slugProjectName
+              slugFolderName: this.slugProjectName,
             });
             this.closeProject();
           },
@@ -521,7 +624,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.project_name_exists"));
+          .error(this.$t("notifications.name_already_exists"));
 
         return false;
       }
@@ -529,7 +632,7 @@ export default {
       this.$socketio.copyFolder({
         type: "projects",
         slugFolderName: this.slugProjectName,
-        new_folder_name: this.copy_project_name
+        new_folder_name: this.copy_project_name,
       });
       this.showDuplicateProjectMenu = false;
 
@@ -550,8 +653,8 @@ export default {
 
       this.$auth.updateFoldersPasswords({
         projects: {
-          [this.slugProjectName]: this.$refs.passwordField.value
-        }
+          [this.slugProjectName]: this.$refs.passwordField.value,
+        },
       });
 
       this.$socketio.sendAuth();
@@ -559,7 +662,7 @@ export default {
       // check if password matches or not
       this.$eventHub.$once("socketio.authentificated", () => {
         const has_passworded_folder = window.state.list_authorized_folders.filter(
-          f =>
+          (f) =>
             f.type === "projects" &&
             f.allowed_slugFolderNames.includes(this.slugProjectName)
         );
@@ -581,7 +684,7 @@ export default {
     forgetPassword() {
       this.$auth.removeFolderPassword({
         type: "projects",
-        slugFolderName: this.slugProjectName
+        slugFolderName: this.slugProjectName,
       });
       this.$socketio.sendAuth();
 
@@ -601,7 +704,7 @@ export default {
         window.location.origin +
         "/_archives/projects/" +
         this.slugProjectName +
-        `?pwd=${pwd}`;
+        `?socketid=${this.$root.$socketio.socket.id}`;
 
       if (this.$root.state.dev_mode === "debug")
         console.log(
@@ -609,8 +712,8 @@ export default {
         );
 
       window.location.replace(query_url);
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

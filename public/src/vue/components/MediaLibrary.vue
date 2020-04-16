@@ -9,7 +9,7 @@
             project.password === 'has_pass' || project.password !== 'has_pass'
           "
           @click="openCapture"
-          :disabled="read_only || is_iOS_device"
+          :disabled="read_only || is_iOS_device || !can_edit_project"
         >
           <span>{{ $t("capture") }}</span>
         </button>
@@ -18,31 +18,29 @@
           v-if="
             project.password === 'has_pass' || project.password !== 'has_pass'
           "
-          :key="`add_${field.key}`"
           class="barButton barButton_import button"
-          v-for="field in input_file_fields"
-          :disabled="read_only"
-          :for="`add_${field.key}`"
+          :disabled="read_only || !can_edit_project"
+          for="add_file"
         >
           <span>
-            {{ $t(field.label) }}
+            {{ $t("import") }}
             <!-- <div v-html="field.svg" /> -->
           </span>
           <input
             type="file"
             multiple
-            :id="`add_${field.key}`"
-            :name="field.key"
+            id="add_file"
+            name="file"
+            :disabled="read_only || !can_edit_project"
             @change="updateInputFiles($event)"
-            :accept="field.accept"
-            :capture="field.capture"
+            accept=""
             style="width: 1px; height: 1px; overflow: hidden;"
           />
         </label>
 
         <transition name="fade_fast" :duration="150">
           <div
-            v-if="!read_only && show_drop_container"
+            v-if="!read_only && show_drop_container && can_edit_project"
             @drop="dropHandler($event)"
             class="_drop_indicator"
           >
@@ -62,7 +60,12 @@
           :selected_files="selected_files"
         />
 
-        <button type="button" class="barButton barButton_text" @click="createTextMedia">
+        <button
+          type="button"
+          class="barButton barButton_text"
+          @click="createTextMedia"
+          :disabled="read_only || !can_edit_project"
+        >
           <span>{{ $t("create_text") }}</span>
         </button>
       </div>
@@ -81,7 +84,9 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_filters }"
             @click="show_filters = !show_filters"
-          >{{ $t("filters") }}</button>
+          >
+            {{ $t("filters") }}
+          </button>
         </template>
 
         <template v-if="!show_medias_instead_of_projects && show_filters">
@@ -92,10 +97,10 @@
             :keywordFilter="$root.settings.media_filter.keyword"
             :authorFilter="$root.settings.media_filter.author"
             :favFilter="$root.settings.media_filter.fav"
-            @setKeywordFilter="a => $root.setMediaKeywordFilter(a)"
-            @setAuthorFilter="a => $root.setMediaAuthorFilter(a)"
-            @setFavFilter="a => $root.setFavAuthorFilter(a)"
-            @setTypeFilter="a => $root.setTypeFilter(a)"
+            @setKeywordFilter="(a) => $root.setMediaKeywordFilter(a)"
+            @setAuthorFilter="(a) => $root.setMediaAuthorFilter(a)"
+            @setFavFilter="(a) => $root.setFavFilter(a)"
+            @setTypeFilter="(a) => $root.setTypeFilter(a)"
           />
         </template>
       </div>
@@ -108,7 +113,9 @@
       <div v-for="item in groupedMedias" :key="item[0]">
         <h3
           class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-        >{{ $root.formatDateToHuman(item[0]) }}</h3>
+        >
+          {{ $root.formatDateToHuman(item[0]) }}
+        </h3>
 
         <div class="m_mediaShowAll">
           <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -120,18 +127,21 @@
               :preview_size="180"
               :class="{
                 'is--just_added': last_media_added.includes(media.metaFileName),
-                'is--opened_in_media_modal': $root.media_modal.current_slugProjectName === slugProjectName && media.metaFileName === $root.media_modal.current_metaFileName
+                'is--opened_in_media_modal':
+                  $root.media_modal.current_slugProjectName ===
+                    slugProjectName &&
+                  media.metaFileName === $root.media_modal.current_metaFileName,
               }"
               :is_selected="
                 mediaIsSelected({
                   slugFolderName: slugProjectName,
-                  metaFileName: media.metaFileName
+                  metaFileName: media.metaFileName,
                 })
               "
               @toggleSelect="
                 toggleSelectMedia({
                   slugFolderName: slugProjectName,
-                  metaFileName: media.metaFileName
+                  metaFileName: media.metaFileName,
                 })
               "
             />
@@ -162,18 +172,19 @@ export default {
   props: {
     project: Object,
     slugProjectName: String,
-    read_only: Boolean
+    read_only: Boolean,
+    can_edit_project: Boolean,
   },
   components: {
     MediaCard,
     UploadFile,
     TagsAndAuthorFilters,
-    SelectorBar
+    SelectorBar,
   },
   data() {
     return {
       mediaSort: {
-        field: "date_uploaded"
+        field: "date_uploaded",
         // type: "date",
         // order: "descending"
       },
@@ -190,17 +201,6 @@ export default {
       last_media_added: [],
 
       selected_medias: [],
-
-      input_file_fields: [
-        {
-          key: "file",
-          label: "import",
-          accept: "",
-          capture: false,
-          svg: `
-          `
-        }
-      ]
     };
   },
   mounted() {
@@ -236,17 +236,19 @@ export default {
     document.addEventListener("dragover", this.ondragover);
   },
   watch: {
-    "project.medias": function() {
+    "project.medias": function () {
       if (this.media_metaFileName_initially_present.length === 0) {
         this.media_metaFileName_initially_present = Object.values(
           this.project.medias
-        ).map(m => m.metaFileName);
+        ).map((m) => m.metaFileName);
       } else {
         this.last_media_added = Object.values(this.project.medias)
-          .map(m => m.metaFileName)
-          .filter(s => !this.media_metaFileName_initially_present.includes(s));
+          .map((m) => m.metaFileName)
+          .filter(
+            (s) => !this.media_metaFileName_initially_present.includes(s)
+          );
       }
-    }
+    },
   },
 
   computed: {
@@ -266,23 +268,23 @@ export default {
     mediaTypes() {
       return this.$root.getAllTypesFrom(this.project.medias);
     },
-    filteredMedias: function() {
+    filteredMedias: function () {
       if (!this.project.medias || typeof this.project.medias !== "object") {
         return false;
       }
-      return Object.values(this.project.medias).filter(m =>
+      return Object.values(this.project.medias).filter((m) =>
         this.$root.filterMedia(m)
       );
     },
-    sortedMedias: function() {
+    sortedMedias: function () {
       let sortedMedias = this.$_.sortBy(
         this.filteredMedias,
         this.mediaSort.field
       );
       return sortedMedias.reverse();
     },
-    groupedMedias: function() {
-      let mediaGroup = this.$_.groupBy(this.sortedMedias, media => {
+    groupedMedias: function () {
+      let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
         let _date;
 
         if (
@@ -301,7 +303,7 @@ export default {
       mediaGroup = this.$_.sortBy(mediaGroup);
       mediaGroup = mediaGroup.reverse();
       return mediaGroup;
-    }
+    },
   },
   methods: {
     prevMedia() {
@@ -312,7 +314,7 @@ export default {
     },
     mediaNav(relative_index) {
       const current_media_index = this.sortedMedias.findIndex(
-        m => m.metaFileName === this.$root.media_modal.current_metaFileName
+        (m) => m.metaFileName === this.$root.media_modal.current_metaFileName
       );
       const new_media = this.sortedMedias[current_media_index + relative_index];
       this.$root.closeMedia();
@@ -330,7 +332,7 @@ export default {
     toggleSelectMedia({ slugFolderName, metaFileName }) {
       if (this.mediaIsSelected({ slugFolderName, metaFileName })) {
         this.selected_medias = this.selected_medias.filter(
-          m =>
+          (m) =>
             !(
               m.slugFolderName === slugFolderName &&
               m.metaFileName === metaFileName
@@ -339,13 +341,13 @@ export default {
       } else {
         this.selected_medias.push({
           slugFolderName,
-          metaFileName
+          metaFileName,
         });
       }
     },
     mediaIsSelected({ slugFolderName, metaFileName }) {
       return this.selected_medias.some(
-        m =>
+        (m) =>
           m.metaFileName === metaFileName && m.slugFolderName === slugFolderName
       );
     },
@@ -356,7 +358,7 @@ export default {
       }
       this.$root.openMedia({
         slugProjectName: this.slugProjectName,
-        metaFileName
+        metaFileName,
       });
     },
     createTextMedia() {
@@ -368,8 +370,8 @@ export default {
         slugFolderName: this.slugProjectName,
         type: "projects",
         additionalMeta: {
-          type: "text"
-        }
+          type: "text",
+        },
       });
     },
     newTextMediaCreated(mdata) {
@@ -444,8 +446,8 @@ export default {
           this.selected_files = Array.from($event.dataTransfer.files);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

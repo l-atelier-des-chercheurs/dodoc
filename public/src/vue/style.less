@@ -72,6 +72,7 @@ body {
   --switch-size: 0.9rem;
 }
 .switch_twoway label {
+  margin-bottom: 0;
   height: var(--switch-size);
 }
 
@@ -1161,12 +1162,19 @@ small {
 
 .m_projects--list {
   position: relative;
-  .padding-bottom-medium;
-  .padding-top-medium;
 
   .flex-wrap;
   .flex-horizontally-start;
   align-items: flex-start;
+
+  &::before,
+  &::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    grid-column: ~"1 / -1";
+  }
 
   @supports (display: grid) {
     display: grid;
@@ -2351,7 +2359,6 @@ small {
       color: @c-bleumarine_fonce !important;
       // font-weight: 700;
       &::before {
-        opacity: 0.6;
       }
     }
     &::before {
@@ -2365,6 +2372,7 @@ small {
     }
     &.is--loggedInAuthor {
       &::before {
+        opacity: 0.6;
       }
     }
 
@@ -2651,30 +2659,9 @@ small {
     }
   }
 
-  input {
-    -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    background: white;
-    box-shadow: 0 1px 3px rgba(255, 255, 255, 2), 0 1px 2px rgba(0, 0, 0, 0.24);
-    border-radius: 2px;
-    border: 1px solid @c-gris_fonce;
-    outline: 0 !important;
-
-    &:checked {
-      color: @c-bleuvert;
-      background-color: currentColor;
-    }
-
-    &:active {
-    }
-
-    &.disabled {
-      background-color: @c-gris_fonce;
-      cursor: not-allowed;
-    }
-  }
 }
+
+
 
 .m_captureview {
   display: flex;
@@ -4545,6 +4532,7 @@ small {
                 // border-bottom: 1px solid white;
                 // margin-bottom: -4px;
                 z-index: 2;
+
               }
             }
             label {

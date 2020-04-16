@@ -24,7 +24,7 @@
     <template
       v-else-if="
         $root.state.mode === 'live' &&
-          $root.store.request.display !== 'standalone'
+        $root.store.request.display !== 'standalone'
       "
     >
       <SystemBar v-if="$root.settings.enable_system_bar" :withTitleBar="true" />
@@ -32,7 +32,7 @@
       <TopBar
         :has_back_button="$root.do_navigation.view !== 'ListView'"
         :slugProjectName="$root.do_navigation.current_slugProjectName"
-        :project="$root.currentProject"
+        :project="$root.current_project"
       />
 
       <div class="m_activitiesPanel">
@@ -53,7 +53,12 @@
               :class="{ 'is--large': activitiesPanel_is_large }"
             >
               <div
-                style="position: relative; width: 100%; height: 100%; overflow: hidden"
+                style="
+                  position: relative;
+                  width: 100%;
+                  height: 100%;
+                  overflow: hidden;
+                "
               >
                 <!-- v-show="$root.do_navigation.view === 'ListView'" -->
                 <transition name="ListView" :duration="500">
@@ -74,7 +79,7 @@
                     :slugProjectName="
                       $root.do_navigation.current_slugProjectName
                     "
-                    :project="$root.currentProject"
+                    :project="$root.current_project"
                     :read_only="!$root.state.connected"
                   />
                 </transition>
@@ -85,7 +90,7 @@
                     :slugProjectName="
                       $root.do_navigation.current_slugProjectName
                     "
-                    :project="$root.currentProject"
+                    :project="$root.current_project"
                     :read_only="!$root.state.connected"
                   />
                 </transition>
@@ -126,7 +131,7 @@
                 <span class="margin-small">{{ $t("publication") }}</span>
               </button> -->
 
-              <div style="position: relative; height: 100%; overflow: hidden">
+              <div style="position: relative; height: 100%; overflow: hidden;">
                 <transition name="ListView" :duration="500">
                   <Publications
                     v-if="$root.settings.show_publi_panel"
@@ -142,9 +147,9 @@
                   <PagePublication
                     v-if="
                       $root.settings.current_publication.slug !== false &&
-                        $root.store.publications[
-                          $root.settings.current_publication.slug
-                        ].template === 'page_by_page'
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ].template === 'page_by_page'
                     "
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="
@@ -157,9 +162,9 @@
                   <Carreau
                     v-if="
                       $root.settings.current_publication.slug !== false &&
-                        $root.store.publications[
-                          $root.settings.current_publication.slug
-                        ].template === 'carreau'
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ].template === 'carreau'
                     "
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="
@@ -172,9 +177,9 @@
                   <VideoPublication
                     v-else-if="
                       $root.settings.current_publication.slug !== false &&
-                        $root.store.publications[
-                          $root.settings.current_publication.slug
-                        ].template === 'video_assemblage'
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ].template === 'video_assemblage'
                     "
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="
@@ -187,9 +192,9 @@
                   <VideoEffects
                     v-else-if="
                       $root.settings.current_publication.slug !== false &&
-                        $root.store.publications[
-                          $root.settings.current_publication.slug
-                        ].template === 'video_effects'
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ].template === 'video_effects'
                     "
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="
@@ -202,9 +207,9 @@
                   <DrawingPad
                     v-else-if="
                       $root.settings.current_publication.slug !== false &&
-                        $root.store.publications[
-                          $root.settings.current_publication.slug
-                        ].template === 'drawing_pad'
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ].template === 'drawing_pad'
                     "
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="
@@ -217,9 +222,9 @@
                   <StopmotionAnimation
                     v-else-if="
                       $root.settings.current_publication.slug !== false &&
-                        $root.store.publications[
-                          $root.settings.current_publication.slug
-                        ].template === 'stopmotion_animation'
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ].template === 'stopmotion_animation'
                     "
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="
@@ -232,9 +237,9 @@
                   <MixAudioAndVideo
                     v-else-if="
                       $root.settings.current_publication.slug !== false &&
-                        $root.store.publications[
-                          $root.settings.current_publication.slug
-                        ].template === 'mix_audio_and_video'
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ].template === 'mix_audio_and_video'
                     "
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="
@@ -247,9 +252,9 @@
                   <MixAudioAndImage
                     v-else-if="
                       $root.settings.current_publication.slug !== false &&
-                        $root.store.publications[
-                          $root.settings.current_publication.slug
-                        ].template === 'mix_audio_and_image'
+                      $root.store.publications[
+                        $root.settings.current_publication.slug
+                      ].template === 'mix_audio_and_image'
                     "
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="
@@ -287,7 +292,7 @@
         v-if="$root.media_modal.open"
         :key="
           $root.media_modal.current_slugProjectName +
-            $root.media_modal.current_metaFileName
+          $root.media_modal.current_metaFileName
         "
         :slugMediaName="$root.media_modal.current_metaFileName"
         :slugProjectName="$root.media_modal.current_slugProjectName"
@@ -301,10 +306,12 @@
       <AuthorsList
         v-if="
           $root.showAuthorsListModal ||
-            ($root.state.force_login && !$root.current_author)
+          ($root.state.local_options.force_login && !$root.current_author)
         "
         :authors="$root.store.authors"
-        :prevent_close="$root.state.force_login && !$root.current_author"
+        :prevent_close="
+          $root.state.local_options.force_login && !$root.current_author
+        "
         @close="$root.showAuthorsListModal = false"
       />
     </template>
@@ -313,7 +320,7 @@
         [
           'export_publication',
           'print_publication',
-          'link_publication'
+          'link_publication',
         ].includes($root.state.mode)
       "
     >
@@ -386,7 +393,7 @@ export default {
     Splitpanes,
     Pane,
 
-    MediaContent
+    MediaContent,
   },
   props: {},
   data() {
@@ -403,8 +410,8 @@ export default {
       panels_width: {
         doPane: 100,
         docPane: 0,
-        chatPane: 0
-      }
+        chatPane: 0,
+      },
     };
   },
   watch: {
@@ -434,15 +441,15 @@ export default {
           this.$root.closeChatPanel();
         }
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   created() {
     this.$eventHub.$on("socketio.chats.listMedia", this.newChatPosted);
 
-    if (this.$root.state.force_login) {
-      this.panels_width.chatPane = 30;
-      this.panels_width.doPane = 70;
+    if (this.$root.state.local_options.force_login) {
+      // this.panels_width.chatPane = 30;
+      // this.panels_width.doPane = 70;
     }
   },
   beforeDestroy() {
@@ -457,7 +464,7 @@ export default {
         return false;
       }
       return true;
-    }
+    },
   },
   methods: {
     resize($event) {
@@ -525,8 +532,8 @@ export default {
             chat_name +
             "</b>"
         );
-    }
-  }
+    },
+  },
 };
 </script>
 

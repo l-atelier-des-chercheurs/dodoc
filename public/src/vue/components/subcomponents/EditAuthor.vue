@@ -11,7 +11,6 @@
     <div class="margin-bottom-small">
       <label>{{ $t("name") }}</label>
       <input type="text" v-model.trim="authordata.name" required autofocus />
-      <small v-html="$t('author_name_editing_instructions')" />
     </div>
 
     <!-- Preview -->
@@ -131,7 +130,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t("notifications.author_name_exists"));
+            .error(this.$t("notifications.name_already_exists"));
 
           return false;
         }

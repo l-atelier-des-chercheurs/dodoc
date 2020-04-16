@@ -20,7 +20,7 @@
           draggable="false"
           v-tippy="{
             placement: 'bottom',
-            delay: [1000, 0]
+            delay: [1000, 0],
           }"
         />
       </div>
@@ -42,7 +42,7 @@
           :content="$t('back_to_project')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <span>{{ project.name }}</span>
@@ -52,7 +52,7 @@
           type="button"
           v-if="
             project.hasOwnProperty('name') &&
-              $root.do_navigation.view === 'CaptureView'
+            $root.do_navigation.view === 'CaptureView'
           "
         >
           <span>Capture</span>
@@ -83,7 +83,7 @@
           width="20px"
           height="20px"
           viewBox="0 0 90 90"
-          style="enable-background:new 0 0 90 90;"
+          style="enable-background: new 0 0 90 90;"
           xml:space="preserve"
         >
           <rect class="st0" width="108.2" height="21" />
@@ -102,7 +102,7 @@
           :content="$t('login')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <template v-if="$root.current_author">
@@ -110,7 +110,7 @@
               class="m_topbar--center--authors--portrait"
               v-if="
                 $root.current_author.hasOwnProperty('preview') &&
-                  $root.current_author.preview.length !== ''
+                $root.current_author.preview.length !== ''
               "
             >
               <img
@@ -146,7 +146,7 @@
           :content="$t('share_access')"
           v-tippy="{
             placement: 'bottom-end',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <svg
@@ -159,7 +159,7 @@
             width="20px"
             height="20px"
             viewBox="0 0 90 90"
-            style="enable-background:new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90;"
             xml:space="preserve"
           >
             <path
@@ -183,7 +183,7 @@
           :content="$t('help')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <svg
@@ -196,7 +196,7 @@
             width="12px"
             height="20.3px"
             viewBox="0 0 12 20.3"
-            style="enable-background:new 0 0 12 20.3;"
+            style="enable-background: new 0 0 12 20.3;"
             xml:space="preserve"
           >
             <path
@@ -217,7 +217,7 @@
           :content="$t('settings')"
           v-tippy="{
             placement: 'bottom-end',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <svg
@@ -229,7 +229,7 @@
             width="90px"
             height="90px"
             viewBox="0 0 90 90"
-            style="enable-background:new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90;"
             xml:space="preserve"
           >
             <path
@@ -278,13 +278,13 @@ export default {
   components: {
     QRCode,
     SettingsModal,
-    Clients
+    Clients,
   },
   data() {
     return {
       showQRModal: false,
       showSettingsModal: false,
-      show_menu: false
+      show_menu: false,
     };
   },
   created() {},
@@ -293,9 +293,9 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    "$root.settings.windowWidth": function() {
+    "$root.settings.windowWidth": function () {
       this.menuVisibility();
-    }
+    },
   },
   computed: {
     show_advanced_options() {
@@ -303,7 +303,7 @@ export default {
         this.$root.screen_is_wide ||
         (!this.$root.screen_is_wide && this.show_menu)
       );
-    }
+    },
   },
   methods: {
     menuVisibility() {},
@@ -322,9 +322,9 @@ export default {
     },
     urlToPortrait(slug, preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.filter(m => m.size === 180)[0].path;
+      let pathToSmallestThumb = preview.filter((m) => m.size === 180)[0].path;
       return pathToSmallestThumb;
-    }
-  }
+    },
+  },
 };
 </script>
