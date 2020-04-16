@@ -48,7 +48,7 @@
     </div>
 
     <!-- Role -->
-    <div class="margin-bottom-small">
+    <!-- <div class="margin-bottom-small">
       <label>
         <button
           type="button"
@@ -66,7 +66,7 @@
           </option>
         </select>
       </template>
-    </div>
+    </div>-->
 
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
