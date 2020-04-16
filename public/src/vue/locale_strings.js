@@ -1467,6 +1467,10 @@ module.exports = (function () {
       oc: "Mot de Santa Clara requesit",
       de: "Kennwort zum Öffnen der Datei",
     },
+    only_authors_can_open: {
+      fr: "Accès limité aux auteurs",
+      en: "Access limited to authors",
+    },
     show_password: {
       fr: "Afficher le mot de passe",
       en: "Show password",
