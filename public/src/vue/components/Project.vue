@@ -220,17 +220,6 @@
                 placeholder="…"
               />
             </div>
-            <!-- <div class="switch switch-xs margin-bottom-small">
-                <input
-                  type="checkbox"
-                  class="switch"
-                  id="remember_project_password_for_this_device"
-                  v-model="remember_project_password_for_this_device"
-                />
-                <label
-                  for="remember_project_password_for_this_device"
-                >{{ $t('remember_project_password_for_this_device') }}</label>
-            </div>-->
 
             <button
               type="button"
@@ -243,7 +232,7 @@
 
           <div
             v-if="
-              can_see_project &&
+              can_edit_project &&
               project_password() &&
               context === 'full' &&
               project.editing_limited_to !== 'only_authors'
@@ -663,7 +652,6 @@ export default {
       }
       return "";
     },
-
     requestAccessToProject() {
       const current_author = this.$root.current_author;
 

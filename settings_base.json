@@ -167,7 +167,6 @@
         },
         "password": {
           "type": "string",
-          "read_only": true,
           "transform": "crypt"
         },
         "date_created": {

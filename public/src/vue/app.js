@@ -723,6 +723,16 @@ let vm = new Vue({
       });
       return uniquetTypes;
     },
+    getFolderPassword({ type, slugFolderName }) {
+      const folders_password = this.$auth.getFoldersPasswords();
+      if (
+        folders_password.hasOwnProperty(type) &&
+        folders_password[type].hasOwnProperty(slugFolderName)
+      ) {
+        return publis_password[type][slugFolderName];
+      }
+      return "";
+    },
     detectFullScreen() {
       var fullscreenElement =
         document.fullscreenElement ||

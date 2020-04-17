@@ -60,7 +60,7 @@
         </label>
 
         <div v-if="show_access_control">
-          <AccessControl
+          <EditAccessControl
             :editing_limited_to.sync="projectdata.editing_limited_to"
             :viewing_limited_to.sync="projectdata.viewing_limited_to"
             :password.sync="projectdata.password"
@@ -163,7 +163,7 @@
 </template>
 <script>
 import Modal from "./BaseModal.vue";
-import AccessControl from "../subcomponents/AccessControl.vue";
+import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 import slug from "slugg";
 import ImageSelect from "../subcomponents/ImageSelect.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
@@ -178,7 +178,7 @@ export default {
   },
   components: {
     Modal,
-    AccessControl,
+    EditAccessControl,
     ImageSelect,
     TagsInput,
     AuthorsInput,

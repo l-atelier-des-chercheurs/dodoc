@@ -24,16 +24,53 @@
         />
       </div>
 
-      <!-- Preview -->
-      <!-- <div class="margin-bottom-small">
-        <label>{{ $t('cover_image') }}</label><br>
-        <ImageSelect 
-          :previewURL="previewURL"
-          @newPreview="value => { preview = value }"
-        >
-        </ImageSelect>
-      </div>-->
+      <!-- Author(s) -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >
+            {{ $t("author") }}
+          </button>
+        </label>
 
+        <div v-if="show_authors">
+          <AuthorsInput
+            :currentAuthors="publidata.authors"
+            @authorsChanged="(newAuthors) => (publidata.authors = newAuthors)"
+          />
+          <small>{{ $t("author_instructions") }}</small>
+        </div>
+      </div>
+
+      {{ publidata }}
+
+      <!-- Access control -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_access_control }"
+            @click="show_access_control = !show_access_control"
+          >
+            {{ $t("manage_access") }}
+          </button>
+        </label>
+
+        <div v-if="show_access_control">
+          <EditAccessControl
+            :editing_limited_to.sync="publidata.editing_limited_to"
+            :viewing_limited_to.sync="publidata.viewing_limited_to"
+            :password.sync="publidata.password"
+          />
+        </div>
+      </div>
+
+      <!-- Attached to project -->
       <div class="margin-bottom-small">
         <label>
           <button
@@ -86,28 +123,6 @@
           />
         </template>
       </div>
-
-      <!-- Author(s) -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_authors }"
-            @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
-        </label>
-
-        <template v-if="show_authors">
-          <AuthorsInput
-            :currentAuthors="publidata.authors"
-            @authorsChanged="(newAuthors) => (publidata.authors = newAuthors)"
-          />
-          <small>{{ $t("author_instructions") }}</small>
-        </template>
-      </div>
     </template>
 
     <template slot="submit_button">{{ $t("save") }}</template>
@@ -115,6 +130,8 @@
 </template>
 <script>
 import Modal from "./BaseModal.vue";
+import EditAccessControl from "../subcomponents/EditAccessControl.vue";
+
 import slug from "slugg";
 import ImageSelect from "../subcomponents/ImageSelect.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
@@ -124,10 +141,12 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
+    publi_password: String,
     read_only: Boolean,
   },
   components: {
     Modal,
+    EditAccessControl,
     ImageSelect,
     TagsInput,
     AuthorsInput,
@@ -136,9 +155,22 @@ export default {
     return {
       publidata: {
         name: this.publication.name,
+        editing_limited_to: !!this.publication.editing_limited_to
+          ? this.publication.editing_limited_to
+          : this.publication.password === "has_pass"
+          ? "with_password"
+          : "everybody",
+        viewing_limited_to: this.publication.viewing_limited_to,
         attached_to_project: !!this.publication.attached_to_project
           ? this.publication.attached_to_project
           : "",
+        password:
+          this.publication.password === "has_pass"
+            ? this.$root.getFolderPassword({
+                type: "publications",
+                slugFolderName: slugPubliName,
+              })
+            : "",
         authors:
           typeof this.publication.authors === "string" &&
           this.publication.authors !== ""
@@ -155,6 +187,7 @@ export default {
       show_attached_project: !!this.publication.attached_to_project,
       show_keywords: !!this.publication.keywords,
       show_authors: !!this.publication.authors,
+      show_access_control: !!this.publication.editing_limited_to,
     };
   },
   watch: {
@@ -173,7 +206,7 @@ export default {
 
       // only if user changed the name of this folder
       if (this.publidata.name !== this.publication.name) {
-        function getAllProjectNames() {
+        function getAllPubliNames() {
           let allPublicationsName = [];
           for (let slugPubliName in window.store.publications) {
             let projectName = window.store.publications[slugPubliName].name;
@@ -181,7 +214,7 @@ export default {
           }
           return allPublicationsName;
         }
-        let allPublicationsName = getAllProjectNames();
+        let allPublicationsName = getAllPubliNames();
 
         // check if project name (not slug) already exists
         if (allPublicationsName.indexOf(this.publidata.name) >= 0) {
