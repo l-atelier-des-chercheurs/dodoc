@@ -54,71 +54,15 @@
         </label>
 
         <div v-if="show_access_control">
-          <div class="">
-            <label>
-              {{ $t("who_can_edit") }}
-            </label>
-
-            <div class="">
-              <div
-                v-for="mode in ['only_authors', 'with_password', 'everybody']"
-                :key="mode"
-              >
-                <input
-                  class="custom_radio"
-                  type="radio"
-                  :id="`editing_limited_to-${mode}`"
-                  :name="`editing_limited_to-${mode}`"
-                  :value="mode"
-                  v-model="projectdata.editing_limited_to"
-                />
-                <label class="text-lc" :for="`editing_limited_to-${mode}`">
-                  <span>{{ $t(mode) }}</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Password -->
-          <div
-            class="margin-top-small"
-            v-if="projectdata.editing_limited_to === 'with_password'"
-          >
-            <label>
-              {{ $t("password") }}
-            </label>
-            <div>
-              <input
-                type="password"
-                required
-                v-model="projectdata.password"
-                autocomplete="new-password"
-              />
-            </div>
-          </div>
-
-          <div
-            class="margin-top-small"
-            v-if="projectdata.editing_limited_to !== 'everybody'"
-          >
-            <div class="">
-              <input
-                class=""
-                type="checkbox"
-                id="visible_to_all"
-                name="visible_to_all"
-                v-model="projectdata.viewing_limited_to"
-                true-value="everybody"
-                false-value=""
-              />
-              <label for="visible_to_all">
-                <span>
-                  {{ $t("visible_to_all") }}
-                </span>
-              </label>
-            </div>
-          </div>
+          <AccessControl
+            :editing_limited_to.sync="projectdata.editing_limited_to"
+            :viewing_limited_to.sync="projectdata.viewing_limited_to"
+            :password.sync="projectdata.password"
+          />
         </div>
+        {{ editing_limited_to }}
+        {{ viewing_limited_to }}
+        {{ password }}
       </div>
 
       <!-- Preview -->
@@ -206,6 +150,7 @@
 </template>
 <script>
 import Modal from "./BaseModal.vue";
+import AccessControl from "../subcomponents/AccessControl.vue";
 import ImageSelect from "../subcomponents/ImageSelect.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
@@ -216,6 +161,7 @@ export default {
   },
   components: {
     Modal,
+    AccessControl,
     ImageSelect,
     TagsInput,
     AuthorsInput,
