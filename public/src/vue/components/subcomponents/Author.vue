@@ -12,19 +12,17 @@
       v-else
       class="m_author"
       :class="{
-        'is--selected':
-          author.slugFolderName === $root.current_author.slugFolderName,
+        'is--selected': is_logged_in_as_author,
         'is--editMode': edit_author_mode,
       }"
       @click.stop="
-        author.slugFolderName !== $root.current_author.slugFolderName &&
-        can_login_as_author
+        !is_logged_in_as_author && can_login_as_author
           ? setAuthorWithoutPassword()
           : (show_input_password_field = true)
       "
     >
       <button
-        v-if="can_login_as_author"
+        v-if="can_login_as_author && is_logged_in_as_author"
         type="button"
         class="buttonLink m_author--editButton"
         @click.stop="edit_author_mode = !edit_author_mode"
@@ -52,7 +50,7 @@
       </button>
 
       <button
-        v-if="can_login_as_author"
+        v-if="can_login_as_author && is_logged_in_as_author"
         type="button"
         class="buttonLink m_author--removeButton"
         @click.stop="removeAuthor(author)"
@@ -196,6 +194,11 @@ export default {
         type: "authors",
         slugFolderName: this.author.slugFolderName,
       });
+    },
+    is_logged_in_as_author() {
+      return (
+        this.author.slugFolderName === this.$root.current_author.slugFolderName
+      );
     },
   },
   methods: {

@@ -171,6 +171,17 @@
           "default": "current",
           "read_only": true
         },
+        "email": {
+          "type": "string",
+          "show_only_to": [
+            "self",
+            {
+              "authors": {
+                "role": "admin"
+              }
+            }
+          ]
+        },
         "role": {
           "type": "string",
           "options": ["contributor", "admin"],
