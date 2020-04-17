@@ -46,8 +46,6 @@
         </div>
       </div>
 
-      {{ publidata }}
-
       <!-- Access control -->
       <div class="margin-bottom-small">
         <label>
@@ -68,6 +66,7 @@
             :password.sync="publidata.password"
           />
         </div>
+        publidata.password : {{ publidata.password }}
       </div>
 
       <!-- Attached to project -->
@@ -164,13 +163,7 @@ export default {
         attached_to_project: !!this.publication.attached_to_project
           ? this.publication.attached_to_project
           : "",
-        password:
-          this.publication.password === "has_pass"
-            ? this.$root.getFolderPassword({
-                type: "publications",
-                slugFolderName: slugPubliName,
-              })
-            : "",
+        password: this.publi_password,
         authors:
           typeof this.publication.authors === "string" &&
           this.publication.authors !== ""

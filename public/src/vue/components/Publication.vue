@@ -106,17 +106,6 @@ export default {
         slugFolderName: this.slugPubliName,
       });
     },
-    publi_password() {
-      const pwds = this.$auth.getFoldersPasswords();
-      if (
-        pwds.hasOwnProperty("publications") &&
-        pwds["publications"].hasOwnProperty(this.slugPubliName) &&
-        this.publication.password === "has_pass"
-      ) {
-        return pwds["publications"][this.slugPubliName];
-      }
-      return "";
-    },
   },
   methods: {
     openPublication(slugPubliName) {
@@ -127,37 +116,12 @@ export default {
 
       if (this.can_access_publi) this.$root.openPublication(this.slugPubliName);
     },
-    submitPassword() {
-      console.log("METHODS • Publication: submitPassword");
+    publi_password() {
+      if (this.password !== "has_pass") return "";
 
-      this.$auth.updateFoldersPasswords({
-        publications: {
-          [this.slugPubliName]: this.$refs.passwordField.value,
-        },
-      });
-
-      this.$socketio.sendAuth();
-
-      // check if password matches or not
-      this.$eventHub.$once("socketio.authentificated", () => {
-        const has_passworded_folder = window.state.list_authorized_folders.filter(
-          (f) =>
-            f.type === "publications" &&
-            f.allowed_slugFolderNames.includes(this.slugPubliName)
-        );
-        if (has_passworded_folder.length === 0) {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(
-              this.$t("notifications.wrong_password_for") +
-                this.publication.name
-            );
-          this.$refs.passwordField.value = "";
-          this.$refs.passwordField.focus();
-        } else {
-          this.show_input_pwd = false;
-        }
+      return this.$root.getFolderPassword({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
       });
     },
     forgetPassword() {

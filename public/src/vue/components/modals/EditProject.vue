@@ -172,7 +172,6 @@ import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 export default {
   props: {
     slugProjectName: String,
-    project_password: String,
     project: Object,
     read_only: Boolean,
   },
@@ -187,7 +186,7 @@ export default {
     return {
       show_folder: !!this.project.folder,
       show_image: !!this.project.preview,
-      show_password: !!this.project_password,
+      show_password: this.project.password === "has_pass",
       show_keywords: !!this.project.keywords,
       show_authors: !!this.project.authors,
       show_access_control: !!this.project.editing_limited_to,
@@ -202,12 +201,15 @@ export default {
         authors: this.project.authors,
         editing_limited_to: !!this.project.editing_limited_to
           ? this.project.editing_limited_to
-          : this.project_password
+          : this.project.password
           ? "with_password"
           : "everybody",
         viewing_limited_to: this.project.viewing_limited_to,
         keywords: this.project.keywords,
-        password: this.project_password ? this.project_password : "",
+        password: this.$root.getFolderPassword({
+          type: "projects",
+          slugFolderName: this.slugProjectName,
+        }),
       },
 
       tag: "",

@@ -34,6 +34,7 @@
           @input="$emit('update:password', $event.target.value)"
           autocomplete="new-password"
         />
+        {{ password }}
       </div>
     </div>
 

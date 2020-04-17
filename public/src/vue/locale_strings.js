@@ -2661,13 +2661,6 @@ module.exports = (function () {
         oc: "Cargament de do•doc en cors…",
         de: "Laden des laufenden do•doc…",
       },
-      "wrong_password_for_folder:": {
-        fr: "Le mot de passe n’est pas le bon pour le dossier&nbsp;:",
-        en: "Wrong password or folder missing for:",
-        nl: "Het wachtwoord is niet correct voor dit onderdeel:",
-        oc: "Lo mot de passa es pas lo bon pel dorsièr:",
-        de: "Das Passwort ist nicht das richtige für die Datei.",
-      },
       "created_edited_media:": {
         fr: "Création ou édition d’un média pour le dossier&nbsp;:",
         en: "A media has been created or edited in folder:",
@@ -2788,12 +2781,16 @@ module.exports = (function () {
         oc: "Aqueste projècte ven d'èsser suprimit per qualqu'un mai.",
         de: "Dieses Projekt wurde gerade von jemandem gelöscht.",
       },
-      wrong_password_for: {
-        fr: "Mot de passe erroné pour ",
-        en: "Wrong password for project ",
-        nl: "Onjuist wachtwoord voor ",
-        oc: "Mot de Santa Clara erronèu per",
-        de: "Falsches Passwort für",
+      wrong_password: {
+        fr: "Mot de passe erroné",
+        en: "Wrong password",
+        nl: "Onjuist wachtwoord",
+        oc: "Mot de Santa Clara erronèu",
+        de: "Falsches Passwort",
+      },
+      password_is_valid: {
+        fr: "Mot de passe accepté",
+        en: "Password is valid",
       },
       connected_as: {
         fr: "Connecté comme  ",

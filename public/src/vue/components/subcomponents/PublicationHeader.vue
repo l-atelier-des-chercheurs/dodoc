@@ -85,6 +85,7 @@
         <EditPublication
           v-if="show_edit_publication"
           :publication="publication"
+          :publi_password="publi_password()"
           :slugPubliName="slugPubliName"
           @close="show_edit_publication = false"
         />
@@ -247,6 +248,14 @@ export default {
           () => {}
         );
     },
+    publi_password() {
+      if (this.publication.password !== "has_pass") return "";
+      return this.$root.getFolderPassword({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
+
     duplicateWithNewName(event) {
       console.log("METHODS • PublicationHeader: duplicateWithNewName");
 

@@ -245,9 +245,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(
-              this.$t("notifications.wrong_password_for") + this.author.name
-            );
+            .error(this.$t("notifications.wrong_password"));
           this.$refs.passwordField.value = "";
           this.$refs.passwordField.focus();
         } else {
