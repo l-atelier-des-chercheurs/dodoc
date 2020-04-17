@@ -850,9 +850,9 @@ module.exports = (function () {
     },
     email_instructions: {
       fr:
-        "Optionnel. Il sera uniquement utilisé pour vous notifier d’un changement sur do•doc et ne sera pas visible aux autres utilisateurs.",
+        "Optionnel. Sera uniquement utilisé pour vous notifier d’un message sur do•doc et ne sera pas visible aux autres utilisateurs.",
       en:
-        "Optional. Will only be used to let you know of a change to your projects, and will never be shown to other users.",
+        "Optional. Will only be used to let you know of a new personal message, and will never be shown to other users.",
     },
     date: {
       fr: "Date",
@@ -1477,9 +1477,25 @@ module.exports = (function () {
       oc: "Mot de Santa Clara requesit",
       de: "Kennwort zum Öffnen der Datei",
     },
+    password_required_to_edit: {
+      fr: "Mot de passe requis pour contribuer",
+      en: "Password required to contribute",
+    },
     only_authors_can_open: {
       fr: "Accès limité aux auteurs",
       en: "Access limited to authors",
+    },
+    ask_to_be_added_to_authors: {
+      fr: "Demander à être rajouté aux auteurs pour contribuer",
+      en: "Request to be added to authors list to contribute",
+    },
+    login_to_access_project: {
+      fr: "Identifiez-vous pour accéder",
+      en: "Login to access",
+    },
+    login_to_edit_project: {
+      fr: "Identifiez-vous pour contribuer",
+      en: "Login to contribute",
     },
     show_password: {
       fr: "Afficher le mot de passe",

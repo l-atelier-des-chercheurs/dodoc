@@ -60,9 +60,6 @@
             :password.sync="projectdata.password"
           />
         </div>
-        {{ editing_limited_to }}
-        {{ viewing_limited_to }}
-        {{ password }}
       </div>
 
       <!-- Preview -->
@@ -263,7 +260,7 @@ export default {
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t("notifications.if_only_authors_select_authors"));
-
+        this.show_authors = true;
         return false;
       }
 

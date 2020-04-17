@@ -77,10 +77,14 @@
           "type": "string"
         },
         "editing_limited_to": {
-          "type": "string"
+          "type": "string",
+          "options": ["everybody", "with_password", "only_authors"],
+          "default": "everybody"
         },
         "viewing_limited_to": {
-          "type": "string"
+          "type": "string",
+          "options": ["everybody", ""],
+          "default": "everybody"
         }
       },
       "medias": {
@@ -216,10 +220,14 @@
           "type": "array"
         },
         "editing_limited_to": {
-          "type": "string"
+          "type": "string",
+          "options": ["everybody", "with_password", "only_authors"],
+          "default": "everybody"
         },
         "viewing_limited_to": {
-          "type": "string"
+          "type": "string",
+          "options": ["everybody", ""],
+          "default": "everybody"
         },
         "date_created": {
           "type": "date",

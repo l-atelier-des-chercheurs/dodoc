@@ -328,7 +328,7 @@ module.exports = function (app) {
         socket,
         socketid: socket.id,
         localized_string: `action_not_allowed`,
-        not_localized_string: `Error: folder can’t be downloaded ${slugFolderName}`,
+        not_localized_string: `Error: folder can’t be uploaded ${slugFolderName}`,
         type: "error",
       });
       return;

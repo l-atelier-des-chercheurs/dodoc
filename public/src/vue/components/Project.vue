@@ -27,15 +27,13 @@
       </div>
 
       <div class="m_project--presentation--text">
-        <h2
-          class="m_project--presentation--text--title"
-          :content="slugProjectName"
+        <h2 class="m_project--presentation--text--title">
+          <!-- :content="slugProjectName"
           v-tippy="{
             placement: 'bottom-start',
             delay: [600, 0],
             interactive: true,
-          }"
-        >
+          }" -->
           {{ project.name }}
         </h2>
 
@@ -105,7 +103,7 @@
 
           <div
             class="m_metaField"
-            v-if="!!project.viewing_limited_to && context === 'full'"
+            v-if="!!_viewing_limited_to && context === 'full'"
           >
             <div>{{ $t("consultation") }}</div>
             <div>{{ $t("visible_to_all") }}</div>
@@ -122,11 +120,52 @@
             <label>{{ $t("protected_by_pass") }}</label>
           </div> -->
 
-          <button
+          <div
+            class="m_metaField"
             v-if="
               !can_edit_project &&
+              project.viewing_limited_to === 'only_authors' &&
+              context !== 'full'
+            "
+          >
+            <div>{{ $t("only_authors_can_open") }}</div>
+          </div>
+
+          <template
+            v-if="
+              !can_edit_project &&
+              project.editing_limited_to === 'only_authors' &&
+              context === 'full'
+            "
+          >
+            <button
+              v-if="!$root.current_author"
+              type="button"
+              class="buttonLink"
+              style
+              :readonly="read_only"
+              @click="$root.showAuthorsListModal = true"
+            >
+              {{ $t("login_to_edit_project") }}
+            </button>
+
+            <button
+              v-else
+              type="button"
+              class="buttonLink"
+              style
+              :readonly="read_only"
+              @click="requestAccessToProject"
+            >
+              {{ $t("ask_to_be_added_to_authors") }}
+            </button>
+          </template>
+
+          <button
+            v-if="
+              !can_see_project &&
               project.password === 'has_pass' &&
-              project.editing_limited_to !== 'only_authors'
+              project.viewing_limited_to !== 'only_authors'
             "
             type="button"
             class="buttonLink _open_pwd_input"
@@ -137,17 +176,22 @@
           >
             {{ $t("password_required_to_open") }}
           </button>
+
           <button
             v-if="
-              !can_see_project && project.editing_limited_to === 'only_authors'
+              !can_edit_project &&
+              project.password === 'has_pass' &&
+              project.editing_limited_to !== 'only_authors' &&
+              context === 'full'
             "
             type="button"
-            class="buttonLink"
+            class="buttonLink _open_pwd_input"
+            :class="{ 'is--active': showInputPasswordField }"
             style
             :readonly="read_only"
-            @click="$root.showAuthorsListModal = true"
+            @click="showInputPasswordField = !showInputPasswordField"
           >
-            {{ $t("only_authors_can_open") }}
+            {{ $t("password_required_to_edit") }}
           </button>
 
           <div
@@ -189,7 +233,7 @@
           <div
             v-if="
               can_see_project &&
-              project_password &&
+              project_password() &&
               context === 'full' &&
               project.editing_limited_to !== 'only_authors'
             "
@@ -202,7 +246,7 @@
               v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
             />
             <div v-if="showCurrentPassword && can_see_project">
-              {{ project_password }}
+              {{ project_password() }}
             </div>
           </div>
         </div>
@@ -341,7 +385,7 @@
             v-if="
               can_see_project &&
               can_edit_project &&
-              project_password &&
+              project_password() &&
               context === 'full' &&
               project.editing_limited_to !== 'only_authors'
             "
@@ -443,7 +487,7 @@
       <EditProject
         v-if="showEditProjectModal"
         :project="project"
-        :project_password="project_password"
+        :project_password="project_password()"
         :slugProjectName="slugProjectName"
         @close="showEditProjectModal = false"
         :read_only="read_only"
@@ -542,6 +586,11 @@ export default {
         return this.project.editing_limited_to;
       else return false;
     },
+    _viewing_limited_to() {
+      if (!!this.project.viewing_limited_to)
+        return this.project.viewing_limited_to;
+      else return false;
+    },
     previewURL() {
       if (
         !this.project.hasOwnProperty("preview") ||
@@ -567,24 +616,12 @@ export default {
         slugFolderName: this.slugProjectName,
       });
     },
-    project_password() {
-      const projects_password = this.$auth.getFoldersPasswords();
-      if (
-        projects_password.hasOwnProperty("projects") &&
-        projects_password["projects"].hasOwnProperty(this.slugProjectName) &&
-        this.project.password === "has_pass"
-      ) {
-        return projects_password["projects"][this.slugProjectName];
-      }
-      return "";
-    },
   },
   methods: {
     openProject() {
       if (this.can_see_project) this.$root.openProject(this.slugProjectName);
       else this.showInputPasswordField = !this.showInputPasswordField;
     },
-
     closeProject() {
       this.$root.closeProject();
     },
@@ -603,6 +640,34 @@ export default {
           },
           () => {}
         );
+    },
+    project_password() {
+      const projects_password = this.$auth.getFoldersPasswords();
+      if (
+        projects_password.hasOwnProperty("projects") &&
+        projects_password["projects"].hasOwnProperty(this.slugProjectName) &&
+        this.project.password === "has_pass"
+      ) {
+        return projects_password["projects"][this.slugProjectName];
+      }
+      return "";
+    },
+
+    requestAccessToProject() {
+      const current_author = this.$root.current_author;
+
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error("Feature not yet implemented…");
+
+      // TODO : send request to be added to folder
+      // === creating a channel restricted to all the existing authors + current
+
+      this.$eventHub.$emit("requestToBeAddedToAuthors", {
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
     },
     duplicateWithNewName(event) {
       console.log("METHODS • Project: duplicateWithNewName");
@@ -677,6 +742,8 @@ export default {
         } else {
           this.showInputPasswordField = false;
           this.openProject();
+          // to force refresh computed project_password prop
+          this.$forceUpdate();
         }
       });
     },

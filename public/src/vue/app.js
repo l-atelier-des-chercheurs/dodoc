@@ -837,6 +837,7 @@ let vm = new Vue({
       if (
         folder.password !== "has_pass" &&
         (!folder.hasOwnProperty("editing_limited_to") ||
+          folder.editing_limited_to === "" ||
           folder.editing_limited_to === "with_password")
       )
         return true;
@@ -856,6 +857,7 @@ let vm = new Vue({
       if (
         folder.password === "has_pass" &&
         (!folder.hasOwnProperty("editing_limited_to") ||
+          folder.editing_limited_to === "" ||
           folder.editing_limited_to === "with_password")
       ) {
         return this.state.list_authorized_folders.some((i) => {

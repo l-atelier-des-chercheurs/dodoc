@@ -211,8 +211,10 @@ module.exports = (function () {
     // if editing_limited_to is not set, or set to with_password
     if (
       !folderData.hasOwnProperty("editing_limited_to") ||
+      folderData.editing_limited_to === "" ||
       folderData.editing_limited_to === "with_password"
     ) {
+      dev.logverbose(`AUTH — canEditFolder: checkIfHasPasswordOrPasswordMatch`);
       return checkIfHasPasswordOrPasswordMatch({
         socket,
         type,

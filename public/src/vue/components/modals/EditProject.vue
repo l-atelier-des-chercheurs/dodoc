@@ -60,70 +60,11 @@
         </label>
 
         <div v-if="show_access_control">
-          <div class="">
-            <label>
-              {{ $t("who_can_edit") }}
-            </label>
-
-            <div class="">
-              <div
-                v-for="mode in ['only_authors', 'with_password', 'everybody']"
-                :key="mode"
-              >
-                <input
-                  class="custom_radio"
-                  type="radio"
-                  :id="`editing_limited_to-${mode}`"
-                  :name="`editing_limited_to-${mode}`"
-                  :value="mode"
-                  v-model="projectdata.editing_limited_to"
-                />
-                <label class="text-lc" :for="`editing_limited_to-${mode}`">
-                  <span>{{ $t(mode) }}</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Password -->
-          <div
-            class="margin-top-small"
-            v-if="projectdata.editing_limited_to === 'with_password'"
-          >
-            <label>
-              {{ $t("password") }}
-            </label>
-            <div>
-              <input
-                type="password"
-                required
-                v-model="projectdata.password"
-                autocomplete="new-password"
-              />
-            </div>
-          </div>
-
-          <div
-            class="margin-top-small"
-            v-if="projectdata.editing_limited_to !== 'everybody'"
-          >
-            <div class="">
-              <input
-                class=""
-                type="checkbox"
-                id="visible_to_all"
-                name="visible_to_all"
-                v-model="projectdata.viewing_limited_to"
-                true-value="everybody"
-                false-value=""
-              />
-              <label for="visible_to_all">
-                <span>
-                  {{ $t("visible_to_all") }}
-                </span>
-              </label>
-            </div>
-          </div>
+          <AccessControl
+            :editing_limited_to.sync="projectdata.editing_limited_to"
+            :viewing_limited_to.sync="projectdata.viewing_limited_to"
+            :password.sync="projectdata.password"
+          />
         </div>
       </div>
 
@@ -222,6 +163,7 @@
 </template>
 <script>
 import Modal from "./BaseModal.vue";
+import AccessControl from "../subcomponents/AccessControl.vue";
 import slug from "slugg";
 import ImageSelect from "../subcomponents/ImageSelect.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
@@ -236,6 +178,7 @@ export default {
   },
   components: {
     Modal,
+    AccessControl,
     ImageSelect,
     TagsInput,
     AuthorsInput,
@@ -257,7 +200,11 @@ export default {
       projectdata: {
         name: this.project.name,
         authors: this.project.authors,
-        editing_limited_to: this.project.editing_limited_to,
+        editing_limited_to: !!this.project.editing_limited_to
+          ? this.project.editing_limited_to
+          : this.project_password
+          ? "with_password"
+          : "everybody",
         viewing_limited_to: this.project.viewing_limited_to,
         keywords: this.project.keywords,
         password: this.project_password ? this.project_password : "",
@@ -285,11 +232,7 @@ export default {
         this.show_authors = true;
     },
   },
-  mounted() {
-    this.projectdata.editing_limited_to = !!this.project.editing_limited_to
-      ? this.project.editing_limited_to
-      : "everybody";
-  },
+  mounted() {},
   computed: {
     previewURL() {
       if (
@@ -355,13 +298,15 @@ export default {
 
       if (
         this.projectdata.editing_limited_to === "only_authors" &&
-        this.projectdata.authors.length === 0
+        (!this.projectdata.authors ||
+          !Array.isArray(this.projectdata.authors) ||
+          this.projectdata.authors.length === 0)
       ) {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t("notifications.if_only_authors_select_authors"));
-
+        this.show_authors = true;
         return false;
       }
 

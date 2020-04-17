@@ -4,14 +4,17 @@
       <label>{{ $t("who_can_edit") }}</label>
 
       <div class>
-        <div v-for="mode in ['only_authors', 'with_password', 'everybody']" :key="mode">
+        <div
+          v-for="mode in ['only_authors', 'with_password', 'everybody']"
+          :key="mode"
+        >
           <input
             class="custom_radio"
             type="radio"
             :id="`editing_limited_to-${mode}`"
             :name="`editing_limited_to-${mode}`"
-            :value="editing_limited_to"
-            @input="$emit('update:editing_limited_to', $event.target.value)"
+            :value="mode"
+            v-model="local_editing_limited_to"
           />
           <label class="text-lc" :for="`editing_limited_to-${mode}`">
             <span>{{ $t(mode) }}</span>
@@ -41,10 +44,9 @@
           type="checkbox"
           id="visible_to_all"
           name="visible_to_all"
-          :value="viewing_limited_to"
-          @input="$emit('update:viewing_limited_to', $event.target.value)"
+          v-model="local_viewing_limited_to"
           true-value="everybody"
-          false-value
+          false-value=""
         />
         <label for="visible_to_all">
           <span>{{ $t("visible_to_all") }}</span>
@@ -58,18 +60,28 @@ export default {
   props: {
     editing_limited_to: String,
     viewing_limited_to: String,
-    password: String
+    password: String,
   },
   components: {},
   data() {
-    return {};
+    return {
+      local_editing_limited_to: this.editing_limited_to,
+      local_viewing_limited_to: this.viewing_limited_to,
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    local_editing_limited_to() {
+      this.$emit("update:editing_limited_to", this.local_editing_limited_to);
+    },
+    local_viewing_limited_to() {
+      this.$emit("update:viewing_limited_to", this.local_viewing_limited_to);
+    },
+  },
   computed: {},
-  methods: {}
+  methods: {},
 };
 </script>
 <style lang="scss" scoped></style>
