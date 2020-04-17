@@ -547,7 +547,7 @@ let vm = new Vue({
         Object.keys(this.store.projects).length === 0
       ) {
         this.closeProject();
-        return {};
+        return false;
       }
 
       if (
