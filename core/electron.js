@@ -90,6 +90,7 @@ module.exports = (function () {
         backgroundColor: "#EBEBEB",
         titleBarStyle: "hidden",
         show: true,
+        icon: "./build/icon.png",
 
         webPreferences: {
           allowRunningInsecureContent: true,
