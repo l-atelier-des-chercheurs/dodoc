@@ -2900,6 +2900,11 @@ module.exports = (function () {
         en:
           "Select at least one author that will be able to access that content",
       },
+      access_or_editing_restricted_to_authors: {
+        fr:
+          "Attention : la modification est limité aux auteurs ou aux personnes possédant le mot de passe.",
+        en: "Warning: editing is restricted to authors or with a password",
+      },
     },
   };
 

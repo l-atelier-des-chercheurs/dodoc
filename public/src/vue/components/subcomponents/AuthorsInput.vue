@@ -10,6 +10,7 @@
           $root.current_author &&
           $root.current_author.slugFolderName === author_slug,
       }"
+      :disabled="read_only"
       @click="toggleAuthorName(author_slug)"
     >
       {{ $root.getAuthor(author_slug).name }}
@@ -28,7 +29,7 @@
 </template>
 <script>
 export default {
-  props: ["currentAuthors"],
+  props: ["currentAuthors", "read_only"],
   components: {},
   data() {
     return {

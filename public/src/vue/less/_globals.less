@@ -26,7 +26,6 @@ button,
 
   &[disabled],
   &.is--disabled {
-    opacity: 0.38;
     cursor: not-allowed;
 
     &[class*="bg-"]:not(.bg-transparent) {
@@ -812,8 +811,10 @@ input[type="checkbox"] {
   &:active {
   }
 
+  &:disabled,
   &.disabled {
     background-color: @c-gris;
+    border: none;
     cursor: not-allowed;
   }
 }
@@ -891,6 +892,11 @@ input[readonly],
 textarea[readonly],
 .textarea[readonly] {
   background-color: var(--input-readonly-bg-color);
+  border-bottom: 0;
+  opacity: 1;
+}
+.switch input:disabled + label {
+  opacity: 1;
 }
 
 .text-uc {
