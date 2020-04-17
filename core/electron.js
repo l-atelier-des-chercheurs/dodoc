@@ -91,7 +91,7 @@ module.exports = (function () {
         titleBarStyle: "hidden",
         show: true,
         title: "do•doc",
-        icon: "./build/icon.png",
+        icon: path.join(global.appRoot, "build", "icon.png"),
 
         webPreferences: {
           allowRunningInsecureContent: true,
