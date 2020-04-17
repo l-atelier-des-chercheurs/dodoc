@@ -123,7 +123,9 @@
           <div
             class="m_metaField"
             v-if="
-              !can_edit_project && project.editing_limited_to === 'only_authors'
+              !can_edit_project &&
+              project.viewing_limited_to === 'only_authors' &&
+              context !== 'full'
             "
           >
             <div>{{ $t("only_authors_can_open") }}</div>
@@ -131,7 +133,9 @@
 
           <template
             v-if="
-              !can_edit_project && project.editing_limited_to === 'only_authors'
+              !can_edit_project &&
+              project.editing_limited_to === 'only_authors' &&
+              context === 'full'
             "
           >
             <button
@@ -142,7 +146,7 @@
               :readonly="read_only"
               @click="$root.showAuthorsListModal = true"
             >
-              {{ $t("login_to_access_project") }}
+              {{ $t("login_to_edit_project") }}
             </button>
 
             <button
