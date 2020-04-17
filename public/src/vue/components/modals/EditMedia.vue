@@ -14,7 +14,10 @@
     :media_navigation="true"
   >
     <template slot="header">
-      <div class>{{ $t("edit_the_media") }}</div>
+      <div class>
+        <template v-if="can_edit_media">{{ $t("edit_the_media") }}</template>
+        <template v-else>{{ $t("media") }}</template>
+      </div>
       <small class="font-normal">{{ media.media_filename }}</small>
     </template>
 
@@ -100,6 +103,7 @@
 
         <button
           type="button"
+          v-if="can_edit_media"
           class="buttonLink"
           :class="{ 'is--active': showCopyToProjectOptions }"
           @click="showCopyToProjectOptions = !showCopyToProjectOptions"
@@ -155,7 +159,9 @@
           class="buttonLink"
           :class="{ 'is--active': show_edit_media_options }"
           @click="show_edit_media_options = !show_edit_media_options"
-          v-if="media.type === 'image' || media.type === 'video'"
+          v-if="
+            can_edit_media && (media.type === 'image' || media.type === 'video')
+          "
         >
           <svg
             version="1.1"
@@ -255,6 +261,7 @@
           type="button"
           class="buttonLink hide_on_print"
           @click.prevent="removeMedia()"
+          v-if="can_edit_media"
           :disabled="read_only"
         >
           <svg
@@ -284,14 +291,17 @@
 
       <div class="hide_on_print">
         <!-- Fav or not -->
-        <div class="margin-bottom-small">
+        <div
+          class="margin-bottom-small"
+          v-if="can_edit_media || (!can_edit_media && !!mediadata.fav)"
+        >
           <span class="switch switch-xs">
             <input
               type="checkbox"
               class="switch"
               id="favswitch_editmedia"
               v-model="mediadata.fav"
-              :readonly="read_only"
+              :disabled="!can_edit_media"
             />
             <label
               for="favswitch_editmedia"
@@ -385,7 +395,7 @@
           <br />
           <textarea
             v-model="mediadata.caption"
-            :readonly="read_only"
+            :readonly="read_only || !can_edit_media"
           ></textarea>
         </div>
 
@@ -413,23 +423,22 @@
           <label>{{ $t("keywords") }}</label>
           <TagsInput
             :keywords="mediadata.keywords"
+            :read_only="!can_edit_media"
             @tagsChanged="(newTags) => (mediadata.keywords = newTags)"
           />
         </div>
 
         <!-- Author(s) -->
-        <div
-          v-if="!read_only || !!mediadata.authors"
-          class="margin-bottom-small"
-        >
+        <div class="margin-bottom-small">
           <label>{{ $t("author") }}</label>
 
           <AuthorsInput
             :currentAuthors="mediadata.authors"
+            :read_only="!can_edit_media"
             @authorsChanged="(newAuthors) => (mediadata.authors = newAuthors)"
           />
 
-          <small>{{ $t("author_instructions") }}</small>
+          <small v-if="can_edit_media">{{ $t("author_instructions") }}</small>
           <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
           </textarea>-->
         </div>
@@ -530,6 +539,12 @@ export default {
   computed: {
     all_projects() {
       return this.$root.projects_that_are_accessible;
+    },
+    can_edit_media() {
+      return this.$root.canEditFolder({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
     },
     project_name() {
       if (

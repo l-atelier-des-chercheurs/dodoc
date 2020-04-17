@@ -1,11 +1,21 @@
 <template>
-  <form @close="$emit('close')" v-on:submit.prevent="newAuthor" :read_only="read_only">
+  <form
+    @close="$emit('close')"
+    v-on:submit.prevent="newAuthor"
+    :read_only="read_only"
+  >
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
     <!-- Human name -->
     <div class="margin-bottom-small">
       <label>{{ $t("name") }}</label>
       <input type="text" v-model.trim="authordata.name" required autofocus />
+    </div>
+
+    <div class="margin-bottom-small">
+      <label>{{ $t("email") }}</label>
+      <input type="email" v-model.trim="authordata.email" />
+      <small>{{ $t("email_instructions") }}</small>
     </div>
 
     <!-- Password -->
@@ -32,7 +42,9 @@
           class="button-nostyle text-uc button-triangle"
           :class="{ 'is--active': show_image }"
           @click="show_image = !show_image"
-        >{{ $t("portrait") }}</button>
+        >
+          {{ $t("portrait") }}
+        </button>
       </label>
       <template v-if="show_image">
         <ImageSelect
@@ -48,7 +60,7 @@
     </div>
 
     <!-- Role -->
-    <div class="margin-bottom-small">
+    <!-- <div class="margin-bottom-small">
       <label>
         <button
           type="button"
@@ -66,7 +78,7 @@
           </option>
         </select>
       </template>
-    </div>
+    </div>-->
 
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
@@ -76,14 +88,18 @@
           class="button-nostyle text-uc button-triangle"
           :class="{ 'is--active': show_nfc }"
           @click="show_nfc = !show_nfc"
-        >{{ $t("nfc_tag") }}</button>
+        >
+          {{ $t("nfc_tag") }}
+        </button>
       </label>
       <template v-if="show_nfc">
         <input type="text" v-model="authordata.nfc_tag" />
       </template>
     </div>
 
-    <button type="button" class="button-small" @click="$emit('close')">{{ $t("cancel") }}</button>
+    <button type="button" class="button-small" @click="$emit('close')">
+      {{ $t("cancel") }}
+    </button>
     <button type="submit" class="button-greenthin">{{ $t("create") }}</button>
   </form>
 </template>
@@ -92,10 +108,10 @@ import ImageSelect from "../subcomponents/ImageSelect.vue";
 
 export default {
   props: {
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
-    ImageSelect
+    ImageSelect,
   },
   data() {
     return {
@@ -107,11 +123,12 @@ export default {
 
       authordata: {
         name: "",
+        email: "",
         password: "",
         role: "contributor",
-        nfc_tag: ""
+        nfc_tag: "",
       },
-      preview: undefined
+      preview: undefined,
     };
   },
   computed: {},
@@ -122,12 +139,14 @@ export default {
     }
   },
   methods: {
-    newAuthor: function(event) {
+    newAuthor: function (event) {
       console.log("newAuthor");
 
       let data = JSON.parse(JSON.stringify(this.authordata));
 
-      let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
+      let allAuthorsName = this.$root.allAuthors.map((a) =>
+        a.name.toLowerCase()
+      );
 
       // check if project name (not slug) already exists
       if (allAuthorsName.includes(data.name.toLowerCase())) {
@@ -149,8 +168,8 @@ export default {
       this.$root.createFolder({ type: "authors", data });
 
       this.$emit("close", "");
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

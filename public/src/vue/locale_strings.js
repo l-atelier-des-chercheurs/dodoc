@@ -844,6 +844,16 @@ module.exports = (function () {
       oc: "Ajuda",
       de: "Hilfe",
     },
+    email: {
+      fr: "Adresse mail",
+      en: "Email",
+    },
+    email_instructions: {
+      fr:
+        "Optionnel. Il sera uniquement utilisé pour vous notifier d’un changement sur do•doc et ne sera pas visible aux autres utilisateurs.",
+      en:
+        "Optional. Will only be used to let you know of a change to your projects, and will never be shown to other users.",
+    },
     date: {
       fr: "Date",
       en: "Date",
@@ -1466,6 +1476,10 @@ module.exports = (function () {
       nl: "Wachtwoord vereist",
       oc: "Mot de Santa Clara requesit",
       de: "Kennwort zum Öffnen der Datei",
+    },
+    only_authors_can_open: {
+      fr: "Accès limité aux auteurs",
+      en: "Access limited to authors",
     },
     show_password: {
       fr: "Afficher le mot de passe",
@@ -2885,6 +2899,11 @@ module.exports = (function () {
         fr: "Sélectionnez au moins un auteur qui pourra accéder à ce contenu",
         en:
           "Select at least one author that will be able to access that content",
+      },
+      access_or_editing_restricted_to_authors: {
+        fr:
+          "Attention : la modification est limité aux auteurs ou aux personnes possédant le mot de passe.",
+        en: "Warning: editing is restricted to authors or with a password",
       },
     },
   };

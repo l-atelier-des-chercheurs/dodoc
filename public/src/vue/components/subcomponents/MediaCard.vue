@@ -9,6 +9,7 @@
     }"
   >
     <div>
+      {{ can_edit_media }}
       <figure
         @click.stop.exact="openMediaModal()"
         @click.shift.left.exact="$emit('toggleSelect')"
@@ -55,6 +56,7 @@
                   type="checkbox"
                   v-model="local_is_selected"
                   @change="$emit('toggleSelect')"
+                  :class="{ disabled: !can_edit_media }"
                 />
               </label>
             </div>
@@ -132,6 +134,7 @@ export default {
     media: Object,
     slugProjectName: String,
     metaFileName: String,
+    can_edit_media: Boolean,
     preview_size: Number,
     is_selected: Boolean,
   },

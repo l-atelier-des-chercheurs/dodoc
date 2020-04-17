@@ -1,7 +1,7 @@
 <template>
   <div class="m_project--library">
     <div class="m_actionbar" v-show="$root.state.connected">
-      <div class="m_actionbar--buttonBar">
+      <div class="m_actionbar--buttonBar" v-if="can_edit_project">
         <button
           type="button"
           class="barButton barButton_capture"
@@ -116,7 +116,6 @@
         >
           {{ $root.formatDateToHuman(item[0]) }}
         </h3>
-
         <div class="m_mediaShowAll">
           <div v-for="media in item[1]" :key="media.slugMediaName">
             <MediaCard
@@ -124,6 +123,7 @@
               :media="media"
               :metaFileName="media.metaFileName"
               :slugProjectName="slugProjectName"
+              :can_edit_media="can_edit_project"
               :preview_size="180"
               :class="{
                 'is--just_added': last_media_added.includes(media.metaFileName),
@@ -339,6 +339,18 @@ export default {
             )
         );
       } else {
+        if (!this.can_edit_project) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(
+              this.$t(
+                'notifications["access_or_editing_restricted_to_authors"]'
+              )
+            );
+          return false;
+        }
+
         this.selected_medias.push({
           slugFolderName,
           metaFileName,

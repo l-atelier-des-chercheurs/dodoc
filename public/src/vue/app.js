@@ -547,7 +547,7 @@ let vm = new Vue({
         Object.keys(this.store.projects).length === 0
       ) {
         this.closeProject();
-        return {};
+        return false;
       }
 
       if (
@@ -1044,6 +1044,7 @@ let vm = new Vue({
     setAuthor: function (author) {
       this.settings.current_author_slug = author.slugFolderName;
       this.$socketio.socket.emit("updateClientInfo", { author });
+      this.$socketio.listFolders({ type: "authors" });
     },
     unsetAuthor: function () {
       this.$auth.removeAllFoldersPassword({

@@ -2,9 +2,9 @@
   <div
     class="m_project"
     :class="{
-      'is--hovered': is_hovered && can_access_project,
+      'is--hovered': is_hovered && can_see_project,
       'is--selected': is_selected,
-      'is--accessible': can_access_project,
+      'is--accessible': can_see_project,
     }"
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
@@ -95,17 +95,6 @@
 
           <div
             class="m_metaField"
-            v-if="
-              can_access_project &&
-              project.password === 'has_pass' &&
-              project.editing_limited_to !== 'only_authors'
-            "
-          >
-            <label>{{ $t("protected_by_pass") }}</label>
-          </div>
-
-          <div
-            class="m_metaField"
             v-if="!!_editing_limited_to && context === 'full'"
           >
             <div>{{ $t("who_can_edit") }}</div>
@@ -121,10 +110,21 @@
             <div>{{ $t("consultation") }}</div>
             <div>{{ $t("visible_to_all") }}</div>
           </div>
+          <!-- 
+          <div
+            class="m_metaField"
+            v-if="
+              can_see_project &&
+              project.password === 'has_pass' &&
+              project.editing_limited_to !== 'only_authors'
+            "
+          >
+            <label>{{ $t("protected_by_pass") }}</label>
+          </div> -->
 
           <button
             v-if="
-              !can_access_project &&
+              !can_edit_project &&
               project.password === 'has_pass' &&
               project.editing_limited_to !== 'only_authors'
             "
@@ -139,8 +139,7 @@
           </button>
           <button
             v-if="
-              !can_access_project &&
-              project.editing_limited_to === 'only_authors'
+              !can_see_project && project.editing_limited_to === 'only_authors'
             "
             type="button"
             class="buttonLink"
@@ -153,7 +152,7 @@
 
           <div
             class="padding-verysmall _pwd_input"
-            v-if="showInputPasswordField && !can_access_project"
+            v-if="showInputPasswordField"
           >
             <div class="margin-bottom-small">
               <label>{{ $t("password") }}</label>
@@ -189,7 +188,7 @@
 
           <div
             v-if="
-              can_access_project &&
+              can_see_project &&
               project_password &&
               context === 'full' &&
               project.editing_limited_to !== 'only_authors'
@@ -202,7 +201,7 @@
               @click="showCurrentPassword = !showCurrentPassword"
               v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
             />
-            <div v-if="showCurrentPassword && can_access_project">
+            <div v-if="showCurrentPassword && can_see_project">
               {{ project_password }}
             </div>
           </div>
@@ -211,7 +210,7 @@
 
       <div class="m_project--presentation--buttons">
         <button
-          v-if="context !== 'full' && can_access_project"
+          v-if="context !== 'full' && can_see_project"
           type="button"
           class="m_project--presentation--buttons--openButton"
           @click.exact="openProject"
@@ -232,13 +231,13 @@
             type="checkbox"
             v-model="local_is_selected"
             @change="$emit('toggleSelect')"
-            :class="{ disabled: !can_access_project || !can_edit_project }"
+            :class="{ disabled: !can_see_project || !can_edit_project }"
           />
-          <!-- :disabled="!can_access_project" -->
+          <!-- :disabled="!can_see_project" -->
         </label>
 
         <button
-          v-if="can_access_project && can_edit_project && context === 'full'"
+          v-if="can_see_project && can_edit_project && context === 'full'"
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
@@ -267,7 +266,7 @@
         </button>
 
         <button
-          v-if="can_access_project && can_edit_project && context === 'full'"
+          v-if="can_see_project && can_edit_project && context === 'full'"
           type="button"
           class="buttonLink"
           @click="removeProject()"
@@ -296,7 +295,7 @@
         </button>
 
         <button
-          v-if="can_access_project && can_edit_project && context === 'full'"
+          v-if="can_see_project && can_edit_project && context === 'full'"
           type="button"
           class="buttonLink"
           :class="{ 'is--active': show_advanced_options }"
@@ -340,7 +339,7 @@
         <div v-if="show_advanced_options">
           <button
             v-if="
-              can_access_project &&
+              can_see_project &&
               can_edit_project &&
               project_password &&
               context === 'full' &&
@@ -354,7 +353,7 @@
           </button>
 
           <button
-            v-if="can_access_project && can_edit_project && context === 'full'"
+            v-if="can_see_project && can_edit_project && context === 'full'"
             type="button"
             class="buttonLink"
             @click="downloadProjectArchive"
@@ -395,7 +394,7 @@
           </button>
 
           <button
-            v-if="can_access_project && can_edit_project && context === 'full'"
+            v-if="can_see_project && can_edit_project && context === 'full'"
             type="button"
             class="buttonLink"
             :class="{ 'is--active': showDuplicateProjectMenu }"
@@ -496,8 +495,8 @@ export default {
     };
   },
   watch: {
-    can_access_project() {
-      if (!this.can_access_project && this.context === "full") {
+    can_see_project() {
+      if (!this.can_see_project && this.context === "full") {
         // cas d’un mdp qui a été ajouté ou changé
         this.$alertify
           .closeLogOnClick(true)
@@ -556,7 +555,7 @@ export default {
       }
       return false;
     },
-    can_access_project() {
+    can_see_project() {
       return this.$root.canSeeFolder({
         type: "projects",
         slugFolderName: this.slugProjectName,
@@ -582,7 +581,7 @@ export default {
   },
   methods: {
     openProject() {
-      if (this.can_access_project) this.$root.openProject(this.slugProjectName);
+      if (this.can_see_project) this.$root.openProject(this.slugProjectName);
       else this.showInputPasswordField = !this.showInputPasswordField;
     },
 
@@ -699,7 +698,6 @@ export default {
         this.zip_export_started = false;
       }, 2000);
 
-      const pwd = this.$auth.hashCode(this.project_password);
       const query_url =
         window.location.origin +
         "/_archives/projects/" +

@@ -61,7 +61,8 @@
           "override": true
         },
         "password": {
-          "type": "string"
+          "type": "string",
+          "show_only_to": []
         },
         "authors": {
           "type": "array"
@@ -170,6 +171,10 @@
           "type": "date",
           "default": "current",
           "read_only": true
+        },
+        "email": {
+          "type": "string",
+          "show_only_to": ["self"]
         },
         "role": {
           "type": "string",

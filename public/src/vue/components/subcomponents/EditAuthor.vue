@@ -5,12 +5,16 @@
     v-on:submit.prevent="editAuthor"
     :read_only="read_only"
   >
-    <!-- <span class="">{{ $t('create_an_author') }}</span> -->
-
     <!-- Human name -->
     <div class="margin-bottom-small">
       <label>{{ $t("name") }}</label>
       <input type="text" v-model.trim="authordata.name" required autofocus />
+    </div>
+
+    <div class="margin-bottom-small">
+      <label>{{ $t("email") }}</label>
+      <input type="email" v-model.trim="authordata.email" />
+      <small>{{ $t("email_instructions") }}</small>
     </div>
 
     <!-- Preview -->
@@ -89,6 +93,7 @@ export default {
 
       authordata: {
         name: this.author.name,
+        email: this.author.email,
         // password: "",
         nfc_tag: this.author.nfc_tag,
       },

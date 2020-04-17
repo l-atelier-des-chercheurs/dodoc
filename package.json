@@ -23,6 +23,23 @@
     "node": "8.9.3",
     "npm": "*"
   },
+  "build": {
+    "electronVersion": "2.0.16",
+    "appId": "dodoc2",
+    "productName": "do•doc",
+    "asar": false,
+    "mac": {
+      "category": "public.app-category.education"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "appImage": {
+      "synopsis": "A documentation tool for creativity.",
+      "category": "Game",
+      "desktop": "dodoc-linux-desktop-entry.desktop"
+    }
+  },
   "dependencies": {
     "archiver": "^3.1.1",
     "bcrypt": "^3.0.8",
