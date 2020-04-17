@@ -1,15 +1,10 @@
 <template>
   <div>
-    <div class="">
-      <label>
-        {{ $t("who_can_edit") }}
-      </label>
+    <div class>
+      <label>{{ $t("who_can_edit") }}</label>
 
-      <div class="">
-        <div
-          v-for="mode in ['only_authors', 'with_password', 'everybody']"
-          :key="mode"
-        >
+      <div class>
+        <div v-for="mode in ['only_authors', 'with_password', 'everybody']" :key="mode">
           <input
             class="custom_radio"
             type="radio"
@@ -27,9 +22,7 @@
 
     <!-- Password -->
     <div class="margin-top-small" v-if="editing_limited_to === 'with_password'">
-      <label>
-        {{ $t("password") }}
-      </label>
+      <label>{{ $t("password") }}</label>
       <div>
         <input
           type="password"
@@ -42,21 +35,19 @@
     </div>
 
     <div class="margin-top-small" v-if="editing_limited_to !== 'everybody'">
-      <div class="">
+      <div class>
         <input
-          class=""
+          class
           type="checkbox"
           id="visible_to_all"
           name="visible_to_all"
           :value="viewing_limited_to"
           @input="$emit('update:viewing_limited_to', $event.target.value)"
           true-value="everybody"
-          false-value=""
+          false-value
         />
         <label for="visible_to_all">
-          <span>
-            {{ $t("visible_to_all") }}
-          </span>
+          <span>{{ $t("visible_to_all") }}</span>
         </label>
       </div>
     </div>
@@ -67,7 +58,7 @@ export default {
   props: {
     editing_limited_to: String,
     viewing_limited_to: String,
-    password: String,
+    password: String
   },
   components: {},
   data() {
@@ -78,7 +69,7 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {}
 };
 </script>
 <style lang="scss" scoped></style>
