@@ -37,6 +37,11 @@
     "asar": false,
     "mac": {
       "category": "public.app-category.education"
+    },
+    "appImage": {
+      "synopsis": "A documentation tool for creativity.",
+      "category": "Game",
+      "desktop": "dodoc-linux-desktop-entry.desktop"
     }
   },
   "dependencies": {

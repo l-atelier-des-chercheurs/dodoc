@@ -90,7 +90,7 @@ module.exports = (function () {
         backgroundColor: "#EBEBEB",
         titleBarStyle: "hidden",
         show: true,
-        title: "dodoc",
+        title: "do•doc",
         icon: "./build/icon.png",
 
         webPreferences: {
