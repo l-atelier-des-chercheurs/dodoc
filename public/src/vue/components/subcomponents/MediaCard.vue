@@ -9,7 +9,6 @@
     }"
   >
     <div>
-      {{ can_edit_media }}
       <figure
         @click.stop.exact="openMediaModal()"
         @click.shift.left.exact="$emit('toggleSelect')"

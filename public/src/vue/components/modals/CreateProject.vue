@@ -167,7 +167,6 @@ export default {
     return {
       show_folder: !!this.$root.settings.opened_folder,
       show_image: false,
-      show_password: false,
       show_keywords: false,
       show_authors: this.$root.current_author,
       show_access_control: true,

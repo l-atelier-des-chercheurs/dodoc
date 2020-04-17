@@ -35,6 +35,50 @@
         </select>
       </div>-->
 
+      <!-- Author(s) -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >
+            {{ $t("author") }}
+          </button>
+        </label>
+
+        <div v-if="show_authors">
+          <AuthorsInput
+            :currentAuthors="publidata.authors"
+            @authorsChanged="(newAuthors) => (publidata.authors = newAuthors)"
+          />
+          <small>{{ $t("author_instructions") }}</small>
+        </div>
+      </div>
+
+      <!-- Access control -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_access_control }"
+            @click="show_access_control = !show_access_control"
+          >
+            {{ $t("manage_access") }}
+          </button>
+        </label>
+
+        <div v-if="show_access_control">
+          <AccessControl
+            :editing_limited_to.sync="publidata.editing_limited_to"
+            :viewing_limited_to.sync="publidata.viewing_limited_to"
+            :password.sync="publidata.password"
+          />
+        </div>
+      </div>
+
       <div class="margin-bottom-small">
         <label>
           <button
@@ -60,29 +104,6 @@
         </div>
       </div>
 
-      <!-- Password -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_password }"
-            @click="show_password = !show_password"
-          >
-            {{ $t("password") }}
-          </button>
-        </label>
-
-        <div v-if="show_password">
-          <input
-            type="password"
-            v-model="publidata.password"
-            autocomplete="new-password"
-          />
-          <small>{{ $t("password_instructions") }}</small>
-        </div>
-      </div>
-
       <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>
@@ -95,33 +116,11 @@
             {{ $t("keywords") }}
           </button>
         </label>
-        <template v-if="show_keywords">
+        <div v-if="show_keywords">
           <TagsInput
             @tagsChanged="(newTags) => (publidata.keywords = newTags)"
           />
-        </template>
-      </div>
-
-      <!-- Author(s) -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_authors }"
-            @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
-        </label>
-
-        <template v-if="show_authors">
-          <AuthorsInput
-            :currentAuthors="publidata.authors"
-            @authorsChanged="(newAuthors) => (publidata.authors = newAuthors)"
-          />
-          <small>{{ $t("author_instructions") }}</small>
-        </template>
+        </div>
       </div>
     </template>
 
@@ -130,6 +129,7 @@
 </template>
 <script>
 import Modal from "./BaseModal.vue";
+import AccessControl from "../subcomponents/AccessControl.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 
@@ -147,6 +147,8 @@ export default {
   },
   components: {
     Modal,
+    AccessControl,
+
     TagsInput,
     AuthorsInput,
   },
@@ -154,6 +156,8 @@ export default {
     return {
       publidata: {
         name: this.default_name,
+        editing_limited_to: "everybody",
+        viewing_limited_to: "everybody",
         password: "",
         template: this.default_template,
         keywords: [],
@@ -167,6 +171,7 @@ export default {
       show_password: false,
       show_keywords: false,
       show_authors: this.$root.current_author,
+      show_access_control: true,
     };
   },
   watch: {
@@ -207,8 +212,22 @@ export default {
         return false;
       }
 
+      if (
+        this.publidata.editing_limited_to === "only_authors" &&
+        this.publidata.authors.length === 0
+      ) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.if_only_authors_select_authors"));
+        this.show_authors = true;
+        return false;
+      }
+
       let publidata = {
         name,
+        editing_limited_to: this.publidata.editing_limited_to,
+        viewing_limited_to: this.publidata.viewing_limited_to,
         password: this.publidata.password,
         template: this.publidata.template,
         authors: this.publidata.authors,

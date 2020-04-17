@@ -9,7 +9,10 @@
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
   >
-    <div class="m_project--presentation">
+    <div
+      class="m_project--presentation"
+      :class="{ 'is--full': context === 'full' }"
+    >
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
@@ -124,7 +127,8 @@
             class="m_metaField"
             v-if="
               !can_edit_project &&
-              project.viewing_limited_to === 'only_authors' &&
+              project.editing_limited_to === 'only_authors' &&
+              project.viewing_limited_to !== 'everybody' &&
               context !== 'full'
             "
           >
@@ -133,39 +137,46 @@
 
           <template
             v-if="
-              !can_edit_project &&
-              project.editing_limited_to === 'only_authors' &&
-              context === 'full'
+              !can_edit_project && project.editing_limited_to === 'only_authors'
             "
           >
-            <button
-              v-if="!$root.current_author"
-              type="button"
-              class="buttonLink"
-              style
-              :readonly="read_only"
-              @click="$root.showAuthorsListModal = true"
+            <template
+              v-if="
+                (project.viewing_limited_to === 'everybody' &&
+                  context === 'full') ||
+                (project.viewing_limited_to !== 'everybody' &&
+                  context !== 'full')
+              "
             >
-              {{ $t("login_to_edit_project") }}
-            </button>
+              <button
+                v-if="!$root.current_author"
+                type="button"
+                class="buttonLink"
+                style
+                :readonly="read_only"
+                @click="$root.showAuthorsListModal = true"
+              >
+                {{ $t("login_to_edit_project") }}
+              </button>
 
-            <button
-              v-else
-              type="button"
-              class="buttonLink"
-              style
-              :readonly="read_only"
-              @click="requestAccessToProject"
-            >
-              {{ $t("ask_to_be_added_to_authors") }}
-            </button>
+              <button
+                v-else
+                type="button"
+                class="buttonLink"
+                style
+                :readonly="read_only"
+                @click="requestAccessToProject"
+              >
+                {{ $t("ask_to_be_added_to_authors") }}
+              </button>
+            </template>
           </template>
 
           <button
             v-if="
               !can_see_project &&
               project.password === 'has_pass' &&
-              project.viewing_limited_to !== 'only_authors'
+              project.editing_limited_to !== 'only_authors'
             "
             type="button"
             class="buttonLink _open_pwd_input"
@@ -256,7 +267,7 @@
         <button
           v-if="context !== 'full' && can_see_project"
           type="button"
-          class="m_project--presentation--buttons--openButton"
+          class="m_project--presentation--buttons--openButton button-redthin"
           @click.exact="openProject"
           @click.shift.left.exact="$emit('toggleSelect')"
           @click.meta.left.exact="$emit('toggleSelect')"

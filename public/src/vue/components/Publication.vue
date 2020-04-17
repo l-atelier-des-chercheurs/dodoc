@@ -166,8 +166,6 @@ export default {
         slugFolderName: this.slugPubliName,
       });
       this.$socketio.sendAuth();
-
-      this.closeProject();
     },
   },
 };

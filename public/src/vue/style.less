@@ -1438,7 +1438,7 @@ small {
     flex: 0 1 @t-folderwidth;
     min-width: @t-folderwidth;
     max-width: @t-folderwidth;
-    .padding-bottom-small;
+    // .padding-bottom-small;
     .bg-blanc;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
@@ -1447,6 +1447,11 @@ small {
     justify-items: center;
     align-items: stretch;
     overflow-y: visible;
+    justify-content: space-between;
+
+    &.is--full {
+      justify-content: flex-start;
+    }
 
     @supports (display: grid) {
       min-width: auto;
@@ -1515,19 +1520,20 @@ small {
       .flex-wrap;
       .flex-no-grow;
       .flex-horizontally-centered;
+      .padding-vert-small;
 
       .m_project--presentation--buttons--openButton {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        background-color: transparent;
-        text-indent: -1000px;
-        opacity: 0;
-        min-height: 0;
+        // position: absolute;
+        // top: 0;
+        // bottom: 0;
+        // left: 0;
+        // right: 0;
+        // width: 100%;
+        // height: 100%;
+        // background-color: transparent;
+        // text-indent: -1000px;
+        // opacity: 0;
+        // min-height: 0;
       }
 
       .m_project--presentation--buttons--selectionButton {
