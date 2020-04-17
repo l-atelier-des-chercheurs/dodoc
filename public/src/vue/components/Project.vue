@@ -95,17 +95,6 @@
 
           <div
             class="m_metaField"
-            v-if="
-              can_see_project &&
-              project.password === 'has_pass' &&
-              project.editing_limited_to !== 'only_authors'
-            "
-          >
-            <label>{{ $t("protected_by_pass") }}</label>
-          </div>
-
-          <div
-            class="m_metaField"
             v-if="!!_editing_limited_to && context === 'full'"
           >
             <div>{{ $t("who_can_edit") }}</div>
@@ -121,9 +110,21 @@
             <div>{{ $t("consultation") }}</div>
             <div>{{ $t("visible_to_all") }}</div>
           </div>
+          <!-- 
+          <div
+            class="m_metaField"
+            v-if="
+              can_see_project &&
+              project.password === 'has_pass' &&
+              project.editing_limited_to !== 'only_authors'
+            "
+          >
+            <label>{{ $t("protected_by_pass") }}</label>
+          </div> -->
 
           <button
             v-if="
+              !can_edit_project &&
               project.password === 'has_pass' &&
               project.editing_limited_to !== 'only_authors'
             "
