@@ -76,6 +76,7 @@
       border-radius: 20px;
     }
   }
+
   .m_modal--container--content {
     height: auto;
 
@@ -134,7 +135,7 @@
 
     textarea,
     .textarea,
-    input,
+    input[type="text"],
     select {
       color: @c-noir;
     }
@@ -286,6 +287,12 @@
 
     > * {
       .margin-sides-medium;
+
+      > label ~ div {
+        .padding-small;
+        border: 1px solid @c-gris_clair;
+        border-radius: 4px;
+      }
 
       &.m_modal--buttonrow {
         margin: 0;

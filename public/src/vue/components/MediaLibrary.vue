@@ -9,7 +9,7 @@
             project.password === 'has_pass' || project.password !== 'has_pass'
           "
           @click="openCapture"
-          :disabled="read_only || is_iOS_device"
+          :disabled="read_only || is_iOS_device || !can_edit_project"
         >
           <span>{{ $t("capture") }}</span>
         </button>
@@ -19,7 +19,7 @@
             project.password === 'has_pass' || project.password !== 'has_pass'
           "
           class="barButton barButton_import button"
-          :disabled="read_only"
+          :disabled="read_only || !can_edit_project"
           for="add_file"
         >
           <span>
@@ -31,6 +31,7 @@
             multiple
             id="add_file"
             name="file"
+            :disabled="read_only || !can_edit_project"
             @change="updateInputFiles($event)"
             accept=""
             style="width: 1px; height: 1px; overflow: hidden;"
@@ -39,7 +40,7 @@
 
         <transition name="fade_fast" :duration="150">
           <div
-            v-if="!read_only && show_drop_container"
+            v-if="!read_only && show_drop_container && can_edit_project"
             @drop="dropHandler($event)"
             class="_drop_indicator"
           >
@@ -63,6 +64,7 @@
           type="button"
           class="barButton barButton_text"
           @click="createTextMedia"
+          :disabled="read_only || !can_edit_project"
         >
           <span>{{ $t("create_text") }}</span>
         </button>
@@ -171,6 +173,7 @@ export default {
     project: Object,
     slugProjectName: String,
     read_only: Boolean,
+    can_edit_project: Boolean,
   },
   components: {
     MediaCard,

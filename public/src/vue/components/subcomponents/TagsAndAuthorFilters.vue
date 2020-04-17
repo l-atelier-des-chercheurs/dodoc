@@ -71,12 +71,13 @@
       <label>{{ $t("authors") }}</label>
       <div class="m_authorField margin-bottom-none">
         <button
-          v-for="author in allAuthors"
-          :key="author.slugFolderName"
-          :class="{ 'is--active': authorFilter === author.slugFolderName }"
-          @click="$emit('setAuthorFilter', author.slugFolderName)"
+          v-for="{ slugFolderName: author_slug } in allAuthors"
+          v-if="$root.getAuthor(author_slug)"
+          :key="author_slug"
+          :class="{ 'is--active': authorFilter === author_slug }"
+          @click="$emit('setAuthorFilter', author_slug)"
         >
-          {{ author.name }}
+          {{ $root.getAuthor(author_slug).name }}
         </button>
       </div>
     </div>

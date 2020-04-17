@@ -888,7 +888,7 @@ export default {
       return this.$_.groupBy(this.available_devices, "kind");
     },
     uriToUploadMedia: function () {
-      return `_file-upload/projects/${this.slugProjectName}`;
+      return `_file-upload/projects/${this.slugProjectName}?socketid=${this.$root.$socketio.socket.id}`;
     },
     recording_duration: function () {
       if (this.timer_recording) {

@@ -797,7 +797,7 @@ export default {
 
     selectProject(slugFolderName) {
       if (
-        !this.$root.canAccessFolder({
+        !this.$root.canEditFolder({
           type: "projects",
           slugFolderName,
         })

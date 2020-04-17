@@ -1,13 +1,13 @@
 import io from "socket.io-client";
 import Vue from "vue";
 
-module.exports = (function() {
+module.exports = (function () {
   return {
-    init: function(i18n, auth, alertify) {
+    init: function (i18n, auth, alertify) {
       return new Vue({
         i18n,
         data: {
-          socket: ""
+          socket: "",
         },
         methods: {
           connect(pwd) {
@@ -334,20 +334,11 @@ module.exports = (function() {
             }
 
             if (type === "success") {
-              alertify
-                .closeLogOnClick(true)
-                .delay(4000)
-                .success(msg);
+              alertify.closeLogOnClick(true).delay(4000).success(msg);
             } else if (type === "error") {
-              alertify
-                .closeLogOnClick(true)
-                .delay(10000)
-                .error(msg);
+              alertify.closeLogOnClick(true).delay(10000).error(msg);
             } else {
-              alertify
-                .closeLogOnClick(true)
-                .delay(4000)
-                .log(msg);
+              alertify.closeLogOnClick(true).delay(4000).log(msg);
             }
           },
           listFolders(fdata) {
@@ -401,9 +392,9 @@ module.exports = (function() {
           },
           updateNetworkInfos() {
             this.socket.emit("updateNetworkInfos");
-          }
-        }
+          },
+        },
       });
-    }
+    },
   };
 })();

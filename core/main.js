@@ -87,9 +87,7 @@ module.exports = function ({ router }) {
                   typeof sessionMeta.session_password === "string"
                 ) {
                   const pass = sessionMeta.session_password.trim();
-
                   dev.log("Found session password in meta.txt set to: " + pass);
-
                   global.session_password = auth.hashCode(pass);
                 }
                 global.force_login =
@@ -107,17 +105,6 @@ module.exports = function ({ router }) {
                 dev.log(
                   "LOCAL OPTIONS: Force author password is set to " +
                     global.force_author_password
-                );
-
-                global.only_authors_can_edit_own_content =
-                  !!sessionMeta &&
-                  sessionMeta.hasOwnProperty(
-                    "only_authors_can_edit_own_content"
-                  ) &&
-                  sessionMeta.only_authors_can_edit_own_content === "true";
-                dev.log(
-                  "LOCAL OPTIONS: Only authors can edit own content is set to " +
-                    global.only_authors_can_edit_own_content
                 );
 
                 portscanner

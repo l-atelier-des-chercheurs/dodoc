@@ -9,6 +9,7 @@ const auth = require("./core/auth"),
   file = require("./core/file"),
   exporter = require("./core/exporter"),
   importer = require("./core/importer"),
+  sockets = require("./core/sockets"),
   remote_api = require("./core/remote_api");
 
 module.exports = function (app) {
@@ -244,72 +245,95 @@ module.exports = function (app) {
     });
   }
 
-  function downloadArchive(req, res) {
+  async function downloadArchive(req, res) {
     let type = req.param("type");
     let slugFolderName = req.param("slugFolderName");
 
-    // check if folder is protected
-    file
-      .getFolder({ type: type, slugFolderName })
-      .then((foldersData) => {
-        const folder_meta = Object.values(foldersData)[0];
-        if (!folder_meta.hasOwnProperty("password") || !folder_meta.password) {
-          return;
-        }
-        // if it is, check that we have a socketid with the request and if so, if that id is allowed to access that folder
-        if (!req.query.hasOwnProperty("pwd")) {
-          throw "Missing password for protected folder";
-        }
-        const pwd = req.query.pwd;
+    if (!req.query.hasOwnProperty("socketid"))
+      throw "Missing socket io id to download";
 
-        if (String(auth.hashCode(folder_meta.password)) !== String(pwd)) {
-          throw "Wrong password for folder";
-        }
+    let socket;
+    try {
+      socket = sockets.io().sockets.connected[req.query.socketid];
+    } catch (error) {
+      throw "Missing sockets server-side.";
+    }
 
-        return;
-      })
-      .then(() => {
-        dev.log(
-          `Will create and stream archive for folder ${type}/${slugFolderName}`
-        );
-
-        // checks passed
-        var archive = archiver("zip", {
-          zlib: { level: 0 }, //
-        });
-
-        archive.on("error", function (err) {
-          res.status(500).send({ error: err.message });
-        });
-
-        //on stream closed we can end the request
-        archive.on("end", function () {
-          dev.log("Archive wrote %d bytes", archive.pointer());
-        });
-
-        //set the archive name
-        res.attachment(slugFolderName + ".zip");
-
-        //this is the streaming magic
-        archive.pipe(res);
-
-        const baseFolderPath = global.settings.structure[type].path;
-        const mainFolderPath = api.getFolderPath(baseFolderPath);
-        const thisFolderPath = path.join(mainFolderPath, slugFolderName);
-
-        archive.directory(thisFolderPath, false);
-
-        archive.finalize();
-      })
-      .catch((err) => {
-        dev.error(`Error! ${err}`);
-        res.status(500).send({ error: err });
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
+      sockets.notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be downloaded ${slugFolderName}`,
+        type: "error",
       });
+      return;
+    }
+
+    dev.log(
+      `Will create and stream archive for folder ${type}/${slugFolderName}`
+    );
+
+    // checks passed
+    var archive = archiver("zip", {
+      zlib: { level: 0 }, //
+    });
+
+    archive.on("error", function (err) {
+      res.status(500).send({ error: err.message });
+    });
+
+    //on stream closed we can end the request
+    archive.on("end", function () {
+      dev.log("Archive wrote %d bytes", archive.pointer());
+    });
+
+    //set the archive name
+    res.attachment(slugFolderName + ".zip");
+
+    //this is the streaming magic
+    archive.pipe(res);
+
+    const baseFolderPath = global.settings.structure[type].path;
+    const mainFolderPath = api.getFolderPath(baseFolderPath);
+    const thisFolderPath = path.join(mainFolderPath, slugFolderName);
+
+    archive.directory(thisFolderPath, false);
+
+    archive.finalize();
   }
 
-  function postFile(req, res) {
+  async function postFile(req, res) {
     let type = req.param("type");
     let slugFolderName = req.param("slugFolderName");
+
+    if (!req.query.hasOwnProperty("socketid"))
+      throw "Missing socket io id to download";
+
+    let socket;
+    try {
+      socket = sockets.io().sockets.connected[req.query.socketid];
+    } catch (error) {
+      throw "Missing sockets server-side.";
+    }
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
+      sockets.notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be downloaded ${slugFolderName}`,
+        type: "error",
+      });
+      return;
+    }
+
     importer.handleForm({ req, res, type, slugFolderName });
   }
 };

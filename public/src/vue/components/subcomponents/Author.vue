@@ -192,7 +192,7 @@ export default {
   },
   computed: {
     can_login_as_author() {
-      return this.$root.canAccessFolder({
+      return this.$root.canEditFolder({
         type: "authors",
         slugFolderName: this.author.slugFolderName,
       });
@@ -271,6 +271,16 @@ export default {
     },
     setAuthor() {
       if (this.can_login_as_author) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(
+            this.$t("notifications.connected_as") +
+              "<i>" +
+              this.author.name +
+              "</i>"
+          );
+
         this.$root.setAuthor(this.author);
         setTimeout(() => {
           this.$emit("close");
@@ -280,11 +290,6 @@ export default {
       }
     },
     unsetAuthor() {
-      this.$auth.removeAllFoldersPassword({
-        type: "authors",
-      });
-      this.$socketio.sendAuth();
-
       this.$root.unsetAuthor();
     },
     urlToPortrait(slug, preview) {

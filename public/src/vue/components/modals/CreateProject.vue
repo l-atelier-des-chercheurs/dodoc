@@ -18,6 +18,133 @@
         <input type="text" v-model.trim="projectdata.name" required autofocus />
       </div>
 
+      <!-- Author(s) -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >
+            {{ $t("author") }}
+          </button>
+        </label>
+
+        <div v-if="show_authors">
+          <AuthorsInput
+            :currentAuthors="projectdata.authors"
+            @authorsChanged="(newAuthors) => (projectdata.authors = newAuthors)"
+          />
+          <small>{{ $t("author_instructions") }}</small>
+        </div>
+      </div>
+
+      <!-- Access control -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_access_control }"
+            @click="show_access_control = !show_access_control"
+          >
+            {{ $t("manage_access") }}
+          </button>
+        </label>
+
+        <div v-if="show_access_control">
+          <div class="">
+            <label>
+              {{ $t("who_can_edit") }}
+            </label>
+
+            <div class="">
+              <div
+                v-for="mode in ['only_authors', 'with_password', 'everybody']"
+                :key="mode"
+              >
+                <input
+                  class="custom_radio"
+                  type="radio"
+                  :id="`editing_limited_to-${mode}`"
+                  :name="`editing_limited_to-${mode}`"
+                  :value="mode"
+                  v-model="projectdata.editing_limited_to"
+                />
+                <label class="text-lc" :for="`editing_limited_to-${mode}`">
+                  <span>{{ $t(mode) }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div
+            class="margin-top-small"
+            v-if="projectdata.editing_limited_to === 'with_password'"
+          >
+            <label>
+              {{ $t("password") }}
+            </label>
+            <div>
+              <input
+                type="password"
+                required
+                v-model="projectdata.password"
+                autocomplete="new-password"
+              />
+            </div>
+          </div>
+
+          <div
+            class="margin-top-small"
+            v-if="projectdata.editing_limited_to !== 'everybody'"
+          >
+            <div class="">
+              <input
+                class=""
+                type="checkbox"
+                id="visible_to_all"
+                name="visible_to_all"
+                v-model="projectdata.viewing_limited_to"
+                true-value="everybody"
+                false-value=""
+              />
+              <label for="visible_to_all">
+                <span>
+                  {{ $t("visible_to_all") }}
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_image }"
+            @click="show_image = !show_image"
+          >
+            {{ $t("cover_image") }}
+          </button>
+        </label>
+        <div v-if="show_image">
+          <ImageSelect
+            :load_from_projects_medias="true"
+            @newPreview="
+              (value) => {
+                preview = value;
+              }
+            "
+          ></ImageSelect>
+        </div>
+      </div>
+
       <!-- Folder -->
       <div class="margin-bottom-small">
         <label>
@@ -32,11 +159,11 @@
         </label>
         <div v-if="show_folder">
           <!-- <label v-html="$t('add_to_existing_folder')" /> -->
-          <div class="input-group margin-bottom-none">
+          <div class="">
             <select v-model="existing_group_name">
               <option :key="'none'" :value="'_none'">{{ $t("none") }}</option>
               <option :key="'create'" :value="''"
-                >** {{ $t("create_new") }} **</option
+                >** {{ $t("create_new_folder") }} **</option
               >
               <option
                 v-for="folder in $root.all_folders"
@@ -54,52 +181,6 @@
         </div>
       </div>
 
-      <!-- Preview -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_image }"
-            @click="show_image = !show_image"
-          >
-            {{ $t("cover_image") }}
-          </button>
-        </label>
-        <template v-if="show_image">
-          <ImageSelect
-            :load_from_projects_medias="true"
-            @newPreview="
-              (value) => {
-                preview = value;
-              }
-            "
-          ></ImageSelect>
-        </template>
-      </div>
-
-      <!-- Password -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_password }"
-            @click="show_password = !show_password"
-          >
-            {{ $t("password") }}
-          </button>
-        </label>
-        <template v-if="show_password">
-          <input
-            type="password"
-            v-model="projectdata.password"
-            autocomplete="new-password"
-          />
-          <small>{{ $t("password_instructions") }}</small>
-        </template>
-      </div>
-
       <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>
@@ -112,33 +193,11 @@
             {{ $t("keywords") }}
           </button>
         </label>
-        <template v-if="show_keywords">
+        <div v-if="show_keywords">
           <TagsInput
             @tagsChanged="(newTags) => (projectdata.keywords = newTags)"
           />
-        </template>
-      </div>
-
-      <!-- Author(s) -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_authors }"
-            @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
-        </label>
-
-        <template v-if="show_authors">
-          <AuthorsInput
-            :currentAuthors="projectdata.authors"
-            @authorsChanged="(newAuthors) => (projectdata.authors = newAuthors)"
-          />
-          <small>{{ $t("author_instructions") }}</small>
-        </template>
+        </div>
       </div>
     </template>
 
@@ -168,6 +227,7 @@ export default {
       show_password: false,
       show_keywords: false,
       show_authors: this.$root.current_author,
+      show_access_control: true,
 
       is_sending_content_to_server: false,
 
@@ -175,9 +235,12 @@ export default {
         ? this.$root.settings.opened_folder
         : "_none",
       new_group_name: "",
+      enable_visible_to_all: false,
 
       projectdata: {
         name: "",
+        editing_limited_to: "everybody",
+        viewing_limited_to: "everybody",
         password: "",
         authors: this.$root.current_author
           ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
@@ -203,6 +266,12 @@ export default {
         this.askBeforeClosingModal = false;
       }
     },
+    "projectdata.editing_limited_to": function () {
+      if (this.projectdata.editing_limited_to === "everybody")
+        this.projectdata.viewing_limited_to = "everybody";
+      else if (this.projectdata.editing_limited_to === "only_authors")
+        this.show_authors = true;
+    },
   },
   computed: {},
   methods: {
@@ -225,7 +294,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.project_name_exists"));
+          .error(this.$t("notifications.name_already_exists"));
 
         return false;
       }
@@ -238,6 +307,18 @@ export default {
         else this.projectdata.folder = this.existing_group_name;
       } else if (!!this.new_group_name) {
         this.projectdata.folder = this.new_group_name.toUpperCase();
+      }
+
+      if (
+        this.projectdata.editing_limited_to === "only_authors" &&
+        this.projectdata.authors.length === 0
+      ) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.if_only_authors_select_authors"));
+
+        return false;
       }
 
       this.$eventHub.$on(

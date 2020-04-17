@@ -90,6 +90,8 @@ module.exports = (function () {
         backgroundColor: "#EBEBEB",
         titleBarStyle: "hidden",
         show: true,
+        title: "do•doc",
+        icon: path.join(global.appRoot, "build", "icon.png"),
 
         webPreferences: {
           allowRunningInsecureContent: true,
