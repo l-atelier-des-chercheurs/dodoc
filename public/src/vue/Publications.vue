@@ -21,13 +21,35 @@
           :read_only="read_only"
         />
       </div>
-      <div class="m_actionbar--text">{{ $t('cooking_pot') }}: {{ $t('cooking_pot_instructions')}}</div>
+      <div class="m_actionbar--text">
+        {{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}
+      </div>
+    </div>
+
+    <div class="m_publiFilter">
+      <label>{{ $t("show_recipes_for_project_first") }}</label>
+      <select v-model="slugProjectName_to_filter">
+        <option key="'all'" value>** {{ $t("all").toLowerCase() }} **</option>
+        <option
+          v-for="project in $root.projects_that_are_accessible"
+          :key="project.slugFolderName"
+          :value="project.slugFolderName"
+        >
+          {{ project.name }} ({{
+            recipes_for_this_project(project.slugFolderName).length
+          }})
+        </option>
+      </select>
     </div>
 
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
-      <div class="m_recipes--recipe" v-for="recipe in recipes" :key="recipe.key">
+      <div
+        class="m_recipes--recipe"
+        v-for="recipe in recipes"
+        :key="recipe.key"
+      >
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2 class>{{ $t(recipe.key) }}</h2>
@@ -39,7 +61,9 @@
               type="button"
               class="buttonLink margin-left-none padding-left-none"
               @click="recipe.show_instructions = !recipe.show_instructions"
-            >+ {{ $t('more_informations')}}</button>
+            >
+              + {{ $t("more_informations") }}
+            </button>
           </p>
           <template v-if="recipe.show_instructions">
             <hr />
@@ -53,42 +77,45 @@
             @click="openCreatePublicationModal(recipe.key)"
             :disabled="read_only"
           >
-            <span>{{ $t('create') }}</span>
+            <span>{{ $t("create") }}</span>
           </button>
         </div>
 
         <div
           class="m_recipes--recipe--mealList"
-          v-if="recipe_of_this_template(recipe.key).length > 0"
+          v-if="all_recipes_of_this_template(recipe.key).length > 0"
         >
           <table>
             <thead>
               <tr>
-                <th colspan="2">
-                  <label>{{ $t('previous_creations') }}</label>
+                <th colspan="1">
+                  <label>{{ $t("previous_creations") }}</label>
+                </th>
+                <th colspan="1">
+                  <label>{{ $t("created_date") }}</label>
+                </th>
+                <th colspan="1">
+                  <label>{{ $t("attached_to_project") }}</label>
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr
+              <Publication
                 class="m_recipes--recipe--mealList--meal"
                 v-for="publication in recipe_of_this_template(recipe.key)"
                 :key="publication.slugFolderName"
-                @click="openPublication(publication.slugFolderName)"
-              >
-                <td>{{ publication.name }}</td>
-                <td width="150px">
-                  <small>{{ $root.formatDateToHuman(publication.date_created) }}</small>
-                </td>
-              </tr>
+                :publication="publication"
+              />
 
               <tr
-                v-if="!recipe.show_all_recipes && all_recipes_of_this_template(recipe.key).length > 3"
+                v-if="!recipe.show_all_recipes"
                 @click="recipe.show_all_recipes = true"
                 class="m_recipes--recipe--mealList--meal"
               >
-                <td colspan="2">
-                  <button type="button" class="buttonLink margin-none">{{ $t('show_all') }}</button>
+                <td colspan="4">
+                  <button type="button" class="buttonLink margin-none">
+                    {{ $t("show_all") }}
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -149,16 +176,23 @@
 </template>
 <script>
 import CreatePublication from "./components/modals/CreatePublication.vue";
+import Publication from "./components/Publication.vue";
 
 export default {
   props: ["publications", "read_only"],
   components: {
-    CreatePublication
+    CreatePublication,
+    Publication,
   },
   data() {
     return {
       showCreatePublicationModal: false,
       createPubliTemplateKey: false,
+
+      slugProjectName_to_filter: !!this.$root.do_navigation
+        .current_slugProjectName
+        ? this.$root.do_navigation.current_slugProjectName
+        : "",
 
       recipes: [
         {
@@ -184,7 +218,34 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
+        },
+        {
+          key: "drawing_pad",
+          summary: "drawing_pad_summary",
+          show_instructions: false,
+          instructions: "drawing_pad_instructions",
+          show_all_recipes: false,
+          icon: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+  <title>Fichier 1</title>
+  <g id="Calque_2" data-name="Calque 2">
+    <g id="Calque_6" data-name="Calque 6">
+      <rect x="13.92" y="35.39" width="173.15" height="129.86" style="fill: #fff"/>
+      <rect x="26.17" y="45.02" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+      <rect x="127.82" y="81.05" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+      <circle cx="36.99" cy="81.05" r="5.95" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+      <g>
+        <path d="M69.78,69.42c41.68,0,5.66,33.94,50.44,35.13" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+        <polygon points="115.83 108.09 119.58 104.51 116 100.76 119.11 100.83 122.69 104.58 118.94 108.16 115.83 108.09" style="fill: #353535"/>
+      </g>
+      <polygon points="77.64 108.18 107.23 137.81 48.02 137.81 77.64 108.18" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+      <rect width="201" height="201" style="fill: none"/>
+    </g>
+  </g>
+</svg>
+
+          `,
         },
         {
           key: "video_assemblage",
@@ -215,7 +276,45 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
+        },
+        {
+          key: "video_effects",
+          summary: "video_effects_summary",
+          show_instructions: false,
+          instructions: "video_effects_instructions",
+          show_all_recipes: false,
+          icon: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+  <g id="Calque_6" data-name="Calque 6">
+    <rect x="-38.92" y="-1662.01" width="512" height="2097.07" style="fill: #47998d"/>
+    <rect x="-19.59" y="-12.92" width="460" height="230" rx="10" style="fill: #52c5b9"/>
+    <rect y="0.53" width="201" height="201" style="fill: none"/>
+    <g>
+      <g>
+        <rect x="107.44" y="30.53" width="63.54" height="72" style="fill: #fff"/>
+        <rect x="111.93" y="35.12" width="53.94" height="43.04" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+        <rect x="111.07" y="83.75" width="31.66" height="4.99" style="fill: #353535"/>
+        <rect x="111.07" y="91.03" width="23.67" height="4.99" style="fill: #353535"/>
+        <path d="M132.94,65.19c-.7.45-1.27.14-1.27-.69V48.79c0-.83.57-1.14,1.27-.69l11.92,7.72a.91.91,0,0,1,0,1.65Z" style="fill: #353535"/>
+      </g>
+      <g>
+        <path d="M79.06,120.65,66.93,132.77,27.07,172.64l5.46,5.46,52-52Z"/>
+        <path d="M79.15,116.75a1.29,1.29,0,0,0,1.29-1.28v-9a1.29,1.29,0,0,0-2.58,0v9A1.29,1.29,0,0,0,79.15,116.75Z"/>
+        <path d="M79.15,134.8a1.29,1.29,0,0,0-1.29,1.29v9a1.29,1.29,0,1,0,2.58,0v-9A1.29,1.29,0,0,0,79.15,134.8Z"/>
+        <path d="M98.48,124.49h-9a1.29,1.29,0,0,0,0,2.58h9a1.29,1.29,0,0,0,0-2.58Z"/>
+        <path d="M59.81,127.07h9a1.29,1.29,0,0,0,0-2.58h-9a1.29,1.29,0,0,0,0,2.58Z"/>
+        <path d="M86.88,119.33a1.35,1.35,0,0,0,.92-.37l6.38-6.38a1.29,1.29,0,1,0-1.82-1.82L86,117.14a1.28,1.28,0,0,0,.9,2.19Z"/>
+        <path d="M87.8,132.59A1.29,1.29,0,0,0,86,134.41l6.38,6.38a1.26,1.26,0,0,0,.91.38,1.31,1.31,0,0,0,.92-.38,1.29,1.29,0,0,0,0-1.82Z"/>
+        <path d="M70.51,119a1.26,1.26,0,0,0,.92.37,1.34,1.34,0,0,0,.91-.37,1.27,1.27,0,0,0,0-1.82L66,110.76a1.28,1.28,0,0,0-1.81,1.82Z"/>
+      </g>
+    </g>
+    <rect x="23.93" y="153.7" width="52.51" height="2.57" transform="translate(-94.89 80.88) rotate(-45)" style="fill: #fff"/>
+    <rect x="68.62" y="128.62" width="13.29" height="2.57" transform="translate(-69.81 91.27) rotate(-45)" style="fill: #fff"/>
+    <rect width="201" height="201" style="fill: none"/>
+  </g>
+</svg>
+          `,
         },
         {
           key: "stopmotion_animation",
@@ -293,7 +392,7 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "mix_audio_and_video",
@@ -331,7 +430,7 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "mix_audio_and_image",
@@ -365,20 +464,20 @@ export default {
       <path d="M102,107.63h4.24v2.54H102v4.32H99.27v-4.32H95v-2.54h4.23V103.3H102Z" style="fill: #fff"/>
     </g>
   </g>
-</svg>          
-          `
+</svg>
+          `,
         },
-        {
-          key: "carreau",
-          summary: "carreau_summary",
-          show_instructions: false,
-          instructions: "carreau_instructions",
-          show_all_recipes: false,
-          icon: `
+        // {
+        //   key: "carreau",
+        //   summary: "carreau_summary",
+        //   show_instructions: false,
+        //   instructions: "carreau_instructions",
+        //   show_all_recipes: false,
+        //   icon: `
 
-          `
-        }
-      ]
+        //   `
+        // }
+      ],
     };
   },
 
@@ -386,37 +485,82 @@ export default {
   mounted() {},
   beforeDestroy() {},
 
-  watch: {},
+  watch: {
+    "$root.do_navigation.current_slugProjectName": function () {
+      this.slugProjectName_to_filter = !!this.$root.do_navigation
+        .current_slugProjectName
+        ? this.$root.do_navigation.current_slugProjectName
+        : "";
+    },
+    slugProjectName_to_filter: function () {
+      this.recipes = this.recipes.map((r) => {
+        r.show_all_recipes = false;
+        return r;
+      });
+    },
+  },
   computed: {
     createPubliDefaultName() {
-      const number_of_recipes =
+      let number_of_recipes =
         this.all_recipes_of_this_template(this.createPubliTemplateKey).length +
         1;
-      return this.$t(this.createPubliTemplateKey) + " Nº" + number_of_recipes;
-    }
+
+      let name =
+        this.$t(this.createPubliTemplateKey) + " Nº" + number_of_recipes;
+
+      while (
+        this.all_recipes_of_this_template(this.createPubliTemplateKey).some(
+          (r) => r.name === name
+        )
+      ) {
+        number_of_recipes++;
+        name = this.$t(this.createPubliTemplateKey) + " Nº" + number_of_recipes;
+      }
+
+      return name;
+    },
   },
   methods: {
-    openPublication(slugPubliName) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(
-          `METHODS • Publications: openPublication / slugPubliName = ${slugPubliName}`
-        );
-      }
-      this.$root.openPublication(slugPubliName);
+    recipes_for_this_project(slugProjectName) {
+      if (this.publications && Object.values(this.publications).length === 0)
+        return [];
+      return Object.values(this.publications).filter(
+        (r) => r.attached_to_project === slugProjectName
+      );
     },
     all_recipes_of_this_template(template_key) {
       const filtered_recipes = Object.values(this.publications).filter(
-        r => r.template === template_key
+        (r) => r.template === template_key
       );
+
       let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
       sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
     },
     recipe_of_this_template(template_key) {
-      if (!this.recipes.find(r => r.key === template_key).show_all_recipes) {
-        return this.all_recipes_of_this_template(template_key).slice(0, 3);
+      const recipes = this.all_recipes_of_this_template(template_key);
+
+      if (!this.recipes.find((r) => r.key === template_key).show_all_recipes) {
+        // if show only part of it
+
+        // if project filter, show only those of that project
+        if (!!this.slugProjectName_to_filter)
+          return recipes.filter(
+            (r) => r.attached_to_project === this.slugProjectName_to_filter
+          );
+        else return recipes.slice(0, 3);
       }
-      return this.all_recipes_of_this_template(template_key);
+
+      if (!!this.slugProjectName_to_filter)
+        // show first that project’s publi, and then all the others
+        return recipes.sort((x, y) => {
+          return x.attached_to_project === this.slugProjectName_to_filter
+            ? -1
+            : y.attached_to_project == this.slugProjectName_to_filter
+            ? 1
+            : 0;
+        });
+      else return recipes;
     },
     openCreatePublicationModal(recipe_key) {
       this.showCreatePublicationModal = true;
@@ -430,9 +574,9 @@ export default {
         name,
         slugFolderName,
         template,
-        authors: this.$root.settings.current_author.hasOwnProperty("name")
-          ? [{ name: this.$root.settings.current_author.name }]
-          : []
+        authors: this.$root.current_author
+          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
+          : [],
       };
 
       if (template === "page_by_page") {
@@ -441,14 +585,14 @@ export default {
             id:
               +new Date() +
               "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
-          }
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3),
+          },
         ];
         publication_data.width = 210;
         publication_data.height = 297;
       }
 
-      this.$eventHub.$on("socketio.folder_created_or_updated", fdata => {
+      this.$eventHub.$on("socketio.folder_created_or_updated", (fdata) => {
         if (fdata.id === this.$root.justCreatedFolderID) {
           this.$eventHub.$off("socketio.folder_created_or_updated");
           this.openPublication(fdata.slugFolderName);
@@ -457,11 +601,10 @@ export default {
 
       this.$root.createFolder({
         type: "publications",
-        data: publication_data
+        data: publication_data,
       });
-    }
-  }
+    },
+  },
 };
 </script>
-<style>
-</style>
+<style></style>

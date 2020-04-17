@@ -1,5 +1,5 @@
 <template>
-  <div class="m_publicationview" :class="{ 'is--preview' : preview_mode }" ref="panel">
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -24,17 +24,23 @@
 
       <div
         class="m_carreauPublication--container"
-        :class="{ 'is--fullscreen' : fullscreen_mode }"
+        :class="{ 'is--fullscreen': fullscreen_mode }"
         ref="carreau_container"
         :style="carreauContainerProperties"
       >
         <div
           class="m_publicationSettings"
-          v-if="!['export_publication','print_publication','link_publication'].includes($root.state.mode)"
+          v-if="
+            ![
+              'export_publication',
+              'print_publication',
+              'link_publication'
+            ].includes($root.state.mode)
+          "
         >
           <button
-            class="margin-vert-verysmall font-verysmall"
-            :class="{ 'is--active' : !preview_mode }"
+            class="margin-vert-verysmall font-verysmall _preview_button"
+            :class="{ 'is--active': !preview_mode }"
             @mousedown.stop.prevent="preview_mode = !preview_mode"
             @touchstart.stop.prevent="preview_mode = !preview_mode"
           >
@@ -184,8 +190,16 @@
                 :page="page"
                 :preview_mode="preview_mode"
                 :read_only="read_only"
-                @removePubliMedia="values => { removePubliMedia(values) }"
-                @editPubliMedia="values => { editPubliMedia(values) }"
+                @removePubliMedia="
+                  values => {
+                    removePubliMedia(values);
+                  }
+                "
+                @editPubliMedia="
+                  values => {
+                    editPubliMedia(values);
+                  }
+                "
               />
               <!-- :opacity="1.5 - (last_nth_of_publication_medias.length - index) / 8" -->
               <!-- <div class="m_videoPublication--media--moveItemButtons">
@@ -300,6 +314,8 @@ export default {
       "activity_panels_resized",
       this.updatePageSizeAccordingToPanel
     );
+
+    this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {
     "publication.medias": function() {
@@ -600,5 +616,4 @@ export default {
   }
 };
 </script>
-<style>
-</style>
+<style></style>

@@ -1,54 +1,55 @@
-const path = require('path'),
-  moment = require('moment'),
-  parsedown = require('dodoc-parsedown'),
-  fs = require('fs-extra'),
-  slugg = require('slugg'),
-  os = require('os'),
-  writeFileAtomic = require('write-file-atomic'),
-  ffmpegstatic = require('ffmpeg-static'),
-  ffmpeg = require('fluent-ffmpeg'),
-  pad = require('pad-left');
+const path = require("path"),
+  moment = require("moment"),
+  parsedown = require("dodoc-parsedown"),
+  fs = require("fs-extra"),
+  slugg = require("slugg"),
+  os = require("os"),
+  writeFileAtomic = require("write-file-atomic"),
+  pathToFfmpeg = require("ffmpeg-static"),
+  ffmpeg = require("fluent-ffmpeg"),
+  pad = require("pad-left");
 
-const sharp = require('sharp');
+const sharp = require("sharp");
 
-const dev = require('./dev-log');
+const dev = require("./dev-log");
 
-ffmpeg.setFfmpegPath(ffmpegstatic.path);
+ffmpeg.setFfmpegPath(pathToFfmpeg);
 
-module.exports = (function() {
+module.exports = (function () {
   const API = {
-    getFolderPath: (slugFolderName = '') => getFolderPath(slugFolderName),
+    getFolderPath: (slugFolderName = "") => getFolderPath(slugFolderName),
     findFirstFilenameNotTaken: (thisPath, fileName) =>
       findFirstFilenameNotTaken(thisPath, fileName),
     getCurrentDate: (format = global.settings.metaDateFormat) =>
       getCurrentDate(format),
     convertDate: (date, format = global.settings.metaDateFormat) =>
       convertDate(date, format),
-    parseUTCDate: date => parseUTCDate(date),
+    parseUTCDate: (date) => parseUTCDate(date),
     parseDate: (date, format = global.settings.metaDateFormat) =>
       parseDate(date, format),
     storeData: (mpath, d, e) => storeData(mpath, d, e),
-    parseData: d => parseData(d),
+    parseData: (d) => parseData(d),
     eventAndContent: (sendEvent, objectJson) =>
       eventAndContent(sendEvent, objectJson),
     sendEventWithContent: (sendEvent, objectContent, io, socket) =>
       sendEventWithContent(sendEvent, objectContent, io, socket),
     getNetworkInfos: () => getNetworkInfos(),
-    slug: term => slug(term),
+    removePasswordFromFoldersMeta: (d) => removePasswordFromFoldersMeta(d),
+    slug: (term) => slug(term),
     clip: (value, min, max) => clip(value, min, max),
-    decodeBase64Image: dataString => decodeBase64Image(dataString),
+    decodeBase64Image: (dataString) => decodeBase64Image(dataString),
     writeAudioToDisk: (slugFolderName, mediaName, dataURL) =>
       writeAudioToDisk(slugFolderName, mediaName, dataURL),
     writeVideoToDisk: (slugFolderName, mediaName, dataURL) =>
       writeVideoToDisk(slugFolderName, mediaName, dataURL),
-    makeStopmotionFromImageSequence: d => makeStopmotionFromImageSequence(d)
+    makeStopmotionFromImageSequence: (d) => makeStopmotionFromImageSequence(d),
   };
 
   function _getUserPath() {
     return global.pathToUserContent;
   }
 
-  function getFolderPath(slugFolderName = '') {
+  function getFolderPath(slugFolderName = "") {
     return path.join(_getUserPath(), slugFolderName);
   }
 
@@ -58,7 +59,7 @@ module.exports = (function() {
 
   function convertDate(date, f) {
     if (moment(date).isValid()) return moment(date).format(f);
-    else return '';
+    else return "";
   }
   function parseUTCDate(date) {
     return moment.utc(date);
@@ -66,26 +67,26 @@ module.exports = (function() {
 
   function parseDate(date, f) {
     if (moment(date, f, true).isValid()) {
-      return moment(date, f).format('YYYY-MM-DD HH:mm:ss');
+      return moment(date, f).format("YYYY-MM-DD HH:mm:ss");
     } else {
-      return '';
+      return "";
     }
   }
 
   // check whether media (such as 'hello-world.mp4') already exists in the folder
   function findFirstFilenameNotTaken(thisPath, fileName) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       // let's find the extension if it exists
       var fileExtension = new RegExp(
         global.settings.regexpGetFileExtension,
-        'i'
+        "i"
       ).exec(fileName);
-      fileExtension = fileExtension === null ? '' : fileExtension[0];
+      fileExtension = fileExtension === null ? "" : fileExtension[0];
 
       // remove extension
       var fileNameWithoutExtension = new RegExp(
         global.settings.regexpRemoveFileExtension,
-        'i'
+        "i"
       ).exec(fileName)[1];
       // slug the rest of the name
       fileNameWithoutExtension = slug(fileNameWithoutExtension);
@@ -127,13 +128,13 @@ module.exports = (function() {
   }
 
   function storeData(mpath, d, e) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       dev.logfunction(`COMMON — storeData at path ${mpath}`);
       //       dev.logfunction(`with content ${d}`);
-      if (typeof d === 'object') {
+      if (typeof d === "object") {
         d = parsedown.textify(d);
       }
-      writeFileAtomic(mpath, d, err => {
+      writeFileAtomic(mpath, d, (err) => {
         if (err) {
           reject(err);
         }
@@ -145,7 +146,7 @@ module.exports = (function() {
   function eventAndContent(sendEvent, objectJson) {
     var eventContentJSON = {
       socketevent: sendEvent,
-      content: objectJson
+      content: objectJson,
     };
     return eventContentJSON;
   }
@@ -160,13 +161,11 @@ module.exports = (function() {
     if (socket) {
       // content sent only to one user
       dev.logpackets(
-        `sendEventWithContent for user ${
-          socket.id
-        } = ${eventAndContentJson_string}`
+        `sendEventWithContent for user ${socket.id} = ${eventAndContentJson_string}`
       );
       socket.emit(
-        eventAndContentJson['socketevent'],
-        eventAndContentJson['content']
+        eventAndContentJson["socketevent"],
+        eventAndContentJson["content"]
       );
     } else {
       // content broadcasted to all connected users
@@ -174,8 +173,8 @@ module.exports = (function() {
         `sendEventWithContent for all users = ${eventAndContentJson_string}`
       );
       io.sockets.emit(
-        eventAndContentJson['socketevent'],
-        eventAndContentJson['content']
+        eventAndContentJson["socketevent"],
+        eventAndContentJson["content"]
       );
     }
     // dev.logpackets(
@@ -187,19 +186,19 @@ module.exports = (function() {
     // );
     dev.logpackets(
       `eventAndContentJson — sending packet with string length = ${
-        JSON.stringify(eventAndContentJson['content']).length
+        JSON.stringify(eventAndContentJson["content"]).length
       }`
     );
   }
 
   // from http://stackoverflow.com/a/8440736
   function getLocalIP() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       const ifaces = os.networkInterfaces();
       let ip_adresses = {};
-      Object.keys(ifaces).forEach(function(ifname) {
-        ifaces[ifname].forEach(function(iface) {
-          if ('IPv4' === iface.family && iface.internal === false) {
+      Object.keys(ifaces).forEach(function (ifname) {
+        ifaces[ifname].forEach(function (iface) {
+          if ("IPv4" === iface.family && iface.internal === false) {
             ip_adresses[ifname] = iface.address;
           }
         });
@@ -209,14 +208,26 @@ module.exports = (function() {
   }
 
   function getNetworkInfos() {
-    return new Promise(function(resolve, reject) {
-      getLocalIP().then(ip_adresses => {
+    return new Promise(function (resolve, reject) {
+      getLocalIP().then((ip_adresses) => {
         resolve({
           ip: Object.values(ip_adresses),
-          port: global.appInfos.port
+          port: global.appInfos.port,
         });
       });
     });
+  }
+
+  function removePasswordFromFoldersMeta(foldersData) {
+    Object.keys(foldersData).map((s) => {
+      if (
+        foldersData[s].hasOwnProperty("password") &&
+        foldersData[s].password !== ""
+      ) {
+        foldersData[s].password = "has_pass";
+      }
+    });
+    return foldersData;
   }
 
   function slug(term) {
@@ -234,44 +245,44 @@ module.exports = (function() {
     );
     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     if (matches.length !== 3) {
-      dev.error('Error parsing base64 image');
-      return new Error('Invalid input string');
+      dev.error("Error parsing base64 image");
+      return new Error("Invalid input string");
     }
     // let response = {};
     // response.type = matches[1];
     // response.data = new Buffer(matches[2], 'base64');
-    let response = new Buffer(matches[2], 'base64');
+    let response = new Buffer(matches[2], "base64");
     dev.logverbose(`Just parsed string to bugger`);
     return response;
   }
 
   function writeAudioToDisk(slugFolderName, mediaName, dataURL) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction('COMMON — writeAudioToDisk');
+    return new Promise(function (resolve, reject) {
+      dev.logfunction("COMMON — writeAudioToDisk");
       if (dataURL === undefined) {
-        dev.error('No media data content gotten for ' + mediaName);
-        reject('No media sent');
+        dev.error("No media data content gotten for " + mediaName);
+        reject("No media sent");
       }
-      dataURL = dataURL.split(',').pop();
-      var fileBuffer = new Buffer(dataURL, 'base64');
+      dataURL = dataURL.split(",").pop();
+      var fileBuffer = new Buffer(dataURL, "base64");
 
       let cachePath = path.join(
         global.tempStorage,
         global.settings.cacheDirname,
-        '_medias'
+        "_medias"
       );
-      fs.mkdirp(cachePath, function() {
+      fs.mkdirp(cachePath, function () {
         let pathToTempMedia = path.join(cachePath, mediaName);
 
-        fs.writeFile(pathToTempMedia, fileBuffer, function(err) {
+        fs.writeFile(pathToTempMedia, fileBuffer, function (err) {
           if (err) reject(err);
 
           let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
           const ffmpeg_cmd = new ffmpeg(pathToTempMedia)
-            .audioCodec('aac')
+            .audioCodec("aac")
             .save(pathToMedia)
-            .on('end', function() {
-              console.log('Processing finished !');
+            .on("end", function () {
+              console.log("Processing finished !");
               resolve();
             });
           global.ffmpeg_processes.push(ffmpeg_cmd);
@@ -281,23 +292,23 @@ module.exports = (function() {
   }
 
   function writeVideoToDisk(slugFolderName, mediaName, dataURL) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction('COMMON — writeVideoToDisk');
+    return new Promise(function (resolve, reject) {
+      dev.logfunction("COMMON — writeVideoToDisk");
       if (dataURL === undefined) {
-        dev.error('No media data content gotten for ' + mediaName);
-        reject('No media sent');
+        dev.error("No media data content gotten for " + mediaName);
+        reject("No media sent");
       }
-      dataURL = dataURL.split(',').pop();
-      var fileBuffer = new Buffer(dataURL, 'base64');
+      dataURL = dataURL.split(",").pop();
+      var fileBuffer = new Buffer(dataURL, "base64");
 
       let cachePath = path.join(
         global.tempStorage,
         global.settings.cacheDirname,
-        '_medias'
+        "_medias"
       );
-      fs.mkdirp(cachePath, function() {
+      fs.mkdirp(cachePath, function () {
         let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
-        fs.writeFile(pathToMedia, fileBuffer, function(err) {
+        fs.writeFile(pathToMedia, fileBuffer, function (err) {
           if (err) reject(err);
           resolve();
         });
@@ -328,69 +339,69 @@ module.exports = (function() {
     images,
     slugStopmotionName,
     frameRate,
-    socket
+    socket,
   }) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction('COMMON — makeStopmotionFromImageSequence');
+    return new Promise(function (resolve, reject) {
+      dev.logfunction("COMMON — makeStopmotionFromImageSequence");
 
       const numberOfImagesToProcess = images.length;
 
       _getImageResolution({
         slugStopmotionName,
-        image_filename: images[0]
-      }).then(resolution => {
+        image_filename: images[0],
+      }).then((resolution) => {
         _copyToTempAndRenameImages({ slugStopmotionName, images })
-          .then(tempFolder => {
+          .then((tempFolder) => {
             // ask ffmpeg to make a video from the cache images
             const ffmpeg_cmd = new ffmpeg()
-              .input(path.join(tempFolder, 'img-%04d.jpeg'))
+              .input(path.join(tempFolder, "img-%04d.jpeg"))
               .inputFPS(frameRate)
-              .withVideoCodec('libx264')
-              .withVideoBitrate('4000k')
-              .input('anullsrc')
-              .inputFormat('lavfi')
+              .withVideoCodec("libx264")
+              .withVideoBitrate("4000k")
+              .input("anullsrc")
+              .inputFormat("lavfi")
               .duration(numberOfImagesToProcess / frameRate)
               .size(`${resolution.width}x${resolution.height}`)
               .outputFPS(30)
               .autopad()
-              .addOptions(['-preset slow', '-tune animation'])
-              .toFormat('mp4')
-              .on('start', function(commandLine) {
-                dev.logverbose('Spawned Ffmpeg with command: ' + commandLine);
+              .addOptions(["-preset slow", "-tune animation"])
+              .toFormat("mp4")
+              .on("start", function (commandLine) {
+                dev.logverbose("Spawned Ffmpeg with command: " + commandLine);
               })
-              .on('progress', progress => {
-                require('./sockets').notify({
+              .on("progress", (progress) => {
+                require("./sockets").notify({
                   socket,
                   localized_string: `creating_video`,
                   not_localized_string:
-                    Number.parseFloat(progress.percent).toFixed(1) + '%'
+                    Number.parseFloat(progress.percent).toFixed(1) + "%",
                 });
               })
-              .on('end', () => {
+              .on("end", () => {
                 dev.logverbose(`Stopmotion has been completed`);
                 resolve();
               })
-              .on('error', function(err, stdout, stderr) {
-                dev.error('An error happened: ' + err.message);
-                dev.error('ffmpeg standard output:\n' + stdout);
-                dev.error('ffmpeg standard error:\n' + stderr);
+              .on("error", function (err, stdout, stderr) {
+                dev.error("An error happened: " + err.message);
+                dev.error("ffmpeg standard output:\n" + stdout);
+                dev.error("ffmpeg standard error:\n" + stderr);
                 reject(`couldn't create a stopmotion animation`);
               })
               .save(pathToMedia);
             global.ffmpeg_processes.push(ffmpeg_cmd);
           })
-          .catch(err => reject(err));
+          .catch((err) => reject(err));
       });
     });
   }
 
   function _copyToTempAndRenameImages({ slugStopmotionName, images }) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       let cacheFolderName =
         getCurrentDate(global.settings.metaDateFormat) +
         slugStopmotionName +
-        '-' +
-        (Math.random().toString(36) + '00000000000000000').slice(2, 3 + 2);
+        "-" +
+        (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2);
 
       let cachePath = path.join(
         global.tempStorage,
@@ -400,10 +411,10 @@ module.exports = (function() {
 
       fs.mkdirp(
         cachePath,
-        function() {
+        function () {
           let slugStopmotionPath = getFolderPath(
             path.join(
-              global.settings.structure['stopmotions'].path,
+              global.settings.structure["stopmotions"].path,
               slugStopmotionName
             )
           );
@@ -417,14 +428,14 @@ module.exports = (function() {
                 );
                 const cache_image_path = path.join(
                   cachePath,
-                  'img-' + pad(index, 4, '0') + '.jpeg'
+                  "img-" + pad(index, 4, "0") + ".jpeg"
                 );
 
                 fs.copy(original_image_path, cache_image_path)
                   .then(() => {
                     resolve();
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     dev.error(`Failed to copy image to cache with seq name.`);
                     reject(err);
                   });
@@ -433,10 +444,10 @@ module.exports = (function() {
 
             Promise.all(tasks)
               .then(() => resolve(cachePath))
-              .catch(err => reject(err));
+              .catch((err) => reject(err));
           });
         },
-        function(err, p) {
+        function (err, p) {
           dev.error(`Failed to create cache folder: ${err}`);
           reject(err);
         }
@@ -445,10 +456,10 @@ module.exports = (function() {
   }
 
   function _getImageResolution({ slugStopmotionName, image_filename }) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       let slugStopmotionPath = getFolderPath(
         path.join(
-          global.settings.structure['stopmotions'].path,
+          global.settings.structure["stopmotions"].path,
           slugStopmotionName
         )
       );
@@ -459,7 +470,7 @@ module.exports = (function() {
         if (err) return reject(err);
         return resolve({
           width: info.width,
-          height: info.height
+          height: info.height,
         });
       });
     });

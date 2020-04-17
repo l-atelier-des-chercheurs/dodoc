@@ -13,13 +13,15 @@ html
     - if(mode !== 'export_publication')
       style.
         @import "/fonts/fira/fira.css";
-        @import "/fonts/nanook/nanook.css";
-        @import "/fonts/avara/avara.css";
+        @import "/fonts/roboto-mono/roboto-mono.css";
+        //- @import "/fonts/nanook/nanook.css";
+        //- @import "/fonts/avara/avara.css";
     - else
       style.
         @import "./_fonts/fira/fira.css";
-        @import "./_fonts/nanook/nanook.css";
-        @import "./_fonts/avara/avara.css";
+        @import "./_fonts/roboto-mono/roboto-mono.css";
+        //- @import "./_fonts/nanook/nanook.css";
+        //- @import "./_fonts/avara/avara.css";
 
     script.
       /***********
@@ -42,7 +44,8 @@ html
         projects: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
         authors: {},
         publications: !{ !!publiAndMediaData ? JSON.stringify(publiAndMediaData) : "{}" },
-        stopmotions: {}
+        stopmotions: {},
+        chats: {}
       };
 
       /* state contains settings data, time and client specific data */
@@ -53,6 +56,12 @@ html
         protocol: "!{protocol}",
         connected: false,
         authentificated: false,
+
+        local_options: {
+          force_login: !{global.force_login},
+          force_author_password: !{global.force_author_password},
+        },
+
         localNetworkInfos: {},
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",

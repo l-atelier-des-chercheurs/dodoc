@@ -4,7 +4,7 @@ const dev = require("./dev-log"),
   exporter = require("./exporter"),
   file = require("./file");
 
-module.exports = (function() {
+module.exports = (function () {
   dev.log(`Sockets module initialized at ${api.getCurrentDate()}`);
   let app;
   let io;
@@ -14,7 +14,7 @@ module.exports = (function() {
     createMediaMeta: ({ type, slugFolderName, additionalMeta }) =>
       createMediaMeta({ type, slugFolderName, additionalMeta }),
     notify: notify,
-    io: () => io
+    io: () => io,
   };
 
   function init(thisApp, thisIO) {
@@ -23,7 +23,7 @@ module.exports = (function() {
     app = thisApp;
     io = thisIO;
 
-    io.use(function(socket, next) {
+    io.use(function (socket, next) {
       if (
         auth.isSubmittedSessionPasswordValid(
           socket.handshake.query.hashed_session_password
@@ -35,12 +35,12 @@ module.exports = (function() {
         dev.error(`CONNECTION DENIED`);
         next(new Error("Authentication error"));
       }
-    }).on("connection", function(socket) {
+    }).on("connection", function (socket) {
       dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
       socket._data = {};
 
       var onevent = socket.onevent;
-      socket.onevent = function(packet) {
+      socket.onevent = function (packet) {
         var args = packet.data || [];
         onevent.call(this, packet); // original call
         packet.data = ["*"].concat(args);
@@ -49,54 +49,61 @@ module.exports = (function() {
 
       socket.on("*", (event, data) => dev.log(`RECEIVED EVENT: ${event}`));
 
-      socket.on("authenticate", d => onAuthenticate(socket, d));
+      socket.on("authenticate", (d) => onAuthenticate(socket, d));
 
-      socket.on("listFolders", d => onListFolders(socket, d));
-      socket.on("listFolder", d => onListFolder(socket, d));
-      socket.on("createFolder", d => onCreateFolder(socket, d));
-      socket.on("editFolder", d => onEditFolder(socket, d));
-      socket.on("removeFolder", d => onRemoveFolder(socket, d));
+      socket.on("listFolders", (d) => onListFolders(socket, d));
+      socket.on("listFolder", (d) => onListFolder(socket, d));
+      socket.on("createFolder", (d) => onCreateFolder(socket, d));
+      socket.on("editFolder", (d) => onEditFolder(socket, d));
+      socket.on("removeFolder", (d) => onRemoveFolder(socket, d));
 
-      socket.on("listMedias", d => onListMedias(socket, d));
-      socket.on("createMedia", d => onCreateMedia(socket, d));
-      socket.on("editMedia", d => onEditMedia(socket, d));
-      socket.on("copyMediaToFolder", d => onCopyMediaToFolder(socket, d));
-      socket.on("removeMedia", d => onRemoveMedia(socket, d));
-      socket.on("listSpecificMedias", d => onListSpecificMedias(socket, d));
+      socket.on("listMedias", (d) => onListMedias(socket, d));
+      socket.on("createMedia", (d) => onCreateMedia(socket, d));
+      socket.on("editMedia", (d) => onEditMedia(socket, d));
+      socket.on("copyMediaToFolder", (d) => onCopyMediaToFolder(socket, d));
+      socket.on("removeMedia", (d) => onRemoveMedia(socket, d));
+      socket.on("listSpecificMedias", (d) => onListSpecificMedias(socket, d));
 
-      socket.on("downloadPubliPDF", d => onDownloadPubliPDF(socket, d));
-      socket.on("downloadVideoPubli", d => onDownloadVideoPubli(socket, d));
-      socket.on("downloadStopmotionPubli", d =>
+      socket.on("downloadPubliPDF", (d) => onDownloadPubliPDF(socket, d));
+      socket.on("downloadVideoPubli", (d) => onDownloadVideoPubli(socket, d));
+      socket.on("downloadStopmotionPubli", (d) =>
         onDownloadStopmotionPubli(socket, d)
       );
-      socket.on("addTempMediaToFolder", d => onAddTempMediaToFolder(socket, d));
-      socket.on("copyFolder", d => onCopyFolder(socket, d));
-      socket.on("updateNetworkInfos", d => onUpdateNetworkInfos(socket, d));
+      socket.on("addTempMediaToFolder", (d) =>
+        onAddTempMediaToFolder(socket, d)
+      );
+      socket.on("copyFolder", (d) => onCopyFolder(socket, d));
 
-      socket.on("updateClientInfo", d => onUpdateClientInfo(socket, d));
-      socket.on("listClientsInfo", d => onListClientsInfo(socket, d));
+      socket.on("updateNetworkInfos", (d) => onUpdateNetworkInfos(socket, d));
+      socket.on("updateClientInfo", (d) => onUpdateClientInfo(socket, d));
+      socket.on("listClientsInfo", (d) => onListClientsInfo(socket, d));
 
-      socket.on("disconnect", d => onClientDisconnect(socket));
+      socket.on("disconnect", (d) => onClientDisconnect(socket));
     });
   }
 
   /**************************************************************** UTIL ********************************/
-  function onAuthenticate(socket, d) {
+  async function onAuthenticate(socket, d) {
     dev.logfunction(`EVENT - onAuthenticate for ${JSON.stringify(d, null, 4)}`);
-    auth
-      .setAuthenticate(d.folder_passwords)
-      .then(list_of_authorized_folders => {
-        socket._is_authorized_for_folders = list_of_authorized_folders;
-        api.sendEventWithContent(
-          "authentificated",
-          list_of_authorized_folders,
-          io,
-          socket
-        );
-      })
-      .catch(err => {
-        dev.error(`Failed to auth: ${err}`);
-      });
+
+    const hrstart = process.hrtime();
+
+    const list_of_authorized_folders = await auth.setAuthenticate(
+      d.folder_passwords
+    );
+    socket._is_authorized_for_folders = list_of_authorized_folders;
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(
+      `PERFORMANCE — setAuthenticate : ${hrend[0]}s ${hrend[1] / 1000000}ms`
+    );
+
+    api.sendEventWithContent(
+      "authentificated",
+      list_of_authorized_folders,
+      io,
+      socket
+    );
   }
 
   function notify({
@@ -104,7 +111,7 @@ module.exports = (function() {
     socketid,
     not_localized_string,
     localized_string,
-    type
+    type,
   }) {
     dev.logfunction(`EVENT - notify for socketid = ${socketid}`);
     if (socketid || socket) {
@@ -150,173 +157,170 @@ module.exports = (function() {
   function onCreateFolder(socket, { type, data, id }) {
     dev.logfunction(`EVENT - onCreateFolder for ${data.name}`);
     file.createFolder({ type, data }).then(
-      slugFolderName => {
+      (slugFolderName) => {
         sendFolders({ type, slugFolderName, id });
       },
-      function(err) {
+      function (err) {
         dev.error(`Failed to list folders! Error: ${err}`);
       }
     );
   }
-  function onEditFolder(socket, { type, slugFolderName, data }) {
+  async function onEditFolder(socket, { type, slugFolderName, data, id }) {
     dev.logfunction(
       `EVENT - onEditFolder for type = ${type}, slugFolderName = ${slugFolderName}, data = ${JSON.stringify(
         data
       )}`
     );
 
-    file
-      .getFolder({ type, slugFolderName })
-      .then(foldersData => {
-        if (!auth.canAdminFolder(socket, foldersData, type)) {
-          notify({
-            socket,
-            socketid: socket.id,
-            not_localized_string: `Not allowed to edit`
-          });
+    const foldersData = await file.getFolder({ type, slugFolderName });
+
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: editing this content is not allowed.`,
+        type: "error",
+      });
+      return;
+    }
+
+    const { meta } = await file.editFolder({
+      type,
+      slugFolderName,
+      foldersData: Object.values(foldersData)[0],
+      newFoldersData: data,
+    });
+
+    // if password was changed
+    if (
+      Object.values(foldersData)[0].hasOwnProperty("password") &&
+      Object.values(foldersData)[0].password !== meta.password
+    ) {
+      Object.keys(io.sockets.connected).forEach((sid) => {
+        let this_socket = io.sockets.connected[sid];
+
+        if (this_socket === socket) {
           return;
         }
 
-        file
-          .editFolder({
-            type,
-            slugFolderName,
-            foldersData: Object.values(foldersData)[0],
-            newFoldersData: data
-          })
-          .then(({ slugFolderName, meta }) => {
-            // if password was changed
-            if (
-              Object.values(foldersData)[0].hasOwnProperty("password") &&
-              Object.values(foldersData)[0].password !== meta.password
-            ) {
-              Object.keys(io.sockets.connected).forEach(sid => {
-                let this_socket = io.sockets.connected[sid];
-
-                if (this_socket === socket) {
-                  return;
-                }
-
-                this_socket._is_authorized_for_folders.map(i => {
-                  if (i.type === type) {
-                    if (i.allowed_slugFolderNames.includes(slugFolderName)) {
-                      // remove slug from list
-                      i.allowed_slugFolderNames = i.allowed_slugFolderNames.filter(
-                        s => s !== slugFolderName
-                      );
-                    }
-                  }
-                });
-
-                // refresh auth
-                api.sendEventWithContent(
-                  "authentificated",
-                  this_socket._is_authorized_for_folders,
-                  io,
-                  this_socket
-                );
-              });
+        this_socket._is_authorized_for_folders.map((i) => {
+          if (i.type === type) {
+            if (i.allowed_slugFolderNames.includes(slugFolderName)) {
+              // remove slug from list
+              i.allowed_slugFolderNames = i.allowed_slugFolderNames.filter(
+                (s) => s !== slugFolderName
+              );
             }
+          }
+        });
 
-            sendFolders({ type, slugFolderName });
-          })
-          .catch(err => {
-            dev.error(`Error on editFolder: ${err}`);
-          });
-      })
-      .catch(err => {
-        dev.error(`No folder found: ${err}`);
+        // refresh auth
+        api.sendEventWithContent(
+          "authentificated",
+          this_socket._is_authorized_for_folders,
+          io,
+          this_socket
+        );
       });
+    }
+
+    sendFolders({ type, slugFolderName, id });
   }
 
-  function onRemoveFolder(socket, { type, slugFolderName }) {
+  async function onRemoveFolder(socket, { type, slugFolderName }) {
     dev.logfunction(`EVENT - onRemoveFolder for ${slugFolderName}`);
-    file
-      .getFolder({ type, slugFolderName })
-      .then(foldersData => {
-        if (!auth.canAdminFolder(socket, foldersData, type)) {
-          notify({
-            socket,
-            socketid: socket.id,
-            not_localized_string: `Not allowed to remove`
-          });
-          return;
-        }
-        file
-          .removeFolder({
-            type,
-            slugFolderName
-          })
-          .then(
-            () => {
-              sendFolders({ type });
-            },
-            function(err, p) {
-              dev.error(`Failed to remove folder: ${err}`);
-              reject(err);
-            }
-          );
-      })
-      .catch(err => {
-        dev.error(`No folder found: ${err}`);
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: editing this content is not allowed.`,
+        type: "error",
       });
+      return;
+    }
+
+    await file
+      .removeFolder({
+        type,
+        slugFolderName,
+      })
+      .catch((err) => {
+        dev.error(`Failed to remove folder: ${err}`);
+        reject(err);
+      });
+
+    sendFolders({ type });
   }
 
   /**************************************************************** MEDIA ********************************/
 
-  function onListMedias(socket, { type, slugFolderName }) {
+  async function onListMedias(socket, { type, slugFolderName }) {
     dev.logfunction(
       `EVENT - onListMedias : type = ${type}, slugProjectName = ${slugFolderName}`
     );
 
     const hrstart = process.hrtime();
-    sendMedias({ type, slugFolderName, socket }).then(() => {
-      let hrend = process.hrtime(hrstart);
-      dev.performance(
-        `PERFORMANCE — listMedias : ${hrend[0]}s ${hrend[1] / 1000000}ms`
-      );
-    });
+    await sendMedias({ type, slugFolderName, socket });
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(
+      `PERFORMANCE — listMedias : ${hrend[0]}s ${hrend[1] / 1000000}ms`
+    );
   }
 
-  function onCreateMedia(
+  async function onCreateMedia(
     socket,
     { type, id, slugFolderName, additionalMeta, rawData = "" }
   ) {
     dev.logfunction(
       `EVENT - onCreateMedia : slugFolderName = ${slugFolderName} and type = ${type} and rawData.length = ${rawData.length}`
     );
-    file
-      .createMedia({
-        type,
-        rawData,
-        slugFolderName,
-        additionalMeta,
-        socket
-      })
-      .then(_additionalMeta => {
-        file
-          .createMediaMeta({
-            type,
-            slugFolderName,
-            additionalMeta: _additionalMeta
-          })
-          .then(metaFileName => {
-            sendMedias({
-              type,
-              slugFolderName,
-              metaFileName,
-              id
-            });
-          })
-          .catch(err => {
-            dev.error(`Couldn’t create captured media meta: ${err}`);
-            reject(err);
-          });
-      })
-      .catch(err => {
-        dev.error(`Couldn’t create captured media: ${err}`);
-        reject(err);
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: media can’t be created for protected folder ${slugFolderName}`,
+        type: "error",
       });
+      return;
+    }
+
+    const _additionalMeta = await file.createMedia({
+      type,
+      rawData,
+      slugFolderName,
+      additionalMeta,
+      socket,
+    });
+
+    const metaFileName = await file.createMediaMeta({
+      type,
+      slugFolderName,
+      additionalMeta: _additionalMeta,
+    });
+
+    onEditFolder(socket, { type, slugFolderName, data: {} });
+
+    await sendMedias({
+      type,
+      slugFolderName,
+      metaFileName,
+      id,
+    });
   }
 
   function createMediaMeta({ type, slugFolderName, additionalMeta }) {
@@ -326,20 +330,21 @@ module.exports = (function() {
     );
     file
       .createMediaMeta({ type, slugFolderName, additionalMeta })
-      .then(metaFileName => {
+      .then((metaFileName) => {
+        onEditFolder(undefined, { type, slugFolderName, data: {} });
         sendMedias({
           type,
           slugFolderName,
-          metaFileName
+          metaFileName,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         dev.error(`Couldn’t create imported media meta: ${err}`);
         reject(err);
       });
   }
 
-  function onEditMedia(
+  async function onEditMedia(
     socket,
     { type, slugFolderName, slugMediaName, data, recipe_with_data }
   ) {
@@ -351,6 +356,20 @@ module.exports = (function() {
       )}`
     );
 
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be edited ${slugFolderName}`,
+        type: "error",
+      });
+      return;
+    }
+
     file
       .editMedia({
         type,
@@ -358,104 +377,154 @@ module.exports = (function() {
         metaFileName: slugMediaName,
         data,
         recipe_with_data,
-        socket
+        socket,
       })
       .then(
-        slugFolderName => {
+        (slugFolderName) => {
+          onEditFolder(socket, { type, slugFolderName, data: {} });
           sendMedias({ type, slugFolderName, metaFileName: slugMediaName });
         },
-        function(err) {
+        function (err) {
           dev.error(`Failed to edit media! Error: ${err}`);
         }
       );
   }
-  function onCopyMediaToFolder(
+  async function onCopyMediaToFolder(
     socket,
-    { type, from_slugFolderName, to_slugFolderName, slugMediaName }
+    {
+      type,
+      from_slugFolderName,
+      to_slugFolderName,
+      slugMediaName,
+      meta_to_edit,
+    }
   ) {
     dev.logfunction(
       `EVENT - onCopyMediaToFolder for type ${type}
       from_slugFolderName = ${from_slugFolderName}\n
       to_slugFolderName = ${to_slugFolderName}\n
-      slugMediaName = ${slugMediaName}`
+      slugMediaName = ${slugMediaName}\n
+      with new meta_to_edit = ${meta_to_edit}`
     );
 
-    file
-      .getFolder({ type, slugFolderName: from_slugFolderName })
-      .then(foldersData => {
-        if (!auth.canAdminFolder(socket, foldersData, type)) {
-          notify({
-            socket,
-            socketid: socket.id,
-            not_localized_string: `Not allowed to edit from folder ${from_slugFolderName}`
-          });
-        } else {
-          return;
-        }
-      })
-      .then(() => {
-        file
-          .getFolder({ type, slugFolderName: to_slugFolderName })
-          .then(foldersData => {
-            if (!auth.canAdminFolder(socket, foldersData, type)) {
-              notify({
-                socket,
-                socketid: socket.id,
-                not_localized_string: `Not allowed to edit destination folder ${to_slugFolderName}`
-              });
-            }
-            return;
-          });
-      })
-      .then(() => {
-        file
-          .copyMediaToAnotherFolder({
-            type,
-            from_slugFolderName,
-            to_slugFolderName,
-            metaFileName: slugMediaName
-          })
-          .then(newMetaFileName => {
-            notify({
-              socket,
-              localized_string: `media_copied_successfully`,
-              type: "success"
-            });
+    const from_foldersData = await file.getFolder({
+      type,
+      slugFolderName: from_slugFolderName,
+    });
 
-            sendMedias({
-              type,
-              slugFolderName: to_slugFolderName,
-              metaFileName: newMetaFileName
-            });
-          })
-          .catch((err, p) => {
-            notify({
-              socket,
-              socketid: socket.id,
-              not_localized_string: `Copy failed with error: ${err}`
-            });
-
-            dev.error(`Failed to copy media to another folder: ${err}`);
-            reject(err);
-          });
+    if (
+      !(await auth.canEditFolder(
+        socket,
+        from_foldersData[from_slugFolderName],
+        type
+      ))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: origin folder ${to_slugFolderName} can’t be edited `,
+        type: "error",
       });
+      return;
+    }
+
+    const to_foldersData = await file.getFolder({
+      type,
+      slugFolderName: to_slugFolderName,
+    });
+
+    if (
+      !(await auth.canEditFolder(
+        socket,
+        to_foldersData[to_slugFolderName],
+        type
+      ))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: destination folder ${to_slugFolderName} can’t be edited`,
+        type: "error",
+      });
+      return;
+    }
+
+    const newMetaFileName = await file
+      .copyMediaToAnotherFolder({
+        type,
+        from_slugFolderName,
+        to_slugFolderName,
+        metaFileName: slugMediaName,
+        meta_to_edit,
+      })
+      .catch((err, p) => {
+        notify({
+          socket,
+          socketid: socket.id,
+          not_localized_string: `Copy failed with error: ${err}`,
+          type: "error",
+        });
+
+        dev.error(`Failed to copy media to another folder: ${err}`);
+        reject(err);
+      });
+
+    notify({
+      socket,
+      socketid: socket.id,
+      localized_string: `media_copied_successfully`,
+      type: "success",
+    });
+
+    sendMedias({
+      type,
+      slugFolderName: to_slugFolderName,
+      metaFileName: newMetaFileName,
+    });
   }
 
-  function onRemoveMedia(socket, { type, slugFolderName, slugMediaName }) {
+  async function onRemoveMedia(
+    socket,
+    { type, slugFolderName, slugMediaName }
+  ) {
     dev.logfunction(
       `EVENT - onRemoveMedia for type = ${type}, slugFolderName = ${slugFolderName}, and slugMediaName = ${slugMediaName}`
     );
-    file
-      .removeMedia({ type, slugFolderName, metaFileName: slugMediaName })
-      .then(
-        () => {
-          sendMedias({ type, slugFolderName });
-        },
-        function(err, p) {
-          dev.error(`Failed to remove media: ${err}`);
-          reject(err);
-        }
-      );
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be edited ${slugFolderName}`,
+        type: "error",
+      });
+      return;
+    }
+
+    await file
+      .removeMedia({
+        type,
+        slugFolderName,
+        metaFileName: slugMediaName,
+      })
+      .catch((err, p) => {
+        notify({
+          socket,
+          socketid: socket.id,
+          not_localized_string: `Failed to remove media: ${err}`,
+          type: "error",
+        });
+        reject(err);
+      });
+
+    await onEditFolder(socket, { type, slugFolderName, data: {} });
+    await sendMedias({ type, slugFolderName });
   }
 
   function onListSpecificMedias(socket, { type, medias_list }) {
@@ -467,40 +536,43 @@ module.exports = (function() {
     sendSpecificMedias({ type, medias_list, socket });
   }
 
-  function onDownloadPubliPDF(socket, { slugPubliName }) {
+  function onDownloadPubliPDF(socket, { slugPubliName, options }) {
     dev.logfunction(
       `EVENT - onDownloadPubliPDF with 
       slugPubliName = ${slugPubliName}`
     );
-    exporter.makePDFForPubli({ slugPubliName }).then(({ pdfName, pdfPath }) => {
-      notify({
-        socket,
-        localized_string: `finished_creating_recipe`,
-        type: "success"
-      });
-
-      api.sendEventWithContent(
-        "publiPDFGenerated",
-        { pdfName, pdfPath },
-        io,
-        socket
-      );
-    });
-  }
-
-  function onDownloadVideoPubli(socket, { slugPubliName }) {
-    dev.logfunction(
-      `EVENT - onDownloadVideoPubli with 
-      slugPubliName = ${slugPubliName}`
-    );
-
     exporter
-      .makeVideoForPubli({ slugPubliName, socket })
-      .then(videoName => {
+      .makePDFForPubli({ slugPubliName, options })
+      .then(({ pdfName, imageName, docPath }) => {
         notify({
           socket,
           localized_string: `finished_creating_recipe`,
-          type: "success"
+          type: "success",
+        });
+
+        api.sendEventWithContent(
+          "publiPDFGenerated",
+          { pdfName, imageName, docPath },
+          io,
+          socket
+        );
+      });
+  }
+
+  function onDownloadVideoPubli(socket, { slugPubliName, options }) {
+    dev.logfunction(
+      `EVENT - onDownloadVideoPubli with 
+      slugPubliName = ${slugPubliName} 
+      and options = ${JSON.stringify(options)}`
+    );
+
+    exporter
+      .makeVideoForPubli({ slugPubliName, socket, options })
+      .then((videoName) => {
+        notify({
+          socket,
+          localized_string: `finished_creating_recipe`,
+          type: "success",
         });
 
         api.sendEventWithContent(
@@ -510,13 +582,13 @@ module.exports = (function() {
           socket
         );
       })
-      .catch(error_msg => {
+      .catch((error_msg) => {
         notify({
           socket,
           socketid: socket.id,
           localized_string: `video_creation_failed`,
           not_localized_string: error_msg,
-          type: "error"
+          type: "error",
         });
 
         api.sendEventWithContent("publiVideoFailed", {}, io, socket);
@@ -531,11 +603,11 @@ module.exports = (function() {
 
     exporter
       .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
-      .then(videoName => {
+      .then((videoName) => {
         notify({
           socket,
           localized_string: `finished_creating_recipe`,
-          type: "success"
+          type: "success",
         });
 
         api.sendEventWithContent(
@@ -545,65 +617,96 @@ module.exports = (function() {
           socket
         );
       })
-      .catch(error => {
+      .catch((error) => {
         notify({
           socket,
           socketid: socket.id,
           localized_string: `video_creation_failed`,
           not_localized_string: error.message,
-          type: "error"
+          type: "error",
         });
 
         api.sendEventWithContent("publiStopmotionFailed", {}, io, socket);
       });
   }
 
-  function onAddTempMediaToFolder(socket, { from, to, additionalMeta }) {
+  async function onAddTempMediaToFolder(socket, { from, to, additionalMeta }) {
     dev.logfunction(
       `EVENT - onAddTempMediaToFolder with 
       from = ${JSON.stringify(from)} and to = ${JSON.stringify(to)}`
     );
 
-    file
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be edited ${slugFolderName}`,
+        type: "error",
+      });
+      return;
+    }
+
+    await file
       .addTempMediaToFolder({ from, to, additionalMeta })
-      .then(() => {
+      .catch((err) => {
         notify({
           socket,
           socketid: socket.id,
-          localized_string: `media_has_been_added_successfully`
-        });
-      })
-      .catch(err => {
-        notify({
-          socket,
-          socketid: socket.id,
-          not_localized_string: `Error adding temp media to folder: ${err}`
+          not_localized_string: `Error adding temp media to folder: ${err}`,
         });
       });
+
+    notify({
+      socket,
+      socketid: socket.id,
+      localized_string: `media_has_been_added_successfully`,
+    });
   }
 
-  function onCopyFolder(socket, { type, slugFolderName, new_folder_name, id }) {
+  async function onCopyFolder(
+    socket,
+    { type, slugFolderName, new_folder_name, id }
+  ) {
     dev.logfunction(
       `EVENT - onCopyFolder with 
       type = ${type} and slugFolderName = ${slugFolderName}, for name = ${new_folder_name}`
     );
-    file.copyFolder({ type, slugFolderName, new_folder_name }).then(
-      new_slugFolderName => {
-        sendFolders({ type, slugFolderName: new_slugFolderName, id });
-      },
-      function(err) {
-        dev.error(`Failed to copy folder! Error: ${err}`);
-      }
-    );
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+
+    if (
+      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: editing this content is not allowed.`,
+        type: "error",
+      });
+      return;
+    }
+
+    const new_slugFolderName = await file.copyFolder({
+      type,
+      slugFolderName,
+      new_folder_name,
+    });
+
+    await sendFolders({ type, slugFolderName: new_slugFolderName, id });
   }
 
   function onUpdateNetworkInfos() {
     dev.logfunction(`EVENT - onUpdateNetworkInfos`);
     api.getNetworkInfos().then(
-      localNetworkInfos => {
+      (localNetworkInfos) => {
         api.sendEventWithContent("newNetworkInfos", localNetworkInfos, io);
       },
-      function(err, p) {
+      function (err, p) {
         dev.error(`Err while getting local IP: ${err}`);
         reject(err);
       }
@@ -614,21 +717,21 @@ module.exports = (function() {
 
   // send projects, authors and publications
   function sendFolders({ type, slugFolderName, socket, id } = {}) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       dev.logfunction(
         `COMMON - sendFolders for type = ${type} and slugFolderName = ${slugFolderName}`
       );
 
       file
         .getFolder({ type, slugFolderName })
-        .then(foldersData => {
+        .then((foldersData) => {
           // if folder creation, we get an ID to open the folder straight away
           if (foldersData !== undefined && slugFolderName && id) {
             foldersData[slugFolderName].id = id;
           }
 
           // check if single socket or multiple sockets
-          Object.keys(io.sockets.connected).forEach(sid => {
+          Object.keys(io.sockets.connected).forEach((sid) => {
             if (socket) {
               if (!!socket && socket.id !== sid) {
                 return;
@@ -676,105 +779,95 @@ module.exports = (function() {
             }
           });
         })
-        .catch(err => {
+        .catch((err) => {
           dev.error(`No folder found: ${err}`);
           return reject();
         });
     });
   }
 
-  function sendMedias({ type, slugFolderName, metaFileName, socket, id }) {
-    return new Promise(function(resolve, reject) {
-      dev.logfunction(
-        `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
+  async function sendMedias({
+    type,
+    slugFolderName,
+    metaFileName,
+    socket,
+    id,
+  }) {
+    dev.logfunction(
+      `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
+    );
+
+    const foldersData = await file
+      .getFolder({ type, slugFolderName })
+      .catch((err) => {
+        dev.error(`No folder found: ${err}`);
+        return reject(err);
+      });
+
+    if (foldersData === undefined) {
+      return;
+    }
+
+    const list_metaFileName = await file.getMediaMetaNames({
+      type,
+      slugFolderName,
+      metaFileName,
+    });
+
+    let medias_list = list_metaFileName.map((_metaFileName) => {
+      return {
+        slugFolderName,
+        metaFileName: _metaFileName,
+      };
+    });
+    let folders_and_medias = await file.readMediaList({ type, medias_list });
+    dev.logverbose(`Got medias, now sending to the right clients`);
+
+    if (
+      folders_and_medias !== undefined &&
+      Object.keys(folders_and_medias).length
+    ) {
+      if (metaFileName && id) {
+        folders_and_medias[slugFolderName].medias[metaFileName].id = id;
+      }
+
+      if (
+        foldersData[slugFolderName].hasOwnProperty("password") &&
+        foldersData[slugFolderName].password !== ""
+      ) {
+        foldersData[slugFolderName].password = "has_pass";
+      }
+
+      foldersData[slugFolderName].medias =
+        folders_and_medias[slugFolderName].medias;
+    }
+
+    for (sid in io.sockets.connected) {
+      if (!!socket && socket.id !== sid) {
+        continue;
+      }
+
+      let thisSocket = socket || io.sockets.connected[sid];
+
+      let filtered_folders_and_medias = await auth.filterMedias(
+        thisSocket,
+        type,
+        foldersData
       );
 
-      file
-        .getFolder({ type, slugFolderName })
-        .then(foldersData => {
-          if (foldersData === undefined) {
-            return reject();
-          }
-          file
-            .getMediaMetaNames({
-              type,
-              slugFolderName,
-              metaFileName
-            })
-            .then(list_metaFileName => {
-              let medias_list = list_metaFileName.map(_metaFileName => {
-                return {
-                  slugFolderName,
-                  metaFileName: _metaFileName
-                };
-              });
-              file
-                .readMediaList({ type, medias_list })
-                .then(folders_and_medias => {
-                  dev.logverbose(
-                    `Got medias, now sending to the right clients`
-                  );
-
-                  if (
-                    folders_and_medias !== undefined &&
-                    Object.keys(folders_and_medias).length
-                  ) {
-                    if (metaFileName && id) {
-                      folders_and_medias[slugFolderName].medias[
-                        metaFileName
-                      ].id = id;
-                    }
-
-                    if (
-                      foldersData[slugFolderName].hasOwnProperty("password") &&
-                      foldersData[slugFolderName].password !== ""
-                    ) {
-                      foldersData[slugFolderName].password = "has_pass";
-                    }
-
-                    foldersData[slugFolderName].medias =
-                      folders_and_medias[slugFolderName].medias;
-                  }
-
-                  Object.keys(io.sockets.connected).forEach(sid => {
-                    if (!!socket && socket.id !== sid) {
-                      return;
-                    }
-
-                    let thisSocket = socket || io.sockets.connected[sid];
-
-                    let filtered_folders_and_medias = auth.filterMedias(
-                      thisSocket,
-                      type,
-                      foldersData
-                    );
-
-                    api.sendEventWithContent(
-                      !!metaFileName ? "listMedia" : "listMedias",
-                      { [type]: filtered_folders_and_medias },
-                      io,
-                      thisSocket
-                    );
-                    return resolve();
-                  });
-                });
-            })
-            .catch(err => {
-              dev.error(`Failed to list medias! Error: ${err}`);
-              return reject(err);
-            });
-        })
-        .catch(err => {
-          dev.error(`No folder found: ${err}`);
-          return reject(err);
-        });
-    });
+      api.sendEventWithContent(
+        !!metaFileName ? "listMedia" : "listMedias",
+        { [type]: filtered_folders_and_medias },
+        io,
+        thisSocket
+      );
+    }
   }
 
   // only for one user at a time
   function sendSpecificMedias({ type, medias_list, socket }) {
     dev.logfunction(`COMMON - sendSpecificMedias`);
-    file.readMediaList({ type, medias_list }).then(folders_and_medias => {
+    file.readMediaList({ type, medias_list }).then((folders_and_medias) => {
       api.sendEventWithContent(
         "listSpecificMedias",
         { [type]: folders_and_medias },
@@ -799,8 +892,9 @@ module.exports = (function() {
     const connected_clients = [];
     Object.entries(io.sockets.connected).forEach(([id, this_socket]) => {
       connected_clients.push({
-        id,
-        data: this_socket._data
+        // not sending socketio ID in full — we use it to check incoming REST request
+        id: id.substring(0, 4),
+        data: this_socket._data,
       });
     });
 

@@ -20,7 +20,7 @@
           draggable="false"
           v-tippy="{
             placement: 'bottom',
-            delay: [1000, 0]
+            delay: [1000, 0],
           }"
         />
       </div>
@@ -42,7 +42,7 @@
           :content="$t('back_to_project')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <span>{{ project.name }}</span>
@@ -52,7 +52,7 @@
           type="button"
           v-if="
             project.hasOwnProperty('name') &&
-              $root.do_navigation.view === 'CaptureView'
+            $root.do_navigation.view === 'CaptureView'
           "
         >
           <span>Capture</span>
@@ -83,7 +83,7 @@
           width="20px"
           height="20px"
           viewBox="0 0 90 90"
-          style="enable-background:new 0 0 90 90;"
+          style="enable-background: new 0 0 90 90;"
           xml:space="preserve"
         >
           <rect class="st0" width="108.2" height="21" />
@@ -98,26 +98,26 @@
         <button
           type="button"
           class="m_topbar--center--authors--currentAuthor"
-          @click="showAuthorsListModal = true"
+          @click="$root.showAuthorsListModal = true"
           :content="$t('login')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
-          <template v-if="!!$root.settings.current_author">
+          <template v-if="$root.current_author">
             <div
               class="m_topbar--center--authors--portrait"
               v-if="
-                $root.settings.current_author.hasOwnProperty('preview') &&
-                  $root.settings.current_author.preview.length !== ''
+                $root.current_author.hasOwnProperty('preview') &&
+                $root.current_author.preview.length !== ''
               "
             >
               <img
                 :src="
                   urlToPortrait(
-                    $root.settings.current_author.slugFolderName,
-                    $root.settings.current_author.preview
+                    $root.current_author.slugFolderName,
+                    $root.current_author.preview
                   )
                 "
                 width="100"
@@ -126,7 +126,7 @@
               />
             </div>
             <div class="m_topbar--center--authors--name">
-              {{ $root.settings.current_author.name }}
+              {{ $root.current_author.name }}
             </div>
           </template>
           <template v-else>
@@ -135,12 +135,6 @@
         </button>
 
         <Clients />
-
-        <AuthorsList
-          v-if="showAuthorsListModal"
-          :authors="authors"
-          @close="showAuthorsListModal = false"
-        ></AuthorsList>
       </div>
     </div>
 
@@ -152,7 +146,7 @@
           :content="$t('share_access')"
           v-tippy="{
             placement: 'bottom-end',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <svg
@@ -165,7 +159,7 @@
             width="20px"
             height="20px"
             viewBox="0 0 90 90"
-            style="enable-background:new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90;"
             xml:space="preserve"
           >
             <path
@@ -189,7 +183,7 @@
           :content="$t('help')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <svg
@@ -202,7 +196,7 @@
             width="12px"
             height="20.3px"
             viewBox="0 0 12 20.3"
-            style="enable-background:new 0 0 12 20.3;"
+            style="enable-background: new 0 0 12 20.3;"
             xml:space="preserve"
           >
             <path
@@ -223,7 +217,7 @@
           :content="$t('settings')"
           v-tippy="{
             placement: 'bottom-end',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <svg
@@ -235,7 +229,7 @@
             width="90px"
             height="90px"
             viewBox="0 0 90 90"
-            style="enable-background:new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90;"
             xml:space="preserve"
           >
             <path
@@ -277,7 +271,6 @@
 <script>
 import QRCode from "./components/modals/QRCode.vue";
 import SettingsModal from "./components/modals/SettingsModal.vue";
-import AuthorsList from "./components/modals/AuthorsList.vue";
 import Clients from "./components/Clients.vue";
 
 export default {
@@ -285,15 +278,13 @@ export default {
   components: {
     QRCode,
     SettingsModal,
-    AuthorsList,
-    Clients
+    Clients,
   },
   data() {
     return {
       showQRModal: false,
       showSettingsModal: false,
-      showAuthorsListModal: false,
-      show_menu: false
+      show_menu: false,
     };
   },
   created() {},
@@ -302,9 +293,9 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    "$root.settings.windowWidth": function() {
+    "$root.settings.windowWidth": function () {
       this.menuVisibility();
-    }
+    },
   },
   computed: {
     show_advanced_options() {
@@ -312,7 +303,7 @@ export default {
         this.$root.screen_is_wide ||
         (!this.$root.screen_is_wide && this.show_menu)
       );
-    }
+    },
   },
   methods: {
     menuVisibility() {},
@@ -331,9 +322,9 @@ export default {
     },
     urlToPortrait(slug, preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.filter(m => m.size === 180)[0].path;
+      let pathToSmallestThumb = preview.filter((m) => m.size === 180)[0].path;
       return pathToSmallestThumb;
-    }
-  }
+    },
+  },
 };
 </script>

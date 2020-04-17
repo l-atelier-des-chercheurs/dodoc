@@ -8,7 +8,7 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
-  background-color: fade(#fff, 90%);
+  background-color: fade(@c-noir, 90%);
   // cursor: pointer;
   .custom_scrollbar(8px, 5px, 6px);
 
@@ -76,6 +76,7 @@
       border-radius: 20px;
     }
   }
+
   .m_modal--container--content {
     height: auto;
 
@@ -134,7 +135,7 @@
 
     textarea,
     .textarea,
-    input,
+    input[type="text"],
     select {
       color: @c-noir;
     }
@@ -287,6 +288,12 @@
     > * {
       .margin-sides-medium;
 
+      > label ~ div {
+        .padding-small;
+        border: 1px solid @c-gris_clair;
+        border-radius: 4px;
+      }
+
       &.m_modal--buttonrow {
         margin: 0;
         // .margin-vert-small;
@@ -300,6 +307,10 @@
             padding: 0;
           }
         }
+      }
+
+      .plyr .plyr__video-wrapper {
+        background-color: transparent;
       }
 
       &:first-child {
@@ -328,10 +339,10 @@
     overflow: hidden;
     position: relative;
     // .bg-blanc;
-    // .bg-gris_clair;
-    .bg-noir;
+    .bg-gris_fonce;
+    // .bg-noir;
 
-    &[data-context='edit'] {
+    &[data-context="edit"] {
       > * {
         width: 100%;
         height: 100%;
@@ -346,6 +357,13 @@
       height: auto;
       object-fit: contain;
       object-position: center;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: 0;
     }
 
     .plyr--video,
@@ -396,14 +414,18 @@
       }
     }
     &.type-other {
-      color: white;
-    }
-    pre {
-      margin-top: 0;
+      color: @c-noir;
+
+      pre {
+        display: inline-block;
+        .bg-blanc;
+        .margin-verysmall;
+        .padding-verysmall;
+      }
     }
   }
 
-  input[type='text'] {
+  input[type="text"] {
   }
 
   .m_modal--preview--media {
@@ -436,6 +458,20 @@
     top: 0;
     right: 0;
   }
+}
+
+.m_modal--loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  background-color: fade(@c-blanc, 80%);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .m_modal--minimize_button {
@@ -491,7 +527,8 @@
   border-bottom: 2px solid @c-gris_clair;
 
   h3 {
-    .padding-medium;
+    .padding-sides-medium;
+    .padding-vert-small;
     font-weight: 700;
     .font-large;
   }
@@ -518,7 +555,7 @@
     .margin-verysmall;
   }
 
-  button[type='submit'] {
+  button[type="submit"] {
     #app:not(.is--wide) & {
       // left: 50%;
       width: 10em;

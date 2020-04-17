@@ -4,27 +4,6 @@
   </div>
 </template>
 <script>
-function loadScript(src) {
-  return new Promise(function(resolve, reject) {
-    if (document.querySelector('script[src="' + src + '"]')) {
-      resolve();
-      return;
-    }
-
-    const el = document.createElement("script");
-
-    el.type = "text/javascript";
-    el.async = true;
-    el.src = src;
-
-    el.addEventListener("load", resolve);
-    el.addEventListener("error", reject);
-    el.addEventListener("abort", reject);
-
-    document.head.appendChild(el);
-  });
-}
-
 export default {
   props: {},
   components: {},
@@ -33,7 +12,7 @@ export default {
   },
   created() {},
   mounted() {
-    loadScript("/libs/instascan.min.js")
+    this.$loadScript("/libs/instascan.min.js")
       .then(() => {
         // Script is loaded, do something
 
@@ -87,5 +66,4 @@ export default {
   methods: {}
 };
 </script>
-<style>
-</style>
+<style></style>

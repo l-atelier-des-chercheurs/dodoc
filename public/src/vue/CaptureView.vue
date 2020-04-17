@@ -17,7 +17,7 @@
           width="169px"
           height="169px"
           viewBox="0 0 169 169"
-          style="enable-background:new 0 0 169 169;"
+          style="enable-background: new 0 0 169 169;"
           xml:space="preserve"
         >
           <path
@@ -58,7 +58,7 @@
           width="169px"
           height="169px"
           viewBox="0 0 169 169"
-          style="enable-background:new 0 0 169 169;"
+          style="enable-background: new 0 0 169 169;"
           xml:space="preserve"
         >
           <path
@@ -74,7 +74,7 @@
       :class="{
         stopmotion_inprogress: $root.store.stopmotions.hasOwnProperty(
           current_stopmotion
-        )
+        ),
       }"
     >
       <div class="m_panel">
@@ -106,7 +106,7 @@
                     v-for="(currentId, kind) in selected_devicesId"
                     :key="kind"
                   >
-                    <span class="font-verysmall">{{ kind }}</span>
+                    <span class="font-verysmall">{{ $t(kind) }}</span>
                     <select
                       v-if="sorted_available_devices.hasOwnProperty(kind)"
                       v-model="selected_devicesId[kind]"
@@ -133,11 +133,11 @@
                   </div>
 
                   <div v-if="actual_current_video_resolution">
-                    <span class="font-verysmall"
-                      >{{ $t("current") }}&nbsp;:
+                    <span class="font-verysmall">
+                      {{ $t("current") }}&nbsp;:
                       {{ actual_current_video_resolution.width }} x
-                      {{ actual_current_video_resolution.height }}</span
-                    >
+                      {{ actual_current_video_resolution.height }}
+                    </span>
                   </div>
                   <div
                     v-for="res in available_camera_resolutions"
@@ -213,8 +213,8 @@
               <label
                 v-if="
                   selected_mode !== 'stopmotion' &&
-                    is_recording &&
-                    recording_duration
+                  is_recording &&
+                  recording_duration
                 "
                 :key="'duration'"
                 v-html="recording_duration"
@@ -223,8 +223,8 @@
               <label
                 v-if="
                   selected_mode === 'stopmotion' &&
-                    is_recording &&
-                    recording_duration
+                  is_recording &&
+                  recording_duration
                 "
                 :key="'time_before'"
                 v-html="time_before_next_picture"
@@ -276,8 +276,8 @@
             <MediaContent
               v-if="
                 selected_mode === 'stopmotion' &&
-                  stopmotion.onion_skin_img &&
-                  current_stopmotion
+                stopmotion.onion_skin_img &&
+                current_stopmotion
               "
               class="m_panel--previewCard--live--onionskin"
               :context="'edit'"
@@ -348,9 +348,9 @@
                       </li>
                     </ul>
                   </template>
-                  <template v-else>{{
-                    $t("no_stopmotion_created_yet")
-                  }}</template>
+                  <template v-else>
+                    {{ $t("no_stopmotion_created_yet") }}
+                  </template>
                 </div>
               </div>
             </transition>
@@ -412,12 +412,12 @@
           @close="current_stopmotion = false"
           @new_single_image="updateSingleImage"
           @show_live_feed="
-            state => {
+            (state) => {
               is_showing_live_feed = state;
             }
           "
           @validating_video="
-            state => {
+            (state) => {
               is_validating_stopmotion_video = state;
             }
           "
@@ -445,7 +445,7 @@
                 xml:space="preserve"
               >
                 <path
-                  style="fill: currentColor"
+                  style="fill: currentColor;"
                   d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
                   c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
                   c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
@@ -479,7 +479,7 @@
                 :content="$t('timelapse')"
                 v-tippy="{
                   placement: 'top',
-                  delay: [600, 0]
+                  delay: [600, 0],
                 }"
                 @click="timelapse_mode = !timelapse_mode"
               >
@@ -493,7 +493,7 @@
                   width="81px"
                   height="81px"
                   viewBox="0 0 81 81"
-                  style="enable-background:new 0 0 81 81;"
+                  style="enable-background: new 0 0 81 81;"
                   xml:space="preserve"
                 >
                   <path
@@ -527,8 +527,8 @@
               <div
                 v-if="
                   selected_mode === 'stopmotion' &&
-                    stopmotion.onion_skin_img &&
-                    is_showing_live_feed
+                  stopmotion.onion_skin_img &&
+                  is_showing_live_feed
                 "
               >
                 <label>{{ $t("onion_skin") }}</label>
@@ -582,7 +582,7 @@
       v-if="$root.settings.capture_options.distant_flux.active"
       :key="$root.settings.capture_options.distant_flux.username"
       @changeStreamTo="
-        new_stream => {
+        (new_stream) => {
           changeStreamTo(new_stream);
         }
       "
@@ -605,16 +605,16 @@ export default {
   props: {
     project: {
       type: Object,
-      default: ""
+      default: "",
     },
     slugProjectName: String,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     MediaContent,
     StopmotionPanel,
     MediaValidationButtons,
-    DistantFlux
+    DistantFlux,
   },
   data() {
     return {
@@ -622,24 +622,24 @@ export default {
       available_modes: [
         {
           picto: "/images/i_icone-dodoc_image.svg",
-          key: "photo"
+          key: "photo",
         },
         {
           picto: "/images/i_icone-dodoc_video.svg",
-          key: "video"
+          key: "video",
         },
         {
           picto: "/images/i_icone-dodoc_anim.svg",
-          key: "stopmotion"
+          key: "stopmotion",
         },
         {
           picto: "/images/i_icone-dodoc_audio.svg",
-          key: "audio"
+          key: "audio",
         },
         {
           picto: "/images/i_icone-dodoc_vecto.svg",
-          key: "vecto"
-        }
+          key: "vecto",
+        },
       ],
 
       recordVideoFeed: undefined,
@@ -686,60 +686,60 @@ export default {
           "current-time",
           "mute",
           "volume",
-          "fullscreen"
+          "fullscreen",
         ],
-        iconUrl: "/images/plyr.svg"
+        iconUrl: "/images/plyr.svg",
       },
 
       ideal_camera_resolution: {
         name: "hd",
         width: 1280,
-        height: 720
+        height: 720,
       },
       available_camera_resolutions: [
         {
           name: "vga",
           width: 640,
-          height: 480
+          height: 480,
         },
         {
           name: "hd",
           width: 1280,
-          height: 720
+          height: 720,
         },
         {
           name: "full hd",
           width: 1920,
-          height: 1080
-        }
+          height: 1080,
+        },
       ],
       selected_devicesId: {
         audioinput: "",
         videoinput: "",
-        audiooutput: ""
+        audiooutput: "",
       },
       vecto: {
         svgstr: "",
-        blurradius: 0
+        blurradius: 0,
       },
       stopmotion: {
         onion_skin_img: false,
-        onion_skin_opacity: 0
-      }
+        onion_skin_opacity: 0,
+      },
     };
   },
   created() {
     console.log("CREATED • CaptureView");
 
-    navigator.mediaDevices.enumerateDevices().then(deviceInfos => {
-      this.available_devices = deviceInfos;
+    this.listAllDevices().then((all_device_infos) => {
+      this.available_devices = all_device_infos;
 
       // SOURCES (device_id)
-      Object.keys(this.selected_devicesId).map(kind => {
+      Object.keys(this.selected_devicesId).map((kind) => {
         // check if $root ID already exist and match ones we just got
         if (this.sorted_available_devices.hasOwnProperty(kind)) {
           const matching_id = this.sorted_available_devices[kind].filter(
-            m =>
+            (m) =>
               m.deviceId ===
               this.$root.settings.capture_options.selected_devicesId[kind]
           );
@@ -751,7 +751,7 @@ export default {
             if (kind === "videoinput") {
               const camera_back = this.sorted_available_devices[
                 kind
-              ].filter(x => x.label.includes("back"));
+              ].filter((x) => x.label.includes("back"));
               if (camera_back.length > 0) {
                 this.selected_devicesId[kind] = camera_back[0].deviceId;
                 return;
@@ -791,7 +791,7 @@ export default {
   },
 
   watch: {
-    "selected_devicesId.audioinput": function() {
+    "selected_devicesId.audioinput": function () {
       console.log(
         `WATCH • Capture: selected_devicesId.audioinput = ${this.selected_devicesId.audioinput}`
       );
@@ -803,19 +803,19 @@ export default {
       // });
       this.$root.settings.capture_options.selected_devicesId.audioinput = this.selected_devicesId.audioinput;
     },
-    "selected_devicesId.audiooutput": function() {
+    "selected_devicesId.audiooutput": function () {
       console.log(
         `WATCH • Capture: selected_devicesId.audiooutput = ${this.selected_devicesId.audiooutput}`
       );
       this.$root.settings.capture_options.selected_devicesId.audiooutput = this.selected_devicesId.audiooutput;
     },
-    "selected_devicesId.videoinput": function() {
+    "selected_devicesId.videoinput": function () {
       console.log(
         `WATCH • Capture: selected_devicesId.videoinput = ${this.selected_devicesId.videoinput}`
       );
       this.$root.settings.capture_options.selected_devicesId.videoinput = this.selected_devicesId.videoinput;
     },
-    selected_mode: function() {
+    selected_mode: function () {
       console.log("WATCH • Capture: selected_mode : " + this.selected_mode);
       this.mode_just_changed = true;
       this.show_stopmotion_list = false;
@@ -828,7 +828,7 @@ export default {
         this.startMode();
       });
     },
-    is_recording: function() {
+    is_recording: function () {
       equalizer.setSarahCouleur(this.is_recording);
 
       if (this.is_recording) {
@@ -837,7 +837,7 @@ export default {
         this.timer_recording = false;
       }
     },
-    ideal_camera_resolution: function() {
+    ideal_camera_resolution: function () {
       console.log(
         `WATCH • Capture: ideal_camera_resolution = ${Object.entries(
           this.ideal_camera_resolution
@@ -845,10 +845,10 @@ export default {
       );
       this.$root.settings.capture_options.ideal_camera_resolution = this.ideal_camera_resolution;
     },
-    "$root.settings.capture_options.distant_flux.active": function() {
+    "$root.settings.capture_options.distant_flux.active": function () {
       this.startMode();
     },
-    media_to_validate: function() {
+    media_to_validate: function () {
       console.log(
         `WATCH • Capture: media_to_validate = ${this.media_to_validate}`
       );
@@ -858,16 +858,16 @@ export default {
         this.$refs.videoElement.play();
       }
     },
-    current_stopmotion: function() {
+    current_stopmotion: function () {
       this.$root.settings.capture_mode_cant_be_changed = this.current_stopmotion
         ? this.current_stopmotion
         : false;
     },
-    show_stopmotion_list: function() {
+    show_stopmotion_list: function () {
       if (this.show_stopmotion_list) {
         this.$socketio.listFolders({ type: "stopmotions" });
       }
-    }
+    },
   },
   computed: {
     is_making_stopmotion() {
@@ -879,7 +879,7 @@ export default {
     },
     stopmotions() {
       let stopmotions = Object.values(this.$root.store.stopmotions);
-      stopmotions = this.$_.sortBy(stopmotions, function(o) {
+      stopmotions = this.$_.sortBy(stopmotions, function (o) {
         return o.date_created;
       }).reverse();
       return stopmotions;
@@ -887,10 +887,10 @@ export default {
     sorted_available_devices() {
       return this.$_.groupBy(this.available_devices, "kind");
     },
-    uriToUploadMedia: function() {
-      return `_file-upload/projects/${this.slugProjectName}`;
+    uriToUploadMedia: function () {
+      return `_file-upload/projects/${this.slugProjectName}?socketid=${this.$root.$socketio.socket.id}`;
     },
-    recording_duration: function() {
+    recording_duration: function () {
       if (this.timer_recording) {
         return this.$moment(this.$root.currentTime - this.timer_recording)
           .startOf("second")
@@ -898,7 +898,7 @@ export default {
       }
       return false;
     },
-    time_before_next_picture: function() {
+    time_before_next_picture: function () {
       const seconds_ellapsed_since_beginning = this.$moment(
         this.$root.currentTime - this.timer_recording
       ).seconds();
@@ -908,9 +908,62 @@ export default {
         return 0;
       }
       return this.timelapse_interval - time_ellapsed_since_last_capture;
-    }
+    },
   },
   methods: {
+    listAllDevices() {
+      return new Promise((resolve, reject) => {
+        let tasks = [];
+
+        tasks.push(
+          new Promise((resolve, reject) => {
+            navigator.mediaDevices.enumerateDevices().then((device_infos) => {
+              return resolve(device_infos);
+            });
+          })
+        );
+
+        if (this.$root.state.is_electron) {
+          tasks.push(
+            new Promise((resolve, reject) => {
+              const { desktopCapturer } = window.require("electron");
+              desktopCapturer.getSources(
+                { types: ["window", "screen"] },
+                (error, sources) => {
+                  const screen_infos = sources.reduce((acc, source) => {
+                    acc.push(source);
+                    return acc;
+                  }, []);
+                  return resolve(screen_infos);
+                }
+              );
+            })
+          );
+        }
+
+        Promise.all(tasks).then((d_array) => {
+          const all_devices = d_array.reduce((acc, devices) => {
+            devices.map((device) => {
+              const _device = JSON.parse(JSON.stringify(device));
+              if (!_device.hasOwnProperty("kind")) {
+                if (_device.name === "Entire screen") {
+                  _device.label = _device.name;
+                  _device.deviceId = _device.id;
+                  // _device.deviceId = "Entire screen";
+                  _device.kind = "videoinput";
+                  acc.push(_device);
+                }
+              } else {
+                acc.push(_device);
+              }
+            });
+            return acc;
+          }, []);
+
+          return resolve(all_devices);
+        });
+      });
+    },
     startMode() {
       console.log("METHODS • CaptureView: startMode");
 
@@ -930,10 +983,10 @@ export default {
         this.stopAllFeeds().then(() => {
           equalizer.clearCanvas();
           this.startAudioFeed()
-            .then(stream => {
+            .then((stream) => {
               equalizer.start(this.$refs.equalizerElement, stream);
             })
-            .catch(err => {});
+            .catch((err) => {});
         });
       } else if (this.selected_mode === "vecto") {
         this.stopAllFeeds().then(() => {
@@ -947,7 +1000,7 @@ export default {
         return;
       }
 
-      let currentModeIndex = this.available_modes.findIndex(d => {
+      let currentModeIndex = this.available_modes.findIndex((d) => {
         return d.key === this.selected_mode;
       });
 
@@ -961,7 +1014,7 @@ export default {
         return;
       }
 
-      let currentModeIndex = this.available_modes.findIndex(d => {
+      let currentModeIndex = this.available_modes.findIndex((d) => {
         return d.key === this.selected_mode;
       });
 
@@ -1027,7 +1080,7 @@ export default {
     stopAudioFeed() {
       console.log("METHODS • CaptureView: stopAudioFeed");
       if (this.audioStream) {
-        this.audioStream.getAudioTracks().forEach(function(track) {
+        this.audioStream.getAudioTracks().forEach(function (track) {
           track.stop();
         });
         this.audioStream = null;
@@ -1061,7 +1114,7 @@ export default {
         }
 
         this.getCameraFeed(withAudio)
-          .then(stream => {
+          .then((stream) => {
             console.log(
               "METHODS • CaptureView: startCameraFeed / got camera stream"
             );
@@ -1074,7 +1127,7 @@ export default {
                   if (this.$refs.videoElement.videoWidth) {
                     this.actual_current_video_resolution = {
                       width: this.$refs.videoElement.videoWidth,
-                      height: this.$refs.videoElement.videoHeight
+                      height: this.$refs.videoElement.videoHeight,
                     };
                   }
                 }, 200);
@@ -1082,7 +1135,7 @@ export default {
             }
             return resolve();
           })
-          .catch(err => {
+          .catch((err) => {
             this.$alertify.error(err);
             reject();
           });
@@ -1093,42 +1146,61 @@ export default {
       return new Promise((resolve, reject) => {
         console.log("METHODS • CaptureView: getCameraFeed");
 
-        const constraints = {
-          video: {
-            /* old syntax, with webrtc-adapter */
-            // optional: [{ sourceId: this.selected_devicesId.videoinput }],
-            // mandatory: {
-            //   // minWidth:"1280","maxWidth":"1280","minHeight":"720","maxHeight":"720"
-            //   // minWidth:"640","maxWidth":"640","minHeight":"480","maxHeight":"480"
-            //   minWidth: this.ideal_camera_resolution.width,
-            //   maxWidth: this.ideal_camera_resolution.width,
-            //   minHeight: this.ideal_camera_resolution.height,
-            //   maxHeight: this.ideal_camera_resolution.height
-            // }
+        let constraints = {};
 
-            deviceId: this.selected_devicesId.videoinput
-              ? { exact: this.selected_devicesId.videoinput }
-              : undefined,
-            // minHeight: this.ideal_camera_resolution.height
-            width: {
-              min: 640,
-              ideal: this.ideal_camera_resolution.width,
-              max: 1920
+        if (this.selected_devicesId.videoinput.startsWith("screen:")) {
+          constraints = {
+            audio: false,
+            video: {
+              mandatory: {
+                chromeMediaSource: "desktop",
+                // chromeMediaSourceId: this.selected_devicesId.videoinput,
+                minWidth: this.ideal_camera_resolution.width,
+                maxWidth: this.ideal_camera_resolution.width,
+                minHeight: this.ideal_camera_resolution.height,
+                maxHeight: this.ideal_camera_resolution.height,
+              },
             },
-            height: {
-              min: 480,
-              ideal: this.ideal_camera_resolution.height,
-              max: 1080
-            }
-          },
-          audio: withAudio
-        };
+          };
+          // if (withAudio) {}
+        } else {
+          constraints = {
+            video: {
+              /* old syntax, with webrtc-adapter */
+              // optional: [{ sourceId: this.selected_devicesId.videoinput }],
+              // mandatory: {
+              //   // minWidth:"1280","maxWidth":"1280","minHeight":"720","maxHeight":"720"
+              //   // minWidth:"640","maxWidth":"640","minHeight":"480","maxHeight":"480"
+              //   minWidth: this.ideal_camera_resolution.width,
+              //   maxWidth: this.ideal_camera_resolution.width,
+              //   minHeight: this.ideal_camera_resolution.height,
+              //   maxHeight: this.ideal_camera_resolution.height
+              // }
+              deviceId: this.selected_devicesId.videoinput
+                ? { exact: this.selected_devicesId.videoinput }
+                : undefined,
+              // minHeight: this.ideal_camera_resolution.height
+              width: {
+                min: 640,
+                ideal: this.ideal_camera_resolution.width,
+                max: 1920,
+              },
+              height: {
+                min: 480,
+                ideal: this.ideal_camera_resolution.height,
+                max: 1080,
+              },
+            },
+            audio: withAudio,
+          };
+        }
+
         navigator.getUserMedia(
           constraints,
-          stream => {
+          (stream) => {
             resolve(stream);
           },
-          err => {
+          (err) => {
             return reject(
               this.$t(
                 "notifications.failed_to_start_video_change_source_or_res"
@@ -1150,11 +1222,11 @@ export default {
         //   .log('METHODS • CaptureView: startAudioFeed');
 
         this.getAudioFeed()
-          .then(stream => {
+          .then((stream) => {
             this.audioStream = stream;
             resolve(stream);
           })
-          .catch(err => {
+          .catch((err) => {
             this.$alertify.error(err);
             reject();
           });
@@ -1171,15 +1243,15 @@ export default {
         const constraints = {
           video: false,
           audio: {
-            optional: [{ sourceId: this.selected_devicesId.audioinput }]
-          }
+            optional: [{ sourceId: this.selected_devicesId.audioinput }],
+          },
         };
         navigator.getUserMedia(
           constraints,
-          stream => {
+          (stream) => {
             return resolve(stream);
           },
-          err => {
+          (err) => {
             return reject(
               this.$t(
                 "notifications.failed_to_start_video_change_source_or_res"
@@ -1204,7 +1276,7 @@ export default {
           invisibleCanvas.height
         );
         var imageData = invisibleCanvas.toBlob(
-          imageBlob => {
+          (imageBlob) => {
             return resolve(imageBlob);
           },
           "image/jpeg",
@@ -1224,7 +1296,7 @@ export default {
           const options = {
             recorderType: RecordRTC.MediaStreamRecorder,
             type: "video",
-            videoBitsPerSecond: 4112000
+            videoBitsPerSecond: 4112000,
           };
 
           setTimeout(() => recordVideoFeed.startRecording(options), 500);
@@ -1249,7 +1321,7 @@ export default {
       return new Promise((resolve, reject) => {
         if (!!this.audioStream) {
           let recordAudioFeed = RecordRTC(this.audioStream, {
-            type: "audio"
+            type: "audio",
           });
           recordAudioFeed.startRecording();
 
@@ -1299,31 +1371,33 @@ export default {
       }
 
       if (this.selected_mode === "photo") {
-        this.getStaticImageFromVideoElement().then(rawData => {
+        this.getStaticImageFromVideoElement().then((rawData) => {
           this.media_to_validate = {
             rawData,
             objectURL: URL.createObjectURL(rawData),
-            type: "image"
+            type: "image",
           };
         });
       } else if (this.selected_mode === "video") {
         this.stopVideoFeed();
-        this.startRecordCameraFeed(this.recordVideoWithAudio).then(rawData => {
-          this.media_to_validate = {
-            rawData,
-            objectURL: URL.createObjectURL(rawData),
-            type: "video"
-          };
-        });
+        this.startRecordCameraFeed(this.recordVideoWithAudio).then(
+          (rawData) => {
+            this.media_to_validate = {
+              rawData,
+              objectURL: URL.createObjectURL(rawData),
+              type: "video",
+            };
+          }
+        );
       } else if (this.selected_mode === "audio") {
         equalizer.clearCanvas();
-        this.startRecordAudioFeed().then(rawData => {
+        this.startRecordAudioFeed().then((rawData) => {
           const preview = this.$refs.equalizerElement.toDataURL("image/png");
           this.media_to_validate = {
             preview,
             rawData,
             objectURL: URL.createObjectURL(rawData),
-            type: "audio"
+            type: "audio",
           };
         });
       } else if (this.selected_mode === "stopmotion") {
@@ -1332,7 +1406,7 @@ export default {
         this.media_to_validate = {
           preview: this.vecto.svgstr,
           rawData: new Blob([this.vecto.svgstr], { type: "text/xml" }),
-          type: "svg"
+          type: "svg",
         };
       }
     },
@@ -1341,15 +1415,15 @@ export default {
         name:
           this.slugProjectName + "-" + this.$moment().format("YYYYMMDD_HHmmss"),
         linked_project: this.slugProjectName,
-        authors: this.$root.settings.current_author.hasOwnProperty("name")
-          ? [{ name: this.$root.settings.current_author.name }]
-          : ""
+        authors: this.$root.current_author
+          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
+          : "",
       };
 
-      this.getStaticImageFromVideoElement().then(imageData => {
+      this.getStaticImageFromVideoElement().then((imageData) => {
         if (!this.current_stopmotion) {
           // create stopmotion
-          this.$eventHub.$on("socketio.folder_created_or_updated", fdata => {
+          this.$eventHub.$on("socketio.folder_created_or_updated", (fdata) => {
             if (fdata.id === this.$root.justCreatedFolderID) {
               this.$eventHub.$off("socketio.folder_created_or_updated");
               this.current_stopmotion = fdata.slugFolderName;
@@ -1358,7 +1432,7 @@ export default {
           });
           this.$root.createFolder({
             type: "stopmotions",
-            data: smdata
+            data: smdata,
           });
         } else {
           // append to stopmotion
@@ -1373,8 +1447,8 @@ export default {
         type: "stopmotions",
         rawData: imageData,
         additionalMeta: {
-          type: "image"
-        }
+          type: "image",
+        },
       });
     },
     startVectoFeed() {
@@ -1395,10 +1469,10 @@ export default {
                 window.setTimeout(scanToVecto, 1000);
                 return;
               }
-              this.getStaticImageFromVideoElement().then(imageData => {
+              this.getStaticImageFromVideoElement().then((imageData) => {
                 ImageTracer.imageToSVG(
                   URL.createObjectURL(imageData),
-                  svgstr => {
+                  (svgstr) => {
                     this.vecto.svgstr = svgstr;
                     window.setTimeout(scanToVecto, 1000);
                   },
@@ -1411,8 +1485,8 @@ export default {
                     blurradius: this.vecto.blurradius,
                     pal: [
                       { r: 255, g: 255, b: 255, a: 255 },
-                      { r: 0, g: 0, b: 0, a: 255 }
-                    ]
+                      { r: 0, g: 0, b: 0, a: 255 },
+                    ],
                     // pal : [{r:255,g:255,b:255,a:255}, {r:214,g:0,b:103,a:255}]
                   }
                 );
@@ -1422,7 +1496,7 @@ export default {
 
             resolve();
           })
-          .catch(err => {
+          .catch((err) => {
             this.$alertify.error(err);
             reject();
           });
@@ -1446,7 +1520,7 @@ export default {
           image: "jpeg",
           video: "webm",
           audio: "wav",
-          svg: "svg"
+          svg: "svg",
         };
         const filename = `${
           this.media_to_validate.type
@@ -1467,9 +1541,9 @@ export default {
         const meta = {
           fileCreationDate: modified,
           fav,
-          authors: this.$root.settings.current_author.hasOwnProperty("name")
-            ? [{ name: this.$root.settings.current_author.name }]
-            : ""
+          authors: this.$root.current_author
+            ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
+            : "",
         };
         formData.append(filename, JSON.stringify(meta));
 
@@ -1491,7 +1565,7 @@ export default {
         axios
           .post(this.uriToUploadMedia, formData, {
             headers: { "Content-Type": "multipart/form-data" },
-            onUploadProgress: function(progressEvent) {
+            onUploadProgress: function (progressEvent) {
               console.log(
                 `METHODS • CaptureView: onUploadProgress for name = ${filename} / ${parseInt(
                   Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -1501,10 +1575,10 @@ export default {
                 Math.round((progressEvent.loaded * 100) / progressEvent.total)
               );
               // this.selected_files_meta[filename].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
-            }.bind(this)
+            }.bind(this),
           })
-          .then(x => x.data)
-          .then(x => {
+          .then((x) => x.data)
+          .then((x) => {
             if (this.$root.state.dev_mode === "debug") {
               console.log(
                 `METHODS • CaptureView: name = ${filename} / success uploading`
@@ -1522,7 +1596,7 @@ export default {
             // this.selected_files_meta[filename].upload_percentages = 100;
             resolve();
           })
-          .catch(err => {
+          .catch((err) => {
             if (this.$root.state.dev_mode === "debug") {
               console.log(
                 `METHODS • sendThisFile: name = ${filename} / failed uploading`
@@ -1556,24 +1630,24 @@ export default {
       ) {
         this.$socketio.listMedias({
           type: "stopmotions",
-          slugFolderName
+          slugFolderName,
         });
       }
     },
     loadStopmotion(slugFolderName) {
       this.current_stopmotion = slugFolderName;
-    }
-  }
+    },
+  },
 };
 
 // CREATE A SOUND EQUALIZER
-var equalizer = (function() {
-  window.requestAnimFrame = (function() {
+var equalizer = (function () {
+  window.requestAnimFrame = (function () {
     return (
       window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
       window.mozRequestAnimationFrame ||
-      function(callback, element) {
+      function (callback, element) {
         window.setTimeout(callback, 1000 / 60);
       }
     );
@@ -1597,10 +1671,10 @@ var equalizer = (function() {
   var ctx;
 
   var API = {
-    start: function(canvasEl, stream) {
+    start: function (canvasEl, stream) {
       ctx = canvasEl.getContext("2d");
 
-      window.AudioContext = (function() {
+      window.AudioContext = (function () {
         return window.AudioContext || window.mozAudioContext;
       })();
 
@@ -1611,19 +1685,19 @@ var equalizer = (function() {
       }
       startEqualizer(stream);
     },
-    stop: function() {
+    stop: function () {
       stopEqualizer();
     },
-    setSarahCouleur: function(isCurrentlyRecording) {
+    setSarahCouleur: function (isCurrentlyRecording) {
       if (isCurrentlyRecording) {
         sarahCouleur = "red";
       } else {
         sarahCouleur = "gray";
       }
     },
-    clearCanvas: function() {
+    clearCanvas: function () {
       clearCanvas();
-    }
+    },
   };
 
   function startEqualizer(stream) {
@@ -1653,7 +1727,7 @@ var equalizer = (function() {
 
     // setup the event handler that is triggered every time enough samples have been collected
     // trigger the audio analysis and draw one column in the display based on the results
-    javascriptNode.onaudioprocess = function() {
+    javascriptNode.onaudioprocess = function () {
       amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
       analyserNode.getByteTimeDomainData(amplitudeArray);
 

@@ -7,13 +7,13 @@
     :askBeforeClosingModal="askBeforeClosingModal"
   >
     <template slot="header">
-      <div class>{{ $t('edit_publication') }}</div>
+      <div class>{{ $t("edit_publication") }}</div>
     </template>
 
     <template slot="sidebar">
       <!-- Human name -->
       <div class="margin-bottom-small">
-        <label>{{ $t('name') }}</label>
+        <label>{{ $t("name") }}</label>
         <input
           class="input-big"
           type="text"
@@ -34,6 +34,32 @@
         </ImageSelect>
       </div>-->
 
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_attached_project }"
+            @click="show_attached_project = !show_attached_project"
+          >
+            {{ $t("attached_to_project") }}
+          </button>
+        </label>
+        <div v-if="show_attached_project">
+          <select v-model="publidata.attached_to_project">
+            <option key="''" :value="''">** {{ $t("none") }} **</option>
+            <option
+              v-for="project in Object.values($root.store.projects)"
+              :key="project.slugFolderName"
+              :value="project.slugFolderName"
+            >
+              {{ project.name }}</option
+            >
+          </select>
+          <small>{{ $t("attached_to_project_instructions") }}</small>
+        </div>
+      </div>
+
       <!-- Password -->
       <!-- <div class="margin-bottom-small">
         <label>{{ $t('password') }}</label>
@@ -43,26 +69,48 @@
 
       <!-- Keywords -->
       <div class="margin-bottom-small">
-        <label>{{ $t('keywords') }}</label>
-        <TagsInput
-          :keywords="publidata.keywords"
-          @tagsChanged="newTags => publidata.keywords = newTags"
-        />
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_keywords }"
+            @click="show_keywords = !show_keywords"
+          >
+            {{ $t("keywords") }}
+          </button>
+        </label>
+        <template v-if="show_keywords">
+          <TagsInput
+            :keywords="publidata.keywords"
+            @tagsChanged="(newTags) => (publidata.keywords = newTags)"
+          />
+        </template>
       </div>
 
       <!-- Author(s) -->
       <div class="margin-bottom-small">
-        <label>{{ $t('author') }}</label>
-        <br />
-        <AuthorsInput
-          :currentAuthors="publidata.authors"
-          @authorsChanged="newAuthors => publidata.authors = newAuthors"
-        />
-        <small>{{ $t('author_instructions') }}</small>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >
+            {{ $t("author") }}
+          </button>
+        </label>
+
+        <template v-if="show_authors">
+          <AuthorsInput
+            :currentAuthors="publidata.authors"
+            @authorsChanged="(newAuthors) => (publidata.authors = newAuthors)"
+          />
+          <small>{{ $t("author_instructions") }}</small>
+        </template>
       </div>
     </template>
 
-    <template slot="submit_button">{{ $t('save') }}</template>
+    <template slot="submit_button">{{ $t("save") }}</template>
   </Modal>
 </template>
 <script>
@@ -76,30 +124,37 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     Modal,
     ImageSelect,
     TagsInput,
-    AuthorsInput
+    AuthorsInput,
   },
   data() {
     return {
       publidata: {
         name: this.publication.name,
+        attached_to_project: !!this.publication.attached_to_project
+          ? this.publication.attached_to_project
+          : "",
         authors:
           typeof this.publication.authors === "string" &&
           this.publication.authors !== ""
-            ? this.publication.authors.split(",").map(a => {
+            ? this.publication.authors.split(",").map((a) => {
                 return { name: a };
               })
             : this.publication.authors,
-        keywords: this.publication.keywords
+        keywords: this.publication.keywords,
       },
       tag: "",
       preview: undefined,
-      askBeforeClosingModal: false
+      askBeforeClosingModal: false,
+
+      show_attached_project: !!this.publication.attached_to_project,
+      show_keywords: !!this.publication.keywords,
+      show_authors: !!this.publication.authors,
     };
   },
   watch: {
@@ -107,13 +162,13 @@ export default {
       handler() {
         this.askBeforeClosingModal = true;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {},
   computed: {},
   methods: {
-    editThisPublication: function(event) {
+    editThisPublication: function (event) {
       console.log("editThisPublication");
 
       // only if user changed the name of this folder
@@ -134,7 +189,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t("notifications.publi_name_exists"));
+            .error(this.$t("notifications.name_already_exists"));
 
           return false;
         }
@@ -147,13 +202,12 @@ export default {
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        data: this.publidata
+        data: this.publidata,
       });
 
       this.$emit("close", "");
-    }
-  }
+    },
+  },
 };
 </script>
-<style>
-</style>
+<style></style>

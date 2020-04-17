@@ -8,14 +8,15 @@
             v-for="project in all_projects"
             :key="project.slugFolderName"
             :value="project.slugFolderName"
-          >{{ project.name }}</option>
+            >{{ project.name }}</option
+          >
         </select>
         <button
           type="button"
           @click="addTempMediaToFolder()"
           :disabled="upload_to_folder === ''"
           v-html="$t('send')"
-          class="bg-bleuvert button-thin"
+          class="bg-bleuvert button-small"
         />
       </div>
     </div>
@@ -30,12 +31,12 @@
 export default {
   props: {
     media_filename: String,
-    publication: Object
+    publication: Object,
   },
   components: {},
   data() {
     return {
-      upload_to_folder: ""
+      upload_to_folder: "",
     };
   },
 
@@ -53,7 +54,7 @@ export default {
   computed: {
     all_projects() {
       return this.$root.projects_that_are_accessible;
-    }
+    },
   },
   methods: {
     addTempMediaToFolder() {
@@ -62,18 +63,18 @@ export default {
       this.$socketio.addTempMediaToFolder({
         from: {
           media_filename: this.media_filename,
-          type: "publications"
+          type: "publications",
         },
         to: {
           slugFolderName: this.upload_to_folder,
-          type: "projects"
+          type: "projects",
         },
         additionalMeta: {
           caption,
-          authors: this.$root.settings.current_author.hasOwnProperty("name")
-            ? [{ name: this.$root.settings.current_author.name }]
-            : ""
-        }
+          authors: this.$root.current_author
+            ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
+            : "",
+        },
       });
 
       if (
@@ -90,9 +91,8 @@ export default {
         this.$root.openProject(this.upload_to_folder);
         this.$emit("close");
       });
-    }
-  }
+    },
+  },
 };
 </script>
-<style>
-</style>
+<style></style>

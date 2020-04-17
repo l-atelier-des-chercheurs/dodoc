@@ -71,6 +71,15 @@
         },
         "description": {
           "type": "string"
+        },
+        "folder": {
+          "type": "string"
+        },
+        "editing_limited_to": {
+          "type": "string"
+        },
+        "viewing_limited_to": {
+          "type": "string"
         }
       },
       "medias": {
@@ -101,7 +110,16 @@
           },
           "type": {
             "type": "string",
-            "options": ["image", "video", "audio", "text", "document", "other"],
+            "options": [
+              "image",
+              "video",
+              "audio",
+              "text",
+              "code",
+              "stl",
+              "document",
+              "other"
+            ],
             "default": "other"
           },
           "fav": {
@@ -122,6 +140,10 @@
           },
           "caption": {
             "type": "string"
+          },
+          "file_meta": {
+            "type": "array",
+            "read_only": true
           }
         }
       }
@@ -141,13 +163,27 @@
         },
         "password": {
           "type": "string",
+          "read_only": true,
+          "transform": "crypt"
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
           "read_only": true
+        },
+        "role": {
+          "type": "string",
+          "options": ["contributor", "admin"],
+          "default": "contributor"
         },
         "description": {
           "type": "string"
         },
         "nfc_tag": {
           "type": "string"
+        },
+        "last_messages_read_in_channels": {
+          "type": "array"
         }
       }
     },
@@ -187,6 +223,9 @@
         "description": {
           "type": "string"
         },
+        "attached_to_project": {
+          "type": "string"
+        },
         "template": {
           "type": "string",
           "options": [
@@ -195,7 +234,9 @@
             "video_assemblage",
             "stopmotion_animation",
             "mix_audio_and_video",
-            "mix_audio_and_image"
+            "mix_audio_and_image",
+            "drawing_pad",
+            "video_effects"
           ],
           "default": "page_by_page"
         },
@@ -240,7 +281,16 @@
         "pages": {
           "type": "array"
         },
+        "removed_pages": {
+          "type": "array"
+        },
+        "layers": {
+          "type": "array"
+        },
         "medias_slugs": {
+          "type": "array"
+        },
+        "effects": {
           "type": "array"
         }
       },
@@ -251,6 +301,11 @@
           },
           "slugMediaName": {
             "type": "string"
+          },
+          "date_created": {
+            "type": "date",
+            "default": "current",
+            "read_only": true
           },
           "date_modified": {
             "type": "date",
@@ -264,6 +319,19 @@
             "type": "string"
           },
           "page_id": {
+            "type": "string"
+          },
+          "layer_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "options": ["text", "solid_color"]
+          },
+          "color": {
+            "type": "string"
+          },
+          "media_filename": {
             "type": "string"
           },
           "duration": {
@@ -280,6 +348,12 @@
               "max": 100
             }
           },
+          "transition_in": {
+            "type": "string"
+          },
+          "transition_out": {
+            "type": "string"
+          },
           "x": {
             "type": "number"
           },
@@ -295,12 +369,26 @@
           "height": {
             "type": "number"
           },
+          "fit_mode": {
+            "type": "string"
+          },
+          "lock_original_ratio": {
+            "type": "boolean"
+          },
           "z_index": {
             "type": "number",
             "clip": {
               "min": -20000,
               "max": 20000
             }
+          },
+          "canvas_information": {
+            "type": "string",
+            "escape": false
+          },
+          "file_meta": {
+            "type": "array",
+            "read_only": true
           }
         }
       }
@@ -342,6 +430,49 @@
             "type": "string",
             "options": ["image"],
             "default": "other"
+          },
+          "authors": {
+            "type": "array"
+          },
+          "file_meta": {
+            "type": "array",
+            "read_only": true
+          }
+        }
+      }
+    },
+    "chats": {
+      "path": "_chats",
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified": {
+          "type": "date",
+          "default": "current",
+          "override": true
+        },
+        "authors": {
+          "type": "array"
+        }
+      },
+      "medias": {
+        "fields": {
+          "date_created": {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
+          "text": {
+            "type": "string"
           },
           "authors": {
             "type": "array"

@@ -4,22 +4,25 @@
     :class="{
       'is--inPubli': is_media_in_publi,
       'is--fav': media.fav,
-      'is--ownMedia': media_made_by_current_author
+      'is--ownMedia': media_made_by_current_author,
+      'is--selected': is_selected,
     }"
   >
     <div>
       <figure
-        @click.stop="openMediaModal()"
+        @click.stop.exact="openMediaModal()"
+        @click.shift.left.exact="$emit('toggleSelect')"
+        @click.meta.left.exact="$emit('toggleSelect')"
         @mouseover="is_hovered = true"
         @mouseleave="is_hovered = false"
         :class="{ 'is--hovered': is_hovered }"
       >
         <div>
-          <div class="m_metaField padding-sides-verysmall">
+          <div class="m_media--topbar m_metaField padding-sides-verysmall">
             <div>
               <svg
-                version="1.1"
                 v-if="media.fav"
+                version="1.1"
                 class="inline-svg"
                 xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -29,7 +32,7 @@
                 width="78.5px"
                 height="106.4px"
                 viewBox="0 0 78.5 106.4"
-                style="enable-background:new 0 0 78.5 106.4;"
+                style="enable-background: new 0 0 78.5 106.4;"
                 xml:space="preserve"
               >
                 <polygon
@@ -38,9 +41,22 @@
                 />
                 <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
               </svg>
-              <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">{{
-                $t(media.type)
-              }}</span>
+              <span v-if="!!media.type" :class="{ 'c-rouge': media.fav }">
+                {{ $t(media.type) }}
+              </span>
+              <label
+                :for="is_selected + id"
+                class="input-selector"
+                @click.stop
+                v-if="is_hovered || is_selected"
+              >
+                <input
+                  :id="is_selected + id"
+                  type="checkbox"
+                  v-model="local_is_selected"
+                  @change="$emit('toggleSelect')"
+                />
+              </label>
             </div>
           </div>
           <MediaContent
@@ -54,13 +70,13 @@
             <span>{{ media.caption }}</span>
           </figcaption>
 
-          <transition name="slideright" :duration="400">
+          <transition name="fade_fast" :duration="400">
             <div
               v-if="
                 $root.settings.current_publication.slug &&
-                  $root.settings.current_publication.accepted_media_type.includes(
-                    media.type
-                  )
+                $root.settings.current_publication.accepted_media_type.includes(
+                  media.type
+                )
               "
               class="m_media--add_to_recipe"
               @click.stop="addToCurrentPubli()"
@@ -72,7 +88,7 @@
                 @click.stop="addToCurrentPubli()"
                 v-tippy="{
                   placement: 'left',
-                  delay: [600, 0]
+                  delay: [600, 0],
                 }"
               >
                 <template v-if="!is_media_in_publi">→</template>
@@ -116,10 +132,11 @@ export default {
     media: Object,
     slugProjectName: String,
     metaFileName: String,
-    preview_size: Number
+    preview_size: Number,
+    is_selected: Boolean,
   },
   components: {
-    MediaContent
+    MediaContent,
   },
   data() {
     return {
@@ -128,20 +145,26 @@ export default {
         image: "/images/i_icone-dodoc_image.svg",
         video: "/images/i_icone-dodoc_video.svg",
         stopmotion: "/images/i_icone-dodoc_anim.svg",
-        audio: "/images/i_icone-dodoc_audio.svg"
-      }
+        audio: "/images/i_icone-dodoc_audio.svg",
+      },
+      local_is_selected: false,
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
     };
   },
 
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    is_selected: function () {
+      this.local_is_selected = this.is_selected;
+    },
+  },
   computed: {
     is_media_in_publi() {
       return (
         Object.values(this.$root.current_publication_medias).findIndex(
-          s => s.slugMediaName === this.metaFileName
+          (s) => s.slugMediaName === this.metaFileName
         ) > -1
       );
 
@@ -169,15 +192,15 @@ export default {
       if (!this.media.authors || typeof this.media.authors !== "object") {
         return false;
       }
-      if (!this.$root.settings.current_author) {
+      if (!this.$root.current_author) {
         return false;
       }
       return (
         this.media.authors.filter(
-          a => a.name === this.$root.settings.current_author.name
+          (a) => a.slugFolderName === this.$root.current_author.slugFolderName
         ).length > 0
       );
-    }
+    },
   },
   methods: {
     openMediaModal() {
@@ -188,7 +211,7 @@ export default {
       }
       this.$root.openMedia({
         slugProjectName: this.slugProjectName,
-        metaFileName: this.metaFileName
+        metaFileName: this.metaFileName,
       });
     },
     removeMedia() {
@@ -213,10 +236,10 @@ export default {
       }
       this.$eventHub.$emit("publication.addMedia", {
         slugProjectName: this.slugProjectName,
-        metaFileName: this.metaFileName
+        metaFileName: this.metaFileName,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

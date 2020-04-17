@@ -9,6 +9,7 @@
     :askBeforeClosingModal="askBeforeClosingModal"
     :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
+    :is_loading="is_sending_content_to_server"
     :can_minimize="true"
     :media_navigation="true"
   >
@@ -46,7 +47,7 @@
             width="46.7px"
             height="70px"
             viewBox="0 0 46.7 70"
-            style="enable-background:new 0 0 46.7 70;"
+            style="enable-background: new 0 0 46.7 70;"
             xml:space="preserve"
           >
             <g>
@@ -80,7 +81,7 @@
             width="20px"
             height="20px"
             viewBox="0 0 90 90"
-            style="enable-background:new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90;"
             xml:space="preserve"
           >
             <path
@@ -113,7 +114,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95;"
             xml:space="preserve"
           >
             <polygon
@@ -136,7 +137,8 @@
                 v-for="project in all_projects"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-              >{{ project.name }}</option>
+                >{{ project.name }}</option
+              >
             </select>
             <button
               type="button"
@@ -151,6 +153,7 @@
         <button
           type="button"
           class="buttonLink"
+          :class="{ 'is--active': show_edit_media_options }"
           @click="show_edit_media_options = !show_edit_media_options"
           v-if="media.type === 'image' || media.type === 'video'"
         >
@@ -164,7 +167,7 @@
             width="77.6px"
             height="85.4px"
             viewBox="0 0 77.6 85.4"
-            style="enable-background:new 0 0 77.6 85.4;"
+            style="enable-background: new 0 0 77.6 85.4;"
             xml:space="preserve"
           >
             <defs />
@@ -188,25 +191,64 @@
           </svg>
           {{ $t("adjust") }}
         </button>
-        <div v-if="show_edit_media_options" class="bg-creme">
+        <div v-if="show_edit_media_options" class="bg-gris_tresclair border">
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('rotate_image', { angle: 90 })"
             v-if="media.type === 'image'"
-          >{{ $t("rotate_clockwise") }}</button>
+          >
+            {{ $t("rotate_clockwise") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('optimize_video')"
             v-if="media.type === 'video'"
-          >{{ $t("convert_video_for_the_web") }}</button>
+          >
+            {{ $t("optimize_video") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
-          >{{ $t("revert_to_original") }}</button>
+          >
+            {{ $t("revert_to_original") }}
+          </button>
+          <button
+            type="button"
+            class="buttonLink"
+            :class="{ 'is--active': trim_mode }"
+            @click="trim_mode = !trim_mode"
+            v-if="media.type === 'video'"
+          >
+            {{ $t("trim_video") }}
+          </button>
+
+          <div v-if="trim_mode">
+            <small>{{ $t("trim_video_instructions") }}</small>
+
+            <div class>
+              <label>{{ $t("beginning") }}</label>
+              <div class="padding-sides-medium">
+                <input type="time" class="bg-blanc" />
+                <button type="button"></button>
+              </div>
+            </div>
+            <!-- <div class="">
+              <label>{{ $t("end") }}</label>
+              <div class="padding-sides-medium">
+                <button type="button">Set</button>
+                <input type="time" class="bg-blanc" />
+                <input type="text" class="bg-blanc" />
+              </div>
+            </div>-->
+
+            <div class>
+              <label>{{ $t("duration") }}</label>
+            </div>
+          </div>
         </div>
 
         <button
@@ -225,7 +267,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95;"
             xml:space="preserve"
           >
             <path
@@ -251,7 +293,10 @@
               v-model="mediadata.fav"
               :readonly="read_only"
             />
-            <label for="favswitch_editmedia" :class="{ 'c-rouge': mediadata.fav }">
+            <label
+              for="favswitch_editmedia"
+              :class="{ 'c-rouge': mediadata.fav }"
+            >
               {{ $t("fav") }}
               <svg
                 version="1.1"
@@ -264,7 +309,7 @@
                 width="78.5px"
                 height="106.4px"
                 viewBox="0 0 78.5 106.4"
-                style="enable-background:new 0 0 78.5 106.4;"
+                style="enable-background: new 0 0 78.5 106.4;"
                 xml:space="preserve"
               >
                 <polygon
@@ -279,11 +324,17 @@
 
         <div class="m_metaField" v-if="!!media.type">
           <div>{{ $t("type") }}</div>
-          <div>
-            {{ $t(media.type) }}
-            <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
-          </div>
+          <div>{{ $t(media.type) }}</div>
         </div>
+        <div class="m_metaField" v-if="media_size">
+          <div>{{ $t("size") }}</div>
+          <div>{{ $root.formatBytes(media_size) }}</div>
+        </div>
+        <div class="m_metaField" v-if="media_dimensions">
+          <div>{{ $t("dimensions") }}</div>
+          <div>{{ media_dimensions }}</div>
+        </div>
+
         <div
           class="m_metaField"
           v-if="!!project_name && $root.do_navigation.view !== 'ProjectView'"
@@ -296,9 +347,9 @@
               :content="$t('open_project')"
               v-tippy="{
                 placement: 'top',
-                delay: [600, 0]
+                delay: [600, 0],
               }"
-              style="text-transform: initial"
+              style="text-transform: initial;"
             >
               {{ project_name }}
               ↑
@@ -327,14 +378,15 @@
 
         <!-- Caption -->
         <div
-          v-if="
-            (!read_only || !!mediadata.caption) && mediadata.type !== 'text'
-          "
+          v-if="!read_only || !!mediadata.caption"
           class="margin-bottom-small"
         >
           <label>{{ $t("caption") }}</label>
           <br />
-          <textarea v-model="mediadata.caption" :readonly="read_only"></textarea>
+          <textarea
+            v-model="mediadata.caption"
+            :readonly="read_only"
+          ></textarea>
         </div>
 
         <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -361,17 +413,20 @@
           <label>{{ $t("keywords") }}</label>
           <TagsInput
             :keywords="mediadata.keywords"
-            @tagsChanged="newTags => (mediadata.keywords = newTags)"
+            @tagsChanged="(newTags) => (mediadata.keywords = newTags)"
           />
         </div>
 
         <!-- Author(s) -->
-        <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
+        <div
+          v-if="!read_only || !!mediadata.authors"
+          class="margin-bottom-small"
+        >
           <label>{{ $t("author") }}</label>
 
           <AuthorsInput
             :currentAuthors="mediadata.authors"
-            @authorsChanged="newAuthors => (mediadata.authors = newAuthors)"
+            @authorsChanged="(newAuthors) => (mediadata.authors = newAuthors)"
           />
 
           <small>{{ $t("author_instructions") }}</small>
@@ -411,8 +466,8 @@ export default {
     media: Object,
     read_only: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   components: {
     Modal,
@@ -420,7 +475,7 @@ export default {
     MediaContent,
     CreateQRCode,
     TagsInput,
-    AuthorsInput
+    AuthorsInput,
   },
   data() {
     return {
@@ -430,6 +485,7 @@ export default {
       show_edit_media_options: false,
 
       upload_to_folder: this.slugProjectName,
+      is_sending_content_to_server: false,
 
       mediadata: {
         type: this.media.type,
@@ -437,12 +493,14 @@ export default {
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
-        content: this.media.content
+        content: this.media.content,
       },
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
       askBeforeClosingModal: false,
 
-      is_ready: false
+      trim_mode: false,
+
+      is_ready: false,
     };
   },
   watch: {
@@ -452,13 +510,13 @@ export default {
           this.askBeforeClosingModal = true;
         }
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   created() {
     if (typeof this.mediadata.authors === "string") {
       if (this.mediadata.authors !== "") {
-        this.mediadata.authors = this.mediadata.authors.split(",").map(a => {
+        this.mediadata.authors = this.mediadata.authors.split(",").map((a) => {
           return { name: a };
         });
       } else {
@@ -481,17 +539,38 @@ export default {
         return false;
       }
       return this.$root.store.projects[this.slugProjectName].name;
-    }
+    },
+    media_size() {
+      if (
+        !this.media.file_meta ||
+        !this.media.file_meta.find((m) => m.hasOwnProperty("size"))
+      )
+        return false;
+      return this.media.file_meta.find((m) => m.hasOwnProperty("size")).size;
+    },
+    media_dimensions() {
+      if (
+        !this.media.file_meta ||
+        !this.media.file_meta.find((m) => m.hasOwnProperty("width")) ||
+        !this.media.file_meta.find((m) => m.hasOwnProperty("height"))
+      )
+        return false;
+      return (
+        this.media.file_meta.find((m) => m.hasOwnProperty("width")).width +
+        " × " +
+        this.media.file_meta.find((m) => m.hasOwnProperty("height")).height
+      );
+    },
   },
   methods: {
-    printMedia: function() {
+    printMedia: function () {
       window.print();
     },
-    minimizeMediaAndShowProject: function() {
+    minimizeMediaAndShowProject: function () {
       this.$root.media_modal.minimized = true;
       this.$root.openProject(this.slugProjectName);
     },
-    removeMedia: function() {
+    removeMedia: function () {
       this.$alertify
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
@@ -501,7 +580,7 @@ export default {
             this.$root.removeMedia({
               type: "projects",
               slugFolderName: this.slugProjectName,
-              slugMediaName: this.slugMediaName
+              slugMediaName: this.slugMediaName,
             });
             // then close that popover
             this.$emit("close", "");
@@ -509,15 +588,38 @@ export default {
           () => {}
         );
     },
-    editThisMedia: function() {
+    editThisMedia: function () {
       console.log("editThisMedia");
+
+      this.$eventHub.$once("socketio.projects.listMedia", this.editWereSaved);
+
       this.$root.editMedia({
         type: "projects",
         slugFolderName: this.slugProjectName,
         slugMediaName: this.slugMediaName,
-        data: this.mediadata
+        data: this.mediadata,
       });
-      // then close that popover
+
+      // show loader if modifications took more than .25 seconds to happen
+      setTimeout(() => {
+        this.is_sending_content_to_server = true;
+
+        // indicate that changes could not be saved after 5 seconds
+        setTimeout(() => {
+          this.is_sending_content_to_server = false;
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.failed_to_save_media"));
+        }, 5000);
+      }, 250);
+    },
+    editWereSaved() {
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t("notifications.successfully_saved_media"));
+      this.is_sending_content_to_server = false;
       this.$emit("close", "");
     },
     copyMediaToProject(to_slugFolderName) {
@@ -526,11 +628,12 @@ export default {
         type: "projects",
         from_slugFolderName: this.slugProjectName,
         to_slugFolderName,
-        slugMediaName: this.slugMediaName
+        slugMediaName: this.slugMediaName,
       });
+
       this.showCopyToProjectOptions = false;
     },
-    editRawMedia: function(type, detail) {
+    editRawMedia: function (type, detail) {
       console.log("editRawMedia");
       this.$root.editMedia({
         type: "projects",
@@ -540,11 +643,11 @@ export default {
         recipe_with_data: {
           apply_to: this.media.media_filename,
           type,
-          detail
-        }
+          detail,
+        },
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

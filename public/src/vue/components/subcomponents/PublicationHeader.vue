@@ -1,6 +1,6 @@
 <template>
   <div class="m_publicationMeta">
-    <div
+    <!-- <div
       class="label padding-verysmall"
       v-if="
         ![
@@ -11,8 +11,7 @@
       "
     >
       {{ $t(publication.template) }}
-    </div>
-
+    </div> -->
     <div class="m_publicationMeta--topbar">
       <div>
         <button
@@ -22,14 +21,14 @@
             ![
               'export_publication',
               'print_publication',
-              'link_publication'
+              'link_publication',
             ].includes($root.state.mode)
           "
           @click="closePublication()"
           :content="$t('close')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           ‹
@@ -41,7 +40,7 @@
           v-tippy="{
             placement: 'bottom-start',
             delay: [600, 0],
-            interactive: true
+            interactive: true,
           }"
         >
           {{ publication.name }}
@@ -52,7 +51,7 @@
           ![
             'export_publication',
             'print_publication',
-            'link_publication'
+            'link_publication',
           ].includes($root.state.mode)
         "
       >
@@ -71,7 +70,7 @@
             width="100.7px"
             height="101px"
             viewBox="0 0 100.7 101"
-            style="enable-background:new 0 0 100.7 101;"
+            style="enable-background: new 0 0 100.7 101;"
             xml:space="preserve"
           >
             <path
@@ -93,11 +92,55 @@
         <button
           type="button"
           class="buttonLink"
+          :class="{ 'is--active': show_copy_options }"
+          @click="show_copy_options = !show_copy_options"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="91.6px"
+            height="95px"
+            viewBox="0 0 91.6 95"
+            style="enable-background: new 0 0 91.6 95;"
+            xml:space="preserve"
+          >
+            <polygon
+              class="st0"
+              points="39.5,11.8 83,11.8 83,55.4 72.7,55.4 72.7,67.2 94.8,67.2 94.8,0 27.7,0 27.7,22.2 39.5,22.2 	"
+            />
+            <path
+              class="st0"
+              d="M67.2,27.7L0,27.7l0,67.2l67.2,0L67.2,27.7z M55.4,83l-43.6,0l0-43.6l43.6,0L55.4,83z"
+            />
+          </svg>
+          <span class>{{ $t("duplicate") }}</span>
+        </button>
+
+        <div v-if="show_copy_options" class="margin-bottom-small">
+          <label v-html="$t('name_of_copy')" />
+          <form @submit.prevent="duplicateWithNewName()" class="input-group">
+            <input
+              type="text"
+              v-model.trim="copy_publi_name"
+              required
+              autofocus
+            />
+            <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
+          </form>
+        </div>
+
+        <button
+          type="button"
+          class="buttonLink"
           v-if="show_export_button"
           @click="$emit('export')"
           :class="{ 'is--disabled': export_button_is_disabled }"
         >
-          {{ $t("export") }}
+          {{ $t("create") }}
         </button>
 
         <button type="button" class="buttonLink" @click="removePublication">
@@ -111,7 +154,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95;"
             xml:space="preserve"
           >
             <path
@@ -135,19 +178,25 @@ export default {
     publication_medias: [Boolean, Array, Object],
     number_of_medias_required: {
       type: Number,
-      default: -1
+      default: -1,
     },
     show_export_button: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
+    enable_export_button: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {
-    EditPublication
+    EditPublication,
   },
   data() {
     return {
-      show_edit_publication: false
+      show_edit_publication: false,
+      show_copy_options: false,
+      copy_publi_name: this.$t("copy_of") + " " + this.publication.name,
     };
   },
 
@@ -158,6 +207,8 @@ export default {
   watch: {},
   computed: {
     export_button_is_disabled() {
+      if (!this.enable_export_button) return true;
+
       if (Object.values(this.publication_medias).length < 1) return true;
 
       if (
@@ -168,7 +219,7 @@ export default {
         return true;
 
       return false;
-    }
+    },
   },
   methods: {
     closePublication() {
@@ -189,14 +240,57 @@ export default {
             }
             this.$root.removeFolder({
               type: "publications",
-              slugFolderName: this.slugPubliName
+              slugFolderName: this.slugPubliName,
             });
             this.closePublication();
           },
           () => {}
         );
-    }
-  }
+    },
+    duplicateWithNewName(event) {
+      console.log("METHODS • PublicationHeader: duplicateWithNewName");
+
+      function getAllPublisNames() {
+        let allPublisName = [];
+        for (let slugPubliName in window.store.publications) {
+          let publi_name = window.store.publications[slugPubliName].name;
+          allPublisName.push(publi_name);
+        }
+        return allPublisName;
+      }
+      let allPublisName = getAllPublisNames();
+
+      // check if publi name (not slug) already exists
+      if (allPublisName.indexOf(this.copy_publi_name) >= 0) {
+        // invalidate if it does
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.name_already_exists"));
+
+        return false;
+      }
+
+      this.$socketio.copyFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        new_folder_name: this.copy_publi_name,
+      });
+      this.show_copy_options = false;
+
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .log(this.$t("notifications.copy_in_progress"));
+
+      this.$eventHub.$once("socketio.publications.folder_listed", () => {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(this.$t("notifications.copy_completed"));
+      });
+    },
+  },
 };
 </script>
 <style></style>
