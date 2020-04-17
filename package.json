@@ -38,6 +38,9 @@
     "mac": {
       "category": "public.app-category.education"
     },
+    "linux": {
+      "target": "AppImage"
+    },
     "appImage": {
       "synopsis": "A documentation tool for creativity.",
       "category": "Game",
