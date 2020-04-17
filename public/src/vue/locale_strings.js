@@ -1481,6 +1481,14 @@ module.exports = (function () {
       fr: "Accès limité aux auteurs",
       en: "Access limited to authors",
     },
+    ask_to_be_added_to_authors: {
+      fr: "Demander à être rajouté aux auteurs",
+      en: "Request to be added to authors list",
+    },
+    login_to_access_project: {
+      fr: "Identifiez-vous pour accéder",
+      en: "Login to access",
+    },
     show_password: {
       fr: "Afficher le mot de passe",
       en: "Show password",

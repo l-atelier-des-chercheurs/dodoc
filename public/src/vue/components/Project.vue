@@ -27,15 +27,13 @@
       </div>
 
       <div class="m_project--presentation--text">
-        <h2
-          class="m_project--presentation--text--title"
-          :content="slugProjectName"
+        <h2 class="m_project--presentation--text--title">
+          <!-- :content="slugProjectName"
           v-tippy="{
             placement: 'bottom-start',
             delay: [600, 0],
             interactive: true,
-          }"
-        >
+          }" -->
           {{ project.name }}
         </h2>
 
@@ -122,6 +120,43 @@
             <label>{{ $t("protected_by_pass") }}</label>
           </div> -->
 
+          <div
+            class="m_metaField"
+            v-if="
+              !can_edit_project && project.editing_limited_to === 'only_authors'
+            "
+          >
+            <div>{{ $t("only_authors_can_open") }}</div>
+          </div>
+
+          <template
+            v-if="
+              !can_edit_project && project.editing_limited_to === 'only_authors'
+            "
+          >
+            <button
+              v-if="!$root.current_author"
+              type="button"
+              class="buttonLink"
+              style
+              :readonly="read_only"
+              @click="$root.showAuthorsListModal = true"
+            >
+              {{ $t("login_to_access_project") }}
+            </button>
+
+            <button
+              v-else
+              type="button"
+              class="buttonLink"
+              style
+              :readonly="read_only"
+              @click="requestAccessToProject"
+            >
+              {{ $t("ask_to_be_added_to_authors") }}
+            </button>
+          </template>
+
           <button
             v-if="
               !can_edit_project &&
@@ -136,18 +171,6 @@
             @click="showInputPasswordField = !showInputPasswordField"
           >
             {{ $t("password_required_to_open") }}
-          </button>
-          <button
-            v-if="
-              !can_see_project && project.editing_limited_to === 'only_authors'
-            "
-            type="button"
-            class="buttonLink"
-            style
-            :readonly="read_only"
-            @click="$root.showAuthorsListModal = true"
-          >
-            {{ $t("only_authors_can_open") }}
           </button>
 
           <div
@@ -603,6 +626,17 @@ export default {
           },
           () => {}
         );
+    },
+    requestAccessToProject() {
+      const current_author = this.$root.current_author;
+
+      // TODO : send request to be added to folder
+      // === creating a channel restricted to all the existing authors + current
+
+      this.$eventHub.$emit("requestToBeAddedToAuthors", {
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
     },
     duplicateWithNewName(event) {
       console.log("METHODS • Project: duplicateWithNewName");
