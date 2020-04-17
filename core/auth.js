@@ -363,16 +363,15 @@ module.exports = (function () {
     // check if author is one of field_to_act_on.show_only_to
     if (field_props.show_only_to.includes("self")) {
       // check is socket is amongst the authors of this content
-      if (isSocketAuthorizedForFolders({ socket, type, slugFolderName }))
+      if (isSocketAuthorizedForFolders({ socket, type, slugFolderName })) {
         return meta;
       }
     }
 
     // hide field
-    if (meta.hasOwnProperty(field_name))
-      meta[field_name] = "_field_is_hidden";
+    if (meta.hasOwnProperty(field_name)) meta[field_name] = "_field_is_hidden";
     return meta;
-}
+  }
 
   function removeNonPublicMediasFromAllFolders(folders_and_medias) {
     let filtered_folders_and_medias = JSON.parse(
