@@ -300,7 +300,22 @@ module.exports = (function () {
     //     filteredFoldersData[slugFolderName]._authorized = false;
     //   }
     // }
-    return filteredFoldersData;
+
+    const filter_folders = {};
+
+    filteredFoldersData = Object.entries(filteredFoldersData).map(
+      ([slugFolderName, meta]) => {
+        const filtered_meta = filterMetaDependingOnAuthorRole({
+          socket,
+          type,
+          slugFolderName,
+          meta,
+        });
+        filter_folders[slugFolderName] = filtered_meta;
+      }
+    );
+
+    return filter_folders;
   }
 
   async function filterMedias(socket, type, folders_and_medias) {
@@ -321,6 +336,43 @@ module.exports = (function () {
       return removeNonPublicMediasFromAllFolders(folders_and_medias);
     }
   }
+
+  function filterMetaDependingOnAuthorRole({
+    socket,
+    type,
+    type_two,
+    slugFolderName,
+    meta,
+  }) {
+    dev.logfunction(`AUTH — filterMetasDependingOnAuthorRole`);
+
+    // check if structure has a property enabled
+    let fields =
+      type_two === undefined
+        ? global.settings.structure[type].fields
+        : global.settings.structure[type][type_two].fields;
+
+    const field_to_act_on = Object.entries(fields).find(([key, f]) =>
+      f.hasOwnProperty("show_only_to")
+    );
+    if (!field_to_act_on) return meta;
+
+    const field_name = field_to_act_on[0];
+    const field_props = field_to_act_on[1];
+
+    // check if author is one of field_to_act_on.show_only_to
+    if (field_props.show_only_to.includes("self")) {
+      // check is socket is amongst the authors of this content
+      if (isSocketAuthorizedForFolders({ socket, type, slugFolderName }))
+        return meta;
+      }
+    }
+
+    // hide field
+    if (meta.hasOwnProperty(field_name))
+      meta[field_name] = "_field_is_hidden";
+    return meta;
+}
 
   function removeNonPublicMediasFromAllFolders(folders_and_medias) {
     let filtered_folders_and_medias = JSON.parse(
