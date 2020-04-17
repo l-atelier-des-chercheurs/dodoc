@@ -371,7 +371,8 @@ module.exports = (function () {
     }
 
     // hide field
-    if (meta.hasOwnProperty(field_name)) meta[field_name] = "_field_is_hidden";
+    if (meta.hasOwnProperty(field_name) && !!meta.field_name)
+      meta[field_name] = "_field_is_hidden";
     return meta;
   }
 

@@ -61,8 +61,7 @@
           "override": true
         },
         "password": {
-          "type": "string",
-          "show_only_to": []
+          "type": "string"
         },
         "authors": {
           "type": "array"
