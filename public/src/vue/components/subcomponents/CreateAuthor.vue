@@ -21,7 +21,7 @@
     <!-- Password -->
     <div class="margin-bottom-small">
       <label>{{ $t("password") }}</label>
-      <template v-if="show_password">
+      <div v-if="show_password">
         <input
           type="password"
           :required="
@@ -31,7 +31,7 @@
           autocomplete="new-password"
         />
         <small>{{ $t("password_instructions") }}</small>
-      </template>
+      </div>
     </div>
 
     <!-- Preview -->

@@ -73,14 +73,14 @@
           </button>
         </label>
 
-        <template v-if="show_password">
+        <div v-if="show_password">
           <input
             type="password"
             v-model="publidata.password"
             autocomplete="new-password"
           />
           <small>{{ $t("password_instructions") }}</small>
-        </template>
+        </div>
       </div>
 
       <!-- Keywords -->

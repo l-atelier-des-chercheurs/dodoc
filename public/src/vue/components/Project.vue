@@ -163,6 +163,22 @@
 
           <button
             v-if="
+              !can_see_project &&
+              project.password === 'has_pass' &&
+              project.viewing_limited_to !== 'only_authors'
+            "
+            type="button"
+            class="buttonLink _open_pwd_input"
+            :class="{ 'is--active': showInputPasswordField }"
+            style
+            :readonly="read_only"
+            @click="showInputPasswordField = !showInputPasswordField"
+          >
+            {{ $t("password_required_to_open") }}
+          </button>
+
+          <button
+            v-if="
               !can_edit_project &&
               project.password === 'has_pass' &&
               project.editing_limited_to !== 'only_authors'
@@ -174,7 +190,7 @@
             :readonly="read_only"
             @click="showInputPasswordField = !showInputPasswordField"
           >
-            {{ $t("password_required_to_open") }}
+            {{ $t("password_required_to_edit") }}
           </button>
 
           <div
@@ -596,6 +612,7 @@ export default {
     },
     project_password() {
       const projects_password = this.$auth.getFoldersPasswords();
+
       if (
         projects_password.hasOwnProperty("projects") &&
         projects_password["projects"].hasOwnProperty(this.slugProjectName) &&
@@ -633,6 +650,11 @@ export default {
     },
     requestAccessToProject() {
       const current_author = this.$root.current_author;
+
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error("Feature not yet implemented…");
 
       // TODO : send request to be added to folder
       // === creating a channel restricted to all the existing authors + current
