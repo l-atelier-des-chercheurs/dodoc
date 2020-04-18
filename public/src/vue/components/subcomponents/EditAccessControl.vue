@@ -4,10 +4,7 @@
       <label>{{ $t("who_can_edit") }}</label>
 
       <div class>
-        <div
-          v-for="mode in ['only_authors', 'with_password', 'everybody']"
-          :key="mode"
-        >
+        <div v-for="mode in editing_modes" :key="mode">
           <input
             class="custom_radio"
             type="radio"
@@ -24,7 +21,10 @@
     </div>
 
     <!-- Password -->
-    <div class="margin-top-small" v-if="editing_limited_to === 'with_password'">
+    <div
+      class="margin-top-small"
+      v-if="editing_limited_to === 'with_password' && can_have_password"
+    >
       <label>{{ $t("password") }}</label>
       <div>
         <input
@@ -34,7 +34,6 @@
           @input="$emit('update:password', $event.target.value)"
           autocomplete="new-password"
         />
-        {{ password }}
       </div>
     </div>
 
@@ -62,15 +61,24 @@ export default {
     editing_limited_to: String,
     viewing_limited_to: String,
     password: String,
+    can_have_password: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {},
   data() {
     return {
       local_editing_limited_to: this.editing_limited_to,
       local_viewing_limited_to: this.viewing_limited_to,
+      editing_modes: [],
     };
   },
-  created() {},
+  created() {
+    if (this.can_have_password)
+      this.editing_modes = ["only_authors", "with_password", "everybody"];
+    else this.editing_modes = ["only_authors", "everybody"];
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {

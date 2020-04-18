@@ -56,13 +56,9 @@
         "
       >
         <AccessController
-          :editing_limited_to="publication.editing_limited_to"
-          :viewing_limited_to="publication.viewing_limited_to"
-          :password="publication.password"
+          :folder="publication"
           :context="'full'"
           :type="'publications'"
-          :slugFolderName="publication.slugFolderName"
-          @openFolder="openPublication"
           @closeFolder="closePublication"
         />
 

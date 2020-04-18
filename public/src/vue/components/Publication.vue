@@ -16,12 +16,9 @@
     </td>
     <td>
       <AccessController
-        :editing_limited_to="publication.editing_limited_to"
-        :viewing_limited_to="publication.viewing_limited_to"
-        :password="publication.password"
+        :folder="publication"
         :context="'short'"
         :type="'publications'"
-        :slugFolderName="publication.slugFolderName"
         @openFolder="openPublication"
       />
       <button

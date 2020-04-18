@@ -61,9 +61,18 @@
                 $root.formatDateToPrecise(chat.date_modified)
               }}
             </small>
+
+            <!-- <AccessController
+              :folder="publication"
+              :context="'full'"
+              :type="'publications'"
+              @openFolder="openChat(chat.slugFolderName)"
+            /> -->
+
             <button
               type="button"
               class="buttonLink bg-rouge"
+              v-if="can_see_chat(chat.slugFolderName)"
               @click.exact.stop="openChat(chat.slugFolderName)"
               @click.shift="removeChat(chat.slugFolderName)"
             >
@@ -82,6 +91,7 @@
 <script>
 import CreateChat from "./components/modals/CreateChat.vue";
 import Chat from "./components/Chat.vue";
+import EditAccessControl from "./components/subcomponents/EditAccessControl.vue";
 
 export default {
   props: {
@@ -91,6 +101,7 @@ export default {
   components: {
     CreateChat,
     Chat,
+    EditAccessControl,
   },
   data() {
     return {
@@ -129,6 +140,12 @@ export default {
             });
           }, 1000);
         });
+      });
+    },
+    can_see_chat(slugChatName) {
+      return this.$root.canSeeFolder({
+        type: "chats",
+        slugFolderName: slugChatName,
       });
     },
     unreadMessages(chat) {

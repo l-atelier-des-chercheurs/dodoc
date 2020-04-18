@@ -95,12 +95,9 @@
           <DateField :title="'edited'" :date="project.date_modified" />
 
           <AccessController
-            :editing_limited_to="project.editing_limited_to"
-            :viewing_limited_to="project.viewing_limited_to"
-            :password="project.password"
+            :folder="project"
             :context="context"
             :type="'projects'"
-            :slugFolderName="project.slugFolderName"
             @openFolder="openProject"
             @closeFolder="closeProject"
           />

@@ -161,22 +161,13 @@
 <script>
 export default {
   props: {
-    editing_limited_to: {
-      type: String,
-    },
-    viewing_limited_to: {
-      type: String,
-    },
-    password: {
-      type: String,
+    folder: {
+      type: Object,
     },
     context: {
       type: String,
     },
     type: {
-      type: String,
-    },
-    slugFolderName: {
       type: String,
     },
   },
@@ -211,6 +202,18 @@ export default {
     },
   },
   computed: {
+    slugFolderName() {
+      return this.folder.slugFolderName;
+    },
+    editing_limited_to() {
+      return this.folder.editing_limited_to;
+    },
+    viewing_limited_to() {
+      return this.folder.viewing_limited_to;
+    },
+    password() {
+      return this.folder.password;
+    },
     can_see_folder() {
       return this.$root.canSeeFolder({
         type: this.type,
