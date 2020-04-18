@@ -424,11 +424,11 @@ module.exports = (function () {
       de: "Vergessen Sie das Passwort",
     },
     forget_password_and_close: {
-      fr: "Oublier le mot de passe et fermer le projet",
-      en: "Forget password and close project",
-      nl: "Wachtwoord vergeten en sluiten ",
-      oc: "Doblidar lo mot de Santa-Clara e clavar lo projècte",
-      de: "Vergessen Sie das Passwort und schließen sie das Projekt",
+      fr: "Oublier le mot de passe et fermer",
+      en: "Forget password and close",
+      nl: "Wachtwoord vergeten en sluiten",
+      oc: "Doblidar lo mot de Santa-Clara e clavar",
+      de: "Vergessen Sie das Passwort und schließen sie",
     },
     remember_password_on_this_device: {
       fr: "Sauvegarder pour cet appareil",
