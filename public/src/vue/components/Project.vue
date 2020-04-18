@@ -95,8 +95,6 @@
           <DateField :title="'edited'" :date="project.date_modified" />
 
           <AccessController
-            :can_see_folder="can_see_project"
-            :can_edit_folder="can_edit_project"
             :editing_limited_to="project.editing_limited_to"
             :viewing_limited_to="project.viewing_limited_to"
             :password="project.password"
@@ -379,28 +377,6 @@ export default {
     };
   },
   watch: {
-    can_see_project() {
-      if (!this.can_see_project && this.context === "full") {
-        // cas d’un mdp qui a été ajouté ou changé
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(
-            this.$t("notifications.password_added_or_changed_to_this_project")
-          );
-
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .log(
-            this.$t("notifications.enter_password_to_reopen_project") +
-              "&nbsp;:" +
-              this.project.name
-          );
-
-        this.closeProject();
-      }
-    },
     showInputPasswordField() {
       if (this.showInputPasswordField) {
         this.$nextTick(() => {

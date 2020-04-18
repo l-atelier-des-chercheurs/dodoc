@@ -2880,20 +2880,13 @@ module.exports = (function () {
         oc: "Còpia acabada",
         de: "Kopie komplett",
       },
-      password_added_or_changed_to_this_project: {
-        fr: "Le mot de passe de ce projet a été ajouté ou modifié.",
-        en: "The password for this project hass been added or changed.",
-        nl: "Wachtwoord voor dit project werd toegevoegd of gewijzigd .",
-        oc:
-          "Lo mot de Santa-Cmlara d'aqueste projècte es estat apondut o modificat",
-        de: "Das Passwort für dieses Projekt wurde hinzugefügt oder geändert.",
+      password_added_or_changed: {
+        fr: "Le mot de passe de ce contenu a été ajouté ou modifié.",
+        en: "The password for this content has been added or changed.",
       },
-      enter_password_to_reopen_project: {
-        fr: "Entrez le nouveau mot de passe pour accéder à nouveau à",
-        en: "Enter the new password to reopen project",
-        nl: "Voer het nieuwe wachtwoord in om opnieuw toegang te krijgen",
-        oc: "Dintratz lo novèl mot de santa-Clara per accedir tornar mai a",
-        de: "Geben Sie das neue Passwort für den erneuten Zugriff ein.",
+      enter_password_to_reopen: {
+        fr: "Entrez le nouveau mot de passe pour le rouvrir",
+        en: "Enter the new password to reopen",
       },
       enter_password_to_select: {
         fr: "Renseignez le mot de passe du projet pour pouvoir le sélectionner",

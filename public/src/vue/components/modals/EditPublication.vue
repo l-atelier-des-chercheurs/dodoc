@@ -66,7 +66,6 @@
             :password.sync="publidata.password"
           />
         </div>
-        publidata.password : {{ publidata.password }}
       </div>
 
       <!-- Attached to project -->
@@ -190,6 +189,12 @@ export default {
       },
       deep: true,
     },
+    "publidata.editing_limited_to": function () {
+      if (this.publidata.editing_limited_to === "everybody")
+        this.publidata.viewing_limited_to = "everybody";
+      else if (this.publidata.editing_limited_to === "only_authors")
+        this.show_authors = true;
+    },
   },
   mounted() {},
   computed: {},
@@ -223,6 +228,20 @@ export default {
 
       if (typeof this.preview !== "undefined") {
         this.publidata.preview_rawdata = this.preview;
+      }
+
+      if (
+        this.publidata.editing_limited_to === "only_authors" &&
+        (!this.publidata.authors ||
+          !Array.isArray(this.publidata.authors) ||
+          this.publidata.authors.length === 0)
+      ) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.if_only_authors_select_authors"));
+        this.show_authors = true;
+        return false;
       }
 
       this.$root.editFolder({

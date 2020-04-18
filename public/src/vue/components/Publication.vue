@@ -1,5 +1,5 @@
 <template>
-  <tr @click="openPublication">
+  <tr>
     <td>{{ publication.name }}</td>
     <td width="150px">
       <small>
@@ -15,65 +15,36 @@
       </template>
     </td>
     <td>
+      <AccessController
+        :editing_limited_to="publication.editing_limited_to"
+        :viewing_limited_to="publication.viewing_limited_to"
+        :password="publication.password"
+        :context="'short'"
+        :type="'publications'"
+        :slugFolderName="publication.slugFolderName"
+        @openFolder="openPublication"
+      />
       <button
+        v-if="can_see_publi"
         type="button"
-        class="buttonLink"
-        v-if="can_access_publi"
-        @click.stop="openPublication"
+        class="m_project--presentation--buttons--openButton button-redthin"
+        @click.exact="openPublication"
+        @click.shift.left.exact="$emit('toggleSelect')"
+        @click.meta.left.exact="$emit('toggleSelect')"
       >
-        {{ $t("open") }}
+        <span class>{{ $t("open") }}</span>
       </button>
-
-      <button
-        v-if="can_access_publi && publi_password"
-        type="button"
-        class="buttonLink _button_forgetpassword"
-        @click.stop="forgetPassword"
-      >
-        {{ $t("forget_password") }}
-      </button>
-
-      <button
-        v-if="!can_access_publi"
-        type="button"
-        class="buttonLink _open_pwd_input"
-        :class="{ 'is--active': show_input_pwd }"
-        style
-        :readonly="read_only"
-        @click.stop="show_input_pwd = !show_input_pwd"
-      >
-        {{ $t("password_required_to_open") }}
-      </button>
-
-      <form
-        class="padding-verysmall _pwd_input"
-        v-if="show_input_pwd && !can_access_publi"
-        @submit.prevent="submitPassword"
-      >
-        <div class="">
-          <label>{{ $t("password") }}</label>
-          <input
-            type="password"
-            ref="passwordField"
-            required
-            autofocus
-            placeholder="…"
-          />
-        </div>
-        <input
-          type="submit"
-          class="button button-bg_rounded bg-bleuvert margin-top-small"
-        />
-      </form>
     </td>
   </tr>
 </template>
 <script>
+import AccessController from "./subcomponents/AccessController.vue";
+
 export default {
   props: {
     publication: Object,
   },
-  components: {},
+  components: { AccessController },
   data() {
     return {
       show_input_pwd: false,
@@ -100,7 +71,7 @@ export default {
     slugPubliName() {
       return this.publication.slugFolderName;
     },
-    can_access_publi() {
+    can_see_publi() {
       return this.$root.canSeeFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
@@ -114,7 +85,7 @@ export default {
           `METHODS • Publication: openPublication / slugPubliName = ${slugPubliName}`
         );
 
-      if (this.can_access_publi) this.$root.openPublication(this.slugPubliName);
+      if (this.can_see_publi) this.$root.openPublication(this.slugPubliName);
     },
     publi_password() {
       if (this.password !== "has_pass") return "";

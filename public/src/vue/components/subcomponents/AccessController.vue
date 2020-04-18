@@ -161,12 +161,6 @@
 <script>
 export default {
   props: {
-    can_see_folder: {
-      type: Boolean,
-    },
-    can_edit_folder: {
-      type: Boolean,
-    },
     editing_limited_to: {
       type: String,
     },
@@ -196,8 +190,39 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    can_see_project() {
+      if (!this.can_see_folder && this.context === "full") {
+        // cas d’un mdp qui a été ajouté ou changé
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            this.$t("notifications.password_added_or_changed_to_this_project")
+          );
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(this.$t("notifications.enter_password_to_reopen"));
+
+        this.$emit("closeFolder");
+      }
+    },
+  },
   computed: {
+    can_see_folder() {
+      return this.$root.canSeeFolder({
+        type: this.type,
+        slugFolderName: this.slugFolderName,
+      });
+    },
+    can_edit_folder() {
+      return this.$root.canEditFolder({
+        type: this.type,
+        slugFolderName: this.slugFolderName,
+      });
+    },
     _editing_limited_to() {
       if (!!this.editing_limited_to) return this.editing_limited_to;
       else return false;

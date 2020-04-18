@@ -55,6 +55,17 @@
           ].includes($root.state.mode)
         "
       >
+        <AccessController
+          :editing_limited_to="publication.editing_limited_to"
+          :viewing_limited_to="publication.viewing_limited_to"
+          :password="publication.password"
+          :context="'full'"
+          :type="'publications'"
+          :slugFolderName="publication.slugFolderName"
+          @openFolder="openPublication"
+          @closeFolder="closePublication"
+        />
+
         <button
           type="button"
           class="buttonLink"
@@ -172,6 +183,8 @@
 </template>
 <script>
 import EditPublication from "../modals/EditPublication.vue";
+import AccessController from "./AccessController.vue";
+
 export default {
   props: {
     slugPubliName: String,
@@ -192,6 +205,7 @@ export default {
   },
   components: {
     EditPublication,
+    AccessController,
   },
   data() {
     return {
