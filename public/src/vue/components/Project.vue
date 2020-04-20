@@ -114,7 +114,6 @@
         >
           <span v-if="!project.folder" class>{{ $t("open") }}</span>
           <svg
-            v-else
             version="1.1"
             class="m_project--presentation--buttons--openButton--icon inline-svg"
             xmlns="http://www.w3.org/2000/svg"

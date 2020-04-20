@@ -1,5 +1,5 @@
 <template>
-  <div class="margin-vert-small">
+  <div class="">
     <!-- editing_limited_to : {{ editing_limited_to }}<br />
     viewing_limited_to : {{ viewing_limited_to }}<br />
     password : {{ password }}<br />
