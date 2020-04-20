@@ -6,27 +6,25 @@
     <div class="m_page" :style="setPageProperties(page)">
       <template v-if="!preview_mode">
         <div
-          v-for="(item, index) in [0, 1, 2, 3]"
+          v-for="(pos, index) in ['left', 'right', 'top', 'bottom']"
+          v-if="page['margin_' + pos] > 0"
           class="m_page--margins_rule"
-          :style="
-            `--margin_left: ${page.margin_left}mm; --margin_right: ${page.margin_right}mm; --margin_top: ${page.margin_top}mm; --margin_bottom: ${page.margin_bottom}mm;`
-          "
+          :class="['m_page--margins_rule_' + pos]"
+          :style="`--margin_${pos}: ${page['margin_' + pos]}mm`"
           :key="index"
-        />
+        ></div>
 
         <div
           class="m_page--grid"
           v-if="!!page.gridstep && page.gridstep > 0"
-          :style="
-            `
+          :style="`
             --gridstep: ${page.gridstep}mm; 
             --margin_left: ${page.margin_left}mm; 
             --margin_right: ${page.margin_right}mm; 
             --margin_top: ${page.margin_top}mm; 
             --margin_bottom: ${page.margin_bottom}mm;
             --zoom: ${zoom};
-          `
-          "
+          `"
         />
       </template>
 
@@ -42,7 +40,7 @@
       <div
         v-if="
           pageNumber >= 0 &&
-            (!page.hasOwnProperty('show_page_number') || page.show_page_number)
+          (!page.hasOwnProperty('show_page_number') || page.show_page_number)
         "
         class="m_page--pageNumber"
         :class="{ toRight: true }"
@@ -56,7 +54,7 @@
             ![
               'export_publication',
               'print_publication',
-              'link_publication'
+              'link_publication',
             ].includes($root.state.mode)
           "
         >
@@ -77,12 +75,12 @@
           :read_only="read_only"
           :pixelsPerMillimeters="pixelsPerMillimeters"
           @removePubliMedia="
-            values => {
+            (values) => {
               removePubliMedia(values);
             }
           "
           @editPubliMedia="
-            values => {
+            (values) => {
               editPubliMedia(values);
             }
           "
@@ -102,19 +100,19 @@ export default {
     slugPubliName: String,
     pageNumber: {
       type: Number,
-      default: -1
+      default: -1,
     },
     page: Object,
     publication_medias: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     read_only: Boolean,
     pixelsPerMillimeters: Number,
-    zoom: Number
+    zoom: Number,
   },
   components: {
-    MediaPublication
+    MediaPublication,
   },
   data() {
     return {};
@@ -128,7 +126,7 @@ export default {
         "audio",
         "text",
         "document",
-        "other"
+        "other",
       ];
     }
   },
@@ -139,7 +137,7 @@ export default {
   computed: {
     customCSSVars() {
       return `--current-time-human: "${this.$root.currentTime_human}"`;
-    }
+    },
   },
   methods: {
     setPageContainerProperties(page) {
@@ -175,7 +173,7 @@ export default {
       this.$root.removeMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        slugMediaName
+        slugMediaName,
       });
     },
     // function to update property of a media inside medias_list
@@ -194,14 +192,14 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName,
-        data: val
+        data: val,
       });
     },
 
     noSelection() {
       this.has_media_selected = false;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss"></style>

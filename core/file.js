@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const path = require("path"),
   fs = require("fs-extra"),
   validator = require("validator");
