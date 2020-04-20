@@ -70,7 +70,9 @@
         </button>
 
         <button
-          v-if="!$root.current_author && viewing_limited_to !== 'everybody'"
+          v-else-if="
+            !$root.current_author && viewing_limited_to !== 'everybody'
+          "
           type="button"
           class="buttonLink"
           style
