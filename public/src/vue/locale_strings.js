@@ -92,12 +92,12 @@ module.exports = (function () {
       en: "none",
     },
     interactive_preview: {
-      fr: "Aperçu interactif",
-      en: "Interactive preview",
+      fr: "Interactif",
+      en: "Interactive",
     },
     static_preview: {
-      fr: "Aperçu image",
-      en: "Static preview",
+      fr: "Image",
+      en: "Static",
     },
     advanced_options: {
       fr: "Options avancées",
