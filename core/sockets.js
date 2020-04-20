@@ -536,11 +536,33 @@ module.exports = (function () {
     sendSpecificMedias({ type, medias_list, socket });
   }
 
-  function onDownloadPubliPDF(socket, { slugPubliName, options }) {
+  async function onDownloadPubliPDF(socket, { slugPubliName, options }) {
     dev.logfunction(
       `EVENT - onDownloadPubliPDF with 
       slugPubliName = ${slugPubliName}`
     );
+
+    const foldersData = await file.getFolder({
+      type: "publications",
+      slugFolderName: slugPubliName,
+    });
+    if (
+      !(await auth.canEditFolder(
+        socket,
+        foldersData[slugPubliName],
+        "publications"
+      ))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be downloaded ${slugPubliName}`,
+        type: "error",
+      });
+      return;
+    }
+
     exporter
       .makePDFForPubli({ slugPubliName, options })
       .then(({ pdfName, imageName, docPath }) => {
@@ -559,12 +581,33 @@ module.exports = (function () {
       });
   }
 
-  function onDownloadVideoPubli(socket, { slugPubliName, options }) {
+  async function onDownloadVideoPubli(socket, { slugPubliName, options }) {
     dev.logfunction(
       `EVENT - onDownloadVideoPubli with 
       slugPubliName = ${slugPubliName} 
       and options = ${JSON.stringify(options)}`
     );
+
+    const foldersData = await file.getFolder({
+      type: "publications",
+      slugFolderName: slugPubliName,
+    });
+    if (
+      !(await auth.canEditFolder(
+        socket,
+        foldersData[slugPubliName],
+        "publications"
+      ))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be downloaded ${slugPubliName}`,
+        type: "error",
+      });
+      return;
+    }
 
     exporter
       .makeVideoForPubli({ slugPubliName, socket, options })
@@ -595,11 +638,32 @@ module.exports = (function () {
       });
   }
 
-  function onDownloadStopmotionPubli(socket, { slugPubliName, options }) {
+  async function onDownloadStopmotionPubli(socket, { slugPubliName, options }) {
     dev.logfunction(
       `EVENT - onDownloadStopmotionPubli with 
       slugPubliName = ${slugPubliName}`
     );
+
+    const foldersData = await file.getFolder({
+      type: "publications",
+      slugFolderName: slugPubliName,
+    });
+    if (
+      !(await auth.canEditFolder(
+        socket,
+        foldersData[slugPubliName],
+        "publications"
+      ))
+    ) {
+      notify({
+        socket,
+        socketid: socket.id,
+        localized_string: `action_not_allowed`,
+        not_localized_string: `Error: folder can’t be downloaded ${slugPubliName}`,
+        type: "error",
+      });
+      return;
+    }
 
     exporter
       .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
@@ -636,15 +700,22 @@ module.exports = (function () {
       from = ${JSON.stringify(from)} and to = ${JSON.stringify(to)}`
     );
 
-    const foldersData = await file.getFolder({ type, slugFolderName });
+    const foldersData = await file.getFolder({
+      type: to.type,
+      slugFolderName: to.slugFolderName,
+    });
     if (
-      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
+      !(await auth.canEditFolder(
+        socket,
+        foldersData[to.slugFolderName],
+        to.type
+      ))
     ) {
       notify({
         socket,
         socketid: socket.id,
         localized_string: `action_not_allowed`,
-        not_localized_string: `Error: folder can’t be edited ${slugFolderName}`,
+        not_localized_string: `Error: folder can’t be downloaded ${slugPubliName}`,
         type: "error",
       });
       return;

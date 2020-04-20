@@ -29,7 +29,7 @@ button,
     cursor: not-allowed;
 
     &[class*="bg-"]:not(.bg-transparent) {
-      background-color: gray;
+      background-color: @c-gris;
     }
   }
 
@@ -255,6 +255,10 @@ button,
     &::after {
       // border-bottom-width: 2px;
     }
+  }
+
+  &[disabled] {
+    background-color: @c-gris;
   }
 
   &.bg-noir {

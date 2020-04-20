@@ -25,8 +25,8 @@
           <div
             v-if="
               export_type === 'png' &&
-                Array.isArray(publication.pages) &&
-                publication.pages.length > 1
+              Array.isArray(publication.pages) &&
+              publication.pages.length > 1
             "
             class="margin-bottom-small"
           >
@@ -118,9 +118,22 @@
             class="margin-small margin-left-none bg-bleumarine c-blanc button-allwide"
             @click="getLink"
             v-if="!show_link_infos"
+            :disabled="
+              publication.hasOwnProperty('viewing_limited_to') &&
+              publication.viewing_limited_to !== 'everybody'
+            "
           >
             {{ $t("share") }}
           </button>
+
+          <small
+            v-if="
+              publication.hasOwnProperty('viewing_limited_to') &&
+              publication.viewing_limited_to !== 'everybody'
+            "
+          >
+            {{ $t("set_visibility_to_everybody") }}
+          </small>
 
           <CreateQRCode
             v-if="show_link_infos"
@@ -141,12 +154,12 @@ import CreateQRCode from "./qr/CreateQRCode.vue";
 export default {
   props: {
     publication: Object,
-    slugPubliName: String
+    slugPubliName: String,
   },
   components: {
     Modal,
     AddCreationToProject,
-    CreateQRCode
+    CreateQRCode,
   },
   data() {
     return {
@@ -158,7 +171,7 @@ export default {
       show_link_infos: false,
 
       export_type: "pdf",
-      pagenumber_to_export: 1
+      pagenumber_to_export: 1,
     };
   },
   created() {},
@@ -166,12 +179,12 @@ export default {
   beforeDestroy() {},
 
   watch: {
-    export_type: function() {
+    export_type: function () {
       this.doc_request_status = false;
     },
-    pagenumber_to_export: function() {
+    pagenumber_to_export: function () {
       this.doc_request_status = false;
-    }
+    },
   },
   computed: {},
   methods: {
@@ -189,7 +202,7 @@ export default {
       );
 
       let options = {
-        type: this.export_type
+        type: this.export_type,
       };
 
       if (options.type === "png") {
@@ -198,7 +211,7 @@ export default {
 
       this.$socketio.downloadPubliPDF({
         slugPubliName: this.slugPubliName,
-        options
+        options,
       });
       this.doc_request_status = "waiting_for_server";
     },
@@ -227,7 +240,10 @@ export default {
         this.web_export_started = false;
       }, 2000);
       window.location.replace(
-        window.location.origin + "/_publications/web/" + this.slugPubliName
+        window.location.origin +
+          "/_publications/web/" +
+          this.slugPubliName +
+          `/?socketid=${this.$root.$socketio.socket.id}`
       );
     },
     getLink() {
@@ -236,7 +252,7 @@ export default {
       }
 
       this.show_link_infos = true;
-    }
-  }
+    },
+  },
 };
 </script>

@@ -40,6 +40,17 @@
     >
       <div>{{ $t("only_authors_can_open") }}</div>
     </div>
+    <div
+      class="m_metaField"
+      v-else-if="
+        !can_edit_folder &&
+        editing_limited_to === 'with_password' &&
+        viewing_limited_to !== 'everybody' &&
+        context !== 'full'
+      "
+    >
+      <div>{{ $t("only_password_can_open") }}</div>
+    </div>
 
     <template v-if="!can_edit_folder && editing_limited_to === 'only_authors'">
       <template
@@ -200,6 +211,13 @@ export default {
         this.$emit("closeFolder");
       }
     },
+    showInputPasswordField: function () {
+      if (this.showInputPasswordField) {
+        this.$nextTick(() => {
+          this.$refs.passwordField.focus();
+        });
+      }
+    },
   },
   computed: {
     slugFolderName() {
@@ -249,7 +267,6 @@ export default {
 
       // check if password matches or not
       this.$eventHub.$once("socketio.authentificated", () => {
-        debugger;
         const has_passworded_folder = window.state.list_authorized_folders.filter(
           (f) =>
             f.type === this.type &&
@@ -313,6 +330,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .m_metaField:last-of-type {
-  margin-bottom: 0;
+  // margin-bottom: 0;
 }
 </style>

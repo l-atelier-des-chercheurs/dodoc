@@ -157,8 +157,24 @@ module.exports = function (app) {
     });
   }
 
-  function exportPublication(req, res) {
+  async function exportPublication(req, res) {
     let slugPubliName = req.param("publication");
+    const type = "publications";
+
+    const isSocketAllowed = await isSocketIDAuthorized({
+      socketid: req.query.socketid,
+      type,
+      slugFolderName: slugPubliName,
+    }).catch((err) => {
+      sockets.notify({
+        socketid: req.query.socketid,
+        localized_string: `action_not_allowed`,
+        not_localized_string: err,
+        type: "error",
+      });
+    });
+    if (!isSocketAllowed) return false;
+
     generatePageData(req).then((pageData) => {
       exporter.loadPublication(slugPubliName, pageData).then((pageData) => {
         pageData.mode = "export_publication";
@@ -203,8 +219,21 @@ module.exports = function (app) {
     });
   }
 
-  function linkPublication(req, res) {
+  async function linkPublication(req, res) {
     let slugPubliName = req.param("publication");
+    const type = "publications";
+
+    const foldersData = await file.getFolder({
+      type,
+      slugFolderName: slugPubliName,
+    });
+    if (
+      foldersData[slugPubliName].hasOwnProperty("viewing_limited_to") &&
+      foldersData[slugPubliName].viewing_limited_to !== "everybody"
+    ) {
+      res.status(403).send(`Access not allowed.`);
+    }
+
     generatePageData(req).then((pageData) => {
       exporter.loadPublication(slugPubliName, pageData).then((pageData) => {
         pageData.mode = "link_publication";
@@ -249,29 +278,19 @@ module.exports = function (app) {
     let type = req.param("type");
     let slugFolderName = req.param("slugFolderName");
 
-    if (!req.query.hasOwnProperty("socketid"))
-      throw "Missing socket io id to download";
-
-    let socket;
-    try {
-      socket = sockets.io().sockets.connected[req.query.socketid];
-    } catch (error) {
-      throw "Missing sockets server-side.";
-    }
-
-    const foldersData = await file.getFolder({ type, slugFolderName });
-    if (
-      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
-    ) {
+    const isSocketAllowed = await isSocketIDAuthorized({
+      socketid: req.query.socketid,
+      type,
+      slugFolderName,
+    }).catch((err) => {
       sockets.notify({
-        socket,
-        socketid: socket.id,
+        socketid: req.query.socketid,
         localized_string: `action_not_allowed`,
-        not_localized_string: `Error: folder can’t be downloaded ${slugFolderName}`,
+        not_localized_string: err,
         type: "error",
       });
-      return;
-    }
+    });
+    if (!isSocketAllowed) return false;
 
     dev.log(
       `Will create and stream archive for folder ${type}/${slugFolderName}`
@@ -310,30 +329,37 @@ module.exports = function (app) {
     let type = req.param("type");
     let slugFolderName = req.param("slugFolderName");
 
-    if (!req.query.hasOwnProperty("socketid"))
-      throw "Missing socket io id to download";
+    const isSocketAllowed = await isSocketIDAuthorized({
+      socketid: req.query.socketid,
+      type,
+      slugFolderName,
+    }).catch((err) => {
+      sockets.notify({
+        socketid: req.query.socketid,
+        localized_string: `action_not_allowed`,
+        not_localized_string: err,
+        type: "error",
+      });
+    });
+    if (!isSocketAllowed) return false;
 
+    importer.handleForm({ req, res, type, slugFolderName });
+  }
+
+  async function isSocketIDAuthorized({ socketid, type, slugFolderName }) {
     let socket;
+
+    if (!socketid) throw "Missing socketid in URL";
+
     try {
-      socket = sockets.io().sockets.connected[req.query.socketid];
+      socket = sockets.io().sockets.connected[socketid];
     } catch (error) {
       throw "Missing sockets server-side.";
     }
 
     const foldersData = await file.getFolder({ type, slugFolderName });
-    if (
-      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
-    ) {
-      sockets.notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: folder can’t be uploaded ${slugFolderName}`,
-        type: "error",
-      });
-      return;
-    }
-
-    importer.handleForm({ req, res, type, slugFolderName });
+    if (!(await auth.canEditFolder(socket, foldersData[slugFolderName], type)))
+      throw "User can’t edit folder";
+    return true;
   }
 };

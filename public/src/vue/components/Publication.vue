@@ -1,6 +1,12 @@
 <template>
   <tr>
-    <td>{{ publication.name }}</td>
+    <td>
+      {{ publication.name }}
+      <ProtectedLock
+        :editing_limited_to="publication.editing_limited_to"
+        :is_protected="!can_edit_publi"
+      />
+    </td>
     <td width="150px">
       <small>
         {{ $root.formatDateToHuman(publication.date_created) }}
@@ -36,12 +42,13 @@
 </template>
 <script>
 import AccessController from "./subcomponents/AccessController.vue";
+import ProtectedLock from "./subcomponents/ProtectedLock.vue";
 
 export default {
   props: {
     publication: Object,
   },
-  components: { AccessController },
+  components: { AccessController, ProtectedLock },
   data() {
     return {
       show_input_pwd: false,
@@ -67,6 +74,12 @@ export default {
     },
     slugPubliName() {
       return this.publication.slugFolderName;
+    },
+    can_edit_publi() {
+      return this.$root.canEditFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
     },
     can_see_publi() {
       return this.$root.canSeeFolder({

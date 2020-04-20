@@ -31,13 +31,12 @@
 
       <div class="m_project--presentation--text">
         <h2 class="m_project--presentation--text--title">
-          <!-- :content="slugProjectName"
-          v-tippy="{
-            placement: 'bottom-start',
-            delay: [600, 0],
-            interactive: true,
-          }" -->
+          <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
           {{ project.name }}
+          <ProtectedLock
+            :editing_limited_to="project.editing_limited_to"
+            :is_protected="!can_edit_project"
+          />
         </h2>
 
         <div class="m_project--presentation--text--infos">
@@ -109,6 +108,38 @@
           v-if="context !== 'full' && can_see_project"
           type="button"
           class="m_project--presentation--buttons--openButton button-redthin"
+          @click.exact="openProject"
+          @click.shift.left.exact="$emit('toggleSelect')"
+          @click.meta.left.exact="$emit('toggleSelect')"
+        >
+          <span v-if="!project.folder" class>{{ $t("open") }}</span>
+          <svg
+            v-else
+            version="1.1"
+            class="m_project--presentation--buttons--openButton--icon inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="46.3px"
+            height="46.3px"
+            viewBox="0 0 46.3 46.3"
+            style="enable-background: new 0 0 46.3 46.3;"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              style="fill: currentColor;"
+              d="M38.1,29.1L37.8,23c-0.1-3.7-0.1-6.7,0.6-9.7l-33,33L0,40.9L32.9,7.9c-2.9,0.6-6,0.6-9.6,0.5l-6.2-0.3L17.8,0
+		l27.1,1.4l1.4,27.1L38.1,29.1z"
+            />
+          </svg>
+        </button>
+
+        <button
+          v-if="context !== 'full' && can_see_project"
+          type="button"
+          class="m_project--presentation--buttons--invisibleOpenButton"
           @click.exact="openProject"
           @click.shift.left.exact="$emit('toggleSelect')"
           @click.meta.left.exact="$emit('toggleSelect')"
@@ -344,6 +375,7 @@
 import EditProject from "./modals/EditProject.vue";
 import MediaLibrary from "./MediaLibrary.vue";
 import AccessController from "./subcomponents/AccessController.vue";
+import ProtectedLock from "./subcomponents/ProtectedLock.vue";
 
 export default {
   props: {
@@ -356,6 +388,7 @@ export default {
     EditProject,
     MediaLibrary,
     AccessController,
+    ProtectedLock,
   },
   data() {
     return {

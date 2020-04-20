@@ -52,6 +52,12 @@ module.exports = (function () {
       oc: "Recepta",
       de: "Publikation",
     },
+    set_visibility_to_everybody: {
+      fr:
+        "Ce contenu est actuellement en privé et ne peut donc pas être partagé. Pour le partager, cochez VISIBLE PAR TOUT LE MONDE dans les options du contenu.",
+      en:
+        "This content is currently set to private and cannot be shared. To get a link to share it, change its options to VISIBLE FOR EVERYONE.",
+    },
     medias_selected: {
       fr: "média(s) sélectionné(s)",
       en: "media(s) selected",
@@ -1190,6 +1196,10 @@ module.exports = (function () {
       fr: "Seulement les auteurs",
       en: "Only authors",
     },
+    protected_by_authors: {
+      fr: "Protégé par les auteurs",
+      en: "Protected by authors",
+    },
     with_password: {
       fr: "Avec un mot de passe",
       en: "With a password",
@@ -1484,6 +1494,10 @@ module.exports = (function () {
     only_authors_can_open: {
       fr: "Accès limité aux auteurs",
       en: "Access limited to authors",
+    },
+    only_password_can_open: {
+      fr: "Accès limité par mot de passe",
+      en: "Access limited with password",
     },
     ask_to_be_added_to_authors: {
       fr: "Demander à être rajouté aux auteurs pour contribuer",
