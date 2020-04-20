@@ -136,6 +136,17 @@
           </svg>
         </button>
 
+        <button
+          v-if="context !== 'full' && can_see_project"
+          type="button"
+          class="m_project--presentation--buttons--invisibleOpenButton"
+          @click.exact="openProject"
+          @click.shift.left.exact="$emit('toggleSelect')"
+          @click.meta.left.exact="$emit('toggleSelect')"
+        >
+          <span class>{{ $t("open") }}</span>
+        </button>
+
         <label
           v-if="context !== 'full' && (is_hovered || is_selected)"
           :for="is_selected + id"
