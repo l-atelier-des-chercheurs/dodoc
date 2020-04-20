@@ -211,8 +211,10 @@ module.exports = (function () {
     // if editing_limited_to is not set, or set to with_password
     if (
       !folderData.hasOwnProperty("editing_limited_to") ||
+      folderData.editing_limited_to === "" ||
       folderData.editing_limited_to === "with_password"
     ) {
+      dev.logverbose(`AUTH — canEditFolder: checkIfHasPasswordOrPasswordMatch`);
       return checkIfHasPasswordOrPasswordMatch({
         socket,
         type,
@@ -369,7 +371,8 @@ module.exports = (function () {
     }
 
     // hide field
-    if (meta.hasOwnProperty(field_name)) meta[field_name] = "_field_is_hidden";
+    if (meta.hasOwnProperty(field_name) && !!meta.field_name)
+      meta[field_name] = "_field_is_hidden";
     return meta;
   }
 

@@ -1,5 +1,5 @@
 <template>
-  <tr @click="openPublication">
+  <tr>
     <td>{{ publication.name }}</td>
     <td width="150px">
       <small>
@@ -15,65 +15,33 @@
       </template>
     </td>
     <td>
+      <AccessController
+        :folder="publication"
+        :context="'short'"
+        :type="'publications'"
+        @openFolder="openPublication"
+      />
       <button
+        v-if="can_see_publi"
         type="button"
-        class="buttonLink"
-        v-if="can_access_publi"
-        @click.stop="openPublication"
+        class="m_project--presentation--buttons--openButton button-redthin"
+        @click.exact="openPublication"
+        @click.shift.left.exact="$emit('toggleSelect')"
+        @click.meta.left.exact="$emit('toggleSelect')"
       >
-        {{ $t("open") }}
+        <span class>{{ $t("open") }}</span>
       </button>
-
-      <button
-        v-if="can_access_publi && publi_password"
-        type="button"
-        class="buttonLink _button_forgetpassword"
-        @click.stop="forgetPassword"
-      >
-        {{ $t("forget_password") }}
-      </button>
-
-      <button
-        v-if="!can_access_publi"
-        type="button"
-        class="buttonLink _open_pwd_input"
-        :class="{ 'is--active': show_input_pwd }"
-        style
-        :readonly="read_only"
-        @click.stop="show_input_pwd = !show_input_pwd"
-      >
-        {{ $t("password_required_to_open") }}
-      </button>
-
-      <form
-        class="padding-verysmall _pwd_input"
-        v-if="show_input_pwd && !can_access_publi"
-        @submit.prevent="submitPassword"
-      >
-        <div class="">
-          <label>{{ $t("password") }}</label>
-          <input
-            type="password"
-            ref="passwordField"
-            required
-            autofocus
-            placeholder="…"
-          />
-        </div>
-        <input
-          type="submit"
-          class="button button-bg_rounded bg-bleuvert margin-top-small"
-        />
-      </form>
     </td>
   </tr>
 </template>
 <script>
+import AccessController from "./subcomponents/AccessController.vue";
+
 export default {
   props: {
     publication: Object,
   },
-  components: {},
+  components: { AccessController },
   data() {
     return {
       show_input_pwd: false,
@@ -100,22 +68,11 @@ export default {
     slugPubliName() {
       return this.publication.slugFolderName;
     },
-    can_access_publi() {
+    can_see_publi() {
       return this.$root.canSeeFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
       });
-    },
-    publi_password() {
-      const pwds = this.$auth.getFoldersPasswords();
-      if (
-        pwds.hasOwnProperty("publications") &&
-        pwds["publications"].hasOwnProperty(this.slugPubliName) &&
-        this.publication.password === "has_pass"
-      ) {
-        return pwds["publications"][this.slugPubliName];
-      }
-      return "";
     },
   },
   methods: {
@@ -125,39 +82,14 @@ export default {
           `METHODS • Publication: openPublication / slugPubliName = ${slugPubliName}`
         );
 
-      if (this.can_access_publi) this.$root.openPublication(this.slugPubliName);
+      if (this.can_see_publi) this.$root.openPublication(this.slugPubliName);
     },
-    submitPassword() {
-      console.log("METHODS • Publication: submitPassword");
+    publi_password() {
+      if (this.password !== "has_pass") return "";
 
-      this.$auth.updateFoldersPasswords({
-        publications: {
-          [this.slugPubliName]: this.$refs.passwordField.value,
-        },
-      });
-
-      this.$socketio.sendAuth();
-
-      // check if password matches or not
-      this.$eventHub.$once("socketio.authentificated", () => {
-        const has_passworded_folder = window.state.list_authorized_folders.filter(
-          (f) =>
-            f.type === "publications" &&
-            f.allowed_slugFolderNames.includes(this.slugPubliName)
-        );
-        if (has_passworded_folder.length === 0) {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(
-              this.$t("notifications.wrong_password_for") +
-                this.publication.name
-            );
-          this.$refs.passwordField.value = "";
-          this.$refs.passwordField.focus();
-        } else {
-          this.show_input_pwd = false;
-        }
+      return this.$root.getFolderPassword({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
       });
     },
     forgetPassword() {
@@ -166,8 +98,6 @@ export default {
         slugFolderName: this.slugPubliName,
       });
       this.$socketio.sendAuth();
-
-      this.closeProject();
     },
   },
 };

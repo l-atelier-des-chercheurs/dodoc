@@ -723,6 +723,17 @@ let vm = new Vue({
       });
       return uniquetTypes;
     },
+    getFolderPassword({ type, slugFolderName }) {
+      debugger;
+      const folders_password = this.$auth.getFoldersPasswords();
+      if (
+        folders_password.hasOwnProperty(type) &&
+        folders_password[type].hasOwnProperty(slugFolderName)
+      ) {
+        return folders_password[type][slugFolderName];
+      }
+      return "";
+    },
     detectFullScreen() {
       var fullscreenElement =
         document.fullscreenElement ||
@@ -837,6 +848,7 @@ let vm = new Vue({
       if (
         folder.password !== "has_pass" &&
         (!folder.hasOwnProperty("editing_limited_to") ||
+          folder.editing_limited_to === "" ||
           folder.editing_limited_to === "with_password")
       )
         return true;
@@ -856,6 +868,7 @@ let vm = new Vue({
       if (
         folder.password === "has_pass" &&
         (!folder.hasOwnProperty("editing_limited_to") ||
+          folder.editing_limited_to === "" ||
           folder.editing_limited_to === "with_password")
       ) {
         return this.state.list_authorized_folders.some((i) => {

@@ -424,11 +424,11 @@ module.exports = (function () {
       de: "Vergessen Sie das Passwort",
     },
     forget_password_and_close: {
-      fr: "Oublier le mot de passe et fermer le projet",
-      en: "Forget password and close project",
-      nl: "Wachtwoord vergeten en sluiten ",
-      oc: "Doblidar lo mot de Santa-Clara e clavar lo projècte",
-      de: "Vergessen Sie das Passwort und schließen sie das Projekt",
+      fr: "Oublier le mot de passe et fermer",
+      en: "Forget password and close",
+      nl: "Wachtwoord vergeten en sluiten",
+      oc: "Doblidar lo mot de Santa-Clara e clavar",
+      de: "Vergessen Sie das Passwort und schließen sie",
     },
     remember_password_on_this_device: {
       fr: "Sauvegarder pour cet appareil",
@@ -2661,13 +2661,6 @@ module.exports = (function () {
         oc: "Cargament de do•doc en cors…",
         de: "Laden des laufenden do•doc…",
       },
-      "wrong_password_for_folder:": {
-        fr: "Le mot de passe n’est pas le bon pour le dossier&nbsp;:",
-        en: "Wrong password or folder missing for:",
-        nl: "Het wachtwoord is niet correct voor dit onderdeel:",
-        oc: "Lo mot de passa es pas lo bon pel dorsièr:",
-        de: "Das Passwort ist nicht das richtige für die Datei.",
-      },
       "created_edited_media:": {
         fr: "Création ou édition d’un média pour le dossier&nbsp;:",
         en: "A media has been created or edited in folder:",
@@ -2788,12 +2781,16 @@ module.exports = (function () {
         oc: "Aqueste projècte ven d'èsser suprimit per qualqu'un mai.",
         de: "Dieses Projekt wurde gerade von jemandem gelöscht.",
       },
-      wrong_password_for: {
-        fr: "Mot de passe erroné pour ",
-        en: "Wrong password for project ",
-        nl: "Onjuist wachtwoord voor ",
-        oc: "Mot de Santa Clara erronèu per",
-        de: "Falsches Passwort für",
+      wrong_password: {
+        fr: "Mot de passe erroné",
+        en: "Wrong password",
+        nl: "Onjuist wachtwoord",
+        oc: "Mot de Santa Clara erronèu",
+        de: "Falsches Passwort",
+      },
+      password_is_valid: {
+        fr: "Mot de passe accepté",
+        en: "Password is valid",
       },
       connected_as: {
         fr: "Connecté comme  ",
@@ -2883,20 +2880,13 @@ module.exports = (function () {
         oc: "Còpia acabada",
         de: "Kopie komplett",
       },
-      password_added_or_changed_to_this_project: {
-        fr: "Le mot de passe de ce projet a été ajouté ou modifié.",
-        en: "The password for this project hass been added or changed.",
-        nl: "Wachtwoord voor dit project werd toegevoegd of gewijzigd .",
-        oc:
-          "Lo mot de Santa-Cmlara d'aqueste projècte es estat apondut o modificat",
-        de: "Das Passwort für dieses Projekt wurde hinzugefügt oder geändert.",
+      password_added_or_changed: {
+        fr: "Le mot de passe de ce contenu a été ajouté ou modifié.",
+        en: "The password for this content has been added or changed.",
       },
-      enter_password_to_reopen_project: {
-        fr: "Entrez le nouveau mot de passe pour accéder à nouveau à",
-        en: "Enter the new password to reopen project",
-        nl: "Voer het nieuwe wachtwoord in om opnieuw toegang te krijgen",
-        oc: "Dintratz lo novèl mot de santa-Clara per accedir tornar mai a",
-        de: "Geben Sie das neue Passwort für den erneuten Zugriff ein.",
+      enter_password_to_reopen: {
+        fr: "Entrez le nouveau mot de passe pour le rouvrir",
+        en: "Enter the new password to reopen",
       },
       enter_password_to_select: {
         fr: "Renseignez le mot de passe du projet pour pouvoir le sélectionner",

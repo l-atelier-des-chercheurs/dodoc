@@ -61,8 +61,7 @@
           "override": true
         },
         "password": {
-          "type": "string",
-          "show_only_to": []
+          "type": "string"
         },
         "authors": {
           "type": "array"
@@ -77,10 +76,14 @@
           "type": "string"
         },
         "editing_limited_to": {
-          "type": "string"
+          "type": "string",
+          "options": ["everybody", "with_password", "only_authors"],
+          "default": "everybody"
         },
         "viewing_limited_to": {
-          "type": "string"
+          "type": "string",
+          "options": ["everybody", ""],
+          "default": "everybody"
         }
       },
       "medias": {
@@ -164,7 +167,6 @@
         },
         "password": {
           "type": "string",
-          "read_only": true,
           "transform": "crypt"
         },
         "date_created": {
@@ -206,14 +208,23 @@
           "type": "string"
         },
         "password": {
-          "type": "string",
-          "read_only": true
+          "type": "string"
         },
         "authors": {
           "type": "array"
         },
         "keywords": {
           "type": "array"
+        },
+        "editing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "with_password", "only_authors"],
+          "default": "everybody"
+        },
+        "viewing_limited_to": {
+          "type": "string",
+          "options": ["everybody", ""],
+          "default": "everybody"
         },
         "date_created": {
           "type": "date",

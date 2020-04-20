@@ -9,7 +9,10 @@
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
   >
-    <div class="m_project--presentation">
+    <div
+      class="m_project--presentation"
+      :class="{ 'is--full': context === 'full' }"
+    >
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
@@ -91,163 +94,13 @@
 
           <DateField :title="'edited'" :date="project.date_modified" />
 
-          <div
-            class="m_metaField"
-            v-if="!!_editing_limited_to && context === 'full'"
-          >
-            <div>{{ $t("who_can_edit") }}</div>
-            <div class="">
-              <span>{{ $t(_editing_limited_to) }}</span>
-            </div>
-          </div>
-
-          <div
-            class="m_metaField"
-            v-if="!!project.viewing_limited_to && context === 'full'"
-          >
-            <div>{{ $t("consultation") }}</div>
-            <div>{{ $t("visible_to_all") }}</div>
-          </div>
-          <!-- 
-          <div
-            class="m_metaField"
-            v-if="
-              can_see_project &&
-              project.password === 'has_pass' &&
-              project.editing_limited_to !== 'only_authors'
-            "
-          >
-            <label>{{ $t("protected_by_pass") }}</label>
-          </div> -->
-
-          <div
-            class="m_metaField"
-            v-if="
-              !can_edit_project &&
-              project.viewing_limited_to === 'only_authors' &&
-              context !== 'full'
-            "
-          >
-            <div>{{ $t("only_authors_can_open") }}</div>
-          </div>
-
-          <template
-            v-if="
-              !can_edit_project &&
-              project.editing_limited_to === 'only_authors' &&
-              context === 'full'
-            "
-          >
-            <button
-              v-if="!$root.current_author"
-              type="button"
-              class="buttonLink"
-              style
-              :readonly="read_only"
-              @click="$root.showAuthorsListModal = true"
-            >
-              {{ $t("login_to_edit_project") }}
-            </button>
-
-            <button
-              v-else
-              type="button"
-              class="buttonLink"
-              style
-              :readonly="read_only"
-              @click="requestAccessToProject"
-            >
-              {{ $t("ask_to_be_added_to_authors") }}
-            </button>
-          </template>
-
-          <button
-            v-if="
-              !can_see_project &&
-              project.password === 'has_pass' &&
-              project.viewing_limited_to !== 'only_authors'
-            "
-            type="button"
-            class="buttonLink _open_pwd_input"
-            :class="{ 'is--active': showInputPasswordField }"
-            style
-            :readonly="read_only"
-            @click="showInputPasswordField = !showInputPasswordField"
-          >
-            {{ $t("password_required_to_open") }}
-          </button>
-
-          <button
-            v-if="
-              !can_edit_project &&
-              project.password === 'has_pass' &&
-              project.editing_limited_to !== 'only_authors'
-            "
-            type="button"
-            class="buttonLink _open_pwd_input"
-            :class="{ 'is--active': showInputPasswordField }"
-            style
-            :readonly="read_only"
-            @click="showInputPasswordField = !showInputPasswordField"
-          >
-            {{ $t("password_required_to_edit") }}
-          </button>
-
-          <div
-            class="padding-verysmall _pwd_input"
-            v-if="showInputPasswordField"
-          >
-            <div class="margin-bottom-small">
-              <label>{{ $t("password") }}</label>
-              <input
-                type="password"
-                ref="passwordField"
-                @keydown.enter.prevent="submitPassword"
-                required
-                autofocus
-                placeholder="…"
-              />
-            </div>
-            <!-- <div class="switch switch-xs margin-bottom-small">
-                <input
-                  type="checkbox"
-                  class="switch"
-                  id="remember_project_password_for_this_device"
-                  v-model="remember_project_password_for_this_device"
-                />
-                <label
-                  for="remember_project_password_for_this_device"
-                >{{ $t('remember_project_password_for_this_device') }}</label>
-            </div>-->
-
-            <button
-              type="button"
-              class="button bg-bleuvert button-thin"
-              @click="submitPassword"
-            >
-              {{ $t("send") }}
-            </button>
-          </div>
-
-          <div
-            v-if="
-              can_see_project &&
-              project_password &&
-              context === 'full' &&
-              project.editing_limited_to !== 'only_authors'
-            "
-            class="m_metaField"
-          >
-            <div
-              class="cursor-pointer"
-              :readonly="read_only"
-              @click="showCurrentPassword = !showCurrentPassword"
-              v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
-            />
-            <div v-if="showCurrentPassword && can_see_project">
-              {{ project_password }}
-            </div>
-          </div>
+          <AccessController
+            :folder="project"
+            :context="context"
+            :type="'projects'"
+            @openFolder="openProject"
+            @closeFolder="closeProject"
+          />
         </div>
       </div>
 
@@ -255,7 +108,7 @@
         <button
           v-if="context !== 'full' && can_see_project"
           type="button"
-          class="m_project--presentation--buttons--openButton"
+          class="m_project--presentation--buttons--openButton button-redthin"
           @click.exact="openProject"
           @click.shift.left.exact="$emit('toggleSelect')"
           @click.meta.left.exact="$emit('toggleSelect')"
@@ -381,21 +234,6 @@
 
         <div v-if="show_advanced_options">
           <button
-            v-if="
-              can_see_project &&
-              can_edit_project &&
-              project_password &&
-              context === 'full' &&
-              project.editing_limited_to !== 'only_authors'
-            "
-            type="button"
-            class="_button_forgetpassword"
-            @click="forgetPassword"
-          >
-            {{ $t("forget_password_and_close") }}
-          </button>
-
-          <button
             v-if="can_see_project && can_edit_project && context === 'full'"
             type="button"
             class="buttonLink"
@@ -486,7 +324,7 @@
       <EditProject
         v-if="showEditProjectModal"
         :project="project"
-        :project_password="project_password"
+        :project_password="project_password()"
         :slugProjectName="slugProjectName"
         @close="showEditProjectModal = false"
         :read_only="read_only"
@@ -505,7 +343,7 @@
 <script>
 import EditProject from "./modals/EditProject.vue";
 import MediaLibrary from "./MediaLibrary.vue";
-import MediaCard from "./subcomponents/MediaCard.vue";
+import AccessController from "./subcomponents/AccessController.vue";
 
 export default {
   props: {
@@ -517,14 +355,12 @@ export default {
   components: {
     EditProject,
     MediaLibrary,
-    MediaCard,
+    AccessController,
   },
   data() {
     return {
       slugProjectName: this.project.slugFolderName,
       showEditProjectModal: false,
-      showInputPasswordField: false,
-      showCurrentPassword: false,
       remember_project_password_for_this_device: true,
       show_advanced_options: false,
 
@@ -538,28 +374,6 @@ export default {
     };
   },
   watch: {
-    can_see_project() {
-      if (!this.can_see_project && this.context === "full") {
-        // cas d’un mdp qui a été ajouté ou changé
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(
-            this.$t("notifications.password_added_or_changed_to_this_project")
-          );
-
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .log(
-            this.$t("notifications.enter_password_to_reopen_project") +
-              "&nbsp;:" +
-              this.project.name
-          );
-
-        this.closeProject();
-      }
-    },
     showInputPasswordField() {
       if (this.showInputPasswordField) {
         this.$nextTick(() => {
@@ -580,11 +394,6 @@ export default {
   mounted() {},
   beforeDestroy() {},
   computed: {
-    _editing_limited_to() {
-      if (!!this.project.editing_limited_to)
-        return this.project.editing_limited_to;
-      else return false;
-    },
     previewURL() {
       if (
         !this.project.hasOwnProperty("preview") ||
@@ -610,25 +419,12 @@ export default {
         slugFolderName: this.slugProjectName,
       });
     },
-    project_password() {
-      const projects_password = this.$auth.getFoldersPasswords();
-
-      if (
-        projects_password.hasOwnProperty("projects") &&
-        projects_password["projects"].hasOwnProperty(this.slugProjectName) &&
-        this.project.password === "has_pass"
-      ) {
-        return projects_password["projects"][this.slugProjectName];
-      }
-      return "";
-    },
   },
   methods: {
     openProject() {
       if (this.can_see_project) this.$root.openProject(this.slugProjectName);
       else this.showInputPasswordField = !this.showInputPasswordField;
     },
-
     closeProject() {
       this.$root.closeProject();
     },
@@ -648,18 +444,9 @@ export default {
           () => {}
         );
     },
-    requestAccessToProject() {
-      const current_author = this.$root.current_author;
-
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .error("Feature not yet implemented…");
-
-      // TODO : send request to be added to folder
-      // === creating a channel restricted to all the existing authors + current
-
-      this.$eventHub.$emit("requestToBeAddedToAuthors", {
+    project_password() {
+      if (this.password !== "has_pass") return "";
+      return this.$root.getFolderPassword({
         type: "projects",
         slugFolderName: this.slugProjectName,
       });
@@ -706,48 +493,6 @@ export default {
           .delay(4000)
           .success(this.$t("notifications.copy_completed"));
       });
-    },
-    submitPassword() {
-      console.log("METHODS • Project: submitPassword");
-
-      this.$auth.updateFoldersPasswords({
-        projects: {
-          [this.slugProjectName]: this.$refs.passwordField.value,
-        },
-      });
-
-      this.$socketio.sendAuth();
-
-      // check if password matches or not
-      this.$eventHub.$once("socketio.authentificated", () => {
-        const has_passworded_folder = window.state.list_authorized_folders.filter(
-          (f) =>
-            f.type === "projects" &&
-            f.allowed_slugFolderNames.includes(this.slugProjectName)
-        );
-        if (has_passworded_folder.length === 0) {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(
-              this.$t("notifications.wrong_password_for") + this.project.name
-            );
-          this.$refs.passwordField.value = "";
-          this.$refs.passwordField.focus();
-        } else {
-          this.showInputPasswordField = false;
-          this.openProject();
-        }
-      });
-    },
-    forgetPassword() {
-      this.$auth.removeFolderPassword({
-        type: "projects",
-        slugFolderName: this.slugProjectName,
-      });
-      this.$socketio.sendAuth();
-
-      this.closeProject();
     },
     downloadProjectArchive() {
       if (this.$root.state.dev_mode === "debug") {

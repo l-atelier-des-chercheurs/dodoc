@@ -55,6 +55,13 @@
           ].includes($root.state.mode)
         "
       >
+        <AccessController
+          :folder="publication"
+          :context="'full'"
+          :type="'publications'"
+          @closeFolder="closePublication"
+        />
+
         <button
           type="button"
           class="buttonLink"
@@ -85,6 +92,7 @@
         <EditPublication
           v-if="show_edit_publication"
           :publication="publication"
+          :publi_password="publi_password()"
           :slugPubliName="slugPubliName"
           @close="show_edit_publication = false"
         />
@@ -171,6 +179,8 @@
 </template>
 <script>
 import EditPublication from "../modals/EditPublication.vue";
+import AccessController from "./AccessController.vue";
+
 export default {
   props: {
     slugPubliName: String,
@@ -191,6 +201,7 @@ export default {
   },
   components: {
     EditPublication,
+    AccessController,
   },
   data() {
     return {
@@ -247,6 +258,14 @@ export default {
           () => {}
         );
     },
+    publi_password() {
+      if (this.publication.password !== "has_pass") return "";
+      return this.$root.getFolderPassword({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
+
     duplicateWithNewName(event) {
       console.log("METHODS • PublicationHeader: duplicateWithNewName");
 
