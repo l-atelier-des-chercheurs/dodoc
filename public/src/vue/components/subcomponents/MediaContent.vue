@@ -91,18 +91,23 @@
         <iframe v-else :src="`/libs/stl/show_stl.html?mediaURL=${mediaURL}`" />
 
         <div class="mediaContainer--buttons">
-          <button
-            type="button"
-            class="bg-orange button-small"
-            @click="interactive_stl_mode = !interactive_stl_mode"
+          <div
+            class="switch switch-xs switch_twoway button button-thin bg-gris_tresclair"
           >
-            <template v-if="!interactive_stl_mode">
+            <label :for="`interactive_preview_${id}`" class="cursor-pointer">
+              <span class>{{ $t("static_preview") }}</span>
+            </label>
+
+            <input
+              type="checkbox"
+              class="switch"
+              :id="`interactive_preview_${id}`"
+              v-model="interactive_stl_mode"
+            />
+            <label :for="`interactive_preview_${id}`">
               {{ $t("interactive_preview") }}
-            </template>
-            <template v-else>
-              {{ $t("static_preview") }}
-            </template>
-          </button>
+            </label>
+          </div>
         </div>
       </template>
     </template>
@@ -254,6 +259,8 @@ export default {
       },
       htmlForEditor: this.value,
       interactive_stl_mode: false,
+
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       plyr_options: {
         controls: [
