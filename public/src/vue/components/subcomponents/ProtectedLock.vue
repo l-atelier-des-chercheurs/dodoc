@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <span v-if="editing_limited_to && editing_limited_to !== 'everybody'">
     <svg
       v-if="is_protected"
       version="1.1"
@@ -13,7 +13,7 @@
       height="88.3px"
       viewBox="0 0 66.9 88.3"
       xml:space="preserve"
-      :content="$t('protected')"
+      :content="popover_caption"
       v-tippy="{
         placement: 'bottom',
         delay: [600, 0],
@@ -59,6 +59,7 @@
 <script>
 export default {
   props: {
+    editing_limited_to: String,
     is_protected: Boolean,
   },
   components: {},
@@ -69,7 +70,14 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    popover_caption() {
+      if (this.editing_limited_to === "only_authors")
+        return this.$t("protected_by_authors");
+      if (this.editing_limited_to === "with_password")
+        return this.$t("protected_by_pass");
+    },
+  },
   methods: {},
 };
 </script>

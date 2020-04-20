@@ -1190,6 +1190,10 @@ module.exports = (function () {
       fr: "Seulement les auteurs",
       en: "Only authors",
     },
+    protected_by_authors: {
+      fr: "Protégé par les auteurs",
+      en: "Protected by authors",
+    },
     with_password: {
       fr: "Avec un mot de passe",
       en: "With a password",

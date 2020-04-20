@@ -3,10 +3,7 @@
     <td>
       {{ publication.name }}
       <ProtectedLock
-        v-if="
-          publication.editing_limited_to &&
-          publication.editing_limited_to !== 'everybody'
-        "
+        :editing_limited_to="publication.editing_limited_to"
         :is_protected="!can_edit_publi"
       />
     </td>

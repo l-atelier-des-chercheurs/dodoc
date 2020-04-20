@@ -34,16 +34,12 @@
           ‹
         </button>
 
-        <div
-          class="m_publicationMeta--topbar--title"
-          :content="slugPubliName"
-          v-tippy="{
-            placement: 'bottom-start',
-            delay: [600, 0],
-            interactive: true,
-          }"
-        >
+        <div class="m_publicationMeta--topbar--title">
           {{ publication.name }}
+          <ProtectedLock
+            :editing_limited_to="publication.editing_limited_to"
+            :is_protected="!can_edit_publi()"
+          />
         </div>
       </div>
       <div
@@ -230,6 +226,7 @@
 <script>
 import EditPublication from "../modals/EditPublication.vue";
 import AccessController from "./AccessController.vue";
+import ProtectedLock from "./ProtectedLock.vue";
 
 export default {
   props: {
@@ -252,6 +249,7 @@ export default {
   components: {
     EditPublication,
     AccessController,
+    ProtectedLock,
   },
   data() {
     return {

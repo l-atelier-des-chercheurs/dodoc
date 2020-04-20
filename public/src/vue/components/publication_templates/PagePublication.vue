@@ -18,7 +18,7 @@
       :slugPubliName="slugPubliName"
     />
 
-    <div class="m_publicationButtons">
+    <div class="m_publicationButtons" v-if="can_edit_publi">
       <button
         v-if="!contact_sheet_mode"
         class="buttonLink"
@@ -35,7 +35,7 @@
         ![
           'export_publication',
           'print_publication',
-          'link_publication'
+          'link_publication',
         ].includes($root.state.mode)
       "
     >
@@ -55,7 +55,7 @@
           width="144px"
           height="84px"
           viewBox="0 0 144 84"
-          style="enable-background:new 0 0 144 84;"
+          style="enable-background: new 0 0 144 84;"
           xml:space="preserve"
         >
           <defs />
@@ -83,7 +83,7 @@
           width="133.3px"
           height="133.2px"
           viewBox="0 0 133.3 133.2"
-          style="enable-background:new 0 0 133.3 133.2;"
+          style="enable-background: new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
           <polygon
@@ -114,7 +114,7 @@
           width="133.3px"
           height="133.2px"
           viewBox="0 0 133.3 133.2"
-          style="enable-background:new 0 0 133.3 133.2;"
+          style="enable-background: new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
           <polygon
@@ -152,7 +152,7 @@
           width="182.5px"
           height="188.1px"
           viewBox="0 0 182.5 188.1"
-          style="enable-background:new 0 0 182.5 188.1;"
+          style="enable-background: new 0 0 182.5 188.1;"
           xml:space="preserve"
         >
           <defs />
@@ -178,7 +178,7 @@
           width="155.6px"
           height="21.2px"
           viewBox="0 0 155.6 21.2"
-          style="enable-background:new 0 0 155.6 21.2;"
+          style="enable-background: new 0 0 155.6 21.2;"
           xml:space="preserve"
         >
           <defs />
@@ -193,7 +193,7 @@
         ![
           'export_publication',
           'print_publication',
-          'link_publication'
+          'link_publication',
         ].includes($root.state.mode)
       "
     >
@@ -224,8 +224,8 @@
             ![
               'export_publication',
               'print_publication',
-              'link_publication'
-            ].includes($root.state.mode)
+              'link_publication',
+            ].includes($root.state.mode) && can_edit_publi
           "
         >
           <button
@@ -261,10 +261,10 @@
           <span
             v-html="
               $t('current_page:') +
-                ' ' +
-                (opened_page_index + 1) +
-                '/' +
-                this.pagesWithDefault.length
+              ' ' +
+              (opened_page_index + 1) +
+              '/' +
+              this.pagesWithDefault.length
             "
           />
         </div>
@@ -286,7 +286,7 @@
           [
             'export_publication',
             'print_publication',
-            'link_publication'
+            'link_publication',
           ].includes($root.state.mode)
         "
       >
@@ -320,7 +320,7 @@
             :key="page.id"
             @mouseenter="show_buttons = page.id"
             @mouseleave="
-              event =>
+              (event) =>
                 event.relatedTarget === null ? '' : (show_buttons = false)
             "
           >
@@ -332,7 +332,7 @@
               :pageNumber="pageNumber"
               :page="page"
               :publication_medias="publication_medias[page.id]"
-              :read_only="read_only"
+              :read_only="read_only || !can_edit_publi"
               :pixelsPerMillimeters="pixelsPerMillimeters"
               :zoom="0.2"
             />
@@ -349,6 +349,7 @@
                 <button
                   type="button"
                   class="_advanced_menu_button"
+                  v-if="can_edit_publi"
                   @click.stop="
                     show_advanced_menu_for_page !== page.id
                       ? (show_advanced_menu_for_page = page.id)
@@ -364,7 +365,7 @@
                     width="168px"
                     height="168px"
                     viewBox="0 0 168 168"
-                    style="enable-background:new 0 0 168 168;"
+                    style="enable-background: new 0 0 168 168;"
                     xml:space="preserve"
                   >
                     <rect x="73.5" y="37" class="st0" width="21" height="21" />
@@ -380,7 +381,9 @@
                 </button>
 
                 <div
-                  v-if="show_advanced_menu_for_page === page.id"
+                  v-if="
+                    show_advanced_menu_for_page === page.id && can_edit_publi
+                  "
                   class="_advanced_menu"
                   @click.stop
                 >
@@ -436,7 +439,7 @@
                           <option
                             v-for="{
                               name,
-                              slugFolderName: slugPubliName
+                              slugFolderName: slugPubliName,
                             } in all_recipes_of_this_template"
                             :key="slugPubliName"
                             :value="slugPubliName"
@@ -466,6 +469,7 @@
           <button
             type="button"
             class="m_publicationview--pages--contactSheet--pages--page m_publicationview--pages--contactSheet--pages--page_create"
+            v-if="can_edit_publi"
             :key="'create_page'"
             @click="insertPageAtIndex(pagesWithDefault.length + 1)"
           >
@@ -503,14 +507,14 @@
               :pageNumber="pageNumber"
               :page="page"
               :publication_medias="publication_medias[page.id]"
-              :read_only="read_only"
+              :read_only="read_only || !can_edit_publi"
               :pixelsPerMillimeters="pixelsPerMillimeters"
               :zoom="0.1"
             />
 
             <div
               class="m_publicationview--pages--contactSheet--pages--page--buttons"
-              v-if="show_restore_options === page.id"
+              v-if="show_restore_options === page.id && can_edit_publi"
             >
               <!-- <button
                 type="button"
@@ -581,7 +585,7 @@
             :publication_medias="
               publication_medias[$root.settings.current_publication.page_id]
             "
-            :read_only="read_only"
+            :read_only="read_only || !can_edit_publi"
             :pixelsPerMillimeters="pixelsPerMillimeters"
             :zoom="zoom"
           />
@@ -628,13 +632,13 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     PublicationHeader,
     ExportPagePubli,
     PagePublicationSinglePage,
-    SettingsPane
+    SettingsPane,
   },
   data() {
     return {
@@ -652,8 +656,8 @@ export default {
           snap_to_grid: true,
           header_left: "",
           header_right: "",
-          show_page_number: true
-        }
+          show_page_number: true,
+        },
       },
 
       show_removed_pages: false,
@@ -675,7 +679,7 @@ export default {
 
       pixelsPerMillimeters: 0,
       has_media_selected: false,
-      show_export_modal: false
+      show_export_modal: false,
     };
   },
   created() {
@@ -723,13 +727,13 @@ export default {
   },
 
   watch: {
-    "publication.medias": function() {
+    "publication.medias": function () {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`WATCH • Publication: publication.medias`);
       }
       this.updateMediasPubli();
     },
-    show_buttons: function() {
+    show_buttons: function () {
       this.show_advanced_menu_for_page = false;
       this.show_advanced_option = false;
     },
@@ -743,7 +747,7 @@ export default {
           --page-height: ${this.publications_options.height}mm
         `;
       },
-      deep: true
+      deep: true,
     },
     "$root.store.projects": {
       handler() {
@@ -752,39 +756,51 @@ export default {
 
         this.updateMediasPubli();
       },
-      deep: true
+      deep: true,
     },
-    zoom: function() {
+    zoom: function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: zoom`);
 
       this.zoom = Math.min(this.zoom_max, Math.max(this.zoom_min, this.zoom));
       this.$root.setPublicationZoom(this.zoom);
     },
-    "$root.settings.publi_zoom": function() {
+    "$root.settings.publi_zoom": function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: $root.settings.publi_zoom`);
 
       this.zoom = this.$root.settings.publi_zoom;
-    }
+    },
   },
   computed: {
     opened_single_page() {
       if (this.opened_page_index === false) return false;
       return this.pagesWithDefault[this.opened_page_index];
     },
+    can_see_publi() {
+      return this.$root.canSeeFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
+    can_edit_publi() {
+      return this.$root.canEditFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
     opened_page_index() {
       if (!this.$root.settings.current_publication.page_id) return false;
 
       const index = this.pagesWithDefault.findIndex(
-        p => p.id === this.$root.settings.current_publication.page_id
+        (p) => p.id === this.$root.settings.current_publication.page_id
       );
       return index;
     },
     all_recipes_of_this_template() {
       const filtered_recipes = Object.values(
         this.$root.store.publications
-      ).filter(r => r.template === "page_by_page");
+      ).filter((r) => r.template === "page_by_page");
       let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
       sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
@@ -860,7 +876,7 @@ export default {
       );
 
       return removedDefaultPages;
-    }
+    },
   },
   methods: {
     generateID() {
@@ -873,7 +889,7 @@ export default {
     mergePageObjectWithDefault(pages) {
       return pages.reduce((acc, page) => {
         let _page = JSON.parse(JSON.stringify(page));
-        Object.keys(this.publications_options).map(k => {
+        Object.keys(this.publications_options).map((k) => {
           const option = this.publications_options[k];
           if (typeof option === "number") {
             if (_page.hasOwnProperty(k) && !Number.isNaN(_page[k])) {
@@ -895,12 +911,13 @@ export default {
         return acc;
       }, []);
     },
+
     getHighestZNumberAmongstMedias(page_medias) {
       if (!page_medias) return 0;
 
       const medias_with_z = page_medias
-        .filter(m => m.publi_meta.hasOwnProperty("z_index"))
-        .map(m => {
+        .filter((m) => m.publi_meta.hasOwnProperty("z_index"))
+        .map((m) => {
           return m.publi_meta.z_index;
         });
 
@@ -918,7 +935,7 @@ export default {
       )
         return;
 
-      const prev_pos = this.pagesWithDefault.findIndex(p => p.id === id);
+      const prev_pos = this.pagesWithDefault.findIndex((p) => p.id === id);
       const new_pos = $event.target.value - 1;
       let pages = this.publication.pages.slice();
 
@@ -940,8 +957,8 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          pages
-        }
+          pages,
+        },
       });
 
       this.show_buttons = false;
@@ -967,12 +984,12 @@ export default {
         ? this.publication.pages.slice()
         : [];
       let page_to_restore = this.publication.removed_pages.find(
-        p => p.id === id
+        (p) => p.id === id
       );
       pages.push(page_to_restore);
 
       let removed_pages = this.publication.removed_pages.filter(
-        p => p.id !== id
+        (p) => p.id !== id
       );
 
       this.$root.editFolder({
@@ -980,8 +997,8 @@ export default {
         slugFolderName: this.slugPubliName,
         data: {
           pages,
-          removed_pages
-        }
+          removed_pages,
+        },
       });
     },
     removePageForGood(id) {
@@ -989,23 +1006,23 @@ export default {
         console.log(`METHODS • Publication: removePageForGood id = ${id}`);
 
       let removed_pages = this.publication.removed_pages.filter(
-        p => p.id !== id
+        (p) => p.id !== id
       );
 
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          removed_pages
-        }
+          removed_pages,
+        },
       });
 
-      this.publication_medias[id].map(m => {
+      this.publication_medias[id].map((m) => {
         if (!m.hasOwnProperty("publi_meta")) return;
         this.$root.removeMedia({
           type: "publications",
           slugFolderName: this.slugPubliName,
-          slugMediaName: m.publi_meta.metaFileName
+          slugMediaName: m.publi_meta.metaFileName,
         });
       });
     },
@@ -1053,7 +1070,7 @@ export default {
         page_id,
         x,
         y,
-        z_index
+        z_index,
       };
 
       if (slugProjectName && metaFileName) {
@@ -1067,7 +1084,7 @@ export default {
       this.$root.createMedia({
         slugFolderName: this.slugPubliName,
         type: "publications",
-        additionalMeta
+        additionalMeta,
       });
     },
     printThisPublication() {
@@ -1109,7 +1126,7 @@ export default {
               console.log(`Some medias missing from client`);
               missingMedias.push({
                 slugFolderName: publi_media.slugProjectName,
-                metaFileName: publi_media.slugMediaName
+                metaFileName: publi_media.slugMediaName,
               });
               return acc;
             }
@@ -1139,7 +1156,7 @@ export default {
       if (missingMedias.length > 0) {
         this.$root.listSpecificMedias({
           type: "projects",
-          medias_list: missingMedias
+          medias_list: missingMedias,
         });
       }
 
@@ -1194,15 +1211,15 @@ export default {
       }
 
       pages.splice(index, 0, {
-        id: this.generateID()
+        id: this.generateID(),
       });
 
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          pages
-        }
+          pages,
+        },
       });
     },
     duplicatePage({ id, $event }) {
@@ -1215,16 +1232,16 @@ export default {
 
       const publi_to_copy_to = Object.values(
         this.$root.store.publications
-      ).find(p => p.slugFolderName === slugPubliName_to_copy_to);
+      ).find((p) => p.slugFolderName === slugPubliName_to_copy_to);
 
       let index_of_page_to_copy = publi_to_copy_to.pages.length;
       if (slugPubliName_to_copy_to === this.slugPubliName)
         index_of_page_to_copy = this.publication.pages.findIndex(
-          p => p.id === id
+          (p) => p.id === id
         );
 
       const page_to_copy = JSON.parse(
-        JSON.stringify(this.publication.pages.find(p => p.id === id))
+        JSON.stringify(this.publication.pages.find((p) => p.id === id))
       );
 
       // create new id
@@ -1243,14 +1260,14 @@ export default {
         type: "publications",
         slugFolderName: slugPubliName_to_copy_to,
         data: {
-          pages
-        }
+          pages,
+        },
       });
 
       // get all medias of page
       const medias_to_copy = this.publication_medias[id];
 
-      medias_to_copy.map(m => {
+      medias_to_copy.map((m) => {
         // copy all medias of page with new page ID
         this.$socketio.copyMediaToFolder({
           type: "publications",
@@ -1258,8 +1275,8 @@ export default {
           to_slugFolderName: slugPubliName_to_copy_to,
           slugMediaName: m.publi_meta.metaFileName,
           meta_to_edit: {
-            page_id: new_id
-          }
+            page_id: new_id,
+          },
         });
       });
 
@@ -1278,8 +1295,8 @@ export default {
       //   .confirm(
       //     this.$t("sureToRemovePage"),
       //     () => {
-      let pages = this.publication.pages.filter(p => p.id !== id);
-      let page_to_remove = this.publication.pages.find(p => p.id === id);
+      let pages = this.publication.pages.filter((p) => p.id !== id);
+      let page_to_remove = this.publication.pages.find((p) => p.id === id);
 
       let removed_pages = Array.isArray(this.publication.removed_pages)
         ? this.publication.removed_pages.slice()
@@ -1291,8 +1308,8 @@ export default {
         slugFolderName: this.slugPubliName,
         data: {
           pages,
-          removed_pages
-        }
+          removed_pages,
+        },
       });
       //   },
       //   () => {}
@@ -1351,8 +1368,8 @@ export default {
           this.zoom = panel_width / (page.offsetWidth + margins);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

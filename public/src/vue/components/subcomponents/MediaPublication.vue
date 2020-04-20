@@ -16,9 +16,9 @@
         'is--hovered': is_hovered,
         'is--previewed': preview_mode,
         'is--overflowing': is_text_overflowing,
-        'is--inline_edited': inline_edit_mode
+        'is--inline_edited': inline_edit_mode,
       },
-      'is--fit_mode_' + fit_mode
+      'is--fit_mode_' + fit_mode,
     ]"
   >
     <!-- if media is link -->
@@ -74,7 +74,7 @@
       :content="$t('text_overflow')"
       v-tippy="{
         placement: 'top',
-        delay: [600, 0]
+        delay: [600, 0],
       }"
     >
       <span>…</span>
@@ -91,7 +91,7 @@
         class="m_mediaPublication--edit_styles--helpButton"
         :content="$t('write_some_CSS_code_for_example')"
         v-tippy="{
-          delay: [600, 0]
+          delay: [600, 0],
         }"
       >
         ?
@@ -110,7 +110,12 @@
 
     <!-- <transition name="fade_fast" :duration="150"> -->
     <div
-      v-if="(is_selected || is_hovered) && !preview_mode && !inline_edit_mode"
+      v-if="
+        (is_selected || is_hovered) &&
+        !preview_mode &&
+        !inline_edit_mode &&
+        !read_only
+      "
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
@@ -118,10 +123,10 @@
       <div
         class="handle handle_resizeMedia_bottom"
         @mousedown.stop.prevent="
-          event => resizeMedia({ event, type: 'mouse', origin: 'bottom' })
+          (event) => resizeMedia({ event, type: 'mouse', origin: 'bottom' })
         "
         @touchstart.stop.prevent="
-          event => resizeMedia({ event, type: 'touch', origin: 'bottom' })
+          (event) => resizeMedia({ event, type: 'touch', origin: 'bottom' })
         "
       >
         <svg
@@ -133,7 +138,7 @@
           width="60px"
           height="106px"
           viewBox="0 0 60 106"
-          style="enable-background:new 0 0 60 106;"
+          style="enable-background: new 0 0 60 106;"
           xml:space="preserve"
         >
           <path
@@ -146,10 +151,10 @@
       <div
         class="handle handle_resizeMedia_right"
         @mousedown.stop.prevent="
-          event => resizeMedia({ event, type: 'mouse', origin: 'right' })
+          (event) => resizeMedia({ event, type: 'mouse', origin: 'right' })
         "
         @touchstart.stop.prevent="
-          event => resizeMedia({ event, type: 'touch', origin: 'right' })
+          (event) => resizeMedia({ event, type: 'touch', origin: 'right' })
         "
       >
         <svg
@@ -161,7 +166,7 @@
           width="106px"
           height="60px"
           viewBox="0 0 106 60"
-          style="enable-background:new 0 0 106 60;"
+          style="enable-background: new 0 0 106 60;"
           xml:space="preserve"
         >
           <path
@@ -175,10 +180,12 @@
         v-if="media.type !== 'text' && media.publi_meta.type !== 'text'"
         class="handle handle_resizeMedia"
         @mousedown.stop.prevent="
-          event => resizeMedia({ event, type: 'mouse', origin: 'bottomright' })
+          (event) =>
+            resizeMedia({ event, type: 'mouse', origin: 'bottomright' })
         "
         @touchstart.stop.prevent="
-          event => resizeMedia({ event, type: 'touch', origin: 'bottomright' })
+          (event) =>
+            resizeMedia({ event, type: 'touch', origin: 'bottomright' })
         "
       >
         <svg
@@ -191,7 +198,7 @@
           width="77.5px"
           height="77.5px"
           viewBox="0 0 77.5 77.5"
-          style="enable-background:new 0 0 77.5 77.5;"
+          style="enable-background: new 0 0 77.5 77.5;"
           xml:space="preserve"
         >
           <path
@@ -221,7 +228,12 @@
 
     <transition name="fade_fast" :duration="150">
       <div
-        v-if="(is_selected || is_hovered) && !preview_mode && !inline_edit_mode"
+        v-if="
+          (is_selected || is_hovered) &&
+          !preview_mode &&
+          !inline_edit_mode &&
+          !read_only
+        "
         class="m_mediaPublication--buttons"
       >
         <button
@@ -239,7 +251,7 @@
             width="168px"
             height="168px"
             viewBox="0 0 168 168"
-            style="enable-background:new 0 0 168 168;"
+            style="enable-background: new 0 0 168 168;"
             xml:space="preserve"
           >
             <rect x="73.5" y="37" class="st0" width="21" height="21" />
@@ -256,14 +268,14 @@
             @touchstart.stop.prevent="editZIndex(+1)"
             :content="
               $t('move_to_foreground') +
-                '<br>' +
-                $t('layer:') +
-                ' ' +
-                mediaZIndex
+              '<br>' +
+              $t('layer:') +
+              ' ' +
+              mediaZIndex
             "
             v-tippy="{
               placement: 'top',
-              delay: [600, 0]
+              delay: [600, 0],
             }"
           >
             <svg
@@ -276,7 +288,7 @@
               width="40.3px"
               height="59.6px"
               viewBox="0 0 40.3 59.6"
-              style="enable-background:new 0 0 40.3 59.6;"
+              style="enable-background: new 0 0 40.3 59.6;"
               xml:space="preserve"
             >
               <path
@@ -294,14 +306,14 @@
             @touchstart.stop.prevent="editZIndex(-1)"
             :content="
               $t('move_to_background') +
-                '<br>' +
-                $t('layer:') +
-                ' ' +
-                mediaZIndex
+              '<br>' +
+              $t('layer:') +
+              ' ' +
+              mediaZIndex
             "
             v-tippy="{
               placement: 'top',
-              delay: [600, 0]
+              delay: [600, 0],
             }"
           >
             <svg
@@ -314,7 +326,7 @@
               width="40.3px"
               height="59.6px"
               viewBox="0 0 40.3 59.6"
-              style="enable-background:new 0 0 40.3 59.6;"
+              style="enable-background: new 0 0 40.3 59.6;"
               xml:space="preserve"
             >
               <path
@@ -334,7 +346,7 @@
             :content="$t('css_settings')"
             v-tippy="{
               placement: 'top',
-              delay: [600, 0]
+              delay: [600, 0],
             }"
           >
             {{ $t("css") }}<sup v-if="custom_css">*</sup>
@@ -352,7 +364,7 @@
             "
             v-tippy="{
               placement: 'top',
-              delay: [600, 0]
+              delay: [600, 0],
             }"
           >
             <svg
@@ -366,7 +378,7 @@
               width="113.5px"
               height="113.5px"
               viewBox="0 0 113.5 113.5"
-              style="enable-background:new 0 0 113.5 113.5;"
+              style="enable-background: new 0 0 113.5 113.5;"
               xml:space="preserve"
             >
               <path
@@ -393,7 +405,7 @@
               width="100.7px"
               height="101px"
               viewBox="0 0 100.7 101"
-              style="enable-background:new 0 0 100.7 101;"
+              style="enable-background: new 0 0 100.7 101;"
               xml:space="preserve"
             >
               <path
@@ -462,7 +474,7 @@
             :content="$t('withdraw')"
             v-tippy="{
               placement: 'top',
-              delay: [600, 0]
+              delay: [600, 0],
             }"
           >
             <!-- <svg
@@ -505,12 +517,12 @@ export default {
     read_only: Boolean,
     preview_mode: Boolean,
     lowdef: Boolean,
-    pixelsPerMillimeters: Number
+    pixelsPerMillimeters: Number,
   },
   components: {
     MediaContent,
     PrismEditor,
-    CollaborativeEditor
+    CollaborativeEditor,
   },
   data() {
     return {
@@ -543,25 +555,25 @@ export default {
 
       dragOffset: {
         x: 0,
-        y: 0
+        y: 0,
       },
       mediaPos: {
         x: 0,
         y: 0,
         px: 0,
-        py: 0
+        py: 0,
       },
 
       resizeOffset: {
         x: 0,
-        y: 0
+        y: 0,
       },
       resize_origin: "",
 
       rotateOffset: {
         x: 0,
         y: 0,
-        angle: 0
+        angle: 0,
       },
       rotate: 0,
       debounce_setCSSForMedia: undefined,
@@ -570,13 +582,13 @@ export default {
         width: 0,
         height: 0,
         pwidth: 0,
-        pheight: 0
+        pheight: 0,
       },
 
       mediaZIndex: 0,
 
       fit_mode: "cover",
-      lock_original_ratio: true
+      lock_original_ratio: true,
     };
   },
 
@@ -591,12 +603,12 @@ export default {
 
   watch: {
     "media.publi_meta": {
-      handler: function() {
+      handler: function () {
         this.updateMediaStyles();
       },
-      deep: true
+      deep: true,
     },
-    is_selected: function() {
+    is_selected: function () {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`WATCH • MediaPublication: is_selected`);
       }
@@ -608,7 +620,7 @@ export default {
         window.removeEventListener("mousedown", this.deselectMedia);
         window.removeEventListener("touchstart", this.deselectMedia);
       }
-    }
+    },
   },
   computed: {
     mediaStyles() {
@@ -631,7 +643,7 @@ export default {
       )
         return this.mediaSize.width * this.media.ratio;
       else return this.mediaSize.height;
-    }
+    },
   },
   methods: {
     newMediaSelected(mediaID) {
@@ -641,12 +653,12 @@ export default {
     },
     saveTextMedia() {
       const val = {
-        content: this.htmlForEditor
+        content: this.htmlForEditor,
       };
 
       this.$emit("editPubliMedia", {
         slugMediaName: this.media.publi_meta.metaFileName,
-        val
+        val,
       });
 
       this.inline_edit_mode = false;
@@ -655,13 +667,13 @@ export default {
       if (this.media.slugProjectName)
         this.$root.openMedia({
           slugProjectName: this.media.slugProjectName,
-          metaFileName: this.media.metaFileName
+          metaFileName: this.media.metaFileName,
         });
       else this.inline_edit_mode = true;
     },
     editZIndex(val) {
       this.updateMediaPubliMeta({
-        z_index: this.mediaZIndex + val
+        z_index: this.mediaZIndex + val,
       });
     },
     setMediaHeightToContent() {
@@ -677,7 +689,7 @@ export default {
       this.mediaSize.height = contentHeight;
 
       this.updateMediaPubliMeta({
-        height: this.mediaSize.height
+        height: this.mediaSize.height,
       });
     },
     toggleEditWindow() {
@@ -688,11 +700,11 @@ export default {
         clearTimeout(this.debounce_setCSSForMedia);
       this.debounce_setCSSForMedia = setTimeout(() => {
         const val = {
-          custom_css: this.custom_css
+          custom_css: this.custom_css,
         };
         this.$emit("editPubliMedia", {
           slugMediaName: this.media.publi_meta.metaFileName,
-          val
+          val,
         });
       }, 0);
     },
@@ -701,7 +713,7 @@ export default {
       else if (this.fit_mode === "contain") this.fit_mode = "cover";
 
       this.updateMediaPubliMeta({
-        fit_mode: this.fit_mode
+        fit_mode: this.fit_mode,
       });
     },
     updateMediaStyles() {
@@ -759,7 +771,7 @@ export default {
       }
       this.$emit("editPubliMedia", {
         slugMediaName: this.media.publi_meta.metaFileName,
-        val
+        val,
       });
     },
     limitMediaXPos(xPos) {
@@ -831,7 +843,7 @@ export default {
 
     removePubliMedia() {
       this.$emit("removePubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName
+        slugMediaName: this.media.publi_meta.metaFileName,
       });
     },
     resizeMedia({ event, type, origin }) {
@@ -943,7 +955,7 @@ export default {
 
         this.updateMediaPubliMeta({
           width: this.mediaSize.width,
-          height: this.mediaSize.height
+          height: this.mediaSize.height,
         });
         this.is_resized = false;
       }
@@ -1007,7 +1019,7 @@ export default {
       }
       if (this.is_rotated) {
         this.updateMediaPubliMeta({
-          rotate: this.rotate
+          rotate: this.rotate,
         });
         this.is_rotated = false;
       }
@@ -1088,7 +1100,7 @@ export default {
 
         this.updateMediaPubliMeta({
           x: this.mediaPos.x,
-          y: this.mediaPos.y
+          y: this.mediaPos.y,
         });
         this.is_dragged = false;
       }
@@ -1119,14 +1131,14 @@ export default {
     },
     enableLock() {
       this.updateMediaPubliMeta({
-        lock_original_ratio: true
+        lock_original_ratio: true,
       });
     },
     disableLock() {
       this.updateMediaPubliMeta({
-        lock_original_ratio: false
+        lock_original_ratio: false,
       });
-    }
-  }
+    },
+  },
 };
 </script>

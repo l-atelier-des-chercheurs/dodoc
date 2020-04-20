@@ -34,10 +34,7 @@
           <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
           {{ project.name }}
           <ProtectedLock
-            v-if="
-              project.editing_limited_to &&
-              project.editing_limited_to !== 'everybody'
-            "
+            :editing_limited_to="project.editing_limited_to"
             :is_protected="!can_edit_project"
           />
         </h2>
