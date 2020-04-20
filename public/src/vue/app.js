@@ -724,7 +724,6 @@ let vm = new Vue({
       return uniquetTypes;
     },
     getFolderPassword({ type, slugFolderName }) {
-      debugger;
       const folders_password = this.$auth.getFoldersPasswords();
       if (
         folders_password.hasOwnProperty(type) &&

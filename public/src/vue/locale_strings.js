@@ -1495,6 +1495,10 @@ module.exports = (function () {
       fr: "Accès limité aux auteurs",
       en: "Access limited to authors",
     },
+    only_password_can_open: {
+      fr: "Accès limité par mot de passe",
+      en: "Access limited with password",
+    },
     ask_to_be_added_to_authors: {
       fr: "Demander à être rajouté aux auteurs pour contribuer",
       en: "Request to be added to authors list to contribute",
