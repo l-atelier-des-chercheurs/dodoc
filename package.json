@@ -16,15 +16,8 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "electron .",
-    "debug": "electron --inspect=5858 . --debug --verbose",
-    "debug-brk": "electron --inspect=5858 . --debug-brk --verbose",
-    "node-start": "node .",
-    "node-debug": "node . --inspect=5858 --debug --verbose",
-    "node-debug-brk": "node . --inspect=5858 --debug-brk --verbose",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "postinstall": "electron-builder install-app-deps"
+    "start": "node .",
+    "debug": "node --inspect . --debug --debug --verbose"
   },
   "engines": {
     "node": "8.9.3",
@@ -54,8 +47,6 @@
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "dodoc-parsedown": "github:louis-ev/dodoc-parsedown#master",
-    "electron-pdf-window": "^1.0.12",
-    "electron-window-state": "^5.0.3",
     "exif-reader": "^1.0.3",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.0.1",
@@ -75,6 +66,7 @@
     "platform-folders": "^0.4.1",
     "portscanner": "^2.2.0",
     "pug": "^2.0.4",
+    "puppeteer": "^2.1.1",
     "quill-render": "^1.0.5",
     "rich-text": "^4.0.0",
     "sharedb": "^1.1.0",
@@ -91,11 +83,6 @@
     "ws": "^7.2.1"
   },
   "devDependencies": {
-    "electron": "^2.0.18",
-    "electron-builder": "^21.2.0",
-    "electron-packager": "^14.1.1",
-    "electron-prebuilt": "^1.4.13",
-    "electron-rebuild": "^1.8.8",
-    "node-gyp": "^6.0.1"
+    "node-gyp": "^3.8.0"
   }
 }
