@@ -71,9 +71,18 @@ body {
 .range-xs {
   --switch-size: 0.9rem;
 }
-.switch_twoway label {
-  margin-bottom: 0;
-  height: var(--switch-size);
+.switch_twoway {
+  display: flex;
+  align-items: center;
+  label {
+    margin-bottom: 0;
+    line-height: var(--switch-size);
+    height: var(--switch-size);
+
+    &:first-child {
+      margin-right: 0.5rem;
+    }
+  }
 }
 
 .plyr {
@@ -3707,7 +3716,10 @@ small {
     justify-content: flex-start;
 
     > * {
+      border: 2px solid @c-gris_tresclair;
       pointer-events: auto;
+      .padding-verysmall;
+      max-width: 100%;
     }
   }
 }
@@ -5564,7 +5576,12 @@ small {
     }
 
     iframe {
-      border: 1px solid @c-border;
+      border: 2px solid @c-gris_tresclair;
+    }
+
+    .mediaContainer--buttons {
+      .padding-verysmall;
+      padding: 0;
     }
   }
 

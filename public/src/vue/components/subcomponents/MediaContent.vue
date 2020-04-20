@@ -91,9 +91,7 @@
         <iframe v-else :src="`/libs/stl/show_stl.html?mediaURL=${mediaURL}`" />
 
         <div class="mediaContainer--buttons">
-          <div
-            class="switch switch-xs switch_twoway button button-thin bg-gris_tresclair"
-          >
+          <div class="switch switch-xs switch_twoway button button-thin">
             <label :for="`interactive_preview_${id}`" class="cursor-pointer">
               <span class>{{ $t("static_preview") }}</span>
             </label>
