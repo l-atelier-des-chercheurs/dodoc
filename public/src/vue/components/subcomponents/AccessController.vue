@@ -60,13 +60,23 @@
         "
       >
         <button
-          v-if="!$root.current_author"
+          v-if="!$root.current_author && viewing_limited_to === 'everybody'"
           type="button"
           class="buttonLink"
           style
           @click="$root.showAuthorsListModal = true"
         >
           {{ $t("login_to_edit_project") }}
+        </button>
+
+        <button
+          v-if="!$root.current_author && viewing_limited_to !== 'everybody'"
+          type="button"
+          class="buttonLink"
+          style
+          @click="$root.showAuthorsListModal = true"
+        >
+          {{ $t("login_to_access_project") }}
         </button>
 
         <button
