@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="margin-vert-small">
     <!-- editing_limited_to : {{ editing_limited_to }}<br />
     viewing_limited_to : {{ viewing_limited_to }}<br />
     password : {{ password }}<br />
@@ -311,4 +311,8 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.m_metaField:last-of-type {
+  margin-bottom: 0;
+}
+</style>

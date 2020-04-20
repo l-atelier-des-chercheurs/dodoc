@@ -3976,15 +3976,16 @@ small {
   z-index: 1;
 
   // .margin-medium;
-  // .margin-small;
-  // border-radius: 0 0 10px 10px;
+  .margin-small;
+  margin-bottom: 0;
 
   > .buttonLink {
     flex: 0 0 0;
   }
 
   .m_publicationMeta--topbar {
-    border-radius: 2px;
+    border-radius: 10px;
+
     margin: 0;
     display: flex;
     flex-flow: row wrap;
@@ -4028,6 +4029,24 @@ small {
       .font-publi_title;
       flex: 1 1 auto;
     }
+  }
+
+  .m_publicationMeta--settingsBar {
+    border-radius: 2px;
+    margin: 0;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-content: flex-start;
+    align-items: center;
+
+    .bg-blanc;
+    .boxs-card-0;
+
+    .padding-sides-medium;
+    .margin-sides-verysmall;
+
+    border-top: 1px solid @c-border;
   }
 }
 
