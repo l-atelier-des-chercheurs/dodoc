@@ -200,6 +200,13 @@ export default {
         this.$emit("closeFolder");
       }
     },
+    showInputPasswordField: function () {
+      if (this.showInputPasswordField) {
+        this.$nextTick(() => {
+          this.$refs.passwordField.focus();
+        });
+      }
+    },
   },
   computed: {
     slugFolderName() {
@@ -313,6 +320,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .m_metaField:last-of-type {
-  margin-bottom: 0;
+  // margin-bottom: 0;
 }
 </style>

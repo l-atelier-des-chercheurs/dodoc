@@ -46,8 +46,6 @@
           {{ publication.name }}
         </div>
       </div>
-      can_see_publi = {{ can_see_publi() }} can_edit_publi =
-      {{ can_edit_publi() }}
       <div
         v-if="
           ![
@@ -103,7 +101,7 @@
           type="button"
           class="buttonLink bg-rouge"
           v-if="show_export_button"
-          @click="$emit('export')"
+          @click="createButtonClicked"
           :class="{ 'is--disabled': export_button_is_disabled }"
         >
           {{ $t("create") }}
@@ -121,6 +119,7 @@
       <button
         type="button"
         class="buttonLink"
+        v-if="can_edit_publi()"
         @click="show_edit_publication = true"
       >
         <svg
@@ -157,6 +156,7 @@
         type="button"
         class="buttonLink"
         :class="{ 'is--active': show_copy_options }"
+        v-if="can_edit_publi()"
         @click="show_copy_options = !show_copy_options"
       >
         <svg
@@ -197,7 +197,12 @@
         </form>
       </div>
 
-      <button type="button" class="buttonLink" @click="removePublication">
+      <button
+        type="button"
+        class="buttonLink"
+        v-if="can_edit_publi()"
+        @click="removePublication"
+      >
         <svg
           version="1.1"
           class="inline-svg"
@@ -265,6 +270,7 @@ export default {
   computed: {
     export_button_is_disabled() {
       if (!this.enable_export_button) return true;
+      if (!this.can_edit_publi()) return true;
 
       if (Object.values(this.publication_medias).length < 1) return true;
 
@@ -284,6 +290,17 @@ export default {
         console.log(`METHODS • Publication: closePublication`);
       }
       this.$root.closePublication();
+    },
+    createButtonClicked() {
+      if (!this.can_edit_publi()) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.action_not_allowed"));
+        return;
+      }
+
+      this.$emit("export");
     },
     removePublication() {
       this.$alertify
