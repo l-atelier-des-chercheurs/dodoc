@@ -118,9 +118,22 @@
             class="margin-small margin-left-none bg-bleumarine c-blanc button-allwide"
             @click="getLink"
             v-if="!show_link_infos"
+            :disabled="
+              publication.hasOwnProperty('viewing_limited_to') &&
+              publication.viewing_limited_to !== 'everybody'
+            "
           >
             {{ $t("share") }}
           </button>
+
+          <small
+            v-if="
+              publication.hasOwnProperty('viewing_limited_to') &&
+              publication.viewing_limited_to !== 'everybody'
+            "
+          >
+            {{ $t("set_visibility_to_everybody") }}
+          </small>
 
           <CreateQRCode
             v-if="show_link_infos"

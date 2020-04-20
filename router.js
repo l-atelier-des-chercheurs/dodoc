@@ -227,7 +227,10 @@ module.exports = function (app) {
       type,
       slugFolderName: slugPubliName,
     });
-    if (foldersData[slugPubliName].viewing_limited_to !== "everybody") {
+    if (
+      foldersData[slugPubliName].hasOwnProperty("viewing_limited_to") &&
+      foldersData[slugPubliName].viewing_limited_to !== "everybody"
+    ) {
       res.status(403).send(`Access not allowed.`);
     }
 

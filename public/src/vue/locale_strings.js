@@ -52,6 +52,12 @@ module.exports = (function () {
       oc: "Recepta",
       de: "Publikation",
     },
+    set_visibility_to_everybody: {
+      fr:
+        "Ce contenu est actuellement en privé et ne peut donc pas être partagé. Pour le partager, cochez VISIBLE PAR TOUT LE MONDE dans les options du contenu.",
+      en:
+        "This content is currently set to private and cannot be shared. To get a link to share it, change its options to VISIBLE FOR EVERYONE.",
+    },
     medias_selected: {
       fr: "média(s) sélectionné(s)",
       en: "media(s) selected",
