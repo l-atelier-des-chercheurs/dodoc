@@ -31,13 +31,15 @@
 
       <div class="m_project--presentation--text">
         <h2 class="m_project--presentation--text--title">
-          <!-- :content="slugProjectName"
-          v-tippy="{
-            placement: 'bottom-start',
-            delay: [600, 0],
-            interactive: true,
-          }" -->
+          <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
           {{ project.name }}
+          <ProtectedLock
+            v-if="
+              project.editing_limited_to &&
+              project.editing_limited_to !== 'everybody'
+            "
+            :is_protected="!can_edit_project"
+          />
         </h2>
 
         <div class="m_project--presentation--text--infos">
@@ -344,6 +346,7 @@
 import EditProject from "./modals/EditProject.vue";
 import MediaLibrary from "./MediaLibrary.vue";
 import AccessController from "./subcomponents/AccessController.vue";
+import ProtectedLock from "./subcomponents/ProtectedLock.vue";
 
 export default {
   props: {
@@ -356,6 +359,7 @@ export default {
     EditProject,
     MediaLibrary,
     AccessController,
+    ProtectedLock,
   },
   data() {
     return {
