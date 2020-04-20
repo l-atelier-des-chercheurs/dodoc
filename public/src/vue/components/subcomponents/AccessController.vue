@@ -1,5 +1,5 @@
 <template>
-  <div class="margin-vert-small">
+  <div class="">
     <!-- editing_limited_to : {{ editing_limited_to }}<br />
     viewing_limited_to : {{ viewing_limited_to }}<br />
     password : {{ password }}<br />
@@ -60,13 +60,23 @@
         "
       >
         <button
-          v-if="!$root.current_author"
+          v-if="!$root.current_author && viewing_limited_to === 'everybody'"
           type="button"
           class="buttonLink"
           style
           @click="$root.showAuthorsListModal = true"
         >
           {{ $t("login_to_edit_project") }}
+        </button>
+
+        <button
+          v-if="!$root.current_author && viewing_limited_to !== 'everybody'"
+          type="button"
+          class="buttonLink"
+          style
+          @click="$root.showAuthorsListModal = true"
+        >
+          {{ $t("login_to_access_project") }}
         </button>
 
         <button

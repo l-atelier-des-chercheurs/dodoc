@@ -125,6 +125,7 @@ export default {
         "video",
         "audio",
         "text",
+        "stl",
         "document",
         "other",
       ];
