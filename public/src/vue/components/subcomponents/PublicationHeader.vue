@@ -46,6 +46,8 @@
           {{ publication.name }}
         </div>
       </div>
+      can_see_publi = {{ can_see_publi() }} can_edit_publi =
+      {{ can_edit_publi() }}
       <div
         v-if="
           ![
@@ -305,6 +307,19 @@ export default {
     publi_password() {
       if (this.publication.password !== "has_pass") return "";
       return this.$root.getFolderPassword({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
+
+    can_see_publi() {
+      return this.$root.canSeeFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
+    can_edit_publi() {
+      return this.$root.canEditFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
       });

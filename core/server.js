@@ -66,7 +66,7 @@ module.exports = function (router) {
 
   app.use(function (req, res, next) {
     if (isURLToForbiddenFiles(req.url)) {
-      res.status(404).send(`Access not allowed.`);
+      res.status(403).send(`Access not allowed.`);
     } else {
       next();
     }
