@@ -588,7 +588,7 @@ export default {
       mediaZIndex: 0,
 
       fit_mode: "cover",
-      lock_original_ratio: true,
+      lock_original_ratio: false,
     };
   },
 
@@ -627,22 +627,13 @@ export default {
       return `
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
-        height: ${this.auto_height}mm;
+        height: ${this.mediaSize.height}mm;
         z-index: ${this.media.publi_meta.z_index};
       `;
     },
     text_is_overflowing() {
       const el = this.$refs.media;
       return el.offsetHeight + 15 < el.scrollHeight;
-    },
-    auto_height() {
-      if (
-        this.lock_original_ratio &&
-        this.media.type !== "text" &&
-        this.media.publi_meta.type !== "text"
-      )
-        return this.mediaSize.width * this.media.ratio;
-      else return this.mediaSize.height;
     },
   },
   methods: {
@@ -749,11 +740,6 @@ export default {
       this.fit_mode = this.media.publi_meta.hasOwnProperty("fit_mode")
         ? this.media.publi_meta.fit_mode
         : "cover";
-      this.lock_original_ratio = this.media.publi_meta.hasOwnProperty(
-        "lock_original_ratio"
-      )
-        ? this.media.publi_meta.lock_original_ratio
-        : true;
 
       if (this.media.type === "text" || this.media.publi_meta.type === "text") {
         this.$nextTick(() => {
@@ -856,13 +842,8 @@ export default {
       if (!this.read_only) {
         this.resize_origin = origin;
 
-        if (this.resize_origin === "bottomright" && !this.lock_original_ratio)
-          this.enableLock();
-        else if (
-          this.resize_origin !== "bottomright" &&
-          this.lock_original_ratio
-        )
-          this.disableLock();
+        if (this.resize_origin === "bottomright") this.enableLock();
+        else if (this.resize_origin !== "bottomright") this.disableLock();
 
         if (type === "mouse") {
           window.addEventListener("mousemove", this.resizeMove);
@@ -921,12 +902,7 @@ export default {
           this.mediaSize.width = this.limitMediaWidth(newWidth);
 
         let new_height;
-        if (
-          this.lock_original_ratio &&
-          this.media.hasOwnProperty("ratio") &&
-          this.media.type !== "text" &&
-          this.media.publi_meta.type !== "text"
-        )
+        if (this.lock_original_ratio)
           new_height = this.mediaSize.width * this.media.ratio;
         else {
           const deltaY =
@@ -1130,14 +1106,10 @@ export default {
       }
     },
     enableLock() {
-      this.updateMediaPubliMeta({
-        lock_original_ratio: true,
-      });
+      this.lock_original_ratio = true;
     },
     disableLock() {
-      this.updateMediaPubliMeta({
-        lock_original_ratio: false,
-      });
+      this.lock_original_ratio = false;
     },
   },
 };

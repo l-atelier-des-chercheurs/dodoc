@@ -81,8 +81,6 @@
         <!-- // TODO : set STL/3d picto -->
       </template>
       <template v-else>
-        <!-- // TODO : load STL in viewer, maybe behind a button in case it is too heavy -->
-        <!-- like a video tag: show image by default, and a button to go "interactive" -->
         <img
           v-if="!interactive_stl_mode"
           :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
