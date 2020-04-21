@@ -1072,7 +1072,7 @@ small {
         .padding-top-small;
         .padding-sides-small;
 
-        .m_media {
+        .m_mediaCard {
           .padding-sides-small;
 
           @supports (display: grid) {
@@ -1904,7 +1904,7 @@ small {
   }
 }
 
-.m_media {
+.m_mediaCard {
   position: relative;
 
   width: 100%;
@@ -1949,7 +1949,7 @@ small {
   }
 
   &.is--opened_in_media_modal {
-    .m_media--topbar {
+    .m_mediaCard--topbar {
       span {
         // color: white;
       }
@@ -1958,7 +1958,7 @@ small {
       border: 2px solid @c-gris_fonce;
       // border-top: 0;
 
-      .m_media--topbar {
+      .m_mediaCard--topbar {
         // background-color: @c-gris_fonce;
         border-bottom: 0;
         border-radius: 0;
@@ -1987,7 +1987,7 @@ small {
       color: @c-gris !important;
     }
 
-    .m_media--add_to_recipe .button_addToPubli {
+    .m_mediaCard--add_to_recipe .button_addToPubli {
       background-color: @c-orange;
       border-color: @c-orange_fonce;
     }
@@ -2062,6 +2062,7 @@ small {
       // .bg-gris_fonce;
       .bg-blanc;
       overflow: hidden;
+      pointer-events: none;
 
       &::after {
         content: "";
@@ -2164,7 +2165,7 @@ small {
       }
     }
 
-    .m_media--add_to_recipe {
+    .m_mediaCard--add_to_recipe {
       position: absolute;
       top: 0;
       left: 0;
@@ -2205,7 +2206,7 @@ small {
       }
     }
 
-    .m_media--topbar {
+    .m_mediaCard--topbar {
       > * {
         margin: 0;
         display: flex;
@@ -2222,7 +2223,7 @@ small {
       }
     }
 
-    .m_media--caption {
+    .m_mediaCard--caption {
       // position: absolute;
       // bottom: 0;
 
@@ -2251,7 +2252,7 @@ small {
       }
     }
 
-    &:not(.is--hovered) .m_media--caption span {
+    &:not(.is--hovered) .m_mediaCard--caption span {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
