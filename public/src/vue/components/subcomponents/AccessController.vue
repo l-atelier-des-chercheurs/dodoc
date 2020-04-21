@@ -311,7 +311,7 @@ export default {
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .error("Feature not yet implemented…");
+        .error("Fonctionnalité en cours d’intégration…");
 
       // TODO : send request to be added to folder
       // === creating a channel restricted to all the existing authors + current
