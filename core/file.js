@@ -457,12 +457,12 @@ module.exports = (function () {
 
           fs.copy(oldFolderPath, newFolderPath)
             .then(() => {
-              API.getFolder({ type, new_slugFolderName }).then(
+              API.getFolder({ type, slugFolderName: new_slugFolderName }).then(
                 (foldersData) => {
                   API.editFolder({
                     type,
                     slugFolderName: new_slugFolderName,
-                    foldersData,
+                    foldersData: foldersData[new_slugFolderName],
                     newFoldersData: {
                       name: new_folder_name,
                     },
