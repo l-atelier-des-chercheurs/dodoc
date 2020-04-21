@@ -12,6 +12,7 @@
         'is--dragged': is_dragged,
         'is--resized': is_resized,
         'is--rotated': is_rotated,
+        'is--selected': is_selected,
         'is--waitingForServerResponse': is_waitingForServer,
         'is--hovered': is_hovered,
         'is--previewed': preview_mode,
@@ -627,11 +628,15 @@ export default {
   },
   computed: {
     mediaStyles() {
+      const set_z_index = this.is_selected
+        ? 100000
+        : this.media.publi_meta.z_index;
+
       return `
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
-        z-index: ${this.media.publi_meta.z_index};
+        z-index: ${set_z_index};
       `;
     },
     text_is_overflowing() {
@@ -711,6 +716,7 @@ export default {
       });
     },
     updateMediaStyles() {
+      debugger;
       this.rotate = this.media.publi_meta.hasOwnProperty("rotate")
         ? this.media.publi_meta.rotate
         : 0;

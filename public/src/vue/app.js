@@ -771,7 +771,6 @@ let vm = new Vue({
                 },
               });
 
-              debugger;
               this.$socketio.sendAuth();
               this.$eventHub.$once("socketio.authentificated", () => {
                 return resolve(d);

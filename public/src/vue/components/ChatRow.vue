@@ -6,18 +6,24 @@
     }"
   >
     <div class="m_chatRow--firstLine">
-      <span
-        v-if="unread_messages_count"
-        class="m_chatRow--unreadCounter"
-        :content="$t('unread_messages')"
-        v-tippy="{
-          placement: 'bottom',
-          delay: [600, 0],
-        }"
-      >
-        {{ unread_messages_count }}
-      </span>
-      <span class="m_chatRow--name">{{ chat.name }} </span>
+      <div>
+        <span
+          v-if="unread_messages_count && can_see_chat"
+          class="m_chatRow--unreadCounter"
+          :content="$t('unread_messages')"
+          v-tippy="{
+            placement: 'bottom',
+            delay: [600, 0],
+          }"
+        >
+          {{ unread_messages_count }}
+        </span>
+        <span class="m_chatRow--name">{{ chat.name }} </span>
+        <ProtectedLock
+          :editing_limited_to="chat.editing_limited_to"
+          :is_protected="!can_see_chat"
+        />
+      </div>
       <small class="c-blanc text-lc">
         {{ $t("last_message") }} —
         {{ $root.formatDateToCalendar(chat.date_modified) }}
@@ -83,6 +89,7 @@
 </template>
 <script>
 import AccessController from "./subcomponents/AccessController.vue";
+import ProtectedLock from "./subcomponents/ProtectedLock.vue";
 
 export default {
   props: {
@@ -90,6 +97,7 @@ export default {
   },
   components: {
     AccessController,
+    ProtectedLock,
   },
   data() {
     return {
