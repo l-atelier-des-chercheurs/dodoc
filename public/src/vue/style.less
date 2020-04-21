@@ -277,7 +277,7 @@ body {
         padding: 0;
         margin: 0;
         font-size: 1em;
-        font-weight: 200;
+        font-weight: 400;
         text-align: center;
 
         text-transform: lowercase;
@@ -919,7 +919,7 @@ body {
       color: #fff;
       margin-right: ~"calc(var(--spacing) / 3)";
       font-size: 1em;
-      font-weight: 200;
+      font-weight: 400;
       text-transform: lowercase;
     }
     .m_listview--openedFolderLabel--intitule {
@@ -4060,7 +4060,7 @@ small {
       height: 2em;
       .margin-right-small;
       border-radius: 50%;
-      font-weight: 300;
+      font-weight: 400;
     }
 
     .m_publicationMeta--topbar--title {
@@ -4201,7 +4201,7 @@ small {
   height: 100%;
   color: @c-noir;
 
-  background: linear-gradient(to right, transparent 0%, @c-noir 60%);
+  background: linear-gradient(to right, transparent 0%, @c-noir 90%);
 }
 
 .m_chat--content {
@@ -4225,13 +4225,15 @@ small {
     z-index: 1;
     .padding-sides-small;
 
-    display: flex;
-    align-items: center;
-
     transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     &.has--content_hidden_behind {
       box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
+    }
+
+    .m_chat--content--topbar--firstLine {
+      display: flex;
+      align-items: center;
     }
 
     .m_chat--content--topbar--backbutton {
@@ -4243,13 +4245,22 @@ small {
       height: 2em;
       .margin-right-small;
       border-radius: 50%;
-      font-weight: 300;
+      font-weight: 400;
     }
 
     .m_chat--content--topbar--name {
       .font-folder_title;
       .padding-small;
       padding-left: 0;
+      flex: 1 1 auto;
+    }
+
+    .m_chat--content--topbar--options {
+      flex: 0 0 auto;
+
+      button {
+        color: white;
+      }
     }
   }
 

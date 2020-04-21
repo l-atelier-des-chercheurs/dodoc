@@ -164,21 +164,6 @@ export default {
     closeChat() {
       this.$root.closeChat();
     },
-    removeChat() {
-      this.$alertify
-        .okBtn(this.$t("yes"))
-        .cancelBtn(this.$t("cancel"))
-        .confirm(
-          this.$t("sure_to_remove_chat"),
-          () => {
-            this.$root.removeFolder({
-              type: "chats",
-              slugFolderName: this.chat.slugFolderName,
-            });
-          },
-          () => {}
-        );
-    },
   },
 };
 </script>

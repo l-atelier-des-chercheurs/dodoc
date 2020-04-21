@@ -5,27 +5,68 @@
         class="m_chat--content--topbar"
         :class="{ 'has--content_hidden_behind': !is_scrolled_to_top }"
       >
-        <button
-          type="button"
-          class="m_chat--content--topbar--backbutton"
-          @click="$root.closeChat()"
-          :content="$t('close')"
-          v-tippy="{
-            placement: 'bottom',
-            delay: [600, 0],
-          }"
-        >
-          ‹
-        </button>
-
-        <span class="m_chat--content--topbar--name">{{ chat.name }}</span>
-        <div class="m_chat--content--topbar--options">
+        <div class="m_chat--content--topbar--firstLine">
           <button
             type="button"
-            class="buttonLink bg-rouge"
+            class="m_chat--content--topbar--backbutton"
             @click="$root.closeChat()"
+            :content="$t('close')"
+            v-tippy="{
+              placement: 'bottom',
+              delay: [600, 0],
+            }"
           >
-            {{ $t("back") }}
+            ‹
+          </button>
+
+          <span class="m_chat--content--topbar--name">{{ chat.name }}</span>
+          <div class="m_chat--content--topbar--options">
+            <button
+              type="button"
+              class="buttonLink"
+              :class="{ 'is--active': show_chat_options }"
+              @click="show_chat_options = !show_chat_options"
+            >
+              <svg
+                version="1.1"
+                class="inline-svg"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="77.6px"
+                height="85.4px"
+                viewBox="0 0 77.6 85.4"
+                style="enable-background: new 0 0 77.6 85.4;"
+                xml:space="preserve"
+              >
+                <defs />
+                <g>
+                  <path
+                    d="M73.9,39h-7.6c-1.6-5.6-6.7-9.7-12.7-9.7S42.5,33.5,40.8,39H3.7c-2,0-3.7,1.6-3.7,3.7c0,2,1.6,3.7,3.7,3.7h37.1
+		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h7.6c2,0,3.7-1.6,3.7-3.7C77.6,40.7,76,39,73.9,39z M53.6,48.7c-3.2,0-6-2.6-6-6
+		s2.6-6,6-6s6,2.6,6,6S56.8,48.7,53.6,48.7z"
+                  />
+                  <path
+                    d="M3.7,17.1h7.9c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,9.7,73.9,9.7H37
+		C35.4,4.1,30.3,0,24.3,0S13.2,4.1,11.6,9.7H3.7c-2,0-3.7,1.6-3.7,3.7S1.6,17.1,3.7,17.1z M24.3,7.4c3.2,0,6,2.6,6,6s-2.6,6-6,6
+		s-6-2.8-6-6S21.1,7.4,24.3,7.4z"
+                  />
+                  <path
+                    d="M73.9,68.3H37c-1.6-5.6-6.7-9.7-12.7-9.7s-11.1,4.1-12.7,9.7H3.7c-2,0-3.7,1.6-3.7,3.7s1.6,3.7,3.7,3.7h7.9
+		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,68.3,73.9,68.3z M24.3,78c-3.2,0-6-2.6-6-6s2.6-6,6-6
+		s6,2.6,6,6S27.5,78,24.3,78z"
+                  />
+                </g>
+              </svg>
+
+              {{ $t("advanced_options") }}
+            </button>
+          </div>
+        </div>
+        <div class="m_chat--content--topbar--options" v-if="show_chat_options">
+          <button type="button" class="buttonLink" @click="removeChat()">
+            {{ $t("remove") }}
           </button>
         </div>
       </div>
@@ -168,6 +209,8 @@ export default {
       is_scrolled_to_bottom: false,
       is_scrolled_to_top: false,
       last_read_message_on_opening: false,
+
+      show_chat_options: false,
 
       first_message_index_to_show: false,
     };
@@ -423,6 +466,22 @@ export default {
       });
 
       this.new_message = "";
+    },
+    removeChat() {
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sure_to_remove_chat"),
+          () => {
+            this.$root.removeFolder({
+              type: "chats",
+              slugFolderName: this.chat.slugFolderName,
+            });
+            this.$root.closeChat();
+          },
+          () => {}
+        );
     },
   },
 };
