@@ -37,50 +37,7 @@
         </div>
 
         <div class="m_chats--list">
-          <div
-            v-for="(chat, index) in chats"
-            :key="index"
-            class="m_chats--list--item"
-            :class="{
-              'is--open':
-                $root.settings.current_chat.slug === chat.slugFolderName,
-            }"
-            @click="openChat(chat.slugFolderName)"
-          >
-            <span
-              v-if="unreadMessages(chat)"
-              class="m_chats--list--item--unreadCounter"
-              :content="$t('unread_messages')"
-              v-tippy="{
-                placement: 'bottom',
-                delay: [600, 0],
-              }"
-            >
-              {{ unreadMessages(chat) }}
-            </span>
-            <span class="m_chats--list--item--name">{{ chat.name }} </span>
-            <small class="c-blanc text-lc">
-              {{ $t("last_message") }} —
-              {{ $root.formatDateToCalendar(chat.date_modified) }}
-            </small>
-
-            <!-- <AccessController
-              :folder="publication"
-              :context="'full'"
-              :type="'publications'"
-              @openFolder="openChat(chat.slugFolderName)"
-            /> -->
-
-            <button
-              type="button"
-              class="buttonLink bg-rouge"
-              v-if="can_see_chat(chat.slugFolderName)"
-              @click.exact.stop="openChat(chat.slugFolderName)"
-              @click.shift="removeChat(chat.slugFolderName)"
-            >
-              {{ $t("open") }}
-            </button>
-          </div>
+          <ChatRow v-for="(chat, index) in chats" :key="index" :chat="chat" />
         </div>
       </div>
     </div>
@@ -92,6 +49,7 @@
 </template>
 <script>
 import CreateChat from "./components/modals/CreateChat.vue";
+import ChatRow from "./components/ChatRow.vue";
 import Chat from "./components/Chat.vue";
 import EditAccessControl from "./components/subcomponents/EditAccessControl.vue";
 
@@ -102,6 +60,7 @@ export default {
   },
   components: {
     CreateChat,
+    ChatRow,
     Chat,
     EditAccessControl,
   },
@@ -143,61 +102,6 @@ export default {
           }, 1000);
         });
       });
-    },
-    can_see_chat(slugChatName) {
-      return this.$root.canSeeFolder({
-        type: "chats",
-        slugFolderName: slugChatName,
-      });
-    },
-    unreadMessages(chat) {
-      if (
-        typeof chat.medias !== "object" ||
-        Object.keys(chat.medias).length === 0 ||
-        !this.$root.current_author
-      )
-        return false;
-
-      const total_number_of_messages_in_chat = Object.keys(chat.medias).length;
-
-      // find media with meta
-      const last_messages_read_in_channels = this.$root.current_author
-        .last_messages_read_in_channels;
-
-      if (last_messages_read_in_channels) {
-        const existing_info = last_messages_read_in_channels.find(
-          (c) => c.channel === chat.slugFolderName
-        );
-        if (existing_info) {
-          const last_message_metaFileName = existing_info.metaFileName;
-          const index_of_past_message_read = Object.values(
-            chat.medias
-          ).findIndex((m) => m.metaFileName === existing_info.msg);
-          return (
-            total_number_of_messages_in_chat - index_of_past_message_read - 1
-          );
-        }
-      }
-
-      return total_number_of_messages_in_chat;
-    },
-    openChat(slug) {
-      this.$root.settings.current_chat.slug = slug;
-    },
-    removeChat(slugFolderName) {
-      this.$alertify
-        .okBtn(this.$t("yes"))
-        .cancelBtn(this.$t("cancel"))
-        .confirm(
-          this.$t("sure_to_remove_chat"),
-          () => {
-            this.$root.removeFolder({
-              type: "chats",
-              slugFolderName,
-            });
-          },
-          () => {}
-        );
     },
   },
 };

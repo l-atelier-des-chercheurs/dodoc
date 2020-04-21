@@ -32,8 +32,6 @@
         type="button"
         class="m_project--presentation--buttons--openButton button-redthin"
         @click.exact="openPublication"
-        @click.shift.left.exact="$emit('toggleSelect')"
-        @click.meta.left.exact="$emit('toggleSelect')"
       >
         <span class>{{ $t("open") }}</span>
       </button>

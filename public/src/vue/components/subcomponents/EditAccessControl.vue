@@ -37,7 +37,10 @@
       </div>
     </div>
 
-    <div class="margin-top-small" v-if="editing_limited_to !== 'everybody'">
+    <div
+      class="margin-top-small"
+      v-if="can_have_readonly && editing_limited_to !== 'everybody'"
+    >
       <div class>
         <input
           class
@@ -65,6 +68,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    can_have_readonly: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {},
   data() {
@@ -78,19 +85,29 @@ export default {
     if (this.can_have_password)
       this.editing_modes = ["only_authors", "with_password", "everybody"];
     else this.editing_modes = ["only_authors", "everybody"];
+
+    // if (!this.can_have_readonly) this.local_viewing_limited_to = "";
   },
   mounted() {},
   beforeDestroy() {},
   watch: {
     local_editing_limited_to() {
       this.$emit("update:editing_limited_to", this.local_editing_limited_to);
+      this.sanitizeViewingDependingOnEditing();
     },
     local_viewing_limited_to() {
       this.$emit("update:viewing_limited_to", this.local_viewing_limited_to);
     },
   },
   computed: {},
-  methods: {},
+  methods: {
+    sanitizeViewingDependingOnEditing() {
+      if (!this.can_have_readonly)
+        if (this.local_editing_limited_to === "everybody")
+          this.local_viewing_limited_to = "everybody";
+        else this.local_viewing_limited_to = "";
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

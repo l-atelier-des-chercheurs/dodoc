@@ -1,18 +1,33 @@
 <template>
-  <div class="m_chat" @click.self="$root.settings.current_chat.slug = false">
+  <div class="m_chat" @click.self="$root.closeChat()">
     <div class="m_chat--content">
       <div
-        class="m_chat--content--name"
+        class="m_chat--content--topbar"
         :class="{ 'has--content_hidden_behind': !is_scrolled_to_top }"
       >
-        {{ chat.name }}
         <button
           type="button"
-          class="buttonLink bg-rouge"
-          @click="$root.settings.current_chat.slug = false"
+          class="m_chat--content--topbar--backbutton"
+          @click="$root.closeChat()"
+          :content="$t('close')"
+          v-tippy="{
+            placement: 'bottom',
+            delay: [600, 0],
+          }"
         >
-          {{ $t("back") }}
+          ‹
         </button>
+
+        <span class="m_chat--content--topbar--name">{{ chat.name }}</span>
+        <div class="m_chat--content--topbar--options">
+          <button
+            type="button"
+            class="buttonLink bg-rouge"
+            @click="$root.closeChat()"
+          >
+            {{ $t("back") }}
+          </button>
+        </div>
       </div>
 
       <div class="m_chat--content--discussion" ref="chat_content">
@@ -349,6 +364,7 @@ export default {
     isCurrentAuthor(message) {
       return (
         Array.isArray(message.authors) &&
+        this.$root.current_author &&
         (message.authors[0].name === this.$root.current_author.name ||
           message.authors[0].slugFolderName ===
             this.$root.current_author.slugFolderName)

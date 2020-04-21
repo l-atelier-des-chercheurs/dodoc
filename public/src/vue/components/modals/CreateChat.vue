@@ -30,13 +30,13 @@
             {{ $t("participants") }}
           </button>
         </label>
-        <template v-if="show_authors">
+        <div v-if="show_authors">
           <AuthorsInput
             :currentAuthors="chatdata.authors"
             @authorsChanged="(newAuthors) => (chatdata.authors = newAuthors)"
           />
           <small>{{ $t("author_instructions") }}</small>
-        </template>
+        </div>
       </div>
 
       <!-- Access control -->
@@ -57,6 +57,7 @@
             :editing_limited_to.sync="chatdata.editing_limited_to"
             :viewing_limited_to.sync="chatdata.viewing_limited_to"
             :can_have_password="false"
+            :can_have_readonly="false"
           />
         </div>
       </div>

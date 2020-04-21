@@ -2601,6 +2601,12 @@ module.exports = (function () {
         en:
           "This action was blocked. Are you the author of this content and/or do you have the password?",
       },
+      cant_open_chat: {
+        fr:
+          "Identifiez-vous et vérifiez que vous faites partie de la liste des participants à cette discussion pour y accéder.",
+        en:
+          "Login and check that your account is amongst the participants to open this topic.",
+      },
       media_was_sent: {
         fr: "Le média a été enregistré.",
         en: "The media was sent.",

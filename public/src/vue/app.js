@@ -1169,6 +1169,12 @@ let vm = new Vue({
       }
       this.settings.current_chat.slug = slugFolderName;
     },
+    closeChat() {
+      if (window.state.dev_mode === "debug") {
+        console.log(`ROOT EVENT: closeChat`);
+      }
+      this.settings.current_chat.slug = false;
+    },
     openPublication(slugPubliName) {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: openPublication: ${slugPubliName}`);

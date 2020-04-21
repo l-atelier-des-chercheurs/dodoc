@@ -53,9 +53,10 @@
     </div>
 
     <template v-if="!can_edit_folder && editing_limited_to === 'only_authors'">
-      <template
+      <div
+        class="text-centered"
         v-if="
-          (viewing_limited_to === 'everybody' && context === 'full') ||
+          context === 'full' ||
           (viewing_limited_to !== 'everybody' && context !== 'full')
         "
       >
@@ -90,7 +91,7 @@
         >
           {{ $t("ask_to_be_added_to_authors") }}
         </button>
-      </template>
+      </div>
     </template>
 
     <button
