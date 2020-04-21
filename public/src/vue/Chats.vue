@@ -59,10 +59,9 @@
               {{ unreadMessages(chat) }}
             </span>
             <span class="m_chats--list--item--name">{{ chat.name }} </span>
-            <small class="c-blanc">
-              {{ $t("last_message") }}<br />{{
-                $root.formatDateToPrecise(chat.date_modified)
-              }}
+            <small class="c-blanc text-lc">
+              {{ $t("last_message") }} —
+              {{ $root.formatDateToCalendar(chat.date_modified) }}
             </small>
 
             <!-- <AccessController

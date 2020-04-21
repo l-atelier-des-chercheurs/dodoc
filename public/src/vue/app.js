@@ -1335,6 +1335,9 @@ let vm = new Vue({
     formatDateToHuman(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LL");
     },
+    formatDateToCalendar(date) {
+      return this.$moment(date, "YYYY-MM-DD HH:mm:ss").calendar();
+    },
     formatDateToPrecise(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");
     },

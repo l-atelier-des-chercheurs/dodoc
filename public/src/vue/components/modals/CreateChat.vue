@@ -27,10 +27,9 @@
             :class="{ 'is--active': show_authors }"
             @click="show_authors = !show_authors"
           >
-            {{ $t("author") }}
+            {{ $t("participants") }}
           </button>
         </label>
-
         <template v-if="show_authors">
           <AuthorsInput
             :currentAuthors="chatdata.authors"
@@ -38,6 +37,28 @@
           />
           <small>{{ $t("author_instructions") }}</small>
         </template>
+      </div>
+
+      <!-- Access control -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_access_control }"
+            @click="show_access_control = !show_access_control"
+          >
+            {{ $t("manage_access") }}
+          </button>
+        </label>
+
+        <div v-if="show_access_control">
+          <EditAccessControl
+            :editing_limited_to.sync="chatdata.editing_limited_to"
+            :viewing_limited_to.sync="chatdata.viewing_limited_to"
+            :can_have_password="false"
+          />
+        </div>
       </div>
     </template>
 
@@ -47,6 +68,7 @@
 <script>
 import Modal from "./BaseModal.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
+import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 
 export default {
   props: {
@@ -55,10 +77,12 @@ export default {
   components: {
     Modal,
     AuthorsInput,
+    EditAccessControl,
   },
   data() {
     return {
-      show_authors: this.$root.current_author,
+      show_authors: true,
+      show_access_control: true,
 
       is_sending_content_to_server: false,
 
@@ -67,6 +91,8 @@ export default {
         authors: this.$root.current_author
           ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
           : [],
+        editing_limited_to: "everybody",
+        viewing_limited_to: "everybody",
       },
       askBeforeClosingModal: false,
     };
@@ -104,6 +130,8 @@ export default {
 
         return false;
       }
+
+      this.is_sending_content_to_server = true;
 
       this.$root
         .createFolder({ type: "chats", data: this.chatdata })

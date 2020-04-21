@@ -122,6 +122,10 @@ module.exports = (function () {
       fr: "Aucun média à afficher sur cette page",
       en: "No media on this page",
     },
+    show_older_messages: {
+      fr: "Voir les messages plus anciens",
+      en: "See older messages",
+    },
     created: {
       fr: "Création",
       en: "Created",
@@ -1165,6 +1169,10 @@ module.exports = (function () {
       nl: "Auteurs",
       oc: "Autors",
       de: "Autoren",
+    },
+    participants: {
+      fr: "Participants",
+      en: "Participants",
     },
     authors_list: {
       fr: "Liste des auteurs",
