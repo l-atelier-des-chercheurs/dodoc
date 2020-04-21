@@ -1423,17 +1423,15 @@ export default {
       this.getStaticImageFromVideoElement().then((imageData) => {
         if (!this.current_stopmotion) {
           // create stopmotion
-          this.$eventHub.$on("socketio.folder_created_or_updated", (fdata) => {
-            if (fdata.id === this.$root.justCreatedFolderID) {
-              this.$eventHub.$off("socketio.folder_created_or_updated");
+          this.$root
+            .createFolder({
+              type: "stopmotions",
+              data: smdata,
+            })
+            .then((fdata) => {
               this.current_stopmotion = fdata.slugFolderName;
               this.addImageToStopmotion(imageData);
-            }
-          });
-          this.$root.createFolder({
-            type: "stopmotions",
-            data: smdata,
-          });
+            });
         } else {
           // append to stopmotion
           this.addImageToStopmotion(imageData);

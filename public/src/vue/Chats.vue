@@ -18,7 +18,10 @@
               <span>{{ $t("create") }}</span>
             </button>
 
-            <CreateChat v-if="show_create_channel_modal" />
+            <CreateChat
+              v-if="show_create_channel_modal"
+              @close="show_create_channel_modal = false"
+            />
           </template>
           <template v-else>
             <div>

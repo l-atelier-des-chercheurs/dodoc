@@ -2237,6 +2237,10 @@ module.exports = (function () {
       oc: "Animacion imatge per imatge",
       de: "Einzelbild für Bild Animation",
     },
+    stop_stopmotion: {
+      fr: "Arrêter cette animation",
+      en: "Stop stopmotion",
+    },
     web: {
       fr: "Page web",
       en: "Webpage",

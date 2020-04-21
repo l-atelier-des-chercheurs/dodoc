@@ -94,7 +94,7 @@ export default {
 
       if (
         Object.values(this.$root.store.chats).some(
-          ({ name }) => name === this.new_channel_name
+          ({ name }) => name === this.chatdata.name
         )
       ) {
         this.$alertify
@@ -105,8 +105,12 @@ export default {
         return false;
       }
 
-      this.$root.createFolder({ type: "chats", data: this.chatdata });
-      this.$emit("close");
+      this.$root
+        .createFolder({ type: "chats", data: this.chatdata })
+        .then((cdata) => {
+          this.$emit("close");
+          this.$root.openChat(cdata.slugFolderName);
+        });
     },
   },
 };

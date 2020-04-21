@@ -266,39 +266,13 @@ export default {
           },
         ];
       }
-      this.$eventHub.$on(
-        "socketio.folder_created_or_updated",
-        this.newPublicationCreated
-      );
-      this.$root.createFolder({ type: "publications", data: publidata });
-    },
-    newPublicationCreated: function (pdata) {
-      if (pdata.id === this.$root.justCreatedFolderID) {
-        this.$eventHub.$off(
-          "socketio.folder_created_or_updated",
-          this.newPublicationCreated
-        );
-        this.$root.justCreatedFolderID = false;
 
-        if (pdata.password === "has_pass") {
-          this.$auth.updateFoldersPasswords({
-            publications: {
-              [pdata.slugFolderName]: this.publidata.password,
-            },
-          });
-          this.$socketio.sendAuth();
-
-          this.$eventHub.$once("socketio.authentificated", () => {
-            this.$emit("close", "");
-            this.$root.openPublication(pdata.slugFolderName);
-          });
-        } else {
-          this.$nextTick(() => {
-            this.$emit("close", "");
-            this.$root.openPublication(pdata.slugFolderName);
-          });
-        }
-      }
+      this.$root
+        .createFolder({ type: "publications", data: publidata })
+        .then((pdata) => {
+          this.$emit("close", "");
+          this.$root.openPublication(pdata.slugFolderName);
+        });
     },
   },
 };

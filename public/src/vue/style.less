@@ -2291,6 +2291,7 @@ small {
   color: @c-noir;
   border-bottom: 1px dashed @c-border;
   border-radius: 2px;
+  text-align: left;
 
   .margin-bottom-small;
 
@@ -3409,8 +3410,9 @@ small {
     // .bg-noir;
     flex: 1 1 auto;
     display: flex;
-    flex-flow: row nowrap;
-    max-height: 120px;
+    flex-flow: row wrap;
+    justify-content: center;
+    // max-height: 120px;
     // justify-content: flex-end;
 
     // .m_stopmotionpanel--medias--single {
@@ -3439,7 +3441,7 @@ small {
 
     .m_stopmotionpanel--medias--list {
       display: block;
-      flex: 1 1 auto;
+      flex: 1 1 200px;
       position: relative;
       display: flex;
       flex-flow: row nowrap;
@@ -3540,11 +3542,12 @@ small {
 
     .m_stopmotionpanel--medias--validation {
       // .bg-rouge;
-      flex-shrink: 0;
+      flex: 0 0 auto;
       .padding-verysmall;
 
       display: flex;
       flex: row nowrap;
+      justify-content: center;
       align-items: center;
 
       --input-height: 2em;
@@ -3552,7 +3555,7 @@ small {
       .m_stopmotionpanel--medias--validation--fpscounter {
         // .padding-sides-small;
         display: flex;
-        flex-flow: row nowrap;
+        flex-flow: column nowrap;
         align-items: center;
 
         select {
@@ -3565,9 +3568,10 @@ small {
         label {
           .margin-sides-verysmall;
           // display: none;
-          .c-blanc;
-          max-width: 80px;
+
+          // max-width: 80px;
           font-size: 0.6em;
+          white-space: nowrap;
         }
       }
 

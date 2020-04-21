@@ -151,7 +151,7 @@
         can_edit_folder &&
         folderPassword() &&
         context === 'full' &&
-        editing_limited_to !== 'only_authors'
+        (!editing_limited_to || editing_limited_to === 'with_password')
       "
       class="m_metaField"
     >
@@ -171,7 +171,7 @@
         can_edit_folder &&
         folderPassword() &&
         context === 'full' &&
-        editing_limited_to !== 'only_authors'
+        (!editing_limited_to || editing_limited_to === 'with_password')
       "
       type="button"
       class="_button_forgetpassword"
