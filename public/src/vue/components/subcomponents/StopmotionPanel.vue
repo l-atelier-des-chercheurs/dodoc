@@ -10,7 +10,7 @@
         @click="cancelStopmotion"
         class="buttonLink"
       >
-        <span class="text-cap font-verysmall">{{ $t("back") }}</span>
+        <span class="text-cap font-verysmall">{{ $t("stop_stopmotion") }}</span>
       </button>
 
       <button
@@ -52,7 +52,7 @@
           :class="{
             'is--current_single':
               show_previous_photo.metaFileName === media.metaFileName &&
-              !show_live_feed
+              !show_live_feed,
           }"
         >
           <MediaContent
@@ -76,6 +76,7 @@
       </transition-group>
       <div class="m_stopmotionpanel--medias--validation">
         <div class="m_stopmotionpanel--medias--validation--fpscounter">
+          <label class>{{ $t("img_per_second") }}</label>
           <select step="1" v-model.number="frameRate">
             <option>2</option>
             <option>4</option>
@@ -84,9 +85,6 @@
             <option>24</option>
             <option>30</option>
           </select>
-          <label class v-if="medias.length <= 1">{{
-            $t("img_per_second")
-          }}</label>
         </div>
 
         <button
@@ -98,9 +96,9 @@
             validating_video_preview && frameRate === previousFrameRate
           "
         >
-          <!-- <span class="text-cap font-verysmall">
-            {{ $t('generate') }}
-          </span>-->
+          <span class="text-cap padding-left-small font-verysmall">
+            {{ $t("create") }}
+          </span>
           <img
             src="/images/i_play.svg"
             width="48"
@@ -142,11 +140,11 @@ export default {
   props: {
     stopmotiondata: Object,
     slugProjectName: String,
-    videoStream: MediaStream
+    videoStream: MediaStream,
   },
   components: {
     MediaContent,
-    MediaValidationButtons
+    MediaValidationButtons,
   },
   data() {
     return {
@@ -155,7 +153,7 @@ export default {
       validating_video_preview: false,
       show_previous_photo: false,
       media_is_being_sent: false,
-      show_live_feed: true
+      show_live_feed: true,
     };
   },
 
@@ -168,7 +166,7 @@ export default {
   beforeDestroy() {},
 
   watch: {
-    medias: function() {
+    medias: function () {
       if (this.medias.length > 0) {
         if (this.show_live_feed) {
           this.show_previous_photo = this.medias[this.medias.length - 1];
@@ -180,34 +178,34 @@ export default {
         }
       }
     },
-    show_previous_photo: function() {
+    show_previous_photo: function () {
       this.$emit("new_single_image", this.show_previous_photo);
     },
-    show_live_feed: function() {
+    show_live_feed: function () {
       this.$emit("show_live_feed", this.show_live_feed);
     },
-    validating_video_preview: function() {
+    validating_video_preview: function () {
       this.$emit("validating_video", this.validating_video_preview);
-    }
+    },
   },
   computed: {
-    medias: function() {
+    medias: function () {
       if (this.stopmotiondata.hasOwnProperty("medias")) {
         return Object.values(this.stopmotiondata.medias);
       } else {
         return [];
       }
-    }
+    },
   },
   methods: {
-    assembleStopmotionMedias: function() {
+    assembleStopmotionMedias: function () {
       console.log("METHODS • StopmotionPanel: assembleStopmotionMedias");
       this.$eventHub.$on(
         "socketio.media_created_or_updated",
         this.newStopmotionVideo
       );
 
-      const list_media_names = this.medias.map(x => x.media_filename);
+      const list_media_names = this.medias.map((x) => x.media_filename);
 
       this.$root.createMedia({
         slugFolderName: this.slugProjectName,
@@ -216,14 +214,14 @@ export default {
         additionalMeta: {
           type: "stopmotion",
           slugStopmotionName: this.stopmotiondata.slugFolderName,
-          frameRate: this.frameRate
-        }
+          frameRate: this.frameRate,
+        },
       });
       this.previousFrameRate = this.frameRate;
       this.validating_video_preview = false;
       this.media_is_being_sent = true;
     },
-    newStopmotionVideo: function(mdata) {
+    newStopmotionVideo: function (mdata) {
       console.log("METHODS • StopmotionPanel: newStopmotionVideo");
       this.$eventHub.$off(
         "socketio.media_created_or_updated",
@@ -236,16 +234,16 @@ export default {
         // this.$refs.videoPreview.getElementsByTagName('video')[0].play();
       });
     },
-    backToStopmotion: function() {
+    backToStopmotion: function () {
       console.log("METHODS • StopmotionPanel: backToStopmotion");
       this.$root.removeMedia({
         type: "projects",
         slugFolderName: this.slugProjectName,
-        slugMediaName: this.validating_video_preview.metaFileName
+        slugMediaName: this.validating_video_preview.metaFileName,
       });
       this.validating_video_preview = false;
     },
-    cancelStopmotion: function() {
+    cancelStopmotion: function () {
       this.$alertify
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
@@ -260,21 +258,21 @@ export default {
           () => {}
         );
     },
-    save: function() {
+    save: function () {
       this.show_previous_photo = false;
       this.validating_video_preview = false;
       this.$nextTick(() => {
         this.$emit("close");
       });
     },
-    saveAndFav: function() {
+    saveAndFav: function () {
       this.$root.editMedia({
         type: "projects",
         slugFolderName: this.slugProjectName,
         slugMediaName: this.validating_video_preview.metaFileName,
         data: {
-          fav: true
-        }
+          fav: true,
+        },
       });
       this.show_previous_photo = false;
       this.validating_video_preview = false;
@@ -282,12 +280,12 @@ export default {
         this.$emit("close");
       });
     },
-    removeMedia: function(slugMediaName) {
+    removeMedia: function (slugMediaName) {
       console.log("METHODS • StopmotionPanel: removeMedia");
 
       // get index
       const index = this.medias.findIndex(
-        m => m.metaFileName === slugMediaName
+        (m) => m.metaFileName === slugMediaName
       );
       if (index < this.medias.length - 1) {
         this.show_previous_photo = this.medias[index + 1];
@@ -300,10 +298,10 @@ export default {
       this.$root.removeMedia({
         type: "stopmotions",
         slugFolderName: this.stopmotiondata.slugFolderName,
-        slugMediaName
+        slugMediaName,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

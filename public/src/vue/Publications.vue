@@ -100,7 +100,7 @@
               </tr>
             </thead>
             <tbody>
-              <Publication
+              <PublicationRow
                 class="m_recipes--recipe--mealList--meal"
                 v-for="publication in recipe_of_this_template(recipe.key)"
                 :key="publication.slugFolderName"
@@ -176,13 +176,13 @@
 </template>
 <script>
 import CreatePublication from "./components/modals/CreatePublication.vue";
-import Publication from "./components/Publication.vue";
+import PublicationRow from "./components/PublicationRow.vue";
 
 export default {
   props: ["publications", "read_only"],
   components: {
     CreatePublication,
-    Publication,
+    PublicationRow,
   },
   data() {
     return {
@@ -565,44 +565,6 @@ export default {
     openCreatePublicationModal(recipe_key) {
       this.showCreatePublicationModal = true;
       this.createPubliTemplateKey = recipe_key;
-    },
-    createAndOpenPublication(template) {
-      const name = this.$t("untitled");
-      const slugFolderName = template;
-
-      let publication_data = {
-        name,
-        slugFolderName,
-        template,
-        authors: this.$root.current_author
-          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
-          : [],
-      };
-
-      if (template === "page_by_page") {
-        publication_data.pages = [
-          {
-            id:
-              +new Date() +
-              "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3),
-          },
-        ];
-        publication_data.width = 210;
-        publication_data.height = 297;
-      }
-
-      this.$eventHub.$on("socketio.folder_created_or_updated", (fdata) => {
-        if (fdata.id === this.$root.justCreatedFolderID) {
-          this.$eventHub.$off("socketio.folder_created_or_updated");
-          this.openPublication(fdata.slugFolderName);
-        }
-      });
-
-      this.$root.createFolder({
-        type: "publications",
-        data: publication_data,
-      });
     },
   },
 };

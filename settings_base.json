@@ -475,6 +475,16 @@
         },
         "authors": {
           "type": "array"
+        },
+        "editing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "only_authors"],
+          "default": "everybody"
+        },
+        "viewing_limited_to": {
+          "type": "string",
+          "options": ["everybody", ""],
+          "default": "everybody"
         }
       },
       "medias": {

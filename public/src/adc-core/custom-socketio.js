@@ -161,6 +161,7 @@ module.exports = (function () {
             let content = Object.values(data)[0];
 
             console.log(`Type is ${type}`);
+            debugger;
 
             for (let slugFolderName in content) {
               console.log(`Media data is for ${slugFolderName}.`);

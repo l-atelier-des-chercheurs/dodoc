@@ -165,9 +165,9 @@ export default {
 
       if (!!data.password) data.password = this.$auth.hashCode(data.password);
 
-      this.$root.createFolder({ type: "authors", data });
-
-      this.$emit("close", "");
+      this.$root.createFolder({ type: "authors", data }).then((adata) => {
+        this.$emit("close", "");
+      });
     },
   },
 };

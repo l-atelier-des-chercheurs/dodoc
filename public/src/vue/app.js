@@ -747,25 +747,82 @@ let vm = new Vue({
       }
     },
     createFolder: function (fdata) {
-      if (window.state.dev_mode === "debug") {
-        console.log(
-          `ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`
+      return new Promise((resolve, reject) => {
+        if (window.state.dev_mode === "debug") {
+          console.log(
+            `ROOT EVENT: createfolder: ${JSON.stringify(fdata, null, 4)}`
+          );
+        }
+
+        const type = fdata.type;
+
+        fdata.id =
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15);
+
+        this.$socketio.createFolder(fdata);
+
+        const catchFolderCreation = (d) => {
+          if (fdata.id === d.id) {
+            if (d.password === "has_pass") {
+              this.$auth.updateFoldersPasswords({
+                [type]: {
+                  [d.slugFolderName]: fdata.data.password,
+                },
+              });
+
+              debugger;
+              this.$socketio.sendAuth();
+              this.$eventHub.$once("socketio.authentificated", () => {
+                return resolve(d);
+              });
+            } else {
+              this.$nextTick(() => {
+                return resolve(d);
+              });
+            }
+          } else {
+            this.$eventHub.$once(
+              `socketio.folder_created_or_updated`,
+              catchFolderCreation
+            );
+          }
+        };
+        this.$eventHub.$once(
+          `socketio.folder_created_or_updated`,
+          catchFolderCreation
         );
-      }
-
-      this.justCreatedFolderID = fdata.id =
-        Math.random().toString(36).substring(2, 15) +
-        Math.random().toString(36).substring(2, 15);
-
-      this.$socketio.createFolder(fdata);
+      });
     },
     editFolder: function (fdata) {
-      if (window.state.dev_mode === "debug") {
-        console.log(
-          `ROOT EVENT: editFolder: ${JSON.stringify(fdata, null, 4)}`
+      return new Promise((resolve, reject) => {
+        if (window.state.dev_mode === "debug") {
+          console.log(
+            `ROOT EVENT: editFolder: ${JSON.stringify(fdata, null, 4)}`
+          );
+        }
+
+        fdata.id =
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15);
+
+        this.$socketio.editFolder(fdata);
+
+        const catchFolderEdition = function (d) {
+          if (fdata.id === d.id) {
+            return resolve(d);
+          } else {
+            this.$eventHub.$once(
+              `socketio.folder_created_or_updated`,
+              catchFolderCreation
+            );
+          }
+        };
+        this.$eventHub.$once(
+          "socketio.folder_created_or_updated",
+          catchFolderEdition
         );
-      }
-      this.$socketio.editFolder(fdata);
+      });
     },
     removeFolder: function ({ type, slugFolderName }) {
       if (window.state.dev_mode === "debug") {
@@ -1106,7 +1163,18 @@ let vm = new Vue({
 
       this.settings.show_chat_panel = false;
     },
-
+    openChat(slugFolderName) {
+      if (window.state.dev_mode === "debug") {
+        console.log(`ROOT EVENT: openChat: ${slugFolderName}`);
+      }
+      this.settings.current_chat.slug = slugFolderName;
+    },
+    closeChat() {
+      if (window.state.dev_mode === "debug") {
+        console.log(`ROOT EVENT: closeChat`);
+      }
+      this.settings.current_chat.slug = false;
+    },
     openPublication(slugPubliName) {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: openPublication: ${slugPubliName}`);
@@ -1272,6 +1340,9 @@ let vm = new Vue({
     },
     formatDateToHuman(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LL");
+    },
+    formatDateToCalendar(date) {
+      return this.$moment(date, "YYYY-MM-DD HH:mm:ss").calendar();
     },
     formatDateToPrecise(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");

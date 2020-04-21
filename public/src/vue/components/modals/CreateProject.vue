@@ -240,6 +240,7 @@ export default {
 
         return false;
       }
+
       if (!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
       }
@@ -263,42 +264,17 @@ export default {
         return false;
       }
 
-      this.$eventHub.$on(
-        "socketio.folder_created_or_updated",
-        this.newFolderCreated
-      );
-
       this.is_sending_content_to_server = true;
 
-      this.$root.createFolder({ type: "projects", data: this.projectdata });
-    },
-    newFolderCreated: function (fdata) {
-      if (fdata.id === this.$root.justCreatedFolderID) {
-        this.$eventHub.$off(
-          "socketio.folder_created_or_updated",
-          this.newFolderCreated
-        );
-        this.$root.justCreatedFolderID = false;
-
-        if (fdata.password === "has_pass") {
-          this.$auth.updateFoldersPasswords({
-            projects: {
-              [fdata.slugFolderName]: this.projectdata.password,
-            },
-          });
-          this.$socketio.sendAuth();
-
-          this.$eventHub.$once("socketio.authentificated", () => {
-            this.$emit("close", "");
-            this.$root.openProject(fdata.slugFolderName);
-          });
-        } else {
-          this.$nextTick(() => {
-            this.$emit("close", "");
-            this.$root.openProject(fdata.slugFolderName);
-          });
-        }
-      }
+      this.$root
+        .createFolder({
+          type: "projects",
+          data: this.projectdata,
+        })
+        .then((fdata) => {
+          this.$emit("close", "");
+          this.$root.openProject(fdata.slugFolderName);
+        });
     },
   },
 };

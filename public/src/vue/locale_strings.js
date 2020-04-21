@@ -122,6 +122,10 @@ module.exports = (function () {
       fr: "Aucun média à afficher sur cette page",
       en: "No media on this page",
     },
+    show_older_messages: {
+      fr: "Voir les messages plus anciens",
+      en: "See older messages",
+    },
     created: {
       fr: "Création",
       en: "Created",
@@ -1165,6 +1169,10 @@ module.exports = (function () {
       nl: "Auteurs",
       oc: "Autors",
       de: "Autoren",
+    },
+    participants: {
+      fr: "Participants",
+      en: "Participants",
     },
     authors_list: {
       fr: "Liste des auteurs",
@@ -2237,6 +2245,10 @@ module.exports = (function () {
       oc: "Animacion imatge per imatge",
       de: "Einzelbild für Bild Animation",
     },
+    stop_stopmotion: {
+      fr: "Arrêter cette animation",
+      en: "Stop stopmotion",
+    },
     web: {
       fr: "Page web",
       en: "Webpage",
@@ -2588,6 +2600,12 @@ module.exports = (function () {
           "Cette action n’est pas permise. Êtes-vous bien auteur de ce contenu et/ou possédez-vous le mot de passe associé ?",
         en:
           "This action was blocked. Are you the author of this content and/or do you have the password?",
+      },
+      cant_open_chat: {
+        fr:
+          "Identifiez-vous et vérifiez que vous faites partie de la liste des participants à cette discussion pour y accéder.",
+        en:
+          "Login and check that your account is amongst the participants to open this topic.",
       },
       media_was_sent: {
         fr: "Le média a été enregistré.",

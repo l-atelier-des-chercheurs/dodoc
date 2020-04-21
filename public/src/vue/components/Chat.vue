@@ -1,21 +1,48 @@
 <template>
-  <div class="m_chat" @click.self="$root.settings.current_chat.slug = false">
+  <div class="m_chat" @click.self="$root.closeChat()">
     <div class="m_chat--content">
       <div
-        class="m_chat--content--name"
+        class="m_chat--content--topbar"
         :class="{ 'has--content_hidden_behind': !is_scrolled_to_top }"
       >
-        {{ chat.name }}
         <button
           type="button"
-          class="buttonLink bg-rouge"
-          @click="$root.settings.current_chat.slug = false"
+          class="m_chat--content--topbar--backbutton"
+          @click="$root.closeChat()"
+          :content="$t('close')"
+          v-tippy="{
+            placement: 'bottom',
+            delay: [600, 0],
+          }"
         >
-          {{ $t("back") }}
+          ‹
         </button>
+
+        <span class="m_chat--content--topbar--name">{{ chat.name }}</span>
+        <div class="m_chat--content--topbar--options">
+          <button
+            type="button"
+            class="buttonLink bg-rouge"
+            @click="$root.closeChat()"
+          >
+            {{ $t("back") }}
+          </button>
+        </div>
       </div>
 
       <div class="m_chat--content--discussion" ref="chat_content">
+        <button
+          type="button"
+          class="_button_showOlderMessages"
+          v-if="first_message_index_to_show"
+          @click="
+            first_message_index_to_show = 0;
+            is_scrolled_to_bottom = false;
+          "
+        >
+          <span>{{ $t("show_older_messages") }}</span>
+        </button>
+
         <div v-for="item in grouped_messages" :key="item[0]">
           <h3 class="label c-noir margin-small text-centered">
             {{ $root.formatDateToHuman(item[0]) }}
@@ -75,7 +102,7 @@
             <div
               v-if="
                 message.metaFileName === last_read_message_on_opening &&
-                index < item[1].length - 1
+                index < item[1].length - 0
               "
               class="m_sinceLastVisit"
               ref="sinceLastVisit"
@@ -141,6 +168,8 @@ export default {
       is_scrolled_to_bottom: false,
       is_scrolled_to_top: false,
       last_read_message_on_opening: false,
+
+      first_message_index_to_show: false,
     };
   },
   created() {
@@ -167,25 +196,26 @@ export default {
         );
 
         // check if some unread messages
+        this.last_read_message_on_opening =
+          last_message_read_for_this_channel.msg;
+
+        this.setFirstMessageIndexToShow(last_message_read_for_this_channel.msg);
+
         this.$nextTick(() => {
           if (
             last_message_read_for_this_channel.msg !==
             this.sorted_messages[this.sorted_messages.length - 1].metaFileName
           ) {
-            this.last_read_message_on_opening =
-              last_message_read_for_this_channel.msg;
-
-            this.$nextTick(() => {
-              if (this.$refs.sinceLastVisit) {
-                this.scrollToMessage(this.$refs.sinceLastVisit[0]);
-                this.$refs.chat_content.style.scrollBehavior = "smooth";
-              }
-            });
+            if (this.$refs.sinceLastVisit) {
+              this.scrollToMessage(this.$refs.sinceLastVisit[0]);
+              this.$refs.chat_content.style.scrollBehavior = "smooth";
+            }
           } else {
             this.scrollToBottom();
             this.$refs.chat_content.style.scrollBehavior = "smooth";
           }
         });
+        // });
       }
     });
 
@@ -230,7 +260,12 @@ export default {
   computed: {
     sorted_messages: function () {
       if (typeof this.chat.medias !== "object") return [];
-      return this.$_.sortBy(this.chat.medias, "date_created");
+      let _sorted_messages = this.$_.sortBy(this.chat.medias, "date_created");
+
+      if (this.first_message_index_to_show)
+        return _sorted_messages.slice(this.first_message_index_to_show);
+
+      return _sorted_messages;
     },
     grouped_messages: function () {
       let message_group = this.$_.groupBy(this.sorted_messages, (message) => {
@@ -265,6 +300,21 @@ export default {
         console.log("METHODS • Chat: scrollToMessage");
       this.$refs.chat_content.scrollTop = $el.offsetTop - 100;
     },
+    setFirstMessageIndexToShow(last_message_read) {
+      if (!this.last_read_message_on_opening || !last_message_read)
+        return false;
+      if (this.sorted_messages < 10) this.first_message_index_to_show = 0;
+
+      const last_message_read_index = this.sorted_messages.findIndex(
+        (m) => m.metaFileName === this.last_read_message_on_opening
+      );
+
+      this.first_message_index_to_show = Math.max(
+        0,
+        last_message_read_index - 10
+      );
+    },
+
     setReadMessageToLast() {
       // if logged in, set author last_messages_read_in_channels to metaFileName of chat
       if (this.$root.current_author && this.sorted_messages.length > 0) {
@@ -314,6 +364,7 @@ export default {
     isCurrentAuthor(message) {
       return (
         Array.isArray(message.authors) &&
+        this.$root.current_author &&
         (message.authors[0].name === this.$root.current_author.name ||
           message.authors[0].slugFolderName ===
             this.$root.current_author.slugFolderName)
@@ -322,9 +373,12 @@ export default {
     getMessageAuthor(message) {
       if (message.authors && message.authors.length > 0) {
         const first_author = message.authors[0];
-        if (first_author.hasOwnProperty("slugFolderName"))
+        if (
+          first_author.hasOwnProperty("slugFolderName") &&
+          this.$root.getAuthor(first_author.slugFolderName)
+        )
           return this.$root.getAuthor(first_author.slugFolderName).name;
-        else return first_author.name;
+        else if (first_author.hasOwnProperty("name")) return first_author.name;
       }
       return false;
     },
