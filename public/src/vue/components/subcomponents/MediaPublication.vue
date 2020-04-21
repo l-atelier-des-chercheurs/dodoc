@@ -711,6 +711,7 @@ export default {
       });
     },
     updateMediaStyles() {
+      debugger;
       this.rotate = this.media.publi_meta.hasOwnProperty("rotate")
         ? this.media.publi_meta.rotate
         : 0;

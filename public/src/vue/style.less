@@ -4132,6 +4132,12 @@ small {
   .margin-bottom-medium;
   border: 2px solid @c-rouge_fonce;
 
+  &.is--open {
+    background-color: @c-rouge_fonce;
+    // .padding-left-small;
+    // border-color: @c-noir;
+  }
+
   .m_chatRow--firstLine {
     .padding-verysmall;
     display: flex;
@@ -4164,11 +4170,6 @@ small {
     color: @c-gris_fonce;
   }
 
-  &.is--open {
-    background-color: @c-rouge_fonce;
-    .padding-left-small;
-  }
-
   .m_chatRow--name {
     font-weight: 500;
     letter-spacing: 0.02em;
@@ -4179,10 +4180,10 @@ small {
     background-color: @c-rouge_fonce;
     width: 2em;
     height: 2em;
-    display: block;
+
     .font-verysmall;
 
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
   }
@@ -4245,6 +4246,7 @@ small {
     .m_chat--content--topbar--name {
       .font-folder_title;
       .padding-small;
+      padding-left: 0;
     }
   }
 
