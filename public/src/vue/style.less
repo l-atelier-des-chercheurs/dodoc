@@ -4257,8 +4257,7 @@ small {
     overflow-y: auto;
 
     .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
-
-    .padding-verysmall;
+    .padding-sides-verysmall;
   }
   .m_chat--content--scrollToBottom {
     pointer-events: none;
@@ -4391,6 +4390,7 @@ small {
 .m_sinceLastVisit {
   position: relative;
   margin: 0 var(--spacing);
+  .margin-vert-verysmall;
   width: ~"calc(100% - var(--spacing) * 2)";
   .font-verysmall;
   display: flex;
@@ -4418,6 +4418,7 @@ small {
   position: relative;
   margin: 0 auto;
   // width: ~"calc(100% - var(--spacing) * 2)";
+  .margin-vert-small;
   .font-verysmall;
   background-color: @c-rouge_fonce;
 
