@@ -605,6 +605,9 @@ export default {
     "media.publi_meta": {
       handler: function () {
         this.updateMediaStyles();
+        this.htmlForEditor = this.media.publi_meta.content
+          ? this.media.publi_meta.content
+          : "";
       },
       deep: true,
     },
