@@ -109,7 +109,14 @@
         language="css"
       />
       <div class="m_mediaPublication--edit_styles--sendButton">
-        <button type="button" class @click="setCSSForMedia">
+        <button
+          type="button"
+          class="button-greenthin"
+          @click="setCSSForMedia"
+          :class="{
+            'is--disabled': custom_css === media.publi_meta.custom_css,
+          }"
+        >
           {{ $t("send") }}
         </button>
       </div>
