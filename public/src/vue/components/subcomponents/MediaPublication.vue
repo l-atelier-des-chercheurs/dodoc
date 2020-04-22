@@ -350,7 +350,8 @@
               delay: [600, 0],
             }"
           >
-            {{ $t("css") }}<sup v-if="custom_css">*</sup>
+            {{ $t("css") }}
+            <sup v-if="custom_css">*</sup>
           </button>
 
           <button
@@ -466,7 +467,7 @@
               <rect x="120.4" y="56.9" width="10" height="16.6" />
             </g>
           </svg>
-        </button> -->
+          </button>-->
 
           <button
             type="button"
@@ -496,7 +497,7 @@
                 points="37.2,30.6 30.6,37.2 18.6,25.2 6.6,37.2 0,30.6 12,18.6 0,6.6 6.6,0 18.6,12 30.6,0 37.2,6.6 
             25.2,18.6 "
               />
-            </svg> -->
+            </svg>-->
             {{ $t("withdraw") }}
           </button>
         </div>
@@ -636,6 +637,8 @@ export default {
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
+                z-index: ${set_z_index};
+
       `;
     },
     text_is_overflowing() {

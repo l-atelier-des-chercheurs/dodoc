@@ -18,14 +18,14 @@ export default {
     media: Object,
     drawing_options: Object,
     is_active: Boolean,
-    zoom: Number,
+    zoom: Number
   },
   components: {},
   data() {
     return {
       canvas: undefined,
       new_line: undefined,
-      isDown: false,
+      isDown: false
     };
   },
   created() {},
@@ -36,13 +36,12 @@ export default {
         : "/libs/fabric.min.js";
 
     this.$loadScript(path_to_fabric).then(() => {
-      debugger;
       document.addEventListener("keyup", this.captureKeyListener);
 
       this.$eventHub.$on("remove_selection", this.removeSelection);
 
       this.canvas = new fabric.Canvas(this.$refs.canvas, {
-        enableRetinaScaling: true,
+        enableRetinaScaling: true
       });
 
       if (
@@ -54,12 +53,12 @@ export default {
 
       this.setDrawingOptions();
 
-      this.canvas.on("mouse:down", (o) => {
+      this.canvas.on("mouse:down", o => {
         this.isDown = true;
         var pointer = this.canvas.getPointer(o.e);
         var points = [pointer.x, pointer.y, pointer.x, pointer.y];
       });
-      this.canvas.on("mouse:move", (o) => {
+      this.canvas.on("mouse:move", o => {
         if (!this.isDown) return;
         var pointer = this.canvas.getPointer(o.e);
 
@@ -70,7 +69,7 @@ export default {
         }
       });
 
-      this.canvas.on("mouse:up", (o) => {
+      this.canvas.on("mouse:up", o => {
         if (!this.isDown) return;
         this.isDown = false;
 
@@ -85,7 +84,7 @@ export default {
   },
 
   watch: {
-    "media.canvas_information": function () {
+    "media.canvas_information": function() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • DrawingLayer: media.canvas_information`);
 
@@ -103,7 +102,7 @@ export default {
 
         this.setDrawingOptions();
       },
-      deep: true,
+      deep: true
     },
     layer_options: {
       handler() {
@@ -114,12 +113,12 @@ export default {
 
         this.canvas
           .getObjects()
-          .map((o) => o.set("stroke", this.layer_options.color));
+          .map(o => o.set("stroke", this.layer_options.color));
         this.canvas.renderAll();
         this.setDrawingOptions();
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   computed: {
     page_container_styles() {
@@ -144,7 +143,7 @@ export default {
           transform: scale(${this.zoom});
         `;
       }
-    },
+    }
   },
   methods: {
     captureKeyListener(event) {
@@ -162,7 +161,7 @@ export default {
 
       this.canvas.selection = this.drawing_options.mode === "select";
 
-      this.canvas.forEachObject((o) => {
+      this.canvas.forEachObject(o => {
         o.evented = this.drawing_options.mode === "select";
       });
       if (this.drawing_options.mode === "drawing") {
@@ -179,15 +178,15 @@ export default {
       //   this.updateLinksList();
       // });
     },
-    removeSelection: function () {
-      this.canvas.getActiveObjects().forEach((obj) => {
+    removeSelection: function() {
+      this.canvas.getActiveObjects().forEach(obj => {
         this.canvas.remove(obj);
       });
       this.canvas.discardActiveObject().renderAll();
 
       this.updateLinksList();
     },
-    updateLinksList: function () {
+    updateLinksList: function() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • DrawingLayer: updateLinksList`);
 
@@ -195,7 +194,7 @@ export default {
         [
           "export_publication",
           "print_publication",
-          "link_publication",
+          "link_publication"
         ].includes(this.$root.state.mode)
       ) {
         return;
@@ -206,10 +205,10 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName: this.media.metaFileName,
-        data: { canvas_information },
+        data: { canvas_information }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style></style>
