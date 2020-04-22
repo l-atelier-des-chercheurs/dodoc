@@ -1074,6 +1074,9 @@ small {
       .m_project--library--medias {
         .padding-top-small;
         .padding-sides-small;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        .custom_scrollbar(8px, 5px, 6px);
 
         .m_mediaCard {
           .padding-sides-small;
@@ -1618,10 +1621,6 @@ small {
     .padding-top-small;
     // .padding-sides-verysmall;
     .padding-bottom-medium;
-
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    .custom_scrollbar(8px, 5px, 6px);
 
     // @supports (display: grid) {
     //   display: grid;

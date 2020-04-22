@@ -398,12 +398,10 @@ export default {
   props: {},
   data() {
     return {
-      minPercent: 0,
       split: "vertical",
       drag_offset: 0,
       hasMoved: false,
       height: null,
-      percent: 100,
       type: "width",
       resizeType: "left",
 
@@ -457,12 +455,14 @@ export default {
   },
   computed: {
     activitiesPanel_is_large() {
-      if ((this.percent / 100) * this.$root.settings.windowWidth < 850) {
+      if (
+        (this.panels_width.doPane / 100) * this.$root.settings.windowWidth <
+        850
+      )
         return false;
-      }
-      if (this.$root.settings.windowHeight < 650) {
-        return false;
-      }
+
+      if (this.$root.settings.windowHeight < 650) return false;
+
       return true;
     },
   },
