@@ -68,6 +68,13 @@
       </button>
     </div>
     <div v-else-if="current_layer.type === 'medias'">
+      <button
+        class="buttonLink"
+        @mousedown.stop.prevent="createPubliText"
+        @touchstart.stop.prevent="createPubliText"
+      >
+        {{ $t("create_text") }}
+      </button>
       <!-- <label>
         <input type="color" v-model="drawing_options.color" />
         Couleur
@@ -105,6 +112,20 @@ export default {
   methods: {
     removeLayer() {
       this.$emit("removeLayer", this.current_layer.id);
+    },
+    createPubliText() {
+      // ajouter du text dans la publi
+      // qui ne possède pas de lien
+      this.$eventHub.$emit("publication.addMedia", {
+        type: "text",
+      });
+
+      this.$eventHub.$once("publication.media_created", ({ mdata }) => {
+        this.$eventHub.$emit(
+          "publication.set_media_to_edit_mode",
+          mdata.metaFileName
+        );
+      });
     },
   },
 };

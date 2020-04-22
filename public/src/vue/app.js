@@ -231,7 +231,6 @@ let vm = new Vue({
     state: window.state,
 
     justCreatedFolderID: false,
-    justCreatedMediaID: false,
 
     currentTime: "",
     app_is_fullscreen: false,
@@ -832,24 +831,41 @@ let vm = new Vue({
       this.$socketio.removeFolder({ type, slugFolderName });
     },
     createMedia: function (mdata) {
-      if (window.state.dev_mode === "debug") {
-        console.log(`ROOT EVENT: createMedia`);
-      }
-      this.justCreatedMediaID = mdata.id =
-        Math.random().toString(36).substring(2, 15) +
-        Math.random().toString(36).substring(2, 15);
-
-      if (this.current_author) {
-        if (!mdata.hasOwnProperty("additionalMeta")) {
-          mdata.additionalMeta = {};
+      return new Promise((resolve, reject) => {
+        if (window.state.dev_mode === "debug") {
+          console.log(`ROOT EVENT: createMedia`);
         }
-        mdata.additionalMeta.authors = [
-          { slugFolderName: this.current_author.slugFolderName },
-        ];
-      }
+        mdata.id =
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15);
 
-      this.$nextTick(() => {
+        if (this.current_author) {
+          if (!mdata.hasOwnProperty("additionalMeta")) {
+            mdata.additionalMeta = {};
+          }
+          mdata.additionalMeta.authors = [
+            { slugFolderName: this.current_author.slugFolderName },
+          ];
+        }
+
         this.$socketio.createMedia(mdata);
+
+        const catchMediaCreation = (d) => {
+          if (mdata.id === d.id) {
+            this.$nextTick(() => {
+              return resolve(d);
+            });
+          } else {
+            this.$eventHub.$once(
+              `socketio.media_created_or_updated`,
+              catchMediaCreation
+            );
+          }
+        };
+        this.$eventHub.$once(
+          `socketio.media_created_or_updated`,
+          catchMediaCreation
+        );
       });
     },
 
@@ -899,6 +915,10 @@ let vm = new Vue({
 
       const folder = this.store[type][slugFolderName];
 
+      // if admin
+      if (this.current_author && this.current_author.role === "admin")
+        return true;
+
       // if no password && no editing limits
       if (
         folder.password !== "has_pass" &&
@@ -913,10 +933,6 @@ let vm = new Vue({
         folder.hasOwnProperty("editing_limited_to") &&
         folder.editing_limited_to === "everybody"
       )
-        return true;
-
-      // if admin
-      if (this.current_author && this.current_author.role === "admin")
         return true;
 
       // if password is set

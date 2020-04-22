@@ -211,6 +211,7 @@
           </div>
         </div>
 
+        {{ publication_medias }}
         <div
           v-for="layer in layers"
           :key="layer.id"
@@ -423,58 +424,61 @@ export default {
     },
   },
   methods: {
-    createPubliText() {
-      // ajouter du text dans la publi
-      // qui ne possède pas de lien
-      this.addMedia({ type: "text" });
-    },
     addMedia({ slugProjectName, metaFileName, type }) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • DrawingPad: addMedia with
+      return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug") {
+          console.log(`METHODS • DrawingPad: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
-      }
+        }
 
-      const layer_id = this.$root.settings.current_publication.layer_id;
+        const layer_id = this.$root.settings.current_publication.layer_id;
 
-      const x = 0;
-      const y = 0;
+        const x = 0;
+        const y = 0;
 
-      const z_index =
-        this.getHighestZNumberAmongstMedias(this.publication_medias[layer_id]) +
-        1;
+        const z_index =
+          this.getHighestZNumberAmongstMedias(
+            this.publication_medias[layer_id]
+          ) + 1;
 
-      let additionalMeta = {
-        layer_id,
-        x,
-        y,
-        z_index,
-      };
+        let additionalMeta = {
+          layer_id,
+          x,
+          y,
+          z_index,
+        };
 
-      if (slugProjectName && metaFileName) {
-        additionalMeta.slugProjectName = slugProjectName;
-        additionalMeta.desired_filename = metaFileName;
-        additionalMeta.slugMediaName = metaFileName;
-      }
+        if (slugProjectName && metaFileName) {
+          additionalMeta.slugProjectName = slugProjectName;
+          additionalMeta.desired_filename = metaFileName;
+          additionalMeta.slugMediaName = metaFileName;
+        }
 
-      if (type) additionalMeta.type = type;
+        if (type) additionalMeta.type = type;
 
-      // get current scroll
-      if (this.$refs.current_page) {
-        const posx_in_cm =
-          this.$refs.current_page.scrollLeft / this.pixelsPerMillimeters;
-        if (!Number.isNaN(posx_in_cm)) additionalMeta.x = posx_in_cm;
+        // get current scroll
+        if (this.$refs.current_page) {
+          const posx_in_cm =
+            this.$refs.current_page.scrollLeft / this.pixelsPerMillimeters;
+          if (!Number.isNaN(posx_in_cm)) additionalMeta.x = posx_in_cm;
 
-        const posy_in_cm =
-          this.$refs.current_page.scrollTop / this.pixelsPerMillimeters;
-        if (!Number.isNaN(posy_in_cm)) additionalMeta.y = posy_in_cm;
-      }
+          const posy_in_cm =
+            this.$refs.current_page.scrollTop / this.pixelsPerMillimeters;
+          if (!Number.isNaN(posy_in_cm)) additionalMeta.y = posy_in_cm;
+        }
 
-      debugger;
-
-      this.$root.createMedia({
-        slugFolderName: this.slugPubliName,
-        type: "publications",
-        additionalMeta,
+        this.$root
+          .createMedia({
+            slugFolderName: this.slugPubliName,
+            type: "publications",
+            additionalMeta,
+          })
+          .then((mdata) => {
+            this.$eventHub.$emit("publication.media_created", {
+              mdata,
+            });
+            return resolve(mdata);
+          });
       });
     },
     layerOptions(layer) {

@@ -4467,9 +4467,8 @@ small {
 
   .m_publicationButtons {
     position: absolute;
-    bottom: 0px;
-    left: 40px;
-    width: 50%;
+    top: 100px;
+    left: 0px;
     max-width: 200px;
     z-index: 1001;
     background-color: rgba(255, 255, 255, 0.95);
@@ -5534,7 +5533,7 @@ small {
   &.is--inline_edited {
     outline: 2px solid @c-bleuvert;
     .ql-editor {
-      background-color: @c-gris_tresclair;
+      // background-color: @c-gris_tresclair;
     }
   }
 
@@ -5653,6 +5652,15 @@ small {
 
     &.type-text {
       background-color: rgba(255, 255, 255, 0.95);
+
+      .ql-container {
+        display: flex;
+        flex-flow: column;
+
+        > .ql-editor {
+          flex: 1 1 auto;
+        }
+      }
     }
 
     &.type-video {
@@ -5827,20 +5835,8 @@ small {
     pointer-events: none;
     .padding-verysmall;
 
-    ._advanced_menu_button {
-      border-radius: 50%;
-      background-color: transparent !important;
-
-      svg {
-        width: @t-pictoSize;
-        height: @t-pictoSize;
-        padding: @t-pictoPadding;
-        background-color: @c-orange;
-
-        border: @t-borderSize solid currentColor;
-        border-radius: 50%;
-      }
-    }
+    display: flex;
+    justify-content: flex-end;
 
     ._advanced_menu {
       display: flex;
@@ -5867,6 +5863,21 @@ small {
       &.is--active {
         .bg-noir;
         color: @c-orange;
+      }
+    }
+    > button {
+      position: relative;
+      border-radius: 50%;
+      background-color: transparent !important;
+      margin: 0;
+
+      svg {
+        width: @t-pictoSize;
+        height: @t-pictoSize;
+        padding: @t-pictoPadding;
+        background-color: @c-orange;
+        border: @t-borderSize solid currentColor;
+        border-radius: 50%;
       }
     }
   }

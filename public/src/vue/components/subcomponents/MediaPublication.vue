@@ -245,6 +245,39 @@
       >
         <button
           type="button"
+          v-if="!media.slugProjectName"
+          class="buttonLink _no_underline"
+          @mousedown.stop.prevent="editButtonClicked"
+          @touchstart.stop.prevent="editButtonClicked"
+          :content="$t('edit_content')"
+          v-tippy="{
+            placement: 'top',
+            delay: [600, 0],
+          }"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg inline-svg-larger"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="90.7px"
+            height="91px"
+            viewBox="0 0 90 120"
+            style="enable-background: new 0 0 100.7 101;"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
+              L19.1,91.5z"
+            />
+          </svg>
+        </button>
+
+        <button
+          type="button"
           class="_advanced_menu_button _no_underline"
           @mousedown.stop.prevent="
             show_advanced_menu = !show_advanced_menu;
@@ -368,21 +401,17 @@
 
           <button
             type="button"
+            v-if="media.slugProjectName"
             class="buttonLink _no_underline"
             @mousedown.stop.prevent="editButtonClicked"
             @touchstart.stop.prevent="editButtonClicked"
-            :content="
-              media.slugProjectName
-                ? $t('edit_original_media')
-                : $t('edit_content')
-            "
+            :content="$t('edit_original_media')"
             v-tippy="{
               placement: 'top',
               delay: [600, 0],
             }"
           >
             <svg
-              v-if="media.slugProjectName"
               version="1.1"
               class="inline-svg inline-svg-larger"
               xmlns="http://www.w3.org/2000/svg"
@@ -406,26 +435,6 @@
 		s-1.8,9-5.1,12.3L76.8,61.3c-3.3,3.3-7.7,5.1-12.3,5.1c-4.7,0-9-1.8-12.3-5.1c-1.6-1.6-2.9-3.5-3.7-5.5c-2.1,0.1-4.1,1-5.7,2.5
 		l-5,5c1.4,2.5,3.1,4.9,5.3,7.1c11.8,11.8,31,11.8,42.8,0l18.7-18.7c11.8-11.8,11.8-31,0-42.8C92.8-3,73.7-3,61.8,8.9L45,25.7
 		C46.2,25.6,47.5,25.5,48.8,25.5L48.8,25.5L48.8,25.5z"
-              />
-            </svg>
-            <svg
-              v-else
-              version="1.1"
-              class="inline-svg inline-svg-larger"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="100.7px"
-              height="101px"
-              viewBox="0 0 100.7 101"
-              style="enable-background: new 0 0 100.7 101;"
-              xml:space="preserve"
-            >
-              <path
-                class="st0"
-                d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
-              L19.1,91.5z"
               />
             </svg>
             <!-- {{ $t('edit') }} -->
@@ -610,9 +619,18 @@ export default {
   mounted() {
     this.updateMediaStyles();
     this.$eventHub.$on("publication.newMediaSelected", this.newMediaSelected);
+    debugger;
+    this.$eventHub.$on(
+      "publication.set_media_to_edit_mode",
+      this.setMediaToEditMode
+    );
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.newMediaSelected", this.newMediaSelected);
+    this.$eventHub.$off(
+      "publication.set_media_to_edit_mode",
+      this.setMediaToEditMode
+    );
   },
 
   watch: {
@@ -664,6 +682,12 @@ export default {
         this.is_selected = false;
       }
     },
+    setMediaToEditMode(metaFileName) {
+      debugger;
+      if (this.media.publi_meta.metaFileName === metaFileName) {
+        this.editButtonClicked();
+      }
+    },
     saveTextMedia() {
       const val = {
         content: this.htmlForEditor,
@@ -682,7 +706,12 @@ export default {
           slugProjectName: this.media.slugProjectName,
           metaFileName: this.media.metaFileName,
         });
-      else this.inline_edit_mode = true;
+      else {
+        this.inline_edit_mode = true;
+        this.$nextTick(() => {
+          this.$refs.textField.$el.querySelector(".ql-editor").focus();
+        });
+      }
     },
     editZIndex(val) {
       this.updateMediaPubliMeta({
