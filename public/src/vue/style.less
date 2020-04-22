@@ -3819,7 +3819,6 @@ small {
 
 .m_recipes {
   .padding-small;
-  .margin-right-verysmall;
   overflow-y: auto;
   .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
 }
@@ -4109,6 +4108,7 @@ small {
 
 .m_chats--list {
   overflow-y: auto;
+  .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
 }
 
 .m_chatRow {
@@ -6374,24 +6374,30 @@ small {
 }
 
 .splitpanes--vertical > .splitpanes__splitter {
-  width: 1px;
-  margin-left: -1px;
+  width: 0px;
+  min-width: 0;
+  margin-left: 0px;
   // border-right: 1px solid black;
 }
 .splitpanes--horizontal > .splitpanes__splitter {
-  height: 1px;
+  height: 0px;
   // border-bottom: 1px solid black;
 }
 
-.splitpanes__splitter:before {
+.splitpanes__splitter::before {
   content: "";
+
   position: absolute;
   left: 0;
   top: 0;
   transition: opacity 0.4s;
   background-color: rgba(255, 255, 255, 1);
-  opacity: 0;
+  background-color: red;
+  opacity: 1;
   z-index: 10;
+
+  // interferes with scrolling
+  display: none;
 }
 .splitpanes--vertical > .splitpanes__splitter::before {
   left: -10px;
