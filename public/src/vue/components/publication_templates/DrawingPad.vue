@@ -458,6 +458,19 @@ export default {
 
       if (type) additionalMeta.type = type;
 
+      // get current scroll
+      if (this.$refs.current_page) {
+        const posx_in_cm =
+          this.$refs.current_page.scrollLeft / this.pixelsPerMillimeters;
+        if (!Number.isNaN(posx_in_cm)) additionalMeta.x = posx_in_cm;
+
+        const posy_in_cm =
+          this.$refs.current_page.scrollTop / this.pixelsPerMillimeters;
+        if (!Number.isNaN(posy_in_cm)) additionalMeta.y = posy_in_cm;
+      }
+
+      debugger;
+
       this.$root.createMedia({
         slugFolderName: this.slugPubliName,
         type: "publications",
