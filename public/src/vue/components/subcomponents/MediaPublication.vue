@@ -222,21 +222,33 @@
           />
         </svg>
       </div>
-      <!-- <div class="handle handle_rotateMedia"
-          @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
-          @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
+      <div
+        class="handle handle_rotateMedia"
+        v-if="is_selected || is_hovered"
+        @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
+        @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="98.7px"
+          height="132.2px"
+          viewBox="0 0 98.7 132.2"
+          style="enable-background: new 0 0 98.7 132.2;"
+          xml:space="preserve"
         >
-  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="98.7px"
-    height="132.2px" viewBox="0 0 98.7 132.2" style="enable-background:new 0 0 98.7 132.2;" xml:space="preserve">
-  <defs>
-  </defs>
-  <path d="M80.1,117.7c-3.1-0.2-5.6-0.3-7.6-0.2c-1.4,0.1-2.9,0.3-4.5,0.5c14.7-13.7,36.9-42.4,29.1-63.4S71.6,27,24.8,24.6
+          <defs></defs>
+          <path
+            d="M80.1,117.7c-3.1-0.2-5.6-0.3-7.6-0.2c-1.4,0.1-2.9,0.3-4.5,0.5c14.7-13.7,36.9-42.4,29.1-63.4S71.6,27,24.8,24.6
     c1.1-0.8,2.2-1.6,3.1-2.4c1.5-1.3,3.2-3.1,5.3-5.5L40,9L29.3,0L0,34.9l32.9,31.5l9.7-10.1l-7.7-7c-2.4-2.1-4.3-3.8-5.9-4.9
     c-1.6-1.2-3.3-2.2-5.2-3.1l-0.1-1.2c29.3,1.4,52.5,6.6,56.5,20.7s-15.9,39.7-23.5,46.5l-0.5-0.6c0.7-1.9,1.2-3.9,1.6-5.9
-    c0.3-2,0.6-4.5,0.8-7.7l0.7-10.5l-14-0.4L43.7,128l45.5,4.2l1.3-13.9L80.1,117.7z"/>
-  </svg>
-
-      </div>-->
+    c0.3-2,0.6-4.5,0.8-7.7l0.7-10.5l-14-0.4L43.7,128l45.5,4.2l1.3-13.9L80.1,117.7z"
+          />
+        </svg>
+      </div>
     </div>
     <!-- </transition> -->
 
@@ -626,7 +638,6 @@ export default {
   mounted() {
     this.updateMediaStyles();
     this.$eventHub.$on("publication.newMediaSelected", this.newMediaSelected);
-    debugger;
     this.$eventHub.$on(
       "publication.set_media_to_edit_mode",
       this.setMediaToEditMode
@@ -690,7 +701,6 @@ export default {
       }
     },
     setMediaToEditMode(metaFileName) {
-      debugger;
       if (this.media.publi_meta.metaFileName === metaFileName) {
         this.editButtonClicked();
       }
@@ -1017,36 +1027,48 @@ export default {
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
 
+      const center_of_block = {
+        x:
+          this.$refs.media.getBoundingClientRect().x +
+          this.$refs.media.getBoundingClientRect().width / 2,
+        y:
+          this.$refs.media.getBoundingClientRect().y +
+          this.$refs.media.getBoundingClientRect().height / 2,
+      };
+
+      function angle(cx, cy, ex, ey) {
+        var dy = ey - cy;
+        var dx = ex - cx;
+        var theta = Math.atan2(dy, dx); // range (-PI, PI]
+        theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
+        //if (theta < 0) theta = 360 + theta; // range [0, 360)
+        return theta;
+      }
+
       if (!this.is_rotated) {
         this.is_rotated = true;
         this.is_selected = true;
 
-        this.rotateOffset.x = this.$refs.media.getBoundingClientRect().x;
-        this.rotateOffset.y = this.$refs.media.getBoundingClientRect().y;
+        // this.rotateOffset.x = pageX;
+        // this.rotateOffset.y = pageY;
 
-        const radians = Math.atan2(
-          pageX - this.rotateOffset.x,
-          pageY - this.rotateOffset.y
+        const initial_angle = angle(
+          center_of_block.x,
+          center_of_block.y,
+          pageX,
+          pageY
         );
-        const deg = Math.round(radians * (180 / Math.PI) * -1 + 100);
-        this.rotateOffset.angle = deg;
+
+        this.rotateOffset.angle = this.rotate - initial_angle;
       } else {
-        // measure distance between pageX/pageY and this.rotateOffset.x / this.rotateOffset.y
-        // const a = pageX - this.rotateOffset.x;
-        // const b = pageY - this.rotateOffset.y;
-        // const dist_since_down = Math.round(Math.sqrt( a*a + b*b ));
-
-        const radians = Math.atan2(
-          pageX - this.rotateOffset.x,
-          pageY - this.rotateOffset.y
+        const current_angle = angle(
+          center_of_block.x,
+          center_of_block.y,
+          pageX,
+          pageY
         );
-        const deg = Math.round(radians * (180 / Math.PI) * -1 + 100);
 
-        // const deg = radians * (180/Math.PI);
-
-        // this.rotate = deg + this.rotateOffset.angle;
-        this.rotate = this.rotateOffset.angle + deg;
-        // this.rotate = deg - this.rotateOffset.angle;
+        this.rotate = this.rotateOffset.angle + current_angle;
       }
     },
     rotateUp(event) {
