@@ -4467,8 +4467,8 @@ small {
 
   .m_publicationButtons {
     position: absolute;
-    top: 100px;
-    left: 0px;
+    bottom: 0px;
+    left: 40px;
     max-width: 200px;
     z-index: 1001;
     background-color: rgba(255, 255, 255, 0.95);
@@ -5652,6 +5652,10 @@ small {
     &.type-text {
       background-color: rgba(255, 255, 255, 0.95);
 
+      iframe {
+        width: 100%;
+      }
+
       .ql-container {
         display: flex;
         flex-flow: column;
@@ -5672,7 +5676,7 @@ small {
       }
     }
 
-    iframe {
+    &.type-stl iframe {
       border: 2px solid @c-gris_tresclair;
       .bg-gris_tresclair;
       width: 100%;
