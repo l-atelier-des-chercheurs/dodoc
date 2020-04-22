@@ -25,7 +25,7 @@
     <!-- if media is link -->
     <MediaContent
       v-if="!media.publi_meta.hasOwnProperty('type')"
-      :context="preview_mode && mode !== 'contact_sheet' ? 'full' : 'preview'"
+      :context="mode !== 'contact_sheet' ? 'full' : 'preview'"
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
@@ -34,7 +34,13 @@
       :style="media.publi_meta.custom_css"
     />
     <!-- if not -->
-    <div class="mediaContainer" v-else :style="media.publi_meta.custom_css">
+    <div
+      class="mediaContainer"
+      v-else
+      :style="media.publi_meta.custom_css"
+      :class="`type-${media.publi_meta.type}`"
+      :data-context="context"
+    >
       <template v-if="media.publi_meta.type === 'text'">
         <CollaborativeEditor
           v-if="inline_edit_mode"
@@ -111,17 +117,13 @@
 
     <!-- <transition name="fade_fast" :duration="150"> -->
     <div
-      v-if="
-        (is_selected || is_hovered) &&
-        !preview_mode &&
-        !inline_edit_mode &&
-        !read_only
-      "
+      v-if="!preview_mode && !inline_edit_mode && !read_only"
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
     >
       <div
+        v-if="is_selected || is_hovered"
         class="handle handle_resizeMedia_bottom"
         @mousedown.stop.prevent="
           (event) => resizeMedia({ event, type: 'mouse', origin: 'bottom' })
@@ -150,6 +152,7 @@
         </svg>
       </div>
       <div
+        v-if="is_selected || is_hovered"
         class="handle handle_resizeMedia_right"
         @mousedown.stop.prevent="
           (event) => resizeMedia({ event, type: 'mouse', origin: 'right' })
@@ -171,14 +174,16 @@
           xml:space="preserve"
         >
           <path
-            d="M28.1,0l9.2,8.6l-6.5,6.6c-2,2-3.6,3.6-5,4.7c-1.4,1.1-3,2.2-4.8,3.2l64.1,0c-1.8-1-3.4-2.1-4.8-3.2
-		c-1.4-1.1-3.1-2.7-5-4.7l-6.6-6.6L77.7,0L106,30L77.7,60l-9.2-8.6l6.7-6.7c2-2,3.7-3.6,5.1-4.7c1.4-1.1,2.9-2.1,4.5-3l-63.9,0
-		c1.6,0.9,3.2,1.9,4.5,3c1.4,1.1,3.1,2.7,5.1,4.7l6.6,6.7L28.1,60L0,30L28.1,0z"
+            d="M28.1,0l9.2,8.6l-6.5,6.6c-2,2-3.6,3.6-5,4.7c-1.4,1.1-3,2.2-4.8,3.2l64.1,0c-1.8-1-3.4-2.1-4.8-3.2 c-1.4-1.1-3.1-2.7-5-4.7l-6.6-6.6L77.7,0L106,30L77.7,60l-9.2-8.6l6.7-6.7c2-2,3.7-3.6,5.1-4.7c1.4-1.1,2.9-2.1,4.5-3l-63.9,0 c1.6,0.9,3.2,1.9,4.5,3c1.4,1.1,3.1,2.7,5.1,4.7l6.6,6.7L28.1,60L0,30L28.1,0z"
           />
         </svg>
       </div>
       <div
-        v-if="media.type !== 'text' && media.publi_meta.type !== 'text'"
+        v-if="
+          media.type !== 'text' &&
+          media.publi_meta.type !== 'text' &&
+          (is_selected || is_hovered)
+        "
         class="handle handle_resizeMedia"
         @mousedown.stop.prevent="
           (event) =>
@@ -196,9 +201,9 @@
           xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
           x="0px"
           y="0px"
-          width="77.5px"
-          height="77.5px"
-          viewBox="0 0 77.5 77.5"
+          width="106px"
+          height="60px"
+          viewBox="-10 -10 100 100"
           style="enable-background: new 0 0 77.5 77.5;"
           xml:space="preserve"
         >
@@ -239,7 +244,7 @@
       >
         <button
           type="button"
-          class="_advanced_menu_button buttonLink _no_underline"
+          class="_advanced_menu_button _no_underline"
           @mousedown.stop.prevent="show_advanced_menu = !show_advanced_menu"
           @touchstart.stop.prevent="show_advanced_menu = !show_advanced_menu"
         >
@@ -350,7 +355,8 @@
               delay: [600, 0],
             }"
           >
-            {{ $t("css") }}<sup v-if="custom_css">*</sup>
+            {{ $t("css") }}
+            <sup v-if="custom_css">*</sup>
           </button>
 
           <button
@@ -466,7 +472,7 @@
               <rect x="120.4" y="56.9" width="10" height="16.6" />
             </g>
           </svg>
-        </button> -->
+          </button>-->
 
           <button
             type="button"
@@ -496,7 +502,7 @@
                 points="37.2,30.6 30.6,37.2 18.6,25.2 6.6,37.2 0,30.6 12,18.6 0,6.6 6.6,0 18.6,12 30.6,0 37.2,6.6 
             25.2,18.6 "
               />
-            </svg> -->
+            </svg>-->
             {{ $t("withdraw") }}
           </button>
         </div>
@@ -636,7 +642,8 @@ export default {
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
-        z-index: ${set_z_index};
+                z-index: ${set_z_index};
+
       `;
     },
     text_is_overflowing() {
@@ -716,29 +723,30 @@ export default {
       });
     },
     updateMediaStyles() {
-      debugger;
       this.rotate = this.media.publi_meta.hasOwnProperty("rotate")
         ? this.media.publi_meta.rotate
         : 0;
       this.mediaSize.width =
         this.media.publi_meta.hasOwnProperty("width") &&
-        !!Number.parseInt(this.media.publi_meta.width)
-          ? this.limitMediaWidth(Number.parseInt(this.media.publi_meta.width))
+        !!Number.parseFloat(this.media.publi_meta.width)
+          ? this.limitMediaWidth(Number.parseFloat(this.media.publi_meta.width))
           : 100;
       this.mediaSize.height =
         this.media.publi_meta.hasOwnProperty("height") &&
-        !!Number.parseInt(this.media.publi_meta.height)
-          ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height))
+        !!Number.parseFloat(this.media.publi_meta.height)
+          ? this.limitMediaHeight(
+              Number.parseFloat(this.media.publi_meta.height)
+            )
           : 100;
       this.mediaPos.x =
         this.media.publi_meta.hasOwnProperty("x") &&
-        !!Number.parseInt(this.media.publi_meta.x)
-          ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x))
+        !!Number.parseFloat(this.media.publi_meta.x)
+          ? this.limitMediaXPos(Number.parseFloat(this.media.publi_meta.x))
           : this.page.margin_left;
       this.mediaPos.y =
         this.media.publi_meta.hasOwnProperty("y") &&
-        !!Number.parseInt(this.media.publi_meta.y)
-          ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y))
+        !!Number.parseFloat(this.media.publi_meta.y)
+          ? this.limitMediaYPos(Number.parseFloat(this.media.publi_meta.y))
           : this.page.margin_top;
       this.custom_css = this.media.publi_meta.hasOwnProperty("custom_css")
         ? this.media.publi_meta.custom_css
@@ -848,19 +856,19 @@ export default {
         );
       }
 
-      if (!this.read_only) {
-        this.resize_origin = origin;
+      if (this.read_only) return;
 
-        if (this.resize_origin === "bottomright") this.enableLock();
-        else if (this.resize_origin !== "bottomright") this.disableLock();
+      this.resize_origin = origin;
 
-        if (type === "mouse") {
-          window.addEventListener("mousemove", this.resizeMove);
-          window.addEventListener("mouseup", this.resizeUp);
-        } else if (type === "touch") {
-          window.addEventListener("touchmove", this.resizeMove);
-          window.addEventListener("touchend", this.resizeUp);
-        }
+      if (this.resize_origin === "bottomright") this.enableLock();
+      else if (this.resize_origin !== "bottomright") this.disableLock();
+
+      if (type === "mouse") {
+        window.addEventListener("mousemove", this.resizeMove);
+        window.addEventListener("mouseup", this.resizeUp);
+      } else if (type === "touch") {
+        window.addEventListener("touchmove", this.resizeMove);
+        window.addEventListener("touchend", this.resizeUp);
       }
     },
     rotateMedia(type, origin) {
@@ -897,8 +905,8 @@ export default {
         this.is_selected = true;
         this.resizeOffset.x = pageX_mm;
         this.resizeOffset.y = pageY_mm;
-        this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
-        this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
+        this.mediaSize.pwidth = Number.parseFloat(this.mediaSize.width);
+        this.mediaSize.pheight = Number.parseFloat(this.mediaSize.height);
       } else {
         const deltaX =
           (pageX_mm - this.resizeOffset.x) / this.$root.settings.publi_zoom;
@@ -1024,15 +1032,16 @@ export default {
           `METHODS • MediaPublication: dragMedia with is_dragged = ${this.is_dragged}`
         );
       }
-      if (!this.read_only) {
-        if (type === "mouse") {
-          this.is_selected = true;
-          window.addEventListener("mousemove", this.dragMove);
-          window.addEventListener("mouseup", this.dragUp);
-        } else if (type === "touch") {
-          window.addEventListener("touchmove", this.dragMove);
-          window.addEventListener("touchend", this.dragUp);
-        }
+
+      if (this.read_only) return;
+
+      if (type === "mouse") {
+        this.is_selected = true;
+        window.addEventListener("mousemove", this.dragMove);
+        window.addEventListener("mouseup", this.dragUp);
+      } else if (type === "touch") {
+        window.addEventListener("touchmove", this.dragMove);
+        window.addEventListener("touchend", this.dragUp);
       }
     },
     dragMove(event) {
@@ -1055,8 +1064,8 @@ export default {
         this.dragOffset.x = pageX_mm;
         this.dragOffset.y = pageY_mm;
 
-        this.mediaPos.px = Number.parseInt(this.mediaPos.x);
-        this.mediaPos.py = Number.parseInt(this.mediaPos.y);
+        this.mediaPos.px = Number.parseFloat(this.mediaPos.x);
+        this.mediaPos.py = Number.parseFloat(this.mediaPos.y);
       } else {
         const deltaX =
           (pageX_mm - this.dragOffset.x) / this.$root.settings.publi_zoom;

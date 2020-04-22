@@ -322,7 +322,7 @@ module.exports = (function () {
       fr: "Calque dessin 1",
       en: "Drawing layer 1",
     },
-    drawing_layer_1: {
+    media_layer_1: {
       fr: "Calque média 1",
       en: "Media layer 1",
     },
