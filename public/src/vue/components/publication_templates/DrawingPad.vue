@@ -308,6 +308,8 @@ export default {
   },
   created() {
     this.$root.setPublicationZoom(this.zoom);
+
+    if (!this.can_edit_publi) this.preview_mode = true;
   },
   mounted() {
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty("mmMeasurer")
@@ -364,6 +366,15 @@ export default {
       },
       deep: true,
     },
+    preview_mode: function () {
+      if (!this.preview_mode && !this.can_edit_publi) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.action_not_allowed"));
+        this.preview_mode = true;
+      }
+    },
     zoom: function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: zoom`);
@@ -379,6 +390,12 @@ export default {
     },
   },
   computed: {
+    can_edit_publi() {
+      return this.$root.canEditFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
     layers() {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`COMPUTED • layers`);
@@ -453,6 +470,7 @@ export default {
         margin_right: 0,
         margin_top: 0,
         margin_bottom: 0,
+        snap_to_grid: false,
         width: this.publication.width,
         height: this.publication.height,
         color: layer.color,

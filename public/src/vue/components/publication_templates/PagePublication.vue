@@ -299,7 +299,7 @@
           :pageNumber="pageNumber"
           :page="page"
           :publication_medias="publication_medias[page.id]"
-          :read_only="read_only"
+          :read_only="read_only || !can_edit_publi"
           :pixelsPerMillimeters="pixelsPerMillimeters"
           :zoom="zoom"
         />
@@ -685,6 +685,8 @@ export default {
   created() {
     // when opening a publi, we’ll need to use the medias field to request some actual content
     this.$root.setPublicationZoom(this.zoom);
+
+    if (!this.can_edit_publi) this.preview_mode = true;
   },
   mounted() {
     this.$eventHub.$on("publication.addMedia", this.addMedia);
@@ -758,6 +760,15 @@ export default {
       },
       deep: true,
     },
+    preview_mode: function () {
+      if (!this.preview_mode && !this.can_edit_publi) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.action_not_allowed"));
+        this.preview_mode = true;
+      }
+    },
     zoom: function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: zoom`);
@@ -784,6 +795,7 @@ export default {
       });
     },
     can_edit_publi() {
+      debugger;
       return this.$root.canEditFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,

@@ -25,7 +25,7 @@
     <!-- if media is link -->
     <MediaContent
       v-if="!media.publi_meta.hasOwnProperty('type')"
-      :context="preview_mode && mode !== 'contact_sheet' ? 'full' : 'preview'"
+      :context="mode !== 'contact_sheet' ? 'full' : 'preview'"
       :slugFolderName="media.slugProjectName"
       :media="media"
       :read_only="read_only"
@@ -636,7 +636,6 @@ export default {
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
-        z-index: ${set_z_index};
       `;
     },
     text_is_overflowing() {
@@ -721,23 +720,25 @@ export default {
         : 0;
       this.mediaSize.width =
         this.media.publi_meta.hasOwnProperty("width") &&
-        !!Number.parseInt(this.media.publi_meta.width)
-          ? this.limitMediaWidth(Number.parseInt(this.media.publi_meta.width))
+        !!Number.parseFloat(this.media.publi_meta.width)
+          ? this.limitMediaWidth(Number.parseFloat(this.media.publi_meta.width))
           : 100;
       this.mediaSize.height =
         this.media.publi_meta.hasOwnProperty("height") &&
-        !!Number.parseInt(this.media.publi_meta.height)
-          ? this.limitMediaHeight(Number.parseInt(this.media.publi_meta.height))
+        !!Number.parseFloat(this.media.publi_meta.height)
+          ? this.limitMediaHeight(
+              Number.parseFloat(this.media.publi_meta.height)
+            )
           : 100;
       this.mediaPos.x =
         this.media.publi_meta.hasOwnProperty("x") &&
-        !!Number.parseInt(this.media.publi_meta.x)
-          ? this.limitMediaXPos(Number.parseInt(this.media.publi_meta.x))
+        !!Number.parseFloat(this.media.publi_meta.x)
+          ? this.limitMediaXPos(Number.parseFloat(this.media.publi_meta.x))
           : this.page.margin_left;
       this.mediaPos.y =
         this.media.publi_meta.hasOwnProperty("y") &&
-        !!Number.parseInt(this.media.publi_meta.y)
-          ? this.limitMediaYPos(Number.parseInt(this.media.publi_meta.y))
+        !!Number.parseFloat(this.media.publi_meta.y)
+          ? this.limitMediaYPos(Number.parseFloat(this.media.publi_meta.y))
           : this.page.margin_top;
       this.custom_css = this.media.publi_meta.hasOwnProperty("custom_css")
         ? this.media.publi_meta.custom_css
@@ -847,19 +848,19 @@ export default {
         );
       }
 
-      if (!this.read_only) {
-        this.resize_origin = origin;
+      if (this.read_only) return;
 
-        if (this.resize_origin === "bottomright") this.enableLock();
-        else if (this.resize_origin !== "bottomright") this.disableLock();
+      this.resize_origin = origin;
 
-        if (type === "mouse") {
-          window.addEventListener("mousemove", this.resizeMove);
-          window.addEventListener("mouseup", this.resizeUp);
-        } else if (type === "touch") {
-          window.addEventListener("touchmove", this.resizeMove);
-          window.addEventListener("touchend", this.resizeUp);
-        }
+      if (this.resize_origin === "bottomright") this.enableLock();
+      else if (this.resize_origin !== "bottomright") this.disableLock();
+
+      if (type === "mouse") {
+        window.addEventListener("mousemove", this.resizeMove);
+        window.addEventListener("mouseup", this.resizeUp);
+      } else if (type === "touch") {
+        window.addEventListener("touchmove", this.resizeMove);
+        window.addEventListener("touchend", this.resizeUp);
       }
     },
     rotateMedia(type, origin) {
@@ -896,8 +897,8 @@ export default {
         this.is_selected = true;
         this.resizeOffset.x = pageX_mm;
         this.resizeOffset.y = pageY_mm;
-        this.mediaSize.pwidth = Number.parseInt(this.mediaSize.width);
-        this.mediaSize.pheight = Number.parseInt(this.mediaSize.height);
+        this.mediaSize.pwidth = Number.parseFloat(this.mediaSize.width);
+        this.mediaSize.pheight = Number.parseFloat(this.mediaSize.height);
       } else {
         const deltaX =
           (pageX_mm - this.resizeOffset.x) / this.$root.settings.publi_zoom;
@@ -1023,15 +1024,16 @@ export default {
           `METHODS • MediaPublication: dragMedia with is_dragged = ${this.is_dragged}`
         );
       }
-      if (!this.read_only) {
-        if (type === "mouse") {
-          this.is_selected = true;
-          window.addEventListener("mousemove", this.dragMove);
-          window.addEventListener("mouseup", this.dragUp);
-        } else if (type === "touch") {
-          window.addEventListener("touchmove", this.dragMove);
-          window.addEventListener("touchend", this.dragUp);
-        }
+
+      if (this.read_only) return;
+
+      if (type === "mouse") {
+        this.is_selected = true;
+        window.addEventListener("mousemove", this.dragMove);
+        window.addEventListener("mouseup", this.dragUp);
+      } else if (type === "touch") {
+        window.addEventListener("touchmove", this.dragMove);
+        window.addEventListener("touchend", this.dragUp);
       }
     },
     dragMove(event) {
@@ -1054,8 +1056,8 @@ export default {
         this.dragOffset.x = pageX_mm;
         this.dragOffset.y = pageY_mm;
 
-        this.mediaPos.px = Number.parseInt(this.mediaPos.x);
-        this.mediaPos.py = Number.parseInt(this.mediaPos.y);
+        this.mediaPos.px = Number.parseFloat(this.mediaPos.x);
+        this.mediaPos.py = Number.parseFloat(this.mediaPos.y);
       } else {
         const deltaX =
           (pageX_mm - this.dragOffset.x) / this.$root.settings.publi_zoom;

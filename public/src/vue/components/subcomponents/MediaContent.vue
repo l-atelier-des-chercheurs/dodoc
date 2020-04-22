@@ -12,13 +12,6 @@
         :src="linkToImageThumb"
         draggable="false"
       />
-      <transition name="slideFromTop" :duration="600">
-        <img
-          v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb"
-          :src="linkToHoveredThumb"
-          draggable="false"
-        />
-      </transition>
     </template>
 
     <template v-else-if="media.type === 'video'">
@@ -224,7 +217,6 @@ export default {
       type: String,
       default: "…",
     },
-    is_hovered: Boolean,
     read_only: {
       type: Boolean,
       default: true,
@@ -355,8 +347,7 @@ export default {
     imageSrcSetAttr: function () {
       if (
         this.element_width_for_sizes === 0 ||
-        this.mediaURL.toLowerCase().endsWith(".gif") ||
-        this.context === "full"
+        this.mediaURL.toLowerCase().endsWith(".gif")
       ) {
         return;
       }
@@ -376,17 +367,6 @@ export default {
         return;
       }
       return this.element_width_for_sizes + "px";
-    },
-    linkToHoveredThumb: function () {
-      let pathToSmallestThumb = this.media.thumbs.filter(
-        (m) => m.size === this.thumbResHovered
-      )[0].path;
-
-      const url =
-        this.$root.state.mode === "export_publication"
-          ? "./" + pathToSmallestThumb
-          : "/" + pathToSmallestThumb;
-      return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
   },
   methods: {
