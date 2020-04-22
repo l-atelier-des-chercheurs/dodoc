@@ -182,7 +182,8 @@
         v-if="
           media.type !== 'text' &&
           media.publi_meta.type !== 'text' &&
-          (is_selected || is_hovered)
+          (is_selected || is_hovered) &&
+          media.hasOwnProperty('ratio')
         "
         class="handle handle_resizeMedia"
         @mousedown.stop.prevent="
@@ -245,8 +246,14 @@
         <button
           type="button"
           class="_advanced_menu_button _no_underline"
-          @mousedown.stop.prevent="show_advanced_menu = !show_advanced_menu"
-          @touchstart.stop.prevent="show_advanced_menu = !show_advanced_menu"
+          @mousedown.stop.prevent="
+            show_advanced_menu = !show_advanced_menu;
+            is_selected = true;
+          "
+          @touchstart.stop.prevent="
+            show_advanced_menu = !show_advanced_menu;
+            is_selected = true;
+          "
         >
           <svg
             version="1.1"
@@ -737,6 +744,8 @@ export default {
           ? this.limitMediaHeight(
               Number.parseFloat(this.media.publi_meta.height)
             )
+          : this.media.hasOwnProperty("ratio")
+          ? this.mediaSize.width * this.media.ratio
           : 100;
       this.mediaPos.x =
         this.media.publi_meta.hasOwnProperty("x") &&
