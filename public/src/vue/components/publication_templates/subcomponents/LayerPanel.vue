@@ -18,14 +18,18 @@
           class="buttonLink"
           @click="show_create_layer_modal = false"
           v-else
-        >{{ $t("cancel") }}</button>
+        >
+          {{ $t("cancel") }}
+        </button>
 
         <button
           type="button"
           class="buttonLink"
           :class="{ 'is--active': show_create_layer_modal }"
           @click="show_create_layer_modal = !show_create_layer_modal"
-        >{{ $t("create") }}</button>
+        >
+          {{ $t("create") }}
+        </button>
       </div>
 
       <form
@@ -35,7 +39,13 @@
       >
         <div class="margin-bottom-small">
           <label>{{ $t("layer_name") }}</label>
-          <input type="text" required autofocus ref="newLayerInputName" v-model="new_layer_name" />
+          <input
+            type="text"
+            required
+            autofocus
+            ref="newLayerInputName"
+            v-model="new_layer_name"
+          />
         </div>
 
         <div class="margin-bottom-small">
@@ -46,14 +56,10 @@
           </select>
           <small>
             <template v-if="new_layer_type === 'drawing'">
-              {{
-              $t("drawing_layer_instructions")
-              }}
+              {{ $t("drawing_layer_instructions") }}
             </template>
             <template v-else-if="new_layer_type === 'medias'">
-              {{
-              $t("medias_layer_instructions")
-              }}
+              {{ $t("medias_layer_instructions") }}
             </template>
           </small>
         </div>
@@ -82,17 +88,17 @@
             @click="toggleActiveLayer(layer.id)"
             class="m_layerPanel--layerList--layer"
             :class="{
-            'is--active':
-              layer.id === $root.settings.current_publication.layer_id
-          }"
+              'is--active':
+                layer.id === $root.settings.current_publication.layer_id,
+            }"
           >
             <div class="_vignette" :class="['_vignette_' + layer.type]">
               <input
                 v-if="layer.type === 'drawing'"
                 type="color"
                 @click.stop="
-                $root.settings.current_publication.layer_id = layer.id
-              "
+                  $root.settings.current_publication.layer_id = layer.id
+                "
                 :value="layer.color"
                 @change="updateLayerColor({ $event, id: layer.id })"
               />
@@ -102,29 +108,25 @@
               <br />
               <span class="label">
                 <template v-if="layer.type === 'drawing'">
-                  {{
-                  $t("drawing")
-                  }}
+                  {{ $t("drawing") }}
                 </template>
                 <template v-if="layer.type === 'medias'">
                   <template v-if="!mediasFromLayer(layer.id)">
-                    {{
-                    $t("media")
-                    }}
+                    {{ $t("media") }}
                   </template>
                   <template v-else>
                     <template v-if="mediasFromLayer(layer.id).length === 1">
                       {{
-                      mediasFromLayer(layer.id).length +
-                      " " +
-                      $t("media").toLowerCase()
+                        mediasFromLayer(layer.id).length +
+                        " " +
+                        $t("media").toLowerCase()
                       }}
                     </template>
                     <template v-else>
                       {{
-                      mediasFromLayer(layer.id).length +
-                      " " +
-                      $t("medias").toLowerCase()
+                        mediasFromLayer(layer.id).length +
+                        " " +
+                        $t("medias").toLowerCase()
                       }}
                     </template>
                   </template>
@@ -137,13 +139,16 @@
       </SlickList>
     </div>
 
-    <LayerOptions
-      v-if="current_layer"
-      :current_layer="current_layer"
-      :drawing_options="drawing_options"
-      @updateDrawingOptions="v => $emit('updateDrawingOptions', v)"
-      @removeLayer="id => removeLayer(id)"
-    />
+    <transition name="slideleft" mode="out-in">
+      <LayerOptions
+        v-if="current_layer"
+        :key="current_layer.id"
+        :current_layer="current_layer"
+        :drawing_options="drawing_options"
+        @updateDrawingOptions="(v) => $emit('updateDrawingOptions', v)"
+        @removeLayer="(id) => removeLayer(id)"
+      />
+    </transition>
   </div>
 </template>
 <script>
@@ -156,12 +161,12 @@ export default {
     medias: Object,
     slugPubliName: String,
     publication: Object,
-    drawing_options: Object
+    drawing_options: Object,
   },
   components: {
     LayerOptions,
     SlickItem,
-    SlickList
+    SlickList,
   },
   directives: { handle: HandleDirective },
   data() {
@@ -169,7 +174,7 @@ export default {
       show_create_layer_modal: false,
       new_layer_name: "",
       new_layer_type: "drawing",
-      show_layers: true
+      show_layers: true,
     };
   },
   created() {},
@@ -183,7 +188,7 @@ export default {
     this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {
-    "$root.settings.current_publication.layer_id": function() {
+    "$root.settings.current_publication.layer_id": function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(
           `WATCH • LayerPanel: $root.settings.current_publication.layer_id`
@@ -196,13 +201,13 @@ export default {
           "audio",
           "text",
           "document",
-          "other"
+          "other",
         ];
       } else {
         this.$root.settings.current_publication.accepted_media_type = [];
       }
     },
-    show_create_layer_modal: function() {
+    show_create_layer_modal: function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • LayerPanel: show_create_layer_modal`);
 
@@ -211,7 +216,7 @@ export default {
           this.$refs.newLayerInputName.focus();
         });
       }
-    }
+    },
   },
   computed: {
     sorted_layers: {
@@ -225,10 +230,10 @@ export default {
           type: "publications",
           slugFolderName: this.slugPubliName,
           data: {
-            layers
-          }
+            layers,
+          },
         });
-      }
+      },
     },
     current_layer() {
       if (
@@ -237,9 +242,9 @@ export default {
       )
         return false;
       return this.publication.layers.find(
-        l => l.id === this.$root.settings.current_publication.layer_id
+        (l) => l.id === this.$root.settings.current_publication.layer_id
       );
-    }
+    },
   },
   methods: {
     toggleActiveLayer(id) {
@@ -251,11 +256,11 @@ export default {
     },
     mediasFromLayer(id) {
       if (typeof this.medias !== "object") return [];
-      return Object.values(this.medias).filter(m => m.layer_id === id);
+      return Object.values(this.medias).filter((m) => m.layer_id === id);
     },
     updateLayerColor({ $event, id }) {
       const new_color = $event.target.value;
-      const layers = this.publication.layers.map(l => {
+      const layers = this.publication.layers.map((l) => {
         if (l.id === id) l.color = new_color;
         return l;
       });
@@ -263,8 +268,8 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          layers
-        }
+          layers,
+        },
       });
     },
     createLayer() {
@@ -286,15 +291,15 @@ export default {
         type: this.new_layer_type,
         name: this.new_layer_name,
         id: layer_id,
-        color: "#000000"
+        color: "#000000",
       });
 
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          layers
-        }
+          layers,
+        },
       });
 
       this.$eventHub.$once("socketio.publications.folder_listed", () =>
@@ -310,8 +315,8 @@ export default {
           type: "publications",
           additionalMeta: {
             layer_id,
-            canvas_information: ""
-          }
+            canvas_information: "",
+          },
         });
       }
 
@@ -337,7 +342,7 @@ export default {
         return;
       }
 
-      let layers = this.publication.layers.filter(l => l.id !== id);
+      let layers = this.publication.layers.filter((l) => l.id !== id);
 
       this.$alertify
         .okBtn(this.$t("yes"))
@@ -352,14 +357,14 @@ export default {
               type: "publications",
               slugFolderName: this.slugPubliName,
               data: {
-                layers
-              }
+                layers,
+              },
             });
           },
           () => {}
         );
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss"></style>

@@ -4566,12 +4566,14 @@ small {
     flex-flow: row nowrap;
 
     > * {
+      // border: 2px solid @c-noir;
+      border-bottom: 0;
       border-radius: 5px;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
-      background-color: rgba(255, 255, 255, 0.75);
+      background-color: rgba(255, 255, 255, 1);
       max-width: 220px;
-      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
+      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.2);
       max-height: 320px;
       .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
       overflow-x: hidden;
@@ -4581,10 +4583,14 @@ small {
 
     .m_layerPanel--layerList {
       flex: 0 0 200px;
+      z-index: 1;
     }
 
     .m_layerOptions {
       flex: 0 0 200px;
+      border-left: 0;
+      .bg-noir;
+      .c-blanc;
     }
 
     .m_layerPanel--layerList--topbar {
@@ -5296,15 +5302,24 @@ small {
 
   .m_drawingPad--layer {
     position: absolute;
+    pointer-events: none;
     // margin: @t-skipline / 2 auto;
 
-    &.is--inactive {
-      pointer-events: none;
-      // opacity: 0.2;
+    .m_mediaPublication {
+      pointer-events: auto;
     }
-    &.is--noteditable {
+
+    &.is--inactive {
       &.m_drawingPad--layer_drawing {
+      }
+      .m_mediaPublication {
         pointer-events: none;
+      }
+    }
+
+    &.is--edited {
+      &.m_drawingPad--layer_drawing {
+        pointer-events: auto;
       }
     }
 

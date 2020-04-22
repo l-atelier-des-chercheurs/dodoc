@@ -2,7 +2,11 @@
   <div class="m_layerOptions">
     <div class="m_layerOptions--layerName">{{ current_layer.name }}</div>
 
-    <button type="button" class="buttonLink _no_underline" @click.stop="removeLayer">
+    <button
+      type="button"
+      class="buttonLink _no_underline"
+      @click.stop="removeLayer"
+    >
       <svg
         version="1.1"
         class="inline-svg"
@@ -13,7 +17,7 @@
         width="91.6px"
         height="95px"
         viewBox="0 0 91.6 95"
-        style="enable-background:new 0 0 91.6 95;"
+        style="enable-background: new 0 0 91.6 95;"
         xml:space="preserve"
       >
         <path
@@ -21,16 +25,47 @@
             l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
         />
       </svg>
-      {{ $t("remove") }}
+      {{ $t("remove_layer") }}
     </button>
 
     <div v-if="current_layer.type === 'drawing'">
       <div v-for="mode in ['select', 'drawing']" :key="mode">
-        <input type="radio" :id="mode" :name="mode" :value="mode" v-model="drawing_options.mode" />
+        <input
+          type="radio"
+          :id="mode"
+          :name="mode"
+          :value="mode"
+          v-model="drawing_options.mode"
+        />
         <label :for="mode">
           <span>{{ mode }}</span>
         </label>
       </div>
+      <button
+        type="button"
+        class="buttonLink _no_underline"
+        @click.stop="$eventHub.$emit('remove_selection')"
+      >
+        <svg
+          version="1.1"
+          class="inline-svg"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="91.6px"
+          height="95px"
+          viewBox="0 0 91.6 95"
+          style="enable-background: new 0 0 91.6 95;"
+          xml:space="preserve"
+        >
+          <path
+            d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
+          />
+        </svg>
+        {{ $t("remove_selection") }}
+      </button>
     </div>
     <div v-else-if="current_layer.type === 'medias'">
       <!-- <label>
@@ -49,7 +84,7 @@
 export default {
   props: {
     current_layer: Object,
-    drawing_options: Object
+    drawing_options: Object,
   },
   components: {},
   data() {
@@ -63,15 +98,15 @@ export default {
       handler() {
         this.$emit("updateDrawingOptions", this.drawing_options);
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {},
   methods: {
     removeLayer() {
       this.$emit("removeLayer", this.current_layer.id);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
