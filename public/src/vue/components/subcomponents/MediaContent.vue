@@ -355,8 +355,12 @@ export default {
       // get all available sizes
       const img_srcset = this.media.thumbs.reduce((acc, t) => {
         if (t.hasOwnProperty("path")) {
-          // acc.push(encodeURIComponent(t.path) + ' ' + t.size + 'w');
-          acc.push(t.path + " " + t.size + "w");
+          const path =
+            this.$root.state.mode === "export_publication"
+              ? "./" + t.path
+              : "/" + t.path;
+
+          acc.push(path + " " + t.size + "w");
         }
         return acc;
       }, []);

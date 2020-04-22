@@ -67,25 +67,28 @@
         v-for="media in publication_medias"
         :key="media.publi_meta.metaFileName"
       >
-        <MediaPublication
-          :page="page"
-          :mode="mode"
-          :media="media"
-          :preview_mode="preview_mode"
-          :read_only="read_only"
-          :pixelsPerMillimeters="pixelsPerMillimeters"
-          @removePubliMedia="
-            (values) => {
-              removePubliMedia(values);
-            }
-          "
-          @editPubliMedia="
-            (values) => {
-              editPubliMedia(values);
-            }
-          "
-          @unselected="noSelection"
-        />
+        <transition name="slideup" :duration="1000">
+          <MediaPublication
+            :key="media.publi_meta.metaFileName"
+            :page="page"
+            :mode="mode"
+            :media="media"
+            :preview_mode="preview_mode"
+            :read_only="read_only"
+            :pixelsPerMillimeters="pixelsPerMillimeters"
+            @removePubliMedia="
+              (values) => {
+                removePubliMedia(values);
+              }
+            "
+            @editPubliMedia="
+              (values) => {
+                editPubliMedia(values);
+              }
+            "
+            @unselected="noSelection"
+          />
+        </transition>
       </div>
     </div>
   </div>
