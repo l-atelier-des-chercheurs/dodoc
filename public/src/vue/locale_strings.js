@@ -1674,6 +1674,10 @@ module.exports = (function () {
       oc: "vidèo",
       de: "Video",
     },
+    stl: {
+      fr: "STL",
+      en: "STL",
+    },
     stopmotion: {
       fr: "animation",
       en: "stopmotion",

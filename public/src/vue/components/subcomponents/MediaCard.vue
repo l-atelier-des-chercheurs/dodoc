@@ -1,6 +1,6 @@
 <template>
   <div
-    class="m_media"
+    class="m_mediaCard"
     :class="{
       'is--inPubli': is_media_in_publi,
       'is--fav': media.fav,
@@ -18,7 +18,7 @@
         :class="{ 'is--hovered': is_hovered }"
       >
         <div>
-          <div class="m_media--topbar m_metaField padding-sides-verysmall">
+          <div class="m_mediaCard--topbar m_metaField padding-sides-verysmall">
             <div>
               <svg
                 v-if="media.fav"
@@ -67,7 +67,7 @@
             :media="media"
             :preview_size="preview_size"
           />
-          <figcaption class="m_media--caption" v-if="!!media.caption">
+          <figcaption class="m_mediaCard--caption" v-if="!!media.caption">
             <span>{{ media.caption }}</span>
           </figcaption>
 
@@ -79,7 +79,7 @@
                   media.type
                 )
               "
-              class="m_media--add_to_recipe"
+              class="m_mediaCard--add_to_recipe"
               @click.stop="addToCurrentPubli()"
             >
               <button
