@@ -211,7 +211,6 @@
           </div>
         </div>
 
-        {{ publication_medias }}
         <div
           v-for="layer in layers"
           :key="layer.id"
@@ -522,71 +521,45 @@ export default {
       }
 
       // get list of publications items
-      let medias_paginated = {};
+
       let missingMedias = [];
 
-      Object.keys(this.publication.medias).map((metaFileName) => {
-        const _media = JSON.parse(
-          JSON.stringify(this.publication.medias[metaFileName])
-        );
+      const medias_paginated = Object.values(this.publication.medias).reduce(
+        (acc, publi_media) => {
+          let meta = {};
 
-        // for each, get slugFolderName and metaFileName
-        if (
-          !_media.hasOwnProperty("slugProjectName") ||
-          !_media.hasOwnProperty("metaFileName")
-        ) {
-          return;
-        }
-
-        const slugProjectName = _media.slugProjectName;
-        const slugMediaName = _media.slugMediaName;
-
-        // find in store if slugFolderName exists
-        if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
-          console.error(
-            `Missing project in store — not expected : ${slugProjectName}`
-          );
-          console.error(
-            `Medias from project was probably added to the publication before it was removed altogether.`
-          );
-          return;
-        }
-
-        // find in store if metaFileName exists
-        const project_medias = this.$root.store.projects[slugProjectName]
-          .medias;
-        if (!project_medias.hasOwnProperty(slugMediaName)) {
-          console.log(`Some medias missing from client`);
-          missingMedias.push({
-            slugFolderName: slugProjectName,
-            metaFileName: slugMediaName,
-          });
-        } else {
-          let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
-
-          if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
-            console.error(
-              `Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`
-            );
-            console.error(
-              `Media was probably added to the publication before it was removed.`
-            );
-            return;
-          }
-
-          meta.slugProjectName = slugProjectName;
-          meta.publi_meta = JSON.parse(JSON.stringify(_media));
-
-          if (_media.hasOwnProperty("layer_id")) {
-            if (!medias_paginated.hasOwnProperty(_media.layer_id)) {
-              medias_paginated[_media.layer_id] = [];
+          if (
+            publi_media.hasOwnProperty("slugProjectName") &&
+            publi_media.hasOwnProperty("metaFileName")
+          ) {
+            const original_media_meta = this.getOriginalMediaMeta(publi_media);
+            // case of missing project media locally
+            if (!original_media_meta) return acc;
+            if (Object.keys(original_media_meta).length === 0) {
+              console.log(`Some medias missing from client`);
+              missingMedias.push({
+                slugFolderName: publi_media.slugProjectName,
+                metaFileName: publi_media.slugMediaName,
+              });
+              return acc;
             }
 
-            medias_paginated[_media.layer_id].push(meta);
+            meta = original_media_meta;
+            meta.slugProjectName = publi_media.slugProjectName;
           }
-          return;
-        }
-      });
+
+          meta.publi_meta = JSON.parse(JSON.stringify(publi_media));
+
+          if (publi_media.hasOwnProperty("layer_id")) {
+            if (!acc.hasOwnProperty(publi_media.layer_id)) {
+              acc[publi_media.layer_id] = [];
+            }
+            acc[publi_media.layer_id].push(meta);
+          }
+          return acc;
+        },
+        []
+      );
 
       console.log(
         `Finished building media list. Missing medias: ${missingMedias.length}`
