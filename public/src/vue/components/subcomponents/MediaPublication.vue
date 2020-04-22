@@ -34,7 +34,13 @@
       :style="media.publi_meta.custom_css"
     />
     <!-- if not -->
-    <div class="mediaContainer" v-else :style="media.publi_meta.custom_css">
+    <div
+      class="mediaContainer"
+      v-else
+      :style="media.publi_meta.custom_css"
+      :class="`type-${media.publi_meta.type}`"
+      :data-context="context"
+    >
       <template v-if="media.publi_meta.type === 'text'">
         <CollaborativeEditor
           v-if="inline_edit_mode"
@@ -111,17 +117,13 @@
 
     <!-- <transition name="fade_fast" :duration="150"> -->
     <div
-      v-if="
-        (is_selected || is_hovered) &&
-        !preview_mode &&
-        !inline_edit_mode &&
-        !read_only
-      "
+      v-if="!preview_mode && !inline_edit_mode && !read_only"
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
     >
       <div
+        v-if="is_selected || is_hovered"
         class="handle handle_resizeMedia_bottom"
         @mousedown.stop.prevent="
           (event) => resizeMedia({ event, type: 'mouse', origin: 'bottom' })
@@ -150,6 +152,7 @@
         </svg>
       </div>
       <div
+        v-if="is_selected || is_hovered"
         class="handle handle_resizeMedia_right"
         @mousedown.stop.prevent="
           (event) => resizeMedia({ event, type: 'mouse', origin: 'right' })
@@ -171,14 +174,16 @@
           xml:space="preserve"
         >
           <path
-            d="M28.1,0l9.2,8.6l-6.5,6.6c-2,2-3.6,3.6-5,4.7c-1.4,1.1-3,2.2-4.8,3.2l64.1,0c-1.8-1-3.4-2.1-4.8-3.2
-		c-1.4-1.1-3.1-2.7-5-4.7l-6.6-6.6L77.7,0L106,30L77.7,60l-9.2-8.6l6.7-6.7c2-2,3.7-3.6,5.1-4.7c1.4-1.1,2.9-2.1,4.5-3l-63.9,0
-		c1.6,0.9,3.2,1.9,4.5,3c1.4,1.1,3.1,2.7,5.1,4.7l6.6,6.7L28.1,60L0,30L28.1,0z"
+            d="M28.1,0l9.2,8.6l-6.5,6.6c-2,2-3.6,3.6-5,4.7c-1.4,1.1-3,2.2-4.8,3.2l64.1,0c-1.8-1-3.4-2.1-4.8-3.2 c-1.4-1.1-3.1-2.7-5-4.7l-6.6-6.6L77.7,0L106,30L77.7,60l-9.2-8.6l6.7-6.7c2-2,3.7-3.6,5.1-4.7c1.4-1.1,2.9-2.1,4.5-3l-63.9,0 c1.6,0.9,3.2,1.9,4.5,3c1.4,1.1,3.1,2.7,5.1,4.7l6.6,6.7L28.1,60L0,30L28.1,0z"
           />
         </svg>
       </div>
       <div
-        v-if="media.type !== 'text' && media.publi_meta.type !== 'text'"
+        v-if="
+          media.type !== 'text' &&
+          media.publi_meta.type !== 'text' &&
+          (is_selected || is_hovered)
+        "
         class="handle handle_resizeMedia"
         @mousedown.stop.prevent="
           (event) =>
@@ -196,9 +201,9 @@
           xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
           x="0px"
           y="0px"
-          width="77.5px"
-          height="77.5px"
-          viewBox="0 0 77.5 77.5"
+          width="106px"
+          height="60px"
+          viewBox="-10 -10 100 100"
           style="enable-background: new 0 0 77.5 77.5;"
           xml:space="preserve"
         >
@@ -239,7 +244,7 @@
       >
         <button
           type="button"
-          class="_advanced_menu_button buttonLink _no_underline"
+          class="_advanced_menu_button _no_underline"
           @mousedown.stop.prevent="show_advanced_menu = !show_advanced_menu"
           @touchstart.stop.prevent="show_advanced_menu = !show_advanced_menu"
         >

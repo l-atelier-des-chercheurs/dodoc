@@ -4842,6 +4842,8 @@ small {
               background: transparent;
               .font-verysmall;
               color: black;
+              background-color: @c-bleuvert_fonce;
+              color: white;
             }
 
             button {
@@ -5456,9 +5458,10 @@ small {
   height: 40px;
   border-radius: 50%;
   padding: 0;
+  margin: 0;
 
   &:hover {
-    background-color: #eee !important;
+    // background-color: #eee !important;
   }
 
   svg {
@@ -5515,6 +5518,12 @@ small {
   &:not(.is--previewed) {
     // background-color: fade(@c-orange, 50%);
     // border: 2px solid @c-orange;
+  }
+  &.is--previewed {
+    .controlFrame {
+      .handle {
+      }
+    }
   }
 
   &.is--fit_mode_cover .mediaContainer.type-image img {
@@ -5643,6 +5652,10 @@ small {
       object-fit: cover;
     }
 
+    &.type-text {
+      background-color: rgba(255, 255, 255, 0.95);
+    }
+
     &.type-video {
       .plyr {
         border-radius: @t-buttonradius;
@@ -5677,22 +5690,23 @@ small {
     border: none;
   }
 
-  .controlFrame {
-    @t-borderSize: 3px;
-    @t-handleSize: 60px;
+  @t-borderSize: 2px;
+  @t-handleSize: 60px;
+  @t-pictoSize: 34px;
+  @t-pictoPadding: 6px;
 
+  .controlFrame {
     position: absolute;
     top: -@t-borderSize / 2;
     left: -@t-borderSize / 2;
     right: -@t-borderSize / 2;
     bottom: -@t-borderSize / 2;
-    z-index: 1;
+    z-index: 10;
 
     color: #000;
     border: @t-borderSize solid currentColor;
     border-style: solid;
     cursor: pointer;
-    background: transparent;
 
     // transition: border .2s, background 2s;
     // transition: all 1s;
@@ -5736,9 +5750,9 @@ small {
       z-index: 150;
 
       svg {
-        width: 34px;
-        height: 34px;
-        padding: 6px;
+        width: @t-pictoSize;
+        height: @t-pictoSize;
+        padding: @t-pictoPadding;
         border: @t-borderSize solid currentColor;
         border-style: inherit;
         border-radius: 50%;
@@ -5809,15 +5823,24 @@ small {
     top: 0;
     right: 0;
     width: 100%;
-    z-index: 2;
+    z-index: 20;
     // overflow: hidden;
     pointer-events: none;
     .padding-verysmall;
 
     ._advanced_menu_button {
-      width: 24px;
-      height: 24px;
-      border: 3px solid @c-noir;
+      border-radius: 50%;
+      background-color: transparent !important;
+
+      svg {
+        width: @t-pictoSize;
+        height: @t-pictoSize;
+        padding: @t-pictoPadding;
+        background-color: @c-orange;
+
+        border: @t-borderSize solid currentColor;
+        border-radius: 50%;
+      }
     }
 
     ._advanced_menu {
