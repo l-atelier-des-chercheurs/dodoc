@@ -374,27 +374,17 @@ export default {
       });
     },
     createTextMedia() {
-      this.$eventHub.$on(
-        "socketio.media_created_or_updated",
-        this.newTextMediaCreated
-      );
-      this.$root.createMedia({
-        slugFolderName: this.slugProjectName,
-        type: "projects",
-        additionalMeta: {
-          type: "text",
-        },
-      });
-    },
-    newTextMediaCreated(mdata) {
-      if (this.$root.justCreatedMediaID === mdata.id) {
-        this.$root.justCreatedMediaID = false;
-        this.$eventHub.$off(
-          "socketio.media_created_or_updated",
-          this.newTextMediaCreated
-        );
-        this.openMediaModal(mdata.metaFileName);
-      }
+      this.$root
+        .createMedia({
+          slugFolderName: this.slugProjectName,
+          type: "projects",
+          additionalMeta: {
+            type: "text",
+          },
+        })
+        .then((mdata) => {
+          this.openMediaModal(mdata.metaFileName);
+        });
     },
     openCapture() {
       // const iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);

@@ -27,6 +27,8 @@ button,
   &[disabled],
   &.is--disabled {
     cursor: not-allowed;
+    color: @c-gris;
+    background-color: @c-gris_tresclair;
 
     &[class*="bg-"]:not(.bg-transparent) {
       background-color: @c-gris;
@@ -96,38 +98,14 @@ button,
     text-decoration: none;
   }
 
-  &.button-thin {
-    .button-thin;
-    .margin-verysmall;
-    .padding-vert-small;
-    .padding-sides-small;
-    .text-cap;
-    .font-verysmall;
-    // background-color: @c-rouge;
-    // color: white;
-    border-radius: @t-buttonradius;
-  }
-
   &.button-redthin {
     .button-thin;
-    .margin-verysmall;
-    .padding-vert-small;
-    .padding-sides-small;
-    .text-cap;
-    .font-verysmall;
     background-color: @c-rouge;
-    border-radius: 2em;
     color: white;
   }
   &.button-greenthin {
     .button-thin;
-    .margin-verysmall;
-    .padding-vert-small;
-    .padding-sides-small;
-    .text-cap;
-    .font-verysmall;
     background-color: @c-bleuvert;
-    border-radius: @t-buttonradius;
     color: white;
   }
 
@@ -275,7 +253,8 @@ button,
     }
   }
 
-  &[disabled] {
+  &[disabled],
+  &.is--disabled {
     background-color: @c-gris;
   }
 
@@ -466,6 +445,14 @@ b {
 .button-thin {
   min-height: 0;
   line-height: 1;
+  .margin-verysmall;
+  .padding-vert-verysmall;
+  .padding-sides-small;
+  .text-cap;
+  .font-verysmall;
+  // background-color: @c-rouge;
+  // color: white;
+  border-radius: @t-buttonradius;
 }
 .button-wide {
   min-width: 3.5em;
@@ -839,7 +826,8 @@ input[type="checkbox"] {
   }
 
   &:disabled,
-  &.disabled {
+  &.disabled,
+  &.is--disabled {
     background-color: @c-gris;
     border: none;
     cursor: not-allowed;

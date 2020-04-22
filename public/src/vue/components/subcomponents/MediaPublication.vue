@@ -109,7 +109,14 @@
         language="css"
       />
       <div class="m_mediaPublication--edit_styles--sendButton">
-        <button type="button" class @click="setCSSForMedia">
+        <button
+          type="button"
+          class="button-greenthin"
+          @click="setCSSForMedia"
+          :class="{
+            'is--disabled': custom_css === media.publi_meta.custom_css,
+          }"
+        >
           {{ $t("send") }}
         </button>
       </div>
@@ -215,21 +222,33 @@
           />
         </svg>
       </div>
-      <!-- <div class="handle handle_rotateMedia"
-          @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
-          @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
+      <div
+        class="handle handle_rotateMedia"
+        v-if="is_selected || is_hovered"
+        @mousedown.stop.prevent="rotateMedia('mouse', 'bottomright')"
+        @touchstart.stop.prevent="rotateMedia('touch', 'bottomright')"
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="98.7px"
+          height="132.2px"
+          viewBox="0 0 98.7 132.2"
+          style="enable-background: new 0 0 98.7 132.2;"
+          xml:space="preserve"
         >
-  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="98.7px"
-    height="132.2px" viewBox="0 0 98.7 132.2" style="enable-background:new 0 0 98.7 132.2;" xml:space="preserve">
-  <defs>
-  </defs>
-  <path d="M80.1,117.7c-3.1-0.2-5.6-0.3-7.6-0.2c-1.4,0.1-2.9,0.3-4.5,0.5c14.7-13.7,36.9-42.4,29.1-63.4S71.6,27,24.8,24.6
+          <defs></defs>
+          <path
+            d="M80.1,117.7c-3.1-0.2-5.6-0.3-7.6-0.2c-1.4,0.1-2.9,0.3-4.5,0.5c14.7-13.7,36.9-42.4,29.1-63.4S71.6,27,24.8,24.6
     c1.1-0.8,2.2-1.6,3.1-2.4c1.5-1.3,3.2-3.1,5.3-5.5L40,9L29.3,0L0,34.9l32.9,31.5l9.7-10.1l-7.7-7c-2.4-2.1-4.3-3.8-5.9-4.9
     c-1.6-1.2-3.3-2.2-5.2-3.1l-0.1-1.2c29.3,1.4,52.5,6.6,56.5,20.7s-15.9,39.7-23.5,46.5l-0.5-0.6c0.7-1.9,1.2-3.9,1.6-5.9
-    c0.3-2,0.6-4.5,0.8-7.7l0.7-10.5l-14-0.4L43.7,128l45.5,4.2l1.3-13.9L80.1,117.7z"/>
-  </svg>
-
-      </div>-->
+    c0.3-2,0.6-4.5,0.8-7.7l0.7-10.5l-14-0.4L43.7,128l45.5,4.2l1.3-13.9L80.1,117.7z"
+          />
+        </svg>
+      </div>
     </div>
     <!-- </transition> -->
 
@@ -243,6 +262,39 @@
         "
         class="m_mediaPublication--buttons"
       >
+        <button
+          type="button"
+          v-if="!media.slugProjectName"
+          class="buttonLink _no_underline"
+          @mousedown.stop.prevent="editButtonClicked"
+          @touchstart.stop.prevent="editButtonClicked"
+          :content="$t('edit_content')"
+          v-tippy="{
+            placement: 'top',
+            delay: [600, 0],
+          }"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg inline-svg-larger"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="90.7px"
+            height="91px"
+            viewBox="0 0 90 120"
+            style="enable-background: new 0 0 100.7 101;"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
+              L19.1,91.5z"
+            />
+          </svg>
+        </button>
+
         <button
           type="button"
           class="_advanced_menu_button _no_underline"
@@ -368,21 +420,17 @@
 
           <button
             type="button"
+            v-if="media.slugProjectName"
             class="buttonLink _no_underline"
             @mousedown.stop.prevent="editButtonClicked"
             @touchstart.stop.prevent="editButtonClicked"
-            :content="
-              media.slugProjectName
-                ? $t('edit_original_media')
-                : $t('edit_content')
-            "
+            :content="$t('edit_original_media')"
             v-tippy="{
               placement: 'top',
               delay: [600, 0],
             }"
           >
             <svg
-              v-if="media.slugProjectName"
               version="1.1"
               class="inline-svg inline-svg-larger"
               xmlns="http://www.w3.org/2000/svg"
@@ -406,26 +454,6 @@
 		s-1.8,9-5.1,12.3L76.8,61.3c-3.3,3.3-7.7,5.1-12.3,5.1c-4.7,0-9-1.8-12.3-5.1c-1.6-1.6-2.9-3.5-3.7-5.5c-2.1,0.1-4.1,1-5.7,2.5
 		l-5,5c1.4,2.5,3.1,4.9,5.3,7.1c11.8,11.8,31,11.8,42.8,0l18.7-18.7c11.8-11.8,11.8-31,0-42.8C92.8-3,73.7-3,61.8,8.9L45,25.7
 		C46.2,25.6,47.5,25.5,48.8,25.5L48.8,25.5L48.8,25.5z"
-              />
-            </svg>
-            <svg
-              v-else
-              version="1.1"
-              class="inline-svg inline-svg-larger"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="100.7px"
-              height="101px"
-              viewBox="0 0 100.7 101"
-              style="enable-background: new 0 0 100.7 101;"
-              xml:space="preserve"
-            >
-              <path
-                class="st0"
-                d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
-              L19.1,91.5z"
               />
             </svg>
             <!-- {{ $t('edit') }} -->
@@ -610,9 +638,17 @@ export default {
   mounted() {
     this.updateMediaStyles();
     this.$eventHub.$on("publication.newMediaSelected", this.newMediaSelected);
+    this.$eventHub.$on(
+      "publication.set_media_to_edit_mode",
+      this.setMediaToEditMode
+    );
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.newMediaSelected", this.newMediaSelected);
+    this.$eventHub.$off(
+      "publication.set_media_to_edit_mode",
+      this.setMediaToEditMode
+    );
   },
 
   watch: {
@@ -664,6 +700,11 @@ export default {
         this.is_selected = false;
       }
     },
+    setMediaToEditMode(metaFileName) {
+      if (this.media.publi_meta.metaFileName === metaFileName) {
+        this.editButtonClicked();
+      }
+    },
     saveTextMedia() {
       const val = {
         content: this.htmlForEditor,
@@ -682,7 +723,12 @@ export default {
           slugProjectName: this.media.slugProjectName,
           metaFileName: this.media.metaFileName,
         });
-      else this.inline_edit_mode = true;
+      else {
+        this.inline_edit_mode = true;
+        this.$nextTick(() => {
+          this.$refs.textField.$el.querySelector(".ql-editor").focus();
+        });
+      }
     },
     editZIndex(val) {
       this.updateMediaPubliMeta({
@@ -981,36 +1027,48 @@ export default {
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
 
+      const center_of_block = {
+        x:
+          this.$refs.media.getBoundingClientRect().x +
+          this.$refs.media.getBoundingClientRect().width / 2,
+        y:
+          this.$refs.media.getBoundingClientRect().y +
+          this.$refs.media.getBoundingClientRect().height / 2,
+      };
+
+      function angle(cx, cy, ex, ey) {
+        var dy = ey - cy;
+        var dx = ex - cx;
+        var theta = Math.atan2(dy, dx); // range (-PI, PI]
+        theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
+        //if (theta < 0) theta = 360 + theta; // range [0, 360)
+        return theta;
+      }
+
       if (!this.is_rotated) {
         this.is_rotated = true;
         this.is_selected = true;
 
-        this.rotateOffset.x = this.$refs.media.getBoundingClientRect().x;
-        this.rotateOffset.y = this.$refs.media.getBoundingClientRect().y;
+        // this.rotateOffset.x = pageX;
+        // this.rotateOffset.y = pageY;
 
-        const radians = Math.atan2(
-          pageX - this.rotateOffset.x,
-          pageY - this.rotateOffset.y
+        const initial_angle = angle(
+          center_of_block.x,
+          center_of_block.y,
+          pageX,
+          pageY
         );
-        const deg = Math.round(radians * (180 / Math.PI) * -1 + 100);
-        this.rotateOffset.angle = deg;
+
+        this.rotateOffset.angle = this.rotate - initial_angle;
       } else {
-        // measure distance between pageX/pageY and this.rotateOffset.x / this.rotateOffset.y
-        // const a = pageX - this.rotateOffset.x;
-        // const b = pageY - this.rotateOffset.y;
-        // const dist_since_down = Math.round(Math.sqrt( a*a + b*b ));
-
-        const radians = Math.atan2(
-          pageX - this.rotateOffset.x,
-          pageY - this.rotateOffset.y
+        const current_angle = angle(
+          center_of_block.x,
+          center_of_block.y,
+          pageX,
+          pageY
         );
-        const deg = Math.round(radians * (180 / Math.PI) * -1 + 100);
 
-        // const deg = radians * (180/Math.PI);
-
-        // this.rotate = deg + this.rotateOffset.angle;
-        this.rotate = this.rotateOffset.angle + deg;
-        // this.rotate = deg - this.rotateOffset.angle;
+        this.rotate = this.rotateOffset.angle + current_angle;
       }
     },
     rotateUp(event) {

@@ -4469,7 +4469,6 @@ small {
     position: absolute;
     bottom: 0px;
     left: 40px;
-    width: 50%;
     max-width: 200px;
     z-index: 1001;
     background-color: rgba(255, 255, 255, 0.95);
@@ -5500,7 +5499,7 @@ small {
   min-height: 10mm;
   z-index: 0;
 
-  transform-origin: top left;
+  transform-origin: center center;
   transition: all 0.12s cubic-bezier(0.25, 0.8, 0.25, 1);
 
   &.is--hovered {
@@ -5534,7 +5533,7 @@ small {
   &.is--inline_edited {
     outline: 2px solid @c-bleuvert;
     .ql-editor {
-      background-color: @c-gris_tresclair;
+      // background-color: @c-gris_tresclair;
     }
   }
 
@@ -5624,13 +5623,12 @@ small {
 
     .m_mediaPublication--edit_styles--sendButton {
       text-align: center;
-      .bg-noir;
 
-      button {
-        // .label;
-        .button-small;
-        .bg-bleuvert;
-      }
+      // button {
+      //   // .label;
+      //   .button-small;
+      //   .bg-bleuvert;
+      // }
     }
   }
 
@@ -5653,6 +5651,19 @@ small {
 
     &.type-text {
       background-color: rgba(255, 255, 255, 0.95);
+
+      iframe {
+        width: 100%;
+      }
+
+      .ql-container {
+        display: flex;
+        flex-flow: column;
+
+        > .ql-editor {
+          flex: 1 1 auto;
+        }
+      }
     }
 
     &.type-video {
@@ -5665,7 +5676,7 @@ small {
       }
     }
 
-    iframe {
+    &.type-stl iframe {
       border: 2px solid @c-gris_tresclair;
       .bg-gris_tresclair;
       width: 100%;
@@ -5827,20 +5838,8 @@ small {
     pointer-events: none;
     .padding-verysmall;
 
-    ._advanced_menu_button {
-      border-radius: 50%;
-      background-color: transparent !important;
-
-      svg {
-        width: @t-pictoSize;
-        height: @t-pictoSize;
-        padding: @t-pictoPadding;
-        background-color: @c-orange;
-
-        border: @t-borderSize solid currentColor;
-        border-radius: 50%;
-      }
-    }
+    display: flex;
+    justify-content: flex-end;
 
     ._advanced_menu {
       display: flex;
@@ -5867,6 +5866,21 @@ small {
       &.is--active {
         .bg-noir;
         color: @c-orange;
+      }
+    }
+    > button {
+      position: relative;
+      border-radius: 50%;
+      background-color: transparent !important;
+      margin: 0;
+
+      svg {
+        width: @t-pictoSize;
+        height: @t-pictoSize;
+        padding: @t-pictoPadding;
+        background-color: @c-orange;
+        border: @t-borderSize solid currentColor;
+        border-radius: 50%;
       }
     }
   }

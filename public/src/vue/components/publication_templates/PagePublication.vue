@@ -1052,61 +1052,73 @@ export default {
     createPubliText() {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
-      this.addMedia({ type: "text" });
+      this.addMedia({ type: "text" }).then((mdata) => {
+        this.$eventHub.$emit(
+          "publication.set_media_to_edit_mode",
+          mdata.metaFileName
+        );
+      });
     },
     addMedia({ slugProjectName, metaFileName, type }) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: addMedia with
+      return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug") {
+          console.log(`METHODS • Publication: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
-      }
+        }
 
-      if (!this.$root.settings.current_publication.page_id) {
-        console.log(`METHODS • Publication: addMedia missing page id`);
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error("Missing page id to add media properly");
-      }
+        if (!this.$root.settings.current_publication.page_id) {
+          console.log(`METHODS • Publication: addMedia missing page id`);
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error("Missing page id to add media properly");
+        }
 
-      const page_id = this.$root.settings.current_publication.page_id;
+        const page_id = this.$root.settings.current_publication.page_id;
 
-      const x = this.publications_options.margin_left;
-      const y = this.publications_options.margin_top;
+        const x = this.publications_options.margin_left;
+        const y = this.publications_options.margin_top;
 
-      const z_index =
-        this.getHighestZNumberAmongstMedias(this.publication_medias[page_id]) +
-        1;
+        const z_index =
+          this.getHighestZNumberAmongstMedias(
+            this.publication_medias[page_id]
+          ) + 1;
 
-      let additionalMeta = {
-        page_id,
-        x,
-        y,
-        z_index,
-      };
+        let additionalMeta = {
+          page_id,
+          x,
+          y,
+          z_index,
+        };
 
-      if (slugProjectName && metaFileName) {
-        additionalMeta.slugProjectName = slugProjectName;
-        additionalMeta.desired_filename = metaFileName;
-        additionalMeta.slugMediaName = metaFileName;
-      }
+        if (slugProjectName && metaFileName) {
+          additionalMeta.slugProjectName = slugProjectName;
+          additionalMeta.desired_filename = metaFileName;
+          additionalMeta.slugMediaName = metaFileName;
+        }
 
-      if (type) additionalMeta.type = type;
+        if (type) additionalMeta.type = type;
 
-      // get current scroll
-      if (this.$refs.page_container) {
-        const posx_in_cm =
-          this.$refs.page_container.scrollLeft / this.pixelsPerMillimeters;
-        if (!Number.isNaN(posx_in_cm)) additionalMeta.x = posx_in_cm;
+        // get current scroll
+        if (this.$refs.page_container) {
+          const posx_in_cm =
+            this.$refs.page_container.scrollLeft / this.pixelsPerMillimeters;
+          if (!Number.isNaN(posx_in_cm)) additionalMeta.x = posx_in_cm;
 
-        const posy_in_cm =
-          this.$refs.page_container.scrollTop / this.pixelsPerMillimeters;
-        if (!Number.isNaN(posy_in_cm)) additionalMeta.y = posy_in_cm;
-      }
+          const posy_in_cm =
+            this.$refs.page_container.scrollTop / this.pixelsPerMillimeters;
+          if (!Number.isNaN(posy_in_cm)) additionalMeta.y = posy_in_cm;
+        }
 
-      this.$root.createMedia({
-        slugFolderName: this.slugPubliName,
-        type: "publications",
-        additionalMeta,
+        this.$root
+          .createMedia({
+            slugFolderName: this.slugPubliName,
+            type: "publications",
+            additionalMeta,
+          })
+          .then((mdata) => {
+            return resolve(mdata);
+          });
       });
     },
     printThisPublication() {
