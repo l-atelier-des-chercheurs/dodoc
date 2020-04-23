@@ -74,7 +74,12 @@
           v-for="{ slugFolderName: author_slug } in allAuthors"
           v-if="$root.getAuthor(author_slug)"
           :key="author_slug"
-          :class="{ 'is--active': authorFilter === author_slug }"
+          :class="{
+            'is--active': authorFilter === author_slug,
+            'is--loggedInAuthor':
+              $root.current_author &&
+              $root.current_author.slugFolderName === author_slug,
+          }"
           @click="$emit('setAuthorFilter', author_slug)"
         >
           {{ $root.getAuthor(author_slug).name }}
