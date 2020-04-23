@@ -332,42 +332,57 @@
           </span>
         </div>
 
-        <div class="m_metaField" v-if="!!media.type">
-          <div>{{ $t("type") }}</div>
-          <div>{{ $t(media.type) }}</div>
-        </div>
-        <div class="m_metaField" v-if="media_size">
-          <div>{{ $t("size") }}</div>
-          <div>{{ $root.formatBytes(media_size) }}</div>
-        </div>
-        <div class="m_metaField" v-if="media_dimensions">
-          <div>{{ $t("dimensions") }}</div>
-          <div>{{ media_dimensions }}</div>
-        </div>
-
-        <div
-          class="m_metaField"
-          v-if="!!project_name && $root.do_navigation.view !== 'ProjectView'"
-        >
-          <div>{{ $t("project") }}</div>
-          <div>
+        <div class="margin-vert-verysmall">
+          <label>
             <button
               type="button"
-              @click="minimizeMediaAndShowProject"
-              :content="$t('open_project')"
-              v-tippy="{
-                placement: 'top',
-                delay: [600, 0],
-              }"
-              style="text-transform: initial;"
+              class="button-nostyle text-uc button-triangle"
+              :class="{ 'is--active': show_media_infos }"
+              @click="show_media_infos = !show_media_infos"
             >
-              {{ project_name }}
-              ↑
+              {{ $t("infos_about_the_media") }}
             </button>
-            <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
-          </div>
-        </div>
-        <!-- <div class="m_metaField" v-if="!!media.authors">
+          </label>
+
+          <div v-if="show_media_infos" class="margin-vert-verysmall">
+            <div class="m_metaField" v-if="!!media.type">
+              <div>{{ $t("type") }}</div>
+              <div>{{ $t(media.type) }}</div>
+            </div>
+            <div class="m_metaField" v-if="media_size">
+              <div>{{ $t("size") }}</div>
+              <div>{{ $root.formatBytes(media_size) }}</div>
+            </div>
+            <div class="m_metaField" v-if="media_dimensions">
+              <div>{{ $t("dimensions") }}</div>
+              <div>{{ media_dimensions }}</div>
+            </div>
+
+            <div
+              class="m_metaField"
+              v-if="
+                !!project_name && $root.do_navigation.view !== 'ProjectView'
+              "
+            >
+              <div>{{ $t("project") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="minimizeMediaAndShowProject"
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial;"
+                >
+                  {{ project_name }}
+                  ↑
+                </button>
+                <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
+              </div>
+            </div>
+            <!-- <div class="m_metaField" v-if="!!media.authors">
           <div>
             {{ $t('author') }}
           </div>
@@ -376,15 +391,24 @@
           </div>
         </div>-->
 
-        <DateField :title="'created'" :date="media.date_created" />
+            <DateField :title="'created'" :date="media.date_created" />
 
-        <DateField
-          v-if="media.hasOwnProperty('date_uploaded')"
-          :title="'uploaded'"
-          :date="media.date_uploaded"
-        />
+            <DateField
+              v-if="media.hasOwnProperty('date_uploaded')"
+              :title="'uploaded'"
+              :date="media.date_uploaded"
+            />
 
-        <DateField :title="'edited'" :date="media.date_modified" />
+            <DateField
+              v-if="
+                media.hasOwnProperty('date_uploaded') &&
+                media.date_uploaded !== media.date_modified
+              "
+              :title="'edited'"
+              :date="media.date_modified"
+            />
+          </div>
+        </div>
 
         <!-- Caption -->
         <div
@@ -492,6 +516,7 @@ export default {
       showCopyToProjectOptions: false,
       is_minimized: false,
       show_edit_media_options: false,
+      show_media_infos: false,
 
       upload_to_folder: this.slugProjectName,
       is_sending_content_to_server: false,

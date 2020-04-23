@@ -144,7 +144,9 @@ export default {
     return {
       publidata: {
         name: this.default_name,
-        editing_limited_to: "everybody",
+        editing_limited_to: this.$root.current_author
+          ? "only_authors"
+          : "everybody",
         viewing_limited_to: "everybody",
         password: "",
         template: this.default_template,

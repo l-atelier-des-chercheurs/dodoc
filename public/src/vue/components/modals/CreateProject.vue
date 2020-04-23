@@ -181,7 +181,9 @@ export default {
 
       projectdata: {
         name: "",
-        editing_limited_to: "everybody",
+        editing_limited_to: this.$root.current_author
+          ? "only_authors"
+          : "everybody",
         viewing_limited_to: "everybody",
         password: "",
         authors: this.$root.current_author

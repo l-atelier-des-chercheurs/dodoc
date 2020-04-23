@@ -136,8 +136,9 @@
         </button>
 
         <button
-          v-if="context !== 'full' && can_see_project"
+          v-if="context !== 'full'"
           type="button"
+          :class="{ 'is--disabled': !can_see_project }"
           class="m_project--presentation--buttons--invisibleOpenButton"
           @click.exact="openProject"
           @click.shift.left.exact="$emit('toggleSelect')"

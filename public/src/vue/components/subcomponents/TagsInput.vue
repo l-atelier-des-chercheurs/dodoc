@@ -69,7 +69,10 @@
         <template v-else>{{ $t("hide_all_keywords") }}</template>
       </button>
 
-      <div v-if="allKeywordsExceptCurrent.length > 0" class="autocomplete">
+      <div
+        v-if="allKeywordsExceptCurrent.length > 0 && show_all_keywords"
+        class="autocomplete"
+      >
         <label>{{ $t("all_tags") }}</label>
         <div>
           <button

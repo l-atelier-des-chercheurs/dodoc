@@ -24,7 +24,7 @@
                 :key="q.resolution.width + q.resolution.height"
                 >{{ q.label }}</option
               >
-              <option :value="'draft'" :key="'custom'">
+              <option :value="'draft'" :key="'draft'">
                 → {{ $t("draft").toLowerCase() }}
               </option>
               <option :value="'custom'" :key="'custom'">
