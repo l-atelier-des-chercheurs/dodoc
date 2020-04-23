@@ -31,13 +31,13 @@
       :read_only="read_only"
       :element_width_for_sizes="mediaSize.width * pixelsPerMillimeters"
       v-model="media.content"
-      :style="media.publi_meta.custom_css"
+      :style="contentStyles"
     />
     <!-- if not -->
     <div
       class="mediaContainer"
       v-else
-      :style="media.publi_meta.custom_css"
+      :style="contentStyles"
       :class="`type-${media.publi_meta.type}`"
       :data-context="context"
     >
@@ -254,6 +254,38 @@
 
     <transition name="fade_fast" :duration="150">
       <div
+        class="m_mediaPublication--textStyleBar"
+        v-if="
+          (is_selected || is_hovered) &&
+          !preview_mode &&
+          !inline_edit_mode &&
+          !read_only &&
+          (media.type === 'text' || media.publi_meta.type === 'text')
+        "
+      >
+        <div class="m_mediaPublication--textStyleBar--container">
+          <div>
+            <label>{{ $t("font_size") }} {{ font_size_percent }}%</label>
+            <div>
+              <input
+                type="range"
+                min="10"
+                max="300"
+                v-model="font_size_percent"
+                @change="
+                  updateMediaPubliMeta({
+                    font_size_percent,
+                  })
+                "
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+
+    <transition name="fade_fast" :duration="150">
+      <div
         v-if="
           (is_selected || is_hovered) &&
           !preview_mode &&
@@ -298,6 +330,7 @@
         <button
           type="button"
           class="_advanced_menu_button _no_underline"
+          :class="{ 'is--active': show_advanced_menu }"
           @mousedown.stop.prevent="
             show_advanced_menu = !show_advanced_menu;
             is_selected = true;
@@ -620,6 +653,8 @@ export default {
       rotate: 0,
       debounce_setCSSForMedia: undefined,
 
+      font_size_percent: 100,
+
       mediaSize: {
         width: 0,
         height: 0,
@@ -672,6 +707,8 @@ export default {
       } else {
         window.removeEventListener("mousedown", this.deselectMedia);
         window.removeEventListener("touchstart", this.deselectMedia);
+
+        this.show_advanced_menu = false;
       }
     },
   },
@@ -685,9 +722,18 @@ export default {
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
-                z-index: ${set_z_index};
-
+        z-index: ${set_z_index};
       `;
+    },
+    contentStyles() {
+      let css = " ";
+
+      css += `font-size: ${this.font_size_percent}%; `;
+
+      if (this.media.publi_meta.custom_css)
+        css += this.media.publi_meta.custom_css;
+
+      return css;
     },
     text_is_overflowing() {
       const el = this.$refs.media;
@@ -755,17 +801,24 @@ export default {
       this.show_edit_styles_window = !this.show_edit_styles_window;
     },
     setCSSForMedia(event) {
-      if (this.debounce_setCSSForMedia)
-        clearTimeout(this.debounce_setCSSForMedia);
-      this.debounce_setCSSForMedia = setTimeout(() => {
-        const val = {
-          custom_css: this.custom_css,
-        };
-        this.$emit("editPubliMedia", {
-          slugMediaName: this.media.publi_meta.metaFileName,
-          val,
-        });
-      }, 0);
+      const val = {
+        custom_css: this.custom_css,
+      };
+      this.$emit("editPubliMedia", {
+        slugMediaName: this.media.publi_meta.metaFileName,
+        val,
+      });
+      // if (this.debounce_setCSSForMedia)
+      //   clearTimeout(this.debounce_setCSSForMedia);
+      // this.debounce_setCSSForMedia = setTimeout(() => {
+      //   const val = {
+      //     custom_css: this.custom_css,
+      //   };
+      //   this.$emit("editPubliMedia", {
+      //     slugMediaName: this.media.publi_meta.metaFileName,
+      //     val,
+      //   });
+      // }, 0);
     },
     toggleImageFitMode() {
       if (this.fit_mode === "cover") this.fit_mode = "contain";
@@ -814,6 +867,12 @@ export default {
         : "cover";
 
       if (this.media.type === "text" || this.media.publi_meta.type === "text") {
+        this.font_size_percent =
+          this.media.publi_meta.hasOwnProperty("font_size_percent") &&
+          !!Number.parseFloat(this.media.publi_meta.font_size_percent)
+            ? Number.parseFloat(this.media.publi_meta.font_size_percent)
+            : 100;
+
         this.$nextTick(() => {
           const el = this.$refs.media;
           this.is_text_overflowing =

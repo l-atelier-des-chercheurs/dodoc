@@ -1560,6 +1560,10 @@ module.exports = (function () {
       oc: "protegit per mot de Santa Clara",
       de: "Passwortgeschützt",
     },
+    font_size: {
+      fr: "Taille de la police",
+      en: "Font-size",
+    },
     password_instructions: {
       fr:
         "Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce contenu.",
