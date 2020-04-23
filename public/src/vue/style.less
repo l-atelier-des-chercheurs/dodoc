@@ -6388,9 +6388,15 @@ small {
 }
 
 .splitpanes--vertical > .splitpanes__splitter {
-  width: 0px;
-  min-width: 0;
-  margin-left: 0px;
+  position: relative;
+  width: 1px;
+  margin-right: -1px;
+  // background-color: rgba(255, 255, 0, 0.2);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // min-width: 0;
   // border-right: 1px solid black;
 }
 .splitpanes--horizontal > .splitpanes__splitter {
@@ -6401,22 +6407,22 @@ small {
 .splitpanes__splitter::before {
   content: "";
 
-  position: absolute;
-  left: 0;
-  top: 0;
+  transform: translateY(-50%);
   transition: opacity 0.4s;
-  background-color: rgba(255, 255, 255, 1);
-  background-color: red;
+
+  background-color: @c-noir;
+  border-radius: 4px;
+
   opacity: 1;
   z-index: 10;
 
-  // interferes with scrolling
   display: none;
 }
 .splitpanes--vertical > .splitpanes__splitter::before {
-  left: -10px;
-  right: -10px;
-  height: 100%;
+  left: 0px;
+  margin: 4px;
+  width: 4px;
+  height: 15px;
 }
 .splitpanes--horizontal > .splitpanes__splitter::before {
   top: -10px;
@@ -6438,7 +6444,7 @@ small {
     width: @t-button_size;
     height: @t-button_size;
 
-    border-radius: @t-button_size 0 0 @t-button_size;
+    border-radius: 1em 0 0 1em;
     // box-shadow: 2px 3px 10px fade(@c-bleuvert, 50%);
     // box-shadow: inset 5px 0 5px fade(@c-bleuvert_fonce, 50%);
     .bg-bleuvert;
@@ -6454,18 +6460,18 @@ small {
   }
 
   &:hover {
-    .bg-bleuvert;
     &:after {
       .bg-bleuvert_fonce;
     }
   }
 
-  ~ .splitpanes__splitter:after {
-    top: 120px;
-    .bg-rouge;
-    // box-shadow: 2px 3px 10px fade(@c-rouge, 50%);
-    background-image: url("/images/i_chat.svg");
-
+  ~ .splitpanes__splitter {
+    &:after {
+      top: 120px;
+      .bg-rouge;
+      // box-shadow: 2px 3px 10px fade(@c-rouge, 50%);
+      background-image: url("/images/i_chat.svg");
+    }
     &:hover:after {
       .bg-rouge_fonce;
     }
