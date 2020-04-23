@@ -2066,6 +2066,16 @@ small {
       overflow: hidden;
       pointer-events: none;
 
+      > * {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        object-fit: contain;
+        object-position: 50% 47%;
+      }
+
       &::after {
         content: "";
         display: block;
@@ -2249,7 +2259,7 @@ small {
   border-radius: 2px;
   text-align: left;
 
-  .margin-bottom-small;
+  .margin-bottom-verysmall;
 
   > *:first-child {
     .label;
@@ -3659,16 +3669,6 @@ small {
 
 .mediaContainer {
   position: relative;
-
-  > * {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    object-fit: contain;
-    object-position: 50% 47%;
-  }
 
   .mediaContainer--buttons {
     position: absolute;
@@ -6090,6 +6090,9 @@ small {
     margin-bottom: 0;
     font-size: 75%;
     // .padding-verysmall;
+  }
+
+  .mediaContainer {
   }
 
   .m_mediaMontagePublication--solidColor {
