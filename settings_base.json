@@ -216,6 +216,7 @@
         "keywords": {
           "type": "array"
         },
+
         "editing_limited_to": {
           "type": "string",
           "options": ["everybody", "with_password", "only_authors"],
@@ -241,6 +242,9 @@
         },
         "attached_to_project": {
           "type": "string"
+        },
+        "show_on_external_domain": {
+          "type": "boolean"
         },
         "template": {
           "type": "string",

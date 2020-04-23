@@ -89,7 +89,6 @@
               />
             </g>
           </svg>
-
           {{ $t("advanced_options") }}
         </button>
 
@@ -102,6 +101,34 @@
         >
           {{ $t("create") }}
         </button>
+      </div>
+      <div
+        class="text-centered"
+        style="width: 100%;"
+        v-if="
+          publication.template === 'page_by_page' &&
+          $root.consult_domains &&
+          $root.consult_domains.length > 0
+        "
+      >
+        <div class="switch switch-xs">
+          <input
+            id="remember_password_on_this_device"
+            type="checkbox"
+            v-model="show_on_external_domain"
+          />
+          <label for="remember_password_on_this_device">
+            {{ $t("display_on_website") }}
+            <a
+              v-for="domain in $root.consult_domains"
+              :key="domain"
+              :href="domain"
+              target="_blank"
+              class="js--openInBrowser"
+              >{{ domain }}</a
+            >
+          </label>
+        </div>
       </div>
     </div>
     <div class="m_publicationMeta--settingsBar" v-if="show_settings">
@@ -308,6 +335,25 @@ export default {
         return true;
 
       return false;
+    },
+    show_on_external_domain: {
+      get() {
+        if (
+          !this.publication.hasOwnProperty("show_on_external_domain") ||
+          this.publication.show_on_external_domain === false
+        )
+          return false;
+        return this.publication.show_on_external_domain;
+      },
+      set(show_on_external_domain) {
+        this.$root.editFolder({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          data: {
+            show_on_external_domain,
+          },
+        });
+      },
     },
   },
   methods: {

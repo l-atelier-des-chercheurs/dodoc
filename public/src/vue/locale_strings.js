@@ -58,6 +58,10 @@ module.exports = (function () {
       en:
         "This content is currently set to private and cannot be shared. To get a link to share it, change its options to VISIBLE FOR EVERYONE.",
     },
+    display_on_website: {
+      fr: "Rendre visible sur ",
+      en: "Display on ",
+    },
     medias_selected: {
       fr: "média(s) sélectionné(s)",
       en: "media(s) selected",

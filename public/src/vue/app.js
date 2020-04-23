@@ -661,6 +661,13 @@ let vm = new Vue({
       }
       return true;
     },
+    consult_domains() {
+      if (!!this.state.api_domaines_whitelist)
+        return this.state.api_domaines_whitelist
+          .split(",")
+          .filter((d) => d !== "localhost");
+      return false;
+    },
   },
   methods: {
     getAllKeywordsFrom(base) {
