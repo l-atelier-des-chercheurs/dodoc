@@ -60,6 +60,16 @@
     <div class="m_mediaPublication--floatingSaveButton" v-if="inline_edit_mode">
       <button
         type="button"
+        class="button button-bg_rounded bg-orange"
+        @click="cancelTextMediaInlineEditing"
+      >
+        <img src="/images/i_clear.svg" draggable="false" />
+        <span class="text-cap font-verysmall">
+          {{ $t("cancel") }}
+        </span>
+      </button>
+      <button
+        type="button"
         class="button button-bg_rounded bg-bleuvert"
         @click="saveTextMedia"
       >
@@ -90,7 +100,7 @@
     <div
       class="m_mediaPublication--edit_styles"
       v-if="
-        (is_selected || is_hovered) && !preview_mode && show_edit_styles_window
+        (is_selected || is_hovered) && !preview_mode && show_custom_css_window
       "
     >
       <button
@@ -440,7 +450,7 @@
             class="buttonLink _no_underline"
             @mousedown.stop.prevent="toggleEditWindow()"
             @touchstart.stop.prevent="toggleEditWindow()"
-            :class="{ 'is--active': show_edit_styles_window }"
+            :class="{ 'is--active': show_custom_css_window }"
             :content="$t('css_settings')"
             v-tippy="{
               placement: 'top',
@@ -616,7 +626,7 @@ export default {
       custom_css: this.media.publi_meta.hasOwnProperty("custom_css")
         ? this.media.publi_meta.custom_css
         : "",
-      show_edit_styles_window: false,
+      show_custom_css_window: false,
 
       limit_media_to_page: true,
       htmlForEditor: this.media.publi_meta.content
@@ -709,6 +719,7 @@ export default {
         window.removeEventListener("touchstart", this.deselectMedia);
 
         this.show_advanced_menu = false;
+        this.show_custom_css_window = false;
       }
     },
   },
@@ -763,6 +774,10 @@ export default {
 
       this.inline_edit_mode = false;
     },
+    cancelTextMediaInlineEditing() {
+      this.htmlForEditor = this.media.publi_meta.content;
+      this.inline_edit_mode = false;
+    },
     editButtonClicked() {
       if (this.media.slugProjectName)
         this.$root.openMedia({
@@ -798,7 +813,7 @@ export default {
       });
     },
     toggleEditWindow() {
-      this.show_edit_styles_window = !this.show_edit_styles_window;
+      this.show_custom_css_window = !this.show_custom_css_window;
     },
     setCSSForMedia(event) {
       const val = {
