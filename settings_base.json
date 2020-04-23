@@ -406,6 +406,9 @@
           "file_meta": {
             "type": "array",
             "read_only": true
+          },
+          "font_size_percent": {
+            "type": "number"
           }
         }
       }
