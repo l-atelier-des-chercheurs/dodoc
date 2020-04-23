@@ -127,48 +127,58 @@ export default {
           ? "./_libs/fabric.min.js"
           : "/libs/fabric.min.js";
 
-      this.$loadScript(path_to_fabric).then(() => {
-        document.addEventListener("keyup", this.captureKeyListener);
+      this.$loadScript(path_to_fabric)
+        .then(
+          () =>
+            new Promise((resolve) => {
+              // <== create a promise here
+              setTimeout(function () {
+                resolve(); // <== resolve it in callback
+              }, 500);
+            })
+        )
+        .then(() => {
+          document.addEventListener("keyup", this.captureKeyListener);
 
-        this.$eventHub.$on("remove_selection", this.removeSelection);
+          this.$eventHub.$on("remove_selection", this.removeSelection);
 
-        this.canvas = new fabric.Canvas(this.$refs.canvas, {
-          enableRetinaScaling: true,
-        });
+          this.canvas = new fabric.Canvas(this.$refs.canvas, {
+            enableRetinaScaling: true,
+          });
 
-        if (
-          this.media.hasOwnProperty("canvas_information") &&
-          this.media.canvas_information !== ""
-        ) {
-          this.canvas.loadFromJSON(JSON.parse(this.media.canvas_information));
-        }
-
-        this.setDrawingOptions();
-
-        this.canvas.on("mouse:down", (o) => {
-          this.isDown = true;
-          var pointer = this.canvas.getPointer(o.e);
-          var points = [pointer.x, pointer.y, pointer.x, pointer.y];
-        });
-        this.canvas.on("mouse:move", (o) => {
-          if (!this.isDown) return;
-          var pointer = this.canvas.getPointer(o.e);
-
-          if (this.drawing_options.mode === "drawing") {
-            // this.new_line.set({ x2: pointer.x, y2: pointer.y });
-            // this.new_line.setCoords();
-            this.canvas.renderAll();
+          if (
+            this.media.hasOwnProperty("canvas_information") &&
+            this.media.canvas_information !== ""
+          ) {
+            this.canvas.loadFromJSON(JSON.parse(this.media.canvas_information));
           }
-        });
 
-        this.canvas.on("mouse:up", (o) => {
-          if (!this.isDown) return;
-          this.isDown = false;
+          this.setDrawingOptions();
 
-          if (this.drawing_options.mode === "drawing") this.updateLinksList();
-          if (o.target) this.updateLinksList();
+          this.canvas.on("mouse:down", (o) => {
+            this.isDown = true;
+            var pointer = this.canvas.getPointer(o.e);
+            var points = [pointer.x, pointer.y, pointer.x, pointer.y];
+          });
+          this.canvas.on("mouse:move", (o) => {
+            if (!this.isDown) return;
+            var pointer = this.canvas.getPointer(o.e);
+
+            if (this.drawing_options.mode === "drawing") {
+              // this.new_line.set({ x2: pointer.x, y2: pointer.y });
+              // this.new_line.setCoords();
+              this.canvas.renderAll();
+            }
+          });
+
+          this.canvas.on("mouse:up", (o) => {
+            if (!this.isDown) return;
+            this.isDown = false;
+
+            if (this.drawing_options.mode === "drawing") this.updateLinksList();
+            if (o.target) this.updateLinksList();
+          });
         });
-      });
     },
     captureKeyListener(event) {
       if (
