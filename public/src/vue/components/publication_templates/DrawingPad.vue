@@ -182,14 +182,12 @@
           'export_publication',
           'print_publication',
           'link_publication',
-        ].includes($root.state.mode)
+        ].includes($root.state.mode) && !preview_mode
       "
       :layers="layers"
       :publication="publication"
       :slugPubliName="slugPubliName"
       :medias="publication.medias"
-      :drawing_options="drawing_options"
-      @updateDrawingOptions="(v) => (drawing_options = v)"
     />
 
     <div class="m_drawingPad" ref="current_page">
@@ -231,7 +229,11 @@
           <PagePublicationSinglePage
             v-if="layer.type === 'medias'"
             :mode="'drawingpad'"
-            :preview_mode="preview_mode"
+            :preview_mode="
+              preview_mode ||
+              (layer.id !== $root.settings.current_publication.layer_id &&
+                !preview_mode)
+            "
             :slugPubliName="slugPubliName"
             :page="layerOptions(layer)"
             :publication_medias="publication_medias[layer.id]"
@@ -254,7 +256,6 @@
               layer.id === $root.settings.current_publication.layer_id
             "
             :media="getDrawingLayerReferenceMedia(layer.id)"
-            :drawing_options="drawing_options"
             :zoom="zoom"
           />
         </div>
@@ -297,11 +298,6 @@ export default {
       zoom: 1,
       zoom_min: 0.2,
       zoom_max: 2,
-
-      drawing_options: {
-        width: 4,
-        mode: "drawing",
-      },
 
       pixelsPerMillimeters: 0,
     };
@@ -532,7 +528,9 @@ export default {
             publi_media.hasOwnProperty("slugProjectName") &&
             publi_media.hasOwnProperty("metaFileName")
           ) {
-            const original_media_meta = this.getOriginalMediaMeta(publi_media);
+            const original_media_meta = this.$root.getOriginalMediaMeta(
+              publi_media
+            );
             // case of missing project media locally
             if (!original_media_meta) return acc;
             if (Object.keys(original_media_meta).length === 0) {

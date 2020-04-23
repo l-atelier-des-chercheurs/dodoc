@@ -1069,6 +1069,12 @@ export default {
         );
 
         this.rotate = this.rotateOffset.angle + current_angle;
+
+        console.log("this.rotate = " + this.rotate);
+
+        const angle_on_90pos = Math.abs(this.rotate % 90);
+        if (angle_on_90pos < 5 || angle_on_90pos > 85)
+          this.rotate = Math.round(this.rotate / 90) * 90;
       }
     },
     rotateUp(event) {
@@ -1077,6 +1083,7 @@ export default {
           `METHODS • MediaPublication: rotateUp with is_rotated = ${this.is_rotated}`
         );
       }
+
       if (this.is_rotated) {
         this.updateMediaPubliMeta({
           rotate: this.rotate,

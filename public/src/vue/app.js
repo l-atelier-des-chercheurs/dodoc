@@ -1323,6 +1323,40 @@ let vm = new Vue({
       }
       this.settings.media_filter = {};
     },
+    getOriginalMediaMeta(publi_media) {
+      const slugProjectName = publi_media.slugProjectName;
+      const slugMediaName = publi_media.slugMediaName;
+
+      // find in store if slugFolderName exists
+      if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
+        console.error(
+          `Missing project in store — not expected : ${slugProjectName}`
+        );
+        console.error(
+          `Medias from project was probably added to the publication before it was removed altogether.`
+        );
+        return;
+      }
+
+      // find in store if metaFileName exists
+      const project_medias = this.$root.store.projects[slugProjectName].medias;
+
+      if (!project_medias.hasOwnProperty(slugMediaName)) {
+        return {};
+      } else {
+        let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
+        if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
+          console.error(
+            `Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`
+          );
+          console.error(
+            `Media was probably added to the publication before it was removed.`
+          );
+          return false;
+        }
+        return meta;
+      }
+    },
     loadAllProjectsMedias() {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: loadAllProjectsMedias`);

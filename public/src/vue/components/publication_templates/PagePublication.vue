@@ -1153,7 +1153,9 @@ export default {
             publi_media.hasOwnProperty("slugProjectName") &&
             publi_media.hasOwnProperty("metaFileName")
           ) {
-            const original_media_meta = this.getOriginalMediaMeta(publi_media);
+            const original_media_meta = this.$root.getOriginalMediaMeta(
+              publi_media
+            );
             // case of missing project media locally
             if (!original_media_meta) return acc;
             if (Object.keys(original_media_meta).length === 0) {
@@ -1195,40 +1197,6 @@ export default {
       }
 
       this.publication_medias = medias_paginated;
-    },
-    getOriginalMediaMeta(publi_media) {
-      const slugProjectName = publi_media.slugProjectName;
-      const slugMediaName = publi_media.slugMediaName;
-
-      // find in store if slugFolderName exists
-      if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
-        console.error(
-          `Missing project in store — not expected : ${slugProjectName}`
-        );
-        console.error(
-          `Medias from project was probably added to the publication before it was removed altogether.`
-        );
-        return;
-      }
-
-      // find in store if metaFileName exists
-      const project_medias = this.$root.store.projects[slugProjectName].medias;
-
-      if (!project_medias.hasOwnProperty(slugMediaName)) {
-        return {};
-      } else {
-        let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
-        if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
-          console.error(
-            `Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`
-          );
-          console.error(
-            `Media was probably added to the publication before it was removed.`
-          );
-          return false;
-        }
-        return meta;
-      }
     },
 
     insertPageAtIndex(index) {

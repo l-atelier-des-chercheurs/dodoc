@@ -41,6 +41,8 @@
           @resize="resize($event)"
           @resized="resized()"
           @splitter-click="splitterClicked($event)"
+          :data-docpane_isopen="$root.settings.show_publi_panel === true"
+          :data-chatpane_isopen="$root.settings.show_chat_panel === true"
         >
           <pane
             class="splitter-pane"

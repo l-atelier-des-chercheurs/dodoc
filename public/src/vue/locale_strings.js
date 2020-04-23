@@ -1467,6 +1467,14 @@ module.exports = (function () {
       oc: "Suprimir l'imatge",
       de: "Dieses Bild löschen",
     },
+    remove_layer: {
+      fr: "Supprimer le calque",
+      en: "Remove layer",
+    },
+    remove_selection: {
+      fr: "Supprimer la sélection",
+      en: "Remove selection",
+    },
     withdraw: {
       fr: "Enlever",
       en: "Withdraw",
@@ -1742,7 +1750,7 @@ module.exports = (function () {
       de: "Generieren",
     },
     select: {
-      fr: "Sélectionner",
+      fr: "Sélection",
       en: "Select",
       nl: "Selecteren",
       oc: "Seleccionar",
