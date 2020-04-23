@@ -103,6 +103,10 @@ module.exports = (function () {
       fr: "Options avancées",
       en: "Advanced options",
     },
+    infos_about_the_media: {
+      fr: "Informations sur le média",
+      en: "Informations on the media",
+    },
     uploaded: {
       fr: "Importation",
       en: "Uploaded",
