@@ -122,7 +122,7 @@
             <a
               v-for="domain in $root.consult_domains"
               :key="domain"
-              :href="domain"
+              :href="`http://${domain}`"
               target="_blank"
               class="js--openInBrowser"
               >{{ domain }}</a
