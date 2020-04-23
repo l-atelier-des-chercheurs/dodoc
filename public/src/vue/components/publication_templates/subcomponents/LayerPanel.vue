@@ -23,6 +23,7 @@
         </button>
 
         <button
+          v-if="show_layers"
           type="button"
           class="buttonLink"
           :class="{ 'is--active': show_create_layer_modal }"
@@ -141,12 +142,11 @@
 
     <transition name="slideleft" mode="out-in">
       <LayerOptions
-        v-if="current_layer"
+        v-if="current_layer && show_layers"
         :key="current_layer.id"
         :current_layer="current_layer"
-        :drawing_options="drawing_options"
-        @updateDrawingOptions="(v) => $emit('updateDrawingOptions', v)"
-        @removeLayer="(id) => removeLayer(id)"
+        @updateDrawingOptions="(v) => updateDrawingOptions(v)"
+        @removeLayer="removeLayer()"
       />
     </transition>
   </div>
@@ -158,10 +158,10 @@ import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 export default {
   props: {
     layers: Array,
+    preview_mode: Boolean,
     medias: Object,
     slugPubliName: String,
     publication: Object,
-    drawing_options: Object,
   },
   components: {
     LayerOptions,
@@ -331,7 +331,35 @@ export default {
         (Math.random().toString(36) + "00000000000000000").slice(2, 3)
       );
     },
-    removeLayer(id) {
+    updateDrawingOptions(values) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • LayerPanel: updateDrawingOptions`);
+
+      if (
+        !this.publication.hasOwnProperty("layers") ||
+        this.publication.layers.length === 0
+      )
+        return;
+
+      let _layers = JSON.parse(JSON.stringify(this.publication.layers));
+
+      const id = this.current_layer.id;
+      _layers = _layers.map((l) => {
+        if (l.id === id) {
+          Object.assign(l, values);
+        }
+        return l;
+      });
+
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
+          layers: _layers,
+        },
+      });
+    },
+    removeLayer() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • LayerPanel: removeLayer`);
 
@@ -342,6 +370,7 @@ export default {
         return;
       }
 
+      const id = this.current_layer.id;
       let layers = this.publication.layers.filter((l) => l.id !== id);
 
       this.$alertify

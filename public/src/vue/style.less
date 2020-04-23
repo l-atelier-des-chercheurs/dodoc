@@ -4574,6 +4574,39 @@ small {
       border-left: 0;
       .bg-noir;
       .c-blanc;
+      padding: 0;
+
+      button,
+      input,
+      label {
+        color: inherit;
+      }
+
+      .m_layerOptions--topbar {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        border-bottom: 2px solid black;
+        .margin-bottom-verysmall;
+
+        > button {
+          margin: 0;
+        }
+      }
+
+      .m_layerOptions--topbar--layerName {
+        font-weight: bold;
+        flex: 1 1 auto;
+        .padding-verysmall;
+      }
+
+      .m_layerOptions--content {
+        .padding-small;
+
+        > * > * {
+          margin: 0;
+        }
+      }
     }
 
     .m_layerPanel--layerList--topbar {
@@ -5295,6 +5328,7 @@ small {
     }
 
     &.is--inactive {
+      // opacity: 0.85;
       &.m_drawingPad--layer_drawing {
       }
       .m_mediaPublication {
