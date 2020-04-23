@@ -6440,6 +6440,9 @@ small {
     right: 0;
     z-index: 100;
 
+    font-family: "Fira Code";
+    color: @c-bleumarine;
+
     @t-button_size: 3em;
     width: @t-button_size;
     height: @t-button_size;
@@ -6451,12 +6454,15 @@ small {
     .padding-verysmall;
 
     background-image: url("/images/i_marmite.svg");
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
+    cursor: pointer;
 
     background-size: 3em 3em;
-    background-position: center center;
+    background-position: center @t-skipline / 4;
     background-repeat: no-repeat;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
   }
 
   &:hover {
@@ -6469,11 +6475,33 @@ small {
     &:after {
       top: 120px;
       .bg-rouge;
+      color: @c-bleumarine_fonce;
       // box-shadow: 2px 3px 10px fade(@c-rouge, 50%);
       background-image: url("/images/i_chat.svg");
     }
     &:hover:after {
       .bg-rouge_fonce;
+    }
+  }
+}
+
+.splitpanes {
+  &[data-docpane_isopen="true"] {
+    .splitpanes__splitter:nth-child(2) {
+      &::after {
+        height: 4em;
+        content: "◄ ►";
+        cursor: col-resize;
+      }
+    }
+  }
+  &[data-chatpane_isopen="true"] {
+    .splitpanes__splitter ~ .splitpanes__splitter {
+      &::after {
+        height: 4em;
+        content: "◄ ►";
+        cursor: col-resize;
+      }
     }
   }
 }
