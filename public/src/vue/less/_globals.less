@@ -1054,11 +1054,22 @@ input[type="range"] {
   line-height: 1.6rem;
   vertical-align: middle;
   background: transparent;
+  color: #fff;
+  border-color: blue;
 
   --input-range-track-box-shadow: none;
+  --input-range-track-color: #fff;
+  --input-range-thumb-height: 1rem;
+  --input-range-thumb-color: @c-orange;
 
   &::-webkit-slider-thumb {
     border: 0.1rem solid currentColor !important;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: -0.5rem;
+  }
+  &::-webkit-slider-runnable-track {
+    height: 0.25rem;
   }
 }
 
