@@ -95,6 +95,12 @@ export default {
           },
         ],
         [{ list: "ordered" }, { list: "bullet" }],
+        [
+          { align: "" },
+          { align: "center" },
+          { align: "right" },
+          { align: "justify" },
+        ],
         ["clean"],
       ],
 
@@ -124,6 +130,7 @@ export default {
         "color",
         "background",
         "font",
+        "align",
       ],
     });
 
