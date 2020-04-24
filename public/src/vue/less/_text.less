@@ -808,18 +808,6 @@
 .ql-snow .ql-picker.ql-font {
   width: 108px;
 }
-.ql-snow .ql-picker.ql-font .ql-picker-label::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item::before {
-  content: "Sans Serif";
-}
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="serif"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="serif"]::before {
-  content: "Serif";
-}
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="monospace"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="monospace"]::before {
-  content: "Monospace";
-}
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="serif"]::before {
   font-family: Georgia, Times New Roman, serif;
 }
@@ -1558,7 +1546,7 @@
 
     .ql-formats {
       button,
-      > *:not(.ql-size):not(.ql-header) .ql-picker-label {
+      > *:not(.ql-size):not(.ql-header):not(.ql-font) .ql-picker-label {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1859,6 +1847,9 @@
 .ql-picker.ql-header {
   width: 115px !important;
 }
+.ql-picker.ql-font {
+  width: 125px !important;
+}
 
 html[lang="fr"] .ql-picker.ql-header .ql-picker-label::before,
 html[lang="fr"] .ql-picker.ql-header .ql-picker-item::before {
@@ -1918,6 +1909,20 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
   }
 }
 
-.ql-font-roboto {
-  font-family: "Roboto", sans-serif;
+.ql-picker.ql-font .ql-picker-label[data-value=""]::before,
+.ql-picker.ql-font .ql-picker-item[data-value=""]::before {
+  content: "Fira Sans";
+  font-family: "Fira Sans";
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="Alegreya"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Alegreya"]::before {
+  content: "Alegreya";
+  font-family: "Alegreya";
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="Roboto Mono"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Roboto Mono"]::before {
+  content: "Roboto mono";
+  font-family: "Roboto Mono";
 }

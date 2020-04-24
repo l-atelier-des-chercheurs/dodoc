@@ -11,8 +11,10 @@ import Quill from "quill";
 
 ShareDB.types.register(require("rich-text").type);
 
+// specify the fonts you would
+var fonts = ["", "Alegreya", "Roboto Mono"];
 var FontAttributor = Quill.import("attributors/style/font");
-FontAttributor.whitelist = ["roboto", "inconsolata"];
+FontAttributor.whitelist = fonts;
 Quill.register(FontAttributor, true);
 
 var Size = Quill.import("attributors/style/size");
@@ -42,6 +44,7 @@ export default {
       ),
 
       custom_toolbar: [
+        [{ font: fonts }],
         [{ header: [false, 1, 2, 3] }],
         [{ size: ["50%", false, "150%", "300%"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ["bold", "italic", "underline", "link", "blockquote"],
@@ -120,6 +123,7 @@ export default {
         "list",
         "color",
         "background",
+        "font",
       ],
     });
 
