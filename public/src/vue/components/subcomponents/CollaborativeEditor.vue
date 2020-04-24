@@ -101,6 +101,7 @@ export default {
           { align: "right" },
           { align: "justify" },
         ],
+        ["code-block"],
         ["clean"],
       ],
 
@@ -131,6 +132,7 @@ export default {
         "background",
         "font",
         "align",
+        "code-block",
       ],
     });
 
