@@ -1136,6 +1136,7 @@ let vm = new Vue({
       this.settings.current_author_slug = author.slugFolderName;
       this.$socketio.socket.emit("updateClientInfo", { author });
       this.$socketio.listFolders({ type: "authors" });
+      this.$eventHub.$emit("authors.set_new_author");
     },
     unsetAuthor: function () {
       this.$auth.removeAllFoldersPassword({

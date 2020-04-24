@@ -134,6 +134,26 @@ module.exports = (function () {
       fr: "Voir les messages plus anciens",
       en: "See older messages",
     },
+    show: {
+      fr: "Afficher",
+      en: "Show",
+    },
+    only_my_projects: {
+      fr: "Seulement mes projets",
+      en: "My projects",
+    },
+    only_my_medias: {
+      fr: "Seulement mes médias",
+      en: "My medias",
+    },
+    all_projects: {
+      fr: "Tous les projets",
+      en: "All projects",
+    },
+    all_medias: {
+      fr: "Tous les médias",
+      en: "All medias",
+    },
     created: {
       fr: "Création",
       en: "Created",

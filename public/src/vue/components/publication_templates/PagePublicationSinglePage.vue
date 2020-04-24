@@ -62,12 +62,8 @@
         </template>
       </div>
 
-      <div
-        v-else
-        v-for="media in publication_medias"
-        :key="media.publi_meta.metaFileName"
-      >
-        <transition name="slideup" :duration="1000">
+      <div v-else v-for="media in publication_medias">
+        <transition name="MediaPublication" :duration="500">
           <MediaPublication
             :key="media.publi_meta.metaFileName"
             :page="page"

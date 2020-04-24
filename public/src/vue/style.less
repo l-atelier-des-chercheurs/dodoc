@@ -819,7 +819,7 @@ body {
     width: 100%;
     height: 100%;
     min-width: 240px;
-    min-height: 320px;
+    min-height: 220px;
 
     display: flex;
     flex-flow: column nowrap;
@@ -1662,6 +1662,27 @@ small {
   }
 }
 
+.m_displayMyContent {
+  display: block;
+  max-width: 320px;
+  width: 90%;
+  background-color: @c-noir;
+  color: white;
+
+  border-radius: 8px;
+
+  margin: @t-skipline auto;
+  .padding-verysmall;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  span {
+    .padding-sides-verysmall;
+  }
+}
+
 .m_publiFilter {
   flex: 0 0 auto;
   width: auto;
@@ -1685,6 +1706,18 @@ small {
 
 .m_listview .m_actionbar {
   border-color: white;
+
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+
+  > * {
+    flex: 1 1 300px;
+  }
+
+  .m_displayMyContent {
+    flex: 0 0 auto;
+  }
 }
 
 .barButton {
@@ -4465,29 +4498,36 @@ small {
     }
   }
 
-  .m_publicationButtons {
+  .m_pageLefttoolbar {
     position: absolute;
-    bottom: 0px;
-    left: 40px;
-    max-width: 200px;
+    bottom: 20px;
+    left: 20px;
     z-index: 1001;
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 10px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    // border-top-left-radius: 0;
+    // border-bottom-left-radius: 0;
     padding-top: 0;
     // .padding-bottom-verysmall;
 
-    .font-verysmall;
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
-    max-height: 320px;
-    .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
-    overflow: auto;
-    overscroll-behavior-y: contain;
+  }
 
-    > button {
-      display: block;
-      pointer-events: auto;
+  .m_publicationButtons {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+
+    button {
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+
+      svg {
+        margin: 0;
+        .margin-right-verysmall;
+      }
     }
   }
 
@@ -4988,7 +5028,7 @@ small {
 
     .m_page--grid {
       // Configuration
-      --gridstep: 10mm;
+      --gridstep: 5mm;
       --zoom: 1;
       --gridstep_before: ~"calc(var(--gridstep) - (1px/var(--zoom)))";
 
@@ -6808,6 +6848,21 @@ small {
 }
 .BackButton-enter,
 .BackButton-leave-to {
+  // transform: translate3d(-120px, 0, 0);
+  max-width: 0;
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.25, 0.2, 0.25, 1);
+}
+
+.MediaPublication-enter-active,
+.MediaPublication-leave-active {
+  // transform: translate3d(0, 0, 0);
+  max-width: 100px;
+  opacity: 1;
+  transition: all 0.5s cubic-bezier(0.25, 0.2, 0.25, 1);
+}
+.MediaPublication-enter,
+.MediaPublication-leave-to {
   // transform: translate3d(-120px, 0, 0);
   max-width: 0;
   opacity: 0;

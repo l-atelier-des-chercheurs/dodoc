@@ -861,7 +861,7 @@ export default {
             )
           : this.media.hasOwnProperty("ratio")
           ? this.mediaSize.width * this.media.ratio
-          : 100;
+          : 66;
       this.mediaPos.x =
         this.media.publi_meta.hasOwnProperty("x") &&
         !!Number.parseFloat(this.media.publi_meta.x)
