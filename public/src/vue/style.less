@@ -5585,9 +5585,9 @@ small {
 
     span {
       display: block;
-      width: 2rem;
-      height: 2rem;
-      font-size: 2rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      font-size: 1rem;
       margin: 0 auto;
       line-height: 0.5;
       background-color: @c-rouge;
@@ -6623,87 +6623,6 @@ small {
   }
 }
 
-.quillWrapper {
-  display: flex;
-  flex-flow: column nowrap;
-  overflow: hidden;
-
-  .ql-toolbar {
-    flex: 1 1 auto;
-  }
-  .ql-container {
-    flex: 1 1 0;
-    overflow: hidden;
-  }
-
-  .ql-container {
-    font-family: inherit;
-  }
-  .ql-container.ql-snow {
-    border: none;
-  }
-  .ql-toolbar button {
-    min-height: 0;
-  }
-  .ql-toolbar {
-    .bg-blanc;
-    font-family: inherit;
-    border-color: @c-gris_clair;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
-
-  .ql-container.ql-bubble {
-    .ql-tooltip {
-      white-space: inherit;
-      position: fixed;
-      padding: 0;
-    }
-  }
-
-  > * {
-    flex: 0 0 auto;
-
-    &.ql-container {
-      flex: 1 1 auto;
-      height: auto;
-    }
-    .ql-editor {
-      // .textarea;
-      min-height: 200px;
-      overflow: visible;
-
-      .bg-blanc;
-
-      border-left: 2px solid transparent;
-      height: 100%;
-      border-left: solid var(--input-border-width) var(--input-border-color);
-      border-radius: var(--input-border-radius);
-      border-radius: 0;
-
-      // font-size:14pt !important;
-
-      // background: linear-gradient(transparent, transparent 28px, #91D1D3 28px);
-      // background-size: 30px 30px;
-      // background-attachment: local;
-
-      // background: linear-gradient(transparent, transparent ~"calc(@{t-skipline} - 2px)", rgba(0,0,0,.15) ~"calc(@{t-skipline} - 2px)");
-      // background-size: @t-skipline @t-skipline;
-      // background-attachment: local;
-      // background-position-y: ~"calc(@{t-skipline} * 0.85)";
-
-      &:focus {
-        border-left-color: @c-orange;
-        background-color: white;
-      }
-
-      > *:first-child {
-        margin-top: 0;
-      }
-    }
-  }
-}
 
 .fade-enter-active,
 .fade-leave-active {
