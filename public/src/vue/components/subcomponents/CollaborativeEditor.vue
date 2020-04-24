@@ -11,6 +11,10 @@ import Quill from "quill";
 
 ShareDB.types.register(require("rich-text").type);
 
+var Size = Quill.import("attributors/style/size");
+Size.whitelist = ["12px", "18px", "24px", "36px"];
+Quill.register(Size, true);
+
 export default {
   props: {
     value: {
@@ -35,7 +39,7 @@ export default {
 
       custom_toolbar: [
         [{ header: [false, 1, 2, 3] }],
-        // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
+        [{ size: [false, "12px", "18px", "24px", "36px"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ["bold", "italic", "underline", "link", "blockquote"],
         [
           {
@@ -103,6 +107,7 @@ export default {
       theme: this.theme,
       formats: [
         "bold",
+        "size",
         "italic",
         "underline",
         "link",
@@ -214,20 +219,31 @@ export default {
   },
 };
 </script>
-<style>
-.ql-toolbar .ql-formats:first-child::before {
-  content: "options";
+<style lang="scss">
+.quillWrapper .ql-toolbar {
+  border-bottom-width: 2px;
+  background-color: var(--c-gris-clair);
+
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+
+  // overflow-x: auto;
+  overflow-y: visible;
+}
+
+.ql-toolbar::before {
+  // content: "options";
   position: relative;
-  display: inline-block;
-  float: left;
-  font-size: 1rem;
-  vertical-align: middle;
-  font-weight: 400;
-  /* background-color: #333; */
-  /* left: -8px; */
+  display: block;
+
   margin: 0;
-  margin-top: 4px;
-  font-weight: 400;
+  // margin-top: 4px;
+  padding: 4px;
+  font-weight: 700;
+  font-family: "Fira Code";
+  text-decoration: underline;
+
   /* padding: 11px; */
   /* margin-bottom: 10px; */
   /* text-decoration: underline; */
@@ -237,44 +253,59 @@ export default {
   /* font-style: italic; */
 }
 
-html[lang="fr"]
-  .ql-snow
-  .ql-picker.ql-header
-  .ql-picker-label[data-value="1"]::before,
-html[lang="fr"]
-  .ql-snow
-  .ql-picker.ql-header
-  .ql-picker-item[data-value="1"]::before {
+.ql-formats {
+  display: flex;
+  flex-flow: row nowrap;
+
+  border: 2px solid var(--c-gris-clair);
+  border-radius: 12px;
+  padding: 0.4rem;
+  background: white;
+}
+
+.ql-picker.ql-header {
+  width: 115px !important;
+}
+
+html[lang="fr"] .ql-picker.ql-header .ql-picker-label::before,
+html[lang="fr"] .ql-picker.ql-header .ql-picker-item::before {
+  content: "Texte courant";
+}
+html[lang="en"] .ql-picker.ql-header .ql-picker-label::before,
+html[lang="en"] .ql-picker.ql-header .ql-picker-item::before {
+  content: "Regular text";
+}
+html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
+html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
   content: "Titre 1";
 }
-html[lang="fr"]
-  .ql-snow
-  .ql-picker.ql-header
-  .ql-picker-label[data-value="2"]::before,
-html[lang="fr"]
-  .ql-snow
-  .ql-picker.ql-header
-  .ql-picker-item[data-value="2"]::before {
+html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
+html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
   content: "Titre 2";
 }
-html[lang="fr"]
-  .ql-snow
-  .ql-picker.ql-header
-  .ql-picker-label[data-value="3"]::before,
-html[lang="fr"]
-  .ql-snow
-  .ql-picker.ql-header
-  .ql-picker-item[data-value="3"]::before {
+html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
+html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
   content: "Titre 3";
 }
-html[lang="fr"]
-  .ql-snow
-  .ql-picker.ql-header
-  .ql-picker-label[data-value="4"]::before,
-html[lang="fr"]
-  .ql-snow
-  .ql-picker.ql-header
-  .ql-picker-item[data-value="4"]::before {
+html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="4"]::before,
+html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
   content: "Titre 4";
+}
+
+.ql-picker.ql-size .ql-picker-item[data-value="12px"]::before {
+  content: "12px";
+  font-size: 12px !important;
+}
+.ql-picker.ql-size .ql-picker-item[data-value="18px"]::before {
+  content: "18px";
+  font-size: 18px !important;
+}
+.ql-picker.ql-size .ql-picker-item[data-value="24px"]::before {
+  content: "24px";
+  font-size: 24px !important;
+}
+.ql-picker.ql-size .ql-picker-item[data-value="36px"]::before {
+  content: "36px";
+  font-size: 36px !important;
 }
 </style>
