@@ -16,7 +16,7 @@ FontAttributor.whitelist = ["roboto", "inconsolata"];
 Quill.register(FontAttributor, true);
 
 var Size = Quill.import("attributors/style/size");
-Size.whitelist = ["10px", "18px", "28px", "48px"];
+Size.whitelist = ["50%", "18px", "150%", "300%"];
 Quill.register(Size, true);
 
 export default {
@@ -43,7 +43,7 @@ export default {
 
       custom_toolbar: [
         [{ header: [false, 1, 2, 3] }],
-        [{ size: ["10px", false, "28px", "48px"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
+        [{ size: ["50%", false, "150%", "300%"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ["bold", "italic", "underline", "link", "blockquote"],
         [
           {
@@ -247,14 +247,7 @@ export default {
   font-weight: 700;
   font-family: "Fira Code";
   text-decoration: underline;
-
-  /* padding: 11px; */
-  /* margin-bottom: 10px; */
-  /* text-decoration: underline; */
   font-size: 0.8rem;
-  /* text-transform: uppercase; */
-  /* margin-right: 15px; */
-  /* font-style: italic; */
 }
 
 .ql-formats {
@@ -296,9 +289,9 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
   content: "Titre 4";
 }
 
-.ql-picker.ql-size .ql-picker-item[data-value="10px"]::before {
+.ql-picker.ql-size .ql-picker-item[data-value="50%"]::before {
   content: "Small";
-  font-size: 10px !important;
+  font-size: 70% !important;
 
   html[lang="fr"] & {
     content: "Petit";
@@ -312,17 +305,17 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
     content: "Normal";
   }
 }
-.ql-picker.ql-size .ql-picker-item[data-value="28px"]::before {
+.ql-picker.ql-size .ql-picker-item[data-value="150%"]::before {
   content: "Large";
-  font-size: 28px !important;
+  font-size: 150% !important;
 
   html[lang="fr"] & {
     content: "Grand";
   }
 }
-.ql-picker.ql-size .ql-picker-item[data-value="48px"]::before {
+.ql-picker.ql-size .ql-picker-item[data-value="300%"]::before {
   content: "Huge";
-  font-size: 48px !important;
+  font-size: 300% !important;
 
   html[lang="fr"] & {
     content: "Énorme";
