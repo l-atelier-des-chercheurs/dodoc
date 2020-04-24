@@ -11,8 +11,10 @@ import Quill from "quill";
 
 ShareDB.types.register(require("rich-text").type);
 
+// specify the fonts you would
+var fonts = ["", "Alegreya", "Roboto Mono"];
 var FontAttributor = Quill.import("attributors/style/font");
-FontAttributor.whitelist = ["roboto", "inconsolata"];
+FontAttributor.whitelist = fonts;
 Quill.register(FontAttributor, true);
 
 var Size = Quill.import("attributors/style/size");
@@ -42,6 +44,7 @@ export default {
       ),
 
       custom_toolbar: [
+        [{ font: fonts }],
         [{ header: [false, 1, 2, 3] }],
         [{ size: ["50%", false, "150%", "300%"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ["bold", "italic", "underline", "link", "blockquote"],
@@ -92,6 +95,13 @@ export default {
           },
         ],
         [{ list: "ordered" }, { list: "bullet" }],
+        [
+          { align: "" },
+          { align: "center" },
+          { align: "right" },
+          { align: "justify" },
+        ],
+        ["code-block"],
         ["clean"],
       ],
 
@@ -120,6 +130,9 @@ export default {
         "list",
         "color",
         "background",
+        "font",
+        "align",
+        "code-block",
       ],
     });
 
@@ -223,106 +236,4 @@ export default {
   },
 };
 </script>
-<style lang="scss">
-.quillWrapper .ql-toolbar {
-  border-bottom-width: 2px;
-  background-color: var(--c-gris-clair);
-
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-
-  // overflow-x: auto;
-  overflow-y: visible;
-}
-
-.ql-toolbar::before {
-  // content: "options";
-  position: relative;
-  display: block;
-
-  margin: 0;
-  // margin-top: 4px;
-  padding: 4px;
-  font-weight: 700;
-  font-family: "Fira Code";
-  text-decoration: underline;
-  font-size: 0.8rem;
-}
-
-.ql-formats {
-  display: flex;
-  flex-flow: row nowrap;
-
-  border: 2px solid var(--c-gris-clair);
-  border-radius: 12px;
-  padding: 0.4rem;
-  background: white;
-}
-
-.ql-picker.ql-header {
-  width: 115px !important;
-}
-
-html[lang="fr"] .ql-picker.ql-header .ql-picker-label::before,
-html[lang="fr"] .ql-picker.ql-header .ql-picker-item::before {
-  content: "Texte courant";
-}
-html[lang="en"] .ql-picker.ql-header .ql-picker-label::before,
-html[lang="en"] .ql-picker.ql-header .ql-picker-item::before {
-  content: "Regular text";
-}
-html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
-html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
-  content: "Titre 1";
-}
-html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
-html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
-  content: "Titre 2";
-}
-html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
-html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
-  content: "Titre 3";
-}
-html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="4"]::before,
-html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
-  content: "Titre 4";
-}
-
-.ql-picker.ql-size .ql-picker-item[data-value="50%"]::before {
-  content: "Small";
-  font-size: 70% !important;
-
-  html[lang="fr"] & {
-    content: "Petit";
-  }
-}
-.ql-picker.ql-size .ql-picker-item:not([data-value])::before {
-  content: "Regular";
-  font-size: 18px !important;
-
-  html[lang="fr"] & {
-    content: "Normal";
-  }
-}
-.ql-picker.ql-size .ql-picker-item[data-value="150%"]::before {
-  content: "Large";
-  font-size: 150% !important;
-
-  html[lang="fr"] & {
-    content: "Grand";
-  }
-}
-.ql-picker.ql-size .ql-picker-item[data-value="300%"]::before {
-  content: "Huge";
-  font-size: 300% !important;
-
-  html[lang="fr"] & {
-    content: "Énorme";
-  }
-}
-
-.ql-font-roboto {
-  font-family: "Roboto", sans-serif;
-}
-</style>
+<style lang="scss"></style>

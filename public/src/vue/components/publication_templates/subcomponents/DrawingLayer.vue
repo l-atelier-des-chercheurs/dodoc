@@ -187,6 +187,7 @@ export default {
         event.key === "Backspace"
       ) {
         this.removeSelection();
+        event.stopPropagation();
       }
     },
     setDrawingOptions() {
