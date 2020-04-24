@@ -11,8 +11,12 @@ import Quill from "quill";
 
 ShareDB.types.register(require("rich-text").type);
 
+var FontAttributor = Quill.import("attributors/style/font");
+FontAttributor.whitelist = ["roboto", "inconsolata"];
+Quill.register(FontAttributor, true);
+
 var Size = Quill.import("attributors/style/size");
-Size.whitelist = ["12px", "18px", "24px", "36px"];
+Size.whitelist = ["10px", "18px", "28px", "48px"];
 Quill.register(Size, true);
 
 export default {
@@ -39,7 +43,7 @@ export default {
 
       custom_toolbar: [
         [{ header: [false, 1, 2, 3] }],
-        [{ size: [false, "12px", "18px", "24px", "36px"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
+        [{ size: ["10px", false, "28px", "48px"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ["bold", "italic", "underline", "link", "blockquote"],
         [
           {
@@ -292,20 +296,40 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
   content: "Titre 4";
 }
 
-.ql-picker.ql-size .ql-picker-item[data-value="12px"]::before {
-  content: "12px";
-  font-size: 12px !important;
+.ql-picker.ql-size .ql-picker-item[data-value="10px"]::before {
+  content: "Small";
+  font-size: 10px !important;
+
+  html[lang="fr"] & {
+    content: "Petit";
+  }
 }
-.ql-picker.ql-size .ql-picker-item[data-value="18px"]::before {
-  content: "18px";
+.ql-picker.ql-size .ql-picker-item:not([data-value])::before {
+  content: "Regular";
   font-size: 18px !important;
+
+  html[lang="fr"] & {
+    content: "Normal";
+  }
 }
-.ql-picker.ql-size .ql-picker-item[data-value="24px"]::before {
-  content: "24px";
-  font-size: 24px !important;
+.ql-picker.ql-size .ql-picker-item[data-value="28px"]::before {
+  content: "Large";
+  font-size: 28px !important;
+
+  html[lang="fr"] & {
+    content: "Grand";
+  }
 }
-.ql-picker.ql-size .ql-picker-item[data-value="36px"]::before {
-  content: "36px";
-  font-size: 36px !important;
+.ql-picker.ql-size .ql-picker-item[data-value="48px"]::before {
+  content: "Huge";
+  font-size: 48px !important;
+
+  html[lang="fr"] & {
+    content: "Énorme";
+  }
+}
+
+.ql-font-roboto {
+  font-family: "Roboto", sans-serif;
 }
 </style>
