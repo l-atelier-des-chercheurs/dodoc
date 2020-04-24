@@ -281,6 +281,7 @@
                 type="range"
                 min="10"
                 max="300"
+                step="10"
                 v-model="font_size_percent"
                 @change="
                   updateMediaPubliMeta({
