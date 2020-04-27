@@ -181,7 +181,8 @@
         "role": {
           "type": "string",
           "options": ["contributor", "admin"],
-          "default": "contributor"
+          "default": "contributor",
+          "only_admin_can_edit": true
         },
         "description": {
           "type": "string"

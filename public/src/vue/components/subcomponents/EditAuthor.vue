@@ -72,7 +72,7 @@
     <button type="button" class="button-small" @click="$emit('close')">
       {{ $t("cancel") }}
     </button>
-    <button type="submit" class="button-greenthin">{{ $t("save") }}</button>
+    <button type="submit" class="bg-bleuvert">{{ $t("save") }}</button>
   </form>
 </template>
 <script>
