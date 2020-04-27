@@ -55,13 +55,35 @@
           <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
         </div>
       </template>
+      <template
+        v-else-if="['ellipsis', 'rectangle'].includes(media.publi_meta.type)"
+      >
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          vector-effect="non-scaling-stroke"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            v-if="media.publi_meta.type === 'ellipsis'"
+            cx="50"
+            cy="50"
+            r="50"
+          />
+          <rect
+            v-if="media.publi_meta.type === 'rectangle'"
+            width="100"
+            height="100"
+          />
+        </svg>
+      </template>
     </div>
 
     <div class="m_mediaPublication--floatingSaveButton" v-if="inline_edit_mode">
       <button
         type="button"
         class="button button-bg_rounded bg-orange"
-        @click="cancelTextMediaInlineEditing"
+        @click="cancelMediaInlineEditing"
       >
         <img src="/images/i_clear.svg" draggable="false" />
         <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
@@ -69,7 +91,7 @@
       <button
         type="button"
         class="button button-bg_rounded bg-bleuvert"
-        @click="saveTextMedia"
+        @click="saveMedia"
       >
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
@@ -265,28 +287,52 @@
 
     <transition name="fade_fast" :duration="150">
       <div
-        class="m_mediaPublication--textStyleBar"
-        v-if="
-          is_selected &&
-          !preview_mode &&
-          !inline_edit_mode &&
-          !read_only &&
-          (media.type === 'text' || media.publi_meta.type === 'text')
-        "
+        class="m_mediaPublication--stylebar"
+        v-if="is_selected && !preview_mode && !inline_edit_mode && !read_only"
       >
-        <div class="m_mediaPublication--textStyleBar--container">
-          <div>
-            <label>{{ $t("font_size") }} {{ font_size_percent }}%</label>
+        <div class="m_mediaPublication--stylebar--container">
+          <div v-if="media.type === 'text' || media.publi_meta.type === 'text'">
+            <label>{{ $t("font_size") }}</label>
             <div>
               <input
                 type="range"
-                min="10"
+                min="0"
                 max="300"
                 step="10"
                 v-model="font_size_percent"
                 @change="
                   updateMediaPubliMeta({
                     font_size_percent,
+                  })
+                "
+              />
+            </div>
+            <label>{{ font_size_percent }}%</label>
+          </div>
+
+          <div>
+            <label>{{ $t("fill_color") }}</label>
+            <div>
+              <input
+                type="color"
+                v-model="fill_color"
+                @change="
+                  updateMediaPubliMeta({
+                    fill_color,
+                  })
+                "
+              />
+            </div>
+          </div>
+          <div>
+            <label>{{ $t("stroke_color") }}</label>
+            <div>
+              <input
+                type="color"
+                v-model="stroke_color"
+                @change="
+                  updateMediaPubliMeta({
+                    stroke_color,
                   })
                 "
               />
@@ -666,6 +712,8 @@ export default {
       debounce_setCSSForMedia: undefined,
 
       font_size_percent: 100,
+      fill_color: "transparent",
+      stroke_color: "transparent",
 
       mediaSize: {
         width: 0,
@@ -739,9 +787,11 @@ export default {
       `;
     },
     contentStyles() {
-      let css = " ";
-
-      css += `font-size: ${this.font_size_percent}%; `;
+      let css = `
+        --font_size_percent: ${this.font_size_percent}%;
+        --fill_color: ${this.fill_color};
+        --stroke_color: ${this.stroke_color};
+      `;
 
       if (this.media.publi_meta.custom_css)
         css += this.media.publi_meta.custom_css;
@@ -761,10 +811,11 @@ export default {
     },
     setMediaToEditMode(metaFileName) {
       if (this.media.publi_meta.metaFileName === metaFileName) {
+        if (!this.is_selected) this.is_selected = true;
         this.editButtonClicked();
       }
     },
-    saveTextMedia() {
+    saveMedia() {
       const val = {
         content: this.htmlForEditor,
       };
@@ -776,7 +827,7 @@ export default {
 
       this.inline_edit_mode = false;
     },
-    cancelTextMediaInlineEditing() {
+    cancelMediaInlineEditing() {
       this.htmlForEditor = this.media.publi_meta.content;
       this.inline_edit_mode = false;
     },
@@ -789,7 +840,8 @@ export default {
       else {
         this.inline_edit_mode = true;
         this.$nextTick(() => {
-          this.$refs.textField.$el.querySelector(".ql-editor").focus();
+          if (this.$refs.textField && this.$refs.textField.$el)
+            this.$refs.textField.$el.querySelector(".ql-editor").focus();
         });
       }
     },
@@ -898,6 +950,17 @@ export default {
               .offsetHeight;
         });
       }
+
+      this.stroke_color =
+        this.media.publi_meta.hasOwnProperty("stroke_color") &&
+        !!this.media.publi_meta.stroke_color
+          ? this.media.publi_meta.stroke_color
+          : "transparent";
+      this.fill_color =
+        this.media.publi_meta.hasOwnProperty("fill_color") &&
+        !!this.media.publi_meta.fill_color
+          ? this.media.publi_meta.fill_color
+          : "transparent";
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug") {
@@ -1104,7 +1167,9 @@ export default {
         // if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
         //   this.mediaSize.height = this.mediaSize.width * this.media.ratio;
         // else
-        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
+        if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
+          this.mediaSize.height = this.mediaSize.width * this.media.ratio;
+        else this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
 
         this.updateMediaPubliMeta({
           width: this.mediaSize.width,

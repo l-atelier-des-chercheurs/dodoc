@@ -5715,7 +5715,10 @@ small {
     overflow: hidden;
     height: 100%;
     width: 100%;
+    outline: 2px solid transparent;
     // background-color: white;
+
+    font-size: var(--font_size_percent);
 
     > * {
       width: 100%;
@@ -5726,6 +5729,13 @@ small {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    &:not(.type-ellipsis):not(.type-rectangle) {
+      background-color: var(--fill_color);
+      outline-color: var(--stroke_color);
+      outline-width: 4px;
+      outline-style: solid;
     }
 
     &.type-text {
@@ -5745,13 +5755,29 @@ small {
       }
     }
 
+    &.type-ellipsis,
+    &.type-rectangle {
+      svg {
+        width: 100%;
+        height: 100%;
+        fill: var(--fill_color);
+        stroke: var(--stroke_color);
+        stroke-width: 4px;
+      }
+    }
+
     &.type-video {
       .plyr {
         border-radius: @t-buttonradius;
       }
+      .plyr--video,
+      .plyr__video-wrapper,
+      .plyr__poster {
+        background-color: transparent;
+      }
       img {
         object-fit: contain;
-        background-color: #000;
+        background: transparent;
       }
     }
 
@@ -5899,7 +5925,15 @@ small {
         border-radius: 50%;
         overflow: visible;
 
+        fill: currentColor;
         background-color: @c-orange;
+      }
+
+      &:hover {
+        svg {
+          background-color: @c-noir;
+          color: @c-orange;
+        }
       }
     }
     .handle_resizeMedia {
@@ -5909,10 +5943,6 @@ small {
       color: @c-noir;
 
       transition: transform 0.2s;
-      &:hover {
-        color: @c-orange;
-        // transform: scale(1.2);
-      }
     }
     .handle_resizeMedia_bottom {
       bottom: -@t-handleSize / 2;
@@ -5921,10 +5951,6 @@ small {
       color: @c-noir;
 
       transition: transform 0.2s;
-      &:hover {
-        color: @c-orange;
-        // transform: scale(1.2);
-      }
     }
     .handle_resizeMedia_right {
       right: -@t-handleSize / 2;
@@ -5933,10 +5959,6 @@ small {
       color: @c-noir;
 
       transition: transform 0.2s;
-      &:hover {
-        color: @c-orange;
-        // transform: scale(1.2);
-      }
     }
     .handle_rotateMedia {
       top: -@t-handleSize / 2;
@@ -5947,11 +5969,6 @@ small {
       cursor: -moz-grab;
 
       transition: transform 0.2s;
-      &:hover {
-        color: @c-orange;
-        cursor: -webkit-grabbing;
-        cursor: -moz-grabbing;
-      }
     }
   }
 
@@ -5962,23 +5979,50 @@ small {
     white-space: pre-wrap;
   }
 
-  .m_mediaPublication--textStyleBar {
-    position: absolute;
+  .m_mediaPublication--stylebar {
+    position: fixed;
     top: auto;
+    left: 0;
+    width: 100%;
     bottom: 100%;
     z-index: 20;
     // overflow: hidden;
     .margin-verysmall;
+    margin-left: auto;
+    margin-right: auto;
 
     display: flex;
+    justify-content: center;
 
-    .m_mediaPublication--textStyleBar--container {
-      .padding-verysmall;
+    .m_mediaPublication--stylebar--container {
       background-color: @c-noir;
       color: white;
 
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
+
+      .margin-sides-verysmall;
+
+      > * {
+        .margin-verysmall;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+        > *:not(:last-child) {
+          margin-right: ~"calc(var(--spacing) / 4)";
+        }
+      }
+
       label {
         color: inherit;
+        margin-bottom: 0;
+      }
+      input {
+        width: 24px;
+        height: 24px;
+        padding: 2px;
       }
 
       input[type="range"] {
@@ -6047,8 +6091,8 @@ small {
       border-radius: 50%;
       background-color: transparent !important;
       margin: 0;
-      min-width: 3rem;
-      min-height: 3rem;
+      min-width: 2.2rem;
+      min-height: 2.2rem;
 
       svg {
         width: @t-pictoSize;
@@ -6751,14 +6795,15 @@ small {
 .MediaPublication-enter-active,
 .MediaPublication-leave-active {
   // transform: translate3d(0, 0, 0);
-  max-width: 100px;
+  // max-width: 100px;
   opacity: 1;
   transition: all 0.5s cubic-bezier(0.25, 0.2, 0.25, 1);
 }
 .MediaPublication-enter,
 .MediaPublication-leave-to {
   // transform: translate3d(-120px, 0, 0);
-  max-width: 0;
+  // max-width: 0;
+  // transform: scale(0);
   opacity: 0;
   transition: all 0.5s cubic-bezier(0.25, 0.2, 0.25, 1);
 }

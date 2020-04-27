@@ -21,7 +21,7 @@
     <div class="m_pageLefttoolbar">
       <PublicationButtons
         v-if="can_edit_publi && !contact_sheet_mode"
-        @createPubliText="createPubliText"
+        @addMedia="createPubliMedia"
       />
     </div>
 
@@ -1047,17 +1047,19 @@ export default {
 
       this.openPage(this.pagesWithDefault[new_index].id);
     },
-    createPubliText() {
+    createPubliMedia(values) {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
-      this.addMedia({ type: "text" }).then((mdata) => {
-        this.$eventHub.$emit(
-          "publication.set_media_to_edit_mode",
-          mdata.metaFileName
-        );
+      this.addMedia({ values }).then((mdata) => {
+        if (values.type && type === "text") {
+          this.$eventHub.$emit(
+            "publication.set_media_to_edit_mode",
+            mdata.metaFileName
+          );
+        }
       });
     },
-    addMedia({ slugProjectName, metaFileName, type }) {
+    addMedia({ slugProjectName, metaFileName, values }) {
       return new Promise((resolve, reject) => {
         if (this.$root.state.dev_mode === "debug") {
           console.log(`METHODS • Publication: addMedia with
@@ -1095,7 +1097,7 @@ export default {
           additionalMeta.slugMediaName = metaFileName;
         }
 
-        if (type) additionalMeta.type = type;
+        if (values) Object.assign(additionalMeta, values);
 
         // get current scroll
         if (this.$refs.page_container) {

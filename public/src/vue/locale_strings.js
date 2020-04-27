@@ -552,6 +552,14 @@ module.exports = (function () {
       fr: "Modifier le média original",
       en: "Edit original media content",
     },
+    stroke_color: {
+      fr: "Couleur du contour",
+      en: "Stroke color",
+    },
+    fill_color: {
+      fr: "Couleur du fond",
+      en: "Fill color",
+    },
     adjust: {
       fr: "Ajuster",
       en: "Adjust",

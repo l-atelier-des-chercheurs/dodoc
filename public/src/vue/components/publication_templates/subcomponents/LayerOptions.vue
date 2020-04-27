@@ -86,7 +86,7 @@
         </div>
       </div>
       <div v-else-if="current_layer.type === 'medias'">
-        <PublicationButtons @createPubliText="createPubliText" />
+        <PublicationButtons @addMedia="createPubliMedia" />
       </div>
     </div>
   </div>
@@ -135,18 +135,20 @@ export default {
     removeLayer() {
       this.$emit("removeLayer");
     },
-    createPubliText() {
+    createPubliMedia(values) {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
       this.$eventHub.$emit("publication.addMedia", {
-        type: "text",
+        values,
       });
 
       this.$eventHub.$once("publication.media_created", ({ mdata }) => {
-        this.$eventHub.$emit(
-          "publication.set_media_to_edit_mode",
-          mdata.metaFileName
-        );
+        if (values.type === "text") {
+          this.$eventHub.$emit(
+            "publication.set_media_to_edit_mode",
+            mdata.metaFileName
+          );
+        }
       });
     },
   },

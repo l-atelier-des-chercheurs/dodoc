@@ -1,5 +1,8 @@
 <template>
-  <div class="m_publicationview--pages--pageContainer" :style="setPageContainerProperties(page)">
+  <div
+    class="m_publicationview--pages--pageContainer"
+    :style="setPageContainerProperties(page)"
+  >
     <div class="m_page" :style="setPageProperties(page)">
       <template v-if="!preview_mode">
         <div
@@ -41,7 +44,9 @@
         "
         class="m_page--pageNumber"
         :class="{ toRight: true }"
-      >{{ pageNumber + 1 }}</div>
+      >
+        {{ pageNumber + 1 }}
+      </div>
 
       <div v-if="publication_medias.length === 0" class="m_page--noMedia">
         <template
@@ -52,31 +57,38 @@
               'link_publication',
             ].includes($root.state.mode)
           "
-        >{{ $t("no_media_on_this_page") }}</template>
+          >{{ $t("no_media_on_this_page") }}</template
+        >
       </div>
 
-      <div v-else v-for="media in publication_medias">
+      <div
+        v-else
+        v-for="media in publication_medias"
+        :key="media.publi_meta.metaFileName"
+      >
         <transition name="MediaPublication" :duration="500">
-          <MediaPublication
-            :key="media.publi_meta.metaFileName"
-            :page="page"
-            :mode="mode"
-            :media="media"
-            :preview_mode="preview_mode"
-            :read_only="read_only"
-            :pixelsPerMillimeters="pixelsPerMillimeters"
-            @removePubliMedia="
-              (values) => {
-                removePubliMedia(values);
-              }
-            "
-            @editPubliMedia="
-              (values) => {
-                editPubliMedia(values);
-              }
-            "
-            @unselected="noSelection"
-          />
+          <div>
+            <MediaPublication
+              :key="media.publi_meta.metaFileName"
+              :page="page"
+              :mode="mode"
+              :media="media"
+              :preview_mode="preview_mode"
+              :read_only="read_only"
+              :pixelsPerMillimeters="pixelsPerMillimeters"
+              @removePubliMedia="
+                (values) => {
+                  removePubliMedia(values);
+                }
+              "
+              @editPubliMedia="
+                (values) => {
+                  editPubliMedia(values);
+                }
+              "
+              @unselected="noSelection"
+            />
+          </div>
         </transition>
       </div>
     </div>
@@ -92,19 +104,19 @@ export default {
     slugPubliName: String,
     pageNumber: {
       type: Number,
-      default: -1
+      default: -1,
     },
     page: Object,
     publication_medias: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     read_only: Boolean,
     pixelsPerMillimeters: Number,
-    zoom: Number
+    zoom: Number,
   },
   components: {
-    MediaPublication
+    MediaPublication,
   },
   data() {
     return {};
@@ -119,7 +131,7 @@ export default {
         "text",
         "stl",
         "document",
-        "other"
+        "other",
       ];
     }
   },
@@ -130,7 +142,7 @@ export default {
   computed: {
     customCSSVars() {
       return `--current-time-human: "${this.$root.currentTime_human}"`;
-    }
+    },
   },
   methods: {
     setPageContainerProperties(page) {
@@ -166,7 +178,7 @@ export default {
       this.$root.removeMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        slugMediaName
+        slugMediaName,
       });
     },
     // function to update property of a media inside medias_list
@@ -185,14 +197,14 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName,
-        data: val
+        data: val,
       });
     },
 
     noSelection() {
       this.has_media_selected = false;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss"></style>

@@ -2,8 +2,8 @@
   <div class="m_publicationButtons">
     <button
       class="button"
-      @mousedown.stop.prevent="$emit('createPubliText')"
-      @touchstart.stop.prevent="$emit('createPubliText')"
+      @mousedown.stop.prevent="$emit('addMedia', { type: 'text' })"
+      @touchstart.stop.prevent="$emit('addMedia', { type: 'text' })"
     >
       <svg
         version="1.1"
@@ -53,8 +53,12 @@
     </button>
     <button
       class="button"
-      @mousedown.stop.prevent="$emit('createPubliText')"
-      @touchstart.stop.prevent="$emit('createPubliText')"
+      @mousedown.stop.prevent="
+        $emit('addMedia', { type: 'rectangle', stroke_color: '#fc4b60' })
+      "
+      @touchstart.stop.prevent="
+        $emit('addMedia', { type: 'rectangle', stroke_color: '#fc4b60' })
+      "
     >
       <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
       <svg
@@ -87,12 +91,16 @@
           height="56"
         />
       </svg>
-      <span>{{ $t("square") }}</span>
+      <span>{{ $t("rectangle") }}</span>
     </button>
     <button
       class="button"
-      @mousedown.stop.prevent="$emit('createPubliText')"
-      @touchstart.stop.prevent="$emit('createPubliText')"
+      @mousedown.stop.prevent="
+        $emit('addMedia', { type: 'ellipsis', stroke_color: '#fc4b60' })
+      "
+      @touchstart.stop.prevent="
+        $emit('addMedia', { type: 'ellipsis', stroke_color: '#fc4b60' })
+      "
     >
       <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
       <svg

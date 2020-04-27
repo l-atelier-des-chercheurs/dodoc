@@ -346,7 +346,7 @@
           },
           "type": {
             "type": "string",
-            "options": ["text", "solid_color"]
+            "options": ["text", "solid_color", "rectangle", "ellipsis"]
           },
           "color": {
             "type": "string"
@@ -409,6 +409,12 @@
           },
           "font_size_percent": {
             "type": "number"
+          },
+          "fill_color": {
+            "type": "string"
+          },
+          "stroke_color": {
+            "type": "string"
           }
         }
       }
