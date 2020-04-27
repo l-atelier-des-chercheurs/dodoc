@@ -64,9 +64,7 @@
         @click="cancelTextMediaInlineEditing"
       >
         <img src="/images/i_clear.svg" draggable="false" />
-        <span class="text-cap font-verysmall">
-          {{ $t("cancel") }}
-        </span>
+        <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
       <button
         type="button"
@@ -139,6 +137,9 @@
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
     >
+      <!-- <svg class="dashed-vector" viewBox="0 0 300 100" preserveAspectRatio="none">
+        <path d="M0,0 300,0 300,100 0,100z" vector-effect="non-scaling-stroke" />
+      </svg>-->
       <div
         v-if="is_selected || is_hovered"
         class="handle handle_resizeMedia_bottom"
@@ -250,7 +251,7 @@
           style="enable-background: new 0 0 98.7 132.2;"
           xml:space="preserve"
         >
-          <defs></defs>
+          <defs />
           <path
             d="M80.1,117.7c-3.1-0.2-5.6-0.3-7.6-0.2c-1.4,0.1-2.9,0.3-4.5,0.5c14.7-13.7,36.9-42.4,29.1-63.4S71.6,27,24.8,24.6
     c1.1-0.8,2.2-1.6,3.1-2.4c1.5-1.3,3.2-3.1,5.3-5.5L40,9L29.3,0L0,34.9l32.9,31.5l9.7-10.1l-7.7-7c-2.4-2.1-4.3-3.8-5.9-4.9
@@ -266,7 +267,7 @@
       <div
         class="m_mediaPublication--textStyleBar"
         v-if="
-          (is_selected || is_hovered) &&
+          is_selected &&
           !preview_mode &&
           !inline_edit_mode &&
           !read_only &&
@@ -1037,32 +1038,60 @@ export default {
         this.resizeOffset.y = pageY_mm;
         this.mediaSize.pwidth = Number.parseFloat(this.mediaSize.width);
         this.mediaSize.pheight = Number.parseFloat(this.mediaSize.height);
+        this.mediaPos.px = Number.parseFloat(this.mediaPos.x);
+        this.mediaPos.py = Number.parseFloat(this.mediaPos.y);
       } else {
-        const deltaX =
-          (pageX_mm - this.resizeOffset.x) / this.$root.settings.publi_zoom;
-        let newWidth = this.mediaSize.pwidth + deltaX;
-
         if (
           this.resize_origin === "right" ||
           this.resize_origin === "bottomright"
-        )
-          this.mediaSize.width = this.limitMediaWidth(newWidth);
-
-        let new_height;
-        if (this.lock_original_ratio)
-          new_height = this.mediaSize.width * this.media.ratio;
-        else {
-          const deltaY =
-            (pageY_mm - this.resizeOffset.y) / this.$root.settings.publi_zoom;
-          new_height = this.mediaSize.pheight + deltaY;
+        ) {
+          const new_width = this.getNewSize({
+            pageX_mm,
+            pageY_mm,
+            axis_angle: 0,
+            plength: this.mediaSize.pwidth,
+          });
+          this.mediaSize.width = this.limitMediaWidth(new_width);
         }
-
         if (
           this.resize_origin === "bottom" ||
           this.resize_origin === "bottomright"
-        )
+        ) {
+          let new_height = 0;
+
+          if (this.lock_original_ratio && this.media.hasOwnProperty("ratio")) {
+            new_height = this.mediaSize.width * this.media.ratio;
+          } else {
+            new_height = this.getNewSize({
+              pageX_mm,
+              pageY_mm,
+              axis_angle: 90,
+              plength: this.mediaSize.pheight,
+            });
+          }
+
           this.mediaSize.height = this.limitMediaHeight(new_height);
+        }
+
+        // TODO : prevent opposite axis from moving
+
+        // this.mediaPos.x =
+        //   this.mediaPos.px + Math.cos(new_width - this.mediaSize.pwidth);
+
+        // this.mediaPos.x =
+        //   this.mediaPos.py + (new_width - this.mediaSize.pwidth) / 2;
+
+        // we need to move x and y to prevent them from moving
       }
+    },
+    getNewSize({ pageX_mm, pageY_mm, axis_angle, plength }) {
+      const angle = (this.rotate + axis_angle) * (Math.PI / 180); // rads to degs, range (-180, 180]
+      let distance =
+        Math.cos(angle) * (pageX_mm - this.resizeOffset.x) +
+        Math.sin(angle) * (pageY_mm - this.resizeOffset.y);
+
+      const new_length = distance * this.$root.settings.publi_zoom + plength;
+      return new_length;
     },
     resizeUp(event) {
       if (this.$root.state.dev_mode === "debug")
@@ -1072,9 +1101,10 @@ export default {
 
       if (this.is_resized) {
         this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
-        if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
-          this.mediaSize.height = this.mediaSize.width * this.media.ratio;
-        else this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
+        // if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
+        //   this.mediaSize.height = this.mediaSize.width * this.media.ratio;
+        // else
+        this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
 
         this.updateMediaPubliMeta({
           width: this.mediaSize.width,
