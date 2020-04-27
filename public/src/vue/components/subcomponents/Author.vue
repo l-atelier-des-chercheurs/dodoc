@@ -130,7 +130,7 @@
 
           <button
             type="button"
-            class="button bg-bleuvert button-thin"
+            class="button-greenthin"
             @click="submitPassword"
           >
             {{ $t("send") }}
@@ -301,4 +301,10 @@ export default {
   },
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+._pwd_input,
+._open_pwd_input {
+  position: relative;
+  z-index: 1;
+}
+</style>
