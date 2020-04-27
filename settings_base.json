@@ -33,7 +33,7 @@
   "api": {
     "enabled": false,
     "allow_all_domains": false,
-    "domains_whitelist": []
+    "domains_whitelist": ["plop"]
   },
 
   "structure": {
@@ -506,6 +506,9 @@
           "type": "string",
           "options": ["everybody", ""],
           "default": "everybody"
+        },
+        "pinned": {
+          "type": "boolean"
         }
       },
       "medias": {

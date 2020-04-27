@@ -1,14 +1,14 @@
 <template>
   <Modal
     @close="$emit('close')"
-    @submit="newChat"
+    @submit="editThisChat"
     :read_only="read_only"
     :typeOfModal="'EditMeta'"
     :askBeforeClosingModal="askBeforeClosingModal"
     :is_loading="is_sending_content_to_server"
   >
     <template slot="header">
-      <span class>{{ $t("create_a_chat") }}</span>
+      <span class>{{ $t("edit_a_chat") }}</span>
     </template>
 
     <template slot="sidebar">
@@ -110,6 +110,7 @@ import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 
 export default {
   props: {
+    chat: Object,
     read_only: Boolean,
   },
   components: {
@@ -119,19 +120,21 @@ export default {
   },
   data() {
     return {
-      show_authors: true,
-      show_access_control: true,
+      show_authors: !!this.chat.authors,
+      show_access_control: !!this.chat.editing_limited_to,
 
       is_sending_content_to_server: false,
 
       chatdata: {
-        name: "",
-        pinned: false,
-        authors: this.$root.current_author
-          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
-          : [],
-        editing_limited_to: "everybody",
-        viewing_limited_to: "everybody",
+        name: this.chat.name,
+        pinned: this.chat.pinned ? this.chat.pinned : false,
+        authors: this.chat.authors,
+        editing_limited_to: !!this.chat.editing_limited_to
+          ? this.chat.editing_limited_to
+          : this.chat.password
+          ? "with_password"
+          : "everybody",
+        viewing_limited_to: this.chat.viewing_limited_to,
       },
       askBeforeClosingModal: false,
     };
@@ -154,10 +157,11 @@ export default {
   },
   computed: {},
   methods: {
-    newChat: function (event) {
-      console.log("newChat");
+    editThisChat: function (event) {
+      console.log("editThisChat");
 
       if (
+        this.chatdata.name !== this.chat.name &&
         Object.values(this.$root.store.chats).some(
           ({ name }) => name === this.chatdata.name
         )
@@ -173,10 +177,14 @@ export default {
       this.is_sending_content_to_server = true;
 
       this.$root
-        .createFolder({ type: "chats", data: this.chatdata })
+        .editFolder({
+          type: "chats",
+          slugFolderName: this.chat.slugFolderName,
+          data: this.chatdata,
+        })
         .then((cdata) => {
+          // this.is_sending_content_to_server = false;
           this.$emit("close");
-          this.$root.openChat(cdata.slugFolderName);
         });
     },
   },

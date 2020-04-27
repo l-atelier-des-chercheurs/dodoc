@@ -36,8 +36,23 @@
           </template>
         </div>
 
+        <label>{{ $t("pinned") }}</label>
         <div class="m_chats--list">
-          <ChatRow v-for="(chat, index) in chats" :key="index" :chat="chat" />
+          <ChatRow
+            v-for="(chat, index) in pinned_chats"
+            :key="index"
+            :chat="chat"
+          />
+        </div>
+
+        <hr />
+
+        <div class="m_chats--list">
+          <ChatRow
+            v-for="(chat, index) in non_pinned_chats"
+            :key="index"
+            :chat="chat"
+          />
         </div>
       </div>
     </div>
@@ -85,6 +100,16 @@ export default {
 
       return Object.values(this.$root.store.chats).find(
         (c) => c.slugFolderName === this.$root.settings.current_chat.slug
+      );
+    },
+    pinned_chats() {
+      if (Object.keys(this.chats).length === 0) return [];
+      return Object.values(this.chats).filter((c) => c.pinned === true);
+    },
+    non_pinned_chats() {
+      if (Object.keys(this.chats).length === 0) return [];
+      return Object.values(this.chats).filter(
+        (c) => !c.pinned || c.pinned === false
       );
     },
   },

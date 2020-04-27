@@ -822,7 +822,7 @@ let vm = new Vue({
           } else {
             this.$eventHub.$once(
               `socketio.folder_created_or_updated`,
-              catchFolderCreation
+              catchFolderEdition
             );
           }
         };
