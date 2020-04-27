@@ -355,7 +355,12 @@
             <label>{{ font_size_percent }}%</label>
           </div>
 
-          <div>
+          <div
+            v-if="
+              media.publi_meta.type !== 'line' &&
+              media.publi_meta.type !== 'arrow'
+            "
+          >
             <label>{{ $t("fill_color") }}</label>
             <div>
               <input
