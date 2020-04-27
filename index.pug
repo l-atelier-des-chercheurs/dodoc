@@ -54,7 +54,7 @@ html
         protocol: "!{protocol}",
         connected: false,
         authentificated: false,
-        api_domaines_whitelist: "!{global.settings.api.domains_whitelist}",
+        api_domaines_whitelist: "!{global.settings.api.enabled ? global.settings.api.domains_whitelist : ''}",
 
         local_options: {
           force_login: !{global.force_login},

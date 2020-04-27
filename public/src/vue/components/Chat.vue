@@ -65,11 +65,24 @@
           </div>
         </div>
         <div class="m_chat--content--topbar--options" v-if="show_chat_options">
+          <button
+            type="button"
+            class="buttonLink"
+            @click="show_edit_chat = true"
+          >
+            {{ $t("edit") }}
+          </button>
           <button type="button" class="buttonLink" @click="removeChat()">
             {{ $t("remove") }}
           </button>
         </div>
       </div>
+
+      <EditChat
+        v-if="show_edit_chat"
+        :chat="chat"
+        @close="show_edit_chat = false"
+      />
 
       <div class="m_chat--content--discussion" ref="chat_content">
         <button
@@ -198,11 +211,15 @@
   </div>
 </template>
 <script>
+import EditChat from "./modals/EditChat.vue";
+
 export default {
   props: {
     chat: Object,
   },
-  components: {},
+  components: {
+    EditChat,
+  },
   data() {
     return {
       new_message: "",
@@ -211,6 +228,7 @@ export default {
       last_read_message_on_opening: false,
 
       show_chat_options: false,
+      show_edit_chat: false,
 
       first_message_index_to_show: false,
     };

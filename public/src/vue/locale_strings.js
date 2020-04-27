@@ -33,9 +33,21 @@ module.exports = (function () {
       fr: "Créer une discussion",
       en: "Create a room",
     },
+    edit_a_chat: {
+      fr: "Éditer une discussion",
+      en: "Edit a room",
+    },
     chat_name: {
       fr: "Nom du sujet",
       en: "Topic",
+    },
+    pinned_to_the_top_of_the_list: {
+      fr: "Afficher en haut de la liste",
+      en: "Pin to the top",
+    },
+    pinned: {
+      fr: "Épinglés",
+      en: "Pinned",
     },
     create_new_folder: {
       fr: "créer un nouveau dossier",

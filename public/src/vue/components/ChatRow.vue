@@ -3,6 +3,7 @@
     class="m_chatRow"
     :class="{
       'is--open': $root.settings.current_chat.slug === chat.slugFolderName,
+      'is--pinned': chat.pinned,
     }"
   >
     <div class="m_chatRow--firstLine">
@@ -18,11 +19,13 @@
         >
           {{ unread_messages_count }}
         </span>
-        <span class="m_chatRow--name">{{ chat.name }} </span>
-        <ProtectedLock
-          :editing_limited_to="chat.editing_limited_to"
-          :is_protected="!can_see_chat"
-        />
+        <span class="m_chatRow--name"
+          >{{ chat.name }}
+          <ProtectedLock
+            :editing_limited_to="chat.editing_limited_to"
+            :is_protected="!can_see_chat"
+          />
+        </span>
       </div>
       <small class="c-blanc text-lc">
         {{ $t("last_message") }} —

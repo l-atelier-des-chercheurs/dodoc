@@ -1172,6 +1172,17 @@ small {
         color: inherit;
       }
     }
+
+    label {
+      color: inherit;
+      margin-bottom: 0;
+    }
+
+    hr {
+      border-bottom-color: @c-rouge_fonce;
+      max-width: 100px;
+      margin: @t-skipline auto;
+    }
   }
 }
 
@@ -4147,13 +4158,22 @@ small {
 .m_chatRow {
   // .bg-rouge_fonce;
   border-radius: 4px;
-  .margin-bottom-medium;
+  .margin-vert-small;
   border: 2px solid @c-rouge_fonce;
 
   &.is--open {
     background-color: @c-rouge_fonce;
     // .padding-left-small;
     // border-color: @c-noir;
+  }
+
+  &.is--pinned {
+    .m_chatRow--name {
+      font-size: 130%;
+      // background-color: white;
+      // .padding-verysmall;
+      // color: @c-rouge;
+    }
   }
 
   .m_chatRow--firstLine {
