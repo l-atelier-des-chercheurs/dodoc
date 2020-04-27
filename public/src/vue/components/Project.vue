@@ -552,10 +552,4 @@ export default {
   },
 };
 </script>
-<style scoped>
-._pwd_input,
-._open_pwd_input {
-  position: relative;
-  z-index: 1;
-}
-</style>
+<style scoped></style>

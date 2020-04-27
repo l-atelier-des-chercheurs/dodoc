@@ -140,7 +140,7 @@
 
       <button
         type="button"
-        class="button bg-bleuvert button-thin"
+        class="button button-greenthin"
         @click="submitPassword"
       >
         {{ $t("send") }}
@@ -344,5 +344,14 @@ export default {
 <style lang="scss" scoped>
 .m_metaField:last-of-type {
   // margin-bottom: 0;
+}
+._pwd_input,
+._open_pwd_input {
+  position: relative;
+  z-index: 1;
+}
+
+button {
+  z-index: 1;
 }
 </style>

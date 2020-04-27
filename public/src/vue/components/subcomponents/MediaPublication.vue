@@ -701,6 +701,7 @@ export default {
     preview_mode: Boolean,
     lowdef: Boolean,
     pixelsPerMillimeters: Number,
+    zoom: Number,
   },
   components: {
     MediaContent,
@@ -841,6 +842,7 @@ export default {
         --font_size_percent: ${this.font_size_percent}%;
         --fill_color: ${this.fill_color};
         --stroke_color: ${this.stroke_color};
+        --stroke_width: ${4 * this.zoom}px;
       `;
 
       if (this.media.publi_meta.custom_css)
@@ -1203,7 +1205,7 @@ export default {
         Math.cos(angle) * (pageX_mm - this.resizeOffset.x) +
         Math.sin(angle) * (pageY_mm - this.resizeOffset.y);
 
-      const new_length = distance * this.$root.settings.publi_zoom + plength;
+      const new_length = distance / this.zoom + plength;
       return new_length;
     },
     resizeUp(event) {
@@ -1361,13 +1363,11 @@ export default {
         this.mediaPos.px = Number.parseFloat(this.mediaPos.x);
         this.mediaPos.py = Number.parseFloat(this.mediaPos.y);
       } else {
-        const deltaX =
-          (pageX_mm - this.dragOffset.x) / this.$root.settings.publi_zoom;
+        const deltaX = (pageX_mm - this.dragOffset.x) / this.zoom;
         let newX = this.mediaPos.px + deltaX;
         this.mediaPos.x = this.limitMediaXPos(newX);
 
-        const deltaY =
-          (pageY_mm - this.dragOffset.y) / this.$root.settings.publi_zoom;
+        const deltaY = (pageY_mm - this.dragOffset.y) / this.zoom;
         let newY = this.mediaPos.py + deltaY;
         this.mediaPos.y = this.limitMediaYPos(newY);
       }

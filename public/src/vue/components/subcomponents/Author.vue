@@ -22,7 +22,10 @@
       "
     >
       <button
-        v-if="can_login_as_author && is_logged_in_as_author"
+        v-if="
+          (can_login_as_author && is_logged_in_as_author) ||
+          $root.current_author_is_admin
+        "
         type="button"
         class="buttonLink m_author--editButton"
         @click.stop="edit_author_mode = !edit_author_mode"
@@ -130,7 +133,7 @@
 
           <button
             type="button"
-            class="button bg-bleuvert button-thin"
+            class="button-greenthin"
             @click="submitPassword"
           >
             {{ $t("send") }}
@@ -301,4 +304,10 @@ export default {
   },
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+._pwd_input,
+._open_pwd_input {
+  position: relative;
+  z-index: 1;
+}
+</style>

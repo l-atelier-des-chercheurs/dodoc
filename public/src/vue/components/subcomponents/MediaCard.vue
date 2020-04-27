@@ -84,7 +84,7 @@
             >
               <button
                 type="button"
-                class="button_addToPubli button-greenthin button-square"
+                class="button_addToPubli bg-bleuvert button-square"
                 :content="instructions_depending_on_media_in_publi"
                 @click.stop="addToCurrentPubli()"
                 v-tippy="{

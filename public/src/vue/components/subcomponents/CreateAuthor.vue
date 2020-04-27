@@ -18,6 +18,28 @@
       <small>{{ $t("email_instructions") }}</small>
     </div>
 
+    <!-- Role -->
+    <div class="margin-bottom-small">
+      <label>
+        {{ $t("role") }}
+      </label>
+      <div>
+        <select v-model="authordata.role">
+          <option
+            v-for="role in possible_roles"
+            :value="role"
+            :key="role"
+            :disabled="
+              role === 'admin' &&
+              (!current_author || current_author.role !== 'admin')
+            "
+          >
+            {{ $t(role) }}
+          </option>
+        </select>
+      </div>
+    </div>
+
     <!-- Password -->
     <div class="margin-bottom-small">
       <label>{{ $t("password") }}</label>
@@ -59,27 +81,6 @@
       </template>
     </div>
 
-    <!-- Role -->
-    <!-- <div class="margin-bottom-small">
-      <label>
-        <button
-          type="button"
-          class="button-nostyle text-uc button-triangle"
-          :class="{ 'is--active': show_role }"
-          @click="show_role = !show_role"
-        >{{ $t("role") }}</button>
-      </label>
-      <template v-if="show_role">
-        <select v-model="authordata.role">
-          <option v-for="role in possible_roles" :value="role" :key="role">
-            {{
-            $t(role)
-            }}
-          </option>
-        </select>
-      </template>
-    </div>-->
-
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
       <label>
@@ -100,7 +101,7 @@
     <button type="button" class="button-small" @click="$emit('close')">
       {{ $t("cancel") }}
     </button>
-    <button type="submit" class="button-greenthin">{{ $t("create") }}</button>
+    <button type="submit" class="bg-bleuvert">{{ $t("create") }}</button>
   </form>
 </template>
 <script>
@@ -117,10 +118,8 @@ export default {
     return {
       show_password: true,
       show_image: false,
-      show_role: true,
       show_nfc: false,
-      possible_roles: ["contributor"],
-
+      possible_roles: ["contributor", "admin"],
       authordata: {
         name: "",
         email: "",
@@ -132,6 +131,7 @@ export default {
     };
   },
   computed: {},
+  created() {},
   mounted() {
     if (Modernizr !== undefined && !Modernizr.touchevents) {
       const el = this.$el.querySelector("[autofocus]");

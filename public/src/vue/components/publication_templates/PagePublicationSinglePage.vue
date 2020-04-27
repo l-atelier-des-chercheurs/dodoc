@@ -76,6 +76,7 @@
               :preview_mode="preview_mode"
               :read_only="read_only"
               :pixelsPerMillimeters="pixelsPerMillimeters"
+              :zoom="zoom"
               @removePubliMedia="
                 (values) => {
                   removePubliMedia(values);

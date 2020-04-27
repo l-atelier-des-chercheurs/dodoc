@@ -446,7 +446,7 @@
                       <button
                         type="submit"
                         v-html="$t('duplicate')"
-                        class="button button-greenthin"
+                        class="button bg-bleuvert"
                       />
                     </form>
                   </template>
@@ -1051,7 +1051,7 @@ export default {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
       this.addMedia({ values }).then((mdata) => {
-        if (values.type && type === "text") {
+        if (values.type && values.type === "text") {
           this.$eventHub.$emit(
             "publication.set_media_to_edit_mode",
             mdata.metaFileName
