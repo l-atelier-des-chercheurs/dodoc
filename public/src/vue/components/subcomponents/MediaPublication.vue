@@ -56,12 +56,17 @@
         </div>
       </template>
       <template
-        v-else-if="['ellipsis', 'rectangle'].includes(media.publi_meta.type)"
+        v-else-if="
+          ['ellipsis', 'rectangle', 'line', 'arrow'].includes(
+            media.publi_meta.type
+          )
+        "
       >
         <svg
           viewBox="0 0 100 100"
+          :width="`${this.mediaSize.width}mm`"
+          :height="`${this.mediaSize.height}mm`"
           preserveAspectRatio="none"
-          vector-effect="non-scaling-stroke"
           xmlns="http://www.w3.org/2000/svg"
         >
           <circle
@@ -69,12 +74,52 @@
             cx="50"
             cy="50"
             r="50"
+            vector-effect="non-scaling-stroke"
           />
           <rect
             v-if="media.publi_meta.type === 'rectangle'"
             width="100"
             height="100"
+            vector-effect="non-scaling-stroke"
           />
+          <line
+            v-if="media.publi_meta.type === 'line'"
+            x1="0"
+            y1="50"
+            x2="100"
+            y2="50"
+            vector-effect="non-scaling-stroke"
+          />
+          <g v-if="media.publi_meta.type === 'arrow'">
+            <line
+              x1="0"
+              y1="50"
+              x2="100"
+              y2="50"
+              vector-effect="non-scaling-stroke"
+            />
+            <g
+              transform="
+                translate(100, 50)"
+              preserveAspectRatio
+            >
+              <line
+                x1="0"
+                y1="0"
+                x2="-10"
+                y2="-10"
+                vector-effect="non-scaling-stroke"
+              />
+
+              <line
+                x1="0"
+                y1="0"
+                x2="-10"
+                y2="10"
+                vector-effect="non-scaling-stroke"
+              />
+            </g>
+          </g>
         </svg>
       </template>
     </div>
@@ -1018,7 +1063,7 @@ export default {
       //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
       // }
       return Math.max(
-        20,
+        5,
         Math.min(this.page.width - this.page.margin_right - this.mediaPos.x, w)
       );
     },
@@ -1030,7 +1075,7 @@ export default {
       //   console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
       // }
       return Math.max(
-        20,
+        5,
         Math.min(
           this.page.height - this.page.margin_bottom - this.mediaPos.y,
           h

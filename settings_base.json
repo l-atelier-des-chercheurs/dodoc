@@ -346,7 +346,14 @@
           },
           "type": {
             "type": "string",
-            "options": ["text", "solid_color", "rectangle", "ellipsis"]
+            "options": [
+              "text",
+              "solid_color",
+              "rectangle",
+              "ellipsis",
+              "line",
+              "arrow"
+            ]
           },
           "color": {
             "type": "string"

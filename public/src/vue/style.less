@@ -5569,8 +5569,8 @@ small {
   -moz-user-select: none;
   user-select: none;
 
-  min-width: 10mm;
-  min-height: 10mm;
+  min-width: 5mm;
+  min-height: 5mm;
   z-index: 0;
 
   transform-origin: center center;
@@ -5731,7 +5731,7 @@ small {
       object-fit: cover;
     }
 
-    &:not(.type-ellipsis):not(.type-rectangle) {
+    &:not(.type-ellipsis):not(.type-rectangle):not(.type-arrow):not(.type-line) {
       background-color: var(--fill_color);
       outline-color: var(--stroke_color);
       outline-width: 4px;
@@ -5756,13 +5756,17 @@ small {
     }
 
     &.type-ellipsis,
-    &.type-rectangle {
+    &.type-rectangle,
+    &.type-line,
+    &.type-arrow {
+      overflow: visible;
       svg {
         width: 100%;
         height: 100%;
         fill: var(--fill_color);
         stroke: var(--stroke_color);
         stroke-width: 4px;
+        overflow: visible;
       }
     }
 

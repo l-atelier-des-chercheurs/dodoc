@@ -54,10 +54,118 @@
     <button
       class="button"
       @mousedown.stop.prevent="
-        $emit('addMedia', { type: 'rectangle', stroke_color: '#fc4b60' })
+        $emit('addMedia', { type: 'line', stroke_color: '#1d327f' })
       "
       @touchstart.stop.prevent="
-        $emit('addMedia', { type: 'rectangle', stroke_color: '#fc4b60' })
+        $emit('addMedia', { type: 'line', stroke_color: '#1d327f' })
+      "
+    >
+      <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
+      <svg
+        version="1.1"
+        class="inline-svg inline-svg-larger"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        x="0px"
+        y="0px"
+        width="168px"
+        height="168px"
+        viewBox="0 0 168 168"
+        style="enable-background: new 0 0 168 168;"
+        xml:space="preserve"
+      >
+        <path
+          style="fill: #52c5b9;"
+          d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
+        />
+        <line
+          x1="42"
+          y1="84"
+          x2="126"
+          y2="84"
+          style="
+            fill: none;
+            stroke: #1b2f81;
+            stroke-width: 15;
+            stroke-miterlimit: 10;
+          "
+        />
+      </svg>
+      <span>{{ $t("line") }}</span>
+    </button>
+    <button
+      class="button"
+      @mousedown.stop.prevent="
+        $emit('addMedia', { type: 'arrow', stroke_color: '#1d327f' })
+      "
+      @touchstart.stop.prevent="
+        $emit('addMedia', { type: 'arrow', stroke_color: '#1d327f' })
+      "
+    >
+      <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
+      <svg
+        version="1.1"
+        class="inline-svg inline-svg-larger"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        x="0px"
+        y="0px"
+        width="168px"
+        height="168px"
+        viewBox="0 0 168 168"
+        style="enable-background: new 0 0 168 168;"
+        xml:space="preserve"
+      >
+        <path
+          style="fill: #52c5b9;"
+          d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
+        />
+        <line
+          x1="42"
+          y1="84"
+          x2="126"
+          y2="84"
+          style="
+            fill: none;
+            stroke: #1b2f81;
+            stroke-width: 15;
+            stroke-miterlimit: 40;
+          "
+        />
+        <line
+          x1="126"
+          y1="84"
+          x2="93"
+          y2="51"
+          style="
+            fill: none;
+            stroke: #1b2f81;
+            stroke-width: 15;
+            stroke-miterlimit: 10;
+          "
+        />
+        <line
+          x1="126"
+          y1="84"
+          x2="93"
+          y2="117"
+          style="
+            fill: none;
+            stroke: #1b2f81;
+            stroke-width: 15;
+            stroke-miterlimit: 10;
+          "
+        />
+      </svg>
+      <span>{{ $t("arrow") }}</span>
+    </button>
+    <button
+      class="button"
+      @mousedown.stop.prevent="
+        $emit('addMedia', { type: 'rectangle', stroke_color: '#1d327f' })
+      "
+      @touchstart.stop.prevent="
+        $emit('addMedia', { type: 'rectangle', stroke_color: '#1d327f' })
       "
     >
       <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
@@ -96,10 +204,10 @@
     <button
       class="button"
       @mousedown.stop.prevent="
-        $emit('addMedia', { type: 'ellipsis', stroke_color: '#fc4b60' })
+        $emit('addMedia', { type: 'ellipsis', stroke_color: '#1d327f' })
       "
       @touchstart.stop.prevent="
-        $emit('addMedia', { type: 'ellipsis', stroke_color: '#fc4b60' })
+        $emit('addMedia', { type: 'ellipsis', stroke_color: '#1d327f' })
       "
     >
       <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
