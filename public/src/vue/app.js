@@ -566,6 +566,9 @@ let vm = new Vue({
         return false;
       return this.store.authors[this.settings.current_author_slug];
     },
+    current_author_is_admin() {
+      return this.current_author && this.current_author.role === "admin";
+    },
     current_publication() {
       if (this.settings.current_publication.slug) {
         if (
@@ -890,6 +893,7 @@ let vm = new Vue({
       }
       this.$socketio.editMedia(mdata);
     },
+
     canSeeFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
@@ -923,8 +927,7 @@ let vm = new Vue({
       const folder = this.store[type][slugFolderName];
 
       // if admin
-      if (this.current_author && this.current_author.role === "admin")
-        return true;
+      if (this.current_author_is_admin) return true;
 
       // if no password && no editing limits
       if (

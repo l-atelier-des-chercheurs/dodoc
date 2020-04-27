@@ -154,16 +154,22 @@ module.exports = (function () {
     });
   }
 
-  function onCreateFolder(socket, { type, data, id }) {
+  async function onCreateFolder(socket, { type, data, id }) {
     dev.logfunction(`EVENT - onCreateFolder for ${data.name}`);
-    file.createFolder({ type, data }).then(
-      (slugFolderName) => {
-        sendFolders({ type, slugFolderName, id });
-      },
-      function (err) {
+
+    data = await auth.preventFieldsEditingDependingOnRole({
+      socket,
+      type,
+      meta: data,
+    });
+
+    const slugFolderName = await file
+      .createFolder({ type, data })
+      .catch((err) => {
         dev.error(`Failed to list folders! Error: ${err}`);
-      }
-    );
+      });
+
+    sendFolders({ type, slugFolderName, id });
   }
   async function onEditFolder(socket, { type, slugFolderName, data, id }) {
     dev.logfunction(
@@ -186,6 +192,12 @@ module.exports = (function () {
       });
       return;
     }
+
+    data = await auth.preventFieldsEditingDependingOnRole({
+      socket,
+      type,
+      meta: data,
+    });
 
     const { meta } = await file.editFolder({
       type,

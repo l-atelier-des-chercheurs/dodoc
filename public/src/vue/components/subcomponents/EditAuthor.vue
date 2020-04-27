@@ -17,6 +17,28 @@
       <small>{{ $t("email_instructions") }}</small>
     </div>
 
+    <!-- Role -->
+    <div class="margin-bottom-small">
+      <label>
+        {{ $t("role") }}
+      </label>
+      <div>
+        <select v-model="authordata.role">
+          <option
+            v-for="role in possible_roles"
+            :value="role"
+            :key="role"
+            :disabled="
+              role === 'admin' &&
+              (!$root.current_author || $root.current_author.role !== 'admin')
+            "
+          >
+            {{ $t(role) }}
+          </option>
+        </select>
+      </div>
+    </div>
+
     <!-- Preview -->
     <div class="margin-bottom-small">
       <label>
@@ -91,9 +113,12 @@ export default {
       show_image: !!this.author.preview,
       show_nfc: !!this.author.nfc_tag,
 
+      possible_roles: ["contributor", "admin"],
+
       authordata: {
         name: this.author.name,
         email: this.author.email,
+        role: this.author.role,
         // password: "",
         nfc_tag: this.author.nfc_tag,
       },

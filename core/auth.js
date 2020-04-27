@@ -31,6 +31,14 @@ module.exports = (function () {
           .then((d) => resolve(d))
           .catch((e) => reject(e))
       ),
+
+    preventFieldsEditingDependingOnRole: ({ socket, type, type_two, meta }) =>
+      new Promise((resolve, reject) =>
+        preventFieldsEditingDependingOnRole({ socket, type, type_two, meta })
+          .then((d) => resolve(d))
+          .catch((e) => reject(e))
+      ),
+
     removeNonPublicMediasFromAllFolders: (folders_and_medias) =>
       removeNonPublicMediasFromAllFolders(folders_and_medias),
 
@@ -142,6 +150,33 @@ module.exports = (function () {
     return d_array;
   }
 
+  async function isSocketSessionAdmin(socket) {
+    const sockets_authors_slugs =
+      socket &&
+      socket._is_authorized_for_folders &&
+      socket._is_authorized_for_folders.length > 0 &&
+      socket._is_authorized_for_folders.some(
+        (f) =>
+          f.type === "authors" &&
+          f.allowed_slugFolderNames &&
+          f.allowed_slugFolderNames.length > 0
+      )
+        ? socket._is_authorized_for_folders.find(
+            (f) =>
+              f.type === "authors" &&
+              f.allowed_slugFolderNames &&
+              f.allowed_slugFolderNames.length > 0
+          ).allowed_slugFolderNames
+        : false;
+
+    // check if account is admin
+    // if it is then it can see everything
+    if (sockets_authors_slugs)
+      return await isSocketLoggedInAsAdmin(sockets_authors_slugs);
+
+    return false;
+  }
+
   async function canEditFolder(socket, folderData, type) {
     const slugFolderName = folderData.slugFolderName;
 
@@ -169,7 +204,7 @@ module.exports = (function () {
       folderData.hasOwnProperty("editing_limited_to") &&
       folderData.editing_limited_to === "everybody"
     ) {
-      return true;
+      return "everybody_can_edit";
     }
 
     const sockets_authors_slugs =
@@ -205,7 +240,7 @@ module.exports = (function () {
     if (sockets_authors_slugs) {
       const is_admin = await isSocketLoggedInAsAdmin(sockets_authors_slugs);
       dev.logverbose(`AUTH — canEditFolder: is_admin = ${is_admin}`);
-      if (is_admin) return true;
+      if (is_admin) return "is_session_admin";
     }
 
     // if editing_limited_to is not set, or set to with_password
@@ -215,19 +250,23 @@ module.exports = (function () {
       folderData.editing_limited_to === "with_password"
     ) {
       dev.logverbose(`AUTH — canEditFolder: checkIfHasPasswordOrPasswordMatch`);
-      return checkIfHasPasswordOrPasswordMatch({
-        socket,
-        type,
-        slugFolderName,
-        folderData,
-      });
+      if (
+        checkIfHasPasswordOrPasswordMatch({
+          socket,
+          type,
+          slugFolderName,
+          folderData,
+        })
+      )
+        return "has_password";
+      else return "missing_password";
     }
 
     // let’s check if editing_limited_to is set to 'only_authors'
     // if folder has author, then socket has to have authors aswell
     if (folderData.editing_limited_to === "only_authors") {
       // return there if socket has no authorized list
-      if (!sockets_authors_slugs) return false;
+      if (!sockets_authors_slugs) return "not_allowed_author";
 
       if (
         folderData.authors &&
@@ -257,12 +296,14 @@ module.exports = (function () {
         dev.logverbose(
           `AUTH — canEditFolder: has author, is socket author --> ${socket_has_author_that_is_allowed}`
         );
-        return socket_has_author_that_is_allowed;
+        if (socket_has_author_that_is_allowed) return "allowed_author";
+        else return "not_allowed_author";
       } else {
         // if folder has no author then we’re good
         dev.logverbose(
-          `AUTH — canEditFolder: no author for folder --> authorized`
+          `AUTH — canEditFolder: no author for folder though folder is set to only_authors --> unauthorized`
         );
+        return "no_author_set_for_folder";
       }
     }
   }
@@ -371,8 +412,38 @@ module.exports = (function () {
     }
 
     // hide field
-    if (meta.hasOwnProperty(field_name) && !!meta.field_name)
-      meta[field_name] = "_field_is_hidden";
+    if (meta.hasOwnProperty(field_name) && !!meta[field_name])
+      delete meta[field_name];
+    return meta;
+  }
+
+  async function preventFieldsEditingDependingOnRole({
+    socket,
+    type,
+    type_two,
+    meta,
+  }) {
+    dev.logfunction(`AUTH — filterMetasDependingOnAuthorRole`);
+
+    // check if structure has a property enabled
+    let fields =
+      type_two === undefined
+        ? global.settings.structure[type].fields
+        : global.settings.structure[type][type_two].fields;
+
+    const field_to_act_on = Object.entries(fields).find(([key, f]) =>
+      f.hasOwnProperty("only_admin_can_edit")
+    );
+    if (!field_to_act_on) return meta;
+
+    const field_name = field_to_act_on[0];
+    const field_props = field_to_act_on[1];
+
+    if (meta.hasOwnProperty(field_name) && !!meta[field_name]) {
+      if (!(await isSocketSessionAdmin(socket))) {
+        delete meta[field_name];
+      }
+    }
     return meta;
   }
 
