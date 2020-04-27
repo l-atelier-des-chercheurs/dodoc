@@ -419,7 +419,7 @@ export default {
     },
   },
   methods: {
-    addMedia({ slugProjectName, metaFileName, type }) {
+    addMedia({ slugProjectName, metaFileName, values }) {
       return new Promise((resolve, reject) => {
         if (this.$root.state.dev_mode === "debug") {
           console.log(`METHODS • DrawingPad: addMedia with
@@ -449,7 +449,7 @@ export default {
           additionalMeta.slugMediaName = metaFileName;
         }
 
-        if (type) additionalMeta.type = type;
+        if (values) Object.assign(additionalMeta, values);
 
         // get current scroll
         if (this.$refs.current_page) {

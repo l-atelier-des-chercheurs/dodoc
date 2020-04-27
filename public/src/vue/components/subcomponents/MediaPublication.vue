@@ -55,23 +55,88 @@
           <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
         </div>
       </template>
+      <template
+        v-else-if="
+          ['ellipsis', 'rectangle', 'line', 'arrow'].includes(
+            media.publi_meta.type
+          )
+        "
+      >
+        <svg
+          viewBox="0 0 100 100"
+          :width="`${this.mediaSize.width}mm`"
+          :height="`${this.mediaSize.height}mm`"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            v-if="media.publi_meta.type === 'ellipsis'"
+            cx="50"
+            cy="50"
+            r="50"
+            vector-effect="non-scaling-stroke"
+          />
+          <rect
+            v-if="media.publi_meta.type === 'rectangle'"
+            width="100"
+            height="100"
+            vector-effect="non-scaling-stroke"
+          />
+          <line
+            v-if="media.publi_meta.type === 'line'"
+            x1="0"
+            y1="50"
+            x2="100"
+            y2="50"
+            vector-effect="non-scaling-stroke"
+          />
+          <g v-if="media.publi_meta.type === 'arrow'">
+            <line
+              x1="0"
+              y1="50"
+              x2="100"
+              y2="50"
+              vector-effect="non-scaling-stroke"
+            />
+            <g
+              transform="
+                translate(100, 50)"
+              preserveAspectRatio
+            >
+              <line
+                x1="0"
+                y1="0"
+                x2="-10"
+                y2="-10"
+                vector-effect="non-scaling-stroke"
+              />
+
+              <line
+                x1="0"
+                y1="0"
+                x2="-10"
+                y2="10"
+                vector-effect="non-scaling-stroke"
+              />
+            </g>
+          </g>
+        </svg>
+      </template>
     </div>
 
     <div class="m_mediaPublication--floatingSaveButton" v-if="inline_edit_mode">
       <button
         type="button"
         class="button button-bg_rounded bg-orange"
-        @click="cancelTextMediaInlineEditing"
+        @click="cancelMediaInlineEditing"
       >
         <img src="/images/i_clear.svg" draggable="false" />
-        <span class="text-cap font-verysmall">
-          {{ $t("cancel") }}
-        </span>
+        <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
       <button
         type="button"
         class="button button-bg_rounded bg-bleuvert"
-        @click="saveTextMedia"
+        @click="saveMedia"
       >
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
@@ -139,6 +204,9 @@
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
     >
+      <!-- <svg class="dashed-vector" viewBox="0 0 300 100" preserveAspectRatio="none">
+        <path d="M0,0 300,0 300,100 0,100z" vector-effect="non-scaling-stroke" />
+      </svg>-->
       <div
         v-if="is_selected || is_hovered"
         class="handle handle_resizeMedia_bottom"
@@ -250,7 +318,7 @@
           style="enable-background: new 0 0 98.7 132.2;"
           xml:space="preserve"
         >
-          <defs></defs>
+          <defs />
           <path
             d="M80.1,117.7c-3.1-0.2-5.6-0.3-7.6-0.2c-1.4,0.1-2.9,0.3-4.5,0.5c14.7-13.7,36.9-42.4,29.1-63.4S71.6,27,24.8,24.6
     c1.1-0.8,2.2-1.6,3.1-2.4c1.5-1.3,3.2-3.1,5.3-5.5L40,9L29.3,0L0,34.9l32.9,31.5l9.7-10.1l-7.7-7c-2.4-2.1-4.3-3.8-5.9-4.9
@@ -264,28 +332,57 @@
 
     <transition name="fade_fast" :duration="150">
       <div
-        class="m_mediaPublication--textStyleBar"
-        v-if="
-          (is_selected || is_hovered) &&
-          !preview_mode &&
-          !inline_edit_mode &&
-          !read_only &&
-          (media.type === 'text' || media.publi_meta.type === 'text')
-        "
+        class="m_mediaPublication--stylebar"
+        v-if="is_selected && !preview_mode && !inline_edit_mode && !read_only"
       >
-        <div class="m_mediaPublication--textStyleBar--container">
-          <div>
-            <label>{{ $t("font_size") }} {{ font_size_percent }}%</label>
+        <div class="m_mediaPublication--stylebar--container">
+          <div v-if="media.type === 'text' || media.publi_meta.type === 'text'">
+            <label>{{ $t("font_size") }}</label>
             <div>
               <input
                 type="range"
-                min="10"
+                min="0"
                 max="300"
                 step="10"
                 v-model="font_size_percent"
                 @change="
                   updateMediaPubliMeta({
                     font_size_percent,
+                  })
+                "
+              />
+            </div>
+            <label>{{ font_size_percent }}%</label>
+          </div>
+
+          <div
+            v-if="
+              media.publi_meta.type !== 'line' &&
+              media.publi_meta.type !== 'arrow'
+            "
+          >
+            <label>{{ $t("fill_color") }}</label>
+            <div>
+              <input
+                type="color"
+                v-model="fill_color"
+                @change="
+                  updateMediaPubliMeta({
+                    fill_color,
+                  })
+                "
+              />
+            </div>
+          </div>
+          <div>
+            <label>{{ $t("stroke_color") }}</label>
+            <div>
+              <input
+                type="color"
+                v-model="stroke_color"
+                @change="
+                  updateMediaPubliMeta({
+                    stroke_color,
                   })
                 "
               />
@@ -665,6 +762,8 @@ export default {
       debounce_setCSSForMedia: undefined,
 
       font_size_percent: 100,
+      fill_color: "transparent",
+      stroke_color: "transparent",
 
       mediaSize: {
         width: 0,
@@ -738,9 +837,11 @@ export default {
       `;
     },
     contentStyles() {
-      let css = " ";
-
-      css += `font-size: ${this.font_size_percent}%; `;
+      let css = `
+        --font_size_percent: ${this.font_size_percent}%;
+        --fill_color: ${this.fill_color};
+        --stroke_color: ${this.stroke_color};
+      `;
 
       if (this.media.publi_meta.custom_css)
         css += this.media.publi_meta.custom_css;
@@ -760,10 +861,11 @@ export default {
     },
     setMediaToEditMode(metaFileName) {
       if (this.media.publi_meta.metaFileName === metaFileName) {
+        if (!this.is_selected) this.is_selected = true;
         this.editButtonClicked();
       }
     },
-    saveTextMedia() {
+    saveMedia() {
       const val = {
         content: this.htmlForEditor,
       };
@@ -775,7 +877,7 @@ export default {
 
       this.inline_edit_mode = false;
     },
-    cancelTextMediaInlineEditing() {
+    cancelMediaInlineEditing() {
       this.htmlForEditor = this.media.publi_meta.content;
       this.inline_edit_mode = false;
     },
@@ -788,7 +890,8 @@ export default {
       else {
         this.inline_edit_mode = true;
         this.$nextTick(() => {
-          this.$refs.textField.$el.querySelector(".ql-editor").focus();
+          if (this.$refs.textField && this.$refs.textField.$el)
+            this.$refs.textField.$el.querySelector(".ql-editor").focus();
         });
       }
     },
@@ -861,7 +964,7 @@ export default {
             )
           : this.media.hasOwnProperty("ratio")
           ? this.mediaSize.width * this.media.ratio
-          : 100;
+          : 66;
       this.mediaPos.x =
         this.media.publi_meta.hasOwnProperty("x") &&
         !!Number.parseFloat(this.media.publi_meta.x)
@@ -897,6 +1000,17 @@ export default {
               .offsetHeight;
         });
       }
+
+      this.stroke_color =
+        this.media.publi_meta.hasOwnProperty("stroke_color") &&
+        !!this.media.publi_meta.stroke_color
+          ? this.media.publi_meta.stroke_color
+          : "transparent";
+      this.fill_color =
+        this.media.publi_meta.hasOwnProperty("fill_color") &&
+        !!this.media.publi_meta.fill_color
+          ? this.media.publi_meta.fill_color
+          : "transparent";
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug") {
@@ -954,7 +1068,7 @@ export default {
       //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
       // }
       return Math.max(
-        20,
+        5,
         Math.min(this.page.width - this.page.margin_right - this.mediaPos.x, w)
       );
     },
@@ -966,7 +1080,7 @@ export default {
       //   console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
       // }
       return Math.max(
-        20,
+        5,
         Math.min(
           this.page.height - this.page.margin_bottom - this.mediaPos.y,
           h
@@ -1037,32 +1151,60 @@ export default {
         this.resizeOffset.y = pageY_mm;
         this.mediaSize.pwidth = Number.parseFloat(this.mediaSize.width);
         this.mediaSize.pheight = Number.parseFloat(this.mediaSize.height);
+        this.mediaPos.px = Number.parseFloat(this.mediaPos.x);
+        this.mediaPos.py = Number.parseFloat(this.mediaPos.y);
       } else {
-        const deltaX =
-          (pageX_mm - this.resizeOffset.x) / this.$root.settings.publi_zoom;
-        let newWidth = this.mediaSize.pwidth + deltaX;
-
         if (
           this.resize_origin === "right" ||
           this.resize_origin === "bottomright"
-        )
-          this.mediaSize.width = this.limitMediaWidth(newWidth);
-
-        let new_height;
-        if (this.lock_original_ratio)
-          new_height = this.mediaSize.width * this.media.ratio;
-        else {
-          const deltaY =
-            (pageY_mm - this.resizeOffset.y) / this.$root.settings.publi_zoom;
-          new_height = this.mediaSize.pheight + deltaY;
+        ) {
+          const new_width = this.getNewSize({
+            pageX_mm,
+            pageY_mm,
+            axis_angle: 0,
+            plength: this.mediaSize.pwidth,
+          });
+          this.mediaSize.width = this.limitMediaWidth(new_width);
         }
-
         if (
           this.resize_origin === "bottom" ||
           this.resize_origin === "bottomright"
-        )
+        ) {
+          let new_height = 0;
+
+          if (this.lock_original_ratio && this.media.hasOwnProperty("ratio")) {
+            new_height = this.mediaSize.width * this.media.ratio;
+          } else {
+            new_height = this.getNewSize({
+              pageX_mm,
+              pageY_mm,
+              axis_angle: 90,
+              plength: this.mediaSize.pheight,
+            });
+          }
+
           this.mediaSize.height = this.limitMediaHeight(new_height);
+        }
+
+        // TODO : prevent opposite axis from moving
+
+        // this.mediaPos.x =
+        //   this.mediaPos.px + Math.cos(new_width - this.mediaSize.pwidth);
+
+        // this.mediaPos.x =
+        //   this.mediaPos.py + (new_width - this.mediaSize.pwidth) / 2;
+
+        // we need to move x and y to prevent them from moving
       }
+    },
+    getNewSize({ pageX_mm, pageY_mm, axis_angle, plength }) {
+      const angle = (this.rotate + axis_angle) * (Math.PI / 180); // rads to degs, range (-180, 180]
+      let distance =
+        Math.cos(angle) * (pageX_mm - this.resizeOffset.x) +
+        Math.sin(angle) * (pageY_mm - this.resizeOffset.y);
+
+      const new_length = distance * this.$root.settings.publi_zoom + plength;
+      return new_length;
     },
     resizeUp(event) {
       if (this.$root.state.dev_mode === "debug")
@@ -1072,6 +1214,9 @@ export default {
 
       if (this.is_resized) {
         this.mediaSize.width = this.roundMediaVal(this.mediaSize.width);
+        // if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
+        //   this.mediaSize.height = this.mediaSize.width * this.media.ratio;
+        // else
         if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
           this.mediaSize.height = this.mediaSize.width * this.media.ratio;
         else this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);

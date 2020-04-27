@@ -18,15 +18,11 @@
       :slugPubliName="slugPubliName"
     />
 
-    <div class="m_publicationButtons" v-if="can_edit_publi">
-      <button
-        v-if="!contact_sheet_mode"
-        class="buttonLink"
-        @mousedown.stop.prevent="createPubliText"
-        @touchstart.stop.prevent="createPubliText"
-      >
-        {{ $t("create_text") }}
-      </button>
+    <div class="m_pageLefttoolbar">
+      <PublicationButtons
+        v-if="can_edit_publi && !contact_sheet_mode"
+        @addMedia="createPubliMedia"
+      />
     </div>
 
     <div
@@ -627,6 +623,7 @@ import PublicationHeader from "../subcomponents/PublicationHeader.vue";
 import ExportPagePubli from "../modals/ExportPagePubli.vue";
 import PagePublicationSinglePage from "./PagePublicationSinglePage.vue";
 import SettingsPane from "./SettingsPane.vue";
+import PublicationButtons from "./subcomponents/PublicationButtons.vue";
 
 export default {
   props: {
@@ -639,6 +636,7 @@ export default {
     ExportPagePubli,
     PagePublicationSinglePage,
     SettingsPane,
+    PublicationButtons,
   },
   data() {
     return {
@@ -652,7 +650,7 @@ export default {
           margin_right: 10,
           margin_top: 20,
           margin_bottom: 20,
-          gridstep: 10,
+          gridstep: 5,
           snap_to_grid: true,
           header_left: "",
           header_right: "",
@@ -1049,17 +1047,19 @@ export default {
 
       this.openPage(this.pagesWithDefault[new_index].id);
     },
-    createPubliText() {
+    createPubliMedia(values) {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
-      this.addMedia({ type: "text" }).then((mdata) => {
-        this.$eventHub.$emit(
-          "publication.set_media_to_edit_mode",
-          mdata.metaFileName
-        );
+      this.addMedia({ values }).then((mdata) => {
+        if (values.type && type === "text") {
+          this.$eventHub.$emit(
+            "publication.set_media_to_edit_mode",
+            mdata.metaFileName
+          );
+        }
       });
     },
-    addMedia({ slugProjectName, metaFileName, type }) {
+    addMedia({ slugProjectName, metaFileName, values }) {
       return new Promise((resolve, reject) => {
         if (this.$root.state.dev_mode === "debug") {
           console.log(`METHODS • Publication: addMedia with
@@ -1097,7 +1097,7 @@ export default {
           additionalMeta.slugMediaName = metaFileName;
         }
 
-        if (type) additionalMeta.type = type;
+        if (values) Object.assign(additionalMeta, values);
 
         // get current scroll
         if (this.$refs.page_container) {

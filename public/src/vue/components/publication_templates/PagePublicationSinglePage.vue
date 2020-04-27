@@ -57,9 +57,8 @@
               'link_publication',
             ].includes($root.state.mode)
           "
+          >{{ $t("no_media_on_this_page") }}</template
         >
-          {{ $t("no_media_on_this_page") }}
-        </template>
       </div>
 
       <div
@@ -67,27 +66,29 @@
         v-for="media in publication_medias"
         :key="media.publi_meta.metaFileName"
       >
-        <transition name="slideup" :duration="1000">
-          <MediaPublication
-            :key="media.publi_meta.metaFileName"
-            :page="page"
-            :mode="mode"
-            :media="media"
-            :preview_mode="preview_mode"
-            :read_only="read_only"
-            :pixelsPerMillimeters="pixelsPerMillimeters"
-            @removePubliMedia="
-              (values) => {
-                removePubliMedia(values);
-              }
-            "
-            @editPubliMedia="
-              (values) => {
-                editPubliMedia(values);
-              }
-            "
-            @unselected="noSelection"
-          />
+        <transition name="MediaPublication" :duration="500">
+          <div>
+            <MediaPublication
+              :key="media.publi_meta.metaFileName"
+              :page="page"
+              :mode="mode"
+              :media="media"
+              :preview_mode="preview_mode"
+              :read_only="read_only"
+              :pixelsPerMillimeters="pixelsPerMillimeters"
+              @removePubliMedia="
+                (values) => {
+                  removePubliMedia(values);
+                }
+              "
+              @editPubliMedia="
+                (values) => {
+                  editPubliMedia(values);
+                }
+              "
+              @unselected="noSelection"
+            />
+          </div>
         </transition>
       </div>
     </div>

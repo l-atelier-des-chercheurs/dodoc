@@ -134,6 +134,26 @@ module.exports = (function () {
       fr: "Voir les messages plus anciens",
       en: "See older messages",
     },
+    show: {
+      fr: "Afficher",
+      en: "Show",
+    },
+    only_my_projects: {
+      fr: "Seulement mes projets",
+      en: "My projects",
+    },
+    only_my_medias: {
+      fr: "Seulement mes médias",
+      en: "My medias",
+    },
+    all_projects: {
+      fr: "Tous les projets",
+      en: "All projects",
+    },
+    all_medias: {
+      fr: "Tous les médias",
+      en: "All medias",
+    },
     created: {
       fr: "Création",
       en: "Created",
@@ -531,6 +551,14 @@ module.exports = (function () {
     edit_original_media: {
       fr: "Modifier le média original",
       en: "Edit original media content",
+    },
+    stroke_color: {
+      fr: "Couleur du contour",
+      en: "Stroke color",
+    },
+    fill_color: {
+      fr: "Couleur du fond",
+      en: "Fill color",
     },
     adjust: {
       fr: "Ajuster",
@@ -1775,6 +1803,23 @@ module.exports = (function () {
       oc: "Deseleccionar",
       de: "Auswahl aufheben",
     },
+    ellipsis: {
+      fr: "Ellipse",
+      en: "Ellipsis",
+    },
+    rectangle: {
+      fr: "Rectangle",
+      en: "Rectangle",
+    },
+    line: {
+      fr: "Ligne",
+      en: "Line",
+    },
+    arrow: {
+      fr: "Flèche",
+      en: "Arrow",
+    },
+
     toconnectwithanotherdevice: {
       fr:
         "Pour accéder à cet élément avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web, ou bien scannez le code QR&nbsp;: ",

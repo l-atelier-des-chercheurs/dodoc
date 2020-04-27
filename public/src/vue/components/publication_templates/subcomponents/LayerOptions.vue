@@ -86,23 +86,21 @@
         </div>
       </div>
       <div v-else-if="current_layer.type === 'medias'">
-        <button
-          class="buttonLink"
-          @mousedown.stop.prevent="createPubliText"
-          @touchstart.stop.prevent="createPubliText"
-        >
-          {{ $t("create_text") }}
-        </button>
+        <PublicationButtons @addMedia="createPubliMedia" />
       </div>
     </div>
   </div>
 </template>
 <script>
+import PublicationButtons from "./PublicationButtons.vue";
+
 export default {
   props: {
     current_layer: Object,
   },
-  components: {},
+  components: {
+    PublicationButtons,
+  },
   data() {
     return {
       drawing_options: {
@@ -137,18 +135,20 @@ export default {
     removeLayer() {
       this.$emit("removeLayer");
     },
-    createPubliText() {
+    createPubliMedia(values) {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
       this.$eventHub.$emit("publication.addMedia", {
-        type: "text",
+        values,
       });
 
       this.$eventHub.$once("publication.media_created", ({ mdata }) => {
-        this.$eventHub.$emit(
-          "publication.set_media_to_edit_mode",
-          mdata.metaFileName
-        );
+        if (values.type === "text") {
+          this.$eventHub.$emit(
+            "publication.set_media_to_edit_mode",
+            mdata.metaFileName
+          );
+        }
       });
     },
   },
