@@ -64,8 +64,8 @@
       >
         <svg
           viewBox="0 0 100 100"
-          :width="`${this.mediaSize.width}mm`"
-          :height="`${this.mediaSize.height}mm`"
+          :width="`${mediaSize.width}mm`"
+          :height="`${mediaSize.height}mm`"
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
         >
