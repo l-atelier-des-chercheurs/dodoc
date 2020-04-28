@@ -1,5 +1,5 @@
 <template>
-  <tr>
+  <tr @click.exact="openPublication">
     <td>
       {{ publication.name }}
       <ProtectedLock
