@@ -1517,6 +1517,10 @@
     white-space: inherit;
     position: fixed;
     padding: 0;
+    max-width: 600px !important;
+    width: 100% !important;
+
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     .ql-toolbar {
       .margin-sides-small;
@@ -1527,6 +1531,15 @@
     }
 
     .ql-tooltip-arrow {
+    }
+
+    &.ql-hidden {
+      // bubble editor : when no text is selected
+      display: block;
+      bottom: ~"calc(100% + var(--spacing) / 2)" !important;
+      top: auto !important;
+      left: 50% !important;
+      transform: translate(-50%, 0) !important;
     }
   }
 

@@ -130,7 +130,7 @@
         class="button button-bg_rounded bg-orange"
         @click="cancelMediaInlineEditing"
       >
-        <img src="/images/i_clear.svg" draggable="false" />
+        <!-- <img src="/images/i_clear.svg" draggable="false" /> -->
         <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
       <button
