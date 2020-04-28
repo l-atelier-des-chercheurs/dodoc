@@ -64,8 +64,8 @@
       >
         <svg
           viewBox="0 0 100 100"
-          :width="`${this.mediaSize.width}mm`"
-          :height="`${this.mediaSize.height}mm`"
+          :width="`${mediaSize.width}mm`"
+          :height="`${mediaSize.height}mm`"
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -130,7 +130,7 @@
         class="button button-bg_rounded bg-orange"
         @click="cancelMediaInlineEditing"
       >
-        <img src="/images/i_clear.svg" draggable="false" />
+        <!-- <img src="/images/i_clear.svg" draggable="false" /> -->
         <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
       <button

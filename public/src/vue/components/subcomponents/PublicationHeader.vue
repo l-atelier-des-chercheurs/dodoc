@@ -108,7 +108,13 @@
         v-if="
           publication.template === 'page_by_page' &&
           $root.consult_domains &&
-          $root.consult_domains.length > 0
+          $root.consult_domains.length > 0 &&
+          can_edit_publi() &&
+          ![
+            'export_publication',
+            'print_publication',
+            'link_publication',
+          ].includes($root.state.mode)
         "
       >
         <div class="switch switch-xs">

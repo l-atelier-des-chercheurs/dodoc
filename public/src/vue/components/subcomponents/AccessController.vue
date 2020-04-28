@@ -65,7 +65,7 @@
           type="button"
           class="buttonLink"
           style
-          @click="$root.showAuthorsListModal = true"
+          @click.stop="$root.showAuthorsListModal = true"
         >
           {{ $t("login_to_edit_project") }}
         </button>
@@ -77,7 +77,7 @@
           type="button"
           class="buttonLink"
           style
-          @click="$root.showAuthorsListModal = true"
+          @click.stop="$root.showAuthorsListModal = true"
         >
           {{ $t("login_to_access_project") }}
         </button>
@@ -87,7 +87,7 @@
           type="button"
           class="buttonLink"
           style
-          @click="requestAccessToProject"
+          @click.stop="requestAccessToProject"
         >
           {{ $t("ask_to_be_added_to_authors") }}
         </button>
@@ -104,7 +104,7 @@
       class="buttonLink _open_pwd_input"
       :class="{ 'is--active': showInputPasswordField }"
       style
-      @click="showInputPasswordField = !showInputPasswordField"
+      @click.stop="showInputPasswordField = !showInputPasswordField"
     >
       {{ $t("password_required_to_open") }}
     </button>
@@ -120,7 +120,7 @@
       class="buttonLink _open_pwd_input"
       :class="{ 'is--active': showInputPasswordField }"
       style
-      @click="showInputPasswordField = !showInputPasswordField"
+      @click.stop="showInputPasswordField = !showInputPasswordField"
     >
       {{ $t("password_required_to_edit") }}
     </button>
@@ -141,7 +141,7 @@
       <button
         type="button"
         class="button button-greenthin"
-        @click="submitPassword"
+        @click.stop="submitPassword"
       >
         {{ $t("send") }}
       </button>

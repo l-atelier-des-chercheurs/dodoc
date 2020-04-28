@@ -649,7 +649,7 @@
   display: inline-block;
   float: left;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   height: var(--quill-options-size);
   position: relative;
   vertical-align: middle;
@@ -1419,21 +1419,21 @@
 //   color: #fff;
 // }
 .ql-bubble .ql-tooltip-arrow {
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
   content: " ";
   display: block;
   left: 50%;
-  margin-left: -12px;
+  margin-left: -6px;
   position: absolute;
 }
 .ql-bubble .ql-tooltip:not(.ql-flip) .ql-tooltip-arrow {
-  border-bottom: 12px solid @c-gris;
-  top: -12px;
+  border-bottom: 6px solid @c-gris_clair;
+  top: -6px;
 }
 .ql-bubble .ql-tooltip.ql-flip .ql-tooltip-arrow {
-  border-top: 12px solid @c-gris;
-  bottom: -12px;
+  border-top: 6px solid @c-gris_clair;
+  bottom: -6px;
 }
 .ql-bubble .ql-tooltip.ql-editing .ql-tooltip-editor {
   display: block;
@@ -1517,6 +1517,10 @@
     white-space: inherit;
     position: fixed;
     padding: 0;
+    max-width: 600px !important;
+    width: 100% !important;
+
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     .ql-toolbar {
       .margin-sides-small;
@@ -1527,6 +1531,15 @@
     }
 
     .ql-tooltip-arrow {
+    }
+
+    &.ql-hidden {
+      // bubble editor : when no text is selected
+      display: block;
+      bottom: ~"calc(100% + var(--spacing) / 2)" !important;
+      top: auto !important;
+      left: 50% !important;
+      transform: translate(-50%, 0) !important;
     }
   }
 
@@ -1926,6 +1939,10 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
   html[lang="fr"] & {
     content: "Énorme";
   }
+}
+
+.ql-picker.ql-size .ql-picker-label[data-value]::before {
+  font-size: 100% !important;
 }
 
 .ql-picker.ql-font .ql-picker-label[data-value=""]::before,
