@@ -551,16 +551,29 @@ export default {
         else return recipes.slice(0, 3);
       }
 
-      if (!!this.slugProjectName_to_filter)
+      if (!!this.slugProjectName_to_filter) {
         // show first that project’s publi, and then all the others
-        return recipes.sort((x, y) => {
-          return x.attached_to_project === this.slugProjectName_to_filter
-            ? -1
-            : y.attached_to_project == this.slugProjectName_to_filter
-            ? 1
-            : 0;
-        });
-      else return recipes;
+        const recipes_of_project = recipes.filter(
+          (r) => r.attached_to_project === this.slugProjectName_to_filter
+        );
+
+        if (recipes_of_project)
+          return recipes_of_project.concat(
+            recipes.filter(
+              (r) => r.attached_to_project !== this.slugProjectName_to_filter
+            )
+          );
+
+        // return recipes.sort((x, y) => {
+        //   return x.attached_to_project === this.slugProjectName_to_filter
+        //     ? -1
+        //     : y.attached_to_project === this.slugProjectName_to_filter
+        //     ? 1
+        //     : 0;
+        // });
+      }
+
+      return recipes;
     },
     openCreatePublicationModal(recipe_key) {
       this.showCreatePublicationModal = true;
