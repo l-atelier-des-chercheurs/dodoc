@@ -649,7 +649,7 @@
   display: inline-block;
   float: left;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   height: var(--quill-options-size);
   position: relative;
   vertical-align: middle;
@@ -1926,6 +1926,10 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
   html[lang="fr"] & {
     content: "Énorme";
   }
+}
+
+.ql-picker.ql-size .ql-picker-label[data-value]::before {
+  font-size: 100% !important;
 }
 
 .ql-picker.ql-font .ql-picker-label[data-value=""]::before,
