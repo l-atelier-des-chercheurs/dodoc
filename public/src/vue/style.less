@@ -4519,29 +4519,57 @@ small {
   }
 
   .m_pageLefttoolbar {
+  }
+
+  .m_publicationButtons {
     position: absolute;
     // bottom: 20px;
     top: 0;
     margin-top: 200px;
     left: 20px;
     z-index: 1001;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 10px;
-    // border-top-left-radius: 0;
-    // border-bottom-left-radius: 0;
-    padding-top: 0;
-    // .padding-bottom-verysmall;
+
+    .bg-noir;
+    background-color: rgba(53, 53, 53, 0.95);
+    border-radius: 4px;
+    .padding-sides-verysmall;
+    .padding-vert-verysmall;
 
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
-  }
 
-  .m_publicationButtons {
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
 
     > * {
-      .padding-small;
+      .padding-sides-verysmall;
+      // .padding-vert-verysmall;
+
+      > label {
+        color: white;
+      }
+
+      > div {
+        .item {
+          .margin-bottom-verysmall;
+          .padding-verysmall;
+          padding-top: 0;
+          border-radius: 4px;
+
+          .bg-gris_tresclair;
+
+          &:hover {
+            .bg-blanc;
+          }
+
+          label {
+          }
+        }
+      }
+
+      &:not(:last-child) {
+        // border-bottom: 2px solid @c-border;
+      }
     }
 
     button {
@@ -5589,6 +5617,38 @@ small {
   }
 }
 
+.m_customStyles {
+  .prism-editor__code {
+    // box-shadow: 0px 2px 16px 0px rgba(51, 51, 51, 0.8);
+    .bg-noir;
+    min-height: 3.5em;
+    max-height: 200px;
+    .custom_scrollbar(8px, 5px, 6px, transparent, @c-blanc);
+    overflow: auto;
+    overscroll-behavior-y: contain;
+    margin-bottom: -1px;
+  }
+
+  pre {
+    margin: 0;
+    border: 3px solid @c-noir;
+    &:focus {
+      outline: 0;
+      border-color: @c-orange;
+    }
+  }
+
+  .m_customStyles--sendButton {
+    text-align: center;
+
+    // button {
+    //   // .label;
+    //   .button-small;
+    //   .bg-bleuvert;
+    // }
+  }
+}
+
 .m_mediaPublication {
   position: absolute;
 
@@ -5674,66 +5734,6 @@ small {
 
     > * {
       pointer-events: auto;
-    }
-  }
-
-  .m_mediaPublication--edit_styles {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translate(-50%, 0);
-    margin: 0 auto;
-    .padding-verysmall;
-    max-width: 300px;
-    min-width: 200px;
-    width: 100%;
-    height: auto;
-    z-index: 100;
-
-    > .m_mediaPublication--edit_styles--helpButton {
-      position: absolute;
-      top: 0.7em;
-      right: 0.5em;
-      color: @c-gris_clair;
-      z-index: 1;
-      background-color: transparent;
-      min-height: 0;
-      min-width: 0;
-      height: 1em;
-      width: 1em;
-      display: block;
-      line-height: 0;
-      padding: 0;
-    }
-
-    .prism-editor__code {
-      box-shadow: 0px 2px 16px 0px rgba(51, 51, 51, 0.8);
-      .bg-noir;
-      min-height: 3.5em;
-      max-height: 200px;
-      .custom_scrollbar(8px, 5px, 6px, transparent, @c-blanc);
-      overflow: auto;
-      overscroll-behavior-y: contain;
-      margin-bottom: -1px;
-    }
-
-    pre {
-      margin: 0;
-      border: 3px solid @c-noir;
-      &:focus {
-        outline: 0;
-        border-color: @c-orange;
-      }
-    }
-
-    .m_mediaPublication--edit_styles--sendButton {
-      text-align: center;
-
-      // button {
-      //   // .label;
-      //   .button-small;
-      //   .bg-bleuvert;
-      // }
     }
   }
 

@@ -162,41 +162,6 @@
       <span>…</span>
     </button>
 
-    <div
-      class="m_mediaPublication--edit_styles"
-      v-if="
-        (is_selected || is_hovered) && !preview_mode && show_custom_css_window
-      "
-    >
-      <button
-        type="button"
-        class="m_mediaPublication--edit_styles--helpButton"
-        :content="$t('write_some_CSS_code_for_example')"
-        v-tippy="{
-          delay: [600, 0],
-        }"
-      >
-        ?
-      </button>
-      <PrismEditor
-        v-model="custom_css"
-        @change="/* setCSSForMedia */"
-        language="css"
-      />
-      <div class="m_mediaPublication--edit_styles--sendButton">
-        <button
-          type="button"
-          class="button-greenthin"
-          @click="setCSSForMedia"
-          :class="{
-            'is--disabled': custom_css === media.publi_meta.custom_css,
-          }"
-        >
-          {{ $t("send") }}
-        </button>
-      </div>
-    </div>
-
     <!-- <transition name="fade_fast" :duration="150"> -->
     <div
       v-if="!preview_mode && !inline_edit_mode && !read_only"
@@ -490,22 +455,6 @@
 
           <button
             type="button"
-            class="buttonLink _no_underline"
-            @mousedown.stop.prevent="toggleEditWindow()"
-            @touchstart.stop.prevent="toggleEditWindow()"
-            :class="{ 'is--active': show_custom_css_window }"
-            :content="$t('css_settings')"
-            v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
-          >
-            {{ $t("css") }}
-            <sup v-if="custom_css">*</sup>
-          </button>
-
-          <button
-            type="button"
             v-if="media.slugProjectName"
             class="buttonLink _no_underline"
             @mousedown.stop.prevent="editButtonClicked"
@@ -633,7 +582,6 @@
 </template>
 <script>
 import MediaContent from "./MediaContent.vue";
-import PrismEditor from "vue-prism-editor";
 import debounce from "debounce";
 import CollaborativeEditor from "./CollaborativeEditor.vue";
 
@@ -650,7 +598,6 @@ export default {
   },
   components: {
     MediaContent,
-    PrismEditor,
     CollaborativeEditor,
   },
   data() {
@@ -666,11 +613,6 @@ export default {
       inline_edit_mode: false,
       show_advanced_menu: false,
       show_zindex_number: false,
-
-      custom_css: this.media.publi_meta.hasOwnProperty("custom_css")
-        ? this.media.publi_meta.custom_css
-        : "",
-      show_custom_css_window: false,
 
       limit_media_to_page: true,
       htmlForEditor: this.media.publi_meta.content
@@ -718,6 +660,7 @@ export default {
         pheight: 0,
       },
 
+      custom_css: "",
       mediaZIndex: 0,
 
       fit_mode: "cover",
@@ -860,29 +803,6 @@ export default {
       this.updateMediaPubliMeta({
         height: this.mediaSize.height,
       });
-    },
-    toggleEditWindow() {
-      this.show_custom_css_window = !this.show_custom_css_window;
-    },
-    setCSSForMedia(event) {
-      const val = {
-        custom_css: this.custom_css,
-      };
-      this.$emit("editPubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName,
-        val,
-      });
-      // if (this.debounce_setCSSForMedia)
-      //   clearTimeout(this.debounce_setCSSForMedia);
-      // this.debounce_setCSSForMedia = setTimeout(() => {
-      //   const val = {
-      //     custom_css: this.custom_css,
-      //   };
-      //   this.$emit("editPubliMedia", {
-      //     slugMediaName: this.media.publi_meta.metaFileName,
-      //     val,
-      //   });
-      // }, 0);
     },
     toggleImageFitMode() {
       if (this.fit_mode === "cover") this.fit_mode = "contain";
@@ -1360,7 +1280,6 @@ export default {
         console.log(`METHODS • MediaPublication: deselectMedia`);
 
       this.show_advanced_menu = false;
-      this.show_custom_css_window = false;
 
       this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
         (meta) => meta !== this.media.publi_meta.metaFileName

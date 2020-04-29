@@ -2,9 +2,16 @@
   <div class="m_publicationButtons">
     <div>
       <label>
-        {{ $t("create") }}
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_create_options }"
+          @click="show_create_options = !show_create_options"
+        >
+          {{ $t("create") }}
+        </button>
       </label>
-      <div>
+      <div v-if="show_create_options">
         <button
           class="button"
           @mousedown.stop.prevent="$emit('addMedia', { type: 'text' })"
@@ -254,37 +261,59 @@
         {{ $t("edit") }}
       </label>
       <div>
-        <div class="m_mediaPublication--stylebar--container">
-          <div v-if="media.type === 'text' || media.publi_meta.type === 'text'">
-            <label>{{ $t("font_size") }}</label>
-            <div>
-              <input
-                type="range"
-                min="0"
-                max="300"
-                step="10"
-                v-model="font_size_percent"
-              />
-            </div>
-            <label>{{ font_size_percent }}%</label>
-          </div>
-
-          <div
-            v-if="
-              media.publi_meta.type !== 'line' &&
-              media.publi_meta.type !== 'arrow'
-            "
-          >
-            <label>{{ $t("fill_color") }}</label>
-            <div>
-              <input type="color" v-model="fill_color" />
-            </div>
-          </div>
+        <div
+          class="item"
+          v-if="media.type === 'text' || media.publi_meta.type === 'text'"
+        >
+          <label>{{ $t("font_size") }}</label>
           <div>
-            <label>{{ $t("stroke_color") }}</label>
-            <div>
-              <input type="color" v-model="stroke_color" />
-            </div>
+            <input
+              type="range"
+              min="0"
+              max="300"
+              step="10"
+              v-model="font_size_percent"
+            />
+          </div>
+          <label>{{ font_size_percent }}%</label>
+        </div>
+
+        <div
+          class="item"
+          v-if="
+            media.publi_meta.type !== 'line' &&
+            media.publi_meta.type !== 'arrow' &&
+            media.type !== 'image'
+          "
+        >
+          <label>{{ $t("fill_color") }}</label>
+          <div>
+            <input type="color" v-model="fill_color" />
+          </div>
+        </div>
+        <div class="item">
+          <label>{{ $t("stroke_color") }}</label>
+          <div>
+            <input type="color" v-model="stroke_color" />
+          </div>
+        </div>
+
+        <div class="item m_customStyles">
+          <label>{{ $t("css_settings") }}</label>
+          <PrismEditor
+            v-model="custom_css"
+            @change="/* setCSSForMedia */"
+            language="css"
+          />
+          <div class="m_customStyles--sendButton">
+            <button
+              type="button"
+              class="button-greenthin"
+              @click="updateMediaPubliMeta({ custom_css: custom_css })"
+              :class="{}"
+            >
+              {{ $t("send") }}
+            </button>
           </div>
         </div>
       </div>
@@ -292,20 +321,38 @@
   </div>
 </template>
 <script>
+import PrismEditor from "vue-prism-editor";
+
 export default {
   props: {
     preview_mode: Boolean,
     slugPubliName: String,
     page_medias: Array,
   },
-  components: {},
+  components: {
+    PrismEditor,
+  },
   data() {
-    return {};
+    return {
+      show_create_options: true,
+      custom_css: "",
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    "$root.settings.current_publication.selected_medias": function () {
+      if (this.$root.settings.current_publication.selected_medias.length > 0) {
+        this.show_create_options = false;
+      } else this.show_create_options = true;
+    },
+    media: function () {
+      this.custom_css = this.media.publi_meta.hasOwnProperty("custom_css")
+        ? this.media.publi_meta.custom_css
+        : this.custom_css;
+    },
+  },
   computed: {
     media() {
       if (this.$root.settings.current_publication.selected_medias.length === 0)
@@ -361,7 +408,6 @@ export default {
   },
   methods: {
     updateMediaPubliMeta(val) {
-      debugger;
       this.$root.editMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
