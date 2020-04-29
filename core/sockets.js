@@ -181,17 +181,20 @@ module.exports = (function () {
     const foldersData = await file.getFolder({ type, slugFolderName });
 
     if (
-      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: editing this content is not allowed.`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, foldersData[slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: folder can’t be edited ${slugFolderName} ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     data = await auth.preventFieldsEditingDependingOnRole({
       socket,
@@ -248,17 +251,20 @@ module.exports = (function () {
     const foldersData = await file.getFolder({ type, slugFolderName });
 
     if (
-      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: editing this content is not allowed.`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, foldersData[slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: removing folder not allowed ${slugFolderName} ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     await file
       .removeFolder({
@@ -297,19 +303,21 @@ module.exports = (function () {
       `EVENT - onCreateMedia : slugFolderName = ${slugFolderName} and type = ${type} and rawData.length = ${rawData.length}`
     );
 
-    const foldersData = await file.getFolder({ type, slugFolderName });
     if (
-      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: media can’t be created for protected folder ${slugFolderName}`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, foldersData[slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: media can’t be created for protected folder ${slugFolderName} ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     const _additionalMeta = await file.createMedia({
       type,
@@ -369,18 +377,22 @@ module.exports = (function () {
     );
 
     const foldersData = await file.getFolder({ type, slugFolderName });
+
     if (
-      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: folder can’t be edited ${slugFolderName}`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, foldersData[slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: err.message,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     file
       .editMedia({
@@ -425,21 +437,20 @@ module.exports = (function () {
     });
 
     if (
-      !(await auth.canEditFolder(
-        socket,
-        from_foldersData[from_slugFolderName],
-        type
-      ))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: origin folder ${to_slugFolderName} can’t be edited `,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, from_foldersData[from_slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: origin folder ${to_slugFolderName} can’t be edited: ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     const to_foldersData = await file.getFolder({
       type,
@@ -447,21 +458,20 @@ module.exports = (function () {
     });
 
     if (
-      !(await auth.canEditFolder(
-        socket,
-        to_foldersData[to_slugFolderName],
-        type
-      ))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: destination folder ${to_slugFolderName} can’t be edited`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, to_foldersData[to_slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: destination folder ${to_slugFolderName} can’t be edited: ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     const newMetaFileName = await file
       .copyMediaToAnotherFolder({
@@ -506,18 +516,22 @@ module.exports = (function () {
     );
 
     const foldersData = await file.getFolder({ type, slugFolderName });
+
     if (
-      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: folder can’t be edited ${slugFolderName}`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, foldersData[slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: folder can’t be edited ${slugFolderName} ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     await file
       .removeMedia({
@@ -558,22 +572,22 @@ module.exports = (function () {
       type: "publications",
       slugFolderName: slugPubliName,
     });
+
     if (
-      !(await auth.canEditFolder(
-        socket,
-        foldersData[slugPubliName],
-        "publications"
-      ))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: folder can’t be downloaded ${slugPubliName}`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, foldersData[slugPubliName], "publications")
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: folder can’t be edited ${slugPubliName} ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     exporter
       .makePDFForPubli({ slugPubliName, options })
@@ -604,22 +618,22 @@ module.exports = (function () {
       type: "publications",
       slugFolderName: slugPubliName,
     });
+
     if (
-      !(await auth.canEditFolder(
-        socket,
-        foldersData[slugPubliName],
-        "publications"
-      ))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: folder can’t be downloaded ${slugPubliName}`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, foldersData[slugPubliName], "publications")
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: folder can’t be edited ${slugPubliName} ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     exporter
       .makeVideoForPubli({ slugPubliName, socket, options })
@@ -661,21 +675,20 @@ module.exports = (function () {
       slugFolderName: slugPubliName,
     });
     if (
-      !(await auth.canEditFolder(
-        socket,
-        foldersData[slugPubliName],
-        "publications"
-      ))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: folder can’t be downloaded ${slugPubliName}`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, foldersData[slugPubliName], "publications")
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: folder can’t be downloaded ${slugPubliName} ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     exporter
       .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
@@ -716,22 +729,22 @@ module.exports = (function () {
       type: to.type,
       slugFolderName: to.slugFolderName,
     });
+
     if (
-      !(await auth.canEditFolder(
-        socket,
-        foldersData[to.slugFolderName],
-        to.type
-      ))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: folder can’t be downloaded ${slugPubliName}`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, foldersData[to.slugFolderName], to.type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: temp media can’t be added to folder ${to.slugFolderName} ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     await file
       .addTempMediaToFolder({ from, to, additionalMeta })
@@ -762,17 +775,20 @@ module.exports = (function () {
     const foldersData = await file.getFolder({ type, slugFolderName });
 
     if (
-      !(await auth.canEditFolder(socket, foldersData[slugFolderName], type))
-    ) {
-      notify({
-        socket,
-        socketid: socket.id,
-        localized_string: `action_not_allowed`,
-        not_localized_string: `Error: editing this content is not allowed.`,
-        type: "error",
-      });
+      !(await auth
+        .canEditFolder(socket, foldersData[slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: editing this content is not allowed ${slugFolderName} ${err}`,
+            type: "error",
+          });
+        }))
+    )
       return;
-    }
 
     const new_slugFolderName = await file.copyFolder({
       type,

@@ -27,6 +27,9 @@ module.exports = function ({ router }) {
 
   if (dev.isDebug()) {
     process.traceDeprecation = true;
+    // process.on("unhandledRejection", (err) => {
+    //   throw err;
+    // });
   }
 
   if (is_electron) {

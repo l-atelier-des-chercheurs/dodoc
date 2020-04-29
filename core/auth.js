@@ -259,14 +259,14 @@ module.exports = (function () {
         })
       )
         return "has_password";
-      else return "missing_password";
+      else throw new Error("missing_password");
     }
 
     // let’s check if editing_limited_to is set to 'only_authors'
     // if folder has author, then socket has to have authors aswell
     if (folderData.editing_limited_to === "only_authors") {
       // return there if socket has no authorized list
-      if (!sockets_authors_slugs) return "not_allowed_author";
+      if (!sockets_authors_slugs) throw new Error("no_author");
 
       if (
         folderData.authors &&
@@ -297,7 +297,7 @@ module.exports = (function () {
           `AUTH — canEditFolder: has author, is socket author --> ${socket_has_author_that_is_allowed}`
         );
         if (socket_has_author_that_is_allowed) return "allowed_author";
-        else return "not_allowed_author";
+        else throw new Error("authors_not_allowed");
       } else {
         // if folder has no author then we’re good
         dev.logverbose(
@@ -322,7 +322,22 @@ module.exports = (function () {
       return true;
     }
 
-    return await canEditFolder(socket, folderData, type);
+    const reason = await canEditFolder(socket, folderData, type).catch(
+      (err) => {
+        dev.error(`Failed to edit folder: ${err}`);
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `action_not_allowed`,
+          not_localized_string: err.message,
+          type: "error",
+        });
+      }
+    );
+
+    if (!reason) return false;
+
+    return reason;
   }
 
   function filterFolders(socket, type, foldersData) {
@@ -542,6 +557,8 @@ module.exports = (function () {
   async function isSocketLoggedInAsAdmin(sockets_authors_slugs) {
     dev.logfunction(`AUTH — isSocketLoggedInAsAdmin`);
 
+    let is_admin = false;
+
     // get all session authors
     const all_authors_informations = await file.getFolder({ type: "authors" });
     const admins_slugs = Object.values(all_authors_informations).reduce(
@@ -556,8 +573,10 @@ module.exports = (function () {
       admins_slugs.length > 0 &&
       admins_slugs.some((a) => sockets_authors_slugs.includes(a))
     )
-      return true;
-    return false;
+      is_admin = true;
+
+    dev.logverbose(`AUTH — isSocketLoggedInAsAdmin: ${is_admin}`);
+    return is_admin;
   }
 
   return API;
