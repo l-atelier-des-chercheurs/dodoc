@@ -303,6 +303,7 @@ module.exports = (function () {
       `EVENT - onCreateMedia : slugFolderName = ${slugFolderName} and type = ${type} and rawData.length = ${rawData.length}`
     );
 
+    const foldersData = await file.getFolder({ type, slugFolderName });
     if (
       !(await auth
         .canEditFolder(socket, foldersData[slugFolderName], type)
