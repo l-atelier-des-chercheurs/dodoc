@@ -349,7 +349,7 @@
               <div>{{ $t("type") }}</div>
               <div>{{ $t(media.type) }}</div>
             </div>
-            <div class="m_metaField" v-if="media_size">
+            <div class="m_metaField" v-if="media_size && media.type !== 'text'">
               <div>{{ $t("size") }}</div>
               <div>{{ $root.formatBytes(media_size) }}</div>
             </div>
