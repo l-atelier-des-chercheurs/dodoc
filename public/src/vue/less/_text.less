@@ -1832,8 +1832,9 @@
   }
 }
 .quillWrapper .ql-toolbar {
-  border-bottom-width: 2px;
+  // border-bottom-width: 2px;
   background-color: var(--c-gris-clair);
+  padding-right: 50px;
 
   display: flex;
   flex-flow: row wrap;
@@ -1883,8 +1884,8 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-label::before,
 html[lang="fr"] .ql-picker.ql-header .ql-picker-item::before {
   content: "Texte courant";
 }
-html[lang="en"] .ql-picker.ql-header .ql-picker-label::before,
-html[lang="en"] .ql-picker.ql-header .ql-picker-item::before {
+html .ql-picker.ql-header .ql-picker-label::before,
+html .ql-picker.ql-header .ql-picker-item::before {
   content: "Regular text";
 }
 html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
