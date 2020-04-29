@@ -329,6 +329,13 @@
       </div>
     </div>
     <!-- </transition> -->
+    <transition name="fadeOnLeave">
+      <div v-if="show_zindex_number" class="m_mediaPublication--zIndex">
+        <svg viewBox="0 0 20 18">
+          <text text-anchor="middle" x="10" y="15">{{ mediaZIndex }}</text>
+        </svg>
+      </div>
+    </transition>
 
     <transition name="fade_fast" :duration="150">
       <div
@@ -721,6 +728,7 @@ export default {
 
       inline_edit_mode: false,
       show_advanced_menu: false,
+      show_zindex_number: false,
 
       custom_css: this.media.publi_meta.hasOwnProperty("custom_css")
         ? this.media.publi_meta.custom_css
@@ -788,6 +796,7 @@ export default {
       "publication.set_media_to_edit_mode",
       this.setMediaToEditMode
     );
+    this.$eventHub.$on("publication.flashZIndex", this.flashZIndex);
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.newMediaSelected", this.newMediaSelected);
@@ -795,6 +804,7 @@ export default {
       "publication.set_media_to_edit_mode",
       this.setMediaToEditMode
     );
+    this.$eventHub.$off("publication.flashZIndex", this.flashZIndex);
   },
 
   watch: {
@@ -867,6 +877,12 @@ export default {
         this.editButtonClicked();
       }
     },
+    flashZIndex() {
+      this.show_zindex_number = true;
+      setTimeout(() => {
+        this.show_zindex_number = false;
+      }, 500);
+    },
     saveMedia() {
       const val = {
         content: this.htmlForEditor,
@@ -898,6 +914,7 @@ export default {
       }
     },
     editZIndex(val) {
+      this.$eventHub.$emit("publication.flashZIndex");
       this.updateMediaPubliMeta({
         z_index: this.mediaZIndex + val,
       });
