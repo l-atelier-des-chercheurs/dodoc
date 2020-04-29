@@ -4524,18 +4524,26 @@ small {
   .m_publicationButtons {
     position: absolute;
     // bottom: 20px;
-    top: 0;
+    bottom: 10;
     margin-top: 200px;
-    left: 20px;
+    left: -0px;
+    max-height: 75%;
+    max-width: 220px;
     z-index: 1001;
+
+    overflow-y: auto;
 
     .bg-noir;
     background-color: rgba(53, 53, 53, 0.95);
     border-radius: 4px;
+    border-top-left-radius: 0;
+    border-top-left-radius: 0;
     .padding-sides-verysmall;
     .padding-vert-verysmall;
 
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
+    .custom_scrollbar(1px, 4px, 3px, rgba(255, 255, 255, 0), #fff);
+    // .custom_scrollbar(1px, 3px, 2px, rgba(255, 255, 255, 0), #fff);
 
     display: flex;
     flex-flow: column nowrap;
@@ -4549,9 +4557,10 @@ small {
         color: white;
       }
 
-      > div {
-        .item {
-          .margin-bottom-verysmall;
+      > div > div {
+        .margin-bottom-verysmall;
+
+        &.item {
           .padding-verysmall;
           padding-top: 0;
           border-radius: 4px;
@@ -6010,9 +6019,10 @@ small {
     height: 100%;
     left: 0;
     top: 0;
-    // background-color: @c-orange_clair;
+    background-color: rgba(53, 53, 53, 0.4);
     color: @c-noir;
     color: @c-orange;
+    .padding-large;
 
     svg {
       width: 100%;

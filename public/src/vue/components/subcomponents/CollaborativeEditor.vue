@@ -148,7 +148,6 @@ export default {
     this.editor.root.innerHTML = this.value;
 
     if (this.read_only) this.editor.disable();
-    debugger;
 
     this.$nextTick(() => {
       // this.initWebsocketMode();

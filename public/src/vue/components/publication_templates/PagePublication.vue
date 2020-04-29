@@ -18,17 +18,15 @@
       :slugPubliName="slugPubliName"
     />
 
-    <div class="m_pageLefttoolbar">
-      <PublicationButtons
-        v-if="can_edit_publi && !contact_sheet_mode && !preview_mode"
-        :preview_mode="preview_mode"
-        :page_medias="
-          publication_medias[$root.settings.current_publication.page_id]
-        "
-        :slugPubliName="slugPubliName"
-        @addMedia="createPubliMedia"
-      />
-    </div>
+    <PublicationButtons
+      v-if="can_edit_publi && !contact_sheet_mode && !preview_mode"
+      :preview_mode="preview_mode"
+      :page_medias="
+        publication_medias[$root.settings.current_publication.page_id]
+      "
+      :slugPubliName="slugPubliName"
+      @addMedia="createPubliMedia"
+    />
 
     <div
       class="m_publicationSettings"

@@ -358,6 +358,14 @@ module.exports = (function () {
       fr: "Nom du calque",
       en: "Layer name",
     },
+    layer_order: {
+      fr: "Ordre d’empilement",
+      en: "Order in the stack",
+    },
+    layer_order_instructions: {
+      fr: "Plus cette valeur est haute et plus le bloc sera au premier plan.",
+      en: "The higher the value the higher in the stack of blocs.",
+    },
     drawing_layer_1: {
       fr: "Calque dessin 1",
       en: "Drawing layer 1",
@@ -1603,6 +1611,10 @@ module.exports = (function () {
     font_size: {
       fr: "Taille de la police",
       en: "Font-size",
+    },
+    click_on_a_media_to_edit_its_presentation: {
+      fr: "Cliquez sur un média pour modifier ses paramètres",
+      en: "Cliquez sur un média pour modifier ses paramètres",
     },
     password_instructions: {
       fr:

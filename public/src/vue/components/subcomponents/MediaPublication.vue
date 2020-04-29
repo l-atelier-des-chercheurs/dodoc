@@ -6,7 +6,7 @@
     :data-media_type="media.type"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
-    @mousedown.stop="toggleMediaSelection"
+    @mousedown.stop="selectMedia"
     :class="[
       {
         'is--dragged': is_dragged,
@@ -379,82 +379,6 @@
         <div v-if="show_advanced_menu" class="_advanced_menu" @click.stop>
           <button
             type="button"
-            class="buttonLink _no_underline"
-            @mousedown.stop.prevent="editZIndex(+1)"
-            @touchstart.stop.prevent="editZIndex(+1)"
-            :content="
-              $t('move_to_foreground') +
-              '<br>' +
-              $t('layer:') +
-              ' ' +
-              mediaZIndex
-            "
-            v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
-          >
-            <svg
-              version="1.1"
-              class="inline-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="40.3px"
-              height="59.6px"
-              viewBox="0 0 40.3 59.6"
-              style="enable-background: new 0 0 40.3 59.6;"
-              xml:space="preserve"
-            >
-              <path
-                class="st0"
-                d="M35,24.4l-4.6-4.2c-2.7-2.5-4.8-4.7-6.4-7.3l0,46.7l-7.7,0l0-46.6c-1.7,2.5-3.8,4.7-6.4,7.1l-4.6,4.2L0,18.1
-              L20.2,0l20.2,18.1L35,24.4z"
-              />
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            class="buttonLink _no_underline"
-            @mousedown.stop.prevent="editZIndex(-1)"
-            @touchstart.stop.prevent="editZIndex(-1)"
-            :content="
-              $t('move_to_background') +
-              '<br>' +
-              $t('layer:') +
-              ' ' +
-              mediaZIndex
-            "
-            v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
-          >
-            <svg
-              version="1.1"
-              class="inline-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="40.3px"
-              height="59.6px"
-              viewBox="0 0 40.3 59.6"
-              style="enable-background: new 0 0 40.3 59.6;"
-              xml:space="preserve"
-            >
-              <path
-                class="st0"
-                d="M5.3,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7L24,0l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
-              L20.2,59.6L0,41.5L5.3,35.2z"
-              />
-            </svg>
-          </button>
-
-          <button
-            type="button"
             v-if="media.slugProjectName"
             class="buttonLink _no_underline"
             @mousedown.stop.prevent="editButtonClicked"
@@ -700,14 +624,13 @@ export default {
   },
   computed: {
     is_selected() {
-      debugger;
       return this.$root.settings.current_publication.selected_medias.some(
         (meta) => meta === this.media.publi_meta.metaFileName
       );
     },
     mediaStyles() {
       const set_z_index = this.is_selected
-        ? 100000
+        ? /* 100000 */ this.media.publi_meta.z_index
         : this.media.publi_meta.z_index;
 
       return `
@@ -781,12 +704,6 @@ export default {
             this.$refs.textField.$el.querySelector(".ql-editor").focus();
         });
       }
-    },
-    editZIndex(val) {
-      this.$eventHub.$emit("publication.flashZIndex");
-      this.updateMediaPubliMeta({
-        z_index: this.mediaZIndex + val,
-      });
     },
     setMediaHeightToContent() {
       const el = this.$refs.media;

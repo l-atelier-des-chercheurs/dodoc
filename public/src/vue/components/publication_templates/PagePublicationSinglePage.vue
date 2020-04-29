@@ -6,7 +6,7 @@
     <div
       class="m_page"
       :style="setPageProperties(page)"
-      @click.self="$root.settings.current_publication.selected_medias = []"
+      @click.native="$root.settings.current_publication.selected_medias = []"
     >
       <template v-if="!preview_mode">
         <div
