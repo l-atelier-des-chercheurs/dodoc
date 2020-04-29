@@ -286,6 +286,7 @@ let vm = new Vue({
         page_id: false,
         layer_id: false,
         accepted_media_type: [],
+        selected_medias: [],
       },
 
       current_chat: {

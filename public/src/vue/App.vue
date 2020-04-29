@@ -489,12 +489,12 @@ export default {
 
       if (e.index === 1) {
         if (this.panels_width.docPane <= 0.01) {
-          if (this.panels_width.chatPane <= 0.01) this.panels_width.doPane = 70;
+          if (this.panels_width.chatPane <= 0.01) this.panels_width.doPane = 50;
           else {
-            this.panels_width.chatPane = 35;
-            this.panels_width.doPane = 35;
+            this.panels_width.chatPane = 25;
+            this.panels_width.doPane = 25;
           }
-          this.panels_width.docPane = 30;
+          this.panels_width.docPane = 50;
         } else {
           if (this.panels_width.chatPane <= 0.01)
             this.panels_width.doPane = 100;

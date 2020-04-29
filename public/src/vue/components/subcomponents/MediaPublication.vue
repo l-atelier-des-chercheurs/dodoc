@@ -6,7 +6,7 @@
     :data-media_type="media.type"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
-    @mousedown.stop="is_selected = true"
+    @mousedown.stop="toggleMediaSelection"
     :class="[
       {
         'is--dragged': is_dragged,
@@ -339,68 +339,6 @@
 
     <transition name="fade_fast" :duration="150">
       <div
-        class="m_mediaPublication--stylebar"
-        v-if="is_selected && !preview_mode && !inline_edit_mode && !read_only"
-      >
-        <div class="m_mediaPublication--stylebar--container">
-          <div v-if="media.type === 'text' || media.publi_meta.type === 'text'">
-            <label>{{ $t("font_size") }}</label>
-            <div>
-              <input
-                type="range"
-                min="0"
-                max="300"
-                step="10"
-                v-model="font_size_percent"
-                @change="
-                  updateMediaPubliMeta({
-                    font_size_percent,
-                  })
-                "
-              />
-            </div>
-            <label>{{ font_size_percent }}%</label>
-          </div>
-
-          <div
-            v-if="
-              media.publi_meta.type !== 'line' &&
-              media.publi_meta.type !== 'arrow'
-            "
-          >
-            <label>{{ $t("fill_color") }}</label>
-            <div>
-              <input
-                type="color"
-                v-model="fill_color"
-                @change="
-                  updateMediaPubliMeta({
-                    fill_color,
-                  })
-                "
-              />
-            </div>
-          </div>
-          <div>
-            <label>{{ $t("stroke_color") }}</label>
-            <div>
-              <input
-                type="color"
-                v-model="stroke_color"
-                @change="
-                  updateMediaPubliMeta({
-                    stroke_color,
-                  })
-                "
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </transition>
-
-    <transition name="fade_fast" :duration="150">
-      <div
         v-if="
           (is_selected || is_hovered) &&
           !preview_mode &&
@@ -448,11 +386,11 @@
           :class="{ 'is--active': show_advanced_menu }"
           @mousedown.stop.prevent="
             show_advanced_menu = !show_advanced_menu;
-            is_selected = true;
+            selectMedia();
           "
           @touchstart.stop.prevent="
             show_advanced_menu = !show_advanced_menu;
-            is_selected = true;
+            selectMedia();
           "
         >
           <svg
@@ -722,7 +660,6 @@ export default {
       is_rotated: false,
       is_waitingForServer: false,
       is_hovered: false,
-      is_selected: false,
       is_touch: Modernizr.touchevents,
       is_text_overflowing: false,
 
@@ -817,24 +754,14 @@ export default {
       },
       deep: true,
     },
-    is_selected: function () {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`WATCH • MediaPublication: is_selected`);
-      }
-      if (this.is_selected) {
-        window.addEventListener("mousedown", this.deselectMedia);
-        window.addEventListener("touchstart", this.deselectMedia);
-        this.$eventHub.$emit("publication.newMediaSelected", this.mediaID);
-      } else {
-        window.removeEventListener("mousedown", this.deselectMedia);
-        window.removeEventListener("touchstart", this.deselectMedia);
-
-        this.show_advanced_menu = false;
-        this.show_custom_css_window = false;
-      }
-    },
   },
   computed: {
+    is_selected() {
+      debugger;
+      return this.$root.settings.current_publication.selected_medias.some(
+        (meta) => meta === this.media.publi_meta.metaFileName
+      );
+    },
     mediaStyles() {
       const set_z_index = this.is_selected
         ? 100000
@@ -866,14 +793,13 @@ export default {
     },
   },
   methods: {
-    newMediaSelected(mediaID) {
-      if (mediaID !== this.mediaID) {
-        this.is_selected = false;
-      }
+    newMediaSelected(metaFileName) {
+      if (metaFileName !== this.media.publi_meta.metaFileName)
+        this.deselectMedia();
     },
     setMediaToEditMode(metaFileName) {
       if (this.media.publi_meta.metaFileName === metaFileName) {
-        if (!this.is_selected) this.is_selected = true;
+        if (!this.is_selected) this.selectMedia();
         this.editButtonClicked();
       }
     },
@@ -1032,9 +958,9 @@ export default {
           : "transparent";
     },
     updateMediaPubliMeta(val) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
-      }
+
       this.$emit("editPubliMedia", {
         slugMediaName: this.media.publi_meta.metaFileName,
         val,
@@ -1113,11 +1039,10 @@ export default {
       });
     },
     resizeMedia({ event, type, origin }) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`
         );
-      }
 
       if (this.read_only) return;
 
@@ -1135,11 +1060,11 @@ export default {
       }
     },
     rotateMedia(type, origin) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: rotateMedia with is_resized = ${this.is_resized}`
         );
-      }
+
       if (!this.read_only) {
         if (type === "mouse") {
           window.addEventListener("mousemove", this.rotateMove);
@@ -1151,11 +1076,10 @@ export default {
       }
     },
     resizeMove(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: resizeMove with is_resized = ${this.is_resized}`
         );
-      }
 
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
@@ -1165,7 +1089,7 @@ export default {
 
       if (!this.is_resized) {
         this.is_resized = true;
-        this.is_selected = true;
+        this.selectMedia();
         this.resizeOffset.x = pageX_mm;
         this.resizeOffset.y = pageY_mm;
         this.mediaSize.pwidth = Number.parseFloat(this.mediaSize.width);
@@ -1257,11 +1181,10 @@ export default {
     },
 
     rotateMove(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: rotateMove with is_rotated = ${this.is_rotated}`
         );
-      }
 
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
@@ -1286,7 +1209,7 @@ export default {
 
       if (!this.is_rotated) {
         this.is_rotated = true;
-        this.is_selected = true;
+        this.selectMedia();
 
         // this.rotateOffset.x = pageX;
         // this.rotateOffset.y = pageY;
@@ -1317,11 +1240,10 @@ export default {
       }
     },
     rotateUp(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: rotateUp with is_rotated = ${this.is_rotated}`
         );
-      }
 
       if (this.is_rotated) {
         this.updateMediaPubliMeta({
@@ -1340,16 +1262,15 @@ export default {
     },
 
     dragMedia(type) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: dragMedia with is_dragged = ${this.is_dragged}`
         );
-      }
 
       if (this.read_only) return;
 
       if (type === "mouse") {
-        this.is_selected = true;
+        this.selectMedia();
         window.addEventListener("mousemove", this.dragMove);
         window.addEventListener("mouseup", this.dragUp);
       } else if (type === "touch") {
@@ -1358,11 +1279,10 @@ export default {
       }
     },
     dragMove(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: dragMove with is_dragged = ${this.is_dragged}`
         );
-      }
 
       const pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = !!event.pageY ? event.pageY : event.touches[0].pageY;
@@ -1372,7 +1292,7 @@ export default {
 
       if (!this.is_dragged) {
         this.is_dragged = true;
-        this.is_selected = true;
+        this.selectMedia();
 
         this.dragOffset.x = pageX_mm;
         this.dragOffset.y = pageY_mm;
@@ -1390,11 +1310,11 @@ export default {
       }
     },
     dragUp(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: dragUp with is_dragged = ${this.is_dragged}`
         );
-      }
+
       if (this.is_dragged) {
         this.mediaPos.x =
           this.roundMediaVal(this.mediaPos.x - this.page.margin_left) +
@@ -1417,12 +1337,34 @@ export default {
 
       return false;
     },
-    deselectMedia(event) {
-      if (this.$root.state.dev_mode === "debug") {
+    toggleMediaSelection() {
+      if (this.is_selected) this.deselectMedia();
+      else this.selectMedia();
+    },
+    selectMedia() {
+      if (this.is_selected) return;
+
+      if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • MediaPublication: deselectMedia`);
-      }
-      this.is_selected = false;
-      this.$emit("unselected");
+
+      // if shift is not hold down
+      // then we unselect everything
+      this.$root.settings.current_publication.selected_medias = [];
+
+      this.$root.settings.current_publication.selected_medias.push(
+        this.media.publi_meta.metaFileName
+      );
+    },
+    deselectMedia() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • MediaPublication: deselectMedia`);
+
+      this.show_advanced_menu = false;
+      this.show_custom_css_window = false;
+
+      this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
+        (meta) => meta !== this.media.publi_meta.metaFileName
+      );
     },
     mouseOver() {
       if (!this.is_touch) {

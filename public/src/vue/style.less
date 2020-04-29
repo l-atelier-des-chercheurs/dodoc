@@ -4520,7 +4520,9 @@ small {
 
   .m_pageLefttoolbar {
     position: absolute;
-    bottom: 20px;
+    // bottom: 20px;
+    top: 0;
+    margin-top: 200px;
     left: 20px;
     z-index: 1001;
     background-color: rgba(255, 255, 255, 0.95);
@@ -4537,6 +4539,10 @@ small {
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
+
+    > * {
+      .padding-small;
+    }
 
     button {
       text-align: left;
@@ -6014,59 +6020,6 @@ small {
 
       text {
         fill: currentColor;
-      }
-    }
-  }
-
-  .m_mediaPublication--stylebar {
-    position: fixed;
-    top: auto;
-    left: 0;
-    width: 100%;
-    bottom: 100%;
-    z-index: 20;
-    // overflow: hidden;
-    .margin-verysmall;
-    margin-left: auto;
-    margin-right: auto;
-
-    display: flex;
-    justify-content: center;
-
-    .m_mediaPublication--stylebar--container {
-      background-color: @c-noir;
-      color: white;
-
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: center;
-
-      .margin-sides-verysmall;
-
-      > * {
-        .margin-verysmall;
-        display: flex;
-        flex-flow: row nowrap;
-        align-items: center;
-
-        > *:not(:last-child) {
-          margin-right: ~"calc(var(--spacing) / 4)";
-        }
-      }
-
-      label {
-        color: inherit;
-        margin-bottom: 0;
-      }
-      input {
-        width: 24px;
-        height: 24px;
-        padding: 2px;
-      }
-
-      input[type="range"] {
-        margin: 0;
-        width: 140px;
       }
     }
   }

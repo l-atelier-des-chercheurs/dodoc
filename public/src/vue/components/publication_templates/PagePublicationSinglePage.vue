@@ -3,7 +3,11 @@
     class="m_publicationview--pages--pageContainer"
     :style="setPageContainerProperties(page)"
   >
-    <div class="m_page" :style="setPageProperties(page)">
+    <div
+      class="m_page"
+      :style="setPageProperties(page)"
+      @click.self="$root.settings.current_publication.selected_medias = []"
+    >
       <template v-if="!preview_mode">
         <div
           v-for="(pos, index) in ['left', 'right', 'top', 'bottom']"
@@ -87,7 +91,6 @@
                   editPubliMedia(values);
                 }
               "
-              @unselected="noSelection"
             />
           </div>
         </transition>
@@ -125,6 +128,7 @@ export default {
   created() {},
   mounted() {
     if (this.mode === "single") {
+      this.$root.settings.current_publication.selected_medias = [];
       this.$root.settings.current_publication.accepted_media_type = [
         "image",
         "video",
@@ -137,7 +141,10 @@ export default {
     }
   },
   beforeDestroy() {
-    this.$root.settings.current_publication.accepted_media_type = [];
+    if (this.mode === "single") {
+      this.$root.settings.current_publication.selected_medias = [];
+      this.$root.settings.current_publication.accepted_media_type = [];
+    }
   },
   watch: {},
   computed: {
@@ -200,10 +207,6 @@ export default {
         slugMediaName,
         data: val,
       });
-    },
-
-    noSelection() {
-      this.has_media_selected = false;
     },
   },
 };
