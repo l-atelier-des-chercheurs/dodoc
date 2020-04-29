@@ -1513,6 +1513,12 @@
   --quill-options-size: 2.2rem;
   --quill-buttons-size: 1.2rem;
 
+  &.is--read_only {
+    .ql-toolbar {
+      display: none;
+    }
+  }
+
   .ql-bubble .ql-tooltip {
     white-space: inherit;
     position: fixed;

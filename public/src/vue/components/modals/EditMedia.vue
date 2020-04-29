@@ -447,7 +447,7 @@
           <label>{{ $t("keywords") }}</label>
           <TagsInput
             :keywords="mediadata.keywords"
-            :read_only="!can_edit_media"
+            :read_only="read_only || !can_edit_media"
             @tagsChanged="(newTags) => (mediadata.keywords = newTags)"
           />
         </div>
@@ -458,7 +458,7 @@
 
           <AuthorsInput
             :currentAuthors="mediadata.authors"
-            :read_only="!can_edit_media"
+            :read_only="read_only || !can_edit_media"
             @authorsChanged="(newAuthors) => (mediadata.authors = newAuthors)"
           />
 
@@ -476,7 +476,7 @@
         :context="'edit'"
         :slugFolderName="slugProjectName"
         :media="media"
-        :read_only="read_only"
+        :read_only="read_only || !can_edit_media"
         v-model="mediadata.content"
       />
       <div class="m_mediaOptions"></div>

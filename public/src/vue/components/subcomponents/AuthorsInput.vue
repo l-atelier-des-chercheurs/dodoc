@@ -2,6 +2,7 @@
   <div class="m_authorField">
     <button
       v-for="author_slug in all_authors_slugs"
+      v-if="read_only && authors.some((a) => a.slugFolderName === author_slug)"
       type="button"
       :key="author_slug"
       :class="{
@@ -20,7 +21,8 @@
       @click="show_all_authors = true"
       v-if="
         max_authors_displayed_at_first <= all_authors_slugs.length &&
-        !show_all_authors
+        !show_all_authors &&
+        !read_only
       "
       class="m_authorField--show_all_authors"
       v-html="$t('show_all_authors')"

@@ -141,6 +141,7 @@
         v-model="htmlForEditor"
         :media="media"
         :slugFolderName="slugFolderName"
+        :read_only="read_only"
         ref="textField"
       />
       <div v-else class="mediaTextContent">

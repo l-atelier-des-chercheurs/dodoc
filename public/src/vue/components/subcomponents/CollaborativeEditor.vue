@@ -1,5 +1,10 @@
 <template>
-  <div class="quillWrapper" autocorrect="off" autofocus="autofocus">
+  <div
+    class="quillWrapper"
+    autocorrect="off"
+    autofocus="autofocus"
+    :class="{ 'is--read_only': read_only }"
+  >
     <!-- connection_state : {{ connection_state }}<br> -->
     <div ref="editor" class="mediaTextContent" />
   </div>
@@ -32,6 +37,10 @@ export default {
     theme: {
       type: String,
       default: "snow",
+    },
+    read_only: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {},
@@ -138,10 +147,15 @@ export default {
 
     this.editor.root.innerHTML = this.value;
 
+    if (this.read_only) this.editor.disable();
+    debugger;
+
     this.$nextTick(() => {
       // this.initWebsocketMode();
 
       this.editor.on("text-change", (delta, oldDelta, source) => {
+        if (this.read_only) return;
+
         this.$emit(
           "input",
           this.editor.getText() ? this.editor.root.innerHTML : ""
@@ -154,7 +168,12 @@ export default {
       this.socket.close();
     }
   },
-  watch: {},
+  watch: {
+    read_only() {
+      if (this.read_only) this.editor.disable();
+      else this.editor.enable();
+    },
+  },
   computed: {},
   methods: {
     initWebsocketMode() {
