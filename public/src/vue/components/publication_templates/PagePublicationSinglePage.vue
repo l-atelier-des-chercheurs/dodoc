@@ -1,27 +1,25 @@
 <template>
-  <div
-    class="m_publicationview--pages--pageContainer"
-    :style="setPageContainerProperties(page)"
-  >
-    <div
-      class="m_page"
-      :style="setPageProperties(page)"
-      @click.native="$root.settings.current_publication.selected_medias = []"
-    >
-      <template v-if="!preview_mode">
-        <div
-          v-for="(pos, index) in ['left', 'right', 'top', 'bottom']"
-          v-if="page['margin_' + pos] > 0"
-          class="m_page--margins_rule"
-          :class="['m_page--margins_rule_' + pos]"
-          :style="`--margin_${pos}: ${page['margin_' + pos]}mm`"
-          :key="index"
-        ></div>
+  <div class="m_publicationview--pages--pageContainer">
+    <div :style="setPageContainerProperties(page)">
+      <div
+        class="m_page"
+        :style="setPageProperties(page)"
+        @click.self="$root.settings.current_publication.selected_medias = []"
+      >
+        <template v-if="!preview_mode">
+          <div
+            v-for="(pos, index) in ['left', 'right', 'top', 'bottom']"
+            v-if="page['margin_' + pos] > 0"
+            class="m_page--margins_rule"
+            :class="['m_page--margins_rule_' + pos]"
+            :style="`--margin_${pos}: ${page['margin_' + pos]}mm`"
+            :key="index"
+          ></div>
 
-        <div
-          class="m_page--grid"
-          v-if="!!page.gridstep && page.gridstep > 0"
-          :style="`
+          <div
+            class="m_page--grid"
+            v-if="!!page.gridstep && page.gridstep > 0"
+            :style="`
             --gridstep: ${page.gridstep}mm; 
             --margin_left: ${page.margin_left}mm; 
             --margin_right: ${page.margin_right}mm; 
@@ -29,71 +27,72 @@
             --margin_bottom: ${page.margin_bottom}mm;
             --zoom: ${zoom};
           `"
-        />
-      </template>
+          />
+        </template>
 
-      <div
-        class="m_page--header"
-        :style="customCSSVars"
-        v-if="!!page.header_left || !!page.header_right"
-      >
-        <div>{{ page.header_left }}</div>
-        <div>{{ page.header_right }}</div>
-      </div>
-
-      <div
-        v-if="
-          pageNumber >= 0 &&
-          (!page.hasOwnProperty('show_page_number') || page.show_page_number)
-        "
-        class="m_page--pageNumber"
-        :class="{ toRight: true }"
-      >
-        {{ pageNumber + 1 }}
-      </div>
-
-      <div v-if="publication_medias.length === 0" class="m_page--noMedia">
-        <template
-          v-if="
-            ![
-              'export_publication',
-              'print_publication',
-              'link_publication',
-            ].includes($root.state.mode)
-          "
-          >{{ $t("no_media_on_this_page") }}</template
+        <div
+          class="m_page--header"
+          :style="customCSSVars"
+          v-if="!!page.header_left || !!page.header_right"
         >
-      </div>
+          <div>{{ page.header_left }}</div>
+          <div>{{ page.header_right }}</div>
+        </div>
 
-      <div
-        v-else
-        v-for="media in publication_medias"
-        :key="media.publi_meta.metaFileName"
-      >
-        <transition name="MediaPublication" :duration="500">
-          <div>
-            <MediaPublication
-              :key="media.publi_meta.metaFileName"
-              :page="page"
-              :mode="mode"
-              :media="media"
-              :preview_mode="preview_mode"
-              :read_only="read_only"
-              :pixelsPerMillimeters="pixelsPerMillimeters"
-              :zoom="zoom"
-              @removePubliMedia="
-                (values) => {
-                  removePubliMedia(values);
-                }
-              "
-              @editPubliMedia="
-                (values) => {
-                  editPubliMedia(values);
-                }
-              "
-            />
-          </div>
-        </transition>
+        <div
+          v-if="
+            pageNumber >= 0 &&
+            (!page.hasOwnProperty('show_page_number') || page.show_page_number)
+          "
+          class="m_page--pageNumber"
+          :class="{ toRight: true }"
+        >
+          {{ pageNumber + 1 }}
+        </div>
+
+        <div v-if="publication_medias.length === 0" class="m_page--noMedia">
+          <template
+            v-if="
+              ![
+                'export_publication',
+                'print_publication',
+                'link_publication',
+              ].includes($root.state.mode)
+            "
+            >{{ $t("no_media_on_this_page") }}</template
+          >
+        </div>
+
+        <div
+          v-else
+          v-for="media in publication_medias"
+          :key="media.publi_meta.metaFileName"
+        >
+          <transition name="MediaPublication" :duration="500">
+            <div>
+              <MediaPublication
+                :key="media.publi_meta.metaFileName"
+                :page="page"
+                :mode="mode"
+                :media="media"
+                :preview_mode="preview_mode"
+                :read_only="read_only"
+                :pixelsPerMillimeters="pixelsPerMillimeters"
+                :zoom="zoom"
+                @removePubliMedia="
+                  (values) => {
+                    removePubliMedia(values);
+                  }
+                "
+                @editPubliMedia="
+                  (values) => {
+                    editPubliMedia(values);
+                  }
+                "
+              />
+            </div>
+          </transition>
+        </div>
       </div>
     </div>
   </div>
@@ -156,10 +155,16 @@ export default {
     setPageContainerProperties(page) {
       if (this.$root.state.mode === "print_publication") return;
 
+      if (this.mode === "single")
+        return `
+          width: ${page.width * this.zoom + 40}mm;
+          height: ${page.height * this.zoom + 40}mm;
+          margin: 40px;
+        `;
       return `
-        width: ${page.width * this.zoom}mm;
-        height: ${page.height * this.zoom}mm;
-      `;
+          width: ${page.width * this.zoom + 0}mm;
+          height: ${page.height * this.zoom + 0}mm;
+        `;
     },
     setPageProperties(page) {
       if (this.$root.state.mode === "print_publication") {

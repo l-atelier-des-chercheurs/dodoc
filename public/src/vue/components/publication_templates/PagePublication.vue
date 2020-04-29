@@ -18,16 +18,6 @@
       :slugPubliName="slugPubliName"
     />
 
-    <PublicationButtons
-      v-if="can_edit_publi && !contact_sheet_mode && !preview_mode"
-      :preview_mode="preview_mode"
-      :page_medias="
-        publication_medias[$root.settings.current_publication.page_id]
-      "
-      :slugPubliName="slugPubliName"
-      @addMedia="createPubliMedia"
-    />
-
     <div
       class="m_publicationSettings"
       v-if="
@@ -282,6 +272,11 @@
     <div
       class="m_publicationview--pages"
       ref="page_container"
+      :style="
+        !!$root.settings.current_publication.page_id
+          ? 'overflow: hidden; height: 100%;'
+          : ''
+      "
       @click.self="$root.settings.current_publication.selected_medias = []"
     >
       <div
@@ -575,24 +570,32 @@
         </transition-group>
       </div>
 
-      <div v-else>
-        <transition name="scaleIn" mode="out-in" :duration="300">
-          <PagePublicationSinglePage
-            ref="current_page"
-            :mode="'single'"
-            :key="$root.settings.current_publication.page_id"
-            :preview_mode="preview_mode"
-            :slugPubliName="slugPubliName"
-            :pageNumber="opened_page_index"
-            :page="opened_single_page"
-            :publication_medias="
-              publication_medias[$root.settings.current_publication.page_id]
-            "
-            :read_only="read_only || !can_edit_publi"
-            :pixelsPerMillimeters="pixelsPerMillimeters"
-            :zoom="zoom"
-          />
-        </transition>
+      <div v-else class="m_publicationview--pages--singlePageBloc">
+        <PublicationButtons
+          v-if="can_edit_publi && !contact_sheet_mode && !preview_mode"
+          :preview_mode="preview_mode"
+          :page_medias="
+            publication_medias[$root.settings.current_publication.page_id]
+          "
+          :slugPubliName="slugPubliName"
+          @addMedia="createPubliMedia"
+        />
+
+        <PagePublicationSinglePage
+          ref="current_page"
+          :mode="'single'"
+          :key="$root.settings.current_publication.page_id"
+          :preview_mode="preview_mode"
+          :slugPubliName="slugPubliName"
+          :pageNumber="opened_page_index"
+          :page="opened_single_page"
+          :publication_medias="
+            publication_medias[$root.settings.current_publication.page_id]
+          "
+          :read_only="read_only || !can_edit_publi"
+          :pixelsPerMillimeters="pixelsPerMillimeters"
+          :zoom="zoom"
+        />
       </div>
     </div>
 
@@ -902,6 +905,7 @@ export default {
         (Math.random().toString(36) + "00000000000000000").slice(2, 3)
       );
     },
+    zoomChanged(e) {},
     mergePageObjectWithDefault(pages) {
       return pages.reduce((acc, page) => {
         let _page = JSON.parse(JSON.stringify(page));

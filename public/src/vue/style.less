@@ -4486,7 +4486,7 @@ small {
   // padding-left: @t-skipline/2;
   // .padding-sides-small;
   padding-left: 0;
-  border-left: @c-bleuvert @t-skipline / 2 solid;
+  // border-left: @c-bleuvert @t-skipline / 2 solid;
   transition: all 0.4s ease-out;
 
   display: flex;
@@ -4506,7 +4506,6 @@ small {
     &.m_publicationMeta {
       flex: 0 0 auto;
     }
-    &.m_publicationview--pages,
     &.m_videoPublication {
       overflow-y: auto;
 
@@ -4522,13 +4521,13 @@ small {
   }
 
   .m_publicationButtons {
-    position: absolute;
+    // position: absolute;
     // bottom: 20px;
-    bottom: 10;
-    margin-top: 200px;
-    left: -0px;
-    max-height: 75%;
-    max-width: 220px;
+    // bottom: 10;
+    // margin-top: 200px;
+    // left: -0px;
+    // max-height: 75%;
+    max-width: 180px;
     z-index: 1001;
 
     overflow-y: auto;
@@ -4544,10 +4543,6 @@ small {
     box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
     .custom_scrollbar(1px, 4px, 3px, rgba(255, 255, 255, 0), #fff);
     // .custom_scrollbar(1px, 3px, 2px, rgba(255, 255, 255, 0), #fff);
-
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: flex-start;
 
     > * {
       .padding-sides-verysmall;
@@ -4581,11 +4576,16 @@ small {
       }
     }
 
-    button {
+    ._create_buttons {
       text-align: left;
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      .font-verysmall;
+      .button-thin;
+      margin: 0;
+      .margin-bottom-verysmall;
+      .padding-sides-verysmall;
 
       svg {
         margin: 0;
@@ -4891,11 +4891,11 @@ small {
   }
 
   .m_publicationview--pages {
-    .padding-vert-medium;
-    > * {
-    }
+    // height: 100%;
+    // overflow: hidden;
 
     .m_publicationview--pages--contactSheet {
+      .padding-vert-medium;
       .margin-sides-medium;
 
       ._show_removed_pages {
@@ -4989,9 +4989,27 @@ small {
     }
   }
 
+  .m_publicationview--pages--singlePageBloc {
+    // .padding-vert-medium;
+    // .margin-sides-medium;
+
+    display: flex;
+    flex-flow: row nowrap;
+    height: 100%;
+
+    > .m_publicationButtons {
+      flex: 0 0 auto;
+    }
+    > .m_publicationview--pages--pageContainer {
+      flex: 1 1 0;
+      height: 100% !important;
+      width: auto !important;
+      overflow: auto;
+    }
+  }
+
   .m_publicationview--pages--pageContainer {
     position: relative;
-    margin: @t-skipline / 2 auto;
     // margin: auto;
     transition: none 0.2s;
   }
@@ -5004,7 +5022,7 @@ small {
     z-index: 0;
     transform-origin: top left;
 
-    margin: 0 auto;
+    // margin: 0 auto;
 
     // print only options
     font-variant-ligatures: none;
@@ -6020,6 +6038,8 @@ small {
     left: 0;
     top: 0;
     background-color: rgba(53, 53, 53, 0.4);
+    background-color: rgba(255, 255, 255, 0.4);
+    background-color: fade(@c-orange_clair, 30%);
     color: @c-noir;
     color: @c-orange;
     .padding-large;
@@ -6973,6 +6993,7 @@ body[data-mode="print_publication"] {
     display: block !important;
     padding: 0 !important;
     overflow: hidden;
+    height: 100%;
     -webkit-print-color-adjust: exact;
     > * {
       page-break-before: always;

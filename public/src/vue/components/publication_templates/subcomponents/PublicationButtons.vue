@@ -14,7 +14,7 @@
       <div v-if="show_create_options">
         <div>
           <button
-            class="button"
+            class="button _create_buttons"
             @mousedown.stop.prevent="$emit('addMedia', { type: 'text' })"
             @touchstart.stop.prevent="$emit('addMedia', { type: 'text' })"
           >
@@ -67,7 +67,7 @@
         </div>
         <div>
           <button
-            class="button"
+            class="button _create_buttons"
             @mousedown.stop.prevent="
               $emit('addMedia', { type: 'line', stroke_color: '#1d327f' })
             "
@@ -111,7 +111,7 @@
         </div>
         <div>
           <button
-            class="button"
+            class="button _create_buttons"
             @mousedown.stop.prevent="
               $emit('addMedia', { type: 'arrow', stroke_color: '#1d327f' })
             "
@@ -179,7 +179,7 @@
         </div>
         <div>
           <button
-            class="button"
+            class="button _create_buttons"
             @mousedown.stop.prevent="
               $emit('addMedia', { type: 'rectangle', stroke_color: '#1d327f' })
             "
@@ -223,7 +223,7 @@
         </div>
         <div>
           <button
-            class="button"
+            class="button _create_buttons"
             @mousedown.stop.prevent="
               $emit('addMedia', { type: 'ellipsis', stroke_color: '#1d327f' })
             "
