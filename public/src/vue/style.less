@@ -1345,11 +1345,12 @@ small {
         &.is--collapsed {
           .m_project--presentation {
             flex-flow: row nowrap;
-            align-items: center;
+            align-items: stretch;
 
             .m_project--presentation--vignette {
-              flex: 0 0 40%;
-              padding-bottom: 26%;
+              flex: 0 0 35%;
+              height: auto;
+              padding-bottom: 0%;
             }
 
             .m_project--presentation--buttons {
@@ -1378,8 +1379,12 @@ small {
               font-size: 1rem;
               margin: 0;
               .padding-vert-verysmall;
-              .padding-sides-small;
+              .padding-sides-verysmall;
               text-align: left;
+
+              height: 100%;
+              display: flex;
+              align-items: center;
             }
             .m_project--presentation--text--infos {
               background-color: var(--c-gris-tresclair);
@@ -1403,6 +1408,14 @@ small {
               .m_metaField {
                 display: none;
               }
+            }
+
+            .m_project--presentation--buttons {
+              align-items: center;
+            }
+            .m_project--presentation--buttons--openButton {
+              width: 2em;
+              height: 2em;
             }
           }
         }
