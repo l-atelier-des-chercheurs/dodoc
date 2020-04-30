@@ -1118,13 +1118,13 @@ export default {
         if (values) Object.assign(additionalMeta, values);
 
         // get current scroll
-        if (this.$refs.page_container) {
+        if (this.$refs.current_page) {
           const posx_in_cm =
-            this.$refs.page_container.scrollLeft / this.pixelsPerMillimeters;
+            this.$refs.current_page.$el.scrollLeft / this.pixelsPerMillimeters;
           if (!Number.isNaN(posx_in_cm)) additionalMeta.x = posx_in_cm;
 
           const posy_in_cm =
-            this.$refs.page_container.scrollTop / this.pixelsPerMillimeters;
+            this.$refs.current_page.$el.scrollTop / this.pixelsPerMillimeters;
           if (!Number.isNaN(posy_in_cm)) additionalMeta.y = posy_in_cm;
         }
 
