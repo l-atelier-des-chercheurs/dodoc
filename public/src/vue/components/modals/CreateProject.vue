@@ -32,10 +32,7 @@
         </label>
 
         <div v-if="show_authors">
-          <AuthorsInput
-            :currentAuthors="projectdata.authors"
-            @authorsChanged="(newAuthors) => (projectdata.authors = newAuthors)"
-          />
+          <AuthorsInput :currentAuthors.sync="projectdata.authors" />
           <small>{{ $t("author_instructions") }}</small>
         </div>
       </div>
@@ -58,6 +55,7 @@
             :editing_limited_to.sync="projectdata.editing_limited_to"
             :viewing_limited_to.sync="projectdata.viewing_limited_to"
             :password.sync="projectdata.password"
+            :authors.sync="projectdata.authors"
           />
         </div>
       </div>

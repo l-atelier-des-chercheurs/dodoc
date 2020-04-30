@@ -44,9 +44,9 @@ export default {
   components: {},
   data() {
     return {
-      authors: !!this.currentAuthors ? this.currentAuthors.slice() : [],
       show_all_authors: false,
       max_authors_displayed_at_first: 8,
+      authors: [],
     };
   },
 
@@ -56,7 +56,15 @@ export default {
   },
   beforeDestroy() {},
 
-  watch: {},
+  watch: {
+    currentAuthors: {
+      handler() {
+        this.authors = !!this.currentAuthors ? this.currentAuthors.slice() : [];
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   computed: {
     all_authors_slugs() {
       let _all_authors_slugs = [];
@@ -93,7 +101,8 @@ export default {
           slugFolderName: author_slug,
         });
       }
-      this.$emit("authorsChanged", this.authors);
+      debugger;
+      this.$emit("update:currentAuthors", this.authors);
     },
   },
 };

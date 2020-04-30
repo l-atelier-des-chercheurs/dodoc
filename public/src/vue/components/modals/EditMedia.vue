@@ -457,9 +457,8 @@
           <label>{{ $t("author") }}</label>
 
           <AuthorsInput
-            :currentAuthors="mediadata.authors"
+            :currentAuthors.sync="mediadata.authors"
             :read_only="read_only || !can_edit_media"
-            @authorsChanged="(newAuthors) => (mediadata.authors = newAuthors)"
           />
 
           <small v-if="can_edit_media">{{ $t("author_instructions") }}</small>

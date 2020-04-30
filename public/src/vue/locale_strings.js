@@ -42,12 +42,12 @@ module.exports = (function () {
       en: "Topic",
     },
     pinned_to_the_top_of_the_list: {
-      fr: "Afficher en haut de la liste",
+      fr: "Épingler en haut de la liste",
       en: "Pin to the top",
     },
     pinned: {
-      fr: "Épinglés",
-      en: "Pinned",
+      fr: "Discussions épinglés",
+      en: "Pinned topics",
     },
     create_new_folder: {
       fr: "créer un nouveau dossier",
@@ -56,6 +56,10 @@ module.exports = (function () {
     manage_access: {
       fr: "Gérer l’accès au contenu",
       en: "Manage access",
+    },
+    no_message_yet: {
+      fr: "Aucun message à afficher pour l’instant…",
+      em: "No message to display yet…",
     },
     login_after_creation: {
       fr: "S’identifier dans la foulée",
@@ -3039,9 +3043,10 @@ module.exports = (function () {
         en: "New message in chat ",
       },
       if_only_authors_select_authors: {
-        fr: "Sélectionnez au moins un auteur qui pourra accéder à ce contenu",
+        fr:
+          "Sélectionnez au moins un auteur qui pourra accéder et modifier ce contenu",
         en:
-          "Select at least one author that will be able to access that content",
+          "Select at least one author who will be able to access and edit this content",
       },
       access_or_editing_restricted_to_authors: {
         fr:

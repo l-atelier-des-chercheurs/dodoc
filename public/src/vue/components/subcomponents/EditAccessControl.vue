@@ -72,6 +72,8 @@ export default {
       type: Boolean,
       default: true,
     },
+    authors: Array,
+    name: String,
   },
   components: {},
   data() {
@@ -91,6 +93,21 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
+    authors: {
+      handler: function (new_authors, old_authors) {
+        if (
+          this.editing_limited_to === "only_authors" &&
+          new_authors.length === 0
+        ) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.if_only_authors_select_authors"));
+          this.$emit("update:authors", old_authors);
+        }
+      },
+      deep: true,
+    },
     local_editing_limited_to() {
       this.$emit("update:editing_limited_to", this.local_editing_limited_to);
       this.sanitizeViewingDependingOnEditing();
