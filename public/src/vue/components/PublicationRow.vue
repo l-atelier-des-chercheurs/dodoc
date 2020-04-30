@@ -103,13 +103,6 @@ export default {
         slugFolderName: this.slugPubliName,
       });
     },
-    forgetPassword() {
-      this.$auth.removeFolderPassword({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-      });
-      this.$socketio.sendAuth();
-    },
   },
 };
 </script>

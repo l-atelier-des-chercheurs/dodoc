@@ -239,21 +239,22 @@ export default {
 
       // check if password matches or not
       this.$eventHub.$once("socketio.authentificated", () => {
-        const has_passworded_folder = window.state.list_authorized_folders.filter(
-          (f) =>
-            f.type === "authors" &&
-            f.allowed_slugFolderNames.includes(this.author.slugFolderName)
-        );
-        if (has_passworded_folder.length === 0) {
+        if (
+          this.$root.state.list_authorized_folders.some(
+            (f) =>
+              f.type === "authors" &&
+              f.allowed_slugFolderNames.includes(this.author.slugFolderName)
+          )
+        ) {
+          this.show_input_password_field = false;
+          this.setAuthor();
+        } else {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
             .error(this.$t("notifications.wrong_password"));
           this.$refs.passwordField.value = "";
           this.$refs.passwordField.focus();
-        } else {
-          this.show_input_password_field = false;
-          this.setAuthor();
         }
       });
     },

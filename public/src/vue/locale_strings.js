@@ -2974,6 +2974,10 @@ module.exports = (function () {
         oc: "Connexion a do•doc en utilizant lo mot de Santa Clara enregistrat",
         de: "Anmeldung zu do•doc mit dem registrierten Passwort.",
       },
+      connecting_using_saved_account: {
+        fr: "Identification automatique en tant que ",
+        en: "Automatic login as ",
+      },
       doc_created: {
         fr: "Le document a été créé",
         en: "The document was created",
