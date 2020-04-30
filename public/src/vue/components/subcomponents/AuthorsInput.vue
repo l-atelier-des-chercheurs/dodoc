@@ -101,7 +101,6 @@ export default {
           slugFolderName: author_slug,
         });
       }
-      debugger;
       this.$emit("update:currentAuthors", this.authors);
     },
   },

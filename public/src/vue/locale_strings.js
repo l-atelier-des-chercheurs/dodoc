@@ -978,6 +978,10 @@ module.exports = (function () {
       oc: "Tornar",
       de: "Rückkehr",
     },
+    sureToRemoveYourselfFromAuthors: {
+      fr:
+        "Êtes-vous sûr de vouloir vous retirer de la liste des auteurs ? Vous ne pourrez plus modifier ce contenu.",
+    },
     sureToRemoveAuthor: {
       fr:
         "Êtes-vous sûr de vouloir supprimer cet auteur ? Tous les médias, projets et recettes associés seront conservés.",
