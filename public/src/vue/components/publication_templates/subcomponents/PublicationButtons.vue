@@ -301,11 +301,18 @@
                   type="range"
                   min="0"
                   max="300"
-                  step="10"
+                  step="1"
                   v-model="font_size_percent"
                 />
               </div>
-              <label>{{ font_size_percent }}%</label>
+              <div class="input-group">
+                <input
+                  type="number"
+                  class="input-small"
+                  v-model="font_size_percent"
+                />
+                <span class="input-addon input-addon-small">%</span>
+              </div>
             </div>
 
             <div
@@ -535,6 +542,7 @@ export default {
           : 100;
       },
       set(value) {
+        if (value > 90 && value < 110) value = 100;
         this.updateMediaPubliMeta({ font_size_percent: value });
       },
     },
