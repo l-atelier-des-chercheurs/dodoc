@@ -157,13 +157,18 @@ export default {
 
       if (this.mode === "single")
         return `
-          width: ${page.width * this.zoom + 40}mm;
-          height: ${page.height * this.zoom + 40}mm;
-          margin: 40px;
+          width: ${page.width * this.zoom}mm;
+          height: ${page.height * this.zoom}mm;
+          margin: 140px auto;
+          padding: 140px;           
+          transform: scale(${this.zoom});
+          transform-origin: left top;
         `;
       return `
           width: ${page.width * this.zoom + 0}mm;
           height: ${page.height * this.zoom + 0}mm;
+          transform: scale(${this.zoom});
+          transform-origin: left top;
         `;
     },
     setPageProperties(page) {
@@ -177,7 +182,6 @@ export default {
         return `
           width: ${page.width}mm;
           height: ${page.height}mm;
-          transform: scale(${this.zoom});
         `;
       }
     },

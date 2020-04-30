@@ -1489,6 +1489,10 @@ module.exports = (function () {
       oc: "Reglatges",
       de: "Einstellungen",
     },
+    page_settings: {
+      fr: "Réglages de la page",
+      en: "Page settings",
+    },
     stopmotion_list: {
       fr: "Liste des animations",
       en: "Stopmotion list",

@@ -131,6 +131,7 @@
         @mousedown.stop.prevent="zoom += 0.1"
         @touchstart.stop.prevent="zoom += 0.1"
       >
+        {{ zoom }}
         <svg
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
@@ -223,7 +224,7 @@
             :class="{ 'is--active': page_settings_panel }"
             @click="page_settings_panel = !page_settings_panel"
           >
-            {{ $t("settings") }}
+            {{ $t("page_settings") }}
           </button>
         </div>
 
@@ -683,7 +684,7 @@ export default {
       fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.2,
-      zoom_max: 2,
+      zoom_max: 1.6,
 
       pixelsPerMillimeters: 0,
       has_media_selected: false,

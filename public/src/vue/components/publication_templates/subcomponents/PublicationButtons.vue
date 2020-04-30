@@ -279,7 +279,7 @@
       </label>
       <template v-if="show_edit_options">
         <div v-if="!media">
-          <small class="c-blanc">{{
+          <small class="">{{
             $t("click_on_a_media_to_edit_its_presentation")
           }}</small>
         </div>
@@ -405,21 +405,33 @@
             </div>
           </div>
           <div class="item m_customStyles">
-            <label>{{ $t("css_settings") }}</label>
-            <PrismEditor
-              v-model="custom_css"
-              @change="/* setCSSForMedia */"
-              language="css"
-            />
-            <div class="m_customStyles--sendButton">
+            {{ show_custom_css }}
+            <label>
               <button
                 type="button"
-                class="button-greenthin"
-                @click="updateMediaPubliMeta({ custom_css: custom_css })"
-                :class="{}"
+                class="button-nostyle text-uc button-triangle"
+                :class="{ 'is--active': show_custom_css }"
+                @click="show_custom_css = !show_custom_css"
               >
-                {{ $t("send") }}
+                {{ $t("css_settings") }}
               </button>
+            </label>
+            <div v-if="show_custom_css">
+              <PrismEditor
+                v-model="custom_css"
+                @change="/* setCSSForMedia */"
+                language="css"
+              />
+              <div class="m_customStyles--sendButton">
+                <button
+                  type="button"
+                  class="button-greenthin"
+                  @click="updateMediaPubliMeta({ custom_css: custom_css })"
+                  :class="{}"
+                >
+                  {{ $t("send") }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -443,6 +455,7 @@ export default {
     return {
       show_create_options: true,
       show_edit_options: true,
+      show_custom_css: false,
       custom_css: "",
     };
   },
