@@ -702,6 +702,9 @@ b {
 .padding-right-small {
   padding-right: @t-skipline / 2;
 }
+.padding-right-medium {
+  padding-right: @t-skipline;
+}
 .padding-bottom-verysmall {
   padding-bottom: @t-skipline / 4;
 }
@@ -1054,16 +1057,17 @@ input[type="range"] {
   line-height: 1.6rem;
   vertical-align: middle;
   background: transparent;
-  color: #fff;
+  color: @c-gris_fonce;
   border-color: blue;
+  margin: 0;
 
   --input-range-track-box-shadow: none;
-  --input-range-track-color: #fff;
+  --input-range-track-color: @c-gris_fonce;
   --input-range-thumb-height: 1rem;
   --input-range-thumb-color: @c-orange;
 
   &::-webkit-slider-thumb {
-    border: 0.1rem solid currentColor !important;
+    border: 0.2rem solid currentColor !important;
     width: 1.25rem;
     height: 1.25rem;
     margin-top: -0.5rem;

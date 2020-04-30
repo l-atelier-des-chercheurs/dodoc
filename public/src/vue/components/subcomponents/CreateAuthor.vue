@@ -98,10 +98,31 @@
       </template>
     </div>
 
-    <button type="button" class="button-small" @click="$emit('close')">
-      {{ $t("cancel") }}
-    </button>
-    <button type="submit" class="bg-bleuvert">{{ $t("create") }}</button>
+    <div class="flex-wrap flex-space-between margin-bottom-small">
+      <button
+        type="button"
+        class="buttonLink"
+        style="flex-grow: 0;"
+        @click="$emit('close')"
+      >
+        {{ $t("cancel") }}
+      </button>
+
+      <button type="submit" class="bg-bleuvert">{{ $t("create") }}</button>
+    </div>
+
+    <div class="text-centered">
+      <span class="switch switch-xs margin-top-small">
+        <input
+          id="login_after_creation"
+          type="checkbox"
+          v-model="login_after_creation"
+        />
+        <label for="login_after_creation">{{
+          $t("login_after_creation")
+        }}</label>
+      </span>
+    </div>
   </form>
 </template>
 <script>
@@ -128,6 +149,7 @@ export default {
         nfc_tag: "",
       },
       preview: undefined,
+      login_after_creation: true,
     };
   },
   computed: {},
@@ -166,6 +188,14 @@ export default {
       if (!!data.password) data.password = this.$auth.hashCode(data.password);
 
       this.$root.createFolder({ type: "authors", data }).then((adata) => {
+        if (this.login_after_creation) {
+          this.$nextTick(() => {
+            this.$eventHub.$emit("authors.submitPassword", {
+              slugFolderName: adata.slugFolderName,
+              password: data.password,
+            });
+          });
+        }
         this.$emit("close", "");
       });
     },

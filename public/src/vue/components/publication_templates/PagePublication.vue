@@ -18,13 +18,6 @@
       :slugPubliName="slugPubliName"
     />
 
-    <div class="m_pageLefttoolbar">
-      <PublicationButtons
-        v-if="can_edit_publi && !contact_sheet_mode"
-        @addMedia="createPubliMedia"
-      />
-    </div>
-
     <div
       class="m_publicationSettings"
       v-if="
@@ -230,7 +223,7 @@
             :class="{ 'is--active': page_settings_panel }"
             @click="page_settings_panel = !page_settings_panel"
           >
-            {{ $t("settings") }}
+            {{ $t("page_settings") }}
           </button>
         </div>
 
@@ -276,7 +269,16 @@
       </div>
     </div>
 
-    <div class="m_publicationview--pages" ref="page_container">
+    <div
+      class="m_publicationview--pages"
+      ref="page_container"
+      :style="
+        !!$root.settings.current_publication.page_id
+          ? 'overflow: hidden; height: 100%;'
+          : ''
+      "
+      @click.self="$root.settings.current_publication.selected_medias = []"
+    >
       <div
         v-if="
           [
@@ -568,24 +570,32 @@
         </transition-group>
       </div>
 
-      <div v-else>
-        <transition name="scaleIn" mode="out-in" :duration="300">
-          <PagePublicationSinglePage
-            ref="current_page"
-            :mode="'single'"
-            :key="$root.settings.current_publication.page_id"
-            :preview_mode="preview_mode"
-            :slugPubliName="slugPubliName"
-            :pageNumber="opened_page_index"
-            :page="opened_single_page"
-            :publication_medias="
-              publication_medias[$root.settings.current_publication.page_id]
-            "
-            :read_only="read_only || !can_edit_publi"
-            :pixelsPerMillimeters="pixelsPerMillimeters"
-            :zoom="zoom"
-          />
-        </transition>
+      <div v-else class="m_publicationview--pages--singlePageBloc">
+        <PublicationButtons
+          v-if="can_edit_publi && !contact_sheet_mode && !preview_mode"
+          :preview_mode="preview_mode"
+          :page_medias="
+            publication_medias[$root.settings.current_publication.page_id]
+          "
+          :slugPubliName="slugPubliName"
+          @addMedia="createPubliMedia"
+        />
+
+        <PagePublicationSinglePage
+          ref="current_page"
+          :mode="'single'"
+          :key="$root.settings.current_publication.page_id"
+          :preview_mode="preview_mode"
+          :slugPubliName="slugPubliName"
+          :pageNumber="opened_page_index"
+          :page="opened_single_page"
+          :publication_medias="
+            publication_medias[$root.settings.current_publication.page_id]
+          "
+          :read_only="read_only || !can_edit_publi"
+          :pixelsPerMillimeters="pixelsPerMillimeters"
+          :zoom="zoom"
+        />
       </div>
     </div>
 
@@ -673,7 +683,7 @@ export default {
       fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.2,
-      zoom_max: 2,
+      zoom_max: 1.6,
 
       pixelsPerMillimeters: 0,
       has_media_selected: false,
@@ -895,6 +905,7 @@ export default {
         (Math.random().toString(36) + "00000000000000000").slice(2, 3)
       );
     },
+    zoomChanged(e) {},
     mergePageObjectWithDefault(pages) {
       return pages.reduce((acc, page) => {
         let _page = JSON.parse(JSON.stringify(page));
@@ -1051,12 +1062,19 @@ export default {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
       this.addMedia({ values }).then((mdata) => {
-        if (values.type && values.type === "text") {
-          this.$eventHub.$emit(
-            "publication.set_media_to_edit_mode",
-            mdata.metaFileName
-          );
-        }
+        this.$nextTick(() => {
+          if (values.type && values.type === "text") {
+            this.$eventHub.$emit(
+              "publication.set_media_to_edit_mode",
+              mdata.metaFileName
+            );
+          } else {
+            this.$eventHub.$emit(
+              "publication.selectNewMedia",
+              mdata.metaFileName
+            );
+          }
+        });
       });
     },
     addMedia({ slugProjectName, metaFileName, values }) {
@@ -1100,13 +1118,13 @@ export default {
         if (values) Object.assign(additionalMeta, values);
 
         // get current scroll
-        if (this.$refs.page_container) {
+        if (this.$refs.current_page) {
           const posx_in_cm =
-            this.$refs.page_container.scrollLeft / this.pixelsPerMillimeters;
+            this.$refs.current_page.$el.scrollLeft / this.pixelsPerMillimeters;
           if (!Number.isNaN(posx_in_cm)) additionalMeta.x = posx_in_cm;
 
           const posy_in_cm =
-            this.$refs.page_container.scrollTop / this.pixelsPerMillimeters;
+            this.$refs.current_page.$el.scrollTop / this.pixelsPerMillimeters;
           if (!Number.isNaN(posy_in_cm)) additionalMeta.y = posy_in_cm;
         }
 
@@ -1366,8 +1384,9 @@ export default {
         const page = current_page_el.$el.getElementsByClassName("m_page")[0];
 
         const margins = 100;
-        if (!!page && panel_width < page.offsetWidth + margins) {
-          this.zoom = panel_width / (page.offsetWidth + margins);
+
+        if (!!page) {
+          this.zoom = panel_width / (page.offsetWidth + margins + 200);
         }
       }
     },

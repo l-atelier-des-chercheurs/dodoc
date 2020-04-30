@@ -85,6 +85,9 @@
       />
 
       <div class="m_chat--content--discussion" ref="chat_content">
+        <small class="_no_message_message" v-if="sorted_messages.length === 0">
+          {{ $t("no_message_yet") }}
+        </small>
         <button
           type="button"
           class="_button_showOlderMessages"

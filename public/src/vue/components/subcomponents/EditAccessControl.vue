@@ -72,6 +72,8 @@ export default {
       type: Boolean,
       default: true,
     },
+    authors: Array,
+    name: String,
   },
   components: {},
   data() {
@@ -91,6 +93,46 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
+    authors: {
+      handler: function (new_authors, old_authors) {
+        // prevent 0 authors if folder protected by authors
+        if (
+          this.editing_limited_to === "only_authors" &&
+          new_authors.length === 0
+        ) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.if_only_authors_select_authors"));
+          this.$emit("update:authors", old_authors);
+          return;
+        }
+
+        // show alert if removing oneself from authors of a protected folder
+        if (
+          this.editing_limited_to === "only_authors" &&
+          this.$root.current_author &&
+          new_authors.some(
+            (a) => a.slugFolderName === this.$root.current_author.slugFolderName
+          ) === false &&
+          old_authors.some(
+            (a) => a.slugFolderName === this.$root.current_author.slugFolderName
+          ) === true
+        ) {
+          this.$alertify
+            .okBtn(this.$t("yes"))
+            .cancelBtn(this.$t("cancel"))
+            .confirm(
+              this.$t("sureToRemoveYourselfFromAuthors"),
+              () => {},
+              () => {
+                this.$emit("update:authors", old_authors);
+              }
+            );
+        }
+      },
+      deep: true,
+    },
     local_editing_limited_to() {
       this.$emit("update:editing_limited_to", this.local_editing_limited_to);
       this.sanitizeViewingDependingOnEditing();

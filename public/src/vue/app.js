@@ -286,6 +286,7 @@ let vm = new Vue({
         page_id: false,
         layer_id: false,
         accepted_media_type: [],
+        selected_medias: [],
       },
 
       current_chat: {
@@ -463,9 +464,9 @@ let vm = new Vue({
       }
 
       // remove auth inbetween reloads
-      this.$auth.removeAllFoldersPassword({
-        type: "authors",
-      });
+      // this.$auth.removeAllFoldersPassword({
+      //   type: "authors",
+      // });
 
       if (this.$root.state.session_password === "has_pass") {
         var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
@@ -475,7 +476,7 @@ let vm = new Vue({
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .log(this.$t("notifications.using_saved_password"));
+            .success(this.$t("notifications.using_saved_password"));
 
           this.$eventHub.$once("socketio.socketerror", () => {
             this.showSessionPasswordModal = true;
@@ -504,6 +505,33 @@ let vm = new Vue({
           this.$socketio.listMedias({
             type: "projects",
             slugFolderName: this.current_project.slugFolderName,
+          });
+        }
+
+        const authorized_authors = this.$root.state.list_authorized_folders.filter(
+          (f) => f.type === "authors" && f.allowed_slugFolderNames.length > 0
+        );
+
+        if (authorized_authors.length > 0) {
+          this.$eventHub.$once("socketio.authors.folders_listed", () => {
+            if (Object.values(this.store.authors).length === 0) return;
+
+            const first_author_slug =
+              authorized_authors[0].allowed_slugFolderNames[0];
+            const author = Object.values(this.store.authors).find(
+              (a) => a.slugFolderName === first_author_slug
+            );
+
+            if (author) {
+              this.setAuthor(author);
+              this.$alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .success(
+                  this.$t("notifications.connecting_using_saved_account") +
+                    author.name
+                );
+            }
           });
         }
       });
@@ -537,6 +565,23 @@ let vm = new Vue({
       ) {
         this.unsetAuthor();
       }
+    },
+    "state.list_authorized_folders": {
+      handler() {
+        const authors = this.state.list_authorized_folders.find(
+          (f) => f.type === "authors"
+        );
+        if (authors) {
+          const allowed_slugFolderNames = authors.allowed_slugFolderNames;
+          if (
+            allowed_slugFolderNames.length === 0 ||
+            allowed_slugFolderNames[0] !== this.settings.current_author_slug
+          ) {
+            this.unsetAuthor();
+          }
+        }
+      },
+      deep: true,
     },
   },
   computed: {

@@ -68,10 +68,7 @@
           </button>
         </label>
         <div v-if="show_authors">
-          <AuthorsInput
-            :currentAuthors="chatdata.authors"
-            @authorsChanged="(newAuthors) => (chatdata.authors = newAuthors)"
-          />
+          <AuthorsInput :currentAuthors.sync="chatdata.authors" />
           <small>{{ $t("author_instructions") }}</small>
         </div>
       </div>
@@ -95,6 +92,7 @@
             :viewing_limited_to.sync="chatdata.viewing_limited_to"
             :can_have_password="false"
             :can_have_readonly="false"
+            :authors.sync="chatdata.authors"
           />
         </div>
       </div>

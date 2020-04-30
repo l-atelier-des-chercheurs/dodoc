@@ -42,12 +42,12 @@ module.exports = (function () {
       en: "Topic",
     },
     pinned_to_the_top_of_the_list: {
-      fr: "Afficher en haut de la liste",
+      fr: "Épingler en haut de la liste",
       en: "Pin to the top",
     },
     pinned: {
-      fr: "Épinglés",
-      en: "Pinned",
+      fr: "Discussions épinglés",
+      en: "Pinned topics",
     },
     create_new_folder: {
       fr: "créer un nouveau dossier",
@@ -56,6 +56,14 @@ module.exports = (function () {
     manage_access: {
       fr: "Gérer l’accès au contenu",
       en: "Manage access",
+    },
+    no_message_yet: {
+      fr: "Aucun message à afficher pour l’instant…",
+      em: "No message to display yet…",
+    },
+    login_after_creation: {
+      fr: "S’identifier dans la foulée",
+      en: "Login after creation",
     },
     publication: {
       fr: "Recette",
@@ -357,6 +365,14 @@ module.exports = (function () {
     layer_name: {
       fr: "Nom du calque",
       en: "Layer name",
+    },
+    layer_order: {
+      fr: "Ordre d’empilement",
+      en: "Order in the stack",
+    },
+    layer_order_instructions: {
+      fr: "Plus cette valeur est haute et plus le bloc sera au premier plan.",
+      en: "The higher the value the higher in the stack of blocs.",
     },
     drawing_layer_1: {
       fr: "Calque dessin 1",
@@ -962,6 +978,10 @@ module.exports = (function () {
       oc: "Tornar",
       de: "Rückkehr",
     },
+    sureToRemoveYourselfFromAuthors: {
+      fr:
+        "Êtes-vous sûr de vouloir vous retirer de la liste des auteurs ? Vous ne pourrez plus modifier ce contenu.",
+    },
     sureToRemoveAuthor: {
       fr:
         "Êtes-vous sûr de vouloir supprimer cet auteur ? Tous les médias, projets et recettes associés seront conservés.",
@@ -1481,6 +1501,10 @@ module.exports = (function () {
       oc: "Reglatges",
       de: "Einstellungen",
     },
+    page_settings: {
+      fr: "Réglages de la page",
+      en: "Page settings",
+    },
     stopmotion_list: {
       fr: "Liste des animations",
       en: "Stopmotion list",
@@ -1603,6 +1627,10 @@ module.exports = (function () {
     font_size: {
       fr: "Taille de la police",
       en: "Font-size",
+    },
+    click_on_a_media_to_edit_its_presentation: {
+      fr: "Cliquez sur un média pour modifier ses paramètres",
+      en: "Cliquez sur un média pour modifier ses paramètres",
     },
     password_instructions: {
       fr:
@@ -2958,6 +2986,10 @@ module.exports = (function () {
         oc: "Connexion a do•doc en utilizant lo mot de Santa Clara enregistrat",
         de: "Anmeldung zu do•doc mit dem registrierten Passwort.",
       },
+      connecting_using_saved_account: {
+        fr: "Identification automatique en tant que ",
+        en: "Automatic login as ",
+      },
       doc_created: {
         fr: "Le document a été créé",
         en: "The document was created",
@@ -3015,9 +3047,10 @@ module.exports = (function () {
         en: "New message in chat ",
       },
       if_only_authors_select_authors: {
-        fr: "Sélectionnez au moins un auteur qui pourra accéder à ce contenu",
+        fr:
+          "Sélectionnez au moins un auteur qui pourra accéder et modifier ce contenu",
         en:
-          "Select at least one author that will be able to access that content",
+          "Select at least one author who will be able to access and edit this content",
       },
       access_or_editing_restricted_to_authors: {
         fr:

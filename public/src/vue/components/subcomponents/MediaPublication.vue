@@ -6,7 +6,7 @@
     :data-media_type="media.type"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
-    @mousedown.stop="is_selected = true"
+    @mousedown.stop="selectMedia"
     :class="[
       {
         'is--dragged': is_dragged,
@@ -162,41 +162,6 @@
       <span>…</span>
     </button>
 
-    <div
-      class="m_mediaPublication--edit_styles"
-      v-if="
-        (is_selected || is_hovered) && !preview_mode && show_custom_css_window
-      "
-    >
-      <button
-        type="button"
-        class="m_mediaPublication--edit_styles--helpButton"
-        :content="$t('write_some_CSS_code_for_example')"
-        v-tippy="{
-          delay: [600, 0],
-        }"
-      >
-        ?
-      </button>
-      <PrismEditor
-        v-model="custom_css"
-        @change="/* setCSSForMedia */"
-        language="css"
-      />
-      <div class="m_mediaPublication--edit_styles--sendButton">
-        <button
-          type="button"
-          class="button-greenthin"
-          @click="setCSSForMedia"
-          :class="{
-            'is--disabled': custom_css === media.publi_meta.custom_css,
-          }"
-        >
-          {{ $t("send") }}
-        </button>
-      </div>
-    </div>
-
     <!-- <transition name="fade_fast" :duration="150"> -->
     <div
       v-if="!preview_mode && !inline_edit_mode && !read_only"
@@ -329,66 +294,11 @@
       </div>
     </div>
     <!-- </transition> -->
-
-    <transition name="fade_fast" :duration="150">
-      <div
-        class="m_mediaPublication--stylebar"
-        v-if="is_selected && !preview_mode && !inline_edit_mode && !read_only"
-      >
-        <div class="m_mediaPublication--stylebar--container">
-          <div v-if="media.type === 'text' || media.publi_meta.type === 'text'">
-            <label>{{ $t("font_size") }}</label>
-            <div>
-              <input
-                type="range"
-                min="0"
-                max="300"
-                step="10"
-                v-model="font_size_percent"
-                @change="
-                  updateMediaPubliMeta({
-                    font_size_percent,
-                  })
-                "
-              />
-            </div>
-            <label>{{ font_size_percent }}%</label>
-          </div>
-
-          <div
-            v-if="
-              media.publi_meta.type !== 'line' &&
-              media.publi_meta.type !== 'arrow'
-            "
-          >
-            <label>{{ $t("fill_color") }}</label>
-            <div>
-              <input
-                type="color"
-                v-model="fill_color"
-                @change="
-                  updateMediaPubliMeta({
-                    fill_color,
-                  })
-                "
-              />
-            </div>
-          </div>
-          <div>
-            <label>{{ $t("stroke_color") }}</label>
-            <div>
-              <input
-                type="color"
-                v-model="stroke_color"
-                @change="
-                  updateMediaPubliMeta({
-                    stroke_color,
-                  })
-                "
-              />
-            </div>
-          </div>
-        </div>
+    <transition name="fadeOnLeave">
+      <div v-if="show_zindex_number" class="m_mediaPublication--zIndex">
+        <svg viewBox="0 0 20 18">
+          <text text-anchor="middle" x="10" y="15">{{ mediaZIndex }}</text>
+        </svg>
       </div>
     </transition>
 
@@ -441,11 +351,11 @@
           :class="{ 'is--active': show_advanced_menu }"
           @mousedown.stop.prevent="
             show_advanced_menu = !show_advanced_menu;
-            is_selected = true;
+            selectMedia();
           "
           @touchstart.stop.prevent="
             show_advanced_menu = !show_advanced_menu;
-            is_selected = true;
+            selectMedia();
           "
         >
           <svg
@@ -467,98 +377,6 @@
         </button>
 
         <div v-if="show_advanced_menu" class="_advanced_menu" @click.stop>
-          <button
-            type="button"
-            class="buttonLink _no_underline"
-            @mousedown.stop.prevent="editZIndex(+1)"
-            @touchstart.stop.prevent="editZIndex(+1)"
-            :content="
-              $t('move_to_foreground') +
-              '<br>' +
-              $t('layer:') +
-              ' ' +
-              mediaZIndex
-            "
-            v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
-          >
-            <svg
-              version="1.1"
-              class="inline-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="40.3px"
-              height="59.6px"
-              viewBox="0 0 40.3 59.6"
-              style="enable-background: new 0 0 40.3 59.6;"
-              xml:space="preserve"
-            >
-              <path
-                class="st0"
-                d="M35,24.4l-4.6-4.2c-2.7-2.5-4.8-4.7-6.4-7.3l0,46.7l-7.7,0l0-46.6c-1.7,2.5-3.8,4.7-6.4,7.1l-4.6,4.2L0,18.1
-              L20.2,0l20.2,18.1L35,24.4z"
-              />
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            class="buttonLink _no_underline"
-            @mousedown.stop.prevent="editZIndex(-1)"
-            @touchstart.stop.prevent="editZIndex(-1)"
-            :content="
-              $t('move_to_background') +
-              '<br>' +
-              $t('layer:') +
-              ' ' +
-              mediaZIndex
-            "
-            v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
-          >
-            <svg
-              version="1.1"
-              class="inline-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="40.3px"
-              height="59.6px"
-              viewBox="0 0 40.3 59.6"
-              style="enable-background: new 0 0 40.3 59.6;"
-              xml:space="preserve"
-            >
-              <path
-                class="st0"
-                d="M5.3,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7L24,0l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
-              L20.2,59.6L0,41.5L5.3,35.2z"
-              />
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            class="buttonLink _no_underline"
-            @mousedown.stop.prevent="toggleEditWindow()"
-            @touchstart.stop.prevent="toggleEditWindow()"
-            :class="{ 'is--active': show_custom_css_window }"
-            :content="$t('css_settings')"
-            v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
-          >
-            {{ $t("css") }}
-            <sup v-if="custom_css">*</sup>
-          </button>
-
           <button
             type="button"
             v-if="media.slugProjectName"
@@ -688,7 +506,6 @@
 </template>
 <script>
 import MediaContent from "./MediaContent.vue";
-import PrismEditor from "vue-prism-editor";
 import debounce from "debounce";
 import CollaborativeEditor from "./CollaborativeEditor.vue";
 
@@ -705,7 +522,6 @@ export default {
   },
   components: {
     MediaContent,
-    PrismEditor,
     CollaborativeEditor,
   },
   data() {
@@ -715,17 +531,12 @@ export default {
       is_rotated: false,
       is_waitingForServer: false,
       is_hovered: false,
-      is_selected: false,
       is_touch: Modernizr.touchevents,
       is_text_overflowing: false,
 
       inline_edit_mode: false,
       show_advanced_menu: false,
-
-      custom_css: this.media.publi_meta.hasOwnProperty("custom_css")
-        ? this.media.publi_meta.custom_css
-        : "",
-      show_custom_css_window: false,
+      show_zindex_number: false,
 
       limit_media_to_page: true,
       htmlForEditor: this.media.publi_meta.content
@@ -773,6 +584,7 @@ export default {
         pheight: 0,
       },
 
+      custom_css: "",
       mediaZIndex: 0,
 
       fit_mode: "cover",
@@ -783,18 +595,20 @@ export default {
   created() {},
   mounted() {
     this.updateMediaStyles();
-    this.$eventHub.$on("publication.newMediaSelected", this.newMediaSelected);
+    this.$eventHub.$on("publication.selectNewMedia", this.selectNewMedia);
     this.$eventHub.$on(
       "publication.set_media_to_edit_mode",
       this.setMediaToEditMode
     );
+    this.$eventHub.$on("publication.flashZIndex", this.flashZIndex);
   },
   beforeDestroy() {
-    this.$eventHub.$off("publication.newMediaSelected", this.newMediaSelected);
+    this.$eventHub.$off("publication.selectNewMedia", this.selectNewMedia);
     this.$eventHub.$off(
       "publication.set_media_to_edit_mode",
       this.setMediaToEditMode
     );
+    this.$eventHub.$off("publication.flashZIndex", this.flashZIndex);
   },
 
   watch: {
@@ -807,27 +621,16 @@ export default {
       },
       deep: true,
     },
-    is_selected: function () {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`WATCH • MediaPublication: is_selected`);
-      }
-      if (this.is_selected) {
-        window.addEventListener("mousedown", this.deselectMedia);
-        window.addEventListener("touchstart", this.deselectMedia);
-        this.$eventHub.$emit("publication.newMediaSelected", this.mediaID);
-      } else {
-        window.removeEventListener("mousedown", this.deselectMedia);
-        window.removeEventListener("touchstart", this.deselectMedia);
-
-        this.show_advanced_menu = false;
-        this.show_custom_css_window = false;
-      }
-    },
   },
   computed: {
+    is_selected() {
+      return this.$root.settings.current_publication.selected_medias.some(
+        (meta) => meta === this.media.publi_meta.metaFileName
+      );
+    },
     mediaStyles() {
       const set_z_index = this.is_selected
-        ? 100000
+        ? /* 100000 */ this.media.publi_meta.z_index
         : this.media.publi_meta.z_index;
 
       return `
@@ -856,16 +659,21 @@ export default {
     },
   },
   methods: {
-    newMediaSelected(mediaID) {
-      if (mediaID !== this.mediaID) {
-        this.is_selected = false;
-      }
+    selectNewMedia(metaFileName) {
+      if (metaFileName === this.media.publi_meta.metaFileName)
+        if (!this.is_selected) this.selectMedia();
     },
     setMediaToEditMode(metaFileName) {
-      if (this.media.publi_meta.metaFileName === metaFileName) {
-        if (!this.is_selected) this.is_selected = true;
+      if (metaFileName === this.media.publi_meta.metaFileName) {
+        if (!this.is_selected) this.selectMedia();
         this.editButtonClicked();
       }
+    },
+    flashZIndex() {
+      this.show_zindex_number = true;
+      setTimeout(() => {
+        this.show_zindex_number = false;
+      }, 500);
     },
     saveMedia() {
       const val = {
@@ -880,6 +688,10 @@ export default {
       this.inline_edit_mode = false;
     },
     cancelMediaInlineEditing() {
+      if (this.media.publi_meta.content === "") {
+        this.removePubliMedia();
+      }
+
       this.htmlForEditor = this.media.publi_meta.content;
       this.inline_edit_mode = false;
     },
@@ -897,11 +709,6 @@ export default {
         });
       }
     },
-    editZIndex(val) {
-      this.updateMediaPubliMeta({
-        z_index: this.mediaZIndex + val,
-      });
-    },
     setMediaHeightToContent() {
       const el = this.$refs.media;
       let contentHeight =
@@ -917,29 +724,6 @@ export default {
       this.updateMediaPubliMeta({
         height: this.mediaSize.height,
       });
-    },
-    toggleEditWindow() {
-      this.show_custom_css_window = !this.show_custom_css_window;
-    },
-    setCSSForMedia(event) {
-      const val = {
-        custom_css: this.custom_css,
-      };
-      this.$emit("editPubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName,
-        val,
-      });
-      // if (this.debounce_setCSSForMedia)
-      //   clearTimeout(this.debounce_setCSSForMedia);
-      // this.debounce_setCSSForMedia = setTimeout(() => {
-      //   const val = {
-      //     custom_css: this.custom_css,
-      //   };
-      //   this.$emit("editPubliMedia", {
-      //     slugMediaName: this.media.publi_meta.metaFileName,
-      //     val,
-      //   });
-      // }, 0);
     },
     toggleImageFitMode() {
       if (this.fit_mode === "cover") this.fit_mode = "contain";
@@ -1015,9 +799,9 @@ export default {
           : "transparent";
     },
     updateMediaPubliMeta(val) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
-      }
+
       this.$emit("editPubliMedia", {
         slugMediaName: this.media.publi_meta.metaFileName,
         val,
@@ -1096,11 +880,10 @@ export default {
       });
     },
     resizeMedia({ event, type, origin }) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: resizeMedia with is_resized = ${this.is_resized}`
         );
-      }
 
       if (this.read_only) return;
 
@@ -1118,11 +901,11 @@ export default {
       }
     },
     rotateMedia(type, origin) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: rotateMedia with is_resized = ${this.is_resized}`
         );
-      }
+
       if (!this.read_only) {
         if (type === "mouse") {
           window.addEventListener("mousemove", this.rotateMove);
@@ -1134,11 +917,10 @@ export default {
       }
     },
     resizeMove(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: resizeMove with is_resized = ${this.is_resized}`
         );
-      }
 
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
@@ -1148,7 +930,7 @@ export default {
 
       if (!this.is_resized) {
         this.is_resized = true;
-        this.is_selected = true;
+        this.selectMedia();
         this.resizeOffset.x = pageX_mm;
         this.resizeOffset.y = pageY_mm;
         this.mediaSize.pwidth = Number.parseFloat(this.mediaSize.width);
@@ -1240,11 +1022,10 @@ export default {
     },
 
     rotateMove(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: rotateMove with is_rotated = ${this.is_rotated}`
         );
-      }
 
       const pageX = event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = event.pageY ? event.pageY : event.touches[0].pageY;
@@ -1269,7 +1050,7 @@ export default {
 
       if (!this.is_rotated) {
         this.is_rotated = true;
-        this.is_selected = true;
+        this.selectMedia();
 
         // this.rotateOffset.x = pageX;
         // this.rotateOffset.y = pageY;
@@ -1300,11 +1081,10 @@ export default {
       }
     },
     rotateUp(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: rotateUp with is_rotated = ${this.is_rotated}`
         );
-      }
 
       if (this.is_rotated) {
         this.updateMediaPubliMeta({
@@ -1323,16 +1103,15 @@ export default {
     },
 
     dragMedia(type) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: dragMedia with is_dragged = ${this.is_dragged}`
         );
-      }
 
       if (this.read_only) return;
 
       if (type === "mouse") {
-        this.is_selected = true;
+        this.selectMedia();
         window.addEventListener("mousemove", this.dragMove);
         window.addEventListener("mouseup", this.dragUp);
       } else if (type === "touch") {
@@ -1341,11 +1120,10 @@ export default {
       }
     },
     dragMove(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: dragMove with is_dragged = ${this.is_dragged}`
         );
-      }
 
       const pageX = !!event.pageX ? event.pageX : event.touches[0].pageX;
       const pageY = !!event.pageY ? event.pageY : event.touches[0].pageY;
@@ -1355,7 +1133,7 @@ export default {
 
       if (!this.is_dragged) {
         this.is_dragged = true;
-        this.is_selected = true;
+        this.selectMedia();
 
         this.dragOffset.x = pageX_mm;
         this.dragOffset.y = pageY_mm;
@@ -1373,11 +1151,11 @@ export default {
       }
     },
     dragUp(event) {
-      if (this.$root.state.dev_mode === "debug") {
+      if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • MediaPublication: dragUp with is_dragged = ${this.is_dragged}`
         );
-      }
+
       if (this.is_dragged) {
         this.mediaPos.x =
           this.roundMediaVal(this.mediaPos.x - this.page.margin_left) +
@@ -1400,12 +1178,33 @@ export default {
 
       return false;
     },
-    deselectMedia(event) {
-      if (this.$root.state.dev_mode === "debug") {
+    toggleMediaSelection() {
+      if (this.is_selected) this.deselectMedia();
+      else this.selectMedia();
+    },
+    selectMedia() {
+      if (this.is_selected) return;
+
+      if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • MediaPublication: deselectMedia`);
-      }
-      this.is_selected = false;
-      this.$emit("unselected");
+
+      // if shift is not hold down
+      // then we unselect everything
+      this.$root.settings.current_publication.selected_medias = [];
+
+      this.$root.settings.current_publication.selected_medias.push(
+        this.media.publi_meta.metaFileName
+      );
+    },
+    deselectMedia() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • MediaPublication: deselectMedia`);
+
+      this.show_advanced_menu = false;
+
+      this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
+        (meta) => meta !== this.media.publi_meta.metaFileName
+      );
     },
     mouseOver() {
       if (!this.is_touch) {

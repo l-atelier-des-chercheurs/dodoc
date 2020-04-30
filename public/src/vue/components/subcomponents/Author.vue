@@ -180,8 +180,12 @@ export default {
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on("authors.submitPassword", this.submitPassword);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("authors.submitPassword", this.submitPassword);
+  },
   watch: {
     show_input_password_field: function () {
       if (this.show_input_password_field) {
@@ -193,7 +197,9 @@ export default {
   },
   computed: {
     can_login_as_author() {
-      return this.$root.canEditFolder({
+      // not using root’s canEditFolder because authors have some specific props, namely that an admin cannot fake being
+      // an author — this will delog him/her
+      return this.canEditFolder({
         type: "authors",
         slugFolderName: this.author.slugFolderName,
       });
@@ -219,19 +225,45 @@ export default {
       this.$socketio.sendAuth();
       this.setAuthor();
     },
+    canEditFolder: function ({ type, slugFolderName }) {
+      if (!this.$root.store[type].hasOwnProperty(slugFolderName)) return false;
 
-    submitPassword() {
+      const folder = this.$root.store[type][slugFolderName];
+
+      // if no password && no editing limits
+      if (folder.password !== "has_pass") return true;
+
+      // if password is set
+      if (folder.password === "has_pass") {
+        return this.$root.state.list_authorized_folders.some((i) => {
+          return (
+            !!i &&
+            i.hasOwnProperty("type") &&
+            i.type === type &&
+            i.hasOwnProperty("allowed_slugFolderNames") &&
+            i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
+          );
+        });
+      }
+
+      return false;
+    },
+
+    submitPassword({
+      slugFolderName,
+      password = this.$auth.hashCode(this.$refs.passwordField.value),
+    }) {
       console.log("METHODS • Author: submitPassword");
 
-      const pass = this.$auth.hashCode(this.$refs.passwordField.value);
+      if (slugFolderName && slugFolderName !== this.author.slugFolderName)
+        return;
 
       this.$auth.removeAllFoldersPassword({
         type: "authors",
       });
-
       this.$auth.updateFoldersPasswords({
         authors: {
-          [this.author.slugFolderName]: pass,
+          [this.author.slugFolderName]: password,
         },
       });
 
@@ -239,21 +271,22 @@ export default {
 
       // check if password matches or not
       this.$eventHub.$once("socketio.authentificated", () => {
-        const has_passworded_folder = window.state.list_authorized_folders.filter(
-          (f) =>
-            f.type === "authors" &&
-            f.allowed_slugFolderNames.includes(this.author.slugFolderName)
-        );
-        if (has_passworded_folder.length === 0) {
+        if (
+          this.$root.state.list_authorized_folders.some(
+            (f) =>
+              f.type === "authors" &&
+              f.allowed_slugFolderNames.includes(this.author.slugFolderName)
+          )
+        ) {
+          this.show_input_password_field = false;
+          this.setAuthor();
+        } else {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
             .error(this.$t("notifications.wrong_password"));
           this.$refs.passwordField.value = "";
           this.$refs.passwordField.focus();
-        } else {
-          this.show_input_password_field = false;
-          this.setAuthor();
         }
       });
     },
@@ -286,9 +319,7 @@ export default {
           );
 
         this.$root.setAuthor(this.author);
-        setTimeout(() => {
-          this.$emit("close");
-        }, 100);
+        this.$emit("close");
       } else {
         this.show_input_password_field = !this.show_input_password_field;
       }

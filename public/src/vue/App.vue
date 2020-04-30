@@ -108,31 +108,6 @@
               class="m_activitiesPanel--doc"
               :class="{ 'is--open': $root.settings.show_publi_panel }"
             >
-              <!-- <button
-                v-if="$root.screen_is_wide"
-                class="publiButton"
-                :content="$t('mix_medias')"
-                v-tippy="{
-                  placement: 'left',
-                  delay: [600, 0]
-                }"
-                :class="{
-                  'is--open': $root.settings.show_publi_panel,
-                  'is--allthewaytotheleft': activity_panel_percent === 0
-                }"
-                @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
-                @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
-                :key="'openPubli'"
-              >
-                <img
-                  src="/images/i_marmite.svg"
-                  width="48"
-                  height="48"
-                  draggable="false"
-                />
-                <span class="margin-small">{{ $t("publication") }}</span>
-              </button> -->
-
               <div style="position: relative; height: 100%; overflow: hidden;">
                 <transition name="ListView" :duration="500">
                   <Publications
@@ -489,12 +464,12 @@ export default {
 
       if (e.index === 1) {
         if (this.panels_width.docPane <= 0.01) {
-          if (this.panels_width.chatPane <= 0.01) this.panels_width.doPane = 70;
+          if (this.panels_width.chatPane <= 0.01) this.panels_width.doPane = 50;
           else {
-            this.panels_width.chatPane = 35;
-            this.panels_width.doPane = 35;
+            this.panels_width.chatPane = 25;
+            this.panels_width.doPane = 25;
           }
-          this.panels_width.docPane = 30;
+          this.panels_width.docPane = 50;
         } else {
           if (this.panels_width.chatPane <= 0.01)
             this.panels_width.doPane = 100;

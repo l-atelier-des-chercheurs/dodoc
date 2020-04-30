@@ -66,7 +66,6 @@
 import CreateChat from "./components/modals/CreateChat.vue";
 import ChatRow from "./components/ChatRow.vue";
 import Chat from "./components/Chat.vue";
-import EditAccessControl from "./components/subcomponents/EditAccessControl.vue";
 
 export default {
   props: {
@@ -77,7 +76,6 @@ export default {
     CreateChat,
     ChatRow,
     Chat,
-    EditAccessControl,
   },
   data() {
     return {

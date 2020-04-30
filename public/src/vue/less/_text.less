@@ -879,6 +879,9 @@
   line-height: 26px;
   margin-right: 8px;
 }
+html[lang="fr"] .ql-snow .ql-tooltip::before {
+  content: "Lien :";
+}
 .ql-snow .ql-tooltip input[type="text"] {
   display: none;
   border: 1px solid #ccc;
@@ -901,9 +904,15 @@
   margin-left: 16px;
   padding-right: 8px;
 }
+html[lang="fr"] .ql-tooltip a.ql-action::after {
+  content: "Modifier";
+}
 .ql-snow .ql-tooltip a.ql-remove::before {
   content: "Remove";
   margin-left: 8px;
+}
+html[lang="fr"] .ql-tooltip a.ql-remove::before {
+  content: "Supprimer";
 }
 .ql-snow .ql-tooltip a {
   line-height: 26px;
@@ -920,8 +929,14 @@
   content: "Save";
   padding-right: 0px;
 }
+html[lang="fr"] .ql-tooltip.ql-editing a.ql-action::after {
+  content: "Enregistrer";
+}
 .ql-snow .ql-tooltip[data-mode="link"]::before {
   content: "Enter link:";
+}
+html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
+  content: "Ajoutez un lien :";
 }
 .ql-snow .ql-tooltip[data-mode="formula"]::before {
   content: "Enter formula:";
@@ -1513,14 +1528,21 @@
   --quill-options-size: 2.2rem;
   --quill-buttons-size: 1.2rem;
 
+  &.is--read_only {
+    .ql-toolbar {
+      display: none;
+    }
+  }
+
   .ql-bubble .ql-tooltip {
     white-space: inherit;
     position: fixed;
     padding: 0;
     max-width: 600px !important;
     width: 100% !important;
+    min-width: 340px;
 
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    // transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     .ql-toolbar {
       .margin-sides-small;
@@ -1832,8 +1854,9 @@
   }
 }
 .quillWrapper .ql-toolbar {
-  border-bottom-width: 2px;
+  // border-bottom-width: 2px;
   background-color: var(--c-gris-clair);
+  padding-right: 50px;
 
   display: flex;
   flex-flow: row wrap;
@@ -1883,25 +1906,29 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-label::before,
 html[lang="fr"] .ql-picker.ql-header .ql-picker-item::before {
   content: "Texte courant";
 }
-html[lang="en"] .ql-picker.ql-header .ql-picker-label::before,
-html[lang="en"] .ql-picker.ql-header .ql-picker-item::before {
+html .ql-picker.ql-header .ql-picker-label::before,
+html .ql-picker.ql-header .ql-picker-item::before {
   content: "Regular text";
 }
 html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
 html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
   content: "Titre 1";
+  font-weight: 700;
 }
 html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
 html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
   content: "Titre 2";
+  font-weight: 700;
 }
 html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
 html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
   content: "Titre 3";
+  font-weight: 700;
 }
 html[lang="fr"] .ql-picker.ql-header .ql-picker-label[data-value="4"]::before,
 html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
   content: "Titre 4";
+  font-weight: 700;
 }
 
 .ql-picker.ql-size .ql-picker-label[data-value="50%"]::before,
