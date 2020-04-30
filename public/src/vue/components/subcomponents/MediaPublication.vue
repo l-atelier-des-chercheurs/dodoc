@@ -688,6 +688,10 @@ export default {
       this.inline_edit_mode = false;
     },
     cancelMediaInlineEditing() {
+      if (this.media.publi_meta.content === "") {
+        this.removePubliMedia();
+      }
+
       this.htmlForEditor = this.media.publi_meta.content;
       this.inline_edit_mode = false;
     },
