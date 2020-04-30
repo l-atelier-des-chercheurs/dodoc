@@ -57,6 +57,10 @@ module.exports = (function () {
       fr: "Gérer l’accès au contenu",
       en: "Manage access",
     },
+    login_after_creation: {
+      fr: "S’identifier dans la foulée",
+      en: "Login after creation",
+    },
     publication: {
       fr: "Recette",
       en: "Recipe",
