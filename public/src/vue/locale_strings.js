@@ -246,7 +246,7 @@ module.exports = (function () {
       en: "Role",
     },
     admin: {
-      fr: "Admin",
+      fr: "Administrateur",
       en: "Admin",
     },
     contributor: {
