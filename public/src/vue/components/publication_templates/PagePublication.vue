@@ -1062,12 +1062,19 @@ export default {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
       this.addMedia({ values }).then((mdata) => {
-        if (values.type && values.type === "text") {
-          this.$eventHub.$emit(
-            "publication.set_media_to_edit_mode",
-            mdata.metaFileName
-          );
-        }
+        this.$nextTick(() => {
+          if (values.type && values.type === "text") {
+            this.$eventHub.$emit(
+              "publication.set_media_to_edit_mode",
+              mdata.metaFileName
+            );
+          } else {
+            this.$eventHub.$emit(
+              "publication.selectNewMedia",
+              mdata.metaFileName
+            );
+          }
+        });
       });
     },
     addMedia({ slugProjectName, metaFileName, values }) {
@@ -1377,8 +1384,9 @@ export default {
         const page = current_page_el.$el.getElementsByClassName("m_page")[0];
 
         const margins = 100;
-        if (!!page && panel_width < page.offsetWidth + margins) {
-          this.zoom = panel_width / (page.offsetWidth + margins);
+
+        if (!!page) {
+          this.zoom = panel_width / (page.offsetWidth + margins + 200);
         }
       }
     },

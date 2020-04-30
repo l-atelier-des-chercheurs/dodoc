@@ -595,7 +595,7 @@ export default {
   created() {},
   mounted() {
     this.updateMediaStyles();
-    this.$eventHub.$on("publication.newMediaSelected", this.newMediaSelected);
+    this.$eventHub.$on("publication.selectNewMedia", this.selectNewMedia);
     this.$eventHub.$on(
       "publication.set_media_to_edit_mode",
       this.setMediaToEditMode
@@ -603,7 +603,7 @@ export default {
     this.$eventHub.$on("publication.flashZIndex", this.flashZIndex);
   },
   beforeDestroy() {
-    this.$eventHub.$off("publication.newMediaSelected", this.newMediaSelected);
+    this.$eventHub.$off("publication.selectNewMedia", this.selectNewMedia);
     this.$eventHub.$off(
       "publication.set_media_to_edit_mode",
       this.setMediaToEditMode
@@ -659,12 +659,12 @@ export default {
     },
   },
   methods: {
-    newMediaSelected(metaFileName) {
-      if (metaFileName !== this.media.publi_meta.metaFileName)
-        this.deselectMedia();
+    selectNewMedia(metaFileName) {
+      if (metaFileName === this.media.publi_meta.metaFileName)
+        if (!this.is_selected) this.selectMedia();
     },
     setMediaToEditMode(metaFileName) {
-      if (this.media.publi_meta.metaFileName === metaFileName) {
+      if (metaFileName === this.media.publi_meta.metaFileName) {
         if (!this.is_selected) this.selectMedia();
         this.editButtonClicked();
       }
