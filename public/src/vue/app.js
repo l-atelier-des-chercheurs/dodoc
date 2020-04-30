@@ -566,6 +566,23 @@ let vm = new Vue({
         this.unsetAuthor();
       }
     },
+    "state.list_authorized_folders": {
+      handler() {
+        const authors = this.state.list_authorized_folders.find(
+          (f) => f.type === "authors"
+        );
+        if (authors) {
+          const allowed_slugFolderNames = authors.allowed_slugFolderNames;
+          if (
+            allowed_slugFolderNames.length === 0 ||
+            allowed_slugFolderNames[0] !== this.settings.current_author_slug
+          ) {
+            this.unsetAuthor();
+          }
+        }
+      },
+      deep: true,
+    },
   },
   computed: {
     current_project() {
