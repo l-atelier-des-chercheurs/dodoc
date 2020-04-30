@@ -92,7 +92,7 @@ module.exports = (function () {
                         meta.medias = {};
                       }
 
-                      meta.fullFolderPath = thisFolderPath;
+                      // meta.fullFolderPath = thisFolderPath;
 
                       resolve({ [slugFolderName]: meta });
                     })
