@@ -316,13 +316,33 @@
                 media.type !== 'image'
               "
             >
-              <label>{{ $t("fill_color") }}</label>
+              <label
+                >{{ $t("fill_color") }}
+                <button
+                  type="button"
+                  class="buttonLink padding-verysmall margin-none"
+                  v-if="fill_color !== 'none'"
+                  @click="fill_color = 'none'"
+                >
+                  ×
+                </button>
+              </label>
               <div>
                 <input type="color" v-model="fill_color" />
               </div>
             </div>
             <div class="item">
-              <label>{{ $t("stroke_color") }}</label>
+              <label
+                >{{ $t("stroke_color") }}
+                <button
+                  type="button"
+                  class="buttonLink padding-verysmall margin-none"
+                  v-if="stroke_color !== 'none'"
+                  @click="stroke_color = 'none'"
+                >
+                  ×
+                </button>
+              </label>
               <div>
                 <input type="color" v-model="stroke_color" />
               </div>
@@ -523,7 +543,7 @@ export default {
         return this.media.publi_meta.hasOwnProperty("stroke_color") &&
           !!this.media.publi_meta.stroke_color
           ? this.media.publi_meta.stroke_color
-          : "transparent";
+          : "none";
       },
       set(value) {
         this.updateMediaPubliMeta({ stroke_color: value });
@@ -534,7 +554,7 @@ export default {
         return this.media.publi_meta.hasOwnProperty("fill_color") &&
           !!this.media.publi_meta.fill_color
           ? this.media.publi_meta.fill_color
-          : "transparent";
+          : "none";
       },
       set(value) {
         this.updateMediaPubliMeta({ fill_color: value });
