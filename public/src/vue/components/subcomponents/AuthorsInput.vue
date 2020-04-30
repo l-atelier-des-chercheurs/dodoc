@@ -2,7 +2,10 @@
   <div class="m_authorField">
     <button
       v-for="author_slug in all_authors_slugs"
-      v-if="read_only && authors.some((a) => a.slugFolderName === author_slug)"
+      v-if="
+        !read_only ||
+        (read_only && authors.some((a) => a.slugFolderName === author_slug))
+      "
       type="button"
       :key="author_slug"
       :class="{
@@ -31,7 +34,13 @@
 </template>
 <script>
 export default {
-  props: ["currentAuthors", "read_only"],
+  props: {
+    currentAuthors: Array,
+    read_only: {
+      type: Boolean,
+      default: false,
+    },
+  },
   components: {},
   data() {
     return {
