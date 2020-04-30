@@ -188,7 +188,6 @@ export default {
       if (!!data.password) data.password = this.$auth.hashCode(data.password);
 
       this.$root.createFolder({ type: "authors", data }).then((adata) => {
-        debugger;
         if (this.login_after_creation) {
           this.$nextTick(() => {
             this.$eventHub.$emit("authors.submitPassword", {
