@@ -90,7 +90,7 @@
         />
         <div class="m_author--name">{{ author.name }}</div>
         <div class="m_author--role" v-if="author.role">
-          <label>{{ author.role }}</label>
+          <label>{{ $t(author.role) }}</label>
         </div>
 
         <div
