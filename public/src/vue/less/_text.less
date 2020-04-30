@@ -879,6 +879,9 @@
   line-height: 26px;
   margin-right: 8px;
 }
+html[lang="fr"] .ql-snow .ql-tooltip::before {
+  content: "Lien :";
+}
 .ql-snow .ql-tooltip input[type="text"] {
   display: none;
   border: 1px solid #ccc;
@@ -901,9 +904,15 @@
   margin-left: 16px;
   padding-right: 8px;
 }
+html[lang="fr"] .ql-tooltip a.ql-action::after {
+  content: "Modifier";
+}
 .ql-snow .ql-tooltip a.ql-remove::before {
   content: "Remove";
   margin-left: 8px;
+}
+html[lang="fr"] .ql-tooltip a.ql-remove::before {
+  content: "Supprimer";
 }
 .ql-snow .ql-tooltip a {
   line-height: 26px;
@@ -920,8 +929,14 @@
   content: "Save";
   padding-right: 0px;
 }
+html[lang="fr"] .ql-tooltip.ql-editing a.ql-action::after {
+  content: "Enregistrer";
+}
 .ql-snow .ql-tooltip[data-mode="link"]::before {
   content: "Enter link:";
+}
+html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
+  content: "Ajoutez un lien :";
 }
 .ql-snow .ql-tooltip[data-mode="formula"]::before {
   content: "Enter formula:";
@@ -1526,7 +1541,7 @@
     max-width: 600px !important;
     width: 100% !important;
 
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    // transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     .ql-toolbar {
       .margin-sides-small;

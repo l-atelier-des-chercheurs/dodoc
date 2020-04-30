@@ -160,9 +160,10 @@ export default {
           width: ${page.width * this.zoom}mm;
           height: ${page.height * this.zoom}mm;
           margin: 140px auto;
-          padding: 140px;           
+          padding: 100px 140px 100px 240px; 
           transform: scale(${this.zoom});
           transform-origin: left top;
+          box-sizing: content-box;
         `;
       return `
           width: ${page.width * this.zoom + 0}mm;
