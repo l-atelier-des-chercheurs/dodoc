@@ -108,31 +108,6 @@
               class="m_activitiesPanel--doc"
               :class="{ 'is--open': $root.settings.show_publi_panel }"
             >
-              <!-- <button
-                v-if="$root.screen_is_wide"
-                class="publiButton"
-                :content="$t('mix_medias')"
-                v-tippy="{
-                  placement: 'left',
-                  delay: [600, 0]
-                }"
-                :class="{
-                  'is--open': $root.settings.show_publi_panel,
-                  'is--allthewaytotheleft': activity_panel_percent === 0
-                }"
-                @mousedown.stop.prevent="dragPubliPanel($event, 'mouse')"
-                @touchstart.stop.prevent="dragPubliPanel($event, 'touch')"
-                :key="'openPubli'"
-              >
-                <img
-                  src="/images/i_marmite.svg"
-                  width="48"
-                  height="48"
-                  draggable="false"
-                />
-                <span class="margin-small">{{ $t("publication") }}</span>
-              </button> -->
-
               <div style="position: relative; height: 100%; overflow: hidden;">
                 <transition name="ListView" :duration="500">
                   <Publications

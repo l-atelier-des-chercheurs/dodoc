@@ -744,64 +744,6 @@ body {
   }
 }
 
-.publiButton {
-  position: absolute;
-  top: 30px;
-  right: 100%;
-
-  @t-button_size: 3em;
-  width: 3em;
-  margin-right: 0em;
-  z-index: 100;
-
-  min-height: @t-button_size;
-  border-radius: @t-button_size 0 0 @t-button_size;
-  box-shadow: 2px 3px 10px fade(@c-bleuvert, 50%);
-  box-shadow: inset 5px 0 5px fade(@c-bleuvert_fonce, 50%);
-
-  user-select: none;
-
-  .padding-verysmall;
-  .button-inline;
-  .c-blanc;
-  font-weight: 400;
-  .bg-bleuvert;
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
-
-  &.is--dragged {
-    cursor: -webkit-grabbing;
-    cursor: -moz-grabbing;
-  }
-
-  &:hover,
-  &:active {
-    .bg-bleuvert_fonce;
-  }
-
-  > * {
-    pointer-events: none;
-  }
-
-  span {
-    padding: @t-skipline / 4;
-    display: none;
-  }
-
-  &.is--allthewaytotheleft {
-    transform: scale(-1, 1);
-    transform-origin: right center;
-
-    &.is--open {
-      box-shadow: 0px 2px 5px @c-bleuvert_fonce;
-    }
-
-    + div > .m_publicationview {
-      border-color: transparent !important;
-    }
-  }
-}
-
 /**********************************************************************
                               MAIN VIEWS
 **********************************************************************/
@@ -5717,8 +5659,8 @@ small {
 .m_mediaPublication {
   position: absolute;
 
-  -moz-user-select: none;
-  user-select: none;
+  // -moz-user-select: none;
+  // user-select: none;
 
   min-width: 5mm;
   min-height: 5mm;
@@ -6951,7 +6893,6 @@ body[data-mode="print_publication"] {
   .m_publicationMeta,
   .m_publicationFooter,
   .controlFrame,
-  .publiButton,
   .m_publicationview--pages--pageContainer::before,
   .m_mediaPublication--buttons,
   .m_page--margins_rule,

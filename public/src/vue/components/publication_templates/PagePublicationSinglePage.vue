@@ -155,22 +155,26 @@ export default {
     setPageContainerProperties(page) {
       if (this.$root.state.mode === "print_publication") return;
 
-      if (this.mode === "single")
-        return `
+      let css = `
           width: ${page.width * this.zoom}mm;
           height: ${page.height * this.zoom}mm;
+          transform: scale(${this.zoom});
+          transform-origin: left top;
+      `;
+
+      if (this.mode === "single")
+        return (css += `
           margin: 140px auto;
           padding: 100px 140px 100px 240px; 
-          transform: scale(${this.zoom});
-          transform-origin: left top;
           box-sizing: content-box;
-        `;
-      return `
-          width: ${page.width * this.zoom + 0}mm;
-          height: ${page.height * this.zoom + 0}mm;
-          transform: scale(${this.zoom});
-          transform-origin: left top;
-        `;
+        `);
+
+      if (this.mode === "export")
+        return (css += `
+          margin: 1em auto;
+        `);
+
+      return css;
     },
     setPageProperties(page) {
       if (this.$root.state.mode === "print_publication") {
