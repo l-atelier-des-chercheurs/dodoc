@@ -131,7 +131,6 @@
         @mousedown.stop.prevent="zoom += 0.1"
         @touchstart.stop.prevent="zoom += 0.1"
       >
-        {{ zoom }}
         <svg
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"

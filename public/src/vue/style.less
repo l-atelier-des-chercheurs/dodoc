@@ -4530,73 +4530,79 @@ small {
     max-width: 180px;
     z-index: 1001;
 
+    height: 100%;
     overflow-y: auto;
+    .padding-vert-small;
+
+    .custom_scrollbar(1px, 4px, 3px, rgba(255, 255, 255, 0), @c-noir);
 
     // .bg-noir;
     // background-color: rgba(53, 53, 53, 0.95);
-    .bg-blanc;
-    .c-noir;
 
-    border-radius: 4px;
-    // border-top-left-radius: 0;
-    // border-top-left-radius: 0;
-    .padding-sides-verysmall;
-    .padding-vert-verysmall;
-    // .margin-small;
-    .margin-verysmall;
-    // margin-right: 0;
-    // margin-top: 0;
+    .m_publicationButtons--content {
+      .bg-blanc;
+      .c-noir;
 
-    box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
-    .custom_scrollbar(1px, 4px, 3px, rgba(255, 255, 255, 0), #fff);
-    // .custom_scrollbar(1px, 3px, 2px, rgba(255, 255, 255, 0), #fff);
+      border-radius: 4px;
+      // border-top-left-radius: 0;
+      // border-top-left-radius: 0;
+      // .padding-sides-verysmall;
+      .padding-vert-verysmall;
+      // .margin-small;
+      .margin-verysmall;
+      // margin-right: 0;
+      // margin-top: 0;
 
-    > * {
-      .padding-sides-verysmall;
-      // .padding-vert-verysmall;
+      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
+      // .custom_scrollbar(1px, 3px, 2px, rgba(255, 255, 255, 0), #fff);
 
-      > label {
-        // color: white;
-      }
+      > * {
+        .padding-sides-verysmall;
+        // .padding-vert-verysmall;
 
-      > div > div {
-        .margin-bottom-verysmall;
+        > label {
+          // color: white;
+        }
 
-        &.item {
-          .padding-verysmall;
-          padding-top: 0;
-          border-radius: 4px;
+        > div > div {
+          .margin-bottom-verysmall;
 
-          .bg-gris_tresclair;
+          &.item {
+            .padding-verysmall;
+            padding-top: 0;
+            border-radius: 4px;
 
-          &:hover {
-            .bg-blanc;
+            .bg-gris_tresclair;
+
+            &:hover {
+              .bg-blanc;
+            }
+
+            label {
+            }
           }
+        }
 
-          label {
-          }
+        &:not(:last-child) {
+          // border-bottom: 2px solid @c-border;
         }
       }
 
-      &:not(:last-child) {
-        // border-bottom: 2px solid @c-border;
-      }
-    }
-
-    ._create_buttons {
-      text-align: left;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      .font-verysmall;
-      .button-thin;
-      margin: 0;
-      .margin-bottom-verysmall;
-      .padding-sides-verysmall;
-
-      svg {
+      ._create_buttons {
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        .font-verysmall;
+        .button-thin;
         margin: 0;
-        .margin-right-verysmall;
+        .margin-bottom-verysmall;
+        .padding-sides-verysmall;
+
+        svg {
+          margin: 0;
+          .margin-right-verysmall;
+        }
       }
     }
   }
@@ -5003,6 +5009,7 @@ small {
   .m_publicationview--pages--singlePageBloc {
     // .padding-vert-medium;
     // .margin-sides-medium;
+    position: relative;
 
     display: flex;
     flex-flow: row nowrap;
