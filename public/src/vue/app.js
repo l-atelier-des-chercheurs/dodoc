@@ -560,7 +560,7 @@ let vm = new Vue({
       // check if, when store.authors refresh, the current_author_slug is still there
       // delog if not
       if (
-        this.settings.current_author_slug &&
+        this.settings.current_author_slug !== false &&
         !this.store.authors.hasOwnProperty(this.settings.current_author_slug)
       ) {
         this.unsetAuthor();
@@ -573,13 +573,12 @@ let vm = new Vue({
         );
         if (authors) {
           const allowed_slugFolderNames = authors.allowed_slugFolderNames;
-          if (
-            allowed_slugFolderNames.length === 0 ||
-            allowed_slugFolderNames[0] !== this.settings.current_author_slug
-          ) {
-            this.unsetAuthor();
+          if (allowed_slugFolderNames.length > 0) {
+            this.setAuthor(allowed_slugFolderNames[0]);
+            return;
           }
         }
+        this.unsetAuthor();
       },
       deep: true,
     },
@@ -1180,13 +1179,30 @@ let vm = new Vue({
 
       localstore.set("language", newLangCode);
     },
-    setAuthor: function (author) {
-      this.settings.current_author_slug = author.slugFolderName;
+    setAuthor: function (author_slug) {
+      if (this.settings.current_author_slug === author_slug) return;
+
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`ROOT EVENT: setAuthor`);
+
+      const author = Object.values(this.store.authors).find(
+        (a) => a.slugFolderName === author_slug
+      );
+
+      if (!author) return;
+
+      this.settings.current_author_slug = author_slug;
+
       this.$socketio.socket.emit("updateClientInfo", { author });
       this.$socketio.listFolders({ type: "authors" });
       this.$eventHub.$emit("authors.set_new_author");
     },
     unsetAuthor: function () {
+      if (this.settings.current_author_slug) return;
+
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`ROOT EVENT: unsetAuthor`);
+
       this.$auth.removeAllFoldersPassword({
         type: "authors",
       });
