@@ -322,8 +322,18 @@ export default {
   },
 
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on(
+      "publications.showAdvancedOptions",
+      this.showAdvancedOptions
+    );
+  },
+  beforeDestroy() {
+    this.$eventHub.$off(
+      "publications.showAdvancedOptions",
+      this.showAdvancedOptions
+    );
+  },
 
   watch: {},
   computed: {
@@ -379,6 +389,9 @@ export default {
       }
 
       this.$emit("export");
+    },
+    showAdvancedOptions() {
+      this.show_settings = true;
     },
     removePublication() {
       this.$alertify

@@ -775,6 +775,7 @@ export default {
           .delay(4000)
           .error(this.$t("notifications.action_not_allowed"));
         this.preview_mode = true;
+        this.$eventHub.$emit("publications.showAdvancedOptions");
       }
     },
     zoom: function () {
