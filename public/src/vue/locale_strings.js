@@ -592,6 +592,10 @@ module.exports = (function () {
       fr: "Couleur du fond",
       en: "Fill color",
     },
+    stroke_width: {
+      fr: "Épaisseur du contour",
+      en: "Stroke width",
+    },
     adjust: {
       fr: "Ajuster",
       en: "Adjust",
