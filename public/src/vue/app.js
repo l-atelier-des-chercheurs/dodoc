@@ -523,7 +523,7 @@ let vm = new Vue({
             );
 
             if (author) {
-              this.setAuthor(author);
+              this.setAuthor(first_author_slug);
               this.$alertify
                 .closeLogOnClick(true)
                 .delay(4000)
@@ -1379,7 +1379,7 @@ let vm = new Vue({
             " " +
             `<button class="bg-blanc padding-none c-bleumarine font-thin">${author.name}</button>`
         );
-      this.setAuthor(author);
+      this.setAuthor(author.slugFolderName);
     },
 
     setMediaFilter(filter) {
