@@ -3,6 +3,7 @@
     class="m_listview"
     :class="{ 'is--folder': !!$root.settings.opened_folder }"
   >
+    {{ $root.state.list_authorized_folders.find((f) => f.type === "authors") }}
     <main class="m_projects main_scroll_panel">
       <transition name="fade_fast" :duration="150">
         <div
@@ -438,12 +439,12 @@ export default {
     }
     this.$eventHub.$on("modal.prev_media", this.prevMedia);
     this.$eventHub.$on("modal.next_media", this.nextMedia);
-    this.$eventHub.$on("authors.set_new_author", this.newAuthorSet);
+    this.$eventHub.$on("authors.newAuthorSet", this.newAuthorSet);
   },
   beforeDestroy() {
     this.$eventHub.$off("modal.prev_media", this.prevMedia);
     this.$eventHub.$off("modal.next_media", this.nextMedia);
-    this.$eventHub.$off("authors.set_new_author", this.newAuthorSet);
+    this.$eventHub.$off("authors.newAuthorSet", this.newAuthorSet);
   },
   watch: {
     currentLang: function () {

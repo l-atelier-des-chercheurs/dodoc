@@ -1195,10 +1195,10 @@ let vm = new Vue({
 
       this.$socketio.socket.emit("updateClientInfo", { author });
       this.$socketio.listFolders({ type: "authors" });
-      this.$eventHub.$emit("authors.set_new_author");
+      this.$eventHub.$emit("authors.newAuthorSet");
     },
     unsetAuthor: function () {
-      if (this.settings.current_author_slug) return;
+      if (!this.settings.current_author_slug) return;
 
       if (this.$root.state.dev_mode === "debug")
         console.log(`ROOT EVENT: unsetAuthor`);
