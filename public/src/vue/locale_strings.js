@@ -97,6 +97,10 @@ module.exports = (function () {
       oc: "Nom",
       de: "Name",
     },
+    name_or_pseudo: {
+      fr: "Nom ou pseudonyme",
+      en: "Name or nickname",
+    },
     project_name: {
       fr: "Nom du projet",
       en: "Project name",
