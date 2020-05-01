@@ -873,7 +873,7 @@ export default {
       this.locked_in_place = this.media.publi_meta.hasOwnProperty(
         "locked_in_place"
       )
-        ? this.media.publi_meta.locked_in_place
+        ? Boolean(this.media.publi_meta.locked_in_place)
         : false;
 
       if (this.media.type === "text" || this.media.publi_meta.type === "text") {
