@@ -434,15 +434,7 @@
               </div>
             </div>
 
-            <div
-              class="item"
-              v-if="
-                media.publi_meta.type !== 'line' &&
-                media.publi_meta.type !== 'arrow' &&
-                media.type !== 'image' &&
-                stroke_color !== 'none'
-              "
-            >
+            <div class="item" v-if="stroke_color !== 'none'">
               <label>{{ $t("stroke_width") }}</label>
               <div>
                 <input
