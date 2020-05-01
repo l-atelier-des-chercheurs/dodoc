@@ -775,6 +775,7 @@ export default {
           .delay(4000)
           .error(this.$t("notifications.action_not_allowed"));
         this.preview_mode = true;
+        this.$eventHub.$emit("publications.showAdvancedOptions");
       }
     },
     zoom: function () {
@@ -905,7 +906,6 @@ export default {
         (Math.random().toString(36) + "00000000000000000").slice(2, 3)
       );
     },
-    zoomChanged(e) {},
     mergePageObjectWithDefault(pages) {
       return pages.reduce((acc, page) => {
         let _page = JSON.parse(JSON.stringify(page));
@@ -989,6 +989,10 @@ export default {
 
       this.$root.settings.current_publication.page_id = id;
       this.contact_sheet_mode = false;
+
+      this.$nextTick(() => {
+        this.updatePageSizeAccordingToPanel();
+      });
     },
     showAllPages() {
       if (this.$root.state.dev_mode === "debug")
@@ -1138,14 +1142,6 @@ export default {
             return resolve(mdata);
           });
       });
-    },
-    printThisPublication() {
-      this.preview_mode = true;
-      this.$root.setPublicationZoom(1);
-
-      setTimeout(() => {
-        window.print();
-      }, 500);
     },
     updateMediasPubli() {
       if (this.$root.state.dev_mode === "debug") {
@@ -1377,17 +1373,13 @@ export default {
       }, 500);
     },
     updatePageSizeAccordingToPanel() {
-      const panel_width = this.$refs.panel.offsetWidth;
-      const current_page_el = this.$refs.current_page;
+      if (this.$refs.current_page && this.$refs.current_page.$el) {
+        const panel_el = this.$refs.current_page.$el;
+        const current_page_el = panel_el.firstElementChild;
 
-      if (current_page_el && panel_width > 0) {
-        const page = current_page_el.$el.getElementsByClassName("m_page")[0];
+        this.zoom = panel_el.offsetWidth / current_page_el.offsetWidth;
 
-        const margins = 100;
-
-        if (!!page) {
-          this.zoom = panel_width / (page.offsetWidth + margins + 200);
-        }
+        debugger;
       }
     },
   },

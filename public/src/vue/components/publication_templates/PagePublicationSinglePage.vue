@@ -164,8 +164,8 @@ export default {
 
       if (this.mode === "single")
         return (css += `
-          margin: 140px auto;
-          padding: 100px 140px 100px 240px; 
+          margin: 140px;
+          padding: 40px 140px 100px 240px;  
           box-sizing: content-box;
         `);
 

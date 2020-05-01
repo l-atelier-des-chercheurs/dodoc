@@ -8,7 +8,7 @@
 
     <!-- Human name -->
     <div class="margin-bottom-small">
-      <label>{{ $t("name") }}</label>
+      <label>{{ $t("name_or_pseudo") }}</label>
       <input type="text" v-model.trim="authordata.name" required autofocus />
     </div>
 
