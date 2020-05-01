@@ -658,6 +658,7 @@ export default {
       font_size_percent: 100,
       fill_color: "transparent",
       stroke_color: "transparent",
+      stroke_width: 4,
 
       mediaSize: {
         width: 0,
@@ -729,7 +730,7 @@ export default {
         --font_size_percent: ${this.font_size_percent}%;
         --fill_color: ${this.fill_color};
         --stroke_color: ${this.stroke_color};
-        --stroke_width: ${4 * this.zoom}px;
+        --stroke_width: ${this.stroke_width * this.zoom}px;
       `;
 
       if (this.media.publi_meta.custom_css)
@@ -902,6 +903,11 @@ export default {
         !!this.media.publi_meta.fill_color
           ? this.media.publi_meta.fill_color
           : "transparent";
+      this.stroke_width =
+        this.media.publi_meta.hasOwnProperty("stroke_width") &&
+        !!Number.parseFloat(this.media.publi_meta.stroke_width)
+          ? Number.parseFloat(this.media.publi_meta.stroke_width)
+          : 4;
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug")

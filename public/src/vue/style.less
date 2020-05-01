@@ -4497,11 +4497,9 @@ small {
     // max-height: 75%;
     max-width: 220px;
     z-index: 1001;
-    pointer-events: none;
-
-    height: 100%;
+    max-height: 100%;
     overflow-y: auto;
-    .padding-vert-small;
+    .padding-vert-verysmall;
 
     .custom_scrollbar(1px, 4px, 3px, rgba(255, 255, 255, 0), @c-noir);
 
@@ -4517,9 +4515,13 @@ small {
       // border-top-left-radius: 0;
       // border-top-left-radius: 0;
       // .padding-sides-verysmall;
-      .padding-vert-verysmall;
+      // .padding-vert-verysmall;
       // .margin-small;
-      .margin-sides-small;
+      .margin-sides-verysmall;
+
+      // necessary to trigger bottom margin of last item
+      padding-bottom: 0.001rem;
+
       // margin-right: 0;
       // margin-top: 0;
 
@@ -4542,11 +4544,11 @@ small {
             padding-top: 0;
             border-radius: 4px;
 
-            // border: 2px solid @c-gris_tresclair;
+            border-left: 3px solid var(--input-border-color);
             // .bg-gris_tresclair;
 
             &:hover {
-              .bg-blanc;
+              border-color: var(--input-border-color-focus);
             }
 
             > *:last-child {
@@ -4578,6 +4580,11 @@ small {
           margin: 0;
           .margin-right-verysmall;
         }
+      }
+
+      input[type="color"] {
+        height: 40px;
+        .padding-verysmall;
       }
     }
   }
@@ -4846,7 +4853,7 @@ small {
     .m_publicationNavMenu--buttonRow {
       // border-top: 1px solid @c-noir;
       // .margin-sides-medium;
-      // .padding-verysmall;
+      .padding-verysmall;
 
       display: flex;
       flex-flow: row nowrap;
@@ -5648,6 +5655,13 @@ small {
     overflow: auto;
     overscroll-behavior-y: contain;
     margin-bottom: -1px;
+
+    ::-moz-selection {
+      background: rgba(245, 223, 223, 0.25);
+    }
+    ::selection {
+      background: rgba(245, 223, 223, 0.25);
+    }
   }
 
   pre {
@@ -5794,7 +5808,7 @@ small {
     &:not(.type-ellipsis):not(.type-rectangle):not(.type-arrow):not(.type-line) {
       background-color: var(--fill_color);
       outline-color: var(--stroke_color);
-      outline-width: 4px;
+      outline-width: var(--stroke_width);
       outline-style: solid;
     }
 
@@ -5863,9 +5877,10 @@ small {
     padding: 0;
     // min-height: auto;
     border: none;
+    background-color: transparent;
   }
 
-  @t-borderSize: 1px;
+  @t-borderSize: 2px;
   @t-borderPadding: 2px;
   @t-handleSize: 48px;
   @t-pictoSize: 24px;
@@ -5895,7 +5910,7 @@ small {
       width: 30px;
       height: 30px;
       padding: 6px;
-      border: @t-borderSize dashed @c-borderColor;
+      border: @t-borderSize solid @c-borderColor;
       border-radius: 50%;
       overflow: visible;
 
@@ -6021,7 +6036,7 @@ small {
         width: @t-pictoSize;
         height: @t-pictoSize;
         padding: @t-pictoPadding;
-        border: @t-borderSize dashed @c-borderColor;
+        border: @t-borderSize solid @c-borderColor;
         border-radius: 50%;
         overflow: visible;
 

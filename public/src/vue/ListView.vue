@@ -240,18 +240,18 @@
           <select v-model="show_only_my_content">
             <option :value="true">
               <template v-if="!show_medias_instead_of_projects">
-                {{ $t("only_my_projects") }}
+                {{ $t("only_my_projects").toLowerCase() }}
               </template>
               <template v-else>
-                {{ $t("only_my_medias") }}
+                {{ $t("only_my_medias").toLowerCase() }}
               </template>
             </option>
             <option :value="false">
               <template v-if="!show_medias_instead_of_projects">
-                {{ $t("all_projects") }}
+                {{ $t("all_projects").toLowerCase() }}
               </template>
               <template v-else>
-                {{ $t("all_medias") }}
+                {{ $t("all_medias").toLowerCase() }}
               </template>
             </option>
           </select>

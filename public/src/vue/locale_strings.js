@@ -603,6 +603,10 @@ module.exports = (function () {
       fr: "Restorer",
       en: "Restore",
     },
+    lock_in_place: {
+      fr: "Verrouiller sur place",
+      en: "Lock in position",
+    },
     rotate_clockwise: {
       fr: "Pivoter vers la droite",
       en: "Rotate clockwise",

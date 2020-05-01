@@ -426,6 +426,9 @@
           },
           "stroke_color": {
             "type": "string"
+          },
+          "stroke_width": {
+            "type": "number"
           }
         }
       }

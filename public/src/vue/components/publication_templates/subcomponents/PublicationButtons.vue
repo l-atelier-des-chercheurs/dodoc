@@ -19,8 +19,22 @@
           <div>
             <button
               class="button _create_buttons"
-              @mousedown.stop.prevent="$emit('addMedia', { type: 'text' })"
-              @touchstart.stop.prevent="$emit('addMedia', { type: 'text' })"
+              @mousedown.stop.prevent="
+                $emit('addMedia', {
+                  type: 'text',
+                  stroke_color: stroke_color !== 'none' ? stroke_color : '',
+                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
+                })
+              "
+              @touchstart.stop.prevent="
+                $emit('addMedia', {
+                  type: 'text',
+                  stroke_color: stroke_color !== 'none' ? stroke_color : '',
+                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
+                })
+              "
             >
               <svg
                 version="1.1"
@@ -73,10 +87,20 @@
             <button
               class="button _create_buttons"
               @mousedown.stop.prevent="
-                $emit('addMedia', { type: 'line', stroke_color: '#1d327f' })
+                $emit('addMedia', {
+                  type: 'line',
+                  stroke_color:
+                    stroke_color !== 'none' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
+                })
               "
               @touchstart.stop.prevent="
-                $emit('addMedia', { type: 'line', stroke_color: '#1d327f' })
+                $emit('addMedia', {
+                  type: 'line',
+                  stroke_color:
+                    stroke_color !== 'none' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
+                })
               "
             >
               <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
@@ -117,10 +141,20 @@
             <button
               class="button _create_buttons"
               @mousedown.stop.prevent="
-                $emit('addMedia', { type: 'arrow', stroke_color: '#1d327f' })
+                $emit('addMedia', {
+                  type: 'arrow',
+                  stroke_color:
+                    stroke_color !== 'none' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
+                })
               "
               @touchstart.stop.prevent="
-                $emit('addMedia', { type: 'arrow', stroke_color: '#1d327f' })
+                $emit('addMedia', {
+                  type: 'arrow',
+                  stroke_color:
+                    stroke_color !== 'none' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
+                })
               "
             >
               <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
@@ -187,13 +221,27 @@
               @mousedown.stop.prevent="
                 $emit('addMedia', {
                   type: 'rectangle',
-                  stroke_color: '#1d327f',
+                  stroke_color:
+                    stroke_color !== 'none'
+                      ? stroke_color
+                      : fill_color !== 'none'
+                      ? ''
+                      : '#1d327f',
+                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
                 })
               "
               @touchstart.stop.prevent="
                 $emit('addMedia', {
                   type: 'rectangle',
-                  stroke_color: '#1d327f',
+                  stroke_color:
+                    stroke_color !== 'none'
+                      ? stroke_color
+                      : fill_color !== 'none'
+                      ? ''
+                      : '#1d327f',
+                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
                 })
               "
             >
@@ -235,10 +283,30 @@
             <button
               class="button _create_buttons"
               @mousedown.stop.prevent="
-                $emit('addMedia', { type: 'ellipsis', stroke_color: '#1d327f' })
+                $emit('addMedia', {
+                  type: 'ellipsis',
+                  stroke_color:
+                    stroke_color !== 'none'
+                      ? stroke_color
+                      : fill_color !== 'none'
+                      ? ''
+                      : '#1d327f',
+                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
+                })
               "
               @touchstart.stop.prevent="
-                $emit('addMedia', { type: 'ellipsis', stroke_color: '#1d327f' })
+                $emit('addMedia', {
+                  type: 'ellipsis',
+                  stroke_color:
+                    stroke_color !== 'none'
+                      ? stroke_color
+                      : fill_color !== 'none'
+                      ? ''
+                      : '#1d327f',
+                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
+                })
               "
             >
               <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
@@ -363,6 +431,35 @@
                   v-model="stroke_color"
                   :novalue="stroke_color === 'none'"
                 />
+              </div>
+            </div>
+
+            <div
+              class="item"
+              v-if="
+                media.publi_meta.type !== 'line' &&
+                media.publi_meta.type !== 'arrow' &&
+                media.type !== 'image' &&
+                stroke_color !== 'none'
+              "
+            >
+              <label>{{ $t("stroke_width") }}</label>
+              <div>
+                <input
+                  type="range"
+                  min="1"
+                  max="20"
+                  step="1"
+                  v-model="stroke_width"
+                />
+              </div>
+              <div class="input-group">
+                <input
+                  type="number"
+                  class="input-small"
+                  v-model="stroke_width"
+                />
+                <span class="input-addon input-addon-small">pt</span>
               </div>
             </div>
 
@@ -547,7 +644,8 @@ export default {
 
     font_size_percent: {
       get() {
-        return this.media.publi_meta.hasOwnProperty("font_size_percent") &&
+        return this.media &&
+          this.media.publi_meta.hasOwnProperty("font_size_percent") &&
           !!Number.parseFloat(this.media.publi_meta.font_size_percent)
           ? Number.parseFloat(this.media.publi_meta.font_size_percent)
           : 100;
@@ -559,7 +657,8 @@ export default {
     },
     stroke_color: {
       get() {
-        return this.media.publi_meta.hasOwnProperty("stroke_color") &&
+        return this.media &&
+          this.media.publi_meta.hasOwnProperty("stroke_color") &&
           !!this.media.publi_meta.stroke_color
           ? this.media.publi_meta.stroke_color
           : "none";
@@ -570,7 +669,8 @@ export default {
     },
     fill_color: {
       get() {
-        return this.media.publi_meta.hasOwnProperty("fill_color") &&
+        return this.media &&
+          this.media.publi_meta.hasOwnProperty("fill_color") &&
           !!this.media.publi_meta.fill_color
           ? this.media.publi_meta.fill_color
           : "none";
@@ -579,14 +679,27 @@ export default {
         this.updateMediaPubliMeta({ fill_color: value });
       },
     },
+    stroke_width: {
+      get() {
+        return this.media &&
+          this.media.publi_meta.hasOwnProperty("stroke_width") &&
+          !!Number.parseFloat(this.media.publi_meta.stroke_width)
+          ? Number.parseFloat(this.media.publi_meta.stroke_width)
+          : 4;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ stroke_width: value });
+      },
+    },
     mediaZIndex() {
-      return this.media.publi_meta.hasOwnProperty("z_index")
+      return this.media && this.media.publi_meta.hasOwnProperty("z_index")
         ? this.media.publi_meta.z_index
         : 0;
     },
   },
   methods: {
     updateMediaPubliMeta(val) {
+      if (!this.media) return;
       this.$root.editMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
