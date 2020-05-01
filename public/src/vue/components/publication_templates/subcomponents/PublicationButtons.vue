@@ -13,7 +13,6 @@
           </button>
         </label>
         <div v-if="show_create_options">
-          {{ fill_color }}
           <small>
             {{ $t("import_medias_from_projects_or_create_shapes_here") }}
           </small>
@@ -25,6 +24,7 @@
                   type: 'text',
                   stroke_color: stroke_color !== 'none' ? stroke_color : '',
                   fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
                 })
               "
               @touchstart.stop.prevent="
@@ -32,6 +32,7 @@
                   type: 'text',
                   stroke_color: stroke_color !== 'none' ? stroke_color : '',
                   fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
                 })
               "
             >
@@ -90,6 +91,7 @@
                   type: 'line',
                   stroke_color:
                     stroke_color !== 'none' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
                 })
               "
               @touchstart.stop.prevent="
@@ -97,6 +99,7 @@
                   type: 'line',
                   stroke_color:
                     stroke_color !== 'none' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
                 })
               "
             >
@@ -142,6 +145,7 @@
                   type: 'arrow',
                   stroke_color:
                     stroke_color !== 'none' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
                 })
               "
               @touchstart.stop.prevent="
@@ -149,6 +153,7 @@
                   type: 'arrow',
                   stroke_color:
                     stroke_color !== 'none' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
                 })
               "
             >
@@ -223,6 +228,7 @@
                       ? ''
                       : '#1d327f',
                   fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
                 })
               "
               @touchstart.stop.prevent="
@@ -235,6 +241,7 @@
                       ? ''
                       : '#1d327f',
                   fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
                 })
               "
             >
@@ -285,6 +292,7 @@
                       ? ''
                       : '#1d327f',
                   fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
                 })
               "
               @touchstart.stop.prevent="
@@ -297,6 +305,7 @@
                       ? ''
                       : '#1d327f',
                   fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_width: stroke_width,
                 })
               "
             >
@@ -422,6 +431,35 @@
                   v-model="stroke_color"
                   :novalue="stroke_color === 'none'"
                 />
+              </div>
+            </div>
+
+            <div
+              class="item"
+              v-if="
+                media.publi_meta.type !== 'line' &&
+                media.publi_meta.type !== 'arrow' &&
+                media.type !== 'image' &&
+                stroke_color !== 'none'
+              "
+            >
+              <label>{{ $t("stroke_width") }}</label>
+              <div>
+                <input
+                  type="range"
+                  min="1"
+                  max="20"
+                  step="1"
+                  v-model="stroke_width"
+                />
+              </div>
+              <div class="input-group">
+                <input
+                  type="number"
+                  class="input-small"
+                  v-model="stroke_width"
+                />
+                <span class="input-addon input-addon-small">pt</span>
               </div>
             </div>
 
@@ -639,6 +677,18 @@ export default {
       },
       set(value) {
         this.updateMediaPubliMeta({ fill_color: value });
+      },
+    },
+    stroke_width: {
+      get() {
+        return this.media &&
+          this.media.publi_meta.hasOwnProperty("stroke_width") &&
+          !!Number.parseFloat(this.media.publi_meta.stroke_width)
+          ? Number.parseFloat(this.media.publi_meta.stroke_width)
+          : 4;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ stroke_width: value });
       },
     },
     mediaZIndex() {

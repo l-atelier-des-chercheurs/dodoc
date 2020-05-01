@@ -812,6 +812,15 @@ textarea,
 
 input[type="color"][novalue]::-webkit-color-swatch {
   background-color: transparent !important;
+  @c-checked: @c-gris;
+  @t-checked: 8px;
+  background-image: linear-gradient(45deg, @c-checked 25%, transparent 25%),
+    linear-gradient(-45deg, @c-checked 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, @c-checked 75%),
+    linear-gradient(-45deg, transparent 75%, @c-checked 75%) !important;
+  background-size: @t-checked @t-checked;
+  background-position: 0 0, 0 @t-checked / 2, @t-checked / 2 -@t-checked / 2,
+    -@t-checked / 2 0px;
 }
 
 input[type="checkbox"] {
