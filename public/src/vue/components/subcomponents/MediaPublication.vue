@@ -18,6 +18,7 @@
         'is--previewed': preview_mode,
         'is--overflowing': is_text_overflowing,
         'is--inline_edited': inline_edit_mode,
+        'is--locked': locked_in_place,
       },
       'is--fit_mode_' + fit_mode,
     ]"
@@ -164,7 +165,9 @@
 
     <!-- <transition name="fade_fast" :duration="150"> -->
     <div
-      v-if="!preview_mode && !inline_edit_mode && !read_only"
+      v-if="
+        !preview_mode && !inline_edit_mode && !read_only && !locked_in_place
+      "
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
       @touchstart.stop.prevent="dragMedia('touch')"
@@ -305,16 +308,91 @@
     <transition name="fade_fast" :duration="150">
       <div
         v-if="
+          ((is_selected || is_hovered) &&
+            !preview_mode &&
+            !inline_edit_mode &&
+            !read_only) ||
+          (!preview_mode && !read_only && locked_in_place)
+        "
+      >
+        <button
+          type="button"
+          class="_lock_button _no_underline"
+          :class="{ 'is--active': locked_in_place }"
+          @mousedown.stop.prevent="toggleLock()"
+          @touchstart.stop.prevent="toggleLock()"
+          :content="$t('lock_in_place')"
+          v-tippy="{
+            placement: 'bottom',
+            delay: [600, 0],
+          }"
+        >
+          <svg
+            v-if="locked_in_place"
+            version="1.1"
+            class="inline-svg"
+            style="padding-top: 6px;"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="66.9px"
+            height="88.3px"
+            viewBox="0 0 66.9 88.3"
+            xml:space="preserve"
+          >
+            <path
+              style="fill: currentColor;"
+              d="M61.7,34.4h-1V24.3c0-11.7-7.5-19.2-16.9-22.7C40.6,0.6,36.7,0,33.1,0C29.5,0,26,0.6,22.4,1.6
+		C13.3,4.9,6.2,12.3,6.2,24.3v10.1h-1c-2.9,0-5.2,2.3-5.2,5.2v43.5c0,2.9,2.3,5.2,5.2,5.2h56.5c2.9,0,5.2-2.3,5.2-5.2V39.6
+		C66.9,36.7,64.6,34.4,61.7,34.4z M33.4,70.1c-4.5,0-8.4-3.6-8.4-8.1c0-4.5,3.9-8.4,8.4-8.4s8.1,3.9,8.1,8.4
+		C41.5,66.5,38,70.1,33.4,70.1z M49,34.4H17.9V24.3c0-6.2,3.6-10.1,8.4-11.7c2.3-0.6,4.5-1.3,6.8-1.3c2.3,0,4.9,0.6,6.8,1.3
+		c5.2,1.6,9.1,5.8,9.1,11.7V34.4z"
+            />
+          </svg>
+          <svg
+            class="inline-svg"
+            v-else
+            style="padding-top: 6px;"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="100.3px"
+            height="87.3px"
+            viewBox="0 0 100.3 87.3"
+            xml:space="preserve"
+          >
+            <path
+              class="st1"
+              d="M84.1,1.6C80.5,0.6,76.9,0,73.3,0c-3.6,0-7.5,0.6-10.7,1.6c-9.4,3.6-16.9,11-16.9,22.7v9.1H17.9H6.2h-1
+				c-2.9,0-5.2,2.3-5.2,5.2v43.5c0,2.9,2.3,5.2,5.2,5.2h56.5c2.9,0,5.2-2.3,5.2-5.2V38.6c0-2.9-2.3-5.2-5.2-5.2h-1h-3.3v-9.1
+				c0-5.8,3.9-10.1,9.1-11.7c1.9-0.6,4.5-1.3,6.8-1.3c2.3,0,4.5,0.6,6.8,1.3c4.9,1.6,8.4,5.5,8.4,11.7v10.7h11.7V24.3
+				C100.3,12.3,93.1,4.9,84.1,1.6z M40.9,64.2c-0.3,0.7-0.7,1.4-1.2,2c-0.3,0.4-0.7,0.8-1.1,1.1c-0.4,0.3-0.8,0.6-1.3,0.9
+				c-1.2,0.6-2.5,1-3.9,1s-2.8-0.3-4-1c-0.5-0.2-0.9-0.5-1.3-0.9c-0.4-0.3-0.8-0.7-1.2-1.1c-0.5-0.6-1-1.3-1.3-2
+				c-0.4-1-0.7-2-0.7-3.2c0-1.4,0.4-2.8,1-4c0.3-0.5,0.6-0.9,0.9-1.3s0.7-0.8,1.2-1.2c0.4-0.3,0.9-0.7,1.3-0.9c1.2-0.7,2.6-1,4-1
+				s2.7,0.4,3.9,1c0.5,0.3,0.9,0.6,1.3,0.9s0.8,0.7,1.1,1.2s0.6,0.9,0.9,1.3c0.6,1.2,1,2.6,1,4C41.5,62.1,41.3,63.2,40.9,64.2z"
+            />
+          </svg>
+        </button>
+      </div>
+    </transition>
+
+    <transition name="fade_fast" :duration="150">
+      <div
+        v-if="
           (is_selected || is_hovered) &&
           !preview_mode &&
           !inline_edit_mode &&
-          !read_only
+          !read_only &&
+          !locked_in_place
         "
         class="m_mediaPublication--buttons"
       >
         <button
           type="button"
-          v-if="!media.slugProjectName"
+          v-if="!media.slugProjectName && media.publi_meta.type === 'text'"
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editButtonClicked"
           @touchstart.stop.prevent="editButtonClicked"
@@ -588,6 +666,7 @@ export default {
       mediaZIndex: 0,
 
       fit_mode: "cover",
+      locked_in_place: false,
       lock_original_ratio: false,
     };
   },
@@ -629,9 +708,10 @@ export default {
       );
     },
     mediaStyles() {
-      const set_z_index = this.is_selected
-        ? /* 100000 */ this.media.publi_meta.z_index
-        : this.media.publi_meta.z_index;
+      const set_z_index =
+        this.is_selected && !this.show_zindex_number && !this.preview_mode
+          ? 100000
+          : this.media.publi_meta.z_index;
 
       return `
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
@@ -670,10 +750,12 @@ export default {
       }
     },
     flashZIndex() {
-      this.show_zindex_number = true;
-      setTimeout(() => {
-        this.show_zindex_number = false;
-      }, 500);
+      if (!this.show_zindex_number) {
+        this.show_zindex_number = true;
+        setTimeout(() => {
+          this.show_zindex_number = false;
+        }, 2000);
+      }
     },
     saveMedia() {
       const val = {
@@ -733,6 +815,18 @@ export default {
         fit_mode: this.fit_mode,
       });
     },
+
+    toggleLock() {
+      this.locked_in_place = !this.locked_in_place;
+      this.updateMediaPubliMeta({
+        locked_in_place: this.locked_in_place,
+      });
+
+      if (this.locked_in_place) {
+        this.deselectMedia();
+      }
+    },
+
     updateMediaStyles() {
       this.rotate = this.media.publi_meta.hasOwnProperty("rotate")
         ? this.media.publi_meta.rotate
@@ -770,6 +864,11 @@ export default {
       this.fit_mode = this.media.publi_meta.hasOwnProperty("fit_mode")
         ? this.media.publi_meta.fit_mode
         : "cover";
+      this.locked_in_place = this.media.publi_meta.hasOwnProperty(
+        "locked_in_place"
+      )
+        ? this.media.publi_meta.locked_in_place
+        : false;
 
       if (this.media.type === "text" || this.media.publi_meta.type === "text") {
         this.font_size_percent =

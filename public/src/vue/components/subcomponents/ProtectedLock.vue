@@ -28,7 +28,6 @@
 		c5.2,1.6,9.1,5.8,9.1,11.7V34.4z"
       />
     </svg>
-    <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
     <svg
       v-else
       class="inline-svg"

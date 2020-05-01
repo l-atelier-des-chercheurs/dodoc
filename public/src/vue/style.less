@@ -5698,6 +5698,12 @@ small {
   &:not(.is--previewed) {
     // background-color: fade(@c-orange, 50%);
     // border: 2px solid @c-orange;
+    &.is--locked {
+      pointer-events: none !important;
+      ._lock_button {
+        pointer-events: auto;
+      }
+    }
   }
   &.is--previewed {
     .controlFrame {
@@ -5858,6 +5864,46 @@ small {
   @t-pictoSize: 24px;
   @t-pictoPadding: 2px;
   @c-borderColor: #000000;
+
+  ._lock_button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    display: block;
+
+    width: 30px;
+    height: 30px;
+    // border-radius: 50%;
+    .margin-verysmall;
+    z-index: 11;
+
+    background-color: transparent;
+    &.is--active {
+      // background-color: transparent;
+    }
+
+    svg {
+      width: 30px;
+      height: 30px;
+      padding: 6px;
+      border: @t-borderSize dashed @c-borderColor;
+      border-radius: 50%;
+      overflow: visible;
+
+      fill: currentColor;
+      background-color: @c-orange;
+    }
+
+    &:hover {
+      background-color: transparent;
+      svg {
+        background-color: @c-noir;
+        color: @c-orange;
+      }
+    }
+  }
 
   .controlFrame {
     position: absolute;

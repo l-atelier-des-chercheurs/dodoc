@@ -338,7 +338,11 @@
                 </button>
               </label>
               <div>
-                <input type="color" v-model="fill_color" />
+                <input
+                  type="color"
+                  v-model="fill_color"
+                  :novalue="fill_color === 'none'"
+                />
               </div>
             </div>
             <div class="item">
@@ -354,7 +358,11 @@
                 </button>
               </label>
               <div>
-                <input type="color" v-model="stroke_color" />
+                <input
+                  type="color"
+                  v-model="stroke_color"
+                  :novalue="stroke_color === 'none'"
+                />
               </div>
             </div>
 
