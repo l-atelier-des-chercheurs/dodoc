@@ -13,6 +13,9 @@
           </button>
         </label>
         <div v-if="show_create_options">
+          <small>
+            {{ $t("import_medias_from_projects_or_create_shapes_here") }}
+          </small>
           <div>
             <button
               class="button _create_buttons"
@@ -287,7 +290,7 @@
         <template v-if="show_edit_options">
           <div v-if="!media">
             <small class="">{{
-              $t("click_on_a_media_to_edit_its_presentation")
+              $t("click_on_a_bloc_to_edit_its_presentation")
             }}</small>
           </div>
           <div v-else>

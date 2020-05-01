@@ -981,6 +981,8 @@ module.exports = (function () {
     sureToRemoveYourselfFromAuthors: {
       fr:
         "Êtes-vous sûr de vouloir vous retirer de la liste des auteurs ? Vous ne pourrez plus modifier ce contenu.",
+      en:
+        "Do you really want to remove yourself from the list of authors? You won’t be able to edit this content anymore.",
     },
     sureToRemoveAuthor: {
       fr:
@@ -1628,9 +1630,15 @@ module.exports = (function () {
       fr: "Taille de la police",
       en: "Font-size",
     },
-    click_on_a_media_to_edit_its_presentation: {
-      fr: "Cliquez sur un média pour modifier ses paramètres",
-      en: "Cliquez sur un média pour modifier ses paramètres",
+    import_medias_from_projects_or_create_shapes_here: {
+      fr:
+        "Importez des médias situés dans les projets ou créez des blocs avec les options ci-dessous.",
+      en:
+        "Import medias from projects or create new blocs with the following options.",
+    },
+    click_on_a_bloc_to_edit_its_presentation: {
+      fr: "Cliquez sur un bloc pour modifier son aspect",
+      en: "Click on a bloc to change its aspect",
     },
     password_instructions: {
       fr:

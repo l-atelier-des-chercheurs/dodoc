@@ -1,11 +1,7 @@
 <template>
   <div>
     <div v-if="edit_author_mode" class="m_authorsList--editAuthor">
-      <EditAuthor
-        :author="author"
-        @close="edit_author_mode = false"
-        :read_only="read_only"
-      />
+      <EditAuthor :author="author" @close="edit_author_mode = false" :read_only="read_only" />
     </div>
 
     <div
@@ -111,9 +107,7 @@
           style
           :readonly="read_only"
           @click.stop="show_input_password_field = !show_input_password_field"
-        >
-          {{ $t("password_required_to_open") }}
-        </button>
+        >{{ $t("password_required_to_open") }}</button>
 
         <div
           class="padding-verysmall _pwd_input"
@@ -131,13 +125,7 @@
             />
           </div>
 
-          <button
-            type="button"
-            class="button-greenthin"
-            @click="submitPassword"
-          >
-            {{ $t("send") }}
-          </button>
+          <button type="button" class="button-greenthin" @click="submitPassword">{{ $t("send") }}</button>
         </div>
 
         <button
@@ -148,17 +136,13 @@
           "
           class="buttonLink"
           @click.stop="setAuthorWithoutPassword()"
-        >
-          {{ $t("login") }}
-        </button>
+        >{{ $t("login") }}</button>
         <button
           type="button"
           v-if="author.slugFolderName === $root.current_author.slugFolderName"
           class="buttonLink"
           @click.stop="unsetAuthor()"
-        >
-          {{ $t("logout") }}
-        </button>
+        >{{ $t("logout") }}</button>
       </div>
     </div>
   </div>
@@ -168,15 +152,15 @@ import EditAuthor from "./../subcomponents/EditAuthor.vue";
 
 export default {
   props: {
-    author: Object,
+    author: Object
   },
   components: {
-    EditAuthor,
+    EditAuthor
   },
   data() {
     return {
       edit_author_mode: false,
-      show_input_password_field: false,
+      show_input_password_field: false
     };
   },
   created() {},
@@ -187,13 +171,13 @@ export default {
     this.$eventHub.$off("authors.submitPassword", this.submitPassword);
   },
   watch: {
-    show_input_password_field: function () {
+    show_input_password_field: function() {
       if (this.show_input_password_field) {
         this.$nextTick(() => {
           this.$refs.passwordField.focus();
         });
       }
-    },
+    }
   },
   computed: {
     can_login_as_author() {
@@ -201,31 +185,33 @@ export default {
       // an author — this will delog him/her
       return this.canEditFolder({
         type: "authors",
-        slugFolderName: this.author.slugFolderName,
+        slugFolderName: this.author.slugFolderName
       });
     },
     is_logged_in_as_author() {
       return (
         this.author.slugFolderName === this.$root.current_author.slugFolderName
       );
-    },
+    }
   },
   methods: {
     setAuthorWithoutPassword() {
       this.$auth.removeAllFoldersPassword({
-        type: "authors",
+        type: "authors"
       });
 
       this.$auth.updateFoldersPasswords({
         authors: {
-          [this.author.slugFolderName]: "",
-        },
+          [this.author.slugFolderName]: ""
+        }
       });
-
       this.$socketio.sendAuth();
-      this.setAuthor();
+
+      this.checkResultsFromLogin({
+        slugFolderName: this.author.slugFolderName
+      });
     },
-    canEditFolder: function ({ type, slugFolderName }) {
+    canEditFolder: function({ type, slugFolderName }) {
       if (!this.$root.store[type].hasOwnProperty(slugFolderName)) return false;
 
       const folder = this.$root.store[type][slugFolderName];
@@ -235,7 +221,7 @@ export default {
 
       // if password is set
       if (folder.password === "has_pass") {
-        return this.$root.state.list_authorized_folders.some((i) => {
+        return this.$root.state.list_authorized_folders.some(i => {
           return (
             !!i &&
             i.hasOwnProperty("type") &&
@@ -251,35 +237,49 @@ export default {
 
     submitPassword({
       slugFolderName,
-      password = this.$auth.hashCode(this.$refs.passwordField.value),
+      password = this.$auth.hashCode(this.$refs.passwordField.value)
     }) {
-      console.log("METHODS • Author: submitPassword");
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Author • METHODS / submitPassword`);
 
       if (slugFolderName && slugFolderName !== this.author.slugFolderName)
         return;
 
       this.$auth.removeAllFoldersPassword({
-        type: "authors",
+        type: "authors"
       });
       this.$auth.updateFoldersPasswords({
         authors: {
-          [this.author.slugFolderName]: password,
-        },
+          [this.author.slugFolderName]: password
+        }
       });
-
       this.$socketio.sendAuth();
 
       // check if password matches or not
+      this.checkResultsFromLogin({
+        slugFolderName: this.author.slugFolderName
+      });
+    },
+    checkResultsFromLogin({ slugFolderName }) {
       this.$eventHub.$once("socketio.authentificated", () => {
         if (
           this.$root.state.list_authorized_folders.some(
-            (f) =>
+            f =>
               f.type === "authors" &&
-              f.allowed_slugFolderNames.includes(this.author.slugFolderName)
+              f.allowed_slugFolderNames.includes(slugFolderName)
           )
         ) {
           this.show_input_password_field = false;
-          this.setAuthor();
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(
+              this.$t("notifications.connected_as") +
+                "<i>" +
+                this.author.name +
+                "</i>"
+            );
+          this.$emit("close");
         } else {
           this.$alertify
             .closeLogOnClick(true)
@@ -292,6 +292,9 @@ export default {
     },
 
     removeAuthor() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Author • METHODS / removeAuthor`);
+
       this.$alertify
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
@@ -300,39 +303,24 @@ export default {
           () => {
             this.$root.removeFolder({
               type: "authors",
-              slugFolderName: this.author.slugFolderName,
+              slugFolderName: this.author.slugFolderName
             });
           },
           () => {}
         );
     },
-    setAuthor() {
-      if (this.can_login_as_author) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(
-            this.$t("notifications.connected_as") +
-              "<i>" +
-              this.author.name +
-              "</i>"
-          );
-
-        this.$root.setAuthor(this.author);
-        this.$emit("close");
-      } else {
-        this.show_input_password_field = !this.show_input_password_field;
-      }
-    },
     unsetAuthor() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Author • METHODS / unsetAuthor`);
+
       this.$root.unsetAuthor();
     },
     urlToPortrait(slug, preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.filter((m) => m.size === 180)[0].path;
+      let pathToSmallestThumb = preview.filter(m => m.size === 180)[0].path;
       return pathToSmallestThumb;
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
