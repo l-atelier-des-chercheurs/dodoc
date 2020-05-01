@@ -828,6 +828,8 @@ export default {
 
       if (this.locked_in_place) {
         this.deselectMedia();
+      } else {
+        this.selectMedia();
       }
     },
 
@@ -992,8 +994,9 @@ export default {
 
       this.resize_origin = origin;
 
-      if (this.resize_origin === "bottomright") this.enableLock();
-      else if (this.resize_origin !== "bottomright") this.disableLock();
+      if (this.resize_origin === "bottomright") this.lock_original_ratio = true;
+      else if (this.resize_origin !== "bottomright")
+        this.lock_original_ratio = false;
 
       if (type === "mouse") {
         window.addEventListener("mousemove", this.resizeMove);
@@ -1318,12 +1321,6 @@ export default {
       if (!this.is_touch) {
         this.is_hovered = false;
       }
-    },
-    enableLock() {
-      this.lock_original_ratio = true;
-    },
-    disableLock() {
-      this.lock_original_ratio = false;
     },
   },
 };
