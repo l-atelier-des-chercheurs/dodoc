@@ -3,7 +3,6 @@
     class="m_listview"
     :class="{ 'is--folder': !!$root.settings.opened_folder }"
   >
-    {{ $root.state.list_authorized_folders.find((f) => f.type === "authors") }}
     <main class="m_projects main_scroll_panel">
       <transition name="fade_fast" :duration="150">
         <div

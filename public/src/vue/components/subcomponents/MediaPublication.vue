@@ -166,7 +166,11 @@
     <!-- <transition name="fade_fast" :duration="150"> -->
     <div
       v-if="
-        !preview_mode && !inline_edit_mode && !read_only && !locked_in_place
+        !preview_mode &&
+        !inline_edit_mode &&
+        !read_only &&
+        !locked_in_place &&
+        (is_selected || is_hovered)
       "
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
@@ -312,7 +316,7 @@
             !preview_mode &&
             !inline_edit_mode &&
             !read_only) ||
-          (!preview_mode && !read_only && locked_in_place)
+          (!preview_mode && !inline_edit_mode && !read_only && locked_in_place)
         "
       >
         <button
