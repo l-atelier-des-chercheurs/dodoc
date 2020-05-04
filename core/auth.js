@@ -227,7 +227,7 @@ module.exports = (function () {
 
     // socket has no authors, but might be able to access if no authors on folder, and no password
     if (!sockets_authors_slugs)
-      dev.logfunction(`AUTH — canEditFolder : socket has no authors`);
+      dev.logverbose(`AUTH — canEditFolder : socket has no authors`);
     else
       dev.logverbose(
         `AUTH — canEditFolder: socket authors are ${sockets_authors_slugs.join(
@@ -325,13 +325,6 @@ module.exports = (function () {
     const reason = await canEditFolder(socket, folderData, type).catch(
       (err) => {
         dev.error(`Failed to edit folder: ${err}`);
-        notify({
-          socket,
-          socketid: socket.id,
-          localized_string: `action_not_allowed`,
-          not_localized_string: err.message,
-          type: "error",
-        });
       }
     );
 
@@ -387,12 +380,20 @@ module.exports = (function () {
       type
     );
 
-    if (can_see_folder) {
-      return folders_and_medias;
-    } else {
+    if (
+      !(await canSeeFolder(
+        socket,
+        folders_and_medias[slugFolderName],
+        type
+      ).catch((err) => {
+        dev.error(`Failed to see folder: ${err}, returning public medias only`);
+      }))
+    ) {
       // check for each media if hasownproperty 'public' and if public is set to true
       return removeNonPublicMediasFromAllFolders(folders_and_medias);
     }
+
+    return folders_and_medias;
   }
 
   function filterMetaDependingOnAuthorRole({
