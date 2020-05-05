@@ -718,7 +718,7 @@ export default {
 
     document.getElementsByTagName("body")[0].style = `
       --page-width: ${this.publications_options.width}mm;
-      --page-height: ${this.publications_options.height - 1}mm
+      --page-height: ${this.publications_options.height}mm
     `;
   },
   beforeDestroy() {
@@ -753,7 +753,7 @@ export default {
         }
         document.getElementsByTagName("body")[0].style = `
           --page-width: ${this.publications_options.width}mm;
-          --page-height: ${this.publications_options.height - 1}mm
+          --page-height: ${this.publications_options.height}mm
         `;
       },
       deep: true,

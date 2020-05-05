@@ -240,11 +240,16 @@ module.exports = (function () {
 
               const { BrowserWindow } = require("electron");
 
+              const browser_window = {
+                width: Math.floor(publiData.width * 3.78),
+                height: Math.floor(publiData.height * 3.78) + 25, // totally arbitrary value… will have to find better
+              };
+
               let win = new BrowserWindow({
                 // width: 800,
                 // height: 600,
-                width: Math.floor(publiData.width * 3.78),
-                height: Math.floor(publiData.height * 3.78) + 25, // totally arbitrary value… will have to find better
+                width: browser_window.width,
+                height: browser_window.height,
                 show: false,
               });
               win.loadURL(urlToPubli);
@@ -276,6 +281,9 @@ module.exports = (function () {
                           width: publiData.width * 1000,
                           height: publiData.height * 1000,
                         },
+                        dpi: 300,
+                        printBackground: false,
+                        printSelectionOnly: false,
                       },
                       (error, data) => {
                         if (error) throw error;
@@ -307,7 +315,9 @@ module.exports = (function () {
                     const docPath = path.join(cachePath, imageName);
 
                     win.capturePage((image) => {
-                      fs.writeFile(docPath, image.toPNG(), (error) => {
+                      var conv = image.toPNG(1.0); // to PNG
+
+                      fs.writeFile(docPath, conv, (error) => {
                         if (error) throw error;
                         dev.logverbose(
                           `EXPORTER — makePDFForPubli : created image at ${docPath}`
