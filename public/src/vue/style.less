@@ -5442,6 +5442,7 @@ small {
 
   .m_drawingPad--layer {
     position: absolute;
+    width: 100%;
     pointer-events: none;
     // margin: @t-skipline / 2 auto;
 
@@ -5465,7 +5466,7 @@ small {
     }
 
     > * {
-      margin: 0;
+      margin: 0 auto;
       > * {
         position: relative;
         transform-origin: top left;
@@ -5474,6 +5475,10 @@ small {
         background-color: transparent;
         transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
       }
+    }
+
+    .m_page {
+      margin: 0 auto;
     }
 
     .m_drawingPad--layer--backgroundContainer--background {
@@ -5748,7 +5753,7 @@ small {
 
   .m_mediaPublication--overflowing_sign {
     position: absolute;
-    bottom: 30px;
+    bottom: 20px;
     font-weight: 700;
     text-align: center;
     width: 100%;
@@ -5765,6 +5770,7 @@ small {
       font-size: 1rem;
       margin: 0 auto;
       line-height: 1;
+      border-radius: 50%;
       background-color: @c-rouge;
       .c-blanc;
       pointer-events: auto;

@@ -11,7 +11,7 @@
       "
     >
       {{ $t(publication.template) }}
-    </div> -->
+    </div>-->
     <div class="m_publicationMeta--topbar">
       <div>
         <button
@@ -30,9 +30,7 @@
             placement: 'bottom',
             delay: [600, 0],
           }"
-        >
-          ‹
-        </button>
+        >‹</button>
 
         <div class="m_publicationMeta--topbar--title">
           {{ publication.name }}
@@ -98,9 +96,7 @@
           v-if="show_export_button"
           @click="createButtonClicked"
           :class="{ 'is--disabled': export_button_is_disabled }"
-        >
-          {{ $t("create") }}
-        </button>
+        >{{ $t("create") }}</button>
       </div>
       <div
         class="text-centered"
@@ -131,8 +127,7 @@
               :href="`http://${domain}`"
               target="_blank"
               class="js--openInBrowser"
-              >{{ domain }}</a
-            >
+            >{{ domain }}</a>
           </label>
         </div>
       </div>
@@ -153,12 +148,10 @@
                   $root.current_author.slugFolderName === author.slugFolderName,
               }"
             >
-              <template v-if="$root.getAuthor(author.slugFolderName)">
-                {{ $root.getAuthor(author.slugFolderName).name }}
-              </template>
-              <template v-else>
-                {{ author.slugFolderName }}
-              </template>
+              <template
+                v-if="$root.getAuthor(author.slugFolderName)"
+              >{{ $root.getAuthor(author.slugFolderName).name }}</template>
+              <template v-else>{{ author.slugFolderName }}</template>
             </span>
           </div>
         </div>
@@ -243,22 +236,12 @@
         <div v-if="show_copy_options" class="margin-bottom-small">
           <label v-html="$t('name_of_copy')" />
           <form @submit.prevent="duplicateWithNewName()" class="input-group">
-            <input
-              type="text"
-              v-model.trim="copy_publi_name"
-              required
-              autofocus
-            />
+            <input type="text" v-model.trim="copy_publi_name" required autofocus />
             <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
           </form>
         </div>
 
-        <button
-          type="button"
-          class="buttonLink"
-          v-if="can_edit_publi()"
-          @click="removePublication"
-        >
+        <button type="button" class="buttonLink" v-if="can_edit_publi()" @click="removePublication">
           <svg
             version="1.1"
             class="inline-svg"
@@ -296,28 +279,28 @@ export default {
     publication_medias: [Boolean, Array, Object],
     number_of_medias_required: {
       type: Number,
-      default: -1,
+      default: -1
     },
     show_export_button: {
       type: Boolean,
-      default: true,
+      default: true
     },
     enable_export_button: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
   },
   components: {
     EditPublication,
     AccessController,
-    ProtectedLock,
+    ProtectedLock
   },
   data() {
     return {
       show_edit_publication: false,
       show_settings: false,
       show_copy_options: false,
-      copy_publi_name: this.$t("copy_of") + " " + this.publication.name,
+      copy_publi_name: this.$t("copy_of") + " " + this.publication.name
     };
   },
 
@@ -366,18 +349,18 @@ export default {
           type: "publications",
           slugFolderName: this.slugPubliName,
           data: {
-            show_on_external_domain,
-          },
+            show_on_external_domain
+          }
         });
-      },
-    },
+      }
+    }
   },
   methods: {
     closePublication() {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: closePublication`);
       }
-      this.$root.closePublication();
+      this.$emit("close");
     },
     createButtonClicked() {
       if (!this.can_edit_publi()) {
@@ -405,7 +388,7 @@ export default {
             }
             this.$root.removeFolder({
               type: "publications",
-              slugFolderName: this.slugPubliName,
+              slugFolderName: this.slugPubliName
             });
             this.closePublication();
           },
@@ -416,20 +399,20 @@ export default {
       if (this.publication.password !== "has_pass") return "";
       return this.$root.getFolderPassword({
         type: "publications",
-        slugFolderName: this.slugPubliName,
+        slugFolderName: this.slugPubliName
       });
     },
 
     can_see_publi() {
       return this.$root.canSeeFolder({
         type: "publications",
-        slugFolderName: this.slugPubliName,
+        slugFolderName: this.slugPubliName
       });
     },
     can_edit_publi() {
       return this.$root.canEditFolder({
         type: "publications",
-        slugFolderName: this.slugPubliName,
+        slugFolderName: this.slugPubliName
       });
     },
 
@@ -460,7 +443,7 @@ export default {
       this.$socketio.copyFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        new_folder_name: this.copy_publi_name,
+        new_folder_name: this.copy_publi_name
       });
       this.show_copy_options = false;
 
@@ -475,8 +458,8 @@ export default {
           .delay(4000)
           .success(this.$t("notifications.copy_completed"));
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style></style>

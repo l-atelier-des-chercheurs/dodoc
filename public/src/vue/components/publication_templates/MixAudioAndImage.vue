@@ -1,15 +1,12 @@
 <template>
-  <div
-    class="m_publicationview"
-    :class="{ 'is--preview': preview_mode }"
-    ref="panel"
-  >
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
       :publication_medias="publication_medias"
       :number_of_medias_required="number_of_medias_required"
       @export="show_export_modal = true"
+      @close="$root.closePublication"
     />
 
     <ExportVideoPubliModal

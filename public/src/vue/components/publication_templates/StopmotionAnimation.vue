@@ -1,14 +1,11 @@
 <template>
-  <div
-    class="m_publicationview"
-    :class="{ 'is--preview': preview_mode }"
-    ref="panel"
-  >
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
       :publication_medias="publication_medias"
       @export="show_export_modal = true"
+      @close="$root.closePublication"
     />
 
     <ExportStopmotionPubliModal
@@ -23,11 +20,7 @@
         <small class="c-blanc" v-html="$t('add_multiple_images')" />
       </p>
     </div>
-    <transition-group
-      class="m_stopmotionAnimationPublication"
-      name="slideFromTop"
-      :duration="300"
-    >
+    <transition-group class="m_stopmotionAnimationPublication" name="slideFromTop" :duration="300">
       <div
         class="m_stopmotionAnimationPublication--media"
         v-for="media in publication_medias"

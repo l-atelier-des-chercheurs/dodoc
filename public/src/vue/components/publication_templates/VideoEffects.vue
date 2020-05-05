@@ -1,15 +1,12 @@
 <template>
-  <div
-    class="m_publicationview"
-    :class="{ 'is--preview': preview_mode }"
-    ref="panel"
-  >
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
       :publication_medias="publication_medias"
       :enable_export_button="export_button_enabled"
       @export="show_export_modal = true"
+      @close="$root.closePublication"
     />
 
     <ExportVideoPubliModal
@@ -21,7 +18,7 @@
     />
 
     <div class="m_videoEffects">
-      <div class="" v-if="!video_media">
+      <div class v-if="!video_media">
         <p>
           <small class="c-blanc" v-html="$t('add_one_video_file')" />
         </p>
@@ -37,38 +34,21 @@
             <label class="c-white">{{ $t("effect") }}</label>
 
             <div class="margin-bottom-small">
-              <select
-                :value="effect.type"
-                @change="setEffectType({ $event, id: effect.id })"
-              >
-                <option value="">— </option>
-                <option value="watermark"> {{ $t("watermark") }}… </option>
-                <option value="black_and_white">
-                  {{ $t("black_and_white") }}
-                </option>
-                <option value="colored_filter">
-                  {{ $t("colored_filter") }}…
-                </option>
-                <option value="slow_down"> {{ $t("slow_down") }}… </option>
-                <option value="speed_up"> {{ $t("speed_up") }}… </option>
-                <option value="reverse">
-                  {{ $t("reverse") }}
-                </option>
-                <option value="rotate"> {{ $t("rotate") }}… </option>
-                <option value="mirror">
-                  {{ $t("mirror") }}
-                </option>
+              <select :value="effect.type" @change="setEffectType({ $event, id: effect.id })">
+                <option value>—</option>
+                <option value="watermark">{{ $t("watermark") }}…</option>
+                <option value="black_and_white">{{ $t("black_and_white") }}</option>
+                <option value="colored_filter">{{ $t("colored_filter") }}…</option>
+                <option value="slow_down">{{ $t("slow_down") }}…</option>
+                <option value="speed_up">{{ $t("speed_up") }}…</option>
+                <option value="reverse">{{ $t("reverse") }}</option>
+                <option value="rotate">{{ $t("rotate") }}…</option>
+                <option value="mirror">{{ $t("mirror") }}</option>
               </select>
             </div>
 
-            <div
-              v-if="effect.type === 'watermark'"
-              class="margin-bottom-small"
-              :key="'watermark'"
-            >
-              <label>
-                {{ $t("image") }}
-              </label>
+            <div v-if="effect.type === 'watermark'" class="margin-bottom-small" :key="'watermark'">
+              <label>{{ $t("image") }}</label>
               <div v-if="!watermark_media">
                 <small>{{ $t("watermark_instructions") }}</small>
               </div>
@@ -129,12 +109,12 @@
                 "
               />
               <div class="ta-ri">
-                <small
-                  >×
+                <small>
+                  ×
                   {{
-                    effect.speed !== "custom"
-                      ? effect.speed
-                      : effect.custom_speed
+                  effect.speed !== "custom"
+                  ? effect.speed
+                  : effect.custom_speed
                   }}
                 </small>
               </div>
@@ -149,9 +129,9 @@
                   <div>{{ $t("duration") }}</div>
                   <div>
                     {{
-                      $root.formatDurationToMinuteHours(
-                        video_media.duration * 1000
-                      )
+                    $root.formatDurationToMinuteHours(
+                    video_media.duration * 1000
+                    )
                     }}
                   </div>
                 </div>
@@ -163,9 +143,7 @@
               <div>
                 <small
                   v-if="effect.speed === 'custom' && effect.custom_speed < 0.5"
-                >
-                  {{ $t("slowing_video_down_limit") }}
-                </small>
+                >{{ $t("slowing_video_down_limit") }}</small>
               </div>
             </div>
             <div
@@ -179,12 +157,8 @@
                   setEffectProp({ $event, id: effect.id, prop: 'speed' })
                 "
               >
-                <option value="1.5">
-                  {{ $t("a_little").toLowerCase() }}
-                </option>
-                <option value="4">
-                  {{ $t("a_lot").toLowerCase() }}
-                </option>
+                <option value="1.5">{{ $t("a_little").toLowerCase() }}</option>
+                <option value="4">{{ $t("a_lot").toLowerCase() }}</option>
                 <option value="custom">{{ $t("custom").toLowerCase() }}</option>
               </select>
               <input
@@ -199,12 +173,12 @@
                 "
               />
               <div class="ta-ri">
-                <small
-                  >×
+                <small>
+                  ×
                   {{
-                    effect.speed !== "custom"
-                      ? effect.speed
-                      : effect.custom_speed
+                  effect.speed !== "custom"
+                  ? effect.speed
+                  : effect.custom_speed
                   }}
                 </small>
               </div>
@@ -214,9 +188,9 @@
                   <div>{{ $t("duration") }}</div>
                   <div>
                     {{
-                      $root.formatDurationToMinuteHours(
-                        video_media.duration * 1000
-                      )
+                    $root.formatDurationToMinuteHours(
+                    video_media.duration * 1000
+                    )
                     }}
                   </div>
                 </div>
@@ -237,12 +211,8 @@
                   setEffectProp({ $event, id: effect.id, prop: 'rotation' })
                 "
               >
-                <option :value="1">
-                  {{ $t("clockwise").toLowerCase() }}
-                </option>
-                <option :value="2">
-                  {{ $t("counterclockwise").toLowerCase() }}
-                </option>
+                <option :value="1">{{ $t("clockwise").toLowerCase() }}</option>
+                <option :value="2">{{ $t("counterclockwise").toLowerCase() }}</option>
               </select>
             </div>
             <div
@@ -254,15 +224,9 @@
                 :value="effect.flip"
                 @change="setEffectProp({ $event, id: effect.id, prop: 'flip' })"
               >
-                <option value="vflip">
-                  {{ $t("vertical_flip").toLowerCase() }}
-                </option>
-                <option value="hflip">
-                  {{ $t("horizontal_flip").toLowerCase() }}
-                </option>
-                <option value="hflip, vflip">
-                  {{ $t("both").toLowerCase() }}
-                </option>
+                <option value="vflip">{{ $t("vertical_flip").toLowerCase() }}</option>
+                <option value="hflip">{{ $t("horizontal_flip").toLowerCase() }}</option>
+                <option value="hflip, vflip">{{ $t("both").toLowerCase() }}</option>
               </select>
             </div>
           </div>
