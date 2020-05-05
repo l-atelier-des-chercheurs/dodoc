@@ -11,6 +11,10 @@ import localstore from "store";
 import _ from "underscore";
 Object.defineProperty(Vue.prototype, "$_", { value: _ });
 
+Array.prototype.move = function (from, to) {
+  this.splice(to, 0, this.splice(from, 1)[0]);
+};
+
 import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
 
