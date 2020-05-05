@@ -686,7 +686,6 @@ export default {
       zoom_max: 1.6,
 
       pixelsPerMillimeters: 0,
-      has_media_selected: false,
       show_export_modal: false,
     };
   },

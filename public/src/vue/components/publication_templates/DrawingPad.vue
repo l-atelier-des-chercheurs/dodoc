@@ -305,6 +305,11 @@ export default {
   created() {
     this.$root.setPublicationZoom(this.zoom);
 
+    document.getElementsByTagName("body")[0].style = `
+      --page-width: ${this.publication.width}mm;
+      --page-height: ${this.publication.height}mm
+    `;
+
     if (!this.can_edit_publi) this.preview_mode = true;
   },
   mounted() {

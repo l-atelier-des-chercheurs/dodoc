@@ -639,6 +639,12 @@ let vm = new Vue({
         this.canSeeFolder({ type, slugFolderName: p.slugFolderName })
       );
     },
+    projects_that_are_editable() {
+      const type = "projects";
+      return Object.values(this.store[type]).filter((p) =>
+        this.canEditFolder({ type, slugFolderName: p.slugFolderName })
+      );
+    },
     current_publication_medias() {
       if (
         !this.current_publication ||
