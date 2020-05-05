@@ -256,7 +256,7 @@ module.exports = (function () {
                   page.setViewport({
                     width: Math.floor(publiData.width * 3.7795),
                     height: Math.floor(publiData.height * 3.7795), // totally arbitrary value… will have to find better
-                    deviceScaleFactor: 1,
+                    deviceScaleFactor: 2,
                   });
                   page
                     .goto(urlToPubli, {
