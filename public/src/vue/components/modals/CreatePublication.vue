@@ -14,13 +14,7 @@
       <!-- Human name -->
       <div class="margin-bottom-small">
         <label>{{ $t("name") }}</label>
-        <input
-          type="text"
-          v-model.trim="publidata.name"
-          required
-          autofocus
-          autoselect
-        />
+        <input type="text" v-model.trim="publidata.name" required autofocus autoselect />
       </div>
 
       <!-- Author(s) -->
@@ -31,9 +25,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_authors }"
             @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
+          >{{ $t("author") }}</button>
         </label>
 
         <div v-if="show_authors">
@@ -50,9 +42,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_access_control }"
             @click="show_access_control = !show_access_control"
-          >
-            {{ $t("manage_access") }}
-          </button>
+          >{{ $t("manage_access") }}</button>
         </label>
 
         <div v-if="show_access_control">
@@ -72,9 +62,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_attached_project }"
             @click="show_attached_project = !show_attached_project"
-          >
-            {{ $t("attached_to_project") }}
-          </button>
+          >{{ $t("attached_to_project") }}</button>
         </label>
         <div v-if="show_attached_project">
           <select v-model="publidata.attached_to_project">
@@ -83,8 +71,7 @@
               v-for="project in $root.projects_that_are_accessible"
               :key="project.slugFolderName"
               :value="project.slugFolderName"
-              >{{ project.name }}</option
-            >
+            >{{ project.name }}</option>
           </select>
           <small>{{ $t("attached_to_project_instructions") }}</small>
         </div>
@@ -98,12 +85,11 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_keywords }"
             @click="show_keywords = !show_keywords"
-          >
-            {{ $t("keywords") }}
-          </button>
+          >{{ $t("keywords") }}</button>
         </label>
         <div v-if="show_keywords">
           <TagsInput
+            :type="'publications'"
             @tagsChanged="(newTags) => (publidata.keywords = newTags)"
           />
         </div>
@@ -124,19 +110,19 @@ export default {
     read_only: Boolean,
     default_name: {
       default: "",
-      type: String,
+      type: String
     },
     default_template: {
       default: "page_by_page",
-      type: String,
-    },
+      type: String
+    }
   },
   components: {
     Modal,
     EditAccessControl,
 
     TagsInput,
-    AuthorsInput,
+    AuthorsInput
   },
   data() {
     return {
@@ -152,28 +138,28 @@ export default {
         authors: this.$root.current_author
           ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
           : [],
-        attached_to_project: this.$root.do_navigation.current_slugProjectName,
+        attached_to_project: this.$root.do_navigation.current_slugProjectName
       },
 
       show_attached_project: this.$root.do_navigation.current_slugProjectName,
       show_password: false,
       show_keywords: false,
       show_authors: this.$root.current_author,
-      show_access_control: true,
+      show_access_control: true
     };
   },
   watch: {
     publidata: {
-      handler: function () {
+      handler: function() {
         this.askBeforeClosingModal = true;
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   mounted() {},
   computed: {},
   methods: {
-    newPublication: function (event) {
+    newPublication: function(event) {
       if (this.$root.state.dev_mode === "debug") {
         console.log("METHODS • CreatePublication: newPublication");
       }
@@ -220,7 +206,7 @@ export default {
         template: this.publidata.template,
         authors: this.publidata.authors,
         keywords: this.publidata.keywords,
-        attached_to_project: this.publidata.attached_to_project,
+        attached_to_project: this.publidata.attached_to_project
       };
 
       if (publidata.template === "page_by_page") {
@@ -229,8 +215,8 @@ export default {
             id:
               +new Date() +
               "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3),
-          },
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+          }
         ];
         publidata.width = 210;
         publidata.height = 297;
@@ -250,8 +236,8 @@ export default {
             id:
               +new Date() +
               "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3),
-          },
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+          }
         ];
         publidata.width = 200;
         publidata.height = 150;
@@ -262,18 +248,18 @@ export default {
             id:
               +new Date() +
               "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3),
-          },
+              (Math.random().toString(36) + "00000000000000000").slice(2, 3)
+          }
         ];
       }
 
       this.$root
         .createFolder({ type: "publications", data: publidata })
-        .then((pdata) => {
+        .then(pdata => {
           this.$emit("close", "");
           this.$root.openPublication(pdata.slugFolderName);
         });
-    },
-  },
+    }
+  }
 };
 </script>
