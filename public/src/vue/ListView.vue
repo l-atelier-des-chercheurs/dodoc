@@ -423,7 +423,8 @@ export default {
       selected_medias: [],
       selected_projects: [],
 
-      show_only_my_content: this.$root.current_author ? true : false,
+      // show_only_my_content: this.$root.current_author ? true : false,
+      show_only_my_content: false,
 
       debounce_search_project_name: this.$root.settings.project_filter.name,
       debounce_search_project_name_function: undefined,
@@ -791,9 +792,9 @@ export default {
     },
     newAuthorSet() {
       if (this.$root.current_author) {
-        this.show_only_my_content = true;
+        // this.show_only_my_content = true;
       } else {
-        this.show_only_my_content = false;
+        // this.show_only_my_content = false;
       }
     },
 
