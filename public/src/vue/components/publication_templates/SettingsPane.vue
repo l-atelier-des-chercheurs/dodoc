@@ -177,7 +177,7 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    publications_options: Object
+    publications_options: Object,
   },
   components: {},
   data() {
@@ -196,7 +196,7 @@ export default {
       new_header_right: "",
       new_show_page_number: false,
 
-      active_tab: "header"
+      active_tab: "header",
     };
   },
   created() {},
@@ -213,15 +213,15 @@ export default {
         this.updatePubliOptionsInFields();
         document.getElementsByTagName("body")[0].style = `
           --page-width: ${this.publications_options.width}mm;
-          --page-height: ${this.publications_options.height}mm
+          --page-height: ${this.publications_options.height - 1}mm
         `;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {
     page_format: {
-      get: function() {
+      get: function () {
         if (this.new_width === 210 && this.new_height === 297)
           return "A4_portrait";
         else if (this.new_width === 297 && this.new_height === 210)
@@ -232,7 +232,7 @@ export default {
           return "A5_landscape";
         else return "custom";
       },
-      set: function(val) {
+      set: function (val) {
         if (val === "A4_portrait") {
           this.setPropVal({ width: 210, height: 297 });
         } else if (val === "A4_landscape") {
@@ -243,8 +243,8 @@ export default {
           this.setPropVal({ width: 210, height: 148 });
         }
         // } else if (val === "custom") return "custom";
-      }
-    }
+      },
+    },
   },
   methods: {
     updatePubliOptionsInFields() {
@@ -279,20 +279,20 @@ export default {
       }
 
       this.setPropVal({
-        [type]: val
+        [type]: val,
       });
     },
     setPropVal(data) {
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        data
+        data,
       });
     },
     handleClick(newTab) {
       this.currentTab = newTab;
-    }
-  }
+    },
+  },
 };
 </script>
 //

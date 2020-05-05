@@ -686,7 +686,6 @@ export default {
       zoom_max: 1.6,
 
       pixelsPerMillimeters: 0,
-      has_media_selected: false,
       show_export_modal: false,
     };
   },
@@ -719,7 +718,7 @@ export default {
 
     document.getElementsByTagName("body")[0].style = `
       --page-width: ${this.publications_options.width}mm;
-      --page-height: ${this.publications_options.height}mm
+      --page-height: ${this.publications_options.height - 1}mm
     `;
   },
   beforeDestroy() {
@@ -754,7 +753,7 @@ export default {
         }
         document.getElementsByTagName("body")[0].style = `
           --page-width: ${this.publications_options.width}mm;
-          --page-height: ${this.publications_options.height}mm
+          --page-height: ${this.publications_options.height - 1}mm
         `;
       },
       deep: true,
