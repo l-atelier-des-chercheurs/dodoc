@@ -1,5 +1,9 @@
 <template>
-  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
+  <div
+    class="m_publicationview"
+    :class="{ 'is--preview': preview_mode }"
+    ref="panel"
+  >
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -34,7 +38,7 @@
             ![
               'export_publication',
               'print_publication',
-              'link_publication'
+              'link_publication',
             ].includes($root.state.mode)
           "
         >
@@ -54,7 +58,7 @@
               width="144px"
               height="84px"
               viewBox="0 0 144 84"
-              style="enable-background:new 0 0 144 84;"
+              style="enable-background: new 0 0 144 84;"
               xml:space="preserve"
             >
               <defs />
@@ -83,7 +87,7 @@
               width="133.3px"
               height="133.2px"
               viewBox="0 0 133.3 133.2"
-              style="enable-background:new 0 0 133.3 133.2;"
+              style="enable-background: new 0 0 133.3 133.2;"
               xml:space="preserve"
             >
               <polygon
@@ -94,7 +98,10 @@
                 class="st0"
                 points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
               />
-              <polygon class="st0" points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	" />
+              <polygon
+                class="st0"
+                points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
+              />
               <polygon
                 class="st0"
                 points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
@@ -111,7 +118,7 @@
               width="133.3px"
               height="133.2px"
               viewBox="0 0 133.3 133.2"
-              style="enable-background:new 0 0 133.3 133.2;"
+              style="enable-background: new 0 0 133.3 133.2;"
               xml:space="preserve"
             >
               <polygon
@@ -122,7 +129,10 @@
                 class="st0"
                 points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
               />
-              <polygon class="st0" points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	" />
+              <polygon
+                class="st0"
+                points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
+              />
               <polygon
                 class="st0"
                 points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
@@ -145,11 +155,13 @@
               width="182.5px"
               height="188.1px"
               viewBox="0 0 182.5 188.1"
-              style="enable-background:new 0 0 182.5 188.1;"
+              style="enable-background: new 0 0 182.5 188.1;"
               xml:space="preserve"
             >
               <defs />
-              <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
+              <path
+                d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"
+              />
             </svg>
           </button>
           <button
@@ -168,7 +180,7 @@
               width="155.6px"
               height="21.2px"
               viewBox="0 0 155.6 21.2"
-              style="enable-background:new 0 0 155.6 21.2;"
+              style="enable-background: new 0 0 155.6 21.2;"
               xml:space="preserve"
             >
               <defs />
@@ -177,8 +189,13 @@
           </button>
         </div>
 
-        <div class="m_carreauPublication--container--content" :style="carreauContentProperties">
-          <h2 class="m_carreauPublication--container--content--title">{{ publication.name }}</h2>
+        <div
+          class="m_carreauPublication--container--content"
+          :style="carreauContentProperties"
+        >
+          <h2 class="m_carreauPublication--container--content--title">
+            {{ publication.name }}
+          </h2>
           <transition-group name="fade_fast" :duration="300" tag="div">
             <div
               v-for="(media, index) in last_nth_of_publication_medias"
@@ -191,12 +208,12 @@
                 :preview_mode="preview_mode"
                 :read_only="read_only"
                 @removePubliMedia="
-                  values => {
+                  (values) => {
                     removePubliMedia(values);
                   }
                 "
                 @editPubliMedia="
-                  values => {
+                  (values) => {
                     editPubliMedia(values);
                   }
                 "
@@ -232,19 +249,15 @@ import PublicationHeader from "../subcomponents/PublicationHeader.vue";
 import MediaCarreau from "../subcomponents/MediaCarreau.vue";
 import { setTimeout } from "timers";
 
-Array.prototype.move = function(from, to) {
-  this.splice(to, 0, this.splice(from, 1)[0]);
-};
-
 export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     PublicationHeader,
-    MediaCarreau
+    MediaCarreau,
   },
   data() {
     return {
@@ -261,7 +274,7 @@ export default {
         margin_right: 0,
         margin_top: 0,
         margin_bottom: 0,
-        gridstep: false
+        gridstep: false,
       },
 
       preview_mode: this.$root.state.mode !== "live",
@@ -270,7 +283,7 @@ export default {
       zoom_min: 0.4,
       zoom_max: 1.4,
 
-      has_media_selected: false
+      has_media_selected: false,
     };
   },
   created() {
@@ -280,7 +293,7 @@ export default {
     this.$root.settings.current_publication.accepted_media_type = [
       "video",
       "image",
-      "audio"
+      "audio",
     ];
 
     this.$eventHub.$on("publication.addMedia", this.addMedia);
@@ -318,7 +331,7 @@ export default {
     this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {
-    "publication.medias": function() {
+    "publication.medias": function () {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`WATCH • Publication: publication.medias`);
       }
@@ -331,9 +344,9 @@ export default {
         }
         this.updateMediasPubli();
       },
-      deep: true
+      deep: true,
     },
-    "publication.medias_slugs": function() {
+    "publication.medias_slugs": function () {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`WATCH • Publication: publication.medias_slugs`);
       }
@@ -344,13 +357,13 @@ export default {
           : [];
       this.updateMediasPubli();
     },
-    zoom: function() {
+    zoom: function () {
       this.zoom = Math.min(this.zoom_max, Math.max(this.zoom_min, this.zoom));
       this.$root.setPublicationZoom(this.zoom);
     },
-    "$root.settings.publi_zoom": function() {
+    "$root.settings.publi_zoom": function () {
       this.zoom = this.$root.settings.publi_zoom;
-    }
+    },
   },
   computed: {
     carreauContainerProperties() {
@@ -368,7 +381,7 @@ export default {
     },
     last_nth_of_publication_medias() {
       return this.publication_medias.slice(-10);
-    }
+    },
   },
   methods: {
     addMedia({ slugProjectName, metaFileName }) {
@@ -379,19 +392,19 @@ export default {
 
       const desired_filename = metaFileName;
 
-      this.$eventHub.$on("socketio.media_created_or_updated", d => {
+      this.$eventHub.$on("socketio.media_created_or_updated", (d) => {
         this.$eventHub.$off("socketio.media_created_or_updated");
 
         this.medias_slugs_in_order.push({
-          slugMediaName: d.metaFileName
+          slugMediaName: d.metaFileName,
         });
 
         this.$root.editFolder({
           type: "publications",
           slugFolderName: this.slugPubliName,
           data: {
-            medias_slugs: this.medias_slugs_in_order
-          }
+            medias_slugs: this.medias_slugs_in_order,
+          },
         });
       });
 
@@ -405,8 +418,8 @@ export default {
           x: Math.random().toFixed(2) / 3,
           y: Math.random().toFixed(2) / 3,
           width: 0.3 + Math.random().toFixed(2) / 3,
-          rotate: (Math.random().toFixed(2) - 0.5) * 5
-        }
+          rotate: (Math.random().toFixed(2) - 0.5) * 5,
+        },
       });
     },
     removePubliMedia({ slugMediaName }) {
@@ -419,12 +432,12 @@ export default {
       this.$root.removeMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        slugMediaName
+        slugMediaName,
       });
 
       if (this.medias_slugs_in_order.length > 0) {
         this.medias_slugs_in_order = this.medias_slugs_in_order.filter(
-          m => m.slugMediaName !== slugMediaName
+          (m) => m.slugMediaName !== slugMediaName
         );
       }
 
@@ -432,8 +445,8 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          medias_slugs: this.medias_slugs_in_order
-        }
+          medias_slugs: this.medias_slugs_in_order,
+        },
       });
     },
     editPubliMedia({ slugMediaName, val }) {
@@ -451,7 +464,7 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName,
-        data: val
+        data: val,
       });
     },
     updateMediasPubli() {
@@ -476,7 +489,7 @@ export default {
         return;
       }
 
-      this.medias_slugs_in_order.map(item => {
+      this.medias_slugs_in_order.map((item) => {
         const metaFileName = item.slugMediaName;
 
         if (!this.publication.medias.hasOwnProperty(metaFileName)) {
@@ -515,7 +528,7 @@ export default {
           console.log(`Some medias missing from client`);
           missingMedias.push({
             slugFolderName: slugProjectName,
-            metaFileName: slugMediaName
+            metaFileName: slugMediaName,
           });
         } else {
           let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
@@ -546,7 +559,7 @@ export default {
       if (missingMedias.length > 0) {
         this.$root.listSpecificMedias({
           type: "projects",
-          medias_list: missingMedias
+          medias_list: missingMedias,
         });
       }
 
@@ -554,7 +567,7 @@ export default {
     },
     move(metaFileName, dir) {
       const idx = this.medias_slugs_in_order.findIndex(
-        m => m.slugMediaName === metaFileName
+        (m) => m.slugMediaName === metaFileName
       );
       console.log(
         `METHODS • VideoPublication: move idx = ${idx} and dir = ${dir}`
@@ -570,8 +583,8 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          medias_slugs: this.medias_slugs_in_order
-        }
+          medias_slugs: this.medias_slugs_in_order,
+        },
       });
     },
     toggleFullscreen() {
@@ -612,8 +625,8 @@ export default {
     updatePageSizeAccordingToPanel() {
       this.page.width = this.$refs.carreau_container.offsetWidth;
       this.page.height = this.page.width * this.page.ratio;
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>
