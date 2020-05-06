@@ -4,7 +4,12 @@
       <div
         class="m_page"
         :style="setPageProperties(page)"
-        @click.self="$root.settings.current_publication.selected_medias = []"
+        @mousedown.self="
+          $root.settings.current_publication.selected_medias = []
+        "
+        @touchstart.stop.prevent="
+          $root.settings.current_publication.selected_medias = []
+        "
       >
         <template v-if="!preview_mode">
           <div
@@ -46,7 +51,9 @@
           "
           class="m_page--pageNumber"
           :class="{ toRight: true }"
-        >{{ pageNumber + 1 }}</div>
+        >
+          {{ pageNumber + 1 }}
+        </div>
 
         <div v-if="publication_medias.length === 0" class="m_page--noMedia">
           <template
@@ -57,14 +64,19 @@
                 'link_publication',
               ].includes($root.state.mode)
             "
-          >{{ $t("no_media_on_this_page") }}</template>
+            >{{ $t("no_media_on_this_page") }}</template
+          >
         </div>
 
-        <div v-else v-for="media in publication_medias" :key="media.publi_meta.metaFileName">
+        <div
+          v-else
+          v-for="media in publication_medias"
+          :key="media.metaFileName"
+        >
           <transition name="MediaPublication" :duration="500">
             <div>
               <MediaPublication
-                :key="media.publi_meta.metaFileName"
+                :key="media.metaFileName"
                 :page="page"
                 :mode="mode"
                 :media="media"
@@ -100,19 +112,19 @@ export default {
     slugPubliName: String,
     pageNumber: {
       type: Number,
-      default: -1
+      default: -1,
     },
     page: Object,
     publication_medias: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     read_only: Boolean,
     pixelsPerMillimeters: Number,
-    zoom: Number
+    zoom: Number,
   },
   components: {
-    MediaPublication
+    MediaPublication,
   },
   data() {
     return {};
@@ -128,7 +140,7 @@ export default {
         "text",
         "stl",
         "document",
-        "other"
+        "other",
       ];
     }
   },
@@ -142,7 +154,7 @@ export default {
   computed: {
     customCSSVars() {
       return `--current-time-human: "${this.$root.currentTime_human}"`;
-    }
+    },
   },
   methods: {
     setPageContainerProperties(page) {
@@ -163,8 +175,9 @@ export default {
           width: ${page.width}mm;
           height: ${page.height}mm;
           margin: 40px;
-          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${240 /
-          this.zoom}px;  
+          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${
+          240 / this.zoom
+        }px;  
           box-sizing: content-box;
         `);
 
@@ -201,7 +214,7 @@ export default {
       this.$root.removeMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        slugMediaName
+        slugMediaName,
       });
     },
     // function to update property of a media inside medias_list
@@ -220,10 +233,10 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName,
-        data: val
+        data: val,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss"></style>

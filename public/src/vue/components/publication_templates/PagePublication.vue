@@ -7,12 +7,13 @@
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
-      :publication_medias="paged_medias"
+      :medias="paged_medias"
       @export="show_export_modal = true"
       @close="contact_sheet_mode ? $root.closePublication() : showAllPages()"
     />
 
-    publi medias not paged {{ medias }}
+    <!-- publi medias not paged
+    <pre>{{ medias }}</pre> -->
 
     <ExportPagePubli
       v-if="show_export_modal"
@@ -787,7 +788,6 @@ export default {
         console.log(`WATCH • Publication: zoom`);
 
       this.zoom = Math.min(this.zoom_max, Math.max(this.zoom_min, this.zoom));
-      debugger;
       this.$root.setPublicationZoom(this.zoom);
     },
     "$root.settings.publi_zoom": function () {
@@ -799,7 +799,7 @@ export default {
   },
   computed: {
     paged_medias() {
-      return (page_id = this.$_.groupBy(this.medias, "page_id"));
+      return this.$_.groupBy(this.medias, "page_id");
     },
     opened_single_page() {
       if (this.opened_page_index === false) return false;
@@ -944,9 +944,9 @@ export default {
       if (!page_medias) return 0;
 
       const medias_with_z = page_medias
-        .filter((m) => m.publi_meta.hasOwnProperty("z_index"))
+        .filter((m) => m.hasOwnProperty("z_index"))
         .map((m) => {
-          return m.publi_meta.z_index;
+          return m.z_index;
         });
 
       if (medias_with_z.length === 0) return 0;
@@ -1050,11 +1050,10 @@ export default {
       });
 
       this.paged_medias[id].map((m) => {
-        if (!m.hasOwnProperty("publi_meta")) return;
         this.$root.removeMedia({
           type: "publications",
           slugFolderName: this.slugPubliName,
-          slugMediaName: m.publi_meta.metaFileName,
+          slugMediaName: m.metaFileName,
         });
       });
     },
@@ -1149,7 +1148,6 @@ export default {
           });
       });
     },
-
     insertPageAtIndex(index) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • Publication: insertPageAtIndex ${index}`);
@@ -1226,7 +1224,7 @@ export default {
           type: "publications",
           from_slugFolderName: this.slugPubliName,
           to_slugFolderName: slugPubliName_to_copy_to,
-          slugMediaName: m.publi_meta.metaFileName,
+          slugMediaName: m.metaFileName,
           meta_to_edit: {
             page_id: new_id,
           },
@@ -1315,7 +1313,6 @@ export default {
         const current_page_el = panel_el.querySelector(".m_page");
 
         this.zoom = (panel_el.offsetWidth * 0.6) / current_page_el.offsetWidth;
-        debugger;
       }
     },
   },

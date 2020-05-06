@@ -153,8 +153,8 @@ export default {
               });
               return acc;
             }
-            media.linked_media = original_media_meta;
-            media.linked_media.slugProjectName = publi_media.slugProjectName;
+            media._linked_media = original_media_meta;
+            media._linked_media.slugProjectName = publi_media.slugProjectName;
           }
 
           acc.push(media);
