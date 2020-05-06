@@ -21,7 +21,6 @@
     />
 
     <div class="m_videoPublication">
-      {{ medias_slugs_in_order }}
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
           <small class="c-blanc" v-html="$t('add_multiple_videos_files')" />
