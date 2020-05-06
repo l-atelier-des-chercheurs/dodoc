@@ -1631,6 +1631,10 @@ module.exports = (function () {
       fr: "Transition : fondu enchaîné",
       en: "Transition: fade",
     },
+    linked_media_wasnt_found: {
+      fr: "Le média lié n’a pas été trouvé parmis les projets.",
+      en: "The linked media wasn’t found amongst the projects.",
+    },
     protected_by_pass: {
       fr: "protégé par mot de passe",
       en: "protected by password",
