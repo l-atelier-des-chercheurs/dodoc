@@ -364,7 +364,7 @@ export default {
 
         if (!this.publication.medias.hasOwnProperty(metaFileName)) {
           // error : a media referenced in medias_slugs is not in this.publication.medias
-          return;
+          return acc;
         }
 
         const _media = this.publication.medias[metaFileName];
@@ -385,7 +385,7 @@ export default {
             console.error(
               `Medias from project was probably added to the publication before it was removed altogether.`
             );
-            return;
+            return acc;
           }
 
           // find in store if metaFileName exists
