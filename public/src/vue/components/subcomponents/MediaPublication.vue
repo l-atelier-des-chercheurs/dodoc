@@ -22,9 +22,24 @@
       'is--fit_mode_' + fit_mode,
     ]"
   >
+    <div
+      v-if="
+        media.hasOwnProperty('_linked_media') &&
+        media._linked_media.hasOwnProperty('_isAbsent')
+      "
+    >
+      {{ $t("linked_media_wasnt_found") }}
+      <br />
+      <small
+        >{{ media._linked_media.slugProjectName }}/{{
+          media._linked_media.slugMediaName
+        }}</small
+      >
+    </div>
+
     <!-- if media is link -->
     <MediaContent
-      v-if="media.hasOwnProperty('_linked_media')"
+      v-else-if="media.hasOwnProperty('_linked_media')"
       :context="mode !== 'contact_sheet' ? 'full' : 'preview'"
       :slugFolderName="media._linked_media.slugProjectName"
       :media="media._linked_media"

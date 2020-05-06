@@ -1,5 +1,9 @@
 <template>
-  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
+  <div
+    class="m_publicationview"
+    :class="{ 'is--preview': preview_mode }"
+    ref="panel"
+  >
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -34,11 +38,18 @@
             <label class="c-white">{{ $t("effect") }}</label>
 
             <div class="margin-bottom-small">
-              <select :value="effect.type" @change="setEffectType({ $event, id: effect.id })">
+              <select
+                :value="effect.type"
+                @change="setEffectType({ $event, id: effect.id })"
+              >
                 <option value>—</option>
                 <option value="watermark">{{ $t("watermark") }}…</option>
-                <option value="black_and_white">{{ $t("black_and_white") }}</option>
-                <option value="colored_filter">{{ $t("colored_filter") }}…</option>
+                <option value="black_and_white">{{
+                  $t("black_and_white")
+                }}</option>
+                <option value="colored_filter"
+                  >{{ $t("colored_filter") }}…</option
+                >
                 <option value="slow_down">{{ $t("slow_down") }}…</option>
                 <option value="speed_up">{{ $t("speed_up") }}…</option>
                 <option value="reverse">{{ $t("reverse") }}</option>
@@ -47,7 +58,11 @@
               </select>
             </div>
 
-            <div v-if="effect.type === 'watermark'" class="margin-bottom-small" :key="'watermark'">
+            <div
+              v-if="effect.type === 'watermark'"
+              class="margin-bottom-small"
+              :key="'watermark'"
+            >
               <label>{{ $t("image") }}</label>
               <div v-if="!watermark_media">
                 <small>{{ $t("watermark_instructions") }}</small>
@@ -58,7 +73,7 @@
                   :preview_mode="false"
                   :read_only="read_only"
                   @removePubliMedia="
-                    values => {
+                    (values) => {
                       removePubliMedia(values);
                     }
                   "
@@ -112,16 +127,16 @@
                 <small>
                   ×
                   {{
-                  effect.speed !== "custom"
-                  ? effect.speed
-                  : effect.custom_speed
+                    effect.speed !== "custom"
+                      ? effect.speed
+                      : effect.custom_speed
                   }}
                 </small>
               </div>
               <div
                 v-if="
                   (video_media && video_media.duration) ||
-                    (video_media.file_meta && video_media.file_meta.duration)
+                  (video_media.file_meta && video_media.file_meta.duration)
                 "
               >
                 <hr />
@@ -129,9 +144,9 @@
                   <div>{{ $t("duration") }}</div>
                   <div>
                     {{
-                    $root.formatDurationToMinuteHours(
-                    video_media.duration * 1000
-                    )
+                      $root.formatDurationToMinuteHours(
+                        video_media.duration * 1000
+                      )
                     }}
                   </div>
                 </div>
@@ -143,7 +158,8 @@
               <div>
                 <small
                   v-if="effect.speed === 'custom' && effect.custom_speed < 0.5"
-                >{{ $t("slowing_video_down_limit") }}</small>
+                  >{{ $t("slowing_video_down_limit") }}</small
+                >
               </div>
             </div>
             <div
@@ -176,9 +192,9 @@
                 <small>
                   ×
                   {{
-                  effect.speed !== "custom"
-                  ? effect.speed
-                  : effect.custom_speed
+                    effect.speed !== "custom"
+                      ? effect.speed
+                      : effect.custom_speed
                   }}
                 </small>
               </div>
@@ -188,9 +204,9 @@
                   <div>{{ $t("duration") }}</div>
                   <div>
                     {{
-                    $root.formatDurationToMinuteHours(
-                    video_media.duration * 1000
-                    )
+                      $root.formatDurationToMinuteHours(
+                        video_media.duration * 1000
+                      )
                     }}
                   </div>
                 </div>
@@ -212,7 +228,9 @@
                 "
               >
                 <option :value="1">{{ $t("clockwise").toLowerCase() }}</option>
-                <option :value="2">{{ $t("counterclockwise").toLowerCase() }}</option>
+                <option :value="2">{{
+                  $t("counterclockwise").toLowerCase()
+                }}</option>
               </select>
             </div>
             <div
@@ -224,9 +242,15 @@
                 :value="effect.flip"
                 @change="setEffectProp({ $event, id: effect.id, prop: 'flip' })"
               >
-                <option value="vflip">{{ $t("vertical_flip").toLowerCase() }}</option>
-                <option value="hflip">{{ $t("horizontal_flip").toLowerCase() }}</option>
-                <option value="hflip, vflip">{{ $t("both").toLowerCase() }}</option>
+                <option value="vflip">{{
+                  $t("vertical_flip").toLowerCase()
+                }}</option>
+                <option value="hflip">{{
+                  $t("horizontal_flip").toLowerCase()
+                }}</option>
+                <option value="hflip, vflip">{{
+                  $t("both").toLowerCase()
+                }}</option>
               </select>
             </div>
           </div>
@@ -239,12 +263,12 @@
             :read_only="read_only"
             :enable_set_video_volume="true"
             @removePubliMedia="
-              values => {
+              (values) => {
                 removePubliMedia(values);
               }
             "
             @editPubliMedia="
-              values => {
+              (values) => {
                 editPubliMedia(values);
               }
             "
@@ -263,19 +287,20 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    read_only: Boolean
+    medias: Array,
+    read_only: Boolean,
   },
   components: {
     PublicationHeader,
     MediaMontagePublication,
-    ExportVideoPubliModal
+    ExportVideoPubliModal,
   },
   data() {
     return {
       show_export_modal: false,
       publication_medias: [],
       medias_slugs_in_order: [],
-      number_of_medias_required: 1
+      number_of_medias_required: 1,
     };
   },
   created() {},
@@ -306,7 +331,7 @@ export default {
     this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {
-    "publication.medias": function() {
+    "publication.medias": function () {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`WATCH • Publication: publication.medias`);
       }
@@ -319,9 +344,9 @@ export default {
         }
         this.updateMediasPubli();
       },
-      deep: true
+      deep: true,
     },
-    "publication.medias_slugs": function() {
+    "publication.medias_slugs": function () {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`WATCH • Publication: publication.medias_slugs`);
       }
@@ -331,7 +356,7 @@ export default {
           ? this.publication.medias_slugs
           : [];
       this.updateMediasPubli();
-    }
+    },
   },
   computed: {
     effects() {
@@ -342,7 +367,7 @@ export default {
     accepted_media_type() {
       if (
         this.effects.length > 0 &&
-        this.effects.some(e => e.type === "watermark")
+        this.effects.some((e) => e.type === "watermark")
       ) {
         return ["video", "image"];
       }
@@ -359,11 +384,11 @@ export default {
       return true;
     },
     watermark_media() {
-      return this.publication_medias.find(m => m.type === "image");
+      return this.publication_medias.find((m) => m.type === "image");
     },
     video_media() {
-      return this.publication_medias.find(m => m.type === "video");
-    }
+      return this.publication_medias.find((m) => m.type === "video");
+    },
   },
   methods: {
     getVideomedaiNewDuration(effect) {
@@ -375,7 +400,7 @@ export default {
 
     setEffectType({ $event, id }) {
       const new_type = $event.target.value;
-      const effects = this.publication.effects.map(e => {
+      const effects = this.publication.effects.map((e) => {
         if (e.id === id && e.type !== new_type) {
           e.type = new_type;
 
@@ -397,14 +422,14 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          effects
-        }
+          effects,
+        },
       });
     },
     setEffectProp({ $event, id, prop }) {
       const new_value = $event.target.value;
 
-      const effects = this.publication.effects.map(e => {
+      const effects = this.publication.effects.map((e) => {
         if (e.id === id && e[prop] !== new_value) {
           e[prop] = new_value;
         }
@@ -415,8 +440,8 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          effects
-        }
+          effects,
+        },
       });
     },
 
@@ -428,19 +453,19 @@ export default {
 
       const desired_filename = metaFileName;
 
-      this.$eventHub.$on("socketio.media_created_or_updated", d => {
+      this.$eventHub.$on("socketio.media_created_or_updated", (d) => {
         this.$eventHub.$off("socketio.media_created_or_updated");
 
         this.medias_slugs_in_order.push({
-          slugMediaName: d.metaFileName
+          slugMediaName: d.metaFileName,
         });
 
         this.$root.editFolder({
           type: "publications",
           slugFolderName: this.slugPubliName,
           data: {
-            medias_slugs: this.medias_slugs_in_order
-          }
+            medias_slugs: this.medias_slugs_in_order,
+          },
         });
       });
 
@@ -450,8 +475,8 @@ export default {
         additionalMeta: {
           slugProjectName,
           desired_filename,
-          slugMediaName: metaFileName
-        }
+          slugMediaName: metaFileName,
+        },
       });
     },
     removePubliMedia({ slugMediaName }) {
@@ -464,12 +489,12 @@ export default {
       this.$root.removeMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        slugMediaName
+        slugMediaName,
       });
 
       if (this.medias_slugs_in_order.length > 0) {
         this.medias_slugs_in_order = this.medias_slugs_in_order.filter(
-          m => m.slugMediaName !== slugMediaName
+          (m) => m.slugMediaName !== slugMediaName
         );
       }
 
@@ -477,8 +502,8 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          medias_slugs: this.medias_slugs_in_order
-        }
+          medias_slugs: this.medias_slugs_in_order,
+        },
       });
     },
     editPubliMedia({ slugMediaName, val }) {
@@ -496,7 +521,7 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName,
-        data: val
+        data: val,
       });
     },
     updateMediasPubli() {
@@ -523,7 +548,7 @@ export default {
         return;
       }
 
-      this.medias_slugs_in_order.map(item => {
+      this.medias_slugs_in_order.map((item) => {
         const metaFileName = item.slugMediaName;
 
         if (!this.publication.medias.hasOwnProperty(metaFileName)) {
@@ -562,7 +587,7 @@ export default {
           console.log(`Some medias missing from client`);
           missingMedias.push({
             slugFolderName: slugProjectName,
-            metaFileName: slugMediaName
+            metaFileName: slugMediaName,
           });
         } else {
           let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
@@ -593,18 +618,18 @@ export default {
       if (missingMedias.length > 0) {
         this.$root.listSpecificMedias({
           type: "projects",
-          medias_list: missingMedias
+          medias_list: missingMedias,
         });
       }
 
-      const types_of_medias = publi_medias.map(m => m.type);
+      const types_of_medias = publi_medias.map((m) => m.type);
       this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type.filter(
-        t => !types_of_medias.includes(t)
+        (t) => !types_of_medias.includes(t)
       );
 
       this.publication_medias = publi_medias;
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

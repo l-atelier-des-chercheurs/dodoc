@@ -20,18 +20,12 @@
       :read_only="!$root.state.connected"
     /> -->
 
-    <!--
-
     <VideoEffects
-      v-else-if="
-        $root.store.publications[$root.settings.current_publication.slug]
-          .template === 'video_effects'
-      "
-      :slugPubliName="$root.settings.current_publication.slug"
-      :publication="
-        $root.store.publications[$root.settings.current_publication.slug]
-      "
-      :read_only="!$root.state.connected"
+      v-if="publication.template === 'video_effects'"
+      :slugPubliName="publication.slugFolderName"
+      :publication="publication"
+      :medias="medias"
+      :read_only="read_only"
     />
 
     <DrawingPad
@@ -84,13 +78,14 @@
         $root.store.publications[$root.settings.current_publication.slug]
       "
       :read_only="!$root.state.connected"
-    /> -->
+    />
+    -->
   </div>
 </template>
 <script>
 import PagePublication from "./components/publication_templates/PagePublication.vue";
 import VideoPublication from "./components/publication_templates/VideoPublication.vue";
-import Carreau from "./components/publication_templates/Carreau.vue";
+// import Carreau from "./components/publication_templates/Carreau.vue";
 import DrawingPad from "./components/publication_templates/DrawingPad.vue";
 import VideoEffects from "./components/publication_templates/VideoEffects.vue";
 import StopmotionAnimation from "./components/publication_templates/StopmotionAnimation.vue";
@@ -105,6 +100,7 @@ export default {
   },
   components: {
     PagePublication,
+    VideoEffects,
   },
   data() {
     return {};
@@ -141,7 +137,12 @@ export default {
 
             // case of missing project media locally
             if (!original_media_meta) {
-              media.is_missing = true;
+              media._linked_media = {
+                _isAbsent: true,
+                slugProjectName: publi_media.slugProjectName,
+                slugMediaName: publi_media.slugMediaName,
+              };
+              acc.push(media);
               return acc;
             }
 
@@ -162,6 +163,8 @@ export default {
         },
         []
       );
+
+      debugger;
 
       console.log(
         `Finished building media list. Missing medias: ${missingMedias.length}`
