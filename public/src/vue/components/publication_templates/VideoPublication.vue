@@ -21,6 +21,7 @@
     />
 
     <div class="m_videoPublication">
+      {{ medias_slugs_in_order }}
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
           <small class="c-blanc" v-html="$t('add_multiple_videos_files')" />
@@ -287,30 +288,28 @@ export default {
     removePubliMedia({ slugMediaName }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • Publication: removeMedia / slugMediaName = ${slugMediaName}`
+          `METHODS • Publication: removePubliMedia / slugMediaName = ${slugMediaName}`
         );
       }
 
-      this.$root.removeMedia({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        slugMediaName,
-      });
-
-      if (this.medias_slugs_in_order.length > 0) {
-        const medias_slugs_in_order = this.medias_slugs_in_order.filter(
-          (m) => m.slugMediaName !== slugMediaName
-        );
-
-        debugger;
-        this.$root.editFolder({
+      const medias_slugs = this.medias_slugs_in_order.filter(
+        (m) => m.slugMediaName !== slugMediaName
+      );
+      this.$root
+        .editFolder({
           type: "publications",
           slugFolderName: this.slugPubliName,
           data: {
-            medias_slugs: medias_slugs_in_order,
+            medias_slugs,
           },
+        })
+        .then(() => {
+          this.$root.removeMedia({
+            type: "publications",
+            slugFolderName: this.slugPubliName,
+            slugMediaName,
+          });
         });
-      }
     },
     editPubliMedia({ slugMediaName, val }) {
       if (this.$root.state.dev_mode === "debug") {
