@@ -46,9 +46,7 @@
           "
           class="m_page--pageNumber"
           :class="{ toRight: true }"
-        >
-          {{ pageNumber + 1 }}
-        </div>
+        >{{ pageNumber + 1 }}</div>
 
         <div v-if="publication_medias.length === 0" class="m_page--noMedia">
           <template
@@ -59,15 +57,10 @@
                 'link_publication',
               ].includes($root.state.mode)
             "
-            >{{ $t("no_media_on_this_page") }}</template
-          >
+          >{{ $t("no_media_on_this_page") }}</template>
         </div>
 
-        <div
-          v-else
-          v-for="media in publication_medias"
-          :key="media.publi_meta.metaFileName"
-        >
+        <div v-else v-for="media in publication_medias" :key="media.publi_meta.metaFileName">
           <transition name="MediaPublication" :duration="500">
             <div>
               <MediaPublication
@@ -107,19 +100,19 @@ export default {
     slugPubliName: String,
     pageNumber: {
       type: Number,
-      default: -1,
+      default: -1
     },
     page: Object,
     publication_medias: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     read_only: Boolean,
     pixelsPerMillimeters: Number,
-    zoom: Number,
+    zoom: Number
   },
   components: {
-    MediaPublication,
+    MediaPublication
   },
   data() {
     return {};
@@ -135,7 +128,7 @@ export default {
         "text",
         "stl",
         "document",
-        "other",
+        "other"
       ];
     }
   },
@@ -149,28 +142,36 @@ export default {
   computed: {
     customCSSVars() {
       return `--current-time-human: "${this.$root.currentTime_human}"`;
-    },
+    }
   },
   methods: {
     setPageContainerProperties(page) {
       if (this.$root.state.mode === "print_publication") return;
 
       let css = `
-          width: ${page.width * this.zoom}mm;
-          height: ${page.height * this.zoom}mm;
-          transform: scale(${this.zoom});
-          transform-origin: left top;
+        transform: scale(${this.zoom});
+        transform-origin: left top;
       `;
 
+      if (this.mode === "contact_sheet")
+        return (css += `
+          width: ${page.width * this.zoom}mm;
+          height: ${page.height * this.zoom}mm;
+        `);
       if (this.mode === "single")
         return (css += `
-          margin: 140px;
-          padding: 40px 140px 100px 240px;  
+          width: ${page.width}mm;
+          height: ${page.height}mm;
+          margin: 40px;
+          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${240 /
+          this.zoom}px;  
           box-sizing: content-box;
         `);
 
       if (this.mode === "export")
         return (css += `
+          width: ${page.width}mm;
+          height: ${page.height}mm;
           margin: 1em auto;
         `);
 
@@ -200,7 +201,7 @@ export default {
       this.$root.removeMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        slugMediaName,
+        slugMediaName
       });
     },
     // function to update property of a media inside medias_list
@@ -219,10 +220,10 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName,
-        data: val,
+        data: val
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss"></style>

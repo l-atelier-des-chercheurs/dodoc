@@ -8,30 +8,26 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_create_options }"
             @click="show_create_options = !show_create_options"
-          >
-            {{ $t("create") }}
-          </button>
+          >{{ $t("create") }}</button>
         </label>
         <div v-if="show_create_options">
-          <small>
-            {{ $t("import_medias_from_projects_or_create_shapes_here") }}
-          </small>
+          <small>{{ $t("import_medias_from_projects_or_create_shapes_here") }}</small>
           <div>
             <button
               class="button _create_buttons"
               @mousedown.stop.prevent="
                 $emit('addMedia', {
                   type: 'text',
-                  stroke_color: stroke_color !== 'none' ? stroke_color : '',
-                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_color: stroke_color !== '' ? stroke_color : '',
+                  fill_color: fill_color !== '' ? fill_color : '',
                   stroke_width: stroke_width,
                 })
               "
               @touchstart.stop.prevent="
                 $emit('addMedia', {
                   type: 'text',
-                  stroke_color: stroke_color !== 'none' ? stroke_color : '',
-                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  stroke_color: stroke_color !== '' ? stroke_color : '',
+                  fill_color: fill_color !== '' ? fill_color : '',
                   stroke_width: stroke_width,
                 })
               "
@@ -53,32 +49,11 @@
                   style="fill: #52c5b9;"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
-                <rect
-                  x="79.4"
-                  y="52.1"
-                  style="fill: #1b2f81;"
-                  width="62.3"
-                  height="15"
-                />
-                <rect
-                  x="79.4"
-                  y="79.5"
-                  style="fill: #1b2f81;"
-                  width="62.3"
-                  height="15"
-                />
-                <rect
-                  x="79.4"
-                  y="107"
-                  style="fill: #1b2f81;"
-                  width="62.3"
-                  height="15"
-                />
+                <rect x="79.4" y="52.1" style="fill: #1b2f81;" width="62.3" height="15" />
+                <rect x="79.4" y="79.5" style="fill: #1b2f81;" width="62.3" height="15" />
+                <rect x="79.4" y="107" style="fill: #1b2f81;" width="62.3" height="15" />
 
-                <path
-                  style="fill: #1b2f81;"
-                  d="M21.2,52.1h49v15H53.7V122H37.6V67.1H21.2V52.1z"
-                />
+                <path style="fill: #1b2f81;" d="M21.2,52.1h49v15H53.7V122H37.6V67.1H21.2V52.1z" />
               </svg>
               <span>{{ $t("text") }}</span>
             </button>
@@ -90,7 +65,7 @@
                 $emit('addMedia', {
                   type: 'line',
                   stroke_color:
-                    stroke_color !== 'none' ? stroke_color : '#1d327f',
+                    stroke_color !== '' ? stroke_color : '#1d327f',
                   stroke_width: stroke_width,
                 })
               "
@@ -98,7 +73,7 @@
                 $emit('addMedia', {
                   type: 'line',
                   stroke_color:
-                    stroke_color !== 'none' ? stroke_color : '#1d327f',
+                    stroke_color !== '' ? stroke_color : '#1d327f',
                   stroke_width: stroke_width,
                 })
               "
@@ -144,7 +119,7 @@
                 $emit('addMedia', {
                   type: 'arrow',
                   stroke_color:
-                    stroke_color !== 'none' ? stroke_color : '#1d327f',
+                    stroke_color !== '' ? stroke_color : '#1d327f',
                   stroke_width: stroke_width,
                 })
               "
@@ -152,7 +127,7 @@
                 $emit('addMedia', {
                   type: 'arrow',
                   stroke_color:
-                    stroke_color !== 'none' ? stroke_color : '#1d327f',
+                    stroke_color !== '' ? stroke_color : '#1d327f',
                   stroke_width: stroke_width,
                 })
               "
@@ -222,12 +197,12 @@
                 $emit('addMedia', {
                   type: 'rectangle',
                   stroke_color:
-                    stroke_color !== 'none'
+                    stroke_color !== ''
                       ? stroke_color
-                      : fill_color !== 'none'
+                      : fill_color !== ''
                       ? ''
                       : '#1d327f',
-                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  fill_color: fill_color !== '' ? fill_color : '',
                   stroke_width: stroke_width,
                 })
               "
@@ -235,12 +210,12 @@
                 $emit('addMedia', {
                   type: 'rectangle',
                   stroke_color:
-                    stroke_color !== 'none'
+                    stroke_color !== ''
                       ? stroke_color
-                      : fill_color !== 'none'
+                      : fill_color !== ''
                       ? ''
                       : '#1d327f',
-                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  fill_color: fill_color !== '' ? fill_color : '',
                   stroke_width: stroke_width,
                 })
               "
@@ -286,12 +261,12 @@
                 $emit('addMedia', {
                   type: 'ellipsis',
                   stroke_color:
-                    stroke_color !== 'none'
+                    stroke_color !== ''
                       ? stroke_color
-                      : fill_color !== 'none'
+                      : fill_color !== ''
                       ? ''
                       : '#1d327f',
-                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  fill_color: fill_color !== '' ? fill_color : '',
                   stroke_width: stroke_width,
                 })
               "
@@ -299,12 +274,12 @@
                 $emit('addMedia', {
                   type: 'ellipsis',
                   stroke_color:
-                    stroke_color !== 'none'
+                    stroke_color !== ''
                       ? stroke_color
-                      : fill_color !== 'none'
+                      : fill_color !== ''
                       ? ''
                       : '#1d327f',
-                  fill_color: fill_color !== 'none' ? fill_color : '',
+                  fill_color: fill_color !== '' ? fill_color : '',
                   stroke_width: stroke_width,
                 })
               "
@@ -351,37 +326,24 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_edit_options }"
             @click="show_edit_options = !show_edit_options"
-          >
-            {{ $t("edit") }}
-          </button>
+          >{{ $t("edit") }}</button>
         </label>
         <template v-if="show_edit_options">
           <div v-if="!media">
-            <small class="">{{
+            <small class>
+              {{
               $t("click_on_a_bloc_to_edit_its_presentation")
-            }}</small>
+              }}
+            </small>
           </div>
           <div v-else>
-            <div
-              class="item"
-              v-if="media.type === 'text' || media.publi_meta.type === 'text'"
-            >
+            <div class="item" v-if="media.type === 'text' || media.publi_meta.type === 'text'">
               <label>{{ $t("font_size") }}</label>
               <div>
-                <input
-                  type="range"
-                  min="0"
-                  max="300"
-                  step="1"
-                  v-model="font_size_percent"
-                />
+                <input type="range" min="0" max="300" step="1" v-model="font_size_percent" />
               </div>
               <div class="input-group">
-                <input
-                  type="number"
-                  class="input-small"
-                  v-model="font_size_percent"
-                />
+                <input type="number" class="input-small" v-model="font_size_percent" />
                 <span class="input-addon input-addon-small">%</span>
               </div>
             </div>
@@ -394,63 +356,41 @@
                 media.type !== 'image'
               "
             >
-              <label
-                >{{ $t("fill_color") }}
+              <label>
+                {{ $t("fill_color") }}
                 <button
                   type="button"
                   class="buttonLink padding-verysmall margin-none"
-                  v-if="fill_color !== 'none'"
-                  @click="fill_color = 'none'"
-                >
-                  ×
-                </button>
+                  v-if="fill_color !== ''"
+                  @click="fill_color = ''"
+                >×</button>
               </label>
               <div>
-                <input
-                  type="color"
-                  v-model="fill_color"
-                  :novalue="fill_color === 'none'"
-                />
+                <input type="color" v-model="fill_color" :novalue="fill_color === ''" />
               </div>
             </div>
             <div class="item">
-              <label
-                >{{ $t("stroke_color") }}
+              <label>
+                {{ $t("stroke_color") }}
                 <button
                   type="button"
                   class="buttonLink padding-verysmall margin-none"
-                  v-if="stroke_color !== 'none'"
-                  @click="stroke_color = 'none'"
-                >
-                  ×
-                </button>
+                  v-if="stroke_color !== ''"
+                  @click="stroke_color = ''"
+                >×</button>
               </label>
               <div>
-                <input
-                  type="color"
-                  v-model="stroke_color"
-                  :novalue="stroke_color === 'none'"
-                />
+                <input type="color" v-model="stroke_color" :novalue="stroke_color === ''" />
               </div>
             </div>
 
-            <div class="item" v-if="stroke_color !== 'none'">
+            <div class="item" v-if="stroke_color !== ''">
               <label>{{ $t("stroke_width") }}</label>
               <div>
-                <input
-                  type="range"
-                  min="1"
-                  max="20"
-                  step="1"
-                  v-model="stroke_width"
-                />
+                <input type="range" min="1" max="20" step="1" v-model="stroke_width" />
               </div>
               <div class="input-group">
-                <input
-                  type="number"
-                  class="input-small"
-                  v-model="stroke_width"
-                />
+                <input type="number" class="input-small" v-model="stroke_width" />
                 <span class="input-addon input-addon-small">pt</span>
               </div>
             </div>
@@ -459,8 +399,8 @@
               <label>{{ $t("layer_order") }}</label>
               <div>
                 <small>{{ $t("layer_order_instructions") }}</small>
-                {{ mediaZIndex }}
 
+                {{ mediaZIndex }}
                 <button
                   type="button"
                   class="buttonLink _no_underline"
@@ -545,25 +485,17 @@
                   class="button-nostyle text-uc button-triangle"
                   :class="{ 'is--active': show_custom_css }"
                   @click.stop="show_custom_css = !show_custom_css"
-                >
-                  {{ $t("css_settings") }}
-                </button>
+                >{{ $t("css_settings") }}</button>
               </label>
               <div v-if="show_custom_css">
-                <PrismEditor
-                  v-model="custom_css"
-                  @change="/* setCSSForMedia */"
-                  language="css"
-                />
+                <PrismEditor v-model="custom_css" @change="/* setCSSForMedia */" language="css" />
                 <div class="m_customStyles--sendButton">
                   <button
                     type="button"
                     class="button-greenthin"
                     @click="updateMediaPubliMeta({ custom_css: custom_css })"
                     :class="{}"
-                  >
-                    {{ $t("send") }}
-                  </button>
+                  >{{ $t("send") }}</button>
                 </div>
               </div>
             </div>
@@ -580,31 +512,31 @@ export default {
   props: {
     preview_mode: Boolean,
     slugPubliName: String,
-    page_medias: Array,
+    page_medias: Array
   },
   components: {
-    PrismEditor,
+    PrismEditor
   },
   data() {
     return {
       show_create_options: true,
       show_edit_options: true,
       show_custom_css: false,
-      custom_css: "",
+      custom_css: ""
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {
-    "$root.settings.current_publication.selected_medias": function () {
+    "$root.settings.current_publication.selected_medias": function() {
       if (this.$root.settings.current_publication.selected_medias.length > 0) {
         this.show_edit_options = true;
       }
       // this.show_create_options = false;
       // this.show_create_options = true;
     },
-    media: function () {
+    media: function() {
       if (this.media) {
         this.custom_css = this.media.publi_meta.hasOwnProperty("custom_css")
           ? this.media.publi_meta.custom_css
@@ -613,7 +545,7 @@ export default {
           this.show_custom_css = true;
         }
       }
-    },
+    }
   },
   computed: {
     media() {
@@ -623,7 +555,7 @@ export default {
       const all_selected_medias = this.$root.settings.current_publication.selected_medias.reduce(
         (acc, meta) => {
           const corresponding_media = this.page_medias.find(
-            (m) => m.publi_meta.metaFileName === meta
+            m => m.publi_meta.metaFileName === meta
           );
           if (corresponding_media) acc.push(corresponding_media);
           return acc;
@@ -645,7 +577,7 @@ export default {
       set(value) {
         if (value > 90 && value < 110) value = 100;
         this.updateMediaPubliMeta({ font_size_percent: value });
-      },
+      }
     },
     stroke_color: {
       get() {
@@ -653,11 +585,11 @@ export default {
           this.media.publi_meta.hasOwnProperty("stroke_color") &&
           !!this.media.publi_meta.stroke_color
           ? this.media.publi_meta.stroke_color
-          : "none";
+          : "";
       },
       set(value) {
         this.updateMediaPubliMeta({ stroke_color: value });
-      },
+      }
     },
     fill_color: {
       get() {
@@ -665,11 +597,11 @@ export default {
           this.media.publi_meta.hasOwnProperty("fill_color") &&
           !!this.media.publi_meta.fill_color
           ? this.media.publi_meta.fill_color
-          : "none";
+          : "";
       },
       set(value) {
         this.updateMediaPubliMeta({ fill_color: value });
-      },
+      }
     },
     stroke_width: {
       get() {
@@ -681,13 +613,13 @@ export default {
       },
       set(value) {
         this.updateMediaPubliMeta({ stroke_width: value });
-      },
+      }
     },
     mediaZIndex() {
       return this.media && this.media.publi_meta.hasOwnProperty("z_index")
         ? this.media.publi_meta.z_index
         : 0;
-    },
+    }
   },
   methods: {
     updateMediaPubliMeta(val) {
@@ -696,16 +628,16 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName: this.media.publi_meta.metaFileName,
-        data: val,
+        data: val
       });
     },
     editZIndex(val) {
       this.$eventHub.$emit("publication.flashZIndex");
       this.updateMediaPubliMeta({
-        z_index: this.mediaZIndex + val,
+        z_index: this.mediaZIndex + val
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped></style>

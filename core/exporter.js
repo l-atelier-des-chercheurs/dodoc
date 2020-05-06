@@ -803,12 +803,12 @@ module.exports = (function () {
             // } else {
             sharp(media.full_path)
               .rotate()
+              .flatten({ background: "white" })
               .resize(resolution.width, resolution.height, {
                 fit: "contain",
                 withoutEnlargement: false,
                 background: "black",
               })
-              .flatten()
               .withMetadata()
               .toFile(cache_image_path)
               .then(() => resolve())
@@ -1862,12 +1862,12 @@ module.exports = (function () {
       fs.access(temp_video_path, fs.F_OK, function (err) {
         if (err) {
           sharp(vm.full_path)
+            .flatten({ background: "white" })
             .resize(resolution.width, resolution.height, {
               fit: "contain",
               withoutEnlargement: false,
               background: "black",
             })
-            .flatten()
             .withMetadata()
             .toFile(temp_image_path)
             .then(() => {

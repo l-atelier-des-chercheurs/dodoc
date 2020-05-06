@@ -92,33 +92,12 @@
             vector-effect="non-scaling-stroke"
           />
           <g v-if="media.publi_meta.type === 'arrow'">
-            <line
-              x1="0"
-              y1="50"
-              x2="100"
-              y2="50"
-              vector-effect="non-scaling-stroke"
-            />
-            <g
-              transform="
-                translate(100, 50)"
-              preserveAspectRatio
-            >
-              <line
-                x1="0"
-                y1="0"
-                x2="-10"
-                y2="-10"
-                vector-effect="non-scaling-stroke"
-              />
+            <line x1="0" y1="50" x2="100" y2="50" vector-effect="non-scaling-stroke" />
+            <g transform="
+                translate(100, 50)" preserveAspectRatio>
+              <line x1="0" y1="0" x2="-10" y2="-10" vector-effect="non-scaling-stroke" />
 
-              <line
-                x1="0"
-                y1="0"
-                x2="-10"
-                y2="10"
-                vector-effect="non-scaling-stroke"
-              />
+              <line x1="0" y1="0" x2="-10" y2="10" vector-effect="non-scaling-stroke" />
             </g>
           </g>
         </svg>
@@ -134,11 +113,7 @@
         <!-- <img src="/images/i_clear.svg" draggable="false" /> -->
         <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
-      <button
-        type="button"
-        class="button button-bg_rounded bg-bleuvert"
-        @click="saveMedia"
-      >
+      <button type="button" class="button button-bg_rounded bg-bleuvert" @click="saveMedia">
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
           <slot name="submit_button">{{ $t("save") }}</slot>
@@ -600,11 +575,11 @@ export default {
     preview_mode: Boolean,
     lowdef: Boolean,
     pixelsPerMillimeters: Number,
-    zoom: Number,
+    zoom: Number
   },
   components: {
     MediaContent,
-    CollaborativeEditor,
+    CollaborativeEditor
   },
   data() {
     return {
@@ -632,25 +607,25 @@ export default {
 
       dragOffset: {
         x: 0,
-        y: 0,
+        y: 0
       },
       mediaPos: {
         x: 0,
         y: 0,
         px: 0,
-        py: 0,
+        py: 0
       },
 
       resizeOffset: {
         x: 0,
-        y: 0,
+        y: 0
       },
       resize_origin: "",
 
       rotateOffset: {
         x: 0,
         y: 0,
-        angle: 0,
+        angle: 0
       },
       rotate: 0,
       debounce_setCSSForMedia: undefined,
@@ -664,7 +639,7 @@ export default {
         width: 0,
         height: 0,
         pwidth: 0,
-        pheight: 0,
+        pheight: 0
       },
 
       custom_css: "",
@@ -672,7 +647,7 @@ export default {
 
       fit_mode: "cover",
       locked_in_place: false,
-      lock_original_ratio: false,
+      lock_original_ratio: false
     };
   },
 
@@ -697,19 +672,19 @@ export default {
 
   watch: {
     "media.publi_meta": {
-      handler: function () {
+      handler: function() {
         this.updateMediaStyles();
         this.htmlForEditor = this.media.publi_meta.content
           ? this.media.publi_meta.content
           : "";
       },
-      deep: true,
-    },
+      deep: true
+    }
   },
   computed: {
     is_selected() {
       return this.$root.settings.current_publication.selected_medias.some(
-        (meta) => meta === this.media.publi_meta.metaFileName
+        meta => meta === this.media.publi_meta.metaFileName
       );
     },
     mediaStyles() {
@@ -741,7 +716,7 @@ export default {
     text_is_overflowing() {
       const el = this.$refs.media;
       return el.offsetHeight + 15 < el.scrollHeight;
-    },
+    }
   },
   methods: {
     selectNewMedia(metaFileName) {
@@ -764,12 +739,12 @@ export default {
     },
     saveMedia() {
       const val = {
-        content: this.htmlForEditor,
+        content: this.htmlForEditor
       };
 
       this.$emit("editPubliMedia", {
         slugMediaName: this.media.publi_meta.metaFileName,
-        val,
+        val
       });
 
       this.inline_edit_mode = false;
@@ -786,7 +761,7 @@ export default {
       if (this.media.slugProjectName)
         this.$root.openMedia({
           slugProjectName: this.media.slugProjectName,
-          metaFileName: this.media.metaFileName,
+          metaFileName: this.media.metaFileName
         });
       else {
         this.inline_edit_mode = true;
@@ -809,7 +784,7 @@ export default {
       this.mediaSize.height = contentHeight;
 
       this.updateMediaPubliMeta({
-        height: this.mediaSize.height,
+        height: this.mediaSize.height
       });
     },
     toggleImageFitMode() {
@@ -817,14 +792,14 @@ export default {
       else if (this.fit_mode === "contain") this.fit_mode = "cover";
 
       this.updateMediaPubliMeta({
-        fit_mode: this.fit_mode,
+        fit_mode: this.fit_mode
       });
     },
 
     toggleLock() {
       this.locked_in_place = !this.locked_in_place;
       this.updateMediaPubliMeta({
-        locked_in_place: this.locked_in_place,
+        locked_in_place: this.locked_in_place
       });
 
       if (this.locked_in_place) {
@@ -915,7 +890,7 @@ export default {
 
       this.$emit("editPubliMedia", {
         slugMediaName: this.media.publi_meta.metaFileName,
-        val,
+        val
       });
     },
     limitMediaXPos(xPos) {
@@ -987,7 +962,7 @@ export default {
 
     removePubliMedia() {
       this.$emit("removePubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName,
+        slugMediaName: this.media.publi_meta.metaFileName
       });
     },
     resizeMedia({ event, type, origin }) {
@@ -1058,7 +1033,7 @@ export default {
             pageX_mm,
             pageY_mm,
             axis_angle: 0,
-            plength: this.mediaSize.pwidth,
+            plength: this.mediaSize.pwidth
           });
           this.mediaSize.width = this.limitMediaWidth(new_width);
         }
@@ -1075,7 +1050,7 @@ export default {
               pageX_mm,
               pageY_mm,
               axis_angle: 90,
-              plength: this.mediaSize.pheight,
+              plength: this.mediaSize.pheight
             });
           }
 
@@ -1119,7 +1094,7 @@ export default {
 
         this.updateMediaPubliMeta({
           width: this.mediaSize.width,
-          height: this.mediaSize.height,
+          height: this.mediaSize.height
         });
         this.is_resized = false;
       }
@@ -1148,7 +1123,7 @@ export default {
           this.$refs.media.getBoundingClientRect().width / 2,
         y:
           this.$refs.media.getBoundingClientRect().y +
-          this.$refs.media.getBoundingClientRect().height / 2,
+          this.$refs.media.getBoundingClientRect().height / 2
       };
 
       function angle(cx, cy, ex, ey) {
@@ -1200,7 +1175,7 @@ export default {
 
       if (this.is_rotated) {
         this.updateMediaPubliMeta({
-          rotate: this.rotate,
+          rotate: this.rotate
         });
         this.is_rotated = false;
       }
@@ -1278,7 +1253,7 @@ export default {
 
         this.updateMediaPubliMeta({
           x: this.mediaPos.x,
-          y: this.mediaPos.y,
+          y: this.mediaPos.y
         });
         this.is_dragged = false;
       }
@@ -1315,7 +1290,7 @@ export default {
       this.show_advanced_menu = false;
 
       this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
-        (meta) => meta !== this.media.publi_meta.metaFileName
+        meta => meta !== this.media.publi_meta.metaFileName
       );
     },
     mouseOver() {
@@ -1327,7 +1302,7 @@ export default {
       if (!this.is_touch) {
         this.is_hovered = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>

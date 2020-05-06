@@ -676,39 +676,6 @@ let vm = new Vue({
       let allAuthors = [];
       return Object.values(this.store.authors);
     },
-    allKeywords() {
-      let allKeywords = [];
-      for (let slugProjectName in this.store.projects) {
-        const project = this.store.projects[slugProjectName];
-        let projectKeywords = project.keywords;
-        if (!!projectKeywords) {
-          projectKeywords.map((val) => {
-            allKeywords.push(val.title);
-          });
-        }
-
-        if (
-          project.hasOwnProperty("medias") &&
-          Object.keys(project.medias).length > 0
-        ) {
-          Object.values(project.medias).map((m) => {
-            if (m.hasOwnProperty("keywords") && m.keywords.length > 0) {
-              allKeywords = allKeywords.concat(m.keywords.map((k) => k.title));
-            }
-          });
-        }
-      }
-      allKeywords = allKeywords.filter(function (item, pos) {
-        return allKeywords.indexOf(item) == pos;
-      });
-
-      return allKeywords.map((kw) => {
-        return {
-          text: kw,
-          classes: "tagcolorid_" + (parseInt(kw, 36) % 2),
-        };
-      });
-    },
     currentTime_human() {
       return this.$moment(this.currentTime).format("LL   LTS");
     },
@@ -727,6 +694,41 @@ let vm = new Vue({
     },
   },
   methods: {
+    allKeywords({ type = "projects" }) {
+      let allTypeKeywords = [];
+      for (let slugProjectName in this.store[type]) {
+        const folder = this.store[type][slugProjectName];
+        let folderKeywords = folder.keywords;
+        if (!!folderKeywords) {
+          folderKeywords.map((val) => {
+            allTypeKeywords.push(val.title);
+          });
+        }
+
+        if (
+          folder.hasOwnProperty("medias") &&
+          Object.keys(folder.medias).length > 0
+        ) {
+          Object.values(folder.medias).map((m) => {
+            if (m.hasOwnProperty("keywords") && m.keywords.length > 0) {
+              allTypeKeywords = allTypeKeywords.concat(
+                m.keywords.map((k) => k.title)
+              );
+            }
+          });
+        }
+      }
+      allTypeKeywords = allTypeKeywords.filter(function (item, pos) {
+        return allTypeKeywords.indexOf(item) == pos;
+      });
+
+      return allTypeKeywords.map((kw) => {
+        return {
+          text: kw,
+          classes: "tagcolorid_" + (parseInt(kw, 36) % 2),
+        };
+      });
+    },
     getAllKeywordsFrom(base) {
       let uniqueKeywords = [];
       Object.values(base).map((meta) => {

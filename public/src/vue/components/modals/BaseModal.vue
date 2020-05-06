@@ -7,7 +7,7 @@
         { is_invisible: !showModal },
         { is_minimized: is_minimized }
       ]"
-      @mousedown.self="/* closeModal */"
+      @mousedown.self="closeModal"
       :style="`height: ${$root.settings.windowHeight}px`"
     >
       <div
