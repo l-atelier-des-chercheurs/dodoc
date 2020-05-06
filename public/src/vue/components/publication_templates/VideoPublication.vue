@@ -123,7 +123,6 @@
               @click="
                 addMedia({
                   type: 'solid_color',
-                  right_after: media.publi_meta.metaFileName,
                 })
               "
             >{{ $t("add_solid_color") }}</button>
