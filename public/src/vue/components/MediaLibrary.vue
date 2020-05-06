@@ -72,10 +72,10 @@
 
       <div class="m_actionbar--text">
         <!-- {{ $t("showing") }} -->
-        <span :class="{ 'c-rouge': sortedMedias.length !== numberOfMedias }">
+        <span :class="{ 'c-rouge': sortedMedias.length !== allMedias.length }">
           {{ sortedMedias.length }}
           {{ $t("medias_of") }}
-          {{ numberOfMedias }}
+          {{ allMedias.length }}
         </span>
         <template v-if="$root.allKeywords.length >= 0">
           —
@@ -252,12 +252,6 @@ export default {
   },
 
   computed: {
-    numberOfMedias() {
-      if (!this.project.hasOwnProperty("medias")) {
-        return 0;
-      }
-      return Object.keys(this.project.medias).length;
-    },
     mediaKeywords() {
       // grab all keywords from this.project.medias
       return this.$root.getAllKeywordsFrom(this.project.medias);
@@ -268,13 +262,17 @@ export default {
     mediaTypes() {
       return this.$root.getAllTypesFrom(this.project.medias);
     },
-    filteredMedias: function () {
+    allMedias() {
       if (!this.project.medias || typeof this.project.medias !== "object") {
         return false;
       }
-      return Object.values(this.project.medias).filter((m) =>
-        this.$root.filterMedia(m)
+      const allMedias = Object.values(this.project.medias).filter(
+        (m) => !m.hasOwnProperty("_isAbsent") || m._isAbsent === false
       );
+      return allMedias;
+    },
+    filteredMedias: function () {
+      return this.allMedias.filter((m) => this.$root.filterMedia(m));
     },
     sortedMedias: function () {
       let sortedMedias = this.$_.sortBy(

@@ -3,10 +3,16 @@
     class="m_mediaMontagePublication"
     ref="media"
     :class="{
-      'is--waitingForServerResponse': is_waitingForServer
+      'is--waitingForServerResponse': is_waitingForServer,
     }"
   >
-    <template v-if="media.hasOwnProperty('type')">
+    <div v-if="media.is_missing">
+      {{ $t("linked_media_wasnt_found") }}
+      <br />
+      <small>{{ media.slugProjectName }}/{{ media.slugMediaName }}</small>
+    </div>
+
+    <template v-else-if="media.hasOwnProperty('type')">
       <MediaContent
         ref="mediaContent"
         :context="'full'"
@@ -61,7 +67,7 @@
     <div
       v-else-if="
         media.publi_meta.hasOwnProperty('type') &&
-          media.publi_meta.type === 'solid_color'
+        media.publi_meta.type === 'solid_color'
       "
       class="m_mediaMontagePublication--solidColor"
     >
@@ -95,7 +101,7 @@
       :content="$t('withdraw')"
       v-tippy="{
         placement: 'top',
-        delay: [600, 0]
+        delay: [600, 0],
       }"
     >
       <svg
@@ -108,7 +114,7 @@
         width="37.2px"
         height="37.2px"
         viewBox="0 0 37.2 37.2"
-        style="enable-background:new 0 0 37.2 37.2;"
+        style="enable-background: new 0 0 37.2 37.2;"
         xml:space="preserve"
       >
         <polygon
@@ -130,15 +136,15 @@ export default {
     read_only: Boolean,
     enable_image_timer: {
       type: Boolean,
-      default: false
+      default: false,
     },
     enable_set_video_volume: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   components: {
-    MediaContent
+    MediaContent,
   },
   data() {
     return {
@@ -147,7 +153,7 @@ export default {
         3 + 5
       )}`,
       seconds_per_image: this.media.publi_meta.duration,
-      volume: this.media.publi_meta.volume ? this.media.publi_meta.volume : 100
+      volume: this.media.publi_meta.volume ? this.media.publi_meta.volume : 100,
     };
   },
 
@@ -159,36 +165,36 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    "media.publi_meta.duration": function() {
+    "media.publi_meta.duration": function () {
       if (this.enable_image_timer) {
         this.seconds_per_image = this.media.publi_meta.duration;
       }
     },
-    seconds_per_image: function() {
+    seconds_per_image: function () {
       this.seconds_per_image = Math.min(
         999,
         Math.max(0, this.seconds_per_image)
       );
       if (this.media.publi_meta.duration !== this.seconds_per_image) {
         this.updateMediaPubliMeta({
-          duration: this.seconds_per_image
+          duration: this.seconds_per_image,
         });
       }
     },
-    "media.publi_meta.volume": function() {
+    "media.publi_meta.volume": function () {
       if (this.enable_set_video_volume) {
         this.volume = this.media.publi_meta.volume;
         this.$refs.mediaContent.setVolume(this.volume);
       }
     },
-    volume: function() {
+    volume: function () {
       this.volume = Math.min(100, Math.max(0, this.volume));
       if (this.media.publi_meta.volume !== this.volume) {
         this.updateMediaPubliMeta({
-          volume: this.volume
+          volume: this.volume,
         });
       }
-    }
+    },
   },
   computed: {
     solid_color_background() {
@@ -205,16 +211,16 @@ export default {
     media_dimensions() {
       if (
         !this.media.file_meta ||
-        !this.media.file_meta.find(m => m.hasOwnProperty("width")) ||
-        !this.media.file_meta.find(m => m.hasOwnProperty("height"))
+        !this.media.file_meta.find((m) => m.hasOwnProperty("width")) ||
+        !this.media.file_meta.find((m) => m.hasOwnProperty("height"))
       )
         return false;
       return (
-        this.media.file_meta.find(m => m.hasOwnProperty("width")).width +
+        this.media.file_meta.find((m) => m.hasOwnProperty("width")).width +
         " × " +
-        this.media.file_meta.find(m => m.hasOwnProperty("height")).height
+        this.media.file_meta.find((m) => m.hasOwnProperty("height")).height
       );
-    }
+    },
   },
   methods: {
     updateMediaPubliMeta(val) {
@@ -223,18 +229,18 @@ export default {
       }
       this.$emit("editPubliMedia", {
         slugMediaName: this.media.publi_meta.metaFileName,
-        val
+        val,
       });
     },
     removePubliMedia() {
       this.$emit("removePubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName
+        slugMediaName: this.media.publi_meta.metaFileName,
       });
     },
     volumeChanged(val) {
       this.volume = val;
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

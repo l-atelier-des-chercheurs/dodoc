@@ -1,5 +1,9 @@
 <template>
-  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
+  <div
+    class="m_publicationview"
+    :class="{ 'is--preview': preview_mode }"
+    ref="panel"
+  >
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -17,6 +21,7 @@
     />
 
     <div class="m_videoPublication">
+      {{ medias_slugs_in_order }}
       <div class="margin-medium" v-if="publication_medias.length === 0">
         <p>
           <small class="c-blanc" v-html="$t('add_multiple_videos_files')" />
@@ -24,7 +29,10 @@
       </div>
 
       <transition-group name="list-complete" :duration="300">
-        <div v-for="(media, index) in publication_medias" :key="media.publi_meta.metaFileName">
+        <div
+          v-for="(media, index) in publication_medias"
+          :key="media.publi_meta.metaFileName"
+        >
           <div class="switch switch-xs m_videoPublication--transitionToggle">
             <input
               class="switch"
@@ -39,9 +47,7 @@
               "
             />
             <label :for="'transition_in_' + media.publi_meta.metaFileName">
-              {{
-              $t("transition_fade")
-              }}
+              {{ $t("transition_fade") }}
             </label>
             <button
               type="button"
@@ -53,10 +59,15 @@
                   right_after: media.publi_meta.metaFileName,
                 })
               "
-            >{{ $t("add_solid_color") }}</button>
+            >
+              {{ $t("add_solid_color") }}
+            </button>
           </div>
 
-          <div class="m_videoPublication--media" :data-type="media.publi_meta.type">
+          <div
+            class="m_videoPublication--media"
+            :data-type="media.publi_meta.type"
+          >
             <MediaMontagePublication
               :media="media"
               :preview_mode="false"
@@ -75,9 +86,7 @@
               "
             />
             <span class="m_videoPublication--media--mediaNumber">
-              {{
-              index + 1
-              }}
+              {{ index + 1 }}
             </span>
             <div class="m_videoPublication--media--moveItemButtons">
               <button
@@ -114,9 +123,9 @@
                 })
               "
             />
-            <label
-              :for="'transition_out_' + media.publi_meta.metaFileName"
-            >{{ $t("transition_fade") }}</label>
+            <label :for="'transition_out_' + media.publi_meta.metaFileName">{{
+              $t("transition_fade")
+            }}</label>
             <button
               type="button"
               class="m_videoPublication--addSolidColor buttonLink bg-noir"
@@ -125,7 +134,9 @@
                   type: 'solid_color',
                 })
               "
-            >{{ $t("add_solid_color") }}</button>
+            >
+              {{ $t("add_solid_color") }}
+            </button>
           </div>
         </div>
       </transition-group>
@@ -147,25 +158,25 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     PublicationHeader,
     MediaMontagePublication,
-    ExportVideoPubliModal
+    ExportVideoPubliModal,
   },
   data() {
     return {
       show_export_modal: false,
       publication_medias: [],
-      medias_slugs_in_order: []
+      medias_slugs_in_order: [],
     };
   },
   created() {},
   mounted() {
     this.$root.settings.current_publication.accepted_media_type = [
       "video",
-      "image"
+      "image",
     ];
 
     this.$eventHub.$on("publication.addMedia", this.addMedia);
@@ -192,7 +203,7 @@ export default {
     this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {
-    "publication.medias": function() {
+    "publication.medias": function () {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`WATCH • Publication: publication.medias`);
       }
@@ -205,9 +216,9 @@ export default {
         }
         this.updateMediasPubli();
       },
-      deep: true
+      deep: true,
     },
-    "publication.medias_slugs": function() {
+    "publication.medias_slugs": function () {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`WATCH • Publication: publication.medias_slugs`);
       }
@@ -217,85 +228,88 @@ export default {
           ? this.publication.medias_slugs
           : [];
       this.updateMediasPubli();
-    }
+    },
   },
   computed: {},
   methods: {
     addMedia({ slugProjectName, metaFileName, type, right_after }) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: addMedia with
+      return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug") {
+          console.log(`METHODS • Publication: addMedia with
         slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
-      }
-
-      let additionalMeta = {};
-
-      if (slugProjectName && metaFileName) {
-        additionalMeta.slugProjectName = slugProjectName;
-        additionalMeta.desired_filename = metaFileName;
-        additionalMeta.slugMediaName = metaFileName;
-      }
-      if (type) additionalMeta.type = type;
-
-      this.$eventHub.$on("socketio.media_created_or_updated", d => {
-        this.$eventHub.$off("socketio.media_created_or_updated");
-
-        if (!!right_after) {
-          // this is much more complex than it could be because of possible missing medias
-          // in medias_slugs_in_order: medias that were added and then removed or part
-          // of a removed project
-          const index = this.medias_slugs_in_order.findIndex(
-            s => s.slugMediaName === right_after
-          );
-          this.medias_slugs_in_order.splice(index, 0, {
-            slugMediaName: d.metaFileName
-          });
-        } else {
-          this.medias_slugs_in_order.push({
-            slugMediaName: d.metaFileName
-          });
         }
 
-        this.$root.editFolder({
-          type: "publications",
-          slugFolderName: this.slugPubliName,
-          data: {
-            medias_slugs: this.medias_slugs_in_order
-          }
-        });
-      });
+        let additionalMeta = {};
 
-      this.$root.createMedia({
-        slugFolderName: this.slugPubliName,
-        type: "publications",
-        additionalMeta
+        if (slugProjectName && metaFileName) {
+          additionalMeta.slugProjectName = slugProjectName;
+          additionalMeta.desired_filename = metaFileName;
+          additionalMeta.slugMediaName = metaFileName;
+        }
+        if (type) additionalMeta.type = type;
+
+        this.$root
+          .createMedia({
+            slugFolderName: this.slugPubliName,
+            type: "publications",
+            additionalMeta,
+          })
+          .then((mdata) => {
+            const medias_slugs = JSON.parse(
+              JSON.stringify(this.medias_slugs_in_order)
+            );
+            if (!!right_after) {
+              // this is much more complex than it could be because of possible missing medias
+              // in medias_slugs_in_order: medias that were added and then removed or part
+              // of a removed project
+
+              const index = medias_slugs.findIndex(
+                (s) => s.slugMediaName === right_after
+              );
+              medias_slugs.splice(index, 0, {
+                slugMediaName: mdata.metaFileName,
+              });
+            } else {
+              medias_slugs.push({
+                slugMediaName: mdata.metaFileName,
+              });
+            }
+
+            this.$root.editFolder({
+              type: "publications",
+              slugFolderName: this.slugPubliName,
+              data: {
+                medias_slugs: medias_slugs,
+              },
+            });
+          });
       });
     },
     removePubliMedia({ slugMediaName }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • Publication: removeMedia / slugMediaName = ${slugMediaName}`
+          `METHODS • Publication: removePubliMedia / slugMediaName = ${slugMediaName}`
         );
       }
 
-      this.$root.removeMedia({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        slugMediaName
-      });
-
-      if (this.medias_slugs_in_order.length > 0) {
-        this.medias_slugs_in_order = this.medias_slugs_in_order.filter(
-          m => m.slugMediaName !== slugMediaName
-        );
-      }
-
-      this.$root.editFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        data: {
-          medias_slugs: this.medias_slugs_in_order
-        }
-      });
+      const medias_slugs = this.medias_slugs_in_order.filter(
+        (m) => m.slugMediaName !== slugMediaName
+      );
+      this.$root
+        .editFolder({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          data: {
+            medias_slugs,
+          },
+        })
+        .then(() => {
+          this.$root.removeMedia({
+            type: "publications",
+            slugFolderName: this.slugPubliName,
+            slugMediaName,
+          });
+        });
     },
     editPubliMedia({ slugMediaName, val }) {
       if (this.$root.state.dev_mode === "debug") {
@@ -312,7 +326,7 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName,
-        data: val
+        data: val,
       });
     },
     toggleTransition({ position, metaFileName }) {
@@ -323,7 +337,7 @@ export default {
       let val = {};
 
       const media = this.publication_medias.find(
-        m => m.publi_meta.metaFileName === metaFileName
+        (m) => m.publi_meta.metaFileName === metaFileName
       );
 
       if (
@@ -394,13 +408,16 @@ export default {
             console.log(`Some medias missing from client`);
             missingMedias.push({
               slugFolderName: slugProjectName,
-              metaFileName: slugMediaName
+              metaFileName: slugMediaName,
             });
             return acc;
           } else {
             let meta = JSON.parse(
               JSON.stringify(project_medias[slugMediaName])
             );
+            meta.publi_meta = JSON.parse(JSON.stringify(_media));
+            meta.slugProjectName = slugProjectName;
+            meta.slugMediaName = slugMediaName;
 
             if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
               console.error(
@@ -409,11 +426,9 @@ export default {
               console.error(
                 `Media was probably added to the publication before it was removed.`
               );
-              return acc;
-            }
 
-            meta.slugProjectName = slugProjectName;
-            meta.publi_meta = JSON.parse(JSON.stringify(_media));
+              meta.is_missing = true;
+            }
 
             acc.push(meta);
             return acc;
@@ -421,7 +436,7 @@ export default {
         } else {
           // not a reference to a project’s media : most probably a solid color
           let meta = {
-            publi_meta: JSON.parse(JSON.stringify(_media))
+            publi_meta: JSON.parse(JSON.stringify(_media)),
           };
           acc.push(meta);
           return acc;
@@ -436,35 +451,44 @@ export default {
       if (missingMedias.length > 0) {
         this.$root.listSpecificMedias({
           type: "projects",
-          medias_list: missingMedias
+          medias_list: missingMedias,
         });
       }
 
       this.publication_medias = publi_medias;
     },
     move(metaFileName, dir) {
-      const idx = this.medias_slugs_in_order.findIndex(
-        m => m.slugMediaName === metaFileName
-      );
-      console.log(
-        `METHODS • VideoPublication: move idx = ${idx} and dir = ${dir}`
+      // find index in medias_slugs_in_order
+      const current_index_in_slugs = this.medias_slugs_in_order.findIndex(
+        (m) => m.slugMediaName === metaFileName
       );
 
-      if (dir < 0) {
-        this.medias_slugs_in_order.move(idx, idx + dir);
-      } else if (dir > 0) {
-        this.medias_slugs_in_order.move(idx + dir, idx);
-      }
+      const current_media_index = this.publication_medias.findIndex(
+        (m) => m.publi_meta.metaFileName === metaFileName
+      );
+      const adjacent_media_meta = this.publication_medias[
+        current_media_index + dir
+      ].publi_meta.metaFileName;
+
+      const new_index_in_slugs = this.medias_slugs_in_order.findIndex(
+        (m) => m.slugMediaName === adjacent_media_meta
+      );
+
+      const medias_slugs = JSON.parse(
+        JSON.stringify(this.medias_slugs_in_order)
+      );
+
+      medias_slugs.move(current_index_in_slugs, new_index_in_slugs);
 
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          medias_slugs: this.medias_slugs_in_order
-        }
+          medias_slugs,
+        },
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

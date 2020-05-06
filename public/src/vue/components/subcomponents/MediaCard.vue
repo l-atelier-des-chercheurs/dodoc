@@ -7,6 +7,7 @@
       'is--ownMedia': media_made_by_current_author,
       'is--selected': is_selected,
     }"
+    v-if="!media._isAbsent"
   >
     <div>
       <figure
