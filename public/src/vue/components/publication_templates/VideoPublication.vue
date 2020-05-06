@@ -71,7 +71,6 @@
               :read_only="read_only"
               :enable_image_timer="true"
               :enable_set_video_volume="true"
-                }
               @removePubliMedia="$emit('removePubliMedia', $event)"
               @editPubliMedia="$emit('editPubliMedia', $event)"
             />
