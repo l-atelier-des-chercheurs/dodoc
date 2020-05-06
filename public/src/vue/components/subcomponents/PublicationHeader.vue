@@ -291,7 +291,7 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    medias: [Boolean, Array, Object],
+    medias: Array,
     number_of_medias_required: {
       type: Number,
       default: -1,
@@ -338,12 +338,13 @@ export default {
     export_button_is_disabled() {
       if (!this.enable_export_button) return true;
       if (!this.can_edit_publi()) return true;
+      debugger;
 
-      if (Object.values(this.medias).length < 1) return true;
+      if (this.medias.length < 1) return true;
 
       if (
         this.number_of_medias_required !== -1 &&
-        Object.values(this.medias).length !== this.number_of_medias_required
+        this.medias.length !== this.number_of_medias_required
       )
         return true;
 

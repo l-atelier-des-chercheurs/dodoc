@@ -645,7 +645,7 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    medias: Array,
+    paged_medias: Object,
     read_only: Boolean,
   },
   components: {
@@ -703,12 +703,7 @@ export default {
   },
   mounted() {
     this.$eventHub.$on("publication.addMedia", this.addMedia);
-    // this.$eventHub.$on(
-    //   "socketio.projects.listSpecificMedias",
-    //   this.updateMediasPubli
-    // );
     document.addEventListener("keyup", this.publicationKeyListener);
-    // this.updateMediasPubli();
 
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty("mmMeasurer")
       ? this.$refs.mmMeasurer.offsetWidth / 10
@@ -721,18 +716,9 @@ export default {
         this.updatePageSizeAccordingToPanel
       );
     });
-
-    document.getElementsByTagName("body")[0].style = `
-      --page-width: ${this.publications_options.width}mm;
-      --page-height: ${this.publications_options.height}mm
-    `;
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.addMedia", this.addMedia);
-    // this.$eventHub.$off(
-    //   "socketio.projects.listSpecificMedias",
-    //   this.updateMediasPubli
-    // );
     document.removeEventListener("keyup", this.publicationKeyListener);
 
     this.$eventHub.$off(
@@ -742,12 +728,6 @@ export default {
   },
 
   watch: {
-    "publication.medias": function () {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`WATCH • Publication: publication.medias`);
-      }
-      // this.updateMediasPubli();
-    },
     show_buttons: function () {
       this.show_advanced_menu_for_page = false;
       this.show_advanced_option = false;
@@ -757,21 +737,14 @@ export default {
         if (this.$root.state.dev_mode === "debug") {
           console.log(`WATCH • Publication: publications_options`);
         }
+
         document.getElementsByTagName("body")[0].style = `
           --page-width: ${this.publications_options.width}mm;
           --page-height: ${this.publications_options.height}mm
         `;
       },
       deep: true,
-    },
-    "$root.store.projects": {
-      handler() {
-        if (this.$root.state.dev_mode === "debug")
-          console.log(`WATCH • Publication: $root.store.projects`);
-
-        // this.updateMediasPubli();
-      },
-      deep: true,
+      immediate: true,
     },
     preview_mode: function () {
       if (!this.preview_mode && !this.can_edit_publi) {
@@ -798,9 +771,6 @@ export default {
     },
   },
   computed: {
-    paged_medias() {
-      return this.$_.groupBy(this.medias, "page_id");
-    },
     opened_single_page() {
       if (this.opened_page_index === false) return false;
       return this.pagesWithDefault[this.opened_page_index];
