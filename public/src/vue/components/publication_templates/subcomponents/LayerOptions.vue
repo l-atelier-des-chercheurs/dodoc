@@ -86,11 +86,7 @@
         </div>
       </div>
       <div v-else-if="current_layer.type === 'medias'">
-        <PublicationButtons
-          :page_medias="[]"
-          :slugPubliName=""
-          @addMedia="createPubliMedia"
-        />
+        <PublicationButtons :page_medias="[]" @addMedia="createPubliMedia" />
       </div>
     </div>
   </div>
