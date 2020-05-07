@@ -52,31 +52,29 @@
       @addMedia="addMediaOrdered"
     />
 
-    <!--
-
     <MixAudioAndVideo
-      v-else-if="
-        $root.store.publications[$root.settings.current_publication.slug]
-          .template === 'mix_audio_and_video'
-      "
-      :slugPubliName="$root.settings.current_publication.slug"
-      :publication="
-        $root.store.publications[$root.settings.current_publication.slug]
-      "
-      :read_only="!$root.state.connected"
+      v-else-if="publication.template === 'mix_audio_and_video'"
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      :medias_in_order="medias_in_order"
+      :read_only="read_only"
+      @removePubliMedia="orderedRemovePubliMedia"
+      @editPubliMedia="editPubliMedia"
+      @editPubliFolder="editPubliFolder"
+      @addMedia="addMediaOrdered"
     />
+
     <MixAudioAndImage
-      v-else-if="
-        $root.store.publications[$root.settings.current_publication.slug]
-          .template === 'mix_audio_and_image'
-      "
-      :slugPubliName="$root.settings.current_publication.slug"
-      :publication="
-        $root.store.publications[$root.settings.current_publication.slug]
-      "
-      :read_only="!$root.state.connected"
+      v-else-if="publication.template === 'mix_audio_and_image'"
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      :medias_in_order="medias_in_order"
+      :read_only="read_only"
+      @removePubliMedia="orderedRemovePubliMedia"
+      @editPubliMedia="editPubliMedia"
+      @editPubliFolder="editPubliFolder"
+      @addMedia="addMediaOrdered"
     />
-    -->
     <!-- <Carreau
       v-if="
         $root.settings.current_publication.slug !== false &&
@@ -112,6 +110,8 @@ export default {
     VideoEffects,
     DrawingPad,
     StopmotionAnimation,
+    MixAudioAndVideo,
+    MixAudioAndImage,
   },
   data() {
     return {

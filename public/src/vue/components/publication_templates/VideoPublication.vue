@@ -174,16 +174,15 @@ export default {
   },
   created() {},
   mounted() {
+    this.$eventHub.$on("publication.addMedia", this.addMedia);
     this.$root.settings.current_publication.accepted_media_type = [
       "video",
       "image",
     ];
-
-    this.$eventHub.$on("publication.addMedia", this.addMedia);
   },
   beforeDestroy() {
-    this.$root.settings.current_publication.accepted_media_type = [];
     this.$eventHub.$off("publication.addMedia", this.addMedia);
+    this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {},
   computed: {},
