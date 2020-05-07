@@ -8,6 +8,17 @@
       :read_only="read_only"
       @addMedia="addMedia"
     />
+    <Story
+      v-if="publication.template === 'story'"
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      :medias_in_order="medias_in_order"
+      :read_only="read_only"
+      @removePubliMedia="orderedRemovePubliMedia"
+      @editPubliMedia="editPubliMedia"
+      @changeMediaOrder="changeMediaOrder"
+      @addMedia="addMediaOrdered"
+    />
     <VideoPublication
       v-else-if="publication.template === 'video_assemblage'"
       :slugPubliName="slugPubliName"
@@ -91,6 +102,7 @@
 </template>
 <script>
 import PagePublication from "./components/publication_templates/PagePublication.vue";
+import Story from "./components/publication_templates/Story.vue";
 import VideoPublication from "./components/publication_templates/VideoPublication.vue";
 import DrawingPad from "./components/publication_templates/DrawingPad.vue";
 import VideoEffects from "./components/publication_templates/VideoEffects.vue";
@@ -106,6 +118,7 @@ export default {
   },
   components: {
     PagePublication,
+    Story,
     VideoPublication,
     VideoEffects,
     DrawingPad,

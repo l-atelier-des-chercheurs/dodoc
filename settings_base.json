@@ -257,7 +257,8 @@
             "mix_audio_and_video",
             "mix_audio_and_image",
             "drawing_pad",
-            "video_effects"
+            "video_effects",
+            "story"
           ],
           "default": "page_by_page"
         },

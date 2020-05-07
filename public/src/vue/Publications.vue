@@ -196,6 +196,15 @@ export default {
 
       recipes: [
         {
+          key: "story",
+          summary: "story_summary",
+          show_instructions: false,
+          instructions: "story_instructions",
+          show_all_recipes: false,
+          icon: `
+          `,
+        },
+        {
           key: "page_by_page",
           summary: "page_by_page_summary",
           show_instructions: false,

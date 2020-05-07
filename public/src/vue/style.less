@@ -4474,7 +4474,8 @@ small {
     &.m_publicationMeta {
       flex: 0 0 auto;
     }
-    &.m_videoPublication {
+    &.m_videoPublication,
+    &.m_storyPublication {
       overflow-y: auto;
 
       .custom_scrollbar(8px, 5px, 6px);
@@ -5356,6 +5357,112 @@ small {
           bottom: 0;
         }
       }
+    }
+  }
+}
+
+.m_storyPublication {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+
+  .padding-vert-medium;
+  .padding-sides-medium;
+
+  .m_storyPublication--media {
+    position: relative;
+    .padding-sides-medium;
+    .padding-vert-small;
+    .bg-blanc;
+    max-width: 600px;
+    margin: 0 auto;
+
+    .mediaContainer {
+      position: relative;
+      &.type-image {
+        border-radius: @t-buttonradius;
+        overflow: hidden;
+        height: 40vh;
+        .bg-creme;
+
+        img {
+          object-fit: scale-down;
+          height: 100%;
+        }
+      }
+
+      &.type-video {
+        max-height: 40vh;
+        .plyr {
+          border-radius: @t-buttonradius;
+        }
+        .plyr--video,
+        .plyr__video-wrapper,
+        .plyr__poster {
+          background-color: transparent;
+        }
+        img {
+          object-fit: contain;
+          background: transparent;
+        }
+      }
+
+      &.type-stl {
+        iframe {
+          border: 2px solid @c-gris_tresclair;
+          .bg-gris_tresclair;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  .m_storyPublication--media--moveItemButtons {
+    position: absolute;
+    left: -24px;
+    top: 0;
+    height: 100%;
+    width: 24px;
+
+    > * {
+      background-color: transparent;
+      color: @c-bleuvert_fonce;
+      // opacity: 0.4;
+      transition: opacity 0.4s;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .m_storyPublication--media--moveItemButton--before,
+    .m_storyPublication--media--moveItemButton--after {
+      transform: rotate(90deg);
+      display: block;
+      position: absolute;
+      right: 0;
+      padding: 0;
+      min-height: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+
+      &:hover {
+        background-color: @c-bleuvert_fonce;
+      }
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    .m_storyPublication--media--moveItemButton--before {
+      top: 0;
+    }
+    .m_storyPublication--media--moveItemButton--after {
+      bottom: 0;
     }
   }
 }

@@ -616,7 +616,6 @@ export default {
     page: Object,
     read_only: Boolean,
     preview_mode: Boolean,
-    lowdef: Boolean,
     pixelsPerMillimeters: Number,
     zoom: Number,
   },

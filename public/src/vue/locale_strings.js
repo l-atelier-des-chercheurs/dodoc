@@ -2358,6 +2358,18 @@ module.exports = (function () {
       oc: "Document pagina per pagina",
       de: "Seite zu Seite Dokument",
     },
+    story: {
+      fr: "Récit",
+      en: "Story",
+    },
+    story_summary: {
+      fr: "",
+      en: "",
+    },
+    story_instructions: {
+      fr: "",
+      en: "",
+    },
     carreau: {
       fr: "Carreau",
       nl: "Tegel",
