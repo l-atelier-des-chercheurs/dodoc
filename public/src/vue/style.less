@@ -113,6 +113,7 @@ body {
   }
   &.plyr--audio {
     .plyr__controls {
+      margin: 0;
       .plyr__volume {
         margin-right: 5px;
       }
@@ -1423,10 +1424,6 @@ small {
 
   &.is--selected {
     border: 4px dashed @c-bleuvert !important;
-  }
-
-  ._advanced_menu {
-    right: 5px;
   }
 
   .m_project--presentation {
@@ -4474,7 +4471,8 @@ small {
     &.m_publicationMeta {
       flex: 0 0 auto;
     }
-    &.m_videoPublication {
+    &.m_videoPublication,
+    &.m_storyPublication {
       overflow-y: auto;
 
       .custom_scrollbar(8px, 5px, 6px);
@@ -5360,6 +5358,234 @@ small {
   }
 }
 
+.m_storyPublication {
+  .padding-vert-medium;
+  .padding-sides-medium;
+
+  .m_storyPublication--content {
+    .bg-blanc;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+    border-radius: @t-buttonradius;
+    .padding-vert-verysmall;
+
+    > span::after {
+      content: "";
+      position: relative;
+      height: 1px;
+      display: block;
+      width: 100%;
+      .margin-small;
+    }
+  }
+
+  .m_mediaStory {
+    position: relative;
+    .padding-vert-verysmall;
+    .padding-sides-medium;
+    margin: 0 auto;
+
+    // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    // border-radius: 4px;
+  }
+}
+
+@t-storyButtons: 24px;
+@t-marginFromDoc: 0;
+
+.m_mediaStory--moveItemButtons {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  height: 100%;
+  width: @t-storyButtons;
+  margin: 0;
+  margin-left: @t-marginFromDoc;
+
+  background-color: @c-bleuvert_fonce;
+  // border: 2px solid @c-bleuvert_fonce;
+  border-radius: @t-storyButtons / 2;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+
+  color: @c-noir;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--visible {
+    opacity: 1;
+  }
+
+  .m_mediaStory--moveItemButton--before,
+  .m_mediaStory--moveItemButton--after,
+  .m_mediaStory--moveItemButton--options > button {
+    background-color: transparent;
+    display: block;
+    right: 0;
+    padding: 0;
+    min-height: 0;
+    width: @t-storyButtons;
+    height: @t-storyButtons;
+    border-radius: 50%;
+    // transform: rotate(90deg);
+    transform: rotate(90deg);
+
+    &:hover {
+      background-color: @c-bleuvert;
+    }
+    img,
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .m_mediaStory--moveItemButton--options {
+    position: relative;
+    > button {
+      padding: 4px;
+      transform: rotate(90deg);
+    }
+
+    ._advanced_menu {
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translate(0, -50%);
+
+      button {
+        .bg-orange;
+        color: @c-noir;
+      }
+    }
+  }
+}
+
+.m_insertMediaButton {
+  position: relative;
+  .bg-blanc;
+  min-height: @t-storyButtons;
+
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--open {
+    // background-color: @c-noir;
+  }
+
+  .m_insertMediaButton--toggleButton {
+    // font-size: 0.4rem;
+    order: 2;
+    position: absolute;
+    left: 100%;
+    padding: 0;
+    min-height: 0;
+    line-height: 1;
+    width: @t-storyButtons;
+    height: 100%;
+    border-radius: @t-storyButtons / 2;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+
+    margin-left: @t-marginFromDoc;
+
+    background-color: transparent;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &::before {
+      content: "+";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 5px;
+      height: 5px;
+      padding-left: 1px;
+      border-radius: 50%;
+      font-weight: 500;
+      font-size: 1.3em;
+      text-align: center;
+      // background-color: @c-noir;
+    }
+    &:hover {
+      background-color: @c-bleuvert_fonce;
+    }
+
+    &.is--active {
+      // background-color: @c-bleuvert_fonce;
+    }
+  }
+
+  .m_insertMediaButton--menu {
+    .padding-verysmall;
+    overflow: hidden;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // background-color: @c-bleuvert;
+
+    .barButton {
+      .margin-small;
+    }
+  }
+  // right: 100%;
+}
+
+.m_mediaStory {
+  min-height: 3 * @t-storyButtons;
+
+  .mediaContainer {
+    position: relative;
+    &.type-image {
+      border-radius: @t-buttonradius;
+      overflow: hidden;
+      height: 40vh;
+      .bg-creme;
+
+      img {
+        object-fit: scale-down;
+        height: 100%;
+      }
+    }
+
+    &.type-video {
+      max-height: 40vh;
+
+      .plyr {
+        border-radius: @t-buttonradius;
+      }
+      .plyr--video,
+      .plyr__video-wrapper,
+      .plyr__poster {
+        background-color: transparent;
+      }
+      img {
+        object-fit: contain;
+        background: transparent;
+      }
+    }
+
+    &.type-stl {
+      iframe {
+        border: 2px solid @c-gris_tresclair;
+        .bg-gris_tresclair;
+        width: 100%;
+        height: 40vh;
+      }
+    }
+  }
+}
+
 .m_videoEffects {
   display: flex;
   flex-flow: row wrap;
@@ -5645,10 +5871,19 @@ small {
 
   .padding-small;
 
-  &::before {
-  }
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  background-color: @c-noir;
+  pointer-events: auto;
 
-  button {
+  width: 240px;
+  .margin-small;
+  border: 0;
+
+  > button {
+    min-width: 2.2rem;
+    min-height: 2.2rem;
     margin-left: ~"calc(-1/4 * var(--spacing))";
     margin-top: ~"calc( -1/4 * var(--spacing))";
   }
@@ -6141,24 +6376,6 @@ small {
 
     display: flex;
     justify-content: flex-end;
-
-    ._advanced_menu {
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: space-around;
-      background-color: @c-noir;
-      pointer-events: auto;
-
-      padding: 0;
-      width: 240px;
-      .margin-small;
-      border: 0;
-
-      > button {
-        min-width: 2.2rem;
-        min-height: 2.2rem;
-      }
-    }
 
     > button {
     }

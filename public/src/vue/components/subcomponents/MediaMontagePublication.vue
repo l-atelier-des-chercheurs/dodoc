@@ -6,30 +6,43 @@
       'is--waitingForServerResponse': is_waitingForServer,
     }"
   >
-    <div v-if="media.is_missing">
+    <div
+      v-if="
+        media.hasOwnProperty('_linked_media') &&
+        media._linked_media.hasOwnProperty('_isAbsent')
+      "
+    >
       {{ $t("linked_media_wasnt_found") }}
       <br />
-      <small>{{ media.slugProjectName }}/{{ media.slugMediaName }}</small>
+      <small
+        >{{ media._linked_media.slugProjectName }}/{{
+          media._linked_media.slugMediaName
+        }}</small
+      >
     </div>
 
-    <template v-else-if="media.hasOwnProperty('type')">
+    <template v-else-if="media.hasOwnProperty('_linked_media')">
       <MediaContent
         ref="mediaContent"
         :context="'full'"
-        :slugFolderName="media.slugProjectName"
-        :media="media"
+        :slugFolderName="media._linked_media.slugProjectName"
+        :media="media._linked_media"
         :read_only="read_only"
-        v-model="media.content"
+        v-model="media._linked_media.content"
         :audio_volume="volume"
         @volumeChanged="volumeChanged"
       />
 
-      <p class="mediaCaption">{{ media.caption }}</p>
+      <p class="mediaCaption" v-if="!!media._linked_media.caption">
+        {{ media._linked_media.caption }}
+      </p>
 
       <div class="margin-top-small">
         <div class="m_metaField">
           <div>{{ $t("project") }}</div>
-          <div>{{ $root.store.projects[media.slugProjectName].name }}</div>
+          <div>
+            {{ $root.store.projects[media._linked_media.slugProjectName].name }}
+          </div>
         </div>
         <div
           class="m_metaField"
@@ -40,7 +53,9 @@
             {{ original_media_duration }}
           </div>
           <div
-            v-else-if="enable_image_timer && media.type === 'image'"
+            v-else-if="
+              enable_image_timer && media._linked_media.type === 'image'
+            "
             class="m_mediaMontagePublication--set_props"
           >
             <input type="number" v-model.number="seconds_per_image" step="1" />
@@ -54,7 +69,7 @@
 
         <div
           class="m_metaField"
-          v-if="enable_set_video_volume && media.type === 'video'"
+          v-if="enable_set_video_volume && media._linked_media.type === 'video'"
         >
           <div>{{ $t("volume") }}</div>
           <div class="m_mediaMontagePublication--set_props">
@@ -65,10 +80,7 @@
     </template>
 
     <div
-      v-else-if="
-        media.publi_meta.hasOwnProperty('type') &&
-        media.publi_meta.type === 'solid_color'
-      "
+      v-else-if="media.type === 'solid_color'"
       class="m_mediaMontagePublication--solidColor"
     >
       <div
@@ -77,11 +89,11 @@
       >
         <input
           type="color"
-          :id="`solidcolor + ${media.publi_meta.metaFileName}`"
-          :value="media.publi_meta.color"
+          :id="`solidcolor + ${media.metaFileName}`"
+          :value="media.color"
           @change="updateMediaPubliMeta({ color: $event.target.value })"
         />
-        <label :for="`solidcolor + ${media.publi_meta.metaFileName}`">{{
+        <label :for="`solidcolor + ${media.metaFileName}`">{{
           $t("select_color")
         }}</label>
       </div>
@@ -152,8 +164,8 @@ export default {
         2,
         3 + 5
       )}`,
-      seconds_per_image: this.media.publi_meta.duration,
-      volume: this.media.publi_meta.volume ? this.media.publi_meta.volume : 100,
+      seconds_per_image: this.media.duration,
+      volume: this.media.volume ? this.media.volume : 100,
     };
   },
 
@@ -165,9 +177,9 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    "media.publi_meta.duration": function () {
+    "media.duration": function () {
       if (this.enable_image_timer) {
-        this.seconds_per_image = this.media.publi_meta.duration;
+        this.seconds_per_image = this.media.duration;
       }
     },
     seconds_per_image: function () {
@@ -175,21 +187,21 @@ export default {
         999,
         Math.max(0, this.seconds_per_image)
       );
-      if (this.media.publi_meta.duration !== this.seconds_per_image) {
+      if (this.media.duration !== this.seconds_per_image) {
         this.updateMediaPubliMeta({
           duration: this.seconds_per_image,
         });
       }
     },
-    "media.publi_meta.volume": function () {
+    "media.volume": function () {
       if (this.enable_set_video_volume) {
-        this.volume = this.media.publi_meta.volume;
+        this.volume = this.media.volume;
         this.$refs.mediaContent.setVolume(this.volume);
       }
     },
     volume: function () {
       this.volume = Math.min(100, Math.max(0, this.volume));
-      if (this.media.publi_meta.volume !== this.volume) {
+      if (this.media.volume !== this.volume) {
         this.updateMediaPubliMeta({
           volume: this.volume,
         });
@@ -198,27 +210,41 @@ export default {
   },
   computed: {
     solid_color_background() {
-      if (this.media.publi_meta.color)
-        return `background-color: ${this.media.publi_meta.color}`;
+      if (this.media.color) return `background-color: ${this.media.color}`;
       return `background-color: #000`;
     },
     original_media_duration() {
-      if (this.media.duration) {
-        return this.$moment.utc(this.media.duration * 1000).format("mm:ss");
+      if (
+        this.media.hasOwnProperty("_linked_media") &&
+        this.media._linked_media.duration
+      ) {
+        return this.$moment
+          .utc(this.media._linked_media.duration * 1000)
+          .format("mm:ss");
       }
       return false;
     },
     media_dimensions() {
       if (
-        !this.media.file_meta ||
-        !this.media.file_meta.find((m) => m.hasOwnProperty("width")) ||
-        !this.media.file_meta.find((m) => m.hasOwnProperty("height"))
+        !this.media.hasOwnProperty("_linked_media") ||
+        !this.media._linked_media.file_meta ||
+        !this.media._linked_media.file_meta.find((m) =>
+          m.hasOwnProperty("width")
+        ) ||
+        !this.media._linked_media.file_meta.find((m) =>
+          m.hasOwnProperty("height")
+        )
       )
         return false;
+
       return (
-        this.media.file_meta.find((m) => m.hasOwnProperty("width")).width +
+        this.media._linked_media.file_meta.find((m) =>
+          m.hasOwnProperty("width")
+        ).width +
         " × " +
-        this.media.file_meta.find((m) => m.hasOwnProperty("height")).height
+        this.media._linked_media.file_meta.find((m) =>
+          m.hasOwnProperty("height")
+        ).height
       );
     },
   },
@@ -228,13 +254,13 @@ export default {
         console.log(`METHODS • MediaMontagePublication: updateMediaPubliMeta`);
       }
       this.$emit("editPubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName,
+        metaFileName: this.media.metaFileName,
         val,
       });
     },
     removePubliMedia() {
       this.$emit("removePubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName,
+        metaFileName: this.media.metaFileName,
       });
     },
     volumeChanged(val) {

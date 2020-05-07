@@ -1,9 +1,13 @@
 <template>
-  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
+  <div
+    class="m_publicationview"
+    :class="{ 'is--preview': preview_mode }"
+    ref="panel"
+  >
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
-      :publication_medias="publication_medias"
+      :medias="layered_medias"
       @export="show_export_modal = true"
       @close="$root.closePublication"
     />
@@ -72,13 +76,22 @@
           style="enable-background: new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
-          <polygon class="st0" points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	" />
+          <polygon
+            class="st0"
+            points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"
+          />
           <polygon
             class="st0"
             points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
           />
-          <polygon class="st0" points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	" />
-          <polygon class="st0" points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	" />
+          <polygon
+            class="st0"
+            points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
+          />
+          <polygon
+            class="st0"
+            points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
+          />
         </svg>
         <svg
           version="1.1"
@@ -94,13 +107,22 @@
           style="enable-background: new 0 0 133.3 133.2;"
           xml:space="preserve"
         >
-          <polygon class="st0" points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	" />
+          <polygon
+            class="st0"
+            points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"
+          />
           <polygon
             class="st0"
             points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
           />
-          <polygon class="st0" points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	" />
-          <polygon class="st0" points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	" />
+          <polygon
+            class="st0"
+            points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
+          />
+          <polygon
+            class="st0"
+            points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
+          />
         </svg>
       </button>
       <button
@@ -124,7 +146,9 @@
           xml:space="preserve"
         >
           <defs />
-          <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
+          <path
+            d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"
+          />
         </svg>
       </button>
       <button
@@ -162,14 +186,17 @@
         ].includes($root.state.mode) && !preview_mode
       "
       :layers="layers"
+      :layered_medias="layered_medias"
       :publication="publication"
       :slugPubliName="slugPubliName"
-      :medias="publication.medias"
     />
 
     <div class="m_drawingPad" ref="current_page">
       <div class="m_drawingPad--content" :style="pad_size">
-        <div :key="'background'" class="m_drawingPad--layer m_drawingPad--layer_background">
+        <div
+          :key="'background'"
+          class="m_drawingPad--layer m_drawingPad--layer_background"
+        >
           <div
             class="m_drawingPad--layer--backgroundContainer"
             :style="`width: ${publication.width * zoom}mm; height: ${
@@ -210,7 +237,7 @@
             "
             :slugPubliName="slugPubliName"
             :page="layerOptions(layer)"
-            :publication_medias="publication_medias[layer.id]"
+            :publication_medias="layered_medias[layer.id]"
             :read_only="read_only"
             :pixelsPerMillimeters="pixelsPerMillimeters"
             :zoom="zoom"
@@ -252,19 +279,19 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    read_only: Boolean
+    layered_medias: Object,
+    read_only: Boolean,
   },
   components: {
     PublicationHeader,
     ExportPagePubli,
     DrawingLayer,
     PagePublicationSinglePage,
-    LayerPanel
+    LayerPanel,
   },
   data() {
     return {
       show_export_modal: false,
-      publication_medias: {},
       accepted_media_type: ["audio", "video"],
 
       preview_mode: this.$root.state.mode !== "live",
@@ -273,7 +300,7 @@ export default {
       zoom_min: 0.2,
       zoom_max: 2,
 
-      pixelsPerMillimeters: 0
+      pixelsPerMillimeters: 0,
     };
   },
   created() {
@@ -306,42 +333,17 @@ export default {
     }
 
     this.$eventHub.$on("publication.addMedia", this.addMedia);
-    this.$eventHub.$on(
-      "socketio.projects.listSpecificMedias",
-      this.updateMediasPubli
-    );
 
     this.$eventHub.$off(
       "activity_panels_resized",
       this.updatePageSizeAccordingToPanel
     );
-
-    this.updateMediasPubli();
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.addMedia", this.addMedia);
-    this.$eventHub.$off(
-      "socketio.projects.listSpecificMedias",
-      this.updateMediasPubli
-    );
   },
   watch: {
-    "publication.medias": function() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`WATCH • Publication: publication.medias`);
-      }
-      this.updateMediasPubli();
-    },
-    "$root.store.projects": {
-      handler() {
-        if (this.$root.state.dev_mode === "debug") {
-          console.log(`WATCH • Publication: $root.store.projects`);
-        }
-        this.updateMediasPubli();
-      },
-      deep: true
-    },
-    preview_mode: function() {
+    preview_mode: function () {
       if (!this.preview_mode && !this.can_edit_publi) {
         this.$alertify
           .closeLogOnClick(true)
@@ -350,25 +352,25 @@ export default {
         this.preview_mode = true;
       }
     },
-    zoom: function() {
+    zoom: function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: zoom`);
 
       this.zoom = Math.min(this.zoom_max, Math.max(this.zoom_min, this.zoom));
       this.$root.setPublicationZoom(this.zoom);
     },
-    "$root.settings.publi_zoom": function() {
+    "$root.settings.publi_zoom": function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: $root.settings.publi_zoom`);
 
       this.zoom = this.$root.settings.publi_zoom;
-    }
+    },
   },
   computed: {
     can_edit_publi() {
       return this.$root.canEditFolder({
         type: "publications",
-        slugFolderName: this.slugPubliName
+        slugFolderName: this.slugPubliName,
       });
     },
     layers() {
@@ -390,69 +392,40 @@ export default {
         [
           "export_publication",
           "print_publication",
-          "link_publication"
+          "link_publication",
         ].includes(this.$root.state.mode)
       ) {
         return `width: ${this.publication.width}mm; height: ${this.publication.height}mm;`;
       }
-    }
+    },
   },
   methods: {
-    addMedia({ slugProjectName, metaFileName, values }) {
+    addMedia({ values = {} }) {
       return new Promise((resolve, reject) => {
-        if (this.$root.state.dev_mode === "debug") {
-          console.log(`METHODS • DrawingPad: addMedia with
-        slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
-        }
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`DrawingPad • METHODS: addMedia`);
 
-        const layer_id = this.$root.settings.current_publication.layer_id;
+        values.layer_id = this.$root.settings.current_publication.layer_id;
 
-        const x = 0;
-        const y = 0;
+        values.x = 0;
+        values.y = 0;
 
-        const z_index =
-          this.getHighestZNumberAmongstMedias(
-            this.publication_medias[layer_id]
-          ) + 1;
-
-        let additionalMeta = {
-          layer_id,
-          x,
-          y,
-          z_index
-        };
-
-        if (slugProjectName && metaFileName) {
-          additionalMeta.slugProjectName = slugProjectName;
-          additionalMeta.desired_filename = metaFileName;
-          additionalMeta.slugMediaName = metaFileName;
-        }
-
-        if (values) Object.assign(additionalMeta, values);
+        values.z_index =
+          this.getHighestZNumberAmongstMedias(this.layered_medias[layer_id]) +
+          1;
 
         // get current scroll
         if (this.$refs.current_page) {
           const posx_in_cm =
             this.$refs.current_page.scrollLeft / this.pixelsPerMillimeters;
-          if (!Number.isNaN(posx_in_cm)) additionalMeta.x = posx_in_cm;
+          if (!Number.isNaN(posx_in_cm)) values.x = posx_in_cm;
 
           const posy_in_cm =
             this.$refs.current_page.scrollTop / this.pixelsPerMillimeters;
-          if (!Number.isNaN(posy_in_cm)) additionalMeta.y = posy_in_cm;
+          if (!Number.isNaN(posy_in_cm)) values.y = posy_in_cm;
         }
 
-        this.$root
-          .createMedia({
-            slugFolderName: this.slugPubliName,
-            type: "publications",
-            additionalMeta
-          })
-          .then(mdata => {
-            this.$eventHub.$emit("publication.media_created", {
-              mdata
-            });
-            return resolve(mdata);
-          });
+        this.$emit("addMedia", { values });
       });
     },
     layerOptions(layer) {
@@ -464,7 +437,7 @@ export default {
         snap_to_grid: false,
         width: this.publication.width,
         height: this.publication.height,
-        color: layer.color
+        color: layer.color,
         // gridstep: 50
       };
     },
@@ -473,84 +446,14 @@ export default {
       if (!page_medias) return 0;
 
       const medias_with_z = page_medias
-        .filter(m => m.publi_meta.hasOwnProperty("z_index"))
-        .map(m => {
-          return m.publi_meta.z_index;
+        .filter((m) => m.hasOwnProperty("z_index"))
+        .map((m) => {
+          return m.z_index;
         });
 
       if (medias_with_z.length === 0) return 0;
 
       return Math.max(...medias_with_z);
-    },
-    updateMediasPubli() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: updateMediasPubli`);
-      }
-
-      if (
-        !this.publication.hasOwnProperty("medias") ||
-        Object.keys(this.publication.medias).length === 0
-      ) {
-        this.publication_medias = {};
-        return;
-      }
-
-      // get list of publications items
-
-      let missingMedias = [];
-
-      const medias_paginated = Object.values(this.publication.medias).reduce(
-        (acc, publi_media) => {
-          let meta = {};
-
-          if (
-            publi_media.hasOwnProperty("slugProjectName") &&
-            publi_media.hasOwnProperty("metaFileName")
-          ) {
-            const original_media_meta = this.$root.getOriginalMediaMeta(
-              publi_media
-            );
-            // case of missing project media locally
-            if (!original_media_meta) return acc;
-            if (Object.keys(original_media_meta).length === 0) {
-              console.log(`Some medias missing from client`);
-              missingMedias.push({
-                slugFolderName: publi_media.slugProjectName,
-                metaFileName: publi_media.slugMediaName
-              });
-              return acc;
-            }
-
-            meta = original_media_meta;
-            meta.slugProjectName = publi_media.slugProjectName;
-          }
-
-          meta.publi_meta = JSON.parse(JSON.stringify(publi_media));
-
-          if (publi_media.hasOwnProperty("layer_id")) {
-            if (!acc.hasOwnProperty(publi_media.layer_id)) {
-              acc[publi_media.layer_id] = [];
-            }
-            acc[publi_media.layer_id].push(meta);
-          }
-          return acc;
-        },
-        []
-      );
-
-      console.log(
-        `Finished building media list. Missing medias: ${missingMedias.length}`
-      );
-
-      // send list of medias to get
-      if (missingMedias.length > 0) {
-        this.$root.listSpecificMedias({
-          type: "projects",
-          medias_list: missingMedias
-        });
-      }
-
-      this.publication_medias = medias_paginated;
     },
     toggleFullscreen() {
       if (this.$root.state.dev_mode === "debug") {
@@ -606,12 +509,12 @@ export default {
 
     getDrawingLayerReferenceMedia(id) {
       const reference_media = Object.values(this.publication.medias).find(
-        m => m.layer_id === id
+        (m) => m.layer_id === id
       );
       if (reference_media) return reference_media;
       return false;
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

@@ -360,7 +360,11 @@
           <div v-else>
             <div
               class="item"
-              v-if="media.type === 'text' || media.publi_meta.type === 'text'"
+              v-if="
+                media.type === 'text' ||
+                (media.hasOwnProperty('_linked_media') &&
+                  media._linked_media.type === 'text')
+              "
             >
               <label>{{ $t("font_size") }}</label>
               <div>
@@ -385,9 +389,10 @@
             <div
               class="item"
               v-if="
-                media.publi_meta.type !== 'line' &&
-                media.publi_meta.type !== 'arrow' &&
-                media.type !== 'image'
+                media.type !== 'line' &&
+                media.type !== 'arrow' &&
+                media.hasOwnProperty('_linked_media') &&
+                media._linked_media.type !== 'image'
               "
             >
               <label>
@@ -601,9 +606,9 @@ export default {
       // this.show_create_options = true;
     },
     media: function () {
-      if (this.media && this.media.publi_meta) {
-        this.custom_css = this.media.publi_meta.hasOwnProperty("custom_css")
-          ? this.media.publi_meta.custom_css
+      if (this.media) {
+        this.custom_css = this.media.hasOwnProperty("custom_css")
+          ? this.media.custom_css
           : this.custom_css;
         if (!!this.custom_css) {
           this.show_custom_css = true;
@@ -619,7 +624,7 @@ export default {
       const all_selected_medias = this.$root.settings.current_publication.selected_medias.reduce(
         (acc, meta) => {
           const corresponding_media = this.page_medias.find(
-            (m) => m.publi_meta.metaFileName === meta
+            (m) => m.metaFileName === meta
           );
           if (corresponding_media) acc.push(corresponding_media);
           return acc;
@@ -633,9 +638,9 @@ export default {
     font_size_percent: {
       get() {
         return this.media &&
-          this.media.publi_meta.hasOwnProperty("font_size_percent") &&
-          !!Number.parseFloat(this.media.publi_meta.font_size_percent)
-          ? Number.parseFloat(this.media.publi_meta.font_size_percent)
+          this.media.hasOwnProperty("font_size_percent") &&
+          !!Number.parseFloat(this.media.font_size_percent)
+          ? Number.parseFloat(this.media.font_size_percent)
           : 100;
       },
       set(value) {
@@ -646,9 +651,9 @@ export default {
     stroke_color: {
       get() {
         return this.media &&
-          this.media.publi_meta.hasOwnProperty("stroke_color") &&
-          !!this.media.publi_meta.stroke_color
-          ? this.media.publi_meta.stroke_color
+          this.media.hasOwnProperty("stroke_color") &&
+          !!this.media.stroke_color
+          ? this.media.stroke_color
           : "";
       },
       set(value) {
@@ -658,9 +663,9 @@ export default {
     fill_color: {
       get() {
         return this.media &&
-          this.media.publi_meta.hasOwnProperty("fill_color") &&
-          !!this.media.publi_meta.fill_color
-          ? this.media.publi_meta.fill_color
+          this.media.hasOwnProperty("fill_color") &&
+          !!this.media.fill_color
+          ? this.media.fill_color
           : "";
       },
       set(value) {
@@ -670,9 +675,9 @@ export default {
     stroke_width: {
       get() {
         return this.media &&
-          this.media.publi_meta.hasOwnProperty("stroke_width") &&
-          !!Number.parseFloat(this.media.publi_meta.stroke_width)
-          ? Number.parseFloat(this.media.publi_meta.stroke_width)
+          this.media.hasOwnProperty("stroke_width") &&
+          !!Number.parseFloat(this.media.stroke_width)
+          ? Number.parseFloat(this.media.stroke_width)
           : 4;
       },
       set(value) {
@@ -680,8 +685,8 @@ export default {
       },
     },
     mediaZIndex() {
-      return this.media && this.media.publi_meta.hasOwnProperty("z_index")
-        ? this.media.publi_meta.z_index
+      return this.media && this.media.hasOwnProperty("z_index")
+        ? this.media.z_index
         : 0;
     },
   },
@@ -691,7 +696,7 @@ export default {
       this.$root.editMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        slugMediaName: this.media.publi_meta.metaFileName,
+        slugMediaName: this.media.metaFileName,
         data: val,
       });
     },

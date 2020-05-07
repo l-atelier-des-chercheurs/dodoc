@@ -238,8 +238,10 @@ export default {
         console.log("METHODS • MediaCard: addToPubli");
       }
       this.$eventHub.$emit("publication.addMedia", {
-        slugProjectName: this.slugProjectName,
-        metaFileName: this.metaFileName,
+        values: {
+          slugProjectName: this.slugProjectName,
+          metaFileName: this.metaFileName,
+        },
       });
     },
   },

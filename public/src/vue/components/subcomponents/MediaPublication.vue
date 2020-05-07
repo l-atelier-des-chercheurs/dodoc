@@ -3,7 +3,6 @@
     class="m_mediaPublication"
     ref="media"
     :style="mediaStyles"
-    :data-media_type="media.type"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
     @mousedown.stop="selectMedia"
@@ -23,15 +22,30 @@
       'is--fit_mode_' + fit_mode,
     ]"
   >
+    <div
+      v-if="
+        media.hasOwnProperty('_linked_media') &&
+        media._linked_media.hasOwnProperty('_isAbsent')
+      "
+    >
+      {{ $t("linked_media_wasnt_found") }}
+      <br />
+      <small
+        >{{ media._linked_media.slugProjectName }}/{{
+          media._linked_media.slugMediaName
+        }}</small
+      >
+    </div>
+
     <!-- if media is link -->
     <MediaContent
-      v-if="!media.publi_meta.hasOwnProperty('type')"
+      v-else-if="media.hasOwnProperty('_linked_media')"
       :context="mode !== 'contact_sheet' ? 'full' : 'preview'"
-      :slugFolderName="media.slugProjectName"
-      :media="media"
+      :slugFolderName="media._linked_media.slugProjectName"
+      :media="media._linked_media"
       :read_only="read_only"
       :element_width_for_sizes="mediaSize.width * pixelsPerMillimeters"
-      v-model="media.content"
+      v-model="media._linked_media.content"
       :style="contentStyles"
     />
     <!-- if not -->
@@ -39,16 +53,17 @@
       class="mediaContainer"
       v-else
       :style="contentStyles"
-      :class="`type-${media.publi_meta.type}`"
+      :class="`type-${media.type}`"
       :data-context="context"
     >
-      <template v-if="media.publi_meta.type === 'text'">
+      <template v-if="media.type === 'text'">
         <CollaborativeEditor
           v-if="inline_edit_mode"
           v-model="htmlForEditor"
-          :media="media.publi_meta"
+          class="fixedPanel"
+          :media="media"
           :theme="'bubble'"
-          :slugFolderName="media.publi_meta.slugFolderName"
+          :slugFolderName="media.slugFolderName"
           ref="textField"
         />
         <div v-else class="mediaTextContent">
@@ -58,9 +73,7 @@
       </template>
       <template
         v-else-if="
-          ['ellipsis', 'rectangle', 'line', 'arrow'].includes(
-            media.publi_meta.type
-          )
+          ['ellipsis', 'rectangle', 'line', 'arrow'].includes(media.type)
         "
       >
         <svg
@@ -71,33 +84,54 @@
           xmlns="http://www.w3.org/2000/svg"
         >
           <circle
-            v-if="media.publi_meta.type === 'ellipsis'"
+            v-if="media.type === 'ellipsis'"
             cx="50"
             cy="50"
             r="50"
             vector-effect="non-scaling-stroke"
           />
           <rect
-            v-if="media.publi_meta.type === 'rectangle'"
+            v-if="media.type === 'rectangle'"
             width="100"
             height="100"
             vector-effect="non-scaling-stroke"
           />
           <line
-            v-if="media.publi_meta.type === 'line'"
+            v-if="media.type === 'line'"
             x1="0"
             y1="50"
             x2="100"
             y2="50"
             vector-effect="non-scaling-stroke"
           />
-          <g v-if="media.publi_meta.type === 'arrow'">
-            <line x1="0" y1="50" x2="100" y2="50" vector-effect="non-scaling-stroke" />
-            <g transform="
-                translate(100, 50)" preserveAspectRatio>
-              <line x1="0" y1="0" x2="-10" y2="-10" vector-effect="non-scaling-stroke" />
+          <g v-if="media.type === 'arrow'">
+            <line
+              x1="0"
+              y1="50"
+              x2="100"
+              y2="50"
+              vector-effect="non-scaling-stroke"
+            />
+            <g
+              transform="
+                translate(100, 50)"
+              preserveAspectRatio
+            >
+              <line
+                x1="0"
+                y1="0"
+                x2="-10"
+                y2="-10"
+                vector-effect="non-scaling-stroke"
+              />
 
-              <line x1="0" y1="0" x2="-10" y2="10" vector-effect="non-scaling-stroke" />
+              <line
+                x1="0"
+                y1="0"
+                x2="-10"
+                y2="10"
+                vector-effect="non-scaling-stroke"
+              />
             </g>
           </g>
         </svg>
@@ -113,7 +147,11 @@
         <!-- <img src="/images/i_clear.svg" draggable="false" /> -->
         <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
-      <button type="button" class="button button-bg_rounded bg-bleuvert" @click="saveMedia">
+      <button
+        type="button"
+        class="button button-bg_rounded bg-bleuvert"
+        @click="saveMedia"
+      >
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
           <slot name="submit_button">{{ $t("save") }}</slot>
@@ -121,12 +159,19 @@
       </button>
     </div>
 
-    <p class="mediaCaption">{{ media.caption }}</p>
+    <p
+      class="mediaCaption"
+      v-if="
+        media.hasOwnProperty('_linked_media') && !!media._linked_media.caption
+      "
+    >
+      {{ media._linked_media.caption }}
+    </p>
 
     <button
       class="m_mediaPublication--overflowing_sign"
       type="button"
-      v-if="is_text_overflowing && !preview_mode"
+      v-if="is_text_overflowing && !preview_mode && (is_selected || is_hovered)"
       @mousedown.stop.prevent="setMediaHeightToContent"
       @touchstart.stop.prevent="setMediaHeightToContent"
       :content="$t('text_overflow')"
@@ -212,10 +257,9 @@
       </div>
       <div
         v-if="
-          media.type !== 'text' &&
-          media.publi_meta.type !== 'text' &&
-          (is_selected || is_hovered) &&
-          media.hasOwnProperty('ratio')
+          media.hasOwnProperty('_linked_media') &&
+          media._linked_media.hasOwnProperty('ratio') &&
+          (is_selected || is_hovered)
         "
         class="handle handle_resizeMedia"
         @mousedown.stop.prevent="
@@ -371,7 +415,7 @@
       >
         <button
           type="button"
-          v-if="!media.slugProjectName && media.publi_meta.type === 'text'"
+          v-if="media.type === 'text'"
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editButtonClicked"
           @touchstart.stop.prevent="editButtonClicked"
@@ -436,7 +480,7 @@
         <div v-if="show_advanced_menu" class="_advanced_menu" @click.stop>
           <button
             type="button"
-            v-if="media.slugProjectName"
+            v-if="media.hasOwnProperty('_linked_media')"
             class="buttonLink _no_underline"
             @mousedown.stop.prevent="editButtonClicked"
             @touchstart.stop.prevent="editButtonClicked"
@@ -573,13 +617,12 @@ export default {
     page: Object,
     read_only: Boolean,
     preview_mode: Boolean,
-    lowdef: Boolean,
     pixelsPerMillimeters: Number,
-    zoom: Number
+    zoom: Number,
   },
   components: {
     MediaContent,
-    CollaborativeEditor
+    CollaborativeEditor,
   },
   data() {
     return {
@@ -596,9 +639,7 @@ export default {
       show_zindex_number: false,
 
       limit_media_to_page: true,
-      htmlForEditor: this.media.publi_meta.content
-        ? this.media.publi_meta.content
-        : "",
+      htmlForEditor: this.media.content ? this.media.content : "",
 
       mediaID: `${(Math.random().toString(36) + "00000000000000000").slice(
         2,
@@ -607,25 +648,25 @@ export default {
 
       dragOffset: {
         x: 0,
-        y: 0
+        y: 0,
       },
       mediaPos: {
         x: 0,
         y: 0,
         px: 0,
-        py: 0
+        py: 0,
       },
 
       resizeOffset: {
         x: 0,
-        y: 0
+        y: 0,
       },
       resize_origin: "",
 
       rotateOffset: {
         x: 0,
         y: 0,
-        angle: 0
+        angle: 0,
       },
       rotate: 0,
       debounce_setCSSForMedia: undefined,
@@ -639,7 +680,7 @@ export default {
         width: 0,
         height: 0,
         pwidth: 0,
-        pheight: 0
+        pheight: 0,
       },
 
       custom_css: "",
@@ -647,7 +688,7 @@ export default {
 
       fit_mode: "cover",
       locked_in_place: false,
-      lock_original_ratio: false
+      lock_original_ratio: false,
     };
   },
 
@@ -671,27 +712,25 @@ export default {
   },
 
   watch: {
-    "media.publi_meta": {
-      handler: function() {
+    media: {
+      handler: function () {
         this.updateMediaStyles();
-        this.htmlForEditor = this.media.publi_meta.content
-          ? this.media.publi_meta.content
-          : "";
+        this.htmlForEditor = this.media.content ? this.media.content : "";
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {
     is_selected() {
       return this.$root.settings.current_publication.selected_medias.some(
-        meta => meta === this.media.publi_meta.metaFileName
+        (meta) => meta === this.media.metaFileName
       );
     },
     mediaStyles() {
       const set_z_index =
         this.is_selected && !this.show_zindex_number && !this.preview_mode
           ? 100000
-          : this.media.publi_meta.z_index;
+          : this.media.z_index;
 
       return `
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
@@ -708,23 +747,22 @@ export default {
         --stroke_width: ${this.stroke_width * this.zoom}px;
       `;
 
-      if (this.media.publi_meta.custom_css)
-        css += this.media.publi_meta.custom_css;
+      if (this.media.custom_css) css += this.media.custom_css;
 
       return css;
     },
     text_is_overflowing() {
       const el = this.$refs.media;
       return el.offsetHeight + 15 < el.scrollHeight;
-    }
+    },
   },
   methods: {
     selectNewMedia(metaFileName) {
-      if (metaFileName === this.media.publi_meta.metaFileName)
+      if (metaFileName === this.media.metaFileName)
         if (!this.is_selected) this.selectMedia();
     },
     setMediaToEditMode(metaFileName) {
-      if (metaFileName === this.media.publi_meta.metaFileName) {
+      if (metaFileName === this.media.metaFileName) {
         if (!this.is_selected) this.selectMedia();
         this.editButtonClicked();
       }
@@ -739,29 +777,29 @@ export default {
     },
     saveMedia() {
       const val = {
-        content: this.htmlForEditor
+        content: this.htmlForEditor,
       };
 
       this.$emit("editPubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName,
-        val
+        slugMediaName: this.media.metaFileName,
+        val,
       });
 
       this.inline_edit_mode = false;
     },
     cancelMediaInlineEditing() {
-      if (this.media.publi_meta.content === "") {
+      if (this.media.content === "") {
         this.removePubliMedia();
       }
 
-      this.htmlForEditor = this.media.publi_meta.content;
+      this.htmlForEditor = this.media.content;
       this.inline_edit_mode = false;
     },
     editButtonClicked() {
-      if (this.media.slugProjectName)
+      if (this.media.hasOwnProperty("_linked_media"))
         this.$root.openMedia({
-          slugProjectName: this.media.slugProjectName,
-          metaFileName: this.media.metaFileName
+          slugProjectName: this.media._linked_media.slugProjectName,
+          metaFileName: this.media._linked_media.metaFileName,
         });
       else {
         this.inline_edit_mode = true;
@@ -784,7 +822,7 @@ export default {
       this.mediaSize.height = contentHeight;
 
       this.updateMediaPubliMeta({
-        height: this.mediaSize.height
+        height: this.mediaSize.height,
       });
     },
     toggleImageFitMode() {
@@ -792,14 +830,14 @@ export default {
       else if (this.fit_mode === "contain") this.fit_mode = "cover";
 
       this.updateMediaPubliMeta({
-        fit_mode: this.fit_mode
+        fit_mode: this.fit_mode,
       });
     },
 
     toggleLock() {
       this.locked_in_place = !this.locked_in_place;
       this.updateMediaPubliMeta({
-        locked_in_place: this.locked_in_place
+        locked_in_place: this.locked_in_place,
       });
 
       if (this.locked_in_place) {
@@ -810,53 +848,50 @@ export default {
     },
 
     updateMediaStyles() {
-      this.rotate = this.media.publi_meta.hasOwnProperty("rotate")
-        ? this.media.publi_meta.rotate
-        : 0;
+      this.rotate = this.media.hasOwnProperty("rotate") ? this.media.rotate : 0;
       this.mediaSize.width =
-        this.media.publi_meta.hasOwnProperty("width") &&
-        !!Number.parseFloat(this.media.publi_meta.width)
-          ? this.limitMediaWidth(Number.parseFloat(this.media.publi_meta.width))
+        this.media.hasOwnProperty("width") &&
+        !!Number.parseFloat(this.media.width)
+          ? this.limitMediaWidth(Number.parseFloat(this.media.width))
           : 100;
       this.mediaSize.height =
-        this.media.publi_meta.hasOwnProperty("height") &&
-        !!Number.parseFloat(this.media.publi_meta.height)
-          ? this.limitMediaHeight(
-              Number.parseFloat(this.media.publi_meta.height)
-            )
-          : this.media.hasOwnProperty("ratio")
-          ? this.mediaSize.width * this.media.ratio
+        this.media.hasOwnProperty("height") &&
+        !!Number.parseFloat(this.media.height)
+          ? this.limitMediaHeight(Number.parseFloat(this.media.height))
+          : this.media.hasOwnProperty("_linked_media") &&
+            this.media._linked_media.hasOwnProperty("ratio")
+          ? this.mediaSize.width * this.media._linked_media.ratio
           : 66;
       this.mediaPos.x =
-        this.media.publi_meta.hasOwnProperty("x") &&
-        !!Number.parseFloat(this.media.publi_meta.x)
-          ? this.limitMediaXPos(Number.parseFloat(this.media.publi_meta.x))
+        this.media.hasOwnProperty("x") && !!Number.parseFloat(this.media.x)
+          ? this.limitMediaXPos(Number.parseFloat(this.media.x))
           : this.page.margin_left;
       this.mediaPos.y =
-        this.media.publi_meta.hasOwnProperty("y") &&
-        !!Number.parseFloat(this.media.publi_meta.y)
-          ? this.limitMediaYPos(Number.parseFloat(this.media.publi_meta.y))
+        this.media.hasOwnProperty("y") && !!Number.parseFloat(this.media.y)
+          ? this.limitMediaYPos(Number.parseFloat(this.media.y))
           : this.page.margin_top;
-      this.custom_css = this.media.publi_meta.hasOwnProperty("custom_css")
-        ? this.media.publi_meta.custom_css
+      this.custom_css = this.media.hasOwnProperty("custom_css")
+        ? this.media.custom_css
         : this.custom_css;
-      this.mediaZIndex = this.media.publi_meta.hasOwnProperty("z_index")
-        ? this.media.publi_meta.z_index
+      this.mediaZIndex = this.media.hasOwnProperty("z_index")
+        ? this.media.z_index
         : 0;
-      this.fit_mode = this.media.publi_meta.hasOwnProperty("fit_mode")
-        ? this.media.publi_meta.fit_mode
+      this.fit_mode = this.media.hasOwnProperty("fit_mode")
+        ? this.media.fit_mode
         : "cover";
-      this.locked_in_place = this.media.publi_meta.hasOwnProperty(
-        "locked_in_place"
-      )
-        ? Boolean(this.media.publi_meta.locked_in_place)
+      this.locked_in_place = this.media.hasOwnProperty("locked_in_place")
+        ? Boolean(this.media.locked_in_place)
         : false;
 
-      if (this.media.type === "text" || this.media.publi_meta.type === "text") {
+      if (
+        this.media.type === "text" ||
+        (this.media.hasOwnProperty("_linked_media") &&
+          this.media._linked_media.type === "text")
+      ) {
         this.font_size_percent =
-          this.media.publi_meta.hasOwnProperty("font_size_percent") &&
-          !!Number.parseFloat(this.media.publi_meta.font_size_percent)
-            ? Number.parseFloat(this.media.publi_meta.font_size_percent)
+          this.media.hasOwnProperty("font_size_percent") &&
+          !!Number.parseFloat(this.media.font_size_percent)
+            ? Number.parseFloat(this.media.font_size_percent)
             : 100;
 
         this.$nextTick(() => {
@@ -869,19 +904,17 @@ export default {
       }
 
       this.stroke_color =
-        this.media.publi_meta.hasOwnProperty("stroke_color") &&
-        !!this.media.publi_meta.stroke_color
-          ? this.media.publi_meta.stroke_color
+        this.media.hasOwnProperty("stroke_color") && !!this.media.stroke_color
+          ? this.media.stroke_color
           : "transparent";
       this.fill_color =
-        this.media.publi_meta.hasOwnProperty("fill_color") &&
-        !!this.media.publi_meta.fill_color
-          ? this.media.publi_meta.fill_color
+        this.media.hasOwnProperty("fill_color") && !!this.media.fill_color
+          ? this.media.fill_color
           : "transparent";
       this.stroke_width =
-        this.media.publi_meta.hasOwnProperty("stroke_width") &&
-        !!Number.parseFloat(this.media.publi_meta.stroke_width)
-          ? Number.parseFloat(this.media.publi_meta.stroke_width)
+        this.media.hasOwnProperty("stroke_width") &&
+        !!Number.parseFloat(this.media.stroke_width)
+          ? Number.parseFloat(this.media.stroke_width)
           : 4;
     },
     updateMediaPubliMeta(val) {
@@ -889,14 +922,13 @@ export default {
         console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
 
       this.$emit("editPubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName,
-        val
+        slugMediaName: this.media.metaFileName,
+        val,
       });
     },
     limitMediaXPos(xPos) {
-      if (!this.limit_media_to_page) {
-        return xPos;
-      }
+      if (!this.limit_media_to_page) return xPos;
+
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaXPos / xPos = ${xPos}`);
       // }
@@ -909,16 +941,15 @@ export default {
       );
     },
     roundMediaVal(val) {
-      if (this.page.snap_to_grid) {
+      if (this.page.snap_to_grid)
         return Math.round(val / this.page.gridstep) * this.page.gridstep;
-      }
+
       return +val.toFixed(1);
     },
 
     limitMediaYPos(yPos) {
-      if (!this.limit_media_to_page) {
-        return yPos;
-      }
+      if (!this.limit_media_to_page) return yPos;
+
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
       // }
@@ -933,9 +964,8 @@ export default {
     },
 
     limitMediaWidth(w) {
-      if (!this.limit_media_to_page) {
-        return w;
-      }
+      if (!this.limit_media_to_page) return w;
+
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
       // }
@@ -945,9 +975,8 @@ export default {
       );
     },
     limitMediaHeight(h) {
-      if (!this.limit_media_to_page) {
-        return h;
-      }
+      if (!this.limit_media_to_page) return h;
+
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
       // }
@@ -962,7 +991,7 @@ export default {
 
     removePubliMedia() {
       this.$emit("removePubliMedia", {
-        slugMediaName: this.media.publi_meta.metaFileName
+        metaFileName: this.media.metaFileName,
       });
     },
     resizeMedia({ event, type, origin }) {
@@ -1033,7 +1062,7 @@ export default {
             pageX_mm,
             pageY_mm,
             axis_angle: 0,
-            plength: this.mediaSize.pwidth
+            plength: this.mediaSize.pwidth,
           });
           this.mediaSize.width = this.limitMediaWidth(new_width);
         }
@@ -1043,14 +1072,18 @@ export default {
         ) {
           let new_height = 0;
 
-          if (this.lock_original_ratio && this.media.hasOwnProperty("ratio")) {
-            new_height = this.mediaSize.width * this.media.ratio;
+          if (
+            this.lock_original_ratio &&
+            this.media.hasOwnProperty("_linked_media") &&
+            this.media._linked_media.hasOwnProperty("ratio")
+          ) {
+            new_height = this.mediaSize.width * this.media._linked_media.ratio;
           } else {
             new_height = this.getNewSize({
               pageX_mm,
               pageY_mm,
               axis_angle: 90,
-              plength: this.mediaSize.pheight
+              plength: this.mediaSize.pheight,
             });
           }
 
@@ -1088,18 +1121,24 @@ export default {
         // if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
         //   this.mediaSize.height = this.mediaSize.width * this.media.ratio;
         // else
-        if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
-          this.mediaSize.height = this.mediaSize.width * this.media.ratio;
+        if (
+          this.lock_original_ratio &&
+          this.media.hasOwnProperty("_linked_media") &&
+          this.media._linked_media.hasOwnProperty("ratio")
+        )
+          this.mediaSize.height =
+            this.mediaSize.width * this.media._linked_media.ratio;
         else this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
 
         this.updateMediaPubliMeta({
           width: this.mediaSize.width,
-          height: this.mediaSize.height
+          height: this.mediaSize.height,
         });
         this.is_resized = false;
       }
 
       event.stopPropagation();
+
       window.removeEventListener("mousemove", this.resizeMove);
       window.removeEventListener("mouseup", this.resizeUp);
       window.removeEventListener("touchmove", this.resizeMove);
@@ -1123,7 +1162,7 @@ export default {
           this.$refs.media.getBoundingClientRect().width / 2,
         y:
           this.$refs.media.getBoundingClientRect().y +
-          this.$refs.media.getBoundingClientRect().height / 2
+          this.$refs.media.getBoundingClientRect().height / 2,
       };
 
       function angle(cx, cy, ex, ey) {
@@ -1175,7 +1214,7 @@ export default {
 
       if (this.is_rotated) {
         this.updateMediaPubliMeta({
-          rotate: this.rotate
+          rotate: this.rotate,
         });
         this.is_rotated = false;
       }
@@ -1253,7 +1292,7 @@ export default {
 
         this.updateMediaPubliMeta({
           x: this.mediaPos.x,
-          y: this.mediaPos.y
+          y: this.mediaPos.y,
         });
         this.is_dragged = false;
       }
@@ -1280,7 +1319,7 @@ export default {
       this.$root.settings.current_publication.selected_medias = [];
 
       this.$root.settings.current_publication.selected_medias.push(
-        this.media.publi_meta.metaFileName
+        this.media.metaFileName
       );
     },
     deselectMedia() {
@@ -1290,7 +1329,7 @@ export default {
       this.show_advanced_menu = false;
 
       this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
-        meta => meta !== this.media.publi_meta.metaFileName
+        (meta) => meta !== this.media.metaFileName
       );
     },
     mouseOver() {
@@ -1302,7 +1341,7 @@ export default {
       if (!this.is_touch) {
         this.is_hovered = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>

@@ -121,118 +121,7 @@
                   :duration="500"
                   v-if="$root.settings.current_publication.slug !== false"
                 >
-                  <PagePublication
-                    v-if="
-                      $root.settings.current_publication.slug !== false &&
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ].template === 'page_by_page'
-                    "
-                    :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ]
-                    "
-                    :read_only="!$root.state.connected"
-                  />
-                  <Carreau
-                    v-if="
-                      $root.settings.current_publication.slug !== false &&
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ].template === 'carreau'
-                    "
-                    :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ]
-                    "
-                    :read_only="!$root.state.connected"
-                  />
-                  <VideoPublication
-                    v-else-if="
-                      $root.settings.current_publication.slug !== false &&
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ].template === 'video_assemblage'
-                    "
-                    :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ]
-                    "
-                    :read_only="!$root.state.connected"
-                  />
-                  <VideoEffects
-                    v-else-if="
-                      $root.settings.current_publication.slug !== false &&
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ].template === 'video_effects'
-                    "
-                    :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ]
-                    "
-                    :read_only="!$root.state.connected"
-                  />
-                  <DrawingPad
-                    v-else-if="
-                      $root.settings.current_publication.slug !== false &&
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ].template === 'drawing_pad'
-                    "
-                    :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ]
-                    "
-                    :read_only="!$root.state.connected"
-                  />
-                  <StopmotionAnimation
-                    v-else-if="
-                      $root.settings.current_publication.slug !== false &&
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ].template === 'stopmotion_animation'
-                    "
-                    :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ]
-                    "
-                    :read_only="!$root.state.connected"
-                  />
-                  <MixAudioAndVideo
-                    v-else-if="
-                      $root.settings.current_publication.slug !== false &&
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ].template === 'mix_audio_and_video'
-                    "
-                    :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ]
-                    "
-                    :read_only="!$root.state.connected"
-                  />
-                  <MixAudioAndImage
-                    v-else-if="
-                      $root.settings.current_publication.slug !== false &&
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ].template === 'mix_audio_and_image'
-                    "
+                  <Publication
                     :slugPubliName="$root.settings.current_publication.slug"
                     :publication="
                       $root.store.publications[
@@ -302,15 +191,7 @@
       "
     >
       <template v-if="$root.current_publication">
-        <PagePublication
-          v-if="$root.current_publication.template === 'page_by_page'"
-          :slugPubliName="$root.current_publication.slugFolderName"
-          :publication="$root.current_publication"
-          :read_only="!$root.state.connected"
-        />
-        <DrawingPad
-          v-else-if="$root.current_publication.template === 'drawing_pad'"
-          :slugPubliName="$root.current_publication.slugFolderName"
+        <Publication
           :publication="$root.current_publication"
           :read_only="!$root.state.connected"
         />
@@ -334,15 +215,7 @@ import SessionPassword from "./components/modals/SessionPassword.vue";
 
 import MediaContent from "./components/subcomponents/MediaContent.vue";
 import Publications from "./Publications.vue";
-
-import PagePublication from "./components/publication_templates/PagePublication.vue";
-import Carreau from "./components/publication_templates/Carreau.vue";
-import VideoPublication from "./components/publication_templates/VideoPublication.vue";
-import DrawingPad from "./components/publication_templates/DrawingPad.vue";
-import VideoEffects from "./components/publication_templates/VideoEffects.vue";
-import StopmotionAnimation from "./components/publication_templates/StopmotionAnimation.vue";
-import MixAudioAndVideo from "./components/publication_templates/MixAudioAndVideo.vue";
-import MixAudioAndImage from "./components/publication_templates/MixAudioAndImage.vue";
+import Publication from "./Publication.vue";
 
 import { Splitpanes, Pane } from "splitpanes";
 
@@ -359,14 +232,7 @@ export default {
     AuthorsList,
     SessionPassword,
     Publications,
-    PagePublication,
-    Carreau,
-    VideoPublication,
-    DrawingPad,
-    VideoEffects,
-    StopmotionAnimation,
-    MixAudioAndVideo,
-    MixAudioAndImage,
+    Publication,
     Splitpanes,
     Pane,
 

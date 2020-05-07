@@ -86,7 +86,12 @@
         </div>
       </div>
       <div v-else-if="current_layer.type === 'medias'">
-        <PublicationButtons :page_medias="[]" @addMedia="createPubliMedia" />
+        <PublicationButtons
+          :preview_mode="preview_mode"
+          :page_medias="layer_medias"
+          :slugPubliName="slugPubliName"
+          @addMedia="createPubliMedia"
+        />
       </div>
     </div>
   </div>
@@ -97,6 +102,8 @@ import PublicationButtons from "./PublicationButtons.vue";
 export default {
   props: {
     current_layer: Object,
+    layer_medias: Array,
+    slugPubliName: String,
   },
   components: {
     PublicationButtons,
@@ -142,7 +149,7 @@ export default {
         values,
       });
 
-      this.$eventHub.$once("publication.media_created", ({ mdata }) => {
+      this.$eventHub.$once("publication.justAddedMedia", ({ mdata }) => {
         if (values.type === "text") {
           this.$eventHub.$emit(
             "publication.set_media_to_edit_mode",

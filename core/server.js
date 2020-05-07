@@ -81,7 +81,7 @@ module.exports = function (router) {
   app.use(bodyParser.json());
   app.locals.pretty = true;
 
-  // setup_realtime_collaboration(server);
+  setup_realtime_collaboration(server);
   router(app);
 
   server.listen(app.get("port"), () => {

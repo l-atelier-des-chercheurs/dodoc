@@ -386,11 +386,11 @@
 .ql-editor .ql-align-right {
   text-align: right;
 }
-.ql-editor.ql-blank::before {
+.ql-container:not(.ql-disabled) .ql-editor.ql-blank::before {
   color: rgba(0, 0, 0, 0.6);
   content: attr(data-placeholder);
   font-style: italic;
-  left: 15px;
+  left: ~"calc(15px + var(--input-border-width) )";
   pointer-events: none;
   position: absolute;
   right: 15px;
@@ -1534,7 +1534,7 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
     }
   }
 
-  .ql-bubble .ql-tooltip {
+  &.fixedPanel .ql-bubble .ql-tooltip {
     white-space: inherit;
     position: fixed;
     padding: 0;
