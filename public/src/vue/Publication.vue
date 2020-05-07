@@ -40,19 +40,20 @@
       @addMedia="addMedia"
     />
 
+    <StopmotionAnimation
+      v-else-if="publication.template === 'stopmotion_animation'"
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      :medias_in_order="medias_in_order"
+      :read_only="read_only"
+      @removePubliMedia="orderedRemovePubliMedia"
+      @editPubliMedia="editPubliMedia"
+      @editPubliFolder="editPubliFolder"
+      @addMedia="addMediaOrdered"
+    />
+
     <!--
 
-    <StopmotionAnimation
-      v-else-if="
-        $root.store.publications[$root.settings.current_publication.slug]
-          .template === 'stopmotion_animation'
-      "
-      :slugPubliName="$root.settings.current_publication.slug"
-      :publication="
-        $root.store.publications[$root.settings.current_publication.slug]
-      "
-      :read_only="!$root.state.connected"
-    />
     <MixAudioAndVideo
       v-else-if="
         $root.store.publications[$root.settings.current_publication.slug]
@@ -110,6 +111,7 @@ export default {
     VideoPublication,
     VideoEffects,
     DrawingPad,
+    StopmotionAnimation,
   },
   data() {
     return {
