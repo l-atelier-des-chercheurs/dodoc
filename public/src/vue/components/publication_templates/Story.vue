@@ -3,6 +3,8 @@
     class="m_publicationview"
     :class="{ 'is--preview': preview_mode }"
     ref="panel"
+    @mousedown.self="$root.settings.current_publication.selected_medias = []"
+    @touchstart.self="$root.settings.current_publication.selected_medias = []"
   >
     <PublicationHeader
       :slugPubliName="slugPubliName"
@@ -20,7 +22,11 @@
       :instructions="$t('export_video_instructions')"
     />
 
-    <div class="m_storyPublication">
+    <div
+      class="m_storyPublication"
+      @mousedown.self="$root.settings.current_publication.selected_medias = []"
+      @touchstart.self="$root.settings.current_publication.selected_medias = []"
+    >
       <transition-group name="list-complete" :duration="300">
         <div
           v-for="(media, index) in medias_in_order"
@@ -34,15 +40,13 @@
             "
           />
 
-          <div class="m_storyPublication--media" :data-type="media.type">
-            <MediaStory
-              :media="media"
-              :media_position="mediaPosition(index)"
-              :preview_mode="preview_mode"
-              :read_only="read_only"
-              @changeMediaOrder="$emit('changeMediaOrder', $event)"
-            />
-          </div>
+          <MediaStory
+            :media="media"
+            :media_position="mediaPosition(index)"
+            :preview_mode="preview_mode"
+            :read_only="read_only"
+            @changeMediaOrder="$emit('changeMediaOrder', $event)"
+          />
         </div>
       </transition-group>
     </div>

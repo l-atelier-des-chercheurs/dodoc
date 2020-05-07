@@ -5379,7 +5379,7 @@ small {
     .margin-small;
   }
 
-  .m_storyPublication--media {
+  .m_mediaStory {
     .bg-blanc;
     position: relative;
     .padding-vert-verysmall;
@@ -5395,7 +5395,7 @@ small {
 @t-storyButtons: 24px;
 @t-marginFromDoc: 0;
 
-.m_storyPublication--media--moveItemButtons {
+.m_mediaStory--moveItemButtons {
   position: absolute;
   left: 100%;
   top: 0;
@@ -5416,9 +5416,16 @@ small {
   flex-flow: column nowrap;
   justify-content: space-between;
 
-  .m_storyPublication--media--moveItemButton--before,
-  .m_storyPublication--media--moveItemButton--after,
-  .m_storyPublication--media--moveItemButton--options {
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--visible {
+    opacity: 1;
+  }
+
+  .m_mediaStory--moveItemButton--before,
+  .m_mediaStory--moveItemButton--after,
+  .m_mediaStory--moveItemButton--options {
     background-color: transparent;
     display: block;
     right: 0;
@@ -5440,7 +5447,7 @@ small {
     }
   }
 
-  .m_storyPublication--media--moveItemButton--options {
+  .m_mediaStory--moveItemButton--options {
     padding: 4px;
     transform: rotate(90deg);
   }
@@ -5521,7 +5528,7 @@ small {
 }
 
 .m_mediaStory {
-  min-height: 2.5 * @t-storyButtons;
+  min-height: 3 * @t-storyButtons;
 
   .mediaContainer {
     position: relative;
@@ -5559,7 +5566,7 @@ small {
         border: 2px solid @c-gris_tresclair;
         .bg-gris_tresclair;
         width: 100%;
-        height: 100%;
+        height: 40vh;
       }
     }
   }

@@ -62,12 +62,15 @@
       {{ media._linked_media.caption }}
     </p>
     <div
-      class="m_storyPublication--media--moveItemButtons"
-      v-if="(is_selected || is_hovered) && !preview_mode && !read_only"
+      class="m_mediaStory--moveItemButtons"
+      :class="{
+        'is--visible':
+          (is_selected || is_hovered) && !preview_mode && !read_only,
+      }"
     >
       <button
         type="button"
-        class="m_storyPublication--media--moveItemButton--before"
+        class="m_mediaStory--moveItemButton--before"
         :disabled="media_position === 'first'"
         @click="
           $emit('changeMediaOrder', {
@@ -82,7 +85,7 @@
       <div>
         <button
           type="button"
-          class="m_storyPublication--media--moveItemButton--options"
+          class="m_mediaStory--moveItemButton--options"
           @click="show_media_options = !show_media_options"
         >
           <svg
@@ -142,7 +145,7 @@
 
       <button
         type="button"
-        class="m_storyPublication--media--moveItemButton--after"
+        class="m_mediaStory--moveItemButton--after"
         :disabled="media_position === 'last'"
         @click="
           $emit('changeMediaOrder', {

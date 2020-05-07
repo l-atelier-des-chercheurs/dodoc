@@ -7,7 +7,7 @@
         @mousedown.self="
           $root.settings.current_publication.selected_medias = []
         "
-        @touchstart.stop.prevent="
+        @touchstart.self="
           $root.settings.current_publication.selected_medias = []
         "
       >
