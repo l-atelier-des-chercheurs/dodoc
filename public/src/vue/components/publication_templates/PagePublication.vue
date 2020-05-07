@@ -1059,7 +1059,7 @@ export default {
     createPubliMedia(values) {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
-      this.addMedia(values);
+      this.addMedia({ values });
     },
     addMedia({ values = {} }) {
       if (this.$root.state.dev_mode === "debug")

@@ -27,29 +27,37 @@
       @mousedown.self="$root.settings.current_publication.selected_medias = []"
       @touchstart.self="$root.settings.current_publication.selected_medias = []"
     >
-      <transition-group name="list-complete" :duration="300">
-        <div
-          v-for="(media, index) in medias_in_order"
-          :key="media.metaFileName"
-        >
-          <InsertMediaButton
-            v-if="can_edit_publi"
-            @addMedia="
-              (values) =>
-                addMedia({ values, right_after_meta: media.metaFileName })
-            "
-          />
+      <div class="m_storyPublication--content">
+        <InsertMediaButton
+          v-if="can_edit_publi"
+          :is_collapsed="medias_in_order.length === 0"
+          @addMedia="(values) => addMedia({ values })"
+        />
 
-          <MediaStory
-            :media="media"
-            :media_position="mediaPosition(index)"
-            :preview_mode="preview_mode"
-            :read_only="read_only"
-            @removePubliMedia="$emit('removePubliMedia', $event)"
-            @changeMediaOrder="$emit('changeMediaOrder', $event)"
-          />
-        </div>
-      </transition-group>
+        <transition-group name="list-complete" :duration="300">
+          <div
+            v-for="(media, index) in medias_in_order"
+            :key="media.metaFileName"
+          >
+            <MediaStory
+              :media="media"
+              :media_position="mediaPosition(index)"
+              :preview_mode="preview_mode"
+              :slugPubliName="slugPubliName"
+              :read_only="read_only"
+              @removePubliMedia="$emit('removePubliMedia', $event)"
+              @changeMediaOrder="$emit('changeMediaOrder', $event)"
+            />
+            <InsertMediaButton
+              v-if="can_edit_publi"
+              @addMedia="
+                (values) =>
+                  addMedia({ values, right_after_meta: media.metaFileName })
+              "
+            />
+          </div>
+        </transition-group>
+      </div>
     </div>
   </div>
 </template>

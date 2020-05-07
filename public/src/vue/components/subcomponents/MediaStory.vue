@@ -43,7 +43,9 @@
           v-model="htmlForEditor"
           :media="media"
           :theme="'bubble'"
-          :slugFolderName="media.slugFolderName"
+          :enable_collaboration="true"
+          :type="'publications'"
+          :slugFolderName="slugPubliName"
           ref="textField"
         />
         <div v-else class="mediaTextContent">
@@ -104,7 +106,7 @@
           </svg>
         </button>
         <div class="_advanced_menu" v-if="show_advanced_menu">
-          <button
+          <!-- <button
             type="button"
             v-if="media.type === 'text'"
             class="buttonLink _no_underline"
@@ -135,7 +137,7 @@
               L19.1,91.5z"
               />
             </svg>
-          </button>
+          </button> -->
 
           <button
             type="button"
@@ -290,6 +292,7 @@ export default {
     media: Object,
     read_only: Boolean,
     preview_mode: Boolean,
+    slugPubliName: String,
     media_position: String,
   },
   components: {
@@ -305,7 +308,7 @@ export default {
       is_hovered: false,
       is_touch: Modernizr.touchevents,
 
-      inline_edit_mode: false,
+      inline_edit_mode: true,
       show_advanced_menu: false,
 
       htmlForEditor: this.media.content ? this.media.content : "",
@@ -364,13 +367,6 @@ export default {
           slugProjectName: this.media._linked_media.slugProjectName,
           metaFileName: this.media._linked_media.metaFileName,
         });
-      else {
-        this.inline_edit_mode = true;
-        this.$nextTick(() => {
-          if (this.$refs.textField && this.$refs.textField.$el)
-            this.$refs.textField.$el.querySelector(".ql-editor").focus();
-        });
-      }
     },
     toggleImageFitMode() {
       if (this.fit_mode === "cover") this.fit_mode = "contain";

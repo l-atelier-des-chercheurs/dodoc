@@ -257,7 +257,6 @@ export default {
       else this.$root.settings.current_publication.layer_id = id;
     },
     mediasFromLayer(id) {
-      debugger;
       if (this.layered_medias.hasOwnProperty(id)) return [];
       return this.layered_medias[id];
     },

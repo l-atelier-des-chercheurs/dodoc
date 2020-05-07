@@ -366,7 +366,6 @@ export default {
         (m) => m.slugMediaName !== metaFileName
       );
 
-      debugger;
       this.$root
         .editFolder({
           type: "publications",

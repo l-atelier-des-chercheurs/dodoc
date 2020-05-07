@@ -82,11 +82,16 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    is_collapsed: {
+      type: Boolean,
+      default: true,
+    },
+  },
   components: {},
   data() {
     return {
-      show_menu: false,
+      show_menu: !this.is_collapsed,
       selected_files: [],
 
       is_iOS_device:

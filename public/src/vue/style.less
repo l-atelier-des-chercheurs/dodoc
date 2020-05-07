@@ -5359,28 +5359,31 @@ small {
 }
 
 .m_storyPublication {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-
   .padding-vert-medium;
   .padding-sides-medium;
 
-  > span::after {
-    content: "";
-    position: relative;
-    height: 1px;
-    display: block;
+  .m_storyPublication--content {
+    .bg-blanc;
+    max-width: 600px;
+    margin: 0 auto;
     width: 100%;
-    .margin-small;
+    border-radius: @t-buttonradius;
+    .padding-vert-verysmall;
+
+    > span::after {
+      content: "";
+      position: relative;
+      height: 1px;
+      display: block;
+      width: 100%;
+      .margin-small;
+    }
   }
 
   .m_mediaStory {
-    .bg-blanc;
     position: relative;
     .padding-vert-verysmall;
     .padding-sides-medium;
-    max-width: 600px;
     margin: 0 auto;
 
     // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
