@@ -145,6 +145,8 @@
         v-if="current_layer && show_layers"
         :key="current_layer.id"
         :current_layer="current_layer"
+        :layer_medias="layered_medias[current_layer.id]"
+        :slugPubliName="slugPubliName"
         @updateDrawingOptions="(v) => updateDrawingOptions(v)"
         @removeLayer="removeLayer()"
       />
@@ -159,7 +161,7 @@ export default {
   props: {
     layers: Array,
     preview_mode: Boolean,
-    medias: Object,
+    layered_medias: Object,
     slugPubliName: String,
     publication: Object,
   },
@@ -255,8 +257,9 @@ export default {
       else this.$root.settings.current_publication.layer_id = id;
     },
     mediasFromLayer(id) {
-      if (typeof this.medias !== "object") return [];
-      return Object.values(this.medias).filter((m) => m.layer_id === id);
+      debugger;
+      if (this.layered_medias.hasOwnProperty(id)) return [];
+      return this.layered_medias[id];
     },
     updateLayerColor({ $event, id }) {
       const new_color = $event.target.value;

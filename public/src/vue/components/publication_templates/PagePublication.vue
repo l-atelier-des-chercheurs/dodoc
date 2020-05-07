@@ -703,6 +703,23 @@ export default {
   },
   mounted() {
     this.$eventHub.$on("publication.addMedia", this.addMedia);
+
+    this.$eventHub.$on("publication.justAddedMedia", (mdata) => {
+      this.$nextTick(() => {
+        if (mdata.type && mdata.type === "text") {
+          this.$eventHub.$emit(
+            "publication.set_media_to_edit_mode",
+            mdata.metaFileName
+          );
+        } else {
+          this.$eventHub.$emit(
+            "publication.selectNewMedia",
+            mdata.metaFileName
+          );
+        }
+      });
+    });
+
     document.addEventListener("keyup", this.publicationKeyListener);
 
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty("mmMeasurer")
@@ -1042,81 +1059,42 @@ export default {
     createPubliMedia(values) {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
-      this.addMedia({ values }).then((mdata) => {
-        this.$nextTick(() => {
-          if (values.type && values.type === "text") {
-            this.$eventHub.$emit(
-              "publication.set_media_to_edit_mode",
-              mdata.metaFileName
-            );
-          } else {
-            this.$eventHub.$emit(
-              "publication.selectNewMedia",
-              mdata.metaFileName
-            );
-          }
-        });
-      });
+      this.addMedia(values);
     },
-    addMedia({ slugProjectName, metaFileName, values }) {
-      return new Promise((resolve, reject) => {
-        if (this.$root.state.dev_mode === "debug") {
-          console.log(`METHODS • Publication: addMedia with
-        slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
-        }
+    addMedia({ values = {} }) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`PagePublication • METHODS: addMedia`);
 
-        if (!this.$root.settings.current_publication.page_id) {
-          console.log(`METHODS • Publication: addMedia missing page id`);
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error("Missing page id to add media properly");
-        }
+      if (!this.$root.settings.current_publication.page_id) {
+        console.log(`METHODS • Publication: addMedia missing page id`);
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error("Missing page id to add media properly");
+      }
 
-        const page_id = this.$root.settings.current_publication.page_id;
+      values.page_id = this.$root.settings.current_publication.page_id;
 
-        const x = this.publications_options.margin_left;
-        const y = this.publications_options.margin_top;
+      values.x = this.publications_options.margin_left;
+      values.y = this.publications_options.margin_top;
 
-        const z_index =
-          this.getHighestZNumberAmongstMedias(this.paged_medias[page_id]) + 1;
+      values.z_index =
+        this.getHighestZNumberAmongstMedias(
+          this.paged_medias[this.$root.settings.current_publication.page_id]
+        ) + 1;
 
-        let additionalMeta = {
-          page_id,
-          x,
-          y,
-          z_index,
-        };
+      // get current scroll
+      if (this.$refs.current_page) {
+        const posx_in_cm =
+          this.$refs.current_page.$el.scrollLeft / this.pixelsPerMillimeters;
+        if (!Number.isNaN(posx_in_cm)) values.x = posx_in_cm;
 
-        if (slugProjectName && metaFileName) {
-          additionalMeta.slugProjectName = slugProjectName;
-          additionalMeta.desired_filename = metaFileName;
-          additionalMeta.slugMediaName = metaFileName;
-        }
+        const posy_in_cm =
+          this.$refs.current_page.$el.scrollTop / this.pixelsPerMillimeters;
+        if (!Number.isNaN(posy_in_cm)) values.y = posy_in_cm;
+      }
 
-        if (values) Object.assign(additionalMeta, values);
-
-        // get current scroll
-        if (this.$refs.current_page) {
-          const posx_in_cm =
-            this.$refs.current_page.$el.scrollLeft / this.pixelsPerMillimeters;
-          if (!Number.isNaN(posx_in_cm)) additionalMeta.x = posx_in_cm;
-
-          const posy_in_cm =
-            this.$refs.current_page.$el.scrollTop / this.pixelsPerMillimeters;
-          if (!Number.isNaN(posy_in_cm)) additionalMeta.y = posy_in_cm;
-        }
-
-        this.$root
-          .createMedia({
-            slugFolderName: this.slugPubliName,
-            type: "publications",
-            additionalMeta,
-          })
-          .then((mdata) => {
-            return resolve(mdata);
-          });
-      });
+      this.$emit("addMedia", { values });
     },
     insertPageAtIndex(index) {
       if (this.$root.state.dev_mode === "debug")

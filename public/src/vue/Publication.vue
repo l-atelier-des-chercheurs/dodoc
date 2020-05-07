@@ -6,6 +6,7 @@
       :publication="publication"
       :paged_medias="paged_medias"
       :read_only="read_only"
+      @addMedia="addMedia"
     />
     <VideoPublication
       v-else-if="publication.template === 'video_assemblage'"
@@ -16,7 +17,7 @@
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @changeMediaOrder="changeMediaOrder"
-      @addMedia="addMedia"
+      @addMedia="addMediaOrdered"
     />
     <VideoEffects
       v-else-if="publication.template === 'video_effects'"
@@ -27,21 +28,20 @@
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @editPubliFolder="editPubliFolder"
+      @addMedia="addMediaOrdered"
+    />
+
+    <DrawingPad
+      v-else-if="publication.template === 'drawing_pad'"
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      :layered_medias="layered_medias"
+      :read_only="read_only"
+      @addMedia="addMedia"
     />
 
     <!--
 
-    <DrawingPad
-      v-else-if="
-        $root.store.publications[$root.settings.current_publication.slug]
-          .template === 'drawing_pad'
-      "
-      :slugPubliName="$root.settings.current_publication.slug"
-      :publication="
-        $root.store.publications[$root.settings.current_publication.slug]
-      "
-      :read_only="!$root.state.connected"
-    />
     <StopmotionAnimation
       v-else-if="
         $root.store.publications[$root.settings.current_publication.slug]
@@ -109,6 +109,7 @@ export default {
     PagePublication,
     VideoPublication,
     VideoEffects,
+    DrawingPad,
   },
   data() {
     return {
@@ -117,8 +118,6 @@ export default {
   },
   created() {},
   mounted() {
-    this.$eventHub.$on("publication.addMedia", this.addMedia);
-
     this.$eventHub.$on(
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
@@ -131,7 +130,6 @@ export default {
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
     );
-    this.$eventHub.$off("publication.addMedia", this.addMedia);
   },
   watch: {
     "publication.medias": function () {
@@ -156,6 +154,9 @@ export default {
     },
     paged_medias() {
       return this.$_.groupBy(this.medias, "page_id");
+    },
+    layered_medias() {
+      return this.$_.groupBy(this.medias, "layer_id");
     },
     medias_slugs() {
       if (this.$root.state.dev_mode === "debug")
@@ -265,12 +266,50 @@ export default {
       this.medias = medias;
     },
 
-    addMedia({ values = {}, right_after_meta = false }) {
+    addMediaOrdered({ values = {}, right_after_meta = false }) {
       return new Promise((resolve, reject) => {
-        if (this.$root.state.dev_mode === "debug") {
+        this.addMedia({ values }).then((mdata) => {
+          const medias_slugs =
+            !Array.isArray(this.publication.medias_slugs) ||
+            this.publication.medias_slugs.length === 0
+              ? []
+              : JSON.parse(JSON.stringify(this.publication.medias_slugs));
+
+          if (right_after_meta) {
+            // this is much more complex than it could be because of possible missing medias
+            // in medias_slugs_in_order: medias that were added and then removed or part
+            // of a removed project
+            const index = medias_slugs.findIndex(
+              (s) => s.slugMediaName === right_after_meta
+            );
+            medias_slugs.splice(index, 0, {
+              slugMediaName: mdata.metaFileName,
+            });
+          } else {
+            medias_slugs.push({
+              slugMediaName: mdata.metaFileName,
+            });
+          }
+          this.$root
+            .editFolder({
+              type: "publications",
+              slugFolderName: this.slugPubliName,
+              data: {
+                medias_slugs: medias_slugs,
+              },
+            })
+            .then((fdata) => {
+              this.$eventHub.$emit("publication.justAddedMedia", mdata);
+            });
+        });
+      });
+    },
+
+    addMedia({ values = {} }) {
+      return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
           console.log(`METHODS • Publication: addMedia with
         values = ${JSON.stringify(values)}`);
-        }
 
         let additionalMeta = {};
 
@@ -288,36 +327,7 @@ export default {
             additionalMeta,
           })
           .then((mdata) => {
-            const medias_slugs =
-              !Array.isArray(this.publication.medias_slugs) ||
-              this.publication.medias_slugs.length === 0
-                ? []
-                : JSON.parse(JSON.stringify(this.publication.medias_slugs));
-
-            if (right_after_meta) {
-              // this is much more complex than it could be because of possible missing medias
-              // in medias_slugs_in_order: medias that were added and then removed or part
-              // of a removed project
-
-              const index = medias_slugs.findIndex(
-                (s) => s.slugMediaName === right_after_meta
-              );
-              medias_slugs.splice(index, 0, {
-                slugMediaName: mdata.metaFileName,
-              });
-            } else {
-              medias_slugs.push({
-                slugMediaName: mdata.metaFileName,
-              });
-            }
-
-            this.$root.editFolder({
-              type: "publications",
-              slugFolderName: this.slugPubliName,
-              data: {
-                medias_slugs: medias_slugs,
-              },
-            });
+            return resolve(mdata);
           });
       });
     },

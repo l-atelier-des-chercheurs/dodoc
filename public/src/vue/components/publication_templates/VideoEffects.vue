@@ -21,7 +21,7 @@
       :instructions="$t('export_video_instructions')"
     />
 
-    <div class="m_videoEffects">
+    <div class="m_videoEffects" :data-accepted_medias="accepted_media_type">
       <div class v-if="!video_media">
         <p>
           <small class="c-blanc" v-html="$t('add_one_video_file')" />
@@ -294,13 +294,10 @@ export default {
   },
   created() {},
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = this.accepted_media_type;
-
     this.$eventHub.$on("publication.addMedia", this.addMedia);
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.addMedia", this.addMedia);
-    this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {},
   computed: {
@@ -310,13 +307,18 @@ export default {
       return [];
     },
     accepted_media_type() {
+      const medias_that_can_be_added = [];
+
+      if (!this.video_media) medias_that_can_be_added.push("video");
+
       if (
         this.effects.length > 0 &&
-        this.effects.some((e) => e.type === "watermark")
-      ) {
-        return ["video", "image"];
-      }
-      return ["video"];
+        this.effects.some((e) => e.type === "watermark") &&
+        !this.watermark_media
+      )
+        medias_that_can_be_added.push("image");
+
+      this.$root.settings.current_publication.accepted_media_type = medias_that_can_be_added;
     },
     export_button_enabled() {
       if (
@@ -387,40 +389,8 @@ export default {
         },
       });
     },
-
-    addMedia({ slugProjectName, metaFileName }) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: addMedia with
-        slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
-      }
-
-      const desired_filename = metaFileName;
-
-      this.$eventHub.$on("socketio.media_created_or_updated", (d) => {
-        this.$eventHub.$off("socketio.media_created_or_updated");
-
-        this.medias_slugs_in_order.push({
-          slugMediaName: d.metaFileName,
-        });
-
-        this.$root.editFolder({
-          type: "publications",
-          slugFolderName: this.slugPubliName,
-          data: {
-            medias_slugs: this.medias_slugs_in_order,
-          },
-        });
-      });
-
-      this.$root.createMedia({
-        slugFolderName: this.slugPubliName,
-        type: "publications",
-        additionalMeta: {
-          slugProjectName,
-          desired_filename,
-          slugMediaName: metaFileName,
-        },
-      });
+    addMedia(d) {
+      this.$emit("addMedia", d);
     },
   },
 };
