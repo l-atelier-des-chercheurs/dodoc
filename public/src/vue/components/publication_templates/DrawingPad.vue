@@ -446,9 +446,9 @@ export default {
       if (!page_medias) return 0;
 
       const medias_with_z = page_medias
-        .filter((m) => m.publi_meta.hasOwnProperty("z_index"))
+        .filter((m) => m.hasOwnProperty("z_index"))
         .map((m) => {
-          return m.publi_meta.z_index;
+          return m.z_index;
         });
 
       if (medias_with_z.length === 0) return 0;
