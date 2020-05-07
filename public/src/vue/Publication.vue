@@ -365,6 +365,8 @@ export default {
       const medias_slugs = this.publication.medias_slugs.filter(
         (m) => m.slugMediaName !== metaFileName
       );
+
+      debugger;
       this.$root
         .editFolder({
           type: "publications",

@@ -990,7 +990,7 @@ export default {
 
     removePubliMedia() {
       this.$emit("removePubliMedia", {
-        slugMediaName: this.media.metaFileName,
+        metaFileName: this.media.metaFileName,
       });
     },
     resizeMedia({ event, type, origin }) {

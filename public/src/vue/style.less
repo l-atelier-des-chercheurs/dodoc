@@ -1426,10 +1426,6 @@ small {
     border: 4px dashed @c-bleuvert !important;
   }
 
-  ._advanced_menu {
-    right: 5px;
-  }
-
   .m_project--presentation {
     position: relative;
     // z-index: 0;
@@ -5425,7 +5421,7 @@ small {
 
   .m_mediaStory--moveItemButton--before,
   .m_mediaStory--moveItemButton--after,
-  .m_mediaStory--moveItemButton--options {
+  .m_mediaStory--moveItemButton--options > button {
     background-color: transparent;
     display: block;
     right: 0;
@@ -5448,8 +5444,23 @@ small {
   }
 
   .m_mediaStory--moveItemButton--options {
-    padding: 4px;
-    transform: rotate(90deg);
+    position: relative;
+    > button {
+      padding: 4px;
+      transform: rotate(90deg);
+    }
+
+    ._advanced_menu {
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translate(0, -50%);
+
+      button {
+        .bg-orange;
+        color: @c-noir;
+      }
+    }
   }
 }
 
@@ -5857,10 +5868,19 @@ small {
 
   .padding-small;
 
-  &::before {
-  }
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  background-color: @c-noir;
+  pointer-events: auto;
 
-  button {
+  width: 240px;
+  .margin-small;
+  border: 0;
+
+  > button {
+    min-width: 2.2rem;
+    min-height: 2.2rem;
     margin-left: ~"calc(-1/4 * var(--spacing))";
     margin-top: ~"calc( -1/4 * var(--spacing))";
   }
@@ -6353,24 +6373,6 @@ small {
 
     display: flex;
     justify-content: flex-end;
-
-    ._advanced_menu {
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: space-around;
-      background-color: @c-noir;
-      pointer-events: auto;
-
-      padding: 0;
-      width: 240px;
-      .margin-small;
-      border: 0;
-
-      > button {
-        min-width: 2.2rem;
-        min-height: 2.2rem;
-      }
-    }
 
     > button {
     }

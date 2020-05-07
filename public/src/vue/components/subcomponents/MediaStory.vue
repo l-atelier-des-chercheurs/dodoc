@@ -82,12 +82,8 @@
         <img src="/images/i_arrow_left.svg" draggable="false" />
       </button>
 
-      <div>
-        <button
-          type="button"
-          class="m_mediaStory--moveItemButton--options"
-          @click="show_media_options = !show_media_options"
-        >
+      <div class="m_mediaStory--moveItemButton--options">
+        <button type="button" @click="show_advanced_menu = !show_advanced_menu">
           <svg
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +103,7 @@
             />
           </svg>
         </button>
-        <div class="" v-if="show_media_options">
+        <div class="_advanced_menu" v-if="show_advanced_menu">
           <button
             type="button"
             v-if="media.type === 'text'"
@@ -140,58 +136,7 @@
               />
             </svg>
           </button>
-        </div>
-      </div>
 
-      <button
-        type="button"
-        class="m_mediaStory--moveItemButton--after"
-        :disabled="media_position === 'last'"
-        @click="
-          $emit('changeMediaOrder', {
-            metaFileName: media.metaFileName,
-            dir: +1,
-          })
-        "
-      >
-        <img src="/images/i_arrow_right.svg" draggable="false" />
-      </button>
-    </div>
-
-    <transition name="fade_fast" :duration="150">
-      <div class="m_mediaStory--buttons">
-        <button
-          type="button"
-          class="_advanced_menu_button _no_underline"
-          :class="{ 'is--active': show_advanced_menu }"
-          @mousedown.stop.prevent="
-            show_advanced_menu = !show_advanced_menu;
-            selectMedia();
-          "
-          @touchstart.stop.prevent="
-            show_advanced_menu = !show_advanced_menu;
-            selectMedia();
-          "
-        >
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="168px"
-            height="168px"
-            viewBox="0 0 168 168"
-            style="enable-background: new 0 0 168 168;"
-            xml:space="preserve"
-          >
-            <rect x="73.5" y="37" class="st0" width="21" height="21" />
-            <rect x="73.5" y="73.5" class="st0" width="21" height="21" />
-            <rect x="73.5" y="110" class="st0" width="21" height="21" />
-          </svg>
-        </button>
-
-        <div v-if="show_advanced_menu" class="_advanced_menu" @click.stop>
           <button
             type="button"
             v-if="media.hasOwnProperty('_linked_media')"
@@ -318,7 +263,21 @@
           </button>
         </div>
       </div>
-    </transition>
+
+      <button
+        type="button"
+        class="m_mediaStory--moveItemButton--after"
+        :disabled="media_position === 'last'"
+        @click="
+          $emit('changeMediaOrder', {
+            metaFileName: media.metaFileName,
+            dir: +1,
+          })
+        "
+      >
+        <img src="/images/i_arrow_right.svg" draggable="false" />
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -345,52 +304,11 @@ export default {
       is_waitingForServer: false,
       is_hovered: false,
       is_touch: Modernizr.touchevents,
-      is_text_overflowing: false,
 
       inline_edit_mode: false,
       show_advanced_menu: false,
-      show_zindex_number: false,
 
-      limit_media_to_page: true,
       htmlForEditor: this.media.content ? this.media.content : "",
-
-      mediaID: `${(Math.random().toString(36) + "00000000000000000").slice(
-        2,
-        3 + 5
-      )}`,
-
-      dragOffset: {
-        x: 0,
-        y: 0,
-      },
-      mediaPos: {
-        x: 0,
-        y: 0,
-        px: 0,
-        py: 0,
-      },
-
-      resizeOffset: {
-        x: 0,
-        y: 0,
-      },
-      resize_origin: "",
-
-      rotateOffset: {
-        x: 0,
-        y: 0,
-        angle: 0,
-      },
-      rotate: 0,
-      debounce_setCSSForMedia: undefined,
-
-      font_size_percent: 100,
-      fill_color: "transparent",
-      stroke_color: "transparent",
-      stroke_width: 4,
-
-      custom_css: "",
-      mediaZIndex: 0,
 
       fit_mode: "cover",
     };
@@ -479,7 +397,7 @@ export default {
     },
     removePubliMedia() {
       this.$emit("removePubliMedia", {
-        slugMediaName: this.media.metaFileName,
+        metaFileName: this.media.metaFileName,
       });
     },
     toggleMediaSelection() {

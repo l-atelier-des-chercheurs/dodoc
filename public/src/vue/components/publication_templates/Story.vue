@@ -45,6 +45,7 @@
             :media_position="mediaPosition(index)"
             :preview_mode="preview_mode"
             :read_only="read_only"
+            @removePubliMedia="$emit('removePubliMedia', $event)"
             @changeMediaOrder="$emit('changeMediaOrder', $event)"
           />
         </div>
