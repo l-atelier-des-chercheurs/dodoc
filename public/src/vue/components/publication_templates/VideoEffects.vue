@@ -21,7 +21,7 @@
       :instructions="$t('export_video_instructions')"
     />
 
-    <div class="m_videoEffects" :data-accepted_medias="accepted_media_type">
+    <div class="m_videoEffects">
       <div class v-if="!video_media">
         <p>
           <small class="c-blanc" v-html="$t('add_one_video_file')" />
@@ -299,26 +299,34 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off("publication.addMedia", this.addMedia);
   },
-  watch: {},
+  watch: {
+    medias_in_order: {
+      handler() {
+        this.$root.settings.current_publication.accepted_media_type = this.required_media_type.filter(
+          (t) =>
+            !this.medias_in_order.some(
+              (m) => m._linked_media && m._linked_media.type === t
+            )
+        );
+      },
+      immediate: true,
+    },
+  },
   computed: {
     effects() {
       if (!!this.publication.effects && Array.isArray(this.publication.effects))
         return this.publication.effects;
       return [];
     },
-    accepted_media_type() {
-      const medias_that_can_be_added = [];
-
-      if (!this.video_media) medias_that_can_be_added.push("video");
-
+    required_media_type() {
       if (
         this.effects.length > 0 &&
         this.effects.some((e) => e.type === "watermark") &&
         !this.watermark_media
       )
-        medias_that_can_be_added.push("image");
+        return ["video", "image"];
 
-      this.$root.settings.current_publication.accepted_media_type = medias_that_can_be_added;
+      return ["video"];
     },
     export_button_enabled() {
       if (

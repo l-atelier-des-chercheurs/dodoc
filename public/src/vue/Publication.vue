@@ -92,12 +92,12 @@
 <script>
 import PagePublication from "./components/publication_templates/PagePublication.vue";
 import VideoPublication from "./components/publication_templates/VideoPublication.vue";
-// import Carreau from "./components/publication_templates/Carreau.vue";
 import DrawingPad from "./components/publication_templates/DrawingPad.vue";
 import VideoEffects from "./components/publication_templates/VideoEffects.vue";
 import StopmotionAnimation from "./components/publication_templates/StopmotionAnimation.vue";
 import MixAudioAndVideo from "./components/publication_templates/MixAudioAndVideo.vue";
 import MixAudioAndImage from "./components/publication_templates/MixAudioAndImage.vue";
+// import Carreau from "./components/publication_templates/Carreau.vue";
 
 export default {
   props: {
