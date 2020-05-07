@@ -1388,6 +1388,10 @@ module.exports = (function () {
       oc: "Inserir una pagina aicí",
       de: "Eine Seite davor hinzufügen",
     },
+    insert_medias_here: {
+      fr: "Insérer un média ici",
+      en: "Insert a media here",
+    },
     add_a_page_before: {
       fr: "Ajouter une page avant celle-ci",
       en: "Add a page before this one",
