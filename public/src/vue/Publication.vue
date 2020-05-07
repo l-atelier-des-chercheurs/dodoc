@@ -14,6 +14,8 @@
       :publication="publication"
       :medias_in_order="medias_in_order"
       :read_only="read_only"
+      :can_edit_publi="can_edit_publi"
+      :can_see_publi="can_see_publi"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @changeMediaOrder="changeMediaOrder"
@@ -204,6 +206,18 @@ export default {
         []
       );
       return medias_in_order;
+    },
+    can_edit_publi() {
+      return this.$root.canEditFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
+    can_see_publi() {
+      return this.$root.canSeeFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
     },
   },
   methods: {

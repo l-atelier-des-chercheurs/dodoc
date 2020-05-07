@@ -27,6 +27,7 @@
           :key="media.metaFileName"
         >
           <InsertMediaButton
+            v-if="can_edit_publi"
             @addMedia="
               (values) =>
                 addMedia({ values, right_after_meta: media.metaFileName })
@@ -36,63 +37,11 @@
           <div class="m_storyPublication--media" :data-type="media.type">
             <MediaStory
               :media="media"
+              :media_position="mediaPosition(index)"
               :preview_mode="preview_mode"
               :read_only="read_only"
+              @changeMediaOrder="$emit('changeMediaOrder', $event)"
             />
-            <div class="m_storyPublication--media--moveItemButtons">
-              <button
-                type="button"
-                class="m_storyPublication--media--moveItemButton--before"
-                :disabled="index === 0"
-                @click="
-                  $emit('changeMediaOrder', {
-                    metaFileName: media.metaFileName,
-                    dir: -1,
-                  })
-                "
-              >
-                <img src="/images/i_arrow_left.svg" draggable="false" />
-              </button>
-
-              <button
-                type="button"
-                class="m_storyPublication--media--moveItemButton--options"
-                @click="show_media_options = media.metaFileName"
-              >
-                <svg
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  x="0px"
-                  y="0px"
-                  width="4px"
-                  height="16.2px"
-                  viewBox="0 0 4 16.2"
-                  style="enable-background: new 0 0 4 16.2;"
-                  xml:space="preserve"
-                >
-                  <path
-                    style="fill: currentColor;"
-                    d="M0,14.1c0,1.1,0.9,2,2,2s2-0.9,2-2s-0.9-2-2-2S0,13,0,14.1z M0,2c0,1.1,0.9,2,2,2s2-0.9,2-2S3.1,0,2,0
-	S0,0.9,0,2z M0,8.1c0,1.1,0.9,2,2,2s2-0.9,2-2s-0.9-2-2-2S0,7,0,8.1z"
-                  />
-                </svg>
-              </button>
-
-              <button
-                type="button"
-                class="m_storyPublication--media--moveItemButton--after"
-                :disabled="index >= medias_in_order.length - 1"
-                @click="
-                  $emit('changeMediaOrder', {
-                    metaFileName: media.metaFileName,
-                    dir: +1,
-                  })
-                "
-              >
-                <img src="/images/i_arrow_right.svg" draggable="false" />
-              </button>
-            </div>
           </div>
         </div>
       </transition-group>
@@ -109,6 +58,8 @@ export default {
     slugPubliName: String,
     publication: Object,
     medias_in_order: Array,
+    can_edit_publi: Boolean,
+    can_see_publi: Boolean,
     read_only: Boolean,
   },
   components: {
@@ -150,6 +101,11 @@ export default {
     },
     addMedia(d) {
       this.$emit("addMedia", d);
+    },
+    mediaPosition(index) {
+      if (index === 0) return "first";
+      if (index === this.medias_in_order.length - 1) return "last";
+      return "";
     },
   },
 };

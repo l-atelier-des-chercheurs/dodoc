@@ -1,5 +1,11 @@
 <template>
-  <div class="m_mediaStory" ref="media" :class="[]">
+  <div
+    class="m_mediaStory"
+    ref="media"
+    @mouseover="mouseOver"
+    @mouseleave="mouseLeave"
+    @mousedown.stop="selectMedia"
+  >
     <div
       v-if="
         media.hasOwnProperty('_linked_media') &&
@@ -55,51 +61,102 @@
     >
       {{ media._linked_media.caption }}
     </p>
-
-    <transition name="fade_fast" :duration="150">
-      <div
-        v-if="
-          (is_selected || is_hovered) &&
-          !preview_mode &&
-          !inline_edit_mode &&
-          !read_only &&
-          !locked_in_place
+    <div
+      class="m_storyPublication--media--moveItemButtons"
+      v-if="(is_selected || is_hovered) && !preview_mode && !read_only"
+    >
+      <button
+        type="button"
+        class="m_storyPublication--media--moveItemButton--before"
+        :disabled="media_position === 'first'"
+        @click="
+          $emit('changeMediaOrder', {
+            metaFileName: media.metaFileName,
+            dir: -1,
+          })
         "
-        class="m_mediaStory--buttons"
       >
+        <img src="/images/i_arrow_left.svg" draggable="false" />
+      </button>
+
+      <div>
         <button
           type="button"
-          v-if="media.type === 'text'"
-          class="buttonLink _no_underline"
-          @mousedown.stop.prevent="editButtonClicked"
-          @touchstart.stop.prevent="editButtonClicked"
-          :content="$t('edit_content')"
-          v-tippy="{
-            placement: 'top',
-            delay: [600, 0],
-          }"
+          class="m_storyPublication--media--moveItemButton--options"
+          @click="show_media_options = !show_media_options"
         >
           <svg
             version="1.1"
-            class="inline-svg inline-svg-larger"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             x="0px"
             y="0px"
-            width="90.7px"
-            height="91px"
-            viewBox="0 0 90 120"
-            style="enable-background: new 0 0 100.7 101;"
+            width="4px"
+            height="16.2px"
+            viewBox="0 0 4 16.2"
+            style="enable-background: new 0 0 4 16.2;"
             xml:space="preserve"
           >
             <path
-              class="st0"
-              d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
-              L19.1,91.5z"
+              style="fill: currentColor;"
+              d="M0,14.1c0,1.1,0.9,2,2,2s2-0.9,2-2s-0.9-2-2-2S0,13,0,14.1z M0,2c0,1.1,0.9,2,2,2s2-0.9,2-2S3.1,0,2,0
+	S0,0.9,0,2z M0,8.1c0,1.1,0.9,2,2,2s2-0.9,2-2s-0.9-2-2-2S0,7,0,8.1z"
             />
           </svg>
         </button>
+        <div class="" v-if="show_media_options">
+          <button
+            type="button"
+            v-if="media.type === 'text'"
+            class="buttonLink _no_underline"
+            @mousedown.stop.prevent="editButtonClicked"
+            @touchstart.stop.prevent="editButtonClicked"
+            :content="$t('edit_content')"
+            v-tippy="{
+              placement: 'top',
+              delay: [600, 0],
+            }"
+          >
+            <svg
+              version="1.1"
+              class="inline-svg inline-svg-larger"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="90.7px"
+              height="91px"
+              viewBox="0 0 90 120"
+              style="enable-background: new 0 0 100.7 101;"
+              xml:space="preserve"
+            >
+              <path
+                class="st0"
+                d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
+              L19.1,91.5z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
 
+      <button
+        type="button"
+        class="m_storyPublication--media--moveItemButton--after"
+        :disabled="media_position === 'last'"
+        @click="
+          $emit('changeMediaOrder', {
+            metaFileName: media.metaFileName,
+            dir: +1,
+          })
+        "
+      >
+        <img src="/images/i_arrow_right.svg" draggable="false" />
+      </button>
+    </div>
+
+    <transition name="fade_fast" :duration="150">
+      <div class="m_mediaStory--buttons">
         <button
           type="button"
           class="_advanced_menu_button _no_underline"
@@ -271,6 +328,7 @@ export default {
     media: Object,
     read_only: Boolean,
     preview_mode: Boolean,
+    media_position: String,
   },
   components: {
     MediaContent,

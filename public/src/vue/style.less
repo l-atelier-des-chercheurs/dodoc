@@ -5369,19 +5369,31 @@ small {
 
   .padding-vert-medium;
   .padding-sides-medium;
-  .bg-blanc;
+
+  > span::after {
+    content: "";
+    position: relative;
+    height: 1px;
+    display: block;
+    width: 100%;
+    .margin-small;
+  }
 
   .m_storyPublication--media {
+    .bg-blanc;
     position: relative;
     .padding-vert-verysmall;
     .padding-sides-medium;
     max-width: 600px;
     margin: 0 auto;
+
+    // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    // border-radius: 4px;
   }
 }
 
 @t-storyButtons: 24px;
-@t-marginFromDoc: @t-storyButtons / 2;
+@t-marginFromDoc: 0;
 
 .m_storyPublication--media--moveItemButtons {
   position: absolute;
@@ -5389,11 +5401,14 @@ small {
   top: 0;
   height: 100%;
   width: @t-storyButtons;
-  margin: 0 @t-marginFromDoc;
+  margin: 0;
+  margin-left: @t-marginFromDoc;
 
   background-color: @c-bleuvert_fonce;
   // border: 2px solid @c-bleuvert_fonce;
-  border-radius: @t-marginFromDoc;
+  border-radius: @t-storyButtons / 2;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 
   color: @c-noir;
 
@@ -5401,7 +5416,9 @@ small {
   flex-flow: column nowrap;
   justify-content: space-between;
 
-  > button {
+  .m_storyPublication--media--moveItemButton--before,
+  .m_storyPublication--media--moveItemButton--after,
+  .m_storyPublication--media--moveItemButton--options {
     background-color: transparent;
     display: block;
     right: 0;
@@ -5411,6 +5428,7 @@ small {
     height: @t-storyButtons;
     border-radius: 50%;
     // transform: rotate(90deg);
+    transform: rotate(90deg);
 
     &:hover {
       background-color: @c-bleuvert;
@@ -5422,11 +5440,6 @@ small {
     }
   }
 
-  .m_storyPublication--media--moveItemButton--before,
-  .m_storyPublication--media--moveItemButton--after {
-    transform: rotate(90deg);
-  }
-
   .m_storyPublication--media--moveItemButton--options {
     padding: 4px;
     transform: rotate(90deg);
@@ -5436,15 +5449,12 @@ small {
 .m_insertMediaButton {
   position: relative;
   .bg-blanc;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
   min-height: @t-storyButtons;
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--open {
-    background-color: #eee;
+    // background-color: @c-noir;
   }
 
   .m_insertMediaButton--toggleButton {
@@ -5456,8 +5466,10 @@ small {
     min-height: 0;
     line-height: 1;
     width: @t-storyButtons;
-    height: @t-storyButtons;
-    border-radius: 50%;
+    height: 100%;
+    border-radius: @t-storyButtons / 2;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 
     margin-left: @t-marginFromDoc;
 
@@ -5474,26 +5486,42 @@ small {
       justify-content: center;
       width: 5px;
       height: 5px;
+      padding-left: 1px;
       border-radius: 50%;
-      font-weight: 600;
-      font-size: 1.2em;
+      font-weight: 500;
+      font-size: 1.3em;
+      text-align: center;
       // background-color: @c-noir;
     }
     &:hover {
       background-color: @c-bleuvert_fonce;
     }
+
+    &.is--active {
+      // background-color: @c-bleuvert_fonce;
+    }
   }
 
   .m_insertMediaButton--menu {
-    > button {
-      border-radius: 1.2em;
+    .padding-verysmall;
+    overflow: hidden;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // background-color: @c-bleuvert;
+
+    .barButton {
+      .margin-small;
     }
   }
   // right: 100%;
 }
 
 .m_mediaStory {
-  min-height: 3 * @t-storyButtons;
+  min-height: 2.5 * @t-storyButtons;
 
   .mediaContainer {
     position: relative;
