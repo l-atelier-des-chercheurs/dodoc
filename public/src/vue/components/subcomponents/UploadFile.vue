@@ -132,8 +132,6 @@ export default {
             `UploadFile • METHODS: name = ${filename} / formData is ready / sending to ${this.uriToUploadMedia}`
           );
 
-        debugger;
-
         // TODO : possibilité de cancel
         axios
           .post(this.uriToUploadMedia, formData, {
@@ -159,42 +157,47 @@ export default {
             this.files_to_upload_meta[filename].status = "success";
             this.files_to_upload_meta[filename].upload_percentages = 100;
 
-            const catchMediaCreation = (d) => {
-              if (this.$root.state.dev_mode === "debug")
-                console.log(`UploadFile • METHODS: catchMediaCreation`);
+            this.list_of_medias_to_add_to_fragment.push(x.metaFileNames[0]);
+            debugger;
+            return resolve();
 
-              if (
-                d.hasOwnProperty(this.type) &&
-                d[this.type].hasOwnProperty(this.slugFolderName)
-              ) {
-                const new_media = Object.values(
-                  d[this.type][this.slugFolderName].medias
-                ).find((m) => m.media_filename === x.medias_filenames[0]);
+            // const catchMediaCreation = (d) => {
+            //   if (this.$root.state.dev_mode === "debug")
+            //     console.log(`UploadFile • METHODS: catchMediaCreation`);
 
-                if (new_media) {
-                  console.log(
-                    `UploadFile • METHODS: sendThisFile. Will emit insertMedia for = ${new_media}`
-                  );
+            //   if (
+            //     d.hasOwnProperty(this.type) &&
+            //     d[this.type].hasOwnProperty(this.slugFolderName)
+            //   ) {
+            //     const new_media = Object.values(
+            //       d[this.type][this.slugFolderName].medias
+            //     ).find((m) => m.media_filename === x.medias_filenames[0]);
 
-                  this.list_of_medias_to_add_to_fragment.push(new_media);
-                }
-                return resolve();
-              }
-              this.$eventHub.$once(
-                `socketio.${this.type}.listMedia`,
-                catchMediaCreation
-              );
-            };
-            this.$eventHub.$once(
-              `socketio.${this.type}.listMedia`,
-              catchMediaCreation
-            );
+            //     if (new_media) {
+            //       console.log(
+            //         `UploadFile • METHODS: sendThisFile. Will emit insertMedia for = ${new_media}`
+            //       );
+
+            //       this.list_of_medias_to_add_to_fragment.push(new_media);
+            //     }
+            //     return resolve();
+            //   }
+            //   this.$eventHub.$once(
+            //     `socketio.${this.type}.listMedia`,
+            //     catchMediaCreation
+            //   );
+            // };
+            // this.$eventHub.$once(
+            //   `socketio.${this.type}.listMedia`,
+            //   catchMediaCreation
+            // );
             // resolve(x.map(img => Object.assign({}, img, { url: `${BASE_URL}/images/${img.id}` })));
           })
           .catch((err) => {
-            console.log(
-              `METHODS • sendThisFile: name = ${filename} / failed uploading`
-            );
+            if (this.$root.state.dev_mode === "debug")
+              console.log(
+                `METHODS • sendThisFile: name = ${filename} / failed uploading`
+              );
 
             this.files_to_upload_meta[filename].status = "failed";
             this.files_to_upload_meta[filename].upload_percentages = 0;
@@ -204,16 +207,26 @@ export default {
     },
     sendAllFiles() {
       const executeSequentially = (array) => {
-        return this.sendThisFile(
-          this.files_to_upload[array.shift()]
-        ).then((x) => (array.length == 0 ? x : executeSequentially(array)));
+        return this.sendThisFile(this.files_to_upload[array.shift()]).then(
+          (x) => {
+            if (this.$root.state.dev_mode === "debug")
+              console.log(
+                `UploadFile • METHODS: sendAllFiles / finished sending file, onto next`
+              );
+
+            return array.length === 0 ? x : executeSequentially(array);
+          }
+        );
       };
 
       executeSequentially(
         Array.from(Array(this.files_to_upload.length).keys())
       ).then((x) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(
+            `UploadFile • METHODS: sendAllFiles / finished uploading sequentially`
+          );
         this.$emit("insertMedias", this.list_of_medias_to_add_to_fragment);
-        this.$emit("close");
       });
 
       // const test = async () => {

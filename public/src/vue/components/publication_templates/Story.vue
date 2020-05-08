@@ -30,12 +30,15 @@
 
         <InsertMediaButton
           v-if="can_edit_publi && !read_only"
-          :is_collapsed="medias_in_order.length === 0"
+          :is_collapsed="medias_in_order.length > 0"
           :slugPubliName="slugPubliName"
           @addMedia="(values) => addMedia({ values, in_position: 'start' })"
           @insertMedias="
             ({ medias }) =>
-              $emit('insertMediasInList', { medias, in_position: 'start' })
+              $emit('insertMediasInList', {
+                metaFileNames,
+                in_position: 'start',
+              })
           "
         />
 
@@ -61,9 +64,9 @@
                   addMedia({ values, right_after_meta: media.metaFileName })
               "
               @insertMedias="
-                ({ medias }) =>
+                ({ metaFileNames }) =>
                   $emit('insertMediasInList', {
-                    medias,
+                    metaFileNames,
                     right_after_meta: media.metaFileName,
                   })
               "

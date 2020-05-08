@@ -308,7 +308,7 @@ export default {
         );
       });
     },
-    insertMediasInList({ medias, right_after_meta, in_position }) {
+    insertMediasInList({ metaFileNames, right_after_meta, in_position }) {
       return new Promise((resolve, reject) => {
         const medias_slugs =
           !Array.isArray(this.publication.medias_slugs) ||
@@ -316,9 +316,9 @@ export default {
             ? []
             : JSON.parse(JSON.stringify(this.publication.medias_slugs));
 
-        const new_media_metas = medias.map((m) => {
+        const new_media_metas = metaFileNames.map((metaFileName) => {
           return {
-            slugMediaName: m.metaFileName,
+            slugMediaName: metaFileName,
           };
         });
 
@@ -347,8 +347,8 @@ export default {
             },
           })
           .then((fdata) => {
-            medias.map((m) => {
-              this.$eventHub.$emit("publication.just_appended_media", m);
+            metaFileNames.map((metaFileName) => {
+              // this.$eventHub.$emit("publication.just_appended_media", metaFileName);
             });
           });
       });

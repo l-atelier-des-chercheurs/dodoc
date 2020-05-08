@@ -4,7 +4,7 @@
       type="button"
       class="m_insertMediaButton--toggleButton"
       :class="{ 'is--active': show_menu }"
-      @click="show_menu = !show_menu"
+      @click="toggleMenu"
       :content="$t('insert_medias_here')"
       v-tippy="{
         placement: 'bottom',
@@ -13,7 +13,10 @@
     ></button>
 
     <transition name="fade_fast" :duration="150">
-      <div class="m_insertMediaButton--menu" v-if="show_menu">
+      <div
+        class="m_insertMediaButton--menu"
+        v-if="show_menu && selected_files.length === 0"
+      >
         <div v-show="$root.state.connected" class="m_actionbar">
           <div class="m_actionbar--buttonBar">
             <button
@@ -57,15 +60,6 @@
               </div>
             </transition>
 
-            <UploadFile
-              v-if="selected_files.length > 0"
-              :slugFolderName="slugPubliName"
-              :type="'publications'"
-              :selected_files="selected_files"
-              @close=""
-              @insertMedias="(medias) => insertImportedMedias({ medias })"
-            />
-
             <button
               type="button"
               class="barButton barButton_text"
@@ -77,6 +71,16 @@
         </div>
       </div>
     </transition>
+
+    <UploadFile
+      v-if="selected_files.length > 0"
+      class="m_insertMediaButton--uploadFile"
+      :slugFolderName="slugPubliName"
+      :type="'publications'"
+      :selected_files="selected_files"
+      @close=""
+      @insertMedias="(metaFileNames) => insertImportedMedias({ metaFileNames })"
+    />
   </div>
 </template>
 <script>
@@ -124,10 +128,15 @@ export default {
 
       this.show_menu = false;
     },
-    insertImportedMedias({ medias }) {
+    insertImportedMedias({ metaFileNames }) {
       this.selected_files = [];
-      this.$emit("insertMedias", { medias });
+      this.$emit("insertMedias", { metaFileNames });
+      debugger;
       this.show_menu = false;
+    },
+    toggleMenu() {
+      this.show_menu = !this.show_menu;
+      this.selected_files = [];
     },
     openCapture() {},
     updateInputFiles($event) {

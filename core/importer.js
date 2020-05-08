@@ -91,10 +91,10 @@ module.exports = (function () {
                 })
               );
             }
-            Promise.all(m).then((medias_filenames) => {
+            Promise.all(m).then((metaFileNames) => {
               let msg = {};
               msg.msg = "success";
-              msg.medias_filenames = medias_filenames;
+              msg.metaFileNames = metaFileNames;
               return resolve({ msg });
             });
           }
@@ -116,7 +116,7 @@ module.exports = (function () {
     return new Promise(function (resolve, reject) {
       dev.logfunction("IMPORTER — renameAndConvertMediaAndCreateMeta");
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
-        function (newFileName) {
+        async function (newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);
 
           if (fileMeta.hasOwnProperty("additionalMeta")) {
@@ -131,21 +131,12 @@ module.exports = (function () {
             fileMeta.additionalMeta = {};
           }
 
-          file
+          await file
             .convertAndSaveMedia({
               uploadDir,
               tempPath: fileMeta.path,
               newFileName,
               socketid,
-            })
-            .then((newFileName) => {
-              fileMeta.additionalMeta.media_filename = newFileName;
-              sockets.createMediaMeta({
-                type,
-                slugFolderName,
-                additionalMeta: fileMeta.additionalMeta,
-              });
-              resolve(newFileName);
             })
             .catch((err) => {
               dev.error(err);
@@ -157,9 +148,18 @@ module.exports = (function () {
               });
               resolve();
             });
+
+          fileMeta.additionalMeta.media_filename = newFileName;
+          const metaFileName = await sockets.createMediaMeta({
+            type,
+            slugFolderName,
+            additionalMeta: fileMeta.additionalMeta,
+          });
+
+          return resolve(metaFileName);
         },
         function (err) {
-          reject(err);
+          return reject(err);
         }
       );
     });

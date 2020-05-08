@@ -657,7 +657,12 @@ body {
   .margin-bottom-small;
   .bg-gris_tresclair;
   border-radius: @t-buttonradius;
+
   overflow: hidden;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 
   .m_uploadFile--progressBar {
     content: "";
@@ -5448,6 +5453,10 @@ small {
     &:hover {
       background-color: @c-bleuvert;
     }
+    &[disabled] {
+      opacity: 0;
+    }
+
     img,
     svg {
       width: 100%;
@@ -5487,13 +5496,13 @@ small {
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--open {
     // background-color: @c-noir;
-    .padding-vert-verysmall;
+    .margin-vert-verysmall;
   }
 
   .m_insertMediaButton--toggleButton {
@@ -5549,9 +5558,9 @@ small {
     // .bg-noir;
     // .bg-bleuvert_fonce;
     .bg-gris_clair;
-    border-radius: @t-storyButtons / 2;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-radius: @t-buttonradius;
+    // border-top-right-radius: 0;
+    // border-bottom-right-radius: 0;
 
     display: flex;
     justify-content: center;
@@ -5571,6 +5580,12 @@ small {
         margin-left: 0;
       }
     }
+  }
+
+  .m_insertMediaButton--uploadFile {
+    flex: 1 1 280px;
+    // .bg-gris_clair;
+    // .padding-medium;
   }
   // right: 100%;
 }
@@ -5657,13 +5672,13 @@ small {
             color: @c-gris_clair;
           }
 
-          &:hover::before {
-            transform: scale(1.2);
-          }
-
           &.is--focused::before {
             color: @c-orange;
           }
+        }
+
+        .ql-editor.ql-blank::before {
+          left: 0;
         }
       }
 
