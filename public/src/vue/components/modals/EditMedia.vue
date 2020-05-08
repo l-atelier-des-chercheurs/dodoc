@@ -361,7 +361,8 @@
             <div
               class="m_metaField"
               v-if="
-                !!project_name && $root.do_navigation.view !== 'ProjectView'
+                !!project_name &&
+                $root.current_project.slugFolderName !== slugProjectName
               "
             >
               <div>{{ $t("project") }}</div>

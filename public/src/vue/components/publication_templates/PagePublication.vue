@@ -704,7 +704,7 @@ export default {
   mounted() {
     this.$eventHub.$on("publication.addMedia", this.addMedia);
 
-    this.$eventHub.$on("publication.justAddedMedia", (mdata) => {
+    this.$eventHub.$on("publication.just_added_media", (mdata) => {
       this.$nextTick(() => {
         if (mdata.type && mdata.type === "text") {
           this.$eventHub.$emit(

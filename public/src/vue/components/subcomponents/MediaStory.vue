@@ -6,60 +6,79 @@
     @mouseleave="mouseLeave"
     @mousedown.stop="selectMedia"
   >
-    <div
-      v-if="
-        media.hasOwnProperty('_linked_media') &&
-        media._linked_media.hasOwnProperty('_isAbsent')
-      "
-    >
-      {{ $t("linked_media_wasnt_found") }}
-      <br />
-      <small
-        >{{ media._linked_media.slugProjectName }}/{{
-          media._linked_media.slugMediaName
-        }}</small
-      >
-    </div>
+    <template v-if="media.hasOwnProperty('_linked_media')">
+      <div v-if="media._linked_media.hasOwnProperty('_isAbsent')">
+        {{ $t("linked_media_wasnt_found") }}
+        <br />
+        <small
+          >{{ media._linked_media.slugProjectName }}/{{
+            media._linked_media.slugMediaName
+          }}</small
+        >
+      </div>
+      <MediaContent
+        v-else
+        :context="'full'"
+        :slugFolderName="media._linked_media.slugProjectName"
+        :media="media._linked_media"
+        :read_only="read_only"
+        v-model="media._linked_media.content"
+      />
+    </template>
 
-    <!-- if media is link -->
-    <MediaContent
-      v-else-if="media.hasOwnProperty('_linked_media')"
-      :context="'full'"
-      :slugFolderName="media._linked_media.slugProjectName"
-      :media="media._linked_media"
-      :read_only="read_only"
-      v-model="media._linked_media.content"
-    />
-    <!-- if not -->
-    <div
-      class="mediaContainer"
-      v-else
-      :class="`type-${media.type}`"
-      :data-context="context"
-    >
-      <template v-if="media.type === 'text'">
-        <CollaborativeEditor
-          v-if="inline_edit_mode"
-          v-model="htmlForEditor"
-          class="fixedPanel"
-          :media="media"
-          :theme="'bubble'"
-          :enable_collaboration="true"
-          :type="'publications'"
-          :slugFolderName="slugPubliName"
-          ref="textField"
-        />
-        <div v-else class="mediaTextContent">
-          <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />
-          <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
-        </div>
-      </template>
-    </div>
+    <template v-else>
+      <!-- if not -->
+      <MediaContent
+        v-if="
+          [
+            'image',
+            'video',
+            'audio',
+            'code',
+            'stl',
+            'document',
+            'other',
+          ].includes(media.type)
+        "
+        :context="'full'"
+        :slugFolderName="media.slugProjectName"
+        :media="media"
+        :read_only="read_only"
+        v-model="media.content"
+      />
+
+      <div
+        class="mediaContainer"
+        v-else
+        :class="`type-${media.type}`"
+        :data-context="context"
+      >
+        <template v-if="media.type === 'text'">
+          <CollaborativeEditor
+            v-if="inline_edit_mode"
+            v-model="htmlForEditor"
+            class="fixedPanel"
+            :media="media"
+            :theme="'bubble'"
+            :slugFolderName="slugPubliName"
+            :enable_collaboration="true"
+            :type="'publications'"
+            ref="textField"
+          />
+          <div v-else class="mediaTextContent">
+            <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />
+            <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
+          </div>
+        </template>
+      </div>
+    </template>
 
     <p
       class="mediaCaption"
       v-if="
-        media.hasOwnProperty('_linked_media') && !!media._linked_media.caption
+        (media.hasOwnProperty('_linked_media') &&
+          !!media._linked_media.caption) ||
+        !!media.caption
       "
     >
       {{ media._linked_media.caption }}

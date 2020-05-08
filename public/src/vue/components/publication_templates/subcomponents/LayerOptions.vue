@@ -149,7 +149,7 @@ export default {
         values,
       });
 
-      this.$eventHub.$once("publication.justAddedMedia", ({ mdata }) => {
+      this.$eventHub.$once("publication.just_added_media", ({ mdata }) => {
         if (values.type === "text") {
           this.$eventHub.$emit(
             "publication.set_media_to_edit_mode",

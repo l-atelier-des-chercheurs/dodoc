@@ -14,7 +14,7 @@
 
     <transition name="fade_fast" :duration="150">
       <div class="m_insertMediaButton--menu" v-if="show_menu">
-        <div v-show="$root.state.connected">
+        <div v-show="$root.state.connected" class="m_actionbar">
           <div class="m_actionbar--buttonBar">
             <button
               type="button"
@@ -59,10 +59,11 @@
 
             <UploadFile
               v-if="selected_files.length > 0"
-              @close="selected_files = []"
               :slugFolderName="slugPubliName"
               :type="'publications'"
               :selected_files="selected_files"
+              @close=""
+              @insertMedias="(medias) => insertImportedMedias({ medias })"
             />
 
             <button
@@ -123,32 +124,35 @@ export default {
 
       this.show_menu = false;
     },
+    insertImportedMedias({ medias }) {
+      this.selected_files = [];
+      this.$emit("insertMedias", { medias });
+      this.show_menu = false;
+    },
     openCapture() {},
     updateInputFiles($event) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • AddMedia / updateSelectedFiles`);
-      }
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`InsertMediaButton • METHODS / updateInputFiles`);
+
       this.selected_files = Array.from($event.target.files);
       $event.target.value = "";
     },
     ondragover() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • AddMedia / ondragover`);
-      }
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`InsertMediaButton • METHODS / ondragover`);
 
       this.show_drop_container = true;
       this.cancelDragOver();
     },
     cancelDragOver() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • AddMedia / cancelDragOver`);
-      }
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`InsertMediaButton • METHODS / cancelDragOver`);
+
       this.show_drop_container = false;
     },
     dropHandler($event) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • AddMedia / dropHandler`);
-      }
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`InsertMediaButton • METHODS / dropHandler`);
 
       // Prevent default behavior (Prevent file from being opened)
       $event.preventDefault();

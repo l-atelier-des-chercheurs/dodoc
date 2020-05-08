@@ -5364,6 +5364,7 @@ small {
 
   .m_storyPublication--content {
     .bg-blanc;
+    .boxs-card-4;
     max-width: 600px;
     margin: 0 auto;
     width: 100%;
@@ -5471,8 +5472,14 @@ small {
   position: relative;
   .bg-blanc;
   min-height: @t-storyButtons;
+  .padding-sides-medium;
+  max-width: 600px;
+  padding-right: 0;
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  display: flex;
+  justify-content: flex-end;
 
   &.is--open {
     // background-color: @c-noir;
@@ -5519,14 +5526,21 @@ small {
     }
 
     &.is--active {
+      background-color: @c-bleuvert_fonce;
       // background-color: @c-bleuvert_fonce;
     }
   }
 
   .m_insertMediaButton--menu {
-    .padding-verysmall;
+    // .padding-verysmall;
     overflow: hidden;
-    width: 100%;
+    // width: 100%;
+    // .bg-noir;
+    // .bg-bleuvert_fonce;
+    .bg-gris_clair;
+    border-radius: @t-storyButtons / 2;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 
     display: flex;
     justify-content: center;
@@ -5534,8 +5548,17 @@ small {
 
     // background-color: @c-bleuvert;
 
+    .m_actionbar {
+      margin: 0;
+      border: 0;
+    }
+
     .barButton {
-      .margin-small;
+      .margin-verysmall;
+
+      &:not(:first-child) {
+        margin-left: 0;
+      }
     }
   }
   // right: 100%;
@@ -5546,11 +5569,13 @@ small {
 
   .mediaContainer {
     position: relative;
+    .bg-gris_tresclair;
+    // border: 1px solid @c-gris_tresclair;
+
     &.type-image {
       border-radius: @t-buttonradius;
       overflow: hidden;
       height: 40vh;
-      .bg-creme;
 
       img {
         object-fit: scale-down;
@@ -5560,7 +5585,6 @@ small {
 
     &.type-video {
       height: 40vh;
-      .bg-creme;
       border-radius: @t-buttonradius;
       overflow: hidden;
 
@@ -5588,6 +5612,29 @@ small {
         .bg-gris_tresclair;
         width: 100%;
         height: 40vh;
+      }
+    }
+
+    &.type-text {
+      .quillWrapper,
+      .ql-container {
+        overflow: visible;
+      }
+      .ql-tooltip {
+        position: absolute !important;
+        // margin-left: -@t-skipline / 2;
+        // margin-right: -@t-skipline / 2;
+        width: ~"calc(100% + var(--spacing) * 2)" !important;
+      }
+
+      .ql-toolbar {
+        .padding-right-verysmall;
+        // border-radius: @t-buttonradius;
+        // background: white;
+        // padding:0;
+      }
+      .ql-editor {
+        min-height: 2em;
       }
     }
   }

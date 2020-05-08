@@ -32,7 +32,11 @@
           v-if="can_edit_publi && !read_only"
           :is_collapsed="medias_in_order.length === 0"
           :slugPubliName="slugPubliName"
-          @addMedia="(values) => addMedia({ values })"
+          @addMedia="(values) => addMedia({ values, in_position: 'start' })"
+          @insertMedias="
+            ({ medias }) =>
+              $emit('insertMediasInList', { medias, in_position: 'start' })
+          "
         />
 
         <transition-group name="list-complete" :duration="300">
@@ -55,6 +59,13 @@
               @addMedia="
                 (values) =>
                   addMedia({ values, right_after_meta: media.metaFileName })
+              "
+              @insertMedias="
+                ({ medias }) =>
+                  $emit('insertMediasInList', {
+                    medias,
+                    right_after_meta: media.metaFileName,
+                  })
               "
             />
           </div>

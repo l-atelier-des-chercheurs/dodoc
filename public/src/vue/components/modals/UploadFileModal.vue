@@ -13,11 +13,12 @@
 
     <template slot="sidebar">
       <div>
+        {{ type }}
         <UploadFile
           @close="$emit('update:selected_files', [])"
           :read_only="read_only"
           :slugFolderName="slugFolderName"
-          :type="'projects'"
+          :type="type"
           :selected_files.sync="selected_files"
         />
       </div>

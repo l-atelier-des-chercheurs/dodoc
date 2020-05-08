@@ -8,7 +8,7 @@ const api = require("./api"),
 
 module.exports = (function () {
   const API = {
-    handleForm: ({ req, res, type, slugFolderName }) => {
+    handleForm: ({ req, type, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
         dev.logfunction(
           `IMPORTER — handleForm : type = ${type}, slugFolderName = ${slugFolderName}`
@@ -69,9 +69,11 @@ module.exports = (function () {
         // log any errors that occur
         form.on("error", function (err) {
           console.log(`An error has happened: ${err}`);
+          return reject({ err });
         });
         form.on("aborted", function (err) {
           console.log(`File upload aborted: ${err}`);
+          return reject({ err });
         });
 
         // once all the files have been uploaded
@@ -93,8 +95,7 @@ module.exports = (function () {
               let msg = {};
               msg.msg = "success";
               msg.medias_filenames = medias_filenames;
-              res.end(JSON.stringify(msg));
-              resolve();
+              return resolve({ msg });
             });
           }
         });
