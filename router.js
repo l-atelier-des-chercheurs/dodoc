@@ -326,8 +326,8 @@ module.exports = function (app) {
   }
 
   async function postFile(req, res) {
-    let type = req.param("type");
-    let slugFolderName = req.param("slugFolderName");
+    let type = req.params.type;
+    let slugFolderName = req.params.slugFolderName;
 
     const isSocketAllowed = await isSocketIDAuthorized({
       socketid: req.query.socketid,
@@ -343,7 +343,25 @@ module.exports = function (app) {
     });
     if (!isSocketAllowed) return false;
 
-    importer.handleForm({ req, res, type, slugFolderName });
+    importer
+      .handleForm({ req, type, slugFolderName })
+      .then(({ msg }) => {
+        sockets.notify({
+          socketid: req.query.socketid,
+          localized_string: `imported_files_successfully`,
+          type: "success",
+        });
+        res.end(JSON.stringify(msg));
+      })
+      .catch(({ err }) => {
+        sockets.notify({
+          socketid: req.query.socketid,
+          localized_string: `action_not_allowed`,
+          not_localized_string: err,
+          type: "error",
+        });
+        res.end();
+      });
   }
 
   async function isSocketIDAuthorized({ socketid, type, slugFolderName }) {
@@ -358,8 +376,15 @@ module.exports = function (app) {
     }
 
     const foldersData = await file.getFolder({ type, slugFolderName });
-    if (!(await auth.canEditFolder(socket, foldersData[slugFolderName], type)))
+    if (
+      !(await auth
+        .canEditFolder(socket, foldersData[slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+        }))
+    )
       throw "User can’t edit folder";
+
     return true;
   }
 };

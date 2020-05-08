@@ -6,14 +6,6 @@
     @mousedown.self="$root.settings.current_publication.selected_medias = []"
     @touchstart.self="$root.settings.current_publication.selected_medias = []"
   >
-    <PublicationHeader
-      :slugPubliName="slugPubliName"
-      :publication="publication"
-      :medias="medias_in_order"
-      @export="show_export_modal = true"
-      @close="$root.closePublication"
-    />
-
     <ExportVideoPubliModal
       v-if="show_export_modal"
       @close="show_export_modal = false"
@@ -28,10 +20,26 @@
       @touchstart.self="$root.settings.current_publication.selected_medias = []"
     >
       <div class="m_storyPublication--content">
+        <PublicationHeader
+          :slugPubliName="slugPubliName"
+          :publication="publication"
+          :medias="medias_in_order"
+          @export="show_export_modal = true"
+          @close="$root.closePublication"
+        />
+
         <InsertMediaButton
-          v-if="can_edit_publi"
-          :is_collapsed="medias_in_order.length === 0"
-          @addMedia="(values) => addMedia({ values })"
+          v-if="can_edit_publi && !read_only"
+          :is_collapsed="medias_in_order.length > 0"
+          :slugPubliName="slugPubliName"
+          @addMedia="(values) => addMedia({ values, in_position: 'start' })"
+          @insertMedias="
+            ({ medias }) =>
+              $emit('insertMediasInList', {
+                metaFileNames,
+                in_position: 'start',
+              })
+          "
         />
 
         <transition-group name="list-complete" :duration="300">
@@ -48,11 +56,21 @@
               @removePubliMedia="$emit('removePubliMedia', $event)"
               @changeMediaOrder="$emit('changeMediaOrder', $event)"
             />
+
             <InsertMediaButton
-              v-if="can_edit_publi"
+              v-if="can_edit_publi && !read_only"
+              :slugPubliName="slugPubliName"
+              :is_collapsed="mediaPosition(index) !== 'last'"
               @addMedia="
                 (values) =>
                   addMedia({ values, right_after_meta: media.metaFileName })
+              "
+              @insertMedias="
+                ({ metaFileNames }) =>
+                  $emit('insertMediasInList', {
+                    metaFileNames,
+                    right_after_meta: media.metaFileName,
+                  })
               "
             />
           </div>

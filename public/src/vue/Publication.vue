@@ -20,6 +20,7 @@
       @editPubliMedia="editPubliMedia"
       @changeMediaOrder="changeMediaOrder"
       @addMedia="addMediaOrdered"
+      @insertMediasInList="insertMediasInList"
     />
     <VideoPublication
       v-else-if="publication.template === 'video_assemblage'"
@@ -295,45 +296,67 @@ export default {
       this.medias = medias;
     },
 
-    addMediaOrdered({ values = {}, right_after_meta = false }) {
+    addMediaOrdered({ values = {}, right_after_meta, in_position }) {
       return new Promise((resolve, reject) => {
-        this.addMedia({ values }).then((mdata) => {
-          const medias_slugs =
-            !Array.isArray(this.publication.medias_slugs) ||
-            this.publication.medias_slugs.length === 0
-              ? []
-              : JSON.parse(JSON.stringify(this.publication.medias_slugs));
-
-          if (right_after_meta) {
-            // this is much more complex than it could be because of possible missing medias
-            // in medias_slugs_in_order: medias that were added and then removed or part
-            // of a removed project
-            const index = medias_slugs.findIndex(
-              (s) => s.slugMediaName === right_after_meta
-            );
-            medias_slugs.splice(index, 0, {
-              slugMediaName: mdata.metaFileName,
-            });
-          } else {
-            medias_slugs.push({
-              slugMediaName: mdata.metaFileName,
-            });
-          }
-          this.$root
-            .editFolder({
-              type: "publications",
-              slugFolderName: this.slugPubliName,
-              data: {
-                medias_slugs: medias_slugs,
-              },
-            })
-            .then((fdata) => {
-              this.$eventHub.$emit("publication.justAddedMedia", mdata);
-            });
-        });
+        this.addMedia({ values }).then((mdata) =>
+          this.insertMediasInList({
+            metaFileNames: [mdata.metaFileName],
+            right_after_meta,
+            in_position,
+          })
+        );
       });
     },
+    insertMediasInList({ metaFileNames, right_after_meta, in_position }) {
+      return new Promise((resolve, reject) => {
+        const medias_slugs =
+          !Array.isArray(this.publication.medias_slugs) ||
+          this.publication.medias_slugs.length === 0
+            ? []
+            : JSON.parse(JSON.stringify(this.publication.medias_slugs));
 
+        const new_media_metas = metaFileNames.map((metaFileName) => {
+          return {
+            slugMediaName: metaFileName,
+          };
+        });
+
+        let index = medias_slugs.length;
+
+        if (right_after_meta) {
+          // this is much more complex than it could be because of possible missing medias
+          // in medias_slugs_in_order: medias that were added and then removed or part
+          // of a removed project
+          index = medias_slugs.findIndex(
+            (s) => s.slugMediaName === right_after_meta
+          );
+          index += 1;
+        } else if (in_position && in_position === "start") {
+          index = 0;
+        }
+
+        medias_slugs.splice(index, 0, ...new_media_metas);
+
+        this.$root
+          .editFolder({
+            type: "publications",
+            slugFolderName: this.slugPubliName,
+            data: {
+              medias_slugs: medias_slugs,
+            },
+          })
+          .then((fdata) => {
+            this.$nextTick(() => {
+              metaFileNames.map((metaFileName) => {
+                this.$eventHub.$emit(
+                  "publication.just_inserted_media",
+                  metaFileName
+                );
+              });
+            });
+          });
+      });
+    },
     addMedia({ values = {} }) {
       return new Promise((resolve, reject) => {
         if (this.$root.state.dev_mode === "debug")
@@ -356,6 +379,7 @@ export default {
             additionalMeta,
           })
           .then((mdata) => {
+            this.$eventHub.$emit("publication.just_added_media", mdata);
             return resolve(mdata);
           });
       });

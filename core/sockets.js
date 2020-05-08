@@ -12,7 +12,11 @@ module.exports = (function () {
   const API = {
     init: (app, io) => init(app, io),
     createMediaMeta: ({ type, slugFolderName, additionalMeta }) =>
-      createMediaMeta({ type, slugFolderName, additionalMeta }),
+      new Promise((resolve, reject) =>
+        createMediaMeta({ type, slugFolderName, additionalMeta })
+          .then((d) => resolve(d))
+          .catch((e) => reject(e))
+      ),
     notify: notify,
     io: () => io,
   };
@@ -344,25 +348,32 @@ module.exports = (function () {
     });
   }
 
-  function createMediaMeta({ type, slugFolderName, additionalMeta }) {
+  async function createMediaMeta({ type, slugFolderName, additionalMeta }) {
     dev.logfunction(`EVENT - createMediaMeta for ${slugFolderName}`);
     dev.logverbose(
       `Has additional meta: ${JSON.stringify(additionalMeta, null, 4)}`
     );
-    file
-      .createMediaMeta({ type, slugFolderName, additionalMeta })
-      .then((metaFileName) => {
-        onEditFolder(undefined, { type, slugFolderName, data: {} });
-        sendMedias({
-          type,
-          slugFolderName,
-          metaFileName,
-        });
+
+    const metaFileName = await file
+      .createMediaMeta({
+        type,
+        slugFolderName,
+        additionalMeta,
       })
       .catch((err) => {
         dev.error(`Couldn’t create imported media meta: ${err}`);
-        reject(err);
+        throw err;
       });
+
+    onEditFolder(undefined, { type, slugFolderName, data: {} });
+
+    await sendMedias({
+      type,
+      slugFolderName,
+      metaFileName,
+    });
+
+    return metaFileName;
   }
 
   async function onEditMedia(

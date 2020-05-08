@@ -199,6 +199,10 @@ module.exports = (function () {
       oc: "Data de mandadís",
       de: "Versanddatum",
     },
+    imported_files_successfully: {
+      fr: "Média importé avec succès",
+      en: "Media imported successfully",
+    },
     attached_to_project: {
       fr: "Rattachée au projet",
       en: "Attached to project",

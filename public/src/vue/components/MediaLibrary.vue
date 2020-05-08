@@ -20,7 +20,7 @@
           "
           class="barButton barButton_import button"
           :disabled="read_only || !can_edit_project"
-          for="add_file"
+          :for="`add_file_${id}`"
         >
           <span>
             {{ $t("import") }}
@@ -29,7 +29,7 @@
           <input
             type="file"
             multiple
-            id="add_file"
+            :id="`add_file_${id}`"
             name="file"
             :disabled="read_only || !can_edit_project"
             @change="updateInputFiles($event)"
@@ -51,13 +51,13 @@
           </div>
         </transition>
 
-        <UploadFile
+        <UploadFileModal
           v-if="selected_files.length > 0"
           @close="selected_files = []"
           :read_only="read_only"
           :slugFolderName="slugProjectName"
           :type="'projects'"
-          :selected_files="selected_files"
+          :selected_files.sync="selected_files"
         />
 
         <button
@@ -105,11 +105,7 @@
         </template>
       </div>
     </div>
-    <transition-group
-      class="m_project--library--medias"
-      name="list-complete"
-      v-if="selected_files.length === 0"
-    >
+    <transition-group class="m_project--library--medias" name="list-complete">
       <div v-for="item in groupedMedias" :key="item[0]">
         <h3
           class="font-folder_title margin-sides-small margin-none margin-bottom-small"
@@ -161,7 +157,7 @@
   </div>
 </template>
 <script>
-import UploadFile from "./modals/UploadFile.vue";
+import UploadFileModal from "./modals/UploadFileModal.vue";
 import MediaCard from "./subcomponents/MediaCard.vue";
 import TagsAndAuthorFilters from "./subcomponents/TagsAndAuthorFilters.vue";
 import SelectorBar from "./subcomponents/SelectorBar.vue";
@@ -177,7 +173,7 @@ export default {
   },
   components: {
     MediaCard,
-    UploadFile,
+    UploadFileModal,
     TagsAndAuthorFilters,
     SelectorBar,
   },
@@ -188,6 +184,8 @@ export default {
         // type: "date",
         // order: "descending"
       },
+
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       selected_files: [],
       is_iOS_device:
@@ -226,14 +224,14 @@ export default {
     this.$root.settings.media_filter.fav = false;
     this.$root.settings.media_filter.type = "";
 
+    document.removeEventListener("dragover", this.ondragover);
+
     this.$eventHub.$off("modal.prev_media", this.prevMedia);
     this.$eventHub.$off("modal.next_media", this.nextMedia);
     this.$eventHub.$off(
       "socketio.media_created_or_updated",
       this.media_created
     );
-
-    document.addEventListener("dragover", this.ondragover);
   },
   watch: {
     "project.medias": function () {

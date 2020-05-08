@@ -1541,6 +1541,7 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
     max-width: 600px !important;
     width: 100% !important;
     min-width: 340px;
+    z-index: 10000;
 
     // transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -1549,7 +1550,7 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
       margin-top: -1px;
       margin-bottom: -1px;
       border-radius: 8px;
-      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.2);
+      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.45);
     }
 
     .ql-tooltip-arrow {
@@ -1562,6 +1563,10 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
       top: auto !important;
       left: 50% !important;
       transform: translate(-50%, 0) !important;
+
+      .ql-tooltip-arrow {
+        display: none;
+      }
     }
   }
 

@@ -204,17 +204,17 @@ export default {
         `;
       }
     },
-    removePubliMedia({ slugMediaName }) {
+    removePubliMedia({ metaFileName }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • Publication: removeMedia / slugMediaName = ${slugMediaName}`
+          `METHODS • Publication: removeMedia / slugMediaName = ${metaFileName}`
         );
       }
 
       this.$root.removeMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        slugMediaName,
+        slugMediaName: metaFileName,
       });
     },
     // function to update property of a media inside medias_list

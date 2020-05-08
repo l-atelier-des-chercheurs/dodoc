@@ -317,6 +317,9 @@
         }
       },
       "medias": {
+        "thumbs": {
+          "resolutions": [180, 360, 1600]
+        },
         "fields": {
           "slugProjectName": {
             "type": "string"
@@ -354,7 +357,15 @@
               "rectangle",
               "ellipsis",
               "line",
-              "arrow"
+              "arrow",
+
+              "image",
+              "video",
+              "audio",
+              "code",
+              "stl",
+              "document",
+              "other"
             ]
           },
           "color": {
