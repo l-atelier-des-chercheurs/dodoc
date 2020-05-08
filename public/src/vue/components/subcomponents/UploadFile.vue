@@ -158,7 +158,6 @@ export default {
             this.files_to_upload_meta[filename].upload_percentages = 100;
 
             this.list_of_medias_to_add_to_fragment.push(x.metaFileNames[0]);
-            debugger;
             return resolve();
 
             // const catchMediaCreation = (d) => {

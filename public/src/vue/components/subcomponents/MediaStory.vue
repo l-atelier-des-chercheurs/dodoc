@@ -258,11 +258,6 @@
             type="button"
             class="buttonLink _no_underline"
             @click.stop.prevent="removePubliMedia()"
-            :content="$t('withdraw')"
-            v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
           >
             <svg
               version="1.1"
@@ -283,7 +278,11 @@
             25.2,18.6 "
               />
             </svg>
-            {{ $t("withdraw") }}
+            {{
+              media.hasOwnProperty("_linked_media")
+                ? $t("withdraw")
+                : $t("remove")
+            }}
           </button>
         </div>
       </div>
@@ -347,12 +346,16 @@ export default {
       "publication.set_media_to_edit_mode",
       this.setMediaToEditMode
     );
+    this.$eventHub.$on(
+      "publication.just_inserted_media",
+      this.mediaJustInserted
+    );
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.selectNewMedia", this.selectNewMedia);
     this.$eventHub.$off(
-      "publication.set_media_to_edit_mode",
-      this.setMediaToEditMode
+      "publication.just_inserted_media",
+      this.mediaJustInserted
     );
   },
 
@@ -381,6 +384,11 @@ export default {
       if (metaFileName === this.media.metaFileName) {
         if (!this.is_selected) this.selectMedia();
         this.editButtonClicked();
+      }
+    },
+    mediaJustInserted() {
+      if (this.media.type === "text") {
+        this.selectMedia();
       }
     },
     editButtonClicked() {

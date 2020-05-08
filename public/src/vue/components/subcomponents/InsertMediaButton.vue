@@ -131,7 +131,6 @@ export default {
     insertImportedMedias({ metaFileNames }) {
       this.selected_files = [];
       this.$emit("insertMedias", { metaFileNames });
-      debugger;
       this.show_menu = false;
     },
     toggleMenu() {

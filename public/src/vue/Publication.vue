@@ -298,10 +298,9 @@ export default {
 
     addMediaOrdered({ values = {}, right_after_meta, in_position }) {
       return new Promise((resolve, reject) => {
-        debugger;
         this.addMedia({ values }).then((mdata) =>
           this.insertMediasInList({
-            medias: [mdata],
+            metaFileNames: [mdata.metaFileName],
             right_after_meta,
             in_position,
           })
@@ -347,8 +346,13 @@ export default {
             },
           })
           .then((fdata) => {
-            metaFileNames.map((metaFileName) => {
-              // this.$eventHub.$emit("publication.just_appended_media", metaFileName);
+            this.$nextTick(() => {
+              metaFileNames.map((metaFileName) => {
+                this.$eventHub.$emit(
+                  "publication.just_inserted_media",
+                  metaFileName
+                );
+              });
             });
           });
       });

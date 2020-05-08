@@ -56,9 +56,11 @@
               @removePubliMedia="$emit('removePubliMedia', $event)"
               @changeMediaOrder="$emit('changeMediaOrder', $event)"
             />
+
             <InsertMediaButton
               v-if="can_edit_publi && !read_only"
               :slugPubliName="slugPubliName"
+              :is_collapsed="mediaPosition(index) !== 'last'"
               @addMedia="
                 (values) =>
                   addMedia({ values, right_after_meta: media.metaFileName })
