@@ -41,6 +41,7 @@
         <CollaborativeEditor
           v-if="inline_edit_mode"
           v-model="htmlForEditor"
+          class="fixedPanel"
           :media="media"
           :theme="'bubble'"
           :enable_collaboration="true"

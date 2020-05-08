@@ -5559,10 +5559,17 @@ small {
     }
 
     &.type-video {
-      max-height: 40vh;
+      height: 40vh;
+      .bg-creme;
+      border-radius: @t-buttonradius;
+      overflow: hidden;
+
+      > div {
+        height: 100%;
+      }
 
       .plyr {
-        border-radius: @t-buttonradius;
+        // border-radius: @t-buttonradius;
       }
       .plyr--video,
       .plyr__video-wrapper,
