@@ -29,8 +29,9 @@
     >
       <div class="m_storyPublication--content">
         <InsertMediaButton
-          v-if="can_edit_publi"
+          v-if="can_edit_publi && !read_only"
           :is_collapsed="medias_in_order.length === 0"
+          :slugPubliName="slugPubliName"
           @addMedia="(values) => addMedia({ values })"
         />
 
@@ -49,7 +50,8 @@
               @changeMediaOrder="$emit('changeMediaOrder', $event)"
             />
             <InsertMediaButton
-              v-if="can_edit_publi"
+              v-if="can_edit_publi && !read_only"
+              :slugPubliName="slugPubliName"
               @addMedia="
                 (values) =>
                   addMedia({ values, right_after_meta: media.metaFileName })

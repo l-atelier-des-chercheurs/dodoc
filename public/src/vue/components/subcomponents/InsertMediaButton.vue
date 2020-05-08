@@ -27,8 +27,7 @@
 
             <label
               class="barButton barButton_import button"
-              :disabled="read_only"
-              for="add_file"
+              :id="`insert_file_${id}`"
             >
               <span>
                 {{ $t("import") }}
@@ -37,9 +36,8 @@
               <input
                 type="file"
                 multiple
-                id="add_file"
+                :id="`insert_file_${id}`"
                 name="file"
-                :disabled="read_only || !can_edit_project"
                 @change="updateInputFiles($event)"
                 accept=""
                 style="width: 1px; height: 1px; overflow: hidden;"
@@ -62,8 +60,8 @@
             <UploadFile
               v-if="selected_files.length > 0"
               @close="selected_files = []"
-              :slugFolderName="slugProjectName"
-              :type="'projects'"
+              :slugFolderName="slugPubliName"
+              :type="'publications'"
               :selected_files="selected_files"
             />
 
@@ -81,27 +79,40 @@
   </div>
 </template>
 <script>
+import UploadFile from "./UploadFile.vue";
+
 export default {
   props: {
     is_collapsed: {
       type: Boolean,
       default: true,
     },
+    slugPubliName: String,
   },
-  components: {},
+  components: {
+    UploadFile,
+  },
   data() {
     return {
       show_menu: !this.is_collapsed,
       selected_files: [],
 
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 8),
+
       is_iOS_device:
         !!window.navigator.platform &&
         /iPad|iPhone|iPod/.test(navigator.platform),
+
+      show_drop_container: false,
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    document.addEventListener("dragover", this.ondragover);
+  },
+  beforeDestroy() {
+    document.removeEventListener("dragover", this.ondragover);
+  },
   watch: {},
   computed: {},
   methods: {
@@ -111,6 +122,50 @@ export default {
       });
 
       this.show_menu = false;
+    },
+    openCapture() {},
+    updateInputFiles($event) {
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(`METHODS • AddMedia / updateSelectedFiles`);
+      }
+      this.selected_files = Array.from($event.target.files);
+      $event.target.value = "";
+    },
+    ondragover() {
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(`METHODS • AddMedia / ondragover`);
+      }
+
+      this.show_drop_container = true;
+      this.cancelDragOver();
+    },
+    cancelDragOver() {
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(`METHODS • AddMedia / cancelDragOver`);
+      }
+      this.show_drop_container = false;
+    },
+    dropHandler($event) {
+      if (this.$root.state.dev_mode === "debug") {
+        console.log(`METHODS • AddMedia / dropHandler`);
+      }
+
+      // Prevent default behavior (Prevent file from being opened)
+      $event.preventDefault();
+
+      if ($event.dataTransfer.items) {
+        let files = [];
+        for (var i = 0; i < $event.dataTransfer.items.length; i++) {
+          if ($event.dataTransfer.items[i].kind === "file") {
+            files.push($event.dataTransfer.items[i].getAsFile());
+          }
+        }
+        this.selected_files = files;
+      } else {
+        for (var i = 0; i < $event.dataTransfer.files.length; i++) {
+          this.selected_files = Array.from($event.dataTransfer.files);
+        }
+      }
     },
   },
 };

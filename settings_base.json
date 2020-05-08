@@ -317,6 +317,9 @@
         }
       },
       "medias": {
+        "thumbs": {
+          "resolutions": [180, 360, 800, 1600]
+        },
         "fields": {
           "slugProjectName": {
             "type": "string"

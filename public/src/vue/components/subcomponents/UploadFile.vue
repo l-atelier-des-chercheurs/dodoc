@@ -1,80 +1,58 @@
 <template>
-  <Modal
-    @close="$emit('close')"
-    :read_only="read_only"
-    :typeOfModal="'EditMeta'"
-    :askBeforeClosingModal="false"
-    :isFile="true"
-  >
-    <!-- @submit="uploadFiles" -->
-    <template slot="header">
-      <span class>{{ $t("import_medias") }}</span>
-    </template>
-
-    <template slot="sidebar">
-      <div>
-        <div
-          v-for="f in files_to_upload"
-          :key="f.name"
-          class="m_uploadFile"
-          :class="cssStatus(f)"
-          :style="`--progress-percent: ${
-            files_to_upload_meta.hasOwnProperty(f.name)
-              ? files_to_upload_meta[f.name].upload_percentages / 100
-              : 0
-          }`"
-        >
-          <div class="m_uploadFile--progressBar"></div>
-          <!-- too heavy on memory on mobile devices -->
-          <!-- <img 
+  <div>
+    <div
+      v-for="f in files_to_upload"
+      :key="f.name"
+      class="m_uploadFile"
+      :class="cssStatus(f)"
+      :style="`--progress-percent: ${
+        files_to_upload_meta.hasOwnProperty(f.name)
+          ? files_to_upload_meta[f.name].upload_percentages / 100
+          : 0
+      }`"
+    >
+      <div class="m_uploadFile--progressBar"></div>
+      <!-- too heavy on memory on mobile devices -->
+      <!-- <img 
             v-if="!!f.type && f.type.includes('image') && index < 5" 
             class="m_uploadFile--image"
             :src="getImgPreview(f)"
           >-->
-          <div class="m_uploadFile--image" />
+      <div class="m_uploadFile--image" />
 
-          <div class="m_uploadFile--filename">{{ f.name }}</div>
-          <div class="m_uploadFile--size">{{ $root.formatBytes(f.size) }}</div>
-          <div
-            class="m_uploadFile--action"
-            v-if="files_to_upload_meta.hasOwnProperty(f.name)"
+      <div class="m_uploadFile--filename">{{ f.name }}</div>
+      <div class="m_uploadFile--size">{{ $root.formatBytes(f.size) }}</div>
+      <div
+        class="m_uploadFile--action"
+        v-if="files_to_upload_meta.hasOwnProperty(f.name)"
+      >
+        <button
+          type="button"
+          class="buttonLink"
+          @click="sendThisFile(f)"
+          :disabled="
+            read_only ||
+            (files_to_upload_meta.hasOwnProperty(f.name) &&
+              files_to_upload_meta[f.name].status === 'success')
+          "
+        >
+          <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">{{
+            $t("import")
+          }}</template>
+          <template
+            v-else-if="files_to_upload_meta[f.name].status === 'success'"
+            >{{ $t("sent") }}</template
           >
-            <button
-              type="button"
-              class="buttonLink"
-              @click="sendThisFile(f)"
-              :disabled="
-                read_only ||
-                (files_to_upload_meta.hasOwnProperty(f.name) &&
-                  files_to_upload_meta[f.name].status === 'success')
-              "
-            >
-              <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">{{
-                $t("import")
-              }}</template>
-              <template
-                v-else-if="files_to_upload_meta[f.name].status === 'success'"
-                >{{ $t("sent") }}</template
-              >
-              <template
-                v-else-if="files_to_upload_meta[f.name].status === 'failed'"
-                >{{ $t("retry") }}</template
-              >
-            </button>
-          </div>
-        </div>
+          <template
+            v-else-if="files_to_upload_meta[f.name].status === 'failed'"
+            >{{ $t("retry") }}</template
+          >
+        </button>
       </div>
-    </template>
-
-    <!-- 
-    <template slot="submit_button" v-if="files_to_upload.length > 0">
-      {{ $t('import_all_files') }}
-    </template> 
-    -->
-  </Modal>
+    </div>
+  </div>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import * as axios from "axios";
 import { setTimeout } from "timers";
 
@@ -85,9 +63,7 @@ export default {
     type: String,
     selected_files: Array,
   },
-  components: {
-    Modal,
-  },
+  components: {},
   data() {
     return {
       files_to_upload: this.selected_files,
