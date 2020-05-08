@@ -348,7 +348,7 @@ module.exports = function (app) {
       .then(({ msg }) => {
         sockets.notify({
           socketid: req.query.socketid,
-          localized_string: `success uploading files`,
+          localized_string: `imported_files_successfully`,
           type: "success",
         });
         res.end(JSON.stringify(msg));

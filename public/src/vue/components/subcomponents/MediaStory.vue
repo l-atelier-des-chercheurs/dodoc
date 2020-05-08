@@ -55,7 +55,9 @@
       >
         <template v-if="media.type === 'text'">
           <CollaborativeEditor
-            v-if="inline_edit_mode"
+            v-if="
+              inline_edit_mode && is_selected && !preview_mode && !read_only
+            "
             v-model="htmlForEditor"
             class="fixedPanel"
             :media="media"

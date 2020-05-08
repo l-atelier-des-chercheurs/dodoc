@@ -191,11 +191,12 @@ export default {
     // cursorsOne.createCursor(1, "User 1", "#0a997f");
 
     this.$nextTick(() => {
+      this.editor.root.innerHTML = this.value;
+
       if (this.$root.state.mode === "live" && this.enable_collaboration) {
         this.initWebsocketMode();
         this.editor.focus();
       } else {
-        this.editor.root.innerHTML = this.value;
       }
 
       this.editor.on("text-change", (delta, oldDelta, source) => {

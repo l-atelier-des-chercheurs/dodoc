@@ -4012,7 +4012,7 @@ small {
     align-items: center;
 
     .bg-blanc;
-    .boxs-card-0;
+    .boxs-card-1;
 
     // .margin-top-small;
     // .margin-right-small;
@@ -5359,9 +5359,6 @@ small {
 }
 
 .m_storyPublication {
-  .padding-vert-medium;
-  .padding-sides-medium;
-
   .m_storyPublication--content {
     .bg-blanc;
     .boxs-card-4;
@@ -5369,7 +5366,18 @@ small {
     margin: 0 auto;
     width: 100%;
     border-radius: @t-buttonradius;
-    .padding-vert-verysmall;
+
+    .margin-vert-large;
+    padding-top: 1px;
+
+    .m_publicationMeta {
+      position: sticky;
+      top: @t-skipline / 2;
+      // top: 0;
+      // margin-top: 0;
+      // margin: 0;
+      z-index: 1500;
+    }
 
     > span::after {
       content: "";
@@ -5383,7 +5391,7 @@ small {
 
   .m_mediaStory {
     position: relative;
-    .padding-vert-verysmall;
+    // .padding-vert-verysmall;
     .padding-sides-medium;
     margin: 0 auto;
 
@@ -5481,8 +5489,11 @@ small {
   display: flex;
   justify-content: flex-end;
 
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
   &.is--open {
     // background-color: @c-noir;
+    .padding-vert-verysmall;
   }
 
   .m_insertMediaButton--toggleButton {
@@ -5570,11 +5581,11 @@ small {
   .mediaContainer {
     position: relative;
     .bg-gris_tresclair;
+    padding: 2px;
     // border: 1px solid @c-gris_tresclair;
+    border-radius: @t-buttonradius;
 
     &.type-image {
-      border-radius: @t-buttonradius;
-      overflow: hidden;
       height: 40vh;
 
       img {
@@ -5616,25 +5627,71 @@ small {
     }
 
     &.type-text {
-      .quillWrapper,
-      .ql-container {
-        overflow: visible;
-      }
-      .ql-tooltip {
-        position: absolute !important;
-        // margin-left: -@t-skipline / 2;
-        // margin-right: -@t-skipline / 2;
-        width: ~"calc(100% + var(--spacing) * 2)" !important;
+      .bg-blanc;
+
+      .mediaTextContent {
+        // background: linear-gradient(
+        //   transparent,
+        //   transparent ~"calc(1.35em - 2px)",
+        //   rgba(0, 0, 0, 0.15) ~"calc(1.35em - 2px)"
+        // );
+        // background-size: 1.35em 1.35em;
+        // background-attachment: local;
+        // background-position-y: ~"calc(1.35em * 0.8)";
+
+        &.ql-container > .ql-editor > *,
+        &:not(.ql-container) > * > * {
+          &::before {
+            content: "•";
+            position: absolute;
+            right: 100%;
+            padding-right: 8px;
+            font-size: 1rem;
+            vertical-align: bottom;
+            display: inline-block;
+
+            transform: scale(1);
+
+            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+            color: @c-gris_clair;
+          }
+
+          &:hover::before {
+            transform: scale(1.2);
+          }
+
+          &.is--focused::before {
+            color: @c-orange;
+          }
+        }
       }
 
-      .ql-toolbar {
-        .padding-right-verysmall;
-        // border-radius: @t-buttonradius;
-        // background: white;
-        // padding:0;
+      .quillWrapper.fixedPanel {
+        &.quillWrapper,
+        .ql-container {
+          overflow: visible;
+          .ql-tooltip {
+            position: absolute !important;
+            // margin-left: -@t-skipline / 2;
+            // margin-right: -@t-skipline / 2;
+            width: ~"calc(100% + var(--spacing) * 4)" !important;
+
+            .ql-toolbar {
+              .padding-right-verysmall;
+              z-index: 10000;
+              // border-radius: @t-buttonradius;
+              // background: white;
+              // padding:0;
+            }
+          }
+        }
       }
       .ql-editor {
         min-height: 2em;
+        border: 0;
+        padding: 0;
+        background-color: transparent;
       }
     }
   }

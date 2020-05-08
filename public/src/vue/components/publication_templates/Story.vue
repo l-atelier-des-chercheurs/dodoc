@@ -6,14 +6,6 @@
     @mousedown.self="$root.settings.current_publication.selected_medias = []"
     @touchstart.self="$root.settings.current_publication.selected_medias = []"
   >
-    <PublicationHeader
-      :slugPubliName="slugPubliName"
-      :publication="publication"
-      :medias="medias_in_order"
-      @export="show_export_modal = true"
-      @close="$root.closePublication"
-    />
-
     <ExportVideoPubliModal
       v-if="show_export_modal"
       @close="show_export_modal = false"
@@ -28,6 +20,14 @@
       @touchstart.self="$root.settings.current_publication.selected_medias = []"
     >
       <div class="m_storyPublication--content">
+        <PublicationHeader
+          :slugPubliName="slugPubliName"
+          :publication="publication"
+          :medias="medias_in_order"
+          @export="show_export_modal = true"
+          @close="$root.closePublication"
+        />
+
         <InsertMediaButton
           v-if="can_edit_publi && !read_only"
           :is_collapsed="medias_in_order.length === 0"
