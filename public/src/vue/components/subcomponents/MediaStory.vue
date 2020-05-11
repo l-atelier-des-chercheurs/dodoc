@@ -107,7 +107,12 @@
           })
         "
       >
-        <img src="/images/i_arrow_left.svg" draggable="false" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+          <path
+            d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
+            style="fill: currentColor;"
+          />
+        </svg>
       </button>
 
       <div class="m_mediaStory--moveItemButton--options">
@@ -302,7 +307,12 @@
           })
         "
       >
-        <img src="/images/i_arrow_right.svg" draggable="false" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+          <path
+            d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
+            style="fill: currentColor;"
+          />
+        </svg>
       </button>
     </div>
   </div>

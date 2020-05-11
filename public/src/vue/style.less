@@ -5660,12 +5660,17 @@ small {
   min-height: 3 * @t-storyButtons;
 
   &.is--selected {
-    border: 2px solid @c-gris_tresclair;
+    .m_mediaStory--moveItemButtons {
+      background-color: @c-noir;
+      color: white;
+    }
+    // border-right: 2px solid @c-gris_tresclair;
   }
 
   .mediaContainer {
     position: relative;
-    .bg-gris_tresclair;
+    // .bg-gris_tresclair;
+    .bg-creme;
     max-height: 50vh;
     // padding: 2px;
     // border: 1px solid @c-gris_tresclair;
@@ -5728,6 +5733,7 @@ small {
     &.type-stl,
     &.type-document {
       iframe {
+        display: block;
         border: 2px solid @c-gris_tresclair;
         .bg-gris_tresclair;
         width: 100%;
