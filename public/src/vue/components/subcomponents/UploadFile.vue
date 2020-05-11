@@ -226,6 +226,7 @@ export default {
             `UploadFile • METHODS: sendAllFiles / finished uploading sequentially`
           );
         this.$emit("insertMedias", this.list_of_medias_to_add_to_fragment);
+        this.$emit("close", "");
       });
 
       // const test = async () => {

@@ -13,7 +13,6 @@
 
     <template slot="sidebar">
       <div>
-        {{ type }}
         <UploadFile
           @close="$emit('update:selected_files', [])"
           :read_only="read_only"
