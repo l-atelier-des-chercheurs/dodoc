@@ -5396,7 +5396,7 @@ small {
     }
   }
 
-  counter-reset: compteListe;
+  counter-reset: mediaCounter;
 
   .m_mediaStory {
     position: relative;
@@ -5406,12 +5406,13 @@ small {
     scroll-margin: 80px;
 
     &::before {
-      counter-increment: compteListe 1;
-      content: counter(compteListe) " ";
+      counter-increment: mediaCounter 1;
+      content: counter(mediaCounter) " ";
       position: absolute;
       right: 100%;
       top: 0;
       .padding-verysmall;
+      .padding-sides-medium;
       // .c-noir;
       // .c-blanc;
       .text-cap;
@@ -5427,6 +5428,13 @@ small {
 
     // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     // border-radius: 4px;
+  }
+}
+.m_publicationview.is--preview {
+  .m_mediaStory {
+    &::before {
+      color: @c-gris;
+    }
   }
 }
 
@@ -5613,6 +5621,10 @@ small {
     // .padding-medium;
   }
   // right: 100%;
+}
+
+._story_insert_placeholders {
+  min-height: @t-storyButtons;
 }
 
 .m_mediaStory {
