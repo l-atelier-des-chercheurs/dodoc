@@ -30,7 +30,12 @@
 
         <InsertMediaButton
           v-if="can_edit_publi && !read_only"
-          :is_collapsed="medias_in_order.length > 0"
+          :is_collapsed="
+            !(
+              !Array.isArray(publication.medias_slugs) ||
+              publication.medias_slugs.length === 0
+            )
+          "
           :slugPubliName="slugPubliName"
           @addMedia="(values) => addMedia({ values, in_position: 'start' })"
           @insertMedias="
