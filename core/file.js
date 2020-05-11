@@ -673,7 +673,14 @@ module.exports = (function () {
         let metaFileName;
         if (additionalMeta.hasOwnProperty("media_filename")) {
           mediaName = additionalMeta.media_filename;
-          mediaPath = path.join(api.getFolderPath(slugFolderName), mediaName);
+
+          const baseFolderPath = global.settings.structure[type].path;
+          const mainFolderPath = api.getFolderPath(baseFolderPath);
+
+          let slugFolderPath = api.getFolderPath(
+            path.join(global.settings.structure[type].path, slugFolderName)
+          );
+          mediaPath = path.join(slugFolderPath, mediaName);
           metaFileName = mediaName + global.settings.metaFileext;
         } else if (additionalMeta.hasOwnProperty("desired_filename")) {
           let randomString = (
@@ -815,8 +822,8 @@ module.exports = (function () {
                     resolve();
                   })
                   .catch((err) => {
-                    dev.logverbose(`No EXIF data to read from: ${err}`);
-                    resolve();
+                    dev.error(`No EXIF data to read from: ${err}`);
+                    return resolve();
                   });
               });
               tasks.push(getEXIFTimestamp);

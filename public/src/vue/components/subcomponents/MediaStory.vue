@@ -22,6 +22,7 @@
         :slugFolderName="media._linked_media.slugProjectName"
         :media="media._linked_media"
         :read_only="read_only"
+        :style="mediaStyles"
         v-model="media._linked_media.content"
       />
     </template>
@@ -41,9 +42,11 @@
           ].includes(media.type)
         "
         :context="'full'"
-        :slugFolderName="media.slugProjectName"
+        :slugFolderName="slugPubliName"
+        :subfolder="`_publications/`"
         :media="media"
         :read_only="read_only"
+        :style="mediaStyles"
         v-model="media.content"
       />
 
@@ -374,6 +377,47 @@ export default {
         (meta) => meta === this.media.metaFileName
       );
     },
+    mediaStyles() {
+      let css = "";
+      debugger;
+
+      const ratio = this.media_ratio ? this.media_ratio : 1;
+      css += `--media-ratio: ${ratio * 100}%; `;
+
+      return css;
+    },
+
+    media_ratio() {
+      debugger;
+      if (
+        this.media.hasOwnProperty("file_meta") &&
+        this.media.file_meta.some((f) => f.hasOwnProperty("ratio"))
+      ) {
+        return this.media.file_meta.find((f) => f.hasOwnProperty("ratio"))
+          .ratio;
+      }
+      if (this.media.hasOwnProperty("ratio")) return this.media.ratio;
+
+      if (this.media.hasOwnProperty("_linked_media")) {
+        if (
+          this.media._linked_media.hasOwnProperty("file_meta") &&
+          this.media._linked_media.file_meta.some((f) =>
+            f.hasOwnProperty("ratio")
+          )
+        )
+          return this.media._linked_media.file_meta.find((f) =>
+            f.hasOwnProperty("ratio")
+          ).ratio;
+
+        if (
+          this.media._linked_media.hasOwnProperty("ratio") &&
+          this.media._linked_media.ratio
+        )
+          return this.media._linked_media.ratio;
+      }
+
+      return false;
+    },
   },
   methods: {
     selectNewMedia(metaFileName) {
@@ -386,8 +430,8 @@ export default {
         this.editButtonClicked();
       }
     },
-    mediaJustInserted() {
-      if (this.media.type === "text") {
+    mediaJustInserted(metaFileName) {
+      if (this.media.metaFileName === metaFileName) {
         this.selectMedia();
       }
     },

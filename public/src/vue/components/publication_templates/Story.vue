@@ -34,7 +34,7 @@
           :slugPubliName="slugPubliName"
           @addMedia="(values) => addMedia({ values, in_position: 'start' })"
           @insertMedias="
-            ({ medias }) =>
+            ({ metaFileNames }) =>
               $emit('insertMediasInList', {
                 metaFileNames,
                 in_position: 'start',
@@ -42,12 +42,10 @@
           "
         />
 
-        <transition-group name="list-complete" :duration="300">
-          <div
-            v-for="(media, index) in medias_in_order"
-            :key="media.metaFileName"
-          >
+        <transition-group tag="div" name="StoryModules" :duration="700">
+          <template v-for="(media, index) in medias_in_order">
             <MediaStory
+              :key="media.metaFileName"
               :media="media"
               :media_position="mediaPosition(index)"
               :preview_mode="preview_mode"
@@ -57,10 +55,11 @@
               @changeMediaOrder="$emit('changeMediaOrder', $event)"
             />
 
+            <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
             <InsertMediaButton
+              :key="`insert_${index}`"
               v-if="can_edit_publi && !read_only"
               :slugPubliName="slugPubliName"
-              :is_collapsed="mediaPosition(index) !== 'last'"
               @addMedia="
                 (values) =>
                   addMedia({ values, right_after_meta: media.metaFileName })
@@ -73,7 +72,7 @@
                   })
               "
             />
-          </div>
+          </template>
         </transition-group>
       </div>
     </div>
