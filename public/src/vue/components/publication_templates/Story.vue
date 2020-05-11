@@ -157,7 +157,7 @@
           "
         />
 
-        <transition-group tag="div" name="StoryModules" :duration="700">
+        <transition-group tag="div" name="StoryModules" appear :duration="700">
           <template v-for="(media, index) in medias_in_order">
             <MediaStory
               :key="media.metaFileName"
@@ -171,7 +171,10 @@
             />
 
             <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
-            <div class="_story_insert_placeholders" :key="`insert_${index}`">
+            <div
+              class="_story_insert_placeholders"
+              :key="`insert_${media.metaFileName}`"
+            >
               <InsertMediaButton
                 v-if="can_edit_publi && !read_only && !preview_mode"
                 :slugPubliName="slugPubliName"
@@ -255,6 +258,7 @@ export default {
     index_currently_visible() {
       this.current_scroll;
       if (!this.$refs.publi) return -1;
+
       const insertMediaButtons = this.$refs.publi.querySelectorAll(
         ".m_insertMediaButton"
       );

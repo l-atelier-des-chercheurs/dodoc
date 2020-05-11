@@ -5,11 +5,12 @@
         <button
           type="button"
           class="barButton barButton_capture"
+          :class="{ 'is--disabled': is_iOS_device }"
           v-if="
             project.password === 'has_pass' || project.password !== 'has_pass'
           "
           @click="openCapture"
-          :disabled="read_only || is_iOS_device || !can_edit_project"
+          :disabled="read_only || !can_edit_project"
         >
           <span>{{ $t("capture") }}</span>
         </button>
@@ -383,23 +384,20 @@ export default {
         });
     },
     openCapture() {
-      // const iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
-      // if(iOS) {
-      //   this.showImportModal = true;
+      if (this.is_iOS_device) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(8000)
+          .error(this.$t("notifications.ios_not_compatible_with_capture"));
+        setTimeout(() => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(8000)
+            .success(this.$t("notifications.instead_import_with_this_button"));
+        }, 1500);
 
-      //   this.$alertify
-      //     .closeLogOnClick(true)
-      //     .delay(8000)
-      //     .error(this.$t('notifications.ios_not_compatible_with_capture'));
-      //   setTimeout(() => {
-      //     this.$alertify
-      //       .closeLogOnClick(true)
-      //       .delay(8000)
-      //       .log(this.$t('notifications.instead_import_with_this_button'));
-      //   },1500);
-
-      //   return;
-      // }
+        return;
+      }
       this.$root.do_navigation.view = "CaptureView";
     },
     updateInputFiles($event) {

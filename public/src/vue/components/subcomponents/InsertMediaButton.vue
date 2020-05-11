@@ -15,18 +15,18 @@
       }"
     ></button>
 
-    <transition name="fade_fast" :duration="150">
+    <transition name="fade_fast" :duration="150" mode="out-in">
       <div
         class="m_insertMediaButton--menu"
-        v-if="show_menu && selected_files.length === 0"
+        v-if="show_menu && selected_files.length === 0 && !enable_capture_mode"
       >
         <div v-show="$root.state.connected" class="m_actionbar">
           <div class="m_actionbar--buttonBar">
             <button
               type="button"
               class="barButton barButton_capture"
-              @click="openCapture"
-              :disabled="is_iOS_device"
+              @click="toggleCapture"
+              :class="{ 'is--disabled': is_iOS_device }"
             >
               <span>{{ $t("capture") }}</span>
             </button>
@@ -71,22 +71,36 @@
               <span>{{ $t("create_text") }}</span>
             </button>
           </div>
+          <!-- <small v-if="!is_iOS_device">
+            {{ $t("notifications.ios_not_compatible_with_capture") }}
+          </small> -->
         </div>
       </div>
+      <UploadFile
+        v-else-if="selected_files.length > 0"
+        class="m_insertMediaButton--uploadFile"
+        :slugFolderName="slugPubliName"
+        :type="'publications'"
+        :selected_files="selected_files"
+        @insertMedias="
+          (metaFileNames) => insertImportedMedias({ metaFileNames })
+        "
+      />
+      <CaptureView
+        v-else-if="enable_capture_mode"
+        class="is--collapsed"
+        :slugFolderName="slugPubliName"
+        :type="`publications`"
+        :read_only="read_only"
+        @insertMedias="
+          (metaFileNames) => insertImportedMedias({ metaFileNames })
+        "
+      />
     </transition>
-
-    <UploadFile
-      v-if="selected_files.length > 0"
-      class="m_insertMediaButton--uploadFile"
-      :slugFolderName="slugPubliName"
-      :type="'publications'"
-      :selected_files="selected_files"
-      @close=""
-      @insertMedias="(metaFileNames) => insertImportedMedias({ metaFileNames })"
-    />
   </div>
 </template>
 <script>
+import CaptureView from "../../CaptureView.vue";
 import UploadFile from "./UploadFile.vue";
 
 export default {
@@ -99,6 +113,7 @@ export default {
     slugPubliName: String,
   },
   components: {
+    CaptureView,
     UploadFile,
   },
   data() {
@@ -113,6 +128,7 @@ export default {
         /iPad|iPhone|iPod/.test(navigator.platform),
 
       show_drop_container: false,
+      enable_capture_mode: false,
     };
   },
   created() {},
@@ -134,14 +150,35 @@ export default {
     },
     insertImportedMedias({ metaFileNames }) {
       this.selected_files = [];
-      this.$emit("insertMedias", { metaFileNames });
       this.show_menu = false;
+      this.enable_capture_mode = false;
+      setTimeout(() => {
+        this.$emit("insertMedias", { metaFileNames });
+      }, 500);
     },
     toggleMenu() {
       this.show_menu = !this.show_menu;
+      this.enable_capture_mode = false;
       this.selected_files = [];
     },
-    openCapture() {},
+    toggleCapture() {
+      if (this.is_iOS_device) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(8000)
+          .error(this.$t("notifications.ios_not_compatible_with_capture"));
+        setTimeout(() => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(8000)
+            .success(this.$t("notifications.instead_import_with_this_button"));
+        }, 1500);
+
+        return;
+      }
+
+      this.enable_capture_mode = !this.enable_capture_mode;
+    },
     updateInputFiles($event) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`InsertMediaButton • METHODS / updateInputFiles`);

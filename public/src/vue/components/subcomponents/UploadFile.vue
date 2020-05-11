@@ -142,12 +142,7 @@ export default {
               );
             }.bind(this),
           })
-          .then((x) => {
-            if (this.$root.state.dev_mode === "debug")
-              console.log(`UploadFile • METHODS: got answer, x = ${x}`);
-
-            return x.data;
-          })
+          .then((x) => x.data)
           .then((x) => {
             if (this.$root.state.dev_mode === "debug")
               console.log(
