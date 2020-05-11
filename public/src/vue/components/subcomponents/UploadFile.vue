@@ -142,12 +142,7 @@ export default {
               );
             }.bind(this),
           })
-          .then((x) => {
-            if (this.$root.state.dev_mode === "debug")
-              console.log(`UploadFile • METHODS: got answer, x = ${x}`);
-
-            return x.data;
-          })
+          .then((x) => x.data)
           .then((x) => {
             if (this.$root.state.dev_mode === "debug")
               console.log(
@@ -226,6 +221,7 @@ export default {
             `UploadFile • METHODS: sendAllFiles / finished uploading sequentially`
           );
         this.$emit("insertMedias", this.list_of_medias_to_add_to_fragment);
+        this.$emit("close", "");
       });
 
       // const test = async () => {

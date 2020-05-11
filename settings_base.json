@@ -462,6 +462,13 @@
           "type": "array"
         },
         "linked_project": {
+          "type": "string",
+          "comment": "is_deprecated_and_replaced_with_linked_folder"
+        },
+        "linked_folder": {
+          "type": "string"
+        },
+        "linked_type": {
           "type": "string"
         }
       },

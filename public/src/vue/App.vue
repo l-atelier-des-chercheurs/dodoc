@@ -89,10 +89,10 @@
                 <transition name="CaptureView" :duration="500">
                   <CaptureView
                     v-if="$root.do_navigation.view === 'CaptureView'"
-                    :slugProjectName="
+                    :slugFolderName="
                       $root.do_navigation.current_slugProjectName
                     "
-                    :project="$root.current_project"
+                    :type="`projects`"
                     :read_only="!$root.state.connected"
                   />
                 </transition>

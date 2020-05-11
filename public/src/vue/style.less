@@ -2681,14 +2681,16 @@ small {
     align-items: center;
     padding: @t-skipline / 2 0;
 
-    .m_activitiesPanel--do:not(.is--large) & {
-      flex-flow: row nowrap;
+    .m_activitiesPanel--do:not(.is--large) &,
+    .is--collapsed& {
+      flex-flow: row wrap;
     }
 
     button {
       .c-orange;
 
-      .m_activitiesPanel--do:not(.is--large) & {
+      .m_activitiesPanel--do:not(.is--large) &,
+      .is--collapsed& {
         display: none;
       }
     }
@@ -2729,7 +2731,8 @@ small {
       text-align: center;
       transition: all 1s;
 
-      .m_activitiesPanel--do:not(.is--large) & {
+      .m_activitiesPanel--do:not(.is--large) &,
+      .is--collapsed& {
         margin: 0vw 1vw;
       }
 
@@ -2743,7 +2746,8 @@ small {
         padding: 4px;
         .bg-orange;
 
-        .m_activitiesPanel--do:not(.is--large) & {
+        .m_activitiesPanel--do:not(.is--large) &,
+        .is--collapsed& {
           margin: 0;
         }
 
@@ -2763,7 +2767,8 @@ small {
         font-weight: 600;
         // .c-noir;
 
-        .m_activitiesPanel--do:not(.is--large) & {
+        .m_activitiesPanel--do:not(.is--large) &,
+        .is--collapsed& {
           display: none;
         }
       }
@@ -5372,7 +5377,7 @@ small {
     width: 100%;
     border-radius: 10px;
 
-    .margin-vert-large;
+    .margin-vert-medium;
     .padding-bottom-medium;
     margin-bottom: 50vh;
     padding-top: 1px;
@@ -5383,6 +5388,7 @@ small {
       // top: 0;
       // margin-top: 0;
       // margin: 0;
+      .margin-bottom-medium;
       z-index: 1500;
     }
 
@@ -5396,14 +5402,45 @@ small {
     }
   }
 
+  counter-reset: mediaCounter;
+
   .m_mediaStory {
     position: relative;
     // .padding-vert-verysmall;
     .padding-sides-medium;
     margin: 0 auto;
+    scroll-margin: 80px;
+
+    &::before {
+      counter-increment: mediaCounter 1;
+      content: counter(mediaCounter) " ";
+      position: absolute;
+      right: 100%;
+      top: 0;
+      .padding-verysmall;
+      .padding-sides-medium;
+      // .c-noir;
+      // .c-blanc;
+      .text-cap;
+      .font-verysmall;
+      color: @c-bleuvert_fonce;
+      // font-weight: 600;
+      // background-color: fade(@c-noir, 100%);
+      // .c-blanc;
+      // border-radius: 0 0 0.4em 0;
+      line-height: 1;
+      z-index: 1;
+    }
 
     // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     // border-radius: 4px;
+  }
+}
+.m_publicationview.is--preview {
+  .m_mediaStory {
+    &::before {
+      color: @c-gris;
+    }
   }
 }
 
@@ -5493,7 +5530,7 @@ small {
   min-height: @t-storyButtons;
   .padding-sides-medium;
   max-width: 600px;
-  padding-right: 0;
+  // padding-right: 0;
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -5505,6 +5542,34 @@ small {
   &.is--open {
     // background-color: @c-noir;
     .margin-vert-verysmall;
+  }
+
+  &::before {
+    content: "→";
+    font-family: "Fira Code";
+    font-weight: 700;
+    display: block;
+    left: 4px;
+    position: absolute;
+    .c-rouge;
+    font-size: 200%;
+
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    transform: translateX(-4px) scale(0.5);
+    opacity: 0;
+
+    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  &.is--active {
+    &::before {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+    // .bg-rouge;
   }
 
   .m_insertMediaButton--toggleButton {
@@ -5585,39 +5650,77 @@ small {
   }
 
   .m_insertMediaButton--uploadFile {
-    flex: 1 1 280px;
+    flex: 0 1 280px;
     // .bg-gris_clair;
     // .padding-medium;
   }
-  // right: 100%;
+
+  .m_captureview {
+    position: relative;
+  }
+}
+
+._story_insert_placeholders {
+  min-height: @t-storyButtons;
 }
 
 .m_mediaStory {
   min-height: 3 * @t-storyButtons;
 
+  &.is--selected {
+    .m_mediaStory--moveItemButtons {
+      background-color: @c-noir;
+      color: white;
+    }
+    // border-right: 2px solid @c-gris_tresclair;
+  }
+
   .mediaContainer {
     position: relative;
-    .bg-gris_tresclair;
-    padding: 2px;
+    // .bg-gris_tresclair;
+    .bg-creme;
+    max-height: 50vh;
+    // padding: 2px;
     // border: 1px solid @c-gris_tresclair;
     border-radius: @t-buttonradius;
 
     &.type-image {
-      height: 40vh;
+      // height: var(--media-ratio);
+
+      &::after {
+        content: "";
+        display: block;
+        width: 100%;
+        padding-bottom: var(--media-ratio);
+      }
 
       img {
+        position: absolute;
+        width: 100%;
         object-fit: scale-down;
         height: 100%;
+        border-radius: @t-buttonradius;
       }
     }
 
     &.type-video {
-      height: 40vh;
-      border-radius: @t-buttonradius;
       overflow: hidden;
 
+      &::after {
+        content: "";
+        display: block;
+        width: 100%;
+        padding-bottom: var(--media-ratio);
+      }
+
       > div {
+        position: absolute;
         height: 100%;
+        width: 100%;
+      }
+
+      video {
+        border-radius: @t-buttonradius;
       }
 
       .plyr {
@@ -5627,6 +5730,7 @@ small {
       .plyr__video-wrapper,
       .plyr__poster {
         background-color: transparent;
+        border-radius: @t-buttonradius;
       }
       img {
         object-fit: contain;
@@ -5634,8 +5738,10 @@ small {
       }
     }
 
-    &.type-stl {
+    &.type-stl,
+    &.type-document {
       iframe {
+        display: block;
         border: 2px solid @c-gris_tresclair;
         .bg-gris_tresclair;
         width: 100%;
@@ -7126,6 +7232,34 @@ small {
 .list-complete-leave-active {
   position: absolute;
   z-index: 0 !important;
+}
+
+.StoryModules-enter-active,
+.StoryModules-leave-active,
+.StoryModules-move {
+  transition: 700ms cubic-bezier(0.19, 1, 0.22, 1) !important;
+  transition-property: opacity, transform;
+  transform-origin: center top;
+}
+
+.StoryModules-enter {
+  opacity: 0;
+  transform: translateX(0px) scaleY(0.9);
+}
+
+.StoryModules-enter-to {
+  opacity: 1;
+  transform: translateX(0) scaleY(1);
+}
+
+.StoryModules-leave-active {
+  position: absolute;
+}
+
+.StoryModules-leave-to {
+  opacity: 0;
+  transform: scaleY(0.9);
+  transform-origin: center top;
 }
 
 .fileupload_list-move {

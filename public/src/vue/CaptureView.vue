@@ -406,7 +406,7 @@
         <StopmotionPanel
           v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
           :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
-          :slugProjectName="slugProjectName"
+          :slugProjectName="slugFolderName"
           :read_only="read_only"
           :videoStream="videoStream"
           @close="current_stopmotion = false"
@@ -603,11 +603,8 @@ import * as axios from "axios";
 
 export default {
   props: {
-    project: {
-      type: Object,
-      default: "",
-    },
-    slugProjectName: String,
+    slugFolderName: String,
+    type: String,
     read_only: Boolean,
   },
   components: {
@@ -888,7 +885,7 @@ export default {
       return this.$_.groupBy(this.available_devices, "kind");
     },
     uriToUploadMedia: function () {
-      return `_file-upload/projects/${this.slugProjectName}?socketid=${this.$root.$socketio.socket.id}`;
+      return `_file-upload/${this.type}/${this.slugFolderName}?socketid=${this.$root.$socketio.socket.id}`;
     },
     recording_duration: function () {
       if (this.timer_recording) {
@@ -1413,8 +1410,9 @@ export default {
     addStopmotionImage() {
       const smdata = {
         name:
-          this.slugProjectName + "-" + this.$moment().format("YYYYMMDD_HHmmss"),
-        linked_project: this.slugProjectName,
+          this.slugFolderName + "-" + this.$moment().format("YYYYMMDD_HHmmss"),
+        linked_folder: this.slugFolderName,
+        linked_type: this.type,
         authors: this.$root.current_author
           ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
           : "",
@@ -1589,6 +1587,9 @@ export default {
               .success(this.$t("notifications.media_was_sent"));
             this.media_is_being_sent = false;
             this.media_to_validate = false;
+
+            debugger;
+            this.$emit("insertMedias", [x.metaFileNames[0]]);
 
             // this.selected_files_meta[filename].status = 'success';
             // this.selected_files_meta[filename].upload_percentages = 100;

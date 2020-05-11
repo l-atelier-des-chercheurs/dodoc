@@ -199,10 +199,6 @@ module.exports = (function () {
       oc: "Data de mandadís",
       de: "Versanddatum",
     },
-    imported_files_successfully: {
-      fr: "Média importé avec succès",
-      en: "Media imported successfully",
-    },
     attached_to_project: {
       fr: "Rattachée au projet",
       en: "Attached to project",
@@ -2735,6 +2731,10 @@ module.exports = (function () {
         oc:
           "Los Iphones and Ipads son pas compatibles amb la fonccionalitat de captura.",
         de: "iPhones und iPads sind nicht mit der Aufnahmefunktion kompatibel.",
+      },
+      imported_files_successfully: {
+        fr: "Média importé avec succès",
+        en: "Media imported successfully",
       },
       instead_import_with_this_button: {
         fr:

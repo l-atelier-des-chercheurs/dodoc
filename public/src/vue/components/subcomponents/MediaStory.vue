@@ -1,6 +1,7 @@
 <template>
   <div
     class="m_mediaStory"
+    :class="{ 'is--selected': is_selected }"
     ref="media"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
@@ -22,6 +23,7 @@
         :slugFolderName="media._linked_media.slugProjectName"
         :media="media._linked_media"
         :read_only="read_only"
+        :style="mediaStyles"
         v-model="media._linked_media.content"
       />
     </template>
@@ -41,9 +43,11 @@
           ].includes(media.type)
         "
         :context="'full'"
-        :slugFolderName="media.slugProjectName"
+        :slugFolderName="slugPubliName"
+        :subfolder="`_publications/`"
         :media="media"
         :read_only="read_only"
+        :style="mediaStyles"
         v-model="media.content"
       />
 
@@ -103,7 +107,12 @@
           })
         "
       >
-        <img src="/images/i_arrow_left.svg" draggable="false" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+          <path
+            d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
+            style="fill: currentColor;"
+          />
+        </svg>
       </button>
 
       <div class="m_mediaStory--moveItemButton--options">
@@ -298,7 +307,12 @@
           })
         "
       >
-        <img src="/images/i_arrow_right.svg" draggable="false" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+          <path
+            d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
+            style="fill: currentColor;"
+          />
+        </svg>
       </button>
     </div>
   </div>
@@ -374,6 +388,45 @@ export default {
         (meta) => meta === this.media.metaFileName
       );
     },
+    mediaStyles() {
+      let css = "";
+
+      const ratio = this.media_ratio ? this.media_ratio : 1;
+      css += `--media-ratio: ${ratio * 100}%; `;
+
+      return css;
+    },
+
+    media_ratio() {
+      if (
+        this.media.hasOwnProperty("file_meta") &&
+        this.media.file_meta.some((f) => f.hasOwnProperty("ratio"))
+      ) {
+        return this.media.file_meta.find((f) => f.hasOwnProperty("ratio"))
+          .ratio;
+      }
+      if (this.media.hasOwnProperty("ratio")) return this.media.ratio;
+
+      if (this.media.hasOwnProperty("_linked_media")) {
+        if (
+          this.media._linked_media.hasOwnProperty("file_meta") &&
+          this.media._linked_media.file_meta.some((f) =>
+            f.hasOwnProperty("ratio")
+          )
+        )
+          return this.media._linked_media.file_meta.find((f) =>
+            f.hasOwnProperty("ratio")
+          ).ratio;
+
+        if (
+          this.media._linked_media.hasOwnProperty("ratio") &&
+          this.media._linked_media.ratio
+        )
+          return this.media._linked_media.ratio;
+      }
+
+      return false;
+    },
   },
   methods: {
     selectNewMedia(metaFileName) {
@@ -386,9 +439,12 @@ export default {
         this.editButtonClicked();
       }
     },
-    mediaJustInserted() {
-      if (this.media.type === "text") {
+    mediaJustInserted(metaFileName) {
+      if (this.media.metaFileName === metaFileName) {
         this.selectMedia();
+        this.$nextTick(() => {
+          this.scrollToMedia();
+        });
       }
     },
     editButtonClicked() {
@@ -453,6 +509,17 @@ export default {
       this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
         (meta) => meta !== this.media.metaFileName
       );
+    },
+    scrollToMedia() {
+      const media = this.$refs.media;
+      debugger;
+      if (media.scrollIntoViewIfNeeded) media.scrollIntoViewIfNeeded(true);
+      else
+        media.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
     },
     mouseOver() {
       if (!this.is_touch) {
