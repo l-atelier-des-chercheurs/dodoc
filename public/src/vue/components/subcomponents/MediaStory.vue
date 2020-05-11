@@ -379,7 +379,6 @@ export default {
     },
     mediaStyles() {
       let css = "";
-      debugger;
 
       const ratio = this.media_ratio ? this.media_ratio : 1;
       css += `--media-ratio: ${ratio * 100}%; `;
@@ -388,7 +387,6 @@ export default {
     },
 
     media_ratio() {
-      debugger;
       if (
         this.media.hasOwnProperty("file_meta") &&
         this.media.file_meta.some((f) => f.hasOwnProperty("ratio"))
@@ -433,6 +431,7 @@ export default {
     mediaJustInserted(metaFileName) {
       if (this.media.metaFileName === metaFileName) {
         this.selectMedia();
+        this.scrollToMedia();
       }
     },
     editButtonClicked() {
@@ -497,6 +496,13 @@ export default {
       this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
         (meta) => meta !== this.media.metaFileName
       );
+    },
+    scrollToMedia() {
+      this.$refs.media.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
     },
     mouseOver() {
       if (!this.is_touch) {
