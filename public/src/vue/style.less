@@ -5633,6 +5633,7 @@ small {
   .mediaContainer {
     position: relative;
     .bg-gris_tresclair;
+    max-height: 50vh;
     // padding: 2px;
     // border: 1px solid @c-gris_tresclair;
     border-radius: @t-buttonradius;
@@ -7190,6 +7191,7 @@ small {
 .StoryModules-move {
   transition: 700ms ease-in-out !important;
   transition-property: opacity, transform;
+  transform-origin: center top;
 }
 
 .StoryModules-enter {
@@ -7200,7 +7202,6 @@ small {
 .StoryModules-enter-to {
   opacity: 1;
   transform: translateX(0) scaleY(1);
-  transform-origin: center center;
 }
 
 .StoryModules-leave-active {

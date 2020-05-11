@@ -431,7 +431,9 @@ export default {
     mediaJustInserted(metaFileName) {
       if (this.media.metaFileName === metaFileName) {
         this.selectMedia();
-        this.scrollToMedia();
+        this.$nextTick(() => {
+          this.scrollToMedia();
+        });
       }
     },
     editButtonClicked() {
