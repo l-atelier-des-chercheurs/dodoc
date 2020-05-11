@@ -1,6 +1,7 @@
 <template>
   <div
     class="m_mediaStory"
+    :class="{ 'is--selected': is_selected }"
     ref="media"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
@@ -500,11 +501,15 @@ export default {
       );
     },
     scrollToMedia() {
-      this.$refs.media.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
-      });
+      const media = this.$refs.media;
+      debugger;
+      if (media.scrollIntoViewIfNeeded) media.scrollIntoViewIfNeeded(true);
+      else
+        media.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
     },
     mouseOver() {
       if (!this.is_touch) {

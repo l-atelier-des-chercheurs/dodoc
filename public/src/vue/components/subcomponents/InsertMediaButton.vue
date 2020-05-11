@@ -1,5 +1,8 @@
 <template>
-  <div class="m_insertMediaButton" :class="{ 'is--open': show_menu }">
+  <div
+    class="m_insertMediaButton"
+    :class="{ 'is--open': show_menu, 'is--active': is_currently_active }"
+  >
     <button
       type="button"
       class="m_insertMediaButton--toggleButton"
@@ -92,6 +95,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    is_currently_active: Boolean,
     slugPubliName: String,
   },
   components: {

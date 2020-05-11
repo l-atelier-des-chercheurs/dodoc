@@ -5383,6 +5383,7 @@ small {
       // top: 0;
       // margin-top: 0;
       // margin: 0;
+      .margin-bottom-medium;
       z-index: 1500;
     }
 
@@ -5538,6 +5539,34 @@ small {
     .margin-vert-verysmall;
   }
 
+  &::before {
+    content: "→";
+    font-family: "Fira Code";
+    font-weight: 700;
+    display: block;
+    left: 4px;
+    position: absolute;
+    .c-rouge;
+    font-size: 200%;
+
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    transform: translateX(-4px) scale(0.5);
+    opacity: 0;
+
+    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  &.is--active {
+    &::before {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+    // .bg-rouge;
+  }
+
   .m_insertMediaButton--toggleButton {
     // font-size: 0.4rem;
     order: 2;
@@ -5630,6 +5659,10 @@ small {
 .m_mediaStory {
   min-height: 3 * @t-storyButtons;
 
+  &.is--selected {
+    border: 2px solid @c-gris_tresclair;
+  }
+
   .mediaContainer {
     position: relative;
     .bg-gris_tresclair;
@@ -5692,7 +5725,8 @@ small {
       }
     }
 
-    &.type-stl {
+    &.type-stl,
+    &.type-document {
       iframe {
         border: 2px solid @c-gris_tresclair;
         .bg-gris_tresclair;
@@ -7189,7 +7223,7 @@ small {
 .StoryModules-enter-active,
 .StoryModules-leave-active,
 .StoryModules-move {
-  transition: 700ms ease-in-out !important;
+  transition: 700ms cubic-bezier(0.19, 1, 0.22, 1) !important;
   transition-property: opacity, transform;
   transform-origin: center top;
 }

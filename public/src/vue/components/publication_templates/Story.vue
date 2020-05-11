@@ -124,6 +124,7 @@
 
     <div
       class="m_storyPublication"
+      ref="publi"
       @mousedown.self="$root.settings.current_publication.selected_medias = []"
       @touchstart.self="$root.settings.current_publication.selected_medias = []"
     >
@@ -144,6 +145,7 @@
               publication.medias_slugs.length === 0
             )
           "
+          :is_currently_active="(index_currently_visible === 0)"
           :slugPubliName="slugPubliName"
           @addMedia="(values) => addMedia({ values, in_position: 'start' })"
           @insertMedias="
@@ -173,6 +175,7 @@
               <InsertMediaButton
                 v-if="can_edit_publi && !read_only && !preview_mode"
                 :slugPubliName="slugPubliName"
+                :is_currently_active="(index_currently_visible === index + 1)"
                 @addMedia="
                   (values) =>
                     addMedia({ values, right_after_meta: media.metaFileName })
@@ -217,11 +220,12 @@ export default {
       show_media_options: false,
       preview_mode: false,
       fullscreen_mode: false,
+      current_scroll: 0,
     };
   },
   created() {},
   mounted() {
-    this.$eventHub.$on("publication.addMedia", this.addMedia);
+    this.$eventHub.$on("publication.addMedia", this.addMediaAtIndex);
     this.$root.settings.current_publication.accepted_media_type = [
       "image",
       "video",
@@ -231,19 +235,56 @@ export default {
       "document",
       "other",
     ];
+
+    const getCurrentScroll = () => {
+      if (
+        this.$refs.publi &&
+        this.current_scroll !== this.$refs.publi.scrollTop
+      )
+        this.current_scroll = this.$refs.publi.scrollTop;
+      setTimeout(getCurrentScroll, 400);
+    };
+    getCurrentScroll();
   },
   beforeDestroy() {
-    this.$eventHub.$off("publication.addMedia", this.addMedia);
+    this.$eventHub.$off("publication.addMedia", this.addMediaAtIndex);
     this.$root.settings.current_publication.accepted_media_type = [];
   },
   watch: {},
-  computed: {},
+  computed: {
+    index_currently_visible() {
+      this.current_scroll;
+      if (!this.$refs.publi) return -1;
+      const insertMediaButtons = this.$refs.publi.querySelectorAll(
+        ".m_insertMediaButton"
+      );
+      let index = 0;
+      for (const insert of insertMediaButtons) {
+        // loop until we get insert.offsetTop > this.current_scroll;
+        if (insert.offsetTop > this.current_scroll + 80) break;
+
+        index++;
+      }
+      return index;
+    },
+  },
   methods: {
     toggleTransition({ position, metaFileName }) {
       console.log(
         `METHODS • VideoPublication: toggleTransition for metaFileName = ${metaFileName} and position = ${position}`
       );
       this.$emit("editPubliMedia", { metaFileName, val });
+    },
+    addMediaAtIndex(d) {
+      if (
+        this.index_currently_visible >= 0 &&
+        this.index_currently_visible <= this.medias_in_order.length
+      ) {
+        d.right_after_meta = this.medias_in_order[
+          this.index_currently_visible - 1
+        ].metaFileName;
+      }
+      this.addMedia(d);
     },
     addMedia(d) {
       this.$emit("addMedia", d);
