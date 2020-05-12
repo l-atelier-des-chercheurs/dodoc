@@ -102,6 +102,20 @@
           {{ $t("create") }}
         </button>
       </div>
+      <div style="width: 100%;" v-if="publication.is_model">
+        <label>{{ $t("publi_is_model") }}</label>
+      </div>
+      <div style="width: 100%;" v-else-if="!!publication_model">
+        <label
+          >{{ $t("publi_follows_model:") }}
+          <span
+            class="text-underline"
+            @click="$root.openPublication(publication_model.slugFolderName)"
+          >
+            {{ publication_model.name }}
+          </span></label
+        >
+      </div>
       <div
         class="text-centered"
         style="width: 100%;"
@@ -367,6 +381,15 @@ export default {
           },
         });
       },
+    },
+    publication_model() {
+      if (!this.publication.follows_model) return false;
+      return Object.values(this.$root.store.publications).find(
+        (p) =>
+          this.publication.template === p.template &&
+          p.is_model === true &&
+          p.slugFolderName === this.publication.follows_model
+      );
     },
   },
   methods: {

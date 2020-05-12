@@ -314,6 +314,12 @@
         },
         "effects": {
           "type": "array"
+        },
+        "is_model": {
+          "type": "boolean"
+        },
+        "follows_model": {
+          "type": "string"
         }
       },
       "medias": {
