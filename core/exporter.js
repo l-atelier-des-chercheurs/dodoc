@@ -233,6 +233,12 @@ module.exports = (function () {
           })
           .then((publiData) => {
             publiData = Object.values(publiData)[0];
+
+            const default_page_size = {
+              width: publiData.width ? publiData.width : 210,
+              height: publiData.height ? publiData.height : 297,
+            };
+
             fs.mkdirp(cachePath, () => {
               dev.logverbose(
                 `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
@@ -241,8 +247,8 @@ module.exports = (function () {
               const { BrowserWindow } = require("electron");
 
               const browser_window = {
-                width: Math.floor(publiData.width * 3.78),
-                height: Math.floor(publiData.height * 3.78) + 25, // totally arbitrary value… will have to find better
+                width: Math.floor(default_page_size.width * 3.78),
+                height: Math.floor(default_page_size.height * 3.78) + 25, // totally arbitrary value… will have to find better
               };
 
               let win = new BrowserWindow({
@@ -278,8 +284,8 @@ module.exports = (function () {
                       {
                         marginsType: 1,
                         pageSize: {
-                          width: publiData.width * 1000,
-                          height: publiData.height * 1000,
+                          width: default_page_size.width * 1000,
+                          height: default_page_size.height * 1000,
                         },
                         dpi: 300,
                         printBackground: false,

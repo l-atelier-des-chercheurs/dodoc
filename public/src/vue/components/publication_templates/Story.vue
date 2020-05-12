@@ -6,12 +6,11 @@
     @mousedown.self="$root.settings.current_publication.selected_medias = []"
     @touchstart.self="$root.settings.current_publication.selected_medias = []"
   >
-    <ExportVideoPubliModal
+    <ExportPagePubli
       v-if="show_export_modal"
+      :publication="publication"
       @close="show_export_modal = false"
       :slugPubliName="slugPubliName"
-      :publication="publication"
-      :instructions="$t('export_video_instructions')"
     />
 
     <PublicationDisplayButtons
@@ -73,7 +72,10 @@
             />
 
             <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
-            <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
+            <div
+              class="_story_insert_placeholders"
+              :key="`insert_${media.metaFileName}`"
+            >
               <InsertMediaButton
                 v-if="can_edit_publi && !read_only && !preview_mode"
                 :slugPubliName="slugPubliName"
@@ -101,6 +103,7 @@
 <script>
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
 import PublicationDisplayButtons from "../subcomponents/PublicationDisplayButtons.vue";
+import ExportPagePubli from "../modals/ExportPagePubli.vue";
 import MediaStory from "../subcomponents/MediaStory.vue";
 import InsertMediaButton from "../subcomponents/InsertMediaButton.vue";
 
@@ -112,20 +115,21 @@ export default {
     can_edit_publi: Boolean,
     can_see_publi: Boolean,
     read_only: Boolean,
-    preview_mode: Boolean
+    preview_mode: Boolean,
   },
   components: {
     PublicationHeader,
     PublicationDisplayButtons,
+    ExportPagePubli,
     MediaStory,
-    InsertMediaButton
+    InsertMediaButton,
   },
   data() {
     return {
       show_export_modal: false,
       show_media_options: false,
       fullscreen_mode: false,
-      current_scroll: 0
+      current_scroll: 0,
     };
   },
   created() {},
@@ -138,7 +142,7 @@ export default {
       "text",
       "stl",
       "document",
-      "other"
+      "other",
     ];
 
     const getCurrentScroll = () => {
@@ -172,7 +176,7 @@ export default {
         index++;
       }
       return index;
-    }
+    },
   },
   methods: {
     toggleTransition({ position, metaFileName }) {
@@ -230,8 +234,12 @@ export default {
         } // Maybe other prefixed APIs?
         this.fullscreen_mode = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
-<style></style>
+<style>
+@page {
+  margin: 5cm;
+}
+</style>
