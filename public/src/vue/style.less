@@ -5465,7 +5465,7 @@ small {
     margin: 0 auto;
     scroll-margin: 80px;
 
-    &::before {
+    &:not(.is--previewed)::before {
       counter-increment: mediaCounter 1;
       content: counter(mediaCounter) " ";
       position: absolute;
