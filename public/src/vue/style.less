@@ -4370,15 +4370,21 @@ small {
     align-items: center;
     background-color: @c-creme;
 
+    .is--currentauthor& {
+      background-color: @c-bleumarine_clair !important;
+      color: @c-bleumarine_fonce !important;
+    }
+
     // border-bottom: 2px solid @c-gris_tresclair;
   }
 
   .m_message--meta--author {
     flex: 0 0 auto;
 
-    span {
+    > span {
       display: flex;
       flex-flow: row nowrap;
+      align-items: center;
       font-weight: 400;
       text-transform: initial;
       margin-right: @t-skipline / 4 !important;
@@ -4387,22 +4393,29 @@ small {
       border-top-left-radius: 4px;
 
       .is--currentauthor& {
-        background-color: @c-bleumarine_clair !important;
-        color: @c-bleumarine_fonce !important;
-
         &::before {
           opacity: 0.6;
         }
       }
 
-      &::before {
-        content: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2084%2084%22%3E%0A%20%20%3Ctitle%3Etext%20copie%2010%3C/title%3E%0A%20%20%3Cg%20id%3D%22Calque_6%22%20data-name%3D%22Calque%206%22%3E%0A%20%20%20%20%3Cg%20id%3D%22flc%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M64%2C56.53a18.29%2C18.29%2C0%2C0%2C0-10.06-8.09s-3.44-1.71-12.28-1.71-12.27%2C1.71-12.27%2C1.71a18.31%2C18.31%2C0%2C0%2C0-10.07%2C8.09c-1%2C1.47-1.47%2C4.66-1.71%2C6.37v2.45c0%2C3.19%2C2.2%2C5.89%2C4.9%2C5.89H60.56c2.7%2C0%2C4.91-2.7%2C4.91-5.89V62.9A10.5%2C10.5%2C0%2C0%2C0%2C64%2C56.53M28.41%2C24.91c0%2C7.36%2C4.66%2C18.39%2C13.5%2C18.39%2C8.59%2C0%2C13.5-11%2C13.5-18.39a13.44%2C13.44%2C0%2C0%2C0-13.5-13.47%2C13.29%2C13.29%2C0%2C0%2C0-13.5%2C13.47%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E%0A");
-        display: inline-block;
-        vertical-align: baseline;
+      ._pp,
+      ._no_pp {
         width: 20px;
         height: 20px;
-        opacity: 0.2;
-        transform: scale(0.8);
+        border-radius: 50%;
+        margin-right: 0.2em;
+      }
+
+      ._no_pp {
+        &::before {
+          content: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2084%2084%22%3E%0A%20%20%3Ctitle%3Etext%20copie%2010%3C/title%3E%0A%20%20%3Cg%20id%3D%22Calque_6%22%20data-name%3D%22Calque%206%22%3E%0A%20%20%20%20%3Cg%20id%3D%22flc%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M64%2C56.53a18.29%2C18.29%2C0%2C0%2C0-10.06-8.09s-3.44-1.71-12.28-1.71-12.27%2C1.71-12.27%2C1.71a18.31%2C18.31%2C0%2C0%2C0-10.07%2C8.09c-1%2C1.47-1.47%2C4.66-1.71%2C6.37v2.45c0%2C3.19%2C2.2%2C5.89%2C4.9%2C5.89H60.56c2.7%2C0%2C4.91-2.7%2C4.91-5.89V62.9A10.5%2C10.5%2C0%2C0%2C0%2C64%2C56.53M28.41%2C24.91c0%2C7.36%2C4.66%2C18.39%2C13.5%2C18.39%2C8.59%2C0%2C13.5-11%2C13.5-18.39a13.44%2C13.44%2C0%2C0%2C0-13.5-13.47%2C13.29%2C13.29%2C0%2C0%2C0-13.5%2C13.47%22/%3E%0A%20%20%20%20%3C/g%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E%0A");
+          display: inline-block;
+          vertical-align: baseline;
+          width: 20px;
+          height: 20px;
+          opacity: 0.2;
+          transform: scale(0.8);
+        }
       }
     }
   }

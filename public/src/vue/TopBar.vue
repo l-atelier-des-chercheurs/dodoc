@@ -114,12 +114,7 @@
               "
             >
               <img
-                :src="
-                  urlToPortrait(
-                    $root.current_author.slugFolderName,
-                    $root.current_author.preview
-                  )
-                "
+                :src="urlToPortrait($root.current_author.preview)"
                 width="100"
                 height="100"
                 draggable="false"
@@ -320,7 +315,7 @@ export default {
     toggleMenu() {
       this.show_menu = !this.show_menu;
     },
-    urlToPortrait(slug, preview) {
+    urlToPortrait(preview) {
       if (!preview) return "";
       let pathToSmallestThumb = preview.filter((m) => m.size === 180)[0].path;
       return pathToSmallestThumb;
