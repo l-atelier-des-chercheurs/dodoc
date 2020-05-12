@@ -2963,6 +2963,7 @@ small {
         .padding-small;
         // .margin-vert-small;
         overflow-y: auto;
+        overscroll-behavior-y: contain;
         height: 100%;
 
         // border-bottom: 2px solid @c-gris;
@@ -3430,7 +3431,10 @@ small {
       scroll-behavior: smooth;
 
       background-color: @c-gris_tresclair;
-      border-radius: 6px;
+
+      // for some strange reason this prevents stopmotion thumbs
+      // from showing in story publi
+      // border-radius: 6px;
 
       .custom_scrollbar(1px, 3px, 2px, rgba(255, 255, 255, 0), #333);
 
@@ -5689,6 +5693,8 @@ small {
 
   .m_captureview {
     position: relative;
+    min-height: 320px;
+    height: 50vh;
   }
 }
 

@@ -44,7 +44,7 @@
         "
         :context="'full'"
         :slugFolderName="slugPubliName"
-        :subfolder="`_publications/`"
+        :folderType="'publications'"
         :media="media"
         :read_only="read_only"
         :style="mediaStyles"

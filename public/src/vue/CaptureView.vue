@@ -283,7 +283,7 @@
               :context="'edit'"
               :slugFolderName="current_stopmotion"
               :media="stopmotion.onion_skin_img"
-              :subfolder="'_stopmotions/'"
+              :folderType="'stopmotions'"
               :style="
                 is_showing_live_feed
                   ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}`
@@ -338,7 +338,7 @@
                                   :context="'preview'"
                                   :slugFolderName="stopmotion.slugFolderName"
                                   :media="media"
-                                  :subfolder="'_stopmotions/'"
+                                  :folderType="'stopmotions'"
                                   :preview_size="150"
                                 />
                               </div>
@@ -406,9 +406,11 @@
         <StopmotionPanel
           v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
           :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
-          :slugProjectName="slugFolderName"
+          :type="type"
+          :slugFolderName="slugFolderName"
           :read_only="read_only"
           :videoStream="videoStream"
+          @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
           @close="current_stopmotion = false"
           @new_single_image="updateSingleImage"
           @show_live_feed="
