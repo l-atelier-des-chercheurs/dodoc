@@ -14,113 +14,12 @@
       :instructions="$t('export_video_instructions')"
     />
 
-    <div
-      class="m_publicationSettings"
-      v-if="
-        ![
-          'export_publication',
-          'print_publication',
-          'link_publication',
-        ].includes($root.state.mode)
-      "
-    >
-      <button
-        class="margin-vert-verysmall font-verysmall _preview_button"
-        :class="{ 'is--active': !preview_mode }"
-        @mousedown.stop.prevent="preview_mode = !preview_mode"
-        @touchstart.stop.prevent="preview_mode = !preview_mode"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="144px"
-          height="84px"
-          viewBox="0 0 144 84"
-          style="enable-background: new 0 0 144 84;"
-          xml:space="preserve"
-        >
-          <defs />
-          <g>
-            <path
-              d="M72,0C32.2,0,0,42,0,42s32.2,42,72,42s72-42,72-42S111.8,0,72,0z M72,71.3c-16.5,0-30-13.2-30-29.6
-            c0-16.3,13.4-29.6,30-29.6c16.5,0,30,13.3,30,29.6C102,58,88.5,71.3,72,71.3z"
-            />
-          </g>
-        </svg>
-      </button>
-      <button
-        class="margin-vert-verysmall font-verysmall"
-        @mousedown.stop.prevent="toggleFullscreen"
-        @touchstart.stop.prevent="toggleFullscreen"
-      >
-        <svg
-          version="1.1"
-          v-if="!fullscreen_mode"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="133.3px"
-          height="133.2px"
-          viewBox="0 0 133.3 133.2"
-          style="enable-background: new 0 0 133.3 133.2;"
-          xml:space="preserve"
-        >
-          <polygon
-            class="st0"
-            points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"
-          />
-          <polygon
-            class="st0"
-            points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
-          />
-          <polygon
-            class="st0"
-            points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
-          />
-          <polygon
-            class="st0"
-            points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
-          />
-        </svg>
-        <svg
-          version="1.1"
-          v-if="fullscreen_mode"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="133.3px"
-          height="133.2px"
-          viewBox="0 0 133.3 133.2"
-          style="enable-background: new 0 0 133.3 133.2;"
-          xml:space="preserve"
-        >
-          <polygon
-            class="st0"
-            points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"
-          />
-          <polygon
-            class="st0"
-            points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
-          />
-          <polygon
-            class="st0"
-            points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
-          />
-          <polygon
-            class="st0"
-            points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
-          />
-        </svg>
-      </button>
-    </div>
+    <PublicationDisplayButtons
+      :preview_mode="preview_mode"
+      :fullscreen_mode="fullscreen_mode"
+      @togglePreviewMode="$emit('togglePreviewMode')"
+      @toggleFullScreen="toggleFullscreen"
+    />
 
     <div
       class="m_storyPublication"
@@ -137,25 +36,27 @@
           @close="$root.closePublication"
         />
 
-        <InsertMediaButton
-          v-if="can_edit_publi && !read_only"
-          :is_collapsed="
-            !(
-              !Array.isArray(publication.medias_slugs) ||
-              publication.medias_slugs.length === 0
-            )
-          "
-          :is_currently_active="(index_currently_visible === 0)"
-          :slugPubliName="slugPubliName"
-          @addMedia="(values) => addMedia({ values, in_position: 'start' })"
-          @insertMedias="
-            ({ metaFileNames }) =>
-              $emit('insertMediasInList', {
-                metaFileNames,
-                in_position: 'start',
-              })
-          "
-        />
+        <div class="_story_insert_placeholders">
+          <InsertMediaButton
+            v-if="can_edit_publi && !read_only && !preview_mode"
+            :is_collapsed="
+              !(
+                !Array.isArray(publication.medias_slugs) ||
+                publication.medias_slugs.length === 0
+              )
+            "
+            :is_currently_active="(index_currently_visible === 0)"
+            :slugPubliName="slugPubliName"
+            @addMedia="(values) => addMedia({ values, in_position: 'start' })"
+            @insertMedias="
+              ({ metaFileNames }) =>
+                $emit('insertMediasInList', {
+                  metaFileNames,
+                  in_position: 'start',
+                })
+            "
+          />
+        </div>
 
         <transition-group tag="div" name="StoryModules" appear :duration="700">
           <template v-for="(media, index) in medias_in_order">
@@ -200,6 +101,7 @@
 </template>
 <script>
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
+import PublicationDisplayButtons from "../subcomponents/PublicationDisplayButtons.vue";
 import MediaStory from "../subcomponents/MediaStory.vue";
 import InsertMediaButton from "../subcomponents/InsertMediaButton.vue";
 
@@ -211,9 +113,11 @@ export default {
     can_edit_publi: Boolean,
     can_see_publi: Boolean,
     read_only: Boolean,
+    preview_mode: Boolean,
   },
   components: {
     PublicationHeader,
+    PublicationDisplayButtons,
     MediaStory,
     InsertMediaButton,
   },
@@ -221,7 +125,6 @@ export default {
     return {
       show_export_modal: false,
       show_media_options: false,
-      preview_mode: false,
       fullscreen_mode: false,
       current_scroll: 0,
     };

@@ -127,6 +127,10 @@ module.exports = (function () {
       fr: "Image",
       en: "Static",
     },
+    preview: {
+      fr: "Aperçu",
+      en: "Preview",
+    },
     advanced_options: {
       fr: "Options avancées",
       en: "Advanced options",

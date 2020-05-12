@@ -1588,7 +1588,6 @@ export default {
             this.media_is_being_sent = false;
             this.media_to_validate = false;
 
-            debugger;
             this.$emit("insertMedias", [x.metaFileNames[0]]);
 
             // this.selected_files_meta[filename].status = 'success';
