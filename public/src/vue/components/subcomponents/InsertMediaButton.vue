@@ -1,7 +1,7 @@
 <template>
   <div
     class="m_insertMediaButton"
-    :class="{ 'is--open': show_menu, 'is--active': is_currently_active }"
+    :class="{ 'is--open': show_menu, 'is--active': is_currently_active && !show_drop_container, 'is--dragover' : show_drop_container }"
   >
     <button
       type="button"
@@ -14,11 +14,17 @@
         delay: [600, 0],
       }"
     ></button>
-
     <transition name="fade_fast" :duration="150" mode="out-in">
+      <div v-if="show_drop_container" @drop="dropHandler($event)" class="_drop_indicator">
+        <div>
+          <img src="/images/i_importer.svg" draggable="false" />
+          <label>{{ $t("drop_here_to_import") }}</label>
+        </div>
+      </div>
+
       <div
         class="m_insertMediaButton--menu"
-        v-if="show_menu && selected_files.length === 0 && !enable_capture_mode"
+        v-else-if="show_menu && selected_files.length === 0 && !enable_capture_mode"
       >
         <div v-show="$root.state.connected" class="m_actionbar">
           <div class="m_actionbar--buttonBar">
@@ -31,10 +37,7 @@
               <span>{{ $t("capture") }}</span>
             </button>
 
-            <label
-              class="barButton barButton_import button"
-              :id="`insert_file_${id}`"
-            >
+            <label class="barButton barButton_import button" :id="`insert_file_${id}`">
               <span>
                 {{ $t("import") }}
                 <!-- <div v-html="field.svg" /> -->
@@ -45,35 +48,18 @@
                 :id="`insert_file_${id}`"
                 name="file"
                 @change="updateInputFiles($event)"
-                accept=""
+                accept
                 style="width: 1px; height: 1px; overflow: hidden;"
               />
             </label>
 
-            <transition name="fade_fast" :duration="150">
-              <div
-                v-if="!read_only && show_drop_container && can_edit_project"
-                @drop="dropHandler($event)"
-                class="_drop_indicator"
-              >
-                <div>
-                  <img src="/images/i_importer.svg" draggable="false" />
-                  <label>{{ $t("drop_here_to_import") }}</label>
-                </div>
-              </div>
-            </transition>
-
-            <button
-              type="button"
-              class="barButton barButton_text"
-              @click="createTextMedia"
-            >
+            <button type="button" class="barButton barButton_text" @click="createTextMedia">
               <span>{{ $t("create_text") }}</span>
             </button>
           </div>
           <!-- <small v-if="!is_iOS_device">
             {{ $t("notifications.ios_not_compatible_with_capture") }}
-          </small> -->
+          </small>-->
         </div>
       </div>
       <UploadFile
@@ -102,19 +88,20 @@
 <script>
 import CaptureView from "../../CaptureView.vue";
 import UploadFile from "./UploadFile.vue";
+import debounce from "debounce";
 
 export default {
   props: {
     is_collapsed: {
       type: Boolean,
-      default: true,
+      default: true
     },
     is_currently_active: Boolean,
-    slugPubliName: String,
+    slugPubliName: String
   },
   components: {
     CaptureView,
-    UploadFile,
+    UploadFile
   },
   data() {
     return {
@@ -128,12 +115,14 @@ export default {
         /iPad|iPhone|iPod/.test(navigator.platform),
 
       show_drop_container: false,
-      enable_capture_mode: false,
+      enable_capture_mode: false
     };
   },
   created() {},
   mounted() {
     document.addEventListener("dragover", this.ondragover);
+
+    this.cancelDragOver = debounce(this.cancelDragOver, 300);
   },
   beforeDestroy() {
     document.removeEventListener("dragover", this.ondragover);
@@ -143,7 +132,7 @@ export default {
   methods: {
     createTextMedia() {
       this.$emit("addMedia", {
-        type: "text",
+        type: "text"
       });
 
       this.show_menu = false;
@@ -219,8 +208,8 @@ export default {
           this.selected_files = Array.from($event.dataTransfer.files);
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped></style>

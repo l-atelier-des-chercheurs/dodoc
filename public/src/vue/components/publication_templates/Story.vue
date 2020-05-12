@@ -47,6 +47,7 @@
             "
             :is_currently_active="(index_currently_visible === 0)"
             :slugPubliName="slugPubliName"
+            :read_only="read_only"
             @addMedia="(values) => addMedia({ values, in_position: 'start' })"
             @insertMedias="
               ({ metaFileNames }) =>
@@ -72,14 +73,12 @@
             />
 
             <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
-            <div
-              class="_story_insert_placeholders"
-              :key="`insert_${media.metaFileName}`"
-            >
+            <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
               <InsertMediaButton
                 v-if="can_edit_publi && !read_only && !preview_mode"
                 :slugPubliName="slugPubliName"
                 :is_currently_active="(index_currently_visible === index + 1)"
+                :read_only="read_only"
                 @addMedia="
                   (values) =>
                     addMedia({ values, right_after_meta: media.metaFileName })
@@ -113,20 +112,20 @@ export default {
     can_edit_publi: Boolean,
     can_see_publi: Boolean,
     read_only: Boolean,
-    preview_mode: Boolean,
+    preview_mode: Boolean
   },
   components: {
     PublicationHeader,
     PublicationDisplayButtons,
     MediaStory,
-    InsertMediaButton,
+    InsertMediaButton
   },
   data() {
     return {
       show_export_modal: false,
       show_media_options: false,
       fullscreen_mode: false,
-      current_scroll: 0,
+      current_scroll: 0
     };
   },
   created() {},
@@ -139,7 +138,7 @@ export default {
       "text",
       "stl",
       "document",
-      "other",
+      "other"
     ];
 
     const getCurrentScroll = () => {
@@ -173,7 +172,7 @@ export default {
         index++;
       }
       return index;
-    },
+    }
   },
   methods: {
     toggleTransition({ position, metaFileName }) {
@@ -231,8 +230,8 @@ export default {
         } // Maybe other prefixed APIs?
         this.fullscreen_mode = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style></style>
