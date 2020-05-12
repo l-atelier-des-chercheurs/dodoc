@@ -2963,6 +2963,7 @@ small {
         .padding-small;
         // .margin-vert-small;
         overflow-y: auto;
+        overscroll-behavior-y: contain;
         height: 100%;
 
         // border-bottom: 2px solid @c-gris;
@@ -3246,6 +3247,8 @@ small {
 
   > * {
     flex: 0 1 180px;
+    display: flex;
+    align-items: center;
   }
 
   .m_mediaValidationButtons--overlay {
@@ -3430,7 +3433,10 @@ small {
       scroll-behavior: smooth;
 
       background-color: @c-gris_tresclair;
-      border-radius: 6px;
+
+      // for some strange reason this prevents stopmotion thumbs
+      // from showing in story publi
+      // border-radius: 6px;
 
       .custom_scrollbar(1px, 3px, 2px, rgba(255, 255, 255, 0), #333);
 
@@ -4600,17 +4606,35 @@ small {
   .m_publicationSettings {
     position: absolute;
     bottom: 20px;
-    right: 40px;
+    right: 20px;
     pointer-events: none;
     z-index: 1000;
 
-    > button {
-      display: block;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+
+    button {
+      &:hover {
+        .bg-gris_clair;
+      }
+      &.is--active {
+        &:hover {
+          background-color: @c-orange_fonce;
+        }
+      }
+    }
+
+    > * {
+      display: flex;
+      align-items: center;
+
       pointer-events: auto;
-      height: 44px;
-      width: 44px;
-      padding: 14px;
-      .margin-vert-small;
+      // height: 44px;
+      // width: auto;
+      padding: 7px;
+
+      .margin-vert-verysmall;
       min-height: 0;
 
       text-align: center;
@@ -4618,7 +4642,7 @@ small {
       line-height: 0;
       font-weight: 300;
 
-      border-radius: 50%;
+      border-radius: 22px;
       background-color: white;
       box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
 
@@ -4631,12 +4655,26 @@ small {
       }
 
       svg {
-        width: 100%;
-        height: 100%;
+        display: block;
+        width: 37px;
+        height: 30px;
+        padding: 7px 7px;
+      }
+
+      button {
+        padding: 0;
+        margin: 0;
+        min-height: 0;
       }
 
       &._preview_button {
-        padding: 9px;
+        // padding: 9px;
+      }
+
+      span {
+        padding: 7px 7px;
+        .label;
+        .c-noir;
       }
     }
   }
@@ -5368,11 +5406,13 @@ small {
   }
 }
 
+@t-maxStoryWidth: 680px;
+
 .m_storyPublication {
   .m_storyPublication--content {
     .bg-blanc;
     .boxs-card-2;
-    max-width: 600px;
+    max-width: @t-maxStoryWidth;
     margin: 0 auto;
     width: 100%;
     border-radius: 10px;
@@ -5418,7 +5458,7 @@ small {
       right: 100%;
       top: 0;
       .padding-verysmall;
-      .padding-sides-medium;
+      // .padding-sides-small;
       // .c-noir;
       // .c-blanc;
       .text-cap;
@@ -5529,7 +5569,7 @@ small {
   .bg-blanc;
   min-height: @t-storyButtons;
   .padding-sides-medium;
-  max-width: 600px;
+  max-width: @t-maxStoryWidth;
   // padding-right: 0;
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -5539,7 +5579,8 @@ small {
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
-  &.is--open {
+  &.is--open,
+  &.is--dragover {
     // background-color: @c-noir;
     .margin-vert-verysmall;
   }
@@ -5655,8 +5696,47 @@ small {
     // .padding-medium;
   }
 
+  ._drop_indicator {
+    position: relative;
+    background-color: @c-rouge;
+    border-radius: @t-buttonradius;
+
+    width: 100%;
+    height: auto;
+    // z-index: 50000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    > * {
+      display: flex;
+      align-items: center;
+      width: auto;
+      height: auto;
+      .bg-blanc;
+      border-radius: @t-buttonradius;
+      .padding-sides-verysmall;
+      .margin-verysmall;
+
+      label {
+        margin-bottom: 0;
+        .c-rouge;
+      }
+    }
+
+    img {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
   .m_captureview {
     position: relative;
+    min-height: 320px;
+    height: 50vh;
   }
 }
 
@@ -5783,11 +5863,35 @@ small {
           &.is--focused::before {
             color: @c-orange;
           }
+          .is--previewed&::before {
+            display: none;
+          }
         }
 
         .ql-editor.ql-blank::before {
           left: 0;
         }
+
+        .ql-editor {
+          min-height: 2em;
+          border: 0;
+          padding: 0;
+          background-color: transparent;
+        }
+      }
+      .ql-container {
+        overflow: visible;
+      }
+      .ql-toolbar {
+        .padding-right-verysmall;
+        z-index: 10000;
+        // border-radius: @t-buttonradius;
+        // background: white;
+        // padding:0;
+      }
+
+      .quillWrapper {
+        overflow: visible;
       }
 
       .quillWrapper.fixedPanel {
@@ -5796,25 +5900,22 @@ small {
           overflow: visible;
           .ql-tooltip {
             position: absolute !important;
-            // margin-left: -@t-skipline / 2;
-            // margin-right: -@t-skipline / 2;
             width: ~"calc(100% + var(--spacing) * 4)" !important;
-
-            .ql-toolbar {
-              .padding-right-verysmall;
-              z-index: 10000;
-              // border-radius: @t-buttonradius;
-              // background: white;
-              // padding:0;
-            }
+          }
+          .ql-tooltip.ql-hidden {
+            // position: relative !important;
           }
         }
       }
-      .ql-editor {
-        min-height: 2em;
-        border: 0;
-        padding: 0;
-        background-color: transparent;
+      .ql-toolbar.ql-snow {
+        border-radius: 8px;
+        box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.45);
+        width: ~"calc(100% + var(--spacing) * 1)" !important;
+        margin-left: ~"calc(var(--spacing) * -.5)";
+        margin-bottom: 1em;
+
+        position: sticky;
+        top: 70px;
       }
     }
   }

@@ -127,6 +127,10 @@ module.exports = (function () {
       fr: "Image",
       en: "Static",
     },
+    preview: {
+      fr: "Aperçu",
+      en: "Preview",
+    },
     advanced_options: {
       fr: "Options avancées",
       en: "Advanced options",
@@ -1952,8 +1956,8 @@ module.exports = (function () {
       en: "Switch fit mode",
     },
     drop_here_to_import: {
-      fr: "Déposez vos contenus ici pour les importer",
-      en: "Drop your content here to import",
+      fr: "Déposez les médias ici pour les importer",
+      en: "Drop the files here to import",
       nl: "Laad de bestanden hier om te importeren ",
       oc: "Depausatz vòstres contenguts aicí per los importar",
       de: "Hier zum Importieren ablegen",

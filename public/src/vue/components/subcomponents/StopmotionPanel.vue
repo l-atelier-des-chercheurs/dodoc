@@ -25,17 +25,6 @@
     </div>
 
     <div class="m_stopmotionpanel--medias" v-if="!validating_video_preview">
-      <!-- <div class="m_stopmotionpanel--medias--single">
-        <MediaContent
-          v-if="show_previous_photo"
-          :context="'preview'"
-          :slugFolderName="stopmotiondata.slugFolderName"
-          :media="show_previous_photo"
-          :subfolder="'_stopmotions/'"
-          :preview_size="1200"
-        />
-      </div>-->
-
       <transition-group
         class="m_stopmotionpanel--medias--list"
         name="list-complete"
@@ -59,7 +48,7 @@
             :context="'preview'"
             :slugFolderName="stopmotiondata.slugFolderName"
             :media="media"
-            :subfolder="'_stopmotions/'"
+            :folderType="'stopmotions'"
             :preview_size="150"
           />
         </div>
@@ -112,7 +101,8 @@
     <div v-else class="m_stopmotionpanel--videopreview" ref="videoPreview">
       <MediaContent
         :context="'full'"
-        :slugFolderName="slugProjectName"
+        :slugFolderName="slugFolderName"
+        :folderType="type"
         :media="validating_video_preview"
       />
     </div>
@@ -139,7 +129,8 @@ import MediaValidationButtons from "./MediaValidationButtons.vue";
 export default {
   props: {
     stopmotiondata: Object,
-    slugProjectName: String,
+    slugFolderName: String,
+    type: String,
     videoStream: MediaStream,
   },
   components: {
@@ -208,8 +199,8 @@ export default {
       const list_media_names = this.medias.map((x) => x.media_filename);
 
       this.$root.createMedia({
-        slugFolderName: this.slugProjectName,
-        type: "projects",
+        slugFolderName: this.slugFolderName,
+        type: this.type,
         rawData: list_media_names,
         additionalMeta: {
           type: "stopmotion",
@@ -237,8 +228,8 @@ export default {
     backToStopmotion: function () {
       console.log("METHODS • StopmotionPanel: backToStopmotion");
       this.$root.removeMedia({
-        type: "projects",
-        slugFolderName: this.slugProjectName,
+        type: this.type,
+        slugFolderName: this.slugFolderName,
         slugMediaName: this.validating_video_preview.metaFileName,
       });
       this.validating_video_preview = false;
@@ -259,23 +250,28 @@ export default {
         );
     },
     save: function () {
+      this.$emit("saveMedia", this.validating_video_preview.metaFileName);
       this.show_previous_photo = false;
       this.validating_video_preview = false;
+
       this.$nextTick(() => {
         this.$emit("close");
       });
     },
     saveAndFav: function () {
       this.$root.editMedia({
-        type: "projects",
-        slugFolderName: this.slugProjectName,
+        type: this.type,
+        slugFolderName: this.slugFolderName,
         slugMediaName: this.validating_video_preview.metaFileName,
         data: {
           fav: true,
         },
       });
+      this.$emit("saveMedia", this.validating_video_preview.metaFileName);
+
       this.show_previous_photo = false;
       this.validating_video_preview = false;
+
       this.$nextTick(() => {
         this.$emit("close");
       });

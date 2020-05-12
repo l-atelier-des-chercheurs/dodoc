@@ -1,7 +1,7 @@
 <template>
   <div
     class="m_mediaStory"
-    :class="{ 'is--selected': is_selected }"
+    :class="{ 'is--selected': is_selected, 'is--previewed': preview_mode }"
     ref="media"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
@@ -44,7 +44,7 @@
         "
         :context="'full'"
         :slugFolderName="slugPubliName"
-        :subfolder="`_publications/`"
+        :folderType="'publications'"
         :media="media"
         :read_only="read_only"
         :style="mediaStyles"
@@ -63,14 +63,15 @@
               inline_edit_mode && is_selected && !preview_mode && !read_only
             "
             v-model="htmlForEditor"
-            class="fixedPanel"
             :media="media"
-            :theme="'bubble'"
             :slugFolderName="slugPubliName"
             :enable_collaboration="true"
             :type="'publications'"
             ref="textField"
           />
+          <!-- class="fixedPanel"
+            :theme="'bubble'" -->
+
           <div v-else class="mediaTextContent">
             <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />
             <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
@@ -512,7 +513,6 @@ export default {
     },
     scrollToMedia() {
       const media = this.$refs.media;
-      debugger;
       if (media.scrollIntoViewIfNeeded) media.scrollIntoViewIfNeeded(true);
       else
         media.scrollIntoView({

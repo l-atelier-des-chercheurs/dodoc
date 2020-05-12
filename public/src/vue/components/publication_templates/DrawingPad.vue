@@ -32,8 +32,8 @@
       <button
         class="margin-vert-verysmall font-verysmall _preview_button"
         :class="{ 'is--active': !preview_mode }"
-        @mousedown.stop.prevent="preview_mode = !preview_mode"
-        @touchstart.stop.prevent="preview_mode = !preview_mode"
+        @mousedown.stop.prevent="$emit('togglePreviewMode')"
+        @touchstart.stop.prevent="$emit('togglePreviewMode')"
       >
         <svg
           version="1.1"
@@ -281,6 +281,9 @@ export default {
     publication: Object,
     layered_medias: Object,
     read_only: Boolean,
+    preview_mode: Boolean,
+    can_edit_publi: Boolean,
+    can_see_publi: Boolean,
   },
   components: {
     PublicationHeader,
@@ -294,7 +297,6 @@ export default {
       show_export_modal: false,
       accepted_media_type: ["audio", "video"],
 
-      preview_mode: this.$root.state.mode !== "live",
       fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.2,
@@ -310,8 +312,6 @@ export default {
       --page-width: ${this.publication.width}mm;
       --page-height: ${this.publication.height}mm
     `;
-
-    if (!this.can_edit_publi) this.preview_mode = true;
   },
   mounted() {
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty("mmMeasurer")
@@ -343,15 +343,6 @@ export default {
     this.$eventHub.$off("publication.addMedia", this.addMedia);
   },
   watch: {
-    preview_mode: function () {
-      if (!this.preview_mode && !this.can_edit_publi) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("notifications.action_not_allowed"));
-        this.preview_mode = true;
-      }
-    },
     zoom: function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: zoom`);

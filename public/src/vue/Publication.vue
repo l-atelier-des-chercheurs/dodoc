@@ -6,6 +6,10 @@
       :publication="publication"
       :paged_medias="paged_medias"
       :read_only="read_only"
+      :can_edit_publi="can_edit_publi"
+      :can_see_publi="can_see_publi"
+      :preview_mode="preview_mode"
+      @togglePreviewMode="preview_mode = !preview_mode"
       @addMedia="addMedia"
     />
     <Story
@@ -16,11 +20,13 @@
       :read_only="read_only"
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
+      :preview_mode="preview_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @changeMediaOrder="changeMediaOrder"
       @addMedia="addMediaOrdered"
       @insertMediasInList="insertMediasInList"
+      @togglePreviewMode="preview_mode = !preview_mode"
     />
     <VideoPublication
       v-else-if="publication.template === 'video_assemblage'"
@@ -28,6 +34,9 @@
       :publication="publication"
       :medias_in_order="medias_in_order"
       :read_only="read_only"
+      :can_edit_publi="can_edit_publi"
+      :can_see_publi="can_see_publi"
+      :preview_mode="preview_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @changeMediaOrder="changeMediaOrder"
@@ -39,6 +48,9 @@
       :publication="publication"
       :medias_in_order="medias_in_order"
       :read_only="read_only"
+      :can_edit_publi="can_edit_publi"
+      :can_see_publi="can_see_publi"
+      :preview_mode="preview_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @editPubliFolder="editPubliFolder"
@@ -51,6 +63,9 @@
       :publication="publication"
       :layered_medias="layered_medias"
       :read_only="read_only"
+      :can_edit_publi="can_edit_publi"
+      :can_see_publi="can_see_publi"
+      :preview_mode="preview_mode"
       @addMedia="addMedia"
     />
 
@@ -60,6 +75,9 @@
       :publication="publication"
       :medias_in_order="medias_in_order"
       :read_only="read_only"
+      :can_edit_publi="can_edit_publi"
+      :can_see_publi="can_see_publi"
+      :preview_mode="preview_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @editPubliFolder="editPubliFolder"
@@ -72,6 +90,9 @@
       :publication="publication"
       :medias_in_order="medias_in_order"
       :read_only="read_only"
+      :can_edit_publi="can_edit_publi"
+      :can_see_publi="can_see_publi"
+      :preview_mode="preview_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @editPubliFolder="editPubliFolder"
@@ -84,6 +105,9 @@
       :publication="publication"
       :medias_in_order="medias_in_order"
       :read_only="read_only"
+      :can_edit_publi="can_edit_publi"
+      :can_see_publi="can_see_publi"
+      :preview_mode="preview_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @editPubliFolder="editPubliFolder"
@@ -132,6 +156,7 @@ export default {
   data() {
     return {
       medias: [],
+      preview_mode: true,
     };
   },
   created() {},
@@ -141,6 +166,10 @@ export default {
       this.updateMediasPubli
     );
 
+    // this.preview_mode =
+    //   !this.can_edit_publi || this.$root.state.mode !== "live";
+
+    document.addEventListener("keyup", this.publicationKeyListener);
     this.updateMediasPubli();
   },
   beforeDestroy() {
@@ -148,6 +177,8 @@ export default {
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
     );
+
+    document.removeEventListener("keyup", this.publicationKeyListener);
   },
   watch: {
     "publication.medias": function () {
@@ -164,6 +195,27 @@ export default {
         this.updateMediasPubli();
       },
       deep: true,
+    },
+    preview_mode: function () {
+      if (!this.preview_mode && !this.can_edit_publi) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.action_not_allowed"));
+        this.preview_mode = true;
+        this.$eventHub.$emit("publications.showAdvancedOptions");
+      } else {
+        if (this.preview_mode) {
+          this.$root.settings.current_publication.selected_medias = [];
+        }
+      }
+    },
+    can_edit_publi: function () {
+      if (this.can_edit_publi) {
+        this.preview_mode = false;
+      } else {
+        this.preview_mode = true;
+      }
     },
   },
   computed: {
@@ -186,6 +238,18 @@ export default {
       )
         return [];
     },
+    can_see_publi() {
+      return this.$root.canSeeFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
+    can_edit_publi() {
+      return this.$root.canEditFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
     medias_in_order() {
       if (this.medias.length === 0) return [];
 
@@ -207,18 +271,6 @@ export default {
         []
       );
       return medias_in_order;
-    },
-    can_edit_publi() {
-      return this.$root.canEditFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-      });
-    },
-    can_see_publi() {
-      return this.$root.canSeeFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-      });
     },
   },
   methods: {
@@ -469,6 +521,13 @@ export default {
           medias_slugs,
         },
       });
+    },
+
+    publicationKeyListener(evt) {
+      switch (evt.key) {
+        case "p":
+        // this.preview_mode = !this.preview_mode;
+      }
     },
   },
 };

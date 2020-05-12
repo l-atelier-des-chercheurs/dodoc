@@ -204,7 +204,7 @@ export default {
   props: {
     slugFolderName: String,
     media: Object,
-    subfolder: {
+    folderType: {
       type: String,
       default: "",
     },
@@ -295,6 +295,15 @@ export default {
       return this.$root.state.mode === "export_publication"
         ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`
         : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
+    },
+    subfolder: function () {
+      if (!this.folderType) return "";
+      switch (this.folderType) {
+        case "publications":
+          return "_publications/";
+        case "stopmotions":
+          return "_stopmotions/";
+      }
     },
     thumbRes: function () {
       return this.context === "preview"
