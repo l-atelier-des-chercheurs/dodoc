@@ -266,8 +266,4 @@ export default {
   },
 };
 </script>
-<style>
-@page {
-  margin: 5cm;
-}
-</style>
+<style></style>
