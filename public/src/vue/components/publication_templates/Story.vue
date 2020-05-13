@@ -38,7 +38,12 @@
 
         <div class="_story_insert_placeholders">
           <InsertMediaButton
-            v-if="can_edit_publi && !read_only && !preview_mode"
+            v-if="
+              can_edit_publi &&
+              !read_only &&
+              !preview_mode &&
+              !model_for_this_publication
+            "
             :is_collapsed="
               !(
                 !Array.isArray(publication.medias_slugs) ||
@@ -62,13 +67,24 @@
 
         <transition-group tag="div" name="StoryModules" appear :duration="700">
           <template v-for="(media, index) in medias_in_order">
+            <MediaPlaceholder
+              v-if="media.type === 'placeholder' && model_for_this_publication"
+              :key="media.metaFileName"
+              :model_placeholder_media="media"
+              :slugPubliName="slugPubliName"
+              :publication="publication"
+              :preview_mode="preview_mode"
+              @addMedia="(values) => addMedia({ values })"
+            />
+
             <MediaStory
+              v-else
               :key="media.metaFileName"
               :media="media"
               :media_position="mediaPosition(index)"
               :preview_mode="preview_mode"
               :slugPubliName="slugPubliName"
-              :read_only="read_only"
+              :read_only="read_only || !!model_for_this_publication"
               @removePubliMedia="$emit('removePubliMedia', $event)"
               @changeMediaOrder="$emit('changeMediaOrder', $event)"
             />
@@ -79,7 +95,12 @@
               :key="`insert_${media.metaFileName}`"
             >
               <InsertMediaButton
-                v-if="can_edit_publi && !read_only && !preview_mode"
+                v-if="
+                  can_edit_publi &&
+                  !read_only &&
+                  !preview_mode &&
+                  !model_for_this_publication
+                "
                 :slugPubliName="slugPubliName"
                 :is_currently_active="(index_currently_visible === index + 1)"
                 :publi_is_model="publication.is_model"
@@ -108,6 +129,7 @@ import PublicationHeader from "../subcomponents/PublicationHeader.vue";
 import PublicationDisplayButtons from "../subcomponents/PublicationDisplayButtons.vue";
 import ExportPagePubli from "../modals/ExportPagePubli.vue";
 import MediaStory from "../subcomponents/MediaStory.vue";
+import MediaPlaceholder from "../subcomponents/MediaPlaceholder.vue";
 import InsertMediaButton from "../subcomponents/InsertMediaButton.vue";
 
 export default {
@@ -119,13 +141,14 @@ export default {
     can_see_publi: Boolean,
     read_only: Boolean,
     preview_mode: Boolean,
-    model_for_this_publication: Object,
+    model_for_this_publication: [Boolean, Object],
   },
   components: {
     PublicationHeader,
     PublicationDisplayButtons,
     ExportPagePubli,
     MediaStory,
+    MediaPlaceholder,
     InsertMediaButton,
   },
   data() {

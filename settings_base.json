@@ -448,6 +448,12 @@
           },
           "stroke_width": {
             "type": "number"
+          },
+          "placeholder_meta_reference": {
+            "type": "string"
+          },
+          "placeholder_medias_slugs": {
+            "type": "array"
           }
         }
       }

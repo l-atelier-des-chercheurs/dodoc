@@ -157,11 +157,21 @@ export default {
   data() {
     return {
       medias: [],
+      publication_model_medias: [],
       preview_mode: true,
     };
   },
   created() {},
   mounted() {
+    this.$socketio.listFolder({
+      type: "publications",
+      slugFolderName: this.slugPubliName,
+    });
+    this.$socketio.listMedias({
+      type: "publications",
+      slugFolderName: this.slugPubliName,
+    });
+
     this.$eventHub.$on(
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
@@ -189,6 +199,32 @@ export default {
       this.updateMediasPubli();
     },
     "$root.store.projects": {
+      handler() {
+        if (this.$root.state.dev_mode === "debug") {
+          console.log(`WATCH • Publication: $root.store.projects`);
+        }
+        this.updateMediasPubli();
+      },
+      deep: true,
+    },
+    "publication.follows_model": {
+      handler() {
+        const model = this.model_for_this_publication;
+        if (model) {
+          this.$socketio.listFolder({
+            type: "publications",
+            slugFolderName: model.slugFolderName,
+          });
+          this.$socketio.listMedias({
+            type: "publications",
+            slugFolderName: model.slugFolderName,
+          });
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+    model_for_this_publication: {
       handler() {
         if (this.$root.state.dev_mode === "debug") {
           console.log(`WATCH • Publication: $root.store.projects`);
@@ -251,25 +287,62 @@ export default {
       );
     },
     medias_in_order() {
-      if (this.medias.length === 0) return [];
+      // if publi follows model, then it doesn’t use a medias_slugs field but follows the model’s medias_slugs
+      const publication = this.model_for_this_publication
+        ? this.model_for_this_publication
+        : this.publication;
 
       if (
-        !Array.isArray(this.publication.medias_slugs) ||
-        this.publication.medias_slugs.length === 0
+        !Array.isArray(publication.medias_slugs) ||
+        publication.medias_slugs.length === 0
       ) {
         return [];
       }
 
-      const medias_in_order = this.publication.medias_slugs.reduce(
-        (acc, item) => {
-          const media = this.medias.find(
-            (m) => m.metaFileName === item.slugMediaName
+      const medias_in_order = publication.medias_slugs.reduce((acc, item) => {
+        const medias = this.model_for_this_publication
+          ? this.publication_model_medias
+          : this.medias;
+
+        const media = medias.find((m) => m.metaFileName === item.slugMediaName);
+        if (!media) return acc;
+
+        if (this.model_for_this_publication && media.type === "placeholder") {
+          const placeholder_reply_media = this.medias.find(
+            (m) => m.placeholder_meta_reference === media.metaFileName
           );
-          if (media) acc.push(media);
-          return acc;
-        },
-        []
-      );
+          if (placeholder_reply_media) {
+            media._reply = placeholder_reply_media;
+
+            if (
+              placeholder_reply_media.hasOwnProperty(
+                "placeholder_medias_slugs"
+              ) &&
+              Array.isArray(placeholder_reply_media.placeholder_medias_slugs)
+            ) {
+              const reply_medias = placeholder_reply_media.placeholder_medias_slugs.reduce(
+                (acc, { slugMediaName }) => {
+                  const corresponding_media = this.medias.find(
+                    (m) => m.metaFileName === slugMediaName
+                  );
+                  if (corresponding_media) acc.push(corresponding_media);
+                  return acc;
+                },
+                []
+              );
+              if (reply_medias.length > 0) {
+                media._reply._medias = reply_medias;
+              }
+
+              debugger;
+            }
+          }
+        }
+
+        acc.push(media);
+        return acc;
+      }, []);
+
       return medias_in_order;
     },
   },
@@ -281,57 +354,20 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log(`Publication • COMPUTED: medias`);
 
-      let medias = [];
+      let { medias, missingMedias } = this.getLinkedMediasForPubli({
+        publication: this.publication,
+      });
 
-      if (
-        !this.publication.hasOwnProperty("medias") ||
-        Object.keys(this.publication.medias).length === 0
-      )
-        return medias;
-
-      let missingMedias = [];
-
-      medias = Object.values(this.publication.medias).reduce(
-        (acc, publi_media) => {
-          let media = {};
-          media = JSON.parse(JSON.stringify(publi_media));
-
-          if (
-            publi_media.hasOwnProperty("slugProjectName") &&
-            publi_media.hasOwnProperty("slugMediaName")
-          ) {
-            const original_media_meta = this.$root.getOriginalMediaMeta(
-              publi_media
-            );
-
-            // case of missing project media locally
-            if (!original_media_meta) {
-              media._linked_media = {
-                _isAbsent: true,
-                slugProjectName: publi_media.slugProjectName,
-                slugMediaName: publi_media.slugMediaName,
-              };
-              acc.push(media);
-              return acc;
-            }
-
-            if (Object.keys(original_media_meta).length === 0) {
-              console.log(`Some medias missing from client`);
-              missingMedias.push({
-                slugFolderName: publi_media.slugProjectName,
-                metaFileName: publi_media.slugMediaName,
-              });
-              return acc;
-            }
-            media._linked_media = original_media_meta;
-            media._linked_media.slugProjectName = publi_media.slugProjectName;
-          }
-
-          acc.push(media);
-          return acc;
-        },
-        []
-      );
+      if (this.model_for_this_publication) {
+        const {
+          medias: publication_model_medias,
+          missingMedias: publi_missingMedias,
+        } = this.getLinkedMediasForPubli({
+          publication: this.model_for_this_publication,
+        });
+        this.publication_model_medias = publication_model_medias;
+        missingMedias.concat(publi_missingMedias);
+      }
 
       console.log(
         `Finished building media list. Missing medias: ${missingMedias.length}`
@@ -348,6 +384,57 @@ export default {
       this.medias = medias;
     },
 
+    getLinkedMediasForPubli({ publication }) {
+      let medias = [];
+      let missingMedias = [];
+
+      if (
+        !publication.hasOwnProperty("medias") ||
+        Object.keys(publication.medias).length === 0
+      )
+        return { medias, missingMedias };
+
+      medias = Object.values(publication.medias).reduce((acc, publi_media) => {
+        let media = {};
+        media = JSON.parse(JSON.stringify(publi_media));
+
+        if (
+          publi_media.hasOwnProperty("slugProjectName") &&
+          publi_media.hasOwnProperty("slugMediaName")
+        ) {
+          const original_media_meta = this.$root.getOriginalMediaMeta(
+            publi_media
+          );
+
+          // case of missing project media locally
+          if (!original_media_meta) {
+            media._linked_media = {
+              _isAbsent: true,
+              slugProjectName: publi_media.slugProjectName,
+              slugMediaName: publi_media.slugMediaName,
+            };
+            acc.push(media);
+            return acc;
+          }
+
+          if (Object.keys(original_media_meta).length === 0) {
+            console.log(`Some medias missing from client`);
+            missingMedias.push({
+              slugFolderName: publi_media.slugProjectName,
+              metaFileName: publi_media.slugMediaName,
+            });
+            return acc;
+          }
+          media._linked_media = original_media_meta;
+          media._linked_media.slugProjectName = publi_media.slugProjectName;
+        }
+
+        acc.push(media);
+        return acc;
+      }, []);
+
+      return { medias, missingMedias };
+    },
     addMediaOrdered({ values = {}, right_after_meta, in_position }) {
       return new Promise((resolve, reject) => {
         this.addMedia({ values }).then((mdata) =>

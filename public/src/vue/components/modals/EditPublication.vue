@@ -283,7 +283,6 @@ export default {
           p.is_model === true &&
           p.slugFolderName !== this.publication.slugFolderName
       );
-      debugger;
       return publis;
     },
   },

@@ -9,6 +9,7 @@
   >
     <button
       type="button"
+      v-if="can_collapse"
       class="m_insertMediaButton--toggleButton"
       :class="{ 'is--active': show_menu }"
       @click="toggleMenu"
@@ -122,6 +123,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    can_collapse: {
+      type: Boolean,
+      default: true,
+    },
     publi_is_model: {
       type: Boolean,
       default: false,
@@ -157,7 +162,14 @@ export default {
   beforeDestroy() {
     document.removeEventListener("dragover", this.ondragover);
   },
-  watch: {},
+  watch: {
+    show_menu: {
+      handler() {
+        if (!this.can_collapse) this.show_menu = true;
+      },
+      immediate: true,
+    },
+  },
   computed: {},
   methods: {
     createTextMedia() {

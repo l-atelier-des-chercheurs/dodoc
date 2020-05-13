@@ -5584,6 +5584,7 @@ small {
       position: absolute;
       right: 100%;
       top: 50%;
+      z-index: 100000;
       transform: translate(0, -50%);
 
       button {
@@ -5594,13 +5595,37 @@ small {
   }
 }
 
-.m_placeholder {
+// in publi following models
+.m_mediaPlaceholder {
+  // color: @c-gris;
+  .padding-medium;
+  counter-increment: mediaCounter -1;
+  > * {
+    border: 4px dashed @c-gris_clair;
+    // background-color: @c-gris_clair;
+    // .padding-small;
+    counter-reset: mediaCounter;
+  }
+
+  .m_mediaStory {
+    &:not(.is--previewed)::before {
+      right: auto;
+      left: 0;
+      .c-gris;
+
+      display: none;
+    }
+  }
+}
+
+// in models
+.m_mediaStory--placeholder {
+  color: @c-gris;
   border: 4px dashed @c-gris_clair;
   background-color: white;
   .padding-small;
-  color: @c-gris;
 
-  small {
+  > small {
     color: inherit;
   }
 }
@@ -5725,6 +5750,7 @@ small {
     .barButton {
       .margin-right-verysmall;
       .margin-bottom-verysmall;
+      .padding-sides-verysmall;
 
       &:not(:first-child) {
         margin-left: 0;
