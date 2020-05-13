@@ -1323,6 +1323,10 @@ module.exports = (function () {
       oc: "Escriure",
       de: "Schreiben",
     },
+    placeholder: {
+      fr: "Zone éditable",
+      en: "Editable bloc",
+    },
     import: {
       fr: "Importer",
       en: "Import",

@@ -21,6 +21,7 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
+      :model_for_this_publication="model_for_this_publication"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @changeMediaOrder="changeMediaOrder"
@@ -228,16 +229,6 @@ export default {
     layered_medias() {
       return this.$_.groupBy(this.medias, "layer_id");
     },
-    medias_slugs() {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(`Publication • COMPUTED: medias`);
-
-      if (
-        !this.publication.hasOwnProperty("medias") ||
-        Object.keys(this.publication.medias).length === 0
-      )
-        return [];
-    },
     can_see_publi() {
       return this.$root.canSeeFolder({
         type: "publications",
@@ -249,6 +240,15 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
       });
+    },
+    model_for_this_publication() {
+      if (!this.publication.follows_model) return false;
+      return Object.values(this.$root.store.publications).find(
+        (p) =>
+          this.publication.template === p.template &&
+          p.is_model === true &&
+          p.slugFolderName === this.publication.follows_model
+      );
     },
     medias_in_order() {
       if (this.medias.length === 0) return [];

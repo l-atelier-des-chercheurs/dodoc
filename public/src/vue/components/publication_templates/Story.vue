@@ -31,6 +31,7 @@
           :slugPubliName="slugPubliName"
           :publication="publication"
           :medias="medias_in_order"
+          :model_for_this_publication="model_for_this_publication"
           @export="show_export_modal = true"
           @close="$root.closePublication"
         />
@@ -118,6 +119,7 @@ export default {
     can_see_publi: Boolean,
     read_only: Boolean,
     preview_mode: Boolean,
+    model_for_this_publication: Object,
   },
   components: {
     PublicationHeader,

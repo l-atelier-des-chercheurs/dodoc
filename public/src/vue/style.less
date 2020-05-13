@@ -1019,6 +1019,10 @@ small {
         margin-bottom: 0;
       }
 
+      .m_actionbar--buttonBar {
+        margin-left: 0;
+      }
+
       .m_project--library--medias {
         .padding-top-small;
         .padding-sides-small;
@@ -1619,6 +1623,12 @@ small {
     display: flex;
     flex-flow: row wrap;
     align-items: flex-start;
+    .margin-verysmall;
+    margin-bottom: 0;
+
+    > *:last-child {
+      margin-right: 0 !important;
+    }
   }
 
   .m_actionbar--text {
@@ -1788,7 +1798,7 @@ small {
   &.barButton_placeholder {
     color: @c-gris_fonce;
     &::before {
-      background-image: url("/images/i_text.svg");
+      background-image: url("/images/i_placeholder.svg");
     }
   }
   &.barButton_capture {
@@ -5588,6 +5598,11 @@ small {
   border: 4px dashed @c-gris_clair;
   background-color: white;
   .padding-small;
+  color: @c-gris;
+
+  small {
+    color: inherit;
+  }
 }
 
 .m_insertMediaButton {
@@ -5708,7 +5723,8 @@ small {
     }
 
     .barButton {
-      .margin-verysmall;
+      .margin-right-verysmall;
+      .margin-bottom-verysmall;
 
       &:not(:first-child) {
         margin-left: 0;

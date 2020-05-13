@@ -77,9 +77,9 @@
             <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
           </div>
         </template>
-        <template v-else>
+        <template v-else-if="media.type === 'placeholder'">
           <div class="m_placeholder">
-            {{ media.type }}
+            <small>{{ $t("placeholder") }} </small>
           </div>
         </template>
       </div>

@@ -105,14 +105,16 @@
       <div style="width: 100%;" v-if="publication.is_model">
         <label>{{ $t("publi_is_model") }}</label>
       </div>
-      <div style="width: 100%;" v-else-if="!!publication_model">
+      <div style="width: 100%;" v-else-if="!!model_for_this_publication">
         <label>
           <span v-html="$t('publi_follows_model:')" />
           <span
             class="text-underline button padding-none button-rectangle"
-            @click="$root.openPublication(publication_model.slugFolderName)"
+            @click="
+              $root.openPublication(model_for_this_publication.slugFolderName)
+            "
           >
-            {{ publication_model.name }}
+            {{ model_for_this_publication.name }}
           </span>
         </label>
       </div>
@@ -310,6 +312,7 @@ export default {
       type: Number,
       default: -1,
     },
+    model_for_this_publication: Object,
     show_export_button: {
       type: Boolean,
       default: true,
@@ -381,15 +384,6 @@ export default {
           },
         });
       },
-    },
-    publication_model() {
-      if (!this.publication.follows_model) return false;
-      return Object.values(this.$root.store.publications).find(
-        (p) =>
-          this.publication.template === p.template &&
-          p.is_model === true &&
-          p.slugFolderName === this.publication.follows_model
-      );
     },
   },
   methods: {

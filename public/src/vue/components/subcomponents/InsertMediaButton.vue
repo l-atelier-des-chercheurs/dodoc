@@ -71,7 +71,7 @@
               class="barButton barButton_text"
               @click="createTextMedia"
             >
-              <span>{{ $t("text") }}</span>
+              <span>{{ $t("write") }}</span>
             </button>
 
             <button
@@ -80,7 +80,7 @@
               class="barButton barButton_placeholder"
               @click="createPlaceholderMedia"
             >
-              <span>{{ $t("create_placeholder") }}</span>
+              <span>{{ $t("placeholder") }}</span>
             </button>
           </div>
           <!-- <small v-if="!is_iOS_device">
