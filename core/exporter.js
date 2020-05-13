@@ -235,6 +235,12 @@ module.exports = (function () {
           })
           .then((publiData) => {
             publiData = Object.values(publiData)[0];
+
+            const default_page_size = {
+              width: publiData.width ? publiData.width : 210,
+              height: publiData.height ? publiData.height : 297,
+            };
+
             fs.mkdirp(cachePath, () => {
               dev.logverbose(
                 `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
@@ -254,8 +260,8 @@ module.exports = (function () {
                 })
                 .then((page) => {
                   page.setViewport({
-                    width: Math.floor(publiData.width * 3.7795),
-                    height: Math.floor(publiData.height * 3.7795), // totally arbitrary value… will have to find better
+                    width: Math.floor(default_page_size.width * 3.7795),
+                    height: Math.floor(default_page_size.height * 3.7795), // totally arbitrary value… will have to find better
                     deviceScaleFactor: 2,
                   });
                   page
@@ -284,8 +290,8 @@ module.exports = (function () {
                           .pdf({
                             path: docPath,
                             printBackground: true,
-                            width: `${publiData.width}mm`,
-                            height: `${publiData.height}mm`,
+                            width: `${default_page_size.width}mm`,
+                            height: `${default_page_size.height}mm`,
                           })
                           .then(() => {
                             dev.logverbose(
@@ -316,8 +322,12 @@ module.exports = (function () {
                             clip: {
                               x: 0,
                               y: 0,
-                              width: Math.floor(publiData.width * 3.7795),
-                              height: Math.floor(publiData.height * 3.7795), // totally arbitrary value… will have to find better
+                              width: Math.floor(
+                                default_page_size.width * 3.7795
+                              ),
+                              height: Math.floor(
+                                default_page_size.height * 3.7795
+                              ), // totally arbitrary value… will have to find better
                             },
                             path: docPath,
                           })

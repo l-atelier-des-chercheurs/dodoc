@@ -158,7 +158,7 @@
         "width": 1200,
         "height": 1200,
         "thumbs": {
-          "resolutions": [180, 640]
+          "resolutions": [30, 180, 640]
         }
       },
       "fields": {
@@ -314,6 +314,12 @@
         },
         "effects": {
           "type": "array"
+        },
+        "is_model": {
+          "type": "boolean"
+        },
+        "follows_model": {
+          "type": "string"
         }
       },
       "medias": {
@@ -353,6 +359,7 @@
             "type": "string",
             "options": [
               "text",
+              "placeholder",
               "solid_color",
               "rectangle",
               "ellipsis",
@@ -441,6 +448,12 @@
           },
           "stroke_width": {
             "type": "number"
+          },
+          "placeholder_meta_reference": {
+            "type": "string"
+          },
+          "placeholder_medias_slugs": {
+            "type": "array"
           }
         }
       }

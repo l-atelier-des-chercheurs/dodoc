@@ -5,7 +5,7 @@
     ref="media"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
-    @mousedown.stop="selectMedia"
+    @click.stop="selectMedia"
   >
     <template v-if="media.hasOwnProperty('_linked_media')">
       <div v-if="media._linked_media.hasOwnProperty('_isAbsent')">
@@ -77,6 +77,11 @@
             <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
           </div>
         </template>
+        <template v-else-if="media.type === 'placeholder'">
+          <div class="m_mediaStory--placeholder">
+            <small>{{ $t("placeholder") }} </small>
+          </div>
+        </template>
       </div>
     </template>
 
@@ -101,7 +106,7 @@
         type="button"
         class="m_mediaStory--moveItemButton--before"
         :disabled="media_position === 'first'"
-        @click="
+        @click.stop="
           $emit('changeMediaOrder', {
             metaFileName: media.metaFileName,
             dir: -1,
@@ -117,7 +122,10 @@
       </button>
 
       <div class="m_mediaStory--moveItemButton--options">
-        <button type="button" @click="show_advanced_menu = !show_advanced_menu">
+        <button
+          type="button"
+          @click.stop="show_advanced_menu = !show_advanced_menu"
+        >
           <svg
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
@@ -301,7 +309,7 @@
         type="button"
         class="m_mediaStory--moveItemButton--after"
         :disabled="media_position === 'last'"
-        @click="
+        @click.stop="
           $emit('changeMediaOrder', {
             metaFileName: media.metaFileName,
             dir: +1,

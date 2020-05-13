@@ -119,7 +119,15 @@
                   class="m_message--meta--author"
                   v-if="getMessageAuthor(message)"
                 >
-                  <span>{{ getMessageAuthor(message) }}</span>
+                  <span>
+                    <img
+                      class="_pp"
+                      v-if="urlToPortrait(getMessageAuthor(message))"
+                      :src="urlToPortrait(getMessageAuthor(message))"
+                    />
+                    <span v-else class="_no_pp"> </span>
+                    {{ getMessageAuthor(message).name }}</span
+                  >
                 </div>
                 <div class="m_message--meta--date">
                   <span>{{
@@ -441,10 +449,16 @@ export default {
           first_author.hasOwnProperty("slugFolderName") &&
           this.$root.getAuthor(first_author.slugFolderName)
         )
-          return this.$root.getAuthor(first_author.slugFolderName).name;
-        else if (first_author.hasOwnProperty("name")) return first_author.name;
+          return this.$root.getAuthor(first_author.slugFolderName);
+        else if (first_author.hasOwnProperty("name")) return first_author;
       }
       return false;
+    },
+    urlToPortrait(author) {
+      if (!author || !author.preview) return false;
+      let pathToSmallestThumb = author.preview.filter((m) => m.size === 30)[0]
+        .path;
+      return pathToSmallestThumb;
     },
     removeMessage(message) {
       if (this.$root.state.dev_mode === "debug") {

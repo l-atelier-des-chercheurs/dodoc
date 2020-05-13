@@ -90,6 +90,10 @@ module.exports = (function () {
       fr: "projet(s) sélectionné(s)",
       en: "project(s) selected",
     },
+    reply: {
+      fr: "Répondre",
+      en: "Reply",
+    },
     name: {
       fr: "Nom",
       en: "Name",
@@ -1316,12 +1320,16 @@ module.exports = (function () {
       oc: "Totes los mèdias",
       de: "Alle Medien",
     },
-    create_text: {
+    write: {
       fr: "Écrire",
       en: "Write",
       nl: "Schrijven",
       oc: "Escriure",
       de: "Schreiben",
+    },
+    placeholder: {
+      fr: "Zone éditable",
+      en: "Editable bloc",
     },
     import: {
       fr: "Importer",
@@ -2338,6 +2346,37 @@ module.exports = (function () {
       oc: "Gabarit",
       de: "Vorlage",
     },
+    model: {
+      fr: "Modèle",
+      en: "Model",
+    },
+    publi_is_model: {
+      fr: "Cette recette est un modèle",
+      en: "This recipe is a model",
+    },
+    publi_is_model_instructions: {
+      fr:
+        "Si actif, cette recette pourra être utilisée comme référence lors de la création d’autres recettes.",
+      en:
+        "If enabled, this recipe can be selected as a model for other recipes to lean on.",
+    },
+    no_models_yet: {
+      fr: "Aucune recette modèle n’a été créé pour l’instant",
+      en: "No models recipe have been created yet",
+    },
+    "publi_follows_model:": {
+      fr: "Cette recette suit le modèle&nbsp:",
+      en: "This recipe has model:",
+    },
+    select_publi_model: {
+      fr: "Sélectionner un modèle",
+      en: "Select a model",
+    },
+    select_publi_model_instructions: {
+      fr:
+        "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",
+      en: "If enabled, this recipe will display the model’s medias and guides.",
+    },
     standard: {
       fr: "Standard",
       en: "Standard",
@@ -2739,6 +2778,10 @@ module.exports = (function () {
       imported_files_successfully: {
         fr: "Média importé avec succès",
         en: "Media imported successfully",
+      },
+      models_must_be_visible_to_everybody: {
+        fr: "Attention ! Les modèles doivent être visibles par tout le monde.",
+        en: "Warning! Models must be visible to everybody.",
       },
       instead_import_with_this_button: {
         fr:

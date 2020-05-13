@@ -1,10 +1,15 @@
 <template>
   <div
     class="m_insertMediaButton"
-    :class="{ 'is--open': show_menu, 'is--active': is_currently_active && !show_drop_container, 'is--dragover' : show_drop_container }"
+    :class="{
+      'is--open': show_menu,
+      'is--active': is_currently_active && !show_drop_container,
+      'is--dragover': show_drop_container,
+    }"
   >
     <button
       type="button"
+      v-if="can_collapse"
       class="m_insertMediaButton--toggleButton"
       :class="{ 'is--active': show_menu }"
       @click="toggleMenu"
@@ -15,7 +20,11 @@
       }"
     ></button>
     <transition name="fade_fast" :duration="150" mode="out-in">
-      <div v-if="show_drop_container" @drop="dropHandler($event)" class="_drop_indicator">
+      <div
+        v-if="show_drop_container"
+        @drop="dropHandler($event)"
+        class="_drop_indicator"
+      >
         <div>
           <img src="/images/i_importer.svg" draggable="false" />
           <label>{{ $t("drop_here_to_import") }}</label>
@@ -24,7 +33,10 @@
 
       <div
         class="m_insertMediaButton--menu"
-        v-else-if="show_menu && selected_files.length === 0 && !enable_capture_mode"
+        v-else-if="
+          (show_menu && selected_files.length === 0 && !enable_capture_mode) ||
+          !can_collapse
+        "
       >
         <div v-show="$root.state.connected" class="m_actionbar">
           <div class="m_actionbar--buttonBar">
@@ -37,7 +49,10 @@
               <span>{{ $t("capture") }}</span>
             </button>
 
-            <label class="barButton barButton_import button" :id="`insert_file_${id}`">
+            <label
+              class="barButton barButton_import button"
+              :id="`insert_file_${id}`"
+            >
               <span>
                 {{ $t("import") }}
                 <!-- <div v-html="field.svg" /> -->
@@ -53,8 +68,21 @@
               />
             </label>
 
-            <button type="button" class="barButton barButton_text" @click="createTextMedia">
-              <span>{{ $t("create_text") }}</span>
+            <button
+              type="button"
+              class="barButton barButton_text"
+              @click="createTextMedia"
+            >
+              <span>{{ $t("write") }}</span>
+            </button>
+
+            <button
+              type="button"
+              v-if="publi_is_model"
+              class="barButton barButton_placeholder"
+              @click="createPlaceholderMedia"
+            >
+              <span>{{ $t("placeholder") }}</span>
             </button>
           </div>
           <!-- <small v-if="!is_iOS_device">
@@ -94,14 +122,22 @@ export default {
   props: {
     is_collapsed: {
       type: Boolean,
-      default: true
+      default: true,
+    },
+    can_collapse: {
+      type: Boolean,
+      default: true,
+    },
+    publi_is_model: {
+      type: Boolean,
+      default: false,
     },
     is_currently_active: Boolean,
-    slugPubliName: String
+    slugPubliName: String,
   },
   components: {
     CaptureView,
-    UploadFile
+    UploadFile,
   },
   data() {
     return {
@@ -115,7 +151,7 @@ export default {
         /iPad|iPhone|iPod/.test(navigator.platform),
 
       show_drop_container: false,
-      enable_capture_mode: false
+      enable_capture_mode: false,
     };
   },
   created() {},
@@ -127,12 +163,26 @@ export default {
   beforeDestroy() {
     document.removeEventListener("dragover", this.ondragover);
   },
-  watch: {},
+  watch: {
+    show_menu: {
+      handler() {
+        if (!this.can_collapse) this.show_menu = true;
+      },
+      immediate: true,
+    },
+  },
   computed: {},
   methods: {
     createTextMedia() {
       this.$emit("addMedia", {
-        type: "text"
+        type: "text",
+      });
+
+      this.show_menu = false;
+    },
+    createPlaceholderMedia() {
+      this.$emit("addMedia", {
+        type: "placeholder",
       });
 
       this.show_menu = false;
@@ -208,8 +258,8 @@ export default {
           this.selected_files = Array.from($event.dataTransfer.files);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

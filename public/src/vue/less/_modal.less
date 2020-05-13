@@ -139,6 +139,9 @@
     select {
       color: @c-noir;
     }
+    select[disabled] {
+      .c-gris;
+    }
   }
 }
 
@@ -403,6 +406,8 @@
         height: 100%;
 
         .ql-editor {
+          max-width: 70ch;
+          margin: 0 auto;
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
           overscroll-behavior-y: contain;

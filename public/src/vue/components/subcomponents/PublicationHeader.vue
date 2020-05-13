@@ -102,6 +102,22 @@
           {{ $t("create") }}
         </button>
       </div>
+      <div style="width: 100%;" v-if="publication.is_model">
+        <label>{{ $t("publi_is_model") }}</label>
+      </div>
+      <div style="width: 100%;" v-else-if="model_for_this_publication">
+        <label>
+          <span v-html="$t('publi_follows_model:')" />
+          <span
+            class="text-underline button padding-none button-rectangle"
+            @click="
+              $root.openPublication(model_for_this_publication.slugFolderName)
+            "
+          >
+            {{ model_for_this_publication.name }}
+          </span>
+        </label>
+      </div>
       <div
         class="text-centered"
         style="width: 100%;"
@@ -296,6 +312,7 @@ export default {
       type: Number,
       default: -1,
     },
+    model_for_this_publication: [Boolean, Object],
     show_export_button: {
       type: Boolean,
       default: true,

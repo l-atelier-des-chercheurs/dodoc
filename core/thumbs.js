@@ -215,6 +215,11 @@ module.exports = (function () {
       if (type === "image") {
         getEXIFDataForImage(mediaPath)
           .then((exifdata) => {
+            let meta = {};
+
+            if (exifdata.width) meta.width = exifdata.width;
+            if (exifdata.height) meta.height = exifdata.height;
+
             let ratio = exifdata.height / exifdata.width;
             if (
               exifdata.orientation &&
@@ -223,25 +228,41 @@ module.exports = (function () {
               dev.log(`Media is portrait. Inverting ratio`);
               ratio = 1 / ratio;
             }
+            meta.ratio = Number.parseFloat(ratio).toPrecision(4);
 
-            return resolve({
-              ratio: Number.parseFloat(ratio).toPrecision(4),
-              width: exifdata.width,
-              height: exifdata.height,
-            });
+            var parsed_exif_data = exifReader(exifdata.exif);
+            if (parsed_exif_data && parsed_exif_data.hasOwnProperty("gps")) {
+              meta.gps = JSON.stringify(parsed_exif_data.gps);
+            }
+
+            return resolve(meta);
           })
           .catch((err) => reject());
       } else if (type === "video" || type === "audio") {
         getEXIFDataForVideoAndAudio(mediaPath)
           .then((metadata) => {
-            let values = {};
+            let meta = {};
 
             if (
               metadata &&
               metadata.hasOwnProperty("format") &&
               metadata.format.hasOwnProperty("duration")
             ) {
-              values.duration = metadata.format.duration;
+              meta.duration = metadata.format.duration;
+            }
+
+            if (
+              metadata &&
+              metadata.hasOwnProperty("format") &&
+              metadata.format.hasOwnProperty("tags")
+            ) {
+              const tags = metadata.format.tags;
+              if (tags.hasOwnProperty("location"))
+                meta.location = tags.location;
+              else if (
+                tags.hasOwnProperty("com.apple.quicktime.location.ISO6709")
+              )
+                meta.location = tags["com.apple.quicktime.location.ISO6709"];
             }
 
             if (
@@ -255,13 +276,12 @@ module.exports = (function () {
                 let ratio =
                   metadata.streams[0].height / metadata.streams[0].width;
 
-                (values.ratio = Number.parseFloat(ratio).toPrecision(4)),
-                  (values.width = metadata.streams[0].width);
-                values.height = metadata.streams[0].height;
+                (meta.ratio = Number.parseFloat(ratio).toPrecision(4)),
+                  (meta.width = metadata.streams[0].width);
+                meta.height = metadata.streams[0].height;
               }
             }
-
-            return resolve(values);
+            return resolve(meta);
           })
           .catch((err) => {
             dev.error(`No probe data to read from: ${err}`);

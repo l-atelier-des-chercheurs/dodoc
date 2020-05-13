@@ -67,7 +67,7 @@
           @click="createTextMedia"
           :disabled="read_only || !can_edit_project"
         >
-          <span>{{ $t("create_text") }}</span>
+          <span>{{ $t("write") }}</span>
         </button>
       </div>
 
@@ -85,7 +85,9 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_filters }"
             @click="show_filters = !show_filters"
-          >{{ $t("filters") }}</button>
+          >
+            {{ $t("filters") }}
+          </button>
         </template>
 
         <template v-if="!show_medias_instead_of_projects && show_filters">
@@ -108,7 +110,9 @@
       <div v-for="item in groupedMedias" :key="item[0]">
         <h3
           class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-        >{{ $root.formatDateToHuman(item[0]) }}</h3>
+        >
+          {{ $root.formatDateToHuman(item[0]) }}
+        </h3>
         <div class="m_mediaShowAll">
           <div v-for="media in item[1]" :key="media.slugMediaName">
             <MediaCard
@@ -166,18 +170,18 @@ export default {
     project: Object,
     slugProjectName: String,
     read_only: Boolean,
-    can_edit_project: Boolean
+    can_edit_project: Boolean,
   },
   components: {
     MediaCard,
     UploadFileModal,
     TagsAndAuthorFilters,
-    SelectorBar
+    SelectorBar,
   },
   data() {
     return {
       mediaSort: {
-        field: "date_uploaded"
+        field: "date_uploaded",
         // type: "date",
         // order: "descending"
       },
@@ -195,7 +199,7 @@ export default {
       media_metaFileName_initially_present: [],
       last_media_added: [],
 
-      selected_medias: []
+      selected_medias: [],
     };
   },
   mounted() {
@@ -231,17 +235,19 @@ export default {
     );
   },
   watch: {
-    "project.medias": function() {
+    "project.medias": function () {
       if (this.media_metaFileName_initially_present.length === 0) {
         this.media_metaFileName_initially_present = Object.values(
           this.project.medias
-        ).map(m => m.metaFileName);
+        ).map((m) => m.metaFileName);
       } else {
         this.last_media_added = Object.values(this.project.medias)
-          .map(m => m.metaFileName)
-          .filter(s => !this.media_metaFileName_initially_present.includes(s));
+          .map((m) => m.metaFileName)
+          .filter(
+            (s) => !this.media_metaFileName_initially_present.includes(s)
+          );
       }
-    }
+    },
   },
 
   computed: {
@@ -260,22 +266,22 @@ export default {
         return false;
       }
       const allMedias = Object.values(this.project.medias).filter(
-        m => !m.hasOwnProperty("_isAbsent") || m._isAbsent === false
+        (m) => !m.hasOwnProperty("_isAbsent") || m._isAbsent === false
       );
       return allMedias;
     },
-    filteredMedias: function() {
-      return this.allMedias.filter(m => this.$root.filterMedia(m));
+    filteredMedias: function () {
+      return this.allMedias.filter((m) => this.$root.filterMedia(m));
     },
-    sortedMedias: function() {
+    sortedMedias: function () {
       let sortedMedias = this.$_.sortBy(
         this.filteredMedias,
         this.mediaSort.field
       );
       return sortedMedias.reverse();
     },
-    groupedMedias: function() {
-      let mediaGroup = this.$_.groupBy(this.sortedMedias, media => {
+    groupedMedias: function () {
+      let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
         let _date;
 
         if (
@@ -294,7 +300,7 @@ export default {
       mediaGroup = this.$_.sortBy(mediaGroup);
       mediaGroup = mediaGroup.reverse();
       return mediaGroup;
-    }
+    },
   },
   methods: {
     prevMedia() {
@@ -305,7 +311,7 @@ export default {
     },
     mediaNav(relative_index) {
       const current_media_index = this.sortedMedias.findIndex(
-        m => m.metaFileName === this.$root.media_modal.current_metaFileName
+        (m) => m.metaFileName === this.$root.media_modal.current_metaFileName
       );
       const new_media = this.sortedMedias[current_media_index + relative_index];
       this.$root.closeMedia();
@@ -323,7 +329,7 @@ export default {
     toggleSelectMedia({ slugFolderName, metaFileName }) {
       if (this.mediaIsSelected({ slugFolderName, metaFileName })) {
         this.selected_medias = this.selected_medias.filter(
-          m =>
+          (m) =>
             !(
               m.slugFolderName === slugFolderName &&
               m.metaFileName === metaFileName
@@ -344,13 +350,13 @@ export default {
 
         this.selected_medias.push({
           slugFolderName,
-          metaFileName
+          metaFileName,
         });
       }
     },
     mediaIsSelected({ slugFolderName, metaFileName }) {
       return this.selected_medias.some(
-        m =>
+        (m) =>
           m.metaFileName === metaFileName && m.slugFolderName === slugFolderName
       );
     },
@@ -361,7 +367,7 @@ export default {
       }
       this.$root.openMedia({
         slugProjectName: this.slugProjectName,
-        metaFileName
+        metaFileName,
       });
     },
     createTextMedia() {
@@ -370,10 +376,10 @@ export default {
           slugFolderName: this.slugProjectName,
           type: "projects",
           additionalMeta: {
-            type: "text"
-          }
+            type: "text",
+          },
         })
-        .then(mdata => {
+        .then((mdata) => {
           this.openMediaModal(mdata.metaFileName);
         });
     },
@@ -436,8 +442,8 @@ export default {
           this.selected_files = Array.from($event.dataTransfer.files);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

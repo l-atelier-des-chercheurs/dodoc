@@ -27,12 +27,13 @@
   outline: none;
   user-select: none;
   vertical-align: middle;
-  text-indent: calc(var(--switch-size) * 2 + .5rem);
+  /* text-indent: calc(var(--switch-size) * 2 + .5rem); */
+  padding-left: calc(var(--switch-size) * 2 + 0.5rem);
 }
 
 .switch input + label::before,
 .switch input + label::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -67,7 +68,7 @@
 }
 
 .switch input:disabled + label {
-  opacity: .5;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
