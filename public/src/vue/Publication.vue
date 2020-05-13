@@ -163,15 +163,16 @@ export default {
   },
   created() {},
   mounted() {
-    this.$socketio.listFolder({
-      type: "publications",
-      slugFolderName: this.slugPubliName,
-    });
-    this.$socketio.listMedias({
-      type: "publications",
-      slugFolderName: this.slugPubliName,
-    });
-
+    if (this.$root.state.mode === "live") {
+      this.$socketio.listFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+      this.$socketio.listMedias({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    }
     this.$eventHub.$on(
       "socketio.projects.listSpecificMedias",
       this.updateMediasPubli
