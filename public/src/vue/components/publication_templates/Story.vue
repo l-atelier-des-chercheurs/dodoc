@@ -46,6 +46,7 @@
             "
             :is_currently_active="(index_currently_visible === 0)"
             :slugPubliName="slugPubliName"
+            :publi_is_model="publication.is_model"
             :read_only="read_only"
             @addMedia="(values) => addMedia({ values, in_position: 'start' })"
             @insertMedias="
@@ -80,6 +81,7 @@
                 v-if="can_edit_publi && !read_only && !preview_mode"
                 :slugPubliName="slugPubliName"
                 :is_currently_active="(index_currently_visible === index + 1)"
+                :publi_is_model="publication.is_model"
                 :read_only="read_only"
                 @addMedia="
                   (values) =>

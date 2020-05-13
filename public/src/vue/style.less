@@ -1785,6 +1785,12 @@ small {
       background-image: url("/images/i_text.svg");
     }
   }
+  &.barButton_placeholder {
+    color: @c-gris_fonce;
+    &::before {
+      background-image: url("/images/i_text.svg");
+    }
+  }
   &.barButton_capture {
     color: @c-orange;
     &::before {
@@ -5576,6 +5582,12 @@ small {
       }
     }
   }
+}
+
+.m_placeholder {
+  border: 4px dashed @c-gris_clair;
+  background-color: white;
+  .padding-small;
 }
 
 .m_insertMediaButton {

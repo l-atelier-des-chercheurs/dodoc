@@ -359,6 +359,7 @@
             "type": "string",
             "options": [
               "text",
+              "placeholder",
               "solid_color",
               "rectangle",
               "ellipsis",

@@ -1316,7 +1316,7 @@ module.exports = (function () {
       oc: "Totes los mèdias",
       de: "Alle Medien",
     },
-    create_text: {
+    write: {
       fr: "Écrire",
       en: "Write",
       nl: "Schrijven",

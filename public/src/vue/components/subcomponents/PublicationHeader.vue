@@ -106,15 +106,15 @@
         <label>{{ $t("publi_is_model") }}</label>
       </div>
       <div style="width: 100%;" v-else-if="!!publication_model">
-        <label
-          >{{ $t("publi_follows_model:") }}
+        <label>
+          <span v-html="$t('publi_follows_model:')" />
           <span
-            class="text-underline"
+            class="text-underline button padding-none button-rectangle"
             @click="$root.openPublication(publication_model.slugFolderName)"
           >
             {{ publication_model.name }}
-          </span></label
-        >
+          </span>
+        </label>
       </div>
       <div
         class="text-centered"
