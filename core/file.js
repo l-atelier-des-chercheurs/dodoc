@@ -606,12 +606,16 @@ module.exports = (function () {
         Promise.all(allMediasData)
           .then((mediasMeta) => {
             dev.logverbose(
-              `readMediaList: gathered all metas, now processing : ${JSON.stringify(
-                mediasMeta,
-                null,
-                4
-              )}`
+              `readMediaList: gathered all metas, now processing : 
+              `
             );
+            // ${
+            //     JSON.stringify(
+            //     mediasMeta,
+            //     null,
+            //     4
+            //   )
+            //   }
 
             // reunite array items as a single big object
             let folders_and_medias = {};
