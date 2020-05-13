@@ -306,7 +306,7 @@ export default {
         authors: this.publidata.authors,
         keywords: this.publidata.keywords,
         attached_to_project: this.publidata.attached_to_project,
-        is_model: this.publidata.attached_to_project,
+        is_model: this.publidata.is_model,
         follows_model: this.publidata.follows_model,
       };
 

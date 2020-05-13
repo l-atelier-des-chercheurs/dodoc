@@ -90,6 +90,10 @@ module.exports = (function () {
       fr: "projet(s) sélectionné(s)",
       en: "project(s) selected",
     },
+    reply: {
+      fr: "Répondre",
+      en: "Reply",
+    },
     name: {
       fr: "Nom",
       en: "Name",

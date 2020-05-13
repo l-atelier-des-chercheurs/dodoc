@@ -74,6 +74,7 @@
               :slugPubliName="slugPubliName"
               :publication="publication"
               :preview_mode="preview_mode"
+              :read_only="read_only"
               @addMedia="(values) => addMedia({ values })"
             />
 
