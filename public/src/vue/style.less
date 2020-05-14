@@ -4054,14 +4054,16 @@ small {
     .padding-vert-verysmall;
 
     > * {
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: center;
-      align-content: center;
-      align-items: center;
-
       // .margin-vert-verysmall;
       .margin-sides-small;
+
+      &:first-child {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+      }
     }
 
     .m_publicationMeta--topbar--backbutton {

@@ -103,10 +103,23 @@
           {{ $t("create") }}
         </button>
       </div>
-      <div style="width: 100%;" v-if="publication.is_model">
+      <div style="width: 100%;" class="ta-ce" v-if="publication.is_model">
         <label>{{ $t("publi_is_model") }}</label>
+        <label>
+          <span v-html="$t('URL_to_share_for_replies')" />
+          <a
+            :href="url_to_share_for_replies"
+            target="_blank"
+            class="js--openInBrowser"
+            >{{ url_to_share_for_replies }}</a
+          >
+        </label>
       </div>
-      <div style="width: 100%;" v-else-if="model_for_this_publication">
+      <div
+        style="width: 100%;"
+        class="ta-ce"
+        v-else-if="model_for_this_publication"
+      >
         <label>
           <span v-html="$t('publi_follows_model:')" />
           <span
@@ -366,6 +379,13 @@ export default {
         return true;
 
       return false;
+    },
+    url_to_share_for_replies() {
+      return (
+        window.location.origin +
+        "/_publications/reply/" +
+        this.publication.slugFolderName
+      );
     },
     show_on_external_domain: {
       get() {
