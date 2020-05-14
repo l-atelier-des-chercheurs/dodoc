@@ -376,7 +376,8 @@
               "stl",
               "document",
               "other"
-            ]
+            ],
+            "default": "other"
           },
           "color": {
             "type": "string"

@@ -5588,9 +5588,14 @@ small {
       z-index: 100000;
       transform: translate(0, -50%);
 
-      button {
+      button,
+      a {
         .bg-orange;
+        border-radius: @t-buttonradius;
         color: @c-noir;
+        min-height: 0;
+        .margin-verysmall;
+        text-decoration: none;
       }
     }
   }
@@ -6330,7 +6335,7 @@ small {
   .boxs-card-2;
   border: 1px solid @c-gris;
 
-  .padding-small;
+  .padding-verysmall;
 
   display: flex;
   flex-flow: row wrap;

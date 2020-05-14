@@ -206,6 +206,39 @@
               />
             </svg>
           </button> -->
+          <a
+            :download="media.media_filename"
+            :href="mediaURL"
+            target="_blank"
+            class="buttonLink"
+            :disabled="read_only"
+          >
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="46.7px"
+              height="70px"
+              viewBox="0 0 46.7 70"
+              style="enable-background: new 0 0 46.7 70;"
+              xml:space="preserve"
+            >
+              <g>
+                <g>
+                  <path
+                    class="st0"
+                    d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
+			L23.3,59.6L3.2,41.5L8.5,35.2z"
+                  />
+                </g>
+                <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
+              </g>
+            </svg>
+            {{ $t("download") }}
+          </a>
 
           <button
             type="button"
@@ -429,6 +462,18 @@ export default {
     },
   },
   computed: {
+    mediaURL() {
+      const slugFolderName =
+        this.media._linked_media && this.media._linked_media.slugProjectName
+          ? this.media._linked_media.slugProjectName
+          : this.slugPubliName;
+      const media_filename =
+        this.media._linked_media && this.media._linked_media.media_filename
+          ? this.media._linked_media.media_filename
+          : this.media.media_filename;
+      return `/${slugFolderName}/${media_filename}`;
+    },
+
     is_selected() {
       return this.$root.settings.current_publication.selected_medias.some(
         (meta) => meta === this.media.metaFileName
