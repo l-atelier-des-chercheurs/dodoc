@@ -90,36 +90,42 @@
       v-if="(media_caption || is_selected) && media.type !== 'text'"
       :class="{ 'is--beingEdited': edit_caption_mode }"
     >
-      <p v-if="!edit_caption_mode" v-html="media_caption" />
-      <!-- <textarea v-else v-model="new_media_caption" /> -->
-      <CollaborativeEditor
-        v-else
-        :specific_toolbar="[
-          ['bold', 'italic', 'underline', 'link', 'blockquote'],
-          ['clean'],
-        ]"
-        v-model="new_media_caption"
-        ref="textField"
-      />
-
-      <button
-        type="button"
-        class="buttonLink"
-        v-if="is_selected && !edit_caption_mode"
-        v-html="!!media_caption ? $t('edit_caption') : $t('add_caption')"
-        @click="edit_caption_mode = true"
-      />
-      <template v-else-if="edit_caption_mode">
+      <template v-if="!edit_caption_mode">
+        <p v-html="media_caption" />
+        <!-- <textarea v-else v-model="new_media_caption" /> -->
         <button
           type="button"
-          class="button-redthin"
-          @click="edit_caption_mode = false"
-        >
-          {{ $t("cancel") }}
-        </button>
-        <button type="button" class="button-greenthin" @click="sendNewCaption">
-          {{ $t("send") }}
-        </button>
+          class="buttonLink"
+          v-if="is_selected"
+          v-html="!!media_caption ? $t('edit_caption') : $t('add_caption')"
+          @click="edit_caption_mode = true"
+        />
+      </template>
+      <template v-else-if="edit_caption_mode">
+        <CollaborativeEditor
+          :specific_toolbar="[
+            ['bold', 'italic', 'underline', 'link', 'blockquote'],
+            ['clean'],
+          ]"
+          v-model="new_media_caption"
+          ref="textField"
+        />
+        <div>
+          <button
+            type="button"
+            class="button-redthin"
+            @click="edit_caption_mode = false"
+          >
+            {{ $t("cancel") }}
+          </button>
+          <button
+            type="button"
+            class="button-greenthin"
+            @click="sendNewCaption"
+          >
+            {{ $t("send") }}
+          </button>
+        </div>
       </template>
     </div>
 

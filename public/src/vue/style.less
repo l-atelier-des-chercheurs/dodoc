@@ -6023,23 +6023,46 @@ small {
   }
 
   .mediaCaption {
+    position: relative;
     margin-top: 0.3em;
     font-size: 75%;
 
-    // display: flex;
-    // flex-flow: row wrap;
-    // justify-content: space-between;
-    // align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
 
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     &.is--beingEdited {
-      .bg-creme;
-      .padding-verysmall;
+      // .bg-creme;
+      // .padding-verysmall;
+    }
+
+    > *:nth-child(2) {
+      flex: 0 0 auto;
+    }
+
+    .quillWrapper {
+      z-index: 1;
+      margin-top: ~"calc(-1.6 * var(--quill-options-size))";
+    }
+    .quillWrapper,
+    .ql-container {
+      overflow: visible;
+    }
+
+    .ql-toolbar {
+      background: transparent;
     }
 
     .ql-editor {
-      min-height: 100px;
+      min-height: 1em;
+      .padding-verysmall;
+    }
+
+    .ql-tooltip {
+      z-index: 1;
     }
 
     p,
