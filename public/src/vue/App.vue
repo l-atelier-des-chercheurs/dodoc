@@ -31,7 +31,6 @@
         $root.store.request.display === 'distraction_free'
       "
     >
-      Prout
       <template v-if="$root.current_publication">
         <Publication
           :publication="$root.current_publication"
