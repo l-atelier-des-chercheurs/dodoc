@@ -335,8 +335,6 @@ export default {
               if (reply_medias.length > 0) {
                 media._reply._medias = reply_medias;
               }
-
-              debugger;
             }
           }
         }

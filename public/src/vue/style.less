@@ -5603,11 +5603,20 @@ small {
   .padding-medium;
   counter-increment: mediaCounter -1;
 
+  > label {
+    color: @c-gris;
+    margin-bottom: 0;
+  }
+
   > *:not(label) {
     border: 4px dashed @c-gris_clair;
-    border: 4px dashed @c-gris_clair;
-    .padding-right-medium;
-    .padding-vert-verysmall;
+
+    // border: 4px solid @c-gris_clair;
+    // .bg-gris_clair;
+    // .bg-bleumarine;
+    // .bg-gris_clair;
+    // .padding-right-medium;
+    // .padding-vert-verysmall;
     // background-color: @c-gris_clair;
     // .padding-small;
     counter-reset: mediaCounter;
@@ -5622,6 +5631,10 @@ small {
 
       display: none;
     }
+  }
+
+  .m_mediaStory--moveItemButtons {
+    background-color: @c-gris_clair;
   }
 }
 
@@ -5639,11 +5652,10 @@ small {
 
 .m_insertMediaButton {
   position: relative;
-  .bg-blanc;
+  // .bg-blanc;
   min-height: @t-storyButtons;
   .padding-sides-medium;
   max-width: @t-maxStoryWidth;
-  // padding-right: 0;
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -5656,6 +5668,7 @@ small {
   &.is--dragover {
     // background-color: @c-noir;
     .margin-vert-verysmall;
+    // .bg-gris_clair;
   }
 
   &::before {
@@ -5726,12 +5739,12 @@ small {
     }
     &:hover {
       background-color: @c-bleuvert_fonce;
-      background-color: rgba(51, 51, 51, 0.5);
+      // background-color: rgba(51, 51, 51, 0.5);
     }
 
     &.is--active {
       background-color: @c-bleuvert_fonce;
-      background-color: rgba(51, 51, 51, 0.9);
+      // background-color: rgba(51, 51, 51, 0.9);
     }
     .is--open&::before {
       transform: rotate(135deg);
@@ -7427,12 +7440,12 @@ small {
 
 .StoryModules-enter {
   opacity: 0;
-  transform: translateX(0px) scaleY(0.9);
+  // transform: translateX(0px) scaleY(0.9);
 }
 
 .StoryModules-enter-to {
   opacity: 1;
-  transform: translateX(0) scaleY(1);
+  // transform: translateX(0) scaleY(1);
 }
 
 .StoryModules-leave-active {
@@ -7441,8 +7454,8 @@ small {
 
 .StoryModules-leave-to {
   opacity: 0;
-  transform: scaleY(0.9);
-  transform-origin: center top;
+  // transform: scaleY(0.9);
+  // transform-origin: center top;
 }
 
 .fileupload_list-move {
