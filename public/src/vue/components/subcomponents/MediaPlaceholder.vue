@@ -53,6 +53,7 @@
             :read_only="read_only"
             @removePubliMedia="orderedRemovePubliMedia($event)"
             @changeMediaOrder="changeMediaOrder($event)"
+            @editPubliMedia="$emit('editPubliMedia', $event)"
           />
 
           <div
@@ -174,8 +175,6 @@ export default {
 
     insertMediasInList({ metaFileNames, right_after_meta, in_position }) {
       return new Promise((resolve, reject) => {
-        debugger;
-
         const medias_slugs =
           !Array.isArray(this.placeholder_medias_slugs) ||
           this.placeholder_medias_slugs.length === 0
@@ -265,8 +264,6 @@ export default {
       const current_index_in_slugs = medias_slugs.findIndex(
         (m) => m.slugMediaName === metaFileName
       );
-
-      debugger;
 
       const current_media_index = this.model_placeholder_media._reply._medias.findIndex(
         (m) => m.metaFileName === metaFileName

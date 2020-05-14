@@ -343,6 +343,9 @@
             "default": "current",
             "override": true
           },
+          "caption": {
+            "type": "string"
+          },
           "authors": {
             "type": "array"
           },
@@ -373,7 +376,8 @@
               "stl",
               "document",
               "other"
-            ]
+            ],
+            "default": "other"
           },
           "color": {
             "type": "string"

@@ -335,8 +335,6 @@ export default {
               if (reply_medias.length > 0) {
                 media._reply._medias = reply_medias;
               }
-
-              debugger;
             }
           }
         }
@@ -550,8 +548,8 @@ export default {
     editPubliMedia({ metaFileName, val }) {
       if (this.$root.state.dev_mode === "debug")
         console.log(
-          `METHODS • Publication: editPubliMedia / args = ${JSON.stringify(
-            arguments[0],
+          `METHODS • Publication: editPubliMedia / for metaFileName = ${metaFileName} and val = ${JSON.stringify(
+            val,
             null,
             4
           )}`

@@ -887,7 +887,7 @@ export default {
       return this.$_.groupBy(this.available_devices, "kind");
     },
     uriToUploadMedia: function () {
-      return `_file-upload/${this.type}/${this.slugFolderName}?socketid=${this.$root.$socketio.socket.id}`;
+      return `/_file-upload/${this.type}/${this.slugFolderName}?socketid=${this.$root.$socketio.socket.id}`;
     },
     recording_duration: function () {
       if (this.timer_recording) {

@@ -85,16 +85,44 @@
       </div>
     </template>
 
-    <p
+    <div
       class="mediaCaption"
-      v-if="
-        (media.hasOwnProperty('_linked_media') &&
-          !!media._linked_media.caption) ||
-        !!media.caption
-      "
+      v-if="(media_caption || is_selected) && media.type !== 'text'"
+      :class="{ 'is--beingEdited': edit_caption_mode }"
     >
-      {{ media._linked_media.caption }}
-    </p>
+      <p v-if="!edit_caption_mode" v-html="media_caption" />
+      <!-- <textarea v-else v-model="new_media_caption" /> -->
+      <CollaborativeEditor
+        v-else
+        :specific_toolbar="[
+          ['bold', 'italic', 'underline', 'link', 'blockquote'],
+          ['clean'],
+        ]"
+        v-model="new_media_caption"
+        ref="textField"
+      />
+
+      <button
+        type="button"
+        class="buttonLink"
+        v-if="is_selected && !edit_caption_mode"
+        v-html="!!media_caption ? $t('edit_caption') : $t('add_caption')"
+        @click="edit_caption_mode = true"
+      />
+      <template v-else-if="edit_caption_mode">
+        <button
+          type="button"
+          class="button-redthin"
+          @click="edit_caption_mode = false"
+        >
+          {{ $t("cancel") }}
+        </button>
+        <button type="button" class="button-greenthin" @click="sendNewCaption">
+          {{ $t("send") }}
+        </button>
+      </template>
+    </div>
+
     <div
       class="m_mediaStory--moveItemButtons"
       :class="{
@@ -178,6 +206,39 @@
               />
             </svg>
           </button> -->
+          <a
+            :download="media.media_filename"
+            :href="mediaURL"
+            target="_blank"
+            class="buttonLink"
+            :disabled="read_only"
+          >
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="46.7px"
+              height="70px"
+              viewBox="0 0 46.7 70"
+              style="enable-background: new 0 0 46.7 70;"
+              xml:space="preserve"
+            >
+              <g>
+                <g>
+                  <path
+                    class="st0"
+                    d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2
+			L23.3,59.6L3.2,41.5L8.5,35.2z"
+                  />
+                </g>
+                <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
+              </g>
+            </svg>
+            {{ $t("download") }}
+          </a>
 
           <button
             type="button"
@@ -358,6 +419,10 @@ export default {
       htmlForEditor: this.media.content ? this.media.content : "",
 
       fit_mode: "cover",
+
+      edit_caption_mode: false,
+      media_caption: "",
+      new_media_caption: "",
     };
   },
 
@@ -390,8 +455,25 @@ export default {
       },
       deep: true,
     },
+    edit_caption_mode() {
+      if (this.edit_caption_mode) {
+        this.new_media_caption = this.media_caption;
+      }
+    },
   },
   computed: {
+    mediaURL() {
+      const slugFolderName =
+        this.media._linked_media && this.media._linked_media.slugProjectName
+          ? this.media._linked_media.slugProjectName
+          : this.slugPubliName;
+      const media_filename =
+        this.media._linked_media && this.media._linked_media.media_filename
+          ? this.media._linked_media.media_filename
+          : this.media.media_filename;
+      return `/${slugFolderName}/${media_filename}`;
+    },
+
     is_selected() {
       return this.$root.settings.current_publication.selected_medias.some(
         (meta) => meta === this.media.metaFileName
@@ -448,6 +530,10 @@ export default {
         this.editButtonClicked();
       }
     },
+    sendNewCaption() {
+      this.updateMediaPubliMeta({ caption: this.new_media_caption });
+      this.edit_caption_mode = false;
+    },
     mediaJustInserted(metaFileName) {
       if (this.media.metaFileName === metaFileName) {
         this.selectMedia();
@@ -476,20 +562,38 @@ export default {
       this.fit_mode = this.media.hasOwnProperty("fit_mode")
         ? this.media.fit_mode
         : "cover";
+      this.media_caption = this.media.hasOwnProperty("caption")
+        ? this.media.caption
+        : "";
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
 
       this.$emit("editPubliMedia", {
-        slugMediaName: this.media.metaFileName,
+        metaFileName: this.media.metaFileName,
         val,
       });
     },
     removePubliMedia() {
-      this.$emit("removePubliMedia", {
-        metaFileName: this.media.metaFileName,
-      });
+      if (this.media.type !== "placeholder") {
+        this.$emit("removePubliMedia", {
+          metaFileName: this.media.metaFileName,
+        });
+      } else {
+        this.$alertify
+          .okBtn(this.$t("yes"))
+          .cancelBtn(this.$t("cancel"))
+          .confirm(
+            this.$t("sureToRemovePlaceholder"),
+            () => {
+              this.$emit("removePubliMedia", {
+                metaFileName: this.media.metaFileName,
+              });
+            },
+            () => {}
+          );
+      }
     },
     toggleMediaSelection() {
       if (this.is_selected) this.deselectMedia();
