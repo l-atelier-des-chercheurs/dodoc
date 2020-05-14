@@ -20,6 +20,8 @@ import ShareDB from "sharedb/lib/client";
 import Quill from "quill";
 import QuillCursors from "quill-cursors";
 import debounce from "debounce";
+import katex from "katex";
+window.katex = katex;
 
 Quill.register("modules/cursors", QuillCursors);
 ShareDB.types.register(require("rich-text").type);
@@ -124,6 +126,7 @@ export default {
           { align: "justify" },
         ],
         ["code-block"],
+        ["formula"],
         ["clean"],
       ],
 
@@ -146,6 +149,7 @@ export default {
     this.editor = new Quill(this.$refs.editor, {
       modules: {
         toolbar: this.custom_toolbar,
+        formula: true,
         cursors: {
           template: `
     <span class="ql-cursor-caret-container">
@@ -178,6 +182,7 @@ export default {
         "font",
         "align",
         "code-block",
+        "formula",
       ],
       placeholder: "…",
     });
