@@ -487,9 +487,24 @@ export default {
       });
     },
     removePubliMedia() {
-      this.$emit("removePubliMedia", {
-        metaFileName: this.media.metaFileName,
-      });
+      if (this.media.type !== "placeholder") {
+        this.$emit("removePubliMedia", {
+          metaFileName: this.media.metaFileName,
+        });
+      } else {
+        this.$alertify
+          .okBtn(this.$t("yes"))
+          .cancelBtn(this.$t("cancel"))
+          .confirm(
+            this.$t("sureToRemovePlaceholder"),
+            () => {
+              this.$emit("removePubliMedia", {
+                metaFileName: this.media.metaFileName,
+              });
+            },
+            () => {}
+          );
+      }
     },
     toggleMediaSelection() {
       if (this.is_selected) this.deselectMedia();

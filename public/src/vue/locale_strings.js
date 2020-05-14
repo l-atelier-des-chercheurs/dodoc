@@ -1014,6 +1014,12 @@ module.exports = (function () {
         "Sètz segur de voler suprimir aqueste autor ? Totes los mèdias, projèctes e recèptas associadas seràn servadas.",
       de: "Sind Sie sicher, dass Sie diesen Autor löschen wollen?",
     },
+    sureToRemovePlaceholder: {
+      fr:
+        "Êtes-vous sûr de vouloir supprimer ce bloc éditable ? Cela supprimera également tous les contenus ajoutés par des contributeurs dans d’autres ",
+      en:
+        "Do you really want to remove this editable block? This will also remove all content added in this block in recipe following this model.",
+    },
     sure_to_remove_chat: {
       fr: "Êtes-vous sûr de vouloir supprimer ce sujet et tout son contenu ?",
       en: "Do you really want to delete this topic and all its content?",
