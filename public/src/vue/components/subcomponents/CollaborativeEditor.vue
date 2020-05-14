@@ -35,6 +35,13 @@ var Size = Quill.import("attributors/style/size");
 Size.whitelist = ["50%", "18px", "150%", "300%"];
 Quill.register(Size, true);
 
+var BlockEmbed = Quill.import("blots/block/embed");
+
+class DividerBlot extends BlockEmbed {}
+DividerBlot.blotName = "divider";
+DividerBlot.tagName = "hr";
+Quill.register(DividerBlot);
+
 export default {
   props: {
     value: {
@@ -128,6 +135,7 @@ export default {
         ],
         ["code-block"],
         ["formula"],
+        ["divider"],
         ["clean"],
       ],
 
@@ -147,13 +155,24 @@ export default {
 
   created() {},
   mounted() {
-    const toolbar = this.specific_toolbar
+    const toolbar_options = this.specific_toolbar
       ? this.specific_toolbar
       : this.custom_toolbar;
 
     this.editor = new Quill(this.$refs.editor, {
       modules: {
-        toolbar,
+        toolbar: {
+          container: toolbar_options,
+          handlers: {
+            divider: () => {
+              var range = this.editor.getSelection();
+              if (range) {
+                // insert the <hr> where the cursor is
+                this.editor.insertEmbed(range.index, "divider", "null");
+              }
+            },
+          },
+        },
         formula: true,
         cursors: {
           template: `
@@ -188,6 +207,7 @@ export default {
         "align",
         "code-block",
         "formula",
+        "divider",
       ],
       placeholder: "…",
     });

@@ -1099,6 +1099,14 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
 .ql-bubble .ql-tooltip.ql-flip {
   transform: translateY(-10px);
 }
+
+.ql-divider:before {
+  content: "";
+  display: block;
+  border: none;
+  border-bottom: 4px dotted var(--c-bleuvert);
+  width: 100%;
+}
 .ql-bubble .ql-formats {
   display: inline-block;
   vertical-align: middle;
@@ -1733,8 +1741,9 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
   /* Let's make sure all's aligned */
   hr,
   .hr {
-    border: 1px solid;
-    margin: -1px 0;
+    border: none;
+    border-bottom: 4px dotted var(--c-bleuvert);
+    margin: ~"calc(var(--spacing) / 2)" 0;
   }
   a,
   b,
