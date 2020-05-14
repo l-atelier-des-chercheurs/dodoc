@@ -216,7 +216,10 @@ module.exports = (function () {
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
         _getFolderSlugs(mainFolderPath).then((folders) => {
-          let slugFolderName = api.slug(data.name);
+          const reference_name = data.hasOwnProperty("desired_foldername")
+            ? data.desired_foldername
+            : data.name;
+          let slugFolderName = api.slug(reference_name);
           if (slugFolderName === "") {
             slugFolderName = "untitled";
           }

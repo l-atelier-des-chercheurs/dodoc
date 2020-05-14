@@ -170,7 +170,7 @@ module.exports = (function () {
     const slugFolderName = await file
       .createFolder({ type, data })
       .catch((err) => {
-        dev.error(`Failed to list folders! Error: ${err}`);
+        dev.error(`Failed to create folder! Error: ${err}`);
       });
 
     sendFolders({ type, slugFolderName, id });

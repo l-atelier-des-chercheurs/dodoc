@@ -1,6 +1,6 @@
 <template>
   <div class="m_mediaPlaceholder">
-    <label>{{ $t("placeholder") }}</label>
+    <label>{{ $t("placeholder") }} </label>
     <div v-if="!model_placeholder_media.hasOwnProperty('_reply')">
       <button
         type="button"
@@ -16,10 +16,10 @@
         :slugPubliName="slugPubliName"
         :publi_is_model="publication.is_model"
         :can_collapse="
-          !model_placeholder_media._reply._medias ||
-          model_placeholder_media._reply._medias.length === 0
-            ? false
-            : true
+          !(
+            !model_placeholder_media._reply._medias ||
+            model_placeholder_media._reply._medias.length === 0
+          )
         "
         :read_only="read_only"
         @addMedia="

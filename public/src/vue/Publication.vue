@@ -178,6 +178,7 @@ export default {
       this.updateMediasPubli
     );
 
+    this.preview_mode = !this.can_edit_publi;
     // this.preview_mode =
     //   !this.can_edit_publi || this.$root.state.mode !== "live";
 

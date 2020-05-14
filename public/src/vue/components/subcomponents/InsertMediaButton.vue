@@ -34,8 +34,7 @@
       <div
         class="m_insertMediaButton--menu"
         v-else-if="
-          (show_menu && selected_files.length === 0 && !enable_capture_mode) ||
-          !can_collapse
+          (show_menu && selected_files.length === 0 && !enable_capture_mode)
         "
       >
         <div v-show="$root.state.connected" class="m_actionbar">
