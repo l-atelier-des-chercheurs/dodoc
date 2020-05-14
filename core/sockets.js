@@ -338,7 +338,7 @@ module.exports = (function () {
       additionalMeta: _additionalMeta,
     });
 
-    onEditFolder(socket, { type, slugFolderName, data: {} });
+    // onEditFolder(socket, { type, slugFolderName, data: {} });
 
     await sendMedias({
       type,
@@ -365,7 +365,7 @@ module.exports = (function () {
         throw err;
       });
 
-    onEditFolder(undefined, { type, slugFolderName, data: {} });
+    // onEditFolder(undefined, { type, slugFolderName, data: {} });
 
     await sendMedias({
       type,
@@ -417,7 +417,7 @@ module.exports = (function () {
       })
       .then(
         (slugFolderName) => {
-          onEditFolder(socket, { type, slugFolderName, data: {} });
+          // onEditFolder(socket, { type, slugFolderName, data: {} });
           sendMedias({ type, slugFolderName, metaFileName: slugMediaName });
         },
         function (err) {
@@ -561,7 +561,7 @@ module.exports = (function () {
         reject(err);
       });
 
-    await onEditFolder(socket, { type, slugFolderName, data: {} });
+    // await onEditFolder(socket, { type, slugFolderName, data: {} });
     await sendMedias({ type, slugFolderName });
   }
 
