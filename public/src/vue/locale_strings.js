@@ -2374,6 +2374,11 @@ module.exports = (function () {
       en:
         "If enabled, this recipe can be selected as a model for other recipes to lean on.",
     },
+    URL_to_share_for_replies: {
+      fr:
+        "Pour générer des réponses basées sur ce modèle, partagez cette adresse",
+      en: "To generate replies based on this model, share this URL",
+    },
     no_models_yet: {
       fr: "Aucune recette modèle n’a été créé pour l’instant",
       en: "No models recipe have been created yet",
