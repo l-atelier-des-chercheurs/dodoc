@@ -85,16 +85,44 @@
       </div>
     </template>
 
-    <p
+    <div
       class="mediaCaption"
-      v-if="
-        (media.hasOwnProperty('_linked_media') &&
-          !!media._linked_media.caption) ||
-        !!media.caption
-      "
+      v-if="(media_caption || is_selected) && media.type !== 'text'"
+      :class="{ 'is--beingEdited': edit_caption_mode }"
     >
-      {{ media._linked_media.caption }}
-    </p>
+      <p v-if="!edit_caption_mode" v-html="media_caption" />
+      <!-- <textarea v-else v-model="new_media_caption" /> -->
+      <CollaborativeEditor
+        v-else
+        :specific_toolbar="[
+          ['bold', 'italic', 'underline', 'link', 'blockquote'],
+          ['clean'],
+        ]"
+        v-model="new_media_caption"
+        ref="textField"
+      />
+
+      <button
+        type="button"
+        class="buttonLink"
+        v-if="is_selected && !edit_caption_mode"
+        v-html="!!media_caption ? $t('edit_caption') : $t('add_caption')"
+        @click="edit_caption_mode = true"
+      />
+      <template v-else-if="edit_caption_mode">
+        <button
+          type="button"
+          class="button-redthin"
+          @click="edit_caption_mode = false"
+        >
+          {{ $t("cancel") }}
+        </button>
+        <button type="button" class="button-greenthin" @click="sendNewCaption">
+          {{ $t("send") }}
+        </button>
+      </template>
+    </div>
+
     <div
       class="m_mediaStory--moveItemButtons"
       :class="{
@@ -358,6 +386,10 @@ export default {
       htmlForEditor: this.media.content ? this.media.content : "",
 
       fit_mode: "cover",
+
+      edit_caption_mode: false,
+      media_caption: "",
+      new_media_caption: "",
     };
   },
 
@@ -389,6 +421,11 @@ export default {
         this.htmlForEditor = this.media.content ? this.media.content : "";
       },
       deep: true,
+    },
+    edit_caption_mode() {
+      if (this.edit_caption_mode) {
+        this.new_media_caption = this.media_caption;
+      }
     },
   },
   computed: {
@@ -448,6 +485,10 @@ export default {
         this.editButtonClicked();
       }
     },
+    sendNewCaption() {
+      this.updateMediaPubliMeta({ caption: this.new_media_caption });
+      this.edit_caption_mode = false;
+    },
     mediaJustInserted(metaFileName) {
       if (this.media.metaFileName === metaFileName) {
         this.selectMedia();
@@ -476,13 +517,16 @@ export default {
       this.fit_mode = this.media.hasOwnProperty("fit_mode")
         ? this.media.fit_mode
         : "cover";
+      this.media_caption = this.media.hasOwnProperty("caption")
+        ? this.media.caption
+        : "";
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
 
       this.$emit("editPubliMedia", {
-        slugMediaName: this.media.metaFileName,
+        metaFileName: this.media.metaFileName,
         val,
       });
     },

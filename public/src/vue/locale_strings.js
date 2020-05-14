@@ -279,6 +279,14 @@ module.exports = (function () {
       oc: "Legenda",
       de: "Legende",
     },
+    add_caption: {
+      fr: "Ajouter une légende",
+      en: "Add a caption",
+    },
+    edit_caption: {
+      fr: "Modifier la légende",
+      en: "Edit caption",
+    },
     formatting: {
       fr: "Mise en forme",
       en: "Formatting",

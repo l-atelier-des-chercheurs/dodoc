@@ -43,6 +43,7 @@ export default {
     },
     media: Object,
     slugFolderName: String,
+    specific_toolbar: Array,
     theme: {
       type: String,
       default: "snow",
@@ -146,9 +147,13 @@ export default {
 
   created() {},
   mounted() {
+    const toolbar = this.specific_toolbar
+      ? this.specific_toolbar
+      : this.custom_toolbar;
+
     this.editor = new Quill(this.$refs.editor, {
       modules: {
-        toolbar: this.custom_toolbar,
+        toolbar,
         formula: true,
         cursors: {
           template: `

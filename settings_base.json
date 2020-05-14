@@ -343,6 +343,9 @@
             "default": "current",
             "override": true
           },
+          "caption": {
+            "type": "string"
+          },
           "authors": {
             "type": "array"
           },

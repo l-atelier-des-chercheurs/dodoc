@@ -53,6 +53,7 @@
             :read_only="read_only"
             @removePubliMedia="orderedRemovePubliMedia($event)"
             @changeMediaOrder="changeMediaOrder($event)"
+            @editPubliMedia="$emit('editPubliMedia', $event)"
           />
 
           <div

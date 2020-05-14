@@ -76,6 +76,7 @@
               :preview_mode="preview_mode"
               :read_only="read_only"
               @addMedia="(values) => addMedia({ values })"
+              @editPubliMedia="$emit('editPubliMedia', $event)"
             />
 
             <MediaStory
@@ -88,6 +89,7 @@
               :read_only="read_only || !!model_for_this_publication"
               @removePubliMedia="$emit('removePubliMedia', $event)"
               @changeMediaOrder="$emit('changeMediaOrder', $event)"
+              @editPubliMedia="$emit('editPubliMedia', $event)"
             />
 
             <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
