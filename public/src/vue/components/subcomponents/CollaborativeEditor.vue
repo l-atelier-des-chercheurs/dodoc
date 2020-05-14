@@ -167,7 +167,6 @@ export default {
             divider: () => {
               var range = this.editor.getSelection();
               if (range) {
-                // insert the <hr> where the cursor is
                 this.editor.insertEmbed(range.index, "divider", "null");
               }
             },

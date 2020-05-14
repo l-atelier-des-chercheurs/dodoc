@@ -390,12 +390,12 @@ export default {
     },
   },
   created: function () {
-    // document.addEventListener("keyup", this.modalKeyListener);
+    document.addEventListener("keyup", this.modalKeyListener);
     document.body.classList.add("has_modal_opened");
     this.$root.settings.has_modal_opened = true;
   },
-  destroyed: function () {
-    // document.removeEventListener("keyup", this.modalKeyListener);
+  beforeDestroy: function () {
+    document.removeEventListener("keyup", this.modalKeyListener);
     document.body.classList.remove("has_modal_opened");
     this.$root.settings.has_modal_opened = false;
   },
