@@ -22,7 +22,8 @@
               'export_publication',
               'print_publication',
               'link_publication',
-            ].includes($root.state.mode)
+            ].includes($root.state.mode) ||
+            $root.store.request.display === 'distraction_free'
           "
           @click="closePublication()"
           :content="$t('close')"

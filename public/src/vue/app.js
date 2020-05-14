@@ -367,8 +367,7 @@ let vm = new Vue({
           .delay(4000)
           .error(
             this.$t('notifications["failed_to_get_folder:"]') +
-              " " +
-              this.store.request.slugProjectName
+              ` ${this.store.request.type}/${this.store.request.slugFolderName}`
           );
       } else {
         this.$alertify
@@ -384,22 +383,38 @@ let vm = new Vue({
         "ROOT EVENT: created / no errors, checking for content to load"
       );
 
-    // if a slugProjectName or a metaFileName is requested, load the content of that folder rightaway
+    // if a slugFolderName or a metaFileName is requested, load the content of that folder rightaway
     // we are probably in a webbrowser that accesses a subfolder or a media
-    if (this.store.request.slugProjectName) {
-      this.$eventHub.$once("socketio.projects.folders_listed", () => {
-        this.openProject(this.store.request.slugProjectName);
+    if (this.store.request.type && this.store.request.slugFolderName) {
+      this.$eventHub.$once("socketio.authentificated", () => {
+        this.$socketio.listFolders({ type: this.store.request.type });
       });
+
+      this.$eventHub.$once(
+        `socketio.${this.store.request.type}.folders_listed`,
+        () => {
+          if (this.store.request.type === "projects")
+            this.openProject(this.store.request.slugFolderName);
+          if (this.store.request.type === "publications") {
+            this.settings.current_publication.slug = this.store.request.slugFolderName;
+          }
+        }
+      );
       // requesting edit of a media
       if (this.store.request.metaFileName) {
-        this.$eventHub.$once("socketio.projects.listMedias", () => {
-          const metaFileName = this.store.request.metaFileName;
-          this.media_modal.show_sidebar = false;
-          this.openMedia({
-            slugProjectName: this.store.request.slugProjectName,
-            metaFileName,
-          });
-        });
+        this.$eventHub.$once(
+          `socketio.${this.store.request.type}.listMedias`,
+          () => {
+            if (this.store.request.type === "projects") {
+              const metaFileName = this.store.request.metaFileName;
+              this.media_modal.show_sidebar = false;
+              this.openMedia({
+                slugProjectName: this.store.request.slugFolderName,
+                metaFileName,
+              });
+            }
+          }
+        );
       }
     } else if (
       ["export_publication", "print_publication", "link_publication"].includes(
@@ -593,7 +608,7 @@ let vm = new Vue({
         !this.store.hasOwnProperty("projects") ||
         Object.keys(this.store.projects).length === 0
       ) {
-        this.closeProject();
+        // this.closeProject();
         return false;
       }
 
@@ -668,7 +683,8 @@ let vm = new Vue({
       return this.current_publication.medias;
     },
     requested_media() {
-      return this.store.projects[this.store.request.slugProjectName].medias[
+      if (this.store.request.type !== "projects") return false;
+      return this.store.projects[this.store.request.slugFolderName].medias[
         this.store.request.metaFileName
       ];
     },

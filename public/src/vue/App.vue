@@ -6,7 +6,7 @@
           class
           :context="'full'"
           :autoplay="true"
-          :slugFolderName="$root.store.request.slugProjectName"
+          :slugFolderName="$root.store.request.slugFolderName"
           :media="$root.requested_media"
           v-model="$root.requested_media.content"
         />
@@ -20,6 +20,24 @@
         @close="$root.showSessionPasswordModal = false"
         :read_only="!$root.state.connected"
       />
+    </template>
+    <template
+      v-else-if="
+        [
+          'export_publication',
+          'print_publication',
+          'link_publication',
+        ].includes($root.state.mode) ||
+        $root.store.request.display === 'distraction_free'
+      "
+    >
+      Prout
+      <template v-if="$root.current_publication">
+        <Publication
+          :publication="$root.current_publication"
+          :read_only="!$root.state.connected"
+        />
+      </template>
     </template>
     <template
       v-else-if="
@@ -180,22 +198,6 @@
         "
         @close="$root.showAuthorsListModal = false"
       />
-    </template>
-    <template
-      v-else-if="
-        [
-          'export_publication',
-          'print_publication',
-          'link_publication',
-        ].includes($root.state.mode)
-      "
-    >
-      <template v-if="$root.current_publication">
-        <Publication
-          :publication="$root.current_publication"
-          :read_only="!$root.state.connected"
-        />
-      </template>
     </template>
 
     <portal-target name="modal_container" />

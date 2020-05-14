@@ -611,6 +611,11 @@ module.exports = (function () {
               slugFolderName,
             })
             .then((list_metaFileName) => {
+              if (list_metaFileName.length === 0) {
+                pageData.publiAndMediaData = publi_and_medias;
+                return resolve(pageData);
+              }
+
               let medias_list = list_metaFileName.map((metaFileName) => {
                 return {
                   slugFolderName,
@@ -625,6 +630,7 @@ module.exports = (function () {
                 .then((publi_medias) => {
                   publi_and_medias[slugFolderName].medias =
                     publi_medias[slugFolderName].medias;
+
                   pageData.publiAndMediaData = publi_and_medias;
 
                   // we need to get the list of original medias in the publi

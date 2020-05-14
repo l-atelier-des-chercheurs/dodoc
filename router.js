@@ -19,9 +19,12 @@ module.exports = function (app) {
   app.get("/", showIndex);
   app.get("/:project", loadFolderOrMedia);
   app.get("/:project/media/:metaFileName", loadFolderOrMedia);
+
   app.get("/_publications/:publication", linkPublication);
   app.get("/_publications/web/:publication", exportPublication);
   app.get("/_publications/print/:publication", printPublication);
+  app.get("/_publications/reply/:publication", replyToPublication);
+  app.get("/_publications/edit_reply/:publication", loadPublication);
   app.get("/_publications/print/doc/:docName", showDoc);
   app.get("/_publications/video/:videoName", showVideo);
   app.get("/_archives/:type/:slugFolderName", downloadArchive);
@@ -57,8 +60,6 @@ module.exports = function (app) {
       pageData.pageTitle = "do•doc";
       // full path on the storage space, as displayed in the footer
       pageData.folderPath = api.getFolderPath();
-      pageData.slugProjectName = "";
-      pageData.url = req.path;
       pageData.protocol = req.protocol;
       pageData.structure = global.settings.structure;
       pageData.authorsFolder = global.settings.structure.authors.path;
@@ -99,7 +100,8 @@ module.exports = function (app) {
 
     generatePageData(req).then(
       (pageData) => {
-        pageData.slugProjectName = slugProjectName;
+        pageData.type = "projects";
+        pageData.slugFolderName = slugProjectName;
         pageData.metaFileName = metaFileName;
         pageData.display = display;
 
@@ -128,8 +130,9 @@ module.exports = function (app) {
                 ],
               })
               .then((folders_and_medias) => {
-                pageData.folderAndMediaData[slugProjectName].medias =
-                  folders_and_medias[slugProjectName].medias;
+                if (Object.keys(folders_and_medias) !== 0)
+                  pageData.folderAndMediaData[slugProjectName].medias =
+                    folders_and_medias[slugProjectName].medias;
                 return res.render("index", pageData);
               });
           })
@@ -147,6 +150,10 @@ module.exports = function (app) {
 
   function printPublication(req, res) {
     let slugPubliName = req.param("publication");
+    dev.logfunction(
+      `ROUTER — printPublication • slugPubliName = ${slugPubliName}`
+    );
+
     generatePageData(req).then((pageData) => {
       dev.logverbose(`Generated printpublication pageData`);
       dev.logverbose(`Now getting publication data for ${slugPubliName}`);
@@ -157,9 +164,90 @@ module.exports = function (app) {
     });
   }
 
+  async function replyToPublication(req, res) {
+    let slugPubliName = req.param("publication");
+    const type = "publications";
+
+    dev.logfunction(
+      `ROUTER — replyToPublication • slugPubliName = ${slugPubliName}`
+    );
+
+    const foldersData = await file
+      .getFolder({
+        type,
+        slugFolderName: slugPubliName,
+      })
+      .catch((err) => {
+        res.status(403).send(`Failed to load publi: ${err}`);
+        return;
+      });
+
+    const folders_meta = foldersData[slugPubliName];
+    if (!folders_meta) {
+      res.status(403).send(`Failed to load publi`);
+    }
+
+    if (
+      folders_meta.hasOwnProperty("viewing_limited_to") &&
+      folders_meta.viewing_limited_to !== "everybody"
+    ) {
+      res.status(403).send(`Access not allowed.`);
+      return;
+    }
+
+    if (folders_meta.is_model !== true) {
+      res.status(403).send(`Publi ${folders_meta.name} is not a model`);
+      return;
+    }
+
+    const rnd = (Math.random().toString(36) + "00000000000000000").slice(
+      2,
+      3 + 8
+    );
+
+    // en créé une nouvelle : nom = aléatoire, modèle = slugPubliName, edition par tt le monde
+    const data = {
+      name: `Réponse à «${folders_meta.name}»`,
+      desired_foldername: `reply_to_${folders_meta.name}-${rnd}`,
+      follows_model: slugPubliName,
+      template: folders_meta.template,
+      editing_limited_to: "everybody",
+      viewing_limited_to: "everybody",
+    };
+
+    const slugFolderName = await file
+      .createFolder({ type, data })
+      .catch((err) => {
+        dev.error(`Failed to create folder! Error: ${err}`);
+        res.status(403).send(`Error on creating reply to ${slugPubliName}.`);
+      });
+
+    res.redirect(`/_publications/edit_reply/` + slugFolderName);
+  }
+
+  async function loadPublication(req, res) {
+    // if a publication has been requested
+    let slugPubliName = req.param("publication");
+
+    dev.logfunction(
+      `ROUTER — loadPublication • slugPubliName = ${slugPubliName}`
+    );
+
+    generatePageData(req).then((pageData) => {
+      pageData.type = "publications";
+      pageData.slugFolderName = slugPubliName;
+      pageData.display = "distraction_free";
+      return res.render("index", pageData);
+    });
+  }
+
   async function exportPublication(req, res) {
     let slugPubliName = req.param("publication");
     const type = "publications";
+
+    dev.logfunction(
+      `ROUTER — exportPublication • slugPubliName = ${slugPubliName}`
+    );
 
     const isSocketAllowed = await isSocketIDAuthorized({
       socketid: req.query.socketid,
@@ -193,6 +281,7 @@ module.exports = function (app) {
 
                 archive.on("error", function (err) {
                   res.status(500).send({ error: err.message });
+                  return;
                 });
 
                 //on stream closed we can end the request
@@ -223,15 +312,26 @@ module.exports = function (app) {
     let slugPubliName = req.param("publication");
     const type = "publications";
 
+    dev.logfunction(
+      `ROUTER — linkPublication • slugPubliName = ${slugPubliName}`
+    );
+
     const foldersData = await file.getFolder({
       type,
       slugFolderName: slugPubliName,
     });
+
+    if (!foldersData.hasOwnProperty(slugPubliName)) {
+      res.status(403).send(`Publi not found.`);
+      return;
+    }
+
     if (
       foldersData[slugPubliName].hasOwnProperty("viewing_limited_to") &&
       foldersData[slugPubliName].viewing_limited_to !== "everybody"
     ) {
       res.status(403).send(`Access not allowed.`);
+      return;
     }
 
     generatePageData(req).then((pageData) => {
@@ -303,6 +403,7 @@ module.exports = function (app) {
 
     archive.on("error", function (err) {
       res.status(500).send({ error: err.message });
+      return;
     });
 
     //on stream closed we can end the request
