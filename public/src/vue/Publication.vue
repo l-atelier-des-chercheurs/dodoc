@@ -9,7 +9,7 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
-      :fullscreen_mode.sync="fullscreen_mode"
+      :fullscreen_mode="fullscreen_mode"
       @togglePreviewMode="preview_mode = !preview_mode"
       @addMedia="addMedia"
     />
@@ -40,7 +40,6 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
-      :fullscreen_mode="fullscreen_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @changeMediaOrder="changeMediaOrder"
@@ -55,7 +54,6 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
-      :fullscreen_mode="fullscreen_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @editPubliFolder="editPubliFolder"
@@ -84,7 +82,6 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
-      :fullscreen_mode="fullscreen_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @editPubliFolder="editPubliFolder"
@@ -100,7 +97,6 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
-      :fullscreen_mode="fullscreen_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @editPubliFolder="editPubliFolder"
@@ -116,7 +112,6 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
-      :fullscreen_mode="fullscreen_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @editPubliFolder="editPubliFolder"
@@ -202,6 +197,10 @@ export default {
     );
 
     document.removeEventListener("keyup", this.publicationKeyListener);
+    document.removeEventListener(
+      "fullscreenchange",
+      this.handleFullscreenChange
+    );
   },
   watch: {
     "publication.medias": function () {
@@ -394,6 +393,7 @@ export default {
       this.medias = medias;
     },
     handleFullscreenChange() {
+      debugger;
       var fullscreenElement =
         document.fullscreenElement ||
         document.mozFullScreenElement ||
