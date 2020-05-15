@@ -254,7 +254,10 @@ export default {
       }
     },
     addMediaAtIndex(d) {
-      if (
+      debugger;
+      if (this.index_currently_visible === -1) {
+        d.in_position = "start";
+      } else if (
         this.index_currently_visible >= 0 &&
         this.index_currently_visible <= this.medias_in_order.length
       ) {
