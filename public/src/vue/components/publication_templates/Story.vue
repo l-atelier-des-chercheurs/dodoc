@@ -1,7 +1,11 @@
 <template>
   <div
     class="m_publicationview"
-    :class="{ 'is--preview': preview_mode, 'is--fullscreen': fullscreen_mode }"
+    :class="{
+      'is--preview': preview_mode,
+      'is--distraction_free':
+        $root.store.request.display === 'distraction_free' || fullscreen_mode,
+    }"
     ref="panel"
     @mousedown.self="$root.settings.current_publication.selected_medias = []"
     @touchstart.self="$root.settings.current_publication.selected_medias = []"
@@ -85,7 +89,11 @@
               :media="media"
               :media_position="mediaPosition(index)"
               :preview_mode="preview_mode"
-              :slugPubliName="slugPubliName"
+              :slugPubliName="
+                !model_for_this_publication
+                  ? slugPubliName
+                  : model_for_this_publication.slugFolderName
+              "
               :read_only="read_only || !!model_for_this_publication"
               @removePubliMedia="$emit('removePubliMedia', $event)"
               @changeMediaOrder="$emit('changeMediaOrder', $event)"
@@ -144,6 +152,7 @@ export default {
     can_see_publi: Boolean,
     read_only: Boolean,
     preview_mode: Boolean,
+    fullscreen_mode: Boolean,
     model_for_this_publication: [Boolean, Object],
   },
   components: {
@@ -158,7 +167,6 @@ export default {
     return {
       show_export_modal: false,
       show_media_options: false,
-      fullscreen_mode: false,
       current_scroll: 0,
     };
   },
@@ -233,37 +241,6 @@ export default {
       if (index === 0) return "first";
       if (index === this.medias_in_order.length - 1) return "last";
       return "";
-    },
-    toggleFullscreen() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • PagePublication: toggleFullscreen`);
-      }
-      const docElem = this.$refs.panel;
-      if (this.fullscreen_mode === false) {
-        if (!!docElem.requestFullscreen) {
-          // W3C API
-          docElem.requestFullscreen();
-        } else if (!!docElem.mozRequestFullScreen) {
-          // Mozilla current API
-          docElem.mozRequestFullScreen();
-        } else if (!!docElem.webkitRequestFullScreen) {
-          // Webkit current API
-          docElem.webkitRequestFullScreen();
-        } // Maybe other prefixed APIs?
-        this.fullscreen_mode = true;
-      } else {
-        if (!!document.exitFullscreen) {
-          // W3C API
-          document.exitFullscreen();
-        } else if (!!document.mozExitFullscreen) {
-          // Mozilla current API
-          document.mozExitFullscreen();
-        } else if (!!document.webkitExitFullscreen) {
-          // Webkit current API
-          document.webkitExitFullscreen();
-        } // Maybe other prefixed APIs?
-        this.fullscreen_mode = false;
-      }
     },
   },
 };

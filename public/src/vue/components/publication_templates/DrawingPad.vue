@@ -282,6 +282,7 @@ export default {
     layered_medias: Object,
     read_only: Boolean,
     preview_mode: Boolean,
+    fullscreen_mode: Boolean,
     can_edit_publi: Boolean,
     can_see_publi: Boolean,
   },
@@ -296,8 +297,6 @@ export default {
     return {
       show_export_modal: false,
       accepted_media_type: ["audio", "video"],
-
-      fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.2,
       zoom_max: 2,

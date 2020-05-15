@@ -378,7 +378,7 @@ module.exports = (function () {
 
   async function onEditMedia(
     socket,
-    { type, slugFolderName, slugMediaName, data, recipe_with_data }
+    { type, id, slugFolderName, slugMediaName, data, recipe_with_data }
   ) {
     dev.logfunction(
       `EVENT - onEditMedia for type ${type}\nslugFolderName = ${slugFolderName}\nslugMediaName = ${slugMediaName}\ndata = ${JSON.stringify(
@@ -418,7 +418,7 @@ module.exports = (function () {
       .then(
         (slugFolderName) => {
           // onEditFolder(socket, { type, slugFolderName, data: {} });
-          sendMedias({ type, slugFolderName, metaFileName: slugMediaName });
+          sendMedias({ type, id, slugFolderName, metaFileName: slugMediaName });
         },
         function (err) {
           dev.error(`Failed to edit media! Error: ${err}`);
