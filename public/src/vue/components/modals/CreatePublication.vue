@@ -23,48 +23,6 @@
         />
       </div>
 
-      <!-- Author(s) -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_authors }"
-            @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
-        </label>
-
-        <div v-if="show_authors">
-          <AuthorsInput :currentAuthors.sync="publidata.authors" />
-          <small>{{ $t("author_instructions") }}</small>
-        </div>
-      </div>
-
-      <!-- Access control -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_access_control }"
-            @click="show_access_control = !show_access_control"
-          >
-            {{ $t("manage_access") }}
-          </button>
-        </label>
-
-        <div v-if="show_access_control">
-          <EditAccessControl
-            :editing_limited_to.sync="publidata.editing_limited_to"
-            :viewing_limited_to.sync="publidata.viewing_limited_to"
-            :password.sync="publidata.password"
-            :authors.sync="publidata.authors"
-          />
-        </div>
-      </div>
-
       <div class="margin-bottom-small">
         <label>
           <button
@@ -134,6 +92,48 @@
               >
             </select>
           </div>
+        </div>
+      </div>
+
+      <!-- Author(s) -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >
+            {{ $t("author") }}
+          </button>
+        </label>
+
+        <div v-if="show_authors">
+          <AuthorsInput :currentAuthors.sync="publidata.authors" />
+          <small>{{ $t("author_instructions") }}</small>
+        </div>
+      </div>
+
+      <!-- Access control -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_access_control }"
+            @click="show_access_control = !show_access_control"
+          >
+            {{ $t("manage_access") }}
+          </button>
+        </label>
+
+        <div v-if="show_access_control">
+          <EditAccessControl
+            :editing_limited_to.sync="publidata.editing_limited_to"
+            :viewing_limited_to.sync="publidata.viewing_limited_to"
+            :password.sync="publidata.password"
+            :authors.sync="publidata.authors"
+          />
         </div>
       </div>
 
