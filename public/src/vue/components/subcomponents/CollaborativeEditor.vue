@@ -222,9 +222,14 @@ export default {
     this.$nextTick(() => {
       this.editor.root.innerHTML = this.value;
 
+      if (this.$root.state.mode === "live") {
+        this.editor.focus();
+        this.$nextTick(() => {
+          this.editor.setSelection(this.editor.getLength(), 0, "api");
+        });
+      }
       if (this.$root.state.mode === "live" && this.enable_collaboration) {
         this.initWebsocketMode();
-        this.editor.focus();
       } else {
       }
 
