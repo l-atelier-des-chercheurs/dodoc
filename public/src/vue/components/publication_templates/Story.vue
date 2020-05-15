@@ -218,9 +218,10 @@ export default {
   },
   methods: {
     toggleTransition({ position, metaFileName }) {
-      console.log(
-        `METHODS • VideoPublication: toggleTransition for metaFileName = ${metaFileName} and position = ${position}`
-      );
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `METHODS • VideoPublication: toggleTransition for metaFileName = ${metaFileName} and position = ${position}`
+        );
       this.$emit("editPubliMedia", { metaFileName, val });
     },
     toggleFullScreen() {
@@ -254,7 +255,14 @@ export default {
       }
     },
     addMediaAtIndex(d) {
-      if (
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `Story • METHODS: addMediaAtIndex with this.index_currently_visible = ${this.index_currently_visible}`
+        );
+
+      if (this.index_currently_visible === -1) {
+        d.in_position = "start";
+      } else if (
         this.index_currently_visible >= 0 &&
         this.index_currently_visible <= this.medias_in_order.length
       ) {

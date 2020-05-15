@@ -13,17 +13,19 @@
       {{ $t(publication.template) }}
     </div>-->
     <div class="m_publicationMeta--topbar">
-      <div>
+      <div class="m_publicationMeta--topbar--name">
         <button
           type="button"
           class="m_publicationMeta--topbar--backbutton"
           v-if="
-            ![
-              'export_publication',
-              'print_publication',
-              'link_publication',
-            ].includes($root.state.mode) ||
-            $root.store.request.display === 'distraction_free'
+            !(
+              [
+                'export_publication',
+                'print_publication',
+                'link_publication',
+              ].includes($root.state.mode) ||
+              $root.store.request.display === 'distraction_free'
+            )
           "
           @click="closePublication()"
           :content="$t('close')"
@@ -44,12 +46,16 @@
         </div>
       </div>
       <div
+        class="m_publicationMeta--topbar--buttons"
         v-if="
-          ![
-            'export_publication',
-            'print_publication',
-            'link_publication',
-          ].includes($root.state.mode)
+          !(
+            [
+              'export_publication',
+              'print_publication',
+              'link_publication',
+            ].includes($root.state.mode) ||
+            $root.store.request.display === 'distraction_free'
+          )
         "
       >
         <button
@@ -103,7 +109,14 @@
           {{ $t("create") }}
         </button>
       </div>
-      <div style="width: 100%;" class="ta-ce" v-if="publication.is_model">
+      <div
+        style="width: 100%;"
+        class="ta-ce"
+        v-if="
+          publication.is_model &&
+          $root.store.request.display !== 'distraction_free'
+        "
+      >
         <label>{{ $t("publi_is_model") }}</label>
         <label>
           <span v-html="$t('URL_to_share_for_replies')" />
@@ -118,7 +131,10 @@
       <div
         style="width: 100%;"
         class="ta-ce"
-        v-else-if="model_for_this_publication"
+        v-else-if="
+          model_for_this_publication &&
+          $root.store.request.display !== 'distraction_free'
+        "
       >
         <label>
           <span v-html="$t('publi_follows_model:')" />
