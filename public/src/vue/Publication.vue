@@ -376,7 +376,7 @@ export default {
           publication: this.model_for_this_publication,
         });
         this.publication_model_medias = publication_model_medias;
-        missingMedias.concat(publi_missingMedias);
+        missingMedias = missingMedias.concat(publi_missingMedias);
       }
 
       console.log(
