@@ -5,6 +5,7 @@
       'is--preview': preview_mode,
       'is--distraction_free':
         $root.store.request.display === 'distraction_free' || fullscreen_mode,
+      'has--model': model_for_this_publication,
     }"
     ref="panel"
     @mousedown.self="$root.settings.current_publication.selected_medias = []"

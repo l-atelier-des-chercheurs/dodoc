@@ -5452,6 +5452,10 @@ small {
 .m_storyPublication {
   .padding-sides-medium;
 
+  .m_publicationview.is--distraction_free.has--model & {
+    padding: 0;
+  }
+
   .m_storyPublication--content {
     max-width: @t-maxStoryWidth;
     margin: 0 auto;
@@ -5466,8 +5470,9 @@ small {
     margin-bottom: 50vh;
     padding-top: 1px;
 
-    .m_publicationsview.is--distraction_free & {
+    .m_publicationview.is--distraction_free & {
       box-shadow: none !important;
+      margin: 0;
     }
 
     .m_publicationMeta {
@@ -5478,12 +5483,15 @@ small {
       .margin-bottom-small;
       z-index: 1500;
 
+      .m_publicationview.is--distraction_free & {
+        position: relative !important;
+      }
       @media only screen and (min-height: 780px) {
         position: sticky;
       }
     }
     .m_publicationMeta--topbar {
-      box-shadow: none;
+      // box-shadow: none;
     }
 
     > span::after {
