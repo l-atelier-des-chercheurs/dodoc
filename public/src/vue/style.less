@@ -5478,7 +5478,7 @@ small {
       .margin-bottom-medium;
       z-index: 1500;
 
-      @media only screen and (min-height: 680px) {
+      @media only screen and (min-height: 780px) {
         position: sticky;
       }
     }
@@ -5535,7 +5535,7 @@ small {
 }
 
 @t-storyButtons: 24px;
-@t-marginFromDoc: 0;
+@t-marginFromDoc: 0px;
 
 .m_mediaStory--moveItemButtons {
   position: absolute;
@@ -5883,13 +5883,17 @@ small {
       background-color: @c-noir;
       color: white;
     }
+
+    .mediaContainer {
+      .bg-creme;
+    }
     // border-right: 2px solid @c-gris_tresclair;
   }
 
   .mediaContainer {
     position: relative;
     // .bg-gris_tresclair;
-    .bg-creme;
+    // .bg-creme;
     // padding: 2px;
     // border: 1px solid @c-gris_tresclair;
     border-radius: @t-buttonradius;
@@ -5907,6 +5911,7 @@ small {
         // position: absolute;
         width: 100%;
         object-fit: scale-down;
+        object-position: left top;
         height: 100%;
         max-height: 50vh;
         border-radius: @t-buttonradius;
