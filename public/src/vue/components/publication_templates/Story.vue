@@ -85,7 +85,11 @@
               :media="media"
               :media_position="mediaPosition(index)"
               :preview_mode="preview_mode"
-              :slugPubliName="slugPubliName"
+              :slugPubliName="
+                !model_for_this_publication
+                  ? slugPubliName
+                  : model_for_this_publication.slugFolderName
+              "
               :read_only="read_only || !!model_for_this_publication"
               @removePubliMedia="$emit('removePubliMedia', $event)"
               @changeMediaOrder="$emit('changeMediaOrder', $event)"

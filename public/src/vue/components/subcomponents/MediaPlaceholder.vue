@@ -50,7 +50,7 @@
             :media_position="mediaPosition(index)"
             :preview_mode="preview_mode"
             :slugPubliName="slugPubliName"
-            :read_only="read_only"
+            :read_only="read_only || preview_mode"
             @removePubliMedia="orderedRemovePubliMedia($event)"
             @changeMediaOrder="changeMediaOrder($event)"
             @editPubliMedia="$emit('editPubliMedia', $event)"

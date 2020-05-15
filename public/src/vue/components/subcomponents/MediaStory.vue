@@ -481,6 +481,7 @@ export default {
     },
 
     is_selected() {
+      if (this.read_only) return false;
       return this.$root.settings.current_publication.selected_medias.some(
         (meta) => meta === this.media.metaFileName
       );
