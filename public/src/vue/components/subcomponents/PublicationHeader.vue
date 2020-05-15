@@ -117,8 +117,18 @@
           $root.store.request.display !== 'distraction_free'
         "
       >
-        <label>{{ $t("publi_is_model") }}</label>
         <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_publi_model_infos }"
+            @click.stop="show_publi_model_infos = !show_publi_model_infos"
+          >
+            {{ $t("publi_is_model") }}
+          </button>
+        </label>
+
+        <label v-if="show_publi_model_infos">
           <span v-html="$t('URL_to_share_for_replies')" />
           <a
             :href="url_to_share_for_replies"
@@ -362,6 +372,7 @@ export default {
       show_edit_publication: false,
       show_settings: false,
       show_copy_options: false,
+      show_publi_model_infos: false,
       copy_publi_name: this.$t("copy_of") + " " + this.publication.name,
     };
   },
