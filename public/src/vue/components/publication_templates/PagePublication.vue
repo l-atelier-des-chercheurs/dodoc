@@ -28,7 +28,7 @@
       :zoom_max="zoom_max"
       @togglePreviewMode="$emit('togglePreviewMode')"
       @setZoom="(val) => (zoom = val)"
-      @toggleFullScreen="toggleFullscreen"
+      @toggleFullScreen="$emit('update:fullscreen_mode')"
     />
 
     <div
@@ -502,6 +502,7 @@ export default {
     can_edit_publi: Boolean,
     can_see_publi: Boolean,
     preview_mode: Boolean,
+    fullscreen_mode: Boolean,
   },
   components: {
     PublicationHeader,
@@ -541,7 +542,6 @@ export default {
       show_advanced_menu_for_page: false,
       show_advanced_option: false,
 
-      fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.2,
       zoom_max: 2,
@@ -598,6 +598,11 @@ export default {
     show_buttons: function () {
       this.show_advanced_menu_for_page = false;
       this.show_advanced_option = false;
+    },
+    fullscreen_mode: function () {
+      setTimeout(() => {
+        this.updatePageSizeAccordingToPanel();
+      }, 500);
     },
     publications_options: {
       handler() {
@@ -1041,41 +1046,6 @@ export default {
       //   },
       //   () => {}
       // );
-    },
-    toggleFullscreen() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • PagePublication: toggleFullscreen`);
-      }
-      const docElem = this.$refs.panel;
-      if (this.fullscreen_mode === false) {
-        if (!!docElem.requestFullscreen) {
-          // W3C API
-          docElem.requestFullscreen();
-        } else if (!!docElem.mozRequestFullScreen) {
-          // Mozilla current API
-          docElem.mozRequestFullScreen();
-        } else if (!!docElem.webkitRequestFullScreen) {
-          // Webkit current API
-          docElem.webkitRequestFullScreen();
-        } // Maybe other prefixed APIs?
-        this.fullscreen_mode = true;
-      } else {
-        if (!!document.exitFullscreen) {
-          // W3C API
-          document.exitFullscreen();
-        } else if (!!document.mozExitFullscreen) {
-          // Mozilla current API
-          document.mozExitFullscreen();
-        } else if (!!document.webkitExitFullscreen) {
-          // Webkit current API
-          document.webkitExitFullscreen();
-        } // Maybe other prefixed APIs?
-        this.fullscreen_mode = false;
-      }
-
-      setTimeout(() => {
-        this.updatePageSizeAccordingToPanel();
-      }, 500);
     },
     updatePageSizeAccordingToPanel() {
       if (this.$refs.current_page && this.$refs.current_page.$el) {
