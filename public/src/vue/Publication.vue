@@ -400,35 +400,6 @@ export default {
         document.webkitFullscreenElement;
       this.fullscreen_mode = fullscreenElement;
     },
-    toggleFullscreen() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • PagePublication: toggleFullscreen`);
-      }
-      const docElem = this.$refs.panel;
-      if (this.fullscreen_mode === false) {
-        if (!!docElem.requestFullscreen) {
-          // W3C API
-          docElem.requestFullscreen();
-        } else if (!!docElem.mozRequestFullScreen) {
-          // Mozilla current API
-          docElem.mozRequestFullScreen();
-        } else if (!!docElem.webkitRequestFullScreen) {
-          // Webkit current API
-          docElem.webkitRequestFullScreen();
-        } // Maybe other prefixed APIs?
-      } else {
-        if (!!document.exitFullscreen) {
-          // W3C API
-          document.exitFullscreen();
-        } else if (!!document.mozExitFullscreen) {
-          // Mozilla current API
-          document.mozExitFullscreen();
-        } else if (!!document.webkitExitFullscreen) {
-          // Webkit current API
-          document.webkitExitFullscreen();
-        } // Maybe other prefixed APIs?
-      }
-    },
     getLinkedMediasForPubli({ publication }) {
       let medias = [];
       let missingMedias = [];
