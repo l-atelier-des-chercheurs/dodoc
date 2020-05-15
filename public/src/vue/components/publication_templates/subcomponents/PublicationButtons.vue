@@ -391,8 +391,8 @@
               v-if="
                 media.type !== 'line' &&
                 media.type !== 'arrow' &&
-                media.hasOwnProperty('_linked_media') &&
-                media._linked_media.type !== 'image'
+                (!media.hasOwnProperty('_linked_media') ||
+                  media._linked_media.type !== 'image')
               "
             >
               <label>
