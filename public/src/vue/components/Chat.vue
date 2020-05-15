@@ -19,7 +19,14 @@
             ‹
           </button>
 
-          <span class="m_chat--content--topbar--name">{{ chat.name }}</span>
+          <span class="m_chat--content--topbar--name"
+            >{{ chat.name }}
+            <ProtectedLock
+              :editing_limited_to="chat.editing_limited_to"
+              :is_protected="false"
+            />
+          </span>
+
           <div class="m_chat--content--topbar--options">
             <button
               type="button"
@@ -64,7 +71,44 @@
             </button>
           </div>
         </div>
-        <div class="m_chat--content--topbar--options" v-if="show_chat_options">
+        <div
+          class="m_chat--content--topbar--optionbar"
+          v-if="show_chat_options"
+        >
+          <div>
+            <div class="m_metaField" v-if="!!chat.authors">
+              <div>{{ $t("author") }}</div>
+              <div class="m_authorField">
+                <span
+                  v-for="author in chat.authors"
+                  v-if="author.slugFolderName"
+                  :key="author.slugFolderName"
+                  class="is--active"
+                  :class="{
+                    'is--loggedInAuthor':
+                      $root.current_author &&
+                      $root.current_author.slugFolderName ===
+                        author.slugFolderName,
+                  }"
+                >
+                  <template v-if="$root.getAuthor(author.slugFolderName)">
+                    {{ $root.getAuthor(author.slugFolderName).name }}
+                  </template>
+                  <template v-else>
+                    {{ author.slugFolderName }}
+                  </template>
+                </span>
+              </div>
+            </div>
+
+            <AccessController
+              :folder="chat"
+              :context="'full'"
+              :type="'chats'"
+              @closeFolder="$root.closeChat()"
+            />
+          </div>
+
           <button
             type="button"
             class="buttonLink"
@@ -135,7 +179,9 @@
                   }}</span>
                   <button
                     type="button"
-                    v-if="isCurrentAuthor(message)"
+                    v-if="
+                      isCurrentAuthor(message) || $root.current_author_is_admin
+                    "
                     class="button-nostyle padding-top-verysmall"
                     @click="removeMessage(message)"
                   >
@@ -222,6 +268,8 @@
   </div>
 </template>
 <script>
+import ProtectedLock from "./subcomponents/ProtectedLock.vue";
+import AccessController from "./subcomponents/AccessController.vue";
 import EditChat from "./modals/EditChat.vue";
 
 export default {
@@ -229,6 +277,8 @@ export default {
     chat: Object,
   },
   components: {
+    ProtectedLock,
+    AccessController,
     EditChat,
   },
   data() {
@@ -489,16 +539,22 @@ export default {
         return false;
       }
 
-      this.$root.createMedia({
-        type: "chats",
-        slugFolderName: this.chat.slugFolderName,
-        additionalMeta: {
-          text: this.new_message,
-          authors: [
-            { slugFolderName: this.$root.current_author.slugFolderName },
-          ],
-        },
-      });
+      this.$root
+        .createMedia({
+          type: "chats",
+          slugFolderName: this.chat.slugFolderName,
+          additionalMeta: {
+            text: this.new_message,
+            authors: [
+              { slugFolderName: this.$root.current_author.slugFolderName },
+            ],
+          },
+        })
+        .then((mdata) => {
+          this.$nextTick(() => {
+            this.setReadMessageToLast();
+          });
+        });
 
       this.new_message = "";
     },
