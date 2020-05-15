@@ -21,7 +21,7 @@
       :preview_mode="preview_mode"
       :fullscreen_mode="fullscreen_mode"
       @togglePreviewMode="$emit('togglePreviewMode')"
-      @toggleFullScreen="toggleFullscreen"
+      @toggleFullScreen="toggleFullScreen"
     />
 
     <div
@@ -222,6 +222,36 @@ export default {
         `METHODS • VideoPublication: toggleTransition for metaFileName = ${metaFileName} and position = ${position}`
       );
       this.$emit("editPubliMedia", { metaFileName, val });
+    },
+    toggleFullScreen() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`METHODS • PagePublication: toggleFullScreen`);
+
+      const docElem = this.$refs.panel;
+
+      if (this.fullscreen_mode === false) {
+        if (!!docElem.requestFullscreen) {
+          // W3C API
+          docElem.requestFullscreen();
+        } else if (!!docElem.mozRequestFullScreen) {
+          // Mozilla current API
+          docElem.mozRequestFullScreen();
+        } else if (!!docElem.webkitRequestFullScreen) {
+          // Webkit current API
+          docElem.webkitRequestFullScreen();
+        } // Maybe other prefixed APIs?
+      } else {
+        if (!!document.exitFullscreen) {
+          // W3C API
+          document.exitFullscreen();
+        } else if (!!document.mozExitFullscreen) {
+          // Mozilla current API
+          document.mozExitFullscreen();
+        } else if (!!document.webkitExitFullscreen) {
+          // Webkit current API
+          document.webkitExitFullscreen();
+        } // Maybe other prefixed APIs?
+      }
     },
     addMediaAtIndex(d) {
       if (
