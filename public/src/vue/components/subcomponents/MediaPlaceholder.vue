@@ -212,7 +212,7 @@ export default {
               placeholder_medias_slugs: medias_slugs,
             },
           })
-          .then((fdata) => {
+          .then((mdata) => {
             this.$nextTick(() => {
               metaFileNames.map((metaFileName) => {
                 this.$eventHub.$emit(

@@ -6043,8 +6043,8 @@ small {
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     &.is--beingEdited {
-      // .bg-creme;
-      // .padding-verysmall;
+      .bg-creme;
+      display: block;
     }
 
     > *:nth-child(2) {
@@ -6053,14 +6053,22 @@ small {
 
     .quillWrapper {
       z-index: 1;
-      margin-top: ~"calc(-1.6 * var(--quill-options-size))";
+      flex: 1 1 auto;
+      // margin-top: ~"calc(-1.6 * var(--quill-options-size))";
     }
     .quillWrapper,
     .ql-container {
       overflow: visible;
     }
 
+    .ql-container {
+      .padding-verysmall;
+      padding-top: 0;
+    }
+
     .ql-toolbar {
+      padding: 0;
+
       background: transparent;
     }
 

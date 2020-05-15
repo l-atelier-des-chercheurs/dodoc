@@ -960,10 +960,36 @@ let vm = new Vue({
       this.$socketio.removeMedia(mdata);
     },
     editMedia: function (mdata) {
-      if (window.state.dev_mode === "debug") {
-        console.log(`ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`);
-      }
-      this.$socketio.editMedia(mdata);
+      return new Promise((resolve, reject) => {
+        if (window.state.dev_mode === "debug") {
+          console.log(
+            `ROOT EVENT: editMedia: ${JSON.stringify(mdata, null, 4)}`
+          );
+        }
+
+        mdata.id =
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15);
+
+        this.$socketio.editMedia(mdata);
+
+        const catchMediaCreation = (d) => {
+          if (mdata.id === d.id) {
+            this.$nextTick(() => {
+              return resolve(d);
+            });
+          } else {
+            this.$eventHub.$once(
+              `socketio.media_created_or_updated`,
+              catchMediaCreation
+            );
+          }
+        };
+        this.$eventHub.$once(
+          `socketio.media_created_or_updated`,
+          catchMediaCreation
+        );
+      });
     },
 
     canSeeFolder: function ({ type, slugFolderName }) {
