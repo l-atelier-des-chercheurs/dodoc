@@ -201,11 +201,29 @@ export default {
   computed: {
     index_currently_visible() {
       this.current_scroll;
-      if (!this.$refs.publi) return -1;
+      if (!this.$refs.publi) return 0;
 
       const insertMediaButtons = this.$refs.publi.querySelectorAll(
         ".m_insertMediaButton"
       );
+
+      // if pane is scrolled all the way, we should adjust
+      var el = this.$refs.publi.firstElementChild;
+      var elHeight = el.offsetHeight;
+      elHeight += parseInt(
+        window.getComputedStyle(el).getPropertyValue("margin-top")
+      );
+      elHeight += parseInt(
+        window.getComputedStyle(el).getPropertyValue("margin-bottom")
+      );
+
+      if (
+        this.current_scroll / (elHeight - this.$refs.publi.offsetHeight) >
+        0.9
+      ) {
+        return insertMediaButtons.length - 1;
+      }
+
       let index = 0;
       for (const insert of insertMediaButtons) {
         // loop until we get insert.offsetTop > this.current_scroll;
@@ -260,10 +278,10 @@ export default {
           `Story • METHODS: addMediaAtIndex with this.index_currently_visible = ${this.index_currently_visible}`
         );
 
-      if (this.index_currently_visible === -1) {
+      if (this.index_currently_visible === 0) {
         d.in_position = "start";
       } else if (
-        this.index_currently_visible >= 0 &&
+        this.index_currently_visible > 0 &&
         this.index_currently_visible <= this.medias_in_order.length
       ) {
         d.right_after_meta = this.medias_in_order[

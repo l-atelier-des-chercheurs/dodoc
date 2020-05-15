@@ -5629,7 +5629,8 @@ small {
 // in publi following models
 .m_mediaPlaceholder {
   // color: @c-gris;
-  .padding-medium;
+  .padding-sides-medium;
+  .padding-vert-small;
   counter-increment: mediaCounter -1;
 
   > label {
@@ -5701,6 +5702,7 @@ small {
 
   &.is--open,
   &.is--dragover {
+    padding: 0;
     // background-color: @c-noir;
     .margin-vert-verysmall;
     // .bg-gris_clair;

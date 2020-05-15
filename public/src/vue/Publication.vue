@@ -393,7 +393,6 @@ export default {
       this.medias = medias;
     },
     handleFullscreenChange() {
-      debugger;
       var fullscreenElement =
         document.fullscreenElement ||
         document.mozFullScreenElement ||
