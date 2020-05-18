@@ -7,12 +7,25 @@
     :is_loading="is_sending_content_to_server"
   >
     <template slot="header">
-      <span class>{{ $t("login") }}</span>
+      <span class>{{ $t("account") }}</span>
     </template>
 
     <template slot="preview">
       <div class="">
-        <div class="m_selectedQRShareMode hide_on_print">
+        <p class="margin-medium">
+          <template
+            v-if="$root.current_publication.editing_limited_to === 'everybody'"
+          >
+            {{ $t("create_an_account_or_login_to_participate") }}
+          </template>
+          <template v-else>
+            {{ $t("login_to_edit_existing_participation") }}
+          </template>
+        </p>
+        <div
+          class="m_sideBySideSwitches"
+          v-if="$root.current_publication.editing_limited_to !== 'only_authors'"
+        >
           <label for="CreateAccount">
             <input
               type="radio"
@@ -32,6 +45,8 @@
             {{ $t("login") }}
           </label>
         </div>
+        <div v-else class="margin-medium"></div>
+
         <div class="margin-medium">
           <transition name="fade_fast" mode="out-in" :duration="250">
             <div v-if="current_mode === 'CreateAccount'">
@@ -102,7 +117,10 @@ export default {
     return {
       show_create_author_panel: false,
       is_sending_content_to_server: false,
-      current_mode: "CreateAccount",
+      current_mode:
+        this.$root.current_publication.editing_limited_to === "only_authors"
+          ? "Login"
+          : "CreateAccount",
 
       login_author_name: "",
     };

@@ -182,7 +182,7 @@
               :key="domain"
               :href="`http://${domain}`"
               target="_blank"
-              class="js--openInBrowser"
+              class="js--openInBrowser text-lc"
               >{{ domain }}</a
             >
           </label>

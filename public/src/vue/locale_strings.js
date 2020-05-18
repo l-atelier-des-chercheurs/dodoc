@@ -253,6 +253,10 @@ module.exports = (function () {
       oc: "Autor",
       de: "Autor(en)",
     },
+    account: {
+      fr: "Compte",
+      en: "Account",
+    },
     role: {
       fr: "Rôle",
       en: "Role",
@@ -300,6 +304,16 @@ module.exports = (function () {
       nl: "effen",
       oc: "Lissatge",
       de: "Glättungmodus",
+    },
+    create_an_account_or_login_to_participate: {
+      fr:
+        "Créez un compte ou identifiez-vous avec un compte existant pour participer",
+      en: "Create an account or login using an existing account to participate",
+    },
+    login_to_edit_existing_participation: {
+      fr:
+        "Identifiez-vous avec le compte créé précédemment pour modifier vos réponses",
+      en: "Login with an existing account to edit your replies",
     },
     custom: {
       fr: "Personnalisé",

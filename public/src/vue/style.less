@@ -722,6 +722,32 @@ body {
   }
 }
 
+.m_sideBySideSwitches {
+  display: flex;
+  flex-flow: row wrap;
+
+  > * {
+    flex: 1 1 0;
+    margin: 0;
+    padding: 0;
+    min-width: 150px;
+    border-bottom: 2px solid var(--c-gris-clair);
+    border-right: 2px solid var(--c-gris-clair);
+    display: flex;
+    align-items: center;
+
+    input {
+      display: block;
+      flex: 0 0 auto;
+      margin: ~"calc(var(--spacing) / 2)";
+    }
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+}
+
 .m_filterBar {
   max-height: @t-skipline*3;
   overflow: hidden;

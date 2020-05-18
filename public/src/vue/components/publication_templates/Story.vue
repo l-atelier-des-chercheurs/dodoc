@@ -18,6 +18,7 @@
     />
 
     <PublicationDisplayButtons
+      v-if="$root.store.request.display !== 'survey'"
       :preview_mode="preview_mode"
       :fullscreen_mode="fullscreen_mode"
       @togglePreviewMode="$emit('togglePreviewMode')"

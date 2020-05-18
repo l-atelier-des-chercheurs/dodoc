@@ -30,7 +30,6 @@
         ].includes($root.state.mode) || $root.store.request.display === 'survey'
       "
     >
-      {{ survey_can_edit_publication }}
       <SimpleAuthorLogin
         v-if="!survey_can_edit_publication"
         :prevent_close="true"
