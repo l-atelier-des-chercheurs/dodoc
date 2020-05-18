@@ -51,18 +51,26 @@ export default {
   watch: {},
   computed: {
     uniqueClients() {
-      return this.$root.state.clients.filter((client) => {
+      return this.$root.state.clients.reduce((acc, client) => {
         if (client.id === this.$root.$socketio.socket.id.substring(0, 4))
-          return false;
+          return acc;
 
         if (
           this.$root.state.local_options.force_login &&
           !client.data.hasOwnProperty("author")
         )
-          return false;
+          return acc;
 
-        return true;
-      });
+        if (
+          !client.data.hasOwnProperty("author") ||
+          !acc.some(
+            (a) => a.data.slugFolderName === client.data.author.slugFolderName
+          )
+        )
+          acc.push(client);
+
+        return acc;
+      }, []);
     },
   },
   methods: {},
