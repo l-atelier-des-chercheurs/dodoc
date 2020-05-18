@@ -3,8 +3,7 @@
     class="m_publicationview"
     :class="{
       'is--preview': preview_mode,
-      'is--distraction_free':
-        $root.store.request.display === 'distraction_free' || fullscreen_mode,
+      'is--survey': $root.store.request.display === 'survey' || fullscreen_mode,
       'has--model': model_for_this_publication,
     }"
     ref="panel"

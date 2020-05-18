@@ -91,7 +91,7 @@
       :class="{ 'is--beingEdited': edit_caption_mode }"
     >
       <template v-if="!edit_caption_mode">
-        <p v-html="media_caption" />
+        <p v-if="media_caption" v-html="media_caption" />
         <!-- <textarea v-else v-model="new_media_caption" /> -->
         <button
           type="button"

@@ -27,12 +27,35 @@
           'export_publication',
           'print_publication',
           'link_publication',
-        ].includes($root.state.mode) ||
-        $root.store.request.display === 'distraction_free'
+        ].includes($root.state.mode) || $root.store.request.display === 'survey'
       "
     >
-      <template v-if="$root.current_publication">
+      {{ survey_can_edit_publication }}
+      <SimpleAuthorLogin
+        v-if="!survey_can_edit_publication"
+        :prevent_close="true"
+        @loggedInAs="($event) => loggedInAs($event)"
+      />
+
+      <template v-if="survey_can_edit_publication">
+        <div class="_survey_author_indicator" v-if="$root.current_author">
+          <button type="button" class="button-greenthin">
+            {{ $root.current_author.name }}
+            <span v-if="$root.current_author_is_admin"
+              >({{ $t("admin") }})</span
+            >
+          </button>
+          <button
+            type="button"
+            class="buttonLink"
+            @click.stop="$root.unsetAuthor()"
+          >
+            {{ $t("logout") }}
+          </button>
+        </div>
+
         <Publication
+          v-if="survey_can_edit_publication"
           :publication="$root.current_publication"
           :read_only="!$root.state.connected"
         />
@@ -218,6 +241,8 @@ import MediaContent from "./components/subcomponents/MediaContent.vue";
 import Publications from "./Publications.vue";
 import Publication from "./Publication.vue";
 
+import SimpleAuthorLogin from "./components/modals/SimpleAuthorLogin.vue";
+
 import { Splitpanes, Pane } from "splitpanes";
 
 export default {
@@ -236,7 +261,7 @@ export default {
     Publication,
     Splitpanes,
     Pane,
-
+    SimpleAuthorLogin,
     MediaContent,
   },
   props: {},
@@ -309,6 +334,16 @@ export default {
 
       return true;
     },
+    survey_can_edit_publication() {
+      if (this.$root.current_author_is_admin) return true;
+      return (
+        this.$root.current_publication &&
+        this.$root.current_author &&
+        this.$root.current_publication.authors.some(
+          (a) => a.slugFolderName === this.$root.current_author.slugFolderName
+        )
+      );
+    },
   },
   methods: {
     resize($event) {
@@ -376,6 +411,55 @@ export default {
             chat_name +
             "</b>"
         );
+    },
+    loggedInAs(slugAuthorName) {
+      if (this.$root.store.request.display !== "survey") return false;
+      if (!this.$root.current_publication) return false;
+
+      if (this.$root.current_publication.editing_limited_to === "everybody") {
+        this.$root
+          .editFolder({
+            type: "publications",
+            slugFolderName: this.$root.current_publication.slugFolderName,
+            data: {
+              editing_limited_to: "only_authors",
+              viewing_limited_to: "",
+              authors: [{ slugFolderName: slugAuthorName }],
+            },
+          })
+          .then(() => {
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .success(
+                this.$t("notifications.connected_as") +
+                  "<i>" +
+                  this.author.name +
+                  "</i>"
+              );
+          });
+      } else if (
+        this.$root.current_publication.authors.some(
+          (a) => a.slugFolderName === slugAuthorName
+        )
+      ) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(
+            this.$t("notifications.connected_as") +
+              "<i>" +
+              this.$root.current_author.name +
+              "</i>"
+          );
+      } else {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            this.$t("notifications.account_not_associated_to_this_ressource")
+          );
+      }
     },
   },
 };

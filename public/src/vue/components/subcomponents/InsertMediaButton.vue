@@ -9,7 +9,7 @@
   >
     <button
       type="button"
-      v-if="can_collapse"
+      v-if="can_collapse || (!can_collapse && !show_menu)"
       class="m_insertMediaButton--toggleButton"
       :class="{ 'is--active': show_menu }"
       @click="toggleMenu"

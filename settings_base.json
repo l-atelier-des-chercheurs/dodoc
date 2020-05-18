@@ -180,7 +180,7 @@
         },
         "role": {
           "type": "string",
-          "options": ["contributor", "admin"],
+          "options": ["contributor", "participant", "admin"],
           "default": "contributor",
           "only_admin_can_edit": true
         },

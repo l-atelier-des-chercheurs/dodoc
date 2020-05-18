@@ -14,12 +14,18 @@
 
     <div class="margin-bottom-small">
       <label>{{ $t("email") }}</label>
-      <input type="email" v-model.trim="authordata.email" />
-      <small>{{ $t("email_instructions") }}</small>
+      <input
+        type="email"
+        v-model.trim="authordata.email"
+        :required="mode === 'simple_login'"
+      />
+      <small v-if="mode !== 'simple_login'">{{
+        $t("email_instructions")
+      }}</small>
     </div>
 
     <!-- Role -->
-    <div class="margin-bottom-small">
+    <div class="margin-bottom-small" v-if="mode !== 'simple_login'">
       <label>
         {{ $t("role") }}
       </label>
@@ -52,12 +58,14 @@
           v-model="authordata.password"
           autocomplete="new-password"
         />
-        <small>{{ $t("password_instructions") }}</small>
+        <small v-if="mode !== 'simple_login'">{{
+          $t("password_instructions")
+        }}</small>
       </div>
     </div>
 
     <!-- Preview -->
-    <div class="margin-bottom-small">
+    <div class="margin-bottom-small" v-if="mode !== 'simple_login'">
       <label>
         <button
           type="button"
@@ -82,7 +90,7 @@
     </div>
 
     <!-- NFC tag(s) -->
-    <div class="margin-bottom-small">
+    <div class="margin-bottom-small" v-if="mode !== 'simple_login'">
       <label>
         <button
           type="button"
@@ -111,7 +119,7 @@
       <button type="submit" class="bg-bleuvert">{{ $t("create") }}</button>
     </div>
 
-    <div class="text-centered">
+    <div class="text-centered" v-if="mode !== 'simple_login'">
       <span class="switch switch-xs margin-top-small">
         <input
           id="login_after_creation"
@@ -131,6 +139,7 @@ import ImageSelect from "../subcomponents/ImageSelect.vue";
 export default {
   props: {
     read_only: Boolean,
+    mode: String,
   },
   components: {
     ImageSelect,
@@ -140,7 +149,7 @@ export default {
       show_password: true,
       show_image: false,
       show_nfc: false,
-      possible_roles: ["contributor", "admin"],
+      possible_roles: ["contributor", "participant", "admin"],
       authordata: {
         name: "",
         email: "",
@@ -186,6 +195,10 @@ export default {
       }
 
       if (!!data.password) data.password = this.$auth.hashCode(data.password);
+
+      if (this.mode === "simple_login") {
+        data.role = "participant";
+      }
 
       this.$root.createFolder({ type: "authors", data }).then((adata) => {
         if (this.login_after_creation) {

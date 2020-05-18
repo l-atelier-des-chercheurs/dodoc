@@ -889,9 +889,13 @@ module.exports = (function () {
     login: {
       fr: "S’identifier",
       en: "Login",
-      nl: "Inloggen ",
+      nl: "Inloggen",
       oc: "S'identificar",
       de: "Anmeldung",
+    },
+    create_account: {
+      fr: "Créer un compte",
+      en: "Create an account",
     },
     logout: {
       fr: "Se déconnecter",
@@ -3166,6 +3170,16 @@ module.exports = (function () {
         fr:
           "Attention : la modification est limité aux auteurs ou aux personnes possédant le mot de passe.",
         en: "Warning: editing is restricted to authors or with a password",
+      },
+      "account_does_not_exist:": {
+        fr: "Le compte demandé n’existe pas&nbsp;:",
+        en: "The requested account does not exist:",
+      },
+      account_not_associated_to_this_ressource: {
+        fr:
+          "Ce compte existe bien mais n’est pas autorisé à accéder à cette ressource. Avez-vous la bonne URL ?",
+        en:
+          "This account exists but is not associated to this content. Do you have the right link?",
       },
     },
   };

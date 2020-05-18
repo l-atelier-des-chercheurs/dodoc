@@ -24,7 +24,7 @@
                 'print_publication',
                 'link_publication',
               ].includes($root.state.mode) ||
-              $root.store.request.display === 'distraction_free'
+              $root.store.request.display === 'survey'
             )
           "
           @click="closePublication()"
@@ -54,7 +54,7 @@
               'print_publication',
               'link_publication',
             ].includes($root.state.mode) ||
-            $root.store.request.display === 'distraction_free'
+            $root.store.request.display === 'survey'
           )
         "
       >
@@ -112,10 +112,7 @@
       <div
         style="width: 100%;"
         class="ta-ce"
-        v-if="
-          publication.is_model &&
-          $root.store.request.display !== 'distraction_free'
-        "
+        v-if="publication.is_model && $root.store.request.display !== 'survey'"
       >
         <label>
           <button
@@ -142,8 +139,7 @@
         style="width: 100%;"
         class="ta-ce"
         v-else-if="
-          model_for_this_publication &&
-          $root.store.request.display !== 'distraction_free'
+          model_for_this_publication && $root.store.request.display !== 'survey'
         "
       >
         <label>
