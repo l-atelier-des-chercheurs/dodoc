@@ -172,7 +172,7 @@ export default {
     document.removeEventListener("dragover", this.ondragover);
   },
   watch: {
-    show_menu: {
+    can_collapse: {
       handler() {
         if (!this.can_collapse) this.show_menu = true;
       },

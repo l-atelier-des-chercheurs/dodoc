@@ -65,6 +65,9 @@
               :slugPubliName="slugPubliName"
               :publi_is_model="publication.is_model"
               :read_only="read_only"
+              :can_collapse="
+                index !== model_placeholder_media._reply._medias.length - 1
+              "
               @addMedia="
                 (values) =>
                   addMediaOrdered({
