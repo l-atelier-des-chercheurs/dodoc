@@ -253,6 +253,10 @@ module.exports = (function () {
       oc: "Autor",
       de: "Autor(en)",
     },
+    account: {
+      fr: "Compte",
+      en: "Account",
+    },
     role: {
       fr: "Rôle",
       en: "Role",
@@ -300,6 +304,16 @@ module.exports = (function () {
       nl: "effen",
       oc: "Lissatge",
       de: "Glättungmodus",
+    },
+    create_an_account_or_login_to_participate: {
+      fr:
+        "Créez un compte ou identifiez-vous avec un compte existant pour participer",
+      en: "Create an account or login using an existing account to participate",
+    },
+    login_to_edit_existing_participation: {
+      fr:
+        "Identifiez-vous avec le compte créé précédemment pour modifier vos réponses",
+      en: "Login with an existing account to edit your replies",
     },
     custom: {
       fr: "Personnalisé",
@@ -889,9 +903,13 @@ module.exports = (function () {
     login: {
       fr: "S’identifier",
       en: "Login",
-      nl: "Inloggen ",
+      nl: "Inloggen",
       oc: "S'identificar",
       de: "Anmeldung",
+    },
+    create_account: {
+      fr: "Créer un compte",
+      en: "Create an account",
     },
     logout: {
       fr: "Se déconnecter",
@@ -1342,7 +1360,7 @@ module.exports = (function () {
       de: "Schreiben",
     },
     placeholder: {
-      fr: "Zone éditable",
+      fr: "Bloc éditable",
       en: "Editable bloc",
     },
     import: {
@@ -3166,6 +3184,16 @@ module.exports = (function () {
         fr:
           "Attention : la modification est limité aux auteurs ou aux personnes possédant le mot de passe.",
         en: "Warning: editing is restricted to authors or with a password",
+      },
+      "account_does_not_exist:": {
+        fr: "Le compte demandé n’existe pas&nbsp;:",
+        en: "The requested account does not exist:",
+      },
+      account_not_associated_to_this_ressource: {
+        fr:
+          "Ce compte existe bien mais n’est pas autorisé à accéder à cette ressource. Avez-vous la bonne URL ?",
+        en:
+          "This account exists but is not associated to this content. Do you have the right link?",
       },
     },
   };

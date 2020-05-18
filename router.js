@@ -24,7 +24,7 @@ module.exports = function (app) {
   app.get("/_publications/web/:publication", exportPublication);
   app.get("/_publications/print/:publication", printPublication);
   app.get("/_publications/reply/:publication", replyToPublication);
-  app.get("/_publications/edit/:publication", loadPublication);
+  app.get("/_publications/survey/:publication", surveyPublication);
   app.get("/_publications/print/doc/:docName", showDoc);
   app.get("/_publications/video/:videoName", showVideo);
   app.get("/_archives/:type/:slugFolderName", downloadArchive);
@@ -222,21 +222,21 @@ module.exports = function (app) {
         res.status(403).send(`Error on creating reply to ${slugPubliName}.`);
       });
 
-    res.redirect(`/_publications/edit/` + slugFolderName);
+    res.redirect(`/_publications/survey/` + slugFolderName);
   }
 
-  async function loadPublication(req, res) {
+  async function surveyPublication(req, res) {
     // if a publication has been requested
     let slugPubliName = req.param("publication");
 
     dev.logfunction(
-      `ROUTER — loadPublication • slugPubliName = ${slugPubliName}`
+      `ROUTER — surveyPublication • slugPubliName = ${slugPubliName}`
     );
 
     generatePageData(req).then((pageData) => {
       pageData.type = "publications";
       pageData.slugFolderName = slugPubliName;
-      pageData.display = "distraction_free";
+      pageData.display = "survey";
       return res.render("index", pageData);
     });
   }

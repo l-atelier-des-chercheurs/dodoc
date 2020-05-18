@@ -516,6 +516,10 @@ let vm = new Vue({
         this.$socketio.connect();
       }
 
+      if (this.$root.store.request.display === "survey") {
+        this.$socketio.listFolders({ type: "authors" });
+      }
+
       this.$eventHub.$once("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "projects" });
