@@ -624,7 +624,7 @@ let vm = new Vue({
         return this.store.projects[this.do_navigation.current_slugProjectName];
       } else {
         this.closeProject();
-        return {};
+        return false;
       }
     },
     current_author() {

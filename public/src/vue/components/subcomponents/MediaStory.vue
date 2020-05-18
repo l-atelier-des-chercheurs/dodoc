@@ -1,7 +1,10 @@
 <template>
   <div
     class="m_mediaStory"
-    :class="{ 'is--selected': is_selected, 'is--previewed': preview_mode }"
+    :class="[
+      'type-' + media.type,
+      { 'is--selected': is_selected, 'is--previewed': preview_mode },
+    ]"
     ref="media"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
@@ -79,55 +82,47 @@
         </template>
         <template v-else-if="media.type === 'placeholder'">
           <div class="m_mediaStory--placeholder">
-            <small>{{ $t("placeholder") }} </small>
+            <label>{{ $t("placeholder") }} </label>
+
+            <ol>
+              <li>
+                instructions
+                <MediaField
+                  v-if="media.instructions || is_selected"
+                  :value="media.instructions"
+                  :show_edit_button="is_selected"
+                  :add_instructions="$t('add_instructions')"
+                  :edit_instructions="$t('edit_instructions')"
+                  @updateField="
+                    (value) => updateMediaPubliMeta({ instructions: value })
+                  "
+                />
+              </li>
+              <li>
+                Possibilités de réponse
+
+                <PlaceholderConstraints />
+              </li>
+            </ol>
           </div>
         </template>
       </div>
     </template>
 
-    <div
+    <MediaField
+      v-if="
+        (media.caption || is_selected) &&
+        media.type !== 'text' &&
+        media.type !== 'placeholder' &&
+        media.type !== 'divider'
+      "
       class="mediaCaption"
-      v-if="(media_caption || is_selected) && media.type !== 'text'"
-      :class="{ 'is--beingEdited': edit_caption_mode }"
-    >
-      <template v-if="!edit_caption_mode">
-        <p v-if="media_caption" v-html="media_caption" />
-        <!-- <textarea v-else v-model="new_media_caption" /> -->
-        <button
-          type="button"
-          class="buttonLink"
-          v-if="is_selected"
-          v-html="!!media_caption ? $t('edit_caption') : $t('add_caption')"
-          @click="edit_caption_mode = true"
-        />
-      </template>
-      <template v-else-if="edit_caption_mode">
-        <CollaborativeEditor
-          :specific_toolbar="[
-            ['bold', 'italic', 'underline', 'link', 'blockquote'],
-            ['clean'],
-          ]"
-          v-model="new_media_caption"
-          ref="textField"
-        />
-        <div>
-          <button
-            type="button"
-            class="button-redthin"
-            @click="edit_caption_mode = false"
-          >
-            {{ $t("cancel") }}
-          </button>
-          <button
-            type="button"
-            class="button-greenthin"
-            @click="sendNewCaption"
-          >
-            {{ $t("send") }}
-          </button>
-        </div>
-      </template>
-    </div>
+      :value="media.caption"
+      :add_instructions="$t('add_caption')"
+      :edit_instructions="$t('edit_caption')"
+      :show_edit_button="is_selected"
+      @updateField="(value) => updateMediaPubliMeta({ caption: value })"
+    />
 
     <div
       class="m_mediaStory--moveItemButtons"
@@ -158,7 +153,10 @@
       <div class="m_mediaStory--moveItemButton--options">
         <button
           type="button"
-          @click.stop="show_advanced_menu = !show_advanced_menu"
+          @click.stop="
+            show_advanced_menu = !show_advanced_menu;
+            selectMedia();
+          "
         >
           <svg
             version="1.1"
@@ -397,6 +395,8 @@
 import MediaContent from "./MediaContent.vue";
 import debounce from "debounce";
 import CollaborativeEditor from "./CollaborativeEditor.vue";
+import MediaField from "./MediaField.vue";
+import PlaceholderConstraints from "./PlaceholderConstraints.vue";
 
 export default {
   props: {
@@ -409,6 +409,8 @@ export default {
   components: {
     MediaContent,
     CollaborativeEditor,
+    MediaField,
+    PlaceholderConstraints,
   },
   data() {
     return {
@@ -426,9 +428,8 @@ export default {
 
       fit_mode: "cover",
 
-      edit_caption_mode: false,
-      media_caption: "",
-      new_media_caption: "",
+      edit_instructions: false,
+      new_instructions: "",
     };
   },
 
@@ -461,9 +462,9 @@ export default {
       },
       deep: true,
     },
-    edit_caption_mode() {
-      if (this.edit_caption_mode) {
-        this.new_media_caption = this.media_caption;
+    edit_instructions() {
+      if (this.edit_instructions) {
+        this.new_instructions = this.media.instructions;
       }
     },
   },
@@ -537,9 +538,9 @@ export default {
         this.editButtonClicked();
       }
     },
-    sendNewCaption() {
-      this.updateMediaPubliMeta({ caption: this.new_media_caption });
-      this.edit_caption_mode = false;
+    sendNewInstructions() {
+      this.updateMediaPubliMeta({ instructions: this.new_instructions });
+      this.edit_instructions = false;
     },
     mediaJustInserted(metaFileName) {
       if (this.media.metaFileName === metaFileName) {
@@ -569,9 +570,6 @@ export default {
       this.fit_mode = this.media.hasOwnProperty("fit_mode")
         ? this.media.fit_mode
         : "cover";
-      this.media_caption = this.media.hasOwnProperty("caption")
-        ? this.media.caption
-        : "";
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug")

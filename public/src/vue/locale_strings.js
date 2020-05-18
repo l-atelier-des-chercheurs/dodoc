@@ -291,6 +291,14 @@ module.exports = (function () {
       fr: "Modifier la légende",
       en: "Edit caption",
     },
+    add_instructions: {
+      fr: "Ajouter des instructions",
+      en: "Add instructions",
+    },
+    edit_instructions: {
+      fr: "Modifier les instructions",
+      en: "Edit instructions",
+    },
     formatting: {
       fr: "Mise en forme",
       en: "Formatting",
@@ -1362,6 +1370,10 @@ module.exports = (function () {
     placeholder: {
       fr: "Bloc éditable",
       en: "Editable bloc",
+    },
+    divider: {
+      fr: "Séparateur",
+      en: "Divider",
     },
     import: {
       fr: "Importer",

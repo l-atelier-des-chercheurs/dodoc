@@ -346,6 +346,9 @@
           "caption": {
             "type": "string"
           },
+          "instructions": {
+            "type": "string"
+          },
           "authors": {
             "type": "array"
           },
@@ -363,6 +366,7 @@
             "options": [
               "text",
               "placeholder",
+              "divider",
               "solid_color",
               "rectangle",
               "ellipsis",

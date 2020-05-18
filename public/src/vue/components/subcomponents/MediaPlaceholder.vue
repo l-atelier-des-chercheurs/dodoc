@@ -1,6 +1,10 @@
 <template>
   <div class="m_mediaPlaceholder">
     <label>{{ $t("placeholder") }} </label>
+
+    <div v-if="model_placeholder_media.hasOwnProperty('instructions')">
+      <div v-html="model_placeholder_media.instructions" />
+    </div>
     <div v-if="!model_placeholder_media.hasOwnProperty('_reply')">
       <button
         type="button"
@@ -65,6 +69,9 @@
               :slugPubliName="slugPubliName"
               :publi_is_model="publication.is_model"
               :read_only="read_only"
+              :can_collapse="
+                index !== model_placeholder_media._reply._medias.length - 1
+              "
               @addMedia="
                 (values) =>
                   addMediaOrdered({
