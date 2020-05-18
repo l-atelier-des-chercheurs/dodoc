@@ -3,7 +3,8 @@
     class="m_insertMediaButton"
     :class="{
       'is--open': show_menu,
-      'is--active': is_currently_active && !show_drop_container,
+      'is--active':
+        is_currently_active && !show_drop_container && $root.current_project,
       'is--dragover': show_drop_container,
     }"
   >
@@ -82,6 +83,14 @@
               @click="createPlaceholderMedia"
             >
               <span>{{ $t("placeholder") }}</span>
+            </button>
+
+            <button
+              type="button"
+              class="barButton barButton_divider"
+              @click="createDivider"
+            >
+              <span>{{ $t("divider") }}</span>
             </button>
           </div>
           <!-- <small v-if="!is_iOS_device">
@@ -182,6 +191,13 @@ export default {
     createPlaceholderMedia() {
       this.$emit("addMedia", {
         type: "placeholder",
+      });
+
+      this.show_menu = false;
+    },
+    createDivider() {
+      this.$emit("addMedia", {
+        type: "divider",
       });
 
       this.show_menu = false;

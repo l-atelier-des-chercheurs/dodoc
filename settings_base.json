@@ -363,6 +363,7 @@
             "options": [
               "text",
               "placeholder",
+              "divider",
               "solid_color",
               "rectangle",
               "ellipsis",

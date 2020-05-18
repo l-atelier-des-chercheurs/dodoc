@@ -1363,6 +1363,10 @@ module.exports = (function () {
       fr: "Bloc éditable",
       en: "Editable bloc",
     },
+    divider: {
+      fr: "Séparateur",
+      en: "Divider",
+    },
     import: {
       fr: "Importer",
       en: "Import",

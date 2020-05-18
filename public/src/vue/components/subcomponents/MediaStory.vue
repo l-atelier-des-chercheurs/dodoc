@@ -1,7 +1,10 @@
 <template>
   <div
     class="m_mediaStory"
-    :class="{ 'is--selected': is_selected, 'is--previewed': preview_mode }"
+    :class="[
+      'type-' + media.type,
+      { 'is--selected': is_selected, 'is--previewed': preview_mode },
+    ]"
     ref="media"
     @mouseover="mouseOver"
     @mouseleave="mouseLeave"
@@ -79,7 +82,7 @@
         </template>
         <template v-else-if="media.type === 'placeholder'">
           <div class="m_mediaStory--placeholder">
-            <small>{{ $t("placeholder") }} </small>
+            <label>{{ $t("placeholder") }} </label>
           </div>
         </template>
       </div>
@@ -87,7 +90,12 @@
 
     <div
       class="mediaCaption"
-      v-if="(media_caption || is_selected) && media.type !== 'text'"
+      v-if="
+        (media_caption || is_selected) &&
+        media.type !== 'text' &&
+        media.type !== 'placeholder' &&
+        media.type !== 'divider'
+      "
       :class="{ 'is--beingEdited': edit_caption_mode }"
     >
       <template v-if="!edit_caption_mode">
@@ -158,7 +166,10 @@
       <div class="m_mediaStory--moveItemButton--options">
         <button
           type="button"
-          @click.stop="show_advanced_menu = !show_advanced_menu"
+          @click.stop="
+            show_advanced_menu = !show_advanced_menu;
+            selectMedia();
+          "
         >
           <svg
             version="1.1"
