@@ -117,11 +117,7 @@ export default {
     return {
       show_create_author_panel: false,
       is_sending_content_to_server: false,
-      current_mode:
-        this.$root.current_publication.editing_limited_to === "only_authors"
-          ? "Login"
-          : "CreateAccount",
-
+      current_mode: "CreateAccount",
       login_author_name: "",
     };
   },
@@ -132,7 +128,20 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off("authors.submitPassword", this.submitPassword);
   },
-  watch: {},
+  watch: {
+    "$root.current_publication": {
+      handler() {
+        if (
+          this.$root.current_publication.editing_limited_to === "only_authors"
+        ) {
+          this.current_mode = "Login";
+        } else {
+          this.current_mode = "CreateAccount";
+        }
+      },
+      immediate: true,
+    },
+  },
   computed: {},
   methods: {
     loginAs() {
@@ -143,6 +152,7 @@ export default {
         (a) => a.name === this.login_author_name
       );
       const password = this.$auth.hashCode(this.$refs.passwordField.value);
+
       if (!author) {
         this.$alertify
           .closeLogOnClick(true)

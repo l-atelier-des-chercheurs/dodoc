@@ -33,7 +33,7 @@
       <SimpleAuthorLogin
         v-if="!survey_can_edit_publication"
         :prevent_close="true"
-        @loggedInAs="($event) => loggedInAs($event)"
+        @loggedInAs="loggedInAs"
       />
 
       <template v-if="survey_can_edit_publication">
@@ -338,6 +338,7 @@ export default {
       return (
         this.$root.current_publication &&
         this.$root.current_author &&
+        Array.isArray(this.$root.current_publication.authors) &&
         this.$root.current_publication.authors.some(
           (a) => a.slugFolderName === this.$root.current_author.slugFolderName
         )
@@ -426,17 +427,7 @@ export default {
               authors: [{ slugFolderName: slugAuthorName }],
             },
           })
-          .then(() => {
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .success(
-                this.$t("notifications.connected_as") +
-                  "<i>" +
-                  this.author.name +
-                  "</i>"
-              );
-          });
+          .then(() => {});
       } else if (
         this.$root.current_publication.authors.some(
           (a) => a.slugFolderName === slugAuthorName
