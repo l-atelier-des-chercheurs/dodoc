@@ -168,7 +168,6 @@ export default {
   created() {},
   mounted() {
     if (this.$root.state.mode === "live") {
-      debugger;
       this.$socketio.listFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
