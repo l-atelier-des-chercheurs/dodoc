@@ -1,6 +1,10 @@
 <template>
   <div class="m_mediaPlaceholder">
     <label>{{ $t("placeholder") }} </label>
+
+    <div v-if="model_placeholder_media.hasOwnProperty('instructions')">
+      <div v-html="model_placeholder_media.instructions" />
+    </div>
     <div v-if="!model_placeholder_media.hasOwnProperty('_reply')">
       <button
         type="button"

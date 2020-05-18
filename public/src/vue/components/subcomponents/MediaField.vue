@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="m_mediaField" :class="{ 'is--beingEdited': edit_mode }">
     <template v-if="!edit_mode">
       <div v-if="value" v-html="value" />
       <button
         type="button"
         class="buttonLink"
         v-if="show_edit_button"
-        v-html="!!value ? $t('edit_caption') : $t('add_caption')"
+        v-html="!!value ? edit_instructions : add_instructions"
         @click="edit_mode = true"
       />
     </template>
@@ -19,7 +19,7 @@
         v-model="new_value"
         ref="textField"
       />
-      <div>
+      <div class="m_mediaField--buttonRow">
         <button type="button" class="button-redthin" @click="edit_mode = false">
           {{ $t("cancel") }}
         </button>
@@ -35,7 +35,12 @@ import CollaborativeEditor from "./CollaborativeEditor.vue";
 
 export default {
   props: {
-    value: String,
+    value: {
+      type: String,
+      default: "",
+    },
+    add_instructions: String,
+    edit_instructions: String,
     show_edit_button: Boolean,
   },
   components: {

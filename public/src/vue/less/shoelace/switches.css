@@ -37,6 +37,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  height: var(--switch-size);
   width: calc(var(--switch-size) * 2);
   bottom: 0;
   display: block;

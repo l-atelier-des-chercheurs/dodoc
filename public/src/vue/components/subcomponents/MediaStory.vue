@@ -87,52 +87,22 @@
             <ol>
               <li>
                 instructions
-                <template v-if="!edit_instructions">
-                  <div
-                    class="mediaInstructions"
-                    v-if="media.instructions"
-                    v-html="media.instructions"
-                  />
-                  <button
-                    type="button"
-                    class="buttonLink"
-                    v-if="is_selected"
-                    v-html="
-                      !!media.instructions
-                        ? $t('edit_instructions')
-                        : $t('add_instructions')
-                    "
-                    @click="edit_instructions = true"
-                  />
-                </template>
-                <template v-else>
-                  <CollaborativeEditor
-                    :specific_toolbar="[
-                      ['bold', 'italic', 'underline', 'link', 'blockquote'],
-                      ['clean'],
-                    ]"
-                    v-model="new_instructions"
-                    ref="textField"
-                  />
-                  <div>
-                    <button
-                      type="button"
-                      class="button-redthin"
-                      @click="edit_instructions = false"
-                    >
-                      {{ $t("cancel") }}
-                    </button>
-                    <button
-                      type="button"
-                      class="button-greenthin"
-                      @click="sendNewInstructions"
-                    >
-                      {{ $t("send") }}
-                    </button>
-                  </div>
-                </template>
+                <MediaField
+                  v-if="media.instructions || is_selected"
+                  :value="media.instructions"
+                  :show_edit_button="is_selected"
+                  :add_instructions="$t('add_instructions')"
+                  :edit_instructions="$t('edit_instructions')"
+                  @updateField="
+                    (value) => updateMediaPubliMeta({ instructions: value })
+                  "
+                />
               </li>
-              <li>Possibilités de réponse</li>
+              <li>
+                Possibilités de réponse
+
+                <PlaceholderConstraints />
+              </li>
             </ol>
           </div>
         </template>
@@ -148,6 +118,8 @@
       "
       class="mediaCaption"
       :value="media.caption"
+      :add_instructions="$t('add_caption')"
+      :edit_instructions="$t('edit_caption')"
       :show_edit_button="is_selected"
       @updateField="(value) => updateMediaPubliMeta({ caption: value })"
     />
@@ -424,6 +396,7 @@ import MediaContent from "./MediaContent.vue";
 import debounce from "debounce";
 import CollaborativeEditor from "./CollaborativeEditor.vue";
 import MediaField from "./MediaField.vue";
+import PlaceholderConstraints from "./PlaceholderConstraints.vue";
 
 export default {
   props: {
@@ -437,6 +410,7 @@ export default {
     MediaContent,
     CollaborativeEditor,
     MediaField,
+    PlaceholderConstraints,
   },
   data() {
     return {
