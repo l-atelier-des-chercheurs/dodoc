@@ -1342,7 +1342,7 @@ module.exports = (function () {
       de: "Schreiben",
     },
     placeholder: {
-      fr: "Zone éditable",
+      fr: "Bloc éditable",
       en: "Editable bloc",
     },
     import: {
