@@ -167,7 +167,12 @@ export default {
             divider: () => {
               var range = this.editor.getSelection();
               if (range) {
-                this.editor.insertEmbed(range.index, "divider", "null");
+                this.editor.insertEmbed(
+                  range.index,
+                  "divider",
+                  "null",
+                  Quill.sources.USER
+                );
               }
             },
           },
