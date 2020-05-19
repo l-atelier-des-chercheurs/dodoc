@@ -65,7 +65,10 @@
               type="button"
               class="barButton barButton_capture"
               v-if="
-                !(modes_allowed.length === 1 && modes_allowed[0] === 'text')
+                modes_allowed === 'all' ||
+                modes_allowed.some((m) =>
+                  ['photo', 'video', 'stopmotion', 'audio', 'vecto'].includes(m)
+                )
               "
               @click="toggleCapture"
               :class="{ 'is--disabled': is_iOS_device }"

@@ -1836,12 +1836,11 @@ small {
   }
   &.barButton_divider {
     color: @c-bleuvert;
-
     &::before {
       height: 0;
       width: 16px;
       margin: 0 6px;
-      border-bottom: 4px dotted var(--c-bleuvert);
+      border-bottom: 4px solid var(--c-bleuvert);
     }
   }
   &.barButton_import {
@@ -5680,14 +5679,17 @@ small {
 // in publi following models
 .m_mediaPlaceholder {
   // color: @c-gris;
-  .padding-sides-small;
-  .padding-vert-small;
+  // .padding-sides-small;
+  // .padding-vert-small;
+  padding: 4px;
+
   .padding-bottom-medium;
   counter-increment: mediaCounter -1;
   background-color: @c-gris_tresclair;
   background-color: @c-creme;
   // border: 4px solid @c-gris_tresclair;
   border-radius: 10px;
+
   // margin: 5px;
 
   > label {
@@ -5714,8 +5716,15 @@ small {
   }
 
   .m_mediaPlaceholder--instructions {
-    .margin-small;
-    .padding-small;
+    border-radius: 7px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    .margin-bottom-medium;
+    .padding-sides-medium;
+    .padding-bottom-small;
+    .padding-top-verysmall;
+    // padding-top: 0;
     .bg-blanc;
     p {
     }
@@ -5760,9 +5769,9 @@ small {
 
 .m_mediaStory.type-divider {
   .mediaContainer {
-    border-radius: 0;
-    height: @t-storyButtons / 2;
-    border-bottom: 4px dotted var(--c-bleuvert);
+    // border-radius: 0;
+    // height: @t-storyButtons / 2;
+    // border-bottom: 4px solid var(--c-bleuvert);
   }
 }
 
@@ -5905,6 +5914,7 @@ small {
     // border-radius: @t-buttonradius;
     // border-top-right-radius: 0;
     // border-bottom-right-radius: 0;
+    .bg-gris_tresclair;
 
     display: flex;
     justify-content: center;

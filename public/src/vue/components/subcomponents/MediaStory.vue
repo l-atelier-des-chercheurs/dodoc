@@ -111,6 +111,11 @@
             </ol>
           </div>
         </template>
+        <template v-else-if="media.type === 'divider'">
+          <div class="mediaTextContent">
+            <hr />
+          </div>
+        </template>
       </div>
     </template>
 
