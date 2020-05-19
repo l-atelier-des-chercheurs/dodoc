@@ -6,13 +6,16 @@
       v-if="model_placeholder_media.hasOwnProperty('instructions')"
       class="m_mediaPlaceholder--instructions"
     >
-      <label>{{ $t("instructions") }}</label>
+      <!-- <label>{{ $t("instructions") }}</label> -->
       <div
         class="mediaTextContent"
         v-html="model_placeholder_media.instructions"
       />
     </div>
-    <div v-if="!model_placeholder_media.hasOwnProperty('_reply')">
+    <div
+      v-if="!model_placeholder_media.hasOwnProperty('_reply')"
+      class="m_mediaPlaceholder--reply"
+    >
       <button
         type="button"
         class="m_mediaPlaceholder--replyButton"

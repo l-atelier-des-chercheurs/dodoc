@@ -38,7 +38,7 @@
           <img src="/images/i_importer.svg" draggable="false" />
           <label>{{ $t("drop_here_to_import") }}</label>
         </div>
-        <div class="ta-ce">
+        <div class="ta-ce" v-if="publi_follows_model">
           <small class="c-noir">
             <span v-html="$t('expected_contents:')" />
 
@@ -128,7 +128,7 @@
           <!-- <small v-if="!is_iOS_device">
             {{ $t("notifications.ios_not_compatible_with_capture") }}
           </small>-->
-          <div class="ta-ce">
+          <div class="ta-ce" v-if="publi_follows_model">
             <small class="c-noir">
               <span v-html="$t('expected_contents:')" />
               <template v-if="modes_allowed === 'all'">{{
