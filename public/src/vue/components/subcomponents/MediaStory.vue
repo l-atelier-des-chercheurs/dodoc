@@ -101,7 +101,12 @@
               <li>
                 Possibilités de réponse
 
-                <PlaceholderConstraints />
+                <PlaceholderConstraints
+                  :available_modes="media.available_modes"
+                  @updateField="
+                    (value) => updateMediaPubliMeta({ available_modes: value })
+                  "
+                />
               </li>
             </ol>
           </div>

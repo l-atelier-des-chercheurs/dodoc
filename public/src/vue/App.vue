@@ -334,9 +334,9 @@ export default {
       return true;
     },
     survey_can_edit_publication() {
+      if (!this.$root.current_publication) return false;
       if (this.$root.current_author_is_admin) return true;
       return (
-        this.$root.current_publication &&
         this.$root.current_author &&
         Array.isArray(this.$root.current_publication.authors) &&
         this.$root.current_publication.authors.some(

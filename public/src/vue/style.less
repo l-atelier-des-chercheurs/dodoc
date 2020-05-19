@@ -4562,6 +4562,7 @@ small {
   }
 
   ._survey_author_indicator {
+    .bg-blanc;
   }
 
   > * {
@@ -5684,11 +5685,14 @@ small {
   .padding-bottom-medium;
   counter-increment: mediaCounter -1;
   background-color: @c-gris_tresclair;
-  // border: 4px solid @c-gris_clair;
+  background-color: @c-creme;
+  // border: 4px solid @c-gris_tresclair;
+  border-radius: 10px;
   // margin: 5px;
 
   > label {
     color: @c-gris_fonce;
+    // .margin-vert-none;
     .margin-sides-small;
   }
 
@@ -5707,6 +5711,14 @@ small {
     // background-color: @c-gris_clair;
     // .padding-small;
     counter-reset: mediaCounter;
+  }
+
+  .m_mediaPlaceholder--instructions {
+    .margin-small;
+    .padding-small;
+    .bg-blanc;
+    p {
+    }
   }
 
   .m_mediaStory {
@@ -5876,6 +5888,13 @@ small {
     }
   }
 
+  ._cancel_capture_button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+  }
+
   .m_insertMediaButton--menu {
     // .padding-verysmall;
     overflow: hidden;
@@ -5927,12 +5946,6 @@ small {
     width: 100%;
     height: auto;
     // z-index: 50000;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    text-align: center;
 
     > * {
       display: flex;
@@ -6238,19 +6251,44 @@ small {
 }
 
 .m_placeholderConstraints {
-  ._picto {
-    display: block;
-    height: 32px;
-    width: 32px;
-  }
+  display: grid;
+  grid-template-columns: auto;
+  grid-auto-flow: column;
 
   .m_placeholderConstraints--item {
-    .bg-blanc;
+    // .bg-blanc;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    .padding-small;
 
     label {
       height: auto;
+      padding-left: 0;
+      padding-top: 20px;
+    }
+
+    ._picto {
+      display: block;
+      height: 38px;
+      width: 38px;
+
+      border-radius: 14px;
+      overflow: hidden;
+
+      img {
+        object-fit: cover;
+      }
+
+      // border: 4px solid #fff;
+      // background-color: @c-orange;
+      background-color: #fff;
+      margin-left: -5px;
+
+      padding: 4px;
+      margin-bottom: 2px;
+    }
+
+    .switch input:checked + label::before {
     }
   }
 }

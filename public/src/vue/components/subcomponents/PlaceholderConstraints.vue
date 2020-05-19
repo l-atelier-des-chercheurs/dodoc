@@ -11,15 +11,23 @@
           class="switch"
           :id="`option_${id}_${option.key}`"
           v-model="option.enabled"
+          :disabled="
+            option.enabled && options.filter((o) => o.enabled).length === 1
+          "
         />
         <label
+          :disabled="
+            option.enabled && options.filter((o) => o.enabled).length === 1
+          "
           :for="`option_${id}_${option.key}`"
           :class="{ 'c-rouge': option.enabled }"
         >
-          <img class="_picto" :src="option.picto" />
+          <div class="_picto">
+            <img v-if="option.picto" :src="option.picto" />
+          </div>
           <span
             >{{ $t(option.key) }}
-            <template v-if="option.key === 'other'">
+            <template v-if="option.key === 'file'">
               (.docx, .PDF, .stl…)
             </template>
           </span>
@@ -30,7 +38,7 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: { available_modes: Array },
   components: {},
   data() {
     return {
@@ -56,7 +64,7 @@ export default {
           enabled: true,
         },
         {
-          key: "other",
+          key: "file",
           picto: "",
           enabled: true,
         },
@@ -68,8 +76,48 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
-  computed: {},
+  watch: {
+    available_modes: {
+      handler() {
+        if (
+          !this.available_modes ||
+          !Array.isArray(this.available_modes) ||
+          this.available_modes.length === 0
+        ) {
+          this.options.map((o) => (o.enabled = true));
+          return;
+        }
+
+        this.options.map((o) => {
+          if (this.available_modes.some((m) => m.mode_key === o.key))
+            o.enabled = true;
+          else o.enabled = false;
+        });
+      },
+      deep: true,
+      immediate: true,
+    },
+    options: {
+      handler() {
+        const enabled_modes = this.options
+          .filter((o) => o.enabled)
+          .map((o) => {
+            return { mode_key: o.key };
+          });
+        this.$emit("updateField", enabled_modes);
+      },
+      deep: true,
+    },
+  },
+  computed: {
+    // available_modes() {
+    //   return this.options
+    //     .filter((o) => o.enabled)
+    //     .map((o) => {
+    //       mode_key: o.key;
+    //     });
+    // },
+  },
   methods: {},
 };
 </script>

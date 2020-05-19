@@ -20,6 +20,14 @@
         delay: [600, 0],
       }"
     ></button>
+    <button
+      type="button"
+      class="buttonLink _cancel_capture_button"
+      v-if="enable_capture_mode"
+      @click="enable_capture_mode = false"
+    >
+      {{ $t("cancel") }}
+    </button>
     <transition name="fade_fast" :duration="150" mode="out-in">
       <div
         v-if="show_drop_container"
@@ -29,6 +37,19 @@
         <div>
           <img src="/images/i_importer.svg" draggable="false" />
           <label>{{ $t("drop_here_to_import") }}</label>
+        </div>
+        <div class="ta-ce">
+          <small class="c-noir">
+            <span v-html="$t('expected_contents:')" />
+
+            <template v-if="modes_allowed === 'all'">{{ $t("all") }}</template>
+            <span
+              v-else
+              v-for="(mode, index) in modes_allowed"
+              :key="mode"
+              v-html="(index > 0 ? ', ' : '') + $t(mode)"
+            />
+          </small>
         </div>
       </div>
 
@@ -43,6 +64,9 @@
             <button
               type="button"
               class="barButton barButton_capture"
+              v-if="
+                !(modes_allowed.length === 1 && modes_allowed[0] === 'text')
+              "
               @click="toggleCapture"
               :class="{ 'is--disabled': is_iOS_device }"
             >
@@ -52,6 +76,9 @@
             <label
               class="barButton barButton_import button"
               :id="`insert_file_${id}`"
+              v-if="
+                !(modes_allowed.length === 1 && modes_allowed[0] === 'text')
+              "
             >
               <span>
                 {{ $t("import") }}
@@ -71,6 +98,7 @@
             <button
               type="button"
               class="barButton barButton_text"
+              v-if="modes_allowed !== 'all' && modes_allowed.includes('text')"
               @click="createTextMedia"
             >
               <span>{{ $t("write") }}</span>
@@ -87,6 +115,7 @@
 
             <button
               type="button"
+              v-if="!publi_follows_model"
               class="barButton barButton_divider"
               @click="createDivider"
             >
@@ -96,6 +125,20 @@
           <!-- <small v-if="!is_iOS_device">
             {{ $t("notifications.ios_not_compatible_with_capture") }}
           </small>-->
+          <div class="ta-ce">
+            <small class="c-noir">
+              <span v-html="$t('expected_contents:')" />
+              <template v-if="modes_allowed === 'all'">{{
+                $t("all")
+              }}</template>
+              <span
+                v-else
+                v-for="(mode, index) in modes_allowed"
+                :key="mode"
+                v-html="(index > 0 ? ', ' : '') + $t(mode)"
+              />
+            </small>
+          </div>
         </div>
       </div>
       <UploadFile
@@ -114,6 +157,11 @@
         :slugFolderName="slugPubliName"
         :type="`publications`"
         :read_only="read_only"
+        :available_modes="
+          modes_allowed !== 'all'
+            ? modes_allowed.filter((m) => m !== 'text')
+            : undefined
+        "
         @insertMedias="
           (metaFileNames) => insertImportedMedias({ metaFileNames })
         "
@@ -140,8 +188,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    publi_follows_model: {
+      type: Boolean,
+      default: false,
+    },
     is_currently_active: Boolean,
     slugPubliName: String,
+    available_modes: Array,
   },
   components: {
     CaptureView,
@@ -179,7 +232,13 @@ export default {
       immediate: true,
     },
   },
-  computed: {},
+  computed: {
+    modes_allowed() {
+      if (!this.available_modes || !Array.isArray(this.available_modes))
+        return "all";
+      return this.available_modes.map((m) => m.mode_key);
+    },
+  },
   methods: {
     createTextMedia() {
       this.$emit("addMedia", {

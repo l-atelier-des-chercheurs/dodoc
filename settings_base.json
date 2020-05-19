@@ -349,6 +349,9 @@
           "instructions": {
             "type": "string"
           },
+          "available_modes": {
+            "type": "array"
+          },
           "authors": {
             "type": "array"
           },
