@@ -2426,9 +2426,9 @@ module.exports = (function () {
         "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",
       en: "If enabled, this recipe will display the model’s medias and guides.",
     },
-    "expected_contents:": {
-      fr: "Contenus attendus&nbsp;:",
-      en: "Expected contents:",
+    "type_of_expected_contents:": {
+      fr: "Type de contenus attendus&nbsp;:",
+      en: "Type of expected contents:",
     },
     standard: {
       fr: "Standard",

@@ -40,7 +40,7 @@
         </div>
         <div class="ta-ce padding-sides-small" v-if="publi_follows_model">
           <small class="c-noir">
-            <span v-html="$t('expected_contents:')" />
+            <span v-html="$t('type_of_expected_contents:')" />
 
             <template v-if="modes_allowed === 'all'">{{ $t("all") }}</template>
             <span
@@ -135,7 +135,7 @@
           </small>-->
           <div class="ta-ce padding-sides-small" v-if="publi_follows_model">
             <small class="c-noir">
-              <span v-html="$t('expected_contents:')" />
+              <span v-html="$t('type_of_expected_contents:')" />
               <template v-if="modes_allowed === 'all'">{{
                 $t("all")
               }}</template>
