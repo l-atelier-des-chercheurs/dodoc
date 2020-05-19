@@ -6,13 +6,16 @@
       v-if="model_placeholder_media.hasOwnProperty('instructions')"
       class="m_mediaPlaceholder--instructions"
     >
-      <label>{{ $t("instructions") }}</label>
+      <!-- <label>{{ $t("instructions") }}</label> -->
       <div
         class="mediaTextContent"
         v-html="model_placeholder_media.instructions"
       />
     </div>
-    <div v-if="!model_placeholder_media.hasOwnProperty('_reply')">
+    <div
+      v-if="!model_placeholder_media.hasOwnProperty('_reply')"
+      class="m_mediaPlaceholder--reply"
+    >
       <button
         type="button"
         class="m_mediaPlaceholder--replyButton"
@@ -80,9 +83,6 @@
               :publi_follows_model="true"
               :available_modes="model_placeholder_media.available_modes"
               :read_only="read_only"
-              :can_collapse="
-                index !== model_placeholder_media._reply._medias.length - 1
-              "
               @addMedia="
                 (values) =>
                   addMediaOrdered({

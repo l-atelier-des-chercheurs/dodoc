@@ -38,9 +38,9 @@
           <img src="/images/i_importer.svg" draggable="false" />
           <label>{{ $t("drop_here_to_import") }}</label>
         </div>
-        <div class="ta-ce">
+        <div class="ta-ce padding-sides-small" v-if="publi_follows_model">
           <small class="c-noir">
-            <span v-html="$t('expected_contents:')" />
+            <span v-html="$t('type_of_expected_contents:')" />
 
             <template v-if="modes_allowed === 'all'">{{ $t("all") }}</template>
             <span
@@ -65,7 +65,11 @@
               type="button"
               class="barButton barButton_capture"
               v-if="
-                !(modes_allowed.length === 1 && modes_allowed[0] === 'text')
+                !publi_follows_model ||
+                modes_allowed === 'all' ||
+                modes_allowed.some((m) =>
+                  ['photo', 'video', 'stopmotion', 'audio', 'vecto'].includes(m)
+                )
               "
               @click="toggleCapture"
               :class="{ 'is--disabled': is_iOS_device }"
@@ -98,7 +102,11 @@
             <button
               type="button"
               class="barButton barButton_text"
-              v-if="modes_allowed !== 'all' && modes_allowed.includes('text')"
+              v-if="
+                !publi_follows_model ||
+                modes_allowed === 'all' ||
+                modes_allowed.includes('text')
+              "
               @click="createTextMedia"
             >
               <span>{{ $t("write") }}</span>
@@ -125,9 +133,9 @@
           <!-- <small v-if="!is_iOS_device">
             {{ $t("notifications.ios_not_compatible_with_capture") }}
           </small>-->
-          <div class="ta-ce">
+          <div class="ta-ce padding-sides-small" v-if="publi_follows_model">
             <small class="c-noir">
-              <span v-html="$t('expected_contents:')" />
+              <span v-html="$t('type_of_expected_contents:')" />
               <template v-if="modes_allowed === 'all'">{{
                 $t("all")
               }}</template>
@@ -159,7 +167,7 @@
         :read_only="read_only"
         :available_modes="
           modes_allowed !== 'all'
-            ? modes_allowed.filter((m) => m !== 'text')
+            ? modes_allowed.filter((m) => m !== 'text' && m !== 'file')
             : undefined
         "
         @insertMedias="

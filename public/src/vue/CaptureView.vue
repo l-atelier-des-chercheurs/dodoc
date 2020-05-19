@@ -1,6 +1,5 @@
 <template>
   <div class="m_captureview">
-    {{ selected_mode }}
     <div class="m_captureview--modeSelector">
       <button
         type="button"

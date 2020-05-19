@@ -82,33 +82,35 @@
         </template>
         <template v-else-if="media.type === 'placeholder'">
           <div class="m_mediaStory--placeholder">
-            <label>{{ $t("placeholder") }} </label>
+            <!-- <label>{{ $t("placeholder") }} </label> -->
+            <div class="m_mediaStory--placeholder--instructions">
+              <label>{{ $t("instructions") }}</label>
+              <MediaField
+                v-if="media.instructions || is_selected"
+                :value="media.instructions"
+                :show_edit_button="true"
+                :add_instructions="$t('add_instructions')"
+                :edit_instructions="$t('edit_instructions')"
+                @updateField="
+                  (value) => updateMediaPubliMeta({ instructions: value })
+                "
+              />
+            </div>
+            <div class="m_mediaStory--placeholder--constraints">
+              <label v-html="$t('type_of_expected_contents:')" />
 
-            <ol>
-              <li>
-                instructions
-                <MediaField
-                  v-if="media.instructions || is_selected"
-                  :value="media.instructions"
-                  :show_edit_button="is_selected"
-                  :add_instructions="$t('add_instructions')"
-                  :edit_instructions="$t('edit_instructions')"
-                  @updateField="
-                    (value) => updateMediaPubliMeta({ instructions: value })
-                  "
-                />
-              </li>
-              <li>
-                Possibilités de réponse
-
-                <PlaceholderConstraints
-                  :available_modes="media.available_modes"
-                  @updateField="
-                    (value) => updateMediaPubliMeta({ available_modes: value })
-                  "
-                />
-              </li>
-            </ol>
+              <PlaceholderConstraints
+                :available_modes="media.available_modes"
+                @updateField="
+                  (value) => updateMediaPubliMeta({ available_modes: value })
+                "
+              />
+            </div>
+          </div>
+        </template>
+        <template v-else-if="media.type === 'divider'">
+          <div class="mediaTextContent">
+            <hr />
           </div>
         </template>
       </div>
@@ -475,6 +477,7 @@ export default {
   },
   computed: {
     mediaURL() {
+      const type_path = this.media._linked_media ? "" : "/_publications";
       const slugFolderName =
         this.media._linked_media && this.media._linked_media.slugProjectName
           ? this.media._linked_media.slugProjectName
@@ -483,7 +486,7 @@ export default {
         this.media._linked_media && this.media._linked_media.media_filename
           ? this.media._linked_media.media_filename
           : this.media.media_filename;
-      return `/${slugFolderName}/${media_filename}`;
+      return `${type_path}/${slugFolderName}/${media_filename}`;
     },
 
     is_selected() {

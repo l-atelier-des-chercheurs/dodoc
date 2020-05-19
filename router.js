@@ -207,7 +207,7 @@ module.exports = function (app) {
 
     // en créé une nouvelle : nom = aléatoire, modèle = slugPubliName, edition par tt le monde
     const data = {
-      name: `Réponse à «${folders_meta.name}»`,
+      name: `«${folders_meta.name}»`,
       desired_foldername: `reply_to_${folders_meta.name}-${rnd}`,
       follows_model: slugPubliName,
       template: folders_meta.template,
@@ -221,6 +221,8 @@ module.exports = function (app) {
         dev.error(`Failed to create folder! Error: ${err}`);
         res.status(403).send(`Error on creating reply to ${slugPubliName}.`);
       });
+
+    sockets.sendFolders({ type, slugFolderName });
 
     res.redirect(`/_publications/survey/` + slugFolderName);
   }
