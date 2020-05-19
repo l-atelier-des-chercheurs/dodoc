@@ -6,6 +6,7 @@
     :class="{
       'is--read_only': read_only,
       'is--focused': is_focused,
+      'has--noToolbar': specific_toolbar && specific_toolbar.length === 0,
     }"
   >
     <!-- connection_state : {{ connection_state }}
@@ -139,6 +140,24 @@ export default {
         ["clean"],
       ],
 
+      formats: [
+        "bold",
+        "size",
+        "italic",
+        "underline",
+        "link",
+        "header",
+        "blockquote",
+        "list",
+        "color",
+        "background",
+        "font",
+        "align",
+        "code-block",
+        "formula",
+        "divider",
+      ],
+
       is_focused: false,
 
       debounce_textUpdate: undefined,
@@ -158,6 +177,10 @@ export default {
     const toolbar_options = this.specific_toolbar
       ? this.specific_toolbar
       : this.custom_toolbar;
+
+    if (toolbar_options.length === 0) {
+      this.formats = [];
+    }
 
     this.editor = new Quill(this.$refs.editor, {
       modules: {
@@ -196,23 +219,7 @@ export default {
       },
       bounds: this.$refs.editor,
       theme: this.theme,
-      formats: [
-        "bold",
-        "size",
-        "italic",
-        "underline",
-        "link",
-        "header",
-        "blockquote",
-        "list",
-        "color",
-        "background",
-        "font",
-        "align",
-        "code-block",
-        "formula",
-        "divider",
-      ],
+      formats: this.formats,
       placeholder: "…",
     });
 

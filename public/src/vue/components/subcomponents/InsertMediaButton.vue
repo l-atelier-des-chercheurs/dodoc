@@ -202,7 +202,7 @@ export default {
     },
     is_currently_active: Boolean,
     slugPubliName: String,
-    available_modes: Array,
+    modes_allowed: Array,
   },
   components: {
     CaptureView,
@@ -240,17 +240,21 @@ export default {
       immediate: true,
     },
   },
-  computed: {
-    modes_allowed() {
-      if (!this.available_modes || !Array.isArray(this.available_modes))
-        return "all";
-      return this.available_modes.map((m) => m.mode_key);
-    },
-  },
+  computed: {},
   methods: {
     createTextMedia() {
+      const text_bloc_options = this.modes_allowed.find((m) => m === "text");
+
+      let plain_text = false;
+      if (
+        text_bloc_options &&
+        text_bloc_options.advanced_text_options === "false"
+      )
+        plain_text = true;
+
       this.$emit("addMedia", {
         type: "text",
+        plain_text,
       });
 
       this.show_menu = false;

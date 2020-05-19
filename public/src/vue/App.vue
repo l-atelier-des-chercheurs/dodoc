@@ -47,10 +47,31 @@
           <button
             type="button"
             class="buttonLink"
+            v-if="user_replies.length > 0"
+            :class="{ 'is--active': show_all_my_replies }"
+            @click.stop="show_all_my_replies = !show_all_my_replies"
+          >
+            {{ $t("see_all_my_stories") }}
+          </button>
+          <button
+            type="button"
+            class="buttonLink"
             @click.stop="$root.unsetAuthor()"
           >
             {{ $t("logout") }}
           </button>
+
+          <div v-if="show_all_my_replies" class="padding-small">
+            <div
+              v-for="reply in user_replies"
+              :key="reply.slugFolderName"
+              class="padding-verysmall"
+            >
+              <a :href="`/_publications/survey/${reply.slugFolderName}`">{{
+                reply.name
+              }}</a>
+            </div>
+          </div>
         </div>
 
         <Publication
@@ -273,6 +294,8 @@ export default {
       type: "width",
       resizeType: "left",
 
+      show_all_my_replies: false,
+
       panels_width: {
         doPane: 100,
         docPane: 0,
@@ -334,7 +357,13 @@ export default {
       return true;
     },
     survey_can_edit_publication() {
-      if (!this.$root.current_publication) return false;
+      if (
+        !this.$root.current_publication ||
+        !this.$root.current_publication.authors ||
+        !Array.isArray(this.$root.current_publication.authors) ||
+        this.$root.current_publication.authors.length === 0
+      )
+        return false;
       if (this.$root.current_author_is_admin) return true;
       return (
         this.$root.current_author &&
@@ -342,6 +371,16 @@ export default {
         this.$root.current_publication.authors.some(
           (a) => a.slugFolderName === this.$root.current_author.slugFolderName
         )
+      );
+    },
+    user_replies() {
+      return Object.values(this.$root.store.publications).filter(
+        (p) =>
+          !!p.follows_model &&
+          p.authors &&
+          p.authors.some(
+            (a) => a.slugFolderName === this.$root.current_author.slugFolderName
+          )
       );
     },
   },
