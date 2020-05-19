@@ -95,6 +95,9 @@
                   <label>{{ $t("created_date") }}</label>
                 </th>
                 <th colspan="1">
+                  <label>{{ $t("authors") }}</label>
+                </th>
+                <th colspan="1">
                   <label>{{ $t("attached_to_project") }}</label>
                 </th>
               </tr>
@@ -112,7 +115,7 @@
                 @click="recipe.show_all_recipes = true"
                 class="m_recipes--recipe--mealList--meal"
               >
-                <td colspan="4">
+                <td colspan="5">
                   <button type="button" class="buttonLink margin-none">
                     {{ $t("show_all") }}
                   </button>
