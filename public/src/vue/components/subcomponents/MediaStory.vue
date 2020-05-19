@@ -66,6 +66,7 @@
               inline_edit_mode && is_selected && !preview_mode && !read_only
             "
             v-model="htmlForEditor"
+            :specific_toolbar="media.plain_text ? [] : undefined"
             :media="media"
             :slugFolderName="slugPubliName"
             :enable_collaboration="true"

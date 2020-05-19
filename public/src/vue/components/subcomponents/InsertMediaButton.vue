@@ -249,8 +249,20 @@ export default {
   },
   methods: {
     createTextMedia() {
+      const text_bloc_options = this.available_modes.find(
+        (m) => m.mode_key === "text"
+      );
+
+      let plain_text = false;
+      if (
+        text_bloc_options &&
+        text_bloc_options.advanced_text_options === "false"
+      )
+        plain_text = true;
+
       this.$emit("addMedia", {
         type: "text",
+        plain_text,
       });
 
       this.show_menu = false;

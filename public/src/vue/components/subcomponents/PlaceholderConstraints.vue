@@ -33,6 +33,19 @@
           </span>
         </label>
       </span>
+      <div
+        v-if="option.key === 'text' && option.enabled"
+        class="_advanced_text"
+      >
+        <label class="" :for="`option_${id}_${option.key}_advtext`" @click.stop>
+          <input
+            :id="`option_${id}_${option.key}_advtext`"
+            type="checkbox"
+            v-model="option.advanced_text_options"
+          />
+          {{ $t("advanced_text_bloc") }}
+        </label>
+      </div>
     </div>
   </div>
 </template>
@@ -47,6 +60,7 @@ export default {
           key: "text",
           picto: "/images/i_text.svg",
           enabled: true,
+          advanced_text_options: false,
         },
         {
           key: "photo",
@@ -89,9 +103,12 @@ export default {
         }
 
         this.options.map((o) => {
-          if (this.available_modes.some((m) => m.mode_key === o.key))
+          if (this.available_modes.some((m) => m.mode_key === o.key)) {
             o.enabled = true;
-          else o.enabled = false;
+            const item = this.available_modes.find((m) => m.mode_key === o.key);
+            if (item.hasOwnProperty("advanced_text_options"))
+              o.advanced_text_options = item.advanced_text_options === "true";
+          } else o.enabled = false;
         });
       },
       deep: true,
@@ -102,8 +119,14 @@ export default {
         const enabled_modes = this.options
           .filter((o) => o.enabled)
           .map((o) => {
+            if (o.key === "text")
+              return {
+                mode_key: o.key,
+                advanced_text_options: o.advanced_text_options,
+              };
             return { mode_key: o.key };
           });
+
         this.$emit("updateField", enabled_modes);
       },
       deep: true,

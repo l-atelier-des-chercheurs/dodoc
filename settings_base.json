@@ -433,6 +433,9 @@
           "locked_in_place": {
             "type": "boolean"
           },
+          "plain_text": {
+            "type": "boolean"
+          },
           "z_index": {
             "type": "number",
             "clip": {

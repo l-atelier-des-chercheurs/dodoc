@@ -65,6 +65,10 @@ module.exports = (function () {
       fr: "S’identifier dans la foulée",
       en: "Login after creation",
     },
+    advanced_text_bloc: {
+      fr: "Mise en forme du texte",
+      en: "Advanced text options",
+    },
     publication: {
       fr: "Recette",
       en: "Recipe",
