@@ -12,6 +12,28 @@
         {{ $root.formatDateToHuman(publication.date_created) }}
       </small>
     </td>
+    <td width="150px">
+      <div v-if="publication.authors" class="m_authorField">
+        <span
+          v-for="author in publication.authors"
+          v-if="author.slugFolderName"
+          :key="author.slugFolderName"
+          class="is--active"
+          :class="{
+            'is--loggedInAuthor':
+              $root.current_author &&
+              $root.current_author.slugFolderName === author.slugFolderName,
+          }"
+        >
+          <template v-if="$root.getAuthor(author.slugFolderName)">
+            {{ $root.getAuthor(author.slugFolderName).name }}
+          </template>
+          <template v-else>
+            {{ author.slugFolderName }}
+          </template>
+        </span>
+      </div>
+    </td>
     <td class="font-folder_title">
       <template v-if="attached_project">
         {{ attached_project.name }}
