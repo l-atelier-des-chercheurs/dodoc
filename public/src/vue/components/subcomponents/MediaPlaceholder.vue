@@ -83,9 +83,6 @@
               :publi_follows_model="true"
               :available_modes="model_placeholder_media.available_modes"
               :read_only="read_only"
-              :can_collapse="
-                index !== model_placeholder_media._reply._medias.length - 1
-              "
               @addMedia="
                 (values) =>
                   addMediaOrdered({

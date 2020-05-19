@@ -5684,6 +5684,7 @@ small {
   padding: 4px;
 
   .padding-bottom-medium;
+  .margin-sides-medium;
   counter-increment: mediaCounter -1;
   background-color: @c-gris_tresclair;
   background-color: @c-creme;
@@ -5733,7 +5734,9 @@ small {
   }
 
   .m_insertMediaButton--menu {
-    background-color: transparent;
+    .m_actionbar {
+      // background-color: transparent !important;
+    }
   }
 
   .m_mediaStory {
@@ -5859,7 +5862,7 @@ small {
     height: 100%;
     padding-left: 2px;
     border-radius: @t-storyButtons / 2;
-    .bg-gris_tresclair;
+    .bg-gris_clair;
     .margin-vert-verysmall;
 
     display: flex;
@@ -5932,7 +5935,8 @@ small {
     .m_actionbar {
       margin: 0;
       border: 0;
-      .bg-gris_tresclair;
+      .bg-gris_clair;
+      border-radius: 4px;
     }
 
     .m_actionbar--buttonBar {

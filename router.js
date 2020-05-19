@@ -222,6 +222,8 @@ module.exports = function (app) {
         res.status(403).send(`Error on creating reply to ${slugPubliName}.`);
       });
 
+    sockets.sendFolders({ type, slugFolderName });
+
     res.redirect(`/_publications/survey/` + slugFolderName);
   }
 

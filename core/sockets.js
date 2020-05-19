@@ -17,6 +17,8 @@ module.exports = (function () {
           .then((d) => resolve(d))
           .catch((e) => reject(e))
       ),
+    sendFolders: ({ type, slugFolderName, socket, id }) =>
+      sendFolders({ type, slugFolderName, socket, id }),
     notify: notify,
     io: () => io,
   };

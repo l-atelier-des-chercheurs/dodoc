@@ -38,7 +38,7 @@
           <img src="/images/i_importer.svg" draggable="false" />
           <label>{{ $t("drop_here_to_import") }}</label>
         </div>
-        <div class="ta-ce" v-if="publi_follows_model">
+        <div class="ta-ce padding-sides-small" v-if="publi_follows_model">
           <small class="c-noir">
             <span v-html="$t('expected_contents:')" />
 
@@ -65,6 +65,7 @@
               type="button"
               class="barButton barButton_capture"
               v-if="
+                !publi_follows_model ||
                 modes_allowed === 'all' ||
                 modes_allowed.some((m) =>
                   ['photo', 'video', 'stopmotion', 'audio', 'vecto'].includes(m)
@@ -101,7 +102,11 @@
             <button
               type="button"
               class="barButton barButton_text"
-              v-if="modes_allowed !== 'all' && modes_allowed.includes('text')"
+              v-if="
+                !publi_follows_model ||
+                modes_allowed === 'all' ||
+                modes_allowed.includes('text')
+              "
               @click="createTextMedia"
             >
               <span>{{ $t("write") }}</span>
@@ -128,7 +133,7 @@
           <!-- <small v-if="!is_iOS_device">
             {{ $t("notifications.ios_not_compatible_with_capture") }}
           </small>-->
-          <div class="ta-ce" v-if="publi_follows_model">
+          <div class="ta-ce padding-sides-small" v-if="publi_follows_model">
             <small class="c-noir">
               <span v-html="$t('expected_contents:')" />
               <template v-if="modes_allowed === 'all'">{{
