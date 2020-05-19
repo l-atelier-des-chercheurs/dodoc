@@ -424,6 +424,7 @@ export default {
             data: {
               editing_limited_to: "only_authors",
               viewing_limited_to: "",
+              name: `[${this.$root.current_author.name}] ${this.$root.current_publication.name}`,
               authors: [{ slugFolderName: slugAuthorName }],
             },
           })

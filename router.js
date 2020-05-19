@@ -207,7 +207,7 @@ module.exports = function (app) {
 
     // en créé une nouvelle : nom = aléatoire, modèle = slugPubliName, edition par tt le monde
     const data = {
-      name: `Réponse à «${folders_meta.name}»`,
+      name: `«${folders_meta.name}»`,
       desired_foldername: `reply_to_${folders_meta.name}-${rnd}`,
       follows_model: slugPubliName,
       template: folders_meta.template,
