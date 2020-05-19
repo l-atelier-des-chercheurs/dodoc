@@ -3996,6 +3996,18 @@ small {
   .padding-small;
   text-align: left;
 
+  &.m_recipes--recipe--mealList--meal_replies {
+    td:first-child {
+      &::before {
+        content: " " "→";
+        // font-weight: 700;
+        font-size: 1.2em;
+        font-family: "Fira Code";
+        margin-left: 0.5em;
+      }
+    }
+  }
+
   .m_recipes--recipe--mealList--mealTitle {
     // .font-folder_title;
     // .font-publi_title;
