@@ -129,6 +129,11 @@ export default {
     this.$eventHub.$off("authors.submitPassword", this.submitPassword);
   },
   watch: {
+    "$root.current_author": {
+      handler() {
+        this.$emit("loggedInAs", this.$root.current_author.slugFolderName);
+      },
+    },
     "$root.current_publication": {
       handler() {
         if (
@@ -196,7 +201,7 @@ export default {
           //       this.login_author_name +
           //       "</i>"
           //   );
-          this.$emit("loggedInAs", slugFolderName);
+          // this.$emit("loggedInAs", slugFolderName);
         })
         .catch(() => {
           this.is_sending_content_to_server = false;
