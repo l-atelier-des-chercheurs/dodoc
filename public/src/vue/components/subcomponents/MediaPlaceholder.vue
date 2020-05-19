@@ -140,6 +140,8 @@ export default {
   },
   methods: {
     mediaPosition(index) {
+      if (this.model_placeholder_media._reply._medias.length === 1)
+        return "alone";
       if (index === 0) return "first";
       if (index === this.model_placeholder_media._reply._medias.length - 1)
         return "last";

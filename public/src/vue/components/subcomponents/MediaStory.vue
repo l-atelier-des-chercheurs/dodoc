@@ -141,7 +141,7 @@
       <button
         type="button"
         class="m_mediaStory--moveItemButton--before"
-        :disabled="media_position === 'first'"
+        :disabled="media_position === 'first' || media_position === 'alone'"
         @click.stop="
           $emit('changeMediaOrder', {
             metaFileName: media.metaFileName,
@@ -380,7 +380,7 @@
       <button
         type="button"
         class="m_mediaStory--moveItemButton--after"
-        :disabled="media_position === 'last'"
+        :disabled="media_position === 'last' || media_position === 'alone'"
         @click.stop="
           $emit('changeMediaOrder', {
             metaFileName: media.metaFileName,

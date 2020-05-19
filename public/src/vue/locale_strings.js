@@ -2466,6 +2466,14 @@ module.exports = (function () {
       fr: "Récit",
       en: "Story",
     },
+    stories: {
+      fr: "Récits",
+      en: "Stories",
+    },
+    see_all_my_stories: {
+      fr: "Consulter tous mes récits",
+      en: "See all my stories",
+    },
     story_summary: {
       fr: "",
       en: "",
