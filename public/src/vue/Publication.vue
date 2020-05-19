@@ -168,6 +168,7 @@ export default {
   created() {},
   mounted() {
     if (this.$root.state.mode === "live") {
+      debugger;
       this.$socketio.listFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
@@ -319,6 +320,7 @@ export default {
         if (!media) return acc;
 
         if (this.model_for_this_publication && media.type === "placeholder") {
+          debugger;
           const placeholder_reply_media = this.medias.find(
             (m) => m.placeholder_meta_reference === media.metaFileName
           );

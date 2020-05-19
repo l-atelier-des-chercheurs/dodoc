@@ -1,5 +1,6 @@
 <template>
   <div class="m_captureview">
+    {{ selected_mode }}
     <div class="m_captureview--modeSelector">
       <button
         type="button"
@@ -27,19 +28,19 @@
         </svg>
       </button>
 
-      <div v-for="mode in available_modes" :key="mode.key">
+      <div v-for="mode in available_modes" :key="mode">
         <input
           type="radio"
-          :id="mode.key"
-          :value="mode.key"
+          :id="id + mode"
+          :value="mode"
           :disabled="$root.settings.capture_mode_cant_be_changed"
           v-model="selected_mode"
         />
-        <label :for="mode.key">
+        <label :for="id + mode">
           <div class="picto">
-            <img :src="mode.picto" />
+            <img :src="available_mode_picto[mode]" />
           </div>
-          <span>{{ $t(mode.key) }}</span>
+          <span>{{ $t(mode) }}</span>
         </label>
       </div>
       <button
@@ -608,6 +609,10 @@ export default {
     slugFolderName: String,
     type: String,
     read_only: Boolean,
+    available_modes: {
+      type: Array,
+      default: ["photo", "video", "stopmotion", "audio", "vecto"],
+    },
   },
   components: {
     MediaContent,
@@ -618,31 +623,19 @@ export default {
   data() {
     return {
       selected_mode: "",
-      available_modes: [
-        {
-          picto: "/images/i_icone-dodoc_image.svg",
-          key: "photo",
-        },
-        {
-          picto: "/images/i_icone-dodoc_video.svg",
-          key: "video",
-        },
-        {
-          picto: "/images/i_icone-dodoc_anim.svg",
-          key: "stopmotion",
-        },
-        {
-          picto: "/images/i_icone-dodoc_audio.svg",
-          key: "audio",
-        },
-        {
-          picto: "/images/i_icone-dodoc_vecto.svg",
-          key: "vecto",
-        },
-      ],
+
+      available_mode_picto: {
+        photo: "/images/i_icone-dodoc_image.svg",
+        video: "/images/i_icone-dodoc_video.svg",
+        stopmotion: "/images/i_icone-dodoc_anim.svg",
+        audio: "/images/i_icone-dodoc_audio.svg",
+        vecto: "/images/i_icone-dodoc_vecto.svg",
+      },
 
       recordVideoFeed: undefined,
       recordVideoWithAudio: true,
+
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       show_capture_settings: false,
       show_stopmotion_list: false,
@@ -765,10 +758,15 @@ export default {
       });
 
       // MODE
-      if (this.$root.settings.capture_options.selected_mode !== "") {
+      if (
+        this.$root.settings.capture_options.selected_mode !== "" &&
+        this.available_modes.includes(
+          this.$root.settings.capture_options.selected_mode
+        )
+      ) {
         this.selected_mode = this.$root.settings.capture_options.selected_mode;
       } else {
-        this.selected_mode = this.available_modes[0].key;
+        this.selected_mode = this.available_modes[0];
       }
 
       // RESOLUTION
@@ -1002,12 +1000,10 @@ export default {
         return;
       }
 
-      let currentModeIndex = this.available_modes.findIndex((d) => {
-        return d.key === this.selected_mode;
-      });
+      let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
 
       if (currentModeIndex > 0) {
-        this.selected_mode = this.available_modes[currentModeIndex - 1].key;
+        this.selected_mode = this.available_modes[currentModeIndex - 1];
       }
     },
     nextMode() {
@@ -1016,12 +1012,10 @@ export default {
         return;
       }
 
-      let currentModeIndex = this.available_modes.findIndex((d) => {
-        return d.key === this.selected_mode;
-      });
+      let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
 
       if (currentModeIndex < this.available_modes.length - 1) {
-        this.selected_mode = this.available_modes[currentModeIndex + 1].key;
+        this.selected_mode = this.available_modes[currentModeIndex + 1];
       }
     },
 

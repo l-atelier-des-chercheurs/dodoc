@@ -354,10 +354,10 @@ module.exports = (function () {
       oc: "Pelofa de cèba",
       de: "Überlagerung",
     },
-    "file:": {
-      fr: "Fichier&nbsp;:",
-      en: "File&nbsp;:",
-      nl: "Bestand:",
+    file: {
+      fr: "Fichier",
+      en: "File",
+      nl: "Bestand",
       oc: "Fichièr",
       de: "Datei",
     },
@@ -2425,6 +2425,10 @@ module.exports = (function () {
       fr:
         "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",
       en: "If enabled, this recipe will display the model’s medias and guides.",
+    },
+    "expected_contents:": {
+      fr: "Contenus attendus&nbsp;:",
+      en: "Expected contents:",
     },
     standard: {
       fr: "Standard",

@@ -1,9 +1,16 @@
 <template>
   <div class="m_mediaPlaceholder">
-    <label>{{ $t("placeholder") }} </label>
+    <!-- <label>{{ $t("placeholder") }} </label> -->
 
-    <div v-if="model_placeholder_media.hasOwnProperty('instructions')">
-      <div v-html="model_placeholder_media.instructions" />
+    <div
+      v-if="model_placeholder_media.hasOwnProperty('instructions')"
+      class="m_mediaPlaceholder--instructions"
+    >
+      <label>{{ $t("instructions") }}</label>
+      <div
+        class="mediaTextContent"
+        v-html="model_placeholder_media.instructions"
+      />
     </div>
     <div v-if="!model_placeholder_media.hasOwnProperty('_reply')">
       <button
@@ -19,6 +26,8 @@
         v-if="!preview_mode"
         :slugPubliName="slugPubliName"
         :publi_is_model="publication.is_model"
+        :publi_follows_model="true"
+        :available_modes="model_placeholder_media.available_modes"
         :can_collapse="
           !(
             !model_placeholder_media._reply._medias ||
@@ -68,6 +77,8 @@
               v-if="!preview_mode"
               :slugPubliName="slugPubliName"
               :publi_is_model="publication.is_model"
+              :publi_follows_model="true"
+              :available_modes="model_placeholder_media.available_modes"
               :read_only="read_only"
               :can_collapse="
                 index !== model_placeholder_media._reply._medias.length - 1
