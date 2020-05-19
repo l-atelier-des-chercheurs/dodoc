@@ -477,6 +477,7 @@ export default {
   },
   computed: {
     mediaURL() {
+      const type_path = this.media._linked_media ? "" : "/_publications";
       const slugFolderName =
         this.media._linked_media && this.media._linked_media.slugProjectName
           ? this.media._linked_media.slugProjectName
@@ -485,7 +486,7 @@ export default {
         this.media._linked_media && this.media._linked_media.media_filename
           ? this.media._linked_media.media_filename
           : this.media.media_filename;
-      return `/${slugFolderName}/${media_filename}`;
+      return `${type_path}/${slugFolderName}/${media_filename}`;
     },
 
     is_selected() {

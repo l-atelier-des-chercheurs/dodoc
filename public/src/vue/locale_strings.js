@@ -299,6 +299,10 @@ module.exports = (function () {
       fr: "Modifier les instructions",
       en: "Edit instructions",
     },
+    instructions: {
+      fr: "Instructions",
+      en: "Instructions",
+    },
     formatting: {
       fr: "Mise en forme",
       en: "Formatting",

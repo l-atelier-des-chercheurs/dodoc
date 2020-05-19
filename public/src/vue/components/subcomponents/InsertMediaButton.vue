@@ -167,7 +167,7 @@
         :read_only="read_only"
         :available_modes="
           modes_allowed !== 'all'
-            ? modes_allowed.filter((m) => m !== 'text')
+            ? modes_allowed.filter((m) => m !== 'text' && m !== 'file')
             : undefined
         "
         @insertMedias="
