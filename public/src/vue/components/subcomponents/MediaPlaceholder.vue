@@ -26,7 +26,11 @@
     </div>
     <div v-else>
       <InsertMediaButton
-        v-if="!preview_mode"
+        v-if="
+          !preview_mode &&
+          (!model_placeholder_media._reply._medias ||
+            model_placeholder_media._reply._medias.length === 0)
+        "
         :slugPubliName="slugPubliName"
         :publi_is_model="publication.is_model"
         :publi_follows_model="true"
@@ -77,7 +81,10 @@
             :key="`insert_${media.metaFileName}`"
           >
             <InsertMediaButton
-              v-if="!preview_mode"
+              v-if="
+                !preview_mode &&
+                index === model_placeholder_media._reply._medias.length - 1
+              "
               :slugPubliName="slugPubliName"
               :publi_is_model="publication.is_model"
               :publi_follows_model="true"
