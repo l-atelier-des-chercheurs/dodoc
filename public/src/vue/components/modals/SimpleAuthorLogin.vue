@@ -3,7 +3,7 @@
     ref="modal"
     @close="$emit('close')"
     :typeOfModal="'SmallAndScroll'"
-    :prevent_close="true"
+    :prevent_close="prevent_close"
     :is_loading="is_sending_content_to_server"
   >
     <template slot="header">
@@ -11,8 +11,8 @@
     </template>
 
     <template slot="preview">
-      <div class="">
-        <p class="margin-medium">
+      <div class v-if="!$root.current_author">
+        <!-- <p class="margin-medium">
           <template
             v-if="$root.current_publication.editing_limited_to === 'everybody'"
           >
@@ -21,27 +21,17 @@
           <template v-else>
             {{ $t("login_to_edit_existing_participation") }}
           </template>
-        </p>
+        </p>-->
         <div
           class="m_sideBySideSwitches"
           v-if="$root.current_publication.editing_limited_to !== 'only_authors'"
         >
           <label for="CreateAccount">
-            <input
-              type="radio"
-              id="CreateAccount"
-              value="CreateAccount"
-              v-model="current_mode"
-            />
+            <input type="radio" id="CreateAccount" value="CreateAccount" v-model="current_mode" />
             {{ $t("create_account") }}
           </label>
           <label for="Login">
-            <input
-              type="radio"
-              id="Login"
-              value="Login"
-              v-model="current_mode"
-            />
+            <input type="radio" id="Login" value="Login" v-model="current_mode" />
             {{ $t("login") }}
           </label>
         </div>
@@ -56,19 +46,11 @@
                 :mode="'simple_login'"
               />
             </div>
-            <form
-              v-else-if="current_mode === 'Login'"
-              @submit.prevent="loginAs"
-            >
+            <form v-else-if="current_mode === 'Login'" @submit.prevent="loginAs">
               <!-- Human name -->
               <div class="margin-bottom-small">
                 <label>{{ $t("name_or_pseudo") }}</label>
-                <input
-                  type="text"
-                  v-model.trim="login_author_name"
-                  required
-                  autofocus
-                />
+                <input type="text" v-model.trim="login_author_name" required autofocus />
               </div>
 
               <input type="email" disabled="disabled" style="display: none;" />
@@ -78,7 +60,7 @@
                 <input
                   type="password"
                   ref="passwordField"
-                  required
+                  :required="$root.state.local_options.force_author_password ? true : false"
                   autofocus
                   placeholder="…"
                 />
@@ -91,13 +73,20 @@
                   class="button button-bg_rounded bg-bleuvert"
                 >
                   <img src="/images/i_enregistre.svg" draggable="false" />
-                  <span class="text-cap font-verysmall">
-                    {{ $t("send") }}
-                  </span>
+                  <span class="text-cap font-verysmall">{{ $t("send") }}</span>
                 </button>
               </div>
             </form>
           </transition>
+        </div>
+      </div>
+      <div v-else>
+        <div class="margin-medium">
+          <Author
+            :author="$root.current_author"
+            :key="$root.current_author.slugFolderName"
+            @close="$emit('close')"
+          />
         </div>
       </div>
     </template>
@@ -106,19 +95,23 @@
 <script>
 import Modal from "./BaseModal.vue";
 import CreateAuthor from "./../subcomponents/CreateAuthor.vue";
+import Author from "./../subcomponents/Author.vue";
 
 export default {
-  props: {},
+  props: {
+    prevent_close: Boolean
+  },
   components: {
     Modal,
     CreateAuthor,
+    Author
   },
   data() {
     return {
       show_create_author_panel: false,
       is_sending_content_to_server: false,
       current_mode: "CreateAccount",
-      login_author_name: "",
+      login_author_name: ""
     };
   },
   created() {},
@@ -129,11 +122,6 @@ export default {
     this.$eventHub.$off("authors.submitPassword", this.submitPassword);
   },
   watch: {
-    "$root.current_author": {
-      handler() {
-        this.$emit("loggedInAs", this.$root.current_author.slugFolderName);
-      },
-    },
     "$root.current_publication": {
       handler() {
         if (
@@ -144,8 +132,8 @@ export default {
           this.current_mode = "CreateAccount";
         }
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   computed: {},
   methods: {
@@ -154,7 +142,7 @@ export default {
         console.log(`Author • METHODS / submitPassword`);
 
       const author = Object.values(this.$root.store.authors).find(
-        (a) => a.name === this.login_author_name
+        a => a.name === this.login_author_name
       );
       const password = this.$auth.hashCode(this.$refs.passwordField.value);
 
@@ -177,31 +165,21 @@ export default {
       this.is_sending_content_to_server = true;
 
       this.$auth.removeAllFoldersPassword({
-        type: "authors",
+        type: "authors"
       });
       this.$auth.updateFoldersPasswords({
         authors: {
-          [slugFolderName]: password,
-        },
+          [slugFolderName]: password
+        }
       });
       this.$socketio.sendAuth();
 
       // check if password matches or not
       this.checkResultsFromLogin({
-        slugFolderName: slugFolderName,
+        slugFolderName: slugFolderName
       })
         .then(() => {
           this.is_sending_content_to_server = false;
-          // this.$alertify
-          //   .closeLogOnClick(true)
-          //   .delay(4000)
-          //   .success(
-          //     this.$t("notifications.connected_as") +
-          //       "<i>" +
-          //       this.login_author_name +
-          //       "</i>"
-          //   );
-          // this.$emit("loggedInAs", slugFolderName);
         })
         .catch(() => {
           this.is_sending_content_to_server = false;
@@ -218,7 +196,7 @@ export default {
         this.$eventHub.$once("socketio.authentificated", () => {
           if (
             this.$root.state.list_authorized_folders.some(
-              (f) =>
+              f =>
                 f.type === "authors" &&
                 f.allowed_slugFolderNames.includes(slugFolderName)
             )
@@ -229,8 +207,8 @@ export default {
           }
         });
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped></style>

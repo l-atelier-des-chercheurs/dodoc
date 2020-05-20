@@ -2478,6 +2478,10 @@ module.exports = (function () {
       fr: "Consulter tous mes récits",
       en: "See all my stories",
     },
+    list_of_stories: {
+      fr: "Liste des récits créés",
+      en: "List of stories created",
+    },
     story_summary: {
       fr: "",
       en: "",

@@ -1,9 +1,5 @@
 <template>
-  <form
-    @close="$emit('close')"
-    v-on:submit.prevent="newAuthor"
-    :read_only="read_only"
-  >
+  <form @close="$emit('close')" v-on:submit.prevent="newAuthor" :read_only="read_only">
     <!-- <span class="">{{ $t('create_an_author') }}</span> -->
 
     <!-- Human name -->
@@ -17,18 +13,18 @@
       <input
         type="email"
         v-model.trim="authordata.email"
-        :required="mode === 'simple_login'"
+        :required="$root.state.local_options.require_email ? true : false"
       />
-      <small v-if="mode !== 'simple_login'">{{
+      <small v-if="mode !== 'simple_login'">
+        {{
         $t("email_instructions")
-      }}</small>
+        }}
+      </small>
     </div>
 
     <!-- Role -->
     <div class="margin-bottom-small" v-if="mode !== 'simple_login'">
-      <label>
-        {{ $t("role") }}
-      </label>
+      <label>{{ $t("role") }}</label>
       <div>
         <select v-model="authordata.role">
           <option
@@ -39,9 +35,7 @@
               role === 'admin' &&
               (!current_author || current_author.role !== 'admin')
             "
-          >
-            {{ $t(role) }}
-          </option>
+          >{{ $t(role) }}</option>
         </select>
       </div>
     </div>
@@ -58,9 +52,6 @@
           v-model="authordata.password"
           autocomplete="new-password"
         />
-        <small v-if="mode !== 'simple_login'">{{
-          $t("password_instructions")
-        }}</small>
       </div>
     </div>
 
@@ -72,9 +63,7 @@
           class="button-nostyle text-uc button-triangle"
           :class="{ 'is--active': show_image }"
           @click="show_image = !show_image"
-        >
-          {{ $t("portrait") }}
-        </button>
+        >{{ $t("portrait") }}</button>
       </label>
       <template v-if="show_image">
         <ImageSelect
@@ -97,9 +86,7 @@
           class="button-nostyle text-uc button-triangle"
           :class="{ 'is--active': show_nfc }"
           @click="show_nfc = !show_nfc"
-        >
-          {{ $t("nfc_tag") }}
-        </button>
+        >{{ $t("nfc_tag") }}</button>
       </label>
       <template v-if="show_nfc">
         <input type="text" v-model="authordata.nfc_tag" />
@@ -112,23 +99,19 @@
         class="buttonLink"
         style="flex-grow: 0;"
         @click="$emit('close')"
-      >
-        {{ $t("cancel") }}
-      </button>
+      >{{ $t("cancel") }}</button>
 
       <button type="submit" class="bg-bleuvert">{{ $t("create") }}</button>
     </div>
 
     <div class="text-centered" v-if="mode !== 'simple_login'">
       <span class="switch switch-xs margin-top-small">
-        <input
-          id="login_after_creation"
-          type="checkbox"
-          v-model="login_after_creation"
-        />
-        <label for="login_after_creation">{{
+        <input id="login_after_creation" type="checkbox" v-model="login_after_creation" />
+        <label for="login_after_creation">
+          {{
           $t("login_after_creation")
-        }}</label>
+          }}
+        </label>
       </span>
     </div>
   </form>
@@ -139,10 +122,10 @@ import ImageSelect from "../subcomponents/ImageSelect.vue";
 export default {
   props: {
     read_only: Boolean,
-    mode: String,
+    mode: String
   },
   components: {
-    ImageSelect,
+    ImageSelect
   },
   data() {
     return {
@@ -155,10 +138,10 @@ export default {
         email: "",
         password: "",
         role: "contributor",
-        nfc_tag: "",
+        nfc_tag: ""
       },
       preview: undefined,
-      login_after_creation: true,
+      login_after_creation: true
     };
   },
   computed: {},
@@ -170,14 +153,12 @@ export default {
     }
   },
   methods: {
-    newAuthor: function (event) {
+    newAuthor: function(event) {
       console.log("newAuthor");
 
       let data = JSON.parse(JSON.stringify(this.authordata));
 
-      let allAuthorsName = this.$root.allAuthors.map((a) =>
-        a.name.toLowerCase()
-      );
+      let allAuthorsName = this.$root.allAuthors.map(a => a.name.toLowerCase());
 
       // check if project name (not slug) already exists
       if (allAuthorsName.includes(data.name.toLowerCase())) {
@@ -196,23 +177,19 @@ export default {
 
       if (!!data.password) data.password = this.$auth.hashCode(data.password);
 
-      if (this.mode === "simple_login") {
-        data.role = "participant";
-      }
-
-      this.$root.createFolder({ type: "authors", data }).then((adata) => {
+      this.$root.createFolder({ type: "authors", data }).then(adata => {
         if (this.login_after_creation) {
           this.$nextTick(() => {
             this.$eventHub.$emit("authors.submitPassword", {
               slugFolderName: adata.slugFolderName,
-              password: data.password,
+              password: data.password
             });
           });
         }
         this.$emit("close", "");
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style></style>

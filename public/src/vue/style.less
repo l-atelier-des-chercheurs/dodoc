@@ -157,6 +157,11 @@ body {
 #app {
   width: 100%;
   height: 100%;
+}
+
+.m_dodoc {
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
 
   display: flex;
@@ -231,14 +236,14 @@ body {
     min-width: 180px;
     flex: 1 1 0;
 
-    #app:not(.is--wide) & {
+    .m_dodoc:not(.is--wide) & {
       flex: 1 0 100%;
     }
     &.m_topbar--center {
       min-width: 200px;
       max-width: 200px;
 
-      #app:not(.is--wide) & {
+      .m_dodoc:not(.is--wide) & {
         max-width: none;
       }
     }
@@ -287,7 +292,7 @@ body {
 
         text-transform: lowercase;
 
-        #app:not(.is--wide) & {
+        .m_dodoc:not(.is--wide) & {
           width: 42px;
           .backButton--text {
             display: none;
@@ -303,7 +308,7 @@ body {
         -moz-user-select: none;
         user-select: none;
 
-        #app:not(.is--wide) & {
+        .m_dodoc:not(.is--wide) & {
           .padding-small;
           width: 140px;
         }
@@ -325,7 +330,7 @@ body {
       align-content: flex-start;
       align-items: center;
 
-      #app:not(.is--wide) & {
+      .m_dodoc:not(.is--wide) & {
         display: none;
       }
 
@@ -1488,7 +1493,7 @@ small {
       max-width: none;
     }
 
-    #app:not(.is--wide) & {
+    .m_dodoc:not(.is--wide) & {
       flex-basis: 320px;
       max-width: none;
     }
@@ -1747,7 +1752,7 @@ small {
     cursor: inherit;
   }
 
-  #app:not(.is--wide) & {
+  .m_dodoc:not(.is--wide) & {
     .margin-verysmall;
     margin-left: 0;
     margin-top: 0;
@@ -3377,7 +3382,7 @@ small {
   // .bg-blanc;
   // border: 2px solid @c-noir;
 
-  #app:not(.is--wide) & {
+  .m_dodoc:not(.is--wide) & {
     left: auto;
     right: 0;
     .margin-top-medium;
@@ -8057,7 +8062,7 @@ body[data-mode="print_publication"] {
     background-color: transparent;
   }
 
-  #app {
+  .m_dodoc {
     // overflow: hidden;
   }
 
