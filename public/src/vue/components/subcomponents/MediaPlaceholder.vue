@@ -1,7 +1,6 @@
 <template>
   <div class="m_mediaPlaceholder">
     <!-- <label>{{ $t("placeholder") }} </label> -->
-
     <div
       v-if="model_placeholder_media.hasOwnProperty('instructions')"
       class="m_mediaPlaceholder--instructions"
@@ -24,7 +23,7 @@
         {{ $t("reply") }}
       </button>
     </div>
-    <div v-else>
+    <div v-else class="m_mediaPlaceholder--replies">
       <InsertMediaButton
         v-if="
           !preview_mode &&
@@ -34,7 +33,7 @@
         :slugPubliName="slugPubliName"
         :publi_is_model="publication.is_model"
         :publi_follows_model="true"
-        :available_modes="model_placeholder_media.available_modes"
+        :modes_allowed="modes_allowed"
         :can_collapse="
           !(
             !model_placeholder_media._reply._medias ||
@@ -83,12 +82,14 @@
             <InsertMediaButton
               v-if="
                 !preview_mode &&
-                index === model_placeholder_media._reply._medias.length - 1
+                index === model_placeholder_media._reply._medias.length - 1 &&
+                (modes_allowed === 'all' ||
+                  Object.keys(modes_allowed).length > 0)
               "
               :slugPubliName="slugPubliName"
               :publi_is_model="publication.is_model"
               :publi_follows_model="true"
-              :available_modes="model_placeholder_media.available_modes"
+              :modes_allowed="modes_allowed"
               :read_only="read_only"
               @addMedia="
                 (values) =>
@@ -143,6 +144,47 @@ export default {
       )
         return [];
       return this.model_placeholder_media._reply.placeholder_medias_slugs;
+    },
+    modes_allowed() {
+      if (
+        !this.model_placeholder_media.available_modes ||
+        !Array.isArray(this.model_placeholder_media.available_modes)
+      )
+        return "all";
+
+      const modes_allowed = this.model_placeholder_media.available_modes.reduce(
+        (acc, m) => {
+          acc[m.mode_key] = JSON.parse(JSON.stringify(m));
+          delete acc[m.mode_key].mode_key;
+          return acc;
+        },
+        {}
+      );
+
+      if (
+        this.model_placeholder_media._reply._medias &&
+        this.model_placeholder_media._reply._medias.length > 0
+      ) {
+        // check for each if there is an amount, and if there is then how many medias with that type already exist
+        Object.entries(modes_allowed).map(([mode, opts]) => {
+          if (opts.hasOwnProperty("amount") && opts.amount) {
+            const amount_of_type = opts.amount;
+
+            const number_of_medias_of_this_type = this.model_placeholder_media._reply._medias.filter(
+              (m) => {
+                if (mode === "photo")
+                  return m.type === mode || m.type === "image";
+                return m.type === mode;
+              }
+            ).length;
+
+            if (number_of_medias_of_this_type >= amount_of_type)
+              delete modes_allowed[mode];
+          }
+        });
+      }
+
+      return modes_allowed;
     },
   },
   methods: {

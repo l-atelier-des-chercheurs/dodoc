@@ -87,7 +87,6 @@
             <div class="m_mediaStory--placeholder--instructions">
               <label>{{ $t("instructions") }}</label>
               <MediaField
-                v-if="media.instructions || is_selected"
                 :value="media.instructions"
                 :show_edit_button="true"
                 :add_instructions="$t('add_instructions')"
@@ -499,7 +498,7 @@ export default {
     mediaStyles() {
       let css = "";
 
-      const ratio = this.media_ratio ? this.media_ratio : 1;
+      const ratio = this.media_ratio ? this.media_ratio : 0.5625;
       css += `--media-ratio: ${ratio * 100}%; `;
 
       return css;

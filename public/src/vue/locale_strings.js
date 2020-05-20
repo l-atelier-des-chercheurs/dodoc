@@ -69,6 +69,14 @@ module.exports = (function () {
       fr: "Mise en forme du texte",
       en: "Advanced text options",
     },
+    amount: {
+      fr: "Nombre",
+      en: "Amount",
+    },
+    unlimited: {
+      fr: "Illimité",
+      en: "Unlimited",
+    },
     publication: {
       fr: "Recette",
       en: "Recipe",
