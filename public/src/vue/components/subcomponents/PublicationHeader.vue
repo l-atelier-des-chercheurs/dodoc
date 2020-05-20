@@ -130,7 +130,7 @@
           <a
             :href="url_to_share_for_replies"
             target="_blank"
-            class="js--openInBrowser"
+            class="js--openInBrowser text-lc"
             >{{ url_to_share_for_replies }}</a
           >
         </label>

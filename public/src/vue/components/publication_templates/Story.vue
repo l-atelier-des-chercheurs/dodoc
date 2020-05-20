@@ -1,5 +1,5 @@
 <template>
-  <div
+  <section
     class="m_publicationview"
     :class="{
       'is--preview': preview_mode,
@@ -132,9 +132,23 @@
             </div>
           </template>
         </transition-group>
+
+        <footer class="m_storyPublication--content--footer">
+          <div>
+            <small
+              >{{ $t("notifications.successfully_saved") }} <br />
+              {{ $root.formatDateToPrecise(publication.date_modified) }}
+            </small>
+          </div>
+          <div>
+            <small>
+              {{ $t("notifications.you_can_close_this_window") }}
+            </small>
+          </div>
+        </footer>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 <script>
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";

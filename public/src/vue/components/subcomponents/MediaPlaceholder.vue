@@ -34,7 +34,7 @@
         :slugPubliName="slugPubliName"
         :publi_is_model="publication.is_model"
         :publi_follows_model="true"
-        :modes_allowed="modes_allowed"
+        :available_modes="model_placeholder_media.available_modes"
         :can_collapse="
           !(
             !model_placeholder_media._reply._medias ||
@@ -88,7 +88,7 @@
               :slugPubliName="slugPubliName"
               :publi_is_model="publication.is_model"
               :publi_follows_model="true"
-              :modes_allowed="modes_allowed"
+              :available_modes="model_placeholder_media.available_modes"
               :read_only="read_only"
               @addMedia="
                 (values) =>
@@ -143,16 +143,6 @@ export default {
       )
         return [];
       return this.model_placeholder_media._reply.placeholder_medias_slugs;
-    },
-    modes_allowed() {
-      if (
-        !this.model_placeholder_media.available_modes ||
-        !Array.isArray(this.model_placeholder_media.available_modes)
-      )
-        return "all";
-      return this.model_placeholder_media.available_modes.map(
-        (m) => m.mode_key
-      );
     },
   },
   methods: {

@@ -159,21 +159,44 @@
           (metaFileNames) => insertImportedMedias({ metaFileNames })
         "
       />
-      <CaptureView
-        v-else-if="enable_capture_mode"
-        class="is--collapsed"
-        :slugFolderName="slugPubliName"
-        :type="`publications`"
-        :read_only="read_only"
-        :available_modes="
-          modes_allowed !== 'all'
-            ? modes_allowed.filter((m) => m !== 'text' && m !== 'file')
-            : undefined
-        "
-        @insertMedias="
-          (metaFileNames) => insertImportedMedias({ metaFileNames })
-        "
-      />
+      <template v-else-if="enable_capture_mode">
+        <!-- v-if="captureview_in_modal === false && false" -->
+        <CaptureView
+          class="is--collapsed"
+          :slugFolderName="slugPubliName"
+          :type="`publications`"
+          :read_only="read_only"
+          :available_modes="
+            modes_allowed !== 'all'
+              ? modes_allowed.filter((m) => m !== 'text' && m !== 'file')
+              : undefined
+          "
+          @insertMedias="
+            (metaFileNames) => insertImportedMedias({ metaFileNames })
+          "
+        />
+
+        <!-- <Modal
+          v-else
+          @close="enable_capture_mode = false"
+          :typeOfModal="'SmallAndScroll'"
+        >
+          <CaptureView
+            class="is--collapsed"
+            :slugFolderName="slugPubliName"
+            :type="`publications`"
+            :read_only="read_only"
+            :available_modes="
+              modes_allowed !== 'all'
+                ? modes_allowed.filter((m) => m !== 'text' && m !== 'file')
+                : undefined
+            "
+            @insertMedias="
+              (metaFileNames) => insertImportedMedias({ metaFileNames })
+            "
+          />
+        </Modal> -->
+      </template>
     </transition>
   </div>
 </template>
@@ -181,6 +204,7 @@
 import CaptureView from "../../CaptureView.vue";
 import UploadFile from "./UploadFile.vue";
 import debounce from "debounce";
+import Modal from "../modals/BaseModal.vue";
 
 export default {
   props: {
@@ -202,11 +226,12 @@ export default {
     },
     is_currently_active: Boolean,
     slugPubliName: String,
-    modes_allowed: Array,
+    available_modes: Array,
   },
   components: {
     CaptureView,
     UploadFile,
+    Modal,
   },
   data() {
     return {
@@ -240,22 +265,35 @@ export default {
       immediate: true,
     },
   },
-  computed: {},
+  computed: {
+    modes_allowed() {
+      if (!this.available_modes || !Array.isArray(this.available_modes))
+        return "all";
+      return this.available_modes.map((m) => m.mode_key);
+    },
+  },
   methods: {
     createTextMedia() {
-      const text_bloc_options = this.modes_allowed.find((m) => m === "text");
+      if (this.available_modes) {
+        let plain_text = false;
+        const text_bloc_options = this.available_modes.find(
+          (m) => m.mode_key === "text"
+        );
 
-      let plain_text = false;
-      if (
-        text_bloc_options &&
-        text_bloc_options.advanced_text_options === "false"
-      )
-        plain_text = true;
-
-      this.$emit("addMedia", {
-        type: "text",
-        plain_text,
-      });
+        if (
+          text_bloc_options &&
+          text_bloc_options.advanced_text_options === "false"
+        )
+          plain_text = true;
+        this.$emit("addMedia", {
+          type: "text",
+          plain_text,
+        });
+      } else {
+        this.$emit("addMedia", {
+          type: "text",
+        });
+      }
 
       this.show_menu = false;
     },
