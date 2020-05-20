@@ -269,6 +269,8 @@ export default {
     modes_allowed() {
       if (!this.available_modes || !Array.isArray(this.available_modes))
         return "all";
+
+      debugger;
       return this.available_modes.map((m) => m.mode_key);
     },
   },

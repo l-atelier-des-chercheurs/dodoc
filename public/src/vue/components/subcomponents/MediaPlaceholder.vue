@@ -24,7 +24,7 @@
         {{ $t("reply") }}
       </button>
     </div>
-    <div v-else>
+    <div v-else class="m_mediaPlaceholder--replies">
       <InsertMediaButton
         v-if="
           !preview_mode &&

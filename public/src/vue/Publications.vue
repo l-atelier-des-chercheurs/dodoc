@@ -21,9 +21,9 @@
           :read_only="read_only"
         />
       </div>
-      <div
-        class="m_actionbar--text"
-      >{{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}</div>
+      <div class="m_actionbar--text">
+        {{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}
+      </div>
     </div>
 
     <div class="m_publiFilter">
@@ -36,7 +36,7 @@
           :value="project.slugFolderName"
         >
           {{ project.name }} ({{
-          recipes_for_this_project(project.slugFolderName).length
+            recipes_for_this_project(project.slugFolderName).length
           }})
         </option>
       </select>
@@ -45,7 +45,11 @@
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
-      <div class="m_recipes--recipe" v-for="recipe in recipes" :key="recipe.key">
+      <div
+        class="m_recipes--recipe"
+        v-for="recipe in recipes"
+        :key="recipe.key"
+      >
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2 class>{{ $t(recipe.key) }}</h2>
@@ -57,7 +61,9 @@
               type="button"
               class="buttonLink margin-left-none padding-left-none"
               @click="recipe.show_instructions = !recipe.show_instructions"
-            >+ {{ $t("more_informations") }}</button>
+            >
+              + {{ $t("more_informations") }}
+            </button>
           </p>
           <template v-if="recipe.show_instructions">
             <hr />
@@ -97,7 +103,9 @@
               </tr>
             </thead>
             <tbody>
-              <template v-for="publication in recipe_of_this_template(recipe.key)">
+              <template
+                v-for="publication in recipe_of_this_template(recipe.key)"
+              >
                 <PublicationRow
                   class="m_recipes--recipe--mealList--meal"
                   :key="publication.slugFolderName"
@@ -118,7 +126,9 @@
                 class="m_recipes--recipe--mealList--meal"
               >
                 <td colspan="5">
-                  <button type="button" class="buttonLink margin-none">{{ $t("show_all") }}</button>
+                  <button type="button" class="buttonLink margin-none">
+                    {{ $t("show_all") }}
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -185,7 +195,7 @@ export default {
   props: ["publications", "read_only"],
   components: {
     CreatePublication,
-    PublicationRow
+    PublicationRow,
   },
   data() {
     return {
@@ -221,7 +231,7 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "story",
@@ -230,7 +240,7 @@ export default {
           instructions: "story_instructions",
           show_all_recipes: false,
           icon: `
-          `
+          `,
         },
         {
           key: "drawing_pad",
@@ -257,7 +267,7 @@ export default {
   </g>
 </svg>
 
-          `
+          `,
         },
         {
           key: "video_assemblage",
@@ -288,7 +298,7 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "video_effects",
@@ -326,7 +336,7 @@ export default {
     <rect width="201" height="201" style="fill: none"/>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "stopmotion_animation",
@@ -404,7 +414,7 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "mix_audio_and_video",
@@ -442,7 +452,7 @@ export default {
     </g>
   </g>
 </svg>
-          `
+          `,
         },
         {
           key: "mix_audio_and_image",
@@ -477,8 +487,8 @@ export default {
     </g>
   </g>
 </svg>
-          `
-        }
+          `,
+        },
         // {
         //   key: "carreau",
         //   summary: "carreau_summary",
@@ -489,7 +499,7 @@ export default {
 
         //   `
         // }
-      ]
+      ],
     };
   },
 
@@ -498,18 +508,18 @@ export default {
   beforeDestroy() {},
 
   watch: {
-    "$root.do_navigation.current_slugProjectName": function() {
+    "$root.do_navigation.current_slugProjectName": function () {
       this.slugProjectName_to_filter = !!this.$root.do_navigation
         .current_slugProjectName
         ? this.$root.do_navigation.current_slugProjectName
         : "";
     },
-    slugProjectName_to_filter: function() {
-      this.recipes = this.recipes.map(r => {
+    slugProjectName_to_filter: function () {
+      this.recipes = this.recipes.map((r) => {
         r.show_all_recipes = false;
         return r;
       });
-    }
+    },
   },
   computed: {
     createPubliDefaultName() {
@@ -522,7 +532,7 @@ export default {
 
       while (
         this.all_recipes_of_this_template(this.createPubliTemplateKey).some(
-          r => r.name === name
+          (r) => r.name === name
         )
       ) {
         number_of_recipes++;
@@ -530,19 +540,19 @@ export default {
       }
 
       return name;
-    }
+    },
   },
   methods: {
     recipes_for_this_project(slugProjectName) {
       if (this.publications && Object.values(this.publications).length === 0)
         return [];
       return Object.values(this.publications).filter(
-        r => r.attached_to_project === slugProjectName
+        (r) => r.attached_to_project === slugProjectName
       );
     },
     all_recipes_of_this_template(template_key) {
       const filtered_recipes = Object.values(this.publications).filter(
-        r => r.template === template_key
+        (r) => r.template === template_key
       );
 
       let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
@@ -553,12 +563,11 @@ export default {
       const recipes = this.all_recipes_of_this_template(template_key);
 
       let recipes_with_models = recipes
-        .filter(r => !r.follows_model)
-        .map(r => {
+        .filter((r) => !r.follows_model)
+        .map((r) => {
           if (r.is_model) {
-            debugger;
             const recipes_following_this_model = recipes.filter(
-              _r => _r.follows_model && _r.follows_model === r.slugFolderName
+              (_r) => _r.follows_model && _r.follows_model === r.slugFolderName
             );
             if (recipes_following_this_model.length > 0) {
               r._replies = recipes_following_this_model;
@@ -567,13 +576,13 @@ export default {
           return r;
         });
 
-      if (!this.recipes.find(r => r.key === template_key).show_all_recipes) {
+      if (!this.recipes.find((r) => r.key === template_key).show_all_recipes) {
         // if show only part of it
 
         // if project filter, show only those of that project
         if (!!this.slugProjectName_to_filter)
           return recipes_with_models.filter(
-            r => r.attached_to_project === this.slugProjectName_to_filter
+            (r) => r.attached_to_project === this.slugProjectName_to_filter
           );
         else return recipes_with_models.slice(0, 3);
       }
@@ -581,13 +590,13 @@ export default {
       if (!!this.slugProjectName_to_filter) {
         // show first that project’s publi, and then all the others
         const recipes_of_project = recipes_with_models.filter(
-          r => r.attached_to_project === this.slugProjectName_to_filter
+          (r) => r.attached_to_project === this.slugProjectName_to_filter
         );
 
         if (recipes_of_project)
           return recipes_of_project.concat(
             recipes_with_models.filter(
-              r => r.attached_to_project !== this.slugProjectName_to_filter
+              (r) => r.attached_to_project !== this.slugProjectName_to_filter
             )
           );
 
@@ -605,8 +614,8 @@ export default {
     openCreatePublicationModal(recipe_key) {
       this.showCreatePublicationModal = true;
       this.createPubliTemplateKey = recipe_key;
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>
