@@ -12,9 +12,7 @@
         />
       </div>
     </template>
-    <template
-      v-else-if="$root.state.mode === 'live' && !$root.state.authentificated"
-    >
+    <template v-else-if="$root.state.mode === 'live' && !$root.state.authentificated">
       <SessionPassword
         v-if="$root.showSessionPasswordModal"
         @close="$root.showSessionPasswordModal = false"
@@ -22,218 +20,16 @@
       />
     </template>
     <template
-      v-else-if="
-        [
-          'export_publication',
-          'print_publication',
-          'link_publication',
-        ].includes($root.state.mode) || $root.store.request.display === 'survey'
-      "
+      v-else-if="$root.showAuthorsListModal || ($root.state.local_options.force_login && !$root.current_author)"
     >
       <SimpleAuthorLogin
-        v-if="!survey_can_edit_publication"
-        :prevent_close="true"
-        @loggedInAs="loggedInAs"
+        v-if="$root.state.local_options.simple_login && (!$root.current_author || $root.current_author.role === 'participant') "
+        :prevent_close="$root.state.local_options.force_login && !$root.current_author"
+        @close="$root.showAuthorsListModal = false"
       />
-
-      <template v-if="survey_can_edit_publication">
-        <div class="_survey_author_indicator" v-if="$root.current_author">
-          <button type="button" class="button-greenthin">
-            {{ $root.current_author.name }}
-            <span v-if="$root.current_author_is_admin"
-              >({{ $t("admin") }})</span
-            >
-          </button>
-          <button
-            type="button"
-            class="buttonLink"
-            v-if="user_replies.length > 0"
-            :class="{ 'is--active': show_all_my_replies }"
-            @click.stop="show_all_my_replies = !show_all_my_replies"
-          >
-            {{ $t("see_all_my_stories") }}
-          </button>
-          <button
-            type="button"
-            class="buttonLink"
-            @click.stop="$root.unsetAuthor()"
-          >
-            {{ $t("logout") }}
-          </button>
-
-          <div v-if="show_all_my_replies" class="padding-small">
-            <div
-              v-for="reply in user_replies"
-              :key="reply.slugFolderName"
-              class="padding-verysmall"
-            >
-              <a :href="`/_publications/survey/${reply.slugFolderName}`">{{
-                reply.name
-              }}</a>
-            </div>
-          </div>
-        </div>
-
-        <Publication
-          v-if="survey_can_edit_publication"
-          :publication="$root.current_publication"
-          :read_only="!$root.state.connected"
-        />
-      </template>
-    </template>
-    <template
-      v-else-if="
-        $root.state.mode === 'live' &&
-        $root.store.request.display !== 'standalone'
-      "
-    >
-      <SystemBar v-if="$root.settings.enable_system_bar" :withTitleBar="true" />
-
-      <TopBar
-        :has_back_button="$root.do_navigation.view !== 'ListView'"
-        :slugProjectName="$root.do_navigation.current_slugProjectName"
-        :project="$root.current_project"
-      />
-
-      <div class="m_activitiesPanel">
-        <splitpanes
-          watch-slots
-          @resize="resize($event)"
-          @resized="resized()"
-          @splitter-click="splitterClicked($event)"
-          :data-docpane_isopen="$root.settings.show_publi_panel === true"
-          :data-chatpane_isopen="$root.settings.show_chat_panel === true"
-        >
-          <pane
-            class="splitter-pane"
-            ref="doPane"
-            min-size="5"
-            :size="panels_width.doPane"
-          >
-            <div
-              class="m_activitiesPanel--do"
-              :class="{ 'is--large': activitiesPanel_is_large }"
-            >
-              <div
-                style="
-                  position: relative;
-                  width: 100%;
-                  height: 100%;
-                  overflow: hidden;
-                "
-              >
-                <!-- v-show="$root.do_navigation.view === 'ListView'" -->
-                <transition name="ListView" :duration="500">
-                  <ListView
-                    v-show="$root.do_navigation.view === 'ListView'"
-                    :presentationMD="$root.store.presentationMD"
-                    :read_only="!$root.state.connected"
-                    :projects="$root.store.projects"
-                  />
-                </transition>
-                <transition name="ProjectView" :duration="500">
-                  <ProjectView
-                    v-if="
-                      ['ProjectView', 'CaptureView'].includes(
-                        $root.do_navigation.view
-                      )
-                    "
-                    :slugProjectName="
-                      $root.do_navigation.current_slugProjectName
-                    "
-                    :project="$root.current_project"
-                    :read_only="!$root.state.connected"
-                  />
-                </transition>
-
-                <transition name="CaptureView" :duration="500">
-                  <CaptureView
-                    v-if="$root.do_navigation.view === 'CaptureView'"
-                    :slugFolderName="
-                      $root.do_navigation.current_slugProjectName
-                    "
-                    :type="`projects`"
-                    :read_only="!$root.state.connected"
-                  />
-                </transition>
-              </div>
-            </div>
-          </pane>
-          <pane
-            class="splitter-pane"
-            ref="docPane"
-            :size="panels_width.docPane"
-          >
-            <div
-              class="m_activitiesPanel--doc"
-              :class="{ 'is--open': $root.settings.show_publi_panel }"
-            >
-              <div style="position: relative; height: 100%; overflow: hidden;">
-                <transition name="ListView" :duration="500">
-                  <Publications
-                    v-if="$root.settings.show_publi_panel"
-                    :publications="$root.store.publications"
-                    :read_only="!$root.state.connected"
-                  />
-                </transition>
-                <transition
-                  name="ProjectView"
-                  :duration="500"
-                  v-if="$root.settings.current_publication.slug !== false"
-                >
-                  <Publication
-                    :slugPubliName="$root.settings.current_publication.slug"
-                    :publication="
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ]
-                    "
-                    :read_only="!$root.state.connected"
-                  />
-                </transition>
-              </div>
-            </div>
-          </pane>
-          <pane
-            class="splitter-pane"
-            ref="chatPane"
-            :size="panels_width.chatPane"
-          >
-            <div
-              class="m_activitiesPanel--chat"
-              :class="{ 'is--open': $root.settings.show_chat_panel }"
-            >
-              <transition name="ListView" :duration="500">
-                <Chats
-                  v-if="$root.settings.show_chat_panel"
-                  :read_only="!$root.state.connected"
-                  :chats="$root.store.chats"
-                />
-              </transition>
-            </div>
-          </pane>
-        </splitpanes>
-      </div>
-      <EditMedia
-        v-if="$root.media_modal.open"
-        :key="
-          $root.media_modal.current_slugProjectName +
-          $root.media_modal.current_metaFileName
-        "
-        :slugMediaName="$root.media_modal.current_metaFileName"
-        :slugProjectName="$root.media_modal.current_slugProjectName"
-        :media="
-          $root.store.projects[$root.media_modal.current_slugProjectName]
-            .medias[$root.media_modal.current_metaFileName]
-        "
-        @close="$root.closeMedia()"
-        :read_only="!$root.state.connected"
-      />
+      <!-- !survey_can_edit_publication" -->
       <AuthorsList
-        v-if="
-          $root.showAuthorsListModal ||
-          ($root.state.local_options.force_login && !$root.current_author)
-        "
+        v-else
         :authors="$root.store.authors"
         :prevent_close="
           $root.state.local_options.force_login && !$root.current_author
@@ -241,121 +37,110 @@
         @close="$root.showAuthorsListModal = false"
       />
     </template>
+    <template
+      v-else-if="[
+          'export_publication',
+          'print_publication',
+          'link_publication',
+        ].includes($root.state.mode) && $root.current_publication"
+    >
+      <Publication :publication="$root.current_publication" :read_only="!$root.state.connected" />
+    </template>
+
+    <template
+      v-else-if="$root.store.request.display === 'survey' || ($root.current_author && $root.current_author.role === 'participant')"
+    >
+      <div class="_survey_author_indicator" v-if="$root.current_author">
+        <button type="button" class="button-greenthin">
+          {{ $root.current_author.name }}
+          <span
+            v-if="$root.current_author_is_admin"
+          >({{ $t("admin") }})</span>
+        </button>
+        <button
+          type="button"
+          class="buttonLink"
+          v-if="user_replies.length > 0 "
+          :class="{ 'is--active': show_all_my_replies }"
+          @click.stop="show_all_my_replies = !show_all_my_replies"
+        >{{ $t("see_all_my_stories") }}</button>
+        <button
+          type="button"
+          class="buttonLink"
+          @click.stop="$root.unsetAuthor()"
+        >{{ $t("logout") }}</button>
+
+        <div v-if="show_all_my_replies || !this.$root.current_publication" class="padding-small">
+          <label>{{ $t('list_of_stories')}}</label>
+          <div v-for="reply in user_replies" :key="reply.slugFolderName" class="padding-verysmall">
+            <a :href="`/_publications/survey/${reply.slugFolderName}`">
+              {{
+              reply.name
+              }}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <Publication
+        v-if="$root.current_publication && survey_can_edit_publication"
+        :publication="$root.current_publication"
+        :read_only="!$root.state.connected"
+      />
+    </template>
+    <template
+      v-if="
+        $root.state.mode === 'live' &&
+        $root.store.request.display !== 'standalone' && 
+        $root.store.request.display !== 'survey' && 
+        (!$root.state.local_options.force_login || ($root.current_author && $root.current_author.role !== 'participant'))
+      "
+    >
+      <FullDodoc />
+    </template>
 
     <portal-target name="modal_container" />
   </div>
 </template>
 
 <script>
-import SystemBar from "./SystemBar.vue";
-import TopBar from "./TopBar.vue";
-import ListView from "./ListView.vue";
-import Chats from "./Chats.vue";
-import ProjectView from "./ProjectView.vue";
-import CaptureView from "./CaptureView.vue";
-import EditMedia from "./components/modals/EditMedia.vue";
-import AuthorsList from "./components/modals/AuthorsList.vue";
-import SessionPassword from "./components/modals/SessionPassword.vue";
+import FullDodoc from "./FullDodoc.vue";
 
+import SessionPassword from "./components/modals/SessionPassword.vue";
+import AuthorsList from "./components/modals/AuthorsList.vue";
 import MediaContent from "./components/subcomponents/MediaContent.vue";
-import Publications from "./Publications.vue";
 import Publication from "./Publication.vue";
 
 import SimpleAuthorLogin from "./components/modals/SimpleAuthorLogin.vue";
 
-import { Splitpanes, Pane } from "splitpanes";
-
 export default {
   name: "app",
   components: {
-    SystemBar,
-    TopBar,
-    ListView,
-    Chats,
-    ProjectView,
-    CaptureView,
-    EditMedia,
+    FullDodoc,
     AuthorsList,
     SessionPassword,
-    Publications,
     Publication,
-    Splitpanes,
-    Pane,
     SimpleAuthorLogin,
-    MediaContent,
+    MediaContent
   },
   props: {},
   data() {
     return {
-      split: "vertical",
-      drag_offset: 0,
-      hasMoved: false,
-      height: null,
-      type: "width",
-      resizeType: "left",
-
-      show_all_my_replies: false,
-
-      panels_width: {
-        doPane: 100,
-        docPane: 0,
-        chatPane: 0,
-      },
+      show_all_my_replies: false
     };
   },
   watch: {
-    panels_width: {
+    "$root.current_author": {
       handler() {
-        if (
-          this.panels_width.docPane > 0.01 &&
-          !this.$root.settings.show_publi_panel
-        ) {
-          this.$root.openPubliPanel();
-        } else if (
-          this.panels_width.docPane <= 0.01 &&
-          this.$root.settings.show_publi_panel
-        ) {
-          this.$root.closePubliPanel();
-        }
-
-        if (
-          this.panels_width.chatPane > 0.01 &&
-          !this.$root.settings.show_chat_panel
-        ) {
-          this.$root.openChatPanel();
-        } else if (
-          this.panels_width.chatPane <= 0.01 &&
-          this.$root.settings.show_chat_panel
-        ) {
-          this.$root.closeChatPanel();
-        }
-      },
-      deep: true,
-    },
-  },
-  created() {
-    this.$eventHub.$on("socketio.chats.listMedia", this.newChatPosted);
-
-    if (this.$root.state.local_options.force_login) {
-      // this.panels_width.chatPane = 30;
-      // this.panels_width.doPane = 70;
+        this.surveyLoggedInAs(this.$root.current_author.slugFolderName);
+      }
     }
   },
+  created() {},
   beforeDestroy() {
     this.$eventHub.$off("socketio.chats.listMedia", this.newChatPosted);
   },
   computed: {
-    activitiesPanel_is_large() {
-      if (
-        (this.panels_width.doPane / 100) * this.$root.settings.windowWidth <
-        850
-      )
-        return false;
-
-      if (this.$root.settings.windowHeight < 650) return false;
-
-      return true;
-    },
     survey_can_edit_publication() {
       if (
         !this.$root.current_publication ||
@@ -369,89 +154,23 @@ export default {
         this.$root.current_author &&
         Array.isArray(this.$root.current_publication.authors) &&
         this.$root.current_publication.authors.some(
-          (a) => a.slugFolderName === this.$root.current_author.slugFolderName
+          a => a.slugFolderName === this.$root.current_author.slugFolderName
         )
       );
     },
     user_replies() {
       return Object.values(this.$root.store.publications).filter(
-        (p) =>
+        p =>
           !!p.follows_model &&
           p.authors &&
           p.authors.some(
-            (a) => a.slugFolderName === this.$root.current_author.slugFolderName
+            a => a.slugFolderName === this.$root.current_author.slugFolderName
           )
       );
-    },
+    }
   },
   methods: {
-    resize($event) {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • App: splitpanes resize`);
-      this.panels_width.doPane = $event[0].size;
-      this.panels_width.docPane = $event[1].size;
-      this.panels_width.chatPane = $event[2].size;
-    },
-    resized() {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • App: splitpanes resized`);
-      this.$eventHub.$emit(`activity_panels_resized`);
-    },
-    splitterClicked(e) {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(
-          `METHODS • App: splitpanes splitterClicked with e.index = ${e.index}`
-        );
-
-      if (e.index === 1) {
-        if (this.panels_width.docPane <= 0.01) {
-          if (this.panels_width.chatPane <= 0.01) this.panels_width.doPane = 50;
-          else {
-            this.panels_width.chatPane = 25;
-            this.panels_width.doPane = 25;
-          }
-          this.panels_width.docPane = 50;
-        } else {
-          if (this.panels_width.chatPane <= 0.01)
-            this.panels_width.doPane = 100;
-          else
-            this.panels_width.doPane =
-              this.panels_width.docPane + this.panels_width.doPane;
-          this.panels_width.docPane = 0.01;
-        }
-      } else if (e.index === 2) {
-        if (this.panels_width.chatPane <= 0.01) {
-          if (this.panels_width.docPane <= 0.01) this.panels_width.doPane = 70;
-          else {
-            this.panels_width.docPane = 35;
-            this.panels_width.doPane = 35;
-          }
-          this.panels_width.chatPane = 30;
-        } else {
-          this.panels_width.doPane =
-            this.panels_width.chatPane + this.panels_width.doPane;
-          this.panels_width.chatPane = 0.01;
-        }
-      }
-    },
-    newChatPosted(m) {
-      // const chatroom =
-      const type = Object.keys(m)[0];
-      const content = Object.values(m)[0];
-
-      const chat_name = Object.values(content)[0].name;
-
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .log(
-          this.$t("notifications.new_chat_posted_in") +
-            "<b>" +
-            chat_name +
-            "</b>"
-        );
-    },
-    loggedInAs(slugAuthorName) {
+    surveyLoggedInAs(slugAuthorName) {
       if (this.$root.store.request.display !== "survey") return false;
       if (!this.$root.current_publication) return false;
 
@@ -464,13 +183,13 @@ export default {
               editing_limited_to: "only_authors",
               viewing_limited_to: "",
               name: `[${this.$root.current_author.name}] ${this.$root.current_publication.name}`,
-              authors: [{ slugFolderName: slugAuthorName }],
-            },
+              authors: [{ slugFolderName: slugAuthorName }]
+            }
           })
           .then(() => {});
       } else if (
         this.$root.current_publication.authors.some(
-          (a) => a.slugFolderName === slugAuthorName
+          a => a.slugFolderName === slugAuthorName
         )
       ) {
         this.$alertify
@@ -490,8 +209,8 @@ export default {
             this.$t("notifications.account_not_associated_to_this_ressource")
           );
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

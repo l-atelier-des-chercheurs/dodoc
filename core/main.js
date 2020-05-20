@@ -93,22 +93,32 @@ module.exports = function ({ router }) {
                   dev.log("Found session password in meta.txt set to: " + pass);
                   global.session_password = auth.hashCode(pass);
                 }
-                global.force_login =
-                  !!sessionMeta &&
-                  sessionMeta.hasOwnProperty("force_login") &&
-                  sessionMeta.force_login === "true";
-                dev.log(
-                  "LOCAL OPTIONS: Force login is set to " + global.force_login
-                );
 
-                global.force_author_password =
+                if (
                   !!sessionMeta &&
-                  sessionMeta.hasOwnProperty("force_author_password") &&
-                  sessionMeta.force_author_password === "true";
-                dev.log(
-                  "LOCAL OPTIONS: Force author password is set to " +
-                    global.force_author_password
-                );
+                  sessionMeta.hasOwnProperty("new_account_default_role") &&
+                  sessionMeta.new_account_default_role !== ""
+                    ? sessionMeta.new_account_default_role
+                    : ""
+                ) {
+                  global.settings.structure.authors.fields.role.default =
+                    sessionMeta.new_account_default_role;
+                }
+
+                [
+                  "force_login",
+                  "simple_login",
+                  "require_email",
+                  "force_author_password",
+                ].map((rule) => {
+                  if (
+                    !!sessionMeta &&
+                    sessionMeta.hasOwnProperty(rule) &&
+                    sessionMeta[rule] === "true"
+                  ) {
+                    global[rule] = true;
+                  } else global[rule] = false;
+                });
 
                 portscanner
                   .findAPortNotInUse(
