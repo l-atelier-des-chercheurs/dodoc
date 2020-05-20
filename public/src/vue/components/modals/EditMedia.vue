@@ -658,7 +658,7 @@ export default {
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .success(this.$t("notifications.successfully_saved_media"));
+        .success(this.$t("notifications.successfully_saved"));
       this.is_sending_content_to_server = false;
       this.$emit("close", "");
     },

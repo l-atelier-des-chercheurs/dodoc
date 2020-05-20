@@ -12,7 +12,9 @@
         />
       </div>
     </template>
-    <template v-else-if="$root.state.mode === 'live' && !$root.state.authentificated">
+    <template
+      v-else-if="$root.state.mode === 'live' && !$root.state.authentificated"
+    >
       <SessionPassword
         v-if="$root.showSessionPasswordModal"
         @close="$root.showSessionPasswordModal = false"
@@ -20,14 +22,21 @@
       />
     </template>
     <template
-      v-else-if="$root.showAuthorsListModal || ($root.state.local_options.force_login && !$root.current_author)"
+      v-else-if="
+        $root.showAuthorsListModal ||
+        ($root.state.local_options.force_login && !$root.current_author)
+      "
     >
       <SimpleAuthorLogin
-        v-if="$root.state.local_options.simple_login && (!$root.current_author || $root.current_author.role === 'participant') "
-        :prevent_close="$root.state.local_options.force_login && !$root.current_author"
+        v-if="
+          $root.state.local_options.simple_login &&
+          (!$root.current_author || $root.current_author.role === 'participant')
+        "
+        :prevent_close="
+          $root.state.local_options.force_login && !$root.current_author
+        "
         @close="$root.showAuthorsListModal = false"
       />
-      <!-- !survey_can_edit_publication" -->
       <AuthorsList
         v-else
         :authors="$root.store.authors"
@@ -38,62 +47,35 @@
       />
     </template>
     <template
-      v-else-if="[
+      v-else-if="
+        [
           'export_publication',
           'print_publication',
           'link_publication',
-        ].includes($root.state.mode) && $root.current_publication"
+        ].includes($root.state.mode) && $root.current_publication
+      "
     >
-      <Publication :publication="$root.current_publication" :read_only="!$root.state.connected" />
-    </template>
-
-    <template
-      v-else-if="$root.store.request.display === 'survey' || ($root.current_author && $root.current_author.role === 'participant')"
-    >
-      <div class="_survey_author_indicator" v-if="$root.current_author">
-        <button type="button" class="button-greenthin">
-          {{ $root.current_author.name }}
-          <span
-            v-if="$root.current_author_is_admin"
-          >({{ $t("admin") }})</span>
-        </button>
-        <button
-          type="button"
-          class="buttonLink"
-          v-if="user_replies.length > 0 "
-          :class="{ 'is--active': show_all_my_replies }"
-          @click.stop="show_all_my_replies = !show_all_my_replies"
-        >{{ $t("see_all_my_stories") }}</button>
-        <button
-          type="button"
-          class="buttonLink"
-          @click.stop="$root.unsetAuthor()"
-        >{{ $t("logout") }}</button>
-
-        <div v-if="show_all_my_replies || !this.$root.current_publication" class="padding-small">
-          <label>{{ $t('list_of_stories')}}</label>
-          <div v-for="reply in user_replies" :key="reply.slugFolderName" class="padding-verysmall">
-            <a :href="`/_publications/survey/${reply.slugFolderName}`">
-              {{
-              reply.name
-              }}
-            </a>
-          </div>
-        </div>
-      </div>
-
       <Publication
-        v-if="$root.current_publication && survey_can_edit_publication"
         :publication="$root.current_publication"
         :read_only="!$root.state.connected"
       />
     </template>
+
+    <template
+      v-else-if="
+        $root.store.request.display === 'survey' ||
+        ($root.current_author && $root.current_author.role === 'participant')
+      "
+    >
+      <Survey />
+    </template>
     <template
       v-if="
         $root.state.mode === 'live' &&
-        $root.store.request.display !== 'standalone' && 
-        $root.store.request.display !== 'survey' && 
-        (!$root.state.local_options.force_login || ($root.current_author && $root.current_author.role !== 'participant'))
+        $root.store.request.display !== 'standalone' &&
+        $root.store.request.display !== 'survey' &&
+        (!$root.state.local_options.force_login ||
+          ($root.current_author && $root.current_author.role !== 'participant'))
       "
     >
       <FullDodoc />
@@ -105,6 +87,7 @@
 
 <script>
 import FullDodoc from "./FullDodoc.vue";
+import Survey from "./Survey.vue";
 
 import SessionPassword from "./components/modals/SessionPassword.vue";
 import AuthorsList from "./components/modals/AuthorsList.vue";
@@ -117,100 +100,22 @@ export default {
   name: "app",
   components: {
     FullDodoc,
+    Survey,
     AuthorsList,
     SessionPassword,
     Publication,
     SimpleAuthorLogin,
-    MediaContent
+    MediaContent,
   },
   props: {},
   data() {
-    return {
-      show_all_my_replies: false
-    };
+    return {};
   },
-  watch: {
-    "$root.current_author": {
-      handler() {
-        this.surveyLoggedInAs(this.$root.current_author.slugFolderName);
-      }
-    }
-  },
+  watch: {},
   created() {},
-  beforeDestroy() {
-    this.$eventHub.$off("socketio.chats.listMedia", this.newChatPosted);
-  },
-  computed: {
-    survey_can_edit_publication() {
-      if (
-        !this.$root.current_publication ||
-        !this.$root.current_publication.authors ||
-        !Array.isArray(this.$root.current_publication.authors) ||
-        this.$root.current_publication.authors.length === 0
-      )
-        return false;
-      if (this.$root.current_author_is_admin) return true;
-      return (
-        this.$root.current_author &&
-        Array.isArray(this.$root.current_publication.authors) &&
-        this.$root.current_publication.authors.some(
-          a => a.slugFolderName === this.$root.current_author.slugFolderName
-        )
-      );
-    },
-    user_replies() {
-      return Object.values(this.$root.store.publications).filter(
-        p =>
-          !!p.follows_model &&
-          p.authors &&
-          p.authors.some(
-            a => a.slugFolderName === this.$root.current_author.slugFolderName
-          )
-      );
-    }
-  },
-  methods: {
-    surveyLoggedInAs(slugAuthorName) {
-      if (this.$root.store.request.display !== "survey") return false;
-      if (!this.$root.current_publication) return false;
-
-      if (this.$root.current_publication.editing_limited_to === "everybody") {
-        this.$root
-          .editFolder({
-            type: "publications",
-            slugFolderName: this.$root.current_publication.slugFolderName,
-            data: {
-              editing_limited_to: "only_authors",
-              viewing_limited_to: "",
-              name: `[${this.$root.current_author.name}] ${this.$root.current_publication.name}`,
-              authors: [{ slugFolderName: slugAuthorName }]
-            }
-          })
-          .then(() => {});
-      } else if (
-        this.$root.current_publication.authors.some(
-          a => a.slugFolderName === slugAuthorName
-        )
-      ) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(
-            this.$t("notifications.connected_as") +
-              "<i>" +
-              this.$root.current_author.name +
-              "</i>"
-          );
-      } else {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(
-            this.$t("notifications.account_not_associated_to_this_ressource")
-          );
-      }
-    }
-  }
+  beforeDestroy() {},
+  computed: {},
+  methods: {},
 };
 </script>
 

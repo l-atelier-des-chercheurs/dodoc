@@ -2932,10 +2932,15 @@ module.exports = (function () {
         en:
           "Changes to this media couldn’t be saved, check that the connection is active and try again.",
       },
-      successfully_saved_media: {
+      successfully_saved: {
         fr: "Les modifications ont bien été enregistrées.",
         en: "Changes were successfully saved.",
       },
+      you_can_close_this_window: {
+        fr: "Vous pouvez fermer cet onglet.",
+        en: "You can close this tab.",
+      },
+
       connection_error: {
         fr: "La connexion au serveur n’a pu se faire.",
         en: "The connection to the server could not be established.",
