@@ -87,7 +87,6 @@
             <div class="m_mediaStory--placeholder--instructions">
               <label>{{ $t("instructions") }}</label>
               <MediaField
-                v-if="media.instructions || is_selected"
                 :value="media.instructions"
                 :show_edit_button="true"
                 :add_instructions="$t('add_instructions')"

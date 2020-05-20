@@ -410,6 +410,7 @@
           :slugFolderName="slugFolderName"
           :read_only="read_only"
           :videoStream="videoStream"
+          :can_add_to_fav="can_add_to_fav"
           @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
           @close="current_stopmotion = false"
           @new_single_image="updateSingleImage"
@@ -570,6 +571,7 @@
             <MediaValidationButtons
               v-if="media_to_validate"
               :read_only="read_only"
+              :can_add_to_fav="can_add_to_fav"
               :media_is_being_sent="media_is_being_sent"
               :media_being_sent_percent="media_being_sent_percent"
               @cancel="cancelValidation()"
@@ -611,6 +613,10 @@ export default {
     available_modes: {
       type: Array,
       default: ["photo", "video", "stopmotion", "audio", "vecto"],
+    },
+    can_add_to_fav: {
+      type: Boolean,
+      default: true,
     },
   },
   components: {

@@ -10,7 +10,6 @@
   >
     <button
       type="button"
-      v-if="can_collapse || (!can_collapse && !show_menu)"
       class="m_insertMediaButton--toggleButton"
       :class="{ 'is--active': show_menu }"
       @click="toggleMenu"
@@ -20,14 +19,14 @@
         delay: [600, 0],
       }"
     ></button>
-    <button
+    <!-- <button
       type="button"
       class="buttonLink _cancel_capture_button"
       v-if="enable_capture_mode"
       @click="enable_capture_mode = false"
     >
       {{ $t("cancel") }}
-    </button>
+    </button> -->
     <transition name="fade_fast" :duration="150" mode="out-in">
       <div
         v-if="show_drop_container"
@@ -169,6 +168,7 @@
           :slugFolderName="slugPubliName"
           :type="`publications`"
           :read_only="read_only"
+          :can_add_to_fav="false"
           :available_modes="
             modes_allowed !== 'all'
               ? Object.keys(modes_allowed).filter(

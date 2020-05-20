@@ -112,6 +112,7 @@
       :read_only="read_only"
       :media_is_being_sent="media_is_being_sent"
       :cancelButtonIsBackButton="true"
+      :can_add_to_fav="can_add_to_fav"
       @cancel="backToStopmotion"
       @save="save()"
       @save_and_fav="saveAndFav()"
@@ -132,6 +133,7 @@ export default {
     slugFolderName: String,
     type: String,
     videoStream: MediaStream,
+    can_add_to_fav: Boolean,
   },
   components: {
     MediaContent,

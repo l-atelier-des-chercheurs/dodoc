@@ -1,7 +1,6 @@
 <template>
   <div class="m_mediaPlaceholder">
     <!-- <label>{{ $t("placeholder") }} </label> -->
-
     <div
       v-if="model_placeholder_media.hasOwnProperty('instructions')"
       class="m_mediaPlaceholder--instructions"
@@ -84,8 +83,8 @@
               v-if="
                 !preview_mode &&
                 index === model_placeholder_media._reply._medias.length - 1 &&
-                modes_allowed !== 'all' &&
-                Object.keys(modes_allowed).length > 0
+                (modes_allowed === 'all' ||
+                  Object.keys(modes_allowed).length > 0)
               "
               :slugPubliName="slugPubliName"
               :publi_is_model="publication.is_model"
