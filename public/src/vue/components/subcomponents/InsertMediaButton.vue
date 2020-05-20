@@ -45,7 +45,7 @@
             <template v-if="modes_allowed === 'all'">{{ $t("all") }}</template>
             <span
               v-else
-              v-for="(mode, index) in modes_allowed"
+              v-for="(mode, index) in Object.keys(modes_allowed)"
               :key="mode"
               v-html="(index > 0 ? ', ' : '') + $t(mode)"
             />
@@ -67,7 +67,7 @@
               v-if="
                 !publi_follows_model ||
                 modes_allowed === 'all' ||
-                modes_allowed.some((m) =>
+                Object.keys(modes_allowed).some((m) =>
                   ['photo', 'video', 'stopmotion', 'audio', 'vecto'].includes(m)
                 )
               "
@@ -81,7 +81,10 @@
               class="barButton barButton_import button"
               :id="`insert_file_${id}`"
               v-if="
-                !(modes_allowed.length === 1 && modes_allowed[0] === 'text')
+                !(
+                  Object.keys(modes_allowed).length === 1 &&
+                  Object.keys(modes_allowed)[0] === 'text'
+                )
               "
             >
               <span>
@@ -105,7 +108,7 @@
               v-if="
                 !publi_follows_model ||
                 modes_allowed === 'all' ||
-                modes_allowed.includes('text')
+                modes_allowed.hasOwnProperty('text')
               "
               @click="createTextMedia"
             >
@@ -141,7 +144,7 @@
               }}</template>
               <span
                 v-else
-                v-for="(mode, index) in modes_allowed"
+                v-for="(mode, index) in Object.keys(modes_allowed)"
                 :key="mode"
                 v-html="(index > 0 ? ', ' : '') + $t(mode)"
               />
@@ -168,7 +171,9 @@
           :read_only="read_only"
           :available_modes="
             modes_allowed !== 'all'
-              ? modes_allowed.filter((m) => m !== 'text' && m !== 'file')
+              ? Object.keys(modes_allowed).filter(
+                  (m) => m !== 'text' && m !== 'file'
+                )
               : undefined
           "
           @insertMedias="
@@ -226,7 +231,7 @@ export default {
     },
     is_currently_active: Boolean,
     slugPubliName: String,
-    available_modes: Array,
+    modes_allowed: [String, Object],
   },
   components: {
     CaptureView,
@@ -265,28 +270,18 @@ export default {
       immediate: true,
     },
   },
-  computed: {
-    modes_allowed() {
-      if (!this.available_modes || !Array.isArray(this.available_modes))
-        return "all";
-
-      debugger;
-      return this.available_modes.map((m) => m.mode_key);
-    },
-  },
+  computed: {},
   methods: {
     createTextMedia() {
-      if (this.available_modes) {
+      if (this.modes_allowed && this.modes_allowed !== "all") {
         let plain_text = false;
-        const text_bloc_options = this.available_modes.find(
-          (m) => m.mode_key === "text"
-        );
 
         if (
-          text_bloc_options &&
-          text_bloc_options.advanced_text_options === "false"
+          this.modes_allowed.text &&
+          this.modes_allowed.text.advanced_text_options === "false"
         )
           plain_text = true;
+
         this.$emit("addMedia", {
           type: "text",
           plain_text,

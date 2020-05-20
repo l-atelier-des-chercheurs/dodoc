@@ -499,7 +499,7 @@ export default {
     mediaStyles() {
       let css = "";
 
-      const ratio = this.media_ratio ? this.media_ratio : 1;
+      const ratio = this.media_ratio ? this.media_ratio : 0.5625;
       css += `--media-ratio: ${ratio * 100}%; `;
 
       return css;
