@@ -69,8 +69,8 @@ module.exports = (function () {
       fr: "Mise en forme du texte",
       en: "Advanced text options",
     },
-    limit_amount: {
-      fr: "Quantité",
+    amount: {
+      fr: "Nombre",
       en: "Amount",
     },
     unlimited: {

@@ -27,7 +27,10 @@
         </label>
       </div>
 
-      <div class="_options" v-if="option.enabled">
+      <div
+        class="_options"
+        v-if="option.enabled && (option.advanced_text_options || option.amount)"
+      >
         <label>{{ $t("settings") }}</label>
         <div v-if="option.key === 'text'" class="_advanced_text">
           <label
@@ -43,9 +46,9 @@
             {{ $t("advanced_text_bloc") }}
           </label>
         </div>
-        <div class="_amount">
+        <div class="_amount" v-if="option.amount">
           <label>
-            {{ $t("limit_amount") }}
+            {{ $t("amount") }}
           </label>
           <select v-model="option.amount">
             <option value="unlimited">{{ $t("unlimited") }}</option>
@@ -94,7 +97,6 @@ export default {
           key: "file",
           picto: "",
           enabled: true,
-          amount: "unlimited",
         },
       ],
 
