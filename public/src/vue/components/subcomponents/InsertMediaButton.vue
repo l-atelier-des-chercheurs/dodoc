@@ -231,7 +231,10 @@ export default {
     },
     is_currently_active: Boolean,
     slugPubliName: String,
-    modes_allowed: [String, Object],
+    modes_allowed: {
+      type: [String, Object],
+      default: "all",
+    },
   },
   components: {
     CaptureView,

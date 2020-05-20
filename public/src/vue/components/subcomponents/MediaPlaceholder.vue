@@ -179,7 +179,6 @@ export default {
               }
             ).length;
 
-            debugger;
             if (number_of_medias_of_this_type >= amount_of_type)
               delete modes_allowed[mode];
           }
