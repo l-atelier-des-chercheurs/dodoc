@@ -5881,10 +5881,14 @@ small {
 
 .m_mediaStory.type-divider {
   .mediaContainer {
-    padding-top: 1em;
+    padding-top: @t-skipline / 3;
     // border-radius: 0;
     // height: @t-storyButtons / 2;
     // border-bottom: 4px solid var(--c-bleuvert);
+
+    hr {
+      margin: 0;
+    }
   }
 }
 
@@ -6399,11 +6403,6 @@ small {
   // grid-template-columns: minmax(120px, 1fr);
   // grid-auto-flow: column;
 
-  display: flex;
-  flex-flow: row wrap;
-  align-items: flex-start;
-  .margin-sides-verysmall;
-
   > * {
     flex: 0 0 auto;
   }
@@ -6412,16 +6411,30 @@ small {
     // flex-basis: 100% !important;
   }
 
-  .m_placeholderConstraints--item {
+  .m_placeholderConstraints--typeSelector {
+    .margin-sides-small;
+  }
+
+  .m_placeholderConstraints--medias {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    .margin-sides-verysmall;
+  }
+
+  .m_placeholderConstraints--medias--item {
     // flex: 0 0 auto;
     // .bg-blanc;
     // justify-content: center;
     .margin-verysmall;
-    // .padding-verysmall;
 
     // display: flex;
     // flex-flow: row wrap;
     // align-items: center;
+
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
     .bg-blanc;
     text-align: center;
 
@@ -6434,7 +6447,8 @@ small {
       // .padding-vert-verysmall;
 
       &._options {
-        width: 125px;
+        width: 110px;
+        text-align: left;
 
         > *:not(label) {
           // .bg-gris_tresclair;
@@ -6466,9 +6480,9 @@ small {
       // height: 38px;
       width: auto;
       text-align: center;
-      .margin-vert-verysmall;
-      margin-left: auto;
-      margin-right: auto;
+      .margin-verysmall;
+      // margin-left: auto;
+      // margin-right: auto;
       min-height: 0;
 
       > * {
@@ -6479,11 +6493,11 @@ small {
         object-fit: cover;
         height: 30px;
         width: 30px;
+        .margin-bottom-verysmall;
       }
 
       label {
-        .margin-verysmall;
-        margin-bottom: 0;
+        .margin-sides-verysmall;
         padding: 0;
         text-align: center;
       }

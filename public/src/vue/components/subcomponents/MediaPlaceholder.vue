@@ -6,22 +6,14 @@
       class="m_mediaPlaceholder--instructions"
     >
       <!-- <label>{{ $t("instructions") }}</label> -->
-      <div
-        class="mediaTextContent"
-        v-html="model_placeholder_media.instructions"
-      />
+      <div class="mediaTextContent" v-html="model_placeholder_media.instructions" />
     </div>
-    <div
-      v-if="!model_placeholder_media.hasOwnProperty('_reply')"
-      class="m_mediaPlaceholder--reply"
-    >
+    <div v-if="!model_placeholder_media.hasOwnProperty('_reply')" class="m_mediaPlaceholder--reply">
       <button
         type="button"
         class="m_mediaPlaceholder--replyButton"
         @click="createPlaceholderMedia"
-      >
-        {{ $t("reply") }}
-      </button>
+      >{{ $t("reply") }}</button>
     </div>
     <div v-else class="m_mediaPlaceholder--replies">
       <InsertMediaButton
@@ -60,9 +52,7 @@
         appear
         :duration="700"
       >
-        <template
-          v-for="(media, index) in model_placeholder_media._reply._medias"
-        >
+        <template v-for="(media, index) in model_placeholder_media._reply._medias">
           <MediaStory
             :key="media.metaFileName"
             :media="media"
@@ -75,10 +65,7 @@
             @editPubliMedia="$emit('editPubliMedia', $event)"
           />
 
-          <div
-            class="_story_insert_placeholders"
-            :key="`insert_${media.metaFileName}`"
-          >
+          <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
             <InsertMediaButton
               v-if="
                 !preview_mode &&
@@ -121,11 +108,11 @@ export default {
     model_placeholder_media: Object,
     slugPubliName: String,
     publication: Object,
-    preview_mode: Boolean,
+    preview_mode: Boolean
   },
   components: {
     InsertMediaButton,
-    MediaStory,
+    MediaStory
   },
   data() {
     return {};
@@ -171,7 +158,7 @@ export default {
             const amount_of_type = opts.amount;
 
             const number_of_medias_of_this_type = this.model_placeholder_media._reply._medias.filter(
-              (m) => {
+              m => {
                 if (mode === "photo")
                   return m.type === mode || m.type === "image";
                 return m.type === mode;
@@ -185,7 +172,7 @@ export default {
       }
 
       return modes_allowed;
-    },
+    }
   },
   methods: {
     mediaPosition(index) {
@@ -200,16 +187,16 @@ export default {
       this.$emit("addMedia", {
         type: "placeholder",
         placeholder_meta_reference: this.model_placeholder_media.metaFileName,
-        placeholder_medias_slugs: [],
+        placeholder_medias_slugs: []
       });
     },
     addMediaOrdered({ values = {}, right_after_meta, in_position }) {
       return new Promise((resolve, reject) => {
-        this.addMedia({ values }).then((mdata) =>
+        this.addMedia({ values }).then(mdata =>
           this.insertMediasInList({
             metaFileNames: [mdata.metaFileName],
             right_after_meta,
-            in_position,
+            in_position
           })
         );
       });
@@ -234,9 +221,9 @@ export default {
           .createMedia({
             slugFolderName: this.slugPubliName,
             type: "publications",
-            additionalMeta,
+            additionalMeta
           })
-          .then((mdata) => {
+          .then(mdata => {
             return resolve(mdata);
           });
       });
@@ -250,9 +237,9 @@ export default {
             ? []
             : JSON.parse(JSON.stringify(this.placeholder_medias_slugs));
 
-        const new_media_metas = metaFileNames.map((metaFileName) => {
+        const new_media_metas = metaFileNames.map(metaFileName => {
           return {
-            slugMediaName: metaFileName,
+            slugMediaName: metaFileName
           };
         });
 
@@ -263,7 +250,7 @@ export default {
           // in medias_slugs_in_order: medias that were added and then removed or part
           // of a removed project
           index = medias_slugs.findIndex(
-            (s) => s.slugMediaName === right_after_meta
+            s => s.slugMediaName === right_after_meta
           );
           index += 1;
         } else if (in_position && in_position === "start") {
@@ -278,12 +265,12 @@ export default {
             slugFolderName: this.slugPubliName,
             slugMediaName: this.model_placeholder_media._reply.metaFileName,
             data: {
-              placeholder_medias_slugs: medias_slugs,
-            },
+              placeholder_medias_slugs: medias_slugs
+            }
           })
-          .then((mdata) => {
+          .then(mdata => {
             this.$nextTick(() => {
-              metaFileNames.map((metaFileName) => {
+              metaFileNames.map(metaFileName => {
                 this.$eventHub.$emit(
                   "publication.just_inserted_media",
                   metaFileName
@@ -300,9 +287,7 @@ export default {
           ? []
           : JSON.parse(JSON.stringify(this.placeholder_medias_slugs));
 
-      medias_slugs = medias_slugs.filter(
-        (m) => m.slugMediaName !== metaFileName
-      );
+      medias_slugs = medias_slugs.filter(m => m.slugMediaName !== metaFileName);
 
       this.$root
         .editMedia({
@@ -310,14 +295,14 @@ export default {
           slugFolderName: this.slugPubliName,
           slugMediaName: this.model_placeholder_media._reply.metaFileName,
           data: {
-            placeholder_medias_slugs: medias_slugs,
-          },
+            placeholder_medias_slugs: medias_slugs
+          }
         })
         .then(() => {
           this.$root.removeMedia({
             type: "publications",
             slugFolderName: this.slugPubliName,
-            slugMediaName: metaFileName,
+            slugMediaName: metaFileName
           });
         });
     },
@@ -331,18 +316,18 @@ export default {
 
       // find index in medias_slugs_in_order
       const current_index_in_slugs = medias_slugs.findIndex(
-        (m) => m.slugMediaName === metaFileName
+        m => m.slugMediaName === metaFileName
       );
 
       const current_media_index = this.model_placeholder_media._reply._medias.findIndex(
-        (m) => m.metaFileName === metaFileName
+        m => m.metaFileName === metaFileName
       );
       const adjacent_media_meta = this.model_placeholder_media._reply._medias[
         current_media_index + dir
       ].metaFileName;
 
       const new_index_in_slugs = medias_slugs.findIndex(
-        (m) => m.slugMediaName === adjacent_media_meta
+        m => m.slugMediaName === adjacent_media_meta
       );
 
       medias_slugs.move(current_index_in_slugs, new_index_in_slugs);
@@ -352,11 +337,11 @@ export default {
         slugFolderName: this.slugPubliName,
         slugMediaName: this.model_placeholder_media._reply.metaFileName,
         data: {
-          placeholder_medias_slugs: medias_slugs,
-        },
+          placeholder_medias_slugs: medias_slugs
+        }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped></style>

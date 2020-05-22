@@ -10,6 +10,10 @@
     @mousedown.self="$root.settings.current_publication.selected_medias = []"
     @touchstart.self="$root.settings.current_publication.selected_medias = []"
   >
+    {{ publication.medias_slugs }}
+    <br />
+    KEYS
+    {{ publication.medias && typeof publication.medias === 'object' ? Object.keys(publication.medias) : 'nop' }}
     <ExportPagePubli
       v-if="show_export_modal"
       :publication="publication"
@@ -102,10 +106,7 @@
             />
 
             <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
-            <div
-              class="_story_insert_placeholders"
-              :key="`insert_${media.metaFileName}`"
-            >
+            <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
               <InsertMediaButton
                 v-if="
                   can_edit_publi &&
@@ -135,15 +136,14 @@
 
         <footer class="m_storyPublication--content--footer">
           <div>
-            <small
-              >{{ $t("notifications.successfully_saved") }} <br />
+            <small>
+              {{ $t("notifications.successfully_saved") }}
+              <br />
               {{ $root.formatDateToPrecise(publication.date_modified) }}
             </small>
           </div>
           <div>
-            <small>
-              {{ $t("notifications.you_can_close_this_window") }}
-            </small>
+            <small>{{ $t("notifications.you_can_close_this_window") }}</small>
           </div>
         </footer>
       </div>
@@ -168,7 +168,7 @@ export default {
     read_only: Boolean,
     preview_mode: Boolean,
     fullscreen_mode: Boolean,
-    model_for_this_publication: [Boolean, Object],
+    model_for_this_publication: [Boolean, Object]
   },
   components: {
     PublicationHeader,
@@ -176,13 +176,13 @@ export default {
     ExportPagePubli,
     MediaStory,
     MediaPlaceholder,
-    InsertMediaButton,
+    InsertMediaButton
   },
   data() {
     return {
       show_export_modal: false,
       show_media_options: false,
-      current_scroll: 0,
+      current_scroll: 0
     };
   },
   created() {},
@@ -195,7 +195,7 @@ export default {
       "text",
       "stl",
       "document",
-      "other",
+      "other"
     ];
 
     const getCurrentScroll = () => {
@@ -247,7 +247,7 @@ export default {
         index++;
       }
       return index;
-    },
+    }
   },
   methods: {
     toggleTransition({ position, metaFileName }) {
@@ -312,8 +312,8 @@ export default {
       if (index === 0) return "first";
       if (index === this.medias_in_order.length - 1) return "last";
       return "";
-    },
-  },
+    }
+  }
 };
 </script>
 <style></style>

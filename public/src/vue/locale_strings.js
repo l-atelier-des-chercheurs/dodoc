@@ -1901,6 +1901,10 @@ module.exports = (function () {
       oc: "tèxte",
       de: "Text",
     },
+    choices: {
+      fr: "Choix multiples",
+      en: "Multiple choices",
+    },
     document: {
       fr: "document",
       en: "document",
@@ -3243,6 +3247,10 @@ module.exports = (function () {
           "Ce compte existe bien mais n’est pas autorisé à accéder à cette ressource. Avez-vous la bonne URL ?",
         en:
           "This account exists but is not associated to this content. Do you have the right link?",
+      },
+      option_already_exists: {
+        fr: "Cette option existe déjà",
+        en: "This option already exists",
       },
     },
   };
