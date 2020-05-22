@@ -6,109 +6,147 @@
       class="m_mediaPlaceholder--instructions"
     >
       <!-- <label>{{ $t("instructions") }}</label> -->
-      <div
-        class="mediaTextContent"
-        v-html="model_placeholder_media.instructions"
-      />
+      <div class="mediaTextContent" v-html="model_placeholder_media.instructions" />
     </div>
-    <div
-      v-if="!model_placeholder_media.hasOwnProperty('_reply')"
-      class="m_mediaPlaceholder--reply"
-    >
+    <div v-if="!model_placeholder_media.hasOwnProperty('_reply')" class="m_mediaPlaceholder--reply">
       <button
         type="button"
         class="m_mediaPlaceholder--replyButton"
         @click="createPlaceholderMedia"
-      >
-        {{ $t("reply") }}
-      </button>
+      >{{ $t("reply") }}</button>
     </div>
     <div v-else class="m_mediaPlaceholder--replies">
-      <InsertMediaButton
-        v-if="
+      <template v-if="modes_allowed.hasOwnProperty('choices')">
+        <template
+          v-if="modes_allowed['choices'].hasOwnProperty('multiple') && modes_allowed['choices'].multiple === 'true'"
+        >
+          <div
+            v-for="choice in modes_allowed['choices'].choices"
+            :key="choice"
+            class="m_choice"
+            @click="toggleChoiceFromSelection(choice)"
+          >
+            <label class :for="id + '_choice_' + choice">
+              <input
+                :id="id + '_choice_' + choice"
+                :type="'checkbox'"
+                :checked="choices_selected.includes(choice)"
+                @change="toggleChoiceFromSelection(choice)"
+              />
+              {{ choice }}
+            </label>
+          </div>
+        </template>
+        <template v-else>
+          <div
+            v-for="choice in modes_allowed['choices'].choices"
+            :key="choice"
+            class="m_choice"
+            @click="setChoiceFromSelect(choice)"
+          >
+            <input
+              class="custom_radio"
+              type="radio"
+              :id="id + '_choice_' + choice"
+              :name="`${id}_multiple_choices_radio`"
+              :checked="choices_selected.includes(choice)"
+              @change="setChoiceFromSelect(choice)"
+            />
+            <label class :for="id + '_choice_' + choice">
+              <span>{{ choice }}</span>
+            </label>
+          </div>
+        </template>
+
+        <div v-if="model_placeholder_media._reply.answers">
+          <small
+            class="margin-sides-small"
+            v-html="$t('answers_given:') + '&nbsp;' + model_placeholder_media._reply.answers.split('|').join(' - ')"
+          />
+        </div>
+      </template>
+      <template v-else>
+        <InsertMediaButton
+          v-if="
           !preview_mode &&
           (!model_placeholder_media._reply._medias ||
             model_placeholder_media._reply._medias.length === 0)
         "
-        :slugPubliName="slugPubliName"
-        :publi_is_model="publication.is_model"
-        :publi_follows_model="true"
-        :modes_allowed="modes_allowed"
-        :can_collapse="
+          :slugPubliName="slugPubliName"
+          :publi_is_model="publication.is_model"
+          :publi_follows_model="true"
+          :modes_allowed="modes_allowed"
+          :can_collapse="
           !(
             !model_placeholder_media._reply._medias ||
             model_placeholder_media._reply._medias.length === 0
           )
         "
-        :read_only="read_only"
-        @addMedia="
+          :read_only="read_only"
+          @addMedia="
           (values) => addMediaOrdered({ values, in_position: 'start' })
         "
-        @insertMedias="
+          @insertMedias="
           ({ metaFileNames }) =>
             insertMediasInList({
               metaFileNames,
               in_position: 'start',
             })
         "
-      />
+        />
 
-      <transition-group
-        v-if="model_placeholder_media._reply._medias"
-        tag="div"
-        name="StoryModules"
-        appear
-        :duration="700"
-      >
-        <template
-          v-for="(media, index) in model_placeholder_media._reply._medias"
+        <transition-group
+          v-if="model_placeholder_media._reply._medias"
+          tag="div"
+          name="StoryModules"
+          appear
+          :duration="700"
         >
-          <MediaStory
-            :key="media.metaFileName"
-            :media="media"
-            :media_position="mediaPosition(index)"
-            :preview_mode="preview_mode"
-            :slugPubliName="slugPubliName"
-            :read_only="read_only || preview_mode"
-            @removePubliMedia="orderedRemovePubliMedia($event)"
-            @changeMediaOrder="changeMediaOrder($event)"
-            @editPubliMedia="$emit('editPubliMedia', $event)"
-          />
+          <template v-for="(media, index) in model_placeholder_media._reply._medias">
+            <MediaStory
+              :key="media.metaFileName"
+              :media="media"
+              :media_position="mediaPosition(index)"
+              :preview_mode="preview_mode"
+              :slugPubliName="slugPubliName"
+              :read_only="read_only || preview_mode"
+              @removePubliMedia="orderedRemovePubliMedia($event)"
+              @changeMediaOrder="changeMediaOrder($event)"
+              @editPubliMedia="$emit('editPubliMedia', $event)"
+            />
 
-          <div
-            class="_story_insert_placeholders"
-            :key="`insert_${media.metaFileName}`"
-          >
-            <InsertMediaButton
-              v-if="
+            <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
+              <InsertMediaButton
+                v-if="
                 !preview_mode &&
                 index === model_placeholder_media._reply._medias.length - 1 &&
                 (modes_allowed === 'all' ||
                   Object.keys(modes_allowed).length > 0)
               "
-              :slugPubliName="slugPubliName"
-              :publi_is_model="publication.is_model"
-              :publi_follows_model="true"
-              :modes_allowed="modes_allowed"
-              :read_only="read_only"
-              @addMedia="
+                :slugPubliName="slugPubliName"
+                :publi_is_model="publication.is_model"
+                :publi_follows_model="true"
+                :modes_allowed="modes_allowed"
+                :read_only="read_only"
+                @addMedia="
                 (values) =>
                   addMediaOrdered({
                     values,
                     right_after_meta: media.metaFileName,
                   })
               "
-              @insertMedias="
+                @insertMedias="
                 ({ metaFileNames }) =>
                   insertMediasInList({
                     metaFileNames,
                     right_after_meta: media.metaFileName,
                   })
               "
-            />
-          </div>
-        </template>
-      </transition-group>
+              />
+            </div>
+          </template>
+        </transition-group>
+      </template>
     </div>
   </div>
 </template>
@@ -121,19 +159,37 @@ export default {
     model_placeholder_media: Object,
     slugPubliName: String,
     publication: Object,
-    preview_mode: Boolean,
+    preview_mode: Boolean
   },
   components: {
     InsertMediaButton,
-    MediaStory,
+    MediaStory
   },
   data() {
-    return {};
+    return {
+      choices_selected: [],
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5)
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    "model_placeholder_media._reply": {
+      handler() {
+        if (
+          this.model_placeholder_media._reply &&
+          this.model_placeholder_media._reply.answers
+        ) {
+          this.choices_selected = this.model_placeholder_media._reply.answers.split(
+            "|"
+          );
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   computed: {
     placeholder_medias_slugs() {
       if (!this.model_placeholder_media.hasOwnProperty("_reply")) return false;
@@ -161,6 +217,18 @@ export default {
         {}
       );
 
+      if (modes_allowed.hasOwnProperty("choices")) {
+        if (
+          modes_allowed.choices.choices &&
+          modes_allowed.choices.choices.length > 0
+        ) {
+          modes_allowed.choices.choices = modes_allowed.choices.choices.split(
+            "|"
+          );
+          return modes_allowed;
+        } else return {};
+      }
+
       if (
         this.model_placeholder_media._reply._medias &&
         this.model_placeholder_media._reply._medias.length > 0
@@ -171,7 +239,7 @@ export default {
             const amount_of_type = opts.amount;
 
             const number_of_medias_of_this_type = this.model_placeholder_media._reply._medias.filter(
-              (m) => {
+              m => {
                 if (mode === "photo")
                   return m.type === mode || m.type === "image";
                 return m.type === mode;
@@ -185,7 +253,7 @@ export default {
       }
 
       return modes_allowed;
-    },
+    }
   },
   methods: {
     mediaPosition(index) {
@@ -200,16 +268,16 @@ export default {
       this.$emit("addMedia", {
         type: "placeholder",
         placeholder_meta_reference: this.model_placeholder_media.metaFileName,
-        placeholder_medias_slugs: [],
+        placeholder_medias_slugs: []
       });
     },
     addMediaOrdered({ values = {}, right_after_meta, in_position }) {
       return new Promise((resolve, reject) => {
-        this.addMedia({ values }).then((mdata) =>
+        this.addMedia({ values }).then(mdata =>
           this.insertMediasInList({
             metaFileNames: [mdata.metaFileName],
             right_after_meta,
-            in_position,
+            in_position
           })
         );
       });
@@ -234,9 +302,9 @@ export default {
           .createMedia({
             slugFolderName: this.slugPubliName,
             type: "publications",
-            additionalMeta,
+            additionalMeta
           })
-          .then((mdata) => {
+          .then(mdata => {
             return resolve(mdata);
           });
       });
@@ -250,9 +318,9 @@ export default {
             ? []
             : JSON.parse(JSON.stringify(this.placeholder_medias_slugs));
 
-        const new_media_metas = metaFileNames.map((metaFileName) => {
+        const new_media_metas = metaFileNames.map(metaFileName => {
           return {
-            slugMediaName: metaFileName,
+            slugMediaName: metaFileName
           };
         });
 
@@ -263,7 +331,7 @@ export default {
           // in medias_slugs_in_order: medias that were added and then removed or part
           // of a removed project
           index = medias_slugs.findIndex(
-            (s) => s.slugMediaName === right_after_meta
+            s => s.slugMediaName === right_after_meta
           );
           index += 1;
         } else if (in_position && in_position === "start") {
@@ -278,12 +346,12 @@ export default {
             slugFolderName: this.slugPubliName,
             slugMediaName: this.model_placeholder_media._reply.metaFileName,
             data: {
-              placeholder_medias_slugs: medias_slugs,
-            },
+              placeholder_medias_slugs: medias_slugs
+            }
           })
-          .then((mdata) => {
+          .then(mdata => {
             this.$nextTick(() => {
-              metaFileNames.map((metaFileName) => {
+              metaFileNames.map(metaFileName => {
                 this.$eventHub.$emit(
                   "publication.just_inserted_media",
                   metaFileName
@@ -300,9 +368,7 @@ export default {
           ? []
           : JSON.parse(JSON.stringify(this.placeholder_medias_slugs));
 
-      medias_slugs = medias_slugs.filter(
-        (m) => m.slugMediaName !== metaFileName
-      );
+      medias_slugs = medias_slugs.filter(m => m.slugMediaName !== metaFileName);
 
       this.$root
         .editMedia({
@@ -310,14 +376,14 @@ export default {
           slugFolderName: this.slugPubliName,
           slugMediaName: this.model_placeholder_media._reply.metaFileName,
           data: {
-            placeholder_medias_slugs: medias_slugs,
-          },
+            placeholder_medias_slugs: medias_slugs
+          }
         })
         .then(() => {
           this.$root.removeMedia({
             type: "publications",
             slugFolderName: this.slugPubliName,
-            slugMediaName: metaFileName,
+            slugMediaName: metaFileName
           });
         });
     },
@@ -331,18 +397,18 @@ export default {
 
       // find index in medias_slugs_in_order
       const current_index_in_slugs = medias_slugs.findIndex(
-        (m) => m.slugMediaName === metaFileName
+        m => m.slugMediaName === metaFileName
       );
 
       const current_media_index = this.model_placeholder_media._reply._medias.findIndex(
-        (m) => m.metaFileName === metaFileName
+        m => m.metaFileName === metaFileName
       );
       const adjacent_media_meta = this.model_placeholder_media._reply._medias[
         current_media_index + dir
       ].metaFileName;
 
       const new_index_in_slugs = medias_slugs.findIndex(
-        (m) => m.slugMediaName === adjacent_media_meta
+        m => m.slugMediaName === adjacent_media_meta
       );
 
       medias_slugs.move(current_index_in_slugs, new_index_in_slugs);
@@ -352,11 +418,31 @@ export default {
         slugFolderName: this.slugPubliName,
         slugMediaName: this.model_placeholder_media._reply.metaFileName,
         data: {
-          placeholder_medias_slugs: medias_slugs,
-        },
+          placeholder_medias_slugs: medias_slugs
+        }
       });
     },
-  },
+    toggleChoiceFromSelection(choice) {
+      if (this.choices_selected.includes(choice))
+        this.choices_selected = this.choices_selected.filter(c => c !== choice);
+      else this.choices_selected.push(choice);
+
+      this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
+    },
+    setChoiceFromSelect(choice) {
+      debugger;
+      this.choices_selected = [choice];
+      this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
+    },
+    updateMediaAnswers(val) {
+      this.$root.editMedia({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        slugMediaName: this.model_placeholder_media._reply.metaFileName,
+        data: val
+      });
+    }
+  }
 };
 </script>
 <style lang="scss" scoped></style>

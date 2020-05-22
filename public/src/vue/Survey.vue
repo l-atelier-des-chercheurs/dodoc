@@ -3,7 +3,9 @@
     <div class="_survey_author_indicator" v-if="$root.current_author">
       <button type="button" class="button-greenthin">
         {{ $root.current_author.name }}
-        <span v-if="$root.current_author_is_admin">({{ $t("admin") }})</span>
+        <span
+          v-if="$root.current_author_is_admin"
+        >({{ $t("admin") }})</span>
       </button>
       <button
         type="button"
@@ -11,30 +13,13 @@
         v-if="user_replies.length > 0"
         :class="{ 'is--active': show_all_my_replies }"
         @click.stop="show_all_my_replies = !show_all_my_replies"
-      >
-        {{ $t("see_all_my_stories") }}
-      </button>
-      <button
-        type="button"
-        class="buttonLink"
-        @click.stop="$root.unsetAuthor()"
-      >
-        {{ $t("logout") }}
-      </button>
+      >{{ $t("see_all_my_stories") }}</button>
+      <button type="button" class="buttonLink" @click.stop="$root.unsetAuthor()">{{ $t("logout") }}</button>
 
-      <div
-        v-if="show_all_my_replies || !this.$root.current_publication"
-        class="padding-small"
-      >
+      <div v-if="show_all_my_replies || !this.$root.current_publication" class="padding-small">
         <label>{{ $t("list_of_stories") }}</label>
-        <div
-          v-for="reply in user_replies"
-          :key="reply.slugFolderName"
-          class="padding-verysmall"
-        >
-          <a :href="`/_publications/survey/${reply.slugFolderName}`">
-            {{ reply.name }}
-          </a>
+        <div v-for="reply in user_replies" :key="reply.slugFolderName" class="padding-verysmall">
+          <a :href="`/_publications/survey/${reply.slugFolderName}`">{{ reply.name }}</a>
         </div>
       </div>
     </div>
@@ -54,7 +39,7 @@ export default {
   components: { Publication },
   data() {
     return {
-      show_all_my_replies: false,
+      show_all_my_replies: false
     };
   },
   created() {},
@@ -66,8 +51,8 @@ export default {
     "$root.current_author": {
       handler() {
         this.surveyLoggedInAs(this.$root.current_author.slugFolderName);
-      },
-    },
+      }
+    }
   },
   computed: {
     survey_can_edit_publication() {
@@ -83,20 +68,20 @@ export default {
         this.$root.current_author &&
         Array.isArray(this.$root.current_publication.authors) &&
         this.$root.current_publication.authors.some(
-          (a) => a.slugFolderName === this.$root.current_author.slugFolderName
+          a => a.slugFolderName === this.$root.current_author.slugFolderName
         )
       );
     },
     user_replies() {
       return Object.values(this.$root.store.publications).filter(
-        (p) =>
+        p =>
           !!p.follows_model &&
           p.authors &&
           p.authors.some(
-            (a) => a.slugFolderName === this.$root.current_author.slugFolderName
+            a => a.slugFolderName === this.$root.current_author.slugFolderName
           )
       );
-    },
+    }
   },
   methods: {
     surveyLoggedInAs(slugAuthorName) {
@@ -112,14 +97,15 @@ export default {
               editing_limited_to: "only_authors",
               viewing_limited_to: "",
               name: `[${this.$root.current_author.name}] ${this.$root.current_publication.name}`,
-              authors: [{ slugFolderName: slugAuthorName }],
-            },
+              authors: [{ slugFolderName: slugAuthorName }]
+            }
           })
           .then(() => {});
       } else if (
         this.$root.current_publication.authors.some(
-          (a) => a.slugFolderName === slugAuthorName
-        )
+          a => a.slugFolderName === slugAuthorName
+        ) ||
+        this.$root.current_author_is_admin
       ) {
         this.$alertify
           .closeLogOnClick(true)
@@ -138,8 +124,8 @@ export default {
             this.$t("notifications.account_not_associated_to_this_ressource")
           );
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped></style>

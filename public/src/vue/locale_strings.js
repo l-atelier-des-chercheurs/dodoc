@@ -151,6 +151,10 @@ module.exports = (function () {
       fr: "Options avancées",
       en: "Advanced options",
     },
+    "answers_given:": {
+      fr: "Réponse(s) enregistrée(s)&nbsp;:",
+      en: "Answer(s) saved:",
+    },
     infos_about_the_media: {
       fr: "Informations sur le média",
       en: "Informations on the media",
@@ -1901,6 +1905,14 @@ module.exports = (function () {
       oc: "tèxte",
       de: "Text",
     },
+    choices: {
+      fr: "Choix multiples",
+      en: "Multiple choices",
+    },
+    multiple_choices_possible: {
+      fr: "Plusieurs choix possibles",
+      en: "Multiple choices possibles",
+    },
     document: {
       fr: "document",
       en: "document",
@@ -3243,6 +3255,10 @@ module.exports = (function () {
           "Ce compte existe bien mais n’est pas autorisé à accéder à cette ressource. Avez-vous la bonne URL ?",
         en:
           "This account exists but is not associated to this content. Do you have the right link?",
+      },
+      option_already_exists: {
+        fr: "Cette option existe déjà",
+        en: "This option already exists",
       },
     },
   };
