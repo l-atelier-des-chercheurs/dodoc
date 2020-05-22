@@ -91,7 +91,7 @@
           {{ $t('multiple_choices_possible') }}
         </label>
       </div>
-
+      <!-- {{ options.find(o => o.key === 'choices').mutiple }} -->
       <div class="m_placeholderConstraints--choices--allChoices">
         <div v-for="choice in splitted_choices" :key="choice" class="m_choice">
           <template v-if="options.find(o => o.key === 'choices').multiple === true">
@@ -122,25 +122,34 @@
         </div>
       </div>
 
-      <button
-        type="button"
-        class="buttonLink"
-        :class="{ 'is--active' : edit_choice_mode }"
-        @click="edit_choice_mode = !edit_choice_mode"
-      >{{ $t('add') }}/{{ $t('edit') }}</button>
-
-      <form
-        @submit.prevent="addChoice"
-        class="m_placeholderConstraints--choices--addChoice"
-        v-if="edit_choice_mode"
-      >
-        <input type="text" required autofocus />
-
-        <div class="flex-nowrap flex-space-between">
-          <button type="submit" class="button-redthin">{{ $t('add')}}</button>
-          <button type="submit" class="button-greenthin">{{ $t('add')}}</button>
+      <div class="m_placeholderConstraints--choices--editor">
+        <div>
+          <button
+            type="button"
+            class="m_placeholderConstraints--choices--toggleEditMode buttonLink"
+            :class="{ 'is--active' : edit_choice_mode }"
+            @click="edit_choice_mode = !edit_choice_mode"
+          >{{ $t('add') }}/{{ $t('edit') }}</button>
         </div>
-      </form>
+        <div>
+          <form
+            @submit.prevent="addChoice"
+            class="m_placeholderConstraints--choices--addChoice"
+            v-if="edit_choice_mode"
+          >
+            <input type="text" required autofocus />
+
+            <div class="flex-nowrap flex-space-between">
+              <button
+                type="button"
+                class="button-redthin"
+                @click="edit_choice_mode = false"
+              >{{ $t('cancel')}}</button>
+              <button type="submit" class="button-greenthin">{{ $t('add')}}</button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     <!-- <pre>{{ options }}</pre> -->
@@ -222,6 +231,8 @@ export default {
               o.advanced_text_options = item.advanced_text_options === "true";
             if (item.hasOwnProperty("amount")) o.amount = item.amount;
             if (item.hasOwnProperty("choices")) o.choices = item.choices;
+            if (item.hasOwnProperty("multiple"))
+              o.multiple = item.multiple === "true";
           } else o.enabled = false;
         });
 
@@ -254,6 +265,7 @@ export default {
             if (o.amount && o.amount !== "unlimited") val.amount = o.amount;
 
             if (o.choices) val.choices = o.choices;
+            if (o.multiple) val.multiple = o.multiple;
 
             return val;
           });

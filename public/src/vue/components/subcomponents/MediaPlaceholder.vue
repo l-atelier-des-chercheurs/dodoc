@@ -16,86 +16,137 @@
       >{{ $t("reply") }}</button>
     </div>
     <div v-else class="m_mediaPlaceholder--replies">
-      <InsertMediaButton
-        v-if="
+      <template v-if="modes_allowed.hasOwnProperty('choices')">
+        <template
+          v-if="modes_allowed['choices'].hasOwnProperty('multiple') && modes_allowed['choices'].multiple === 'true'"
+        >
+          <div
+            v-for="choice in modes_allowed['choices'].choices"
+            :key="choice"
+            class="m_choice"
+            @click="toggleChoiceFromSelection(choice)"
+          >
+            <label class :for="id + '_choice_' + choice">
+              <input
+                :id="id + '_choice_' + choice"
+                :type="'checkbox'"
+                :checked="choices_selected.includes(choice)"
+                @change="toggleChoiceFromSelection(choice)"
+              />
+              {{ choice }}
+            </label>
+          </div>
+        </template>
+        <template v-else>
+          <div
+            v-for="choice in modes_allowed['choices'].choices"
+            :key="choice"
+            class="m_choice"
+            @click="setChoiceFromSelect(choice)"
+          >
+            <input
+              class="custom_radio"
+              type="radio"
+              :id="id + '_choice_' + choice"
+              :name="`${id}_multiple_choices_radio`"
+              :checked="choices_selected.includes(choice)"
+              @change="setChoiceFromSelect(choice)"
+            />
+            <label class :for="id + '_choice_' + choice">
+              <span>{{ choice }}</span>
+            </label>
+          </div>
+        </template>
+
+        <div v-if="model_placeholder_media._reply.answers">
+          <small
+            class="margin-sides-small"
+            v-html="$t('answers_given:') + '&nbsp;' + model_placeholder_media._reply.answers.split('|').join(' - ')"
+          />
+        </div>
+      </template>
+      <template v-else>
+        <InsertMediaButton
+          v-if="
           !preview_mode &&
           (!model_placeholder_media._reply._medias ||
             model_placeholder_media._reply._medias.length === 0)
         "
-        :slugPubliName="slugPubliName"
-        :publi_is_model="publication.is_model"
-        :publi_follows_model="true"
-        :modes_allowed="modes_allowed"
-        :can_collapse="
+          :slugPubliName="slugPubliName"
+          :publi_is_model="publication.is_model"
+          :publi_follows_model="true"
+          :modes_allowed="modes_allowed"
+          :can_collapse="
           !(
             !model_placeholder_media._reply._medias ||
             model_placeholder_media._reply._medias.length === 0
           )
         "
-        :read_only="read_only"
-        @addMedia="
+          :read_only="read_only"
+          @addMedia="
           (values) => addMediaOrdered({ values, in_position: 'start' })
         "
-        @insertMedias="
+          @insertMedias="
           ({ metaFileNames }) =>
             insertMediasInList({
               metaFileNames,
               in_position: 'start',
             })
         "
-      />
+        />
 
-      <transition-group
-        v-if="model_placeholder_media._reply._medias"
-        tag="div"
-        name="StoryModules"
-        appear
-        :duration="700"
-      >
-        <template v-for="(media, index) in model_placeholder_media._reply._medias">
-          <MediaStory
-            :key="media.metaFileName"
-            :media="media"
-            :media_position="mediaPosition(index)"
-            :preview_mode="preview_mode"
-            :slugPubliName="slugPubliName"
-            :read_only="read_only || preview_mode"
-            @removePubliMedia="orderedRemovePubliMedia($event)"
-            @changeMediaOrder="changeMediaOrder($event)"
-            @editPubliMedia="$emit('editPubliMedia', $event)"
-          />
+        <transition-group
+          v-if="model_placeholder_media._reply._medias"
+          tag="div"
+          name="StoryModules"
+          appear
+          :duration="700"
+        >
+          <template v-for="(media, index) in model_placeholder_media._reply._medias">
+            <MediaStory
+              :key="media.metaFileName"
+              :media="media"
+              :media_position="mediaPosition(index)"
+              :preview_mode="preview_mode"
+              :slugPubliName="slugPubliName"
+              :read_only="read_only || preview_mode"
+              @removePubliMedia="orderedRemovePubliMedia($event)"
+              @changeMediaOrder="changeMediaOrder($event)"
+              @editPubliMedia="$emit('editPubliMedia', $event)"
+            />
 
-          <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
-            <InsertMediaButton
-              v-if="
+            <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
+              <InsertMediaButton
+                v-if="
                 !preview_mode &&
                 index === model_placeholder_media._reply._medias.length - 1 &&
                 (modes_allowed === 'all' ||
                   Object.keys(modes_allowed).length > 0)
               "
-              :slugPubliName="slugPubliName"
-              :publi_is_model="publication.is_model"
-              :publi_follows_model="true"
-              :modes_allowed="modes_allowed"
-              :read_only="read_only"
-              @addMedia="
+                :slugPubliName="slugPubliName"
+                :publi_is_model="publication.is_model"
+                :publi_follows_model="true"
+                :modes_allowed="modes_allowed"
+                :read_only="read_only"
+                @addMedia="
                 (values) =>
                   addMediaOrdered({
                     values,
                     right_after_meta: media.metaFileName,
                   })
               "
-              @insertMedias="
+                @insertMedias="
                 ({ metaFileNames }) =>
                   insertMediasInList({
                     metaFileNames,
                     right_after_meta: media.metaFileName,
                   })
               "
-            />
-          </div>
-        </template>
-      </transition-group>
+              />
+            </div>
+          </template>
+        </transition-group>
+      </template>
     </div>
   </div>
 </template>
@@ -115,12 +166,30 @@ export default {
     MediaStory
   },
   data() {
-    return {};
+    return {
+      choices_selected: [],
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5)
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    "model_placeholder_media._reply": {
+      handler() {
+        if (
+          this.model_placeholder_media._reply &&
+          this.model_placeholder_media._reply.answers
+        ) {
+          this.choices_selected = this.model_placeholder_media._reply.answers.split(
+            "|"
+          );
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   computed: {
     placeholder_medias_slugs() {
       if (!this.model_placeholder_media.hasOwnProperty("_reply")) return false;
@@ -147,6 +216,18 @@ export default {
         },
         {}
       );
+
+      if (modes_allowed.hasOwnProperty("choices")) {
+        if (
+          modes_allowed.choices.choices &&
+          modes_allowed.choices.choices.length > 0
+        ) {
+          modes_allowed.choices.choices = modes_allowed.choices.choices.split(
+            "|"
+          );
+          return modes_allowed;
+        } else return {};
+      }
 
       if (
         this.model_placeholder_media._reply._medias &&
@@ -339,6 +420,26 @@ export default {
         data: {
           placeholder_medias_slugs: medias_slugs
         }
+      });
+    },
+    toggleChoiceFromSelection(choice) {
+      if (this.choices_selected.includes(choice))
+        this.choices_selected = this.choices_selected.filter(c => c !== choice);
+      else this.choices_selected.push(choice);
+
+      this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
+    },
+    setChoiceFromSelect(choice) {
+      debugger;
+      this.choices_selected = [choice];
+      this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
+    },
+    updateMediaAnswers(val) {
+      this.$root.editMedia({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        slugMediaName: this.model_placeholder_media._reply.metaFileName,
+        data: val
       });
     }
   }

@@ -352,6 +352,9 @@
           "available_modes": {
             "type": "array"
           },
+          "answers": {
+            "type": "string"
+          },
           "authors": {
             "type": "array"
           },

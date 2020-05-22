@@ -173,7 +173,7 @@ module.exports = (function () {
 
                 // check if mdata has a mediaID (which means a user just created it)
                 const mdata = Object.values(content[slugFolderName].medias)[0];
-                if (mdata.hasOwnProperty("id")) {
+                if (mdata && mdata.hasOwnProperty("id")) {
                   this.$eventHub.$emit(
                     "socketio.media_created_or_updated",
                     mdata

@@ -6432,8 +6432,8 @@ small {
     }
   }
   .m_placeholderConstraints--choices--allChoices {
-    display: flex;
-    flex-flow: row wrap;
+    // display: flex;
+    // flex-flow: row wrap;
 
     > * {
     }
@@ -6442,6 +6442,13 @@ small {
     max-width: 300px;
     .padding-small;
     .bg-blanc;
+  }
+
+  .m_placeholderConstraints--choices--editor {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
   }
 
   .m_placeholderConstraints--typeSelector {
