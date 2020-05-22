@@ -6423,6 +6423,7 @@ small {
     // flex-flow: row wrap;
     // align-items: center;
     .bg-blanc;
+    text-align: center;
 
     border-radius: 8px;
 
@@ -6430,7 +6431,7 @@ small {
       // flex: 0 0 100px;
       padding-right: 0.5em;
       .padding-sides-verysmall;
-      .padding-vert-verysmall;
+      // .padding-vert-verysmall;
 
       &._options {
         width: 125px;
@@ -6440,16 +6441,16 @@ small {
           border: 2px solid @c-gris_clair;
           .margin-vert-verysmall;
           .padding-verysmall;
-
-          &:last-child {
-            margin-bottom: 0;
-          }
         }
       }
     }
 
     &.is--active {
       border: 2px solid @c-rouge;
+    }
+
+    .switch input + label {
+      padding-left: ~"calc(var(--switch-size) * 2)";
     }
 
     label {
@@ -6465,7 +6466,9 @@ small {
       // height: 38px;
       width: auto;
       text-align: center;
-      .margin-verysmall;
+      .margin-vert-verysmall;
+      margin-left: auto;
+      margin-right: auto;
       min-height: 0;
 
       > * {
