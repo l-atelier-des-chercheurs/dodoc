@@ -10,10 +10,6 @@
     @mousedown.self="$root.settings.current_publication.selected_medias = []"
     @touchstart.self="$root.settings.current_publication.selected_medias = []"
   >
-    {{ publication.medias_slugs }}
-    <br />
-    KEYS
-    {{ publication.medias && typeof publication.medias === 'object' ? Object.keys(publication.medias) : 'nop' }}
     <ExportPagePubli
       v-if="show_export_modal"
       :publication="publication"

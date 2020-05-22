@@ -1905,6 +1905,10 @@ module.exports = (function () {
       fr: "Choix multiples",
       en: "Multiple choices",
     },
+    multiple_choices_possible: {
+      fr: "Plusieurs choix possibles",
+      en: "Multiple choices possibles",
+    },
     document: {
       fr: "document",
       en: "document",

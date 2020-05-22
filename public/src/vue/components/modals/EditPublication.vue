@@ -31,9 +31,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_model_options }"
             @click="show_model_options = !show_model_options"
-          >
-            {{ $t("model") }}
-          </button>
+          >{{ $t("model") }}</button>
         </label>
         <div v-if="show_model_options">
           <div class="margin-bottom-small">
@@ -48,9 +46,7 @@
                 <label
                   for="is_model_switch"
                   :class="{ 'c-rouge': publidata.is_model }"
-                >
-                  {{ $t("publi_is_model") }}
-                </label>
+                >{{ $t("publi_is_model") }}</label>
               </span>
             </div>
             <small>{{ $t("publi_is_model_instructions") }}</small>
@@ -68,29 +64,24 @@
                 <label
                   for="follows_model_switch"
                   :class="{ 'c-rouge': publi_follows_model }"
-                >
-                  {{ $t("select_publi_model") }}
-                </label>
+                >{{ $t("select_publi_model") }}</label>
               </span>
             </div>
             <small>{{ $t("select_publi_model_instructions") }}</small>
           </div>
-          <div v-if="publi_follows_model">
+          <div v-if="publi_follows_model && !publidata.is_model">
             <!-- <pre>{{ model_recipes_of_this_template }}</pre> -->
-            <small v-if="model_recipes_of_this_template.length === 0">
-              {{ $t("no_models_yet") }}
-            </small>
+            <small v-if="model_recipes_of_this_template.length === 0">{{ $t("no_models_yet") }}</small>
             <select
               :disabled="model_recipes_of_this_template.length === 0"
               v-model="publidata.follows_model"
             >
-              <option value="">** {{ $t("none") }} **</option>
+              <option value>** {{ $t("none") }} **</option>
               <option
                 v-for="model in model_recipes_of_this_template"
                 :key="model.slugFolderName"
                 :value="model.slugFolderName"
-                >{{ model.name }}</option
-              >
+              >{{ model.name }}</option>
             </select>
           </div>
         </div>
@@ -104,9 +95,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_authors }"
             @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
+          >{{ $t("author") }}</button>
         </label>
 
         <div v-if="show_authors">
@@ -123,9 +112,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_access_control }"
             @click="show_access_control = !show_access_control"
-          >
-            {{ $t("manage_access") }}
-          </button>
+          >{{ $t("manage_access") }}</button>
         </label>
 
         <div v-if="show_access_control">
@@ -146,9 +133,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_attached_project }"
             @click="show_attached_project = !show_attached_project"
-          >
-            {{ $t("attached_to_project") }}
-          </button>
+          >{{ $t("attached_to_project") }}</button>
         </label>
         <div v-if="show_attached_project">
           <select v-model="publidata.attached_to_project">
@@ -157,8 +142,7 @@
               v-for="project in Object.values($root.store.projects)"
               :key="project.slugFolderName"
               :value="project.slugFolderName"
-              >{{ project.name }}</option
-            >
+            >{{ project.name }}</option>
           </select>
           <small>{{ $t("attached_to_project_instructions") }}</small>
         </div>
@@ -179,9 +163,7 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_keywords }"
             @click="show_keywords = !show_keywords"
-          >
-            {{ $t("keywords") }}
-          </button>
+          >{{ $t("keywords") }}</button>
         </label>
         <template v-if="show_keywords">
           <TagsInput
@@ -210,14 +192,14 @@ export default {
     slugPubliName: String,
     publication: Object,
     publi_password: String,
-    read_only: Boolean,
+    read_only: Boolean
   },
   components: {
     Modal,
     EditAccessControl,
     ImageSelect,
     TagsInput,
-    AuthorsInput,
+    AuthorsInput
   },
   data() {
     return {
@@ -236,7 +218,7 @@ export default {
         authors:
           typeof this.publication.authors === "string" &&
           this.publication.authors !== ""
-            ? this.publication.authors.split(",").map((a) => {
+            ? this.publication.authors.split(",").map(a => {
                 return { name: a };
               })
             : this.publication.authors,
@@ -244,7 +226,7 @@ export default {
         is_model: this.publication.is_model,
         follows_model: this.publication.follows_model
           ? this.publication.follows_model
-          : "",
+          : ""
       },
       tag: "",
       preview: undefined,
@@ -256,7 +238,7 @@ export default {
       show_access_control: !!this.publication.editing_limited_to,
       show_model_options:
         this.publication.is_model || !!this.publication.follows_model,
-      publi_follows_model: !!this.publication.follows_model,
+      publi_follows_model: !!this.publication.follows_model
     };
   },
   watch: {
@@ -264,30 +246,30 @@ export default {
       handler() {
         this.askBeforeClosingModal = true;
       },
-      deep: true,
+      deep: true
     },
-    "publidata.editing_limited_to": function () {
+    "publidata.editing_limited_to": function() {
       if (this.publidata.editing_limited_to === "everybody")
         this.publidata.viewing_limited_to = "everybody";
       else if (this.publidata.editing_limited_to === "only_authors")
         this.show_authors = true;
-    },
+    }
   },
   mounted() {},
   computed: {
     model_recipes_of_this_template() {
       // return publications with template === identical
       const publis = Object.values(this.$root.store.publications).filter(
-        (p) =>
+        p =>
           this.publication.template === p.template &&
           p.is_model === true &&
           p.slugFolderName !== this.publication.slugFolderName
       );
       return publis;
-    },
+    }
   },
   methods: {
-    editThisPublication: function (event) {
+    editThisPublication: function(event) {
       console.log("editThisPublication");
 
       // only if user changed the name of this folder
@@ -351,12 +333,12 @@ export default {
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        data: this.publidata,
+        data: this.publidata
       });
 
       this.$emit("close", "");
-    },
-  },
+    }
+  }
 };
 </script>
 <style></style>

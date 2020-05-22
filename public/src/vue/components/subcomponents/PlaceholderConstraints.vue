@@ -1,12 +1,24 @@
 <template>
   <div class="m_placeholderConstraints">
     <div class="m_placeholderConstraints--typeSelector">
-      <label>
-        <input type="radio" v-model="type_of_content" value="medias" />
+      <input
+        type="radio"
+        class="custom_radio"
+        v-model="type_of_content"
+        :id="`${id}_type_medias`"
+        value="medias"
+      />
+      <label :for="`${id}_type_medias`">
         <span>{{ $t('medias') }}</span>
       </label>
-      <label>
-        <input type="radio" v-model="type_of_content" value="choices" />
+      <input
+        type="radio"
+        class="custom_radio"
+        v-model="type_of_content"
+        :id="`${id}_type_choices`"
+        value="choices"
+      />
+      <label :for="`${id}_type_choices`">
         <span>{{ $t('choices') }}</span>
       </label>
     </div>
@@ -69,14 +81,69 @@
       </div>
     </div>
     <div class="m_placeholderConstraints--choices" v-else-if="type_of_content === 'choices'">
-      <div v-for="choice in choices.split('|')" :key="choice">{{ choice.option }}</div>
-      <form @submit.prevent="addChoiceOption">
-        <input type="text" required />
-        <button type="submit">{{ $t('add')}}</button>
+      <div class="m_placeholderConstraints--choices--multiple">
+        <label class :for="`enable_multiple_${id}`">
+          <input
+            :id="`enable_multiple_${id}`"
+            type="checkbox"
+            v-model="options.find(o => o.key === 'choices').multiple"
+          />
+          {{ $t('multiple_choices_possible') }}
+        </label>
+      </div>
+
+      <div class="m_placeholderConstraints--choices--allChoices">
+        <div v-for="choice in splitted_choices" :key="choice" class="m_choice">
+          <template v-if="options.find(o => o.key === 'choices').multiple === true">
+            <label class :for="'_choice_' + choice">
+              <input :id="'_choice_' + choice" :type="'checkbox'" />
+              {{ choice }}
+            </label>
+          </template>
+
+          <template v-else>
+            <input
+              class="custom_radio"
+              type="radio"
+              :id="`_choice_${id}-${choice}`"
+              :name="`${id}_multiple_choices_radio`"
+            />
+            <label class :for="`_choice_${id}-${choice}`">
+              <span>{{ choice }}</span>
+            </label>
+          </template>
+
+          <button
+            type="button"
+            class="buttonLink"
+            v-if="edit_choice_mode"
+            @click="removeChoice(choice)"
+          >{{ $t('remove') }}</button>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="buttonLink"
+        :class="{ 'is--active' : edit_choice_mode }"
+        @click="edit_choice_mode = !edit_choice_mode"
+      >{{ $t('add') }}/{{ $t('edit') }}</button>
+
+      <form
+        @submit.prevent="addChoice"
+        class="m_placeholderConstraints--choices--addChoice"
+        v-if="edit_choice_mode"
+      >
+        <input type="text" required autofocus />
+
+        <div class="flex-nowrap flex-space-between">
+          <button type="submit" class="button-redthin">{{ $t('add')}}</button>
+          <button type="submit" class="button-greenthin">{{ $t('add')}}</button>
+        </div>
       </form>
     </div>
 
-    <pre>      {{ options }}</pre>
+    <!-- <pre>{{ options }}</pre> -->
   </div>
 </template>
 <script>
@@ -86,6 +153,7 @@ export default {
   data() {
     return {
       type_of_content: "medias",
+      edit_choice_mode: false,
 
       options: [
         {
@@ -121,7 +189,8 @@ export default {
         {
           key: "choices",
           // picto: "/images/i_text.svg",
-          choices: [],
+          choices: "",
+          multiple: false,
           enabled: false
         }
       ],
@@ -145,8 +214,6 @@ export default {
           return;
         }
 
-        debugger;
-
         this.options.map(o => {
           if (this.available_modes.some(m => m.mode_key === o.key)) {
             o.enabled = true;
@@ -154,8 +221,7 @@ export default {
             if (item.hasOwnProperty("advanced_text_options"))
               o.advanced_text_options = item.advanced_text_options === "true";
             if (item.hasOwnProperty("amount")) o.amount = item.amount;
-            if (item.hasOwnProperty("choices"))
-              o.choices = item.choices.split("|");
+            if (item.hasOwnProperty("choices")) o.choices = item.choices;
           } else o.enabled = false;
         });
 
@@ -165,6 +231,13 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    edit_choice_mode() {
+      if (this.edit_choice_mode) {
+        this.$nextTick(() => {
+          this.$el.querySelector("[autofocus]").focus();
+        });
+      }
     },
     options: {
       handler() {
@@ -180,7 +253,7 @@ export default {
 
             if (o.amount && o.amount !== "unlimited") val.amount = o.amount;
 
-            if (o.choices) val.choices = o.choices.join("|");
+            if (o.choices) val.choices = o.choices;
 
             return val;
           });
@@ -206,19 +279,19 @@ export default {
     }
   },
   computed: {
-    choices() {}
-    // available_modes() {
-    //   return this.options
-    //     .filter((o) => o.enabled)
-    //     .map((o) => {
-    //       mode_key: o.key;
-    //     });
-    // },
+    splitted_choices() {
+      return this.options.find(o => o.key === "choices").choices !== ""
+        ? this.options
+            .find(o => o.key === "choices")
+            .choices.split("|")
+            .filter(c => c !== "")
+        : [];
+    }
   },
   methods: {
-    addChoiceOption($event) {
+    addChoice($event) {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`PlaceholderConstraints • METHODS: addChoiceOption`);
+        console.log(`PlaceholderConstraints • METHODS: addChoice`);
 
       if (
         !$event.target ||
@@ -229,9 +302,7 @@ export default {
 
       const new_choice = $event.target.elements[0].value;
 
-      const existing_choices = this.options.find(o => o.key === "choices")
-        .choices;
-
+      const existing_choices = this.splitted_choices;
       if (existing_choices.includes(new_choice)) {
         this.$alertify
           .closeLogOnClick(true)
@@ -241,6 +312,20 @@ export default {
       }
 
       existing_choices.push(new_choice);
+
+      this.options.find(
+        o => o.key === "choices"
+      ).choices = existing_choices.join("|");
+
+      // this.edit_choice_mode = false;
+      $event.target.elements[0].value = "";
+    },
+    removeChoice(choice) {
+      const new_choices = this.splitted_choices.filter(c => c !== choice);
+
+      this.options.find(o => o.key === "choices").choices = new_choices.join(
+        "|"
+      );
     }
   }
 };

@@ -6411,8 +6411,45 @@ small {
     // flex-basis: 100% !important;
   }
 
+  .m_placeholderConstraints--choices {
+    .margin-vert-verysmall;
+    // .margin-sides-small;
+  }
+  .m_placeholderConstraints--choices--multiple {
+    text-align: center;
+    .margin-vert-small;
+
+    label {
+      // .bg-gris;
+      border: 2px solid @c-blanc;
+      margin: 0;
+      .padding-verysmall;
+    }
+
+    input {
+      display: inline-block;
+      // vertical-align: middle;
+    }
+  }
+  .m_placeholderConstraints--choices--allChoices {
+    display: flex;
+    flex-flow: row wrap;
+
+    > * {
+    }
+  }
+  .m_placeholderConstraints--choices--addChoice {
+    max-width: 300px;
+    .padding-small;
+    .bg-blanc;
+  }
+
   .m_placeholderConstraints--typeSelector {
     .margin-sides-small;
+
+    label {
+      .margin-right-small;
+    }
   }
 
   .m_placeholderConstraints--medias {
@@ -6525,6 +6562,45 @@ small {
       // line-height: 1.4;
       // width: 100px;
     }
+  }
+}
+
+.m_choice {
+  // border: 2px solid white;
+  .bg-blanc;
+  .margin-small;
+  border-radius: 4px;
+
+  label {
+    text-transform: initial;
+    font-weight: 700;
+    font-family: inherit;
+    color: @c-noir !important;
+    font-size: inherit;
+    .padding-small;
+
+    span {
+      display: block;
+    }
+
+    // .font-margium;
+  }
+  input {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  input[type="radio"].custom_radio:checked + label::before,
+  input[type="radio"].custom_radio:not(:checked) + label::before,
+  input[type="radio"].custom_radio:checked + label::after,
+  input[type="radio"].custom_radio:not(:checked) + label::after {
+    top: 17px;
+    left: 5px;
+  }
+
+  .buttonLink {
+    margin: 0;
+    .margin-right-small;
+    margin-left: -@t-skipline / 2;
   }
 }
 
