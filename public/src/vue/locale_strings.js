@@ -1306,6 +1306,10 @@ module.exports = (function () {
       oc: "Mèdias",
       de: "Medien",
     },
+    text_and_medias: {
+      fr: "Médias et textes",
+      en: "Medias and texts",
+    },
     media: {
       fr: "Média",
       en: "Media",

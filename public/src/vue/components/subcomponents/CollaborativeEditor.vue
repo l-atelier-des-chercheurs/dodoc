@@ -12,6 +12,7 @@
     <!-- connection_state : {{ connection_state }}
     <br />-->
     <div ref="editor" class="mediaTextContent" />
+
     <!-- <div class="_customCaret" :style="_customCaret_style" /> -->
   </div>
 </template>
@@ -47,24 +48,24 @@ export default {
   props: {
     value: {
       type: String,
-      default: "…"
+      default: "…",
     },
     media: Object,
     slugFolderName: String,
     specific_toolbar: Array,
     theme: {
       type: String,
-      default: "snow"
+      default: "snow",
     },
     read_only: {
       type: Boolean,
-      default: false
+      default: false,
     },
     enable_collaboration: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    type: String
+    type: String,
   },
   components: {},
   data() {
@@ -100,9 +101,9 @@ export default {
               "#bdb3b3",
               "#ae1cee",
               "#fff933",
-              "#a54a0f"
-            ]
-          }
+              "#a54a0f",
+            ],
+          },
         ],
         [
           {
@@ -123,21 +124,21 @@ export default {
               "#bdb3b3",
               "#ae1cee",
               "#fff933",
-              "#a54a0f"
-            ]
-          }
+              "#a54a0f",
+            ],
+          },
         ],
         [{ list: "ordered" }, { list: "bullet" }],
         [
           { align: "" },
           { align: "center" },
           { align: "right" },
-          { align: "justify" }
+          { align: "justify" },
         ],
         ["code-block"],
         ["formula"],
         ["divider"],
-        ["clean"]
+        ["clean"],
       ],
 
       formats: [
@@ -155,7 +156,7 @@ export default {
         "align",
         "code-block",
         "formula",
-        "divider"
+        "divider",
       ],
 
       is_focused: false,
@@ -163,12 +164,12 @@ export default {
       debounce_textUpdate: undefined,
       caret_position: {
         top: undefined,
-        left: undefined
+        left: undefined,
       },
 
       socket: null,
       connection_state: !this.enable_collaboration ? "disabled" : "connecting…",
-      requested_resource_url: undefined
+      requested_resource_url: undefined,
     };
   },
 
@@ -197,8 +198,8 @@ export default {
                   Quill.sources.USER
                 );
               }
-            }
-          }
+            },
+          },
         },
         formula: true,
         cursors: {
@@ -214,13 +215,13 @@ export default {
 `,
           hideDelayMs: 5000,
           hideSpeedMs: 0,
-          selectionChangeSource: null
-        }
+          selectionChangeSource: null,
+        },
       },
       bounds: this.$refs.editor,
       theme: this.theme,
       formats: this.formats,
-      placeholder: "…"
+      placeholder: "…",
     });
 
     this.$refs.editor.dataset.quill = this.editor;
@@ -284,14 +285,14 @@ export default {
     read_only() {
       if (this.read_only) this.editor.disable();
       else this.editor.enable();
-    }
+    },
   },
   computed: {
     _customCaret_style() {
       return {
-        transform: `translate3d(${this.caret_position.left}px, ${this.caret_position.top}px, 0px)`
+        transform: `translate3d(${this.caret_position.left}px, ${this.caret_position.top}px, 0px)`,
       };
-    }
+    },
   },
   methods: {
     initWebsocketMode() {
@@ -299,7 +300,7 @@ export default {
       const params = new URLSearchParams({
         type: this.type,
         slugFolderName: this.slugFolderName,
-        metaFileName: this.media.metaFileName
+        metaFileName: this.media.metaFileName,
       });
 
       const requested_querystring = "?" + params.toString();
@@ -319,7 +320,7 @@ export default {
       connection.on("state", this.wsState);
 
       const doc = connection.get("textMedias", requested_querystring);
-      doc.subscribe(err => {
+      doc.subscribe((err) => {
         if (err) {
           console.error(`ON • CollaborativeEditor: err ${err}`);
         }
@@ -369,7 +370,7 @@ export default {
         });
       });
 
-      doc.on("error", err => {
+      doc.on("error", (err) => {
         // soucis : les situations ou le serveur a été fermé et en le rouvrant il ne possède plus d’instance du doc dans sharedb…
         this.$forceUpdate();
       });
@@ -392,7 +393,7 @@ export default {
 
       this.editor
         .getLines()
-        .map(b => b.domNode.classList.remove("is--focused"));
+        .map((b) => b.domNode.classList.remove("is--focused"));
 
       const range = this.editor.getSelection();
 
@@ -422,11 +423,11 @@ export default {
           slugFolderName: this.slugFolderName,
           slugMediaName: this.media.metaFileName,
           data: {
-            content: this.editor.getText() ? this.editor.root.innerHTML : ""
-          }
+            content: this.editor.getText() ? this.editor.root.innerHTML : "",
+          },
         });
       }, 1000);
-    }
-  }
+    },
+  },
 };
 </script>

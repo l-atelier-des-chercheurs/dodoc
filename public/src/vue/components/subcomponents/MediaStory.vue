@@ -61,18 +61,30 @@
         :data-context="context"
       >
         <template v-if="media.type === 'text'">
-          <CollaborativeEditor
+          <template
             v-if="
               inline_edit_mode && is_selected && !preview_mode && !read_only
             "
-            v-model="htmlForEditor"
-            :specific_toolbar="media.plain_text ? [] : undefined"
-            :media="media"
-            :slugFolderName="slugPubliName"
-            :enable_collaboration="true"
-            :type="'publications'"
-            ref="textField"
-          />
+          >
+            <template v-if="media.only_numbers">
+              <input
+                type="number"
+                v-model="htmlForEditor"
+                @input="updateTextMedia"
+              />
+            </template>
+
+            <CollaborativeEditor
+              v-else
+              v-model="htmlForEditor"
+              :specific_toolbar="media.plain_text ? [] : undefined"
+              :media="media"
+              :slugFolderName="slugPubliName"
+              :enable_collaboration="true"
+              :type="'publications'"
+              ref="textField"
+            />
+          </template>
           <!-- class="fixedPanel"
             :theme="'bubble'" -->
 
@@ -80,6 +92,11 @@
             <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />
             <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
           </div>
+          <small
+            v-if="is_in_placeholder"
+            class="margin-sides-small"
+            v-html="$t('answers_given:') + '&nbsp;' + media.content"
+          />
         </template>
         <template v-else-if="media.type === 'placeholder'">
           <div class="m_mediaStory--placeholder">
@@ -412,6 +429,7 @@ export default {
     preview_mode: Boolean,
     slugPubliName: String,
     media_position: String,
+    is_in_placeholder: Boolean,
   },
   components: {
     MediaContent,
@@ -437,6 +455,8 @@ export default {
 
       edit_instructions: false,
       new_instructions: "",
+
+      debounce_textUpdate: undefined,
     };
   },
 
@@ -587,6 +607,16 @@ export default {
         metaFileName: this.media.metaFileName,
         val,
       });
+    },
+    updateTextMedia() {
+      if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
+      this.debounce_textUpdate = setTimeout(() => {
+        console.log(
+          `CollaborativeEditor • updateTextMedia: saving new snapshop`
+        );
+
+        this.updateMediaPubliMeta({ content: this.htmlForEditor });
+      }, 1000);
     },
     removePubliMedia() {
       if (this.media.type !== "placeholder") {

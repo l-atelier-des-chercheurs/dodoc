@@ -439,6 +439,9 @@
           "plain_text": {
             "type": "boolean"
           },
+          "only_numbers": {
+            "type": "boolean"
+          },
           "z_index": {
             "type": "number",
             "clip": {
