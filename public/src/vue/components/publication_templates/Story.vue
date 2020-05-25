@@ -134,14 +134,14 @@
         </transition-group>
 
         <footer class="m_storyPublication--content--footer">
-          <div>
+          <div v-if="!publication.date_submitted">
             <small>
               {{ $t("notifications.successfully_saved") }}
               <br />
               {{ $root.formatDateToPrecise(publication.date_modified) }}
             </small>
           </div>
-          <div class="" v-if="url_to_publi">
+          <div class="" v-if="url_to_publi && !publication.date_submitted">
             <small
               >{{ $t("save_following_address_and_come_back_later") }}<br />
               <a :href="url_to_publi">{{ url_to_publi }}</a>
