@@ -154,6 +154,15 @@
           </span>
         </label>
       </div>
+      <div v-else-if="model_for_this_publication">
+        <div class="" v-if="url_to_publi && !publication.date_submitted">
+          <small
+            >{{ $t("save_following_address_and_come_back_later") }}<br />
+            <a :href="url_to_publi">{{ url_to_publi }}</a>
+          </small>
+        </div>
+      </div>
+
       <div
         class="text-centered"
         style="width: 100%;"
@@ -353,6 +362,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    url_to_publi: [Boolean, URL],
     enable_export_button: {
       type: Boolean,
       default: true,

@@ -36,6 +36,7 @@
           :slugPubliName="slugPubliName"
           :publication="publication"
           :medias="medias_in_order"
+          :url_to_publi="url_to_publi"
           :model_for_this_publication="model_for_this_publication"
           @export="show_export_modal = true"
           @close="$root.closePublication"
@@ -133,43 +134,19 @@
           </template>
         </transition-group>
 
-        <footer class="m_storyPublication--content--footer">
-          <div v-if="!publication.date_submitted">
-            <small>
-              {{ $t("notifications.successfully_saved") }}
-              <br />
-              {{ $root.formatDateToPrecise(publication.date_modified) }}
-            </small>
-          </div>
-          <div class="" v-if="url_to_publi && !publication.date_submitted">
-            <small
-              >{{ $t("save_following_address_and_come_back_later") }}<br />
-              <a :href="url_to_publi">{{ url_to_publi }}</a>
-            </small>
-          </div>
-          <div class="" v-if="model_for_this_publication">
-            <template v-if="!publication.date_submitted">
-              <small>{{ $t("finished_writing_reply") }}</small>
-              <button
-                type="button"
-                class="button-greenthin"
-                @click="lockAndPublish"
-              >
-                {{ $t("lock_and_publish") }}
-              </button>
-            </template>
-            <small v-else>
-              {{ $t("published") }} —
-              {{ $root.formatDateToPrecise(publication.date_submitted) }}
-            </small>
-          </div>
-        </footer>
+        <PublicationFooter
+          :publication="publication"
+          :url_to_publi="url_to_publi"
+          :model_for_this_publication="model_for_this_publication"
+          @lockAndPublish="$emit('lockAndPublish')"
+        />
       </div>
     </div>
   </section>
 </template>
 <script>
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
+import PublicationFooter from "../subcomponents/PublicationFooter.vue";
 import PublicationDisplayButtons from "../subcomponents/PublicationDisplayButtons.vue";
 import ExportPagePubli from "../modals/ExportPagePubli.vue";
 import MediaStory from "../subcomponents/MediaStory.vue";
@@ -190,6 +167,7 @@ export default {
   },
   components: {
     PublicationHeader,
+    PublicationFooter,
     PublicationDisplayButtons,
     ExportPagePubli,
     MediaStory,
@@ -332,18 +310,6 @@ export default {
           document.webkitExitFullscreen();
         } // Maybe other prefixed APIs?
       }
-    },
-    lockAndPublish() {
-      this.$alertify
-        .okBtn(this.$t("yes"))
-        .cancelBtn(this.$t("cancel"))
-        .confirm(
-          this.$t("sureToLockAndPublish"),
-          () => {
-            this.$emit("lockAndPublish");
-          },
-          () => {}
-        );
     },
     addMediaAtIndex(d) {
       if (this.$root.state.dev_mode === "debug")

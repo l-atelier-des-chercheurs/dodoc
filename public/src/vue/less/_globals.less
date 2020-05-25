@@ -943,6 +943,15 @@ input[type="radio"].custom_radio {
     & + label {
       cursor: not-allowed;
     }
+
+    &:checked {
+      & + label::before {
+        border: none;
+      }
+      & + label::after {
+        opacity: 0.4;
+      }
+    }
   }
 }
 

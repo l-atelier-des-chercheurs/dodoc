@@ -42,6 +42,7 @@
               <input
                 :id="id + '_choice_' + choice"
                 :type="'checkbox'"
+                :disabled="read_only"
                 :checked="choices_selected.includes(choice)"
                 @change="toggleChoiceFromSelection(choice)"
               />
@@ -59,6 +60,7 @@
             <input
               class="custom_radio"
               type="radio"
+              :disabled="read_only"
               :id="id + '_choice_' + choice"
               :name="`${id}_multiple_choices_radio`"
               :checked="choices_selected.includes(choice)"
@@ -246,9 +248,9 @@ export default {
           modes_allowed.choices.choices &&
           modes_allowed.choices.choices.length > 0
         ) {
-          modes_allowed.choices.choices = modes_allowed.choices.choices.split(
-            "|"
-          );
+          modes_allowed.choices.choices = modes_allowed.choices.choices
+            .split("|")
+            .filter((c) => c !== "");
           return modes_allowed;
         } else return {};
       }
@@ -449,6 +451,7 @@ export default {
       });
     },
     toggleChoiceFromSelection(choice) {
+      if (this.read_only) return false;
       if (this.choices_selected.includes(choice))
         this.choices_selected = this.choices_selected.filter(
           (c) => c !== choice
@@ -458,6 +461,7 @@ export default {
       this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
     },
     setChoiceFromSelect(choice) {
+      if (this.read_only) return false;
       this.choices_selected = [choice];
       this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
     },
