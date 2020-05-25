@@ -5697,16 +5697,6 @@ small {
       top: 50%;
       z-index: 100000;
       transform: translate(0, -50%);
-
-      button,
-      a {
-        .bg-orange;
-        border-radius: @t-buttonradius;
-        color: @c-noir;
-        min-height: 0;
-        .margin-verysmall;
-        text-decoration: none;
-      }
     }
   }
 }
@@ -6890,7 +6880,6 @@ small {
   top: 40px;
   right: ~"calc(-75px + 40px / 2)";
   background-color: white;
-  width: 220px;
   .boxs-card-2;
   border: 1px solid @c-gris;
 
@@ -6902,15 +6891,18 @@ small {
   background-color: @c-noir;
   pointer-events: auto;
 
-  width: 240px;
+  width: 200px;
   .margin-small;
   border: 0;
 
-  > button {
-    min-width: 2.2rem;
-    min-height: 2.2rem;
-    margin-left: ~"calc(-1/4 * var(--spacing))";
-    margin-top: ~"calc( -1/4 * var(--spacing))";
+  button,
+  a {
+    .bg-orange;
+    border-radius: @t-buttonradius;
+    color: @c-noir;
+    min-height: 0;
+    .margin-verysmall;
+    text-decoration: none;
   }
 }
 
