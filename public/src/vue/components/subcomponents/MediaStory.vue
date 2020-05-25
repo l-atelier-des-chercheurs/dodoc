@@ -61,24 +61,36 @@
         :data-context="context"
       >
         <template v-if="media.type === 'text'">
-          <CollaborativeEditor
+          <template
             v-if="
               inline_edit_mode && is_selected && !preview_mode && !read_only
             "
-            v-model="htmlForEditor"
-            :specific_toolbar="media.plain_text ? [] : undefined"
-            :media="media"
-            :slugFolderName="slugPubliName"
-            :enable_collaboration="true"
-            :type="'publications'"
-            ref="textField"
-          />
+          >
+            <template v-if="media.only_numbers">
+              <input
+                type="number"
+                v-model="htmlForEditor"
+                @input="updateTextMedia"
+              />
+            </template>
+
+            <CollaborativeEditor
+              v-else
+              v-model="htmlForEditor"
+              :specific_toolbar="media.plain_text ? [] : undefined"
+              :media="media"
+              :slugFolderName="slugPubliName"
+              :enable_collaboration="true"
+              :type="'publications'"
+              ref="textField"
+            />
+          </template>
           <!-- class="fixedPanel"
             :theme="'bubble'" -->
 
           <div v-else class="mediaTextContent">
             <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />
-            <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
+            <p v-else class="_no_textcontent" v-html="no_text_content" />
           </div>
         </template>
         <template v-else-if="media.type === 'placeholder'">
@@ -437,6 +449,8 @@ export default {
 
       edit_instructions: false,
       new_instructions: "",
+
+      debounce_textUpdate: undefined,
     };
   },
 
@@ -488,7 +502,10 @@ export default {
           : this.media.media_filename;
       return `${type_path}/${slugFolderName}/${media_filename}`;
     },
-
+    no_text_content() {
+      if (this.media.only_numbers) return this.$t("no_numbers");
+      return this.$t("no_text_content");
+    },
     is_selected() {
       if (this.read_only) return false;
       return this.$root.settings.current_publication.selected_medias.some(
@@ -587,6 +604,16 @@ export default {
         metaFileName: this.media.metaFileName,
         val,
       });
+    },
+    updateTextMedia() {
+      if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
+      this.debounce_textUpdate = setTimeout(() => {
+        console.log(
+          `CollaborativeEditor • updateTextMedia: saving new snapshop`
+        );
+
+        this.updateMediaPubliMeta({ content: this.htmlForEditor });
+      }, 1000);
     },
     removePubliMedia() {
       if (this.media.type !== "placeholder") {

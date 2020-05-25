@@ -9,7 +9,7 @@
         value="medias"
       />
       <label :for="`${id}_type_medias`">
-        <span>{{ $t('medias') }}</span>
+        <span>{{ $t("text_and_medias") }}</span>
       </label>
       <input
         type="radio"
@@ -19,10 +19,13 @@
         value="choices"
       />
       <label :for="`${id}_type_choices`">
-        <span>{{ $t('choices') }}</span>
+        <span>{{ $t("choices") }}</span>
       </label>
     </div>
-    <div class="m_placeholderConstraints--medias" v-if="type_of_content === 'medias'">
+    <div
+      class="m_placeholderConstraints--medias"
+      v-if="type_of_content === 'medias'"
+    >
       <div
         class="m_placeholderConstraints--medias--item"
         :class="{ 'is--active': option.enabled }"
@@ -49,23 +52,48 @@
           </div>
           <label>{{ $t(option.key) }}</label>
           <div>
-            <small class v-if="option.key === 'file'">(.docx, .PDF, .stl…)</small>
+            <small class v-if="option.key === 'file'"
+              >(.docx, .PDF, .stl…)</small
+            >
           </div>
         </button>
 
         <div
           class="_options"
-          v-if="option.enabled && (option.advanced_text_options || option.amount)"
+          v-if="
+            option.enabled &&
+            (option.advanced_text_options ||
+              option.only_numbers ||
+              option.amount)
+          "
         >
           <!-- <label>{{ $t("settings") }}</label> -->
           <div v-if="option.key === 'text'" class="_advanced_text">
-            <label class :for="`option_${id}_${option.key}_advtext`" @click.stop>
+            <label
+              class
+              :for="`option_${id}_${option.key}_advtext`"
+              @click.stop
+            >
               <input
                 :id="`option_${id}_${option.key}_advtext`"
                 type="checkbox"
                 v-model="option.advanced_text_options"
               />
               {{ $t("advanced_text_bloc") }}
+            </label>
+          </div>
+          <div v-if="option.key === 'text'" class="_advanced_text">
+            <label
+              class
+              :for="`option_${id}_${option.key}_only_numbers`"
+              @click.stop
+            >
+              <input
+                :id="`option_${id}_${option.key}_only_numbers`"
+                type="checkbox"
+                v-model="option.only_numbers"
+              />
+              {{ $t("only_numbers") }}
             </label>
           </div>
           <div class="_amount" v-if="option.amount">
@@ -80,23 +108,28 @@
         </div>
       </div>
     </div>
-    <div class="m_placeholderConstraints--choices" v-else-if="type_of_content === 'choices'">
+    <div
+      class="m_placeholderConstraints--choices"
+      v-else-if="type_of_content === 'choices'"
+    >
       <div class="m_placeholderConstraints--choices--multiple">
         <label class :for="`enable_multiple_${id}`">
           <input
             :id="`enable_multiple_${id}`"
             type="checkbox"
-            v-model="options.find(o => o.key === 'choices').multiple"
+            v-model="options.find((o) => o.key === 'choices').multiple"
           />
-          {{ $t('multiple_choices_possible') }}
+          {{ $t("multiple_choices_possible") }}
         </label>
       </div>
       <!-- {{ options.find(o => o.key === 'choices').mutiple }} -->
       <div class="m_placeholderConstraints--choices--allChoices">
         <div v-for="choice in splitted_choices" :key="choice" class="m_choice">
-          <template v-if="options.find(o => o.key === 'choices').multiple === true">
+          <template
+            v-if="options.find((o) => o.key === 'choices').multiple === true"
+          >
             <label class :for="'_choice_' + choice">
-              <input :id="'_choice_' + choice" :type="'checkbox'" />
+              <input :id="'_choice_' + choice" :type="'checkbox'" disabled />
               {{ choice }}
             </label>
           </template>
@@ -104,6 +137,7 @@
           <template v-else>
             <input
               class="custom_radio"
+              disabled
               type="radio"
               :id="`_choice_${id}-${choice}`"
               :name="`${id}_multiple_choices_radio`"
@@ -118,7 +152,9 @@
             class="buttonLink"
             v-if="edit_choice_mode"
             @click="removeChoice(choice)"
-          >{{ $t('remove') }}</button>
+          >
+            {{ $t("remove") }}
+          </button>
         </div>
       </div>
 
@@ -127,9 +163,11 @@
           <button
             type="button"
             class="m_placeholderConstraints--choices--toggleEditMode buttonLink"
-            :class="{ 'is--active' : edit_choice_mode }"
+            :class="{ 'is--active': edit_choice_mode }"
             @click="edit_choice_mode = !edit_choice_mode"
-          >{{ $t('add') }}/{{ $t('edit') }}</button>
+          >
+            {{ $t("add") }}/{{ $t("edit") }}
+          </button>
         </div>
         <div>
           <form
@@ -144,8 +182,12 @@
                 type="button"
                 class="button-redthin"
                 @click="edit_choice_mode = false"
-              >{{ $t('cancel')}}</button>
-              <button type="submit" class="button-greenthin">{{ $t('add')}}</button>
+              >
+                {{ $t("cancel") }}
+              </button>
+              <button type="submit" class="button-greenthin">
+                {{ $t("add") }}
+              </button>
             </div>
           </form>
         </div>
@@ -157,7 +199,7 @@
 </template>
 <script>
 export default {
-  props: { available_modes: Array },
+  props: { available_modes: [String, Array] },
   components: {},
   data() {
     return {
@@ -170,41 +212,42 @@ export default {
           picto: "/images/i_text.svg",
           enabled: true,
           advanced_text_options: false,
-          amount: "unlimited"
+          only_numbers: false,
+          amount: "unlimited",
         },
         {
           key: "photo",
           picto: "/images/i_icone-dodoc_image.svg",
           enabled: true,
-          amount: "unlimited"
+          amount: "unlimited",
         },
         {
           key: "video",
           picto: "/images/i_icone-dodoc_video.svg",
           enabled: true,
-          amount: "unlimited"
+          amount: "unlimited",
         },
         {
           key: "audio",
           picto: "/images/i_icone-dodoc_audio.svg",
           enabled: true,
-          amount: "unlimited"
+          amount: "unlimited",
         },
         {
           key: "file",
           picto: "",
-          enabled: true
+          enabled: true,
         },
         {
           key: "choices",
           // picto: "/images/i_text.svg",
           choices: "",
           multiple: false,
-          enabled: false
-        }
+          enabled: false,
+        },
       ],
 
-      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5)
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
     };
   },
   created() {},
@@ -223,12 +266,14 @@ export default {
           return;
         }
 
-        this.options.map(o => {
-          if (this.available_modes.some(m => m.mode_key === o.key)) {
+        this.options.map((o) => {
+          if (this.available_modes.some((m) => m.mode_key === o.key)) {
             o.enabled = true;
-            const item = this.available_modes.find(m => m.mode_key === o.key);
+            const item = this.available_modes.find((m) => m.mode_key === o.key);
             if (item.hasOwnProperty("advanced_text_options"))
               o.advanced_text_options = item.advanced_text_options === "true";
+            if (item.hasOwnProperty("only_numbers"))
+              o.only_numbers = item.only_numbers === "true";
             if (item.hasOwnProperty("amount")) o.amount = item.amount;
             if (item.hasOwnProperty("choices")) o.choices = item.choices;
             if (item.hasOwnProperty("multiple"))
@@ -236,12 +281,12 @@ export default {
           } else o.enabled = false;
         });
 
-        if (this.options.find(o => o.key === "choices" && o.enabled))
+        if (this.options.find((o) => o.key === "choices" && o.enabled))
           this.type_of_content = "choices";
         else this.type_of_content = "medias";
       },
       deep: true,
-      immediate: true
+      immediate: true,
     },
     edit_choice_mode() {
       if (this.edit_choice_mode) {
@@ -256,11 +301,13 @@ export default {
           console.log(`PlaceholderConstraints • WATCH: options`);
 
         let enabled_modes = this.options
-          .filter(o => o.enabled)
-          .map(o => {
+          .filter((o) => o.enabled)
+          .map((o) => {
             let val = { mode_key: o.key };
-            if (o.key === "text")
+            if (o.key === "text") {
               val.advanced_text_options = o.advanced_text_options;
+              val.only_numbers = o.only_numbers;
+            }
 
             if (o.amount && o.amount !== "unlimited") val.amount = o.amount;
 
@@ -277,28 +324,33 @@ export default {
 
         this.$emit("updateField", enabled_modes);
       },
-      deep: true
+      deep: true,
     },
     type_of_content() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`PlaceholderConstraints • WATCH: type_of_content`);
 
-      if (this.type_of_content === "choices")
-        this.options.map(o =>
+      if (this.type_of_content === "choices") {
+        this.options.map((o) =>
           o.key !== "choices" ? (o.enabled = false) : (o.enabled = true)
         );
-      else this.options.find(o => o.key === "choices").enabled = false;
-    }
+        if (
+          this.options.find((o) => o.key === "choices").choices.length === 0
+        ) {
+          this.edit_choice_mode = true;
+        }
+      } else this.options.find((o) => o.key === "choices").enabled = false;
+    },
   },
   computed: {
     splitted_choices() {
-      return this.options.find(o => o.key === "choices").choices !== ""
+      return this.options.find((o) => o.key === "choices").choices !== ""
         ? this.options
-            .find(o => o.key === "choices")
+            .find((o) => o.key === "choices")
             .choices.split("|")
-            .filter(c => c !== "")
+            .filter((c) => c !== "")
         : [];
-    }
+    },
   },
   methods: {
     addChoice($event) {
@@ -326,20 +378,20 @@ export default {
       existing_choices.push(new_choice);
 
       this.options.find(
-        o => o.key === "choices"
+        (o) => o.key === "choices"
       ).choices = existing_choices.join("|");
 
       // this.edit_choice_mode = false;
       $event.target.elements[0].value = "";
     },
     removeChoice(choice) {
-      const new_choices = this.splitted_choices.filter(c => c !== choice);
+      const new_choices = this.splitted_choices.filter((c) => c !== choice);
 
-      this.options.find(o => o.key === "choices").choices = new_choices.join(
+      this.options.find((o) => o.key === "choices").choices = new_choices.join(
         "|"
       );
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

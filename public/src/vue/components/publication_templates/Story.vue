@@ -36,6 +36,7 @@
           :slugPubliName="slugPubliName"
           :publication="publication"
           :medias="medias_in_order"
+          :url_to_publi="url_to_publi"
           :model_for_this_publication="model_for_this_publication"
           @export="show_export_modal = true"
           @close="$root.closePublication"
@@ -102,7 +103,10 @@
             />
 
             <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
-            <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
+            <div
+              class="_story_insert_placeholders"
+              :key="`insert_${media.metaFileName}`"
+            >
               <InsertMediaButton
                 v-if="
                   can_edit_publi &&
@@ -130,24 +134,19 @@
           </template>
         </transition-group>
 
-        <footer class="m_storyPublication--content--footer">
-          <div>
-            <small>
-              {{ $t("notifications.successfully_saved") }}
-              <br />
-              {{ $root.formatDateToPrecise(publication.date_modified) }}
-            </small>
-          </div>
-          <div>
-            <small>{{ $t("notifications.you_can_close_this_window") }}</small>
-          </div>
-        </footer>
+        <PublicationFooter
+          :publication="publication"
+          :url_to_publi="url_to_publi"
+          :model_for_this_publication="model_for_this_publication"
+          @lockAndPublish="$emit('lockAndPublish')"
+        />
       </div>
     </div>
   </section>
 </template>
 <script>
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
+import PublicationFooter from "../subcomponents/PublicationFooter.vue";
 import PublicationDisplayButtons from "../subcomponents/PublicationDisplayButtons.vue";
 import ExportPagePubli from "../modals/ExportPagePubli.vue";
 import MediaStory from "../subcomponents/MediaStory.vue";
@@ -164,21 +163,22 @@ export default {
     read_only: Boolean,
     preview_mode: Boolean,
     fullscreen_mode: Boolean,
-    model_for_this_publication: [Boolean, Object]
+    model_for_this_publication: [Boolean, Object],
   },
   components: {
     PublicationHeader,
+    PublicationFooter,
     PublicationDisplayButtons,
     ExportPagePubli,
     MediaStory,
     MediaPlaceholder,
-    InsertMediaButton
+    InsertMediaButton,
   },
   data() {
     return {
       show_export_modal: false,
       show_media_options: false,
-      current_scroll: 0
+      current_scroll: 0,
     };
   },
   created() {},
@@ -191,7 +191,7 @@ export default {
       "text",
       "stl",
       "document",
-      "other"
+      "other",
     ];
 
     const getCurrentScroll = () => {
@@ -243,7 +243,35 @@ export default {
         index++;
       }
       return index;
-    }
+    },
+    url_to_publi() {
+      if (!this.$root.state.localNetworkInfos.ip) return false;
+
+      const ip = this.$root.state.localNetworkInfos.ip[0];
+      let url = new URL(window.location);
+
+      function isIP(address) {
+        const r = RegExp(
+          "((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])"
+        );
+        return r.test(address);
+      }
+
+      // si on est en localhost (cas de electron et navigateur connecté à electron)
+      // alors on remplace localhost par l’IP
+      if (url.hostname === "localhost") {
+        url.hostname = ip;
+      }
+      // si on est sur une ip (cas d’un hébergement en ligne, ou d’un navigateur connecté à electron)
+      // alors on remplace par l’IP
+      else if (isIP(url.hostname)) {
+        url.hostname = ip;
+      }
+
+      url.pathname = `_publications/survey/${this.publication.slugFolderName}`;
+
+      return url;
+    },
   },
   methods: {
     toggleTransition({ position, metaFileName }) {
@@ -308,8 +336,8 @@ export default {
       if (index === 0) return "first";
       if (index === this.medias_in_order.length - 1) return "last";
       return "";
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

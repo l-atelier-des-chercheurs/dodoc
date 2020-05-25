@@ -238,6 +238,9 @@
           "default": "current",
           "override": true
         },
+        "date_submitted": {
+          "type": "date"
+        },
         "description": {
           "type": "string"
         },
@@ -437,6 +440,9 @@
             "type": "boolean"
           },
           "plain_text": {
+            "type": "boolean"
+          },
+          "only_numbers": {
             "type": "boolean"
           },
           "z_index": {

@@ -69,6 +69,10 @@ module.exports = (function () {
       fr: "Mise en forme du texte",
       en: "Advanced text options",
     },
+    only_numbers: {
+      fr: "Nombres uniquement",
+      en: "Numbers only",
+    },
     amount: {
       fr: "Nombre",
       en: "Amount",
@@ -411,6 +415,10 @@ module.exports = (function () {
     no_text_content: {
       fr: "Champ texte vide…",
       en: "Text field is empty…",
+    },
+    no_numbers: {
+      fr: "Champ nombre vide…",
+      en: "Number field is empty…",
     },
     ungroup: {
       fr: "Dégrouper",
@@ -1052,11 +1060,21 @@ module.exports = (function () {
       oc: "Tornar",
       de: "Rückkehr",
     },
+    published: {
+      fr: "Publié",
+      en: "Published",
+    },
     sureToRemoveYourselfFromAuthors: {
       fr:
         "Êtes-vous sûr de vouloir vous retirer de la liste des auteurs ? Vous ne pourrez plus modifier ce contenu.",
       en:
         "Do you really want to remove yourself from the list of authors? You won’t be able to edit this content anymore.",
+    },
+    sureToLockAndPublish: {
+      fr:
+        "Êtes-vous sûr de vouloir publier ce récit ? Vous ne pourrez plus le modifier.",
+      en:
+        "Do you really want to publish this story? You won’t be able to edit anymore.",
     },
     sureToRemoveAuthor: {
       fr:
@@ -1305,6 +1323,10 @@ module.exports = (function () {
       nl: "Bestanden",
       oc: "Mèdias",
       de: "Medien",
+    },
+    text_and_medias: {
+      fr: "Médias et textes",
+      en: "Medias and texts",
     },
     media: {
       fr: "Média",
@@ -2757,6 +2779,18 @@ module.exports = (function () {
       fr: "Dernier message",
       en: "Last message",
     },
+    save_following_address_and_come_back_later: {
+      fr: "Enregistrez l’adresse suivante pour finaliser plus tard.",
+      en: "Save this URL to connect again and finish in the future.",
+    },
+    finished_writing_reply: {
+      fr: "Vous avez terminé ?",
+      en: "Are you finished?",
+    },
+    lock_and_publish: {
+      fr: "Verrouillez et publiez votre récit",
+      en: "Lock and publish this story",
+    },
     carreau_summary: {
       fr: "Empiler des médias pour créer en temps réel des présentations.",
       en: "Stack multiple medias on a single surface to project content.",
@@ -2953,7 +2987,7 @@ module.exports = (function () {
           "Changes to this media couldn’t be saved, check that the connection is active and try again.",
       },
       successfully_saved: {
-        fr: "Les modifications ont bien été enregistrées.",
+        fr: "Les modifications ont bien été prises en compte.",
         en: "Changes were successfully saved.",
       },
       you_can_close_this_window: {

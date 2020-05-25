@@ -30,6 +30,7 @@
       @addMedia="addMediaOrdered"
       @insertMediasInList="insertMediasInList"
       @togglePreviewMode="preview_mode = !preview_mode"
+      @lockAndPublish="lockAndPublish"
     />
     <VideoPublication
       v-else-if="publication.template === 'video_assemblage'"
@@ -145,7 +146,7 @@ import MixAudioAndImage from "./components/publication_templates/MixAudioAndImag
 export default {
   props: {
     publication: Object,
-    read_only: Boolean
+    read_only: Boolean,
   },
   components: {
     PagePublication,
@@ -155,14 +156,14 @@ export default {
     DrawingPad,
     StopmotionAnimation,
     MixAudioAndVideo,
-    MixAudioAndImage
+    MixAudioAndImage,
   },
   data() {
     return {
       medias: [],
       publication_model_medias: [],
       preview_mode: true,
-      fullscreen_mode: false
+      fullscreen_mode: false,
     };
   },
   created() {},
@@ -170,11 +171,11 @@ export default {
     if (this.$root.state.mode === "live") {
       this.$socketio.listFolder({
         type: "publications",
-        slugFolderName: this.slugPubliName
+        slugFolderName: this.slugPubliName,
       });
       this.$socketio.listMedias({
         type: "publications",
-        slugFolderName: this.slugPubliName
+        slugFolderName: this.slugPubliName,
       });
     }
     this.$eventHub.$on(
@@ -203,7 +204,7 @@ export default {
     );
   },
   watch: {
-    "publication.medias": function() {
+    "publication.medias": function () {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`WATCH • Publication: publication.medias`);
       }
@@ -216,7 +217,7 @@ export default {
         }
         this.updateMediasPubli();
       },
-      deep: true
+      deep: true,
     },
     "publication.follows_model": {
       handler() {
@@ -224,16 +225,16 @@ export default {
         if (model) {
           this.$socketio.listFolder({
             type: "publications",
-            slugFolderName: model.slugFolderName
+            slugFolderName: model.slugFolderName,
           });
           this.$socketio.listMedias({
             type: "publications",
-            slugFolderName: model.slugFolderName
+            slugFolderName: model.slugFolderName,
           });
         }
       },
       deep: true,
-      immediate: true
+      immediate: true,
     },
     model_for_this_publication: {
       handler() {
@@ -242,9 +243,9 @@ export default {
 
         this.updateMediasPubli();
       },
-      deep: true
+      deep: true,
     },
-    preview_mode: function() {
+    preview_mode: function () {
       if (!this.preview_mode && !this.can_edit_publi) {
         this.$alertify
           .closeLogOnClick(true)
@@ -258,13 +259,13 @@ export default {
         }
       }
     },
-    can_edit_publi: function() {
+    can_edit_publi: function () {
       if (this.can_edit_publi) {
         this.preview_mode = false;
       } else {
         this.preview_mode = true;
       }
-    }
+    },
   },
   computed: {
     slugPubliName() {
@@ -279,19 +280,19 @@ export default {
     can_see_publi() {
       return this.$root.canSeeFolder({
         type: "publications",
-        slugFolderName: this.slugPubliName
+        slugFolderName: this.slugPubliName,
       });
     },
     can_edit_publi() {
       return this.$root.canEditFolder({
         type: "publications",
-        slugFolderName: this.slugPubliName
+        slugFolderName: this.slugPubliName,
       });
     },
     model_for_this_publication() {
       if (!this.publication.follows_model) return false;
       return Object.values(this.$root.store.publications).find(
-        p =>
+        (p) =>
           this.publication.template === p.template &&
           p.is_model === true &&
           p.slugFolderName === this.publication.follows_model
@@ -315,12 +316,12 @@ export default {
           ? this.publication_model_medias
           : this.medias;
 
-        const media = medias.find(m => m.metaFileName === item.slugMediaName);
+        const media = medias.find((m) => m.metaFileName === item.slugMediaName);
         if (!media) return acc;
 
         if (this.model_for_this_publication && media.type === "placeholder") {
           const placeholder_reply_media = this.medias.find(
-            m => m.placeholder_meta_reference === media.metaFileName
+            (m) => m.placeholder_meta_reference === media.metaFileName
           );
           if (placeholder_reply_media) {
             media._reply = placeholder_reply_media;
@@ -334,7 +335,7 @@ export default {
               const reply_medias = placeholder_reply_media.placeholder_medias_slugs.reduce(
                 (acc, { slugMediaName }) => {
                   const corresponding_media = this.medias.find(
-                    m => m.metaFileName === slugMediaName
+                    (m) => m.metaFileName === slugMediaName
                   );
                   if (corresponding_media) acc.push(corresponding_media);
                   return acc;
@@ -353,7 +354,7 @@ export default {
       }, []);
 
       return medias_in_order;
-    }
+    },
   },
   methods: {
     updateMediasPubli() {
@@ -364,15 +365,15 @@ export default {
         console.log(`Publication • COMPUTED: medias`);
 
       let { medias, missingMedias } = this.getLinkedMediasForPubli({
-        publication: this.publication
+        publication: this.publication,
       });
 
       if (this.model_for_this_publication) {
         const {
           medias: publication_model_medias,
-          missingMedias: publi_missingMedias
+          missingMedias: publi_missingMedias,
         } = this.getLinkedMediasForPubli({
-          publication: this.model_for_this_publication
+          publication: this.model_for_this_publication,
         });
         this.publication_model_medias = publication_model_medias;
         missingMedias = missingMedias.concat(publi_missingMedias);
@@ -386,7 +387,7 @@ export default {
       if (missingMedias.length > 0) {
         this.$root.listSpecificMedias({
           type: "projects",
-          medias_list: missingMedias
+          medias_list: missingMedias,
         });
       }
 
@@ -426,7 +427,7 @@ export default {
             media._linked_media = {
               _isAbsent: true,
               slugProjectName: publi_media.slugProjectName,
-              slugMediaName: publi_media.slugMediaName
+              slugMediaName: publi_media.slugMediaName,
             };
             acc.push(media);
             return acc;
@@ -436,7 +437,7 @@ export default {
             console.log(`Some medias missing from client`);
             missingMedias.push({
               slugFolderName: publi_media.slugProjectName,
-              metaFileName: publi_media.slugMediaName
+              metaFileName: publi_media.slugMediaName,
             });
             return acc;
           }
@@ -452,11 +453,11 @@ export default {
     },
     addMediaOrdered({ values = {}, right_after_meta, in_position }) {
       return new Promise((resolve, reject) => {
-        this.addMedia({ values }).then(mdata =>
+        this.addMedia({ values }).then((mdata) =>
           this.insertMediasInList({
             metaFileNames: [mdata.metaFileName],
             right_after_meta,
-            in_position
+            in_position,
           })
         );
       });
@@ -469,9 +470,9 @@ export default {
             ? []
             : JSON.parse(JSON.stringify(this.publication.medias_slugs));
 
-        const new_media_metas = metaFileNames.map(metaFileName => {
+        const new_media_metas = metaFileNames.map((metaFileName) => {
           return {
-            slugMediaName: metaFileName
+            slugMediaName: metaFileName,
           };
         });
 
@@ -482,7 +483,7 @@ export default {
           // in medias_slugs_in_order: medias that were added and then removed or part
           // of a removed project
           index = medias_slugs.findIndex(
-            s => s.slugMediaName === right_after_meta
+            (s) => s.slugMediaName === right_after_meta
           );
           index += 1;
         } else if (in_position && in_position === "start") {
@@ -496,12 +497,12 @@ export default {
             type: "publications",
             slugFolderName: this.slugPubliName,
             data: {
-              medias_slugs: medias_slugs
-            }
+              medias_slugs: medias_slugs,
+            },
           })
-          .then(fdata => {
+          .then((fdata) => {
             this.$nextTick(() => {
-              metaFileNames.map(metaFileName => {
+              metaFileNames.map((metaFileName) => {
                 this.$eventHub.$emit(
                   "publication.just_inserted_media",
                   metaFileName
@@ -530,9 +531,9 @@ export default {
           .createMedia({
             slugFolderName: this.slugPubliName,
             type: "publications",
-            additionalMeta
+            additionalMeta,
           })
-          .then(mdata => {
+          .then((mdata) => {
             this.$eventHub.$emit("publication.just_added_media", mdata);
             return resolve(mdata);
           });
@@ -541,7 +542,7 @@ export default {
 
     orderedRemovePubliMedia({ metaFileName }) {
       const medias_slugs = this.publication.medias_slugs.filter(
-        m => m.slugMediaName !== metaFileName
+        (m) => m.slugMediaName !== metaFileName
       );
 
       this.$root
@@ -549,14 +550,14 @@ export default {
           type: "publications",
           slugFolderName: this.slugPubliName,
           data: {
-            medias_slugs
-          }
+            medias_slugs,
+          },
         })
         .then(() => {
           this.$root.removeMedia({
             type: "publications",
             slugFolderName: this.slugPubliName,
-            slugMediaName: metaFileName
+            slugMediaName: metaFileName,
           });
         });
     },
@@ -574,7 +575,7 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName: metaFileName,
-        data: val
+        data: val,
       });
     },
     editPubliFolder({ val }) {
@@ -590,24 +591,24 @@ export default {
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
-        data: val
+        data: val,
       });
     },
     changeMediaOrder({ metaFileName, dir }) {
       // find index in medias_slugs_in_order
       const current_index_in_slugs = this.publication.medias_slugs.findIndex(
-        m => m.slugMediaName === metaFileName
+        (m) => m.slugMediaName === metaFileName
       );
 
       const current_media_index = this.medias_in_order.findIndex(
-        m => m.metaFileName === metaFileName
+        (m) => m.metaFileName === metaFileName
       );
       const adjacent_media_meta = this.medias_in_order[
         current_media_index + dir
       ].metaFileName;
 
       const new_index_in_slugs = this.publication.medias_slugs.findIndex(
-        m => m.slugMediaName === adjacent_media_meta
+        (m) => m.slugMediaName === adjacent_media_meta
       );
 
       const medias_slugs = JSON.parse(
@@ -620,8 +621,8 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          medias_slugs
-        }
+          medias_slugs,
+        },
       });
     },
 
@@ -630,8 +631,19 @@ export default {
         case "p":
         // this.preview_mode = !this.preview_mode;
       }
-    }
-  }
+    },
+    lockAndPublish() {
+      var now = this.$moment();
+
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
+          date_submitted: now,
+        },
+      });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

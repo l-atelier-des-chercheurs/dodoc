@@ -13,7 +13,7 @@
       class="m_insertMediaButton--toggleButton"
       :class="{ 'is--active': show_menu }"
       @click="toggleMenu"
-      :content="$t('insert_medias_here')"
+      :content="!show_menu ? $t('insert_medias_here') : ''"
       v-tippy="{
         placement: 'bottom',
         delay: [600, 0],
@@ -113,6 +113,14 @@
             >
               <span>{{ $t("write") }}</span>
             </button>
+            <button
+              type="button"
+              v-if="!publi_follows_model"
+              class="barButton barButton_divider"
+              @click="createDivider"
+            >
+              <span>{{ $t("divider") }}</span>
+            </button>
 
             <button
               type="button"
@@ -121,15 +129,6 @@
               @click="createPlaceholderMedia"
             >
               <span>{{ $t("placeholder") }}</span>
-            </button>
-
-            <button
-              type="button"
-              v-if="!publi_follows_model"
-              class="barButton barButton_divider"
-              @click="createDivider"
-            >
-              <span>{{ $t("divider") }}</span>
             </button>
           </div>
           <!-- <small v-if="!is_iOS_device">
@@ -276,24 +275,18 @@ export default {
   computed: {},
   methods: {
     createTextMedia() {
+      let val = {
+        type: "text",
+      };
       if (this.modes_allowed && this.modes_allowed !== "all") {
-        let plain_text = false;
-
-        if (
-          this.modes_allowed.text &&
-          this.modes_allowed.text.advanced_text_options === "false"
-        )
-          plain_text = true;
-
-        this.$emit("addMedia", {
-          type: "text",
-          plain_text,
-        });
-      } else {
-        this.$emit("addMedia", {
-          type: "text",
-        });
+        if (this.modes_allowed.text) {
+          if (this.modes_allowed.text.advanced_text_options === "false")
+            val.plain_text = true;
+          if (this.modes_allowed.text.only_numbers === "true")
+            val.only_numbers = true;
+        }
       }
+      this.$emit("addMedia", val);
 
       this.show_menu = false;
     },

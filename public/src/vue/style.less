@@ -516,6 +516,11 @@ body {
     color: white;
     .padding-sides-medium;
   }
+
+  .m_topbar--repliesList {
+    width: 100%;
+    flex: 1 1 auto;
+  }
 }
 
 .m_authorsList {
@@ -5550,7 +5555,9 @@ small {
       }
     }
     .m_publicationMeta--topbar {
-      // box-shadow: none;
+      .m_publicationview.is--survey & {
+        box-shadow: none;
+      }
     }
 
     > span::after {
@@ -5570,6 +5577,14 @@ small {
       justify-content: center;
       align-items: center;
       text-align: center;
+
+      &::before {
+        display: block;
+        content: "•";
+        width: 100%;
+        text-align: center;
+        color: @c-gris;
+      }
 
       > div {
         .bg-gris_tresclair;
@@ -5697,16 +5712,6 @@ small {
       top: 50%;
       z-index: 100000;
       transform: translate(0, -50%);
-
-      button,
-      a {
-        .bg-orange;
-        border-radius: @t-buttonradius;
-        color: @c-noir;
-        min-height: 0;
-        .margin-verysmall;
-        text-decoration: none;
-      }
     }
   }
 }
@@ -5821,7 +5826,7 @@ small {
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 6px;
   // .padding-vert-small;
-  .margin-sides-small;
+  .margin-sides-verysmall;
   .mediaTextContent {
     .padding-sides-small;
   }
@@ -5972,12 +5977,14 @@ small {
     padding-left: 1px;
     border-radius: @t-storyButtons / 2;
     .bg-gris_clair;
+    // .bg-bleuvert;
     .margin-vert-verysmall;
     // margin: 4px 0;
 
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     &::before {
       content: "+";
@@ -5995,11 +6002,14 @@ small {
       width: @t-storyButtons;
       height: @t-storyButtons;
 
-      transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+      // .c-bleumarine;
+
+      transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
       // background-color: @c-noir;
     }
     &:hover {
-      .bg-gris_clair;
+      .bg-gris;
+      // .bg-bleuvert_fonce;
       .c-noir;
 
       // background-color: rgba(51, 51, 51, 0.5);
@@ -6007,11 +6017,17 @@ small {
 
     &.is--active {
       .bg-gris_clair;
+      // .bg-rouge;
       .c-noir;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       // background-color: @c-bleuvert_fonce;
       // background-color: rgba(51, 51, 51, 0.9);
+
+      &:hover {
+        .bg-gris;
+        // .bg-rouge_fonce;
+      }
     }
     .is--open&::before {
       transform: rotate(135deg);
@@ -6046,6 +6062,7 @@ small {
       margin: 0;
       border: 0;
       .bg-gris_clair;
+      border-radius: 4px;
       // border-radius: 4px;
     }
 
@@ -6483,7 +6500,6 @@ small {
     text-align: center;
 
     border-radius: 8px;
-
     > * {
       // flex: 0 0 100px;
       padding-right: 0.5em;
@@ -6499,6 +6515,14 @@ small {
           border: 2px solid @c-gris_clair;
           .margin-vert-verysmall;
           .padding-verysmall;
+
+          &:first-child {
+            margin-top: 0;
+          }
+        }
+
+        label {
+          display: block;
         }
       }
     }
@@ -6578,6 +6602,11 @@ small {
   .margin-small;
   border-radius: 4px;
 
+  label,
+  input {
+    pointer-events: none;
+  }
+
   label {
     text-transform: initial;
     font-weight: 700;
@@ -6600,8 +6629,8 @@ small {
   input[type="radio"].custom_radio:not(:checked) + label::before,
   input[type="radio"].custom_radio:checked + label::after,
   input[type="radio"].custom_radio:not(:checked) + label::after {
-    top: 17px;
-    left: 5px;
+    top: 19px;
+    left: 6px;
   }
 
   .buttonLink {
@@ -6890,7 +6919,6 @@ small {
   top: 40px;
   right: ~"calc(-75px + 40px / 2)";
   background-color: white;
-  width: 220px;
   .boxs-card-2;
   border: 1px solid @c-gris;
 
@@ -6902,15 +6930,18 @@ small {
   background-color: @c-noir;
   pointer-events: auto;
 
-  width: 240px;
+  width: 200px;
   .margin-small;
   border: 0;
 
-  > button {
-    min-width: 2.2rem;
-    min-height: 2.2rem;
-    margin-left: ~"calc(-1/4 * var(--spacing))";
-    margin-top: ~"calc( -1/4 * var(--spacing))";
+  button,
+  a {
+    .bg-orange;
+    border-radius: @t-buttonradius;
+    color: @c-noir;
+    min-height: 0;
+    .margin-verysmall;
+    text-decoration: none;
   }
 }
 

@@ -12,6 +12,17 @@
     <!-- connection_state : {{ connection_state }}
     <br />-->
     <div ref="editor" class="mediaTextContent" />
+
+    <div class="quillWrapper--savingIndicator" v-if="enable_collaboration">
+      <transition name="fade" :duration="600">
+        <template v-if="is_loading_or_saving">
+          <span class="loader loader-small" />
+        </template>
+        <template v-else-if="show_saved_icon">
+          <span>✓</span>
+        </template>
+      </transition>
+    </div>
     <!-- <div class="_customCaret" :style="_customCaret_style" /> -->
   </div>
 </template>
@@ -47,24 +58,24 @@ export default {
   props: {
     value: {
       type: String,
-      default: "…"
+      default: "…",
     },
     media: Object,
     slugFolderName: String,
     specific_toolbar: Array,
     theme: {
       type: String,
-      default: "snow"
+      default: "snow",
     },
     read_only: {
       type: Boolean,
-      default: false
+      default: false,
     },
     enable_collaboration: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    type: String
+    type: String,
   },
   components: {},
   data() {
@@ -75,6 +86,9 @@ export default {
         2,
         3 + 5
       ),
+
+      is_loading_or_saving: false,
+      show_saved_icon: false,
 
       custom_toolbar: [
         [{ font: fonts }],
@@ -100,9 +114,9 @@ export default {
               "#bdb3b3",
               "#ae1cee",
               "#fff933",
-              "#a54a0f"
-            ]
-          }
+              "#a54a0f",
+            ],
+          },
         ],
         [
           {
@@ -123,21 +137,21 @@ export default {
               "#bdb3b3",
               "#ae1cee",
               "#fff933",
-              "#a54a0f"
-            ]
-          }
+              "#a54a0f",
+            ],
+          },
         ],
         [{ list: "ordered" }, { list: "bullet" }],
         [
           { align: "" },
           { align: "center" },
           { align: "right" },
-          { align: "justify" }
+          { align: "justify" },
         ],
         ["code-block"],
         ["formula"],
         ["divider"],
-        ["clean"]
+        ["clean"],
       ],
 
       formats: [
@@ -155,7 +169,7 @@ export default {
         "align",
         "code-block",
         "formula",
-        "divider"
+        "divider",
       ],
 
       is_focused: false,
@@ -163,17 +177,19 @@ export default {
       debounce_textUpdate: undefined,
       caret_position: {
         top: undefined,
-        left: undefined
+        left: undefined,
       },
 
       socket: null,
       connection_state: !this.enable_collaboration ? "disabled" : "connecting…",
-      requested_resource_url: undefined
+      requested_resource_url: undefined,
     };
   },
 
   created() {},
   mounted() {
+    this.is_loading_or_saving = true;
+
     const toolbar_options = this.specific_toolbar
       ? this.specific_toolbar
       : this.custom_toolbar;
@@ -197,8 +213,8 @@ export default {
                   Quill.sources.USER
                 );
               }
-            }
-          }
+            },
+          },
         },
         formula: true,
         cursors: {
@@ -214,13 +230,13 @@ export default {
 `,
           hideDelayMs: 5000,
           hideSpeedMs: 0,
-          selectionChangeSource: null
-        }
+          selectionChangeSource: null,
+        },
       },
       bounds: this.$refs.editor,
       theme: this.theme,
       formats: this.formats,
-      placeholder: "…"
+      placeholder: "…",
     });
 
     this.$refs.editor.dataset.quill = this.editor;
@@ -233,6 +249,7 @@ export default {
 
     this.$nextTick(() => {
       this.editor.root.innerHTML = this.value;
+      this.is_loading_or_saving = false;
 
       if (this.$root.state.mode === "live") {
         this.editor.focus();
@@ -242,7 +259,6 @@ export default {
       }
       if (this.$root.state.mode === "live" && this.enable_collaboration) {
         this.initWebsocketMode();
-      } else {
       }
 
       this.editor.on("text-change", (delta, oldDelta, source) => {
@@ -284,14 +300,14 @@ export default {
     read_only() {
       if (this.read_only) this.editor.disable();
       else this.editor.enable();
-    }
+    },
   },
   computed: {
     _customCaret_style() {
       return {
-        transform: `translate3d(${this.caret_position.left}px, ${this.caret_position.top}px, 0px)`
+        transform: `translate3d(${this.caret_position.left}px, ${this.caret_position.top}px, 0px)`,
       };
-    }
+    },
   },
   methods: {
     initWebsocketMode() {
@@ -299,7 +315,7 @@ export default {
       const params = new URLSearchParams({
         type: this.type,
         slugFolderName: this.slugFolderName,
-        metaFileName: this.media.metaFileName
+        metaFileName: this.media.metaFileName,
       });
 
       const requested_querystring = "?" + params.toString();
@@ -319,7 +335,7 @@ export default {
       connection.on("state", this.wsState);
 
       const doc = connection.get("textMedias", requested_querystring);
-      doc.subscribe(err => {
+      doc.subscribe((err) => {
         if (err) {
           console.error(`ON • CollaborativeEditor: err ${err}`);
         }
@@ -369,7 +385,7 @@ export default {
         });
       });
 
-      doc.on("error", err => {
+      doc.on("error", (err) => {
         // soucis : les situations ou le serveur a été fermé et en le rouvrant il ne possède plus d’instance du doc dans sharedb…
         this.$forceUpdate();
       });
@@ -392,7 +408,7 @@ export default {
 
       this.editor
         .getLines()
-        .map(b => b.domNode.classList.remove("is--focused"));
+        .map((b) => b.domNode.classList.remove("is--focused"));
 
       const range = this.editor.getSelection();
 
@@ -412,21 +428,31 @@ export default {
     },
     updateTextMedia(event) {
       if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
+      this.is_loading_or_saving = true;
+
       this.debounce_textUpdate = setTimeout(() => {
         console.log(
           `CollaborativeEditor • updateTextMedia: saving new snapshop`
         );
 
-        this.$root.editMedia({
-          type: this.type,
-          slugFolderName: this.slugFolderName,
-          slugMediaName: this.media.metaFileName,
-          data: {
-            content: this.editor.getText() ? this.editor.root.innerHTML : ""
-          }
-        });
+        this.$root
+          .editMedia({
+            type: this.type,
+            slugFolderName: this.slugFolderName,
+            slugMediaName: this.media.metaFileName,
+            data: {
+              content: this.editor.getText() ? this.editor.root.innerHTML : "",
+            },
+          })
+          .then((mdata) => {
+            this.is_loading_or_saving = false;
+            this.show_saved_icon = true;
+            setTimeout(() => {
+              this.show_saved_icon = false;
+            }, 200);
+          });
       }, 1000);
-    }
-  }
+    },
+  },
 };
 </script>

@@ -1125,8 +1125,6 @@ module.exports = (function () {
                 dev.logverbose(`New content: ${data.content}`);
 
                 let updateTextMedia = new Promise((resolve, reject) => {
-                  // Legacy : if no filename in meta file when it is expected in blueprint
-                  // then it means its in the name of the text file
                   function getMediaFilename(meta, metaFileName) {
                     if (
                       global.settings.structure[
@@ -1135,12 +1133,15 @@ module.exports = (function () {
                     ) {
                       if (meta.hasOwnProperty("media_filename")) {
                         return meta.media_filename;
-                      } else {
-                        return new RegExp(
-                          global.settings.regexpRemoveFileExtension,
-                          "i"
-                        ).exec(metaFileName)[1];
                       }
+                      // Legacy : if no filename in meta file when it is expected in blueprint
+                      // then it means its in the name of the text file
+                      // else {
+                      //   return new RegExp(
+                      //     global.settings.regexpRemoveFileExtension,
+                      //     "i"
+                      //   ).exec(metaFileName)[1];
+                      // }
                     }
                   }
                   let mediaFileName = getMediaFilename(meta, metaFileName);
@@ -1196,12 +1197,13 @@ module.exports = (function () {
             ) {
               if (meta.hasOwnProperty("media_filename")) {
                 return meta.media_filename;
-              } else {
-                return new RegExp(
-                  global.settings.regexpRemoveFileExtension,
-                  "i"
-                ).exec(metaFileName)[1];
               }
+              //  else {
+              //   return new RegExp(
+              //     global.settings.regexpRemoveFileExtension,
+              //     "i"
+              //   ).exec(metaFileName)[1];
+              // }
             } else {
               return "";
             }
@@ -1682,17 +1684,17 @@ module.exports = (function () {
 
             // Legacy : if no filename in meta file when it is expected in blueprint
             // then it means its in the name of the text file
-            if (
-              !mediaData.hasOwnProperty("media_filename") &&
-              global.settings.structure[type].medias.fields.hasOwnProperty(
-                "media_filename"
-              )
-            ) {
-              mediaData.media_filename = new RegExp(
-                global.settings.regexpRemoveFileExtension,
-                "i"
-              ).exec(metaFileName)[1];
-            }
+            // if (
+            //   !mediaData.hasOwnProperty("media_filename") &&
+            //   global.settings.structure[type].medias.fields.hasOwnProperty(
+            //     "media_filename"
+            //   )
+            // ) {
+            //   mediaData.media_filename = new RegExp(
+            //     global.settings.regexpRemoveFileExtension,
+            //     "i"
+            //   ).exec(metaFileName)[1];
+            // }
 
             if (
               (mediaData.type === "text" ||
