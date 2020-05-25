@@ -523,6 +523,7 @@ let vm = new Vue({
       this.$eventHub.$once("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "projects" });
+        this.$root.updateNetworkInfos();
 
         if (this.current_project) {
           this.$socketio.listMedias({

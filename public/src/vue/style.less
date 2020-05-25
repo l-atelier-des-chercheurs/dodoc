@@ -5571,6 +5571,14 @@ small {
       align-items: center;
       text-align: center;
 
+      &::before {
+        display: block;
+        content: "•";
+        width: 100%;
+        text-align: center;
+        color: @c-gris;
+      }
+
       > div {
         .bg-gris_tresclair;
         .padding-sides-verysmall;
@@ -6485,7 +6493,6 @@ small {
     text-align: center;
 
     border-radius: 8px;
-
     > * {
       // flex: 0 0 100px;
       padding-right: 0.5em;
@@ -6501,6 +6508,14 @@ small {
           border: 2px solid @c-gris_clair;
           .margin-vert-verysmall;
           .padding-verysmall;
+
+          &:first-child {
+            margin-top: 0;
+          }
+        }
+
+        label {
+          display: block;
         }
       }
     }

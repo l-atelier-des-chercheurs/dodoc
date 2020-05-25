@@ -102,7 +102,10 @@
             />
 
             <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
-            <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
+            <div
+              class="_story_insert_placeholders"
+              :key="`insert_${media.metaFileName}`"
+            >
               <InsertMediaButton
                 v-if="
                   can_edit_publi &&
@@ -138,8 +141,27 @@
               {{ $root.formatDateToPrecise(publication.date_modified) }}
             </small>
           </div>
-          <div>
-            <small>{{ $t("notifications.you_can_close_this_window") }}</small>
+          <div class="" v-if="url_to_publi">
+            <small
+              >{{ $t("save_following_address_and_come_back_later") }}<br />
+              <a :href="url_to_publi">{{ url_to_publi }}</a>
+            </small>
+          </div>
+          <div class="" v-if="model_for_this_publication">
+            <template v-if="!publication.date_submitted">
+              <small>{{ $t("finished_writing_reply") }}</small>
+              <button
+                type="button"
+                class="button-greenthin"
+                @click="lockAndPublish"
+              >
+                {{ $t("lock_and_publish") }}
+              </button>
+            </template>
+            <small v-else>
+              {{ $t("published") }} —
+              {{ $root.formatDateToPrecise(publication.date_submitted) }}
+            </small>
           </div>
         </footer>
       </div>
@@ -164,7 +186,7 @@ export default {
     read_only: Boolean,
     preview_mode: Boolean,
     fullscreen_mode: Boolean,
-    model_for_this_publication: [Boolean, Object]
+    model_for_this_publication: [Boolean, Object],
   },
   components: {
     PublicationHeader,
@@ -172,13 +194,13 @@ export default {
     ExportPagePubli,
     MediaStory,
     MediaPlaceholder,
-    InsertMediaButton
+    InsertMediaButton,
   },
   data() {
     return {
       show_export_modal: false,
       show_media_options: false,
-      current_scroll: 0
+      current_scroll: 0,
     };
   },
   created() {},
@@ -191,7 +213,7 @@ export default {
       "text",
       "stl",
       "document",
-      "other"
+      "other",
     ];
 
     const getCurrentScroll = () => {
@@ -243,7 +265,35 @@ export default {
         index++;
       }
       return index;
-    }
+    },
+    url_to_publi() {
+      if (!this.$root.state.localNetworkInfos.ip) return false;
+
+      const ip = this.$root.state.localNetworkInfos.ip[0];
+      let url = new URL(window.location);
+
+      function isIP(address) {
+        const r = RegExp(
+          "((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])"
+        );
+        return r.test(address);
+      }
+
+      // si on est en localhost (cas de electron et navigateur connecté à electron)
+      // alors on remplace localhost par l’IP
+      if (url.hostname === "localhost") {
+        url.hostname = ip;
+      }
+      // si on est sur une ip (cas d’un hébergement en ligne, ou d’un navigateur connecté à electron)
+      // alors on remplace par l’IP
+      else if (isIP(url.hostname)) {
+        url.hostname = ip;
+      }
+
+      url.pathname = `_publications/survey/${this.publication.slugFolderName}`;
+
+      return url;
+    },
   },
   methods: {
     toggleTransition({ position, metaFileName }) {
@@ -283,6 +333,18 @@ export default {
         } // Maybe other prefixed APIs?
       }
     },
+    lockAndPublish() {
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sureToLockAndPublish"),
+          () => {
+            this.$emit("lockAndPublish");
+          },
+          () => {}
+        );
+    },
     addMediaAtIndex(d) {
       if (this.$root.state.dev_mode === "debug")
         console.log(
@@ -308,8 +370,8 @@ export default {
       if (index === 0) return "first";
       if (index === this.medias_in_order.length - 1) return "last";
       return "";
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

@@ -238,6 +238,9 @@
           "default": "current",
           "override": true
         },
+        "date_submitted": {
+          "type": "date"
+        },
         "description": {
           "type": "string"
         },

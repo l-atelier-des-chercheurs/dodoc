@@ -90,7 +90,7 @@
 
           <div v-else class="mediaTextContent">
             <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />
-            <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
+            <p v-else class="_no_textcontent" v-html="no_text_content" />
           </div>
         </template>
         <template v-else-if="media.type === 'placeholder'">
@@ -502,7 +502,10 @@ export default {
           : this.media.media_filename;
       return `${type_path}/${slugFolderName}/${media_filename}`;
     },
-
+    no_text_content() {
+      if (this.media.only_numbers) return this.$t("no_numbers");
+      return this.$t("no_text_content");
+    },
     is_selected() {
       if (this.read_only) return false;
       return this.$root.settings.current_publication.selected_medias.some(

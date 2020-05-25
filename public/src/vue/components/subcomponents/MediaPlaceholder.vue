@@ -84,6 +84,7 @@
         <InsertMediaButton
           v-if="
             !preview_mode &&
+            !read_only &&
             (!model_placeholder_media._reply._medias ||
               model_placeholder_media._reply._medias.length === 0)
           "
@@ -139,6 +140,7 @@
               <InsertMediaButton
                 v-if="
                   !preview_mode &&
+                  !read_only &&
                   index === model_placeholder_media._reply._medias.length - 1 &&
                   (modes_allowed === 'all' ||
                     Object.keys(modes_allowed).length > 0)
@@ -180,6 +182,7 @@ export default {
     slugPubliName: String,
     publication: Object,
     preview_mode: Boolean,
+    read_only: Boolean,
   },
   components: {
     InsertMediaButton,
