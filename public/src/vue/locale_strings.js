@@ -69,6 +69,10 @@ module.exports = (function () {
       fr: "Mise en forme du texte",
       en: "Advanced text options",
     },
+    only_numbers: {
+      fr: "Nombres uniquement",
+      en: "Numbers only",
+    },
     amount: {
       fr: "Nombre",
       en: "Amount",

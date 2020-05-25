@@ -92,11 +92,6 @@
             <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />
             <p v-else class="_no_textcontent" v-html="$t('no_text_content')" />
           </div>
-          <small
-            v-if="is_in_placeholder"
-            class="margin-sides-small"
-            v-html="$t('answers_given:') + '&nbsp;' + media.content"
-          />
         </template>
         <template v-else-if="media.type === 'placeholder'">
           <div class="m_mediaStory--placeholder">
@@ -429,7 +424,6 @@ export default {
     preview_mode: Boolean,
     slugPubliName: String,
     media_position: String,
-    is_in_placeholder: Boolean,
   },
   components: {
     MediaContent,

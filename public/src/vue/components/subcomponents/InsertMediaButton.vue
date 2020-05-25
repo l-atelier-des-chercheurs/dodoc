@@ -113,6 +113,14 @@
             >
               <span>{{ $t("write") }}</span>
             </button>
+            <button
+              type="button"
+              v-if="!publi_follows_model"
+              class="barButton barButton_divider"
+              @click="createDivider"
+            >
+              <span>{{ $t("divider") }}</span>
+            </button>
 
             <button
               type="button"
@@ -121,15 +129,6 @@
               @click="createPlaceholderMedia"
             >
               <span>{{ $t("placeholder") }}</span>
-            </button>
-
-            <button
-              type="button"
-              v-if="!publi_follows_model"
-              class="barButton barButton_divider"
-              @click="createDivider"
-            >
-              <span>{{ $t("divider") }}</span>
             </button>
           </div>
           <!-- <small v-if="!is_iOS_device">

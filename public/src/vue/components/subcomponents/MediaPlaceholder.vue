@@ -127,7 +127,6 @@
               :preview_mode="preview_mode"
               :slugPubliName="slugPubliName"
               :read_only="read_only || preview_mode"
-              :is_in_placeholder="true"
               @removePubliMedia="orderedRemovePubliMedia($event)"
               @changeMediaOrder="changeMediaOrder($event)"
               @editPubliMedia="$emit('editPubliMedia', $event)"
@@ -455,7 +454,6 @@ export default {
       this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
     },
     setChoiceFromSelect(choice) {
-      debugger;
       this.choices_selected = [choice];
       this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
     },

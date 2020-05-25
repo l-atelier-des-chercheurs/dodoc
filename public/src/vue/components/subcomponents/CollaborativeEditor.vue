@@ -13,6 +13,16 @@
     <br />-->
     <div ref="editor" class="mediaTextContent" />
 
+    <div class="quillWrapper--savingIndicator" v-if="enable_collaboration">
+      <transition name="fade" :duration="600">
+        <template v-if="is_loading_or_saving">
+          <span class="loader loader-small" />
+        </template>
+        <template v-else-if="show_saved_icon">
+          <span>✓</span>
+        </template>
+      </transition>
+    </div>
     <!-- <div class="_customCaret" :style="_customCaret_style" /> -->
   </div>
 </template>
@@ -76,6 +86,9 @@ export default {
         2,
         3 + 5
       ),
+
+      is_loading_or_saving: false,
+      show_saved_icon: false,
 
       custom_toolbar: [
         [{ font: fonts }],
@@ -175,6 +188,8 @@ export default {
 
   created() {},
   mounted() {
+    this.is_loading_or_saving = true;
+
     const toolbar_options = this.specific_toolbar
       ? this.specific_toolbar
       : this.custom_toolbar;
@@ -234,6 +249,7 @@ export default {
 
     this.$nextTick(() => {
       this.editor.root.innerHTML = this.value;
+      this.is_loading_or_saving = false;
 
       if (this.$root.state.mode === "live") {
         this.editor.focus();
@@ -243,7 +259,6 @@ export default {
       }
       if (this.$root.state.mode === "live" && this.enable_collaboration) {
         this.initWebsocketMode();
-      } else {
       }
 
       this.editor.on("text-change", (delta, oldDelta, source) => {
@@ -413,19 +428,29 @@ export default {
     },
     updateTextMedia(event) {
       if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
+      this.is_loading_or_saving = true;
+
       this.debounce_textUpdate = setTimeout(() => {
         console.log(
           `CollaborativeEditor • updateTextMedia: saving new snapshop`
         );
 
-        this.$root.editMedia({
-          type: this.type,
-          slugFolderName: this.slugFolderName,
-          slugMediaName: this.media.metaFileName,
-          data: {
-            content: this.editor.getText() ? this.editor.root.innerHTML : "",
-          },
-        });
+        this.$root
+          .editMedia({
+            type: this.type,
+            slugFolderName: this.slugFolderName,
+            slugMediaName: this.media.metaFileName,
+            data: {
+              content: this.editor.getText() ? this.editor.root.innerHTML : "",
+            },
+          })
+          .then((mdata) => {
+            this.is_loading_or_saving = false;
+            this.show_saved_icon = true;
+            setTimeout(() => {
+              this.show_saved_icon = false;
+            }, 200);
+          });
       }, 1000);
     },
   },
