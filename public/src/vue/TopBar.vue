@@ -174,7 +174,7 @@
         <a
           class="js--openInBrowser"
           target="_blank"
-          href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc"
+          href="https://dodoc.fr/"
           :content="$t('help')"
           v-tippy="{
             placement: 'bottom',
