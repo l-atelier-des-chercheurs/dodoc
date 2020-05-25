@@ -18,6 +18,7 @@
       <button
         type="button"
         class="m_mediaPlaceholder--replyButton"
+        v-if="!read_only"
         @click="createPlaceholderMedia"
       >
         {{ $t("reply") }}
