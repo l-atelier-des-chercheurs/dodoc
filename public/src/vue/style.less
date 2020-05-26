@@ -879,6 +879,13 @@ body {
 .m_listview {
   display: flex;
   flex-flow: column nowrap;
+
+  .m_actionbar--buttonBar {
+    &:first-child {
+      margin-top: 0;
+      margin-left: 0;
+    }
+  }
 }
 
 .m_listview--openedFolderLabel {

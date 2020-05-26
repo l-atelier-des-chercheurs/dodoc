@@ -5,7 +5,6 @@
     password : {{ password }}<br />
     can_see_folder : {{ can_see_folder }}<br />
     can_edit_folder : {{ can_edit_folder }}<br /> -->
-
     <div class="m_metaField" v-if="!!_editing_limited_to && context === 'full'">
       <div>{{ $t("who_can_edit") }}</div>
       <div class="">
@@ -17,6 +16,11 @@
       <div>{{ $t("consultation") }}</div>
       <div>{{ $t("visible_to_all") }}</div>
     </div>
+
+    <small
+      v-if="_editing_limited_to === 'nobody'"
+      v-html="$t('archived_explanation')"
+    />
     <!-- 
           <div
             class="m_metaField"
@@ -258,12 +262,6 @@ export default {
       });
     },
     _editing_limited_to() {
-      if (
-        this.folder.hasOwnProperty("archived") &&
-        this.folder.archived === true
-      )
-        return "nobody(archived)";
-      debugger;
       if (!!this.editing_limited_to) return this.editing_limited_to;
       else return false;
     },

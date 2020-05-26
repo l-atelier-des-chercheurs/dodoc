@@ -2484,12 +2484,6 @@ module.exports = (function () {
       fr: "Document archivé&nbsp;: il ne peut plus être modifié.",
       en: "Document is archived: it cannot be edited anymore.",
     },
-    archived_instructions: {
-      fr:
-        "Un contenu archivé ne pourra plus être modifié. Si besoin demandez à un administrateur pour désarchiver ce contenu.",
-      en:
-        "If set, this content will not be editable anymore. If necessary, ask an administrator to unarchive this document.",
-    },
     "type_of_expected_contents:": {
       fr: "Type de contenus attendus&nbsp;:",
       en: "Type of expected contents:",
@@ -2872,7 +2866,7 @@ module.exports = (function () {
       oc: "Mèdia precedent",
       de: "Vorherige Medien",
     },
-    "nobody(archived)": {
+    nobody: {
       fr: "Personne (archivé)",
       en: "Nobody (archived)",
     },

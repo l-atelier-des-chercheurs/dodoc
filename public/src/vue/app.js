@@ -1032,8 +1032,11 @@ let vm = new Vue({
       // if admin
       if (this.current_author_is_admin) return true;
 
-      // if archived
-      if (folder.archived === true) return false;
+      if (
+        folder.hasOwnProperty("editing_limited_to") &&
+        folder.editing_limited_to === "nobody"
+      )
+        return false;
 
       // if no password && no editing limits
       if (

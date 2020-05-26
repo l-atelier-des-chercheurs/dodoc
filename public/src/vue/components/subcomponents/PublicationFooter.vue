@@ -14,13 +14,13 @@
       </small>
     </div> -->
     <div class="" v-if="model_for_this_publication">
-      <template v-if="!publication.archived">
+      <template v-if="can_edit_publi">
         <small>{{ $t("finished_writing_reply") }}</small>
         <button type="button" class="button-greenthin" @click="lockAndPublish">
           {{ $t("lock_and_publish") }}
         </button>
       </template>
-      <small v-else>
+      <small v-else-if="publication.date_submitted">
         {{ $t("published") }} —
         {{ $root.formatDateToPrecise(publication.date_submitted) }}
       </small>
@@ -33,6 +33,7 @@ export default {
     publication: Object,
     model_for_this_publication: [Boolean, Object],
     url_to_publi: [Boolean, URL],
+    can_edit_publi: Boolean,
   },
   components: {},
   data() {

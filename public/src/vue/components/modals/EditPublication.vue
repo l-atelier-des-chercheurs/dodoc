@@ -189,37 +189,6 @@
           />
         </template>
       </div>
-
-      <!-- Archived -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_archived }"
-            @click="show_archived = !show_archived"
-          >
-            {{ $t("archived") }}
-          </button>
-        </label>
-
-        <div v-if="show_archived">
-          <div class="switch switch-xs">
-            <input
-              type="checkbox"
-              class="switch"
-              id="is_model_switch"
-              v-model="publidata.archived"
-            />
-            <label
-              for="is_model_switch"
-              :class="{ 'c-rouge': publidata.archived }"
-              >{{ $t("archived") }}</label
-            >
-          </div>
-          <small>{{ $t("archived_instructions") }}</small>
-        </div>
-      </div>
     </template>
 
     <template slot="submit_button">{{ $t("save") }}</template>
@@ -274,7 +243,6 @@ export default {
         follows_model: this.publication.follows_model
           ? this.publication.follows_model
           : "",
-        archived: this.publication.archived ? this.publication.archived : false,
       },
       tag: "",
       preview: undefined,
@@ -287,7 +255,6 @@ export default {
       show_model_options:
         this.publication.is_model || !!this.publication.follows_model,
       publi_follows_model: !!this.publication.follows_model,
-      show_archived: !!this.publication.archived,
     };
   },
   watch: {

@@ -77,7 +77,7 @@
         },
         "editing_limited_to": {
           "type": "string",
-          "options": ["everybody", "with_password", "only_authors"],
+          "options": ["everybody", "with_password", "only_authors", "nobody"],
           "default": "everybody"
         },
         "viewing_limited_to": {
@@ -220,7 +220,7 @@
 
         "editing_limited_to": {
           "type": "string",
-          "options": ["everybody", "with_password", "only_authors"],
+          "options": ["everybody", "with_password", "only_authors", "nobody"],
           "default": "everybody"
         },
         "viewing_limited_to": {
@@ -240,9 +240,6 @@
         },
         "date_submitted": {
           "type": "date"
-        },
-        "archived": {
-          "type": "boolean"
         },
         "description": {
           "type": "string"
@@ -563,7 +560,7 @@
         },
         "editing_limited_to": {
           "type": "string",
-          "options": ["everybody", "only_authors"],
+          "options": ["everybody", "only_authors", "nobody"],
           "default": "everybody"
         },
         "viewing_limited_to": {
