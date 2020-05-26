@@ -2476,6 +2476,16 @@ module.exports = (function () {
         "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",
       en: "If enabled, this recipe will display the model’s medias and guides.",
     },
+    archived: {
+      fr: "Archiver",
+      en: "Archived",
+    },
+    archived_instructions: {
+      fr:
+        "Un contenu archivé ne pourra plus être modifié, uniquement consulté. Si besoin demandez à un administrateur pour désarchiver ce contenu.",
+      en:
+        "If archived, this content will not be editable anymore. If need be ask an administrator to unarchive this document.",
+    },
     "type_of_expected_contents:": {
       fr: "Type de contenus attendus&nbsp;:",
       en: "Type of expected contents:",
