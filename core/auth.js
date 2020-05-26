@@ -323,7 +323,7 @@ module.exports = (function () {
     );
 
     if (
-      !folderData.hasOwnProperty("viewing_limited_to") ||
+      folderData.hasOwnProperty("viewing_limited_to") &&
       folderData.viewing_limited_to === "everybody"
     ) {
       return true;
