@@ -147,7 +147,7 @@
       </div>
 
       <div
-        v-if="show_all_my_replies || !this.$root.current_publication"
+        v-if="show_all_my_replies || !$root.current_publication"
         class="m_topbar--repliesList padding-small"
       >
         <label>{{ $t("list_of_stories") }}</label>
