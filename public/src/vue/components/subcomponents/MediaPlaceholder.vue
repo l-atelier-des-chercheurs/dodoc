@@ -236,8 +236,7 @@ export default {
           modes_allowed.choices.choices = modes_allowed.choices.choices
             .split("|")
             .filter(c => c !== "");
-          return modes_allowed;
-        } else return {};
+        }
       }
 
       return modes_allowed;
