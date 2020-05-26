@@ -37,7 +37,10 @@
       </div>
     </div>
 
-    <div class="margin-top-small" v-if="can_have_readonly && editing_limited_to !== 'everybody'">
+    <div
+      class="margin-top-small"
+      v-if="can_have_readonly && editing_limited_to !== 'everybody'"
+    >
       <div class>
         <input
           class
@@ -63,27 +66,32 @@ export default {
     password: String,
     can_have_password: {
       type: Boolean,
-      default: true
+      default: true,
     },
     can_have_readonly: {
       type: Boolean,
-      default: true
+      default: true,
     },
     authors: Array,
-    name: String
+    name: String,
   },
   components: {},
   data() {
     return {
       local_editing_limited_to: this.editing_limited_to,
       local_viewing_limited_to: this.viewing_limited_to,
-      editing_modes: []
+      editing_modes: [],
     };
   },
   created() {
     if (this.can_have_password)
-      this.editing_modes = ["only_authors", "with_password", "everybody"];
-    else this.editing_modes = ["only_authors", "everybody"];
+      this.editing_modes = [
+        "only_authors",
+        "with_password",
+        "everybody",
+        "nobody",
+      ];
+    else this.editing_modes = ["only_authors", "everybody", "nobody"];
 
     // if (!this.can_have_readonly) this.local_viewing_limited_to = "";
   },
@@ -91,7 +99,7 @@ export default {
   beforeDestroy() {},
   watch: {
     authors: {
-      handler: function(new_authors, old_authors) {
+      handler: function (new_authors, old_authors) {
         // prevent 0 authors if folder protected by authors
         if (
           this.editing_limited_to === "only_authors" &&
@@ -110,10 +118,10 @@ export default {
           this.editing_limited_to === "only_authors" &&
           this.$root.current_author &&
           new_authors.some(
-            a => a.slugFolderName === this.$root.current_author.slugFolderName
+            (a) => a.slugFolderName === this.$root.current_author.slugFolderName
           ) === false &&
           old_authors.some(
-            a => a.slugFolderName === this.$root.current_author.slugFolderName
+            (a) => a.slugFolderName === this.$root.current_author.slugFolderName
           ) === true &&
           this.$root.current_author.role !== "admin"
         ) {
@@ -129,7 +137,7 @@ export default {
             );
         }
       },
-      deep: true
+      deep: true,
     },
     local_editing_limited_to() {
       this.$emit("update:editing_limited_to", this.local_editing_limited_to);
@@ -137,7 +145,7 @@ export default {
     },
     local_viewing_limited_to() {
       this.$emit("update:viewing_limited_to", this.local_viewing_limited_to);
-    }
+    },
   },
   computed: {},
   methods: {
@@ -146,8 +154,8 @@ export default {
         if (this.local_editing_limited_to === "everybody")
           this.local_viewing_limited_to = "everybody";
         else this.local_viewing_limited_to = "";
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

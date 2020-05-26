@@ -138,6 +138,7 @@
           :publication="publication"
           :url_to_publi="url_to_publi"
           :model_for_this_publication="model_for_this_publication"
+          :can_edit_publi="can_edit_publi"
           @lockAndPublish="$emit('lockAndPublish')"
         />
       </div>
