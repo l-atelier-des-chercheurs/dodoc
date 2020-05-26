@@ -142,6 +142,7 @@
       :add_instructions="$t('add_caption')"
       :edit_instructions="$t('edit_caption')"
       :show_edit_button="is_selected"
+      :read_only="preview_mode || read_only"
       @updateField="(value) => updateMediaPubliMeta({ caption: value })"
     />
 

@@ -1,6 +1,6 @@
 <template>
   <div class="m_mediaField" :class="{ 'is--beingEdited': edit_mode }">
-    <template v-if="!edit_mode || !read_only">
+    <template v-if="!edit_mode">
       <div v-if="value" v-html="value" />
       <button
         type="button"
