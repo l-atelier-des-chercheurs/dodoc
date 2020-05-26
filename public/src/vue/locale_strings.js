@@ -2872,6 +2872,10 @@ module.exports = (function () {
       oc: "Mèdia precedent",
       de: "Vorherige Medien",
     },
+    "nobody(archived)": {
+      fr: "Personne (archivé)",
+      en: "Nobody (archived)",
+    },
     next_media: {
       fr: "Média suivant",
       en: "Next media",

@@ -110,7 +110,7 @@
         </button>
       </div>
       <div v-if="publication.archived" style="width: 100%;" class="ta-ce">
-        <label>{{ $t("archived_explanation") }}</label>
+        <label v-html="$t('archived_explanation')" />
       </div>
       <div
         style="width: 100%;"
