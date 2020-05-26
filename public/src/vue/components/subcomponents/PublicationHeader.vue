@@ -205,7 +205,7 @@
           <div class="m_authorField">
             <span
               v-for="author in publication.authors"
-              v-if="author.slugFolderName"
+              v-if="$root.getAuthor(author.slugFolderName)"
               :key="author.slugFolderName"
               class="is--active"
               :class="{
@@ -217,7 +217,6 @@
               <template v-if="$root.getAuthor(author.slugFolderName)">{{
                 $root.getAuthor(author.slugFolderName).name
               }}</template>
-              <template v-else>{{ author.slugFolderName }}</template>
             </span>
           </div>
         </div>

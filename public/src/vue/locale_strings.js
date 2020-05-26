@@ -2480,11 +2480,15 @@ module.exports = (function () {
       fr: "Archiver",
       en: "Archived",
     },
+    archived_explanation: {
+      fr: "Document archivé&nbsp;: il ne peut plus être modifié.",
+      en: "Document is archived: it cannot be edited anymore.",
+    },
     archived_instructions: {
       fr:
-        "Un contenu archivé ne pourra plus être modifié, uniquement consulté. Si besoin demandez à un administrateur pour désarchiver ce contenu.",
+        "Un contenu archivé ne pourra plus être modifié. Si besoin demandez à un administrateur pour désarchiver ce contenu.",
       en:
-        "If archived, this content will not be editable anymore. If need be ask an administrator to unarchive this document.",
+        "If set, this content will not be editable anymore. If necessary, ask an administrator to unarchive this document.",
     },
     "type_of_expected_contents:": {
       fr: "Type de contenus attendus&nbsp;:",

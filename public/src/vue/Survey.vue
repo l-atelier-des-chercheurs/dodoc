@@ -163,7 +163,7 @@
             {{ $t("last_modified") }} —
             {{ $root.formatDateToPrecise(reply.date_modified) }}
 
-            <template v-if="reply.date_submitted">
+            <template v-if="reply.archived">
               •
               {{ $t("published") }} —
               {{ $root.formatDateToPrecise(reply.date_submitted) }}
@@ -177,7 +177,7 @@
       v-if="$root.current_publication && survey_can_edit_publication"
       :publication="$root.current_publication"
       :read_only="
-        !$root.state.connected || !!$root.current_publication.date_submitted
+        !$root.state.connected || !!$root.current_publication.archived
       "
     />
   </div>
