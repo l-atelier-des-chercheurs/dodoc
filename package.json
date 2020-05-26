@@ -58,7 +58,7 @@
     "electron-window-state": "^5.0.3",
     "exif-reader": "^1.0.3",
     "express": "^4.17.1",
-    "ffmpeg-static": "^4.0.1",
+    "ffmpeg-static": "^3.0.0",
     "ffprobe-static": "^3.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "formidable": "^1.2.1",
