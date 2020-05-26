@@ -3,11 +3,21 @@
     class="m_insertMediaButton"
     :class="{
       'is--open': show_menu,
-      'is--active':
-        is_currently_active && !show_drop_container && $root.current_project,
       'is--dragover': show_drop_container,
     }"
   >
+    <button
+      type="button"
+      class="m_insertMediaButton--importHere"
+      :class="{
+        'is--active': is_currently_active && !show_drop_container && $root.current_project,
+      }"
+      :content="!$root.current_project ? $t('insert_medias_here') : ''"
+      v-tippy="{
+        placement: 'bottom',
+        delay: [600, 0],
+      }"
+    ></button>
     <button
       type="button"
       class="m_insertMediaButton--toggleButton"
@@ -26,13 +36,9 @@
       @click="enable_capture_mode = false"
     >
       {{ $t("cancel") }}
-    </button> -->
+    </button>-->
     <transition name="fade_fast" :duration="150" mode="out-in">
-      <div
-        v-if="show_drop_container"
-        @drop="dropHandler($event)"
-        class="_drop_indicator"
-      >
+      <div v-if="show_drop_container" @drop="dropHandler($event)" class="_drop_indicator">
         <div>
           <img src="/images/i_importer.svg" draggable="false" />
           <label>{{ $t("drop_here_to_import") }}</label>
@@ -137,9 +143,11 @@
           <div class="ta-ce padding-sides-small" v-if="publi_follows_model">
             <small class="c-noir">
               <span v-html="$t('type_of_expected_contents:')" />
-              <template v-if="modes_allowed === 'all'">{{
+              <template v-if="modes_allowed === 'all'">
+                {{
                 $t("all")
-              }}</template>
+                }}
+              </template>
               <span
                 v-else
                 v-for="(mode, index) in Object.keys(modes_allowed)"
@@ -199,7 +207,7 @@
               (metaFileNames) => insertImportedMedias({ metaFileNames })
             "
           />
-        </Modal> -->
+        </Modal>-->
       </template>
     </transition>
   </div>
@@ -214,31 +222,31 @@ export default {
   props: {
     is_collapsed: {
       type: Boolean,
-      default: true,
+      default: true
     },
     can_collapse: {
       type: Boolean,
-      default: true,
+      default: true
     },
     publi_is_model: {
       type: Boolean,
-      default: false,
+      default: false
     },
     publi_follows_model: {
       type: Boolean,
-      default: false,
+      default: false
     },
     is_currently_active: Boolean,
     slugPubliName: String,
     modes_allowed: {
       type: [String, Object],
-      default: "all",
-    },
+      default: "all"
+    }
   },
   components: {
     CaptureView,
     UploadFile,
-    Modal,
+    Modal
   },
   data() {
     return {
@@ -252,7 +260,7 @@ export default {
         /iPad|iPhone|iPod/.test(navigator.platform),
 
       show_drop_container: false,
-      enable_capture_mode: false,
+      enable_capture_mode: false
     };
   },
   created() {},
@@ -269,14 +277,14 @@ export default {
       handler() {
         if (!this.can_collapse) this.show_menu = true;
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   computed: {},
   methods: {
     createTextMedia() {
       let val = {
-        type: "text",
+        type: "text"
       };
       if (this.modes_allowed && this.modes_allowed !== "all") {
         if (this.modes_allowed.text) {
@@ -292,14 +300,14 @@ export default {
     },
     createPlaceholderMedia() {
       this.$emit("addMedia", {
-        type: "placeholder",
+        type: "placeholder"
       });
 
       this.show_menu = false;
     },
     createDivider() {
       this.$emit("addMedia", {
-        type: "divider",
+        type: "divider"
       });
 
       this.show_menu = false;
@@ -375,8 +383,8 @@ export default {
           this.selected_files = Array.from($event.dataTransfer.files);
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped></style>
