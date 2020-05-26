@@ -127,6 +127,7 @@
           <input
             :id="`enable_multiple_${id}`"
             type="checkbox"
+            :disabled="read_only"
             v-model="options.find((o) => o.key === 'choices').multiple"
           />
           {{ $t("multiple_choices_possible") }}
