@@ -203,8 +203,7 @@ module.exports = (function () {
     if (
       folderData.hasOwnProperty("editing_limited_to") &&
       folderData.editing_limited_to === "everybody" &&
-      folderData.hasOwnProperty("archived") &&
-      folderData.archived !== true
+      (!folderData.hasOwnProperty("archived") || folderData.archived !== true)
     ) {
       return "everybody_can_edit";
     }
