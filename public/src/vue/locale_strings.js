@@ -163,6 +163,10 @@ module.exports = (function () {
       fr: "Réponse(s) enregistrée(s)&nbsp;:",
       en: "Answer(s) saved:",
     },
+    "answer_type_expected:": {
+      fr: "Type de réponse attendu&nbsp;:",
+      en: "Answer type expected:",
+    },
     infos_about_the_media: {
       fr: "Informations sur le média",
       en: "Informations on the media",

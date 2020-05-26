@@ -135,7 +135,7 @@
           <!-- <small v-if="!is_iOS_device">
             {{ $t("notifications.ios_not_compatible_with_capture") }}
           </small>-->
-          <div class="ta-ce padding-sides-small" v-if="publi_follows_model">
+          <!-- <div class="ta-ce padding-sides-small" v-if="publi_follows_model">
             <small class="c-noir">
               <span v-html="$t('type_of_expected_contents:')" />
               <template v-if="modes_allowed === 'all'">
@@ -150,7 +150,7 @@
                 v-html="(index > 0 ? ', ' : '') + $t(mode)"
               />
             </small>
-          </div>
+          </div>-->
         </div>
       </div>
       <UploadFile

@@ -65,6 +65,12 @@
         </template>
       </template>
       <template v-else>
+        <div v-if="answer_type_expected" class="margin-bottom-small">
+          <small
+            class="margin-sides-small"
+            v-html="$t('answer_type_expected:') + '&nbsp;' + answer_type_expected"
+          />
+        </div>
         <InsertMediaButton
           v-if="
             !preview_mode &&
@@ -75,7 +81,7 @@
           :slugPubliName="slugPubliName"
           :publi_is_model="publication.is_model"
           :publi_follows_model="true"
-          :modes_allowed="modes_allowed"
+          :modes_allowed="remaining_modes_allowed"
           :can_collapse="
             !(
               !model_placeholder_media._reply._medias ||
@@ -121,13 +127,13 @@
                   !preview_mode &&
                   !read_only &&
                   index === model_placeholder_media._reply._medias.length - 1 &&
-                  (modes_allowed === 'all' ||
-                    Object.keys(modes_allowed).length > 0)
+                  (remaining_modes_allowed === 'all' ||
+                    Object.keys(remaining_modes_allowed).length > 0)
                 "
                 :slugPubliName="slugPubliName"
                 :publi_is_model="publication.is_model"
                 :publi_follows_model="true"
-                :modes_allowed="modes_allowed"
+                :modes_allowed="remaining_modes_allowed"
                 :read_only="read_only"
                 @addMedia="
                   (values) =>
@@ -234,12 +240,17 @@ export default {
         } else return {};
       }
 
+      return modes_allowed;
+    },
+    remaining_modes_allowed() {
+      const _modes_allowed = JSON.parse(JSON.stringify(this.modes_allowed));
+
       if (
         this.model_placeholder_media._reply._medias &&
         this.model_placeholder_media._reply._medias.length > 0
       ) {
         // check for each if there is an amount, and if there is then how many medias with that type already exist
-        Object.entries(modes_allowed).map(([mode, opts]) => {
+        Object.entries(_modes_allowed).map(([mode, opts]) => {
           if (opts.hasOwnProperty("amount") && opts.amount) {
             const amount_of_type = opts.amount;
 
@@ -252,12 +263,12 @@ export default {
             ).length;
 
             if (number_of_medias_of_this_type >= amount_of_type)
-              delete modes_allowed[mode];
+              delete _modes_allowed[mode];
           }
         });
       }
 
-      return modes_allowed;
+      return _modes_allowed;
     },
     answers_given() {
       if (!!this.model_placeholder_media._reply.answers)
@@ -280,13 +291,29 @@ export default {
         );
         return Object.entries(medias_types).reduce((acc, [type, amount]) => {
           if (!!acc) acc += " • ";
-          if (amount > 1) acc += `${this.$t(type)} (${amount})`;
-          else acc += `${this.$t(type)}`;
+
+          if (type === "image") type = "photo";
+
+          acc += `${this.$t(type)} (${amount})`;
+
           return acc;
         }, "");
       }
 
       return this.$t("none_f");
+    },
+    answer_type_expected() {
+      if (this.modes_allowed === "all") return this.$t("all").toLowerCase();
+
+      return Object.entries(this.modes_allowed).reduce(
+        (acc, [type, { amount }]) => {
+          if (!!acc) acc += " • ";
+          if (amount && amount > 1) acc += `${this.$t(type)} (${amount})`;
+          else acc += `${this.$t(type)}`;
+          return acc;
+        },
+        ""
+      );
     }
   },
   methods: {
