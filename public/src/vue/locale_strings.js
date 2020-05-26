@@ -139,6 +139,10 @@ module.exports = (function () {
       fr: "aucun",
       en: "none",
     },
+    none_f: {
+      fr: "aucune",
+      en: "none",
+    },
     interactive_preview: {
       fr: "Interactif",
       en: "Interactive",

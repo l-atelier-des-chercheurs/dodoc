@@ -5793,6 +5793,8 @@ small {
     margin-right: 0;
     &.is--open {
       .padding-left-small;
+      margin-left: 0;
+      margin-right: 0;
     }
 
     .m_insertMediaButton--toggleButton {
@@ -5811,8 +5813,11 @@ small {
     .padding-sides-small;
 
     &.type-text {
-      .padding-small;
-      .margin-sides-small;
+      .mediaContainer {
+        .padding-vert-small;
+        // .margin-sides-small;
+        background-color: rgba(255, 255, 255, 0.8);
+      }
     }
     // padding: 0;
     &:not(.is--previewed)::before {
@@ -5827,10 +5832,6 @@ small {
   .m_mediaStory--moveItemButtons {
     background-color: @c-gris_clair;
     margin-right: -8px;
-  }
-
-  .m_mediaStory.type-text {
-    background-color: rgba(255, 255, 255, 0.8);
   }
 }
 .m_mediaStory.type-text,
@@ -5937,15 +5938,14 @@ small {
   }
 
   .m_insertMediaButton--importHere {
-    min-height: 0;
-    min-width: 0;
+    position: absolute;
+    left: -1rem;
+    top: 0;
+
     &::before {
       content: "→";
 
       display: block;
-      left: -1rem;
-      top: 0;
-      position: absolute;
 
       width: 2rem;
       height: 2rem;

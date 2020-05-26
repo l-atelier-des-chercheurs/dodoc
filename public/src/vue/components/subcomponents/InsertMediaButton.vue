@@ -6,18 +6,13 @@
       'is--dragover': show_drop_container,
     }"
   >
-    <button
-      type="button"
+    <div
       class="m_insertMediaButton--importHere"
+      v-if="!show_menu"
       :class="{
         'is--active': is_currently_active && !show_drop_container && $root.current_project,
       }"
-      :content="!$root.current_project ? $t('insert_medias_here') : ''"
-      v-tippy="{
-        placement: 'bottom',
-        delay: [600, 0],
-      }"
-    ></button>
+    />
     <button
       type="button"
       class="m_insertMediaButton--toggleButton"
