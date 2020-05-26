@@ -16,7 +16,7 @@
       <div v-if="publication.authors" class="m_authorField">
         <span
           v-for="author in publication.authors"
-          v-if="author.slugFolderName"
+          v-if="$root.getAuthor(author.slugFolderName)"
           :key="author.slugFolderName"
           class="is--active"
           :class="{

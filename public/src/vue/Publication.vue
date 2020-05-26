@@ -640,6 +640,7 @@ export default {
         slugFolderName: this.slugPubliName,
         data: {
           date_submitted: now,
+          archived: true,
         },
       });
     },

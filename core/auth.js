@@ -202,7 +202,8 @@ module.exports = (function () {
 
     if (
       folderData.hasOwnProperty("editing_limited_to") &&
-      folderData.editing_limited_to === "everybody"
+      folderData.editing_limited_to === "everybody" &&
+      (!folderData.hasOwnProperty("archived") || folderData.archived !== true)
     ) {
       return "everybody_can_edit";
     }
@@ -241,6 +242,11 @@ module.exports = (function () {
       const is_admin = await isSocketLoggedInAsAdmin(sockets_authors_slugs);
       dev.logverbose(`AUTH — canEditFolder: is_admin = ${is_admin}`);
       if (is_admin) return "is_session_admin";
+    }
+
+    // if folder is archived, only admins can edit it
+    if (folderData.hasOwnProperty("archived") && folderData.archived === true) {
+      throw new Error("folder_archived");
     }
 
     // if editing_limited_to is not set, or set to with_password

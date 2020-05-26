@@ -14,7 +14,7 @@
       </small>
     </div> -->
     <div class="" v-if="model_for_this_publication">
-      <template v-if="!publication.date_submitted">
+      <template v-if="!publication.archived">
         <small>{{ $t("finished_writing_reply") }}</small>
         <button type="button" class="button-greenthin" @click="lockAndPublish">
           {{ $t("lock_and_publish") }}
@@ -31,7 +31,7 @@
 export default {
   props: {
     publication: Object,
-    model_for_this_publication: Object,
+    model_for_this_publication: [Boolean, Object],
     url_to_publi: [Boolean, URL],
   },
   components: {},

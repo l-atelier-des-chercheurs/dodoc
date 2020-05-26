@@ -59,7 +59,7 @@
             <div class="m_authorField">
               <span
                 v-for="author in project.authors"
-                v-if="author.slugFolderName"
+                v-if="$root.getAuthor(author.slugFolderName)"
                 :key="author.slugFolderName"
                 class="is--active"
                 :class="{

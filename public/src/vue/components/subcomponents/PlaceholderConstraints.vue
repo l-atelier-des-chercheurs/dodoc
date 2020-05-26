@@ -4,6 +4,7 @@
       <input
         type="radio"
         class="custom_radio"
+        :disabled="read_only"
         v-model="type_of_content"
         :id="`${id}_type_medias`"
         value="medias"
@@ -14,6 +15,7 @@
       <input
         type="radio"
         class="custom_radio"
+        :disabled="read_only"
         v-model="type_of_content"
         :id="`${id}_type_choices`"
         value="choices"
@@ -37,6 +39,7 @@
           <input
             type="checkbox"
             class="switch"
+            :disabled="read_only"
             :id="`option_${id}_${option.key}`"
             v-model="option.enabled"
           />
@@ -45,6 +48,7 @@
         <button
           type="button"
           class="_picto button-nostyle"
+          :disabled="read_only"
           @click="option.enabled = !option.enabled"
         >
           <div class>
@@ -76,6 +80,7 @@
             >
               <input
                 :id="`option_${id}_${option.key}_advtext`"
+                :disabled="read_only"
                 type="checkbox"
                 v-model="option.advanced_text_options"
               />
@@ -91,6 +96,7 @@
               <input
                 :id="`option_${id}_${option.key}_only_numbers`"
                 type="checkbox"
+                :disabled="read_only"
                 v-model="option.only_numbers"
               />
               {{ $t("only_numbers") }}
@@ -98,7 +104,11 @@
           </div>
           <div class="_amount" v-if="option.amount">
             <label>{{ $t("amount") }}</label>
-            <select v-model="option.amount" class="select-xs">
+            <select
+              v-model="option.amount"
+              class="select-xs"
+              :disabled="read_only"
+            >
               <option value="unlimited">{{ $t("unlimited") }}</option>
               <option value="1">1</option>
               <option value="2">2</option>
@@ -117,6 +127,7 @@
           <input
             :id="`enable_multiple_${id}`"
             type="checkbox"
+            :disabled="read_only"
             v-model="options.find((o) => o.key === 'choices').multiple"
           />
           {{ $t("multiple_choices_possible") }}
@@ -199,7 +210,7 @@
 </template>
 <script>
 export default {
-  props: { available_modes: [String, Array] },
+  props: { available_modes: [String, Array], read_only: Boolean },
   components: {},
   data() {
     return {

@@ -44,7 +44,6 @@
       :slugFolderName="media._linked_media.slugProjectName"
       :media="media._linked_media"
       :read_only="read_only"
-      :element_width_for_sizes="mediaSize.width * pixelsPerMillimeters"
       v-model="media._linked_media.content"
       :style="contentStyles"
     />

@@ -258,6 +258,12 @@ export default {
       });
     },
     _editing_limited_to() {
+      if (
+        this.folder.hasOwnProperty("archived") &&
+        this.folder.archived === true
+      )
+        return "nobody(archived)";
+      debugger;
       if (!!this.editing_limited_to) return this.editing_limited_to;
       else return false;
     },

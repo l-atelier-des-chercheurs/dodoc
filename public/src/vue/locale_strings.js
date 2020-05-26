@@ -2476,6 +2476,20 @@ module.exports = (function () {
         "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",
       en: "If enabled, this recipe will display the model’s medias and guides.",
     },
+    archived: {
+      fr: "Archiver",
+      en: "Archived",
+    },
+    archived_explanation: {
+      fr: "Document archivé&nbsp;: il ne peut plus être modifié.",
+      en: "Document is archived: it cannot be edited anymore.",
+    },
+    archived_instructions: {
+      fr:
+        "Un contenu archivé ne pourra plus être modifié. Si besoin demandez à un administrateur pour désarchiver ce contenu.",
+      en:
+        "If set, this content will not be editable anymore. If necessary, ask an administrator to unarchive this document.",
+    },
     "type_of_expected_contents:": {
       fr: "Type de contenus attendus&nbsp;:",
       en: "Type of expected contents:",
@@ -2857,6 +2871,10 @@ module.exports = (function () {
       nl: "Vorige media ",
       oc: "Mèdia precedent",
       de: "Vorherige Medien",
+    },
+    "nobody(archived)": {
+      fr: "Personne (archivé)",
+      en: "Nobody (archived)",
     },
     next_media: {
       fr: "Média suivant",

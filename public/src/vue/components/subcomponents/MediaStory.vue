@@ -103,6 +103,7 @@
                 :show_edit_button="true"
                 :add_instructions="$t('add_instructions')"
                 :edit_instructions="$t('edit_instructions')"
+                :read_only="preview_mode || read_only"
                 @updateField="
                   (value) => updateMediaPubliMeta({ instructions: value })
                 "
@@ -113,6 +114,7 @@
 
               <PlaceholderConstraints
                 :available_modes="media.available_modes"
+                :read_only="preview_mode || read_only"
                 @updateField="
                   (value) => updateMediaPubliMeta({ available_modes: value })
                 "
@@ -140,6 +142,7 @@
       :add_instructions="$t('add_caption')"
       :edit_instructions="$t('edit_caption')"
       :show_edit_button="is_selected"
+      :read_only="preview_mode || read_only"
       @updateField="(value) => updateMediaPubliMeta({ caption: value })"
     />
 

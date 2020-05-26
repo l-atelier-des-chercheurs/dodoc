@@ -241,6 +241,9 @@
         "date_submitted": {
           "type": "date"
         },
+        "archived": {
+          "type": "boolean"
+        },
         "description": {
           "type": "string"
         },
