@@ -1,11 +1,11 @@
 <template>
   <div class="m_mediaField" :class="{ 'is--beingEdited': edit_mode }">
-    <template v-if="!edit_mode">
+    <template v-if="!edit_mode || !read_only">
       <div v-if="value" v-html="value" />
       <button
         type="button"
         class="buttonLink"
-        v-if="show_edit_button"
+        v-if="show_edit_button && !read_only"
         v-html="!!value ? edit_instructions : add_instructions"
         @click="edit_mode = true"
       />
@@ -42,6 +42,7 @@ export default {
     add_instructions: String,
     edit_instructions: String,
     show_edit_button: Boolean,
+    read_only: Boolean,
   },
   components: {
     CollaborativeEditor,

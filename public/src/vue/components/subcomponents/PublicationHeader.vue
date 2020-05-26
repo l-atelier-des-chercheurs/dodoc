@@ -109,6 +109,9 @@
           {{ $t("create") }}
         </button>
       </div>
+      <div v-if="publication.archived" style="width: 100%;" class="ta-ce">
+        <label>{{ $t("archived_explanation") }}</label>
+      </div>
       <div
         style="width: 100%;"
         class="ta-ce"
@@ -155,7 +158,7 @@
         </label>
       </div>
       <div v-else-if="model_for_this_publication">
-        <div class="" v-if="url_to_publi && !publication.date_submitted">
+        <div class="" v-if="url_to_publi && !publication.archived">
           <small
             >{{ $t("save_following_address_and_come_back_later") }}<br />
             <a :href="url_to_publi">{{ url_to_publi }}</a>
