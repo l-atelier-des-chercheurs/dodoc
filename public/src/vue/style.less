@@ -5651,14 +5651,14 @@ small {
   position: absolute;
   right: 100%;
   top: 0;
-  // height: 100%;
+  min-height: 100%;
   width: @t-storyButtons;
   margin: 0;
   margin-left: @t-marginFromDoc;
   margin-right: @t-marginFromDoc;
 
-  // background-color: @c-bleuvert_fonce;
-  background-color: rgba(51, 51, 51, 0.3);
+  background-color: @c-bleuvert_fonce;
+  // background-color: rgba(51, 51, 51, 0.3);
   // border: 2px solid @c-bleuvert_fonce;
   border-radius: @t-storyButtons / 2;
   // border-top-left-radius: 0;
@@ -5692,7 +5692,7 @@ small {
     transform: rotate(90deg);
 
     &:hover {
-      background-color: @c-bleuvert;
+      background-color: @c-orange;
     }
     &[disabled] {
       opacity: 0;
@@ -5781,6 +5781,9 @@ small {
   }
 
   .m_mediaPlaceholder--replies {
+    .margin-top-small;
+    .margin-bottom-verysmall;
+    padding-top: 4px;
   }
 
   .m_insertMediaButton--menu {
@@ -5813,7 +5816,7 @@ small {
     .padding-sides-small;
 
     &.type-text {
-      .mediaContainer {
+      .mediaTextContent {
         .padding-vert-small;
         // .margin-sides-small;
         background-color: rgba(255, 255, 255, 0.8);
@@ -5831,16 +5834,17 @@ small {
 
   .m_mediaStory--moveItemButtons {
     background-color: @c-gris_clair;
-    margin-right: -8px;
+    // margin-right: -8px;
+    right: ~"calc(100% + 4px)";
   }
 }
 .m_mediaStory.type-text,
 .m_mediaStory.type-divider {
-  border-radius: 6px;
   // .padding-vert-small;
   .mediaTextContent {
-    .margin-sides-verysmall;
-    .padding-sides-small;
+    border-radius: 6px;
+    // .margin-sides-verysmall;
+    .padding-sides-medium;
   }
 }
 
@@ -6335,10 +6339,11 @@ small {
       }
       .ql-toolbar.ql-snow {
         border-radius: 8px;
-        box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.45);
-        width: ~"calc(100% + var(--spacing) * 1)" !important;
-        margin-left: ~"calc(var(--spacing) * -.5)";
-        margin-bottom: 1em;
+        // box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.25);
+        // width: ~"calc(100% + var(--spacing) * 1)" !important;
+        // margin-left: ~"calc(var(--spacing) * -.5)";
+
+        margin-bottom: 0.5em;
 
         position: sticky;
         top: 70px;
