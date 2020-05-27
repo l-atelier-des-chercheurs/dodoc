@@ -160,12 +160,12 @@ module.exports = (function () {
       en: "Advanced options",
     },
     "answers_given:": {
-      fr: "Réponse(s) enregistrée(s)&nbsp;:",
-      en: "Answer(s) saved:",
+      fr: "Enregistré&nbsp;:",
+      en: "Saved:",
     },
     "answer_type_expected:": {
-      fr: "Type de réponse attendu&nbsp;:",
-      en: "Answer type expected:",
+      fr: "Format(s) accepté(s)&nbsp;:",
+      en: "Accepted format(s):",
     },
     infos_about_the_media: {
       fr: "Informations sur le média",
