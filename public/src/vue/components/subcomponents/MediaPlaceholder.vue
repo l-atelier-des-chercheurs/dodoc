@@ -42,7 +42,7 @@
               <input
                 :id="id + '_choice_' + choice"
                 :type="'checkbox'"
-                :disabled="read_only"
+                :disabled="read_only || preview_mode"
                 :checked="choices_selected.includes(choice)"
                 @change="toggleChoiceFromSelection(choice)"
               />
@@ -60,7 +60,7 @@
             <input
               class="custom_radio"
               type="radio"
-              :disabled="read_only"
+              :disabled="read_only || preview_mode"
               :id="id + '_choice_' + choice"
               :name="`${id}_multiple_choices_radio`"
               :checked="choices_selected.includes(choice)"
@@ -505,7 +505,7 @@ export default {
       });
     },
     toggleChoiceFromSelection(choice) {
-      if (this.read_only) return false;
+      if (this.read_only || this.preview_mode) return false;
       if (this.choices_selected.includes(choice))
         this.choices_selected = this.choices_selected.filter(
           (c) => c !== choice
@@ -515,7 +515,7 @@ export default {
       this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
     },
     setChoiceFromSelect(choice) {
-      if (this.read_only) return false;
+      if (this.read_only || this.preview_mode) return false;
       this.choices_selected = [choice];
       this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
     },

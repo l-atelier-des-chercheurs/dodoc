@@ -1000,6 +1000,8 @@ let vm = new Vue({
     canSeeFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
+      if (this.current_author_is_admin) return true;
+
       // if folder has pass, and user doesn’t have it
       const folder = this.store[type][slugFolderName];
 
