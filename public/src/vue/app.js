@@ -1010,6 +1010,17 @@ let vm = new Vue({
         return true;
       }
 
+      if (
+        folder.hasOwnProperty("viewing_limited_to") &&
+        folder.viewing_limited_to === "only_authors"
+      ) {
+        if (!folder.authors || folder.authors.length === 0) return false;
+
+        return folder.authors.some(
+          (a) => a.slugFolderName === this.current_author.slugFolderName
+        );
+      }
+
       return this.canEditFolder({ type, slugFolderName });
     },
     userHasPasswordSaved: function ({ type, slugFolderName }) {
@@ -1077,7 +1088,7 @@ let vm = new Vue({
         folder.hasOwnProperty("editing_limited_to") &&
         folder.editing_limited_to === "only_authors"
       ) {
-        if (!folder.authors || folder.authors.length === 0) return true;
+        if (!folder.authors || folder.authors.length === 0) return false;
 
         return folder.authors.some(
           (a) => a.slugFolderName === this.current_author.slugFolderName

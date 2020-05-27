@@ -641,6 +641,7 @@ export default {
         data: {
           date_submitted: now,
           editing_limited_to: "nobody",
+          viewing_limited_to: "only_authors",
         },
       });
     },

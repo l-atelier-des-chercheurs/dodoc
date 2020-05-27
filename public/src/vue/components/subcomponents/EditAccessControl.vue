@@ -41,18 +41,46 @@
       class="margin-top-small"
       v-if="can_have_readonly && editing_limited_to !== 'everybody'"
     >
-      <div class>
+      <label>{{ $t("consultation") }}</label>
+      <div v-if="editing_limited_to === 'nobody'">
         <input
-          class
-          type="checkbox"
-          id="visible_to_all"
-          name="visible_to_all"
+          class="custom_radio"
+          type="radio"
+          id="visible_to_authors_only"
+          name="visibility"
           v-model="local_viewing_limited_to"
+          value="only_authors"
+        />
+        <label for="visible_to_authors_only">
+          <span>{{ $t("visible_to_authors") }}</span>
+        </label>
+      </div>
+      <div>
+        <input
+          :class="editing_limited_to !== 'nobody' ? '' : 'custom_radio'"
+          :type="editing_limited_to !== 'nobody' ? 'checkbox' : 'radio'"
+          id="visible_to_all"
+          name="visibility"
+          v-model="local_viewing_limited_to"
+          value="everybody"
           true-value="everybody"
-          false-value
+          false-value=""
         />
         <label for="visible_to_all">
           <span>{{ $t("visible_to_all") }}</span>
+        </label>
+      </div>
+      <div v-if="editing_limited_to === 'nobody'">
+        <input
+          class="custom_radio"
+          type="radio"
+          id="visible_to_nobody"
+          name="visibility"
+          v-model="local_viewing_limited_to"
+          value=""
+        />
+        <label for="visible_to_nobody">
+          <span>{{ $t("visible_to_nobody") }}</span>
         </label>
       </div>
     </div>
@@ -150,10 +178,15 @@ export default {
   computed: {},
   methods: {
     sanitizeViewingDependingOnEditing() {
+      // for chat : viewing sticks to editing
       if (!this.can_have_readonly)
         if (this.local_editing_limited_to === "everybody")
           this.local_viewing_limited_to = "everybody";
         else this.local_viewing_limited_to = "";
+
+      if (this.local_editing_limited_to === "nobody")
+        this.local_viewing_limited_to = "only_authors";
+      else this.local_viewing_limited_to = "";
     },
   },
 };

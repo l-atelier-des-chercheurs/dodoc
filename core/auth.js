@@ -210,23 +210,7 @@ module.exports = (function () {
       return "everybody_can_edit";
     }
 
-    const sockets_authors_slugs =
-      socket &&
-      socket._is_authorized_for_folders &&
-      socket._is_authorized_for_folders.length > 0 &&
-      socket._is_authorized_for_folders.some(
-        (f) =>
-          f.type === "authors" &&
-          f.allowed_slugFolderNames &&
-          f.allowed_slugFolderNames.length > 0
-      )
-        ? socket._is_authorized_for_folders.find(
-            (f) =>
-              f.type === "authors" &&
-              f.allowed_slugFolderNames &&
-              f.allowed_slugFolderNames.length > 0
-          ).allowed_slugFolderNames
-        : false;
+    const sockets_authors_slugs = getSocketAuthors(socket);
 
     // socket has no authors, but might be able to access if no authors on folder, and no password
     if (!sockets_authors_slugs)
@@ -272,46 +256,61 @@ module.exports = (function () {
     // let’s check if editing_limited_to is set to 'only_authors'
     // if folder has author, then socket has to have authors aswell
     if (folderData.editing_limited_to === "only_authors") {
-      // return there if socket has no authorized list
-      if (!sockets_authors_slugs) throw new Error("no_author");
+      const reason_for_edit_allowed = await checkIfAuthorIsFoldersAuthor({
+        sockets_authors_slugs,
+        folderData,
+      }).catch((err) => {
+        throw new Error(err);
+      });
+      return reason_for_edit_allowed;
+    }
+  }
 
-      if (
-        folderData.authors &&
-        Array.isArray(folderData.authors) &&
-        folderData.authors.length > 0 &&
-        folderData.authors.some((a) => !!a.slugFolderName)
-      ) {
-        // this means that only authors can edit the content
-        // if folder has authors, then we need to check whether this socket has author as well
-        // legacy: in the past authors were tagged with their name (and not their slugs… stupid decision…)
-        // so we need to only get authors that have their slugs
-        const allowed_authors_slugs = folderData.authors.reduce((acc, a) => {
-          if (a.slugFolderName) acc.push(a.slugFolderName);
-          return acc;
-        }, []);
+  async function checkIfAuthorIsFoldersAuthor({
+    sockets_authors_slugs,
+    folderData,
+  }) {
+    dev.logfunction(`AUTH — checkIfAuthorIsFoldersAuthor`);
 
-        dev.logverbose(
-          `AUTH — canEditFolder: folder has authors: allowed_authors_slugs = ${allowed_authors_slugs.join(
-            " - "
-          )}`
-        );
-        const socket_has_author_that_is_allowed = allowed_authors_slugs.some(
-          (allowed_author_slug) =>
-            sockets_authors_slugs.includes(allowed_author_slug)
-        );
+    // return there if socket has no authorized list
+    if (!sockets_authors_slugs) throw new Error("no_author");
 
-        dev.logverbose(
-          `AUTH — canEditFolder: has author, is socket author --> ${socket_has_author_that_is_allowed}`
-        );
-        if (socket_has_author_that_is_allowed) return "allowed_author";
-        else throw new Error("authors_not_allowed");
-      } else {
-        // if folder has no author then we’re good
-        dev.logverbose(
-          `AUTH — canEditFolder: no author for folder though folder is set to only_authors --> unauthorized`
-        );
-        return "no_author_set_for_folder";
-      }
+    if (
+      folderData.authors &&
+      Array.isArray(folderData.authors) &&
+      folderData.authors.length > 0 &&
+      folderData.authors.some((a) => !!a.slugFolderName)
+    ) {
+      // this means that only authors can edit the content
+      // if folder has authors, then we need to check whether this socket has author as well
+      // legacy: in the past authors were tagged with their name (and not their slugs… stupid decision…)
+      // so we need to only get authors that have their slugs
+      const allowed_authors_slugs = folderData.authors.reduce((acc, a) => {
+        if (a.slugFolderName) acc.push(a.slugFolderName);
+        return acc;
+      }, []);
+
+      dev.logverbose(
+        `AUTH — canEditFolder: folder has authors: allowed_authors_slugs = ${allowed_authors_slugs.join(
+          " - "
+        )}`
+      );
+      const socket_has_author_that_is_allowed = allowed_authors_slugs.some(
+        (allowed_author_slug) =>
+          sockets_authors_slugs.includes(allowed_author_slug)
+      );
+
+      dev.logverbose(
+        `AUTH — canEditFolder: has author, is socket author --> ${socket_has_author_that_is_allowed}`
+      );
+      if (socket_has_author_that_is_allowed) return "allowed_author";
+      else throw new Error("authors_not_allowed");
+    } else {
+      // if folder has no author then we’re good
+      dev.logverbose(
+        `AUTH — canEditFolder: no author for folder though folder is set to only_authors --> unauthorized`
+      );
+      return "no_author_set_for_folder";
     }
   }
 
@@ -326,7 +325,27 @@ module.exports = (function () {
       folderData.hasOwnProperty("viewing_limited_to") &&
       folderData.viewing_limited_to === "everybody"
     ) {
-      return true;
+      return "everybody_can_edit";
+    }
+
+    const sockets_authors_slugs = getSocketAuthors(socket);
+    if (sockets_authors_slugs) {
+      const is_admin = await isSocketLoggedInAsAdmin(sockets_authors_slugs);
+      dev.logverbose(`AUTH — canSeeFolder: is_admin = ${is_admin}`);
+      if (is_admin) return "is_session_admin";
+    }
+
+    if (
+      folderData.hasOwnProperty("viewing_limited_to") &&
+      folderData.viewing_limited_to === "only_authors"
+    ) {
+      const reason_for_viewing_allowed = await checkIfAuthorIsFoldersAuthor({
+        sockets_authors_slugs,
+        folderData,
+      }).catch((err) => {
+        throw new Error(err);
+      });
+      return reason_for_viewing_allowed;
     }
 
     const reason = await canEditFolder(socket, folderData, type).catch(
@@ -585,6 +604,25 @@ module.exports = (function () {
 
     dev.logverbose(`AUTH — isSocketLoggedInAsAdmin: ${is_admin}`);
     return is_admin;
+  }
+
+  function getSocketAuthors(socket) {
+    return socket &&
+      socket._is_authorized_for_folders &&
+      socket._is_authorized_for_folders.length > 0 &&
+      socket._is_authorized_for_folders.some(
+        (f) =>
+          f.type === "authors" &&
+          f.allowed_slugFolderNames &&
+          f.allowed_slugFolderNames.length > 0
+      )
+      ? socket._is_authorized_for_folders.find(
+          (f) =>
+            f.type === "authors" &&
+            f.allowed_slugFolderNames &&
+            f.allowed_slugFolderNames.length > 0
+        ).allowed_slugFolderNames
+      : false;
   }
 
   return API;

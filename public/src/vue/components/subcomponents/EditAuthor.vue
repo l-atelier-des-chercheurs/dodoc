@@ -113,7 +113,7 @@ export default {
       show_image: !!this.author.preview,
       show_nfc: !!this.author.nfc_tag,
 
-      possible_roles: ["contributor", "admin"],
+      possible_roles: ["contributor", "participant", "admin"],
 
       authordata: {
         name: this.author.name,

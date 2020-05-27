@@ -297,6 +297,10 @@ module.exports = (function () {
       fr: "Contributeur",
       en: "Contributor",
     },
+    participant: {
+      fr: "Participant",
+      en: "Participant",
+    },
     download: {
       fr: "Télécharger",
       en: "Download",
@@ -1379,6 +1383,14 @@ module.exports = (function () {
     visible_to_all: {
       fr: "Visible par tout le monde",
       en: "Visible for everyone",
+    },
+    visible_to_authors: {
+      fr: "Visible par les auteurs uniquement",
+      en: "Visible for authors only",
+    },
+    visible_to_nobody: {
+      fr: "Visible pour personne",
+      en: "Visible for noone",
     },
     only_authors: {
       fr: "Seulement les auteurs",
