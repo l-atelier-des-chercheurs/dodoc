@@ -64,7 +64,7 @@
     </div>
 
     <template
-      v-else-if="
+      v-if="
         !can_edit_folder &&
         (editing_limited_to === 'only_authors' ||
           viewing_limited_to === 'only_authors')
@@ -100,7 +100,7 @@
         </button>
 
         <button
-          v-else-if="editing_limited_to !== 'nobody'"
+          v-else-if="!can_see_folder"
           type="button"
           class="buttonLink"
           style
