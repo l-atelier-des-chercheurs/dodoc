@@ -139,6 +139,10 @@ module.exports = (function () {
       fr: "aucun",
       en: "none",
     },
+    none_f: {
+      fr: "aucune",
+      en: "none",
+    },
     interactive_preview: {
       fr: "Interactif",
       en: "Interactive",
@@ -158,6 +162,10 @@ module.exports = (function () {
     "answers_given:": {
       fr: "Réponse(s) enregistrée(s)&nbsp;:",
       en: "Answer(s) saved:",
+    },
+    "answer_type_expected:": {
+      fr: "Type de réponse attendu&nbsp;:",
+      en: "Answer type expected:",
     },
     infos_about_the_media: {
       fr: "Informations sur le média",

@@ -3,7 +3,11 @@
     class="m_mediaStory"
     :class="[
       'type-' + media.type,
-      { 'is--selected': is_selected, 'is--previewed': preview_mode },
+      {
+        'is--selected': is_selected,
+        'is--previewed': preview_mode,
+        'has--onlyNumbers': media.only_numbers,
+      },
     ]"
     ref="media"
     @mouseover="mouseOver"
@@ -149,8 +153,7 @@
     <div
       class="m_mediaStory--moveItemButtons"
       :class="{
-        'is--visible':
-          (is_selected || is_hovered) && !preview_mode && !read_only,
+        'is--visible': !preview_mode && !read_only,
       }"
     >
       <button

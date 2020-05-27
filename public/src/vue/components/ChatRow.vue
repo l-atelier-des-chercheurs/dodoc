@@ -28,11 +28,10 @@
         </span>
       </div>
 
-      <!-- not valid anymore: folders modified date don’t get updated when changed -->
-      <!-- <small class="c-blanc text-lc">
+      <small class="c-blanc text-lc">
         {{ $t("last_message") }} —
         {{ $root.formatDateToCalendar(chat.date_modified) }}
-      </small> -->
+      </small>
 
       <button
         type="button"

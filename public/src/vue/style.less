@@ -5769,6 +5769,7 @@ small {
 
     .padding-sides-small;
     .padding-vert-small;
+    // .margin-bottom-small;
     // .padding-top-verysmall;
     // padding-top: 0;
     .bg-blanc;
@@ -5780,7 +5781,6 @@ small {
   }
 
   .m_mediaPlaceholder--replies {
-    .margin-top-small;
   }
 
   .m_insertMediaButton--menu {
@@ -5793,6 +5793,8 @@ small {
     margin-right: 0;
     &.is--open {
       .padding-left-small;
+      margin-left: 0;
+      margin-right: 0;
     }
 
     .m_insertMediaButton--toggleButton {
@@ -5811,7 +5813,11 @@ small {
     .padding-sides-small;
 
     &.type-text {
-      .padding-small;
+      .mediaContainer {
+        .padding-vert-small;
+        // .margin-sides-small;
+        background-color: rgba(255, 255, 255, 0.8);
+      }
     }
     // padding: 0;
     &:not(.is--previewed)::before {
@@ -5830,7 +5836,6 @@ small {
 }
 .m_mediaStory.type-text,
 .m_mediaStory.type-divider {
-  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 6px;
   // .padding-vert-small;
   .mediaTextContent {
@@ -5925,51 +5930,56 @@ small {
     padding: 0;
     // padding-left: @t-skipline;
     // background-color: @c-noir;
-    .margin-vert-verysmall;
+    .margin-medium;
     // .bg-gris_clair;
   }
   &.is--open {
-    margin-right: -24px;
+    // margin-right: -24px;
   }
-  &::before {
-    content: "→";
 
-    display: block;
-    left: -1rem;
+  .m_insertMediaButton--importHere {
     position: absolute;
+    left: -1rem;
+    top: 0;
 
-    width: 2rem;
-    height: 2rem;
-    padding: 0;
-    border-radius: 50%;
-    min-width: 0;
-    // pointer-events: auto;
-    color: white;
-    border: 2px solid @c-bleuvert_fonce;
-    .bg-bleuvert;
-
-    box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
-    font-weight: 700;
-    font-size: 1.2em;
-    font-family: "Fira Code";
-    pointer-events: auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    transform: translateX(-4px) scale(0.5);
-    opacity: 0;
-
-    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-
-  &.is--active {
     &::before {
-      transform: translateX(0) scale(1);
-      opacity: 1;
+      content: "→";
+
+      display: block;
+
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      border-radius: 50%;
+      min-width: 0;
+      // pointer-events: auto;
+      color: white;
+      border: 2px solid @c-bleuvert_fonce;
+      .bg-bleuvert;
+
+      box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.4);
+      font-weight: 700;
+      font-size: 1.2em;
+      font-family: "Fira Code";
+      pointer-events: auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      transform: translateX(-4px) scale(0.5);
+      opacity: 0;
+
+      transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
     }
-    // .bg-rouge;
+
+    &.is--active {
+      &::before {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+      }
+      // .bg-rouge;
+    }
   }
 
   .m_insertMediaButton--toggleButton {
@@ -6150,14 +6160,21 @@ small {
 
   &.is--selected {
     .m_mediaStory--moveItemButtons {
-      background-color: @c-noir;
-      color: white;
+      // background-color: @c-noir;
+      // color: white;
     }
 
     .mediaContainer {
       // .bg-creme;
     }
     // border-right: 2px solid @c-gris_tresclair;
+  }
+
+  &.has--onlyNumbers {
+    .mediaContainer {
+      max-width: 30ch;
+      // margin: 0 auto;
+    }
   }
 
   .mediaContainer {
