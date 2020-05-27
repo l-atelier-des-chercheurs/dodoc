@@ -80,7 +80,7 @@
               :slugPubliName="slugPubliName"
               :publication="publication"
               :preview_mode="preview_mode"
-              :read_only="read_only"
+              :read_only="read_only || !can_edit_publi"
               @addMedia="(values) => addMedia({ values })"
               @editPubliMedia="$emit('editPubliMedia', $event)"
             />

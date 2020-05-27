@@ -1000,6 +1000,8 @@ let vm = new Vue({
     canSeeFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;
 
+      if (this.current_author_is_admin) return true;
+
       // if folder has pass, and user doesn’t have it
       const folder = this.store[type][slugFolderName];
 
@@ -1008,6 +1010,17 @@ let vm = new Vue({
         folder.viewing_limited_to === "everybody"
       ) {
         return true;
+      }
+
+      if (
+        folder.hasOwnProperty("viewing_limited_to") &&
+        folder.viewing_limited_to === "only_authors"
+      ) {
+        if (!folder.authors || folder.authors.length === 0) return false;
+
+        return folder.authors.some(
+          (a) => a.slugFolderName === this.current_author.slugFolderName
+        );
       }
 
       return this.canEditFolder({ type, slugFolderName });
@@ -1077,7 +1090,7 @@ let vm = new Vue({
         folder.hasOwnProperty("editing_limited_to") &&
         folder.editing_limited_to === "only_authors"
       ) {
-        if (!folder.authors || folder.authors.length === 0) return true;
+        if (!folder.authors || folder.authors.length === 0) return false;
 
         return folder.authors.some(
           (a) => a.slugFolderName === this.current_author.slugFolderName

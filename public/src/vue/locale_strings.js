@@ -160,12 +160,12 @@ module.exports = (function () {
       en: "Advanced options",
     },
     "answers_given:": {
-      fr: "Réponse(s) enregistrée(s)&nbsp;:",
-      en: "Answer(s) saved:",
+      fr: "Enregistré&nbsp;:",
+      en: "Saved:",
     },
     "answer_type_expected:": {
-      fr: "Type de réponse attendu&nbsp;:",
-      en: "Answer type expected:",
+      fr: "Format(s) accepté(s)&nbsp;:",
+      en: "Accepted format(s):",
     },
     infos_about_the_media: {
       fr: "Informations sur le média",
@@ -296,6 +296,10 @@ module.exports = (function () {
     contributor: {
       fr: "Contributeur",
       en: "Contributor",
+    },
+    participant: {
+      fr: "Participant",
+      en: "Participant",
     },
     download: {
       fr: "Télécharger",
@@ -1379,6 +1383,14 @@ module.exports = (function () {
     visible_to_all: {
       fr: "Visible par tout le monde",
       en: "Visible for everyone",
+    },
+    visible_to_authors: {
+      fr: "Visible par les auteurs uniquement",
+      en: "Visible for authors only",
+    },
+    visible_to_nobody: {
+      fr: "Visible pour personne",
+      en: "Visible for noone",
     },
     only_authors: {
       fr: "Seulement les auteurs",

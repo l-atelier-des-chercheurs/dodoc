@@ -153,7 +153,8 @@
     <div
       class="m_mediaStory--moveItemButtons"
       :class="{
-        'is--visible': !preview_mode && !read_only,
+        'is--visible':
+          !preview_mode && !read_only && (is_selected || is_hovered),
       }"
     >
       <button
@@ -494,6 +495,7 @@ export default {
         this.new_instructions = this.media.instructions;
       }
     },
+    is_selected() {},
   },
   computed: {
     mediaURL() {
@@ -514,9 +516,11 @@ export default {
     },
     is_selected() {
       if (this.read_only) return false;
-      return this.$root.settings.current_publication.selected_medias.some(
+      const is_selected = this.$root.settings.current_publication.selected_medias.some(
         (meta) => meta === this.media.metaFileName
       );
+      if (!is_selected) this.show_advanced_menu = false;
+      return is_selected;
     },
     mediaStyles() {
       let css = "";
