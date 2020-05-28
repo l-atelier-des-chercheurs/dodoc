@@ -154,6 +154,10 @@ module.exports = function (app) {
       `ROUTER — printPublication • slugPubliName = ${slugPubliName}`
     );
 
+    // only allow for localhost: with electron/puppeteer to export PDF and if local dev
+    if (req.hostname !== "localhost")
+      res.status(403).send(`Only allowed for localhost`);
+
     generatePageData(req).then((pageData) => {
       dev.logverbose(`Generated printpublication pageData`);
       dev.logverbose(`Now getting publication data for ${slugPubliName}`);
@@ -208,7 +212,7 @@ module.exports = function (app) {
     // en créé une nouvelle : nom = aléatoire, modèle = slugPubliName, edition par tt le monde
     const data = {
       name: `«${folders_meta.name}»`,
-      desired_foldername: `reply_to_${folders_meta.name}-${rnd}`,
+      desired_foldername: `${folders_meta.name}-reply-${rnd}`,
       follows_model: slugPubliName,
       template: folders_meta.template,
       editing_limited_to: "everybody",

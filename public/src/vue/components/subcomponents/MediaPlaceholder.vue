@@ -78,7 +78,9 @@
             !preview_mode &&
             !read_only &&
             (!model_placeholder_media._reply._medias ||
-              model_placeholder_media._reply._medias.length === 0)
+              model_placeholder_media._reply._medias.length === 0) &&
+            (remaining_modes_allowed === 'all' ||
+              Object.keys(remaining_modes_allowed).length > 0)
           "
           :slugPubliName="slugPubliName"
           :publi_is_model="publication.is_model"
@@ -237,7 +239,7 @@ export default {
         !this.model_placeholder_media.available_modes ||
         !Array.isArray(this.model_placeholder_media.available_modes)
       )
-        return "all";
+        return {};
 
       const modes_allowed = this.model_placeholder_media.available_modes.reduce(
         (acc, m) => {
@@ -322,7 +324,8 @@ export default {
       return this.$t("none");
     },
     answer_type_expected() {
-      if (this.modes_allowed === "all") return this.$t("all").toLowerCase();
+      if (this.modes_allowed === "all") return this.$t("all");
+      if (Object.keys(this.modes_allowed).length === 0) return this.$t("none");
 
       return Object.entries(this.modes_allowed).reduce(
         (acc, [type, { amount }]) => {

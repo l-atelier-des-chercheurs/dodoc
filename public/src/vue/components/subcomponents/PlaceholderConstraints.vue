@@ -221,7 +221,7 @@ export default {
         {
           key: "text",
           picto: "/images/i_text.svg",
-          enabled: true,
+          enabled: false,
           advanced_text_options: false,
           only_numbers: false,
           amount: "unlimited",
@@ -229,25 +229,25 @@ export default {
         {
           key: "photo",
           picto: "/images/i_icone-dodoc_image.svg",
-          enabled: true,
+          enabled: false,
           amount: "unlimited",
         },
         {
           key: "video",
           picto: "/images/i_icone-dodoc_video.svg",
-          enabled: true,
+          enabled: false,
           amount: "unlimited",
         },
         {
           key: "audio",
           picto: "/images/i_icone-dodoc_audio.svg",
-          enabled: true,
+          enabled: false,
           amount: "unlimited",
         },
         {
           key: "file",
           picto: "",
-          enabled: true,
+          enabled: false,
         },
         {
           key: "choices",
