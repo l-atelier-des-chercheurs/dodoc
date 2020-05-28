@@ -2488,6 +2488,10 @@ module.exports = (function () {
         "Pour générer des réponses basées sur ce modèle, partagez cette adresse",
       en: "To generate replies based on this model, share this URL",
     },
+    URL_to_edit_in_simple_interface: {
+      fr: "Pour accéder au récit dans l’interface simplifiée",
+      en: "Click here to open this story in a dedicated page",
+    },
     no_models_yet: {
       fr: "Aucune recette modèle n’a été créé pour l’instant",
       en: "No models recipe have been created yet",
