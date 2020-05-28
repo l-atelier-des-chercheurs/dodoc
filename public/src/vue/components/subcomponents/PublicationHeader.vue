@@ -153,15 +153,31 @@
         "
       >
         <label>
-          <span v-html="$t('publi_follows_model:')" />
-          <span
-            class="text-underline button padding-none button-rectangle"
-            @click="
-              $root.openPublication(model_for_this_publication.slugFolderName)
-            "
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_publi_model_infos }"
+            @click.stop="show_publi_model_infos = !show_publi_model_infos"
           >
-            {{ model_for_this_publication.name }}
-          </span>
+            <span v-html="$t('publi_follows_model:')" />
+            <span
+              class="text-underline button padding-none button-rectangle"
+              @click="
+                $root.openPublication(model_for_this_publication.slugFolderName)
+              "
+            >
+              {{ model_for_this_publication.name }}
+            </span>
+          </button>
+        </label>
+        <label v-if="show_publi_model_infos">
+          <span v-html="$t('URL_to_edit_in_simple_interface')" />
+          <a
+            :href="url_to_access_simplified_mode"
+            target="_blank"
+            class="js--openInBrowser text-lc"
+            >{{ url_to_access_simplified_mode }}</a
+          >
         </label>
       </div>
       <div v-else-if="model_for_this_publication">
@@ -426,6 +442,13 @@ export default {
       return (
         window.location.origin +
         "/_publications/reply/" +
+        this.publication.slugFolderName
+      );
+    },
+    url_to_access_simplified_mode() {
+      return (
+        window.location.origin +
+        "/_publications/survey/" +
         this.publication.slugFolderName
       );
     },
