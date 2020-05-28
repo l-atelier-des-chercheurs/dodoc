@@ -11,7 +11,7 @@
         v-html="model_placeholder_media.instructions"
       />
     </div>
-    <div
+    <!-- <div
       v-if="!model_placeholder_media.hasOwnProperty('_reply')"
       class="m_mediaPlaceholder--reply"
     >
@@ -23,8 +23,8 @@
       >
         {{ $t("reply") }}
       </button>
-    </div>
-    <div v-else class="m_mediaPlaceholder--replies">
+    </div> -->
+    <div class="m_mediaPlaceholder--replies">
       <template v-if="modes_allowed.hasOwnProperty('choices')">
         <template
           v-if="
@@ -354,13 +354,27 @@ export default {
         return "last";
       return "";
     },
-    createPlaceholderMedia() {
+    createPlaceholderMediaIfMissing() {
       return new Promise((resolve, reject) => {
-        this.$emit("addMedia", {
-          type: "placeholder",
-          placeholder_meta_reference: this.model_placeholder_media.metaFileName,
-          placeholder_medias_slugs: [],
-        });
+        if (this.model_placeholder_media._reply) return resolve();
+
+        this.$root
+          .createMedia({
+            slugFolderName: this.slugPubliName,
+            type: "publications",
+            additionalMeta: {
+              type: "placeholder",
+              placeholder_meta_reference: this.model_placeholder_media
+                .metaFileName,
+              placeholder_medias_slugs: [],
+            },
+          })
+          .then((mdata) => {
+            this.$nextTick(() => {
+              debugger;
+              return resolve(mdata);
+            });
+          });
       });
     },
     addMediaOrdered({ values = {}, right_after_meta, in_position }) {
@@ -404,53 +418,55 @@ export default {
 
     insertMediasInList({ metaFileNames, right_after_meta, in_position }) {
       return new Promise((resolve, reject) => {
-        const medias_slugs =
-          !Array.isArray(this.placeholder_medias_slugs) ||
-          this.placeholder_medias_slugs.length === 0
-            ? []
-            : JSON.parse(JSON.stringify(this.placeholder_medias_slugs));
+        this.createPlaceholderMediaIfMissing().then(() => {
+          const medias_slugs =
+            !Array.isArray(this.placeholder_medias_slugs) ||
+            this.placeholder_medias_slugs.length === 0
+              ? []
+              : JSON.parse(JSON.stringify(this.placeholder_medias_slugs));
 
-        const new_media_metas = metaFileNames.map((metaFileName) => {
-          return {
-            slugMediaName: metaFileName,
-          };
-        });
+          const new_media_metas = metaFileNames.map((metaFileName) => {
+            return {
+              slugMediaName: metaFileName,
+            };
+          });
 
-        let index = medias_slugs.length;
+          let index = medias_slugs.length;
 
-        if (right_after_meta) {
-          // this is much more complex than it could be because of possible missing medias
-          // in medias_slugs_in_order: medias that were added and then removed or part
-          // of a removed project
-          index = medias_slugs.findIndex(
-            (s) => s.slugMediaName === right_after_meta
-          );
-          index += 1;
-        } else if (in_position && in_position === "start") {
-          index = 0;
-        }
+          if (right_after_meta) {
+            // this is much more complex than it could be because of possible missing medias
+            // in medias_slugs_in_order: medias that were added and then removed or part
+            // of a removed project
+            index = medias_slugs.findIndex(
+              (s) => s.slugMediaName === right_after_meta
+            );
+            index += 1;
+          } else if (in_position && in_position === "start") {
+            index = 0;
+          }
 
-        medias_slugs.splice(index, 0, ...new_media_metas);
+          medias_slugs.splice(index, 0, ...new_media_metas);
 
-        this.$root
-          .editMedia({
-            type: "publications",
-            slugFolderName: this.slugPubliName,
-            slugMediaName: this.model_placeholder_media._reply.metaFileName,
-            data: {
-              placeholder_medias_slugs: medias_slugs,
-            },
-          })
-          .then((mdata) => {
-            this.$nextTick(() => {
-              metaFileNames.map((metaFileName) => {
-                this.$eventHub.$emit(
-                  "publication.just_inserted_media",
-                  metaFileName
-                );
+          this.$root
+            .editMedia({
+              type: "publications",
+              slugFolderName: this.slugPubliName,
+              slugMediaName: this.model_placeholder_media._reply.metaFileName,
+              data: {
+                placeholder_medias_slugs: medias_slugs,
+              },
+            })
+            .then((mdata) => {
+              this.$nextTick(() => {
+                metaFileNames.map((metaFileName) => {
+                  this.$eventHub.$emit(
+                    "publication.just_inserted_media",
+                    metaFileName
+                  );
+                });
               });
             });
-          });
+        });
       });
     },
     orderedRemovePubliMedia({ metaFileName }) {
@@ -532,11 +548,13 @@ export default {
       this.updateMediaAnswers({ answers: this.choices_selected.join("|") });
     },
     updateMediaAnswers(val) {
-      this.$root.editMedia({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        slugMediaName: this.model_placeholder_media._reply.metaFileName,
-        data: val,
+      this.createPlaceholderMediaIfMissing().then(() => {
+        this.$root.editMedia({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          slugMediaName: this.model_placeholder_media._reply.metaFileName,
+          data: val,
+        });
       });
     },
   },
