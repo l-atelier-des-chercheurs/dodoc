@@ -77,7 +77,8 @@
           v-if="
             !preview_mode &&
             !read_only &&
-            (!model_placeholder_media._reply._medias ||
+            (!model_placeholder_media._reply ||
+              !model_placeholder_media._reply._medias ||
               model_placeholder_media._reply._medias.length === 0) &&
             (remaining_modes_allowed === 'all' ||
               Object.keys(remaining_modes_allowed).length > 0)
@@ -88,6 +89,7 @@
           :modes_allowed="remaining_modes_allowed"
           :can_collapse="
             !(
+              !model_placeholder_media._reply ||
               !model_placeholder_media._reply._medias ||
               model_placeholder_media._reply._medias.length === 0
             )
@@ -106,7 +108,10 @@
         />
 
         <transition-group
-          v-if="model_placeholder_media._reply._medias"
+          v-if="
+            model_placeholder_media._reply &&
+            model_placeholder_media._reply._medias
+          "
           tag="div"
           name="StoryModules"
           appear
@@ -267,6 +272,7 @@ export default {
       const _modes_allowed = JSON.parse(JSON.stringify(this.modes_allowed));
 
       if (
+        this.model_placeholder_media._reply &&
         this.model_placeholder_media._reply._medias &&
         this.model_placeholder_media._reply._medias.length > 0
       ) {
@@ -292,6 +298,7 @@ export default {
       return _modes_allowed;
     },
     answers_given() {
+      if (!this.model_placeholder_media._reply) return false;
       if (!!this.model_placeholder_media._reply.answers)
         return this.model_placeholder_media._reply.answers
           .split("|")
@@ -348,10 +355,12 @@ export default {
       return "";
     },
     createPlaceholderMedia() {
-      this.$emit("addMedia", {
-        type: "placeholder",
-        placeholder_meta_reference: this.model_placeholder_media.metaFileName,
-        placeholder_medias_slugs: [],
+      return new Promise((resolve, reject) => {
+        this.$emit("addMedia", {
+          type: "placeholder",
+          placeholder_meta_reference: this.model_placeholder_media.metaFileName,
+          placeholder_medias_slugs: [],
+        });
       });
     },
     addMediaOrdered({ values = {}, right_after_meta, in_position }) {
