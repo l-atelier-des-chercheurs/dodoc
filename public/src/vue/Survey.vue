@@ -232,6 +232,11 @@ export default {
   computed: {
     survey_can_edit_publication() {
       if (
+        !this.$root.state.local_options.force_login &&
+        !this.$root.current_author
+      )
+        return true;
+      if (
         !this.$root.current_publication ||
         !this.$root.current_publication.authors ||
         !Array.isArray(this.$root.current_publication.authors) ||
