@@ -12,7 +12,7 @@
         <button
           type="button"
           class="buttonLink"
-          v-if="user_replies.length > 0"
+          v-if="user_replies_by_model.length > 0"
           :class="{ 'is--active': show_all_my_replies }"
           @click.stop="show_all_my_replies = !show_all_my_replies"
         >
@@ -151,25 +151,46 @@
         class="m_topbar--repliesList padding-small"
       >
         <label>{{ $t("list_of_stories") }}</label>
-        <div
-          v-for="reply in user_replies"
-          :key="reply.slugFolderName"
+
+        <ol
+          v-for="{ model_name, replies } in user_replies_by_model"
+          :key="model_name"
           class="padding-verysmall"
         >
-          <a :href="`/_publications/survey/${reply.slugFolderName}`">{{
-            reply.name
-          }}</a>
-          <small>
-            {{ $t("last_modified") }} —
-            {{ $root.formatDateToPrecise(reply.date_modified) }}
+          <strong>{{ model_name }}</strong>
 
-            <template v-if="reply.date_submitted">
-              •
-              {{ $t("published") }} —
-              {{ $root.formatDateToPrecise(reply.date_submitted) }}
-            </template>
-          </small>
-        </div>
+          <li
+            class="margin-sides-medium padding-verysmall"
+            v-for="reply in replies"
+            :key="reply.slugFolderName"
+          >
+            <a :href="`/_publications/survey/${reply.slugFolderName}`">{{
+              reply.name
+            }}</a>
+            <div>
+              <small>
+                {{ $t("created_date") }} —
+                {{ $root.formatDateToPrecise(reply.date_created) }}
+              </small>
+            </div>
+            <div>
+              <small>
+                {{ $t("last_modified") }} —
+                {{ $root.formatDateToPrecise(reply.date_modified) }}
+              </small>
+            </div>
+
+            <div>
+              <small>
+                <template v-if="reply.date_submitted">
+                  •
+                  {{ $t("published") }} —
+                  {{ $root.formatDateToPrecise(reply.date_submitted) }}
+                </template>
+              </small>
+            </div>
+          </li>
+        </ol>
       </div>
     </div>
 
@@ -226,8 +247,8 @@ export default {
         )
       );
     },
-    user_replies() {
-      return Object.values(this.$root.store.publications).filter(
+    user_replies_by_model() {
+      const user_replies = Object.values(this.$root.store.publications).filter(
         (p) =>
           !!p.follows_model &&
           p.authors &&
@@ -235,6 +256,36 @@ export default {
             (a) => a.slugFolderName === this.$root.current_author.slugFolderName
           )
       );
+
+      const all_models_slugs = user_replies.reduce((acc, r) => {
+        if (!acc.includes(r.follows_model)) acc.push(r.follows_model);
+        return acc;
+      }, []);
+
+      debugger;
+
+      const user_replies_by_model = all_models_slugs.reduce(
+        (acc, model_slug) => {
+          const model = Object.values(this.$root.store.publications).find(
+            (p) => p.slugFolderName === model_slug
+          );
+
+          if (model) {
+            let replies = user_replies.filter(
+              (r) => r.follows_model === model_slug
+            );
+            replies = this.$_.sortBy(replies, "date_created");
+            acc.push({
+              model_name: model.name,
+              replies,
+            });
+          }
+          return acc;
+        },
+        []
+      );
+
+      return user_replies_by_model;
     },
   },
   methods: {
