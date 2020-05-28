@@ -635,13 +635,18 @@ export default {
     lockAndPublish() {
       var now = this.$moment();
 
+      const editing_limited_to = "nobody";
+      const viewing_limited_to = this.$root.current_author
+        ? "only_authors"
+        : "everybody";
+
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
           date_submitted: now,
-          editing_limited_to: "nobody",
-          viewing_limited_to: "only_authors",
+          editing_limited_to,
+          viewing_limited_to,
         },
       });
     },
