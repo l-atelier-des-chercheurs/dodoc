@@ -40,6 +40,16 @@
         <div class="m_publicationMeta--topbar--title">
           {{ publication.name }}
           <ProtectedLock
+            v-if="
+              !(
+                [
+                  'export_publication',
+                  'print_publication',
+                  'link_publication',
+                ].includes($root.state.mode) ||
+                $root.store.request.display === 'survey'
+              )
+            "
             :editing_limited_to="publication.editing_limited_to"
             :is_protected="!can_edit_publi()"
           />
