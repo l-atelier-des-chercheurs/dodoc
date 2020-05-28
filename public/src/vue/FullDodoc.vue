@@ -17,15 +17,23 @@
         :data-docpane_isopen="$root.settings.show_publi_panel === true"
         :data-chatpane_isopen="$root.settings.show_chat_panel === true"
       >
-        <pane class="splitter-pane" ref="doPane" min-size="5" :size="panels_width.doPane">
-          <div class="m_activitiesPanel--do" :class="{ 'is--large': activitiesPanel_is_large }">
+        <pane
+          class="splitter-pane"
+          ref="doPane"
+          min-size="5"
+          :size="panels_width.doPane"
+        >
+          <div
+            class="m_activitiesPanel--do"
+            :class="{ 'is--large': activitiesPanel_is_large }"
+          >
             <div
               style="
-                  position: relative;
-                  width: 100%;
-                  height: 100%;
-                  overflow: hidden;
-                "
+                position: relative;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+              "
             >
               <!-- v-show="$root.do_navigation.view === 'ListView'" -->
               <transition name="ListView" :duration="500">
@@ -39,13 +47,11 @@
               <transition name="ProjectView" :duration="500">
                 <ProjectView
                   v-if="
-                      ['ProjectView', 'CaptureView'].includes(
-                        $root.do_navigation.view
-                      )
-                    "
-                  :slugProjectName="
-                      $root.do_navigation.current_slugProjectName
-                    "
+                    ['ProjectView', 'CaptureView'].includes(
+                      $root.do_navigation.view
+                    )
+                  "
+                  :slugProjectName="$root.do_navigation.current_slugProjectName"
                   :project="$root.current_project"
                   :read_only="!$root.state.connected"
                 />
@@ -54,9 +60,7 @@
               <transition name="CaptureView" :duration="500">
                 <CaptureView
                   v-if="$root.do_navigation.view === 'CaptureView'"
-                  :slugFolderName="
-                      $root.do_navigation.current_slugProjectName
-                    "
+                  :slugFolderName="$root.do_navigation.current_slugProjectName"
                   :type="`projects`"
                   :read_only="!$root.state.connected"
                 />
@@ -85,17 +89,21 @@
                 <Publication
                   :slugPubliName="$root.settings.current_publication.slug"
                   :publication="
-                      $root.store.publications[
-                        $root.settings.current_publication.slug
-                      ]
-                    "
+                    $root.store.publications[
+                      $root.settings.current_publication.slug
+                    ]
+                  "
                   :read_only="!$root.state.connected"
                 />
               </transition>
             </div>
           </div>
         </pane>
-        <pane class="splitter-pane" ref="chatPane" :size="panels_width.chatPane">
+        <pane
+          class="splitter-pane"
+          ref="chatPane"
+          :size="panels_width.chatPane"
+        >
           <div
             class="m_activitiesPanel--chat"
             :class="{ 'is--open': $root.settings.show_chat_panel }"
@@ -114,15 +122,16 @@
     <EditMedia
       v-if="$root.media_modal.open"
       :key="
-          $root.media_modal.current_slugProjectName +
-          $root.media_modal.current_metaFileName
-        "
+        $root.media_modal.current_slugProjectName +
+        $root.media_modal.current_metaFileName
+      "
       :slugMediaName="$root.media_modal.current_metaFileName"
       :slugProjectName="$root.media_modal.current_slugProjectName"
       :media="
-          $root.store.projects[$root.media_modal.current_slugProjectName]
-            .medias[$root.media_modal.current_metaFileName]
-        "
+        $root.store.projects[$root.media_modal.current_slugProjectName].medias[
+          $root.media_modal.current_metaFileName
+        ]
+      "
       @close="$root.closeMedia()"
       :read_only="!$root.state.connected"
     />
@@ -157,7 +166,7 @@ export default {
     Splitpanes,
     Pane,
 
-    MediaContent
+    MediaContent,
   },
   data() {
     return {
@@ -171,12 +180,13 @@ export default {
       panels_width: {
         doPane: 100,
         docPane: 0,
-        chatPane: 0
-      }
+        chatPane: 0,
+      },
     };
   },
   created() {
     this.$eventHub.$on("socketio.chats.listMedia", this.newChatPosted);
+    this.$eventHub.$on("resizePanels", this.resize);
 
     if (this.$root.state.local_options.force_login) {
       // this.panels_width.chatPane = 30;
@@ -186,6 +196,7 @@ export default {
   mounted() {},
   beforeDestroy() {
     this.$eventHub.$off("socketio.chats.listMedia", this.newChatPosted);
+    this.$eventHub.$off("resizePanels", this.resize);
   },
   watch: {
     panels_width: {
@@ -214,8 +225,8 @@ export default {
           this.$root.closeChatPanel();
         }
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {
     activitiesPanel_is_large() {
@@ -228,12 +239,14 @@ export default {
       if (this.$root.settings.windowHeight < 650) return false;
 
       return true;
-    }
+    },
   },
   methods: {
     resize($event) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • App: splitpanes resize`);
+
+      debugger;
       this.panels_width.doPane = $event[0].size;
       this.panels_width.docPane = $event[1].size;
       this.panels_width.chatPane = $event[2].size;
@@ -296,9 +309,8 @@ export default {
             chat_name +
             "</b>"
         );
-    }
-  }
+    },
+  },
 };
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -85,12 +85,9 @@ export default {
   },
   created() {},
   mounted() {
-    this.reloadChats();
-    this.$eventHub.$on("socketio.reconnect", this.reloadChats);
+    this.$root.loadAllChats();
   },
-  beforeDestroy() {
-    this.$eventHub.$off("socketio.reconnect", this.reloadChats);
-  },
+  beforeDestroy() {},
   watch: {},
   computed: {
     current_chat() {
@@ -111,22 +108,7 @@ export default {
       );
     },
   },
-  methods: {
-    reloadChats() {
-      this.$socketio.listFolders({ type: "chats" });
-      this.$eventHub.$once("socketio.chats.folders_listed", () => {
-        Object.keys(this.$root.store.chats).forEach((slugChatName) => {
-          const project_meta = this.$root.store.chats[slugChatName];
-          setTimeout(() => {
-            this.$socketio.listMedias({
-              type: "chats",
-              slugFolderName: slugChatName,
-            });
-          }, 1000);
-        });
-      });
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss"></style>

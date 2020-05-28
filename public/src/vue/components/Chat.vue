@@ -299,8 +299,6 @@ export default {
       type: "chats",
       slugFolderName: this.chat.slugFolderName,
     });
-
-    // this.$eventHub.$on("socketio.reconnect", this.reloadChat);
   },
   mounted() {
     this.$eventHub.$once("socketio.chats.listMedias", () => {
@@ -367,9 +365,7 @@ export default {
       } else this.is_scrolled_to_bottom = false;
     }, 1000);
   },
-  beforeDestroy() {
-    this.$eventHub.$off("socketio.reconnect", this.loadChat);
-  },
+  beforeDestroy() {},
   watch: {
     grouped_messages() {
       if (this.is_scrolled_to_bottom) {
