@@ -13,6 +13,21 @@
       </div>
     </template>
     <template
+      v-else-if="
+        [
+          'export_publication',
+          'print_publication',
+          'link_publication',
+        ].includes($root.state.mode) && $root.current_publication
+      "
+    >
+      <Publication
+        :publication="$root.current_publication"
+        :read_only="!$root.state.connected"
+      />
+    </template>
+
+    <template
       v-else-if="$root.state.mode === 'live' && !$root.state.authentificated"
     >
       <SessionPassword
@@ -46,21 +61,6 @@
         @close="$root.showAuthorsListModal = false"
       />
     </template>
-    <template
-      v-else-if="
-        [
-          'export_publication',
-          'print_publication',
-          'link_publication',
-        ].includes($root.state.mode) && $root.current_publication
-      "
-    >
-      <Publication
-        :publication="$root.current_publication"
-        :read_only="!$root.state.connected"
-      />
-    </template>
-
     <template
       v-else-if="
         $root.store.request.display === 'survey' ||

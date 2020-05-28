@@ -612,7 +612,7 @@ export default {
     read_only: Boolean,
     available_modes: {
       type: Array,
-      default: ["photo", "video", "stopmotion", "audio", "vecto"],
+      default: () => ["photo", "video", "stopmotion", "audio", "vecto"],
     },
     can_add_to_fav: {
       type: Boolean,

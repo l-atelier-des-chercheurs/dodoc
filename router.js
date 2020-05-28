@@ -154,6 +154,10 @@ module.exports = function (app) {
       `ROUTER — printPublication • slugPubliName = ${slugPubliName}`
     );
 
+    // only allow for localhost: with electron/puppeteer to export PDF and if local dev
+    if (req.hostname !== "localhost")
+      res.status(403).send(`Only allowed for localhost`);
+
     generatePageData(req).then((pageData) => {
       dev.logverbose(`Generated printpublication pageData`);
       dev.logverbose(`Now getting publication data for ${slugPubliName}`);
