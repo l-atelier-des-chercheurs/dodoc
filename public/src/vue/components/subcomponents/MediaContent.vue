@@ -88,7 +88,13 @@
             class="switch switch-xs switch_twoway button button-thin"
             @click.self="interactive_stl_mode = !interactive_stl_mode"
           >
-            <label :for="`interactive_preview_${id}`" class="cursor-pointer">
+            <label
+              :for="`interactive_preview_${id}`"
+              class="cursor-pointer"
+              :class="{
+                'is--active': !interactive_stl_mode,
+              }"
+            >
               <span class>{{ $t("static_preview") }}</span>
             </label>
 
@@ -98,7 +104,12 @@
               :id="`interactive_preview_${id}`"
               v-model="interactive_stl_mode"
             />
-            <label :for="`interactive_preview_${id}`">
+            <label
+              :for="`interactive_preview_${id}`"
+              :class="{
+                'is--active': interactive_stl_mode,
+              }"
+            >
               {{ $t("interactive_preview") }}
             </label>
           </div>

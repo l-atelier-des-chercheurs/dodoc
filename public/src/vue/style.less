@@ -79,6 +79,7 @@ body {
     margin-bottom: 0;
     line-height: var(--switch-size);
     height: var(--switch-size);
+    padding-top: 1px;
 
     &:first-child {
       margin-right: 0.5rem;
@@ -6467,15 +6468,18 @@ small {
     text-align: center;
     .margin-vert-small;
 
-    label {
-      // .bg-gris;
-      border: 2px solid @c-blanc;
-      margin: 0;
-      .padding-verysmall;
+    > * {
+      display: inline-block;
     }
 
+    // label {
+    //   // .bg-gris;
+    //   border: 2px solid @c-blanc;
+    //   margin: 0;
+    //   .padding-verysmall;
+    // }
+
     input {
-      display: inline-block;
       // vertical-align: middle;
     }
   }

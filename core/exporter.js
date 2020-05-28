@@ -291,7 +291,7 @@ module.exports = (function () {
                             path: docPath,
                             printBackground: true,
                             width: `${default_page_size.width}mm`,
-                            height: `${default_page_size.height}mm`,
+                            height: `${default_page_ssize.height}mm`,
                           })
                           .then(() => {
                             dev.logverbose(
