@@ -57,7 +57,13 @@
 
           <div class="m_actionbar--text">
             <div class="switch switch-xs switch_twoway">
-              <label for="media_switch" class="cursor-pointer">
+              <label
+                for="media_switch"
+                class="cursor-pointer"
+                :class="{
+                  'is--active': !show_medias_instead_of_projects,
+                }"
+              >
                 <span class>{{ $t("projects") }}</span>
               </label>
               <input
@@ -65,7 +71,12 @@
                 id="media_switch"
                 v-model="show_medias_instead_of_projects"
               />
-              <label for="media_switch">
+              <label
+                for="media_switch"
+                :class="{
+                  'is--active': show_medias_instead_of_projects,
+                }"
+              >
                 <span class>{{ $t("medias") }}</span>
               </label>
             </div>

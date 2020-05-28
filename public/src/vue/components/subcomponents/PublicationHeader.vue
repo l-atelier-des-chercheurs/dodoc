@@ -461,11 +461,16 @@ export default {
       this.show_settings = true;
     },
     removePublication() {
+      if (this.publication.is_model) {
+      }
+
       this.$alertify
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
         .confirm(
-          this.$t("sureToRemovePubli"),
+          this.publication.is_model
+            ? this.$t("sureToRemovePubliThatIsModel")
+            : this.$t("sureToRemovePubli"),
           () => {
             if (this.$root.state.dev_mode === "debug") {
               console.log(`METHODS • Publication: removePublication`);

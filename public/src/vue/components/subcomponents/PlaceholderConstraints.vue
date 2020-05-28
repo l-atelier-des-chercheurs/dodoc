@@ -123,15 +123,40 @@
       v-else-if="type_of_content === 'choices'"
     >
       <div class="m_placeholderConstraints--choices--multiple">
-        <label class :for="`enable_multiple_${id}`">
+        <div
+          class="switch switch-xs switch_twoway button button-thin"
+          @click.self="
+            options.find((o) => o.key === 'choices').multiple = !options.find(
+              (o) => o.key === 'choices'
+            ).multiple
+          "
+        >
+          <label
+            :for="`enable_multiple_${id}`"
+            class="cursor-pointer"
+            :class="{
+              'is--active': !options.find((o) => o.key === 'choices').multiple,
+            }"
+          >
+            <span class>{{ $t("single_choice") }}</span>
+          </label>
+
           <input
-            :id="`enable_multiple_${id}`"
+            class="switch"
             type="checkbox"
+            :id="`enable_multiple_${id}`"
             :disabled="read_only"
             v-model="options.find((o) => o.key === 'choices').multiple"
           />
-          {{ $t("multiple_choices_possible") }}
-        </label>
+          <label
+            :for="`enable_multiple_${id}`"
+            :class="{
+              'is--active': options.find((o) => o.key === 'choices').multiple,
+            }"
+          >
+            {{ $t("multiple_choices_possible") }}
+          </label>
+        </div>
       </div>
       <!-- {{ options.find(o => o.key === 'choices').mutiple }} -->
       <div class="m_placeholderConstraints--choices--allChoices">

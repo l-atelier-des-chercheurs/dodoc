@@ -43,15 +43,6 @@
     >
       <div class="m_publicationNavMenu--settings">
         <div>
-          <!-- <div class="switch switch-xs switch_twoway">
-            <label for="view_switch" class="cursor-pointer"
-              ><span>{{ $t("show_all_pages") }}</span></label
-            >
-            <input type="checkbox" id="view_switch" />
-            <label for="view_switch"
-              ><span>{{ $t("single_page") }}</span></label
-            >
-          </div>-->
           <button
             type="button"
             class="buttonLink"

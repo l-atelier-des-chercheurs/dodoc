@@ -1183,6 +1183,11 @@ module.exports = (function () {
       oc: "Sètz segur de voler suprimir aquesta recèpta ?",
       de: "Sind sie sicher dass sie diese Publikation löschen möchten ?",
     },
+    sureToRemovePubliThatIsModel: {
+      fr:
+        "Êtes-vous sûr de vouloir supprimer cette recette ? Comme c’est un modèle, toutes les réponses à ce modèle deviendront innaccessibles et non-fonctionnelles.",
+      en: "Do you really want to delete this recipe?",
+    },
     sure_to_cancel_stopmotion: {
       fr:
         "Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu <i>Liste des animations</i>",
@@ -1950,6 +1955,10 @@ module.exports = (function () {
     choices: {
       fr: "Choix multiples",
       en: "Multiple choices",
+    },
+    single_choice: {
+      fr: "Un choix unique",
+      en: "Single choice",
     },
     multiple_choices_possible: {
       fr: "Plusieurs choix possibles",
