@@ -94,6 +94,11 @@
                     editPubliMedia(values);
                   }
                 "
+                @duplicateMedia="
+                  (values) => {
+                    duplicateMedia(values);
+                  }
+                "
               />
             </div>
           </transition>
@@ -235,6 +240,34 @@ export default {
         slugMediaName,
         data: val,
       });
+    },
+    duplicateMedia({ metaFileName }) {
+      this.$root
+        .copyMediaToFolder({
+          type: "publications",
+          from_slugFolderName: this.slugPubliName,
+          to_slugFolderName: this.slugPubliName,
+          slugMediaName: metaFileName,
+        })
+        .then((mdata) => {
+          const x = mdata.x ? mdata.x + 5 : 20;
+          const y = mdata.y ? mdata.y + 5 : 20;
+          const z_index = mdata.z_index ? mdata.z_index + 1 : 1;
+
+          this.editPubliMedia({
+            slugMediaName: mdata.metaFileName,
+            val: {
+              x,
+              y,
+              z_index,
+            },
+          });
+
+          this.$eventHub.$emit(
+            "publication.selectNewMedia",
+            mdata.metaFileName
+          );
+        });
     },
   },
 };

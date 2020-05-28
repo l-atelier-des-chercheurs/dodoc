@@ -571,14 +571,39 @@
           <button
             type="button"
             class="buttonLink _no_underline"
-            @click.stop.prevent="removePubliMedia()"
-            :content="$t('withdraw')"
-            v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
+            @click.stop.prevent="duplicateMedia()"
           >
-            <!-- <svg
+            <svg
+              version="1.1"
+              class="inline-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="91.6px"
+              height="95px"
+              viewBox="0 0 91.6 95"
+              style="enable-background: new 0 0 91.6 95;"
+              xml:space="preserve"
+            >
+              <polygon
+                class="st0"
+                points="39.5,11.8 83,11.8 83,55.4 72.7,55.4 72.7,67.2 94.8,67.2 94.8,0 27.7,0 27.7,22.2 39.5,22.2 	"
+              />
+              <path
+                class="st0"
+                d="M67.2,27.7L0,27.7l0,67.2l67.2,0L67.2,27.7z M55.4,83l-43.6,0l0-43.6l43.6,0L55.4,83z"
+              />
+            </svg>
+            <span class>{{ $t("duplicate") }}</span>
+          </button>
+
+          <button
+            type="button"
+            class="buttonLink _no_underline"
+            @click.stop.prevent="removePubliMedia()"
+          >
+            <svg
               version="1.1"
               class="inline-svg"
               xmlns="http://www.w3.org/2000/svg"
@@ -588,7 +613,7 @@
               width="37.2px"
               height="37.2px"
               viewBox="0 0 37.2 37.2"
-              style="enable-background:new 0 0 37.2 37.2;"
+              style="enable-background: new 0 0 37.2 37.2;"
               xml:space="preserve"
             >
               <polygon
@@ -596,7 +621,7 @@
                 points="37.2,30.6 30.6,37.2 18.6,25.2 6.6,37.2 0,30.6 12,18.6 0,6.6 6.6,0 18.6,12 30.6,0 37.2,6.6 
             25.2,18.6 "
               />
-            </svg>-->
+            </svg>
             {{ $t("withdraw") }}
           </button>
         </div>
@@ -990,6 +1015,11 @@ export default {
 
     removePubliMedia() {
       this.$emit("removePubliMedia", {
+        metaFileName: this.media.metaFileName,
+      });
+    },
+    duplicateMedia() {
+      this.$emit("duplicateMedia", {
         metaFileName: this.media.metaFileName,
       });
     },

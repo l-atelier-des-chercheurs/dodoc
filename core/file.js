@@ -1499,7 +1499,7 @@ module.exports = (function () {
                     fs.copy(origin_path, destination_path, function (err) {
                       if (err) {
                         dev.error(`Failed to copy: ${err}`);
-                        return reject(err);
+                        // return reject(err);
                       }
                       return resolve({
                         media_filename: newFileName,

@@ -130,6 +130,7 @@
               @removePubliMedia="orderedRemovePubliMedia($event)"
               @changeMediaOrder="changeMediaOrder($event)"
               @editPubliMedia="$emit('editPubliMedia', $event)"
+              @duplicateMedia="orderedDuplicateMedia($event)"
             />
 
             <div
@@ -494,6 +495,22 @@ export default {
             type: "publications",
             slugFolderName: this.slugPubliName,
             slugMediaName: metaFileName,
+          });
+        });
+    },
+
+    orderedDuplicateMedia({ metaFileName }) {
+      this.$root
+        .copyMediaToFolder({
+          type: "publications",
+          from_slugFolderName: this.slugPubliName,
+          to_slugFolderName: this.slugPubliName,
+          slugMediaName: metaFileName,
+        })
+        .then((mdata) => {
+          this.insertMediasInList({
+            metaFileNames: [mdata.metaFileName],
+            right_after_meta: metaFileName,
           });
         });
     },

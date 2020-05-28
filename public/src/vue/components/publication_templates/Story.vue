@@ -100,6 +100,7 @@
               @removePubliMedia="$emit('removePubliMedia', $event)"
               @changeMediaOrder="$emit('changeMediaOrder', $event)"
               @editPubliMedia="$emit('editPubliMedia', $event)"
+              @duplicateMedia="$emit('duplicateMedia', $event)"
             />
 
             <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
