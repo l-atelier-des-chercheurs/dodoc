@@ -996,6 +996,37 @@ let vm = new Vue({
         );
       });
     },
+    copyMediaToFolder: function (mdata) {
+      return new Promise((resolve, reject) => {
+        if (window.state.dev_mode === "debug")
+          console.log(
+            `ROOT EVENT: copyMediaToFolder: ${JSON.stringify(mdata, null, 4)}`
+          );
+
+        mdata.id =
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15);
+
+        this.$socketio.copyMediaToFolder(mdata);
+
+        const catchMediaCopy = (d) => {
+          if (mdata.id === d.id) {
+            this.$nextTick(() => {
+              return resolve(d);
+            });
+          } else {
+            this.$eventHub.$once(
+              `socketio.media_created_or_updated`,
+              catchMediaCopy
+            );
+          }
+        };
+        this.$eventHub.$once(
+          `socketio.media_created_or_updated`,
+          catchMediaCopy
+        );
+      });
+    },
 
     canSeeFolder: function ({ type, slugFolderName }) {
       if (!this.store[type].hasOwnProperty(slugFolderName)) return false;

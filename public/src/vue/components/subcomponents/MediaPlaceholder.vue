@@ -130,6 +130,7 @@
               @removePubliMedia="orderedRemovePubliMedia($event)"
               @changeMediaOrder="changeMediaOrder($event)"
               @editPubliMedia="$emit('editPubliMedia', $event)"
+              @duplicateMedia="$emit('duplicateMedia', $event)"
             />
 
             <div

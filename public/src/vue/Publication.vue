@@ -26,6 +26,7 @@
       :model_for_this_publication="model_for_this_publication"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
+      @duplicateMedia="orderedDuplicateMedia"
       @changeMediaOrder="changeMediaOrder"
       @addMedia="addMediaOrdered"
       @insertMediasInList="insertMediasInList"
@@ -561,6 +562,23 @@ export default {
           });
         });
     },
+
+    orderedDuplicateMedia({ metaFileName }) {
+      this.$root
+        .copyMediaToFolder({
+          type: "publications",
+          from_slugFolderName: this.slugPubliName,
+          to_slugFolderName: this.slugPubliName,
+          slugMediaName: metaFileName,
+        })
+        .then((mdata) => {
+          this.insertMediasInList({
+            metaFileNames: [mdata.metaFileName],
+            right_after_meta: metaFileName,
+          });
+        });
+    },
+
     editPubliMedia({ metaFileName, val }) {
       if (this.$root.state.dev_mode === "debug")
         console.log(

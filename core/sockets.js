@@ -435,6 +435,7 @@ module.exports = (function () {
       to_slugFolderName,
       slugMediaName,
       meta_to_edit,
+      id,
     }
   ) {
     dev.logfunction(
@@ -516,6 +517,7 @@ module.exports = (function () {
 
     sendMedias({
       type,
+      id,
       slugFolderName: to_slugFolderName,
       metaFileName: newMetaFileName,
     });

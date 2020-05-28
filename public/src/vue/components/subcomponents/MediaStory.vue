@@ -204,38 +204,32 @@
           </svg>
         </button>
         <div class="_advanced_menu" v-if="show_advanced_menu">
-          <!-- <button
-            type="button"
-            v-if="media.type === 'text'"
-            class="buttonLink _no_underline"
-            @mousedown.stop.prevent="editButtonClicked"
-            @touchstart.stop.prevent="editButtonClicked"
-            :content="$t('edit_content')"
-            v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
-          >
+          <button type="button" class="buttonLink" @click="duplicateMedia">
             <svg
               version="1.1"
-              class="inline-svg inline-svg-larger"
+              class="inline-svg"
               xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink"
               x="0px"
               y="0px"
-              width="90.7px"
-              height="91px"
-              viewBox="0 0 90 120"
-              style="enable-background: new 0 0 100.7 101;"
+              width="91.6px"
+              height="95px"
+              viewBox="0 0 91.6 95"
+              style="enable-background: new 0 0 91.6 95;"
               xml:space="preserve"
             >
+              <polygon
+                class="st0"
+                points="39.5,11.8 83,11.8 83,55.4 72.7,55.4 72.7,67.2 94.8,67.2 94.8,0 27.7,0 27.7,22.2 39.5,22.2 	"
+              />
               <path
                 class="st0"
-                d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
-              L19.1,91.5z"
+                d="M67.2,27.7L0,27.7l0,67.2l67.2,0L67.2,27.7z M55.4,83l-43.6,0l0-43.6l43.6,0L55.4,83z"
               />
             </svg>
-          </button> -->
+            <span class>{{ $t("duplicate") }}</span>
+          </button>
+
           <a
             :download="media.media_filename"
             :href="mediaURL"
@@ -563,6 +557,11 @@ export default {
     },
   },
   methods: {
+    duplicateMedia() {
+      this.$emit("duplicateMedia", {
+        metaFileName: this.media.metaFileName,
+      });
+    },
     selectNewMedia(metaFileName) {
       if (metaFileName === this.media.metaFileName)
         if (!this.is_selected) this.selectMedia();
