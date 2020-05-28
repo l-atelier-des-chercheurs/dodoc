@@ -288,7 +288,7 @@ module.exports = (function () {
                           height: default_page_size.height * 1000,
                         },
                         dpi: 300,
-                        printBackground: false,
+                        printBackground: true,
                         printSelectionOnly: false,
                       },
                       (error, data) => {
