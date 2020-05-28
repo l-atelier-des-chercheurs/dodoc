@@ -328,6 +328,7 @@ export default {
           .error(
             this.$t("notifications.account_not_associated_to_this_ressource")
           );
+        this.show_all_my_replies = true;
       }
     },
   },
