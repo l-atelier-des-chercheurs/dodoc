@@ -432,6 +432,7 @@ let vm = new Vue({
     this.$eventHub.$on("socketio.reconnect", () => {
       this.$socketio.listFolders({ type: "authors" });
       this.$socketio.listFolders({ type: "projects" });
+      this.loadAllChats();
 
       if (this.settings.current_publication.slug) {
         this.$socketio.listFolder({
@@ -467,7 +468,7 @@ let vm = new Vue({
     if (this.state.mode === "live") {
       console.log("ROOT EVENT: created / now connecting with socketio");
 
-      if (!this.$root.state.is_electron) {
+      if (!this.state.is_electron) {
         this.$eventHub.$on("socketio.connect", () => {
           this.$alertify
             .closeLogOnClick(true)
@@ -487,7 +488,7 @@ let vm = new Vue({
       //   type: "authors",
       // });
 
-      if (this.$root.state.session_password === "has_pass") {
+      if (this.state.session_password === "has_pass") {
         var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
         if (session_storage_pwd) {
           this.$socketio.connect(session_storage_pwd);
@@ -516,14 +517,15 @@ let vm = new Vue({
         this.$socketio.connect();
       }
 
-      if (this.$root.store.request.display === "survey") {
+      if (this.store.request.display === "survey") {
         this.$socketio.listFolders({ type: "authors" });
       }
 
       this.$eventHub.$once("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "projects" });
-        this.$root.updateNetworkInfos();
+        this.loadAllChats();
+        this.updateNetworkInfos();
 
         if (this.current_project) {
           this.$socketio.listMedias({
@@ -532,7 +534,7 @@ let vm = new Vue({
           });
         }
 
-        const authorized_authors = this.$root.state.list_authorized_folders.filter(
+        const authorized_authors = this.state.list_authorized_folders.filter(
           (f) => f.type === "authors" && f.allowed_slugFolderNames.length > 0
         );
 
@@ -562,7 +564,7 @@ let vm = new Vue({
     }
   },
   beforeDestroy() {
-    this.$root.settings.current_publication.page_id = false;
+    this.settings.current_publication.page_id = false;
   },
   watch: {
     "settings.has_modal_opened": function () {
@@ -651,6 +653,12 @@ let vm = new Vue({
       }
       return false;
     },
+    get_total_unread_messages() {
+      return Object.values(this.store.chats).reduce((acc, c) => {
+        acc += this.getUnreadMessageCount(c);
+        return acc;
+      }, 0);
+    },
     all_folders() {
       return Object.values(this.store.projects).reduce((acc, p) => {
         if (!!p.folder && !acc.includes(p.folder)) acc.push(p.folder);
@@ -678,11 +686,11 @@ let vm = new Vue({
 
       if (
         this.current_publication.template === "page_by_page" &&
-        this.$root.settings.current_publication.page_id
+        this.settings.current_publication.page_id
       ) {
         // we need to check current page
         return Object.values(this.current_publication.medias).filter(
-          (m) => m.page_id === this.$root.settings.current_publication.page_id
+          (m) => m.page_id === this.settings.current_publication.page_id
         );
       }
       return this.current_publication.medias;
@@ -749,6 +757,45 @@ let vm = new Vue({
           classes: "tagcolorid_" + (parseInt(kw, 36) % 2),
         };
       });
+    },
+    getUnreadMessageCount(chat) {
+      if (
+        typeof chat.medias !== "object" ||
+        Object.keys(chat.medias).length === 0 ||
+        !this.current_author
+      )
+        return false;
+
+      if (
+        !this.canSeeFolder({
+          type: "chats",
+          slugFolderName: chat.slugFolderName,
+        })
+      )
+        return false;
+
+      const total_number_of_messages_in_chat = Object.keys(chat.medias).length;
+
+      // find media with meta
+      const last_messages_read_in_channels = this.current_author
+        .last_messages_read_in_channels;
+
+      if (last_messages_read_in_channels) {
+        const existing_info = last_messages_read_in_channels.find(
+          (c) => c.channel === chat.slugFolderName
+        );
+        if (existing_info) {
+          const last_message_metaFileName = existing_info.metaFileName;
+          const index_of_past_message_read = Object.values(
+            chat.medias
+          ).findIndex((m) => m.metaFileName === existing_info.msg);
+          return (
+            total_number_of_messages_in_chat - index_of_past_message_read - 1
+          );
+        }
+      }
+
+      return total_number_of_messages_in_chat;
     },
     getAllKeywordsFrom(base) {
       let uniqueKeywords = [];
@@ -1291,8 +1338,7 @@ let vm = new Vue({
     setAuthor: function (author_slug) {
       if (this.settings.current_author_slug === author_slug) return;
 
-      if (this.$root.state.dev_mode === "debug")
-        console.log(`ROOT EVENT: setAuthor`);
+      if (this.state.dev_mode === "debug") console.log(`ROOT EVENT: setAuthor`);
 
       const author = Object.values(this.store.authors).find(
         (a) => a.slugFolderName === author_slug
@@ -1309,7 +1355,7 @@ let vm = new Vue({
     unsetAuthor: function () {
       if (!this.settings.current_author_slug) return;
 
-      if (this.$root.state.dev_mode === "debug")
+      if (this.state.dev_mode === "debug")
         console.log(`ROOT EVENT: unsetAuthor`);
 
       this.$auth.removeAllFoldersPassword({
@@ -1501,7 +1547,7 @@ let vm = new Vue({
       const slugMediaName = publi_media.slugMediaName;
 
       // find in store if slugFolderName exists
-      if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
+      if (!this.store.projects.hasOwnProperty(slugProjectName)) {
         console.error(
           `Missing project in store — not expected : ${slugProjectName}`
         );
@@ -1512,7 +1558,7 @@ let vm = new Vue({
       }
 
       // find in store if metaFileName exists
-      const project_medias = this.$root.store.projects[slugProjectName].medias;
+      const project_medias = this.store.projects[slugProjectName].medias;
 
       if (!project_medias.hasOwnProperty(slugMediaName)) {
         return {};
@@ -1530,6 +1576,23 @@ let vm = new Vue({
         return meta;
       }
     },
+    loadAllChats() {
+      this.$socketio.listFolders({ type: "chats" });
+      this.$eventHub.$once("socketio.chats.folders_listed", () => {
+        let index = 0;
+        Object.keys(this.store.chats).forEach((slugChatName) => {
+          // const project_meta = this.store.chats[slugChatName];
+          index++;
+          setTimeout(() => {
+            this.$socketio.listMedias({
+              type: "chats",
+              slugFolderName: slugChatName,
+            });
+          }, 500 * index);
+        });
+      });
+    },
+
     loadAllProjectsMedias() {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: loadAllProjectsMedias`);

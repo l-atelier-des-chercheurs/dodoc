@@ -130,6 +130,20 @@
         </button>
 
         <Clients />
+
+        <div class="m_unreadMessages" v-if="$root.get_total_unread_messages">
+          <button
+            type="button"
+            @click="openChatPanel()"
+            :content="$t('unread_messages')"
+            v-tippy="{
+              placement: 'bottom',
+              delay: [600, 0],
+            }"
+          >
+            {{ $root.get_total_unread_messages }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -301,6 +315,13 @@ export default {
     },
   },
   methods: {
+    openChatPanel() {
+      this.$eventHub.$emit("resizePanels", [
+        { size: 40 },
+        { size: 0 },
+        { size: 60 },
+      ]);
+    },
     menuVisibility() {},
     goBack() {
       this.$root.navigation_back();
