@@ -536,12 +536,22 @@
   position: absolute;
   transform: translateY(10px);
 
-  background-color: #fff;
-  // border: 1px solid @c-border;
-  box-shadow: 0px 0px 5px @c-border;
+  // background-color: var(--c-gris-clair);
+  .bg-blanc;
+  border-radius: 8px;
+  border: 2px solid var(--c-gris-clair);
+  // box-shadow: 0px 0px 5px @c-border;
   color: @c-noir;
-  padding: 5px 12px;
+  // padding: 5px 12px;
+  .padding-vert-verysmall;
+  .padding-sides-verysmall;
+  .margin-sides-verysmall;
   white-space: nowrap;
+
+  z-index: 10000;
+
+  input[type="text"] {
+  }
 }
 .ql-snow .ql-tooltip a {
   cursor: pointer;
@@ -875,21 +885,26 @@
 .ql-tooltip {
 }
 .ql-snow .ql-tooltip::before {
-  content: "Visit URL:";
+  content: "Visit URL";
   line-height: 26px;
   margin-right: 8px;
+  .label;
 }
 html[lang="fr"] .ql-snow .ql-tooltip::before {
-  content: "Lien :";
+  // content: "Lien :";
 }
 .ql-snow .ql-tooltip input[type="text"] {
   display: none;
-  border: 1px solid #ccc;
-  font-size: 13px;
-  height: 26px;
+  border: 2px solid var(--c-gris-clair);
+
+  .font-small;
+  height: 36px;
   margin: 0px;
-  padding: 3px 5px;
-  width: 170px;
+
+  width: 190px;
+
+  .padding-verysmall;
+  .bg-blanc;
 }
 .ql-snow .ql-tooltip a.ql-preview {
   display: inline-block;
@@ -903,6 +918,10 @@ html[lang="fr"] .ql-snow .ql-tooltip::before {
   content: "Edit";
   margin-left: 16px;
   padding-right: 8px;
+  .button-thin;
+  background-color: @c-bleuvert;
+  color: white;
+  .padding-sides-small;
 }
 html[lang="fr"] .ql-tooltip a.ql-action::after {
   content: "Modifier";
@@ -927,22 +946,23 @@ html[lang="fr"] .ql-tooltip a.ql-remove::before {
 .ql-snow .ql-tooltip.ql-editing a.ql-action::after {
   border-right: 0px;
   content: "Save";
-  padding-right: 0px;
+  // padding-right: 0px;
+  margin-right: 0;
 }
 html[lang="fr"] .ql-tooltip.ql-editing a.ql-action::after {
   content: "Enregistrer";
 }
 .ql-snow .ql-tooltip[data-mode="link"]::before {
-  content: "Enter link:";
+  content: "Link:";
 }
 html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
-  content: "Ajoutez un lien :";
+  content: "Lien";
 }
 .ql-snow .ql-tooltip[data-mode="formula"]::before {
-  content: "Enter formula:";
+  content: "Enter formula";
 }
 .ql-snow .ql-tooltip[data-mode="video"]::before {
-  content: "Enter video:";
+  content: "Enter video";
 }
 .ql-snow a {
   color: #06c;
