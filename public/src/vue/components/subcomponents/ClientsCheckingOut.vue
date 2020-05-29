@@ -65,7 +65,7 @@ export default {
       return false;
     },
     clients_checking_out() {
-      if (!this.current_prop) return [];
+      if (!this.current_prop || !this.$root.unique_clients) return [];
 
       return this.$root.unique_clients.filter(
         (c) =>

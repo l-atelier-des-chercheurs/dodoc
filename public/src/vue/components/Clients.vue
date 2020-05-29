@@ -1,5 +1,8 @@
 <template>
-  <div class="m_clientsList" v-if="$root.unique_clients.length">
+  <div
+    class="m_clientsList"
+    v-if="$root.unique_clients && $root.unique_clients.length"
+  >
     <button
       type="button"
       class="m_clientsList--indicator"
