@@ -58,7 +58,7 @@
     </div>
 
     <transition name="slideright" :duration="500">
-      <Chat :chat="current_chat" v-if="current_chat" />
+      <Chat :chat="$root.current_chat" v-if="$root.current_chat" />
     </transition>
   </div>
 </template>
@@ -90,13 +90,6 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    current_chat() {
-      if (!this.$root.settings.current_chat.slug) return false;
-
-      return Object.values(this.$root.store.chats).find(
-        (c) => c.slugFolderName === this.$root.settings.current_chat.slug
-      );
-    },
     pinned_chats() {
       if (Object.keys(this.chats).length === 0) return [];
       return Object.values(this.chats).filter((c) => c.pinned === true);

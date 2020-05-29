@@ -1,5 +1,5 @@
 <template>
-  <div class="m_clientsList" v-if="uniqueClients.length">
+  <div class="m_clientsList" v-if="$root.unique_clients.length">
     <button
       type="button"
       class="m_clientsList--indicator"
@@ -10,7 +10,7 @@
         delay: [600, 0],
       }"
     >
-      <span>{{ uniqueClients.length }}</span>
+      <span>{{ $root.unique_clients.length }}</span>
     </button>
     <div class="m_clientsList--list" v-if="showClientList">
       <button
@@ -26,10 +26,10 @@
       <span
         class="m_clientsList--list--client"
         :key="client.id"
-        v-for="client in uniqueClients"
+        v-for="client in $root.unique_clients"
       >
         <template v-if="client.data.hasOwnProperty('author')">{{
-          client.data.author.name
+          $root.getAuthor(client.data.author.slugFolderName).name
         }}</template>
         <template v-else>{{ $t("anonymous") }}</template>
       </span>
@@ -49,30 +49,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    uniqueClients() {
-      return this.$root.state.clients.reduce((acc, client) => {
-        if (client.id === this.$root.$socketio.socket.id.substring(0, 4))
-          return acc;
-
-        if (
-          this.$root.state.local_options.force_login &&
-          !client.data.hasOwnProperty("author")
-        )
-          return acc;
-
-        if (
-          !client.data.hasOwnProperty("author") ||
-          !acc.some(
-            (a) => a.data.slugFolderName === client.data.author.slugFolderName
-          )
-        )
-          acc.push(client);
-
-        return acc;
-      }, []);
-    },
-  },
+  computed: {},
   methods: {},
 };
 </script>

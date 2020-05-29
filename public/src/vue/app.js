@@ -608,9 +608,53 @@ let vm = new Vue({
       },
       deep: true,
     },
+
+    current_project() {
+      this.updateClientInfo({
+        looking_at_project: {
+          slugFolderName: this.current_project
+            ? this.current_project.slugFolderName
+            : false,
+        },
+      });
+    },
+    current_publication() {
+      this.updateClientInfo({
+        looking_at_publi: {
+          slugFolderName: this.current_publication
+            ? this.current_publication.slugFolderName
+            : false,
+        },
+      });
+    },
+    media_modal: {
+      handler() {
+        let opened_media_modal = {};
+
+        if (this.media_modal.open) {
+          opened_media_modal.slugFolderName = this.media_modal.current_slugProjectName;
+          opened_media_modal.metaFileName = this.media_modal.current_metaFileName;
+        }
+        this.updateClientInfo({
+          opened_media_modal,
+        });
+      },
+      deep: true,
+    },
+    current_chat() {
+      this.updateClientInfo({
+        looking_at_chat: {
+          slugFolderName: this.current_chat
+            ? this.current_chat.slugFolderName
+            : false,
+        },
+      });
+    },
   },
   computed: {
     current_project() {
+      if (!this.do_navigation.current_slugProjectName) return false;
+
       if (
         !this.store.hasOwnProperty("projects") ||
         Object.keys(this.store.projects).length === 0
@@ -635,6 +679,13 @@ let vm = new Vue({
       if (!this.store.authors.hasOwnProperty(this.settings.current_author_slug))
         return false;
       return this.store.authors[this.settings.current_author_slug];
+    },
+    current_chat() {
+      if (!this.settings.current_chat.slug) return false;
+
+      return Object.values(this.store.chats).find(
+        (c) => c.slugFolderName === this.settings.current_chat.slug
+      );
     },
     current_author_is_admin() {
       return this.current_author && this.current_author.role === "admin";
@@ -677,6 +728,29 @@ let vm = new Vue({
         this.canEditFolder({ type, slugFolderName: p.slugFolderName })
       );
     },
+    unique_clients() {
+      return this.$root.state.clients.reduce((acc, client) => {
+        if (client.id === this.$root.$socketio.socket.id.substring(0, 4))
+          return acc;
+
+        if (
+          this.$root.state.local_options.force_login &&
+          !client.data.hasOwnProperty("author")
+        )
+          return acc;
+
+        if (
+          !client.data.hasOwnProperty("author") ||
+          !acc.some(
+            (a) => a.data.slugFolderName === client.data.author.slugFolderName
+          )
+        )
+          acc.push(client);
+
+        return acc;
+      }, []);
+    },
+
     current_publication_medias() {
       if (
         !this.current_publication ||
@@ -1348,7 +1422,9 @@ let vm = new Vue({
 
       this.settings.current_author_slug = author_slug;
 
-      this.$socketio.socket.emit("updateClientInfo", { author });
+      this.$socketio.socket.emit("updateClientInfo", {
+        author: { slugFolderName: author.slugFolderName },
+      });
       this.$socketio.listFolders({ type: "authors" });
       this.$eventHub.$emit("authors.newAuthorSet");
     },
@@ -1364,7 +1440,10 @@ let vm = new Vue({
       this.$socketio.sendAuth();
 
       this.settings.current_author_slug = false;
-      this.$socketio.socket.emit("updateClientInfo", {});
+      this.$socketio.socket.emit("updateClientInfo", { author: {} });
+    },
+    updateClientInfo(val) {
+      this.$socketio.socket.emit("updateClientInfo", val);
     },
     togglePubliPanel: function () {
       if (window.state.dev_mode === "debug") {

@@ -2,7 +2,9 @@
   <div
     class="m_chatRow"
     :class="{
-      'is--open': $root.settings.current_chat.slug === chat.slugFolderName,
+      'is--open':
+        $root.current_chat &&
+        $root.current_chat.slugFolderName === chat.slugFolderName,
       'is--pinned': chat.pinned,
     }"
   >
@@ -41,6 +43,11 @@
       >
         {{ $t("open") }}
       </button>
+
+      <ClientsCheckingOut
+        :type="'chats'"
+        :slugFolderName="chat.slugFolderName"
+      />
     </div>
 
     <div class="m_chatRow--secondLine">
@@ -94,6 +101,7 @@
 <script>
 import AccessController from "./subcomponents/AccessController.vue";
 import ProtectedLock from "./subcomponents/ProtectedLock.vue";
+import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 
 export default {
   props: {
@@ -102,6 +110,7 @@ export default {
   components: {
     AccessController,
     ProtectedLock,
+    ClientsCheckingOut,
   },
   data() {
     return {

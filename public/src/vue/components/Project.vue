@@ -360,6 +360,11 @@
         @close="showEditProjectModal = false"
         :read_only="read_only"
       />
+
+      <ClientsCheckingOut
+        :type="'projects'"
+        :slugFolderName="slugProjectName"
+      />
     </div>
 
     <MediaLibrary
@@ -376,6 +381,7 @@ import EditProject from "./modals/EditProject.vue";
 import MediaLibrary from "./MediaLibrary.vue";
 import AccessController from "./subcomponents/AccessController.vue";
 import ProtectedLock from "./subcomponents/ProtectedLock.vue";
+import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 
 export default {
   props: {
@@ -389,6 +395,7 @@ export default {
     MediaLibrary,
     AccessController,
     ProtectedLock,
+    ClientsCheckingOut,
   },
   data() {
     return {

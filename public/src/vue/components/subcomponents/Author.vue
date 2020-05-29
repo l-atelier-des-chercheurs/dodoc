@@ -96,6 +96,21 @@
           <label>{{ $t(author.role) }}</label>
         </div>
 
+        <div class="m_author--connected" v-if="author_is_connected">
+          <label class="">
+            <button
+              type="button"
+              class="button-nostyle padding-none text-uc button-triangle"
+              :class="{ 'is--active': show_connection_information }"
+              @click.stop="
+                show_connection_information = !show_connection_information
+              "
+            >
+              {{ $t("currently_connected") }}
+            </button>
+          </label>
+        </div>
+
         <div
           class
           v-if="
@@ -211,6 +226,15 @@ export default {
       return (
         this.author.slugFolderName === this.$root.current_author.slugFolderName
       );
+    },
+    author_is_connected() {
+      return this.$root.unique_clients.find((client) => {
+        return (
+          client.data &&
+          client.data.author &&
+          client.data.author.slugFolderName === this.author.slugFolderName
+        );
+      });
     },
   },
   methods: {

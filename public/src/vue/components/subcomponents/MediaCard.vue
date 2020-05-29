@@ -100,6 +100,12 @@
           </transition>
         </div>
 
+        <ClientsCheckingOut
+          :type="'media_modal'"
+          :slugFolderName="slugProjectName"
+          :metaFileName="media.metaFileName"
+        />
+
         <figcaption v-if="is_hovered && false">
           <div class="m_metaField" v-if="!!media.type">
             <div>{{ $t("type") }}</div>
@@ -112,6 +118,7 @@
           <DateField :title="'created'" :date="media.date_created" />
           <DateField :title="'edited'" :date="media.date_modified" />
         </figcaption>
+
         <!-- <nav>
           <button 
             type="button" 
@@ -128,6 +135,7 @@
 <script>
 import MediaContent from "./MediaContent.vue";
 import { setTimeout } from "timers";
+import ClientsCheckingOut from "../subcomponents/ClientsCheckingOut.vue";
 
 export default {
   props: {
@@ -140,6 +148,7 @@ export default {
   },
   components: {
     MediaContent,
+    ClientsCheckingOut,
   },
   data() {
     return {

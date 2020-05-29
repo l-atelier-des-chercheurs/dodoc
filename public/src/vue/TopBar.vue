@@ -1,5 +1,7 @@
 <template>
   <div class="m_topbar" :class="{ 'is--collapsable': !$root.screen_is_wide }">
+    <!-- <pre>{{ $root.state.clients }}</pre> -->
+
     <div class="m_topbar--left">
       <div class="m_topbar--left--logo">
         <transition name="BackButton" :duration="500">

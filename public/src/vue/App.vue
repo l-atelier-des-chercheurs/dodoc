@@ -74,8 +74,9 @@
         $root.state.mode === 'live' &&
         $root.store.request.display !== 'standalone' &&
         $root.store.request.display !== 'survey' &&
-        (!$root.state.local_options.force_login ||
-          ($root.current_author && $root.current_author.role !== 'participant'))
+        (!$root.current_author ||
+          $root.current_author.role !== 'participant') &&
+        !$root.state.local_options.force_login
       "
     >
       <FullDodoc />
