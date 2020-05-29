@@ -12,17 +12,21 @@
     <!-- connection_state : {{ connection_state }}
     <br />-->
     <div ref="editor" class="mediaTextContent" />
-
-    <div class="quillWrapper--savingIndicator" v-if="enable_collaboration">
-      <transition name="fade" :duration="600">
-        <template v-if="is_loading_or_saving">
-          <span class="loader loader-small" />
-        </template>
-        <template v-else-if="show_saved_icon">
-          <span>✓</span>
-        </template>
-      </transition>
-    </div>
+    <transition name="fade" :duration="600">
+      <div
+        class="quillWrapper--savingIndicator"
+        v-if="enable_collaboration && (is_loading_or_saving || show_saved_icon)"
+      >
+        <transition name="fade" :duration="600">
+          <template v-if="is_loading_or_saving">
+            <span class="loader loader-small" />
+          </template>
+          <template v-else-if="show_saved_icon">
+            <span>✓</span>
+          </template>
+        </transition>
+      </div>
+    </transition>
     <!-- <div class="_customCaret" :style="_customCaret_style" /> -->
   </div>
 </template>
@@ -249,6 +253,7 @@ export default {
 
     this.$nextTick(() => {
       this.editor.root.innerHTML = this.value;
+
       this.is_loading_or_saving = false;
 
       if (this.$root.state.mode === "live") {

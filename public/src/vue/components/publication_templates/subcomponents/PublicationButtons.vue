@@ -13,9 +13,9 @@
           </button>
         </label>
         <div v-if="show_create_options">
-          <small>{{
-            $t("import_medias_from_projects_or_create_shapes_here")
-          }}</small>
+          <small>
+            {{ $t("import_medias_from_projects_or_create_shapes_here") }}
+          </small>
           <div>
             <button
               class="button _create_buttons"
@@ -353,9 +353,9 @@
         </label>
         <template v-if="show_edit_options">
           <div v-if="!media">
-            <small class>
-              {{ $t("click_on_a_bloc_to_edit_its_presentation") }}
-            </small>
+            <small class>{{
+              $t("click_on_a_bloc_to_edit_its_presentation")
+            }}</small>
           </div>
           <div v-else>
             <div
@@ -460,7 +460,6 @@
               <label>{{ $t("layer_order") }}</label>
               <div>
                 <small>{{ $t("layer_order_instructions") }}</small>
-
                 {{ mediaZIndex }}
                 <button
                   type="button"
@@ -555,6 +554,7 @@
                   v-model="custom_css"
                   @change="/* setCSSForMedia */"
                   language="css"
+                  ref="prismEditor"
                 />
                 <div class="m_customStyles--sendButton">
                   <button
@@ -595,7 +595,9 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.updateMediaStyles();
+  },
   beforeDestroy() {},
   watch: {
     "$root.settings.current_publication.selected_medias": function () {
@@ -605,14 +607,28 @@ export default {
       // this.show_create_options = false;
       // this.show_create_options = true;
     },
-    media: function () {
-      if (this.media) {
-        this.custom_css = this.media.hasOwnProperty("custom_css")
-          ? this.media.custom_css
-          : this.custom_css;
-        if (!!this.custom_css) {
-          this.show_custom_css = true;
+    media: {
+      handler: function () {
+        if (this.media) {
+          this.custom_css = this.media.hasOwnProperty("custom_css")
+            ? this.media.custom_css
+            : "";
+          if (!!this.custom_css) {
+            this.show_custom_css = true;
+          }
         }
+      },
+      deep: true,
+    },
+    show_custom_css() {
+      if (this.show_custom_css) {
+        this.$nextTick(() => {
+          if (
+            this.$refs.prismEditor &&
+            this.$refs.prismEditor.$el.firstElementChild
+          )
+            this.$refs.prismEditor.$el.firstElementChild.focus();
+        });
       }
     },
   },
@@ -706,6 +722,7 @@ export default {
         z_index: this.mediaZIndex + val,
       });
     },
+    updateMediaStyles() {},
   },
 };
 </script>

@@ -23,7 +23,7 @@
       >
         {{ $t("reply") }}
       </button>
-    </div> -->
+    </div>-->
     <div class="m_mediaPlaceholder--replies">
       <template v-if="modes_allowed.hasOwnProperty('choices')">
         <template
@@ -169,7 +169,7 @@
           </template>
         </transition-group>
       </template>
-      <div v-if="answer_type_expected" class="">
+      <div v-if="answer_type_expected" class>
         <small
           class="margin-sides-small"
           v-html="
@@ -372,7 +372,6 @@ export default {
           })
           .then((mdata) => {
             this.$nextTick(() => {
-              debugger;
               return resolve(mdata);
             });
           });

@@ -390,7 +390,7 @@
           <div>
             {{ media.authors }}
           </div>
-        </div>-->
+            </div>-->
 
             <DateField :title="'created'" :date="media.date_created" />
 
@@ -476,6 +476,7 @@
         :context="'edit'"
         :slugFolderName="slugProjectName"
         :media="media"
+        :folderType="'projects'"
         :read_only="read_only || !can_edit_media"
         v-model="mediadata.content"
       />
