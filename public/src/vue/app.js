@@ -524,6 +524,7 @@ let vm = new Vue({
       this.$eventHub.$once("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "projects" });
+        this.$socketio.listFolders({ type: "publications" });
         this.loadAllChats();
         this.updateNetworkInfos();
 
@@ -913,11 +914,21 @@ let vm = new Vue({
       });
     },
     getAuthor(slugFolderName) {
-      if (Object.keys(this.store.authors).length === 0) return false;
-      const author = Object.values(this.store.authors).find(
-        (a) => a.slugFolderName === slugFolderName
+      return this.getFolder({ slugFolderName, type: "authors" });
+    },
+    getFolder({ slugFolderName, type }) {
+      if (
+        Object.keys(this.store[type]).length === 0 ||
+        !this.store[type].hasOwnProperty(slugFolderName)
+      )
+        return false;
+      return this.store[type][slugFolderName];
+    },
+    getPublication(slugFolderName) {
+      if (Object.keys(this.store.publications).length === 0) return false;
+      return Object.values(this.store.publications).find(
+        (p) => p.slugFolderName === slugFolderName
       );
-      return author;
     },
     getAllTypesFrom(base) {
       let uniquetTypes = [];
