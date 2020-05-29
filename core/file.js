@@ -1136,12 +1136,15 @@ module.exports = (function () {
                       }
                       // Legacy : if no filename in meta file when it is expected in blueprint
                       // then it means its in the name of the text file
-                      // else {
-                      //   return new RegExp(
-                      //     global.settings.regexpRemoveFileExtension,
-                      //     "i"
-                      //   ).exec(metaFileName)[1];
-                      // }
+                      else {
+                        const metaFileName_without_ext = new RegExp(
+                          global.settings.regexpRemoveFileExtension,
+                          "i"
+                        ).exec(metaFileName)[1];
+
+                        if (metaFileName_without_ext.includes("."))
+                          return metaFileName_without_ext;
+                      }
                     }
                   }
                   let mediaFileName = getMediaFilename(meta, metaFileName);
@@ -1197,13 +1200,15 @@ module.exports = (function () {
             ) {
               if (meta.hasOwnProperty("media_filename")) {
                 return meta.media_filename;
+              } else {
+                const metaFileName_without_ext = new RegExp(
+                  global.settings.regexpRemoveFileExtension,
+                  "i"
+                ).exec(metaFileName)[1];
+
+                if (metaFileName_without_ext.includes("."))
+                  return metaFileName_without_ext;
               }
-              //  else {
-              //   return new RegExp(
-              //     global.settings.regexpRemoveFileExtension,
-              //     "i"
-              //   ).exec(metaFileName)[1];
-              // }
             } else {
               return "";
             }
@@ -1684,17 +1689,20 @@ module.exports = (function () {
 
             // Legacy : if no filename in meta file when it is expected in blueprint
             // then it means its in the name of the text file
-            // if (
-            //   !mediaData.hasOwnProperty("media_filename") &&
-            //   global.settings.structure[type].medias.fields.hasOwnProperty(
-            //     "media_filename"
-            //   )
-            // ) {
-            //   mediaData.media_filename = new RegExp(
-            //     global.settings.regexpRemoveFileExtension,
-            //     "i"
-            //   ).exec(metaFileName)[1];
-            // }
+            if (
+              !mediaData.hasOwnProperty("media_filename") &&
+              global.settings.structure[type].medias.fields.hasOwnProperty(
+                "media_filename"
+              )
+            ) {
+              const metaFileName_without_ext = new RegExp(
+                global.settings.regexpRemoveFileExtension,
+                "i"
+              ).exec(metaFileName)[1];
+
+              if (metaFileName_without_ext.includes("."))
+                mediaData.media_filename = metaFileName_without_ext;
+            }
 
             if (
               (mediaData.type === "text" ||
