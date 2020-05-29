@@ -502,9 +502,12 @@ export default {
     },
     urlToPortrait(author) {
       if (!author || !author.preview) return false;
-      let pathToSmallestThumb = author.preview.filter((m) => m.size === 30)[0]
-        .path;
-      return pathToSmallestThumb;
+      let pathToSmallestThumb = author.preview.find((m) => m.size === 50);
+      if (pathToSmallestThumb && pathToSmallestThumb.path) {
+        pathToSmallestThumb = pathToSmallestThumb.path;
+        return pathToSmallestThumb;
+      }
+      return false;
     },
     removeMessage(message) {
       if (this.$root.state.dev_mode === "debug") {
