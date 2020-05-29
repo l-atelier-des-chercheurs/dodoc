@@ -398,6 +398,7 @@ export default {
       );
     },
     author_is_connected() {
+      if (!this.$root.unique_clients) return false;
       return this.$root.unique_clients.find((client) => {
         return (
           client.data &&

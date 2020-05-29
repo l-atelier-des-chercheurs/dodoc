@@ -76,7 +76,7 @@
         $root.store.request.display !== 'survey' &&
         (!$root.current_author ||
           $root.current_author.role !== 'participant') &&
-        !$root.state.local_options.force_login
+        (!$root.state.local_options.force_login || $root.current_author)
       "
     >
       <FullDodoc />
