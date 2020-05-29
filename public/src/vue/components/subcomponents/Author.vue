@@ -97,6 +97,190 @@
         </div>
 
         <div
+          class="m_author--connected bg-bleumarine_clair padding-verysmall"
+          v-if="author_is_connected"
+        >
+          <label class="">
+            <button
+              type="button"
+              class="button-nostyle padding-none text-uc button-triangle"
+              :class="{ 'is--active': show_connection_information }"
+              @click.stop="
+                show_connection_information = !show_connection_information
+              "
+            >
+              {{ $t("currently_connected") }}
+            </button>
+          </label>
+          <div v-if="show_connection_information && author_looking_at">
+            <div
+              class="m_metaField"
+              v-if="
+                author_looking_at.looking_at_project &&
+                author_looking_at.looking_at_project.slugFolderName &&
+                $root.getFolder({
+                  type: 'projects',
+                  slugFolderName:
+                    author_looking_at.looking_at_project.slugFolderName,
+                })
+              "
+            >
+              <div>{{ $t("project") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="
+                    closeAuthorAndShowProject(
+                      author_looking_at.looking_at_project.slugFolderName
+                    )
+                  "
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial;"
+                >
+                  {{
+                    $root.getFolder({
+                      type: "projects",
+                      slugFolderName:
+                        author_looking_at.looking_at_project.slugFolderName,
+                    }).name
+                  }}
+
+                  ↑
+                </button>
+              </div>
+            </div>
+            <div
+              class="m_metaField"
+              v-if="
+                author_looking_at.opened_media_modal &&
+                author_looking_at.opened_media_modal.slugFolderName &&
+                author_looking_at.opened_media_modal.metaFileName &&
+                $root.getFolder({
+                  type: 'projects',
+                  slugFolderName:
+                    author_looking_at.looking_at_project.slugFolderName,
+                })
+              "
+            >
+              <div>{{ $t("media") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="
+                    closeAuthorAndShowMedia({
+                      slugFolderName:
+                        author_looking_at.looking_at_project.slugFolderName,
+                      metaFileName:
+                        author_looking_at.opened_media_modal.metaFileName,
+                    })
+                  "
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial;"
+                >
+                  {{
+                    $root.getFolder({
+                      type: "projects",
+                      slugFolderName:
+                        author_looking_at.looking_at_project.slugFolderName,
+                    }).name
+                  }}
+                  / {{ author_looking_at.opened_media_modal.metaFileName }}
+
+                  ↑
+                </button>
+              </div>
+            </div>
+            <div
+              class="m_metaField"
+              v-if="
+                author_looking_at.looking_at_publi &&
+                author_looking_at.looking_at_publi.slugFolderName &&
+                $root.getFolder({
+                  type: 'publications',
+                  slugFolderName:
+                    author_looking_at.looking_at_publi.slugFolderName,
+                })
+              "
+            >
+              <div>{{ $t("publication") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="
+                    closeAuthorAndShowPubli(
+                      author_looking_at.looking_at_publi.slugFolderName
+                    )
+                  "
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial;"
+                >
+                  {{
+                    $root.getFolder({
+                      type: "publications",
+                      slugFolderName:
+                        author_looking_at.looking_at_publi.slugFolderName,
+                    }).name
+                  }}
+
+                  ↑
+                </button>
+              </div>
+            </div>
+            <div
+              class="m_metaField"
+              v-if="
+                author_looking_at.looking_at_chat &&
+                author_looking_at.looking_at_chat.slugFolderName &&
+                $root.getFolder({
+                  type: 'chats',
+                  slugFolderName:
+                    author_looking_at.looking_at_chat.slugFolderName,
+                })
+              "
+            >
+              <div>{{ $t("chat") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="
+                    closeAuthorAndShowChat(
+                      author_looking_at.looking_at_chat.slugFolderName
+                    )
+                  "
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial;"
+                >
+                  {{
+                    $root.getFolder({
+                      type: "chats",
+                      slugFolderName:
+                        author_looking_at.looking_at_chat.slugFolderName,
+                    }).name
+                  }}
+                  ↑
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
           class
           v-if="
             can_login_as_author &&
@@ -180,6 +364,7 @@ export default {
     return {
       edit_author_mode: false,
       show_input_password_field: false,
+      show_connection_information: false,
     };
   },
   created() {},
@@ -211,6 +396,20 @@ export default {
       return (
         this.author.slugFolderName === this.$root.current_author.slugFolderName
       );
+    },
+    author_is_connected() {
+      return this.$root.unique_clients.find((client) => {
+        return (
+          client.data &&
+          client.data.author &&
+          client.data.author.slugFolderName === this.author.slugFolderName
+        );
+      });
+    },
+    author_looking_at() {
+      if (!this.author_is_connected || !this.author_is_connected.data)
+        return false;
+      return this.author_is_connected.data;
     },
   },
   methods: {
@@ -309,7 +508,42 @@ export default {
         }
       });
     },
-
+    closeAuthorAndShowProject(slugFolderName) {
+      this.$emit("close");
+      this.$root.openProject(slugFolderName);
+    },
+    closeAuthorAndShowMedia({ slugFolderName, metaFileName }) {
+      this.$emit("close");
+      this.$root.openMedia({ slugProjectName: slugFolderName, metaFileName });
+    },
+    closeAuthorAndShowPubli(slugFolderName) {
+      this.$emit("close");
+      if (!this.$root.current_publication) {
+        this.openPubliPanel();
+        this.$eventHub.$emit("resizePanels", [
+          { size: 40 },
+          { size: 60 },
+          { size: 0 },
+        ]);
+      }
+      this.$nextTick(() => {
+        this.$root.openPublication(slugFolderName);
+      });
+    },
+    closeAuthorAndShowChat(slugFolderName) {
+      this.$emit("close");
+      if (!this.$root.current_chat) {
+        this.$root.openChatPanel();
+        this.$eventHub.$emit("resizePanels", [
+          { size: 40 },
+          { size: 0 },
+          { size: 60 },
+        ]);
+      }
+      this.$nextTick(() => {
+        this.$root.openChat(slugFolderName);
+      });
+    },
     removeAuthor() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`Author • METHODS / removeAuthor`);

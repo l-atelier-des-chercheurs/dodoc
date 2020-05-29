@@ -32,6 +32,10 @@
             {{ author.slugFolderName }}
           </template>
         </span>
+        <ClientsCheckingOut
+          :type="'publications'"
+          :slugFolderName="slugPubliName"
+        />
       </div>
     </td>
     <td class="font-folder_title">
@@ -63,12 +67,13 @@
 <script>
 import AccessController from "./subcomponents/AccessController.vue";
 import ProtectedLock from "./subcomponents/ProtectedLock.vue";
+import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 
 export default {
   props: {
     publication: Object,
   },
-  components: { AccessController, ProtectedLock },
+  components: { AccessController, ProtectedLock, ClientsCheckingOut },
   data() {
     return {
       show_input_pwd: false,

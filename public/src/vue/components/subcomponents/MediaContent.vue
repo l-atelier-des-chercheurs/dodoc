@@ -109,9 +109,8 @@
               :class="{
                 'is--active': interactive_stl_mode,
               }"
+              >{{ $t("interactive_preview") }}</label
             >
-              {{ $t("interactive_preview") }}
-            </label>
           </div>
         </div>
       </template>
@@ -151,8 +150,10 @@
         v-if="context === 'edit'"
         v-model="htmlForEditor"
         :media="media"
-        :slugFolderName="slugFolderName"
         :read_only="read_only"
+        :slugFolderName="slugFolderName"
+        :enable_collaboration="true"
+        :type="folderType"
         ref="textField"
       />
       <div v-else class="mediaTextContent">

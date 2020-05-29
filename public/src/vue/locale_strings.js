@@ -948,6 +948,10 @@ module.exports = (function () {
       oc: "Accedir a do•doc",
       de: "Verbinden sie zu do•doc",
     },
+    currently_connected: {
+      fr: "Connecté en ce moment",
+      en: "Currently connected",
+    },
     login: {
       fr: "S’identifier",
       en: "Login",

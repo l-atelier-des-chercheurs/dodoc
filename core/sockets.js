@@ -993,7 +993,9 @@ module.exports = (function () {
   }
 
   function onUpdateClientInfo(socket, data) {
-    socket._data = data;
+    Object.keys(data).map((k) => {
+      socket._data[k] = data[k];
+    });
     sendClients();
   }
   function onListClientsInfo(socket) {

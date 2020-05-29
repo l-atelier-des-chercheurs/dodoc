@@ -164,9 +164,9 @@
             v-for="reply in replies"
             :key="reply.slugFolderName"
           >
-            <a :href="`/_publications/survey/${reply.slugFolderName}`">{{
-              reply.name
-            }}</a>
+            <a :href="`/_publications/survey/${reply.slugFolderName}`">
+              {{ reply.name }}
+            </a>
             <div>
               <small>
                 {{ $t("created_date") }} —
@@ -266,8 +266,6 @@ export default {
         if (!acc.includes(r.follows_model)) acc.push(r.follows_model);
         return acc;
       }, []);
-
-      debugger;
 
       const user_replies_by_model = all_models_slugs.reduce(
         (acc, model_slug) => {

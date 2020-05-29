@@ -18,11 +18,11 @@
       <div v-if="media._linked_media.hasOwnProperty('_isAbsent')">
         {{ $t("linked_media_wasnt_found") }}
         <br />
-        <small
-          >{{ media._linked_media.slugProjectName }}/{{
+        <small>
+          {{ media._linked_media.slugProjectName }}/{{
             media._linked_media.slugMediaName
-          }}</small
-        >
+          }}
+        </small>
       </div>
       <MediaContent
         v-else
@@ -90,7 +90,7 @@
             />
           </template>
           <!-- class="fixedPanel"
-            :theme="'bubble'" -->
+          :theme="'bubble'"-->
 
           <div v-else class="mediaTextContent">
             <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />

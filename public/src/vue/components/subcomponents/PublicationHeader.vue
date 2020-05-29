@@ -188,6 +188,12 @@
           </small>
         </div>
       </div>
+      <div class="text-centered" style="width: 100%;">
+        <ClientsCheckingOut
+          :type="'publications'"
+          :slugFolderName="slugPubliName"
+        />
+      </div>
 
       <div
         class="text-centered"
@@ -224,6 +230,7 @@
         </div>
       </div>
     </div>
+
     <div class="m_publicationMeta--settingsBar" v-if="show_settings">
       <div>
         <div class="m_metaField" v-if="!!publication.authors">
@@ -372,6 +379,7 @@
 import EditPublication from "../modals/EditPublication.vue";
 import AccessController from "./AccessController.vue";
 import ProtectedLock from "./ProtectedLock.vue";
+import ClientsCheckingOut from "./ClientsCheckingOut.vue";
 
 export default {
   props: {
@@ -397,6 +405,7 @@ export default {
     EditPublication,
     AccessController,
     ProtectedLock,
+    ClientsCheckingOut,
   },
   data() {
     return {

@@ -246,7 +246,6 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • App: splitpanes resize`);
 
-      debugger;
       this.panels_width.doPane = $event[0].size;
       this.panels_width.docPane = $event[1].size;
       this.panels_width.chatPane = $event[2].size;

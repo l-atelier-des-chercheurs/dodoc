@@ -71,6 +71,11 @@
             </button>
           </div>
         </div>
+        <ClientsCheckingOut
+          :type="'chats'"
+          :slugFolderName="chat.slugFolderName"
+        />
+
         <div
           class="m_chat--content--topbar--optionbar"
           v-if="show_chat_options"
@@ -271,6 +276,7 @@
 import ProtectedLock from "./subcomponents/ProtectedLock.vue";
 import AccessController from "./subcomponents/AccessController.vue";
 import EditChat from "./modals/EditChat.vue";
+import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 
 export default {
   props: {
@@ -280,6 +286,7 @@ export default {
     ProtectedLock,
     AccessController,
     EditChat,
+    ClientsCheckingOut,
   },
   data() {
     return {
@@ -502,9 +509,12 @@ export default {
     },
     urlToPortrait(author) {
       if (!author || !author.preview) return false;
-      let pathToSmallestThumb = author.preview.filter((m) => m.size === 30)[0]
-        .path;
-      return pathToSmallestThumb;
+      let pathToSmallestThumb = author.preview.find((m) => m.size === 50);
+      if (pathToSmallestThumb && pathToSmallestThumb.path) {
+        pathToSmallestThumb = pathToSmallestThumb.path;
+        return pathToSmallestThumb;
+      }
+      return false;
     },
     removeMessage(message) {
       if (this.$root.state.dev_mode === "debug") {
