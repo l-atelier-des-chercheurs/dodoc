@@ -414,6 +414,12 @@
           overscroll-behavior-y: contain;
           .custom_scrollbar(8px, 5px, 6px);
           // .custom_scrollbar(1px, 5px, 4px, rgba(255, 255, 255, 0), #333);
+
+          &::after {
+            content: "";
+            display: block;
+            height: 0.5em;
+          }
         }
       }
     }
