@@ -570,6 +570,10 @@
         },
         "pinned": {
           "type": "boolean"
+        },
+        "number_of_medias": {
+          "type": "number",
+          "only_admin_can_edit": true
         }
       },
       "medias": {

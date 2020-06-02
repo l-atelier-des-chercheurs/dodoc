@@ -92,7 +92,7 @@
     transition: background-color 0.4s ease-out;
 
     > * {
-      flex: 1 1 200px;
+      flex: 1 1 300px;
       // transition: all .5s ease-out;
 
       &.m_modal--sidebar {
@@ -118,6 +118,10 @@
         height: 90vh;
         overflow: hidden;
         border-right: 1px solid @c-gris_clair;
+
+        #app:not(.is--wide) & {
+          height: auto;
+        }
       }
     }
 
@@ -188,13 +192,13 @@
           min-height: 70vh;
         }
         #app:not(.is--wide) & {
-          position: fixed;
-          height: 50vh;
+          // position: fixed;
+          // height: 50vh;
         }
       }
       .m_modal--sidebar {
         #app:not(.is--wide) & {
-          margin-top: 50vh;
+          // margin-top: 50vh;
           margin-bottom: 3em;
         }
       }
@@ -414,6 +418,12 @@
           overscroll-behavior-y: contain;
           .custom_scrollbar(8px, 5px, 6px);
           // .custom_scrollbar(1px, 5px, 4px, rgba(255, 255, 255, 0), #333);
+
+          &::after {
+            content: "";
+            display: block;
+            height: 0.5em;
+          }
         }
       }
     }
@@ -537,6 +547,10 @@
 
 .m_modal--header {
   border-bottom: 2px solid @c-gris_clair;
+
+  #app:not(.is--wide) & {
+    border-top: 2px solid @c-gris_clair;
+  }
 
   h3 {
     .padding-sides-medium;

@@ -174,6 +174,7 @@ export default {
         "code-block",
         "formula",
         "divider",
+        "video",
       ],
 
       is_focused: false,

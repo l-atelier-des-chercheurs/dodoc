@@ -8,14 +8,58 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_create_options }"
             @click="show_create_options = !show_create_options"
-          >
-            {{ $t("create") }}
-          </button>
+          >{{ $t("create") }}</button>
         </label>
         <div v-if="show_create_options">
-          <small>
-            {{ $t("import_medias_from_projects_or_create_shapes_here") }}
-          </small>
+          <small>{{ $t("import_medias_from_projects_or_create_shapes_here") }}</small>
+
+          <div>
+            <button
+              class="button _create_buttons"
+              @mousedown.stop.prevent="enable_capture_mode = true"
+              @touchstart.stop.prevent="enable_capture_mode = true"
+            >
+              <svg
+                version="1.1"
+                class="inline-svg inline-svg-larger"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="168px"
+                height="168px"
+                viewBox="0 0 168 168"
+                style="enable-background: new 0 0 168 168;"
+                xml:space="preserve"
+              >
+                <path
+                  style="fill: #52c5b9;"
+                  d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
+                />
+                <circle
+                  style="
+                    fill: #1b2f81;
+                    stroke-width: 15;
+                    stroke-miterlimit: 10;
+                  "
+                  cx="84"
+                  cy="84"
+                  r="41.8"
+                />
+              </svg>
+              <span>{{ $t("capture") }}</span>
+            </button>
+          </div>
+
+          <CaptureViewModal
+            v-if="enable_capture_mode"
+            :slugFolderName="slugPubliName"
+            :type="'publications'"
+            :read_only="read_only"
+            @close="enable_capture_mode = false"
+            @insertMedias="(metaFileNames) => insertImportedMedias(metaFileNames)"
+          />
+
           <div>
             <button
               class="button _create_buttons"
@@ -53,32 +97,11 @@
                   style="fill: #52c5b9;"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
-                <rect
-                  x="79.4"
-                  y="52.1"
-                  style="fill: #1b2f81;"
-                  width="62.3"
-                  height="15"
-                />
-                <rect
-                  x="79.4"
-                  y="79.5"
-                  style="fill: #1b2f81;"
-                  width="62.3"
-                  height="15"
-                />
-                <rect
-                  x="79.4"
-                  y="107"
-                  style="fill: #1b2f81;"
-                  width="62.3"
-                  height="15"
-                />
+                <rect x="79.4" y="52.1" style="fill: #1b2f81;" width="62.3" height="15" />
+                <rect x="79.4" y="79.5" style="fill: #1b2f81;" width="62.3" height="15" />
+                <rect x="79.4" y="107" style="fill: #1b2f81;" width="62.3" height="15" />
 
-                <path
-                  style="fill: #1b2f81;"
-                  d="M21.2,52.1h49v15H53.7V122H37.6V67.1H21.2V52.1z"
-                />
+                <path style="fill: #1b2f81;" d="M21.2,52.1h49v15H53.7V122H37.6V67.1H21.2V52.1z" />
               </svg>
               <span>{{ $t("text") }}</span>
             </button>
@@ -347,15 +370,15 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_edit_options }"
             @click="show_edit_options = !show_edit_options"
-          >
-            {{ $t("edit") }}
-          </button>
+          >{{ $t("edit") }}</button>
         </label>
         <template v-if="show_edit_options">
           <div v-if="!media">
-            <small class>{{
+            <small class>
+              {{
               $t("click_on_a_bloc_to_edit_its_presentation")
-            }}</small>
+              }}
+            </small>
           </div>
           <div v-else>
             <div
@@ -368,20 +391,10 @@
             >
               <label>{{ $t("font_size") }}</label>
               <div>
-                <input
-                  type="range"
-                  min="0"
-                  max="300"
-                  step="1"
-                  v-model="font_size_percent"
-                />
+                <input type="range" min="0" max="300" step="1" v-model="font_size_percent" />
               </div>
               <div class="input-group">
-                <input
-                  type="number"
-                  class="input-small"
-                  v-model="font_size_percent"
-                />
+                <input type="number" class="input-small" v-model="font_size_percent" />
                 <span class="input-addon input-addon-small">%</span>
               </div>
             </div>
@@ -402,16 +415,10 @@
                   class="buttonLink padding-verysmall margin-none"
                   v-if="fill_color !== ''"
                   @click="fill_color = ''"
-                >
-                  ×
-                </button>
+                >×</button>
               </label>
               <div>
-                <input
-                  type="color"
-                  v-model="fill_color"
-                  :novalue="fill_color === ''"
-                />
+                <input type="color" v-model="fill_color" :novalue="fill_color === ''" />
               </div>
             </div>
             <div class="item">
@@ -422,36 +429,20 @@
                   class="buttonLink padding-verysmall margin-none"
                   v-if="stroke_color !== ''"
                   @click="stroke_color = ''"
-                >
-                  ×
-                </button>
+                >×</button>
               </label>
               <div>
-                <input
-                  type="color"
-                  v-model="stroke_color"
-                  :novalue="stroke_color === ''"
-                />
+                <input type="color" v-model="stroke_color" :novalue="stroke_color === ''" />
               </div>
             </div>
 
             <div class="item" v-if="stroke_color !== ''">
               <label>{{ $t("stroke_width") }}</label>
               <div>
-                <input
-                  type="range"
-                  min="1"
-                  max="20"
-                  step="1"
-                  v-model="stroke_width"
-                />
+                <input type="range" min="1" max="20" step="1" v-model="stroke_width" />
               </div>
               <div class="input-group">
-                <input
-                  type="number"
-                  class="input-small"
-                  v-model="stroke_width"
-                />
+                <input type="number" class="input-small" v-model="stroke_width" />
                 <span class="input-addon input-addon-small">pt</span>
               </div>
             </div>
@@ -545,9 +536,7 @@
                   class="button-nostyle text-uc button-triangle"
                   :class="{ 'is--active': show_custom_css }"
                   @click.stop="show_custom_css = !show_custom_css"
-                >
-                  {{ $t("css_settings") }}
-                </button>
+                >{{ $t("css_settings") }}</button>
               </label>
               <div v-if="show_custom_css">
                 <PrismEditor
@@ -562,9 +551,7 @@
                     class="button-greenthin"
                     @click="updateMediaPubliMeta({ custom_css: custom_css })"
                     :class="{}"
-                  >
-                    {{ $t("send") }}
-                  </button>
+                  >{{ $t("send") }}</button>
                 </div>
               </div>
             </div>
@@ -576,22 +563,28 @@
 </template>
 <script>
 import PrismEditor from "vue-prism-editor";
+import CaptureViewModal from "../../modals/CaptureViewModal.vue";
 
 export default {
   props: {
     preview_mode: Boolean,
     slugPubliName: String,
     page_medias: Array,
+    publi_is_model: Boolean,
   },
   components: {
     PrismEditor,
+    CaptureViewModal,
   },
   data() {
     return {
       show_create_options: true,
       show_edit_options: true,
       show_custom_css: false,
+      enable_capture_mode: false,
       custom_css: "",
+
+      selected_files: [],
     };
   },
   created() {},
@@ -600,7 +593,7 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    "$root.settings.current_publication.selected_medias": function () {
+    "$root.settings.current_publication.selected_medias": function() {
       if (this.$root.settings.current_publication.selected_medias.length > 0) {
         this.show_edit_options = true;
       }
@@ -608,7 +601,7 @@ export default {
       // this.show_create_options = true;
     },
     media: {
-      handler: function () {
+      handler: function() {
         if (this.media) {
           this.custom_css = this.media.hasOwnProperty("custom_css")
             ? this.media.custom_css
@@ -644,7 +637,7 @@ export default {
       const all_selected_medias = this.$root.settings.current_publication.selected_medias.reduce(
         (acc, meta) => {
           const corresponding_media = this.page_medias.find(
-            (m) => m.metaFileName === meta
+            m => m.metaFileName === meta
           );
           if (corresponding_media) acc.push(corresponding_media);
           return acc;
@@ -727,6 +720,13 @@ export default {
       });
     },
     updateMediaStyles() {},
+    insertImportedMedias(metaFileNames) {
+      this.selected_files = [];
+      this.enable_capture_mode = false;
+      setTimeout(() => {
+        this.$emit("insertMedias", metaFileNames);
+      }, 500);
+    },
   },
 };
 </script>

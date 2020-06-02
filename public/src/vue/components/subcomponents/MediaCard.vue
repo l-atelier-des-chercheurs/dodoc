@@ -62,7 +62,7 @@
             </div>
           </div>
           <MediaContent
-            v-model="media.content"
+            v-model="media_content"
             :context="'preview'"
             :slugFolderName="slugProjectName"
             :media="media"
@@ -173,6 +173,10 @@ export default {
     },
   },
   computed: {
+    media_content() {
+      if (this.media.type !== "text") return this.media.content;
+      return this.media.content;
+    },
     is_media_in_publi() {
       return (
         Object.values(this.$root.current_publication_medias).findIndex(

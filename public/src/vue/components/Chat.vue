@@ -447,6 +447,7 @@ export default {
           channel: this.chat.slugFolderName,
           msg: this.sorted_messages[this.sorted_messages.length - 1]
             .metaFileName,
+          index: this.chat.number_of_medias,
         };
 
         let last_messages_read_in_channels = Array.isArray(
@@ -464,7 +465,9 @@ export default {
         );
         if (
           channel_info_in_author &&
-          channel_info_in_author.msg === last_message_channel.msg
+          channel_info_in_author.msg === last_message_channel.msg &&
+          Number(channel_info_in_author.index) ===
+            Number(last_message_channel.index)
         ) {
           // already up to date, do nothing
           return;
