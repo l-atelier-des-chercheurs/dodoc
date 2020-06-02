@@ -3,10 +3,9 @@
     class="m_publicationview"
     :class="{
       'is--preview': preview_mode,
-      'is--survey': $root.store.request.display === 'survey' || fullscreen_mode,
+      'is--survey': $root.store.request.display === 'survey',
       'has--model': model_for_this_publication,
     }"
-    ref="panel"
     @mousedown.self="$root.settings.current_publication.selected_medias = []"
     @touchstart.self="$root.settings.current_publication.selected_medias = []"
   >
@@ -20,9 +19,8 @@
     <PublicationDisplayButtons
       v-if="$root.store.request.display !== 'survey'"
       :preview_mode="preview_mode"
-      :fullscreen_mode="fullscreen_mode"
       @togglePreviewMode="$emit('togglePreviewMode')"
-      @toggleFullScreen="toggleFullScreen"
+      @toggleFullScreen="$emit('toggleFullScreen')"
     />
 
     <div
@@ -164,7 +162,6 @@ export default {
     can_see_publi: Boolean,
     read_only: Boolean,
     preview_mode: Boolean,
-    fullscreen_mode: Boolean,
     model_for_this_publication: [Boolean, Object],
   },
   components: {
@@ -282,36 +279,6 @@ export default {
           `METHODS • VideoPublication: toggleTransition for metaFileName = ${metaFileName} and position = ${position}`
         );
       this.$emit("editPubliMedia", { metaFileName, val });
-    },
-    toggleFullScreen() {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • PagePublication: toggleFullScreen`);
-
-      const docElem = this.$refs.panel;
-
-      if (this.fullscreen_mode === false) {
-        if (!!docElem.requestFullscreen) {
-          // W3C API
-          docElem.requestFullscreen();
-        } else if (!!docElem.mozRequestFullScreen) {
-          // Mozilla current API
-          docElem.mozRequestFullScreen();
-        } else if (!!docElem.webkitRequestFullScreen) {
-          // Webkit current API
-          docElem.webkitRequestFullScreen();
-        } // Maybe other prefixed APIs?
-      } else {
-        if (!!document.exitFullscreen) {
-          // W3C API
-          document.exitFullscreen();
-        } else if (!!document.mozExitFullscreen) {
-          // Mozilla current API
-          document.mozExitFullscreen();
-        } else if (!!document.webkitExitFullscreen) {
-          // Webkit current API
-          document.webkitExitFullscreen();
-        } // Maybe other prefixed APIs?
-      }
     },
     addMediaAtIndex(d) {
       if (this.$root.state.dev_mode === "debug")

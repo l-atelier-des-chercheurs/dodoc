@@ -45,7 +45,7 @@
     >
       <svg
         version="1.1"
-        v-if="!fullscreen_mode"
+        v-if="!$root.app_is_fullscreen"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
@@ -76,7 +76,7 @@
       </svg>
       <svg
         version="1.1"
-        v-if="fullscreen_mode"
+        v-if="$root.app_is_fullscreen"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
@@ -179,7 +179,6 @@
 export default {
   props: {
     preview_mode: Boolean,
-    fullscreen_mode: Boolean,
     show_zoom_buttons: {
       type: Boolean,
       default: false,
