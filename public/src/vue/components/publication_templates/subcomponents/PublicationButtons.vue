@@ -21,6 +21,40 @@
               class="button _create_buttons"
               @mousedown.stop.prevent="
                 $emit('addMedia', {
+                  type: 'unspecified',
+                })
+              "
+              @touchstart.stop.prevent="
+                $emit('addMedia', {
+                  type: 'unspecified',
+                })
+              "
+            >
+              <span>{{ $t("unspecified") }}</span>
+            </button>
+          </div>
+          <div>
+            <button
+              class="button _create_buttons"
+              @mousedown.stop.prevent="
+                $emit('addMedia', {
+                  type: 'capture',
+                })
+              "
+              @touchstart.stop.prevent="
+                $emit('addMedia', {
+                  type: 'capture',
+                })
+              "
+            >
+              <span>{{ $t("capture") }}</span>
+            </button>
+          </div>
+          <div>
+            <button
+              class="button _create_buttons"
+              @mousedown.stop.prevent="
+                $emit('addMedia', {
                   type: 'text',
                   stroke_color: stroke_color !== '' ? stroke_color : '',
                   fill_color: fill_color !== '' ? fill_color : '',
@@ -582,6 +616,7 @@ export default {
     preview_mode: Boolean,
     slugPubliName: String,
     page_medias: Array,
+    publi_is_model: Boolean,
   },
   components: {
     PrismEditor,

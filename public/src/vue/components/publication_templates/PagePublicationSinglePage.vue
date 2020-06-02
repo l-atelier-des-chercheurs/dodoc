@@ -84,6 +84,7 @@
                 :read_only="read_only"
                 :pixelsPerMillimeters="pixelsPerMillimeters"
                 :zoom="zoom"
+                :publi_is_model="publi_is_model"
                 @removePubliMedia="
                   (values) => {
                     removePubliMedia(values);
@@ -127,6 +128,7 @@ export default {
     read_only: Boolean,
     pixelsPerMillimeters: Number,
     zoom: Number,
+    publi_is_model: Boolean,
   },
   components: {
     MediaPublication,

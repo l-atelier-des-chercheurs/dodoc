@@ -426,6 +426,7 @@
             paged_medias[$root.settings.current_publication.page_id]
           "
           :slugPubliName="slugPubliName"
+          :publi="publication.is_model"
           @addMedia="createPubliMedia"
         />
 
@@ -438,6 +439,7 @@
             :slugPubliName="slugPubliName"
             :pageNumber="opened_page_index"
             :page="opened_single_page"
+            :publi_is_model="publication.is_model"
             :publication_medias="
               paged_medias[$root.settings.current_publication.page_id]
             "
