@@ -634,7 +634,11 @@ export default {
   },
   computed: {
     media() {
-      if (this.$root.settings.current_publication.selected_medias.length === 0)
+      if (
+        this.$root.settings.current_publication.selected_medias.length === 0 ||
+        !Array.isArray(this.page_medias) ||
+        this.page_medias.length === 0
+      )
         return false;
 
       const all_selected_medias = this.$root.settings.current_publication.selected_medias.reduce(

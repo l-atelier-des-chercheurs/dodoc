@@ -2,6 +2,7 @@
   <div>
     <PagePublication
       v-if="publication.template === 'page_by_page'"
+      ref="panel"
       :slugPubliName="slugPubliName"
       :publication="publication"
       :paged_medias="paged_medias"
@@ -9,12 +10,13 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
-      :fullscreen_mode="fullscreen_mode"
       @togglePreviewMode="preview_mode = !preview_mode"
+      @toggleFullScreen="toggleFullScreen"
       @addMedia="addMedia"
     />
     <Story
       v-if="publication.template === 'story'"
+      ref="panel"
       :slugPubliName="slugPubliName"
       :publication="publication"
       :medias_in_order="medias_in_order"
@@ -22,7 +24,6 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
-      :fullscreen_mode="fullscreen_mode"
       :model_for_this_publication="model_for_this_publication"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
@@ -31,6 +32,7 @@
       @addMedia="addMediaOrdered"
       @insertMediasInList="insertMediasInList"
       @togglePreviewMode="preview_mode = !preview_mode"
+      @toggleFullScreen="toggleFullScreen"
       @lockAndPublish="lockAndPublish"
     />
     <VideoPublication
@@ -64,6 +66,7 @@
 
     <DrawingPad
       v-else-if="publication.template === 'drawing_pad'"
+      ref="panel"
       :slugPubliName="slugPubliName"
       :publication="publication"
       :layered_medias="layered_medias"
@@ -71,7 +74,8 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
-      :fullscreen_mode="fullscreen_mode"
+      @togglePreviewMode="preview_mode = !preview_mode"
+      @toggleFullScreen="toggleFullScreen"
       @addMedia="addMedia"
     />
 
@@ -164,7 +168,6 @@ export default {
       medias: [],
       publication_model_medias: [],
       preview_mode: true,
-      fullscreen_mode: false,
     };
   },
   created() {},
@@ -393,13 +396,6 @@ export default {
       }
 
       this.medias = medias;
-    },
-    handleFullscreenChange() {
-      var fullscreenElement =
-        document.fullscreenElement ||
-        document.mozFullScreenElement ||
-        document.webkitFullscreenElement;
-      this.fullscreen_mode = fullscreenElement;
     },
     getLinkedMediasForPubli({ publication }) {
       let medias = [];
@@ -667,6 +663,38 @@ export default {
           viewing_limited_to,
         },
       });
+    },
+    toggleFullScreen() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Publication • METHODS: toggleFullScreen`);
+
+      debugger;
+
+      const docElem = this.$refs.panel.$el;
+      if (this.$root.app_is_fullscreen === false) {
+        if (!!docElem.requestFullscreen) {
+          // W3C API
+          docElem.requestFullscreen();
+        } else if (!!docElem.mozRequestFullScreen) {
+          // Mozilla current API
+          docElem.mozRequestFullScreen();
+        } else if (!!docElem.webkitRequestFullScreen) {
+          // Webkit current API
+          docElem.webkitRequestFullScreen();
+        } // Maybe other prefixed APIs?
+        // this.$root.app_is_fullscreen = true;
+      } else {
+        if (!!document.exitFullscreen) {
+          // W3C API
+          document.exitFullscreen();
+        } else if (!!document.mozExitFullscreen) {
+          // Mozilla current API
+          document.mozExitFullscreen();
+        } else if (!!document.webkitExitFullscreen) {
+          // Webkit current API
+          document.webkitExitFullscreen();
+        } // Maybe other prefixed APIs?
+      }
     },
   },
 };

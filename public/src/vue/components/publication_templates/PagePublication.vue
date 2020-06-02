@@ -1,7 +1,10 @@
 <template>
   <div
     class="m_publicationview"
-    :class="{ 'is--preview': preview_mode, 'is--fullscreen': fullscreen_mode }"
+    :class="{
+      'is--preview': preview_mode,
+      'is--fullscreen': $root.app_is_fullscreen,
+    }"
     ref="panel"
   >
     <PublicationHeader
@@ -21,14 +24,13 @@
 
     <PublicationDisplayButtons
       :preview_mode="preview_mode"
-      :fullscreen_mode="fullscreen_mode"
       :show_zoom_buttons="!contact_sheet_mode"
       :zoom="zoom"
       :zoom_min="zoom_min"
       :zoom_max="zoom_max"
       @togglePreviewMode="$emit('togglePreviewMode')"
       @setZoom="(val) => (zoom = val)"
-      @toggleFullScreen="$emit('update:fullscreen_mode')"
+      @toggleFullScreen="$emit('toggleFullScreen')"
     />
 
     <div
@@ -493,7 +495,6 @@ export default {
     can_edit_publi: Boolean,
     can_see_publi: Boolean,
     preview_mode: Boolean,
-    fullscreen_mode: Boolean,
   },
   components: {
     PublicationHeader,
@@ -590,7 +591,7 @@ export default {
       this.show_advanced_menu_for_page = false;
       this.show_advanced_option = false;
     },
-    fullscreen_mode: function () {
+    "$root.app_is_fullscreen": function () {
       setTimeout(() => {
         this.updatePageSizeAccordingToPanel();
       }, 500);
@@ -911,11 +912,13 @@ export default {
       if (this.$refs.current_page) {
         const posx_in_cm =
           this.$refs.current_page.$el.scrollLeft / this.pixelsPerMillimeters;
-        if (!Number.isNaN(posx_in_cm)) values.x = posx_in_cm;
+        if (!Number.isNaN(posx_in_cm))
+          values.x = Math.max(values.x, posx_in_cm);
 
         const posy_in_cm =
           this.$refs.current_page.$el.scrollTop / this.pixelsPerMillimeters;
-        if (!Number.isNaN(posy_in_cm)) values.y = posy_in_cm;
+        if (!Number.isNaN(posy_in_cm))
+          values.y = Math.max(values.y, posy_in_cm);
       }
 
       this.$emit("addMedia", { values });

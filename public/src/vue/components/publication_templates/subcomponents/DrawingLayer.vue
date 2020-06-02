@@ -1,6 +1,12 @@
 <template>
-  <div class="m_drawingLayer" :style="page_container_styles">
-    <div class="m_drawingLayer--content" :style="page_styles">
+  <div
+    class="m_drawingLayer"
+    :style="setPageContainerProperties(layer_options)"
+  >
+    <div
+      class="m_drawingLayer--content"
+      :style="setPageProperties(layer_options)"
+    >
       <canvas
         ref="canvas"
         v-if="layer_options.width * pixelsPerMillimeters > 0"
@@ -73,31 +79,7 @@ export default {
       deep: true,
     },
   },
-  computed: {
-    page_container_styles() {
-      if (this.$root.state.mode === "print_publication") return;
-
-      return `
-        width: ${this.layer_options.width * this.zoom}mm;
-        height: ${this.layer_options.height * this.zoom}mm;
-      `;
-    },
-    page_styles() {
-      if (this.$root.state.mode === "print_publication") {
-        // reducing page height by 1mm is necessary to prevent blank pages in-between
-        return `
-          width: ${this.layer_options.width}mm;
-          height: ${this.layer_options.height - 1}mm;
-        `;
-      } else {
-        return `
-          width: ${this.layer_options.width}mm;
-          height: ${this.layer_options.height}mm;
-          transform: scale(${this.zoom});
-        `;
-      }
-    },
-  },
+  computed: {},
   methods: {
     updateDrawingOptions(val) {
       if (this.$root.state.dev_mode === "debug")
@@ -107,6 +89,38 @@ export default {
 
       if (!this.canvas) return false;
       this.setDrawingOptions();
+    },
+    setPageContainerProperties(page) {
+      if (this.$root.state.mode === "print_publication") return;
+
+      let css = `
+        transform: scale(${this.zoom});
+        transform-origin: left top;
+      `;
+
+      return (css += `
+          width: ${page.width}mm;
+          height: ${page.height}mm;
+          margin: 40px;
+          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${
+        240 / this.zoom
+      }px;  
+          box-sizing: content-box;
+        `);
+    },
+    setPageProperties(page) {
+      if (this.$root.state.mode === "print_publication") {
+        // reducing page height by 1mm is necessary to prevent blank pages in-between
+        return `
+          width: ${page.width}mm;
+          height: ${page.height - 1}mm;
+        `;
+      } else {
+        return `
+          width: ${page.width}mm;
+          height: ${page.height}mm;
+        `;
+      }
     },
     startCanvas() {
       if (!this.$refs.canvas) {
