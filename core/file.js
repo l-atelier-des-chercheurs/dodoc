@@ -148,6 +148,29 @@ module.exports = (function () {
                   })
                 );
               }
+
+              // For each folder, find how many medias they have
+              if (
+                global.settings.structure[type].hasOwnProperty("medias") &&
+                global.settings.structure[type].fields.hasOwnProperty(
+                  "number_of_medias"
+                )
+              ) {
+                allFoldersData.push(
+                  new Promise((resolve, reject) => {
+                    dev.logverbose(`Figuring out how many medias they have`);
+                    API.getMediaMetaNames({ type, slugFolderName }).then(
+                      (list_metaFileName) => {
+                        resolve({
+                          [slugFolderName]: {
+                            number_of_medias: list_metaFileName.length,
+                          },
+                        });
+                      }
+                    );
+                  })
+                );
+              }
             }
           });
           Promise.all(allFoldersData).then((parsedFoldersData) => {
