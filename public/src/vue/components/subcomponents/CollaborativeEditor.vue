@@ -174,6 +174,7 @@ export default {
         "code-block",
         "formula",
         "divider",
+        "video",
       ],
 
       is_focused: false,
@@ -362,7 +363,7 @@ export default {
               4
             )}`
           );
-          // this.editor.setContents(doc.data);
+          this.editor.setContents(doc.data);
         }
 
         this.editor.setSelection(this.editor.getLength(), 0, "api");
