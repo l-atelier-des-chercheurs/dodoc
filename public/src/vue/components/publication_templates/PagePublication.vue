@@ -911,11 +911,13 @@ export default {
       if (this.$refs.current_page) {
         const posx_in_cm =
           this.$refs.current_page.$el.scrollLeft / this.pixelsPerMillimeters;
-        if (!Number.isNaN(posx_in_cm)) values.x = posx_in_cm;
+        if (!Number.isNaN(posx_in_cm))
+          values.x = Math.max(values.x, posx_in_cm);
 
         const posy_in_cm =
           this.$refs.current_page.$el.scrollTop / this.pixelsPerMillimeters;
-        if (!Number.isNaN(posy_in_cm)) values.y = posy_in_cm;
+        if (!Number.isNaN(posy_in_cm))
+          values.y = Math.max(values.y, posy_in_cm);
       }
 
       this.$emit("addMedia", { values });
