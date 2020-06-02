@@ -18,7 +18,9 @@
       @click.stop="
         !is_logged_in_as_author && can_login_as_author
           ? setAuthorWithoutPassword()
-          : (show_input_password_field = true)
+          : author.password === 'has_pass'
+          ? (show_input_password_field = true)
+          : ''
       "
     >
       <button
@@ -96,10 +98,7 @@
           <label>{{ $t(author.role) }}</label>
         </div>
 
-        <div
-          class="m_author--connected bg-bleumarine_clair padding-verysmall"
-          v-if="author_is_connected"
-        >
+        <div class="m_author--connected" v-if="author_is_connected" @click.stop>
           <label class="">
             <button
               type="button"
@@ -333,7 +332,7 @@
             author.slugFolderName !== $root.current_author.slugFolderName &&
             can_login_as_author
           "
-          class="buttonLink"
+          class="button-thin bg-bleumarine"
           @click.stop="setAuthorWithoutPassword()"
         >
           {{ $t("login") }}
@@ -341,7 +340,7 @@
         <button
           type="button"
           v-if="author.slugFolderName === $root.current_author.slugFolderName"
-          class="buttonLink"
+          class="button-redthin"
           @click.stop="unsetAuthor()"
         >
           {{ $t("logout") }}
