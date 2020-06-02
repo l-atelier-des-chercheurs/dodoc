@@ -84,10 +84,6 @@
           "type": "string",
           "options": ["everybody", "only_authors", ""],
           "default": "everybody"
-        },
-        "number_of_medias": {
-          "type": "number",
-          "only_admin_can_edit": true
         }
       },
       "medias": {
@@ -574,6 +570,10 @@
         },
         "pinned": {
           "type": "boolean"
+        },
+        "number_of_medias": {
+          "type": "number",
+          "only_admin_can_edit": true
         }
       },
       "medias": {
