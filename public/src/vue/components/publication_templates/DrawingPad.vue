@@ -50,16 +50,16 @@
           :key="'background'"
           class="m_drawingPad--layer m_drawingPad--layer_background"
         >
-          <div
-            class="m_drawingPad--layer--backgroundContainer"
-            :style="`width: ${publication.width * zoom}mm; height: ${
-              publication.height * zoom
-            }mm;`"
-          >
+          <div class="">
             <div
-              class="m_drawingPad--layer--backgroundContainer--background"
-              :style="`width: ${publication.width}mm; height: ${publication.height}mm; transform: scale(${zoom});`"
-            />
+              class="m_drawingPad--layer--backgroundContainer"
+              :style="setPageContainerProperties(publication)"
+            >
+              <div
+                class="m_drawingPad--layer--backgroundContainer--background"
+                :style="setPageProperties(publication)"
+              />
+            </div>
           </div>
         </div>
 
@@ -82,7 +82,7 @@
         >
           <PagePublicationSinglePage
             v-if="layer.type === 'medias'"
-            :mode="'drawingpad'"
+            :mode="'single'"
             :preview_mode="
               preview_mode ||
               (layer.id !== $root.settings.current_publication.layer_id &&
@@ -323,6 +323,38 @@ export default {
       );
       if (reference_media) return reference_media;
       return false;
+    },
+    setPageContainerProperties(page) {
+      if (this.$root.state.mode === "print_publication") return;
+
+      let css = `
+        transform: scale(${this.zoom});
+        transform-origin: left top;
+      `;
+
+      return (css += `
+          width: ${page.width}mm;
+          height: ${page.height}mm;
+          margin: 40px;
+          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${
+        240 / this.zoom
+      }px;  
+          box-sizing: content-box;
+        `);
+    },
+    setPageProperties(page) {
+      if (this.$root.state.mode === "print_publication") {
+        // reducing page height by 1mm is necessary to prevent blank pages in-between
+        return `
+          width: ${page.width}mm;
+          height: ${page.height - 1}mm;
+        `;
+      } else {
+        return `
+          width: ${page.width}mm;
+          height: ${page.height}mm;
+        `;
+      }
     },
   },
 };
