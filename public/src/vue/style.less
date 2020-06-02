@@ -577,8 +577,9 @@ body {
   .margin-small;
   min-height: 200px;
 
-  .bg-gris_tresclair;
+  .bg-creme;
   border-radius: @t-buttonradius;
+
   text-align: center;
   text-transform: initial;
 
@@ -598,6 +599,7 @@ body {
     font-weight: 200;
     .font-large;
     letter-spacing: -0.01em;
+    .padding-sides-small;
 
     > * {
       .margin-bottom-small;
@@ -632,6 +634,26 @@ body {
     position: absolute;
     top: 0;
     left: 0;
+  }
+
+  .m_author--connected {
+    .bg-bleumarine_clair;
+    border-radius: 4px;
+    .padding-verysmall;
+
+    > label {
+      .margin-bottom-none;
+      display: block;
+    }
+
+    .m_metaField:last-child {
+      margin-bottom: 0;
+    }
+    .m_metaField {
+      button {
+        padding: 2px 4px;
+      }
+    }
   }
 
   img {
