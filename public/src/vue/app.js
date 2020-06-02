@@ -834,12 +834,9 @@ let vm = new Vue({
       });
     },
     getUnreadMessageCount(chat) {
-      if (
-        typeof chat.medias !== "object" ||
-        Object.keys(chat.medias).length === 0 ||
-        !this.current_author
-      )
-        return false;
+      debugger;
+
+      if (!this.current_author) return false;
 
       if (
         !this.canSeeFolder({
@@ -849,7 +846,7 @@ let vm = new Vue({
       )
         return false;
 
-      const total_number_of_messages_in_chat = Object.keys(chat.medias).length;
+      const total_number_of_messages_in_chat = chat.number_of_medias;
 
       // find media with meta
       const last_messages_read_in_channels = this.current_author
@@ -859,14 +856,21 @@ let vm = new Vue({
         const existing_info = last_messages_read_in_channels.find(
           (c) => c.channel === chat.slugFolderName
         );
+
         if (existing_info) {
-          const last_message_metaFileName = existing_info.metaFileName;
-          const index_of_past_message_read = Object.values(
-            chat.medias
-          ).findIndex((m) => m.metaFileName === existing_info.msg);
-          return (
-            total_number_of_messages_in_chat - index_of_past_message_read - 1
-          );
+          // const last_message_metaFileName = existing_info.metaFileName;
+          // const index_of_past_message_read = Object.values(
+          //   chat.medias
+          // ).findIndex((m) => m.metaFileName === existing_info.msg);
+          // return (
+          //   total_number_of_messages_in_chat - index_of_past_message_read - 1
+          // );
+          // using index for performance reason (no need to list all chats to get a rough unread count)
+          if (existing_info.hasOwnProperty("index")) {
+            return (
+              total_number_of_messages_in_chat - Number(existing_info.index)
+            );
+          }
         }
       }
 
@@ -1668,19 +1672,20 @@ let vm = new Vue({
     },
     loadAllChats() {
       this.$socketio.listFolders({ type: "chats" });
-      this.$eventHub.$once("socketio.chats.folders_listed", () => {
-        let index = 0;
-        Object.keys(this.store.chats).forEach((slugChatName) => {
-          // const project_meta = this.store.chats[slugChatName];
-          index++;
-          setTimeout(() => {
-            this.$socketio.listMedias({
-              type: "chats",
-              slugFolderName: slugChatName,
-            });
-          }, 500 * index);
-        });
-      });
+      // too much data/power for limited reward
+      // this.$eventHub.$once("socketio.chats.folders_listed", () => {
+      //   let index = 0;
+      //   Object.keys(this.store.chats).forEach((slugChatName) => {
+      //     // const project_meta = this.store.chats[slugChatName];
+      //     index++;
+      //     setTimeout(() => {
+      //       this.$socketio.listMedias({
+      //         type: "chats",
+      //         slugFolderName: slugChatName,
+      //       });
+      //     }, 500 * index);
+      //   });
+      // });
     },
 
     loadAllProjectsMedias() {
