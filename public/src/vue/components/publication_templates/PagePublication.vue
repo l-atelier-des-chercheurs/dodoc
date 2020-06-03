@@ -871,6 +871,23 @@ export default {
           metaFileName: metaFileName,
           val: _values,
         });
+
+        const catchMediaEdition = d => {
+          if (metaFileName === d.metaFileName) {
+            this.$nextTick(() => {
+              this.$eventHub.$emit("publication.selectNewMedia", metaFileName);
+            });
+          } else {
+            this.$eventHub.$once(
+              `socketio.media_just_edited`,
+              catchMediaEdition
+            );
+          }
+        };
+        this.$eventHub.$once(
+          `publication.media_just_edited`,
+          catchMediaEdition
+        );
       });
     },
     prepareMetaToPlaceOnPage() {

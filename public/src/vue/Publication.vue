@@ -586,12 +586,16 @@ export default {
           )}`
         );
 
-      this.$root.editMedia({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        slugMediaName: metaFileName,
-        data: val,
-      });
+      this.$root
+        .editMedia({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          slugMediaName: metaFileName,
+          data: val,
+        })
+        .then(mdata => {
+          this.$eventHub.$emit("publication.media_just_edited", mdata);
+        });
     },
     editPubliFolder({ val }) {
       if (this.$root.state.dev_mode === "debug")
