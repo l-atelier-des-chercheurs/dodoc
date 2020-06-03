@@ -76,7 +76,7 @@
               :key="media.metaFileName"
               :model_placeholder_media="media"
               :slugPubliName="slugPubliName"
-              :publication="publication"
+              :publi_is_model="publication.is_model"
               :preview_mode="preview_mode"
               :read_only="read_only || !can_edit_publi"
               @addMedia="(values) => addMedia({ values })"
@@ -102,10 +102,7 @@
             />
 
             <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
-            <div
-              class="_story_insert_placeholders"
-              :key="`insert_${media.metaFileName}`"
-            >
+            <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
               <InsertMediaButton
                 v-if="
                   can_edit_publi &&

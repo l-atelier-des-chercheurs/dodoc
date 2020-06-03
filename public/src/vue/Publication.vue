@@ -10,6 +10,7 @@
       :can_edit_publi="can_edit_publi"
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
+      :model_for_this_publication="model_for_this_publication"
       @togglePreviewMode="preview_mode = !preview_mode"
       @editPubliMedia="editPubliMedia"
       @toggleFullScreen="toggleFullScreen"
@@ -277,7 +278,58 @@ export default {
       return this.publication.slugFolderName;
     },
     paged_medias() {
-      return this.$_.groupBy(this.medias, "page_id");
+      const publication = this.model_for_this_publication
+        ? this.model_for_this_publication
+        : this.publication;
+
+      // récupérer tous les médias du modèle
+      const medias = this.model_for_this_publication
+        ? this.publication_model_medias
+        : this.medias;
+
+      // return this.$_.groupBy(this.medias, "page_id");
+
+      return medias.reduce((acc, media) => {
+        if (this.model_for_this_publication && media.type === "placeholder") {
+          const placeholder_reply_media = this.medias.find(
+            m => m.placeholder_meta_reference === media.metaFileName
+          );
+          if (placeholder_reply_media) {
+            media._reply = placeholder_reply_media;
+
+            if (
+              placeholder_reply_media.hasOwnProperty(
+                "placeholder_medias_slugs"
+              ) &&
+              Array.isArray(placeholder_reply_media.placeholder_medias_slugs)
+            ) {
+              const reply_medias = placeholder_reply_media.placeholder_medias_slugs.reduce(
+                (acc, { slugMediaName }) => {
+                  const corresponding_media = this.medias.find(
+                    m => m.metaFileName === slugMediaName
+                  );
+                  if (corresponding_media) acc.push(corresponding_media);
+                  return acc;
+                },
+                []
+              );
+              if (reply_medias.length > 0) {
+                media._reply._medias = reply_medias;
+              }
+            }
+          }
+        }
+
+        const page_id = media.page_id;
+        if (!acc.hasOwnProperty(page_id)) acc[page_id] = [];
+
+        acc[page_id].push(media);
+        return acc;
+        // si le média du modèle est un placeholder
+        // chercher les médias de la réponse qui contiennent une référence au modèle
+      }, {});
+
+      return medias_in_order;
     },
     layered_medias() {
       return this.$_.groupBy(this.medias, "layer_id");
@@ -672,8 +724,6 @@ export default {
     toggleFullScreen() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`Publication • METHODS: toggleFullScreen`);
-
-      debugger;
 
       const docElem = this.$refs.panel.$el;
       if (this.$root.app_is_fullscreen === false) {

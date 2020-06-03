@@ -19,7 +19,7 @@
         :can_add_to_fav="false"
         :available_modes="undefined"
         @insertMedias="
-            (metaFileNames) => $emit('insertMedias', { metaFileNames })
+            (metaFileNames) => $emit('insertMedias', metaFileNames)
           "
       />
     </template>

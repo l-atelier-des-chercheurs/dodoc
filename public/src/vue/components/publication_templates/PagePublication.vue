@@ -4,6 +4,8 @@
     :class="{
       'is--preview': preview_mode,
       'is--fullscreen': $root.app_is_fullscreen,
+      'is--survey': $root.store.request.display === 'survey',
+      'has--model': model_for_this_publication,
     }"
     ref="panel"
   >
@@ -11,6 +13,7 @@
       :slugPubliName="slugPubliName"
       :publication="publication"
       :medias="paged_medias"
+      :model_for_this_publication="model_for_this_publication"
       @export="show_export_modal = true"
       @close="contact_sheet_mode ? $root.closePublication() : showAllPages()"
     />
@@ -78,9 +81,7 @@
           :publications_options="publications_options"
         />
       </div>
-
       <hr v-if="!contact_sheet_mode" class="margin-none" />
-
       <div class="m_publicationNavMenu--buttonRow" v-if="!contact_sheet_mode">
         <button type="button" @click="navPage(-1)" :disabled="opened_page_index === 0">
           <img src="/images/i_arrow_left.svg" draggable="false" />
@@ -137,6 +138,7 @@
           :pageNumber="pageNumber"
           :page="page"
           :publication_medias="paged_medias[page.id]"
+          :model_for_this_publication="model_for_this_publication"
           :read_only="read_only || !can_edit_publi"
           :pixelsPerMillimeters="pixelsPerMillimeters"
           :zoom="zoom"
@@ -167,6 +169,7 @@
               :pageNumber="pageNumber"
               :page="page"
               :publication_medias="paged_medias[page.id]"
+              :model_for_this_publication="model_for_this_publication"
               :read_only="read_only || !can_edit_publi"
               :pixelsPerMillimeters="pixelsPerMillimeters"
               :zoom="0.2"
@@ -313,6 +316,7 @@
               :pageNumber="pageNumber"
               :page="page"
               :publication_medias="paged_medias[page.id]"
+              :model_for_this_publication="model_for_this_publication"
               :read_only="read_only || !can_edit_publi"
               :pixelsPerMillimeters="pixelsPerMillimeters"
               :zoom="0.1"
@@ -382,6 +386,7 @@
             paged_medias[$root.settings.current_publication.page_id]
           "
           :slugPubliName="slugPubliName"
+          :publi_is_model="publication.is_model"
           :publi="publication.is_model"
           @addMedia="createPubliMedia"
           @insertMedias="
@@ -402,6 +407,7 @@
             :pageNumber="opened_page_index"
             :page="opened_single_page"
             :publi_is_model="publication.is_model"
+            :model_for_this_publication="model_for_this_publication"
             :publication_medias="
               paged_medias[$root.settings.current_publication.page_id]
             "
@@ -454,6 +460,7 @@ export default {
     read_only: Boolean,
     can_edit_publi: Boolean,
     can_see_publi: Boolean,
+    model_for_this_publication: Object,
     preview_mode: Boolean,
   },
   components: {
@@ -641,16 +648,18 @@ export default {
         console.log(`COMPUTED • pagesWithDefault`);
       }
 
+      const publication = this.model_for_this_publication
+        ? this.model_for_this_publication
+        : this.publication;
+
       if (
-        !this.publication.hasOwnProperty("pages") ||
-        this.publication.pages.length === 0
+        !publication.hasOwnProperty("pages") ||
+        publication.pages.length === 0
       ) {
         return [];
       }
 
-      let defaultPages = this.mergePageObjectWithDefault(
-        this.publication.pages
-      );
+      let defaultPages = this.mergePageObjectWithDefault(publication.pages);
 
       if (this.$root.settings.url_queries.hasOwnProperty("page")) {
         const idx = this.$root.settings.url_queries.page - 1;
@@ -663,6 +672,13 @@ export default {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`COMPUTED • removedPagesWithDefault`);
       }
+
+      // hide removedpages for following models
+      if (this.model_for_this_publication) return [];
+
+      const publication = this.model_for_this_publication
+        ? this.model_for_this_publication
+        : this.publication;
 
       if (
         !this.publication.hasOwnProperty("removed_pages") ||
@@ -858,8 +874,6 @@ export default {
     editMediaToPlaceOnPage({ metaFileNames }) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`PagePublication • METHODS: addMedia`);
-
-      debugger;
 
       metaFileNames.map((metaFileName, index) => {
         const _values = this.prepareMetaToPlaceOnPage();

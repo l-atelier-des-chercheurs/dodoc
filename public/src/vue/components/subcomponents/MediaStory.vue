@@ -20,7 +20,7 @@
         <br />
         <small>
           {{ media._linked_media.slugProjectName }}/{{
-            media._linked_media.slugMediaName
+          media._linked_media.slugMediaName
           }}
         </small>
       </div>
@@ -58,12 +58,7 @@
         v-model="media.content"
       />
 
-      <div
-        class="mediaContainer"
-        v-else
-        :class="`type-${media.type}`"
-        :data-context="context"
-      >
+      <div class="mediaContainer" v-else :class="`type-${media.type}`" :data-context="context">
         <template v-if="media.type === 'text'">
           <template
             v-if="
@@ -71,11 +66,7 @@
             "
           >
             <template v-if="media.only_numbers">
-              <input
-                type="number"
-                v-model="htmlForEditor"
-                @input="updateTextMedia"
-              />
+              <input type="number" v-model="htmlForEditor" @input="updateTextMedia" />
             </template>
 
             <CollaborativeEditor
@@ -98,9 +89,9 @@
           </div>
         </template>
         <template v-else-if="media.type === 'placeholder'">
-          <div class="m_mediaStory--placeholder">
+          <div class="_placeholder">
             <!-- <label>{{ $t("placeholder") }} </label> -->
-            <div class="m_mediaStory--placeholder--instructions">
+            <div class="_placeholder--instructions">
               <label>{{ $t("instructions") }}</label>
               <MediaField
                 :value="media.instructions"
@@ -113,7 +104,7 @@
                 "
               />
             </div>
-            <div class="m_mediaStory--placeholder--constraints">
+            <div class="_placeholder--constraints">
               <label v-html="$t('type_of_expected_contents:')" />
 
               <PlaceholderConstraints
@@ -337,21 +328,13 @@
                 />
               </g>
               <g>
-                <path
-                  d="M125.4,106.4h-12v-9.2h7v-6.4h10v11C130.4,104.3,128.2,106.4,125.4,106.4z"
-                />
-                <path
-                  d="M93.8,106.4H75v-9.2h18.8V106.4z M55.4,106.4H36.6v-9.2h18.8V106.4z"
-                />
+                <path d="M125.4,106.4h-12v-9.2h7v-6.4h10v11C130.4,104.3,128.2,106.4,125.4,106.4z" />
+                <path d="M93.8,106.4H75v-9.2h18.8V106.4z M55.4,106.4H36.6v-9.2h18.8V106.4z" />
                 <path d="M17,106.4H5c-2.8,0-5-2.1-5-4.6v-11h10v6.4h7V106.4z" />
                 <rect y="56.9" width="10" height="16.6" />
                 <path d="M10,39.6H0v-11C0,26.1,2.2,24,5,24h12v9.2h-7V39.6z" />
-                <path
-                  d="M93.8,33.2H75V24h18.8V33.2z M55.4,33.2H36.6V24h18.8V33.2z"
-                />
-                <path
-                  d="M130.4,39.6h-10v-6.4h-7V24h12c2.8,0,5,2.1,5,4.6V39.6z"
-                />
+                <path d="M93.8,33.2H75V24h18.8V33.2z M55.4,33.2H36.6V24h18.8V33.2z" />
+                <path d="M130.4,39.6h-10v-6.4h-7V24h12c2.8,0,5,2.1,5,4.6V39.6z" />
                 <rect x="120.4" y="56.9" width="10" height="16.6" />
               </g>
             </svg>
@@ -382,9 +365,9 @@
               />
             </svg>
             {{
-              media.hasOwnProperty("_linked_media")
-                ? $t("withdraw")
-                : $t("remove")
+            media.hasOwnProperty("_linked_media")
+            ? $t("withdraw")
+            : $t("remove")
             }}
           </button>
         </div>
@@ -478,7 +461,7 @@ export default {
 
   watch: {
     media: {
-      handler: function () {
+      handler: function() {
         this.updateMediaStyles();
         this.htmlForEditor = this.media.content ? this.media.content : "";
       },
@@ -511,7 +494,7 @@ export default {
     is_selected() {
       if (this.read_only) return false;
       const is_selected = this.$root.settings.current_publication.selected_medias.some(
-        (meta) => meta === this.media.metaFileName
+        meta => meta === this.media.metaFileName
       );
       if (!is_selected) this.show_advanced_menu = false;
       return is_selected;
@@ -528,21 +511,20 @@ export default {
     media_ratio() {
       if (
         this.media.hasOwnProperty("file_meta") &&
-        this.media.file_meta.some((f) => f.hasOwnProperty("ratio"))
+        this.media.file_meta.some(f => f.hasOwnProperty("ratio"))
       ) {
-        return this.media.file_meta.find((f) => f.hasOwnProperty("ratio"))
-          .ratio;
+        return this.media.file_meta.find(f => f.hasOwnProperty("ratio")).ratio;
       }
       if (this.media.hasOwnProperty("ratio")) return this.media.ratio;
 
       if (this.media.hasOwnProperty("_linked_media")) {
         if (
           this.media._linked_media.hasOwnProperty("file_meta") &&
-          this.media._linked_media.file_meta.some((f) =>
+          this.media._linked_media.file_meta.some(f =>
             f.hasOwnProperty("ratio")
           )
         )
-          return this.media._linked_media.file_meta.find((f) =>
+          return this.media._linked_media.file_meta.find(f =>
             f.hasOwnProperty("ratio")
           ).ratio;
 
@@ -669,7 +651,7 @@ export default {
       this.show_advanced_menu = false;
 
       this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
-        (meta) => meta !== this.media.metaFileName
+        meta => meta !== this.media.metaFileName
       );
     },
     scrollToMedia() {
