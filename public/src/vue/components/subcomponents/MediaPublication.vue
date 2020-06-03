@@ -143,6 +143,7 @@
             :publi_is_model="publi_is_model"
             :preview_mode="preview_mode"
             :read_only="read_only"
+            :captureview_in_modal="true"
             @addMedia="(values) => addMedia({ values })"
             @editPubliMedia="(values) => updateMediaPubliMeta(values)"
           />
@@ -168,6 +169,7 @@
               <PlaceholderConstraints
                 :available_modes="media.available_modes"
                 :read_only="preview_mode || read_only"
+                :paged_mode="true"
                 @updateField="
                   (value) => updateMediaPubliMeta({ available_modes: value })
                 "

@@ -460,7 +460,7 @@ export default {
     read_only: Boolean,
     can_edit_publi: Boolean,
     can_see_publi: Boolean,
-    model_for_this_publication: Object,
+    model_for_this_publication: [Boolean, Object],
     preview_mode: Boolean,
   },
   components: {

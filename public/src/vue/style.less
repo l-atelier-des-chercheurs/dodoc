@@ -5860,6 +5860,35 @@ small {
   .m_mediaPublication & {
     margin: 0;
     // opacity: 0.4;
+    margin: 0;
+
+    .m_mediaPlaceholder--replies.has--replies {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: 0;
+      padding: 0;
+
+      .m_mediaStory {
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+
+        .mediaContainer.type-image img {
+          width: 100%;
+          height: 100%;
+          max-height: none;
+          object-position: center;
+        }
+
+        .mediaTextContent {
+          background: white;
+        }
+      }
+    }
 
     .m_mediaStory--moveItemButtons {
       right: 0;
@@ -7224,6 +7253,10 @@ small {
     outline: 2px solid @c-bleuvert;
     .ql-editor {
       // background-color: @c-gris_tresclair;
+    }
+
+    .type-placeholder {
+      overflow: auto;
     }
   }
 

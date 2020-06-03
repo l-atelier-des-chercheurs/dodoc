@@ -21,7 +21,10 @@
         {{ $t("reply") }}
       </button>
     </div>-->
-    <div class="m_mediaPlaceholder--replies">
+    <div
+      class="m_mediaPlaceholder--replies"
+      :class="{ 'has--replies' : model_placeholder_media._reply && model_placeholder_media._reply._medias && model_placeholder_media._reply._medias.length > 0 }"
+    >
       <template v-if="modes_allowed.hasOwnProperty('choices')">
         <template
           v-if="
@@ -84,6 +87,7 @@
           :publi_is_model="publi_is_model"
           :publi_follows_model="true"
           :modes_allowed="remaining_modes_allowed"
+          :captureview_in_modal="captureview_in_modal"
           :can_collapse="
             !(
               !model_placeholder_media._reply ||
@@ -143,6 +147,7 @@
                 :publi_is_model="publi_is_model"
                 :publi_follows_model="true"
                 :modes_allowed="remaining_modes_allowed"
+                :captureview_in_modal="captureview_in_modal"
                 :read_only="read_only"
                 @addMedia="
                   (values) =>
@@ -190,6 +195,7 @@ export default {
     publi_is_model: Boolean,
     preview_mode: Boolean,
     read_only: Boolean,
+    captureview_in_modal: Boolean,
   },
   components: {
     InsertMediaButton,

@@ -17,7 +17,7 @@
         :type="type"
         :read_only="read_only"
         :can_add_to_fav="false"
-        :available_modes="undefined"
+        :available_modes="available_modes"
         @insertMedias="
             (metaFileNames) => $emit('insertMedias', metaFileNames)
           "
@@ -34,6 +34,7 @@ export default {
     slugFolderName: String,
     type: String,
     read_only: Boolean,
+    available_modes: Array,
   },
   components: {
     Modal,
