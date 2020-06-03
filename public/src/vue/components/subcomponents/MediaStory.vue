@@ -150,7 +150,7 @@
     >
       <button
         type="button"
-        class="m_mediaStory--moveItemButton--before"
+        class="m_mediaStory--moveItemButtons--before"
         :disabled="media_position === 'first' || media_position === 'alone'"
         @click.stop="
           $emit('changeMediaOrder', {
@@ -167,7 +167,7 @@
         </svg>
       </button>
 
-      <div class="m_mediaStory--moveItemButton--options">
+      <div class="m_mediaStory--moveItemButtons--options">
         <button
           type="button"
           @click.stop="
@@ -195,7 +195,12 @@
           </svg>
         </button>
         <div class="_advanced_menu" v-if="show_advanced_menu">
-          <button type="button" class="buttonLink" @click="duplicateMedia">
+          <button
+            type="button"
+            class="buttonLink"
+            @click="duplicateMedia"
+            v-if="can_duplicate_media"
+          >
             <svg
               version="1.1"
               class="inline-svg"
@@ -375,7 +380,7 @@
 
       <button
         type="button"
-        class="m_mediaStory--moveItemButton--after"
+        class="m_mediaStory--moveItemButtons--after"
         :disabled="media_position === 'last' || media_position === 'alone'"
         @click.stop="
           $emit('changeMediaOrder', {
@@ -408,6 +413,10 @@ export default {
     preview_mode: Boolean,
     slugPubliName: String,
     media_position: String,
+    can_duplicate_media: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {
     MediaContent,

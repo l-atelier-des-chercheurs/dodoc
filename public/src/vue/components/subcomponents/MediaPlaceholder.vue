@@ -122,6 +122,8 @@
               :preview_mode="preview_mode"
               :slugPubliName="slugPubliName"
               :read_only="read_only || preview_mode"
+              :can_duplicate_media="(remaining_modes_allowed === 'all' ||
+                    Object.keys(remaining_modes_allowed).length > 0)"
               @removePubliMedia="orderedRemovePubliMedia($event)"
               @changeMediaOrder="changeMediaOrder($event)"
               @editPubliMedia="$emit('editPubliMedia', $event)"
@@ -327,7 +329,8 @@ export default {
       return Object.entries(this.modes_allowed).reduce(
         (acc, [type, { amount }]) => {
           if (!!acc) acc += " • ";
-          if (amount && amount > 1) acc += `${this.$t(type)} (${amount})`;
+
+          if (amount && amount >= 1) acc += `${this.$t(type)} (${amount})`;
           else acc += `${this.$t(type)}`;
           return acc;
         },

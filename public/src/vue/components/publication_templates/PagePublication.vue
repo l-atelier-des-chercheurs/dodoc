@@ -380,7 +380,7 @@
 
       <div v-else class="m_publicationview--pages--singlePageBloc">
         <PublicationButtons
-          v-if="can_edit_publi && !contact_sheet_mode && !preview_mode"
+          v-if="can_edit_publi && !contact_sheet_mode && !preview_mode && !model_for_this_publication"
           :preview_mode="preview_mode"
           :page_medias="
             paged_medias[$root.settings.current_publication.page_id]

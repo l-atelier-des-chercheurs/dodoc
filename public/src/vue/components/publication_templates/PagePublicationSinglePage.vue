@@ -73,10 +73,11 @@
                 :mode="mode"
                 :media="media"
                 :preview_mode="preview_mode"
-                :read_only="read_only || !!model_for_this_publication"
+                :read_only="read_only"
                 :pixelsPerMillimeters="pixelsPerMillimeters"
                 :zoom="zoom"
                 :publi_is_model="publi_is_model"
+                :model_for_this_publication="model_for_this_publication"
                 :slugPubliName="slugPubliName"
                 @removePubliMedia="(values) => removePubliMedia(values)"
                 @editPubliMedia="(values) => editPubliMedia(values)"
@@ -114,7 +115,6 @@ export default {
   },
   components: {
     MediaPublication,
-    MediaPlaceholder,
   },
   data() {
     return {};

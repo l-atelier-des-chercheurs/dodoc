@@ -135,7 +135,19 @@
           </svg>
         </template>
         <template v-else-if="media.type === 'placeholder'">
-          <div class="_placeholder">
+          <MediaPlaceholder
+            v-if="model_for_this_publication"
+            :key="media.metaFileName"
+            :model_placeholder_media="media"
+            :slugPubliName="slugPubliName"
+            :publi_is_model="publi_is_model"
+            :preview_mode="preview_mode"
+            :read_only="read_only"
+            @addMedia="(values) => addMedia({ values })"
+            @editPubliMedia="(values) => updateMediaPubliMeta(values)"
+          />
+
+          <div v-else class="_placeholder">
             <!-- <label>{{ $t("placeholder") }} </label> -->
             <div class="_placeholder--instructions">
               <label>{{ $t("instructions") }}</label>
@@ -212,7 +224,8 @@
         !inline_edit_mode &&
         !read_only &&
         !locked_in_place &&
-        (is_selected || is_hovered)
+        (is_selected || is_hovered) && 
+        !model_for_this_publication
       "
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
@@ -353,11 +366,14 @@
     <transition name="fade_fast" :duration="150">
       <div
         v-if="
-          ((is_selected || is_hovered) &&
+          ((
+            (is_selected || is_hovered) &&
             !preview_mode &&
             !inline_edit_mode &&
-            !read_only) ||
-          (!preview_mode && !inline_edit_mode && !read_only && locked_in_place)
+            !read_only
+          ) || 
+          (!preview_mode && !inline_edit_mode && !read_only && locked_in_place)) &&       
+          !model_for_this_publication
         "
       >
         <button
@@ -431,7 +447,8 @@
           !preview_mode &&
           !inline_edit_mode &&
           !read_only &&
-          !locked_in_place
+          !locked_in_place &&
+          !model_for_this_publication
         "
         class="m_mediaPublication--buttons"
       >
@@ -658,6 +675,7 @@ import debounce from "debounce";
 import CollaborativeEditor from "./CollaborativeEditor.vue";
 import MediaField from "./MediaField.vue";
 import PlaceholderConstraints from "./PlaceholderConstraints.vue";
+import MediaPlaceholder from "./MediaPlaceholder.vue";
 
 export default {
   props: {
@@ -669,12 +687,14 @@ export default {
     preview_mode: Boolean,
     pixelsPerMillimeters: Number,
     zoom: Number,
+    model_for_this_publication: [Boolean, Object],
   },
   components: {
     MediaContent,
     CollaborativeEditor,
     MediaField,
     PlaceholderConstraints,
+    MediaPlaceholder,
   },
   data() {
     return {
@@ -1366,7 +1386,8 @@ export default {
       else this.selectMedia();
     },
     selectMedia() {
-      if (this.is_selected || this.read_only) return;
+      if (this.is_selected || this.read_only || this.model_for_this_publication)
+        return;
 
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • MediaPublication: deselectMedia`);
