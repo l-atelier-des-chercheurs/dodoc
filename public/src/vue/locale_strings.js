@@ -1639,6 +1639,10 @@ module.exports = (function () {
       oc: "Zoom",
       de: "Zoom",
     },
+    reset: {
+      fr: "Remettre à 1",
+      en: "Reset",
+    },
     settings: {
       fr: "Réglages",
       en: "Settings",

@@ -64,7 +64,6 @@
             "
           >{{ $t("no_media_on_this_page") }}</template>
         </div>
-
         <div v-else v-for="media in publication_medias" :key="media.metaFileName">
           <transition name="MediaPublication" :duration="500">
             <div>
@@ -78,22 +77,11 @@
                 :pixelsPerMillimeters="pixelsPerMillimeters"
                 :zoom="zoom"
                 :publi_is_model="publi_is_model"
+                :model_for_this_publication="model_for_this_publication"
                 :slugPubliName="slugPubliName"
-                @removePubliMedia="
-                  (values) => {
-                    removePubliMedia(values);
-                  }
-                "
-                @editPubliMedia="
-                  (values) => {
-                    editPubliMedia(values);
-                  }
-                "
-                @duplicateMedia="
-                  (values) => {
-                    duplicateMedia(values);
-                  }
-                "
+                @removePubliMedia="(values) => removePubliMedia(values)"
+                @editPubliMedia="(values) => editPubliMedia(values)"
+                @duplicateMedia="(values) => duplicateMedia(values)"
               />
             </div>
           </transition>
@@ -123,6 +111,7 @@ export default {
     pixelsPerMillimeters: Number,
     zoom: Number,
     publi_is_model: Boolean,
+    model_for_this_publication: [Boolean, Object],
   },
   components: {
     MediaPublication,

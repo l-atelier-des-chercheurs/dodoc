@@ -34,11 +34,7 @@
       {{ $t("cancel") }}
     </button>-->
     <transition name="fade_fast" :duration="150" mode="out-in">
-      <div
-        v-if="show_drop_container"
-        @drop="dropHandler($event)"
-        class="_drop_indicator"
-      >
+      <div v-if="show_drop_container" @drop="dropHandler($event)" class="_drop_indicator">
         <div>
           <img src="/images/i_importer.svg" draggable="false" />
           <label>{{ $t("drop_here_to_import") }}</label>
@@ -170,7 +166,8 @@
       />
       <template v-else-if="enable_capture_mode">
         <!-- v-if="captureview_in_modal === false && false" -->
-        <CaptureView
+        <component
+          :is="!captureview_in_modal ? 'CaptureView' : 'CaptureViewModal'"
           class="is--collapsed"
           :slugFolderName="slugPubliName"
           :type="`publications`"
@@ -187,33 +184,13 @@
             (metaFileNames) => insertImportedMedias({ metaFileNames })
           "
         />
-
-        <!-- <Modal
-          v-else
-          @close="enable_capture_mode = false"
-          :typeOfModal="'SmallAndScroll'"
-        >
-          <CaptureView
-            class="is--collapsed"
-            :slugFolderName="slugPubliName"
-            :type="`publications`"
-            :read_only="read_only"
-            :available_modes="
-              modes_allowed !== 'all'
-                ? modes_allowed.filter((m) => m !== 'text' && m !== 'file')
-                : undefined
-            "
-            @insertMedias="
-              (metaFileNames) => insertImportedMedias({ metaFileNames })
-            "
-          />
-        </Modal>-->
       </template>
     </transition>
   </div>
 </template>
 <script>
 import CaptureView from "../../CaptureView.vue";
+import CaptureViewModal from "../modals/CaptureViewModal.vue";
 import UploadFile from "./UploadFile.vue";
 import debounce from "debounce";
 import Modal from "../modals/BaseModal.vue";
@@ -236,6 +213,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    captureview_in_modal: {
+      type: Boolean,
+      default: false,
+    },
     is_currently_active: Boolean,
     slugPubliName: String,
     modes_allowed: {
@@ -245,6 +226,7 @@ export default {
   },
   components: {
     CaptureView,
+    CaptureViewModal,
     UploadFile,
     Modal,
   },

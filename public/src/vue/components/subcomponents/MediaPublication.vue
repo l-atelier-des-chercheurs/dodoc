@@ -7,6 +7,8 @@
     @mouseleave="mouseLeave"
     @mousedown.stop="selectMedia"
     :class="[
+      'type-' + media.type,
+      'is--fit_mode_' + fit_mode,
       {
         'is--dragged': is_dragged,
         'is--resized': is_resized,
@@ -19,7 +21,6 @@
         'is--inline_edited': inline_edit_mode,
         'is--locked': locked_in_place,
       },
-      'is--fit_mode_' + fit_mode,
     ]"
   >
     <template v-if="media.hasOwnProperty('_linked_media')">
@@ -133,6 +134,49 @@
             </g>
           </svg>
         </template>
+        <template v-else-if="media.type === 'placeholder'">
+          <MediaPlaceholder
+            v-if="model_for_this_publication"
+            :key="media.metaFileName"
+            :model_placeholder_media="media"
+            :slugPubliName="slugPubliName"
+            :publi_is_model="publi_is_model"
+            :preview_mode="preview_mode"
+            :read_only="read_only"
+            :captureview_in_modal="true"
+            @addMedia="(values) => addMedia({ values })"
+            @editPubliMedia="(values) => updateMediaPubliMeta(values)"
+          />
+
+          <div v-else class="_placeholder">
+            <!-- <label>{{ $t("placeholder") }} </label> -->
+            <div class="_placeholder--instructions">
+              <label>{{ $t("instructions") }}</label>
+              <MediaField
+                :value="media.instructions"
+                :show_edit_button="true"
+                :add_instructions="$t('add_instructions')"
+                :edit_instructions="$t('edit_instructions')"
+                :read_only="preview_mode || read_only || !inline_edit_mode"
+                @updateField="
+                  (value) => updateMediaPubliMeta({ instructions: value })
+                "
+              />
+            </div>
+            <div class="_placeholder--constraints">
+              <label v-html="$t('type_of_expected_contents:')" />
+
+              <PlaceholderConstraints
+                :available_modes="media.available_modes"
+                :read_only="preview_mode || read_only"
+                :paged_mode="true"
+                @updateField="
+                  (value) => updateMediaPubliMeta({ available_modes: value })
+                "
+              />
+            </div>
+          </div>
+        </template>
       </div>
     </template>
 
@@ -182,7 +226,8 @@
         !inline_edit_mode &&
         !read_only &&
         !locked_in_place &&
-        (is_selected || is_hovered)
+        (is_selected || is_hovered) && 
+        !model_for_this_publication
       "
       class="controlFrame"
       @mousedown.stop.prevent="dragMedia('mouse')"
@@ -323,11 +368,14 @@
     <transition name="fade_fast" :duration="150">
       <div
         v-if="
-          ((is_selected || is_hovered) &&
+          ((
+            (is_selected || is_hovered) &&
             !preview_mode &&
             !inline_edit_mode &&
-            !read_only) ||
-          (!preview_mode && !inline_edit_mode && !read_only && locked_in_place)
+            !read_only
+          ) || 
+          (!preview_mode && !inline_edit_mode && !read_only && locked_in_place)) &&       
+          !model_for_this_publication
         "
       >
         <button
@@ -401,13 +449,14 @@
           !preview_mode &&
           !inline_edit_mode &&
           !read_only &&
-          !locked_in_place
+          !locked_in_place &&
+          !model_for_this_publication
         "
         class="m_mediaPublication--buttons"
       >
         <button
           type="button"
-          v-if="media.type === 'text'"
+          v-if="media.type === 'text' || media.type === 'placeholder'"
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editButtonClicked"
           @touchstart.stop.prevent="editButtonClicked"
@@ -626,6 +675,9 @@
 import MediaContent from "./MediaContent.vue";
 import debounce from "debounce";
 import CollaborativeEditor from "./CollaborativeEditor.vue";
+import MediaField from "./MediaField.vue";
+import PlaceholderConstraints from "./PlaceholderConstraints.vue";
+import MediaPlaceholder from "./MediaPlaceholder.vue";
 
 export default {
   props: {
@@ -637,10 +689,14 @@ export default {
     preview_mode: Boolean,
     pixelsPerMillimeters: Number,
     zoom: Number,
+    model_for_this_publication: [Boolean, Object],
   },
   components: {
     MediaContent,
     CollaborativeEditor,
+    MediaField,
+    PlaceholderConstraints,
+    MediaPlaceholder,
   },
   data() {
     return {
@@ -1332,7 +1388,8 @@ export default {
       else this.selectMedia();
     },
     selectMedia() {
-      if (this.is_selected) return;
+      if (this.is_selected || this.read_only || this.model_for_this_publication)
+        return;
 
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • MediaPublication: deselectMedia`);
