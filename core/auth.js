@@ -465,7 +465,9 @@ module.exports = (function () {
     type_two,
     meta,
   }) {
-    dev.logfunction(`AUTH — filterMetasDependingOnAuthorRole`);
+    dev.logfunction(`AUTH — preventFieldsEditingDependingOnRole`);
+
+    if (typeof meta !== "object" || Object.keys(meta).length === 0) return meta;
 
     // check if structure has a property enabled
     let fields =
