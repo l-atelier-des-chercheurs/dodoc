@@ -18,7 +18,11 @@
     </div>
 
     <!-- Role -->
-    <div class="margin-bottom-small">
+    <div
+      class="margin-bottom-small"
+      v-if="($root.current_author && $root.current_author.role === 'admin')
+"
+    >
       <label>
         {{ $t("role") }}
       </label>
@@ -70,8 +74,47 @@
     <!-- <div class="margin-bottom-small">
       <label>{{ $t('password') }}</label>
       <input type="password" v-model="authordata.password">
-      <small>{{ $t('password_instructions') }}</small>
     </div>-->
+    <!-- Password -->
+    <div class="margin-bottom-small">
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_password }"
+          @click.stop="show_password = !show_password"
+        >
+          <template v-if="author.password === 'has_pass'">
+            {{ $t("change_password") }}
+          </template>
+          <template v-else>
+            {{ $t("add_password") }}
+          </template>
+        </button>
+      </label>
+
+      <div v-if="show_password">
+        <div class="margin-bottom-verysmall">
+          <input
+            type="password"
+            v-if="author.password === 'has_pass'"
+            :placeholder="$t('old_password').toLowerCase()"
+            v-model="authordata._old_password"
+          />
+        </div>
+        <div>
+          <input
+            type="password"
+            :required="
+              $root.state.local_options.force_author_password ? true : false
+            "
+            :placeholder="$t('new_password').toLowerCase()"
+            v-model="authordata.password"
+          />
+        </div>
+        <small>{{ $t("password_instructions") }}</small>
+      </div>
+    </div>
 
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
@@ -112,6 +155,7 @@ export default {
     return {
       show_image: !!this.author.preview,
       show_nfc: !!this.author.nfc_tag,
+      show_password: false,
 
       possible_roles: ["contributor", "participant", "admin"],
 
@@ -119,7 +163,8 @@ export default {
         name: this.author.name,
         email: this.author.email,
         role: this.author.role,
-        // password: "",
+        password: "",
+        _old_password: "",
         nfc_tag: this.author.nfc_tag,
       },
       preview: undefined,
@@ -168,6 +213,17 @@ export default {
 
       if (typeof this.preview !== "undefined") {
         this.authordata.preview_rawdata = this.preview;
+      }
+
+      if (!!this.authordata.password) {
+        this.authordata.password = this.$auth.hashCode(
+          this.authordata.password
+        );
+      }
+      if (!!this.authordata._old_password) {
+        this.authordata._old_password = this.$auth.hashCode(
+          this.authordata._old_password
+        );
       }
 
       this.$root.editFolder({

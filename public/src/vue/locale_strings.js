@@ -487,6 +487,22 @@ module.exports = (function () {
       oc: "Entresenhar lo mot de Santa-Clara çai-jos :",
       de: "Kennwort bitte hier eingeben",
     },
+    change_password: {
+      fr: "Modifier le mot de passe",
+      en: "Change password",
+    },
+    add_password: {
+      fr: "Protéger par un mot de passe",
+      en: "Protect with a password",
+    },
+    old_password: {
+      fr: "Ancien mot de passe",
+      en: "Old password",
+    },
+    new_password: {
+      fr: "Nouveau mot de passe",
+      en: "New password",
+    },
     validate_with_enter: {
       fr: "Valider avec la touche ENTRÉE.",
       en: "Validate with ENTER.",
