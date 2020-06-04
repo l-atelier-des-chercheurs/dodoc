@@ -4,6 +4,8 @@ const dev = require("./dev-log"),
   exporter = require("./exporter"),
   file = require("./file");
 
+const bcrypt = require("bcryptjs");
+
 module.exports = (function () {
   dev.log(`Sockets module initialized at ${api.getCurrentDate()}`);
   let app;
@@ -207,6 +209,36 @@ module.exports = (function () {
       type,
       meta: data,
     });
+
+    // check if password is crypted and should change
+    const password_field_options =
+      global.settings.structure[type].fields.password;
+    if (
+      password_field_options.hasOwnProperty("transform") &&
+      password_field_options.transform === "crypt" &&
+      Object.values(foldersData)[0].password &&
+      !!data.password
+    ) {
+      if (
+        !data._old_password ||
+        !(await bcrypt.compare(
+          data._old_password,
+          Object.values(foldersData)[0].password
+        ))
+      ) {
+        dev.error(
+          `Failed to change password and edit folder: old password is wrong or missing`
+        );
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `action_not_allowed`,
+          not_localized_string: `Error: folder can’t be edited ${slugFolderName} because old password is wrong or missing`,
+          type: "error",
+        });
+        return;
+      }
+    }
 
     const { meta } = await file.editFolder({
       type,
