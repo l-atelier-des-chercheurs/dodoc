@@ -309,13 +309,13 @@ export default {
         : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
     },
     subfolder: function () {
-      if (!this.folderType) return "";
       switch (this.folderType) {
         case "publications":
           return "_publications/";
         case "stopmotions":
           return "_stopmotions/";
       }
+      return "";
     },
     thumbRes: function () {
       return this.context === "preview"
