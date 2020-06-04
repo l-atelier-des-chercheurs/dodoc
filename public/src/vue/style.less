@@ -4682,8 +4682,22 @@ small {
     position: relative;
     border: none;
     // .bg-creme;
+    display: block;
     .bg-blanc;
     // .bg-gris_tresclair;
+
+    .m_publicationview--pages {
+      overflow: visible !important;
+      height: auto !important;
+    }
+
+    .m_publicationview--pages--singlePageBloc {
+      display: block;
+      height: auto !important;
+      > .m_publicationview--pages--pageContainer {
+        height: auto !important;
+      }
+    }
   }
 
   ._survey_author_indicator {
@@ -5856,36 +5870,84 @@ small {
 
   // margin: 5px;
 
+  &.is--choices {
+    .m_mediaPlaceholder--replies {
+      margin-top: 0;
+    }
+  }
+
   // in paged publi
   .m_mediaPublication & {
     margin: 0;
     // opacity: 0.4;
-    margin: 0;
+    // padding: 0;
 
-    .m_mediaPlaceholder--replies.has--replies {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: 0;
-      padding: 0;
+    display: flex;
+    flex-flow: column nowrap;
 
-      .m_mediaStory {
-        padding: 0;
-        height: 100%;
-        width: 100%;
-        position: absolute;
+    &.is--choices {
+      // background-color: transparent;
 
-        .mediaContainer.type-image img {
-          width: 100%;
-          height: 100%;
-          max-height: none;
-          object-position: center;
+      .m_mediaPlaceholder--replies {
+      }
+    }
+
+    &:not(.is--choices) {
+      // background-color: transparent;
+      &:not(.has--replies) .m_mediaPlaceholder--replies {
+        flex: 1 0 auto;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+
+        margin: 0;
+
+        // there can only be one
+        .m_insertMediaButton {
+          margin: 0;
         }
+      }
 
-        .mediaTextContent {
-          background: white;
+      &.has--replies {
+        background-color: @c-noir;
+      }
+
+      &.has--replies .m_mediaPlaceholder--instructions {
+        display: none;
+      }
+
+      &.has--replies .m_mediaPlaceholder--replies {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 0;
+        padding: 0;
+
+        .m_mediaStory {
+          padding: 0;
+          height: 100%;
+          width: 100%;
+          position: absolute;
+
+          .mediaContainer.type-image img {
+            width: 100%;
+            height: 100%;
+            max-height: none;
+            object-position: center;
+          }
+
+          .mediaTextContent {
+            background: transparent;
+            padding: 0;
+            padding-left: 1px;
+
+            .ql-editor > *::before {
+              display: none;
+            }
+          }
         }
       }
     }
@@ -6035,6 +6097,7 @@ small {
     background-color: @c-creme;
     border-radius: 10px;
     padding: 4px;
+    height: auto;
 
     // border-top: 4px dashed @c-gris_clair;
     // border-bottom: 4px dashed @c-gris_clair;
@@ -6108,7 +6171,7 @@ small {
     padding: 0;
     // padding-left: @t-skipline;
     // background-color: @c-noir;
-    .margin-vert-medium;
+    .margin-vert-small;
     // .bg-gris_clair;
   }
   &.is--open {
@@ -6259,7 +6322,7 @@ small {
       margin: 0;
       border: 0;
       .bg-gris_clair;
-      border-radius: 4px;
+      // border-radius: 4px;
       // border-radius: 4px;
     }
 

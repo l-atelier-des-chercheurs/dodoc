@@ -24,7 +24,10 @@
         <span>{{ $t("choices") }}</span>
       </label>
     </div>
-    <div class="m_placeholderConstraints--medias" v-if="type_of_content === 'medias'">
+    <div
+      class="m_placeholderConstraints--medias"
+      v-if="type_of_content === 'medias'"
+    >
       <!-- <div v-if="paged_mode">
         <select v-model="">
         <option v-for="option in options" :key="option.key">
@@ -63,22 +66,28 @@
             </div>
             <label>{{ $t(option.key) }}</label>
             <div>
-              <small class v-if="option.key === 'file'">(.docx, .PDF, .stl…)</small>
+              <small class v-if="option.key === 'file'"
+                >(.docx, .PDF, .stl…)</small
+              >
             </div>
           </button>
 
           <div
             class="_options"
             v-if="
-            option.enabled &&
-            (option.advanced_text_options ||
-              option.only_numbers ||
-              option.amount)
-          "
+              option.enabled &&
+              (option.advanced_text_options ||
+                option.only_numbers ||
+                option.amount)
+            "
           >
             <!-- <label>{{ $t("settings") }}</label> -->
             <div v-if="option.key === 'text'" class="_advanced_text">
-              <label class :for="`option_${id}_${option.key}_advtext`" @click.stop>
+              <label
+                class
+                :for="`option_${id}_${option.key}_advtext`"
+                @click.stop
+              >
                 <input
                   :id="`option_${id}_${option.key}_advtext`"
                   :disabled="read_only"
@@ -89,7 +98,11 @@
               </label>
             </div>
             <div v-if="option.key === 'text'" class="_advanced_text">
-              <label class :for="`option_${id}_${option.key}_only_numbers`" @click.stop>
+              <label
+                class
+                :for="`option_${id}_${option.key}_only_numbers`"
+                @click.stop
+              >
                 <input
                   :id="`option_${id}_${option.key}_only_numbers`"
                   type="checkbox"
@@ -101,7 +114,11 @@
             </div>
             <div class="_amount" v-if="option.amount">
               <label>{{ $t("amount") }}</label>
-              <select v-model="option.amount" class="select-xs" :disabled="read_only || paged_mode">
+              <select
+                v-model="option.amount"
+                class="select-xs"
+                :disabled="read_only || paged_mode"
+              >
                 <option value="unlimited">{{ $t("unlimited") }}</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -112,7 +129,10 @@
         </template>
       </div>
     </div>
-    <div class="m_placeholderConstraints--choices" v-else-if="type_of_content === 'choices'">
+    <div
+      class="m_placeholderConstraints--choices"
+      v-else-if="type_of_content === 'choices'"
+    >
       <div class="m_placeholderConstraints--choices--multiple">
         <div
           class="switch switch-xs switch_twoway button button-thin"
@@ -144,13 +164,16 @@
             :class="{
               'is--active': options.find((o) => o.key === 'choices').multiple,
             }"
-          >{{ $t("multiple_choices_possible") }}</label>
+            >{{ $t("multiple_choices_possible") }}</label
+          >
         </div>
       </div>
       <!-- {{ options.find(o => o.key === 'choices').mutiple }} -->
       <div class="m_placeholderConstraints--choices--allChoices">
         <div v-for="choice in splitted_choices" :key="choice" class="m_choice">
-          <template v-if="options.find((o) => o.key === 'choices').multiple === true">
+          <template
+            v-if="options.find((o) => o.key === 'choices').multiple === true"
+          >
             <label class :for="'_choice_' + choice">
               <input :id="'_choice_' + choice" :type="'checkbox'" disabled />
               {{ choice }}
@@ -175,7 +198,9 @@
             class="buttonLink"
             v-if="edit_choice_mode"
             @click="removeChoice(choice)"
-          >{{ $t("remove") }}</button>
+          >
+            {{ $t("remove") }}
+          </button>
         </div>
       </div>
 
@@ -186,7 +211,9 @@
             class="m_placeholderConstraints--choices--toggleEditMode buttonLink"
             :class="{ 'is--active': edit_choice_mode }"
             @click="edit_choice_mode = !edit_choice_mode"
-          >{{ $t("add") }}/{{ $t("edit") }}</button>
+          >
+            {{ $t("add") }}/{{ $t("edit") }}
+          </button>
         </div>
         <div>
           <form
@@ -201,8 +228,12 @@
                 type="button"
                 class="button-redthin"
                 @click="edit_choice_mode = false"
-              >{{ $t("cancel") }}</button>
-              <button type="submit" class="button-greenthin">{{ $t("add") }}</button>
+              >
+                {{ $t("cancel") }}
+              </button>
+              <button type="submit" class="button-greenthin">
+                {{ $t("add") }}
+              </button>
             </div>
           </form>
         </div>
@@ -287,10 +318,10 @@ export default {
           return;
         }
 
-        this.options.map(o => {
-          if (this.available_modes.some(m => m.mode_key === o.key)) {
+        this.options.map((o) => {
+          if (this.available_modes.some((m) => m.mode_key === o.key)) {
             o.enabled = true;
-            const item = this.available_modes.find(m => m.mode_key === o.key);
+            const item = this.available_modes.find((m) => m.mode_key === o.key);
             if (item.hasOwnProperty("advanced_text_options"))
               o.advanced_text_options = item.advanced_text_options === "true";
             if (item.hasOwnProperty("only_numbers"))
@@ -302,7 +333,7 @@ export default {
           } else o.enabled = false;
         });
 
-        if (this.options.find(o => o.key === "choices" && o.enabled))
+        if (this.options.find((o) => o.key === "choices" && o.enabled))
           this.type_of_content = "choices";
         else this.type_of_content = "medias";
       },
@@ -326,8 +357,8 @@ export default {
         // }
 
         let enabled_modes = this.options
-          .filter(o => o.enabled)
-          .map(o => {
+          .filter((o) => o.enabled)
+          .map((o) => {
             let val = { mode_key: o.key };
             if (o.key === "text") {
               val.advanced_text_options = o.advanced_text_options;
@@ -356,22 +387,24 @@ export default {
         console.log(`PlaceholderConstraints • WATCH: type_of_content`);
 
       if (this.type_of_content === "choices") {
-        this.options.map(o =>
+        this.options.map((o) =>
           o.key !== "choices" ? (o.enabled = false) : (o.enabled = true)
         );
-        if (this.options.find(o => o.key === "choices").choices.length === 0) {
+        if (
+          this.options.find((o) => o.key === "choices").choices.length === 0
+        ) {
           this.edit_choice_mode = true;
         }
-      } else this.options.find(o => o.key === "choices").enabled = false;
+      } else this.options.find((o) => o.key === "choices").enabled = false;
     },
   },
   computed: {
     splitted_choices() {
-      return this.options.find(o => o.key === "choices").choices !== ""
+      return this.options.find((o) => o.key === "choices").choices !== ""
         ? this.options
-            .find(o => o.key === "choices")
+            .find((o) => o.key === "choices")
             .choices.split("|")
-            .filter(c => c !== "")
+            .filter((c) => c !== "")
         : [];
     },
   },
@@ -401,16 +434,16 @@ export default {
       existing_choices.push(new_choice);
 
       this.options.find(
-        o => o.key === "choices"
+        (o) => o.key === "choices"
       ).choices = existing_choices.join("|");
 
       // this.edit_choice_mode = false;
       $event.target.elements[0].value = "";
     },
     removeChoice(choice) {
-      const new_choices = this.splitted_choices.filter(c => c !== choice);
+      const new_choices = this.splitted_choices.filter((c) => c !== choice);
 
-      this.options.find(o => o.key === "choices").choices = new_choices.join(
+      this.options.find((o) => o.key === "choices").choices = new_choices.join(
         "|"
       );
     },

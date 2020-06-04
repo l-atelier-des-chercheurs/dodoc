@@ -1,12 +1,24 @@
 <template>
-  <div class="m_mediaPlaceholder">
+  <div
+    class="m_mediaPlaceholder"
+    :class="{
+      'is--choices': modes_allowed.hasOwnProperty('choices'),
+      'has--replies':
+        model_placeholder_media._reply &&
+        model_placeholder_media._reply._medias &&
+        model_placeholder_media._reply._medias.length > 0,
+    }"
+  >
     <!-- <label>{{ $t("placeholder") }} </label> -->
     <div
       v-if="model_placeholder_media.hasOwnProperty('instructions')"
       class="m_mediaPlaceholder--instructions"
     >
       <!-- <label>{{ $t("instructions") }}</label> -->
-      <div class="mediaTextContent" v-html="model_placeholder_media.instructions" />
+      <div
+        class="mediaTextContent"
+        v-html="model_placeholder_media.instructions"
+      />
     </div>
     <!-- <div
       v-if="!model_placeholder_media.hasOwnProperty('_reply')"
@@ -21,10 +33,7 @@
         {{ $t("reply") }}
       </button>
     </div>-->
-    <div
-      class="m_mediaPlaceholder--replies"
-      :class="{ 'has--replies' : model_placeholder_media._reply && model_placeholder_media._reply._medias && model_placeholder_media._reply._medias.length > 0 }"
-    >
+    <div class="m_mediaPlaceholder--replies">
       <template v-if="modes_allowed.hasOwnProperty('choices')">
         <template
           v-if="
@@ -118,7 +127,9 @@
           appear
           :duration="700"
         >
-          <template v-for="(media, index) in model_placeholder_media._reply._medias">
+          <template
+            v-for="(media, index) in model_placeholder_media._reply._medias"
+          >
             <MediaStory
               :key="media.metaFileName"
               :media="media"
@@ -134,7 +145,10 @@
               @duplicateMedia="orderedDuplicateMedia($event)"
             />
 
-            <div class="_story_insert_placeholders" :key="`insert_${media.metaFileName}`">
+            <div
+              class="_story_insert_placeholders"
+              :key="`insert_${media.metaFileName}`"
+            >
               <InsertMediaButton
                 v-if="
                   !preview_mode &&
@@ -179,7 +193,10 @@
         />
       </div>
       <div v-if="answers_given">
-        <small class="margin-sides-small" v-html="$t('answers_given:') + '&nbsp;' + answers_given" />
+        <small
+          class="margin-sides-small"
+          v-html="$t('answers_given:') + '&nbsp;' + answers_given"
+        />
       </div>
     </div>
   </div>
@@ -260,7 +277,7 @@ export default {
         ) {
           modes_allowed.choices.choices = modes_allowed.choices.choices
             .split("|")
-            .filter(c => c !== "");
+            .filter((c) => c !== "");
         }
       }
 
@@ -280,7 +297,7 @@ export default {
             const amount_of_type = opts.amount;
 
             const number_of_medias_of_this_type = this.model_placeholder_media._reply._medias.filter(
-              m => {
+              (m) => {
                 if (mode === "photo")
                   return m.type === mode || m.type === "image";
                 return m.type === mode;
@@ -368,7 +385,7 @@ export default {
               placeholder_medias_slugs: [],
             },
           })
-          .then(mdata => {
+          .then((mdata) => {
             this.$nextTick(() => {
               return resolve(mdata);
             });
@@ -377,7 +394,7 @@ export default {
     },
     addMediaOrdered({ values = {}, right_after_meta, in_position }) {
       return new Promise((resolve, reject) => {
-        this.addMedia({ values }).then(mdata =>
+        this.addMedia({ values }).then((mdata) =>
           this.insertMediasInList({
             metaFileNames: [mdata.metaFileName],
             right_after_meta,
@@ -408,7 +425,7 @@ export default {
             type: "publications",
             additionalMeta,
           })
-          .then(mdata => {
+          .then((mdata) => {
             return resolve(mdata);
           });
       });
@@ -423,7 +440,7 @@ export default {
               ? []
               : JSON.parse(JSON.stringify(this.placeholder_medias_slugs));
 
-          const new_media_metas = metaFileNames.map(metaFileName => {
+          const new_media_metas = metaFileNames.map((metaFileName) => {
             return {
               slugMediaName: metaFileName,
             };
@@ -436,7 +453,7 @@ export default {
             // in medias_slugs_in_order: medias that were added and then removed or part
             // of a removed project
             index = medias_slugs.findIndex(
-              s => s.slugMediaName === right_after_meta
+              (s) => s.slugMediaName === right_after_meta
             );
             index += 1;
           } else if (in_position && in_position === "start") {
@@ -454,9 +471,9 @@ export default {
                 placeholder_medias_slugs: medias_slugs,
               },
             })
-            .then(mdata => {
+            .then((mdata) => {
               this.$nextTick(() => {
-                metaFileNames.map(metaFileName => {
+                metaFileNames.map((metaFileName) => {
                   this.$eventHub.$emit(
                     "publication.just_inserted_media",
                     metaFileName
@@ -474,7 +491,9 @@ export default {
           ? []
           : JSON.parse(JSON.stringify(this.placeholder_medias_slugs));
 
-      medias_slugs = medias_slugs.filter(m => m.slugMediaName !== metaFileName);
+      medias_slugs = medias_slugs.filter(
+        (m) => m.slugMediaName !== metaFileName
+      );
 
       this.$root
         .editMedia({
@@ -502,7 +521,7 @@ export default {
           to_slugFolderName: this.slugPubliName,
           slugMediaName: metaFileName,
         })
-        .then(mdata => {
+        .then((mdata) => {
           this.insertMediasInList({
             metaFileNames: [mdata.metaFileName],
             right_after_meta: metaFileName,
@@ -519,18 +538,18 @@ export default {
 
       // find index in medias_slugs_in_order
       const current_index_in_slugs = medias_slugs.findIndex(
-        m => m.slugMediaName === metaFileName
+        (m) => m.slugMediaName === metaFileName
       );
 
       const current_media_index = this.model_placeholder_media._reply._medias.findIndex(
-        m => m.metaFileName === metaFileName
+        (m) => m.metaFileName === metaFileName
       );
       const adjacent_media_meta = this.model_placeholder_media._reply._medias[
         current_media_index + dir
       ].metaFileName;
 
       const new_index_in_slugs = medias_slugs.findIndex(
-        m => m.slugMediaName === adjacent_media_meta
+        (m) => m.slugMediaName === adjacent_media_meta
       );
 
       medias_slugs.move(current_index_in_slugs, new_index_in_slugs);
@@ -547,7 +566,9 @@ export default {
     toggleChoiceFromSelection(choice) {
       if (this.read_only || this.preview_mode) return false;
       if (this.choices_selected.includes(choice))
-        this.choices_selected = this.choices_selected.filter(c => c !== choice);
+        this.choices_selected = this.choices_selected.filter(
+          (c) => c !== choice
+        );
       else this.choices_selected.push(choice);
 
       this.updateMediaAnswers({ answers: this.choices_selected.join("|") });

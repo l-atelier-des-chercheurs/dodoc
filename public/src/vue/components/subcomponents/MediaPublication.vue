@@ -19,7 +19,7 @@
         'is--previewed': preview_mode,
         'is--overflowing': is_text_overflowing,
         'is--inline_edited': inline_edit_mode,
-        'is--locked': locked_in_place,
+        'is--locked': locked_in_place && !model_for_this_publication,
       },
     ]"
   >
@@ -29,7 +29,7 @@
         <br />
         <small>
           {{ media._linked_media.slugProjectName }}/{{
-          media._linked_media.slugMediaName
+            media._linked_media.slugMediaName
           }}
         </small>
       </div>
@@ -92,8 +92,8 @@
         </template>
         <template
           v-else-if="
-          ['ellipsis', 'rectangle', 'line', 'arrow'].includes(media.type)
-        "
+            ['ellipsis', 'rectangle', 'line', 'arrow'].includes(media.type)
+          "
         >
           <svg
             viewBox="0 0 100 100"
@@ -124,12 +124,33 @@
               vector-effect="non-scaling-stroke"
             />
             <g v-if="media.type === 'arrow'">
-              <line x1="0" y1="50" x2="100" y2="50" vector-effect="non-scaling-stroke" />
-              <g transform="
-                translate(100, 50)" preserveAspectRatio>
-                <line x1="0" y1="0" x2="-10" y2="-10" vector-effect="non-scaling-stroke" />
+              <line
+                x1="0"
+                y1="50"
+                x2="100"
+                y2="50"
+                vector-effect="non-scaling-stroke"
+              />
+              <g
+                transform="
+                translate(100, 50)"
+                preserveAspectRatio
+              >
+                <line
+                  x1="0"
+                  y1="0"
+                  x2="-10"
+                  y2="-10"
+                  vector-effect="non-scaling-stroke"
+                />
 
-                <line x1="0" y1="0" x2="-10" y2="10" vector-effect="non-scaling-stroke" />
+                <line
+                  x1="0"
+                  y1="0"
+                  x2="-10"
+                  y2="10"
+                  vector-effect="non-scaling-stroke"
+                />
               </g>
             </g>
           </svg>
@@ -189,7 +210,11 @@
         <!-- <img src="/images/i_clear.svg" draggable="false" /> -->
         <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
-      <button type="button" class="button button-bg_rounded bg-bleuvert" @click="saveMedia">
+      <button
+        type="button"
+        class="button button-bg_rounded bg-bleuvert"
+        @click="saveMedia"
+      >
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
           <slot name="submit_button">{{ $t("save") }}</slot>
@@ -202,7 +227,9 @@
       v-if="
         media.hasOwnProperty('_linked_media') && !!media._linked_media.caption
       "
-    >{{ media._linked_media.caption }}</p>
+    >
+      {{ media._linked_media.caption }}
+    </p>
 
     <button
       class="m_mediaPublication--overflowing_sign"
@@ -226,7 +253,7 @@
         !inline_edit_mode &&
         !read_only &&
         !locked_in_place &&
-        (is_selected || is_hovered) && 
+        (is_selected || is_hovered) &&
         !model_for_this_publication
       "
       class="controlFrame"
@@ -368,13 +395,14 @@
     <transition name="fade_fast" :duration="150">
       <div
         v-if="
-          ((
-            (is_selected || is_hovered) &&
+          (((is_selected || is_hovered) &&
             !preview_mode &&
             !inline_edit_mode &&
-            !read_only
-          ) || 
-          (!preview_mode && !inline_edit_mode && !read_only && locked_in_place)) &&       
+            !read_only) ||
+            (!preview_mode &&
+              !inline_edit_mode &&
+              !read_only &&
+              locked_in_place)) &&
           !model_for_this_publication
         "
       >
@@ -787,7 +815,7 @@ export default {
 
   watch: {
     media: {
-      handler: function() {
+      handler: function () {
         this.updateMediaStyles();
         this.htmlForEditor = this.media.content ? this.media.content : "";
       },
@@ -797,7 +825,7 @@ export default {
   computed: {
     is_selected() {
       return this.$root.settings.current_publication.selected_medias.some(
-        meta => meta === this.media.metaFileName
+        (meta) => meta === this.media.metaFileName
       );
     },
     mediaStyles() {
@@ -1409,7 +1437,7 @@ export default {
       this.show_advanced_menu = false;
 
       this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
-        meta => meta !== this.media.metaFileName
+        (meta) => meta !== this.media.metaFileName
       );
     },
     mouseOver() {
