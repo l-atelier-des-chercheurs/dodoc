@@ -5870,44 +5870,83 @@ small {
 
   // margin: 5px;
 
+  &.is--choices {
+    .m_mediaPlaceholder--replies {
+      margin-top: 0;
+    }
+  }
+
   // in paged publi
   .m_mediaPublication & {
     margin: 0;
     // opacity: 0.4;
-    padding: 0;
-    &:not(.is--choices) {
-      background-color: transparent;
+    // padding: 0;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    &.is--choices {
+      // background-color: transparent;
+
+      .m_mediaPlaceholder--replies {
+      }
     }
 
-    .m_mediaPlaceholder--replies.has--replies {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: 0;
-      padding: 0;
+    &:not(.is--choices) {
+      // background-color: transparent;
+      &:not(.has--replies) .m_mediaPlaceholder--replies {
+        flex: 1 0 auto;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
 
-      .m_mediaStory {
-        padding: 0;
-        height: 100%;
-        width: 100%;
-        position: absolute;
+        margin: 0;
 
-        .mediaContainer.type-image img {
-          width: 100%;
-          height: 100%;
-          max-height: none;
-          object-position: center;
+        // there can only be one
+        .m_insertMediaButton {
+          margin: 0;
         }
+      }
 
-        .mediaTextContent {
-          background: transparent;
+      &.has--replies {
+        background-color: @c-noir;
+      }
+
+      &.has--replies .m_mediaPlaceholder--instructions {
+        display: none;
+      }
+
+      &.has--replies .m_mediaPlaceholder--replies {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 0;
+        padding: 0;
+
+        .m_mediaStory {
           padding: 0;
-          padding-left: 1px;
+          height: 100%;
+          width: 100%;
+          position: absolute;
 
-          .ql-editor > *::before {
-            display: none;
+          .mediaContainer.type-image img {
+            width: 100%;
+            height: 100%;
+            max-height: none;
+            object-position: center;
+          }
+
+          .mediaTextContent {
+            background: transparent;
+            padding: 0;
+            padding-left: 1px;
+
+            .ql-editor > *::before {
+              display: none;
+            }
           }
         }
       }
@@ -6058,6 +6097,7 @@ small {
     background-color: @c-creme;
     border-radius: 10px;
     padding: 4px;
+    height: auto;
 
     // border-top: 4px dashed @c-gris_clair;
     // border-bottom: 4px dashed @c-gris_clair;
@@ -6131,7 +6171,7 @@ small {
     padding: 0;
     // padding-left: @t-skipline;
     // background-color: @c-noir;
-    .margin-vert-medium;
+    .margin-vert-small;
     // .bg-gris_clair;
   }
   &.is--open {
@@ -6282,7 +6322,7 @@ small {
       margin: 0;
       border: 0;
       .bg-gris_clair;
-      border-radius: 4px;
+      // border-radius: 4px;
       // border-radius: 4px;
     }
 

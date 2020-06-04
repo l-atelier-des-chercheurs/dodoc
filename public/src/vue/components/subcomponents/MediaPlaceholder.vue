@@ -1,7 +1,13 @@
 <template>
   <div
     class="m_mediaPlaceholder"
-    :class="{ 'is--choices': modes_allowed.hasOwnProperty('choices') }"
+    :class="{
+      'is--choices': modes_allowed.hasOwnProperty('choices'),
+      'has--replies':
+        model_placeholder_media._reply &&
+        model_placeholder_media._reply._medias &&
+        model_placeholder_media._reply._medias.length > 0,
+    }"
   >
     <!-- <label>{{ $t("placeholder") }} </label> -->
     <div
@@ -27,15 +33,7 @@
         {{ $t("reply") }}
       </button>
     </div>-->
-    <div
-      class="m_mediaPlaceholder--replies"
-      :class="{
-        'has--replies':
-          model_placeholder_media._reply &&
-          model_placeholder_media._reply._medias &&
-          model_placeholder_media._reply._medias.length > 0,
-      }"
-    >
+    <div class="m_mediaPlaceholder--replies">
       <template v-if="modes_allowed.hasOwnProperty('choices')">
         <template
           v-if="

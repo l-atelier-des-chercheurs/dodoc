@@ -33,7 +33,9 @@
             placement: 'bottom',
             delay: [600, 0],
           }"
-        >‹</button>
+        >
+          ‹
+        </button>
 
         <div class="m_publicationMeta--topbar--title">
           {{ publication.name }}
@@ -113,7 +115,9 @@
           v-if="show_export_button"
           @click="createButtonClicked"
           :class="{ 'is--disabled': export_button_is_disabled }"
-        >{{ $t("create") }}</button>
+        >
+          {{ $t("create") }}
+        </button>
       </div>
       <div
         style="width: 100%;"
@@ -126,7 +130,9 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_publi_model_infos }"
             @click.stop="show_publi_model_infos = !show_publi_model_infos"
-          >{{ $t("publi_is_model") }}</button>
+          >
+            {{ $t("publi_is_model") }}
+          </button>
         </label>
 
         <label v-if="show_publi_model_infos">
@@ -135,7 +141,8 @@
             :href="url_to_share_for_replies"
             target="_blank"
             class="js--openInBrowser text-lc"
-          >{{ url_to_share_for_replies }}</a>
+            >{{ url_to_share_for_replies }}</a
+          >
         </label>
       </div>
       <div
@@ -158,7 +165,8 @@
               @click="
                 $root.openPublication(model_for_this_publication.slugFolderName)
               "
-            >{{ model_for_this_publication.name }}</span>
+              >{{ model_for_this_publication.name }}</span
+            >
           </button>
         </label>
         <label v-if="show_publi_model_infos">
@@ -167,7 +175,8 @@
             :href="url_to_access_simplified_mode"
             target="_blank"
             class="js--openInBrowser text-lc"
-          >{{ url_to_access_simplified_mode }}</a>
+            >{{ url_to_access_simplified_mode }}</a
+          >
         </label>
       </div>
       <div v-else-if="model_for_this_publication">
@@ -180,7 +189,11 @@
         </div>
       </div>
       <div class="text-centered" style="width: 100%;">
-        <ClientsCheckingOut :type="'publications'" :slugFolderName="slugPubliName" />
+        <ClientsCheckingOut
+          v-if="$root.store.request.display !== 'survey'"
+          :type="'publications'"
+          :slugFolderName="slugPubliName"
+        />
       </div>
 
       <div
@@ -212,7 +225,8 @@
               :href="`http://${domain}`"
               target="_blank"
               class="js--openInBrowser text-lc"
-            >{{ domain }}</a>
+              >{{ domain }}</a
+            >
           </label>
         </div>
       </div>
@@ -235,9 +249,7 @@
               }"
             >
               <template v-if="$root.getAuthor(author.slugFolderName)">
-                {{
-                $root.getAuthor(author.slugFolderName).name
-                }}
+                {{ $root.getAuthor(author.slugFolderName).name }}
               </template>
             </span>
           </div>
@@ -323,12 +335,22 @@
         <div v-if="show_copy_options" class="margin-bottom-small">
           <label v-html="$t('name_of_copy')" />
           <form @submit.prevent="duplicateWithNewName()" class="input-group">
-            <input type="text" v-model.trim="copy_publi_name" required autofocus />
+            <input
+              type="text"
+              v-model.trim="copy_publi_name"
+              required
+              autofocus
+            />
             <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
           </form>
         </div>
 
-        <button type="button" class="buttonLink" v-if="can_edit_publi()" @click="removePublication">
+        <button
+          type="button"
+          class="buttonLink"
+          v-if="can_edit_publi()"
+          @click="removePublication"
+        >
           <svg
             version="1.1"
             class="inline-svg"

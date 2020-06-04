@@ -236,6 +236,7 @@
           </button>
 
           <a
+            v-if="media.type !== 'text'"
             :download="media.media_filename"
             :href="mediaURL"
             target="_blank"

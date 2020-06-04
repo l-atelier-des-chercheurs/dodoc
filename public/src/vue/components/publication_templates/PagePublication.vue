@@ -202,7 +202,7 @@
                 <button
                   type="button"
                   class="_advanced_menu_button"
-                  v-if="can_edit_publi"
+                  v-if="can_edit_publi && !model_for_this_publication"
                   @click.stop="
                     show_advanced_menu_for_page !== page.id
                       ? (show_advanced_menu_for_page = page.id)
@@ -322,7 +322,7 @@
           <button
             type="button"
             class="m_publicationview--pages--contactSheet--pages--page m_publicationview--pages--contactSheet--pages--page_create"
-            v-if="can_edit_publi"
+            v-if="can_edit_publi && !model_for_this_publication"
             :key="'create_page'"
             @click="insertPageAtIndex(pagesWithDefault.length + 1)"
           >
