@@ -865,14 +865,15 @@ let vm = new Vue({
           // );
           // using index for performance reason (no need to list all chats to get a rough unread count)
           if (existing_info.hasOwnProperty("index")) {
-            return (
+            return Math.max(
+              0,
               total_number_of_messages_in_chat - Number(existing_info.index)
             );
           }
         }
       }
 
-      return total_number_of_messages_in_chat;
+      return Math.max(0, total_number_of_messages_in_chat);
     },
     getAllKeywordsFrom(base) {
       let uniqueKeywords = [];

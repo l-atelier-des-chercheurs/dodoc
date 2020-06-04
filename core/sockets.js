@@ -214,6 +214,7 @@ module.exports = (function () {
     const password_field_options =
       global.settings.structure[type].fields.password;
     if (
+      password_field_options &&
       password_field_options.hasOwnProperty("transform") &&
       password_field_options.transform === "crypt" &&
       Object.values(foldersData)[0].password &&

@@ -15,16 +15,11 @@
               placement: 'bottom',
               delay: [600, 0],
             }"
-          >
-            ‹
-          </button>
+          >‹</button>
 
-          <span class="m_chat--content--topbar--name"
-            >{{ chat.name }}
-            <ProtectedLock
-              :editing_limited_to="chat.editing_limited_to"
-              :is_protected="false"
-            />
+          <span class="m_chat--content--topbar--name">
+            {{ chat.name }}
+            <ProtectedLock :editing_limited_to="chat.editing_limited_to" :is_protected="false" />
           </span>
 
           <div class="m_chat--content--topbar--options">
@@ -66,20 +61,13 @@
                   />
                 </g>
               </svg>
-
               {{ $t("advanced_options") }}
             </button>
           </div>
         </div>
-        <ClientsCheckingOut
-          :type="'chats'"
-          :slugFolderName="chat.slugFolderName"
-        />
+        <ClientsCheckingOut :type="'chats'" :slugFolderName="chat.slugFolderName" />
 
-        <div
-          class="m_chat--content--topbar--optionbar"
-          v-if="show_chat_options"
-        >
+        <div class="m_chat--content--topbar--optionbar" v-if="show_chat_options">
           <div>
             <div class="m_metaField" v-if="!!chat.authors">
               <div>{{ $t("author") }}</div>
@@ -96,12 +84,10 @@
                         author.slugFolderName,
                   }"
                 >
-                  <template v-if="$root.getAuthor(author.slugFolderName)">
-                    {{ $root.getAuthor(author.slugFolderName).name }}
-                  </template>
-                  <template v-else>
-                    {{ author.slugFolderName }}
-                  </template>
+                  <template
+                    v-if="$root.getAuthor(author.slugFolderName)"
+                  >{{ $root.getAuthor(author.slugFolderName).name }}</template>
+                  <template v-else>{{ author.slugFolderName }}</template>
                 </span>
               </div>
             </div>
@@ -114,29 +100,18 @@
             />
           </div>
 
-          <button
-            type="button"
-            class="buttonLink"
-            @click="show_edit_chat = true"
-          >
-            {{ $t("edit") }}
-          </button>
-          <button type="button" class="buttonLink" @click="removeChat()">
-            {{ $t("remove") }}
-          </button>
+          <button type="button" class="buttonLink" @click="show_edit_chat = true">{{ $t("edit") }}</button>
+          <button type="button" class="buttonLink" @click="removeChat()">{{ $t("remove") }}</button>
         </div>
       </div>
 
-      <EditChat
-        v-if="show_edit_chat"
-        :chat="chat"
-        @close="show_edit_chat = false"
-      />
+      <EditChat v-if="show_edit_chat" :chat="chat" @close="show_edit_chat = false" />
 
       <div class="m_chat--content--discussion" ref="chat_content">
-        <small class="_no_message_message" v-if="sorted_messages.length === 0">
-          {{ $t("no_message_yet") }}
-        </small>
+        <small
+          class="_no_message_message"
+          v-if="sorted_messages.length === 0"
+        >{{ $t("no_message_yet") }}</small>
         <button
           type="button"
           class="_button_showOlderMessages"
@@ -150,9 +125,7 @@
         </button>
 
         <div v-for="item in grouped_messages" :key="item[0]">
-          <h3 class="label c-noir margin-small text-centered">
-            {{ $root.formatDateToHuman(item[0]) }}
-          </h3>
+          <h3 class="label c-noir margin-small text-centered">{{ $root.formatDateToHuman(item[0]) }}</h3>
           <template v-for="(message, index) in item[1]">
             <div
               :key="message.metaFileName"
@@ -164,24 +137,23 @@
               }"
             >
               <div class="m_message--meta" v-if="message.authors">
-                <div
-                  class="m_message--meta--author"
-                  v-if="getMessageAuthor(message)"
-                >
+                <div class="m_message--meta--author" v-if="getMessageAuthor(message)">
                   <span>
                     <img
                       class="_pp"
                       v-if="urlToPortrait(getMessageAuthor(message))"
                       :src="urlToPortrait(getMessageAuthor(message))"
                     />
-                    <span v-else class="_no_pp"> </span>
-                    {{ getMessageAuthor(message).name }}</span
-                  >
+                    <span v-else class="_no_pp"></span>
+                    {{ getMessageAuthor(message).name }}
+                  </span>
                 </div>
                 <div class="m_message--meta--date">
-                  <span>{{
+                  <span>
+                    {{
                     $moment(message.date_created).format("HH:mm")
-                  }}</span>
+                    }}
+                  </span>
                   <button
                     type="button"
                     v-if="
@@ -231,10 +203,7 @@
       </div>
 
       <transition name="fade_fast" :duration="400">
-        <div
-          class="m_chat--content--scrollToBottom"
-          v-if="!is_scrolled_to_bottom"
-        >
+        <div class="m_chat--content--scrollToBottom" v-if="!is_scrolled_to_bottom">
           <button type="button" @click="scrollToBottom()">
             <img src="/images/i_arrow_right.svg" draggable="false" />
           </button>
@@ -249,12 +218,7 @@
           <label>{{ $t("post_a_message") }}</label>
           <form @submit.prevent="postNewMessage()" class="input-group">
             <input type="text" v-model.trim="new_message" required autofocus />
-            <button
-              type="submit"
-              :disabled="!new_message"
-              v-html="$t('send')"
-              class="bg-rouge"
-            />
+            <button type="submit" :disabled="!new_message" v-html="$t('send')" class="bg-rouge" />
           </form>
         </template>
         <template v-else>
@@ -263,9 +227,7 @@
               type="button"
               class="button-thin bg-bleumarine"
               @click="$root.showAuthorsListModal = true"
-            >
-              {{ $t("login_to_post") }}
-            </button>
+            >{{ $t("login_to_post") }}</button>
           </div>
         </template>
       </div>
@@ -315,11 +277,11 @@ export default {
       if (
         last_messages_read_in_channels &&
         last_messages_read_in_channels.some(
-          (c) => c.channel === this.chat.slugFolderName
+          c => c.channel === this.chat.slugFolderName
         )
       ) {
         const last_message_read_for_this_channel = last_messages_read_in_channels.find(
-          (c) => c.channel === this.chat.slugFolderName
+          c => c.channel === this.chat.slugFolderName
         );
 
         // check if some unread messages
@@ -383,7 +345,7 @@ export default {
     },
   },
   computed: {
-    sorted_messages: function () {
+    sorted_messages: function() {
       if (typeof this.chat.medias !== "object") return [];
       let _sorted_messages = this.$_.sortBy(this.chat.medias, "date_created");
 
@@ -392,8 +354,8 @@ export default {
 
       return _sorted_messages;
     },
-    grouped_messages: function () {
-      let message_group = this.$_.groupBy(this.sorted_messages, (message) => {
+    grouped_messages: function() {
+      let message_group = this.$_.groupBy(this.sorted_messages, message => {
         let _date;
 
         if (
@@ -431,7 +393,7 @@ export default {
       if (this.sorted_messages < 10) this.first_message_index_to_show = 0;
 
       const last_message_read_index = this.sorted_messages.findIndex(
-        (m) => m.metaFileName === this.last_read_message_on_opening
+        m => m.metaFileName === this.last_read_message_on_opening
       );
 
       this.first_message_index_to_show = Math.max(
@@ -461,7 +423,7 @@ export default {
           : [];
 
         const channel_info_in_author = last_messages_read_in_channels.find(
-          (c) => c.channel === last_message_channel.channel
+          c => c.channel === last_message_channel.channel
         );
         if (
           channel_info_in_author &&
@@ -475,7 +437,7 @@ export default {
 
         // remove existing prop
         last_messages_read_in_channels = last_messages_read_in_channels.filter(
-          (c) => c.channel !== last_message_channel.channel
+          c => c.channel !== last_message_channel.channel
         );
 
         last_messages_read_in_channels.push(last_message_channel);
@@ -512,7 +474,7 @@ export default {
     },
     urlToPortrait(author) {
       if (!author || !author.preview) return false;
-      let pathToSmallestThumb = author.preview.find((m) => m.size === 50);
+      let pathToSmallestThumb = author.preview.find(m => m.size === 50);
       if (pathToSmallestThumb && pathToSmallestThumb.path) {
         pathToSmallestThumb = pathToSmallestThumb.path;
         return pathToSmallestThumb;
@@ -559,7 +521,7 @@ export default {
             ],
           },
         })
-        .then((mdata) => {
+        .then(mdata => {
           this.$nextTick(() => {
             this.setReadMessageToLast();
           });

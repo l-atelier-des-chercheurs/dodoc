@@ -1273,6 +1273,8 @@ module.exports = (function () {
                 type: type + "/" + "medias",
                 slugFolderName: slugFolderName + "/" + metaFileName,
               });
+              cache.del({ type, slugFolderName });
+
               return thumbs.removeMediaThumbs(
                 slugFolderName,
                 type,
