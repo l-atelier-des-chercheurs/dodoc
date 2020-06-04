@@ -156,8 +156,13 @@
           </svg>
         </template>
         <template v-else-if="media.type === 'placeholder'">
+          <EditPlaceholderModal
+            v-if="inline_edit_mode"
+            :media="media"
+            @updateMediaPubliMeta="(value) => updateMediaPubliMeta(value)"
+            @close="inline_edit_mode = false"
+          />
           <MediaPlaceholder
-            v-if="model_for_this_publication"
             :key="media.metaFileName"
             :model_placeholder_media="media"
             :slugPubliName="slugPubliName"
@@ -168,40 +173,14 @@
             @addMedia="(values) => addMedia({ values })"
             @editPubliMedia="(values) => updateMediaPubliMeta(values)"
           />
-
-          <div v-else class="_placeholder">
-            <!-- <label>{{ $t("placeholder") }} </label> -->
-            <div class="_placeholder--instructions">
-              <label>{{ $t("instructions") }}</label>
-              <MediaField
-                :value="media.instructions"
-                :show_edit_button="true"
-                :add_instructions="$t('add_instructions')"
-                :edit_instructions="$t('edit_instructions')"
-                :read_only="preview_mode || read_only || !inline_edit_mode"
-                @updateField="
-                  (value) => updateMediaPubliMeta({ instructions: value })
-                "
-              />
-            </div>
-            <div class="_placeholder--constraints">
-              <label v-html="$t('type_of_expected_contents:')" />
-
-              <PlaceholderConstraints
-                :available_modes="media.available_modes"
-                :read_only="preview_mode || read_only"
-                :paged_mode="true"
-                @updateField="
-                  (value) => updateMediaPubliMeta({ available_modes: value })
-                "
-              />
-            </div>
-          </div>
         </template>
       </div>
     </template>
 
-    <div class="m_mediaPublication--floatingSaveButton" v-if="inline_edit_mode">
+    <div
+      class="m_mediaPublication--floatingSaveButton"
+      v-if="inline_edit_mode && media.type !== 'placeholder'"
+    >
       <button
         type="button"
         class="button button-bg_rounded bg-orange"
@@ -703,8 +682,7 @@
 import MediaContent from "./MediaContent.vue";
 import debounce from "debounce";
 import CollaborativeEditor from "./CollaborativeEditor.vue";
-import MediaField from "./MediaField.vue";
-import PlaceholderConstraints from "./PlaceholderConstraints.vue";
+import EditPlaceholderModal from "../modals/EditPlaceholderModal.vue";
 import MediaPlaceholder from "./MediaPlaceholder.vue";
 
 export default {
@@ -722,8 +700,7 @@ export default {
   components: {
     MediaContent,
     CollaborativeEditor,
-    MediaField,
-    PlaceholderConstraints,
+    EditPlaceholderModal,
     MediaPlaceholder,
   },
   data() {

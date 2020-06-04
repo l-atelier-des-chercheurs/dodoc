@@ -224,6 +224,25 @@
       }
     }
   }
+  &.typeOfModal-MediumAndScroll {
+    overflow-y: auto;
+
+    // if it is large, then it might be long as well. Let’s make sure it sticks to the top and scrolls to the bottom
+    .m_modal--container {
+      padding: 5vh 0;
+      max-width: @t-panelWidth * 2;
+      align-self: flex-start;
+      .m_modal--preview {
+        display: flex;
+        flex-flow: column nowrap;
+        min-height: 10vh;
+        height: auto;
+      }
+      .m_modal--sidebar {
+        flex-basis: @t-panelWidth * 2;
+      }
+    }
+  }
   &.typeOfModal-LargeAndNoScrollWithButtons {
     .m_modal--container {
       max-width: none;

@@ -4782,15 +4782,17 @@ small {
 
           &.item {
             position: relative;
-            .padding-verysmall;
-            .padding-left-small;
-            padding-top: 0;
+            .padding-sides-verysmall;
+            // .padding-left-small;
+            .margin-bottom-verysmall;
+
             border-radius: 4px;
 
             // .bg-gris_tresclair;
+            color: var(--input-border-color);
 
             &:hover {
-              border-color: var(--input-border-color-focus);
+              color: var(--input-border-color-focus);
             }
 
             > *:last-child {
@@ -4801,13 +4803,19 @@ small {
               content: "";
               position: absolute;
               left: 0;
-              width: 3px;
+              width: 2px;
               height: 100%;
-              background-color: var(--input-border-color);
+              background-color: currentColor;
               border-radius: 1.5px;
             }
 
-            label {
+            > label {
+              display: block;
+
+              button {
+                margin: 0;
+                margin: ~"calc(-1 * var(--spacing))" 0;
+              }
             }
           }
         }

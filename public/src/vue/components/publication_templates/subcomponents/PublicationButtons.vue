@@ -8,10 +8,14 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_create_options }"
             @click="show_create_options = !show_create_options"
-          >{{ $t("create") }}</button>
+          >
+            {{ $t("create") }}
+          </button>
         </label>
         <div v-if="show_create_options">
-          <small>{{ $t("import_medias_from_projects_or_create_shapes_here") }}</small>
+          <small>{{
+            $t("import_medias_from_projects_or_create_shapes_here")
+          }}</small>
 
           <div>
             <button
@@ -57,7 +61,9 @@
             :type="'publications'"
             :read_only="read_only"
             @close="enable_capture_mode = false"
-            @insertMedias="(metaFileNames) => insertImportedMedias({ metaFileNames })"
+            @insertMedias="
+              (metaFileNames) => insertImportedMedias({ metaFileNames })
+            "
           />
 
           <div>
@@ -85,10 +91,10 @@
                   transform="matrix(6.123234e-17 -1 1 6.123234e-17 49.334 208.2684)"
                   width="89.6"
                   height="16.8"
-                  style="fill:#1b2f81"
+                  style="fill: #1b2f81;"
                 />
                 <path
-                  style="fill: #1b2f81"
+                  style="fill: #1b2f81;"
                   d="M74.1,113.5l14.1-15.3c2.4-2.6,4.4-4.7,6.1-6.1c1.7-1.5,3.8-2.9,6.3-4.4l-70.7,0V71.9l70.7,0
 				c-2.2-1.3-4.2-2.7-6.1-4.4c-1.9-1.6-4-3.7-6.4-6.1L74.1,46L87,35l40.3,44.8L87,124.6L74.1,113.5z"
                 />
@@ -117,8 +123,8 @@
             :type="'publications'"
             :selected_files="selected_files"
             @insertMedias="
-          (metaFileNames) => insertImportedMedias({ metaFileNames })
-        "
+              (metaFileNames) => insertImportedMedias({ metaFileNames })
+            "
           />
 
           <div>
@@ -158,11 +164,32 @@
                   style="fill: #52c5b9;"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
-                <rect x="79.4" y="52.1" style="fill: #1b2f81;" width="62.3" height="15" />
-                <rect x="79.4" y="79.5" style="fill: #1b2f81;" width="62.3" height="15" />
-                <rect x="79.4" y="107" style="fill: #1b2f81;" width="62.3" height="15" />
+                <rect
+                  x="79.4"
+                  y="52.1"
+                  style="fill: #1b2f81;"
+                  width="62.3"
+                  height="15"
+                />
+                <rect
+                  x="79.4"
+                  y="79.5"
+                  style="fill: #1b2f81;"
+                  width="62.3"
+                  height="15"
+                />
+                <rect
+                  x="79.4"
+                  y="107"
+                  style="fill: #1b2f81;"
+                  width="62.3"
+                  height="15"
+                />
 
-                <path style="fill: #1b2f81;" d="M21.2,52.1h49v15H53.7V122H37.6V67.1H21.2V52.1z" />
+                <path
+                  style="fill: #1b2f81;"
+                  d="M21.2,52.1h49v15H53.7V122H37.6V67.1H21.2V52.1z"
+                />
               </svg>
               <span>{{ $t("text") }}</span>
             </button>
@@ -426,14 +453,15 @@
             <button
               class="button _create_buttons"
               @mousedown.stop.prevent="
-              $emit('addMedia', {
+                $emit('addMedia', {
                   type: 'placeholder',
                 })
-"
-              @touchstart.stop.prevent="              $emit('addMedia', {
+              "
+              @touchstart.stop.prevent="
+                $emit('addMedia', {
                   type: 'placeholder',
                 })
-"
+              "
             >
               <svg
                 version="1.1"
@@ -454,21 +482,48 @@
                 />
                 <polygon
                   points="144 142 114 142 114 122 124 122 124 112 144 112 144 142"
-                  style="fill: #1b2f81"
+                  style="fill: #1b2f81;"
                 />
-                <rect x="69" y="122" width="30" height="20" style="fill: #1b2f81" />
+                <rect
+                  x="69"
+                  y="122"
+                  width="30"
+                  height="20"
+                  style="fill: #1b2f81;"
+                />
                 <polygon
                   points="54 142 24 142 24 112 44 112 44 122 54 122 54 142"
-                  style="fill: #1b2f81"
+                  style="fill: #1b2f81;"
                 />
-                <rect x="24" y="67" width="20" height="30" style="fill: #1b2f81" />
-                <polygon points="44 52 24 52 24 22 54 22 54 42 44 42 44 52" style="fill: #1b2f81" />
-                <rect x="69" y="22" width="30" height="20" style="fill: #1b2f81" />
+                <rect
+                  x="24"
+                  y="67"
+                  width="20"
+                  height="30"
+                  style="fill: #1b2f81;"
+                />
+                <polygon
+                  points="44 52 24 52 24 22 54 22 54 42 44 42 44 52"
+                  style="fill: #1b2f81;"
+                />
+                <rect
+                  x="69"
+                  y="22"
+                  width="30"
+                  height="20"
+                  style="fill: #1b2f81;"
+                />
                 <polygon
                   points="144 52 124 52 124 42 114 42 114 22 144 22 144 52"
-                  style="fill: #1b2f81"
+                  style="fill: #1b2f81;"
                 />
-                <rect x="124" y="67" width="20" height="30" style="fill: #1b2f81" />
+                <rect
+                  x="124"
+                  y="67"
+                  width="20"
+                  height="30"
+                  style="fill: #1b2f81;"
+                />
               </svg>
               <span>{{ $t("placeholder") }}</span>
             </button>
@@ -482,14 +537,14 @@
             class="button-nostyle text-uc button-triangle"
             :class="{ 'is--active': show_edit_options }"
             @click="show_edit_options = !show_edit_options"
-          >{{ $t("edit") }}</button>
+          >
+            {{ $t("edit") }}
+          </button>
         </label>
         <template v-if="show_edit_options">
           <div v-if="!media">
             <small class>
-              {{
-              $t("click_on_a_bloc_to_edit_its_presentation")
-              }}
+              {{ $t("click_on_a_bloc_to_edit_its_presentation") }}
             </small>
           </div>
           <div v-else>
@@ -503,10 +558,20 @@
             >
               <label>{{ $t("font_size") }}</label>
               <div>
-                <input type="range" min="0" max="300" step="1" v-model="font_size_percent" />
+                <input
+                  type="range"
+                  min="0"
+                  max="300"
+                  step="1"
+                  v-model="font_size_percent"
+                />
               </div>
               <div class="input-group">
-                <input type="number" class="input-small" v-model="font_size_percent" />
+                <input
+                  type="number"
+                  class="input-small"
+                  v-model="font_size_percent"
+                />
                 <span class="input-addon input-addon-small">%</span>
               </div>
             </div>
@@ -524,13 +589,19 @@
                 {{ $t("fill_color") }}
                 <button
                   type="button"
-                  class="buttonLink padding-verysmall margin-none"
+                  class="buttonLink"
                   v-if="fill_color !== ''"
                   @click="fill_color = ''"
-                >×</button>
+                >
+                  ×
+                </button>
               </label>
               <div>
-                <input type="color" v-model="fill_color" :novalue="fill_color === ''" />
+                <input
+                  type="color"
+                  v-model="fill_color"
+                  :novalue="fill_color === ''"
+                />
               </div>
             </div>
             <div class="item">
@@ -538,23 +609,39 @@
                 {{ $t("stroke_color") }}
                 <button
                   type="button"
-                  class="buttonLink padding-verysmall margin-none"
+                  class="buttonLink"
                   v-if="stroke_color !== ''"
                   @click="stroke_color = ''"
-                >×</button>
+                >
+                  ×
+                </button>
               </label>
               <div>
-                <input type="color" v-model="stroke_color" :novalue="stroke_color === ''" />
+                <input
+                  type="color"
+                  v-model="stroke_color"
+                  :novalue="stroke_color === ''"
+                />
               </div>
             </div>
 
             <div class="item" v-if="stroke_color !== ''">
               <label>{{ $t("stroke_width") }}</label>
               <div>
-                <input type="range" min="1" max="20" step="1" v-model="stroke_width" />
+                <input
+                  type="range"
+                  min="1"
+                  max="20"
+                  step="1"
+                  v-model="stroke_width"
+                />
               </div>
               <div class="input-group">
-                <input type="number" class="input-small" v-model="stroke_width" />
+                <input
+                  type="number"
+                  class="input-small"
+                  v-model="stroke_width"
+                />
                 <span class="input-addon input-addon-small">pt</span>
               </div>
             </div>
@@ -648,7 +735,9 @@
                   class="button-nostyle text-uc button-triangle"
                   :class="{ 'is--active': show_custom_css }"
                   @click.stop="show_custom_css = !show_custom_css"
-                >{{ $t("css_settings") }}</button>
+                >
+                  {{ $t("css_settings") }}
+                </button>
               </label>
               <div v-if="show_custom_css">
                 <PrismEditor
@@ -663,7 +752,9 @@
                     class="button-greenthin"
                     @click="updateMediaPubliMeta({ custom_css: custom_css })"
                     :class="{}"
-                  >{{ $t("send") }}</button>
+                  >
+                    {{ $t("send") }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -708,7 +799,7 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    "$root.settings.current_publication.selected_medias": function() {
+    "$root.settings.current_publication.selected_medias": function () {
       if (this.$root.settings.current_publication.selected_medias.length > 0) {
         this.show_edit_options = true;
       }
@@ -716,7 +807,7 @@ export default {
       // this.show_create_options = true;
     },
     media: {
-      handler: function() {
+      handler: function () {
         if (this.media) {
           this.custom_css = this.media.hasOwnProperty("custom_css")
             ? this.media.custom_css
@@ -752,7 +843,7 @@ export default {
       const all_selected_medias = this.$root.settings.current_publication.selected_medias.reduce(
         (acc, meta) => {
           const corresponding_media = this.page_medias.find(
-            m => m.metaFileName === meta
+            (m) => m.metaFileName === meta
           );
           if (corresponding_media) acc.push(corresponding_media);
           return acc;
