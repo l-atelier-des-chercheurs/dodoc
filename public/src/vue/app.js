@@ -834,7 +834,6 @@ let vm = new Vue({
       });
     },
     getUnreadMessageCount(chat) {
-
       if (!this.current_author) return false;
 
       if (

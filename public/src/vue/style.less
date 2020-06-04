@@ -4682,8 +4682,22 @@ small {
     position: relative;
     border: none;
     // .bg-creme;
+    display: block;
     .bg-blanc;
     // .bg-gris_tresclair;
+
+    .m_publicationview--pages {
+      overflow: visible !important;
+      height: auto !important;
+    }
+
+    .m_publicationview--pages--singlePageBloc {
+      display: block;
+      height: auto !important;
+      > .m_publicationview--pages--pageContainer {
+        height: auto !important;
+      }
+    }
   }
 
   ._survey_author_indicator {
@@ -5860,7 +5874,10 @@ small {
   .m_mediaPublication & {
     margin: 0;
     // opacity: 0.4;
-    margin: 0;
+    padding: 0;
+    &:not(.is--choices) {
+      background-color: transparent;
+    }
 
     .m_mediaPlaceholder--replies.has--replies {
       position: absolute;
@@ -5885,7 +5902,13 @@ small {
         }
 
         .mediaTextContent {
-          background: white;
+          background: transparent;
+          padding: 0;
+          padding-left: 1px;
+
+          .ql-editor > *::before {
+            display: none;
+          }
         }
       }
     }
