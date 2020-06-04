@@ -22,7 +22,6 @@
             <ProtectedLock :editing_limited_to="chat.editing_limited_to" :is_protected="false" />
           </span>
 
-          {{ chat.number_of_medias }}
           <div class="m_chat--content--topbar--options">
             <button
               type="button"
