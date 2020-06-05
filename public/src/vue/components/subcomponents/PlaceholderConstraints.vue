@@ -90,7 +90,7 @@
               >
                 <input
                   :id="`option_${id}_${option.key}_advtext`"
-                  :disabled="read_only"
+                  :disabled="read_only || paged_mode"
                   type="checkbox"
                   v-model="option.advanced_text_options"
                 />
