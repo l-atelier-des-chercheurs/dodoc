@@ -52,29 +52,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    current_prop() {
-      if (this.type === "projects") {
-        return "looking_at_project";
-      } else if (this.type === "publications") {
-        return "looking_at_publi";
-      } else if (this.type === "media_modal") {
-        return "opened_media_modal";
-      } else if (this.type === "chats") {
-        return "looking_at_chat";
-      }
-      return false;
-    },
     clients_checking_out() {
-      if (!this.current_prop || !this.$root.unique_clients) return [];
-
-      return this.$root.unique_clients.filter(
-        (c) =>
-          c.data &&
-          c.data.hasOwnProperty(this.current_prop) &&
-          c.data[this.current_prop].slugFolderName === this.slugFolderName &&
-          (!this.metaFileName ||
-            c.data[this.current_prop].metaFileName === this.metaFileName)
-      );
+      return this.$root.findClientsLookingAt({
+        type: this.type,
+        slugFolderName: this.slugFolderName,
+        metaFileName: this.metaFileName,
+      });
     },
   },
   methods: {

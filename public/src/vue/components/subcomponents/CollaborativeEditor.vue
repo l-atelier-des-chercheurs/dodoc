@@ -11,7 +11,16 @@
   >
     <!-- connection_state : {{ connection_state }}
     <br />-->
+
+    {{ local_other_clients_editing }}
+
     <div ref="editor" class="mediaTextContent" />
+    <!-- <ClientsCheckingOut
+      :type="'projects'"
+      :slugFolderName="slugFolderName"
+      :metaFileName="media.metaFileName"
+    /> -->
+
     <transition name="fade" :duration="600">
       <div
         class="quillWrapper--savingIndicator"
@@ -27,10 +36,11 @@
         </transition>
       </div>
     </transition>
-    <!-- <div class="_customCaret" :style="_customCaret_style" /> -->
   </div>
 </template>
 <script>
+import ClientsCheckingOut from "./ClientsCheckingOut.vue";
+
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import ShareDB from "sharedb/lib/client";
 import Quill from "quill";
@@ -64,8 +74,9 @@ export default {
       type: String,
       default: "…",
     },
-    media: Object,
+    type: String,
     slugFolderName: String,
+    media: Object,
     specific_toolbar: Array,
     theme: {
       type: String,
@@ -79,9 +90,10 @@ export default {
       type: Boolean,
       default: false,
     },
-    type: String,
   },
-  components: {},
+  components: {
+    ClientsCheckingOut,
+  },
   data() {
     return {
       editor: null,
@@ -93,6 +105,8 @@ export default {
 
       is_loading_or_saving: false,
       show_saved_icon: false,
+      cursors: [],
+      local_other_clients_editing: [],
 
       custom_toolbar: [
         [{ font: fonts }],
@@ -180,10 +194,6 @@ export default {
       is_focused: false,
 
       debounce_textUpdate: undefined,
-      caret_position: {
-        top: undefined,
-        left: undefined,
-      },
 
       socket: null,
       connection_state: !this.enable_collaboration ? "disabled" : "connecting…",
@@ -224,18 +234,18 @@ export default {
         formula: true,
         cursors: {
           template: `
-    <span class="ql-cursor-caret-container">
-    <span class="ql-cursor-selections"></span>
-      <span class="ql-cursor-caret"></span>
-    </span>
-    <div class="ql-cursor-flag">
-      <small class="ql-cursor-name"></small>
-      <span class="ql-cursor-flag-flap"></span>
-    </div>
-`,
+            <span class="ql-cursor-selections"></span>
+            <span class="ql-cursor-caret-container">
+              <span class="ql-cursor-caret"></span>
+            </span>
+            <div class="ql-cursor-flag">
+              <small class="ql-cursor-name"></small>
+            </div>
+          `,
           hideDelayMs: 5000,
           hideSpeedMs: 0,
-          selectionChangeSource: null,
+          // selectionChangeSource: null,
+          transformOnTextChange: true,
         },
       },
       bounds: this.$refs.editor,
@@ -249,8 +259,13 @@ export default {
     if (this.read_only || this.$root.state.mode !== "live")
       this.editor.disable();
 
-    // const cursorsOne = this.editor.getModule("cursors");
-    // cursorsOne.createCursor(1, "User 1", "#0a997f");
+    this.cursors = this.editor.getModule("cursors");
+
+    const name = this.$root.current_author
+      ? this.$root.current_author.name
+      : this.$t("anonymous");
+
+    this.cursors.createCursor("_self", name, "#0a997f");
 
     this.$nextTick(() => {
       this.editor.root.innerHTML = this.value;
@@ -279,7 +294,9 @@ export default {
           this.updateFocusedLines();
         });
 
-        // cursorsOne.moveCursor(1, range);
+        // const range = this.editor.getSelection();
+        // this.cursors.moveCursor("_self", range);
+        // this.updateCaretPositionForClient(range);
       });
 
       this.editor.on("selection-change", (range, oldRange, source) => {
@@ -287,11 +304,10 @@ export default {
         if (range === null && oldRange !== null) this.is_focused = false;
         else if (range !== null && oldRange === null) this.is_focused = true;
 
-        // cursorsOne.moveCursor(1, range);
-        if (!!range && range.length == 0) {
-          console.log("User cursor is on", range.index);
-          this.updateCaretPosition();
-        }
+        if (this.enable_collaboration)
+          this.$nextTick(() => {
+            this.updateCaretPositionForClient(range);
+          });
 
         this.updateFocusedLines();
       });
@@ -307,15 +323,96 @@ export default {
       if (this.read_only) this.editor.disable();
       else this.editor.enable();
     },
+    other_clients_editing() {
+      // compare other_clients_editing with cursors
+      const cursors = this.cursors.cursors();
+
+      this.other_clients_editing.map(({ name, index, length }) => {
+        // check if client has cursor locally
+        if (!cursors.find((cursor) => cursor.id === name)) {
+          const color = this.getColorFromName(name);
+          this.cursors.createCursor(name, name, color);
+          this.cursors.moveCursor(name, { index, length });
+          this.cursors.toggleFlag(name);
+        } else {
+          // detect changes, only update for client whose index or length changed
+          if (
+            this.local_other_clients_editing.find(
+              (local_client) =>
+                local_client.name === name &&
+                (local_client.index !== index || local_client.length !== length)
+            )
+          ) {
+            this.cursors.moveCursor(name, { index, length });
+          }
+        }
+      });
+
+      cursors.map((cursor) => {
+        if (
+          cursor.id !== "_self" &&
+          !this.other_clients_editing.find(
+            (client) => client.name === cursor.id
+          )
+        ) {
+          this.cursors.removeCursor(cursor.id);
+        }
+      });
+
+      this.local_other_clients_editing = JSON.parse(
+        JSON.stringify(this.other_clients_editing)
+      );
+    },
   },
   computed: {
-    _customCaret_style() {
-      return {
-        transform: `translate3d(${this.caret_position.left}px, ${this.caret_position.top}px, 0px)`,
-      };
+    other_clients_editing() {
+      if (
+        !this.type ||
+        !this.slugFolderName ||
+        !this.media ||
+        !this.media.metaFileName
+      )
+        return false;
+
+      const clients = this.$root.findClientsLookingAt({
+        type: this.type,
+        slugFolderName: this.slugFolderName,
+        metaFileName: this.media.metaFileName,
+      });
+
+      return clients.reduce((acc, c) => {
+        if (c.data && c.data.caret_position && c.data.caret_position.index) {
+          let name = this.$t("anonymous");
+          if (
+            c.data.author &&
+            c.data.author.slugFolderName &&
+            this.$root.getAuthor(c.data.author.slugFolderName)
+          ) {
+            name = this.$root.getAuthor(c.data.author.slugFolderName).name;
+          }
+
+          acc.push({
+            name,
+            index: c.data.caret_position.index,
+            length: c.data.caret_position.length,
+          });
+        }
+        return acc;
+      }, []);
     },
   },
   methods: {
+    getColorFromName(name) {
+      const colors = this.custom_toolbar[4][0].color;
+
+      debugger;
+
+      // if (name === this.$t("anonymous")) {
+      //   return colors[Math.floor(Math.random() * colors.length)];
+      // }
+
+      return colors[parseInt(name, 36) % colors.length];
+    },
     initWebsocketMode() {
       console.log(`CollaborativeEditor / initWebsocketMode`);
       const params = new URLSearchParams({
@@ -396,11 +493,11 @@ export default {
         this.$forceUpdate();
       });
     },
-    updateCaretPosition() {
-      console.log(`CollaborativeEditor • METHODS: updateCaretPosition`);
-      var selection = this.editor.getSelection(true);
-      const caretPos = this.editor.getBounds(selection);
-      this.caret_position = { top: caretPos.top, left: caretPos.left };
+    updateCaretPositionForClient(range) {
+      this.cursors.moveCursor("_self", range);
+      this.$root.updateClientInfo({
+        caret_position: range,
+      });
     },
     updateFocusedLines() {
       console.log(`CollaborativeEditor • METHODS: updateFocusedLines`);

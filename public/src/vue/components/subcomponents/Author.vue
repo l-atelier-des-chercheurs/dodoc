@@ -155,9 +155,9 @@
             <div
               class="m_metaField"
               v-if="
-                author_looking_at.opened_media_modal &&
-                author_looking_at.opened_media_modal.slugFolderName &&
-                author_looking_at.opened_media_modal.metaFileName &&
+                author_looking_at.editing_media &&
+                author_looking_at.editing_media.slugFolderName &&
+                author_looking_at.editing_media.metaFileName &&
                 $root.getFolder({
                   type: 'projects',
                   slugFolderName:
@@ -174,7 +174,7 @@
                       slugFolderName:
                         author_looking_at.looking_at_project.slugFolderName,
                       metaFileName:
-                        author_looking_at.opened_media_modal.metaFileName,
+                        author_looking_at.editing_media.metaFileName,
                     })
                   "
                   :content="$t('open_project')"
@@ -191,7 +191,7 @@
                         author_looking_at.looking_at_project.slugFolderName,
                     }).name
                   }}
-                  / {{ author_looking_at.opened_media_modal.metaFileName }}
+                  / {{ author_looking_at.editing_media.metaFileName }}
 
                   ↑
                 </button>

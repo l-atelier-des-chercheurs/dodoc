@@ -80,8 +80,10 @@
             v-if="inline_edit_mode"
             v-model="htmlForEditor"
             class="fixedPanel"
+            :enable_collaboration="true"
             :media="media"
             :theme="'bubble'"
+            :type="'publications'"
             :slugFolderName="slugPubliName"
             ref="textField"
           />

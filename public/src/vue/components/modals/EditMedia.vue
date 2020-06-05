@@ -20,7 +20,7 @@
       </div>
       <small class="font-normal">{{ media.media_filename }}</small>
       <ClientsCheckingOut
-        :type="'media_modal'"
+        :type="'projects'"
         :slugFolderName="slugProjectName"
         :metaFileName="media.metaFileName"
       />

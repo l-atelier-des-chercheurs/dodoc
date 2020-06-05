@@ -630,14 +630,14 @@ let vm = new Vue({
     },
     media_modal: {
       handler() {
-        let opened_media_modal = {};
+        let editing_media = {};
 
         if (this.media_modal.open) {
-          opened_media_modal.slugFolderName = this.media_modal.current_slugProjectName;
-          opened_media_modal.metaFileName = this.media_modal.current_metaFileName;
+          editing_media.slugFolderName = this.media_modal.current_slugProjectName;
+          editing_media.metaFileName = this.media_modal.current_metaFileName;
         }
         this.updateClientInfo({
-          opened_media_modal,
+          editing_media,
         });
       },
       deep: true,
@@ -894,6 +894,25 @@ let vm = new Vue({
           classes: "tagcolorid_" + (parseInt(kw, 36) % 2),
         };
       });
+    },
+    findClientsLookingAt({ type, slugFolderName, metaFileName }) {
+      if (type === "projects" && metaFileName) {
+        type = "editing_media";
+      } else if (type === "projects") {
+        type = "looking_at_project";
+      } else if (type === "publications") {
+        type = "looking_at_publi";
+      } else if (type === "chats") {
+        type = "looking_at_chat";
+      } else return [];
+
+      return this.$root.unique_clients.filter(
+        (c) =>
+          c.data &&
+          c.data.hasOwnProperty(type) &&
+          c.data[type].slugFolderName === slugFolderName &&
+          (!metaFileName || c.data[type].metaFileName === metaFileName)
+      );
     },
     getAllAuthorsFrom(base) {
       let uniqueAuthors = [];
