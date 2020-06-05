@@ -18,13 +18,13 @@
           :options="{
             size: 400,
             foreground: '#333',
-            background: 'transparent'
+            background: 'transparent',
           }"
         ></qrcode>
       </div>
       <div class="m_qrSnippet--text">
         <a
-          class="break-long-lines js--openInBrowser"
+          class="break-long-lines js--openInBrowser text-lc"
           :href="getURLToApp(ip)"
           target="_blank"
         >
@@ -77,15 +77,15 @@ export default {
     media: Object,
     type: {
       type: String,
-      default: "projects"
-    }
+      default: "projects",
+    },
   },
   components: {
-    qrcode
+    qrcode,
   },
   data() {
     return {
-      open_in_dodoc: true
+      open_in_dodoc: true,
     };
   },
   created() {},
@@ -104,10 +104,10 @@ export default {
         return false;
       }
       return this.$root.store.projects[this.slugFolderName].name;
-    }
+    },
   },
   methods: {
-    printQR: function() {
+    printQR: function () {
       window.print();
     },
     getURLToApp(ip) {
@@ -151,8 +151,8 @@ export default {
         }
       }
       return url;
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

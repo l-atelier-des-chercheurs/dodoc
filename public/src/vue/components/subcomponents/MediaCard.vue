@@ -101,7 +101,7 @@
         </div>
 
         <ClientsCheckingOut
-          :type="'media_modal'"
+          :type="'projects'"
           :slugFolderName="slugProjectName"
           :metaFileName="media.metaFileName"
         />
