@@ -12,7 +12,7 @@
     <!-- connection_state : {{ connection_state }}
     <br />-->
 
-    {{ local_other_clients_editing }}
+    <!-- {{ other_clients_editing }} -->
 
     <div ref="editor" class="mediaTextContent" />
     <!-- <ClientsCheckingOut
@@ -265,7 +265,8 @@ export default {
       ? this.$root.current_author.name
       : this.$t("anonymous");
 
-    this.cursors.createCursor("_self", name, "#0a997f");
+    this.cursors.createCursor("_self", name, "#1b2f81");
+    this.cursors.toggleFlag("_self", false);
 
     this.$nextTick(() => {
       this.editor.root.innerHTML = this.value;
@@ -365,6 +366,9 @@ export default {
     },
   },
   computed: {
+    reference_to_media() {
+      return `${this.type}/${this.slugFolderName}/${this.media.metaFileName}`;
+    },
     other_clients_editing() {
       if (
         !this.type ||
@@ -374,14 +378,13 @@ export default {
       )
         return false;
 
-      const clients = this.$root.findClientsLookingAt({
-        type: this.type,
-        slugFolderName: this.slugFolderName,
-        metaFileName: this.media.metaFileName,
-      });
-
-      return clients.reduce((acc, c) => {
-        if (c.data && c.data.caret_position && c.data.caret_position.index) {
+      return this.$root.unique_clients.reduce((acc, c) => {
+        if (
+          c.data &&
+          c.data.caret_information &&
+          c.data.caret_information.path === this.reference_to_media &&
+          c.data.caret_information.range.index
+        ) {
           let name = this.$t("anonymous");
           if (
             c.data.author &&
@@ -393,8 +396,8 @@ export default {
 
           acc.push({
             name,
-            index: c.data.caret_position.index,
-            length: c.data.caret_position.length,
+            index: c.data.caret_information.range.index,
+            length: c.data.caret_information.range.length,
           });
         }
         return acc;
@@ -404,8 +407,6 @@ export default {
   methods: {
     getColorFromName(name) {
       const colors = this.custom_toolbar[4][0].color;
-
-      debugger;
 
       // if (name === this.$t("anonymous")) {
       //   return colors[Math.floor(Math.random() * colors.length)];
@@ -496,7 +497,10 @@ export default {
     updateCaretPositionForClient(range) {
       this.cursors.moveCursor("_self", range);
       this.$root.updateClientInfo({
-        caret_position: range,
+        caret_information: {
+          path: this.reference_to_media,
+          range,
+        },
       });
     },
     updateFocusedLines() {
