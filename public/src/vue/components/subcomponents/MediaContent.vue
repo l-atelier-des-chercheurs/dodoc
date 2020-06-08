@@ -417,12 +417,13 @@ export default {
         return this.mediaURL;
       }
 
-      let firstThumbs = this.media.thumbs.filter((t) => !!t && t[opt] === 0);
-      if (!firstThumbs || firstThumbs.length === 0) return;
+      let firstThumbs = this.media.thumbs.find((t) => !!t && t[opt] === 0);
 
-      let pathToSmallestThumb = firstThumbs[0].thumbsData.filter(
-        (m) => m.size === this.thumbRes
-      )[0].path;
+        (m) => m && m.size === this.thumbRes
+      );
+      if (!small_thumb) return this.mediaURL;
+
+      let pathToSmallestThumb = small_thumb.path;
 
       let url =
         this.$root.state.mode === "export_publication"

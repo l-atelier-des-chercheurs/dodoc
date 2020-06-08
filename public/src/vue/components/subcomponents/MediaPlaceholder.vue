@@ -182,7 +182,7 @@
           </template>
         </transition-group>
       </template>
-      <div v-if="answer_type_expected" class>
+      <div v-if="answer_type_expected" class="_help">
         <small
           class="margin-sides-small"
           v-html="
@@ -192,7 +192,7 @@
           "
         />
       </div>
-      <div v-if="answers_given">
+      <div v-if="answers_given" class="_help">
         <small
           class="margin-sides-small"
           v-html="$t('answers_given:') + '&nbsp;' + answers_given"
