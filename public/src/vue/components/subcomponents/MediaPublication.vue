@@ -987,11 +987,11 @@ export default {
       this.stroke_color =
         this.media.hasOwnProperty("stroke_color") && !!this.media.stroke_color
           ? this.media.stroke_color
-          : "transparent";
+          : "";
       this.fill_color =
         this.media.hasOwnProperty("fill_color") && !!this.media.fill_color
           ? this.media.fill_color
-          : "transparent";
+          : "";
       this.stroke_width =
         this.media.hasOwnProperty("stroke_width") &&
         !!Number.parseFloat(this.media.stroke_width)
