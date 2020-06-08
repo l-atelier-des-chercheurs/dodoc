@@ -419,6 +419,7 @@ export default {
 
       let firstThumbs = this.media.thumbs.find((t) => !!t && t[opt] === 0);
 
+      const small_thumb = firstThumbs.thumbsData.find(
         (m) => m && m.size === this.thumbRes
       );
       if (!small_thumb) return this.mediaURL;

@@ -604,7 +604,7 @@
                 />
               </div>
             </div>
-            <div class="item">
+            <div class="item" v-if="media.type !== 'placeholder'">
               <label>
                 {{ $t("stroke_color") }}
                 <button
