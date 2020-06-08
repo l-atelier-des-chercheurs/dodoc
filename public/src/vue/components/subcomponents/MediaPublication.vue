@@ -991,7 +991,7 @@ export default {
       this.fill_color =
         this.media.hasOwnProperty("fill_color") && !!this.media.fill_color
           ? this.media.fill_color
-          : "transparent";
+          : "";
       this.stroke_width =
         this.media.hasOwnProperty("stroke_width") &&
         !!Number.parseFloat(this.media.stroke_width)

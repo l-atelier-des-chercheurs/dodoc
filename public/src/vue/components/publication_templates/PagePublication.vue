@@ -677,28 +677,29 @@ export default {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`COMPUTED • publications_options`);
       }
+
+      const publication = this.model_for_this_publication
+        ? this.model_for_this_publication
+        : this.publication;
+
       // set default values to options
-      if (!this.publication.hasOwnProperty("template")) {
+      if (!publication.hasOwnProperty("template")) {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error("Missing template in publication");
       }
-      if (
-        !this.publication_defaults.hasOwnProperty(this.publication.template)
-      ) {
+      if (!this.publication_defaults.hasOwnProperty(publication.template)) {
         console.log(
           "No defaults for this template. Returning original publication object."
         );
-        return this.publication;
+        return publication;
       }
 
-      let publication_options = this.publication_defaults[
-        this.publication.template
-      ];
+      let publication_options = this.publication_defaults[publication.template];
       for (let k of Object.keys(publication_options)) {
-        if (this.publication.hasOwnProperty(k)) {
-          publication_options[k] = this.publication[k];
+        if (publication.hasOwnProperty(k)) {
+          publication_options[k] = publication[k];
         }
       }
 

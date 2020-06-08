@@ -1585,23 +1585,24 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
       margin-bottom: -1px;
       border-radius: 8px;
       box-shadow: 0px 2px 16px 0px rgba(0, 0, 0, 0.45);
+      padding-right: ~"calc(var(--spacing) / 4)";
     }
 
     .ql-tooltip-arrow {
     }
 
-    &.ql-hidden {
-      // bubble editor : when no text is selected
-      display: block;
-      bottom: ~"calc(100% + var(--spacing) / 2)" !important;
-      top: auto !important;
-      left: 50% !important;
-      transform: translate(-50%, 0) !important;
+    // &.ql-hidden {
+    // bubble editor : when no text is selected
+    display: block;
+    bottom: ~"calc(100% + var(--spacing) / 2)" !important;
+    top: auto !important;
+    left: 50% !important;
+    transform: translate(-50%, 0) !important;
 
-      .ql-tooltip-arrow {
-        display: none;
-      }
+    .ql-tooltip-arrow {
+      display: none;
     }
+    // }
   }
   .quillWrapper--savingIndicator {
     position: absolute;

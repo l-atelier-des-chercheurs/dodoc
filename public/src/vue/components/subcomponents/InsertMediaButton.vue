@@ -34,7 +34,11 @@
       {{ $t("cancel") }}
     </button>-->
     <transition name="fade_fast" :duration="150" mode="out-in">
-      <div v-if="show_drop_container" @drop="dropHandler($event)" class="_drop_indicator">
+      <div
+        v-if="show_drop_container"
+        @drop="dropHandler($event)"
+        class="_drop_indicator"
+      >
         <div>
           <img src="/images/i_importer.svg" draggable="false" />
           <label>{{ $t("drop_here_to_import") }}</label>
@@ -183,6 +187,7 @@
           @insertMedias="
             (metaFileNames) => insertImportedMedias({ metaFileNames })
           "
+          @close="enable_capture_mode = false"
         />
       </template>
     </transition>

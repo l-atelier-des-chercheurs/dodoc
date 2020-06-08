@@ -1,5 +1,11 @@
 <template>
-  <div id="app" :class="{ 'is--wide': $root.screen_is_wide }">
+  <div
+    id="app"
+    :class="{
+      'is--wide': $root.screen_is_wide,
+      'is--survey': $root.store.request.display === 'survey',
+    }"
+  >
     <template v-if="$root.store.request.display === 'standalone'">
       <div class="m_standaloneMedia">
         <MediaContent
