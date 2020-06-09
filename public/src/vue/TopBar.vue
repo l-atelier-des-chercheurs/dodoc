@@ -340,8 +340,13 @@ export default {
     },
     urlToPortrait(preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.filter((m) => m.size === 180)[0].path;
-      return pathToSmallestThumb;
+      let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
+
+      let url =
+        this.$root.state.mode === "export_publication"
+          ? `./${pathToSmallestThumb}`
+          : `/${pathToSmallestThumb}`;
+      return url;
     },
   },
 };
