@@ -58,12 +58,7 @@
         v-model="media.content"
       />
 
-      <div
-        class="mediaContainer"
-        v-else
-        :class="`type-${media.type}`"
-        :data-context="context"
-      >
+      <div class="mediaContainer" v-else :class="`type-${media.type}`">
         <template v-if="media.type === 'text'">
           <template
             v-if="

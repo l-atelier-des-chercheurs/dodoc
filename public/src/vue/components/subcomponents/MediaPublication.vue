@@ -73,7 +73,6 @@
         v-else
         :style="contentStyles"
         :class="`type-${media.type}`"
-        :data-context="context"
       >
         <template v-if="media.type === 'text'">
           <CollaborativeEditor
