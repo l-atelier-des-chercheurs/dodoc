@@ -289,7 +289,7 @@ export default {
 
         this.$emit(
           "input",
-          this.editor.getText() ? this.editor.root.innerHTML : ""
+          this.editor.getText() ? this.sanitizeEditorHTML() : ""
         );
 
         this.$nextTick(() => {
@@ -418,6 +418,12 @@ export default {
 
       return colors[parseInt(name, 36) % colors.length];
     },
+    sanitizeEditorHTML() {
+      // used to make sure we don’t get weird stuff such as <p style="font-family: "Avada";">plop</p>
+      let content = this.editor.root.innerHTML;
+      content = content.replace(/&quot;/g, "'");
+      return content;
+    },
     initWebsocketMode() {
       console.log(`CollaborativeEditor / initWebsocketMode`);
       const params = new URLSearchParams({
@@ -472,7 +478,7 @@ export default {
 
         this.$emit(
           "input",
-          this.editor.getText() ? this.editor.root.innerHTML : ""
+          this.editor.getText() ? this.sanitizeEditorHTML() : ""
         );
 
         this.editor.on("text-change", (delta, oldDelta, source) => {
@@ -552,13 +558,15 @@ export default {
           `CollaborativeEditor • updateTextMedia: saving new snapshop`
         );
 
+        debugger;
+
         this.$root
           .editMedia({
             type: this.type,
             slugFolderName: this.slugFolderName,
             slugMediaName: this.media.metaFileName,
             data: {
-              content: this.editor.getText() ? this.editor.root.innerHTML : "",
+              content: this.editor.getText() ? this.sanitizeEditorHTML() : "",
             },
           })
           .then((mdata) => {
