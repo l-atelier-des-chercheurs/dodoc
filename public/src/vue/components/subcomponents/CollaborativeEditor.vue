@@ -112,7 +112,7 @@ export default {
         [{ font: fonts }],
         [{ header: [false, 1, 2, 3] }],
         [{ size: ["50%", false, "150%", "300%"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
-        ["bold", "italic", "underline", "link", "blockquote"],
+        ["bold", "italic", "underline", "strike", "link", "blockquote"],
         [
           {
             color: [
@@ -177,6 +177,7 @@ export default {
         "size",
         "italic",
         "underline",
+        "strike",
         "link",
         "header",
         "blockquote",
