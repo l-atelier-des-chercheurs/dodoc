@@ -186,6 +186,8 @@ export default {
 
       if (this.local_editing_limited_to === "nobody")
         this.local_viewing_limited_to = "only_authors";
+      else if (this.local_editing_limited_to === "everybody")
+        this.local_viewing_limited_to = "everybody";
       else this.local_viewing_limited_to = "";
     },
   },
