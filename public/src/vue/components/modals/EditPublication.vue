@@ -264,12 +264,6 @@ export default {
       },
       deep: true,
     },
-    "publidata.editing_limited_to": function () {
-      if (this.publidata.editing_limited_to === "everybody")
-        this.publidata.viewing_limited_to = "everybody";
-      else if (this.publidata.editing_limited_to === "only_authors")
-        this.show_authors = true;
-    },
   },
   mounted() {},
   computed: {
