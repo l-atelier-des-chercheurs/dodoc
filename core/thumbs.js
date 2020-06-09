@@ -230,14 +230,16 @@ module.exports = (function () {
             }
             meta.ratio = Number.parseFloat(ratio).toPrecision(4);
 
-            var parsed_exif_data = exifReader(exifdata.exif);
-            if (parsed_exif_data && parsed_exif_data.hasOwnProperty("gps")) {
-              meta.gps = JSON.stringify(parsed_exif_data.gps);
+            if (exifdata.exif) {
+              var parsed_exif_data = exifReader(exifdata.exif);
+              if (parsed_exif_data && parsed_exif_data.hasOwnProperty("gps")) {
+                meta.gps = JSON.stringify(parsed_exif_data.gps);
+              }
             }
 
             return resolve(meta);
           })
-          .catch((err) => reject());
+          .catch((err) => reject(err));
       } else if (type === "video" || type === "audio") {
         getEXIFDataForVideoAndAudio(mediaPath)
           .then((metadata) => {
@@ -313,10 +315,10 @@ module.exports = (function () {
         .metadata()
         .then((exifdata) => {
           if (typeof exifdata === "undefined") {
-            reject();
+            return reject();
           }
           dev.logverbose(`Gotten metadata.`);
-          resolve(exifdata);
+          return resolve(exifdata);
         })
         .catch((err) => reject(err));
     });
