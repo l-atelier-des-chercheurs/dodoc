@@ -505,6 +505,29 @@ export default {
     },
     removePublication() {
       if (this.publication.is_model) {
+        // check if other recipes depend on it
+        // if so, prevent removing
+        const publication_relying_on_this_model = Object.values(
+          this.$root.store.publications
+        ).filter(
+          (p) =>
+            p.template === this.publication.template &&
+            p.follows_model &&
+            p.follows_model === this.publication.slugFolderName
+        );
+
+        if (publication_relying_on_this_model.length > 0) {
+          this.$alertify.alert(
+            this.$t("publiHasPubliRelyingOnItCantDelete") +
+              `<br><b>${publication_relying_on_this_model.length}</b> ` +
+              this.$t("recipes").toLowerCase()
+          );
+          return;
+        }
+
+        //   Object.values(this.publications).filter(
+        //   (r) => r.template === template_key
+        // );
       }
 
       this.$alertify
