@@ -265,7 +265,7 @@ export default {
       ? this.$root.current_author.name
       : this.$t("anonymous");
 
-    this.cursors.createCursor("_self", name, "#1b2f81");
+    this.cursors.createCursor("_self", name, "#1d327f");
     this.cursors.toggleFlag("_self", false);
 
     this.$nextTick(() => {
@@ -317,6 +317,9 @@ export default {
   beforeDestroy() {
     if (!!this.socket) {
       this.socket.close();
+    }
+    if (this.enable_collaboration) {
+      this.removeCaretPosition();
     }
   },
   watch: {
@@ -501,6 +504,12 @@ export default {
           path: this.reference_to_media,
           range,
         },
+      });
+    },
+    removeCaretPosition() {
+      this.cursors.removeCursor("_self");
+      this.$root.updateClientInfo({
+        caret_information: {},
       });
     },
     updateFocusedLines() {
