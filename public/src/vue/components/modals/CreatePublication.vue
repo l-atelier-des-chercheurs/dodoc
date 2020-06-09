@@ -125,9 +125,6 @@
           </button>
         </label>
 
-        Plop {{ publidata.editing_limited_to }}
-        {{ publidata.viewing_limited_to }}
-
         <div v-if="show_access_control">
           <EditAccessControl
             :editing_limited_to.sync="publidata.editing_limited_to"
