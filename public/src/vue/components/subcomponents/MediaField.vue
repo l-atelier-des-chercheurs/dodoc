@@ -13,7 +13,7 @@
     <template v-else-if="edit_mode">
       <CollaborativeEditor
         :specific_toolbar="[
-          ['bold', 'italic', 'underline', 'link', 'blockquote'],
+          ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
           ['clean'],
         ]"
         v-model="new_value"

@@ -90,7 +90,7 @@
           v-if="!!author.preview"
           width="100"
           height="100"
-          :src="urlToPortrait(author.slugFolderName, author.preview)"
+          :src="urlToPortrait(author.preview)"
           draggable="false"
         />
         <div class="m_author--name">{{ author.name }}</div>
@@ -568,9 +568,10 @@ export default {
 
       this.$root.unsetAuthor();
     },
-    urlToPortrait(slug, preview) {
+    urlToPortrait(preview) {
       if (!preview) return "";
       let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
+      debugger;
       let url =
         this.$root.state.mode === "export_publication"
           ? `./${pathToSmallestThumb}`

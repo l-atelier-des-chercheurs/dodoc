@@ -119,8 +119,10 @@
             @click="getLink"
             v-if="!show_link_infos"
             :disabled="
-              publication.hasOwnProperty('viewing_limited_to') &&
-              publication.viewing_limited_to !== 'everybody'
+              (publication.hasOwnProperty('editing_limited_to') &&
+                publication.editing_limited_to !== 'everybody') &&
+              (publication.hasOwnProperty('viewing_limited_to') &&
+                publication.viewing_limited_to !== 'everybody')
             "
           >
             {{ $t("share") }}

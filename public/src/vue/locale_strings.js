@@ -1224,6 +1224,12 @@ module.exports = (function () {
         "Êtes-vous sûr de vouloir supprimer cette recette ? Comme c’est un modèle, toutes les réponses à ce modèle deviendront innaccessibles et non-fonctionnelles.",
       en: "Do you really want to delete this recipe?",
     },
+    publiHasPubliRelyingOnItCantDelete: {
+      fr:
+        "Ce modèle est utilisé comme référence par une ou plusieurs recettes réponses et ne peut donc pas être supprimé.",
+      en:
+        "This model is used by one or more reply recipes and cannot be deleted as long as this is the case.",
+    },
     sure_to_cancel_stopmotion: {
       fr:
         "Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu <i>Liste des animations</i>",
@@ -2522,6 +2528,10 @@ module.exports = (function () {
         "Si actif, cette recette pourra être utilisée comme référence lors de la création d’autres recettes.",
       en:
         "If enabled, this recipe can be selected as a model for other recipes to lean on.",
+    },
+    recipes: {
+      fr: "Recettes",
+      en: "Recipes",
     },
     URL_to_share_for_replies: {
       fr:
