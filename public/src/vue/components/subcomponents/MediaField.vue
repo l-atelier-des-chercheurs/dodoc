@@ -1,7 +1,7 @@
 <template>
   <div class="m_mediaField" :class="{ 'is--beingEdited': edit_mode }">
     <template v-if="!edit_mode">
-      <div v-if="value" v-html="value" />
+      <div v-if="value" class="mediaTextContent" v-html="value" />
       <button
         type="button"
         class="buttonLink"

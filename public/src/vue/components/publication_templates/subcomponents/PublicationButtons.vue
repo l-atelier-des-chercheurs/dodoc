@@ -42,7 +42,7 @@
                 />
                 <circle
                   style="
-                    fill: #1b2f81;
+                    fill: #1d327f;
                     stroke-width: 15;
                     stroke-miterlimit: 10;
                   "
@@ -91,10 +91,10 @@
                   transform="matrix(6.123234e-17 -1 1 6.123234e-17 49.334 208.2684)"
                   width="89.6"
                   height="16.8"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                 />
                 <path
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                   d="M74.1,113.5l14.1-15.3c2.4-2.6,4.4-4.7,6.1-6.1c1.7-1.5,3.8-2.9,6.3-4.4l-70.7,0V71.9l70.7,0
 				c-2.2-1.3-4.2-2.7-6.1-4.4c-1.9-1.6-4-3.7-6.4-6.1L74.1,46L87,35l40.3,44.8L87,124.6L74.1,113.5z"
                 />
@@ -167,27 +167,27 @@
                 <rect
                   x="79.4"
                   y="52.1"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                   width="62.3"
                   height="15"
                 />
                 <rect
                   x="79.4"
                   y="79.5"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                   width="62.3"
                   height="15"
                 />
                 <rect
                   x="79.4"
                   y="107"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                   width="62.3"
                   height="15"
                 />
 
                 <path
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                   d="M21.2,52.1h49v15H53.7V122H37.6V67.1H21.2V52.1z"
                 />
               </svg>
@@ -237,7 +237,7 @@
                   y2="84"
                   style="
                     fill: none;
-                    stroke: #1b2f81;
+                    stroke: #1d327f;
                     stroke-width: 15;
                     stroke-miterlimit: 10;
                   "
@@ -289,7 +289,7 @@
                   y2="84"
                   style="
                     fill: none;
-                    stroke: #1b2f81;
+                    stroke: #1d327f;
                     stroke-width: 15;
                     stroke-miterlimit: 40;
                   "
@@ -301,7 +301,7 @@
                   y2="51"
                   style="
                     fill: none;
-                    stroke: #1b2f81;
+                    stroke: #1d327f;
                     stroke-width: 15;
                     stroke-miterlimit: 10;
                   "
@@ -313,7 +313,7 @@
                   y2="117"
                   style="
                     fill: none;
-                    stroke: #1b2f81;
+                    stroke: #1d327f;
                     stroke-width: 15;
                     stroke-miterlimit: 10;
                   "
@@ -375,7 +375,7 @@
                   y="56"
                   style="
                     fill: none;
-                    stroke: #1b2f81;
+                    stroke: #1d327f;
                     stroke-width: 13;
                     stroke-miterlimit: 10;
                   "
@@ -437,7 +437,7 @@
                 <circle
                   style="
                     fill: none;
-                    stroke: #1b2f81;
+                    stroke: #1d327f;
                     stroke-width: 15;
                     stroke-miterlimit: 10;
                   "
@@ -482,47 +482,47 @@
                 />
                 <polygon
                   points="144 142 114 142 114 122 124 122 124 112 144 112 144 142"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                 />
                 <rect
                   x="69"
                   y="122"
                   width="30"
                   height="20"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                 />
                 <polygon
                   points="54 142 24 142 24 112 44 112 44 122 54 122 54 142"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                 />
                 <rect
                   x="24"
                   y="67"
                   width="20"
                   height="30"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                 />
                 <polygon
                   points="44 52 24 52 24 22 54 22 54 42 44 42 44 52"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                 />
                 <rect
                   x="69"
                   y="22"
                   width="30"
                   height="20"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                 />
                 <polygon
                   points="144 52 124 52 124 42 114 42 114 22 144 22 144 52"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                 />
                 <rect
                   x="124"
                   y="67"
                   width="20"
                   height="30"
-                  style="fill: #1b2f81;"
+                  style="fill: #1d327f;"
                 />
               </svg>
               <span>{{ $t("placeholder") }}</span>
@@ -625,7 +625,10 @@
               </div>
             </div>
 
-            <div class="item" v-if="stroke_color !== ''">
+            <div
+              class="item"
+              v-if="media.type !== 'placeholder' && stroke_color !== ''"
+            >
               <label>{{ $t("stroke_width") }}</label>
               <div>
                 <input

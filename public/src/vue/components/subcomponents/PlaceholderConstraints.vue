@@ -36,6 +36,7 @@
 
 
       </div>-->
+      {{ available_modes }}
 
       <!-- v-else -->
       <div
@@ -77,6 +78,7 @@
             v-if="
               option.enabled &&
               (option.advanced_text_options ||
+                option.force_text_style ||
                 option.only_numbers ||
                 option.amount)
             "
@@ -96,6 +98,24 @@
                 />
                 {{ $t("advanced_text_bloc") }}
               </label>
+            </div>
+            <div
+              v-if="option.key === 'text' && !option.advanced_text_options"
+              class="_force_text"
+            >
+              <label>{{ $t("style") }}</label>
+              <select
+                v-model="option.force_text_style"
+                class="select-xs"
+                :disabled="read_only"
+              >
+                <option
+                  v-for="style in [false, 'bold', 'italic', 'large', 'small']"
+                  :value="style"
+                  :key="style"
+                  v-html="!style ? $t('none') : $t(style)"
+                />
+              </select>
             </div>
             <div v-if="option.key === 'text'" class="_advanced_text">
               <label
@@ -264,6 +284,7 @@ export default {
           picto: "/images/i_text.svg",
           enabled: false,
           advanced_text_options: false,
+          force_text_style: false,
           only_numbers: false,
           amount: this.paged_mode ? 1 : "unlimited",
         },
@@ -324,6 +345,8 @@ export default {
             const item = this.available_modes.find((m) => m.mode_key === o.key);
             if (item.hasOwnProperty("advanced_text_options"))
               o.advanced_text_options = item.advanced_text_options === "true";
+            if (item.hasOwnProperty("force_text_style"))
+              o.force_text_style = item.force_text_style;
             if (item.hasOwnProperty("only_numbers"))
               o.only_numbers = item.only_numbers === "true";
             if (item.hasOwnProperty("amount")) o.amount = item.amount;
@@ -362,6 +385,7 @@ export default {
             let val = { mode_key: o.key };
             if (o.key === "text") {
               val.advanced_text_options = o.advanced_text_options;
+              val.force_text_style = o.force_text_style;
               val.only_numbers = o.only_numbers;
             }
 
