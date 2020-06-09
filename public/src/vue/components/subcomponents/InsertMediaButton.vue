@@ -277,9 +277,13 @@ export default {
         if (this.modes_allowed.text) {
           if (this.modes_allowed.text.advanced_text_options === "false")
             val.plain_text = true;
+          if (this.modes_allowed.text.force_text_style)
+            val.force_text_style = this.modes_allowed.text.force_text_style;
           if (this.modes_allowed.text.only_numbers === "true")
             val.only_numbers = true;
         }
+
+        debugger;
       }
       this.$emit("addMedia", val);
 

@@ -86,6 +86,7 @@
               :slugFolderName="slugPubliName"
               :enable_collaboration="true"
               :type="'publications'"
+              :style="force_text_style"
               ref="textField"
             />
           </template>
@@ -513,6 +514,14 @@ export default {
           ? this.media._linked_media.media_filename
           : this.media.media_filename;
       return `${type_path}/${slugFolderName}/${media_filename}`;
+    },
+    force_text_style() {
+      if (this.media.force_text_style === "bold") return `font-weight: 700;`;
+      if (this.media.force_text_style === "italic")
+        return `font-style: italic;`;
+      if (this.media.force_text_style === "large") return `font-size: 200%;`;
+      if (this.media.force_text_style === "small") return `font-size: 60%;`;
+      return ``;
     },
     no_text_content() {
       if (this.media.only_numbers) return this.$t("no_numbers");

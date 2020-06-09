@@ -66,8 +66,8 @@ module.exports = (function () {
       en: "Login after creation",
     },
     advanced_text_bloc: {
-      fr: "Mise en forme du texte",
-      en: "Advanced text options",
+      fr: "Permettre la mise en forme du texte",
+      en: "Allow text layout",
     },
     only_numbers: {
       fr: "Nombres uniquement",
@@ -158,6 +158,22 @@ module.exports = (function () {
     advanced_options: {
       fr: "Options avancées",
       en: "Advanced options",
+    },
+    bold: {
+      fr: "Gras",
+      en: "Bold",
+    },
+    italic: {
+      fr: "Italique",
+      en: "Italic",
+    },
+    large: {
+      fr: "Grand",
+      en: "Large",
+    },
+    small: {
+      fr: "Petit",
+      en: "Small",
     },
     "answers_given:": {
       fr: "Enregistré&nbsp;:",

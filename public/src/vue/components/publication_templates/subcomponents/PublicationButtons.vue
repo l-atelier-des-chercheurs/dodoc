@@ -625,7 +625,10 @@
               </div>
             </div>
 
-            <div class="item" v-if="stroke_color !== ''">
+            <div
+              class="item"
+              v-if="media.type !== 'placeholder' && stroke_color !== ''"
+            >
               <label>{{ $t("stroke_width") }}</label>
               <div>
                 <input

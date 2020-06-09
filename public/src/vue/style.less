@@ -5911,6 +5911,17 @@ small {
     display: flex;
     flex-flow: column nowrap;
 
+    .m_mediaPlaceholder--instructions {
+      .padding-sides-verysmall;
+      .padding-vert-verysmall;
+      .font-small;
+    }
+
+    .m_mediaPlaceholder--replies {
+      margin: 0;
+      padding: 0;
+    }
+
     &.is--choices {
       // background-color: transparent;
 
@@ -5932,6 +5943,21 @@ small {
         // there can only be one
         .m_insertMediaButton {
           margin: 0;
+          padding: 0;
+
+          .m_insertMediaButton--toggleButton {
+            display: none;
+          }
+          .m_insertMediaButton--menu {
+            .m_actionbar {
+              background-color: transparent;
+            }
+          }
+        }
+
+        .barButton > span,
+        .barButton label {
+          .padding-vert-verysmall;
         }
       }
 
@@ -5968,7 +5994,8 @@ small {
           .mediaTextContent {
             background: transparent;
             padding: 0;
-            padding-left: 1px;
+            padding-left: 4px;
+            padding-top: 2px;
 
             .ql-editor > *::before {
               display: none;
@@ -6152,6 +6179,7 @@ small {
     // .padding-top-verysmall;
     // padding-top: 0;
     .bg-blanc;
+    .c-noir;
 
     label {
       margin-bottom: 0;
@@ -7460,6 +7488,7 @@ small {
 
     &.type-placeholder {
       --fill_color: @c-creme;
+      overflow: auto;
       .m_mediaPlaceholder {
         background-color: var(--fill_color);
       }

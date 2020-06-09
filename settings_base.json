@@ -445,6 +445,9 @@
           "only_numbers": {
             "type": "boolean"
           },
+          "force_text_style": {
+            "type": "string"
+          },
           "z_index": {
             "type": "number",
             "clip": {
