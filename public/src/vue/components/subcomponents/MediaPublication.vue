@@ -60,7 +60,11 @@
           ].includes(media.type)
         "
         :context="'full'"
-        :slugFolderName="slugPubliName"
+        :slugFolderName="
+          model_for_this_publication
+            ? model_for_this_publication.slugFolderName
+            : slugPubliName
+        "
         :folderType="'publications'"
         :media="media"
         :read_only="read_only"
