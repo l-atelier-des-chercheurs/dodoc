@@ -208,7 +208,8 @@
             'export_publication',
             'print_publication',
             'link_publication',
-          ].includes($root.state.mode)
+          ].includes($root.state.mode) &&
+          $root.store.request.display !== 'survey'
         "
       >
         <div class="switch switch-xs">
