@@ -36,7 +36,7 @@
 
 
       </div>-->
-      {{ available_modes }}
+      <!-- {{ available_modes }} -->
 
       <!-- v-else -->
       <div
