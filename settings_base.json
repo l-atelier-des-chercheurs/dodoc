@@ -176,7 +176,7 @@
         },
         "email": {
           "type": "string",
-          "show_only_to": ["self"]
+          "show_only_to": ["self", "admin"]
         },
         "role": {
           "type": "string",
