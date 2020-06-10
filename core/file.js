@@ -586,9 +586,7 @@ module.exports = (function () {
       return new Promise(function (resolve, reject) {
         dev.logfunction(
           `COMMON — readMediaList: medias_list = ${JSON.stringify(
-            medias_list,
-            null,
-            4
+            medias_list
           )}}`
         );
 
