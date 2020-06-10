@@ -287,10 +287,7 @@ export default {
       this.editor.on("text-change", (delta, oldDelta, source) => {
         if (this.read_only) return;
 
-        this.$emit(
-          "input",
-          this.editor.getText() ? this.sanitizeEditorHTML() : ""
-        );
+        this.$emit("input", this.sanitizeEditorHTML());
 
         this.$nextTick(() => {
           this.updateFocusedLines();
@@ -420,8 +417,11 @@ export default {
     },
     sanitizeEditorHTML() {
       // used to make sure we don’t get weird stuff such as <p style="font-family: "Avada";">plop</p>
+      if (!this.editor.getText() || this.editor.getText() === "\n") return "";
+
       let content = this.editor.root.innerHTML;
       content = content.replace(/&quot;/g, "'");
+
       return content;
     },
     initWebsocketMode() {
@@ -476,10 +476,7 @@ export default {
 
         this.editor.setSelection(this.editor.getLength(), 0, "api");
 
-        this.$emit(
-          "input",
-          this.editor.getText() ? this.sanitizeEditorHTML() : ""
-        );
+        this.$emit("input", this.sanitizeEditorHTML());
 
         this.editor.on("text-change", (delta, oldDelta, source) => {
           if (source == "user") {
@@ -564,7 +561,7 @@ export default {
             slugFolderName: this.slugFolderName,
             slugMediaName: this.media.metaFileName,
             data: {
-              content: this.editor.getText() ? this.sanitizeEditorHTML() : "",
+              content: this.sanitizeEditorHTML(),
             },
           })
           .then((mdata) => {
