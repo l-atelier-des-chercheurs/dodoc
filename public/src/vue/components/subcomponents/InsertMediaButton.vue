@@ -283,7 +283,6 @@ export default {
             val.only_numbers = true;
         }
 
-        debugger;
       }
       this.$emit("addMedia", val);
 

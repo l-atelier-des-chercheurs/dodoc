@@ -58,7 +58,7 @@ FontAttributor.whitelist = fonts;
 Quill.register(FontAttributor, true);
 
 var Size = Quill.import("attributors/style/size");
-Size.whitelist = ["50%", "18px", "150%", "300%"];
+Size.whitelist = ["75%", "18px", "150%", "300%"];
 Quill.register(Size, true);
 
 var BlockEmbed = Quill.import("blots/block/embed");
@@ -111,7 +111,7 @@ export default {
       custom_toolbar: [
         [{ font: fonts }],
         [{ header: [false, 1, 2, 3] }],
-        [{ size: ["50%", false, "150%", "300%"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
+        [{ size: ["75%", false, "150%", "300%"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ["bold", "italic", "underline", "strike", "link", "blockquote"],
         [
           {
@@ -287,10 +287,7 @@ export default {
       this.editor.on("text-change", (delta, oldDelta, source) => {
         if (this.read_only) return;
 
-        this.$emit(
-          "input",
-          this.editor.getText() ? this.sanitizeEditorHTML() : ""
-        );
+        this.$emit("input", this.sanitizeEditorHTML());
 
         this.$nextTick(() => {
           this.updateFocusedLines();
@@ -420,8 +417,11 @@ export default {
     },
     sanitizeEditorHTML() {
       // used to make sure we don’t get weird stuff such as <p style="font-family: "Avada";">plop</p>
+      if (!this.editor.getText() || this.editor.getText() === "\n") return "";
+
       let content = this.editor.root.innerHTML;
       content = content.replace(/&quot;/g, "'");
+
       return content;
     },
     initWebsocketMode() {
@@ -476,10 +476,7 @@ export default {
 
         this.editor.setSelection(this.editor.getLength(), 0, "api");
 
-        this.$emit(
-          "input",
-          this.editor.getText() ? this.sanitizeEditorHTML() : ""
-        );
+        this.$emit("input", this.sanitizeEditorHTML());
 
         this.editor.on("text-change", (delta, oldDelta, source) => {
           if (source == "user") {
@@ -558,15 +555,13 @@ export default {
           `CollaborativeEditor • updateTextMedia: saving new snapshop`
         );
 
-        debugger;
-
         this.$root
           .editMedia({
             type: this.type,
             slugFolderName: this.slugFolderName,
             slugMediaName: this.media.metaFileName,
             data: {
-              content: this.editor.getText() ? this.sanitizeEditorHTML() : "",
+              content: this.sanitizeEditorHTML(),
             },
           })
           .then((mdata) => {

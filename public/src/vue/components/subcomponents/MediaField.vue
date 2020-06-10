@@ -11,14 +11,11 @@
       />
     </template>
     <template v-else-if="edit_mode">
-      <CollaborativeEditor
-        :specific_toolbar="[
+      <!-- :specific_toolbar="[
           ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
           ['clean'],
-        ]"
-        v-model="new_value"
-        ref="textField"
-      />
+        ]" -->
+      <CollaborativeEditor v-model="new_value" ref="textField" />
       <div class="m_mediaField--buttonRow">
         <button type="button" class="button-redthin" @click="edit_mode = false">
           {{ $t("cancel") }}

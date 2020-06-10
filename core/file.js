@@ -586,9 +586,7 @@ module.exports = (function () {
       return new Promise(function (resolve, reject) {
         dev.logfunction(
           `COMMON — readMediaList: medias_list = ${JSON.stringify(
-            medias_list,
-            null,
-            4
+            medias_list
           )}}`
         );
 
@@ -1952,8 +1950,7 @@ module.exports = (function () {
                 global.settings.structure[type].preview.width,
                 global.settings.structure[type].preview.height,
                 {
-                  fit: "inside",
-                  withoutEnlargement: true,
+                  fit: "cover",
                 }
               )
               .flatten({ background: "white" })

@@ -16,13 +16,6 @@
         'is--editMode': edit_author_mode,
       }"
     >
-      <!-- @click.stop="
-        !is_logged_in_as_author && can_login_as_author
-          ? setAuthorWithoutPassword()
-          : author.password === 'has_pass'
-          ? (show_input_password_field = true)
-          : ''
-      " -->
       <button
         v-if="
           (can_login_as_author && is_logged_in_as_author) ||
@@ -92,6 +85,13 @@
           height="100"
           :src="urlToPortrait(author.preview)"
           draggable="false"
+          @click.stop="
+            !is_logged_in_as_author && can_login_as_author
+              ? setAuthorWithoutPassword()
+              : author.password === 'has_pass'
+              ? (show_input_password_field = true)
+              : ''
+          "
         />
         <div class="m_author--name">{{ author.name }}</div>
         <div class="m_author--email" v-if="author.email">
@@ -574,7 +574,6 @@ export default {
     urlToPortrait(preview) {
       if (!preview) return "";
       let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
-      debugger;
       let url =
         this.$root.state.mode === "export_publication"
           ? `./${pathToSmallestThumb}`
