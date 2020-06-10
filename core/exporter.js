@@ -23,7 +23,7 @@ module.exports = (function () {
     loadPublication: (slugPubliName, pageData) =>
       loadPublication(slugPubliName, pageData),
 
-    copyFolderContent: ({ html, folders_and_medias, slugFolderName }) => {
+    copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
         // create cache folder that we will need to copy the content
         let cacheFolderName =
