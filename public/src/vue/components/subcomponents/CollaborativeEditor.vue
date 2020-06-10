@@ -58,7 +58,7 @@ FontAttributor.whitelist = fonts;
 Quill.register(FontAttributor, true);
 
 var Size = Quill.import("attributors/style/size");
-Size.whitelist = ["50%", "18px", "150%", "300%"];
+Size.whitelist = ["75%", "18px", "150%", "300%"];
 Quill.register(Size, true);
 
 var BlockEmbed = Quill.import("blots/block/embed");
@@ -111,7 +111,7 @@ export default {
       custom_toolbar: [
         [{ font: fonts }],
         [{ header: [false, 1, 2, 3] }],
-        [{ size: ["50%", false, "150%", "300%"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
+        [{ size: ["75%", false, "150%", "300%"] }], // [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }, { 'header': 4 }],
         ["bold", "italic", "underline", "strike", "link", "blockquote"],
         [
           {
