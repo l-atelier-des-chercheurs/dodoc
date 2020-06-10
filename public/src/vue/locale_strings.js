@@ -307,7 +307,7 @@ module.exports = (function () {
     },
     admin: {
       fr: "Administrateur",
-      en: "Admin",
+      en: "Administrator",
     },
     contributor: {
       fr: "Contributeur",
@@ -1054,9 +1054,9 @@ module.exports = (function () {
     },
     email_instructions: {
       fr:
-        "Optionnel. Sera uniquement utilisé pour vous notifier d’un message sur do•doc et ne sera pas visible aux autres utilisateurs.",
+        "Optionnel. Sera uniquement utilisé pour vous notifier d’un message sur do•doc et ne sera pas visible aux autres utilisateurs à l’exception des administrateurs.",
       en:
-        "Optional. Will only be used to let you know of a new personal message, and will never be shown to other users.",
+        "Optional. Will only be used to let you know of a new personal message, and will never be shown to other users except for administrators.",
     },
     date: {
       fr: "Date",

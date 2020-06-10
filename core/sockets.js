@@ -20,7 +20,11 @@ module.exports = (function () {
           .catch((e) => reject(e))
       ),
     sendFolders: ({ type, slugFolderName, socket, id }) =>
-      sendFolders({ type, slugFolderName, socket, id }),
+      new Promise((resolve, reject) =>
+        sendFolders({ type, slugFolderName, socket, id })
+          .then((d) => resolve(d))
+          .catch((e) => reject(e))
+      ),
     notify: notify,
     io: () => io,
   };
@@ -136,7 +140,7 @@ module.exports = (function () {
   }
 
   /**************************************************************** FOLDER ********************************/
-  function onListFolders(socket, data) {
+  async function onListFolders(socket, data) {
     dev.logfunction(`EVENT - onListFolders`);
     if (!data || !data.hasOwnProperty("type")) {
       dev.error(`Missing type field`);
@@ -144,22 +148,22 @@ module.exports = (function () {
     }
     const type = data.type;
     const hrstart = process.hrtime();
-    sendFolders({ type, socket }).then(() => {
-      let hrend = process.hrtime(hrstart);
-      dev.performance(
-        `PERFORMANCE — listFolders : ${hrend[0]}s ${hrend[1] / 1000000}ms`
-      );
-    });
+
+    await sendFolders({ type, socket });
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(
+      `PERFORMANCE — listFolders : ${hrend[0]}s ${hrend[1] / 1000000}ms`
+    );
   }
-  function onListFolder(socket, { type, slugFolderName }) {
+  async function onListFolder(socket, { type, slugFolderName }) {
     dev.logfunction(
       `EVENT - onListFolder with slugFolderName = ${slugFolderName}`
     );
     const hrstart = process.hrtime();
-    sendFolders({ type, slugFolderName, socket }).then(() => {
-      let hrend = process.hrtime(hrstart);
-      dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
-    });
+    await sendFolders({ type, slugFolderName, socket });
+    let hrend = process.hrtime(hrstart);
+    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
 
   async function onCreateFolder(socket, { type, data, id }) {
@@ -177,7 +181,7 @@ module.exports = (function () {
         dev.error(`Failed to create folder! Error: ${err}`);
       });
 
-    sendFolders({ type, slugFolderName, id });
+    await sendFolders({ type, slugFolderName, id });
   }
   async function onEditFolder(socket, { type, slugFolderName, data, id }) {
     dev.logfunction(
@@ -281,7 +285,7 @@ module.exports = (function () {
       });
     }
 
-    sendFolders({ type, slugFolderName, id });
+    await sendFolders({ type, slugFolderName, id });
   }
 
   async function onRemoveFolder(socket, { type, slugFolderName }) {
@@ -315,7 +319,7 @@ module.exports = (function () {
         reject(err);
       });
 
-    sendFolders({ type });
+    await sendFolders({ type });
   }
 
   /**************************************************************** MEDIA ********************************/
@@ -864,73 +868,67 @@ module.exports = (function () {
   /**************************************************************** GENERAL ********************************/
 
   // send projects, authors and publications
-  function sendFolders({ type, slugFolderName, socket, id } = {}) {
-    return new Promise(function (resolve, reject) {
-      dev.logfunction(
-        `COMMON - sendFolders for type = ${type} and slugFolderName = ${slugFolderName}`
+  async function sendFolders({ type, slugFolderName, socket, id } = {}) {
+    dev.logfunction(
+      `COMMON - sendFolders for type = ${type} and slugFolderName = ${slugFolderName}`
+    );
+
+    let foldersData = await file
+      .getFolder({ type, slugFolderName })
+      .catch((err) => {
+        dev.error(`No folder found: ${err}`);
+        throw err;
+      });
+
+    // if folder creation, we get an ID to open the folder straight away
+    if (foldersData !== undefined && slugFolderName && id) {
+      foldersData[slugFolderName].id = id;
+    }
+
+    // check if single socket or multiple sockets
+    Object.keys(io.sockets.connected).forEach(async (sid) => {
+      if (socket && socket.id !== sid) return;
+
+      let thisSocket = socket || io.sockets.connected[sid];
+
+      let filteredFoldersData = await auth.filterFolders(
+        thisSocket,
+        type,
+        foldersData
       );
 
-      file
-        .getFolder({ type, slugFolderName })
-        .then((foldersData) => {
-          // if folder creation, we get an ID to open the folder straight away
-          if (foldersData !== undefined && slugFolderName && id) {
-            foldersData[slugFolderName].id = id;
+      if (filteredFoldersData === undefined) {
+        filteredFoldersData = "";
+      } else {
+        // remove password field
+        for (let k in filteredFoldersData) {
+          // check if there is any password, if there is then send a placeholder
+          if (
+            filteredFoldersData[k].hasOwnProperty("password") &&
+            filteredFoldersData[k].password !== ""
+          ) {
+            filteredFoldersData[k].password = "has_pass";
           }
+        }
+      }
 
-          // check if single socket or multiple sockets
-          Object.keys(io.sockets.connected).forEach((sid) => {
-            if (socket) {
-              if (!!socket && socket.id !== sid) {
-                return;
-              }
-            }
-            let thisSocket = socket || io.sockets.connected[sid];
-
-            let filteredFoldersData = auth.filterFolders(
-              thisSocket,
-              type,
-              foldersData
-            );
-
-            if (filteredFoldersData === undefined) {
-              filteredFoldersData = "";
-            } else {
-              // remove password field
-              for (let k in filteredFoldersData) {
-                // check if there is any password, if there is then send a placeholder
-                if (
-                  filteredFoldersData[k].hasOwnProperty("password") &&
-                  filteredFoldersData[k].password !== ""
-                ) {
-                  filteredFoldersData[k].password = "has_pass";
-                }
-              }
-            }
-
-            if (slugFolderName) {
-              api.sendEventWithContent(
-                "listFolder",
-                { [type]: filteredFoldersData },
-                io,
-                thisSocket
-              );
-              return resolve();
-            } else {
-              api.sendEventWithContent(
-                "listFolders",
-                { [type]: filteredFoldersData },
-                io,
-                thisSocket
-              );
-              return resolve();
-            }
-          });
-        })
-        .catch((err) => {
-          dev.error(`No folder found: ${err}`);
-          return reject();
-        });
+      if (slugFolderName) {
+        api.sendEventWithContent(
+          "listFolder",
+          { [type]: filteredFoldersData },
+          io,
+          thisSocket
+        );
+        return true;
+      } else {
+        api.sendEventWithContent(
+          "listFolders",
+          { [type]: filteredFoldersData },
+          io,
+          thisSocket
+        );
+        return true;
+      }
     });
   }
 
@@ -949,7 +947,7 @@ module.exports = (function () {
       .getFolder({ type, slugFolderName })
       .catch((err) => {
         dev.error(`No folder found: ${err}`);
-        return reject(err);
+        throw err;
       });
 
     if (foldersData === undefined) {

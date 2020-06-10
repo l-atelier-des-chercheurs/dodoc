@@ -15,14 +15,14 @@
         'is--selected': is_logged_in_as_author,
         'is--editMode': edit_author_mode,
       }"
-      @click.stop="
+    >
+      <!-- @click.stop="
         !is_logged_in_as_author && can_login_as_author
           ? setAuthorWithoutPassword()
           : author.password === 'has_pass'
           ? (show_input_password_field = true)
           : ''
-      "
-    >
+      " -->
       <button
         v-if="
           (can_login_as_author && is_logged_in_as_author) ||
@@ -94,6 +94,9 @@
           draggable="false"
         />
         <div class="m_author--name">{{ author.name }}</div>
+        <div class="m_author--email" v-if="author.email">
+          {{ author.email }}
+        </div>
         <div class="m_author--role" v-if="author.role">
           <label>{{ $t(author.role) }}</label>
         </div>
