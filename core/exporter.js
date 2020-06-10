@@ -25,7 +25,7 @@ module.exports = (function () {
     loadPublication: (slugPubliName, pageData) =>
       loadPublication(slugPubliName, pageData),
 
-    copyFolderContent: ({ html, folders_and_medias, slugFolderName }) => {
+    copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
         // create cache folder that we will need to copy the content
         let cacheFolderName =
@@ -121,7 +121,7 @@ module.exports = (function () {
                       typeof mediaMeta.thumbs !== "undefined"
                     ) {
                       mediaMeta.thumbs.map((t) => {
-                        if (t.hasOwnProperty("path")) {
+                        if (t && t.hasOwnProperty("path")) {
                           tasks.push(
                             new Promise((resolve, reject) => {
                               let thumb_path = t.path;
