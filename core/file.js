@@ -1952,8 +1952,7 @@ module.exports = (function () {
                 global.settings.structure[type].preview.width,
                 global.settings.structure[type].preview.height,
                 {
-                  fit: "inside",
-                  withoutEnlargement: true,
+                  fit: "cover",
                 }
               )
               .flatten({ background: "white" })
