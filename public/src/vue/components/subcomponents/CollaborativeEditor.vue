@@ -558,8 +558,6 @@ export default {
           `CollaborativeEditor • updateTextMedia: saving new snapshop`
         );
 
-        debugger;
-
         this.$root
           .editMedia({
             type: this.type,

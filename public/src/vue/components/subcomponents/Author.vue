@@ -574,7 +574,6 @@ export default {
     urlToPortrait(preview) {
       if (!preview) return "";
       let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
-      debugger;
       let url =
         this.$root.state.mode === "export_publication"
           ? `./${pathToSmallestThumb}`
