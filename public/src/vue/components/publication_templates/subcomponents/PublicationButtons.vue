@@ -788,6 +788,7 @@
 import PrismEditor from "vue-prism-editor";
 import CaptureViewModal from "../../modals/CaptureViewModal.vue";
 import UploadFile from "../../subcomponents/UploadFile.vue";
+import { throttle } from "underscore";
 
 export default {
   props: {
@@ -943,15 +944,16 @@ export default {
     },
   },
   methods: {
-    updateMediaPubliMeta(val) {
+    updateMediaPubliMeta: throttle(function (val) {
       if (!this.media) return;
+
       this.$root.editMedia({
         type: "publications",
         slugFolderName: this.slugPubliName,
         slugMediaName: this.media.metaFileName,
         data: val,
       });
-    },
+    }, 400),
     updateInputFiles($event) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`InsertMediaButton • METHODS / updateInputFiles`);
