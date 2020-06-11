@@ -180,6 +180,7 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
       });
+
       this.$socketio.listMedias({
         type: "publications",
         slugFolderName: this.slugPubliName,

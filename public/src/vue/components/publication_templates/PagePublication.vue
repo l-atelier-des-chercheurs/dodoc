@@ -16,7 +16,7 @@
       :model_for_this_publication="model_for_this_publication"
       :url_to_publi="url_to_publi"
       @export="show_export_modal = true"
-      @close="contact_sheet_mode ? $root.closePublication() : showAllPages()"
+      @close="backOrClose"
     />
 
     <ExportPagePubli
@@ -763,6 +763,10 @@ export default {
         "_" +
         (Math.random().toString(36) + "00000000000000000").slice(2, 3)
       );
+    },
+    backOrClose() {
+      if (this.contact_sheet_mode) this.$root.closePublication();
+      else this.showAllPages();
     },
     mergePageObjectWithDefault(pages) {
       return pages.reduce((acc, page) => {
