@@ -307,7 +307,7 @@
             <!-- {{ $t('edit') }} -->
           </button>
 
-          <button
+          <!-- <button
             v-if="!!media.ratio && !lock_original_ratio"
             type="button"
             class="buttonLink _no_underline"
@@ -357,7 +357,7 @@
                 <rect x="120.4" y="56.9" width="10" height="16.6" />
               </g>
             </svg>
-          </button>
+          </button> -->
 
           <button
             type="button"
@@ -533,41 +533,12 @@ export default {
     mediaStyles() {
       let css = "";
 
-      const ratio = this.media_ratio ? this.media_ratio : 0.5625;
+      const ratio = this.$root.getFileMeta({ type: "ratio", media: this.media })
+        ? this.$root.getFileMeta({ type: "ratio", media: this.media })
+        : 0.5625;
       css += `--media-ratio: ${ratio * 100}%; `;
 
       return css;
-    },
-
-    media_ratio() {
-      if (
-        this.media.hasOwnProperty("file_meta") &&
-        this.media.file_meta.some((f) => f.hasOwnProperty("ratio"))
-      ) {
-        return this.media.file_meta.find((f) => f.hasOwnProperty("ratio"))
-          .ratio;
-      }
-      if (this.media.hasOwnProperty("ratio")) return this.media.ratio;
-
-      if (this.media.hasOwnProperty("_linked_media")) {
-        if (
-          this.media._linked_media.hasOwnProperty("file_meta") &&
-          this.media._linked_media.file_meta.some((f) =>
-            f.hasOwnProperty("ratio")
-          )
-        )
-          return this.media._linked_media.file_meta.find((f) =>
-            f.hasOwnProperty("ratio")
-          ).ratio;
-
-        if (
-          this.media._linked_media.hasOwnProperty("ratio") &&
-          this.media._linked_media.ratio
-        )
-          return this.media._linked_media.ratio;
-      }
-
-      return false;
     },
   },
   methods: {

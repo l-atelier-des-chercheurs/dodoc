@@ -463,6 +463,9 @@
             "type": "array",
             "read_only": true
           },
+          "margin": {
+            "type": "number"
+          },
           "font_size_percent": {
             "type": "number"
           },
