@@ -87,7 +87,7 @@
                 v-if="$root.settings.current_publication.slug !== false"
               >
                 <Publication
-                  :slugPubliName="$root.settings.current_publication.slug"
+                  :key="$root.settings.current_publication.slug"
                   :publication="
                     $root.store.publications[
                       $root.settings.current_publication.slug
