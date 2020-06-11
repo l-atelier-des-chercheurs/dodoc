@@ -1,5 +1,5 @@
 <template>
-  <footer class="m_storyPublication--content--footer">
+  <footer class="m_publicationFooter">
     <div v-if="!publication.date_submitted">
       <small>
         {{ $t("notifications.successfully_saved") }}
@@ -24,6 +24,29 @@
         {{ $t("published") }} —
         {{ $root.formatDateToPrecise(publication.date_submitted) }}
       </small>
+    </div>
+
+    <div
+      v-if="
+        ['export_publication', 'link_publication'].includes($root.state.mode)
+      "
+    >
+      <a
+        class="js--openInBrowser c-noir"
+        target="_blank"
+        href="https://dodoc.fr/"
+      >
+        {{ $t("made_with_dodoc") }}
+        <img
+          :src="
+            this.$root.state.mode === 'export_publication'
+              ? './_images/i_logo.svg'
+              : '/images/i_logo.svg'
+          "
+          @click="goHome()"
+          draggable="false"
+        />
+      </a>
     </div>
   </footer>
 </template>

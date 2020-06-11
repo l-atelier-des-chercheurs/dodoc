@@ -1502,7 +1502,8 @@ let vm = new Vue({
       this.$socketio.socket.emit("updateClientInfo", { author: {} });
     },
     updateClientInfo(val) {
-      this.$socketio.socket.emit("updateClientInfo", val);
+      if (this.$socketio.socket)
+        this.$socketio.socket.emit("updateClientInfo", val);
     },
     togglePubliPanel: function () {
       if (window.state.dev_mode === "debug") {

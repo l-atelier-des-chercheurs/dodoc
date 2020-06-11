@@ -245,6 +245,7 @@ export default {
     },
     url_to_publi() {
       let url = this.$root.getURL();
+      if (!url) return false;
       url.pathname = `_publications/survey/${this.publication.slugFolderName}`;
       return url;
     },
