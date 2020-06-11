@@ -436,6 +436,10 @@ module.exports = (function () {
       fr: "Dossier actuellement ouvert&nbsp;:",
       en: "Currently opened folder",
     },
+    currently_open: {
+      fr: "Actuellement ouvert",
+      en: "Currently open",
+    },
     group: {
       fr: "Regrouper",
       en: "Group",
@@ -1094,6 +1098,10 @@ module.exports = (function () {
       oc: "Òc",
       de: "Ja",
     },
+    no: {
+      fr: "Non",
+      en: "No",
+    },
     cancel: {
       fr: "Annuler",
       en: "Cancel",
@@ -1111,6 +1119,12 @@ module.exports = (function () {
     published: {
       fr: "Publié",
       en: "Published",
+    },
+    alreadyAnsweredThatModel: {
+      fr:
+        "Vous avez déjà répondu à ce modèle, êtes-vous sur de vouloir y répondre à nouveau ?",
+      en:
+        "You have already replied to this model, would you like to reply again?",
     },
     sureToRemoveYourselfFromAuthors: {
       fr:
@@ -1218,11 +1232,6 @@ module.exports = (function () {
       nl: "Weet u zeker dat u deze publicatie wilt verwijderen?",
       oc: "Sètz segur de voler suprimir aquesta recèpta ?",
       de: "Sind sie sicher dass sie diese Publikation löschen möchten ?",
-    },
-    sureToRemovePubliThatIsModel: {
-      fr:
-        "Êtes-vous sûr de vouloir supprimer cette recette ? Comme c’est un modèle, toutes les réponses à ce modèle deviendront innaccessibles et non-fonctionnelles.",
-      en: "Do you really want to delete this recipe?",
     },
     publiHasPubliRelyingOnItCantDelete: {
       fr:

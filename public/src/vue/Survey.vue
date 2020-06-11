@@ -153,20 +153,43 @@
         <label>{{ $t("list_of_stories") }}</label>
 
         <ol
-          v-for="{ model_name, replies } in user_replies_by_model"
+          v-for="{
+            model_name,
+            slug_model_name,
+            replies,
+          } in user_replies_by_model"
           :key="model_name"
           class="padding-verysmall"
         >
-          <strong>{{ model_name }}</strong>
+          <strong
+            :class="{
+              'bg-rouge_clair padding-sides-verysmall c-noir':
+                slug_model_name === model_reference_slugFolderName,
+            }"
+            >{{ model_name }}</strong
+          >
 
           <li
             class="margin-sides-medium padding-verysmall"
             v-for="reply in replies"
             :key="reply.slugFolderName"
           >
-            <a :href="`/_publications/survey/${reply.slugFolderName}`">
+            <a
+              v-if="
+                !$root.current_publication ||
+                reply.slugFolderName !==
+                  $root.current_publication.slugFolderName
+              "
+              :href="`/_publications/survey/${reply.slugFolderName}`"
+            >
               {{ reply.name }}
             </a>
+            <span v-else>
+              {{ reply.name }}
+              <small class="c-rouge"
+                >— {{ $t("currently_open").toLowerCase() }}</small
+              >
+            </span>
             <div>
               <small>
                 {{ $t("created_date") }} —
@@ -193,9 +216,12 @@
         </ol>
       </div>
     </div>
-
     <Publication
-      v-if="$root.current_publication && survey_can_edit_publication"
+      v-if="
+        $root.current_publication &&
+        !ask_if_author_wants_to_create_new_reply &&
+        survey_can_edit_publication
+      "
       :publication="$root.current_publication"
       :read_only="!$root.state.connected"
     />
@@ -214,6 +240,9 @@ export default {
       show_all_my_replies: false,
       showSettingsModal: false,
       showQRModal: false,
+      ask_if_author_wants_to_create_new_reply: false,
+
+      model_reference_slugFolderName: false,
     };
   },
   created() {},
@@ -225,7 +254,17 @@ export default {
   watch: {
     "$root.current_author": {
       handler() {
-        this.surveyLoggedInAs(this.$root.current_author.slugFolderName);
+        if (this.$root.current_author)
+          this.surveyLoggedInAs(this.$root.current_author.slugFolderName);
+      },
+    },
+    "$root.current_publication.follows_model": {
+      handler() {
+        if (
+          this.$root.current_publication &&
+          this.$root.current_publication.follows_model
+        )
+          this.model_reference_slugFolderName = this.$root.current_publication.follows_model;
       },
     },
   },
@@ -280,6 +319,7 @@ export default {
             replies = this.$_.sortBy(replies, "date_created");
             acc.push({
               model_name: model.name,
+              slug_model_name: model.slugFolderName,
               replies,
             });
           }
@@ -287,6 +327,19 @@ export default {
         },
         []
       );
+
+      if (this.model_reference_slugFolderName) {
+        return [
+          ...user_replies_by_model.filter(
+            ({ slug_model_name }) =>
+              slug_model_name === this.model_reference_slugFolderName
+          ),
+          ...user_replies_by_model.filter(
+            ({ slug_model_name }) =>
+              slug_model_name !== this.model_reference_slugFolderName
+          ),
+        ];
+      }
 
       return user_replies_by_model;
     },
@@ -297,6 +350,34 @@ export default {
       if (!this.$root.current_publication) return false;
 
       if (this.$root.current_publication.editing_limited_to === "everybody") {
+        // check if other publis with same model and author exist
+        if (
+          this.user_replies_by_model.some(
+            (m) =>
+              m.slug_model_name === this.$root.current_publication.follows_model
+          ) &&
+          !this.ask_if_author_wants_to_create_new_reply
+        ) {
+          this.ask_if_author_wants_to_create_new_reply = true;
+
+          this.$alertify
+            .okBtn(this.$t("yes"))
+            .cancelBtn(this.$t("no"))
+            .confirm(
+              this.$t("alreadyAnsweredThatModel"),
+              () => {
+                this.ask_if_author_wants_to_create_new_reply = false;
+              },
+              () => {
+                this.$root.removeFolder({
+                  type: "publications",
+                  slugFolderName: this.$root.current_publication.slugFolderName,
+                });
+                this.show_all_my_replies = true;
+              }
+            );
+        }
+
         this.$root
           .editFolder({
             type: "publications",

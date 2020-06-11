@@ -218,7 +218,13 @@
     <button
       class="m_mediaPublication--overflowing_sign"
       type="button"
-      v-if="is_text_overflowing && !preview_mode && (is_selected || is_hovered)"
+      v-if="
+        is_text_overflowing &&
+        !preview_mode &&
+        !locked_in_place &&
+        !model_for_this_publication &&
+        (is_selected || is_hovered)
+      "
       @mousedown.stop.prevent="setMediaHeightToContent"
       @touchstart.stop.prevent="setMediaHeightToContent"
       :content="$t('text_overflow')"

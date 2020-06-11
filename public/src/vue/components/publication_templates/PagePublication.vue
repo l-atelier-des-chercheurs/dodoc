@@ -14,6 +14,7 @@
       :publication="publication"
       :medias="paged_medias"
       :model_for_this_publication="model_for_this_publication"
+      :url_to_publi="url_to_publi"
       @export="show_export_modal = true"
       @close="contact_sheet_mode ? $root.closePublication() : showAllPages()"
     />
@@ -472,29 +473,20 @@
       </div>
     </div>
 
-    <div
-      class="m_publicationFooter margin-vert-small"
+    <PublicationFooter
       v-if="
-        ['export_publication', 'link_publication'].includes($root.state.mode)
+        [
+          'export_publication',
+          'print_publication',
+          'link_publication',
+        ].includes($root.state.mode) || contact_sheet_mode
       "
-    >
-      <a
-        class="js--openInBrowser c-noir"
-        target="_blank"
-        href="https://dodoc.fr/"
-      >
-        {{ $t("made_with_dodoc") }}
-        <img
-          :src="
-            this.$root.state.mode === 'export_publication'
-              ? './_images/i_logo.svg'
-              : '/images/i_logo.svg'
-          "
-          @click="goHome()"
-          draggable="false"
-        />
-      </a>
-    </div>
+      :publication="publication"
+      :url_to_publi="url_to_publi"
+      :model_for_this_publication="model_for_this_publication"
+      :can_edit_publi="can_edit_publi"
+      @lockAndPublish="$emit('lockAndPublish')"
+    />
     <div
       ref="mmMeasurer"
       style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
@@ -508,6 +500,7 @@ import ExportPagePubli from "../modals/ExportPagePubli.vue";
 import PagePublicationSinglePage from "./PagePublicationSinglePage.vue";
 import SettingsPane from "./SettingsPane.vue";
 import PublicationButtons from "./subcomponents/PublicationButtons.vue";
+import PublicationFooter from "../subcomponents/PublicationFooter.vue";
 
 export default {
   props: {
@@ -527,6 +520,7 @@ export default {
     PagePublicationSinglePage,
     SettingsPane,
     PublicationButtons,
+    PublicationFooter,
   },
   data() {
     return {
@@ -656,6 +650,12 @@ export default {
     opened_single_page() {
       if (this.opened_page_index === false) return false;
       return this.pagesWithDefault[this.opened_page_index];
+    },
+    url_to_publi() {
+      let url = this.$root.getURL();
+      if (!url) return false;
+      url.pathname = `_publications/survey/${this.publication.slugFolderName}`;
+      return url;
     },
     opened_page_index() {
       if (!this.$root.settings.current_publication.page_id) return false;

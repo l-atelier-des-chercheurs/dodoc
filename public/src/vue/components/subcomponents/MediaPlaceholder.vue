@@ -11,7 +11,10 @@
   >
     <!-- <label>{{ $t("placeholder") }} </label> -->
     <div
-      v-if="model_placeholder_media.hasOwnProperty('instructions')"
+      v-if="
+        model_placeholder_media.hasOwnProperty('instructions') &&
+        !!model_placeholder_media.instructions
+      "
       class="m_mediaPlaceholder--instructions"
     >
       <!-- <label>{{ $t("instructions") }}</label> -->
@@ -346,6 +349,7 @@ export default {
       return this.$t("none");
     },
     answer_type_expected() {
+      if (this.modes_allowed.hasOwnProperty("choices")) return false;
       if (this.modes_allowed === "all") return this.$t("all");
       if (Object.keys(this.modes_allowed).length === 0) return this.$t("none");
 
