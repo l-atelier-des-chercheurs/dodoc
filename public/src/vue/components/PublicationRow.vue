@@ -1,7 +1,6 @@
 <template>
   <tr @click.exact="openPublication">
     <td>
-      {{ slugPubliName }}
       {{ publication.name }}
       <ProtectedLock
         :editing_limited_to="publication.editing_limited_to"
