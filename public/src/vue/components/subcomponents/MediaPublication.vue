@@ -310,11 +310,7 @@
         </svg>
       </div>
       <div
-        v-if="
-          media.hasOwnProperty('_linked_media') &&
-          media._linked_media.hasOwnProperty('ratio') &&
-          (is_selected || is_hovered)
-        "
+        v-if="ratio && (is_selected || is_hovered)"
         class="handle handle_resizeMedia"
         @mousedown.stop.prevent="
           (event) =>
@@ -761,6 +757,8 @@ export default {
       rotate: 0,
       debounce_setCSSForMedia: undefined,
 
+      ratio: undefined,
+
       font_size_percent: 100,
       fill_color: "transparent",
       stroke_color: "transparent",
@@ -942,6 +940,10 @@ export default {
 
     updateMediaStyles() {
       this.rotate = this.media.hasOwnProperty("rotate") ? this.media.rotate : 0;
+      this.ratio = this.$root.getFileMeta({
+        type: "ratio",
+        media: this.media,
+      });
       this.mediaSize.width =
         this.media.hasOwnProperty("width") &&
         !!Number.parseFloat(this.media.width)
@@ -951,9 +953,8 @@ export default {
         this.media.hasOwnProperty("height") &&
         !!Number.parseFloat(this.media.height)
           ? this.limitMediaHeight(Number.parseFloat(this.media.height))
-          : this.media.hasOwnProperty("_linked_media") &&
-            this.media._linked_media.hasOwnProperty("ratio")
-          ? this.mediaSize.width * this.media._linked_media.ratio
+          : this.ratio
+          ? this.mediaSize.width * this.ratio
           : 66;
       this.mediaPos.x =
         this.media.hasOwnProperty("x") && !!Number.parseFloat(this.media.x)
@@ -1176,12 +1177,8 @@ export default {
         ) {
           let new_height = 0;
 
-          if (
-            this.lock_original_ratio &&
-            this.media.hasOwnProperty("_linked_media") &&
-            this.media._linked_media.hasOwnProperty("ratio")
-          ) {
-            new_height = this.mediaSize.width * this.media._linked_media.ratio;
+          if (this.lock_original_ratio && this.ratio) {
+            new_height = this.mediaSize.width * this.ratio;
           } else {
             new_height = this.getNewSize({
               pageX_mm,
@@ -1225,13 +1222,8 @@ export default {
         // if (this.lock_original_ratio && this.media.hasOwnProperty("ratio"))
         //   this.mediaSize.height = this.mediaSize.width * this.media.ratio;
         // else
-        if (
-          this.lock_original_ratio &&
-          this.media.hasOwnProperty("_linked_media") &&
-          this.media._linked_media.hasOwnProperty("ratio")
-        )
-          this.mediaSize.height =
-            this.mediaSize.width * this.media._linked_media.ratio;
+        if (this.lock_original_ratio && this.ratio)
+          this.mediaSize.height = this.mediaSize.width * this.ratio;
         else this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
 
         this.updateMediaPubliMeta({

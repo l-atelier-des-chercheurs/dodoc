@@ -1785,6 +1785,34 @@ let vm = new Vue({
         this.closeProject();
       }
     },
+    getFileMeta({ type, media }) {
+      if (
+        media.hasOwnProperty("file_meta") &&
+        media.file_meta.some((f) => f.hasOwnProperty(type))
+      ) {
+        return media.file_meta.find((f) => f.hasOwnProperty(type))[type];
+      }
+      if (media.hasOwnProperty(type)) return media[type];
+
+      if (media.hasOwnProperty("_linked_media")) {
+        if (
+          media._linked_media.hasOwnProperty("file_meta") &&
+          media._linked_media.file_meta.some((f) => f.hasOwnProperty(type))
+        )
+          return media._linked_media.file_meta.find((f) =>
+            f.hasOwnProperty(type)
+          )[type];
+
+        if (
+          media._linked_media.hasOwnProperty(type) &&
+          media._linked_media[type]
+        )
+          return media._linked_media[type];
+      }
+
+      return false;
+    },
+
     formatBytes(a, b) {
       if (0 == a) return `0 ${this.$t("bytes")}`;
 
