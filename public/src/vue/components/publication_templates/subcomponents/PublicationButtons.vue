@@ -548,6 +548,23 @@
             </small>
           </div>
           <div v-else>
+            <div class="item">
+              <label>{{ $t("margin") }}</label>
+              <div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  v-model="margin"
+                />
+              </div>
+              <div class="input-group">
+                <input type="number" class="input-small" v-model="margin" />
+                <span class="input-addon input-addon-small">pt</span>
+              </div>
+            </div>
+
             <div
               class="item"
               v-if="
@@ -857,6 +874,18 @@ export default {
       return all_selected_medias[0];
     },
 
+    margin: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("margin") &&
+          !!Number.parseFloat(this.media.margin)
+          ? Number.parseFloat(this.media.margin)
+          : 0;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ margin: value });
+      },
+    },
     font_size_percent: {
       get() {
         return this.media &&
@@ -879,6 +908,7 @@ export default {
           : "";
       },
       set(value) {
+        if (value === "") this.stroke_width = "";
         this.updateMediaPubliMeta({ stroke_color: value });
       },
     },

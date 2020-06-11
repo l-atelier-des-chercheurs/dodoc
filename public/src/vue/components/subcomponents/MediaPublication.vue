@@ -766,6 +766,8 @@ export default {
       stroke_color: "transparent",
       stroke_width: 4,
 
+      margin: 0,
+
       mediaSize: {
         width: 0,
         height: 0,
@@ -832,6 +834,7 @@ export default {
     contentStyles() {
       let css = `
         --font_size_percent: ${this.font_size_percent}%;
+        --margin: ${this.margin * this.zoom}px;
         --fill_color: ${this.fill_color};
         --stroke_color: ${this.stroke_color};
         --stroke_width: ${this.stroke_width * this.zoom}px;
@@ -972,6 +975,12 @@ export default {
       this.locked_in_place = this.media.hasOwnProperty("locked_in_place")
         ? Boolean(this.media.locked_in_place)
         : false;
+
+      this.margin =
+        this.media.hasOwnProperty("margin") &&
+        !!Number.parseFloat(this.media.margin)
+          ? Number.parseFloat(this.media.margin)
+          : 0;
 
       if (
         this.media.type === "text" ||
