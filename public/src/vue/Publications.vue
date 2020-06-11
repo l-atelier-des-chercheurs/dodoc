@@ -83,7 +83,7 @@
 
         <div
           class="m_recipes--recipe--mealList"
-          v-if="all_recipes_of_this_template(recipe.key).length > 0"
+          v-if="allRecipesOfThisTemplate(recipe.key).length > 0"
         >
           <table>
             <thead>
@@ -103,9 +103,7 @@
               </tr>
             </thead>
             <tbody>
-              <template
-                v-for="publication in recipe_of_this_template(recipe.key)"
-              >
+              <template v-for="publication in recipeOfThisTemplate(recipe.key)">
                 <PublicationRow
                   class="m_recipes--recipe--mealList--meal"
                   :key="publication.slugFolderName"
@@ -524,14 +522,13 @@ export default {
   computed: {
     createPubliDefaultName() {
       let number_of_recipes =
-        this.all_recipes_of_this_template(this.createPubliTemplateKey).length +
-        1;
+        this.allRecipesOfThisTemplate(this.createPubliTemplateKey).length + 1;
 
       let name =
         this.$t(this.createPubliTemplateKey) + " Nº" + number_of_recipes;
 
       while (
-        this.all_recipes_of_this_template(this.createPubliTemplateKey).some(
+        this.allRecipesOfThisTemplate(this.createPubliTemplateKey).some(
           (r) => r.name === name
         )
       ) {
@@ -550,7 +547,7 @@ export default {
         (r) => r.attached_to_project === slugProjectName
       );
     },
-    all_recipes_of_this_template(template_key) {
+    allRecipesOfThisTemplate(template_key) {
       const filtered_recipes = Object.values(this.publications).filter(
         (r) => r.template === template_key
       );
@@ -559,8 +556,8 @@ export default {
       sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
     },
-    recipe_of_this_template(template_key) {
-      const recipes = this.all_recipes_of_this_template(template_key);
+    recipeOfThisTemplate(template_key) {
+      const recipes = this.allRecipesOfThisTemplate(template_key);
 
       let recipes_with_models = recipes
         .filter((r) => !r.follows_model)
@@ -576,7 +573,7 @@ export default {
           return r;
         });
 
-      if (!this.recipes.find((r) => r.key === template_key).show_all_recipes) {
+      if (!this.recipes.some((r) => r.key === template_key).show_all_recipes) {
         // if show only part of it
 
         // if project filter, show only those of that project

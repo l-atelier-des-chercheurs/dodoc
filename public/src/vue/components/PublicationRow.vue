@@ -1,6 +1,7 @@
 <template>
   <tr @click.exact="openPublication">
     <td>
+      {{ slugPubliName }}
       {{ publication.name }}
       <ProtectedLock
         :editing_limited_to="publication.editing_limited_to"
@@ -114,10 +115,10 @@ export default {
     },
   },
   methods: {
-    openPublication(slugPubliName) {
+    openPublication() {
       if (this.$root.state.dev_mode === "debug")
         console.log(
-          `METHODS • Publication: openPublication / slugPubliName = ${slugPubliName}`
+          `METHODS • Publication: openPublication / slugPubliName = ${this.slugPubliName}`
         );
 
       if (this.can_see_publi) this.$root.openPublication(this.slugPubliName);
