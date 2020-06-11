@@ -11,7 +11,10 @@
   >
     <!-- <label>{{ $t("placeholder") }} </label> -->
     <div
-      v-if="model_placeholder_media.hasOwnProperty('instructions')"
+      v-if="
+        model_placeholder_media.hasOwnProperty('instructions') &&
+        !!model_placeholder_media.instructions
+      "
       class="m_mediaPlaceholder--instructions"
     >
       <!-- <label>{{ $t("instructions") }}</label> -->
