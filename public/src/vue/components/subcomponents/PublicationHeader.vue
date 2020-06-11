@@ -58,14 +58,11 @@
       <div
         class="m_publicationMeta--topbar--buttons"
         v-if="
-          !(
-            [
-              'export_publication',
-              'print_publication',
-              'link_publication',
-            ].includes($root.state.mode) ||
-            $root.store.request.display === 'survey'
-          )
+          ![
+            'export_publication',
+            'print_publication',
+            'link_publication',
+          ].includes($root.state.mode)
         "
       >
         <button
@@ -112,7 +109,7 @@
         <button
           type="button"
           class="buttonLink bg-rouge"
-          v-if="show_export_button"
+          v-if="show_export_button && $root.store.request.display !== 'survey'"
           @click="createButtonClicked"
           :class="{ 'is--disabled': export_button_is_disabled }"
         >
@@ -179,8 +176,8 @@
           >
         </label>
       </div>
-      <div v-else-if="model_for_this_publication">
-        <div class v-if="url_to_publi && can_edit_publi()">
+      <div v-else-if="model_for_this_publication" style="width: 100%;">
+        <div class v-if="url_to_publi">
           <small>
             {{ $t("save_following_address_and_come_back_later") }}
             <br />
@@ -257,6 +254,7 @@
         </div>
 
         <AccessController
+          v-if="$root.store.request.display !== 'survey'"
           :folder="publication"
           :context="'full'"
           :type="'publications'"
@@ -268,7 +266,7 @@
         <button
           type="button"
           class="buttonLink"
-          v-if="can_edit_publi()"
+          v-if="can_edit_publi() && $root.store.request.display !== 'survey'"
           @click="show_edit_publication = true"
         >
           <svg
@@ -305,7 +303,7 @@
           type="button"
           class="buttonLink"
           :class="{ 'is--active': show_copy_options }"
-          v-if="can_edit_publi()"
+          v-if="can_edit_publi() && $root.store.request.display !== 'survey'"
           @click="show_copy_options = !show_copy_options"
         >
           <svg
@@ -535,9 +533,7 @@ export default {
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
         .confirm(
-          this.publication.is_model
-            ? this.$t("sureToRemovePubliThatIsModel")
-            : this.$t("sureToRemovePubli"),
+          this.$t("sureToRemovePubli"),
           () => {
             if (this.$root.state.dev_mode === "debug") {
               console.log(`METHODS • Publication: removePublication`);

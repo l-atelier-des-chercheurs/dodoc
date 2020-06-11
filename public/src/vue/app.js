@@ -833,6 +833,32 @@ let vm = new Vue({
         };
       });
     },
+    getURL() {
+      if (!this.$root.state.localNetworkInfos.ip) return false;
+
+      const ip = this.$root.state.localNetworkInfos.ip[0];
+      let url = new URL(window.location);
+
+      function isIP(address) {
+        const r = RegExp(
+          "((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])"
+        );
+        return r.test(address);
+      }
+
+      // si on est en localhost (cas de electron et navigateur connecté à electron)
+      // alors on remplace localhost par l’IP
+      if (url.hostname === "localhost") {
+        url.hostname = ip;
+      }
+      // si on est sur une ip (cas d’un hébergement en ligne, ou d’un navigateur connecté à electron)
+      // alors on remplace par l’IP
+      else if (isIP(url.hostname)) {
+        url.hostname = ip;
+      }
+
+      return url;
+    },
     getUnreadMessageCount(chat) {
       if (!this.current_author) return false;
 

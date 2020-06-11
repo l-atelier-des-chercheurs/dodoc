@@ -14,6 +14,7 @@
       :publication="publication"
       :medias="paged_medias"
       :model_for_this_publication="model_for_this_publication"
+      :url_to_publi="url_to_publi"
       @export="show_export_modal = true"
       @close="contact_sheet_mode ? $root.closePublication() : showAllPages()"
     />
@@ -656,6 +657,11 @@ export default {
     opened_single_page() {
       if (this.opened_page_index === false) return false;
       return this.pagesWithDefault[this.opened_page_index];
+    },
+    url_to_publi() {
+      let url = this.$root.getURL();
+      url.pathname = `_publications/survey/${this.publication.slugFolderName}`;
+      return url;
     },
     opened_page_index() {
       if (!this.$root.settings.current_publication.page_id) return false;
