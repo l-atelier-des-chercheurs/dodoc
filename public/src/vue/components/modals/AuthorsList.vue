@@ -4,6 +4,7 @@
     @close="$emit('close')"
     :typeOfModal="'LargeAndScroll'"
     :prevent_close="prevent_close"
+    :is_loading="is_loading"
   >
     <template slot="header">
       <span class>{{ $t("authors_list") }}</span>
@@ -96,12 +97,17 @@ export default {
       openCreateAuthorPanel: false,
       editAuthorSlug: false,
       show_detail: false,
+      is_loading: false,
     };
   },
 
   created() {},
   mounted() {
+    this.is_loading = true;
     this.$socketio.listFolders({ type: "authors" });
+    this.$eventHub.$once("socketio.authors.folders_listed", () => {
+      this.is_loading = false;
+    });
   },
   beforeDestroy() {},
 

@@ -639,7 +639,10 @@ export default {
     editThisMedia: function () {
       console.log("editThisMedia");
 
-      this.$eventHub.$once("socketio.projects.listMedia", this.editWereSaved);
+      this.$eventHub.$once(
+        "socketio.projects.media_listed",
+        this.editWereSaved
+      );
 
       this.$root.editMedia({
         type: "projects",

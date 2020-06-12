@@ -182,7 +182,7 @@ module.exports = (function () {
               }
             }
 
-            this.$eventHub.$emit(`socketio.${type}.listMedia`, data);
+            this.$eventHub.$emit(`socketio.${type}.media_listed`, data);
           },
 
           _onListMedias(data) {
@@ -200,7 +200,7 @@ module.exports = (function () {
                   content[slugFolderName].medias;
               }
             }
-            this.$eventHub.$emit(`socketio.${type}.listMedias`);
+            this.$eventHub.$emit(`socketio.${type}.medias_listed`);
           },
 
           _onListSpecificMedias(data) {

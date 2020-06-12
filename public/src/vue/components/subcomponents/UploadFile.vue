@@ -157,38 +157,6 @@ export default {
 
             this.list_of_medias_to_add_to_fragment.push(x.metaFileNames[0]);
             return resolve();
-
-            // const catchMediaCreation = (d) => {
-            //   if (this.$root.state.dev_mode === "debug")
-            //     console.log(`UploadFile • METHODS: catchMediaCreation`);
-
-            //   if (
-            //     d.hasOwnProperty(this.type) &&
-            //     d[this.type].hasOwnProperty(this.slugFolderName)
-            //   ) {
-            //     const new_media = Object.values(
-            //       d[this.type][this.slugFolderName].medias
-            //     ).find((m) => m.media_filename === x.medias_filenames[0]);
-
-            //     if (new_media) {
-            //       console.log(
-            //         `UploadFile • METHODS: sendThisFile. Will emit insertMedia for = ${new_media}`
-            //       );
-
-            //       this.list_of_medias_to_add_to_fragment.push(new_media);
-            //     }
-            //     return resolve();
-            //   }
-            //   this.$eventHub.$once(
-            //     `socketio.${this.type}.listMedia`,
-            //     catchMediaCreation
-            //   );
-            // };
-            // this.$eventHub.$once(
-            //   `socketio.${this.type}.listMedia`,
-            //   catchMediaCreation
-            // );
-            // resolve(x.map(img => Object.assign({}, img, { url: `${BASE_URL}/images/${img.id}` })));
           })
           .catch((err) => {
             if (this.$root.state.dev_mode === "debug")
