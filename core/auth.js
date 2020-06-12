@@ -366,8 +366,10 @@ module.exports = (function () {
     dev.logfunction(`AUTH — filterFolders`);
 
     if (foldersData === undefined) {
-      return;
+      return {};
     }
+
+    const socket_is_admin = await isSocketSessionAdmin(socket);
 
     // we do this in order not to touch the original foldersData for other clients
     let filteredFoldersData = JSON.parse(JSON.stringify(foldersData));
@@ -384,8 +386,9 @@ module.exports = (function () {
     const filter_folders = {};
 
     for ([slugFolderName, meta] of Object.entries(filteredFoldersData)) {
-      const filtered_meta = await filterMetaDependingOnAuthorRole({
+      const filtered_meta = filterMetaDependingOnAuthorRole({
         socket,
+        socket_is_admin,
         type,
         slugFolderName,
         meta,
@@ -423,8 +426,9 @@ module.exports = (function () {
     return folders_and_medias;
   }
 
-  async function filterMetaDependingOnAuthorRole({
+  function filterMetaDependingOnAuthorRole({
     socket,
+    socket_is_admin,
     type,
     type_two,
     slugFolderName,
@@ -437,6 +441,10 @@ module.exports = (function () {
       type_two === undefined
         ? global.settings.structure[type].fields
         : global.settings.structure[type][type_two].fields;
+
+    if (meta.hasOwnProperty("password") && meta.password !== "") {
+      meta.password = "has_pass";
+    }
 
     const field_to_act_on = Object.entries(fields).find(([key, f]) =>
       f.hasOwnProperty("show_only_to")
@@ -456,7 +464,7 @@ module.exports = (function () {
 
     if (field_props.show_only_to.includes("admin")) {
       // check is socket is amongst the authors of this content
-      if (await isSocketSessionAdmin(socket)) {
+      if (socket_is_admin) {
         return meta;
       }
     }

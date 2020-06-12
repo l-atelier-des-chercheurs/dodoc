@@ -573,7 +573,7 @@ export default {
           return r;
         });
 
-      if (!this.recipes.some((r) => r.key === template_key).show_all_recipes) {
+      if (!this.recipes.find((r) => r.key === template_key).show_all_recipes) {
         // if show only part of it
 
         // if project filter, show only those of that project
