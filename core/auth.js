@@ -366,7 +366,7 @@ module.exports = (function () {
     dev.logfunction(`AUTH — filterFolders`);
 
     if (foldersData === undefined) {
-      return;
+      return {};
     }
 
     const socket_is_admin = await isSocketSessionAdmin(socket);
