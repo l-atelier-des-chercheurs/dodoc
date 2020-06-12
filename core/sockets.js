@@ -899,21 +899,6 @@ module.exports = (function () {
         foldersData
       );
 
-      if (filteredFoldersData === undefined) {
-        filteredFoldersData = "";
-      } else {
-        // remove password field
-        for (let k in filteredFoldersData) {
-          // check if there is any password, if there is then send a placeholder
-          if (
-            filteredFoldersData[k].hasOwnProperty("password") &&
-            filteredFoldersData[k].password !== ""
-          ) {
-            filteredFoldersData[k].password = "has_pass";
-          }
-        }
-      }
-
       if (slugFolderName) {
         api.sendEventWithContent(
           "listFolder",
@@ -921,7 +906,6 @@ module.exports = (function () {
           io,
           thisSocket
         );
-        return true;
       } else {
         api.sendEventWithContent(
           "listFolders",
@@ -929,7 +913,6 @@ module.exports = (function () {
           io,
           thisSocket
         );
-        return true;
       }
     });
   }
@@ -945,16 +928,10 @@ module.exports = (function () {
       `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
     );
 
-    const foldersData = await file
-      .getFolder({ type, slugFolderName })
-      .catch((err) => {
-        dev.error(`No folder found: ${err}`);
-        throw err;
-      });
-
-    if (foldersData === undefined) {
-      return;
-    }
+    await file.getFolder({ type, slugFolderName }).catch((err) => {
+      dev.error(`No folder found: ${err}`);
+      throw err;
+    });
 
     const list_metaFileName = await file.getMediaMetaNames({
       type,
@@ -971,19 +948,16 @@ module.exports = (function () {
     let folders_and_medias = await file.readMediaList({ type, medias_list });
     dev.logverbose(`Got medias, now sending to the right clients`);
 
+    let foldersData = {
+      [slugFolderName]: { medias: {} },
+    };
+
     if (
       folders_and_medias !== undefined &&
       Object.keys(folders_and_medias).length
     ) {
       if (metaFileName && id) {
         folders_and_medias[slugFolderName].medias[metaFileName].id = id;
-      }
-
-      if (
-        foldersData[slugFolderName].hasOwnProperty("password") &&
-        foldersData[slugFolderName].password !== ""
-      ) {
-        foldersData[slugFolderName].password = "has_pass";
       }
 
       foldersData[slugFolderName].medias =
