@@ -1030,12 +1030,12 @@ export default {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaXPos / xPos = ${xPos}`);
       // }
+
+      const xcenter = this.mediaSize.width / 2;
+
       return Math.max(
-        this.page.margin_left,
-        Math.min(
-          this.page.width - this.page.margin_right - this.mediaSize.width,
-          xPos
-        )
+        this.page.margin_left - xcenter,
+        Math.min(this.page.width - this.page.margin_right - xcenter, xPos)
       );
     },
     roundMediaVal(val) {
@@ -1048,15 +1048,14 @@ export default {
     limitMediaYPos(yPos) {
       if (!this.limit_media_to_page) return yPos;
 
+      const ycenter = this.mediaSize.height / 2;
+
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
       // }
       yPos = Math.max(
-        this.page.margin_top,
-        Math.min(
-          this.page.height - this.page.margin_bottom - this.mediaSize.height,
-          yPos
-        )
+        this.page.margin_top - ycenter,
+        Math.min(this.page.height - this.page.margin_bottom - ycenter, yPos)
       );
       return yPos;
     },
@@ -1067,9 +1066,13 @@ export default {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
       // }
+
       return Math.max(
         5,
-        Math.min(this.page.width - this.page.margin_right - this.mediaPos.x, w)
+        Math.min(
+          this.page.width - this.page.margin_right - this.page.margin_left,
+          w
+        )
       );
     },
     limitMediaHeight(h) {
@@ -1081,7 +1084,7 @@ export default {
       return Math.max(
         5,
         Math.min(
-          this.page.height - this.page.margin_bottom - this.mediaPos.y,
+          this.page.height - this.page.margin_bottom - this.page.margin_top,
           h
         )
       );
