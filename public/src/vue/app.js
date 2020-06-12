@@ -26,6 +26,15 @@ import locale_strings from "./locale_strings.js";
 
 import "prismjs";
 
+Vue.component("Loader", {
+  name: "Loader",
+  template: `
+    <div class="_loader">
+      <span class="loader" />
+    </div>
+  `,
+});
+
 // Vue.config.silent = false;
 // Vue.config.devtools = true;
 
@@ -403,7 +412,7 @@ let vm = new Vue({
       // requesting edit of a media
       if (this.store.request.metaFileName) {
         this.$eventHub.$once(
-          `socketio.${this.store.request.type}.listMedias`,
+          `socketio.${this.store.request.type}.medias_listed`,
           () => {
             if (this.store.request.type === "projects") {
               const metaFileName = this.store.request.metaFileName;
@@ -1329,11 +1338,6 @@ let vm = new Vue({
       this.do_navigation.view = "ProjectView";
       this.do_navigation.current_slugProjectName = slugProjectName;
 
-      this.$socketio.listMedias({
-        type: "projects",
-        slugFolderName: slugProjectName,
-      });
-
       history.pushState(
         { slugProjectName },
         this.store.projects[slugProjectName].name,
@@ -1502,8 +1506,12 @@ let vm = new Vue({
       this.$socketio.socket.emit("updateClientInfo", { author: {} });
     },
     updateClientInfo(val) {
-      if (this.$socketio.socket)
+      if (this.$socketio.socket) {
+        if (window.state.dev_mode === "debug")
+          console.log(`ROOT EVENT: updateClientInfo`);
+
         this.$socketio.socket.emit("updateClientInfo", val);
+      }
     },
     togglePubliPanel: function () {
       if (window.state.dev_mode === "debug") {
@@ -1627,7 +1635,7 @@ let vm = new Vue({
       //     slugFolderName: matching_tag.slugProjectName
       //   });
 
-      //   this.$eventHub.$once('socketio.projects.listMedias', () => {
+      //   this.$eventHub.$once('socketio.projects.medias_listed', () => {
       //     this.openMedia({
       //       slugProjectName: matching_tag.slugProjectName,
       //       metaFileName: matching_tag.metaFileName
@@ -1717,20 +1725,6 @@ let vm = new Vue({
     },
     loadAllChats() {
       this.$socketio.listFolders({ type: "chats" });
-      // too much data/power for limited reward
-      // this.$eventHub.$once("socketio.chats.folders_listed", () => {
-      //   let index = 0;
-      //   Object.keys(this.store.chats).forEach((slugChatName) => {
-      //     // const project_meta = this.store.chats[slugChatName];
-      //     index++;
-      //     setTimeout(() => {
-      //       this.$socketio.listMedias({
-      //         type: "chats",
-      //         slugFolderName: slugChatName,
-      //       });
-      //     }, 500 * index);
-      //   });
-      // });
     },
 
     loadAllProjectsMedias() {
@@ -1752,7 +1746,7 @@ let vm = new Vue({
         this.store.projects
       ).length;
 
-      this.$eventHub.$on("socketio.projects.listMedias", () => {
+      this.$eventHub.$on("socketio.projects.medias_listed", () => {
         number_of_projects_to_load_medias_to--;
         if (number_of_projects_to_load_medias_to === 0) {
           this.$eventHub.$emit("socketio.has_finished_loading_all_medias");

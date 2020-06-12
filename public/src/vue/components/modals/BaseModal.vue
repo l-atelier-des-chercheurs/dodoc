@@ -108,9 +108,7 @@
               </span>
             </button>
           </form>
-          <div class="m_modal--loader" v-if="is_loading">
-            <span class="loader" />
-          </div>
+          <Loader v-if="is_loading" />
         </div>
       </div>
 

@@ -185,7 +185,7 @@ export default {
     };
   },
   created() {
-    this.$eventHub.$on("socketio.chats.listMedia", this.newChatPosted);
+    this.$eventHub.$on("socketio.chats.media_listed", this.newChatPosted);
     this.$eventHub.$on("resizePanels", this.resize);
 
     if (this.$root.state.local_options.force_login) {
@@ -195,7 +195,7 @@ export default {
   },
   mounted() {},
   beforeDestroy() {
-    this.$eventHub.$off("socketio.chats.listMedia", this.newChatPosted);
+    this.$eventHub.$off("socketio.chats.media_listed", this.newChatPosted);
     this.$eventHub.$off("resizePanels", this.resize);
   },
   watch: {

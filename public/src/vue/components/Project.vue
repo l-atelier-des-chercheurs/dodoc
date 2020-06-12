@@ -374,6 +374,10 @@
       :read_only="read_only"
       :can_edit_project="can_edit_project"
     />
+
+    <transition name="fade_fast" :duration="400">
+      <Loader v-if="is_loading" />
+    </transition>
   </div>
 </template>
 <script>
@@ -411,6 +415,8 @@ export default {
       showDuplicateProjectMenu: false,
       copy_project_name: this.$t("copy_of") + " " + this.project.name,
       zip_export_started: false,
+
+      is_loading: false,
     };
   },
   watch: {
@@ -431,7 +437,23 @@ export default {
       });
     },
   },
-  mounted() {},
+  mounted() {
+    if (this.context === "full") {
+      this.is_loading = true;
+      this.$socketio.listFolders({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
+      this.$socketio.listMedias({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
+
+      this.$eventHub.$once("socketio.projects.medias_listed", () => {
+        this.is_loading = false;
+      });
+    }
+  },
   beforeDestroy() {},
   computed: {
     previewURL() {

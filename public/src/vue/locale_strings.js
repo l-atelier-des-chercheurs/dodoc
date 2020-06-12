@@ -387,6 +387,10 @@ module.exports = (function () {
       fr: "Tailles et marges",
       en: "Sizes and margins",
     },
+    margin: {
+      fr: "Marge",
+      en: "Margin",
+    },
     size: {
       fr: "Taille",
       en: "Size",
