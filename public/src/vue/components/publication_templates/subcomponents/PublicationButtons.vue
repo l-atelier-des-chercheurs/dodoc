@@ -650,7 +650,7 @@
               <div>
                 <input
                   type="range"
-                  min="1"
+                  min="0"
                   max="20"
                   step="1"
                   v-model="stroke_width"
@@ -927,9 +927,7 @@ export default {
     },
     stroke_width: {
       get() {
-        return this.media &&
-          this.media.hasOwnProperty("stroke_width") &&
-          !!Number.parseFloat(this.media.stroke_width)
+        return this.media && this.media.hasOwnProperty("stroke_width")
           ? Number.parseFloat(this.media.stroke_width)
           : 4;
       },

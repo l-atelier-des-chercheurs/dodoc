@@ -1011,11 +1011,9 @@ export default {
         this.media.hasOwnProperty("fill_color") && !!this.media.fill_color
           ? this.media.fill_color
           : "";
-      this.stroke_width =
-        this.media.hasOwnProperty("stroke_width") &&
-        !!Number.parseFloat(this.media.stroke_width)
-          ? Number.parseFloat(this.media.stroke_width)
-          : 4;
+      this.stroke_width = this.media.hasOwnProperty("stroke_width")
+        ? Number.parseFloat(this.media.stroke_width)
+        : 4;
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug")
