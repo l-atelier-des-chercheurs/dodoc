@@ -153,7 +153,9 @@ module.exports = (function () {
 
     let hrend = process.hrtime(hrstart);
     dev.performance(
-      `PERFORMANCE — listFolders : ${hrend[0]}s ${hrend[1] / 1000000}ms`
+      `PERFORMANCE — listFolders for type = ${data.type} : ${hrend[0]}s ${
+        hrend[1] / 1000000
+      }ms`
     );
   }
   async function onListFolder(socket, { type, slugFolderName }) {
