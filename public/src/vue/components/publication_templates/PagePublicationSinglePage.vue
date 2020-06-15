@@ -55,7 +55,9 @@
           "
           class="m_page--pageNumber"
           :class="{ toRight: true }"
-        >{{ pageNumber + 1 }}</div>
+        >
+          {{ pageNumber + 1 }}
+        </div>
 
         <div v-if="publication_medias.length === 0" class="m_page--noMedia">
           <template
@@ -66,9 +68,14 @@
                 'link_publication',
               ].includes($root.state.mode)
             "
-          >{{ $t("no_media_on_this_page") }}</template>
+            >{{ $t("no_media_on_this_page") }}</template
+          >
         </div>
-        <div v-else v-for="media in publication_medias" :key="media.metaFileName">
+        <div
+          v-else
+          v-for="media in publication_medias"
+          :key="media.metaFileName"
+        >
           <transition name="MediaPublication" :duration="500">
             <div>
               <MediaPublication
@@ -171,7 +178,7 @@ export default {
       let action = "";
       let detail = "";
 
-      if (event.key === "Backspace") {
+      if (event.key === "Backspace" || event.key === "Delete") {
         action = "remove";
       } else if (event.key === "ArrowUp") {
         action = "move";
@@ -212,8 +219,9 @@ export default {
           width: ${page.width}mm;
           height: ${page.height}mm;
           margin: 40px;
-          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${240 /
-          this.zoom}px;  
+          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${
+          240 / this.zoom
+        }px;  
           box-sizing: content-box;
         `);
 
@@ -277,7 +285,7 @@ export default {
           to_slugFolderName: this.slugPubliName,
           slugMediaName: metaFileName,
         })
-        .then(mdata => {
+        .then((mdata) => {
           const x = mdata.x ? mdata.x + 5 : 20;
           const y = mdata.y ? mdata.y + 5 : 20;
           const z_index = mdata.z_index ? mdata.z_index + 1 : 1;
