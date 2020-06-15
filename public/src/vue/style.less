@@ -5985,54 +5985,8 @@ small {
         margin: 0;
         padding: 0;
 
-        .m_mediaStory {
-          padding: 0;
-          height: 100%;
-          width: 100%;
-          position: absolute;
-
-          .mediaContainer.type-image img {
-            width: 100%;
-            height: 100%;
-            max-height: none;
-            object-position: center;
-          }
-
-          .mediaTextContent {
-            background: transparent;
-            padding: 0;
-            padding-left: 4px;
-            padding-top: 2px;
-
-            .ql-editor > *::before {
-              display: none;
-            }
-          }
-        }
-
         ._help {
           display: none;
-        }
-      }
-    }
-
-    .m_mediaStory--moveItemButtons {
-      right: 0;
-      top: 0;
-      .margin-small;
-      min-height: 0;
-
-      .m_mediaStory--moveItemButtons--before,
-      .m_mediaStory--moveItemButtons--after {
-        display: none;
-      }
-
-      .m_mediaStory--moveItemButtons--options {
-        ._advanced_menu {
-          right: 100%;
-          left: auto;
-          top: 0;
-          transform: none;
         }
       }
     }
@@ -6144,6 +6098,82 @@ small {
     border-radius: 6px;
     // .margin-sides-verysmall;
     .padding-sides-medium;
+  }
+}
+
+.m_mediaPublicationReply {
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+
+  .mediaContainer.type-image img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-position: center;
+  }
+
+  .mediaTextContent {
+    background: transparent;
+    padding: 0;
+    padding-left: 4px;
+    padding-top: 2px;
+
+    .ql-editor > *::before {
+      display: none;
+    }
+  }
+
+  .m_mediaPublicationReply--moveItemButtons {
+    position: absolute;
+    right: 0;
+    top: 0;
+    .margin-small;
+    min-height: 0;
+
+    .m_mediaPublicationReply--moveItemButtons--before,
+    .m_mediaPublicationReply--moveItemButtons--after {
+      display: none;
+    }
+
+    .m_mediaPublicationReply--moveItemButtons--options > button {
+      background-color: transparent;
+      display: block;
+      right: 0;
+      padding: 0;
+      min-height: 0;
+      width: @t-storyButtons;
+      height: @t-storyButtons;
+      border-radius: 50%;
+      // transform: rotate(90deg);
+      transform: rotate(90deg);
+
+      position: relative;
+
+      padding: 4px;
+      transform: rotate(90deg);
+
+      &:hover {
+        background-color: @c-orange;
+      }
+      &[disabled] {
+        opacity: 0;
+      }
+
+      img,
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      ._advanced_menu {
+        right: 100%;
+        left: auto;
+        top: 0;
+        transform: none;
+      }
+    }
   }
 }
 

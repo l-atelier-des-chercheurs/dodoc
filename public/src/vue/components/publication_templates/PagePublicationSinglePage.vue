@@ -84,7 +84,10 @@
                 :model_for_this_publication="model_for_this_publication"
                 :slugPubliName="slugPubliName"
                 @removePubliMedia="(values) => removePubliMedia(values)"
-                @editPubliMedia="(values) => editPubliMedia(values)"
+                @editPubliMedia="
+                  ({ metaFileName, val }) =>
+                    editPubliMedia({ metaFileName, val })
+                "
                 @duplicateMedia="(values) => duplicateMedia(values)"
               />
             </div>
@@ -158,7 +161,10 @@ export default {
     captureKeyListener(event) {
       if (
         this.$root.settings.current_publication.selected_medias.length === 0 ||
-        this.$root.settings.has_modal_opened
+        this.$root.settings.has_modal_opened ||
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor")
       )
         return;
 
@@ -258,6 +264,8 @@ export default {
           )}`
         );
       }
+
+      debugger;
 
       this.$emit("editPubliMedia", { metaFileName, val });
     },

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="m_mediaStory"
+    class="m_mediaPublicationReply"
     :class="[
       'type-' + media.type,
       {
@@ -76,12 +76,14 @@
             <CollaborativeEditor
               v-else
               v-model="htmlForEditor"
+              class="fixedPanel"
               :specific_toolbar="media.plain_text ? [] : undefined"
               :media="media"
               :slugFolderName="slugPubliName"
               :enable_collaboration="true"
+              :theme="'bubble'"
               :type="'publications'"
-              :style="force_text_style"
+              :style="media.plain_text ? force_text_style : ''"
               ref="textField"
             />
           </template>
@@ -147,32 +149,13 @@
     />
 
     <div
-      class="m_mediaStory--moveItemButtons"
+      class="m_mediaPublicationReply--moveItemButtons"
       :class="{
         'is--visible':
           !preview_mode && !read_only && (is_selected || is_hovered),
       }"
     >
-      <button
-        type="button"
-        class="m_mediaStory--moveItemButtons--before"
-        :disabled="media_position === 'first' || media_position === 'alone'"
-        @click.stop="
-          $emit('changeMediaOrder', {
-            metaFileName: media.metaFileName,
-            dir: -1,
-          })
-        "
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
-          <path
-            d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
-            style="fill: currentColor;"
-          />
-        </svg>
-      </button>
-
-      <div class="m_mediaStory--moveItemButtons--options">
+      <div class="m_mediaPublicationReply--moveItemButtons--options">
         <button
           type="button"
           @click.stop="
@@ -200,37 +183,6 @@
           </svg>
         </button>
         <div class="_advanced_menu" v-if="show_advanced_menu">
-          <button
-            type="button"
-            class="buttonLink"
-            @click="duplicateMedia"
-            v-if="can_duplicate_media"
-          >
-            <svg
-              version="1.1"
-              class="inline-svg"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="91.6px"
-              height="95px"
-              viewBox="0 0 91.6 95"
-              style="enable-background: new 0 0 91.6 95;"
-              xml:space="preserve"
-            >
-              <polygon
-                class="st0"
-                points="39.5,11.8 83,11.8 83,55.4 72.7,55.4 72.7,67.2 94.8,67.2 94.8,0 27.7,0 27.7,22.2 39.5,22.2 	"
-              />
-              <path
-                class="st0"
-                d="M67.2,27.7L0,27.7l0,67.2l67.2,0L67.2,27.7z M55.4,83l-43.6,0l0-43.6l43.6,0L55.4,83z"
-              />
-            </svg>
-            <span class>{{ $t("duplicate") }}</span>
-          </button>
-
           <a
             v-if="media.type !== 'text'"
             :download="media.media_filename"
@@ -307,58 +259,6 @@
             <!-- {{ $t('edit') }} -->
           </button>
 
-          <!-- <button
-            v-if="!!media.ratio && !lock_original_ratio"
-            type="button"
-            class="buttonLink _no_underline"
-            @click.stop.prevent="toggleImageFitMode"
-            :content="$t('switch_fit_mode')"
-            v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
-          >
-            <svg
-              class="inline-svg inline-svg-larger"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="130.4px"
-              height="130.4px"
-              viewBox="0 0 130.4 130.4"
-              style="enable-background: new 0 0 130.4 130.4;"
-              xml:space="preserve"
-            >
-              <defs />
-              <g>
-                <path
-                  d="M100.3,130.4H30.1c-2.4,0-4.4-2.2-4.4-5V5c0-2.8,2-5,4.4-5h70.1c2.4,0,4.4,2.2,4.4,5v120.4
-		C104.7,128.2,102.7,130.4,100.3,130.4z M34.5,120.4h61.3V10H34.5V120.4z"
-                />
-              </g>
-              <g>
-                <path
-                  d="M125.4,106.4h-12v-9.2h7v-6.4h10v11C130.4,104.3,128.2,106.4,125.4,106.4z"
-                />
-                <path
-                  d="M93.8,106.4H75v-9.2h18.8V106.4z M55.4,106.4H36.6v-9.2h18.8V106.4z"
-                />
-                <path d="M17,106.4H5c-2.8,0-5-2.1-5-4.6v-11h10v6.4h7V106.4z" />
-                <rect y="56.9" width="10" height="16.6" />
-                <path d="M10,39.6H0v-11C0,26.1,2.2,24,5,24h12v9.2h-7V39.6z" />
-                <path
-                  d="M93.8,33.2H75V24h18.8V33.2z M55.4,33.2H36.6V24h18.8V33.2z"
-                />
-                <path
-                  d="M130.4,39.6h-10v-6.4h-7V24h12c2.8,0,5,2.1,5,4.6V39.6z"
-                />
-                <rect x="120.4" y="56.9" width="10" height="16.6" />
-              </g>
-            </svg>
-          </button> -->
-
           <button
             type="button"
             class="buttonLink _no_underline"
@@ -391,25 +291,6 @@
           </button>
         </div>
       </div>
-
-      <button
-        type="button"
-        class="m_mediaStory--moveItemButtons--after"
-        :disabled="media_position === 'last' || media_position === 'alone'"
-        @click.stop="
-          $emit('changeMediaOrder', {
-            metaFileName: media.metaFileName,
-            dir: +1,
-          })
-        "
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
-          <path
-            d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
-            style="fill: currentColor;"
-          />
-        </svg>
-      </button>
     </div>
   </div>
 </template>
@@ -426,11 +307,6 @@ export default {
     read_only: Boolean,
     preview_mode: Boolean,
     slugPubliName: String,
-    media_position: String,
-    can_duplicate_media: {
-      type: Boolean,
-      default: true,
-    },
   },
   components: {
     MediaContent,
@@ -463,7 +339,6 @@ export default {
 
   created() {},
   mounted() {
-    this.updateMediaStyles();
     this.$eventHub.$on("publication.selectNewMedia", this.selectNewMedia);
     this.$eventHub.$on(
       "publication.set_media_to_edit_mode",
@@ -485,7 +360,6 @@ export default {
   watch: {
     media: {
       handler: function () {
-        this.updateMediaStyles();
         this.htmlForEditor = this.media.content ? this.media.content : "";
       },
       deep: true,
@@ -542,11 +416,6 @@ export default {
     },
   },
   methods: {
-    duplicateMedia() {
-      this.$emit("duplicateMedia", {
-        metaFileName: this.media.metaFileName,
-      });
-    },
     selectNewMedia(metaFileName) {
       if (metaFileName === this.media.metaFileName)
         if (!this.is_selected) this.selectMedia();
@@ -571,20 +440,6 @@ export default {
           slugProjectName: this.media._linked_media.slugProjectName,
           metaFileName: this.media._linked_media.metaFileName,
         });
-    },
-    toggleImageFitMode() {
-      if (this.fit_mode === "cover") this.fit_mode = "contain";
-      else if (this.fit_mode === "contain") this.fit_mode = "cover";
-
-      this.updateMediaPubliMeta({
-        fit_mode: this.fit_mode,
-      });
-    },
-
-    updateMediaStyles() {
-      this.fit_mode = this.media.hasOwnProperty("fit_mode")
-        ? this.media.fit_mode
-        : "cover";
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug")

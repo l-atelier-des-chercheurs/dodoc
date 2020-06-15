@@ -92,7 +92,7 @@
               >
                 <input
                   :id="`option_${id}_${option.key}_advtext`"
-                  :disabled="read_only || paged_mode"
+                  :disabled="read_only"
                   type="checkbox"
                   v-model="option.advanced_text_options"
                 />
@@ -385,7 +385,9 @@ export default {
             let val = { mode_key: o.key };
             if (o.key === "text") {
               val.advanced_text_options = o.advanced_text_options;
-              val.force_text_style = o.force_text_style;
+              if (!val.advanced_text_options)
+                val.force_text_style = o.force_text_style;
+
               val.only_numbers = o.only_numbers;
             }
 
