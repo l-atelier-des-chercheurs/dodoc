@@ -106,6 +106,10 @@ module.exports = (function () {
       fr: "projet(s) sélectionné(s)",
       en: "project(s) selected",
     },
+    number_of_medias: {
+      fr: "Nombre de médias",
+      en: "Amount of medias",
+    },
     reply: {
       fr: "Répondre",
       en: "Reply",
@@ -728,6 +732,10 @@ module.exports = (function () {
     lock_in_place: {
       fr: "Verrouiller sur place",
       en: "Lock in position",
+    },
+    unlock: {
+      fr: "Déverouiller",
+      en: "Unlock",
     },
     rotate_clockwise: {
       fr: "Pivoter vers la droite",

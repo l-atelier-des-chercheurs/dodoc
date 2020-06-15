@@ -323,6 +323,10 @@
         },
         "follows_model": {
           "type": "string"
+        },
+        "number_of_medias": {
+          "type": "number",
+          "only_admin_can_edit": true
         }
       },
       "medias": {

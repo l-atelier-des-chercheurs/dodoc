@@ -55,9 +55,7 @@
           "
           class="m_page--pageNumber"
           :class="{ toRight: true }"
-        >
-          {{ pageNumber + 1 }}
-        </div>
+        >{{ pageNumber + 1 }}</div>
 
         <div v-if="publication_medias.length === 0" class="m_page--noMedia">
           <template
@@ -68,14 +66,9 @@
                 'link_publication',
               ].includes($root.state.mode)
             "
-            >{{ $t("no_media_on_this_page") }}</template
-          >
+          >{{ $t("no_media_on_this_page") }}</template>
         </div>
-        <div
-          v-else
-          v-for="media in publication_medias"
-          :key="media.metaFileName"
-        >
+        <div v-else v-for="media in publication_medias" :key="media.metaFileName">
           <transition name="MediaPublication" :duration="500">
             <div>
               <MediaPublication
@@ -133,6 +126,8 @@ export default {
   created() {},
   mounted() {
     if (this.mode === "single") {
+      document.addEventListener("keydown", this.captureKeyListener);
+
       this.$root.settings.current_publication.selected_medias = [];
       this.$root.settings.current_publication.accepted_media_type = [
         "image",
@@ -147,6 +142,8 @@ export default {
   },
   beforeDestroy() {
     if (this.mode === "single") {
+      document.removeEventListener("keydown", this.captureKeyListener);
+
       this.$root.settings.current_publication.selected_medias = [];
       this.$root.settings.current_publication.accepted_media_type = [];
     }
@@ -158,6 +155,39 @@ export default {
     },
   },
   methods: {
+    captureKeyListener(event) {
+      if (
+        this.$root.settings.current_publication.selected_medias.length === 0 ||
+        this.$root.settings.has_modal_opened
+      )
+        return;
+
+      let action = "";
+      let detail = "";
+
+      if (event.key === "Backspace") {
+        action = "remove";
+      } else if (event.key === "ArrowUp") {
+        action = "move";
+        detail = { x: 0, y: -1 };
+      } else if (event.key === "ArrowDown") {
+        action = "move";
+        detail = { x: 0, y: 1 };
+      } else if (event.key === "ArrowLeft") {
+        action = "move";
+        detail = { x: -1, y: 0 };
+      } else if (event.key === "ArrowRight") {
+        action = "move";
+        detail = { x: 1, y: 0 };
+      }
+
+      if (action) event.preventDefault();
+
+      this.$eventHub.$emit("publication.selected.triggerAction", {
+        action,
+        detail,
+      });
+    },
     setPageContainerProperties(page) {
       if (this.$root.state.mode === "print_publication") return;
 
@@ -176,9 +206,8 @@ export default {
           width: ${page.width}mm;
           height: ${page.height}mm;
           margin: 40px;
-          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${
-          240 / this.zoom
-        }px;  
+          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${240 /
+          this.zoom}px;  
           box-sizing: content-box;
         `);
 
@@ -219,7 +248,7 @@ export default {
       });
     },
     // function to update property of a media inside medias_list
-    editPubliMedia({ slugMediaName, val }) {
+    editPubliMedia({ metaFileName, val }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
           `METHODS • Publication: editPubliMedia / args = ${JSON.stringify(
@@ -230,12 +259,7 @@ export default {
         );
       }
 
-      this.$root.editMedia({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        slugMediaName,
-        data: val,
-      });
+      this.$emit("editPubliMedia", { metaFileName, val });
     },
     duplicateMedia({ metaFileName }) {
       this.$root
@@ -245,13 +269,13 @@ export default {
           to_slugFolderName: this.slugPubliName,
           slugMediaName: metaFileName,
         })
-        .then((mdata) => {
+        .then(mdata => {
           const x = mdata.x ? mdata.x + 5 : 20;
           const y = mdata.y ? mdata.y + 5 : 20;
           const z_index = mdata.z_index ? mdata.z_index + 1 : 1;
 
           this.editPubliMedia({
-            slugMediaName: mdata.metaFileName,
+            metaFileName: mdata.metaFileName,
             val: {
               x,
               y,
