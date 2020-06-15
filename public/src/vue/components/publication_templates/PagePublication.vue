@@ -55,9 +55,7 @@
             class="buttonLink"
             v-if="!contact_sheet_mode"
             @click="showAllPages"
-          >
-            {{ $t("show_all_pages") }}
-          </button>
+          >{{ $t("show_all_pages") }}</button>
         </div>
 
         <div
@@ -77,9 +75,7 @@
             class="buttonLink"
             :class="{ 'is--active': page_settings_panel }"
             @click="page_settings_panel = !page_settings_panel"
-          >
-            {{ $t("page_settings") }}
-          </button>
+          >{{ $t("page_settings") }}</button>
         </div>
 
         <SettingsPane
@@ -91,11 +87,7 @@
       </div>
       <hr v-if="!contact_sheet_mode" class="margin-none" />
       <div class="m_publicationNavMenu--buttonRow" v-if="!contact_sheet_mode">
-        <button
-          type="button"
-          @click="navPage(-1)"
-          :disabled="opened_page_index === 0"
-        >
+        <button type="button" @click="navPage(-1)" :disabled="opened_page_index === 0">
           <img src="/images/i_arrow_left.svg" draggable="false" />
           {{ $t("previous_page") }}
         </button>
@@ -155,13 +147,11 @@
           :read_only="read_only || !can_edit_publi"
           :pixelsPerMillimeters="pixelsPerMillimeters"
           :zoom="zoom"
+          @editPubliMedia="$emit('editPubliMedia', $event)"
         />
       </div>
 
-      <div
-        v-else-if="contact_sheet_mode"
-        class="m_publicationview--pages--contactSheet"
-      >
+      <div v-else-if="contact_sheet_mode" class="m_publicationview--pages--contactSheet">
         <transition-group
           tag="div"
           class="m_publicationview--pages--contactSheet--pages"
@@ -192,8 +182,7 @@
             />
             <span
               class="m_publicationview--pages--contactSheet--pages--page--pageNumber"
-              >{{ pageNumber + 1 }}</span
-            >
+            >{{ pageNumber + 1 }}</span>
 
             <transition name="fade_fast" :duration="150">
               <div
@@ -223,13 +212,7 @@
                     xml:space="preserve"
                   >
                     <rect x="73.5" y="37" class="st0" width="21" height="21" />
-                    <rect
-                      x="73.5"
-                      y="73.5"
-                      class="st0"
-                      width="21"
-                      height="21"
-                    />
+                    <rect x="73.5" y="73.5" class="st0" width="21" height="21" />
                     <rect x="73.5" y="110" class="st0" width="21" height="21" />
                   </svg>
                 </button>
@@ -247,25 +230,19 @@
                       class="buttonLink"
                       v-if="pagesWithDefault.length > 1"
                       @click="show_advanced_option = 'move'"
-                    >
-                      {{ $t("move") }}
-                    </button>
+                    >{{ $t("move") }}</button>
 
                     <button
                       type="button"
                       class="buttonLink"
                       @click="show_advanced_option = 'duplicate'"
-                    >
-                      {{ $t("duplicate") }}
-                    </button>
+                    >{{ $t("duplicate") }}</button>
 
                     <button
                       type="button"
                       class="buttonLink"
                       @click="removePage(page.id)"
-                    >
-                      {{ $t("remove") }}
-                    </button>
+                    >{{ $t("remove") }}</button>
                   </template>
 
                   <template v-else-if="show_advanced_option === 'move'">
@@ -275,18 +252,12 @@
                         @change="updatePagePos({ id: page.id, $event })"
                         :value="pageNumber + 1"
                       >
-                        <option
-                          v-for="pos in pagesWithDefault.length"
-                          :key="pos"
-                          v-html="pos"
-                        />
+                        <option v-for="pos in pagesWithDefault.length" :key="pos" v-html="pos" />
                       </select>
                     </span>
                   </template>
                   <template v-else-if="show_advanced_option === 'duplicate'">
-                    <form
-                      @submit.prevent="duplicatePage({ id: page.id, $event })"
-                    >
+                    <form @submit.prevent="duplicatePage({ id: page.id, $event })">
                       <template v-if="pagesWithDefault.length > 1">
                         <label>{{ $t("destination_document") }}</label>
                         <select :value="slugPubliName">
@@ -301,11 +272,7 @@
                           />
                         </select>
                       </template>
-                      <button
-                        type="submit"
-                        v-html="$t('duplicate')"
-                        class="button bg-bleuvert"
-                      />
+                      <button type="submit" v-html="$t('duplicate')" class="button bg-bleuvert" />
                     </form>
                   </template>
                 </div>
@@ -314,9 +281,7 @@
                   type="button"
                   class="buttonLink"
                   @click.stop="openPage(page.id)"
-                >
-                  {{ $t("open") }}
-                </button>
+                >{{ $t("open") }}</button>
               </div>
             </transition>
           </div>
@@ -326,9 +291,7 @@
             v-if="can_edit_publi && !model_for_this_publication"
             :key="'create_page'"
             @click="insertPageAtIndex(pagesWithDefault.length + 1)"
-          >
-            {{ $t("create_empty_page") }}
-          </button>
+          >{{ $t("create_empty_page") }}</button>
         </transition-group>
 
         <button
@@ -337,9 +300,7 @@
           :class="{ 'is--active': show_removed_pages }"
           @click="show_removed_pages = !show_removed_pages"
           v-if="removedPagesWithDefault.length > 0"
-        >
-          {{ $t("show_removed_pages") }} ({{ removedPagesWithDefault.length }})
-        </button>
+        >{{ $t("show_removed_pages") }} ({{ removedPagesWithDefault.length }})</button>
 
         <transition-group
           tag="div"
@@ -365,6 +326,7 @@
               :read_only="read_only || !can_edit_publi"
               :pixelsPerMillimeters="pixelsPerMillimeters"
               :zoom="0.1"
+              @editPubliMedia="$emit('editPubliMedia', $event)"
             />
 
             <div
@@ -412,16 +374,12 @@
                 type="button"
                 class="buttonLink"
                 @click.stop="restorePage(page.id)"
-              >
-                {{ $t("restore") }}
-              </button>
+              >{{ $t("restore") }}</button>
               <button
                 type="button"
                 class="buttonLink"
                 @click.stop="removePageForGood(page.id)"
-              >
-                {{ $t("remove") }}
-              </button>
+              >{{ $t("remove") }}</button>
             </div>
           </div>
         </transition-group>
@@ -468,6 +426,7 @@
             :read_only="read_only || !can_edit_publi"
             :pixelsPerMillimeters="pixelsPerMillimeters"
             :zoom="zoom"
+            @editPubliMedia="$emit('editPubliMedia', $event)"
           />
         </transition>
       </div>
@@ -567,7 +526,7 @@ export default {
   mounted() {
     this.$eventHub.$on("publication.addMedia", this.addMedia);
 
-    this.$eventHub.$on("publication.just_added_media", (mdata) => {
+    this.$eventHub.$on("publication.just_added_media", mdata => {
       this.$nextTick(() => {
         if (mdata.type && mdata.type === "text") {
           this.$eventHub.$emit(
@@ -605,11 +564,11 @@ export default {
   },
 
   watch: {
-    show_buttons: function () {
+    show_buttons: function() {
       this.show_advanced_menu_for_page = false;
       this.show_advanced_option = false;
     },
-    "$root.app_is_fullscreen": function () {
+    "$root.app_is_fullscreen": function() {
       setTimeout(() => {
         this.updatePageSizeAccordingToPanel();
       }, 500);
@@ -628,7 +587,7 @@ export default {
       deep: true,
       immediate: true,
     },
-    zoom: function () {
+    zoom: function() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: zoom`);
 
@@ -639,7 +598,7 @@ export default {
       this.zoom = Math.min(this.zoom_max, Math.max(this.zoom_min, this.zoom));
       this.$root.setPublicationZoom(this.zoom);
     },
-    "$root.settings.publi_zoom": function () {
+    "$root.settings.publi_zoom": function() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: $root.settings.publi_zoom`);
 
@@ -661,14 +620,14 @@ export default {
       if (!this.$root.settings.current_publication.page_id) return false;
 
       const index = this.pagesWithDefault.findIndex(
-        (p) => p.id === this.$root.settings.current_publication.page_id
+        p => p.id === this.$root.settings.current_publication.page_id
       );
       return index;
     },
     all_recipes_of_this_template() {
       const filtered_recipes = Object.values(
         this.$root.store.publications
-      ).filter((r) => r.template === "page_by_page");
+      ).filter(r => r.template === "page_by_page");
       let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
       sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
@@ -771,7 +730,7 @@ export default {
     mergePageObjectWithDefault(pages) {
       return pages.reduce((acc, page) => {
         let _page = JSON.parse(JSON.stringify(page));
-        Object.keys(this.publications_options).map((k) => {
+        Object.keys(this.publications_options).map(k => {
           const option = this.publications_options[k];
           if (typeof option === "number") {
             if (_page.hasOwnProperty(k) && !Number.isNaN(_page[k])) {
@@ -798,8 +757,8 @@ export default {
       if (!page_medias) return 0;
 
       const medias_with_z = page_medias
-        .filter((m) => m.hasOwnProperty("z_index"))
-        .map((m) => {
+        .filter(m => m.hasOwnProperty("z_index"))
+        .map(m => {
           return m.z_index;
         });
 
@@ -817,7 +776,7 @@ export default {
       )
         return;
 
-      const prev_pos = this.pagesWithDefault.findIndex((p) => p.id === id);
+      const prev_pos = this.pagesWithDefault.findIndex(p => p.id === id);
       const new_pos = $event.target.value - 1;
       let pages = this.publication.pages.slice();
 
@@ -870,12 +829,12 @@ export default {
         ? this.publication.pages.slice()
         : [];
       let page_to_restore = this.publication.removed_pages.find(
-        (p) => p.id === id
+        p => p.id === id
       );
       pages.push(page_to_restore);
 
       let removed_pages = this.publication.removed_pages.filter(
-        (p) => p.id !== id
+        p => p.id !== id
       );
 
       this.$root.editFolder({
@@ -892,7 +851,7 @@ export default {
         console.log(`METHODS • Publication: removePageForGood id = ${id}`);
 
       let removed_pages = this.publication.removed_pages.filter(
-        (p) => p.id !== id
+        p => p.id !== id
       );
 
       this.$root.editFolder({
@@ -903,7 +862,7 @@ export default {
         },
       });
 
-      this.paged_medias[id].map((m) => {
+      this.paged_medias[id].map(m => {
         this.$root.removeMedia({
           type: "publications",
           slugFolderName: this.slugPubliName,
@@ -952,7 +911,7 @@ export default {
           val: _values,
         });
 
-        const catchMediaEdition = (d) => {
+        const catchMediaEdition = d => {
           if (metaFileName === d.metaFileName) {
             this.$nextTick(() => {
               this.$eventHub.$emit("publication.selectNewMedia", metaFileName);
@@ -1042,16 +1001,16 @@ export default {
 
       const publi_to_copy_to = Object.values(
         this.$root.store.publications
-      ).find((p) => p.slugFolderName === slugPubliName_to_copy_to);
+      ).find(p => p.slugFolderName === slugPubliName_to_copy_to);
 
       let index_of_page_to_copy = publi_to_copy_to.pages.length;
       if (slugPubliName_to_copy_to === this.slugPubliName)
         index_of_page_to_copy = this.publication.pages.findIndex(
-          (p) => p.id === id
+          p => p.id === id
         );
 
       const page_to_copy = JSON.parse(
-        JSON.stringify(this.publication.pages.find((p) => p.id === id))
+        JSON.stringify(this.publication.pages.find(p => p.id === id))
       );
 
       // create new id
@@ -1077,7 +1036,7 @@ export default {
       // get all medias of page
       const medias_to_copy = this.paged_medias[id];
 
-      medias_to_copy.map((m) => {
+      medias_to_copy.map(m => {
         // copy all medias of page with new page ID
         this.$socketio.copyMediaToFolder({
           type: "publications",
@@ -1105,8 +1064,8 @@ export default {
       //   .confirm(
       //     this.$t("sureToRemovePage"),
       //     () => {
-      let pages = this.publication.pages.filter((p) => p.id !== id);
-      let page_to_remove = this.publication.pages.find((p) => p.id === id);
+      let pages = this.publication.pages.filter(p => p.id !== id);
+      let page_to_remove = this.publication.pages.find(p => p.id === id);
 
       let removed_pages = Array.isArray(this.publication.removed_pages)
         ? this.publication.removed_pages.slice()

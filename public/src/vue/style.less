@@ -7358,6 +7358,14 @@ small {
     z-index: 2;
   }
 
+  &.is--saving {
+    pointer-events: none;
+  }
+
+  ._loader {
+    background-color: transparent;
+  }
+
   &:not(.is--previewed) {
     // background-color: fade(@c-orange, 50%);
     // border: 2px solid @c-orange;
@@ -7371,6 +7379,8 @@ small {
         svg {
           background: @c-noir;
           border-color: transparent;
+          // background: white;
+          // color: @c-noir;
         }
       }
     }

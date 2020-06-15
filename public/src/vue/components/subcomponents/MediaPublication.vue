@@ -29,7 +29,7 @@
         <br />
         <small>
           {{ media._linked_media.slugProjectName }}/{{
-            media._linked_media.slugMediaName
+          media._linked_media.slugMediaName
           }}
         </small>
       </div>
@@ -72,12 +72,7 @@
         :style="contentStyles"
       />
 
-      <div
-        class="mediaContainer"
-        v-else
-        :style="contentStyles"
-        :class="`type-${media.type}`"
-      >
+      <div class="mediaContainer" v-else :style="contentStyles" :class="`type-${media.type}`">
         <template v-if="media.type === 'text'">
           <CollaborativeEditor
             v-if="inline_edit_mode"
@@ -129,33 +124,12 @@
               vector-effect="non-scaling-stroke"
             />
             <g v-if="media.type === 'arrow'">
-              <line
-                x1="0"
-                y1="50"
-                x2="100"
-                y2="50"
-                vector-effect="non-scaling-stroke"
-              />
-              <g
-                transform="
-                translate(100, 50)"
-                preserveAspectRatio
-              >
-                <line
-                  x1="0"
-                  y1="0"
-                  x2="-10"
-                  y2="-10"
-                  vector-effect="non-scaling-stroke"
-                />
+              <line x1="0" y1="50" x2="100" y2="50" vector-effect="non-scaling-stroke" />
+              <g transform="
+                translate(100, 50)" preserveAspectRatio>
+                <line x1="0" y1="0" x2="-10" y2="-10" vector-effect="non-scaling-stroke" />
 
-                <line
-                  x1="0"
-                  y1="0"
-                  x2="-10"
-                  y2="10"
-                  vector-effect="non-scaling-stroke"
-                />
+                <line x1="0" y1="0" x2="-10" y2="10" vector-effect="non-scaling-stroke" />
               </g>
             </g>
           </svg>
@@ -194,11 +168,7 @@
         <!-- <img src="/images/i_clear.svg" draggable="false" /> -->
         <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
-      <button
-        type="button"
-        class="button button-bg_rounded bg-bleuvert"
-        @click="saveMedia"
-      >
+      <button type="button" class="button button-bg_rounded bg-bleuvert" @click="saveMedia">
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
           <slot name="submit_button">{{ $t("save") }}</slot>
@@ -211,9 +181,7 @@
       v-if="
         media.hasOwnProperty('_linked_media') && !!media._linked_media.caption
       "
-    >
-      {{ media._linked_media.caption }}
-    </p>
+    >{{ media._linked_media.caption }}</p>
 
     <button
       class="m_mediaPublication--overflowing_sign"
@@ -398,7 +366,7 @@
           :class="{ 'is--active': locked_in_place }"
           @mousedown.stop.prevent="toggleLock()"
           @touchstart.stop.prevent="toggleLock()"
-          :content="$t('lock_in_place')"
+          :content="!locked_in_place ? $t('lock_in_place') : $t('unlock')"
           v-tippy="{
             placement: 'bottom',
             delay: [600, 0],
@@ -683,6 +651,10 @@
         </div>
       </div>
     </transition>
+
+    <transition name="scaleIn" :duration="400">
+      <Loader v-if="is_saving" />
+    </transition>
   </div>
 </template>
 <script>
@@ -719,6 +691,7 @@ export default {
       is_hovered: false,
       is_touch: Modernizr.touchevents,
       is_text_overflowing: false,
+      is_saving: false,
 
       inline_edit_mode: false,
       show_advanced_menu: false,
@@ -791,6 +764,10 @@ export default {
       this.setMediaToEditMode
     );
     this.$eventHub.$on("publication.flashZIndex", this.flashZIndex);
+    this.$eventHub.$on(
+      "publication.selected.triggerAction",
+      this.triggerAction
+    );
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.selectNewMedia", this.selectNewMedia);
@@ -799,11 +776,15 @@ export default {
       this.setMediaToEditMode
     );
     this.$eventHub.$off("publication.flashZIndex", this.flashZIndex);
+    this.$eventHub.$off(
+      "publication.selected.triggerAction",
+      this.triggerAction
+    );
   },
 
   watch: {
     media: {
-      handler: function () {
+      handler: function() {
         this.updateMediaStyles();
         this.htmlForEditor = this.media.content ? this.media.content : "";
       },
@@ -813,7 +794,7 @@ export default {
   computed: {
     is_selected() {
       return this.$root.settings.current_publication.selected_medias.some(
-        (meta) => meta === this.media.metaFileName
+        meta => meta === this.media.metaFileName
       );
     },
     mediaStyles() {
@@ -851,6 +832,37 @@ export default {
     selectNewMedia(metaFileName) {
       if (metaFileName === this.media.metaFileName)
         if (!this.is_selected) this.selectMedia();
+    },
+    triggerAction({ action, detail }) {
+      if (!this.is_selected) return;
+      if (action === "remove") {
+        this.removePubliMedia();
+      } else if (action === "move" && detail) {
+        if (this.page.snap_to_grid) {
+          detail.x *= this.page.gridstep;
+          detail.y *= this.page.gridstep;
+        }
+
+        const deltaX = detail.x;
+        let newX = this.mediaPos.x + deltaX;
+        const deltaY = detail.y;
+        let newY = this.mediaPos.y + deltaY;
+
+        this.mediaPos.x = this.limitMediaXPos(newX);
+        this.mediaPos.y = this.limitMediaYPos(newY);
+
+        this.mediaPos.x =
+          this.roundMediaVal(this.mediaPos.x - this.page.margin_left) +
+          this.page.margin_left;
+        this.mediaPos.y =
+          this.roundMediaVal(this.mediaPos.y - this.page.margin_top) +
+          this.page.margin_top;
+
+        this.updateMediaPubliMeta({
+          x: this.mediaPos.x,
+          y: this.mediaPos.y,
+        });
+      }
     },
     setMediaToEditMode(metaFileName) {
       if (metaFileName === this.media.metaFileName) {
@@ -1020,8 +1032,25 @@ export default {
         console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
 
       this.$emit("editPubliMedia", {
-        slugMediaName: this.media.metaFileName,
+        metaFileName: this.media.metaFileName,
         val,
+      });
+
+      this.is_saving = true;
+
+      const media_editing_timeout = setTimeout(() => {
+        if (this.is_saving) {
+          this.is_saving = false;
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.failed_to_save_media"));
+        }
+      }, 5000);
+
+      this.$eventHub.$once(`publication.media_just_edited`, () => {
+        this.is_saving = false;
+        clearTimeout(media_editing_timeout);
       });
     },
     limitMediaXPos(xPos) {
@@ -1091,9 +1120,18 @@ export default {
     },
 
     removePubliMedia() {
-      this.$emit("removePubliMedia", {
-        metaFileName: this.media.metaFileName,
-      });
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sureToRemoveMedia"),
+          () => {
+            this.$emit("removePubliMedia", {
+              metaFileName: this.media.metaFileName,
+            });
+          },
+          () => {}
+        );
     },
     duplicateMedia() {
       this.$emit("duplicateMedia", {
@@ -1427,7 +1465,7 @@ export default {
       this.show_advanced_menu = false;
 
       this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
-        (meta) => meta !== this.media.metaFileName
+        meta => meta !== this.media.metaFileName
       );
     },
     mouseOver() {

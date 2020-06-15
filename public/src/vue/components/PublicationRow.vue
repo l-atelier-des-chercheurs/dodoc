@@ -8,9 +8,7 @@
       />
     </td>
     <td width="150px">
-      <small>
-        {{ $root.formatDateToHuman(publication.date_created) }}
-      </small>
+      <small>{{ $root.formatDateToHuman(publication.date_created) }}</small>
     </td>
     <td width="150px">
       <div v-if="publication.authors" class="m_authorField">
@@ -25,26 +23,21 @@
               $root.current_author.slugFolderName === author.slugFolderName,
           }"
         >
-          <template v-if="$root.getAuthor(author.slugFolderName)">
-            {{ $root.getAuthor(author.slugFolderName).name }}
-          </template>
-          <template v-else>
-            {{ author.slugFolderName }}
-          </template>
+          <template
+            v-if="$root.getAuthor(author.slugFolderName)"
+          >{{ $root.getAuthor(author.slugFolderName).name }}</template>
+          <template v-else>{{ author.slugFolderName }}</template>
         </span>
-        <ClientsCheckingOut
-          :type="'publications'"
-          :slugFolderName="slugPubliName"
-        />
+        <ClientsCheckingOut :type="'publications'" :slugFolderName="slugPubliName" />
       </div>
     </td>
+    <td class="font-verysmall strong">
+      <template v-if="publication.number_of_medias">{{ publication.number_of_medias }}</template>
+      <template v-else>—</template>
+    </td>
     <td class="font-folder_title">
-      <template v-if="attached_project">
-        {{ attached_project.name }}
-      </template>
-      <template v-else>
-        —
-      </template>
+      <template v-if="attached_project">{{ attached_project.name }}</template>
+      <template v-else>—</template>
     </td>
     <td>
       <AccessController
@@ -94,7 +87,7 @@ export default {
   computed: {
     attached_project() {
       return Object.values(this.$root.store.projects).find(
-        (_p) => _p.slugFolderName === this.publication.attached_to_project
+        _p => _p.slugFolderName === this.publication.attached_to_project
       );
     },
     slugPubliName() {
