@@ -834,7 +834,8 @@ export default {
         if (!this.is_selected) this.selectMedia();
     },
     triggerAction({ action, detail }) {
-      if (!this.is_selected) return;
+      if (!this.is_selected || this.is_saving) return;
+
       if (action === "remove") {
         this.removePubliMedia();
       } else if (action === "move" && detail) {

@@ -126,7 +126,7 @@ export default {
   created() {},
   mounted() {
     if (this.mode === "single") {
-      document.addEventListener("keyup", this.captureKeyListener);
+      document.addEventListener("keydown", this.captureKeyListener);
 
       this.$root.settings.current_publication.selected_medias = [];
       this.$root.settings.current_publication.accepted_media_type = [
@@ -142,7 +142,8 @@ export default {
   },
   beforeDestroy() {
     if (this.mode === "single") {
-      document.removeEventListener("keyup", this.captureKeyListener);
+      document.removeEventListener("keydown", this.captureKeyListener);
+
       this.$root.settings.current_publication.selected_medias = [];
       this.$root.settings.current_publication.accepted_media_type = [];
     }
@@ -157,6 +158,9 @@ export default {
     captureKeyListener(event) {
       if (this.$root.settings.current_publication.selected_medias.length === 0)
         return;
+
+      event.preventDefault();
+      event.stopPropagation();
 
       let action = "";
       let detail = "";
@@ -181,8 +185,6 @@ export default {
         action,
         detail,
       });
-
-      event.preventDefault();
     },
     setPageContainerProperties(page) {
       if (this.$root.state.mode === "print_publication") return;
