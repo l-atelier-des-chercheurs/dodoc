@@ -198,7 +198,7 @@ export default {
       if (
         this.is_active &&
         this.drawing_options.mode === "select" &&
-        (event.key === "Backspace" || event.key === "Delete")
+        event.key === "Backspace"
       ) {
         this.removeSelection();
         event.stopPropagation();
