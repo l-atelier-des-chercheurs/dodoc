@@ -156,11 +156,11 @@ export default {
   },
   methods: {
     captureKeyListener(event) {
-      if (this.$root.settings.current_publication.selected_medias.length === 0)
+      if (
+        this.$root.settings.current_publication.selected_medias.length === 0 ||
+        this.$root.settings.has_modal_opened
+      )
         return;
-
-      event.preventDefault();
-      event.stopPropagation();
 
       let action = "";
       let detail = "";
@@ -180,6 +180,8 @@ export default {
         action = "move";
         detail = { x: 1, y: 0 };
       }
+
+      if (action) event.preventDefault();
 
       this.$eventHub.$emit("publication.selected.triggerAction", {
         action,
