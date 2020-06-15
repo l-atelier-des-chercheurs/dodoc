@@ -29,7 +29,7 @@
         <br />
         <small>
           {{ media._linked_media.slugProjectName }}/{{
-          media._linked_media.slugMediaName
+            media._linked_media.slugMediaName
           }}
         </small>
       </div>
@@ -72,7 +72,12 @@
         :style="contentStyles"
       />
 
-      <div class="mediaContainer" v-else :style="contentStyles" :class="`type-${media.type}`">
+      <div
+        class="mediaContainer"
+        v-else
+        :style="contentStyles"
+        :class="`type-${media.type}`"
+      >
         <template v-if="media.type === 'text'">
           <CollaborativeEditor
             v-if="inline_edit_mode"
@@ -124,12 +129,33 @@
               vector-effect="non-scaling-stroke"
             />
             <g v-if="media.type === 'arrow'">
-              <line x1="0" y1="50" x2="100" y2="50" vector-effect="non-scaling-stroke" />
-              <g transform="
-                translate(100, 50)" preserveAspectRatio>
-                <line x1="0" y1="0" x2="-10" y2="-10" vector-effect="non-scaling-stroke" />
+              <line
+                x1="0"
+                y1="50"
+                x2="100"
+                y2="50"
+                vector-effect="non-scaling-stroke"
+              />
+              <g
+                transform="
+                translate(100, 50)"
+                preserveAspectRatio
+              >
+                <line
+                  x1="0"
+                  y1="0"
+                  x2="-10"
+                  y2="-10"
+                  vector-effect="non-scaling-stroke"
+                />
 
-                <line x1="0" y1="0" x2="-10" y2="10" vector-effect="non-scaling-stroke" />
+                <line
+                  x1="0"
+                  y1="0"
+                  x2="-10"
+                  y2="10"
+                  vector-effect="non-scaling-stroke"
+                />
               </g>
             </g>
           </svg>
@@ -149,6 +175,7 @@
             :preview_mode="preview_mode"
             :read_only="read_only"
             :captureview_in_modal="true"
+            :paged_mode="true"
             @addMedia="(values) => addMedia({ values })"
             @editPubliMedia="(values) => updateMediaPubliMeta(values)"
           />
@@ -168,7 +195,11 @@
         <!-- <img src="/images/i_clear.svg" draggable="false" /> -->
         <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
-      <button type="button" class="button button-bg_rounded bg-bleuvert" @click="saveMedia">
+      <button
+        type="button"
+        class="button button-bg_rounded bg-bleuvert"
+        @click="saveMedia"
+      >
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
           <slot name="submit_button">{{ $t("save") }}</slot>
@@ -181,7 +212,9 @@
       v-if="
         media.hasOwnProperty('_linked_media') && !!media._linked_media.caption
       "
-    >{{ media._linked_media.caption }}</p>
+    >
+      {{ media._linked_media.caption }}
+    </p>
 
     <button
       class="m_mediaPublication--overflowing_sign"
@@ -784,7 +817,7 @@ export default {
 
   watch: {
     media: {
-      handler: function() {
+      handler: function () {
         this.updateMediaStyles();
         this.htmlForEditor = this.media.content ? this.media.content : "";
       },
@@ -794,7 +827,7 @@ export default {
   computed: {
     is_selected() {
       return this.$root.settings.current_publication.selected_medias.some(
-        meta => meta === this.media.metaFileName
+        (meta) => meta === this.media.metaFileName
       );
     },
     mediaStyles() {
@@ -885,7 +918,7 @@ export default {
       };
 
       this.$emit("editPubliMedia", {
-        slugMediaName: this.media.metaFileName,
+        metaFileName: this.media.metaFileName,
         val,
       });
 
@@ -1466,7 +1499,7 @@ export default {
       this.show_advanced_menu = false;
 
       this.$root.settings.current_publication.selected_medias = this.$root.settings.current_publication.selected_medias.filter(
-        meta => meta !== this.media.metaFileName
+        (meta) => meta !== this.media.metaFileName
       );
     },
     mouseOver() {

@@ -133,55 +133,68 @@
           <template
             v-for="(media, index) in model_placeholder_media._reply._medias"
           >
-            <MediaStory
-              :key="media.metaFileName"
-              :media="media"
-              :media_position="mediaPosition(index)"
-              :preview_mode="preview_mode"
-              :slugPubliName="slugPubliName"
-              :read_only="read_only || preview_mode"
-              :can_duplicate_media="(remaining_modes_allowed === 'all' ||
-                    Object.keys(remaining_modes_allowed).length > 0)"
-              @removePubliMedia="orderedRemovePubliMedia($event)"
-              @changeMediaOrder="changeMediaOrder($event)"
-              @editPubliMedia="$emit('editPubliMedia', $event)"
-              @duplicateMedia="orderedDuplicateMedia($event)"
-            />
-
-            <div
-              class="_story_insert_placeholders"
-              :key="`insert_${media.metaFileName}`"
-            >
-              <InsertMediaButton
-                v-if="
-                  !preview_mode &&
-                  !read_only &&
-                  index === model_placeholder_media._reply._medias.length - 1 &&
-                  (remaining_modes_allowed === 'all' ||
-                    Object.keys(remaining_modes_allowed).length > 0)
-                "
+            <template v-if="!paged_mode">
+              <MediaStory
+                :key="media.metaFileName"
+                :media="media"
+                :media_position="mediaPosition(index)"
+                :preview_mode="preview_mode"
                 :slugPubliName="slugPubliName"
-                :publi_is_model="publi_is_model"
-                :publi_follows_model="true"
-                :modes_allowed="remaining_modes_allowed"
-                :captureview_in_modal="captureview_in_modal"
-                :read_only="read_only"
-                @addMedia="
-                  (values) =>
-                    addMediaOrdered({
-                      values,
-                      right_after_meta: media.metaFileName,
-                    })
-                "
-                @insertMedias="
-                  ({ metaFileNames }) =>
-                    insertMediasInList({
-                      metaFileNames,
-                      right_after_meta: media.metaFileName,
-                    })
-                "
+                :read_only="read_only || preview_mode"
+                :can_duplicate_media="(remaining_modes_allowed === 'all' ||
+                    Object.keys(remaining_modes_allowed).length > 0)"
+                @removePubliMedia="orderedRemovePubliMedia($event)"
+                @changeMediaOrder="changeMediaOrder($event)"
+                @editPubliMedia="$emit('editPubliMedia', $event)"
+                @duplicateMedia="orderedDuplicateMedia($event)"
               />
-            </div>
+              <div
+                class="_story_insert_placeholders"
+                :key="`insert_${media.metaFileName}`"
+              >
+                <InsertMediaButton
+                  v-if="
+                    !preview_mode &&
+                    !read_only &&
+                    index ===
+                      model_placeholder_media._reply._medias.length - 1 &&
+                    (remaining_modes_allowed === 'all' ||
+                      Object.keys(remaining_modes_allowed).length > 0)
+                  "
+                  :slugPubliName="slugPubliName"
+                  :publi_is_model="publi_is_model"
+                  :publi_follows_model="true"
+                  :modes_allowed="remaining_modes_allowed"
+                  :captureview_in_modal="captureview_in_modal"
+                  :read_only="read_only"
+                  @addMedia="
+                    (values) =>
+                      addMediaOrdered({
+                        values,
+                        right_after_meta: media.metaFileName,
+                      })
+                  "
+                  @insertMedias="
+                    ({ metaFileNames }) =>
+                      insertMediasInList({
+                        metaFileNames,
+                        right_after_meta: media.metaFileName,
+                      })
+                  "
+                />
+              </div>
+            </template>
+            <template v-else>
+              <MediaPublicationReply
+                :key="media.metaFileName"
+                :media="media"
+                :preview_mode="preview_mode"
+                :slugPubliName="slugPubliName"
+                :read_only="read_only || preview_mode"
+                @removePubliMedia="orderedRemovePubliMedia($event)"
+                @editPubliMedia="$emit('editPubliMedia', $event)"
+              />
+            </template>
           </template>
         </transition-group>
       </template>
@@ -207,6 +220,7 @@
 <script>
 import InsertMediaButton from "./InsertMediaButton.vue";
 import MediaStory from "./MediaStory.vue";
+import MediaPublicationReply from "./MediaPublicationReply.vue";
 
 export default {
   props: {
@@ -216,10 +230,15 @@ export default {
     preview_mode: Boolean,
     read_only: Boolean,
     captureview_in_modal: Boolean,
+    paged_mode: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     InsertMediaButton,
     MediaStory,
+    MediaPublicationReply,
   },
   data() {
     return {
