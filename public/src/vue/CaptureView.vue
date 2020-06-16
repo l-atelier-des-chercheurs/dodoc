@@ -467,6 +467,7 @@
                 type="button"
                 class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton--btn"
                 :class="{ 'is--justCaptured': capture_button_pressed }"
+                :disabled="is_saving"
                 @mousedown.stop.prevent="captureOrStop()"
                 @touchstart.stop.prevent="captureOrStop()"
               >
@@ -628,6 +629,7 @@ export default {
   data() {
     return {
       selected_mode: "",
+      is_saving: false,
 
       available_mode_picto: {
         photo: "/images/i_icone-dodoc_image.svg",
@@ -1442,14 +1444,31 @@ export default {
     },
     addImageToStopmotion(imageData) {
       console.log("METHODS • CaptureView: addImageToStopmotion");
-      this.$root.createMedia({
-        slugFolderName: this.current_stopmotion,
-        type: "stopmotions",
-        rawData: imageData,
-        additionalMeta: {
-          type: "image",
-        },
-      });
+      this.is_saving = true;
+
+      const media_editing_timeout = setTimeout(() => {
+        if (this.is_saving) {
+          this.is_saving = false;
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.failed_to_save_media"));
+        }
+      }, 5000);
+
+      this.$root
+        .createMedia({
+          slugFolderName: this.current_stopmotion,
+          type: "stopmotions",
+          rawData: imageData,
+          additionalMeta: {
+            type: "image",
+          },
+        })
+        .then((mdata) => {
+          this.is_saving = false;
+          clearTimeout(media_editing_timeout);
+        });
     },
     startVectoFeed() {
       return new Promise((resolve, reject) => {
