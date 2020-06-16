@@ -273,8 +273,6 @@ export default {
         );
       }
 
-      debugger;
-
       this.$emit("editPubliMedia", { metaFileName, val });
     },
     duplicateMedia({ metaFileName }) {

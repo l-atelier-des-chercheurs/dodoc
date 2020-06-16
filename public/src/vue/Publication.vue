@@ -640,8 +640,6 @@ export default {
           )}`
         );
 
-      debugger;
-
       this.$root
         .editMedia({
           type: "publications",

@@ -5970,6 +5970,7 @@ small {
 
       &.has--replies {
         // background-color: @c-noir;
+        --fill_color: transparent;
       }
 
       &.has--replies .m_mediaPlaceholder--instructions {
@@ -6131,6 +6132,13 @@ small {
     top: 0;
     .margin-small;
     min-height: 0;
+
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &.is--visible {
+      opacity: 1;
+    }
 
     .m_mediaPublicationReply--moveItemButtons--before,
     .m_mediaPublicationReply--moveItemButtons--after {
@@ -7389,12 +7397,13 @@ small {
   }
 
   &.is--saving {
-    pointer-events: none;
+    // pointer-events: none;
   }
 
   ._loader {
     background-color: transparent;
     --loader-border-color: @c-orange;
+    --loader-bg-color: @c-noir;
   }
 
   &:not(.is--previewed) {
@@ -7586,9 +7595,12 @@ small {
 
   .ql-editor.ql-editor {
     padding: 0;
-    // min-height: auto;
+    min-height: auto;
     border: none;
     background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.7);
+
+    outline: 2px solid @c-gris_clair;
   }
 
   @t-borderSize: 2px;
