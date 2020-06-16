@@ -189,6 +189,15 @@ export default {
     );
 
     this.preview_mode = !this.can_edit_publi;
+
+    if (
+      ["export_publication", "print_publication", "link_publication"].includes(
+        this.$root.state.mode
+      )
+    ) {
+      this.preview_mode = true;
+    }
+
     // this.preview_mode =
     //   !this.can_edit_publi || this.$root.state.mode !== "live";
 
