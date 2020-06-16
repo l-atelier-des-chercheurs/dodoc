@@ -842,6 +842,36 @@ let vm = new Vue({
         };
       });
     },
+    toggleFullScreen() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Publication • METHODS: toggleFullScreen`);
+
+      const docElem = document.documentElement;
+      if (this.$root.app_is_fullscreen === false) {
+        if (!!docElem.requestFullscreen) {
+          // W3C API
+          docElem.requestFullscreen();
+        } else if (!!docElem.mozRequestFullScreen) {
+          // Mozilla current API
+          docElem.mozRequestFullScreen();
+        } else if (!!docElem.webkitRequestFullScreen) {
+          // Webkit current API
+          docElem.webkitRequestFullScreen();
+        } // Maybe other prefixed APIs?
+        // this.$root.app_is_fullscreen = true;
+      } else {
+        if (!!document.exitFullscreen) {
+          // W3C API
+          document.exitFullscreen();
+        } else if (!!document.mozExitFullscreen) {
+          // Mozilla current API
+          document.mozExitFullscreen();
+        } else if (!!document.webkitExitFullscreen) {
+          // Webkit current API
+          document.webkitExitFullscreen();
+        } // Maybe other prefixed APIs?
+      }
+    },
     getURL() {
       if (!this.$root.state.localNetworkInfos.ip) return false;
 

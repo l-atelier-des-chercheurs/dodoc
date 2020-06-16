@@ -512,14 +512,21 @@ body {
         height: auto;
         padding: @t-skipline / 2 @t-skipline / 2;
         cursor: pointer;
+        color: @c-gris;
 
         svg {
           width: 20px;
           height: 20px;
         }
 
-        path {
-          fill: @c-gris;
+        path,
+        polygon {
+          fill: currentColor;
+        }
+
+        &.is--active {
+          color: @c-rouge;
+          background-color: transparent;
         }
       }
     }

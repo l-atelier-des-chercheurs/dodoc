@@ -20,7 +20,6 @@
       v-if="$root.store.request.display !== 'survey'"
       :preview_mode="preview_mode"
       @togglePreviewMode="$emit('togglePreviewMode')"
-      @toggleFullScreen="$emit('toggleFullScreen')"
     />
 
     <div

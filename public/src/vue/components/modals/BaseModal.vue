@@ -267,6 +267,7 @@ export default {
         if (!this.has_confirm_close_modal_open) {
           this.closeModal();
         }
+        event.preventDefault();
         return;
       }
 
@@ -388,12 +389,12 @@ export default {
     },
   },
   created: function () {
-    document.addEventListener("keyup", this.modalKeyListener);
+    document.addEventListener("keydown", this.modalKeyListener);
     document.body.classList.add("has_modal_opened");
     this.$root.settings.has_modal_opened = true;
   },
   beforeDestroy: function () {
-    document.removeEventListener("keyup", this.modalKeyListener);
+    document.removeEventListener("keydown", this.modalKeyListener);
     document.body.classList.remove("has_modal_opened");
     this.$root.settings.has_modal_opened = false;
   },
