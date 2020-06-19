@@ -441,6 +441,7 @@ let vm = new Vue({
     this.$eventHub.$on("socketio.reconnect", () => {
       this.$socketio.listFolders({ type: "authors" });
       this.$socketio.listFolders({ type: "projects" });
+      this.$socketio.listFolders({ type: "publications" });
       this.loadAllChats();
 
       if (this.settings.current_publication.slug) {
