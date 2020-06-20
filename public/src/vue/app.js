@@ -531,30 +531,45 @@ let vm = new Vue({
         this.$socketio.listFolders({ type: "authors" });
       }
 
-      this.$eventHub.$once("socketio.authentificated", () => {
+      this.$eventHub.$on("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "projects" });
         this.$socketio.listFolders({ type: "publications" });
         this.$socketio.listFolders({ type: "chats" });
+
         this.updateNetworkInfos();
 
-        if (this.current_project) {
+        if (this.settings.current_publication.slug) {
+          this.$socketio.listFolder({
+            type: "publications",
+            slugFolderName: this.settings.current_publication.slug,
+          });
+          this.$socketio.listMedias({
+            type: "publications",
+            slugFolderName: this.settings.current_publication.slug,
+          });
+        }
+        if (this.do_navigation.current_slugProjectName) {
+          this.$socketio.listFolder({
+            type: "projects",
+            slugFolderName: this.do_navigation.current_slugProjectName,
+          });
           this.$socketio.listMedias({
             type: "projects",
-            slugFolderName: this.current_project.slugFolderName,
+            slugFolderName: this.do_navigation.current_slugProjectName,
           });
         }
 
-        const authorized_authors = this.state.list_authorized_folders.filter(
+        const authorized_authors = this.state.list_authorized_folders.find(
           (f) => f.type === "authors" && f.allowed_slugFolderNames.length > 0
         );
 
-        if (authorized_authors.length > 0) {
+        if (authorized_authors) {
           this.$eventHub.$once("socketio.authors.folders_listed", () => {
             if (Object.values(this.store.authors).length === 0) return;
 
             const first_author_slug =
-              authorized_authors[0].allowed_slugFolderNames[0];
+              authorized_authors.allowed_slugFolderNames[0];
             const author = Object.values(this.store.authors).find(
               (a) => a.slugFolderName === first_author_slug
             );
