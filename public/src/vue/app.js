@@ -442,7 +442,7 @@ let vm = new Vue({
       this.$socketio.listFolders({ type: "authors" });
       this.$socketio.listFolders({ type: "projects" });
       this.$socketio.listFolders({ type: "publications" });
-      this.loadAllChats();
+      this.$socketio.listFolders({ type: "chats" });
 
       if (this.settings.current_publication.slug) {
         this.$socketio.listFolder({
@@ -535,7 +535,7 @@ let vm = new Vue({
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "projects" });
         this.$socketio.listFolders({ type: "publications" });
-        this.loadAllChats();
+        this.$socketio.listFolders({ type: "chats" });
         this.updateNetworkInfos();
 
         if (this.current_project) {
@@ -1753,10 +1753,6 @@ let vm = new Vue({
         return meta;
       }
     },
-    loadAllChats() {
-      this.$socketio.listFolders({ type: "chats" });
-    },
-
     loadAllProjectsMedias() {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: loadAllProjectsMedias`);

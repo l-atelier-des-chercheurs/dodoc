@@ -85,7 +85,7 @@ export default {
   },
   created() {},
   mounted() {
-    this.$root.loadAllChats();
+    this.$socketio.listFolders({ type: "chats" });
   },
   beforeDestroy() {},
   watch: {},
