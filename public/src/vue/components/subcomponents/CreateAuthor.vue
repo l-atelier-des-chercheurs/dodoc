@@ -169,7 +169,7 @@ export default {
 
       let data = JSON.parse(JSON.stringify(this.authordata));
 
-      let allAuthorsName = this.$root.allAuthors.map((a) =>
+      let allAuthorsName = this.$root.all_authors.map((a) =>
         a.name.toLowerCase()
       );
 

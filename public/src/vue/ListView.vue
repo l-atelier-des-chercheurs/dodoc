@@ -108,7 +108,7 @@
                     <template
                       v-if="
                         $root.allKeywords.length > 0 ||
-                        $root.allAuthors.length > 0
+                        $root.all_authors.length > 0
                       "
                     >
                       —
@@ -214,7 +214,7 @@
                   <template
                     v-if="
                       $root.allKeywords.length > 0 ||
-                      $root.allAuthors.length > 0
+                      $root.all_authors.length > 0
                     "
                   >
                     —

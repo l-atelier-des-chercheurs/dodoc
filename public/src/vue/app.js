@@ -786,8 +786,7 @@ let vm = new Vue({
         this.store.request.metaFileName
       ];
     },
-    allAuthors() {
-      let allAuthors = [];
+    all_authors() {
       return Object.values(this.store.authors);
     },
     currentTime_human() {
