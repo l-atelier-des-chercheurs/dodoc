@@ -498,7 +498,7 @@ let vm = new Vue({
       //   type: "authors",
       // });
 
-      if (this.state.session_password === "has_pass") {
+      if (this.state.local_options.session_password === "has_pass") {
         var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
         if (session_storage_pwd) {
           this.$socketio.connect(session_storage_pwd);

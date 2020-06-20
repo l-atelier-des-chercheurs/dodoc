@@ -50,7 +50,6 @@ html
       /* state contains settings data, time and client specific data */
       window.state = {
         appVersion: "!{global.appInfos.version}",
-        session_password: "!{global.session_password ? 'has_pass' : ''}",
         authorsFolder: "!{authorsFolder}",
         protocol: "!{protocol}",
         connected: false,
@@ -58,6 +57,7 @@ html
         api_domaines_whitelist: "!{global.settings.api.enabled ? global.settings.api.domains_whitelist : ''}",
 
         local_options: {
+          session_password: "!{global.session_password ? 'has_pass' : ''}",
           force_login: !{global.force_login},
           simple_login: !{global.simple_login},
           require_email: !{global.require_email},
