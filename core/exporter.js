@@ -23,7 +23,7 @@ module.exports = (function () {
     loadPublication: (slugPubliName, pageData) =>
       loadPublication(slugPubliName, pageData),
 
-    copyFolderContent: ({ html, folders_and_medias, slugFolderName }) => {
+    copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
         // create cache folder that we will need to copy the content
         let cacheFolderName =
@@ -119,7 +119,7 @@ module.exports = (function () {
                       typeof mediaMeta.thumbs !== "undefined"
                     ) {
                       mediaMeta.thumbs.map((t) => {
-                        if (t.hasOwnProperty("path")) {
+                        if (t && t.hasOwnProperty("path")) {
                           tasks.push(
                             new Promise((resolve, reject) => {
                               let thumb_path = t.path;
@@ -233,6 +233,12 @@ module.exports = (function () {
           })
           .then((publiData) => {
             publiData = Object.values(publiData)[0];
+
+            const default_page_size = {
+              width: publiData.width ? publiData.width : 210,
+              height: publiData.height ? publiData.height : 297,
+            };
+
             fs.mkdirp(cachePath, () => {
               dev.logverbose(
                 `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
@@ -240,11 +246,16 @@ module.exports = (function () {
 
               const { BrowserWindow } = require("electron");
 
+              const browser_window = {
+                width: Math.floor(default_page_size.width * 3.78),
+                height: Math.floor(default_page_size.height * 3.78) + 25, // totally arbitrary value… will have to find better
+              };
+
               let win = new BrowserWindow({
                 // width: 800,
                 // height: 600,
-                width: Math.floor(publiData.width * 3.78),
-                height: Math.floor(publiData.height * 3.78) + 25, // totally arbitrary value… will have to find better
+                width: browser_window.width,
+                height: browser_window.height,
                 show: false,
               });
               win.loadURL(urlToPubli);
@@ -273,9 +284,12 @@ module.exports = (function () {
                       {
                         marginsType: 1,
                         pageSize: {
-                          width: publiData.width * 1000,
-                          height: publiData.height * 1000,
+                          width: default_page_size.width * 1000,
+                          height: default_page_size.height * 1000,
                         },
+                        dpi: 300,
+                        printBackground: true,
+                        printSelectionOnly: false,
                       },
                       (error, data) => {
                         if (error) throw error;
@@ -307,7 +321,9 @@ module.exports = (function () {
                     const docPath = path.join(cachePath, imageName);
 
                     win.capturePage((image) => {
-                      fs.writeFile(docPath, image.toPNG(), (error) => {
+                      var conv = image.toPNG(1.0); // to PNG
+
+                      fs.writeFile(docPath, conv, (error) => {
                         if (error) throw error;
                         dev.logverbose(
                           `EXPORTER — makePDFForPubli : created image at ${docPath}`
@@ -595,6 +611,11 @@ module.exports = (function () {
               slugFolderName,
             })
             .then((list_metaFileName) => {
+              if (list_metaFileName.length === 0) {
+                pageData.publiAndMediaData = publi_and_medias;
+                return resolve(pageData);
+              }
+
               let medias_list = list_metaFileName.map((metaFileName) => {
                 return {
                   slugFolderName,
@@ -609,6 +630,7 @@ module.exports = (function () {
                 .then((publi_medias) => {
                   publi_and_medias[slugFolderName].medias =
                     publi_medias[slugFolderName].medias;
+
                   pageData.publiAndMediaData = publi_and_medias;
 
                   // we need to get the list of original medias in the publi
@@ -789,12 +811,12 @@ module.exports = (function () {
             // } else {
             sharp(media.full_path)
               .rotate()
+              .flatten({ background: "white" })
               .resize(resolution.width, resolution.height, {
                 fit: "contain",
                 withoutEnlargement: false,
                 background: "black",
               })
-              .flatten()
               .withMetadata()
               .toFile(cache_image_path)
               .then(() => resolve())
@@ -1848,12 +1870,12 @@ module.exports = (function () {
       fs.access(temp_video_path, fs.F_OK, function (err) {
         if (err) {
           sharp(vm.full_path)
+            .flatten({ background: "white" })
             .resize(resolution.width, resolution.height, {
               fit: "contain",
               withoutEnlargement: false,
               background: "black",
             })
-            .flatten()
             .withMetadata()
             .toFile(temp_image_path)
             .then(() => {

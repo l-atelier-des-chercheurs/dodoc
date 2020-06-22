@@ -11,18 +11,21 @@
       "
     >
       {{ $t(publication.template) }}
-    </div> -->
+    </div>-->
     <div class="m_publicationMeta--topbar">
-      <div>
+      <div class="m_publicationMeta--topbar--name">
         <button
           type="button"
           class="m_publicationMeta--topbar--backbutton"
           v-if="
-            ![
-              'export_publication',
-              'print_publication',
-              'link_publication',
-            ].includes($root.state.mode)
+            !(
+              [
+                'export_publication',
+                'print_publication',
+                'link_publication',
+              ].includes($root.state.mode) ||
+              $root.store.request.display === 'survey'
+            )
           "
           @click="closePublication()"
           :content="$t('close')"
@@ -34,19 +37,26 @@
           ‹
         </button>
 
-        <div
-          class="m_publicationMeta--topbar--title"
-          :content="slugPubliName"
-          v-tippy="{
-            placement: 'bottom-start',
-            delay: [600, 0],
-            interactive: true,
-          }"
-        >
+        <div class="m_publicationMeta--topbar--title">
           {{ publication.name }}
+          <ProtectedLock
+            v-if="
+              !(
+                [
+                  'export_publication',
+                  'print_publication',
+                  'link_publication',
+                ].includes($root.state.mode) ||
+                $root.store.request.display === 'survey'
+              )
+            "
+            :editing_limited_to="publication.editing_limited_to"
+            :is_protected="!can_edit_publi()"
+          />
         </div>
       </div>
       <div
+        class="m_publicationMeta--topbar--buttons"
         v-if="
           ![
             'export_publication',
@@ -58,6 +68,205 @@
         <button
           type="button"
           class="buttonLink"
+          @click="show_settings = !show_settings"
+          :class="{ 'is--active': show_settings }"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="77.6px"
+            height="85.4px"
+            viewBox="0 0 77.6 85.4"
+            style="enable-background: new 0 0 77.6 85.4;"
+            xml:space="preserve"
+          >
+            <defs />
+            <g>
+              <path
+                d="M73.9,39h-7.6c-1.6-5.6-6.7-9.7-12.7-9.7S42.5,33.5,40.8,39H3.7c-2,0-3.7,1.6-3.7,3.7c0,2,1.6,3.7,3.7,3.7h37.1
+		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h7.6c2,0,3.7-1.6,3.7-3.7C77.6,40.7,76,39,73.9,39z M53.6,48.7c-3.2,0-6-2.6-6-6
+		s2.6-6,6-6s6,2.6,6,6S56.8,48.7,53.6,48.7z"
+              />
+              <path
+                d="M3.7,17.1h7.9c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,9.7,73.9,9.7H37
+		C35.4,4.1,30.3,0,24.3,0S13.2,4.1,11.6,9.7H3.7c-2,0-3.7,1.6-3.7,3.7S1.6,17.1,3.7,17.1z M24.3,7.4c3.2,0,6,2.6,6,6s-2.6,6-6,6
+		s-6-2.8-6-6S21.1,7.4,24.3,7.4z"
+              />
+              <path
+                d="M73.9,68.3H37c-1.6-5.6-6.7-9.7-12.7-9.7s-11.1,4.1-12.7,9.7H3.7c-2,0-3.7,1.6-3.7,3.7s1.6,3.7,3.7,3.7h7.9
+		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,68.3,73.9,68.3z M24.3,78c-3.2,0-6-2.6-6-6s2.6-6,6-6
+		s6,2.6,6,6S27.5,78,24.3,78z"
+              />
+            </g>
+          </svg>
+          {{ $t("advanced_options") }}
+        </button>
+
+        <button
+          type="button"
+          class="buttonLink bg-rouge"
+          v-if="show_export_button && $root.store.request.display !== 'survey'"
+          @click="createButtonClicked"
+          :class="{ 'is--disabled': export_button_is_disabled }"
+        >
+          {{ $t("create") }}
+        </button>
+      </div>
+      <div
+        style="width: 100%;"
+        class="ta-ce"
+        v-if="publication.is_model && $root.store.request.display !== 'survey'"
+      >
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_publi_model_infos }"
+            @click.stop="show_publi_model_infos = !show_publi_model_infos"
+          >
+            {{ $t("publi_is_model") }}
+          </button>
+        </label>
+
+        <label v-if="show_publi_model_infos">
+          <span v-html="$t('URL_to_share_for_replies')" />
+          <a
+            :href="url_to_share_for_replies"
+            target="_blank"
+            class="js--openInBrowser text-lc"
+            >{{ url_to_share_for_replies }}</a
+          >
+        </label>
+      </div>
+      <div
+        style="width: 100%;"
+        class="ta-ce"
+        v-else-if="
+          model_for_this_publication && $root.store.request.display !== 'survey'
+        "
+      >
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_publi_model_infos }"
+            @click.stop="show_publi_model_infos = !show_publi_model_infos"
+          >
+            <span v-html="$t('publi_follows_model:')" />
+            <span
+              class="text-underline button padding-none button-rectangle"
+              @click="
+                $root.openPublication(model_for_this_publication.slugFolderName)
+              "
+              >{{ model_for_this_publication.name }}</span
+            >
+          </button>
+        </label>
+        <label v-if="show_publi_model_infos">
+          <span v-html="$t('URL_to_edit_in_simple_interface')" />
+          <a
+            :href="url_to_access_simplified_mode"
+            target="_blank"
+            class="js--openInBrowser text-lc"
+            >{{ url_to_access_simplified_mode }}</a
+          >
+        </label>
+      </div>
+      <div v-else-if="model_for_this_publication" style="width: 100%;">
+        <div class v-if="url_to_publi">
+          <small>
+            {{ $t("save_following_address_and_come_back_later") }}
+            <br />
+            <a :href="url_to_publi">{{ url_to_publi }}</a>
+          </small>
+        </div>
+      </div>
+      <div class="text-centered" style="width: 100%;">
+        <ClientsCheckingOut
+          v-if="$root.store.request.display !== 'survey'"
+          :type="'publications'"
+          :slugFolderName="slugPubliName"
+        />
+      </div>
+
+      <div
+        class="text-centered"
+        style="width: 100%;"
+        v-if="
+          publication.template === 'page_by_page' &&
+          $root.consult_domains &&
+          $root.consult_domains.length > 0 &&
+          can_edit_publi() &&
+          ![
+            'export_publication',
+            'print_publication',
+            'link_publication',
+          ].includes($root.state.mode) &&
+          $root.store.request.display !== 'survey'
+        "
+      >
+        <div class="switch switch-xs">
+          <input
+            id="remember_password_on_this_device"
+            type="checkbox"
+            v-model="show_on_external_domain"
+          />
+          <label for="remember_password_on_this_device">
+            {{ $t("display_on_website") }}
+            <a
+              v-for="domain in $root.consult_domains"
+              :key="domain"
+              :href="`http://${domain}`"
+              target="_blank"
+              class="js--openInBrowser text-lc"
+              >{{ domain }}</a
+            >
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="m_publicationMeta--settingsBar" v-if="show_settings">
+      <div>
+        <div class="m_metaField" v-if="!!publication.authors">
+          <div>{{ $t("author") }}</div>
+          <div class="m_authorField">
+            <span
+              v-for="author in publication.authors"
+              v-if="$root.getAuthor(author.slugFolderName)"
+              :key="author.slugFolderName"
+              class="is--active"
+              :class="{
+                'is--loggedInAuthor':
+                  $root.current_author &&
+                  $root.current_author.slugFolderName === author.slugFolderName,
+              }"
+            >
+              <template v-if="$root.getAuthor(author.slugFolderName)">
+                {{ $root.getAuthor(author.slugFolderName).name }}
+              </template>
+            </span>
+          </div>
+        </div>
+
+        <AccessController
+          v-if="$root.store.request.display !== 'survey'"
+          :folder="publication"
+          :context="'full'"
+          :type="'publications'"
+          @closeFolder="closePublication"
+        />
+      </div>
+
+      <div>
+        <button
+          type="button"
+          class="buttonLink"
+          v-if="can_edit_publi() && $root.store.request.display !== 'survey'"
           @click="show_edit_publication = true"
         >
           <svg
@@ -85,6 +294,7 @@
         <EditPublication
           v-if="show_edit_publication"
           :publication="publication"
+          :publi_password="publi_password()"
           :slugPubliName="slugPubliName"
           @close="show_edit_publication = false"
         />
@@ -93,6 +303,7 @@
           type="button"
           class="buttonLink"
           :class="{ 'is--active': show_copy_options }"
+          v-if="can_edit_publi() && $root.store.request.display !== 'survey'"
           @click="show_copy_options = !show_copy_options"
         >
           <svg
@@ -136,14 +347,9 @@
         <button
           type="button"
           class="buttonLink"
-          v-if="show_export_button"
-          @click="$emit('export')"
-          :class="{ 'is--disabled': export_button_is_disabled }"
+          v-if="can_edit_publi()"
+          @click="removePublication"
         >
-          {{ $t("create") }}
-        </button>
-
-        <button type="button" class="buttonLink" @click="removePublication">
           <svg
             version="1.1"
             class="inline-svg"
@@ -171,19 +377,25 @@
 </template>
 <script>
 import EditPublication from "../modals/EditPublication.vue";
+import AccessController from "./AccessController.vue";
+import ProtectedLock from "./ProtectedLock.vue";
+import ClientsCheckingOut from "./ClientsCheckingOut.vue";
+
 export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    publication_medias: [Boolean, Array, Object],
+    medias: [Object, Array],
     number_of_medias_required: {
       type: Number,
       default: -1,
     },
+    model_for_this_publication: [Boolean, Object],
     show_export_button: {
       type: Boolean,
       default: true,
     },
+    url_to_publi: [Boolean, URL],
     enable_export_button: {
       type: Boolean,
       default: true,
@@ -191,34 +403,82 @@ export default {
   },
   components: {
     EditPublication,
+    AccessController,
+    ProtectedLock,
+    ClientsCheckingOut,
   },
   data() {
     return {
       show_edit_publication: false,
+      show_settings: false,
       show_copy_options: false,
+      show_publi_model_infos: false,
       copy_publi_name: this.$t("copy_of") + " " + this.publication.name,
     };
   },
 
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on(
+      "publications.showAdvancedOptions",
+      this.showAdvancedOptions
+    );
+  },
+  beforeDestroy() {
+    this.$eventHub.$off(
+      "publications.showAdvancedOptions",
+      this.showAdvancedOptions
+    );
+  },
 
   watch: {},
   computed: {
     export_button_is_disabled() {
       if (!this.enable_export_button) return true;
+      if (!this.can_edit_publi()) return true;
 
-      if (Object.values(this.publication_medias).length < 1) return true;
+      if (this.medias.length < 1) return true;
 
       if (
         this.number_of_medias_required !== -1 &&
-        Object.values(this.publication_medias).length !==
-          this.number_of_medias_required
+        this.medias.length !== this.number_of_medias_required
       )
         return true;
 
       return false;
+    },
+    url_to_share_for_replies() {
+      return (
+        window.location.origin +
+        "/_publications/reply/" +
+        this.publication.slugFolderName
+      );
+    },
+    url_to_access_simplified_mode() {
+      return (
+        window.location.origin +
+        "/_publications/survey/" +
+        this.publication.slugFolderName
+      );
+    },
+    show_on_external_domain: {
+      get() {
+        if (
+          !this.publication.hasOwnProperty("show_on_external_domain") ||
+          this.publication.show_on_external_domain === false
+        )
+          return false;
+        return this.publication.show_on_external_domain;
+      },
+      set(show_on_external_domain) {
+        this.$root.editFolder({
+          type: "publications",
+          slugFolderName: this.slugPubliName,
+          data: {
+            show_on_external_domain,
+          },
+        });
+      },
     },
   },
   methods: {
@@ -226,9 +486,49 @@ export default {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: closePublication`);
       }
-      this.$root.closePublication();
+      this.$emit("close");
+    },
+    createButtonClicked() {
+      if (!this.can_edit_publi()) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.action_not_allowed"));
+        return;
+      }
+
+      this.$emit("export");
+    },
+    showAdvancedOptions() {
+      this.show_settings = true;
     },
     removePublication() {
+      if (this.publication.is_model) {
+        // check if other recipes depend on it
+        // if so, prevent removing
+        const publication_relying_on_this_model = Object.values(
+          this.$root.store.publications
+        ).filter(
+          (p) =>
+            p.template === this.publication.template &&
+            p.follows_model &&
+            p.follows_model === this.publication.slugFolderName
+        );
+
+        if (publication_relying_on_this_model.length > 0) {
+          this.$alertify.alert(
+            this.$t("publiHasPubliRelyingOnItCantDelete") +
+              `<br><b>${publication_relying_on_this_model.length}</b> ` +
+              this.$t("recipes").toLowerCase()
+          );
+          return;
+        }
+
+        //   Object.values(this.publications).filter(
+        //   (r) => r.template === template_key
+        // );
+      }
+
       this.$alertify
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
@@ -247,6 +547,27 @@ export default {
           () => {}
         );
     },
+    publi_password() {
+      if (this.publication.password !== "has_pass") return "";
+      return this.$root.getFolderPassword({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
+
+    can_see_publi() {
+      return this.$root.canSeeFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
+    can_edit_publi() {
+      return this.$root.canEditFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+      });
+    },
+
     duplicateWithNewName(event) {
       console.log("METHODS • PublicationHeader: duplicateWithNewName");
 

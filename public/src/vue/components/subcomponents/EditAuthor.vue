@@ -5,12 +5,42 @@
     v-on:submit.prevent="editAuthor"
     :read_only="read_only"
   >
-    <!-- <span class="">{{ $t('create_an_author') }}</span> -->
-
     <!-- Human name -->
     <div class="margin-bottom-small">
       <label>{{ $t("name") }}</label>
       <input type="text" v-model.trim="authordata.name" required autofocus />
+    </div>
+
+    <div class="margin-bottom-small">
+      <label>{{ $t("email") }}</label>
+      <input type="email" v-model.trim="authordata.email" />
+      <small>{{ $t("email_instructions") }}</small>
+    </div>
+
+    <!-- Role -->
+    <div
+      class="margin-bottom-small"
+      v-if="($root.current_author && $root.current_author.role === 'admin')
+"
+    >
+      <label>
+        {{ $t("role") }}
+      </label>
+      <div>
+        <select v-model="authordata.role">
+          <option
+            v-for="role in possible_roles"
+            :value="role"
+            :key="role"
+            :disabled="
+              role === 'admin' &&
+              (!$root.current_author || $root.current_author.role !== 'admin')
+            "
+          >
+            {{ $t(role) }}
+          </option>
+        </select>
+      </div>
     </div>
 
     <!-- Preview -->
@@ -44,8 +74,47 @@
     <!-- <div class="margin-bottom-small">
       <label>{{ $t('password') }}</label>
       <input type="password" v-model="authordata.password">
-      <small>{{ $t('password_instructions') }}</small>
     </div>-->
+    <!-- Password -->
+    <div class="margin-bottom-small">
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_password }"
+          @click.stop="show_password = !show_password"
+        >
+          <template v-if="author.password === 'has_pass'">
+            {{ $t("change_password") }}
+          </template>
+          <template v-else>
+            {{ $t("add_password") }}
+          </template>
+        </button>
+      </label>
+
+      <div v-if="show_password">
+        <div class="margin-bottom-verysmall">
+          <input
+            type="password"
+            v-if="author.password === 'has_pass'"
+            :placeholder="$t('old_password').toLowerCase()"
+            v-model="authordata._old_password"
+          />
+        </div>
+        <div>
+          <input
+            type="password"
+            :required="
+              $root.state.local_options.force_author_password ? true : false
+            "
+            :placeholder="$t('new_password').toLowerCase()"
+            v-model="authordata.password"
+          />
+        </div>
+        <small>{{ $t("password_instructions") }}</small>
+      </div>
+    </div>
 
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small">
@@ -68,7 +137,7 @@
     <button type="button" class="button-small" @click="$emit('close')">
       {{ $t("cancel") }}
     </button>
-    <button type="submit" class="button-greenthin">{{ $t("save") }}</button>
+    <button type="submit" class="bg-bleuvert">{{ $t("save") }}</button>
   </form>
 </template>
 <script>
@@ -86,10 +155,16 @@ export default {
     return {
       show_image: !!this.author.preview,
       show_nfc: !!this.author.nfc_tag,
+      show_password: false,
+
+      possible_roles: ["contributor", "participant", "admin"],
 
       authordata: {
         name: this.author.name,
-        // password: "",
+        email: this.author.email,
+        role: this.author.role,
+        password: "",
+        _old_password: "",
         nfc_tag: this.author.nfc_tag,
       },
       preview: undefined,
@@ -119,7 +194,7 @@ export default {
   methods: {
     editAuthor: function (event) {
       console.log("editAuthor");
-      let allAuthorsName = this.$root.allAuthors.map((a) =>
+      let allAuthorsName = this.$root.all_authors.map((a) =>
         a.name.toLowerCase()
       );
 
@@ -138,6 +213,17 @@ export default {
 
       if (typeof this.preview !== "undefined") {
         this.authordata.preview_rawdata = this.preview;
+      }
+
+      if (!!this.authordata.password) {
+        this.authordata.password = this.$auth.hashCode(
+          this.authordata.password
+        );
+      }
+      if (!!this.authordata._old_password) {
+        this.authordata._old_password = this.$auth.hashCode(
+          this.authordata._old_password
+        );
       }
 
       this.$root.editFolder({

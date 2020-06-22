@@ -1,5 +1,7 @@
 <template>
   <div class="m_topbar" :class="{ 'is--collapsable': !$root.screen_is_wide }">
+    <!-- <pre>{{ $root.state.clients }}</pre> -->
+
     <div class="m_topbar--left">
       <div class="m_topbar--left--logo">
         <transition name="BackButton" :duration="500">
@@ -114,12 +116,7 @@
               "
             >
               <img
-                :src="
-                  urlToPortrait(
-                    $root.current_author.slugFolderName,
-                    $root.current_author.preview
-                  )
-                "
+                :src="urlToPortrait($root.current_author.preview)"
                 width="100"
                 height="100"
                 draggable="false"
@@ -135,6 +132,20 @@
         </button>
 
         <Clients />
+
+        <div class="m_unreadMessages" v-if="$root.get_total_unread_messages">
+          <button
+            type="button"
+            @click="openChatPanel()"
+            :content="$t('unread_messages')"
+            v-tippy="{
+              placement: 'bottom',
+              delay: [600, 0],
+            }"
+          >
+            {{ $root.get_total_unread_messages }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -179,7 +190,7 @@
         <a
           class="js--openInBrowser"
           target="_blank"
-          href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc"
+          href="https://dodoc.fr/"
           :content="$t('help')"
           v-tippy="{
             placement: 'bottom',
@@ -246,6 +257,79 @@
           </svg>
         </button>
 
+        <button
+          :class="{ 'is--active': $root.app_is_fullscreen }"
+          @click="$root.toggleFullScreen()"
+          :content="$t('fullscreen')"
+          v-tippy="{
+            placement: 'bottom-end',
+            delay: [600, 0],
+          }"
+        >
+          <svg
+            version="1.1"
+            v-if="!$root.app_is_fullscreen"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+            x="0px"
+            y="0px"
+            width="133.3px"
+            height="133.2px"
+            viewBox="-15 -15 160 160"
+            style="enable-background: new 0 0 133.3 133.2;"
+            xml:space="preserve"
+          >
+            <polygon
+              class="st0"
+              points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"
+            />
+            <polygon
+              class="st0"
+              points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
+            />
+            <polygon
+              class="st0"
+              points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
+            />
+            <polygon
+              class="st0"
+              points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
+            />
+          </svg>
+          <svg
+            version="1.1"
+            v-if="$root.app_is_fullscreen"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+            x="0px"
+            y="0px"
+            width="133.3px"
+            height="133.2px"
+            viewBox="0 0 133.3 133.2"
+            style="enable-background: new 0 0 133.3 133.2;"
+            xml:space="preserve"
+          >
+            <polygon
+              class="st0"
+              points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"
+            />
+            <polygon
+              class="st0"
+              points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
+            />
+            <polygon
+              class="st0"
+              points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
+            />
+            <polygon
+              class="st0"
+              points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
+            />
+          </svg>
+        </button>
+
         <SettingsModal
           v-if="showSettingsModal"
           @close="showSettingsModal = false"
@@ -306,6 +390,13 @@ export default {
     },
   },
   methods: {
+    openChatPanel() {
+      this.$eventHub.$emit("resizePanels", [
+        { size: 40 },
+        { size: 0 },
+        { size: 60 },
+      ]);
+    },
     menuVisibility() {},
     goBack() {
       this.$root.navigation_back();
@@ -320,10 +411,15 @@ export default {
     toggleMenu() {
       this.show_menu = !this.show_menu;
     },
-    urlToPortrait(slug, preview) {
+    urlToPortrait(preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.filter((m) => m.size === 180)[0].path;
-      return pathToSmallestThumb;
+      let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
+
+      let url =
+        this.$root.state.mode === "export_publication"
+          ? `./${pathToSmallestThumb}`
+          : `/${pathToSmallestThumb}`;
+      return url;
     },
   },
 };

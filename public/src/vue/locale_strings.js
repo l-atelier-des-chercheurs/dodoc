@@ -33,9 +33,21 @@ module.exports = (function () {
       fr: "Créer une discussion",
       en: "Create a room",
     },
+    edit_a_chat: {
+      fr: "Éditer une discussion",
+      en: "Edit a room",
+    },
     chat_name: {
       fr: "Nom du sujet",
       en: "Topic",
+    },
+    pinned_to_the_top_of_the_list: {
+      fr: "Épingler en haut de la liste",
+      en: "Pin to the top",
+    },
+    pinned: {
+      fr: "Discussions épinglés",
+      en: "Pinned topics",
     },
     create_new_folder: {
       fr: "créer un nouveau dossier",
@@ -45,12 +57,46 @@ module.exports = (function () {
       fr: "Gérer l’accès au contenu",
       en: "Manage access",
     },
+    no_message_yet: {
+      fr: "Aucun message à afficher pour l’instant…",
+      em: "No message to display yet…",
+    },
+    login_after_creation: {
+      fr: "S’identifier dans la foulée",
+      en: "Login after creation",
+    },
+    advanced_text_bloc: {
+      fr: "Permettre la mise en forme du texte",
+      en: "Allow text layout",
+    },
+    only_numbers: {
+      fr: "Nombres uniquement",
+      en: "Numbers only",
+    },
+    amount: {
+      fr: "Nombre",
+      en: "Amount",
+    },
+    unlimited: {
+      fr: "Illimité",
+      en: "Unlimited",
+    },
     publication: {
       fr: "Recette",
       en: "Recipe",
       nl: "Publicatie",
       oc: "Recepta",
       de: "Publikation",
+    },
+    set_visibility_to_everybody: {
+      fr:
+        "Ce contenu est actuellement en privé et ne peut donc pas être partagé. Pour le partager, cochez VISIBLE PAR TOUT LE MONDE dans les options du contenu.",
+      en:
+        "This content is currently set to private and cannot be shared. To get a link to share it, change its options to VISIBLE FOR EVERYONE.",
+    },
+    display_on_website: {
+      fr: "Rendre visible sur ",
+      en: "Display on ",
     },
     medias_selected: {
       fr: "média(s) sélectionné(s)",
@@ -60,12 +106,24 @@ module.exports = (function () {
       fr: "projet(s) sélectionné(s)",
       en: "project(s) selected",
     },
+    number_of_medias: {
+      fr: "Nombre de médias",
+      en: "Amount of medias",
+    },
+    reply: {
+      fr: "Répondre",
+      en: "Reply",
+    },
     name: {
       fr: "Nom",
       en: "Name",
       nl: "Naam",
       oc: "Nom",
       de: "Name",
+    },
+    name_or_pseudo: {
+      fr: "Nom ou pseudonyme",
+      en: "Name or nickname",
     },
     project_name: {
       fr: "Nom du projet",
@@ -85,17 +143,53 @@ module.exports = (function () {
       fr: "aucun",
       en: "none",
     },
+    none_f: {
+      fr: "aucune",
+      en: "none",
+    },
     interactive_preview: {
-      fr: "Aperçu interactif",
-      en: "Interactive preview",
+      fr: "Interactif",
+      en: "Interactive",
     },
     static_preview: {
-      fr: "Aperçu image",
-      en: "Static preview",
+      fr: "Image",
+      en: "Static",
+    },
+    preview: {
+      fr: "Aperçu",
+      en: "Preview",
     },
     advanced_options: {
       fr: "Options avancées",
       en: "Advanced options",
+    },
+    bold: {
+      fr: "Gras",
+      en: "Bold",
+    },
+    italic: {
+      fr: "Italique",
+      en: "Italic",
+    },
+    large: {
+      fr: "Grand",
+      en: "Large",
+    },
+    small: {
+      fr: "Petit",
+      en: "Small",
+    },
+    "answers_given:": {
+      fr: "Enregistré&nbsp;:",
+      en: "Saved:",
+    },
+    "answer_type_expected:": {
+      fr: "Format(s) accepté(s)&nbsp;:",
+      en: "Accepted format(s):",
+    },
+    infos_about_the_media: {
+      fr: "Informations sur le média",
+      en: "Informations on the media",
     },
     uploaded: {
       fr: "Importation",
@@ -115,6 +209,30 @@ module.exports = (function () {
     no_media_on_this_page: {
       fr: "Aucun média à afficher sur cette page",
       en: "No media on this page",
+    },
+    show_older_messages: {
+      fr: "Voir les messages plus anciens",
+      en: "See older messages",
+    },
+    show: {
+      fr: "Afficher",
+      en: "Show",
+    },
+    only_my_projects: {
+      fr: "Seulement mes projets",
+      en: "My projects",
+    },
+    only_my_medias: {
+      fr: "Seulement mes médias",
+      en: "My medias",
+    },
+    all_projects: {
+      fr: "Tous les projets",
+      en: "All projects",
+    },
+    all_medias: {
+      fr: "Tous les médias",
+      en: "All medias",
     },
     created: {
       fr: "Création",
@@ -183,17 +301,25 @@ module.exports = (function () {
       oc: "Autor",
       de: "Autor(en)",
     },
+    account: {
+      fr: "Compte",
+      en: "Account",
+    },
     role: {
       fr: "Rôle",
       en: "Role",
     },
     admin: {
-      fr: "Admin",
-      en: "Admin",
+      fr: "Administrateur",
+      en: "Administrator",
     },
     contributor: {
       fr: "Contributeur",
       en: "Contributor",
+    },
+    participant: {
+      fr: "Participant",
+      en: "Participant",
     },
     download: {
       fr: "Télécharger",
@@ -209,6 +335,26 @@ module.exports = (function () {
       oc: "Legenda",
       de: "Legende",
     },
+    add_caption: {
+      fr: "Ajouter une légende",
+      en: "Add a caption",
+    },
+    edit_caption: {
+      fr: "Modifier la légende",
+      en: "Edit caption",
+    },
+    add_instructions: {
+      fr: "Ajouter des instructions",
+      en: "Add instructions",
+    },
+    edit_instructions: {
+      fr: "Modifier les instructions",
+      en: "Edit instructions",
+    },
+    instructions: {
+      fr: "Instructions",
+      en: "Instructions",
+    },
     formatting: {
       fr: "Mise en forme",
       en: "Formatting",
@@ -223,6 +369,16 @@ module.exports = (function () {
       oc: "Lissatge",
       de: "Glättungmodus",
     },
+    create_an_account_or_login_to_participate: {
+      fr:
+        "Créez un compte ou identifiez-vous avec un compte existant pour participer",
+      en: "Create an account or login using an existing account to participate",
+    },
+    login_to_edit_existing_participation: {
+      fr:
+        "Identifiez-vous avec le compte créé précédemment pour modifier vos réponses",
+      en: "Login with an existing account to edit your replies",
+    },
     custom: {
       fr: "Personnalisé",
       en: "Custom",
@@ -234,6 +390,10 @@ module.exports = (function () {
     sizes_and_margins: {
       fr: "Tailles et marges",
       en: "Sizes and margins",
+    },
+    margin: {
+      fr: "Marge",
+      en: "Margin",
     },
     size: {
       fr: "Taille",
@@ -254,10 +414,10 @@ module.exports = (function () {
       oc: "Pelofa de cèba",
       de: "Überlagerung",
     },
-    "file:": {
-      fr: "Fichier&nbsp;:",
-      en: "File&nbsp;:",
-      nl: "Bestand:",
+    file: {
+      fr: "Fichier",
+      en: "File",
+      nl: "Bestand",
       oc: "Fichièr",
       de: "Datei",
     },
@@ -284,6 +444,10 @@ module.exports = (function () {
       fr: "Dossier actuellement ouvert&nbsp;:",
       en: "Currently opened folder",
     },
+    currently_open: {
+      fr: "Actuellement ouvert",
+      en: "Currently open",
+    },
     group: {
       fr: "Regrouper",
       en: "Group",
@@ -291,6 +455,10 @@ module.exports = (function () {
     no_text_content: {
       fr: "Champ texte vide…",
       en: "Text field is empty…",
+    },
+    no_numbers: {
+      fr: "Champ nombre vide…",
+      en: "Number field is empty…",
     },
     ungroup: {
       fr: "Dégrouper",
@@ -308,11 +476,19 @@ module.exports = (function () {
       fr: "Nom du calque",
       en: "Layer name",
     },
+    layer_order: {
+      fr: "Ordre d’empilement",
+      en: "Order in the stack",
+    },
+    layer_order_instructions: {
+      fr: "Plus cette valeur est haute et plus le bloc sera au premier plan.",
+      en: "The higher the value the higher in the stack of blocs.",
+    },
     drawing_layer_1: {
       fr: "Calque dessin 1",
       en: "Drawing layer 1",
     },
-    drawing_layer_1: {
+    media_layer_1: {
       fr: "Calque média 1",
       en: "Media layer 1",
     },
@@ -338,6 +514,22 @@ module.exports = (function () {
       nl: "Wachtwoord invoeren:",
       oc: "Entresenhar lo mot de Santa-Clara çai-jos :",
       de: "Kennwort bitte hier eingeben",
+    },
+    change_password: {
+      fr: "Modifier le mot de passe",
+      en: "Change password",
+    },
+    add_password: {
+      fr: "Protéger par un mot de passe",
+      en: "Protect with a password",
+    },
+    old_password: {
+      fr: "Ancien mot de passe",
+      en: "Old password",
+    },
+    new_password: {
+      fr: "Nouveau mot de passe",
+      en: "New password",
     },
     validate_with_enter: {
       fr: "Valider avec la touche ENTRÉE.",
@@ -424,11 +616,11 @@ module.exports = (function () {
       de: "Vergessen Sie das Passwort",
     },
     forget_password_and_close: {
-      fr: "Oublier le mot de passe et fermer le projet",
-      en: "Forget password and close project",
-      nl: "Wachtwoord vergeten en sluiten ",
-      oc: "Doblidar lo mot de Santa-Clara e clavar lo projècte",
-      de: "Vergessen Sie das Passwort und schließen sie das Projekt",
+      fr: "Oublier le mot de passe et fermer",
+      en: "Forget password and close",
+      nl: "Wachtwoord vergeten en sluiten",
+      oc: "Doblidar lo mot de Santa-Clara e clavar",
+      de: "Vergessen Sie das Passwort und schließen sie",
     },
     remember_password_on_this_device: {
       fr: "Sauvegarder pour cet appareil",
@@ -514,6 +706,18 @@ module.exports = (function () {
       fr: "Modifier le média original",
       en: "Edit original media content",
     },
+    stroke_color: {
+      fr: "Couleur du contour",
+      en: "Stroke color",
+    },
+    fill_color: {
+      fr: "Couleur du fond",
+      en: "Fill color",
+    },
+    stroke_width: {
+      fr: "Épaisseur du contour",
+      en: "Stroke width",
+    },
     adjust: {
       fr: "Ajuster",
       en: "Adjust",
@@ -524,6 +728,14 @@ module.exports = (function () {
     restore: {
       fr: "Restorer",
       en: "Restore",
+    },
+    lock_in_place: {
+      fr: "Verrouiller sur place",
+      en: "Lock in position",
+    },
+    unlock: {
+      fr: "Déverouiller",
+      en: "Unlock",
     },
     rotate_clockwise: {
       fr: "Pivoter vers la droite",
@@ -784,12 +996,20 @@ module.exports = (function () {
       oc: "Accedir a do•doc",
       de: "Verbinden sie zu do•doc",
     },
+    currently_connected: {
+      fr: "Connecté en ce moment",
+      en: "Currently connected",
+    },
     login: {
       fr: "S’identifier",
       en: "Login",
-      nl: "Inloggen ",
+      nl: "Inloggen",
       oc: "S'identificar",
       de: "Anmeldung",
+    },
+    create_account: {
+      fr: "Créer un compte",
+      en: "Create an account",
     },
     logout: {
       fr: "Se déconnecter",
@@ -844,6 +1064,16 @@ module.exports = (function () {
       oc: "Ajuda",
       de: "Hilfe",
     },
+    email: {
+      fr: "Adresse mail",
+      en: "Email",
+    },
+    email_instructions: {
+      fr:
+        "Optionnel. Sera uniquement utilisé pour vous notifier d’un message sur do•doc et ne sera pas visible aux autres utilisateurs à l’exception des administrateurs.",
+      en:
+        "Optional. Will only be used to let you know of a new personal message, and will never be shown to other users except for administrators.",
+    },
     date: {
       fr: "Date",
       en: "Date",
@@ -880,6 +1110,10 @@ module.exports = (function () {
       oc: "Òc",
       de: "Ja",
     },
+    no: {
+      fr: "Non",
+      en: "No",
+    },
     cancel: {
       fr: "Annuler",
       en: "Cancel",
@@ -894,6 +1128,28 @@ module.exports = (function () {
       oc: "Tornar",
       de: "Rückkehr",
     },
+    published: {
+      fr: "Publié",
+      en: "Published",
+    },
+    alreadyAnsweredThatModel: {
+      fr:
+        "Vous avez déjà répondu à ce modèle, êtes-vous sur de vouloir y répondre à nouveau ?",
+      en:
+        "You have already replied to this model, would you like to reply again?",
+    },
+    sureToRemoveYourselfFromAuthors: {
+      fr:
+        "Êtes-vous sûr de vouloir vous retirer de la liste des auteurs ? Vous ne pourrez plus modifier ce contenu.",
+      en:
+        "Do you really want to remove yourself from the list of authors? You won’t be able to edit this content anymore.",
+    },
+    sureToLockAndPublish: {
+      fr:
+        "Êtes-vous sûr de vouloir publier ce récit ? Vous ne pourrez plus le modifier.",
+      en:
+        "Do you really want to publish this story? You won’t be able to edit anymore.",
+    },
     sureToRemoveAuthor: {
       fr:
         "Êtes-vous sûr de vouloir supprimer cet auteur ? Tous les médias, projets et recettes associés seront conservés.",
@@ -903,6 +1159,12 @@ module.exports = (function () {
       oc:
         "Sètz segur de voler suprimir aqueste autor ? Totes los mèdias, projèctes e recèptas associadas seràn servadas.",
       de: "Sind Sie sicher, dass Sie diesen Autor löschen wollen?",
+    },
+    sureToRemovePlaceholder: {
+      fr:
+        "Êtes-vous sûr de vouloir supprimer ce bloc éditable ? Cela supprimera également tous les contenus ajoutés par des contributeurs dans d’autres ",
+      en:
+        "Do you really want to remove this editable block? This will also remove all content added in this block in recipe following this model.",
     },
     sure_to_remove_chat: {
       fr: "Êtes-vous sûr de vouloir supprimer ce sujet et tout son contenu ?",
@@ -982,6 +1244,12 @@ module.exports = (function () {
       nl: "Weet u zeker dat u deze publicatie wilt verwijderen?",
       oc: "Sètz segur de voler suprimir aquesta recèpta ?",
       de: "Sind sie sicher dass sie diese Publikation löschen möchten ?",
+    },
+    publiHasPubliRelyingOnItCantDelete: {
+      fr:
+        "Ce modèle est utilisé comme référence par une ou plusieurs recettes réponses et ne peut donc pas être supprimé.",
+      en:
+        "This model is used by one or more reply recipes and cannot be deleted as long as this is the case.",
     },
     sure_to_cancel_stopmotion: {
       fr:
@@ -1136,6 +1404,10 @@ module.exports = (function () {
       oc: "Mèdias",
       de: "Medien",
     },
+    text_and_medias: {
+      fr: "Médias et textes",
+      en: "Medias and texts",
+    },
     media: {
       fr: "Média",
       en: "Media",
@@ -1149,6 +1421,10 @@ module.exports = (function () {
       nl: "Auteurs",
       oc: "Autors",
       de: "Autoren",
+    },
+    participants: {
+      fr: "Participants",
+      en: "Participants",
     },
     authors_list: {
       fr: "Liste des auteurs",
@@ -1176,9 +1452,21 @@ module.exports = (function () {
       fr: "Visible par tout le monde",
       en: "Visible for everyone",
     },
+    visible_to_authors: {
+      fr: "Visible par les auteurs uniquement",
+      en: "Visible for authors only",
+    },
+    visible_to_nobody: {
+      fr: "Visible pour personne",
+      en: "Visible for noone",
+    },
     only_authors: {
       fr: "Seulement les auteurs",
       en: "Only authors",
+    },
+    protected_by_authors: {
+      fr: "Protégé par les auteurs",
+      en: "Protected by authors",
     },
     with_password: {
       fr: "Avec un mot de passe",
@@ -1202,12 +1490,20 @@ module.exports = (function () {
       oc: "Totes los mèdias",
       de: "Alle Medien",
     },
-    create_text: {
+    write: {
       fr: "Écrire",
       en: "Write",
       nl: "Schrijven",
       oc: "Escriure",
       de: "Schreiben",
+    },
+    placeholder: {
+      fr: "Bloc éditable",
+      en: "Editable bloc",
+    },
+    divider: {
+      fr: "Séparateur",
+      en: "Divider",
     },
     import: {
       fr: "Importer",
@@ -1277,6 +1573,10 @@ module.exports = (function () {
       nl: "Hier een pagina invoegen",
       oc: "Inserir una pagina aicí",
       de: "Eine Seite davor hinzufügen",
+    },
+    insert_medias_here: {
+      fr: "Insérer un média ici",
+      en: "Insert a media here",
     },
     add_a_page_before: {
       fr: "Ajouter une page avant celle-ci",
@@ -1398,12 +1698,20 @@ module.exports = (function () {
       oc: "Zoom",
       de: "Zoom",
     },
+    reset: {
+      fr: "Remettre à 1",
+      en: "Reset",
+    },
     settings: {
       fr: "Réglages",
       en: "Settings",
       nl: "Instellingen",
       oc: "Reglatges",
       de: "Einstellungen",
+    },
+    page_settings: {
+      fr: "Réglages de la page",
+      en: "Page settings",
     },
     stopmotion_list: {
       fr: "Liste des animations",
@@ -1439,6 +1747,14 @@ module.exports = (function () {
       oc: "Suprimir l'imatge",
       de: "Dieses Bild löschen",
     },
+    remove_layer: {
+      fr: "Supprimer le calque",
+      en: "Remove layer",
+    },
+    remove_selection: {
+      fr: "Supprimer la sélection",
+      en: "Remove selection",
+    },
     withdraw: {
       fr: "Enlever",
       en: "Withdraw",
@@ -1467,9 +1783,29 @@ module.exports = (function () {
       oc: "Mot de Santa Clara requesit",
       de: "Kennwort zum Öffnen der Datei",
     },
+    password_required_to_edit: {
+      fr: "Mot de passe requis pour contribuer",
+      en: "Password required to contribute",
+    },
     only_authors_can_open: {
       fr: "Accès limité aux auteurs",
       en: "Access limited to authors",
+    },
+    only_password_can_open: {
+      fr: "Accès limité par mot de passe",
+      en: "Access limited with password",
+    },
+    ask_to_be_added_to_authors: {
+      fr: "Demander à être rajouté aux auteurs pour contribuer",
+      en: "Request to be added to authors list to contribute",
+    },
+    login_to_access_project: {
+      fr: "Identifiez-vous pour accéder",
+      en: "Login to access",
+    },
+    login_to_edit_project: {
+      fr: "Identifiez-vous pour contribuer",
+      en: "Login to contribute",
     },
     show_password: {
       fr: "Afficher le mot de passe",
@@ -1489,12 +1825,30 @@ module.exports = (function () {
       fr: "Transition : fondu enchaîné",
       en: "Transition: fade",
     },
+    linked_media_wasnt_found: {
+      fr: "Le média lié n’a pas été trouvé parmis les projets.",
+      en: "The linked media wasn’t found amongst the projects.",
+    },
     protected_by_pass: {
       fr: "protégé par mot de passe",
       en: "protected by password",
       nl: "Beveiligd met een wachtwoord. ",
       oc: "protegit per mot de Santa Clara",
       de: "Passwortgeschützt",
+    },
+    font_size: {
+      fr: "Taille de la police",
+      en: "Font-size",
+    },
+    import_medias_from_projects_or_create_shapes_here: {
+      fr:
+        "Importez des médias situés dans les projets ou créez des blocs avec les options ci-dessous.",
+      en:
+        "Import medias from projects or create new blocs with the following options.",
+    },
+    click_on_a_bloc_to_edit_its_presentation: {
+      fr: "Cliquez sur un bloc pour modifier son aspect",
+      en: "Click on a bloc to change its aspect",
     },
     password_instructions: {
       fr:
@@ -1626,6 +1980,10 @@ module.exports = (function () {
       oc: "vidèo",
       de: "Video",
     },
+    stl: {
+      fr: "STL",
+      en: "STL",
+    },
     stopmotion: {
       fr: "animation",
       en: "stopmotion",
@@ -1661,6 +2019,18 @@ module.exports = (function () {
       oc: "tèxte",
       de: "Text",
     },
+    choices: {
+      fr: "Choix multiples",
+      en: "Multiple choices",
+    },
+    single_choice: {
+      fr: "Un choix unique",
+      en: "Single choice",
+    },
+    multiple_choices_possible: {
+      fr: "Plusieurs choix possibles",
+      en: "Multiple choices possibles",
+    },
     document: {
       fr: "document",
       en: "document",
@@ -1690,7 +2060,7 @@ module.exports = (function () {
       de: "Generieren",
     },
     select: {
-      fr: "Sélectionner",
+      fr: "Sélection",
       en: "Select",
       nl: "Selecteren",
       oc: "Seleccionar",
@@ -1703,6 +2073,23 @@ module.exports = (function () {
       oc: "Deseleccionar",
       de: "Auswahl aufheben",
     },
+    ellipsis: {
+      fr: "Ellipse",
+      en: "Ellipsis",
+    },
+    rectangle: {
+      fr: "Rectangle",
+      en: "Rectangle",
+    },
+    line: {
+      fr: "Ligne",
+      en: "Line",
+    },
+    arrow: {
+      fr: "Flèche",
+      en: "Arrow",
+    },
+
     toconnectwithanotherdevice: {
       fr:
         "Pour accéder à cet élément avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web, ou bien scannez le code QR&nbsp;: ",
@@ -1767,8 +2154,8 @@ module.exports = (function () {
       en: "Switch fit mode",
     },
     drop_here_to_import: {
-      fr: "Déposez vos contenus ici pour les importer",
-      en: "Drop your content here to import",
+      fr: "Déposez les médias ici pour les importer",
+      en: "Drop the files here to import",
       nl: "Laad de bestanden hier om te importeren ",
       oc: "Depausatz vòstres contenguts aicí per los importar",
       de: "Hier zum Importieren ablegen",
@@ -2149,6 +2536,62 @@ module.exports = (function () {
       oc: "Gabarit",
       de: "Vorlage",
     },
+    model: {
+      fr: "Modèle",
+      en: "Model",
+    },
+    publi_is_model: {
+      fr: "Cette recette est un modèle",
+      en: "This recipe is a model",
+    },
+    publi_is_model_instructions: {
+      fr:
+        "Si actif, cette recette pourra être utilisée comme référence lors de la création d’autres recettes.",
+      en:
+        "If enabled, this recipe can be selected as a model for other recipes to lean on.",
+    },
+    recipes: {
+      fr: "Recettes",
+      en: "Recipes",
+    },
+    URL_to_share_for_replies: {
+      fr:
+        "Pour générer des réponses basées sur ce modèle, partagez cette adresse",
+      en: "To generate replies based on this model, share this URL",
+    },
+    URL_to_edit_in_simple_interface: {
+      fr: "Pour accéder au récit dans l’interface simplifiée",
+      en: "Click here to open this story in a dedicated page",
+    },
+    no_models_yet: {
+      fr: "Aucune recette modèle n’a été créé pour l’instant",
+      en: "No models recipe have been created yet",
+    },
+    "publi_follows_model:": {
+      fr: "Cette recette suit le modèle&nbsp:",
+      en: "This recipe has model:",
+    },
+    select_publi_model: {
+      fr: "Sélectionner un modèle",
+      en: "Select a model",
+    },
+    select_publi_model_instructions: {
+      fr:
+        "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",
+      en: "If enabled, this recipe will display the model’s medias and guides.",
+    },
+    archived: {
+      fr: "Archiver",
+      en: "Archived",
+    },
+    archived_explanation: {
+      fr: "Document archivé&nbsp;: il ne peut plus être modifié.",
+      en: "Document is archived: it cannot be edited anymore.",
+    },
+    "type_of_expected_contents:": {
+      fr: "Type de contenus attendus&nbsp;:",
+      en: "Type of expected contents:",
+    },
     standard: {
       fr: "Standard",
       en: "Standard",
@@ -2177,6 +2620,30 @@ module.exports = (function () {
       oc: "Document pagina per pagina",
       de: "Seite zu Seite Dokument",
     },
+    story: {
+      fr: "Récit",
+      en: "Story",
+    },
+    stories: {
+      fr: "Récits",
+      en: "Stories",
+    },
+    see_all_my_stories: {
+      fr: "Consulter tous mes récits",
+      en: "See all my stories",
+    },
+    list_of_stories: {
+      fr: "Liste des récits créés",
+      en: "List of stories created",
+    },
+    story_summary: {
+      fr: "",
+      en: "",
+    },
+    story_instructions: {
+      fr: "",
+      en: "",
+    },
     carreau: {
       fr: "Carreau",
       nl: "Tegel",
@@ -2196,6 +2663,10 @@ module.exports = (function () {
       nl: "Stopmotion animatie",
       oc: "Animacion imatge per imatge",
       de: "Einzelbild für Bild Animation",
+    },
+    stop_stopmotion: {
+      fr: "Arrêter cette animation",
+      en: "Stop stopmotion",
     },
     web: {
       fr: "Page web",
@@ -2420,6 +2891,18 @@ module.exports = (function () {
       fr: "Dernier message",
       en: "Last message",
     },
+    save_following_address_and_come_back_later: {
+      fr: "Enregistrez l’adresse suivante pour finaliser plus tard.",
+      en: "Save this URL to connect again and finish in the future.",
+    },
+    finished_writing_reply: {
+      fr: "Vous avez terminé ?",
+      en: "Are you finished?",
+    },
+    lock_and_publish: {
+      fr: "Verrouillez et publiez votre récit",
+      en: "Lock and publish this story",
+    },
     carreau_summary: {
       fr: "Empiler des médias pour créer en temps réel des présentations.",
       en: "Stack multiple medias on a single surface to project content.",
@@ -2487,6 +2970,10 @@ module.exports = (function () {
       oc: "Mèdia precedent",
       de: "Vorherige Medien",
     },
+    nobody: {
+      fr: "Personne (archivé)",
+      en: "Nobody (archived)",
+    },
     next_media: {
       fr: "Média suivant",
       en: "Next media",
@@ -2531,6 +3018,14 @@ module.exports = (function () {
           "Los Iphones and Ipads son pas compatibles amb la fonccionalitat de captura.",
         de: "iPhones und iPads sind nicht mit der Aufnahmefunktion kompatibel.",
       },
+      imported_files_successfully: {
+        fr: "Média importé avec succès",
+        en: "Media imported successfully",
+      },
+      models_must_be_visible_to_everybody: {
+        fr: "Attention ! Les modèles doivent être visibles par tout le monde.",
+        en: "Warning! Models must be visible to everybody.",
+      },
       instead_import_with_this_button: {
         fr:
           "Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.",
@@ -2548,6 +3043,12 @@ module.exports = (function () {
           "Cette action n’est pas permise. Êtes-vous bien auteur de ce contenu et/ou possédez-vous le mot de passe associé ?",
         en:
           "This action was blocked. Are you the author of this content and/or do you have the password?",
+      },
+      cant_open_chat: {
+        fr:
+          "Identifiez-vous et vérifiez que vous faites partie de la liste des participants à cette discussion pour y accéder.",
+        en:
+          "Login and check that your account is amongst the participants to open this topic.",
       },
       media_was_sent: {
         fr: "Le média a été enregistré.",
@@ -2601,10 +3102,15 @@ module.exports = (function () {
         en:
           "Changes to this media couldn’t be saved, check that the connection is active and try again.",
       },
-      successfully_saved_media: {
-        fr: "Les modifications ont bien été enregistrées.",
+      successfully_saved: {
+        fr: "Les modifications ont bien été prises en compte.",
         en: "Changes were successfully saved.",
       },
+      you_can_close_this_window: {
+        fr: "Vous pouvez fermer cet onglet.",
+        en: "You can close this tab.",
+      },
+
       connection_error: {
         fr: "La connexion au serveur n’a pu se faire.",
         en: "The connection to the server could not be established.",
@@ -2634,13 +3140,6 @@ module.exports = (function () {
         nl: "Do•doc is aan het laden …",
         oc: "Cargament de do•doc en cors…",
         de: "Laden des laufenden do•doc…",
-      },
-      "wrong_password_for_folder:": {
-        fr: "Le mot de passe n’est pas le bon pour le dossier&nbsp;:",
-        en: "Wrong password or folder missing for:",
-        nl: "Het wachtwoord is niet correct voor dit onderdeel:",
-        oc: "Lo mot de passa es pas lo bon pel dorsièr:",
-        de: "Das Passwort ist nicht das richtige für die Datei.",
       },
       "created_edited_media:": {
         fr: "Création ou édition d’un média pour le dossier&nbsp;:",
@@ -2762,12 +3261,16 @@ module.exports = (function () {
         oc: "Aqueste projècte ven d'èsser suprimit per qualqu'un mai.",
         de: "Dieses Projekt wurde gerade von jemandem gelöscht.",
       },
-      wrong_password_for: {
-        fr: "Mot de passe erroné pour ",
-        en: "Wrong password for project ",
-        nl: "Onjuist wachtwoord voor ",
-        oc: "Mot de Santa Clara erronèu per",
-        de: "Falsches Passwort für",
+      wrong_password: {
+        fr: "Mot de passe erroné",
+        en: "Wrong password",
+        nl: "Onjuist wachtwoord",
+        oc: "Mot de Santa Clara erronèu",
+        de: "Falsches Passwort",
+      },
+      password_is_valid: {
+        fr: "Mot de passe accepté",
+        en: "Password is valid",
       },
       connected_as: {
         fr: "Connecté comme  ",
@@ -2822,6 +3325,10 @@ module.exports = (function () {
         oc: "Connexion a do•doc en utilizant lo mot de Santa Clara enregistrat",
         de: "Anmeldung zu do•doc mit dem registrierten Passwort.",
       },
+      connecting_using_saved_account: {
+        fr: "Identification automatique en tant que ",
+        en: "Automatic login as ",
+      },
       doc_created: {
         fr: "Le document a été créé",
         en: "The document was created",
@@ -2857,20 +3364,13 @@ module.exports = (function () {
         oc: "Còpia acabada",
         de: "Kopie komplett",
       },
-      password_added_or_changed_to_this_project: {
-        fr: "Le mot de passe de ce projet a été ajouté ou modifié.",
-        en: "The password for this project hass been added or changed.",
-        nl: "Wachtwoord voor dit project werd toegevoegd of gewijzigd .",
-        oc:
-          "Lo mot de Santa-Cmlara d'aqueste projècte es estat apondut o modificat",
-        de: "Das Passwort für dieses Projekt wurde hinzugefügt oder geändert.",
+      password_added_or_changed: {
+        fr: "Le mot de passe de ce contenu a été ajouté ou modifié.",
+        en: "The password for this content has been added or changed.",
       },
-      enter_password_to_reopen_project: {
-        fr: "Entrez le nouveau mot de passe pour accéder à nouveau à",
-        en: "Enter the new password to reopen project",
-        nl: "Voer het nieuwe wachtwoord in om opnieuw toegang te krijgen",
-        oc: "Dintratz lo novèl mot de santa-Clara per accedir tornar mai a",
-        de: "Geben Sie das neue Passwort für den erneuten Zugriff ein.",
+      enter_password_to_reopen: {
+        fr: "Entrez le nouveau mot de passe pour le rouvrir",
+        en: "Enter the new password to reopen",
       },
       enter_password_to_select: {
         fr: "Renseignez le mot de passe du projet pour pouvoir le sélectionner",
@@ -2886,9 +3386,29 @@ module.exports = (function () {
         en: "New message in chat ",
       },
       if_only_authors_select_authors: {
-        fr: "Sélectionnez au moins un auteur qui pourra accéder à ce contenu",
+        fr:
+          "Sélectionnez au moins un auteur qui pourra accéder et modifier ce contenu",
         en:
-          "Select at least one author that will be able to access that content",
+          "Select at least one author who will be able to access and edit this content",
+      },
+      access_or_editing_restricted_to_authors: {
+        fr:
+          "Attention : la modification est limité aux auteurs ou aux personnes possédant le mot de passe.",
+        en: "Warning: editing is restricted to authors or with a password",
+      },
+      "account_does_not_exist:": {
+        fr: "Le compte demandé n’existe pas&nbsp;:",
+        en: "The requested account does not exist:",
+      },
+      account_not_associated_to_this_ressource: {
+        fr:
+          "Ce compte existe bien mais n’est pas autorisé à accéder à cette ressource. Avez-vous la bonne URL ?",
+        en:
+          "This account exists but is not associated to this content. Do you have the right link?",
+      },
+      option_already_exists: {
+        fr: "Cette option existe déjà",
+        en: "This option already exists",
       },
     },
   };

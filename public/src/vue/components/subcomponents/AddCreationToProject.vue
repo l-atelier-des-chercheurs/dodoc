@@ -1,11 +1,14 @@
 <template>
-  <div class="m_addcreationtoproject">
+  <div
+    class="m_addcreationtoproject"
+    v-if="$root.projects_that_are_editable.length > 0"
+  >
     <div class="margin-bottom-small">
       <label v-html="$t('add_to_project')" />
       <div class="flex-nowrap">
         <select v-model="upload_to_folder">
           <option
-            v-for="project in all_projects"
+            v-for="project in $root.projects_that_are_editable"
             :key="project.slugFolderName"
             :value="project.slugFolderName"
             >{{ project.name }}</option
@@ -45,17 +48,13 @@ export default {
     if (this.$root.do_navigation.current_slugProjectName) {
       this.upload_to_folder = this.$root.do_navigation.current_slugProjectName;
     } else {
-      this.upload_to_folder = this.all_projects[0].slugFolderName;
+      this.upload_to_folder = this.$root.projects_that_are_editable[0].slugFolderName;
     }
   },
   beforeDestroy() {},
 
   watch: {},
-  computed: {
-    all_projects() {
-      return this.$root.projects_that_are_accessible;
-    },
-  },
+  computed: {},
   methods: {
     addTempMediaToFolder() {
       let caption = this.$t("cooking_pot") + " / " + this.publication.name;

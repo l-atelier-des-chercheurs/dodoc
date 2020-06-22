@@ -6,11 +6,11 @@
         v-for="tag in tags"
         :key="tag.text"
         @click="removeTag(tag.text)"
+        :disabled="read_only"
         class="can_be_removed"
         :class="['tagcolorid_' + (parseInt(tag.text, 36) % 2)]"
       >{{ tag.text }}</button>
-
-      <div class="new-tag-input-wrapper" :key="'new-tag-input'">
+      <div class="new-tag-input-wrapper" :key="'new-tag-input'" v-if="!read_only">
         <input
           type="text"
           class="new-tag-input"
@@ -40,7 +40,7 @@
       </div>
     </transition-group>
 
-    <div class="m_keywordField">
+    <div class="m_keywordField" v-if="!read_only">
       <button
         type="button"
         key="show_all_keywords"
@@ -48,11 +48,15 @@
         @click="show_all_keywords = !show_all_keywords"
         class="m_keywordField--show_all_keywords"
       >
-        <template v-if="!show_all_keywords">{{ $t("show_all_keywords") }}</template>
+        <template v-if="!show_all_keywords">
+          {{
+          $t("show_all_keywords")
+          }}
+        </template>
         <template v-else>{{ $t("hide_all_keywords") }}</template>
       </button>
 
-      <div v-if="allKeywordsExceptCurrent.length > 0" class="autocomplete">
+      <div v-if="allKeywordsExceptCurrent.length > 0 && show_all_keywords" class="autocomplete">
         <label>{{ $t("all_tags") }}</label>
         <div>
           <button
@@ -71,7 +75,14 @@
 import { createTags } from "@johmun/vue-tags-input";
 
 export default {
-  props: ["keywords"],
+  props: {
+    keywords: Array,
+    read_only: Boolean,
+    type: {
+      default: "projects",
+      type: String
+    }
+  },
   components: {},
   data() {
     return {
@@ -97,11 +108,13 @@ export default {
       if (this.tag.length === 0) {
         return [];
       }
-      const fitting_keywords = this.$root.allKeywords.filter(
-        i =>
-          new RegExp(this.tag, "i").test(i.text) &&
-          !this.tags.find(t => t.text === i.text)
-      );
+      const fitting_keywords = this.$root
+        .allKeywords({ type: this.type })
+        .filter(
+          i =>
+            new RegExp(this.tag, "i").test(i.text) &&
+            !this.tags.find(t => t.text === i.text)
+        );
       return fitting_keywords.slice(0, 2);
       // return fitting_keywords;
       // return this.$root.allKeywords.filter(i => i.text.toLowerCase().startsWith(this.tag.toLowerCase()) && !this.tags.find(t => t.text === i.text));
@@ -116,9 +129,9 @@ export default {
       return false;
     },
     allKeywordsExceptCurrent() {
-      return this.$root.allKeywords.filter(
-        i => !this.tags.find(t => t.text === i.text)
-      );
+      return this.$root
+        .allKeywords({ type: this.type })
+        .filter(i => !this.tags.find(t => t.text === i.text));
     }
   },
   methods: {
@@ -135,6 +148,7 @@ export default {
       this.tag = "";
     },
     removeTag: function(tag_text) {
+      if (this.read_only) return;
       this.tags = this.tags.filter(t => t.text !== tag_text);
       this.sendTags(this.tags);
     },

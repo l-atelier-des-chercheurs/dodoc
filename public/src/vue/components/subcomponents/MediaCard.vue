@@ -1,12 +1,13 @@
 <template>
   <div
-    class="m_media"
+    class="m_mediaCard"
     :class="{
       'is--inPubli': is_media_in_publi,
       'is--fav': media.fav,
       'is--ownMedia': media_made_by_current_author,
       'is--selected': is_selected,
     }"
+    v-if="!media._isAbsent"
   >
     <div>
       <figure
@@ -18,7 +19,7 @@
         :class="{ 'is--hovered': is_hovered }"
       >
         <div>
-          <div class="m_media--topbar m_metaField padding-sides-verysmall">
+          <div class="m_mediaCard--topbar m_metaField padding-sides-verysmall">
             <div>
               <svg
                 v-if="media.fav"
@@ -55,18 +56,19 @@
                   type="checkbox"
                   v-model="local_is_selected"
                   @change="$emit('toggleSelect')"
+                  :class="{ disabled: !can_edit_media }"
                 />
               </label>
             </div>
           </div>
           <MediaContent
-            v-model="media.content"
+            v-model="media_content"
             :context="'preview'"
             :slugFolderName="slugProjectName"
             :media="media"
             :preview_size="preview_size"
           />
-          <figcaption class="m_media--caption" v-if="!!media.caption">
+          <figcaption class="m_mediaCard--caption" v-if="!!media.caption">
             <span>{{ media.caption }}</span>
           </figcaption>
 
@@ -78,12 +80,12 @@
                   media.type
                 )
               "
-              class="m_media--add_to_recipe"
+              class="m_mediaCard--add_to_recipe"
               @click.stop="addToCurrentPubli()"
             >
               <button
                 type="button"
-                class="button_addToPubli button-greenthin button-square"
+                class="button_addToPubli bg-bleuvert button-square"
                 :content="instructions_depending_on_media_in_publi"
                 @click.stop="addToCurrentPubli()"
                 v-tippy="{
@@ -98,6 +100,12 @@
           </transition>
         </div>
 
+        <ClientsCheckingOut
+          :type="'projects'"
+          :slugFolderName="slugProjectName"
+          :metaFileName="media.metaFileName"
+        />
+
         <figcaption v-if="is_hovered && false">
           <div class="m_metaField" v-if="!!media.type">
             <div>{{ $t("type") }}</div>
@@ -110,6 +118,7 @@
           <DateField :title="'created'" :date="media.date_created" />
           <DateField :title="'edited'" :date="media.date_modified" />
         </figcaption>
+
         <!-- <nav>
           <button 
             type="button" 
@@ -126,17 +135,20 @@
 <script>
 import MediaContent from "./MediaContent.vue";
 import { setTimeout } from "timers";
+import ClientsCheckingOut from "../subcomponents/ClientsCheckingOut.vue";
 
 export default {
   props: {
     media: Object,
     slugProjectName: String,
     metaFileName: String,
+    can_edit_media: Boolean,
     preview_size: Number,
     is_selected: Boolean,
   },
   components: {
     MediaContent,
+    ClientsCheckingOut,
   },
   data() {
     return {
@@ -161,6 +173,10 @@ export default {
     },
   },
   computed: {
+    media_content() {
+      if (this.media.type !== "text") return this.media.content;
+      return this.media.content;
+    },
     is_media_in_publi() {
       return (
         Object.values(this.$root.current_publication_medias).findIndex(
@@ -235,8 +251,10 @@ export default {
         console.log("METHODS • MediaCard: addToPubli");
       }
       this.$eventHub.$emit("publication.addMedia", {
-        slugProjectName: this.slugProjectName,
-        metaFileName: this.metaFileName,
+        values: {
+          slugProjectName: this.slugProjectName,
+          metaFileName: this.metaFileName,
+        },
       });
     },
   },

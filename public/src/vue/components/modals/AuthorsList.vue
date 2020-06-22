@@ -4,6 +4,7 @@
     @close="$emit('close')"
     :typeOfModal="'LargeAndScroll'"
     :prevent_close="prevent_close"
+    :is_loading="is_loading"
   >
     <template slot="header">
       <span class>{{ $t("authors_list") }}</span>
@@ -38,20 +39,22 @@
           </div>
         </div>
         <transition-group tag="div" class="m_authorsList" name="list-complete">
-          <div class="m_authorsList--createAuthor" :key="'createAuthor'">
-            <button
-              type="button"
-              @click="openCreateAuthorPanel = true"
-              v-if="openCreateAuthorPanel == false"
-              class="m_authorsList--createAuthor--createButton bg-bleumarine"
-            >
-              {{ $t("create_an_author") }}
-            </button>
-            <CreateAuthor
-              v-else
-              @close="openCreateAuthorPanel = false"
-              :read_only="read_only"
-            />
+          <div class="" :key="'createAuthor'">
+            <div class="m_authorsList--createAuthor">
+              <button
+                type="button"
+                @click="openCreateAuthorPanel = true"
+                v-if="openCreateAuthorPanel == false"
+                class="m_authorsList--createAuthor--createButton bg-bleumarine"
+              >
+                {{ $t("create_an_author") }}
+              </button>
+              <CreateAuthor
+                v-else
+                @close="openCreateAuthorPanel = false"
+                :read_only="read_only"
+              />
+            </div>
           </div>
 
           <template v-if="Object.keys(sortedAuthors).length > 0">
@@ -71,7 +74,6 @@
 <script>
 import Author from "./../subcomponents/Author.vue";
 import Modal from "./BaseModal.vue";
-import ImageSelect from "./../subcomponents/ImageSelect.vue";
 import CreateAuthor from "./../subcomponents/CreateAuthor.vue";
 
 export default {
@@ -95,12 +97,17 @@ export default {
       openCreateAuthorPanel: false,
       editAuthorSlug: false,
       show_detail: false,
+      is_loading: false,
     };
   },
 
   created() {},
   mounted() {
+    this.is_loading = true;
     this.$socketio.listFolders({ type: "authors" });
+    this.$eventHub.$once("socketio.authors.folders_listed", () => {
+      this.is_loading = false;
+    });
   },
   beforeDestroy() {},
 

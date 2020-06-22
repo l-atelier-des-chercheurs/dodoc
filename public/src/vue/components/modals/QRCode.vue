@@ -1,18 +1,32 @@
 <template>
-  <Modal @close="$emit('close')" :read_only="read_only" :typeOfModal="'SmallAndScroll'">
+  <Modal
+    @close="$emit('close')"
+    :read_only="read_only"
+    :typeOfModal="'SmallAndScroll'"
+  >
     <template slot="header">
-      <span class>{{ $t('remote_access') }}</span>
+      <span class>{{ $t("remote_access") }}</span>
     </template>
 
     <template slot="preview">
-      <div class="m_selectedQRShareMode hide_on_print">
+      <div class="m_sideBySideSwitches hide_on_print">
         <label for="CreateQRCode">
-          <input type="radio" id="CreateQRCode" value="CreateQRCode" v-model="current_mode" />
-          {{ $t('share_access') }}
+          <input
+            type="radio"
+            id="CreateQRCode"
+            value="CreateQRCode"
+            v-model="current_mode"
+          />
+          {{ $t("share_access") }}
         </label>
         <label for="ScanQRCode">
-          <input type="radio" id="ScanQRCode" value="ScanQRCode" v-model="current_mode" />
-          {{ $t('scan_qr_code') }}
+          <input
+            type="radio"
+            id="ScanQRCode"
+            value="ScanQRCode"
+            v-model="current_mode"
+          />
+          {{ $t("scan_qr_code") }}
         </label>
       </div>
 
@@ -38,42 +52,16 @@ export default {
   components: {
     Modal,
     CreateQRCode,
-    ScanQRCode
+    ScanQRCode,
   },
   data() {
     return {
-      current_mode: "CreateQRCode"
+      current_mode: "CreateQRCode",
     };
   },
   mounted() {},
   computed: {},
-  methods: {}
+  methods: {},
 };
 </script>
-<style lang="scss">
-.m_selectedQRShareMode {
-  display: flex;
-  flex-flow: row wrap;
-
-  > * {
-    flex: 1 1 0;
-    margin: 0;
-    padding: 0;
-    min-width: 150px;
-    border-bottom: 2px solid var(--c-gris-clair);
-    border-right: 2px solid var(--c-gris-clair);
-    display: flex;
-    align-items: center;
-
-    input {
-      display: block;
-      flex: 0 0 auto;
-      margin: calc(var(--spacing) / 2);
-    }
-
-    &:last-child {
-      border-right: none;
-    }
-  }
-}
-</style>
+<style lang="scss"></style>

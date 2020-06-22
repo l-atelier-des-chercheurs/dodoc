@@ -23,17 +23,117 @@
         />
       </div>
 
-      <!-- Template -->
-      <!-- <div class="margin-bottom-small">
-        <label>{{ $t('format') }}</label>
-        <select v-model="publidata.template">
-          <option v-for="template in $root.state.list_of_publications_templates"
-            :key="template"
-            :value="template"
-            v-html="$t(template)"
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_model_options }"
+            @click="show_model_options = !show_model_options"
+          >
+            {{ $t("model") }}
+          </button>
+        </label>
+        <div v-if="show_model_options">
+          <div class="margin-bottom-small">
+            <div>
+              <span class="switch switch-xs">
+                <input
+                  type="checkbox"
+                  class="switch"
+                  id="is_model_switch"
+                  v-model="publidata.is_model"
+                />
+                <label
+                  for="is_model_switch"
+                  :class="{ 'c-rouge': publidata.is_model }"
+                  >{{ $t("publi_is_model") }}</label
+                >
+              </span>
+            </div>
+            <small>{{ $t("publi_is_model_instructions") }}</small>
+          </div>
+
+          <div class="margin-bottom-small" v-if="!publidata.is_model">
+            <div>
+              <span class="switch switch-xs">
+                <input
+                  type="checkbox"
+                  class="switch"
+                  id="follows_model_switch"
+                  v-model="publi_follows_model"
+                />
+                <label
+                  for="follows_model_switch"
+                  :class="{ 'c-rouge': publi_follows_model }"
+                  >{{ $t("select_publi_model") }}</label
+                >
+              </span>
+            </div>
+            <small>{{ $t("select_publi_model_instructions") }}</small>
+          </div>
+          <div v-if="publi_follows_model && !publidata.is_model">
+            <!-- <pre>{{ model_recipes_of_this_template }}</pre> -->
+            <small v-if="model_recipes_of_this_template.length === 0">{{
+              $t("no_models_yet")
+            }}</small>
+            <select
+              :disabled="model_recipes_of_this_template.length === 0"
+              v-model="publidata.follows_model"
+            >
+              <option value>** {{ $t("none") }} **</option>
+              <option
+                v-for="model in model_recipes_of_this_template"
+                :key="model.slugFolderName"
+                :value="model.slugFolderName"
+                >{{ model.name }}</option
+              >
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Author(s) -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_authors }"
+            @click="show_authors = !show_authors"
+          >
+            {{ $t("author") }}
+          </button>
+        </label>
+
+        <div v-if="show_authors">
+          <AuthorsInput :currentAuthors.sync="publidata.authors" />
+          <small>{{ $t("author_instructions") }}</small>
+        </div>
+      </div>
+
+      <!-- Access control -->
+      <div class="margin-bottom-small">
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_access_control }"
+            @click="show_access_control = !show_access_control"
+          >
+            {{ $t("manage_access") }}
+          </button>
+        </label>
+
+        <div v-if="show_access_control">
+          <EditAccessControl
+            :editing_limited_to.sync="publidata.editing_limited_to"
+            :viewing_limited_to.sync="publidata.viewing_limited_to"
+            :password.sync="publidata.password"
+            :authors.sync="publidata.authors"
           />
-        </select>
-      </div>-->
+        </div>
+      </div>
 
       <div class="margin-bottom-small">
         <label>
@@ -60,29 +160,6 @@
         </div>
       </div>
 
-      <!-- Password -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_password }"
-            @click="show_password = !show_password"
-          >
-            {{ $t("password") }}
-          </button>
-        </label>
-
-        <template v-if="show_password">
-          <input
-            type="password"
-            v-model="publidata.password"
-            autocomplete="new-password"
-          />
-          <small>{{ $t("password_instructions") }}</small>
-        </template>
-      </div>
-
       <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>
@@ -95,33 +172,12 @@
             {{ $t("keywords") }}
           </button>
         </label>
-        <template v-if="show_keywords">
+        <div v-if="show_keywords">
           <TagsInput
+            :type="'publications'"
             @tagsChanged="(newTags) => (publidata.keywords = newTags)"
           />
-        </template>
-      </div>
-
-      <!-- Author(s) -->
-      <div class="margin-bottom-small">
-        <label>
-          <button
-            type="button"
-            class="button-nostyle text-uc button-triangle"
-            :class="{ 'is--active': show_authors }"
-            @click="show_authors = !show_authors"
-          >
-            {{ $t("author") }}
-          </button>
-        </label>
-
-        <template v-if="show_authors">
-          <AuthorsInput
-            :currentAuthors="publidata.authors"
-            @authorsChanged="(newAuthors) => (publidata.authors = newAuthors)"
-          />
-          <small>{{ $t("author_instructions") }}</small>
-        </template>
+        </div>
       </div>
     </template>
 
@@ -130,6 +186,7 @@
 </template>
 <script>
 import Modal from "./BaseModal.vue";
+import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 
@@ -147,6 +204,8 @@ export default {
   },
   components: {
     Modal,
+    EditAccessControl,
+
     TagsInput,
     AuthorsInput,
   },
@@ -154,6 +213,10 @@ export default {
     return {
       publidata: {
         name: this.default_name,
+        editing_limited_to: this.$root.current_author
+          ? "only_authors"
+          : "everybody",
+        viewing_limited_to: "everybody",
         password: "",
         template: this.default_template,
         keywords: [],
@@ -161,12 +224,17 @@ export default {
           ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
           : [],
         attached_to_project: this.$root.do_navigation.current_slugProjectName,
+        is_model: false,
+        follows_model: "",
       },
 
       show_attached_project: this.$root.do_navigation.current_slugProjectName,
       show_password: false,
       show_keywords: false,
       show_authors: this.$root.current_author,
+      show_model_options: true,
+      publi_follows_model: false,
+      show_access_control: true,
     };
   },
   watch: {
@@ -178,7 +246,15 @@ export default {
     },
   },
   mounted() {},
-  computed: {},
+  computed: {
+    model_recipes_of_this_template() {
+      // return publications with template === identical
+      const publis = Object.values(window.store.publications).filter(
+        (p) => this.publidata.template === p.template && p.is_model === true
+      );
+      return publis;
+    },
+  },
   methods: {
     newPublication: function (event) {
       if (this.$root.state.dev_mode === "debug") {
@@ -207,13 +283,29 @@ export default {
         return false;
       }
 
+      if (
+        this.publidata.editing_limited_to === "only_authors" &&
+        this.publidata.authors.length === 0
+      ) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.if_only_authors_select_authors"));
+        this.show_authors = true;
+        return false;
+      }
+
       let publidata = {
         name,
+        editing_limited_to: this.publidata.editing_limited_to,
+        viewing_limited_to: this.publidata.viewing_limited_to,
         password: this.publidata.password,
         template: this.publidata.template,
         authors: this.publidata.authors,
         keywords: this.publidata.keywords,
         attached_to_project: this.publidata.attached_to_project,
+        is_model: this.publidata.is_model,
+        follows_model: this.publidata.follows_model,
       };
 
       if (publidata.template === "page_by_page") {
@@ -259,39 +351,13 @@ export default {
           },
         ];
       }
-      this.$eventHub.$on(
-        "socketio.folder_created_or_updated",
-        this.newPublicationCreated
-      );
-      this.$root.createFolder({ type: "publications", data: publidata });
-    },
-    newPublicationCreated: function (pdata) {
-      if (pdata.id === this.$root.justCreatedFolderID) {
-        this.$eventHub.$off(
-          "socketio.folder_created_or_updated",
-          this.newPublicationCreated
-        );
-        this.$root.justCreatedFolderID = false;
 
-        if (pdata.password === "has_pass") {
-          this.$auth.updateFoldersPasswords({
-            publications: {
-              [pdata.slugFolderName]: this.publidata.password,
-            },
-          });
-          this.$socketio.sendAuth();
-
-          this.$eventHub.$once("socketio.authentificated", () => {
-            this.$emit("close", "");
-            this.$root.openPublication(pdata.slugFolderName);
-          });
-        } else {
-          this.$nextTick(() => {
-            this.$emit("close", "");
-            this.$root.openPublication(pdata.slugFolderName);
-          });
-        }
-      }
+      this.$root
+        .createFolder({ type: "publications", data: publidata })
+        .then((pdata) => {
+          this.$emit("close", "");
+          this.$root.openPublication(pdata.slugFolderName);
+        });
     },
   },
 };

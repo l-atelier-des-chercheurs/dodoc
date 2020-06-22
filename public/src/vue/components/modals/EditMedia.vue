@@ -14,12 +14,20 @@
     :media_navigation="true"
   >
     <template slot="header">
-      <div class>{{ $t("edit_the_media") }}</div>
+      <div class>
+        <template v-if="can_edit_media">{{ $t("edit_the_media") }}</template>
+        <template v-else>{{ $t("media") }}</template>
+      </div>
       <small class="font-normal">{{ media.media_filename }}</small>
+      <ClientsCheckingOut
+        :type="'projects'"
+        :slugFolderName="slugProjectName"
+        :metaFileName="media.metaFileName"
+      />
     </template>
 
     <template slot="sidebar">
-      <!-- <small>{{ this.$root.allAuthors }}</small> -->
+      <!-- <small>{{ this.$root.all_authors }}</small> -->
 
       <div v-if="!read_only" class="m_modal--buttonrow">
         <!-- CONFLICT WITH QR PRINTING -->
@@ -100,6 +108,7 @@
 
         <button
           type="button"
+          v-if="can_edit_media"
           class="buttonLink"
           :class="{ 'is--active': showCopyToProjectOptions }"
           @click="showCopyToProjectOptions = !showCopyToProjectOptions"
@@ -155,7 +164,9 @@
           class="buttonLink"
           :class="{ 'is--active': show_edit_media_options }"
           @click="show_edit_media_options = !show_edit_media_options"
-          v-if="media.type === 'image' || media.type === 'video'"
+          v-if="
+            can_edit_media && (media.type === 'image' || media.type === 'video')
+          "
         >
           <svg
             version="1.1"
@@ -255,6 +266,7 @@
           type="button"
           class="buttonLink hide_on_print"
           @click.prevent="removeMedia()"
+          v-if="can_edit_media"
           :disabled="read_only"
         >
           <svg
@@ -284,14 +296,17 @@
 
       <div class="hide_on_print">
         <!-- Fav or not -->
-        <div class="margin-bottom-small">
+        <div
+          class="margin-bottom-small"
+          v-if="can_edit_media || (!can_edit_media && !!mediadata.fav)"
+        >
           <span class="switch switch-xs">
             <input
               type="checkbox"
               class="switch"
               id="favswitch_editmedia"
               v-model="mediadata.fav"
-              :readonly="read_only"
+              :disabled="!can_edit_media"
             />
             <label
               for="favswitch_editmedia"
@@ -322,59 +337,84 @@
           </span>
         </div>
 
-        <div class="m_metaField" v-if="!!media.type">
-          <div>{{ $t("type") }}</div>
-          <div>{{ $t(media.type) }}</div>
-        </div>
-        <div class="m_metaField" v-if="media_size">
-          <div>{{ $t("size") }}</div>
-          <div>{{ $root.formatBytes(media_size) }}</div>
-        </div>
-        <div class="m_metaField" v-if="media_dimensions">
-          <div>{{ $t("dimensions") }}</div>
-          <div>{{ media_dimensions }}</div>
-        </div>
-
-        <div
-          class="m_metaField"
-          v-if="!!project_name && $root.do_navigation.view !== 'ProjectView'"
-        >
-          <div>{{ $t("project") }}</div>
-          <div>
+        <div class="margin-vert-verysmall">
+          <label>
             <button
               type="button"
-              @click="minimizeMediaAndShowProject"
-              :content="$t('open_project')"
-              v-tippy="{
-                placement: 'top',
-                delay: [600, 0],
-              }"
-              style="text-transform: initial;"
+              class="button-nostyle text-uc button-triangle"
+              :class="{ 'is--active': show_media_infos }"
+              @click="show_media_infos = !show_media_infos"
             >
-              {{ project_name }}
-              ↑
+              {{ $t("infos_about_the_media") }}
             </button>
-            <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
-          </div>
-        </div>
-        <!-- <div class="m_metaField" v-if="!!media.authors">
+          </label>
+
+          <div v-if="show_media_infos" class="margin-vert-verysmall">
+            <div class="m_metaField" v-if="!!media.type">
+              <div>{{ $t("type") }}</div>
+              <div>{{ $t(media.type) }}</div>
+            </div>
+            <div class="m_metaField" v-if="media_size && media.type !== 'text'">
+              <div>{{ $t("size") }}</div>
+              <div>{{ $root.formatBytes(media_size) }}</div>
+            </div>
+            <div class="m_metaField" v-if="media_dimensions">
+              <div>{{ $t("dimensions") }}</div>
+              <div>{{ media_dimensions }}</div>
+            </div>
+
+            <div
+              class="m_metaField"
+              v-if="
+                !!project_name &&
+                $root.current_project.slugFolderName !== slugProjectName
+              "
+            >
+              <div>{{ $t("project") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="minimizeMediaAndShowProject"
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial;"
+                >
+                  {{ project_name }}
+                  ↑
+                </button>
+                <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
+              </div>
+            </div>
+            <!-- <div class="m_metaField" v-if="!!media.authors">
           <div>
             {{ $t('author') }}
           </div>
           <div>
             {{ media.authors }}
           </div>
-        </div>-->
+            </div>-->
 
-        <DateField :title="'created'" :date="media.date_created" />
+            <DateField :title="'created'" :date="media.date_created" />
 
-        <DateField
-          v-if="media.hasOwnProperty('date_uploaded')"
-          :title="'uploaded'"
-          :date="media.date_uploaded"
-        />
+            <DateField
+              v-if="media.hasOwnProperty('date_uploaded')"
+              :title="'uploaded'"
+              :date="media.date_uploaded"
+            />
 
-        <DateField :title="'edited'" :date="media.date_modified" />
+            <DateField
+              v-if="
+                media.hasOwnProperty('date_uploaded') &&
+                media.date_uploaded !== media.date_modified
+              "
+              :title="'edited'"
+              :date="media.date_modified"
+            />
+          </div>
+        </div>
 
         <!-- Caption -->
         <div
@@ -385,7 +425,7 @@
           <br />
           <textarea
             v-model="mediadata.caption"
-            :readonly="read_only"
+            :readonly="read_only || !can_edit_media"
           ></textarea>
         </div>
 
@@ -413,23 +453,21 @@
           <label>{{ $t("keywords") }}</label>
           <TagsInput
             :keywords="mediadata.keywords"
+            :read_only="read_only || !can_edit_media"
             @tagsChanged="(newTags) => (mediadata.keywords = newTags)"
           />
         </div>
 
         <!-- Author(s) -->
-        <div
-          v-if="!read_only || !!mediadata.authors"
-          class="margin-bottom-small"
-        >
+        <div class="margin-bottom-small">
           <label>{{ $t("author") }}</label>
 
           <AuthorsInput
-            :currentAuthors="mediadata.authors"
-            @authorsChanged="(newAuthors) => (mediadata.authors = newAuthors)"
+            :currentAuthors.sync="mediadata.authors"
+            :read_only="read_only || !can_edit_media"
           />
 
-          <small>{{ $t("author_instructions") }}</small>
+          <small v-if="can_edit_media">{{ $t("author_instructions") }}</small>
           <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
           </textarea>-->
         </div>
@@ -443,7 +481,8 @@
         :context="'edit'"
         :slugFolderName="slugProjectName"
         :media="media"
-        :read_only="read_only"
+        :folderType="'projects'"
+        :read_only="read_only || !can_edit_media"
         v-model="mediadata.content"
       />
       <div class="m_mediaOptions"></div>
@@ -458,6 +497,7 @@ import CreateQRCode from "./qr/CreateQRCode.vue";
 import { setTimeout } from "timers";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
+import ClientsCheckingOut from "../subcomponents/ClientsCheckingOut.vue";
 
 export default {
   props: {
@@ -474,8 +514,9 @@ export default {
     DateTime,
     MediaContent,
     CreateQRCode,
-    TagsInput,
     AuthorsInput,
+    TagsInput,
+    ClientsCheckingOut,
   },
   data() {
     return {
@@ -483,6 +524,7 @@ export default {
       showCopyToProjectOptions: false,
       is_minimized: false,
       show_edit_media_options: false,
+      show_media_infos: false,
 
       upload_to_folder: this.slugProjectName,
       is_sending_content_to_server: false,
@@ -530,6 +572,12 @@ export default {
   computed: {
     all_projects() {
       return this.$root.projects_that_are_accessible;
+    },
+    can_edit_media() {
+      return this.$root.canEditFolder({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
     },
     project_name() {
       if (
@@ -591,7 +639,10 @@ export default {
     editThisMedia: function () {
       console.log("editThisMedia");
 
-      this.$eventHub.$once("socketio.projects.listMedia", this.editWereSaved);
+      this.$eventHub.$once(
+        "socketio.projects.media_listed",
+        this.editWereSaved
+      );
 
       this.$root.editMedia({
         type: "projects",
@@ -606,11 +657,13 @@ export default {
 
         // indicate that changes could not be saved after 5 seconds
         setTimeout(() => {
-          this.is_sending_content_to_server = false;
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t("notifications.failed_to_save_media"));
+          if (this.is_sending_content_to_server) {
+            this.is_sending_content_to_server = false;
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(this.$t("notifications.failed_to_save_media"));
+          }
         }, 5000);
       }, 250);
     },
@@ -618,7 +671,7 @@ export default {
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .success(this.$t("notifications.successfully_saved_media"));
+        .success(this.$t("notifications.successfully_saved"));
       this.is_sending_content_to_server = false;
       this.$emit("close", "");
     },

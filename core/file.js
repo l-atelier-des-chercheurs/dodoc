@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const path = require("path"),
   fs = require("fs-extra"),
   validator = require("validator");
@@ -92,7 +92,7 @@ module.exports = (function () {
                         meta.medias = {};
                       }
 
-                      meta.fullFolderPath = thisFolderPath;
+                      // meta.fullFolderPath = thisFolderPath;
 
                       resolve({ [slugFolderName]: meta });
                     })
@@ -145,6 +145,29 @@ module.exports = (function () {
                           resolve();
                         });
                     });
+                  })
+                );
+              }
+
+              // For each folder, find how many medias they have
+              if (
+                global.settings.structure[type].hasOwnProperty("medias") &&
+                global.settings.structure[type].fields.hasOwnProperty(
+                  "number_of_medias"
+                )
+              ) {
+                allFoldersData.push(
+                  new Promise((resolve, reject) => {
+                    dev.logverbose(`Figuring out how many medias they have`);
+                    API.getMediaMetaNames({ type, slugFolderName }).then(
+                      (list_metaFileName) => {
+                        resolve({
+                          [slugFolderName]: {
+                            number_of_medias: list_metaFileName.length,
+                          },
+                        });
+                      }
+                    );
                   })
                 );
               }
@@ -216,7 +239,10 @@ module.exports = (function () {
         const mainFolderPath = api.getFolderPath(baseFolderPath);
 
         _getFolderSlugs(mainFolderPath).then((folders) => {
-          let slugFolderName = api.slug(data.name);
+          const reference_name = data.hasOwnProperty("desired_foldername")
+            ? data.desired_foldername
+            : data.name;
+          let slugFolderName = api.slug(reference_name);
           if (slugFolderName === "") {
             slugFolderName = "untitled";
           }
@@ -457,12 +483,12 @@ module.exports = (function () {
 
           fs.copy(oldFolderPath, newFolderPath)
             .then(() => {
-              API.getFolder({ type, new_slugFolderName }).then(
+              API.getFolder({ type, slugFolderName: new_slugFolderName }).then(
                 (foldersData) => {
                   API.editFolder({
                     type,
                     slugFolderName: new_slugFolderName,
-                    foldersData,
+                    foldersData: foldersData[new_slugFolderName],
                     newFoldersData: {
                       name: new_folder_name,
                     },
@@ -560,9 +586,7 @@ module.exports = (function () {
       return new Promise(function (resolve, reject) {
         dev.logfunction(
           `COMMON — readMediaList: medias_list = ${JSON.stringify(
-            medias_list,
-            null,
-            4
+            medias_list
           )}}`
         );
 
@@ -606,12 +630,16 @@ module.exports = (function () {
         Promise.all(allMediasData)
           .then((mediasMeta) => {
             dev.logverbose(
-              `readMediaList: gathered all metas, now processing : ${JSON.stringify(
-                mediasMeta,
-                null,
-                4
-              )}`
+              `readMediaList: gathered all metas, now processing : 
+              `
             );
+            // ${
+            //     JSON.stringify(
+            //     mediasMeta,
+            //     null,
+            //     4
+            //   )
+            //   }
 
             // reunite array items as a single big object
             let folders_and_medias = {};
@@ -673,7 +701,14 @@ module.exports = (function () {
         let metaFileName;
         if (additionalMeta.hasOwnProperty("media_filename")) {
           mediaName = additionalMeta.media_filename;
-          mediaPath = path.join(api.getFolderPath(slugFolderName), mediaName);
+
+          const baseFolderPath = global.settings.structure[type].path;
+          const mainFolderPath = api.getFolderPath(baseFolderPath);
+
+          let slugFolderPath = api.getFolderPath(
+            path.join(global.settings.structure[type].path, slugFolderName)
+          );
+          mediaPath = path.join(slugFolderPath, mediaName);
           metaFileName = mediaName + global.settings.metaFileext;
         } else if (additionalMeta.hasOwnProperty("desired_filename")) {
           let randomString = (
@@ -815,8 +850,8 @@ module.exports = (function () {
                     resolve();
                   })
                   .catch((err) => {
-                    dev.logverbose(`No EXIF data to read from: ${err}`);
-                    resolve();
+                    dev.error(`No EXIF data to read from: ${err}`);
+                    return resolve();
                   });
               });
               tasks.push(getEXIFTimestamp);
@@ -1111,8 +1146,6 @@ module.exports = (function () {
                 dev.logverbose(`New content: ${data.content}`);
 
                 let updateTextMedia = new Promise((resolve, reject) => {
-                  // Legacy : if no filename in meta file when it is expected in blueprint
-                  // then it means its in the name of the text file
                   function getMediaFilename(meta, metaFileName) {
                     if (
                       global.settings.structure[
@@ -1121,11 +1154,17 @@ module.exports = (function () {
                     ) {
                       if (meta.hasOwnProperty("media_filename")) {
                         return meta.media_filename;
-                      } else {
-                        return new RegExp(
+                      }
+                      // Legacy : if no filename in meta file when it is expected in blueprint
+                      // then it means its in the name of the text file
+                      else {
+                        const metaFileName_without_ext = new RegExp(
                           global.settings.regexpRemoveFileExtension,
                           "i"
                         ).exec(metaFileName)[1];
+
+                        if (metaFileName_without_ext.includes("."))
+                          return metaFileName_without_ext;
                       }
                     }
                   }
@@ -1183,10 +1222,13 @@ module.exports = (function () {
               if (meta.hasOwnProperty("media_filename")) {
                 return meta.media_filename;
               } else {
-                return new RegExp(
+                const metaFileName_without_ext = new RegExp(
                   global.settings.regexpRemoveFileExtension,
                   "i"
                 ).exec(metaFileName)[1];
+
+                if (metaFileName_without_ext.includes("."))
+                  return metaFileName_without_ext;
               }
             } else {
               return "";
@@ -1229,6 +1271,8 @@ module.exports = (function () {
                 type: type + "/" + "medias",
                 slugFolderName: slugFolderName + "/" + metaFileName,
               });
+              cache.del({ type, slugFolderName });
+
               return thumbs.removeMediaThumbs(
                 slugFolderName,
                 type,
@@ -1483,7 +1527,7 @@ module.exports = (function () {
                     fs.copy(origin_path, destination_path, function (err) {
                       if (err) {
                         dev.error(`Failed to copy: ${err}`);
-                        return reject(err);
+                        // return reject(err);
                       }
                       return resolve({
                         media_filename: newFileName,
@@ -1674,10 +1718,13 @@ module.exports = (function () {
                 "media_filename"
               )
             ) {
-              mediaData.media_filename = new RegExp(
+              const metaFileName_without_ext = new RegExp(
                 global.settings.regexpRemoveFileExtension,
                 "i"
               ).exec(metaFileName)[1];
+
+              if (metaFileName_without_ext.includes("."))
+                mediaData.media_filename = metaFileName_without_ext;
             }
 
             if (
@@ -1903,8 +1950,7 @@ module.exports = (function () {
                 global.settings.structure[type].preview.width,
                 global.settings.structure[type].preview.height,
                 {
-                  fit: "inside",
-                  withoutEnlargement: true,
+                  fit: "cover",
                 }
               )
               .flatten({ background: "white" })

@@ -12,13 +12,6 @@
         :src="linkToImageThumb"
         draggable="false"
       />
-      <transition name="slideFromTop" :duration="600">
-        <img
-          v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb"
-          :src="linkToHoveredThumb"
-          draggable="false"
-        />
-      </transition>
     </template>
 
     <template v-else-if="media.type === 'video'">
@@ -81,8 +74,6 @@
         <!-- // TODO : set STL/3d picto -->
       </template>
       <template v-else>
-        <!-- // TODO : load STL in viewer, maybe behind a button in case it is too heavy -->
-        <!-- like a video tag: show image by default, and a button to go "interactive" -->
         <img
           v-if="!interactive_stl_mode"
           :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
@@ -93,18 +84,34 @@
         <iframe v-else :src="`/libs/stl/show_stl.html?mediaURL=${mediaURL}`" />
 
         <div class="mediaContainer--buttons">
-          <button
-            type="button"
-            class="bg-orange button-small"
-            @click="interactive_stl_mode = !interactive_stl_mode"
+          <div
+            class="switch switch-xs switch_twoway button button-thin"
+            @click.self="interactive_stl_mode = !interactive_stl_mode"
           >
-            <template v-if="!interactive_stl_mode">
-              {{ $t("interactive_preview") }}
-            </template>
-            <template v-else>
-              {{ $t("static_preview") }}
-            </template>
-          </button>
+            <label
+              :for="`interactive_preview_${id}`"
+              class="cursor-pointer"
+              :class="{
+                'is--active': !interactive_stl_mode,
+              }"
+            >
+              <span class>{{ $t("static_preview") }}</span>
+            </label>
+
+            <input
+              type="checkbox"
+              class="switch"
+              :id="`interactive_preview_${id}`"
+              v-model="interactive_stl_mode"
+            />
+            <label
+              :for="`interactive_preview_${id}`"
+              :class="{
+                'is--active': interactive_stl_mode,
+              }"
+              >{{ $t("interactive_preview") }}</label
+            >
+          </div>
         </div>
       </template>
     </template>
@@ -143,7 +150,10 @@
         v-if="context === 'edit'"
         v-model="htmlForEditor"
         :media="media"
+        :read_only="read_only"
         :slugFolderName="slugFolderName"
+        :enable_collaboration="true"
+        :type="folderType"
         ref="textField"
       />
       <div v-else class="mediaTextContent">
@@ -206,7 +216,7 @@ export default {
   props: {
     slugFolderName: String,
     media: Object,
-    subfolder: {
+    folderType: {
       type: String,
       default: "",
     },
@@ -223,7 +233,6 @@ export default {
       type: String,
       default: "…",
     },
-    is_hovered: Boolean,
     read_only: {
       type: Boolean,
       default: true,
@@ -256,6 +265,8 @@ export default {
       },
       htmlForEditor: this.value,
       interactive_stl_mode: false,
+
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       plyr_options: {
         controls: [
@@ -297,6 +308,15 @@ export default {
         ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`
         : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
     },
+    subfolder: function () {
+      switch (this.folderType) {
+        case "publications":
+          return "_publications/";
+        case "stopmotions":
+          return "_stopmotions/";
+      }
+      return "";
+    },
     thumbRes: function () {
       return this.context === "preview"
         ? this.preview_size
@@ -329,7 +349,9 @@ export default {
       if (
         // if image is gif and context is not 'preview', let’s show the original gif
         this.context !== "preview" &&
-        this.mediaURL.toLowerCase().endsWith(".gif")
+        (this.mediaURL.toLowerCase().endsWith(".gif") ||
+          this.mediaURL.toLowerCase().endsWith(".svg") ||
+          this.mediaURL.toLowerCase().endsWith(".png"))
       ) {
         return this.mediaURL;
       }
@@ -352,8 +374,7 @@ export default {
     imageSrcSetAttr: function () {
       if (
         this.element_width_for_sizes === 0 ||
-        this.mediaURL.toLowerCase().endsWith(".gif") ||
-        this.context === "full"
+        this.mediaURL.toLowerCase().endsWith(".gif")
       ) {
         return;
       }
@@ -361,8 +382,12 @@ export default {
       // get all available sizes
       const img_srcset = this.media.thumbs.reduce((acc, t) => {
         if (t.hasOwnProperty("path")) {
-          // acc.push(encodeURIComponent(t.path) + ' ' + t.size + 'w');
-          acc.push(t.path + " " + t.size + "w");
+          const path =
+            this.$root.state.mode === "export_publication"
+              ? "./" + t.path
+              : "/" + t.path;
+
+          acc.push(path + " " + t.size + "w");
         }
         return acc;
       }, []);
@@ -373,17 +398,6 @@ export default {
         return;
       }
       return this.element_width_for_sizes + "px";
-    },
-    linkToHoveredThumb: function () {
-      let pathToSmallestThumb = this.media.thumbs.filter(
-        (m) => m.size === this.thumbResHovered
-      )[0].path;
-
-      const url =
-        this.$root.state.mode === "export_publication"
-          ? "./" + pathToSmallestThumb
-          : "/" + pathToSmallestThumb;
-      return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
   },
   methods: {
@@ -405,12 +419,14 @@ export default {
         return this.mediaURL;
       }
 
-      let firstThumbs = this.media.thumbs.filter((t) => !!t && t[opt] === 0);
-      if (!firstThumbs || firstThumbs.length === 0) return;
+      let firstThumbs = this.media.thumbs.find((t) => !!t && t[opt] === 0);
 
-      let pathToSmallestThumb = firstThumbs[0].thumbsData.filter(
-        (m) => m.size === this.thumbRes
-      )[0].path;
+      const small_thumb = firstThumbs.thumbsData.find(
+        (m) => m && m.size === this.thumbRes
+      );
+      if (!small_thumb) return this.mediaURL;
+
+      let pathToSmallestThumb = small_thumb.path;
 
       let url =
         this.$root.state.mode === "export_publication"
@@ -429,7 +445,12 @@ export default {
       // get all available sizes
       const img_srcset = firstThumbs[0].thumbsData.reduce((acc, t) => {
         if (t.hasOwnProperty("path")) {
-          acc.push(t.path + " " + t.size + "w");
+          const path =
+            this.$root.state.mode === "export_publication"
+              ? "./" + t.path
+              : "/" + t.path;
+
+          acc.push(path + " " + t.size + "w");
         }
         return acc;
       }, []);

@@ -2,6 +2,10 @@
   <div class="m_authorField">
     <button
       v-for="author_slug in all_authors_slugs"
+      v-if="
+        !read_only ||
+        (read_only && authors.some((a) => a.slugFolderName === author_slug))
+      "
       type="button"
       :key="author_slug"
       :class="{
@@ -10,6 +14,7 @@
           $root.current_author &&
           $root.current_author.slugFolderName === author_slug,
       }"
+      :disabled="read_only"
       @click="toggleAuthorName(author_slug)"
     >
       {{ $root.getAuthor(author_slug).name }}
@@ -19,7 +24,8 @@
       @click="show_all_authors = true"
       v-if="
         max_authors_displayed_at_first <= all_authors_slugs.length &&
-        !show_all_authors
+        !show_all_authors &&
+        !read_only
       "
       class="m_authorField--show_all_authors"
       v-html="$t('show_all_authors')"
@@ -28,13 +34,19 @@
 </template>
 <script>
 export default {
-  props: ["currentAuthors"],
+  props: {
+    currentAuthors: Array,
+    read_only: {
+      type: Boolean,
+      default: false,
+    },
+  },
   components: {},
   data() {
     return {
-      authors: !!this.currentAuthors ? this.currentAuthors.slice() : [],
       show_all_authors: false,
       max_authors_displayed_at_first: 8,
+      authors: [],
     };
   },
 
@@ -44,7 +56,15 @@ export default {
   },
   beforeDestroy() {},
 
-  watch: {},
+  watch: {
+    currentAuthors: {
+      handler() {
+        this.authors = !!this.currentAuthors ? this.currentAuthors.slice() : [];
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   computed: {
     all_authors_slugs() {
       let _all_authors_slugs = [];
@@ -57,7 +77,7 @@ export default {
           _all_authors_slugs.push(a.slugFolderName);
       });
 
-      this.$root.allAuthors.map((a) => {
+      this.$root.all_authors.map((a) => {
         if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
           _all_authors_slugs.push(a.slugFolderName);
       });
@@ -81,7 +101,7 @@ export default {
           slugFolderName: author_slug,
         });
       }
-      this.$emit("authorsChanged", this.authors);
+      this.$emit("update:currentAuthors", this.authors);
     },
   },
 };

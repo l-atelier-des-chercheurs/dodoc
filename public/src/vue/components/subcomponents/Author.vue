@@ -12,19 +12,15 @@
       v-else
       class="m_author"
       :class="{
-        'is--selected':
-          author.slugFolderName === $root.current_author.slugFolderName,
+        'is--selected': is_logged_in_as_author,
         'is--editMode': edit_author_mode,
       }"
-      @click.stop="
-        author.slugFolderName !== $root.current_author.slugFolderName &&
-        can_login_as_author
-          ? setAuthorWithoutPassword()
-          : (show_input_password_field = true)
-      "
     >
       <button
-        v-if="can_login_as_author"
+        v-if="
+          (can_login_as_author && is_logged_in_as_author) ||
+          $root.current_author_is_admin
+        "
         type="button"
         class="buttonLink m_author--editButton"
         @click.stop="edit_author_mode = !edit_author_mode"
@@ -52,7 +48,10 @@
       </button>
 
       <button
-        v-if="can_login_as_author"
+        v-if="
+          (can_login_as_author && is_logged_in_as_author) ||
+          $root.current_author_is_admin
+        "
         type="button"
         class="buttonLink m_author--removeButton"
         @click.stop="removeAuthor(author)"
@@ -84,12 +83,203 @@
           v-if="!!author.preview"
           width="100"
           height="100"
-          :src="urlToPortrait(author.slugFolderName, author.preview)"
+          :src="urlToPortrait(author.preview)"
           draggable="false"
+          @click.stop="
+            !is_logged_in_as_author && can_login_as_author
+              ? setAuthorWithoutPassword()
+              : author.password === 'has_pass'
+              ? (show_input_password_field = true)
+              : ''
+          "
         />
         <div class="m_author--name">{{ author.name }}</div>
+        <div class="m_author--email" v-if="author.email">
+          {{ author.email }}
+        </div>
         <div class="m_author--role" v-if="author.role">
-          <label>{{ author.role }}</label>
+          <label>{{ $t(author.role) }}</label>
+        </div>
+
+        <div class="m_author--connected" v-if="author_is_connected" @click.stop>
+          <label class="">
+            <button
+              type="button"
+              class="button-nostyle padding-none text-uc button-triangle"
+              :class="{ 'is--active': show_connection_information }"
+              @click.stop="
+                show_connection_information = !show_connection_information
+              "
+            >
+              {{ $t("currently_connected") }}
+            </button>
+          </label>
+          <div v-if="show_connection_information && author_looking_at">
+            <div
+              class="m_metaField"
+              v-if="
+                author_looking_at.looking_at_project &&
+                author_looking_at.looking_at_project.slugFolderName &&
+                $root.getFolder({
+                  type: 'projects',
+                  slugFolderName:
+                    author_looking_at.looking_at_project.slugFolderName,
+                })
+              "
+            >
+              <div>{{ $t("project") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="
+                    closeAuthorAndShowProject(
+                      author_looking_at.looking_at_project.slugFolderName
+                    )
+                  "
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial;"
+                >
+                  {{
+                    $root.getFolder({
+                      type: "projects",
+                      slugFolderName:
+                        author_looking_at.looking_at_project.slugFolderName,
+                    }).name
+                  }}
+
+                  ↑
+                </button>
+              </div>
+            </div>
+            <div
+              class="m_metaField"
+              v-if="
+                author_looking_at.editing_media &&
+                author_looking_at.editing_media.slugFolderName &&
+                author_looking_at.editing_media.metaFileName &&
+                $root.getFolder({
+                  type: 'projects',
+                  slugFolderName:
+                    author_looking_at.looking_at_project.slugFolderName,
+                })
+              "
+            >
+              <div>{{ $t("media") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="
+                    closeAuthorAndShowMedia({
+                      slugFolderName:
+                        author_looking_at.looking_at_project.slugFolderName,
+                      metaFileName:
+                        author_looking_at.editing_media.metaFileName,
+                    })
+                  "
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial;"
+                >
+                  {{
+                    $root.getFolder({
+                      type: "projects",
+                      slugFolderName:
+                        author_looking_at.looking_at_project.slugFolderName,
+                    }).name
+                  }}
+                  / {{ author_looking_at.editing_media.metaFileName }}
+
+                  ↑
+                </button>
+              </div>
+            </div>
+            <div
+              class="m_metaField"
+              v-if="
+                author_looking_at.looking_at_publi &&
+                author_looking_at.looking_at_publi.slugFolderName &&
+                $root.getFolder({
+                  type: 'publications',
+                  slugFolderName:
+                    author_looking_at.looking_at_publi.slugFolderName,
+                })
+              "
+            >
+              <div>{{ $t("publication") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="
+                    closeAuthorAndShowPubli(
+                      author_looking_at.looking_at_publi.slugFolderName
+                    )
+                  "
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial;"
+                >
+                  {{
+                    $root.getFolder({
+                      type: "publications",
+                      slugFolderName:
+                        author_looking_at.looking_at_publi.slugFolderName,
+                    }).name
+                  }}
+
+                  ↑
+                </button>
+              </div>
+            </div>
+            <div
+              class="m_metaField"
+              v-if="
+                author_looking_at.looking_at_chat &&
+                author_looking_at.looking_at_chat.slugFolderName &&
+                $root.getFolder({
+                  type: 'chats',
+                  slugFolderName:
+                    author_looking_at.looking_at_chat.slugFolderName,
+                })
+              "
+            >
+              <div>{{ $t("chat") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="
+                    closeAuthorAndShowChat(
+                      author_looking_at.looking_at_chat.slugFolderName
+                    )
+                  "
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial;"
+                >
+                  {{
+                    $root.getFolder({
+                      type: "chats",
+                      slugFolderName:
+                        author_looking_at.looking_at_chat.slugFolderName,
+                    }).name
+                  }}
+                  ↑
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div
@@ -132,7 +322,7 @@
 
           <button
             type="button"
-            class="button bg-bleuvert button-thin"
+            class="button-greenthin"
             @click="submitPassword"
           >
             {{ $t("send") }}
@@ -145,7 +335,7 @@
             author.slugFolderName !== $root.current_author.slugFolderName &&
             can_login_as_author
           "
-          class="buttonLink"
+          class="button-thin bg-bleumarine"
           @click.stop="setAuthorWithoutPassword()"
         >
           {{ $t("login") }}
@@ -153,8 +343,8 @@
         <button
           type="button"
           v-if="author.slugFolderName === $root.current_author.slugFolderName"
-          class="buttonLink"
-          @click.stop="unsetAuthor()"
+          class="button-redthin"
+          @click.stop="$root.unsetAuthor()"
         >
           {{ $t("logout") }}
         </button>
@@ -176,11 +366,16 @@ export default {
     return {
       edit_author_mode: false,
       show_input_password_field: false,
+      show_connection_information: false,
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on("authors.submitPassword", this.submitPassword);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("authors.submitPassword", this.submitPassword);
+  },
   watch: {
     show_input_password_field: function () {
       if (this.show_input_password_field) {
@@ -192,10 +387,32 @@ export default {
   },
   computed: {
     can_login_as_author() {
-      return this.$root.canEditFolder({
+      // not using root’s canEditFolder because authors have some specific props, namely that an admin cannot fake being
+      // an author — this will delog him/her
+      return this.canEditFolder({
         type: "authors",
         slugFolderName: this.author.slugFolderName,
       });
+    },
+    is_logged_in_as_author() {
+      return (
+        this.author.slugFolderName === this.$root.current_author.slugFolderName
+      );
+    },
+    author_is_connected() {
+      if (!this.$root.unique_clients) return false;
+      return this.$root.unique_clients.find((client) => {
+        return (
+          client.data &&
+          client.data.author &&
+          client.data.author.slugFolderName === this.author.slugFolderName
+        );
+      });
+    },
+    author_looking_at() {
+      if (!this.author_is_connected || !this.author_is_connected.data)
+        return false;
+      return this.author_is_connected.data;
     },
   },
   methods: {
@@ -209,52 +426,131 @@ export default {
           [this.author.slugFolderName]: "",
         },
       });
-
       this.$socketio.sendAuth();
-      this.setAuthor();
+
+      this.checkResultsFromLogin({
+        slugFolderName: this.author.slugFolderName,
+      });
+    },
+    canEditFolder: function ({ type, slugFolderName }) {
+      if (!this.$root.store[type].hasOwnProperty(slugFolderName)) return false;
+
+      const folder = this.$root.store[type][slugFolderName];
+
+      // if no password && no editing limits
+      if (folder.password !== "has_pass") return true;
+
+      // if password is set
+      if (folder.password === "has_pass") {
+        return this.$root.state.list_authorized_folders.some((i) => {
+          return (
+            !!i &&
+            i.hasOwnProperty("type") &&
+            i.type === type &&
+            i.hasOwnProperty("allowed_slugFolderNames") &&
+            i.allowed_slugFolderNames.indexOf(slugFolderName) >= 0
+          );
+        });
+      }
+
+      return false;
     },
 
-    submitPassword() {
-      console.log("METHODS • Author: submitPassword");
+    submitPassword({
+      slugFolderName,
+      password = this.$auth.hashCode(this.$refs.passwordField.value),
+    }) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Author • METHODS / submitPassword`);
 
-      const pass = this.$auth.hashCode(this.$refs.passwordField.value);
+      if (slugFolderName && slugFolderName !== this.author.slugFolderName)
+        return;
 
       this.$auth.removeAllFoldersPassword({
         type: "authors",
       });
-
       this.$auth.updateFoldersPasswords({
         authors: {
-          [this.author.slugFolderName]: pass,
+          [this.author.slugFolderName]: password,
         },
       });
-
       this.$socketio.sendAuth();
 
       // check if password matches or not
+      this.checkResultsFromLogin({
+        slugFolderName: this.author.slugFolderName,
+      });
+    },
+    checkResultsFromLogin({ slugFolderName }) {
       this.$eventHub.$once("socketio.authentificated", () => {
-        const has_passworded_folder = window.state.list_authorized_folders.filter(
-          (f) =>
-            f.type === "authors" &&
-            f.allowed_slugFolderNames.includes(this.author.slugFolderName)
-        );
-        if (has_passworded_folder.length === 0) {
+        if (
+          this.$root.state.list_authorized_folders.some(
+            (f) =>
+              f.type === "authors" &&
+              f.allowed_slugFolderNames.includes(slugFolderName)
+          )
+        ) {
+          this.show_input_password_field = false;
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(
-              this.$t("notifications.wrong_password_for") + this.author.name
+            .success(
+              this.$t("notifications.connected_as") +
+                "<i>" +
+                this.author.name +
+                "</i>"
             );
+          this.$emit("close");
+        } else {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.wrong_password"));
           this.$refs.passwordField.value = "";
           this.$refs.passwordField.focus();
-        } else {
-          this.show_input_password_field = false;
-          this.setAuthor();
         }
       });
     },
-
+    closeAuthorAndShowProject(slugFolderName) {
+      this.$emit("close");
+      this.$root.openProject(slugFolderName);
+    },
+    closeAuthorAndShowMedia({ slugFolderName, metaFileName }) {
+      this.$emit("close");
+      this.$root.openMedia({ slugProjectName: slugFolderName, metaFileName });
+    },
+    closeAuthorAndShowPubli(slugFolderName) {
+      this.$emit("close");
+      if (!this.$root.current_publication) {
+        this.openPubliPanel();
+        this.$eventHub.$emit("resizePanels", [
+          { size: 40 },
+          { size: 60 },
+          { size: 0 },
+        ]);
+      }
+      this.$nextTick(() => {
+        this.$root.openPublication(slugFolderName);
+      });
+    },
+    closeAuthorAndShowChat(slugFolderName) {
+      this.$emit("close");
+      if (!this.$root.current_chat) {
+        this.$root.openChatPanel();
+        this.$eventHub.$emit("resizePanels", [
+          { size: 40 },
+          { size: 0 },
+          { size: 60 },
+        ]);
+      }
+      this.$nextTick(() => {
+        this.$root.openChat(slugFolderName);
+      });
+    },
     removeAuthor() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Author • METHODS / removeAuthor`);
+
       this.$alertify
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
@@ -269,35 +565,22 @@ export default {
           () => {}
         );
     },
-    setAuthor() {
-      if (this.can_login_as_author) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(
-            this.$t("notifications.connected_as") +
-              "<i>" +
-              this.author.name +
-              "</i>"
-          );
-
-        this.$root.setAuthor(this.author);
-        setTimeout(() => {
-          this.$emit("close");
-        }, 100);
-      } else {
-        this.show_input_password_field = !this.show_input_password_field;
-      }
-    },
-    unsetAuthor() {
-      this.$root.unsetAuthor();
-    },
-    urlToPortrait(slug, preview) {
+    urlToPortrait(preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.filter((m) => m.size === 180)[0].path;
-      return pathToSmallestThumb;
+      let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
+      let url =
+        this.$root.state.mode === "export_publication"
+          ? `./${pathToSmallestThumb}`
+          : `/${pathToSmallestThumb}`;
+      return url;
     },
   },
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+._pwd_input,
+._open_pwd_input {
+  position: relative;
+  z-index: 1;
+}
+</style>

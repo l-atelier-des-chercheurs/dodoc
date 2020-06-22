@@ -21,9 +21,9 @@
           :read_only="read_only"
         />
       </div>
-      <div class="m_actionbar--text">
-        {{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}
-      </div>
+      <div
+        class="m_actionbar--text"
+      >{{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}</div>
     </div>
 
     <div class="m_publiFilter">
@@ -36,7 +36,7 @@
           :value="project.slugFolderName"
         >
           {{ project.name }} ({{
-            recipes_for_this_project(project.slugFolderName).length
+          recipes_for_this_project(project.slugFolderName).length
           }})
         </option>
       </select>
@@ -45,11 +45,7 @@
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
-      <div
-        class="m_recipes--recipe"
-        v-for="recipe in recipes"
-        :key="recipe.key"
-      >
+      <div class="m_recipes--recipe" v-for="recipe in recipes" :key="recipe.key">
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2 class>{{ $t(recipe.key) }}</h2>
@@ -61,9 +57,7 @@
               type="button"
               class="buttonLink margin-left-none padding-left-none"
               @click="recipe.show_instructions = !recipe.show_instructions"
-            >
-              + {{ $t("more_informations") }}
-            </button>
+            >+ {{ $t("more_informations") }}</button>
           </p>
           <template v-if="recipe.show_instructions">
             <hr />
@@ -83,7 +77,7 @@
 
         <div
           class="m_recipes--recipe--mealList"
-          v-if="all_recipes_of_this_template(recipe.key).length > 0"
+          v-if="allRecipesOfThisTemplate(recipe.key).length > 0"
         >
           <table>
             <thead>
@@ -95,27 +89,39 @@
                   <label>{{ $t("created_date") }}</label>
                 </th>
                 <th colspan="1">
+                  <label>{{ $t("authors") }}</label>
+                </th>
+                <th colspan="1">
+                  <label>{{ $t("number_of_medias") }}</label>
+                </th>
+                <th colspan="1">
                   <label>{{ $t("attached_to_project") }}</label>
                 </th>
               </tr>
             </thead>
             <tbody>
-              <Publication
-                class="m_recipes--recipe--mealList--meal"
-                v-for="publication in recipe_of_this_template(recipe.key)"
-                :key="publication.slugFolderName"
-                :publication="publication"
-              />
+              <template v-for="publication in recipeOfThisTemplate(recipe.key)">
+                <PublicationRow
+                  class="m_recipes--recipe--mealList--meal"
+                  :key="publication.slugFolderName"
+                  :publication="publication"
+                />
+
+                <PublicationRow
+                  v-for="reply in publication._replies"
+                  :key="reply.slugFolderName"
+                  class="m_recipes--recipe--mealList--meal m_recipes--recipe--mealList--meal_replies"
+                  :publication="reply"
+                />
+              </template>
 
               <tr
                 v-if="!recipe.show_all_recipes"
                 @click="recipe.show_all_recipes = true"
                 class="m_recipes--recipe--mealList--meal"
               >
-                <td colspan="4">
-                  <button type="button" class="buttonLink margin-none">
-                    {{ $t("show_all") }}
-                  </button>
+                <td colspan="6">
+                  <button type="button" class="buttonLink margin-none">{{ $t("show_all") }}</button>
                 </td>
               </tr>
             </tbody>
@@ -176,13 +182,13 @@
 </template>
 <script>
 import CreatePublication from "./components/modals/CreatePublication.vue";
-import Publication from "./components/Publication.vue";
+import PublicationRow from "./components/PublicationRow.vue";
 
 export default {
   props: ["publications", "read_only"],
   components: {
     CreatePublication,
-    Publication,
+    PublicationRow,
   },
   data() {
     return {
@@ -218,6 +224,15 @@ export default {
     </g>
   </g>
 </svg>
+          `,
+        },
+        {
+          key: "story",
+          summary: "story_summary",
+          show_instructions: false,
+          instructions: "story_instructions",
+          show_all_recipes: false,
+          icon: `
           `,
         },
         {
@@ -486,14 +501,14 @@ export default {
   beforeDestroy() {},
 
   watch: {
-    "$root.do_navigation.current_slugProjectName": function () {
+    "$root.do_navigation.current_slugProjectName": function() {
       this.slugProjectName_to_filter = !!this.$root.do_navigation
         .current_slugProjectName
         ? this.$root.do_navigation.current_slugProjectName
         : "";
     },
-    slugProjectName_to_filter: function () {
-      this.recipes = this.recipes.map((r) => {
+    slugProjectName_to_filter: function() {
+      this.recipes = this.recipes.map(r => {
         r.show_all_recipes = false;
         return r;
       });
@@ -502,15 +517,14 @@ export default {
   computed: {
     createPubliDefaultName() {
       let number_of_recipes =
-        this.all_recipes_of_this_template(this.createPubliTemplateKey).length +
-        1;
+        this.allRecipesOfThisTemplate(this.createPubliTemplateKey).length + 1;
 
       let name =
         this.$t(this.createPubliTemplateKey) + " Nº" + number_of_recipes;
 
       while (
-        this.all_recipes_of_this_template(this.createPubliTemplateKey).some(
-          (r) => r.name === name
+        this.allRecipesOfThisTemplate(this.createPubliTemplateKey).some(
+          r => r.name === name
         )
       ) {
         number_of_recipes++;
@@ -525,84 +539,73 @@ export default {
       if (this.publications && Object.values(this.publications).length === 0)
         return [];
       return Object.values(this.publications).filter(
-        (r) => r.attached_to_project === slugProjectName
+        r => r.attached_to_project === slugProjectName
       );
     },
-    all_recipes_of_this_template(template_key) {
+    allRecipesOfThisTemplate(template_key) {
       const filtered_recipes = Object.values(this.publications).filter(
-        (r) => r.template === template_key
+        r => r.template === template_key
       );
 
       let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
       sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
     },
-    recipe_of_this_template(template_key) {
-      const recipes = this.all_recipes_of_this_template(template_key);
+    recipeOfThisTemplate(template_key) {
+      const recipes = this.allRecipesOfThisTemplate(template_key);
 
-      if (!this.recipes.find((r) => r.key === template_key).show_all_recipes) {
+      let recipes_with_models = recipes
+        .filter(r => !r.follows_model)
+        .map(r => {
+          if (r.is_model) {
+            const recipes_following_this_model = recipes.filter(
+              _r => _r.follows_model && _r.follows_model === r.slugFolderName
+            );
+            if (recipes_following_this_model.length > 0) {
+              r._replies = recipes_following_this_model;
+            }
+          }
+          return r;
+        });
+
+      if (!this.recipes.find(r => r.key === template_key).show_all_recipes) {
         // if show only part of it
 
         // if project filter, show only those of that project
         if (!!this.slugProjectName_to_filter)
-          return recipes.filter(
-            (r) => r.attached_to_project === this.slugProjectName_to_filter
+          return recipes_with_models.filter(
+            r => r.attached_to_project === this.slugProjectName_to_filter
           );
-        else return recipes.slice(0, 3);
+        else return recipes_with_models.slice(0, 3);
       }
 
-      if (!!this.slugProjectName_to_filter)
+      if (!!this.slugProjectName_to_filter) {
         // show first that project’s publi, and then all the others
-        return recipes.sort((x, y) => {
-          return x.attached_to_project === this.slugProjectName_to_filter
-            ? -1
-            : y.attached_to_project == this.slugProjectName_to_filter
-            ? 1
-            : 0;
-        });
-      else return recipes;
+        const recipes_of_project = recipes_with_models.filter(
+          r => r.attached_to_project === this.slugProjectName_to_filter
+        );
+
+        if (recipes_of_project)
+          return recipes_of_project.concat(
+            recipes_with_models.filter(
+              r => r.attached_to_project !== this.slugProjectName_to_filter
+            )
+          );
+
+        // return recipes.sort((x, y) => {
+        //   return x.attached_to_project === this.slugProjectName_to_filter
+        //     ? -1
+        //     : y.attached_to_project === this.slugProjectName_to_filter
+        //     ? 1
+        //     : 0;
+        // });
+      }
+
+      return recipes_with_models;
     },
     openCreatePublicationModal(recipe_key) {
       this.showCreatePublicationModal = true;
       this.createPubliTemplateKey = recipe_key;
-    },
-    createAndOpenPublication(template) {
-      const name = this.$t("untitled");
-      const slugFolderName = template;
-
-      let publication_data = {
-        name,
-        slugFolderName,
-        template,
-        authors: this.$root.current_author
-          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
-          : [],
-      };
-
-      if (template === "page_by_page") {
-        publication_data.pages = [
-          {
-            id:
-              +new Date() +
-              "_" +
-              (Math.random().toString(36) + "00000000000000000").slice(2, 3),
-          },
-        ];
-        publication_data.width = 210;
-        publication_data.height = 297;
-      }
-
-      this.$eventHub.$on("socketio.folder_created_or_updated", (fdata) => {
-        if (fdata.id === this.$root.justCreatedFolderID) {
-          this.$eventHub.$off("socketio.folder_created_or_updated");
-          this.openPublication(fdata.slugFolderName);
-        }
-      });
-
-      this.$root.createFolder({
-        type: "publications",
-        data: publication_data,
-      });
     },
   },
 };

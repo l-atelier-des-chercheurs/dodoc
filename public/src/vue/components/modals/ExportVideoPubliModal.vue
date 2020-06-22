@@ -24,7 +24,7 @@
                 :key="q.resolution.width + q.resolution.height"
                 >{{ q.label }}</option
               >
-              <option :value="'draft'" :key="'custom'">
+              <option :value="'draft'" :key="'draft'">
                 → {{ $t("draft").toLowerCase() }}
               </option>
               <option :value="'custom'" :key="'custom'">
@@ -130,11 +130,11 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    instructions: String
+    instructions: String,
   },
   components: {
     Modal,
-    AddCreationToProject
+    AddCreationToProject,
   },
   data() {
     return {
@@ -145,41 +145,41 @@ export default {
 
       resolution: {
         width: 1280,
-        height: 720
+        height: 720,
       },
       custom_resolution: {
         width: 1280,
-        height: 720
+        height: 720,
       },
       available_qualities: [
         {
           label: this.$t("very_high"),
           resolution: {
             width: 1920,
-            height: 1080
-          }
+            height: 1080,
+          },
         },
         {
           label: this.$t("high"),
           resolution: {
             width: 1280,
-            height: 720
-          }
+            height: 720,
+          },
         },
         {
           label: this.$t("medium"),
           resolution: {
             width: 854,
-            height: 480
-          }
+            height: 480,
+          },
         },
         {
           label: this.$t("low"),
           resolution: {
             width: 640,
-            height: 360
-          }
-        }
+            height: 360,
+          },
+        },
       ],
 
       plyr_options: {
@@ -190,10 +190,10 @@ export default {
           "current-time",
           "mute",
           "volume",
-          "fullscreen"
+          "fullscreen",
         ],
-        iconUrl: "/images/plyr.svg"
-      }
+        iconUrl: "/images/plyr.svg",
+      },
     };
   },
   created() {},
@@ -204,14 +204,14 @@ export default {
       handler() {
         this.video_request_status = false;
       },
-      deep: true
+      deep: true,
     },
     custom_resolution: {
       handler() {
         this.video_request_status = false;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {
     disable_generation_button() {
@@ -226,7 +226,7 @@ export default {
           return true;
       }
       return false;
-    }
+    },
   },
   methods: {
     downloadVideo() {
@@ -242,13 +242,13 @@ export default {
         ) {
           options.resolution = {
             width: this.custom_resolution.width,
-            height: this.custom_resolution.height
+            height: this.custom_resolution.height,
           };
         }
       } else if (this.resolution === "draft") {
         options.resolution = {
           width: 426,
-          height: 240
+          height: 240,
         };
         options.bitrate = "1000k";
       } else {
@@ -266,7 +266,7 @@ export default {
 
       this.$socketio.downloadVideoPubli({
         slugPubliName: this.slugPubliName,
-        options
+        options,
       });
       this.video_request_status = "waiting_for_server";
     },
@@ -290,7 +290,7 @@ export default {
       this.$eventHub.$off("socketio.publication.videoIsGenerated");
 
       this.video_request_status = "failed";
-    }
-  }
+    },
+  },
 };
 </script>
