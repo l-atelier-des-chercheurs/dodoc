@@ -13,7 +13,6 @@
       :model_for_this_publication="model_for_this_publication"
       @togglePreviewMode="preview_mode = !preview_mode"
       @editPubliMedia="editPubliMedia"
-      @toggleFullScreen="toggleFullScreen"
       @addMedia="addMedia"
       @lockAndPublish="lockAndPublish"
     />
@@ -35,7 +34,6 @@
       @addMedia="addMediaOrdered"
       @insertMediasInList="insertMediasInList"
       @togglePreviewMode="preview_mode = !preview_mode"
-      @toggleFullScreen="toggleFullScreen"
       @lockAndPublish="lockAndPublish"
     />
     <VideoPublication
@@ -78,7 +76,6 @@
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
       @togglePreviewMode="preview_mode = !preview_mode"
-      @toggleFullScreen="toggleFullScreen"
       @addMedia="addMedia"
     />
 
@@ -192,6 +189,15 @@ export default {
     );
 
     this.preview_mode = !this.can_edit_publi;
+
+    if (
+      ["export_publication", "print_publication", "link_publication"].includes(
+        this.$root.state.mode
+      )
+    ) {
+      this.preview_mode = true;
+    }
+
     // this.preview_mode =
     //   !this.can_edit_publi || this.$root.state.mode !== "live";
 
@@ -640,8 +646,6 @@ export default {
           )}`
         );
 
-      debugger;
-
       this.$root
         .editMedia({
           type: "publications",
@@ -724,36 +728,6 @@ export default {
           viewing_limited_to,
         },
       });
-    },
-    toggleFullScreen() {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(`Publication • METHODS: toggleFullScreen`);
-
-      const docElem = this.$refs.panel.$el;
-      if (this.$root.app_is_fullscreen === false) {
-        if (!!docElem.requestFullscreen) {
-          // W3C API
-          docElem.requestFullscreen();
-        } else if (!!docElem.mozRequestFullScreen) {
-          // Mozilla current API
-          docElem.mozRequestFullScreen();
-        } else if (!!docElem.webkitRequestFullScreen) {
-          // Webkit current API
-          docElem.webkitRequestFullScreen();
-        } // Maybe other prefixed APIs?
-        // this.$root.app_is_fullscreen = true;
-      } else {
-        if (!!document.exitFullscreen) {
-          // W3C API
-          document.exitFullscreen();
-        } else if (!!document.mozExitFullscreen) {
-          // Mozilla current API
-          document.mozExitFullscreen();
-        } else if (!!document.webkitExitFullscreen) {
-          // Webkit current API
-          document.webkitExitFullscreen();
-        } // Maybe other prefixed APIs?
-      }
     },
   },
 };

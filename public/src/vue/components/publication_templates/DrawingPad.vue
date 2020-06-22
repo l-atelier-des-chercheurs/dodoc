@@ -27,7 +27,6 @@
       :zoom_max="zoom_max"
       @togglePreviewMode="$emit('togglePreviewMode')"
       @setZoom="(val) => (zoom = val)"
-      @toggleFullScreen="$emit('toggleFullScreen')"
     />
 
     <LayerPanel

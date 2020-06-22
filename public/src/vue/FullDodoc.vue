@@ -17,16 +17,8 @@
         :data-docpane_isopen="$root.settings.show_publi_panel === true"
         :data-chatpane_isopen="$root.settings.show_chat_panel === true"
       >
-        <pane
-          class="splitter-pane"
-          ref="doPane"
-          min-size="5"
-          :size="panels_width.doPane"
-        >
-          <div
-            class="m_activitiesPanel--do"
-            :class="{ 'is--large': activitiesPanel_is_large }"
-          >
+        <pane class="splitter-pane" ref="doPane" min-size="5" :size="panels_width.doPane">
+          <div class="m_activitiesPanel--do" :class="{ 'is--large': activitiesPanel_is_large }">
             <div
               style="
                 position: relative;
@@ -99,11 +91,7 @@
             </div>
           </div>
         </pane>
-        <pane
-          class="splitter-pane"
-          ref="chatPane"
-          :size="panels_width.chatPane"
-        >
+        <pane class="splitter-pane" ref="chatPane" :size="panels_width.chatPane">
           <div
             class="m_activitiesPanel--chat"
             :class="{ 'is--open': $root.settings.show_chat_panel }"
@@ -170,13 +158,6 @@ export default {
   },
   data() {
     return {
-      split: "vertical",
-      drag_offset: 0,
-      hasMoved: false,
-      height: null,
-      type: "width",
-      resizeType: "left",
-
       panels_width: {
         doPane: 100,
         docPane: 0,

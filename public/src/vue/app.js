@@ -441,7 +441,8 @@ let vm = new Vue({
     this.$eventHub.$on("socketio.reconnect", () => {
       this.$socketio.listFolders({ type: "authors" });
       this.$socketio.listFolders({ type: "projects" });
-      this.loadAllChats();
+      this.$socketio.listFolders({ type: "publications" });
+      this.$socketio.listFolders({ type: "chats" });
 
       if (this.settings.current_publication.slug) {
         this.$socketio.listFolder({
@@ -497,7 +498,7 @@ let vm = new Vue({
       //   type: "authors",
       // });
 
-      if (this.state.session_password === "has_pass") {
+      if (this.state.local_options.session_password === "has_pass") {
         var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
         if (session_storage_pwd) {
           this.$socketio.connect(session_storage_pwd);
@@ -530,30 +531,45 @@ let vm = new Vue({
         this.$socketio.listFolders({ type: "authors" });
       }
 
-      this.$eventHub.$once("socketio.authentificated", () => {
+      this.$eventHub.$on("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: "authors" });
         this.$socketio.listFolders({ type: "projects" });
         this.$socketio.listFolders({ type: "publications" });
-        this.loadAllChats();
+        this.$socketio.listFolders({ type: "chats" });
+
         this.updateNetworkInfos();
 
-        if (this.current_project) {
+        if (this.settings.current_publication.slug) {
+          this.$socketio.listFolder({
+            type: "publications",
+            slugFolderName: this.settings.current_publication.slug,
+          });
+          this.$socketio.listMedias({
+            type: "publications",
+            slugFolderName: this.settings.current_publication.slug,
+          });
+        }
+        if (this.do_navigation.current_slugProjectName) {
+          this.$socketio.listFolder({
+            type: "projects",
+            slugFolderName: this.do_navigation.current_slugProjectName,
+          });
           this.$socketio.listMedias({
             type: "projects",
-            slugFolderName: this.current_project.slugFolderName,
+            slugFolderName: this.do_navigation.current_slugProjectName,
           });
         }
 
-        const authorized_authors = this.state.list_authorized_folders.filter(
+        const authorized_authors = this.state.list_authorized_folders.find(
           (f) => f.type === "authors" && f.allowed_slugFolderNames.length > 0
         );
 
-        if (authorized_authors.length > 0) {
+        if (authorized_authors) {
           this.$eventHub.$once("socketio.authors.folders_listed", () => {
             if (Object.values(this.store.authors).length === 0) return;
 
             const first_author_slug =
-              authorized_authors[0].allowed_slugFolderNames[0];
+              authorized_authors.allowed_slugFolderNames[0];
             const author = Object.values(this.store.authors).find(
               (a) => a.slugFolderName === first_author_slug
             );
@@ -785,8 +801,7 @@ let vm = new Vue({
         this.store.request.metaFileName
       ];
     },
-    allAuthors() {
-      let allAuthors = [];
+    all_authors() {
       return Object.values(this.store.authors);
     },
     currentTime_human() {
@@ -841,6 +856,36 @@ let vm = new Vue({
           classes: "tagcolorid_" + (parseInt(kw, 36) % 2),
         };
       });
+    },
+    toggleFullScreen() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Publication • METHODS: toggleFullScreen`);
+
+      const docElem = document.documentElement;
+      if (this.$root.app_is_fullscreen === false) {
+        if (!!docElem.requestFullscreen) {
+          // W3C API
+          docElem.requestFullscreen();
+        } else if (!!docElem.mozRequestFullScreen) {
+          // Mozilla current API
+          docElem.mozRequestFullScreen();
+        } else if (!!docElem.webkitRequestFullScreen) {
+          // Webkit current API
+          docElem.webkitRequestFullScreen();
+        } // Maybe other prefixed APIs?
+        // this.$root.app_is_fullscreen = true;
+      } else {
+        if (!!document.exitFullscreen) {
+          // W3C API
+          document.exitFullscreen();
+        } else if (!!document.mozExitFullscreen) {
+          // Mozilla current API
+          document.mozExitFullscreen();
+        } else if (!!document.webkitExitFullscreen) {
+          // Webkit current API
+          document.webkitExitFullscreen();
+        } // Maybe other prefixed APIs?
+      }
     },
     getURL() {
       if (!this.$root.state.localNetworkInfos.ip) return false;
@@ -1723,10 +1768,6 @@ let vm = new Vue({
         return meta;
       }
     },
-    loadAllChats() {
-      this.$socketio.listFolders({ type: "chats" });
-    },
-
     loadAllProjectsMedias() {
       if (window.state.dev_mode === "debug") {
         console.log(`ROOT EVENT: loadAllProjectsMedias`);

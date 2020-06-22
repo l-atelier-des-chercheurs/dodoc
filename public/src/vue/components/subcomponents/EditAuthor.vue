@@ -194,7 +194,7 @@ export default {
   methods: {
     editAuthor: function (event) {
       console.log("editAuthor");
-      let allAuthorsName = this.$root.allAuthors.map((a) =>
+      let allAuthorsName = this.$root.all_authors.map((a) =>
         a.name.toLowerCase()
       );
 

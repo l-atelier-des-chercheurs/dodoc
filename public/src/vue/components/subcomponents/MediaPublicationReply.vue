@@ -5,6 +5,7 @@
       'type-' + media.type,
       {
         'is--selected': is_selected,
+        'is--hovered': is_hovered,
         'is--previewed': preview_mode,
         'has--onlyNumbers': media.only_numbers,
       },

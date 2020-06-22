@@ -577,7 +577,7 @@
               <div>
                 <input
                   type="range"
-                  min="0"
+                  min="1"
                   max="300"
                   step="1"
                   v-model="font_size_percent"

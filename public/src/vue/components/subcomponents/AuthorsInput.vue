@@ -77,7 +77,7 @@ export default {
           _all_authors_slugs.push(a.slugFolderName);
       });
 
-      this.$root.allAuthors.map((a) => {
+      this.$root.all_authors.map((a) => {
         if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
           _all_authors_slugs.push(a.slugFolderName);
       });

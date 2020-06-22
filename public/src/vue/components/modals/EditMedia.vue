@@ -27,7 +27,7 @@
     </template>
 
     <template slot="sidebar">
-      <!-- <small>{{ this.$root.allAuthors }}</small> -->
+      <!-- <small>{{ this.$root.all_authors }}</small> -->
 
       <div v-if="!read_only" class="m_modal--buttonrow">
         <!-- CONFLICT WITH QR PRINTING -->
@@ -146,7 +146,8 @@
                 v-for="project in all_projects"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-              >{{ project.name }}</option>
+                >{{ project.name }}</option
+              >
             </select>
             <button
               type="button"
@@ -207,26 +208,34 @@
             class="buttonLink"
             @click="editRawMedia('rotate_image', { angle: 90 })"
             v-if="media.type === 'image'"
-          >{{ $t("rotate_clockwise") }}</button>
+          >
+            {{ $t("rotate_clockwise") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('optimize_video')"
             v-if="media.type === 'video'"
-          >{{ $t("optimize_video") }}</button>
+          >
+            {{ $t("optimize_video") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
-          >{{ $t("revert_to_original") }}</button>
+          >
+            {{ $t("revert_to_original") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             :class="{ 'is--active': trim_mode }"
             @click="trim_mode = !trim_mode"
             v-if="media.type === 'video'"
-          >{{ $t("trim_video") }}</button>
+          >
+            {{ $t("trim_video") }}
+          </button>
 
           <div v-if="trim_mode">
             <small>{{ $t("trim_video_instructions") }}</small>
@@ -299,7 +308,10 @@
               v-model="mediadata.fav"
               :disabled="!can_edit_media"
             />
-            <label for="favswitch_editmedia" :class="{ 'c-rouge': mediadata.fav }">
+            <label
+              for="favswitch_editmedia"
+              :class="{ 'c-rouge': mediadata.fav }"
+            >
               {{ $t("fav") }}
               <svg
                 version="1.1"
@@ -332,7 +344,9 @@
               class="button-nostyle text-uc button-triangle"
               :class="{ 'is--active': show_media_infos }"
               @click="show_media_infos = !show_media_infos"
-            >{{ $t("infos_about_the_media") }}</button>
+            >
+              {{ $t("infos_about_the_media") }}
+            </button>
           </label>
 
           <div v-if="show_media_infos" class="margin-vert-verysmall">
@@ -403,10 +417,16 @@
         </div>
 
         <!-- Caption -->
-        <div v-if="!read_only || !!mediadata.caption" class="margin-bottom-small">
+        <div
+          v-if="!read_only || !!mediadata.caption"
+          class="margin-bottom-small"
+        >
           <label>{{ $t("caption") }}</label>
           <br />
-          <textarea v-model="mediadata.caption" :readonly="read_only || !can_edit_media"></textarea>
+          <textarea
+            v-model="mediadata.caption"
+            :readonly="read_only || !can_edit_media"
+          ></textarea>
         </div>
 
         <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -538,7 +558,7 @@ export default {
   created() {
     if (typeof this.mediadata.authors === "string") {
       if (this.mediadata.authors !== "") {
-        this.mediadata.authors = this.mediadata.authors.split(",").map(a => {
+        this.mediadata.authors = this.mediadata.authors.split(",").map((a) => {
           return { name: a };
         });
       } else {
@@ -571,34 +591,34 @@ export default {
     media_size() {
       if (
         !this.media.file_meta ||
-        !this.media.file_meta.find(m => m.hasOwnProperty("size"))
+        !this.media.file_meta.find((m) => m.hasOwnProperty("size"))
       )
         return false;
-      return this.media.file_meta.find(m => m.hasOwnProperty("size")).size;
+      return this.media.file_meta.find((m) => m.hasOwnProperty("size")).size;
     },
     media_dimensions() {
       if (
         !this.media.file_meta ||
-        !this.media.file_meta.find(m => m.hasOwnProperty("width")) ||
-        !this.media.file_meta.find(m => m.hasOwnProperty("height"))
+        !this.media.file_meta.find((m) => m.hasOwnProperty("width")) ||
+        !this.media.file_meta.find((m) => m.hasOwnProperty("height"))
       )
         return false;
       return (
-        this.media.file_meta.find(m => m.hasOwnProperty("width")).width +
+        this.media.file_meta.find((m) => m.hasOwnProperty("width")).width +
         " × " +
-        this.media.file_meta.find(m => m.hasOwnProperty("height")).height
+        this.media.file_meta.find((m) => m.hasOwnProperty("height")).height
       );
     },
   },
   methods: {
-    printMedia: function() {
+    printMedia: function () {
       window.print();
     },
-    minimizeMediaAndShowProject: function() {
+    minimizeMediaAndShowProject: function () {
       this.$root.media_modal.minimized = true;
       this.$root.openProject(this.slugProjectName);
     },
-    removeMedia: function() {
+    removeMedia: function () {
       this.$alertify
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
@@ -616,7 +636,7 @@ export default {
           () => {}
         );
     },
-    editThisMedia: function() {
+    editThisMedia: function () {
       console.log("editThisMedia");
 
       this.$eventHub.$once(
@@ -666,7 +686,7 @@ export default {
 
       this.showCopyToProjectOptions = false;
     },
-    editRawMedia: function(type, detail) {
+    editRawMedia: function (type, detail) {
       console.log("editRawMedia");
       this.$root.editMedia({
         type: "projects",

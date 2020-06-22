@@ -344,7 +344,7 @@
           type="button"
           v-if="author.slugFolderName === $root.current_author.slugFolderName"
           class="button-redthin"
-          @click.stop="unsetAuthor()"
+          @click.stop="$root.unsetAuthor()"
         >
           {{ $t("logout") }}
         </button>
@@ -564,12 +564,6 @@ export default {
           },
           () => {}
         );
-    },
-    unsetAuthor() {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(`Author • METHODS / unsetAuthor`);
-
-      this.$root.unsetAuthor();
     },
     urlToPortrait(preview) {
       if (!preview) return "";
