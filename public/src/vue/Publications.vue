@@ -1,8 +1,9 @@
 <template>
   <div class="m_publicationsview">
     <div class="m_actionbar">
-      <div class="m_actionbar--buttonBar">
-        <!-- <button 
+      <div>
+        <div class="m_actionbar--buttonBar">
+          <!-- <button 
           class="barButton barButton_createPubli"
           type="button"  
           @click="showCreatePublicationModal = true"
@@ -11,19 +12,27 @@
           <span>    
               {{ $t('create_a_publication') }}
           </span>
-        </button>-->
+          </button>-->
 
-        <CreatePublication
-          v-if="showCreatePublicationModal"
-          :default_name="createPubliDefaultName"
-          :default_template="createPubliTemplateKey"
-          @close="showCreatePublicationModal = false"
-          :read_only="read_only"
-        />
+          <CreatePublication
+            v-if="showCreatePublicationModal"
+            :default_name="createPubliDefaultName"
+            :default_template="createPubliTemplateKey"
+            @close="showCreatePublicationModal = false"
+            :read_only="read_only"
+          />
+        </div>
+        <div
+          class="m_actionbar--text"
+        >{{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}</div>
       </div>
-      <div
-        class="m_actionbar--text"
-      >{{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}</div>
+      <div class="m_displayMyContent" v-if="$root.current_author">
+        <span>{{ $t("show") }}</span>
+        <select v-model="show_only_my_content">
+          <option :value="true">{{ $t("only_my_recipes").toLowerCase() }}</option>
+          <option :value="false">{{ $t("all_recipes").toLowerCase() }}</option>
+        </select>
+      </div>
     </div>
 
     <div class="m_publiFilter">
@@ -77,7 +86,7 @@
 
         <div
           class="m_recipes--recipe--mealList"
-          v-if="allRecipesOfThisTemplate(recipe.key).length > 0"
+          v-if="filteredRecipesOfTemplate(recipe.key).length > 0"
         >
           <table>
             <thead>
@@ -199,6 +208,8 @@ export default {
         .current_slugProjectName
         ? this.$root.do_navigation.current_slugProjectName
         : "",
+
+      show_only_my_content: false,
 
       recipes: [
         {
@@ -551,8 +562,20 @@ export default {
       sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
     },
-    recipeOfThisTemplate(template_key) {
+    filteredRecipesOfTemplate(template_key) {
       const recipes = this.allRecipesOfThisTemplate(template_key);
+      if (this.show_only_my_content && this.$root.current_author)
+        return recipes.filter(
+          r =>
+            r.authors &&
+            r.authors.some(
+              a => a.slugFolderName === this.$root.current_author.slugFolderName
+            )
+        );
+      return recipes;
+    },
+    recipeOfThisTemplate(template_key) {
+      const recipes = this.filteredRecipesOfTemplate(template_key);
 
       let recipes_with_models = recipes
         .filter(r => !r.follows_model)
