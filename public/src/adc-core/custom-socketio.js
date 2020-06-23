@@ -58,6 +58,7 @@ module.exports = (function () {
             this.socket.on("pong", this._onPong);
 
             this.socket.on("listClients", this._listClients);
+            this.socket.on("loadJournal", this._onLoadJournal);
           },
           _onSocketConnect() {
             let sessionId = this.socket.io.engine.id;
@@ -259,6 +260,11 @@ module.exports = (function () {
             window.state.clients = data;
           },
 
+          _onLoadJournal(data) {
+            console.log("Received _onLoadJournal packet.");
+            window.state.journal = data;
+          },
+
           // for projects, authors and publications
           _onListFolder(data) {
             console.log("Received _onListFolder packet.");
@@ -426,6 +432,9 @@ module.exports = (function () {
           },
           updateNetworkInfos() {
             this.socket.emit("updateNetworkInfos");
+          },
+          loadJournal() {
+            this.socket.emit("loadJournal");
           },
         },
       });
