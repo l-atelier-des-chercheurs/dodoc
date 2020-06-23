@@ -308,11 +308,11 @@ module.exports = (function () {
       });
     }
 
-    changelog.append({
-      slugAuthorName: auth.getSocketAuthors(socket),
-      action: "edited_folder",
-      detail: { type, slugFolderName, data },
-    });
+    // changelog.append({
+    //   slugAuthorName: auth.getSocketAuthors(socket),
+    //   action: "edited_folder",
+    //   detail: { type, slugFolderName, data },
+    // });
 
     await sendFolders({ type, slugFolderName, id });
   }
