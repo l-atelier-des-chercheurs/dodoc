@@ -181,6 +181,14 @@ module.exports = (function () {
       .createFolder({ type, data })
       .catch((err) => {
         dev.error(`Failed to create folder! Error: ${err}`);
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `action_not_allowed`,
+          not_localized_string: `Error: can’t create folder ${err}`,
+          type: "error",
+        });
+        throw err;
       });
 
     await sendFolders({ type, slugFolderName, id });
@@ -224,8 +232,11 @@ module.exports = (function () {
       password_field_options.hasOwnProperty("transform") &&
       password_field_options.transform === "crypt" &&
       Object.values(foldersData)[0].password &&
-      !!data.password
+      data.hasOwnProperty("password")
     ) {
+      // if attempting to set new password
+      // only allow if old_password match
+
       if (
         !data._old_password ||
         !(await bcrypt.compare(
@@ -243,7 +254,7 @@ module.exports = (function () {
           not_localized_string: `Error: folder can’t be edited ${slugFolderName} because old password is wrong or missing`,
           type: "error",
         });
-        return;
+        throw `Failed to change password and edit folder: old password is wrong or missing`;
       }
     }
 
