@@ -49,7 +49,8 @@ module.exports = (function () {
       isSubmittedSessionPasswordValid(pwd),
 
     hashCode: (code) => hashCode(code),
-    encrypt: (code) => encrypt(code),
+
+    getSocketAuthors: (socket) => getSocketAuthors(socket),
   };
 
   async function setAuthenticate(user_folder_passwords) {

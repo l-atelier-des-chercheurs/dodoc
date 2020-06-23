@@ -53,6 +53,8 @@
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
+    "csv-parser": "^2.3.3",
+    "csv-writer": "^1.6.0",
     "dodoc-parsedown": "github:louis-ev/dodoc-parsedown#master",
     "electron-pdf-window": "^1.0.12",
     "electron-window-state": "^5.0.3",
