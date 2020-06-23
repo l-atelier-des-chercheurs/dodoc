@@ -308,13 +308,29 @@ module.exports = (function () {
       });
     }
 
-    // changelog.append({
-    //   slugAuthorName: auth.getSocketAuthors(socket),
-    //   action: "edited_folder",
-    //   detail: { type, slugFolderName, data },
-    // });
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "edited_folder",
+      detail: { type, slugFolderName, data },
+    });
 
     await sendFolders({ type, slugFolderName, id });
+  }
+
+  async function updateFolderModified({ type, slugFolderName }) {
+    dev.logfunction(
+      `EVENT - updateFolderModified for type = ${type}, slugFolderName = ${slugFolderName}`
+    );
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+
+    await updateFolderEdited({
+      type,
+      slugFolderName,
+      foldersData: Object.values(foldersData)[0],
+    });
+
+    await sendFolders({ type, slugFolderName });
   }
 
   async function onRemoveFolder(socket, { type, slugFolderName }) {
@@ -412,7 +428,7 @@ module.exports = (function () {
       additionalMeta: _additionalMeta,
     });
 
-    onEditFolder(socket, { type, slugFolderName, data: {} });
+    updateFolderModified({ type, slugFolderName });
 
     changelog.append({
       author: auth.getSocketAuthors(socket),

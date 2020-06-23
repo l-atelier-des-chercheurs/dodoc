@@ -56,7 +56,7 @@
                   <th colspan="1">
                     {{ $t("action") }}
                   </th>
-                  <th colspan="1">
+                  <th>
                     {{ $t("detail") }}
                   </th>
                 </tr>
@@ -70,12 +70,28 @@
                     {{ entry.author }}
                   </td>
                   <td>
-                    {{ $t(entry.action) }}
+                    {{ $t(entry.action).toLowerCase() }}
                   </td>
                   <td>
-                    <small>
+                    <small v-if="show_detail_for_entry === index">
                       {{ entry.detail }}
                     </small>
+                    <button
+                      type="button"
+                      class="button-small"
+                      v-if="show_detail_for_entry !== index"
+                      @click="show_detail_for_entry = index"
+                    >
+                      {{ $t("show") }}
+                    </button>
+                    <button
+                      type="button"
+                      class="button-small"
+                      v-if="show_detail_for_entry === index"
+                      @click="show_detail_for_entry = false"
+                    >
+                      {{ $t("hide") }}
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -97,6 +113,7 @@ export default {
   data() {
     return {
       new_lang: this.$root.lang.current,
+      show_detail_for_entry: false,
     };
   },
   watch: {
