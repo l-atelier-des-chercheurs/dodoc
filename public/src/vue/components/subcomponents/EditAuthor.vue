@@ -1,10 +1,5 @@
 <template>
-  <form
-    class
-    @close="$emit('close')"
-    v-on:submit.prevent="editAuthor"
-    :read_only="read_only"
-  >
+  <form class @close="$emit('close')" v-on:submit.prevent="editAuthor" :read_only="read_only">
     <!-- Human name -->
     <div class="margin-bottom-small">
       <label>{{ $t("name") }}</label>
@@ -23,9 +18,7 @@
       v-if="($root.current_author && $root.current_author.role === 'admin')
 "
     >
-      <label>
-        {{ $t("role") }}
-      </label>
+      <label>{{ $t("role") }}</label>
       <div>
         <select v-model="authordata.role">
           <option
@@ -36,9 +29,7 @@
               role === 'admin' &&
               (!$root.current_author || $root.current_author.role !== 'admin')
             "
-          >
-            {{ $t(role) }}
-          </option>
+          >{{ $t(role) }}</option>
         </select>
       </div>
     </div>
@@ -51,9 +42,7 @@
           class="button-nostyle text-uc button-triangle"
           :class="{ 'is--active': show_image }"
           @click="show_image = !show_image"
-        >
-          {{ $t("portrait") }}
-        </button>
+        >{{ $t("portrait") }}</button>
       </label>
 
       <template v-if="show_image">
@@ -84,12 +73,8 @@
           :class="{ 'is--active': show_password }"
           @click.stop="show_password = !show_password"
         >
-          <template v-if="author.password === 'has_pass'">
-            {{ $t("change_password") }}
-          </template>
-          <template v-else>
-            {{ $t("add_password") }}
-          </template>
+          <template v-if="author.password === 'has_pass'">{{ $t("change_password") }}</template>
+          <template v-else>{{ $t("add_password") }}</template>
         </button>
       </label>
 
@@ -124,9 +109,7 @@
           class="button-nostyle text-uc button-triangle"
           :class="{ 'is--active': show_nfc }"
           @click="show_nfc = !show_nfc"
-        >
-          {{ $t("nfc_tag") }}
-        </button>
+        >{{ $t("nfc_tag") }}</button>
       </label>
 
       <template v-if="show_nfc">
@@ -134,9 +117,7 @@
       </template>
     </div>
 
-    <button type="button" class="button-small" @click="$emit('close')">
-      {{ $t("cancel") }}
-    </button>
+    <button type="button" class="button-small" @click="$emit('close')">{{ $t("cancel") }}</button>
     <button type="submit" class="bg-bleuvert">{{ $t("save") }}</button>
   </form>
 </template>
@@ -178,7 +159,7 @@ export default {
       ) {
         return "";
       }
-      const thumb = this.author.preview.filter((p) => p.size === 640);
+      const thumb = this.author.preview.filter(p => p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }
@@ -192,9 +173,9 @@ export default {
     }
   },
   methods: {
-    editAuthor: function (event) {
+    editAuthor: function(event) {
       console.log("editAuthor");
-      let allAuthorsName = this.$root.all_authors.map((a) =>
+      let allAuthorsName = this.$root.all_authors.map(a =>
         a.name.toLowerCase()
       );
 
@@ -219,7 +200,8 @@ export default {
         this.authordata.password = this.$auth.hashCode(
           this.authordata.password
         );
-      }
+      } else delete this.authordata.password;
+
       if (!!this.authordata._old_password) {
         this.authordata._old_password = this.$auth.hashCode(
           this.authordata._old_password

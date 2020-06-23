@@ -226,6 +226,10 @@ module.exports = (function () {
       fr: "Seulement mes médias",
       en: "My medias",
     },
+    only_my_recipes: {
+      fr: "Seulement mes recettes",
+      en: "My recipes",
+    },
     all_projects: {
       fr: "Tous les projets",
       en: "All projects",
@@ -233,6 +237,10 @@ module.exports = (function () {
     all_medias: {
       fr: "Tous les médias",
       en: "All medias",
+    },
+    all_recipes: {
+      fr: "Toutes les recettes",
+      en: "All recipes",
     },
     created: {
       fr: "Création",

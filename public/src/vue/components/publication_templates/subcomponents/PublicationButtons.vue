@@ -560,7 +560,12 @@
                 />
               </div>
               <div class="input-group">
-                <input type="number" class="input-small" v-model="margin" />
+                <input
+                  type="number"
+                  class="input-small"
+                  v-model="margin"
+                  min="0"
+                />
                 <span class="input-addon input-addon-small">pt</span>
               </div>
             </div>

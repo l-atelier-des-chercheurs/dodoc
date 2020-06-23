@@ -2060,7 +2060,7 @@ module.exports = (function () {
             if (!!existing[key]) {
               // do not re-hash if pass is already hashed
               if (existing[key].startsWith("$")) {
-                output_obj[key] = validator.escape(existing[key] + "");
+                output_obj[key] = existing[key];
               } else {
                 output_obj[key] = bcrypt.hashSync(
                   validator.escape(existing[key] + ""),
