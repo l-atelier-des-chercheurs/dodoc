@@ -36,7 +36,7 @@ module.exports = (function () {
     var corsOptions;
     if (global.settings.api.allow_all_domains) {
       dev.logverbose("REMOTE_API — _corsCheck : allowed for all domains");
-      next();
+      callback(null);
     } else {
       if (
         !req.headers.hasOwnProperty("Origin") &&
