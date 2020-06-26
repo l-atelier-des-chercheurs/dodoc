@@ -153,14 +153,14 @@
           <h3 class="label c-noir margin-small text-centered">
             {{ $root.formatDateToHuman(item[0]) }}
           </h3>
-          <template v-for="(message, index) in item[1]">
+          <template v-for="message in item[1]">
             <div
               :key="message.metaFileName"
               class="m_message"
               :class="{
                 'is--currentauthor': isCurrentAuthor(message),
                 'is--lastReadMessage':
-                  message.metaFileName === last_read_message_on_opening,
+                  message.index === last_read_message_index_on_opening,
               }"
             >
               <div class="m_message--meta" v-if="message.authors">
@@ -218,10 +218,10 @@
                 <span v-html="sanitizeMessage(message.text)" />
               </div>
             </div>
+
             <div
               v-if="
-                message.metaFileName === last_read_message_on_opening &&
-                index < item[1].length - 0
+                message.index === Number(last_read_message_index_on_opening)
               "
               class="m_sinceLastVisit"
               ref="sinceLastVisit"
@@ -299,7 +299,7 @@ export default {
       new_message: "",
       is_scrolled_to_bottom: false,
       is_scrolled_to_top: false,
-      last_read_message_on_opening: false,
+      last_read_message_index_on_opening: false,
 
       show_chat_options: false,
       show_edit_chat: false,
@@ -339,18 +339,18 @@ export default {
           (c) => c.channel === this.chat.slugFolderName
         );
 
-        // check if some unread messages
-        this.last_read_message_on_opening =
+        this.last_read_message_index_on_opening =
           last_message_read_for_this_channel.index;
 
-        this.setFirstMessageIndexToShow(
-          last_message_read_for_this_channel.index
+        this.first_message_index_to_show = Math.max(
+          0,
+          last_message_read_for_this_channel.index - 10
         );
 
         this.$nextTick(() => {
           if (
             last_message_read_for_this_channel.index !==
-            this.sorted_messages[this.sorted_messages.length - 1].metaFileName
+            this.sorted_messages.length
           ) {
             if (this.$refs.sinceLastVisit) {
               this.scrollToMessage(this.$refs.sinceLastVisit[0]);
@@ -406,6 +406,8 @@ export default {
       if (typeof this.chat.medias !== "object") return [];
       let _sorted_messages = this.$_.sortBy(this.chat.medias, "date_created");
 
+      _sorted_messages.map((sm, index) => (sm.index = index));
+
       if (this.first_message_index_to_show)
         return _sorted_messages.slice(this.first_message_index_to_show);
 
@@ -456,20 +458,6 @@ export default {
         linkClass: "js--openInBrowser",
       });
       return text;
-    },
-    setFirstMessageIndexToShow(last_message_read) {
-      if (!this.last_read_message_on_opening || !last_message_read)
-        return false;
-      if (this.sorted_messages < 10) this.first_message_index_to_show = 0;
-
-      const last_message_read_index = this.sorted_messages.findIndex(
-        (m) => m.metaFileName === this.last_read_message_on_opening
-      );
-
-      this.first_message_index_to_show = Math.max(
-        0,
-        last_message_read_index - 10
-      );
     },
 
     setReadMessageToLast() {
