@@ -212,7 +212,10 @@
                 </div>
               </div>
 
-              <div class="m_message--text">{{ message.text }}</div>
+              <!-- <div class="m_message--text">{{ wrapMessage(message.text) }}</div> -->
+              <div class="m_message--text">
+                <span v-html="sanitizeMessage(message.text)" />
+              </div>
             </div>
             <div
               v-if="
@@ -280,6 +283,7 @@ import ProtectedLock from "./subcomponents/ProtectedLock.vue";
 import AccessController from "./subcomponents/AccessController.vue";
 import EditChat from "./modals/EditChat.vue";
 import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
+import linkifyHtml from "linkifyjs/html";
 
 export default {
   props: {
@@ -438,6 +442,16 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log("METHODS • Chat: scrollToMessage");
       this.$refs.chat_content.scrollTop = $el.offsetTop - 100;
+    },
+    sanitizeMessage(text) {
+      var doc = new DOMParser().parseFromString(text, "text/html");
+      text = doc.body.textContent || "";
+
+      text = linkifyHtml(text, {
+        defaultProtocol: "https",
+        linkClass: "js--openInBrowser",
+      });
+      return text;
     },
     setFirstMessageIndexToShow(last_message_read) {
       if (!this.last_read_message_on_opening || !last_message_read)
