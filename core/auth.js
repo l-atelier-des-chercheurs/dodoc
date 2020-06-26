@@ -51,6 +51,13 @@ module.exports = (function () {
     hashCode: (code) => hashCode(code),
 
     getSocketAuthors: (socket) => getSocketAuthors(socket),
+
+    isSocketSessionAdmin: (socket) =>
+      new Promise((resolve, reject) =>
+        isSocketSessionAdmin(socket)
+          .then((d) => resolve(d))
+          .catch((e) => reject(e))
+      ),
   };
 
   async function setAuthenticate(user_folder_passwords) {

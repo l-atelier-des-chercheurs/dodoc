@@ -237,12 +237,15 @@ module.exports = (function () {
     const password_field_options =
       global.settings.structure[type].fields.password;
 
+    const socket_is_admin = await auth.isSocketSessionAdmin(socket);
+
     if (
       password_field_options &&
       password_field_options.hasOwnProperty("transform") &&
       password_field_options.transform === "crypt" &&
       Object.values(foldersData)[0].password &&
-      data.hasOwnProperty("password")
+      data.hasOwnProperty("password") &&
+      !socket_is_admin
     ) {
       // if attempting to set new password
       // only allow if old_password match
