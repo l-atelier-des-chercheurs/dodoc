@@ -231,7 +231,7 @@ module.exports = (function () {
       en: "My recipes",
     },
     only_channels_i_participate_in: {
-      fr: "Seulement les discussions accessibles",
+      fr: "les discussions accessibles",
       en: "Only topics I can read",
     },
     all_projects: {

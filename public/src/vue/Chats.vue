@@ -36,7 +36,7 @@
           </template>
         </div>
 
-        <div class="m_actionbar">
+        <div class="m_actionbar" style="margin-left: 0px; margin-right: 0px;">
           <div>
             <div class="m_actionbar--text">
               {{ $t("showing") }}
@@ -73,6 +73,7 @@
             :key="'pinned_' + index"
             :chat="chat"
           />
+          <hr />
           <ChatRow
             v-for="(chat, index) in non_pinned_chats"
             :key="'nonpinned_' + index"
