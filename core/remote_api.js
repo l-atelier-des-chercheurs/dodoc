@@ -36,7 +36,7 @@ module.exports = (function () {
     var corsOptions;
     if (global.settings.api.allow_all_domains) {
       dev.logverbose("REMOTE_API — _corsCheck : allowed for all domains");
-      next();
+      callback(null);
     } else {
       if (
         !req.headers.hasOwnProperty("Origin") &&
@@ -165,6 +165,8 @@ module.exports = (function () {
             }
 
             if (
+              foldersData[slugFolderName].viewing_limited_to !== "everybody" &&
+              foldersData[slugFolderName].editing_limited_to !== "everybody" &&
               foldersData[slugFolderName].hasOwnProperty("password") &&
               foldersData[slugFolderName].password !== ""
             ) {
@@ -192,7 +194,7 @@ module.exports = (function () {
                 dev.error(
                   `Submitted: ${request_folder_password}\nShould be: ${foldersData[slugFolderName].password}`
                 );
-                return reject("Wrong password sent!");
+                return reject("Wrong password submitted!");
               }
             }
 

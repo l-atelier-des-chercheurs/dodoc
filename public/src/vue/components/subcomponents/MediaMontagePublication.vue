@@ -14,11 +14,11 @@
     >
       {{ $t("linked_media_wasnt_found") }}
       <br />
-      <small
-        >{{ media._linked_media.slugProjectName }}/{{
-          media._linked_media.slugMediaName
-        }}</small
-      >
+      <small>
+        {{ media._linked_media.slugProjectName }}/{{
+        media._linked_media.slugMediaName
+        }}
+      </small>
     </div>
 
     <template v-else-if="media.hasOwnProperty('_linked_media')">
@@ -27,38 +27,34 @@
         :context="'full'"
         :slugFolderName="media._linked_media.slugProjectName"
         :media="media._linked_media"
-        :read_only="read_only"
+        :read_only="read_only || preview_mode"
         v-model="media._linked_media.content"
         :audio_volume="volume"
         @volumeChanged="volumeChanged"
       />
 
-      <p class="mediaCaption" v-if="!!media._linked_media.caption">
-        {{ media._linked_media.caption }}
-      </p>
+      <p class="mediaCaption" v-if="!!media._linked_media.caption">{{ media._linked_media.caption }}</p>
 
       <div class="margin-top-small">
         <div class="m_metaField">
           <div>{{ $t("project") }}</div>
-          <div>
-            {{ $root.store.projects[media._linked_media.slugProjectName].name }}
-          </div>
+          <div>{{ $root.store.projects[media._linked_media.slugProjectName].name }}</div>
         </div>
-        <div
-          class="m_metaField"
-          v-if="original_media_duration || enable_image_timer"
-        >
+        <div class="m_metaField" v-if="original_media_duration || enable_image_timer">
           <div>{{ $t("duration") }}</div>
-          <div v-if="original_media_duration">
-            {{ original_media_duration }}
-          </div>
+          <div v-if="original_media_duration">{{ original_media_duration }}</div>
           <div
             v-else-if="
               enable_image_timer && media._linked_media.type === 'image'
             "
             class="m_mediaMontagePublication--set_props"
           >
-            <input type="number" v-model.number="seconds_per_image" step="1" />
+            <input
+              type="number"
+              v-model.number="seconds_per_image"
+              step="1"
+              :disabled="read_only || preview_mode"
+            />
             <span>{{ $t("seconds") }}</span>
           </div>
         </div>
@@ -72,17 +68,12 @@
           v-if="enable_set_video_volume && media._linked_media.type === 'video'"
         >
           <div>{{ $t("volume") }}</div>
-          <div class="m_mediaMontagePublication--set_props">
-            {{ volume }} / 100
-          </div>
+          <div class="m_mediaMontagePublication--set_props">{{ volume }} / 100</div>
         </div>
       </div>
     </template>
 
-    <div
-      v-else-if="media.type === 'solid_color'"
-      class="m_mediaMontagePublication--solidColor"
-    >
+    <div v-else-if="media.type === 'solid_color'" class="m_mediaMontagePublication--solidColor">
       <div
         class="m_mediaMontagePublication--solidColor--colorPreview"
         :style="solid_color_background"
@@ -90,17 +81,25 @@
         <input
           type="color"
           :id="`solidcolor + ${media.metaFileName}`"
+          v-if="!read_only && !preview_mode"
           :value="media.color"
           @change="updateMediaPubliMeta({ color: $event.target.value })"
         />
-        <label :for="`solidcolor + ${media.metaFileName}`">{{
+        <label :for="`solidcolor + ${media.metaFileName}`" v-if="!read_only && !preview_mode">
+          {{
           $t("select_color")
-        }}</label>
+          }}
+        </label>
       </div>
       <div class="m_metaField">
         <div>{{ $t("duration") }}</div>
         <div class="m_mediaMontagePublication--set_props">
-          <input type="number" v-model.number="seconds_per_image" step="1" />
+          <input
+            type="number"
+            v-model.number="seconds_per_image"
+            step="1"
+            :disabled="read_only || preview_mode"
+          />
           <span>{{ $t("seconds") }}</span>
         </div>
       </div>
@@ -110,6 +109,7 @@
       type="button"
       class="m_mediaMontagePublication--withdraw"
       @click.stop.prevent="removePubliMedia()"
+      v-if="!read_only && !preview_mode"
       :content="$t('withdraw')"
       v-tippy="{
         placement: 'top',
@@ -145,6 +145,7 @@ import debounce from "debounce";
 export default {
   props: {
     media: Object,
+    preview_mode: Boolean,
     read_only: Boolean,
     enable_image_timer: {
       type: Boolean,
@@ -177,12 +178,12 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    "media.duration": function () {
+    "media.duration": function() {
       if (this.enable_image_timer) {
         this.seconds_per_image = this.media.duration;
       }
     },
-    seconds_per_image: function () {
+    seconds_per_image: function() {
       this.seconds_per_image = Math.min(
         999,
         Math.max(0, this.seconds_per_image)
@@ -193,13 +194,13 @@ export default {
         });
       }
     },
-    "media.volume": function () {
+    "media.volume": function() {
       if (this.enable_set_video_volume) {
         this.volume = this.media.volume;
         this.$refs.mediaContent.setVolume(this.volume);
       }
     },
-    volume: function () {
+    volume: function() {
       this.volume = Math.min(100, Math.max(0, this.volume));
       if (this.media.volume !== this.volume) {
         this.updateMediaPubliMeta({
@@ -228,23 +229,21 @@ export default {
       if (
         !this.media.hasOwnProperty("_linked_media") ||
         !this.media._linked_media.file_meta ||
-        !this.media._linked_media.file_meta.find((m) =>
+        !this.media._linked_media.file_meta.find(m =>
           m.hasOwnProperty("width")
         ) ||
-        !this.media._linked_media.file_meta.find((m) =>
+        !this.media._linked_media.file_meta.find(m =>
           m.hasOwnProperty("height")
         )
       )
         return false;
 
       return (
-        this.media._linked_media.file_meta.find((m) =>
-          m.hasOwnProperty("width")
-        ).width +
+        this.media._linked_media.file_meta.find(m => m.hasOwnProperty("width"))
+          .width +
         " × " +
-        this.media._linked_media.file_meta.find((m) =>
-          m.hasOwnProperty("height")
-        ).height
+        this.media._linked_media.file_meta.find(m => m.hasOwnProperty("height"))
+          .height
       );
     },
   },

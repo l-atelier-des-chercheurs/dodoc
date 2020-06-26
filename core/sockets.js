@@ -723,7 +723,7 @@ module.exports = (function () {
     )
       return;
 
-    const { pdfName, imageName, docPath } = exporter.makePDFForPubli({
+    const { pdfName, imageName, docPath } = await exporter.makePDFForPubli({
       slugPubliName,
       options,
     });
@@ -776,7 +776,7 @@ module.exports = (function () {
     )
       return;
 
-    const videoName = exporter
+    const videoName = await exporter
       .makeVideoForPubli({ slugPubliName, socket, options })
       .catch((error_msg) => {
         notify({
@@ -831,7 +831,7 @@ module.exports = (function () {
     )
       return;
 
-    const videoName = exporter
+    const videoName = await exporter
       .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
       .catch((error) => {
         notify({

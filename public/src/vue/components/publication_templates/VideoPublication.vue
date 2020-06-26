@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="m_publicationview"
-    :class="{ 'is--preview': preview_mode }"
-    ref="panel"
-  >
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -27,15 +23,13 @@
         </p>
       </div>
       <transition-group name="list-complete" :duration="300">
-        <div
-          v-for="(media, index) in medias_in_order"
-          :key="media.metaFileName"
-        >
+        <div v-for="(media, index) in medias_in_order" :key="media.metaFileName">
           <div class="switch switch-xs m_videoPublication--transitionToggle">
             <input
               class="switch"
               :id="'transition_in_' + media.metaFileName"
               type="checkbox"
+              :disabled="read_only || preview_mode"
               :checked="media.transition_in === 'fade'"
               @change="
                 toggleTransition({
@@ -44,40 +38,37 @@
                 })
               "
             />
-            <label :for="'transition_in_' + media.metaFileName">
-              {{ $t("transition_fade") }}
-            </label>
+            <label :for="'transition_in_' + media.metaFileName">{{ $t("transition_fade") }}</label>
             <button
               type="button"
-              v-if="media.type !== 'solid_color'"
+              v-if="media.type !== 'solid_color'  && !read_only && !preview_mode"
               class="m_videoPublication--addSolidColor buttonLink bg-noir"
               @click="
                 addMedia({
                   values: {
                     type: 'solid_color',
                   },
-                  right_after_meta: media.metaFileName,
+                  right_before_meta: media.metaFileName,
                 })
               "
-            >
-              {{ $t("add_solid_color") }}
-            </button>
+            >{{ $t("add_solid_color") }}</button>
           </div>
 
           <div class="m_videoPublication--media" :data-type="media.type">
             <MediaMontagePublication
               :media="media"
-              :preview_mode="false"
+              :preview_mode="preview_mode"
               :read_only="read_only"
               :enable_image_timer="true"
               :enable_set_video_volume="true"
               @removePubliMedia="$emit('removePubliMedia', $event)"
               @editPubliMedia="$emit('editPubliMedia', $event)"
             />
-            <span class="m_videoPublication--media--mediaNumber">
-              {{ index + 1 }}
-            </span>
-            <div class="m_videoPublication--media--moveItemButtons">
+            <span class="m_videoPublication--media--mediaNumber">{{ index + 1 }}</span>
+            <div
+              class="m_videoPublication--media--moveItemButtons"
+              v-if="!read_only && !preview_mode"
+            >
               <button
                 type="button"
                 class="m_videoPublication--media--moveItemButton--before"
@@ -114,6 +105,7 @@
               class="switch"
               :id="'transition_out_' + media.metaFileName"
               type="checkbox"
+              :disabled="read_only || preview_mode"
               :checked="media.transition_out === 'fade'"
               @change="
                 toggleTransition({
@@ -122,12 +114,15 @@
                 })
               "
             />
-            <label :for="'transition_out_' + media.metaFileName">{{
+            <label :for="'transition_out_' + media.metaFileName">
+              {{
               $t("transition_fade")
-            }}</label>
+              }}
+            </label>
             <button
               type="button"
               class="m_videoPublication--addSolidColor buttonLink bg-noir"
+              v-if="!read_only && !preview_mode"
               @click="
                 addMedia({
                   values: {
@@ -135,9 +130,7 @@
                   },
                 })
               "
-            >
-              {{ $t("add_solid_color") }}
-            </button>
+            >{{ $t("add_solid_color") }}</button>
           </div>
         </div>
       </transition-group>
@@ -161,6 +154,7 @@ export default {
     publication: Object,
     medias_in_order: Array,
     read_only: Boolean,
+    preview_mode: Boolean,
   },
   components: {
     PublicationHeader,
@@ -194,7 +188,7 @@ export default {
 
       let val = {};
       const media = this.medias_in_order.find(
-        (m) => m.metaFileName === metaFileName
+        m => m.metaFileName === metaFileName
       );
 
       if (media.hasOwnProperty(position) && media[position] === "fade") {

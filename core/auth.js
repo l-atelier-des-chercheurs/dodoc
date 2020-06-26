@@ -86,6 +86,8 @@ module.exports = (function () {
             return [];
           });
 
+          if (!foldersData) return [];
+
           dev.logverbose(
             `AUTH — setAuthenticate : got folder data, now checking against user_folder_passwords[${type}]`
           );
