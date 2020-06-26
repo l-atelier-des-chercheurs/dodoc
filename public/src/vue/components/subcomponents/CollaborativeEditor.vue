@@ -256,18 +256,19 @@ export default {
     });
 
     this.$refs.editor.dataset.quill = this.editor;
+    this.cursors = this.editor.getModule("cursors");
 
     if (this.read_only || this.$root.state.mode !== "live")
       this.editor.disable();
 
-    this.cursors = this.editor.getModule("cursors");
+    if (!this.read_only && this.$root.state.mode === "live") {
+      const name = this.$root.current_author
+        ? this.$root.current_author.name
+        : this.$t("anonymous");
 
-    const name = this.$root.current_author
-      ? this.$root.current_author.name
-      : this.$t("anonymous");
-
-    this.cursors.createCursor("_self", name, "#1d327f");
-    this.cursors.toggleFlag("_self", false);
+      this.cursors.createCursor("_self", name, "#1d327f");
+      this.cursors.toggleFlag("_self", false);
+    }
 
     this.$nextTick(() => {
       this.editor.root.innerHTML = this.value;
@@ -280,7 +281,11 @@ export default {
           this.editor.setSelection(this.editor.getLength(), 0, "api");
         });
       }
-      if (this.$root.state.mode === "live" && this.enable_collaboration) {
+      if (
+        this.$root.state.mode === "live" &&
+        this.enable_collaboration &&
+        !this.read_only
+      ) {
         this.initWebsocketMode();
       }
 
@@ -387,6 +392,7 @@ export default {
           c.data.caret_information.range.index
         ) {
           let name = this.$t("anonymous");
+          name += ` "${c.id}"`;
           if (
             c.data.author &&
             c.data.author.slugFolderName &&
@@ -502,6 +508,8 @@ export default {
       });
     },
     updateCaretPositionForClient(range) {
+      if (this.read_only) return;
+
       this.cursors.moveCursor("_self", range);
       this.$root.updateClientInfo({
         caret_information: {

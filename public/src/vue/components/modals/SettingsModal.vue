@@ -103,13 +103,9 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
-
 export default {
   props: ["read_only"],
-  components: {
-    Modal,
-  },
+  components: {},
   data() {
     return {
       new_lang: this.$root.lang.current,

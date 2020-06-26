@@ -46,8 +46,8 @@ module.exports = (function () {
       en: "Pin to the top",
     },
     pinned: {
-      fr: "Discussions épinglés",
-      en: "Pinned topics",
+      fr: "Épinglées",
+      en: "Pinned",
     },
     create_new_folder: {
       fr: "créer un nouveau dossier",
@@ -230,6 +230,10 @@ module.exports = (function () {
       fr: "Seulement mes recettes",
       en: "My recipes",
     },
+    only_channels_i_participate_in: {
+      fr: "les discussions accessibles",
+      en: "Only topics I can read",
+    },
     all_projects: {
       fr: "Tous les projets",
       en: "All projects",
@@ -241,6 +245,14 @@ module.exports = (function () {
     all_recipes: {
       fr: "Toutes les recettes",
       en: "All recipes",
+    },
+    all_channels: {
+      fr: "Toutes les discussions",
+      en: "All topics",
+    },
+    channels_of: {
+      fr: "Discussions sur",
+      en: "Topics of",
     },
     created: {
       fr: "Création",
@@ -348,6 +360,10 @@ module.exports = (function () {
     removed_folder: {
       fr: "A supprimé un dossier",
       en: "Has removed a folder",
+    },
+    message_was_removed: {
+      fr: "Ce message a été supprimé",
+      en: "This message was removed",
     },
     created_media: {
       fr: "A créé un média",

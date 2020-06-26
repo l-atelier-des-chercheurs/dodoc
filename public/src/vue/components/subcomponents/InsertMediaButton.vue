@@ -198,7 +198,6 @@ import CaptureView from "../../CaptureView.vue";
 import CaptureViewModal from "../modals/CaptureViewModal.vue";
 import UploadFile from "./UploadFile.vue";
 import debounce from "debounce";
-import Modal from "../modals/BaseModal.vue";
 
 export default {
   props: {
@@ -233,7 +232,6 @@ export default {
     CaptureView,
     CaptureViewModal,
     UploadFile,
-    Modal,
   },
   data() {
     return {
@@ -282,7 +280,6 @@ export default {
           if (this.modes_allowed.text.only_numbers === "true")
             val.only_numbers = true;
         }
-
       }
       this.$emit("addMedia", val);
 
