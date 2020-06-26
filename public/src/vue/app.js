@@ -60,6 +60,9 @@ Vue.component("Loader", {
 import ProtectedLock from "./components/subcomponents/ProtectedLock.vue";
 Vue.component("ProtectedLock", ProtectedLock);
 
+import Pin from "./components/subcomponents/Pin.vue";
+Vue.component("Pin", Pin);
+
 import Modal from "./components/modals/BaseModal.vue";
 Vue.component("Modal", Modal);
 

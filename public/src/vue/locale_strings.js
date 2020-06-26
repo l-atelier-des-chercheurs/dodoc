@@ -230,6 +230,10 @@ module.exports = (function () {
       fr: "Seulement mes recettes",
       en: "My recipes",
     },
+    only_channels_i_participate_in: {
+      fr: "Seulement les discussions accessibles",
+      en: "Only topics I can read",
+    },
     all_projects: {
       fr: "Tous les projets",
       en: "All projects",
@@ -241,6 +245,14 @@ module.exports = (function () {
     all_recipes: {
       fr: "Toutes les recettes",
       en: "All recipes",
+    },
+    all_channels: {
+      fr: "Toutes les discussions",
+      en: "All topics",
+    },
+    channels_of: {
+      fr: "Discussions sur",
+      en: "Topics of",
     },
     created: {
       fr: "Création",

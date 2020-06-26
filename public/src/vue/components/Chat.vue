@@ -20,6 +20,7 @@
           </button>
 
           <span class="m_chat--content--topbar--name">
+            <Pin v-if="chat.pinned" />
             {{ chat.name }}
             <ProtectedLock
               :editing_limited_to="chat.editing_limited_to"

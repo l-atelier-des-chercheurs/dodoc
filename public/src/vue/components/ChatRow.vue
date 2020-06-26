@@ -21,8 +21,9 @@
         >
           {{ $root.getUnreadMessageCount(chat) }}
         </span>
-        <span class="m_chatRow--name"
-          >{{ chat.name }}
+        <span class="m_chatRow--name">
+          <Pin v-if="chat.pinned" />
+          {{ chat.name }}
           <ProtectedLock
             :editing_limited_to="chat.editing_limited_to"
             :is_protected="!can_see_chat"
