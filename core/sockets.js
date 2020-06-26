@@ -327,7 +327,7 @@ module.exports = (function () {
 
     const foldersData = await file.getFolder({ type, slugFolderName });
 
-    await updateFolderEdited({
+    await file.updateFolderEdited({
       type,
       slugFolderName,
       foldersData: Object.values(foldersData)[0],
