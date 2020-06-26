@@ -445,6 +445,9 @@ export default {
       this.$refs.chat_content.scrollTop = $el.offsetTop - 100;
     },
     sanitizeMessage(text) {
+      if (text === "~removed")
+        return "<small>" + this.$t("message_was_removed") + "</small>";
+
       var doc = new DOMParser().parseFromString(text, "text/html");
       text = doc.body.textContent || "";
 
@@ -515,10 +518,13 @@ export default {
         .confirm(
           this.$t("sure_to_remove_message"),
           () => {
-            this.$root.removeMedia({
+            this.$root.editMedia({
               type: "chats",
               slugFolderName: this.chat.slugFolderName,
               slugMediaName: message.metaFileName,
+              data: {
+                text: "~removed",
+              },
             });
           },
           () => {}

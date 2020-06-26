@@ -361,6 +361,10 @@ module.exports = (function () {
       fr: "A supprimé un dossier",
       en: "Has removed a folder",
     },
+    message_was_removed: {
+      fr: "Ce message a été supprimé",
+      en: "This message was removed",
+    },
     created_media: {
       fr: "A créé un média",
       en: "Has created a media",
