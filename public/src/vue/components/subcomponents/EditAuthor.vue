@@ -136,6 +136,9 @@
       {{ $t("cancel") }}
     </button>
     <button type="submit" class="bg-bleuvert">{{ $t("save") }}</button>
+    <transition name="scaleIn" :duration="400">
+      <Loader v-if="is_sending_content_to_server" />
+    </transition>
   </form>
 </template>
 <script>
@@ -166,6 +169,8 @@ export default {
         nfc_tag: this.author.nfc_tag,
       },
       preview: undefined,
+
+      is_sending_content_to_server: false,
     };
   },
   computed: {
@@ -225,13 +230,22 @@ export default {
         );
       }
 
-      this.$root.editFolder({
-        type: "authors",
-        slugFolderName: this.author.slugFolderName,
-        data: this.authordata,
-      });
+      this.is_sending_content_to_server = true;
 
-      this.$emit("close", "");
+      this.$root
+        .editFolder({
+          type: "authors",
+          slugFolderName: this.author.slugFolderName,
+          data: this.authordata,
+        })
+        .then((cdata) => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(this.$t("notifications.successfully_saved"));
+          this.is_sending_content_to_server = false;
+          this.$emit("close", "");
+        });
     },
   },
 };
