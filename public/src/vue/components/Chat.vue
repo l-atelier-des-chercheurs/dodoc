@@ -341,13 +341,15 @@ export default {
 
         // check if some unread messages
         this.last_read_message_on_opening =
-          last_message_read_for_this_channel.msg;
+          last_message_read_for_this_channel.index;
 
-        this.setFirstMessageIndexToShow(last_message_read_for_this_channel.msg);
+        this.setFirstMessageIndexToShow(
+          last_message_read_for_this_channel.index
+        );
 
         this.$nextTick(() => {
           if (
-            last_message_read_for_this_channel.msg !==
+            last_message_read_for_this_channel.index !==
             this.sorted_messages[this.sorted_messages.length - 1].metaFileName
           ) {
             if (this.$refs.sinceLastVisit) {
@@ -468,53 +470,9 @@ export default {
     },
 
     setReadMessageToLast() {
-      // if logged in, set author last_messages_read_in_channels to metaFileName of chat
-      if (this.$root.current_author && this.sorted_messages.length > 0) {
-        const last_message_channel = {
-          channel: this.chat.slugFolderName,
-          msg: this.sorted_messages[this.sorted_messages.length - 1]
-            .metaFileName,
-          index: this.chat.number_of_medias,
-        };
-
-        let last_messages_read_in_channels = Array.isArray(
-          this.$root.current_author.last_messages_read_in_channels
-        )
-          ? JSON.parse(
-              JSON.stringify(
-                this.$root.current_author.last_messages_read_in_channels
-              )
-            )
-          : [];
-
-        const channel_info_in_author = last_messages_read_in_channels.find(
-          (c) => c.channel === last_message_channel.channel
-        );
-        if (
-          channel_info_in_author &&
-          channel_info_in_author.msg === last_message_channel.msg &&
-          Number(channel_info_in_author.index) ===
-            Number(last_message_channel.index)
-        ) {
-          // already up to date, do nothing
-          return;
-        }
-
-        // remove existing prop
-        last_messages_read_in_channels = last_messages_read_in_channels.filter(
-          (c) => c.channel !== last_message_channel.channel
-        );
-
-        last_messages_read_in_channels.push(last_message_channel);
-
-        this.$root.editFolder({
-          type: "authors",
-          slugFolderName: this.$root.current_author.slugFolderName,
-          data: {
-            last_messages_read_in_channels,
-          },
-        });
-      }
+      this.$root.setReadMessageToLast({
+        chat: this.chat,
+      });
     },
     isCurrentAuthor(message) {
       return (

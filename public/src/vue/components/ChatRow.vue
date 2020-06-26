@@ -10,8 +10,10 @@
   >
     <div class="m_chatRow--firstLine">
       <div>
-        <span
+        <button
+          type="button"
           v-if="$root.getUnreadMessageCount(chat) && can_see_chat"
+          @click="setUnreadToZero()"
           class="m_chatRow--unreadCounter"
           :content="$t('unread_messages')"
           v-tippy="{
@@ -20,7 +22,7 @@
           }"
         >
           {{ $root.getUnreadMessageCount(chat) }}
-        </span>
+        </button>
         <span class="m_chatRow--name">
           <Pin v-if="chat.pinned" />
           {{ chat.name }}
@@ -143,6 +145,11 @@ export default {
     },
     closeChat() {
       this.$root.closeChat();
+    },
+    setUnreadToZero() {
+      this.$root.setReadMessageToLast({
+        chat: this.chat,
+      });
     },
   },
 };
