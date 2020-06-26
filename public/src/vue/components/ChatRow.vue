@@ -100,7 +100,6 @@
 </template>
 <script>
 import AccessController from "./subcomponents/AccessController.vue";
-import ProtectedLock from "./subcomponents/ProtectedLock.vue";
 import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 
 export default {
@@ -109,7 +108,6 @@ export default {
   },
   components: {
     AccessController,
-    ProtectedLock,
     ClientsCheckingOut,
   },
   data() {

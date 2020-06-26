@@ -1,5 +1,9 @@
 <template>
-  <Modal @close="$emit('close')" class="m_exportModal" :typeOfModal="'ExportVideo'">
+  <Modal
+    @close="$emit('close')"
+    class="m_exportModal"
+    :typeOfModal="'ExportVideo'"
+  >
     <template slot="header">
       <span class>{{ $t("export_creation") }}</span>
     </template>
@@ -16,24 +20,32 @@
                 v-for="q in available_qualities"
                 :value="q.resolution"
                 :key="q.resolution.width + q.resolution.height"
-              >{{ q.label }}</option>
-              <option :value="'draft'" :key="'draft'">→ {{ $t("draft").toLowerCase() }}</option>
-              <option :value="'custom'" :key="'custom'">↓ {{ $t("custom").toLowerCase() }}</option>
+                >{{ q.label }}</option
+              >
+              <option :value="'draft'" :key="'draft'"
+                >→ {{ $t("draft").toLowerCase() }}</option
+              >
+              <option :value="'custom'" :key="'custom'"
+                >↓ {{ $t("custom").toLowerCase() }}</option
+              >
             </select>
             <div v-if="resolution === 'draft'">
               <small>{{ $t("video_export_draft_instructions") }}</small>
             </div>
             <div v-else-if="resolution === 'custom'">
               <small>
-                {{
-                $t("video_export_custom_quality_instructions")
-                }}
+                {{ $t("video_export_custom_quality_instructions") }}
               </small>
             </div>
-            <div v-else class="label">{{ resolution.width }} × {{ resolution.height }}</div>
+            <div v-else class="label">
+              {{ resolution.width }} × {{ resolution.height }}
+            </div>
           </div>
 
-          <div v-if="resolution === 'custom'" class="margin-bottom-small input-group">
+          <div
+            v-if="resolution === 'custom'"
+            class="margin-bottom-small input-group"
+          >
             <input
               class
               type="number"
@@ -61,23 +73,19 @@
               @click="downloadVideo"
             >
               <template v-if="!video_request_status">
-                {{
-                $t("make_video")
-                }}
+                {{ $t("make_video") }}
               </template>
-              <template v-else-if="video_request_status === 'waiting_for_server'">
+              <template
+                v-else-if="video_request_status === 'waiting_for_server'"
+              >
                 <span class="loader loader-xs" />
                 {{ $t("notifications.creation_in_progress") }}
               </template>
               <template v-else-if="video_request_status === 'generated'">
-                {{
-                $t("notifications.video_created")
-                }}
+                {{ $t("notifications.video_created") }}
               </template>
               <template v-else-if="video_request_status === 'failed'">
-                {{
-                $t("notifications.video_creation_failed")
-                }}
+                {{ $t("notifications.video_creation_failed") }}
               </template>
             </button>
           </div>
@@ -94,7 +102,8 @@
                 v-if="link_to_video !== false"
                 class="buttonLink margin-left-none padding-left-none"
                 :href="link_to_video"
-              >{{ $t("download") }}</a>
+                >{{ $t("download") }}</a
+              >
             </div>
             <div v-if="resolution !== 'draft'" class="margin-vert-small">
               <AddCreationToProject
@@ -111,7 +120,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import { setTimeout } from "timers";
 import AddCreationToProject from "../subcomponents/AddCreationToProject.vue";
 
@@ -122,7 +130,6 @@ export default {
     instructions: String,
   },
   components: {
-    Modal,
     AddCreationToProject,
   },
   data() {

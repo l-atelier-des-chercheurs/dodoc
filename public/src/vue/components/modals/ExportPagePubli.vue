@@ -148,7 +148,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import { setTimeout } from "timers";
 import AddCreationToProject from "../subcomponents/AddCreationToProject.vue";
 import CreateQRCode from "./qr/CreateQRCode.vue";
@@ -159,7 +158,6 @@ export default {
     slugPubliName: String,
   },
   components: {
-    Modal,
     AddCreationToProject,
     CreateQRCode,
   },

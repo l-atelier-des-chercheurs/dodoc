@@ -279,7 +279,6 @@
   </div>
 </template>
 <script>
-import ProtectedLock from "./subcomponents/ProtectedLock.vue";
 import AccessController from "./subcomponents/AccessController.vue";
 import EditChat from "./modals/EditChat.vue";
 import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
@@ -290,7 +289,6 @@ export default {
     chat: Object,
   },
   components: {
-    ProtectedLock,
     AccessController,
     EditChat,
     ClientsCheckingOut,

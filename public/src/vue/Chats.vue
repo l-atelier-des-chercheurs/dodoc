@@ -36,18 +36,12 @@
           </template>
         </div>
 
-        <label>{{ $t("pinned") }}</label>
         <div class="m_chats--list">
           <ChatRow
             v-for="(chat, index) in pinned_chats"
             :key="index"
             :chat="chat"
           />
-        </div>
-
-        <hr />
-
-        <div class="m_chats--list">
           <ChatRow
             v-for="(chat, index) in non_pinned_chats"
             :key="index"
@@ -92,13 +86,22 @@ export default {
   computed: {
     pinned_chats() {
       if (Object.keys(this.chats).length === 0) return [];
-      return Object.values(this.chats).filter((c) => c.pinned === true);
+      let pinned_chats = Object.values(this.chats).filter(
+        (c) => c.pinned === true
+      );
+      pinned_chats = this.$_.sortBy(pinned_chats, (i) => i.name.toLowerCase());
+
+      return pinned_chats;
     },
     non_pinned_chats() {
       if (Object.keys(this.chats).length === 0) return [];
-      return Object.values(this.chats).filter(
+      let non_pinned_chats = Object.values(this.chats).filter(
         (c) => !c.pinned || c.pinned === false
       );
+      non_pinned_chats = this.$_.sortBy(non_pinned_chats, "date_modified");
+      non_pinned_chats = non_pinned_chats.reverse();
+
+      return non_pinned_chats;
     },
   },
   methods: {},

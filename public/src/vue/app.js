@@ -26,15 +26,6 @@ import locale_strings from "./locale_strings.js";
 
 import "prismjs";
 
-Vue.component("Loader", {
-  name: "Loader",
-  template: `
-    <div class="_loader">
-      <span class="loader" />
-    </div>
-  `,
-});
-
 // Vue.config.silent = false;
 // Vue.config.devtools = true;
 
@@ -56,6 +47,21 @@ Vue.component("tippy", TippyComponent);
 
 import DateFieldComponent from "./components/subcomponents/DateField.vue";
 Vue.component("DateField", DateFieldComponent);
+
+Vue.component("Loader", {
+  name: "Loader",
+  template: `
+    <div class="_loader">
+      <span class="loader" />
+    </div>
+  `,
+});
+
+import ProtectedLock from "./components/subcomponents/ProtectedLock.vue";
+Vue.component("ProtectedLock", ProtectedLock);
+
+import Modal from "./components/modals/BaseModal.vue";
+Vue.component("Modal", Modal);
 
 let lang_settings = {
   available: [

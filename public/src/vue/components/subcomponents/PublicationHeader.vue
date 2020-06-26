@@ -378,7 +378,6 @@
 <script>
 import EditPublication from "../modals/EditPublication.vue";
 import AccessController from "./AccessController.vue";
-import ProtectedLock from "./ProtectedLock.vue";
 import ClientsCheckingOut from "./ClientsCheckingOut.vue";
 
 export default {
@@ -404,7 +403,6 @@ export default {
   components: {
     EditPublication,
     AccessController,
-    ProtectedLock,
     ClientsCheckingOut,
   },
   data() {

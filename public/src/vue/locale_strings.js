@@ -46,8 +46,8 @@ module.exports = (function () {
       en: "Pin to the top",
     },
     pinned: {
-      fr: "Discussions épinglés",
-      en: "Pinned topics",
+      fr: "Épinglées",
+      en: "Pinned",
     },
     create_new_folder: {
       fr: "créer un nouveau dossier",

@@ -23,16 +23,21 @@
               $root.current_author.slugFolderName === author.slugFolderName,
           }"
         >
-          <template
-            v-if="$root.getAuthor(author.slugFolderName)"
-          >{{ $root.getAuthor(author.slugFolderName).name }}</template>
+          <template v-if="$root.getAuthor(author.slugFolderName)">{{
+            $root.getAuthor(author.slugFolderName).name
+          }}</template>
           <template v-else>{{ author.slugFolderName }}</template>
         </span>
-        <ClientsCheckingOut :type="'publications'" :slugFolderName="slugPubliName" />
+        <ClientsCheckingOut
+          :type="'publications'"
+          :slugFolderName="slugPubliName"
+        />
       </div>
     </td>
     <td class="font-verysmall strong">
-      <template v-if="publication.number_of_medias">{{ publication.number_of_medias }}</template>
+      <template v-if="publication.number_of_medias">{{
+        publication.number_of_medias
+      }}</template>
       <template v-else>—</template>
     </td>
     <td class="font-folder_title">
@@ -59,14 +64,13 @@
 </template>
 <script>
 import AccessController from "./subcomponents/AccessController.vue";
-import ProtectedLock from "./subcomponents/ProtectedLock.vue";
 import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 
 export default {
   props: {
     publication: Object,
   },
-  components: { AccessController, ProtectedLock, ClientsCheckingOut },
+  components: { AccessController, ClientsCheckingOut },
   data() {
     return {
       show_input_pwd: false,
@@ -87,7 +91,7 @@ export default {
   computed: {
     attached_project() {
       return Object.values(this.$root.store.projects).find(
-        _p => _p.slugFolderName === this.publication.attached_to_project
+        (_p) => _p.slugFolderName === this.publication.attached_to_project
       );
     },
     slugPubliName() {

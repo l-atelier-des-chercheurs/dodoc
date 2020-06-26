@@ -185,7 +185,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
@@ -203,7 +202,6 @@ export default {
     },
   },
   components: {
-    Modal,
     EditAccessControl,
 
     TagsInput,
