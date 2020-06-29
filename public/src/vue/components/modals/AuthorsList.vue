@@ -113,7 +113,7 @@ export default {
   computed: {
     sorted_authors() {
       let sorted_authors = Object.values(this.authors).sort((a, b) =>
-        a.name.localeCompare(b.name)
+        a.name && b.name ? a.name.localeCompare(b.name) : false
       );
 
       // move current author to top
