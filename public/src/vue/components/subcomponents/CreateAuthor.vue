@@ -169,8 +169,17 @@ export default {
 
       let data = JSON.parse(JSON.stringify(this.authordata));
 
+      if (!data.hasOwnProperty("name")) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.missing_name_field"));
+
+        return false;
+      }
+
       let allAuthorsName = this.$root.all_authors.map((a) =>
-        a.name.toLowerCase()
+        a && a.name ? a.name.toLowerCase() : ""
       );
 
       // check if project name (not slug) already exists
