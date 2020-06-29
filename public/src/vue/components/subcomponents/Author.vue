@@ -567,8 +567,10 @@ export default {
     },
     urlToPortrait(preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
-      let url =
+      const smallest_thumb = preview.find((m) => m && m.size === 180);
+      if (!smallest_thumb) return "";
+      const pathToSmallestThumb = smallest_thumb.path;
+      const url =
         this.$root.state.mode === "export_publication"
           ? `./${pathToSmallestThumb}`
           : `/${pathToSmallestThumb}`;
