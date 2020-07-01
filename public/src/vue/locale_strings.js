@@ -46,8 +46,8 @@ module.exports = (function () {
       en: "Pin to the top",
     },
     pinned: {
-      fr: "Discussions épinglés",
-      en: "Pinned topics",
+      fr: "Épinglées",
+      en: "Pinned",
     },
     create_new_folder: {
       fr: "créer un nouveau dossier",
@@ -226,6 +226,14 @@ module.exports = (function () {
       fr: "Seulement mes médias",
       en: "My medias",
     },
+    only_my_recipes: {
+      fr: "Seulement mes recettes",
+      en: "My recipes",
+    },
+    only_channels_i_participate_in: {
+      fr: "les discussions accessibles",
+      en: "Only topics I can read",
+    },
     all_projects: {
       fr: "Tous les projets",
       en: "All projects",
@@ -233,6 +241,18 @@ module.exports = (function () {
     all_medias: {
       fr: "Tous les médias",
       en: "All medias",
+    },
+    all_recipes: {
+      fr: "Toutes les recettes",
+      en: "All recipes",
+    },
+    all_channels: {
+      fr: "Toutes les discussions",
+      en: "All topics",
+    },
+    channels_of: {
+      fr: "Discussions sur",
+      en: "Topics of",
     },
     created: {
       fr: "Création",
@@ -313,6 +333,10 @@ module.exports = (function () {
       fr: "Administrateur",
       en: "Administrator",
     },
+    only_available_to_admins: {
+      fr: "Fonctionnalité uniquement accessible aux administrateurs",
+      en: "Feature only available to admins",
+    },
     contributor: {
       fr: "Contributeur",
       en: "Contributor",
@@ -320,6 +344,67 @@ module.exports = (function () {
     participant: {
       fr: "Participant",
       en: "Participant",
+    },
+    journal: {
+      fr: "Journal des activités",
+      en: "Journal of activities",
+    },
+    created_folder: {
+      fr: "A créé un dossier",
+      en: "Has created a folder",
+    },
+    edited_folder: {
+      fr: "A modifié un dossier",
+      en: "Has edited a folder",
+    },
+    removed_folder: {
+      fr: "A supprimé un dossier",
+      en: "Has removed a folder",
+    },
+    message_was_removed: {
+      fr: "Ce message a été supprimé",
+      en: "This message was removed",
+    },
+    created_media: {
+      fr: "A créé un média",
+      en: "Has created a media",
+    },
+    created_media_meta: {
+      fr: "A créé un média meta",
+      en: "Has created a media meta",
+    },
+    edited_media: {
+      fr: "A modifié un média",
+      en: "Has edited a media",
+    },
+    copied_media: {
+      fr: "A copié un média",
+      en: "Has copied a media",
+    },
+    removed_media: {
+      fr: "A supprimé un média",
+      en: "Has removed a media",
+    },
+    exported_pdf: {
+      fr: "A exporté un PDF",
+      en: "Has exported a PDF",
+    },
+    exported_video: {
+      fr: "A exporté une vidéo",
+      en: "Has exported a video",
+    },
+    exported_stopmotion: {
+      fr: "A exporté une animation image par image",
+      en: "Has exported a stopmotion",
+    },
+    copied_folder: {
+      fr: "A copié un dossier",
+      en: "Has copied a folder",
+    },
+
+    reload: {
+      fr: "Recharger",
+      en: "Reload",
     },
     download: {
       fr: "Télécharger",

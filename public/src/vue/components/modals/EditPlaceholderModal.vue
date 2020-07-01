@@ -48,7 +48,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import PlaceholderConstraints from "../subcomponents/PlaceholderConstraints.vue";
 import MediaField from "../subcomponents/MediaField.vue";
 
@@ -58,7 +57,6 @@ export default {
     media: Object,
   },
   components: {
-    Modal,
     MediaField,
     PlaceholderConstraints,
   },

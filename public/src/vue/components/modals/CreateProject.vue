@@ -144,7 +144,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 import ImageSelect from "../subcomponents/ImageSelect.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
@@ -155,7 +154,6 @@ export default {
     read_only: Boolean,
   },
   components: {
-    Modal,
     EditAccessControl,
     ImageSelect,
     TagsInput,

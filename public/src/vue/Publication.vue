@@ -218,7 +218,7 @@ export default {
     );
   },
   watch: {
-    "publication.medias": function () {
+    "publication.medias": function() {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`WATCH • Publication: publication.medias`);
       }
@@ -259,7 +259,7 @@ export default {
       },
       deep: true,
     },
-    preview_mode: function () {
+    preview_mode: function() {
       if (!this.preview_mode && !this.can_edit_publi) {
         this.$alertify
           .closeLogOnClick(true)
@@ -273,7 +273,7 @@ export default {
         }
       }
     },
-    can_edit_publi: function () {
+    can_edit_publi: function() {
       if (this.can_edit_publi) {
         this.preview_mode = false;
       } else {
@@ -300,7 +300,7 @@ export default {
       return medias.reduce((acc, media) => {
         if (this.model_for_this_publication && media.type === "placeholder") {
           const placeholder_reply_media = this.medias.find(
-            (m) => m.placeholder_meta_reference === media.metaFileName
+            m => m.placeholder_meta_reference === media.metaFileName
           );
           if (placeholder_reply_media) {
             media._reply = placeholder_reply_media;
@@ -314,7 +314,7 @@ export default {
               const reply_medias = placeholder_reply_media.placeholder_medias_slugs.reduce(
                 (acc, { slugMediaName }) => {
                   const corresponding_media = this.medias.find(
-                    (m) => m.metaFileName === slugMediaName
+                    m => m.metaFileName === slugMediaName
                   );
                   if (corresponding_media) acc.push(corresponding_media);
                   return acc;
@@ -357,7 +357,7 @@ export default {
     model_for_this_publication() {
       if (!this.publication.follows_model) return false;
       return Object.values(this.$root.store.publications).find(
-        (p) =>
+        p =>
           this.publication.template === p.template &&
           p.is_model === true &&
           p.slugFolderName === this.publication.follows_model
@@ -381,12 +381,12 @@ export default {
           ? this.publication_model_medias
           : this.medias;
 
-        const media = medias.find((m) => m.metaFileName === item.slugMediaName);
+        const media = medias.find(m => m.metaFileName === item.slugMediaName);
         if (!media) return acc;
 
         if (this.model_for_this_publication && media.type === "placeholder") {
           const placeholder_reply_media = this.medias.find(
-            (m) => m.placeholder_meta_reference === media.metaFileName
+            m => m.placeholder_meta_reference === media.metaFileName
           );
           if (placeholder_reply_media) {
             media._reply = placeholder_reply_media;
@@ -400,7 +400,7 @@ export default {
               const reply_medias = placeholder_reply_media.placeholder_medias_slugs.reduce(
                 (acc, { slugMediaName }) => {
                   const corresponding_media = this.medias.find(
-                    (m) => m.metaFileName === slugMediaName
+                    m => m.metaFileName === slugMediaName
                   );
                   if (corresponding_media) acc.push(corresponding_media);
                   return acc;
@@ -509,18 +509,29 @@ export default {
 
       return { medias, missingMedias };
     },
-    addMediaOrdered({ values = {}, right_after_meta, in_position }) {
+    addMediaOrdered({
+      values = {},
+      right_before_meta,
+      right_after_meta,
+      in_position,
+    }) {
       return new Promise((resolve, reject) => {
-        this.addMedia({ values }).then((mdata) =>
+        this.addMedia({ values }).then(mdata =>
           this.insertMediasInList({
             metaFileNames: [mdata.metaFileName],
+            right_before_meta,
             right_after_meta,
             in_position,
           })
         );
       });
     },
-    insertMediasInList({ metaFileNames, right_after_meta, in_position }) {
+    insertMediasInList({
+      metaFileNames,
+      right_before_meta,
+      right_after_meta,
+      in_position,
+    }) {
       return new Promise((resolve, reject) => {
         const medias_slugs =
           !Array.isArray(this.publication.medias_slugs) ||
@@ -528,7 +539,7 @@ export default {
             ? []
             : JSON.parse(JSON.stringify(this.publication.medias_slugs));
 
-        const new_media_metas = metaFileNames.map((metaFileName) => {
+        const new_media_metas = metaFileNames.map(metaFileName => {
           return {
             slugMediaName: metaFileName,
           };
@@ -541,9 +552,13 @@ export default {
           // in medias_slugs_in_order: medias that were added and then removed or part
           // of a removed project
           index = medias_slugs.findIndex(
-            (s) => s.slugMediaName === right_after_meta
+            s => s.slugMediaName === right_after_meta
           );
           index += 1;
+        } else if (right_before_meta) {
+          index = medias_slugs.findIndex(
+            s => s.slugMediaName === right_before_meta
+          );
         } else if (in_position && in_position === "start") {
           index = 0;
         }
@@ -558,9 +573,9 @@ export default {
               medias_slugs: medias_slugs,
             },
           })
-          .then((fdata) => {
+          .then(fdata => {
             this.$nextTick(() => {
-              metaFileNames.map((metaFileName) => {
+              metaFileNames.map(metaFileName => {
                 this.$eventHub.$emit(
                   "publication.just_inserted_media",
                   metaFileName
@@ -591,7 +606,7 @@ export default {
             type: "publications",
             additionalMeta,
           })
-          .then((mdata) => {
+          .then(mdata => {
             this.$eventHub.$emit("publication.just_added_media", mdata);
             return resolve(mdata);
           });
@@ -600,7 +615,7 @@ export default {
 
     orderedRemovePubliMedia({ metaFileName }) {
       const medias_slugs = this.publication.medias_slugs.filter(
-        (m) => m.slugMediaName !== metaFileName
+        m => m.slugMediaName !== metaFileName
       );
 
       this.$root
@@ -628,7 +643,7 @@ export default {
           to_slugFolderName: this.slugPubliName,
           slugMediaName: metaFileName,
         })
-        .then((mdata) => {
+        .then(mdata => {
           this.insertMediasInList({
             metaFileNames: [mdata.metaFileName],
             right_after_meta: metaFileName,
@@ -653,7 +668,7 @@ export default {
           slugMediaName: metaFileName,
           data: val,
         })
-        .then((mdata) => {
+        .then(mdata => {
           this.$eventHub.$emit("publication.media_just_edited", mdata);
         });
     },
@@ -676,18 +691,18 @@ export default {
     changeMediaOrder({ metaFileName, dir }) {
       // find index in medias_slugs_in_order
       const current_index_in_slugs = this.publication.medias_slugs.findIndex(
-        (m) => m.slugMediaName === metaFileName
+        m => m.slugMediaName === metaFileName
       );
 
       const current_media_index = this.medias_in_order.findIndex(
-        (m) => m.metaFileName === metaFileName
+        m => m.metaFileName === metaFileName
       );
       const adjacent_media_meta = this.medias_in_order[
         current_media_index + dir
       ].metaFileName;
 
       const new_index_in_slugs = this.publication.medias_slugs.findIndex(
-        (m) => m.slugMediaName === adjacent_media_meta
+        m => m.slugMediaName === adjacent_media_meta
       );
 
       const medias_slugs = JSON.parse(

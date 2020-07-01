@@ -71,6 +71,7 @@ html
         is_electron: !!(window && window.process && window.process.type),
         is_darwin: !!(window && window.process && window.process.platform === 'darwin'),
         clients: [],
+        journal: [],
         list_authorized_folders: [],
         list_of_publications_templates: !{JSON.stringify(structure.publications.fields.template.options, null, 4)},
       };

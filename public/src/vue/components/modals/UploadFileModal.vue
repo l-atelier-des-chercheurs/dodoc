@@ -31,7 +31,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import UploadFile from "../subcomponents/UploadFile.vue";
 
 export default {
@@ -42,7 +41,6 @@ export default {
     selected_files: Array,
   },
   components: {
-    Modal,
     UploadFile,
   },
   data() {

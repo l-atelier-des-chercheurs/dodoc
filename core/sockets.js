@@ -2,7 +2,8 @@ const dev = require("./dev-log"),
   api = require("./api"),
   auth = require("./auth"),
   exporter = require("./exporter"),
-  file = require("./file");
+  file = require("./file"),
+  changelog = require("./changelog");
 
 const bcrypt = require("bcryptjs");
 
@@ -91,6 +92,8 @@ module.exports = (function () {
       socket.on("listClientsInfo", (d) => onListClientsInfo(socket, d));
 
       socket.on("disconnect", (d) => onClientDisconnect(socket));
+
+      socket.on("loadJournal", (d) => onLoadJournal(socket));
     });
   }
 
@@ -181,7 +184,21 @@ module.exports = (function () {
       .createFolder({ type, data })
       .catch((err) => {
         dev.error(`Failed to create folder! Error: ${err}`);
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `action_not_allowed`,
+          not_localized_string: `Error: can’t create folder ${err}`,
+          type: "error",
+        });
+        throw err;
       });
+
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "created_folder",
+      detail: { type, slugFolderName, data },
+    });
 
     await sendFolders({ type, slugFolderName, id });
   }
@@ -219,13 +236,20 @@ module.exports = (function () {
     // check if password is crypted and should change
     const password_field_options =
       global.settings.structure[type].fields.password;
+
+    const socket_is_admin = await auth.isSocketSessionAdmin(socket);
+
     if (
       password_field_options &&
       password_field_options.hasOwnProperty("transform") &&
       password_field_options.transform === "crypt" &&
       Object.values(foldersData)[0].password &&
-      !!data.password
+      data.hasOwnProperty("password") &&
+      !socket_is_admin
     ) {
+      // if attempting to set new password
+      // only allow if old_password match
+
       if (
         !data._old_password ||
         !(await bcrypt.compare(
@@ -243,7 +267,7 @@ module.exports = (function () {
           not_localized_string: `Error: folder can’t be edited ${slugFolderName} because old password is wrong or missing`,
           type: "error",
         });
-        return;
+        throw `Failed to change password and edit folder: old password is wrong or missing`;
       }
     }
 
@@ -287,7 +311,29 @@ module.exports = (function () {
       });
     }
 
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "edited_folder",
+      detail: { type, slugFolderName, data },
+    });
+
     await sendFolders({ type, slugFolderName, id });
+  }
+
+  async function updateFolderModified({ type, slugFolderName }) {
+    dev.logfunction(
+      `EVENT - updateFolderModified for type = ${type}, slugFolderName = ${slugFolderName}`
+    );
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+
+    await file.updateFolderEdited({
+      type,
+      slugFolderName,
+      foldersData: Object.values(foldersData)[0],
+    });
+
+    await sendFolders({ type, slugFolderName });
   }
 
   async function onRemoveFolder(socket, { type, slugFolderName }) {
@@ -320,6 +366,12 @@ module.exports = (function () {
         dev.error(`Failed to remove folder: ${err}`);
         reject(err);
       });
+
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "removed_folder",
+      detail: { type, slugFolderName },
+    });
 
     await sendFolders({ type });
   }
@@ -379,7 +431,13 @@ module.exports = (function () {
       additionalMeta: _additionalMeta,
     });
 
-    onEditFolder(socket, { type, slugFolderName, data: {} });
+    updateFolderModified({ type, slugFolderName });
+
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "created_media",
+      detail: { type, slugFolderName, additionalMeta },
+    });
 
     await sendMedias({
       type,
@@ -407,6 +465,12 @@ module.exports = (function () {
       });
 
     onEditFolder(undefined, { type, slugFolderName, data: {} });
+
+    changelog.append({
+      author: undefined,
+      action: "created_media_meta",
+      detail: { type, slugFolderName, additionalMeta },
+    });
 
     await sendMedias({
       type,
@@ -447,7 +511,7 @@ module.exports = (function () {
     )
       return;
 
-    file
+    await file
       .editMedia({
         type,
         slugFolderName,
@@ -456,15 +520,20 @@ module.exports = (function () {
         recipe_with_data,
         socket,
       })
-      .then(
-        (slugFolderName) => {
-          onEditFolder(socket, { type, slugFolderName, data: {} });
-          sendMedias({ type, id, slugFolderName, metaFileName: slugMediaName });
-        },
-        function (err) {
-          dev.error(`Failed to edit media! Error: ${err}`);
-        }
-      );
+      .catch((err) => {
+        dev.error(`Failed to edit media! Error: ${err}`);
+        throw err;
+      });
+
+    onEditFolder(socket, { type, slugFolderName, data: {} });
+
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "edited_media",
+      detail: { type, slugFolderName, slugMediaName, data },
+    });
+
+    sendMedias({ type, id, slugFolderName, metaFileName: slugMediaName });
   }
   async function onCopyMediaToFolder(
     socket,
@@ -554,6 +623,12 @@ module.exports = (function () {
       type: "success",
     });
 
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "copied_media",
+      detail: { type, from_slugFolderName, to_slugFolderName, slugMediaName },
+    });
+
     sendMedias({
       type,
       id,
@@ -605,6 +680,13 @@ module.exports = (function () {
       });
 
     await onEditFolder(socket, { type, slugFolderName, data: {} });
+
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "removed_media",
+      detail: { type, slugFolderName, slugMediaName },
+    });
+
     await sendMedias({ type, slugFolderName });
   }
 
@@ -644,22 +726,29 @@ module.exports = (function () {
     )
       return;
 
-    exporter
-      .makePDFForPubli({ slugPubliName, options })
-      .then(({ pdfName, imageName, docPath }) => {
-        notify({
-          socket,
-          localized_string: `finished_creating_recipe`,
-          type: "success",
-        });
+    const { pdfName, imageName, docPath } = await exporter.makePDFForPubli({
+      slugPubliName,
+      options,
+    });
 
-        api.sendEventWithContent(
-          "publiPDFGenerated",
-          { pdfName, imageName, docPath },
-          io,
-          socket
-        );
-      });
+    notify({
+      socket,
+      localized_string: `finished_creating_recipe`,
+      type: "success",
+    });
+
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "exported_pdf",
+      detail: { slugPubliName, options },
+    });
+
+    api.sendEventWithContent(
+      "publiPDFGenerated",
+      { pdfName, imageName, docPath },
+      io,
+      socket
+    );
   }
 
   async function onDownloadVideoPubli(socket, { slugPubliName, options }) {
@@ -690,22 +779,8 @@ module.exports = (function () {
     )
       return;
 
-    exporter
+    const videoName = await exporter
       .makeVideoForPubli({ slugPubliName, socket, options })
-      .then((videoName) => {
-        notify({
-          socket,
-          localized_string: `finished_creating_recipe`,
-          type: "success",
-        });
-
-        api.sendEventWithContent(
-          "publiVideoGenerated",
-          { videoName },
-          io,
-          socket
-        );
-      })
       .catch((error_msg) => {
         notify({
           socket,
@@ -717,6 +792,20 @@ module.exports = (function () {
 
         api.sendEventWithContent("publiVideoFailed", {}, io, socket);
       });
+
+    notify({
+      socket,
+      localized_string: `finished_creating_recipe`,
+      type: "success",
+    });
+
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "exported_video",
+      detail: { slugPubliName, options },
+    });
+
+    api.sendEventWithContent("publiVideoGenerated", { videoName }, io, socket);
   }
 
   async function onDownloadStopmotionPubli(socket, { slugPubliName, options }) {
@@ -745,22 +834,8 @@ module.exports = (function () {
     )
       return;
 
-    exporter
+    const videoName = await exporter
       .makeVideoFromImagesInPubli({ slugPubliName, options, socket })
-      .then((videoName) => {
-        notify({
-          socket,
-          localized_string: `finished_creating_recipe`,
-          type: "success",
-        });
-
-        api.sendEventWithContent(
-          "publiStopmotionIsGenerated",
-          { videoName },
-          io,
-          socket
-        );
-      })
       .catch((error) => {
         notify({
           socket,
@@ -772,6 +847,25 @@ module.exports = (function () {
 
         api.sendEventWithContent("publiStopmotionFailed", {}, io, socket);
       });
+
+    notify({
+      socket,
+      localized_string: `finished_creating_recipe`,
+      type: "success",
+    });
+
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "exported_stopmotion",
+      detail: { slugPubliName, options },
+    });
+
+    api.sendEventWithContent(
+      "publiStopmotionIsGenerated",
+      { videoName },
+      io,
+      socket
+    );
   }
 
   async function onAddTempMediaToFolder(socket, { from, to, additionalMeta }) {
@@ -849,6 +943,12 @@ module.exports = (function () {
       type,
       slugFolderName,
       new_folder_name,
+    });
+
+    changelog.append({
+      author: auth.getSocketAuthors(socket),
+      action: "copied_folder",
+      detail: { type, slugFolderName, new_folder_name },
     });
 
     await sendFolders({ type, slugFolderName: new_slugFolderName, id });
@@ -1027,6 +1127,11 @@ module.exports = (function () {
 
   function onClientDisconnect(socket) {
     sendClients();
+  }
+
+  async function onLoadJournal(socket) {
+    const journal_content = await changelog.read();
+    api.sendEventWithContent("loadJournal", journal_content, io, socket);
   }
 
   return API;

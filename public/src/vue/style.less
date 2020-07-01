@@ -4378,7 +4378,7 @@ small {
 
   &.is--pinned {
     .m_chatRow--name {
-      font-size: 130%;
+      // font-size: 130%;
       // background-color: white;
       // .padding-verysmall;
       // color: @c-rouge;
@@ -4420,6 +4420,7 @@ small {
   .m_chatRow--name {
     font-weight: 500;
     letter-spacing: 0.02em;
+    .margin-left-verysmall;
   }
 
   .m_chatRow--unreadCounter {
@@ -4427,7 +4428,10 @@ small {
     background-color: @c-rouge_fonce;
     width: 2em;
     height: 2em;
-    .margin-sides-verysmall;
+    min-height: 0;
+    min-width: 0;
+    .margin-left-verysmall;
+    // margin-bottom: 0px;
 
     .font-verysmall;
 

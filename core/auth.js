@@ -49,7 +49,15 @@ module.exports = (function () {
       isSubmittedSessionPasswordValid(pwd),
 
     hashCode: (code) => hashCode(code),
-    encrypt: (code) => encrypt(code),
+
+    getSocketAuthors: (socket) => getSocketAuthors(socket),
+
+    isSocketSessionAdmin: (socket) =>
+      new Promise((resolve, reject) =>
+        isSocketSessionAdmin(socket)
+          .then((d) => resolve(d))
+          .catch((e) => reject(e))
+      ),
   };
 
   async function setAuthenticate(user_folder_passwords) {
@@ -84,6 +92,8 @@ module.exports = (function () {
             dev.error(`Failed to get folder data: ${err}`);
             return [];
           });
+
+          if (!foldersData) return [];
 
           dev.logverbose(
             `AUTH — setAuthenticate : got folder data, now checking against user_folder_passwords[${type}]`

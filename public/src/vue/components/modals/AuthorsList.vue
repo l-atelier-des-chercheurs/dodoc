@@ -21,9 +21,9 @@
             <strong>{{ $t("login_to_access") }}</strong>
           </div>
 
-          <small>
-            {{ $t("when_logged_as_author_content_will_be_tagged") }}
-          </small>
+          <small>{{
+            $t("when_logged_as_author_content_will_be_tagged")
+          }}</small>
           <button
             v-if="!show_detail"
             type="button"
@@ -33,13 +33,13 @@
             + {{ $t("more_informations") }}
           </button>
           <div>
-            <small v-if="show_detail">
-              {{ $t("more_informations_on_authors") }}
-            </small>
+            <small v-if="show_detail">{{
+              $t("more_informations_on_authors")
+            }}</small>
           </div>
         </div>
         <transition-group tag="div" class="m_authorsList" name="list-complete">
-          <div class="" :key="'createAuthor'">
+          <div class :key="'createAuthor'">
             <div class="m_authorsList--createAuthor">
               <button
                 type="button"
@@ -57,8 +57,8 @@
             </div>
           </div>
 
-          <template v-if="Object.keys(sortedAuthors).length > 0">
-            <template v-for="author in sortedAuthors">
+          <template v-if="Object.keys(sorted_authors).length > 0">
+            <template v-for="author in sorted_authors">
               <Author
                 :author="author"
                 :key="author.slugFolderName"
@@ -73,7 +73,6 @@
 </template>
 <script>
 import Author from "./../subcomponents/Author.vue";
-import Modal from "./BaseModal.vue";
 import CreateAuthor from "./../subcomponents/CreateAuthor.vue";
 
 export default {
@@ -89,7 +88,6 @@ export default {
   },
   components: {
     Author,
-    Modal,
     CreateAuthor,
   },
   data() {
@@ -113,10 +111,24 @@ export default {
 
   watch: {},
   computed: {
-    sortedAuthors: function () {
-      return Object.values(this.authors).sort((a, b) =>
-        a.name.localeCompare(b.name)
+    sorted_authors() {
+      let sorted_authors = Object.values(this.authors).sort((a, b) =>
+        a.name && b.name ? a.name.localeCompare(b.name) : false
       );
+
+      // move current author to top
+      if (this.$root.current_author) {
+        sorted_authors.some(
+          (item, idx) =>
+            item.slugFolderName === this.$root.current_author.slugFolderName &&
+            sorted_authors.unshift(
+              // remove the found item, in-place (by index with splice),
+              // returns an array of a single item removed
+              sorted_authors.splice(idx, 1)[0]
+            )
+        );
+      }
+      return sorted_authors;
     },
   },
   methods: {},

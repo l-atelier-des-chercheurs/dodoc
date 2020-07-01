@@ -490,7 +490,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import MediaContent from "../subcomponents/MediaContent.vue";
 import DateTime from "../subcomponents/DateTime.vue";
 import CreateQRCode from "./qr/CreateQRCode.vue";
@@ -510,7 +509,6 @@ export default {
     },
   },
   components: {
-    Modal,
     DateTime,
     MediaContent,
     CreateQRCode,

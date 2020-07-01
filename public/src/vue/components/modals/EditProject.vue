@@ -160,7 +160,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 import slug from "slugg";
 import ImageSelect from "../subcomponents/ImageSelect.vue";
@@ -174,7 +173,6 @@ export default {
     read_only: Boolean,
   },
   components: {
-    Modal,
     EditAccessControl,
     ImageSelect,
     TagsInput,

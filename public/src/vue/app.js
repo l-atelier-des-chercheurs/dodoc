@@ -26,15 +26,6 @@ import locale_strings from "./locale_strings.js";
 
 import "prismjs";
 
-Vue.component("Loader", {
-  name: "Loader",
-  template: `
-    <div class="_loader">
-      <span class="loader" />
-    </div>
-  `,
-});
-
 // Vue.config.silent = false;
 // Vue.config.devtools = true;
 
@@ -56,6 +47,24 @@ Vue.component("tippy", TippyComponent);
 
 import DateFieldComponent from "./components/subcomponents/DateField.vue";
 Vue.component("DateField", DateFieldComponent);
+
+Vue.component("Loader", {
+  name: "Loader",
+  template: `
+    <div class="_loader">
+      <span class="loader" />
+    </div>
+  `,
+});
+
+import ProtectedLock from "./components/subcomponents/ProtectedLock.vue";
+Vue.component("ProtectedLock", ProtectedLock);
+
+import Pin from "./components/subcomponents/Pin.vue";
+Vue.component("Pin", Pin);
+
+import Modal from "./components/modals/BaseModal.vue";
+Vue.component("Modal", Modal);
 
 let lang_settings = {
   available: [
@@ -912,6 +921,52 @@ let vm = new Vue({
       }
 
       return url;
+    },
+    setReadMessageToLast({ chat }) {
+      // if logged in, set author last_messages_read_in_channels to metaFileName of chat
+      if (!this.$root.current_author) return false;
+
+      const last_message_channel = {
+        channel: chat.slugFolderName,
+        index: chat.number_of_medias,
+      };
+
+      let last_messages_read_in_channels = Array.isArray(
+        this.$root.current_author.last_messages_read_in_channels
+      )
+        ? JSON.parse(
+            JSON.stringify(
+              this.$root.current_author.last_messages_read_in_channels
+            )
+          )
+        : [];
+
+      const channel_info_in_author = last_messages_read_in_channels.find(
+        (c) => c.channel === last_message_channel.channel
+      );
+      if (
+        channel_info_in_author &&
+        Number(channel_info_in_author.index) ===
+          Number(last_message_channel.index)
+      ) {
+        // already up to date, do nothing
+        return;
+      }
+
+      // remove existing prop
+      last_messages_read_in_channels = last_messages_read_in_channels.filter(
+        (c) => c.channel !== last_message_channel.channel
+      );
+
+      last_messages_read_in_channels.push(last_message_channel);
+
+      this.$root.editFolder({
+        type: "authors",
+        slugFolderName: this.$root.current_author.slugFolderName,
+        data: {
+          last_messages_read_in_channels,
+        },
+      });
     },
     getUnreadMessageCount(chat) {
       if (!this.current_author) return false;

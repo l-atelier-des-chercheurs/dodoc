@@ -43,14 +43,12 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import ScanQRCode from "./qr/ScanQRCode.vue";
 import CreateQRCode from "./qr/CreateQRCode.vue";
 
 export default {
   props: ["read_only", "slugProjectName"],
   components: {
-    Modal,
     CreateQRCode,
     ScanQRCode,
   },

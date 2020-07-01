@@ -32,17 +32,13 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
-
 export default {
   props: {},
-  components: {
-    Modal
-  },
+  components: {},
   data() {
     return {
       pwd: "",
-      remember_password_on_this_device: false
+      remember_password_on_this_device: false,
     };
   },
 
@@ -63,8 +59,8 @@ export default {
 
       this.$socketio.connect(this.pwd);
       this.$emit("close");
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

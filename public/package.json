@@ -29,6 +29,7 @@
     "instascan": "^1.0.0",
     "jquery": "^3.4.1",
     "katex": "^0.11.1",
+    "linkifyjs": "^2.1.9",
     "moment": "^2.24.0",
     "node-lessify": "^0.1.5",
     "node-sass": "^4.13.0",

@@ -23,9 +23,7 @@
       v-if="($root.current_author && $root.current_author.role === 'admin')
 "
     >
-      <label>
-        {{ $t("role") }}
-      </label>
+      <label>{{ $t("role") }}</label>
       <div>
         <select v-model="authordata.role">
           <option
@@ -36,9 +34,8 @@
               role === 'admin' &&
               (!$root.current_author || $root.current_author.role !== 'admin')
             "
+            >{{ $t(role) }}</option
           >
-            {{ $t(role) }}
-          </option>
         </select>
       </div>
     </div>
@@ -84,17 +81,18 @@
           :class="{ 'is--active': show_password }"
           @click.stop="show_password = !show_password"
         >
-          <template v-if="author.password === 'has_pass'">
-            {{ $t("change_password") }}
-          </template>
-          <template v-else>
-            {{ $t("add_password") }}
-          </template>
+          <template v-if="author.password === 'has_pass'">{{
+            $t("change_password")
+          }}</template>
+          <template v-else>{{ $t("add_password") }}</template>
         </button>
       </label>
 
       <div v-if="show_password">
-        <div class="margin-bottom-verysmall">
+        <div
+          class="margin-bottom-verysmall"
+          v-if="!$root.current_author_is_admin"
+        >
           <input
             type="password"
             v-if="author.password === 'has_pass'"
@@ -138,6 +136,9 @@
       {{ $t("cancel") }}
     </button>
     <button type="submit" class="bg-bleuvert">{{ $t("save") }}</button>
+    <transition name="scaleIn" :duration="400">
+      <Loader v-if="is_sending_content_to_server" />
+    </transition>
   </form>
 </template>
 <script>
@@ -168,6 +169,8 @@ export default {
         nfc_tag: this.author.nfc_tag,
       },
       preview: undefined,
+
+      is_sending_content_to_server: false,
     };
   },
   computed: {
@@ -219,20 +222,30 @@ export default {
         this.authordata.password = this.$auth.hashCode(
           this.authordata.password
         );
-      }
+      } else delete this.authordata.password;
+
       if (!!this.authordata._old_password) {
         this.authordata._old_password = this.$auth.hashCode(
           this.authordata._old_password
         );
       }
 
-      this.$root.editFolder({
-        type: "authors",
-        slugFolderName: this.author.slugFolderName,
-        data: this.authordata,
-      });
+      this.is_sending_content_to_server = true;
 
-      this.$emit("close", "");
+      this.$root
+        .editFolder({
+          type: "authors",
+          slugFolderName: this.author.slugFolderName,
+          data: this.authordata,
+        })
+        .then((cdata) => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(this.$t("notifications.successfully_saved"));
+          this.is_sending_content_to_server = false;
+          this.$emit("close", "");
+        });
     },
   },
 };

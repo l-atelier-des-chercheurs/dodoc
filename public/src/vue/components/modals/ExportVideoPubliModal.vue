@@ -11,9 +11,7 @@
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class>
-          <div class="margin-bottom-small">
-            {{ instructions }}
-          </div>
+          <div class="margin-bottom-small">{{ instructions }}</div>
 
           <div class="margin-bottom-small">
             <label>{{ $t("quality") }}</label>
@@ -24,20 +22,20 @@
                 :key="q.resolution.width + q.resolution.height"
                 >{{ q.label }}</option
               >
-              <option :value="'draft'" :key="'draft'">
-                → {{ $t("draft").toLowerCase() }}
-              </option>
-              <option :value="'custom'" :key="'custom'">
-                ↓ {{ $t("custom").toLowerCase() }}
-              </option>
+              <option :value="'draft'" :key="'draft'"
+                >→ {{ $t("draft").toLowerCase() }}</option
+              >
+              <option :value="'custom'" :key="'custom'"
+                >↓ {{ $t("custom").toLowerCase() }}</option
+              >
             </select>
             <div v-if="resolution === 'draft'">
               <small>{{ $t("video_export_draft_instructions") }}</small>
             </div>
             <div v-else-if="resolution === 'custom'">
-              <small>{{
-                $t("video_export_custom_quality_instructions")
-              }}</small>
+              <small>
+                {{ $t("video_export_custom_quality_instructions") }}
+              </small>
             </div>
             <div v-else class="label">
               {{ resolution.width }} × {{ resolution.height }}
@@ -49,7 +47,7 @@
             class="margin-bottom-small input-group"
           >
             <input
-              class=""
+              class
               type="number"
               min="2"
               max="4096"
@@ -58,7 +56,7 @@
             />
             <span class="font-large padding-verysmall">×</span>
             <input
-              class=""
+              class
               type="number"
               min="2"
               max="2160"
@@ -74,26 +72,26 @@
               :disabled="disable_generation_button"
               @click="downloadVideo"
             >
-              <template v-if="!video_request_status">{{
-                $t("make_video")
-              }}</template>
+              <template v-if="!video_request_status">
+                {{ $t("make_video") }}
+              </template>
               <template
                 v-else-if="video_request_status === 'waiting_for_server'"
               >
                 <span class="loader loader-xs" />
                 {{ $t("notifications.creation_in_progress") }}
               </template>
-              <template v-else-if="video_request_status === 'generated'">{{
-                $t("notifications.video_created")
-              }}</template>
-              <template v-else-if="video_request_status === 'failed'">{{
-                $t("notifications.video_creation_failed")
-              }}</template>
+              <template v-else-if="video_request_status === 'generated'">
+                {{ $t("notifications.video_created") }}
+              </template>
+              <template v-else-if="video_request_status === 'failed'">
+                {{ $t("notifications.video_creation_failed") }}
+              </template>
             </button>
           </div>
 
           <div v-if="video_request_status === 'generated'">
-            <hr class="" />
+            <hr class />
             <div class="mediaContainer">
               <vue-plyr :options="plyr_options">
                 <video :src="link_to_video" controls preload="auto" />
@@ -122,7 +120,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import { setTimeout } from "timers";
 import AddCreationToProject from "../subcomponents/AddCreationToProject.vue";
 
@@ -133,7 +130,6 @@ export default {
     instructions: String,
   },
   components: {
-    Modal,
     AddCreationToProject,
   },
   data() {

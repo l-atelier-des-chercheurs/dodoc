@@ -105,18 +105,16 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import AddCreationToProject from "../subcomponents/AddCreationToProject.vue";
 import { setTimeout } from "timers";
 
 export default {
   props: {
     publication: Object,
-    slugPubliName: String
+    slugPubliName: String,
   },
   components: {
-    Modal,
-    AddCreationToProject
+    AddCreationToProject,
   },
   data() {
     return {
@@ -129,20 +127,20 @@ export default {
       available_qualities: [
         {
           label: "very_high",
-          height: 1080
+          height: 1080,
         },
         {
           label: "high",
-          height: 720
+          height: 720,
         },
         {
           label: "medium",
-          height: 480
+          height: 480,
         },
         {
           label: "low",
-          height: 360
-        }
+          height: 360,
+        },
       ],
 
       exported_video_name: false,
@@ -155,31 +153,31 @@ export default {
           "current-time",
           "mute",
           "volume",
-          "fullscreen"
+          "fullscreen",
         ],
-        iconUrl: "/images/plyr.svg"
-      }
+        iconUrl: "/images/plyr.svg",
+      },
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {
-    quality: function() {
+    quality: function () {
       if (this.video_request_status === "generated") {
         this.video_request_status = false;
       }
     },
-    framerate: function() {
+    framerate: function () {
       this.seconds_per_image = 1 / this.framerate;
       this.framerate = this.framerate.toFixed(1);
       if (this.video_request_status === "generated") {
         this.video_request_status = false;
       }
     },
-    seconds_per_image: function() {
+    seconds_per_image: function () {
       this.framerate = 1 / this.seconds_per_image;
-    }
+    },
   },
   computed: {},
   methods: {
@@ -201,8 +199,8 @@ export default {
         slugPubliName: this.slugPubliName,
         options: {
           framerate: this.framerate,
-          quality: this.quality
-        }
+          quality: this.quality,
+        },
       });
       this.video_request_status = "waiting_for_server";
     },
@@ -226,7 +224,7 @@ export default {
       this.$eventHub.$off("socketio.publication.publiStopmotionIsGenerated");
 
       this.video_request_status = "failed";
-    }
-  }
+    },
+  },
 };
 </script>

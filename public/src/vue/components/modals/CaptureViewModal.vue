@@ -18,15 +18,12 @@
         :read_only="read_only"
         :can_add_to_fav="false"
         :available_modes="available_modes"
-        @insertMedias="
-            (metaFileNames) => $emit('insertMedias', metaFileNames)
-          "
+        @insertMedias="(metaFileNames) => $emit('insertMedias', metaFileNames)"
       />
     </template>
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import CaptureView from "../../CaptureView.vue";
 
 export default {
@@ -37,7 +34,6 @@ export default {
     available_modes: Array,
   },
   components: {
-    Modal,
     CaptureView,
   },
   data() {
@@ -51,6 +47,4 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped>
-</style>
-
+<style lang="scss" scoped></style>
