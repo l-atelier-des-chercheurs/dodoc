@@ -4,8 +4,8 @@ const path = require("path"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
+  sharp = require("sharp");
 
-const sharp = require("sharp");
 sharp.cache(false);
 
 const dev = require("./dev-log"),
