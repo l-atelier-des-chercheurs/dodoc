@@ -15,14 +15,49 @@
 
   <body>
     <div id="app">
-      <model-stl :src="mediaURL"></model-stl>
+      <model-stl
+        :src="mediaURL"
+        :rotation="rotation"
+        :background-color="backgroundColor"
+        ref="model"
+      />
     </div>
     <script src="vue.min.js"></script>
     <script src="vue-3d-model.umd.min.js"></script>
     <script>
       new Vue({
         el: "#app",
-        data: {},
+        data: {
+          rotation: {
+            x: Math.PI / 12,
+            y: -Math.PI / 12,
+            z: 0,
+          },
+          lights: [
+            {
+              type: "HemisphereLight",
+              position: { x: -1, y: -1, z: 1 },
+              skyColor: 0xffffff,
+              groundColor: 0x806060,
+              intensity: 0.2,
+            },
+            {
+              type: "HemisphereLight",
+              position: { x: 1, y: 1, z: -1 },
+              skyColor: 0xffffff,
+              groundColor: 0xffff00,
+              intensity: 0.2,
+            },
+          ],
+          backgroundColor: 0xffffff,
+          // backgroundColor: 0xf4f3ef,
+        },
+        mounted() {
+          // setTimeout(() => {
+          //   var object = this.$refs.model.object;
+          //   object.material.color.setStyle("#353535");
+          // }, 1000);
+        },
         computed: {
           mediaURL() {
             const urlParams = new URLSearchParams(window.location.search);
