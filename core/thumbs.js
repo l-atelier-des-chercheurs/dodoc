@@ -4,10 +4,11 @@ const path = require("path"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
-  StlThumbnailer = require("node-stl-to-thumbnail");
+  sharp = require("sharp");
 
-const sharp = require("sharp");
 sharp.cache(false);
+
+const puppeteer = require("puppeteer");
 
 const dev = require("./dev-log"),
   api = require("./api");
@@ -148,7 +149,12 @@ module.exports = (function () {
           let screenshotsAngles = [0];
           screenshotsAngles.forEach((angle) => {
             let makeSTLScreenshot = new Promise((resolve, reject) => {
-              _makeSTLScreenshot(mediaPath, thumbFolderPath, filename, angle)
+              _makeSTLScreenshot({
+                slugFolderName,
+                thumbFolderPath,
+                filename,
+                angle,
+              })
                 .then(({ screenshotPath, screenshotName }) => {
                   // make screenshot, then make thumbs out of each screenshot and push this to thumbs
                   // naming :
@@ -611,9 +617,16 @@ module.exports = (function () {
     });
   }
 
-  function _makeSTLScreenshot(mediaPath, thumbFolderPath, filename, angle) {
+  function _makeSTLScreenshot({
+    slugFolderName,
+    thumbFolderPath,
+    filename,
+    angle,
+  }) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(`Looking to make a STL screenshot for ${mediaPath}`);
+      dev.logverbose(
+        `Looking to make a STL screenshot for ${slugFolderName}/${filename}`
+      );
 
       // todo : use angle to get screenshots all around an stl
 
@@ -625,25 +638,72 @@ module.exports = (function () {
       fs.access(fullScreenshotPath, fs.F_OK, function (err) {
         // if userDir folder doesn't exist yet at destination
         if (err) {
-          var thumbnailer = new StlThumbnailer({
-            filePath: mediaPath,
-            requestThumbnails: [
-              {
+          let browser;
+
+          puppeteer
+            .launch({
+              headless: true,
+              ignoreHTTPSErrors: true,
+              args: ["--no-sandbox", "--font-render-hinting=none"],
+            })
+            .then((_browser) => {
+              browser = _browser;
+              return browser.newPage();
+            })
+            .then((page) => {
+              page.setViewport({
                 width: 1800,
                 height: 1800,
-              },
-            ],
-          }).then(function (thumbnails) {
-            // thumbnails is an array (in matching order to your requests) of Canvas objects
-            // you can write them to disk, return them to web users, etc
-            // see node-canvas documentation at https://github.com/Automattic/node-canvas
-            thumbnails[0].toBuffer(function (err, buf) {
-              if (err) return reject();
+                deviceScaleFactor: 2,
+              });
+              page
+                .goto(
+                  `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/${slugFolderName}/${filename}`,
+                  {
+                    waitUntil: "networkidle2",
+                  }
+                )
+                .then(() => {
+                  page
+                    .screenshot({
+                      clip: {
+                        x: 0,
+                        y: 0,
+                        width: Math.floor(default_page_size.width * 3.7795),
+                        height: Math.floor(default_page_size.height * 3.7795), // totally arbitrary value… will have to find better
+                      },
+                      path: fullScreenshotPath,
+                    })
+                    .then(() => {
+                      browser.close();
 
-              fs.writeFileSync(fullScreenshotPath, buf);
-              return resolve({ screenshotPath, screenshotName });
+                      dev.logverbose(
+                        `THUMBS — _makeSTLScreenshot : created image at ${fullScreenshotPath}`
+                      );
+                      return resolve({ screenshotPath, screenshotName });
+                    });
+                });
             });
-          });
+
+          // var thumbnailer = new StlThumbnailer({
+          //   filePath: mediaPath,
+          //   requestThumbnails: [
+          //     {
+          //       width: 1800,
+          //       height: 1800,
+          //     },
+          //   ],
+          // }).then(function (thumbnails) {
+          //   // thumbnails is an array (in matching order to your requests) of Canvas objects
+          //   // you can write them to disk, return them to web users, etc
+          //   // see node-canvas documentation at https://github.com/Automattic/node-canvas
+          //   thumbnails[0].toBuffer(function (err, buf) {
+          //     if (err) return reject();
+
+          //     fs.writeFileSync(fullScreenshotPath, buf);
+          //     return resolve({ screenshotPath, screenshotName });
+          //   });
+          // });
         } else {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`
