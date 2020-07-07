@@ -59,7 +59,7 @@ module.exports = (function () {
     },
     no_message_yet: {
       fr: "Aucun message à afficher pour l’instant…",
-      em: "No message to display yet…",
+      en: "No message to display yet…",
     },
     login_after_creation: {
       fr: "S’identifier dans la foulée",

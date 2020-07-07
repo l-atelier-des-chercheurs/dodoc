@@ -1206,6 +1206,7 @@ module.exports = (function () {
               if (
                 (meta.type === "text" ||
                   meta.type === "marker" ||
+                  meta.type === "embed" ||
                   meta.type === "code") &&
                 data.hasOwnProperty("content")
               ) {
@@ -1475,7 +1476,8 @@ module.exports = (function () {
           );
         } else if (
           additionalMeta.type === "text" ||
-          additionalMeta.type === "marker"
+          additionalMeta.type === "marker" ||
+          additionalMeta.type === "embed"
         ) {
           tasks.push(
             new Promise((resolve, reject) => {
@@ -1797,6 +1799,7 @@ module.exports = (function () {
             if (
               (mediaData.type === "text" ||
                 mediaData.type === "marker" ||
+                mediaData.type === "embed" ||
                 mediaData.type === "code") &&
               mediaData.hasOwnProperty("media_filename")
             ) {
