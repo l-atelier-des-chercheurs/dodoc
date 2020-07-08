@@ -31,7 +31,7 @@
     "npm": "*"
   },
   "build": {
-    "electronVersion": "2.0.16",
+    "electronVersion": "2.0.18",
     "appId": "dodoc2",
     "productName": "do•doc",
     "asar": false,
