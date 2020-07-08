@@ -28,7 +28,17 @@ module.exports = (function () {
     append: ({ author, action, detail }) => {
       const timestamp = +new Date();
       if (!author) author = "anonymous";
-      if (detail) detail = JSON.stringify(detail);
+      if (detail) {
+        if (detail.data)
+          for (var i in detail.data)
+            if (
+              typeof detail.data[i] === "string" &&
+              detail.data[i].length > 20
+            )
+              detail.data[i] = detail.data[i].substring(0, 20) + "…";
+
+        detail = JSON.stringify(detail);
+      }
 
       // const string = JSON.stringify({ timestamp, author, action, detail });
       // const string = [timestamp, author, action, detail]
