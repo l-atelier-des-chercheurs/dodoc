@@ -74,6 +74,13 @@ module.exports = (function () {
           });
       });
     },
+    empty: () => {
+      return new Promise(function (resolve, reject) {
+        fs.writeFile(path_to_changelog_file, "", () => {
+          return resolve();
+        });
+      });
+    },
   };
 
   return API;

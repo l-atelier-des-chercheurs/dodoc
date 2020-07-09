@@ -53,10 +53,16 @@
               v-if="$root.current_author_is_admin"
               @click="loadJournal"
             >
-              <template v-if="journal_is_loaded === 0">{{
-                $t("show")
-              }}</template>
+              <template v-if="!journal_is_loaded">{{ $t("show") }}</template>
               <template v-else>{{ $t("reload") }}</template>
+            </button>
+            <button
+              type="button"
+              class="button-greenthin margin-left-none"
+              v-if="$root.current_author_is_admin && journal_is_loaded"
+              @click="emptyJournal"
+            >
+              {{ $t("empty_content") }}
             </button>
           </div>
         </div>
@@ -75,7 +81,6 @@ export default {
   data() {
     return {
       new_lang: this.$root.lang.current,
-      show_detail_for_entry: false,
       journal_is_loaded: false,
     };
   },
@@ -92,6 +97,9 @@ export default {
     loadJournal() {
       this.$socketio.loadJournal();
       this.journal_is_loaded = true;
+    },
+    emptyJournal() {
+      this.$socketio.emptyJournal();
     },
   },
 };
