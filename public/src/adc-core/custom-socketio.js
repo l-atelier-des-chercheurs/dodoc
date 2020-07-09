@@ -436,6 +436,9 @@ module.exports = (function () {
           loadJournal() {
             this.socket.emit("loadJournal");
           },
+          emptyJournal() {
+            this.socket.emit("emptyJournal");
+          },
         },
       });
     },

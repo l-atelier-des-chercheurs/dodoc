@@ -49,6 +49,10 @@ module.exports = (function () {
       fr: "Épinglées",
       en: "Pinned",
     },
+    no_content_to_show: {
+      fr: "Aucun contenu à afficher",
+      en: "No content to show",
+    },
     create_new_folder: {
       fr: "créer un nouveau dossier",
       en: "create new folder",
@@ -3103,6 +3107,11 @@ module.exports = (function () {
       oc: "Se remembrar del mot de Santa Clara per aqueste aparelh",
       de: "Das Passwort für dieses Gerät merken",
     },
+    empty_content: {
+      fr: "Vider le contenu",
+      en: "Empty content",
+    },
+
     notifications: {
       ios_not_compatible_with_capture: {
         fr:
@@ -3311,6 +3320,10 @@ module.exports = (function () {
         nl: "Fout : videostream is niet beschikbaar.",
         oc: "Error : lo flux vidèo es pas disponible",
         de: "Fehler: der Videostrom ist nicht verfügbar.",
+      },
+      no_content_to_show: {
+        fr: "Aucun contenu à afficher.",
+        en: "No content to display.",
       },
       no_content_found_with_nfc_tag: {
         fr:

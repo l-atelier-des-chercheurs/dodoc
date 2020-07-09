@@ -67,6 +67,14 @@
         </tr>
       </thead>
       <tbody>
+        <tr
+          v-if="!filtered_entries || filtered_entries.length === 0"
+          class="bg-gris_tresclair"
+        >
+          <td colspan="4">
+            <small class="">{{ $t("no_content_to_show") }}</small>
+          </td>
+        </tr>
         <tr v-for="(entry, index) of filtered_entries" :key="index">
           <td>
             {{ entry.date.calendar() }}
@@ -120,6 +128,7 @@ export default {
       author_filter: "",
       day_filter: "",
       current_day_shown: false,
+      show_detail_for_entry: false,
     };
   },
   created() {},
@@ -131,8 +140,7 @@ export default {
   computed: {
     entries() {
       let journal = this.journal_entries;
-      if (typeof journal !== "object" || this.$root.state.journal.length === 0)
-        return false;
+      if (typeof journal !== "object" || journal.length === 0) return false;
 
       journal = journal.reduce((acc, j) => {
         if (j.author) {
@@ -149,6 +157,8 @@ export default {
       return journal.reverse();
     },
     filtered_entries() {
+      if (!this.entries) return false;
+
       return this.entries.filter(
         (entry) =>
           (this.author_filter ? this.author_filter === entry.author : true) &&
@@ -163,6 +173,8 @@ export default {
       );
     },
     journal_authors() {
+      if (!this.entries) return false;
+
       let uniqueAuthors = this.entries.reduce((acc, { author }) => {
         if (!acc.includes(author)) acc.push(author);
         return acc;
