@@ -34,82 +34,49 @@
       </div>
       <div class="margin-sides-medium">
         <div class="margin-vert-small">
-          <label>{{ $t("journal") }}</label
-          ><br />
-          <template v-if="!$root.current_author_is_admin">
-            <small>{{ $t("only_available_to_admins") }}</small>
-          </template>
-          <template v-else>
-            <!-- <button type="button" @click="loadJournal">
+          <label>{{ $t("journal") }}</label>
+          <div>
+            <template v-if="!$root.current_author_is_admin">
+              <small>{{ $t("only_available_to_admins") }}</small>
+            </template>
+            <template v-else-if="journal_is_loaded">
+              <!-- <button type="button" @click="loadJournal">
               {{ $t("reload") }}
             </button> -->
-
-            <table class="table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th colspan="1">
-                    {{ $t("date") }}
-                  </th>
-                  <th colspan="1">
-                    {{ $t("author") }}
-                  </th>
-                  <th colspan="1">
-                    {{ $t("action") }}
-                  </th>
-                  <th>
-                    {{ $t("detail") }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(entry, index) of journal_entries" :key="index">
-                  <td>
-                    {{ entry.date }}
-                  </td>
-                  <td>
-                    {{ entry.author }}
-                  </td>
-                  <td>
-                    {{ $t(entry.action).toLowerCase() }}
-                  </td>
-                  <td>
-                    <small v-if="show_detail_for_entry === index">
-                      {{ entry.detail }}
-                    </small>
-                    <button
-                      type="button"
-                      class="button-small"
-                      v-if="show_detail_for_entry !== index"
-                      @click="show_detail_for_entry = index"
-                    >
-                      {{ $t("show") }}
-                    </button>
-                    <button
-                      type="button"
-                      class="button-small"
-                      v-if="show_detail_for_entry === index"
-                      @click="show_detail_for_entry = false"
-                    >
-                      {{ $t("hide") }}
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </template>
+              <ActivityJournal :journal_entries="$root.state.journal" />
+            </template>
+          </div>
+          <div>
+            <button
+              type="button"
+              class="button-greenthin margin-left-none"
+              v-if="$root.current_author_is_admin"
+              @click="loadJournal"
+            >
+              <template v-if="journal_is_loaded === 0">{{
+                $t("show")
+              }}</template>
+              <template v-else>{{ $t("reload") }}</template>
+            </button>
+          </div>
         </div>
       </div>
     </template>
   </Modal>
 </template>
 <script>
+import ActivityJournal from "../subcomponents/ActivityJournal.vue";
+
 export default {
   props: ["read_only"],
-  components: {},
+  components: {
+    ActivityJournal,
+  },
   data() {
     return {
       new_lang: this.$root.lang.current,
       show_detail_for_entry: false,
+      journal_is_loaded: false,
     };
   },
   watch: {
@@ -118,31 +85,13 @@ export default {
     },
   },
   mounted() {
-    if (this.$root.current_author_is_admin) this.loadJournal();
+    // if (this.$root.current_author_is_admin) this.loadJournal();
   },
-  computed: {
-    journal_entries() {
-      let journal = this.$root.state.journal;
-      if (typeof journal !== "object" || this.$root.state.journal.length === 0)
-        return false;
-
-      journal = journal.map((j) => {
-        if (j.author) {
-          const author = this.$root.getAuthor(j.author);
-          if (author) j.author = author.name;
-        }
-        if (j.timestamp && this.$moment(+j.timestamp).isValid()) {
-          j.date = this.$moment(+j.timestamp).calendar();
-        }
-        return j;
-      });
-
-      return journal;
-    },
-  },
+  computed: {},
   methods: {
     loadJournal() {
       this.$socketio.loadJournal();
+      this.journal_is_loaded = true;
     },
   },
 };
