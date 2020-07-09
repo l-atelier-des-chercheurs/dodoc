@@ -1053,9 +1053,6 @@ let vm = new Vue({
       let uniqueAuthors = [];
       Object.values(base).map((meta) => {
         if (!meta["authors"]) return;
-        if (typeof meta.authors === "string") {
-          meta.authors = [{ name: meta.authors }];
-        }
         meta.authors.map((k) => {
           if (uniqueAuthors.indexOf(k.slugFolderName) == -1)
             uniqueAuthors.push(k.slugFolderName);

@@ -321,6 +321,14 @@ module.exports = (function () {
       oc: "Autor",
       de: "Autor(en)",
     },
+    action: {
+      fr: "Action",
+      en: "Action",
+    },
+    detail: {
+      fr: "Détail",
+      en: "Detail",
+    },
     account: {
       fr: "Compte",
       en: "Account",
@@ -401,7 +409,6 @@ module.exports = (function () {
       fr: "A copié un dossier",
       en: "Has copied a folder",
     },
-
     reload: {
       fr: "Recharger",
       en: "Reload",
@@ -2697,6 +2704,10 @@ module.exports = (function () {
       nl: "Human Tech Days",
       oc: "Human Tech Days",
       de: "Mensch-Technik Tage",
+    },
+    days: {
+      fr: "Jours",
+      en: "Days",
     },
     page_by_page: {
       fr: "Document page à page",
