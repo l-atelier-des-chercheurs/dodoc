@@ -25,6 +25,7 @@ module.exports = (function () {
 
     copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
+        dev.logfunction(`EXPORTER — copyFolderContent = ${slugFolderName}`);
         // create cache folder that we will need to copy the content
         let cacheFolderName =
           api.getCurrentDate() +
