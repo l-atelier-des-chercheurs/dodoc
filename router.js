@@ -473,15 +473,15 @@ module.exports = function (app) {
   }
 
   async function isSocketIDAuthorized({ socketid, type, slugFolderName }) {
-    let socket;
-
     if (!socketid) throw "Missing socketid in URL";
 
-    try {
-      socket = sockets.io().sockets.connected[socketid];
-    } catch (error) {
+    const connected_sockets = sockets.io().sockets.connected;
+
+    if (!connected_sockets || !connected_sockets.hasOwnProperty(socketid)) {
       throw "Missing sockets server-side.";
     }
+
+    const socket = connected_sockets[socketid];
 
     const foldersData = await file.getFolder({ type, slugFolderName });
     if (
@@ -489,6 +489,13 @@ module.exports = function (app) {
         .canEditFolder(socket, foldersData[slugFolderName], type)
         .catch((err) => {
           dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: folder can’t be edited ${slugFolderName} ${err}`,
+            type: "error",
+          });
         }))
     )
       throw "User can’t edit folder";
