@@ -1,9 +1,5 @@
 <template>
-  <Modal
-    @close="$emit('close')"
-    class="m_exportModal"
-    :typeOfModal="'EditMeta'"
-  >
+  <Modal @close="$emit('close')" class="m_exportModal" :typeOfModal="'EditMeta'">
     <template slot="header">
       <span class>{{ $t("export_creation") }}</span>
     </template>
@@ -51,9 +47,11 @@
               <span class="loader loader-xs" />
               {{ $t("notifications.creation_in_progress") }}
             </template>
-            <template v-else-if="doc_request_status === 'generated'">{{
+            <template v-else-if="doc_request_status === 'generated'">
+              {{
               $t("notifications.doc_created")
-            }}</template>
+              }}
+            </template>
           </button>
 
           <div v-if="doc_request_status === 'generated'">
@@ -63,8 +61,7 @@
               :href="link_to_doc"
               target="_blank"
               download
-              >{{ $t("download") }}</a
-            >
+            >{{ $t("download") }}</a>
             <!-- <a 
               v-if="path_to_doc !== false && $root.state.is_electron"
               :href="path_to_doc" target="_blank" 
@@ -80,8 +77,7 @@
                 :href="link_to_doc"
                 target="_blank"
                 class="buttonLink margin-left-none"
-                >{{ $t("open_in_app") }}</a
-              >
+              >{{ $t("open_in_app") }}</a>
 
               <AddCreationToProject
                 :publication="publication"
@@ -124,18 +120,14 @@
               (publication.hasOwnProperty('viewing_limited_to') &&
                 publication.viewing_limited_to !== 'everybody')
             "
-          >
-            {{ $t("share") }}
-          </button>
+          >{{ $t("share") }}</button>
 
           <small
             v-if="
               publication.hasOwnProperty('viewing_limited_to') &&
               publication.viewing_limited_to !== 'everybody'
             "
-          >
-            {{ $t("set_visibility_to_everybody") }}
-          </small>
+          >{{ $t("set_visibility_to_everybody") }}</small>
 
           <CreateQRCode
             v-if="show_link_infos"
@@ -179,10 +171,10 @@ export default {
   beforeDestroy() {},
 
   watch: {
-    export_type: function () {
+    export_type: function() {
       this.doc_request_status = false;
     },
-    pagenumber_to_export: function () {
+    pagenumber_to_export: function() {
       this.doc_request_status = false;
     },
   },
@@ -239,12 +231,17 @@ export default {
       setTimeout(() => {
         this.web_export_started = false;
       }, 2000);
-      window.location.replace(
+
+      const query_url =
         window.location.origin +
-          "/_publications/web/" +
-          this.slugPubliName +
-          `/?socketid=${this.$root.$socketio.socket.id}`
-      );
+        "/_publications/web/" +
+        this.slugPubliName +
+        `/?socketid=${this.$root.$socketio.socket.id}`;
+
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Project • METHODS: downloadWeb with query ${query_url}`);
+
+      window.location.replace(query_url);
     },
     getLink() {
       if (this.$root.state.dev_mode === "debug") {
