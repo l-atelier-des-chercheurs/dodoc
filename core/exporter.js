@@ -252,6 +252,10 @@ module.exports = (function () {
                 height: Math.floor(default_page_size.height * 3.78) + 25, // totally arbitrary value… will have to find better
               };
 
+              dev.logverbose(
+                `EXPORTER — makePDFForPubli : loading URL ${urlToPubli}`
+              );
+
               let win = new BrowserWindow({
                 // width: 800,
                 // height: 600,
