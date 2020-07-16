@@ -162,6 +162,8 @@ export default {
       exported_doc_name: "",
       show_link_infos: false,
 
+      link_to_page_zip: false,
+
       export_type: "pdf",
       pagenumber_to_export: 1,
     };
@@ -236,12 +238,12 @@ export default {
         window.location.origin +
         "/_publications/web/" +
         this.slugPubliName +
-        `/?socketid=${this.$root.$socketio.socket.id}`;
+        `?socketid=${this.$root.$socketio.socket.id}`;
 
       if (this.$root.state.dev_mode === "debug")
         console.log(`Project • METHODS: downloadWeb with query ${query_url}`);
 
-      window.location.replace(query_url);
+      window.open(query_url, "_blank");
     },
     getLink() {
       if (this.$root.state.dev_mode === "debug") {
