@@ -27,6 +27,7 @@ module.exports = (function () {
 
     copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
+        dev.logfunction(`EXPORTER — copyFolderContent = ${slugFolderName}`);
         // create cache folder that we will need to copy the content
         let cacheFolderName =
           api.getCurrentDate() +
@@ -264,6 +265,11 @@ module.exports = (function () {
                     height: Math.floor(default_page_size.height * 3.7795), // totally arbitrary value… will have to find better
                     deviceScaleFactor: 2,
                   });
+
+                  dev.logverbose(
+                    `EXPORTER — makePDFForPubli : loading URL ${urlToPubli}`
+                  );
+
                   page
                     .goto(urlToPubli, {
                       waitUntil: "networkidle2",
