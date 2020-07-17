@@ -3,10 +3,13 @@ const path = require("path"),
   pathToFfmpeg = require("ffmpeg-static"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
-  exifReader = require("exif-reader"),
-  sharp = require("sharp");
+  exifReader = require("exif-reader");
 
+const sharp = require("sharp");
 sharp.cache(false);
+
+const StlThumbnailer = require("node-stl-to-thumbnail");
+// const puppeteer = require("puppeteer");
 
 const dev = require("./dev-log"),
   api = require("./api");
@@ -148,6 +151,7 @@ module.exports = (function () {
           screenshotsAngles.forEach((angle) => {
             let makeSTLScreenshot = new Promise((resolve, reject) => {
               _makeSTLScreenshot({
+                mediaPath,
                 slugFolderName,
                 thumbFolderPath,
                 filename,
@@ -575,8 +579,8 @@ module.exports = (function () {
     timeMark
   ) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(
-        `Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark}`
+      dev.logfunction(
+        `THUMBS — _makeVideoScreenshot: for ${mediaPath} and timeMark = ${timeMark}`
       );
 
       let screenshotName = `${filename}.${timeMark}.jpeg`;
@@ -616,14 +620,15 @@ module.exports = (function () {
   }
 
   function _makeSTLScreenshot({
+    mediaPath,
     slugFolderName,
     thumbFolderPath,
     filename,
     angle,
   }) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(
-        `Looking to make a STL screenshot for ${slugFolderName}/${filename}`
+      dev.logfunction(
+        `THUMBS — _makeSTLScreenshot: ${slugFolderName}/${filename}`
       );
 
       // todo : use angle to get screenshots all around an stl
@@ -636,56 +641,87 @@ module.exports = (function () {
       fs.access(fullScreenshotPath, fs.F_OK, function (err) {
         // if userDir folder doesn't exist yet at destination
         if (err) {
-          const { BrowserWindow } = require("electron");
-
-          let win = new BrowserWindow({
-            // width: 800,
-            // height: 600,
-            width: 1800,
-            height: 1800,
-            show: false,
-          });
-          win.loadURL(
-            // `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/faire-de-la-3d-a-la-maison/bourlingue.stl`
-            `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/${slugFolderName}/${filename}`
-          );
-
-          win.webContents.on("did-finish-load", () => {
-            // Use default printing options
-            setTimeout(() => {
-              win.capturePage((image) => {
-                var conv = image.toPNG(1.0); // to PNG
-
-                fs.writeFile(fullScreenshotPath, conv, (error) => {
-                  if (error) throw error;
-                  dev.logverbose(
-                    `THUMBS — _makeSTLScreenshot : created image at ${fullScreenshotPath}`
-                  );
-                  return resolve({ screenshotPath, screenshotName });
-                });
-              });
-            }, 1000);
-          });
-
-          // var thumbnailer = new StlThumbnailer({
-          //   filePath: mediaPath,
-          //   requestThumbnails: [
-          //     {
+          /* puppeteer version: can’t work for now because of missing extensions */
+          // let browser;
+          // let urlToPubli = `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/${slugFolderName}/${filename}`;
+          // puppeteer
+          //   .launch({
+          //     headless: true,
+          //     ignoreHTTPSErrors: true,
+          //     args: ["--no-sandbox", "--font-render-hinting=none"],
+          //   })
+          //   .then((_browser) => {
+          //     browser = _browser;
+          //     return browser.newPage();
+          //   })
+          //   .then((page) => {
+          //     page.setViewport({
           //       width: 1800,
           //       height: 1800,
-          //     },
-          //   ],
-          // }).then(function (thumbnails) {
-          //   // thumbnails is an array (in matching order to your requests) of Canvas objects
-          //   // you can write them to disk, return them to web users, etc
-          //   // see node-canvas documentation at https://github.com/Automattic/node-canvas
-          //   thumbnails[0].toBuffer(function (err, buf) {
-          //     if (err) return reject();
+          //       deviceScaleFactor: 2,
+          //     });
 
-          //     fs.writeFileSync(fullScreenshotPath, buf);
-          //     return resolve({ screenshotPath, screenshotName });
+          //     dev.logverbose(
+          //       `THUMBS — _makeSTLScreenshot : loading URL ${urlToPubli}`
+          //     );
+
+          //     function delay(duration) {
+          //       return new Promise((resolve) => {
+          //         setTimeout(() => resolve(), duration);
+          //       });
+          //     }
+
+          //     page
+          //       .goto(urlToPubli, {
+          //         waitUntil: "domcontentloaded",
+          //       })
+          //       .then(() => delay(1500))
+          //       .then(() => {
+          //         page
+          //           .screenshot({
+          //             clip: {
+          //               x: 0,
+          //               y: 0,
+          //               width: 1800,
+          //               height: 1800,
+          //             },
+          //             path: fullScreenshotPath,
+          //           })
+          //           .then(() => {
+          //             dev.logverbose(
+          //               `THUMBS — _makeSTLScreenshot : created image at ${fullScreenshotPath}`
+          //             );
+          //             browser.close();
+          //             return resolve({ screenshotPath, screenshotName });
+          //           });
+          //       })
+          //       .catch((err) => {
+          //         browser.close();
+          //         dev.error(
+          //           `THUMBS — _makeSTLScreenshot : failed to make STL screenshot = ${err}`
+          //         );
+          //       });
           //   });
-          // });
+
+          var thumbnailer = new StlThumbnailer({
+            filePath: mediaPath,
+            requestThumbnails: [
+              {
+                width: 1800,
+                height: 1800,
+              },
+            ],
+          }).then(function (thumbnails) {
+            // thumbnails is an array (in matching order to your requests) of Canvas objects
+            // you can write them to disk, return them to web users, etc
+            // see node-canvas documentation at https://github.com/Automattic/node-canvas
+            thumbnails[0].toBuffer(function (err, buf) {
+              if (err) return reject();
+
+              fs.writeFileSync(fullScreenshotPath, buf);
+              return resolve({ screenshotPath, screenshotName });
+            });
+          });
         } else {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`
@@ -698,7 +734,7 @@ module.exports = (function () {
 
   function getEXIFDataForVideoAndAudio(mediaPath) {
     return new Promise(function (resolve, reject) {
-      dev.logfunction(`getEXIFDataForVideoAndAudio: ${mediaPath}`);
+      dev.logfunction(`THUMBS — getEXIFDataForVideoAndAudio: ${mediaPath}`);
       ffmpeg.ffprobe(mediaPath, function (err, metadata) {
         if (err || typeof metadata === "undefined") {
           dev.log(`getEXIFDataForVideoAndAudio: PROBE DATA isn’t valid`);

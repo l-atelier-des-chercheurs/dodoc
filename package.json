@@ -61,6 +61,7 @@
     "memory-cache": "^0.2.0",
     "moment": "^2.24.0",
     "node-localstorage": "^2.1.5",
+    "node-stl-to-thumbnail": "^1.1.0",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
     "platform-folders": "^0.4.1",
