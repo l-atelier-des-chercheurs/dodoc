@@ -21,7 +21,7 @@
         <br />
         <small>
           {{ media._linked_media.slugProjectName }}/{{
-            media._linked_media.slugMediaName
+          media._linked_media.slugMediaName
           }}
         </small>
       </div>
@@ -67,11 +67,7 @@
             "
           >
             <template v-if="media.only_numbers">
-              <input
-                type="number"
-                v-model="htmlForEditor"
-                @input="updateTextMedia"
-              />
+              <input type="number" v-model="htmlForEditor" @input="updateTextMedia" />
             </template>
 
             <CollaborativeEditor
@@ -285,9 +281,9 @@
               />
             </svg>
             {{
-              media.hasOwnProperty("_linked_media")
-                ? $t("withdraw")
-                : $t("remove")
+            media.hasOwnProperty("_linked_media")
+            ? $t("withdraw")
+            : $t("remove")
             }}
           </button>
         </div>
@@ -442,13 +438,13 @@ export default {
           metaFileName: this.media._linked_media.metaFileName,
         });
     },
-    updateMediaPubliMeta(val) {
+    updateMediaPubliMeta(values) {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
+        console.log(`METHODS • MediaPublicationReply: updateMediaPubliMeta`);
 
       this.$emit("editPubliMedia", {
         metaFileName: this.media.metaFileName,
-        val,
+        values,
       });
     },
     updateTextMedia() {
@@ -489,7 +485,7 @@ export default {
       if (this.is_selected) return;
 
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • MediaPublication: deselectMedia`);
+        console.log(`METHODS • MediaPublicationReply: deselectMedia`);
 
       // if shift is not hold down
       // then we unselect everything
@@ -501,7 +497,7 @@ export default {
     },
     deselectMedia() {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • MediaPublication: deselectMedia`);
+        console.log(`METHODS • MediaPublicationReply: deselectMedia`);
 
       this.show_advanced_menu = false;
 

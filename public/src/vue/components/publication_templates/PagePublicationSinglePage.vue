@@ -55,9 +55,7 @@
           "
           class="m_page--pageNumber"
           :class="{ toRight: true }"
-        >
-          {{ pageNumber + 1 }}
-        </div>
+        >{{ pageNumber + 1 }}</div>
 
         <div v-if="publication_medias.length === 0" class="m_page--noMedia">
           <template
@@ -68,14 +66,9 @@
                 'link_publication',
               ].includes($root.state.mode)
             "
-            >{{ $t("no_media_on_this_page") }}</template
-          >
+          >{{ $t("no_media_on_this_page") }}</template>
         </div>
-        <div
-          v-else
-          v-for="media in publication_medias"
-          :key="media.metaFileName"
-        >
+        <div v-else v-for="media in publication_medias" :key="media.metaFileName">
           <transition name="MediaPublication" :duration="500">
             <div>
               <MediaPublication
@@ -92,8 +85,8 @@
                 :slugPubliName="slugPubliName"
                 @removePubliMedia="(values) => removePubliMedia(values)"
                 @editPubliMedia="
-                  ({ metaFileName, val }) =>
-                    editPubliMedia({ metaFileName, val })
+                  ({ metaFileName, values }) =>
+                    editPubliMedia({ metaFileName, values })
                 "
                 @duplicateMedia="(values) => duplicateMedia(values)"
               />
@@ -262,10 +255,10 @@ export default {
       });
     },
     // function to update property of a media inside medias_list
-    editPubliMedia({ metaFileName, val }) {
+    editPubliMedia({ metaFileName, values }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • Publication: editPubliMedia / args = ${JSON.stringify(
+          `METHODS • PagePublicationSinglePage: editPubliMedia / args = ${JSON.stringify(
             arguments[0],
             null,
             4
@@ -273,7 +266,7 @@ export default {
         );
       }
 
-      this.$emit("editPubliMedia", { metaFileName, val });
+      this.$emit("editPubliMedia", { metaFileName, val: values });
     },
     duplicateMedia({ metaFileName }) {
       this.$root
@@ -290,7 +283,7 @@ export default {
 
           this.editPubliMedia({
             metaFileName: mdata.metaFileName,
-            val: {
+            values: {
               x,
               y,
               z_index,

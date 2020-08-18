@@ -29,7 +29,7 @@
         <br />
         <small>
           {{ media._linked_media.slugProjectName }}/{{
-            media._linked_media.slugMediaName
+          media._linked_media.slugMediaName
           }}
         </small>
       </div>
@@ -72,12 +72,7 @@
         :style="contentStyles"
       />
 
-      <div
-        class="mediaContainer"
-        v-else
-        :style="contentStyles"
-        :class="`type-${media.type}`"
-      >
+      <div class="mediaContainer" v-else :style="contentStyles" :class="`type-${media.type}`">
         <template v-if="media.type === 'text'">
           <CollaborativeEditor
             v-if="inline_edit_mode"
@@ -129,33 +124,12 @@
               vector-effect="non-scaling-stroke"
             />
             <g v-if="media.type === 'arrow'">
-              <line
-                x1="0"
-                y1="50"
-                x2="100"
-                y2="50"
-                vector-effect="non-scaling-stroke"
-              />
-              <g
-                transform="
-                translate(100, 50)"
-                preserveAspectRatio
-              >
-                <line
-                  x1="0"
-                  y1="0"
-                  x2="-10"
-                  y2="-10"
-                  vector-effect="non-scaling-stroke"
-                />
+              <line x1="0" y1="50" x2="100" y2="50" vector-effect="non-scaling-stroke" />
+              <g transform="
+                translate(100, 50)" preserveAspectRatio>
+                <line x1="0" y1="0" x2="-10" y2="-10" vector-effect="non-scaling-stroke" />
 
-                <line
-                  x1="0"
-                  y1="0"
-                  x2="-10"
-                  y2="10"
-                  vector-effect="non-scaling-stroke"
-                />
+                <line x1="0" y1="0" x2="-10" y2="10" vector-effect="non-scaling-stroke" />
               </g>
             </g>
           </svg>
@@ -164,7 +138,7 @@
           <EditPlaceholderModal
             v-if="inline_edit_mode"
             :media="media"
-            @updateMediaPubliMeta="(value) => updateMediaPubliMeta(value)"
+            @updateMediaPubliMeta="({ values, metaFileName }) => updateMediaPubliMeta({ values, metaFileName })"
             @close="inline_edit_mode = false"
           />
           <MediaPlaceholder
@@ -177,7 +151,7 @@
             :captureview_in_modal="true"
             :paged_mode="true"
             @addMedia="(values) => addMedia({ values })"
-            @editPubliMedia="(values) => updateMediaPubliMeta(values)"
+            @editPubliMedia="({ values, metaFileName }) => updateMediaPubliMeta({ values, metaFileName })"
           />
         </template>
       </div>
@@ -195,11 +169,7 @@
         <!-- <img src="/images/i_clear.svg" draggable="false" /> -->
         <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
-      <button
-        type="button"
-        class="button button-bg_rounded bg-bleuvert"
-        @click="saveMedia"
-      >
+      <button type="button" class="button button-bg_rounded bg-bleuvert" @click="saveMedia">
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
           <slot name="submit_button">{{ $t("save") }}</slot>
@@ -212,9 +182,7 @@
       v-if="
         media.hasOwnProperty('_linked_media') && !!media._linked_media.caption
       "
-    >
-      {{ media._linked_media.caption }}
-    </p>
+    >{{ media._linked_media.caption }}</p>
 
     <button
       class="m_mediaPublication--overflowing_sign"
@@ -893,8 +861,10 @@ export default {
           this.page.margin_top;
 
         this.updateMediaPubliMeta({
-          x: this.mediaPos.x,
-          y: this.mediaPos.y,
+          values: {
+            x: this.mediaPos.x,
+            y: this.mediaPos.y,
+          },
         });
       }
     },
@@ -959,7 +929,9 @@ export default {
       this.mediaSize.height = contentHeight;
 
       this.updateMediaPubliMeta({
-        height: this.mediaSize.height,
+        values: {
+          height: this.mediaSize.height,
+        },
       });
     },
     toggleImageFitMode() {
@@ -967,14 +939,18 @@ export default {
       else if (this.fit_mode === "contain") this.fit_mode = "cover";
 
       this.updateMediaPubliMeta({
-        fit_mode: this.fit_mode,
+        values: {
+          fit_mode: this.fit_mode,
+        },
       });
     },
 
     toggleLock() {
       this.locked_in_place = !this.locked_in_place;
       this.updateMediaPubliMeta({
-        locked_in_place: this.locked_in_place,
+        values: {
+          locked_in_place: this.locked_in_place,
+        },
       });
 
       if (this.locked_in_place) {
@@ -1061,13 +1037,17 @@ export default {
         ? Number.parseFloat(this.media.stroke_width)
         : 4;
     },
-    updateMediaPubliMeta(val) {
+    updateMediaPubliMeta({ values, metaFileName = this.media.metaFileName }) {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
+        console.log(
+          `METHODS • MediaPublication: updateMediaPubliMeta for metaFileName = ${metaFileName} and values=${JSON.stringify(
+            values
+          )}`
+        );
 
       this.$emit("editPubliMedia", {
-        metaFileName: this.media.metaFileName,
-        val,
+        metaFileName,
+        values,
       });
 
       this.is_saving = true;
@@ -1300,8 +1280,10 @@ export default {
         else this.mediaSize.height = this.roundMediaVal(this.mediaSize.height);
 
         this.updateMediaPubliMeta({
-          width: this.mediaSize.width,
-          height: this.mediaSize.height,
+          values: {
+            width: this.mediaSize.width,
+            height: this.mediaSize.height,
+          },
         });
         this.is_resized = false;
       }
@@ -1383,7 +1365,9 @@ export default {
 
       if (this.is_rotated) {
         this.updateMediaPubliMeta({
-          rotate: this.rotate,
+          values: {
+            rotate: this.rotate,
+          },
         });
         this.is_rotated = false;
       }
@@ -1460,8 +1444,10 @@ export default {
           this.page.margin_top;
 
         this.updateMediaPubliMeta({
-          x: this.mediaPos.x,
-          y: this.mediaPos.y,
+          values: {
+            x: this.mediaPos.x,
+            y: this.mediaPos.y,
+          },
         });
         this.is_dragged = false;
       }
