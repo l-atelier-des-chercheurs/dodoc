@@ -27,7 +27,7 @@
 
           <div
             class="m_page--grid"
-            v-if="!!page.gridstep && page.gridstep > 0"
+            v-if="!!page.gridstep && page.gridstep > 0 && !model_for_this_publication"
             :style="`
             --gridstep: ${page.gridstep}mm; 
             --margin_left: ${page.margin_left}mm; 
