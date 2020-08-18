@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="m_publicationview"
-    :class="{ 'is--preview': preview_mode }"
-    ref="panel"
-  >
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -92,9 +88,7 @@
               xml:space="preserve"
             >
               <defs />
-              <path
-                d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"
-              />
+              <path d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z" />
             </svg>
           </button>
           <button
@@ -122,13 +116,8 @@
           </button>
         </div>
 
-        <div
-          class="m_carreauPublication--container--content"
-          :style="carreauContentProperties"
-        >
-          <h2 class="m_carreauPublication--container--content--title">
-            {{ publication.name }}
-          </h2>
+        <div class="m_carreauPublication--container--content" :style="carreauContentProperties">
+          <h2 class="m_carreauPublication--container--content--title">{{ publication.name }}</h2>
           <transition-group name="fade_fast" :duration="300" tag="div">
             <div
               v-for="(media, index) in last_nth_of_publication_medias"
@@ -385,7 +374,7 @@ export default {
     editPubliMedia({ slugMediaName, val }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(
-          `METHODS • Publication: editPubliMedia / args = ${JSON.stringify(
+          `METHODS • Carreau: editPubliMedia / args = ${JSON.stringify(
             arguments[0],
             null,
             4
