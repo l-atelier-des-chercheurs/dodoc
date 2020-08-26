@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="m_publicationview"
-    :class="{ 'is--preview': preview_mode }"
-    ref="panel"
-  >
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -24,11 +20,7 @@
         <small class="c-blanc" v-html="$t('add_multiple_images')" />
       </p>
     </div>
-    <transition-group
-      class="m_stopmotionAnimationPublication"
-      name="slideFromTop"
-      :duration="300"
-    >
+    <transition-group class="m_stopmotionAnimationPublication" name="slideFromTop" :duration="300">
       <div
         class="m_stopmotionAnimationPublication--media"
         v-for="media in medias_in_order"
@@ -40,6 +32,7 @@
           :read_only="read_only"
           @removePubliMedia="$emit('removePubliMedia', $event)"
           @editPubliMedia="$emit('editPubliMedia', $event)"
+          @duplicateMedia="$emit('duplicateMedia', $event)"
         />
         <!-- <div class="m_metaField">
           <div>
