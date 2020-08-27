@@ -489,9 +489,8 @@ export default {
         return [];
       }
 
-      for (let slugProjectName in this.projects) {
+      for (let project of this.projects) {
         let orderBy;
-        const project = this.projects[slugProjectName];
 
         if (this.currentSort.type === "date") {
           orderBy = +this.$moment(

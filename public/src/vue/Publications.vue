@@ -16,15 +16,119 @@
 
           <CreatePublication
             v-if="showCreatePublicationModal"
-            :default_name="createPubliDefaultName"
+            :default_name="create_publi_default_name"
             :default_template="createPubliTemplateKey"
             @close="showCreatePublicationModal = false"
             :read_only="read_only"
           />
         </div>
-        <div
-          class="m_actionbar--text"
-        >{{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}</div>
+        <div class="m_actionbar--text">
+          <div>{{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}</div>
+
+          <template v-if="publications.length > 0">
+            <div>
+              {{ $t("showing") }}
+              <span
+                :class="{
+                        'c-rouge':
+                          sorted_publications.length !==
+                          publications.length,
+                      }"
+              >
+                {{ sorted_publications.length }}
+                <template
+                  v-if="
+                          sorted_publications.length === publications.length
+                        "
+                >{{ $t("recipes") }}</template>
+                <template v-else>
+                  {{ $t("recipes_of") }}
+                  {{ Object.keys(publications).length }}
+                </template>
+              </span>
+              <template
+                v-if="
+                        $root.allKeywords.length > 0 ||
+                        $root.all_authors.length > 0
+                      "
+              >
+                —
+                <button
+                  type="button"
+                  class="button-nostyle text-uc button-triangle"
+                  :class="{ 'is--active': show_filters }"
+                  @click="show_filters = !show_filters"
+                >{{ $t("filters") }}</button>
+              </template>
+              <TagsAndAuthorFilters
+                v-if="show_filters"
+                :allKeywords="publis_keywords"
+                :allAuthors="publis_authors"
+                :keywordFilter="$root.settings.publication_filter.keyword"
+                :authorFilter="$root.settings.publication_filter.author"
+                @setKeywordFilter="
+                        (a) => $root.setPubliKeywordFilter(a)
+                      "
+                @setAuthorFilter="(a) => $root.setPubliAuthorFilter(a)"
+              />
+            </div>
+            <div class="m_searchProject">
+              <button
+                type="button"
+                class="button-nostyle text-uc button-triangle"
+                :class="{
+                        'is--active':
+                          show_search ||
+                          $root.settings.publication_filter.name.length > 0,
+                      }"
+                @click="show_search = !show_search"
+              >
+                <svg
+                  class="inline-svg"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  width="96.2px"
+                  height="96.2px"
+                  viewBox="0 0 96.2 96.2"
+                  style="margin-bottom: -2px;"
+                  xml:space="preserve"
+                >
+                  <path
+                    fill="currentColor"
+                    class="st0"
+                    d="M10.3,59.9c11.7,11.7,29.5,13.4,43,5.2l9.7,9.7l21.3,21.3l11.9-11.9L74.9,63l-9.7-9.7c8.2-13.5,6.4-31.3-5.2-43 C46.2-3.4,24-3.4,10.3,10.3C-3.4,24-3.4,46.2,10.3,59.9z M50.8,19.5c8.6,8.6,8.6,22.6,0,31.3c-8.6,8.6-22.6,8.6-31.3,0 c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
+                  />
+                </svg>
+                {{ $t("search") }}
+              </button>
+
+              <div
+                v-if="
+                        show_search || debounce_search_publication_name.length > 0
+                      "
+                class="rounded"
+              >
+                <div>{{ $t("recipe_name_to_find") }}</div>
+
+                <div class="input-group">
+                  <input type="text" class v-model="debounce_search_publication_name" />
+                  <span class="input-addon" v-if="debounce_search_publication_name.length > 0">
+                    <button
+                      type="button"
+                      :disabled="
+                              debounce_search_publication_name.length === 0
+                            "
+                      @click="debounce_search_publication_name = ''"
+                    >×</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
       </div>
       <div class="m_displayMyContent" v-if="$root.current_author">
         <span>{{ $t("show") }}</span>
@@ -45,12 +149,11 @@
           :value="project.slugFolderName"
         >
           {{ project.name }} ({{
-          recipes_for_this_project(project.slugFolderName).length
+          recipesForThisProject(project.slugFolderName).length
           }})
         </option>
       </select>
     </div>
-
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
@@ -192,12 +295,21 @@
 <script>
 import CreatePublication from "./components/modals/CreatePublication.vue";
 import PublicationRow from "./components/PublicationRow.vue";
+import TagsAndAuthorFilters from "./components/subcomponents/TagsAndAuthorFilters.vue";
+import debounce from "debounce";
 
 export default {
-  props: ["publications", "read_only"],
+  props: {
+    publications: {
+      type: Array,
+      default: () => [],
+    },
+    read_only: Boolean,
+  },
   components: {
     CreatePublication,
     PublicationRow,
+    TagsAndAuthorFilters,
   },
   data() {
     return {
@@ -210,6 +322,18 @@ export default {
         : "",
 
       show_only_my_content: false,
+      show_search: false,
+      show_filters: false,
+
+      currentSort: {
+        field: "date_created",
+        type: "date",
+        order: "descending",
+      },
+
+      debounce_search_publication_name: this.$root.settings.publication_filter
+        .name,
+      debounce_search_publication_name_function: undefined,
 
       recipes: [
         {
@@ -512,21 +636,43 @@ export default {
   beforeDestroy() {},
 
   watch: {
-    "$root.do_navigation.current_slugProjectName": function() {
+    "$root.do_navigation.current_slugProjectName": function () {
       this.slugProjectName_to_filter = !!this.$root.do_navigation
         .current_slugProjectName
         ? this.$root.do_navigation.current_slugProjectName
         : "";
     },
-    slugProjectName_to_filter: function() {
-      this.recipes = this.recipes.map(r => {
+    slugProjectName_to_filter: function () {
+      this.recipes = this.recipes.map((r) => {
         r.show_all_recipes = false;
         return r;
       });
     },
+    show_filters: function () {
+      if (!this.show_filters) {
+        this.$root.settings.publication_filter.keyword = "";
+        this.$root.settings.publication_filter.author = "";
+        this.$root.settings.publication_filter.name = "";
+        this.debounce_search_publication_name = "";
+      }
+    },
+    debounce_search_publication_name: function () {
+      if (this.debounce_search_publication_name_function)
+        clearTimeout(this.debounce_search_publication_name_function);
+      this.debounce_search_publication_name_function = setTimeout(() => {
+        this.$root.settings.publication_filter.name = this.debounce_search_publication_name;
+      }, 340);
+    },
   },
   computed: {
-    createPubliDefaultName() {
+    publis_keywords: function () {
+      return this.$root.getAllKeywordsFrom(this.publications);
+    },
+    publis_authors: function () {
+      return this.$root.getAllAuthorsFrom(this.publications);
+    },
+
+    create_publi_default_name() {
       let number_of_recipes =
         this.allRecipesOfThisTemplate(this.createPubliTemplateKey).length + 1;
 
@@ -535,7 +681,7 @@ export default {
 
       while (
         this.allRecipesOfThisTemplate(this.createPubliTemplateKey).some(
-          r => r.name === name
+          (r) => r.name === name
         )
       ) {
         number_of_recipes++;
@@ -544,18 +690,143 @@ export default {
 
       return name;
     },
+    sorted_publications() {
+      let sortable = [];
+
+      if (!this.publications || this.publications.length === 0) return [];
+
+      for (const publication of this.publications) {
+        let orderBy;
+
+        if (this.currentSort.type === "date") {
+          orderBy = +this.$moment(
+            publication[this.currentSort.field],
+            "YYYY-MM-DD HH:mm:ss"
+          );
+        } else if (this.currentSort.type === "alph") {
+          orderBy = publication[this.currentSort.field];
+        }
+
+        if (this.$root.settings.publication_filter.name !== "") {
+          if (
+            !publication.name
+              .toLowerCase()
+              .includes(
+                this.$root.settings.publication_filter.name.toLowerCase()
+              )
+          )
+            continue;
+        }
+
+        if (this.show_only_my_content && this.$root.current_author) {
+          if (
+            !publication.hasOwnProperty("authors") ||
+            !Array.isArray(publication.authors) ||
+            !publication.authors.some(
+              (k) =>
+                k.slugFolderName === this.$root.current_author.slugFolderName
+            )
+          ) {
+            continue;
+          }
+        }
+        if (
+          !this.$root.settings.publication_filter.keyword &&
+          !this.$root.settings.publication_filter.author
+        ) {
+          sortable.push({ publication, orderBy });
+          continue;
+        }
+
+        if (
+          !!this.$root.settings.publication_filter.keyword &&
+          !!this.$root.settings.publication_filter.author
+        ) {
+          if (
+            publication.hasOwnProperty("keywords") &&
+            typeof publication.keywords === "object" &&
+            publication.keywords.some(
+              (k) => k.title === this.$root.settings.publication_filter.keyword
+            )
+          ) {
+            if (
+              publication.hasOwnProperty("authors") &&
+              typeof publication.authors === "object" &&
+              publication.authors.some(
+                (k) =>
+                  k.slugFolderName ===
+                  this.$root.settings.publication_filter.author
+              )
+            ) {
+              sortable.push({ publication, orderBy });
+            }
+          }
+          continue;
+        }
+        // if a publication keyword filter is set
+        if (!!this.$root.settings.publication_filter.keyword) {
+          // only add to sorted array if publication has this keyword
+          if (
+            publication.hasOwnProperty("keywords") &&
+            typeof publication.keywords === "object" &&
+            publication.keywords.some(
+              (k) => k.title === this.$root.settings.publication_filter.keyword
+            )
+          ) {
+            sortable.push({ publication, orderBy });
+          }
+          continue;
+        }
+
+        if (!!this.$root.settings.publication_filter.author) {
+          // only add to sorted array if publication has this keyword
+          if (
+            publication.hasOwnProperty("authors") &&
+            typeof publication.authors === "object" &&
+            publication.authors.some(
+              (k) =>
+                k.slugFolderName ===
+                this.$root.settings.publication_filter.author
+            )
+          ) {
+            sortable.push({ publication, orderBy });
+          }
+          continue;
+        }
+      }
+
+      let _sorted_publications = sortable.sort(function (a, b) {
+        let valA = a.orderBy;
+        let valB = b.orderBy;
+        if (typeof a.orderBy === "string" && typeof b.orderBy === "string") {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        }
+        if (valA < valB) {
+          return -1;
+        }
+        if (valA > valB) {
+          return 1;
+        }
+        return 0;
+      });
+
+      if (this.currentSort.order === "descending") {
+        _sorted_publications.reverse();
+      }
+      _sorted_publications = _sorted_publications.map((sp) => sp.publication);
+      return _sorted_publications;
+    },
   },
   methods: {
-    recipes_for_this_project(slugProjectName) {
-      if (this.publications && Object.values(this.publications).length === 0)
-        return [];
-      return Object.values(this.publications).filter(
-        r => r.attached_to_project === slugProjectName
+    recipesForThisProject(slugProjectName) {
+      return this.sorted_publications.filter(
+        (r) => r.attached_to_project === slugProjectName
       );
     },
     allRecipesOfThisTemplate(template_key) {
-      const filtered_recipes = Object.values(this.publications).filter(
-        r => r.template === template_key
+      const filtered_recipes = this.sorted_publications.filter(
+        (r) => r.template === template_key
       );
 
       let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
@@ -566,10 +837,11 @@ export default {
       const recipes = this.allRecipesOfThisTemplate(template_key);
       if (this.show_only_my_content && this.$root.current_author)
         return recipes.filter(
-          r =>
+          (r) =>
             r.authors &&
             r.authors.some(
-              a => a.slugFolderName === this.$root.current_author.slugFolderName
+              (a) =>
+                a.slugFolderName === this.$root.current_author.slugFolderName
             )
         );
       return recipes;
@@ -578,11 +850,11 @@ export default {
       const recipes = this.filteredRecipesOfTemplate(template_key);
 
       let recipes_with_models = recipes
-        .filter(r => !r.follows_model)
-        .map(r => {
+        .filter((r) => !r.follows_model)
+        .map((r) => {
           if (r.is_model) {
             const recipes_following_this_model = recipes.filter(
-              _r => _r.follows_model && _r.follows_model === r.slugFolderName
+              (_r) => _r.follows_model && _r.follows_model === r.slugFolderName
             );
             if (recipes_following_this_model.length > 0) {
               r._replies = recipes_following_this_model;
@@ -591,13 +863,13 @@ export default {
           return r;
         });
 
-      if (!this.recipes.find(r => r.key === template_key).show_all_recipes) {
+      if (!this.recipes.find((r) => r.key === template_key).show_all_recipes) {
         // if show only part of it
 
         // if project filter, show only those of that project
         if (!!this.slugProjectName_to_filter)
           return recipes_with_models.filter(
-            r => r.attached_to_project === this.slugProjectName_to_filter
+            (r) => r.attached_to_project === this.slugProjectName_to_filter
           );
         else return recipes_with_models.slice(0, 3);
       }
@@ -605,13 +877,13 @@ export default {
       if (!!this.slugProjectName_to_filter) {
         // show first that project’s publi, and then all the others
         const recipes_of_project = recipes_with_models.filter(
-          r => r.attached_to_project === this.slugProjectName_to_filter
+          (r) => r.attached_to_project === this.slugProjectName_to_filter
         );
 
         if (recipes_of_project)
           return recipes_of_project.concat(
             recipes_with_models.filter(
-              r => r.attached_to_project !== this.slugProjectName_to_filter
+              (r) => r.attached_to_project !== this.slugProjectName_to_filter
             )
           );
 

@@ -881,6 +881,10 @@ module.exports = (function () {
       oc: "Cercar per nom de projècte",
       de: "Suche nach Projektname",
     },
+    recipe_name_to_find: {
+      fr: "Rechercher par nom de recette",
+      en: "Search by recipe name",
+    },
     show_all: {
       fr: "Tout afficher",
       en: "Show all",
@@ -1462,6 +1466,10 @@ module.exports = (function () {
       nl: "projecten van",
       oc: "projèctes sus",
       de: "Projekte auf",
+    },
+    recipes_of: {
+      fr: "recettes sur",
+      en: "recipes of",
     },
     medias_of: {
       fr: "médias sur",
