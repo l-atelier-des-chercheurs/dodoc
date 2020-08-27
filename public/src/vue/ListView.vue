@@ -406,6 +406,7 @@ export default {
       show_only_my_content: false,
 
       debounce_search_project_name: this.$root.settings.project_filter.name,
+      debounce_search_project_name_function: undefined,
     };
   },
   mounted() {
@@ -458,9 +459,9 @@ export default {
       }
     },
     debounce_search_project_name: function () {
-      if (this.debounce_tweet_filter_function)
-        clearTimeout(this.debounce_tweet_filter_function);
-      this.debounce_tweet_filter_function = setTimeout(() => {
+      if (this.debounce_search_project_name_function)
+        clearTimeout(this.debounce_search_project_name_function);
+      this.debounce_search_project_name_function = setTimeout(() => {
         this.$root.settings.project_filter.name = this.debounce_search_project_name;
       }, 340);
     },
