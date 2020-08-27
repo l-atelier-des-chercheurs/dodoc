@@ -489,7 +489,7 @@ export default {
         return [];
       }
 
-      for (let project of this.projects) {
+      for (let project of Object.values(this.projects)) {
         let orderBy;
 
         if (this.currentSort.type === "date") {
