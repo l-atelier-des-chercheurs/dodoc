@@ -41,13 +41,15 @@
             />
           </svg>
 
-          <div v-if="media_duration" class="_duration">
-            {{ $root.formatDurationToMinuteHours(media_duration * 1000) }}
-          </div>
+          <div
+            v-if="media_duration"
+            class="_duration"
+          >{{ $root.formatDurationToMinuteHours(media_duration * 1000) }}</div>
         </div>
       </template>
       <template v-else>
         <vue-plyr
+          :key="mediaURL"
           :options="plyr_options"
           ref="plyr"
           :emit="['volumechange']"
@@ -109,8 +111,7 @@
               :class="{
                 'is--active': interactive_stl_mode,
               }"
-              >{{ $t("interactive_preview") }}</label
-            >
+            >{{ $t("interactive_preview") }}</label>
           </div>
         </div>
       </template>
@@ -191,12 +192,8 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
-      <div
-        v-if="context !== 'edit' && context !== 'full'"
-        class="padding-small font-verysmall"
-      >
-        <pre
-          >{{ media.media_filename }}
+      <div v-if="context !== 'edit' && context !== 'full'" class="padding-small font-verysmall">
+        <pre>{{ media.media_filename }}
         </pre>
       </div>
       <iframe v-else :src="mediaURL" />

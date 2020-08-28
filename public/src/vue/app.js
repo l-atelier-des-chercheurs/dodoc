@@ -329,6 +329,11 @@ let vm = new Vue({
         author: "",
         name: "",
       },
+      publication_filter: {
+        keyword: "",
+        author: "",
+        name: "",
+      },
       media_filter: {
         keyword: "",
         author: "",
@@ -1489,6 +1494,20 @@ let vm = new Vue({
         this.settings.media_filter.keyword = newKeywordFilter;
       } else {
         this.settings.media_filter.keyword = "";
+      }
+    },
+    setPubliKeywordFilter(newKeywordFilter) {
+      if (this.settings.publication_filter.keyword !== newKeywordFilter) {
+        this.settings.publication_filter.keyword = newKeywordFilter;
+      } else {
+        this.settings.publication_filter.keyword = "";
+      }
+    },
+    setPubliAuthorFilter(newAuthorFilter) {
+      if (this.settings.publication_filter.author !== newAuthorFilter) {
+        this.settings.publication_filter.author = newAuthorFilter;
+      } else {
+        this.settings.publication_filter.author = "";
       }
     },
     setMediaAuthorFilter(newAuthorFilter) {

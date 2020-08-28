@@ -17,16 +17,8 @@
         :data-docpane_isopen="$root.settings.show_publi_panel === true"
         :data-chatpane_isopen="$root.settings.show_chat_panel === true"
       >
-        <pane
-          class="splitter-pane"
-          ref="doPane"
-          min-size="5"
-          :size="panels_width.doPane"
-        >
-          <div
-            class="m_activitiesPanel--do"
-            :class="{ 'is--large': activitiesPanel_is_large }"
-          >
+        <pane class="splitter-pane" ref="doPane" min-size="5" :size="panels_width.doPane">
+          <div class="m_activitiesPanel--do" :class="{ 'is--large': activitiesPanel_is_large }">
             <div
               style="
                 position: relative;
@@ -77,7 +69,7 @@
               <transition name="ListView" :duration="500">
                 <Publications
                   v-if="$root.settings.show_publi_panel"
-                  :publications="$root.store.publications"
+                  :publications="Object.values($root.store.publications)"
                   :read_only="!$root.state.connected"
                 />
               </transition>
@@ -99,11 +91,7 @@
             </div>
           </div>
         </pane>
-        <pane
-          class="splitter-pane"
-          ref="chatPane"
-          :size="panels_width.chatPane"
-        >
+        <pane class="splitter-pane" ref="chatPane" :size="panels_width.chatPane">
           <div
             class="m_activitiesPanel--chat"
             :class="{ 'is--open': $root.settings.show_chat_panel }"

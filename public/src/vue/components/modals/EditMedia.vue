@@ -28,7 +28,6 @@
 
     <template slot="sidebar">
       <!-- <small>{{ this.$root.all_authors }}</small> -->
-
       <div v-if="!read_only" class="m_modal--buttonrow">
         <!-- CONFLICT WITH QR PRINTING -->
         <!-- <button type="button"
@@ -146,8 +145,7 @@
                 v-for="project in all_projects"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-                >{{ project.name }}</option
-              >
+              >{{ project.name }}</option>
             </select>
             <button
               type="button"
@@ -165,7 +163,7 @@
           :class="{ 'is--active': show_edit_media_options }"
           @click="show_edit_media_options = !show_edit_media_options"
           v-if="
-            can_edit_media && (media.type === 'image' || media.type === 'video')
+            can_edit_media && (media.type === 'image' || media.type === 'video' || media.type === 'audio')
           "
         >
           <svg
@@ -181,24 +179,21 @@
             style="enable-background: new 0 0 77.6 85.4;"
             xml:space="preserve"
           >
-            <defs />
-            <g>
-              <path
-                d="M73.9,39h-7.6c-1.6-5.6-6.7-9.7-12.7-9.7S42.5,33.5,40.8,39H3.7c-2,0-3.7,1.6-3.7,3.7c0,2,1.6,3.7,3.7,3.7h37.1
+            <path
+              d="M73.9,39h-7.6c-1.6-5.6-6.7-9.7-12.7-9.7S42.5,33.5,40.8,39H3.7c-2,0-3.7,1.6-3.7,3.7c0,2,1.6,3.7,3.7,3.7h37.1
 		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h7.6c2,0,3.7-1.6,3.7-3.7C77.6,40.7,76,39,73.9,39z M53.6,48.7c-3.2,0-6-2.6-6-6
 		s2.6-6,6-6s6,2.6,6,6S56.8,48.7,53.6,48.7z"
-              />
-              <path
-                d="M3.7,17.1h7.9c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,9.7,73.9,9.7H37
+            />
+            <path
+              d="M3.7,17.1h7.9c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,9.7,73.9,9.7H37
 		C35.4,4.1,30.3,0,24.3,0S13.2,4.1,11.6,9.7H3.7c-2,0-3.7,1.6-3.7,3.7S1.6,17.1,3.7,17.1z M24.3,7.4c3.2,0,6,2.6,6,6s-2.6,6-6,6
 		s-6-2.8-6-6S21.1,7.4,24.3,7.4z"
-              />
-              <path
-                d="M73.9,68.3H37c-1.6-5.6-6.7-9.7-12.7-9.7s-11.1,4.1-12.7,9.7H3.7c-2,0-3.7,1.6-3.7,3.7s1.6,3.7,3.7,3.7h7.9
+            />
+            <path
+              d="M73.9,68.3H37c-1.6-5.6-6.7-9.7-12.7-9.7s-11.1,4.1-12.7,9.7H3.7c-2,0-3.7,1.6-3.7,3.7s1.6,3.7,3.7,3.7h7.9
 		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,68.3,73.9,68.3z M24.3,78c-3.2,0-6-2.6-6-6s2.6-6,6-6
 		s6,2.6,6,6S27.5,78,24.3,78z"
-              />
-            </g>
+            />
           </svg>
           {{ $t("adjust") }}
         </button>
@@ -208,56 +203,52 @@
             class="buttonLink"
             @click="editRawMedia('rotate_image', { angle: 90 })"
             v-if="media.type === 'image'"
-          >
-            {{ $t("rotate_clockwise") }}
-          </button>
+          >{{ $t("rotate_clockwise") }}</button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('optimize_video')"
-            v-if="media.type === 'video'"
-          >
-            {{ $t("optimize_video") }}
-          </button>
+            v-if="media.type === 'video' || media.type === 'audio'"
+          >{{ $t("optimize") }}</button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
-          >
-            {{ $t("revert_to_original") }}
-          </button>
+          >{{ $t("revert_to_original") }}</button>
           <button
             type="button"
             class="buttonLink"
             :class="{ 'is--active': trim_mode }"
             @click="trim_mode = !trim_mode"
-            v-if="media.type === 'video'"
-          >
-            {{ $t("trim_video") }}
-          </button>
+            v-if="media.type === 'video' || media.type === 'audio'"
+          >{{ $t("trim") }}</button>
 
-          <div v-if="trim_mode">
-            <small>{{ $t("trim_video_instructions") }}</small>
-
-            <div class>
-              <label>{{ $t("beginning") }}</label>
-              <div class="padding-sides-medium">
-                <input type="time" class="bg-blanc" />
-                <button type="button"></button>
+          <div v-if="trim_mode" class="ta-le">
+            <div class="margin-sides-small margin-vert-verysmall">
+              <small>{{ $t("trim_video_instructions") }}</small>
+            </div>
+            <div class="flex-wrap flex-space-betwen">
+              <div class="margin-small margin-vert-verysmall">
+                <label>{{ $t("beginning") }}</label>
+                <div class>
+                  <input type="time" class="bg-blanc" v-model="trim_options.beginning" />
+                </div>
+              </div>
+              <div class="margin-small margin-vert-verysmall">
+                <label>{{ $t("end") }}</label>
+                <div class>
+                  <input type="time" class="bg-blanc" v-model="trim_options.end" />
+                </div>
               </div>
             </div>
-            <!-- <div class="">
-              <label>{{ $t("end") }}</label>
-              <div class="padding-sides-medium">
-                <button type="button">Set</button>
-                <input type="time" class="bg-blanc" />
-                <input type="text" class="bg-blanc" />
-              </div>
-            </div>-->
-
-            <div class>
-              <label>{{ $t("duration") }}</label>
+            <!-- <hr class="margin-vert-small" /> -->
+            <div class="margin-sides-verysmall margin-vert-verysmall">
+              <button
+                type="button"
+                class="button-greenthin"
+                @click="editRawMedia('trim', trim_options)"
+              >{{ $t('create') }}</button>
             </div>
           </div>
         </div>
@@ -308,10 +299,7 @@
               v-model="mediadata.fav"
               :disabled="!can_edit_media"
             />
-            <label
-              for="favswitch_editmedia"
-              :class="{ 'c-rouge': mediadata.fav }"
-            >
+            <label for="favswitch_editmedia" :class="{ 'c-rouge': mediadata.fav }">
               {{ $t("fav") }}
               <svg
                 version="1.1"
@@ -344,9 +332,7 @@
               class="button-nostyle text-uc button-triangle"
               :class="{ 'is--active': show_media_infos }"
               @click="show_media_infos = !show_media_infos"
-            >
-              {{ $t("infos_about_the_media") }}
-            </button>
+            >{{ $t("infos_about_the_media") }}</button>
           </label>
 
           <div v-if="show_media_infos" class="margin-vert-verysmall">
@@ -417,16 +403,10 @@
         </div>
 
         <!-- Caption -->
-        <div
-          v-if="!read_only || !!mediadata.caption"
-          class="margin-bottom-small"
-        >
+        <div v-if="!read_only || !!mediadata.caption" class="margin-bottom-small">
           <label>{{ $t("caption") }}</label>
           <br />
-          <textarea
-            v-model="mediadata.caption"
-            :readonly="read_only || !can_edit_media"
-          ></textarea>
+          <textarea v-model="mediadata.caption" :readonly="read_only || !can_edit_media"></textarea>
         </div>
 
         <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -538,6 +518,11 @@ export default {
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
       askBeforeClosingModal: false,
 
+      trim_options: {
+        beginning: "",
+        end: "",
+      },
+
       trim_mode: false,
 
       is_ready: false,
@@ -551,6 +536,14 @@ export default {
         }
       },
       deep: true,
+    },
+    trim_mode() {
+      if (this.trim_mode) {
+        this.trim_options.beginning = "00:00";
+        this.trim_options.end = this.$root.formatDurationToMinuteHours(
+          this.media_duration * 1000
+        );
+      }
     },
   },
   created() {
@@ -606,6 +599,22 @@ export default {
         " × " +
         this.media.file_meta.find((m) => m.hasOwnProperty("height")).height
       );
+    },
+    media_duration: function () {
+      if (
+        !this.media.hasOwnProperty("duration") &&
+        !(
+          this.media.hasOwnProperty("file_meta") &&
+          this.media.file_meta.some((f) => f.hasOwnProperty("duration"))
+        )
+      )
+        return false;
+
+      const duration = this.media.hasOwnProperty("duration")
+        ? this.media.duration
+        : this.media.file_meta.find((f) => f.hasOwnProperty("duration"))
+            .duration;
+      return duration;
     },
   },
   methods: {

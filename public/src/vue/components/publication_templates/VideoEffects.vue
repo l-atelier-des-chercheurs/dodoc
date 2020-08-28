@@ -58,6 +58,7 @@
               </div>
               <div class="_watermark_media" v-else="watermark_media">
                 <MediaMontagePublication
+                  :available_buttons="['remove']"
                   :media="watermark_media"
                   :preview_mode="false"
                   :read_only="read_only"
@@ -253,6 +254,7 @@
 
         <div class="m_videoEffects--media">
           <MediaMontagePublication
+            :available_buttons="['remove']"
             :media="video_media"
             :preview_mode="false"
             :read_only="read_only"
@@ -299,9 +301,9 @@ export default {
     medias_in_order: {
       handler() {
         this.$root.settings.current_publication.accepted_media_type = this.required_media_type.filter(
-          t =>
+          (t) =>
             !this.medias_in_order.some(
-              m => m._linked_media && m._linked_media.type === t
+              (m) => m._linked_media && m._linked_media.type === t
             )
         );
       },
@@ -317,7 +319,7 @@ export default {
     required_media_type() {
       if (
         this.effects.length > 0 &&
-        this.effects.some(e => e.type === "watermark") &&
+        this.effects.some((e) => e.type === "watermark") &&
         !this.watermark_media
       )
         return ["video", "image"];
@@ -335,10 +337,10 @@ export default {
       return true;
     },
     watermark_media() {
-      return this.medias_in_order.find(m => m._linked_media.type === "image");
+      return this.medias_in_order.find((m) => m._linked_media.type === "image");
     },
     video_media() {
-      return this.medias_in_order.find(m => m._linked_media.type === "video");
+      return this.medias_in_order.find((m) => m._linked_media.type === "video");
     },
   },
   methods: {
@@ -351,7 +353,7 @@ export default {
 
     setEffectType({ $event, id }) {
       const new_type = $event.target.value;
-      const effects = this.publication.effects.map(e => {
+      const effects = this.publication.effects.map((e) => {
         if (e.id === id && e.type !== new_type) {
           e.type = new_type;
 
@@ -378,7 +380,7 @@ export default {
     setEffectProp({ $event, id, prop }) {
       const new_value = $event.target.value;
 
-      const effects = this.publication.effects.map(e => {
+      const effects = this.publication.effects.map((e) => {
         if (e.id === id && e[prop] !== new_value) {
           e[prop] = new_value;
         }

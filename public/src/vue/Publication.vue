@@ -91,6 +91,8 @@
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
       @editPubliFolder="editPubliFolder"
+      @duplicateMedia="orderedDuplicateMedia"
+      @changeMediaOrder="changeMediaOrder"
       @addMedia="addMediaOrdered"
     />
 

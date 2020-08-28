@@ -839,19 +839,25 @@ module.exports = (function () {
       oc: "Virar cap a drecha",
       de: "Nach Rechts einschwenken",
     },
-    optimize_video: {
-      fr: "Optimiser la vidéo",
-      en: "Optimize video",
-      oc: "Optimizar la vidèo",
-      de: "Optimieren Sie das Video",
+    optimize: {
+      fr: "Optimiser",
+      en: "Optimize",
     },
-    trim_video: {
-      fr: "Raccourcir la vidéo",
-      en: "Trim video",
+    trim: {
+      fr: "Raccourcir",
+      en: "Trim",
     },
     trim_video_instructions: {
       fr: "Indiquez le début et la fin souhaité pour cette vidéo.",
-      en: "Input the beginning and end to trim the video.",
+      en: "Enter the beginning and end to trim the video.",
+    },
+    beginning: {
+      fr: "Début",
+      en: "Beginning",
+    },
+    end: {
+      fr: "Fin",
+      en: "End",
     },
     revert_to_original: {
       fr: "Revenir à l’original",
@@ -880,6 +886,10 @@ module.exports = (function () {
       en: "Search by project name",
       oc: "Cercar per nom de projècte",
       de: "Suche nach Projektname",
+    },
+    recipe_name_to_find: {
+      fr: "Rechercher par nom de recette",
+      en: "Search by recipe name",
     },
     show_all: {
       fr: "Tout afficher",
@@ -1463,6 +1473,10 @@ module.exports = (function () {
       oc: "projèctes sus",
       de: "Projekte auf",
     },
+    recipes_of: {
+      fr: "recettes sur",
+      en: "recipes of",
+    },
     medias_of: {
       fr: "médias sur",
       en: "medias of",
@@ -1673,34 +1687,6 @@ module.exports = (function () {
     insert_medias_here: {
       fr: "Insérer un média ici",
       en: "Insert a media here",
-    },
-    add_a_page_before: {
-      fr: "Ajouter une page avant celle-ci",
-      en: "Add a page before this one",
-      nl: "Hiervoor een pagina toevoegen ",
-      oc: "Apondre una pagina abans aquela",
-      de: "Eine Seite davor hinzufügen",
-    },
-    add_a_page_after: {
-      fr: "Ajouter une page après celle-ci",
-      en: "Add a page after this one",
-      nl: "Hierna een pagina toevoegen ",
-      oc: "Apondre una pagina aprèp aquela",
-      de: "Eine Seite nach dieser hinzufügen",
-    },
-    add_a_page_here: {
-      fr: "Ajouter une page ici",
-      en: "Add a page here",
-      nl: "Hier een pagina toevoegen",
-      oc: "Apondre una pagina aicí",
-      de: "Hier eine Seite hinzufügen",
-    },
-    remove_this_page: {
-      fr: "▲ Supprimer cette page ▲",
-      en: "▲ Remove this page ▲",
-      nl: "▲ deze pagina verwijderen ▲",
-      oc: "▲ Suprimir aquesta pagina ▲",
-      de: "▲ Diese Seite löschen ▲",
     },
     anonymous: {
       fr: "anonyme",

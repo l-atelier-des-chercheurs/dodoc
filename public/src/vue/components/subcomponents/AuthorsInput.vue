@@ -16,9 +16,7 @@
       }"
       :disabled="read_only"
       @click="toggleAuthorName(author_slug)"
-    >
-      {{ $root.getAuthor(author_slug).name }}
-    </button>
+    >{{ $root.getAuthor(author_slug).name }}</button>
     <button
       type="button"
       @click="show_all_authors = true"
@@ -72,23 +70,24 @@ export default {
       if (this.$root.current_author)
         _all_authors_slugs.push(this.$root.current_author.slugFolderName);
 
-      this.authors.map((acc, a) => {
+      this.authors.map((a) => {
         if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
           _all_authors_slugs.push(a.slugFolderName);
       });
 
       this.$root.all_authors.map((a) => {
         if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
-          _all_authors_slugs.push(a.slugFolderName);
+          if (
+            this.show_all_authors ||
+            _all_authors_slugs.length < this.max_authors_displayed_at_first
+          )
+            _all_authors_slugs.push(a.slugFolderName);
       });
 
-      if (this.show_all_authors) {
-        return _all_authors_slugs;
-      } else {
-        return _all_authors_slugs.slice(0, this.max_authors_displayed_at_first);
-      }
+      return _all_authors_slugs;
     },
   },
+
   methods: {
     toggleAuthorName: function (author_slug) {
       // author_slug is already in authors, then remove it

@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="m_publicationview"
-    :class="{ 'is--preview': preview_mode }"
-    ref="panel"
-  >
+  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -35,6 +31,7 @@
           :key="media.metaFileName"
         >
           <MediaMontagePublication
+            :available_buttons="['remove']"
             :media="media"
             :preview_mode="false"
             :read_only="read_only"

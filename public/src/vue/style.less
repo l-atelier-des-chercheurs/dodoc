@@ -1747,6 +1747,10 @@ small {
       font-size: inherit;
     }
   }
+
+  .m_tagsAndAuthorFilters {
+    .c-gris_fonce;
+  }
 }
 
 .m_displayMyContent {
@@ -1947,6 +1951,8 @@ small {
 .m_searchProject {
   > div {
     background-color: #fff;
+    .c-gris_fonce;
+
     .padding-small;
     .margin-vert-verysmall;
     border-bottom: 0;
@@ -3874,7 +3880,7 @@ small {
       background-color: #fff;
 
       // margin: 2px;
-      padding: 1px 3px;
+      padding: 1px 2px 0px 3px;
       // border-radius: 10px;
       // filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
       .label;
@@ -5519,11 +5525,8 @@ small {
   .m_stopmotionAnimationPublication {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    grid-gap: 1rem;
-
-    // grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     // grid-auto-rows: 20px;
-    // grid-gap: @t-skipline;
+    grid-gap: @t-skipline / 2;
 
     .padding-verysmall;
     .padding-sides-medium;
@@ -5541,11 +5544,29 @@ small {
       right: -5px;
     }
 
+    .m_stopmotionAnimationPublication--media--move {
+      display: flex;
+      justify-content: space-between;
+
+      button {
+        .padding-verysmall;
+      }
+
+      svg {
+        width: 25px;
+        height: 25px;
+      }
+    }
+
+    .m_stopmotionAnimationPublication--media--move--moveRight {
+      transform: rotate(180deg);
+    }
+
     > * {
       .bg-blanc;
       .padding-verysmall;
       .margin-vert-small;
-      .boxs-card-1;
+      .boxs-card-2;
       flex: 0 0 160px;
       border-radius: @t-buttonradius;
       // margin-left: -@t-buttonradius;
@@ -6629,7 +6650,7 @@ small {
         font-size: 0.95em;
 
         &.ql-container > .ql-editor > *
-        // &:not(.ql-container) > * > *
+        // &:not(.ql-container) > * >
         {
           &::before {
             content: "•";
@@ -7925,6 +7946,30 @@ small {
   }
 
   .mediaContainer {
+  }
+
+  ._advanced_menu_button {
+    // background-color: rgba(255, 255, 255, 0.4);
+    fill: @c-noir;
+    width: 30px;
+    height: 30px;
+    min-height: 0;
+    top: -@t-skipline / 6;
+    right: -@t-skipline / 6;
+
+    // background: transparent;
+
+    svg {
+      // filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+    }
+
+    &.is--active {
+      // background-color: var(--c-noir);
+      fill: white;
+    }
+  }
+  ._advanced_menu {
+    top: 30px;
   }
 
   .m_mediaMontagePublication--solidColor {
