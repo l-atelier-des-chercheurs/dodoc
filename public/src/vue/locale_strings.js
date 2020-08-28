@@ -839,19 +839,25 @@ module.exports = (function () {
       oc: "Virar cap a drecha",
       de: "Nach Rechts einschwenken",
     },
-    optimize_video: {
-      fr: "Optimiser la vidéo",
-      en: "Optimize video",
-      oc: "Optimizar la vidèo",
-      de: "Optimieren Sie das Video",
+    optimize: {
+      fr: "Optimiser",
+      en: "Optimize",
     },
-    trim_video: {
-      fr: "Raccourcir la vidéo",
-      en: "Trim video",
+    trim: {
+      fr: "Raccourcir",
+      en: "Trim",
     },
     trim_video_instructions: {
       fr: "Indiquez le début et la fin souhaité pour cette vidéo.",
-      en: "Input the beginning and end to trim the video.",
+      en: "Enter the beginning and end to trim the video.",
+    },
+    beginning: {
+      fr: "Début",
+      en: "Beginning",
+    },
+    end: {
+      fr: "Fin",
+      en: "End",
     },
     revert_to_original: {
       fr: "Revenir à l’original",

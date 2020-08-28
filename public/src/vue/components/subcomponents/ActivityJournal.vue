@@ -1,13 +1,10 @@
 <template>
   <div>
-    <div class="">
+    <div class>
       <div>
-        <div class="">
+        <div class>
           <div class="m_tagsAndAuthorFilters flex-wrap bg-creme rounded">
-            <div
-              v-if="journal_authors && journal_authors.length > 0"
-              class="padding-sides-small"
-            >
+            <div v-if="journal_authors && journal_authors.length > 0" class="padding-sides-small">
               <label>{{ $t("authors") }}</label>
               <div class="m_authorField margin-bottom-none">
                 <button
@@ -21,15 +18,10 @@
                       $root.current_author.slugFolderName === author_slug,
                   }"
                   @click="setAuthorFilter(author_slug)"
-                >
-                  {{ $root.getAuthor(author_slug).name }}
-                </button>
+                >{{ $root.getAuthor(author_slug).name }}</button>
               </div>
             </div>
-            <div
-              v-if="journal_days && journal_days.length > 0"
-              class="padding-sides-small"
-            >
+            <div v-if="journal_days && journal_days.length > 0" class="padding-sides-small">
               <label>{{ $t("days") }}</label>
               <div class="m_authorField margin-bottom-none">
                 <button
@@ -39,9 +31,7 @@
                     'is--active': day_filter === day,
                   }"
                   @click="setDayFilter(day)"
-                >
-                  {{ $moment(day).format("LL") }}
-                </button>
+                >{{ $moment(day).format("LL") }}</button>
               </div>
             </div>
           </div>
@@ -52,64 +42,41 @@
     <table class="table-striped table-bordered">
       <thead>
         <tr>
-          <th colspan="1">
-            {{ $t("date") }}
-          </th>
-          <th colspan="1">
-            {{ $t("author") }}
-          </th>
-          <th colspan="1">
-            {{ $t("action") }}
-          </th>
-          <th>
-            {{ $t("detail") }}
-          </th>
+          <th colspan="1">{{ $t("date") }}</th>
+          <th colspan="1">{{ $t("author") }}</th>
+          <th colspan="1">{{ $t("action") }}</th>
+          <th>{{ $t("detail") }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-if="!filtered_entries || filtered_entries.length === 0"
-          class="bg-gris_tresclair"
-        >
+        <tr v-if="!filtered_entries || filtered_entries.length === 0" class="bg-gris_tresclair">
           <td colspan="4">
-            <small class="">{{ $t("no_content_to_show") }}</small>
+            <small class>{{ $t("no_content_to_show") }}</small>
           </td>
         </tr>
         <tr v-for="(entry, index) of filtered_entries" :key="index">
+          <td>{{ entry.date.calendar() }}</td>
           <td>
-            {{ entry.date.calendar() }}
-          </td>
-          <td>
-            <template v-if="$root.getAuthor(entry.author)">
-              {{ $root.getAuthor(entry.author).name }}
-            </template>
+            <template v-if="$root.getAuthor(entry.author)">{{ $root.getAuthor(entry.author).name }}</template>
             <template v-else>
               <i>{{ entry.author }}</i>
             </template>
           </td>
+          <td>{{ $t(entry.action).toLowerCase() }}</td>
           <td>
-            {{ $t(entry.action).toLowerCase() }}
-          </td>
-          <td>
-            <small v-if="show_detail_for_entry === index">
-              {{ entry.detail }}
-            </small>
+            <small v-if="show_detail_for_entry === index">{{ entry.detail }}</small>
             <button
               type="button"
               class="button-small"
               v-if="show_detail_for_entry !== index"
               @click="show_detail_for_entry = index"
-            >
-              {{ $t("show") }}
-            </button>
+            >{{ $t("show") }}</button>
             <button
               type="button"
               class="button-small"
               v-if="show_detail_for_entry === index"
               @click="show_detail_for_entry = false"
-            >
-              {{ $t("hide") }}
-            </button>
+            >{{ $t("hide") }}</button>
           </td>
         </tr>
       </tbody>
@@ -183,7 +150,6 @@ export default {
         return a.toLowerCase().localeCompare(b.toLowerCase());
       });
 
-      debugger;
       return uniqueAuthors.map((kw) => {
         return {
           slugFolderName: kw,
