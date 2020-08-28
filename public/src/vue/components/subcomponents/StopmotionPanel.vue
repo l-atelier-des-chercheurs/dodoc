@@ -85,16 +85,21 @@
             validating_video_preview && frameRate === previousFrameRate
           "
         >
-          <span class="text-cap padding-left-small font-verysmall">
-            {{ $t("create") }}
-          </span>
-          <img
-            src="/images/i_play.svg"
-            width="48"
-            height="48"
-            draggable="false"
-          />
+          <span class="text-cap padding-left-small font-verysmall">{{ $t("create") }}</span>
+          <img src="/images/i_play.svg" width="48" height="48" draggable="false" />
         </button>
+
+        <!-- <button
+          type="button"
+          class="buttonLink padding-verysmall margin-none"
+          :class="{ 'is--active': show_advanced_menu }"
+          @mousedown.stop.prevent="
+            show_advanced_menu = !show_advanced_menu;
+          "
+          @touchstart.stop.prevent="
+            show_advanced_menu = !show_advanced_menu;
+          "
+        >{{ $t('advanced_options') }}</button>-->
       </div>
     </div>
 
@@ -147,6 +152,7 @@ export default {
       show_previous_photo: false,
       media_is_being_sent: false,
       show_live_feed: true,
+      show_advanced_menu: false,
     };
   },
 
