@@ -214,7 +214,8 @@
           <button
             type="button"
             class="buttonLink"
-            @click="editRawMedia('optimize_video')"
+            :class="{ 'is--active': adjust_mode === 'optimize' }"
+            @click="adjust_mode = 'optimize'"
             v-if="media.type === 'video' || media.type === 'audio'"
           >
             {{ $t("optimize") }}
@@ -230,69 +231,85 @@
           <button
             type="button"
             class="buttonLink"
-            :class="{ 'is--active': trim_mode }"
-            @click="trim_mode = !trim_mode"
+            :class="{ 'is--active': adjust_mode === 'trim' }"
+            @click="adjust_mode = 'trim'"
             v-if="media.type === 'video' || media.type === 'audio'"
           >
             {{ $t("trim") }}
           </button>
 
-          <div v-if="trim_mode" class="ta-le">
-            <div class="margin-sides-small margin-vert-verysmall">
-              <small>{{ $t("trim_video_instructions") }}</small>
-            </div>
-            <div class="flex-wrap flex-space-betwen">
-              <div class="margin-small margin-vert-verysmall">
-                <label>{{ $t("beginning") }}</label>
-                <div class>
-                  <input
-                    type="time"
-                    step="0.1"
-                    class="bg-blanc"
-                    v-model="trim_options.beginning"
-                  />
-                  <button
-                    type="button"
-                    v-if="current_video_time !== trim_options.beginning"
-                    class="buttonLink margin-none padding-sides-none"
-                    @click="trim_options.beginning = current_video_time"
-                  >
-                    {{ $t("use_current_time") }}
-                    ({{ current_video_time }})
-                  </button>
+          <div class="">
+            <template v-if="adjust_mode === 'trim'">
+              <div class="margin-sides-small margin-vert-verysmall">
+                <small>{{ $t("trim_instructions") }}</small>
+              </div>
+              <div class="flex-wrap flex-space-betwen">
+                <div class="margin-small margin-vert-verysmall">
+                  <label>{{ $t("beginning") }}</label>
+                  <div class>
+                    <input
+                      type="time"
+                      step="0.1"
+                      class="bg-blanc"
+                      v-model="trim_options.beginning"
+                    />
+                    <button
+                      type="button"
+                      v-if="current_video_time !== trim_options.beginning"
+                      class="buttonLink margin-none padding-sides-none"
+                      @click="trim_options.beginning = current_video_time"
+                    >
+                      {{ $t("use_current_time") }}
+                      ({{ current_video_time }})
+                    </button>
+                  </div>
+                </div>
+                <div class="margin-small margin-vert-verysmall">
+                  <label>{{ $t("end") }}</label>
+                  <div class>
+                    <input
+                      type="time"
+                      step="0.1"
+                      class="bg-blanc"
+                      v-model="trim_options.end"
+                    />
+                    <button
+                      type="button"
+                      v-if="current_video_time !== trim_options.end"
+                      class="buttonLink margin-none padding-sides-none"
+                      @click="trim_options.end = current_video_time"
+                    >
+                      {{ $t("use_current_time") }}
+                      ({{ current_video_time }})
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div class="margin-small margin-vert-verysmall">
-                <label>{{ $t("end") }}</label>
-                <div class>
-                  <input
-                    type="time"
-                    step="0.1"
-                    class="bg-blanc"
-                    v-model="trim_options.end"
-                  />
-                  <button
-                    type="button"
-                    v-if="current_video_time !== trim_options.end"
-                    class="buttonLink margin-none padding-sides-none"
-                    @click="trim_options.end = current_video_time"
-                  >
-                    {{ $t("use_current_time") }}
-                    ({{ current_video_time }})
-                  </button>
-                </div>
+              <!-- <hr class="margin-vert-small" /> -->
+              <div class="margin-sides-verysmall margin-vert-verysmall">
+                <button
+                  type="button"
+                  class="button-greenthin"
+                  @click="editRawMedia('trim', trim_options)"
+                >
+                  {{ $t("create") }}
+                </button>
               </div>
-            </div>
-            <!-- <hr class="margin-vert-small" /> -->
-            <div class="margin-sides-verysmall margin-vert-verysmall">
-              <button
-                type="button"
-                class="button-greenthin"
-                @click="editRawMedia('trim', trim_options)"
-              >
-                {{ $t("create") }}
-              </button>
-            </div>
+            </template>
+            <template v-else-if="adjust_mode === 'optimize'">
+              <div class="margin-sides-small margin-vert-verysmall">
+                <small>{{ $t("optimize_instructions") }}</small>
+              </div>
+              <div class="margin-sides-verysmall margin-vert-verysmall">
+                <button
+                  type="button"
+                  class="button-greenthin"
+                  @click="editRawMedia('optimize_video')"
+                >
+                  {{ $t("optimize") }}
+                </button>
+              </div>
+            </template>
           </div>
         </div>
 
@@ -593,7 +610,7 @@ export default {
       },
       current_video_time: "00:00:00",
 
-      trim_mode: false,
+      adjust_mode: false,
 
       is_ready: false,
     };
@@ -607,8 +624,8 @@ export default {
       },
       deep: true,
     },
-    trim_mode() {
-      if (this.trim_mode) {
+    adjust_mode() {
+      if (this.adjust_mode === "trim") {
         this.trim_options.beginning = "00:00:00";
         this.trim_options.end = this.$root.formatDurationToHoursMinutesSeconds(
           this.media_duration * 1000
