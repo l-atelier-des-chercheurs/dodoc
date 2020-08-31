@@ -38,11 +38,6 @@ module.exports = (function () {
               }
             });
         } else if (type === "optimize_video") {
-          const resolution = {
-            width: 1280,
-            height: 720,
-          };
-
           newFileName =
             new RegExp(global.settings.regexpRemoveFileExtension, "i").exec(
               newFileName
@@ -62,8 +57,8 @@ module.exports = (function () {
               .withVideoBitrate("6000k")
               .withAudioCodec("aac")
               .withAudioBitrate("128k")
-              .size(`${resolution.width}x${resolution.height}`)
-              .autopad()
+              .size(`?x720`)
+              // .autopad()
               .videoFilter(["setsar=1"])
               .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
               .toFormat("mp4")
