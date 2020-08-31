@@ -353,7 +353,7 @@ module.exports = (function () {
         _copyToTempAndRenameImages({ slugStopmotionName, images })
           .then((tempFolder) => {
             // ask ffmpeg to make a video from the cache images
-            const ffmpeg_cmd = new ffmpeg()
+            const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
               .input(path.join(tempFolder, "img-%04d.jpeg"))
               .inputFPS(frameRate)
               .withVideoCodec("libx264")
