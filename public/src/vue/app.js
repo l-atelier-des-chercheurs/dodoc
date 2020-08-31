@@ -1422,21 +1422,25 @@ let vm = new Vue({
       return false;
     },
     openProject: function (slugProjectName) {
-      if (window.state.dev_mode === "debug") {
+      if (window.state.dev_mode === "debug")
         console.log(`ROOT EVENT: openProject: ${slugProjectName}`);
-      }
-      if (
-        !this.store.projects.hasOwnProperty(slugProjectName) ||
-        !this.canSeeFolder({
-          type: "projects",
-          slugFolderName: slugProjectName,
-        })
-      ) {
+
+      if (!this.store.projects.hasOwnProperty(slugProjectName)) {
         console.log("Missing folder key on the page, aborting.");
         this.closeProject();
         return false;
       }
 
+      if (
+        !this.canSeeFolder({
+          type: "projects",
+          slugFolderName: slugProjectName,
+        })
+      ) {
+        console.log("User can’t see project.");
+        this.closeProject();
+        return false;
+      }
       this.do_navigation.view = "ProjectView";
       this.do_navigation.current_slugProjectName = slugProjectName;
 
