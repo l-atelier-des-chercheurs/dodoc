@@ -13,12 +13,16 @@
 export default {
   props: {
     title: String,
-    date: String
+    date: String,
+    show_detail_initially: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {},
   data() {
     return {
-      show_detail: false
+      show_detail: this.show_detail_initially,
     };
   },
   created() {},
@@ -26,7 +30,7 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {}
+  methods: {},
 };
 </script>
 <style lang="scss"></style>

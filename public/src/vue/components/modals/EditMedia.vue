@@ -54,7 +54,7 @@
             width="46.7px"
             height="70px"
             viewBox="0 0 46.7 70"
-            style="enable-background: new 0 0 46.7 70;"
+            style="enable-background: new 0 0 46.7 70"
             xml:space="preserve"
           >
             <g>
@@ -88,7 +88,7 @@
             width="20px"
             height="20px"
             viewBox="0 0 90 90"
-            style="enable-background: new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90"
             xml:space="preserve"
           >
             <path
@@ -122,7 +122,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background: new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95"
             xml:space="preserve"
           >
             <polygon
@@ -145,7 +145,9 @@
                 v-for="project in all_projects"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-              >{{ project.name }}</option>
+              >
+                {{ project.name }}
+              </option>
             </select>
             <button
               type="button"
@@ -163,7 +165,10 @@
           :class="{ 'is--active': show_edit_media_options }"
           @click="show_edit_media_options = !show_edit_media_options"
           v-if="
-            can_edit_media && (media.type === 'image' || media.type === 'video' || media.type === 'audio')
+            can_edit_media &&
+            (media.type === 'image' ||
+              media.type === 'video' ||
+              media.type === 'audio')
           "
         >
           <svg
@@ -176,7 +181,7 @@
             width="77.6px"
             height="85.4px"
             viewBox="0 0 77.6 85.4"
-            style="enable-background: new 0 0 77.6 85.4;"
+            style="enable-background: new 0 0 77.6 85.4"
             xml:space="preserve"
           >
             <path
@@ -203,53 +208,108 @@
             class="buttonLink"
             @click="editRawMedia('rotate_image', { angle: 90 })"
             v-if="media.type === 'image'"
-          >{{ $t("rotate_clockwise") }}</button>
+          >
+            {{ $t("rotate_clockwise") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
-            @click="editRawMedia('optimize_video')"
+            :class="{ 'is--active': adjust_mode === 'optimize' }"
+            @click="adjust_mode = 'optimize'"
             v-if="media.type === 'video' || media.type === 'audio'"
-          >{{ $t("optimize") }}</button>
+          >
+            {{ $t("optimize") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
-          >{{ $t("revert_to_original") }}</button>
+          >
+            {{ $t("revert_to_original") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
-            :class="{ 'is--active': trim_mode }"
-            @click="trim_mode = !trim_mode"
+            :class="{ 'is--active': adjust_mode === 'trim' }"
+            @click="adjust_mode = 'trim'"
             v-if="media.type === 'video' || media.type === 'audio'"
-          >{{ $t("trim") }}</button>
+          >
+            {{ $t("trim") }}
+          </button>
 
-          <div v-if="trim_mode" class="ta-le">
-            <div class="margin-sides-small margin-vert-verysmall">
-              <small>{{ $t("trim_video_instructions") }}</small>
-            </div>
-            <div class="flex-wrap flex-space-betwen">
-              <div class="margin-small margin-vert-verysmall">
-                <label>{{ $t("beginning") }}</label>
-                <div class>
-                  <input type="time" class="bg-blanc" v-model="trim_options.beginning" />
+          <div class="">
+            <template v-if="adjust_mode === 'trim'">
+              <div class="margin-sides-small margin-vert-verysmall">
+                <small>{{ $t("trim_instructions") }}</small>
+              </div>
+              <div class="flex-wrap flex-space-betwen">
+                <div class="margin-small margin-vert-verysmall">
+                  <label>{{ $t("beginning") }}</label>
+                  <div class>
+                    <input
+                      type="time"
+                      step="0.1"
+                      class="bg-blanc"
+                      v-model="trim_options.beginning"
+                    />
+                    <button
+                      type="button"
+                      v-if="current_video_time !== trim_options.beginning"
+                      class="buttonLink margin-none padding-sides-none"
+                      @click="trim_options.beginning = current_video_time"
+                    >
+                      {{ $t("use_current_time") }}
+                      ({{ current_video_time }})
+                    </button>
+                  </div>
+                </div>
+                <div class="margin-small margin-vert-verysmall">
+                  <label>{{ $t("end") }}</label>
+                  <div class>
+                    <input
+                      type="time"
+                      step="0.1"
+                      class="bg-blanc"
+                      v-model="trim_options.end"
+                    />
+                    <button
+                      type="button"
+                      v-if="current_video_time !== trim_options.end"
+                      class="buttonLink margin-none padding-sides-none"
+                      @click="trim_options.end = current_video_time"
+                    >
+                      {{ $t("use_current_time") }}
+                      ({{ current_video_time }})
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div class="margin-small margin-vert-verysmall">
-                <label>{{ $t("end") }}</label>
-                <div class>
-                  <input type="time" class="bg-blanc" v-model="trim_options.end" />
-                </div>
+              <!-- <hr class="margin-vert-small" /> -->
+              <div class="margin-sides-verysmall margin-vert-verysmall">
+                <button
+                  type="button"
+                  class="button-greenthin"
+                  @click="editRawMedia('trim', trim_options)"
+                >
+                  {{ $t("create") }}
+                </button>
               </div>
-            </div>
-            <!-- <hr class="margin-vert-small" /> -->
-            <div class="margin-sides-verysmall margin-vert-verysmall">
-              <button
-                type="button"
-                class="button-greenthin"
-                @click="editRawMedia('trim', trim_options)"
-              >{{ $t('create') }}</button>
-            </div>
+            </template>
+            <template v-else-if="adjust_mode === 'optimize'">
+              <div class="margin-sides-small margin-vert-verysmall">
+                <small>{{ $t("optimize_instructions") }}</small>
+              </div>
+              <div class="margin-sides-verysmall margin-vert-verysmall">
+                <button
+                  type="button"
+                  class="button-greenthin"
+                  @click="editRawMedia('optimize_video')"
+                >
+                  {{ $t("optimize") }}
+                </button>
+              </div>
+            </template>
           </div>
         </div>
 
@@ -270,7 +330,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background: new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95"
             xml:space="preserve"
           >
             <path
@@ -299,7 +359,10 @@
               v-model="mediadata.fav"
               :disabled="!can_edit_media"
             />
-            <label for="favswitch_editmedia" :class="{ 'c-rouge': mediadata.fav }">
+            <label
+              for="favswitch_editmedia"
+              :class="{ 'c-rouge': mediadata.fav }"
+            >
               {{ $t("fav") }}
               <svg
                 version="1.1"
@@ -312,7 +375,7 @@
                 width="78.5px"
                 height="106.4px"
                 viewBox="0 0 78.5 106.4"
-                style="enable-background: new 0 0 78.5 106.4;"
+                style="enable-background: new 0 0 78.5 106.4"
                 xml:space="preserve"
               >
                 <polygon
@@ -332,7 +395,9 @@
               class="button-nostyle text-uc button-triangle"
               :class="{ 'is--active': show_media_infos }"
               @click="show_media_infos = !show_media_infos"
-            >{{ $t("infos_about_the_media") }}</button>
+            >
+              {{ $t("infos_about_the_media") }}
+            </button>
           </label>
 
           <div v-if="show_media_infos" class="margin-vert-verysmall">
@@ -347,6 +412,16 @@
             <div class="m_metaField" v-if="media_dimensions">
               <div>{{ $t("dimensions") }}</div>
               <div>{{ media_dimensions }}</div>
+            </div>
+            <div class="m_metaField" v-if="media_duration">
+              <div>{{ $t("duration") }}</div>
+              <div>
+                {{
+                  $root.formatDurationToHoursMinutesSeconds(
+                    media_duration * 1000
+                  )
+                }}
+              </div>
             </div>
 
             <div
@@ -366,7 +441,7 @@
                     placement: 'top',
                     delay: [600, 0],
                   }"
-                  style="text-transform: initial;"
+                  style="text-transform: initial"
                 >
                   {{ project_name }}
                   ↑
@@ -383,12 +458,17 @@
           </div>
             </div>-->
 
-            <DateField :title="'created'" :date="media.date_created" />
+            <DateField
+              :title="'created'"
+              :date="media.date_created"
+              :show_detail_initially="true"
+            />
 
             <DateField
               v-if="media.hasOwnProperty('date_uploaded')"
               :title="'uploaded'"
               :date="media.date_uploaded"
+              :show_detail_initially="true"
             />
 
             <DateField
@@ -398,15 +478,22 @@
               "
               :title="'edited'"
               :date="media.date_modified"
+              :show_detail_initially="true"
             />
           </div>
         </div>
 
         <!-- Caption -->
-        <div v-if="!read_only || !!mediadata.caption" class="margin-bottom-small">
+        <div
+          v-if="!read_only || !!mediadata.caption"
+          class="margin-bottom-small"
+        >
           <label>{{ $t("caption") }}</label>
           <br />
-          <textarea v-model="mediadata.caption" :readonly="read_only || !can_edit_media"></textarea>
+          <textarea
+            v-model="mediadata.caption"
+            :readonly="read_only || !can_edit_media"
+          ></textarea>
         </div>
 
         <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -458,12 +545,13 @@
 
     <template slot="preview">
       <MediaContent
+        v-model="mediadata.content"
         :context="'edit'"
         :slugFolderName="slugProjectName"
         :media="media"
         :folderType="'projects'"
         :read_only="read_only || !can_edit_media"
-        v-model="mediadata.content"
+        @videoTimeUpdated="videoTimeUpdated"
       />
       <div class="m_mediaOptions"></div>
     </template>
@@ -471,7 +559,6 @@
 </template>
 <script>
 import MediaContent from "../subcomponents/MediaContent.vue";
-import DateTime from "../subcomponents/DateTime.vue";
 import CreateQRCode from "./qr/CreateQRCode.vue";
 import { setTimeout } from "timers";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
@@ -489,7 +576,6 @@ export default {
     },
   },
   components: {
-    DateTime,
     MediaContent,
     CreateQRCode,
     AuthorsInput,
@@ -522,8 +608,9 @@ export default {
         beginning: "",
         end: "",
       },
+      current_video_time: "00:00:00",
 
-      trim_mode: false,
+      adjust_mode: false,
 
       is_ready: false,
     };
@@ -537,10 +624,10 @@ export default {
       },
       deep: true,
     },
-    trim_mode() {
-      if (this.trim_mode) {
-        this.trim_options.beginning = "00:00";
-        this.trim_options.end = this.$root.formatDurationToMinuteHours(
+    adjust_mode() {
+      if (this.adjust_mode === "trim") {
+        this.trim_options.beginning = "00:00:00";
+        this.trim_options.end = this.$root.formatDurationToHoursMinutesSeconds(
           this.media_duration * 1000
         );
       }
@@ -620,6 +707,11 @@ export default {
   methods: {
     printMedia: function () {
       window.print();
+    },
+    videoTimeUpdated(currentTime) {
+      this.current_video_time = this.$moment
+        .utc(currentTime * 1000)
+        .format("HH:mm:ss.SS");
     },
     minimizeMediaAndShowProject: function () {
       this.$root.media_modal.minimized = true;

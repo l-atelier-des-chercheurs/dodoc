@@ -1422,21 +1422,25 @@ let vm = new Vue({
       return false;
     },
     openProject: function (slugProjectName) {
-      if (window.state.dev_mode === "debug") {
+      if (window.state.dev_mode === "debug")
         console.log(`ROOT EVENT: openProject: ${slugProjectName}`);
-      }
-      if (
-        !this.store.projects.hasOwnProperty(slugProjectName) ||
-        !this.canSeeFolder({
-          type: "projects",
-          slugFolderName: slugProjectName,
-        })
-      ) {
+
+      if (!this.store.projects.hasOwnProperty(slugProjectName)) {
         console.log("Missing folder key on the page, aborting.");
         this.closeProject();
         return false;
       }
 
+      if (
+        !this.canSeeFolder({
+          type: "projects",
+          slugFolderName: slugProjectName,
+        })
+      ) {
+        console.log("User can’t see project.");
+        this.closeProject();
+        return false;
+      }
       this.do_navigation.view = "ProjectView";
       this.do_navigation.current_slugProjectName = slugProjectName;
 
@@ -1878,8 +1882,11 @@ let vm = new Vue({
     formatDateToPrecise(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");
     },
-    formatDurationToMinuteHours(date) {
+    formatDurationToMinuteSeconds(date) {
       return this.$moment.utc(date).format("mm:ss");
+    },
+    formatDurationToHoursMinutesSeconds(date) {
+      return this.$moment.utc(date).format("HH:mm:ss");
     },
     updateNetworkInfos() {
       this.$socketio.updateNetworkInfos();

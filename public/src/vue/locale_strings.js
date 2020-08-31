@@ -843,13 +843,21 @@ module.exports = (function () {
       fr: "Optimiser",
       en: "Optimize",
     },
+    optimize_instructions: {
+      fr:
+        "Convertir le média vidéo ou audio pour optimiser la compatibilité avec tous les appareils et réduire le poids (résolution en 720p, codec vidéo mp4/h264, codec audio aac).",
+      en:
+        "Encode the video or audio media to maximize compatibility and minimize filesize (720p resolution, video codec mp4/h264 and audio codec aac).",
+    },
     trim: {
       fr: "Raccourcir",
       en: "Trim",
     },
-    trim_video_instructions: {
-      fr: "Indiquez le début et la fin souhaité pour cette vidéo.",
-      en: "Enter the beginning and end to trim the video.",
+    trim_instructions: {
+      fr:
+        "Indiquez le début et la fin souhaités.\nVous pouvez lire et mettre la vidéo en pause puis utiliser les boutons ci-dessous pour copier le temps indiqué.",
+      en:
+        "Input the beginning and end to trim the video.\nYou can play and pause the video, then use the buttons beneath to paste the current time.",
     },
     beginning: {
       fr: "Début",
@@ -858,6 +866,10 @@ module.exports = (function () {
     end: {
       fr: "Fin",
       en: "End",
+    },
+    use_current_time: {
+      fr: "Temps du lecteur",
+      en: "Playback time",
     },
     revert_to_original: {
       fr: "Revenir à l’original",

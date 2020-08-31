@@ -38,11 +38,6 @@ module.exports = (function () {
               }
             });
         } else if (type === "optimize_video") {
-          const resolution = {
-            width: 1280,
-            height: 720,
-          };
-
           newFileName =
             new RegExp(global.settings.regexpRemoveFileExtension, "i").exec(
               newFileName
@@ -62,8 +57,8 @@ module.exports = (function () {
               .withVideoBitrate("6000k")
               .withAudioCodec("aac")
               .withAudioBitrate("128k")
-              .size(`${resolution.width}x${resolution.height}`)
-              .autopad()
+              .size(`?x720`)
+              // .autopad()
               .videoFilter(["setsar=1"])
               .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
               .toFormat("mp4")
@@ -92,9 +87,9 @@ module.exports = (function () {
               .run();
           });
         } else if (type === "trim") {
-          const trim_string = `_trim_${detail.beginning}-${detail.end}`.replace(
+          const trim_string = `_trim_${detail.beginning}_${detail.end}`.replace(
             /:/g,
-            "T"
+            "-"
           );
 
           newFileName =
@@ -108,10 +103,11 @@ module.exports = (function () {
           var ffmpeg_task = new ffmpeg();
 
           fs.unlink(new_media_path, (err) => {
+            // see https://stackoverflow.com/a/48208806
             ffmpeg_task
               .input(base_media_path)
-              .seekInput(detail.beginning)
-              .addOptions([`-to ${detail.end}`])
+              .inputOptions([`-ss ${detail.beginning}`, `-to ${detail.end}`])
+              .withVideoCodec("libx264")
               .toFormat("mp4")
               .output(new_media_path)
               .on("start", function (commandLine) {

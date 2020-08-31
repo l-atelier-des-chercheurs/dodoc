@@ -33,7 +33,7 @@
             width="169px"
             height="169px"
             viewBox="0 0 169 169"
-            style="enable-background: new 0 0 169 169;"
+            style="enable-background: new 0 0 169 169"
             xml:space="preserve"
           >
             <path
@@ -41,10 +41,11 @@
             />
           </svg>
 
-          <div
-            v-if="media_duration"
-            class="_duration"
-          >{{ $root.formatDurationToMinuteHours(media_duration * 1000) }}</div>
+          <div v-if="media_duration" class="_duration">
+            {{
+              $root.formatDurationToHoursMinutesSeconds(media_duration * 1000)
+            }}
+          </div>
         </div>
       </template>
       <template v-else>
@@ -52,8 +53,9 @@
           :key="mediaURL"
           :options="plyr_options"
           ref="plyr"
-          :emit="['volumechange']"
+          :emit="['volumechange', 'timeupdate']"
           @volumechange="volumeChanged"
+          @timeupdate="videoTimeUpdated"
         >
           <video
             :poster="linkToComplexMediaThumb({ opt: 'timeMark' })"
@@ -111,7 +113,8 @@
               :class="{
                 'is--active': interactive_stl_mode,
               }"
-            >{{ $t("interactive_preview") }}</label>
+              >{{ $t("interactive_preview") }}</label
+            >
           </div>
         </div>
       </template>
@@ -130,7 +133,7 @@
             width="169px"
             height="169px"
             viewBox="0 0 169 169"
-            style="enable-background: new 0 0 169 169;"
+            style="enable-background: new 0 0 169 169"
             xml:space="preserve"
           >
             <path
@@ -140,7 +143,12 @@
         </div>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options">
+        <vue-plyr
+          :options="plyr_options"
+          :emit="['volumechange', 'timeupdate']"
+          @volumechange="volumeChanged"
+          @timeupdate="videoTimeUpdated"
+        >
           <audio :src="mediaURL" preload="none" :autoplay="autoplay" />
         </vue-plyr>
       </template>
@@ -192,8 +200,12 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
-      <div v-if="context !== 'edit' && context !== 'full'" class="padding-small font-verysmall">
-        <pre>{{ media.media_filename }}
+      <div
+        v-if="context !== 'edit' && context !== 'full'"
+        class="padding-small font-verysmall"
+      >
+        <pre
+          >{{ media.media_filename }}
         </pre>
       </div>
       <iframe v-else :src="mediaURL" />
@@ -401,6 +413,9 @@ export default {
     volumeChanged(event) {
       const vol = Math.round(Number(event.detail.plyr.volume) * 100);
       this.$emit("volumeChanged", vol);
+    },
+    videoTimeUpdated(event) {
+      this.$emit("videoTimeUpdated", event.detail.plyr.media.currentTime);
     },
     setVolume(val) {
       if (this.$refs.hasOwnProperty("plyr")) {
