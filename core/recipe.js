@@ -45,10 +45,10 @@ module.exports = (function () {
 
           const new_media_path = path.join(slugFolderPath, newFileName);
 
-          var ffmpeg_task = new ffmpeg();
+          const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
           fs.unlink(new_media_path, (err) => {
-            ffmpeg_task
+            ffmpeg_cmd
               .input(base_media_path)
               .native()
               .outputFPS(30)
@@ -100,11 +100,11 @@ module.exports = (function () {
             ".mp4";
           const new_media_path = path.join(slugFolderPath, newFileName);
 
-          var ffmpeg_task = new ffmpeg();
+          const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
           fs.unlink(new_media_path, (err) => {
             // see https://stackoverflow.com/a/48208806
-            ffmpeg_task
+            ffmpeg_cmd
               .input(base_media_path)
               .inputOptions([`-ss ${detail.beginning}`, `-to ${detail.end}`])
               .withVideoCodec("libx264")

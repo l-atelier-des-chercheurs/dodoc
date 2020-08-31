@@ -16,8 +16,6 @@ const dev = require("./dev-log"),
 ffmpeg.setFfmpegPath(pathToFfmpeg);
 ffmpeg.setFfprobePath(ffprobestatic.path);
 
-const renice = 0;
-
 module.exports = (function () {
   return {
     loadPublication: (slugPubliName, pageData) =>
@@ -540,8 +538,7 @@ module.exports = (function () {
                   dev.logverbose(
                     `duration : ${numberOfImagesToProcess / framerate}`
                   );
-                  const ffmpeg_cmd = new ffmpeg()
-                    .renice(renice)
+                  const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
                     .input(path.join(imagesCachePath, "img-%04d.jpeg"))
                     .inputFPS(framerate)
                     .withVideoCodec("libx264")
@@ -858,7 +855,7 @@ module.exports = (function () {
       const vm = medias_with_original_filepath.find((m) => m.type === "video");
 
       ffmpeg.ffprobe(vm.full_path, function (err, metadata) {
-        const ffmpeg_cmd = new ffmpeg().renice(renice);
+        const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
         ffmpeg_cmd.input(vm.full_path);
 
@@ -1239,7 +1236,7 @@ module.exports = (function () {
           )}`
         );
 
-        const ffmpeg_cmd = new ffmpeg().renice(renice);
+        const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
         temp_videos_array.map((v) => {
           ffmpeg_cmd.addInput(v.temp_video_path);
@@ -1555,7 +1552,7 @@ module.exports = (function () {
       dev.logfunction("EXPORTER — _mixAudioAndVideo");
 
       const videoPath = path.join(cachePath, videoName);
-      let ffmpeg_cmd = new ffmpeg().renice(renice);
+      const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
       let video_files = medias_with_original_filepath.filter(
         (m) => m.type === "video"
@@ -1635,7 +1632,7 @@ module.exports = (function () {
       dev.logfunction("EXPORTER — _mixAudioAndImage");
 
       const videoPath = path.join(cachePath, videoName);
-      const ffmpeg_cmd = new ffmpeg().renice(renice);
+      const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
       let image_files = medias_with_original_filepath.filter(
         (m) => m.type === "image"
@@ -1740,7 +1737,7 @@ module.exports = (function () {
       fs.access(temp_video_path, fs.F_OK, function (err) {
         if (err) {
           ffmpeg.ffprobe(vm.full_path, function (err, metadata) {
-            const ffmpeg_cmd = new ffmpeg().renice(renice);
+            const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
             ffmpeg_cmd.input(vm.full_path);
 
@@ -1887,7 +1884,7 @@ module.exports = (function () {
               dev.logverbose(
                 `EXPORTER — _prepareImageForMontageAndWeb: created temp image`
               );
-              const ffmpeg_cmd = new ffmpeg().renice(renice);
+              const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
               ffmpeg_cmd.input(temp_image_path);
 
@@ -2006,7 +2003,7 @@ module.exports = (function () {
               dev.logverbose(
                 `EXPORTER — _prepareSolidColorForMontageAndWeb: created temp image`
               );
-              const ffmpeg_cmd = new ffmpeg().renice(renice);
+              const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
               ffmpeg_cmd.input(temp_image_path);
 
