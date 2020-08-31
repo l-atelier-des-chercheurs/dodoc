@@ -92,9 +92,9 @@ module.exports = (function () {
               .run();
           });
         } else if (type === "trim") {
-          const trim_string = `_trim_${detail.beginning}-${detail.end}`.replace(
+          const trim_string = `_trim_${detail.beginning}_${detail.end}`.replace(
             /:/g,
-            "T"
+            "-"
           );
 
           newFileName =

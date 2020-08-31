@@ -247,9 +247,19 @@
                 <div class>
                   <input
                     type="time"
+                    step="0.1"
                     class="bg-blanc"
                     v-model="trim_options.beginning"
                   />
+                  <button
+                    type="button"
+                    v-if="current_video_time !== trim_options.beginning"
+                    class="buttonLink margin-none padding-sides-none"
+                    @click="trim_options.beginning = current_video_time"
+                  >
+                    {{ $t("use_current_time") }}
+                    ({{ current_video_time }})
+                  </button>
                 </div>
               </div>
               <div class="margin-small margin-vert-verysmall">
@@ -257,9 +267,19 @@
                 <div class>
                   <input
                     type="time"
+                    step="0.1"
                     class="bg-blanc"
                     v-model="trim_options.end"
                   />
+                  <button
+                    type="button"
+                    v-if="current_video_time !== trim_options.end"
+                    class="buttonLink margin-none padding-sides-none"
+                    @click="trim_options.end = current_video_time"
+                  >
+                    {{ $t("use_current_time") }}
+                    ({{ current_video_time }})
+                  </button>
                 </div>
               </div>
             </div>
@@ -379,7 +399,11 @@
             <div class="m_metaField" v-if="media_duration">
               <div>{{ $t("duration") }}</div>
               <div>
-                {{ $root.formatDurationToMinuteHours(media_duration * 1000) }}
+                {{
+                  $root.formatDurationToHoursMinutesSeconds(
+                    media_duration * 1000
+                  )
+                }}
               </div>
             </div>
 
@@ -504,12 +528,13 @@
 
     <template slot="preview">
       <MediaContent
+        v-model="mediadata.content"
         :context="'edit'"
         :slugFolderName="slugProjectName"
         :media="media"
         :folderType="'projects'"
         :read_only="read_only || !can_edit_media"
-        v-model="mediadata.content"
+        @videoTimeUpdated="videoTimeUpdated"
       />
       <div class="m_mediaOptions"></div>
     </template>
@@ -566,6 +591,7 @@ export default {
         beginning: "",
         end: "",
       },
+      current_video_time: "00:00:00",
 
       trim_mode: false,
 
@@ -583,8 +609,8 @@ export default {
     },
     trim_mode() {
       if (this.trim_mode) {
-        this.trim_options.beginning = "00:00";
-        this.trim_options.end = this.$root.formatDurationToMinuteHours(
+        this.trim_options.beginning = "00:00:00";
+        this.trim_options.end = this.$root.formatDurationToHoursMinutesSeconds(
           this.media_duration * 1000
         );
       }
@@ -664,6 +690,11 @@ export default {
   methods: {
     printMedia: function () {
       window.print();
+    },
+    videoTimeUpdated(currentTime) {
+      this.current_video_time = this.$moment
+        .utc(currentTime * 1000)
+        .format("HH:mm:ss.SS");
     },
     minimizeMediaAndShowProject: function () {
       this.$root.media_modal.minimized = true;

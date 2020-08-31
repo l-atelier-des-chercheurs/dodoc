@@ -848,8 +848,10 @@ module.exports = (function () {
       en: "Trim",
     },
     trim_video_instructions: {
-      fr: "Indiquez le début et la fin souhaité pour cette vidéo.",
-      en: "Enter the beginning and end to trim the video.",
+      fr:
+        "Indiquez le début et la fin souhaité pour cette vidéo.\nIl est recommandé de mettre la vidéo en pause au moment du début ou de la fin et d’utiliser les boutons ci-dessous pour copier le temps indiqué.",
+      en:
+        "Enter the beginning and end to trim the video.\nTo make this simpler, pause the video on the beginning and end you’d like to set and use the buttons beneath to copy the time.",
     },
     beginning: {
       fr: "Début",
@@ -858,6 +860,10 @@ module.exports = (function () {
     end: {
       fr: "Fin",
       en: "End",
+    },
+    use_current_time: {
+      fr: "Coller le temps du lecteur",
+      en: "Paste the playback time",
     },
     revert_to_original: {
       fr: "Revenir à l’original",
