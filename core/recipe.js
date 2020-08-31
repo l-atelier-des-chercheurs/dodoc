@@ -108,10 +108,11 @@ module.exports = (function () {
           var ffmpeg_task = new ffmpeg();
 
           fs.unlink(new_media_path, (err) => {
+            // see https://stackoverflow.com/a/48208806
             ffmpeg_task
               .input(base_media_path)
-              .seekInput(detail.beginning)
-              .addOptions([`-to ${detail.end}`])
+              .inputOptions([`-ss ${detail.beginning}`, `-to ${detail.end}`])
+              .withVideoCodec("libx264")
               .toFormat("mp4")
               .output(new_media_path)
               .on("start", function (commandLine) {
