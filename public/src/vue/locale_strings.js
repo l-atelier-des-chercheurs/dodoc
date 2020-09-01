@@ -871,6 +871,10 @@ module.exports = (function () {
       fr: "Temps du lecteur",
       en: "Playback time",
     },
+    replace: {
+      fr: "Remplacer",
+      en: "Replace",
+    },
     revert_to_original: {
       fr: "Revenir à l’original",
       en: "Revert to original",

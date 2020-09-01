@@ -292,7 +292,7 @@
                   class="button-greenthin"
                   @click="editRawMedia('trim', trim_options)"
                 >
-                  {{ $t("create") }}
+                  {{ $t("replace") }}
                 </button>
               </div>
             </template>
@@ -554,6 +554,9 @@
         @videoTimeUpdated="videoTimeUpdated"
       />
       <div class="m_mediaOptions"></div>
+      <transition name="fade_fast" :duration="400">
+        <Loader v-if="is_loading_or_saving" />
+      </transition>
     </template>
   </Modal>
 </template>
@@ -589,6 +592,8 @@ export default {
       is_minimized: false,
       show_edit_media_options: false,
       show_media_infos: false,
+
+      is_loading_or_saving: false,
 
       upload_to_folder: this.slugProjectName,
       is_sending_content_to_server: false,
@@ -787,17 +792,27 @@ export default {
     },
     editRawMedia: function (type, detail) {
       console.log("editRawMedia");
-      this.$root.editMedia({
-        type: "projects",
-        slugFolderName: this.slugProjectName,
-        slugMediaName: this.slugMediaName,
-        data: this.mediadata,
-        recipe_with_data: {
-          apply_to: this.media.media_filename,
-          type,
-          detail,
-        },
-      });
+      this.is_loading_or_saving = true;
+
+      this.$root
+        .editMedia({
+          type: "projects",
+          slugFolderName: this.slugProjectName,
+          slugMediaName: this.slugMediaName,
+          data: this.mediadata,
+          recipe_with_data: {
+            apply_to: this.media.media_filename,
+            type,
+            detail,
+          },
+        })
+        .then((mdata) => {
+          this.is_loading_or_saving = false;
+          // this.show_saved_icon = true;
+          // setTimeout(() => {
+          //   this.show_saved_icon = false;
+          // }, 200);
+        });
     },
   },
 };
