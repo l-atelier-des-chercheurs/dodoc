@@ -289,10 +289,17 @@
               <div class="margin-sides-verysmall margin-vert-verysmall">
                 <button
                   type="button"
+                  class="button-thin bg-bleumarine"
+                  @click="testTrim"
+                >
+                  {{ $t("test") }}
+                </button>
+                <button
+                  type="button"
                   class="button-greenthin"
                   @click="editRawMedia('trim', trim_options)"
                 >
-                  {{ $t("create") }}
+                  {{ $t("save") }}
                 </button>
               </div>
             </template>
@@ -546,6 +553,7 @@
     <template slot="preview">
       <MediaContent
         v-model="mediadata.content"
+        ref="mediacontent"
         :context="'edit'"
         :slugFolderName="slugProjectName"
         :media="media"
@@ -554,6 +562,9 @@
         @videoTimeUpdated="videoTimeUpdated"
       />
       <div class="m_mediaOptions"></div>
+      <transition name="fade_fast" :duration="400">
+        <Loader v-if="is_loading_or_saving" />
+      </transition>
     </template>
   </Modal>
 </template>
@@ -589,6 +600,8 @@ export default {
       is_minimized: false,
       show_edit_media_options: false,
       show_media_infos: false,
+
+      is_loading_or_saving: false,
 
       upload_to_folder: this.slugProjectName,
       is_sending_content_to_server: false,
@@ -717,6 +730,45 @@ export default {
       this.$root.media_modal.minimized = true;
       this.$root.openProject(this.slugProjectName);
     },
+    testTrim() {
+      console.log("testTrim");
+
+      // const mediaContent = this.$refs.mediacontent;
+      // if (!mediaContent) {
+      //   console.log("missing MediaContent, can’t test trim");
+      //   return;
+      // }
+
+      // const plyr = mediaContent.$refs.plyr;
+      // if (!plyr) {
+      //   console.log("missing plyr, can’t test trim");
+      //   return;
+      // }
+
+      const player = document.querySelector(".m_modal--mask .plyr video");
+
+      const start_seconds = this.$moment
+        .duration(this.trim_options.beginning)
+        .asSeconds();
+      const end_seconds = this.$moment
+        .duration(this.trim_options.end)
+        .asSeconds();
+
+      player.currentTime = start_seconds;
+      player.play();
+
+      const pausing_function = function () {
+        if (player.currentTime >= end_seconds) {
+          debugger;
+          player.pause();
+          // player.removeEventListener("timeupdate", pausing_function);
+        } else {
+          window.requestAnimationFrame(pausing_function);
+        }
+      };
+      window.requestAnimationFrame(pausing_function);
+      // player.addEventListener("timeupdate", pausing_function, false);
+    },
     removeMedia: function () {
       this.$alertify
         .okBtn(this.$t("yes"))
@@ -787,17 +839,27 @@ export default {
     },
     editRawMedia: function (type, detail) {
       console.log("editRawMedia");
-      this.$root.editMedia({
-        type: "projects",
-        slugFolderName: this.slugProjectName,
-        slugMediaName: this.slugMediaName,
-        data: this.mediadata,
-        recipe_with_data: {
-          apply_to: this.media.media_filename,
-          type,
-          detail,
-        },
-      });
+      this.is_loading_or_saving = true;
+
+      this.$root
+        .editMedia({
+          type: "projects",
+          slugFolderName: this.slugProjectName,
+          slugMediaName: this.slugMediaName,
+          data: this.mediadata,
+          recipe_with_data: {
+            apply_to: this.media.media_filename,
+            type,
+            detail,
+          },
+        })
+        .then((mdata) => {
+          this.is_loading_or_saving = false;
+          // this.show_saved_icon = true;
+          // setTimeout(() => {
+          //   this.show_saved_icon = false;
+          // }, 200);
+        });
     },
   },
 };

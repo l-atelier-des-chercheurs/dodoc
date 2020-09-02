@@ -65,6 +65,7 @@
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
     "platform-folders": "^0.4.1",
+    "portal-vue": "^2.1.7",
     "portscanner": "^2.2.0",
     "pug": "^2.0.4",
     "puppeteer": "^2.1.1",
