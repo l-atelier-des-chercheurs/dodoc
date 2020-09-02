@@ -867,6 +867,10 @@ module.exports = (function () {
       fr: "Fin",
       en: "End",
     },
+    play_video_from_this_moment: {
+      fr: "Lire la vidéo à partir de ce moment là",
+      en: "Play video starting at this moment",
+    },
     use_current_time: {
       fr: "Temps du lecteur",
       en: "Playback time",
@@ -874,6 +878,10 @@ module.exports = (function () {
     replace: {
       fr: "Remplacer",
       en: "Replace",
+    },
+    test: {
+      fr: "Tester",
+      en: "Test",
     },
     revert_to_original: {
       fr: "Revenir à l’original",

@@ -289,10 +289,17 @@
               <div class="margin-sides-verysmall margin-vert-verysmall">
                 <button
                   type="button"
+                  class="button-thin bg-bleumarine"
+                  @click="testTrim"
+                >
+                  {{ $t("test") }}
+                </button>
+                <button
+                  type="button"
                   class="button-greenthin"
                   @click="editRawMedia('trim', trim_options)"
                 >
-                  {{ $t("replace") }}
+                  {{ $t("save") }}
                 </button>
               </div>
             </template>
@@ -546,6 +553,7 @@
     <template slot="preview">
       <MediaContent
         v-model="mediadata.content"
+        ref="mediacontent"
         :context="'edit'"
         :slugFolderName="slugProjectName"
         :media="media"
@@ -721,6 +729,45 @@ export default {
     minimizeMediaAndShowProject: function () {
       this.$root.media_modal.minimized = true;
       this.$root.openProject(this.slugProjectName);
+    },
+    testTrim() {
+      console.log("testTrim");
+
+      // const mediaContent = this.$refs.mediacontent;
+      // if (!mediaContent) {
+      //   console.log("missing MediaContent, can’t test trim");
+      //   return;
+      // }
+
+      // const plyr = mediaContent.$refs.plyr;
+      // if (!plyr) {
+      //   console.log("missing plyr, can’t test trim");
+      //   return;
+      // }
+
+      const player = document.querySelector(".m_modal--mask .plyr video");
+
+      const start_seconds = this.$moment
+        .duration(this.trim_options.beginning)
+        .asSeconds();
+      const end_seconds = this.$moment
+        .duration(this.trim_options.end)
+        .asSeconds();
+
+      player.currentTime = start_seconds;
+      player.play();
+
+      const pausing_function = function () {
+        if (player.currentTime >= end_seconds) {
+          debugger;
+          player.pause();
+          // player.removeEventListener("timeupdate", pausing_function);
+        } else {
+          window.requestAnimationFrame(pausing_function);
+        }
+      };
+      window.requestAnimationFrame(pausing_function);
+      // player.addEventListener("timeupdate", pausing_function, false);
     },
     removeMedia: function () {
       this.$alertify

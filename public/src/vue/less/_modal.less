@@ -99,6 +99,7 @@
         flex: 0 1 @t-panelWidth;
         max-height: 90vh;
         width: 0px;
+        border-left: 1px solid @c-gris_clair;
 
         // transition: all .8s ease-out;
 
@@ -109,6 +110,7 @@
 
         &.is_collapsed {
           flex-basis: 0px;
+          border: none;
         }
       }
 
@@ -117,7 +119,6 @@
         width: 100%;
         height: 90vh;
         overflow: hidden;
-        border-right: 1px solid @c-gris_clair;
 
         #app:not(.is--wide) & {
           height: auto;
