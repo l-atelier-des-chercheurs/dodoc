@@ -31,11 +31,19 @@ module.exports = (function () {
       if (detail) {
         if (detail.data)
           for (var i in detail.data)
+          for (var i in detail.data) {
             if (
               typeof detail.data[i] === "string" &&
               detail.data[i].length > 20
-            )
+            ) {
               detail.data[i] = detail.data[i].substring(0, 20) + "…";
+            } else if (
+              Array.isArray(detail.data[i]) &&
+              detail.data[i].length > 3
+            ) {
+              detail.data[i] = detail.data[i].slice(0, 2).concat({ "…": "…" });
+            }
+          }
 
         detail = JSON.stringify(detail);
       }
