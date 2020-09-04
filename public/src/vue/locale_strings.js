@@ -3147,8 +3147,8 @@ module.exports = (function () {
       de: "Das Passwort für dieses Gerät merken",
     },
     empty_content: {
-      fr: "Vider le contenu",
-      en: "Empty content",
+      fr: "Vider le journal",
+      en: "Empty the journal",
     },
 
     notifications: {
