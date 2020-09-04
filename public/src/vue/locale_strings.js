@@ -361,6 +361,18 @@ module.exports = (function () {
       fr: "Journal des activités",
       en: "Journal of activities",
     },
+    entries: {
+      fr: "Entrées",
+      en: "Entries",
+    },
+    to: {
+      fr: "à",
+      en: "to",
+    },
+    of: {
+      fr: "de",
+      en: "of",
+    },
     created_folder: {
       fr: "A créé un dossier",
       en: "Has created a folder",
@@ -821,6 +833,11 @@ module.exports = (function () {
       oc: "Ajustar",
       de: "Anpassen",
     },
+    adjust_infos: {
+      fr: "Vous pourrez toujours revenir au média d’origine si nécessaire.",
+      en:
+        "You will always be able to go back to the original media if necessary.",
+    },
     restore: {
       fr: "Restorer",
       en: "Restore",
@@ -872,8 +889,16 @@ module.exports = (function () {
       en: "Play video starting at this moment",
     },
     use_current_time: {
-      fr: "Temps du lecteur",
-      en: "Playback time",
+      fr: "Copier le temps du lecteur",
+      en: "Copy playback time",
+    },
+    set_as_beginning: {
+      fr: "début",
+      en: "beginning",
+    },
+    set_as_end: {
+      fr: "fin",
+      en: "end",
     },
     replace: {
       fr: "Remplacer",
@@ -3098,6 +3123,10 @@ module.exports = (function () {
     previous_page: {
       fr: "Page précédente",
       en: "Previous page",
+    },
+    page: {
+      fr: "Page",
+      en: "Page",
     },
     "current_page:": {
       fr: "Page actuelle&nbsp;:",

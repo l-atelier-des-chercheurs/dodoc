@@ -1,10 +1,13 @@
 <template>
-  <div>
-    <div class>
+  <div class="m_activityJournal">
+    <div>
       <div>
         <div class>
           <div class="m_tagsAndAuthorFilters flex-wrap bg-creme rounded">
-            <div v-if="journal_authors && journal_authors.length > 0" class="padding-sides-small">
+            <div
+              v-if="journal_authors && journal_authors.length > 0"
+              class="padding-sides-small"
+            >
               <label>{{ $t("authors") }}</label>
               <div class="m_authorField margin-bottom-none">
                 <button
@@ -18,10 +21,15 @@
                       $root.current_author.slugFolderName === author_slug,
                   }"
                   @click="setAuthorFilter(author_slug)"
-                >{{ $root.getAuthor(author_slug).name }}</button>
+                >
+                  {{ $root.getAuthor(author_slug).name }}
+                </button>
               </div>
             </div>
-            <div v-if="journal_days && journal_days.length > 0" class="padding-sides-small">
+            <div
+              v-if="journal_days && journal_days.length > 0"
+              class="padding-sides-small"
+            >
               <label>{{ $t("days") }}</label>
               <div class="m_authorField margin-bottom-none">
                 <button
@@ -31,7 +39,9 @@
                     'is--active': day_filter === day,
                   }"
                   @click="setDayFilter(day)"
-                >{{ $moment(day).format("LL") }}</button>
+                >
+                  {{ $moment(day).format("LL") }}
+                </button>
               </div>
             </div>
           </div>
@@ -39,6 +49,41 @@
       </div>
     </div>
 
+    <div
+      class="flex-nowrap flex-vertically-start flex-horizontally-end margin-vert-small"
+    >
+      <small style="flex: 0 0 auto" class="margin-verysmall">
+        {{ `${filtered_entries.length} ${$t("entries").toLowerCase()}.` }}<br />
+        <template v-if="filtered_entries.length">
+          {{
+            `${$t("entries")} ${
+              (current_page - 1) * number_of_items_per_page + 1
+            }  ${$t("to")} ${
+              (current_page - 1) * number_of_items_per_page +
+              entries_paginated.length
+            }`
+          }}
+          —
+          {{
+            `${$t("page")} ${current_page} ${$t(
+              "to"
+            )} ${number_of_possible_pages}`
+          }}
+        </template>
+      </small>
+      <select
+        v-if="filtered_entries.length"
+        v-model="current_page"
+        class="margin-verysmall select-xs"
+        style="flex: 0 1 100px"
+      >
+        <option
+          v-for="page_number in number_of_possible_pages"
+          :key="page_number"
+          v-html="page_number"
+        />
+      </select>
+    </div>
     <table class="table-striped table-bordered">
       <thead>
         <tr>
@@ -49,34 +94,50 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-if="!filtered_entries || filtered_entries.length === 0" class="bg-gris_tresclair">
+        <tr
+          v-if="!entries_paginated || entries_paginated.length === 0"
+          class="bg-gris_tresclair"
+        >
           <td colspan="4">
             <small class>{{ $t("no_content_to_show") }}</small>
           </td>
         </tr>
-        <tr v-for="(entry, index) of filtered_entries" :key="index">
+
+        <tr
+          v-for="(entry, index) of entries_paginated"
+          :key="index"
+          class="font-small"
+        >
           <td>{{ entry.date.calendar() }}</td>
           <td>
-            <template v-if="$root.getAuthor(entry.author)">{{ $root.getAuthor(entry.author).name }}</template>
+            <template v-if="$root.getAuthor(entry.author)">{{
+              $root.getAuthor(entry.author).name
+            }}</template>
             <template v-else>
               <i>{{ entry.author }}</i>
             </template>
           </td>
           <td>{{ $t(entry.action).toLowerCase() }}</td>
           <td>
-            <small v-if="show_detail_for_entry === index">{{ entry.detail }}</small>
+            <small v-if="show_detail_for_entry === index">{{
+              entry.detail
+            }}</small>
             <button
               type="button"
-              class="button-small"
+              class="button-thin margin-none"
               v-if="show_detail_for_entry !== index"
               @click="show_detail_for_entry = index"
-            >{{ $t("show") }}</button>
+            >
+              {{ $t("show") }}
+            </button>
             <button
               type="button"
-              class="button-small"
+              class="button-thin"
               v-if="show_detail_for_entry === index"
               @click="show_detail_for_entry = false"
-            >{{ $t("hide") }}</button>
+            >
+              {{ $t("hide") }}
+            </button>
           </td>
         </tr>
       </tbody>
@@ -96,6 +157,8 @@ export default {
       day_filter: "",
       current_day_shown: false,
       show_detail_for_entry: false,
+      current_page: 1,
+      number_of_items_per_page: 100,
     };
   },
   created() {},
@@ -134,9 +197,18 @@ export default {
             : true)
       );
     },
-    entries_paginated_per_day() {
-      return this.$_.groupBy(this.entries, (entry) =>
-        entry.date.format("YYYY-MM-DD")
+    entries_paginated() {
+      if (!this.filtered_entries) return false;
+
+      return this.filtered_entries.slice(
+        (this.current_page - 1) * this.number_of_items_per_page,
+        this.current_page * this.number_of_items_per_page
+      );
+    },
+    number_of_possible_pages() {
+      if (!this.filtered_entries) return false;
+      return Math.ceil(
+        this.filtered_entries.length / this.number_of_items_per_page
       );
     },
     journal_authors() {
@@ -157,17 +229,24 @@ export default {
       });
     },
     journal_days() {
-      return Object.keys(this.entries_paginated_per_day);
+      const group_entries_per_day = this.$_.groupBy(this.entries, (entry) =>
+        entry.date.format("YYYY-MM-DD")
+      );
+      return Object.keys(group_entries_per_day);
     },
   },
   methods: {
     setAuthorFilter(author_slug) {
       if (this.author_filter !== author_slug) this.author_filter = author_slug;
       else this.author_filter = "";
+
+      this.current_page = 1;
     },
     setDayFilter(day) {
       if (this.day_filter !== day) this.day_filter = day;
       else this.day_filter = "";
+
+      this.current_page = 1;
     },
   },
 };
