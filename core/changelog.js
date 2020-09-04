@@ -30,7 +30,6 @@ module.exports = (function () {
       if (!author) author = "anonymous";
       if (detail) {
         if (detail.data)
-          for (var i in detail.data)
           for (var i in detail.data) {
             if (
               typeof detail.data[i] === "string" &&
