@@ -872,9 +872,9 @@ module.exports = (function () {
     },
     trim_instructions: {
       fr:
-        "Indiquez le début et la fin souhaités.\nVous pouvez lire et mettre la vidéo en pause puis utiliser les boutons ci-dessous pour copier le temps indiqué.",
+        "Indiquez le début et la fin souhaités.\nVous pouvez lire et mettre la vidéo en pause puis utiliser les boutons en bas de la vidéo pour copier le temps de lecture.",
       en:
-        "Input the beginning and end to trim the video.\nYou can play and pause the video, then use the buttons beneath to paste the current time.",
+        "Input the beginning and end to trim the video.\nYou can play and pause the video, then use the buttons beneath the video to paste the playback time.",
     },
     beginning: {
       fr: "Début",
@@ -893,12 +893,12 @@ module.exports = (function () {
       en: "Copy playback time",
     },
     set_as_beginning: {
-      fr: "début",
-      en: "beginning",
+      fr: "placer le début",
+      en: "set the beginning",
     },
     set_as_end: {
-      fr: "fin",
-      en: "end",
+      fr: "placer la fin",
+      en: "set the end",
     },
     replace: {
       fr: "Remplacer",
