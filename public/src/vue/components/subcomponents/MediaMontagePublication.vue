@@ -16,7 +16,7 @@
       <br />
       <small>
         {{ media._linked_media.slugProjectName }}/{{
-        media._linked_media.slugMediaName
+          media._linked_media.slugMediaName
         }}
       </small>
     </div>
@@ -33,16 +33,19 @@
         @volumeChanged="volumeChanged"
       />
 
-      <p class="mediaCaption" v-if="!!media._linked_media.caption">{{ media._linked_media.caption }}</p>
+      <p class="mediaCaption" v-if="!!media._linked_media.caption">
+        {{ media._linked_media.caption }}
+      </p>
 
       <div class="margin-top-small">
-        <div class="m_metaField">
-          <div>{{ $t("project") }}</div>
-          <div>{{ $root.store.projects[media._linked_media.slugProjectName].name }}</div>
-        </div>
-        <div class="m_metaField" v-if="original_media_duration || enable_image_timer">
+        <div
+          class="m_metaField"
+          v-if="original_media_duration || enable_image_timer"
+        >
           <div>{{ $t("duration") }}</div>
-          <div v-if="original_media_duration">{{ original_media_duration }}</div>
+          <div v-if="original_media_duration">
+            {{ original_media_duration }}
+          </div>
           <div
             v-else-if="
               enable_image_timer && media._linked_media.type === 'image'
@@ -58,6 +61,13 @@
             <span>{{ $t("seconds") }}</span>
           </div>
         </div>
+
+        <div class="m_metaField">
+          <div>{{ $t("project") }}</div>
+          <div>
+            {{ $root.store.projects[media._linked_media.slugProjectName].name }}
+          </div>
+        </div>
         <div class="m_metaField" v-if="media_dimensions">
           <div>{{ $t("dimensions") }}</div>
           <div>{{ media_dimensions }}</div>
@@ -68,12 +78,17 @@
           v-if="enable_set_video_volume && media._linked_media.type === 'video'"
         >
           <div>{{ $t("volume") }}</div>
-          <div class="m_mediaMontagePublication--set_props">{{ volume }} / 100</div>
+          <div class="m_mediaMontagePublication--set_props">
+            {{ volume }} / 100
+          </div>
         </div>
       </div>
     </template>
 
-    <div v-else-if="media.type === 'solid_color'" class="m_mediaMontagePublication--solidColor">
+    <div
+      v-else-if="media.type === 'solid_color'"
+      class="m_mediaMontagePublication--solidColor"
+    >
       <div
         class="m_mediaMontagePublication--solidColor--colorPreview"
         :style="solid_color_background"
@@ -85,10 +100,11 @@
           :value="media.color"
           @change="updateMediaPubliMeta({ color: $event.target.value })"
         />
-        <label :for="`solidcolor + ${media.metaFileName}`" v-if="!read_only && !preview_mode">
-          {{
-          $t("select_color")
-          }}
+        <label
+          :for="`solidcolor + ${media.metaFileName}`"
+          v-if="!read_only && !preview_mode"
+        >
+          {{ $t("select_color") }}
         </label>
       </div>
       <div class="m_metaField">
@@ -109,12 +125,8 @@
       type="button"
       class="_advanced_menu_button _no_underline"
       :class="{ 'is--active': show_advanced_menu }"
-      @mousedown.stop.prevent="
-            show_advanced_menu = !show_advanced_menu;
-          "
-      @touchstart.stop.prevent="
-            show_advanced_menu = !show_advanced_menu;
-          "
+      @mousedown.stop.prevent="show_advanced_menu = !show_advanced_menu"
+      @touchstart.stop.prevent="show_advanced_menu = !show_advanced_menu"
     >
       <svg
         version="1.1"
@@ -125,7 +137,7 @@
         width="168px"
         height="168px"
         viewBox="0 0 168 168"
-        style="enable-background: new 0 0 168 168;"
+        style="enable-background: new 0 0 168 168"
         xml:space="preserve"
       >
         <rect x="73.5" y="37" class="st0" width="21" height="21" />
@@ -143,9 +155,9 @@
         @touchstart.stop.prevent="editButtonClicked"
         :content="$t('edit_original_media')"
         v-tippy="{
-              placement: 'top',
-              delay: [600, 0],
-            }"
+          placement: 'top',
+          delay: [600, 0],
+        }"
       >
         <svg
           version="1.1"
@@ -157,7 +169,7 @@
           width="113.5px"
           height="113.5px"
           viewBox="0 0 113.5 113.5"
-          style="enable-background: new 0 0 113.5 113.5;"
+          style="enable-background: new 0 0 113.5 113.5"
           xml:space="preserve"
         >
           <path
@@ -192,7 +204,7 @@
           width="91.6px"
           height="95px"
           viewBox="0 0 91.6 95"
-          style="enable-background: new 0 0 91.6 95;"
+          style="enable-background: new 0 0 91.6 95"
           xml:space="preserve"
         >
           <polygon
@@ -223,7 +235,7 @@
           width="37.2px"
           height="37.2px"
           viewBox="0 0 37.2 37.2"
-          style="enable-background: new 0 0 37.2 37.2;"
+          style="enable-background: new 0 0 37.2 37.2"
           xml:space="preserve"
         >
           <polygon

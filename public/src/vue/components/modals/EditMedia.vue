@@ -215,7 +215,7 @@
             type="button"
             class="buttonLink"
             :class="{ 'is--active': adjust_mode === 'optimize' }"
-            @click="adjust_mode = 'optimize'"
+            @click="toggleAdjustMode('optimize')"
             v-if="media.type === 'video' || media.type === 'audio'"
           >
             {{ $t("optimize") }}
@@ -232,13 +232,13 @@
             type="button"
             class="buttonLink"
             :class="{ 'is--active': adjust_mode === 'trim' }"
-            @click="adjust_mode = 'trim'"
+            @click="toggleAdjustMode('trim')"
             v-if="media.type === 'video' || media.type === 'audio'"
           >
             {{ $t("trim") }}
           </button>
 
-          <div class="">
+          <div class="" v-if="!!adjust_mode">
             <template v-if="adjust_mode === 'trim'">
               <div class="margin-sides-small margin-vert-verysmall">
                 <small>{{ $t("trim_instructions") }}</small>
@@ -253,15 +253,6 @@
                       class="bg-blanc"
                       v-model="trim_options.beginning"
                     />
-                    <button
-                      type="button"
-                      v-if="current_video_time !== trim_options.beginning"
-                      class="buttonLink margin-none padding-sides-none"
-                      @click="trim_options.beginning = current_video_time"
-                    >
-                      {{ $t("use_current_time") }}
-                      ({{ current_video_time }})
-                    </button>
                   </div>
                 </div>
                 <div class="margin-small margin-vert-verysmall">
@@ -273,25 +264,12 @@
                       class="bg-blanc"
                       v-model="trim_options.end"
                     />
-                    <button
-                      type="button"
-                      v-if="current_video_time !== trim_options.end"
-                      class="buttonLink margin-none padding-sides-none"
-                      @click="trim_options.end = current_video_time"
-                    >
-                      {{ $t("use_current_time") }}
-                      ({{ current_video_time }})
-                    </button>
                   </div>
                 </div>
               </div>
               <!-- <hr class="margin-vert-small" /> -->
               <div class="margin-sides-verysmall margin-vert-verysmall">
-                <button
-                  type="button"
-                  class="button-thin bg-bleumarine"
-                  @click="testTrim"
-                >
+                <button type="button" class="button-thin" @click="testTrim">
                   {{ $t("test") }}
                 </button>
                 <button
@@ -299,7 +277,7 @@
                   class="button-greenthin"
                   @click="editRawMedia('trim', trim_options)"
                 >
-                  {{ $t("save") }}
+                  {{ $t("trim") }}
                 </button>
               </div>
             </template>
@@ -317,6 +295,9 @@
                 </button>
               </div>
             </template>
+            <small>
+              {{ $t("adjust_infos") }}
+            </small>
           </div>
         </div>
 
@@ -561,7 +542,28 @@
         :read_only="read_only || !can_edit_media"
         @videoTimeUpdated="videoTimeUpdated"
       />
-      <div class="m_mediaOptions"></div>
+      <div class="m_mediaOptions">
+        <div v-if="adjust_mode === 'trim'">
+          <button
+            type="button"
+            class="button-thin bg-bleumarine"
+            :disabled="current_video_time === trim_options.beginning"
+            @click="trim_options.beginning = current_video_time"
+          >
+            {{ $t("set_as_beginning") }} ({{ trim_options.beginning }})
+          </button>
+          <button
+            type="button"
+            v-if="adjust_mode === 'trim'"
+            class="button-thin bg-bleumarine"
+            :disabled="current_video_time === trim_options.end"
+            @click="trim_options.end = current_video_time"
+          >
+            {{ $t("set_as_end") }}
+            ({{ trim_options.end }})
+          </button>
+        </div>
+      </div>
       <transition name="fade_fast" :duration="400">
         <Loader v-if="is_loading_or_saving" />
       </transition>
@@ -645,6 +647,11 @@ export default {
         );
       }
     },
+    show_edit_media_options() {
+      if (this.show_edit_media_options) {
+        this.adjust_mode = false;
+      }
+    },
   },
   created() {
     if (typeof this.mediadata.authors === "string") {
@@ -720,6 +727,10 @@ export default {
   methods: {
     printMedia: function () {
       window.print();
+    },
+    toggleAdjustMode(new_mode) {
+      if (new_mode === this.adjust_mode) this.adjust_mode = false;
+      else this.adjust_mode = new_mode;
     },
     videoTimeUpdated(currentTime) {
       this.current_video_time = this.$moment
@@ -868,10 +879,9 @@ export default {
 .m_mediaOptions {
   position: absolute;
   bottom: 0;
-  right: 0;
   z-index: 100;
-  background-color: white;
-  margin: 50px 10px;
+  /* background-color: white; */
+  margin: 60px 10px;
   /* padding: 15px; */
 }
 </style>
