@@ -2273,12 +2273,12 @@ module.exports = (function () {
 
       if (!recipe_with_data) {
         dev.logverbose("No recipe data.");
-        return resolve();
+        return resolve(meta);
       }
 
       if (!recipe_with_data.hasOwnProperty("apply_to")) {
         dev.err("Missing apply_to value to work out recipe.");
-        return resolve();
+        return resolve(meta);
       }
 
       const slugFolderPath = api.getFolderPath(
