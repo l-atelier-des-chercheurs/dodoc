@@ -1258,6 +1258,16 @@ module.exports = (function () {
       oc: "Tag NFC",
       de: "NFC Tag",
     },
+    nfc_tag_instructions: {
+      fr:
+        "Vous pouvez associer un tag NFC (un carte, une pastille, etc.) à un auteur à l’aide d’un boitier compatible à brancher en USB, pour utiliser un objet pour vous identifier.",
+      en:
+        "You can pair a NFC tag (a card, a badge, etc.) to an author using a device connected via USB, to login using an object.",
+    },
+    pair_a_nfc_tag: {
+      fr: "Associez un tag NFC",
+      en: "Pair an NFC tag",
+    },
     yes: {
       fr: "Oui",
       en: "Yes",

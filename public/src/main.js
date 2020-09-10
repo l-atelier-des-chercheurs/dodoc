@@ -7,7 +7,7 @@ if (window.state.is_electron) {
 
   // If click on a link with a specific class, open in the browser and not in electron.
   function electronSpecificOpenLink(event) {
-    event.path.every(item => {
+    event.path.every((item) => {
       if (item.classList !== undefined && item.classList.length > 0) {
         if (item.classList.contains("js--openInBrowser")) {
           const shell = window.require("electron").shell;
@@ -28,7 +28,7 @@ if (window.state.is_electron) {
 
 document.addEventListener(
   "dragover",
-  function(event) {
+  function (event) {
     event.preventDefault();
     return false;
   },
@@ -37,7 +37,7 @@ document.addEventListener(
 
 document.addEventListener(
   "drop",
-  function(event) {
+  function (event) {
     event.preventDefault();
     return false;
   },
@@ -64,10 +64,11 @@ document.addEventListener(
  * @license     http://www.opensource.org/licenses/BSD-3-Clause New BSD license
  * @version     1.0
  */
-(function($) {
-  $.barcodeListener = function(context, options) {
+
+(function ($) {
+  $.barcodeListener = function (context, options) {
     var $defaults = {
-      support: [8, 10, 12, 13]
+      support: [8, 10, 12, 13],
     };
 
     var $this = this;
@@ -76,14 +77,14 @@ document.addEventListener(
     $this.code = "";
     $this.settings = {};
 
-    $this.init = function() {
+    $this.init = function () {
       $this.settings = $.extend({}, $defaults, options);
-      $this.element.on("keypress", function(e) {
+      $this.element.on("keypress", function (e) {
         $this.listen(e);
       });
     };
 
-    $this.listen = function(e) {
+    $this.listen = function (e) {
       var $char = $this.validateKey(e.which);
       if ($char === 13) {
         $this.validate();
@@ -95,7 +96,7 @@ document.addEventListener(
       }
     };
 
-    $this.validate = function() {
+    $this.validate = function () {
       var $tmp = $this.code;
       if ($this.settings.support.indexOf($tmp.length) > -1) {
         var $d = new Date(),
@@ -109,12 +110,12 @@ document.addEventListener(
       }
     };
 
-    $this.clear = function() {
+    $this.clear = function () {
       $this.code = "";
       $this.timeout = 0;
     };
 
-    $this.validateKey = function(keycode) {
+    $this.validateKey = function (keycode) {
       const azerty_mapping = [224, 38, 233, 34, 39, 40, 167, 232, 33, 231];
       const qwerty_mapping = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
 
@@ -135,7 +136,7 @@ document.addEventListener(
       }
     };
 
-    $this.add = function(char) {
+    $this.add = function (char) {
       if ($this.timeout === 0) {
         var $d = new Date();
         $this.timeout = $d.getTime();
@@ -146,8 +147,8 @@ document.addEventListener(
     $this.init();
   };
 
-  $.fn.barcodeListener = function(options) {
-    return this.each(function() {
+  $.fn.barcodeListener = function (options) {
+    return this.each(function () {
       if (undefined == $(this).data("barcodeListener")) {
         var plugin = new $.barcodeListener(this, options);
         $(this).data("barcodeListener", plugin);
@@ -158,10 +159,10 @@ document.addEventListener(
 
 $("body")
   .barcodeListener()
-  .on("barcode.valid", function(e, code) {
+  .on("barcode.valid", function (e, code) {
     window.dispatchEvent(
       new CustomEvent("tag.newTagDetected", {
-        detail: code
+        detail: code,
       })
     );
     e.preventDefault();
