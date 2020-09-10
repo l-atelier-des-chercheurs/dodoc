@@ -1720,27 +1720,6 @@ let vm = new Vue({
         console.log(`ROOT EVENT: newTagDetected with e.detail = ${e.detail}`);
       }
 
-      // EXPERIMENTAL : SPECIFIC TAGS OPEN MEDIA MODAL
-      // '3121284126' '3121310334' '3121063518' '3121370062'
-
-      // const nfc_custom_tags = [
-      //   {
-      //     id: '3121284126',
-      //     slugProjectName: '110bis-16-novembre',
-      //     metaFileName: 'question-1-49.jpg.txt'
-      //   },
-      //   {
-      //     id: '3121370062',
-      //     slugProjectName: '110bis-16-novembre',
-      //     metaFileName: 'question-2-49-49-49.jpg.txt'
-      //   },
-      //   {
-      //     id: '3121063518',
-      //     slugProjectName: '110bis-16-novembre',
-      //     metaFileName: 'question-3-49-49-49.jpg.txt'
-      //   }
-      // ];
-
       // const matching_tags = nfc_custom_tags.filter(nfc => nfc.id === e.detail);
 
       // if (matching_tags.length > 0) {
@@ -1782,6 +1761,8 @@ let vm = new Vue({
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t("notifications.no_content_found_with_nfc_tag"));
+
+        this.$eventHub.$emit("tag.new_tag_not_attributed", e.detail);
         return;
       }
 
