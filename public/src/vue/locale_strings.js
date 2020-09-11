@@ -3453,6 +3453,10 @@ module.exports = (function () {
         oc: "En cors de creacion de la vidèo...",
         de: "Im Prozess der Erstellung des Videos…",
       },
+      creating_audio: {
+        fr: "En cours de création du son…",
+        en: "Creating audio…",
+      },
       preparing_video_from_montage: {
         fr: "Préparation des vidéos du montage",
         en: "Pre-processing videos from the montage",

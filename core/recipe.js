@@ -129,7 +129,7 @@ module.exports = (function () {
               })
               .run();
           });
-        } else if (type === "trim") {
+        } else if (type === "trim" && media_meta.type === "video") {
           const trim_string = `_trim_${detail.beginning}_${detail.end}`.replace(
             /:/g,
             "-"
@@ -173,6 +173,53 @@ module.exports = (function () {
                 dev.error("ffmpeg standard output:\n" + stdout);
                 dev.error("ffmpeg standard error:\n" + stderr);
                 return reject(`Couldn't convert video : ${err.message}`);
+              })
+              .run();
+          });
+        } else if (type === "trim" && media_meta.type === "audio") {
+          const trim_string = `_trim_${detail.beginning}_${detail.end}`.replace(
+            /:/g,
+            "-"
+          );
+
+          newFileName =
+            new RegExp(global.settings.regexpRemoveFileExtension, "i").exec(
+              newFileName
+            )[1] +
+            trim_string +
+            ".mp3";
+          const new_media_path = path.join(slugFolderPath, newFileName);
+
+          const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+
+          fs.unlink(new_media_path, (err) => {
+            // see https://stackoverflow.com/a/48208806
+            ffmpeg_cmd
+              .input(base_media_path)
+              .inputOptions([`-ss ${detail.beginning}`, `-to ${detail.end}`])
+              .withAudioCodec("libmp3lame")
+              .toFormat("mp3")
+              .output(new_media_path)
+              .on("start", function (commandLine) {
+                dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+              })
+              .on("progress", (progress) => {
+                require("./sockets").notify({
+                  socket,
+                  localized_string: `creating_audio`,
+                  not_localized_string:
+                    Number.parseFloat(progress.percent).toFixed(1) + "%",
+                });
+              })
+              .on("end", () => {
+                dev.logverbose(`Audio conversion has been completed`);
+                return resolve(newFileName);
+              })
+              .on("error", function (err, stdout, stderr) {
+                dev.error("An error happened: " + err.message);
+                dev.error("ffmpeg standard output:\n" + stdout);
+                dev.error("ffmpeg standard error:\n" + stderr);
+                return reject(`Couldn't convert audio : ${err.message}`);
               })
               .run();
           });
