@@ -160,6 +160,25 @@
         </tr>
       </tbody>
     </table>
+
+    <div class="flex-wrap flex-no-grow flex-horizontally-centered">
+      <button
+        type="button"
+        class="button-thin"
+        :disabled="current_page <= 1"
+        @click="current_page = current_page - 1"
+      >
+        {{ $t("previous_page") }}
+      </button>
+      <button
+        type="button"
+        class="button-thin"
+        :disabled="current_page >= number_of_possible_pages"
+        @click="current_page = current_page + 1"
+      >
+        {{ $t("next_page") }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
