@@ -285,11 +285,24 @@
               <div class="margin-sides-small margin-vert-verysmall">
                 <small>{{ $t("optimize_instructions") }}</small>
               </div>
+              <div class="margin-sides-medium margin-bottom-small">
+                <label>{{ $t("quality") }}</label>
+                <select v-model="quality" class="bg-blanc">
+                  <option
+                    v-for="q in available_qualities"
+                    :value="q.height"
+                    :key="q.height"
+                  >
+                    {{ $t(q.label) }}
+                  </option>
+                </select>
+                <small>{{ quality }}p</small>
+              </div>
               <div class="margin-sides-verysmall margin-vert-verysmall">
                 <button
                   type="button"
                   class="button-greenthin"
-                  @click="editRawMedia('optimize_video')"
+                  @click="editRawMedia('optimize', { quality })"
                 >
                   {{ $t("optimize") }}
                 </button>
@@ -628,6 +641,26 @@ export default {
       adjust_mode: false,
 
       is_ready: false,
+
+      quality: 720,
+      available_qualities: [
+        {
+          label: "very_high",
+          height: 1080,
+        },
+        {
+          label: "high",
+          height: 720,
+        },
+        {
+          label: "medium",
+          height: 480,
+        },
+        {
+          label: "low",
+          height: 360,
+        },
+      ],
     };
   },
   watch: {

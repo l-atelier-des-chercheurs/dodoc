@@ -37,7 +37,7 @@ module.exports = (function () {
                 });
               }
             });
-        } else if (type === "optimize_video") {
+        } else if (type === "optimize") {
           newFileName =
             new RegExp(global.settings.regexpRemoveFileExtension, "i").exec(
               newFileName
@@ -47,6 +47,9 @@ module.exports = (function () {
 
           const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
+          let size = `?x720`;
+          if (detail.hasOwnProperty("quality")) size = `?x${detail.quality}`;
+
           fs.unlink(new_media_path, (err) => {
             ffmpeg_cmd
               .input(base_media_path)
@@ -54,10 +57,9 @@ module.exports = (function () {
               .outputFPS(30)
               .addOptions(["-af apad"])
               .withVideoCodec("libx264")
-              .withVideoBitrate("6000k")
               .withAudioCodec("aac")
               .withAudioBitrate("128k")
-              .size(`?x720`)
+              .size(size)
               // .autopad()
               .videoFilter(["setsar=1"])
               .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
