@@ -15,7 +15,8 @@ module.exports = (function () {
       base_media_path,
       slugFolderPath,
       newFileName,
-      socket
+      socket,
+      media_meta
     ) => {
       return new Promise(function (resolve, reject) {
         if (!type) {
@@ -37,7 +38,7 @@ module.exports = (function () {
                 });
               }
             });
-        } else if (type === "optimize") {
+        } else if (type === "optimize" && media_meta.type === "video") {
           newFileName =
             new RegExp(global.settings.regexpRemoveFileExtension, "i").exec(
               newFileName
@@ -64,6 +65,46 @@ module.exports = (function () {
               .videoFilter(["setsar=1"])
               .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
               .toFormat("mp4")
+              .output(new_media_path)
+              .on("start", function (commandLine) {
+                dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+              })
+              .on("progress", (progress) => {
+                require("./sockets").notify({
+                  socket,
+                  localized_string: `creating_video`,
+                  not_localized_string:
+                    Number.parseFloat(progress.percent).toFixed(1) + "%",
+                });
+              })
+              .on("end", () => {
+                dev.logverbose(`Video conversion has been completed`);
+                return resolve(newFileName);
+              })
+              .on("error", function (err, stdout, stderr) {
+                dev.error("An error happened: " + err.message);
+                dev.error("ffmpeg standard output:\n" + stdout);
+                dev.error("ffmpeg standard error:\n" + stderr);
+                return reject(`Couldn't convert video : ${err.message}`);
+              })
+              .run();
+          });
+        } else if (type === "optimize" && media_meta.type === "audio") {
+          newFileName =
+            new RegExp(global.settings.regexpRemoveFileExtension, "i").exec(
+              newFileName
+            )[1] + "_optimized.mp3";
+
+          const new_media_path = path.join(slugFolderPath, newFileName);
+
+          const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+
+          fs.unlink(new_media_path, (err) => {
+            ffmpeg_cmd
+              .input(base_media_path)
+              .withAudioCodec("libmp3lame")
+              .withAudioBitrate("192k")
+              .toFormat("mp3")
               .output(new_media_path)
               .on("start", function (commandLine) {
                 dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);

@@ -2323,7 +2323,8 @@ module.exports = (function () {
                   base_media_path,
                   slugFolderPath,
                   meta.media_filename,
-                  socket
+                  socket,
+                  meta
                 )
                 .then((new_media_filename) => {
                   // return meta name
@@ -2362,7 +2363,8 @@ module.exports = (function () {
                     base_media_path,
                     slugFolderPath,
                     newFileName,
-                    socket
+                    socket,
+                    meta
                   )
                   .then((new_media_filename) => {
                     // return meta name
