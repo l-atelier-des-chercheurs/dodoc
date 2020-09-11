@@ -3,87 +3,105 @@
     <div>
       <div>
         <div class>
-          <div class="m_tagsAndAuthorFilters flex-wrap bg-creme rounded">
-            <div
-              v-if="journal_authors && journal_authors.length > 0"
-              class="padding-sides-small"
-            >
-              <label>{{ $t("authors") }}</label>
-              <div class="m_authorField margin-bottom-none">
+          <div class="m_actionbar">
+            <div class="m_actionbar--text">
+              <template>
                 <button
-                  v-for="{ slugFolderName: author_slug } in journal_authors"
-                  v-if="$root.getAuthor(author_slug)"
-                  :key="author_slug"
-                  :class="{
-                    'is--active': author_filter === author_slug,
-                    'is--loggedInAuthor':
-                      $root.current_author &&
-                      $root.current_author.slugFolderName === author_slug,
-                  }"
-                  @click="setAuthorFilter(author_slug)"
+                  type="button"
+                  class="button-nostyle text-uc button-triangle"
+                  :class="{ 'is--active': show_filters }"
+                  @click="show_filters = !show_filters"
                 >
-                  {{ $root.getAuthor(author_slug).name }}
+                  {{ $t("filters") }}
                 </button>
+              </template>
+              <div
+                class="m_tagsAndAuthorFilters flex-wrap bg-creme rounded"
+                v-if="show_filters"
+              >
+                <div
+                  v-if="journal_authors && journal_authors.length > 0"
+                  class="padding-sides-small"
+                >
+                  <label>{{ $t("authors") }}</label>
+                  <div class="m_authorField margin-bottom-none">
+                    <button
+                      v-for="{ slugFolderName: author_slug } in journal_authors"
+                      v-if="$root.getAuthor(author_slug)"
+                      :key="author_slug"
+                      :class="{
+                        'is--active': author_filter === author_slug,
+                        'is--loggedInAuthor':
+                          $root.current_author &&
+                          $root.current_author.slugFolderName === author_slug,
+                      }"
+                      @click="setAuthorFilter(author_slug)"
+                    >
+                      {{ $root.getAuthor(author_slug).name }}
+                    </button>
+                  </div>
+                </div>
+                <div
+                  v-if="journal_days && journal_days.length > 0"
+                  class="padding-sides-small"
+                >
+                  <label>{{ $t("days") }}</label>
+                  <div class="m_authorField margin-bottom-none">
+                    <button
+                      v-for="day in journal_days"
+                      :key="day"
+                      :class="{
+                        'is--active': day_filter === day,
+                      }"
+                      @click="setDayFilter(day)"
+                    >
+                      {{ $moment(day).format("LL") }}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
             <div
-              v-if="journal_days && journal_days.length > 0"
-              class="padding-sides-small"
+              class="flex-nowrap flex-vertically-start flex-horizontally-end margin-vert-small"
             >
-              <label>{{ $t("days") }}</label>
-              <div class="m_authorField margin-bottom-none">
-                <button
-                  v-for="day in journal_days"
-                  :key="day"
-                  :class="{
-                    'is--active': day_filter === day,
-                  }"
-                  @click="setDayFilter(day)"
-                >
-                  {{ $moment(day).format("LL") }}
-                </button>
-              </div>
+              <small style="flex: 0 0 auto" class="margin-verysmall">
+                {{ `${filtered_entries.length} ${$t("entries").toLowerCase()}.`
+                }}<br />
+                <template v-if="filtered_entries.length">
+                  {{
+                    `${$t("entries")} ${
+                      (current_page - 1) * number_of_items_per_page + 1
+                    }  ${$t("to")} ${
+                      (current_page - 1) * number_of_items_per_page +
+                      entries_paginated.length
+                    }`
+                  }}
+                  —
+                  {{
+                    `${$t("page")} ${current_page} ${$t(
+                      "to"
+                    )} ${number_of_possible_pages}`
+                  }}
+                </template>
+              </small>
+              <select
+                v-if="filtered_entries.length"
+                v-model="current_page"
+                class="margin-verysmall select-xs"
+                style="flex: 0 1 100px"
+              >
+                <option
+                  v-for="page_number in number_of_possible_pages"
+                  :key="page_number"
+                  v-html="page_number"
+                />
+              </select>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div
-      class="flex-nowrap flex-vertically-start flex-horizontally-end margin-vert-small"
-    >
-      <small style="flex: 0 0 auto" class="margin-verysmall">
-        {{ `${filtered_entries.length} ${$t("entries").toLowerCase()}.` }}<br />
-        <template v-if="filtered_entries.length">
-          {{
-            `${$t("entries")} ${
-              (current_page - 1) * number_of_items_per_page + 1
-            }  ${$t("to")} ${
-              (current_page - 1) * number_of_items_per_page +
-              entries_paginated.length
-            }`
-          }}
-          —
-          {{
-            `${$t("page")} ${current_page} ${$t(
-              "to"
-            )} ${number_of_possible_pages}`
-          }}
-        </template>
-      </small>
-      <select
-        v-if="filtered_entries.length"
-        v-model="current_page"
-        class="margin-verysmall select-xs"
-        style="flex: 0 1 100px"
-      >
-        <option
-          v-for="page_number in number_of_possible_pages"
-          :key="page_number"
-          v-html="page_number"
-        />
-      </select>
-    </div>
     <table class="table-striped table-bordered">
       <thead>
         <tr>
@@ -152,7 +170,7 @@ export default {
   components: {},
   data() {
     return {
-      show_filters: false,
+      show_filters: true,
       author_filter: "",
       day_filter: "",
       current_day_shown: false,
