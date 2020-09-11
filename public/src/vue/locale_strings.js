@@ -1268,6 +1268,10 @@ module.exports = (function () {
       fr: "Associez un tag NFC",
       en: "Pair an NFC tag",
     },
+    scan_a_nfc_tag: {
+      fr: "Scannez le tag NFC maintenant…",
+      en: "Scan the NFC tag now…",
+    },
     yes: {
       fr: "Oui",
       en: "Yes",
