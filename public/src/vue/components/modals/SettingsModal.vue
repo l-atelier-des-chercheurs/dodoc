@@ -98,10 +98,14 @@ export default {
   computed: {},
   methods: {
     loadJournal() {
-      this.$socketio.loadJournal();
       this.show_journal = true;
 
       this.is_loading_journal = true;
+
+      this.$nextTick(() => {
+        this.$socketio.loadJournal();
+      });
+
       this.$eventHub.$once(`socketio.journal.is_loaded`, () => {
         this.is_loading_journal = false;
       });
