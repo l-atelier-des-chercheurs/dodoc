@@ -104,10 +104,17 @@
         </div>
         <button
           type="button"
-          class="button-thin bg-bleumarine"
+          class="button-thin"
+          :class="{ 'bg-bleumarine': !detect_scan_nfc_started }"
           v-if="authordata.nfc_tag === ''"
+          @click="detect_scan_nfc_started = !detect_scan_nfc_started"
         >
-          {{ $t("pair_a_nfc_tag") }}
+          <template v-if="!detect_scan_nfc_started">
+            {{ $t("pair_a_nfc_tag") }}
+          </template>
+          <template v-else>
+            {{ $t("scan_a_nfc_tag") }}
+          </template>
         </button>
         <div class="input-group" v-if="authordata.nfc_tag">
           <input type="text" v-model="authordata.nfc_tag" readonly />
@@ -177,6 +184,7 @@ export default {
       },
       preview: undefined,
       login_after_creation: true,
+      detect_scan_nfc_started: false,
     };
   },
   computed: {},
@@ -196,6 +204,16 @@ export default {
       "tag.new_tag_not_attributed",
       this.notAttributedTagDetected
     );
+  },
+  watch: {
+    detect_scan_nfc_started() {
+      if (this.detect_scan_nfc_started) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(this.$t("scan_a_nfc_tag"));
+      }
+    },
   },
   methods: {
     notAttributedTagDetected(nfc_tag_code) {
