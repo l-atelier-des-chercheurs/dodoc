@@ -53,6 +53,14 @@ module.exports = (function () {
       fr: "Aucun contenu à afficher",
       en: "No content to show",
     },
+    fold: {
+      fr: "Replier",
+      en: "Fold",
+    },
+    unfold: {
+      fr: "Déplier",
+      en: "Unfold",
+    },
     create_new_folder: {
       fr: "créer un nouveau dossier",
       en: "create new folder",
