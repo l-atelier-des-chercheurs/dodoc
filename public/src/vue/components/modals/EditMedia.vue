@@ -690,8 +690,6 @@ export default {
     },
     show_edit_media_options() {
       this.adjust_mode = false;
-      if (this.show_edit_media_options) {
-      }
     },
   },
   created() {
@@ -892,7 +890,6 @@ export default {
     editRawMedia: function (type, detail) {
       console.log("editRawMedia");
       this.is_loading_or_saving = true;
-      this.adjust_mode = "_loading";
 
       this.$root
         .editMedia({
