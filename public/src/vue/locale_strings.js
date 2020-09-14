@@ -53,6 +53,14 @@ module.exports = (function () {
       fr: "Aucun contenu à afficher",
       en: "No content to show",
     },
+    fold: {
+      fr: "Replier",
+      en: "Fold",
+    },
+    unfold: {
+      fr: "Déplier",
+      en: "Unfold",
+    },
     create_new_folder: {
       fr: "créer un nouveau dossier",
       en: "create new folder",
@@ -862,9 +870,9 @@ module.exports = (function () {
     },
     optimize_instructions: {
       fr:
-        "Convertir le média vidéo ou audio pour optimiser la compatibilité avec tous les appareils et réduire le poids (résolution en 720p, codec vidéo mp4/h264, codec audio aac).",
+        "Convertir le média vidéo ou audio pour optimiser la compatibilité avec tous les appareils et réduire le poids (codec vidéo mp4/h264, codec audio mp3).",
       en:
-        "Encode the video or audio media to maximize compatibility and minimize filesize (720p resolution, video codec mp4/h264 and audio codec aac).",
+        "Encode the video or audio media to maximize compatibility and minimize filesize (video codec mp4/h264 and audio codec aac).",
     },
     trim: {
       fr: "Raccourcir",
@@ -3020,6 +3028,10 @@ module.exports = (function () {
       fr: "Pivoter",
       en: "Rotate",
     },
+    "error:": {
+      fr: "Erreur&nbsp;:",
+      en: "Error:",
+    },
     mirror: {
       fr: "Miroir",
       en: "Mirror",
@@ -3444,6 +3456,10 @@ module.exports = (function () {
         nl: "De video wordt gemaakt…",
         oc: "En cors de creacion de la vidèo...",
         de: "Im Prozess der Erstellung des Videos…",
+      },
+      creating_audio: {
+        fr: "En cours de création du son…",
+        en: "Creating audio…",
       },
       preparing_video_from_montage: {
         fr: "Préparation des vidéos du montage",

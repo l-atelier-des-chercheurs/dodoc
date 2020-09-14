@@ -47,6 +47,7 @@
       :preview_mode="preview_mode"
       @removePubliMedia="orderedRemovePubliMedia"
       @editPubliMedia="editPubliMedia"
+      @duplicateMedia="orderedDuplicateMedia"
       @changeMediaOrder="changeMediaOrder"
       @addMedia="addMediaOrdered"
     />

@@ -202,7 +202,15 @@
           </svg>
           {{ $t("adjust") }}
         </button>
-        <div v-if="show_edit_media_options" class="bg-gris_tresclair border">
+        <div
+          v-if="show_edit_media_options"
+          class="bg-gris_tresclair border"
+          style="position: relative"
+        >
+          <transition name="fade_fast" :duration="400">
+            <Loader v-if="is_loading_or_saving" />
+          </transition>
+
           <button
             type="button"
             class="buttonLink"
@@ -268,14 +276,26 @@
                 </div>
               </div>
               <!-- <hr class="margin-vert-small" /> -->
+              <div>
+                <small v-if="trim_options_valid !== true">
+                  <span v-html="$t('error:')" />
+                  {{ trim_options_valid }}
+                </small>
+              </div>
               <div class="margin-sides-verysmall margin-vert-verysmall">
-                <button type="button" class="button-thin" @click="testTrim">
+                <button
+                  type="button"
+                  class="button-thin"
+                  @click="testTrim"
+                  :disabled="trim_options_valid !== true"
+                >
                   {{ $t("test") }}
                 </button>
                 <button
                   type="button"
                   class="button-greenthin"
                   @click="editRawMedia('trim', trim_options)"
+                  :disabled="trim_options_valid !== true"
                 >
                   {{ $t("trim") }}
                 </button>
@@ -285,11 +305,24 @@
               <div class="margin-sides-small margin-vert-verysmall">
                 <small>{{ $t("optimize_instructions") }}</small>
               </div>
+              <div class="margin-sides-medium margin-bottom-small">
+                <label>{{ $t("quality") }}</label>
+                <select v-model="quality" class="bg-blanc">
+                  <option
+                    v-for="q in available_qualities"
+                    :value="q.height"
+                    :key="q.height"
+                  >
+                    {{ $t(q.label) }}
+                  </option>
+                </select>
+                <small>{{ quality }}p</small>
+              </div>
               <div class="margin-sides-verysmall margin-vert-verysmall">
                 <button
                   type="button"
                   class="button-greenthin"
-                  @click="editRawMedia('optimize_video')"
+                  @click="editRawMedia('optimize', { quality })"
                 >
                   {{ $t("optimize") }}
                 </button>
@@ -628,6 +661,26 @@ export default {
       adjust_mode: false,
 
       is_ready: false,
+
+      quality: 720,
+      available_qualities: [
+        {
+          label: "very_high",
+          height: 1080,
+        },
+        {
+          label: "high",
+          height: 720,
+        },
+        {
+          label: "medium",
+          height: 480,
+        },
+        {
+          label: "low",
+          height: 360,
+        },
+      ],
     };
   },
   watch: {
@@ -639,6 +692,16 @@ export default {
       },
       deep: true,
     },
+    "trim_options.beginning"() {
+      if (this.trim_options.beginning === "")
+        this.trim_options.beginning = "00:00:00";
+    },
+    "trim_options.end"() {
+      if (this.trim_options.end === "")
+        this.trim_options.end = this.$root.formatDurationToHoursMinutesSeconds(
+          this.media_duration * 1000
+        );
+    },
     adjust_mode() {
       if (this.adjust_mode === "trim") {
         this.trim_options.beginning = "00:00:00";
@@ -648,9 +711,7 @@ export default {
       }
     },
     show_edit_media_options() {
-      if (this.show_edit_media_options) {
-        this.adjust_mode = false;
-      }
+      this.adjust_mode = false;
     },
   },
   created() {
@@ -685,6 +746,27 @@ export default {
         return false;
       }
       return this.$root.store.projects[this.slugProjectName].name;
+    },
+    trim_options_valid() {
+      const _beginning = +this.$moment.duration(this.trim_options.beginning);
+      const _end = +this.$moment.duration(this.trim_options.end);
+      const _duration = +this.$moment.duration(this.media_duration * 1000);
+
+      // if beginning is after clip end
+      if (_beginning >= _end)
+        return `${this.$t("beginning")} >= ${this.$t("end")}`.toLowerCase();
+
+      // if beginning is after trim end
+      if (_beginning > _duration)
+        return `${this.$t("beginning")} > ${this.$t("duration")}`.toLowerCase();
+
+      if (_end > _duration)
+        return `${this.$t("end")} > ${this.$t("duration")}`.toLowerCase();
+
+      // if end is before start
+      if (_end < 0) return `${this.$t("end")} < 0`.toLowerCase();
+
+      return true;
     },
     media_size() {
       if (
@@ -866,6 +948,7 @@ export default {
         })
         .then((mdata) => {
           this.is_loading_or_saving = false;
+          this.adjust_mode = false;
           // this.show_saved_icon = true;
           // setTimeout(() => {
           //   this.show_saved_icon = false;

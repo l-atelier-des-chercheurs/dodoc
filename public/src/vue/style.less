@@ -1194,6 +1194,29 @@ small {
       margin-left: 0.4em;
     }
   }
+  ._media_counter {
+    .bg-noir;
+    .c-blanc;
+    border-radius: 50%;
+    width: 1.4em;
+    height: 1.4em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    .font-verysmall;
+  }
+  ._fold_button {
+    .font-verysmall;
+    text-transform: lowercase;
+    font-weight: 600;
+    letter-spacing: 0;
+
+    &::after {
+      margin-left: -0.05em;
+    }
+  }
 }
 
 .m_channels {
@@ -8201,6 +8224,11 @@ small {
 .m_activityJournal {
   .font-small;
   --table-spacing-y: 0.25rem;
+
+  .m_actionbar {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 .m_unreadMessages {
