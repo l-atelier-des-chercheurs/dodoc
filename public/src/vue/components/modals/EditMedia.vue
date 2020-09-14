@@ -202,7 +202,15 @@
           </svg>
           {{ $t("adjust") }}
         </button>
-        <div v-if="show_edit_media_options" class="bg-gris_tresclair border">
+        <div
+          v-if="show_edit_media_options"
+          class="bg-gris_tresclair border"
+          style="position: relative"
+        >
+          <transition name="fade_fast" :duration="400">
+            <Loader v-if="is_loading_or_saving" />
+          </transition>
+
           <button
             type="button"
             class="buttonLink"
@@ -681,8 +689,8 @@ export default {
       }
     },
     show_edit_media_options() {
+      this.adjust_mode = false;
       if (this.show_edit_media_options) {
-        this.adjust_mode = false;
       }
     },
   },
@@ -884,6 +892,7 @@ export default {
     editRawMedia: function (type, detail) {
       console.log("editRawMedia");
       this.is_loading_or_saving = true;
+      this.adjust_mode = "_loading";
 
       this.$root
         .editMedia({
@@ -899,6 +908,7 @@ export default {
         })
         .then((mdata) => {
           this.is_loading_or_saving = false;
+          this.adjust_mode = false;
           // this.show_saved_icon = true;
           // setTimeout(() => {
           //   this.show_saved_icon = false;
