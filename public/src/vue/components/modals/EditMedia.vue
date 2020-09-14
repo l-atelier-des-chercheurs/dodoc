@@ -692,6 +692,16 @@ export default {
       },
       deep: true,
     },
+    "trim_options.beginning"() {
+      if (this.trim_options.beginning === "")
+        this.trim_options.beginning = "00:00:00";
+    },
+    "trim_options.end"() {
+      if (this.trim_options.end === "")
+        this.trim_options.end = this.$root.formatDurationToHoursMinutesSeconds(
+          this.media_duration * 1000
+        );
+    },
     adjust_mode() {
       if (this.adjust_mode === "trim") {
         this.trim_options.beginning = "00:00:00";
