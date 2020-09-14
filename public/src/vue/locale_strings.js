@@ -3028,6 +3028,10 @@ module.exports = (function () {
       fr: "Pivoter",
       en: "Rotate",
     },
+    "error:": {
+      fr: "Erreur&nbsp;:",
+      en: "Error:",
+    },
     mirror: {
       fr: "Miroir",
       en: "Mirror",

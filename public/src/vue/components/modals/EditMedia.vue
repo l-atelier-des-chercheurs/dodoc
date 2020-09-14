@@ -276,14 +276,26 @@
                 </div>
               </div>
               <!-- <hr class="margin-vert-small" /> -->
+              <div>
+                <small v-if="trim_options_valid !== true">
+                  <span v-html="$t('error:')" />
+                  {{ trim_options_valid }}
+                </small>
+              </div>
               <div class="margin-sides-verysmall margin-vert-verysmall">
-                <button type="button" class="button-thin" @click="testTrim">
+                <button
+                  type="button"
+                  class="button-thin"
+                  @click="testTrim"
+                  :disabled="trim_options_valid !== true"
+                >
                   {{ $t("test") }}
                 </button>
                 <button
                   type="button"
                   class="button-greenthin"
                   @click="editRawMedia('trim', trim_options)"
+                  :disabled="trim_options_valid !== true"
                 >
                   {{ $t("trim") }}
                 </button>
@@ -724,6 +736,27 @@ export default {
         return false;
       }
       return this.$root.store.projects[this.slugProjectName].name;
+    },
+    trim_options_valid() {
+      const _beginning = +this.$moment.duration(this.trim_options.beginning);
+      const _end = +this.$moment.duration(this.trim_options.end);
+      const _duration = +this.$moment.duration(this.media_duration * 1000);
+
+      // if beginning is after clip end
+      if (_beginning >= _end)
+        return `${this.$t("beginning")} >= ${this.$t("end")}`.toLowerCase();
+
+      // if beginning is after trim end
+      if (_beginning > _duration)
+        return `${this.$t("beginning")} > ${this.$t("duration")}`.toLowerCase();
+
+      if (_end > _duration)
+        return `${this.$t("end")} > ${this.$t("duration")}`.toLowerCase();
+
+      // if end is before start
+      if (_end < 0) return `${this.$t("end")} < 0`.toLowerCase();
+
+      return true;
     },
     media_size() {
       if (
