@@ -2921,7 +2921,7 @@ module.exports = (function () {
       en: "Drawing pad",
     },
     drawing: {
-      fr: "Dessin",
+      fr: "Dessin libre",
       en: "Drawing",
     },
     drawing_pad_summary: {
