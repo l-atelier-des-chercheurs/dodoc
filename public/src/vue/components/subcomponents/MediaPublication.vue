@@ -29,7 +29,7 @@
         <br />
         <small>
           {{ media._linked_media.slugProjectName }}/{{
-          media._linked_media.slugMediaName
+            media._linked_media.slugMediaName
           }}
         </small>
       </div>
@@ -72,7 +72,12 @@
         :style="contentStyles"
       />
 
-      <div class="mediaContainer" v-else :style="contentStyles" :class="`type-${media.type}`">
+      <div
+        class="mediaContainer"
+        v-else
+        :style="contentStyles"
+        :class="`type-${media.type}`"
+      >
         <template v-if="media.type === 'text'">
           <CollaborativeEditor
             v-if="inline_edit_mode"
@@ -124,12 +129,33 @@
               vector-effect="non-scaling-stroke"
             />
             <g v-if="media.type === 'arrow'">
-              <line x1="0" y1="50" x2="100" y2="50" vector-effect="non-scaling-stroke" />
-              <g transform="
-                translate(100, 50)" preserveAspectRatio>
-                <line x1="0" y1="0" x2="-10" y2="-10" vector-effect="non-scaling-stroke" />
+              <line
+                x1="0"
+                y1="50"
+                x2="100"
+                y2="50"
+                vector-effect="non-scaling-stroke"
+              />
+              <g
+                transform="
+                translate(100, 50)"
+                preserveAspectRatio
+              >
+                <line
+                  x1="0"
+                  y1="0"
+                  x2="-10"
+                  y2="-10"
+                  vector-effect="non-scaling-stroke"
+                />
 
-                <line x1="0" y1="0" x2="-10" y2="10" vector-effect="non-scaling-stroke" />
+                <line
+                  x1="0"
+                  y1="0"
+                  x2="-10"
+                  y2="10"
+                  vector-effect="non-scaling-stroke"
+                />
               </g>
             </g>
           </svg>
@@ -138,7 +164,7 @@
           <EditPlaceholderModal
             v-if="inline_edit_mode"
             :media="media"
-            @updateMediaPubliMeta="({ values, metaFileName }) => updateMediaPubliMeta({ values, metaFileName })"
+            @updateMediaPubliMeta="(values) => updateMediaPubliMeta({ values })"
             @close="inline_edit_mode = false"
           />
           <MediaPlaceholder
@@ -151,7 +177,7 @@
             :captureview_in_modal="true"
             :paged_mode="true"
             @addMedia="(values) => addMedia({ values })"
-            @editPubliMedia="({ values, metaFileName }) => updateMediaPubliMeta({ values, metaFileName })"
+            @editPubliMedia="$emit('editPubliMedia', $event)"
           />
         </template>
       </div>
@@ -169,7 +195,11 @@
         <!-- <img src="/images/i_clear.svg" draggable="false" /> -->
         <span class="text-cap font-verysmall">{{ $t("cancel") }}</span>
       </button>
-      <button type="button" class="button button-bg_rounded bg-bleuvert" @click="saveMedia">
+      <button
+        type="button"
+        class="button button-bg_rounded bg-bleuvert"
+        @click="saveMedia"
+      >
         <img src="/images/i_enregistre.svg" draggable="false" />
         <span class="text-cap font-verysmall">
           <slot name="submit_button">{{ $t("save") }}</slot>
@@ -182,7 +212,9 @@
       v-if="
         media.hasOwnProperty('_linked_media') && !!media._linked_media.caption
       "
-    >{{ media._linked_media.caption }}</p>
+    >
+      {{ media._linked_media.caption }}
+    </p>
 
     <button
       class="m_mediaPublication--overflowing_sign"
@@ -241,7 +273,7 @@
           width="60px"
           height="106px"
           viewBox="0 0 60 106"
-          style="enable-background: new 0 0 60 106;"
+          style="enable-background: new 0 0 60 106"
           xml:space="preserve"
         >
           <path
@@ -270,7 +302,7 @@
           width="106px"
           height="60px"
           viewBox="0 0 106 60"
-          style="enable-background: new 0 0 106 60;"
+          style="enable-background: new 0 0 106 60"
           xml:space="preserve"
         >
           <path
@@ -300,7 +332,7 @@
           width="106px"
           height="60px"
           viewBox="-10 -10 100 100"
-          style="enable-background: new 0 0 77.5 77.5;"
+          style="enable-background: new 0 0 77.5 77.5"
           xml:space="preserve"
         >
           <path
@@ -325,7 +357,7 @@
           width="98.7px"
           height="132.2px"
           viewBox="0 0 98.7 132.2"
-          style="enable-background: new 0 0 98.7 132.2;"
+          style="enable-background: new 0 0 98.7 132.2"
           xml:space="preserve"
         >
           <defs />
@@ -377,7 +409,7 @@
             v-if="locked_in_place"
             version="1.1"
             class="inline-svg"
-            style="padding-top: 6px;"
+            style="padding-top: 6px"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             x="0px"
@@ -388,7 +420,7 @@
             xml:space="preserve"
           >
             <path
-              style="fill: currentColor;"
+              style="fill: currentColor"
               d="M61.7,34.4h-1V24.3c0-11.7-7.5-19.2-16.9-22.7C40.6,0.6,36.7,0,33.1,0C29.5,0,26,0.6,22.4,1.6
 		C13.3,4.9,6.2,12.3,6.2,24.3v10.1h-1c-2.9,0-5.2,2.3-5.2,5.2v43.5c0,2.9,2.3,5.2,5.2,5.2h56.5c2.9,0,5.2-2.3,5.2-5.2V39.6
 		C66.9,36.7,64.6,34.4,61.7,34.4z M33.4,70.1c-4.5,0-8.4-3.6-8.4-8.1c0-4.5,3.9-8.4,8.4-8.4s8.1,3.9,8.1,8.4
@@ -399,7 +431,7 @@
           <svg
             class="inline-svg"
             v-else
-            style="padding-top: 6px;"
+            style="padding-top: 6px"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -459,7 +491,7 @@
             width="90.7px"
             height="91px"
             viewBox="0 0 90 120"
-            style="enable-background: new 0 0 100.7 101;"
+            style="enable-background: new 0 0 100.7 101"
             xml:space="preserve"
           >
             <path
@@ -492,7 +524,7 @@
             width="168px"
             height="168px"
             viewBox="0 0 168 168"
-            style="enable-background: new 0 0 168 168;"
+            style="enable-background: new 0 0 168 168"
             xml:space="preserve"
           >
             <rect x="73.5" y="37" class="st0" width="21" height="21" />
@@ -524,7 +556,7 @@
               width="113.5px"
               height="113.5px"
               viewBox="0 0 113.5 113.5"
-              style="enable-background: new 0 0 113.5 113.5;"
+              style="enable-background: new 0 0 113.5 113.5"
               xml:space="preserve"
             >
               <path
@@ -608,7 +640,7 @@
               width="91.6px"
               height="95px"
               viewBox="0 0 91.6 95"
-              style="enable-background: new 0 0 91.6 95;"
+              style="enable-background: new 0 0 91.6 95"
               xml:space="preserve"
             >
               <polygon
@@ -638,7 +670,7 @@
               width="37.2px"
               height="37.2px"
               viewBox="0 0 37.2 37.2"
-              style="enable-background: new 0 0 37.2 37.2;"
+              style="enable-background: new 0 0 37.2 37.2"
               xml:space="preserve"
             >
               <polygon
@@ -883,13 +915,13 @@ export default {
       }
     },
     saveMedia() {
-      const val = {
+      const values = {
         content: this.htmlForEditor,
       };
 
       this.$emit("editPubliMedia", {
         metaFileName: this.media.metaFileName,
-        val,
+        values,
       });
 
       this.inline_edit_mode = false;

@@ -141,8 +141,10 @@
                 :preview_mode="preview_mode"
                 :slugPubliName="slugPubliName"
                 :read_only="read_only || preview_mode"
-                :can_duplicate_media="(remaining_modes_allowed === 'all' ||
-                    Object.keys(remaining_modes_allowed).length > 0)"
+                :can_duplicate_media="
+                  remaining_modes_allowed === 'all' ||
+                  Object.keys(remaining_modes_allowed).length > 0
+                "
                 @removePubliMedia="orderedRemovePubliMedia($event)"
                 @changeMediaOrder="changeMediaOrder($event)"
                 @editPubliMedia="$emit('editPubliMedia', $event)"
