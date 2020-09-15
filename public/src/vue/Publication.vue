@@ -77,6 +77,7 @@
       :can_see_publi="can_see_publi"
       :preview_mode="preview_mode"
       @togglePreviewMode="preview_mode = !preview_mode"
+      @editPubliMedia="editPubliMedia"
       @addMedia="addMedia"
     />
 

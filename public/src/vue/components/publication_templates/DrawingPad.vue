@@ -93,6 +93,7 @@
             :read_only="read_only"
             :pixelsPerMillimeters="pixelsPerMillimeters"
             :zoom="zoom"
+            @editPubliMedia="$emit('editPubliMedia', $event)"
           />
 
           <DrawingLayer
@@ -116,7 +117,7 @@
     </div>
     <div
       ref="mmMeasurer"
-      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
+      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%"
     />
   </div>
 </template>
@@ -249,14 +250,25 @@ export default {
         if (this.$root.state.dev_mode === "debug")
           console.log(`DrawingPad • METHODS: addMedia`);
 
-        values.layer_id = this.$root.settings.current_publication.layer_id;
+        const current_layer_id = this.$root.settings.current_publication
+          .layer_id;
+
+        if (!current_layer_id) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.missing_layer_id"));
+        }
+
+        values.layer_id = current_layer_id;
 
         values.x = 0;
         values.y = 0;
 
         values.z_index =
-          this.getHighestZNumberAmongstMedias(this.layered_medias[layer_id]) +
-          1;
+          this.getHighestZNumberAmongstMedias(
+            this.layered_medias[current_layer_id]
+          ) + 1;
 
         // get current scroll
         if (this.$refs.current_page) {
