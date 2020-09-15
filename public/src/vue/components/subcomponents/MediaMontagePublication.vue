@@ -54,6 +54,7 @@
           >
             <input
               type="number"
+              class="input-xs"
               v-model.number="seconds_per_image"
               step="1"
               :disabled="read_only || preview_mode"

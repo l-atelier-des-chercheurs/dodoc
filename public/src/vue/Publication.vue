@@ -692,7 +692,7 @@ export default {
         data: val,
       });
     },
-    changeMediaOrder({ metaFileName, dir }) {
+    changeMediaOrder({ metaFileName, dir, new_index_in_slugs }) {
       // find index in medias_slugs_in_order
       const current_index_in_slugs = this.publication.medias_slugs.findIndex(
         (m) => m.slugMediaName === metaFileName
@@ -701,13 +701,16 @@ export default {
       const current_media_index = this.medias_in_order.findIndex(
         (m) => m.metaFileName === metaFileName
       );
-      const adjacent_media_meta = this.medias_in_order[
-        current_media_index + dir
-      ].metaFileName;
 
-      const new_index_in_slugs = this.publication.medias_slugs.findIndex(
-        (m) => m.slugMediaName === adjacent_media_meta
-      );
+      if (new_index_in_slugs === undefined) {
+        const adjacent_media_meta = this.medias_in_order[
+          current_media_index + dir
+        ].metaFileName;
+
+        new_index_in_slugs = this.publication.medias_slugs.findIndex(
+          (m) => m.slugMediaName === adjacent_media_meta
+        );
+      }
 
       const medias_slugs = JSON.parse(
         JSON.stringify(this.publication.medias_slugs)
