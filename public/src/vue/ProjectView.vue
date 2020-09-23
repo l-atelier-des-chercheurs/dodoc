@@ -25,13 +25,16 @@ export default {
   },
 
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    document.title = "do•doc | " + this.project.name;
+  },
+  beforeDestroy() {
+    document.title = "do•doc";
+  },
 
   watch: {},
   computed: {},
   methods: {}
 };
 </script>
-<style>
-</style>
+<style></style>

@@ -1,21 +1,25 @@
 <template>
-  <div class="m_addcreationtoproject">
+  <div
+    class="m_addcreationtoproject"
+    v-if="$root.projects_that_are_editable.length > 0"
+  >
     <div class="margin-bottom-small">
       <label v-html="$t('add_to_project')" />
       <div class="flex-nowrap">
         <select v-model="upload_to_folder">
           <option
-            v-for="project in all_projects"
+            v-for="project in $root.projects_that_are_editable"
             :key="project.slugFolderName"
             :value="project.slugFolderName"
-          >{{ project.name }}</option>
+            >{{ project.name }}</option
+          >
         </select>
         <button
           type="button"
           @click="addTempMediaToFolder()"
           :disabled="upload_to_folder === ''"
           v-html="$t('send')"
-          class="bg-bleuvert button-thin"
+          class="bg-bleuvert button-small"
         />
       </div>
     </div>
@@ -30,12 +34,12 @@
 export default {
   props: {
     media_filename: String,
-    publication: Object
+    publication: Object,
   },
   components: {},
   data() {
     return {
-      upload_to_folder: ""
+      upload_to_folder: "",
     };
   },
 
@@ -44,17 +48,13 @@ export default {
     if (this.$root.do_navigation.current_slugProjectName) {
       this.upload_to_folder = this.$root.do_navigation.current_slugProjectName;
     } else {
-      this.upload_to_folder = this.all_projects[0].slugFolderName;
+      this.upload_to_folder = this.$root.projects_that_are_editable[0].slugFolderName;
     }
   },
   beforeDestroy() {},
 
   watch: {},
-  computed: {
-    all_projects() {
-      return this.$root.projects_that_are_accessible;
-    }
-  },
+  computed: {},
   methods: {
     addTempMediaToFolder() {
       let caption = this.$t("cooking_pot") + " / " + this.publication.name;
@@ -62,18 +62,18 @@ export default {
       this.$socketio.addTempMediaToFolder({
         from: {
           media_filename: this.media_filename,
-          type: "publications"
+          type: "publications",
         },
         to: {
           slugFolderName: this.upload_to_folder,
-          type: "projects"
+          type: "projects",
         },
         additionalMeta: {
           caption,
-          authors: this.$root.settings.current_author.hasOwnProperty("name")
-            ? [{ name: this.$root.settings.current_author.name }]
-            : ""
-        }
+          authors: this.$root.current_author
+            ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
+            : "",
+        },
       });
 
       if (
@@ -90,9 +90,8 @@ export default {
         this.$root.openProject(this.upload_to_folder);
         this.$emit("close");
       });
-    }
-  }
+    },
+  },
 };
 </script>
-<style>
-</style>
+<style></style>

@@ -5,9 +5,9 @@
       :class="[
         'typeOfModal-' + typeOfModal,
         { is_invisible: !showModal },
-        { is_minimized: is_minimized }
+        { is_minimized: is_minimized },
       ]"
-      @mousedown.self="/* closeModal */"
+      @click.self="closeModal"
       :style="`height: ${$root.settings.windowHeight}px`"
     >
       <div
@@ -15,7 +15,7 @@
         :class="[
           'color-' + backgroundColor,
           { is_invisible: !showModal },
-          { is_minimized: is_minimized }
+          { is_minimized: is_minimized },
         ]"
         @keyup.ctrl.enter="$emit('submit')"
       >
@@ -68,7 +68,7 @@
               >
                 <button
                   type="submit"
-                  :disabled="read_only"
+                  :disabled="read_only || is_loading"
                   class="button button-bg_rounded bg-bleuvert"
                 >
                   <img src="/images/i_enregistre.svg" draggable="false" />
@@ -108,6 +108,7 @@
               </span>
             </button>
           </form>
+          <Loader v-if="is_loading" />
         </div>
       </div>
 
@@ -130,7 +131,7 @@
           :content="$t('minimize_media')"
           v-tippy="{
             placement: 'right',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <img src="/images/i_minimize.svg" draggable="false" />
@@ -145,7 +146,7 @@
           :content="$t('previous_media')"
           v-tippy="{
             placement: 'left',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <img src="/images/i_arrow_left.svg" draggable="false" />
@@ -160,7 +161,7 @@
           :content="$t('next_media')"
           v-tippy="{
             placement: 'right',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <img src="/images/i_arrow_right.svg" draggable="false" />
@@ -176,53 +177,57 @@ export default {
   props: {
     backgroundColor: {
       type: String,
-      default: "white"
+      default: "white",
     },
     read_only: {
       type: Boolean,
-      default: true
+      default: true,
     },
     typeOfModal: {
       type: String,
-      default: "EditMeta"
+      default: "EditMeta",
     },
     askBeforeClosingModal: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isFile: {
       type: Boolean,
-      default: false
+      default: false,
     },
     show_sidebar: {
       type: Boolean,
-      default: true
+      default: true,
     },
     can_minimize: {
       type: Boolean,
-      default: false
+      default: false,
     },
     media_navigation: {
       type: Boolean,
-      default: false
+      default: false,
     },
     is_minimized: {
       type: Boolean,
-      default: false
+      default: false,
     },
     prevent_close: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
+    is_loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       showModal: false,
       windowHeight: window.innerHeight,
-      has_confirm_close_modal_open: false
+      has_confirm_close_modal_open: false,
     };
   },
-  mounted: function() {
+  mounted: function () {
     console.log(`MOUNTED • BaseModal`);
 
     setTimeout(() => {
@@ -253,7 +258,7 @@ export default {
   },
   computed: {},
   methods: {
-    modalKeyListener: function(event) {
+    modalKeyListener: function (event) {
       if (window.state.dev_mode === "debug") {
         console.log("METHODS • BaseModal: modalKeyListener");
       }
@@ -262,6 +267,7 @@ export default {
         if (!this.has_confirm_close_modal_open) {
           this.closeModal();
         }
+        event.preventDefault();
         return;
       }
 
@@ -282,7 +288,7 @@ export default {
         return;
       }
     },
-    closeModal: function() {
+    closeModal: function () {
       console.log(
         `METHODS • BaseModal: closeModal with askBeforeClosingModal = ${this.askBeforeClosingModal}`
       );
@@ -317,7 +323,7 @@ export default {
         }, 400);
       }
     },
-    prevMedia: function() {
+    prevMedia: function () {
       console.log(
         `METHODS • BaseModal: prevMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`
       );
@@ -344,7 +350,7 @@ export default {
         this.$eventHub.$emit("modal.prev_media");
       }
     },
-    nextMedia: function() {
+    nextMedia: function () {
       console.log(
         `METHODS • BaseModal: nextMedia with askBeforeClosingModal = ${this.askBeforeClosingModal}`
       );
@@ -372,25 +378,25 @@ export default {
         this.$eventHub.$emit("modal.next_media");
       }
     },
-    toggleMinimize: function() {
+    toggleMinimize: function () {
       console.log(`METHODS • BaseModal: toggleMinimize`);
       this.$root.media_modal.minimized = !this.$root.media_modal.minimized;
     },
-    toggleSidebar: function() {
+    toggleSidebar: function () {
       console.log(`METHODS • BaseModal: toggleSidebar`);
       this.$root.media_modal.show_sidebar = !this.$root.media_modal
         .show_sidebar;
-    }
+    },
   },
-  created: function() {
-    document.addEventListener("keyup", this.modalKeyListener);
+  created: function () {
+    document.addEventListener("keydown", this.modalKeyListener);
     document.body.classList.add("has_modal_opened");
     this.$root.settings.has_modal_opened = true;
   },
-  destroyed: function() {
-    document.removeEventListener("keyup", this.modalKeyListener);
+  beforeDestroy: function () {
+    document.removeEventListener("keydown", this.modalKeyListener);
     document.body.classList.remove("has_modal_opened");
     this.$root.settings.has_modal_opened = false;
-  }
+  },
 };
 </script>

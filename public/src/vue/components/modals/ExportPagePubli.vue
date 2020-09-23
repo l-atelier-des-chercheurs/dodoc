@@ -1,57 +1,90 @@
 <template>
   <Modal @close="$emit('close')" class="m_exportModal" :typeOfModal="'EditMeta'">
     <template slot="header">
-      <span class>{{ $t('export_creation') }}</span>
+      <span class>{{ $t("export_creation") }}</span>
     </template>
 
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class>
-          <div v-html="$t('get_pdf')" />
+          <div class="margin-bottom-small">
+            <div v-html="$t('get_pdf')" />
+          </div>
+          <div class="margin-bottom-small">
+            <label>{{ $t("type") }}</label>
+            <select v-model="export_type">
+              <option value="pdf">{{ $t("multipage_pdf") }}</option>
+              <option value="png">{{ $t("singlepage_image") }}</option>
+            </select>
+          </div>
+
+          <div
+            v-if="
+              export_type === 'png' &&
+              Array.isArray(publication.pages) &&
+              publication.pages.length > 1
+            "
+            class="margin-bottom-small"
+          >
+            <label>{{ $t("page") }}</label>
+            <input
+              type="number"
+              step="1"
+              min="1"
+              :max="publication.pages.length"
+              v-model="pagenumber_to_export"
+            />
+          </div>
+
           <button
             type="button"
             class="margin-small margin-left-none bg-bleuvert c-blanc button-allwide"
-            :disabled="pdf_request_status !== false"
-            @click="downloadPDF"
+            :disabled="doc_request_status !== false"
+            @click="downloadDoc"
           >
-            <template v-if="!pdf_request_status">{{ $t('download_pdf') }}</template>
-            <template v-else-if="pdf_request_status === 'waiting_for_server'">
+            <template v-if="!doc_request_status">{{ $t("create") }}</template>
+            <template v-else-if="doc_request_status === 'waiting_for_server'">
               <span class="loader loader-xs" />
-              {{ $t('notifications.creation_in_progress') }}
+              {{ $t("notifications.creation_in_progress") }}
             </template>
-            <template
-              v-else-if="pdf_request_status === 'generated'"
-            >{{ $t('notifications.pdf_created') }}</template>
+            <template v-else-if="doc_request_status === 'generated'">
+              {{
+              $t("notifications.doc_created")
+              }}
+            </template>
           </button>
 
-          <div v-if="pdf_request_status === 'generated'">
+          <div v-if="doc_request_status === 'generated'">
             <a
-              v-if="link_to_pdf !== false"
+              v-if="link_to_doc !== false"
               class="buttonLink margin-left-none"
-              :href="link_to_pdf"
+              :href="link_to_doc"
               target="_blank"
               download
-            >{{ $t('download') }}</a>
+            >{{ $t("download") }}</a>
             <!-- <a 
-              v-if="path_to_pdf !== false && $root.state.is_electron"
-              :href="path_to_pdf" target="_blank" 
+              v-if="path_to_doc !== false && $root.state.is_electron"
+              :href="path_to_doc" target="_blank" 
               class="buttonLink margin-left-none js--openInNativeApp"
             >
               {{ $t('open_in_app') }}
             </a>-->
-            <a
-              v-if="link_to_pdf !== false && $root.state.is_electron"
-              :href="link_to_pdf"
-              target="_blank"
-              class="buttonLink margin-left-none"
-            >{{ $t('open_in_app') }}</a>
+            <template v-if="link_to_doc !== false">
+              <!-- <img :src="link_to_doc" /> -->
 
-            <AddCreationToProject
-              v-if="link_to_pdf !== false"
-              :publication="publication"
-              :media_filename="exported_pdf_name"
-              @close="$emit('close')"
-            />
+              <a
+                v-if="$root.state.is_electron"
+                :href="link_to_doc"
+                target="_blank"
+                class="buttonLink margin-left-none"
+              >{{ $t("open_in_app") }}</a>
+
+              <AddCreationToProject
+                :publication="publication"
+                :media_filename="exported_doc_name"
+                @close="$emit('close')"
+              />
+            </template>
           </div>
         </div>
 
@@ -68,7 +101,7 @@
             <template v-if="web_export_started">
               <span class="loader loader-xs" />
             </template>
-            {{ $t('download_website') }}
+            {{ $t("download_website") }}
           </button>
         </div>
 
@@ -81,7 +114,20 @@
             class="margin-small margin-left-none bg-bleumarine c-blanc button-allwide"
             @click="getLink"
             v-if="!show_link_infos"
-          >{{ $t('share') }}</button>
+            :disabled="
+              (publication.hasOwnProperty('editing_limited_to') &&
+                publication.editing_limited_to !== 'everybody') &&
+              (publication.hasOwnProperty('viewing_limited_to') &&
+                publication.viewing_limited_to !== 'everybody')
+            "
+          >{{ $t("share") }}</button>
+
+          <small
+            v-if="
+              publication.hasOwnProperty('viewing_limited_to') &&
+              publication.viewing_limited_to !== 'everybody'
+            "
+          >{{ $t("set_visibility_to_everybody") }}</small>
 
           <CreateQRCode
             v-if="show_link_infos"
@@ -94,7 +140,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import { setTimeout } from "timers";
 import AddCreationToProject from "../subcomponents/AddCreationToProject.vue";
 import CreateQRCode from "./qr/CreateQRCode.vue";
@@ -102,49 +147,69 @@ import CreateQRCode from "./qr/CreateQRCode.vue";
 export default {
   props: {
     publication: Object,
-    slugPubliName: String
+    slugPubliName: String,
   },
   components: {
-    Modal,
     AddCreationToProject,
-    CreateQRCode
+    CreateQRCode,
   },
   data() {
     return {
-      pdf_request_status: false,
-      link_to_pdf: false,
-      path_to_pdf: false,
+      doc_request_status: false,
+      link_to_doc: false,
+      path_to_doc: false,
       web_export_started: false,
-      exported_pdf_name: "",
-      show_link_infos: false
+      exported_doc_name: "",
+      show_link_infos: false,
+
+      link_to_page_zip: false,
+
+      export_type: "pdf",
+      pagenumber_to_export: 1,
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
 
-  watch: {},
+  watch: {
+    export_type: function() {
+      this.doc_request_status = false;
+    },
+    pagenumber_to_export: function() {
+      this.doc_request_status = false;
+    },
+  },
   computed: {},
   methods: {
-    downloadPDF() {
+    downloadDoc() {
       if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • ExportPagePubli: downloadPDF`);
+        console.log(`METHODS • ExportPagePubli: downloadDoc`);
       }
 
-      this.link_to_pdf = false;
-      this.path_to_pdf = false;
+      this.link_to_doc = false;
+      this.path_to_doc = false;
 
       this.$eventHub.$on(
         "socketio.publication.pdfIsGenerated",
         this.publiIsGenerated
       );
 
-      this.$root.downloadPubliPDF({
-        slugPubliName: this.slugPubliName
+      let options = {
+        type: this.export_type,
+      };
+
+      if (options.type === "png") {
+        options.page_to_export = this.pagenumber_to_export;
+      }
+
+      this.$socketio.downloadPubliPDF({
+        slugPubliName: this.slugPubliName,
+        options,
       });
-      this.pdf_request_status = "waiting_for_server";
+      this.doc_request_status = "waiting_for_server";
     },
-    publiIsGenerated({ pdfName, pdfPath }) {
+    publiIsGenerated({ pdfName, docPath, imageName }) {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`METHODS • Publication: publiIsGenerated`);
       }
@@ -153,10 +218,12 @@ export default {
         this.publiIsGenerated
       );
 
-      this.pdf_request_status = "generated";
-      this.exported_pdf_name = pdfName;
-      this.link_to_pdf =
-        window.location.origin + "/_publications/print/pdf/" + pdfName;
+      this.doc_request_status = "generated";
+      this.exported_doc_name = pdfName ? pdfName : imageName;
+      this.link_to_doc =
+        window.location.origin +
+        "/_publications/print/doc/" +
+        this.exported_doc_name;
     },
     downloadWeb() {
       if (this.$root.state.dev_mode === "debug") {
@@ -166,9 +233,17 @@ export default {
       setTimeout(() => {
         this.web_export_started = false;
       }, 2000);
-      window.location.replace(
-        window.location.origin + "/_publications/web/" + this.slugPubliName
-      );
+
+      const query_url =
+        window.location.origin +
+        "/_publications/web/" +
+        this.slugPubliName +
+        `?socketid=${this.$root.$socketio.socket.id}`;
+
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Project • METHODS: downloadWeb with query ${query_url}`);
+
+      window.open(query_url, "_blank");
     },
     getLink() {
       if (this.$root.state.dev_mode === "debug") {
@@ -176,7 +251,7 @@ export default {
       }
 
       this.show_link_infos = true;
-    }
-  }
+    },
+  },
 };
 </script>

@@ -9,17 +9,25 @@
     :askBeforeClosingModal="askBeforeClosingModal"
     :show_sidebar="$root.media_modal.show_sidebar"
     :is_minimized="$root.media_modal.minimized"
+    :is_loading="is_sending_content_to_server"
     :can_minimize="true"
     :media_navigation="true"
   >
     <template slot="header">
-      <div class>{{ $t("edit_the_media") }}</div>
+      <div class>
+        <template v-if="can_edit_media">{{ $t("edit_the_media") }}</template>
+        <template v-else>{{ $t("media") }}</template>
+      </div>
       <small class="font-normal">{{ media.media_filename }}</small>
+      <ClientsCheckingOut
+        :type="'projects'"
+        :slugFolderName="slugProjectName"
+        :metaFileName="media.metaFileName"
+      />
     </template>
 
     <template slot="sidebar">
-      <!-- <small>{{ this.$root.allAuthors }}</small> -->
-
+      <!-- <small>{{ this.$root.all_authors }}</small> -->
       <div v-if="!read_only" class="m_modal--buttonrow">
         <!-- CONFLICT WITH QR PRINTING -->
         <!-- <button type="button"
@@ -46,7 +54,7 @@
             width="46.7px"
             height="70px"
             viewBox="0 0 46.7 70"
-            style="enable-background:new 0 0 46.7 70;"
+            style="enable-background: new 0 0 46.7 70"
             xml:space="preserve"
           >
             <g>
@@ -80,7 +88,7 @@
             width="20px"
             height="20px"
             viewBox="0 0 90 90"
-            style="enable-background:new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90"
             xml:space="preserve"
           >
             <path
@@ -99,6 +107,7 @@
 
         <button
           type="button"
+          v-if="can_edit_media"
           class="buttonLink"
           :class="{ 'is--active': showCopyToProjectOptions }"
           @click="showCopyToProjectOptions = !showCopyToProjectOptions"
@@ -113,7 +122,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95"
             xml:space="preserve"
           >
             <polygon
@@ -136,7 +145,9 @@
                 v-for="project in all_projects"
                 :key="project.slugFolderName"
                 :value="project.slugFolderName"
-              >{{ project.name }}</option>
+              >
+                {{ project.name }}
+              </option>
             </select>
             <button
               type="button"
@@ -151,8 +162,14 @@
         <button
           type="button"
           class="buttonLink"
+          :class="{ 'is--active': show_edit_media_options }"
           @click="show_edit_media_options = !show_edit_media_options"
-          v-if="media.type === 'image' || media.type === 'video'"
+          v-if="
+            can_edit_media &&
+            (media.type === 'image' ||
+              media.type === 'video' ||
+              media.type === 'audio')
+          "
         >
           <svg
             version="1.1"
@@ -164,55 +181,164 @@
             width="77.6px"
             height="85.4px"
             viewBox="0 0 77.6 85.4"
-            style="enable-background:new 0 0 77.6 85.4;"
+            style="enable-background: new 0 0 77.6 85.4"
             xml:space="preserve"
           >
-            <defs />
-            <g>
-              <path
-                d="M73.9,39h-7.6c-1.6-5.6-6.7-9.7-12.7-9.7S42.5,33.5,40.8,39H3.7c-2,0-3.7,1.6-3.7,3.7c0,2,1.6,3.7,3.7,3.7h37.1
+            <path
+              d="M73.9,39h-7.6c-1.6-5.6-6.7-9.7-12.7-9.7S42.5,33.5,40.8,39H3.7c-2,0-3.7,1.6-3.7,3.7c0,2,1.6,3.7,3.7,3.7h37.1
 		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h7.6c2,0,3.7-1.6,3.7-3.7C77.6,40.7,76,39,73.9,39z M53.6,48.7c-3.2,0-6-2.6-6-6
 		s2.6-6,6-6s6,2.6,6,6S56.8,48.7,53.6,48.7z"
-              />
-              <path
-                d="M3.7,17.1h7.9c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,9.7,73.9,9.7H37
+            />
+            <path
+              d="M3.7,17.1h7.9c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,9.7,73.9,9.7H37
 		C35.4,4.1,30.3,0,24.3,0S13.2,4.1,11.6,9.7H3.7c-2,0-3.7,1.6-3.7,3.7S1.6,17.1,3.7,17.1z M24.3,7.4c3.2,0,6,2.6,6,6s-2.6,6-6,6
 		s-6-2.8-6-6S21.1,7.4,24.3,7.4z"
-              />
-              <path
-                d="M73.9,68.3H37c-1.6-5.6-6.7-9.7-12.7-9.7s-11.1,4.1-12.7,9.7H3.7c-2,0-3.7,1.6-3.7,3.7s1.6,3.7,3.7,3.7h7.9
+            />
+            <path
+              d="M73.9,68.3H37c-1.6-5.6-6.7-9.7-12.7-9.7s-11.1,4.1-12.7,9.7H3.7c-2,0-3.7,1.6-3.7,3.7s1.6,3.7,3.7,3.7h7.9
 		c1.6,5.6,6.7,9.7,12.7,9.7s11.1-4.1,12.7-9.7h36.9c2,0,3.7-1.6,3.7-3.7S76,68.3,73.9,68.3z M24.3,78c-3.2,0-6-2.6-6-6s2.6-6,6-6
 		s6,2.6,6,6S27.5,78,24.3,78z"
-              />
-            </g>
+            />
           </svg>
           {{ $t("adjust") }}
         </button>
-        <div v-if="show_edit_media_options" class="bg-creme">
+        <div
+          v-if="show_edit_media_options"
+          class="bg-gris_tresclair border"
+          style="position: relative"
+        >
+          <transition name="fade_fast" :duration="400">
+            <Loader v-if="is_loading_or_saving" />
+          </transition>
+
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('rotate_image', { angle: 90 })"
             v-if="media.type === 'image'"
-          >{{ $t("rotate_clockwise") }}</button>
+          >
+            {{ $t("rotate_clockwise") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
-            @click="editRawMedia('optimize_video')"
-            v-if="media.type === 'video'"
-          >{{ $t("convert_video_for_the_web") }}</button>
+            :class="{ 'is--active': adjust_mode === 'optimize' }"
+            @click="toggleAdjustMode('optimize')"
+            v-if="media.type === 'video' || media.type === 'audio'"
+          >
+            {{ $t("optimize") }}
+          </button>
           <button
             type="button"
             class="buttonLink"
             @click="editRawMedia('reset')"
             v-if="!!media.original_media_filename"
-          >{{ $t("revert_to_original") }}</button>
+          >
+            {{ $t("revert_to_original") }}
+          </button>
+          <button
+            type="button"
+            class="buttonLink"
+            :class="{ 'is--active': adjust_mode === 'trim' }"
+            @click="toggleAdjustMode('trim')"
+            v-if="media.type === 'video' || media.type === 'audio'"
+          >
+            {{ $t("trim") }}
+          </button>
+
+          <div class="" v-if="!!adjust_mode">
+            <template v-if="adjust_mode === 'trim'">
+              <div class="margin-sides-small margin-vert-verysmall">
+                <small>{{ $t("trim_instructions") }}</small>
+              </div>
+              <div class="flex-wrap flex-space-betwen">
+                <div class="margin-small margin-vert-verysmall">
+                  <label>{{ $t("beginning") }}</label>
+                  <div class>
+                    <input
+                      type="time"
+                      step="0.1"
+                      class="bg-blanc"
+                      v-model="trim_options.beginning"
+                    />
+                  </div>
+                </div>
+                <div class="margin-small margin-vert-verysmall">
+                  <label>{{ $t("end") }}</label>
+                  <div class>
+                    <input
+                      type="time"
+                      step="0.1"
+                      class="bg-blanc"
+                      v-model="trim_options.end"
+                    />
+                  </div>
+                </div>
+              </div>
+              <!-- <hr class="margin-vert-small" /> -->
+              <div>
+                <small v-if="trim_options_valid !== true">
+                  <span v-html="$t('error:')" />
+                  {{ trim_options_valid }}
+                </small>
+              </div>
+              <div class="margin-sides-verysmall margin-vert-verysmall">
+                <button
+                  type="button"
+                  class="button-thin"
+                  @click="testTrim"
+                  :disabled="trim_options_valid !== true"
+                >
+                  {{ $t("test") }}
+                </button>
+                <button
+                  type="button"
+                  class="button-greenthin"
+                  @click="editRawMedia('trim', trim_options)"
+                  :disabled="trim_options_valid !== true"
+                >
+                  {{ $t("trim") }}
+                </button>
+              </div>
+            </template>
+            <template v-else-if="adjust_mode === 'optimize'">
+              <div class="margin-sides-small margin-vert-verysmall">
+                <small>{{ $t("optimize_instructions") }}</small>
+              </div>
+              <div class="margin-sides-medium margin-bottom-small">
+                <label>{{ $t("quality") }}</label>
+                <select v-model="quality" class="bg-blanc">
+                  <option
+                    v-for="q in available_qualities"
+                    :value="q.height"
+                    :key="q.height"
+                  >
+                    {{ $t(q.label) }}
+                  </option>
+                </select>
+                <small>{{ quality }}p</small>
+              </div>
+              <div class="margin-sides-verysmall margin-vert-verysmall">
+                <button
+                  type="button"
+                  class="button-greenthin"
+                  @click="editRawMedia('optimize', { quality })"
+                >
+                  {{ $t("optimize") }}
+                </button>
+              </div>
+            </template>
+            <small>
+              {{ $t("adjust_infos") }}
+            </small>
+          </div>
         </div>
 
         <button
           type="button"
           class="buttonLink hide_on_print"
           @click.prevent="removeMedia()"
+          v-if="can_edit_media"
           :disabled="read_only"
         >
           <svg
@@ -225,7 +351,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background:new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95"
             xml:space="preserve"
           >
             <path
@@ -242,16 +368,22 @@
 
       <div class="hide_on_print">
         <!-- Fav or not -->
-        <div class="margin-bottom-small">
+        <div
+          class="margin-bottom-small"
+          v-if="can_edit_media || (!can_edit_media && !!mediadata.fav)"
+        >
           <span class="switch switch-xs">
             <input
               type="checkbox"
               class="switch"
               id="favswitch_editmedia"
               v-model="mediadata.fav"
-              :readonly="read_only"
+              :disabled="!can_edit_media"
             />
-            <label for="favswitch_editmedia" :class="{ 'c-rouge': mediadata.fav }">
+            <label
+              for="favswitch_editmedia"
+              :class="{ 'c-rouge': mediadata.fav }"
+            >
               {{ $t("fav") }}
               <svg
                 version="1.1"
@@ -264,7 +396,7 @@
                 width="78.5px"
                 height="106.4px"
                 viewBox="0 0 78.5 106.4"
-                style="enable-background:new 0 0 78.5 106.4;"
+                style="enable-background: new 0 0 78.5 106.4"
                 xml:space="preserve"
               >
                 <polygon
@@ -277,64 +409,112 @@
           </span>
         </div>
 
-        <div class="m_metaField" v-if="!!media.type">
-          <div>{{ $t("type") }}</div>
-          <div>
-            {{ $t(media.type) }}
-            <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
-          </div>
-        </div>
-        <div
-          class="m_metaField"
-          v-if="!!project_name && $root.do_navigation.view !== 'ProjectView'"
-        >
-          <div>{{ $t("project") }}</div>
-          <div>
+        <div class="margin-vert-verysmall">
+          <label>
             <button
               type="button"
-              @click="minimizeMediaAndShowProject"
-              :content="$t('open_project')"
-              v-tippy="{
-                placement: 'top',
-                delay: [600, 0]
-              }"
-              style="text-transform: initial"
+              class="button-nostyle text-uc button-triangle"
+              :class="{ 'is--active': show_media_infos }"
+              @click="show_media_infos = !show_media_infos"
             >
-              {{ project_name }}
-              ↑
+              {{ $t("infos_about_the_media") }}
             </button>
-            <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
-          </div>
-        </div>
-        <!-- <div class="m_metaField" v-if="!!media.authors">
+          </label>
+
+          <div v-if="show_media_infos" class="margin-vert-verysmall">
+            <div class="m_metaField" v-if="!!media.type">
+              <div>{{ $t("type") }}</div>
+              <div>{{ $t(media.type) }}</div>
+            </div>
+            <div class="m_metaField" v-if="media_size && media.type !== 'text'">
+              <div>{{ $t("size") }}</div>
+              <div>{{ $root.formatBytes(media_size) }}</div>
+            </div>
+            <div class="m_metaField" v-if="media_dimensions">
+              <div>{{ $t("dimensions") }}</div>
+              <div>{{ media_dimensions }}</div>
+            </div>
+            <div class="m_metaField" v-if="media_duration">
+              <div>{{ $t("duration") }}</div>
+              <div>
+                {{
+                  $root.formatDurationToHoursMinutesSeconds(
+                    media_duration * 1000
+                  )
+                }}
+              </div>
+            </div>
+
+            <div
+              class="m_metaField"
+              v-if="
+                !!project_name &&
+                $root.current_project.slugFolderName !== slugProjectName
+              "
+            >
+              <div>{{ $t("project") }}</div>
+              <div>
+                <button
+                  type="button"
+                  @click="minimizeMediaAndShowProject"
+                  :content="$t('open_project')"
+                  v-tippy="{
+                    placement: 'top',
+                    delay: [600, 0],
+                  }"
+                  style="text-transform: initial"
+                >
+                  {{ project_name }}
+                  ↑
+                </button>
+                <!-- <img class="mediaTypeIcon" :src="mediaTypeIcon[media.type]" /> -->
+              </div>
+            </div>
+            <!-- <div class="m_metaField" v-if="!!media.authors">
           <div>
             {{ $t('author') }}
           </div>
           <div>
             {{ media.authors }}
           </div>
-        </div>-->
+            </div>-->
 
-        <DateField :title="'created'" :date="media.date_created" />
+            <DateField
+              :title="'created'"
+              :date="media.date_created"
+              :show_detail_initially="true"
+            />
 
-        <DateField
-          v-if="media.hasOwnProperty('date_uploaded')"
-          :title="'uploaded'"
-          :date="media.date_uploaded"
-        />
+            <DateField
+              v-if="media.hasOwnProperty('date_uploaded')"
+              :title="'uploaded'"
+              :date="media.date_uploaded"
+              :show_detail_initially="true"
+            />
 
-        <DateField :title="'edited'" :date="media.date_modified" />
+            <DateField
+              v-if="
+                media.hasOwnProperty('date_uploaded') &&
+                media.date_uploaded !== media.date_modified
+              "
+              :title="'edited'"
+              :date="media.date_modified"
+              :show_detail_initially="true"
+            />
+          </div>
+        </div>
 
         <!-- Caption -->
         <div
-          v-if="
-            (!read_only || !!mediadata.caption) && mediadata.type !== 'text'
-          "
+          v-if="!read_only || !!mediadata.caption"
           class="margin-bottom-small"
         >
           <label>{{ $t("caption") }}</label>
           <br />
-          <textarea v-model="mediadata.caption" :readonly="read_only"></textarea>
+          <textarea
+            v-model="mediadata.caption"
+            :readonly="read_only || !can_edit_media"
+          ></textarea>
         </div>
 
         <!-- Type of media (if guessed wrong from filename, will only be stored in the meta file and used as a reference when displaying that media on the client) -->
@@ -361,20 +541,21 @@
           <label>{{ $t("keywords") }}</label>
           <TagsInput
             :keywords="mediadata.keywords"
-            @tagsChanged="newTags => (mediadata.keywords = newTags)"
+            :read_only="read_only || !can_edit_media"
+            @tagsChanged="(newTags) => (mediadata.keywords = newTags)"
           />
         </div>
 
         <!-- Author(s) -->
-        <div v-if="!read_only || !!mediadata.authors" class="margin-bottom-small">
+        <div class="margin-bottom-small">
           <label>{{ $t("author") }}</label>
 
           <AuthorsInput
-            :currentAuthors="mediadata.authors"
-            @authorsChanged="newAuthors => (mediadata.authors = newAuthors)"
+            :currentAuthors.sync="mediadata.authors"
+            :read_only="read_only || !can_edit_media"
           />
 
-          <small>{{ $t("author_instructions") }}</small>
+          <small v-if="can_edit_media">{{ $t("author_instructions") }}</small>
           <!-- <textarea v-model="mediadata.authors[0]" :readonly="read_only">
           </textarea>-->
         </div>
@@ -385,24 +566,50 @@
 
     <template slot="preview">
       <MediaContent
+        v-model="mediadata.content"
+        ref="mediacontent"
         :context="'edit'"
         :slugFolderName="slugProjectName"
         :media="media"
-        :read_only="read_only"
-        v-model="mediadata.content"
+        :folderType="'projects'"
+        :read_only="read_only || !can_edit_media"
+        @videoTimeUpdated="videoTimeUpdated"
       />
-      <div class="m_mediaOptions"></div>
+      <div class="m_mediaOptions">
+        <div v-if="adjust_mode === 'trim'">
+          <button
+            type="button"
+            class="button-thin bg-bleumarine"
+            :disabled="current_video_time === trim_options.beginning"
+            @click="trim_options.beginning = current_video_time"
+          >
+            {{ $t("set_as_beginning") }} ({{ trim_options.beginning }})
+          </button>
+          <button
+            type="button"
+            v-if="adjust_mode === 'trim'"
+            class="button-thin bg-bleumarine"
+            :disabled="current_video_time === trim_options.end"
+            @click="trim_options.end = current_video_time"
+          >
+            {{ $t("set_as_end") }}
+            ({{ trim_options.end }})
+          </button>
+        </div>
+      </div>
+      <transition name="fade_fast" :duration="400">
+        <Loader v-if="is_loading_or_saving" />
+      </transition>
     </template>
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import MediaContent from "../subcomponents/MediaContent.vue";
-import DateTime from "../subcomponents/DateTime.vue";
 import CreateQRCode from "./qr/CreateQRCode.vue";
 import { setTimeout } from "timers";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
+import ClientsCheckingOut from "../subcomponents/ClientsCheckingOut.vue";
 
 export default {
   props: {
@@ -411,16 +618,15 @@ export default {
     media: Object,
     read_only: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   components: {
-    Modal,
-    DateTime,
     MediaContent,
     CreateQRCode,
+    AuthorsInput,
     TagsInput,
-    AuthorsInput
+    ClientsCheckingOut,
   },
   data() {
     return {
@@ -428,8 +634,12 @@ export default {
       showCopyToProjectOptions: false,
       is_minimized: false,
       show_edit_media_options: false,
+      show_media_infos: false,
+
+      is_loading_or_saving: false,
 
       upload_to_folder: this.slugProjectName,
+      is_sending_content_to_server: false,
 
       mediadata: {
         type: this.media.type,
@@ -437,12 +647,40 @@ export default {
         caption: this.media.caption,
         keywords: this.media.keywords,
         fav: this.media.fav,
-        content: this.media.content
+        content: this.media.content,
       },
       mediaURL: `/${this.slugProjectName}/${this.media.media_filename}`,
       askBeforeClosingModal: false,
 
-      is_ready: false
+      trim_options: {
+        beginning: "",
+        end: "",
+      },
+      current_video_time: "00:00:00",
+
+      adjust_mode: false,
+
+      is_ready: false,
+
+      quality: 720,
+      available_qualities: [
+        {
+          label: "very_high",
+          height: 1080,
+        },
+        {
+          label: "high",
+          height: 720,
+        },
+        {
+          label: "medium",
+          height: 480,
+        },
+        {
+          label: "low",
+          height: 360,
+        },
+      ],
     };
   },
   watch: {
@@ -452,13 +690,34 @@ export default {
           this.askBeforeClosingModal = true;
         }
       },
-      deep: true
-    }
+      deep: true,
+    },
+    "trim_options.beginning"() {
+      if (this.trim_options.beginning === "")
+        this.trim_options.beginning = "00:00:00";
+    },
+    "trim_options.end"() {
+      if (this.trim_options.end === "")
+        this.trim_options.end = this.$root.formatDurationToHoursMinutesSeconds(
+          this.media_duration * 1000
+        );
+    },
+    adjust_mode() {
+      if (this.adjust_mode === "trim") {
+        this.trim_options.beginning = "00:00:00";
+        this.trim_options.end = this.$root.formatDurationToHoursMinutesSeconds(
+          this.media_duration * 1000
+        );
+      }
+    },
+    show_edit_media_options() {
+      this.adjust_mode = false;
+    },
   },
   created() {
     if (typeof this.mediadata.authors === "string") {
       if (this.mediadata.authors !== "") {
-        this.mediadata.authors = this.mediadata.authors.split(",").map(a => {
+        this.mediadata.authors = this.mediadata.authors.split(",").map((a) => {
           return { name: a };
         });
       } else {
@@ -473,6 +732,12 @@ export default {
     all_projects() {
       return this.$root.projects_that_are_accessible;
     },
+    can_edit_media() {
+      return this.$root.canEditFolder({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
+    },
     project_name() {
       if (
         !this.slugProjectName ||
@@ -481,17 +746,123 @@ export default {
         return false;
       }
       return this.$root.store.projects[this.slugProjectName].name;
-    }
+    },
+    trim_options_valid() {
+      const _beginning = +this.$moment.duration(this.trim_options.beginning);
+      const _end = +this.$moment.duration(this.trim_options.end);
+      const _duration = +this.$moment.duration(this.media_duration * 1000);
+
+      // if beginning is after clip end
+      if (_beginning >= _end)
+        return `${this.$t("beginning")} >= ${this.$t("end")}`.toLowerCase();
+
+      // if beginning is after trim end
+      if (_beginning > _duration)
+        return `${this.$t("beginning")} > ${this.$t("duration")}`.toLowerCase();
+
+      if (_end > _duration)
+        return `${this.$t("end")} > ${this.$t("duration")}`.toLowerCase();
+
+      // if end is before start
+      if (_end < 0) return `${this.$t("end")} < 0`.toLowerCase();
+
+      return true;
+    },
+    media_size() {
+      if (
+        !this.media.file_meta ||
+        !this.media.file_meta.find((m) => m.hasOwnProperty("size"))
+      )
+        return false;
+      return this.media.file_meta.find((m) => m.hasOwnProperty("size")).size;
+    },
+    media_dimensions() {
+      if (
+        !this.media.file_meta ||
+        !this.media.file_meta.find((m) => m.hasOwnProperty("width")) ||
+        !this.media.file_meta.find((m) => m.hasOwnProperty("height"))
+      )
+        return false;
+      return (
+        this.media.file_meta.find((m) => m.hasOwnProperty("width")).width +
+        " × " +
+        this.media.file_meta.find((m) => m.hasOwnProperty("height")).height
+      );
+    },
+    media_duration: function () {
+      if (
+        !this.media.hasOwnProperty("duration") &&
+        !(
+          this.media.hasOwnProperty("file_meta") &&
+          this.media.file_meta.some((f) => f.hasOwnProperty("duration"))
+        )
+      )
+        return false;
+
+      const duration = this.media.hasOwnProperty("duration")
+        ? this.media.duration
+        : this.media.file_meta.find((f) => f.hasOwnProperty("duration"))
+            .duration;
+      return duration;
+    },
   },
   methods: {
-    printMedia: function() {
+    printMedia: function () {
       window.print();
     },
-    minimizeMediaAndShowProject: function() {
+    toggleAdjustMode(new_mode) {
+      if (new_mode === this.adjust_mode) this.adjust_mode = false;
+      else this.adjust_mode = new_mode;
+    },
+    videoTimeUpdated(currentTime) {
+      this.current_video_time = this.$moment
+        .utc(currentTime * 1000)
+        .format("HH:mm:ss.SS");
+    },
+    minimizeMediaAndShowProject: function () {
       this.$root.media_modal.minimized = true;
       this.$root.openProject(this.slugProjectName);
     },
-    removeMedia: function() {
+    testTrim() {
+      console.log("testTrim");
+
+      // const mediaContent = this.$refs.mediacontent;
+      // if (!mediaContent) {
+      //   console.log("missing MediaContent, can’t test trim");
+      //   return;
+      // }
+
+      // const plyr = mediaContent.$refs.plyr;
+      // if (!plyr) {
+      //   console.log("missing plyr, can’t test trim");
+      //   return;
+      // }
+
+      const player = document.querySelector(".m_modal--mask .plyr video");
+
+      const start_seconds = this.$moment
+        .duration(this.trim_options.beginning)
+        .asSeconds();
+      const end_seconds = this.$moment
+        .duration(this.trim_options.end)
+        .asSeconds();
+
+      player.currentTime = start_seconds;
+      player.play();
+
+      const pausing_function = function () {
+        if (player.currentTime >= end_seconds) {
+          debugger;
+          player.pause();
+          // player.removeEventListener("timeupdate", pausing_function);
+        } else {
+          window.requestAnimationFrame(pausing_function);
+        }
+      };
+      window.requestAnimationFrame(pausing_function);
+      // player.addEventListener("timeupdate", pausing_function, false);
+    },
+    removeMedia: function () {
       this.$alertify
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
@@ -501,7 +872,7 @@ export default {
             this.$root.removeMedia({
               type: "projects",
               slugFolderName: this.slugProjectName,
-              slugMediaName: this.slugMediaName
+              slugMediaName: this.slugMediaName,
             });
             // then close that popover
             this.$emit("close", "");
@@ -509,15 +880,43 @@ export default {
           () => {}
         );
     },
-    editThisMedia: function() {
+    editThisMedia: function () {
       console.log("editThisMedia");
+
+      this.$eventHub.$once(
+        "socketio.projects.media_listed",
+        this.editWereSaved
+      );
+
       this.$root.editMedia({
         type: "projects",
         slugFolderName: this.slugProjectName,
         slugMediaName: this.slugMediaName,
-        data: this.mediadata
+        data: this.mediadata,
       });
-      // then close that popover
+
+      // show loader if modifications took more than .25 seconds to happen
+      setTimeout(() => {
+        this.is_sending_content_to_server = true;
+
+        // indicate that changes could not be saved after 5 seconds
+        setTimeout(() => {
+          if (this.is_sending_content_to_server) {
+            this.is_sending_content_to_server = false;
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(this.$t("notifications.failed_to_save_media"));
+          }
+        }, 5000);
+      }, 250);
+    },
+    editWereSaved() {
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t("notifications.successfully_saved"));
+      this.is_sending_content_to_server = false;
       this.$emit("close", "");
     },
     copyMediaToProject(to_slugFolderName) {
@@ -526,35 +925,46 @@ export default {
         type: "projects",
         from_slugFolderName: this.slugProjectName,
         to_slugFolderName,
-        slugMediaName: this.slugMediaName
+        slugMediaName: this.slugMediaName,
       });
+
       this.showCopyToProjectOptions = false;
     },
-    editRawMedia: function(type, detail) {
+    editRawMedia: function (type, detail) {
       console.log("editRawMedia");
-      this.$root.editMedia({
-        type: "projects",
-        slugFolderName: this.slugProjectName,
-        slugMediaName: this.slugMediaName,
-        data: this.mediadata,
-        recipe_with_data: {
-          apply_to: this.media.media_filename,
-          type,
-          detail
-        }
-      });
-    }
-  }
+      this.is_loading_or_saving = true;
+
+      this.$root
+        .editMedia({
+          type: "projects",
+          slugFolderName: this.slugProjectName,
+          slugMediaName: this.slugMediaName,
+          data: this.mediadata,
+          recipe_with_data: {
+            apply_to: this.media.media_filename,
+            type,
+            detail,
+          },
+        })
+        .then((mdata) => {
+          this.is_loading_or_saving = false;
+          this.adjust_mode = false;
+          // this.show_saved_icon = true;
+          // setTimeout(() => {
+          //   this.show_saved_icon = false;
+          // }, 200);
+        });
+    },
+  },
 };
 </script>
 <style>
 .m_mediaOptions {
   position: absolute;
   bottom: 0;
-  right: 0;
   z-index: 100;
-  background-color: white;
-  margin: 50px 10px;
+  /* background-color: white; */
+  margin: 60px 10px;
   /* padding: 15px; */
 }
 </style>

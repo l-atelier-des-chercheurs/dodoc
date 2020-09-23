@@ -13,13 +13,13 @@ html
     - if(mode !== 'export_publication')
       style.
         @import "/fonts/fira/fira.css";
-        @import "/fonts/nanook/nanook.css";
-        @import "/fonts/avara/avara.css";
+        @import "/fonts/roboto-mono/roboto-mono.css";
+        @import "/fonts/alegreya/alegreya.css";
     - else
       style.
         @import "./_fonts/fira/fira.css";
-        @import "./_fonts/nanook/nanook.css";
-        @import "./_fonts/avara/avara.css";
+        @import "./_fonts/roboto-mono/roboto-mono.css";
+        @import "./_fonts/alegreya/alegreya.css";
 
     script.
       /***********
@@ -35,24 +35,35 @@ html
       /* store contains content data */
       window.store = {
         request: {
-          slugProjectName: "!{slugProjectName}",
+          type: "!{type}",
+          slugFolderName: "!{slugFolderName}",
           metaFileName: "!{metaFileName}",
           display: "!{display}"
         },
         projects: !{ !!folderAndMediaData ? JSON.stringify(folderAndMediaData) : "{}" },
         authors: {},
         publications: !{ !!publiAndMediaData ? JSON.stringify(publiAndMediaData) : "{}" },
-        stopmotions: {}
+        stopmotions: {},
+        chats: {}
       };
 
       /* state contains settings data, time and client specific data */
       window.state = {
         appVersion: "!{global.appInfos.version}",
-        session_password: "!{global.session_password ? 'has_pass' : ''}",
         authorsFolder: "!{authorsFolder}",
         protocol: "!{protocol}",
         connected: false,
         authentificated: false,
+        api_domaines_whitelist: "!{global.settings.api.enabled ? global.settings.api.domains_whitelist : ''}",
+
+        local_options: {
+          session_password: "!{global.session_password ? 'has_pass' : ''}",
+          force_login: !{global.force_login},
+          simple_login: !{global.simple_login},
+          require_email: !{global.require_email},
+          force_author_password: !{global.force_author_password},
+        },
+
         localNetworkInfos: {},
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",
@@ -60,6 +71,7 @@ html
         is_electron: !!(window && window.process && window.process.type),
         is_darwin: !!(window && window.process && window.process.platform === 'darwin'),
         clients: [],
+        journal: [],
         list_authorized_folders: [],
         list_of_publications_templates: !{JSON.stringify(structure.publications.fields.template.options, null, 4)},
       };

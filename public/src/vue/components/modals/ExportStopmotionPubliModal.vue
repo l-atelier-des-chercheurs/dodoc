@@ -1,26 +1,36 @@
 <template>
-  <Modal @close="$emit('close')" class="m_exportModal" :typeOfModal="'ExportVideo'">
+  <Modal
+    @close="$emit('close')"
+    class="m_exportModal"
+    :typeOfModal="'ExportVideo'"
+  >
     <template slot="header">
-      <span class>{{ $t('export_creation') }}</span>
+      <span class>{{ $t("export_creation") }}</span>
     </template>
 
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class>
-          <p>{{ $t('export_stopmotion_instructions') }}</p>
+          <p>{{ $t("export_stopmotion_instructions") }}</p>
           <hr />
 
           <div class="margin-bottom-small">
             <label>
-              {{ $t('framerate') }} : {{ framerate }}fps =
-              <template
-                v-if="framerate <= 1"
-              >{{ $t('very_slow') }}</template>
-              <template v-else-if="framerate <= 10">{{ $t('slow') }}</template>
-              <template v-else-if="framerate <= 20">{{ $t('speed_medium') }}</template>
-              <template v-else-if="framerate <= 30">{{ $t('fast') }}</template>
+              {{ $t("framerate") }} : {{ framerate }}fps =
+              <template v-if="framerate <= 1">{{ $t("very_slow") }}</template>
+              <template v-else-if="framerate <= 10">{{ $t("slow") }}</template>
+              <template v-else-if="framerate <= 20">{{
+                $t("speed_medium")
+              }}</template>
+              <template v-else-if="framerate <= 30">{{ $t("fast") }}</template>
             </label>
-            <input type="range" v-model.number="framerate" min="0.1" max="30" step=".1" />
+            <input
+              type="range"
+              v-model.number="framerate"
+              min="0.1"
+              max="30"
+              step=".1"
+            />
           </div>
           <!-- <div class="flex-nowrap" style="align-items: center;">
             <div class="margin-bottom-small">
@@ -35,14 +45,17 @@
           </div>-->
 
           <div class="margin-bottom-small">
-            <label>{{ $t('quality') }}</label>
+            <label>{{ $t("quality") }}</label>
             <select v-model="quality">
               <option
                 v-for="q in available_qualities"
                 :value="q.height"
                 :key="q.height"
-              >{{ $t(q.label) }}</option>
+              >
+                {{ $t(q.label) }}
+              </option>
             </select>
+            <small>{{ quality }}p</small>
           </div>
 
           <button
@@ -51,17 +64,19 @@
             :disabled="video_request_status !== false"
             @click="downloadVideo"
           >
-            <template v-if="!video_request_status">{{ $t('make_video') }}</template>
+            <template v-if="!video_request_status">{{
+              $t("make_video")
+            }}</template>
             <template v-else-if="video_request_status === 'waiting_for_server'">
               <span class="loader loader-xs" />
-              {{ $t('notifications.creation_in_progress') }}
+              {{ $t("notifications.creation_in_progress") }}
             </template>
-            <template
-              v-else-if="video_request_status === 'generated'"
-            >{{ $t('notifications.video_created') }}</template>
-            <template
-              v-else-if="video_request_status === 'failed'"
-            >{{ $t('notifications.video_creation_failed') }}</template>
+            <template v-else-if="video_request_status === 'generated'">{{
+              $t("notifications.video_created")
+            }}</template>
+            <template v-else-if="video_request_status === 'failed'">{{
+              $t("notifications.video_creation_failed")
+            }}</template>
           </button>
 
           <div v-if="video_request_status === 'generated'">
@@ -75,7 +90,8 @@
                 v-if="link_to_video !== false"
                 class="buttonLink margin-left-none padding-left-none"
                 :href="link_to_video"
-              >{{ $t('download') }}</a>
+                >{{ $t("download") }}</a
+              >
 
               <AddCreationToProject
                 v-if="exported_video_name !== false"
@@ -91,18 +107,16 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import AddCreationToProject from "../subcomponents/AddCreationToProject.vue";
 import { setTimeout } from "timers";
 
 export default {
   props: {
     publication: Object,
-    slugPubliName: String
+    slugPubliName: String,
   },
   components: {
-    Modal,
-    AddCreationToProject
+    AddCreationToProject,
   },
   data() {
     return {
@@ -115,20 +129,20 @@ export default {
       available_qualities: [
         {
           label: "very_high",
-          height: 1080
+          height: 1080,
         },
         {
           label: "high",
-          height: 720
+          height: 720,
         },
         {
           label: "medium",
-          height: 640
+          height: 480,
         },
         {
           label: "low",
-          height: 360
-        }
+          height: 360,
+        },
       ],
 
       exported_video_name: false,
@@ -141,31 +155,31 @@ export default {
           "current-time",
           "mute",
           "volume",
-          "fullscreen"
+          "fullscreen",
         ],
-        iconUrl: "/images/plyr.svg"
-      }
+        iconUrl: "/images/plyr.svg",
+      },
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {
-    quality: function() {
+    quality: function () {
       if (this.video_request_status === "generated") {
         this.video_request_status = false;
       }
     },
-    framerate: function() {
+    framerate: function () {
       this.seconds_per_image = 1 / this.framerate;
       this.framerate = this.framerate.toFixed(1);
       if (this.video_request_status === "generated") {
         this.video_request_status = false;
       }
     },
-    seconds_per_image: function() {
+    seconds_per_image: function () {
       this.framerate = 1 / this.seconds_per_image;
-    }
+    },
   },
   computed: {},
   methods: {
@@ -187,8 +201,8 @@ export default {
         slugPubliName: this.slugPubliName,
         options: {
           framerate: this.framerate,
-          quality: this.quality
-        }
+          quality: this.quality,
+        },
       });
       this.video_request_status = "waiting_for_server";
     },
@@ -212,7 +226,7 @@ export default {
       this.$eventHub.$off("socketio.publication.publiStopmotionIsGenerated");
 
       this.video_request_status = "failed";
-    }
-  }
+    },
+  },
 };
 </script>

@@ -1,19 +1,19 @@
-var express = require('express');
+var express = require("express");
 
-var http = require('http');
-var https = require('https');
-var fs = require('fs');
-var path = require('path');
-var bodyParser = require('body-parser');
-const compression = require('compression');
+var http = require("http");
+var https = require("https");
+var fs = require("fs");
+var path = require("path");
+var bodyParser = require("body-parser");
+const compression = require("compression");
 
-var dev = require('./dev-log');
+var dev = require("./dev-log");
 
-const sockets = require('./sockets'),
-  setup_realtime_collaboration = require('./server-realtime_text_collaboration.js');
+const sockets = require("./sockets"),
+  setup_realtime_collaboration = require("./server-realtime_text_collaboration.js");
 
-module.exports = function(router) {
-  dev.logverbose('Starting server 1');
+module.exports = function (router) {
+  dev.logverbose("Starting server 1");
 
   const app = express();
 
@@ -22,26 +22,26 @@ module.exports = function(router) {
   // only for HTTPS, works without asking for a certificate
   const privateKeyPath = !!global.settings.privateKeyPath
     ? global.settings.privateKeyPath
-    : path.join(__dirname, 'ssl', 'file.pem');
+    : path.join(__dirname, "ssl", "file.pem");
 
   const certificatePath = !!global.settings.certificatePath
     ? global.settings.certificatePath
-    : path.join(__dirname, 'ssl', 'file.crt');
+    : path.join(__dirname, "ssl", "file.crt");
 
   const options = {
     key: fs.readFileSync(privateKeyPath),
-    cert: fs.readFileSync(certificatePath)
+    cert: fs.readFileSync(certificatePath),
   };
 
   if (
-    global.settings.protocol === 'https' &&
-    global.settings.redirect_port !== ''
+    global.settings.protocol === "https" &&
+    global.settings.redirect_port !== ""
   ) {
     // redirect from http (port 80) to https (port 443) for example
     http
       .createServer((req, res) => {
         res.writeHead(301, {
-          Location: 'https://' + req.headers['host'] + req.url
+          Location: "https://" + req.headers["host"] + req.url,
         });
         res.end();
       })
@@ -49,30 +49,30 @@ module.exports = function(router) {
   }
 
   let server =
-    global.settings.protocol === 'https'
+    global.settings.protocol === "https"
       ? https.createServer(options, app)
       : http.createServer(app);
 
-  var io = require('socket.io').listen(server);
+  var io = require("socket.io").listen(server);
 
-  dev.logverbose('Starting server 2');
+  dev.logverbose("Starting server 2");
   sockets.init(app, io);
 
-  dev.logverbose('Starting express-settings');
+  dev.logverbose("Starting express-settings");
 
-  app.set('port', global.appInfos.port); //Server's port number
-  app.set('views', global.appRoot); //Specify the views folder
-  app.set('view engine', 'pug'); //View engine is Pug
+  app.set("port", global.appInfos.port); //Server's port number
+  app.set("views", global.appRoot); //Specify the views folder
+  app.set("view engine", "pug"); //View engine is Pug
 
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     if (isURLToForbiddenFiles(req.url)) {
-      res.status(404).send(`Access not allowed.`);
+      res.status(403).send(`Access not allowed.`);
     } else {
       next();
     }
   });
   app.use(express.static(global.pathToUserContent));
-  app.use(express.static(path.join(global.appRoot, 'public')));
+  app.use(express.static(path.join(global.appRoot, "public")));
   app.use(
     express.static(path.join(global.appRoot, global.settings.cacheDirname))
   );
@@ -81,15 +81,13 @@ module.exports = function(router) {
   app.use(bodyParser.json());
   app.locals.pretty = true;
 
-  // setup_realtime_collaboration(server);
+  setup_realtime_collaboration(server);
   router(app);
 
-  server.listen(app.get('port'), () => {
+  server.listen(app.get("port"), () => {
     dev.log(
       `Server up and running. ` +
-        `Go to ${global.settings.protocol}://${global.settings.host}:${
-          global.appInfos.port
-        }`
+        `Go to ${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`
     );
     dev.log(` `);
   });

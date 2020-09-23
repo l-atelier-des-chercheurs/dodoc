@@ -4,11 +4,11 @@ const url = require("url");
 const file = require("./file"),
   auth = require("./auth");
 
-module.exports = (function() {
+module.exports = (function () {
   const API = {
-    init: app => {
+    init: (app) => {
       return _initRemoteApi(app);
-    }
+    },
   };
 
   function _initRemoteApi(app) {
@@ -36,7 +36,7 @@ module.exports = (function() {
     var corsOptions;
     if (global.settings.api.allow_all_domains) {
       dev.logverbose("REMOTE_API — _corsCheck : allowed for all domains");
-      next();
+      callback(null);
     } else {
       if (
         !req.headers.hasOwnProperty("Origin") &&
@@ -95,11 +95,7 @@ module.exports = (function() {
           "base64"
         ).toString("binary");
 
-        if (
-          !auth.isSubmittedSessionPasswordValid(
-            auth.hashCode(request_session_password)
-          )
-        ) {
+        if (!auth.isSubmittedSessionPasswordValid(request_session_password)) {
           dev.error("REMOTE_API — _sessionPasswordCheck : wrong password");
           dev.error(
             `Submitted: "${auth.hashCode(
@@ -125,7 +121,7 @@ module.exports = (function() {
 
     const hrstart = process.hrtime();
     _getContent({ type, slugFolderName, req })
-      .then(d => {
+      .then((d) => {
         dev.log("Returned api request successfully");
         let hrend = process.hrtime(hrstart);
         dev.performance(
@@ -134,14 +130,14 @@ module.exports = (function() {
         res.setHeader("Access-Control-Allow-Origin", "*");
         res.json(d);
       })
-      .catch(err => {
+      .catch((err) => {
         dev.error("Failed to get expected content: " + err);
         res.status(500).send("Error parsing request: " + err);
       });
   }
 
   function _getContent({ type, slugFolderName, req }) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       dev.logfunction(
         `REMOTE_API - _getContent for type = ${type}, slugFolderName = ${slugFolderName}`
       );
@@ -150,7 +146,7 @@ module.exports = (function() {
 
       file
         .getFolder({ type, slugFolderName })
-        .then(_foldersData => {
+        .then((_foldersData) => {
           if (_foldersData === undefined) {
             return reject("No folder found with name " + slugFolderName);
           }
@@ -169,6 +165,8 @@ module.exports = (function() {
             }
 
             if (
+              foldersData[slugFolderName].viewing_limited_to !== "everybody" &&
+              foldersData[slugFolderName].editing_limited_to !== "everybody" &&
               foldersData[slugFolderName].hasOwnProperty("password") &&
               foldersData[slugFolderName].password !== ""
             ) {
@@ -196,7 +194,7 @@ module.exports = (function() {
                 dev.error(
                   `Submitted: ${request_folder_password}\nShould be: ${foldersData[slugFolderName].password}`
                 );
-                return reject("Wrong password sent!");
+                return reject("Wrong password submitted!");
               }
             }
 
@@ -204,20 +202,20 @@ module.exports = (function() {
             // the code isnt exactly the clearest though
             return file.getMediaMetaNames({
               type,
-              slugFolderName
+              slugFolderName,
             });
           }
         })
-        .then(list_metaFileName => {
-          let medias_list = list_metaFileName.map(_metaFileName => {
+        .then((list_metaFileName) => {
+          let medias_list = list_metaFileName.map((_metaFileName) => {
             return {
               slugFolderName,
-              metaFileName: _metaFileName
+              metaFileName: _metaFileName,
             };
           });
           return file.readMediaList({ type, medias_list });
         })
-        .then(folders_and_medias => {
+        .then((folders_and_medias) => {
           if (
             folders_and_medias !== undefined &&
             Object.keys(folders_and_medias).length
@@ -257,7 +255,7 @@ module.exports = (function() {
 
           let tasks = [];
 
-          Object.keys(foldersData[slugFolderName].medias).map(k => {
+          Object.keys(foldersData[slugFolderName].medias).map((k) => {
             const _media = foldersData[slugFolderName].medias[k];
             if (!_media.hasOwnProperty("slugMediaName")) {
               return;
@@ -268,9 +266,9 @@ module.exports = (function() {
                 .readMediaAndThumbs({
                   type: "projects",
                   slugFolderName: _media.slugProjectName,
-                  metaFileName: _media.slugMediaName
+                  metaFileName: _media.slugMediaName,
                 })
-                .then(meta => {
+                .then((meta) => {
                   if (!meta) {
                     // case of non-existent media (was removed recently for example)
                   } else {
@@ -288,12 +286,12 @@ module.exports = (function() {
             return resolve(foldersData);
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     });
   }
 
   function _removePasswordFromFoldersMeta(foldersData) {
-    Object.keys(foldersData).map(s => {
+    Object.keys(foldersData).map((s) => {
       if (
         foldersData[s].hasOwnProperty("password") &&
         foldersData[s].password !== ""

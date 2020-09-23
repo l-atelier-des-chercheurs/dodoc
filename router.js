@@ -9,19 +9,23 @@ const auth = require("./core/auth"),
   file = require("./core/file"),
   exporter = require("./core/exporter"),
   importer = require("./core/importer"),
+  sockets = require("./core/sockets"),
   remote_api = require("./core/remote_api");
 
-module.exports = function(app) {
+module.exports = function (app) {
   /**
    * routing event
    */
   app.get("/", showIndex);
   app.get("/:project", loadFolderOrMedia);
   app.get("/:project/media/:metaFileName", loadFolderOrMedia);
+
   app.get("/_publications/:publication", linkPublication);
   app.get("/_publications/web/:publication", exportPublication);
   app.get("/_publications/print/:publication", printPublication);
-  app.get("/_publications/print/pdf/:pdfName", showPDF);
+  app.get("/_publications/reply/:publication", replyToPublication);
+  app.get("/_publications/survey/:publication", surveyPublication);
+  app.get("/_publications/print/doc/:docName", showDoc);
   app.get("/_publications/video/:videoName", showVideo);
   app.get("/_archives/:type/:slugFolderName", downloadArchive);
   app.post("/_file-upload/:type/:slugFolderName", postFile);
@@ -33,7 +37,7 @@ module.exports = function(app) {
   function collaborativeEditing(ws, req) {
     console.log("WebSocket sharedb event");
 
-    ws.on("message", msg => {
+    ws.on("message", (msg) => {
       console.log("WebSocket was closed");
       ws.send(msg);
     });
@@ -47,7 +51,7 @@ module.exports = function(app) {
    * routing functions
    */
   function generatePageData(req) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       let fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
       dev.log(`••• the following page has been requested: ${fullUrl} •••`);
 
@@ -56,8 +60,6 @@ module.exports = function(app) {
       pageData.pageTitle = "do•doc";
       // full path on the storage space, as displayed in the footer
       pageData.folderPath = api.getFolderPath();
-      pageData.slugProjectName = "";
-      pageData.url = req.path;
       pageData.protocol = req.protocol;
       pageData.structure = global.settings.structure;
       pageData.authorsFolder = global.settings.structure.authors.path;
@@ -72,14 +74,14 @@ module.exports = function(app) {
   // GET
   function showIndex(req, res) {
     generatePageData(req).then(
-      pageData => {
+      (pageData) => {
         // dev.logpackets(
         //   `Rendering index with data `,
         //   JSON.stringify(pageData, null, 4)
         // );
         res.render("index", pageData);
       },
-      err => {
+      (err) => {
         dev.error(`Err while getting index data: ${err}`);
       }
     );
@@ -97,8 +99,9 @@ module.exports = function(app) {
     );
 
     generatePageData(req).then(
-      pageData => {
-        pageData.slugProjectName = slugProjectName;
+      (pageData) => {
+        pageData.type = "projects";
+        pageData.slugFolderName = slugProjectName;
         pageData.metaFileName = metaFileName;
         pageData.display = display;
 
@@ -109,7 +112,8 @@ module.exports = function(app) {
         // let’s make sure that folder exists first and return some meta
         file
           .getFolder({ type: "projects", slugFolderName: slugProjectName })
-          .then(foldersData => {
+          .then((foldersData) => {
+            foldersData = api.removePasswordFromFoldersMeta(foldersData);
             pageData.folderAndMediaData = foldersData;
             if (!metaFileName) {
               return res.render("index", pageData);
@@ -121,13 +125,14 @@ module.exports = function(app) {
                 medias_list: [
                   {
                     slugFolderName: slugProjectName,
-                    metaFileName
-                  }
-                ]
+                    metaFileName,
+                  },
+                ],
               })
-              .then(folders_and_medias => {
-                pageData.folderAndMediaData[slugProjectName].medias =
-                  folders_and_medias[slugProjectName].medias;
+              .then((folders_and_medias) => {
+                if (Object.keys(folders_and_medias) !== 0)
+                  pageData.folderAndMediaData[slugProjectName].medias =
+                    folders_and_medias[slugProjectName].medias;
                 return res.render("index", pageData);
               });
           })
@@ -137,7 +142,7 @@ module.exports = function(app) {
             res.render("index", pageData);
           });
       },
-      err => {
+      (err) => {
         dev.error(`Err while getting index data: ${err}`);
       }
     );
@@ -145,82 +150,215 @@ module.exports = function(app) {
 
   function printPublication(req, res) {
     let slugPubliName = req.param("publication");
-    generatePageData(req).then(pageData => {
+    dev.logfunction(
+      `ROUTER — printPublication • slugPubliName = ${slugPubliName}`
+    );
+
+    // only allow for localhost: with electron/puppeteer to export PDF and if local dev
+    if (req.hostname !== "localhost")
+      res.status(403).send(`Only allowed for localhost`);
+
+    generatePageData(req).then((pageData) => {
       dev.logverbose(`Generated printpublication pageData`);
       dev.logverbose(`Now getting publication data for ${slugPubliName}`);
-      exporter.loadPublication(slugPubliName, pageData).then(pageData => {
+      exporter.loadPublication(slugPubliName, pageData).then((pageData) => {
         pageData.mode = "print_publication";
         res.render("index", pageData);
       });
     });
   }
 
-  function exportPublication(req, res) {
+  async function replyToPublication(req, res) {
     let slugPubliName = req.param("publication");
-    generatePageData(req).then(pageData => {
-      exporter.loadPublication(slugPubliName, pageData).then(pageData => {
-        pageData.mode = "export_publication";
-        res.render("index", pageData, (err, html) => {
-          exporter
-            .copyFolderContent({
-              html,
-              folders_and_medias: pageData.folderAndMediaData,
-              slugFolderName: slugPubliName
-            })
-            .then(
-              cachePath => {
-                var archive = archiver("zip", {
-                  zlib: { level: 0 } //
-                });
+    const type = "publications";
 
-                archive.on("error", function(err) {
-                  res.status(500).send({ error: err.message });
-                });
+    dev.logfunction(
+      `ROUTER — replyToPublication • slugPubliName = ${slugPubliName}`
+    );
 
-                //on stream closed we can end the request
-                archive.on("end", function() {
-                  dev.log("Archive wrote %d bytes", archive.pointer());
-                });
-
-                //set the archive name
-                res.attachment(slugPubliName + ".zip");
-
-                //this is the streaming magic
-                archive.pipe(res);
-
-                archive.directory(cachePath, false);
-
-                archive.finalize();
-              },
-              (err, p) => {
-                dev.error("Failed while preparing/making a web export");
-              }
-            );
-        });
+    const foldersData = await file
+      .getFolder({
+        type,
+        slugFolderName: slugPubliName,
+      })
+      .catch((err) => {
+        res.status(403).send(`Failed to load publi: ${err}`);
+        return;
       });
+
+    const folders_meta = foldersData[slugPubliName];
+    if (!folders_meta) {
+      res.status(403).send(`Failed to load publi`);
+    }
+
+    if (
+      folders_meta.hasOwnProperty("viewing_limited_to") &&
+      folders_meta.viewing_limited_to !== "everybody"
+    ) {
+      res.status(403).send(`Access not allowed.`);
+      return;
+    }
+
+    if (folders_meta.is_model !== true) {
+      res.status(403).send(`Publi ${folders_meta.name} is not a model`);
+      return;
+    }
+
+    const rnd = (Math.random().toString(36) + "00000000000000000").slice(
+      2,
+      3 + 8
+    );
+
+    // en créé une nouvelle : nom = aléatoire, modèle = slugPubliName, edition par tt le monde
+    const data = {
+      name: `«${folders_meta.name}»`,
+      desired_foldername: `${folders_meta.name}-reply-${rnd}`,
+      follows_model: slugPubliName,
+      template: folders_meta.template,
+      editing_limited_to: "everybody",
+      viewing_limited_to: "everybody",
+    };
+
+    const slugFolderName = await file
+      .createFolder({ type, data })
+      .catch((err) => {
+        dev.error(`Failed to create folder! Error: ${err}`);
+        res.status(403).send(`Error on creating reply to ${slugPubliName}.`);
+      });
+
+    sockets.sendFolders({ type, slugFolderName });
+
+    res.redirect(`/_publications/survey/` + slugFolderName);
+  }
+
+  async function surveyPublication(req, res) {
+    // if a publication has been requested
+    let slugPubliName = req.param("publication");
+
+    dev.logfunction(
+      `ROUTER — surveyPublication • slugPubliName = ${slugPubliName}`
+    );
+
+    generatePageData(req).then((pageData) => {
+      pageData.type = "publications";
+      pageData.slugFolderName = slugPubliName;
+      pageData.display = "survey";
+      return res.render("index", pageData);
     });
   }
 
-  function linkPublication(req, res) {
+  async function exportPublication(req, res) {
     let slugPubliName = req.param("publication");
-    generatePageData(req).then(pageData => {
-      exporter.loadPublication(slugPubliName, pageData).then(pageData => {
+    const type = "publications";
+
+    dev.logfunction(
+      `ROUTER — exportPublication • slugPubliName = ${slugPubliName}`
+    );
+
+    const isSocketAllowed = await isSocketIDAuthorized({
+      socketid: req.query.socketid,
+      type,
+      slugFolderName: slugPubliName,
+    }).catch((err) => {
+      sockets.notify({
+        socketid: req.query.socketid,
+        localized_string: `action_not_allowed`,
+        not_localized_string: err,
+        type: "error",
+      });
+    });
+    if (!isSocketAllowed) return false;
+
+    let pageData = await generatePageData(req);
+
+    pageData = await exporter.loadPublication(slugPubliName, pageData);
+
+    pageData.mode = "export_publication";
+
+    res.render("index", pageData, (err, html) => {
+      exporter
+        .copyFolderContent({
+          html,
+          folders_and_medias: pageData.folderAndMediaData,
+          slugFolderName: slugPubliName,
+        })
+        .then(
+          (cachePath) => {
+            var archive = archiver("zip", {
+              zlib: { level: 0 }, //
+            });
+
+            archive.on("error", function (err) {
+              res.status(500).send({ error: err.message });
+              return;
+            });
+
+            //on stream closed we can end the request
+            archive.on("end", function () {
+              dev.log("Archive wrote %d bytes", archive.pointer());
+            });
+
+            //set the archive name
+            res.attachment(slugPubliName + ".zip");
+
+            //this is the streaming magic
+            archive.pipe(res);
+
+            archive.directory(cachePath, false);
+
+            archive.finalize();
+          },
+          (err, p) => {
+            dev.error("Failed while preparing/making a web export");
+          }
+        );
+    });
+  }
+
+  async function linkPublication(req, res) {
+    let slugPubliName = req.param("publication");
+    const type = "publications";
+
+    dev.logfunction(
+      `ROUTER — linkPublication • slugPubliName = ${slugPubliName}`
+    );
+
+    const foldersData = await file.getFolder({
+      type,
+      slugFolderName: slugPubliName,
+    });
+
+    if (!foldersData.hasOwnProperty(slugPubliName)) {
+      res.status(403).send(`Publi not found.`);
+      return;
+    }
+
+    if (
+      foldersData[slugPubliName].hasOwnProperty("viewing_limited_to") &&
+      foldersData[slugPubliName].viewing_limited_to !== "everybody"
+    ) {
+      res.status(403).send(`Access not allowed.`);
+      return;
+    }
+
+    generatePageData(req).then((pageData) => {
+      exporter.loadPublication(slugPubliName, pageData).then((pageData) => {
         pageData.mode = "link_publication";
         res.render("index", pageData);
       });
     });
   }
 
-  function showPDF(req, res) {
-    let pdfName = req.param("pdfName");
+  function showDoc(req, res) {
+    let docName = req.param("docName");
     const cachePath = path.join(
       global.tempStorage,
       global.settings.cacheDirname,
       "_publications"
     );
-    const pdfPath = path.join(cachePath, pdfName);
+    const docPath = path.join(cachePath, docName);
 
-    res.download(pdfPath, pdfName, function(err) {
+    res.download(docPath, docName, function (err) {
       if (err) {
       } else {
       }
@@ -236,79 +374,132 @@ module.exports = function(app) {
     );
     const videoPath = path.join(cachePath, videoName);
 
-    res.download(videoPath, videoName, function(err) {
+    res.download(videoPath, videoName, function (err) {
       if (err) {
       } else {
       }
     });
   }
 
-  function downloadArchive(req, res) {
+  async function downloadArchive(req, res) {
     let type = req.param("type");
     let slugFolderName = req.param("slugFolderName");
 
-    // check if folder is protected
-    file
-      .getFolder({ type: type, slugFolderName })
-      .then(foldersData => {
-        const folder_meta = Object.values(foldersData)[0];
-        if (!folder_meta.hasOwnProperty("password") || !folder_meta.password) {
-          return;
-        }
-        // if it is, check that we have a socketid with the request and if so, if that id is allowed to access that folder
-        if (!req.query.hasOwnProperty("pwd")) {
-          throw "Missing password for protected folder";
-        }
-        const pwd = req.query.pwd;
+    const isSocketAllowed = await isSocketIDAuthorized({
+      socketid: req.query.socketid,
+      type,
+      slugFolderName,
+    }).catch((err) => {
+      sockets.notify({
+        socketid: req.query.socketid,
+        localized_string: `action_not_allowed`,
+        not_localized_string: err,
+        type: "error",
+      });
+    });
+    if (!isSocketAllowed) return false;
 
-        if (String(auth.hashCode(folder_meta.password)) !== String(pwd)) {
-          throw "Wrong password for folder";
-        }
+    dev.log(
+      `Will create and stream archive for folder ${type}/${slugFolderName}`
+    );
 
-        return;
+    // checks passed
+    var archive = archiver("zip", {
+      zlib: { level: 0 }, //
+    });
+
+    archive.on("error", function (err) {
+      res.status(500).send({ error: err.message });
+      return;
+    });
+
+    //on stream closed we can end the request
+    archive.on("end", function () {
+      dev.log("Archive wrote %d bytes", archive.pointer());
+    });
+
+    //set the archive name
+    res.attachment(slugFolderName + ".zip");
+
+    //this is the streaming magic
+    archive.pipe(res);
+
+    const baseFolderPath = global.settings.structure[type].path;
+    const mainFolderPath = api.getFolderPath(baseFolderPath);
+    const thisFolderPath = path.join(mainFolderPath, slugFolderName);
+
+    archive.directory(thisFolderPath, false);
+
+    archive.finalize();
+  }
+
+  async function postFile(req, res) {
+    let type = req.params.type;
+    let slugFolderName = req.params.slugFolderName;
+
+    const isSocketAllowed = await isSocketIDAuthorized({
+      socketid: req.query.socketid,
+      type,
+      slugFolderName,
+    }).catch((err) => {
+      sockets.notify({
+        socketid: req.query.socketid,
+        localized_string: `action_not_allowed`,
+        not_localized_string: err,
+        type: "error",
+      });
+    });
+    if (!isSocketAllowed) return false;
+
+    importer
+      .handleForm({ req, type, slugFolderName })
+      .then(({ msg }) => {
+        sockets.notify({
+          socketid: req.query.socketid,
+          localized_string: `imported_files_successfully`,
+          type: "success",
+        });
+        res.end(JSON.stringify(msg));
       })
-      .then(() => {
-        dev.log(
-          `Will create and stream archive for folder ${type}/${slugFolderName}`
-        );
-
-        // checks passed
-        var archive = archiver("zip", {
-          zlib: { level: 0 } //
+      .catch(({ err }) => {
+        sockets.notify({
+          socketid: req.query.socketid,
+          localized_string: `action_not_allowed`,
+          not_localized_string: err,
+          type: "error",
         });
-
-        archive.on("error", function(err) {
-          res.status(500).send({ error: err.message });
-        });
-
-        //on stream closed we can end the request
-        archive.on("end", function() {
-          dev.log("Archive wrote %d bytes", archive.pointer());
-        });
-
-        //set the archive name
-        res.attachment(slugFolderName + ".zip");
-
-        //this is the streaming magic
-        archive.pipe(res);
-
-        const baseFolderPath = global.settings.structure[type].path;
-        const mainFolderPath = api.getFolderPath(baseFolderPath);
-        const thisFolderPath = path.join(mainFolderPath, slugFolderName);
-
-        archive.directory(thisFolderPath, false);
-
-        archive.finalize();
-      })
-      .catch(err => {
-        dev.error(`Error! ${err}`);
-        res.status(500).send({ error: err });
+        res.end();
       });
   }
 
-  function postFile(req, res) {
-    let type = req.param("type");
-    let slugFolderName = req.param("slugFolderName");
-    importer.handleForm({ req, res, type, slugFolderName });
+  async function isSocketIDAuthorized({ socketid, type, slugFolderName }) {
+    if (!socketid) throw "Missing socketid in URL";
+
+    const connected_sockets = sockets.io().sockets.connected;
+
+    if (!connected_sockets || !connected_sockets.hasOwnProperty(socketid)) {
+      throw "Missing sockets server-side.";
+    }
+
+    const socket = connected_sockets[socketid];
+
+    const foldersData = await file.getFolder({ type, slugFolderName });
+    if (
+      !(await auth
+        .canEditFolder(socket, foldersData[slugFolderName], type)
+        .catch((err) => {
+          dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: folder can’t be edited ${slugFolderName} ${err}`,
+            type: "error",
+          });
+        }))
+    )
+      throw "User can’t edit folder";
+
+    return true;
   }
 };

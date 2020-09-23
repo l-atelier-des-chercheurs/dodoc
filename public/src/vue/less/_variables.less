@@ -26,10 +26,10 @@
 @c-gris: #b9b9b9;
 @c-gris_clair: #e5e5e5;
 @c-gris_tresclair: #f1f1f1;
-@c-gris_fonce: #757575;
+@c-gris_fonce: #666666;
 @c-noir: #353535;
 
-@c-border: #000;
+@c-border: @c-gris;
 @c-body_bg: @c-creme;
 
 :root {
@@ -37,11 +37,16 @@
   --body-bg-color: #fff;
   --table-stripe-bg-color: #eee;
   --color-primary: @c-rouge;
+  --c-rouge: @c-rouge;
   --c-noir: @c-noir;
   --c-orange: @c-orange;
+  --c-bleuvert: @c-bleuvert;
+  --c-gris: @c-gris;
   --c-gris-clair: @c-gris_clair;
   --c-gris-tresclair: @c-gris_tresclair;
   --spacing: @t-skipline;
+  --color-folder: @c-orange_clair;
+  --folder_border_radius: 6px;
 
   --font-family: "Fira";
 

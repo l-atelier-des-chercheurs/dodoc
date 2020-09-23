@@ -12,57 +12,112 @@
         :src="linkToImageThumb"
         draggable="false"
       />
-      <transition name="fade" :duration="600">
-        <img
-          v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb"
-          :src="linkToHoveredThumb"
-          draggable="false"
-        />
-      </transition>
     </template>
 
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
         <img
-          :srcset="videostillSrcSetAttr"
+          :srcset="complexMediaSrcSetAttr({ opt: 'timeMark' })"
           :sizes="imageSizesAttr"
-          :src="linkToVideoThumb"
+          :src="linkToComplexMediaThumb({ opt: 'timeMark' })"
           draggable="false"
         />
-        <div class="play_picto">
-          <svg
-            class
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="169px"
-            height="169px"
-            viewBox="0 0 169 169"
-            style="enable-background:new 0 0 169 169;"
-            xml:space="preserve"
-          >
-            <path
-              d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
-            />
-          </svg>
+        <div class="">
+          <div class="play_picto">
+            <svg
+              class
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="169px"
+              height="169px"
+              viewBox="0 0 169 169"
+              style="enable-background: new 0 0 169 169"
+              xml:space="preserve"
+            >
+              <path
+                d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
+              />
+            </svg>
+          </div>
+          <div v-if="media_duration" class="_duration">
+            {{
+              $root.formatDurationToHoursMinutesSeconds(media_duration * 1000)
+            }}
+          </div>
         </div>
       </template>
       <template v-else>
         <vue-plyr
+          :key="mediaURL"
           :options="plyr_options"
           ref="plyr"
-          :emit="['volumechange']"
+          :emit="['volumechange', 'timeupdate']"
           @volumechange="volumeChanged"
+          @timeupdate="videoTimeUpdated"
         >
           <video
-            :poster="linkToVideoThumb"
+            :poster="linkToComplexMediaThumb({ opt: 'timeMark' })"
             :src="mediaURL"
             preload="none"
             :autoplay="autoplay"
           />
         </vue-plyr>
+      </template>
+    </template>
+
+    <template v-else-if="media.type === 'stl'">
+      <template v-if="context === 'preview'">
+        <img
+          :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
+          :sizes="imageSizesAttr"
+          :src="linkToComplexMediaThumb({ opt: 'angle' })"
+          draggable="false"
+        />
+        <!-- // TODO : set STL/3d picto -->
+      </template>
+      <template v-else>
+        <img
+          v-if="!interactive_stl_mode"
+          :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
+          :sizes="imageSizesAttr"
+          :src="linkToComplexMediaThumb({ opt: 'angle' })"
+          draggable="false"
+        />
+        <iframe v-else :src="`/libs/stl/show_stl.html?mediaURL=${mediaURL}`" />
+
+        <div class="mediaContainer--buttons">
+          <div
+            class="switch switch-xs switch_twoway button button-thin"
+            @click.self="interactive_stl_mode = !interactive_stl_mode"
+          >
+            <label
+              :for="`interactive_preview_${id}`"
+              class="cursor-pointer"
+              :class="{
+                'is--active': !interactive_stl_mode,
+              }"
+            >
+              <span class>{{ $t("static_preview") }}</span>
+            </label>
+
+            <input
+              type="checkbox"
+              class="switch"
+              :id="`interactive_preview_${id}`"
+              v-model="interactive_stl_mode"
+            />
+            <label
+              :for="`interactive_preview_${id}`"
+              :class="{
+                'is--active': interactive_stl_mode,
+              }"
+              >{{ $t("interactive_preview") }}</label
+            >
+          </div>
+        </div>
       </template>
     </template>
 
@@ -79,7 +134,7 @@
             width="169px"
             height="169px"
             viewBox="0 0 169 169"
-            style="enable-background:new 0 0 169 169;"
+            style="enable-background: new 0 0 169 169"
             xml:space="preserve"
           >
             <path
@@ -89,7 +144,13 @@
         </div>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options">
+        <vue-plyr
+          :options="plyr_options"
+          :emit="['volumechange', 'timeupdate']"
+          ref="plyr"
+          @volumechange="volumeChanged"
+          @timeupdate="videoTimeUpdated"
+        >
           <audio :src="mediaURL" preload="none" :autoplay="autoplay" />
         </vue-plyr>
       </template>
@@ -100,7 +161,10 @@
         v-if="context === 'edit'"
         v-model="htmlForEditor"
         :media="media"
+        :read_only="read_only"
         :slugFolderName="slugFolderName"
+        :enable_collaboration="true"
+        :type="folderType"
         ref="textField"
       />
       <div v-else class="mediaTextContent">
@@ -163,55 +227,57 @@ export default {
   props: {
     slugFolderName: String,
     media: Object,
-    subfolder: {
+    folderType: {
       type: String,
-      default: ""
+      default: "",
     },
     context: {
       type: String,
-      default: "preview"
+      default: "preview",
       // preview, edit, publication
     },
     autoplay: {
       type: Boolean,
-      default: false
+      default: false,
     },
     value: {
       type: String,
-      default: "…"
+      default: "…",
     },
-    is_hovered: Boolean,
     read_only: {
       type: Boolean,
-      default: true
+      default: true,
     },
     preview_size: {
       type: Number,
-      default: 180
+      default: 180,
     },
     element_width_for_sizes: {
       type: Number,
-      default: 0
+      default: 0,
     },
     element_height: {
       type: Number,
-      default: 0
+      default: 0,
     },
     audio_volume: {
       type: Number,
-      default: 100
-    }
+      default: 100,
+    },
   },
   components: {
-    CollaborativeEditor
+    CollaborativeEditor,
   },
   data() {
     return {
       available_resolutions: {
         preview_hovered: 360,
-        default: 1600
+        default: 1600,
       },
       htmlForEditor: this.value,
+      interactive_stl_mode: false,
+
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       plyr_options: {
         controls: [
@@ -221,13 +287,13 @@ export default {
           "current-time",
           "mute",
           "volume",
-          "fullscreen"
+          "fullscreen",
         ],
         iconUrl:
           this.$root.state.mode === "export_publication"
             ? `./_images/plyr.svg`
-            : `/images/plyr.svg`
-      }
+            : `/images/plyr.svg`,
+      },
     };
   },
   mounted() {
@@ -242,25 +308,51 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    htmlForEditor: function() {
+    htmlForEditor: function () {
       this.$emit("input", this.htmlForEditor);
-    }
+    },
+    interactive_stl_mode: function () {},
   },
   computed: {
-    mediaURL: function() {
+    mediaURL: function () {
       return this.$root.state.mode === "export_publication"
         ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`
         : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
     },
-    thumbRes: function() {
+    subfolder: function () {
+      switch (this.folderType) {
+        case "publications":
+          return "_publications/";
+        case "stopmotions":
+          return "_stopmotions/";
+      }
+      return "";
+    },
+    thumbRes: function () {
       return this.context === "preview"
         ? this.preview_size
         : this.available_resolutions.default;
     },
-    thumbResHovered: function() {
+    media_duration: function () {
+      if (
+        !this.media.hasOwnProperty("duration") &&
+        !(
+          this.media.hasOwnProperty("file_meta") &&
+          this.media.file_meta.some((f) => f.hasOwnProperty("duration"))
+        )
+      )
+        return false;
+
+      const duration = this.media.hasOwnProperty("duration")
+        ? this.media.duration
+        : this.media.file_meta.find((f) => f.hasOwnProperty("duration"))
+            .duration;
+      return duration;
+    },
+    thumbResHovered: function () {
       return this.available_resolutions.preview_hovered;
     },
-    linkToImageThumb: function() {
+    linkToImageThumb: function () {
       if (!this.media.hasOwnProperty("thumbs")) {
         return this.mediaURL;
       }
@@ -268,13 +360,15 @@ export default {
       if (
         // if image is gif and context is not 'preview', let’s show the original gif
         this.context !== "preview" &&
-        this.mediaURL.toLowerCase().endsWith(".gif")
+        (this.mediaURL.toLowerCase().endsWith(".gif") ||
+          this.mediaURL.toLowerCase().endsWith(".svg") ||
+          this.mediaURL.toLowerCase().endsWith(".png"))
       ) {
         return this.mediaURL;
       }
 
       const small_thumb = this.media.thumbs.filter(
-        m => !!m && m.hasOwnProperty("size") && m.size === this.thumbRes
+        (m) => !!m && m.hasOwnProperty("size") && m.size === this.thumbRes
       );
       if (small_thumb.length == 0) {
         return this.mediaURL;
@@ -288,11 +382,10 @@ export default {
           : `/${pathToSmallestThumb}`;
       return url;
     },
-    imageSrcSetAttr: function() {
+    imageSrcSetAttr: function () {
       if (
         this.element_width_for_sizes === 0 ||
-        this.mediaURL.toLowerCase().endsWith(".gif") ||
-        this.context === "full"
+        this.mediaURL.toLowerCase().endsWith(".gif")
       ) {
         return;
       }
@@ -300,55 +393,38 @@ export default {
       // get all available sizes
       const img_srcset = this.media.thumbs.reduce((acc, t) => {
         if (t.hasOwnProperty("path")) {
-          // acc.push(encodeURIComponent(t.path) + ' ' + t.size + 'w');
-          acc.push(t.path + " " + t.size + "w");
+          const path =
+            this.$root.state.mode === "export_publication"
+              ? "./" + t.path
+              : "/" + t.path;
+
+          acc.push(path + " " + t.size + "w");
         }
         return acc;
       }, []);
       return img_srcset.join(", ");
     },
-    videostillSrcSetAttr: function() {
-      if (this.element_width_for_sizes === 0) {
-        return;
-      }
-
-      let timeMark = 0;
-      let timeMarkThumbs = this.media.thumbs.filter(
-        t => !!t && t.timeMark === 0
-      );
-
-      if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
-        return;
-      }
-
-      // get all available sizes
-      const img_srcset = timeMarkThumbs[0].thumbsData.reduce((acc, t) => {
-        if (t.hasOwnProperty("path")) {
-          acc.push(t.path + " " + t.size + "w");
-        }
-        return acc;
-      }, []);
-
-      return img_srcset.join(", ");
-    },
-    imageSizesAttr: function() {
+    imageSizesAttr: function () {
       if (this.element_width_for_sizes === 0) {
         return;
       }
       return this.element_width_for_sizes + "px";
     },
-    linkToHoveredThumb: function() {
-      let pathToSmallestThumb = this.media.thumbs.filter(
-        m => m.size === this.thumbResHovered
-      )[0].path;
-
-      const url =
-        this.$root.state.mode === "export_publication"
-          ? "./" + pathToSmallestThumb
-          : "/" + pathToSmallestThumb;
-      return pathToSmallestThumb !== undefined ? url : this.mediaURL;
+  },
+  methods: {
+    volumeChanged(event) {
+      const vol = Math.round(Number(event.detail.plyr.volume) * 100);
+      this.$emit("volumeChanged", vol);
     },
-    linkToVideoThumb: function() {
+    videoTimeUpdated(event) {
+      this.$emit("videoTimeUpdated", event.detail.plyr.media.currentTime);
+    },
+    setVolume(val) {
+      if (this.$refs.hasOwnProperty("plyr")) {
+        this.$refs.plyr.player.volume = val / 100;
+      }
+    },
+    linkToComplexMediaThumb: function ({ opt }) {
       if (
         !this.media["thumbs"] ||
         (typeof this.media.thumbs === "object" &&
@@ -357,36 +433,44 @@ export default {
         return this.mediaURL;
       }
 
-      let timeMark = 0;
-      let timeMarkThumbs = this.media.thumbs.filter(
-        t => !!t && t.timeMark === 0
+      let firstThumbs = this.media.thumbs.find((t) => !!t && t[opt] === 0);
+
+      const small_thumb = firstThumbs.thumbsData.find(
+        (m) => m && m.size === this.thumbRes
       );
+      if (!small_thumb) return this.mediaURL;
 
-      if (!timeMarkThumbs || timeMarkThumbs.length === 0) {
-        return this.mediaURL;
-      }
-
-      let pathToSmallestThumb = timeMarkThumbs[0].thumbsData.filter(
-        m => m.size === this.thumbRes
-      )[0].path;
+      let pathToSmallestThumb = small_thumb.path;
 
       let url =
         this.$root.state.mode === "export_publication"
           ? "./" + pathToSmallestThumb
           : "/" + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
-    }
-  },
-  methods: {
-    volumeChanged(event) {
-      const vol = Math.round(Number(event.detail.plyr.volume) * 100);
-      this.$emit("volumeChanged", vol);
     },
-    setVolume(val) {
-      if (this.$refs.hasOwnProperty("plyr")) {
-        this.$refs.plyr.player.volume = val / 100;
+    complexMediaSrcSetAttr: function ({ opt }) {
+      if (this.element_width_for_sizes === 0) {
+        return;
       }
-    }
-  }
+
+      let firstThumbs = this.media.thumbs.filter((t) => !!t && t[opt] === 0);
+      if (!firstThumbs || firstThumbs.length === 0) return;
+
+      // get all available sizes
+      const img_srcset = firstThumbs[0].thumbsData.reduce((acc, t) => {
+        if (t.hasOwnProperty("path")) {
+          const path =
+            this.$root.state.mode === "export_publication"
+              ? "./" + t.path
+              : "/" + t.path;
+
+          acc.push(path + " " + t.size + "w");
+        }
+        return acc;
+      }, []);
+
+      return img_srcset.join(", ");
+    },
+  },
 };
 </script>

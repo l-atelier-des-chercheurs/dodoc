@@ -1,5 +1,11 @@
 <template>
-  <Modal ref="modal" @close="$emit('close')" :typeOfModal="'LargeAndScroll'">
+  <Modal
+    ref="modal"
+    @close="$emit('close')"
+    :typeOfModal="'LargeAndScroll'"
+    :prevent_close="prevent_close"
+    :is_loading="is_loading"
+  >
     <template slot="header">
       <span class>{{ $t("authors_list") }}</span>
     </template>
@@ -7,6 +13,14 @@
     <template slot="preview">
       <div class>
         <div class="margin-sides-medium margin-vert-small">
+          <div
+            v-if="
+              $root.state.local_options.force_login && !$root.current_author
+            "
+          >
+            <strong>{{ $t("login_to_access") }}</strong>
+          </div>
+
           <small>{{
             $t("when_logged_as_author_content_will_be_tagged")
           }}</small>
@@ -25,128 +39,31 @@
           </div>
         </div>
         <transition-group tag="div" class="m_authorsList" name="list-complete">
-          <div class="m_authorsList--createAuthor" :key="'createAuthor'">
-            <button
-              type="button"
-              @click="openCreateAuthorPanel = true"
-              v-if="openCreateAuthorPanel == false"
-              class="m_authorsList--createAuthor--createButton"
-            >
-              {{ $t("create_an_author") }}
-            </button>
-
-            <CreateAuthor
-              v-else
-              @close="openCreateAuthorPanel = false"
-              :read_only="read_only"
-            />
+          <div class :key="'createAuthor'">
+            <div class="m_authorsList--createAuthor">
+              <button
+                type="button"
+                @click="openCreateAuthorPanel = true"
+                v-if="openCreateAuthorPanel == false"
+                class="m_authorsList--createAuthor--createButton bg-bleumarine"
+              >
+                {{ $t("create_an_author") }}
+              </button>
+              <CreateAuthor
+                v-else
+                @close="openCreateAuthorPanel = false"
+                :read_only="read_only"
+              />
+            </div>
           </div>
 
-          <template v-if="Object.keys(sortedAuthors).length > 0">
-            <template v-for="author in sortedAuthors">
-              <div
-                v-if="editAuthorSlug === author.slugFolderName"
+          <template v-if="Object.keys(sorted_authors).length > 0">
+            <template v-for="author in sorted_authors">
+              <Author
+                :author="author"
                 :key="author.slugFolderName"
-                class="m_authorsList--editAuthor"
-              >
-                <EditAuthor
-                  :author="author"
-                  @close="editAuthorSlug = false"
-                  :read_only="read_only"
-                />
-              </div>
-              <div
-                v-else
-                :key="author.slugFolderName"
-                class="m_authorsList--author"
-                :class="{
-                  'is--selected':
-                    author.name === $root.settings.current_author.name
-                }"
-                @click="setAuthor(author)"
-              >
-                <button
-                  type="button"
-                  class="buttonLink m_authorsList--author--editButton"
-                  @click.stop="editAuthor(author)"
-                >
-                  <svg
-                    version="1.1"
-                    class="inline-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    x="0px"
-                    y="0px"
-                    width="100.7px"
-                    height="101px"
-                    viewBox="0 0 100.7 101"
-                    style="enable-background:new 0 0 100.7 101;"
-                    xml:space="preserve"
-                  >
-                    <path
-                      class="st0"
-                      d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
-                L19.1,91.5z"
-                    />
-                  </svg>
-                  <span class style="display: none">{{ $t("edit") }}</span>
-                </button>
-
-                <button
-                  type="button"
-                  class="buttonLink m_authorsList--author--removeButton"
-                  @click.stop="removeAuthor(author)"
-                >
-                  <svg
-                    version="1.1"
-                    class="inline-svg"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    x="0px"
-                    y="0px"
-                    width="91.6px"
-                    height="95px"
-                    viewBox="0 0 91.6 95"
-                    style="enable-background:new 0 0 91.6 95;"
-                    xml:space="preserve"
-                  >
-                    <path
-                      class="st0"
-                      d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
-                    l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
-                    />
-                  </svg>
-                  <span class style="display: none">{{ $t("remove") }}</span>
-                </button>
-
-                <button
-                  type="button"
-                  class="m_authorsList--author--card"
-                  @click="setAuthor(author)"
-                >
-                  <img
-                    v-if="!!author.preview"
-                    width="100"
-                    height="100"
-                    :src="urlToPortrait(author.slugFolderName, author.preview)"
-                    draggable="false"
-                  />
-                  <div class="m_authorsList--author--name">
-                    {{ author.name }}
-                  </div>
-                  <!-- <button type="button" class="buttonLink" @click.stop="setAuthor(author)" v-if="author.name !== $root.settings.current_author.name">
-                      {{ $t('select') }}
-                  </button>-->
-                  <button
-                    type="button"
-                    class="buttonLink"
-                    @click.stop="unsetAuthor()"
-                    v-if="author.name === $root.settings.current_author.name"
-                  >
-                    {{ $t("unselect") }}
-                  </button>
-                </button>
-              </div>
+                @close="$emit('close')"
+              />
             </template>
           </template>
         </transition-group>
@@ -155,77 +72,66 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
-import ImageSelect from "./../subcomponents/ImageSelect.vue";
+import Author from "./../subcomponents/Author.vue";
 import CreateAuthor from "./../subcomponents/CreateAuthor.vue";
-import EditAuthor from "./../subcomponents/EditAuthor.vue";
 
 export default {
   props: {
     authors: {
       type: Object,
-      default: {}
-    }
+      default: {},
+    },
+    prevent_close: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
-    Modal,
+    Author,
     CreateAuthor,
-    EditAuthor
   },
   data() {
     return {
       openCreateAuthorPanel: false,
       editAuthorSlug: false,
-      show_detail: false
+      show_detail: false,
+      is_loading: false,
     };
   },
 
   created() {},
   mounted() {
+    this.is_loading = true;
     this.$socketio.listFolders({ type: "authors" });
+    this.$eventHub.$once("socketio.authors.folders_listed", () => {
+      this.is_loading = false;
+    });
   },
   beforeDestroy() {},
 
   watch: {},
   computed: {
-    sortedAuthors: function() {
-      return Object.values(this.authors).sort((a, b) =>
-        a.name.localeCompare(b.name)
+    sorted_authors() {
+      let sorted_authors = Object.values(this.authors).sort((a, b) =>
+        a.name && b.name ? a.name.localeCompare(b.name) : false
       );
-    }
-  },
-  methods: {
-    editAuthor(author) {
-      this.editAuthorSlug = author.slugFolderName;
-    },
-    removeAuthor(author) {
-      this.$alertify
-        .okBtn(this.$t("yes"))
-        .cancelBtn(this.$t("cancel"))
-        .confirm(
-          this.$t("sureToRemoveAuthor"),
-          () => {
-            this.$root.removeFolder({
-              type: "authors",
-              slugFolderName: author.slugFolderName
-            });
-          },
-          () => {}
+
+      // move current author to top
+      if (this.$root.current_author) {
+        sorted_authors.some(
+          (item, idx) =>
+            item.slugFolderName === this.$root.current_author.slugFolderName &&
+            sorted_authors.unshift(
+              // remove the found item, in-place (by index with splice),
+              // returns an array of a single item removed
+              sorted_authors.splice(idx, 1)[0]
+            )
         );
+      }
+      return sorted_authors;
     },
-    setAuthor(name) {
-      this.$root.setAuthor(name);
-      this.$refs.modal.closeModal();
-    },
-    unsetAuthor() {
-      this.$root.unsetAuthor();
-    },
-    urlToPortrait(slug, preview) {
-      if (!preview) return "";
-      let pathToSmallestThumb = preview.filter(m => m.size === 180)[0].path;
-      return pathToSmallestThumb;
-    }
-  }
+  },
+  methods: {},
 };
 </script>
 <style></style>

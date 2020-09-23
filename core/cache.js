@@ -1,6 +1,6 @@
-const cache = require('memory-cache');
+const cache = require("memory-cache");
 
-module.exports = (function() {
+module.exports = (function () {
   let caches = {};
   let is_enabled = false;
 
@@ -14,22 +14,22 @@ module.exports = (function() {
       dev.logfunction(`CACHE — get ${type}/${slugFolderName}`);
 
       if (!caches.hasOwnProperty(type)) {
-        dev.logverbose('--> no cache');
+        dev.logverbose("--> no cache");
         return null;
       }
 
       if (slugFolderName) {
         const meta = caches[type].get(slugFolderName);
         if (!meta) {
-          dev.logverbose('--> no cache');
+          dev.logverbose("--> no cache");
           return null;
         }
-        dev.logverbose('--> has cache');
+        dev.logverbose("--> has cache");
         return meta;
       } else {
-        dev.logverbose('--> has cache');
+        dev.logverbose("--> has cache");
         let obj = {};
-        caches[type].keys().forEach(k => {
+        caches[type].keys().forEach((k) => {
           obj[k] = caches[type].get(k);
         });
         return obj;
@@ -57,6 +57,6 @@ module.exports = (function() {
       }
       // if editing a key we need to remove the general one as well
       caches[type].del(slugFolderName);
-    }
+    },
   };
 })();

@@ -1,5 +1,7 @@
 <template>
   <div class="m_topbar" :class="{ 'is--collapsable': !$root.screen_is_wide }">
+    <!-- <pre>{{ $root.state.clients }}</pre> -->
+
     <div class="m_topbar--left">
       <div class="m_topbar--left--logo">
         <transition name="BackButton" :duration="500">
@@ -20,7 +22,7 @@
           draggable="false"
           v-tippy="{
             placement: 'bottom',
-            delay: [1000, 0]
+            delay: [1000, 0],
           }"
         />
       </div>
@@ -42,7 +44,7 @@
           :content="$t('back_to_project')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <span>{{ project.name }}</span>
@@ -52,7 +54,7 @@
           type="button"
           v-if="
             project.hasOwnProperty('name') &&
-              $root.do_navigation.view === 'CaptureView'
+            $root.do_navigation.view === 'CaptureView'
           "
         >
           <span>Capture</span>
@@ -83,7 +85,7 @@
           width="20px"
           height="20px"
           viewBox="0 0 90 90"
-          style="enable-background:new 0 0 90 90;"
+          style="enable-background: new 0 0 90 90;"
           xml:space="preserve"
         >
           <rect class="st0" width="108.2" height="21" />
@@ -98,35 +100,30 @@
         <button
           type="button"
           class="m_topbar--center--authors--currentAuthor"
-          @click="showAuthorsListModal = true"
+          @click="$root.showAuthorsListModal = true"
           :content="$t('login')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
-          <template v-if="!!$root.settings.current_author">
+          <template v-if="$root.current_author">
             <div
               class="m_topbar--center--authors--portrait"
               v-if="
-                $root.settings.current_author.hasOwnProperty('preview') &&
-                  $root.settings.current_author.preview.length !== ''
+                $root.current_author.hasOwnProperty('preview') &&
+                $root.current_author.preview.length !== ''
               "
             >
               <img
-                :src="
-                  urlToPortrait(
-                    $root.settings.current_author.slugFolderName,
-                    $root.settings.current_author.preview
-                  )
-                "
+                :src="urlToPortrait($root.current_author.preview)"
                 width="100"
                 height="100"
                 draggable="false"
               />
             </div>
             <div class="m_topbar--center--authors--name">
-              {{ $root.settings.current_author.name }}
+              {{ $root.current_author.name }}
             </div>
           </template>
           <template v-else>
@@ -136,11 +133,19 @@
 
         <Clients />
 
-        <AuthorsList
-          v-if="showAuthorsListModal"
-          :authors="authors"
-          @close="showAuthorsListModal = false"
-        ></AuthorsList>
+        <div class="m_unreadMessages" v-if="$root.get_total_unread_messages">
+          <button
+            type="button"
+            @click="openChatPanel()"
+            :content="$t('unread_messages')"
+            v-tippy="{
+              placement: 'bottom',
+              delay: [600, 0],
+            }"
+          >
+            {{ $root.get_total_unread_messages }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -152,7 +157,7 @@
           :content="$t('share_access')"
           v-tippy="{
             placement: 'bottom-end',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <svg
@@ -165,7 +170,7 @@
             width="20px"
             height="20px"
             viewBox="0 0 90 90"
-            style="enable-background:new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90;"
             xml:space="preserve"
           >
             <path
@@ -185,11 +190,11 @@
         <a
           class="js--openInBrowser"
           target="_blank"
-          href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc"
+          href="https://dodoc.fr/"
           :content="$t('help')"
           v-tippy="{
             placement: 'bottom',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <svg
@@ -202,7 +207,7 @@
             width="12px"
             height="20.3px"
             viewBox="0 0 12 20.3"
-            style="enable-background:new 0 0 12 20.3;"
+            style="enable-background: new 0 0 12 20.3;"
             xml:space="preserve"
           >
             <path
@@ -223,7 +228,7 @@
           :content="$t('settings')"
           v-tippy="{
             placement: 'bottom-end',
-            delay: [600, 0]
+            delay: [600, 0],
           }"
         >
           <svg
@@ -235,7 +240,7 @@
             width="90px"
             height="90px"
             viewBox="0 0 90 90"
-            style="enable-background:new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90;"
             xml:space="preserve"
           >
             <path
@@ -248,6 +253,79 @@
 	c1,0.3,1.7,1.1,1.9,2.1l1.7,9.4h5.7l1.6-9.4c0.1-1,0.9-1.8,1.8-2.2l8.9-2.8c1-0.3,2-0.1,2.7,0.6l7,6.6l4.6-3.3L70.4,71
 	c-0.5-0.9-0.4-1.9,0.2-2.7L76,61c0.6-0.8,1.6-1.2,2.6-1.1l9.7,1.3L90,56l-8.7-4.3C80.4,51.2,79.8,50.3,79.8,49.3z M45,63.4
 	c-10.5,0-19-8.3-19-18.4c0-10.2,8.5-18.4,19-18.4S64,34.8,64,45C64,55.2,55.5,63.4,45,63.4z"
+            />
+          </svg>
+        </button>
+
+        <button
+          :class="{ 'is--active': $root.app_is_fullscreen }"
+          @click="$root.toggleFullScreen()"
+          :content="$t('fullscreen')"
+          v-tippy="{
+            placement: 'bottom-end',
+            delay: [600, 0],
+          }"
+        >
+          <svg
+            version="1.1"
+            v-if="!$root.app_is_fullscreen"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+            x="0px"
+            y="0px"
+            width="133.3px"
+            height="133.2px"
+            viewBox="-15 -15 160 160"
+            style="enable-background: new 0 0 133.3 133.2;"
+            xml:space="preserve"
+          >
+            <polygon
+              class="st0"
+              points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"
+            />
+            <polygon
+              class="st0"
+              points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
+            />
+            <polygon
+              class="st0"
+              points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
+            />
+            <polygon
+              class="st0"
+              points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
+            />
+          </svg>
+          <svg
+            version="1.1"
+            v-if="$root.app_is_fullscreen"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+            x="0px"
+            y="0px"
+            width="133.3px"
+            height="133.2px"
+            viewBox="0 0 133.3 133.2"
+            style="enable-background: new 0 0 133.3 133.2;"
+            xml:space="preserve"
+          >
+            <polygon
+              class="st0"
+              points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"
+            />
+            <polygon
+              class="st0"
+              points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
+            />
+            <polygon
+              class="st0"
+              points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
+            />
+            <polygon
+              class="st0"
+              points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
             />
           </svg>
         </button>
@@ -277,7 +355,6 @@
 <script>
 import QRCode from "./components/modals/QRCode.vue";
 import SettingsModal from "./components/modals/SettingsModal.vue";
-import AuthorsList from "./components/modals/AuthorsList.vue";
 import Clients from "./components/Clients.vue";
 
 export default {
@@ -285,15 +362,13 @@ export default {
   components: {
     QRCode,
     SettingsModal,
-    AuthorsList,
-    Clients
+    Clients,
   },
   data() {
     return {
       showQRModal: false,
       showSettingsModal: false,
-      showAuthorsListModal: false,
-      show_menu: false
+      show_menu: false,
     };
   },
   created() {},
@@ -302,9 +377,9 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    "$root.settings.windowWidth": function() {
+    "$root.settings.windowWidth": function () {
       this.menuVisibility();
-    }
+    },
   },
   computed: {
     show_advanced_options() {
@@ -312,9 +387,16 @@ export default {
         this.$root.screen_is_wide ||
         (!this.$root.screen_is_wide && this.show_menu)
       );
-    }
+    },
   },
   methods: {
+    openChatPanel() {
+      this.$eventHub.$emit("resizePanels", [
+        { size: 40 },
+        { size: 0 },
+        { size: 60 },
+      ]);
+    },
     menuVisibility() {},
     goBack() {
       this.$root.navigation_back();
@@ -329,11 +411,16 @@ export default {
     toggleMenu() {
       this.show_menu = !this.show_menu;
     },
-    urlToPortrait(slug, preview) {
+    urlToPortrait(preview) {
       if (!preview) return "";
-      let pathToSmallestThumb = preview.filter(m => m.size === 180)[0].path;
-      return pathToSmallestThumb;
-    }
-  }
+      let pathToSmallestThumb = preview.find((m) => m.size === 180).path;
+
+      let url =
+        this.$root.state.mode === "export_publication"
+          ? `./${pathToSmallestThumb}`
+          : `/${pathToSmallestThumb}`;
+      return url;
+    },
+  },
 };
 </script>
