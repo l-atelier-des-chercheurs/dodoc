@@ -884,6 +884,14 @@ module.exports = (function () {
       en:
         "Input the beginning and end to trim the video.\nYou can play and pause the video, then use the buttons beneath the video to paste the playback time.",
     },
+    playback: {
+      fr: "Lecture",
+      en: "Playback",
+    },
+    trim_help: {
+      fr: "Modification du début et de la fin de la coupe",
+      en: "Adjusting the beginning and end of the media",
+    },
     beginning: {
       fr: "Début",
       en: "Beginning",
@@ -1273,11 +1281,11 @@ module.exports = (function () {
         "You can pair a NFC tag (a card, a badge, etc.) to an author using a device connected via USB, to login using an object.",
     },
     pair_a_nfc_tag: {
-      fr: "Associez un tag NFC",
+      fr: "Associer un tag NFC",
       en: "Pair an NFC tag",
     },
     scan_a_nfc_tag: {
-      fr: "Scannez le tag NFC maintenant…",
+      fr: "Scanner le tag NFC maintenant…",
       en: "Scan the NFC tag now…",
     },
     yes: {
