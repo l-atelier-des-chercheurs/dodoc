@@ -846,10 +846,10 @@ export default {
     contentStyles() {
       let css = `
         --font_size_percent: ${this.font_size_percent}%;
-        --margin: ${this.margin * this.zoom}px;
+        --margin: ${this.margin}mm;
         --fill_color: ${this.fill_color};
         --stroke_color: ${this.stroke_color};
-        --stroke_width: ${this.stroke_width * this.zoom}px;
+        --stroke_width: ${this.stroke_width}mm;
       `;
 
       if (this.media.custom_css) css += this.media.custom_css;
