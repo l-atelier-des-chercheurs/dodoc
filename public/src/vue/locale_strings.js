@@ -49,6 +49,18 @@ module.exports = (function () {
       fr: "Épinglées",
       en: "Pinned",
     },
+    no_content_to_show: {
+      fr: "Aucun contenu à afficher",
+      en: "No content to show",
+    },
+    fold: {
+      fr: "Replier",
+      en: "Fold",
+    },
+    unfold: {
+      fr: "Déplier",
+      en: "Unfold",
+    },
     create_new_folder: {
       fr: "créer un nouveau dossier",
       en: "create new folder",
@@ -59,7 +71,7 @@ module.exports = (function () {
     },
     no_message_yet: {
       fr: "Aucun message à afficher pour l’instant…",
-      em: "No message to display yet…",
+      en: "No message to display yet…",
     },
     login_after_creation: {
       fr: "S’identifier dans la foulée",
@@ -321,6 +333,14 @@ module.exports = (function () {
       oc: "Autor",
       de: "Autor(en)",
     },
+    action: {
+      fr: "Action",
+      en: "Action",
+    },
+    detail: {
+      fr: "Détail",
+      en: "Detail",
+    },
     account: {
       fr: "Compte",
       en: "Account",
@@ -348,6 +368,18 @@ module.exports = (function () {
     journal: {
       fr: "Journal des activités",
       en: "Journal of activities",
+    },
+    entries: {
+      fr: "Entrées",
+      en: "Entries",
+    },
+    to: {
+      fr: "à",
+      en: "to",
+    },
+    of: {
+      fr: "de",
+      en: "of",
     },
     created_folder: {
       fr: "A créé un dossier",
@@ -401,7 +433,6 @@ module.exports = (function () {
       fr: "A copié un dossier",
       en: "Has copied a folder",
     },
-
     reload: {
       fr: "Recharger",
       en: "Reload",
@@ -810,6 +841,11 @@ module.exports = (function () {
       oc: "Ajustar",
       de: "Anpassen",
     },
+    adjust_infos: {
+      fr: "Vous pourrez toujours revenir au média d’origine si nécessaire.",
+      en:
+        "You will always be able to go back to the original media if necessary.",
+    },
     restore: {
       fr: "Restorer",
       en: "Restore",
@@ -828,19 +864,65 @@ module.exports = (function () {
       oc: "Virar cap a drecha",
       de: "Nach Rechts einschwenken",
     },
-    optimize_video: {
-      fr: "Optimiser la vidéo",
-      en: "Optimize video",
-      oc: "Optimizar la vidèo",
-      de: "Optimieren Sie das Video",
+    optimize: {
+      fr: "Optimiser",
+      en: "Optimize",
     },
-    trim_video: {
-      fr: "Raccourcir la vidéo",
-      en: "Trim video",
+    optimize_instructions: {
+      fr:
+        "Convertir le média vidéo ou audio pour optimiser la compatibilité avec tous les appareils et réduire le poids (codec vidéo mp4/h264, codec audio mp3).",
+      en:
+        "Encode the video or audio media to maximize compatibility and minimize filesize (video codec mp4/h264 and audio codec aac).",
     },
-    trim_video_instructions: {
-      fr: "Indiquez le début et la fin souhaité pour cette vidéo.",
-      en: "Input the beginning and end to trim the video.",
+    trim: {
+      fr: "Raccourcir",
+      en: "Trim",
+    },
+    trim_instructions: {
+      fr:
+        "Indiquez le début et la fin souhaités.\nVous pouvez lire et mettre la vidéo en pause puis utiliser les boutons en bas de la vidéo pour copier le temps de lecture.",
+      en:
+        "Input the beginning and end to trim the video.\nYou can play and pause the video, then use the buttons beneath the video to paste the playback time.",
+    },
+    playback: {
+      fr: "Lecture",
+      en: "Playback",
+    },
+    trim_help: {
+      fr: "Modification du début et de la fin de la coupe",
+      en: "Adjusting the beginning and end of the media",
+    },
+    beginning: {
+      fr: "Début",
+      en: "Beginning",
+    },
+    end: {
+      fr: "Fin",
+      en: "End",
+    },
+    play_video_from_this_moment: {
+      fr: "Lire la vidéo à partir de ce moment là",
+      en: "Play video starting at this moment",
+    },
+    use_current_time: {
+      fr: "Copier le temps du lecteur",
+      en: "Copy playback time",
+    },
+    set_as_beginning: {
+      fr: "placer le début",
+      en: "set the beginning",
+    },
+    set_as_end: {
+      fr: "placer la fin",
+      en: "set the end",
+    },
+    replace: {
+      fr: "Remplacer",
+      en: "Replace",
+    },
+    test: {
+      fr: "Tester",
+      en: "Test",
     },
     revert_to_original: {
       fr: "Revenir à l’original",
@@ -869,6 +951,10 @@ module.exports = (function () {
       en: "Search by project name",
       oc: "Cercar per nom de projècte",
       de: "Suche nach Projektname",
+    },
+    recipe_name_to_find: {
+      fr: "Rechercher par nom de recette",
+      en: "Search by recipe name",
     },
     show_all: {
       fr: "Tout afficher",
@@ -1188,6 +1274,20 @@ module.exports = (function () {
       oc: "Tag NFC",
       de: "NFC Tag",
     },
+    nfc_tag_instructions: {
+      fr:
+        "Vous pouvez associer un tag NFC (un carte, une pastille, etc.) à un auteur à l’aide d’un boitier compatible à brancher en USB, pour utiliser un objet pour vous identifier.",
+      en:
+        "You can pair a NFC tag (a card, a badge, etc.) to an author using a device connected via USB, to login using an object.",
+    },
+    pair_a_nfc_tag: {
+      fr: "Associer un tag NFC",
+      en: "Pair an NFC tag",
+    },
+    scan_a_nfc_tag: {
+      fr: "Scanner le tag NFC maintenant…",
+      en: "Scan the NFC tag now…",
+    },
     yes: {
       fr: "Oui",
       en: "Yes",
@@ -1452,6 +1552,10 @@ module.exports = (function () {
       oc: "projèctes sus",
       de: "Projekte auf",
     },
+    recipes_of: {
+      fr: "recettes sur",
+      en: "recipes of",
+    },
     medias_of: {
       fr: "médias sur",
       en: "medias of",
@@ -1662,34 +1766,6 @@ module.exports = (function () {
     insert_medias_here: {
       fr: "Insérer un média ici",
       en: "Insert a media here",
-    },
-    add_a_page_before: {
-      fr: "Ajouter une page avant celle-ci",
-      en: "Add a page before this one",
-      nl: "Hiervoor een pagina toevoegen ",
-      oc: "Apondre una pagina abans aquela",
-      de: "Eine Seite davor hinzufügen",
-    },
-    add_a_page_after: {
-      fr: "Ajouter une page après celle-ci",
-      en: "Add a page after this one",
-      nl: "Hierna een pagina toevoegen ",
-      oc: "Apondre una pagina aprèp aquela",
-      de: "Eine Seite nach dieser hinzufügen",
-    },
-    add_a_page_here: {
-      fr: "Ajouter une page ici",
-      en: "Add a page here",
-      nl: "Hier een pagina toevoegen",
-      oc: "Apondre una pagina aicí",
-      de: "Hier eine Seite hinzufügen",
-    },
-    remove_this_page: {
-      fr: "▲ Supprimer cette page ▲",
-      en: "▲ Remove this page ▲",
-      nl: "▲ deze pagina verwijderen ▲",
-      oc: "▲ Suprimir aquesta pagina ▲",
-      de: "▲ Diese Seite löschen ▲",
     },
     anonymous: {
       fr: "anonyme",
@@ -2698,6 +2774,10 @@ module.exports = (function () {
       oc: "Human Tech Days",
       de: "Mensch-Technik Tage",
     },
+    days: {
+      fr: "Jours",
+      en: "Days",
+    },
     page_by_page: {
       fr: "Document page à page",
       en: "Paged document",
@@ -2849,7 +2929,7 @@ module.exports = (function () {
       en: "Drawing pad",
     },
     drawing: {
-      fr: "Dessin",
+      fr: "Dessin libre",
       en: "Drawing",
     },
     drawing_pad_summary: {
@@ -2955,6 +3035,10 @@ module.exports = (function () {
     rotate: {
       fr: "Pivoter",
       en: "Rotate",
+    },
+    "error:": {
+      fr: "Erreur&nbsp;:",
+      en: "Error:",
     },
     mirror: {
       fr: "Miroir",
@@ -3074,6 +3158,10 @@ module.exports = (function () {
       fr: "Page précédente",
       en: "Previous page",
     },
+    page: {
+      fr: "Page",
+      en: "Page",
+    },
     "current_page:": {
       fr: "Page actuelle&nbsp;:",
       en: "Current page:",
@@ -3092,6 +3180,11 @@ module.exports = (function () {
       oc: "Se remembrar del mot de Santa Clara per aqueste aparelh",
       de: "Das Passwort für dieses Gerät merken",
     },
+    empty_content: {
+      fr: "Vider le journal",
+      en: "Empty the journal",
+    },
+
     notifications: {
       ios_not_compatible_with_capture: {
         fr:
@@ -3301,6 +3394,10 @@ module.exports = (function () {
         oc: "Error : lo flux vidèo es pas disponible",
         de: "Fehler: der Videostrom ist nicht verfügbar.",
       },
+      no_content_to_show: {
+        fr: "Aucun contenu à afficher.",
+        en: "No content to display.",
+      },
       no_content_found_with_nfc_tag: {
         fr:
           "Scan d’un tag NFC réussi, associez-lui un auteur ou un média pour commencer.",
@@ -3367,6 +3464,10 @@ module.exports = (function () {
         nl: "De video wordt gemaakt…",
         oc: "En cors de creacion de la vidèo...",
         de: "Im Prozess der Erstellung des Videos…",
+      },
+      creating_audio: {
+        fr: "En cours de création du son…",
+        en: "Creating audio…",
       },
       preparing_video_from_montage: {
         fr: "Préparation des vidéos du montage",

@@ -35,7 +35,7 @@
             :disabled="read_only || !can_edit_project"
             @change="updateInputFiles($event)"
             accept
-            style="width: 1px; height: 1px; overflow: hidden;"
+            style="width: 1px; height: 1px; overflow: hidden"
           />
         </label>
 
@@ -107,14 +107,26 @@
       </div>
     </div>
     <transition-group class="m_project--library--medias" name="list-complete">
-      <div v-for="item in groupedMedias" :key="item[0]">
+      <div v-for="[day, medias] in groupedMedias" :key="day">
         <h3
           class="font-folder_title margin-sides-small margin-none margin-bottom-small"
         >
-          {{ $root.formatDateToHuman(item[0]) }}
+          {{ $root.formatDateToHuman(day) }}
+          <span v-if="medias.length > 0" class="_media_counter">{{
+            medias.length
+          }}</span>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle _fold_button"
+            :class="{
+              'is--active': !folded_days.includes(day),
+            }"
+            @click="toggleDayFolding(day)"
+            v-html="!folded_days.includes(day) ? $t('fold') : $t('unfold')"
+          />
         </h3>
-        <div class="m_mediaShowAll">
-          <div v-for="media in item[1]" :key="media.slugMediaName">
+        <div class="m_mediaShowAll" v-if="!folded_days.includes(day)">
+          <div v-for="media in medias" :key="media.slugMediaName">
             <MediaCard
               :key="media.metaFileName"
               :media="media"
@@ -200,6 +212,8 @@ export default {
       last_media_added: [],
 
       selected_medias: [],
+
+      folded_days: [],
     };
   },
   mounted() {
@@ -308,6 +322,11 @@ export default {
     },
     nextMedia() {
       this.mediaNav(+1);
+    },
+    toggleDayFolding(day) {
+      if (this.folded_days.includes(day))
+        this.folded_days = this.folded_days.filter((t) => t !== day);
+      else this.folded_days.push(day);
     },
     mediaNav(relative_index) {
       const current_media_index = this.sortedMedias.findIndex(

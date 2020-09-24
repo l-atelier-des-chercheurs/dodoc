@@ -263,6 +263,7 @@ module.exports = (function () {
           _onLoadJournal(data) {
             console.log("Received _onLoadJournal packet.");
             window.state.journal = data;
+            this.$eventHub.$emit(`socketio.journal.is_loaded`);
           },
 
           // for projects, authors and publications
@@ -435,6 +436,9 @@ module.exports = (function () {
           },
           loadJournal() {
             this.socket.emit("loadJournal");
+          },
+          emptyJournal() {
+            this.socket.emit("emptyJournal");
           },
         },
       });

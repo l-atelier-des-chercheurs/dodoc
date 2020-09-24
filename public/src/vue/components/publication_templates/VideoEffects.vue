@@ -1,5 +1,9 @@
 <template>
-  <div class="m_publicationview" :class="{ 'is--preview': preview_mode }" ref="panel">
+  <div
+    class="m_publicationview"
+    :class="{ 'is--preview': preview_mode }"
+    ref="panel"
+  >
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
@@ -34,15 +38,18 @@
             <label class="c-white">{{ $t("effect") }}</label>
 
             <div class="margin-bottom-small">
-              <select :value="effect.type" @change="setEffectType({ $event, id: effect.id })">
+              <select
+                :value="effect.type"
+                @change="setEffectType({ $event, id: effect.id })"
+              >
                 <option value>—</option>
                 <option value="watermark">{{ $t("watermark") }}…</option>
                 <option value="black_and_white">
-                  {{
-                  $t("black_and_white")
-                  }}
+                  {{ $t("black_and_white") }}
                 </option>
-                <option value="colored_filter">{{ $t("colored_filter") }}…</option>
+                <option value="colored_filter">
+                  {{ $t("colored_filter") }}…
+                </option>
                 <option value="slow_down">{{ $t("slow_down") }}…</option>
                 <option value="speed_up">{{ $t("speed_up") }}…</option>
                 <option value="reverse">{{ $t("reverse") }}</option>
@@ -51,13 +58,18 @@
               </select>
             </div>
 
-            <div v-if="effect.type === 'watermark'" class="margin-bottom-small" :key="'watermark'">
+            <div
+              v-if="effect.type === 'watermark'"
+              class="margin-bottom-small"
+              :key="'watermark'"
+            >
               <label>{{ $t("image") }}</label>
               <div v-if="!watermark_media">
                 <small>{{ $t("watermark_instructions") }}</small>
               </div>
               <div class="_watermark_media" v-else="watermark_media">
                 <MediaMontagePublication
+                  :available_buttons="['remove']"
                   :media="watermark_media"
                   :preview_mode="false"
                   :read_only="read_only"
@@ -112,25 +124,21 @@
                 <small>
                   ×
                   {{
-                  effect.speed !== "custom"
-                  ? effect.speed
-                  : effect.custom_speed
+                    effect.speed !== "custom"
+                      ? effect.speed
+                      : effect.custom_speed
                   }}
                 </small>
               </div>
-              <div
-                v-if="
-                  (video_media && video_media._linked_media.duration)
-                "
-              >
+              <div v-if="video_media && video_media._linked_media.duration">
                 <hr />
                 <div class="m_metaField">
                   <div>{{ $t("duration") }}</div>
                   <div>
                     {{
-                    $root.formatDurationToMinuteHours(
-                    video_media._linked_media.duration * 1000
-                    )
+                      $root.formatDurationToHoursMinutesSeconds(
+                        video_media._linked_media.duration * 1000
+                      )
                     }}
                   </div>
                 </div>
@@ -142,7 +150,8 @@
               <div>
                 <small
                   v-if="effect.speed === 'custom' && effect.custom_speed < 0.5"
-                >{{ $t("slowing_video_down_limit") }}</small>
+                  >{{ $t("slowing_video_down_limit") }}</small
+                >
               </div>
             </div>
             <div
@@ -175,25 +184,21 @@
                 <small>
                   ×
                   {{
-                  effect.speed !== "custom"
-                  ? effect.speed
-                  : effect.custom_speed
+                    effect.speed !== "custom"
+                      ? effect.speed
+                      : effect.custom_speed
                   }}
                 </small>
               </div>
-              <div
-                v-if="
-                  (video_media && video_media._linked_media.duration)
-                "
-              >
+              <div v-if="video_media && video_media._linked_media.duration">
                 <hr />
                 <div class="m_metaField">
                   <div>{{ $t("duration") }}</div>
                   <div>
                     {{
-                    $root.formatDurationToMinuteHours(
-                    video_media._linked_media.duration * 1000
-                    )
+                      $root.formatDurationToHoursMinutesSeconds(
+                        video_media._linked_media.duration * 1000
+                      )
                     }}
                   </div>
                 </div>
@@ -216,9 +221,7 @@
               >
                 <option :value="1">{{ $t("clockwise").toLowerCase() }}</option>
                 <option :value="2">
-                  {{
-                  $t("counterclockwise").toLowerCase()
-                  }}
+                  {{ $t("counterclockwise").toLowerCase() }}
                 </option>
               </select>
             </div>
@@ -232,19 +235,13 @@
                 @change="setEffectProp({ $event, id: effect.id, prop: 'flip' })"
               >
                 <option value="vflip">
-                  {{
-                  $t("vertical_flip").toLowerCase()
-                  }}
+                  {{ $t("vertical_flip").toLowerCase() }}
                 </option>
                 <option value="hflip">
-                  {{
-                  $t("horizontal_flip").toLowerCase()
-                  }}
+                  {{ $t("horizontal_flip").toLowerCase() }}
                 </option>
                 <option value="hflip, vflip">
-                  {{
-                  $t("both").toLowerCase()
-                  }}
+                  {{ $t("both").toLowerCase() }}
                 </option>
               </select>
             </div>
@@ -253,6 +250,7 @@
 
         <div class="m_videoEffects--media">
           <MediaMontagePublication
+            :available_buttons="['remove']"
             :media="video_media"
             :preview_mode="false"
             :read_only="read_only"
@@ -299,9 +297,9 @@ export default {
     medias_in_order: {
       handler() {
         this.$root.settings.current_publication.accepted_media_type = this.required_media_type.filter(
-          t =>
+          (t) =>
             !this.medias_in_order.some(
-              m => m._linked_media && m._linked_media.type === t
+              (m) => m._linked_media && m._linked_media.type === t
             )
         );
       },
@@ -317,7 +315,7 @@ export default {
     required_media_type() {
       if (
         this.effects.length > 0 &&
-        this.effects.some(e => e.type === "watermark") &&
+        this.effects.some((e) => e.type === "watermark") &&
         !this.watermark_media
       )
         return ["video", "image"];
@@ -335,15 +333,15 @@ export default {
       return true;
     },
     watermark_media() {
-      return this.medias_in_order.find(m => m._linked_media.type === "image");
+      return this.medias_in_order.find((m) => m._linked_media.type === "image");
     },
     video_media() {
-      return this.medias_in_order.find(m => m._linked_media.type === "video");
+      return this.medias_in_order.find((m) => m._linked_media.type === "video");
     },
   },
   methods: {
     getVideoMediaNewDuration(effect) {
-      return this.$root.formatDurationToMinuteHours(
+      return this.$root.formatDurationToHoursMinutesSeconds(
         (this.video_media._linked_media.duration * 1000) /
           (effect.speed !== "custom" ? effect.speed : effect.custom_speed)
       );
@@ -351,7 +349,7 @@ export default {
 
     setEffectType({ $event, id }) {
       const new_type = $event.target.value;
-      const effects = this.publication.effects.map(e => {
+      const effects = this.publication.effects.map((e) => {
         if (e.id === id && e.type !== new_type) {
           e.type = new_type;
 
@@ -378,7 +376,7 @@ export default {
     setEffectProp({ $event, id, prop }) {
       const new_value = $event.target.value;
 
-      const effects = this.publication.effects.map(e => {
+      const effects = this.publication.effects.map((e) => {
         if (e.id === id && e[prop] !== new_value) {
           e[prop] = new_value;
         }

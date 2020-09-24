@@ -286,7 +286,7 @@ module.exports = (function () {
     dev.logfunction(`AUTH — checkIfAuthorIsFoldersAuthor`);
 
     // return there if socket has no authorized list
-    if (!sockets_authors_slugs) throw new Error("no_author");
+    if (!sockets_authors_slugs) throw new Error("socket_is_not_logged_in");
 
     if (
       folderData.authors &&

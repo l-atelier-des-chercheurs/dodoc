@@ -51,9 +51,11 @@
                 v-for="q in available_qualities"
                 :value="q.height"
                 :key="q.height"
-                >{{ $t(q.label) }}</option
               >
+                {{ $t(q.label) }}
+              </option>
             </select>
+            <small>{{ quality }}p</small>
           </div>
 
           <button

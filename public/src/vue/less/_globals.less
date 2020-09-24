@@ -114,6 +114,10 @@ button,
     .button-thin;
     background-color: @c-bleuvert;
     color: white;
+
+    &:disabled {
+      background-color: @c-gris;
+    }
   }
 
   &.button-bg_rounded {
@@ -465,9 +469,12 @@ b,
   .padding-sides-small;
   .text-cap;
   .font-verysmall;
-  // background-color: @c-rouge;
   // color: white;
   border-radius: @t-buttonradius;
+
+  &.bg-bleumarine_clair {
+    background-color: @c-bleumarine_clair;
+  }
 }
 .button-wide {
   min-width: 3.5em;
@@ -477,7 +484,7 @@ b,
 }
 .button-inline {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
 }
@@ -826,6 +833,10 @@ textarea,
 
   &:focus {
     // background-color:@c-orange_clair;
+  }
+
+  &.bg-blanc {
+    background-color: white;
   }
 }
 
@@ -1370,6 +1381,9 @@ th {
 .flex-horizontally-start {
   justify-content: flex-start;
 }
+.flex-horizontally-end {
+  justify-content: flex-end;
+}
 .flex-horizontally-centered {
   justify-content: center;
 }
@@ -1382,6 +1396,12 @@ th {
 
 .limited-width {
   max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tiny-width {
+  max-width: 200px;
   margin-left: auto;
   margin-right: auto;
 }

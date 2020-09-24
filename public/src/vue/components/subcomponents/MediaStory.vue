@@ -20,7 +20,7 @@
         <br />
         <small>
           {{ media._linked_media.slugProjectName }}/{{
-            media._linked_media.slugMediaName
+          media._linked_media.slugMediaName
           }}
         </small>
       </div>
@@ -66,11 +66,7 @@
             "
           >
             <template v-if="media.only_numbers">
-              <input
-                type="number"
-                v-model="htmlForEditor"
-                @input="updateTextMedia"
-              />
+              <input type="number" v-model="htmlForEditor" @input="updateTextMedia" />
             </template>
 
             <CollaborativeEditor
@@ -357,7 +353,7 @@
                 <rect x="120.4" y="56.9" width="10" height="16.6" />
               </g>
             </svg>
-          </button> -->
+          </button>-->
 
           <button
             type="button"
@@ -384,9 +380,9 @@
               />
             </svg>
             {{
-              media.hasOwnProperty("_linked_media")
-                ? $t("withdraw")
-                : $t("remove")
+            media.hasOwnProperty("_linked_media")
+            ? $t("withdraw")
+            : $t("remove")
             }}
           </button>
         </div>
@@ -588,7 +584,7 @@ export default {
     },
     updateMediaPubliMeta(val) {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
+        console.log(`METHODS • MediaStory: updateMediaPubliMeta`);
 
       this.$emit("editPubliMedia", {
         metaFileName: this.media.metaFileName,
@@ -633,7 +629,7 @@ export default {
       if (this.is_selected) return;
 
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • MediaPublication: deselectMedia`);
+        console.log(`METHODS • MediaStory: deselectMedia`);
 
       // if shift is not hold down
       // then we unselect everything
@@ -645,7 +641,7 @@ export default {
     },
     deselectMedia() {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • MediaPublication: deselectMedia`);
+        console.log(`METHODS • MediaStory: deselectMedia`);
 
       this.show_advanced_menu = false;
 

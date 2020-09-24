@@ -37,8 +37,9 @@
               role === 'admin' &&
               (!current_author || current_author.role !== 'admin')
             "
-            >{{ $t(role) }}</option
           >
+            {{ $t(role) }}
+          </option>
         </select>
       </div>
     </div>
@@ -95,16 +96,46 @@
           {{ $t("nfc_tag") }}
         </button>
       </label>
-      <template v-if="show_nfc">
-        <input type="text" v-model="authordata.nfc_tag" />
-      </template>
+      <div v-if="show_nfc">
+        <div>
+          <small>
+            {{ $t("nfc_tag_instructions") }}
+          </small>
+        </div>
+        <button
+          type="button"
+          class="button-thin"
+          :class="{ 'bg-bleumarine': !detect_scan_nfc_started }"
+          v-if="authordata.nfc_tag === ''"
+          @click="detect_scan_nfc_started = !detect_scan_nfc_started"
+        >
+          <template v-if="!detect_scan_nfc_started">
+            {{ $t("pair_a_nfc_tag") }}
+          </template>
+          <template v-else>
+            {{ $t("scan_a_nfc_tag") }}
+          </template>
+        </button>
+        <div class="input-group" v-if="authordata.nfc_tag">
+          <input type="text" v-model="authordata.nfc_tag" readonly />
+          <span class="input-addon" v-if="authordata.nfc_tag.length > 0">
+            <button
+              type="button"
+              :disabled="authordata.nfc_tag.length === 0"
+              @click="authordata.nfc_tag = ''"
+            >
+              ×
+            </button>
+          </span>
+        </div>
+      </div>
     </div>
 
     <div class="flex-wrap flex-space-between margin-bottom-small">
       <button
         type="button"
         class="buttonLink"
-        style="flex-grow: 0;"
+        style="flex-grow: 0"
         @click="$emit('close')"
       >
         {{ $t("cancel") }}
@@ -153,6 +184,7 @@ export default {
       },
       preview: undefined,
       login_after_creation: true,
+      detect_scan_nfc_started: false,
     };
   },
   computed: {},
@@ -162,8 +194,33 @@ export default {
       const el = this.$el.querySelector("[autofocus]");
       el.focus();
     }
+    this.$eventHub.$on(
+      "tag.new_tag_not_attributed",
+      this.notAttributedTagDetected
+    );
+  },
+  beforeDestroy() {
+    this.$eventHub.$off(
+      "tag.new_tag_not_attributed",
+      this.notAttributedTagDetected
+    );
+  },
+  watch: {
+    detect_scan_nfc_started() {
+      if (this.detect_scan_nfc_started) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(this.$t("scan_a_nfc_tag"));
+      }
+    },
   },
   methods: {
+    notAttributedTagDetected(nfc_tag_code) {
+      debugger;
+      this.show_nfc = true;
+      this.authordata.nfc_tag = nfc_tag_code;
+    },
     newAuthor: function (event) {
       console.log("newAuthor");
 

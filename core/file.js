@@ -1136,7 +1136,7 @@ module.exports = (function () {
               meta,
               recipe_with_data,
               socket,
-            }).then((media_metas) => {
+            }).then((meta) => {
               dev.logverbose(
                 `Got meta for ${metaFileName} with ${JSON.stringify(
                   meta,
@@ -1206,6 +1206,7 @@ module.exports = (function () {
               if (
                 (meta.type === "text" ||
                   meta.type === "marker" ||
+                  meta.type === "embed" ||
                   meta.type === "code") &&
                 data.hasOwnProperty("content")
               ) {
@@ -1475,7 +1476,8 @@ module.exports = (function () {
           );
         } else if (
           additionalMeta.type === "text" ||
-          additionalMeta.type === "marker"
+          additionalMeta.type === "marker" ||
+          additionalMeta.type === "embed"
         ) {
           tasks.push(
             new Promise((resolve, reject) => {
@@ -1797,6 +1799,7 @@ module.exports = (function () {
             if (
               (mediaData.type === "text" ||
                 mediaData.type === "marker" ||
+                mediaData.type === "embed" ||
                 mediaData.type === "code") &&
               mediaData.hasOwnProperty("media_filename")
             ) {
@@ -2270,12 +2273,12 @@ module.exports = (function () {
 
       if (!recipe_with_data) {
         dev.logverbose("No recipe data.");
-        return resolve();
+        return resolve(meta);
       }
 
       if (!recipe_with_data.hasOwnProperty("apply_to")) {
         dev.err("Missing apply_to value to work out recipe.");
-        return resolve();
+        return resolve(meta);
       }
 
       const slugFolderPath = api.getFolderPath(
@@ -2302,7 +2305,16 @@ module.exports = (function () {
               fs.unlink(base_media_path, (err) => {
                 meta.media_filename = meta.original_media_filename;
                 meta.original_media_filename = "";
-                return resolve(meta);
+
+                const path_to_media = path.join(
+                  slugFolderPath,
+                  meta.media_filename
+                );
+
+                _refreshFileMeta({ meta, path_to_media }).then(({ _meta }) => {
+                  Object.assign(meta, _meta);
+                  return resolve(meta);
+                });
               });
             } else {
               recipe
@@ -2311,18 +2323,29 @@ module.exports = (function () {
                   base_media_path,
                   slugFolderPath,
                   meta.media_filename,
-                  socket
+                  socket,
+                  meta
                 )
-                .then((newFileName) => {
+                .then((new_media_filename) => {
                   // return meta name
                   dev.logverbose(
-                    `Applied recipe successfully, created ${newFileName}`
+                    `Applied recipe successfully, created ${new_media_filename}`
                   );
-                  return resolve(meta);
+
+                  const path_to_media = path.join(
+                    slugFolderPath,
+                    new_media_filename
+                  );
+                  _refreshFileMeta({ meta, path_to_media }).then(
+                    ({ _meta }) => {
+                      Object.assign(meta, _meta);
+                      return resolve(meta);
+                    }
+                  );
                 })
                 .catch((err) => {
                   dev.error(`Error applying recipe : ${err}`);
-                  return resolve();
+                  return resolve(meta);
                 });
             }
           } else {
@@ -2340,16 +2363,28 @@ module.exports = (function () {
                     base_media_path,
                     slugFolderPath,
                     newFileName,
-                    socket
+                    socket,
+                    meta
                   )
                   .then((new_media_filename) => {
                     // return meta name
                     dev.logverbose(
-                      `Applied recipe successfully, created ${newFileName}`
+                      `Applied recipe successfully, created ${new_media_filename}`
                     );
                     meta.original_media_filename = meta.media_filename;
                     meta.media_filename = new_media_filename;
-                    return resolve(meta);
+
+                    const path_to_media = path.join(
+                      slugFolderPath,
+                      meta.media_filename
+                    );
+
+                    _refreshFileMeta({ meta, path_to_media }).then(
+                      ({ _meta }) => {
+                        Object.assign(meta, _meta);
+                        return resolve(meta);
+                      }
+                    );
                   })
                   .catch((err) => {
                     dev.error(`Error applying recipe : ${err}`);
@@ -2358,6 +2393,52 @@ module.exports = (function () {
               });
           }
         });
+    });
+  }
+
+  function _refreshFileMeta({ meta, path_to_media }) {
+    return new Promise(function (resolve, reject) {
+      dev.logfunction(`COMMON — _refreshFileMeta`);
+
+      let tasks = [];
+      let _meta = {
+        file_meta: [],
+      };
+
+      let getFileSize = new Promise((resolve, reject) => {
+        fs.stat(path_to_media, function (err, stats) {
+          if (err || !stats.hasOwnProperty("size")) return resolve();
+          _meta.file_meta.push({ size: stats.size });
+          return resolve();
+        });
+      });
+      tasks.push(getFileSize);
+
+      let getEXIFData = new Promise((resolve, reject) => {
+        thumbs
+          .getMediaEXIF({ type: meta.type, mediaPath: path_to_media })
+          .then((exif_meta) => {
+            Object.entries(exif_meta).map(([key, value]) => {
+              _meta.file_meta.push({ [key]: value });
+            });
+
+            if (exif_meta.hasOwnProperty("duration"))
+              _meta.duration = exif_meta.duration;
+            if (exif_meta.hasOwnProperty("ratio"))
+              _meta.ratio = exif_meta.ratio;
+
+            return resolve();
+          })
+          .catch((err) => {
+            dev.error(`No EXIF data to read from: ${err}`);
+            return resolve();
+          });
+      });
+      tasks.push(getEXIFData);
+
+      Promise.all(tasks).then(() => {
+        resolve({ _meta });
+      });
     });
   }
 

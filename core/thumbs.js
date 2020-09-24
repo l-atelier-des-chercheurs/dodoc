@@ -53,7 +53,6 @@ module.exports = (function () {
         slugFolderName
       );
       let mediaPath = path.join(mainFolderPath, slugFolderName, filename);
-      let relativeMediaPath = path.join();
 
       // let’s make sure that our thumb folder exists first
       fs.mkdirp(api.getFolderPath(thumbFolderPath), function (err) {

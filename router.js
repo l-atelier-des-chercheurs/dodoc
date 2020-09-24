@@ -269,48 +269,49 @@ module.exports = function (app) {
     });
     if (!isSocketAllowed) return false;
 
-    generatePageData(req).then((pageData) => {
-      exporter.loadPublication(slugPubliName, pageData).then((pageData) => {
-        pageData.mode = "export_publication";
-        res.render("index", pageData, (err, html) => {
-          exporter
-            .copyFolderContent({
-              html,
-              folders_and_medias: pageData.folderAndMediaData,
-              slugFolderName: slugPubliName,
-            })
-            .then(
-              (cachePath) => {
-                var archive = archiver("zip", {
-                  zlib: { level: 0 }, //
-                });
+    let pageData = await generatePageData(req);
 
-                archive.on("error", function (err) {
-                  res.status(500).send({ error: err.message });
-                  return;
-                });
+    pageData = await exporter.loadPublication(slugPubliName, pageData);
 
-                //on stream closed we can end the request
-                archive.on("end", function () {
-                  dev.log("Archive wrote %d bytes", archive.pointer());
-                });
+    pageData.mode = "export_publication";
 
-                //set the archive name
-                res.attachment(slugPubliName + ".zip");
+    res.render("index", pageData, (err, html) => {
+      exporter
+        .copyFolderContent({
+          html,
+          folders_and_medias: pageData.folderAndMediaData,
+          slugFolderName: slugPubliName,
+        })
+        .then(
+          (cachePath) => {
+            var archive = archiver("zip", {
+              zlib: { level: 0 }, //
+            });
 
-                //this is the streaming magic
-                archive.pipe(res);
+            archive.on("error", function (err) {
+              res.status(500).send({ error: err.message });
+              return;
+            });
 
-                archive.directory(cachePath, false);
+            //on stream closed we can end the request
+            archive.on("end", function () {
+              dev.log("Archive wrote %d bytes", archive.pointer());
+            });
 
-                archive.finalize();
-              },
-              (err, p) => {
-                dev.error("Failed while preparing/making a web export");
-              }
-            );
-        });
-      });
+            //set the archive name
+            res.attachment(slugPubliName + ".zip");
+
+            //this is the streaming magic
+            archive.pipe(res);
+
+            archive.directory(cachePath, false);
+
+            archive.finalize();
+          },
+          (err, p) => {
+            dev.error("Failed while preparing/making a web export");
+          }
+        );
     });
   }
 
@@ -472,15 +473,15 @@ module.exports = function (app) {
   }
 
   async function isSocketIDAuthorized({ socketid, type, slugFolderName }) {
-    let socket;
-
     if (!socketid) throw "Missing socketid in URL";
 
-    try {
-      socket = sockets.io().sockets.connected[socketid];
-    } catch (error) {
+    const connected_sockets = sockets.io().sockets.connected;
+
+    if (!connected_sockets || !connected_sockets.hasOwnProperty(socketid)) {
       throw "Missing sockets server-side.";
     }
+
+    const socket = connected_sockets[socketid];
 
     const foldersData = await file.getFolder({ type, slugFolderName });
     if (
@@ -488,6 +489,13 @@ module.exports = function (app) {
         .canEditFolder(socket, foldersData[slugFolderName], type)
         .catch((err) => {
           dev.error(`Failed to edit folder: ${err}`);
+          notify({
+            socket,
+            socketid: socket.id,
+            localized_string: `action_not_allowed`,
+            not_localized_string: `Error: folder can’t be edited ${slugFolderName} ${err}`,
+            type: "error",
+          });
         }))
     )
       throw "User can’t edit folder";

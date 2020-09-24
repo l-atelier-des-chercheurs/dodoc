@@ -22,36 +22,41 @@
           :src="linkToComplexMediaThumb({ opt: 'timeMark' })"
           draggable="false"
         />
-        <div class="play_picto">
-          <svg
-            class
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="169px"
-            height="169px"
-            viewBox="0 0 169 169"
-            style="enable-background: new 0 0 169 169;"
-            xml:space="preserve"
-          >
-            <path
-              d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
-            />
-          </svg>
-
+        <div class="">
+          <div class="play_picto">
+            <svg
+              class
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="169px"
+              height="169px"
+              viewBox="0 0 169 169"
+              style="enable-background: new 0 0 169 169"
+              xml:space="preserve"
+            >
+              <path
+                d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
+              />
+            </svg>
+          </div>
           <div v-if="media_duration" class="_duration">
-            {{ $root.formatDurationToMinuteHours(media_duration * 1000) }}
+            {{
+              $root.formatDurationToHoursMinutesSeconds(media_duration * 1000)
+            }}
           </div>
         </div>
       </template>
       <template v-else>
         <vue-plyr
+          :key="mediaURL"
           :options="plyr_options"
           ref="plyr"
-          :emit="['volumechange']"
+          :emit="['volumechange', 'timeupdate']"
           @volumechange="volumeChanged"
+          @timeupdate="videoTimeUpdated"
         >
           <video
             :poster="linkToComplexMediaThumb({ opt: 'timeMark' })"
@@ -129,7 +134,7 @@
             width="169px"
             height="169px"
             viewBox="0 0 169 169"
-            style="enable-background: new 0 0 169 169;"
+            style="enable-background: new 0 0 169 169"
             xml:space="preserve"
           >
             <path
@@ -139,7 +144,13 @@
         </div>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options">
+        <vue-plyr
+          :options="plyr_options"
+          :emit="['volumechange', 'timeupdate']"
+          ref="plyr"
+          @volumechange="volumeChanged"
+          @timeupdate="videoTimeUpdated"
+        >
           <audio :src="mediaURL" preload="none" :autoplay="autoplay" />
         </vue-plyr>
       </template>
@@ -404,6 +415,9 @@ export default {
     volumeChanged(event) {
       const vol = Math.round(Number(event.detail.plyr.volume) * 100);
       this.$emit("volumeChanged", vol);
+    },
+    videoTimeUpdated(event) {
+      this.$emit("videoTimeUpdated", event.detail.plyr.media.currentTime);
     },
     setVolume(val) {
       if (this.$refs.hasOwnProperty("plyr")) {

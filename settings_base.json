@@ -23,6 +23,11 @@
   "thumbFolderName": "_thumbs",
   "deletedFolderName": "_bin",
 
+  "ffmpeg_options": {
+    "priority": 0,
+    "timeout": 600
+  },
+
   "mediaThumbQuality": 70,
   "maxFileSizeForUpload": 10000,
 

@@ -329,6 +329,11 @@ let vm = new Vue({
         author: "",
         name: "",
       },
+      publication_filter: {
+        keyword: "",
+        author: "",
+        name: "",
+      },
       media_filter: {
         keyword: "",
         author: "",
@@ -1053,9 +1058,6 @@ let vm = new Vue({
       let uniqueAuthors = [];
       Object.values(base).map((meta) => {
         if (!meta["authors"]) return;
-        if (typeof meta.authors === "string") {
-          meta.authors = [{ name: meta.authors }];
-        }
         meta.authors.map((k) => {
           if (uniqueAuthors.indexOf(k.slugFolderName) == -1)
             uniqueAuthors.push(k.slugFolderName);
@@ -1420,21 +1422,25 @@ let vm = new Vue({
       return false;
     },
     openProject: function (slugProjectName) {
-      if (window.state.dev_mode === "debug") {
+      if (window.state.dev_mode === "debug")
         console.log(`ROOT EVENT: openProject: ${slugProjectName}`);
-      }
-      if (
-        !this.store.projects.hasOwnProperty(slugProjectName) ||
-        !this.canSeeFolder({
-          type: "projects",
-          slugFolderName: slugProjectName,
-        })
-      ) {
+
+      if (!this.store.projects.hasOwnProperty(slugProjectName)) {
         console.log("Missing folder key on the page, aborting.");
         this.closeProject();
         return false;
       }
 
+      if (
+        !this.canSeeFolder({
+          type: "projects",
+          slugFolderName: slugProjectName,
+        })
+      ) {
+        console.log("User can’t see project.");
+        this.closeProject();
+        return false;
+      }
       this.do_navigation.view = "ProjectView";
       this.do_navigation.current_slugProjectName = slugProjectName;
 
@@ -1492,6 +1498,20 @@ let vm = new Vue({
         this.settings.media_filter.keyword = newKeywordFilter;
       } else {
         this.settings.media_filter.keyword = "";
+      }
+    },
+    setPubliKeywordFilter(newKeywordFilter) {
+      if (this.settings.publication_filter.keyword !== newKeywordFilter) {
+        this.settings.publication_filter.keyword = newKeywordFilter;
+      } else {
+        this.settings.publication_filter.keyword = "";
+      }
+    },
+    setPubliAuthorFilter(newAuthorFilter) {
+      if (this.settings.publication_filter.author !== newAuthorFilter) {
+        this.settings.publication_filter.author = newAuthorFilter;
+      } else {
+        this.settings.publication_filter.author = "";
       }
     },
     setMediaAuthorFilter(newAuthorFilter) {
@@ -1700,27 +1720,6 @@ let vm = new Vue({
         console.log(`ROOT EVENT: newTagDetected with e.detail = ${e.detail}`);
       }
 
-      // EXPERIMENTAL : SPECIFIC TAGS OPEN MEDIA MODAL
-      // '3121284126' '3121310334' '3121063518' '3121370062'
-
-      // const nfc_custom_tags = [
-      //   {
-      //     id: '3121284126',
-      //     slugProjectName: '110bis-16-novembre',
-      //     metaFileName: 'question-1-49.jpg.txt'
-      //   },
-      //   {
-      //     id: '3121370062',
-      //     slugProjectName: '110bis-16-novembre',
-      //     metaFileName: 'question-2-49-49-49.jpg.txt'
-      //   },
-      //   {
-      //     id: '3121063518',
-      //     slugProjectName: '110bis-16-novembre',
-      //     metaFileName: 'question-3-49-49-49.jpg.txt'
-      //   }
-      // ];
-
       // const matching_tags = nfc_custom_tags.filter(nfc => nfc.id === e.detail);
 
       // if (matching_tags.length > 0) {
@@ -1762,6 +1761,8 @@ let vm = new Vue({
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t("notifications.no_content_found_with_nfc_tag"));
+
+        this.$eventHub.$emit("tag.new_tag_not_attributed", e.detail);
         return;
       }
 
@@ -1862,8 +1863,11 @@ let vm = new Vue({
     formatDateToPrecise(date) {
       return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");
     },
-    formatDurationToMinuteHours(date) {
+    formatDurationToMinuteSeconds(date) {
       return this.$moment.utc(date).format("mm:ss");
+    },
+    formatDurationToHoursMinutesSeconds(date) {
+      return this.$moment.utc(date).format("HH:mm:ss");
     },
     updateNetworkInfos() {
       this.$socketio.updateNetworkInfos();

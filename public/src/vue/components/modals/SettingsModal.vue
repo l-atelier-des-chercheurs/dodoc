@@ -25,91 +25,66 @@
                 v-for="lang in this.$root.lang.available"
                 :key="lang.key"
                 :value="lang.key"
-                >{{ lang.name }}</option
               >
+                {{ lang.name }}
+              </option>
             </select>
           </div>
           <small v-html="$t('translate_dodoc_instructions')" />
         </div>
       </div>
       <div class="margin-sides-medium">
-        <div class="margin-vert-small">
-          <label>{{ $t("journal") }}</label
-          ><br />
-          <template v-if="!$root.current_author_is_admin">
-            <small>{{ $t("only_available_to_admins") }}</small>
-          </template>
-          <template v-else>
-            <!-- <button type="button" @click="loadJournal">
+        <div class="margin-vert-small" style="position: relative">
+          <label>{{ $t("journal") }}</label>
+          <div>
+            <template v-if="!$root.current_author_is_admin">
+              <small>{{ $t("only_available_to_admins") }}</small>
+            </template>
+            <Loader v-else-if="is_loading_journal" />
+            <template v-else-if="show_journal">
+              <!-- <button type="button" @click="loadJournal">
               {{ $t("reload") }}
             </button> -->
-
-            <table class="table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th colspan="1">
-                    {{ $t("date") }}
-                  </th>
-                  <th colspan="1">
-                    {{ $t("author") }}
-                  </th>
-                  <th colspan="1">
-                    {{ $t("action") }}
-                  </th>
-                  <th>
-                    {{ $t("detail") }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(entry, index) of journal_entries" :key="index">
-                  <td>
-                    {{ entry.date }}
-                  </td>
-                  <td>
-                    {{ entry.author }}
-                  </td>
-                  <td>
-                    {{ $t(entry.action).toLowerCase() }}
-                  </td>
-                  <td>
-                    <small v-if="show_detail_for_entry === index">
-                      {{ entry.detail }}
-                    </small>
-                    <button
-                      type="button"
-                      class="button-small"
-                      v-if="show_detail_for_entry !== index"
-                      @click="show_detail_for_entry = index"
-                    >
-                      {{ $t("show") }}
-                    </button>
-                    <button
-                      type="button"
-                      class="button-small"
-                      v-if="show_detail_for_entry === index"
-                      @click="show_detail_for_entry = false"
-                    >
-                      {{ $t("hide") }}
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </template>
+              <ActivityJournal :journal_entries="$root.state.journal" />
+            </template>
+          </div>
+          <div>
+            <button
+              type="button"
+              class="button-greenthin margin-left-none"
+              v-if="$root.current_author_is_admin"
+              @click="loadJournal"
+            >
+              <template v-if="!show_journal">{{ $t("show") }}</template>
+              <template v-else>{{ $t("reload") }}</template>
+            </button>
+            <button
+              type="button"
+              class="button-greenthin margin-left-none"
+              v-if="$root.current_author_is_admin && show_journal"
+              @click="emptyJournal"
+            >
+              {{ $t("empty_content") }}
+            </button>
+          </div>
         </div>
       </div>
     </template>
   </Modal>
 </template>
 <script>
+import ActivityJournal from "../subcomponents/ActivityJournal.vue";
+
 export default {
   props: ["read_only"],
-  components: {},
+  components: {
+    ActivityJournal,
+  },
   data() {
     return {
       new_lang: this.$root.lang.current,
-      show_detail_for_entry: false,
+      show_journal: false,
+      is_loading_journal: false,
     };
   },
   watch: {
@@ -118,31 +93,25 @@ export default {
     },
   },
   mounted() {
-    if (this.$root.current_author_is_admin) this.loadJournal();
+    // if (this.$root.current_author_is_admin) this.loadJournal();
   },
-  computed: {
-    journal_entries() {
-      let journal = this.$root.state.journal;
-      if (typeof journal !== "object" || this.$root.state.journal.length === 0)
-        return false;
-
-      journal = journal.map((j) => {
-        if (j.author) {
-          const author = this.$root.getAuthor(j.author);
-          if (author) j.author = author.name;
-        }
-        if (j.timestamp && this.$moment(+j.timestamp).isValid()) {
-          j.date = this.$moment(+j.timestamp).calendar();
-        }
-        return j;
-      });
-
-      return journal;
-    },
-  },
+  computed: {},
   methods: {
     loadJournal() {
-      this.$socketio.loadJournal();
+      this.show_journal = true;
+
+      this.is_loading_journal = true;
+
+      this.$nextTick(() => {
+        this.$socketio.loadJournal();
+      });
+
+      this.$eventHub.$once(`socketio.journal.is_loaded`, () => {
+        this.is_loading_journal = false;
+      });
+    },
+    emptyJournal() {
+      this.$socketio.emptyJournal();
     },
   },
 };

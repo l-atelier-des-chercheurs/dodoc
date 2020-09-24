@@ -173,11 +173,11 @@
             width="4px"
             height="16.2px"
             viewBox="0 0 4 16.2"
-            style="enable-background: new 0 0 4 16.2;"
+            style="enable-background: new 0 0 4 16.2"
             xml:space="preserve"
           >
             <path
-              style="fill: currentColor;"
+              style="fill: currentColor"
               d="M0,14.1c0,1.1,0.9,2,2,2s2-0.9,2-2s-0.9-2-2-2S0,13,0,14.1z M0,2c0,1.1,0.9,2,2,2s2-0.9,2-2S3.1,0,2,0
 	S0,0.9,0,2z M0,8.1c0,1.1,0.9,2,2,2s2-0.9,2-2s-0.9-2-2-2S0,7,0,8.1z"
             />
@@ -202,7 +202,7 @@
               width="46.7px"
               height="70px"
               viewBox="0 0 46.7 70"
-              style="enable-background: new 0 0 46.7 70;"
+              style="enable-background: new 0 0 46.7 70"
               xml:space="preserve"
             >
               <g>
@@ -241,7 +241,7 @@
               width="113.5px"
               height="113.5px"
               viewBox="0 0 113.5 113.5"
-              style="enable-background: new 0 0 113.5 113.5;"
+              style="enable-background: new 0 0 113.5 113.5"
               xml:space="preserve"
             >
               <path
@@ -275,7 +275,7 @@
               width="37.2px"
               height="37.2px"
               viewBox="0 0 37.2 37.2"
-              style="enable-background: new 0 0 37.2 37.2;"
+              style="enable-background: new 0 0 37.2 37.2"
               xml:space="preserve"
             >
               <polygon
@@ -442,13 +442,15 @@ export default {
           metaFileName: this.media._linked_media.metaFileName,
         });
     },
-    updateMediaPubliMeta(val) {
+    updateMediaPubliMeta(values) {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • MediaPublication: updateMediaPubliMeta`);
+        console.log(`METHODS • MediaPublicationReply: updateMediaPubliMeta`);
+
+      debugger;
 
       this.$emit("editPubliMedia", {
         metaFileName: this.media.metaFileName,
-        val,
+        values,
       });
     },
     updateTextMedia() {
@@ -489,7 +491,7 @@ export default {
       if (this.is_selected) return;
 
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • MediaPublication: deselectMedia`);
+        console.log(`METHODS • MediaPublicationReply: deselectMedia`);
 
       // if shift is not hold down
       // then we unselect everything
@@ -501,7 +503,7 @@ export default {
     },
     deselectMedia() {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`METHODS • MediaPublication: deselectMedia`);
+        console.log(`METHODS • MediaPublicationReply: deselectMedia`);
 
       this.show_advanced_menu = false;
 

@@ -9,10 +9,7 @@
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
   >
-    <div
-      class="m_project--presentation"
-      :class="{ 'is--full': context === 'full' }"
-    >
+    <div class="m_project--presentation" :class="{ 'is--full': context === 'full' }">
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
@@ -24,9 +21,7 @@
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
-        >
-          {{ $t("add_a_cover_image") }}
-        </button>
+        >{{ $t("add_a_cover_image") }}</button>
       </div>
 
       <div class="m_project--presentation--text">
@@ -51,8 +46,7 @@
                     $root.settings.project_filter.keyword === keyword.title,
                 },
               ]"
-              >{{ keyword.title }}</span
-            >
+            >{{ keyword.title }}</span>
           </div>
           <div class="m_metaField" v-if="!!project.authors">
             <div>{{ $t("author") }}</div>
@@ -69,20 +63,15 @@
                       author.slugFolderName,
                 }"
               >
-                <template v-if="$root.getAuthor(author.slugFolderName)">
-                  {{ $root.getAuthor(author.slugFolderName).name }}
-                </template>
-                <template v-else>
-                  {{ author.slugFolderName }}
-                </template>
+                <template
+                  v-if="$root.getAuthor(author.slugFolderName)"
+                >{{ $root.getAuthor(author.slugFolderName).name }}</template>
+                <template v-else>{{ author.slugFolderName }}</template>
               </span>
             </div>
           </div>
 
-          <div
-            class="m_metaField"
-            v-if="!!project.folder && context === 'full'"
-          >
+          <div class="m_metaField" v-if="!!project.folder && context === 'full'">
             <div>{{ $t("folder") }}</div>
             <div class="m_folderField">
               <span>{{ project.folder }}</span>
@@ -292,10 +281,7 @@
                       d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2 L23.3,59.6L3.2,41.5L8.5,35.2z"
                     />
                   </g>
-                  <polygon
-                    class="st0"
-                    points="46.7,70 0,70 0,62.4 46.6,62.4 	"
-                  />
+                  <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
                 </g>
               </svg>
             </template>
@@ -341,12 +327,7 @@
           <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
             <label v-html="$t('name_of_copy')" />
             <form @submit.prevent="duplicateWithNewName()" class="input-group">
-              <input
-                type="text"
-                v-model.trim="copy_project_name"
-                required
-                autofocus
-              />
+              <input type="text" v-model.trim="copy_project_name" required autofocus />
               <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
             </form>
           </div>
@@ -361,10 +342,7 @@
         :read_only="read_only"
       />
 
-      <ClientsCheckingOut
-        :type="'projects'"
-        :slugFolderName="slugProjectName"
-      />
+      <ClientsCheckingOut :type="'projects'" :slugFolderName="slugProjectName" />
     </div>
 
     <MediaLibrary
@@ -425,10 +403,10 @@ export default {
         });
       }
     },
-    is_selected: function () {
+    is_selected: function() {
       this.local_is_selected = this.is_selected;
     },
-    "project.viewing_limited_to": function () {
+    "project.viewing_limited_to": function() {
       this.$socketio.listMedias({
         type: "projects",
         slugFolderName: this.slugProjectName,
@@ -461,7 +439,7 @@ export default {
       ) {
         return false;
       }
-      const thumb = this.project.preview.filter((p) => p.size === 640);
+      const thumb = this.project.preview.filter(p => p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }
@@ -574,7 +552,7 @@ export default {
           `Project • METHODS: downloadProjectArchive with query ${query_url}`
         );
 
-      window.location.replace(query_url);
+      window.open(query_url, "_blank");
     },
   },
 };
