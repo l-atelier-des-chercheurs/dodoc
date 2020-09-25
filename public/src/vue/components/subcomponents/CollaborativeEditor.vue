@@ -90,6 +90,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    show_cursors: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {
     ClientsCheckingOut,
@@ -256,7 +260,8 @@ export default {
     });
 
     this.$refs.editor.dataset.quill = this.editor;
-    this.cursors = this.editor.getModule("cursors");
+
+    if (this.show_cursors) this.cursors = this.editor.getModule("cursors");
 
     if (this.read_only || this.$root.state.mode !== "live")
       this.editor.disable();
@@ -266,8 +271,10 @@ export default {
         ? this.$root.current_author.name
         : this.$t("anonymous");
 
-      this.cursors.createCursor("_self", name, "#1d327f");
-      this.cursors.toggleFlag("_self", false);
+      if (this.show_cursors) {
+        this.cursors.createCursor("_self", name, "#1d327f");
+        this.cursors.toggleFlag("_self", false);
+      }
     }
 
     this.$nextTick(() => {
@@ -332,39 +339,43 @@ export default {
     },
     other_clients_editing() {
       // compare other_clients_editing with cursors
-      const cursors = this.cursors.cursors();
 
-      this.other_clients_editing.map(({ name, index, length }) => {
-        // check if client has cursor locally
-        if (!cursors.find((cursor) => cursor.id === name)) {
-          const color = this.getColorFromName(name);
-          this.cursors.createCursor(name, name, color);
-          this.cursors.moveCursor(name, { index, length });
-          this.cursors.toggleFlag(name);
-        } else {
-          // detect changes, only update for client whose index or length changed
+      if (this.show_cursors) {
+        const cursors = this.cursors.cursors();
+
+        this.other_clients_editing.map(({ name, index, length }) => {
+          // check if client has cursor locally
+          if (!cursors.find((cursor) => cursor.id === name)) {
+            const color = this.getColorFromName(name);
+            this.cursors.createCursor(name, name, color);
+            this.cursors.moveCursor(name, { index, length });
+            this.cursors.toggleFlag(name);
+          } else {
+            // detect changes, only update for client whose index or length changed
+            if (
+              this.local_other_clients_editing.find(
+                (local_client) =>
+                  local_client.name === name &&
+                  (local_client.index !== index ||
+                    local_client.length !== length)
+              )
+            ) {
+              this.cursors.moveCursor(name, { index, length });
+            }
+          }
+        });
+
+        cursors.map((cursor) => {
           if (
-            this.local_other_clients_editing.find(
-              (local_client) =>
-                local_client.name === name &&
-                (local_client.index !== index || local_client.length !== length)
+            cursor.id !== "_self" &&
+            !this.other_clients_editing.find(
+              (client) => client.name === cursor.id
             )
           ) {
-            this.cursors.moveCursor(name, { index, length });
+            this.cursors.removeCursor(cursor.id);
           }
-        }
-      });
-
-      cursors.map((cursor) => {
-        if (
-          cursor.id !== "_self" &&
-          !this.other_clients_editing.find(
-            (client) => client.name === cursor.id
-          )
-        ) {
-          this.cursors.removeCursor(cursor.id);
-        }
-      });
+        });
+      }
 
       this.local_other_clients_editing = JSON.parse(
         JSON.stringify(this.other_clients_editing)
