@@ -88,6 +88,7 @@
             :theme="'bubble'"
             :type="'publications'"
             :slugFolderName="slugPubliName"
+            :show_cursors="false"
             ref="textField"
           />
           <div v-else class="mediaTextContent">
