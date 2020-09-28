@@ -171,10 +171,17 @@ module.exports = function (app) {
   async function replyToPublication(req, res) {
     let slugPubliName = req.param("publication");
     const type = "publications";
-
     dev.logfunction(
       `ROUTER — replyToPublication • slugPubliName = ${slugPubliName}`
     );
+
+    let keywords = undefined;
+    if (req.query && req.query.hasOwnProperty("keyword")) {
+      if (typeof req.query.keyword === "string")
+        keywords = [{ title: req.query.keyword }];
+      else if (Array.isArray(req.query.keyword))
+        keywords = req.query.keyword.map((k) => ({ title: k }));
+    }
 
     const foldersData = await file
       .getFolder({
@@ -210,7 +217,7 @@ module.exports = function (app) {
     );
 
     // en créé une nouvelle : nom = aléatoire, modèle = slugPubliName, edition par tt le monde
-    const data = {
+    let data = {
       name: `«${folders_meta.name}»`,
       desired_foldername: `${folders_meta.name}-reply-${rnd}`,
       follows_model: slugPubliName,
@@ -218,6 +225,8 @@ module.exports = function (app) {
       editing_limited_to: "everybody",
       viewing_limited_to: "everybody",
     };
+
+    if (keywords) data.keywords = keywords;
 
     const slugFolderName = await file
       .createFolder({ type, data })
