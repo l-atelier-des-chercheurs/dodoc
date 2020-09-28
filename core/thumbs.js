@@ -177,7 +177,7 @@ module.exports = (function () {
                   makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
                 });
                 Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
-                  resolve({ thumbsData });
+                  resolve({ waveformType: "mono", thumbsData });
                 });
               })
               .catch((err) => {
@@ -664,7 +664,7 @@ module.exports = (function () {
         `THUMBS — _makeAudioWaveforms — Looking to make an audio waveform for ${mediaPath}`
       );
 
-      let screenshotName = `${filename}.wf.jpeg`;
+      let screenshotName = `${filename}.wf.png`;
       let screenshotPath = path.join(thumbFolderPath, screenshotName);
       let fullScreenshotPath = api.getFolderPath(screenshotPath);
 
@@ -674,7 +674,7 @@ module.exports = (function () {
         if (err) {
           ffmpeg()
             .input(mediaPath)
-            .input(`color=#353535:s=3000x2000`)
+            .input(`color=white:s=3000x2000`)
             .inputFormat("lavfi")
             .complexFilter(
               "[0:a]aformat=channel_layouts=mono,showwavespic=s=3000x2000:colors=#fc4b60[fg];[1:v][fg]overlay=format=auto"
