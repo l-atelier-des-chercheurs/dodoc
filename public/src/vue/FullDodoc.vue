@@ -76,7 +76,6 @@
               'is--large': publiPanel_is_large,
             }"
           >
-            {{ publiPanel_is_large }}
             <div style="position: relative; height: 100%; overflow: hidden">
               <transition name="ListView" :duration="500">
                 <Publications
