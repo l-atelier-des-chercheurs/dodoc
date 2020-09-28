@@ -23,24 +23,23 @@
           />
         </div>
         <div class="m_actionbar--text">
-          <div>{{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}</div>
+          <div>
+            {{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}
+          </div>
 
           <template v-if="publications.length > 0">
             <div>
               {{ $t("showing") }}
               <span
                 :class="{
-                        'c-rouge':
-                          sorted_publications.length !==
-                          publications.length,
-                      }"
+                  'c-rouge': sorted_publications.length !== publications.length,
+                }"
               >
                 {{ sorted_publications.length }}
                 <template
-                  v-if="
-                          sorted_publications.length === publications.length
-                        "
-                >{{ $t("recipes") }}</template>
+                  v-if="sorted_publications.length === publications.length"
+                  >{{ $t("recipes") }}</template
+                >
                 <template v-else>
                   {{ $t("recipes_of") }}
                   {{ Object.keys(publications).length }}
@@ -48,9 +47,8 @@
               </span>
               <template
                 v-if="
-                        $root.allKeywords.length > 0 ||
-                        $root.all_authors.length > 0
-                      "
+                  $root.allKeywords.length > 0 || $root.all_authors.length > 0
+                "
               >
                 —
                 <button
@@ -58,7 +56,9 @@
                   class="button-nostyle text-uc button-triangle"
                   :class="{ 'is--active': show_filters }"
                   @click="show_filters = !show_filters"
-                >{{ $t("filters") }}</button>
+                >
+                  {{ $t("filters") }}
+                </button>
               </template>
               <TagsAndAuthorFilters
                 v-if="show_filters"
@@ -66,9 +66,7 @@
                 :allAuthors="publis_authors"
                 :keywordFilter="$root.settings.publication_filter.keyword"
                 :authorFilter="$root.settings.publication_filter.author"
-                @setKeywordFilter="
-                        (a) => $root.setPubliKeywordFilter(a)
-                      "
+                @setKeywordFilter="(a) => $root.setPubliKeywordFilter(a)"
                 @setAuthorFilter="(a) => $root.setPubliAuthorFilter(a)"
               />
             </div>
@@ -77,10 +75,10 @@
                 type="button"
                 class="button-nostyle text-uc button-triangle"
                 :class="{
-                        'is--active':
-                          show_search ||
-                          $root.settings.publication_filter.name.length > 0,
-                      }"
+                  'is--active':
+                    show_search ||
+                    $root.settings.publication_filter.name.length > 0,
+                }"
                 @click="show_search = !show_search"
               >
                 <svg
@@ -93,7 +91,7 @@
                   width="96.2px"
                   height="96.2px"
                   viewBox="0 0 96.2 96.2"
-                  style="margin-bottom: -2px;"
+                  style="margin-bottom: -2px"
                   xml:space="preserve"
                 >
                   <path
@@ -107,22 +105,29 @@
 
               <div
                 v-if="
-                        show_search || debounce_search_publication_name.length > 0
-                      "
+                  show_search || debounce_search_publication_name.length > 0
+                "
                 class="rounded"
               >
                 <div>{{ $t("recipe_name_to_find") }}</div>
 
                 <div class="input-group">
-                  <input type="text" class v-model="debounce_search_publication_name" />
-                  <span class="input-addon" v-if="debounce_search_publication_name.length > 0">
+                  <input
+                    type="text"
+                    class
+                    v-model="debounce_search_publication_name"
+                  />
+                  <span
+                    class="input-addon"
+                    v-if="debounce_search_publication_name.length > 0"
+                  >
                     <button
                       type="button"
-                      :disabled="
-                              debounce_search_publication_name.length === 0
-                            "
+                      :disabled="debounce_search_publication_name.length === 0"
                       @click="debounce_search_publication_name = ''"
-                    >×</button>
+                    >
+                      ×
+                    </button>
                   </span>
                 </div>
               </div>
@@ -133,7 +138,9 @@
       <div class="m_displayMyContent" v-if="$root.current_author">
         <span>{{ $t("show") }}</span>
         <select v-model="show_only_my_content">
-          <option :value="true">{{ $t("only_my_recipes").toLowerCase() }}</option>
+          <option :value="true">
+            {{ $t("only_my_recipes").toLowerCase() }}
+          </option>
           <option :value="false">{{ $t("all_recipes").toLowerCase() }}</option>
         </select>
       </div>
@@ -149,7 +156,7 @@
           :value="project.slugFolderName"
         >
           {{ project.name }} ({{
-          recipesForThisProject(project.slugFolderName).length
+            recipesForThisProject(project.slugFolderName).length
           }})
         </option>
       </select>
@@ -157,7 +164,11 @@
     <!-- liste des recettes -->
     <div class="m_recipes">
       <!-- pour chaque recette -->
-      <div class="m_recipes--recipe" v-for="recipe in recipes" :key="recipe.key">
+      <div
+        class="m_recipes--recipe"
+        v-for="recipe in recipes"
+        :key="recipe.key"
+      >
         <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
         <div class="m_recipes--recipe--text">
           <h2 class>{{ $t(recipe.key) }}</h2>
@@ -169,7 +180,9 @@
               type="button"
               class="buttonLink margin-left-none padding-left-none"
               @click="recipe.show_instructions = !recipe.show_instructions"
-            >+ {{ $t("more_informations") }}</button>
+            >
+              + {{ $t("more_informations") }}
+            </button>
           </p>
           <template v-if="recipe.show_instructions">
             <hr />
@@ -233,7 +246,9 @@
                 class="m_recipes--recipe--mealList--meal"
               >
                 <td colspan="6">
-                  <button type="button" class="buttonLink margin-none">{{ $t("show_all") }}</button>
+                  <button type="button" class="buttonLink margin-none">
+                    {{ $t("show_all") }}
+                  </button>
                 </td>
               </tr>
             </tbody>
