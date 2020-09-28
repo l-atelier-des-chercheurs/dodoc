@@ -96,7 +96,9 @@
           :disabled="opened_page_index === 0"
         >
           <img src="/images/i_arrow_left.svg" draggable="false" />
-          {{ $t("previous_page") }}
+          <span>
+            {{ $t("previous_page") }}
+          </span>
         </button>
         <div class="font-small text-lc">
           <span
@@ -115,7 +117,9 @@
           @click="navPage(+1)"
           :disabled="opened_page_index === pagesWithDefault.length - 1"
         >
-          {{ $t("next_page") }}
+          <span>
+            {{ $t("next_page") }}
+          </span>
           <img src="/images/i_arrow_right.svg" draggable="false" />
         </button>
       </div>
@@ -220,7 +224,7 @@
                     width="168px"
                     height="168px"
                     viewBox="0 0 168 168"
-                    style="enable-background: new 0 0 168 168;"
+                    style="enable-background: new 0 0 168 168"
                     xml:space="preserve"
                   >
                     <rect x="73.5" y="37" class="st0" width="21" height="21" />
@@ -492,7 +496,7 @@
     />
     <div
       ref="mmMeasurer"
-      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
+      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%"
     />
   </div>
 </template>

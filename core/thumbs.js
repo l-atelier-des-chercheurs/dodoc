@@ -38,7 +38,7 @@ module.exports = (function () {
       dev.logfunction(
         `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType}, type: ${type}, subtype: ${subtype}`
       );
-      if (!["image", "video", "stl"].includes(mediaType)) {
+      if (!["image", "video", "audio", "stl"].includes(mediaType)) {
         dev.logverbose(
           `THUMBS — makeMediaThumbs — media is not of type image or video`
         );
@@ -86,9 +86,7 @@ module.exports = (function () {
             });
             makeThumbs.push(makeThumb);
           });
-        }
-
-        if (mediaType === "video") {
+        } else if (mediaType === "video") {
           // make screenshot
           let screenshotsTimemarks = [0];
           screenshotsTimemarks.forEach((timeMark) => {
@@ -144,9 +142,54 @@ module.exports = (function () {
             });
             makeThumbs.push(makeScreenshot);
           });
-        }
+        } else if (mediaType === "audio") {
+          // make screenshot
+          let makeWaveform = new Promise((resolve, reject) => {
+            _makeAudioWaveforms(mediaPath, thumbFolderPath, filename)
+              .then(({ screenshotPath, screenshotName }) => {
+                // make screenshot, then make thumbs out of each screenshot and push this to thumbs
+                // naming :
+                // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
+                // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
+                let makeThumbsFromScreenshot = [];
 
-        if (mediaType === "stl") {
+                thumbResolutions.forEach((thumbRes) => {
+                  let makeThumbFromScreenshot = new Promise(
+                    (resolve, reject) => {
+                      _makeImageThumb(
+                        api.getFolderPath(screenshotPath),
+                        thumbFolderPath,
+                        screenshotName,
+                        thumbRes
+                      )
+                        .then((thumbPath) => {
+                          let thumbMeta = {
+                            path: thumbPath,
+                            size: thumbRes,
+                          };
+                          resolve(thumbMeta);
+                        })
+                        .catch((err) => {
+                          dev.error(
+                            `makeMediaThumbs / Failed to make video thumbs with error ${err}`
+                          );
+                          resolve();
+                        });
+                    }
+                  );
+                  makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
+                });
+                Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
+                  resolve({ waveformType: "mono", thumbsData });
+                });
+              })
+              .catch((err) => {
+                dev.error(`Couldn’t make audio waveforms.`);
+                resolve();
+              });
+          });
+          makeThumbs.push(makeWaveform);
+        } else if (mediaType === "stl") {
           let screenshotsAngles = [0];
           screenshotsAngles.forEach((angle) => {
             let makeSTLScreenshot = new Promise((resolve, reject) => {
@@ -580,7 +623,7 @@ module.exports = (function () {
   ) {
     return new Promise(function (resolve, reject) {
       dev.logfunction(
-        `THUMBS — _makeVideoScreenshot: for ${mediaPath} and timeMark = ${timeMark}`
+        `THUMBS — _makeVideoScreenshot — Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark}`
       );
 
       let screenshotName = `${filename}.${timeMark}.jpeg`;
@@ -609,6 +652,50 @@ module.exports = (function () {
               filename: screenshotName,
               folder: api.getFolderPath(thumbFolderPath),
             });
+        } else {
+          dev.logverbose(
+            `Screenshots already exist at path ${fullScreenshotPath}`
+          );
+          resolve({ screenshotPath, screenshotName });
+        }
+      });
+    });
+  }
+
+  function _makeAudioWaveforms(mediaPath, thumbFolderPath, filename) {
+    return new Promise(function (resolve, reject) {
+      dev.logfunction(
+        `THUMBS — _makeAudioWaveforms — Looking to make an audio waveform for ${mediaPath}`
+      );
+
+      let screenshotName = `${filename}.wf.png`;
+      let screenshotPath = path.join(thumbFolderPath, screenshotName);
+      let fullScreenshotPath = api.getFolderPath(screenshotPath);
+
+      // check first if it exists, resolve if it does
+      fs.access(fullScreenshotPath, fs.F_OK, function (err) {
+        // if userDir folder doesn't exist yet at destination
+        if (err) {
+          ffmpeg()
+            .input(mediaPath)
+            .input(`color=white:s=3000x2000`)
+            .inputFormat("lavfi")
+            .complexFilter(
+              "[0:a]aformat=channel_layouts=mono,showwavespic=s=3000x2000:colors=#fc4b60[fg];[1:v][fg]overlay=format=auto"
+            )
+            .outputOptions(["-vframes 1"])
+            // setup event handlers
+            .on("end", function (files) {
+              dev.logverbose(
+                `Audio waveform were saved : ${JSON.stringify(files, null, 4)}`
+              );
+              resolve({ screenshotPath, screenshotName });
+            })
+            .on("error", function (err) {
+              dev.error(`ffmpeg failed: ${err.message}`);
+              reject(err.message);
+            })
+            .save(fullScreenshotPath);
         } else {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`

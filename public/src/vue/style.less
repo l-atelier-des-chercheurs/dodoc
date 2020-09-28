@@ -4023,9 +4023,13 @@ small {
 
 .m_recipes {
   .padding-small;
-  overflow-y: auto;
-  .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
+
+  .m_activitiesPanel--doc.is--large & {
+    overflow-y: auto;
+    .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
+  }
 }
+
 .m_recipes--recipe {
   border: 4px solid @c-bleuvert;
   .margin-small;
@@ -5294,6 +5298,12 @@ small {
         img {
           width: 30px;
           height: 30px;
+        }
+
+        span {
+          @media only screen and (max-height: 780px) {
+            display: none;
+          }
         }
       }
     }
