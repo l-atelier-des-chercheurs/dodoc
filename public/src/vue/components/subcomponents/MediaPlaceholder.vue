@@ -1,5 +1,11 @@
 <template>
   <div
+    v-if="
+      !publication_is_submitted ||
+      (publication_is_submitted &&
+        model_placeholder_media._reply &&
+        model_placeholder_media._reply._medias.length > 0)
+    "
     class="m_mediaPlaceholder"
     :class="{
       'is--choices': modes_allowed.hasOwnProperty('choices'),
@@ -231,6 +237,7 @@ export default {
     publi_is_model: Boolean,
     preview_mode: Boolean,
     read_only: Boolean,
+    publication_is_submitted: Boolean,
     captureview_in_modal: Boolean,
     paged_mode: {
       type: Boolean,

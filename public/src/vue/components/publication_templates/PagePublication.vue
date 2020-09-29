@@ -151,6 +151,7 @@
           :key="page.id"
           :preview_mode="preview_mode"
           :slugPubliName="slugPubliName"
+          :publication_is_submitted="publication_is_submitted"
           :pageNumber="pageNumber"
           :page="page"
           :publication_medias="paged_medias[page.id]"
@@ -186,6 +187,7 @@
               :mode="'contact_sheet'"
               :preview_mode="true"
               :slugPubliName="slugPubliName"
+              :publication_is_submitted="publication_is_submitted"
               :pageNumber="pageNumber"
               :page="page"
               :publication_medias="paged_medias[page.id]"
@@ -363,6 +365,7 @@
               :mode="'contact_sheet'"
               :preview_mode="true"
               :slugPubliName="slugPubliName"
+              :publication_is_submitted="publication_is_submitted"
               :pageNumber="pageNumber"
               :page="page"
               :publication_medias="paged_medias[page.id]"
@@ -463,6 +466,7 @@
             :mode="'single'"
             :key="$root.settings.current_publication.page_id"
             :preview_mode="preview_mode"
+            :publication_is_submitted="publication_is_submitted"
             :slugPubliName="slugPubliName"
             :pageNumber="opened_page_index"
             :page="opened_single_page"
@@ -654,6 +658,11 @@ export default {
     },
   },
   computed: {
+    publication_is_submitted() {
+      if (!!this.publication.date_submitted) return true;
+      return false;
+    },
+
     opened_single_page() {
       if (this.opened_page_index === false) return false;
       return this.pagesWithDefault[this.opened_page_index];
