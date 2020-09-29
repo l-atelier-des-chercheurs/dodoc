@@ -786,10 +786,10 @@ export default {
         return `${this.$t("beginning")} >= ${this.$t("end")}`.toLowerCase();
 
       // if beginning is after trim end
-      if (_beginning > _duration)
+      if (_duration && _beginning > _duration)
         return `${this.$t("beginning")} > ${this.$t("duration")}`.toLowerCase();
 
-      if (_end > _duration)
+      if (_duration && _end > _duration)
         return `${this.$t("end")} > ${this.$t("duration")}`.toLowerCase();
 
       // if end is before start

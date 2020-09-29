@@ -97,6 +97,7 @@
                 :zoom="zoom"
                 :publi_is_model="publi_is_model"
                 :model_for_this_publication="model_for_this_publication"
+                :publication_is_submitted="publication_is_submitted"
                 :slugPubliName="slugPubliName"
                 @removePubliMedia="(values) => removePubliMedia(values)"
                 @editPubliMedia="
@@ -134,6 +135,7 @@ export default {
     zoom: Number,
     publi_is_model: Boolean,
     model_for_this_publication: [Boolean, Object],
+    publication_is_submitted: Boolean,
   },
   components: {
     MediaPublication,

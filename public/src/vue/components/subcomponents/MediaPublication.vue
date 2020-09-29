@@ -172,6 +172,7 @@
             :key="media.metaFileName"
             :model_placeholder_media="media"
             :slugPubliName="slugPubliName"
+            :publication_is_submitted="publication_is_submitted"
             :publi_is_model="publi_is_model"
             :preview_mode="preview_mode"
             :read_only="read_only"
@@ -706,6 +707,7 @@ export default {
     page: Object,
     read_only: Boolean,
     preview_mode: Boolean,
+    publication_is_submitted: Boolean,
     pixelsPerMillimeters: Number,
     zoom: Number,
     model_for_this_publication: [Boolean, Object],
