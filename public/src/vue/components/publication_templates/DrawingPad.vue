@@ -212,12 +212,6 @@ export default {
     },
   },
   computed: {
-    can_edit_publi() {
-      return this.$root.canEditFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-      });
-    },
     layers() {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`COMPUTED • layers`);
