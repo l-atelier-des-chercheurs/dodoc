@@ -467,6 +467,10 @@ module.exports = (function () {
       fr: "Modifier les instructions",
       en: "Edit instructions",
     },
+    hide_instructions_when_fulfilled: {
+      fr: "Masquer les instructions quand répondu",
+      en: "Hide instructions when completed",
+    },
     instructions: {
       fr: "Instructions",
       en: "Instructions",

@@ -98,6 +98,7 @@
             <!-- <label>{{ $t("placeholder") }} </label> -->
             <div class="_placeholder--instructions">
               <label>{{ $t("instructions") }}</label>
+
               <MediaField
                 :value="media.instructions"
                 :show_edit_button="true"
@@ -108,6 +109,22 @@
                   (value) => updateMediaPubliMeta({ instructions: value })
                 "
               />
+              <div class="margin-vert-small">
+                <span class="switch switch-xs">
+                  <input
+                    type="checkbox"
+                    class="switch"
+                    :id="`hide_instructions_when_fulfilled_${id}`"
+                    v-model="hide_instructions_when_fulfilled"
+                  />
+                  <label
+                    :for="`hide_instructions_when_fulfilled_${id}`"
+                    :class="{ 'c-rouge': hide_instructions_when_fulfilled }"
+                  >
+                    {{ $t("hide_instructions_when_fulfilled") }}
+                  </label>
+                </span>
+              </div>
             </div>
             <div class="_placeholder--constraints">
               <label v-html="$t('type_of_expected_contents:')" />
@@ -451,6 +468,7 @@ export default {
       show_advanced_menu: false,
 
       htmlForEditor: this.media.content ? this.media.content : "",
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       fit_mode: "cover",
 
@@ -498,6 +516,18 @@ export default {
     is_selected() {},
   },
   computed: {
+    hide_instructions_when_fulfilled: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("hide_instructions_when_fulfilled") &&
+          this.media.hide_instructions_when_fulfilled === true
+          ? true
+          : false;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ hide_instructions_when_fulfilled: value });
+      },
+    },
     mediaURL() {
       const type_path = this.media._linked_media ? "" : "/_publications";
       const slugFolderName =

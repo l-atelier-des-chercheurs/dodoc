@@ -19,7 +19,8 @@
     <div
       v-if="
         model_placeholder_media.hasOwnProperty('instructions') &&
-        !!model_placeholder_media.instructions
+        !!model_placeholder_media.instructions &&
+        !hide_instructions
       "
       class="m_mediaPlaceholder--instructions"
     >
@@ -205,22 +206,24 @@
           </template>
         </transition-group>
       </template>
-      <div v-if="answer_type_expected" class="_help">
-        <small
-          class="margin-sides-small"
-          v-html="
-            $t('answer_type_expected:') +
-            '&nbsp;' +
-            answer_type_expected.toLowerCase()
-          "
-        />
-      </div>
-      <div v-if="answers_given" class="_help">
-        <small
-          class="margin-sides-small"
-          v-html="$t('answers_given:') + '&nbsp;' + answers_given"
-        />
-      </div>
+      <template v-if="!hide_instructions">
+        <div v-if="answer_type_expected" class="_help">
+          <small
+            class="margin-sides-small"
+            v-html="
+              $t('answer_type_expected:') +
+              '&nbsp;' +
+              answer_type_expected.toLowerCase()
+            "
+          />
+        </div>
+        <div v-if="answers_given" class="_help">
+          <small
+            class="margin-sides-small"
+            v-html="$t('answers_given:') + '&nbsp;' + answers_given"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -390,6 +393,16 @@ export default {
         },
         ""
       );
+    },
+    hide_instructions() {
+      if (
+        this.model_placeholder_media.hide_instructions_when_fulfilled ===
+          true &&
+        this.answers_given &&
+        this.answers_given !== this.$t("none")
+      )
+        return true;
+      return false;
     },
   },
   methods: {
