@@ -206,24 +206,22 @@
           </template>
         </transition-group>
       </template>
-      <template v-if="!hide_instructions">
-        <div v-if="answer_type_expected" class="_help">
-          <small
-            class="margin-sides-small"
-            v-html="
-              $t('answer_type_expected:') +
-              '&nbsp;' +
-              answer_type_expected.toLowerCase()
-            "
-          />
-        </div>
-        <div v-if="answers_given" class="_help">
-          <small
-            class="margin-sides-small"
-            v-html="$t('answers_given:') + '&nbsp;' + answers_given"
-          />
-        </div>
-      </template>
+      <div v-if="!hide_instructions" class="_help">
+        <small
+          v-if="answer_type_expected"
+          class="margin-sides-small"
+          v-html="
+            $t('answer_type_expected:') +
+            '&nbsp;' +
+            answer_type_expected.toLowerCase()
+          "
+        />
+        <small
+          v-if="answers_given"
+          class="margin-sides-small"
+          v-html="$t('answers_given:') + '&nbsp;' + answers_given"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -331,8 +329,10 @@ export default {
 
             const number_of_medias_of_this_type = this.model_placeholder_media._reply._medias.filter(
               (m) => {
-                if (mode === "photo")
+                if (mode === "photo" || mode === "vecto")
                   return m.type === mode || m.type === "image";
+                if (mode === "stopmotion")
+                  return m.type === mode || m.type === "video";
                 return m.type === mode;
               }
             ).length;
