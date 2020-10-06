@@ -307,6 +307,18 @@ export default {
           amount: this.paged_mode ? 1 : "unlimited",
         },
         {
+          key: "stopmotion",
+          picto: "/images/i_icone-dodoc_anim.svg",
+          enabled: false,
+          amount: this.paged_mode ? 1 : "unlimited",
+        },
+        {
+          key: "vecto",
+          picto: "/images/i_icone-dodoc_vecto.svg",
+          enabled: false,
+          amount: this.paged_mode ? 1 : "unlimited",
+        },
+        {
           key: "file",
           picto: "",
           enabled: false,
