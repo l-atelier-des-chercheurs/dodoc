@@ -164,8 +164,7 @@
                   v-if="
                     !preview_mode &&
                     !read_only &&
-                    index ===
-                      model_placeholder_media._reply._medias.length - 1 &&
+                    // index === model_placeholder_media._reply._medias.length - 1 &&
                     (remaining_modes_allowed === 'all' ||
                       Object.keys(remaining_modes_allowed).length > 0)
                   "
