@@ -37,6 +37,10 @@ module.exports = (function () {
       fr: "Éditer une discussion",
       en: "Edit a room",
     },
+    edit_title: {
+      fr: "Modifier le titre",
+      en: "Edit the title",
+    },
     chat_name: {
       fr: "Nom du sujet",
       en: "Topic",
