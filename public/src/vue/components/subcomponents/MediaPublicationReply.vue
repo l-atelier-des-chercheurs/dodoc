@@ -446,8 +446,6 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • MediaPublicationReply: updateMediaPubliMeta`);
 
-      debugger;
-
       this.$emit("editPubliMedia", {
         metaFileName: this.media.metaFileName,
         values,

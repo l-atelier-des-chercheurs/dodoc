@@ -855,6 +855,10 @@ export default {
         --stroke_width: ${this.stroke_width}mm;
       `;
 
+      // using vector-effect="non-scaling-stroke" to make sure stroke-width is consistent and rounded shapes work as intended
+      // not handled by electron 2.x.x so not working as expected for now in electron
+      // need to update electron soon
+
       if (this.media.custom_css) css += this.media.custom_css;
 
       return css;

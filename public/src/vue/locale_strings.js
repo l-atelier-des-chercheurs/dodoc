@@ -37,6 +37,10 @@ module.exports = (function () {
       fr: "Éditer une discussion",
       en: "Edit a room",
     },
+    edit_title: {
+      fr: "Modifier le titre",
+      en: "Edit the title",
+    },
     chat_name: {
       fr: "Nom du sujet",
       en: "Topic",
@@ -466,6 +470,10 @@ module.exports = (function () {
     edit_instructions: {
       fr: "Modifier les instructions",
       en: "Edit instructions",
+    },
+    hide_instructions_when_fulfilled: {
+      fr: "Masquer une fois renseigné",
+      en: "Hide instructions when filled",
     },
     instructions: {
       fr: "Instructions",

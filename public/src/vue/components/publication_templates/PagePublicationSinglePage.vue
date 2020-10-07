@@ -186,8 +186,6 @@ export default {
       )
         return;
 
-      debugger;
-
       let action = "";
       let detail = "";
 

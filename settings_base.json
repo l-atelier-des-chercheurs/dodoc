@@ -361,6 +361,9 @@
           "instructions": {
             "type": "string"
           },
+          "hide_instructions_when_fulfilled": {
+            "type": "boolean"
+          },
           "available_modes": {
             "type": "array"
           },

@@ -482,8 +482,6 @@ export default {
         return;
       }
 
-      debugger;
-
       let firstThumbs = this.media.thumbs.filter(
         (t) => !!t && t[type] === option
       );
