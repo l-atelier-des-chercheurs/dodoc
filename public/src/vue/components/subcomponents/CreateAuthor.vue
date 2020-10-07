@@ -217,7 +217,6 @@ export default {
   },
   methods: {
     notAttributedTagDetected(nfc_tag_code) {
-      debugger;
       this.show_nfc = true;
       this.authordata.nfc_tag = nfc_tag_code;
     },

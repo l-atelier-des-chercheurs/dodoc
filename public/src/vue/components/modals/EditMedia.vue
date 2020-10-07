@@ -895,7 +895,6 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log(`EditMedia • METHODS: forwardPlayer`);
       const player = document.querySelector(".m_modal--mask .plyr video");
-      debugger;
       player.plyr.forward(1);
     },
     rewindPlayer() {
