@@ -53,7 +53,7 @@
                 publication.medias_slugs.length === 0
               )
             "
-            :is_currently_active="(index_currently_visible === 0)"
+            :is_currently_active="index_currently_visible === 0"
             :slugPubliName="slugPubliName"
             :publi_is_model="publication.is_model"
             :read_only="read_only"
@@ -76,6 +76,7 @@
               :model_placeholder_media="media"
               :slugPubliName="slugPubliName"
               :publi_is_model="publication.is_model"
+              :publication_is_submitted="publication_is_submitted"
               :preview_mode="preview_mode"
               :read_only="read_only || !can_edit_publi"
               @addMedia="(values) => addMedia({ values })"
@@ -113,7 +114,7 @@
                   !model_for_this_publication
                 "
                 :slugPubliName="slugPubliName"
-                :is_currently_active="(index_currently_visible === index + 1)"
+                :is_currently_active="index_currently_visible === index + 1"
                 :publi_is_model="publication.is_model"
                 :read_only="read_only"
                 @addMedia="
@@ -208,6 +209,10 @@ export default {
   },
   watch: {},
   computed: {
+    publication_is_submitted() {
+      if (!!this.publication.date_submitted) return true;
+      return false;
+    },
     index_currently_visible() {
       this.current_scroll;
       if (!this.$refs.publi) return 0;

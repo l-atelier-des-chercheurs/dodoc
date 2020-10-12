@@ -96,7 +96,9 @@
           :disabled="opened_page_index === 0"
         >
           <img src="/images/i_arrow_left.svg" draggable="false" />
-          {{ $t("previous_page") }}
+          <span>
+            {{ $t("previous_page") }}
+          </span>
         </button>
         <div class="font-small text-lc">
           <span
@@ -115,7 +117,9 @@
           @click="navPage(+1)"
           :disabled="opened_page_index === pagesWithDefault.length - 1"
         >
-          {{ $t("next_page") }}
+          <span>
+            {{ $t("next_page") }}
+          </span>
           <img src="/images/i_arrow_right.svg" draggable="false" />
         </button>
       </div>
@@ -147,6 +151,7 @@
           :key="page.id"
           :preview_mode="preview_mode"
           :slugPubliName="slugPubliName"
+          :publication_is_submitted="publication_is_submitted"
           :pageNumber="pageNumber"
           :page="page"
           :publication_medias="paged_medias[page.id]"
@@ -182,6 +187,7 @@
               :mode="'contact_sheet'"
               :preview_mode="true"
               :slugPubliName="slugPubliName"
+              :publication_is_submitted="publication_is_submitted"
               :pageNumber="pageNumber"
               :page="page"
               :publication_medias="paged_medias[page.id]"
@@ -220,7 +226,7 @@
                     width="168px"
                     height="168px"
                     viewBox="0 0 168 168"
-                    style="enable-background: new 0 0 168 168;"
+                    style="enable-background: new 0 0 168 168"
                     xml:space="preserve"
                   >
                     <rect x="73.5" y="37" class="st0" width="21" height="21" />
@@ -359,6 +365,7 @@
               :mode="'contact_sheet'"
               :preview_mode="true"
               :slugPubliName="slugPubliName"
+              :publication_is_submitted="publication_is_submitted"
               :pageNumber="pageNumber"
               :page="page"
               :publication_medias="paged_medias[page.id]"
@@ -459,6 +466,7 @@
             :mode="'single'"
             :key="$root.settings.current_publication.page_id"
             :preview_mode="preview_mode"
+            :publication_is_submitted="publication_is_submitted"
             :slugPubliName="slugPubliName"
             :pageNumber="opened_page_index"
             :page="opened_single_page"
@@ -492,7 +500,7 @@
     />
     <div
       ref="mmMeasurer"
-      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
+      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%"
     />
   </div>
 </template>
@@ -650,6 +658,11 @@ export default {
     },
   },
   computed: {
+    publication_is_submitted() {
+      if (!!this.publication.date_submitted) return true;
+      return false;
+    },
+
     opened_single_page() {
       if (this.opened_page_index === false) return false;
       return this.pagesWithDefault[this.opened_page_index];

@@ -98,21 +98,21 @@
   // width: 1.2em;
 }
 .ql-editor li:not(.ql-direction-rtl)::before {
-  margin-left: -1.5em;
+  margin-left: -1em;
   margin-right: 0.3em;
   text-align: right;
 }
 .ql-editor li.ql-direction-rtl::before {
   margin-left: 0.3em;
-  margin-right: -1.5em;
+  margin-right: -1em;
 }
 .ql-editor ol li:not(.ql-direction-rtl),
 .ql-editor ul li:not(.ql-direction-rtl) {
-  padding-left: 1.5em;
+  padding-left: 1em;
 }
 .ql-editor ol li.ql-direction-rtl,
 .ql-editor ul li.ql-direction-rtl {
-  padding-right: 1.5em;
+  padding-right: 1em;
 }
 .ql-editor ol li {
   // counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
@@ -1830,10 +1830,17 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
 
   ol,
   ul {
-    padding-left: 1.5em;
+    padding-left: 0em;
 
     > li {
       list-style-type: none;
+      padding-left: 1em;
+
+      &::before {
+        margin-left: -1em;
+        margin-right: 0.3em;
+        text-align: right;
+      }
     }
   }
   ul > li::before {

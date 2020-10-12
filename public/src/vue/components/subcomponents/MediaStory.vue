@@ -20,7 +20,7 @@
         <br />
         <small>
           {{ media._linked_media.slugProjectName }}/{{
-          media._linked_media.slugMediaName
+            media._linked_media.slugMediaName
           }}
         </small>
       </div>
@@ -66,7 +66,11 @@
             "
           >
             <template v-if="media.only_numbers">
-              <input type="number" v-model="htmlForEditor" @input="updateTextMedia" />
+              <input
+                type="number"
+                v-model="htmlForEditor"
+                @input="updateTextMedia"
+              />
             </template>
 
             <CollaborativeEditor
@@ -94,6 +98,7 @@
             <!-- <label>{{ $t("placeholder") }} </label> -->
             <div class="_placeholder--instructions">
               <label>{{ $t("instructions") }}</label>
+
               <MediaField
                 :value="media.instructions"
                 :show_edit_button="true"
@@ -104,6 +109,22 @@
                   (value) => updateMediaPubliMeta({ instructions: value })
                 "
               />
+              <div class="margin-vert-small">
+                <span class="switch switch-xs">
+                  <input
+                    type="checkbox"
+                    class="switch"
+                    :id="`hide_instructions_when_fulfilled_${id}`"
+                    v-model="hide_instructions_when_fulfilled"
+                  />
+                  <label
+                    :for="`hide_instructions_when_fulfilled_${id}`"
+                    :class="{ 'c-rouge': hide_instructions_when_fulfilled }"
+                  >
+                    {{ $t("hide_instructions_when_fulfilled") }}
+                  </label>
+                </span>
+              </div>
             </div>
             <div class="_placeholder--constraints">
               <label v-html="$t('type_of_expected_contents:')" />
@@ -163,7 +184,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
           <path
             d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
-            style="fill: currentColor;"
+            style="fill: currentColor"
           />
         </svg>
       </button>
@@ -185,11 +206,11 @@
             width="4px"
             height="16.2px"
             viewBox="0 0 4 16.2"
-            style="enable-background: new 0 0 4 16.2;"
+            style="enable-background: new 0 0 4 16.2"
             xml:space="preserve"
           >
             <path
-              style="fill: currentColor;"
+              style="fill: currentColor"
               d="M0,14.1c0,1.1,0.9,2,2,2s2-0.9,2-2s-0.9-2-2-2S0,13,0,14.1z M0,2c0,1.1,0.9,2,2,2s2-0.9,2-2S3.1,0,2,0
 	S0,0.9,0,2z M0,8.1c0,1.1,0.9,2,2,2s2-0.9,2-2s-0.9-2-2-2S0,7,0,8.1z"
             />
@@ -212,7 +233,7 @@
               width="91.6px"
               height="95px"
               viewBox="0 0 91.6 95"
-              style="enable-background: new 0 0 91.6 95;"
+              style="enable-background: new 0 0 91.6 95"
               xml:space="preserve"
             >
               <polygon
@@ -245,7 +266,7 @@
               width="46.7px"
               height="70px"
               viewBox="0 0 46.7 70"
-              style="enable-background: new 0 0 46.7 70;"
+              style="enable-background: new 0 0 46.7 70"
               xml:space="preserve"
             >
               <g>
@@ -284,7 +305,7 @@
               width="113.5px"
               height="113.5px"
               viewBox="0 0 113.5 113.5"
-              style="enable-background: new 0 0 113.5 113.5;"
+              style="enable-background: new 0 0 113.5 113.5"
               xml:space="preserve"
             >
               <path
@@ -370,7 +391,7 @@
               width="37.2px"
               height="37.2px"
               viewBox="0 0 37.2 37.2"
-              style="enable-background: new 0 0 37.2 37.2;"
+              style="enable-background: new 0 0 37.2 37.2"
               xml:space="preserve"
             >
               <polygon
@@ -380,9 +401,9 @@
               />
             </svg>
             {{
-            media.hasOwnProperty("_linked_media")
-            ? $t("withdraw")
-            : $t("remove")
+              media.hasOwnProperty("_linked_media")
+                ? $t("withdraw")
+                : $t("remove")
             }}
           </button>
         </div>
@@ -402,7 +423,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
           <path
             d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
-            style="fill: currentColor;"
+            style="fill: currentColor"
           />
         </svg>
       </button>
@@ -447,6 +468,7 @@ export default {
       show_advanced_menu: false,
 
       htmlForEditor: this.media.content ? this.media.content : "",
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       fit_mode: "cover",
 
@@ -494,6 +516,18 @@ export default {
     is_selected() {},
   },
   computed: {
+    hide_instructions_when_fulfilled: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("hide_instructions_when_fulfilled") &&
+          this.media.hide_instructions_when_fulfilled === true
+          ? true
+          : false;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ hide_instructions_when_fulfilled: value });
+      },
+    },
     mediaURL() {
       const type_path = this.media._linked_media ? "" : "/_publications";
       const slugFolderName =

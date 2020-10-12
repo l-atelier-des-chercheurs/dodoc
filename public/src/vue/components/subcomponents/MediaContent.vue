@@ -17,9 +17,9 @@
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
         <img
-          :srcset="complexMediaSrcSetAttr({ opt: 'timeMark' })"
+          :srcset="complexMediaSrcSetAttr({ type: 'timeMark', option: 0 })"
           :sizes="imageSizesAttr"
-          :src="linkToComplexMediaThumb({ opt: 'timeMark' })"
+          :src="linkToComplexMediaThumb({ type: 'timeMark', option: 0 })"
           draggable="false"
         />
         <div class="">
@@ -59,7 +59,7 @@
           @timeupdate="videoTimeUpdated"
         >
           <video
-            :poster="linkToComplexMediaThumb({ opt: 'timeMark' })"
+            :poster="linkToComplexMediaThumb({ type: 'timeMark', option: 0 })"
             :src="mediaURL"
             preload="none"
             :autoplay="autoplay"
@@ -71,9 +71,9 @@
     <template v-else-if="media.type === 'stl'">
       <template v-if="context === 'preview'">
         <img
-          :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
+          :srcset="complexMediaSrcSetAttr({ type: 'angle', option: 0 })"
           :sizes="imageSizesAttr"
-          :src="linkToComplexMediaThumb({ opt: 'angle' })"
+          :src="linkToComplexMediaThumb({ type: 'angle', option: 0 })"
           draggable="false"
         />
         <!-- // TODO : set STL/3d picto -->
@@ -81,9 +81,9 @@
       <template v-else>
         <img
           v-if="!interactive_stl_mode"
-          :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
+          :srcset="complexMediaSrcSetAttr({ type: 'angle', option: 0 })"
           :sizes="imageSizesAttr"
-          :src="linkToComplexMediaThumb({ opt: 'angle' })"
+          :src="linkToComplexMediaThumb({ type: 'angle', option: 0 })"
           draggable="false"
         />
         <iframe v-else :src="`/libs/stl/show_stl.html?mediaURL=${mediaURL}`" />
@@ -123,27 +123,54 @@
 
     <template v-else-if="media.type === 'audio'">
       <template v-if="context === 'preview'">
-        <div class="play_picto">
-          <svg
-            class
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="169px"
-            height="169px"
-            viewBox="0 0 169 169"
-            style="enable-background: new 0 0 169 169"
-            xml:space="preserve"
-          >
-            <path
-              d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
-            />
-          </svg>
+        <img
+          :srcset="
+            complexMediaSrcSetAttr({ type: 'waveformType', option: 'mono' })
+          "
+          :sizes="imageSizesAttr"
+          :src="
+            linkToComplexMediaThumb({ type: 'waveformType', option: 'mono' })
+          "
+          draggable="false"
+        />
+        <div>
+          <div class="play_picto">
+            <svg
+              class
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="169px"
+              height="169px"
+              viewBox="0 0 169 169"
+              style="enable-background: new 0 0 169 169"
+              xml:space="preserve"
+            >
+              <path
+                d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
+              />
+            </svg>
+          </div>
+          <div v-if="media_duration" class="_duration">
+            {{
+              $root.formatDurationToHoursMinutesSeconds(media_duration * 1000)
+            }}
+          </div>
         </div>
       </template>
       <template v-else>
+        <img
+          :srcset="
+            complexMediaSrcSetAttr({ type: 'waveformType', option: 'mono' })
+          "
+          :sizes="imageSizesAttr"
+          :src="
+            linkToComplexMediaThumb({ type: 'waveformType', option: 'mono' })
+          "
+          draggable="false"
+        />
         <vue-plyr
           :options="plyr_options"
           :emit="['volumechange', 'timeupdate']"
@@ -424,7 +451,7 @@ export default {
         this.$refs.plyr.player.volume = val / 100;
       }
     },
-    linkToComplexMediaThumb: function ({ opt }) {
+    linkToComplexMediaThumb: function ({ type, option }) {
       if (
         !this.media["thumbs"] ||
         (typeof this.media.thumbs === "object" &&
@@ -433,7 +460,9 @@ export default {
         return this.mediaURL;
       }
 
-      let firstThumbs = this.media.thumbs.find((t) => !!t && t[opt] === 0);
+      let firstThumbs = this.media.thumbs.find(
+        (t) => !!t && t[type] === option
+      );
 
       const small_thumb = firstThumbs.thumbsData.find(
         (m) => m && m.size === this.thumbRes
@@ -448,12 +477,14 @@ export default {
           : "/" + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
-    complexMediaSrcSetAttr: function ({ opt }) {
+    complexMediaSrcSetAttr: function ({ type, option }) {
       if (this.element_width_for_sizes === 0) {
         return;
       }
 
-      let firstThumbs = this.media.thumbs.filter((t) => !!t && t[opt] === 0);
+      let firstThumbs = this.media.thumbs.filter(
+        (t) => !!t && t[type] === option
+      );
       if (!firstThumbs || firstThumbs.length === 0) return;
 
       // get all available sizes

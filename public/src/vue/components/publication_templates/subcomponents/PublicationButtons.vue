@@ -33,19 +33,15 @@
                 width="168px"
                 height="168px"
                 viewBox="0 0 168 168"
-                style="enable-background: new 0 0 168 168;"
+                style="enable-background: new 0 0 168 168"
                 xml:space="preserve"
               >
                 <path
-                  style="fill: #52c5b9;"
+                  style="fill: #52c5b9"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
                 <circle
-                  style="
-                    fill: #1d327f;
-                    stroke-width: 15;
-                    stroke-miterlimit: 10;
-                  "
+                  style="fill: #1d327f; stroke-width: 15; stroke-miterlimit: 10"
                   cx="84"
                   cy="84"
                   r="41.8"
@@ -78,11 +74,11 @@
                 width="168px"
                 height="168px"
                 viewBox="0 0 168 168"
-                style="enable-background: new 0 0 168 168;"
+                style="enable-background: new 0 0 168 168"
                 xml:space="preserve"
               >
                 <path
-                  style="fill: #52c5b9;"
+                  style="fill: #52c5b9"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
                 <rect
@@ -91,16 +87,16 @@
                   transform="matrix(6.123234e-17 -1 1 6.123234e-17 49.334 208.2684)"
                   width="89.6"
                   height="16.8"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                 />
                 <path
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                   d="M74.1,113.5l14.1-15.3c2.4-2.6,4.4-4.7,6.1-6.1c1.7-1.5,3.8-2.9,6.3-4.4l-70.7,0V71.9l70.7,0
 				c-2.2-1.3-4.2-2.7-6.1-4.4c-1.9-1.6-4-3.7-6.4-6.1L74.1,46L87,35l40.3,44.8L87,124.6L74.1,113.5z"
                 />
               </svg>
 
-              <span style="color: inherit;">
+              <span style="color: inherit">
                 {{ $t("import") }}
                 <!-- <div v-html="field.svg" /> -->
               </span>
@@ -111,7 +107,7 @@
                 name="file"
                 @change="updateInputFiles($event)"
                 accept
-                style="width: 1px; height: 1px; overflow: hidden;"
+                style="width: 1px; height: 1px; overflow: hidden"
               />
             </label>
           </div>
@@ -157,37 +153,37 @@
                 width="168px"
                 height="168px"
                 viewBox="0 0 168 168"
-                style="enable-background: new 0 0 168 168;"
+                style="enable-background: new 0 0 168 168"
                 xml:space="preserve"
               >
                 <path
-                  style="fill: #52c5b9;"
+                  style="fill: #52c5b9"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
                 <rect
                   x="79.4"
                   y="52.1"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                   width="62.3"
                   height="15"
                 />
                 <rect
                   x="79.4"
                   y="79.5"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                   width="62.3"
                   height="15"
                 />
                 <rect
                   x="79.4"
                   y="107"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                   width="62.3"
                   height="15"
                 />
 
                 <path
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                   d="M21.2,52.1h49v15H53.7V122H37.6V67.1H21.2V52.1z"
                 />
               </svg>
@@ -223,11 +219,11 @@
                 width="168px"
                 height="168px"
                 viewBox="0 0 168 168"
-                style="enable-background: new 0 0 168 168;"
+                style="enable-background: new 0 0 168 168"
                 xml:space="preserve"
               >
                 <path
-                  style="fill: #52c5b9;"
+                  style="fill: #52c5b9"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
                 <line
@@ -275,11 +271,11 @@
                 width="168px"
                 height="168px"
                 viewBox="0 0 168 168"
-                style="enable-background: new 0 0 168 168;"
+                style="enable-background: new 0 0 168 168"
                 xml:space="preserve"
               >
                 <path
-                  style="fill: #52c5b9;"
+                  style="fill: #52c5b9"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
                 <line
@@ -363,11 +359,11 @@
                 width="168px"
                 height="168px"
                 viewBox="0 0 168 168"
-                style="enable-background: new 0 0 168 168;"
+                style="enable-background: new 0 0 168 168"
                 xml:space="preserve"
               >
                 <path
-                  style="fill: #52c5b9;"
+                  style="fill: #52c5b9"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
                 <rect
@@ -427,11 +423,11 @@
                 width="168px"
                 height="168px"
                 viewBox="0 0 168 168"
-                style="enable-background: new 0 0 168 168;"
+                style="enable-background: new 0 0 168 168"
                 xml:space="preserve"
               >
                 <path
-                  style="fill: #52c5b9;"
+                  style="fill: #52c5b9"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
                 <circle
@@ -473,56 +469,56 @@
                 width="168px"
                 height="168px"
                 viewBox="0 0 168 168"
-                style="enable-background: new 0 0 168 168;"
+                style="enable-background: new 0 0 168 168"
                 xml:space="preserve"
               >
                 <path
-                  style="fill: #52c5b9;"
+                  style="fill: #52c5b9"
                   d="M84,168c46.4,0,84-37.6,84-84c0-46.4-37.6-84-84-84C37.6,0,0,37.6,0,84C0,130.4,37.6,168,84,168z"
                 />
                 <polygon
                   points="144 142 114 142 114 122 124 122 124 112 144 112 144 142"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                 />
                 <rect
                   x="69"
                   y="122"
                   width="30"
                   height="20"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                 />
                 <polygon
                   points="54 142 24 142 24 112 44 112 44 122 54 122 54 142"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                 />
                 <rect
                   x="24"
                   y="67"
                   width="20"
                   height="30"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                 />
                 <polygon
                   points="44 52 24 52 24 22 54 22 54 42 44 42 44 52"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                 />
                 <rect
                   x="69"
                   y="22"
                   width="30"
                   height="20"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                 />
                 <polygon
                   points="144 52 124 52 124 42 114 42 114 22 144 22 144 52"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                 />
                 <rect
                   x="124"
                   y="67"
                   width="20"
                   height="30"
-                  style="fill: #1d327f;"
+                  style="fill: #1d327f"
                 />
               </svg>
               <span>{{ $t("placeholder") }}</span>
@@ -566,7 +562,7 @@
                   v-model="margin"
                   min="0"
                 />
-                <span class="input-addon input-addon-small">pt</span>
+                <span class="input-addon input-addon-small">mm</span>
               </div>
             </div>
 
@@ -667,7 +663,7 @@
                   class="input-small"
                   v-model="stroke_width"
                 />
-                <span class="input-addon input-addon-small">pt</span>
+                <span class="input-addon input-addon-small">mm</span>
               </div>
             </div>
 
@@ -703,7 +699,7 @@
                     width="40.3px"
                     height="59.6px"
                     viewBox="0 0 40.3 59.6"
-                    style="enable-background: new 0 0 40.3 59.6;"
+                    style="enable-background: new 0 0 40.3 59.6"
                     xml:space="preserve"
                   >
                     <path
@@ -741,7 +737,7 @@
                     width="40.3px"
                     height="59.6px"
                     viewBox="0 0 40.3 59.6"
-                    style="enable-background: new 0 0 40.3 59.6;"
+                    style="enable-background: new 0 0 40.3 59.6"
                     xml:space="preserve"
                   >
                     <path

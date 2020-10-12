@@ -47,7 +47,7 @@
               width="20px"
               height="20px"
               viewBox="0 0 90 90"
-              style="enable-background: new 0 0 90 90;"
+              style="enable-background: new 0 0 90 90"
               xml:space="preserve"
             >
               <path
@@ -84,7 +84,7 @@
               width="12px"
               height="20.3px"
               viewBox="0 0 12 20.3"
-              style="enable-background: new 0 0 12 20.3;"
+              style="enable-background: new 0 0 12 20.3"
               xml:space="preserve"
             >
               <path
@@ -117,7 +117,7 @@
               width="90px"
               height="90px"
               viewBox="0 0 90 90"
-              style="enable-background: new 0 0 90 90;"
+              style="enable-background: new 0 0 90 90"
               xml:space="preserve"
             >
               <path
@@ -220,7 +220,7 @@
       v-if="
         $root.current_publication &&
         !ask_if_author_wants_to_create_new_reply &&
-        survey_can_edit_publication
+        (survey_can_edit_publication || survey_can_view_publication)
       "
       :publication="$root.current_publication"
       :read_only="!$root.state.connected"
@@ -289,6 +289,12 @@ export default {
         this.$root.current_publication.authors.some(
           (a) => a.slugFolderName === this.$root.current_author.slugFolderName
         )
+      );
+    },
+    survey_can_view_publication() {
+      return (
+        this.survey_can_edit_publication ||
+        this.$root.current_publication.viewing_limited_to === "everybody"
       );
     },
     user_replies_by_model() {
@@ -406,13 +412,16 @@ export default {
               "</i>"
           );
       } else {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(
-            this.$t("notifications.account_not_associated_to_this_ressource")
-          );
-        this.show_all_my_replies = true;
+        if (this.$root.current_publication.viewing_limited_to === "everybody") {
+        } else {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(
+              this.$t("notifications.account_not_associated_to_this_ressource")
+            );
+          this.show_all_my_replies = true;
+        }
       }
     },
   },

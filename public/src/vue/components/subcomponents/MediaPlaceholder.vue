@@ -1,5 +1,11 @@
 <template>
   <div
+    v-if="
+      !publication_is_submitted ||
+      (publication_is_submitted &&
+        model_placeholder_media._reply &&
+        model_placeholder_media._reply._medias.length > 0)
+    "
     class="m_mediaPlaceholder"
     :class="{
       'is--choices': modes_allowed.hasOwnProperty('choices'),
@@ -13,7 +19,8 @@
     <div
       v-if="
         model_placeholder_media.hasOwnProperty('instructions') &&
-        !!model_placeholder_media.instructions
+        !!model_placeholder_media.instructions &&
+        !hide_instructions
       "
       class="m_mediaPlaceholder--instructions"
     >
@@ -158,8 +165,7 @@
                   v-if="
                     !preview_mode &&
                     !read_only &&
-                    index ===
-                      model_placeholder_media._reply._medias.length - 1 &&
+                    // index === model_placeholder_media._reply._medias.length - 1 &&
                     (remaining_modes_allowed === 'all' ||
                       Object.keys(remaining_modes_allowed).length > 0)
                   "
@@ -200,8 +206,9 @@
           </template>
         </transition-group>
       </template>
-      <div v-if="answer_type_expected" class="_help">
+      <div v-if="!hide_instructions" class="_help">
         <small
+          v-if="answer_type_expected"
           class="margin-sides-small"
           v-html="
             $t('answer_type_expected:') +
@@ -209,9 +216,8 @@
             answer_type_expected.toLowerCase()
           "
         />
-      </div>
-      <div v-if="answers_given" class="_help">
         <small
+          v-if="answers_given"
           class="margin-sides-small"
           v-html="$t('answers_given:') + '&nbsp;' + answers_given"
         />
@@ -231,6 +237,7 @@ export default {
     publi_is_model: Boolean,
     preview_mode: Boolean,
     read_only: Boolean,
+    publication_is_submitted: Boolean,
     captureview_in_modal: Boolean,
     paged_mode: {
       type: Boolean,
@@ -322,8 +329,10 @@ export default {
 
             const number_of_medias_of_this_type = this.model_placeholder_media._reply._medias.filter(
               (m) => {
-                if (mode === "photo")
+                if (mode === "photo" || mode === "vecto")
                   return m.type === mode || m.type === "image";
+                if (mode === "stopmotion")
+                  return m.type === mode || m.type === "video";
                 return m.type === mode;
               }
             ).length;
@@ -384,6 +393,16 @@ export default {
         },
         ""
       );
+    },
+    hide_instructions() {
+      if (
+        this.model_placeholder_media.hide_instructions_when_fulfilled ===
+          true &&
+        this.answers_given &&
+        this.answers_given !== this.$t("none")
+      )
+        return true;
+      return false;
     },
   },
   methods: {

@@ -18,8 +18,8 @@
         <a :href="url_to_publi">{{ url_to_publi }}</a>
       </small>
     </div> -->
-      <div class="" v-if="model_for_this_publication">
-        <template v-if="can_edit_publi">
+      <div class="" v-if="model_for_this_publication && can_edit_publi">
+        <template v-if="!publication.date_submitted">
           <small>{{ $t("finished_writing_reply") }}</small>
           <button
             type="button"

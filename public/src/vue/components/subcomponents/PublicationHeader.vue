@@ -38,7 +38,20 @@
         </button>
 
         <div class="m_publicationMeta--topbar--title">
-          {{ publication.name }}
+          <div class="input-group" v-if="edit_publi_title_in_survey">
+            <input type="text" class v-model="new_publi_name" />
+            <button
+              type="button"
+              class="input-addon button-small bg-bleuvert"
+              :disabled="new_publi_name.length === 0"
+              @click="setNewTitle(new_publi_name)"
+            >
+              <img src="/images/i_enregistre.svg" draggable="false" />
+            </button>
+          </div>
+          <template v-else>
+            {{ publication.name }}
+          </template>
           <ProtectedLock
             v-if="
               !(
@@ -68,6 +81,7 @@
         <button
           type="button"
           class="buttonLink"
+          v-if="$root.store.request.display !== 'survey'"
           @click="show_settings = !show_settings"
           :class="{ 'is--active': show_settings }"
         >
@@ -81,7 +95,7 @@
             width="77.6px"
             height="85.4px"
             viewBox="0 0 77.6 85.4"
-            style="enable-background: new 0 0 77.6 85.4;"
+            style="enable-background: new 0 0 77.6 85.4"
             xml:space="preserve"
           >
             <defs />
@@ -115,9 +129,66 @@
         >
           {{ $t("create") }}
         </button>
+
+        <button
+          type="button"
+          class="buttonLink"
+          v-if="can_edit_publi() && $root.store.request.display === 'survey'"
+          @click="edit_publi_title_in_survey = !edit_publi_title_in_survey"
+          :class="{ 'is--active': edit_publi_title_in_survey }"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="100.7px"
+            height="101px"
+            viewBox="0 0 100.7 101"
+            style="enable-background: new 0 0 100.7 101"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              d="M100.7,23.2L77.5,0l-66,66.2l0,0L0,101l34.7-11.6l0,0L100.7,23.2z M19.1,91.5l-9.4-9.7l4-12.4l18,17.8
+              L19.1,91.5z"
+            />
+          </svg>
+          {{ $t("edit_title") }}
+        </button>
+
+        <button
+          type="button"
+          class="buttonLink"
+          v-if="can_edit_publi()"
+          @click="removePublication"
+        >
+          <svg
+            version="1.1"
+            class="inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="91.6px"
+            height="95px"
+            viewBox="0 0 91.6 95"
+            style="enable-background: new 0 0 91.6 95"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              d="M91.6,17H62.9V0H28.7v17H0v9.4h11.3V95h69V26.4h11.3V17z M64.4,69.4L57.8,76l-12-12l-12,12l-6.6-6.6l12-12
+            l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
+            />
+          </svg>
+          {{ $t("remove") }}
+        </button>
       </div>
       <div
-        style="width: 100%;"
+        style="width: 100%"
         class="ta-ce"
         v-if="publication.is_model && $root.store.request.display !== 'survey'"
       >
@@ -143,7 +214,7 @@
         </label>
       </div>
       <div
-        style="width: 100%;"
+        style="width: 100%"
         class="ta-ce"
         v-else-if="
           model_for_this_publication && $root.store.request.display !== 'survey'
@@ -176,7 +247,7 @@
           >
         </label>
       </div>
-      <div v-else-if="model_for_this_publication" style="width: 100%;">
+      <div v-else-if="model_for_this_publication" style="width: 100%">
         <div class v-if="url_to_publi">
           <small>
             {{ $t("save_following_address_and_come_back_later") }}
@@ -185,7 +256,7 @@
           </small>
         </div>
       </div>
-      <div class="text-centered" style="width: 100%;">
+      <div class="text-centered" style="width: 100%">
         <ClientsCheckingOut
           v-if="$root.store.request.display !== 'survey'"
           :type="'publications'"
@@ -195,7 +266,7 @@
 
       <div
         class="text-centered"
-        style="width: 100%;"
+        style="width: 100%"
         v-if="
           publication.template === 'page_by_page' &&
           $root.consult_domains &&
@@ -279,7 +350,7 @@
             width="100.7px"
             height="101px"
             viewBox="0 0 100.7 101"
-            style="enable-background: new 0 0 100.7 101;"
+            style="enable-background: new 0 0 100.7 101"
             xml:space="preserve"
           >
             <path
@@ -316,7 +387,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background: new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95"
             xml:space="preserve"
           >
             <polygon
@@ -360,7 +431,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background: new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95"
             xml:space="preserve"
           >
             <path
@@ -412,6 +483,7 @@ export default {
       show_copy_options: false,
       show_publi_model_infos: false,
       copy_publi_name: this.$t("copy_of") + " " + this.publication.name,
+      edit_publi_title_in_survey: false,
     };
   },
 
@@ -429,7 +501,12 @@ export default {
     );
   },
 
-  watch: {},
+  watch: {
+    edit_publi_title_in_survey() {
+      if (this.edit_publi_title_in_survey)
+        this.new_publi_name = this.publication.name;
+    },
+  },
   computed: {
     export_button_is_disabled() {
       if (!this.enable_export_button) return true;
@@ -496,6 +573,18 @@ export default {
       }
 
       this.$emit("export");
+    },
+    setNewTitle() {
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
+          name: this.new_publi_name,
+        },
+      });
+      setTimeout(() => {
+        this.edit_publi_title_in_survey = false;
+      }, 200);
     },
     showAdvancedOptions() {
       this.show_settings = true;

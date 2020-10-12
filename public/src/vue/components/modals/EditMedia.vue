@@ -576,25 +576,54 @@
         @videoTimeUpdated="videoTimeUpdated"
       />
       <div class="m_mediaOptions">
-        <div v-if="adjust_mode === 'trim'">
-          <button
-            type="button"
-            class="button-thin bg-bleumarine"
-            :disabled="current_video_time === trim_options.beginning"
-            @click="trim_options.beginning = current_video_time"
+        <div v-if="adjust_mode === 'trim'" class="">
+          <label class="padding-sides-verysmall">{{ $t("playback") }}</label>
+          <div
+            class="flex-wrap flex-horizontally-start flex-no-grow padding-sides-verysmall"
           >
-            {{ $t("set_as_beginning") }} ({{ trim_options.beginning }})
-          </button>
-          <button
-            type="button"
-            v-if="adjust_mode === 'trim'"
-            class="button-thin bg-bleumarine"
-            :disabled="current_video_time === trim_options.end"
-            @click="trim_options.end = current_video_time"
-          >
-            {{ $t("set_as_end") }}
-            ({{ trim_options.end }})
-          </button>
+            <input
+              type="time"
+              step="0.1"
+              class="bg-blanc tiny-width input-xs"
+              v-model="current_video_time"
+            />
+
+            <button
+              type="button"
+              class="button-thin bg-orange"
+              @click="rewindPlayer"
+            >
+              -1 sec
+            </button>
+            <button
+              type="button"
+              class="button-thin bg-orange"
+              @click="forwardPlayer"
+            >
+              +1 sec
+            </button>
+          </div>
+          <label class="padding-sides-verysmall">{{ $t("trim_help") }}</label>
+          <div>
+            <button
+              type="button"
+              class="button-thin bg-bleumarine"
+              :disabled="current_video_time === trim_options.beginning"
+              @click="trim_options.beginning = current_video_time"
+            >
+              {{ $t("set_as_beginning") }}
+              ({{ trim_options.beginning }} → {{ current_video_time }})
+            </button>
+            <button
+              type="button"
+              class="button-thin bg-bleumarine"
+              :disabled="current_video_time === trim_options.end"
+              @click="trim_options.end = current_video_time"
+            >
+              {{ $t("set_as_end") }}
+              ({{ trim_options.end }} → {{ current_video_time }})
+            </button>
+          </div>
         </div>
       </div>
       <transition name="fade_fast" :duration="400">
@@ -757,10 +786,10 @@ export default {
         return `${this.$t("beginning")} >= ${this.$t("end")}`.toLowerCase();
 
       // if beginning is after trim end
-      if (_beginning > _duration)
+      if (_duration && _beginning > _duration)
         return `${this.$t("beginning")} > ${this.$t("duration")}`.toLowerCase();
 
-      if (_end > _duration)
+      if (_duration && _end > _duration)
         return `${this.$t("end")} > ${this.$t("duration")}`.toLowerCase();
 
       // if end is before start
@@ -824,7 +853,8 @@ export default {
       this.$root.openProject(this.slugProjectName);
     },
     testTrim() {
-      console.log("testTrim");
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`EditMedia • METHODS: testTrim`);
 
       // const mediaContent = this.$refs.mediacontent;
       // if (!mediaContent) {
@@ -852,7 +882,6 @@ export default {
 
       const pausing_function = function () {
         if (player.currentTime >= end_seconds) {
-          debugger;
           player.pause();
           // player.removeEventListener("timeupdate", pausing_function);
         } else {
@@ -861,6 +890,18 @@ export default {
       };
       window.requestAnimationFrame(pausing_function);
       // player.addEventListener("timeupdate", pausing_function, false);
+    },
+    forwardPlayer() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`EditMedia • METHODS: forwardPlayer`);
+      const player = document.querySelector(".m_modal--mask .plyr video");
+      player.plyr.forward(1);
+    },
+    rewindPlayer() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`EditMedia • METHODS: rewindPlayer`);
+      const player = document.querySelector(".m_modal--mask .plyr video");
+      player.plyr.rewind(1);
     },
     removeMedia: function () {
       this.$alertify
@@ -963,8 +1004,9 @@ export default {
   position: absolute;
   bottom: 0;
   z-index: 100;
-  /* background-color: white; */
+  background-color: white;
   margin: 60px 10px;
+
   /* padding: 15px; */
 }
 </style>

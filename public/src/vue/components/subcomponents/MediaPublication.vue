@@ -88,6 +88,7 @@
             :theme="'bubble'"
             :type="'publications'"
             :slugFolderName="slugPubliName"
+            :show_cursors="false"
             ref="textField"
           />
           <div v-else class="mediaTextContent">
@@ -171,6 +172,7 @@
             :key="media.metaFileName"
             :model_placeholder_media="media"
             :slugPubliName="slugPubliName"
+            :publication_is_submitted="publication_is_submitted"
             :publi_is_model="publi_is_model"
             :preview_mode="preview_mode"
             :read_only="read_only"
@@ -705,6 +707,7 @@ export default {
     page: Object,
     read_only: Boolean,
     preview_mode: Boolean,
+    publication_is_submitted: Boolean,
     pixelsPerMillimeters: Number,
     zoom: Number,
     model_for_this_publication: [Boolean, Object],
@@ -846,11 +849,15 @@ export default {
     contentStyles() {
       let css = `
         --font_size_percent: ${this.font_size_percent}%;
-        --margin: ${this.margin * this.zoom}px;
+        --margin: ${this.margin}mm;
         --fill_color: ${this.fill_color};
         --stroke_color: ${this.stroke_color};
-        --stroke_width: ${this.stroke_width * this.zoom}px;
+        --stroke_width: ${this.stroke_width}mm;
       `;
+
+      // using vector-effect="non-scaling-stroke" to make sure stroke-width is consistent and rounded shapes work as intended
+      // not handled by electron 2.x.x so not working as expected for now in electron
+      // need to update electron soon
 
       if (this.media.custom_css) css += this.media.custom_css;
 
