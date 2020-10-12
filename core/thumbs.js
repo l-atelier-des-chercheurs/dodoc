@@ -8,7 +8,7 @@ const path = require("path"),
 const sharp = require("sharp");
 sharp.cache(false);
 
-const StlThumbnailer = require("node-stl-to-thumbnail");
+// const StlThumbnailer = require("node-stl-to-thumbnail");
 // const puppeteer = require("puppeteer");
 
 const dev = require("./dev-log"),
@@ -38,7 +38,7 @@ module.exports = (function () {
       dev.logfunction(
         `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType}, type: ${type}, subtype: ${subtype}`
       );
-      if (!["image", "video", "audio", "stl"].includes(mediaType)) {
+      if (!["image", "video", "audio" /*, "stl" */].includes(mediaType)) {
         dev.logverbose(
           `THUMBS — makeMediaThumbs — media is not of type image or video`
         );
