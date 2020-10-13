@@ -252,6 +252,7 @@ module.exports = (function () {
                   headless: true,
                   ignoreHTTPSErrors: true,
                   args: ["--no-sandbox", "--font-render-hinting=none"],
+                  executablePath: "chromium-browser",
                 })
                 .then((_browser) => {
                   browser = _browser;
