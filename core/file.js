@@ -838,6 +838,7 @@ module.exports = (function () {
                   break;
                 case ".mp3":
                 case ".wav":
+                case ".aac":
                 case ".m4a":
                   additionalMeta.type = "audio";
                   break;
@@ -1447,7 +1448,7 @@ module.exports = (function () {
         } else if (additionalMeta.type === "audio") {
           tasks.push(
             new Promise((resolve, reject) => {
-              mediaName += ".mp3";
+              mediaName += ".aac";
 
               // only works for projects media (root) for now
               api
