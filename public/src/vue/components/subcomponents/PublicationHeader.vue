@@ -282,7 +282,7 @@
       >
         <div class="switch switch-xs">
           <input
-            id="remember_password_on_this_device"
+            id="show_on_external_domain"
             type="checkbox"
             v-model="show_on_external_domain"
           />
