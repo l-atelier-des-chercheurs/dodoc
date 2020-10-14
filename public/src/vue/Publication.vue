@@ -340,8 +340,6 @@ export default {
         // si le média du modèle est un placeholder
         // chercher les médias de la réponse qui contiennent une référence au modèle
       }, {});
-
-      return medias_in_order;
     },
     layered_medias() {
       return this.$_.groupBy(this.medias, "layer_id");
