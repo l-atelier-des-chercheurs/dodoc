@@ -1,7 +1,5 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  pathToFfmpeg = require("ffmpeg-static"),
-  ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader");
 
@@ -14,8 +12,12 @@ sharp.cache(false);
 const dev = require("./dev-log"),
   api = require("./api");
 
-ffmpeg.setFfmpegPath(pathToFfmpeg);
-ffmpeg.setFfprobePath(ffprobestatic.path);
+ffmpeg.setFfmpegPath(
+  path.join(global.appRoot, "ffmpeg-4.1.3-armhf-static", "ffmpeg")
+);
+ffmpeg.setFfprobePath(
+  path.join(global.appRoot, "ffmpeg-4.1.3-armhf-static", "ffprobe")
+);
 
 module.exports = (function () {
   const API = {

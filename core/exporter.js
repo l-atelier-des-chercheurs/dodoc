@@ -1,6 +1,4 @@
 const path = require("path"),
-  pathToFfmpeg = require("ffmpeg-static"),
-  ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   fs = require("fs-extra"),
   pad = require("pad-left");
@@ -15,8 +13,12 @@ const dev = require("./dev-log"),
   file = require("./file"),
   thumbs = require("./thumbs");
 
-ffmpeg.setFfmpegPath(pathToFfmpeg);
-ffmpeg.setFfprobePath(ffprobestatic.path);
+ffmpeg.setFfmpegPath(
+  path.join(global.appRoot, "ffmpeg-4.1.3-armhf-static", "ffmpeg")
+);
+ffmpeg.setFfprobePath(
+  path.join(global.appRoot, "ffmpeg-4.1.3-armhf-static", "ffprobe")
+);
 
 module.exports = (function () {
   return {

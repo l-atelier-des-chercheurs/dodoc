@@ -5,7 +5,6 @@ const path = require("path"),
   slugg = require("slugg"),
   os = require("os"),
   writeFileAtomic = require("write-file-atomic"),
-  pathToFfmpeg = require("ffmpeg-static"),
   ffmpeg = require("fluent-ffmpeg"),
   pad = require("pad-left");
 
@@ -13,7 +12,9 @@ const sharp = require("sharp");
 
 const dev = require("./dev-log");
 
-ffmpeg.setFfmpegPath(pathToFfmpeg);
+ffmpeg.setFfmpegPath(
+  path.join(global.appRoot, "ffmpeg-4.1.3-armhf-static", "ffmpeg")
+);
 
 module.exports = (function () {
   const API = {
@@ -196,7 +197,7 @@ module.exports = (function () {
     return new Promise(function (resolve, reject) {
       const ifaces = os.networkInterfaces();
       let ip_adresses = {};
-      Object.keys(ifaces).forEach(function (ifname) {
+      Object.keys(ifaces).forEach(function(ifname) {
         ifaces[ifname].forEach(function (iface) {
           if ("IPv4" === iface.family && iface.internal === false) {
             ip_adresses[ifname] = iface.address;
@@ -257,7 +258,7 @@ module.exports = (function () {
   }
 
   function writeAudioToDisk(slugFolderName, mediaName, dataURL) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       dev.logfunction("COMMON — writeAudioToDisk");
       if (dataURL === undefined) {
         dev.error("No media data content gotten for " + mediaName);
@@ -281,7 +282,7 @@ module.exports = (function () {
           const ffmpeg_cmd = new ffmpeg(pathToTempMedia)
             .audioCodec("aac")
             .save(pathToMedia)
-            .on("end", function () {
+            .on("end", function() {
               console.log("Processing finished !");
               resolve();
             });
@@ -292,7 +293,7 @@ module.exports = (function () {
   }
 
   function writeVideoToDisk(slugFolderName, mediaName, dataURL) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       dev.logfunction("COMMON — writeVideoToDisk");
       if (dataURL === undefined) {
         dev.error("No media data content gotten for " + mediaName);
@@ -341,7 +342,7 @@ module.exports = (function () {
     frameRate,
     socket,
   }) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       dev.logfunction("COMMON — makeStopmotionFromImageSequence");
 
       const numberOfImagesToProcess = images.length;
