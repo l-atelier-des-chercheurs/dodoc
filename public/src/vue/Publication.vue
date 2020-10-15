@@ -378,7 +378,7 @@ export default {
         return [];
       }
 
-      const medias_in_order = publication.medias_slugs.reduce((acc, item) => {
+      return medias_in_order = publication.medias_slugs.reduce((acc, item) => {
         const medias = this.model_for_this_publication
           ? this.publication_model_medias
           : this.medias;
@@ -419,8 +419,6 @@ export default {
         acc.push(media);
         return acc;
       }, []);
-
-      return medias_in_order;
     },
   },
   methods: {
