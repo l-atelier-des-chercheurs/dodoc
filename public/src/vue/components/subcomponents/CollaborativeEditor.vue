@@ -52,7 +52,7 @@ window.katex = katex;
 Quill.register("modules/cursors", QuillCursors);
 ShareDB.types.register(require("rich-text").type);
 
-var fonts = ["", "Alegreya", "Roboto Mono"];
+var fonts = ["", "Alegreya", "Roboto Mono", "Roboto", "Source Sans Pro", "Source Serif Pro", "PT Serif", "Work Sans", "Karla", "IBM Plex Serif", "Volkhov", "Archivo Black", "Spectral"];
 var FontAttributor = Quill.import("attributors/style/font");
 FontAttributor.whitelist = fonts;
 Quill.register(FontAttributor, true);
