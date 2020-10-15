@@ -162,6 +162,7 @@
       </template>
       <template v-else>
         <img
+        v-if="context === 'edit'"
           :srcset="
             complexMediaSrcSetAttr({ type: 'waveformType', option: 'mono' })
           "
