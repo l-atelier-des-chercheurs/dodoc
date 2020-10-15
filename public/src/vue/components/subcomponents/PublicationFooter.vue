@@ -33,6 +33,13 @@
           {{ $t("published") }} —
           {{ $root.formatDateToPrecise(publication.date_submitted) }}
         </small>
+
+
+        <small v-if="publication.date_submitted && can_edit_publi">
+          <button type="button" class="button-redthin" @click="removeSubmittedDate()">
+            {{ $t('remove_published_date') }}
+          </button>
+        </small>
       </div>
     </template>
     <template v-else>
@@ -87,6 +94,9 @@ export default {
           () => {}
         );
     },
+    removeSubmittedDate() {
+      this.$emit("removeSubmittedDate");
+    }
   },
 };
 </script>

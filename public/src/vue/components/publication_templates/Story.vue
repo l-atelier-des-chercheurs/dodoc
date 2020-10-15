@@ -139,6 +139,7 @@
           :model_for_this_publication="model_for_this_publication"
           :can_edit_publi="can_edit_publi"
           @lockAndPublish="$emit('lockAndPublish')"
+          @removeSubmittedDate="$emit('removeSubmittedDate')"
         />
       </div>
     </div>
