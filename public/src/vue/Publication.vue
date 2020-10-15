@@ -15,6 +15,7 @@
       @editPubliMedia="editPubliMedia"
       @addMedia="addMedia"
       @lockAndPublish="lockAndPublish"
+      @removeSubmittedDate="removeSubmittedDate"
     />
     <Story
       v-if="publication.template === 'story'"
@@ -35,6 +36,7 @@
       @insertMediasInList="insertMediasInList"
       @togglePreviewMode="preview_mode = !preview_mode"
       @lockAndPublish="lockAndPublish"
+      @removeSubmittedDate="removeSubmittedDate"
     />
     <VideoPublication
       v-else-if="publication.template === 'video_assemblage'"
@@ -747,6 +749,15 @@ export default {
         },
       });
     },
+    removeSubmittedDate() {
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
+          date_submitted: '',
+        },
+      });
+    }
   },
 };
 </script>

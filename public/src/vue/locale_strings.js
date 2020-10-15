@@ -1325,6 +1325,10 @@ module.exports = (function () {
       fr: "Publié",
       en: "Published",
     },
+    remove_published_date: {
+      fr: "Retirer la date de publication",
+      en: "Remove published date",
+    },
     alreadyAnsweredThatModel: {
       fr:
         "Vous avez déjà répondu à ce modèle, êtes-vous sur de vouloir y répondre à nouveau ?",
