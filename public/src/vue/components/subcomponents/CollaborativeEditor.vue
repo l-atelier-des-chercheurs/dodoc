@@ -261,7 +261,8 @@ export default {
 
     this.$refs.editor.dataset.quill = this.editor;
 
-    if (this.show_cursors) this.cursors = this.editor.getModule("cursors");
+    // if (this.show_cursors) 
+    this.cursors = this.editor.getModule("cursors");
 
     if (this.read_only || this.$root.state.mode !== "live")
       this.editor.disable();
@@ -271,9 +272,9 @@ export default {
         ? this.$root.current_author.name
         : this.$t("anonymous");
 
-      if (this.show_cursors) {
         this.cursors.createCursor("_self", name, "#1d327f");
         this.cursors.toggleFlag("_self", false);
+      if (this.show_cursors) {
       }
     }
 
