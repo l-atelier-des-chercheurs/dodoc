@@ -1017,12 +1017,13 @@ export default {
           : this.ratio
           ? this.mediaSize.width * this.ratio
           : 66;
+        
       this.mediaPos.x =
-        this.media.hasOwnProperty("x") && !!Number.parseFloat(this.media.x)
+        this.media.hasOwnProperty("x") && !Number.isNaN(this.media.x) 
           ? this.limitMediaXPos(Number.parseFloat(this.media.x))
           : this.page.margin_left;
       this.mediaPos.y =
-        this.media.hasOwnProperty("y") && !!Number.parseFloat(this.media.y)
+        this.media.hasOwnProperty("y") && !Number.isNaN(this.media.y)
           ? this.limitMediaYPos(Number.parseFloat(this.media.y))
           : this.page.margin_top;
       this.custom_css = this.media.hasOwnProperty("custom_css")
@@ -1039,8 +1040,7 @@ export default {
         : false;
 
       this.margin =
-        this.media.hasOwnProperty("margin") &&
-        !!Number.parseFloat(this.media.margin)
+        this.media.hasOwnProperty("margin") && Number.parseFloat(this.media.margin)
           ? Number.parseFloat(this.media.margin)
           : 0;
 
@@ -1116,9 +1116,13 @@ export default {
       const xcenter = this.mediaSize.width / 2;
 
       return Math.max(
-        this.page.margin_left - xcenter,
-        Math.min(this.page.width - this.page.margin_right - xcenter, xPos)
+        -xcenter,
+        Math.min(this.page.width - xcenter, xPos)
       );
+      // return Math.max(
+      //   this.page.margin_left - xcenter,
+      //   Math.min(this.page.width - this.page.margin_right - xcenter, xPos)
+      // );
     },
     roundMediaVal(val) {
       if (this.page.snap_to_grid)
@@ -1135,11 +1139,15 @@ export default {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
       // }
-      yPos = Math.max(
-        this.page.margin_top - ycenter,
-        Math.min(this.page.height - this.page.margin_bottom - ycenter, yPos)
+
+      return Math.max(
+        -ycenter,
+        Math.min(this.page.height - ycenter, yPos)
       );
-      return yPos;
+      // return Math.max(
+      //   this.page.margin_top - ycenter,
+      //   Math.min(this.page.height - this.page.margin_bottom - ycenter, yPos)
+      // );
     },
 
     limitMediaWidth(w) {
