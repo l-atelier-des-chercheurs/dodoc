@@ -1152,7 +1152,7 @@ export default {
       return Math.max(
         5,
         Math.min(
-          this.page.width - this.page.margin_right - this.page.margin_left,
+          this.page.width,
           w
         )
       );
@@ -1166,7 +1166,7 @@ export default {
       return Math.max(
         5,
         Math.min(
-          this.page.height - this.page.margin_bottom - this.page.margin_top,
+          this.page.height,
           h
         )
       );
