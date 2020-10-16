@@ -921,7 +921,7 @@ module.exports = (function () {
             inputs: "output",
             outputs: "output",
           });
-          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
         } else if (effect.type === "colored_filter") {
           if (
             !!effect.color &&
@@ -939,7 +939,7 @@ module.exports = (function () {
               outputs: "output",
             });
             // .complexFilter(["color[c];[0:v][c]overlay=shortest=1"]);
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: color is not set correctly`
@@ -993,7 +993,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -1010,7 +1010,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -1077,7 +1077,8 @@ module.exports = (function () {
               //   outputs: "output"
               // }
             );
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+
             // if (metadata && metadata.format && metadata.format.duration)
             //   ffmpeg_cmd.duration(metadata.format.duration);
           } else {
