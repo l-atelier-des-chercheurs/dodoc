@@ -481,6 +481,9 @@
           "font_size_percent": {
             "type": "number"
           },
+          "opacity": {
+            "type": "number"
+          },
           "fill_color": {
             "type": "string"
           },

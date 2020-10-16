@@ -773,6 +773,7 @@ export default {
       ratio: undefined,
 
       font_size_percent: 100,
+      opacity:1,
       fill_color: "transparent",
       stroke_color: "transparent",
       stroke_width: 4,
@@ -859,6 +860,7 @@ export default {
     contentStyles() {
       let css = `
         --font_size_percent: ${this.font_size_percent}%;
+        --opacity: ${this.opacity};
         --margin: ${this.margin}mm;
         --fill_color: ${this.fill_color};
         --stroke_color: ${this.stroke_color};
@@ -1063,6 +1065,13 @@ export default {
         this.media.hasOwnProperty("margin") && Number.parseFloat(this.media.margin)
           ? Number.parseFloat(this.media.margin)
           : 0;
+
+      this.opacity =
+        this.media.hasOwnProperty("opacity") &&
+        !Number.isNaN(this.media.opacity)
+          ? Number.parseFloat(this.media.opacity)
+          : 1;
+      
 
       if (
         this.media.type === "text" ||

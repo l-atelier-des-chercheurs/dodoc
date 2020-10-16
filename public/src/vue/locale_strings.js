@@ -830,6 +830,10 @@ module.exports = (function () {
       fr: "Modifier le média original",
       en: "Edit original media content",
     },
+    opacity: {
+      fr: "Opacité",
+      en: "Opacity",
+    },
     stroke_color: {
       fr: "Couleur du contour",
       en: "Stroke color",
