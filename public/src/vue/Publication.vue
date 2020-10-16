@@ -380,7 +380,7 @@ export default {
         return [];
       }
 
-      return medias_in_order = publication.medias_slugs.reduce((acc, item) => {
+      return publication.medias_slugs.reduce((acc, item) => {
         const medias = this.model_for_this_publication
           ? this.publication_model_medias
           : this.medias;
