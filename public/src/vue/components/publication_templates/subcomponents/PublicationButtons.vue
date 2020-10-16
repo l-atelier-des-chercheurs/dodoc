@@ -545,6 +545,30 @@
           </div>
           <div v-else>
             <div class="item">
+              <label>{{ $t("position") }}</label>
+              <div class="input-group">
+                <span class="input-addon input-addon-small">↔</span>
+                <input
+                  type="number"
+                  class="input-small"
+                  v-model="x"
+                  min="0"
+                />
+                <span class="input-addon input-addon-small">mm</span>
+              </div>
+              <div class="input-group">
+                <span class="input-addon input-addon-small">↕</span>
+                <input
+                  type="number"
+                  class="input-small"
+                  v-model="y"
+                  min="0"
+                />
+                <span class="input-addon input-addon-small">mm</span>
+              </div>
+            </div>
+
+            <div class="item">
               <label>{{ $t("margin") }}</label>
               <div>
                 <input
@@ -876,6 +900,30 @@ export default {
       return all_selected_medias[0];
     },
 
+    x: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("x") &&
+          !!Number.parseFloat(this.media.x)
+          ? Number.parseFloat(this.media.x)
+          : 0;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ x: value });
+      },
+    },
+    y: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("y") &&
+          !!Number.parseFloat(this.media.y)
+          ? Number.parseFloat(this.media.y)
+          : 0;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ y: value });
+      },
+    },
     margin: {
       get() {
         return this.media &&
