@@ -1669,7 +1669,7 @@ module.exports = (function () {
         .withAudioBitrate("128k")
         .addOptions(["-tune stillimage"])
         .videoFilters(
-          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=increase`
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=2,crop=${resolution.width}:${resolution.height}`
         )
         .outputFPS(30)
         .toFormat("mp4")
