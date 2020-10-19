@@ -364,14 +364,36 @@ module.exports = (function () {
         let publication_meta = "";
 
         let resolution = {
-          width: 1280,
-          height: 720,
+          width: undefined,
+          height: undefined,
         };
-        if (options.hasOwnProperty("resolution")) {
-          if (options.resolution.hasOwnProperty("width"))
-            resolution.width = options.resolution.width;
-          if (options.resolution.hasOwnProperty("height"))
+        if (!options.hasOwnProperty("resolution")) {
+          resolution = {
+            width: 1280,
+            height: 720,  
+          }
+        } else {
+          if(options.resolution.hasOwnProperty("height")) {
             resolution.height = options.resolution.height;
+            if(options.resolution.hasOwnProperty("width")) {
+              resolution.width = options.resolution.width;
+            } else {
+              switch (resolution.height) {
+                case 360:
+                  resolution.width = 640;
+                  break;
+                case 480:
+                  resolution.width = 854;
+                  break;
+                case 720:
+                  resolution.width = 1280;
+                  break;
+                case 1080:
+                  resolution.width = 1920;
+                  break;
+              } 
+            }
+          }
         }
 
         let bitrate = options.hasOwnProperty("bitrate")
@@ -410,6 +432,7 @@ module.exports = (function () {
                   medias_with_original_filepath,
                   cachePath,
                   videoName,
+                  resolution,
                   socket,
                 })
                   .then(() => {
@@ -424,6 +447,7 @@ module.exports = (function () {
                   medias_with_original_filepath,
                   cachePath,
                   videoName,
+                  resolution,
                   socket,
                 })
                   .then(() => {
@@ -1547,6 +1571,7 @@ module.exports = (function () {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
     socket,
   }) {
     return new Promise(function (resolve, reject) {
@@ -1601,6 +1626,9 @@ module.exports = (function () {
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
         .addOptions(["-map 0:v:0", "-map 1:a:0"])
+        .videoFilters(
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
+        )
         .toFormat("mp4")
         .on("start", function (commandLine) {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
@@ -1627,6 +1655,7 @@ module.exports = (function () {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
     socket,
   }) {
     return new Promise(function (resolve, reject) {
@@ -1651,10 +1680,6 @@ module.exports = (function () {
 
       let time_since_last_report = 0;
 
-      let resolution = _calculateResolutionAccordingToRatio(
-        image_files[0].ratio
-      );
-
       dev.logverbose(
         `About to create a speaking picture with resolution = ${JSON.stringify(
           resolution
@@ -1669,7 +1694,7 @@ module.exports = (function () {
         .withAudioBitrate("128k")
         .addOptions(["-tune stillimage"])
         .videoFilters(
-          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=2,crop=${resolution.width}:${resolution.height}`
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
         )
         .outputFPS(30)
         .toFormat("mp4")
@@ -2059,22 +2084,22 @@ module.exports = (function () {
     });
   }
 
-  function _calculateResolutionAccordingToRatio(ratio) {
-    let default_video_height = 720;
-    let resolution = {
-      width: 0,
-      height: default_video_height,
-    };
+  // function _calculateResolutionAccordingToRatio(ratio) {
+  //   let default_video_height = 720;
+  //   let resolution = {
+  //     width: 0,
+  //     height: default_video_height,
+  //   };
 
-    if (!ratio) {
-      ratio = 0.75;
-    }
+  //   if (!ratio) {
+  //     ratio = 0.75;
+  //   }
 
-    const new_width = 2 * Math.round(default_video_height / ratio / 2);
-    resolution.width = new_width;
+  //   const new_width = 2 * Math.round(default_video_height / ratio / 2);
+  //   resolution.width = new_width;
 
-    return resolution;
-  }
+  //   return resolution;
+  // }
 
   function _notifyFfmpegProgress({ socket, progress }) {
     let not_localized_string;
