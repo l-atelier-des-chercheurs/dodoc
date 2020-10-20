@@ -27,19 +27,19 @@
         </svg>
       </button>
 
-      <div v-for="mode in available_modes" :key="mode.key">
+      <div v-for="mode in available_modes" :key="mode">
         <input
           type="radio"
-          :id="mode.key"
-          :value="mode.key"
+          :id="id + mode"
+          :value="mode"
           :disabled="$root.settings.capture_mode_cant_be_changed"
           v-model="selected_mode"
         />
-        <label :for="mode.key">
+        <label :for="id + mode">
           <div class="picto">
-            <img :src="mode.picto" />
+            <img :src="available_mode_picto[mode]" />
           </div>
-          <span>{{ $t(mode.key) }}</span>
+          <span>{{ $t(mode) }}</span>
         </label>
       </div>
       <button
@@ -283,7 +283,7 @@
               :context="'edit'"
               :slugFolderName="current_stopmotion"
               :media="stopmotion.onion_skin_img"
-              :subfolder="'_stopmotions/'"
+              :folderType="'stopmotions'"
               :style="
                 is_showing_live_feed
                   ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}`
@@ -338,7 +338,7 @@
                                   :context="'preview'"
                                   :slugFolderName="stopmotion.slugFolderName"
                                   :media="media"
-                                  :subfolder="'_stopmotions/'"
+                                  :folderType="'stopmotions'"
                                   :preview_size="150"
                                 />
                               </div>
@@ -406,9 +406,12 @@
         <StopmotionPanel
           v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
           :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
-          :slugProjectName="slugProjectName"
+          :type="type"
+          :slugFolderName="slugFolderName"
           :read_only="read_only"
           :videoStream="videoStream"
+          :can_add_to_fav="can_add_to_fav"
+          @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
           @close="current_stopmotion = false"
           @new_single_image="updateSingleImage"
           @show_live_feed="
@@ -464,6 +467,7 @@
                 type="button"
                 class="padding-verysmall bg-transparent m_panel--buttons--row--captureButton--btn"
                 :class="{ 'is--justCaptured': capture_button_pressed }"
+                :disabled="is_saving"
                 @mousedown.stop.prevent="captureOrStop()"
                 @touchstart.stop.prevent="captureOrStop()"
               >
@@ -568,6 +572,7 @@
             <MediaValidationButtons
               v-if="media_to_validate"
               :read_only="read_only"
+              :can_add_to_fav="can_add_to_fav"
               :media_is_being_sent="media_is_being_sent"
               :media_being_sent_percent="media_being_sent_percent"
               @cancel="cancelValidation()"
@@ -603,12 +608,17 @@ import * as axios from "axios";
 
 export default {
   props: {
-    project: {
-      type: Object,
-      default: "",
-    },
-    slugProjectName: String,
+    slugFolderName: String,
+    type: String,
     read_only: Boolean,
+    available_modes: {
+      type: Array,
+      default: () => ["photo", "video", "stopmotion", "audio", "vecto"],
+    },
+    can_add_to_fav: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {
     MediaContent,
@@ -619,31 +629,20 @@ export default {
   data() {
     return {
       selected_mode: "",
-      available_modes: [
-        {
-          picto: "/images/i_icone-dodoc_image.svg",
-          key: "photo",
-        },
-        {
-          picto: "/images/i_icone-dodoc_video.svg",
-          key: "video",
-        },
-        {
-          picto: "/images/i_icone-dodoc_anim.svg",
-          key: "stopmotion",
-        },
-        {
-          picto: "/images/i_icone-dodoc_audio.svg",
-          key: "audio",
-        },
-        {
-          picto: "/images/i_icone-dodoc_vecto.svg",
-          key: "vecto",
-        },
-      ],
+      is_saving: false,
+
+      available_mode_picto: {
+        photo: "/images/i_icone-dodoc_image.svg",
+        video: "/images/i_icone-dodoc_video.svg",
+        stopmotion: "/images/i_icone-dodoc_anim.svg",
+        audio: "/images/i_icone-dodoc_audio.svg",
+        vecto: "/images/i_icone-dodoc_vecto.svg",
+      },
 
       recordVideoFeed: undefined,
       recordVideoWithAudio: true,
+
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       show_capture_settings: false,
       show_stopmotion_list: false,
@@ -766,10 +765,15 @@ export default {
       });
 
       // MODE
-      if (this.$root.settings.capture_options.selected_mode !== "") {
+      if (
+        this.$root.settings.capture_options.selected_mode !== "" &&
+        this.available_modes.includes(
+          this.$root.settings.capture_options.selected_mode
+        )
+      ) {
         this.selected_mode = this.$root.settings.capture_options.selected_mode;
       } else {
-        this.selected_mode = this.available_modes[0].key;
+        this.selected_mode = this.available_modes[0];
       }
 
       // RESOLUTION
@@ -888,7 +892,10 @@ export default {
       return this.$_.groupBy(this.available_devices, "kind");
     },
     uriToUploadMedia: function () {
-      return `_file-upload/projects/${this.slugProjectName}?socketid=${this.$root.$socketio.socket.id}`;
+      return (
+        window.location.origin +
+        `/_file-upload/${this.type}/${this.slugFolderName}/?socketid=${this.$root.$socketio.socket.id}`
+      );
     },
     recording_duration: function () {
       if (this.timer_recording) {
@@ -999,12 +1006,10 @@ export default {
         return;
       }
 
-      let currentModeIndex = this.available_modes.findIndex((d) => {
-        return d.key === this.selected_mode;
-      });
+      let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
 
       if (currentModeIndex > 0) {
-        this.selected_mode = this.available_modes[currentModeIndex - 1].key;
+        this.selected_mode = this.available_modes[currentModeIndex - 1];
       }
     },
     nextMode() {
@@ -1013,12 +1018,10 @@ export default {
         return;
       }
 
-      let currentModeIndex = this.available_modes.findIndex((d) => {
-        return d.key === this.selected_mode;
-      });
+      let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
 
       if (currentModeIndex < this.available_modes.length - 1) {
-        this.selected_mode = this.available_modes[currentModeIndex + 1].key;
+        this.selected_mode = this.available_modes[currentModeIndex + 1];
       }
     },
 
@@ -1417,8 +1420,9 @@ export default {
     addStopmotionImage() {
       const smdata = {
         name:
-          this.slugProjectName + "-" + this.$moment().format("YYYYMMDD_HHmmss"),
-        linked_project: this.slugProjectName,
+          this.slugFolderName + "-" + this.$moment().format("YYYYMMDD_HHmmss"),
+        linked_folder: this.slugFolderName,
+        linked_type: this.type,
         authors: this.$root.current_author
           ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
           : "",
@@ -1427,17 +1431,15 @@ export default {
       this.getStaticImageFromVideoElement().then((imageData) => {
         if (!this.current_stopmotion) {
           // create stopmotion
-          this.$eventHub.$on("socketio.folder_created_or_updated", (fdata) => {
-            if (fdata.id === this.$root.justCreatedFolderID) {
-              this.$eventHub.$off("socketio.folder_created_or_updated");
+          this.$root
+            .createFolder({
+              type: "stopmotions",
+              data: smdata,
+            })
+            .then((fdata) => {
               this.current_stopmotion = fdata.slugFolderName;
               this.addImageToStopmotion(imageData);
-            }
-          });
-          this.$root.createFolder({
-            type: "stopmotions",
-            data: smdata,
-          });
+            });
         } else {
           // append to stopmotion
           this.addImageToStopmotion(imageData);
@@ -1446,14 +1448,31 @@ export default {
     },
     addImageToStopmotion(imageData) {
       console.log("METHODS • CaptureView: addImageToStopmotion");
-      this.$root.createMedia({
-        slugFolderName: this.current_stopmotion,
-        type: "stopmotions",
-        rawData: imageData,
-        additionalMeta: {
-          type: "image",
-        },
-      });
+      this.is_saving = true;
+
+      const media_editing_timeout = setTimeout(() => {
+        if (this.is_saving) {
+          this.is_saving = false;
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.failed_to_save_media"));
+        }
+      }, 5000);
+
+      this.$root
+        .createMedia({
+          slugFolderName: this.current_stopmotion,
+          type: "stopmotions",
+          rawData: imageData,
+          additionalMeta: {
+            type: "image",
+          },
+        })
+        .then((mdata) => {
+          this.is_saving = false;
+          clearTimeout(media_editing_timeout);
+        });
     },
     startVectoFeed() {
       return new Promise((resolve, reject) => {
@@ -1595,6 +1614,8 @@ export default {
               .success(this.$t("notifications.media_was_sent"));
             this.media_is_being_sent = false;
             this.media_to_validate = false;
+
+            this.$emit("insertMedias", [x.metaFileNames[0]]);
 
             // this.selected_files_meta[filename].status = 'success';
             // this.selected_files_meta[filename].upload_percentages = 100;

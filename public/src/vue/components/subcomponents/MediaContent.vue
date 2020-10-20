@@ -12,56 +12,54 @@
         :src="linkToImageThumb"
         draggable="false"
       />
-      <transition name="slideFromTop" :duration="600">
-        <img
-          v-if="is_hovered && $root.state.is_electron && linkToHoveredThumb"
-          :src="linkToHoveredThumb"
-          draggable="false"
-        />
-      </transition>
     </template>
 
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
         <img
-          :srcset="complexMediaSrcSetAttr({ opt: 'timeMark' })"
+          :srcset="complexMediaSrcSetAttr({ type: 'timeMark', option: 0 })"
           :sizes="imageSizesAttr"
-          :src="linkToComplexMediaThumb({ opt: 'timeMark' })"
+          :src="linkToComplexMediaThumb({ type: 'timeMark', option: 0 })"
           draggable="false"
         />
-        <div class="play_picto">
-          <svg
-            class
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="169px"
-            height="169px"
-            viewBox="0 0 169 169"
-            style="enable-background: new 0 0 169 169;"
-            xml:space="preserve"
-          >
-            <path
-              d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
-            />
-          </svg>
-
+        <div class="">
+          <div class="play_picto">
+            <svg
+              class
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="169px"
+              height="169px"
+              viewBox="0 0 169 169"
+              style="enable-background: new 0 0 169 169"
+              xml:space="preserve"
+            >
+              <path
+                d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
+              />
+            </svg>
+          </div>
           <div v-if="media_duration" class="_duration">
-            {{ $root.formatDurationToMinuteHours(media_duration * 1000) }}
+            {{
+              $root.formatDurationToHoursMinutesSeconds(media_duration * 1000)
+            }}
           </div>
         </div>
       </template>
       <template v-else>
         <vue-plyr
+          :key="mediaURL"
           :options="plyr_options"
           ref="plyr"
-          :emit="['volumechange']"
+          :emit="['volumechange', 'timeupdate']"
           @volumechange="volumeChanged"
+          @timeupdate="videoTimeUpdated"
         >
           <video
-            :poster="linkToComplexMediaThumb({ opt: 'timeMark' })"
+            :poster="linkToComplexMediaThumb({ type: 'timeMark', option: 0 })"
             :src="mediaURL"
             preload="none"
             :autoplay="autoplay"
@@ -73,66 +71,114 @@
     <template v-else-if="media.type === 'stl'">
       <template v-if="context === 'preview'">
         <img
-          :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
+          :srcset="complexMediaSrcSetAttr({ type: 'angle', option: 0 })"
           :sizes="imageSizesAttr"
-          :src="linkToComplexMediaThumb({ opt: 'angle' })"
+          :src="linkToComplexMediaThumb({ type: 'angle', option: 0 })"
           draggable="false"
         />
         <!-- // TODO : set STL/3d picto -->
       </template>
       <template v-else>
-        <!-- // TODO : load STL in viewer, maybe behind a button in case it is too heavy -->
-        <!-- like a video tag: show image by default, and a button to go "interactive" -->
         <img
           v-if="!interactive_stl_mode"
-          :srcset="complexMediaSrcSetAttr({ opt: 'angle' })"
+          :srcset="complexMediaSrcSetAttr({ type: 'angle', option: 0 })"
           :sizes="imageSizesAttr"
-          :src="linkToComplexMediaThumb({ opt: 'angle' })"
+          :src="linkToComplexMediaThumb({ type: 'angle', option: 0 })"
           draggable="false"
         />
         <iframe v-else :src="`/libs/stl/show_stl.html?mediaURL=${mediaURL}`" />
 
         <div class="mediaContainer--buttons">
-          <button
-            type="button"
-            class="bg-orange button-small"
-            @click="interactive_stl_mode = !interactive_stl_mode"
+          <div
+            class="switch switch-xs switch_twoway button button-thin"
+            @click.self="interactive_stl_mode = !interactive_stl_mode"
           >
-            <template v-if="!interactive_stl_mode">
-              {{ $t("interactive_preview") }}
-            </template>
-            <template v-else>
-              {{ $t("static_preview") }}
-            </template>
-          </button>
+            <label
+              :for="`interactive_preview_${id}`"
+              class="cursor-pointer"
+              :class="{
+                'is--active': !interactive_stl_mode,
+              }"
+            >
+              <span class>{{ $t("static_preview") }}</span>
+            </label>
+
+            <input
+              type="checkbox"
+              class="switch"
+              :id="`interactive_preview_${id}`"
+              v-model="interactive_stl_mode"
+            />
+            <label
+              :for="`interactive_preview_${id}`"
+              :class="{
+                'is--active': interactive_stl_mode,
+              }"
+              >{{ $t("interactive_preview") }}</label
+            >
+          </div>
         </div>
       </template>
     </template>
 
     <template v-else-if="media.type === 'audio'">
       <template v-if="context === 'preview'">
-        <div class="play_picto">
-          <svg
-            class
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="169px"
-            height="169px"
-            viewBox="0 0 169 169"
-            style="enable-background: new 0 0 169 169;"
-            xml:space="preserve"
-          >
-            <path
-              d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
-            />
-          </svg>
+        <img
+          :srcset="
+            complexMediaSrcSetAttr({ type: 'waveformType', option: 'mono' })
+          "
+          :sizes="imageSizesAttr"
+          :src="
+            linkToComplexMediaThumb({ type: 'waveformType', option: 'mono' })
+          "
+          draggable="false"
+        />
+        <div>
+          <div class="play_picto">
+            <svg
+              class
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="169px"
+              height="169px"
+              viewBox="0 0 169 169"
+              style="enable-background: new 0 0 169 169"
+              xml:space="preserve"
+            >
+              <path
+                d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
+              />
+            </svg>
+          </div>
+          <div v-if="media_duration" class="_duration">
+            {{
+              $root.formatDurationToHoursMinutesSeconds(media_duration * 1000)
+            }}
+          </div>
         </div>
       </template>
       <template v-else>
-        <vue-plyr :options="plyr_options">
+        <img
+        v-if="context === 'edit'"
+          :srcset="
+            complexMediaSrcSetAttr({ type: 'waveformType', option: 'mono' })
+          "
+          :sizes="imageSizesAttr"
+          :src="
+            linkToComplexMediaThumb({ type: 'waveformType', option: 'mono' })
+          "
+          draggable="false"
+        />
+        <vue-plyr
+          :options="plyr_options"
+          :emit="['volumechange', 'timeupdate']"
+          ref="plyr"
+          @volumechange="volumeChanged"
+          @timeupdate="videoTimeUpdated"
+        >
           <audio :src="mediaURL" preload="none" :autoplay="autoplay" />
         </vue-plyr>
       </template>
@@ -143,7 +189,10 @@
         v-if="context === 'edit'"
         v-model="htmlForEditor"
         :media="media"
+        :read_only="read_only"
         :slugFolderName="slugFolderName"
+        :enable_collaboration="true"
+        :type="folderType"
         ref="textField"
       />
       <div v-else class="mediaTextContent">
@@ -206,7 +255,7 @@ export default {
   props: {
     slugFolderName: String,
     media: Object,
-    subfolder: {
+    folderType: {
       type: String,
       default: "",
     },
@@ -223,7 +272,6 @@ export default {
       type: String,
       default: "…",
     },
-    is_hovered: Boolean,
     read_only: {
       type: Boolean,
       default: true,
@@ -256,6 +304,8 @@ export default {
       },
       htmlForEditor: this.value,
       interactive_stl_mode: false,
+
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       plyr_options: {
         controls: [
@@ -297,6 +347,15 @@ export default {
         ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`
         : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
     },
+    subfolder: function () {
+      switch (this.folderType) {
+        case "publications":
+          return "_publications/";
+        case "stopmotions":
+          return "_stopmotions/";
+      }
+      return "";
+    },
     thumbRes: function () {
       return this.context === "preview"
         ? this.preview_size
@@ -329,7 +388,9 @@ export default {
       if (
         // if image is gif and context is not 'preview', let’s show the original gif
         this.context !== "preview" &&
-        this.mediaURL.toLowerCase().endsWith(".gif")
+        (this.mediaURL.toLowerCase().endsWith(".gif") ||
+          this.mediaURL.toLowerCase().endsWith(".svg") ||
+          this.mediaURL.toLowerCase().endsWith(".png"))
       ) {
         return this.mediaURL;
       }
@@ -352,8 +413,7 @@ export default {
     imageSrcSetAttr: function () {
       if (
         this.element_width_for_sizes === 0 ||
-        this.mediaURL.toLowerCase().endsWith(".gif") ||
-        this.context === "full"
+        this.mediaURL.toLowerCase().endsWith(".gif")
       ) {
         return;
       }
@@ -361,8 +421,12 @@ export default {
       // get all available sizes
       const img_srcset = this.media.thumbs.reduce((acc, t) => {
         if (t.hasOwnProperty("path")) {
-          // acc.push(encodeURIComponent(t.path) + ' ' + t.size + 'w');
-          acc.push(t.path + " " + t.size + "w");
+          const path =
+            this.$root.state.mode === "export_publication"
+              ? "./" + t.path
+              : "/" + t.path;
+
+          acc.push(path + " " + t.size + "w");
         }
         return acc;
       }, []);
@@ -374,29 +438,21 @@ export default {
       }
       return this.element_width_for_sizes + "px";
     },
-    linkToHoveredThumb: function () {
-      let pathToSmallestThumb = this.media.thumbs.filter(
-        (m) => m.size === this.thumbResHovered
-      )[0].path;
-
-      const url =
-        this.$root.state.mode === "export_publication"
-          ? "./" + pathToSmallestThumb
-          : "/" + pathToSmallestThumb;
-      return pathToSmallestThumb !== undefined ? url : this.mediaURL;
-    },
   },
   methods: {
     volumeChanged(event) {
       const vol = Math.round(Number(event.detail.plyr.volume) * 100);
       this.$emit("volumeChanged", vol);
     },
+    videoTimeUpdated(event) {
+      this.$emit("videoTimeUpdated", event.detail.plyr.media.currentTime);
+    },
     setVolume(val) {
       if (this.$refs.hasOwnProperty("plyr")) {
         this.$refs.plyr.player.volume = val / 100;
       }
     },
-    linkToComplexMediaThumb: function ({ opt }) {
+    linkToComplexMediaThumb: function ({ type, option }) {
       if (
         !this.media["thumbs"] ||
         (typeof this.media.thumbs === "object" &&
@@ -405,12 +461,16 @@ export default {
         return this.mediaURL;
       }
 
-      let firstThumbs = this.media.thumbs.filter((t) => !!t && t[opt] === 0);
-      if (!firstThumbs || firstThumbs.length === 0) return;
+      let firstThumbs = this.media.thumbs.find(
+        (t) => !!t && t[type] === option
+      );
 
-      let pathToSmallestThumb = firstThumbs[0].thumbsData.filter(
-        (m) => m.size === this.thumbRes
-      )[0].path;
+      const small_thumb = firstThumbs.thumbsData.find(
+        (m) => m && m.size === this.thumbRes
+      );
+      if (!small_thumb) return this.mediaURL;
+
+      let pathToSmallestThumb = small_thumb.path;
 
       let url =
         this.$root.state.mode === "export_publication"
@@ -418,18 +478,25 @@ export default {
           : "/" + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
-    complexMediaSrcSetAttr: function ({ opt }) {
+    complexMediaSrcSetAttr: function ({ type, option }) {
       if (this.element_width_for_sizes === 0) {
         return;
       }
 
-      let firstThumbs = this.media.thumbs.filter((t) => !!t && t[opt] === 0);
+      let firstThumbs = this.media.thumbs.filter(
+        (t) => !!t && t[type] === option
+      );
       if (!firstThumbs || firstThumbs.length === 0) return;
 
       // get all available sizes
       const img_srcset = firstThumbs[0].thumbsData.reduce((acc, t) => {
         if (t.hasOwnProperty("path")) {
-          acc.push(t.path + " " + t.size + "w");
+          const path =
+            this.$root.state.mode === "export_publication"
+              ? "./" + t.path
+              : "/" + t.path;
+
+          acc.push(path + " " + t.size + "w");
         }
         return acc;
       }, []);

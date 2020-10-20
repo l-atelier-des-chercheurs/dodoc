@@ -32,10 +32,7 @@
         </label>
 
         <div v-if="show_authors">
-          <AuthorsInput
-            :currentAuthors="projectdata.authors"
-            @authorsChanged="(newAuthors) => (projectdata.authors = newAuthors)"
-          />
+          <AuthorsInput :currentAuthors.sync="projectdata.authors" />
           <small>{{ $t("author_instructions") }}</small>
         </div>
       </div>
@@ -54,70 +51,12 @@
         </label>
 
         <div v-if="show_access_control">
-          <div class="">
-            <label>
-              {{ $t("who_can_edit") }}
-            </label>
-
-            <div class="">
-              <div
-                v-for="mode in ['only_authors', 'with_password', 'everybody']"
-                :key="mode"
-              >
-                <input
-                  class="custom_radio"
-                  type="radio"
-                  :id="`editing_limited_to-${mode}`"
-                  :name="`editing_limited_to-${mode}`"
-                  :value="mode"
-                  v-model="projectdata.editing_limited_to"
-                />
-                <label class="text-lc" :for="`editing_limited_to-${mode}`">
-                  <span>{{ $t(mode) }}</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Password -->
-          <div
-            class="margin-top-small"
-            v-if="projectdata.editing_limited_to === 'with_password'"
-          >
-            <label>
-              {{ $t("password") }}
-            </label>
-            <div>
-              <input
-                type="password"
-                required
-                v-model="projectdata.password"
-                autocomplete="new-password"
-              />
-            </div>
-          </div>
-
-          <div
-            class="margin-top-small"
-            v-if="projectdata.editing_limited_to !== 'everybody'"
-          >
-            <div class="">
-              <input
-                class=""
-                type="checkbox"
-                id="visible_to_all"
-                name="visible_to_all"
-                v-model="projectdata.viewing_limited_to"
-                true-value="everybody"
-                false-value=""
-              />
-              <label for="visible_to_all">
-                <span>
-                  {{ $t("visible_to_all") }}
-                </span>
-              </label>
-            </div>
-          </div>
+          <EditAccessControl
+            :editing_limited_to.sync="projectdata.editing_limited_to"
+            :viewing_limited_to.sync="projectdata.viewing_limited_to"
+            :password.sync="projectdata.password"
+            :authors.sync="projectdata.authors"
+          />
         </div>
       </div>
 
@@ -205,7 +144,7 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
+import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 import ImageSelect from "../subcomponents/ImageSelect.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
@@ -215,7 +154,7 @@ export default {
     read_only: Boolean,
   },
   components: {
-    Modal,
+    EditAccessControl,
     ImageSelect,
     TagsInput,
     AuthorsInput,
@@ -224,7 +163,6 @@ export default {
     return {
       show_folder: !!this.$root.settings.opened_folder,
       show_image: false,
-      show_password: false,
       show_keywords: false,
       show_authors: this.$root.current_author,
       show_access_control: true,
@@ -239,7 +177,9 @@ export default {
 
       projectdata: {
         name: "",
-        editing_limited_to: "everybody",
+        editing_limited_to: this.$root.current_author
+          ? "only_authors"
+          : "everybody",
         viewing_limited_to: "everybody",
         password: "",
         authors: this.$root.current_author
@@ -298,6 +238,7 @@ export default {
 
         return false;
       }
+
       if (!!this.preview) {
         this.projectdata.preview_rawdata = this.preview;
       }
@@ -317,46 +258,21 @@ export default {
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t("notifications.if_only_authors_select_authors"));
-
+        this.show_authors = true;
         return false;
       }
 
-      this.$eventHub.$on(
-        "socketio.folder_created_or_updated",
-        this.newFolderCreated
-      );
-
       this.is_sending_content_to_server = true;
 
-      this.$root.createFolder({ type: "projects", data: this.projectdata });
-    },
-    newFolderCreated: function (fdata) {
-      if (fdata.id === this.$root.justCreatedFolderID) {
-        this.$eventHub.$off(
-          "socketio.folder_created_or_updated",
-          this.newFolderCreated
-        );
-        this.$root.justCreatedFolderID = false;
-
-        if (fdata.password === "has_pass") {
-          this.$auth.updateFoldersPasswords({
-            projects: {
-              [fdata.slugFolderName]: this.projectdata.password,
-            },
-          });
-          this.$socketio.sendAuth();
-
-          this.$eventHub.$once("socketio.authentificated", () => {
-            this.$emit("close", "");
-            this.$root.openProject(fdata.slugFolderName);
-          });
-        } else {
-          this.$nextTick(() => {
-            this.$emit("close", "");
-            this.$root.openProject(fdata.slugFolderName);
-          });
-        }
-      }
+      this.$root
+        .createFolder({
+          type: "projects",
+          data: this.projectdata,
+        })
+        .then((fdata) => {
+          this.$emit("close", "");
+          this.$root.openProject(fdata.slugFolderName);
+        });
     },
   },
 };

@@ -58,6 +58,7 @@ module.exports = (function () {
             this.socket.on("pong", this._onPong);
 
             this.socket.on("listClients", this._listClients);
+            this.socket.on("loadJournal", this._onLoadJournal);
           },
           _onSocketConnect() {
             let sessionId = this.socket.io.engine.id;
@@ -173,7 +174,7 @@ module.exports = (function () {
 
                 // check if mdata has a mediaID (which means a user just created it)
                 const mdata = Object.values(content[slugFolderName].medias)[0];
-                if (mdata.hasOwnProperty("id")) {
+                if (mdata && mdata.hasOwnProperty("id")) {
                   this.$eventHub.$emit(
                     "socketio.media_created_or_updated",
                     mdata
@@ -182,7 +183,7 @@ module.exports = (function () {
               }
             }
 
-            this.$eventHub.$emit(`socketio.${type}.listMedia`, data);
+            this.$eventHub.$emit(`socketio.${type}.media_listed`, data);
           },
 
           _onListMedias(data) {
@@ -200,7 +201,7 @@ module.exports = (function () {
                   content[slugFolderName].medias;
               }
             }
-            this.$eventHub.$emit(`socketio.${type}.listMedias`);
+            this.$eventHub.$emit(`socketio.${type}.medias_listed`);
           },
 
           _onListSpecificMedias(data) {
@@ -259,30 +260,70 @@ module.exports = (function () {
             window.state.clients = data;
           },
 
+          _onLoadJournal(data) {
+            console.log("Received _onLoadJournal packet.");
+            window.state.journal = data;
+            this.$eventHub.$emit(`socketio.journal.is_loaded`);
+          },
+
           // for projects, authors and publications
           _onListFolder(data) {
             console.log("Received _onListFolder packet.");
-            let type = Object.keys(data)[0];
-            let content = Object.values(data)[0];
+            const type = Object.keys(data)[0];
+            const content = Object.values(data)[0];
+            const slugFolderName = Object.keys(content)[0];
 
-            // to prevent override of fully formed medias in folders, we copy back the ones we have already
-            for (let slugFolderName in content) {
-              if (
-                window.store[type].hasOwnProperty(slugFolderName) &&
-                window.store[type][slugFolderName].hasOwnProperty("medias")
-              ) {
+            // supprimer chaque key du folder
+            // Object.keys(window.store[type][slugFolderName]).map((k) =>
+            //   k !== "medias" ? delete window.store[type][slugFolderName][k] : ""
+            // );
+
+            const is_new_folder = !window.store[type].hasOwnProperty(
+              slugFolderName
+            );
+
+            if (is_new_folder) {
+              window.store[type] = Object.assign(
+                {},
+                window.store[type],
+                content
+              );
+            } else {
+              // check if any new props in content
+
+              const folder_has_new_keys = Object.keys(
+                content[slugFolderName]
+              ).some(
+                (k) =>
+                  !Object.keys(window.store[type][slugFolderName]).includes(k)
+              );
+
+              if (folder_has_new_keys) {
+                // keep medias
                 content[slugFolderName].medias =
                   window.store[type][slugFolderName].medias;
-              }
-              if (content[slugFolderName].hasOwnProperty("id")) {
-                this.$eventHub.$emit(
-                  "socketio.folder_created_or_updated",
-                  content[slugFolderName]
+
+                window.store[type] = Object.assign(
+                  {},
+                  window.store[type],
+                  content
                 );
+              } else {
+                Object.keys(content[slugFolderName]).map((k) => {
+                  if (k !== "medias")
+                    window.store[type][slugFolderName][k] =
+                      content[slugFolderName][k];
+                });
               }
             }
 
-            window.store[type] = Object.assign({}, window.store[type], content);
+            if (content[slugFolderName].hasOwnProperty("id")) {
+              this.$eventHub.$emit(
+                "socketio.folder_created_or_updated",
+                content[slugFolderName]
+              );
+            }
+
             this.$eventHub.$emit(`socketio.${type}.folder_listed`);
           },
 
@@ -392,6 +433,12 @@ module.exports = (function () {
           },
           updateNetworkInfos() {
             this.socket.emit("updateNetworkInfos");
+          },
+          loadJournal() {
+            this.socket.emit("loadJournal");
+          },
+          emptyJournal() {
+            this.socket.emit("emptyJournal");
           },
         },
       });

@@ -1,14 +1,22 @@
 <template>
   <div
     class="m_publicationview"
-    :class="{ 'is--preview': preview_mode, 'is--fullscreen': fullscreen_mode }"
+    :class="{
+      'is--preview': preview_mode,
+      'is--fullscreen': $root.app_is_fullscreen,
+      'is--survey': $root.store.request.display === 'survey',
+      'has--model': model_for_this_publication,
+    }"
     ref="panel"
   >
     <PublicationHeader
       :slugPubliName="slugPubliName"
       :publication="publication"
-      :publication_medias="publication_medias"
+      :medias="paged_medias"
+      :model_for_this_publication="model_for_this_publication"
+      :url_to_publi="url_to_publi"
       @export="show_export_modal = true"
+      @close="backOrClose"
     />
 
     <ExportPagePubli
@@ -18,174 +26,16 @@
       :slugPubliName="slugPubliName"
     />
 
-    <div class="m_publicationButtons">
-      <button
-        v-if="!contact_sheet_mode"
-        class="buttonLink"
-        @mousedown.stop.prevent="createPubliText"
-        @touchstart.stop.prevent="createPubliText"
-      >
-        {{ $t("create_text") }}
-      </button>
-    </div>
-
-    <div
-      class="m_publicationSettings"
-      v-if="
-        ![
-          'export_publication',
-          'print_publication',
-          'link_publication'
-        ].includes($root.state.mode)
-      "
-    >
-      <button
-        class="margin-vert-verysmall font-verysmall _preview_button"
-        :class="{ 'is--active': !preview_mode }"
-        @mousedown.stop.prevent="preview_mode = !preview_mode"
-        @touchstart.stop.prevent="preview_mode = !preview_mode"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="144px"
-          height="84px"
-          viewBox="0 0 144 84"
-          style="enable-background:new 0 0 144 84;"
-          xml:space="preserve"
-        >
-          <defs />
-          <g>
-            <path
-              d="M72,0C32.2,0,0,42,0,42s32.2,42,72,42s72-42,72-42S111.8,0,72,0z M72,71.3c-16.5,0-30-13.2-30-29.6
-            c0-16.3,13.4-29.6,30-29.6c16.5,0,30,13.3,30,29.6C102,58,88.5,71.3,72,71.3z"
-            />
-          </g>
-        </svg>
-      </button>
-      <button
-        class="margin-vert-verysmall font-verysmall"
-        @mousedown.stop.prevent="toggleFullscreen"
-        @touchstart.stop.prevent="toggleFullscreen"
-      >
-        <svg
-          version="1.1"
-          v-if="!fullscreen_mode"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="133.3px"
-          height="133.2px"
-          viewBox="0 0 133.3 133.2"
-          style="enable-background:new 0 0 133.3 133.2;"
-          xml:space="preserve"
-        >
-          <polygon
-            class="st0"
-            points="58.7,112.2 58.7,133.2 0,133.2 0,74.5 21,74.5 21,112.2 	"
-          />
-          <polygon
-            class="st0"
-            points="112.3,74.5 133.3,74.5 133.3,133.2 74.6,133.2 74.6,112.2 112.3,112.2 	"
-          />
-          <polygon
-            class="st0"
-            points="21,58.7 0,58.7 0,0 58.7,0 58.7,21 21,21 	"
-          />
-          <polygon
-            class="st0"
-            points="133.3,58.7 112.3,58.7 112.3,21 74.6,21 74.6,0 133.3,0 	"
-          />
-        </svg>
-        <svg
-          version="1.1"
-          v-if="fullscreen_mode"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="133.3px"
-          height="133.2px"
-          viewBox="0 0 133.3 133.2"
-          style="enable-background:new 0 0 133.3 133.2;"
-          xml:space="preserve"
-        >
-          <polygon
-            class="st0"
-            points="0,95.5 0,74.5 58.7,74.5 58.7,133.2 37.7,133.2 37.7,95.5 	"
-          />
-          <polygon
-            class="st0"
-            points="95.6,133.2 74.6,133.2 74.6,74.5 133.3,74.5 133.3,95.5 95.6,95.5 	"
-          />
-          <polygon
-            class="st0"
-            points="37.7,0 58.7,0 58.7,58.7 0,58.7 0,37.7 37.7,37.7 	"
-          />
-          <polygon
-            class="st0"
-            points="74.6,0 95.6,0 95.6,37.7 133.3,37.7 133.3,58.7 74.6,58.7 	"
-          />
-        </svg>
-      </button>
-      <button
-        v-if="!contact_sheet_mode"
-        class="margin-vert-verysmall font-verysmall"
-        :disabled="zoom === zoom_max"
-        @mousedown.stop.prevent="zoom += 0.1"
-        @touchstart.stop.prevent="zoom += 0.1"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="182.5px"
-          height="188.1px"
-          viewBox="0 0 182.5 188.1"
-          style="enable-background:new 0 0 182.5 188.1;"
-          xml:space="preserve"
-        >
-          <defs />
-          <path
-            d="M102.6,0v83.1h79.9v21.2h-79.9v83.8H79.9v-83.8H0V83.1h79.9V0H102.6z"
-          />
-        </svg>
-      </button>
-      <button
-        v-if="!contact_sheet_mode"
-        class="margin-vert-verysmall font-verysmall"
-        :disabled="zoom === zoom_min"
-        @mousedown.stop.prevent="zoom -= 0.1"
-        @touchstart.stop.prevent="zoom -= 0.1"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-          x="0px"
-          y="0px"
-          width="155.6px"
-          height="21.2px"
-          viewBox="0 0 155.6 21.2"
-          style="enable-background:new 0 0 155.6 21.2;"
-          xml:space="preserve"
-        >
-          <defs />
-          <path d="M155.6,0v21.2H0V0H155.6z" />
-        </svg>
-      </button>
-    </div>
+    <PublicationDisplayButtons
+      v-if="$root.store.request.display !== 'survey'"
+      :preview_mode="preview_mode"
+      :show_zoom_buttons="!contact_sheet_mode"
+      :zoom="zoom"
+      :zoom_min="zoom_min"
+      :zoom_max="zoom_max"
+      @togglePreviewMode="$emit('togglePreviewMode')"
+      @setZoom="(val) => (zoom = val)"
+    />
 
     <div
       class="m_publicationNavMenu"
@@ -193,21 +43,12 @@
         ![
           'export_publication',
           'print_publication',
-          'link_publication'
+          'link_publication',
         ].includes($root.state.mode)
       "
     >
       <div class="m_publicationNavMenu--settings">
         <div>
-          <!-- <div class="switch switch-xs switch_twoway">
-            <label for="view_switch" class="cursor-pointer"
-              ><span>{{ $t("show_all_pages") }}</span></label
-            >
-            <input type="checkbox" id="view_switch" />
-            <label for="view_switch"
-              ><span>{{ $t("single_page") }}</span></label
-            >
-          </div>-->
           <button
             type="button"
             class="buttonLink"
@@ -224,8 +65,10 @@
             ![
               'export_publication',
               'print_publication',
-              'link_publication'
-            ].includes($root.state.mode)
+              'link_publication',
+            ].includes($root.state.mode) &&
+            can_edit_publi &&
+            !model_for_this_publication
           "
         >
           <button
@@ -234,7 +77,7 @@
             :class="{ 'is--active': page_settings_panel }"
             @click="page_settings_panel = !page_settings_panel"
           >
-            {{ $t("settings") }}
+            {{ $t("page_settings") }}
           </button>
         </div>
 
@@ -245,9 +88,7 @@
           :publications_options="publications_options"
         />
       </div>
-
       <hr v-if="!contact_sheet_mode" class="margin-none" />
-
       <div class="m_publicationNavMenu--buttonRow" v-if="!contact_sheet_mode">
         <button
           type="button"
@@ -255,16 +96,18 @@
           :disabled="opened_page_index === 0"
         >
           <img src="/images/i_arrow_left.svg" draggable="false" />
-          {{ $t("previous_page") }}
+          <span>
+            {{ $t("previous_page") }}
+          </span>
         </button>
         <div class="font-small text-lc">
           <span
             v-html="
               $t('current_page:') +
-                ' ' +
-                (opened_page_index + 1) +
-                '/' +
-                this.pagesWithDefault.length
+              ' ' +
+              (opened_page_index + 1) +
+              '/' +
+              this.pagesWithDefault.length
             "
           />
         </div>
@@ -274,19 +117,31 @@
           @click="navPage(+1)"
           :disabled="opened_page_index === pagesWithDefault.length - 1"
         >
-          {{ $t("next_page") }}
+          <span>
+            {{ $t("next_page") }}
+          </span>
           <img src="/images/i_arrow_right.svg" draggable="false" />
         </button>
       </div>
     </div>
 
-    <div class="m_publicationview--pages" ref="pages">
+    <div
+      class="m_publicationview--pages"
+      ref="page_container"
+      :style="
+        !!$root.settings.current_publication.page_id &&
+        $root.store.request.display !== 'survey'
+          ? 'overflow: hidden; height: 100%;'
+          : ''
+      "
+      @click.self="$root.settings.current_publication.selected_medias = []"
+    >
       <div
         v-if="
           [
             'export_publication',
             'print_publication',
-            'link_publication'
+            'link_publication',
           ].includes($root.state.mode)
         "
       >
@@ -296,12 +151,15 @@
           :key="page.id"
           :preview_mode="preview_mode"
           :slugPubliName="slugPubliName"
+          :publication_is_submitted="publication_is_submitted"
           :pageNumber="pageNumber"
           :page="page"
-          :publication_medias="publication_medias[page.id]"
-          :read_only="read_only"
+          :publication_medias="paged_medias[page.id]"
+          :model_for_this_publication="model_for_this_publication"
+          :read_only="read_only || !can_edit_publi"
           :pixelsPerMillimeters="pixelsPerMillimeters"
           :zoom="zoom"
+          @editPubliMedia="$emit('editPubliMedia', $event)"
         />
       </div>
 
@@ -320,7 +178,7 @@
             :key="page.id"
             @mouseenter="show_buttons = page.id"
             @mouseleave="
-              event =>
+              (event) =>
                 event.relatedTarget === null ? '' : (show_buttons = false)
             "
           >
@@ -329,17 +187,20 @@
               :mode="'contact_sheet'"
               :preview_mode="true"
               :slugPubliName="slugPubliName"
+              :publication_is_submitted="publication_is_submitted"
               :pageNumber="pageNumber"
               :page="page"
-              :publication_medias="publication_medias[page.id]"
-              :read_only="read_only"
+              :publication_medias="paged_medias[page.id]"
+              :model_for_this_publication="model_for_this_publication"
+              :read_only="read_only || !can_edit_publi"
               :pixelsPerMillimeters="pixelsPerMillimeters"
               :zoom="0.2"
+              @editPubliMedia="$emit('editPubliMedia', $event)"
             />
             <span
               class="m_publicationview--pages--contactSheet--pages--page--pageNumber"
-              >{{ pageNumber + 1 }}
-            </span>
+              >{{ pageNumber + 1 }}</span
+            >
 
             <transition name="fade_fast" :duration="150">
               <div
@@ -349,6 +210,7 @@
                 <button
                   type="button"
                   class="_advanced_menu_button"
+                  v-if="can_edit_publi && !model_for_this_publication"
                   @click.stop="
                     show_advanced_menu_for_page !== page.id
                       ? (show_advanced_menu_for_page = page.id)
@@ -364,7 +226,7 @@
                     width="168px"
                     height="168px"
                     viewBox="0 0 168 168"
-                    style="enable-background:new 0 0 168 168;"
+                    style="enable-background: new 0 0 168 168"
                     xml:space="preserve"
                   >
                     <rect x="73.5" y="37" class="st0" width="21" height="21" />
@@ -380,7 +242,9 @@
                 </button>
 
                 <div
-                  v-if="show_advanced_menu_for_page === page.id"
+                  v-if="
+                    show_advanced_menu_for_page === page.id && can_edit_publi
+                  "
                   class="_advanced_menu"
                   @click.stop
                 >
@@ -436,7 +300,7 @@
                           <option
                             v-for="{
                               name,
-                              slugFolderName: slugPubliName
+                              slugFolderName: slugPubliName,
                             } in all_recipes_of_this_template"
                             :key="slugPubliName"
                             :value="slugPubliName"
@@ -447,7 +311,7 @@
                       <button
                         type="submit"
                         v-html="$t('duplicate')"
-                        class="button button-greenthin"
+                        class="button bg-bleuvert"
                       />
                     </form>
                   </template>
@@ -466,6 +330,7 @@
           <button
             type="button"
             class="m_publicationview--pages--contactSheet--pages--page m_publicationview--pages--contactSheet--pages--page_create"
+            v-if="can_edit_publi && !model_for_this_publication"
             :key="'create_page'"
             @click="insertPageAtIndex(pagesWithDefault.length + 1)"
           >
@@ -500,17 +365,20 @@
               :mode="'contact_sheet'"
               :preview_mode="true"
               :slugPubliName="slugPubliName"
+              :publication_is_submitted="publication_is_submitted"
               :pageNumber="pageNumber"
               :page="page"
-              :publication_medias="publication_medias[page.id]"
-              :read_only="read_only"
+              :publication_medias="paged_medias[page.id]"
+              :model_for_this_publication="model_for_this_publication"
+              :read_only="read_only || !can_edit_publi"
               :pixelsPerMillimeters="pixelsPerMillimeters"
               :zoom="0.1"
+              @editPubliMedia="$emit('editPubliMedia', $event)"
             />
 
             <div
               class="m_publicationview--pages--contactSheet--pages--page--buttons"
-              v-if="show_restore_options === page.id"
+              v-if="show_restore_options === page.id && can_edit_publi"
             >
               <!-- <button
                 type="button"
@@ -568,77 +436,106 @@
         </transition-group>
       </div>
 
-      <div v-else>
-        <transition name="scaleIn" mode="out-in" :duration="300">
+      <div v-else class="m_publicationview--pages--singlePageBloc">
+        <PublicationButtons
+          v-if="
+            can_edit_publi &&
+            !contact_sheet_mode &&
+            !preview_mode &&
+            !model_for_this_publication
+          "
+          :preview_mode="preview_mode"
+          :page_medias="
+            paged_medias[$root.settings.current_publication.page_id]
+          "
+          :slugPubliName="slugPubliName"
+          :publi_is_model="publication.is_model"
+          :publi="publication.is_model"
+          @addMedia="createPubliMedia"
+          @insertMedias="
+            ({ metaFileNames }) =>
+              editMediaToPlaceOnPage({
+                metaFileNames,
+              })
+          "
+        />
+
+        <transition name="fade_fast" mode="out-in" :duration="250">
           <PagePublicationSinglePage
             ref="current_page"
             :mode="'single'"
             :key="$root.settings.current_publication.page_id"
             :preview_mode="preview_mode"
+            :publication_is_submitted="publication_is_submitted"
             :slugPubliName="slugPubliName"
             :pageNumber="opened_page_index"
             :page="opened_single_page"
+            :publi_is_model="publication.is_model"
+            :model_for_this_publication="model_for_this_publication"
             :publication_medias="
-              publication_medias[$root.settings.current_publication.page_id]
+              paged_medias[$root.settings.current_publication.page_id]
             "
-            :read_only="read_only"
+            :read_only="read_only || !can_edit_publi"
             :pixelsPerMillimeters="pixelsPerMillimeters"
             :zoom="zoom"
+            @editPubliMedia="$emit('editPubliMedia', $event)"
           />
         </transition>
       </div>
     </div>
 
-    <div
-      class="m_publicationFooter margin-vert-small"
+    <PublicationFooter
       v-if="
-        ['export_publication', 'link_publication'].includes($root.state.mode)
+        [
+          'export_publication',
+          'print_publication',
+          'link_publication',
+        ].includes($root.state.mode) || contact_sheet_mode
       "
-    >
-      <a
-        class="js--openInBrowser c-noir"
-        target="_blank"
-        href="https://latelier-des-chercheurs.fr/outils/dodoc"
-      >
-        {{ $t("made_with_dodoc") }}
-        <img
-          :src="
-            this.$root.state.mode === 'export_publication'
-              ? './_images/i_logo.svg'
-              : '/images/i_logo.svg'
-          "
-          @click="goHome()"
-          draggable="false"
-        />
-      </a>
-    </div>
+      :publication="publication"
+      :url_to_publi="url_to_publi"
+      :model_for_this_publication="model_for_this_publication"
+      :can_edit_publi="can_edit_publi"
+      @lockAndPublish="$emit('lockAndPublish')"
+      @removeSubmittedDate="$emit('removeSubmittedDate')"
+    />
     <div
       ref="mmMeasurer"
-      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
+      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%"
     />
   </div>
 </template>
 <script>
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
+import PublicationDisplayButtons from "../subcomponents/PublicationDisplayButtons.vue";
 import ExportPagePubli from "../modals/ExportPagePubli.vue";
 import PagePublicationSinglePage from "./PagePublicationSinglePage.vue";
 import SettingsPane from "./SettingsPane.vue";
+import PublicationButtons from "./subcomponents/PublicationButtons.vue";
+import PublicationFooter from "../subcomponents/PublicationFooter.vue";
 
 export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    read_only: Boolean
+    paged_medias: Object,
+    read_only: Boolean,
+    can_edit_publi: Boolean,
+    can_see_publi: Boolean,
+    model_for_this_publication: [Boolean, Object],
+    preview_mode: Boolean,
   },
   components: {
     PublicationHeader,
+    PublicationDisplayButtons,
     ExportPagePubli,
     PagePublicationSinglePage,
-    SettingsPane
+    SettingsPane,
+    PublicationButtons,
+    PublicationFooter,
   },
   data() {
     return {
-      publication_medias: {},
       publication_defaults: {
         page_by_page: {
           width: 210,
@@ -648,12 +545,12 @@ export default {
           margin_right: 10,
           margin_top: 20,
           margin_bottom: 20,
-          gridstep: 10,
+          gridstep: 5,
           snap_to_grid: true,
           header_left: "",
           header_right: "",
-          show_page_number: true
-        }
+          show_page_number: true,
+        },
       },
 
       show_removed_pages: false,
@@ -667,15 +564,12 @@ export default {
       show_advanced_menu_for_page: false,
       show_advanced_option: false,
 
-      preview_mode: this.$root.state.mode !== "live",
-      fullscreen_mode: false,
       zoom: 1,
       zoom_min: 0.2,
       zoom_max: 2,
 
       pixelsPerMillimeters: 0,
-      has_media_selected: false,
-      show_export_modal: false
+      show_export_modal: false,
     };
   },
   created() {
@@ -684,12 +578,22 @@ export default {
   },
   mounted() {
     this.$eventHub.$on("publication.addMedia", this.addMedia);
-    this.$eventHub.$on(
-      "socketio.projects.listSpecificMedias",
-      this.updateMediasPubli
-    );
-    document.addEventListener("keyup", this.publicationKeyListener);
-    this.updateMediasPubli();
+
+    this.$eventHub.$on("publication.just_added_media", (mdata) => {
+      this.$nextTick(() => {
+        if (mdata.type && mdata.type === "text") {
+          this.$eventHub.$emit(
+            "publication.set_media_to_edit_mode",
+            mdata.metaFileName
+          );
+        } else {
+          this.$eventHub.$emit(
+            "publication.selectNewMedia",
+            mdata.metaFileName
+          );
+        }
+      });
+    });
 
     this.pixelsPerMillimeters = this.$refs.hasOwnProperty("mmMeasurer")
       ? this.$refs.mmMeasurer.offsetWidth / 10
@@ -702,19 +606,9 @@ export default {
         this.updatePageSizeAccordingToPanel
       );
     });
-
-    document.getElementsByTagName("body")[0].style = `
-      --page-width: ${this.publications_options.width}mm;
-      --page-height: ${this.publications_options.height}mm
-    `;
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.addMedia", this.addMedia);
-    this.$eventHub.$off(
-      "socketio.projects.listSpecificMedias",
-      this.updateMediasPubli
-    );
-    document.removeEventListener("keyup", this.publicationKeyListener);
 
     this.$eventHub.$off(
       "activity_panels_resized",
@@ -723,68 +617,75 @@ export default {
   },
 
   watch: {
-    "publication.medias": function() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`WATCH • Publication: publication.medias`);
-      }
-      this.updateMediasPubli();
-    },
-    show_buttons: function() {
+    show_buttons: function () {
       this.show_advanced_menu_for_page = false;
       this.show_advanced_option = false;
+    },
+    "$root.app_is_fullscreen": function () {
+      setTimeout(() => {
+        this.updatePageSizeAccordingToPanel();
+      }, 500);
     },
     publications_options: {
       handler() {
         if (this.$root.state.dev_mode === "debug") {
           console.log(`WATCH • Publication: publications_options`);
         }
+
         document.getElementsByTagName("body")[0].style = `
           --page-width: ${this.publications_options.width}mm;
           --page-height: ${this.publications_options.height}mm
         `;
       },
-      deep: true
+      deep: true,
+      immediate: true,
     },
-    "$root.store.projects": {
-      handler() {
-        if (this.$root.state.dev_mode === "debug")
-          console.log(`WATCH • Publication: $root.store.projects`);
-
-        this.updateMediasPubli();
-      },
-      deep: true
-    },
-    zoom: function() {
+    zoom: function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: zoom`);
+
+      if (this.$root.store.request.display === "survey") {
+        this.zoom = 1;
+      }
 
       this.zoom = Math.min(this.zoom_max, Math.max(this.zoom_min, this.zoom));
       this.$root.setPublicationZoom(this.zoom);
     },
-    "$root.settings.publi_zoom": function() {
+    "$root.settings.publi_zoom": function () {
       if (this.$root.state.dev_mode === "debug")
         console.log(`WATCH • Publication: $root.settings.publi_zoom`);
 
       this.zoom = this.$root.settings.publi_zoom;
-    }
+    },
   },
   computed: {
+    publication_is_submitted() {
+      if (!!this.publication.date_submitted) return true;
+      return false;
+    },
+
     opened_single_page() {
       if (this.opened_page_index === false) return false;
       return this.pagesWithDefault[this.opened_page_index];
+    },
+    url_to_publi() {
+      let url = this.$root.getURL();
+      if (!url) return false;
+      url.pathname = `_publications/survey/${this.publication.slugFolderName}`;
+      return url;
     },
     opened_page_index() {
       if (!this.$root.settings.current_publication.page_id) return false;
 
       const index = this.pagesWithDefault.findIndex(
-        p => p.id === this.$root.settings.current_publication.page_id
+        (p) => p.id === this.$root.settings.current_publication.page_id
       );
       return index;
     },
     all_recipes_of_this_template() {
       const filtered_recipes = Object.values(
         this.$root.store.publications
-      ).filter(r => r.template === "page_by_page");
+      ).filter((r) => r.template === "page_by_page");
       let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
       sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
@@ -793,28 +694,29 @@ export default {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`COMPUTED • publications_options`);
       }
+
+      const publication = this.model_for_this_publication
+        ? this.model_for_this_publication
+        : this.publication;
+
       // set default values to options
-      if (!this.publication.hasOwnProperty("template")) {
+      if (!publication.hasOwnProperty("template")) {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error("Missing template in publication");
       }
-      if (
-        !this.publication_defaults.hasOwnProperty(this.publication.template)
-      ) {
+      if (!this.publication_defaults.hasOwnProperty(publication.template)) {
         console.log(
           "No defaults for this template. Returning original publication object."
         );
-        return this.publication;
+        return publication;
       }
 
-      let publication_options = this.publication_defaults[
-        this.publication.template
-      ];
+      let publication_options = this.publication_defaults[publication.template];
       for (let k of Object.keys(publication_options)) {
-        if (this.publication.hasOwnProperty(k)) {
-          publication_options[k] = this.publication[k];
+        if (publication.hasOwnProperty(k)) {
+          publication_options[k] = publication[k];
         }
       }
 
@@ -825,16 +727,18 @@ export default {
         console.log(`COMPUTED • pagesWithDefault`);
       }
 
+      const publication = this.model_for_this_publication
+        ? this.model_for_this_publication
+        : this.publication;
+
       if (
-        !this.publication.hasOwnProperty("pages") ||
-        this.publication.pages.length === 0
+        !publication.hasOwnProperty("pages") ||
+        publication.pages.length === 0
       ) {
         return [];
       }
 
-      let defaultPages = this.mergePageObjectWithDefault(
-        this.publication.pages
-      );
+      let defaultPages = this.mergePageObjectWithDefault(publication.pages);
 
       if (this.$root.settings.url_queries.hasOwnProperty("page")) {
         const idx = this.$root.settings.url_queries.page - 1;
@@ -848,6 +752,13 @@ export default {
         console.log(`COMPUTED • removedPagesWithDefault`);
       }
 
+      // hide removedpages for following models
+      if (this.model_for_this_publication) return [];
+
+      const publication = this.model_for_this_publication
+        ? this.model_for_this_publication
+        : this.publication;
+
       if (
         !this.publication.hasOwnProperty("removed_pages") ||
         this.publication.removed_pages.length === 0
@@ -860,7 +771,7 @@ export default {
       );
 
       return removedDefaultPages;
-    }
+    },
   },
   methods: {
     generateID() {
@@ -870,10 +781,14 @@ export default {
         (Math.random().toString(36) + "00000000000000000").slice(2, 3)
       );
     },
+    backOrClose() {
+      if (this.contact_sheet_mode) this.$root.closePublication();
+      else this.showAllPages();
+    },
     mergePageObjectWithDefault(pages) {
       return pages.reduce((acc, page) => {
         let _page = JSON.parse(JSON.stringify(page));
-        Object.keys(this.publications_options).map(k => {
+        Object.keys(this.publications_options).map((k) => {
           const option = this.publications_options[k];
           if (typeof option === "number") {
             if (_page.hasOwnProperty(k) && !Number.isNaN(_page[k])) {
@@ -895,13 +810,14 @@ export default {
         return acc;
       }, []);
     },
+
     getHighestZNumberAmongstMedias(page_medias) {
       if (!page_medias) return 0;
 
       const medias_with_z = page_medias
-        .filter(m => m.publi_meta.hasOwnProperty("z_index"))
-        .map(m => {
-          return m.publi_meta.z_index;
+        .filter((m) => m.hasOwnProperty("z_index"))
+        .map((m) => {
+          return m.z_index;
         });
 
       if (medias_with_z.length === 0) return 0;
@@ -918,7 +834,7 @@ export default {
       )
         return;
 
-      const prev_pos = this.pagesWithDefault.findIndex(p => p.id === id);
+      const prev_pos = this.pagesWithDefault.findIndex((p) => p.id === id);
       const new_pos = $event.target.value - 1;
       let pages = this.publication.pages.slice();
 
@@ -940,8 +856,8 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          pages
-        }
+          pages,
+        },
       });
 
       this.show_buttons = false;
@@ -952,6 +868,10 @@ export default {
 
       this.$root.settings.current_publication.page_id = id;
       this.contact_sheet_mode = false;
+
+      this.$nextTick(() => {
+        this.updatePageSizeAccordingToPanel();
+      });
     },
     showAllPages() {
       if (this.$root.state.dev_mode === "debug")
@@ -967,12 +887,12 @@ export default {
         ? this.publication.pages.slice()
         : [];
       let page_to_restore = this.publication.removed_pages.find(
-        p => p.id === id
+        (p) => p.id === id
       );
       pages.push(page_to_restore);
 
       let removed_pages = this.publication.removed_pages.filter(
-        p => p.id !== id
+        (p) => p.id !== id
       );
 
       this.$root.editFolder({
@@ -980,8 +900,8 @@ export default {
         slugFolderName: this.slugPubliName,
         data: {
           pages,
-          removed_pages
-        }
+          removed_pages,
+        },
       });
     },
     removePageForGood(id) {
@@ -989,23 +909,22 @@ export default {
         console.log(`METHODS • Publication: removePageForGood id = ${id}`);
 
       let removed_pages = this.publication.removed_pages.filter(
-        p => p.id !== id
+        (p) => p.id !== id
       );
 
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          removed_pages
-        }
+          removed_pages,
+        },
       });
 
-      this.publication_medias[id].map(m => {
-        if (!m.hasOwnProperty("publi_meta")) return;
+      this.paged_medias[id].map((m) => {
         this.$root.removeMedia({
           type: "publications",
           slugFolderName: this.slugPubliName,
-          slugMediaName: m.publi_meta.metaFileName
+          slugMediaName: m.metaFileName,
         });
       });
     },
@@ -1021,17 +940,54 @@ export default {
 
       this.openPage(this.pagesWithDefault[new_index].id);
     },
-    createPubliText() {
+    createPubliMedia(values) {
       // ajouter du text dans la publi
       // qui ne possède pas de lien
-      this.addMedia({ type: "text" });
+      this.addMedia({ values });
     },
-    addMedia({ slugProjectName, metaFileName, type }) {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: addMedia with
-        slugProjectName = ${slugProjectName} and metaFileName = ${metaFileName}`);
-      }
 
+    addMedia({ values }) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`PagePublication • METHODS: addMedia`);
+
+      Object.assign(values, this.prepareMetaToPlaceOnPage());
+
+      this.$emit("addMedia", { values });
+    },
+    editMediaToPlaceOnPage({ metaFileNames }) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`PagePublication • METHODS: addMedia`);
+
+      metaFileNames.map((metaFileName, index) => {
+        const _values = this.prepareMetaToPlaceOnPage();
+
+        _values.x += 10 * index;
+        _values.y += 10 * index;
+
+        this.$emit("editPubliMedia", {
+          metaFileName: metaFileName,
+          val: _values,
+        });
+
+        const catchMediaEdition = (d) => {
+          if (metaFileName === d.metaFileName) {
+            this.$nextTick(() => {
+              this.$eventHub.$emit("publication.selectNewMedia", metaFileName);
+            });
+          } else {
+            this.$eventHub.$once(
+              `socketio.media_just_edited`,
+              catchMediaEdition
+            );
+          }
+        };
+        this.$eventHub.$once(
+          `publication.media_just_edited`,
+          catchMediaEdition
+        );
+      });
+    },
+    prepareMetaToPlaceOnPage() {
       if (!this.$root.settings.current_publication.page_id) {
         console.log(`METHODS • Publication: addMedia missing page id`);
         this.$alertify
@@ -1040,144 +996,32 @@ export default {
           .error("Missing page id to add media properly");
       }
 
-      const page_id = this.$root.settings.current_publication.page_id;
+      let values = {};
 
-      const x = this.publications_options.margin_left;
-      const y = this.publications_options.margin_top;
+      values.page_id = this.$root.settings.current_publication.page_id;
 
-      const z_index =
-        this.getHighestZNumberAmongstMedias(this.publication_medias[page_id]) +
-        1;
+      values.x = this.publications_options.margin_left;
+      values.y = this.publications_options.margin_top;
 
-      let additionalMeta = {
-        page_id,
-        x,
-        y,
-        z_index
-      };
+      values.z_index =
+        this.getHighestZNumberAmongstMedias(
+          this.paged_medias[this.$root.settings.current_publication.page_id]
+        ) + 1;
 
-      if (slugProjectName && metaFileName) {
-        additionalMeta.slugProjectName = slugProjectName;
-        additionalMeta.desired_filename = metaFileName;
-        additionalMeta.slugMediaName = metaFileName;
+      // get current scroll
+      if (this.$refs.current_page) {
+        const posx_in_cm =
+          this.$refs.current_page.$el.scrollLeft / this.pixelsPerMillimeters;
+        if (!Number.isNaN(posx_in_cm))
+          values.x = Math.max(values.x, posx_in_cm);
+
+        const posy_in_cm =
+          this.$refs.current_page.$el.scrollTop / this.pixelsPerMillimeters;
+        if (!Number.isNaN(posy_in_cm))
+          values.y = Math.max(values.y, posy_in_cm);
       }
 
-      if (type) additionalMeta.type = type;
-
-      this.$root.createMedia({
-        slugFolderName: this.slugPubliName,
-        type: "publications",
-        additionalMeta
-      });
-    },
-    printThisPublication() {
-      this.preview_mode = true;
-      this.$root.setPublicationZoom(1);
-
-      setTimeout(() => {
-        window.print();
-      }, 500);
-    },
-    updateMediasPubli() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • Publication: updateMediasPubli`);
-      }
-
-      if (
-        !this.publication.hasOwnProperty("medias") ||
-        Object.keys(this.publication.medias).length === 0
-      ) {
-        this.publication_medias = {};
-        return;
-      }
-
-      // get list of publications items
-      let missingMedias = [];
-
-      const medias_paginated = Object.values(this.publication.medias).reduce(
-        (acc, publi_media) => {
-          let meta = {};
-
-          if (
-            publi_media.hasOwnProperty("slugProjectName") &&
-            publi_media.hasOwnProperty("metaFileName")
-          ) {
-            const original_media_meta = this.getOriginalMediaMeta(publi_media);
-            // case of missing project media locally
-            if (!original_media_meta) return acc;
-            if (Object.keys(original_media_meta).length === 0) {
-              console.log(`Some medias missing from client`);
-              missingMedias.push({
-                slugFolderName: publi_media.slugProjectName,
-                metaFileName: publi_media.slugMediaName
-              });
-              return acc;
-            }
-
-            meta = original_media_meta;
-            meta.slugProjectName = publi_media.slugProjectName;
-          }
-
-          meta.publi_meta = JSON.parse(JSON.stringify(publi_media));
-
-          if (publi_media.hasOwnProperty("page_id")) {
-            if (!acc.hasOwnProperty(publi_media.page_id)) {
-              acc[publi_media.page_id] = [];
-            }
-            acc[publi_media.page_id].push(meta);
-          }
-          return acc;
-        },
-        []
-      );
-
-      console.log(
-        `Finished building media list. Missing medias: ${missingMedias.length}`
-      );
-
-      // send list of medias to get
-      if (missingMedias.length > 0) {
-        this.$root.listSpecificMedias({
-          type: "projects",
-          medias_list: missingMedias
-        });
-      }
-
-      this.publication_medias = medias_paginated;
-    },
-    getOriginalMediaMeta(publi_media) {
-      const slugProjectName = publi_media.slugProjectName;
-      const slugMediaName = publi_media.slugMediaName;
-
-      // find in store if slugFolderName exists
-      if (!this.$root.store.projects.hasOwnProperty(slugProjectName)) {
-        console.error(
-          `Missing project in store — not expected : ${slugProjectName}`
-        );
-        console.error(
-          `Medias from project was probably added to the publication before it was removed altogether.`
-        );
-        return;
-      }
-
-      // find in store if metaFileName exists
-      const project_medias = this.$root.store.projects[slugProjectName].medias;
-
-      if (!project_medias.hasOwnProperty(slugMediaName)) {
-        return {};
-      } else {
-        let meta = JSON.parse(JSON.stringify(project_medias[slugMediaName]));
-        if (meta.hasOwnProperty("_isAbsent") && meta._isAbsent) {
-          console.error(
-            `Missing media in store — not expected : ${slugProjectName} / ${slugMediaName}`
-          );
-          console.error(
-            `Media was probably added to the publication before it was removed.`
-          );
-          return false;
-        }
-        return meta;
-      }
+      return values;
     },
 
     insertPageAtIndex(index) {
@@ -1194,15 +1038,15 @@ export default {
       }
 
       pages.splice(index, 0, {
-        id: this.generateID()
+        id: this.generateID(),
       });
 
       this.$root.editFolder({
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          pages
-        }
+          pages,
+        },
       });
     },
     duplicatePage({ id, $event }) {
@@ -1215,16 +1059,16 @@ export default {
 
       const publi_to_copy_to = Object.values(
         this.$root.store.publications
-      ).find(p => p.slugFolderName === slugPubliName_to_copy_to);
+      ).find((p) => p.slugFolderName === slugPubliName_to_copy_to);
 
       let index_of_page_to_copy = publi_to_copy_to.pages.length;
       if (slugPubliName_to_copy_to === this.slugPubliName)
         index_of_page_to_copy = this.publication.pages.findIndex(
-          p => p.id === id
+          (p) => p.id === id
         );
 
       const page_to_copy = JSON.parse(
-        JSON.stringify(this.publication.pages.find(p => p.id === id))
+        JSON.stringify(this.publication.pages.find((p) => p.id === id))
       );
 
       // create new id
@@ -1243,23 +1087,23 @@ export default {
         type: "publications",
         slugFolderName: slugPubliName_to_copy_to,
         data: {
-          pages
-        }
+          pages,
+        },
       });
 
       // get all medias of page
-      const medias_to_copy = this.publication_medias[id];
+      const medias_to_copy = this.paged_medias[id];
 
-      medias_to_copy.map(m => {
+      medias_to_copy.map((m) => {
         // copy all medias of page with new page ID
         this.$socketio.copyMediaToFolder({
           type: "publications",
           from_slugFolderName: this.slugPubliName,
           to_slugFolderName: slugPubliName_to_copy_to,
-          slugMediaName: m.publi_meta.metaFileName,
+          slugMediaName: m.metaFileName,
           meta_to_edit: {
-            page_id: new_id
-          }
+            page_id: new_id,
+          },
         });
       });
 
@@ -1278,8 +1122,8 @@ export default {
       //   .confirm(
       //     this.$t("sureToRemovePage"),
       //     () => {
-      let pages = this.publication.pages.filter(p => p.id !== id);
-      let page_to_remove = this.publication.pages.find(p => p.id === id);
+      let pages = this.publication.pages.filter((p) => p.id !== id);
+      let page_to_remove = this.publication.pages.find((p) => p.id === id);
 
       let removed_pages = Array.isArray(this.publication.removed_pages)
         ? this.publication.removed_pages.slice()
@@ -1291,68 +1135,22 @@ export default {
         slugFolderName: this.slugPubliName,
         data: {
           pages,
-          removed_pages
-        }
+          removed_pages,
+        },
       });
       //   },
       //   () => {}
       // );
     },
-    publicationKeyListener(evt) {
-      switch (evt.key) {
-        case "p":
-        // this.preview_mode = !this.preview_mode;
-      }
-    },
-    toggleFullscreen() {
-      if (this.$root.state.dev_mode === "debug") {
-        console.log(`METHODS • PagePublication: toggleFullscreen`);
-      }
-      const docElem = this.$refs.panel;
-      if (this.fullscreen_mode === false) {
-        if (!!docElem.requestFullscreen) {
-          // W3C API
-          docElem.requestFullscreen();
-        } else if (!!docElem.mozRequestFullScreen) {
-          // Mozilla current API
-          docElem.mozRequestFullScreen();
-        } else if (!!docElem.webkitRequestFullScreen) {
-          // Webkit current API
-          docElem.webkitRequestFullScreen();
-        } // Maybe other prefixed APIs?
-        this.fullscreen_mode = true;
-      } else {
-        if (!!document.exitFullscreen) {
-          // W3C API
-          document.exitFullscreen();
-        } else if (!!document.mozExitFullscreen) {
-          // Mozilla current API
-          document.mozExitFullscreen();
-        } else if (!!document.webkitExitFullscreen) {
-          // Webkit current API
-          document.webkitExitFullscreen();
-        } // Maybe other prefixed APIs?
-        this.fullscreen_mode = false;
-      }
-
-      setTimeout(() => {
-        this.updatePageSizeAccordingToPanel();
-      }, 500);
-    },
     updatePageSizeAccordingToPanel() {
-      const panel_width = this.$refs.panel.offsetWidth;
-      const current_page_el = this.$refs.current_page;
+      if (this.$refs.current_page && this.$refs.current_page.$el) {
+        const panel_el = this.$refs.current_page.$el;
+        const current_page_el = panel_el.querySelector(".m_page");
 
-      if (current_page_el && panel_width > 0) {
-        const page = current_page_el.$el.getElementsByClassName("m_page")[0];
-
-        const margins = 100;
-        if (!!page && panel_width < page.offsetWidth + margins) {
-          this.zoom = panel_width / (page.offsetWidth + margins);
-        }
+        this.zoom = (panel_el.offsetWidth * 0.6) / current_page_el.offsetWidth;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

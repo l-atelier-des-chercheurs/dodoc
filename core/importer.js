@@ -8,7 +8,7 @@ const api = require("./api"),
 
 module.exports = (function () {
   const API = {
-    handleForm: ({ req, res, type, slugFolderName }) => {
+    handleForm: ({ req, type, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
         dev.logfunction(
           `IMPORTER — handleForm : type = ${type}, slugFolderName = ${slugFolderName}`
@@ -69,9 +69,11 @@ module.exports = (function () {
         // log any errors that occur
         form.on("error", function (err) {
           console.log(`An error has happened: ${err}`);
+          return reject({ err });
         });
         form.on("aborted", function (err) {
           console.log(`File upload aborted: ${err}`);
+          return reject({ err });
         });
 
         // once all the files have been uploaded
@@ -89,12 +91,11 @@ module.exports = (function () {
                 })
               );
             }
-            Promise.all(m).then((medias_filenames) => {
+            Promise.all(m).then((metaFileNames) => {
               let msg = {};
               msg.msg = "success";
-              msg.medias_filenames = medias_filenames;
-              res.end(JSON.stringify(msg));
-              resolve();
+              msg.metaFileNames = metaFileNames;
+              return resolve({ msg });
             });
           }
         });
@@ -115,7 +116,7 @@ module.exports = (function () {
     return new Promise(function (resolve, reject) {
       dev.logfunction("IMPORTER — renameAndConvertMediaAndCreateMeta");
       api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
-        function (newFileName) {
+        async function (newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);
 
           if (fileMeta.hasOwnProperty("additionalMeta")) {
@@ -130,21 +131,12 @@ module.exports = (function () {
             fileMeta.additionalMeta = {};
           }
 
-          file
+          await file
             .convertAndSaveMedia({
               uploadDir,
               tempPath: fileMeta.path,
               newFileName,
               socketid,
-            })
-            .then((newFileName) => {
-              fileMeta.additionalMeta.media_filename = newFileName;
-              sockets.createMediaMeta({
-                type,
-                slugFolderName,
-                additionalMeta: fileMeta.additionalMeta,
-              });
-              resolve(newFileName);
             })
             .catch((err) => {
               dev.error(err);
@@ -156,9 +148,18 @@ module.exports = (function () {
               });
               resolve();
             });
+
+          fileMeta.additionalMeta.media_filename = newFileName;
+          const metaFileName = await sockets.createMediaMeta({
+            type,
+            slugFolderName,
+            additionalMeta: fileMeta.additionalMeta,
+          });
+
+          return resolve(metaFileName);
         },
         function (err) {
-          reject(err);
+          return reject(err);
         }
       );
     });

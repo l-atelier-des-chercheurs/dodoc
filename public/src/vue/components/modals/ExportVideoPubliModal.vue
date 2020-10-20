@@ -11,9 +11,7 @@
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class>
-          <div class="margin-bottom-small">
-            {{ instructions }}
-          </div>
+          <div class="margin-bottom-small">{{ instructions }}</div>
 
           <div class="margin-bottom-small">
             <label>{{ $t("quality") }}</label>
@@ -21,26 +19,28 @@
               <option
                 v-for="q in available_qualities"
                 :value="q.resolution"
-                :key="q.resolution.width + q.resolution.height"
+                :key="q.resolution.height"
                 >{{ q.label }}</option
               >
-              <option :value="'draft'" :key="'custom'">
-                → {{ $t("draft").toLowerCase() }}
-              </option>
-              <option :value="'custom'" :key="'custom'">
-                ↓ {{ $t("custom").toLowerCase() }}
-              </option>
+              <option :value="'draft'" :key="'draft'"
+                >→ {{ $t("draft").toLowerCase() }}</option
+              >
+              <option :value="'custom'" :key="'custom'"
+                >↓ {{ $t("custom").toLowerCase() }}</option
+              >
             </select>
             <div v-if="resolution === 'draft'">
               <small>{{ $t("video_export_draft_instructions") }}</small>
             </div>
             <div v-else-if="resolution === 'custom'">
-              <small>{{
-                $t("video_export_custom_quality_instructions")
-              }}</small>
+              <small>
+                {{ $t("video_export_custom_quality_instructions") }}
+              </small>
             </div>
             <div v-else class="label">
-              {{ resolution.width }} × {{ resolution.height }}
+              <span class="text-lc">
+                {{ resolution.height }}p
+              </span>
             </div>
           </div>
 
@@ -49,7 +49,7 @@
             class="margin-bottom-small input-group"
           >
             <input
-              class=""
+              class
               type="number"
               min="2"
               max="4096"
@@ -58,7 +58,7 @@
             />
             <span class="font-large padding-verysmall">×</span>
             <input
-              class=""
+              class
               type="number"
               min="2"
               max="2160"
@@ -74,26 +74,26 @@
               :disabled="disable_generation_button"
               @click="downloadVideo"
             >
-              <template v-if="!video_request_status">{{
-                $t("make_video")
-              }}</template>
+              <template v-if="!video_request_status">
+                {{ $t("make_video") }}
+              </template>
               <template
                 v-else-if="video_request_status === 'waiting_for_server'"
               >
                 <span class="loader loader-xs" />
                 {{ $t("notifications.creation_in_progress") }}
               </template>
-              <template v-else-if="video_request_status === 'generated'">{{
-                $t("notifications.video_created")
-              }}</template>
-              <template v-else-if="video_request_status === 'failed'">{{
-                $t("notifications.video_creation_failed")
-              }}</template>
+              <template v-else-if="video_request_status === 'generated'">
+                {{ $t("notifications.video_created") }}
+              </template>
+              <template v-else-if="video_request_status === 'failed'">
+                {{ $t("notifications.video_creation_failed") }}
+              </template>
             </button>
           </div>
 
           <div v-if="video_request_status === 'generated'">
-            <hr class="" />
+            <hr class />
             <div class="mediaContainer">
               <vue-plyr :options="plyr_options">
                 <video :src="link_to_video" controls preload="auto" />
@@ -122,7 +122,6 @@
   </Modal>
 </template>
 <script>
-import Modal from "./BaseModal.vue";
 import { setTimeout } from "timers";
 import AddCreationToProject from "../subcomponents/AddCreationToProject.vue";
 
@@ -130,11 +129,10 @@ export default {
   props: {
     slugPubliName: String,
     publication: Object,
-    instructions: String
+    instructions: String,
   },
   components: {
-    Modal,
-    AddCreationToProject
+    AddCreationToProject,
   },
   data() {
     return {
@@ -144,42 +142,37 @@ export default {
       exported_video_name: false,
 
       resolution: {
-        width: 1280,
-        height: 720
+        height: 720,
       },
       custom_resolution: {
         width: 1280,
-        height: 720
+        height: 720,
       },
       available_qualities: [
         {
           label: this.$t("very_high"),
           resolution: {
-            width: 1920,
-            height: 1080
-          }
+            height: 1080,
+          },
         },
         {
           label: this.$t("high"),
           resolution: {
-            width: 1280,
-            height: 720
-          }
+            height: 720,
+          },
         },
         {
           label: this.$t("medium"),
           resolution: {
-            width: 854,
-            height: 480
-          }
+            height: 480,
+          },
         },
         {
           label: this.$t("low"),
           resolution: {
-            width: 640,
-            height: 360
-          }
-        }
+            height: 360,
+          },
+        },
       ],
 
       plyr_options: {
@@ -190,10 +183,10 @@ export default {
           "current-time",
           "mute",
           "volume",
-          "fullscreen"
+          "fullscreen",
         ],
-        iconUrl: "/images/plyr.svg"
-      }
+        iconUrl: "/images/plyr.svg",
+      },
     };
   },
   created() {},
@@ -204,14 +197,14 @@ export default {
       handler() {
         this.video_request_status = false;
       },
-      deep: true
+      deep: true,
     },
     custom_resolution: {
       handler() {
         this.video_request_status = false;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {
     disable_generation_button() {
@@ -226,7 +219,7 @@ export default {
           return true;
       }
       return false;
-    }
+    },
   },
   methods: {
     downloadVideo() {
@@ -242,13 +235,13 @@ export default {
         ) {
           options.resolution = {
             width: this.custom_resolution.width,
-            height: this.custom_resolution.height
+            height: this.custom_resolution.height,
           };
         }
       } else if (this.resolution === "draft") {
         options.resolution = {
           width: 426,
-          height: 240
+          height: 240,
         };
         options.bitrate = "1000k";
       } else {
@@ -266,7 +259,7 @@ export default {
 
       this.$socketio.downloadVideoPubli({
         slugPubliName: this.slugPubliName,
-        options
+        options,
       });
       this.video_request_status = "waiting_for_server";
     },
@@ -290,7 +283,7 @@ export default {
       this.$eventHub.$off("socketio.publication.videoIsGenerated");
 
       this.video_request_status = "failed";
-    }
-  }
+    },
+  },
 };
 </script>

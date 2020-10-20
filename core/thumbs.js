@@ -4,9 +4,8 @@ const path = require("path"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
-  StlThumbnailer = require("node-stl-to-thumbnail");
+  sharp = require("sharp");
 
-const sharp = require("sharp");
 sharp.cache(false);
 
 const dev = require("./dev-log"),
@@ -36,7 +35,7 @@ module.exports = (function () {
       dev.logfunction(
         `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType}, type: ${type}, subtype: ${subtype}`
       );
-      if (!["image", "video", "stl"].includes(mediaType)) {
+      if (!["image", "video", "audio", "stl"].includes(mediaType)) {
         dev.logverbose(
           `THUMBS — makeMediaThumbs — media is not of type image or video`
         );
@@ -84,9 +83,7 @@ module.exports = (function () {
             });
             makeThumbs.push(makeThumb);
           });
-        }
-
-        if (mediaType === "video") {
+        } else if (mediaType === "video") {
           // make screenshot
           let screenshotsTimemarks = [0];
           screenshotsTimemarks.forEach((timeMark) => {
@@ -142,13 +139,63 @@ module.exports = (function () {
             });
             makeThumbs.push(makeScreenshot);
           });
-        }
+        } else if (mediaType === "audio") {
+          // make screenshot
+          let makeWaveform = new Promise((resolve, reject) => {
+            _makeAudioWaveforms(mediaPath, thumbFolderPath, filename)
+              .then(({ screenshotPath, screenshotName }) => {
+                // make screenshot, then make thumbs out of each screenshot and push this to thumbs
+                // naming :
+                // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
+                // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
+                let makeThumbsFromScreenshot = [];
 
-        if (mediaType === "stl") {
+                thumbResolutions.forEach((thumbRes) => {
+                  let makeThumbFromScreenshot = new Promise(
+                    (resolve, reject) => {
+                      _makeImageThumb(
+                        api.getFolderPath(screenshotPath),
+                        thumbFolderPath,
+                        screenshotName,
+                        thumbRes
+                      )
+                        .then((thumbPath) => {
+                          let thumbMeta = {
+                            path: thumbPath,
+                            size: thumbRes,
+                          };
+                          resolve(thumbMeta);
+                        })
+                        .catch((err) => {
+                          dev.error(
+                            `makeMediaThumbs / Failed to make video thumbs with error ${err}`
+                          );
+                          resolve();
+                        });
+                    }
+                  );
+                  makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
+                });
+                Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
+                  resolve({ waveformType: "mono", thumbsData });
+                });
+              })
+              .catch((err) => {
+                dev.error(`Couldn’t make audio waveforms.`);
+                resolve();
+              });
+          });
+          makeThumbs.push(makeWaveform);
+        } else if (mediaType === "stl") {
           let screenshotsAngles = [0];
           screenshotsAngles.forEach((angle) => {
             let makeSTLScreenshot = new Promise((resolve, reject) => {
-              _makeSTLScreenshot(mediaPath, thumbFolderPath, filename, angle)
+              _makeSTLScreenshot({
+                slugFolderName,
+                thumbFolderPath,
+                filename,
+                angle,
+              })
                 .then(({ screenshotPath, screenshotName }) => {
                   // make screenshot, then make thumbs out of each screenshot and push this to thumbs
                   // naming :
@@ -215,6 +262,11 @@ module.exports = (function () {
       if (type === "image") {
         getEXIFDataForImage(mediaPath)
           .then((exifdata) => {
+            let meta = {};
+
+            if (exifdata.width) meta.width = exifdata.width;
+            if (exifdata.height) meta.height = exifdata.height;
+
             let ratio = exifdata.height / exifdata.width;
             if (
               exifdata.orientation &&
@@ -223,25 +275,43 @@ module.exports = (function () {
               dev.log(`Media is portrait. Inverting ratio`);
               ratio = 1 / ratio;
             }
+            meta.ratio = Number.parseFloat(ratio).toPrecision(4);
 
-            return resolve({
-              ratio: Number.parseFloat(ratio).toPrecision(4),
-              width: exifdata.width,
-              height: exifdata.height,
-            });
+            if (exifdata.exif) {
+              var parsed_exif_data = exifReader(exifdata.exif);
+              if (parsed_exif_data && parsed_exif_data.hasOwnProperty("gps")) {
+                meta.gps = JSON.stringify(parsed_exif_data.gps);
+              }
+            }
+
+            return resolve(meta);
           })
-          .catch((err) => reject());
+          .catch((err) => reject(err));
       } else if (type === "video" || type === "audio") {
         getEXIFDataForVideoAndAudio(mediaPath)
           .then((metadata) => {
-            let values = {};
+            let meta = {};
 
             if (
               metadata &&
               metadata.hasOwnProperty("format") &&
               metadata.format.hasOwnProperty("duration")
             ) {
-              values.duration = metadata.format.duration;
+              meta.duration = metadata.format.duration;
+            }
+
+            if (
+              metadata &&
+              metadata.hasOwnProperty("format") &&
+              metadata.format.hasOwnProperty("tags")
+            ) {
+              const tags = metadata.format.tags;
+              if (tags.hasOwnProperty("location"))
+                meta.location = tags.location;
+              else if (
+                tags.hasOwnProperty("com.apple.quicktime.location.ISO6709")
+              )
+                meta.location = tags["com.apple.quicktime.location.ISO6709"];
             }
 
             if (
@@ -255,13 +325,12 @@ module.exports = (function () {
                 let ratio =
                   metadata.streams[0].height / metadata.streams[0].width;
 
-                (values.ratio = Number.parseFloat(ratio).toPrecision(4)),
-                  (values.width = metadata.streams[0].width);
-                values.height = metadata.streams[0].height;
+                (meta.ratio = Number.parseFloat(ratio).toPrecision(4)),
+                  (meta.width = metadata.streams[0].width);
+                meta.height = metadata.streams[0].height;
               }
             }
-
-            return resolve(values);
+            return resolve(meta);
           })
           .catch((err) => {
             dev.error(`No probe data to read from: ${err}`);
@@ -293,10 +362,10 @@ module.exports = (function () {
         .metadata()
         .then((exifdata) => {
           if (typeof exifdata === "undefined") {
-            reject();
+            return reject();
           }
           dev.logverbose(`Gotten metadata.`);
-          resolve(exifdata);
+          return resolve(exifdata);
         })
         .catch((err) => reject(err));
     });
@@ -549,8 +618,8 @@ module.exports = (function () {
     timeMark
   ) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(
-        `Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark}`
+      dev.logfunction(
+        `THUMBS — _makeVideoScreenshot — Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark}`
       );
 
       let screenshotName = `${filename}.${timeMark}.jpeg`;
@@ -589,9 +658,60 @@ module.exports = (function () {
     });
   }
 
-  function _makeSTLScreenshot(mediaPath, thumbFolderPath, filename, angle) {
+  function _makeAudioWaveforms(mediaPath, thumbFolderPath, filename) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(`Looking to make a STL screenshot for ${mediaPath}`);
+      dev.logfunction(
+        `THUMBS — _makeAudioWaveforms — Looking to make an audio waveform for ${mediaPath}`
+      );
+
+      let screenshotName = `${filename}.wf.png`;
+      let screenshotPath = path.join(thumbFolderPath, screenshotName);
+      let fullScreenshotPath = api.getFolderPath(screenshotPath);
+
+      // check first if it exists, resolve if it does
+      fs.access(fullScreenshotPath, fs.F_OK, function (err) {
+        // if userDir folder doesn't exist yet at destination
+        if (err) {
+          ffmpeg()
+            .input(mediaPath)
+            .input(`color=white:s=3000x2000`)
+            .inputFormat("lavfi")
+            .complexFilter(
+              "[0:a]aformat=channel_layouts=mono,showwavespic=s=3000x2000:colors=#fc4b60[fg];[1:v][fg]overlay=format=auto"
+            )
+            .outputOptions(["-vframes 1"])
+            // setup event handlers
+            .on("end", function (files) {
+              dev.logverbose(
+                `Audio waveform were saved : ${JSON.stringify(files, null, 4)}`
+              );
+              resolve({ screenshotPath, screenshotName });
+            })
+            .on("error", function (err) {
+              dev.error(`ffmpeg failed: ${err.message}`);
+              reject(err.message);
+            })
+            .save(fullScreenshotPath);
+        } else {
+          dev.logverbose(
+            `Screenshots already exist at path ${fullScreenshotPath}`
+          );
+          resolve({ screenshotPath, screenshotName });
+        }
+      });
+    });
+  }
+
+  function _makeSTLScreenshot({
+    slugFolderName,
+    thumbFolderPath,
+    filename,
+    angle,
+  }) {
+    return new Promise(function (resolve, reject) {
+      dev.logverbose(
+        `Looking to make a STL screenshot for ${slugFolderName}/${filename}`
+      );
 
       // todo : use angle to get screenshots all around an stl
 
@@ -603,25 +723,56 @@ module.exports = (function () {
       fs.access(fullScreenshotPath, fs.F_OK, function (err) {
         // if userDir folder doesn't exist yet at destination
         if (err) {
-          var thumbnailer = new StlThumbnailer({
-            filePath: mediaPath,
-            requestThumbnails: [
-              {
-                width: 1800,
-                height: 1800,
-              },
-            ],
-          }).then(function (thumbnails) {
-            // thumbnails is an array (in matching order to your requests) of Canvas objects
-            // you can write them to disk, return them to web users, etc
-            // see node-canvas documentation at https://github.com/Automattic/node-canvas
-            thumbnails[0].toBuffer(function (err, buf) {
-              if (err) return reject();
+          const { BrowserWindow } = require("electron");
 
-              fs.writeFileSync(fullScreenshotPath, buf);
-              return resolve({ screenshotPath, screenshotName });
-            });
+          let win = new BrowserWindow({
+            // width: 800,
+            // height: 600,
+            width: 1800,
+            height: 1800,
+            show: false,
           });
+          win.loadURL(
+            // `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/faire-de-la-3d-a-la-maison/bourlingue.stl`
+            `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/${slugFolderName}/${filename}`
+          );
+
+          win.webContents.on("did-finish-load", () => {
+            // Use default printing options
+            setTimeout(() => {
+              win.capturePage((image) => {
+                var conv = image.toPNG(1.0); // to PNG
+
+                fs.writeFile(fullScreenshotPath, conv, (error) => {
+                  if (error) throw error;
+                  dev.logverbose(
+                    `THUMBS — _makeSTLScreenshot : created image at ${fullScreenshotPath}`
+                  );
+                  return resolve({ screenshotPath, screenshotName });
+                });
+              });
+            }, 1000);
+          });
+
+          // var thumbnailer = new StlThumbnailer({
+          //   filePath: mediaPath,
+          //   requestThumbnails: [
+          //     {
+          //       width: 1800,
+          //       height: 1800,
+          //     },
+          //   ],
+          // }).then(function (thumbnails) {
+          //   // thumbnails is an array (in matching order to your requests) of Canvas objects
+          //   // you can write them to disk, return them to web users, etc
+          //   // see node-canvas documentation at https://github.com/Automattic/node-canvas
+          //   thumbnails[0].toBuffer(function (err, buf) {
+          //     if (err) return reject();
+
+          //     fs.writeFileSync(fullScreenshotPath, buf);
+          //     return resolve({ screenshotPath, screenshotName });
+          //   });
+          // });
         } else {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`

@@ -23,6 +23,11 @@
   "thumbFolderName": "_thumbs",
   "deletedFolderName": "_bin",
 
+  "ffmpeg_options": {
+    "priority": 0,
+    "timeout": 600
+  },
+
   "mediaThumbQuality": 70,
   "maxFileSizeForUpload": 10000,
 
@@ -33,7 +38,7 @@
   "api": {
     "enabled": false,
     "allow_all_domains": false,
-    "domains_whitelist": []
+    "domains_whitelist": ["localhost"]
   },
 
   "structure": {
@@ -76,10 +81,14 @@
           "type": "string"
         },
         "editing_limited_to": {
-          "type": "string"
+          "type": "string",
+          "options": ["everybody", "with_password", "only_authors", "nobody"],
+          "default": "everybody"
         },
         "viewing_limited_to": {
-          "type": "string"
+          "type": "string",
+          "options": ["everybody", "only_authors", ""],
+          "default": "everybody"
         }
       },
       "medias": {
@@ -154,7 +163,7 @@
         "width": 1200,
         "height": 1200,
         "thumbs": {
-          "resolutions": [180, 640]
+          "resolutions": [50, 180, 640]
         }
       },
       "fields": {
@@ -163,7 +172,6 @@
         },
         "password": {
           "type": "string",
-          "read_only": true,
           "transform": "crypt"
         },
         "date_created": {
@@ -171,10 +179,15 @@
           "default": "current",
           "read_only": true
         },
+        "email": {
+          "type": "string",
+          "show_only_to": ["self", "admin"]
+        },
         "role": {
           "type": "string",
-          "options": ["contributor", "admin"],
-          "default": "contributor"
+          "options": ["contributor", "participant", "admin"],
+          "default": "contributor",
+          "only_admin_can_edit": true
         },
         "description": {
           "type": "string"
@@ -201,14 +214,24 @@
           "type": "string"
         },
         "password": {
-          "type": "string",
-          "read_only": true
+          "type": "string"
         },
         "authors": {
           "type": "array"
         },
         "keywords": {
           "type": "array"
+        },
+
+        "editing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "with_password", "only_authors", "nobody"],
+          "default": "everybody"
+        },
+        "viewing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "only_authors", ""],
+          "default": "everybody"
         },
         "date_created": {
           "type": "date",
@@ -220,11 +243,17 @@
           "default": "current",
           "override": true
         },
+        "date_submitted": {
+          "type": "date"
+        },
         "description": {
           "type": "string"
         },
         "attached_to_project": {
           "type": "string"
+        },
+        "show_on_external_domain": {
+          "type": "boolean"
         },
         "template": {
           "type": "string",
@@ -236,7 +265,8 @@
             "mix_audio_and_video",
             "mix_audio_and_image",
             "drawing_pad",
-            "video_effects"
+            "video_effects",
+            "story"
           ],
           "default": "page_by_page"
         },
@@ -292,9 +322,22 @@
         },
         "effects": {
           "type": "array"
+        },
+        "is_model": {
+          "type": "boolean"
+        },
+        "follows_model": {
+          "type": "string"
+        },
+        "number_of_medias": {
+          "type": "number",
+          "only_admin_can_edit": true
         }
       },
       "medias": {
+        "thumbs": {
+          "resolutions": [180, 360, 1600]
+        },
         "fields": {
           "slugProjectName": {
             "type": "string"
@@ -312,6 +355,21 @@
             "default": "current",
             "override": true
           },
+          "caption": {
+            "type": "string"
+          },
+          "instructions": {
+            "type": "string"
+          },
+          "hide_instructions_when_fulfilled": {
+            "type": "boolean"
+          },
+          "available_modes": {
+            "type": "array"
+          },
+          "answers": {
+            "type": "string"
+          },
           "authors": {
             "type": "array"
           },
@@ -326,7 +384,25 @@
           },
           "type": {
             "type": "string",
-            "options": ["text", "solid_color"]
+            "options": [
+              "text",
+              "placeholder",
+              "divider",
+              "solid_color",
+              "rectangle",
+              "ellipsis",
+              "line",
+              "arrow",
+
+              "image",
+              "video",
+              "audio",
+              "code",
+              "stl",
+              "document",
+              "other"
+            ],
+            "default": "other"
           },
           "color": {
             "type": "string"
@@ -372,8 +448,17 @@
           "fit_mode": {
             "type": "string"
           },
-          "lock_original_ratio": {
+          "locked_in_place": {
             "type": "boolean"
+          },
+          "plain_text": {
+            "type": "boolean"
+          },
+          "only_numbers": {
+            "type": "boolean"
+          },
+          "force_text_style": {
+            "type": "string"
           },
           "z_index": {
             "type": "number",
@@ -389,6 +474,30 @@
           "file_meta": {
             "type": "array",
             "read_only": true
+          },
+          "margin": {
+            "type": "number"
+          },
+          "font_size_percent": {
+            "type": "number"
+          },
+          "opacity": {
+            "type": "number"
+          },
+          "fill_color": {
+            "type": "string"
+          },
+          "stroke_color": {
+            "type": "string"
+          },
+          "stroke_width": {
+            "type": "number"
+          },
+          "placeholder_meta_reference": {
+            "type": "string"
+          },
+          "placeholder_medias_slugs": {
+            "type": "array"
           }
         }
       }
@@ -410,6 +519,13 @@
           "type": "array"
         },
         "linked_project": {
+          "type": "string",
+          "comment": "is_deprecated_and_replaced_with_linked_folder"
+        },
+        "linked_folder": {
+          "type": "string"
+        },
+        "linked_type": {
           "type": "string"
         }
       },
@@ -462,6 +578,23 @@
         },
         "authors": {
           "type": "array"
+        },
+        "editing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "only_authors", "nobody"],
+          "default": "everybody"
+        },
+        "viewing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "only_authors", ""],
+          "default": "everybody"
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "number_of_medias": {
+          "type": "number",
+          "only_admin_can_edit": true
         }
       },
       "medias": {

@@ -2,14 +2,14 @@
   <div
     class="m_project"
     :class="{
-      'is--hovered': is_hovered && can_access_project,
+      'is--hovered': is_hovered && can_see_project,
       'is--selected': is_selected,
-      'is--accessible': can_access_project,
+      'is--accessible': can_see_project,
     }"
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
   >
-    <div class="m_project--presentation">
+    <div class="m_project--presentation" :class="{ 'is--full': context === 'full' }">
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
@@ -21,22 +21,17 @@
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
-        >
-          {{ $t("add_a_cover_image") }}
-        </button>
+        >{{ $t("add_a_cover_image") }}</button>
       </div>
 
       <div class="m_project--presentation--text">
-        <h2
-          class="m_project--presentation--text--title"
-          :content="slugProjectName"
-          v-tippy="{
-            placement: 'bottom-start',
-            delay: [600, 0],
-            interactive: true,
-          }"
-        >
+        <h2 class="m_project--presentation--text--title">
+          <!-- Generator: Adobe Illustrator 24.1.0, SVG Export Plug-In  -->
           {{ project.name }}
+          <ProtectedLock
+            :editing_limited_to="project.editing_limited_to"
+            :is_protected="!can_edit_project"
+          />
         </h2>
 
         <div class="m_project--presentation--text--infos">
@@ -51,15 +46,14 @@
                     $root.settings.project_filter.keyword === keyword.title,
                 },
               ]"
-              >{{ keyword.title }}</span
-            >
+            >{{ keyword.title }}</span>
           </div>
           <div class="m_metaField" v-if="!!project.authors">
             <div>{{ $t("author") }}</div>
             <div class="m_authorField">
               <span
                 v-for="author in project.authors"
-                v-if="author.slugFolderName"
+                v-if="$root.getAuthor(author.slugFolderName)"
                 :key="author.slugFolderName"
                 class="is--active"
                 :class="{
@@ -69,20 +63,15 @@
                       author.slugFolderName,
                 }"
               >
-                <template v-if="$root.getAuthor(author.slugFolderName)">
-                  {{ $root.getAuthor(author.slugFolderName).name }}
-                </template>
-                <template v-else>
-                  {{ author.slugFolderName }}
-                </template>
+                <template
+                  v-if="$root.getAuthor(author.slugFolderName)"
+                >{{ $root.getAuthor(author.slugFolderName).name }}</template>
+                <template v-else>{{ author.slugFolderName }}</template>
               </span>
             </div>
           </div>
 
-          <div
-            class="m_metaField"
-            v-if="!!project.folder && context === 'full'"
-          >
+          <div class="m_metaField" v-if="!!project.folder && context === 'full'">
             <div>{{ $t("folder") }}</div>
             <div class="m_folderField">
               <span>{{ project.folder }}</span>
@@ -93,127 +82,53 @@
 
           <DateField :title="'edited'" :date="project.date_modified" />
 
-          <div
-            class="m_metaField"
-            v-if="
-              can_access_project &&
-              project.password === 'has_pass' &&
-              project.editing_limited_to !== 'only_authors'
-            "
-          >
-            <label>{{ $t("protected_by_pass") }}</label>
-          </div>
-
-          <div
-            class="m_metaField"
-            v-if="!!_editing_limited_to && context === 'full'"
-          >
-            <div>{{ $t("who_can_edit") }}</div>
-            <div class="">
-              <span>{{ $t(_editing_limited_to) }}</span>
-            </div>
-          </div>
-
-          <div
-            class="m_metaField"
-            v-if="!!project.viewing_limited_to && context === 'full'"
-          >
-            <div>{{ $t("consultation") }}</div>
-            <div>{{ $t("visible_to_all") }}</div>
-          </div>
-
-          <button
-            v-if="
-              !can_access_project &&
-              project.password === 'has_pass' &&
-              project.editing_limited_to !== 'only_authors'
-            "
-            type="button"
-            class="buttonLink _open_pwd_input"
-            :class="{ 'is--active': showInputPasswordField }"
-            style
-            :readonly="read_only"
-            @click="showInputPasswordField = !showInputPasswordField"
-          >
-            {{ $t("password_required_to_open") }}
-          </button>
-          <button
-            v-if="
-              !can_access_project &&
-              project.editing_limited_to === 'only_authors'
-            "
-            type="button"
-            class="buttonLink"
-            style
-            :readonly="read_only"
-            @click="$root.showAuthorsListModal = true"
-          >
-            {{ $t("only_authors_can_open") }}
-          </button>
-
-          <div
-            class="padding-verysmall _pwd_input"
-            v-if="showInputPasswordField && !can_access_project"
-          >
-            <div class="margin-bottom-small">
-              <label>{{ $t("password") }}</label>
-              <input
-                type="password"
-                ref="passwordField"
-                @keydown.enter.prevent="submitPassword"
-                required
-                autofocus
-                placeholder="…"
-              />
-            </div>
-            <!-- <div class="switch switch-xs margin-bottom-small">
-                <input
-                  type="checkbox"
-                  class="switch"
-                  id="remember_project_password_for_this_device"
-                  v-model="remember_project_password_for_this_device"
-                />
-                <label
-                  for="remember_project_password_for_this_device"
-                >{{ $t('remember_project_password_for_this_device') }}</label>
-            </div>-->
-
-            <button
-              type="button"
-              class="button bg-bleuvert button-thin"
-              @click="submitPassword"
-            >
-              {{ $t("send") }}
-            </button>
-          </div>
-
-          <div
-            v-if="
-              can_access_project &&
-              project_password &&
-              context === 'full' &&
-              project.editing_limited_to !== 'only_authors'
-            "
-            class="m_metaField"
-          >
-            <div
-              class="cursor-pointer"
-              :readonly="read_only"
-              @click="showCurrentPassword = !showCurrentPassword"
-              v-html="!showCurrentPassword ? $t('show_password') : $t('hide')"
-            />
-            <div v-if="showCurrentPassword && can_access_project">
-              {{ project_password }}
-            </div>
-          </div>
+          <AccessController
+            :folder="project"
+            :context="context"
+            :type="'projects'"
+            @openFolder="openProject"
+            @closeFolder="closeProject"
+          />
         </div>
       </div>
 
       <div class="m_project--presentation--buttons">
         <button
-          v-if="context !== 'full' && can_access_project"
+          v-if="context !== 'full' && can_see_project"
           type="button"
-          class="m_project--presentation--buttons--openButton"
+          class="m_project--presentation--buttons--openButton button-redthin"
+          @click.exact="openProject"
+          @click.shift.left.exact="$emit('toggleSelect')"
+          @click.meta.left.exact="$emit('toggleSelect')"
+        >
+          <span v-if="!project.folder" class>{{ $t("open") }}</span>
+          <svg
+            version="1.1"
+            class="m_project--presentation--buttons--openButton--icon inline-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="46.3px"
+            height="46.3px"
+            viewBox="0 0 46.3 46.3"
+            style="enable-background: new 0 0 46.3 46.3;"
+            xml:space="preserve"
+          >
+            <path
+              class="st0"
+              style="fill: currentColor;"
+              d="M38.1,29.1L37.8,23c-0.1-3.7-0.1-6.7,0.6-9.7l-33,33L0,40.9L32.9,7.9c-2.9,0.6-6,0.6-9.6,0.5l-6.2-0.3L17.8,0
+		l27.1,1.4l1.4,27.1L38.1,29.1z"
+            />
+          </svg>
+        </button>
+
+        <button
+          v-if="context !== 'full'"
+          type="button"
+          :class="{ 'is--disabled': !can_see_project }"
+          class="m_project--presentation--buttons--invisibleOpenButton"
           @click.exact="openProject"
           @click.shift.left.exact="$emit('toggleSelect')"
           @click.meta.left.exact="$emit('toggleSelect')"
@@ -232,13 +147,13 @@
             type="checkbox"
             v-model="local_is_selected"
             @change="$emit('toggleSelect')"
-            :class="{ disabled: !can_access_project || !can_edit_project }"
+            :class="{ disabled: !can_see_project || !can_edit_project }"
           />
-          <!-- :disabled="!can_access_project" -->
+          <!-- :disabled="!can_see_project" -->
         </label>
 
         <button
-          v-if="can_access_project && can_edit_project && context === 'full'"
+          v-if="can_see_project && can_edit_project && context === 'full'"
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
@@ -267,7 +182,7 @@
         </button>
 
         <button
-          v-if="can_access_project && can_edit_project && context === 'full'"
+          v-if="can_see_project && can_edit_project && context === 'full'"
           type="button"
           class="buttonLink"
           @click="removeProject()"
@@ -296,7 +211,7 @@
         </button>
 
         <button
-          v-if="can_access_project && can_edit_project && context === 'full'"
+          v-if="can_see_project && can_edit_project && context === 'full'"
           type="button"
           class="buttonLink"
           :class="{ 'is--active': show_advanced_options }"
@@ -339,22 +254,7 @@
 
         <div v-if="show_advanced_options">
           <button
-            v-if="
-              can_access_project &&
-              can_edit_project &&
-              project_password &&
-              context === 'full' &&
-              project.editing_limited_to !== 'only_authors'
-            "
-            type="button"
-            class="_button_forgetpassword"
-            @click="forgetPassword"
-          >
-            {{ $t("forget_password_and_close") }}
-          </button>
-
-          <button
-            v-if="can_access_project && can_edit_project && context === 'full'"
+            v-if="can_see_project && can_edit_project && context === 'full'"
             type="button"
             class="buttonLink"
             @click="downloadProjectArchive"
@@ -381,10 +281,7 @@
                       d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2 L23.3,59.6L3.2,41.5L8.5,35.2z"
                     />
                   </g>
-                  <polygon
-                    class="st0"
-                    points="46.7,70 0,70 0,62.4 46.6,62.4 	"
-                  />
+                  <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
                 </g>
               </svg>
             </template>
@@ -395,7 +292,7 @@
           </button>
 
           <button
-            v-if="can_access_project && can_edit_project && context === 'full'"
+            v-if="can_see_project && can_edit_project && context === 'full'"
             type="button"
             class="buttonLink"
             :class="{ 'is--active': showDuplicateProjectMenu }"
@@ -430,12 +327,7 @@
           <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
             <label v-html="$t('name_of_copy')" />
             <form @submit.prevent="duplicateWithNewName()" class="input-group">
-              <input
-                type="text"
-                v-model.trim="copy_project_name"
-                required
-                autofocus
-              />
+              <input type="text" v-model.trim="copy_project_name" required autofocus />
               <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
             </form>
           </div>
@@ -444,11 +336,13 @@
       <EditProject
         v-if="showEditProjectModal"
         :project="project"
-        :project_password="project_password"
+        :project_password="project_password()"
         :slugProjectName="slugProjectName"
         @close="showEditProjectModal = false"
         :read_only="read_only"
       />
+
+      <ClientsCheckingOut :type="'projects'" :slugFolderName="slugProjectName" />
     </div>
 
     <MediaLibrary
@@ -458,12 +352,17 @@
       :read_only="read_only"
       :can_edit_project="can_edit_project"
     />
+
+    <transition name="fade_fast" :duration="400">
+      <Loader v-if="is_loading" />
+    </transition>
   </div>
 </template>
 <script>
 import EditProject from "./modals/EditProject.vue";
 import MediaLibrary from "./MediaLibrary.vue";
-import MediaCard from "./subcomponents/MediaCard.vue";
+import AccessController from "./subcomponents/AccessController.vue";
+import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 
 export default {
   props: {
@@ -475,14 +374,13 @@ export default {
   components: {
     EditProject,
     MediaLibrary,
-    MediaCard,
+    AccessController,
+    ClientsCheckingOut,
   },
   data() {
     return {
       slugProjectName: this.project.slugFolderName,
       showEditProjectModal: false,
-      showInputPasswordField: false,
-      showCurrentPassword: false,
       remember_project_password_for_this_device: true,
       show_advanced_options: false,
 
@@ -493,31 +391,11 @@ export default {
       showDuplicateProjectMenu: false,
       copy_project_name: this.$t("copy_of") + " " + this.project.name,
       zip_export_started: false,
+
+      is_loading: false,
     };
   },
   watch: {
-    can_access_project() {
-      if (!this.can_access_project && this.context === "full") {
-        // cas d’un mdp qui a été ajouté ou changé
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(
-            this.$t("notifications.password_added_or_changed_to_this_project")
-          );
-
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .log(
-            this.$t("notifications.enter_password_to_reopen_project") +
-              "&nbsp;:" +
-              this.project.name
-          );
-
-        this.closeProject();
-      }
-    },
     showInputPasswordField() {
       if (this.showInputPasswordField) {
         this.$nextTick(() => {
@@ -525,24 +403,35 @@ export default {
         });
       }
     },
-    is_selected: function () {
+    is_selected: function() {
       this.local_is_selected = this.is_selected;
     },
-    "project.viewing_limited_to": function () {
+    "project.viewing_limited_to": function() {
       this.$socketio.listMedias({
         type: "projects",
         slugFolderName: this.slugProjectName,
       });
     },
   },
-  mounted() {},
+  mounted() {
+    if (this.context === "full") {
+      this.is_loading = true;
+      this.$socketio.listFolders({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
+      this.$socketio.listMedias({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
+
+      this.$eventHub.$once("socketio.projects.medias_listed", () => {
+        this.is_loading = false;
+      });
+    }
+  },
   beforeDestroy() {},
   computed: {
-    _editing_limited_to() {
-      if (!!this.project.editing_limited_to)
-        return this.project.editing_limited_to;
-      else return false;
-    },
     previewURL() {
       if (
         !this.project.hasOwnProperty("preview") ||
@@ -550,13 +439,13 @@ export default {
       ) {
         return false;
       }
-      const thumb = this.project.preview.filter((p) => p.size === 640);
+      const thumb = this.project.preview.filter(p => p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }
       return false;
     },
-    can_access_project() {
+    can_see_project() {
       return this.$root.canSeeFolder({
         type: "projects",
         slugFolderName: this.slugProjectName,
@@ -568,24 +457,12 @@ export default {
         slugFolderName: this.slugProjectName,
       });
     },
-    project_password() {
-      const projects_password = this.$auth.getFoldersPasswords();
-      if (
-        projects_password.hasOwnProperty("projects") &&
-        projects_password["projects"].hasOwnProperty(this.slugProjectName) &&
-        this.project.password === "has_pass"
-      ) {
-        return projects_password["projects"][this.slugProjectName];
-      }
-      return "";
-    },
   },
   methods: {
     openProject() {
-      if (this.can_access_project) this.$root.openProject(this.slugProjectName);
+      if (this.can_see_project) this.$root.openProject(this.slugProjectName);
       else this.showInputPasswordField = !this.showInputPasswordField;
     },
-
     closeProject() {
       this.$root.closeProject();
     },
@@ -604,6 +481,13 @@ export default {
           },
           () => {}
         );
+    },
+    project_password() {
+      if (this.password !== "has_pass") return "";
+      return this.$root.getFolderPassword({
+        type: "projects",
+        slugFolderName: this.slugProjectName,
+      });
     },
     duplicateWithNewName(event) {
       console.log("METHODS • Project: duplicateWithNewName");
@@ -648,48 +532,6 @@ export default {
           .success(this.$t("notifications.copy_completed"));
       });
     },
-    submitPassword() {
-      console.log("METHODS • Project: submitPassword");
-
-      this.$auth.updateFoldersPasswords({
-        projects: {
-          [this.slugProjectName]: this.$refs.passwordField.value,
-        },
-      });
-
-      this.$socketio.sendAuth();
-
-      // check if password matches or not
-      this.$eventHub.$once("socketio.authentificated", () => {
-        const has_passworded_folder = window.state.list_authorized_folders.filter(
-          (f) =>
-            f.type === "projects" &&
-            f.allowed_slugFolderNames.includes(this.slugProjectName)
-        );
-        if (has_passworded_folder.length === 0) {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(
-              this.$t("notifications.wrong_password_for") + this.project.name
-            );
-          this.$refs.passwordField.value = "";
-          this.$refs.passwordField.focus();
-        } else {
-          this.showInputPasswordField = false;
-          this.openProject();
-        }
-      });
-    },
-    forgetPassword() {
-      this.$auth.removeFolderPassword({
-        type: "projects",
-        slugFolderName: this.slugProjectName,
-      });
-      this.$socketio.sendAuth();
-
-      this.closeProject();
-    },
     downloadProjectArchive() {
       if (this.$root.state.dev_mode === "debug") {
         console.log(`Project • METHODS: downloadProjectArchive`);
@@ -699,7 +541,6 @@ export default {
         this.zip_export_started = false;
       }, 2000);
 
-      const pwd = this.$auth.hashCode(this.project_password);
       const query_url =
         window.location.origin +
         "/_archives/projects/" +
@@ -711,15 +552,9 @@ export default {
           `Project • METHODS: downloadProjectArchive with query ${query_url}`
         );
 
-      window.location.replace(query_url);
+      window.open(query_url, "_blank");
     },
   },
 };
 </script>
-<style scoped>
-._pwd_input,
-._open_pwd_input {
-  position: relative;
-  z-index: 1;
-}
-</style>
+<style scoped></style>

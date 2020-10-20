@@ -51,7 +51,10 @@
         </label>
       </div>
     </div>
-    <div v-if="allKeywords.length > 0" class="padding-sides-small">
+    <div
+      v-if="allKeywords && allKeywords.length > 0"
+      class="padding-sides-small"
+    >
       <label>{{ $t("keywords") }}</label>
       <div class="m_keywordField margin-bottom-none font-large">
         <button
@@ -67,14 +70,19 @@
         </button>
       </div>
     </div>
-    <div v-if="allAuthors.length > 0" class="padding-sides-small">
+    <div v-if="allAuthors && allAuthors.length > 0" class="padding-sides-small">
       <label>{{ $t("authors") }}</label>
       <div class="m_authorField margin-bottom-none">
         <button
           v-for="{ slugFolderName: author_slug } in allAuthors"
           v-if="$root.getAuthor(author_slug)"
           :key="author_slug"
-          :class="{ 'is--active': authorFilter === author_slug }"
+          :class="{
+            'is--active': authorFilter === author_slug,
+            'is--loggedInAuthor':
+              $root.current_author &&
+              $root.current_author.slugFolderName === author_slug,
+          }"
           @click="$emit('setAuthorFilter', author_slug)"
         >
           {{ $root.getAuthor(author_slug).name }}

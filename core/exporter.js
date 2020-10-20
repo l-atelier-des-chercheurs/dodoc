@@ -16,15 +16,14 @@ const dev = require("./dev-log"),
 ffmpeg.setFfmpegPath(pathToFfmpeg);
 ffmpeg.setFfprobePath(ffprobestatic.path);
 
-const renice = 0;
-
 module.exports = (function () {
   return {
     loadPublication: (slugPubliName, pageData) =>
       loadPublication(slugPubliName, pageData),
 
-    copyFolderContent: ({ html, folders_and_medias, slugFolderName }) => {
+    copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
+        dev.logfunction(`EXPORTER — copyFolderContent = ${slugFolderName}`);
         // create cache folder that we will need to copy the content
         let cacheFolderName =
           api.getCurrentDate() +
@@ -119,7 +118,7 @@ module.exports = (function () {
                       typeof mediaMeta.thumbs !== "undefined"
                     ) {
                       mediaMeta.thumbs.map((t) => {
-                        if (t.hasOwnProperty("path")) {
+                        if (t && t.hasOwnProperty("path")) {
                           tasks.push(
                             new Promise((resolve, reject) => {
                               let thumb_path = t.path;
@@ -233,6 +232,12 @@ module.exports = (function () {
           })
           .then((publiData) => {
             publiData = Object.values(publiData)[0];
+
+            const default_page_size = {
+              width: publiData.width ? publiData.width : 210,
+              height: publiData.height ? publiData.height : 297,
+            };
+
             fs.mkdirp(cachePath, () => {
               dev.logverbose(
                 `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
@@ -240,11 +245,20 @@ module.exports = (function () {
 
               const { BrowserWindow } = require("electron");
 
+              const browser_window = {
+                width: Math.floor(default_page_size.width * 3.78),
+                height: Math.floor(default_page_size.height * 3.78) + 25, // totally arbitrary value… will have to find better
+              };
+
+              dev.logverbose(
+                `EXPORTER — makePDFForPubli : loading URL ${urlToPubli}`
+              );
+
               let win = new BrowserWindow({
                 // width: 800,
                 // height: 600,
-                width: Math.floor(publiData.width * 3.78),
-                height: Math.floor(publiData.height * 3.78) + 25, // totally arbitrary value… will have to find better
+                width: browser_window.width,
+                height: browser_window.height,
                 show: false,
               });
               win.loadURL(urlToPubli);
@@ -273,9 +287,12 @@ module.exports = (function () {
                       {
                         marginsType: 1,
                         pageSize: {
-                          width: publiData.width * 1000,
-                          height: publiData.height * 1000,
+                          width: default_page_size.width * 1000,
+                          height: default_page_size.height * 1000,
                         },
+                        dpi: 300,
+                        printBackground: true,
+                        printSelectionOnly: false,
                       },
                       (error, data) => {
                         if (error) throw error;
@@ -307,7 +324,9 @@ module.exports = (function () {
                     const docPath = path.join(cachePath, imageName);
 
                     win.capturePage((image) => {
-                      fs.writeFile(docPath, image.toPNG(), (error) => {
+                      var conv = image.toPNG(1.0); // to PNG
+
+                      fs.writeFile(docPath, conv, (error) => {
                         if (error) throw error;
                         dev.logverbose(
                           `EXPORTER — makePDFForPubli : created image at ${docPath}`
@@ -345,14 +364,36 @@ module.exports = (function () {
         let publication_meta = "";
 
         let resolution = {
-          width: 1280,
-          height: 720,
+          width: undefined,
+          height: undefined,
         };
-        if (options.hasOwnProperty("resolution")) {
-          if (options.resolution.hasOwnProperty("width"))
-            resolution.width = options.resolution.width;
-          if (options.resolution.hasOwnProperty("height"))
+        if (!options.hasOwnProperty("resolution")) {
+          resolution = {
+            width: 1280,
+            height: 720,  
+          }
+        } else {
+          if(options.resolution.hasOwnProperty("height")) {
             resolution.height = options.resolution.height;
+            if(options.resolution.hasOwnProperty("width")) {
+              resolution.width = options.resolution.width;
+            } else {
+              switch (resolution.height) {
+                case 360:
+                  resolution.width = 640;
+                  break;
+                case 480:
+                  resolution.width = 854;
+                  break;
+                case 720:
+                  resolution.width = 1280;
+                  break;
+                case 1080:
+                  resolution.width = 1920;
+                  break;
+              } 
+            }
+          }
         }
 
         let bitrate = options.hasOwnProperty("bitrate")
@@ -391,6 +432,7 @@ module.exports = (function () {
                   medias_with_original_filepath,
                   cachePath,
                   videoName,
+                  resolution,
                   socket,
                 })
                   .then(() => {
@@ -405,6 +447,7 @@ module.exports = (function () {
                   medias_with_original_filepath,
                   cachePath,
                   videoName,
+                  resolution,
                   socket,
                 })
                   .then(() => {
@@ -519,8 +562,7 @@ module.exports = (function () {
                   dev.logverbose(
                     `duration : ${numberOfImagesToProcess / framerate}`
                   );
-                  const ffmpeg_cmd = new ffmpeg()
-                    .renice(renice)
+                  const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
                     .input(path.join(imagesCachePath, "img-%04d.jpeg"))
                     .inputFPS(framerate)
                     .withVideoCodec("libx264")
@@ -595,6 +637,11 @@ module.exports = (function () {
               slugFolderName,
             })
             .then((list_metaFileName) => {
+              if (list_metaFileName.length === 0) {
+                pageData.publiAndMediaData = publi_and_medias;
+                return resolve(pageData);
+              }
+
               let medias_list = list_metaFileName.map((metaFileName) => {
                 return {
                   slugFolderName,
@@ -609,6 +656,7 @@ module.exports = (function () {
                 .then((publi_medias) => {
                   publi_and_medias[slugFolderName].medias =
                     publi_medias[slugFolderName].medias;
+
                   pageData.publiAndMediaData = publi_and_medias;
 
                   // we need to get the list of original medias in the publi
@@ -789,12 +837,12 @@ module.exports = (function () {
             // } else {
             sharp(media.full_path)
               .rotate()
+              .flatten({ background: "white" })
               .resize(resolution.width, resolution.height, {
                 fit: "contain",
                 withoutEnlargement: false,
                 background: "black",
               })
-              .flatten()
               .withMetadata()
               .toFile(cache_image_path)
               .then(() => resolve())
@@ -831,7 +879,7 @@ module.exports = (function () {
       const vm = medias_with_original_filepath.find((m) => m.type === "video");
 
       ffmpeg.ffprobe(vm.full_path, function (err, metadata) {
-        const ffmpeg_cmd = new ffmpeg().renice(renice);
+        const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
         ffmpeg_cmd.input(vm.full_path);
 
@@ -885,7 +933,7 @@ module.exports = (function () {
             inputs: "output",
             outputs: "output",
           });
-          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
         } else if (effect.type === "colored_filter") {
           if (
             !!effect.color &&
@@ -903,7 +951,7 @@ module.exports = (function () {
               outputs: "output",
             });
             // .complexFilter(["color[c];[0:v][c]overlay=shortest=1"]);
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: color is not set correctly`
@@ -957,7 +1005,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -974,7 +1022,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -1041,7 +1089,8 @@ module.exports = (function () {
               //   outputs: "output"
               // }
             );
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+
             // if (metadata && metadata.format && metadata.format.duration)
             //   ffmpeg_cmd.duration(metadata.format.duration);
           } else {
@@ -1212,7 +1261,7 @@ module.exports = (function () {
           )}`
         );
 
-        const ffmpeg_cmd = new ffmpeg().renice(renice);
+        const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
         temp_videos_array.map((v) => {
           ffmpeg_cmd.addInput(v.temp_video_path);
@@ -1522,13 +1571,14 @@ module.exports = (function () {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
     socket,
   }) {
     return new Promise(function (resolve, reject) {
       dev.logfunction("EXPORTER — _mixAudioAndVideo");
 
       const videoPath = path.join(cachePath, videoName);
-      let ffmpeg_cmd = new ffmpeg().renice(renice);
+      const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
       let video_files = medias_with_original_filepath.filter(
         (m) => m.type === "video"
@@ -1576,6 +1626,9 @@ module.exports = (function () {
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
         .addOptions(["-map 0:v:0", "-map 1:a:0"])
+        .videoFilters(
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
+        )
         .toFormat("mp4")
         .on("start", function (commandLine) {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
@@ -1602,13 +1655,14 @@ module.exports = (function () {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
     socket,
   }) {
     return new Promise(function (resolve, reject) {
       dev.logfunction("EXPORTER — _mixAudioAndImage");
 
       const videoPath = path.join(cachePath, videoName);
-      const ffmpeg_cmd = new ffmpeg().renice(renice);
+      const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
       let image_files = medias_with_original_filepath.filter(
         (m) => m.type === "image"
@@ -1626,10 +1680,6 @@ module.exports = (function () {
 
       let time_since_last_report = 0;
 
-      let resolution = _calculateResolutionAccordingToRatio(
-        image_files[0].ratio
-      );
-
       dev.logverbose(
         `About to create a speaking picture with resolution = ${JSON.stringify(
           resolution
@@ -1644,7 +1694,7 @@ module.exports = (function () {
         .withAudioBitrate("128k")
         .addOptions(["-tune stillimage"])
         .videoFilters(
-          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=increase`
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
         )
         .outputFPS(30)
         .toFormat("mp4")
@@ -1713,7 +1763,7 @@ module.exports = (function () {
       fs.access(temp_video_path, fs.F_OK, function (err) {
         if (err) {
           ffmpeg.ffprobe(vm.full_path, function (err, metadata) {
-            const ffmpeg_cmd = new ffmpeg().renice(renice);
+            const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
             ffmpeg_cmd.input(vm.full_path);
 
@@ -1848,19 +1898,19 @@ module.exports = (function () {
       fs.access(temp_video_path, fs.F_OK, function (err) {
         if (err) {
           sharp(vm.full_path)
+            .flatten({ background: "white" })
             .resize(resolution.width, resolution.height, {
               fit: "contain",
               withoutEnlargement: false,
               background: "black",
             })
-            .flatten()
             .withMetadata()
             .toFile(temp_image_path)
             .then(() => {
               dev.logverbose(
                 `EXPORTER — _prepareImageForMontageAndWeb: created temp image`
               );
-              const ffmpeg_cmd = new ffmpeg().renice(renice);
+              const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
               ffmpeg_cmd.input(temp_image_path);
 
@@ -1979,7 +2029,7 @@ module.exports = (function () {
               dev.logverbose(
                 `EXPORTER — _prepareSolidColorForMontageAndWeb: created temp image`
               );
-              const ffmpeg_cmd = new ffmpeg().renice(renice);
+              const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
               ffmpeg_cmd.input(temp_image_path);
 
@@ -2034,22 +2084,22 @@ module.exports = (function () {
     });
   }
 
-  function _calculateResolutionAccordingToRatio(ratio) {
-    let default_video_height = 720;
-    let resolution = {
-      width: 0,
-      height: default_video_height,
-    };
+  // function _calculateResolutionAccordingToRatio(ratio) {
+  //   let default_video_height = 720;
+  //   let resolution = {
+  //     width: 0,
+  //     height: default_video_height,
+  //   };
 
-    if (!ratio) {
-      ratio = 0.75;
-    }
+  //   if (!ratio) {
+  //     ratio = 0.75;
+  //   }
 
-    const new_width = 2 * Math.round(default_video_height / ratio / 2);
-    resolution.width = new_width;
+  //   const new_width = 2 * Math.round(default_video_height / ratio / 2);
+  //   resolution.width = new_width;
 
-    return resolution;
-  }
+  //   return resolution;
+  // }
 
   function _notifyFfmpegProgress({ socket, progress }) {
     let not_localized_string;

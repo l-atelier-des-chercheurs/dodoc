@@ -1,15 +1,16 @@
 <template>
   <div class="m_project--library">
     <div class="m_actionbar" v-show="$root.state.connected">
-      <div class="m_actionbar--buttonBar">
+      <div class="m_actionbar--buttonBar" v-if="can_edit_project">
         <button
           type="button"
           class="barButton barButton_capture"
+          :class="{ 'is--disabled': is_iOS_device }"
           v-if="
             project.password === 'has_pass' || project.password !== 'has_pass'
           "
           @click="openCapture"
-          :disabled="read_only || is_iOS_device || !can_edit_project"
+          :disabled="read_only || !can_edit_project"
         >
           <span>{{ $t("capture") }}</span>
         </button>
@@ -20,7 +21,7 @@
           "
           class="barButton barButton_import button"
           :disabled="read_only || !can_edit_project"
-          for="add_file"
+          :for="`add_file_${id}`"
         >
           <span>
             {{ $t("import") }}
@@ -29,12 +30,12 @@
           <input
             type="file"
             multiple
-            id="add_file"
+            :id="`add_file_${id}`"
             name="file"
             :disabled="read_only || !can_edit_project"
             @change="updateInputFiles($event)"
-            accept=""
-            style="width: 1px; height: 1px; overflow: hidden;"
+            accept
+            style="width: 1px; height: 1px; overflow: hidden"
           />
         </label>
 
@@ -51,13 +52,13 @@
           </div>
         </transition>
 
-        <UploadFile
+        <UploadFileModal
           v-if="selected_files.length > 0"
           @close="selected_files = []"
           :read_only="read_only"
           :slugFolderName="slugProjectName"
           :type="'projects'"
-          :selected_files="selected_files"
+          :selected_files.sync="selected_files"
         />
 
         <button
@@ -66,16 +67,16 @@
           @click="createTextMedia"
           :disabled="read_only || !can_edit_project"
         >
-          <span>{{ $t("create_text") }}</span>
+          <span>{{ $t("write") }}</span>
         </button>
       </div>
 
       <div class="m_actionbar--text">
         <!-- {{ $t("showing") }} -->
-        <span :class="{ 'c-rouge': sortedMedias.length !== numberOfMedias }">
+        <span :class="{ 'c-rouge': sortedMedias.length !== allMedias.length }">
           {{ sortedMedias.length }}
           {{ $t("medias_of") }}
-          {{ numberOfMedias }}
+          {{ allMedias.length }}
         </span>
         <template v-if="$root.allKeywords.length >= 0">
           —
@@ -105,25 +106,33 @@
         </template>
       </div>
     </div>
-    <transition-group
-      class="m_project--library--medias"
-      name="list-complete"
-      v-if="selected_files.length === 0"
-    >
-      <div v-for="item in groupedMedias" :key="item[0]">
+    <transition-group class="m_project--library--medias" name="list-complete">
+      <div v-for="[day, medias] in groupedMedias" :key="day">
         <h3
           class="font-folder_title margin-sides-small margin-none margin-bottom-small"
         >
-          {{ $root.formatDateToHuman(item[0]) }}
+          {{ $root.formatDateToHuman(day) }}
+          <span v-if="medias.length > 0" class="_media_counter">{{
+            medias.length
+          }}</span>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle _fold_button"
+            :class="{
+              'is--active': !folded_days.includes(day),
+            }"
+            @click="toggleDayFolding(day)"
+            v-html="!folded_days.includes(day) ? $t('fold') : $t('unfold')"
+          />
         </h3>
-
-        <div class="m_mediaShowAll">
-          <div v-for="media in item[1]" :key="media.slugMediaName">
+        <div class="m_mediaShowAll" v-if="!folded_days.includes(day)">
+          <div v-for="media in medias" :key="media.slugMediaName">
             <MediaCard
               :key="media.metaFileName"
               :media="media"
               :metaFileName="media.metaFileName"
               :slugProjectName="slugProjectName"
+              :can_edit_media="can_edit_project"
               :preview_size="180"
               :class="{
                 'is--just_added': last_media_added.includes(media.metaFileName),
@@ -161,7 +170,7 @@
   </div>
 </template>
 <script>
-import UploadFile from "./modals/UploadFile.vue";
+import UploadFileModal from "./modals/UploadFileModal.vue";
 import MediaCard from "./subcomponents/MediaCard.vue";
 import TagsAndAuthorFilters from "./subcomponents/TagsAndAuthorFilters.vue";
 import SelectorBar from "./subcomponents/SelectorBar.vue";
@@ -177,7 +186,7 @@ export default {
   },
   components: {
     MediaCard,
-    UploadFile,
+    UploadFileModal,
     TagsAndAuthorFilters,
     SelectorBar,
   },
@@ -188,6 +197,8 @@ export default {
         // type: "date",
         // order: "descending"
       },
+
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       selected_files: [],
       is_iOS_device:
@@ -201,6 +212,8 @@ export default {
       last_media_added: [],
 
       selected_medias: [],
+
+      folded_days: [],
     };
   },
   mounted() {
@@ -226,14 +239,14 @@ export default {
     this.$root.settings.media_filter.fav = false;
     this.$root.settings.media_filter.type = "";
 
+    document.removeEventListener("dragover", this.ondragover);
+
     this.$eventHub.$off("modal.prev_media", this.prevMedia);
     this.$eventHub.$off("modal.next_media", this.nextMedia);
     this.$eventHub.$off(
       "socketio.media_created_or_updated",
       this.media_created
     );
-
-    document.addEventListener("dragover", this.ondragover);
   },
   watch: {
     "project.medias": function () {
@@ -252,12 +265,6 @@ export default {
   },
 
   computed: {
-    numberOfMedias() {
-      if (!this.project.hasOwnProperty("medias")) {
-        return 0;
-      }
-      return Object.keys(this.project.medias).length;
-    },
     mediaKeywords() {
       // grab all keywords from this.project.medias
       return this.$root.getAllKeywordsFrom(this.project.medias);
@@ -268,13 +275,17 @@ export default {
     mediaTypes() {
       return this.$root.getAllTypesFrom(this.project.medias);
     },
-    filteredMedias: function () {
+    allMedias() {
       if (!this.project.medias || typeof this.project.medias !== "object") {
         return false;
       }
-      return Object.values(this.project.medias).filter((m) =>
-        this.$root.filterMedia(m)
+      const allMedias = Object.values(this.project.medias).filter(
+        (m) => !m.hasOwnProperty("_isAbsent") || m._isAbsent === false
       );
+      return allMedias;
+    },
+    filteredMedias: function () {
+      return this.allMedias.filter((m) => this.$root.filterMedia(m));
     },
     sortedMedias: function () {
       let sortedMedias = this.$_.sortBy(
@@ -312,6 +323,11 @@ export default {
     nextMedia() {
       this.mediaNav(+1);
     },
+    toggleDayFolding(day) {
+      if (this.folded_days.includes(day))
+        this.folded_days = this.folded_days.filter((t) => t !== day);
+      else this.folded_days.push(day);
+    },
     mediaNav(relative_index) {
       const current_media_index = this.sortedMedias.findIndex(
         (m) => m.metaFileName === this.$root.media_modal.current_metaFileName
@@ -339,6 +355,18 @@ export default {
             )
         );
       } else {
+        if (!this.can_edit_project) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(
+              this.$t(
+                'notifications["access_or_editing_restricted_to_authors"]'
+              )
+            );
+          return false;
+        }
+
         this.selected_medias.push({
           slugFolderName,
           metaFileName,
@@ -362,46 +390,33 @@ export default {
       });
     },
     createTextMedia() {
-      this.$eventHub.$on(
-        "socketio.media_created_or_updated",
-        this.newTextMediaCreated
-      );
-      this.$root.createMedia({
-        slugFolderName: this.slugProjectName,
-        type: "projects",
-        additionalMeta: {
-          type: "text",
-        },
-      });
-    },
-    newTextMediaCreated(mdata) {
-      if (this.$root.justCreatedMediaID === mdata.id) {
-        this.$root.justCreatedMediaID = false;
-        this.$eventHub.$off(
-          "socketio.media_created_or_updated",
-          this.newTextMediaCreated
-        );
-        this.openMediaModal(mdata.metaFileName);
-      }
+      this.$root
+        .createMedia({
+          slugFolderName: this.slugProjectName,
+          type: "projects",
+          additionalMeta: {
+            type: "text",
+          },
+        })
+        .then((mdata) => {
+          this.openMediaModal(mdata.metaFileName);
+        });
     },
     openCapture() {
-      // const iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
-      // if(iOS) {
-      //   this.showImportModal = true;
+      if (this.is_iOS_device) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(8000)
+          .error(this.$t("notifications.ios_not_compatible_with_capture"));
+        setTimeout(() => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(8000)
+            .success(this.$t("notifications.instead_import_with_this_button"));
+        }, 1500);
 
-      //   this.$alertify
-      //     .closeLogOnClick(true)
-      //     .delay(8000)
-      //     .error(this.$t('notifications.ios_not_compatible_with_capture'));
-      //   setTimeout(() => {
-      //     this.$alertify
-      //       .closeLogOnClick(true)
-      //       .delay(8000)
-      //       .log(this.$t('notifications.instead_import_with_this_button'));
-      //   },1500);
-
-      //   return;
-      // }
+        return;
+      }
       this.$root.do_navigation.view = "CaptureView";
     },
     updateInputFiles($event) {

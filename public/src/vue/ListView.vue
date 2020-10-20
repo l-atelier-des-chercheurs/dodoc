@@ -1,14 +1,8 @@
 <template>
-  <div
-    class="m_listview"
-    :class="{ 'is--folder': !!$root.settings.opened_folder }"
-  >
+  <div class="m_listview" :class="{ 'is--folder': !!$root.settings.opened_folder }">
     <main class="m_projects main_scroll_panel">
       <transition name="fade_fast" :duration="150">
-        <div
-          class="m_listview--openedFolderLabel"
-          v-if="!!$root.settings.opened_folder"
-        >
+        <div class="m_listview--openedFolderLabel" v-if="!!$root.settings.opened_folder">
           <div>
             <button
               class="m_listview--openedFolderLabel--backButton"
@@ -38,65 +32,167 @@
       </transition>
 
       <div class="m_actionbar">
-        <div class="m_actionbar--buttonBar">
-          <button
-            class="barButton barButton_createProject"
-            @click="showCreateProjectModal = true"
-            :disabled="read_only"
-            :key="'createButton'"
-          >
-            <span>{{ $t("create_a_project") }}</span>
-          </button>
-          <CreateProject
-            v-if="showCreateProjectModal"
-            @close="showCreateProjectModal = false"
-            :read_only="read_only"
-          />
-        </div>
-
-        <div class="m_actionbar--text">
-          <div class="switch switch-xs switch_twoway">
-            <label for="media_switch" class="cursor-pointer">
-              <span class>{{ $t("projects") }}</span>
-            </label>
-            <input
-              type="checkbox"
-              id="media_switch"
-              v-model="show_medias_instead_of_projects"
+        <div>
+          <div class="m_actionbar--buttonBar">
+            <button
+              class="barButton barButton_createProject"
+              @click="showCreateProjectModal = true"
+              :disabled="read_only"
+              :key="'createButton'"
+            >
+              <span>{{ $t("create_a_project") }}</span>
+            </button>
+            <CreateProject
+              v-if="showCreateProjectModal"
+              @close="showCreateProjectModal = false"
+              :read_only="read_only"
             />
-            <label for="media_switch">
-              <span class>{{ $t("medias") }}</span>
-            </label>
           </div>
 
-          <div>
-            <template v-if="Object.keys(projects).length > 0">
-              <template v-if="!show_medias_instead_of_projects">
-                <div>
+          <div class="m_actionbar--text">
+            <div class="switch switch-xs switch_twoway">
+              <label
+                for="media_switch"
+                class="cursor-pointer"
+                :class="{
+                  'is--active': !show_medias_instead_of_projects,
+                }"
+              >
+                <span class>{{ $t("projects") }}</span>
+              </label>
+              <input type="checkbox" id="media_switch" v-model="show_medias_instead_of_projects" />
+              <label
+                for="media_switch"
+                :class="{
+                  'is--active': show_medias_instead_of_projects,
+                }"
+              >
+                <span class>{{ $t("medias") }}</span>
+              </label>
+            </div>
+
+            <div>
+              <template v-if="Object.keys(projects).length > 0">
+                <template v-if="!show_medias_instead_of_projects">
+                  <div>
+                    {{ $t("showing") }}
+                    <span
+                      :class="{
+                        'c-rouge':
+                          Object.keys(sortedProjects).length !==
+                          Object.keys(projects).length,
+                      }"
+                    >
+                      {{ sortedProjects.length }}
+                      <template
+                        v-if="
+                          sortedProjects.length === Object.keys(projects).length
+                        "
+                      >{{ $t("projects") }}</template>
+                      <template v-else>
+                        {{ $t("projects_of") }}
+                        {{ Object.keys(projects).length }}
+                      </template>
+                    </span>
+                    <template
+                      v-if="
+                        $root.allKeywords.length > 0 ||
+                        $root.all_authors.length > 0
+                      "
+                    >
+                      —
+                      <button
+                        type="button"
+                        class="button-nostyle text-uc button-triangle"
+                        :class="{ 'is--active': show_filters }"
+                        @click="show_filters = !show_filters"
+                      >{{ $t("filters") }}</button>
+                    </template>
+                    <TagsAndAuthorFilters
+                      v-if="show_filters"
+                      :allKeywords="projectsKeywords"
+                      :allAuthors="projectsAuthors"
+                      :keywordFilter="$root.settings.project_filter.keyword"
+                      :authorFilter="$root.settings.project_filter.author"
+                      @setKeywordFilter="
+                        (a) => $root.setProjectKeywordFilter(a)
+                      "
+                      @setAuthorFilter="(a) => $root.setProjectAuthorFilter(a)"
+                    />
+                  </div>
+                  <div class="m_searchProject">
+                    <button
+                      type="button"
+                      class="button-nostyle text-uc button-triangle"
+                      :class="{
+                        'is--active':
+                          show_search ||
+                          $root.settings.project_filter.name.length > 0,
+                      }"
+                      @click="show_search = !show_search"
+                    >
+                      <svg
+                        class="inline-svg"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        x="0px"
+                        y="0px"
+                        width="96.2px"
+                        height="96.2px"
+                        viewBox="0 0 96.2 96.2"
+                        style="margin-bottom: -2px;"
+                        xml:space="preserve"
+                      >
+                        <path
+                          fill="currentColor"
+                          class="st0"
+                          d="M10.3,59.9c11.7,11.7,29.5,13.4,43,5.2l9.7,9.7l21.3,21.3l11.9-11.9L74.9,63l-9.7-9.7c8.2-13.5,6.4-31.3-5.2-43 C46.2-3.4,24-3.4,10.3,10.3C-3.4,24-3.4,46.2,10.3,59.9z M50.8,19.5c8.6,8.6,8.6,22.6,0,31.3c-8.6,8.6-22.6,8.6-31.3,0 c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
+                        />
+                      </svg>
+                      {{ $t("search") }}
+                    </button>
+
+                    <div
+                      v-if="
+                        show_search || debounce_search_project_name.length > 0
+                      "
+                      class="rounded"
+                    >
+                      <div>{{ $t("project_name_to_find") }}</div>
+
+                      <div class="input-group">
+                        <input type="text" class v-model="debounce_search_project_name" />
+                        <span class="input-addon" v-if="debounce_search_project_name.length > 0">
+                          <button
+                            type="button"
+                            :disabled="
+                              debounce_search_project_name.length === 0
+                            "
+                            @click="debounce_search_project_name = ''"
+                          >×</button>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>
                   {{ $t("showing") }}
                   <span
                     :class="{
                       'c-rouge':
-                        Object.keys(sortedProjects).length !==
-                        Object.keys(projects).length,
+                        Object.keys(sortedMedias).length !==
+                        Object.keys(allMedias).length,
                     }"
                   >
-                    {{ sortedProjects.length }}
-                    <template
-                      v-if="
-                        sortedProjects.length === Object.keys(projects).length
-                      "
-                      >{{ $t("projects") }}</template
-                    >
-                    <template v-else>
-                      {{ $t("projects_of") }}
-                      {{ Object.keys(projects).length }}
-                    </template>
+                    {{ Object.keys(sortedMedias).length }}
+                    {{ $t("medias_of") }}
+                    {{ Object.keys(allMedias).length }}
                   </span>
                   <template
                     v-if="
                       $root.allKeywords.length > 0 ||
-                      $root.allAuthors.length > 0
+                      $root.all_authors.length > 0
                     "
                   >
                     —
@@ -105,129 +201,46 @@
                       class="button-nostyle text-uc button-triangle"
                       :class="{ 'is--active': show_filters }"
                       @click="show_filters = !show_filters"
-                    >
-                      {{ $t("filters") }}
-                    </button>
+                    >{{ $t("filters") }}</button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
-                    :allKeywords="projectsKeywords"
-                    :allAuthors="projectsAuthors"
-                    :keywordFilter="$root.settings.project_filter.keyword"
-                    :authorFilter="$root.settings.project_filter.author"
-                    @setKeywordFilter="(a) => $root.setProjectKeywordFilter(a)"
-                    @setAuthorFilter="(a) => $root.setProjectAuthorFilter(a)"
+                    :allKeywords="mediasKeywords"
+                    :allAuthors="mediasAuthors"
+                    :allTypes="mediaTypes"
+                    :keywordFilter="$root.settings.media_filter.keyword"
+                    :authorFilter="$root.settings.media_filter.author"
+                    :favFilter="$root.settings.media_filter.fav"
+                    @setKeywordFilter="(a) => $root.setMediaKeywordFilter(a)"
+                    @setAuthorFilter="(a) => $root.setMediaAuthorFilter(a)"
+                    @setFavFilter="(a) => $root.setFavFilter(a)"
+                    @setTypeFilter="(a) => $root.setTypeFilter(a)"
                   />
-                </div>
-                <div class="m_searchProject">
-                  <button
-                    type="button"
-                    class="button-nostyle text-uc button-triangle"
-                    :class="{
-                      'is--active':
-                        show_search ||
-                        $root.settings.project_filter.name.length > 0,
-                    }"
-                    @click="show_search = !show_search"
-                  >
-                    <svg
-                      class="inline-svg"
-                      version="1.1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                      x="0px"
-                      y="0px"
-                      width="96.2px"
-                      height="96.2px"
-                      viewBox="0 0 96.2 96.2"
-                      style="margin-bottom: -2px;"
-                      xml:space="preserve"
-                    >
-                      <path
-                        fill="currentColor"
-                        class="st0"
-                        d="M10.3,59.9c11.7,11.7,29.5,13.4,43,5.2l9.7,9.7l21.3,21.3l11.9-11.9L74.9,63l-9.7-9.7c8.2-13.5,6.4-31.3-5.2-43 C46.2-3.4,24-3.4,10.3,10.3C-3.4,24-3.4,46.2,10.3,59.9z M50.8,19.5c8.6,8.6,8.6,22.6,0,31.3c-8.6,8.6-22.6,8.6-31.3,0 c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
-                      />
-                    </svg>
-                    {{ $t("search") }}
-                  </button>
-
-                  <div
-                    v-if="
-                      show_search || debounce_search_project_name.length > 0
-                    "
-                    class="rounded"
-                  >
-                    <div>{{ $t("project_name_to_find") }}</div>
-
-                    <div class="input-group">
-                      <input
-                        type="text"
-                        class
-                        v-model="debounce_search_project_name"
-                      />
-                      <span
-                        class="input-addon"
-                        v-if="debounce_search_project_name.length > 0"
-                      >
-                        <button
-                          type="button"
-                          :disabled="debounce_search_project_name.length === 0"
-                          @click="debounce_search_project_name = ''"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </template>
-              <template v-else>
-                {{ $t("showing") }}
-                <span
-                  :class="{
-                    'c-rouge':
-                      Object.keys(sortedMedias).length !==
-                      Object.keys(allMedias).length,
-                  }"
-                >
-                  {{ Object.keys(sortedMedias).length }}
-                  {{ $t("medias_of") }}
-                  {{ Object.keys(allMedias).length }}
-                </span>
-                <template
-                  v-if="
-                    $root.allKeywords.length > 0 || $root.allAuthors.length > 0
-                  "
-                >
-                  —
-                  <button
-                    type="button"
-                    class="button-nostyle text-uc button-triangle"
-                    :class="{ 'is--active': show_filters }"
-                    @click="show_filters = !show_filters"
-                  >
-                    {{ $t("filters") }}
-                  </button>
                 </template>
-                <TagsAndAuthorFilters
-                  v-if="show_filters"
-                  :allKeywords="mediasKeywords"
-                  :allAuthors="mediasAuthors"
-                  :allTypes="mediaTypes"
-                  :keywordFilter="$root.settings.media_filter.keyword"
-                  :authorFilter="$root.settings.media_filter.author"
-                  :favFilter="$root.settings.media_filter.fav"
-                  @setKeywordFilter="(a) => $root.setMediaKeywordFilter(a)"
-                  @setAuthorFilter="(a) => $root.setMediaAuthorFilter(a)"
-                  @setFavFilter="(a) => $root.setFavFilter(a)"
-                  @setTypeFilter="(a) => $root.setTypeFilter(a)"
-                />
               </template>
-            </template>
-            <template v-else>{{ $t("no_projects_yet") }}</template>
+              <template v-else>{{ $t("no_projects_yet") }}</template>
+            </div>
           </div>
         </div>
+        <div class="m_displayMyContent" v-if="$root.current_author">
+          <span>{{ $t("show") }}</span>
+          <select v-model="show_only_my_content">
+            <option :value="true">
+              <template
+                v-if="!show_medias_instead_of_projects"
+              >{{ $t("only_my_projects").toLowerCase() }}</template>
+              <template v-else>{{ $t("only_my_medias").toLowerCase() }}</template>
+            </option>
+            <option :value="false">
+              <template
+                v-if="!show_medias_instead_of_projects"
+              >{{ $t("all_projects").toLowerCase() }}</template>
+              <template v-else>{{ $t("all_medias").toLowerCase() }}</template>
+            </option>
+          </select>
+        </div>
+
+        <div v-if="$root.current_author" />
       </div>
 
       <transition-group
@@ -268,9 +281,7 @@
                   type="button"
                   class="button-nostyle"
                   @click="toggleFolder(item.name)"
-                >
-                  {{ $t("open") }}
-                </button>
+                >{{ $t("open") }}</button>
               </label>
               <!-- v-if="(is_hovered || is_selected)" -->
             </div>
@@ -306,9 +317,7 @@
         <div v-for="item in groupedMedias" :key="item[0]">
           <h3
             class="font-folder_title margin-sides-small margin-none margin-bottom-small"
-          >
-            {{ $root.formatDateToHuman(item[0]) }}
-          </h3>
+          >{{ $root.formatDateToHuman(item[0]) }}</h3>
 
           <div class="m_mediaShowAll">
             <div v-for="media in item[1]" :key="media.slugMediaName">
@@ -393,6 +402,9 @@ export default {
       selected_medias: [],
       selected_projects: [],
 
+      // show_only_my_content: this.$root.current_author ? true : false,
+      show_only_my_content: false,
+
       debounce_search_project_name: this.$root.settings.project_filter.name,
       debounce_search_project_name_function: undefined,
     };
@@ -406,10 +418,12 @@ export default {
     }
     this.$eventHub.$on("modal.prev_media", this.prevMedia);
     this.$eventHub.$on("modal.next_media", this.nextMedia);
+    this.$eventHub.$on("authors.newAuthorSet", this.newAuthorSet);
   },
   beforeDestroy() {
     this.$eventHub.$off("modal.prev_media", this.prevMedia);
     this.$eventHub.$off("modal.next_media", this.nextMedia);
+    this.$eventHub.$off("authors.newAuthorSet", this.newAuthorSet);
   },
   watch: {
     currentLang: function () {
@@ -445,9 +459,9 @@ export default {
       }
     },
     debounce_search_project_name: function () {
-      if (this.debounce_tweet_filter_function)
-        clearTimeout(this.debounce_tweet_filter_function);
-      this.debounce_tweet_filter_function = setTimeout(() => {
+      if (this.debounce_search_project_name_function)
+        clearTimeout(this.debounce_search_project_name_function);
+      this.debounce_search_project_name_function = setTimeout(() => {
         this.$root.settings.project_filter.name = this.debounce_search_project_name;
       }, 340);
     },
@@ -475,9 +489,8 @@ export default {
         return [];
       }
 
-      for (let slugProjectName in this.projects) {
+      for (let project of Object.values(this.projects)) {
         let orderBy;
-        const project = this.projects[slugProjectName];
 
         if (this.currentSort.type === "date") {
           orderBy = +this.$moment(
@@ -506,6 +519,19 @@ export default {
           continue;
         }
 
+        if (this.show_only_my_content && this.$root.current_author) {
+          if (
+            !project.hasOwnProperty("authors") ||
+            !Array.isArray(project.authors) ||
+            !project.authors.some(
+              (k) =>
+                k.slugFolderName === this.$root.current_author.slugFolderName
+            )
+          ) {
+            continue;
+          }
+        }
+
         if (
           !this.$root.settings.project_filter.keyword &&
           !this.$root.settings.project_filter.author
@@ -522,17 +548,17 @@ export default {
           if (
             project.hasOwnProperty("keywords") &&
             typeof project.keywords === "object" &&
-            project.keywords.filter(
+            project.keywords.some(
               (k) => k.title === this.$root.settings.project_filter.keyword
-            ).length > 0
+            )
           ) {
             if (
               project.hasOwnProperty("authors") &&
               typeof project.authors === "object" &&
-              project.authors.filter(
+              project.authors.some(
                 (k) =>
                   k.slugFolderName === this.$root.settings.project_filter.author
-              ).length > 0
+              )
             ) {
               sortable.push({ project, orderBy });
             }
@@ -545,9 +571,9 @@ export default {
           if (
             project.hasOwnProperty("keywords") &&
             typeof project.keywords === "object" &&
-            project.keywords.filter(
+            project.keywords.some(
               (k) => k.title === this.$root.settings.project_filter.keyword
-            ).length > 0
+            )
           ) {
             sortable.push({ project, orderBy });
           }
@@ -559,10 +585,10 @@ export default {
           if (
             project.hasOwnProperty("authors") &&
             typeof project.authors === "object" &&
-            project.authors.filter(
+            project.authors.some(
               (k) =>
                 k.slugFolderName === this.$root.settings.project_filter.author
-            ).length > 0
+            )
           ) {
             sortable.push({ project, orderBy });
           }
@@ -741,6 +767,13 @@ export default {
         (m) =>
           m.metaFileName === metaFileName && m.slugFolderName === slugFolderName
       );
+    },
+    newAuthorSet() {
+      if (this.$root.current_author) {
+        // this.show_only_my_content = true;
+      } else {
+        // this.show_only_my_content = false;
+      }
     },
 
     toggleAllInFolder({ $event, folder_name }) {
