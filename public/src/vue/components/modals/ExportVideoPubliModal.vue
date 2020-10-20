@@ -19,7 +19,7 @@
               <option
                 v-for="q in available_qualities"
                 :value="q.resolution"
-                :key="q.resolution.width + q.resolution.height"
+                :key="q.resolution.height"
                 >{{ q.label }}</option
               >
               <option :value="'draft'" :key="'draft'"
@@ -38,7 +38,9 @@
               </small>
             </div>
             <div v-else class="label">
-              {{ resolution.width }} × {{ resolution.height }}
+              <span class="text-lc">
+                {{ resolution.height }}p
+              </span>
             </div>
           </div>
 
@@ -140,7 +142,6 @@ export default {
       exported_video_name: false,
 
       resolution: {
-        width: 1280,
         height: 720,
       },
       custom_resolution: {
@@ -151,28 +152,24 @@ export default {
         {
           label: this.$t("very_high"),
           resolution: {
-            width: 1920,
             height: 1080,
           },
         },
         {
           label: this.$t("high"),
           resolution: {
-            width: 1280,
             height: 720,
           },
         },
         {
           label: this.$t("medium"),
           resolution: {
-            width: 854,
             height: 480,
           },
         },
         {
           label: this.$t("low"),
           resolution: {
-            width: 640,
             height: 360,
           },
         },

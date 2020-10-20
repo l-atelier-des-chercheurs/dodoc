@@ -7494,6 +7494,12 @@ small {
     // pointer-events: none;
   }
 
+  &.is--copy_mode {
+    .controlFrame {
+      cursor: copy;
+    }
+  }
+
   ._loader {
     background-color: transparent;
     --loader-border-color: @c-orange;
@@ -7592,6 +7598,7 @@ small {
     // background-color: white;
 
     font-size: var(--font_size_percent);
+    opacity: var(--opacity);
 
     border: 0px solid transparent;
     border-width: var(--margin);

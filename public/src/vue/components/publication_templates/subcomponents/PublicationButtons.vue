@@ -620,6 +620,39 @@
 
             <div
               class="item"
+            >
+              <label>{{ $t("opacity") }}
+                <button
+                  type="button"
+                  class="buttonLink"
+                  v-if="opacity !== 1"
+                  @click="opacity = 1"
+                >
+                  ×
+                </button>
+
+              </label>
+              <div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  v-model="opacity"
+                />
+              </div>
+              <div class="input-group">
+                <input
+                  type="number"
+                  class="input-small"
+                  v-model="opacity"
+                />
+                <!-- <span class="input-addon input-addon-small">%</span> -->
+              </div>
+            </div>
+
+            <div
+              class="item"
               v-if="
                 media.type !== 'line' &&
                 media.type !== 'arrow' &&
@@ -947,6 +980,19 @@ export default {
       set(value) {
         if (value > 90 && value < 110) value = 100;
         this.updateMediaPubliMeta({ font_size_percent: value });
+      },
+    },
+    opacity: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("opacity") &&
+          !!Number.parseFloat(this.media.opacity)
+          ? Number.parseFloat(this.media.opacity)
+          : 1;
+      },
+      set(value) {
+        if (value > 90 && value < 110) value = 100;
+        this.updateMediaPubliMeta({ opacity: value });
       },
     },
     stroke_color: {

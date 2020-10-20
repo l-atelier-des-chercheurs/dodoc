@@ -20,6 +20,7 @@
         'is--overflowing': is_text_overflowing,
         'is--inline_edited': inline_edit_mode,
         'is--locked': locked_in_place && !model_for_this_publication,
+        'is--copy_mode': copy_mode_enabled
       },
     ]"
   >
@@ -250,8 +251,9 @@
         !model_for_this_publication
       "
       class="controlFrame"
-      @mousedown.stop.prevent="dragMedia('mouse')"
-      @touchstart.stop.prevent="dragMedia('touch')"
+      @click="copy_mode_enabled ? duplicateMedia() : false"
+      @mousedown.stop.prevent="!copy_mode_enabled ? dragMedia('mouse') : false"
+      @touchstart.stop.prevent="!copy_mode_enabled ? dragMedia('touch') : false"
     >
       <!-- <svg class="dashed-vector" viewBox="0 0 300 100" preserveAspectRatio="none">
         <path d="M0,0 300,0 300,100 0,100z" vector-effect="non-scaling-stroke" />
@@ -729,6 +731,8 @@ export default {
       is_text_overflowing: false,
       is_saving: false,
 
+      copy_mode_enabled: false,
+
       inline_edit_mode: false,
       show_advanced_menu: false,
       show_zindex_number: false,
@@ -769,6 +773,7 @@ export default {
       ratio: undefined,
 
       font_size_percent: 100,
+      opacity:1,
       fill_color: "transparent",
       stroke_color: "transparent",
       stroke_width: 4,
@@ -804,6 +809,9 @@ export default {
       "publication.selected.triggerAction",
       this.triggerAction
     );
+
+    window.addEventListener('keydown', this.keyIsPressed);    
+    window.addEventListener('keyup', this.keyIsUnpressed);    
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.selectNewMedia", this.selectNewMedia);
@@ -816,7 +824,10 @@ export default {
       "publication.selected.triggerAction",
       this.triggerAction
     );
-  },
+
+    window.removeEventListener('keydown', this.keyIsPressed);    
+    window.removeEventListener('keyup', this.keyIsUnpressed);    
+},
 
   watch: {
     media: {
@@ -849,6 +860,7 @@ export default {
     contentStyles() {
       let css = `
         --font_size_percent: ${this.font_size_percent}%;
+        --opacity: ${this.opacity};
         --margin: ${this.margin}mm;
         --fill_color: ${this.fill_color};
         --stroke_color: ${this.stroke_color};
@@ -869,6 +881,16 @@ export default {
     },
   },
   methods: {
+    keyIsPressed(event) {
+      if(event.key === 'Alt') {
+        this.copy_mode_enabled = true;
+      }
+    },
+    keyIsUnpressed() {
+      if(event.key === 'Alt') {
+        this.copy_mode_enabled = false;
+      }
+    },
     selectNewMedia(metaFileName) {
       if (metaFileName === this.media.metaFileName)
         if (!this.is_selected) this.selectMedia();
@@ -1043,6 +1065,13 @@ export default {
         this.media.hasOwnProperty("margin") && Number.parseFloat(this.media.margin)
           ? Number.parseFloat(this.media.margin)
           : 0;
+
+      this.opacity =
+        this.media.hasOwnProperty("opacity") &&
+        !Number.isNaN(this.media.opacity)
+          ? Number.parseFloat(this.media.opacity)
+          : 1;
+      
 
       if (
         this.media.type === "text" ||
@@ -1438,6 +1467,7 @@ export default {
 
       if (type === "mouse") {
         this.selectMedia();
+
         window.addEventListener("mousemove", this.dragMove);
         window.addEventListener("mouseup", this.dragUp);
       } else if (type === "touch") {

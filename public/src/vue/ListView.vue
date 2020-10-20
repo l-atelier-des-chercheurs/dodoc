@@ -721,9 +721,10 @@ export default {
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
         let _date;
 
-        if (media.hasOwnProperty("date_created") && !!media.date_created) {
-          _date = media.date_created;
-        } else if (
+        // if (media.hasOwnProperty("date_created") && !!media.date_created) {
+        //   _date = media.date_created;
+        // } else 
+        if (
           media.hasOwnProperty("date_uploaded") &&
           !!media.date_uploaded
         ) {
