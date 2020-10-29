@@ -41,6 +41,12 @@
       :layered_medias="layered_medias"
       :publication="publication"
       :slugPubliName="slugPubliName"
+      @insertMedias="
+      ({ metaFileNames }) =>
+        editMediaToPlaceOnLayer({
+          metaFileNames,
+        })
+      "      
     />
 
     <div class="m_drawingPad" ref="current_page">
@@ -247,15 +253,41 @@ export default {
 
       this.$emit("addMedia", { values });
     },
-    prepareMetaToPlaceOnLayer() {
-      if (!this.$root.settings.current_publication.page_id) {
-        console.log(`METHODS • DrawingPad: prepareMetaToPlaceOnLayer`);
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error("Missing page id to add media properly");
-      }
+    editMediaToPlaceOnLayer({ metaFileNames }) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`PagePublication • METHODS: addMedia`);
 
+      metaFileNames.map((metaFileName, index) => {
+        const _values = this.prepareMetaToPlaceOnLayer();
+
+        _values.x += 10 * index;
+        _values.y += 10 * index;
+
+        this.$emit("editPubliMedia", {
+          metaFileName: metaFileName,
+          val: _values,
+        });
+
+        const catchMediaEdition = (d) => {
+          if (metaFileName === d.metaFileName) {
+            this.$nextTick(() => {
+              this.$eventHub.$emit("publication.selectNewMedia", metaFileName);
+            });
+          } else {
+            this.$eventHub.$once(
+              `socketio.media_just_edited`,
+              catchMediaEdition
+            );
+          }
+        };
+        this.$eventHub.$once(
+          `publication.media_just_edited`,
+          catchMediaEdition
+        );
+      });
+    },
+
+    prepareMetaToPlaceOnLayer() {
       let values = {};
 
       const current_layer_id = this.$root.settings.current_publication
