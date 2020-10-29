@@ -91,6 +91,12 @@
           :page_medias="layer_medias"
           :slugPubliName="slugPubliName"
           @addMedia="createPubliMedia"
+          @insertMedias="
+          ({ metaFileNames }) =>
+            editMediaToPlaceOnLayer({
+              metaFileNames,
+            })
+          "
         />
       </div>
     </div>
@@ -156,6 +162,39 @@ export default {
             mdata.metaFileName
           );
         }
+      });
+    },  
+    editMediaToPlaceOnLayer({ metaFileNames }) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`PagePublication • METHODS: addMedia`);
+
+      metaFileNames.map((metaFileName, index) => {
+        const _values = this.prepareMetaToPlaceOnPage();
+
+        _values.x += 10 * index;
+        _values.y += 10 * index;
+
+        this.$emit("editPubliMedia", {
+          metaFileName: metaFileName,
+          val: _values,
+        });
+
+        const catchMediaEdition = (d) => {
+          if (metaFileName === d.metaFileName) {
+            this.$nextTick(() => {
+              this.$eventHub.$emit("publication.selectNewMedia", metaFileName);
+            });
+          } else {
+            this.$eventHub.$once(
+              `socketio.media_just_edited`,
+              catchMediaEdition
+            );
+          }
+        };
+        this.$eventHub.$once(
+          `publication.media_just_edited`,
+          catchMediaEdition
+        );
       });
     },
   },

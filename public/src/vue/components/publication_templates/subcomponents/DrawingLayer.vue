@@ -102,7 +102,7 @@ export default {
           width: ${page.width}mm;
           height: ${page.height}mm;
           margin: 40px;
-          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${
+          padding: 80px ${140 / this.zoom}px ${100 * this.zoom}px ${
         240 / this.zoom
       }px;  
           box-sizing: content-box;

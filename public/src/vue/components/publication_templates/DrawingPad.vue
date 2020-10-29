@@ -240,43 +240,57 @@ export default {
   },
   methods: {
     addMedia({ values = {} }) {
-      return new Promise((resolve, reject) => {
-        if (this.$root.state.dev_mode === "debug")
-          console.log(`DrawingPad • METHODS: addMedia`);
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`DrawingPad • METHODS: addMedia`);
 
-        const current_layer_id = this.$root.settings.current_publication
-          .layer_id;
+      Object.assign(values, this.prepareMetaToPlaceOnLayer());
 
-        if (!current_layer_id) {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t("notifications.missing_layer_id"));
-        }
+      this.$emit("addMedia", { values });
+    },
+    prepareMetaToPlaceOnLayer() {
+      if (!this.$root.settings.current_publication.page_id) {
+        console.log(`METHODS • DrawingPad: prepareMetaToPlaceOnLayer`);
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error("Missing page id to add media properly");
+      }
 
-        values.layer_id = current_layer_id;
+      let values = {};
 
-        values.x = 0;
-        values.y = 0;
+      const current_layer_id = this.$root.settings.current_publication
+        .layer_id;
 
-        values.z_index =
-          this.getHighestZNumberAmongstMedias(
-            this.layered_medias[current_layer_id]
-          ) + 1;
+      if (!current_layer_id) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.missing_layer_id"));
+      }
 
-        // get current scroll
-        if (this.$refs.current_page) {
-          const posx_in_cm =
-            this.$refs.current_page.scrollLeft / this.pixelsPerMillimeters;
-          if (!Number.isNaN(posx_in_cm)) values.x = posx_in_cm;
+      values.layer_id = current_layer_id;
 
-          const posy_in_cm =
-            this.$refs.current_page.scrollTop / this.pixelsPerMillimeters;
-          if (!Number.isNaN(posy_in_cm)) values.y = posy_in_cm;
-        }
+      values.x = 0;
+      values.y = 0;
 
-        this.$emit("addMedia", { values });
-      });
+      values.z_index =
+        this.getHighestZNumberAmongstMedias(
+          this.layered_medias[current_layer_id]
+        ) + 1;
+
+      // get current scroll
+      if (this.$refs.current_page) {
+        const posx_in_cm =
+          this.$refs.current_page.scrollLeft / this.pixelsPerMillimeters;
+        if (!Number.isNaN(posx_in_cm)) values.x = posx_in_cm;
+
+        const posy_in_cm =
+          this.$refs.current_page.scrollTop / this.pixelsPerMillimeters;
+        if (!Number.isNaN(posy_in_cm)) values.y = posy_in_cm;
+      }
+
+      return values;
+
     },
     layerOptions(layer) {
       return {
@@ -341,7 +355,7 @@ export default {
           width: ${page.width}mm;
           height: ${page.height}mm;
           margin: 40px;
-          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${
+          padding: 80px ${140 / this.zoom}px ${100 * this.zoom}px ${
         240 / this.zoom
       }px;  
           box-sizing: content-box;
