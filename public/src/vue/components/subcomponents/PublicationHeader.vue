@@ -190,7 +190,11 @@
       <div
         style="width: 100%"
         class="ta-ce"
-        v-if="publication.is_model && $root.store.request.display !== 'survey'"
+        v-if="
+          publication.is_model &&
+          $root.store.request.display !== 'survey' &&
+          $root.state.mode !== 'link_publication'
+        "
       >
         <label>
           <button
