@@ -1701,10 +1701,8 @@ module.exports = (function () {
         .addOptions(["-shortest"])
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
-        .addOptions(["-tune stillimage"])
-        .videoFilters(
-          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
-        )
+        .addOptions(["-tune stillimage", "-pix_fmt yuv420p"])
+        .videoFilters(`scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`)
         .outputFPS(30)
         .toFormat("mp4")
         .on("start", function (commandLine) {
