@@ -85,7 +85,7 @@
           width="20px"
           height="20px"
           viewBox="0 0 90 90"
-          style="enable-background: new 0 0 90 90;"
+          style="enable-background: new 0 0 90 90"
           xml:space="preserve"
         >
           <rect class="st0" width="108.2" height="21" />
@@ -136,6 +136,7 @@
         <div class="m_unreadMessages" v-if="$root.get_total_unread_messages">
           <button
             type="button"
+            class=""
             @click="openChatPanel()"
             :content="$t('unread_messages')"
             v-tippy="{
@@ -143,7 +144,7 @@
               delay: [600, 0],
             }"
           >
-            {{ $root.get_total_unread_messages }}
+            <span>{{ $root.get_total_unread_messages }}</span>
           </button>
         </div>
       </div>
@@ -170,7 +171,7 @@
             width="20px"
             height="20px"
             viewBox="0 0 90 90"
-            style="enable-background: new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90"
             xml:space="preserve"
           >
             <path
@@ -207,7 +208,7 @@
             width="12px"
             height="20.3px"
             viewBox="0 0 12 20.3"
-            style="enable-background: new 0 0 12 20.3;"
+            style="enable-background: new 0 0 12 20.3"
             xml:space="preserve"
           >
             <path
@@ -240,7 +241,7 @@
             width="90px"
             height="90px"
             viewBox="0 0 90 90"
-            style="enable-background: new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90"
             xml:space="preserve"
           >
             <path
@@ -277,7 +278,7 @@
             width="133.3px"
             height="133.2px"
             viewBox="-15 -15 160 160"
-            style="enable-background: new 0 0 133.3 133.2;"
+            style="enable-background: new 0 0 133.3 133.2"
             xml:space="preserve"
           >
             <polygon
@@ -308,7 +309,7 @@
             width="133.3px"
             height="133.2px"
             viewBox="0 0 133.3 133.2"
-            style="enable-background: new 0 0 133.3 133.2;"
+            style="enable-background: new 0 0 133.3 133.2"
             xml:space="preserve"
           >
             <polygon
