@@ -30,11 +30,16 @@
       v-if="$root.store.request.display !== 'survey'"
       :preview_mode="preview_mode"
       :show_zoom_buttons="!contact_sheet_mode"
+      :show_page_navigator="!contact_sheet_mode"
       :zoom="zoom"
       :zoom_min="zoom_min"
       :zoom_max="zoom_max"
+      :opened_page_index="opened_page_index"
+      :total_number_of_pages="pagesWithDefault.length"
       @togglePreviewMode="$emit('togglePreviewMode')"
       @setZoom="(val) => (zoom = val)"
+      @navPage="(relative_index) => navPage(relative_index)"
+      @showAllPages="showAllPages()"
     />
 
     <div
@@ -48,7 +53,7 @@
       "
     >
       <div class="m_publicationNavMenu--settings">
-        <div>
+        <!-- <div>
           <button
             type="button"
             class="buttonLink"
@@ -57,7 +62,7 @@
           >
             {{ $t("show_all_pages") }}
           </button>
-        </div>
+        </div> -->
 
         <div
           class="_settings_pane_button"
@@ -88,8 +93,11 @@
           :publications_options="publications_options"
         />
       </div>
-      <hr v-if="!contact_sheet_mode" class="margin-none" />
-      <div class="m_publicationNavMenu--buttonRow" v-if="!contact_sheet_mode">
+      <hr v-if="!contact_sheet_mode && false" class="margin-none" />
+      <div
+        class="m_publicationNavMenu--buttonRow"
+        v-if="!contact_sheet_mode && false"
+      >
         <button
           type="button"
           @click="navPage(-1)"
