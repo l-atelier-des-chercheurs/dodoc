@@ -1,18 +1,20 @@
 <template>
-  <div
-    class="m_drawingLayer"
-    :style="setPageContainerProperties(layer_options)"
-  >
+  <div>
     <div
-      class="m_drawingLayer--content"
-      :style="setPageProperties(layer_options)"
+      class="m_drawingLayer"
+      :style="setPageContainerProperties(layer_options)"
     >
-      <canvas
-        ref="canvas"
-        v-if="layer_options.width * pixelsPerMillimeters > 0"
-        :width="`${layer_options.width * pixelsPerMillimeters}px`"
-        :height="`${layer_options.height * pixelsPerMillimeters}px`"
-      />
+      <div
+        class="m_drawingLayer--content"
+        :style="setPageProperties(layer_options)"
+      >
+        <canvas
+          ref="canvas"
+          v-if="layer_options.width * pixelsPerMillimeters > 0"
+          :width="`${layer_options.width * pixelsPerMillimeters}px`"
+          :height="`${layer_options.height * pixelsPerMillimeters}px`"
+        />
+      </div>
     </div>
   </div>
 </template>

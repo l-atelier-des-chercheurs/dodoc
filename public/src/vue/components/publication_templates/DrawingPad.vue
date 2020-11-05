@@ -42,11 +42,11 @@
       :publication="publication"
       :slugPubliName="slugPubliName"
       @insertMedias="
-      ({ metaFileNames }) =>
-        editMediaToPlaceOnLayer({
-          metaFileNames,
-        })
-      "      
+        ({ metaFileNames }) =>
+          editMediaToPlaceOnLayer({
+            metaFileNames,
+          })
+      "
     />
 
     <div class="m_drawingPad" ref="current_page">
@@ -55,7 +55,7 @@
           :key="'background'"
           class="m_drawingPad--layer m_drawingPad--layer_background"
         >
-          <div class="">
+          <div>
             <div
               class="m_drawingPad--layer--backgroundContainer"
               :style="setPageContainerProperties(publication)"
@@ -290,8 +290,7 @@ export default {
     prepareMetaToPlaceOnLayer() {
       let values = {};
 
-      const current_layer_id = this.$root.settings.current_publication
-        .layer_id;
+      const current_layer_id = this.$root.settings.current_publication.layer_id;
 
       if (!current_layer_id) {
         this.$alertify
@@ -322,7 +321,6 @@ export default {
       }
 
       return values;
-
     },
     layerOptions(layer) {
       return {
