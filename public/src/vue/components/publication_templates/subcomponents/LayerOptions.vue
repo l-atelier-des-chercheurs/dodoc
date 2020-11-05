@@ -78,7 +78,7 @@
           </button>
         </div>
 
-        <div v-if="drawing_options.mode === 'drawing'">
+        <div>
           <label>
             <input type="color" v-model="drawing_options.color" />
             {{ $t("color") }}
