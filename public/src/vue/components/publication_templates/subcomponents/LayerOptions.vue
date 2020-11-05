@@ -25,7 +25,7 @@
           width="91.6px"
           height="95px"
           viewBox="0 0 91.6 95"
-          style="enable-background: new 0 0 91.6 95;"
+          style="enable-background: new 0 0 91.6 95"
           xml:space="preserve"
         >
           <path
@@ -66,7 +66,7 @@
               width="91.6px"
               height="95px"
               viewBox="0 0 91.6 95"
-              style="enable-background: new 0 0 91.6 95;"
+              style="enable-background: new 0 0 91.6 95"
               xml:space="preserve"
             >
               <path
@@ -81,7 +81,16 @@
         <div v-if="drawing_options.mode === 'drawing'">
           <label>
             <input type="color" v-model="drawing_options.color" />
-            Couleur
+            {{ $t("color") }}
+          </label>
+          <label>
+            <input
+              type="range"
+              min="1"
+              max="100"
+              v-model="drawing_options.stroke_width"
+            />
+            {{ $t("stroke_width") }}
           </label>
         </div>
       </div>
@@ -118,6 +127,9 @@ export default {
         mode: this.current_layer.hasOwnProperty("mode")
           ? this.current_layer.mode
           : "drawing",
+        stroke_width: this.current_layer.hasOwnProperty("stroke_width")
+          ? this.current_layer.stroke_width
+          : 4,
       },
     };
   },
@@ -158,7 +170,7 @@ export default {
           );
         }
       });
-    },  
+    },
   },
 };
 </script>

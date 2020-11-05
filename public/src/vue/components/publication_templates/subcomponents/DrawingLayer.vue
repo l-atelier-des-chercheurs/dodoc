@@ -37,7 +37,7 @@ export default {
 
       drawing_options: {
         mode: "drawing",
-        width: 4,
+        stroke_width: 4,
         color: "#000000",
       },
     };
@@ -222,7 +222,7 @@ export default {
       }
 
       this.canvas.isDrawingMode = this.drawing_options.mode === "drawing";
-      this.canvas.freeDrawingBrush.width = this.drawing_options.width;
+      this.canvas.freeDrawingBrush.width = this.drawing_options.stroke_width;
       this.canvas.freeDrawingBrush.color = this.drawing_options.color;
 
       // this.$nextTick(() => {
