@@ -21,7 +21,8 @@
 
     <PublicationDisplayButtons
       :preview_mode="preview_mode"
-      :show_zoom_buttons="!contact_sheet_mode"
+      :show_zoom_buttons="true"
+      :show_page_navigator="false"
       :zoom="zoom"
       :zoom_min="zoom_min"
       :zoom_max="zoom_max"

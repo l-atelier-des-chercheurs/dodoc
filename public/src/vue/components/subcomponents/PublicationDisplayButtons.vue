@@ -23,7 +23,7 @@
         width="144px"
         height="84px"
         viewBox="0 0 144 84"
-        style="enable-background: new 0 0 144 84;"
+        style="enable-background: new 0 0 144 84"
         xml:space="preserve"
       >
         <defs />
@@ -56,7 +56,7 @@
           width="182.5px"
           height="188.1px"
           viewBox="0 0 182.5 188.1"
-          style="enable-background: new 0 0 182.5 188.1;"
+          style="enable-background: new 0 0 182.5 188.1"
           xml:space="preserve"
         >
           <defs />
@@ -94,12 +94,122 @@
           width="155.6px"
           height="21.2px"
           viewBox="0 0 205.6 21.2"
-          style="enable-background: new 0 0 155.6 21.2;"
+          style="enable-background: new 0 0 155.6 21.2"
           xml:space="preserve"
         >
           <defs />
           <path d="M155.6,0v21.2H0V0H155.6z" />
         </svg>
+      </button>
+    </div>
+    <div v-if="show_page_navigator">
+      <button
+        class="font-verysmall"
+        :disabled="opened_page_index === 0"
+        @mousedown.stop.prevent="$emit('navPage', -1)"
+        @touchstart.stop.prevent="$emit('navPage', -1)"
+        :content="$t('previous_page')"
+        v-tippy="{
+          placement: 'top',
+          delay: [600, 0],
+        }"
+      >
+        <!-- Generator: Adobe Illustrator 25.0.0, SVG Export Plug-In  -->
+        <svg
+          class="inline-svg inline-svg_larger"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="70.8px"
+          height="65px"
+          viewBox="0 0 70.8 65"
+          style="overflow: visible; enable-background: new 0 0 70.8 65"
+          xml:space="preserve"
+        >
+          <defs></defs>
+          <g>
+            <path
+              d="M41.9,10.8l-4.6,5c-2,2.1-3.8,3.8-5.5,5.1c-1.7,1.3-3.6,2.5-5.7,3.6h44.7v15.8H26c2.2,1.1,4.1,2.3,5.7,3.6
+		c1.6,1.3,3.5,3,5.5,5.1l4.6,5L29.3,65L0,32.5L29.3,0L41.9,10.8z"
+            />
+          </g>
+        </svg>
+      </button>
+      <div>
+        <span
+          v-html="
+            $t('page') +
+            ' ' +
+            (opened_page_index + 1) +
+            '/' +
+            total_number_of_pages
+          "
+        />
+      </div>
+      <button
+        type="button"
+        @mousedown.stop.prevent="$emit('navPage', +1)"
+        @touchstart.stop.prevent="$emit('navPage', +1)"
+        :content="$t('next_page')"
+        v-tippy="{
+          placement: 'top',
+          delay: [600, 0],
+        }"
+      >
+        <!-- Generator: Adobe Illustrator 25.0.0, SVG Export Plug-In  -->
+        <svg
+          class="inline-svg inline-svg_larger"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="70.8px"
+          height="65px"
+          viewBox="0 0 70.8 65"
+          style="overflow: visible; enable-background: new 0 0 70.8 65"
+          xml:space="preserve"
+        >
+          <path
+            d="M29,54.2l4.6-5c2-2.1,3.8-3.8,5.5-5.1c1.7-1.3,3.6-2.5,5.7-3.6L0,40.4l0-15.8l44.8,0c-2.2-1.1-4.1-2.3-5.7-3.6
+		c-1.6-1.3-3.5-3-5.5-5.1l-4.6-5L41.5,0l29.3,32.5L41.5,65L29,54.2z"
+          />
+        </svg>
+      </button>
+    </div>
+    <div v-if="show_page_navigator">
+      <button
+        type="button"
+        class="flex-wrap flex-vertically-centered"
+        @mousedown.stop.prevent="$emit('showAllPages')"
+        @touchstart.stop.prevent="$emit('showAllPages')"
+        :content="$t('show_all_pages')"
+        v-tippy="{
+          placement: 'top',
+          delay: [600, 0],
+        }"
+      >
+        <svg
+          version="1.1"
+          class="inline-svg inline-svg_larger"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="169px"
+          height="169px"
+          viewBox="0 0 169 169"
+          style="overflow: visible; enable-background: new 0 0 169 169"
+          xml:space="preserve"
+        >
+          <rect x="34.2" y="34.2" width="44.7" height="44.7" />
+          <rect x="90.1" y="34.2" width="44.7" height="44.7" />
+          <rect x="34.2" y="90.1" width="44.7" height="44.7" />
+          <rect x="90.1" y="90.1" width="44.7" height="44.7" />
+        </svg>
+        <span v-html="$t('show_all_pages')" />
       </button>
     </div>
   </div>
@@ -112,9 +222,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    show_page_navigator: {
+      type: Boolean,
+      default: false,
+    },
     zoom: Number,
     zoom_min: Number,
     zoom_max: Number,
+    opened_page_index: [Number, Boolean],
+    total_number_of_pages: Number,
   },
   components: {},
   data() {
