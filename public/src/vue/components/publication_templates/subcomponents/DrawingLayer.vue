@@ -1,18 +1,20 @@
 <template>
-  <div
-    class="m_drawingLayer"
-    :style="setPageContainerProperties(layer_options)"
-  >
+  <div>
     <div
-      class="m_drawingLayer--content"
-      :style="setPageProperties(layer_options)"
+      class="m_drawingLayer"
+      :style="setPageContainerProperties(layer_options)"
     >
-      <canvas
-        ref="canvas"
-        v-if="layer_options.width * pixelsPerMillimeters > 0"
-        :width="`${layer_options.width * pixelsPerMillimeters}px`"
-        :height="`${layer_options.height * pixelsPerMillimeters}px`"
-      />
+      <div
+        class="m_drawingLayer--content"
+        :style="setPageProperties(layer_options)"
+      >
+        <canvas
+          ref="canvas"
+          v-if="layer_options.width * pixelsPerMillimeters > 0"
+          :width="`${layer_options.width * pixelsPerMillimeters}px`"
+          :height="`${layer_options.height * pixelsPerMillimeters}px`"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -35,7 +37,7 @@ export default {
 
       drawing_options: {
         mode: "drawing",
-        width: 4,
+        stroke_width: 4,
         color: "#000000",
       },
     };
@@ -102,7 +104,7 @@ export default {
           width: ${page.width}mm;
           height: ${page.height}mm;
           margin: 40px;
-          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${
+          padding: 80px ${140 / this.zoom}px ${100 * this.zoom}px ${
         240 / this.zoom
       }px;  
           box-sizing: content-box;
@@ -220,7 +222,7 @@ export default {
       }
 
       this.canvas.isDrawingMode = this.drawing_options.mode === "drawing";
-      this.canvas.freeDrawingBrush.width = this.drawing_options.width;
+      this.canvas.freeDrawingBrush.width = this.drawing_options.stroke_width;
       this.canvas.freeDrawingBrush.color = this.drawing_options.color;
 
       // this.$nextTick(() => {

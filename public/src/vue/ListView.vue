@@ -1,6 +1,6 @@
 <template>
   <div class="m_listview" :class="{ 'is--folder': !!$root.settings.opened_folder }">
-    <main class="m_projects main_scroll_panel">
+    <main class="m_projects">
       <transition name="fade_fast" :duration="150">
         <div class="m_listview--openedFolderLabel" v-if="!!$root.settings.opened_folder">
           <div>
