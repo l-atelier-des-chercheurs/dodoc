@@ -859,7 +859,7 @@ module.exports = (function () {
         "You will always be able to go back to the original media if necessary.",
     },
     restore: {
-      fr: "Restorer",
+      fr: "Restaurer",
       en: "Restore",
     },
     lock_in_place: {
