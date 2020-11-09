@@ -6774,7 +6774,7 @@ small {
         &.quillWrapper,
         .ql-container {
           overflow: visible;
-          .ql-tooltip {
+          .ql-tooltip:not([data-mode="link"]) {
             position: absolute !important;
             width: ~"calc(100% + var(--spacing) * 4)" !important;
           }
