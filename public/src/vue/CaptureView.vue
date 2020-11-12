@@ -311,6 +311,7 @@
             <transition name="slideright" :duration="400">
               <StopmotionList
                 v-if="show_stopmotion_list && !is_making_stopmotion"
+                :slugFolderName="slugFolderName"
                 @loadStopmotion="loadStopmotion"
               />
             </transition>
@@ -1372,7 +1373,7 @@ export default {
       const smdata = {
         name:
           this.slugFolderName + "-" + this.$moment().format("YYYYMMDD_HHmmss"),
-        linked_folder: this.slugFolderName,
+        linked_project: this.slugFolderName,
         linked_type: this.type,
         authors: this.$root.current_author
           ? [{ slugFolderName: this.$root.current_author.slugFolderName }]

@@ -1,55 +1,74 @@
 <template>
   <div class="m_panel--previewCard--live--stopmotionlist">
-    <div class="margin-bottom-small">
-      <template v-if="Object.keys(stopmotions).length > 0">
-        <ul>
-          <li
-            v-for="stopmotion in stopmotions"
-            :key="stopmotion.slugFolderName"
+    <template v-if="Object.keys(stopmotions).length > 0">
+      <ul>
+        <li
+          v-for="stopmotion in stopmotions"
+          :key="stopmotion.slugFolderName"
+          @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)"
+        >
+          <div class="padding-verysmall">
+            {{ $root.formatDateToHuman(stopmotion.date_created) }}
+          </div>
+          <div
+            v-if="Object.values(stopmotion.medias).length > 0"
+            class="pictures_cont"
           >
-            <button
-              type="button"
-              @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)"
-              @click="loadStopmotion(stopmotion.slugFolderName)"
-            >
-              <div class="padding-verysmall">
-                {{ stopmotion.date_created }}
+            <div class="padding-bottom-verysmall">
+              {{ Object.values(stopmotion.medias).length }}
+              photos
+            </div>
+            <div class="pictures_list">
+              <div
+                v-for="media in Object.values(stopmotion.medias)"
+                :key="media.slugMediaName"
+              >
+                <!-- v-if="index <= 5" -->
+                <MediaContent
+                  :context="'preview'"
+                  :slugFolderName="stopmotion.slugFolderName"
+                  :media="media"
+                  :folderType="'stopmotions'"
+                  :preview_size="150"
+                />
               </div>
-              <template v-if="Object.values(stopmotion.medias).length > 0">
-                <div class="padding-bottom-verysmall">
-                  {{ Object.values(stopmotion.medias).length }}
-                  photos
-                </div>
-                <div class="pictures_list">
-                  <div
-                    v-for="media in Object.values(stopmotion.medias)"
-                    :key="media.slugMediaName"
-                  >
-                    <!-- v-if="index <= 5" -->
-                    <MediaContent
-                      :context="'preview'"
-                      :slugFolderName="stopmotion.slugFolderName"
-                      :media="media"
-                      :folderType="'stopmotions'"
-                      :preview_size="150"
-                    />
-                  </div>
-                </div>
-              </template>
-            </button>
-          </li>
-        </ul>
-      </template>
-      <template v-else>
-        {{ $t("no_stopmotion_created_yet") }}
-      </template>
-    </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="buttonLink"
+            @click="loadStopmotion(stopmotion.slugFolderName)"
+          >
+            {{ $t("load") }}
+          </button>
+          <button
+            type="button"
+            class="buttonLink"
+            @click="removeStopmotion(stopmotion.slugFolderName)"
+          >
+            {{ $t("remove") }}
+          </button>
+        </li>
+      </ul>
+    </template>
+    <template v-else>
+      {{ $t("no_stopmotion_created_yet") }}
+    </template>
   </div>
 </template>
 <script>
+import MediaContent from "./MediaContent.vue";
+
 export default {
-  props: {},
-  components: {},
+  props: {
+    slugFolderName: {
+      type: String,
+      default: false,
+    },
+  },
+  components: {
+    MediaContent,
+  },
   data() {
     return {};
   },
@@ -63,6 +82,11 @@ export default {
       stopmotions = this.$_.sortBy(stopmotions, function (o) {
         return o.date_created;
       }).reverse();
+
+      stopmotions = stopmotions.filter((s) => {
+        if (!s.linked_project || s.linked_project === this.slugFolderName)
+          return true;
+      });
       return stopmotions;
     },
   },
@@ -80,6 +104,21 @@ export default {
     },
     loadStopmotion(slugFolderName) {
       this.$emit("loadStopmotion", slugFolderName);
+    },
+    removeStopmotion(slugFolderName) {
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sure_to_remove_stopmotion"),
+          () => {
+            this.$root.removeFolder({
+              type: "stopmotions",
+              slugFolderName: slugFolderName,
+            });
+          },
+          () => {}
+        );
     },
   },
 };

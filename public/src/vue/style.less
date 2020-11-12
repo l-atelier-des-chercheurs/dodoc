@@ -3147,7 +3147,7 @@ small {
         position: relative;
         flex: 0 0 250px;
         max-width: 250px;
-        // background-color: @c-bleumarine;
+        background-color: @c-bleumarine;
         // .bg-noir;
         // color: @c-noir;
         // color: white;
@@ -3172,17 +3172,23 @@ small {
           list-style: none;
         }
 
-        button {
+        li {
           position: relative;
           // border: 2px solid @c-bleumarine;
+          border-radius: 4px;
           background-color: white;
           display: block;
           width: 100%;
           padding: 0;
           .margin-vert-small;
+          .padding-sides-verysmall;
 
           &:hover {
             background-color: @c-bleumarine_clair;
+          }
+
+          .pictures_cont {
+            .padding-sides-verysmall;
           }
 
           .pictures_list {
@@ -3194,7 +3200,7 @@ small {
 
             > * {
               flex: 0 0 50px;
-              .padding-left-verysmall;
+              // .padding-left-verysmall;
               .padding-bottom-verysmall;
 
               &:last-child {
