@@ -1,6 +1,18 @@
 <template>
   <div class="m_publicationButtons">
     <div class="m_publicationButtons--content">
+      <!-- <div>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_create_options }"
+            @click="show_create_options = !show_create_options"
+          >
+            {{ $t("page_settings") }}
+          </button>
+        </label>
+      </div> -->
       <div>
         <label>
           <button
@@ -548,22 +560,12 @@
               <label>{{ $t("position") }}</label>
               <div class="input-group">
                 <span class="input-addon input-addon-small">↔</span>
-                <input
-                  type="number"
-                  class="input-small"
-                  v-model="x"
-                  min="0"
-                />
+                <input type="number" class="input-small" v-model="x" min="0" />
                 <span class="input-addon input-addon-small">mm</span>
               </div>
               <div class="input-group">
                 <span class="input-addon input-addon-small">↕</span>
-                <input
-                  type="number"
-                  class="input-small"
-                  v-model="y"
-                  min="0"
-                />
+                <input type="number" class="input-small" v-model="y" min="0" />
                 <span class="input-addon input-addon-small">mm</span>
               </div>
             </div>
@@ -618,10 +620,9 @@
               </div>
             </div>
 
-            <div
-              class="item"
-            >
-              <label>{{ $t("opacity") }}
+            <div class="item">
+              <label
+                >{{ $t("opacity") }}
                 <button
                   type="button"
                   class="buttonLink"
@@ -630,7 +631,6 @@
                 >
                   ×
                 </button>
-
               </label>
               <div>
                 <input
@@ -642,11 +642,7 @@
                 />
               </div>
               <div class="input-group">
-                <input
-                  type="number"
-                  class="input-small"
-                  v-model="opacity"
-                />
+                <input type="number" class="input-small" v-model="opacity" />
                 <!-- <span class="input-addon input-addon-small">%</span> -->
               </div>
             </div>
