@@ -4293,7 +4293,7 @@ small {
 
       display: flex;
       flex-flow: row wrap;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-content: flex-start;
       align-items: center;
     }
@@ -4563,9 +4563,20 @@ small {
   .m_chat--content--topbar--optionbar {
     flex: 0 0 auto;
     display: flex;
+    flex-flow: row wrap;
     justify-content: space-around;
     // .bg-blanc;
     .margin-small;
+
+    > * {
+      flex: 1 1 200px;
+
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-start;
+      align-content: flex-start;
+      align-items: center;
+    }
 
     button,
     label {
@@ -6763,7 +6774,7 @@ small {
         &.quillWrapper,
         .ql-container {
           overflow: visible;
-          .ql-tooltip {
+          .ql-tooltip:not([data-mode="link"]) {
             position: absolute !important;
             width: ~"calc(100% + var(--spacing) * 4)" !important;
           }

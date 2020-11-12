@@ -290,7 +290,7 @@
             type="checkbox"
             v-model="show_on_external_domain"
           />
-          <label for="remember_password_on_this_device">
+          <label for="show_on_external_domain">
             {{ $t("display_on_website") }}
             <a
               v-for="domain in $root.consult_domains"

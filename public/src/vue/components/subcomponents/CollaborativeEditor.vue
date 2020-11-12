@@ -52,7 +52,21 @@ window.katex = katex;
 Quill.register("modules/cursors", QuillCursors);
 ShareDB.types.register(require("rich-text").type);
 
-var fonts = ["", "Alegreya", "Roboto Mono", "Roboto", "Source Sans Pro", "Source Serif Pro", "PT Serif", "Work Sans", "Karla", "IBM Plex Serif", "Volkhov", "Archivo Black", "Spectral"];
+var fonts = [
+  "",
+  "Alegreya",
+  "Roboto Mono",
+  "Roboto",
+  "Source Sans Pro",
+  "Source Serif Pro",
+  "PT Serif",
+  "Work Sans",
+  "Karla",
+  "IBM Plex Serif",
+  "Volkhov",
+  "Archivo Black",
+  "Spectral",
+];
 var FontAttributor = Quill.import("attributors/style/font");
 FontAttributor.whitelist = fonts;
 Quill.register(FontAttributor, true);
@@ -261,8 +275,7 @@ export default {
 
     this.$refs.editor.dataset.quill = this.editor;
 
-    // if (this.show_cursors) 
-    this.cursors = this.editor.getModule("cursors");
+    if (this.show_cursors) this.cursors = this.editor.getModule("cursors");
 
     if (this.read_only || this.$root.state.mode !== "live")
       this.editor.disable();
@@ -272,9 +285,9 @@ export default {
         ? this.$root.current_author.name
         : this.$t("anonymous");
 
+      if (this.show_cursors) {
         this.cursors.createCursor("_self", name, "#1d327f");
         this.cursors.toggleFlag("_self", false);
-      if (this.show_cursors) {
       }
     }
 
@@ -348,9 +361,12 @@ export default {
           // check if client has cursor locally
           if (!cursors.find((cursor) => cursor.id === name)) {
             const color = this.getColorFromName(name);
-            this.cursors.createCursor(name, name, color);
-            this.cursors.moveCursor(name, { index, length });
-            this.cursors.toggleFlag(name);
+
+            if (this.show_cursors) {
+              this.cursors.createCursor(name, name, color);
+              this.cursors.moveCursor(name, { index, length });
+              this.cursors.toggleFlag(name);
+            }
           } else {
             // detect changes, only update for client whose index or length changed
             if (
@@ -361,7 +377,8 @@ export default {
                     local_client.length !== length)
               )
             ) {
-              this.cursors.moveCursor(name, { index, length });
+              if (this.show_cursors)
+                this.cursors.moveCursor(name, { index, length });
             }
           }
         });
@@ -373,7 +390,7 @@ export default {
               (client) => client.name === cursor.id
             )
           ) {
-            this.cursors.removeCursor(cursor.id);
+            if (this.show_cursors) this.cursors.removeCursor(cursor.id);
           }
         });
       }
@@ -522,7 +539,7 @@ export default {
     updateCaretPositionForClient(range) {
       if (this.read_only) return;
 
-      this.cursors.moveCursor("_self", range);
+      if (this.show_cursors) this.cursors.moveCursor("_self", range);
       this.$root.updateClientInfo({
         caret_information: {
           path: this.reference_to_media,
@@ -531,7 +548,7 @@ export default {
       });
     },
     removeCaretPosition() {
-      this.cursors.removeCursor("_self");
+      if (this.show_cursors) this.cursors.removeCursor("_self");
       this.$root.updateClientInfo({
         caret_information: {},
       });

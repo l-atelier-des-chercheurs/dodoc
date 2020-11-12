@@ -80,6 +80,22 @@ export default {
       },
       deep: true,
     },
+    drawing_options: {
+      handler() {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`WATCH • DrawingLayer: drawing_options`);
+
+        this.canvas.getActiveObjects().forEach((obj) => {
+          obj.set({
+            strokeWidth: Number(this.drawing_options.stroke_width),
+            stroke: this.drawing_options.color,
+          });
+        });
+
+        this.canvas.renderAll();
+      },
+      deep: true,
+    },
   },
   computed: {},
   methods: {

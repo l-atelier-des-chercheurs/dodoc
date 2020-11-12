@@ -272,7 +272,7 @@ module.exports = function (app) {
       sockets.notify({
         socketid: req.query.socketid,
         localized_string: `action_not_allowed`,
-        not_localized_string: err,
+        not_localized_string: err.message,
         type: "error",
       });
     });
@@ -402,7 +402,7 @@ module.exports = function (app) {
       sockets.notify({
         socketid: req.query.socketid,
         localized_string: `action_not_allowed`,
-        not_localized_string: err,
+        not_localized_string: err.message,
         type: "error",
       });
     });
@@ -454,7 +454,7 @@ module.exports = function (app) {
       sockets.notify({
         socketid: req.query.socketid,
         localized_string: `action_not_allowed`,
-        not_localized_string: err,
+        not_localized_string: err.message,
         type: "error",
       });
     });
@@ -474,7 +474,7 @@ module.exports = function (app) {
         sockets.notify({
           socketid: req.query.socketid,
           localized_string: `action_not_allowed`,
-          not_localized_string: err,
+          not_localized_string: err.message,
           type: "error",
         });
         res.end();

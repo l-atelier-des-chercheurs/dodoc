@@ -15,7 +15,7 @@ export default {
       username: this.$root.settings.capture_options.distant_flux.username,
       callee_username: this.$root.settings.capture_options.distant_flux
         .callee_username,
-      is_calling: false
+      is_calling: false,
     };
   },
 
@@ -32,11 +32,11 @@ export default {
 
     this.connection.session = {
       audio: true,
-      video: true
+      video: true,
     };
     this.connection.sdpConstraints.mandatory = {
       OfferToReceiveAudio: true,
-      OfferToReceiveVideo: true
+      OfferToReceiveVideo: true,
     };
 
     // STAR_FIX_VIDEO_AUTO_PAUSE_ISSUES
@@ -47,31 +47,31 @@ export default {
     if (resolutions == "HD") {
       videoConstraints = {
         width: {
-          ideal: 1280
+          ideal: 1280,
         },
         height: {
-          ideal: 720
+          ideal: 720,
         },
-        frameRate: 30
+        frameRate: 30,
       };
     }
     if (resolutions == "Ultra-HD") {
       videoConstraints = {
         width: {
-          ideal: 1920
+          ideal: 1920,
         },
         height: {
-          ideal: 1080
+          ideal: 1080,
         },
-        frameRate: 30
+        frameRate: 30,
       };
     }
     this.connection.mediaConstraints = {
       video: videoConstraints,
-      audio: true
+      audio: true,
     };
     var CodecsHandler = this.connection.CodecsHandler;
-    this.connection.processSdp = function(sdp) {
+    this.connection.processSdp = function (sdp) {
       var codecs = "vp8";
 
       if (codecs.length) {
@@ -81,29 +81,29 @@ export default {
         sdp = CodecsHandler.setApplicationSpecificBandwidth(sdp, {
           audio: 128,
           video: bitrates,
-          screen: bitrates
+          screen: bitrates,
         });
         sdp = CodecsHandler.setVideoBitrates(sdp, {
           min: bitrates * 8 * 1024,
-          max: bitrates * 8 * 1024
+          max: bitrates * 8 * 1024,
         });
       }
       if (resolutions == "Ultra-HD") {
         sdp = CodecsHandler.setApplicationSpecificBandwidth(sdp, {
           audio: 128,
           video: bitrates,
-          screen: bitrates
+          screen: bitrates,
         });
         sdp = CodecsHandler.setVideoBitrates(sdp, {
           min: bitrates * 8 * 1024,
-          max: bitrates * 8 * 1024
+          max: bitrates * 8 * 1024,
         });
       }
       return sdp;
     };
 
     // this.connection.videosContainer = document.getElementById('videos-container');
-    this.connection.onstream = event => {
+    this.connection.onstream = (event) => {
       console.log("MOUNTED • DistantFlux: onstream");
 
       if (this.is_calling) {
@@ -141,10 +141,10 @@ export default {
 
       return;
     };
-    this.connection.onstreamended = function(event) {
+    this.connection.onstreamended = function (event) {
       console.log("MOUNTED • DistantFlux: onstreamended");
     };
-    this.connection.onMediaError = function(e) {
+    this.connection.onMediaError = function (e) {
       console.log("MOUNTED • DistantFlux: onMediaError");
       if (e.message === "Concurrent mic process limit.") {
         if (DetectRTC.audioInputDevices.length <= 1) {
@@ -158,7 +158,7 @@ export default {
         }
         var secondaryMic = DetectRTC.audioInputDevices[1].deviceId;
         this.connection.mediaConstraints.audio = {
-          deviceId: secondaryMic
+          deviceId: secondaryMic,
         };
         this.connection.join(this.connection.sessionid);
       }
@@ -211,7 +211,7 @@ export default {
           this.connection.join(username);
         }
       );
-    }
-  }
+    },
+  },
 };
 </script>
