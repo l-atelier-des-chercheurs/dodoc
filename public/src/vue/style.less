@@ -3215,14 +3215,17 @@ small {
         }
       }
 
-      .m_panel--previewCard--live--onionskin {
+      .m_panel--previewCard--live--stopmotionimage {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        opacity: 0.2;
-        opacity: var(--onionskin-opacity);
+
+        &.is--onionskin {
+          opacity: 0.2;
+          opacity: var(--onionskin-opacity);
+        }
 
         img {
           width: 100%;
@@ -8820,6 +8823,17 @@ small {
 }
 .scaleIn-enter, .scaleIn-leave-to /* .list-leave-active below version 2.1.8 */ {
   transform: scale(0.7);
+  opacity: 0;
+}
+.scaleInFade-enter-active,
+.scaleInFade-leave-active {
+  opacity: 1;
+  transform: scale(1);
+  transform-origin: center center !important;
+  transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.scaleInFade-enter, .scaleInFade-leave-to /* .list-leave-active below version 2.1.8 */ {
+  transform: scale(0.95);
   opacity: 0;
 }
 

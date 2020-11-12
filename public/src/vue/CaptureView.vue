@@ -17,7 +17,7 @@
           width="169px"
           height="169px"
           viewBox="0 0 169 169"
-          style="enable-background: new 0 0 169 169;"
+          style="enable-background: new 0 0 169 169"
           xml:space="preserve"
         >
           <path
@@ -58,7 +58,7 @@
           width="169px"
           height="169px"
           viewBox="0 0 169 169"
-          style="enable-background: new 0 0 169 169;"
+          style="enable-background: new 0 0 169 169"
           xml:space="preserve"
         >
           <path
@@ -259,7 +259,10 @@
             </transition-group>
 
             <video
-              v-show="['photo', 'video', 'stopmotion'].includes(selected_mode)"
+              v-show="
+                ['photo', 'video', 'stopmotion'].includes(selected_mode) &&
+                is_showing_live_feed
+              "
               ref="videoElement"
               autoplay
               playsinline
@@ -273,23 +276,31 @@
               height="720"
             />
 
-            <MediaContent
-              v-if="
-                selected_mode === 'stopmotion' &&
-                stopmotion.onion_skin_img &&
-                current_stopmotion
-              "
-              class="m_panel--previewCard--live--onionskin"
-              :context="'edit'"
-              :slugFolderName="current_stopmotion"
-              :media="stopmotion.onion_skin_img"
-              :folderType="'stopmotions'"
-              :style="
-                is_showing_live_feed
-                  ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}`
-                  : ''
-              "
-            />
+            <transition name="scaleInFade" mode="out-in" duration="100">
+              <MediaContent
+                v-if="
+                  selected_mode === 'stopmotion' &&
+                  stopmotion.onion_skin_img &&
+                  current_stopmotion
+                "
+                :key="
+                  is_showing_live_feed
+                    ? false
+                    : stopmotion.onion_skin_img.metaFileName
+                "
+                class="m_panel--previewCard--live--stopmotionimage"
+                :class="{ 'is--onionskin': is_showing_live_feed }"
+                :context="'edit'"
+                :slugFolderName="current_stopmotion"
+                :media="stopmotion.onion_skin_img"
+                :folderType="'stopmotions'"
+                :style="
+                  is_showing_live_feed
+                    ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}`
+                    : ''
+                "
+              />
+            </transition>
 
             <div
               id="vectoContainer"
@@ -298,61 +309,10 @@
             ></div>
 
             <transition name="slideright" :duration="400">
-              <div
-                class="m_panel--previewCard--live--stopmotionlist"
+              <StopmotionList
                 v-if="show_stopmotion_list && !is_making_stopmotion"
-              >
-                <div class="margin-bottom-small">
-                  <template v-if="Object.keys(stopmotions).length > 0">
-                    <ul>
-                      <li
-                        v-for="stopmotion in stopmotions"
-                        :key="stopmotion.slugFolderName"
-                      >
-                        <button
-                          type="button"
-                          @mouseenter="
-                            loadStopmotionMedias(stopmotion.slugFolderName)
-                          "
-                          @click="loadStopmotion(stopmotion.slugFolderName)"
-                        >
-                          <div class="padding-verysmall">
-                            {{ stopmotion.date_created }}
-                          </div>
-                          <template
-                            v-if="Object.values(stopmotion.medias).length > 0"
-                          >
-                            <div class="padding-bottom-verysmall">
-                              {{ Object.values(stopmotion.medias).length }}
-                              photos
-                            </div>
-                            <div class="pictures_list">
-                              <div
-                                v-for="media in Object.values(
-                                  stopmotion.medias
-                                )"
-                                :key="media.slugMediaName"
-                              >
-                                <!-- v-if="index <= 5" -->
-                                <MediaContent
-                                  :context="'preview'"
-                                  :slugFolderName="stopmotion.slugFolderName"
-                                  :media="media"
-                                  :folderType="'stopmotions'"
-                                  :preview_size="150"
-                                />
-                              </div>
-                            </div>
-                          </template>
-                        </button>
-                      </li>
-                    </ul>
-                  </template>
-                  <template v-else>
-                    {{ $t("no_stopmotion_created_yet") }}
-                  </template>
-                </div>
-              </div>
+                @loadStopmotion="loadStopmotion"
+              />
             </transition>
           </div>
 
@@ -448,7 +408,7 @@
                 xml:space="preserve"
               >
                 <path
-                  style="fill: currentColor;"
+                  style="fill: currentColor"
                   d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
                   c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
                   c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
@@ -497,7 +457,7 @@
                   width="81px"
                   height="81px"
                   viewBox="0 0 81 81"
-                  style="enable-background: new 0 0 81 81;"
+                  style="enable-background: new 0 0 81 81"
                   xml:space="preserve"
                 >
                   <path
@@ -599,6 +559,7 @@ import MediaContent from "./components/subcomponents/MediaContent.vue";
 import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
 import MediaValidationButtons from "./components/subcomponents/MediaValidationButtons.vue";
 import DistantFlux from "./components/subcomponents/DistantFlux.vue";
+import StopmotionList from "./components/subcomponents/StopmotionList.vue";
 
 import RecordRTC from "recordrtc";
 import "webrtc-adapter";
@@ -625,6 +586,7 @@ export default {
     StopmotionPanel,
     MediaValidationButtons,
     DistantFlux,
+    StopmotionList,
   },
   data() {
     return {
@@ -880,13 +842,6 @@ export default {
         this.show_capture_settings = false;
       }
       return is_making_stopmotion;
-    },
-    stopmotions() {
-      let stopmotions = Object.values(this.$root.store.stopmotions);
-      stopmotions = this.$_.sortBy(stopmotions, function (o) {
-        return o.date_created;
-      }).reverse();
-      return stopmotions;
     },
     sorted_available_devices() {
       return this.$_.groupBy(this.available_devices, "kind");
@@ -1643,17 +1598,6 @@ export default {
     },
     updateSingleImage($event) {
       this.stopmotion.onion_skin_img = $event;
-    },
-    loadStopmotionMedias(slugFolderName) {
-      if (
-        Object.values(this.$root.store.stopmotions[slugFolderName].medias)
-          .length === 0
-      ) {
-        this.$socketio.listMedias({
-          type: "stopmotions",
-          slugFolderName,
-        });
-      }
     },
     loadStopmotion(slugFolderName) {
       this.current_stopmotion = slugFolderName;
