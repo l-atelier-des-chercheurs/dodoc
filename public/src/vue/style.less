@@ -5399,7 +5399,13 @@ small {
             top: -5px;
             right: -5px;
             bottom: -5px;
-            background-color: fade(@c-bleuvert_fonce, 90%);
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            background-color: fade(@c-bleuvert_fonce, 88%);
+            backdrop-filter: blur(3px);
 
             display: flex;
             flex-flow: column nowrap;
@@ -5413,7 +5419,7 @@ small {
               background: transparent;
               .font-verysmall;
               color: black;
-              background-color: @c-bleuvert_fonce;
+              background-color: @c-blanc;
               color: white;
             }
 
@@ -5451,6 +5457,7 @@ small {
     position: relative;
     // margin: auto;
     transition: none 0.2s;
+    overflow: hidden;
   }
 
   .m_page {
