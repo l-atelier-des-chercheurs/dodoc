@@ -234,6 +234,10 @@ module.exports = (function () {
       fr: "Afficher",
       en: "Show",
     },
+    load: {
+      fr: "Charger",
+      en: "Load",
+    },
     only_my_projects: {
       fr: "Seulement mes projets",
       en: "My projects",
@@ -1370,6 +1374,10 @@ module.exports = (function () {
     sure_to_remove_chat: {
       fr: "Êtes-vous sûr de vouloir supprimer ce sujet et tout son contenu ?",
       en: "Do you really want to delete this topic and all its content?",
+    },
+    sure_to_remove_stopmotion: {
+      fr: "Êtes-vous sûr de vouloir supprimer cette animation ?",
+      en: "Do you really want to delete this stopmotion?",
     },
     sureToRemoveSelection: {
       fr: "Êtes-vous sûr de vouloir supprimer cette sélection ?",

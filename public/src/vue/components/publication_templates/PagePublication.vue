@@ -27,7 +27,6 @@
     />
 
     <PublicationDisplayButtons
-      v-if="$root.store.request.display !== 'survey'"
       :preview_mode="preview_mode"
       :show_zoom_buttons="!contact_sheet_mode"
       :show_page_navigator="!contact_sheet_mode"

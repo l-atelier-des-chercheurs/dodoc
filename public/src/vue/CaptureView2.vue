@@ -1,0 +1,649 @@
+<template>
+  <div class="m_captureview2">
+    <div class="m_captureview2--settingsPane">
+      <div class="m_captureview2--settingsPane--settings">
+        <Loader v-if="is_loading_available_devices" />
+        <label>Devices available</label>
+        <button
+          type="button"
+          class="buttonLink"
+          @click="refreshAvailableDevices"
+        >
+          Refresh devices
+        </button>
+        <div>
+          <div class="">
+            <label>Camera</label>
+            <small v-if="!all_video_input_devices.length === 0">
+              No video input devices available
+            </small>
+            <select
+              v-else
+              id="devices"
+              name="Video devices"
+              title="devices"
+              v-model="selected_devices_id.video_input_device"
+            >
+              <option
+                v-for="d in all_video_input_devices"
+                :key="d.deviceId"
+                :value="d"
+              >
+                {{ $t(d.label) }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label>Audio input</label>
+            <small v-if="!all_audio_input_devices.length === 0">
+              No audio input devices available
+            </small>
+            <select
+              v-else
+              id="devices"
+              name="Video devices"
+              title="devices"
+              v-model="selected_devices_id.audio_input_device"
+            >
+              <option
+                v-for="d in all_audio_input_devices"
+                :key="d.deviceId"
+                :value="d"
+              >
+                {{ d.label }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label>select audio output</label>
+            <small v-if="!all_audio_output_devices.length === 0">
+              No audio output devices available
+            </small>
+            <select
+              v-else
+              id="devices"
+              name="Video devices"
+              title="devices"
+              v-model="selected_devices_id.audio_output_device"
+            >
+              <option
+                v-for="d in all_audio_output_devices"
+                :key="d.deviceId"
+                :value="d"
+              >
+                {{ d.label }}
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label>Resolutions</label>
+            <template
+              v-if="
+                !selected_devices_id.video_input_device ||
+                !selected_devices_id.video_input_device.deviceId
+              "
+            >
+              select camera first
+            </template>
+            <template v-else>
+              <button
+                type="button"
+                class="buttonLink"
+                @click="getAllAvailableResolutions"
+                :disabled="is_scanning_resolutions"
+              >
+                <Loader v-if="is_scanning_resolutions" />
+                scan for
+                {{ selected_devices_id.video_input_device.label }}
+              </button>
+            </template>
+          </div>
+
+          <div>
+            <div
+              v-for="res in available_camera_resolutions.concat(
+                custom_camera_resolution
+              )"
+              :key="res.name"
+            >
+              <input
+                type="radio"
+                :id="res.label"
+                :value="res"
+                v-model="desired_camera_resolution"
+              />
+              <label :for="res.label">
+                <span
+                  >{{ res.label }}
+                  <template v-if="res.type !== 'custom'">
+                    •
+                    <template v-if="res.ratio">{{ res.ratio }}</template>
+                    • {{ res.width }}/{{ res.height }})
+                  </template>
+                </span>
+              </label>
+            </div>
+
+            <div
+              v-if="
+                desired_camera_resolution &&
+                desired_camera_resolution.type === 'custom'
+              "
+              class="margin-bottom-small input-group"
+            >
+              <input
+                type="number"
+                min="2"
+                max="4096"
+                step="2"
+                v-model.number="desired_camera_resolution.width"
+              />
+              <span class="font-large padding-verysmall">×</span>
+              <input
+                type="number"
+                min="2"
+                max="2160"
+                step="2"
+                v-model.number="desired_camera_resolution.height"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="m_captureview2--settingsPane--updateButton">
+        <button
+          type="button"
+          @click="setCameraStreamFromDefaults"
+          :disabled="
+            !desired_camera_resolution ||
+            !selected_devices_id.video_input_device ||
+            current_settings === stream_current_settings
+          "
+        >
+          update
+        </button>
+
+        <small v-if="!desired_camera_resolution">
+          Select a camera resolution first
+        </small>
+      </div>
+    </div>
+
+    <div class="m_captureview2--videoFeed">
+      <video ref="videoElement" autoplay playsinline />
+      desired_camera_resolution :
+      {{ desired_camera_resolution }}<br />
+      actual_camera_resolution :
+      {{ actual_camera_resolution }}
+    </div>
+  </div>
+</template>
+<script>
+import adapter from "webrtc-adapter";
+
+export default {
+  props: {},
+  components: {},
+  data() {
+    return {
+      connected_devices: [],
+      ideal_resolution: undefined,
+
+      selected_devices_id: {
+        video_input_device: undefined,
+        audio_input_device: undefined,
+        audio_output_device: undefined,
+      },
+
+      stream: undefined,
+
+      quickScan_resolutions: [
+        {
+          label: "4K(UHD)",
+          width: 3840,
+          height: 2160,
+          ratio: "16:9",
+        },
+        {
+          label: "1080p(FHD)",
+          width: 1920,
+          height: 1080,
+          ratio: "16:9",
+        },
+        // {
+        //   label: "UXGA",
+        //   width: 1600,
+        //   height: 1200,
+        //   ratio: "4:3",
+        // },
+        {
+          label: "720p(HD)",
+          width: 1280,
+          height: 720,
+          ratio: "16:9",
+        },
+        // {
+        //   label: "SVGA",
+        //   width: 800,
+        //   height: 600,
+        //   ratio: "4:3",
+        // },
+        {
+          label: "VGA",
+          width: 640,
+          height: 480,
+          ratio: "4:3",
+        },
+        // {
+        //   label: "360p(nHD)",
+        //   width: 640,
+        //   height: 360,
+        //   ratio: "16:9",
+        // },
+        // {
+        //   label: "CIF",
+        //   width: 352,
+        //   height: 288,
+        //   ratio: "4:3",
+        // },
+        {
+          label: "QVGA",
+          width: 320,
+          height: 240,
+          ratio: "4:3",
+        },
+        // {
+        //   label: "QCIF",
+        //   width: 176,
+        //   height: 144,
+        //   ratio: "4:3",
+        // },
+        // {
+        //   label: "QQVGA",
+        //   width: 160,
+        //   height: 120,
+        //   ratio: "4:3",
+        // },
+      ],
+
+      available_camera_resolutions: [],
+      custom_camera_resolution: {
+        label: this.$t("custom"),
+        type: "custom",
+        width: 1280,
+        height: 720,
+      },
+
+      is_loading_available_devices: false,
+      is_scanning_resolutions: false,
+
+      desired_camera_resolution: undefined,
+      actual_camera_resolution: {
+        width: undefined,
+        height: undefined,
+      },
+
+      stream_current_settings: undefined,
+    };
+  },
+  created() {},
+  mounted() {
+    this.$refs.videoElement.addEventListener(
+      "loadedmetadata",
+      this.refreshVideoActualSize
+    );
+    if (!navigator.getUserMedia) {
+      alert("You need a browser that supports WebRTC");
+      return;
+    }
+
+    this.is_loading_available_devices = true;
+
+    //Call gUM early to force user gesture and allow device enumeration
+    navigator.mediaDevices
+      .getUserMedia({ audio: false, video: true })
+      .then((stream) => {
+        this.stream = stream; // make globally available
+
+        if ("srcObject" in this.$refs.videoElement) {
+          this.$refs.videoElement.srcObject = stream;
+        } else {
+          // Avoid using this in new browsers, as it is going away.
+          this.$refs.videoElement.src = window.URL.createObjectURL(stream);
+        }
+      })
+      .catch((error) => {
+        console.error("getUserMedia error!", error);
+        this.is_loading_available_devices = false;
+        return;
+      })
+      .then(() => this.listDevices())
+      .then((devices) => {
+        this.connected_devices = devices;
+        this.setDefaultInputsAndOutputs();
+        this.is_loading_available_devices = false;
+      })
+      .catch((err) => {
+        this.is_loading_available_devices = false;
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            this.$t("notifications.failed_listing_devices") +
+              "<br>" +
+              err.name +
+              ": " +
+              err.message
+          );
+      });
+  },
+  beforeDestroy() {
+    this.$refs.videoElement.removeEventListener(
+      "loadedmetadata",
+      this.refreshVideoActualSize
+    ); //turn off the event handler
+
+    if (this.stream)
+      this.stream.getTracks().forEach((track) => {
+        track.stop();
+      });
+  },
+  watch: {},
+  computed: {
+    all_video_input_devices() {
+      return this.connected_devices.filter((d) => d.kind === "videoinput");
+    },
+    all_audio_input_devices() {
+      return this.connected_devices.filter((d) => d.kind === "audioinput");
+    },
+    all_audio_output_devices() {
+      return this.connected_devices.filter((d) => d.kind === "audiooutput");
+    },
+    current_settings() {
+      if (
+        !this.selected_devices_id.video_input_device ||
+        !this.desired_camera_resolution ||
+        !this.desired_camera_resolution.width ||
+        !this.desired_camera_resolution.height
+      )
+        return false;
+
+      return (
+        this.selected_devices_id.video_input_device.deviceId +
+        "_" +
+        this.desired_camera_resolution.width +
+        "x" +
+        this.desired_camera_resolution.height
+      );
+    },
+  },
+  methods: {
+    listDevices() {
+      return new Promise((resolve, reject) => {
+        navigator.mediaDevices
+          .enumerateDevices()
+          .then((devices) => {
+            if (!this.$root.state.is_electron) {
+              return resolve(devices);
+            } else return devices;
+          })
+          .then((devices) => {
+            this.getDesktopCapturer()
+              .then((sources) => {
+                devices = devices.concat(sources);
+              })
+              .catch((err) => {})
+              .then(() => {
+                return resolve(devices);
+              });
+            // const screen_infos = sources.reduce((acc, source) => {
+            //                     acc.push(source);
+            //                     return acc;
+            //                   }, []);
+            //                   return resolve(screen_infos);
+            // })
+          })
+          .catch((err) => {
+            return reject(err);
+          });
+      });
+    },
+    setDefaultInputsAndOutputs() {
+      if (this.connected_devices.length === 0) return;
+
+      if (this.all_video_input_devices.length > 0)
+        this.selected_devices_id.video_input_device = this.all_video_input_devices[0];
+      if (this.all_audio_input_devices.length > 0)
+        this.selected_devices_id.audio_input_device = this.all_audio_input_devices[0];
+      if (this.all_video_input_devices.length > 0)
+        this.selected_devices_id.audio_output_device = this.all_audio_output_devices[0];
+    },
+    getAllAvailableResolutions() {
+      const all_resolutions = [];
+
+      this.is_scanning_resolutions = true;
+
+      let tasks = this.quickScan_resolutions.map((resolution) => () =>
+        this.setCameraStream(
+          resolution,
+          this.selected_devices_id.video_input_device
+        )
+      );
+
+      const serial = (funcs) =>
+        funcs.reduce(
+          (promise, func) =>
+            promise
+              .then((result) => result)
+              .catch((result) => result)
+              .then((result) =>
+                func().then(Array.prototype.concat.bind(result))
+              ),
+          Promise.resolve([])
+        );
+      serial(tasks).then((res) => {
+        res = res.filter((r) => !r.status && r.status !== "error");
+        this.available_camera_resolutions = res;
+        this.is_scanning_resolutions = false;
+      });
+    },
+    refreshAvailableDevices() {
+      this.connected_devices = [];
+      this.is_loading_available_devices = true;
+      this.listDevices().then((devices) => {
+        this.connected_devices = devices;
+        this.is_loading_available_devices = false;
+      });
+    },
+    setCameraStream(candidate, device) {
+      return new Promise((resolve, reject) => {
+        console.log("trying " + candidate.label + " on " + device.label);
+
+        //Kill any running streams;
+        if (this.stream)
+          this.stream.getTracks().forEach((track) => {
+            track.stop();
+          });
+
+        let constraints = undefined;
+        if (!device.hasOwnProperty("chromeMediaSource")) {
+          // non screen capture devices
+          constraints = {
+            audio: false,
+            video: {
+              deviceId: device.id ? { exact: device.id } : undefined,
+              width: { exact: candidate.width }, //new syntax
+              height: { exact: candidate.height }, //new syntax
+            },
+          };
+        } else {
+          // screen capture devices
+          constraints = {
+            audio: false,
+            video: {
+              mandatory: {
+                chromeMediaSource: device.chromeMediaSource,
+                chromeMediaSourceId: device.id,
+                minWidth: candidate.width,
+                maxWidth: candidate.width,
+                minHeight: candidate.height,
+                maxHeight: candidate.height,
+              },
+            },
+          };
+        }
+
+        setTimeout(
+          () => {
+            navigator.mediaDevices
+              .getUserMedia(constraints)
+              .then(gotStream)
+              .then(() => {
+                // this.$alertify
+                //   .closeLogOnClick(true)
+                //   .delay(4000)
+                //   .success(this.$t("notifications.successfully_loaded_res"));
+
+                this.$refs.videoElement.onloadedmetadata = (e) => {
+                  // check if candidate settings fit actual settings
+                  this.getVideoActualSize().then((video_size) => {
+                    if (
+                      video_size.width === candidate.width &&
+                      video_size.height === candidate.height
+                    ) {
+                      return resolve(candidate);
+                    } else {
+                      console.log(
+                        "getUserMedia error! Mismatch between expected and actual camera stream resolution"
+                      );
+                      return reject(`Resolution mismatch.`);
+                    }
+                  });
+                };
+              })
+              .catch((error) => {
+                console.log("getUserMedia error!", error);
+                // captureResults("fail: " + error.name);
+                // this.$alertify
+                //   .closeLogOnClick(true)
+                //   .delay(4000)
+                //   .error(this.$t("notifications.failed_loading_res"));
+                return reject({
+                  status: error,
+                  msg: `Failed to getUserMedia : ` + error.name,
+                });
+              });
+          },
+          this.stream ? 200 : 0
+        ); //official examples had this at 200
+
+        const gotStream = (stream) => {
+          //change the video dimensions
+          // console.log(
+          //   "Display size for " +
+          //     candidate.label +
+          //     ": " +
+          //     candidate.width +
+          //     "x" +
+          //     candidate.height
+          // );
+
+          this.$refs.videoElement.width = candidate.width;
+          this.$refs.videoElement.height = candidate.height;
+          this.stream = stream; // make globally available
+
+          if ("srcObject" in this.$refs.videoElement) {
+            this.$refs.videoElement.srcObject = stream;
+          } else {
+            // Avoid using this in new browsers, as it is going away.
+            this.$refs.videoElement.src = window.URL.createObjectURL(stream);
+          }
+
+          this.$refs.videoElement.onloadedmetadata = (e) => {
+            this.$refs.videoElement.play();
+          };
+        };
+      });
+    },
+    getDesktopCapturer() {
+      return new Promise((resolve, reject) => {
+        const { desktopCapturer } = window.require("electron");
+        desktopCapturer.getSources(
+          { types: ["window", "screen"] },
+          (err, sources) => {
+            if (err) return reject(err);
+            sources = sources.filter((s) => s.name === "Entire screen");
+
+            sources = sources.map((s) => {
+              s.chromeMediaSource = "desktop";
+              s.deviceId = s.id;
+              s.kind = "videoinput";
+              s.label = s.name;
+              return s;
+            });
+
+            return resolve(sources);
+          }
+        );
+        // .catch((err) => reject(err));
+      });
+    },
+    setCameraStreamFromDefaults() {
+      this.stream_current_settings = this.current_settings;
+
+      this.setCameraStream(
+        this.desired_camera_resolution,
+        this.selected_devices_id.video_input_device
+      ).catch(() => {
+        this.stream_current_settings = false;
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.failed_to_use_selected_resolution"));
+      });
+    },
+    refreshVideoActualSize() {
+      this.getVideoActualSize()
+        .then(({ width, height }) => {
+          this.actual_camera_resolution.width = width;
+          this.actual_camera_resolution.height = height;
+        })
+        .catch((err) => {
+          if (this.$root.state.dev_mode === "debug")
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error("DEBUG error : failed to get video actual size");
+        });
+    },
+    getVideoActualSize() {
+      return new Promise((resolve, reject) => {
+        //Wait for dimensions if they don't show right away
+        let wait_period_if_necessary = 0;
+        if (!this.$refs.videoElement.videoWidth) {
+          wait_period_if_necessary = 500; //was 500
+        }
+
+        const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+        wait(wait_period_if_necessary).then(() => {
+          if (
+            this.$refs.videoElement.videoWidth *
+              this.$refs.videoElement.videoHeight >
+            0
+          ) {
+            return resolve({
+              width: this.$refs.videoElement.videoWidth,
+              height: this.$refs.videoElement.videoHeight,
+            });
+          } else {
+            return reject("couldn’t get video dimensions");
+          }
+        });
+      });
+    },
+  },
+};
+</script>
+<style lang="scss" scoped></style>

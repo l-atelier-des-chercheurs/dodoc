@@ -23,7 +23,7 @@
             width="78.5px"
             height="106.4px"
             viewBox="0 0 78.5 106.4"
-            style="enable-background: new 0 0 78.5 106.4;"
+            style="enable-background: new 0 0 78.5 106.4"
             xml:space="preserve"
           >
             <polygon
@@ -38,13 +38,23 @@
     <div v-if="allTypes.length > 0" class="padding-sides-small">
       <label>{{ $t("type") }}</label>
       <div class="m_typeField margin-bottom-none font-large">
+        <label :for="`type-${'all'}`" class :key="'all'">
+          <input
+            type="checkbox"
+            :id="`type-${'all'}`"
+            :checked="enabled_types.length === 0"
+            :disabled="enabled_types.length === 0"
+            @click="enabled_types = []"
+            :readonly="read_only"
+          />
+          <span>&nbsp;{{ $t("all") }}</span>
+        </label>
         <label :for="`type-${type}`" class v-for="type in allTypes" :key="type">
           <input
             type="checkbox"
             :id="`type-${type}`"
             :value="type"
             v-model="enabled_types"
-            @change="$emit('setTypeFilter', enabled_types)"
             :readonly="read_only"
           />
           <span>&nbsp;{{ $t(type) }}</span>
@@ -118,7 +128,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
 
-  watch: {},
+  watch: {
+    enabled_types() {
+      this.$emit("setTypeFilter", this.enabled_types);
+    },
+  },
   computed: {
     has_fav_toggle() {
       return this.$listeners && this.$listeners.setFavFilter;

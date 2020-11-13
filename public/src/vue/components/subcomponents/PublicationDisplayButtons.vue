@@ -8,6 +8,7 @@
     "
   >
     <button
+      v-if="$root.store.request.display !== 'survey'"
       class="margin-vert-verysmall font-verysmall _preview_button"
       :class="{ 'is--active': !preview_mode }"
       @mousedown.stop.prevent="$emit('togglePreviewMode')"
@@ -38,7 +39,7 @@
         {{ preview_mode ? $t("edit") : $t("preview") }}
       </span>
     </button>
-    <div v-if="show_zoom_buttons">
+    <div v-if="show_zoom_buttons && $root.store.request.display !== 'survey'">
       <button
         v-if="zoom"
         class="margin-vert-verysmall font-verysmall"
