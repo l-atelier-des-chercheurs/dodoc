@@ -6,9 +6,6 @@
           type="button"
           class="barButton barButton_capture"
           :class="{ 'is--disabled': is_iOS_device }"
-          v-if="
-            project.password === 'has_pass' || project.password !== 'has_pass'
-          "
           @click="openCapture"
           :disabled="read_only || !can_edit_project"
         >
@@ -16,9 +13,6 @@
         </button>
 
         <label
-          v-if="
-            project.password === 'has_pass' || project.password !== 'has_pass'
-          "
           class="barButton barButton_import button"
           :disabled="read_only || !can_edit_project"
           :for="`add_file_${id}`"
