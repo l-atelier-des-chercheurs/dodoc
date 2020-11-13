@@ -99,7 +99,6 @@
               </button>
             </template>
           </div>
-
           <div>
             <div
               v-for="res in available_camera_resolutions.concat(
@@ -349,7 +348,11 @@ export default {
         track.stop();
       });
   },
-  watch: {},
+  watch: {
+    "selected_devices_id.video_input_device": function () {
+      this.available_camera_resolutions = [];
+    },
+  },
   computed: {
     all_video_input_devices() {
       return this.connected_devices.filter((d) => d.kind === "videoinput");
@@ -423,6 +426,7 @@ export default {
       const all_resolutions = [];
 
       this.is_scanning_resolutions = true;
+      this.$refs.videoElement.pause();
 
       let tasks = this.quickScan_resolutions.map((resolution) => () =>
         this.setCameraStream(
@@ -434,18 +438,16 @@ export default {
       const serial = (funcs) =>
         funcs.reduce(
           (promise, func) =>
-            promise
-              .then((result) => result)
-              .catch((result) => result)
-              .then((result) =>
-                func().then(Array.prototype.concat.bind(result))
-              ),
+            promise.then((result) =>
+              func().then(Array.prototype.concat.bind(result))
+            ),
           Promise.resolve([])
         );
       serial(tasks).then((res) => {
         res = res.filter((r) => !r.status && r.status !== "error");
         this.available_camera_resolutions = res;
         this.is_scanning_resolutions = false;
+        this.$refs.videoElement.play();
       });
     },
     refreshAvailableDevices() {
@@ -494,6 +496,8 @@ export default {
           };
         }
 
+        console.log("Constraints = " + JSON.stringify(constraints, null, 4));
+
         setTimeout(
           () => {
             navigator.mediaDevices
@@ -517,19 +521,19 @@ export default {
                       console.log(
                         "getUserMedia error! Mismatch between expected and actual camera stream resolution"
                       );
-                      return reject(`Resolution mismatch.`);
+                      return resolve(`Resolution mismatch.`);
                     }
                   });
                 };
               })
               .catch((error) => {
-                console.log("getUserMedia error!", error);
+                console.log("getUserMedia error : ", error);
                 // captureResults("fail: " + error.name);
                 // this.$alertify
                 //   .closeLogOnClick(true)
                 //   .delay(4000)
                 //   .error(this.$t("notifications.failed_loading_res"));
-                return reject({
+                return resolve({
                   status: error,
                   msg: `Failed to getUserMedia : ` + error.name,
                 });
