@@ -149,6 +149,19 @@
             </div>
           </div>
         </div>
+
+        <div>
+          <button
+            type="button"
+            class="buttonLink"
+            @click="show_debug = !show_debug"
+          >
+            debug: show all devices available
+          </button>
+          <div v-if="show_debug">
+            <pre>{{ all_video_input_devices }}</pre>
+          </div>
+        </div>
       </div>
       <div class="m_captureview2--settingsPane--updateButton">
         <button
@@ -228,6 +241,7 @@ export default {
       },
 
       stream: undefined,
+      show_debug: false,
 
       quickScan_resolutions: [
         {
