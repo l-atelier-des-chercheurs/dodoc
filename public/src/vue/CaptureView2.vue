@@ -162,10 +162,22 @@
         >
           update
         </button>
-        <small
-          >{{ this.desired_camera_resolution.label }} /
-          {{ this.selected_devices_id.video_input_device.label }}</small
-        >
+        <small>
+          <span
+            v-if="desired_camera_resolution && desired_camera_resolution.label"
+          >
+            {{ desired_camera_resolution.label }}</span
+          >
+          <span
+            v-if="
+              selected_devices_id &&
+              selected_devices_id.video_input_device &&
+              selected_devices_id.video_input_device.label
+            "
+          >
+            {{ selected_devices_id.video_input_device.label }}
+          </span>
+        </small>
 
         <small v-if="!desired_camera_resolution">
           Select a camera resolution first
@@ -175,12 +187,26 @@
 
     <div class="m_captureview2--videoFeed">
       <video ref="videoElement" autoplay playsinline />
-      desired_camera_resolution :
-      {{ desired_camera_resolution }}<br />
-      actual_camera_resolution :
-      {{ actual_camera_resolution }}<br />
-      selected_devices_id.video_input_device :
-      {{ selected_devices_id.video_input_device.label }}
+      <small v-if="desired_camera_resolution"
+        >desired_camera_resolution :
+        {{ desired_camera_resolution }}
+      </small>
+      <br />
+      <small v-if="actual_camera_resolution">
+        actual_camera_resolution :
+        {{ actual_camera_resolution }}
+      </small>
+      <br />
+      <small
+        v-if="
+          selected_devices_id &&
+          selected_devices_id.video_input_device &&
+          selected_devices_id.video_input_device.label
+        "
+      >
+        selected_devices_id.video_input_device :
+        {{ selected_devices_id.video_input_device.label }}
+      </small>
     </div>
   </div>
 </template>
