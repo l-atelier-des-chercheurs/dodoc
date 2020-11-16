@@ -33,13 +33,6 @@
           </svg>
           <span class>{{ $t("settings") }}</span>
         </div>
-        <button
-          type="button"
-          class="bg-rouge buttonLink"
-          @click="show_capture_settings = !show_capture_settings"
-        >
-          <span class>{{ $t("close") }}</span>
-        </button>
       </div>
 
       <div class="m_captureview2--settingsPane--settings">
@@ -204,9 +197,9 @@
         </div>
       </div>
       <div class="m_captureview2--settingsPane--updateButton">
-        <small v-if="!desired_camera_resolution">
+        <!-- <small v-if="!desired_camera_resolution">
           Select a camera resolution first
-        </small>
+        </small> -->
         <button
           type="button"
           class="bg-rouge button-wide"
@@ -218,6 +211,14 @@
           "
         >
           {{ $t("update") }}
+        </button>
+        <!-- {{ current_settings }} -->
+        <button
+          type="button"
+          class="bg-rouge buttonLink"
+          @click="show_capture_settings = !show_capture_settings"
+        >
+          <span class>{{ $t("close") }}</span>
         </button>
         <!-- <small>
           <span
@@ -242,13 +243,81 @@
     </div> -->
 
     <div class="m_captureview2--videoPane">
+      <div class="_modeSelector">
+        <button
+          type="button"
+          class="bg-transparent"
+          v-show="!$root.settings.capture_mode_cant_be_changed"
+          @mousedown.stop.prevent="previousMode()"
+          @touchstart.stop.prevent="previousMode()"
+        >
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="169px"
+            height="169px"
+            viewBox="0 0 169 169"
+            style="enable-background: new 0 0 169 169"
+            xml:space="preserve"
+          >
+            <path
+              fill="currentColor"
+              d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"
+            />
+          </svg>
+        </button>
+
+        <div v-for="mode in available_modes" :key="mode">
+          <input
+            type="radio"
+            :id="id + mode"
+            :value="mode"
+            :disabled="$root.settings.capture_mode_cant_be_changed"
+            v-model="selected_mode"
+          />
+          <label :for="id + mode">
+            <div class="_picto">
+              <img :src="available_mode_picto[mode]" />
+            </div>
+            <span>{{ $t(mode) }}</span>
+          </label>
+        </div>
+        <button
+          type="button"
+          class="bg-transparent"
+          v-show="!$root.settings.capture_mode_cant_be_changed"
+          @mousedown.stop.prevent="nextMode()"
+          @touchstart.stop.prevent="nextMode()"
+        >
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="169px"
+            height="169px"
+            viewBox="0 0 169 169"
+            style="enable-background: new 0 0 169 169"
+            xml:space="preserve"
+          >
+            <path
+              fill="currentColor"
+              d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"
+            />
+          </svg>
+        </button>
+      </div>
       <div class="m_captureview2--videoPane--top">
         <div
           class="m_captureview2--videoPane--top--videoContainer"
           :style="video_styles"
         >
           <video ref="videoElement" autoplay playsinline />
-          <div class="m_captureview2--videoPane--top--resolutionTag">
+          <div class="_resolutionTag">
             {{ actual_camera_resolution.width }}×{{
               actual_camera_resolution.height
             }}
@@ -294,10 +363,33 @@
 import adapter from "webrtc-adapter";
 
 export default {
-  props: {},
+  props: {
+    slugFolderName: String,
+    type: String,
+    read_only: Boolean,
+    available_modes: {
+      type: Array,
+      default: () => ["photo", "video", "stopmotion", "audio", "vecto"],
+    },
+    can_add_to_fav: {
+      type: Boolean,
+      default: true,
+    },
+  },
   components: {},
   data() {
     return {
+      selected_mode: "",
+      is_saving: false,
+
+      available_mode_picto: {
+        photo: "/images/i_icone-dodoc_image.svg",
+        video: "/images/i_icone-dodoc_video.svg",
+        stopmotion: "/images/i_icone-dodoc_anim.svg",
+        audio: "/images/i_icone-dodoc_audio.svg",
+        vecto: "/images/i_icone-dodoc_vecto.svg",
+      },
+
       connected_devices: [],
       ideal_resolution: undefined,
 
@@ -882,11 +974,11 @@ export default {
 
   .m_captureview2--videoPane--bottom {
     flex: 0 0 auto;
-
+    padding: calc(var(--spacing) / 2);
     background-color: blue;
   }
 
-  .m_captureview2--videoPane--top--resolutionTag {
+  ._resolutionTag {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -897,6 +989,107 @@ export default {
     margin: 5px;
     border-radius: 4px;
     line-height: 1;
+  }
+
+  .m_captureview2--videoPane--top--videoContainer {
+    position: relative;
+  }
+}
+
+._modeSelector {
+  display: flex;
+  width: 100%;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  padding: calc(var(--spacing) / 2) 0;
+
+  font-family: "Fira Code";
+  color: var(--c-orange);
+
+  input[disabled] + label {
+    filter: grayscale(100%);
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  > * {
+    flex: 0 0 auto;
+    display: flex;
+    flex-flow: row wrap;
+    font-family: inherit;
+  }
+
+  input {
+    width: 0px;
+    height: 0;
+    visibility: hidden;
+  }
+
+  input:checked + label {
+    background-color: var(--c-orange);
+    span {
+      color: white;
+    }
+  }
+
+  input[disabled] + label {
+    filter: grayscale(100%);
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  label {
+    font-size: inherit;
+    font-family: inherit;
+    display: inline-block;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+    margin: 0;
+    cursor: pointer;
+    // min-height: 2.43rem;
+    border-radius: 6px;
+    transition: color 0.25s ease-out, opacity 0.5s;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    letter-spacing: 0;
+    // padding: 0 0.405rem;
+    margin: 1vw;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  ._picto {
+    border-radius: 50%;
+    overflow: hidden;
+    display: block;
+    width: 36px;
+    height: 36px;
+    margin: 0.405rem;
+    padding: 4px;
+    color: #fff;
+
+    margin-right: 0;
+  }
+
+  span {
+    display: block;
+    font-weight: 400;
+    text-transform: lowercase;
+    margin: 0.405rem;
+    font-size: 0.8rem;
+    font-family: Fira Mono;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: #666;
+    font-weight: 600;
   }
 }
 </style>
