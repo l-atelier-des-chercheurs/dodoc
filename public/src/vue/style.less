@@ -3422,7 +3422,9 @@ small {
   flex-flow: row nowrap;
 
   .m_captureview2--settingsPane {
-    flex: 0 1 320px;
+    position: relative;
+    flex: 0 0 240px;
+    max-width: 320px;
     background-color: var(--c-rouge);
     color: white;
 
@@ -3450,6 +3452,24 @@ small {
   .m_captureview2--videoFeed {
     overflow-y: auto;
     padding: ~"calc(var(--spacing) / 2)";
+    flex: 1 1 auto;
+  }
+
+  .m_captureview2--videoFeed--video {
+    position: relative;
+  }
+
+  .m_captureview2--videoFeed--resolutionTag {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: var(--c-noir);
+    color: white;
+    .font-verysmall;
+    padding: 2px 4px;
+    margin: 5px;
+    border-radius: 4px;
+    line-height: 1;
   }
 }
 

@@ -1,8 +1,13 @@
 <template>
   <div class="m_captureview2">
     <div class="m_captureview2--settingsPane">
+      <transition name="fade_fast" :duration="400">
+        <Loader
+          v-if="is_loading_available_devices || is_scanning_resolutions"
+        />
+      </transition>
+
       <div class="m_captureview2--settingsPane--settings">
-        <Loader v-if="is_loading_available_devices" />
         <label>Devices available</label>
         <button
           type="button"
@@ -94,7 +99,6 @@
                 @click="getAllAvailableResolutions"
                 :disabled="is_scanning_resolutions"
               >
-                <Loader v-if="is_scanning_resolutions" />
                 get all input resolutions for
                 {{ selected_devices_id.video_input_device.label }}
               </button>
@@ -200,15 +204,17 @@
     </div>
 
     <div class="m_captureview2--videoFeed">
-      <video ref="videoElement" autoplay playsinline />
+      <div class="m_captureview2--videoFeed--video" :style="video_styles">
+        <video ref="videoElement" autoplay playsinline />
+        <div class="m_captureview2--videoFeed--resolutionTag">
+          {{ actual_camera_resolution.width }}×{{
+            actual_camera_resolution.height
+          }}
+        </div>
+      </div>
       <small v-if="desired_camera_resolution"
         >desired_camera_resolution :
         {{ desired_camera_resolution }}
-      </small>
-      <br />
-      <small v-if="actual_camera_resolution">
-        actual_camera_resolution :
-        {{ actual_camera_resolution }}
       </small>
       <br />
       <small
@@ -428,6 +434,17 @@ export default {
         this.desired_camera_resolution.height
       );
     },
+    video_styles() {
+      if (
+        !this.actual_camera_resolution.width ||
+        !this.actual_camera_resolution.height
+      )
+        return "";
+      return {
+        width: this.actual_camera_resolution.width + "px",
+        height: this.actual_camera_resolution.height + "px",
+      };
+    },
   },
   methods: {
     listDevices() {
@@ -513,6 +530,7 @@ export default {
                 : false,
             };
           });
+
           this.is_loading_available_devices = false;
           return resolve();
         });
@@ -642,14 +660,13 @@ export default {
           { types: ["window", "screen"] },
           (err, sources) => {
             if (err) return reject(err);
-            sources = sources.filter((s) => s.name === "Entire screen");
-
+            // sources = sources.filter((s) => s.name === "Entire screen");
             sources = sources.map((s) => {
               return {
                 chromeMediaSource: "desktop",
                 deviceId: s.id,
                 kind: "videoinput",
-                label: s.name,
+                label: "🖥️ " + s.name,
               };
             });
 
