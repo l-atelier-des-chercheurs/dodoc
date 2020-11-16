@@ -11,6 +11,7 @@
         >
           Refresh devices
         </button>
+
         <div>
           <div class="">
             <label>Camera</label>
@@ -94,7 +95,7 @@
                 :disabled="is_scanning_resolutions"
               >
                 <Loader v-if="is_scanning_resolutions" />
-                scan for
+                get all input resolutions for
                 {{ selected_devices_id.video_input_device.label }}
               </button>
             </template>
@@ -159,23 +160,27 @@
             debug: show all devices available
           </button>
           <div v-if="show_debug">
-            <pre>{{ all_video_input_devices }}</pre>
+            <pre>{{ connected_devices }}</pre>
           </div>
         </div>
       </div>
       <div class="m_captureview2--settingsPane--updateButton">
+        <small v-if="!desired_camera_resolution">
+          Select a camera resolution first
+        </small>
         <button
           type="button"
+          class="bg-rouge button-wide"
           @click="setCameraStreamFromDefaults"
-          :disabled="
+        >
+          <!-- :disabled="
             !desired_camera_resolution ||
             !selected_devices_id.video_input_device ||
             current_settings === stream_current_settings
-          "
-        >
+          " -->
           update
         </button>
-        <small>
+        <!-- <small>
           <span
             v-if="desired_camera_resolution && desired_camera_resolution.label"
           >
@@ -190,11 +195,7 @@
           >
             {{ selected_devices_id.video_input_device.label }}
           </span>
-        </small>
-
-        <small v-if="!desired_camera_resolution">
-          Select a camera resolution first
-        </small>
+        </small> -->
       </div>
     </div>
 
@@ -334,6 +335,8 @@ export default {
   },
   created() {},
   mounted() {
+    this.desired_camera_resolution = this.custom_camera_resolution;
+
     this.$refs.videoElement.addEventListener(
       "loadedmetadata",
       this.refreshVideoActualSize
@@ -363,9 +366,8 @@ export default {
         this.is_loading_available_devices = false;
         return;
       })
-      .then(() => this.listDevices())
-      .then((devices) => {
-        this.connected_devices = devices;
+      .then(this.refreshAvailableDevices)
+      .then(() => {
         this.setDefaultInputsAndOutputs();
         this.is_loading_available_devices = false;
       })
@@ -497,11 +499,23 @@ export default {
       });
     },
     refreshAvailableDevices() {
-      this.connected_devices = [];
-      this.is_loading_available_devices = true;
-      this.listDevices().then((devices) => {
-        this.connected_devices = devices;
-        this.is_loading_available_devices = false;
+      return new Promise((resolve, reject) => {
+        this.connected_devices = [];
+        this.is_loading_available_devices = true;
+        this.listDevices().then((devices) => {
+          this.connected_devices = devices.map((d) => {
+            return {
+              label: d.label,
+              kind: d.kind,
+              deviceId: d.deviceId,
+              chromeMediaSource: d.chromeMediaSource
+                ? d.chromeMediaSource
+                : false,
+            };
+          });
+          this.is_loading_available_devices = false;
+          return resolve();
+        });
       });
     },
     setCameraStream(candidate, device) {
@@ -515,12 +529,17 @@ export default {
           });
 
         let constraints = undefined;
-        if (!device.hasOwnProperty("chromeMediaSource")) {
+        if (
+          !device.hasOwnProperty("chromeMediaSource") ||
+          !device.chromeMediaSource
+        ) {
           // non screen capture devices
           constraints = {
             audio: false,
             video: {
-              deviceId: device.id ? { exact: device.id } : undefined,
+              deviceId: device.deviceId
+                ? { exact: device.deviceId }
+                : undefined,
               width: { exact: candidate.width }, //new syntax
               height: { exact: candidate.height }, //new syntax
             },
@@ -532,7 +551,7 @@ export default {
             video: {
               mandatory: {
                 chromeMediaSource: device.chromeMediaSource,
-                chromeMediaSourceId: device.id,
+                chromeMediaSourceId: device.deviceId,
                 minWidth: candidate.width,
                 maxWidth: candidate.width,
                 minHeight: candidate.height,
@@ -626,11 +645,12 @@ export default {
             sources = sources.filter((s) => s.name === "Entire screen");
 
             sources = sources.map((s) => {
-              s.chromeMediaSource = "desktop";
-              s.deviceId = s.id;
-              s.kind = "videoinput";
-              s.label = s.name;
-              return s;
+              return {
+                chromeMediaSource: "desktop",
+                deviceId: s.id,
+                kind: "videoinput",
+                label: s.name,
+              };
             });
 
             return resolve(sources);
