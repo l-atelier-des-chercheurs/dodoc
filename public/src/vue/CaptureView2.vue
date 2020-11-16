@@ -1,11 +1,46 @@
 <template>
   <div class="m_captureview2">
-    <div class="m_captureview2--settingsPane">
+    <div class="m_captureview2--settingsPane" v-if="show_capture_settings">
       <transition name="fade_fast" :duration="400">
         <Loader
           v-if="is_loading_available_devices || is_scanning_resolutions"
         />
       </transition>
+
+      <div class="m_captureview2--settingsPane--topbar">
+        <div>
+          <svg
+            class="inline-svg inline-svg_larger"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            viewBox="0 0 140 140"
+            xml:space="preserve"
+          >
+            <path
+              style="fill: currentColor"
+              d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
+                  c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
+                  c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
+                  c-0.6,0.9-1.8,1.4-2.9,1.2L35.8,66L34,71.8l9.7,4.8c1,0.5,1.7,1.5,1.7,2.6v10c0,1.1-0.6,2.1-1.6,2.6l-9.6,4.9l2,5.9l10.9-1.6
+                  c1.1-0.2,2.2,0.3,2.9,1.2l6,8.1c0.7,0.9,0.8,2.1,0.3,3l-4.8,9.6l5.1,3.6l7.7-7.5c0.8-0.8,2-1,3.1-0.7l9.9,3
+                  c1.1,0.3,1.9,1.3,2.1,2.4l1.9,10.4h6.4l1.7-10.4c0.2-1.1,0.9-2,2-2.4l9.9-3.2c1.1-0.3,2.2-0.1,3.1,0.7l7.8,7.3l5.1-3.7l-4.9-9.4
+                  c-0.5-1-0.4-2.1,0.2-3l6-8.1c0.7-0.9,1.8-1.4,2.9-1.2l10.8,1.5l1.8-5.9l-9.7-4.8C123.3,90.9,122.7,89.9,122.7,88.8z M84,104.5
+                  c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
+            />
+          </svg>
+          <span class>{{ $t("settings") }}</span>
+        </div>
+        <button
+          type="button"
+          class="bg-rouge buttonLink"
+          @click="show_capture_settings = !show_capture_settings"
+        >
+          <span class>{{ $t("close") }}</span>
+        </button>
+      </div>
 
       <div class="m_captureview2--settingsPane--settings">
         <label>Devices available</label>
@@ -82,7 +117,7 @@
             </select>
           </div>
 
-          <div>
+          <div class="margin-vert-small">
             <label>Resolutions</label>
             <template
               v-if="
@@ -176,13 +211,13 @@
           type="button"
           class="bg-rouge button-wide"
           @click="setCameraStreamFromDefaults"
-        >
-          <!-- :disabled="
+          :disabled="
             !desired_camera_resolution ||
             !selected_devices_id.video_input_device ||
             current_settings === stream_current_settings
-          " -->
-          update
+          "
+        >
+          {{ $t("update") }}
         </button>
         <!-- <small>
           <span
@@ -203,30 +238,55 @@
       </div>
     </div>
 
-    <div class="m_captureview2--videoFeed">
-      <div class="m_captureview2--videoFeed--video" :style="video_styles">
-        <video ref="videoElement" autoplay playsinline />
-        <div class="m_captureview2--videoFeed--resolutionTag">
-          {{ actual_camera_resolution.width }}×{{
-            actual_camera_resolution.height
-          }}
+    <!-- <div class="m_captureview2--settingsPaneButton">
+    </div> -->
+
+    <div class="m_captureview2--videoPane">
+      <div class="m_captureview2--videoPane--top">
+        <div
+          class="m_captureview2--videoPane--top--videoContainer"
+          :style="video_styles"
+        >
+          <video ref="videoElement" autoplay playsinline />
+          <div class="m_captureview2--videoPane--top--resolutionTag">
+            {{ actual_camera_resolution.width }}×{{
+              actual_camera_resolution.height
+            }}
+          </div>
         </div>
       </div>
-      <small v-if="desired_camera_resolution"
-        >desired_camera_resolution :
-        {{ desired_camera_resolution }}
-      </small>
-      <br />
-      <small
-        v-if="
-          selected_devices_id &&
-          selected_devices_id.video_input_device &&
-          selected_devices_id.video_input_device.label
-        "
-      >
-        selected_devices_id.video_input_device :
-        {{ selected_devices_id.video_input_device.label }}
-      </small>
+      <div class="m_captureview2--videoPane--bottom">
+        <button
+          type="button"
+          class="bg-rouge"
+          v-if="!show_capture_settings"
+          @click="show_capture_settings = !show_capture_settings"
+        >
+          <svg
+            class="inline-svg inline-svg_larger"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            viewBox="0 0 140 140"
+            xml:space="preserve"
+          >
+            <path
+              style="fill: currentColor"
+              d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
+                  c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
+                  c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
+                  c-0.6,0.9-1.8,1.4-2.9,1.2L35.8,66L34,71.8l9.7,4.8c1,0.5,1.7,1.5,1.7,2.6v10c0,1.1-0.6,2.1-1.6,2.6l-9.6,4.9l2,5.9l10.9-1.6
+                  c1.1-0.2,2.2,0.3,2.9,1.2l6,8.1c0.7,0.9,0.8,2.1,0.3,3l-4.8,9.6l5.1,3.6l7.7-7.5c0.8-0.8,2-1,3.1-0.7l9.9,3
+                  c1.1,0.3,1.9,1.3,2.1,2.4l1.9,10.4h6.4l1.7-10.4c0.2-1.1,0.9-2,2-2.4l9.9-3.2c1.1-0.3,2.2-0.1,3.1,0.7l7.8,7.3l5.1-3.7l-4.9-9.4
+                  c-0.5-1-0.4-2.1,0.2-3l6-8.1c0.7-0.9,1.8-1.4,2.9-1.2l10.8,1.5l1.8-5.9l-9.7-4.8C123.3,90.9,122.7,89.9,122.7,88.8z M84,104.5
+                  c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
+            />
+          </svg>
+          <span class>{{ $t("settings") }}</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -249,6 +309,7 @@ export default {
 
       stream: undefined,
       show_debug: false,
+      show_capture_settings: false,
 
       quickScan_resolutions: [
         {
@@ -733,4 +794,109 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.m_captureview2 {
+  display: flex;
+  flex-flow: row nowrap;
+
+  .m_captureview2--settingsPane {
+    position: relative;
+    flex: 0 0 240px;
+    max-width: 320px;
+    background-color: var(--c-rouge);
+    color: white;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    label,
+    .buttonLink {
+      color: inherit;
+    }
+  }
+
+  .m_captureview2--settingsPane--topbar {
+    flex: 0 0 auto;
+    border-bottom: 2px solid var(--c-rouge_fonce);
+    padding: calc(var(--spacing) / 2);
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .m_captureview2--settingsPane--settings {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    padding: calc(var(--spacing) / 2);
+    // padding-bottom: var(--spacing);
+  }
+  .m_captureview2--settingsPane--updateButton {
+    flex: 0 0 auto;
+    border-top: 2px solid var(--c-rouge_fonce);
+    padding: calc(var(--spacing) / 2);
+    color: black;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .m_captureview2--settingsPaneButton {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 0;
+    background-color: var(--c-rouge);
+
+    > button {
+      transform: rotate(-90deg);
+      transform-origin: center top;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      margin-left: -1px;
+    }
+  }
+
+  .m_captureview2--videoPane {
+    overflow-y: auto;
+    flex: 1 1 auto;
+
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .m_captureview2--videoPane--top {
+    position: relative;
+    margin: 0 auto;
+
+    flex: 1 1 auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .m_captureview2--videoPane--bottom {
+    flex: 0 0 auto;
+
+    background-color: blue;
+  }
+
+  .m_captureview2--videoPane--top--resolutionTag {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: var(--c-noir);
+    color: white;
+    font-size: var(--font-verysmall);
+    padding: 2px 4px;
+    margin: 5px;
+    border-radius: 4px;
+    line-height: 1;
+  }
+}
+</style>
