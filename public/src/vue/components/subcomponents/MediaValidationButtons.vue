@@ -14,7 +14,7 @@
         width="169px"
         height="169px"
         viewBox="0 0 169 169"
-        style="enable-background: new 0 0 169 169;"
+        style="enable-background: new 0 0 169 169"
         xml:space="preserve"
       >
         <path fill="currentColor" d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z" />
@@ -40,7 +40,7 @@
           x="0px"
           y="0px"
           viewBox="0 0 168 168"
-          style="enable-background: new 0 0 168 168;"
+          style="enable-background: new 0 0 168 168"
           xml:space="preserve"
         >
           <polygon
@@ -68,7 +68,7 @@
         x="0px"
         y="0px"
         viewBox="0 0 168 168"
-        style="enable-background: new 0 0 168 168;"
+        style="enable-background: new 0 0 168 168"
         xml:space="preserve"
       >
         <rect
@@ -109,7 +109,7 @@
         width="68.5px"
         height="80.4px"
         viewBox="0 0 78.5 106.4"
-        style="enable-background: new 0 0 78.5 106.4;"
+        style="enable-background: new 0 0 78.5 106.4"
         xml:space="preserve"
       >
         <polygon
@@ -139,7 +139,7 @@
         width="169px"
         height="169px"
         viewBox="0 0 169 169"
-        style="enable-background: new 0 0 169 169;"
+        style="enable-background: new 0 0 169 169"
         xml:space="preserve"
       >
         <path fill="currentColor" d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z" />

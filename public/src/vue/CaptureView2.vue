@@ -56,7 +56,7 @@
               id="devices"
               name="Video devices"
               title="devices"
-              v-model="selected_devices_id.video_input_device"
+              v-model="selected_devices.video_input_device"
             >
               <option
                 v-for="d in all_video_input_devices"
@@ -77,7 +77,7 @@
               id="devices"
               name="Video devices"
               title="devices"
-              v-model="selected_devices_id.audio_input_device"
+              v-model="selected_devices.audio_input_device"
             >
               <option
                 v-for="d in all_audio_input_devices"
@@ -98,7 +98,7 @@
               id="devices"
               name="Video devices"
               title="devices"
-              v-model="selected_devices_id.audio_output_device"
+              v-model="selected_devices.audio_output_device"
             >
               <option
                 v-for="d in all_audio_output_devices"
@@ -114,8 +114,8 @@
             <label>Resolutions</label>
             <template
               v-if="
-                !selected_devices_id.video_input_device ||
-                !selected_devices_id.video_input_device.deviceId
+                !selected_devices.video_input_device ||
+                !selected_devices.video_input_device.deviceId
               "
             >
               select camera first
@@ -128,7 +128,7 @@
                 :disabled="is_scanning_resolutions"
               >
                 get all input resolutions for
-                {{ selected_devices_id.video_input_device.label }}
+                {{ selected_devices.video_input_device.label }}
               </button>
             </template>
           </div>
@@ -206,7 +206,7 @@
           @click="setCameraStreamFromDefaults"
           :disabled="
             !desired_camera_resolution ||
-            !selected_devices_id.video_input_device ||
+            !selected_devices.video_input_device ||
             current_settings === stream_current_settings
           "
         >
@@ -228,12 +228,12 @@
           >
           <span
             v-if="
-              selected_devices_id &&
-              selected_devices_id.video_input_device &&
-              selected_devices_id.video_input_device.label
+              selected_devices &&
+              selected_devices.video_input_device &&
+              selected_devices.video_input_device.label
             "
           >
-            {{ selected_devices_id.video_input_device.label }}
+            {{ selected_devices.video_input_device.label }}
           </span>
         </small> -->
       </div>
@@ -318,39 +318,67 @@
           class="m_captureview2--videoPane--top--videoContainer"
           :style="video_styles"
         >
-          <video ref="videoElement" autoplay playsinline />
-          <div class="_resolutionTag">
-            {{ actual_camera_resolution.width }}×{{
-              actual_camera_resolution.height
-            }}
-          </div>
+          <video
+            ref="videoElement"
+            autoplay
+            playsinline
+            v-show="!(must_validate_media && media_to_validate)"
+          />
+
+          <transition name="fade_fast">
+            <div
+              class="_settingsTag"
+              v-if="!(must_validate_media && media_to_validate)"
+              @click="show_capture_settings = !show_capture_settings"
+            >
+              <div>
+                {{ actual_camera_resolution.width }}×{{
+                  actual_camera_resolution.height
+                }}
+              </div>
+              <div v-if="selected_devices.video_input_device">
+                {{ selected_devices.video_input_device.label }}
+              </div>
+              <div v-if="selected_devices.audio_input_device">
+                {{ selected_devices.audio_input_device.label }}
+              </div>
+            </div>
+          </transition>
+
+          <transition name="fade_fast" :duration="150">
+            <MediaPreviewBeforeValidation
+              v-if="media_to_validate"
+              :media_to_validate="media_to_validate"
+            />
+          </transition>
         </div>
       </div>
 
-      <transition name="slideup" :duration="500">
+      <transition name="slideup" :duration="150" mode="out-in">
         <div
           class="m_captureview2--videoPane--bottom"
           v-if="!show_capture_settings"
         >
-          <div>
-            <button
-              type="button"
-              class="bg-rouge"
-              @click="show_capture_settings = !show_capture_settings"
-            >
-              <svg
-                class="inline-svg inline-svg_larger"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="0px"
-                viewBox="0 0 140 140"
-                xml:space="preserve"
+          <template v-if="!(media_to_validate && must_validate_media)">
+            <div>
+              <button
+                type="button"
+                class="bg-rouge"
+                @click="show_capture_settings = !show_capture_settings"
               >
-                <path
-                  style="fill: currentColor"
-                  d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
+                <svg
+                  class="inline-svg inline-svg_larger"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 140 140"
+                  xml:space="preserve"
+                >
+                  <path
+                    style="fill: currentColor"
+                    d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
                   c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
                   c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
                   c-0.6,0.9-1.8,1.4-2.9,1.2L35.8,66L34,71.8l9.7,4.8c1,0.5,1.7,1.5,1.7,2.6v10c0,1.1-0.6,2.1-1.6,2.6l-9.6,4.9l2,5.9l10.9-1.6
@@ -358,44 +386,57 @@
                   c1.1,0.3,1.9,1.3,2.1,2.4l1.9,10.4h6.4l1.7-10.4c0.2-1.1,0.9-2,2-2.4l9.9-3.2c1.1-0.3,2.2-0.1,3.1,0.7l7.8,7.3l5.1-3.7l-4.9-9.4
                   c-0.5-1-0.4-2.1,0.2-3l6-8.1c0.7-0.9,1.8-1.4,2.9-1.2l10.8,1.5l1.8-5.9l-9.7-4.8C123.3,90.9,122.7,89.9,122.7,88.8z M84,104.5
                   c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
+                  />
+                </svg>
+                <span class>{{ $t("settings") }}</span>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="bg-orange button-inline _captureButton"
+                :class="{ 'is--justCaptured': capture_button_pressed }"
+                :disabled="is_saving"
+                @mousedown.stop.prevent="captureOrStop()"
+                @touchstart.stop.prevent="captureOrStop()"
+              >
+                <img
+                  v-if="!is_recording"
+                  class="inline-svg inline-svg_larger"
+                  src="/images/i_record.svg"
                 />
-              </svg>
-              <span class>{{ $t("settings") }}</span>
-            </button>
-          </div>
-          <div>
-            <button
-              v-if="!show_capture_settings"
-              type="button"
-              class="bg-orange button-inline _captureButton"
-              :class="{ 'is--justCaptured': capture_button_pressed }"
-              :disabled="is_saving"
-              @mousedown.stop.prevent="captureOrStop()"
-              @touchstart.stop.prevent="captureOrStop()"
-            >
-              <img
-                v-if="!is_recording"
-                class="inline-svg inline-svg_larger"
-                src="/images/i_record.svg"
-              />
-              <img v-else class="inline-svg" src="/images/i_stop.svg" />
+                <img v-else class="inline-svg" src="/images/i_stop.svg" />
 
-              <span v-if="selected_mode === 'photo'">
-                {{ $t("take_picture") }}</span
-              >
-              <span v-else-if="selected_mode === 'video'">
-                {{ $t("take_video") }}</span
-              >
-            </button>
-          </div>
-          <div></div>
+                <span v-if="selected_mode === 'photo'">
+                  {{ $t("take_picture") }}</span
+                >
+                <span v-else-if="selected_mode === 'video'">
+                  {{ $t("take_video") }}</span
+                >
+              </button>
+            </div>
+            <div></div>
+          </template>
+
+          <MediaValidationButtons
+            v-else
+            :read_only="read_only"
+            :can_add_to_fav="can_add_to_fav"
+            :media_is_being_sent="media_is_being_sent"
+            :media_being_sent_percent="media_being_sent_percent"
+            @cancel="cancelValidation()"
+            @save="sendMedia({})"
+            @save_and_fav="sendMedia({ fav: true })"
+          />
         </div>
       </transition>
-      <!-- <CaptureLogic /> -->
     </div>
   </div>
 </template>
 <script>
+import MediaPreviewBeforeValidation from "./components/subcomponents/MediaPreviewBeforeValidation.vue";
+import MediaValidationButtons from "./components/subcomponents/MediaValidationButtons.vue";
+
 import adapter from "webrtc-adapter";
 
 export default {
@@ -411,8 +452,12 @@ export default {
       type: Boolean,
       default: true,
     },
+    must_validate_media: {
+      type: Boolean,
+      default: true,
+    },
   },
-  components: {},
+  components: { MediaPreviewBeforeValidation, MediaValidationButtons },
   data() {
     return {
       selected_mode: "",
@@ -428,10 +473,15 @@ export default {
         vecto: "/images/i_icone-dodoc_vecto.svg",
       },
 
+      media_to_validate: false,
+      media_is_being_sent: false,
+      media_being_sent_percent: 0,
+      capture_button_pressed: false,
+
       connected_devices: [],
       ideal_resolution: undefined,
 
-      selected_devices_id: {
+      selected_devices: {
         video_input_device: undefined,
         audio_input_device: undefined,
         audio_output_device: undefined,
@@ -599,14 +649,29 @@ export default {
       this.refreshVideoActualSize
     ); //turn off the event handler
 
+    this.$root.settings.capture_mode_cant_be_changed = false;
+
     if (this.stream)
       this.stream.getTracks().forEach((track) => {
         track.stop();
       });
   },
   watch: {
-    "selected_devices_id.video_input_device": function () {
+    "selected_devices.video_input_device": function () {
       this.available_camera_resolutions = [];
+    },
+    media_to_validate: function () {
+      console.log(
+        `WATCH • Capture: media_to_validate = ${this.media_to_validate}`
+      );
+      if (this.media_to_validate) {
+        this.$refs.videoElement.pause();
+      } else {
+        this.$refs.videoElement.play();
+      }
+
+      if (this.must_validate_media === false) {
+      }
     },
   },
   computed: {
@@ -621,7 +686,7 @@ export default {
     },
     current_settings() {
       if (
-        !this.selected_devices_id.video_input_device ||
+        !this.selected_devices.video_input_device ||
         !this.desired_camera_resolution ||
         !this.desired_camera_resolution.width ||
         !this.desired_camera_resolution.height
@@ -629,7 +694,7 @@ export default {
         return false;
 
       return (
-        this.selected_devices_id.video_input_device.deviceId +
+        this.selected_devices.video_input_device.deviceId +
         "_" +
         this.desired_camera_resolution.width +
         "x" +
@@ -707,11 +772,11 @@ export default {
       if (this.connected_devices.length === 0) return;
 
       if (this.all_video_input_devices.length > 0)
-        this.selected_devices_id.video_input_device = this.all_video_input_devices[0];
+        this.selected_devices.video_input_device = this.all_video_input_devices[0];
       if (this.all_audio_input_devices.length > 0)
-        this.selected_devices_id.audio_input_device = this.all_audio_input_devices[0];
+        this.selected_devices.audio_input_device = this.all_audio_input_devices[0];
       if (this.all_video_input_devices.length > 0)
-        this.selected_devices_id.audio_output_device = this.all_audio_output_devices[0];
+        this.selected_devices.audio_output_device = this.all_audio_output_devices[0];
     },
     getAllAvailableResolutions() {
       const all_resolutions = [];
@@ -722,7 +787,7 @@ export default {
       let tasks = this.quickScan_resolutions.map((resolution) => () =>
         this.setCameraStream(
           resolution,
-          this.selected_devices_id.video_input_device
+          this.selected_devices.video_input_device
         )
       );
 
@@ -879,6 +944,131 @@ export default {
         };
       });
     },
+    captureKeyListener(event) {
+      console.log("METHODS • CaptureView: captureKeyListener");
+
+      // don’t register if validating a media
+      if (this.media_to_validate || this.is_validating_stopmotion_video) {
+        return false;
+      }
+
+      // disabled because it clashes with the input type range from stopmotion panel
+      // if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
+      //   return false;
+      // }
+
+      switch (event.key) {
+        case "w":
+        case "z":
+        case "ArrowLeft":
+          this.previousMode();
+          break;
+        case "s":
+        case "ArrowRight":
+          this.nextMode();
+          break;
+        case "a":
+        case "q":
+        case " ":
+          this.captureOrStop();
+          break;
+      }
+    },
+    captureOrStop() {
+      this.capture_button_pressed = true;
+      window.setTimeout(() => {
+        this.capture_button_pressed = false;
+      }, 400);
+
+      // if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
+      //   if (!this.is_recording) {
+      //     this.is_recording = true;
+      //     this.timelapse_event = window.setInterval(() => {
+      //       this.capture_button_pressed = true;
+      //       window.setTimeout(() => {
+      //         this.capture_button_pressed = false;
+      //       }, 400);
+      //       this.addStopmotionImage();
+      //     }, this.timelapse_interval * 1000);
+      //   } else {
+      //     this.is_recording = false;
+      //     clearInterval(this.timelapse_event);
+      //     return;
+      //   }
+      // }
+
+      // if (this.is_recording && this.selected_mode !== "stopmotion") {
+      //   this.$eventHub.$emit("capture.stopRecording");
+      //   return;
+      // }
+
+      if (this.selected_mode === "photo") {
+        this.getStaticImageFromVideoElement().then((rawData) => {
+          this.media_to_validate = {
+            rawData,
+            objectURL: URL.createObjectURL(rawData),
+            type: "image",
+          };
+        });
+      } else if (this.selected_mode === "video") {
+        this.stopVideoFeed();
+        this.startRecordCameraFeed(this.recordVideoWithAudio).then(
+          (rawData) => {
+            this.media_to_validate = {
+              rawData,
+              objectURL: URL.createObjectURL(rawData),
+              type: "video",
+            };
+          }
+        );
+      } else if (this.selected_mode === "audio") {
+        equalizer.clearCanvas();
+        this.startRecordAudioFeed().then((rawData) => {
+          const preview = this.$refs.equalizerElement.toDataURL("image/png");
+          this.media_to_validate = {
+            preview,
+            rawData,
+            objectURL: URL.createObjectURL(rawData),
+            type: "audio",
+          };
+        });
+      } else if (this.selected_mode === "stopmotion") {
+        this.addStopmotionImage();
+      } else if (this.selected_mode === "vecto") {
+        this.media_to_validate = {
+          preview: this.vecto.svgstr,
+          rawData: new Blob([this.vecto.svgstr], { type: "text/xml" }),
+          type: "svg",
+        };
+      }
+    },
+    getStaticImageFromVideoElement() {
+      return new Promise((resolve, reject) => {
+        let invisible_canvas = document.createElement("canvas");
+        invisible_canvas.width = this.$refs.videoElement.videoWidth;
+        invisible_canvas.height = this.$refs.videoElement.videoHeight;
+        let invisible_ctx = invisible_canvas.getContext("2d");
+        invisible_ctx.drawImage(
+          this.$refs.videoElement,
+          0,
+          0,
+          invisible_canvas.width,
+          invisible_canvas.height
+        );
+        var imageData = invisible_canvas.toBlob(
+          (imageBlob) => {
+            invisible_canvas.remove();
+            return resolve(imageBlob);
+          },
+          "image/jpeg",
+          0.95
+        );
+        // if(imageData === "data:,") {
+        //   return reject(this.$t('notifications.video_stream_not_available'));
+        // }
+      });
+    },
+
     getDesktopCapturer() {
       return new Promise((resolve, reject) => {
         const { desktopCapturer } = window.require("electron");
@@ -907,7 +1097,7 @@ export default {
 
       this.setCameraStream(
         this.desired_camera_resolution,
-        this.selected_devices_id.video_input_device
+        this.selected_devices.video_input_device
       ).catch(() => {
         this.stream_current_settings = false;
         this.$alertify
@@ -955,6 +1145,127 @@ export default {
           }
         });
       });
+    },
+
+    sendMedia({ fav = false }) {
+      return new Promise((resolve, reject) => {
+        console.log(`METHODS • CaptureView: sendMedia with fav=${fav}`);
+        if (this.$root.state.dev_mode === "debug") {
+          console.log(`METHODS • CaptureView / sendMedia`);
+        }
+
+        this.$root.settings.capture_mode_cant_be_changed = false;
+
+        const timeCreated = this.$moment().format("YYYYMMDD_HHmmss");
+        const randomString = (
+          Math.random().toString(36) + "00000000000000000"
+        ).slice(2, 3 + 2);
+
+        const extensions = {
+          image: "jpeg",
+          video: "webm",
+          audio: "wav",
+          svg: "svg",
+        };
+        const filename = `${
+          this.media_to_validate.type
+        }-${timeCreated}-${randomString}.${
+          extensions[this.media_to_validate.type]
+        }`;
+        const modified = new Date();
+
+        // this.$set(this.selected_files_meta, filename, {
+        //   upload_percentages: 0,
+        //   status: 'sending'
+        // });
+
+        const rawData = this.media_to_validate.rawData;
+
+        let formData = new FormData();
+        formData.append("files", rawData, filename);
+        const meta = {
+          fileCreationDate: modified,
+          fav,
+          authors: this.$root.current_author
+            ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
+            : "",
+        };
+        formData.append(filename, JSON.stringify(meta));
+
+        const socketid = this.$socketio.socket.id;
+        if (socketid !== undefined) {
+          formData.append("socketid", socketid);
+        }
+
+        if (this.$root.state.dev_mode === "debug") {
+          console.log(
+            `METHODS • sendThisFile: name = ${filename} / formData is ready`
+          );
+        }
+
+        this.media_is_being_sent = true;
+        this.media_being_sent_percent = 0;
+
+        // TODO : possibilité de cancel
+        axios
+          .post(this.uriToUploadMedia, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+            onUploadProgress: function (progressEvent) {
+              console.log(
+                `METHODS • CaptureView: onUploadProgress for name = ${filename} / ${parseInt(
+                  Math.round((progressEvent.loaded * 100) / progressEvent.total)
+                )}% `
+              );
+              this.media_being_sent_percent = parseInt(
+                Math.round((progressEvent.loaded * 100) / progressEvent.total)
+              );
+              // this.selected_files_meta[filename].upload_percentages = parseInt(Math.round((progressEvent.loaded * 100 ) / progressEvent.total ) );
+            }.bind(this),
+          })
+          .then((x) => x.data)
+          .then((x) => {
+            if (this.$root.state.dev_mode === "debug") {
+              console.log(
+                `METHODS • CaptureView: name = ${filename} / success uploading`
+              );
+            }
+
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .success(this.$t("notifications.media_was_sent"));
+            this.media_is_being_sent = false;
+            this.media_to_validate = false;
+
+            this.$emit("insertMedias", [x.metaFileNames[0]]);
+
+            // this.selected_files_meta[filename].status = 'success';
+            // this.selected_files_meta[filename].upload_percentages = 100;
+            resolve();
+          })
+          .catch((err) => {
+            if (this.$root.state.dev_mode === "debug") {
+              console.log(
+                `METHODS • sendThisFile: name = ${filename} / failed uploading`
+              );
+            }
+
+            this.media_is_being_sent = false;
+            this.media_being_sent_percent = 0;
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(this.$t("notifications.media_couldnt_be_sent"));
+
+            // this.selected_files_meta[filename].status = 'failed';
+            // this.selected_files_meta[filename].upload_percentages = 0;
+            reject();
+          });
+      });
+    },
+    cancelValidation() {
+      this.media_to_validate = false;
+      this.$root.settings.capture_mode_cant_be_changed = false;
     },
   },
 };
@@ -1039,6 +1350,7 @@ export default {
     margin: 0 auto;
 
     flex: 1 1 auto;
+    overflow: hidden;
 
     width: 100%;
     height: 100%;
@@ -1066,17 +1378,25 @@ export default {
     }
   }
 
-  ._resolutionTag {
+  ._settingsTag {
     position: absolute;
     bottom: 0;
     right: 0;
-    background-color: white;
     color: var(--c-noir);
     font-size: var(--font-verysmall);
-    padding: 2px 4px;
-    margin: 5px;
-    border-radius: 4px;
-    line-height: 1;
+    margin: 15px;
+    pointer-events: none;
+
+    > * {
+      display: inline-block;
+      background-color: white;
+      border-radius: 4px;
+      line-height: 1;
+      margin: 2px;
+      padding: 2px 4px;
+      pointer-events: auto;
+      cursor: pointer;
+    }
   }
 
   .m_captureview2--videoPane--top--videoContainer {
