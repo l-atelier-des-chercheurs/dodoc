@@ -243,74 +243,76 @@
     </div> -->
 
     <div class="m_captureview2--videoPane">
-      <div class="_modeSelector">
-        <button
-          type="button"
-          class="bg-transparent"
-          v-show="!$root.settings.capture_mode_cant_be_changed"
-          @mousedown.stop.prevent="previousMode()"
-          @touchstart.stop.prevent="previousMode()"
-        >
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="169px"
-            height="169px"
-            viewBox="0 0 169 169"
-            style="enable-background: new 0 0 169 169"
-            xml:space="preserve"
+      <transition name="slidedown" :duration="500">
+        <div class="_modeSelector" v-if="!show_capture_settings">
+          <button
+            type="button"
+            class="bg-transparent"
+            v-show="!$root.settings.capture_mode_cant_be_changed"
+            @mousedown.stop.prevent="previousMode()"
+            @touchstart.stop.prevent="previousMode()"
           >
-            <path
-              fill="currentColor"
-              d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"
-            />
-          </svg>
-        </button>
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="169px"
+              height="169px"
+              viewBox="0 0 169 169"
+              style="enable-background: new 0 0 169 169"
+              xml:space="preserve"
+            >
+              <path
+                fill="currentColor"
+                d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"
+              />
+            </svg>
+          </button>
 
-        <div v-for="mode in available_modes" :key="mode">
-          <input
-            type="radio"
-            :id="id + mode"
-            :value="mode"
-            :disabled="$root.settings.capture_mode_cant_be_changed"
-            v-model="selected_mode"
-          />
-          <label :for="id + mode">
-            <div class="_picto">
-              <img :src="available_mode_picto[mode]" />
-            </div>
-            <span>{{ $t(mode) }}</span>
-          </label>
-        </div>
-        <button
-          type="button"
-          class="bg-transparent"
-          v-show="!$root.settings.capture_mode_cant_be_changed"
-          @mousedown.stop.prevent="nextMode()"
-          @touchstart.stop.prevent="nextMode()"
-        >
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="169px"
-            height="169px"
-            viewBox="0 0 169 169"
-            style="enable-background: new 0 0 169 169"
-            xml:space="preserve"
-          >
-            <path
-              fill="currentColor"
-              d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"
+          <div v-for="mode in available_modes" :key="mode">
+            <input
+              type="radio"
+              :id="id + mode"
+              :value="mode"
+              :disabled="$root.settings.capture_mode_cant_be_changed"
+              v-model="selected_mode"
             />
-          </svg>
-        </button>
-      </div>
+            <label :for="id + '_' + mode">
+              <div class="_picto">
+                <img :src="available_mode_picto[mode]" />
+              </div>
+              <span>{{ $t(mode) }}</span>
+            </label>
+          </div>
+          <button
+            type="button"
+            class="bg-transparent"
+            v-show="!$root.settings.capture_mode_cant_be_changed"
+            @mousedown.stop.prevent="nextMode()"
+            @touchstart.stop.prevent="nextMode()"
+          >
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="169px"
+              height="169px"
+              viewBox="0 0 169 169"
+              style="enable-background: new 0 0 169 169"
+              xml:space="preserve"
+            >
+              <path
+                fill="currentColor"
+                d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"
+              />
+            </svg>
+          </button>
+        </div>
+      </transition>
       <div class="m_captureview2--videoPane--top">
         <div
           class="m_captureview2--videoPane--top--videoContainer"
@@ -324,26 +326,31 @@
           </div>
         </div>
       </div>
-      <div class="m_captureview2--videoPane--bottom">
-        <button
-          type="button"
-          class="bg-rouge"
+
+      <transition name="slideup" :duration="500">
+        <div
+          class="m_captureview2--videoPane--bottom"
           v-if="!show_capture_settings"
-          @click="show_capture_settings = !show_capture_settings"
         >
-          <svg
-            class="inline-svg inline-svg_larger"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            viewBox="0 0 140 140"
-            xml:space="preserve"
-          >
-            <path
-              style="fill: currentColor"
-              d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
+          <div>
+            <button
+              type="button"
+              class="bg-rouge"
+              @click="show_capture_settings = !show_capture_settings"
+            >
+              <svg
+                class="inline-svg inline-svg_larger"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                viewBox="0 0 140 140"
+                xml:space="preserve"
+              >
+                <path
+                  style="fill: currentColor"
+                  d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
                   c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
                   c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
                   c-0.6,0.9-1.8,1.4-2.9,1.2L35.8,66L34,71.8l9.7,4.8c1,0.5,1.7,1.5,1.7,2.6v10c0,1.1-0.6,2.1-1.6,2.6l-9.6,4.9l2,5.9l10.9-1.6
@@ -351,11 +358,40 @@
                   c1.1,0.3,1.9,1.3,2.1,2.4l1.9,10.4h6.4l1.7-10.4c0.2-1.1,0.9-2,2-2.4l9.9-3.2c1.1-0.3,2.2-0.1,3.1,0.7l7.8,7.3l5.1-3.7l-4.9-9.4
                   c-0.5-1-0.4-2.1,0.2-3l6-8.1c0.7-0.9,1.8-1.4,2.9-1.2l10.8,1.5l1.8-5.9l-9.7-4.8C123.3,90.9,122.7,89.9,122.7,88.8z M84,104.5
                   c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
-            />
-          </svg>
-          <span class>{{ $t("settings") }}</span>
-        </button>
-      </div>
+                />
+              </svg>
+              <span class>{{ $t("settings") }}</span>
+            </button>
+          </div>
+          <div>
+            <button
+              v-if="!show_capture_settings"
+              type="button"
+              class="bg-orange button-inline _captureButton"
+              :class="{ 'is--justCaptured': capture_button_pressed }"
+              :disabled="is_saving"
+              @mousedown.stop.prevent="captureOrStop()"
+              @touchstart.stop.prevent="captureOrStop()"
+            >
+              <img
+                v-if="!is_recording"
+                class="inline-svg inline-svg_larger"
+                src="/images/i_record.svg"
+              />
+              <img v-else class="inline-svg" src="/images/i_stop.svg" />
+
+              <span v-if="selected_mode === 'photo'">
+                {{ $t("take_picture") }}</span
+              >
+              <span v-else-if="selected_mode === 'video'">
+                {{ $t("take_video") }}</span
+              >
+            </button>
+          </div>
+          <div></div>
+        </div>
+      </transition>
+      <!-- <CaptureLogic /> -->
     </div>
   </div>
 </template>
@@ -381,6 +417,8 @@ export default {
     return {
       selected_mode: "",
       is_saving: false,
+
+      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       available_mode_picto: {
         photo: "/images/i_icone-dodoc_image.svg",
@@ -505,6 +543,17 @@ export default {
       return;
     }
 
+    if (
+      this.$root.settings.capture_options.selected_mode !== "" &&
+      this.available_modes.includes(
+        this.$root.settings.capture_options.selected_mode
+      )
+    ) {
+      this.selected_mode = this.$root.settings.capture_options.selected_mode;
+    } else {
+      this.selected_mode = this.available_modes[0];
+    }
+
     this.is_loading_available_devices = true;
 
     //Call gUM early to force user gesture and allow device enumeration
@@ -594,8 +643,8 @@ export default {
       )
         return "";
       return {
-        width: this.actual_camera_resolution.width + "px",
-        height: this.actual_camera_resolution.height + "px",
+        // maxWidth: this.actual_camera_resolution.width + "px",
+        // maxHeight: this.actual_camera_resolution.height + "px",
       };
     },
   },
@@ -629,6 +678,30 @@ export default {
             return reject(err);
           });
       });
+    },
+    previousMode() {
+      console.log("METHODS • CaptureView: previousMode");
+      if (this.$root.settings.capture_mode_cant_be_changed) {
+        return;
+      }
+
+      let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
+
+      if (currentModeIndex > 0) {
+        this.selected_mode = this.available_modes[currentModeIndex - 1];
+      }
+    },
+    nextMode() {
+      console.log("METHODS • CaptureView: nextMode");
+      if (this.$root.settings.capture_mode_cant_be_changed) {
+        return;
+      }
+
+      let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
+
+      if (currentModeIndex < this.available_modes.length - 1) {
+        this.selected_mode = this.available_modes[currentModeIndex + 1];
+      }
     },
     setDefaultInputsAndOutputs() {
       if (this.connected_devices.length === 0) return;
@@ -893,8 +966,8 @@ export default {
 
   .m_captureview2--settingsPane {
     position: relative;
-    flex: 0 0 240px;
-    max-width: 320px;
+    flex: 1 0 200px;
+    max-width: 280px;
     background-color: var(--c-rouge);
     color: white;
 
@@ -967,6 +1040,10 @@ export default {
 
     flex: 1 1 auto;
 
+    width: 100%;
+    height: 100%;
+    background-color: var(--c-noir);
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -974,16 +1051,27 @@ export default {
 
   .m_captureview2--videoPane--bottom {
     flex: 0 0 auto;
-    padding: calc(var(--spacing) / 2);
-    background-color: blue;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+
+    > * {
+      flex: 1 1 100px;
+      padding: calc(var(--spacing) / 2);
+
+      &:nth-child(2) {
+        text-align: center;
+      }
+    }
   }
 
   ._resolutionTag {
     position: absolute;
     bottom: 0;
     right: 0;
-    background-color: var(--c-noir);
-    color: white;
+    background-color: white;
+    color: var(--c-noir);
     font-size: var(--font-verysmall);
     padding: 2px 4px;
     margin: 5px;
@@ -993,12 +1081,32 @@ export default {
 
   .m_captureview2--videoPane--top--videoContainer {
     position: relative;
+    width: 100%;
+    height: 100%;
+
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
   }
 }
 
+._captureButton {
+  margin: 0 auto;
+}
+
 ._modeSelector {
+  position: absolute;
+  z-index: 1;
   display: flex;
-  width: 100%;
+  left: 0;
+  right: 0;
+  // width: 100%;
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
@@ -1024,6 +1132,10 @@ export default {
     width: 0px;
     height: 0;
     visibility: hidden;
+
+    &:not(:checked) + label:not(:hover) {
+      opacity: 0.3;
+    }
   }
 
   input:checked + label {
@@ -1060,7 +1172,7 @@ export default {
     background-color: #fff;
     letter-spacing: 0;
     // padding: 0 0.405rem;
-    margin: 1vw;
+    margin: 0.5vw;
     text-align: center;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
@@ -1071,7 +1183,9 @@ export default {
     display: block;
     width: 36px;
     height: 36px;
-    margin: 0.405rem;
+
+    margin: calc(var(--spacing) / 8);
+
     padding: 4px;
     color: #fff;
 

@@ -8676,6 +8676,17 @@ small {
   transform: translateY(100%);
   transition: opacity 0.4s linear, transform 0.4s ease-out;
 }
+.slidedown-enter-active,
+.slidedown-leave-active {
+  transform: translateY(0);
+  transition: opacity 0.4s linear, transform 0.25s ease-out;
+}
+.slidedown-enter,
+.slidedown-leave-to {
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 0.4s linear, transform 0.25s ease-out;
+}
 .slideleft-enter-active,
 .slideleft-leave-active {
   transform: translateX(0);
