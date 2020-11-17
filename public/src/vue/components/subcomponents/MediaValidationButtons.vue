@@ -176,11 +176,9 @@ export default {
 
   created() {},
   mounted() {
-    this.$root.settings.capture_mode_cant_be_changed = true;
     document.addEventListener("keyup", this.captureKeyListener);
   },
   beforeDestroy() {
-    // this.$root.settings.capture_mode_cant_be_changed = false;
     document.removeEventListener("keyup", this.captureKeyListener);
   },
 
