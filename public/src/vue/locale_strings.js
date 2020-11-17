@@ -2158,6 +2158,10 @@ module.exports = (function () {
       oc: "fòto",
       de: "Foto",
     },
+    take_picture: {
+      fr: "Prendre une photo",
+      en: "Take a photo",
+    },
     video: {
       fr: "vidéo",
       en: "video",

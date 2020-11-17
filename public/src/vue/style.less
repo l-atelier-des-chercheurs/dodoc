@@ -3417,42 +3417,6 @@ small {
   }
 }
 
-.m_captureview2 {
-  display: flex;
-  flex-flow: row nowrap;
-
-  .m_captureview2--settingsPane {
-    flex: 0 1 320px;
-    background-color: var(--c-rouge);
-    color: white;
-
-    display: flex;
-    flex-flow: column nowrap;
-
-    label,
-    .buttonLink {
-      color: inherit;
-    }
-  }
-  .m_captureview2--settingsPane--settings {
-    overflow-y: auto;
-    flex: 1 1 auto;
-    padding: ~"calc(var(--spacing) / 2)";
-    // padding-bottom: var(--spacing);
-  }
-  .m_captureview2--settingsPane--updateButton {
-    flex: 0 0 auto;
-    border-top: 2px solid var(--c-rouge_fonce);
-    padding: ~"calc(var(--spacing) / 2)";
-    color: black;
-  }
-
-  .m_captureview2--videoFeed {
-    overflow-y: auto;
-    padding: ~"calc(var(--spacing) / 2)";
-  }
-}
-
 .m_mediaValidationButtons {
   position: relative;
   z-index: 105;
@@ -8704,13 +8668,24 @@ small {
 .slideup-enter-active,
 .slideup-leave-active {
   transform: translateY(0);
-  transition: opacity 0.4s linear, transform 0.4s ease-out;
+  transition: opacity 0.2s linear, transform 0.15s ease-out;
 }
 .slideup-enter,
 .slideup-leave-to {
   // opacity: 0;
   transform: translateY(100%);
-  transition: opacity 0.4s linear, transform 0.4s ease-out;
+  transition: opacity 0.2s linear, transform 0.15s ease-out;
+}
+.slidedown-enter-active,
+.slidedown-leave-active {
+  transform: translateY(0);
+  transition: opacity 0.4s linear, transform 0.25s ease-out;
+}
+.slidedown-enter,
+.slidedown-leave-to {
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 0.4s linear, transform 0.25s ease-out;
 }
 .slideleft-enter-active,
 .slideleft-leave-active {
