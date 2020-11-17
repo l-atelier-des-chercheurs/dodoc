@@ -2162,6 +2162,10 @@ module.exports = (function () {
       fr: "Prendre une photo",
       en: "Take a photo",
     },
+    record_video: {
+      fr: "Capturer une vidéo",
+      en: "Record a video",
+    },
     video: {
       fr: "vidéo",
       en: "video",

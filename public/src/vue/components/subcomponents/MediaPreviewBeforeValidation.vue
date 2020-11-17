@@ -5,6 +5,7 @@
       :src="media_to_validate.objectURL"
     />
     <vue-plyr
+      class="m_previewValidation--video"
       v-else-if="media_to_validate.type === 'video'"
       :options="plyr_options"
     >
@@ -65,16 +66,51 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+  background-color: var(--c-noir);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   width: 100%;
   height: 100%;
   object-fit: contain;
 
-  img {
-    position: absolute;
+  > * {
+    // position: absolute;
+    object-fit: contain;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    margin: 0;
+    // .padding-medium;
+
+    &.m_panel--previewCard--validate--svg {
+      svg {
+        max-width: 100%;
+        margin: auto;
+      }
+    }
+  }
+  .m_panel--previewCard--validate--audio {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+
+    .plyr .plyr__controls {
+      color: white;
+    }
+
+    > * {
+      flex: 1 1 auto;
+      // width: 100%;
+      // height: 100%;
+      height: 90%;
+
+      &:last-child {
+        height: 10%;
+      }
+    }
   }
 }
 </style>
