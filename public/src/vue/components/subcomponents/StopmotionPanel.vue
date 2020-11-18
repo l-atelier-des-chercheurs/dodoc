@@ -63,10 +63,10 @@
         >
           <video
             ref="videoElement"
-            :srcObject.prop="stream"
             autoplay
             playsinline
             muted
+            :srcObject.prop="stream"
           />
         </div>
       </transition-group>
