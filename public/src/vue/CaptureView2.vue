@@ -255,7 +255,9 @@
           <transition name="slideup" :duration="150" mode="out-in">
             <div
               class="m_captureview2--videoPane--bottom--buttons"
-              :class="{ 'is--recording': is_recording }"
+              :class="{
+                'is--recording': is_recording && !video_recording_is_paused,
+              }"
               v-if="!(media_to_validate && must_validate_media)"
             >
               <div>
@@ -290,6 +292,61 @@
                   <span v-if="!collapse_capture_pane" class>{{
                     $t("settings")
                   }}</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="bg-orange button-inline _captureButton"
+                  :key="selected_mode + '_pause'"
+                  v-if="selected_mode === 'video' && is_recording"
+                  @mousedown.stop.prevent="pauseOrResumeCapture()"
+                  @touchstart.stop.prevent="pauseOrResumeCapture()"
+                >
+                  <svg
+                    class="inline-svg inline-svg_larger"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 168 168"
+                    style="enable-background: new 0 0 168 168"
+                    xml:space="preserve"
+                  >
+                    <path
+                      id="FOND_3_"
+                      style="fill: #ffbe32"
+                      d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84
+			C168,37.6,130.4,0,84,0z"
+                    />
+                    <rect
+                      id="CENTRE_3_"
+                      x="35"
+                      y="46.7"
+                      style="fill: #ff3e51"
+                      width="38"
+                      height="76"
+                    />
+                    <rect
+                      id="CENTRE_3_"
+                      x="93"
+                      y="46.7"
+                      style="fill: #ff3e51"
+                      width="38"
+                      height="76"
+                    />
+                  </svg>
+
+                  &nbsp;
+
+                  <span>
+                    <template v-if="!video_recording_is_paused">
+                      {{ $t("pause_recording") }}
+                    </template>
+                    <template v-else>
+                      {{ $t("unpause_recording") }}
+                    </template>
+                  </span>
                 </button>
               </div>
               <div>
@@ -451,6 +508,7 @@ export default {
       capture_button_pressed: false,
       mode_just_changed: false,
       is_validating_stopmotion_video: false,
+      video_recording_is_paused: false,
 
       current_stopmotion: false,
 
@@ -472,6 +530,8 @@ export default {
       timelapse_mode: false,
       timelapse_interval: 2,
       timelapse_event: false,
+
+      recorder: null,
 
       actual_camera_resolution: {
         width: undefined,
@@ -754,6 +814,7 @@ export default {
           };
         });
       } else if (this.selected_mode === "video") {
+        this.video_recording_is_paused = false;
         this.startRecordCameraFeed().then((rawData) => {
           this.media_to_validate = {
             rawData,
@@ -782,6 +843,17 @@ export default {
         };
       }
     },
+
+    pauseOrResumeCapture() {
+      if (this.recorder.state !== "paused") {
+        this.video_recording_is_paused = true;
+        this.recorder.pauseRecording();
+      } else {
+        this.video_recording_is_paused = false;
+        this.recorder.resumeRecording();
+      }
+    },
+
     getStaticImageFromVideoElement() {
       return new Promise((resolve, reject) => {
         let invisible_canvas = document.createElement("canvas");
@@ -811,10 +883,10 @@ export default {
 
     startRecordCameraFeed() {
       return new Promise((resolve, reject) => {
-        let recorder = RecordRTC(this.stream, {
+        this.recorder = RecordRTC(this.stream, {
           type: "video",
         });
-        recorder.startRecording({
+        this.recorder.startRecording({
           type: "video",
           videoBitsPerSecond: 4112000,
         });
@@ -823,13 +895,13 @@ export default {
         this.is_recording = true;
 
         this.$eventHub.$once("capture.stopRecording", () => {
-          recorder.stopRecording(() => {
+          this.recorder.stopRecording(() => {
             this.is_recording = false;
-            let video_blob = recorder.getBlob();
+            let video_blob = this.recorder.getBlob();
 
             // recorder.camera.stop();
-            recorder.destroy();
-            recorder = null;
+            this.recorder.destroy();
+            this.recorder = null;
 
             return resolve(video_blob);
           });
