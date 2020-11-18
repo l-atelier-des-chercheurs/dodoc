@@ -379,12 +379,12 @@ module.exports = (function () {
         if (!options.hasOwnProperty("resolution")) {
           resolution = {
             width: 1280,
-            height: 720,  
-          }
+            height: 720,
+          };
         } else {
-          if(options.resolution.hasOwnProperty("height")) {
+          if (options.resolution.hasOwnProperty("height")) {
             resolution.height = options.resolution.height;
-            if(options.resolution.hasOwnProperty("width")) {
+            if (options.resolution.hasOwnProperty("width")) {
               resolution.width = options.resolution.width;
             } else {
               switch (resolution.height) {
@@ -400,7 +400,7 @@ module.exports = (function () {
                 case 1080:
                   resolution.width = 1920;
                   break;
-              } 
+              }
             }
           }
         }
@@ -889,6 +889,7 @@ module.exports = (function () {
 
       ffmpeg.ffprobe(vm.full_path, function (err, metadata) {
         const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+        let has_no_audio_track = false;
 
         ffmpeg_cmd.input(vm.full_path);
 
@@ -900,6 +901,7 @@ module.exports = (function () {
         ) {
           dev.logverbose("Has no audio track, adding anullsrc");
           ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+          has_no_audio_track = true;
         }
 
         let temp_video_volume;
@@ -992,7 +994,7 @@ module.exports = (function () {
               outputs: "output",
             });
 
-            if (speed >= 0.5) {
+            if (speed >= 0.5 && !has_no_audio_track) {
               complexFilters.push({
                 filter: "atempo",
                 options: speed,
@@ -1636,7 +1638,7 @@ module.exports = (function () {
         .withAudioBitrate("128k")
         .addOptions(["-map 0:v:0", "-map 1:a:0"])
         .videoFilters(
-          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
         )
         .toFormat("mp4")
         .on("start", function (commandLine) {
@@ -1702,7 +1704,9 @@ module.exports = (function () {
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
         .addOptions(["-tune stillimage", "-pix_fmt yuv420p"])
-        .videoFilters(`scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`)
+        .videoFilters(
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
+        )
         .outputFPS(30)
         .toFormat("mp4")
         .on("start", function (commandLine) {

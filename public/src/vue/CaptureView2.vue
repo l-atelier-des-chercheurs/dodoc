@@ -8,7 +8,7 @@
       </transition>
 
       <div class="m_captureview2--settingsPane--topbar">
-        <div>
+        <div class="m_captureview2--settingsPane--topbar--title">
           <svg
             class="inline-svg inline-svg_larger"
             version="1.1"
@@ -36,20 +36,12 @@
       </div>
 
       <div class="m_captureview2--settingsPane--settings">
-        <label>Devices available</label>
-        <button
-          type="button"
-          class="buttonLink"
-          @click="refreshAvailableDevices"
-        >
-          Refresh devices
-        </button>
-
-        <div>
+        <label>{{ $t("sources") }}</label>
+        <div class="">
           <div class="">
-            <label>Camera</label>
+            <label>{{ $t("camera") }}</label>
             <small v-if="!all_video_input_devices.length === 0">
-              No video input devices available
+              {{ $t("no_video_input_available") }}
             </small>
             <select
               v-else
@@ -63,7 +55,7 @@
                 :key="d.deviceId"
                 :value="d"
               >
-                {{ $t(d.label) }}
+                {{ d.label }}
               </option>
             </select>
           </div>
@@ -109,19 +101,19 @@
               </option>
             </select>
           </div>
-
-          <div class="margin-vert-small">
-            <label>Resolutions</label>
-            <template
-              v-if="
-                !selected_devices.video_input_device ||
-                !selected_devices.video_input_device.deviceId
-              "
-            >
-              select camera first
-            </template>
-            <template v-else>
-              <button
+        </div>
+        <label>{{ $t("resolutions") }}</label>
+        <div>
+          <small
+            v-if="
+              !selected_devices.video_input_device ||
+              !selected_devices.video_input_device.deviceId
+            "
+          >
+            {{ $t("pick_a_camera") }}
+          </small>
+          <template v-else>
+            <!-- <button
                 type="button"
                 class="buttonLink"
                 @click="getAllAvailableResolutions"
@@ -129,23 +121,24 @@
               >
                 get all input resolutions for
                 {{ selected_devices.video_input_device.label }}
-              </button>
-            </template>
-          </div>
-          <div>
+              </button> -->
+          </template>
+
+          <div class="m_captureview2--settingsPane--settings--resolutions">
             <div
-              v-for="res in available_camera_resolutions.concat(
+              v-for="res in predefined_resolutions.concat(
                 custom_camera_resolution
               )"
               :key="res.name"
             >
-              <input
-                type="radio"
-                :id="res.label"
-                :value="res"
-                v-model="desired_camera_resolution"
-              />
               <label :for="res.label">
+                <input
+                  type="radio"
+                  :id="res.label"
+                  :value="res"
+                  :disabled="unavailable_camera_resolutions.includes(res.label)"
+                  v-model="desired_camera_resolution"
+                />
                 <span
                   >{{ res.label }}
                   <template v-if="res.type !== 'custom'">
@@ -183,7 +176,7 @@
           </div>
         </div>
 
-        <div>
+        <!-- <div>
           <button
             type="button"
             class="buttonLink"
@@ -194,7 +187,7 @@
           <div v-if="show_debug">
             <pre>{{ connected_devices }}</pre>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="m_captureview2--settingsPane--updateButton">
         <!-- <small v-if="!desired_camera_resolution">
@@ -268,6 +261,9 @@
             >
               <path
                 fill="currentColor"
+                stroke="currentColor"
+                stroke-width="10"
+                stroke-linejoin="round"
                 d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"
               />
             </svg>
@@ -284,7 +280,7 @@
               <div class="_picto">
                 <img :src="available_mode_picto[mode]" />
               </div>
-              <span>{{ $t(mode) }}</span>
+              <span v-if="!collapse_capture_pane">{{ $t(mode) }}</span>
             </label>
           </div>
           <button
@@ -307,6 +303,9 @@
             >
               <path
                 fill="currentColor"
+                stroke="currentColor"
+                stroke-width="10"
+                stroke-linejoin="round"
                 d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"
               />
             </svg>
@@ -318,6 +317,59 @@
           class="m_captureview2--videoPane--top--videoContainer"
           :style="video_styles"
         >
+          <transition-group
+            tag="div"
+            class="_recording_timer"
+            name="slideFromTop"
+          >
+            <label
+              v-if="
+                selected_mode !== 'stopmotion' &&
+                is_recording &&
+                recording_duration
+              "
+              :key="'duration'"
+              v-html="recording_duration"
+            />
+
+            <label
+              v-if="
+                selected_mode === 'stopmotion' &&
+                is_recording &&
+                recording_duration
+              "
+              :key="'time_before'"
+              v-html="time_before_next_picture"
+            />
+
+            <div
+              v-if="selected_mode === 'stopmotion' && timelapse_mode"
+              :key="'timelapse_interval'"
+              class="_recording_timer--timelapse"
+            >
+              <div>
+                <span>{{ $t("interval_between_pictures") }}</span>
+                <input type="number" v-model.number="timelapse_interval" />
+                <span>{{ $t("seconds") }}</span>
+              </div>
+            </div>
+            <!-- <label 
+                v-if="selected_mode === 'stopmotion' && timelapse_mode"
+                :key="'disable_interval'"  
+              >
+                <button 
+                  type="button" 
+                  class="button-nostyle text-uc padding-none margin-none c-blanc bg-rouge button-inline"
+                  @click="timelapse_mode = false"
+                >
+                  <svg class="inline-svg margin-right-verysmall" viewBox="0 0 20 20">
+                    <path stroke="" fill="white" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+                  </svg>                    
+                  {{ $t('disable') }}
+                </button>                
+              </label>-->
+          </transition-group>
+
           <video
             ref="videoElement"
             autoplay
@@ -346,6 +398,14 @@
             </div>
           </transition>
 
+          <transition name="enableMode">
+            <div
+              v-if="mode_just_changed"
+              class="_mode_indicator"
+              v-html="$t(selected_mode)"
+            />
+          </transition>
+
           <transition name="fade_fast" :duration="150">
             <MediaPreviewBeforeValidation
               v-if="media_to_validate"
@@ -363,10 +423,12 @@
           <transition name="slideup" :duration="150" mode="out-in">
             <div
               class="m_captureview2--videoPane--bottom--buttons"
+              :class="{ 'is--recording': is_recording }"
               v-if="!(media_to_validate && must_validate_media)"
             >
               <div>
                 <button
+                  v-if="!is_recording"
                   type="button"
                   class="bg-rouge"
                   @click="show_capture_settings = !show_capture_settings"
@@ -393,32 +455,48 @@
                   c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
                     />
                   </svg>
-                  <span class>{{ $t("settings") }}</span>
+                  <span v-if="!collapse_capture_pane" class>{{
+                    $t("settings")
+                  }}</span>
                 </button>
               </div>
               <div>
-                <button
-                  type="button"
-                  class="bg-orange button-inline _captureButton"
-                  :class="{ 'is--justCaptured': capture_button_pressed }"
-                  :disabled="is_saving"
-                  @mousedown.stop.prevent="captureOrStop()"
-                  @touchstart.stop.prevent="captureOrStop()"
-                >
-                  <img
-                    v-if="!is_recording"
-                    class="inline-svg inline-svg_larger"
-                    src="/images/i_record.svg"
-                  />
-                  <img v-else class="inline-svg" src="/images/i_stop.svg" />
+                <transition name="fade_fast" mode="out-in">
+                  <button
+                    type="button"
+                    class="bg-orange button-inline _captureButton"
+                    :class="{ 'is--justCaptured': capture_button_pressed }"
+                    :disabled="is_saving"
+                    :key="selected_mode + is_recording"
+                    @mousedown.stop.prevent="captureOrStop()"
+                    @touchstart.stop.prevent="captureOrStop()"
+                  >
+                    <img
+                      v-if="!is_recording"
+                      class="inline-svg inline-svg_larger"
+                      src="/images/i_record.svg"
+                    />
+                    <img
+                      v-else
+                      class="inline-svg inline-svg_larger"
+                      src="/images/i_stop.svg"
+                    />
 
-                  <span v-if="selected_mode === 'photo'">
-                    {{ $t("take_picture") }}</span
-                  >
-                  <span v-else-if="selected_mode === 'video'">
-                    {{ $t("record_video") }}</span
-                  >
-                </button>
+                    &nbsp;
+
+                    <span v-if="selected_mode === 'photo'">
+                      {{ $t("take_picture") }}</span
+                    >
+                    <span v-else-if="selected_mode === 'video'">
+                      <template v-if="!is_recording">
+                        {{ $t("record_video") }}
+                      </template>
+                      <template v-else>
+                        {{ $t("stop_recording") }}
+                      </template>
+                    </span>
+                  </button>
+                </transition>
               </div>
               <div>
                 <span class="switch switch-xs" v-if="selected_mode === 'video'">
@@ -459,6 +537,7 @@ import adapter from "webrtc-adapter";
 
 import * as axios from "axios";
 import RecordRTC from "recordrtc";
+import { setTimeout } from "timers";
 
 export default {
   props: {
@@ -498,9 +577,11 @@ export default {
       media_is_being_sent: false,
       media_being_sent_percent: 0,
       capture_button_pressed: false,
+      mode_just_changed: false,
 
       connected_devices: [],
       ideal_resolution: undefined,
+      collapse_capture_pane: false,
 
       selected_devices: {
         video_input_device: undefined,
@@ -513,7 +594,7 @@ export default {
       show_capture_settings: false,
       enable_audio_in_video: true,
 
-      quickScan_resolutions: [
+      predefined_resolutions: [
         {
           label: "4K(UHD)",
           width: 3840,
@@ -582,7 +663,7 @@ export default {
         // },
       ],
 
-      available_camera_resolutions: [],
+      unavailable_camera_resolutions: [],
       custom_camera_resolution: {
         label: this.$t("custom"),
         type: "custom",
@@ -592,8 +673,15 @@ export default {
 
       is_loading_available_devices: false,
       is_scanning_resolutions: false,
+      is_recording: false,
+      timer_recording: false,
+
+      timelapse_mode: false,
+      timelapse_interval: 2,
+      timelapse_event: false,
 
       desired_camera_resolution: undefined,
+      last_working_resolution: undefined,
       actual_camera_resolution: {
         width: undefined,
         height: undefined,
@@ -630,6 +718,9 @@ export default {
     } else {
       this.selected_mode = this.available_modes[0];
     }
+
+    this.checkCapturePanelSize();
+    this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
 
     this.is_loading_available_devices = true;
 
@@ -694,11 +785,18 @@ export default {
   },
   watch: {
     "selected_devices.video_input_device": function () {
-      this.available_camera_resolutions = [];
+      this.unavailable_camera_resolutions = [];
+      this.last_working_resolution = false;
     },
     desired_camera_resolution: {
       handler() {},
       deep: true,
+    },
+    selected_mode: function () {
+      this.mode_just_changed = true;
+      setTimeout(() => {
+        this.mode_just_changed = false;
+      }, 300);
     },
     media_to_validate: function () {
       console.log(
@@ -711,6 +809,14 @@ export default {
       }
 
       if (this.must_validate_media === false) {
+      }
+    },
+    is_recording: function () {
+      // equalizer.setSarahCouleur(this.is_recording);
+      if (this.is_recording) {
+        this.timer_recording = this.$root.currentTime;
+      } else {
+        this.timer_recording = false;
       }
     },
     enable_audio_in_video: function () {
@@ -764,6 +870,25 @@ export default {
         `/_file-upload/${this.type}/${this.slugFolderName}/?socketid=${this.$root.$socketio.socket.id}`
       );
     },
+    recording_duration: function () {
+      if (this.timer_recording) {
+        return this.$moment(this.$root.currentTime - this.timer_recording)
+          .startOf("second")
+          .format("mm:ss");
+      }
+      return false;
+    },
+    time_before_next_picture: function () {
+      const seconds_ellapsed_since_beginning = this.$moment(
+        this.$root.currentTime - this.timer_recording
+      ).seconds();
+      const time_ellapsed_since_last_capture =
+        seconds_ellapsed_since_beginning % this.timelapse_interval;
+      if (time_ellapsed_since_last_capture === 0) {
+        return 0;
+      }
+      return this.timelapse_interval - time_ellapsed_since_last_capture;
+    },
   },
   methods: {
     listDevices() {
@@ -798,7 +923,8 @@ export default {
     },
     previousMode() {
       console.log("METHODS • CaptureView: previousMode");
-      if (this.is_recording || this.media_to_validate) return;
+      if (this.is_recording || this.media_to_validate || this.mode_just_changed)
+        return;
 
       let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
 
@@ -808,13 +934,19 @@ export default {
     },
     nextMode() {
       console.log("METHODS • CaptureView: nextMode");
-      if (this.is_recording || this.media_to_validate) return;
+      if (this.is_recording || this.media_to_validate || this.mode_just_changed)
+        return;
 
       let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
 
       if (currentModeIndex < this.available_modes.length - 1) {
         this.selected_mode = this.available_modes[currentModeIndex + 1];
       }
+    },
+    checkCapturePanelSize() {
+      if (this.$el && this.$el.offsetWidth && this.$el.offsetWidth <= 600)
+        this.collapse_capture_pane = true;
+      else this.collapse_capture_pane = false;
     },
     setDefaultInputsAndOutputs() {
       if (this.connected_devices.length === 0) return;
@@ -832,7 +964,7 @@ export default {
       this.is_scanning_resolutions = true;
       this.$refs.videoElement.pause();
 
-      let tasks = this.quickScan_resolutions.map((resolution) => () =>
+      let tasks = this.predefined_resolutions.map((resolution) => () =>
         this.setCameraStream(
           resolution,
           this.selected_devices.video_input_device,
@@ -850,7 +982,7 @@ export default {
         );
       serial(tasks).then((res) => {
         res = res.filter((r) => !r.status && r.status !== "error");
-        this.available_camera_resolutions = res;
+        // this.unavailable_camera_resolutions = res;
         this.is_scanning_resolutions = false;
         this.$refs.videoElement.play();
       });
@@ -905,7 +1037,7 @@ export default {
         } else {
           // screen capture devices
           constraints = {
-            audio: with_audio,
+            audio: false,
             video: {
               mandatory: {
                 chromeMediaSource: device.chromeMediaSource,
@@ -944,7 +1076,10 @@ export default {
                       console.log(
                         "getUserMedia error! Mismatch between expected and actual camera stream resolution"
                       );
-                      return resolve(`Resolution mismatch.`);
+                      return reject({
+                        status: "error",
+                        error_msg: "resolution_mismatch",
+                      });
                     }
                   });
                 };
@@ -956,9 +1091,9 @@ export default {
                 //   .closeLogOnClick(true)
                 //   .delay(4000)
                 //   .error(this.$t("notifications.failed_loading_res"));
-                return resolve({
-                  status: error,
-                  msg: `Failed to getUserMedia : ` + error.name,
+                return reject({
+                  status: "error",
+                  error_msg: error.name,
                 });
               });
           },
@@ -1145,13 +1280,32 @@ export default {
         this.desired_camera_resolution,
         this.selected_devices.video_input_device,
         this.enable_audio_in_video
-      ).catch(() => {
-        this.stream_current_settings = false;
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("notifications.failed_to_use_selected_resolution"));
-      });
+      )
+        .then((res) => {
+          this.last_working_resolution = this.desired_camera_resolution;
+        })
+        .catch((err) => {
+          this.stream_current_settings = false;
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(
+              this.$t(
+                "notifications.failed_to_start_video_change_source_or_res"
+              ) +
+                "<br>" +
+                err.error_msg
+            );
+          this.unavailable_camera_resolutions.push(
+            this.desired_camera_resolution.label
+          );
+          if (this.last_working_resolution) {
+            this.desired_camera_resolution = this.last_working_resolution;
+            setTimeout(() => {
+              this.setCameraStreamFromDefaults();
+            }, 500);
+          }
+        });
     },
     refreshVideoActualSize() {
       this.getVideoActualSize()
@@ -1366,7 +1520,7 @@ export default {
   .m_captureview2--settingsPane--topbar {
     flex: 0 0 auto;
     border-bottom: 2px solid var(--c-rouge_fonce);
-    padding: calc(var(--spacing) / 2);
+    // padding: calc(var(--spacing) / 2);
     color: white;
 
     display: flex;
@@ -1374,12 +1528,39 @@ export default {
     justify-content: center;
   }
 
+  .m_captureview2--settingsPane--topbar--title {
+    padding: calc(var(--spacing) / 2) var(--spacing);
+    font-weight: 700;
+    font-size: var(--font-large);
+  }
+
   .m_captureview2--settingsPane--settings {
     overflow-y: auto;
     flex: 1 1 auto;
     padding: calc(var(--spacing) / 2);
     // padding-bottom: var(--spacing);
+
+    > div {
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+      border-radius: 6px;
+    }
   }
+
+  .m_captureview2--settingsPane--settings--resolutions {
+    label {
+      padding: calc(var(--spacing) / 4) 0;
+
+      display: flex;
+      align-items: center;
+
+      > input {
+        flex: 0 0 auto;
+        margin-right: calc(var(--spacing) / 3);
+      }
+    }
+  }
+
   .m_captureview2--settingsPane--updateButton {
     flex: 0 0 auto;
     border-top: 2px solid var(--c-rouge_fonce);
@@ -1434,12 +1615,15 @@ export default {
   }
 
   .m_captureview2--videoPane--bottom {
+    position: relative;
     flex: 0 0 auto;
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
 
     .m_captureview2--videoPane--bottom--buttons {
       display: flex;
       flex-flow: row wrap;
       justify-content: space-between;
+      align-items: center;
 
       > * {
         flex: 1 1 100px;
@@ -1448,6 +1632,13 @@ export default {
         &:nth-child(2) {
           text-align: center;
         }
+        &:last-child {
+          text-align: right;
+        }
+      }
+
+      &.is--recording {
+        background-color: var(--c-orange);
       }
     }
   }
@@ -1512,7 +1703,7 @@ export default {
 
   input[disabled] + label {
     filter: grayscale(100%);
-    opacity: 0.3;
+    // opacity: 0.3;
     cursor: not-allowed;
   }
 
@@ -1604,6 +1795,91 @@ export default {
     letter-spacing: 0.05em;
     color: #666;
     font-weight: 600;
+  }
+}
+
+._mode_indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--c-orange);
+  font-weight: 700;
+  font-family: "Fira Code";
+  font-size: var(--font-large);
+  text-transform: uppercase;
+
+  letter-spacing: 0.06em;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+._recording_timer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+  text-align: center;
+  pointer-events: none;
+  padding: calc(var(--spacing) / 8);
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+
+  label {
+    display: inline-block;
+    margin: 0 auto;
+    background-color: var(--c-rouge);
+    padding: 0 calc(var(--spacing) / 8);
+
+    margin-bottom: calc(var(--spacing) / 8);
+    color: white;
+    border-radius: 4px;
+    pointer-events: auto;
+  }
+
+  .recording_timer--timelapse {
+    max-width: 450px;
+    margin: calc(var(--spacing) / 2) auto;
+    // .padding-verysmall;
+    pointer-events: auto;
+    // .font-small;
+
+    > * {
+      background-color: var(--c-rouge);
+
+      color: white;
+      padding: 0 calc(var(--spacing) / 8);
+      border-radius: 4px;
+      width: auto;
+    }
+
+    input {
+      display: inline-block;
+      min-width: 2em;
+      max-width: 3em;
+      height: 1.2em;
+      margin: 2px;
+      padding: 0 2px;
+      width: auto;
+      width: auto;
+      text-align: center;
+      color: white;
+
+      background-color: var(--c-rouge_clair);
+
+      border-bottom: 0px;
+
+      &:active,
+      &:focus {
+        border-bottom-color: var(--c-rouge_fonce);
+      }
+    }
   }
 }
 </style>
