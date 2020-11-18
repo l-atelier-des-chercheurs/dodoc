@@ -211,7 +211,7 @@
             </div>
           </transition>
 
-          <transition name="enableMode">
+          <transition name="enableMode" :duration="400">
             <div
               v-if="mode_just_changed"
               class="_mode_indicator"
