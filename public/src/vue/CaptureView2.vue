@@ -8,7 +8,7 @@
       </transition>
 
       <div class="m_captureview2--settingsPane--topbar">
-        <div>
+        <div class="m_captureview2--settingsPane--topbar--title">
           <svg
             class="inline-svg inline-svg_larger"
             version="1.1"
@@ -36,20 +36,12 @@
       </div>
 
       <div class="m_captureview2--settingsPane--settings">
-        <label>Devices available</label>
-        <button
-          type="button"
-          class="buttonLink"
-          @click="refreshAvailableDevices"
-        >
-          Refresh devices
-        </button>
-
-        <div>
+        <label>{{ $t("sources") }}</label>
+        <div class="">
           <div class="">
-            <label>Camera</label>
+            <label>{{ $t("camera") }}</label>
             <small v-if="!all_video_input_devices.length === 0">
-              No video input devices available
+              {{ $t("no_video_input_available") }}
             </small>
             <select
               v-else
@@ -63,7 +55,7 @@
                 :key="d.deviceId"
                 :value="d"
               >
-                {{ $t(d.label) }}
+                {{ d.label }}
               </option>
             </select>
           </div>
@@ -109,19 +101,19 @@
               </option>
             </select>
           </div>
-
-          <div class="margin-vert-small">
-            <label>{{ $t("resolutions") }}</label>
-            <template
-              v-if="
-                !selected_devices.video_input_device ||
-                !selected_devices.video_input_device.deviceId
-              "
-            >
-              select camera first
-            </template>
-            <template v-else>
-              <button
+        </div>
+        <label>{{ $t("resolutions") }}</label>
+        <div>
+          <small
+            v-if="
+              !selected_devices.video_input_device ||
+              !selected_devices.video_input_device.deviceId
+            "
+          >
+            {{ $t("pick_a_camera") }}
+          </small>
+          <template v-else>
+            <!-- <button
                 type="button"
                 class="buttonLink"
                 @click="getAllAvailableResolutions"
@@ -129,23 +121,24 @@
               >
                 get all input resolutions for
                 {{ selected_devices.video_input_device.label }}
-              </button>
-            </template>
-          </div>
-          <div>
+              </button> -->
+          </template>
+
+          <div class="m_captureview2--settingsPane--settings--resolutions">
             <div
-              v-for="res in available_camera_resolutions.concat(
+              v-for="res in predefined_resolutions.concat(
                 custom_camera_resolution
               )"
               :key="res.name"
             >
-              <input
-                type="radio"
-                :id="res.label"
-                :value="res"
-                v-model="desired_camera_resolution"
-              />
               <label :for="res.label">
+                <input
+                  type="radio"
+                  :id="res.label"
+                  :value="res"
+                  :disabled="unavailable_camera_resolutions.includes(res.label)"
+                  v-model="desired_camera_resolution"
+                />
                 <span
                   >{{ res.label }}
                   <template v-if="res.type !== 'custom'">
@@ -183,7 +176,7 @@
           </div>
         </div>
 
-        <div>
+        <!-- <div>
           <button
             type="button"
             class="buttonLink"
@@ -194,7 +187,7 @@
           <div v-if="show_debug">
             <pre>{{ connected_devices }}</pre>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="m_captureview2--settingsPane--updateButton">
         <!-- <small v-if="!desired_camera_resolution">
@@ -585,7 +578,7 @@ export default {
         // },
       ],
 
-      available_camera_resolutions: [],
+      unavailable_camera_resolutions: [],
       custom_camera_resolution: {
         label: this.$t("custom"),
         type: "custom",
@@ -597,6 +590,7 @@ export default {
       is_scanning_resolutions: false,
 
       desired_camera_resolution: undefined,
+      last_working_resolution: undefined,
       actual_camera_resolution: {
         width: undefined,
         height: undefined,
@@ -700,7 +694,8 @@ export default {
   },
   watch: {
     "selected_devices.video_input_device": function () {
-      this.available_camera_resolutions = [];
+      this.unavailable_camera_resolutions = [];
+      this.last_working_resolution = false;
     },
     desired_camera_resolution: {
       handler() {},
@@ -861,7 +856,7 @@ export default {
         );
       serial(tasks).then((res) => {
         res = res.filter((r) => !r.status && r.status !== "error");
-        this.available_camera_resolutions = res;
+        // this.unavailable_camera_resolutions = res;
         this.is_scanning_resolutions = false;
         this.$refs.videoElement.play();
       });
@@ -916,7 +911,7 @@ export default {
         } else {
           // screen capture devices
           constraints = {
-            audio: with_audio,
+            audio: false,
             video: {
               mandatory: {
                 chromeMediaSource: device.chromeMediaSource,
@@ -955,7 +950,10 @@ export default {
                       console.log(
                         "getUserMedia error! Mismatch between expected and actual camera stream resolution"
                       );
-                      return resolve(`Resolution mismatch.`);
+                      return reject({
+                        status: "error",
+                        error_msg: "resolution_mismatch",
+                      });
                     }
                   });
                 };
@@ -967,9 +965,9 @@ export default {
                 //   .closeLogOnClick(true)
                 //   .delay(4000)
                 //   .error(this.$t("notifications.failed_loading_res"));
-                return resolve({
-                  status: error,
-                  msg: `Failed to getUserMedia : ` + error.name,
+                return reject({
+                  status: "error",
+                  error_msg: error.name,
                 });
               });
           },
@@ -1156,13 +1154,32 @@ export default {
         this.desired_camera_resolution,
         this.selected_devices.video_input_device,
         this.enable_audio_in_video
-      ).catch(() => {
-        this.stream_current_settings = false;
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("notifications.failed_to_use_selected_resolution"));
-      });
+      )
+        .then((res) => {
+          this.last_working_resolution = this.desired_camera_resolution;
+        })
+        .catch((err) => {
+          this.stream_current_settings = false;
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(
+              this.$t(
+                "notifications.failed_to_start_video_change_source_or_res"
+              ) +
+                "<br>" +
+                err.error_msg
+            );
+          this.unavailable_camera_resolutions.push(
+            this.desired_camera_resolution.label
+          );
+          if (this.last_working_resolution) {
+            this.desired_camera_resolution = this.last_working_resolution;
+            setTimeout(() => {
+              this.setCameraStreamFromDefaults();
+            }, 500);
+          }
+        });
     },
     refreshVideoActualSize() {
       this.getVideoActualSize()
@@ -1377,7 +1394,7 @@ export default {
   .m_captureview2--settingsPane--topbar {
     flex: 0 0 auto;
     border-bottom: 2px solid var(--c-rouge_fonce);
-    padding: calc(var(--spacing) / 2);
+    // padding: calc(var(--spacing) / 2);
     color: white;
 
     display: flex;
@@ -1385,12 +1402,39 @@ export default {
     justify-content: center;
   }
 
+  .m_captureview2--settingsPane--topbar--title {
+    padding: calc(var(--spacing) / 2) var(--spacing);
+    font-weight: 700;
+    font-size: var(--font-large);
+  }
+
   .m_captureview2--settingsPane--settings {
     overflow-y: auto;
     flex: 1 1 auto;
     padding: calc(var(--spacing) / 2);
     // padding-bottom: var(--spacing);
+
+    > div {
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+      border-radius: 6px;
+    }
   }
+
+  .m_captureview2--settingsPane--settings--resolutions {
+    label {
+      padding: calc(var(--spacing) / 4) 0;
+
+      display: flex;
+      align-items: center;
+
+      > input {
+        flex: 0 0 auto;
+        margin-right: calc(var(--spacing) / 3);
+      }
+    }
+  }
+
   .m_captureview2--settingsPane--updateButton {
     flex: 0 0 auto;
     border-top: 2px solid var(--c-rouge_fonce);

@@ -171,6 +171,14 @@ module.exports = (function () {
       fr: "Interactif",
       en: "Interactive",
     },
+    sources: {
+      fr: "Sources",
+      en: "Sources",
+    },
+    no_video_input_available: {
+      fr: "Aucune source vidéo trouvée",
+      en: "No video souce available",
+    },
     static_preview: {
       fr: "Image",
       en: "Static",
@@ -707,6 +715,14 @@ module.exports = (function () {
       nl: "Camera naar achteren gericht ",
       oc: "Camerà arrièra",
       de: "Rückfahrkamera",
+    },
+    camera: {
+      fr: "Camera",
+      en: "Camera",
+    },
+    pick_a_camera: {
+      fr: "Sélectionnez une caméra",
+      en: "Pick a camera",
     },
     "Entire screen": {
       fr: "Écran de l’ordinateur",
