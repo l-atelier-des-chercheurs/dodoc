@@ -684,7 +684,7 @@ export default {
         })
         .then((mdata) => {
           this.is_saving = false;
-          clearTimeout(media_editing_timeout);
+          // clearTimeout(media_editing_timeout);
         });
     },
 
