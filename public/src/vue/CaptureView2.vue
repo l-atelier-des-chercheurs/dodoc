@@ -375,8 +375,35 @@
             autoplay
             playsinline
             muted
-            v-show="!(must_validate_media && media_to_validate)"
+            v-show="
+              ['photo', 'video', 'stopmotion'].includes(selected_mode) &&
+              show_live_feed &&
+              !(must_validate_media && media_to_validate)
+            "
           />
+          <transition name="scaleInFade" mode="out-in" duration="100">
+            <MediaContent
+              v-if="
+                selected_mode === 'stopmotion' &&
+                stopmotion.onion_skin_img &&
+                current_stopmotion
+              "
+              :key="
+                show_live_feed ? false : stopmotion.onion_skin_img.metaFileName
+              "
+              class="_onion_skin"
+              :class="{ 'is--onionskin': show_live_feed }"
+              :context="'edit'"
+              :slugFolderName="current_stopmotion"
+              :media="stopmotion.onion_skin_img"
+              :folderType="'stopmotions'"
+              :style="
+                show_live_feed
+                  ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}`
+                  : ''
+              "
+            />
+          </transition>
 
           <transition name="fade_fast">
             <div
@@ -414,6 +441,30 @@
           </transition>
         </div>
       </div>
+
+      <transition name="slideup" :duration="150" mode="out-in">
+        <StopmotionPanel
+          v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
+          :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
+          :type="type"
+          :slugFolderName="slugFolderName"
+          :read_only="read_only"
+          :stream="stream"
+          :can_add_to_fav="can_add_to_fav"
+          :show_live_feed.sync="show_live_feed"
+          @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
+          @close="
+            current_stopmotion = false;
+            is_recording = false;
+          "
+          @new_single_image="updateSingleImage"
+          @validating_video="
+            (state) => {
+              is_validating_stopmotion_video = state;
+            }
+          "
+        />
+      </transition>
 
       <transition name="slideup" :duration="150" mode="out-in">
         <div
@@ -511,6 +562,33 @@
                     $t("with_sound")
                   }}</label>
                 </span>
+
+                <div
+                  v-if="
+                    selected_mode === 'stopmotion' &&
+                    stopmotion.onion_skin_img &&
+                    show_live_feed
+                  "
+                >
+                  <label>{{ $t("onion_skin") }}</label>
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model="stopmotion.onion_skin_opacity"
+                    min="0"
+                    max=".9"
+                    step="0.01"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  v-if="selected_mode === 'stopmotion' && !is_making_stopmotion"
+                  @click="show_stopmotion_list = !show_stopmotion_list"
+                  class="button c-bleumarine font-small bg-transparent"
+                >
+                  <span class>{{ $t("stopmotion_list") }}</span>
+                </button>
               </div>
             </div>
             <MediaValidationButtons
@@ -532,6 +610,8 @@
 <script>
 import MediaPreviewBeforeValidation from "./components/subcomponents/MediaPreviewBeforeValidation.vue";
 import MediaValidationButtons from "./components/subcomponents/MediaValidationButtons.vue";
+import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
+import MediaContent from "./components/subcomponents/MediaContent.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -557,7 +637,12 @@ export default {
       default: true,
     },
   },
-  components: { MediaPreviewBeforeValidation, MediaValidationButtons },
+  components: {
+    MediaPreviewBeforeValidation,
+    MediaValidationButtons,
+    StopmotionPanel,
+    MediaContent,
+  },
   data() {
     return {
       selected_mode: "",
@@ -578,6 +663,8 @@ export default {
       media_being_sent_percent: 0,
       capture_button_pressed: false,
       mode_just_changed: false,
+
+      current_stopmotion: false,
 
       connected_devices: [],
       ideal_resolution: undefined,
@@ -685,6 +772,13 @@ export default {
       actual_camera_resolution: {
         width: undefined,
         height: undefined,
+      },
+
+      show_live_feed: true,
+      show_stopmotion_list: false,
+      stopmotion: {
+        onion_skin_img: false,
+        onion_skin_opacity: 0,
       },
 
       stream_current_settings: undefined,
@@ -835,6 +929,13 @@ export default {
     },
     all_audio_output_devices() {
       return this.connected_devices.filter((d) => d.kind === "audiooutput");
+    },
+    is_making_stopmotion() {
+      const is_making_stopmotion = this.current_stopmotion ? true : false;
+      if (is_making_stopmotion) {
+        this.show_capture_settings = false;
+      }
+      return is_making_stopmotion;
     },
     current_settings() {
       if (
@@ -1008,6 +1109,63 @@ export default {
         });
       });
     },
+    addStopmotionImage() {
+      const smdata = {
+        name:
+          this.slugFolderName + "-" + this.$moment().format("YYYYMMDD_HHmmss"),
+        linked_project: this.slugFolderName,
+        linked_type: this.type,
+        authors: this.$root.current_author
+          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
+          : "",
+      };
+
+      this.getStaticImageFromVideoElement().then((imageData) => {
+        if (!this.current_stopmotion) {
+          // create stopmotion
+          this.$root
+            .createFolder({
+              type: "stopmotions",
+              data: smdata,
+            })
+            .then((fdata) => {
+              this.current_stopmotion = fdata.slugFolderName;
+              this.addImageToStopmotion(imageData);
+            });
+        } else {
+          // append to stopmotion
+          this.addImageToStopmotion(imageData);
+        }
+      });
+    },
+    addImageToStopmotion(imageData) {
+      console.log("METHODS • CaptureView: addImageToStopmotion");
+      this.is_saving = true;
+
+      const media_editing_timeout = setTimeout(() => {
+        if (this.is_saving) {
+          this.is_saving = false;
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.failed_to_save_media"));
+        }
+      }, 5000);
+
+      this.$root
+        .createMedia({
+          slugFolderName: this.current_stopmotion,
+          type: "stopmotions",
+          rawData: imageData,
+          additionalMeta: {
+            type: "image",
+          },
+        })
+        .then((mdata) => {
+          this.is_saving = false;
+          clearTimeout(media_editing_timeout);
+        });
+    },
     setCameraStream(candidate, device, with_audio) {
       return new Promise((resolve, reject) => {
         console.log("trying " + candidate.label + " on " + device.label);
@@ -1164,23 +1322,22 @@ export default {
         this.capture_button_pressed = false;
       }, 400);
 
-      // if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
-      //   if (!this.is_recording) {
-      //     this.is_recording = true;
-      //     this.timelapse_event = window.setInterval(() => {
-      //       this.capture_button_pressed = true;
-      //       window.setTimeout(() => {
-      //         this.capture_button_pressed = false;
-      //       }, 400);
-      //       this.addStopmotionImage();
-      //     }, this.timelapse_interval * 1000);
-      //   } else {
-      //     this.is_recording = false;
-      //     clearInterval(this.timelapse_event);
-      //     return;
-      //   }
-      // }
-
+      if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
+        if (!this.is_recording) {
+          this.is_recording = true;
+          this.timelapse_event = window.setInterval(() => {
+            this.capture_button_pressed = true;
+            window.setTimeout(() => {
+              this.capture_button_pressed = false;
+            }, 400);
+            this.addStopmotionImage();
+          }, this.timelapse_interval * 1000);
+        } else {
+          this.is_recording = false;
+          clearInterval(this.timelapse_event);
+          return;
+        }
+      }
       if (this.is_recording && this.selected_mode !== "stopmotion") {
         this.$eventHub.$emit("capture.stopRecording");
         return;
@@ -1492,6 +1649,9 @@ export default {
     },
     cancelValidation() {
       this.media_to_validate = false;
+    },
+    updateSingleImage($event) {
+      this.stopmotion.onion_skin_img = $event;
     },
   },
 };
@@ -1880,6 +2040,25 @@ export default {
         border-bottom-color: var(--c-rouge_fonce);
       }
     }
+  }
+}
+
+._onion_skin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  &.is--onionskin {
+    opacity: 0.2;
+    opacity: var(--onionskin-opacity);
+  }
+
+  >>> img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 }
 </style>

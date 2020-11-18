@@ -35,7 +35,7 @@
           :key="media.metaFileName"
           @click="
             show_previous_photo = media;
-            show_live_feed = false;
+            $emit('update:show_live_feed', false);
           "
           class
           :class="{
@@ -56,11 +56,18 @@
           :class="{ 'is--current_single': show_live_feed }"
           @click="
             show_previous_photo = medias[medias.length - 1];
-            show_live_feed = true;
+            $emit('update:show_live_feed', true);
           "
           :key="'live_feed'"
+          :data-content="$t('live')"
         >
-          <video :srcObject.prop="videoStream" autoplay />
+          <video
+            ref="videoElement"
+            :srcObject.prop="stream"
+            autoplay
+            playsinline
+            muted
+          />
         </div>
       </transition-group>
       <div class="m_stopmotionpanel--medias--validation">
@@ -85,8 +92,15 @@
             validating_video_preview && frameRate === previousFrameRate
           "
         >
-          <span class="text-cap padding-left-small font-verysmall">{{ $t("create") }}</span>
-          <img src="/images/i_play.svg" width="48" height="48" draggable="false" />
+          <span class="text-cap padding-left-small font-verysmall">{{
+            $t("create")
+          }}</span>
+          <img
+            src="/images/i_play.svg"
+            width="48"
+            height="48"
+            draggable="false"
+          />
         </button>
 
         <!-- <button
@@ -137,8 +151,9 @@ export default {
     stopmotiondata: Object,
     slugFolderName: String,
     type: String,
-    videoStream: MediaStream,
+    stream: MediaStream,
     can_add_to_fav: Boolean,
+    show_live_feed: Boolean,
   },
   components: {
     MediaContent,
@@ -151,7 +166,6 @@ export default {
       validating_video_preview: false,
       show_previous_photo: false,
       media_is_being_sent: false,
-      show_live_feed: true,
       show_advanced_menu: false,
     };
   },
@@ -177,11 +191,23 @@ export default {
         }
       }
     },
+    stream: {
+      handler() {
+        // debugger;
+        // if (this.stream && this.$refs.videoElement) {
+        //   if ("srcObject" in this.$refs.videoElement)
+        //     this.$refs.videoElement.srcObject = this.stream;
+        //   // Avoid using this in new browsers, as it is going away.
+        //   else
+        //     this.$refs.videoElement.src = window.URL.createObjectURL(
+        //       this.stream
+        //     );
+        // }
+      },
+      immediate: true,
+    },
     show_previous_photo: function () {
       this.$emit("new_single_image", this.show_previous_photo);
-    },
-    show_live_feed: function () {
-      this.$emit("show_live_feed", this.show_live_feed);
     },
     validating_video_preview: function () {
       this.$emit("validating_video", this.validating_video_preview);
@@ -295,7 +321,7 @@ export default {
         this.show_previous_photo = this.medias[index + 1];
       } else {
         this.show_previous_photo = false;
-        this.show_live_feed = true;
+        this.$emit("update:show_live_feed", true);
       }
       this.validating_video_preview = false;
 

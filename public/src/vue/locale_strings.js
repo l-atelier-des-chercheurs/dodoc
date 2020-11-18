@@ -53,6 +53,10 @@ module.exports = (function () {
       fr: "Épinglées",
       en: "Pinned",
     },
+    live: {
+      fr: "Direct",
+      en: "Live",
+    },
     no_content_to_show: {
       fr: "Aucun contenu à afficher",
       en: "No content to show",
