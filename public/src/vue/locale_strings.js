@@ -126,6 +126,10 @@ module.exports = (function () {
       fr: "Nombre de médias",
       en: "Amount of medias",
     },
+    resolutions: {
+      fr: "Resolutions",
+      en: "Resolutions",
+    },
     reply: {
       fr: "Répondre",
       en: "Reply",

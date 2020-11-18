@@ -111,7 +111,7 @@
           </div>
 
           <div class="margin-vert-small">
-            <label>Resolutions</label>
+            <label>{{ $t("resolutions") }}</label>
             <template
               v-if="
                 !selected_devices.video_input_device ||
@@ -284,7 +284,7 @@
               <div class="_picto">
                 <img :src="available_mode_picto[mode]" />
               </div>
-              <span>{{ $t(mode) }}</span>
+              <span v-if="!collapse_capture_pane">{{ $t(mode) }}</span>
             </label>
           </div>
           <button
@@ -393,7 +393,9 @@
                   c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
                     />
                   </svg>
-                  <span class>{{ $t("settings") }}</span>
+                  <span v-if="!collapse_capture_pane" class>{{
+                    $t("settings")
+                  }}</span>
                 </button>
               </div>
               <div>
@@ -501,6 +503,7 @@ export default {
 
       connected_devices: [],
       ideal_resolution: undefined,
+      collapse_capture_pane: false,
 
       selected_devices: {
         video_input_device: undefined,
@@ -513,7 +516,7 @@ export default {
       show_capture_settings: false,
       enable_audio_in_video: true,
 
-      quickScan_resolutions: [
+      predefined_resolutions: [
         {
           label: "4K(UHD)",
           width: 3840,
@@ -630,6 +633,9 @@ export default {
     } else {
       this.selected_mode = this.available_modes[0];
     }
+
+    this.checkCapturePanelSize();
+    this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
 
     this.is_loading_available_devices = true;
 
@@ -816,6 +822,11 @@ export default {
         this.selected_mode = this.available_modes[currentModeIndex + 1];
       }
     },
+    checkCapturePanelSize() {
+      if (this.$el && this.$el.offsetWidth && this.$el.offsetWidth <= 600)
+        this.collapse_capture_pane = true;
+      else this.collapse_capture_pane = false;
+    },
     setDefaultInputsAndOutputs() {
       if (this.connected_devices.length === 0) return;
 
@@ -832,7 +843,7 @@ export default {
       this.is_scanning_resolutions = true;
       this.$refs.videoElement.pause();
 
-      let tasks = this.quickScan_resolutions.map((resolution) => () =>
+      let tasks = this.predefined_resolutions.map((resolution) => () =>
         this.setCameraStream(
           resolution,
           this.selected_devices.video_input_device,
