@@ -463,7 +463,7 @@ export default {
       // },
 
       stream: undefined,
-      show_capture_settings: true,
+      show_capture_settings: false,
       enable_audio_in_video: true,
 
       is_recording: false,
@@ -596,10 +596,16 @@ export default {
       )
         return;
 
-      let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
+      let current_mode_index = this.available_modes.indexOf(this.selected_mode);
 
-      if (currentModeIndex > 0) {
-        this.selected_mode = this.available_modes[currentModeIndex - 1];
+      if (current_mode_index > 0) {
+      }
+      if (current_mode_index > 0) {
+        this.selected_mode = this.available_modes[current_mode_index - 1];
+      } else {
+        this.selected_mode = this.available_modes[
+          this.available_modes.length - 1
+        ];
       }
     },
     nextMode() {
@@ -612,10 +618,11 @@ export default {
       )
         return;
 
-      let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
-
-      if (currentModeIndex < this.available_modes.length - 1) {
-        this.selected_mode = this.available_modes[currentModeIndex + 1];
+      let current_mode_index = this.available_modes.indexOf(this.selected_mode);
+      if (current_mode_index < this.available_modes.length - 1) {
+        this.selected_mode = this.available_modes[current_mode_index + 1];
+      } else {
+        this.selected_mode = this.available_modes[0];
       }
     },
     checkCapturePanelSize() {
