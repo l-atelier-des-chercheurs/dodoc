@@ -381,12 +381,14 @@
               !(must_validate_media && media_to_validate)
             "
           />
+
           <transition name="scaleInFade" mode="out-in" duration="100">
             <MediaContent
               v-if="
                 selected_mode === 'stopmotion' &&
                 stopmotion.onion_skin_img &&
-                current_stopmotion
+                current_stopmotion &&
+                show_live_feed
               "
               :key="
                 show_live_feed ? false : stopmotion.onion_skin_img.metaFileName
@@ -404,7 +406,6 @@
               "
             />
           </transition>
-
           <transition name="fade_fast">
             <div
               class="_settingsTag"
@@ -440,31 +441,30 @@
             />
           </transition>
         </div>
+        <transition name="slideup" :duration="150" mode="out-in">
+          <StopmotionPanel
+            v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
+            :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
+            :type="type"
+            :slugFolderName="slugFolderName"
+            :read_only="read_only"
+            :stream="stream"
+            :can_add_to_fav="can_add_to_fav"
+            :show_live_feed.sync="show_live_feed"
+            @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
+            @close="
+              current_stopmotion = false;
+              is_recording = false;
+            "
+            @new_single_image="updateSingleImage"
+            @validating_video="
+              (state) => {
+                is_validating_stopmotion_video = state;
+              }
+            "
+          />
+        </transition>
       </div>
-
-      <transition name="slideup" :duration="150" mode="out-in">
-        <StopmotionPanel
-          v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
-          :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
-          :type="type"
-          :slugFolderName="slugFolderName"
-          :read_only="read_only"
-          :stream="stream"
-          :can_add_to_fav="can_add_to_fav"
-          :show_live_feed.sync="show_live_feed"
-          @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
-          @close="
-            current_stopmotion = false;
-            is_recording = false;
-          "
-          @new_single_image="updateSingleImage"
-          @validating_video="
-            (state) => {
-              is_validating_stopmotion_video = state;
-            }
-          "
-        />
-      </transition>
 
       <transition name="slideup" :duration="150" mode="out-in">
         <div
@@ -1770,6 +1770,7 @@ export default {
     background-color: var(--c-noir);
 
     display: flex;
+    flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
   }

@@ -225,39 +225,33 @@ export default {
   methods: {
     assembleStopmotionMedias: function () {
       console.log("METHODS • StopmotionPanel: assembleStopmotionMedias");
-      this.$eventHub.$on(
-        "socketio.media_created_or_updated",
-        this.newStopmotionVideo
-      );
 
       const list_media_names = this.medias.map((x) => x.media_filename);
 
-      this.$root.createMedia({
-        slugFolderName: this.slugFolderName,
-        type: this.type,
-        rawData: list_media_names,
-        additionalMeta: {
-          type: "stopmotion",
-          slugStopmotionName: this.stopmotiondata.slugFolderName,
-          frameRate: this.frameRate,
-        },
-      });
+      this.$root
+        .createMedia({
+          slugFolderName: this.slugFolderName,
+          type: this.type,
+          rawData: list_media_names,
+          additionalMeta: {
+            type: "stopmotion",
+            slugStopmotionName: this.stopmotiondata.slugFolderName,
+            frameRate: this.frameRate,
+          },
+        })
+        .then((mdata) => {
+          console.log("METHODS • StopmotionPanel: newStopmotionVideo");
+          this.validating_video_preview = mdata;
+          this.media_is_being_sent = false;
+
+          this.$nextTick(() => {
+            // this.$refs.videoPreview.getElementsByTagName('video')[0].play();
+          });
+        });
       this.previousFrameRate = this.frameRate;
       this.validating_video_preview = false;
       this.media_is_being_sent = true;
-    },
-    newStopmotionVideo: function (mdata) {
-      console.log("METHODS • StopmotionPanel: newStopmotionVideo");
-      this.$eventHub.$off(
-        "socketio.media_created_or_updated",
-        this.newStopmotionVideo
-      );
-      this.validating_video_preview = mdata;
-      this.media_is_being_sent = false;
-
-      this.$nextTick(() => {
-        // this.$refs.videoPreview.getElementsByTagName('video')[0].play();
-      });
+      this.$emit("update:show_live_feed", false);
     },
     backToStopmotion: function () {
       console.log("METHODS • StopmotionPanel: backToStopmotion");
@@ -267,6 +261,7 @@ export default {
         slugMediaName: this.validating_video_preview.metaFileName,
       });
       this.validating_video_preview = false;
+      this.$emit("update:show_live_feed", true);
     },
     cancelStopmotion: function () {
       this.$alertify
