@@ -423,6 +423,7 @@
           <transition name="slideup" :duration="150" mode="out-in">
             <div
               class="m_captureview2--videoPane--bottom--buttons"
+              :class="{ 'is--recording': is_recording }"
               v-if="!(media_to_validate && must_validate_media)"
             >
               <div>
@@ -1634,6 +1635,10 @@ export default {
         &:last-child {
           text-align: right;
         }
+      }
+
+      &.is--recording {
+        background-color: var(--c-orange);
       }
     }
   }
