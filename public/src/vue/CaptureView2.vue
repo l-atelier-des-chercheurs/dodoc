@@ -312,7 +312,10 @@
           </button>
         </div>
       </transition>
-      <div class="m_captureview2--videoPane--top">
+      <div
+        class="m_captureview2--videoPane--top"
+        v-show="!is_validating_stopmotion_video"
+      >
         <div
           class="m_captureview2--videoPane--top--videoContainer"
           :style="video_styles"
@@ -387,8 +390,7 @@
               v-if="
                 selected_mode === 'stopmotion' &&
                 stopmotion.onion_skin_img &&
-                current_stopmotion &&
-                show_live_feed
+                current_stopmotion
               "
               :key="
                 show_live_feed ? false : stopmotion.onion_skin_img.metaFileName
@@ -441,30 +443,26 @@
             />
           </transition>
         </div>
-        <transition name="slideup" :duration="150" mode="out-in">
-          <StopmotionPanel
-            v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
-            :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
-            :type="type"
-            :slugFolderName="slugFolderName"
-            :read_only="read_only"
-            :stream="stream"
-            :can_add_to_fav="can_add_to_fav"
-            :show_live_feed.sync="show_live_feed"
-            @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
-            @close="
-              current_stopmotion = false;
-              is_recording = false;
-            "
-            @new_single_image="updateSingleImage"
-            @validating_video="
-              (state) => {
-                is_validating_stopmotion_video = state;
-              }
-            "
-          />
-        </transition>
       </div>
+      <transition name="slideup" :duration="150" mode="out-in">
+        <StopmotionPanel
+          v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
+          :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
+          :type="type"
+          :slugFolderName="slugFolderName"
+          :read_only="read_only"
+          :stream="stream"
+          :can_add_to_fav="can_add_to_fav"
+          :show_live_feed.sync="show_live_feed"
+          :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
+          @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
+          @close="
+            current_stopmotion = false;
+            is_recording = false;
+          "
+          @new_single_image="updateSingleImage"
+        />
+      </transition>
 
       <transition name="slideup" :duration="150" mode="out-in">
         <div
@@ -663,6 +661,7 @@ export default {
       media_being_sent_percent: 0,
       capture_button_pressed: false,
       mode_just_changed: false,
+      is_validating_stopmotion_video: false,
 
       current_stopmotion: false,
 
@@ -891,6 +890,13 @@ export default {
       setTimeout(() => {
         this.mode_just_changed = false;
       }, 300);
+    },
+    is_validating_stopmotion_video: function () {
+      if (this.is_validating_stopmotion_video) {
+        this.$refs.videoElement.pause();
+      } else {
+        this.$refs.videoElement.play();
+      }
     },
     media_to_validate: function () {
       console.log(
@@ -1830,7 +1836,8 @@ export default {
     width: 100%;
     height: 100%;
 
-    video {
+    video,
+    .mediaContainer img {
       position: absolute;
       top: 0;
       left: 0;
@@ -2055,11 +2062,12 @@ export default {
     opacity: 0.2;
     opacity: var(--onionskin-opacity);
   }
-
-  >>> img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
+}
+</style>
+<style lang="scss">
+._onion_skin img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 </style>

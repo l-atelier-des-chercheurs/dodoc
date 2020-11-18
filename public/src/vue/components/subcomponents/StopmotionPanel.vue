@@ -154,6 +154,7 @@ export default {
     stream: MediaStream,
     can_add_to_fav: Boolean,
     show_live_feed: Boolean,
+    is_validating_stopmotion_video: Boolean,
   },
   components: {
     MediaContent,
@@ -210,7 +211,10 @@ export default {
       this.$emit("new_single_image", this.show_previous_photo);
     },
     validating_video_preview: function () {
-      this.$emit("validating_video", this.validating_video_preview);
+      this.$emit(
+        "update:is_validating_stopmotion_video",
+        !!this.validating_video_preview
+      );
     },
   },
   computed: {
