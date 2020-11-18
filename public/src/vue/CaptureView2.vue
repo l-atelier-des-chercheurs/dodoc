@@ -1,236 +1,12 @@
 <template>
   <div class="m_captureview2">
-    <div class="m_captureview2--settingsPane" v-if="show_capture_settings">
-      <transition name="fade_fast" :duration="400">
-        <Loader
-          v-if="is_loading_available_devices || is_scanning_resolutions"
-        />
-      </transition>
-
-      <div class="m_captureview2--settingsPane--topbar">
-        <div class="m_captureview2--settingsPane--topbar--title">
-          <svg
-            class="inline-svg inline-svg_larger"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            viewBox="0 0 140 140"
-            xml:space="preserve"
-          >
-            <path
-              style="fill: currentColor"
-              d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
-                  c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
-                  c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
-                  c-0.6,0.9-1.8,1.4-2.9,1.2L35.8,66L34,71.8l9.7,4.8c1,0.5,1.7,1.5,1.7,2.6v10c0,1.1-0.6,2.1-1.6,2.6l-9.6,4.9l2,5.9l10.9-1.6
-                  c1.1-0.2,2.2,0.3,2.9,1.2l6,8.1c0.7,0.9,0.8,2.1,0.3,3l-4.8,9.6l5.1,3.6l7.7-7.5c0.8-0.8,2-1,3.1-0.7l9.9,3
-                  c1.1,0.3,1.9,1.3,2.1,2.4l1.9,10.4h6.4l1.7-10.4c0.2-1.1,0.9-2,2-2.4l9.9-3.2c1.1-0.3,2.2-0.1,3.1,0.7l7.8,7.3l5.1-3.7l-4.9-9.4
-                  c-0.5-1-0.4-2.1,0.2-3l6-8.1c0.7-0.9,1.8-1.4,2.9-1.2l10.8,1.5l1.8-5.9l-9.7-4.8C123.3,90.9,122.7,89.9,122.7,88.8z M84,104.5
-                  c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
-            />
-          </svg>
-          <span class>{{ $t("settings") }}</span>
-        </div>
-      </div>
-
-      <div class="m_captureview2--settingsPane--settings">
-        <label>{{ $t("sources") }}</label>
-        <div class="">
-          <div class="">
-            <label>{{ $t("camera") }}</label>
-            <small v-if="!all_video_input_devices.length === 0">
-              {{ $t("no_video_input_available") }}
-            </small>
-            <select
-              v-else
-              id="devices"
-              name="Video devices"
-              title="devices"
-              v-model="selected_devices.video_input_device"
-            >
-              <option
-                v-for="d in all_video_input_devices"
-                :key="d.deviceId"
-                :value="d"
-              >
-                {{ d.label }}
-              </option>
-            </select>
-          </div>
-          <div>
-            <label>Audio input</label>
-            <small v-if="!all_audio_input_devices.length === 0">
-              No audio input devices available
-            </small>
-            <select
-              v-else
-              id="devices"
-              name="Video devices"
-              title="devices"
-              v-model="selected_devices.audio_input_device"
-            >
-              <option
-                v-for="d in all_audio_input_devices"
-                :key="d.deviceId"
-                :value="d"
-              >
-                {{ d.label }}
-              </option>
-            </select>
-          </div>
-          <div>
-            <label>select audio output</label>
-            <small v-if="!all_audio_output_devices.length === 0">
-              No audio output devices available
-            </small>
-            <select
-              v-else
-              id="devices"
-              name="Video devices"
-              title="devices"
-              v-model="selected_devices.audio_output_device"
-            >
-              <option
-                v-for="d in all_audio_output_devices"
-                :key="d.deviceId"
-                :value="d"
-              >
-                {{ d.label }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <label>{{ $t("resolutions") }}</label>
-        <div>
-          <small
-            v-if="
-              !selected_devices.video_input_device ||
-              !selected_devices.video_input_device.deviceId
-            "
-          >
-            {{ $t("pick_a_camera") }}
-          </small>
-          <template v-else>
-            <!-- <button
-                type="button"
-                class="buttonLink"
-                @click="getAllAvailableResolutions"
-                :disabled="is_scanning_resolutions"
-              >
-                get all input resolutions for
-                {{ selected_devices.video_input_device.label }}
-              </button> -->
-          </template>
-
-          <div class="m_captureview2--settingsPane--settings--resolutions">
-            <div
-              v-for="res in predefined_resolutions.concat(
-                custom_camera_resolution
-              )"
-              :key="res.name"
-            >
-              <label :for="res.label">
-                <input
-                  type="radio"
-                  :id="res.label"
-                  :value="res"
-                  :disabled="unavailable_camera_resolutions.includes(res.label)"
-                  v-model="desired_camera_resolution"
-                />
-                <span
-                  >{{ res.label }}
-                  <template v-if="res.type !== 'custom'">
-                    •
-                    <template v-if="res.ratio">{{ res.ratio }}</template>
-                    • {{ res.width }}/{{ res.height }})
-                  </template>
-                </span>
-              </label>
-            </div>
-
-            <div
-              v-if="
-                desired_camera_resolution &&
-                desired_camera_resolution.type === 'custom'
-              "
-              class="margin-bottom-small input-group"
-            >
-              <input
-                type="number"
-                min="2"
-                max="4096"
-                step="2"
-                v-model.number="desired_camera_resolution.width"
-              />
-              <span class="font-large padding-verysmall">×</span>
-              <input
-                type="number"
-                min="2"
-                max="2160"
-                step="2"
-                v-model.number="desired_camera_resolution.height"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- <div>
-          <button
-            type="button"
-            class="buttonLink"
-            @click="show_debug = !show_debug"
-          >
-            debug: show all devices available
-          </button>
-          <div v-if="show_debug">
-            <pre>{{ connected_devices }}</pre>
-          </div>
-        </div> -->
-      </div>
-      <div class="m_captureview2--settingsPane--updateButton">
-        <!-- <small v-if="!desired_camera_resolution">
-          Select a camera resolution first
-        </small> -->
-        <button
-          type="button"
-          class="bg-rouge button-wide"
-          @click="setCameraStreamFromDefaults"
-          :disabled="
-            !desired_camera_resolution ||
-            !selected_devices.video_input_device ||
-            current_settings === stream_current_settings
-          "
-        >
-          {{ $t("update") }}
-        </button>
-        <!-- {{ current_settings }} -->
-        <button
-          type="button"
-          class="bg-rouge buttonLink"
-          @click="show_capture_settings = !show_capture_settings"
-        >
-          <span class>{{ $t("close") }}</span>
-        </button>
-        <!-- <small>
-          <span
-            v-if="desired_camera_resolution && desired_camera_resolution.label"
-          >
-            {{ desired_camera_resolution.label }}</span
-          >
-          <span
-            v-if="
-              selected_devices &&
-              selected_devices.video_input_device &&
-              selected_devices.video_input_device.label
-            "
-          >
-            {{ selected_devices.video_input_device.label }}
-          </span>
-        </small> -->
-      </div>
-    </div>
+    <CaptureSettings
+      v-show="show_capture_settings"
+      :stream.sync="stream"
+      :enable_audio_in_video="enable_audio_in_video"
+      :actual_camera_resolution.sync="actual_camera_resolution"
+      @close="show_capture_settings = false"
+    />
 
     <!-- <div class="m_captureview2--settingsPaneButton">
     </div> -->
@@ -239,7 +15,12 @@
       <transition name="slidedown" :duration="500">
         <div
           class="_modeSelector"
-          v-if="!show_capture_settings && !media_to_validate && !is_recording"
+          v-if="
+            !show_capture_settings &&
+            !media_to_validate &&
+            !is_recording &&
+            !is_making_stopmotion
+          "
         >
           <button
             type="button"
@@ -312,7 +93,10 @@
           </button>
         </div>
       </transition>
-      <div class="m_captureview2--videoPane--top">
+      <div
+        class="m_captureview2--videoPane--top"
+        v-show="!is_validating_stopmotion_video"
+      >
         <div
           class="m_captureview2--videoPane--top--videoContainer"
           :style="video_styles"
@@ -374,10 +158,39 @@
             ref="videoElement"
             autoplay
             playsinline
+            :srcObject.prop="stream"
             muted
-            v-show="!(must_validate_media && media_to_validate)"
+            v-show="
+              ['photo', 'video', 'stopmotion'].includes(selected_mode) &&
+              show_live_feed &&
+              !(must_validate_media && media_to_validate)
+            "
           />
 
+          <transition name="scaleInFade" mode="in-out" duration="100">
+            <MediaContent
+              v-if="
+                selected_mode === 'stopmotion' &&
+                stopmotion.onion_skin_img &&
+                current_stopmotion &&
+                !is_validating_stopmotion_video
+              "
+              :key="
+                show_live_feed ? false : stopmotion.onion_skin_img.metaFileName
+              "
+              class="_onion_skin"
+              :class="{ 'is--onionskin': show_live_feed }"
+              :context="'edit'"
+              :slugFolderName="current_stopmotion"
+              :media="stopmotion.onion_skin_img"
+              :folderType="'stopmotions'"
+              :style="
+                show_live_feed
+                  ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}`
+                  : ''
+              "
+            />
+          </transition>
           <transition name="fade_fast">
             <div
               class="_settingsTag"
@@ -389,12 +202,12 @@
                   actual_camera_resolution.height
                 }}
               </div>
-              <div v-if="selected_devices.video_input_device">
+              <!-- <div v-if="selected_devices.video_input_device">
                 {{ selected_devices.video_input_device.label }}
               </div>
               <div v-if="selected_devices.audio_input_device">
                 {{ selected_devices.audio_input_device.label }}
-              </div>
+              </div> -->
             </div>
           </transition>
 
@@ -414,6 +227,25 @@
           </transition>
         </div>
       </div>
+      <transition name="slideup" :duration="150" mode="out-in">
+        <StopmotionPanel
+          v-if="$root.store.stopmotions.hasOwnProperty(current_stopmotion)"
+          :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
+          :type="type"
+          :slugFolderName="slugFolderName"
+          :read_only="read_only"
+          :stream="stream"
+          :can_add_to_fav="can_add_to_fav"
+          :show_live_feed.sync="show_live_feed"
+          :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
+          @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
+          @close="
+            current_stopmotion = false;
+            is_recording = false;
+          "
+          @new_single_image="updateSingleImage"
+        />
+      </transition>
 
       <transition name="slideup" :duration="150" mode="out-in">
         <div
@@ -495,6 +327,9 @@
                         {{ $t("stop_recording") }}
                       </template>
                     </span>
+                    <span v-else-if="selected_mode === 'stopmotion'">
+                      {{ $t("take_picture") }}
+                    </span>
                   </button>
                 </transition>
               </div>
@@ -511,6 +346,33 @@
                     $t("with_sound")
                   }}</label>
                 </span>
+
+                <div
+                  v-if="
+                    selected_mode === 'stopmotion' &&
+                    stopmotion.onion_skin_img &&
+                    show_live_feed
+                  "
+                >
+                  <label>{{ $t("onion_skin") }}</label>
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model="stopmotion.onion_skin_opacity"
+                    min="0"
+                    max=".9"
+                    step="0.01"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  v-if="selected_mode === 'stopmotion' && !is_making_stopmotion"
+                  @click="show_stopmotion_list = !show_stopmotion_list"
+                  class="button c-bleumarine font-small bg-transparent"
+                >
+                  <span class>{{ $t("stopmotion_list") }}</span>
+                </button>
               </div>
             </div>
             <MediaValidationButtons
@@ -532,6 +394,10 @@
 <script>
 import MediaPreviewBeforeValidation from "./components/subcomponents/MediaPreviewBeforeValidation.vue";
 import MediaValidationButtons from "./components/subcomponents/MediaValidationButtons.vue";
+import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
+import MediaContent from "./components/subcomponents/MediaContent.vue";
+
+import CaptureSettings from "./components/capture/CaptureSettings.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -557,7 +423,13 @@ export default {
       default: true,
     },
   },
-  components: { MediaPreviewBeforeValidation, MediaValidationButtons },
+  components: {
+    MediaPreviewBeforeValidation,
+    MediaValidationButtons,
+    StopmotionPanel,
+    MediaContent,
+    CaptureSettings,
+  },
   data() {
     return {
       selected_mode: "",
@@ -578,101 +450,22 @@ export default {
       media_being_sent_percent: 0,
       capture_button_pressed: false,
       mode_just_changed: false,
+      is_validating_stopmotion_video: false,
 
-      connected_devices: [],
-      ideal_resolution: undefined,
+      current_stopmotion: false,
+
       collapse_capture_pane: false,
 
-      selected_devices: {
-        video_input_device: undefined,
-        audio_input_device: undefined,
-        audio_output_device: undefined,
-      },
+      // selected_devices: {
+      //   video_input_device: undefined,
+      //   audio_input_device: undefined,
+      //   audio_output_device: undefined,
+      // },
 
       stream: undefined,
-      show_debug: false,
-      show_capture_settings: false,
+      show_capture_settings: true,
       enable_audio_in_video: true,
 
-      predefined_resolutions: [
-        {
-          label: "4K(UHD)",
-          width: 3840,
-          height: 2160,
-          ratio: "16:9",
-        },
-        {
-          label: "1080p(FHD)",
-          width: 1920,
-          height: 1080,
-          ratio: "16:9",
-        },
-        // {
-        //   label: "UXGA",
-        //   width: 1600,
-        //   height: 1200,
-        //   ratio: "4:3",
-        // },
-        {
-          label: "720p(HD)",
-          width: 1280,
-          height: 720,
-          ratio: "16:9",
-        },
-        // {
-        //   label: "SVGA",
-        //   width: 800,
-        //   height: 600,
-        //   ratio: "4:3",
-        // },
-        {
-          label: "VGA",
-          width: 640,
-          height: 480,
-          ratio: "4:3",
-        },
-        // {
-        //   label: "360p(nHD)",
-        //   width: 640,
-        //   height: 360,
-        //   ratio: "16:9",
-        // },
-        // {
-        //   label: "CIF",
-        //   width: 352,
-        //   height: 288,
-        //   ratio: "4:3",
-        // },
-        {
-          label: "QVGA",
-          width: 320,
-          height: 240,
-          ratio: "4:3",
-        },
-        // {
-        //   label: "QCIF",
-        //   width: 176,
-        //   height: 144,
-        //   ratio: "4:3",
-        // },
-        // {
-        //   label: "QQVGA",
-        //   width: 160,
-        //   height: 120,
-        //   ratio: "4:3",
-        // },
-      ],
-
-      unavailable_camera_resolutions: [],
-      custom_camera_resolution: {
-        label: this.$t("custom"),
-        type: "custom",
-        width: 1280,
-        height: 720,
-      },
-
-      is_loading_available_devices: false,
-      is_scanning_resolutions: false,
       is_recording: false,
       timer_recording: false,
 
@@ -680,34 +473,21 @@ export default {
       timelapse_interval: 2,
       timelapse_event: false,
 
-      desired_camera_resolution: undefined,
-      last_working_resolution: undefined,
       actual_camera_resolution: {
         width: undefined,
         height: undefined,
       },
 
-      stream_current_settings: undefined,
+      show_live_feed: true,
+      show_stopmotion_list: false,
+      stopmotion: {
+        onion_skin_img: false,
+        onion_skin_opacity: 0,
+      },
     };
   },
   created() {},
   mounted() {
-    if (
-      this.$root.settings.capture_options &&
-      this.$root.settings.capture_options.desired_camera_resolution
-    )
-      this.desired_camera_resolution = this.$root.settings.capture_options.desired_camera_resolution;
-    else this.desired_camera_resolution = this.custom_camera_resolution;
-
-    this.$refs.videoElement.addEventListener(
-      "loadedmetadata",
-      this.refreshVideoActualSize
-    );
-    if (!navigator.getUserMedia) {
-      alert("You need a browser that supports WebRTC");
-      return;
-    }
-
     if (
       this.$root.settings.capture_options.selected_mode !== "" &&
       this.available_modes.includes(
@@ -721,82 +501,22 @@ export default {
 
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
-
-    this.is_loading_available_devices = true;
-
-    //Call gUM early to force user gesture and allow device enumeration
-    navigator.mediaDevices
-      .getUserMedia({ audio: this.enable_audio_in_video, video: true })
-      .then((stream) => {
-        this.stream = stream; // make globally available
-
-        if ("srcObject" in this.$refs.videoElement) {
-          this.$refs.videoElement.srcObject = stream;
-        } else {
-          // Avoid using this in new browsers, as it is going away.
-          this.$refs.videoElement.src = window.URL.createObjectURL(stream);
-        }
-      })
-      .catch((err) => {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(
-            this.$t("notifications.couldnt_load_getusermedia") +
-              "<br>" +
-              err.name +
-              ": " +
-              err.message
-          );
-        return;
-      })
-      .then(this.refreshAvailableDevices)
-      .then(() => {
-        this.setDefaultInputsAndOutputs();
-        this.is_loading_available_devices = false;
-      })
-      .catch((err) => {
-        this.is_loading_available_devices = false;
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(
-            this.$t("notifications.failed_listing_devices") +
-              "<br>" +
-              err.name +
-              ": " +
-              err.message
-          );
-      })
-      .then(() => {
-        this.setCameraStreamFromDefaults();
-      });
   },
-  beforeDestroy() {
-    this.$refs.videoElement.removeEventListener(
-      "loadedmetadata",
-      this.refreshVideoActualSize
-    ); //turn off the event handler
-
-    if (this.stream)
-      this.stream.getTracks().forEach((track) => {
-        track.stop();
-      });
-  },
+  beforeDestroy() {},
   watch: {
-    "selected_devices.video_input_device": function () {
-      this.unavailable_camera_resolutions = [];
-      this.last_working_resolution = false;
-    },
-    desired_camera_resolution: {
-      handler() {},
-      deep: true,
-    },
     selected_mode: function () {
       this.mode_just_changed = true;
       setTimeout(() => {
         this.mode_just_changed = false;
       }, 300);
+    },
+    is_validating_stopmotion_video: function () {
+      if (this.is_validating_stopmotion_video) {
+        this.$refs.videoElement.pause();
+      } else {
+        this.$refs.videoElement.play();
+        this.show_live_feed = true;
+      }
     },
     media_to_validate: function () {
       console.log(
@@ -819,39 +539,14 @@ export default {
         this.timer_recording = false;
       }
     },
-    enable_audio_in_video: function () {
-      console.log(
-        `WATCH • Capture: enable_audio_in_video = ${this.enable_audio_in_video}`
-      );
-      this.setCameraStreamFromDefaults();
-    },
   },
   computed: {
-    all_video_input_devices() {
-      return this.connected_devices.filter((d) => d.kind === "videoinput");
-    },
-    all_audio_input_devices() {
-      return this.connected_devices.filter((d) => d.kind === "audioinput");
-    },
-    all_audio_output_devices() {
-      return this.connected_devices.filter((d) => d.kind === "audiooutput");
-    },
-    current_settings() {
-      if (
-        !this.selected_devices.video_input_device ||
-        !this.desired_camera_resolution ||
-        !this.desired_camera_resolution.width ||
-        !this.desired_camera_resolution.height
-      )
-        return false;
-
-      return (
-        this.selected_devices.video_input_device.deviceId +
-        "_" +
-        this.desired_camera_resolution.width +
-        "x" +
-        this.desired_camera_resolution.height
-      );
+    is_making_stopmotion() {
+      const is_making_stopmotion = this.current_stopmotion ? true : false;
+      if (is_making_stopmotion) {
+        this.show_capture_settings = false;
+      }
+      return is_making_stopmotion;
     },
     video_styles() {
       if (
@@ -891,39 +586,14 @@ export default {
     },
   },
   methods: {
-    listDevices() {
-      return new Promise((resolve, reject) => {
-        navigator.mediaDevices
-          .enumerateDevices()
-          .then((devices) => {
-            if (!this.$root.state.is_electron) {
-              return resolve(devices);
-            } else return devices;
-          })
-          .then((devices) => {
-            this.getDesktopCapturer()
-              .then((sources) => {
-                devices = devices.concat(sources);
-              })
-              .catch((err) => {})
-              .then(() => {
-                return resolve(devices);
-              });
-            // const screen_infos = sources.reduce((acc, source) => {
-            //                     acc.push(source);
-            //                     return acc;
-            //                   }, []);
-            //                   return resolve(screen_infos);
-            // })
-          })
-          .catch((err) => {
-            return reject(err);
-          });
-      });
-    },
     previousMode() {
       console.log("METHODS • CaptureView: previousMode");
-      if (this.is_recording || this.media_to_validate || this.mode_just_changed)
+      if (
+        this.is_recording ||
+        this.media_to_validate ||
+        this.mode_just_changed ||
+        this.is_making_stopmotion
+      )
         return;
 
       let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
@@ -934,7 +604,12 @@ export default {
     },
     nextMode() {
       console.log("METHODS • CaptureView: nextMode");
-      if (this.is_recording || this.media_to_validate || this.mode_just_changed)
+      if (
+        this.is_recording ||
+        this.media_to_validate ||
+        this.mode_just_changed ||
+        this.is_making_stopmotion
+      )
         return;
 
       let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
@@ -948,186 +623,64 @@ export default {
         this.collapse_capture_pane = true;
       else this.collapse_capture_pane = false;
     },
-    setDefaultInputsAndOutputs() {
-      if (this.connected_devices.length === 0) return;
+    addStopmotionImage() {
+      const smdata = {
+        name:
+          this.slugFolderName + "-" + this.$moment().format("YYYYMMDD_HHmmss"),
+        linked_project: this.slugFolderName,
+        linked_type: this.type,
+        authors: this.$root.current_author
+          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
+          : "",
+      };
 
-      if (this.all_video_input_devices.length > 0)
-        this.selected_devices.video_input_device = this.all_video_input_devices[0];
-      if (this.all_audio_input_devices.length > 0)
-        this.selected_devices.audio_input_device = this.all_audio_input_devices[0];
-      if (this.all_video_input_devices.length > 0)
-        this.selected_devices.audio_output_device = this.all_audio_output_devices[0];
-    },
-    getAllAvailableResolutions() {
-      const all_resolutions = [];
-
-      this.is_scanning_resolutions = true;
-      this.$refs.videoElement.pause();
-
-      let tasks = this.predefined_resolutions.map((resolution) => () =>
-        this.setCameraStream(
-          resolution,
-          this.selected_devices.video_input_device,
-          false
-        )
-      );
-
-      const serial = (funcs) =>
-        funcs.reduce(
-          (promise, func) =>
-            promise.then((result) =>
-              func().then(Array.prototype.concat.bind(result))
-            ),
-          Promise.resolve([])
-        );
-      serial(tasks).then((res) => {
-        res = res.filter((r) => !r.status && r.status !== "error");
-        // this.unavailable_camera_resolutions = res;
-        this.is_scanning_resolutions = false;
-        this.$refs.videoElement.play();
-      });
-    },
-    refreshAvailableDevices() {
-      return new Promise((resolve, reject) => {
-        this.connected_devices = [];
-        this.is_loading_available_devices = true;
-        this.listDevices().then((devices) => {
-          this.connected_devices = devices.map((d) => {
-            return {
-              label: d.label,
-              kind: d.kind,
-              deviceId: d.deviceId,
-              chromeMediaSource: d.chromeMediaSource
-                ? d.chromeMediaSource
-                : false,
-            };
-          });
-
-          this.is_loading_available_devices = false;
-          return resolve();
-        });
-      });
-    },
-    setCameraStream(candidate, device, with_audio) {
-      return new Promise((resolve, reject) => {
-        console.log("trying " + candidate.label + " on " + device.label);
-
-        //Kill any running streams;
-        if (this.stream)
-          this.stream.getTracks().forEach((track) => {
-            track.stop();
-          });
-
-        let constraints = undefined;
-        if (
-          !device.hasOwnProperty("chromeMediaSource") ||
-          !device.chromeMediaSource
-        ) {
-          // non screen capture devices
-          constraints = {
-            audio: with_audio,
-            video: {
-              deviceId: device.deviceId
-                ? { exact: device.deviceId }
-                : undefined,
-              width: { exact: candidate.width }, //new syntax
-              height: { exact: candidate.height }, //new syntax
-            },
-          };
+      this.getStaticImageFromVideoElement().then((imageData) => {
+        if (!this.current_stopmotion) {
+          // create stopmotion
+          this.$root
+            .createFolder({
+              type: "stopmotions",
+              data: smdata,
+            })
+            .then((fdata) => {
+              this.current_stopmotion = fdata.slugFolderName;
+              this.addImageToStopmotion(imageData);
+            });
         } else {
-          // screen capture devices
-          constraints = {
-            audio: false,
-            video: {
-              mandatory: {
-                chromeMediaSource: device.chromeMediaSource,
-                chromeMediaSourceId: device.deviceId,
-                minWidth: candidate.width,
-                maxWidth: candidate.width,
-                minHeight: candidate.height,
-                maxHeight: candidate.height,
-              },
-            },
-          };
+          // append to stopmotion
+          this.addImageToStopmotion(imageData);
         }
-
-        console.log("Constraints = " + JSON.stringify(constraints, null, 4));
-
-        setTimeout(
-          () => {
-            navigator.mediaDevices
-              .getUserMedia(constraints)
-              .then(gotStream)
-              .then(() => {
-                // this.$alertify
-                //   .closeLogOnClick(true)
-                //   .delay(4000)
-                //   .success(this.$t("notifications.successfully_loaded_res"));
-
-                this.$refs.videoElement.onloadedmetadata = (e) => {
-                  // check if candidate settings fit actual settings
-                  this.getVideoActualSize().then((video_size) => {
-                    if (
-                      video_size.width === candidate.width &&
-                      video_size.height === candidate.height
-                    ) {
-                      return resolve(candidate);
-                    } else {
-                      console.log(
-                        "getUserMedia error! Mismatch between expected and actual camera stream resolution"
-                      );
-                      return reject({
-                        status: "error",
-                        error_msg: "resolution_mismatch",
-                      });
-                    }
-                  });
-                };
-              })
-              .catch((error) => {
-                console.log("getUserMedia error : ", error);
-                // captureResults("fail: " + error.name);
-                // this.$alertify
-                //   .closeLogOnClick(true)
-                //   .delay(4000)
-                //   .error(this.$t("notifications.failed_loading_res"));
-                return reject({
-                  status: "error",
-                  error_msg: error.name,
-                });
-              });
-          },
-          this.stream ? 200 : 0
-        ); //official examples had this at 200
-
-        const gotStream = (stream) => {
-          //change the video dimensions
-          // console.log(
-          //   "Display size for " +
-          //     candidate.label +
-          //     ": " +
-          //     candidate.width +
-          //     "x" +
-          //     candidate.height
-          // );
-
-          this.$refs.videoElement.width = candidate.width;
-          this.$refs.videoElement.height = candidate.height;
-          this.stream = stream; // make globally available
-
-          if ("srcObject" in this.$refs.videoElement) {
-            this.$refs.videoElement.srcObject = stream;
-          } else {
-            // Avoid using this in new browsers, as it is going away.
-            this.$refs.videoElement.src = window.URL.createObjectURL(stream);
-          }
-
-          this.$refs.videoElement.onloadedmetadata = (e) => {
-            this.$refs.videoElement.play();
-          };
-        };
       });
     },
+    addImageToStopmotion(imageData) {
+      console.log("METHODS • CaptureView: addImageToStopmotion");
+      this.is_saving = true;
+
+      // const media_editing_timeout = setTimeout(() => {
+      //   if (this.is_saving) {
+      //     this.is_saving = false;
+      //     this.$alertify
+      //       .closeLogOnClick(true)
+      //       .delay(4000)
+      //       .error(this.$t("notifications.failed_to_save_media"));
+      //   }
+      // }, 5000);
+
+      this.$root
+        .createMedia({
+          slugFolderName: this.current_stopmotion,
+          type: "stopmotions",
+          rawData: imageData,
+          additionalMeta: {
+            type: "image",
+          },
+        })
+        .then((mdata) => {
+          this.is_saving = false;
+          clearTimeout(media_editing_timeout);
+        });
+    },
+
     captureKeyListener(event) {
       console.log("METHODS • CaptureView: captureKeyListener");
 
@@ -1164,23 +717,22 @@ export default {
         this.capture_button_pressed = false;
       }, 400);
 
-      // if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
-      //   if (!this.is_recording) {
-      //     this.is_recording = true;
-      //     this.timelapse_event = window.setInterval(() => {
-      //       this.capture_button_pressed = true;
-      //       window.setTimeout(() => {
-      //         this.capture_button_pressed = false;
-      //       }, 400);
-      //       this.addStopmotionImage();
-      //     }, this.timelapse_interval * 1000);
-      //   } else {
-      //     this.is_recording = false;
-      //     clearInterval(this.timelapse_event);
-      //     return;
-      //   }
-      // }
-
+      if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
+        if (!this.is_recording) {
+          this.is_recording = true;
+          this.timelapse_event = window.setInterval(() => {
+            this.capture_button_pressed = true;
+            window.setTimeout(() => {
+              this.capture_button_pressed = false;
+            }, 400);
+            this.addStopmotionImage();
+          }, this.timelapse_interval * 1000);
+        } else {
+          this.is_recording = false;
+          clearInterval(this.timelapse_event);
+          return;
+        }
+      }
       if (this.is_recording && this.selected_mode !== "stopmotion") {
         this.$eventHub.$emit("capture.stopRecording");
         return;
@@ -1247,104 +799,6 @@ export default {
         // if(imageData === "data:,") {
         //   return reject(this.$t('notifications.video_stream_not_available'));
         // }
-      });
-    },
-
-    getDesktopCapturer() {
-      return new Promise((resolve, reject) => {
-        const { desktopCapturer } = window.require("electron");
-        desktopCapturer.getSources(
-          { types: ["window", "screen"] },
-          (err, sources) => {
-            if (err) return reject(err);
-            // sources = sources.filter((s) => s.name === "Entire screen");
-            sources = sources.map((s) => {
-              return {
-                chromeMediaSource: "desktop",
-                deviceId: s.id,
-                kind: "videoinput",
-                label: "🖥️ " + s.name,
-              };
-            });
-
-            return resolve(sources);
-          }
-        );
-        // .catch((err) => reject(err));
-      });
-    },
-    setCameraStreamFromDefaults() {
-      this.stream_current_settings = this.current_settings;
-
-      this.setCameraStream(
-        this.desired_camera_resolution,
-        this.selected_devices.video_input_device,
-        this.enable_audio_in_video
-      )
-        .then((res) => {
-          this.last_working_resolution = this.desired_camera_resolution;
-        })
-        .catch((err) => {
-          this.stream_current_settings = false;
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(
-              this.$t(
-                "notifications.failed_to_start_video_change_source_or_res"
-              ) +
-                "<br>" +
-                err.error_msg
-            );
-          this.unavailable_camera_resolutions.push(
-            this.desired_camera_resolution.label
-          );
-          if (this.last_working_resolution) {
-            this.desired_camera_resolution = this.last_working_resolution;
-            setTimeout(() => {
-              this.setCameraStreamFromDefaults();
-            }, 500);
-          }
-        });
-    },
-    refreshVideoActualSize() {
-      this.getVideoActualSize()
-        .then(({ width, height }) => {
-          this.actual_camera_resolution.width = width;
-          this.actual_camera_resolution.height = height;
-        })
-        .catch((err) => {
-          if (this.$root.state.dev_mode === "debug")
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error("DEBUG error : failed to get video actual size");
-        });
-    },
-    getVideoActualSize() {
-      return new Promise((resolve, reject) => {
-        //Wait for dimensions if they don't show right away
-        let wait_period_if_necessary = 0;
-        if (!this.$refs.videoElement.videoWidth) {
-          wait_period_if_necessary = 500; //was 500
-        }
-
-        const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-        wait(wait_period_if_necessary).then(() => {
-          if (
-            this.$refs.videoElement.videoWidth *
-              this.$refs.videoElement.videoHeight >
-            0
-          ) {
-            return resolve({
-              width: this.$refs.videoElement.videoWidth,
-              height: this.$refs.videoElement.videoHeight,
-            });
-          } else {
-            return reject("couldn’t get video dimensions");
-          }
-        });
       });
     },
 
@@ -1493,6 +947,9 @@ export default {
     cancelValidation() {
       this.media_to_validate = false;
     },
+    updateSingleImage($event) {
+      this.stopmotion.onion_skin_img = $event;
+    },
   },
 };
 </script>
@@ -1500,77 +957,6 @@ export default {
 .m_captureview2 {
   display: flex;
   flex-flow: row nowrap;
-
-  .m_captureview2--settingsPane {
-    position: relative;
-    flex: 1 0 200px;
-    max-width: 280px;
-    background-color: var(--c-rouge);
-    color: white;
-
-    display: flex;
-    flex-flow: column nowrap;
-
-    label,
-    .buttonLink {
-      color: inherit;
-    }
-  }
-
-  .m_captureview2--settingsPane--topbar {
-    flex: 0 0 auto;
-    border-bottom: 2px solid var(--c-rouge_fonce);
-    // padding: calc(var(--spacing) / 2);
-    color: white;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .m_captureview2--settingsPane--topbar--title {
-    padding: calc(var(--spacing) / 2) var(--spacing);
-    font-weight: 700;
-    font-size: var(--font-large);
-  }
-
-  .m_captureview2--settingsPane--settings {
-    overflow-y: auto;
-    flex: 1 1 auto;
-    padding: calc(var(--spacing) / 2);
-    // padding-bottom: var(--spacing);
-
-    > div {
-      background-color: rgba(0, 0, 0, 0.1);
-      padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-      border-radius: 6px;
-    }
-  }
-
-  .m_captureview2--settingsPane--settings--resolutions {
-    label {
-      padding: calc(var(--spacing) / 4) 0;
-
-      display: flex;
-      align-items: center;
-
-      > input {
-        flex: 0 0 auto;
-        margin-right: calc(var(--spacing) / 3);
-      }
-    }
-  }
-
-  .m_captureview2--settingsPane--updateButton {
-    flex: 0 0 auto;
-    border-top: 2px solid var(--c-rouge_fonce);
-    padding: calc(var(--spacing) / 2);
-    color: black;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 
   .m_captureview2--settingsPaneButton {
     position: relative;
@@ -1610,6 +996,7 @@ export default {
     background-color: var(--c-noir);
 
     display: flex;
+    flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
   }
@@ -1669,7 +1056,8 @@ export default {
     width: 100%;
     height: 100%;
 
-    video {
+    video,
+    .mediaContainer img {
       position: absolute;
       top: 0;
       left: 0;
@@ -1881,5 +1269,25 @@ export default {
       }
     }
   }
+}
+
+._onion_skin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  &.is--onionskin {
+    opacity: 0.2;
+    opacity: var(--onionskin-opacity);
+  }
+}
+</style>
+<style lang="scss">
+._onion_skin img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 </style>
