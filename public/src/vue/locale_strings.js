@@ -2186,6 +2186,10 @@ module.exports = (function () {
       fr: "Capturer une vidéo",
       en: "Record a video",
     },
+    stop_recording: {
+      fr: "Arrêter la capture",
+      en: "Stop recording",
+    },
     video: {
       fr: "vidéo",
       en: "video",
