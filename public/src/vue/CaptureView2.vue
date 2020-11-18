@@ -15,7 +15,12 @@
       <transition name="slidedown" :duration="500">
         <div
           class="_modeSelector"
-          v-if="!show_capture_settings && !media_to_validate && !is_recording"
+          v-if="
+            !show_capture_settings &&
+            !media_to_validate &&
+            !is_recording &&
+            !is_making_stopmotion
+          "
         >
           <button
             type="button"
@@ -162,12 +167,13 @@
             "
           />
 
-          <transition name="scaleInFade" mode="out-in" duration="100">
+          <transition name="scaleInFade" mode="in-out" duration="100">
             <MediaContent
               v-if="
                 selected_mode === 'stopmotion' &&
                 stopmotion.onion_skin_img &&
-                current_stopmotion
+                current_stopmotion &&
+                !is_validating_stopmotion_video
               "
               :key="
                 show_live_feed ? false : stopmotion.onion_skin_img.metaFileName
@@ -320,6 +326,9 @@
                       <template v-else>
                         {{ $t("stop_recording") }}
                       </template>
+                    </span>
+                    <span v-else-if="selected_mode === 'stopmotion'">
+                      {{ $t("take_picture") }}
                     </span>
                   </button>
                 </transition>
@@ -506,6 +515,7 @@ export default {
         this.$refs.videoElement.pause();
       } else {
         this.$refs.videoElement.play();
+        this.show_live_feed = true;
       }
     },
     media_to_validate: function () {
@@ -578,7 +588,12 @@ export default {
   methods: {
     previousMode() {
       console.log("METHODS • CaptureView: previousMode");
-      if (this.is_recording || this.media_to_validate || this.mode_just_changed)
+      if (
+        this.is_recording ||
+        this.media_to_validate ||
+        this.mode_just_changed ||
+        this.is_making_stopmotion
+      )
         return;
 
       let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
@@ -589,7 +604,12 @@ export default {
     },
     nextMode() {
       console.log("METHODS • CaptureView: nextMode");
-      if (this.is_recording || this.media_to_validate || this.mode_just_changed)
+      if (
+        this.is_recording ||
+        this.media_to_validate ||
+        this.mode_just_changed ||
+        this.is_making_stopmotion
+      )
         return;
 
       let currentModeIndex = this.available_modes.indexOf(this.selected_mode);
@@ -636,15 +656,15 @@ export default {
       console.log("METHODS • CaptureView: addImageToStopmotion");
       this.is_saving = true;
 
-      const media_editing_timeout = setTimeout(() => {
-        if (this.is_saving) {
-          this.is_saving = false;
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t("notifications.failed_to_save_media"));
-        }
-      }, 5000);
+      // const media_editing_timeout = setTimeout(() => {
+      //   if (this.is_saving) {
+      //     this.is_saving = false;
+      //     this.$alertify
+      //       .closeLogOnClick(true)
+      //       .delay(4000)
+      //       .error(this.$t("notifications.failed_to_save_media"));
+      //   }
+      // }, 5000);
 
       this.$root
         .createMedia({

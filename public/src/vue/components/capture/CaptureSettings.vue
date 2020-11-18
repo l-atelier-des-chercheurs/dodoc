@@ -339,7 +339,10 @@ export default {
       this.$root.settings.capture_options.desired_camera_resolution
     )
       this.desired_camera_resolution = this.$root.settings.capture_options.desired_camera_resolution;
-    else this.desired_camera_resolution = this.custom_camera_resolution;
+    else
+      this.desired_camera_resolution = this.predefined_resolutions.find(
+        (r) => r.label === "720p(HD)"
+      );
 
     this.$refs.videoElement.addEventListener(
       "loadedmetadata",
