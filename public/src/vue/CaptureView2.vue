@@ -216,7 +216,7 @@
             </div>
           </transition>
 
-          <transition name="enableMode" :duration="400">
+          <transition name="enableMode" :duration="800">
             <div
               v-if="mode_just_changed"
               class="_mode_indicator"
@@ -420,8 +420,12 @@
                     stopmotion.onion_skin_img &&
                     show_live_feed
                   "
+                  class="_onion_skin_range"
                 >
-                  <label>{{ $t("onion_skin") }}</label>
+                  <label
+                    >{{ $t("onion_skin") }} —
+                    {{ stopmotion.onion_skin_opacity }}
+                  </label>
                   <input
                     class="margin-none"
                     type="range"
