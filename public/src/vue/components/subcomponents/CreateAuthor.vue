@@ -47,16 +47,14 @@
     <!-- Password -->
     <div class="margin-bottom-small">
       <label>{{ $t("password") }}</label>
-      <div v-if="show_password">
-        <input
-          type="password"
-          :required="
-            $root.state.local_options.force_author_password ? true : false
-          "
-          v-model="authordata.password"
-          autocomplete="new-password"
-        />
-      </div>
+      <PasswordField
+        v-if="show_password"
+        v-model="authordata.password"
+        :required="
+          $root.state.local_options.force_author_password ? true : false
+        "
+        :field_type="'new-password'"
+      />
     </div>
 
     <!-- Preview -->
