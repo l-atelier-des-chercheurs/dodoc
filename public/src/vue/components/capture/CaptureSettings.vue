@@ -702,19 +702,19 @@ export default {
                 this.$refs.videoElement.onloadedmetadata = (e) => {
                   // check if candidate settings fit actual settings
                   this.getVideoActualSize().then((video_size) => {
+                    return resolve(candidate);
                     if (
                       video_size.width === candidate.width &&
                       video_size.height === candidate.height
                     ) {
-                      return resolve(candidate);
                     } else {
-                      console.log(
-                        "getUserMedia error! Mismatch between expected and actual camera stream resolution"
-                      );
-                      return reject({
-                        status: "error",
-                        error_msg: "resolution_mismatch",
-                      });
+                      // console.log(
+                      //   "getUserMedia error! Mismatch between expected and actual camera stream resolution"
+                      // );
+                      // return reject({
+                      //   status: "error",
+                      //   error_msg: "resolution_mismatch",
+                      // });
                     }
                   });
                 };
