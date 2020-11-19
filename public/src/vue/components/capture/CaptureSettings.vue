@@ -589,14 +589,17 @@ export default {
                 "<br>" +
                 err.error_msg
             );
-          this.unavailable_camera_resolutions.push(
-            this.desired_camera_resolution.label
-          );
-          if (this.last_working_resolution) {
-            this.desired_camera_resolution = this.last_working_resolution;
-            setTimeout(() => {
-              this.setCameraStreamFromDefaults();
-            }, 500);
+
+          if (this.desired_camera_resolution.type !== "custom") {
+            this.unavailable_camera_resolutions.push(
+              this.desired_camera_resolution.label
+            );
+            if (this.last_working_resolution) {
+              this.desired_camera_resolution = this.last_working_resolution;
+              setTimeout(() => {
+                this.setCameraStreamFromDefaults();
+              }, 500);
+            }
           }
         });
     },
