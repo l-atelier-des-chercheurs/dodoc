@@ -164,13 +164,6 @@
         </div>
       </div>
 
-      <!-- Password -->
-      <!-- <div class="margin-bottom-small">
-        <label>{{ $t('password') }}</label>
-        <input type="password" v-model="publidata.password" :readonly="read_only">
-        <small>{{ $t('password_instructions') }}</small>
-      </div>-->
-
       <!-- Keywords -->
       <div class="margin-bottom-small">
         <label>

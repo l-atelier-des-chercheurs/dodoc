@@ -2,6 +2,7 @@
   <div class="input-group">
     <input
       :type="field_mode"
+      :required="required"
       :autocomplete="field_type"
       :autoselect="autoselect"
       :autofocus="autofocus"
@@ -11,7 +12,16 @@
     />
 
     <span class="input-addon _passwordfield_toggle">
-      <button type="button" class="" @click="toggleFieldMode">
+      <button
+        type="button"
+        class=""
+        @click="toggleFieldMode"
+        :content="$t('reveal_password')"
+        v-tippy="{
+          placement: 'top',
+          delay: [600, 0],
+        }"
+      >
         <svg
           class="inline-svg"
           version="1.1"
