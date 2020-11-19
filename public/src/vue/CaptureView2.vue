@@ -356,13 +356,14 @@
                     type="button"
                     class="bg-orange button-inline _captureButton"
                     :class="{ 'is--justCaptured': capture_button_pressed }"
-                    :disabled="is_saving"
+                    :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="captureOrStop()"
                     @touchstart.stop.prevent="captureOrStop()"
                   >
+                    <Loader v-if="is_sending_image" />
                     <img
-                      v-if="!is_recording"
+                      v-else-if="!is_recording"
                       class="inline-svg inline-svg_larger"
                       src="/images/i_record.svg"
                     />
@@ -374,7 +375,11 @@
 
                     &nbsp;
 
-                    <span v-if="selected_mode === 'photo'">
+                    <span v-if="is_sending_image">
+                      {{ $t("loading") }}
+                    </span>
+
+                    <span v-else-if="selected_mode === 'photo'">
                       {{ $t("take_picture") }}</span
                     >
                     <span v-else-if="selected_mode === 'video'">
@@ -491,7 +496,7 @@ export default {
   data() {
     return {
       selected_mode: "",
-      is_saving: false,
+      is_sending_image: false,
 
       id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
@@ -774,17 +779,17 @@ export default {
     },
     addImageToStopmotion(imageData) {
       console.log("METHODS • CaptureView: addImageToStopmotion");
-      this.is_saving = true;
+      this.is_sending_image = true;
 
-      // const media_editing_timeout = setTimeout(() => {
-      //   if (this.is_saving) {
-      //     this.is_saving = false;
-      //     this.$alertify
-      //       .closeLogOnClick(true)
-      //       .delay(4000)
-      //       .error(this.$t("notifications.failed_to_save_media"));
-      //   }
-      // }, 5000);
+      const media_editing_timeout = setTimeout(() => {
+        if (this.is_saving) {
+          this.is_saving = false;
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.failed_to_save_media"));
+        }
+      }, 5000);
 
       this.$root
         .createMedia({
@@ -796,7 +801,7 @@ export default {
           },
         })
         .then((mdata) => {
-          this.is_saving = false;
+          this.is_sending_image = false;
           // clearTimeout(media_editing_timeout);
         });
     },
@@ -1202,6 +1207,7 @@ export default {
 }
 
 ._captureButton {
+  position: relative;
   margin: 0 auto;
 }
 
