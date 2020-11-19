@@ -20,8 +20,7 @@
     <!-- Role -->
     <div
       class="margin-bottom-small"
-      v-if="($root.current_author && $root.current_author.role === 'admin')
-"
+      v-if="$root.current_author && $root.current_author.role === 'admin'"
     >
       <label>{{ $t("role") }}</label>
       <div>
@@ -34,8 +33,9 @@
               role === 'admin' &&
               (!$root.current_author || $root.current_author.role !== 'admin')
             "
-            >{{ $t(role) }}</option
           >
+            {{ $t(role) }}
+          </option>
         </select>
       </div>
     </div>
@@ -67,12 +67,6 @@
       </template>
     </div>
 
-    <!-- Password -->
-    <!-- <div class="margin-bottom-small">
-      <label>{{ $t('password') }}</label>
-      <input type="password" v-model="authordata.password">
-    </div>-->
-    <!-- Password -->
     <div class="margin-bottom-small">
       <label>
         <button
@@ -93,21 +87,21 @@
           class="margin-bottom-verysmall"
           v-if="!$root.current_author_is_admin"
         >
-          <input
-            type="password"
+          <PasswordField
             v-if="author.password === 'has_pass'"
-            :placeholder="$t('old_password').toLowerCase()"
             v-model="authordata._old_password"
+            :placeholder="$t('old_password').toLowerCase()"
           />
         </div>
         <div>
-          <input
-            type="password"
+          <PasswordField
+            v-if="show_password"
+            v-model="authordata.password"
             :required="
               $root.state.local_options.force_author_password ? true : false
             "
+            :field_type="'new-password'"
             :placeholder="$t('new_password').toLowerCase()"
-            v-model="authordata.password"
           />
         </div>
         <small>{{ $t("password_instructions") }}</small>

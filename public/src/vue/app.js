@@ -47,6 +47,8 @@ Vue.component("tippy", TippyComponent);
 
 import DateFieldComponent from "./components/subcomponents/DateField.vue";
 Vue.component("DateField", DateFieldComponent);
+import PasswordFieldComponent from "./components/subcomponents/PasswordField.vue";
+Vue.component("PasswordField", PasswordFieldComponent);
 import ImageSelectComponent from "./components/subcomponents/ImageSelect.vue";
 Vue.component("ImageSelect", ImageSelectComponent);
 
