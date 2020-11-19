@@ -100,10 +100,7 @@
         class="m_captureview2--videoPane--top"
         v-show="!is_validating_stopmotion_video"
       >
-        <div
-          class="m_captureview2--videoPane--top--videoContainer"
-          :style="video_styles"
-        >
+        <div class="m_captureview2--videoPane--top--videoContainer">
           <transition-group
             tag="div"
             class="_recording_timer"
@@ -171,6 +168,23 @@
             "
           />
 
+          <div class="_video_grid_overlay" v-if="enable_grid">
+            <!-- :width="actual_camera_resolution.width" -->
+            <!-- :height="actual_camera_resolution.height" -->
+
+            <svg
+              :width="actual_camera_resolution.width"
+              :height="actual_camera_resolution.height"
+            />
+            <!-- <svg
+              xmlns="http://www.w3.org/2000/svg"
+              version="1.1"
+              :width="actual_camera_resolution.width"
+              :height="actual_camera_resolution.height"
+              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
+            /> -->
+          </div>
+
           <transition name="scaleInFade" mode="in-out" duration="100">
             <MediaContent
               v-if="
@@ -200,19 +214,30 @@
             <div
               class="_settingsTag"
               v-if="!(must_validate_media && media_to_validate)"
-              @click="show_capture_settings = !show_capture_settings"
             >
-              <div>
+              <button
+                type="button"
+                class="button-nostyle"
+                @click="show_capture_settings = !show_capture_settings"
+              >
                 {{ actual_camera_resolution.width }}×{{
                   actual_camera_resolution.height
                 }}
-              </div>
+              </button>
               <!-- <div v-if="selected_devices.video_input_device">
                 {{ selected_devices.video_input_device.label }}
               </div>
               <div v-if="selected_devices.audio_input_device">
                 {{ selected_devices.audio_input_device.label }}
               </div> -->
+              <button
+                type="button"
+                class="button-nostyle"
+                :class="{ 'is--active': enable_grid }"
+                @click="enable_grid = !enable_grid"
+              >
+                {{ $t("grid") }}
+              </button>
             </div>
           </transition>
 
@@ -267,7 +292,7 @@
             >
               <div>
                 <button
-                  v-if="!is_recording"
+                  v-if="!is_recording && !is_making_stopmotion"
                   type="button"
                   class="bg-rouge"
                   @click="show_capture_settings = !show_capture_settings"
@@ -422,16 +447,13 @@
                   "
                   class="_onion_skin_range"
                 >
-                  <label
-                    >{{ $t("onion_skin") }} —
-                    {{ stopmotion.onion_skin_opacity }}
-                  </label>
+                  <label>{{ $t("onion_skin") }} </label>
                   <input
                     class="margin-none"
                     type="range"
                     v-model.number="stopmotion.onion_skin_opacity"
-                    min="0"
-                    max=".9"
+                    min="0.1"
+                    max="1"
                     step="0.01"
                   />
                 </div>
@@ -516,6 +538,8 @@ export default {
         vecto: "/images/i_icone-dodoc_vecto.svg",
       },
 
+      enable_grid: true,
+
       media_to_validate: false,
       media_is_being_sent: false,
       media_being_sent_percent: 0,
@@ -548,6 +572,10 @@ export default {
       recorder: null,
 
       actual_camera_resolution: {
+        width: undefined,
+        height: undefined,
+      },
+      displayed_video_size: {
         width: undefined,
         height: undefined,
       },
@@ -635,17 +663,6 @@ export default {
         this.show_capture_settings = false;
       }
       return is_making_stopmotion;
-    },
-    video_styles() {
-      if (
-        !this.actual_camera_resolution.width ||
-        !this.actual_camera_resolution.height
-      )
-        return "";
-      return {
-        // maxWidth: this.actual_camera_resolution.width + "px",
-        // maxHeight: this.actual_camera_resolution.height + "px",
-      };
     },
     uri_to_upload_media: function () {
       return (
@@ -759,7 +776,13 @@ export default {
       if (this.$el && this.$el.offsetWidth && this.$el.offsetWidth <= 600)
         this.collapse_capture_pane = true;
       else this.collapse_capture_pane = false;
+
+      // this.updateVideoDisplayedSize();
     },
+    // updateVideoDisplayedSize() {
+    //   debugger;
+    //   // this. this.$refs.videoElement.offsetWidth
+    // },
     addStopmotionImage() {
       const smdata = {
         name:
@@ -771,6 +794,7 @@ export default {
           : "",
       };
 
+      this.$refs.videoElement.pause();
       this.getStaticImageFromVideoElement().then((imageData) => {
         if (!this.current_stopmotion) {
           // create stopmotion
@@ -794,8 +818,9 @@ export default {
       this.is_sending_image = true;
 
       const media_editing_timeout = setTimeout(() => {
-        if (this.is_saving) {
-          this.is_saving = false;
+        if (this.is_sending_image) {
+          this.is_sending_image = false;
+          this.$refs.videoElement.play();
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
@@ -814,6 +839,7 @@ export default {
         })
         .then((mdata) => {
           this.is_sending_image = false;
+          this.$refs.videoElement.play();
           // clearTimeout(media_editing_timeout);
         });
     },
@@ -1199,12 +1225,23 @@ export default {
     > * {
       display: inline-block;
       background-color: white;
+      // border: 2px solid #fff;
       border-radius: 4px;
       line-height: 1;
       margin: 2px;
       padding: 2px 4px;
+      font-weight: 500;
       pointer-events: auto;
       cursor: pointer;
+
+      &:hover {
+        font-weight: 600;
+      }
+
+      &.is--active {
+        background-color: var(--c-rouge);
+        color: white;
+      }
     }
   }
 
@@ -1447,9 +1484,57 @@ export default {
 }
 ._onion_skin_range {
   max-width: 200px;
-  margin: -10px 0 0 auto;
+  margin: -5px 0 -5px auto;
   label {
     margin: 0;
+  }
+  input {
+    direction: rtl;
+  }
+}
+._video_grid_overlay {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+
+  object-fit: contain;
+
+  --c-gridColor: var(--c-rouge);
+  --gridstep: 33.3333%;
+  --grid_width: 2px;
+  --gridstep_before: calc(var(--gridstep) - (var(--grid_width) / 2));
+
+  > svg {
+    position: absolute;
+    max-height: 100%;
+    max-width: 100%;
+
+    background-image: repeating-linear-gradient(
+        to right,
+        var(--c-gridColor) 0,
+        var(--c-gridColor) var(--grid_width),
+        transparent var(--grid_width),
+        transparent var(--gridstep_before),
+        var(--c-gridColor) var(--gridstep_before),
+        var(--c-gridColor) var(--gridstep)
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        var(--c-gridColor) 0,
+        var(--c-gridColor) var(--grid_width),
+        transparent var(--grid_width),
+        transparent var(--gridstep_before),
+        var(--c-gridColor) var(--gridstep_before),
+        var(--c-gridColor) var(--gridstep)
+      );
+    background-position: 50% 100%;
+    background-repeat: no-repeat;
   }
 }
 </style>

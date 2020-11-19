@@ -2528,6 +2528,10 @@ module.exports = (function () {
       oc: "Magnetisme",
       de: "Magnetismus",
     },
+    grid: {
+      fr: "Grille",
+      en: "Grid",
+    },
     margin_top: {
       fr: "Marge: haut",
       en: "Margin: top",
