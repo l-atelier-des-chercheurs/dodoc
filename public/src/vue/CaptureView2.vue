@@ -174,7 +174,8 @@
                 selected_mode === 'stopmotion' &&
                 stopmotion.onion_skin_img &&
                 current_stopmotion &&
-                !is_validating_stopmotion_video
+                !is_validating_stopmotion_video &&
+                !(show_live_feed && stopmotion.onion_skin_opacity === 0)
               "
               :key="
                 show_live_feed ? false : stopmotion.onion_skin_img.metaFileName
@@ -421,7 +422,7 @@
                   <input
                     class="margin-none"
                     type="range"
-                    v-model="stopmotion.onion_skin_opacity"
+                    v-model.number="stopmotion.onion_skin_opacity"
                     min="0"
                     max=".9"
                     step="0.01"
