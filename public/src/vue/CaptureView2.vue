@@ -1,5 +1,8 @@
 <template>
-  <div class="m_captureview2">
+  <div
+    class="m_captureview2"
+    :class="{ 'is--collapsed': collapse_capture_pane }"
+  >
     <CaptureSettings
       v-show="show_capture_settings"
       :stream.sync="stream"
@@ -174,7 +177,8 @@
                 selected_mode === 'stopmotion' &&
                 stopmotion.onion_skin_img &&
                 current_stopmotion &&
-                !is_validating_stopmotion_video
+                !is_validating_stopmotion_video &&
+                !(show_live_feed && stopmotion.onion_skin_opacity === 0)
               "
               :key="
                 show_live_feed ? false : stopmotion.onion_skin_img.metaFileName
@@ -212,7 +216,7 @@
             </div>
           </transition>
 
-          <transition name="enableMode" :duration="400">
+          <transition name="enableMode" :duration="800">
             <div
               v-if="mode_just_changed"
               class="_mode_indicator"
@@ -356,13 +360,14 @@
                     type="button"
                     class="bg-orange button-inline _captureButton"
                     :class="{ 'is--justCaptured': capture_button_pressed }"
-                    :disabled="is_saving"
+                    :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="captureOrStop()"
                     @touchstart.stop.prevent="captureOrStop()"
                   >
+                    <Loader v-if="is_sending_image" />
                     <img
-                      v-if="!is_recording"
+                      v-else-if="!is_recording"
                       class="inline-svg inline-svg_larger"
                       src="/images/i_record.svg"
                     />
@@ -374,7 +379,11 @@
 
                     &nbsp;
 
-                    <span v-if="selected_mode === 'photo'">
+                    <span v-if="is_sending_image">
+                      {{ $t("loading") }}
+                    </span>
+
+                    <span v-else-if="selected_mode === 'photo'">
                       {{ $t("take_picture") }}</span
                     >
                     <span v-else-if="selected_mode === 'video'">
@@ -411,12 +420,16 @@
                     stopmotion.onion_skin_img &&
                     show_live_feed
                   "
+                  class="_onion_skin_range"
                 >
-                  <label>{{ $t("onion_skin") }}</label>
+                  <label
+                    >{{ $t("onion_skin") }} —
+                    {{ stopmotion.onion_skin_opacity }}
+                  </label>
                   <input
                     class="margin-none"
                     type="range"
-                    v-model="stopmotion.onion_skin_opacity"
+                    v-model.number="stopmotion.onion_skin_opacity"
                     min="0"
                     max=".9"
                     step="0.01"
@@ -491,7 +504,7 @@ export default {
   data() {
     return {
       selected_mode: "",
-      is_saving: false,
+      is_sending_image: false,
 
       id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
@@ -562,6 +575,7 @@ export default {
 
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
+    this.$eventHub.$on(`window.resized`, this.checkCapturePanelSize);
 
     this.$refs.videoElement.addEventListener(
       "loadedmetadata",
@@ -569,6 +583,9 @@ export default {
     );
   },
   beforeDestroy() {
+    this.$eventHub.$off(`activity_panels_resized`, this.checkCapturePanelSize);
+    this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
+
     this.$refs.videoElement.removeEventListener(
       "loadedmetadata",
       this.refreshVideoActualSize
@@ -774,17 +791,17 @@ export default {
     },
     addImageToStopmotion(imageData) {
       console.log("METHODS • CaptureView: addImageToStopmotion");
-      this.is_saving = true;
+      this.is_sending_image = true;
 
-      // const media_editing_timeout = setTimeout(() => {
-      //   if (this.is_saving) {
-      //     this.is_saving = false;
-      //     this.$alertify
-      //       .closeLogOnClick(true)
-      //       .delay(4000)
-      //       .error(this.$t("notifications.failed_to_save_media"));
-      //   }
-      // }, 5000);
+      const media_editing_timeout = setTimeout(() => {
+        if (this.is_saving) {
+          this.is_saving = false;
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.failed_to_save_media"));
+        }
+      }, 5000);
 
       this.$root
         .createMedia({
@@ -796,7 +813,7 @@ export default {
           },
         })
         .then((mdata) => {
-          this.is_saving = false;
+          this.is_sending_image = false;
           // clearTimeout(media_editing_timeout);
         });
     },
@@ -1090,6 +1107,14 @@ export default {
   display: flex;
   flex-flow: row nowrap;
 
+  &.is--collapsed {
+    .m_captureview2--videoPane--bottom--buttons {
+      > * {
+        padding: 0;
+      }
+    }
+  }
+
   .m_captureview2--settingsPaneButton {
     position: relative;
     z-index: 1;
@@ -1202,7 +1227,12 @@ export default {
 }
 
 ._captureButton {
+  position: relative;
   margin: 0 auto;
+
+  > img {
+    flex: 0 0 auto;
+  }
 }
 
 ._modeSelector {
@@ -1283,7 +1313,7 @@ export default {
     background-color: #fff;
     letter-spacing: 0;
     // padding: 0 0.405rem;
-    margin: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    margin: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
     text-align: center;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
@@ -1413,6 +1443,13 @@ export default {
   &.is--onionskin {
     opacity: 0.2;
     opacity: var(--onionskin-opacity);
+  }
+}
+._onion_skin_range {
+  max-width: 200px;
+  margin: -10px 0 0 auto;
+  label {
+    margin: 0;
   }
 }
 </style>

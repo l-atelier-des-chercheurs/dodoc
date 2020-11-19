@@ -47,6 +47,10 @@ Vue.component("tippy", TippyComponent);
 
 import DateFieldComponent from "./components/subcomponents/DateField.vue";
 Vue.component("DateField", DateFieldComponent);
+import PasswordFieldComponent from "./components/subcomponents/PasswordField.vue";
+Vue.component("PasswordField", PasswordFieldComponent);
+import ImageSelectComponent from "./components/subcomponents/ImageSelect.vue";
+Vue.component("ImageSelect", ImageSelectComponent);
 
 Vue.component("Loader", {
   name: "Loader",
@@ -374,6 +378,8 @@ let vm = new Vue({
     window.addEventListener("resize", () => {
       this.settings.windowWidth = window.innerWidth;
       this.settings.windowHeight = window.innerHeight;
+
+      this.$eventHub.$emit(`window.resized`);
     });
 
     this.currentTime = this.$moment().millisecond(0);

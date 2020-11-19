@@ -35,7 +35,7 @@
           width="100.7px"
           height="101px"
           viewBox="0 0 100.7 101"
-          style="enable-background: new 0 0 100.7 101;"
+          style="enable-background: new 0 0 100.7 101"
           xml:space="preserve"
         >
           <path
@@ -44,7 +44,7 @@
                 L19.1,91.5z"
           />
         </svg>
-        <span class style="display: none;">{{ $t("edit") }}</span>
+        <span class style="display: none">{{ $t("edit") }}</span>
       </button>
 
       <button
@@ -66,7 +66,7 @@
           width="91.6px"
           height="95px"
           viewBox="0 0 91.6 95"
-          style="enable-background: new 0 0 91.6 95;"
+          style="enable-background: new 0 0 91.6 95"
           xml:space="preserve"
         >
           <path
@@ -75,7 +75,7 @@
                     l-12-12l6.6-6.6l12,12l12-12l6.6,6.6l-12,12L64.4,69.4z M38.1,9.4h15.3V17H38.1V9.4z"
           />
         </svg>
-        <span class style="display: none;">{{ $t("remove") }}</span>
+        <span class style="display: none">{{ $t("remove") }}</span>
       </button>
 
       <div class="m_author--card">
@@ -141,7 +141,7 @@
                     placement: 'top',
                     delay: [600, 0],
                   }"
-                  style="text-transform: initial;"
+                  style="text-transform: initial"
                 >
                   {{
                     $root.getFolder({
@@ -185,7 +185,7 @@
                     placement: 'top',
                     delay: [600, 0],
                   }"
-                  style="text-transform: initial;"
+                  style="text-transform: initial"
                 >
                   {{
                     $root.getFolder({
@@ -226,7 +226,7 @@
                     placement: 'top',
                     delay: [600, 0],
                   }"
-                  style="text-transform: initial;"
+                  style="text-transform: initial"
                 >
                   {{
                     $root.getFolder({
@@ -266,7 +266,7 @@
                     placement: 'top',
                     delay: [600, 0],
                   }"
-                  style="text-transform: initial;"
+                  style="text-transform: initial"
                 >
                   {{
                     $root.getFolder({
@@ -310,20 +310,20 @@
         >
           <div class="margin-bottom-small">
             <label>{{ $t("password") }}</label>
-            <input
-              type="password"
-              ref="passwordField"
-              @keydown.enter.prevent="submitPassword"
-              required
-              autofocus
-              placeholder="…"
+            <PasswordField
+              v-model="entered_password"
+              :required="true"
+              :autofocus="true"
+              :placeholder="'…'"
+              :field_type="'new-password'"
+              @enter-was-pressed="submitPassword({})"
             />
           </div>
 
           <button
             type="button"
             class="button-greenthin"
-            @click="submitPassword"
+            @click="submitPassword({})"
           >
             {{ $t("send") }}
           </button>
@@ -367,6 +367,7 @@ export default {
       edit_author_mode: false,
       show_input_password_field: false,
       show_connection_information: false,
+      entered_password: "",
     };
   },
   created() {},
@@ -379,9 +380,9 @@ export default {
   watch: {
     show_input_password_field: function () {
       if (this.show_input_password_field) {
-        this.$nextTick(() => {
-          this.$refs.passwordField.focus();
-        });
+        // this.$nextTick(() => {
+        //   this.$refs.passwordField.focus();
+        // });
       }
     },
   },
@@ -458,8 +459,9 @@ export default {
 
     submitPassword({
       slugFolderName,
-      password = this.$auth.hashCode(this.$refs.passwordField.value),
+      password = this.$auth.hashCode(this.entered_password),
     }) {
+      debugger;
       if (this.$root.state.dev_mode === "debug")
         console.log(`Author • METHODS / submitPassword`);
 

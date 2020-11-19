@@ -13,7 +13,13 @@
     <template slot="sidebar">
       <div class="margin-bottom-small">
         <label>{{ $t("password") }}</label>
-        <input type="password" v-model="pwd" required autofocus autoselect />
+        <PasswordField
+          v-model="pwd"
+          :required="true"
+          :autofocus="true"
+          :autoselect="true"
+          :field_type="'new-password'"
+        />
       </div>
 
       <span class="switch switch-xs margin-bottom-small">

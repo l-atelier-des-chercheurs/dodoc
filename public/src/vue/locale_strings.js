@@ -659,6 +659,10 @@ module.exports = (function () {
       oc: "Entresenhar lo mot de Santa-Clara çai-jos :",
       de: "Kennwort bitte hier eingeben",
     },
+    reveal_password: {
+      fr: "Révéler le mot de passe",
+      en: "Reveal password",
+    },
     change_password: {
       fr: "Modifier le mot de passe",
       en: "Change password",
