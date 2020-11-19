@@ -4,7 +4,7 @@
       <Loader v-if="is_loading_available_devices || is_scanning_resolutions" />
     </transition>
 
-    <video ref="videoElement" autoplay playsinline muted v-show="false" />
+    <!-- <video ref="videoElement" autoplay playsinline muted v-show="false" /> -->
 
     <div class="m_captureSettings--topbar">
       <div class="m_captureSettings--topbar--title">
@@ -344,10 +344,6 @@ export default {
         (r) => r.label === "720p(HD)"
       );
 
-    this.$refs.videoElement.addEventListener(
-      "loadedmetadata",
-      this.refreshVideoActualSize
-    );
     if (!navigator.getUserMedia) {
       alert("You need a browser that supports WebRTC");
       return;
@@ -360,13 +356,13 @@ export default {
       .getUserMedia({ audio: this.enable_audio_in_video, video: true })
       .then((stream) => {
         this.$emit("update:stream", stream);
-
-        if ("srcObject" in this.$refs.videoElement) {
-          this.$refs.videoElement.srcObject = stream;
-        } else {
-          // Avoid using this in new browsers, as it is going away.
-          this.$refs.videoElement.src = window.URL.createObjectURL(stream);
-        }
+        // if ("srcObject" in this.$refs.videoElement) {
+        //   this.$refs.videoElement.srcObject = stream;
+        // } else {
+        //   // Avoid using this in new browsers, as it is going away.
+        //   this.$refs.videoElement.src = window.URL.createObjectURL(stream);
+        // }
+        return;
       })
       .catch((err) => {
         this.$alertify
@@ -384,10 +380,8 @@ export default {
       .then(this.refreshAvailableDevices)
       .then(() => {
         this.setDefaultInputsAndOutputs();
-        this.is_loading_available_devices = false;
       })
       .catch((err) => {
-        this.is_loading_available_devices = false;
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
@@ -404,10 +398,6 @@ export default {
       });
   },
   beforeDestroy() {
-    this.$refs.videoElement.removeEventListener(
-      "loadedmetadata",
-      this.refreshVideoActualSize
-    ); //turn off the event handler
     if (this.stream)
       this.stream.getTracks().forEach((track) => {
         track.stop();
@@ -423,6 +413,14 @@ export default {
         `WATCH • Capture: enable_audio_in_video = ${this.enable_audio_in_video}`
       );
       this.setCameraStreamFromDefaults();
+    },
+    stream: function () {
+      // if ("srcObject" in this.$refs.videoElement) {
+      //   this.$refs.videoElement.srcObject = this.stream;
+      // } else {
+      //   // Avoid using this in new browsers, as it is going away.
+      //   this.$refs.videoElement.src = window.URL.createObjectURL(this.stream);
+      // }
     },
   },
   computed: {
@@ -498,7 +496,7 @@ export default {
       const all_resolutions = [];
 
       this.is_scanning_resolutions = true;
-      this.$refs.videoElement.pause();
+      // this.$refs.videoElement.pause();
 
       let tasks = this.predefined_resolutions.map((resolution) => () =>
         this.setCameraStream(
@@ -520,7 +518,7 @@ export default {
         res = res.filter((r) => !r.status && r.status !== "error");
         // this.unavailable_camera_resolutions = res;
         this.is_scanning_resolutions = false;
-        this.$refs.videoElement.play();
+        // this.$refs.videoElement.play();
       });
     },
     getDesktopCapturer() {
@@ -602,48 +600,6 @@ export default {
           }
         });
     },
-    refreshVideoActualSize() {
-      this.getVideoActualSize()
-        .then(({ width, height }) => {
-          this.$emit("update:actual_camera_resolution", {
-            width,
-            height,
-          });
-        })
-        .catch((err) => {
-          if (this.$root.state.dev_mode === "debug")
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error("DEBUG error : failed to get video actual size");
-        });
-    },
-    getVideoActualSize() {
-      return new Promise((resolve, reject) => {
-        //Wait for dimensions if they don't show right away
-        let wait_period_if_necessary = 0;
-        if (!this.$refs.videoElement.videoWidth) {
-          wait_period_if_necessary = 500; //was 500
-        }
-
-        const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-        wait(wait_period_if_necessary).then(() => {
-          if (
-            this.$refs.videoElement.videoWidth *
-              this.$refs.videoElement.videoHeight >
-            0
-          ) {
-            return resolve({
-              width: this.$refs.videoElement.videoWidth,
-              height: this.$refs.videoElement.videoHeight,
-            });
-          } else {
-            return reject("couldn’t get video dimensions");
-          }
-        });
-      });
-    },
     setCameraStream(candidate, device, with_audio) {
       return new Promise((resolve, reject) => {
         console.log("trying " + candidate.label + " on " + device.label);
@@ -699,25 +655,26 @@ export default {
                 //   .delay(4000)
                 //   .success(this.$t("notifications.successfully_loaded_res"));
 
-                this.$refs.videoElement.onloadedmetadata = (e) => {
-                  // check if candidate settings fit actual settings
-                  this.getVideoActualSize().then((video_size) => {
-                    return resolve(candidate);
-                    if (
-                      video_size.width === candidate.width &&
-                      video_size.height === candidate.height
-                    ) {
-                    } else {
-                      // console.log(
-                      //   "getUserMedia error! Mismatch between expected and actual camera stream resolution"
-                      // );
-                      // return reject({
-                      //   status: "error",
-                      //   error_msg: "resolution_mismatch",
-                      // });
-                    }
-                  });
-                };
+                return resolve(candidate);
+                // this.$refs.videoElement.onloadedmetadata = (e) => {
+                //   // check if candidate settings fit actual settings
+                //   this.getVideoActualSize().then((video_size) => {
+                //     return resolve(candidate);
+                //     if (
+                //       video_size.width === candidate.width &&
+                //       video_size.height === candidate.height
+                //     ) {
+                //     } else {
+                //       // console.log(
+                //       //   "getUserMedia error! Mismatch between expected and actual camera stream resolution"
+                //       // );
+                //       // return reject({
+                //       //   status: "error",
+                //       //   error_msg: "resolution_mismatch",
+                //       // });
+                //     }
+                //   });
+                // };
               })
               .catch((error) => {
                 console.log("getUserMedia error : ", error);
@@ -746,20 +703,20 @@ export default {
           //     candidate.height
           // );
 
-          this.$refs.videoElement.width = candidate.width;
-          this.$refs.videoElement.height = candidate.height;
+          // this.$refs.videoElement.width = candidate.width;
+          // this.$refs.videoElement.height = candidate.height;
           this.$emit("update:stream", stream);
 
-          if ("srcObject" in this.$refs.videoElement) {
-            this.$refs.videoElement.srcObject = stream;
-          } else {
-            // Avoid using this in new browsers, as it is going away.
-            this.$refs.videoElement.src = window.URL.createObjectURL(stream);
-          }
+          // if ("srcObject" in this.$refs.videoElement) {
+          //   this.$refs.videoElement.srcObject = stream;
+          // } else {
+          //   // Avoid using this in new browsers, as it is going away.
+          //   this.$refs.videoElement.src = window.URL.createObjectURL(stream);
+          // }
 
-          this.$refs.videoElement.onloadedmetadata = (e) => {
-            this.$refs.videoElement.play();
-          };
+          // this.$refs.videoElement.onloadedmetadata = (e) => {
+          //   this.$refs.videoElement.play();
+          // };
         };
       });
     },

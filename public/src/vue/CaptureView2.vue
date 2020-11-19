@@ -161,6 +161,7 @@
             :srcObject.prop="stream"
             muted
             v-show="
+              stream &&
               ['photo', 'video', 'stopmotion'].includes(selected_mode) &&
               show_live_feed &&
               !(must_validate_media && media_to_validate)
@@ -561,8 +562,18 @@ export default {
 
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
+
+    this.$refs.videoElement.addEventListener(
+      "loadedmetadata",
+      this.refreshVideoActualSize
+    );
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$refs.videoElement.removeEventListener(
+      "loadedmetadata",
+      this.refreshVideoActualSize
+    ); //turn off the event handler
+  },
   watch: {
     selected_mode: function () {
       this.mode_just_changed = true;
@@ -685,6 +696,48 @@ export default {
         this.selected_mode = this.available_modes[0];
       }
     },
+    refreshVideoActualSize() {
+      this.getVideoActualSize()
+        .then(({ width, height }) => {
+          this.actual_camera_resolution.width = width;
+          this.actual_camera_resolution.height = height;
+        })
+        .catch((err) => {
+          if (this.$root.state.dev_mode === "debug")
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error("DEBUG error : failed to get video actual size");
+        });
+    },
+
+    getVideoActualSize() {
+      return new Promise((resolve, reject) => {
+        //Wait for dimensions if they don't show right away
+        let wait_period_if_necessary = 0;
+        if (!this.$refs.videoElement.videoWidth) {
+          wait_period_if_necessary = 500; //was 500
+        }
+
+        const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+        wait(wait_period_if_necessary).then(() => {
+          if (
+            this.$refs.videoElement.videoWidth *
+              this.$refs.videoElement.videoHeight >
+            0
+          ) {
+            return resolve({
+              width: this.$refs.videoElement.videoWidth,
+              height: this.$refs.videoElement.videoHeight,
+            });
+          } else {
+            return reject("couldn’t get video dimensions");
+          }
+        });
+      });
+    },
+
     checkCapturePanelSize() {
       if (this.$el && this.$el.offsetWidth && this.$el.offsetWidth <= 600)
         this.collapse_capture_pane = true;
