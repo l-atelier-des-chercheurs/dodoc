@@ -87,8 +87,9 @@
                 v-for="model in model_recipes_of_this_template"
                 :key="model.slugFolderName"
                 :value="model.slugFolderName"
-                >{{ model.name }}</option
               >
+                {{ model.name }}
+              </option>
             </select>
           </div>
         </div>
@@ -155,8 +156,9 @@
               v-for="project in Object.values($root.store.projects)"
               :key="project.slugFolderName"
               :value="project.slugFolderName"
-              >{{ project.name }}</option
             >
+              {{ project.name }}
+            </option>
           </select>
           <small>{{ $t("attached_to_project_instructions") }}</small>
         </div>
@@ -196,7 +198,6 @@
 </template>
 <script>
 import EditAccessControl from "../subcomponents/EditAccessControl.vue";
-import ImageSelect from "../subcomponents/ImageSelect.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 import slug from "slugg";
@@ -210,7 +211,6 @@ export default {
   },
   components: {
     EditAccessControl,
-    ImageSelect,
     TagsInput,
     AuthorsInput,
   },

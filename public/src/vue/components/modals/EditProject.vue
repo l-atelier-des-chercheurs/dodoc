@@ -109,21 +109,19 @@
             <!-- <label v-html="$t('add_to_existing_folder')" /> -->
             <div class="input-group margin-bottom-none">
               <select v-model="existing_group_name">
-                <option
-                  v-if="!!project.folder"
-                  :key="'none'"
-                  :value="'_none'"
-                  >{{ $t("none") }}</option
-                >
-                <option :key="'create'" :value="''"
-                  >** {{ $t("create_new_folder") }} **</option
-                >
+                <option v-if="!!project.folder" :key="'none'" :value="'_none'">
+                  {{ $t("none") }}
+                </option>
+                <option :key="'create'" :value="''">
+                  ** {{ $t("create_new_folder") }} **
+                </option>
                 <option
                   v-for="folder in $root.all_folders"
                   :key="folder"
                   :value="folder"
-                  >{{ folder }}</option
                 >
+                  {{ folder }}
+                </option>
               </select>
             </div>
           </template>
@@ -162,7 +160,6 @@
 <script>
 import EditAccessControl from "../subcomponents/EditAccessControl.vue";
 import slug from "slugg";
-import ImageSelect from "../subcomponents/ImageSelect.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 
@@ -174,7 +171,6 @@ export default {
   },
   components: {
     EditAccessControl,
-    ImageSelect,
     TagsInput,
     AuthorsInput,
   },

@@ -159,16 +159,12 @@
   </form>
 </template>
 <script>
-import ImageSelect from "../subcomponents/ImageSelect.vue";
-
 export default {
   props: {
     read_only: Boolean,
     mode: String,
   },
-  components: {
-    ImageSelect,
-  },
+  components: {},
   data() {
     return {
       show_password: true,

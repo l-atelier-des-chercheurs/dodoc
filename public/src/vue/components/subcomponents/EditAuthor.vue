@@ -142,16 +142,12 @@
   </form>
 </template>
 <script>
-import ImageSelect from "../subcomponents/ImageSelect.vue";
-
 export default {
   props: {
     read_only: Boolean,
     author: Object,
   },
-  components: {
-    ImageSelect,
-  },
+  components: {},
   data() {
     return {
       show_image: !!this.author.preview,
