@@ -374,6 +374,8 @@ let vm = new Vue({
     window.addEventListener("resize", () => {
       this.settings.windowWidth = window.innerWidth;
       this.settings.windowHeight = window.innerHeight;
+
+      this.$eventHub.$emit(`window.resized`);
     });
 
     this.currentTime = this.$moment().millisecond(0);

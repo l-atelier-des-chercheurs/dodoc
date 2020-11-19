@@ -1,5 +1,8 @@
 <template>
-  <div class="m_captureview2">
+  <div
+    class="m_captureview2"
+    :class="{ 'is--collapsed': collapse_capture_pane }"
+  >
     <CaptureSettings
       v-show="show_capture_settings"
       :stream.sync="stream"
@@ -568,6 +571,7 @@ export default {
 
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
+    this.$eventHub.$on(`window.resized`, this.checkCapturePanelSize);
 
     this.$refs.videoElement.addEventListener(
       "loadedmetadata",
@@ -575,6 +579,9 @@ export default {
     );
   },
   beforeDestroy() {
+    this.$eventHub.$off(`activity_panels_resized`, this.checkCapturePanelSize);
+    this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
+
     this.$refs.videoElement.removeEventListener(
       "loadedmetadata",
       this.refreshVideoActualSize
@@ -1096,6 +1103,14 @@ export default {
   display: flex;
   flex-flow: row nowrap;
 
+  &.is--collapsed {
+    .m_captureview2--videoPane--bottom--buttons {
+      > * {
+        padding: 0;
+      }
+    }
+  }
+
   .m_captureview2--settingsPaneButton {
     position: relative;
     z-index: 1;
@@ -1210,6 +1225,10 @@ export default {
 ._captureButton {
   position: relative;
   margin: 0 auto;
+
+  > img {
+    flex: 0 0 auto;
+  }
 }
 
 ._modeSelector {
@@ -1290,7 +1309,7 @@ export default {
     background-color: #fff;
     letter-spacing: 0;
     // padding: 0 0.405rem;
-    margin: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    margin: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
     text-align: center;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
@@ -1420,6 +1439,13 @@ export default {
   &.is--onionskin {
     opacity: 0.2;
     opacity: var(--onionskin-opacity);
+  }
+}
+._onion_skin_range {
+  max-width: 200px;
+  margin: -10px 0 0 auto;
+  label {
+    margin: 0;
   }
 }
 </style>
