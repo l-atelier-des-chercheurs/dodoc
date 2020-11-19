@@ -3546,7 +3546,7 @@ small {
   display: flex;
   // .bg-noir;
   flex-flow: column nowrap;
-  flex: 0 1 auto;
+  flex: 0 0 auto;
 
   &.is--showing_video_validation {
     flex-grow: 1;
@@ -3615,10 +3615,10 @@ small {
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-y: contain;
       .padding-verysmall;
-      .margin-verysmall;
+      // .margin-verysmall;
       scroll-behavior: smooth;
 
-      background-color: @c-gris_tresclair;
+      background-color: @c-gris_clair;
 
       // for some strange reason this prevents stopmotion thumbs
       // from showing in story publi
@@ -3642,7 +3642,10 @@ small {
         // border-radius: 10px;
         // height: 100px;
         width: auto;
-        flex: 0 0 90px;
+        max-height: 100%;
+        flex: 0 0 auto;
+        width: 100px;
+        height: 66px;
         margin-right: 1px;
         cursor: pointer;
 
@@ -3653,6 +3656,7 @@ small {
           left: 0;
           top: 0;
           .padding-veryverysmall;
+          .margin-veryverysmall;
           // .c-noir;
           // .c-blanc;
           .text-cap;
@@ -3660,16 +3664,19 @@ small {
           // font-weight: 600;
           background-color: fade(@c-noir, 100%);
           .c-blanc;
-          border-radius: 0 0 0.4em 0;
+          border-radius: 0.4em;
           line-height: 1;
           z-index: 1;
         }
 
         &:last-child {
-          flex-basis: 190px;
+          flex-basis: auto;
+          padding-right: 100px;
+          width: auto;
 
           video {
-            width: 90px;
+            width: 100px;
+            height: 66px;
           }
           &::before {
             content: attr(data-content);
@@ -3700,7 +3707,7 @@ small {
             height: 100%;
             margin: 0;
             object-fit: contain;
-            .bg-noir;
+            // .bg-noir;
           }
         }
       }
