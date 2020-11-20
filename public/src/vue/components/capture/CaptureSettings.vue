@@ -203,7 +203,6 @@
             <pre>{{ connected_devices }}</pre>
           </div>
         </div> -->
-      {{ current_settings }}
     </div>
     <div class="m_captureSettings--updateButton">
       <!-- <small v-if="!desired_camera_resolution">
