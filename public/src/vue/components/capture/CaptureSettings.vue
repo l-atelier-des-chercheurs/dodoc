@@ -59,14 +59,20 @@
           </select>
         </div>
         <div>
-          <label>Audio input</label>
+          <label>{{ $t("audioinput") }}</label>
           <small v-if="!all_audio_input_devices.length === 0">
-            No audio input devices available
+            {{ $t("no_audio_input_available") }}
           </small>
           <select
             v-else
             id="devices"
             name="Video devices"
+            :disabled="
+              selected_devices.video_input_device &&
+              selected_devices.video_input_device.chromeMediaSource &&
+              selected_devices.video_input_device.chromeMediaSource ===
+                'desktop'
+            "
             title="devices"
             v-model="selected_devices.audio_input_device"
           >
@@ -78,11 +84,21 @@
               {{ d.label }}
             </option>
           </select>
+          <small
+            v-if="
+              selected_devices.video_input_device &&
+              selected_devices.video_input_device.chromeMediaSource &&
+              selected_devices.video_input_device.chromeMediaSource ===
+                'desktop'
+            "
+          >
+            audio source unavailable for screen capture
+          </small>
         </div>
         <div>
-          <label>select audio output</label>
+          <label>{{ $t("audiooutput") }}</label>
           <small v-if="!all_audio_output_devices.length === 0">
-            No audio output devices available
+            {{ $t("no_audio_output_available") }}
           </small>
           <select
             v-else
@@ -187,6 +203,7 @@
             <pre>{{ connected_devices }}</pre>
           </div>
         </div> -->
+      {{ current_settings }}
     </div>
     <div class="m_captureSettings--updateButton">
       <!-- <small v-if="!desired_camera_resolution">
@@ -231,7 +248,9 @@
 export default {
   props: {
     stream: MediaStream,
-    enable_audio_in_video: Boolean,
+    audio_output_deviceId: String,
+    enable_audio: Boolean,
+    enable_video: Boolean,
     actual_camera_resolution: Object,
   },
   components: {},
@@ -353,7 +372,7 @@ export default {
 
     //Call gUM early to force user gesture and allow device enumeration
     navigator.mediaDevices
-      .getUserMedia({ audio: this.enable_audio_in_video, video: true })
+      .getUserMedia({ audio: true, video: true })
       .then((stream) => {
         this.$emit("update:stream", stream);
         // if ("srcObject" in this.$refs.videoElement) {
@@ -408,10 +427,8 @@ export default {
       this.unavailable_camera_resolutions = [];
       this.last_working_resolution = false;
     },
-    enable_audio_in_video: function () {
-      console.log(
-        `WATCH • Capture: enable_audio_in_video = ${this.enable_audio_in_video}`
-      );
+    enable_audio: function () {
+      console.log(`WATCH • Capture: enable_audio = ${this.enable_audio}`);
       this.setCameraStreamFromDefaults();
     },
     stream: function () {
@@ -434,21 +451,29 @@ export default {
       return this.connected_devices.filter((d) => d.kind === "audiooutput");
     },
     current_settings() {
-      if (
-        !this.selected_devices.video_input_device ||
-        !this.desired_camera_resolution ||
-        !this.desired_camera_resolution.width ||
-        !this.desired_camera_resolution.height
-      )
-        return false;
+      let _settings = "";
 
-      return (
-        this.selected_devices.video_input_device.deviceId +
-        "_" +
-        this.desired_camera_resolution.width +
-        "x" +
-        this.desired_camera_resolution.height
-      );
+      if (!!this.selected_devices.video_input_device)
+        _settings += this.selected_devices.video_input_device.deviceId + "-";
+
+      if (
+        !!this.desired_camera_resolution &&
+        !!this.desired_camera_resolution.width &&
+        !!this.desired_camera_resolution.height
+      )
+        _settings +=
+          this.desired_camera_resolution.width +
+          "x" +
+          this.desired_camera_resolution.height +
+          "-";
+
+      if (!!this.selected_devices.audio_input_device)
+        _settings += this.selected_devices.audio_input_device.deviceId + "-";
+
+      if (!!this.selected_devices.audio_output_device)
+        _settings += this.selected_devices.audio_output_device.deviceId + "-";
+
+      return _settings;
     },
   },
   methods: {
@@ -492,35 +517,35 @@ export default {
       if (this.all_video_input_devices.length > 0)
         this.selected_devices.audio_output_device = this.all_audio_output_devices[0];
     },
-    getAllAvailableResolutions() {
-      const all_resolutions = [];
+    // getAllAvailableResolutions() {
+    //   const all_resolutions = [];
 
-      this.is_scanning_resolutions = true;
-      // this.$refs.videoElement.pause();
+    //   this.is_scanning_resolutions = true;
+    //   // this.$refs.videoElement.pause();
 
-      let tasks = this.predefined_resolutions.map((resolution) => () =>
-        this.setCameraStream(
-          resolution,
-          this.selected_devices.video_input_device,
-          false
-        )
-      );
+    //   let tasks = this.predefined_resolutions.map((resolution) => () =>
+    //     this.setCameraStream(
+    //       resolution,
+    //       this.selected_devices.video_input_device,
+    //       false
+    //     )
+    //   );
 
-      const serial = (funcs) =>
-        funcs.reduce(
-          (promise, func) =>
-            promise.then((result) =>
-              func().then(Array.prototype.concat.bind(result))
-            ),
-          Promise.resolve([])
-        );
-      serial(tasks).then((res) => {
-        res = res.filter((r) => !r.status && r.status !== "error");
-        // this.unavailable_camera_resolutions = res;
-        this.is_scanning_resolutions = false;
-        // this.$refs.videoElement.play();
-      });
-    },
+    //   const serial = (funcs) =>
+    //     funcs.reduce(
+    //       (promise, func) =>
+    //         promise.then((result) =>
+    //           func().then(Array.prototype.concat.bind(result))
+    //         ),
+    //       Promise.resolve([])
+    //     );
+    //   serial(tasks).then((res) => {
+    //     res = res.filter((r) => !r.status && r.status !== "error");
+    //     // this.unavailable_camera_resolutions = res;
+    //     this.is_scanning_resolutions = false;
+    //     // this.$refs.videoElement.play();
+    //   });
+    // },
     getDesktopCapturer() {
       return new Promise((resolve, reject) => {
         const { desktopCapturer } = window.require("electron");
@@ -544,7 +569,6 @@ export default {
         // .catch((err) => reject(err));
       });
     },
-
     refreshAvailableDevices() {
       return new Promise((resolve, reject) => {
         this.connected_devices = [];
@@ -569,15 +593,20 @@ export default {
     setCameraStreamFromDefaults() {
       this.stream_current_settings = this.current_settings;
 
+      if (!!this.selected_devices.audio_output_device)
+        this.$emit(
+          "update:audio_output_deviceId",
+          this.selected_devices.audio_output_device.deviceId
+        );
+
       this.setCameraStream(
         this.desired_camera_resolution,
-        this.selected_devices.video_input_device,
-        this.enable_audio_in_video
+        this.selected_devices
       )
         .then((res) => {
           this.last_working_resolution = this.desired_camera_resolution;
         })
-        .catch((err) => {
+        .catch((error) => {
           this.stream_current_settings = false;
           this.$alertify
             .closeLogOnClick(true)
@@ -587,7 +616,7 @@ export default {
                 "notifications.failed_to_start_video_change_source_or_res"
               ) +
                 "<br>" +
-                err.error_msg
+                error.name
             );
 
           if (this.desired_camera_resolution.type !== "custom") {
@@ -603,49 +632,20 @@ export default {
           }
         });
     },
-    setCameraStream(candidate, device, with_audio) {
+    setCameraStream(camera_resolution, selected_devices) {
       return new Promise((resolve, reject) => {
-        console.log("trying " + candidate.label + " on " + device.label);
+        const _video_input_device = selected_devices.video_input_device;
+        const _audio_input_device = selected_devices.audio_input_device;
 
         //Kill any running streams;
         if (this.stream)
-          this.stream.getTracks().forEach((track) => {
-            track.stop();
-          });
-        let constraints = undefined;
-        if (
-          !device.hasOwnProperty("chromeMediaSource") ||
-          !device.chromeMediaSource
-        ) {
-          // non screen capture devices
-          constraints = {
-            audio: with_audio,
-            video: {
-              deviceId: device.deviceId
-                ? { exact: device.deviceId }
-                : undefined,
-              width: { exact: candidate.width }, //new syntax
-              height: { exact: candidate.height }, //new syntax
-            },
-          };
-        } else {
-          // screen capture devices
-          constraints = {
-            audio: false,
-            video: {
-              mandatory: {
-                chromeMediaSource: device.chromeMediaSource,
-                chromeMediaSourceId: device.deviceId,
-                minWidth: candidate.width,
-                maxWidth: candidate.width,
-                minHeight: candidate.height,
-                maxHeight: candidate.height,
-              },
-            },
-          };
-        }
+          this.stream.getTracks().forEach((track) => track.stop());
 
-        console.log("Constraints = " + JSON.stringify(constraints, null, 4));
+        let constraints = this.createConstraints(
+          camera_resolution,
+          _video_input_device,
+          _audio_input_device
+        );
 
         setTimeout(
           () => {
@@ -653,75 +653,72 @@ export default {
               .getUserMedia(constraints)
               .then(gotStream)
               .then(() => {
-                // this.$alertify
-                //   .closeLogOnClick(true)
-                //   .delay(4000)
-                //   .success(this.$t("notifications.successfully_loaded_res"));
-
-                return resolve(candidate);
-                // this.$refs.videoElement.onloadedmetadata = (e) => {
-                //   // check if candidate settings fit actual settings
-                //   this.getVideoActualSize().then((video_size) => {
-                //     return resolve(candidate);
-                //     if (
-                //       video_size.width === candidate.width &&
-                //       video_size.height === candidate.height
-                //     ) {
-                //     } else {
-                //       // console.log(
-                //       //   "getUserMedia error! Mismatch between expected and actual camera stream resolution"
-                //       // );
-                //       // return reject({
-                //       //   status: "error",
-                //       //   error_msg: "resolution_mismatch",
-                //       // });
-                //     }
-                //   });
-                // };
+                return resolve(camera_resolution);
               })
               .catch((error) => {
                 console.log("getUserMedia error : ", error);
-                // captureResults("fail: " + error.name);
-                // this.$alertify
-                //   .closeLogOnClick(true)
-                //   .delay(4000)
-                //   .error(this.$t("notifications.failed_loading_res"));
-                return reject({
-                  status: "error",
-                  error_msg: error.name,
-                });
+                return reject(error);
               });
           },
           this.stream ? 200 : 0
         ); //official examples had this at 200
 
         const gotStream = (stream) => {
-          //change the video dimensions
-          // console.log(
-          //   "Display size for " +
-          //     candidate.label +
-          //     ": " +
-          //     candidate.width +
-          //     "x" +
-          //     candidate.height
-          // );
-
-          // this.$refs.videoElement.width = candidate.width;
-          // this.$refs.videoElement.height = candidate.height;
           this.$emit("update:stream", stream);
-
-          // if ("srcObject" in this.$refs.videoElement) {
-          //   this.$refs.videoElement.srcObject = stream;
-          // } else {
-          //   // Avoid using this in new browsers, as it is going away.
-          //   this.$refs.videoElement.src = window.URL.createObjectURL(stream);
-          // }
-
-          // this.$refs.videoElement.onloadedmetadata = (e) => {
-          //   this.$refs.videoElement.play();
-          // };
         };
       });
+    },
+    createConstraints(camera_resolution, vi_device, ai_device) {
+      let _constraints = {
+        audio: false,
+        video: false,
+      };
+
+      if (
+        !vi_device.hasOwnProperty("chromeMediaSource") ||
+        !vi_device.chromeMediaSource
+      ) {
+        // non screen capture devices
+        _constraints.audio = !this.enable_audio
+          ? false
+          : {
+              deviceId: ai_device.deviceId
+                ? { exact: ai_device.deviceId }
+                : undefined,
+            };
+
+        // {
+        //   // optional: [{ sourceId: this._video_input_device.audioinput }],
+        // };
+        _constraints.video = !this.enable_video
+          ? false
+          : {
+              deviceId: vi_device.deviceId
+                ? { exact: vi_device.deviceId }
+                : undefined,
+              width: { exact: camera_resolution.width }, //new syntax
+              height: { exact: camera_resolution.height }, //new syntax
+            };
+      } else {
+        // screen capture devices
+        _constraints = {
+          audio: false,
+          video: {
+            mandatory: {
+              chromeMediaSource: vi_device.chromeMediaSource,
+              chromeMediaSourceId: vi_device.deviceId,
+              minWidth: camera_resolution.width,
+              maxWidth: camera_resolution.width,
+              minHeight: camera_resolution.height,
+              maxHeight: camera_resolution.height,
+            },
+          },
+        };
+      }
+
+      console.log("Constraints = " + JSON.stringify(_constraints, null, 4));
+
+      return _constraints;
     },
   },
 };

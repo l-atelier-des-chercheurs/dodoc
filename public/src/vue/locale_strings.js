@@ -180,8 +180,16 @@ module.exports = (function () {
       en: "Sources",
     },
     no_video_input_available: {
-      fr: "Aucune source vidéo trouvée",
-      en: "No video souce available",
+      fr: "Aucune source vidéo disponible",
+      en: "No video source available",
+    },
+    no_audio_input_available: {
+      fr: "Aucune source audio disponible",
+      en: "No audio source available",
+    },
+    no_audio_output_available: {
+      fr: "Aucune sortie audio disponible",
+      en: "No audio output available",
     },
     static_preview: {
       fr: "Image",
@@ -703,10 +711,6 @@ module.exports = (function () {
     audioinput: {
       fr: "Entrée audio",
       en: "Audio input",
-    },
-    videoinput: {
-      fr: "Entrée vidéo",
-      en: "Video input",
     },
     audiooutput: {
       fr: "Sortie audio",
