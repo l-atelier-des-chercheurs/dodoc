@@ -10,6 +10,7 @@
       :options="plyr_options"
     >
       <video
+        ref="videoElement"
         :poster="linkToVideoThumb"
         :src="media_to_validate.objectURL"
         preload="none"
@@ -35,6 +36,7 @@
 export default {
   props: {
     media_to_validate: Object,
+    audio_output_deviceId: String,
   },
   components: {},
   data() {
@@ -54,9 +56,17 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$refs.videoElement.setSinkId(this.audio_output_deviceId);
+  },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    audio_output_deviceId: {
+      handler() {
+        this.$refs.videoElement.setSinkId(this.audio_output_deviceId);
+      },
+    },
+  },
   computed: {},
   methods: {},
 };

@@ -6,7 +6,9 @@
     <CaptureSettings
       v-show="show_capture_settings"
       :stream.sync="stream"
-      :enable_audio_in_video="enable_audio_in_video"
+      :audio_output_deviceId.sync="audio_output_deviceId"
+      :enable_audio="enable_audio"
+      :enable_video="enable_video"
       :actual_camera_resolution.sync="actual_camera_resolution"
       @close="show_capture_settings = false"
     />
@@ -18,12 +20,7 @@
       <transition name="slidedown" :duration="500">
         <div
           class="_modeSelector"
-          v-if="
-            !show_capture_settings &&
-            !media_to_validate &&
-            !is_recording &&
-            !is_making_stopmotion
-          "
+          v-if="!media_to_validate && !is_recording && !is_making_stopmotion"
         >
           <button
             type="button"
@@ -158,7 +155,7 @@
             ref="videoElement"
             autoplay
             playsinline
-            :srcObject.prop="stream"
+            :src-object.prop.camel="stream"
             muted
             v-show="
               stream &&
@@ -253,6 +250,7 @@
             <MediaPreviewBeforeValidation
               v-if="media_to_validate"
               :media_to_validate="media_to_validate"
+              :audio_output_deviceId="audio_output_deviceId"
             />
           </transition>
         </div>
@@ -278,10 +276,7 @@
       </transition>
 
       <transition name="slideup" :duration="150" mode="out-in">
-        <div
-          class="m_captureview2--videoPane--bottom"
-          v-if="!show_capture_settings"
-        >
+        <div class="m_captureview2--videoPane--bottom">
           <transition name="slideup" :duration="150" mode="out-in">
             <div
               class="m_captureview2--videoPane--bottom--buttons"
@@ -431,7 +426,7 @@
                     class="switch"
                     id="recordVideoWithAudio"
                     type="checkbox"
-                    v-model="enable_audio_in_video"
+                    v-model="enable_audio"
                     :disabled="is_recording"
                   />
                   <label for="recordVideoWithAudio">{{
@@ -538,7 +533,7 @@ export default {
         vecto: "/images/i_icone-dodoc_vecto.svg",
       },
 
-      enable_grid: true,
+      enable_grid: false,
 
       media_to_validate: false,
       media_is_being_sent: false,
@@ -559,8 +554,12 @@ export default {
       // },
 
       stream: undefined,
+      audio_output_deviceId: undefined,
+
       show_capture_settings: false,
-      enable_audio_in_video: true,
+
+      enable_audio: true,
+      enable_video: true,
 
       is_recording: false,
       timer_recording: false,
@@ -605,6 +604,7 @@ export default {
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$on(`window.resized`, this.checkCapturePanelSize);
 
+    this.$refs.videoElement.volume = 0;
     this.$refs.videoElement.addEventListener(
       "loadedmetadata",
       this.refreshVideoActualSize
@@ -633,6 +633,11 @@ export default {
         this.$refs.videoElement.play();
         this.show_live_feed = true;
       }
+    },
+    audio_output_deviceId: function () {
+      // const audio = document.createElement('audio');
+      // await audio.setSinkId(audioDevices[0].deviceId);
+      // console.log('Audio is being played on ' + audio.sinkId);
     },
     media_to_validate: function () {
       console.log(
@@ -879,6 +884,7 @@ export default {
       window.setTimeout(() => {
         this.capture_button_pressed = false;
       }, 400);
+      this.show_capture_settings = false;
 
       if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
         if (!this.is_recording) {
