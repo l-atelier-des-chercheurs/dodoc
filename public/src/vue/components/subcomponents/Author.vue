@@ -461,7 +461,6 @@ export default {
       slugFolderName,
       password = this.$auth.hashCode(this.entered_password),
     }) {
-      debugger;
       if (this.$root.state.dev_mode === "debug")
         console.log(`Author • METHODS / submitPassword`);
 
