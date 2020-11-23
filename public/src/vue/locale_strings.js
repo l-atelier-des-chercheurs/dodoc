@@ -2192,7 +2192,7 @@ module.exports = (function () {
     },
     take_picture: {
       fr: "Prendre une photo",
-      en: "Take a photo",
+      en: "Take a picture",
     },
     record_video: {
       fr: "Capturer une vidéo",
@@ -2201,6 +2201,14 @@ module.exports = (function () {
     stop_recording: {
       fr: "Arrêter la capture",
       en: "Stop recording",
+    },
+    pause_recording: {
+      fr: "Mettre en pause",
+      en: "Pause recording",
+    },
+    unpause_recording: {
+      fr: "Relancer l’enregistrement",
+      en: "Resume recording",
     },
     video: {
       fr: "vidéo",
