@@ -290,6 +290,7 @@
                   v-if="!is_recording && !is_making_stopmotion"
                   type="button"
                   class="bg-rouge"
+                  :class="{ 'is--active': show_capture_settings }"
                   @click="show_capture_settings = !show_capture_settings"
                 >
                   <svg
@@ -457,7 +458,7 @@
                   type="button"
                   v-if="selected_mode === 'stopmotion' && !is_making_stopmotion"
                   @click="show_stopmotion_list = !show_stopmotion_list"
-                  class="button c-bleumarine font-small bg-transparent"
+                  class="bg-bleumarine font-small"
                 >
                   <span class>{{ $t("stopmotion_list") }}</span>
                 </button>
@@ -477,6 +478,14 @@
         </div>
       </transition>
     </div>
+
+    <transition name="slideright" :duration="400">
+      <StopmotionList
+        v-if="show_stopmotion_list && !is_making_stopmotion"
+        :slugFolderName="slugFolderName"
+        @loadStopmotion="loadStopmotion"
+      />
+    </transition>
   </div>
 </template>
 <script>
@@ -486,6 +495,7 @@ import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
 import MediaContent from "./components/subcomponents/MediaContent.vue";
 
 import CaptureSettings from "./components/capture/CaptureSettings.vue";
+import StopmotionList from "./components/subcomponents/StopmotionList.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -517,6 +527,7 @@ export default {
     StopmotionPanel,
     MediaContent,
     CaptureSettings,
+    StopmotionList,
   },
   data() {
     return {
@@ -776,7 +787,9 @@ export default {
         });
       });
     },
-
+    loadStopmotion(slugFolderName) {
+      this.current_stopmotion = slugFolderName;
+    },
     checkCapturePanelSize() {
       if (this.$el && this.$el.offsetWidth && this.$el.offsetWidth <= 600)
         this.collapse_capture_pane = true;
@@ -1290,6 +1303,7 @@ export default {
   align-items: center;
   padding: calc(var(--spacing) / 2) 0 0;
   user-select: none;
+  pointer-events: none;
 
   font-family: "Fira Code";
   color: var(--c-orange);
@@ -1305,6 +1319,7 @@ export default {
     display: flex;
     flex-flow: row wrap;
     font-family: inherit;
+    pointer-events: auto;
     // background-color: white;
   }
   > button {
