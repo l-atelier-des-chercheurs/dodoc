@@ -107,17 +107,17 @@
               v-if="
                 selected_mode !== 'stopmotion' &&
                 is_recording &&
-                recording_duration
+                timer_recording_in_seconds !== false
               "
               :key="'duration'"
-              v-html="recording_duration"
+              v-html="timer_recording_in_seconds"
             />
 
             <label
               v-if="
                 selected_mode === 'stopmotion' &&
                 is_recording &&
-                recording_duration
+                timer_recording_in_seconds !== false
               "
               :key="'time_before'"
               v-html="time_before_next_picture"
@@ -573,7 +573,8 @@ export default {
       enable_video: true,
 
       is_recording: false,
-      timer_recording: false,
+      timer_recording_in_seconds: false,
+      recording_timer_interval: undefined,
 
       timelapse_mode: false,
       timelapse_interval: 2,
@@ -665,11 +666,6 @@ export default {
     },
     is_recording: function () {
       // equalizer.setSarahCouleur(this.is_recording);
-      if (this.is_recording) {
-        this.timer_recording = this.$root.currentTime;
-      } else {
-        this.timer_recording = false;
-      }
     },
   },
   computed: {
@@ -686,20 +682,9 @@ export default {
         `/_file-upload/${this.type}/${this.slugFolderName}/?socketid=${this.$root.$socketio.socket.id}`
       );
     },
-    recording_duration: function () {
-      if (this.timer_recording) {
-        return this.$moment(this.$root.currentTime - this.timer_recording)
-          .startOf("second")
-          .format("mm:ss");
-      }
-      return false;
-    },
     time_before_next_picture: function () {
-      const seconds_ellapsed_since_beginning = this.$moment(
-        this.$root.currentTime - this.timer_recording
-      ).seconds();
       const time_ellapsed_since_last_capture =
-        seconds_ellapsed_since_beginning % this.timelapse_interval;
+        timer_recording_in_seconds % this.timelapse_interval;
       if (time_ellapsed_since_last_capture === 0) {
         return 0;
       }
@@ -930,6 +915,7 @@ export default {
         });
       } else if (this.selected_mode === "video") {
         this.video_recording_is_paused = false;
+
         this.startRecordCameraFeed().then((rawData) => {
           this.media_to_validate = {
             rawData,
@@ -962,11 +948,36 @@ export default {
     pauseOrResumeCapture() {
       if (this.recorder.state !== "paused") {
         this.video_recording_is_paused = true;
+        this.pauseTimer();
         this.recorder.pauseRecording();
       } else {
         this.video_recording_is_paused = false;
+        this.unpauseTimer();
         this.recorder.resumeRecording();
       }
+    },
+
+    startTimer() {
+      this.timer_recording_in_seconds = 0;
+      this.recording_timer_interval = setInterval(() => {
+        this.timer_recording_in_seconds = Number(
+          Number(this.timer_recording_in_seconds) + 0.1
+        ).toFixed(1);
+      }, 100);
+    },
+    pauseTimer() {
+      clearInterval(this.recording_timer_interval);
+    },
+    unpauseTimer() {
+      this.recording_timer_interval = setInterval(() => {
+        this.timer_recording_in_seconds = Number(
+          Number(this.timer_recording_in_seconds) + 0.1
+        ).toFixed(1);
+      }, 100);
+    },
+    eraseTimer() {
+      this.timer_recording_in_seconds = false;
+      clearInterval(this.recording_timer_interval);
     },
 
     getStaticImageFromVideoElement() {
@@ -1008,10 +1019,13 @@ export default {
         // recorder.camera = this.stream;
 
         this.is_recording = true;
+        this.startTimer();
 
         this.$eventHub.$once("capture.stopRecording", () => {
           this.recorder.stopRecording(() => {
             this.is_recording = false;
+            this.eraseTimer();
+
             let video_blob = this.recorder.getBlob();
 
             // recorder.camera.stop();
