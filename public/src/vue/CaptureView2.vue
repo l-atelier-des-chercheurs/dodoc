@@ -126,7 +126,7 @@
             <div
               v-if="selected_mode === 'stopmotion' && timelapse_mode"
               :key="'timelapse_interval'"
-              class="_recording_timer--timelapse"
+              class="recording_timer--timelapse"
             >
               <div>
                 <span>{{ $t("interval_between_pictures") }}</span>
@@ -420,6 +420,48 @@
                     </span>
                   </button>
                 </transition>
+
+                <transition name="fade_fast" mode="out-in">
+                  <button
+                    type="button"
+                    class="m_panel--buttons--row--captureButton--advancedOptions"
+                    :class="{ 'is--active': timelapse_mode }"
+                    v-if="selected_mode === 'stopmotion'"
+                    :content="$t('timelapse')"
+                    v-tippy="{
+                      placement: 'top',
+                      delay: [600, 0],
+                    }"
+                    @click="timelapse_mode = !timelapse_mode"
+                  >
+                    <svg
+                      version="1.1"
+                      class="inline-svg margin-right-verysmall"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      x="0px"
+                      y="0px"
+                      width="81px"
+                      height="81px"
+                      viewBox="0 0 81 81"
+                      style="enable-background: new 0 0 81 81"
+                      xml:space="preserve"
+                    >
+                      <path
+                        class="st1"
+                        d="M69.6,20.8c-0.9,0.6-1.7,1.1-2.6,1.7c-6-8.8-15.9-14-26.5-14c-17.6,0-32,14.4-32,32s14.4,32,32,32
+                  c3.1,0,6.2-0.4,9.1-1.3l-1.7-5.8c-2.4,0.7-4.9,1.1-7.4,1.1c-14.3,0-26-11.7-26-26s11.7-26,26-26c8.6,0,16.6,4.2,21.5,11.4
+                  c-0.8,0.5-1.6,1.1-2.4,1.6c-0.7,0.4-0.9,1.1-0.8,1.7c0,0.7,0.4,1.4,1.2,1.6c0.2,0.1,0.3,0.1,0.5,0.1c2.7,0.5,5.3,1.1,8,1.6
+                  c1,0.2,2-0.4,2.3-1.4c0.6-2.8,1.1-5.5,1.7-8.3C72.8,21.3,71,19.9,69.6,20.8z"
+                      />
+                      <path
+                        class="st1"
+                        d="M23,49.4c-1.3,0-2.4-0.8-2.9-2.1c-0.5-1.6,0.4-3.3,1.9-3.8L39,38.3V27.2c0-1.7,1.3-3,3-3s3,1.3,3,3v13.3
+                  c0,1.3-0.8,2.5-2.1,2.9l-19,5.9C23.6,49.4,23.3,49.4,23,49.4z"
+                      />
+                    </svg>
+                  </button>
+                </transition>
               </div>
               <div>
                 <span class="switch switch-xs" v-if="selected_mode === 'video'">
@@ -684,7 +726,7 @@ export default {
     },
     time_before_next_picture: function () {
       const time_ellapsed_since_last_capture =
-        timer_recording_in_seconds % this.timelapse_interval;
+        this.timer_recording_in_seconds % this.timelapse_interval;
       if (time_ellapsed_since_last_capture === 0) {
         return 0;
       }
