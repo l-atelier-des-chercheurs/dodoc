@@ -56,7 +56,7 @@
   </div>
 </template>
 <script>
-import MediaContent from "./MediaContent.vue";
+import MediaContent from "../subcomponents/MediaContent.vue";
 
 export default {
   props: {

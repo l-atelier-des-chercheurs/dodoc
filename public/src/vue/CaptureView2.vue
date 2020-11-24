@@ -165,6 +165,12 @@
             "
           />
 
+          <AudioEqualizer
+            v-if="selected_mode === 'audio'"
+            ref="equalizerElement"
+            :stream="stream"
+          />
+
           <div class="_video_grid_overlay" v-if="enable_grid">
             <!-- :width="actual_camera_resolution.width" -->
             <!-- :height="actual_camera_resolution.height" -->
@@ -535,7 +541,8 @@ import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
 import MediaContent from "./components/subcomponents/MediaContent.vue";
 
 import CaptureSettings from "./components/capture/CaptureSettings.vue";
-import StopmotionList from "./components/subcomponents/StopmotionList.vue";
+import StopmotionList from "./components/capture/StopmotionList.vue";
+import AudioEqualizer from "./components/capture/AudioEqualizer.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -568,6 +575,7 @@ export default {
     MediaContent,
     CaptureSettings,
     StopmotionList,
+    AudioEqualizer,
   },
   data() {
     return {
@@ -967,9 +975,11 @@ export default {
           };
         });
       } else if (this.selected_mode === "audio") {
-        equalizer.clearCanvas();
+        // equalizer.clearCanvas();
         this.startRecordAudioFeed().then((rawData) => {
-          const preview = this.$refs.equalizerElement.toDataURL("image/png");
+          const preview = this.$refs.equalizerElement.$el.toDataURL(
+            "image/png"
+          );
           this.media_to_validate = {
             preview,
             rawData,
@@ -1054,11 +1064,9 @@ export default {
       return new Promise((resolve, reject) => {
         this.recorder = RecordRTC(this.stream, {
           type: "video",
-        });
-        this.recorder.startRecording({
-          type: "video",
           videoBitsPerSecond: 4112000,
         });
+        this.recorder.startRecording();
         // recorder.camera = this.stream;
 
         this.is_recording = true;
@@ -1076,6 +1084,33 @@ export default {
             this.recorder = null;
 
             return resolve(video_blob);
+          });
+        });
+      });
+    },
+    startRecordAudioFeed() {
+      return new Promise((resolve, reject) => {
+        this.recorder = RecordRTC(this.stream, {
+          type: "audio",
+        });
+        this.recorder.startRecording();
+        // recorder.camera = this.stream;
+
+        this.is_recording = true;
+        this.startTimer();
+
+        this.$eventHub.$once("capture.stopRecording", () => {
+          this.recorder.stopRecording(() => {
+            this.is_recording = false;
+            this.eraseTimer();
+
+            let audio_blob = this.recorder.getBlob();
+
+            // recorder.camera.stop();
+            this.recorder.destroy();
+            this.recorder = null;
+
+            return resolve(audio_blob);
           });
         });
       });
