@@ -52,7 +52,6 @@ export default {
       this.drawVolume();
     },
     drawVolume() {
-      console.log("loop");
       const canvas = this.$refs.canvas;
       if (canvas) window.requestAnimationFrame(this.drawVolume);
       else return;
