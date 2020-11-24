@@ -1,7 +1,7 @@
 <template>
   <div class="m_captureSettings">
     <transition name="fade_fast" :duration="400">
-      <Loader v-if="is_loading_available_devices || is_scanning_resolutions" />
+      <Loader v-if="is_loading_available_devices || is_loading_feed" />
     </transition>
 
     <!-- <video ref="videoElement" autoplay playsinline muted v-show="false" /> -->
@@ -203,7 +203,6 @@
             <pre>{{ connected_devices }}</pre>
           </div>
         </div> -->
-      {{ current_settings }}
     </div>
     <div class="m_captureSettings--updateButton">
       <!-- <small v-if="!desired_camera_resolution">
@@ -251,13 +250,12 @@ export default {
     audio_output_deviceId: String,
     enable_audio: Boolean,
     enable_video: Boolean,
-    actual_camera_resolution: Object,
   },
   components: {},
   data() {
     return {
       is_loading_available_devices: false,
-      is_scanning_resolutions: false,
+      is_loading_feed: false,
 
       stream_current_settings: undefined,
       desired_camera_resolution: undefined,
@@ -353,21 +351,12 @@ export default {
   },
   created() {},
   mounted() {
-    if (
-      this.$root.settings.capture_options &&
-      this.$root.settings.capture_options.desired_camera_resolution
-    )
-      this.desired_camera_resolution = this.$root.settings.capture_options.desired_camera_resolution;
-    else
-      this.desired_camera_resolution = this.predefined_resolutions.find(
-        (r) => r.label === "720p(HD)"
-      );
-
     if (!navigator.getUserMedia) {
       alert("You need a browser that supports WebRTC");
       return;
     }
 
+    this.is_loading_feed = true;
     this.is_loading_available_devices = true;
 
     //Call gUM early to force user gesture and allow device enumeration
@@ -394,6 +383,8 @@ export default {
               ": " +
               err.message
           );
+        this.is_loading_feed = false;
+        this.$emit("hasFinishedLoading");
         return;
       })
       .then(this.refreshAvailableDevices)
@@ -412,8 +403,14 @@ export default {
               err.message
           );
       })
+      .then(() => this.setCameraStreamFromDefaults())
       .then(() => {
-        this.setCameraStreamFromDefaults();
+        this.is_loading_feed = false;
+        this.$emit("hasFinishedLoading");
+      })
+      .catch(() => {
+        this.is_loading_feed = false;
+        this.$emit("hasFinishedLoading");
       });
   },
   beforeDestroy() {
@@ -438,6 +435,22 @@ export default {
       //   // Avoid using this in new browsers, as it is going away.
       //   this.$refs.videoElement.src = window.URL.createObjectURL(this.stream);
       // }
+    },
+    selected_devices: {
+      handler() {
+        this.$root.settings.capture_options.selected_devices = JSON.parse(
+          JSON.stringify(this.selected_devices)
+        );
+      },
+      deep: true,
+    },
+    last_working_resolution: {
+      handler() {
+        this.$root.settings.capture_options.last_working_resolution = JSON.parse(
+          JSON.stringify(this.last_working_resolution)
+        );
+      },
+      deep: true,
     },
   },
   computed: {
@@ -510,12 +523,69 @@ export default {
     setDefaultInputsAndOutputs() {
       if (this.connected_devices.length === 0) return;
 
+      // find in $root.settings.capture_options.selected_devices if video_input_device already exists
       if (this.all_video_input_devices.length > 0)
-        this.selected_devices.video_input_device = this.all_video_input_devices[0];
+        this.selected_devices.video_input_device = this.getDefaultDevice({
+          key: "video_input_device",
+          devices_list: this.all_video_input_devices,
+        });
+
       if (this.all_audio_input_devices.length > 0)
-        this.selected_devices.audio_input_device = this.all_audio_input_devices[0];
-      if (this.all_video_input_devices.length > 0)
-        this.selected_devices.audio_output_device = this.all_audio_output_devices[0];
+        this.selected_devices.audio_input_device = this.getDefaultDevice({
+          key: "audio_input_device",
+          devices_list: this.all_audio_input_devices,
+        });
+      if (this.all_audio_output_devices.length > 0)
+        this.selected_devices.audio_output_device = this.getDefaultDevice({
+          key: "audio_output_device",
+          devices_list: this.all_audio_output_devices,
+        });
+
+      if (
+        this.$root.settings.capture_options &&
+        this.$root.settings.capture_options.last_working_resolution
+      ) {
+        this.desired_camera_resolution = JSON.parse(
+          JSON.stringify(
+            this.$root.settings.capture_options.last_working_resolution
+          )
+        );
+      } else {
+        this.desired_camera_resolution = this.predefined_resolutions.find(
+          (r) => r.label === "720p(HD)"
+        );
+      }
+    },
+
+    getDefaultDevice({ key, devices_list }) {
+      // find if this.$root.settings.capture_options.selected_devices has key, and if value is in devices_list
+      const previously_used = this.$root.settings.capture_options
+        .selected_devices;
+      if (previously_used.hasOwnProperty(key) && !!previously_used[key]) {
+        const found_device = devices_list.find(
+          (d) => d.deviceId === previously_used[key].deviceId
+        );
+        // if true, use this
+        if (found_device) {
+          if (this.$root.state.dev_mode === "debug")
+            console.log(
+              `CaptureSettings • METHODS : getDefaultDevice — found previously used device for ` +
+                key
+            );
+
+          return found_device;
+        }
+      }
+
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `CaptureSettings • METHODS : getDefaultDevice — settings first available device for ` +
+            key
+        );
+
+      return devices_list[0];
+
+      // otherwise, use first device
     },
     // getAllAvailableResolutions() {
     //   const all_resolutions = [];
@@ -591,46 +661,50 @@ export default {
       });
     },
     setCameraStreamFromDefaults() {
-      this.stream_current_settings = this.current_settings;
+      return new Promise((resolve, reject) => {
+        this.stream_current_settings = this.current_settings;
 
-      if (!!this.selected_devices.audio_output_device)
-        this.$emit(
-          "update:audio_output_deviceId",
-          this.selected_devices.audio_output_device.deviceId
-        );
+        if (!!this.selected_devices.audio_output_device)
+          this.$emit(
+            "update:audio_output_deviceId",
+            this.selected_devices.audio_output_device.deviceId
+          );
 
-      this.setCameraStream(
-        this.desired_camera_resolution,
-        this.selected_devices
-      )
-        .then((res) => {
-          this.last_working_resolution = this.desired_camera_resolution;
-        })
-        .catch((error) => {
-          this.stream_current_settings = false;
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(
-              this.$t(
-                "notifications.failed_to_start_video_change_source_or_res"
-              ) +
-                "<br>" +
-                error.name
-            );
-
-          if (this.desired_camera_resolution.type !== "custom") {
-            this.unavailable_camera_resolutions.push(
-              this.desired_camera_resolution.label
-            );
-            if (this.last_working_resolution) {
-              this.desired_camera_resolution = this.last_working_resolution;
-              setTimeout(() => {
-                this.setCameraStreamFromDefaults();
-              }, 500);
+        this.setCameraStream(
+          this.desired_camera_resolution,
+          this.selected_devices
+        )
+          .then((res) => {
+            this.last_working_resolution = this.desired_camera_resolution;
+            return resolve();
+          })
+          .catch((error) => {
+            this.stream_current_settings = false;
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(
+                this.$t(
+                  "notifications.failed_to_start_video_change_source_or_res"
+                ) +
+                  "<br>" +
+                  error.name
+              );
+            if (this.desired_camera_resolution.type !== "custom") {
+              this.unavailable_camera_resolutions.push(
+                this.desired_camera_resolution.label
+              );
+              if (this.last_working_resolution) {
+                this.desired_camera_resolution = this.last_working_resolution;
+                setTimeout(() => {
+                  this.setCameraStreamFromDefaults().then(() => resolve());
+                }, 500);
+              } else {
+                return reject();
+              }
             }
-          }
-        });
+          });
+      });
     },
     setCameraStream(camera_resolution, selected_devices) {
       return new Promise((resolve, reject) => {
@@ -791,6 +865,7 @@ export default {
   color: black;
 
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: center;
 }

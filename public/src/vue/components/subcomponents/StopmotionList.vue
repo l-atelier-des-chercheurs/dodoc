@@ -1,5 +1,5 @@
 <template>
-  <div class="m_panel--previewCard--live--stopmotionlist">
+  <div class="m_stopmotionList">
     <template v-if="Object.keys(stopmotions).length > 0">
       <ul>
         <li
@@ -8,15 +8,14 @@
           @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)"
         >
           <div class="padding-verysmall">
-            {{ $root.formatDateToHuman(stopmotion.date_created) }}
+            {{ $root.formatDateToPrecise(stopmotion.date_created) }}
           </div>
           <div
             v-if="Object.values(stopmotion.medias).length > 0"
             class="pictures_cont"
           >
             <div class="padding-bottom-verysmall">
-              {{ Object.values(stopmotion.medias).length }}
-              photos
+              {{ $t("photo") }} = {{ Object.values(stopmotion.medias).length }}
             </div>
             <div class="pictures_list">
               <div
@@ -73,7 +72,9 @@ export default {
     return {};
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$socketio.listFolders({ type: "stopmotions" });
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -123,4 +124,77 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.m_stopmotionList {
+  position: relative;
+  flex: 0 0 250px;
+  max-width: 250px;
+  background-color: var(--c-bleumarine);
+
+  color: var(--c-bleumarine);
+  padding: calc(var(--spacing) / 4);
+
+  overflow-y: auto;
+  height: 100%;
+
+  border-left: 2px solid var(--c-bleumarine);
+  font-size: var(--font-verysmall);
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    position: relative;
+    // border: 2px solid @c-bleumarine;
+    border-radius: 4px;
+    background-color: white;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin-top: calc(var(--spacing) / 8);
+    margin-bottom: calc(var(--spacing) / 8);
+    padding-left: calc(var(--spacing) / 8);
+    padding-left: calc(var(--spacing) / 8);
+
+    &:hover {
+      background-color: var(--c-bleumarine_clair);
+    }
+
+    .pictures_cont {
+      padding-left: calc(var(--spacing) / 8);
+      padding-left: calc(var(--spacing) / 8);
+    }
+
+    .pictures_list {
+      display: flex;
+      flex-flow: row wrap;
+      // justify-content: flex-start;
+      // overflow-x: auto;
+      // .padding-right-verysmall;
+
+      > * {
+        flex: 0 0 50px;
+        // .padding-left-verysmall;
+        padding-bottom: calc(var(--spacing) / 8);
+
+        &:last-child {
+          padding-right: calc(var(--spacing) / 8);
+        }
+
+        img {
+          max-width: 100%;
+          width: auto;
+          height: auto;
+        }
+      }
+    }
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
+</style>
