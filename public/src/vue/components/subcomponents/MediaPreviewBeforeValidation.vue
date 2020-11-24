@@ -22,7 +22,11 @@
     >
       <img :src="media_to_validate.preview" />
       <vue-plyr :options="plyr_options">
-        <audio :src="media_to_validate.objectURL" preload="none" />
+        <audio
+          ref="audioElement"
+          :src="media_to_validate.objectURL"
+          preload="none"
+        />
       </vue-plyr>
     </div>
     <div
@@ -57,18 +61,26 @@ export default {
   },
   created() {},
   mounted() {
-    this.$refs.videoElement.setSinkId(this.audio_output_deviceId);
+    this.setSinkId();
   },
   beforeDestroy() {},
   watch: {
     audio_output_deviceId: {
       handler() {
-        this.$refs.videoElement.setSinkId(this.audio_output_deviceId);
+        this.setSinkId();
       },
     },
   },
   computed: {},
-  methods: {},
+  methods: {
+    setSinkId() {
+      if (this.media_to_validate.type === "video") {
+        this.$refs.videoElement.setSinkId(this.audio_output_deviceId);
+      } else if (this.media_to_validate.type === "audio") {
+        this.$refs.audioElement.setSinkId(this.audio_output_deviceId);
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -94,14 +106,14 @@ export default {
     margin: 0;
     // .padding-medium;
 
-    &.m_panel--previewCard--validate--svg {
+    &.m_previewValidation--svg {
       svg {
         max-width: 100%;
         margin: auto;
       }
     }
   }
-  .m_panel--previewCard--validate--audio {
+  .m_previewValidation--audio {
     height: 100%;
     width: 100%;
     display: flex;
@@ -109,6 +121,9 @@ export default {
 
     .plyr .plyr__controls {
       color: white;
+    }
+
+    img {
     }
 
     > * {

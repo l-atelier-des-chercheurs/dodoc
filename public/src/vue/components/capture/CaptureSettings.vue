@@ -425,8 +425,16 @@ export default {
       this.last_working_resolution = false;
     },
     enable_audio: function () {
-      console.log(`WATCH • Capture: enable_audio = ${this.enable_audio}`);
-      this.setCameraStreamFromDefaults();
+      console.log(
+        `WATCH • CaptureSettings: enable_audio = ${this.enable_audio}`
+      );
+      if (!this.is_loading_feed) this.setCameraStreamFromDefaults();
+    },
+    enable_video: function () {
+      console.log(
+        `WATCH • CaptureSettings: enable_video = ${this.enable_video}`
+      );
+      if (!this.is_loading_feed) this.setCameraStreamFromDefaults();
     },
     stream: function () {
       // if ("srcObject" in this.$refs.videoElement) {
@@ -561,7 +569,11 @@ export default {
       // find if this.$root.settings.capture_options.selected_devices has key, and if value is in devices_list
       const previously_used = this.$root.settings.capture_options
         .selected_devices;
-      if (previously_used.hasOwnProperty(key) && !!previously_used[key]) {
+      if (
+        typeof previously_used === "object" &&
+        previously_used.hasOwnProperty(key) &&
+        !!previously_used[key]
+      ) {
         const found_device = devices_list.find(
           (d) => d.deviceId === previously_used[key].deviceId
         );
@@ -670,7 +682,7 @@ export default {
             this.selected_devices.audio_output_device.deviceId
           );
 
-        this.setCameraStream(
+        this.startCameraStream(
           this.desired_camera_resolution,
           this.selected_devices
         )
@@ -706,7 +718,7 @@ export default {
           });
       });
     },
-    setCameraStream(camera_resolution, selected_devices) {
+    startCameraStream(camera_resolution, selected_devices) {
       return new Promise((resolve, reject) => {
         const _video_input_device = selected_devices.video_input_device;
         const _audio_input_device = selected_devices.audio_input_device;

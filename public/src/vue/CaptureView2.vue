@@ -96,7 +96,7 @@
       <div class="m_captureview2--videoPane--top">
         <div
           class="m_captureview2--videoPane--top--videoContainer"
-          v-show="!is_validating_stopmotion_video && show_live_feed"
+          v-show="!is_validating_stopmotion_video"
         >
           <transition-group
             tag="div"
@@ -163,6 +163,13 @@
               show_live_feed &&
               !(must_validate_media && media_to_validate)
             "
+          />
+
+          <AudioEqualizer
+            v-if="selected_mode === 'audio'"
+            ref="equalizerElement"
+            :stream="stream"
+            :is_recording="is_recording"
           />
 
           <div class="_video_grid_overlay" v-if="enable_grid">
@@ -535,7 +542,8 @@ import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
 import MediaContent from "./components/subcomponents/MediaContent.vue";
 
 import CaptureSettings from "./components/capture/CaptureSettings.vue";
-import StopmotionList from "./components/subcomponents/StopmotionList.vue";
+import StopmotionList from "./components/capture/StopmotionList.vue";
+import AudioEqualizer from "./components/capture/AudioEqualizer.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -568,6 +576,7 @@ export default {
     MediaContent,
     CaptureSettings,
     StopmotionList,
+    AudioEqualizer,
   },
   data() {
     return {
@@ -646,11 +655,9 @@ export default {
       this.available_modes.includes(
         this.$root.settings.capture_options.selected_mode
       )
-    ) {
+    )
       this.selected_mode = this.$root.settings.capture_options.selected_mode;
-    } else {
-      this.selected_mode = this.available_modes[0];
-    }
+    else this.selected_mode = this.available_modes[0];
 
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
@@ -677,6 +684,14 @@ export default {
       setTimeout(() => {
         this.mode_just_changed = false;
       }, 300);
+      this.$root.settings.capture_options.selected_mode = this.selected_mode;
+
+      if (this.selected_mode === "audio") {
+        this.enable_audio = true;
+        this.enable_video = false;
+      } else {
+        this.enable_video = true;
+      }
     },
     is_validating_stopmotion_video: function () {
       if (this.is_validating_stopmotion_video) {
@@ -782,10 +797,14 @@ export default {
         })
         .catch((err) => {
           if (this.$root.state.dev_mode === "debug")
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error("DEBUG error : failed to get video actual size");
+            console.log(
+              `CaptureView2 • METHODS : refreshVideoActualSize — couldnt get video size: ` +
+                err
+            );
+          // this.$alertify
+          //   .closeLogOnClick(true)
+          //   .delay(4000)
+          //   .error("DEBUG error : failed to get video actual size");
         });
     },
 
@@ -801,9 +820,10 @@ export default {
 
         wait(wait_period_if_necessary).then(() => {
           if (
+            !this.$refs.videoElement ||
             this.$refs.videoElement.videoWidth *
               this.$refs.videoElement.videoHeight >
-            0
+              0
           ) {
             return resolve({
               width: this.$refs.videoElement.videoWidth,
@@ -967,9 +987,11 @@ export default {
           };
         });
       } else if (this.selected_mode === "audio") {
-        equalizer.clearCanvas();
+        // equalizer.clearCanvas();
         this.startRecordAudioFeed().then((rawData) => {
-          const preview = this.$refs.equalizerElement.toDataURL("image/png");
+          const preview = this.$refs.equalizerElement.$el
+            .querySelector("canvas")
+            .toDataURL("image/png");
           this.media_to_validate = {
             preview,
             rawData,
@@ -1054,12 +1076,9 @@ export default {
       return new Promise((resolve, reject) => {
         this.recorder = RecordRTC(this.stream, {
           type: "video",
-        });
-        this.recorder.startRecording({
-          type: "video",
           videoBitsPerSecond: 4112000,
         });
-        // recorder.camera = this.stream;
+        this.recorder.startRecording();
 
         this.is_recording = true;
         this.startTimer();
@@ -1076,6 +1095,32 @@ export default {
             this.recorder = null;
 
             return resolve(video_blob);
+          });
+        });
+      });
+    },
+    startRecordAudioFeed() {
+      return new Promise((resolve, reject) => {
+        this.recorder = RecordRTC(this.stream, {
+          type: "audio",
+        });
+        this.recorder.startRecording();
+
+        this.is_recording = true;
+        this.startTimer();
+
+        this.$eventHub.$once("capture.stopRecording", () => {
+          this.recorder.stopRecording(() => {
+            this.is_recording = false;
+            this.eraseTimer();
+
+            let audio_blob = this.recorder.getBlob();
+
+            // recorder.camera.stop();
+            this.recorder.destroy();
+            this.recorder = null;
+
+            return resolve(audio_blob);
           });
         });
       });
