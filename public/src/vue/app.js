@@ -292,6 +292,7 @@ let vm = new Vue({
           videoinput: "",
           audiooutput: "",
         },
+        selected_devices: {},
         desired_camera_resolution: false,
 
         distant_flux: {

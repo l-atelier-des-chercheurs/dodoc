@@ -9,7 +9,7 @@
       :audio_output_deviceId.sync="audio_output_deviceId"
       :enable_audio="enable_audio"
       :enable_video="enable_video"
-      :actual_camera_resolution.sync="actual_camera_resolution"
+      @hasFinishedLoading="hasFinishedLoading"
       @close="show_capture_settings = false"
     />
 
@@ -93,11 +93,11 @@
           </button>
         </div>
       </transition>
-      <div
-        class="m_captureview2--videoPane--top"
-        v-show="!is_validating_stopmotion_video"
-      >
-        <div class="m_captureview2--videoPane--top--videoContainer">
+      <div class="m_captureview2--videoPane--top">
+        <div
+          class="m_captureview2--videoPane--top--videoContainer"
+          v-show="!is_validating_stopmotion_video && show_live_feed"
+        >
           <transition-group
             tag="div"
             class="_recording_timer"
@@ -424,7 +424,7 @@
                 <transition name="fade_fast" mode="out-in">
                   <button
                     type="button"
-                    class="m_panel--buttons--row--captureButton--advancedOptions"
+                    class="_enable_timelapse_button"
                     :class="{ 'is--active': timelapse_mode }"
                     v-if="selected_mode === 'stopmotion'"
                     :content="$t('timelapse')"
@@ -521,13 +521,11 @@
       </transition>
     </div>
 
-    <transition name="slideright" :duration="400">
-      <StopmotionList
-        v-if="show_stopmotion_list && !is_making_stopmotion"
-        :slugFolderName="slugFolderName"
-        @loadStopmotion="loadStopmotion"
-      />
-    </transition>
+    <StopmotionList
+      v-if="show_stopmotion_list && !is_making_stopmotion"
+      :slugFolderName="slugFolderName"
+      @loadStopmotion="loadStopmotion"
+    />
   </div>
 </template>
 <script>
@@ -633,7 +631,7 @@ export default {
         height: undefined,
       },
 
-      show_live_feed: true,
+      show_live_feed: false,
       show_stopmotion_list: false,
       stopmotion: {
         onion_skin_img: false,
@@ -734,6 +732,9 @@ export default {
     },
   },
   methods: {
+    hasFinishedLoading() {
+      this.show_live_feed = true;
+    },
     previousMode() {
       console.log("METHODS • CaptureView: previousMode");
       if (
@@ -1276,6 +1277,10 @@ export default {
 
         &:nth-child(2) {
           text-align: center;
+          display: flex;
+          flex-flow: row wrap;
+          align-items: center;
+          justify-content: center;
         }
         &:last-child {
           text-align: right;
@@ -1340,7 +1345,8 @@ export default {
 
 ._captureButton {
   position: relative;
-  margin: 0 auto;
+  // margin: 0 auto;
+  margin: 0 calc(var(--spacing) / 2);
 
   > img {
     flex: 0 0 auto;
@@ -1612,6 +1618,31 @@ export default {
       );
     background-position: 50% 100%;
     background-repeat: no-repeat;
+  }
+}
+
+._enable_timelapse_button {
+  color: #fff;
+  background: var(--c-orange);
+  width: 24px;
+  height: 24px;
+  display: block;
+  min-height: 0;
+  line-height: 0;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: bold;
+  padding: 0;
+  margin: calc(var(--spacing) / 4);
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  &.is--active {
+    background: var(--c-rouge);
+    color: white;
   }
 }
 </style>
