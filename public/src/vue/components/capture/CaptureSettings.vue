@@ -425,8 +425,16 @@ export default {
       this.last_working_resolution = false;
     },
     enable_audio: function () {
-      console.log(`WATCH • Capture: enable_audio = ${this.enable_audio}`);
-      this.setCameraStreamFromDefaults();
+      console.log(
+        `WATCH • CaptureSettings: enable_audio = ${this.enable_audio}`
+      );
+      if (!this.is_loading_feed) this.setCameraStreamFromDefaults();
+    },
+    enable_video: function () {
+      console.log(
+        `WATCH • CaptureSettings: enable_video = ${this.enable_video}`
+      );
+      if (!this.is_loading_feed) this.setCameraStreamFromDefaults();
     },
     stream: function () {
       // if ("srcObject" in this.$refs.videoElement) {

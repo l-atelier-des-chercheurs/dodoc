@@ -1,5 +1,5 @@
 <template>
-  <canvas width="1280" height="720" />
+  <canvas class="m_audioEqualizer" width="1280" height="720" />
 </template>
 <script>
 export default {
@@ -12,10 +12,18 @@ export default {
   },
   created() {},
   mounted() {
-    equalizer.start(this.$el, this.stream);
+    setTimeout(() => {
+      equalizer.start(this.$el, this.stream);
+    }, 500);
   },
-  beforeDestroy() {},
-  watch: {},
+  beforeDestroy() {
+    equalizer.stop();
+  },
+  watch: {
+    // stream() {
+    //   equalizer.start(this.$el, this.stream);
+    // },
+  },
   computed: {},
   methods: {},
 };
@@ -34,7 +42,7 @@ var equalizer = (function () {
   })();
 
   // Global Variables for Audio
-  var sarahCouleur = "gray";
+  var sarahCouleur = "white";
   var audioContext;
   var analyserNode;
   var javascriptNode;
@@ -52,6 +60,8 @@ var equalizer = (function () {
 
   var API = {
     start: function (canvasEl, stream) {
+      if (!stream) return;
+
       ctx = canvasEl.getContext("2d");
 
       window.AudioContext = (function () {
@@ -70,9 +80,9 @@ var equalizer = (function () {
     },
     setSarahCouleur: function (isCurrentlyRecording) {
       if (isCurrentlyRecording) {
-        sarahCouleur = "red";
+        sarahCouleur = "#fc4b60";
       } else {
-        sarahCouleur = "gray";
+        sarahCouleur = "white";
       }
     },
     clearCanvas: function () {
@@ -96,7 +106,12 @@ var equalizer = (function () {
 
   function setupAudioNodes(stream) {
     // create the media stream from the audio input source (microphone)
-    sourceNode = audioContext.createMediaStreamSource(stream);
+    try {
+      sourceNode = audioContext.createMediaStreamSource(stream);
+    } catch (e) {
+      console.error(`Failed to start equalizer : ` + e);
+      return;
+    }
     audioStream = stream;
 
     analyserNode = audioContext.createAnalyser();
@@ -158,7 +173,7 @@ var equalizer = (function () {
 
     column = 0;
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.strokeStyle = "blue";
+    ctx.strokeStyle = "#1d327f";
     var y = canvasHeight / 2 + 0.5;
     ctx.moveTo(0, y);
     ctx.lineTo(canvasWidth - 1, y);
@@ -168,4 +183,10 @@ var equalizer = (function () {
   return API;
 })();
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.m_audioEqualizer {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: scale-down;
+}
+</style>

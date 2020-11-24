@@ -654,11 +654,9 @@ export default {
       this.available_modes.includes(
         this.$root.settings.capture_options.selected_mode
       )
-    ) {
+    )
       this.selected_mode = this.$root.settings.capture_options.selected_mode;
-    } else {
-      this.selected_mode = this.available_modes[0];
-    }
+    else this.selected_mode = this.available_modes[0];
 
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
@@ -685,6 +683,14 @@ export default {
       setTimeout(() => {
         this.mode_just_changed = false;
       }, 300);
+      this.$root.settings.capture_options.selected_mode = this.selected_mode;
+
+      if (this.selected_mode === "audio") {
+        this.enable_audio = true;
+        this.enable_video = false;
+      } else {
+        this.enable_video = true;
+      }
     },
     is_validating_stopmotion_video: function () {
       if (this.is_validating_stopmotion_video) {
@@ -736,7 +742,6 @@ export default {
       if (time_ellapsed_since_last_capture === 0) {
         return 0;
       }
-      debugger;
       return this.timelapse_interval - time_ellapsed_since_last_capture;
     },
   },
@@ -791,10 +796,14 @@ export default {
         })
         .catch((err) => {
           if (this.$root.state.dev_mode === "debug")
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error("DEBUG error : failed to get video actual size");
+            console.log(
+              `CaptureView2 • METHODS : refreshVideoActualSize — couldnt get video size: ` +
+                err
+            );
+          // this.$alertify
+          //   .closeLogOnClick(true)
+          //   .delay(4000)
+          //   .error("DEBUG error : failed to get video actual size");
         });
     },
 
@@ -810,9 +819,10 @@ export default {
 
         wait(wait_period_if_necessary).then(() => {
           if (
+            !this.$refs.videoElement ||
             this.$refs.videoElement.videoWidth *
               this.$refs.videoElement.videoHeight >
-            0
+              0
           ) {
             return resolve({
               width: this.$refs.videoElement.videoWidth,
@@ -1068,7 +1078,6 @@ export default {
           videoBitsPerSecond: 4112000,
         });
         this.recorder.startRecording();
-        // recorder.camera = this.stream;
 
         this.is_recording = true;
         this.startTimer();
@@ -1095,7 +1104,6 @@ export default {
           type: "audio",
         });
         this.recorder.startRecording();
-        // recorder.camera = this.stream;
 
         this.is_recording = true;
         this.startTimer();
