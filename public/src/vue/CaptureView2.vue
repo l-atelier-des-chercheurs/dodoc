@@ -165,6 +165,13 @@
             "
           />
 
+          <Vecto
+            v-if="selected_mode === 'vecto'"
+            ref="vectoElement"
+            :last_frame_from_video="last_frame_from_video"
+            :number_of_colors="vecto_number_of_colors"
+          />
+
           <AudioEqualizer
             v-if="selected_mode === 'audio'"
             ref="equalizerElement"
@@ -494,7 +501,7 @@
                 >
                   <label>{{ $t("onion_skin") }} </label>
                   <input
-                    class="margin-none"
+                    class="margin-none _rtl"
                     type="range"
                     v-model.number="stopmotion.onion_skin_opacity"
                     min="0.1"
@@ -511,6 +518,21 @@
                 >
                   <span class>{{ $t("stopmotion_list") }}</span>
                 </button>
+
+                <div v-if="selected_mode === 'vecto'" class="_onion_skin_range">
+                  <label
+                    >{{ $t("number_of_colors") }} =
+                    {{ vecto_number_of_colors }}</label
+                  >
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model.number="vecto_number_of_colors"
+                    min="1"
+                    max="7"
+                    step="1"
+                  />
+                </div>
               </div>
             </div>
             <MediaValidationButtons
@@ -544,6 +566,7 @@ import MediaContent from "./components/subcomponents/MediaContent.vue";
 import CaptureSettings from "./components/capture/CaptureSettings.vue";
 import StopmotionList from "./components/capture/StopmotionList.vue";
 import AudioEqualizer from "./components/capture/AudioEqualizer.vue";
+import Vecto from "./components/capture/Vecto.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -577,6 +600,7 @@ export default {
     CaptureSettings,
     StopmotionList,
     AudioEqualizer,
+    Vecto,
   },
   data() {
     return {
@@ -646,6 +670,11 @@ export default {
         onion_skin_img: false,
         onion_skin_opacity: 0,
       },
+
+      last_frame_from_video: undefined,
+      frameGrabber: undefined,
+
+      vecto_number_of_colors: 2,
     };
   },
   created() {},
@@ -672,6 +701,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
+    this.stopFrameGrabber();
 
     this.$refs.videoElement.removeEventListener(
       "loadedmetadata",
@@ -691,6 +721,16 @@ export default {
         this.enable_video = false;
       } else {
         this.enable_video = true;
+      }
+
+      if (this.selected_mode === "vecto") {
+        this.startFrameGrabber();
+      } else {
+        this.stopFrameGrabber();
+      }
+
+      if (this.selected_mode !== "stopmotion") {
+        this.show_stopmotion_list = false;
       }
     },
     is_validating_stopmotion_video: function () {
@@ -845,6 +885,30 @@ export default {
 
       // this.updateVideoDisplayedSize();
     },
+
+    startFrameGrabber() {
+      this.frameGrabber = setInterval(() => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureView2 • METHODS : startFrameGrabber`);
+        // this.frameGrabber();
+
+        const ratio =
+          this.actual_camera_resolution.width /
+          this.actual_camera_resolution.height;
+
+        this.getStaticImageFromVideoElement({
+          width: 480 * ratio,
+          height: 480,
+        }).then((image_data) => (this.last_frame_from_video = image_data));
+      }, 1000);
+    },
+    stopFrameGrabber() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureView2 • METHODS : stopFrameGrabber  `);
+      clearInterval(this.frameGrabber);
+      this.last_frame_from_video = undefined;
+    },
+
     // updateVideoDisplayedSize() {
     //   debugger;
     //   // this. this.$refs.videoElement.offsetWidth
@@ -1002,6 +1066,8 @@ export default {
       } else if (this.selected_mode === "stopmotion") {
         this.addStopmotionImage();
       } else if (this.selected_mode === "vecto") {
+        debugger;
+        this.$refs.vectoElement.svgstr;
         this.media_to_validate = {
           preview: this.vecto.svgstr,
           rawData: new Blob([this.vecto.svgstr], { type: "text/xml" }),
@@ -1045,11 +1111,17 @@ export default {
       clearInterval(this.recording_timer_interval);
     },
 
-    getStaticImageFromVideoElement() {
+    getStaticImageFromVideoElement({ width, height } = {}) {
       return new Promise((resolve, reject) => {
         let invisible_canvas = document.createElement("canvas");
-        invisible_canvas.width = this.$refs.videoElement.videoWidth;
-        invisible_canvas.height = this.$refs.videoElement.videoHeight;
+
+        invisible_canvas.width = width
+          ? width
+          : this.$refs.videoElement.videoWidth;
+        invisible_canvas.height = height
+          ? height
+          : this.$refs.videoElement.videoHeight;
+
         let invisible_ctx = invisible_canvas.getContext("2d");
         invisible_ctx.drawImage(
           this.$refs.videoElement,
@@ -1616,7 +1688,7 @@ export default {
   label {
     margin: 0;
   }
-  input {
+  input._rtl {
     direction: rtl;
   }
 }
