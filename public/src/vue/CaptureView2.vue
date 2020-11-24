@@ -989,9 +989,9 @@ export default {
       } else if (this.selected_mode === "audio") {
         // equalizer.clearCanvas();
         this.startRecordAudioFeed().then((rawData) => {
-          const preview = this.$refs.equalizerElement.$el.toDataURL(
-            "image/png"
-          );
+          const preview = this.$refs.equalizerElement.$el
+            .querySelector("canvas")
+            .toDataURL("image/png");
           this.media_to_validate = {
             preview,
             rawData,

@@ -37,6 +37,9 @@ export default {
         (this.current_audio_level_smoothed * 9 + this.current_audio_level) / 10
       );
     },
+    is_recording() {
+      this.clearCanvas();
+    },
   },
   computed: {},
   methods: {
@@ -56,18 +59,18 @@ export default {
 
       const ctx = canvas.getContext("2d");
 
-      if (!this.is_recording) ctx.fillStyle = "#ffffff";
+      if (!this.is_recording) ctx.fillStyle = "#333";
       else ctx.fillStyle = "#fc4b60";
 
       // draw at pos
-      const number_of_bars = 400;
+      const number_of_bars = canvas.width / 4;
 
       const bar_pos =
         canvas.width * (this.current_draw_percentage / number_of_bars);
       const bar_width = canvas.width / number_of_bars / 2;
 
       let bar_height = (this.current_audio_level / 100) * canvas.height;
-      bar_height = Math.max(10, bar_height);
+      bar_height = Math.max(bar_width, bar_height);
 
       ctx.fillRect(
         bar_pos,
@@ -82,21 +85,31 @@ export default {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
     },
+    clearCanvas() {
+      const canvas = this.$refs.canvas;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      this.current_draw_percentage = 0;
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 .m_audioEqualizer {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: scale-down;
-  color: white;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+
+    background-color: white;
   }
 }
 </style>
