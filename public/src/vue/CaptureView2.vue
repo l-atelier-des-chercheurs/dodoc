@@ -96,7 +96,7 @@
       <div class="m_captureview2--videoPane--top">
         <div
           class="m_captureview2--videoPane--top--videoContainer"
-          v-show="!is_validating_stopmotion_video && show_live_feed"
+          v-show="!is_validating_stopmotion_video"
         >
           <transition-group
             tag="div"
@@ -736,6 +736,7 @@ export default {
       if (time_ellapsed_since_last_capture === 0) {
         return 0;
       }
+      debugger;
       return this.timelapse_interval - time_ellapsed_since_last_capture;
     },
   },
