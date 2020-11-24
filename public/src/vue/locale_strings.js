@@ -2686,6 +2686,10 @@ module.exports = (function () {
       fr: "Ajouter un aplat de couleur",
       en: "Add solid color",
     },
+    number_of_colors: {
+      fr: "Nombre de couleur(s)",
+      en: "Quantity of color(s)",
+    },
     select_color: {
       fr: "Changer la couleur",
       en: "change the color",
