@@ -560,7 +560,7 @@ import MediaContent from "./components/subcomponents/MediaContent.vue";
 import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
 import MediaValidationButtons from "./components/subcomponents/MediaValidationButtons.vue";
 import DistantFlux from "./components/subcomponents/DistantFlux.vue";
-import StopmotionList from "./components/subcomponents/StopmotionList.vue";
+import StopmotionList from "./components/capture/StopmotionList.vue";
 
 import RecordRTC from "recordrtc";
 import "webrtc-adapter";
