@@ -692,6 +692,9 @@ export default {
       } else {
         this.enable_video = true;
       }
+      if (this.selected_mode !== "stopmotion") {
+        this.show_stopmotion_list = false;
+      }
     },
     is_validating_stopmotion_video: function () {
       if (this.is_validating_stopmotion_video) {
