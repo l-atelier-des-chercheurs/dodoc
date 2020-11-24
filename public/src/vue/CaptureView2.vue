@@ -169,6 +169,7 @@
             v-if="selected_mode === 'audio'"
             ref="equalizerElement"
             :stream="stream"
+            :is_recording="is_recording"
           />
 
           <div class="_video_grid_overlay" v-if="enable_grid">
