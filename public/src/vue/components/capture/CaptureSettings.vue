@@ -351,16 +351,6 @@ export default {
   },
   created() {},
   mounted() {
-    if (
-      this.$root.settings.capture_options &&
-      this.$root.settings.capture_options.desired_camera_resolution
-    )
-      this.desired_camera_resolution = this.$root.settings.capture_options.desired_camera_resolution;
-    else
-      this.desired_camera_resolution = this.predefined_resolutions.find(
-        (r) => r.label === "720p(HD)"
-      );
-
     if (!navigator.getUserMedia) {
       alert("You need a browser that supports WebRTC");
       return;
@@ -445,6 +435,22 @@ export default {
       //   // Avoid using this in new browsers, as it is going away.
       //   this.$refs.videoElement.src = window.URL.createObjectURL(this.stream);
       // }
+    },
+    selected_devices: {
+      handler() {
+        this.$root.settings.capture_options.selected_devices = JSON.parse(
+          JSON.stringify(this.selected_devices)
+        );
+      },
+      deep: true,
+    },
+    last_working_resolution: {
+      handler() {
+        this.$root.settings.capture_options.last_working_resolution = JSON.parse(
+          JSON.stringify(this.last_working_resolution)
+        );
+      },
+      deep: true,
     },
   },
   computed: {
@@ -534,6 +540,21 @@ export default {
           key: "audio_output_device",
           devices_list: this.all_audio_output_devices,
         });
+
+      if (
+        this.$root.settings.capture_options &&
+        this.$root.settings.capture_options.last_working_resolution
+      ) {
+        this.desired_camera_resolution = JSON.parse(
+          JSON.stringify(
+            this.$root.settings.capture_options.last_working_resolution
+          )
+        );
+      } else {
+        this.desired_camera_resolution = this.predefined_resolutions.find(
+          (r) => r.label === "720p(HD)"
+        );
+      }
     },
 
     getDefaultDevice({ key, devices_list }) {
@@ -655,9 +676,6 @@ export default {
         )
           .then((res) => {
             this.last_working_resolution = this.desired_camera_resolution;
-            this.$root.settings.capture_options.selected_devices = JSON.parse(
-              JSON.stringify(this.selected_devices)
-            );
             return resolve();
           })
           .catch((error) => {

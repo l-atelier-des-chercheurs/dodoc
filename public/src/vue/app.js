@@ -293,7 +293,7 @@ let vm = new Vue({
           audiooutput: "",
         },
         selected_devices: {},
-        desired_camera_resolution: false,
+        last_working_resolution: false,
 
         distant_flux: {
           active: false,
