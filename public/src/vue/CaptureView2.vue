@@ -975,7 +975,7 @@ export default {
       };
 
       getFrame();
-      this.frameGrabber = setInterval(getFrame, 2000);
+      this.frameGrabber = setInterval(getFrame, 300);
     },
     stopFrameGrabber() {
       if (this.$root.state.dev_mode === "debug")

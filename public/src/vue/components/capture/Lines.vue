@@ -140,8 +140,8 @@ export default {
 
         for (let x = 0; x <= line_density_x; x++) {
           for (let y = 0; y <= line_density_y; y++) {
-            const pos_x = Math.round((canvas.width / line_density_x) * x);
-            const pos_y = Math.round((canvas.height / line_density_y) * y);
+            const pos_x = Math.floor((canvas.width / line_density_x) * x);
+            const pos_y = Math.floor((canvas.height / line_density_y) * y);
 
             var [R, G, B] = this.getImageDataFaster(
               // var pixel_data = this.getImageDataFaster(
@@ -211,6 +211,7 @@ export default {
   svg {
     width: 100%;
     height: 100%;
+    pointer-events: none;
 
     line {
       // transition-property: all;
