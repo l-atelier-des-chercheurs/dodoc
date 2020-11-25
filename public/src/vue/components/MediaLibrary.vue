@@ -5,7 +5,6 @@
         <button
           type="button"
           class="barButton barButton_capture"
-          :class="{ 'is--disabled': is_iOS_device }"
           @click="openCapture"
           :disabled="read_only || !can_edit_project"
         >
@@ -417,8 +416,6 @@ export default {
             .delay(8000)
             .success(this.$t("notifications.instead_import_with_this_button"));
         }, 1500);
-
-        return;
       }
       this.$root.do_navigation.view = "CaptureView";
     },
