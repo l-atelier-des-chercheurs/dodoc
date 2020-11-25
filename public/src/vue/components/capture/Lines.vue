@@ -1,19 +1,29 @@
 <template>
   <div class="m_lines">
-    {{ pixel_array }}
     <svg
       xmlns="http://www.w3.org/2000/svg"
       :viewBox="`0 0 ${svg_width} ${svg_height}`"
       ref="pattern"
+      stroke-linecap="round"
+      stroke="#000"
+      stroke-width="1"
     >
+      <rect
+        x="0"
+        y="0"
+        width="100%"
+        height="100%"
+        fill="#ffffff"
+        stroke="#ff0000"
+      />
       <!-- :width="svg_width"
       :height="svg_height" -->
       <line
-        v-for="(line, index) in lines_array"
-        :key="index"
-        :x1="-length / 2"
+        v-for="line in lines_array"
+        :key="`${line.posX}_${line.posY}`"
+        :x1="-line.length / 2"
         :y1="0"
-        :x2="length / 2"
+        :x2="line.length / 2"
         :y2="0"
         :transform="`translate(${line.posX}, ${line.posY}) rotate(${angle} 0 0)`"
       />
@@ -27,7 +37,15 @@ export default {
     last_frame_from_video: Blob,
     angle: {
       type: Number,
-      default: 106,
+      default: 116,
+    },
+    threshold: {
+      type: Number,
+      default: 14,
+    },
+    density: {
+      type: Number,
+      default: 0.2,
     },
   },
   components: {},
@@ -35,13 +53,12 @@ export default {
     return {
       pixel_array: [],
 
-      number_of_lines_width: 40,
-      number_of_lines_height: 60,
+      // for each pixel create this many lines
 
       is_processing_image: false,
 
-      svg_width: 400,
-      svg_height: 600,
+      svg_width: 600,
+      svg_height: 400,
     };
   },
   created() {},
@@ -49,7 +66,11 @@ export default {
   beforeDestroy() {},
   watch: {
     last_frame_from_video() {
-      this.drawBlobToImage();
+      if (
+        this.last_frame_from_video &&
+        this.last_frame_from_video.type === "image/jpeg"
+      )
+        this.drawBlobToImage();
     },
   },
   computed: {
@@ -57,13 +78,29 @@ export default {
       const map = (value, x1, y1, x2, y2) =>
         ((value - x1) * (y2 - x2)) / (y1 - x1) + x2;
 
-      return this.pixel_array.reduce((acc, p) => {
-        const mapped_brightness = map(p.b, 0, 234, 0, 17);
-        // de 0 à 1 vers 17 à 0
-        if (mapped_brightness < 2) return acc;
+      const svg_padding = 1 / this.density / 2;
+      const svg_width_with_padding = this.svg_width - svg_padding * 2;
+      const svg_height_with_padding = this.svg_height - svg_padding * 2;
 
-        const posX = (p.x / this.number_of_lines_width) * this.svg_width;
-        const posY = (p.y / this.number_of_lines_height) * this.svg_height;
+      const line_density_x = this.svg_width * this.density;
+      const line_density_y = this.svg_height * this.density;
+
+      return this.pixel_array.reduce((acc, p) => {
+        const mapped_brightness = Math.round(map(p.b, 0, 234, 10, 0));
+
+        // de 0 à 1 vers 17 à 0
+        if (
+          typeof mapped_brightness !== "number" ||
+          mapped_brightness > this.threshold
+        )
+          return acc;
+
+        const posX = Math.round(
+          (p.x / line_density_x) * svg_width_with_padding + svg_padding
+        );
+        const posY = Math.round(
+          (p.y / line_density_y) * svg_height_with_padding + svg_padding
+        );
 
         acc.push({
           posX,
@@ -87,22 +124,31 @@ export default {
         var canvas = this.$refs.invisible_canvas;
         canvas.width = img.width;
         canvas.height = img.height;
+
+        this.svg_width = img.width;
+        this.svg_height = img.height;
+
         var ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
 
-        var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 
         let _pixel_array = [];
-        for (let x = 0; x < this.number_of_lines_width; x++) {
-          for (let y = 0; y < this.number_of_lines_height; y++) {
-            const pos_x = (canvas.width / this.number_of_lines_width) * x;
-            const pos_y = (canvas.height / this.number_of_lines_height) * y;
+
+        const line_density_x = Math.round(canvas.width * this.density);
+        const line_density_y = Math.round(canvas.height * this.density);
+
+        for (let x = 0; x <= line_density_x; x++) {
+          for (let y = 0; y <= line_density_y; y++) {
+            const pos_x = Math.round((canvas.width / line_density_x) * x);
+            const pos_y = Math.round((canvas.height / line_density_y) * y);
 
             var [R, G, B] = this.getImageDataFaster(
+              // var pixel_data = this.getImageDataFaster(
               pos_x,
               pos_y,
-              canvas.width / this.number_of_lines_width,
-              canvas.height / this.number_of_lines_height,
+              1,
+              1,
               canvas.width,
               canvas.height,
               imgData
@@ -110,6 +156,7 @@ export default {
 
             const b = (R + R + R + B + G + G + G + G) >> 3;
 
+            // debugger;
             _pixel_array.push({
               x,
               y,
@@ -118,7 +165,6 @@ export default {
           }
         }
 
-        debugger;
         this.pixel_array = _pixel_array;
         this.is_processing_image = false;
 
@@ -133,27 +179,28 @@ export default {
       img.src = URL.createObjectURL(this.last_frame_from_video);
     },
     getImageDataFaster(x, y, w, h, W, H, d) {
-      var arr = new Uint32Array(w * h),
+      var arr = new Uint32Array(w * h * 4),
         i = 0;
 
       for (var r = y; r < h + y; r += 1) {
         for (var c = x; c < w + x; c += 1) {
-          var O = r * W + c;
-          if (c < 0 || c >= W || r < 0 || r >= H) {
-            arr[i++] = 0;
-          } else {
-            arr[i++] = d[O];
+          var O = (r * W + c) * 4;
+          for (var n = 0; n < 4; n++) {
+            if (c < 0 || c >= W || r < 0 || r >= H) {
+              arr[i++] = 0;
+            } else {
+              arr[i++] = d[O + n];
+            }
           }
         }
       }
-      debugger;
 
       return arr;
     },
   },
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .m_lines {
   width: 100%;
   height: 100%;
@@ -164,9 +211,11 @@ export default {
   svg {
     width: 100%;
     height: 100%;
-    stroke-linecap: round;
-    stroke: #ff0000;
-    stroke-width: 2.5;
+
+    line {
+      // transition-property: all;
+      // transition-duration: 1s;
+    }
   }
 }
 </style>

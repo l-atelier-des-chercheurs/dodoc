@@ -648,6 +648,18 @@ module.exports = (function () {
       fr: "Type de calque",
       en: "Layer type",
     },
+    lines_angle: {
+      fr: "Angle des lignes",
+      en: "Lines angle",
+    },
+    lines_threshold: {
+      fr: "Seuil ligne/luminosité",
+      en: "Line/luminosity threshold",
+    },
+    lines_density: {
+      fr: "Densité de lignes",
+      en: "Lines density",
+    },
     drawing_layer_instructions: {
       fr: "Permet de dessiner, tracer des formes, etc.",
       en: "Allows for the drawing of lines, geometric shapes, etc.",

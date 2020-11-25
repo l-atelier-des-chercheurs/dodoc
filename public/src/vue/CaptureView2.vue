@@ -175,7 +175,9 @@
             v-if="selected_mode === 'lines'"
             ref="vectoElement"
             :last_frame_from_video="last_frame_from_video"
-            :lines_angle="lines_angle"
+            :angle="lines_angle"
+            :threshold="lines_threshold"
+            :density="lines_density"
           />
 
           <AudioEqualizer
@@ -507,11 +509,11 @@
                     stopmotion.onion_skin_img &&
                     show_live_feed
                   "
-                  class="_onion_skin_range"
+                  class="_mode_accessory_range"
                 >
                   <label>{{ $t("onion_skin") }} </label>
                   <input
-                    class="margin-none _rtl"
+                    class="_rtl"
                     type="range"
                     v-model.number="stopmotion.onion_skin_opacity"
                     min="0.1"
@@ -529,13 +531,16 @@
                   <span class>{{ $t("stopmotion_list") }}</span>
                 </button>
 
-                <div v-if="selected_mode === 'vecto'">
+                <div
+                  v-if="selected_mode === 'vecto'"
+                  class="_mode_accessory_range"
+                >
                   <label
                     >{{ $t("number_of_colors") }} =
                     {{ vecto_number_of_colors }}</label
                   >
                   <input
-                    class="margin-none"
+                    class=""
                     type="range"
                     v-model.number="vecto_number_of_colors"
                     min="1"
@@ -544,15 +549,48 @@
                   />
                 </div>
 
-                <div v-if="selected_mode === 'lines'">
+                <div
+                  v-if="selected_mode === 'lines'"
+                  class="_mode_accessory_range"
+                >
                   <label>{{ $t("lines_angle") }} = {{ lines_angle }}</label>
                   <input
-                    class="margin-none"
+                    class=""
                     type="range"
                     v-model.number="lines_angle"
                     min="0"
                     max="359"
                     step="1"
+                  />
+                </div>
+                <div
+                  v-if="selected_mode === 'lines'"
+                  class="_mode_accessory_range"
+                >
+                  <label
+                    >{{ $t("lines_threshold") }} = {{ lines_threshold }}</label
+                  >
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model.number="lines_threshold"
+                    min="1"
+                    max="40"
+                    step="1"
+                  />
+                </div>
+                <div
+                  v-if="selected_mode === 'lines'"
+                  class="_mode_accessory_range"
+                >
+                  <label>{{ $t("lines_density") }} = {{ lines_density }}</label>
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model.number="lines_density"
+                    min="0"
+                    max="1"
+                    step=".01"
                   />
                 </div>
               </div>
@@ -707,7 +745,9 @@ export default {
       frameGrabber: undefined,
 
       vecto_number_of_colors: 2,
-      lines_angle: 95,
+      lines_angle: 116,
+      lines_threshold: 14,
+      lines_density: 0.2,
     };
   },
   created() {},
@@ -919,7 +959,7 @@ export default {
     },
 
     startFrameGrabber() {
-      this.frameGrabber = setInterval(() => {
+      const getFrame = () => {
         if (this.$root.state.dev_mode === "debug")
           console.log(`CaptureView2 • METHODS : startFrameGrabber`);
         // this.frameGrabber();
@@ -932,7 +972,10 @@ export default {
           width: 240 * ratio,
           height: 240,
         }).then((image_data) => (this.last_frame_from_video = image_data));
-      }, 2000);
+      };
+
+      getFrame();
+      this.frameGrabber = setInterval(getFrame, 2000);
     },
     stopFrameGrabber() {
       if (this.$root.state.dev_mode === "debug")
@@ -1074,17 +1117,18 @@ export default {
         const svgstr = this.$refs.vectoElement.svgstr;
         this.media_to_validate = {
           preview: svgstr,
-          rawData: new Blob([svgstr], { type: "text/xml" }),
+          rawData: new Blob([svgstr], { type: "image/svg+xml" }),
           type: "svg",
         };
       } else if (this.selected_mode === "lines") {
-        const svg_el = this.$refs.vectoElement.querySelector("svg");
+        const svgstr = this.$refs.vectoElement.$el.querySelector("svg")
+          .outerHTML;
         debugger;
-        // this.media_to_validate = {
-        //   preview: svgstr,
-        //   rawData: new Blob([svgstr], { type: "text/xml" }),
-        //   type: "svg",
-        // };
+        this.media_to_validate = {
+          preview: svgstr,
+          rawData: new Blob([svgstr], { type: "image/svg+xml" }),
+          type: "svg",
+        };
       }
     },
     stopRecording() {
@@ -1723,14 +1767,17 @@ export default {
     opacity: var(--onionskin-opacity);
   }
 }
-._onion_skin_range {
-  max-width: 200px;
+._mode_accessory_range {
+  max-width: 240px;
   margin: -5px 0 -5px auto;
   label {
     margin: 0;
   }
   input._rtl {
     direction: rtl;
+  }
+  input {
+    margin: 0;
   }
 }
 ._video_grid_overlay {
