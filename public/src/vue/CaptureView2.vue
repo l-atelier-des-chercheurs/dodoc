@@ -187,14 +187,41 @@
             :is_recording="is_recording"
           />
 
-          <div class="_video_grid_overlay" v-if="enable_grid">
+          <div
+            class="_video_grid_overlay"
+            v-if="
+              enable_grid &&
+              ['photo', 'video', 'stopmotion'].includes(selected_mode)
+            "
+          >
             <!-- :width="actual_camera_resolution.width" -->
             <!-- :height="actual_camera_resolution.height" -->
 
             <svg
               :width="actual_camera_resolution.width"
               :height="actual_camera_resolution.height"
-            />
+              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
+            >
+              <line
+                v-for="([x1, y1, x2, y2], index) in [
+                  [0, 0, 0, 100],
+                  [33, 0, 33, 100],
+                  [66, 0, 66, 100],
+                  [100, 0, 100, 100],
+                  [0, 0, 100, 0],
+                  [0, 33, 100, 33],
+                  [0, 66, 100, 66],
+                  [0, 100, 100, 100],
+                ]"
+                :key="index"
+                :x1="x1 + '%'"
+                :y1="y1 + '%'"
+                :x2="x2 + '%'"
+                :y2="y2 + '%'"
+                vector-effect="non-scaling-stroke"
+              />
+            </svg>
+
             <!-- <svg
               xmlns="http://www.w3.org/2000/svg"
               version="1.1"
@@ -238,6 +265,7 @@
                 type="button"
                 class="button-nostyle"
                 @click="show_capture_settings = !show_capture_settings"
+                v-if="enable_video"
               >
                 {{ actual_camera_resolution.width }}×{{
                   actual_camera_resolution.height
@@ -253,9 +281,10 @@
                 type="button"
                 class="button-nostyle"
                 :class="{ 'is--active': enable_grid }"
+                v-if="['photo', 'video', 'stopmotion'].includes(selected_mode)"
                 @click="enable_grid = !enable_grid"
               >
-                {{ $t("grid") }}
+                {{ $t("grid").toLowerCase() }}
               </button>
             </div>
           </transition>
@@ -1455,6 +1484,7 @@ export default {
     width: 100%;
     height: 100%;
     background-color: var(--c-noir);
+    // padding: calc(var(--spacing) / 2);
 
     display: flex;
     flex-flow: column nowrap;
@@ -1684,6 +1714,8 @@ export default {
 
   letter-spacing: 0.06em;
 
+  pointer-events: none;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1798,31 +1830,34 @@ export default {
   --grid_width: 2px;
   --gridstep_before: calc(var(--gridstep) - (var(--grid_width) / 2));
 
-  > svg {
+  svg {
     position: absolute;
-    max-height: 100%;
-    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    stroke: var(--c-rouge);
+    stroke-width: 2px;
 
-    background-image: repeating-linear-gradient(
-        to right,
-        var(--c-gridColor) 0,
-        var(--c-gridColor) var(--grid_width),
-        transparent var(--grid_width),
-        transparent var(--gridstep_before),
-        var(--c-gridColor) var(--gridstep_before),
-        var(--c-gridColor) var(--gridstep)
-      ),
-      repeating-linear-gradient(
-        to bottom,
-        var(--c-gridColor) 0,
-        var(--c-gridColor) var(--grid_width),
-        transparent var(--grid_width),
-        transparent var(--gridstep_before),
-        var(--c-gridColor) var(--gridstep_before),
-        var(--c-gridColor) var(--gridstep)
-      );
-    background-position: 50% 100%;
-    background-repeat: no-repeat;
+    // background-image: repeating-linear-gradient(
+    //     to right,
+    //     var(--c-gridColor) 0,
+    //     var(--c-gridColor) var(--grid_width),
+    //     transparent var(--grid_width),
+    //     transparent var(--gridstep_before),
+    //     var(--c-gridColor) var(--gridstep_before),
+    //     var(--c-gridColor) var(--gridstep)
+    //   ),
+    //   repeating-linear-gradient(
+    //     to bottom,
+    //     var(--c-gridColor) 0,
+    //     var(--c-gridColor) var(--grid_width),
+    //     transparent var(--grid_width),
+    //     transparent var(--gridstep_before),
+    //     var(--c-gridColor) var(--gridstep_before),
+    //     var(--c-gridColor) var(--gridstep)
+    //   );
+    // background-position: 50% 100%;
+    // background-repeat: no-repeat;
+    // background-size: 1280px 720px;
   }
 }
 
