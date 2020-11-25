@@ -1841,28 +1841,6 @@ export default {
     rect {
       stroke-width: 2px;
     }
-
-    // background-image: repeating-linear-gradient(
-    //     to right,
-    //     var(--c-gridColor) 0,
-    //     var(--c-gridColor) var(--grid_width),
-    //     transparent var(--grid_width),
-    //     transparent var(--gridstep_before),
-    //     var(--c-gridColor) var(--gridstep_before),
-    //     var(--c-gridColor) var(--gridstep)
-    //   ),
-    //   repeating-linear-gradient(
-    //     to bottom,
-    //     var(--c-gridColor) 0,
-    //     var(--c-gridColor) var(--grid_width),
-    //     transparent var(--grid_width),
-    //     transparent var(--gridstep_before),
-    //     var(--c-gridColor) var(--gridstep_before),
-    //     var(--c-gridColor) var(--gridstep)
-    //   );
-    // background-position: 50% 100%;
-    // background-repeat: no-repeat;
-    // background-size: 1280px 720px;
   }
 }
 
