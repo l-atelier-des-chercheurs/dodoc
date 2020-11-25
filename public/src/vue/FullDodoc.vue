@@ -58,16 +58,8 @@
               </transition>
 
               <transition name="CaptureView" :duration="500">
-                <CaptureView
-                  v-if="$root.do_navigation.view === 'CaptureView'"
-                  :slugFolderName="$root.do_navigation.current_slugProjectName"
-                  :type="`projects`"
-                  :read_only="!$root.state.connected"
-                />
-              </transition>
-              <transition name="CaptureView" :duration="500">
                 <CaptureView2
-                  v-if="$root.do_navigation.view === 'CaptureView2'"
+                  v-if="$root.do_navigation.view === 'CaptureView'"
                   :slugFolderName="$root.do_navigation.current_slugProjectName"
                   :type="`projects`"
                   :read_only="!$root.state.connected"
@@ -154,7 +146,7 @@ import TopBar from "./TopBar.vue";
 import ListView from "./ListView.vue";
 import Chats from "./Chats.vue";
 import ProjectView from "./ProjectView.vue";
-import CaptureView from "./CaptureView.vue";
+// import CaptureView from "./CaptureView.vue";
 import CaptureView2 from "./CaptureView2.vue";
 import EditMedia from "./components/modals/EditMedia.vue";
 import Publications from "./Publications.vue";
@@ -171,7 +163,7 @@ export default {
     ListView,
     Chats,
     ProjectView,
-    CaptureView,
+    // CaptureView,
     CaptureView2,
     EditMedia,
     Publications,
