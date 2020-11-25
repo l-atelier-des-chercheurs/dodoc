@@ -66,6 +66,7 @@ var fonts = [
   "Volkhov",
   "Archivo Black",
   "Spectral",
+  "Krub",
 ];
 var FontAttributor = Quill.import("attributors/style/font");
 FontAttributor.whitelist = fonts;
