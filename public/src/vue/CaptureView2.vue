@@ -393,44 +393,48 @@
                 <transition name="fade_fast" mode="out-in">
                   <button
                     type="button"
+                    v-if="!is_recording"
                     class="bg-orange button-inline _captureButton"
                     :class="{ 'is--justCaptured': capture_button_pressed }"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
-                    @mousedown.stop.prevent="captureOrStop()"
-                    @touchstart.stop.prevent="captureOrStop()"
+                    @mousedown.stop.prevent="setCapture()"
+                    @touchstart.stop.prevent="setCapture()"
                   >
-                    <Loader v-if="is_sending_image" />
                     <img
-                      v-else-if="!is_recording"
                       class="inline-svg inline-svg_larger"
                       src="/images/i_record.svg"
-                    />
-                    <img
-                      v-else
-                      class="inline-svg inline-svg_larger"
-                      src="/images/i_stop.svg"
                     />
 
                     &nbsp;
 
+                    <span v-if="selected_mode === 'photo'">
+                      {{ $t("take_picture") }}</span
+                    >
+                    <span v-else-if="selected_mode === 'video'">
+                      {{ $t("record_video") }}
+                    </span>
+                    <span v-else-if="selected_mode === 'stopmotion'">
+                      {{ $t("take_picture") }}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    v-else
+                    class="bg-orange button-inline _captureButton"
+                    :class="{ 'is--justCaptured': capture_button_pressed }"
+                    :disabled="is_sending_image"
+                    :key="selected_mode + is_recording"
+                    @mousedown.stop.prevent="stopRecording()"
+                    @touchstart.stop.prevent="stopRecording()"
+                  >
                     <span v-if="is_sending_image">
                       {{ $t("loading") }}
                     </span>
 
-                    <span v-else-if="selected_mode === 'photo'">
-                      {{ $t("take_picture") }}</span
-                    >
+                    <span v-if="selected_mode === 'photo'"> </span>
                     <span v-else-if="selected_mode === 'video'">
-                      <template v-if="!is_recording">
-                        {{ $t("record_video") }}
-                      </template>
-                      <template v-else>
-                        {{ $t("stop_recording") }}
-                      </template>
-                    </span>
-                    <span v-else-if="selected_mode === 'stopmotion'">
-                      {{ $t("take_picture") }}
+                      {{ $t("stop_recording") }}
                     </span>
                   </button>
                 </transition>
@@ -1000,11 +1004,11 @@ export default {
         case "a":
         case "q":
         case " ":
-          this.captureOrStop();
+          this.setCapture();
           break;
       }
     },
-    captureOrStop() {
+    setCapture() {
       this.capture_button_pressed = true;
       window.setTimeout(() => {
         this.capture_button_pressed = false;
@@ -1012,24 +1016,14 @@ export default {
       this.show_capture_settings = false;
 
       if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
-        if (!this.is_recording) {
-          this.is_recording = true;
-          this.timelapse_event = window.setInterval(() => {
-            this.capture_button_pressed = true;
-            window.setTimeout(() => {
-              this.capture_button_pressed = false;
-            }, 400);
-            this.addStopmotionImage();
-          }, this.timelapse_interval * 1000);
-        } else {
-          this.is_recording = false;
-          clearInterval(this.timelapse_event);
-          return;
-        }
-      }
-      if (this.is_recording && this.selected_mode !== "stopmotion") {
-        this.$eventHub.$emit("capture.stopRecording");
-        return;
+        this.is_recording = true;
+        this.timelapse_event = window.setInterval(() => {
+          this.capture_button_pressed = true;
+          window.setTimeout(() => {
+            this.capture_button_pressed = false;
+          }, 400);
+          this.addStopmotionImage();
+        }, this.timelapse_interval * 1000);
       }
 
       if (this.selected_mode === "photo") {
@@ -1042,37 +1036,67 @@ export default {
         });
       } else if (this.selected_mode === "video") {
         this.video_recording_is_paused = false;
+        this.startRecordCameraFeed();
+      } else if (this.selected_mode === "audio") {
+        this.startRecordAudioFeed();
+      } else if (this.selected_mode === "stopmotion") {
+        this.addStopmotionImage();
+      } else if (this.selected_mode === "vecto") {
+        debugger;
+        const svgstr = this.$refs.vectoElement.svgstr;
+        this.media_to_validate = {
+          preview: svgstr,
+          rawData: new Blob([svgstr], { type: "text/xml" }),
+          type: "svg",
+        };
+      }
+    },
+    stopRecording() {
+      if (!this.is_recording) return;
 
-        this.startRecordCameraFeed().then((rawData) => {
+      if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
+        this.is_recording = false;
+        clearInterval(this.timelapse_event);
+        return;
+      }
+      if (this.selected_mode === "video") {
+        this.recorder.stopRecording(() => {
+          this.is_recording = false;
+          this.eraseTimer();
+
+          let video_blob = this.recorder.getBlob();
+
+          // recorder.camera.stop();
+          this.recorder.destroy();
+          this.recorder = null;
+
           this.media_to_validate = {
-            rawData,
-            objectURL: URL.createObjectURL(rawData),
+            rawData: video_blob,
+            objectURL: URL.createObjectURL(video_blob),
             type: "video",
           };
         });
       } else if (this.selected_mode === "audio") {
-        // equalizer.clearCanvas();
-        this.startRecordAudioFeed().then((rawData) => {
+        this.recorder.stopRecording(() => {
+          this.is_recording = false;
+          this.eraseTimer();
+
+          let audio_blob = this.recorder.getBlob();
+
+          // recorder.camera.stop();
+          this.recorder.destroy();
+          this.recorder = null;
+
           const preview = this.$refs.equalizerElement.$el
             .querySelector("canvas")
             .toDataURL("image/png");
           this.media_to_validate = {
             preview,
-            rawData,
-            objectURL: URL.createObjectURL(rawData),
+            rawData: audio_blob,
+            objectURL: URL.createObjectURL(audio_blob),
             type: "audio",
           };
         });
-      } else if (this.selected_mode === "stopmotion") {
-        this.addStopmotionImage();
-      } else if (this.selected_mode === "vecto") {
-        debugger;
-        this.$refs.vectoElement.svgstr;
-        this.media_to_validate = {
-          preview: this.vecto.svgstr,
-          rawData: new Blob([this.vecto.svgstr], { type: "text/xml" }),
-          type: "svg",
-        };
       }
     },
 
@@ -1154,21 +1178,6 @@ export default {
 
         this.is_recording = true;
         this.startTimer();
-
-        this.$eventHub.$once("capture.stopRecording", () => {
-          this.recorder.stopRecording(() => {
-            this.is_recording = false;
-            this.eraseTimer();
-
-            let video_blob = this.recorder.getBlob();
-
-            // recorder.camera.stop();
-            this.recorder.destroy();
-            this.recorder = null;
-
-            return resolve(video_blob);
-          });
-        });
       });
     },
     startRecordAudioFeed() {
@@ -1180,21 +1189,6 @@ export default {
 
         this.is_recording = true;
         this.startTimer();
-
-        this.$eventHub.$once("capture.stopRecording", () => {
-          this.recorder.stopRecording(() => {
-            this.is_recording = false;
-            this.eraseTimer();
-
-            let audio_blob = this.recorder.getBlob();
-
-            // recorder.camera.stop();
-            this.recorder.destroy();
-            this.recorder = null;
-
-            return resolve(audio_blob);
-          });
-        });
       });
     },
 

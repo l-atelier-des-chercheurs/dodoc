@@ -105,13 +105,6 @@ export default {
     height: 100%;
     margin: 0;
     // .padding-medium;
-
-    &.m_previewValidation--svg {
-      svg {
-        max-width: 100%;
-        margin: auto;
-      }
-    }
   }
   .m_previewValidation--audio {
     height: 100%;
@@ -136,6 +129,14 @@ export default {
         height: 10%;
       }
     }
+  }
+}
+</style>
+<style lang="scss">
+.m_previewValidation--svg {
+  svg {
+    max-width: 100%;
+    margin: auto;
   }
 }
 </style>
