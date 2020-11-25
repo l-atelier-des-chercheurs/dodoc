@@ -13,6 +13,7 @@ export default {
   data() {
     return {
       svgstr: "",
+      is_processing_image: false,
     };
   },
   created() {},

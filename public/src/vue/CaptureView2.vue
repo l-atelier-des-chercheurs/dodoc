@@ -171,6 +171,12 @@
             :last_frame_from_video="last_frame_from_video"
             :number_of_colors="vecto_number_of_colors"
           />
+          <Lines
+            v-if="selected_mode === 'lines'"
+            ref="vectoElement"
+            :last_frame_from_video="last_frame_from_video"
+            :lines_angle="lines_angle"
+          />
 
           <AudioEqualizer
             v-if="selected_mode === 'audio'"
@@ -523,7 +529,7 @@
                   <span class>{{ $t("stopmotion_list") }}</span>
                 </button>
 
-                <div v-if="selected_mode === 'vecto'" class="_onion_skin_range">
+                <div v-if="selected_mode === 'vecto'">
                   <label
                     >{{ $t("number_of_colors") }} =
                     {{ vecto_number_of_colors }}</label
@@ -534,6 +540,18 @@
                     v-model.number="vecto_number_of_colors"
                     min="1"
                     max="7"
+                    step="1"
+                  />
+                </div>
+
+                <div v-if="selected_mode === 'lines'">
+                  <label>{{ $t("lines_angle") }} = {{ lines_angle }}</label>
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model.number="lines_angle"
+                    min="0"
+                    max="359"
                     step="1"
                   />
                 </div>
@@ -571,6 +589,7 @@ import CaptureSettings from "./components/capture/CaptureSettings.vue";
 import StopmotionList from "./components/capture/StopmotionList.vue";
 import AudioEqualizer from "./components/capture/AudioEqualizer.vue";
 import Vecto from "./components/capture/Vecto.vue";
+import Lines from "./components/capture/Lines.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -585,7 +604,14 @@ export default {
     read_only: Boolean,
     available_modes: {
       type: Array,
-      default: () => ["photo", "video", "stopmotion", "audio", "vecto"],
+      default: () => [
+        "photo",
+        "video",
+        "stopmotion",
+        "audio",
+        "vecto",
+        "lines",
+      ],
     },
     can_add_to_fav: {
       type: Boolean,
@@ -605,6 +631,7 @@ export default {
     StopmotionList,
     AudioEqualizer,
     Vecto,
+    Lines,
   },
   data() {
     return {
@@ -619,6 +646,7 @@ export default {
         stopmotion: "/images/i_icone-dodoc_anim.svg",
         audio: "/images/i_icone-dodoc_audio.svg",
         vecto: "/images/i_icone-dodoc_vecto.svg",
+        lines: "/images/i_icone-dodoc_lines.svg",
       },
 
       enable_grid: false,
@@ -679,6 +707,7 @@ export default {
       frameGrabber: undefined,
 
       vecto_number_of_colors: 2,
+      lines_angle: 95,
     };
   },
   created() {},
@@ -727,10 +756,9 @@ export default {
         this.enable_video = true;
       }
 
-      if (this.selected_mode === "vecto") {
+      this.stopFrameGrabber();
+      if (this.selected_mode === "vecto" || this.selected_mode === "lines") {
         this.startFrameGrabber();
-      } else {
-        this.stopFrameGrabber();
       }
 
       if (this.selected_mode !== "stopmotion") {
@@ -901,15 +929,16 @@ export default {
           this.actual_camera_resolution.height;
 
         this.getStaticImageFromVideoElement({
-          width: 480 * ratio,
-          height: 480,
+          width: 240 * ratio,
+          height: 240,
         }).then((image_data) => (this.last_frame_from_video = image_data));
-      }, 1000);
+      }, 2000);
     },
     stopFrameGrabber() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`CaptureView2 • METHODS : stopFrameGrabber  `);
-      clearInterval(this.frameGrabber);
+
+      if (this.frameGrabber) clearInterval(this.frameGrabber);
       this.last_frame_from_video = undefined;
     },
 
@@ -1042,13 +1071,20 @@ export default {
       } else if (this.selected_mode === "stopmotion") {
         this.addStopmotionImage();
       } else if (this.selected_mode === "vecto") {
-        debugger;
         const svgstr = this.$refs.vectoElement.svgstr;
         this.media_to_validate = {
           preview: svgstr,
           rawData: new Blob([svgstr], { type: "text/xml" }),
           type: "svg",
         };
+      } else if (this.selected_mode === "lines") {
+        const svg_el = this.$refs.vectoElement.querySelector("svg");
+        debugger;
+        // this.media_to_validate = {
+        //   preview: svgstr,
+        //   rawData: new Blob([svgstr], { type: "text/xml" }),
+        //   type: "svg",
+        // };
       }
     },
     stopRecording() {
@@ -1137,6 +1173,8 @@ export default {
 
     getStaticImageFromVideoElement({ width, height } = {}) {
       return new Promise((resolve, reject) => {
+        var t0 = performance.now();
+
         let invisible_canvas = document.createElement("canvas");
 
         invisible_canvas.width = width
@@ -1157,6 +1195,15 @@ export default {
         var imageData = invisible_canvas.toBlob(
           (imageBlob) => {
             invisible_canvas.remove();
+
+            var t1 = performance.now();
+            if (this.$root.state.dev_mode === "debug")
+              console.log(
+                "CaptureView2 • METHODS : getStaticImageFromVideoElement took " +
+                  (t1 - t0) +
+                  " milliseconds."
+              );
+
             return resolve(imageBlob);
           },
           "image/jpeg",

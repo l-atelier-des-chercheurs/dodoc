@@ -2242,6 +2242,10 @@ module.exports = (function () {
       oc: "formas",
       de: "Formen",
     },
+    lines: {
+      fr: "lignes",
+      en: "lines",
+    },
     image: {
       fr: "image",
       en: "image",
