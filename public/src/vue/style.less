@@ -1188,10 +1188,15 @@ small {
   }
 
   h3 {
+    display: flex;
     font-size: 1rem;
     font-family: "Fira Sans";
     font-weight: 600;
     letter-spacing: 0.03em;
+
+    > * {
+      margin-left: 0.4em;
+    }
 
     &::before {
       content: " ";
@@ -1203,14 +1208,15 @@ small {
     .bg-noir;
     .c-blanc;
     border-radius: 50%;
-    width: 1.4em;
-    height: 1.4em;
+    min-width: 1.6em;
+    height: 1.6em;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
     .font-verysmall;
+    padding: 0 0.2em;
   }
   ._fold_button {
     .font-verysmall;

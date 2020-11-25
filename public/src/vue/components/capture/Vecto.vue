@@ -1,8 +1,5 @@
 <template>
-  <div class="m_vecto">
-    number_of_colors {{ number_of_colors }}
-    <div v-html="svgstr"></div>
-  </div>
+  <div class="m_vecto" v-html="svgstr"></div>
 </template>
 <script>
 import ImageTracer from "imagetracerjs";
@@ -16,6 +13,7 @@ export default {
   data() {
     return {
       svgstr: "",
+      is_processing_image: false,
     };
   },
   created() {},
@@ -53,6 +51,8 @@ export default {
           blurradius: 5,
           blurdelta: 64,
 
+          viewbox: true,
+
           // pal: [
           //   { r: 255, g: 255, b: 255, a: 255 },
           //   { r: 0, g: 0, b: 0, a: 255 },
@@ -64,14 +64,19 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .m_vecto {
   width: 100%;
   height: 100%;
   object-fit: scale-down;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

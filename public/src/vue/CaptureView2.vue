@@ -171,6 +171,14 @@
             :last_frame_from_video="last_frame_from_video"
             :number_of_colors="vecto_number_of_colors"
           />
+          <Lines
+            v-if="selected_mode === 'lines'"
+            ref="vectoElement"
+            :last_frame_from_video="last_frame_from_video"
+            :angle="lines_angle"
+            :threshold="lines_threshold"
+            :density="lines_density"
+          />
 
           <AudioEqualizer
             v-if="selected_mode === 'audio'"
@@ -393,44 +401,48 @@
                 <transition name="fade_fast" mode="out-in">
                   <button
                     type="button"
+                    v-if="!is_recording"
                     class="bg-orange button-inline _captureButton"
                     :class="{ 'is--justCaptured': capture_button_pressed }"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
-                    @mousedown.stop.prevent="captureOrStop()"
-                    @touchstart.stop.prevent="captureOrStop()"
+                    @mousedown.stop.prevent="setCapture()"
+                    @touchstart.stop.prevent="setCapture()"
                   >
-                    <Loader v-if="is_sending_image" />
                     <img
-                      v-else-if="!is_recording"
                       class="inline-svg inline-svg_larger"
                       src="/images/i_record.svg"
-                    />
-                    <img
-                      v-else
-                      class="inline-svg inline-svg_larger"
-                      src="/images/i_stop.svg"
                     />
 
                     &nbsp;
 
+                    <span v-if="selected_mode === 'photo'">
+                      {{ $t("take_picture") }}</span
+                    >
+                    <span v-else-if="selected_mode === 'video'">
+                      {{ $t("record_video") }}
+                    </span>
+                    <span v-else-if="selected_mode === 'stopmotion'">
+                      {{ $t("take_picture") }}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    v-else
+                    class="bg-orange button-inline _captureButton"
+                    :class="{ 'is--justCaptured': capture_button_pressed }"
+                    :disabled="is_sending_image"
+                    :key="selected_mode + is_recording"
+                    @mousedown.stop.prevent="stopRecording()"
+                    @touchstart.stop.prevent="stopRecording()"
+                  >
                     <span v-if="is_sending_image">
                       {{ $t("loading") }}
                     </span>
 
-                    <span v-else-if="selected_mode === 'photo'">
-                      {{ $t("take_picture") }}</span
-                    >
+                    <span v-if="selected_mode === 'photo'"> </span>
                     <span v-else-if="selected_mode === 'video'">
-                      <template v-if="!is_recording">
-                        {{ $t("record_video") }}
-                      </template>
-                      <template v-else>
-                        {{ $t("stop_recording") }}
-                      </template>
-                    </span>
-                    <span v-else-if="selected_mode === 'stopmotion'">
-                      {{ $t("take_picture") }}
+                      {{ $t("stop_recording") }}
                     </span>
                   </button>
                 </transition>
@@ -497,11 +509,11 @@
                     stopmotion.onion_skin_img &&
                     show_live_feed
                   "
-                  class="_onion_skin_range"
+                  class="_mode_accessory_range"
                 >
                   <label>{{ $t("onion_skin") }} </label>
                   <input
-                    class="margin-none _rtl"
+                    class="_rtl"
                     type="range"
                     v-model.number="stopmotion.onion_skin_opacity"
                     min="0.1"
@@ -519,18 +531,66 @@
                   <span class>{{ $t("stopmotion_list") }}</span>
                 </button>
 
-                <div v-if="selected_mode === 'vecto'" class="_onion_skin_range">
+                <div
+                  v-if="selected_mode === 'vecto'"
+                  class="_mode_accessory_range"
+                >
                   <label
                     >{{ $t("number_of_colors") }} =
                     {{ vecto_number_of_colors }}</label
                   >
                   <input
-                    class="margin-none"
+                    class=""
                     type="range"
                     v-model.number="vecto_number_of_colors"
                     min="1"
                     max="7"
                     step="1"
+                  />
+                </div>
+
+                <div
+                  v-if="selected_mode === 'lines'"
+                  class="_mode_accessory_range"
+                >
+                  <label>{{ $t("lines_angle") }} = {{ lines_angle }}</label>
+                  <input
+                    class=""
+                    type="range"
+                    v-model.number="lines_angle"
+                    min="0"
+                    max="359"
+                    step="1"
+                  />
+                </div>
+                <div
+                  v-if="selected_mode === 'lines'"
+                  class="_mode_accessory_range"
+                >
+                  <label
+                    >{{ $t("lines_threshold") }} = {{ lines_threshold }}</label
+                  >
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model.number="lines_threshold"
+                    min="1"
+                    max="40"
+                    step="1"
+                  />
+                </div>
+                <div
+                  v-if="selected_mode === 'lines'"
+                  class="_mode_accessory_range"
+                >
+                  <label>{{ $t("lines_density") }} = {{ lines_density }}</label>
+                  <input
+                    class="margin-none"
+                    type="range"
+                    v-model.number="lines_density"
+                    min="0"
+                    max="1"
+                    step=".01"
                   />
                 </div>
               </div>
@@ -567,6 +627,7 @@ import CaptureSettings from "./components/capture/CaptureSettings.vue";
 import StopmotionList from "./components/capture/StopmotionList.vue";
 import AudioEqualizer from "./components/capture/AudioEqualizer.vue";
 import Vecto from "./components/capture/Vecto.vue";
+import Lines from "./components/capture/Lines.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -581,7 +642,14 @@ export default {
     read_only: Boolean,
     available_modes: {
       type: Array,
-      default: () => ["photo", "video", "stopmotion", "audio", "vecto"],
+      default: () => [
+        "photo",
+        "video",
+        "stopmotion",
+        "audio",
+        "vecto",
+        "lines",
+      ],
     },
     can_add_to_fav: {
       type: Boolean,
@@ -601,6 +669,7 @@ export default {
     StopmotionList,
     AudioEqualizer,
     Vecto,
+    Lines,
   },
   data() {
     return {
@@ -615,6 +684,7 @@ export default {
         stopmotion: "/images/i_icone-dodoc_anim.svg",
         audio: "/images/i_icone-dodoc_audio.svg",
         vecto: "/images/i_icone-dodoc_vecto.svg",
+        lines: "/images/i_icone-dodoc_lines.svg",
       },
 
       enable_grid: false,
@@ -675,6 +745,9 @@ export default {
       frameGrabber: undefined,
 
       vecto_number_of_colors: 2,
+      lines_angle: 116,
+      lines_threshold: 14,
+      lines_density: 0.2,
     };
   },
   created() {},
@@ -723,10 +796,9 @@ export default {
         this.enable_video = true;
       }
 
-      if (this.selected_mode === "vecto") {
+      this.stopFrameGrabber();
+      if (this.selected_mode === "vecto" || this.selected_mode === "lines") {
         this.startFrameGrabber();
-      } else {
-        this.stopFrameGrabber();
       }
 
       if (this.selected_mode !== "stopmotion") {
@@ -887,7 +959,7 @@ export default {
     },
 
     startFrameGrabber() {
-      this.frameGrabber = setInterval(() => {
+      const getFrame = () => {
         if (this.$root.state.dev_mode === "debug")
           console.log(`CaptureView2 • METHODS : startFrameGrabber`);
         // this.frameGrabber();
@@ -897,15 +969,19 @@ export default {
           this.actual_camera_resolution.height;
 
         this.getStaticImageFromVideoElement({
-          width: 480 * ratio,
-          height: 480,
+          width: 240 * ratio,
+          height: 240,
         }).then((image_data) => (this.last_frame_from_video = image_data));
-      }, 1000);
+      };
+
+      getFrame();
+      this.frameGrabber = setInterval(getFrame, 300);
     },
     stopFrameGrabber() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`CaptureView2 • METHODS : stopFrameGrabber  `);
-      clearInterval(this.frameGrabber);
+
+      if (this.frameGrabber) clearInterval(this.frameGrabber);
       this.last_frame_from_video = undefined;
     },
 
@@ -1000,11 +1076,11 @@ export default {
         case "a":
         case "q":
         case " ":
-          this.captureOrStop();
+          this.setCapture();
           break;
       }
     },
-    captureOrStop() {
+    setCapture() {
       this.capture_button_pressed = true;
       window.setTimeout(() => {
         this.capture_button_pressed = false;
@@ -1012,24 +1088,14 @@ export default {
       this.show_capture_settings = false;
 
       if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
-        if (!this.is_recording) {
-          this.is_recording = true;
-          this.timelapse_event = window.setInterval(() => {
-            this.capture_button_pressed = true;
-            window.setTimeout(() => {
-              this.capture_button_pressed = false;
-            }, 400);
-            this.addStopmotionImage();
-          }, this.timelapse_interval * 1000);
-        } else {
-          this.is_recording = false;
-          clearInterval(this.timelapse_event);
-          return;
-        }
-      }
-      if (this.is_recording && this.selected_mode !== "stopmotion") {
-        this.$eventHub.$emit("capture.stopRecording");
-        return;
+        this.is_recording = true;
+        this.timelapse_event = window.setInterval(() => {
+          this.capture_button_pressed = true;
+          window.setTimeout(() => {
+            this.capture_button_pressed = false;
+          }, 400);
+          this.addStopmotionImage();
+        }, this.timelapse_interval * 1000);
       }
 
       if (this.selected_mode === "photo") {
@@ -1042,37 +1108,75 @@ export default {
         });
       } else if (this.selected_mode === "video") {
         this.video_recording_is_paused = false;
+        this.startRecordCameraFeed();
+      } else if (this.selected_mode === "audio") {
+        this.startRecordAudioFeed();
+      } else if (this.selected_mode === "stopmotion") {
+        this.addStopmotionImage();
+      } else if (this.selected_mode === "vecto") {
+        const svgstr = this.$refs.vectoElement.svgstr;
+        this.media_to_validate = {
+          preview: svgstr,
+          rawData: new Blob([svgstr], { type: "image/svg+xml" }),
+          type: "svg",
+        };
+      } else if (this.selected_mode === "lines") {
+        const svgstr = this.$refs.vectoElement.$el.querySelector("svg")
+          .outerHTML;
+        debugger;
+        this.media_to_validate = {
+          preview: svgstr,
+          rawData: new Blob([svgstr], { type: "image/svg+xml" }),
+          type: "svg",
+        };
+      }
+    },
+    stopRecording() {
+      if (!this.is_recording) return;
 
-        this.startRecordCameraFeed().then((rawData) => {
+      if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
+        this.is_recording = false;
+        clearInterval(this.timelapse_event);
+        return;
+      }
+      if (this.selected_mode === "video") {
+        this.recorder.stopRecording(() => {
+          this.is_recording = false;
+          this.eraseTimer();
+
+          let video_blob = this.recorder.getBlob();
+
+          // recorder.camera.stop();
+          this.recorder.destroy();
+          this.recorder = null;
+
           this.media_to_validate = {
-            rawData,
-            objectURL: URL.createObjectURL(rawData),
+            rawData: video_blob,
+            objectURL: URL.createObjectURL(video_blob),
             type: "video",
           };
         });
       } else if (this.selected_mode === "audio") {
-        // equalizer.clearCanvas();
-        this.startRecordAudioFeed().then((rawData) => {
+        this.recorder.stopRecording(() => {
+          this.is_recording = false;
+          this.eraseTimer();
+
+          let audio_blob = this.recorder.getBlob();
+
+          // recorder.camera.stop();
+          this.recorder.destroy();
+          this.recorder = null;
+
           const preview = this.$refs.equalizerElement.$el
             .querySelector("canvas")
             .toDataURL("image/png");
           this.media_to_validate = {
             preview,
-            rawData,
-            objectURL: URL.createObjectURL(rawData),
+            rawData: audio_blob,
+            objectURL: URL.createObjectURL(audio_blob),
             type: "audio",
           };
         });
-      } else if (this.selected_mode === "stopmotion") {
-        this.addStopmotionImage();
-      } else if (this.selected_mode === "vecto") {
-        debugger;
-        this.$refs.vectoElement.svgstr;
-        this.media_to_validate = {
-          preview: this.vecto.svgstr,
-          rawData: new Blob([this.vecto.svgstr], { type: "text/xml" }),
-          type: "svg",
-        };
       }
     },
 
@@ -1113,6 +1217,8 @@ export default {
 
     getStaticImageFromVideoElement({ width, height } = {}) {
       return new Promise((resolve, reject) => {
+        var t0 = performance.now();
+
         let invisible_canvas = document.createElement("canvas");
 
         invisible_canvas.width = width
@@ -1133,6 +1239,15 @@ export default {
         var imageData = invisible_canvas.toBlob(
           (imageBlob) => {
             invisible_canvas.remove();
+
+            var t1 = performance.now();
+            if (this.$root.state.dev_mode === "debug")
+              console.log(
+                "CaptureView2 • METHODS : getStaticImageFromVideoElement took " +
+                  (t1 - t0) +
+                  " milliseconds."
+              );
+
             return resolve(imageBlob);
           },
           "image/jpeg",
@@ -1154,21 +1269,6 @@ export default {
 
         this.is_recording = true;
         this.startTimer();
-
-        this.$eventHub.$once("capture.stopRecording", () => {
-          this.recorder.stopRecording(() => {
-            this.is_recording = false;
-            this.eraseTimer();
-
-            let video_blob = this.recorder.getBlob();
-
-            // recorder.camera.stop();
-            this.recorder.destroy();
-            this.recorder = null;
-
-            return resolve(video_blob);
-          });
-        });
       });
     },
     startRecordAudioFeed() {
@@ -1180,21 +1280,6 @@ export default {
 
         this.is_recording = true;
         this.startTimer();
-
-        this.$eventHub.$once("capture.stopRecording", () => {
-          this.recorder.stopRecording(() => {
-            this.is_recording = false;
-            this.eraseTimer();
-
-            let audio_blob = this.recorder.getBlob();
-
-            // recorder.camera.stop();
-            this.recorder.destroy();
-            this.recorder = null;
-
-            return resolve(audio_blob);
-          });
-        });
       });
     },
 
@@ -1682,14 +1767,17 @@ export default {
     opacity: var(--onionskin-opacity);
   }
 }
-._onion_skin_range {
-  max-width: 200px;
+._mode_accessory_range {
+  max-width: 240px;
   margin: -5px 0 -5px auto;
   label {
     margin: 0;
   }
   input._rtl {
     direction: rtl;
+  }
+  input {
+    margin: 0;
   }
 }
 ._video_grid_overlay {
