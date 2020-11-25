@@ -191,18 +191,27 @@
         </div>
       </div>
 
-      <!-- <div>
-          <button
-            type="button"
-            class="buttonLink"
-            @click="show_debug = !show_debug"
-          >
-            debug: show all devices available
-          </button>
-          <div v-if="show_debug">
-            <pre>{{ connected_devices }}</pre>
-          </div>
-        </div> -->
+      <label>{{ $t("connect_to_other_users") }}</label>
+      <div class="padding-small">
+        <span class="switch switch-xs">
+          <input
+            class="switch"
+            id="enableDistantFlux"
+            type="checkbox"
+            v-model="enable_distant_flux"
+          />
+          <label for="enableDistantFlux">{{ $t("enable") }}</label>
+        </span>
+        <DistantFlux2
+          v-if="enable_distant_flux"
+          :stream="stream"
+          @changeStreamTo="
+            (new_stream) => {
+              changeStreamTo(new_stream);
+            }
+          "
+        />
+      </div>
     </div>
     <div class="m_captureSettings--updateButton">
       <!-- <small v-if="!desired_camera_resolution">
@@ -244,6 +253,8 @@
   </div>
 </template>
 <script>
+import DistantFlux2 from "./DistantFlux2.vue";
+
 export default {
   props: {
     stream: MediaStream,
@@ -251,7 +262,9 @@ export default {
     enable_audio: Boolean,
     enable_video: Boolean,
   },
-  components: {},
+  components: {
+    DistantFlux2,
+  },
   data() {
     return {
       is_loading_available_devices: false,
@@ -346,7 +359,7 @@ export default {
         height: 720,
       },
 
-      show_debug: false,
+      enable_distant_flux: false,
     };
   },
   created() {},
@@ -805,6 +818,9 @@ export default {
       console.log("Constraints = " + JSON.stringify(_constraints, null, 4));
 
       return _constraints;
+    },
+    changeStreamTo(stream) {
+      this.$emit("update:stream", stream);
     },
   },
 };

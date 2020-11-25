@@ -544,7 +544,7 @@
         </div>
       </div>
     </div>
-    <DistantFlux
+    <!-- <DistantFlux
       v-if="$root.settings.capture_options.distant_flux.active"
       :key="$root.settings.capture_options.distant_flux.username"
       @changeStreamTo="
@@ -552,14 +552,14 @@
           changeStreamTo(new_stream);
         }
       "
-    />
+    /> -->
   </div>
 </template>
 <script>
 import MediaContent from "./components/subcomponents/MediaContent.vue";
 import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
 import MediaValidationButtons from "./components/subcomponents/MediaValidationButtons.vue";
-import DistantFlux from "./components/subcomponents/DistantFlux.vue";
+// import DistantFlux from "./components/subcomponents/DistantFlux.vue";
 import StopmotionList from "./components/capture/StopmotionList.vue";
 
 import RecordRTC from "recordrtc";
@@ -586,7 +586,7 @@ export default {
     MediaContent,
     StopmotionPanel,
     MediaValidationButtons,
-    DistantFlux,
+    // DistantFlux,
     StopmotionList,
   },
   data() {
