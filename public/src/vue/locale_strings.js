@@ -2811,6 +2811,7 @@ module.exports = (function () {
       en:
         "If enabled, this recipe can be selected as a model for other recipes to lean on.",
     },
+
     recipes: {
       fr: "Recettes",
       en: "Recipes",
@@ -2835,6 +2836,12 @@ module.exports = (function () {
     select_publi_model: {
       fr: "Sélectionner un modèle",
       en: "Select a model",
+    },
+    connect_to_other_users: {
+      fr:
+        "Accéder à des sources provenant d’autres appareils connectés actuellement à do•doc",
+      en:
+        "Connect to sources provided by devices currently connected to do•doc",
     },
     select_publi_model_instructions: {
       fr:
@@ -3224,6 +3231,10 @@ module.exports = (function () {
       nl: "Verzonden",
       oc: "Mandat",
       de: "Gesendet",
+    },
+    enable: {
+      fr: "Activer",
+      en: "Enable",
     },
     disable: {
       fr: "Désactiver",
