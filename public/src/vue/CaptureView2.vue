@@ -204,14 +204,10 @@
             >
               <line
                 v-for="([x1, y1, x2, y2], index) in [
-                  [0, 0, 0, 100],
                   [33, 0, 33, 100],
                   [66, 0, 66, 100],
-                  [100, 0, 100, 100],
-                  [0, 0, 100, 0],
                   [0, 33, 100, 33],
                   [0, 66, 100, 66],
-                  [0, 100, 100, 100],
                 ]"
                 :key="index"
                 :x1="x1 + '%'"
@@ -220,6 +216,7 @@
                 :y2="y2 + '%'"
                 vector-effect="non-scaling-stroke"
               />
+              <rect x="0" y="0" width="100%" height="100%" />
             </svg>
 
             <!-- <svg
@@ -1835,7 +1832,15 @@ export default {
     width: 100%;
     height: 100%;
     stroke: var(--c-rouge);
-    stroke-width: 2px;
+    fill: none;
+    padding: 0.5px;
+
+    line {
+      stroke-width: 2px;
+    }
+    rect {
+      stroke-width: 2px;
+    }
 
     // background-image: repeating-linear-gradient(
     //     to right,
