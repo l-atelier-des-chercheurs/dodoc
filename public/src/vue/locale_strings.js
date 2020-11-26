@@ -1537,6 +1537,10 @@ module.exports = (function () {
       oc: "Validar lo mèdia",
       de: "Medium überprüfen",
     },
+    validate: {
+      fr: "Valider",
+      en: "Validate",
+    },
     add_keyword: {
       fr: "Ajouter un mot-clé",
       en: "Add a keyword",
@@ -3186,12 +3190,12 @@ module.exports = (function () {
       en: "Save this URL to connect again and finish in the future.",
     },
     finished_writing_reply: {
-      fr: "Vous avez terminé ?",
-      en: "Are you finished?",
+      fr: "Votre document est terminé ?",
+      en: "Your document is finished?",
     },
-    lock_and_publish: {
-      fr: "Verrouillez et publiez votre récit",
-      en: "Lock and publish this story",
+    finalize_story: {
+      fr: "Finalisez votre récit",
+      en: "Finalize your story",
     },
     carreau_summary: {
       fr: "Empiler des médias pour créer en temps réel des présentations.",

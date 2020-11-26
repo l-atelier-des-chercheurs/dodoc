@@ -14,8 +14,7 @@
       @togglePreviewMode="preview_mode = !preview_mode"
       @editPubliMedia="editPubliMedia"
       @addMedia="addMedia"
-      @lockAndPublish="lockAndPublish"
-      @removeSubmittedDate="removeSubmittedDate"
+      @openPublishModal="openPublishModal"
     />
     <Story
       v-if="publication.template === 'story'"
@@ -35,8 +34,7 @@
       @addMedia="addMediaOrdered"
       @insertMediasInList="insertMediasInList"
       @togglePreviewMode="preview_mode = !preview_mode"
-      @lockAndPublish="lockAndPublish"
-      @removeSubmittedDate="removeSubmittedDate"
+      @openPublishModal="openPublishModal"
     />
     <VideoPublication
       v-else-if="publication.template === 'video_assemblage'"
@@ -141,6 +139,15 @@
       "
       :read_only="!$root.state.connected"
     />-->
+
+    <PublishModal
+      v-if="show_publish_modal"
+      :read_only="read_only"
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      :can_edit_publi="can_edit_publi"
+      @close="show_publish_modal = false"
+    />
   </div>
 </template>
 <script>
@@ -153,6 +160,8 @@ import StopmotionAnimation from "./components/publication_templates/StopmotionAn
 import MixAudioAndVideo from "./components/publication_templates/MixAudioAndVideo.vue";
 import MixAudioAndImage from "./components/publication_templates/MixAudioAndImage.vue";
 // import Carreau from "./components/publication_templates/Carreau.vue";
+
+import PublishModal from "./components/modals/PublishModal.vue";
 
 export default {
   props: {
@@ -168,12 +177,14 @@ export default {
     StopmotionAnimation,
     MixAudioAndVideo,
     MixAudioAndImage,
+    PublishModal,
   },
   data() {
     return {
       medias: [],
       publication_model_medias: [],
       preview_mode: true,
+      show_publish_modal: false,
     };
   },
   created() {},
@@ -241,15 +252,14 @@ export default {
     },
     "publication.follows_model": {
       handler() {
-        const model = this.model_for_this_publication;
-        if (model) {
+        if (!!this.publication.follows_model) {
           this.$socketio.listFolder({
             type: "publications",
-            slugFolderName: model.slugFolderName,
+            slugFolderName: this.publication.follows_model,
           });
           this.$socketio.listMedias({
             type: "publications",
-            slugFolderName: model.slugFolderName,
+            slugFolderName: this.publication.follows_model,
           });
 
           // this.$eventHub.$on(
@@ -739,32 +749,8 @@ export default {
         // this.preview_mode = !this.preview_mode;
       }
     },
-    lockAndPublish() {
-      var now = this.$moment();
-
-      const editing_limited_to = "nobody";
-      const viewing_limited_to = this.$root.current_author
-        ? "only_authors"
-        : "everybody";
-
-      this.$root.editFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        data: {
-          date_submitted: now,
-          editing_limited_to,
-          viewing_limited_to,
-        },
-      });
-    },
-    removeSubmittedDate() {
-      this.$root.editFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        data: {
-          date_submitted: "",
-        },
-      });
+    openPublishModal() {
+      this.show_publish_modal = true;
     },
   },
 };

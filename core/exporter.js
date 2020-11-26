@@ -20,8 +20,7 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function () {
   return {
-    loadPublication: (slugPubliName, pageData) =>
-      loadPublication(slugPubliName, pageData),
+    loadPublication: (slugPubliName) => loadPublication(slugPubliName),
 
     copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
@@ -409,7 +408,7 @@ module.exports = (function () {
           ? options.bitrate
           : "6000k";
 
-        loadPublication(slugPubliName, {})
+        loadPublication(slugPubliName)
           .then((pageData) => {
             publication_meta = pageData.publiAndMediaData[slugPubliName];
             return _loadMediaFilenameFromPublicationSlugs(
@@ -534,7 +533,7 @@ module.exports = (function () {
           fs.mkdirp(
             imagesCachePath,
             function () {
-              loadPublication(slugPubliName, {})
+              loadPublication(slugPubliName)
                 .then((pageData) => {
                   let ratio = _getMediaRatioFromFirstFilename(
                     slugPubliName,
@@ -620,11 +619,13 @@ module.exports = (function () {
     },
   };
 
-  function loadPublication(slugPubliName, pageData) {
+  function loadPublication(slugPubliName) {
     return new Promise((resolve, reject) => {
       dev.logfunction(
         `EXPORTER — loadPublication with slugPubliName = ${slugPubliName}`
       );
+
+      let _page_informations = {};
 
       let slugFolderName = slugPubliName;
       let type = "publications";
@@ -639,7 +640,7 @@ module.exports = (function () {
         })
         .then((publiData) => {
           publi_and_medias = publiData;
-          pageData.pageTitle = publi_and_medias[slugFolderName].name;
+          _page_informations.pageTitle = publi_and_medias[slugFolderName].name;
           file
             .getMediaMetaNames({
               type,
@@ -647,8 +648,8 @@ module.exports = (function () {
             })
             .then((list_metaFileName) => {
               if (list_metaFileName.length === 0) {
-                pageData.publiAndMediaData = publi_and_medias;
-                return resolve(pageData);
+                _page_informations.publiAndMediaData = publi_and_medias;
+                return resolve(_page_informations);
               }
 
               let medias_list = list_metaFileName.map((metaFileName) => {
@@ -666,7 +667,7 @@ module.exports = (function () {
                   publi_and_medias[slugFolderName].medias =
                     publi_medias[slugFolderName].medias;
 
-                  pageData.publiAndMediaData = publi_and_medias;
+                  _page_informations.publiAndMediaData = publi_and_medias;
 
                   // we need to get the list of original medias in the publi
                   var list_of_linked_medias = [];
@@ -686,8 +687,8 @@ module.exports = (function () {
                       medias_list: list_of_linked_medias,
                     })
                     .then((folders_and_medias) => {
-                      pageData.folderAndMediaData = folders_and_medias;
-                      resolve(pageData);
+                      _page_informations.folderAndMediaData = folders_and_medias;
+                      resolve(_page_informations);
                     });
                 });
             });
