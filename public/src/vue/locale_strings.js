@@ -33,6 +33,10 @@ module.exports = (function () {
       fr: "Créer une discussion",
       en: "Create a room",
     },
+    create_qr_code: {
+      fr: "Créer un code QR",
+      en: "Create a QR code",
+    },
     edit_a_chat: {
       fr: "Éditer une discussion",
       en: "Edit a room",
@@ -65,6 +69,10 @@ module.exports = (function () {
       fr: "Replier",
       en: "Fold",
     },
+    qr_code: {
+      fr: "code QR",
+      en: "QR code",
+    },
     unfold: {
       fr: "Déplier",
       en: "Unfold",
@@ -72,6 +80,12 @@ module.exports = (function () {
     create_new_folder: {
       fr: "créer un nouveau dossier",
       en: "create new folder",
+    },
+    create_qr_code_instructions: {
+      fr:
+        "Écrire un lien pour créer un code QR. Vous pouvez ensuite le télécharger, l’imprimer ou l’intégrer à un document page à page ou à un récit.",
+      en:
+        "Write a link to create the corresponding QR Code to download, print or insert inside a paged document or a story.",
     },
     manage_access: {
       fr: "Gérer l’accès au contenu",

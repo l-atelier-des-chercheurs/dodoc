@@ -93,11 +93,11 @@
           </button>
         </div>
       </transition>
-      <div class="m_captureview2--videoPane--top">
-        <div
-          class="m_captureview2--videoPane--top--videoContainer"
-          v-show="!is_validating_stopmotion_video"
-        >
+      <div
+        class="m_captureview2--videoPane--top"
+        v-show="!is_validating_stopmotion_video"
+      >
+        <div class="m_captureview2--videoPane--top--videoContainer">
           <transition-group
             tag="div"
             class="_recording_timer"
@@ -454,7 +454,7 @@
                   </button>
                   <button
                     type="button"
-                    v-else
+                    v-else-if="is_recording"
                     class="bg-orange button-inline _captureButton"
                     :class="{ 'is--justCaptured': capture_button_pressed }"
                     :disabled="is_sending_image"
@@ -466,8 +466,10 @@
                       {{ $t("loading") }}
                     </span>
 
-                    <span v-if="selected_mode === 'photo'"> </span>
                     <span v-else-if="selected_mode === 'video'">
+                      {{ $t("stop_recording") }}
+                    </span>
+                    <span v-else-if="selected_mode === 'audio'">
                       {{ $t("stop_recording") }}
                     </span>
                   </button>
@@ -1134,9 +1136,14 @@ export default {
         });
       } else if (this.selected_mode === "video") {
         this.video_recording_is_paused = false;
-        this.startRecordCameraFeed();
+        this.startRecordFeed({
+          type: "video",
+          videoBitsPerSecond: 4112000,
+        });
       } else if (this.selected_mode === "audio") {
-        this.startRecordAudioFeed();
+        this.startRecordFeed({
+          type: "audio",
+        });
       } else if (this.selected_mode === "stopmotion") {
         this.addStopmotionImage();
       } else if (this.selected_mode === "vecto") {
@@ -1285,24 +1292,21 @@ export default {
       });
     },
 
-    startRecordCameraFeed() {
+    startRecordFeed(options) {
       return new Promise((resolve, reject) => {
-        this.recorder = RecordRTC(this.stream, {
-          type: "video",
-          videoBitsPerSecond: 4112000,
-        });
-        this.recorder.startRecording();
-
-        this.is_recording = true;
-        this.startTimer();
-      });
-    },
-    startRecordAudioFeed() {
-      return new Promise((resolve, reject) => {
-        this.recorder = RecordRTC(this.stream, {
-          type: "audio",
-        });
-        this.recorder.startRecording();
+        this.recorder = RecordRTC(this.stream, options);
+        try {
+          this.recorder.startRecording();
+        } catch (err) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(
+              this.$t("notifications.failed_to_start_record") +
+                "<br>" +
+                err.message
+            );
+        }
 
         this.is_recording = true;
         this.startTimer();

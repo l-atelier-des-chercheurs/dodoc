@@ -1852,10 +1852,10 @@ small {
   margin-top: 0;
   min-height: 0;
 
-  // background-color: #fff;
-  // color: @c-rouge;
-
   border-radius: 4px;
+
+  display: flex;
+  align-items: center;
 
   label {
     text-transform: inherit;
@@ -1902,12 +1902,13 @@ small {
 
   &::before {
     content: "";
-    display: inline-block;
-    vertical-align: middle;
+    // display: inline-block;
+    // vertical-align: middle;
     width: 28px;
     height: 28px;
     padding-right: 4px;
     background-repeat: no-repeat;
+    background-position: left center;
   }
 
   &.barButton_createProject {
@@ -1978,6 +1979,12 @@ small {
     color: @c-rouge;
     &::before {
       background-image: url("/images/i_add_channel.svg");
+    }
+  }
+  &.barButton_qrCode {
+    color: @c-noir;
+    &::before {
+      background-image: url("/images/i_qr_code.svg");
     }
   }
 }

@@ -63,6 +63,14 @@
           <span>{{ $t("write") }}</span>
         </button>
 
+        <button
+          type="button"
+          class="barButton barButton_qrCode"
+          @click="openQRCodeModal"
+          :disabled="read_only || !can_edit_project"
+        >
+          <span>{{ $t("qr_code") }}</span>
+        </button>
         <!-- <button
           type="button"
           class="buttonLink margin-none"
@@ -418,6 +426,12 @@ export default {
         }, 1500);
       }
       this.$root.do_navigation.view = "CaptureView";
+    },
+    openQRCodeModal() {
+      this.$root.openCreateQrModal({
+        slugFolderName: this.slugProjectName,
+        type: "projects",
+      });
     },
     updateInputFiles($event) {
       if (this.$root.state.dev_mode === "debug") {

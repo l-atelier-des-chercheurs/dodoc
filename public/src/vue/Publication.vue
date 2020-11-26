@@ -251,6 +251,11 @@ export default {
             type: "publications",
             slugFolderName: model.slugFolderName,
           });
+
+          // this.$eventHub.$on(
+          //   "socketio.projects.medias_listed",
+          //   model_media_listed
+          // );
         }
       },
       deep: true,
@@ -292,6 +297,9 @@ export default {
       return this.publication.slugFolderName;
     },
     paged_medias() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Publication • COMPUTED: paged_medias`);
+
       const publication = this.model_for_this_publication
         ? this.model_for_this_publication
         : this.publication;
@@ -429,7 +437,7 @@ export default {
       // triggering listspecificmedias over and over
 
       if (this.$root.state.dev_mode === "debug")
-        console.log(`Publication • COMPUTED: medias`);
+        console.log(`Publication • METHODS: updateMediasPubli`);
 
       let { medias, missingMedias } = this.getLinkedMediasForPubli({
         publication: this.publication,
@@ -754,10 +762,10 @@ export default {
         type: "publications",
         slugFolderName: this.slugPubliName,
         data: {
-          date_submitted: '',
+          date_submitted: "",
         },
       });
-    }
+    },
   },
 };
 </script>

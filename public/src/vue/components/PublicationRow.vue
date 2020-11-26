@@ -49,13 +49,13 @@
         :folder="publication"
         :context="'short'"
         :type="'publications'"
-        @openFolder="openPublication"
+        @openFolder.stop="openPublication"
       />
       <button
         v-if="can_see_publi"
         type="button"
         class="m_project--presentation--buttons--openButton button-redthin"
-        @click.exact="openPublication"
+        @click.stop.exact="openPublication"
       >
         <span class>{{ $t("open") }}</span>
       </button>
