@@ -51,13 +51,13 @@
 
         <hr class="margin-vert-verysmall" />
 
-        <button
+        <!-- <button
           type="button"
           class="buttonLink hide_on_print m_qrSnippet--text--printButton"
           @click.prevent="printQR"
         >
           {{ $t("print") }}
-        </button>
+        </button> -->
 
         <img
           class="m_qrSnippet--text--dodoclogo"
