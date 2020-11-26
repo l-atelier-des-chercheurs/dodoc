@@ -268,10 +268,12 @@ module.exports = (function () {
 
           // for projects, authors and publications
           _onListFolder(data) {
-            console.log("Received _onListFolder packet.");
             const type = Object.keys(data)[0];
             const content = Object.values(data)[0];
             const slugFolderName = Object.keys(content)[0];
+            console.log(
+              `Received _onListFolder packet ${type}/${content}/${slugFolderName}`
+            );
 
             // supprimer chaque key du folder
             // Object.keys(window.store[type][slugFolderName]).map((k) =>
