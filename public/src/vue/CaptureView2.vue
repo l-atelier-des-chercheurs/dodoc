@@ -1291,7 +1291,18 @@ export default {
           type: "video",
           videoBitsPerSecond: 4112000,
         });
-        this.recorder.startRecording();
+        try {
+          this.recorder.startRecording();
+        } catch (err) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(
+              this.$t("notifications.failed_to_start_record_audio") +
+                "<br>" +
+                err.message
+            );
+        }
 
         this.is_recording = true;
         this.startTimer();
@@ -1302,7 +1313,18 @@ export default {
         this.recorder = RecordRTC(this.stream, {
           type: "audio",
         });
-        this.recorder.startRecording();
+        try {
+          this.recorder.startRecording();
+        } catch (err) {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(
+              this.$t("notifications.failed_to_start_record_audio") +
+                "<br>" +
+                err.message
+            );
+        }
 
         this.is_recording = true;
         this.startTimer();
