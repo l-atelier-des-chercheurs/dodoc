@@ -161,7 +161,8 @@ module.exports = function (app) {
     generatePageData(req).then((pageData) => {
       dev.logverbose(`Generated printpublication pageData`);
       dev.logverbose(`Now getting publication data for ${slugPubliName}`);
-      exporter.loadPublication(slugPubliName, pageData).then((pageData) => {
+      exporter.loadPublication(slugPubliName).then((_pageData) => {
+        Object.assign(pageData, _pageData);
         pageData.mode = "print_publication";
         res.render("index", pageData);
       });
@@ -280,7 +281,8 @@ module.exports = function (app) {
 
     let pageData = await generatePageData(req);
 
-    pageData = await exporter.loadPublication(slugPubliName, pageData);
+    const _pageData = await exporter.loadPublication(slugPubliName);
+    Object.assign(pageData, _pageData);
 
     pageData.mode = "export_publication";
 
@@ -351,10 +353,38 @@ module.exports = function (app) {
     }
 
     generatePageData(req).then((pageData) => {
-      exporter.loadPublication(slugPubliName, pageData).then((pageData) => {
-        pageData.mode = "link_publication";
-        res.render("index", pageData);
-      });
+      exporter
+        .loadPublication(slugPubliName)
+        .then((_pageData) => {
+          Object.assign(pageData, _pageData);
+
+          if (!foldersData[slugPubliName].hasOwnProperty("follows_model")) {
+            return false;
+          } else {
+            return exporter.loadPublication(
+              foldersData[slugPubliName].follows_model
+            );
+          }
+        })
+        .then((model_infos) => {
+          if (model_infos) {
+            // extract publiAndMediaData and folderAndMediaData and merge inside pageData
+            // UGLY FIX: should deep merge objects to prevent overrides when model and reply use the same
+            // project as source but not the same medias.
+            // --> These should not happen for now because replies can’t use project’s medias.
+            Object.assign(
+              pageData.folderAndMediaData,
+              model_infos.folderAndMediaData
+            );
+            Object.assign(
+              pageData.publiAndMediaData,
+              model_infos.publiAndMediaData
+            );
+          }
+
+          pageData.mode = "link_publication";
+          res.render("index", pageData);
+        });
     });
   }
 
