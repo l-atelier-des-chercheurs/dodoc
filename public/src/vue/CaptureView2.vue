@@ -93,11 +93,11 @@
           </button>
         </div>
       </transition>
-      <div class="m_captureview2--videoPane--top">
-        <div
-          class="m_captureview2--videoPane--top--videoContainer"
-          v-show="!is_validating_stopmotion_video"
-        >
+      <div
+        class="m_captureview2--videoPane--top"
+        v-show="!is_validating_stopmotion_video"
+      >
+        <div class="m_captureview2--videoPane--top--videoContainer">
           <transition-group
             tag="div"
             class="_recording_timer"
