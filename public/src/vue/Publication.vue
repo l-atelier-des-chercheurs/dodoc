@@ -252,15 +252,14 @@ export default {
     },
     "publication.follows_model": {
       handler() {
-        const model = this.model_for_this_publication;
-        if (model) {
+        if (!!this.publication.follows_model) {
           this.$socketio.listFolder({
             type: "publications",
-            slugFolderName: model.slugFolderName,
+            slugFolderName: this.publication.follows_model,
           });
           this.$socketio.listMedias({
             type: "publications",
-            slugFolderName: model.slugFolderName,
+            slugFolderName: this.publication.follows_model,
           });
 
           // this.$eventHub.$on(
