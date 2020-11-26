@@ -138,6 +138,13 @@
       @close="$root.closeMedia()"
       :read_only="!$root.state.connected"
     />
+    <CreateQRModal
+      v-if="$root.qr_modal"
+      :read_only="!$root.state.connected"
+      :type="$root.qr_modal.type"
+      :slugFolderName="$root.qr_modal.slugFolderName"
+      @close="$root.qr_modal = false"
+    />
   </div>
 </template>
 <script>
@@ -149,6 +156,7 @@ import ProjectView from "./ProjectView.vue";
 // import CaptureView from "./CaptureView.vue";
 import CaptureView2 from "./CaptureView2.vue";
 import EditMedia from "./components/modals/EditMedia.vue";
+import CreateQRModal from "./components/modals/CreateQRModal.vue";
 import Publications from "./Publications.vue";
 import Publication from "./Publication.vue";
 import { Splitpanes, Pane } from "splitpanes";
@@ -166,6 +174,7 @@ export default {
     // CaptureView,
     CaptureView2,
     EditMedia,
+    CreateQRModal,
     Publications,
     Publication,
     Splitpanes,

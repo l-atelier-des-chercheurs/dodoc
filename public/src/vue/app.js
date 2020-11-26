@@ -272,6 +272,8 @@ let vm = new Vue({
       current_slugProjectName: false,
       current_metaFileName: false,
     },
+    qr_modal: false,
+
     showSessionPasswordModal: false,
     showAuthorsListModal: false,
 
@@ -1481,6 +1483,16 @@ let vm = new Vue({
       }
 
       this.media_modal.open = false;
+    },
+    openCreateQrModal({ slugFolderName, type }) {
+      if (window.state.dev_mode === "debug")
+        console.log(
+          `ROOT EVENT: openCreateQrModal for ${type}/${slugFolderName}`
+        );
+      this.qr_modal = {
+        slugFolderName,
+        type,
+      };
     },
     setProjectKeywordFilter(newKeywordFilter) {
       if (this.settings.project_filter.keyword !== newKeywordFilter) {
