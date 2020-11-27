@@ -122,6 +122,14 @@ module.exports = (function () {
       oc: "Recepta",
       de: "Publikation",
     },
+    loop_play: {
+      fr: "Jouer en boucle",
+      en: "Loop at the end of media",
+    },
+    basic_player: {
+      fr: "Afficher seulement le bouton lecture",
+      en: "Only show play button",
+    },
     set_visibility_to_everybody: {
       fr:
         "Ce contenu est actuellement en privé et ne peut donc pas être partagé. Pour le partager, cochez VISIBLE PAR TOUT LE MONDE dans les options du contenu.",

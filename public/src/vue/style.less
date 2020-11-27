@@ -7477,6 +7477,34 @@ small {
     }
   }
 
+  &.has--basic_player {
+    .plyr--audio {
+      .plyr__controls {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        background-color: transparent;
+
+        .plyr__controls__item {
+          margin: auto;
+          background-color: var(--c-orange);
+          padding: 15px;
+          border-radius: 50%;
+
+          svg {
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
+          }
+        }
+      }
+    }
+    .plyr--video {
+      .plyr__controls {
+        display: none;
+      }
+    }
+  }
+
   ._loader {
     background-color: transparent;
     --loader-border-color: @c-orange;

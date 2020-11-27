@@ -20,7 +20,8 @@
         'is--overflowing': is_text_overflowing,
         'is--inline_edited': inline_edit_mode,
         'is--locked': locked_in_place && !model_for_this_publication,
-        'is--copy_mode': copy_mode_enabled
+        'is--copy_mode': copy_mode_enabled,
+        'has--basic_player': media.basic_player,
       },
     ]"
   >
@@ -43,6 +44,8 @@
         :read_only="read_only"
         v-model="media._linked_media.content"
         :style="contentStyles"
+        :loop="media.loop_play"
+        :plyr_controls="plyr_controls"
       />
     </template>
     <!-- if not -->
@@ -71,6 +74,8 @@
         :read_only="read_only"
         v-model="media.content"
         :style="contentStyles"
+        :loop="media.loop_play"
+        :plyr_controls="plyr_controls"
       />
 
       <div
@@ -773,7 +778,7 @@ export default {
       ratio: undefined,
 
       font_size_percent: 100,
-      opacity:1,
+      opacity: 1,
       fill_color: "transparent",
       stroke_color: "transparent",
       stroke_width: 4,
@@ -810,8 +815,8 @@ export default {
       this.triggerAction
     );
 
-    window.addEventListener('keydown', this.keyIsPressed);    
-    window.addEventListener('keyup', this.keyIsUnpressed);    
+    window.addEventListener("keydown", this.keyIsPressed);
+    window.addEventListener("keyup", this.keyIsUnpressed);
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.selectNewMedia", this.selectNewMedia);
@@ -825,9 +830,9 @@ export default {
       this.triggerAction
     );
 
-    window.removeEventListener('keydown', this.keyIsPressed);    
-    window.removeEventListener('keyup', this.keyIsUnpressed);    
-},
+    window.removeEventListener("keydown", this.keyIsPressed);
+    window.removeEventListener("keyup", this.keyIsUnpressed);
+  },
 
   watch: {
     media: {
@@ -843,6 +848,10 @@ export default {
       return this.$root.settings.current_publication.selected_medias.some(
         (meta) => meta === this.media.metaFileName
       );
+    },
+    plyr_controls() {
+      if (this.media.basic_player) return ["play-large", "play"];
+      return;
     },
     mediaStyles() {
       const set_z_index =
@@ -882,12 +891,12 @@ export default {
   },
   methods: {
     keyIsPressed(event) {
-      if(event.key === 'Alt') {
+      if (event.key === "Alt") {
         this.copy_mode_enabled = true;
       }
     },
     keyIsUnpressed() {
-      if(event.key === 'Alt') {
+      if (event.key === "Alt") {
         this.copy_mode_enabled = false;
       }
     },
@@ -1039,9 +1048,9 @@ export default {
           : this.ratio
           ? this.mediaSize.width * this.ratio
           : 66;
-        
+
       this.mediaPos.x =
-        this.media.hasOwnProperty("x") && !Number.isNaN(this.media.x) 
+        this.media.hasOwnProperty("x") && !Number.isNaN(this.media.x)
           ? this.limitMediaXPos(Number.parseFloat(this.media.x))
           : this.page.margin_left;
       this.mediaPos.y =
@@ -1062,7 +1071,8 @@ export default {
         : false;
 
       this.margin =
-        this.media.hasOwnProperty("margin") && Number.parseFloat(this.media.margin)
+        this.media.hasOwnProperty("margin") &&
+        Number.parseFloat(this.media.margin)
           ? Number.parseFloat(this.media.margin)
           : 0;
 
@@ -1071,7 +1081,6 @@ export default {
         !Number.isNaN(this.media.opacity)
           ? Number.parseFloat(this.media.opacity)
           : 1;
-      
 
       if (
         this.media.type === "text" ||
@@ -1144,10 +1153,7 @@ export default {
 
       const xcenter = this.mediaSize.width / 2;
 
-      return Math.max(
-        -xcenter,
-        Math.min(this.page.width - xcenter, xPos)
-      );
+      return Math.max(-xcenter, Math.min(this.page.width - xcenter, xPos));
       // return Math.max(
       //   this.page.margin_left - xcenter,
       //   Math.min(this.page.width - this.page.margin_right - xcenter, xPos)
@@ -1169,10 +1175,7 @@ export default {
       //   console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
       // }
 
-      return Math.max(
-        -ycenter,
-        Math.min(this.page.height - ycenter, yPos)
-      );
+      return Math.max(-ycenter, Math.min(this.page.height - ycenter, yPos));
       // return Math.max(
       //   this.page.margin_top - ycenter,
       //   Math.min(this.page.height - this.page.margin_bottom - ycenter, yPos)
@@ -1186,13 +1189,7 @@ export default {
       //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
       // }
 
-      return Math.max(
-        5,
-        Math.min(
-          this.page.width,
-          w
-        )
-      );
+      return Math.max(5, Math.min(this.page.width, w));
     },
     limitMediaHeight(h) {
       if (!this.limit_media_to_page) return h;
@@ -1200,13 +1197,7 @@ export default {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
       // }
-      return Math.max(
-        5,
-        Math.min(
-          this.page.height,
-          h
-        )
-      );
+      return Math.max(5, Math.min(this.page.height, h));
     },
 
     removePubliMedia() {

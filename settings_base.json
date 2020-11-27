@@ -460,6 +460,12 @@
           "force_text_style": {
             "type": "string"
           },
+          "loop_play": {
+            "type": "boolean"
+          },
+          "basic_player": {
+            "type": "boolean"
+          },
           "z_index": {
             "type": "number",
             "clip": {
