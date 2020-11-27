@@ -122,6 +122,14 @@ module.exports = (function () {
       oc: "Recepta",
       de: "Publikation",
     },
+    loop_play: {
+      fr: "Jouer en boucle",
+      en: "Loop at the end of media",
+    },
+    basic_player: {
+      fr: "Afficher seulement le bouton lecture",
+      en: "Only show play button",
+    },
     set_visibility_to_everybody: {
       fr:
         "Ce contenu est actuellement en privé et ne peut donc pas être partagé. Pour le partager, cochez VISIBLE PAR TOUT LE MONDE dans les options du contenu.",
@@ -896,6 +904,10 @@ module.exports = (function () {
       fr: "Opacité",
       en: "Opacity",
     },
+    blend_mode: {
+      fr: "Mode de fusion",
+      en: "Blend mode",
+    },
     stroke_color: {
       fr: "Couleur du contour",
       en: "Stroke color",
@@ -1489,6 +1501,10 @@ module.exports = (function () {
     move_page_position: {
       fr: "Déplacer la page",
       en: "Move page to position",
+    },
+    position: {
+      fr: "Position",
+      en: "Position",
     },
     create_empty_page: {
       fr: "Ajouter une page vide",
