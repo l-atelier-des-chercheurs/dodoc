@@ -2372,11 +2372,14 @@ module.exports = (function () {
       fr: "Ligne",
       en: "Line",
     },
+    free_draw: {
+      fr: "Dessin libre",
+      en: "Free drawing",
+    },
     arrow: {
       fr: "Flèche",
       en: "Arrow",
     },
-
     toconnectwithanotherdevice: {
       fr:
         "Pour accéder à cet élément avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web, ou bien scannez le code QR&nbsp;: ",

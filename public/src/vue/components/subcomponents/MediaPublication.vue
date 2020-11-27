@@ -167,6 +167,15 @@
             </g>
           </svg>
         </template>
+        <template v-else-if="media.type === 'free_drawing'">
+          <MediaFreeDrawing
+            :inline_edit_mode="inline_edit_mode"
+            :slugPubliName="slugPubliName"
+            :media="media"
+            :mediaSize="mediaSize"
+          />
+        </template>
+
         <template v-else-if="media.type === 'placeholder'">
           <EditPlaceholderModal
             v-if="inline_edit_mode"
@@ -480,7 +489,11 @@
       >
         <button
           type="button"
-          v-if="media.type === 'text' || media.type === 'placeholder'"
+          v-if="
+            media.type === 'text' ||
+            media.type === 'placeholder' ||
+            media.type === 'free_drawing'
+          "
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editButtonClicked"
           @touchstart.stop.prevent="editButtonClicked"
@@ -705,6 +718,7 @@ import debounce from "debounce";
 import CollaborativeEditor from "./CollaborativeEditor.vue";
 import EditPlaceholderModal from "../modals/EditPlaceholderModal.vue";
 import MediaPlaceholder from "./MediaPlaceholder.vue";
+import MediaFreeDrawing from "./MediaFreeDrawing.vue";
 
 export default {
   props: {
@@ -724,6 +738,7 @@ export default {
     CollaborativeEditor,
     EditPlaceholderModal,
     MediaPlaceholder,
+    MediaFreeDrawing,
   },
   data() {
     return {
