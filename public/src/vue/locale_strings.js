@@ -1498,6 +1498,10 @@ module.exports = (function () {
       fr: "Déplacer la page",
       en: "Move page to position",
     },
+    position: {
+      fr: "Position",
+      en: "Position",
+    },
     create_empty_page: {
       fr: "Ajouter une page vide",
       en: "Add an empty page",
