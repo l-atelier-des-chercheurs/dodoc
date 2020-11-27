@@ -21,7 +21,7 @@
         'is--inline_edited': inline_edit_mode,
         'is--locked': locked_in_place && !model_for_this_publication,
         'is--copy_mode': copy_mode_enabled,
-        'has--basic_player': media.basic_player,
+        'has--basic_player': media.basic_player === true,
       },
     ]"
   >
