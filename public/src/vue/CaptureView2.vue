@@ -1156,7 +1156,6 @@ export default {
       } else if (this.selected_mode === "lines") {
         const svgstr = this.$refs.vectoElement.$el.querySelector("svg")
           .outerHTML;
-        debugger;
         this.media_to_validate = {
           preview: svgstr,
           rawData: new Blob([svgstr], { type: "image/svg+xml" }),

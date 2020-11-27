@@ -207,6 +207,27 @@
               class="button _create_buttons"
               @mousedown.stop.prevent="
                 $emit('addMedia', {
+                  type: 'free_drawing',
+                  stroke_color: stroke_color !== '' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
+                })
+              "
+              @touchstart.stop.prevent="
+                $emit('addMedia', {
+                  type: 'free_drawing',
+                  stroke_color: stroke_color !== '' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
+                })
+              "
+            >
+              <span>{{ $t("free_draw") }}</span>
+            </button>
+          </div>
+          <div>
+            <button
+              class="button _create_buttons"
+              @mousedown.stop.prevent="
+                $emit('addMedia', {
                   type: 'line',
                   stroke_color: stroke_color !== '' ? stroke_color : '#1d327f',
                   stroke_width: stroke_width,

@@ -390,6 +390,7 @@
               "divider",
               "solid_color",
               "rectangle",
+              "free_drawing",
               "ellipsis",
               "line",
               "arrow",
@@ -423,6 +424,9 @@
               "min": 0,
               "max": 100
             }
+          },
+          "drawing_paths": {
+            "type": "string"
           },
           "transition_in": {
             "type": "string"
