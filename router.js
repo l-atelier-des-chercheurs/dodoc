@@ -384,16 +384,15 @@ module.exports = function (app) {
   async function loadPublicationAndModel(slugPubliName, publi_data) {
     let pageData = {};
 
+    const _pageData = await exporter.loadPublication(slugPubliName);
+
+    Object.assign(pageData, _pageData);
+
     const model_slug = publi_data.follows_model
       ? publi_data.follows_model
       : false;
 
-    const _pageData = await exporter.loadPublication(slugPubliName);
-
-    Object.assign(pageData, _pageData);
-    if (!model_slug) {
-      return false;
-    } else {
+    if (model_slug) {
       const model_infos = await exporter.loadPublication(model_slug);
       if (model_infos) {
         // extract publiAndMediaData and folderAndMediaData and merge inside pageData

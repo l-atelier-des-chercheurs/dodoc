@@ -272,7 +272,7 @@ module.exports = (function () {
             const content = Object.values(data)[0];
             const slugFolderName = Object.keys(content)[0];
             console.log(
-              `Received _onListFolder packet ${type}/${content}/${slugFolderName}`
+              `Received _onListFolder packet ${type}/${slugFolderName}`
             );
 
             // supprimer chaque key du folder
@@ -331,8 +331,6 @@ module.exports = (function () {
 
           // for projects, authors and publications
           _onListFolders(data) {
-            console.log("Received _onListFolders packet.");
-
             if (typeof data !== "object") {
               return;
             }
@@ -340,7 +338,7 @@ module.exports = (function () {
             let type = Object.keys(data)[0];
             let content = Object.values(data)[0];
 
-            console.log(`Type is ${type}`);
+            console.log(`Received _onListFolders packet for ${type}`);
 
             // to prevent override of fully formed medias in folders, we copy back the ones we have already
             for (let slugFolderName in content) {

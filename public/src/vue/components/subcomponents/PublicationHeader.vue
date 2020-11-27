@@ -221,7 +221,13 @@
         style="width: 100%"
         class="ta-ce"
         v-else-if="
-          model_for_this_publication && $root.store.request.display !== 'survey'
+          model_for_this_publication &&
+          $root.store.request.display !== 'survey' &&
+          ![
+            'export_publication',
+            'print_publication',
+            'link_publication',
+          ].includes($root.state.mode)
         "
       >
         <label>

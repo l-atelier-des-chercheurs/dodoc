@@ -56,7 +56,6 @@
         </small>
       </div>
     </template>
-    <template slot="submit_button">{{ $t("create") }}</template>
   </Modal>
 </template>
 <script>
