@@ -490,6 +490,9 @@
           "opacity": {
             "type": "number"
           },
+          "blend_mode": {
+            "type": "string"
+          },
           "fill_color": {
             "type": "string"
           },

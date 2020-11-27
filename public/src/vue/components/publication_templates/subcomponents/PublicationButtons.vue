@@ -688,6 +688,50 @@
               </div>
             </div>
 
+            <div class="item">
+              <label
+                >{{ $t("blend_mode") }}
+                <button
+                  type="button"
+                  class="buttonLink"
+                  v-if="blend_mode && blend_mode !== 'normal'"
+                  @click="blend_mode = 'normal'"
+                >
+                  ×
+                </button>
+              </label>
+              <div>
+                <select v-model="blend_mode">
+                  <option
+                    v-for="option in [
+                      'normal',
+                      'multiply',
+                      'screen',
+                      'overlay',
+                      'darken',
+                      'lighten',
+                      'color-dodge',
+                      'color-burn',
+                      'hard-light',
+                      'soft-light',
+                      'difference',
+                      'exclusion',
+                      'hue',
+                      'saturation',
+                      'color',
+                      'luminosity',
+                    ]"
+                    :key="option"
+                    :value="option"
+                    v-html="option"
+                  />
+                </select>
+              </div>
+              <small>
+                Use at your own risk: medias can become invisible in some cases.
+              </small>
+            </div>
+
             <div
               class="item"
               v-if="
@@ -1057,6 +1101,17 @@ export default {
       set(value) {
         if (value > 90 && value < 110) value = 100;
         this.updateMediaPubliMeta({ opacity: value });
+      },
+    },
+    blend_mode: {
+      get() {
+        return this.media && this.media.hasOwnProperty("blend_mode")
+          ? this.media.blend_mode
+          : "normal";
+      },
+      set(value) {
+        if (value === "") this.blend_mode = "";
+        this.updateMediaPubliMeta({ blend_mode: value });
       },
     },
     stroke_color: {

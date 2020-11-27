@@ -858,12 +858,16 @@ export default {
         this.is_selected && !this.show_zindex_number && !this.preview_mode
           ? 100000
           : this.media.z_index;
+      const mix_blend_mode = this.media.blend_mode
+        ? this.media.blend_mode
+        : "normal";
 
       return `
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
         z-index: ${set_z_index};
+        mix-blend-mode: ${mix_blend_mode};
       `;
     },
     contentStyles() {

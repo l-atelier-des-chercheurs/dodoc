@@ -904,6 +904,10 @@ module.exports = (function () {
       fr: "Opacité",
       en: "Opacity",
     },
+    blend_mode: {
+      fr: "Mode de fusion",
+      en: "Blend mode",
+    },
     stroke_color: {
       fr: "Couleur du contour",
       en: "Stroke color",
