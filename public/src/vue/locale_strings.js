@@ -674,9 +674,9 @@ module.exports = (function () {
       fr: "Angle des lignes",
       en: "Lines angle",
     },
-    lines_threshold: {
-      fr: "Seuil ligne/luminosité",
-      en: "Line/luminosity threshold",
+    brightness: {
+      fr: "Luminosité",
+      en: "Brightness",
     },
     lines_density: {
       fr: "Densité de lignes",

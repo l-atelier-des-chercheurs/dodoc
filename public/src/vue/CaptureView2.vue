@@ -171,12 +171,14 @@
             :last_frame_from_video="last_frame_from_video"
             :number_of_colors="vecto_number_of_colors"
           />
+
           <Lines
             v-if="selected_mode === 'lines'"
             ref="vectoElement"
             :last_frame_from_video="last_frame_from_video"
             :angle="lines_angle"
-            :threshold="lines_threshold"
+            :boost_brightness="lines_brightness"
+            :boost_contrast="lines_contrast"
             :density="lines_density"
           />
 
@@ -577,50 +579,77 @@
                   />
                 </div>
 
-                <div
-                  v-if="selected_mode === 'lines'"
-                  class="_mode_accessory_range"
+                <button
+                  type="button"
+                  class="buttonLink"
+                  @click="show_lines_settings = !show_lines_settings"
+                  :class="{ 'is--active': show_lines_settings }"
                 >
-                  <label>{{ $t("lines_angle") }} = {{ lines_angle }}</label>
-                  <input
-                    class=""
-                    type="range"
-                    v-model.number="lines_angle"
-                    min="0"
-                    max="359"
-                    step="1"
-                  />
-                </div>
-                <div
-                  v-if="selected_mode === 'lines'"
-                  class="_mode_accessory_range"
-                >
-                  <label
-                    >{{ $t("lines_threshold") }} = {{ lines_threshold }}</label
+                  {{ $t("advanced_options") }}
+                </button>
+
+                <template v-if="show_lines_settings">
+                  <div
+                    v-if="selected_mode === 'lines'"
+                    class="_mode_accessory_range"
                   >
-                  <input
-                    class="margin-none"
-                    type="range"
-                    v-model.number="lines_threshold"
-                    min="1"
-                    max="40"
-                    step="1"
-                  />
-                </div>
-                <div
-                  v-if="selected_mode === 'lines'"
-                  class="_mode_accessory_range"
-                >
-                  <label>{{ $t("lines_density") }} = {{ lines_density }}</label>
-                  <input
-                    class="margin-none"
-                    type="range"
-                    v-model.number="lines_density"
-                    min="0"
-                    max="1"
-                    step=".01"
-                  />
-                </div>
+                    <label>{{ $t("lines_angle") }} = {{ lines_angle }}</label>
+                    <input
+                      class=""
+                      type="range"
+                      v-model.number="lines_angle"
+                      min="0"
+                      max="359"
+                      step="1"
+                    />
+                  </div>
+                  <div
+                    v-if="selected_mode === 'lines'"
+                    class="_mode_accessory_range"
+                  >
+                    <label
+                      >{{ $t("brightness") }} = {{ lines_brightness }}</label
+                    >
+                    <input
+                      class="margin-none"
+                      type="range"
+                      v-model.number="lines_brightness"
+                      min=".1"
+                      max="5"
+                      step=".1"
+                    />
+                  </div>
+                  <div
+                    v-if="selected_mode === 'lines'"
+                    class="_mode_accessory_range"
+                  >
+                    <label>{{ $t("contrast") }} = {{ lines_contrast }}</label>
+                    <input
+                      class="margin-none"
+                      type="range"
+                      v-model.number="lines_contrast"
+                      min=".1"
+                      max="5"
+                      step=".1"
+                    />
+                  </div>
+                  <div
+                    v-if="selected_mode === 'lines'"
+                    class="_mode_accessory_range"
+                  >
+                    <label
+                      >{{ $t("lines_density") }} = {{ lines_density }}</label
+                    >
+                    <input
+                      class="margin-none"
+                      type="range"
+                      v-model.number="lines_density"
+                      min="0.2"
+                      max="0.3"
+                      step=".01"
+                    />
+                  </div>
+                </template>
               </div>
             </div>
             <MediaValidationButtons
@@ -772,10 +801,12 @@ export default {
       last_frame_from_video: undefined,
       frameGrabber: undefined,
 
+      show_lines_settings: false,
       vecto_number_of_colors: 2,
-      lines_angle: 116,
-      lines_threshold: 14,
-      lines_density: 0.2,
+      lines_angle: 108,
+      lines_brightness: 1,
+      lines_contrast: 1,
+      lines_density: 0.25,
     };
   },
   created() {},
