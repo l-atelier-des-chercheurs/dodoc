@@ -39,9 +39,13 @@ export default {
       type: Number,
       default: 116,
     },
-    threshold: {
+    boost_brightness: {
       type: Number,
-      default: 14,
+      default: 1,
+    },
+    boost_contrast: {
+      type: Number,
+      default: 1,
     },
     density: {
       type: Number,
@@ -86,22 +90,26 @@ export default {
       const line_density_y = this.svg_height * this.density;
 
       return this.pixel_array.reduce((acc, p) => {
-        const mapped_brightness = Math.round(map(p.b, 0, 234, 10, 0));
+        let brightness = p.b;
+
+        brightness *= this.boost_brightness;
+
+        let contrast = this.boost_contrast + 1; //convert to decimal & shift range: [0..2]
+        let intercept = 128 * (1 - contrast);
+
+        brightness = brightness * contrast + intercept;
+
+        const mapped_brightness = map(brightness, 0, 234, 10, 0);
+        // const mapped_brightness = brightness;
 
         // de 0 à 1 vers 17 à 0
-        if (
-          typeof mapped_brightness !== "number" ||
-          mapped_brightness > this.threshold
-        )
+        if (typeof mapped_brightness !== "number" || mapped_brightness > 10)
           return acc;
 
-        const posX = Math.round(
-          (p.x / line_density_x) * svg_width_with_padding + svg_padding
-        );
-        const posY = Math.round(
-          (p.y / line_density_y) * svg_height_with_padding + svg_padding
-        );
-
+        const posX =
+          (p.x / line_density_x) * svg_width_with_padding + svg_padding;
+        const posY =
+          (p.y / line_density_y) * svg_height_with_padding + svg_padding;
         acc.push({
           posX,
           posY,
