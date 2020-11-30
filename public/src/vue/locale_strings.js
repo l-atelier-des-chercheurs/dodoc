@@ -1166,11 +1166,23 @@ module.exports = (function () {
       de: "Bilder pro Sekunde",
     },
     timelapse: {
-      fr: "déclenchement automatique",
-      en: "timelapse",
+      fr: "time-lapse",
+      en: "time-lapse",
       nl: "tijdsverloop ",
       oc: "delargament automatic",
       de: "automatische Auslösung",
+    },
+    delay: {
+      fr: "Retardateur",
+      en: "Delay",
+    },
+    start_timelapse: {
+      fr: "Démarrer le time-lapse",
+      en: "Start time-lapse",
+    },
+    stop_timelapse: {
+      fr: "Interrompre le time-lapse",
+      en: "Stop time-lapse",
     },
     seconds_per_image: {
       fr: "secondes par image",
@@ -1373,6 +1385,10 @@ module.exports = (function () {
     scan_a_nfc_tag: {
       fr: "Scanner le tag NFC maintenant…",
       en: "Scan the NFC tag now…",
+    },
+    'now!': {
+      fr:"Maintenant !",
+      en: "Now!",
     },
     yes: {
       fr: "Oui",
