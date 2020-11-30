@@ -320,6 +320,7 @@
           @close="
             current_stopmotion = false;
             is_recording = false;
+            $root.settings.ask_before_leaving_capture = false;
           "
           @new_single_image="updateSingleImage"
         />
@@ -451,7 +452,12 @@
                       {{ $t("record_video") }}
                     </span>
                     <span v-else-if="selected_mode === 'stopmotion'">
-                      {{ $t("take_picture") }}
+                      <template v-if="!timelapse_mode">
+                        {{ $t("take_picture") }}
+                      </template>
+                      <template v-else>
+                        {{ $t("start_timelapse") }}
+                      </template>
                     </span>
                   </button>
                   <button
@@ -582,6 +588,7 @@
                 <button
                   type="button"
                   class="buttonLink"
+                  v-if="selected_mode === 'lines'"
                   @click="show_lines_settings = !show_lines_settings"
                   :class="{ 'is--active': show_lines_settings }"
                 >
@@ -883,15 +890,11 @@ export default {
       );
       if (this.media_to_validate) {
         this.$refs.videoElement.pause();
+        this.$root.settings.ask_before_leaving_capture = true;
       } else {
         this.$refs.videoElement.play();
+        this.$root.settings.ask_before_leaving_capture = false;
       }
-
-      if (this.must_validate_media === false) {
-      }
-    },
-    is_recording: function () {
-      // equalizer.setSarahCouleur(this.is_recording);
     },
   },
   computed: {
@@ -1008,6 +1011,7 @@ export default {
     },
     loadStopmotion(slugFolderName) {
       this.current_stopmotion = slugFolderName;
+      this.$root.settings.ask_before_leaving_capture = true;
     },
     checkCapturePanelSize() {
       if (this.$el && this.$el.offsetWidth && this.$el.offsetWidth <= 600)
@@ -1062,6 +1066,7 @@ export default {
       this.$refs.videoElement.pause();
       this.getStaticImageFromVideoElement().then((imageData) => {
         if (!this.current_stopmotion) {
+          this.$root.settings.ask_before_leaving_capture = true;
           // create stopmotion
           this.$root
             .createFolder({
@@ -1146,17 +1151,6 @@ export default {
       }, 400);
       this.show_capture_settings = false;
 
-      if (this.selected_mode === "stopmotion" && this.timelapse_mode) {
-        this.is_recording = true;
-        this.timelapse_event = window.setInterval(() => {
-          this.capture_button_pressed = true;
-          window.setTimeout(() => {
-            this.capture_button_pressed = false;
-          }, 400);
-          this.addStopmotionImage();
-        }, this.timelapse_interval * 1000);
-      }
-
       if (this.selected_mode === "photo") {
         this.getStaticImageFromVideoElement().then((rawData) => {
           this.media_to_validate = {
@@ -1177,6 +1171,17 @@ export default {
         });
       } else if (this.selected_mode === "stopmotion") {
         this.addStopmotionImage();
+
+        if (this.timelapse_mode) {
+          this.is_recording = true;
+          this.timelapse_event = window.setInterval(() => {
+            this.capture_button_pressed = true;
+            window.setTimeout(() => {
+              this.capture_button_pressed = false;
+            }, 400);
+            this.addStopmotionImage();
+          }, this.timelapse_interval * 1000);
+        }
       } else if (this.selected_mode === "vecto") {
         const svgstr = this.$refs.vectoElement.svgstr;
         this.media_to_validate = {
@@ -1339,6 +1344,7 @@ export default {
         }
 
         this.is_recording = true;
+        this.$root.settings.ask_before_leaving_capture = true;
         this.startTimer();
       });
     },
