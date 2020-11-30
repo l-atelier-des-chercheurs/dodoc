@@ -438,27 +438,31 @@
                     @mousedown.stop.prevent="setCapture()"
                     @touchstart.stop.prevent="setCapture()"
                   >
-                    <img
-                      class="inline-svg inline-svg_larger"
-                      src="/images/i_record.svg"
-                    />
-
-                    &nbsp;
-
-                    <span v-if="selected_mode === 'photo'">
-                      {{ $t("take_picture") }}</span
-                    >
-                    <span v-else-if="selected_mode === 'video'">
-                      {{ $t("record_video") }}
+                    <span v-if="is_sending_image">
+                      {{ $t("loading") }}
                     </span>
-                    <span v-else-if="selected_mode === 'stopmotion'">
-                      <template v-if="!timelapse_mode">
-                        {{ $t("take_picture") }}
-                      </template>
-                      <template v-else>
-                        {{ $t("start_timelapse") }}
-                      </template>
-                    </span>
+
+                    <template v-else>
+                      <img
+                        class="inline-svg inline-svg_larger"
+                        src="/images/i_record.svg"
+                      />
+                      &nbsp;
+                      <span v-if="selected_mode === 'photo'">
+                        {{ $t("take_picture") }}</span
+                      >
+                      <span v-else-if="selected_mode === 'video'">
+                        {{ $t("record_video") }}
+                      </span>
+                      <span v-else-if="selected_mode === 'stopmotion'">
+                        <template v-if="!timelapse_mode">
+                          {{ $t("take_picture") }}
+                        </template>
+                        <template v-else>
+                          {{ $t("start_timelapse") }}
+                        </template>
+                      </span>
+                    </template>
                   </button>
                   <button
                     type="button"
@@ -474,12 +478,27 @@
                       {{ $t("loading") }}
                     </span>
 
-                    <span v-else-if="selected_mode === 'video'">
-                      {{ $t("stop_recording") }}
-                    </span>
-                    <span v-else-if="selected_mode === 'audio'">
-                      {{ $t("stop_recording") }}
-                    </span>
+                    <template v-else>
+                      <img
+                        class="inline-svg inline-svg_larger"
+                        src="/images/i_stop.svg"
+                      />
+                      &nbsp;
+                      <span v-if="selected_mode === 'video'">
+                        {{ $t("stop_recording") }}
+                      </span>
+                      <span v-else-if="selected_mode === 'audio'">
+                        {{ $t("stop_recording") }}
+                      </span>
+                      <span v-else-if="selected_mode === 'stopmotion'">
+                        <template v-if="timelapse_mode">
+                          {{ $t("stop_timelapse") }}
+                        </template>
+                      </span>
+                      <span v-else>
+                        {{ $t("stop") }}
+                      </span>
+                    </template>
                   </button>
                 </transition>
 

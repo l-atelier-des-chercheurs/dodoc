@@ -1166,11 +1166,19 @@ module.exports = (function () {
       de: "Bilder pro Sekunde",
     },
     timelapse: {
-      fr: "déclenchement automatique",
-      en: "timelapse",
+      fr: "time-lapse",
+      en: "time-lapse",
       nl: "tijdsverloop ",
       oc: "delargament automatic",
       de: "automatische Auslösung",
+    },
+    start_timelapse: {
+      fr: "Démarrer le time-lapse",
+      en: "Start time-lapse",
+    },
+    stop_timelapse: {
+      fr: "Interrompre le time-lapse",
+      en: "Stop time-lapse",
     },
     seconds_per_image: {
       fr: "secondes par image",
