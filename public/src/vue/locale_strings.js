@@ -1445,6 +1445,12 @@ module.exports = (function () {
       fr: "Êtes-vous sûr de vouloir supprimer ce sujet et tout son contenu ?",
       en: "Do you really want to delete this topic and all its content?",
     },
+    sure_to_leave_recording: {
+      fr:
+        "Êtes-vous sûr de vouloir sortir du panneau de capture ? Si oui l’enregistrement en cours ne sera pas conservé.",
+      en:
+        "Do you really want to leave the capture panel? If yes then this recording will be discarded.",
+    },
     sure_to_remove_stopmotion: {
       fr: "Êtes-vous sûr de vouloir supprimer cette animation ?",
       en: "Do you really want to delete this stopmotion?",

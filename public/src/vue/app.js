@@ -280,7 +280,7 @@ let vm = new Vue({
     // persistant, par device (dans le localstorage)
     settings: {
       has_modal_opened: false,
-      capture_mode_cant_be_changed: false,
+      ask_before_leaving_capture: false,
 
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
