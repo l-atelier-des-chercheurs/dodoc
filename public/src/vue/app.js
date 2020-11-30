@@ -1888,10 +1888,7 @@ let vm = new Vue({
       this.$socketio.updateNetworkInfos();
     },
     navigation_back() {
-      if (
-        this.do_navigation.view === "CaptureView" ||
-        this.do_navigation.view === "CaptureView2"
-      ) {
+      if (this.do_navigation.view === "CaptureView") {
         this.do_navigation.view = "ProjectView";
       } else if (this.do_navigation.view === "ProjectView") {
         this.closeProject();

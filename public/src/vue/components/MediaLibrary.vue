@@ -71,14 +71,6 @@
         >
           <span>{{ $t("qr_code") }}</span>
         </button>
-        <!-- <button
-          type="button"
-          class="buttonLink margin-none"
-          @click="$root.do_navigation.view = 'CaptureView2'"
-          :disabled="read_only || !can_edit_project"
-        >
-          <span>{{ $t("capture") }} 2 (bêta)</span>
-        </button> -->
       </div>
 
       <div class="m_actionbar--text">
