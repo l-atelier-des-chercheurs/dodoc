@@ -1172,6 +1172,10 @@ module.exports = (function () {
       oc: "delargament automatic",
       de: "automatische Auslösung",
     },
+    delay: {
+      fr: "Retardateur",
+      en: "Delay",
+    },
     start_timelapse: {
       fr: "Démarrer le time-lapse",
       en: "Start time-lapse",
@@ -1381,6 +1385,10 @@ module.exports = (function () {
     scan_a_nfc_tag: {
       fr: "Scanner le tag NFC maintenant…",
       en: "Scan the NFC tag now…",
+    },
+    'now!': {
+      fr:"Maintenant !",
+      en: "Now!",
     },
     yes: {
       fr: "Oui",
