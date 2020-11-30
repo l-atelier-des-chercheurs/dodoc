@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="
+    v-show="
       !publication_is_submitted ||
       (publication_is_submitted &&
         model_placeholder_media._reply &&

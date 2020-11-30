@@ -391,20 +391,25 @@ export default {
         ? this.model_for_this_publication
         : this.publication;
 
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Publication • COMPUTED: medias_in_order`);
+
       if (
         !Array.isArray(publication.medias_slugs) ||
         publication.medias_slugs.length === 0
       ) {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`Publication • COMPUTED: medias_in_order — is empty`);
         return [];
       }
 
-      return publication.medias_slugs.reduce((acc, item) => {
+      const _medias_in_order = publication.medias_slugs.reduce((acc, item) => {
         const medias = this.model_for_this_publication
           ? this.publication_model_medias
           : this.medias;
 
         const media = medias.find((m) => m.metaFileName === item.slugMediaName);
-        if (!media) return acc;
+        if (!media || !media.hasOwnProperty("metaFileName")) return acc;
 
         if (this.model_for_this_publication && media.type === "placeholder") {
           const placeholder_reply_media = this.medias.find(
@@ -439,6 +444,13 @@ export default {
         acc.push(media);
         return acc;
       }, []);
+
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `Publication • COMPUTED: medias_in_order — length = ${_medias_in_order.length}`
+        );
+
+      return _medias_in_order;
     },
   },
   methods: {

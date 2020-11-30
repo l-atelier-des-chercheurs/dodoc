@@ -72,7 +72,7 @@
           <template v-for="(media, index) in medias_in_order">
             <MediaPlaceholder
               v-if="media.type === 'placeholder' && model_for_this_publication"
-              :key="media.metaFileName"
+              :key="`placeholder_${media.metaFileName}`"
               :model_placeholder_media="media"
               :slugPubliName="slugPubliName"
               :publi_is_model="publication.is_model"
@@ -85,7 +85,7 @@
 
             <MediaStory
               v-else
-              :key="media.metaFileName"
+              :key="`mediaStory_${media.metaFileName}`"
               :media="media"
               :media_position="mediaPosition(index)"
               :preview_mode="preview_mode"
@@ -102,10 +102,7 @@
             />
 
             <!-- :is_collapsed="mediaPosition(index) !== 'last'" -->
-            <div
-              class="_story_insert_placeholders"
-              :key="`insert_${media.metaFileName}`"
-            >
+            <div class="_story_insert_placeholders" :key="`insert_${index}`">
               <InsertMediaButton
                 v-if="
                   can_edit_publi &&
