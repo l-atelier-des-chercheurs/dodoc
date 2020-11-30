@@ -2,11 +2,8 @@
   <div class="m_stopmotionList">
     <template v-if="Object.keys(stopmotions).length > 0">
       <ul>
-        <li
-          v-for="stopmotion in stopmotions"
-          :key="stopmotion.slugFolderName"
-          @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)"
-        >
+        <li v-for="stopmotion in stopmotions" :key="stopmotion.slugFolderName">
+          <!-- @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)" -->
           <div class="padding-verysmall">
             {{ $root.formatDateToPrecise(stopmotion.date_created) }}
           </div>
@@ -69,7 +66,9 @@ export default {
     MediaContent,
   },
   data() {
-    return {};
+    return {
+      has_loaded_stopmotions_content: false,
+    };
   },
   created() {},
   mounted() {
@@ -88,6 +87,12 @@ export default {
         if (!s.linked_project || s.linked_project === this.slugFolderName)
           return true;
       });
+
+      if (!this.has_loaded_stopmotions_content) {
+        stopmotions.map((s) => this.loadStopmotionMedias(s.slugFolderName));
+        this.has_loaded_stopmotions_content = true;
+      }
+
       return stopmotions;
     },
   },
