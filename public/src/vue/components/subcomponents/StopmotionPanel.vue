@@ -275,7 +275,7 @@ export default {
           this.$t("sure_to_cancel_stopmotion"),
           () => {
             this.show_previous_photo = false;
-            this.show_live_feed = true;
+            this.$emit("update:show_live_feed", true);
             this.$nextTick(() => {
               this.$emit("close");
             });
