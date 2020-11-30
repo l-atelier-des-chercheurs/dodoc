@@ -375,8 +375,12 @@ export default {
   created() {},
   mounted() {
     this.menuVisibility();
+
+    window.addEventListener("beforeunload", this.confirmReloadTab);
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    window.removeEventListener("beforeunload", this.confirmReloadTab);
+  },
   watch: {
     "$root.settings.windowWidth": function () {
       this.menuVisibility();
@@ -405,6 +409,16 @@ export default {
         else if (where_to === "home") this.goHomeOrReload();
         else if (where_to === "project")
           this.$root.do_navigation.view = "ProjectView";
+      });
+    },
+    confirmReloadTab(event) {
+      if (!this.$root.settings.ask_before_leaving_capture) return;
+      event.preventDefault();
+      event.returnValue = "";
+      this.confirmeBeforeNav().then(() => {
+        // we do this to prevent a loop where triggering reload would come back to confirmReloadTab
+        this.$root.settings.ask_before_leaving_capture = false;
+        window.location.reload();
       });
     },
 
