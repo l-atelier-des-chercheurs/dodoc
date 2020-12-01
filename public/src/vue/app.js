@@ -259,6 +259,7 @@ let vm = new Vue({
     justCreatedFolderID: false,
 
     currentTime: "",
+    currentTime_millis: "",
     app_is_fullscreen: false,
 
     do_navigation: {
@@ -387,6 +388,18 @@ let vm = new Vue({
 
     this.currentTime = this.$moment().millisecond(0);
     setInterval(() => (this.currentTime = this.$moment().millisecond(0)), 1000);
+
+    const roundMillisForMoment = (m) => {
+      const _m = m.clone();
+      const millis_decimal = Math.round(_m.get("millisecond") / 100);
+      _m.millisecond(millis_decimal * 100);
+      return _m;
+    };
+
+    this.currentTime_millis = roundMillisForMoment(this.$moment());
+    setInterval(() => {
+      this.currentTime_millis = roundMillisForMoment(this.$moment());
+    }, 50);
 
     if (this.state.noticeOfError) {
       if (this.state.noticeOfError === "failed_to_find_folder") {
