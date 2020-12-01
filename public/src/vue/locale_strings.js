@@ -1386,8 +1386,8 @@ module.exports = (function () {
       fr: "Scanner le tag NFC maintenant…",
       en: "Scan the NFC tag now…",
     },
-    'now!': {
-      fr:"Maintenant !",
+    "now!": {
+      fr: "Maintenant !",
       en: "Now!",
     },
     yes: {
