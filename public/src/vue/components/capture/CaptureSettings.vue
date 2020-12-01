@@ -364,7 +364,7 @@ export default {
   },
   created() {},
   mounted() {
-    if (!navigator.getUserMedia) {
+    if (!navigator.mediaDevices.getUserMedia) {
       alert("You need a browser that supports WebRTC");
       return;
     }
@@ -396,6 +396,10 @@ export default {
               ": " +
               err.message
           );
+        if (err.message === "Could not start audio source") {
+          this.$emit("update:enable_audio", false);
+        }
+
         this.is_loading_feed = false;
         this.$emit("hasFinishedLoading");
         return;
