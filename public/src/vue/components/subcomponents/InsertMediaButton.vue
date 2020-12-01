@@ -10,8 +10,7 @@
       class="m_insertMediaButton--importHere"
       v-if="!show_menu"
       :class="{
-        'is--active':
-          is_currently_active && !show_drop_container && $root.current_project,
+        'is--active': is_currently_active && !show_drop_container,
       }"
     />
     <button
@@ -61,7 +60,7 @@
       <div
         class="m_insertMediaButton--menu"
         v-else-if="
-          (show_menu && selected_files.length === 0 && !enable_capture_mode)
+          show_menu && selected_files.length === 0 && !enable_capture_mode
         "
       >
         <div v-show="$root.state.connected" class="m_actionbar">
@@ -103,7 +102,7 @@
                 name="file"
                 @change="updateInputFiles($event)"
                 accept
-                style="width: 1px; height: 1px; overflow: hidden;"
+                style="width: 1px; height: 1px; overflow: hidden"
               />
             </label>
 

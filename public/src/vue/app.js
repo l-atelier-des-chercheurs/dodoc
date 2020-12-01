@@ -47,6 +47,10 @@ Vue.component("tippy", TippyComponent);
 
 import DateFieldComponent from "./components/subcomponents/DateField.vue";
 Vue.component("DateField", DateFieldComponent);
+import PasswordFieldComponent from "./components/subcomponents/PasswordField.vue";
+Vue.component("PasswordField", PasswordFieldComponent);
+import ImageSelectComponent from "./components/subcomponents/ImageSelect.vue";
+Vue.component("ImageSelect", ImageSelectComponent);
 
 Vue.component("Loader", {
   name: "Loader",
@@ -255,6 +259,7 @@ let vm = new Vue({
     justCreatedFolderID: false,
 
     currentTime: "",
+    currentTime_millis: "",
     app_is_fullscreen: false,
 
     do_navigation: {
@@ -268,13 +273,15 @@ let vm = new Vue({
       current_slugProjectName: false,
       current_metaFileName: false,
     },
+    qr_modal: false,
+
     showSessionPasswordModal: false,
     showAuthorsListModal: false,
 
     // persistant, par device (dans le localstorage)
     settings: {
       has_modal_opened: false,
-      capture_mode_cant_be_changed: false,
+      ask_before_leaving_capture: false,
 
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
@@ -288,11 +295,8 @@ let vm = new Vue({
           videoinput: "",
           audiooutput: "",
         },
-        ideal_camera_resolution: {
-          name: "",
-          width: "",
-          height: "",
-        },
+        selected_devices: {},
+        last_working_resolution: false,
 
         distant_flux: {
           active: false,
@@ -378,10 +382,24 @@ let vm = new Vue({
     window.addEventListener("resize", () => {
       this.settings.windowWidth = window.innerWidth;
       this.settings.windowHeight = window.innerHeight;
+
+      this.$eventHub.$emit(`window.resized`);
     });
 
     this.currentTime = this.$moment().millisecond(0);
     setInterval(() => (this.currentTime = this.$moment().millisecond(0)), 1000);
+
+    const roundMillisForMoment = (m) => {
+      const _m = m.clone();
+      const millis_decimal = Math.round(_m.get("millisecond") / 100);
+      _m.millisecond(millis_decimal * 100);
+      return _m;
+    };
+
+    this.currentTime_millis = roundMillisForMoment(this.$moment());
+    setInterval(() => {
+      this.currentTime_millis = roundMillisForMoment(this.$moment());
+    }, 50);
 
     if (this.state.noticeOfError) {
       if (this.state.noticeOfError === "failed_to_find_folder") {
@@ -1478,6 +1496,16 @@ let vm = new Vue({
       }
 
       this.media_modal.open = false;
+    },
+    openCreateQrModal({ slugFolderName, type }) {
+      if (window.state.dev_mode === "debug")
+        console.log(
+          `ROOT EVENT: openCreateQrModal for ${type}/${slugFolderName}`
+        );
+      this.qr_modal = {
+        slugFolderName,
+        type,
+      };
     },
     setProjectKeywordFilter(newKeywordFilter) {
       if (this.settings.project_filter.keyword !== newKeywordFilter) {

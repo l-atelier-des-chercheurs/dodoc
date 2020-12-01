@@ -1029,7 +1029,7 @@ module.exports = (function () {
       `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
     );
 
-    await file.getFolder({ type, slugFolderName }).catch((err) => {
+    let foldersData = await file.getFolder({ type, slugFolderName }).catch((err) => {
       dev.error(`No folder found: ${err}`);
       throw err;
     });
@@ -1049,9 +1049,7 @@ module.exports = (function () {
     let folders_and_medias = await file.readMediaList({ type, medias_list });
     dev.logverbose(`Got medias, now sending to the right clients`);
 
-    let foldersData = {
-      [slugFolderName]: { medias: {} },
-    };
+    foldersData[slugFolderName].medias = {};
 
     if (
       folders_and_medias !== undefined &&

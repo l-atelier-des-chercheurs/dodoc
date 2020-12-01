@@ -63,6 +63,7 @@
             :src="mediaURL"
             preload="none"
             :autoplay="autoplay"
+            :loop="loop"
           />
         </vue-plyr>
       </template>
@@ -162,6 +163,7 @@
       </template>
       <template v-else>
         <img
+          v-if="context === 'edit'"
           :srcset="
             complexMediaSrcSetAttr({ type: 'waveformType', option: 'mono' })
           "
@@ -178,7 +180,12 @@
           @volumechange="volumeChanged"
           @timeupdate="videoTimeUpdated"
         >
-          <audio :src="mediaURL" preload="none" :autoplay="autoplay" />
+          <audio
+            :src="mediaURL"
+            preload="none"
+            :autoplay="autoplay"
+            :loop="loop"
+          />
         </vue-plyr>
       </template>
     </template>
@@ -267,6 +274,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    loop: {
+      type: Boolean,
+      default: false,
+    },
     value: {
       type: String,
       default: "…",
@@ -291,6 +302,18 @@ export default {
       type: Number,
       default: 100,
     },
+    plyr_controls: {
+      type: Array,
+      default: () => [
+        "play-large",
+        "play",
+        "progress",
+        "current-time",
+        "mute",
+        "volume",
+        "fullscreen",
+      ],
+    },
   },
   components: {
     CollaborativeEditor,
@@ -307,15 +330,7 @@ export default {
       id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
 
       plyr_options: {
-        controls: [
-          "play-large",
-          "play",
-          "progress",
-          "current-time",
-          "mute",
-          "volume",
-          "fullscreen",
-        ],
+        controls: this.plyr_controls,
         iconUrl:
           this.$root.state.mode === "export_publication"
             ? `./_images/plyr.svg`

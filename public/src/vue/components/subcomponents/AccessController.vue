@@ -120,9 +120,9 @@
       "
       type="button"
       class="buttonLink _open_pwd_input"
-      :class="{ 'is--active': showInputPasswordField }"
+      :class="{ 'is--active': show_password_field }"
       style
-      @click.stop="showInputPasswordField = !showInputPasswordField"
+      @click.stop="show_password_field = !show_password_field"
     >
       {{ $t("password_required_to_open") }}
     </button>
@@ -137,23 +137,23 @@
       "
       type="button"
       class="buttonLink _open_pwd_input"
-      :class="{ 'is--active': showInputPasswordField }"
+      :class="{ 'is--active': show_password_field }"
       style
-      @click.stop="showInputPasswordField = !showInputPasswordField"
+      @click.stop="show_password_field = !show_password_field"
     >
       {{ $t("password_required_to_edit") }}
     </button>
 
-    <div class="padding-verysmall _pwd_input" v-if="showInputPasswordField">
+    <div class="padding-verysmall _pwd_input" v-if="show_password_field">
       <div class="margin-bottom-small">
         <label>{{ $t("password") }}</label>
-        <input
-          type="password"
-          ref="passwordField"
-          @keydown.enter.prevent="submitPassword"
-          required
-          autofocus
-          placeholder="…"
+        <PasswordField
+          v-model="entered_password"
+          :required="true"
+          :autofocus="true"
+          :placeholder="'…'"
+          :field_type="'new-password'"
+          @enter-was-pressed="submitPassword"
         />
       </div>
 
@@ -217,7 +217,7 @@ export default {
   components: {},
   data() {
     return {
-      showInputPasswordField: false,
+      show_password_field: false,
       showCurrentPassword: false,
     };
   },
@@ -243,11 +243,11 @@ export default {
         this.$emit("closeFolder");
       }
     },
-    showInputPasswordField: function () {
-      if (this.showInputPasswordField) {
-        this.$nextTick(() => {
-          this.$refs.passwordField.focus();
-        });
+    show_password_field: function () {
+      if (this.show_password_field) {
+        // this.$nextTick(() => {
+        //   this.$refs.passwordField.focus();
+        // });
       }
     },
   },
@@ -291,7 +291,7 @@ export default {
 
       this.$auth.updateFoldersPasswords({
         [this.type]: {
-          [this.slugFolderName]: this.$refs.passwordField.value,
+          [this.slugFolderName]: this.entered_password,
         },
       });
 
@@ -310,14 +310,14 @@ export default {
             .closeLogOnClick(true)
             .delay(4000)
             .error(this.$t("notifications.wrong_password"));
-          this.$refs.passwordField.value = "";
-          this.$refs.passwordField.focus();
+          this.entered_password = "";
+          // this.$refs.passwordField.focus();
         } else {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
             .success(this.$t("notifications.password_is_valid"));
-          this.showInputPasswordField = false;
+          this.show_password_field = false;
           this.$emit("openFolder");
           // to force refresh computed project_password prop
           this.$forceUpdate();

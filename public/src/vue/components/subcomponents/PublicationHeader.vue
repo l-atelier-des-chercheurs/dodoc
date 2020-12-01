@@ -190,7 +190,11 @@
       <div
         style="width: 100%"
         class="ta-ce"
-        v-if="publication.is_model && $root.store.request.display !== 'survey'"
+        v-if="
+          publication.is_model &&
+          $root.store.request.display !== 'survey' &&
+          $root.state.mode !== 'link_publication'
+        "
       >
         <label>
           <button
@@ -217,7 +221,13 @@
         style="width: 100%"
         class="ta-ce"
         v-else-if="
-          model_for_this_publication && $root.store.request.display !== 'survey'
+          model_for_this_publication &&
+          $root.store.request.display !== 'survey' &&
+          ![
+            'export_publication',
+            'print_publication',
+            'link_publication',
+          ].includes($root.state.mode)
         "
       >
         <label>
@@ -282,11 +292,11 @@
       >
         <div class="switch switch-xs">
           <input
-            id="remember_password_on_this_device"
+            id="show_on_external_domain"
             type="checkbox"
             v-model="show_on_external_domain"
           />
-          <label for="remember_password_on_this_device">
+          <label for="show_on_external_domain">
             {{ $t("display_on_website") }}
             <a
               v-for="domain in $root.consult_domains"

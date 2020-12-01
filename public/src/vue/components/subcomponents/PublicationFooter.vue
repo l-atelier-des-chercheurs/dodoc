@@ -18,15 +18,15 @@
         <a :href="url_to_publi">{{ url_to_publi }}</a>
       </small>
     </div> -->
-      <div class="" v-if="model_for_this_publication && can_edit_publi">
-        <template v-if="!publication.date_submitted">
+      <div class="" v-if="model_for_this_publication">
+        <template v-if="!publication.date_submitted && can_edit_publi">
           <small>{{ $t("finished_writing_reply") }}</small>
           <button
             type="button"
             class="button-greenthin"
-            @click="lockAndPublish"
+            @click="openPublishModal"
           >
-            {{ $t("lock_and_publish") }}
+            {{ $t("validate") }}
           </button>
         </template>
         <small v-else-if="publication.date_submitted">
@@ -75,17 +75,8 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    lockAndPublish() {
-      this.$alertify
-        .okBtn(this.$t("yes"))
-        .cancelBtn(this.$t("cancel"))
-        .confirm(
-          this.$t("sureToLockAndPublish"),
-          () => {
-            this.$emit("lockAndPublish");
-          },
-          () => {}
-        );
+    openPublishModal() {
+      this.$emit("openPublishModal");
     },
   },
 };

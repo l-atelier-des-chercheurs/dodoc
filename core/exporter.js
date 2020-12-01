@@ -20,8 +20,7 @@ ffmpeg.setFfprobePath(
 
 module.exports = (function () {
   return {
-    loadPublication: (slugPubliName, pageData) =>
-      loadPublication(slugPubliName, pageData),
+    loadPublication: (slugPubliName) => loadPublication(slugPubliName),
 
     copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
@@ -366,21 +365,43 @@ module.exports = (function () {
         let publication_meta = "";
 
         let resolution = {
-          width: 1280,
-          height: 720,
+          width: undefined,
+          height: undefined,
         };
-        if (options.hasOwnProperty("resolution")) {
-          if (options.resolution.hasOwnProperty("width"))
-            resolution.width = options.resolution.width;
-          if (options.resolution.hasOwnProperty("height"))
+        if (!options.hasOwnProperty("resolution")) {
+          resolution = {
+            width: 1280,
+            height: 720,
+          };
+        } else {
+          if (options.resolution.hasOwnProperty("height")) {
             resolution.height = options.resolution.height;
+            if (options.resolution.hasOwnProperty("width")) {
+              resolution.width = options.resolution.width;
+            } else {
+              switch (resolution.height) {
+                case 360:
+                  resolution.width = 640;
+                  break;
+                case 480:
+                  resolution.width = 854;
+                  break;
+                case 720:
+                  resolution.width = 1280;
+                  break;
+                case 1080:
+                  resolution.width = 1920;
+                  break;
+              }
+            }
+          }
         }
 
         let bitrate = options.hasOwnProperty("bitrate")
           ? options.bitrate
           : "6000k";
 
-        loadPublication(slugPubliName, {})
+        loadPublication(slugPubliName)
           .then((pageData) => {
             publication_meta = pageData.publiAndMediaData[slugPubliName];
             return _loadMediaFilenameFromPublicationSlugs(
@@ -412,6 +433,7 @@ module.exports = (function () {
                   medias_with_original_filepath,
                   cachePath,
                   videoName,
+                  resolution,
                   socket,
                 })
                   .then(() => {
@@ -426,6 +448,7 @@ module.exports = (function () {
                   medias_with_original_filepath,
                   cachePath,
                   videoName,
+                  resolution,
                   socket,
                 })
                   .then(() => {
@@ -503,7 +526,7 @@ module.exports = (function () {
           fs.mkdirp(
             imagesCachePath,
             function () {
-              loadPublication(slugPubliName, {})
+              loadPublication(slugPubliName)
                 .then((pageData) => {
                   let ratio = _getMediaRatioFromFirstFilename(
                     slugPubliName,
@@ -589,11 +612,13 @@ module.exports = (function () {
     },
   };
 
-  function loadPublication(slugPubliName, pageData) {
+  function loadPublication(slugPubliName) {
     return new Promise((resolve, reject) => {
       dev.logfunction(
         `EXPORTER — loadPublication with slugPubliName = ${slugPubliName}`
       );
+
+      let _page_informations = {};
 
       let slugFolderName = slugPubliName;
       let type = "publications";
@@ -608,7 +633,7 @@ module.exports = (function () {
         })
         .then((publiData) => {
           publi_and_medias = publiData;
-          pageData.pageTitle = publi_and_medias[slugFolderName].name;
+          _page_informations.pageTitle = publi_and_medias[slugFolderName].name;
           file
             .getMediaMetaNames({
               type,
@@ -616,8 +641,8 @@ module.exports = (function () {
             })
             .then((list_metaFileName) => {
               if (list_metaFileName.length === 0) {
-                pageData.publiAndMediaData = publi_and_medias;
-                return resolve(pageData);
+                _page_informations.publiAndMediaData = publi_and_medias;
+                return resolve(_page_informations);
               }
 
               let medias_list = list_metaFileName.map((metaFileName) => {
@@ -635,7 +660,7 @@ module.exports = (function () {
                   publi_and_medias[slugFolderName].medias =
                     publi_medias[slugFolderName].medias;
 
-                  pageData.publiAndMediaData = publi_and_medias;
+                  _page_informations.publiAndMediaData = publi_and_medias;
 
                   // we need to get the list of original medias in the publi
                   var list_of_linked_medias = [];
@@ -655,8 +680,8 @@ module.exports = (function () {
                       medias_list: list_of_linked_medias,
                     })
                     .then((folders_and_medias) => {
-                      pageData.folderAndMediaData = folders_and_medias;
-                      resolve(pageData);
+                      _page_informations.folderAndMediaData = folders_and_medias;
+                      resolve(_page_informations);
                     });
                 });
             });
@@ -858,6 +883,7 @@ module.exports = (function () {
 
       ffmpeg.ffprobe(vm.full_path, function (err, metadata) {
         const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+        let has_no_audio_track = false;
 
         ffmpeg_cmd.input(vm.full_path);
 
@@ -869,6 +895,7 @@ module.exports = (function () {
         ) {
           dev.logverbose("Has no audio track, adding anullsrc");
           ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+          has_no_audio_track = true;
         }
 
         let temp_video_volume;
@@ -911,7 +938,7 @@ module.exports = (function () {
             inputs: "output",
             outputs: "output",
           });
-          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
         } else if (effect.type === "colored_filter") {
           if (
             !!effect.color &&
@@ -929,7 +956,7 @@ module.exports = (function () {
               outputs: "output",
             });
             // .complexFilter(["color[c];[0:v][c]overlay=shortest=1"]);
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: color is not set correctly`
@@ -961,7 +988,7 @@ module.exports = (function () {
               outputs: "output",
             });
 
-            if (speed >= 0.5) {
+            if (speed >= 0.5 && !has_no_audio_track) {
               complexFilters.push({
                 filter: "atempo",
                 options: speed,
@@ -983,7 +1010,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -1000,7 +1027,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -1067,7 +1094,8 @@ module.exports = (function () {
               //   outputs: "output"
               // }
             );
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+
             // if (metadata && metadata.format && metadata.format.duration)
             //   ffmpeg_cmd.duration(metadata.format.duration);
           } else {
@@ -1548,6 +1576,7 @@ module.exports = (function () {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
     socket,
   }) {
     return new Promise(function (resolve, reject) {
@@ -1602,6 +1631,9 @@ module.exports = (function () {
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
         .addOptions(["-map 0:v:0", "-map 1:a:0"])
+        .videoFilters(
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
+        )
         .toFormat("mp4")
         .on("start", function (commandLine) {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
@@ -1628,6 +1660,7 @@ module.exports = (function () {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
     socket,
   }) {
     return new Promise(function (resolve, reject) {
@@ -1652,10 +1685,6 @@ module.exports = (function () {
 
       let time_since_last_report = 0;
 
-      let resolution = _calculateResolutionAccordingToRatio(
-        image_files[0].ratio
-      );
-
       dev.logverbose(
         `About to create a speaking picture with resolution = ${JSON.stringify(
           resolution
@@ -1668,9 +1697,9 @@ module.exports = (function () {
         .addOptions(["-shortest"])
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
-        .addOptions(["-tune stillimage"])
+        .addOptions(["-tune stillimage", "-pix_fmt yuv420p"])
         .videoFilters(
-          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=increase`
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
         )
         .outputFPS(30)
         .toFormat("mp4")
@@ -2060,22 +2089,22 @@ module.exports = (function () {
     });
   }
 
-  function _calculateResolutionAccordingToRatio(ratio) {
-    let default_video_height = 720;
-    let resolution = {
-      width: 0,
-      height: default_video_height,
-    };
+  // function _calculateResolutionAccordingToRatio(ratio) {
+  //   let default_video_height = 720;
+  //   let resolution = {
+  //     width: 0,
+  //     height: default_video_height,
+  //   };
 
-    if (!ratio) {
-      ratio = 0.75;
-    }
+  //   if (!ratio) {
+  //     ratio = 0.75;
+  //   }
 
-    const new_width = 2 * Math.round(default_video_height / ratio / 2);
-    resolution.width = new_width;
+  //   const new_width = 2 * Math.round(default_video_height / ratio / 2);
+  //   resolution.width = new_width;
 
-    return resolution;
-  }
+  //   return resolution;
+  // }
 
   function _notifyFfmpegProgress({ socket, progress }) {
     let not_localized_string;

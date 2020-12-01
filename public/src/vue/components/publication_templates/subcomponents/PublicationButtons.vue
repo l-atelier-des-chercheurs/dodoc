@@ -1,6 +1,18 @@
 <template>
   <div class="m_publicationButtons">
     <div class="m_publicationButtons--content">
+      <!-- <div>
+        <label>
+          <button
+            type="button"
+            class="button-nostyle text-uc button-triangle"
+            :class="{ 'is--active': show_create_options }"
+            @click="show_create_options = !show_create_options"
+          >
+            {{ $t("page_settings") }}
+          </button>
+        </label>
+      </div> -->
       <div>
         <label>
           <button
@@ -188,6 +200,27 @@
                 />
               </svg>
               <span>{{ $t("text") }}</span>
+            </button>
+          </div>
+          <div>
+            <button
+              class="button _create_buttons"
+              @mousedown.stop.prevent="
+                $emit('addMedia', {
+                  type: 'free_drawing',
+                  stroke_color: stroke_color !== '' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
+                })
+              "
+              @touchstart.stop.prevent="
+                $emit('addMedia', {
+                  type: 'free_drawing',
+                  stroke_color: stroke_color !== '' ? stroke_color : '#1d327f',
+                  stroke_width: stroke_width,
+                })
+              "
+            >
+              <span>{{ $t("free_draw") }}</span>
             </button>
           </div>
           <div>
@@ -544,6 +577,68 @@
             </small>
           </div>
           <div v-else>
+            <div
+              class="item"
+              v-if="
+                media_content_type === 'video' || media_content_type === 'audio'
+              "
+            >
+              <label>
+                {{ $t("loop_play") }}
+              </label>
+              <span class="switch switch-xs">
+                <input
+                  type="checkbox"
+                  class="switch"
+                  id="loop_play_switch"
+                  v-model="loop_play"
+                />
+                <label
+                  for="loop_play_switch"
+                  :class="{ 'c-rouge': loop_play }"
+                  >{{ $t("enable") }}</label
+                >
+              </span>
+            </div>
+
+            <div
+              class="item"
+              v-if="
+                media_content_type === 'video' || media_content_type === 'audio'
+              "
+            >
+              <label>
+                {{ $t("basic_player") }}
+              </label>
+              <span class="switch switch-xs">
+                <input
+                  type="checkbox"
+                  class="switch"
+                  id="basic_player_switch"
+                  v-model="basic_player"
+                />
+                <label
+                  for="basic_player_switch"
+                  :class="{ 'c-rouge': basic_player }"
+                  >{{ $t("enable") }}</label
+                >
+              </span>
+            </div>
+
+            <div class="item">
+              <label>{{ $t("position") }}</label>
+              <div class="input-group">
+                <span class="input-addon input-addon-small">↔</span>
+                <input type="number" class="input-small" v-model="x" min="0" />
+                <span class="input-addon input-addon-small">mm</span>
+              </div>
+              <div class="input-group">
+                <span class="input-addon input-addon-small">↕</span>
+                <input type="number" class="input-small" v-model="y" min="0" />
+                <span class="input-addon input-addon-small">mm</span>
+              </div>
+            </div>
+
             <div class="item">
               <label>{{ $t("margin") }}</label>
               <div>
@@ -566,14 +661,7 @@
               </div>
             </div>
 
-            <div
-              class="item"
-              v-if="
-                media.type === 'text' ||
-                (media.hasOwnProperty('_linked_media') &&
-                  media._linked_media.type === 'text')
-              "
-            >
+            <div class="item" v-if="media_content_type === 'text'">
               <label>{{ $t("font_size") }}</label>
               <div>
                 <input
@@ -594,13 +682,83 @@
               </div>
             </div>
 
+            <div class="item">
+              <label
+                >{{ $t("opacity") }}
+                <button
+                  type="button"
+                  class="buttonLink"
+                  v-if="opacity !== 1"
+                  @click="opacity = 1"
+                >
+                  ×
+                </button>
+              </label>
+              <div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  v-model="opacity"
+                />
+              </div>
+              <div class="input-group">
+                <input type="number" class="input-small" v-model="opacity" />
+                <!-- <span class="input-addon input-addon-small">%</span> -->
+              </div>
+            </div>
+
+            <div class="item">
+              <label
+                >{{ $t("blend_mode") }}
+                <button
+                  type="button"
+                  class="buttonLink"
+                  v-if="blend_mode && blend_mode !== 'normal'"
+                  @click="blend_mode = 'normal'"
+                >
+                  ×
+                </button>
+              </label>
+              <div>
+                <select v-model="blend_mode">
+                  <option
+                    v-for="option in [
+                      'normal',
+                      'multiply',
+                      'screen',
+                      'overlay',
+                      'darken',
+                      'lighten',
+                      'color-dodge',
+                      'color-burn',
+                      'hard-light',
+                      'soft-light',
+                      'difference',
+                      'exclusion',
+                      'hue',
+                      'saturation',
+                      'color',
+                      'luminosity',
+                    ]"
+                    :key="option"
+                    :value="option"
+                    v-html="option"
+                  />
+                </select>
+              </div>
+              <small>
+                Use at your own risk: medias can become invisible in some cases.
+              </small>
+            </div>
+
             <div
               class="item"
               v-if="
                 media.type !== 'line' &&
                 media.type !== 'arrow' &&
-                (!media.hasOwnProperty('_linked_media') ||
-                  media._linked_media.type !== 'image')
+                media_content_type !== 'image'
               "
             >
               <label>
@@ -875,7 +1033,59 @@ export default {
 
       return all_selected_medias[0];
     },
-
+    media_content_type() {
+      return this.media.hasOwnProperty("_linked_media")
+        ? this.media._linked_media.type
+        : this.media.type;
+    },
+    loop_play: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("loop_play") &&
+          !!Boolean(this.media.loop_play)
+          ? Boolean(this.media.loop_play)
+          : false;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ loop_play: value });
+      },
+    },
+    basic_player: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("basic_player") &&
+          !!Boolean(this.media.basic_player)
+          ? Boolean(this.media.basic_player)
+          : false;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ basic_player: value });
+      },
+    },
+    x: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("x") &&
+          !!Number.parseFloat(this.media.x)
+          ? Number.parseFloat(this.media.x)
+          : 0;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ x: value });
+      },
+    },
+    y: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("y") &&
+          !!Number.parseFloat(this.media.y)
+          ? Number.parseFloat(this.media.y)
+          : 0;
+      },
+      set(value) {
+        this.updateMediaPubliMeta({ y: value });
+      },
+    },
     margin: {
       get() {
         return this.media &&
@@ -899,6 +1109,30 @@ export default {
       set(value) {
         if (value > 90 && value < 110) value = 100;
         this.updateMediaPubliMeta({ font_size_percent: value });
+      },
+    },
+    opacity: {
+      get() {
+        return this.media &&
+          this.media.hasOwnProperty("opacity") &&
+          !!Number.parseFloat(this.media.opacity)
+          ? Number.parseFloat(this.media.opacity)
+          : 1;
+      },
+      set(value) {
+        if (value > 90 && value < 110) value = 100;
+        this.updateMediaPubliMeta({ opacity: value });
+      },
+    },
+    blend_mode: {
+      get() {
+        return this.media && this.media.hasOwnProperty("blend_mode")
+          ? this.media.blend_mode
+          : "normal";
+      },
+      set(value) {
+        if (value === "") this.blend_mode = "";
+        this.updateMediaPubliMeta({ blend_mode: value });
       },
     },
     stroke_color: {

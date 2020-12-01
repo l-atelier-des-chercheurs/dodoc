@@ -149,6 +149,7 @@
         :slugPubliName="slugPubliName"
         @updateDrawingOptions="(v) => updateDrawingOptions(v)"
         @removeLayer="removeLayer()"
+        @insertMedias="(m) => $emit('insertMedias', m)"
       />
     </transition>
   </div>

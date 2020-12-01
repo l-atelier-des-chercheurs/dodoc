@@ -818,6 +818,7 @@ module.exports = (function () {
               switch (mediaFileExtension.toLowerCase()) {
                 case ".jpeg":
                 case ".jpg":
+                case ".webp":
                 case ".png":
                 case ".gif":
                 case ".tiff":
