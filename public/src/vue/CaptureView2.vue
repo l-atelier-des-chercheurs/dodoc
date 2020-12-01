@@ -906,7 +906,7 @@ export default {
 
       show_capture_settings: false,
 
-      enable_audio: true,
+      enable_audio: false,
       enable_video: true,
 
       is_recording: false,
