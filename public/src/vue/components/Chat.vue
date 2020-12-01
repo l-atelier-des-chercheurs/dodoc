@@ -31,7 +31,7 @@
           <div class="m_chat--content--topbar--options">
             <button
               type="button"
-              class="buttonLink"
+              class="buttonLink bg-rouge"
               :class="{ 'is--active': show_chat_options }"
               @click="show_chat_options = !show_chat_options"
             >
@@ -45,7 +45,7 @@
                 width="77.6px"
                 height="85.4px"
                 viewBox="0 0 77.6 85.4"
-                style="enable-background: new 0 0 77.6 85.4;"
+                style="enable-background: new 0 0 77.6 85.4"
                 xml:space="preserve"
               >
                 <defs />
@@ -112,16 +112,22 @@
             />
           </div>
 
-          <button
-            type="button"
-            class="buttonLink"
-            @click="show_edit_chat = true"
-          >
-            {{ $t("edit") }}
-          </button>
-          <button type="button" class="buttonLink" @click="removeChat()">
-            {{ $t("remove") }}
-          </button>
+          <div>
+            <button
+              type="button"
+              class="buttonLink bg-rouge"
+              @click="show_edit_chat = true"
+            >
+              {{ $t("edit") }}
+            </button>
+            <button
+              type="button"
+              class="buttonLink bg-rouge"
+              @click="removeChat()"
+            >
+              {{ $t("remove") }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -200,7 +206,7 @@
                       width="91.6px"
                       height="95px"
                       viewBox="0 0 91.6 95"
-                      style="enable-background: new 0 0 91.6 95;"
+                      style="enable-background: new 0 0 91.6 95"
                       xml:space="preserve"
                     >
                       <path

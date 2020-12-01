@@ -74,6 +74,12 @@ button,
     &:active {
       background-color: @c-rouge_fonce;
     }
+
+    &[disabled],
+    &.is--disabled {
+      color: @c-rouge_fonce;
+      background-color: transparent !important;
+    }
   }
   &.bg-orange {
     color: #fff;
@@ -505,10 +511,10 @@ b,
   line-height: 1.25;
 }
 .font-verysmall {
-  font-size: 0.8rem;
+  font-size: var(--font-verysmall);
 }
 .font-large {
-  font-size: 1.5rem;
+  font-size: var(--font-large);
 }
 .font-verylarge {
   font-size: 2.5rem;
@@ -1107,7 +1113,7 @@ label,
   }
 }
 
-svg.inline-svg {
+.inline-svg {
   display: inline-block;
   width: 1em;
   height: 1em;
@@ -1246,6 +1252,10 @@ input[type="file"] {
 
   + * {
     margin-top: -@t-skipline / 2;
+  }
+
+  input {
+    min-width: 0;
   }
 }
 .input-addon {

@@ -1,9 +1,10 @@
 <template>
   <div
-    v-if="
+    v-show="
       !publication_is_submitted ||
       (publication_is_submitted &&
         model_placeholder_media._reply &&
+        model_placeholder_media._reply._medias &&
         model_placeholder_media._reply._medias.length > 0)
     "
     class="m_mediaPlaceholder"

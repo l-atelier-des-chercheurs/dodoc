@@ -26,15 +26,13 @@
       v-if="editing_limited_to === 'with_password' && can_have_password"
     >
       <label>{{ $t("password") }}</label>
-      <div>
-        <input
-          type="password"
-          required
-          :value="password"
-          @input="$emit('update:password', $event.target.value)"
-          autocomplete="new-password"
-        />
-      </div>
+      <PasswordField
+        :required="true"
+        :placeholder="'…'"
+        :field_type="'new-password'"
+        :value="password"
+        @input="(value) => $emit('update:password', value)"
+      />
     </div>
 
     <div

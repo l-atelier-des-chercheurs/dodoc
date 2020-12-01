@@ -9,7 +9,7 @@
             v-if="has_back_button"
             class="backButton text-ellipsis"
             type="button"
-            @click="goBack()"
+            @click="navigateTo('back')"
           >
             ‹
             <span class="backButton--text">{{ $t("back") }}</span>
@@ -18,7 +18,7 @@
         <img
           :content="`do•doc version ${$root.state.appVersion}`"
           src="/images/i_logo.svg"
-          @click="goHomeOrReload()"
+          @click="navigateTo('home')"
           draggable="false"
           v-tippy="{
             placement: 'bottom',
@@ -39,7 +39,7 @@
         <button
           type="button"
           v-if="project.hasOwnProperty('name')"
-          @click="$root.do_navigation.view = 'ProjectView'"
+          @click="navigateTo('project')"
           :disabled="$root.do_navigation.view === 'ProjectView'"
           :content="$t('back_to_project')"
           v-tippy="{
@@ -85,7 +85,7 @@
           width="20px"
           height="20px"
           viewBox="0 0 90 90"
-          style="enable-background: new 0 0 90 90;"
+          style="enable-background: new 0 0 90 90"
           xml:space="preserve"
         >
           <rect class="st0" width="108.2" height="21" />
@@ -136,6 +136,7 @@
         <div class="m_unreadMessages" v-if="$root.get_total_unread_messages">
           <button
             type="button"
+            class=""
             @click="openChatPanel()"
             :content="$t('unread_messages')"
             v-tippy="{
@@ -143,7 +144,7 @@
               delay: [600, 0],
             }"
           >
-            {{ $root.get_total_unread_messages }}
+            <span>{{ $root.get_total_unread_messages }}</span>
           </button>
         </div>
       </div>
@@ -170,7 +171,7 @@
             width="20px"
             height="20px"
             viewBox="0 0 90 90"
-            style="enable-background: new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90"
             xml:space="preserve"
           >
             <path
@@ -207,7 +208,7 @@
             width="12px"
             height="20.3px"
             viewBox="0 0 12 20.3"
-            style="enable-background: new 0 0 12 20.3;"
+            style="enable-background: new 0 0 12 20.3"
             xml:space="preserve"
           >
             <path
@@ -240,7 +241,7 @@
             width="90px"
             height="90px"
             viewBox="0 0 90 90"
-            style="enable-background: new 0 0 90 90;"
+            style="enable-background: new 0 0 90 90"
             xml:space="preserve"
           >
             <path
@@ -277,7 +278,7 @@
             width="133.3px"
             height="133.2px"
             viewBox="-15 -15 160 160"
-            style="enable-background: new 0 0 133.3 133.2;"
+            style="enable-background: new 0 0 133.3 133.2"
             xml:space="preserve"
           >
             <polygon
@@ -308,7 +309,7 @@
             width="133.3px"
             height="133.2px"
             viewBox="0 0 133.3 133.2"
-            style="enable-background: new 0 0 133.3 133.2;"
+            style="enable-background: new 0 0 133.3 133.2"
             xml:space="preserve"
           >
             <polygon
@@ -374,8 +375,12 @@ export default {
   created() {},
   mounted() {
     this.menuVisibility();
+
+    window.addEventListener("beforeunload", this.confirmReloadTab);
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    window.removeEventListener("beforeunload", this.confirmReloadTab);
+  },
   watch: {
     "$root.settings.windowWidth": function () {
       this.menuVisibility();
@@ -398,9 +403,40 @@ export default {
       ]);
     },
     menuVisibility() {},
-    goBack() {
-      this.$root.navigation_back();
+    navigateTo(where_to) {
+      this.confirmeBeforeNav().then(() => {
+        if (where_to === "back") this.$root.navigation_back();
+        else if (where_to === "home") this.goHomeOrReload();
+        else if (where_to === "project")
+          this.$root.do_navigation.view = "ProjectView";
+      });
     },
+    confirmReloadTab(event) {
+      if (!this.$root.settings.ask_before_leaving_capture) return;
+      event.preventDefault();
+      event.returnValue = "";
+      this.confirmeBeforeNav().then(() => {
+        // we do this to prevent a loop where triggering reload would come back to confirmReloadTab
+        this.$root.settings.ask_before_leaving_capture = false;
+        window.location.reload();
+      });
+    },
+
+    confirmeBeforeNav() {
+      return new Promise((resolve, reject) => {
+        if (this.$root.settings.ask_before_leaving_capture) {
+          this.$alertify
+            .okBtn(this.$t("yes"))
+            .cancelBtn(this.$t("cancel"))
+            .confirm(
+              this.$t("sure_to_leave_recording"),
+              () => resolve(),
+              () => reject()
+            );
+        } else return resolve();
+      });
+    },
+
     goHomeOrReload() {
       if (this.$root.do_navigation.view !== "ListView") {
         this.$root.closeProject();

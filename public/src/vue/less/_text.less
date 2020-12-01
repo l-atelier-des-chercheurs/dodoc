@@ -952,16 +952,16 @@ html[lang="fr"] .ql-tooltip a.ql-remove::before {
 html[lang="fr"] .ql-tooltip.ql-editing a.ql-action::after {
   content: "Enregistrer";
 }
-.ql-snow .ql-tooltip[data-mode="link"]::before {
+.ql-tooltip[data-mode="link"]::before {
   content: "Link:";
 }
-html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
+html[lang="fr"] .ql-tooltip[data-mode="link"]::before {
   content: "Lien";
 }
-.ql-snow .ql-tooltip[data-mode="formula"]::before {
+.ql-tooltip[data-mode="formula"]::before {
   content: "Enter formula";
 }
-.ql-snow .ql-tooltip[data-mode="video"]::before {
+.ql-tooltip[data-mode="video"]::before {
   content: "Enter video";
 }
 .ql-snow a {
@@ -1739,35 +1739,35 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
   h1,
   .h1 {
     font-size: 2.25em;
-    line-height: 1.27777778em;
+    line-height: 1.27777778;
     margin-top: 0.63888889em;
     margin-bottom: 0em;
   }
   h2,
   .h2 {
     font-size: 1.6875em;
-    line-height: 1.7037037em;
+    line-height: 1.7037037;
     margin-top: 0.65185185em;
     margin-bottom: 0em;
   }
   h3,
   .h3 {
     font-size: 1em;
-    line-height: 1.4375em;
+    line-height: 1.4375;
     margin-top: 1.4375em;
     margin-bottom: 0em;
   }
   h4,
   .h4 {
     font-size: 1em;
-    line-height: 1.4375em;
+    line-height: 1.4375;
     margin-top: 1.4375em;
     margin-bottom: 0em;
   }
   h5,
   .h5 {
     font-size: 1em;
-    line-height: 1.4375em;
+    line-height: 1.4375;
     margin-top: 1.4375em;
     margin-bottom: 0em;
   }
@@ -2112,4 +2112,9 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
 .ql-picker.ql-font .ql-picker-item[data-value="Spectral"]::before {
   content: "Spectral";
   font-family: "Spectral";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Krub"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Krub"]::before {
+  content: "Krub";
+  font-family: "Krub";
 }
