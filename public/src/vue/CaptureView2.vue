@@ -7,7 +7,7 @@
       v-show="show_capture_settings"
       :stream.sync="stream"
       :audio_output_deviceId.sync="audio_output_deviceId"
-      :enable_audio="enable_audio"
+      :enable_audio.sync="enable_audio"
       :enable_video="enable_video"
       @hasFinishedLoading="hasFinishedLoading"
       @close="show_capture_settings = false"
