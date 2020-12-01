@@ -22,11 +22,11 @@ module.exports = function (router) {
   // only for HTTPS, works without asking for a certificate
   const privateKeyPath = !!global.settings.privateKeyPath
     ? global.settings.privateKeyPath
-    : path.join(__dirname, "ssl", "file.pem");
+    : path.join(__dirname, "ssl", "selfsigned.key");
 
   const certificatePath = !!global.settings.certificatePath
     ? global.settings.certificatePath
-    : path.join(__dirname, "ssl", "file.crt");
+    : path.join(__dirname, "ssl", "selfsigned.crt");
 
   const options = {
     key: fs.readFileSync(privateKeyPath),
