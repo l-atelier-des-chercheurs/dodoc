@@ -364,7 +364,7 @@ export default {
   },
   created() {},
   mounted() {
-    if (!navigator.getUserMedia) {
+    if (!navigator.mediaDevices.getUserMedia) {
       alert("You need a browser that supports WebRTC");
       return;
     }
