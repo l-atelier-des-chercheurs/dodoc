@@ -2262,6 +2262,10 @@ module.exports = (function () {
       oc: "fòto",
       de: "Foto",
     },
+    screen_capture: {
+      fr: "Capture d’écran",
+      en: "Screen capture",
+    },
     take_picture: {
       fr: "Prendre une photo",
       en: "Take a picture",

@@ -193,15 +193,17 @@
 
       <label>{{ $t("connect_to_other_users") }}</label>
       <div class="padding-small">
-        <span class="switch switch-xs">
-          <input
-            class="switch"
-            id="enableDistantFlux"
-            type="checkbox"
-            v-model="enable_distant_flux"
-          />
-          <label for="enableDistantFlux">{{ $t("enable") }}</label>
-        </span>
+        <div class="padding-top-small">
+          <span class="switch switch-xs">
+            <input
+              class="switch"
+              id="enableDistantFlux"
+              type="checkbox"
+              v-model="enable_distant_flux"
+            />
+            <label for="enableDistantFlux">{{ $t("enable") }}</label>
+          </span>
+        </div>
         <DistantFlux2
           v-if="enable_distant_flux"
           :stream="stream"
@@ -480,7 +482,14 @@ export default {
   },
   computed: {
     all_video_input_devices() {
-      return this.connected_devices.filter((d) => d.kind === "videoinput");
+      const video_input = this.connected_devices.filter(
+        (d) => d.kind === "videoinput"
+      );
+      const screen_input = {
+        deviceId: "screen_capture",
+        label: "🖥️ " + this.$t("screen_capture"),
+      };
+      return video_input.concat(screen_input);
     },
     all_audio_input_devices() {
       return this.connected_devices.filter((d) => d.kind === "audioinput");
@@ -525,14 +534,14 @@ export default {
             } else return devices;
           })
           .then((devices) => {
-            this.getDesktopCapturer()
-              .then((sources) => {
-                devices = devices.concat(sources);
-              })
-              .catch((err) => {})
-              .then(() => {
-                return resolve(devices);
-              });
+            // this.getDesktopCapturer()
+            //   .then((sources) => {
+            //     devices = devices.concat(sources);
+            //   })
+            //   .catch((err) => {})
+            //   .then(() => {
+            return resolve(devices);
+            // });
             // const screen_infos = sources.reduce((acc, source) => {
             //                     acc.push(source);
             //                     return acc;
@@ -581,7 +590,6 @@ export default {
         );
       }
     },
-
     getDefaultDevice({ key, devices_list }) {
       // find if this.$root.settings.capture_options.selected_devices has key, and if value is in devices_list
       const previously_used = this.$root.settings.capture_options
@@ -613,6 +621,22 @@ export default {
         );
 
       return devices_list[0];
+    },
+    startMediaDeviceFeed(constraints) {
+      return new Promise((resolve, reject) => {
+        debugger;
+        if (
+          constraints.video.deviceId &&
+          constraints.video.deviceId.exact === "screen_capture"
+        )
+          navigator.mediaDevices
+            .getDisplayMedia({ video: true })
+            .then((stream) => resolve(stream));
+        else
+          navigator.mediaDevices
+            .getUserMedia(constraints)
+            .then((stream) => resolve(stream));
+      });
     },
     // getAllAvailableResolutions() {
     //   const all_resolutions = [];
@@ -740,10 +764,9 @@ export default {
 
         setTimeout(
           () => {
-            navigator.mediaDevices
-              .getUserMedia(constraints)
-              .then(gotStream)
-              .then(() => {
+            this.startMediaDeviceFeed(constraints)
+              .then((stream) => {
+                this.$emit("update:stream", stream);
                 return resolve();
               })
               .catch((error) => {
@@ -753,10 +776,6 @@ export default {
           },
           this.stream ? 200 : 0
         ); //official examples had this at 200
-
-        const gotStream = (stream) => {
-          this.$emit("update:stream", stream);
-        };
       });
     },
     createConstraintsFromSelected() {
@@ -765,51 +784,24 @@ export default {
         video: false,
       };
 
-      if (
-        !this.selected_devices.video_input_device.hasOwnProperty(
-          "chromeMediaSource"
-        ) ||
-        !this.selected_devices.video_input_device.chromeMediaSource
-      ) {
-        // non screen capture devices
-        _constraints.audio = !this.enable_audio
-          ? false
-          : {
-              deviceId: this.selected_devices.audio_input_device.deviceId
-                ? { exact: this.selected_devices.audio_input_device.deviceId }
-                : undefined,
-            };
+      // non screen capture devices
+      _constraints.audio = !this.enable_audio
+        ? false
+        : {
+            deviceId: this.selected_devices.audio_input_device.deviceId
+              ? { exact: this.selected_devices.audio_input_device.deviceId }
+              : undefined,
+          };
 
-        // {
-        //   // optional: [{ sourceId: this._video_input_device.audioinput }],
-        // };
-        _constraints.video = !this.enable_video
-          ? false
-          : {
-              deviceId: this.selected_devices.video_input_device.deviceId
-                ? { exact: this.selected_devices.video_input_device.deviceId }
-                : undefined,
-              width: { exact: this.desired_camera_resolution.width }, //new syntax
-              height: { exact: this.desired_camera_resolution.height }, //new syntax
-            };
-      } else {
-        // screen capture devices
-        _constraints = {
-          audio: false,
-          video: {
-            mandatory: {
-              chromeMediaSource: this.selected_devices.video_input_device
-                .chromeMediaSource,
-              chromeMediaSourceId: this.selected_devices.video_input_device
-                .deviceId,
-              minWidth: this.desired_camera_resolution.width,
-              maxWidth: this.desired_camera_resolution.width,
-              minHeight: this.desired_camera_resolution.height,
-              maxHeight: this.desired_camera_resolution.height,
-            },
-          },
-        };
-      }
+      _constraints.video = !this.enable_video
+        ? false
+        : {
+            deviceId: this.selected_devices.video_input_device.deviceId
+              ? { exact: this.selected_devices.video_input_device.deviceId }
+              : undefined,
+            width: { exact: this.desired_camera_resolution.width }, //new syntax
+            height: { exact: this.desired_camera_resolution.height }, //new syntax
+          };
 
       console.log("Constraints = " + JSON.stringify(_constraints, null, 4));
 
