@@ -21,7 +21,8 @@
 
     <PublicationDisplayButtons
       :preview_mode="preview_mode"
-      :show_zoom_buttons="!contact_sheet_mode"
+      :show_zoom_buttons="true"
+      :show_page_navigator="false"
       :zoom="zoom"
       :zoom_min="zoom_min"
       :zoom_max="zoom_max"
@@ -41,6 +42,12 @@
       :layered_medias="layered_medias"
       :publication="publication"
       :slugPubliName="slugPubliName"
+      @insertMedias="
+        ({ metaFileNames }) =>
+          editMediaToPlaceOnLayer({
+            metaFileNames,
+          })
+      "
     />
 
     <div class="m_drawingPad" ref="current_page">
@@ -49,7 +56,7 @@
           :key="'background'"
           class="m_drawingPad--layer m_drawingPad--layer_background"
         >
-          <div class="">
+          <div>
             <div
               class="m_drawingPad--layer--backgroundContainer"
               :style="setPageContainerProperties(publication)"
@@ -240,43 +247,81 @@ export default {
   },
   methods: {
     addMedia({ values = {} }) {
-      return new Promise((resolve, reject) => {
-        if (this.$root.state.dev_mode === "debug")
-          console.log(`DrawingPad • METHODS: addMedia`);
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`DrawingPad • METHODS: addMedia`);
 
-        const current_layer_id = this.$root.settings.current_publication
-          .layer_id;
+      Object.assign(values, this.prepareMetaToPlaceOnLayer());
 
-        if (!current_layer_id) {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t("notifications.missing_layer_id"));
-        }
+      this.$emit("addMedia", { values });
+    },
+    editMediaToPlaceOnLayer({ metaFileNames }) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`PagePublication • METHODS: addMedia`);
 
-        values.layer_id = current_layer_id;
+      metaFileNames.map((metaFileName, index) => {
+        const _values = this.prepareMetaToPlaceOnLayer();
 
-        values.x = 0;
-        values.y = 0;
+        _values.x += 10 * index;
+        _values.y += 10 * index;
 
-        values.z_index =
-          this.getHighestZNumberAmongstMedias(
-            this.layered_medias[current_layer_id]
-          ) + 1;
+        this.$emit("editPubliMedia", {
+          metaFileName: metaFileName,
+          val: _values,
+        });
 
-        // get current scroll
-        if (this.$refs.current_page) {
-          const posx_in_cm =
-            this.$refs.current_page.scrollLeft / this.pixelsPerMillimeters;
-          if (!Number.isNaN(posx_in_cm)) values.x = posx_in_cm;
-
-          const posy_in_cm =
-            this.$refs.current_page.scrollTop / this.pixelsPerMillimeters;
-          if (!Number.isNaN(posy_in_cm)) values.y = posy_in_cm;
-        }
-
-        this.$emit("addMedia", { values });
+        const catchMediaEdition = (d) => {
+          if (metaFileName === d.metaFileName) {
+            this.$nextTick(() => {
+              this.$eventHub.$emit("publication.selectNewMedia", metaFileName);
+            });
+          } else {
+            this.$eventHub.$once(
+              `socketio.media_just_edited`,
+              catchMediaEdition
+            );
+          }
+        };
+        this.$eventHub.$once(
+          `publication.media_just_edited`,
+          catchMediaEdition
+        );
       });
+    },
+
+    prepareMetaToPlaceOnLayer() {
+      let values = {};
+
+      const current_layer_id = this.$root.settings.current_publication.layer_id;
+
+      if (!current_layer_id) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.missing_layer_id"));
+      }
+
+      values.layer_id = current_layer_id;
+
+      values.x = 0;
+      values.y = 0;
+
+      values.z_index =
+        this.getHighestZNumberAmongstMedias(
+          this.layered_medias[current_layer_id]
+        ) + 1;
+
+      // get current scroll
+      if (this.$refs.current_page) {
+        const posx_in_cm =
+          this.$refs.current_page.scrollLeft / this.pixelsPerMillimeters;
+        if (!Number.isNaN(posx_in_cm)) values.x = posx_in_cm;
+
+        const posy_in_cm =
+          this.$refs.current_page.scrollTop / this.pixelsPerMillimeters;
+        if (!Number.isNaN(posy_in_cm)) values.y = posy_in_cm;
+      }
+
+      return values;
     },
     layerOptions(layer) {
       return {
@@ -341,7 +386,7 @@ export default {
           width: ${page.width}mm;
           height: ${page.height}mm;
           margin: 40px;
-          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${
+          padding: 80px ${140 / this.zoom}px ${100 * this.zoom}px ${
         240 / this.zoom
       }px;  
           box-sizing: content-box;

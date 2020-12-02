@@ -71,20 +71,19 @@
                 />
               </div>
 
-              <input type="email" disabled="disabled" style="display: none;" />
+              <input type="email" disabled="disabled" style="display: none" />
 
               <div class="margin-bottom-small">
                 <label>{{ $t("password") }}</label>
-                <input
-                  type="password"
-                  ref="passwordField"
+                <PasswordField
+                  v-model="entered_password"
                   :required="
                     $root.state.local_options.force_author_password
                       ? true
                       : false
                   "
-                  autofocus
-                  placeholder="…"
+                  :autofocus="true"
+                  :placeholder="'…'"
                 />
               </div>
 
@@ -132,6 +131,7 @@ export default {
       is_sending_content_to_server: false,
       current_mode: "CreateAccount",
       login_author_name: "",
+      entered_password: "",
     };
   },
   created() {},
@@ -164,7 +164,7 @@ export default {
       const author = Object.values(this.$root.store.authors).find(
         (a) => a.name === this.login_author_name
       );
-      const password = this.$auth.hashCode(this.$refs.passwordField.value);
+      const password = this.$auth.hashCode(this.entered_password);
 
       if (!author) {
         this.$alertify

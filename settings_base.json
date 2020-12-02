@@ -390,6 +390,7 @@
               "divider",
               "solid_color",
               "rectangle",
+              "free_drawing",
               "ellipsis",
               "line",
               "arrow",
@@ -423,6 +424,9 @@
               "min": 0,
               "max": 100
             }
+          },
+          "drawing_paths": {
+            "type": "string"
           },
           "transition_in": {
             "type": "string"
@@ -460,6 +464,12 @@
           "force_text_style": {
             "type": "string"
           },
+          "loop_play": {
+            "type": "boolean"
+          },
+          "basic_player": {
+            "type": "boolean"
+          },
           "z_index": {
             "type": "number",
             "clip": {
@@ -483,6 +493,9 @@
           },
           "opacity": {
             "type": "number"
+          },
+          "blend_mode": {
+            "type": "string"
           },
           "fill_color": {
             "type": "string"

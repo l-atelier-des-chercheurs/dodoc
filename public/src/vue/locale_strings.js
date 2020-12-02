@@ -33,6 +33,10 @@ module.exports = (function () {
       fr: "Créer une discussion",
       en: "Create a room",
     },
+    create_qr_code: {
+      fr: "Créer un code QR",
+      en: "Create a QR code",
+    },
     edit_a_chat: {
       fr: "Éditer une discussion",
       en: "Edit a room",
@@ -53,6 +57,10 @@ module.exports = (function () {
       fr: "Épinglées",
       en: "Pinned",
     },
+    live: {
+      fr: "Direct",
+      en: "Live",
+    },
     no_content_to_show: {
       fr: "Aucun contenu à afficher",
       en: "No content to show",
@@ -61,6 +69,10 @@ module.exports = (function () {
       fr: "Replier",
       en: "Fold",
     },
+    qr_code: {
+      fr: "code QR",
+      en: "QR code",
+    },
     unfold: {
       fr: "Déplier",
       en: "Unfold",
@@ -68,6 +80,12 @@ module.exports = (function () {
     create_new_folder: {
       fr: "créer un nouveau dossier",
       en: "create new folder",
+    },
+    create_qr_code_instructions: {
+      fr:
+        "Écrire un lien pour créer un code QR. Vous pouvez ensuite le télécharger, l’imprimer ou l’intégrer à un document page à page ou à un récit.",
+      en:
+        "Write a link to create the corresponding QR Code to download, print or insert inside a paged document or a story.",
     },
     manage_access: {
       fr: "Gérer l’accès au contenu",
@@ -104,6 +122,14 @@ module.exports = (function () {
       oc: "Recepta",
       de: "Publikation",
     },
+    loop_play: {
+      fr: "Jouer en boucle",
+      en: "Loop at the end of media",
+    },
+    basic_player: {
+      fr: "Afficher seulement le bouton lecture",
+      en: "Only show play button",
+    },
     set_visibility_to_everybody: {
       fr:
         "Ce contenu est actuellement en privé et ne peut donc pas être partagé. Pour le partager, cochez VISIBLE PAR TOUT LE MONDE dans les options du contenu.",
@@ -125,6 +151,10 @@ module.exports = (function () {
     number_of_medias: {
       fr: "Nombre de médias",
       en: "Amount of medias",
+    },
+    resolutions: {
+      fr: "Resolutions",
+      en: "Resolutions",
     },
     reply: {
       fr: "Répondre",
@@ -166,6 +196,22 @@ module.exports = (function () {
     interactive_preview: {
       fr: "Interactif",
       en: "Interactive",
+    },
+    sources: {
+      fr: "Sources",
+      en: "Sources",
+    },
+    no_video_input_available: {
+      fr: "Aucune source vidéo disponible",
+      en: "No video source available",
+    },
+    no_audio_input_available: {
+      fr: "Aucune source audio disponible",
+      en: "No audio source available",
+    },
+    no_audio_output_available: {
+      fr: "Aucune sortie audio disponible",
+      en: "No audio output available",
     },
     static_preview: {
       fr: "Image",
@@ -233,6 +279,10 @@ module.exports = (function () {
     show: {
       fr: "Afficher",
       en: "Show",
+    },
+    load: {
+      fr: "Charger",
+      en: "Load",
     },
     only_my_projects: {
       fr: "Seulement mes projets",
@@ -620,6 +670,18 @@ module.exports = (function () {
       fr: "Type de calque",
       en: "Layer type",
     },
+    lines_angle: {
+      fr: "Angle des lignes",
+      en: "Lines angle",
+    },
+    brightness: {
+      fr: "Luminosité",
+      en: "Brightness",
+    },
+    lines_density: {
+      fr: "Densité de lignes",
+      en: "Lines density",
+    },
     drawing_layer_instructions: {
       fr: "Permet de dessiner, tracer des formes, etc.",
       en: "Allows for the drawing of lines, geometric shapes, etc.",
@@ -638,6 +700,14 @@ module.exports = (function () {
       nl: "Wachtwoord invoeren:",
       oc: "Entresenhar lo mot de Santa-Clara çai-jos :",
       de: "Kennwort bitte hier eingeben",
+    },
+    reveal_password: {
+      fr: "Révéler le mot de passe",
+      en: "Reveal password",
+    },
+    hide_password: {
+      fr: "Masquer le mot de passe",
+      en: "Hide password",
     },
     change_password: {
       fr: "Modifier le mot de passe",
@@ -680,10 +750,6 @@ module.exports = (function () {
       fr: "Entrée audio",
       en: "Audio input",
     },
-    videoinput: {
-      fr: "Entrée vidéo",
-      en: "Video input",
-    },
     audiooutput: {
       fr: "Sortie audio",
       en: "Audio output",
@@ -700,7 +766,15 @@ module.exports = (function () {
       oc: "Camerà arrièra",
       de: "Rückfahrkamera",
     },
-    "Entire Screen": {
+    camera: {
+      fr: "Camera",
+      en: "Camera",
+    },
+    pick_a_camera: {
+      fr: "Sélectionnez une caméra",
+      en: "Pick a camera",
+    },
+    "Entire screen": {
       fr: "Écran de l’ordinateur",
       en: "Computer screen",
     },
@@ -834,6 +908,10 @@ module.exports = (function () {
       fr: "Opacité",
       en: "Opacity",
     },
+    blend_mode: {
+      fr: "Mode de fusion",
+      en: "Blend mode",
+    },
     stroke_color: {
       fr: "Couleur du contour",
       en: "Stroke color",
@@ -859,7 +937,7 @@ module.exports = (function () {
         "You will always be able to go back to the original media if necessary.",
     },
     restore: {
-      fr: "Restorer",
+      fr: "Restaurer",
       en: "Restore",
     },
     lock_in_place: {
@@ -1092,11 +1170,23 @@ module.exports = (function () {
       de: "Bilder pro Sekunde",
     },
     timelapse: {
-      fr: "déclenchement automatique",
-      en: "timelapse",
+      fr: "time-lapse",
+      en: "time-lapse",
       nl: "tijdsverloop ",
       oc: "delargament automatic",
       de: "automatische Auslösung",
+    },
+    delay: {
+      fr: "Retardateur",
+      en: "Delay",
+    },
+    start_timelapse: {
+      fr: "Démarrer le time-lapse",
+      en: "Start time-lapse",
+    },
+    stop_timelapse: {
+      fr: "Interrompre le time-lapse",
+      en: "Stop time-lapse",
     },
     seconds_per_image: {
       fr: "secondes par image",
@@ -1300,6 +1390,10 @@ module.exports = (function () {
       fr: "Scanner le tag NFC maintenant…",
       en: "Scan the NFC tag now…",
     },
+    "now!": {
+      fr: "Maintenant !",
+      en: "Now!",
+    },
     yes: {
       fr: "Oui",
       en: "Yes",
@@ -1371,6 +1465,16 @@ module.exports = (function () {
       fr: "Êtes-vous sûr de vouloir supprimer ce sujet et tout son contenu ?",
       en: "Do you really want to delete this topic and all its content?",
     },
+    sure_to_leave_recording: {
+      fr:
+        "Êtes-vous sûr de vouloir sortir du panneau de capture ? Si oui l’enregistrement en cours ne sera pas conservé.",
+      en:
+        "Do you really want to leave the capture panel? If yes then this recording will be discarded.",
+    },
+    sure_to_remove_stopmotion: {
+      fr: "Êtes-vous sûr de vouloir supprimer cette animation ?",
+      en: "Do you really want to delete this stopmotion?",
+    },
     sureToRemoveSelection: {
       fr: "Êtes-vous sûr de vouloir supprimer cette sélection ?",
       en: "Do you really want to delete this selection?",
@@ -1424,6 +1528,10 @@ module.exports = (function () {
       fr: "Déplacer la page",
       en: "Move page to position",
     },
+    position: {
+      fr: "Position",
+      en: "Position",
+    },
     create_empty_page: {
       fr: "Ajouter une page vide",
       en: "Add an empty page",
@@ -1470,6 +1578,10 @@ module.exports = (function () {
       nl: "Media valideren",
       oc: "Validar lo mèdia",
       de: "Medium überprüfen",
+    },
+    validate: {
+      fr: "Valider",
+      en: "Validate",
     },
     add_keyword: {
       fr: "Ajouter un mot-clé",
@@ -2150,6 +2262,26 @@ module.exports = (function () {
       oc: "fòto",
       de: "Foto",
     },
+    take_picture: {
+      fr: "Prendre une photo",
+      en: "Take a picture",
+    },
+    record_video: {
+      fr: "Capturer une vidéo",
+      en: "Record a video",
+    },
+    stop_recording: {
+      fr: "Arrêter la capture",
+      en: "Stop recording",
+    },
+    pause_recording: {
+      fr: "Mettre en pause",
+      en: "Pause recording",
+    },
+    unpause_recording: {
+      fr: "Relancer l’enregistrement",
+      en: "Resume recording",
+    },
     video: {
       fr: "vidéo",
       en: "video",
@@ -2181,6 +2313,10 @@ module.exports = (function () {
       nl: "vormen",
       oc: "formas",
       de: "Formen",
+    },
+    lines: {
+      fr: "lignes",
+      en: "lines",
     },
     image: {
       fr: "image",
@@ -2262,11 +2398,14 @@ module.exports = (function () {
       fr: "Ligne",
       en: "Line",
     },
+    free_draw: {
+      fr: "Dessin libre",
+      en: "Free drawing",
+    },
     arrow: {
       fr: "Flèche",
       en: "Arrow",
     },
-
     toconnectwithanotherdevice: {
       fr:
         "Pour accéder à cet élément avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web, ou bien scannez le code QR&nbsp;: ",
@@ -2480,6 +2619,10 @@ module.exports = (function () {
       oc: "Magnetisme",
       de: "Magnetismus",
     },
+    grid: {
+      fr: "Grille",
+      en: "Grid",
+    },
     margin_top: {
       fr: "Marge: haut",
       en: "Margin: top",
@@ -2622,6 +2765,10 @@ module.exports = (function () {
       fr: "Ajouter un aplat de couleur",
       en: "Add solid color",
     },
+    number_of_colors: {
+      fr: "Nombre de couleur(s)",
+      en: "Quantity of color(s)",
+    },
     select_color: {
       fr: "Changer la couleur",
       en: "change the color",
@@ -2727,6 +2874,7 @@ module.exports = (function () {
       en:
         "If enabled, this recipe can be selected as a model for other recipes to lean on.",
     },
+
     recipes: {
       fr: "Recettes",
       en: "Recipes",
@@ -2751,6 +2899,12 @@ module.exports = (function () {
     select_publi_model: {
       fr: "Sélectionner un modèle",
       en: "Select a model",
+    },
+    connect_to_other_users: {
+      fr:
+        "Accéder à des sources provenant d’autres appareils connectés actuellement à do•doc",
+      en:
+        "Connect to sources provided by devices currently connected to do•doc",
     },
     select_publi_model_instructions: {
       fr:
@@ -3081,12 +3235,12 @@ module.exports = (function () {
       en: "Save this URL to connect again and finish in the future.",
     },
     finished_writing_reply: {
-      fr: "Vous avez terminé ?",
-      en: "Are you finished?",
+      fr: "Votre document est terminé ?",
+      en: "Your document is finished?",
     },
-    lock_and_publish: {
-      fr: "Verrouillez et publiez votre récit",
-      en: "Lock and publish this story",
+    finalize_story: {
+      fr: "Finalisez votre récit",
+      en: "Finalize your story",
     },
     carreau_summary: {
       fr: "Empiler des médias pour créer en temps réel des présentations.",
@@ -3140,6 +3294,10 @@ module.exports = (function () {
       nl: "Verzonden",
       oc: "Mandat",
       de: "Gesendet",
+    },
+    enable: {
+      fr: "Activer",
+      en: "Enable",
     },
     disable: {
       fr: "Désactiver",
