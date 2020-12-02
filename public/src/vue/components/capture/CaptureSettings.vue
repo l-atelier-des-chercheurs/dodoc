@@ -613,8 +613,6 @@ export default {
         );
 
       return devices_list[0];
-
-      // otherwise, use first device
     },
     // getAllAvailableResolutions() {
     //   const all_resolutions = [];
@@ -699,11 +697,8 @@ export default {
             this.selected_devices.audio_output_device.deviceId
           );
 
-        this.startCameraStream(
-          this.desired_camera_resolution,
-          this.selected_devices
-        )
-          .then((res) => {
+        this.startCameraStream()
+          .then(() => {
             this.last_working_resolution = this.desired_camera_resolution;
             return resolve();
           })
@@ -735,20 +730,13 @@ export default {
           });
       });
     },
-    startCameraStream(camera_resolution, selected_devices) {
+    startCameraStream() {
       return new Promise((resolve, reject) => {
-        const _video_input_device = selected_devices.video_input_device;
-        const _audio_input_device = selected_devices.audio_input_device;
-
         //Kill any running streams;
         if (this.stream)
           this.stream.getTracks().forEach((track) => track.stop());
 
-        let constraints = this.createConstraints(
-          camera_resolution,
-          _video_input_device,
-          _audio_input_device
-        );
+        let constraints = this.createConstraintsFromSelected();
 
         setTimeout(
           () => {
@@ -756,7 +744,7 @@ export default {
               .getUserMedia(constraints)
               .then(gotStream)
               .then(() => {
-                return resolve(camera_resolution);
+                return resolve();
               })
               .catch((error) => {
                 console.log("getUserMedia error : ", error);
@@ -771,22 +759,24 @@ export default {
         };
       });
     },
-    createConstraints(camera_resolution, vi_device, ai_device) {
+    createConstraintsFromSelected() {
       let _constraints = {
         audio: false,
         video: false,
       };
 
       if (
-        !vi_device.hasOwnProperty("chromeMediaSource") ||
-        !vi_device.chromeMediaSource
+        !this.selected_devices.video_input_device.hasOwnProperty(
+          "chromeMediaSource"
+        ) ||
+        !this.selected_devices.video_input_device.chromeMediaSource
       ) {
         // non screen capture devices
         _constraints.audio = !this.enable_audio
           ? false
           : {
-              deviceId: ai_device.deviceId
-                ? { exact: ai_device.deviceId }
+              deviceId: this.selected_devices.audio_input_device.deviceId
+                ? { exact: this.selected_devices.audio_input_device.deviceId }
                 : undefined,
             };
 
@@ -796,11 +786,11 @@ export default {
         _constraints.video = !this.enable_video
           ? false
           : {
-              deviceId: vi_device.deviceId
-                ? { exact: vi_device.deviceId }
+              deviceId: this.selected_devices.video_input_device.deviceId
+                ? { exact: this.selected_devices.video_input_device.deviceId }
                 : undefined,
-              width: { exact: camera_resolution.width }, //new syntax
-              height: { exact: camera_resolution.height }, //new syntax
+              width: { exact: this.desired_camera_resolution.width }, //new syntax
+              height: { exact: this.desired_camera_resolution.height }, //new syntax
             };
       } else {
         // screen capture devices
@@ -808,12 +798,14 @@ export default {
           audio: false,
           video: {
             mandatory: {
-              chromeMediaSource: vi_device.chromeMediaSource,
-              chromeMediaSourceId: vi_device.deviceId,
-              minWidth: camera_resolution.width,
-              maxWidth: camera_resolution.width,
-              minHeight: camera_resolution.height,
-              maxHeight: camera_resolution.height,
+              chromeMediaSource: this.selected_devices.video_input_device
+                .chromeMediaSource,
+              chromeMediaSourceId: this.selected_devices.video_input_device
+                .deviceId,
+              minWidth: this.desired_camera_resolution.width,
+              maxWidth: this.desired_camera_resolution.width,
+              minHeight: this.desired_camera_resolution.height,
+              maxHeight: this.desired_camera_resolution.height,
             },
           },
         };
