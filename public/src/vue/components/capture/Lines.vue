@@ -103,7 +103,7 @@ export default {
         // const mapped_brightness = brightness;
 
         // de 0 à 1 vers 17 à 0
-        if (typeof mapped_brightness !== "number" || mapped_brightness > 10)
+        if (typeof mapped_brightness !== "number" || mapped_brightness > 20)
           return acc;
 
         const posX =
