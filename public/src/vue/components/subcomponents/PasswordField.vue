@@ -15,8 +15,13 @@
       <button
         type="button"
         class=""
+        :key="field_mode"
         @click="toggleFieldMode"
-        :content="$t('reveal_password')"
+        :content="
+          field_mode === 'password'
+            ? $t('reveal_password')
+            : $t('hide_password')
+        "
         v-tippy="{
           placement: 'top',
           delay: [600, 0],
