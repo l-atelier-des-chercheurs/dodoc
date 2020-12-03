@@ -35,6 +35,12 @@
     </div>
 
     <div class="m_captureSettings--settings">
+      <div v-if="status === 'not_allowed'">
+        <div class="padding-top-verysmall">
+          {{ $t("camera_access_refused") }}
+        </div>
+      </div>
+
       <label>{{ $t("sources") }}</label>
       <button
         type="button"
@@ -281,6 +287,7 @@ export default {
     return {
       is_loading_available_devices: false,
       is_loading_feed: false,
+      status: undefined,
 
       stream_current_settings: undefined,
       desired_camera_resolution: undefined,
@@ -411,7 +418,6 @@ export default {
         if (err.message === "Could not start audio source") {
           this.$emit("update:enable_audio", false);
         }
-
         this.is_loading_feed = false;
         this.$emit("hasFinishedLoading");
         return;
@@ -421,6 +427,7 @@ export default {
         this.setDefaultInputsAndOutputs();
       })
       .catch((err) => {
+        this.is_loading_feed = false;
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
@@ -634,7 +641,6 @@ export default {
     },
     startMediaDeviceFeed(constraints) {
       return new Promise((resolve, reject) => {
-        debugger;
         if (
           constraints.video.deviceId &&
           constraints.video.deviceId.exact === "screen_capture"
@@ -781,6 +787,9 @@ export default {
               })
               .catch((error) => {
                 console.log("getUserMedia error : ", error);
+                if (error.name === "NotAllowedError") {
+                  this.status = "not_allowed";
+                }
                 return reject(error);
               });
           },

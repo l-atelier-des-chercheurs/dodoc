@@ -156,6 +156,12 @@ module.exports = (function () {
       fr: "Resolutions",
       en: "Resolutions",
     },
+    camera_access_refused: {
+      fr:
+        "Accès refusé à la caméra et au micro : vous devez accepter leur accès dans le message qui apparaît pour pouvoir utiliser ce panneau.",
+      en:
+        "Access to camera and microphone denied: you have to accept to share your camera and microphone to use this pane.",
+    },
     reply: {
       fr: "Répondre",
       en: "Reply",
