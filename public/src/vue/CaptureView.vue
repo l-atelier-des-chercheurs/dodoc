@@ -890,16 +890,15 @@ export default {
           tasks.push(
             new Promise((resolve, reject) => {
               const { desktopCapturer } = window.require("electron");
-              desktopCapturer.getSources(
-                { types: ["window", "screen"] },
-                (error, sources) => {
+              desktopCapturer
+                .getSources({ types: ["window", "screen"] })
+                .then((sources) => {
                   const screen_infos = sources.reduce((acc, source) => {
                     acc.push(source);
                     return acc;
                   }, []);
                   return resolve(screen_infos);
-                }
-              );
+                });
             })
           );
         }
@@ -909,7 +908,7 @@ export default {
             devices.map((device) => {
               const _device = JSON.parse(JSON.stringify(device));
               if (!_device.hasOwnProperty("kind")) {
-                if (_device.name === "Entire screen") {
+                if (_device.name === "Entire Screen") {
                   _device.label = _device.name;
                   _device.deviceId = _device.id;
                   // _device.deviceId = "Entire screen";
@@ -1113,7 +1112,7 @@ export default {
             video: {
               mandatory: {
                 chromeMediaSource: "desktop",
-                // chromeMediaSourceId: this.selected_devicesId.videoinput,
+                chromeMediaSourceId: this.selected_devicesId.videoinput,
                 minWidth: this.ideal_camera_resolution.width,
                 maxWidth: this.ideal_camera_resolution.width,
                 minHeight: this.ideal_camera_resolution.height,
@@ -1154,12 +1153,18 @@ export default {
           };
         }
 
-        navigator.getUserMedia(
-          constraints,
-          (stream) => {
+        navigator.mediaDevices
+          .getDisplayMedia({
+            video: {
+              displaySurface: "monitor", // monitor, window, application, browser
+              logicalSurface: true,
+              cursor: "always", // never, always, motion
+            },
+          })
+          .then((stream) => {
             resolve(stream);
-          },
-          (err) => {
+          })
+          .catch((err) => {
             return reject(
               this.$t(
                 "notifications.failed_to_start_video_change_source_or_res"
@@ -1167,8 +1172,7 @@ export default {
                 "<br>" +
                 err
             );
-          }
-        );
+          });
       });
     },
 

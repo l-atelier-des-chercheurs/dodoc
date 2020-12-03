@@ -705,6 +705,10 @@ module.exports = (function () {
       fr: "Révéler le mot de passe",
       en: "Reveal password",
     },
+    hide_password: {
+      fr: "Masquer le mot de passe",
+      en: "Hide password",
+    },
     change_password: {
       fr: "Modifier le mot de passe",
       en: "Change password",
