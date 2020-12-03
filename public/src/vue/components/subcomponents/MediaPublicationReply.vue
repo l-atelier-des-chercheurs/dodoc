@@ -85,6 +85,7 @@
               :theme="'bubble'"
               :type="'publications'"
               :style="media.plain_text ? force_text_style : ''"
+              :show_cursors="false"
               ref="textField"
             />
           </template>
@@ -92,7 +93,11 @@
           :theme="'bubble'"-->
 
           <div v-else class="mediaTextContent">
-            <div v-if="htmlForEditor.length !== 0" v-html="htmlForEditor" />
+            <div
+              v-if="htmlForEditor.length !== 0"
+              v-html="htmlForEditor"
+              :style="media.plain_text ? force_text_style : ''"
+            />
             <p v-else class="_no_textcontent" v-html="no_text_content" />
           </div>
         </template>
@@ -445,8 +450,6 @@ export default {
     updateMediaPubliMeta(values) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • MediaPublicationReply: updateMediaPubliMeta`);
-
-      debugger;
 
       this.$emit("editPubliMedia", {
         metaFileName: this.media.metaFileName,

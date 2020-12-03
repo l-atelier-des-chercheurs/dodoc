@@ -98,21 +98,21 @@
   // width: 1.2em;
 }
 .ql-editor li:not(.ql-direction-rtl)::before {
-  margin-left: -1.5em;
+  margin-left: -1em;
   margin-right: 0.3em;
   text-align: right;
 }
 .ql-editor li.ql-direction-rtl::before {
   margin-left: 0.3em;
-  margin-right: -1.5em;
+  margin-right: -1em;
 }
 .ql-editor ol li:not(.ql-direction-rtl),
 .ql-editor ul li:not(.ql-direction-rtl) {
-  padding-left: 1.5em;
+  padding-left: 1em;
 }
 .ql-editor ol li.ql-direction-rtl,
 .ql-editor ul li.ql-direction-rtl {
-  padding-right: 1.5em;
+  padding-right: 1em;
 }
 .ql-editor ol li {
   // counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
@@ -952,16 +952,16 @@ html[lang="fr"] .ql-tooltip a.ql-remove::before {
 html[lang="fr"] .ql-tooltip.ql-editing a.ql-action::after {
   content: "Enregistrer";
 }
-.ql-snow .ql-tooltip[data-mode="link"]::before {
+.ql-tooltip[data-mode="link"]::before {
   content: "Link:";
 }
-html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
+html[lang="fr"] .ql-tooltip[data-mode="link"]::before {
   content: "Lien";
 }
-.ql-snow .ql-tooltip[data-mode="formula"]::before {
+.ql-tooltip[data-mode="formula"]::before {
   content: "Enter formula";
 }
-.ql-snow .ql-tooltip[data-mode="video"]::before {
+.ql-tooltip[data-mode="video"]::before {
   content: "Enter video";
 }
 .ql-snow a {
@@ -1739,35 +1739,35 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
   h1,
   .h1 {
     font-size: 2.25em;
-    line-height: 1.27777778em;
+    line-height: 1.27777778;
     margin-top: 0.63888889em;
     margin-bottom: 0em;
   }
   h2,
   .h2 {
     font-size: 1.6875em;
-    line-height: 1.7037037em;
+    line-height: 1.7037037;
     margin-top: 0.65185185em;
     margin-bottom: 0em;
   }
   h3,
   .h3 {
     font-size: 1em;
-    line-height: 1.4375em;
+    line-height: 1.4375;
     margin-top: 1.4375em;
     margin-bottom: 0em;
   }
   h4,
   .h4 {
     font-size: 1em;
-    line-height: 1.4375em;
+    line-height: 1.4375;
     margin-top: 1.4375em;
     margin-bottom: 0em;
   }
   h5,
   .h5 {
     font-size: 1em;
-    line-height: 1.4375em;
+    line-height: 1.4375;
     margin-top: 1.4375em;
     margin-bottom: 0em;
   }
@@ -1830,10 +1830,17 @@ html[lang="fr"] .ql-snow .ql-tooltip[data-mode="link"]::before {
 
   ol,
   ul {
-    padding-left: 1.5em;
+    padding-left: 0em;
 
     > li {
       list-style-type: none;
+      padding-left: 1em;
+
+      &::before {
+        margin-left: -1em;
+        margin-right: 0.3em;
+        text-align: right;
+      }
     }
   }
   ul > li::before {
@@ -2055,4 +2062,59 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
 .ql-picker.ql-font .ql-picker-item[data-value="Roboto Mono"]::before {
   content: "Roboto mono";
   font-family: "Roboto Mono";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Roboto"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Roboto"]::before {
+  content: "Roboto";
+  font-family: "Roboto";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Source Sans Pro"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Source Sans Pro"]::before {
+  content: "Source Sans Pro";
+  font-family: "Source Sans Pro";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="PT Serif"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="PT Serif"]::before {
+  content: "PT Serif";
+  font-family: "PT Serif";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Work Sans"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Work Sans"]::before {
+  content: "Work Sans";
+  font-family: "Work Sans";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Karla"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Karla"]::before {
+  content: "Karla";
+  font-family: "Karla";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Source Serif Pro"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Source Serif Pro"]::before {
+  content: "Source Serif Pro";
+  font-family: "Source Serif Pro";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="IBM Plex Serif"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="IBM Plex Serif"]::before {
+  content: "IBM Plex Serif";
+  font-family: "IBM Plex Serif";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Volkhov"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Volkhov"]::before {
+  content: "Volkhov";
+  font-family: "Volkhov";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Archivo Black"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Archivo Black"]::before {
+  content: "Archivo Black";
+  font-family: "Archivo Black";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Spectral"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Spectral"]::before {
+  content: "Spectral";
+  font-family: "Spectral";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Krub"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Krub"]::before {
+  content: "Krub";
+  font-family: "Krub";
 }

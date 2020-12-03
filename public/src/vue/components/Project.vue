@@ -9,7 +9,10 @@
     @mouseover="is_hovered = true"
     @mouseleave="is_hovered = false"
   >
-    <div class="m_project--presentation" :class="{ 'is--full': context === 'full' }">
+    <div
+      class="m_project--presentation"
+      :class="{ 'is--full': context === 'full' }"
+    >
       <div v-if="previewURL" class="m_project--presentation--vignette">
         <img :src="previewURL" class draggable="false" />
       </div>
@@ -21,7 +24,9 @@
           type="button"
           class="buttonLink"
           @click="showEditProjectModal = true"
-        >{{ $t("add_a_cover_image") }}</button>
+        >
+          {{ $t("add_a_cover_image") }}
+        </button>
       </div>
 
       <div class="m_project--presentation--text">
@@ -46,11 +51,14 @@
                     $root.settings.project_filter.keyword === keyword.title,
                 },
               ]"
-            >{{ keyword.title }}</span>
+              >{{ keyword.title }}</span
+            >
           </div>
           <div class="m_metaField" v-if="!!project.authors">
             <div>{{ $t("author") }}</div>
-            <div class="m_authorField">
+            <AuthorsInput :currentAuthors="project.authors" :read_only="true" />
+
+            <!-- <div class="m_authorField">
               <span
                 v-for="author in project.authors"
                 v-if="$root.getAuthor(author.slugFolderName)"
@@ -68,10 +76,13 @@
                 >{{ $root.getAuthor(author.slugFolderName).name }}</template>
                 <template v-else>{{ author.slugFolderName }}</template>
               </span>
-            </div>
+            </div> -->
           </div>
 
-          <div class="m_metaField" v-if="!!project.folder && context === 'full'">
+          <div
+            class="m_metaField"
+            v-if="!!project.folder && context === 'full'"
+          >
             <div>{{ $t("folder") }}</div>
             <div class="m_folderField">
               <span>{{ project.folder }}</span>
@@ -112,12 +123,12 @@
             width="46.3px"
             height="46.3px"
             viewBox="0 0 46.3 46.3"
-            style="enable-background: new 0 0 46.3 46.3;"
+            style="enable-background: new 0 0 46.3 46.3"
             xml:space="preserve"
           >
             <path
               class="st0"
-              style="fill: currentColor;"
+              style="fill: currentColor"
               d="M38.1,29.1L37.8,23c-0.1-3.7-0.1-6.7,0.6-9.7l-33,33L0,40.9L32.9,7.9c-2.9,0.6-6,0.6-9.6,0.5l-6.2-0.3L17.8,0
 		l27.1,1.4l1.4,27.1L38.1,29.1z"
             />
@@ -169,7 +180,7 @@
             width="100.7px"
             height="101px"
             viewBox="0 0 100.7 101"
-            style="enable-background: new 0 0 100.7 101;"
+            style="enable-background: new 0 0 100.7 101"
             xml:space="preserve"
           >
             <path
@@ -198,7 +209,7 @@
             width="91.6px"
             height="95px"
             viewBox="0 0 91.6 95"
-            style="enable-background: new 0 0 91.6 95;"
+            style="enable-background: new 0 0 91.6 95"
             xml:space="preserve"
           >
             <path
@@ -227,7 +238,7 @@
             width="77.6px"
             height="85.4px"
             viewBox="0 0 77.6 85.4"
-            style="enable-background: new 0 0 77.6 85.4;"
+            style="enable-background: new 0 0 77.6 85.4"
             xml:space="preserve"
           >
             <defs />
@@ -271,7 +282,7 @@
                 width="46.7px"
                 height="70px"
                 viewBox="0 0 46.7 70"
-                style="enable-background: new 0 0 46.7 70;"
+                style="enable-background: new 0 0 46.7 70"
                 xml:space="preserve"
               >
                 <g>
@@ -281,7 +292,10 @@
                       d="M8.5,35.2l4.6,4.2c2.7,2.5,4.8,4.7,6.4,7.3l0-46.7h7.7l0,46.6c1.7-2.5,3.8-4.7,6.4-7.1l4.6-4.2l5.3,6.2 L23.3,59.6L3.2,41.5L8.5,35.2z"
                     />
                   </g>
-                  <polygon class="st0" points="46.7,70 0,70 0,62.4 46.6,62.4 	" />
+                  <polygon
+                    class="st0"
+                    points="46.7,70 0,70 0,62.4 46.6,62.4 	"
+                  />
                 </g>
               </svg>
             </template>
@@ -309,7 +323,7 @@
               width="91.6px"
               height="95px"
               viewBox="0 0 91.6 95"
-              style="enable-background: new 0 0 91.6 95;"
+              style="enable-background: new 0 0 91.6 95"
               xml:space="preserve"
             >
               <polygon
@@ -327,7 +341,12 @@
           <div v-if="showDuplicateProjectMenu" class="margin-bottom-small">
             <label v-html="$t('name_of_copy')" />
             <form @submit.prevent="duplicateWithNewName()" class="input-group">
-              <input type="text" v-model.trim="copy_project_name" required autofocus />
+              <input
+                type="text"
+                v-model.trim="copy_project_name"
+                required
+                autofocus
+              />
               <button type="submit" v-html="$t('copy')" class="bg-bleuvert" />
             </form>
           </div>
@@ -342,7 +361,10 @@
         :read_only="read_only"
       />
 
-      <ClientsCheckingOut :type="'projects'" :slugFolderName="slugProjectName" />
+      <ClientsCheckingOut
+        :type="'projects'"
+        :slugFolderName="slugProjectName"
+      />
     </div>
 
     <MediaLibrary
@@ -363,6 +385,7 @@ import EditProject from "./modals/EditProject.vue";
 import MediaLibrary from "./MediaLibrary.vue";
 import AccessController from "./subcomponents/AccessController.vue";
 import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
+import AuthorsInput from "./subcomponents/AuthorsInput.vue";
 
 export default {
   props: {
@@ -376,6 +399,7 @@ export default {
     MediaLibrary,
     AccessController,
     ClientsCheckingOut,
+    AuthorsInput,
   },
   data() {
     return {
@@ -403,10 +427,10 @@ export default {
         });
       }
     },
-    is_selected: function() {
+    is_selected: function () {
       this.local_is_selected = this.is_selected;
     },
-    "project.viewing_limited_to": function() {
+    "project.viewing_limited_to": function () {
       this.$socketio.listMedias({
         type: "projects",
         slugFolderName: this.slugProjectName,
@@ -439,7 +463,7 @@ export default {
       ) {
         return false;
       }
-      const thumb = this.project.preview.filter(p => p.size === 640);
+      const thumb = this.project.preview.filter((p) => p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }

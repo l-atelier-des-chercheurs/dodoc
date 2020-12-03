@@ -85,6 +85,7 @@ select {
   padding-top: 0;
   padding-bottom: 0;
   padding-right: calc(var(--component-spacing) * 0.5 + 1rem);
+  min-width: 0px;
 }
 
 textarea {

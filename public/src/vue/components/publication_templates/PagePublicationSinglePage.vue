@@ -16,18 +16,26 @@
         "
       >
         <template v-if="!preview_mode">
-          <div
+          <template
             v-for="(pos, index) in ['left', 'right', 'top', 'bottom']"
-            v-if="page['margin_' + pos] > 0"
-            class="m_page--margins_rule"
-            :class="['m_page--margins_rule_' + pos]"
-            :style="`--margin_${pos}: ${page['margin_' + pos]}mm`"
-            :key="index"
-          ></div>
+            v-if="!model_for_this_publication"
+          >
+            <div
+              v-if="page['margin_' + pos] > 0"
+              class="m_page--margins_rule"
+              :class="['m_page--margins_rule_' + pos]"
+              :style="`--margin_${pos}: ${page['margin_' + pos]}mm`"
+              :key="index"
+            ></div>
+          </template>
 
           <div
             class="m_page--grid"
-            v-if="!!page.gridstep && page.gridstep > 0 && !model_for_this_publication"
+            v-if="
+              !!page.gridstep &&
+              page.gridstep > 0 &&
+              !model_for_this_publication
+            "
             :style="`
             --gridstep: ${page.gridstep}mm; 
             --margin_left: ${page.margin_left}mm; 
@@ -55,7 +63,9 @@
           "
           class="m_page--pageNumber"
           :class="{ toRight: true }"
-        >{{ pageNumber + 1 }}</div>
+        >
+          {{ pageNumber + 1 }}
+        </div>
 
         <div v-if="publication_medias.length === 0" class="m_page--noMedia">
           <template
@@ -66,9 +76,14 @@
                 'link_publication',
               ].includes($root.state.mode)
             "
-          >{{ $t("no_media_on_this_page") }}</template>
+            >{{ $t("no_media_on_this_page") }}</template
+          >
         </div>
-        <div v-else v-for="media in publication_medias" :key="media.metaFileName">
+        <div
+          v-else
+          v-for="media in publication_medias"
+          :key="media.metaFileName"
+        >
           <transition name="MediaPublication" :duration="500">
             <div>
               <MediaPublication
@@ -82,6 +97,7 @@
                 :zoom="zoom"
                 :publi_is_model="publi_is_model"
                 :model_for_this_publication="model_for_this_publication"
+                :publication_is_submitted="publication_is_submitted"
                 :slugPubliName="slugPubliName"
                 @removePubliMedia="(values) => removePubliMedia(values)"
                 @editPubliMedia="
@@ -119,6 +135,7 @@ export default {
     zoom: Number,
     publi_is_model: Boolean,
     model_for_this_publication: [Boolean, Object],
+    publication_is_submitted: Boolean,
   },
   components: {
     MediaPublication,
@@ -164,7 +181,8 @@ export default {
         this.$root.settings.has_modal_opened ||
         event.target.tagName.toLowerCase() === "input" ||
         event.target.tagName.toLowerCase() === "textarea" ||
-        event.target.className.includes("ql-editor")
+        event.target.className.includes("ql-editor") ||
+        event.target.hasAttribute("contenteditable")
       )
         return;
 
@@ -212,7 +230,7 @@ export default {
           width: ${page.width}mm;
           height: ${page.height}mm;
           margin: 40px;
-          padding: 40px ${140 / this.zoom}px ${100 * this.zoom}px ${
+          padding: 80px ${140 / this.zoom}px ${100 * this.zoom}px ${
           240 / this.zoom
         }px;  
           box-sizing: content-box;

@@ -95,7 +95,8 @@ module.exports = (function () {
 
         webPreferences: {
           allowRunningInsecureContent: true,
-          nodeIntegration: true,
+          nodeIntegration: false,
+          contextIsolation: false,
           plugins: true,
         },
       });

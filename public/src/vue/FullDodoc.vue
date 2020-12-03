@@ -17,8 +17,16 @@
         :data-docpane_isopen="$root.settings.show_publi_panel === true"
         :data-chatpane_isopen="$root.settings.show_chat_panel === true"
       >
-        <pane class="splitter-pane" ref="doPane" min-size="5" :size="panels_width.doPane">
-          <div class="m_activitiesPanel--do" :class="{ 'is--large': activitiesPanel_is_large }">
+        <pane
+          class="splitter-pane"
+          ref="doPane"
+          min-size="5"
+          :size="panels_width.doPane"
+        >
+          <div
+            class="m_activitiesPanel--do"
+            :class="{ 'is--large': activitiesPanel_is_large }"
+          >
             <div
               style="
                 position: relative;
@@ -50,7 +58,7 @@
               </transition>
 
               <transition name="CaptureView" :duration="500">
-                <CaptureView
+                <CaptureView2
                   v-if="$root.do_navigation.view === 'CaptureView'"
                   :slugFolderName="$root.do_navigation.current_slugProjectName"
                   :type="`projects`"
@@ -63,9 +71,12 @@
         <pane class="splitter-pane" ref="docPane" :size="panels_width.docPane">
           <div
             class="m_activitiesPanel--doc"
-            :class="{ 'is--open': $root.settings.show_publi_panel }"
+            :class="{
+              'is--open': $root.settings.show_publi_panel,
+              'is--large': publiPanel_is_large,
+            }"
           >
-            <div style="position: relative; height: 100%; overflow: hidden;">
+            <div style="position: relative; height: 100%; overflow: hidden">
               <transition name="ListView" :duration="500">
                 <Publications
                   v-if="$root.settings.show_publi_panel"
@@ -91,7 +102,11 @@
             </div>
           </div>
         </pane>
-        <pane class="splitter-pane" ref="chatPane" :size="panels_width.chatPane">
+        <pane
+          class="splitter-pane"
+          ref="chatPane"
+          :size="panels_width.chatPane"
+        >
           <div
             class="m_activitiesPanel--chat"
             :class="{ 'is--open': $root.settings.show_chat_panel }"
@@ -123,6 +138,13 @@
       @close="$root.closeMedia()"
       :read_only="!$root.state.connected"
     />
+    <CreateQRModal
+      v-if="$root.qr_modal"
+      :read_only="!$root.state.connected"
+      :type="$root.qr_modal.type"
+      :slugFolderName="$root.qr_modal.slugFolderName"
+      @close="$root.qr_modal = false"
+    />
   </div>
 </template>
 <script>
@@ -131,8 +153,10 @@ import TopBar from "./TopBar.vue";
 import ListView from "./ListView.vue";
 import Chats from "./Chats.vue";
 import ProjectView from "./ProjectView.vue";
-import CaptureView from "./CaptureView.vue";
+// import CaptureView from "./CaptureView.vue";
+import CaptureView2 from "./CaptureView2.vue";
 import EditMedia from "./components/modals/EditMedia.vue";
+import CreateQRModal from "./components/modals/CreateQRModal.vue";
 import Publications from "./Publications.vue";
 import Publication from "./Publication.vue";
 import { Splitpanes, Pane } from "splitpanes";
@@ -147,8 +171,10 @@ export default {
     ListView,
     Chats,
     ProjectView,
-    CaptureView,
+    // CaptureView,
+    CaptureView2,
     EditMedia,
+    CreateQRModal,
     Publications,
     Publication,
     Splitpanes,
@@ -213,6 +239,17 @@ export default {
     activitiesPanel_is_large() {
       if (
         (this.panels_width.doPane / 100) * this.$root.settings.windowWidth <
+        850
+      )
+        return false;
+
+      if (this.$root.settings.windowHeight < 650) return false;
+
+      return true;
+    },
+    publiPanel_is_large() {
+      if (
+        (this.panels_width.docPane / 100) * this.$root.settings.windowWidth <
         850
       )
         return false;

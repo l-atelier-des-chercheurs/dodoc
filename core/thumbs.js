@@ -35,7 +35,7 @@ module.exports = (function () {
       dev.logfunction(
         `THUMBS — makeMediaThumbs — Making thumbs for media with slugFolderName = ${slugFolderName}, filename = ${filename}, mediaType: ${mediaType}, type: ${type}, subtype: ${subtype}`
       );
-      if (!["image", "video", "stl"].includes(mediaType)) {
+      if (!["image", "video", "audio", "stl"].includes(mediaType)) {
         dev.logverbose(
           `THUMBS — makeMediaThumbs — media is not of type image or video`
         );
@@ -55,53 +55,96 @@ module.exports = (function () {
       let mediaPath = path.join(mainFolderPath, slugFolderName, filename);
 
       // let’s make sure that our thumb folder exists first
-      fs.mkdirp(api.getFolderPath(thumbFolderPath), function (err) {
-        if (err) {
-          reject(err);
-        }
+      fs.ensureDir(api.getFolderPath(thumbFolderPath))
+        .then(() => {
+          // regroup all thumbs promises so they can happen as fast as possible
+          let makeThumbs = [];
 
-        // regroup all thumbs promises so they can happen as fast as possible
-        let makeThumbs = [];
-
-        if (mediaType === "image") {
-          thumbResolutions.forEach((thumbRes) => {
-            let makeThumb = new Promise((resolve, reject) => {
-              _makeImageThumb(mediaPath, thumbFolderPath, filename, thumbRes)
-                .then((thumbPath) => {
-                  let thumbMeta = {
-                    path: thumbPath,
-                    size: thumbRes,
-                  };
-                  resolve(thumbMeta);
-                })
-                .catch((err) => {
-                  dev.error(
-                    `makeMediaThumbs / Failed to make image thumbs with error ${err}`
-                  );
-                  resolve();
-                });
+          if (mediaType === "image") {
+            thumbResolutions.forEach((thumbRes) => {
+              let makeThumb = new Promise((resolve, reject) => {
+                _makeImageThumb(mediaPath, thumbFolderPath, filename, thumbRes)
+                  .then((thumbPath) => {
+                    let thumbMeta = {
+                      path: thumbPath,
+                      size: thumbRes,
+                    };
+                    resolve(thumbMeta);
+                  })
+                  .catch((err) => {
+                    dev.error(
+                      `makeMediaThumbs / Failed to make image thumbs with error ${err}`
+                    );
+                    resolve();
+                  });
+              });
+              makeThumbs.push(makeThumb);
             });
-            makeThumbs.push(makeThumb);
-          });
-        }
+          } else if (mediaType === "video") {
+            // make screenshot
+            let screenshotsTimemarks = [0];
+            screenshotsTimemarks.forEach((timeMark) => {
+              let makeScreenshot = new Promise((resolve, reject) => {
+                _makeVideoScreenshot(
+                  mediaPath,
+                  thumbFolderPath,
+                  filename,
+                  timeMark
+                )
+                  .then(({ screenshotPath, screenshotName }) => {
+                    // make screenshot, then make thumbs out of each screenshot and push this to thumbs
+                    // naming :
+                    // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
+                    // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
 
-        if (mediaType === "video") {
-          // make screenshot
-          let screenshotsTimemarks = [0];
-          screenshotsTimemarks.forEach((timeMark) => {
-            let makeScreenshot = new Promise((resolve, reject) => {
-              _makeVideoScreenshot(
-                mediaPath,
-                thumbFolderPath,
-                filename,
-                timeMark
-              )
+                    let makeThumbsFromScreenshot = [];
+
+                    thumbResolutions.forEach((thumbRes) => {
+                      let makeThumbFromScreenshot = new Promise(
+                        (resolve, reject) => {
+                          _makeImageThumb(
+                            api.getFolderPath(screenshotPath),
+                            thumbFolderPath,
+                            screenshotName,
+                            thumbRes
+                          )
+                            .then((thumbPath) => {
+                              let thumbMeta = {
+                                path: thumbPath,
+                                size: thumbRes,
+                              };
+                              resolve(thumbMeta);
+                            })
+                            .catch((err) => {
+                              dev.error(
+                                `makeMediaThumbs / Failed to make video thumbs with error ${err}`
+                              );
+                              resolve();
+                            });
+                        }
+                      );
+                      makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
+                    });
+                    Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
+                      resolve({ timeMark, thumbsData });
+                    });
+                  })
+                  .catch((err) => {
+                    dev.error(`Couldn’t make video screenshots.`);
+                    resolve();
+                  });
+              });
+              makeThumbs.push(makeScreenshot);
+            });
+          } else if (mediaType === "audio") {
+            // make screenshot
+            let makeWaveform = new Promise((resolve, reject) => {
+              _makeAudioWaveforms(mediaPath, thumbFolderPath, filename)
                 .then(({ screenshotPath, screenshotName }) => {
                   // make screenshot, then make thumbs out of each screenshot and push this to thumbs
                   // naming :
                   // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
                   // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
-
                   let makeThumbsFromScreenshot = [];
 
                   thumbResolutions.forEach((thumbRes) => {
@@ -131,83 +174,84 @@ module.exports = (function () {
                     makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
                   });
                   Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
-                    resolve({ timeMark, thumbsData });
+                    resolve({ waveformType: "mono", thumbsData });
                   });
                 })
                 .catch((err) => {
-                  dev.error(`Couldn’t make video screenshots.`);
+                  dev.error(`Couldn’t make audio waveforms.`);
                   resolve();
                 });
             });
-            makeThumbs.push(makeScreenshot);
-          });
-        }
-
-        if (mediaType === "stl") {
-          let screenshotsAngles = [0];
-          screenshotsAngles.forEach((angle) => {
-            let makeSTLScreenshot = new Promise((resolve, reject) => {
-              _makeSTLScreenshot({
-                slugFolderName,
-                thumbFolderPath,
-                filename,
-                angle,
-              })
-                .then(({ screenshotPath, screenshotName }) => {
-                  // make screenshot, then make thumbs out of each screenshot and push this to thumbs
-                  // naming :
-                  // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
-                  // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
-
-                  let makeThumbsFromScreenshot = [];
-
-                  thumbResolutions.forEach((thumbRes) => {
-                    let makeThumbFromScreenshot = new Promise(
-                      (resolve, reject) => {
-                        _makeImageThumb(
-                          api.getFolderPath(screenshotPath),
-                          thumbFolderPath,
-                          screenshotName,
-                          thumbRes
-                        )
-                          .then((thumbPath) => {
-                            let thumbMeta = {
-                              path: thumbPath,
-                              size: thumbRes,
-                            };
-                            resolve(thumbMeta);
-                          })
-                          .catch((err) => {
-                            dev.error(
-                              `makeMediaThumbs / Failed to make stl thumbs with error ${err}`
-                            );
-                            resolve();
-                          });
-                      }
-                    );
-                    makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
-                  });
-                  Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
-                    resolve({ angle, thumbsData });
-                  });
+            makeThumbs.push(makeWaveform);
+          } else if (mediaType === "stl") {
+            let screenshotsAngles = [0];
+            screenshotsAngles.forEach((angle) => {
+              let makeSTLScreenshot = new Promise((resolve, reject) => {
+                _makeSTLScreenshot({
+                  slugFolderName,
+                  thumbFolderPath,
+                  filename,
+                  angle,
                 })
-                .catch((err) => {
-                  dev.error(`Couldn’t make stl screenshots.`);
-                  resolve();
-                });
-            });
-            makeThumbs.push(makeSTLScreenshot);
-          });
-        }
+                  .then(({ screenshotPath, screenshotName }) => {
+                    // make screenshot, then make thumbs out of each screenshot and push this to thumbs
+                    // naming :
+                    // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
+                    // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
 
-        Promise.all(makeThumbs)
-          .then((thumbData) => {
-            resolve(thumbData);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
+                    let makeThumbsFromScreenshot = [];
+
+                    thumbResolutions.forEach((thumbRes) => {
+                      let makeThumbFromScreenshot = new Promise(
+                        (resolve, reject) => {
+                          _makeImageThumb(
+                            api.getFolderPath(screenshotPath),
+                            thumbFolderPath,
+                            screenshotName,
+                            thumbRes
+                          )
+                            .then((thumbPath) => {
+                              let thumbMeta = {
+                                path: thumbPath,
+                                size: thumbRes,
+                              };
+                              resolve(thumbMeta);
+                            })
+                            .catch((err) => {
+                              dev.error(
+                                `makeMediaThumbs / Failed to make stl thumbs with error ${err}`
+                              );
+                              resolve();
+                            });
+                        }
+                      );
+                      makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
+                    });
+                    Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
+                      resolve({ angle, thumbsData });
+                    });
+                  })
+                  .catch((err) => {
+                    dev.error(`Couldn’t make stl screenshots.`);
+                    resolve();
+                  });
+              });
+              makeThumbs.push(makeSTLScreenshot);
+            });
+          }
+
+          Promise.all(makeThumbs)
+            .then((thumbData) => {
+              resolve(thumbData);
+            })
+            .catch((err) => {
+              reject(err);
+            });
+        })
+        .catch((err) => {
+          dev.error(`Error : ` + err);
+          reject(err);
+        });
     });
   }
 
@@ -343,11 +387,7 @@ module.exports = (function () {
 
       let fullThumbFolderPath = api.getFolderPath(thumbFolderPath);
 
-      fs.mkdirp(fullThumbFolderPath, function (err) {
-        if (err) {
-          reject(err);
-        }
-
+      fs.ensureDir(fullThumbFolderPath).then(() => {
         // get all thumbs
         fs.readdir(fullThumbFolderPath, function (err, filenames) {
           //         dev.logverbose(`Found filenames: ${filenames}`);
@@ -385,6 +425,9 @@ module.exports = (function () {
           Promise.all(tasks).then(() => {
             resolve();
           });
+        }).catch((err) => {
+          dev.error(`Error : ` + err);
+          reject(err);
         });
       });
     });
@@ -405,50 +448,51 @@ module.exports = (function () {
 
       let fullThumbFolderPath = api.getFolderPath(thumbFolderPath);
 
-      fs.mkdirp(fullThumbFolderPath, function (err) {
-        if (err) {
-          reject(err);
-        }
+      fs.ensureDir(fullThumbFolderPath)
+        .then(() => {
+          // get all thumbs
+          fs.readdir(fullThumbFolderPath, function (err, filenames) {
+            //         dev.logverbose(`Found filenames: ${filenames}`);
+            if (err) {
+              dev.error(`Couldn't read content dir: ${err}`);
+              reject(err);
+            }
+            if (filenames === undefined) {
+              dev.error(`No folder found: ${err}`);
+              reject(err);
+            }
 
-        // get all thumbs
-        fs.readdir(fullThumbFolderPath, function (err, filenames) {
-          //         dev.logverbose(`Found filenames: ${filenames}`);
-          if (err) {
-            dev.error(`Couldn't read content dir: ${err}`);
-            reject(err);
-          }
-          if (filenames === undefined) {
-            dev.error(`No folder found: ${err}`);
-            reject(err);
-          }
-
-          // get all thumbs that start with
-          var thumbs = filenames.filter((name) => {
-            return name.indexOf(slugMediaName) === 0;
-          });
-
-          let tasks = [];
-
-          thumbs.map((thumbName) => {
-            let removeThisThumb = new Promise((resolve, reject) => {
-              let pathToThumb = path.join(fullThumbFolderPath, thumbName);
-              fs.unlink(pathToThumb, (err) => {
-                dev.logverbose(`Removing thumb ${thumbName}`);
-                if (err) {
-                  reject(`${err}`);
-                } else {
-                  resolve();
-                }
-              });
+            // get all thumbs that start with
+            var thumbs = filenames.filter((name) => {
+              return name.indexOf(slugMediaName) === 0;
             });
-            tasks.push(removeThisThumb);
-          });
 
-          Promise.all(tasks).then(() => {
-            resolve();
+            let tasks = [];
+
+            thumbs.map((thumbName) => {
+              let removeThisThumb = new Promise((resolve, reject) => {
+                let pathToThumb = path.join(fullThumbFolderPath, thumbName);
+                fs.unlink(pathToThumb, (err) => {
+                  dev.logverbose(`Removing thumb ${thumbName}`);
+                  if (err) {
+                    reject(`${err}`);
+                  } else {
+                    resolve();
+                  }
+                });
+              });
+              tasks.push(removeThisThumb);
+            });
+
+            Promise.all(tasks).then(() => {
+              resolve();
+            });
           });
+        })
+        .catch((err) => {
+          dev.error(`Error : ` + err);
+          reject(err);
         });
-      });
     });
   }
 
@@ -575,8 +619,8 @@ module.exports = (function () {
     timeMark
   ) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(
-        `Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark}`
+      dev.logfunction(
+        `THUMBS — _makeVideoScreenshot — Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark}`
       );
 
       let screenshotName = `${filename}.${timeMark}.jpeg`;
@@ -615,6 +659,50 @@ module.exports = (function () {
     });
   }
 
+  function _makeAudioWaveforms(mediaPath, thumbFolderPath, filename) {
+    return new Promise(function (resolve, reject) {
+      dev.logfunction(
+        `THUMBS — _makeAudioWaveforms — Looking to make an audio waveform for ${mediaPath}`
+      );
+
+      let screenshotName = `${filename}.wf.png`;
+      let screenshotPath = path.join(thumbFolderPath, screenshotName);
+      let fullScreenshotPath = api.getFolderPath(screenshotPath);
+
+      // check first if it exists, resolve if it does
+      fs.access(fullScreenshotPath, fs.F_OK, function (err) {
+        // if userDir folder doesn't exist yet at destination
+        if (err) {
+          ffmpeg()
+            .input(mediaPath)
+            .input(`color=white:s=3000x2000`)
+            .inputFormat("lavfi")
+            .complexFilter(
+              "[0:a]aformat=channel_layouts=mono,showwavespic=s=3000x2000:colors=#fc4b60[fg];[1:v][fg]overlay=format=auto"
+            )
+            .outputOptions(["-vframes 1"])
+            // setup event handlers
+            .on("end", function (files) {
+              dev.logverbose(
+                `Audio waveform were saved : ${JSON.stringify(files, null, 4)}`
+              );
+              resolve({ screenshotPath, screenshotName });
+            })
+            .on("error", function (err) {
+              dev.error(`ffmpeg failed: ${err.message}`);
+              reject(err.message);
+            })
+            .save(fullScreenshotPath);
+        } else {
+          dev.logverbose(
+            `Screenshots already exist at path ${fullScreenshotPath}`
+          );
+          resolve({ screenshotPath, screenshotName });
+        }
+      });
+    });
+  }
+
   function _makeSTLScreenshot({
     slugFolderName,
     thumbFolderPath,
@@ -633,10 +721,12 @@ module.exports = (function () {
       let fullScreenshotPath = api.getFolderPath(screenshotPath);
 
       // check first if it exists, resolve if it does
-      fs.access(fullScreenshotPath, fs.F_OK, function (err) {
-        // if userDir folder doesn't exist yet at destination
-        if (err) {
+      fs.pathExists(fullScreenshotPath).then((exists) => {
+        if (!exists) {
           const { BrowserWindow } = require("electron");
+
+          const url_to_load = `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/${slugFolderName}/${filename}`;
+          dev.logverbose(`STL url to load ${url_to_load}`);
 
           let win = new BrowserWindow({
             // width: 800,
@@ -644,19 +734,26 @@ module.exports = (function () {
             width: 1800,
             height: 1800,
             show: false,
+            webPreferences: {
+              contextIsolation: true,
+              allowRunningInsecureContent: true,
+            },
           });
           win.loadURL(
             // `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/faire-de-la-3d-a-la-maison/bourlingue.stl`
-            `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/${slugFolderName}/${filename}`
+            url_to_load
           );
 
-          win.webContents.on("did-finish-load", () => {
+          win.webContents.on("did-stop-loading", async () => {
+            dev.logverbose(
+              `THUMBS — _makeSTLScreenshot : finished loading page`
+            );
+
             // Use default printing options
             setTimeout(() => {
-              win.capturePage((image) => {
-                var conv = image.toPNG(1.0); // to PNG
-
-                fs.writeFile(fullScreenshotPath, conv, (error) => {
+              win.capturePage().then((image) => {
+                win.close();
+                fs.writeFile(fullScreenshotPath, image.toPNG(1.0), (error) => {
                   if (error) throw error;
                   dev.logverbose(
                     `THUMBS — _makeSTLScreenshot : created image at ${fullScreenshotPath}`

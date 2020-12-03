@@ -27,14 +27,18 @@
     />
 
     <PublicationDisplayButtons
-      v-if="$root.store.request.display !== 'survey'"
       :preview_mode="preview_mode"
       :show_zoom_buttons="!contact_sheet_mode"
+      :show_page_navigator="!contact_sheet_mode"
       :zoom="zoom"
       :zoom_min="zoom_min"
       :zoom_max="zoom_max"
+      :opened_page_index="opened_page_index"
+      :total_number_of_pages="pagesWithDefault.length"
       @togglePreviewMode="$emit('togglePreviewMode')"
       @setZoom="(val) => (zoom = val)"
+      @navPage="(relative_index) => navPage(relative_index)"
+      @showAllPages="showAllPages()"
     />
 
     <div
@@ -48,7 +52,7 @@
       "
     >
       <div class="m_publicationNavMenu--settings">
-        <div>
+        <!-- <div>
           <button
             type="button"
             class="buttonLink"
@@ -57,7 +61,7 @@
           >
             {{ $t("show_all_pages") }}
           </button>
-        </div>
+        </div> -->
 
         <div
           class="_settings_pane_button"
@@ -88,15 +92,20 @@
           :publications_options="publications_options"
         />
       </div>
-      <hr v-if="!contact_sheet_mode" class="margin-none" />
-      <div class="m_publicationNavMenu--buttonRow" v-if="!contact_sheet_mode">
+      <hr v-if="!contact_sheet_mode && false" class="margin-none" />
+      <div
+        class="m_publicationNavMenu--buttonRow"
+        v-if="!contact_sheet_mode && false"
+      >
         <button
           type="button"
           @click="navPage(-1)"
           :disabled="opened_page_index === 0"
         >
           <img src="/images/i_arrow_left.svg" draggable="false" />
-          {{ $t("previous_page") }}
+          <span>
+            {{ $t("previous_page") }}
+          </span>
         </button>
         <div class="font-small text-lc">
           <span
@@ -115,7 +124,9 @@
           @click="navPage(+1)"
           :disabled="opened_page_index === pagesWithDefault.length - 1"
         >
-          {{ $t("next_page") }}
+          <span>
+            {{ $t("next_page") }}
+          </span>
           <img src="/images/i_arrow_right.svg" draggable="false" />
         </button>
       </div>
@@ -147,6 +158,7 @@
           :key="page.id"
           :preview_mode="preview_mode"
           :slugPubliName="slugPubliName"
+          :publication_is_submitted="publication_is_submitted"
           :pageNumber="pageNumber"
           :page="page"
           :publication_medias="paged_medias[page.id]"
@@ -182,6 +194,7 @@
               :mode="'contact_sheet'"
               :preview_mode="true"
               :slugPubliName="slugPubliName"
+              :publication_is_submitted="publication_is_submitted"
               :pageNumber="pageNumber"
               :page="page"
               :publication_medias="paged_medias[page.id]"
@@ -220,7 +233,7 @@
                     width="168px"
                     height="168px"
                     viewBox="0 0 168 168"
-                    style="enable-background: new 0 0 168 168;"
+                    style="enable-background: new 0 0 168 168"
                     xml:space="preserve"
                   >
                     <rect x="73.5" y="37" class="st0" width="21" height="21" />
@@ -359,6 +372,7 @@
               :mode="'contact_sheet'"
               :preview_mode="true"
               :slugPubliName="slugPubliName"
+              :publication_is_submitted="publication_is_submitted"
               :pageNumber="pageNumber"
               :page="page"
               :publication_medias="paged_medias[page.id]"
@@ -459,6 +473,7 @@
             :mode="'single'"
             :key="$root.settings.current_publication.page_id"
             :preview_mode="preview_mode"
+            :publication_is_submitted="publication_is_submitted"
             :slugPubliName="slugPubliName"
             :pageNumber="opened_page_index"
             :page="opened_single_page"
@@ -488,11 +503,11 @@
       :url_to_publi="url_to_publi"
       :model_for_this_publication="model_for_this_publication"
       :can_edit_publi="can_edit_publi"
-      @lockAndPublish="$emit('lockAndPublish')"
+      @openPublishModal="$emit('openPublishModal')"
     />
     <div
       ref="mmMeasurer"
-      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%;"
+      style="height: 10mm; width: 10mm; left: 100%; position: fixed; top: 100%"
     />
   </div>
 </template>
@@ -650,6 +665,11 @@ export default {
     },
   },
   computed: {
+    publication_is_submitted() {
+      if (!!this.publication.date_submitted) return true;
+      return false;
+    },
+
     opened_single_page() {
       if (this.opened_page_index === false) return false;
       return this.pagesWithDefault[this.opened_page_index];

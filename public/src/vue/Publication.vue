@@ -14,7 +14,7 @@
       @togglePreviewMode="preview_mode = !preview_mode"
       @editPubliMedia="editPubliMedia"
       @addMedia="addMedia"
-      @lockAndPublish="lockAndPublish"
+      @openPublishModal="openPublishModal"
     />
     <Story
       v-if="publication.template === 'story'"
@@ -34,7 +34,7 @@
       @addMedia="addMediaOrdered"
       @insertMediasInList="insertMediasInList"
       @togglePreviewMode="preview_mode = !preview_mode"
-      @lockAndPublish="lockAndPublish"
+      @openPublishModal="openPublishModal"
     />
     <VideoPublication
       v-else-if="publication.template === 'video_assemblage'"
@@ -139,6 +139,15 @@
       "
       :read_only="!$root.state.connected"
     />-->
+
+    <PublishModal
+      v-if="show_publish_modal"
+      :read_only="read_only"
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      :can_edit_publi="can_edit_publi"
+      @close="show_publish_modal = false"
+    />
   </div>
 </template>
 <script>
@@ -151,6 +160,8 @@ import StopmotionAnimation from "./components/publication_templates/StopmotionAn
 import MixAudioAndVideo from "./components/publication_templates/MixAudioAndVideo.vue";
 import MixAudioAndImage from "./components/publication_templates/MixAudioAndImage.vue";
 // import Carreau from "./components/publication_templates/Carreau.vue";
+
+import PublishModal from "./components/modals/PublishModal.vue";
 
 export default {
   props: {
@@ -166,12 +177,14 @@ export default {
     StopmotionAnimation,
     MixAudioAndVideo,
     MixAudioAndImage,
+    PublishModal,
   },
   data() {
     return {
       medias: [],
       publication_model_medias: [],
       preview_mode: true,
+      show_publish_modal: false,
     };
   },
   created() {},
@@ -239,16 +252,20 @@ export default {
     },
     "publication.follows_model": {
       handler() {
-        const model = this.model_for_this_publication;
-        if (model) {
+        if (!!this.publication.follows_model) {
           this.$socketio.listFolder({
             type: "publications",
-            slugFolderName: model.slugFolderName,
+            slugFolderName: this.publication.follows_model,
           });
           this.$socketio.listMedias({
             type: "publications",
-            slugFolderName: model.slugFolderName,
+            slugFolderName: this.publication.follows_model,
           });
+
+          // this.$eventHub.$on(
+          //   "socketio.projects.medias_listed",
+          //   model_media_listed
+          // );
         }
       },
       deep: true,
@@ -290,6 +307,9 @@ export default {
       return this.publication.slugFolderName;
     },
     paged_medias() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Publication • COMPUTED: paged_medias`);
+
       const publication = this.model_for_this_publication
         ? this.model_for_this_publication
         : this.publication;
@@ -340,8 +360,6 @@ export default {
         // si le média du modèle est un placeholder
         // chercher les médias de la réponse qui contiennent une référence au modèle
       }, {});
-
-      return medias_in_order;
     },
     layered_medias() {
       return this.$_.groupBy(this.medias, "layer_id");
@@ -373,20 +391,25 @@ export default {
         ? this.model_for_this_publication
         : this.publication;
 
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Publication • COMPUTED: medias_in_order`);
+
       if (
         !Array.isArray(publication.medias_slugs) ||
         publication.medias_slugs.length === 0
       ) {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`Publication • COMPUTED: medias_in_order — is empty`);
         return [];
       }
 
-      const medias_in_order = publication.medias_slugs.reduce((acc, item) => {
+      const _medias_in_order = publication.medias_slugs.reduce((acc, item) => {
         const medias = this.model_for_this_publication
           ? this.publication_model_medias
           : this.medias;
 
         const media = medias.find((m) => m.metaFileName === item.slugMediaName);
-        if (!media) return acc;
+        if (!media || !media.hasOwnProperty("metaFileName")) return acc;
 
         if (this.model_for_this_publication && media.type === "placeholder") {
           const placeholder_reply_media = this.medias.find(
@@ -422,7 +445,12 @@ export default {
         return acc;
       }, []);
 
-      return medias_in_order;
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `Publication • COMPUTED: medias_in_order — length = ${_medias_in_order.length}`
+        );
+
+      return _medias_in_order;
     },
   },
   methods: {
@@ -431,7 +459,7 @@ export default {
       // triggering listspecificmedias over and over
 
       if (this.$root.state.dev_mode === "debug")
-        console.log(`Publication • COMPUTED: medias`);
+        console.log(`Publication • METHODS: updateMediasPubli`);
 
       let { medias, missingMedias } = this.getLinkedMediasForPubli({
         publication: this.publication,
@@ -733,23 +761,8 @@ export default {
         // this.preview_mode = !this.preview_mode;
       }
     },
-    lockAndPublish() {
-      var now = this.$moment();
-
-      const editing_limited_to = "nobody";
-      const viewing_limited_to = this.$root.current_author
-        ? "only_authors"
-        : "everybody";
-
-      this.$root.editFolder({
-        type: "publications",
-        slugFolderName: this.slugPubliName,
-        data: {
-          date_submitted: now,
-          editing_limited_to,
-          viewing_limited_to,
-        },
-      });
+    openPublishModal() {
+      this.show_publish_modal = true;
     },
   },
 };

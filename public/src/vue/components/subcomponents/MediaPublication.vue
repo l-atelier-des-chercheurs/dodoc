@@ -20,6 +20,8 @@
         'is--overflowing': is_text_overflowing,
         'is--inline_edited': inline_edit_mode,
         'is--locked': locked_in_place && !model_for_this_publication,
+        'is--copy_mode': copy_mode_enabled,
+        'has--basic_player': media.basic_player === true,
       },
     ]"
   >
@@ -42,6 +44,8 @@
         :read_only="read_only"
         v-model="media._linked_media.content"
         :style="contentStyles"
+        :loop="media.loop_play"
+        :plyr_controls="plyr_controls"
       />
     </template>
     <!-- if not -->
@@ -70,6 +74,8 @@
         :read_only="read_only"
         v-model="media.content"
         :style="contentStyles"
+        :loop="media.loop_play"
+        :plyr_controls="plyr_controls"
       />
 
       <div
@@ -88,6 +94,7 @@
             :theme="'bubble'"
             :type="'publications'"
             :slugFolderName="slugPubliName"
+            :show_cursors="false"
             ref="textField"
           />
           <div v-else class="mediaTextContent">
@@ -160,6 +167,15 @@
             </g>
           </svg>
         </template>
+        <template v-else-if="media.type === 'free_drawing'">
+          <MediaFreeDrawing
+            :inline_edit_mode="inline_edit_mode"
+            :slugPubliName="slugPubliName"
+            :media="media"
+            :mediaSize="mediaSize"
+          />
+        </template>
+
         <template v-else-if="media.type === 'placeholder'">
           <EditPlaceholderModal
             v-if="inline_edit_mode"
@@ -171,6 +187,7 @@
             :key="media.metaFileName"
             :model_placeholder_media="media"
             :slugPubliName="slugPubliName"
+            :publication_is_submitted="publication_is_submitted"
             :publi_is_model="publi_is_model"
             :preview_mode="preview_mode"
             :read_only="read_only"
@@ -248,8 +265,9 @@
         !model_for_this_publication
       "
       class="controlFrame"
-      @mousedown.stop.prevent="dragMedia('mouse')"
-      @touchstart.stop.prevent="dragMedia('touch')"
+      @click="copy_mode_enabled ? duplicateMedia() : false"
+      @mousedown.stop.prevent="!copy_mode_enabled ? dragMedia('mouse') : false"
+      @touchstart.stop.prevent="!copy_mode_enabled ? dragMedia('touch') : false"
     >
       <!-- <svg class="dashed-vector" viewBox="0 0 300 100" preserveAspectRatio="none">
         <path d="M0,0 300,0 300,100 0,100z" vector-effect="non-scaling-stroke" />
@@ -471,7 +489,11 @@
       >
         <button
           type="button"
-          v-if="media.type === 'text' || media.type === 'placeholder'"
+          v-if="
+            media.type === 'text' ||
+            media.type === 'placeholder' ||
+            media.type === 'free_drawing'
+          "
           class="buttonLink _no_underline"
           @mousedown.stop.prevent="editButtonClicked"
           @touchstart.stop.prevent="editButtonClicked"
@@ -696,6 +718,7 @@ import debounce from "debounce";
 import CollaborativeEditor from "./CollaborativeEditor.vue";
 import EditPlaceholderModal from "../modals/EditPlaceholderModal.vue";
 import MediaPlaceholder from "./MediaPlaceholder.vue";
+import MediaFreeDrawing from "./MediaFreeDrawing.vue";
 
 export default {
   props: {
@@ -705,6 +728,7 @@ export default {
     page: Object,
     read_only: Boolean,
     preview_mode: Boolean,
+    publication_is_submitted: Boolean,
     pixelsPerMillimeters: Number,
     zoom: Number,
     model_for_this_publication: [Boolean, Object],
@@ -714,6 +738,7 @@ export default {
     CollaborativeEditor,
     EditPlaceholderModal,
     MediaPlaceholder,
+    MediaFreeDrawing,
   },
   data() {
     return {
@@ -725,6 +750,8 @@ export default {
       is_touch: Modernizr.touchevents,
       is_text_overflowing: false,
       is_saving: false,
+
+      copy_mode_enabled: false,
 
       inline_edit_mode: false,
       show_advanced_menu: false,
@@ -766,6 +793,7 @@ export default {
       ratio: undefined,
 
       font_size_percent: 100,
+      opacity: 1,
       fill_color: "transparent",
       stroke_color: "transparent",
       stroke_width: 4,
@@ -801,6 +829,9 @@ export default {
       "publication.selected.triggerAction",
       this.triggerAction
     );
+
+    window.addEventListener("keydown", this.keyIsPressed);
+    window.addEventListener("keyup", this.keyIsUnpressed);
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.selectNewMedia", this.selectNewMedia);
@@ -813,6 +844,9 @@ export default {
       "publication.selected.triggerAction",
       this.triggerAction
     );
+
+    window.removeEventListener("keydown", this.keyIsPressed);
+    window.removeEventListener("keyup", this.keyIsUnpressed);
   },
 
   watch: {
@@ -830,27 +864,40 @@ export default {
         (meta) => meta === this.media.metaFileName
       );
     },
+    plyr_controls() {
+      if (this.media.basic_player) return ["play-large", "play"];
+      return;
+    },
     mediaStyles() {
       const set_z_index =
         this.is_selected && !this.show_zindex_number && !this.preview_mode
           ? 100000
           : this.media.z_index;
+      const mix_blend_mode = this.media.blend_mode
+        ? this.media.blend_mode
+        : "normal";
 
       return `
         transform: translate(${this.mediaPos.x}mm, ${this.mediaPos.y}mm) rotate(${this.rotate}deg);
         width: ${this.mediaSize.width}mm;
         height: ${this.mediaSize.height}mm;
         z-index: ${set_z_index};
+        mix-blend-mode: ${mix_blend_mode};
       `;
     },
     contentStyles() {
       let css = `
         --font_size_percent: ${this.font_size_percent}%;
+        --opacity: ${this.opacity};
         --margin: ${this.margin}mm;
         --fill_color: ${this.fill_color};
         --stroke_color: ${this.stroke_color};
         --stroke_width: ${this.stroke_width}mm;
       `;
+
+      // using vector-effect="non-scaling-stroke" to make sure stroke-width is consistent and rounded shapes work as intended
+      // not handled by electron 2.x.x so not working as expected for now in electron
+      // need to update electron soon
 
       if (this.media.custom_css) css += this.media.custom_css;
 
@@ -862,6 +909,16 @@ export default {
     },
   },
   methods: {
+    keyIsPressed(event) {
+      if (event.key === "Alt") {
+        this.copy_mode_enabled = true;
+      }
+    },
+    keyIsUnpressed() {
+      if (event.key === "Alt") {
+        this.copy_mode_enabled = false;
+      }
+    },
     selectNewMedia(metaFileName) {
       if (metaFileName === this.media.metaFileName)
         if (!this.is_selected) this.selectMedia();
@@ -1010,12 +1067,13 @@ export default {
           : this.ratio
           ? this.mediaSize.width * this.ratio
           : 66;
+
       this.mediaPos.x =
-        this.media.hasOwnProperty("x") && !!Number.parseFloat(this.media.x)
+        this.media.hasOwnProperty("x") && !Number.isNaN(this.media.x)
           ? this.limitMediaXPos(Number.parseFloat(this.media.x))
           : this.page.margin_left;
       this.mediaPos.y =
-        this.media.hasOwnProperty("y") && !!Number.parseFloat(this.media.y)
+        this.media.hasOwnProperty("y") && !Number.isNaN(this.media.y)
           ? this.limitMediaYPos(Number.parseFloat(this.media.y))
           : this.page.margin_top;
       this.custom_css = this.media.hasOwnProperty("custom_css")
@@ -1033,9 +1091,15 @@ export default {
 
       this.margin =
         this.media.hasOwnProperty("margin") &&
-        !!Number.parseFloat(this.media.margin)
+        Number.parseFloat(this.media.margin)
           ? Number.parseFloat(this.media.margin)
           : 0;
+
+      this.opacity =
+        this.media.hasOwnProperty("opacity") &&
+        !Number.isNaN(this.media.opacity)
+          ? Number.parseFloat(this.media.opacity)
+          : 1;
 
       if (
         this.media.type === "text" ||
@@ -1108,10 +1172,11 @@ export default {
 
       const xcenter = this.mediaSize.width / 2;
 
-      return Math.max(
-        this.page.margin_left - xcenter,
-        Math.min(this.page.width - this.page.margin_right - xcenter, xPos)
-      );
+      return Math.max(-xcenter, Math.min(this.page.width - xcenter, xPos));
+      // return Math.max(
+      //   this.page.margin_left - xcenter,
+      //   Math.min(this.page.width - this.page.margin_right - xcenter, xPos)
+      // );
     },
     roundMediaVal(val) {
       if (this.page.snap_to_grid)
@@ -1128,11 +1193,12 @@ export default {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaYPos / yPos = ${yPos}`);
       // }
-      yPos = Math.max(
-        this.page.margin_top - ycenter,
-        Math.min(this.page.height - this.page.margin_bottom - ycenter, yPos)
-      );
-      return yPos;
+
+      return Math.max(-ycenter, Math.min(this.page.height - ycenter, yPos));
+      // return Math.max(
+      //   this.page.margin_top - ycenter,
+      //   Math.min(this.page.height - this.page.margin_bottom - ycenter, yPos)
+      // );
     },
 
     limitMediaWidth(w) {
@@ -1142,13 +1208,7 @@ export default {
       //   console.log(`METHODS • MediaPublication: limitMediaWidth / w = ${w}`);
       // }
 
-      return Math.max(
-        5,
-        Math.min(
-          this.page.width - this.page.margin_right - this.page.margin_left,
-          w
-        )
-      );
+      return Math.max(5, Math.min(this.page.width, w));
     },
     limitMediaHeight(h) {
       if (!this.limit_media_to_page) return h;
@@ -1156,13 +1216,7 @@ export default {
       // if (this.$root.state.dev_mode === 'debug') {
       //   console.log(`METHODS • MediaPublication: limitMediaHeight / h = ${h}`);
       // }
-      return Math.max(
-        5,
-        Math.min(
-          this.page.height - this.page.margin_bottom - this.page.margin_top,
-          h
-        )
-      );
+      return Math.max(5, Math.min(this.page.height, h));
     },
 
     removePubliMedia() {
@@ -1423,6 +1477,7 @@ export default {
 
       if (type === "mouse") {
         this.selectMedia();
+
         window.addEventListener("mousemove", this.dragMove);
         window.addEventListener("mouseup", this.dragUp);
       } else if (type === "touch") {

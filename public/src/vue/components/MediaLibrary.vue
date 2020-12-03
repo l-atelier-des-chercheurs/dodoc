@@ -5,10 +5,6 @@
         <button
           type="button"
           class="barButton barButton_capture"
-          :class="{ 'is--disabled': is_iOS_device }"
-          v-if="
-            project.password === 'has_pass' || project.password !== 'has_pass'
-          "
           @click="openCapture"
           :disabled="read_only || !can_edit_project"
         >
@@ -16,9 +12,6 @@
         </button>
 
         <label
-          v-if="
-            project.password === 'has_pass' || project.password !== 'has_pass'
-          "
           class="barButton barButton_import button"
           :disabled="read_only || !can_edit_project"
           :for="`add_file_${id}`"
@@ -68,6 +61,15 @@
           :disabled="read_only || !can_edit_project"
         >
           <span>{{ $t("write") }}</span>
+        </button>
+
+        <button
+          type="button"
+          class="barButton barButton_qrCode"
+          @click="openQRCodeModal"
+          :disabled="read_only || !can_edit_project"
+        >
+          <span>{{ $t("qr_code") }}</span>
         </button>
       </div>
 
@@ -414,10 +416,14 @@ export default {
             .delay(8000)
             .success(this.$t("notifications.instead_import_with_this_button"));
         }, 1500);
-
-        return;
       }
       this.$root.do_navigation.view = "CaptureView";
+    },
+    openQRCodeModal() {
+      this.$root.openCreateQrModal({
+        slugFolderName: this.slugProjectName,
+        type: "projects",
+      });
     },
     updateInputFiles($event) {
       if (this.$root.state.dev_mode === "debug") {

@@ -148,7 +148,7 @@ module.exports = function (app) {
     );
   }
 
-  function printPublication(req, res) {
+  async function printPublication(req, res) {
     let slugPubliName = req.param("publication");
     dev.logfunction(
       `ROUTER — printPublication • slugPubliName = ${slugPubliName}`
@@ -158,23 +158,40 @@ module.exports = function (app) {
     if (req.hostname !== "localhost")
       res.status(403).send(`Only allowed for localhost`);
 
-    generatePageData(req).then((pageData) => {
-      dev.logverbose(`Generated printpublication pageData`);
-      dev.logverbose(`Now getting publication data for ${slugPubliName}`);
-      exporter.loadPublication(slugPubliName, pageData).then((pageData) => {
-        pageData.mode = "print_publication";
-        res.render("index", pageData);
-      });
+    const foldersData = await file.getFolder({
+      type: "publications",
+      slugFolderName: slugPubliName,
     });
+
+    const pageData = await generatePageData(req);
+
+    dev.logverbose(`Generated printpublication pageData`);
+    dev.logverbose(`Now getting publication data for ${slugPubliName}`);
+
+    const _pageData = await loadPublicationAndModel(
+      slugPubliName,
+      foldersData[slugPubliName]
+    );
+    Object.assign(pageData, _pageData);
+
+    pageData.mode = "print_publication";
+    res.render("index", pageData);
   }
 
   async function replyToPublication(req, res) {
     let slugPubliName = req.param("publication");
     const type = "publications";
-
     dev.logfunction(
       `ROUTER — replyToPublication • slugPubliName = ${slugPubliName}`
     );
+
+    let keywords = undefined;
+    if (req.query && req.query.hasOwnProperty("keyword")) {
+      if (typeof req.query.keyword === "string")
+        keywords = [{ title: req.query.keyword }];
+      else if (Array.isArray(req.query.keyword))
+        keywords = req.query.keyword.map((k) => ({ title: k }));
+    }
 
     const foldersData = await file
       .getFolder({
@@ -210,7 +227,7 @@ module.exports = function (app) {
     );
 
     // en créé une nouvelle : nom = aléatoire, modèle = slugPubliName, edition par tt le monde
-    const data = {
+    let data = {
       name: `«${folders_meta.name}»`,
       desired_foldername: `${folders_meta.name}-reply-${rnd}`,
       follows_model: slugPubliName,
@@ -218,6 +235,8 @@ module.exports = function (app) {
       editing_limited_to: "everybody",
       viewing_limited_to: "everybody",
     };
+
+    if (keywords) data.keywords = keywords;
 
     const slugFolderName = await file
       .createFolder({ type, data })
@@ -263,15 +282,24 @@ module.exports = function (app) {
       sockets.notify({
         socketid: req.query.socketid,
         localized_string: `action_not_allowed`,
-        not_localized_string: err,
+        not_localized_string: err.message,
         type: "error",
       });
     });
     if (!isSocketAllowed) return false;
 
+    const foldersData = await file.getFolder({
+      type,
+      slugFolderName: slugPubliName,
+    });
+
     let pageData = await generatePageData(req);
 
-    pageData = await exporter.loadPublication(slugPubliName, pageData);
+    const _pageData = await loadPublicationAndModel(
+      slugPubliName,
+      foldersData[slugPubliName]
+    );
+    Object.assign(pageData, _pageData);
 
     pageData.mode = "export_publication";
 
@@ -341,12 +369,48 @@ module.exports = function (app) {
       return;
     }
 
-    generatePageData(req).then((pageData) => {
-      exporter.loadPublication(slugPubliName, pageData).then((pageData) => {
-        pageData.mode = "link_publication";
-        res.render("index", pageData);
-      });
-    });
+    const pageData = await generatePageData(req);
+
+    const _pageData = await loadPublicationAndModel(
+      slugPubliName,
+      foldersData[slugPubliName]
+    );
+    Object.assign(pageData, _pageData);
+
+    pageData.mode = "link_publication";
+    res.render("index", pageData);
+  }
+
+  async function loadPublicationAndModel(slugPubliName, publi_data) {
+    let pageData = {};
+
+    const _pageData = await exporter.loadPublication(slugPubliName);
+
+    Object.assign(pageData, _pageData);
+
+    const model_slug = publi_data.follows_model
+      ? publi_data.follows_model
+      : false;
+
+    if (model_slug) {
+      const model_infos = await exporter.loadPublication(model_slug);
+      if (model_infos) {
+        // extract publiAndMediaData and folderAndMediaData and merge inside pageData
+        // UGLY FIX: should deep merge objects to prevent overrides when model and reply use the same
+        // project as source but not the same medias.
+        // --> These should not happen for now because replies can’t use project’s medias.
+        Object.assign(
+          pageData.folderAndMediaData,
+          model_infos.folderAndMediaData
+        );
+        Object.assign(
+          pageData.publiAndMediaData,
+          model_infos.publiAndMediaData
+        );
+      }
+    }
+
+    return pageData;
   }
 
   function showDoc(req, res) {
@@ -393,7 +457,7 @@ module.exports = function (app) {
       sockets.notify({
         socketid: req.query.socketid,
         localized_string: `action_not_allowed`,
-        not_localized_string: err,
+        not_localized_string: err.message,
         type: "error",
       });
     });
@@ -445,7 +509,7 @@ module.exports = function (app) {
       sockets.notify({
         socketid: req.query.socketid,
         localized_string: `action_not_allowed`,
-        not_localized_string: err,
+        not_localized_string: err.message,
         type: "error",
       });
     });
@@ -465,7 +529,7 @@ module.exports = function (app) {
         sockets.notify({
           socketid: req.query.socketid,
           localized_string: `action_not_allowed`,
-          not_localized_string: err,
+          not_localized_string: err.message,
           type: "error",
         });
         res.end();

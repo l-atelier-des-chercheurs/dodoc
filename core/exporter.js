@@ -18,8 +18,7 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function () {
   return {
-    loadPublication: (slugPubliName, pageData) =>
-      loadPublication(slugPubliName, pageData),
+    loadPublication: (slugPubliName) => loadPublication(slugPubliName),
 
     copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
@@ -38,9 +37,8 @@ module.exports = (function () {
           cacheFolderName
         );
 
-        fs.mkdirp(
-          cachePath,
-          function () {
+        fs.ensureDir(cachePath)
+          .then(() => {
             let tasks = [];
 
             const storeHTMLInIndexFile = new Promise((resolve, reject) => {
@@ -199,12 +197,11 @@ module.exports = (function () {
                 dev.error(`Failed to create cache folder: ${err}`);
                 reject(err);
               });
-          },
-          function (err, p) {
+          })
+          .catch((err) => {
             dev.error(`Failed to create cache folder: ${err}`);
             reject(err);
-          }
-        );
+          });
       });
     },
     makePDFForPubli: ({ slugPubliName, options }) => {
@@ -238,110 +235,117 @@ module.exports = (function () {
               height: publiData.height ? publiData.height : 297,
             };
 
-            fs.mkdirp(cachePath, () => {
-              dev.logverbose(
-                `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
-              );
+            fs.ensureDir(cachePath)
+              .then(() => {
+                dev.logverbose(
+                  `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
+                );
 
-              const { BrowserWindow } = require("electron");
+                const { BrowserWindow } = require("electron");
 
-              const browser_window = {
-                width: Math.floor(default_page_size.width * 3.78),
-                height: Math.floor(default_page_size.height * 3.78) + 25, // totally arbitrary value… will have to find better
-              };
+                const browser_window = {
+                  width: Math.floor(default_page_size.width * 3.78),
+                  height: Math.floor(default_page_size.height * 3.78) + 25, // totally arbitrary value… will have to find better
+                };
 
-              dev.logverbose(
-                `EXPORTER — makePDFForPubli : loading URL ${urlToPubli}`
-              );
+                dev.logverbose(
+                  `EXPORTER — makePDFForPubli : loading URL ${urlToPubli}`
+                );
 
-              let win = new BrowserWindow({
-                // width: 800,
-                // height: 600,
-                width: browser_window.width,
-                height: browser_window.height,
-                show: false,
-              });
-              win.loadURL(urlToPubli);
+                let win = new BrowserWindow({
+                  // width: 800,
+                  // height: 600,
+                  width: browser_window.width,
+                  height: browser_window.height,
+                  show: false,
+                  webPreferences: {
+                    contextIsolation: true,
+                    allowRunningInsecureContent: true,
+                  },
+                });
+                win.loadURL(urlToPubli);
 
-              win.webContents.on("did-finish-load", () => {
-                // Use default printing options
-                setTimeout(() => {
-                  if (
-                    !options ||
-                    !options.hasOwnProperty("type") ||
-                    options.type.toLowerCase() === "pdf"
-                  ) {
-                    const pdfName =
-                      slugPubliName +
-                      "-" +
-                      api.getCurrentDate() +
-                      "-" +
-                      (Math.random().toString(36) + "00000000000000000").slice(
-                        2,
-                        3 + 2
-                      ) +
-                      ".pdf";
-                    const docPath = path.join(cachePath, pdfName);
+                win.webContents.on("did-finish-load", () => {
+                  // Use default printing options
+                  setTimeout(() => {
+                    if (
+                      !options ||
+                      !options.hasOwnProperty("type") ||
+                      options.type.toLowerCase() === "pdf"
+                    ) {
+                      const pdfName =
+                        slugPubliName +
+                        "-" +
+                        api.getCurrentDate() +
+                        "-" +
+                        (
+                          Math.random().toString(36) + "00000000000000000"
+                        ).slice(2, 3 + 2) +
+                        ".pdf";
+                      const docPath = path.join(cachePath, pdfName);
 
-                    win.webContents.printToPDF(
-                      {
-                        marginsType: 1,
-                        pageSize: {
-                          width: default_page_size.width * 1000,
-                          height: default_page_size.height * 1000,
-                        },
-                        dpi: 300,
-                        printBackground: true,
-                        printSelectionOnly: false,
-                      },
-                      (error, data) => {
-                        if (error) throw error;
-                        fs.writeFile(docPath, data, (error) => {
+                      win.webContents
+                        .printToPDF({
+                          marginsType: 1,
+                          pageSize: {
+                            width: default_page_size.width * 1000,
+                            height: default_page_size.height * 1000,
+                          },
+                          dpi: 300,
+                          printBackground: true,
+                          printSelectionOnly: false,
+                        })
+                        .then((data) => {
+                          fs.writeFile(docPath, data, (error) => {
+                            if (error) throw error;
+
+                            dev.logverbose(
+                              `EXPORTER — makePDFForPubli : created PDF at ${docPath}`
+                            );
+
+                            resolve({
+                              pdfName,
+                              docPath,
+                            });
+                          });
+                        })
+                        .catch((error) => {
+                          console.log(
+                            `Failed to write PDF to ${docPath}: `,
+                            error
+                          );
+                        });
+                    } else if (options.type.toLowerCase() === "png") {
+                      const imageName =
+                        slugPubliName +
+                        "-" +
+                        api.getCurrentDate() +
+                        "-" +
+                        (
+                          Math.random().toString(36) + "00000000000000000"
+                        ).slice(2, 3 + 2) +
+                        ".png";
+                      const docPath = path.join(cachePath, imageName);
+
+                      win.capturePage().then((image) => {
+                        win.close();
+                        fs.writeFile(docPath, image.toPNG(1.0), (error) => {
                           if (error) throw error;
-
                           dev.logverbose(
-                            `EXPORTER — makePDFForPubli : created PDF at ${docPath}`
+                            `EXPORTER — makePDFForPubli : created image at ${docPath}`
                           );
 
                           resolve({
-                            pdfName,
                             docPath,
+                            imageName,
                           });
                         });
-                      }
-                    );
-                  } else if (options.type.toLowerCase() === "png") {
-                    const imageName =
-                      slugPubliName +
-                      "-" +
-                      api.getCurrentDate() +
-                      "-" +
-                      (Math.random().toString(36) + "00000000000000000").slice(
-                        2,
-                        3 + 2
-                      ) +
-                      ".png";
-                    const docPath = path.join(cachePath, imageName);
-
-                    win.capturePage((image) => {
-                      var conv = image.toPNG(1.0); // to PNG
-
-                      fs.writeFile(docPath, conv, (error) => {
-                        if (error) throw error;
-                        dev.logverbose(
-                          `EXPORTER — makePDFForPubli : created image at ${docPath}`
-                        );
-
-                        resolve({
-                          docPath,
-                          imageName,
-                        });
                       });
-                    });
-                  }
-                }, 1000);
-              });
-            });
+                    }
+                  }, 1000);
+                });
+              })
+              .catch((err) => {});
           });
       });
     },
@@ -364,21 +368,43 @@ module.exports = (function () {
         let publication_meta = "";
 
         let resolution = {
-          width: 1280,
-          height: 720,
+          width: undefined,
+          height: undefined,
         };
-        if (options.hasOwnProperty("resolution")) {
-          if (options.resolution.hasOwnProperty("width"))
-            resolution.width = options.resolution.width;
-          if (options.resolution.hasOwnProperty("height"))
+        if (!options.hasOwnProperty("resolution")) {
+          resolution = {
+            width: 1280,
+            height: 720,
+          };
+        } else {
+          if (options.resolution.hasOwnProperty("height")) {
             resolution.height = options.resolution.height;
+            if (options.resolution.hasOwnProperty("width")) {
+              resolution.width = options.resolution.width;
+            } else {
+              switch (resolution.height) {
+                case 360:
+                  resolution.width = 640;
+                  break;
+                case 480:
+                  resolution.width = 854;
+                  break;
+                case 720:
+                  resolution.width = 1280;
+                  break;
+                case 1080:
+                  resolution.width = 1920;
+                  break;
+              }
+            }
+          }
         }
 
         let bitrate = options.hasOwnProperty("bitrate")
           ? options.bitrate
           : "6000k";
 
-        loadPublication(slugPubliName, {})
+        loadPublication(slugPubliName)
           .then((pageData) => {
             publication_meta = pageData.publiAndMediaData[slugPubliName];
             return _loadMediaFilenameFromPublicationSlugs(
@@ -387,72 +413,83 @@ module.exports = (function () {
             );
           })
           .then((medias_with_original_filepath) => {
-            fs.mkdirp(cachePath, function () {
-              if (publication_meta.template === "video_assemblage") {
-                _makeVideoAssemblage({
-                  medias_with_original_filepath,
-                  cachePath,
-                  videoName,
-                  resolution,
-                  bitrate,
-                  socket,
-                })
-                  .then(() => {
-                    return resolve(videoName);
+            fs.ensureDir(cachePath)
+              .then(() => {
+                if (publication_meta.template === "video_assemblage") {
+                  _makeVideoAssemblage({
+                    medias_with_original_filepath,
+                    cachePath,
+                    videoName,
+                    resolution,
+                    bitrate,
+                    socket,
                   })
-                  .catch((err) => {
-                    return reject(err.message);
-                  });
-              } else if (publication_meta.template === "mix_audio_and_video") {
-                // merge audio and video
-                // see https://stackoverflow.com/questions/30595594/fluent-ffmpeg-merging-video-and-audio-wrong-frames
-                _mixAudioAndVideo({
-                  medias_with_original_filepath,
-                  cachePath,
-                  videoName,
-                  socket,
-                })
-                  .then(() => {
-                    return resolve(videoName);
+                    .then(() => {
+                      return resolve(videoName);
+                    })
+                    .catch((err) => {
+                      return reject(err.message);
+                    });
+                } else if (
+                  publication_meta.template === "mix_audio_and_video"
+                ) {
+                  // merge audio and video
+                  // see https://stackoverflow.com/questions/30595594/fluent-ffmpeg-merging-video-and-audio-wrong-frames
+                  _mixAudioAndVideo({
+                    medias_with_original_filepath,
+                    cachePath,
+                    videoName,
+                    resolution,
+                    socket,
                   })
-                  .catch((err) => {
-                    return reject(`${err}`);
-                  });
-              } else if (publication_meta.template === "mix_audio_and_image") {
-                // merge audio and image
-                _mixAudioAndImage({
-                  medias_with_original_filepath,
-                  cachePath,
-                  videoName,
-                  socket,
-                })
-                  .then(() => {
-                    return resolve(videoName);
+                    .then(() => {
+                      return resolve(videoName);
+                    })
+                    .catch((err) => {
+                      return reject(`${err}`);
+                    });
+                } else if (
+                  publication_meta.template === "mix_audio_and_image"
+                ) {
+                  // merge audio and image
+                  _mixAudioAndImage({
+                    medias_with_original_filepath,
+                    cachePath,
+                    videoName,
+                    resolution,
+                    socket,
                   })
-                  .catch((err) => {
-                    return reject(`Failed to make a video: ${err}`);
-                  });
-              } else if (publication_meta.template === "video_effects") {
-                if (!publication_meta.effects)
-                  return reject("Missing effects field");
+                    .then(() => {
+                      return resolve(videoName);
+                    })
+                    .catch((err) => {
+                      return reject(`Failed to make a video: ${err}`);
+                    });
+                } else if (publication_meta.template === "video_effects") {
+                  if (!publication_meta.effects)
+                    return reject("Missing effects field");
 
-                _applyVideoEffects({
-                  medias_with_original_filepath,
-                  effects: publication_meta.effects,
-                  cachePath,
-                  videoName,
-                  resolution,
-                  bitrate,
-                  socket,
-                })
-                  .then(() => {
-                    return resolve(videoName);
+                  _applyVideoEffects({
+                    medias_with_original_filepath,
+                    effects: publication_meta.effects,
+                    cachePath,
+                    videoName,
+                    resolution,
+                    bitrate,
+                    socket,
                   })
-                  .catch((err) => {
-                    return reject(err.message);
-                  });
-              }
-            });
+                    .then(() => {
+                      return resolve(videoName);
+                    })
+                    .catch((err) => {
+                      return reject(err.message);
+                    });
+                }
+              })
+              .catch((err) => {
+                dev.error(`Error : ` + err);
+                reject(err);
+              });
           });
       });
     },
@@ -497,101 +534,88 @@ module.exports = (function () {
           height: video_height,
         };
 
-        fs.mkdirp(cachePath, function () {
-          fs.mkdirp(
-            imagesCachePath,
-            function () {
-              loadPublication(slugPubliName, {})
-                .then((pageData) => {
-                  let ratio = _getMediaRatioFromFirstFilename(
-                    slugPubliName,
-                    pageData
-                  );
+        fs.ensureDir(cachePath)
+          .then(() => fs.ensureDir(imagesCachePath))
+          .then(() => loadPublication(slugPubliName))
+          .then((pageData) => {
+            let ratio = _getMediaRatioFromFirstFilename(
+              slugPubliName,
+              pageData
+            );
 
-                  if (!ratio) {
-                    ratio = 0.75;
-                  }
-
-                  const new_width = 2 * Math.round(video_height / ratio / 2);
-                  resolution.width = new_width;
-
-                  return _loadMediaFilenameFromPublicationSlugs(
-                    slugPubliName,
-                    pageData
-                  );
-                })
-                .then((imagesFilePathInOrder) => {
-                  numberOfImagesToProcess = imagesFilePathInOrder.length;
-
-                  return _prepareImagesForStopmotion({
-                    imagesFilePathInOrder,
-                    cachePath: imagesCachePath,
-                    resolution,
-                  });
-                })
-                .then((imagesCachePath) => {
-                  dev.logverbose(`About to create stopmotion`);
-                  dev.logverbose(
-                    `Size : ${resolution.width}x${resolution.height}`
-                  );
-                  dev.logverbose(`framerate : ${framerate}`);
-                  dev.logverbose(
-                    `duration : ${numberOfImagesToProcess / framerate}`
-                  );
-                  const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
-                    .input(path.join(imagesCachePath, "img-%04d.jpeg"))
-                    .inputFPS(framerate)
-                    .withVideoCodec("libx264")
-                    .withVideoBitrate("4000k")
-                    .input("anullsrc")
-                    .inputFormat("lavfi")
-                    .duration(numberOfImagesToProcess / framerate)
-                    .size(`${resolution.width}x${resolution.height}`)
-                    .outputFPS(30)
-                    .autopad()
-                    .addOptions(["-preset slow", "-tune animation"])
-                    .toFormat("mp4")
-                    .on("start", function (commandLine) {
-                      dev.logverbose(
-                        "Spawned Ffmpeg with command: \n" + commandLine
-                      );
-                    })
-                    .on("progress", (progress) => {
-                      _notifyFfmpegProgress({ socket, progress });
-                    })
-                    .on("end", () => {
-                      dev.logverbose(`Stopmotion has been completed`);
-                      return resolve(videoName);
-                    })
-                    .on("error", function (err, stdout, stderr) {
-                      dev.error("An error happened: " + err.message);
-                      dev.error("ffmpeg standard output:\n" + stdout);
-                      dev.error("ffmpeg standard error:\n" + stderr);
-                      return reject(error);
-                    })
-                    .save(videoCachePath);
-                  global.ffmpeg_processes.push(ffmpeg_cmd);
-                })
-                .catch((err) => {
-                  dev.error(`Error : ` + err);
-                  reject(err);
-                });
-            },
-            function (err, p) {
-              dev.error(`Failed to create cache folder: ${err}`);
-              reject(err);
+            if (!ratio) {
+              ratio = 0.75;
             }
-          );
-        });
+
+            const new_width = 2 * Math.round(video_height / ratio / 2);
+            resolution.width = new_width;
+
+            return _loadMediaFilenameFromPublicationSlugs(
+              slugPubliName,
+              pageData
+            );
+          })
+          .then((imagesFilePathInOrder) => {
+            numberOfImagesToProcess = imagesFilePathInOrder.length;
+
+            return _prepareImagesForStopmotion({
+              imagesFilePathInOrder,
+              cachePath: imagesCachePath,
+              resolution,
+            });
+          })
+          .then((imagesCachePath) => {
+            dev.logverbose(`About to create stopmotion`);
+            dev.logverbose(`Size : ${resolution.width}x${resolution.height}`);
+            dev.logverbose(`framerate : ${framerate}`);
+            dev.logverbose(`duration : ${numberOfImagesToProcess / framerate}`);
+            const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+              .input(path.join(imagesCachePath, "img-%04d.jpeg"))
+              .inputFPS(framerate)
+              .withVideoCodec("libx264")
+              .withVideoBitrate("4000k")
+              .input("anullsrc")
+              .inputFormat("lavfi")
+              .duration(numberOfImagesToProcess / framerate)
+              .size(`${resolution.width}x${resolution.height}`)
+              .outputFPS(30)
+              .autopad()
+              .addOptions(["-preset slow", "-tune animation"])
+              .toFormat("mp4")
+              .on("start", function (commandLine) {
+                dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+              })
+              .on("progress", (progress) => {
+                _notifyFfmpegProgress({ socket, progress });
+              })
+              .on("end", () => {
+                dev.logverbose(`Stopmotion has been completed`);
+                return resolve(videoName);
+              })
+              .on("error", function (err, stdout, stderr) {
+                dev.error("An error happened: " + err.message);
+                dev.error("ffmpeg standard output:\n" + stdout);
+                dev.error("ffmpeg standard error:\n" + stderr);
+                return reject(error);
+              })
+              .save(videoCachePath);
+            global.ffmpeg_processes.push(ffmpeg_cmd);
+          })
+          .catch((err) => {
+            dev.error(`Error : ` + err);
+            reject(err);
+          });
       });
     },
   };
 
-  function loadPublication(slugPubliName, pageData) {
+  function loadPublication(slugPubliName) {
     return new Promise((resolve, reject) => {
       dev.logfunction(
         `EXPORTER — loadPublication with slugPubliName = ${slugPubliName}`
       );
+
+      let _page_informations = {};
 
       let slugFolderName = slugPubliName;
       let type = "publications";
@@ -606,7 +630,7 @@ module.exports = (function () {
         })
         .then((publiData) => {
           publi_and_medias = publiData;
-          pageData.pageTitle = publi_and_medias[slugFolderName].name;
+          _page_informations.pageTitle = publi_and_medias[slugFolderName].name;
           file
             .getMediaMetaNames({
               type,
@@ -614,8 +638,8 @@ module.exports = (function () {
             })
             .then((list_metaFileName) => {
               if (list_metaFileName.length === 0) {
-                pageData.publiAndMediaData = publi_and_medias;
-                return resolve(pageData);
+                _page_informations.publiAndMediaData = publi_and_medias;
+                return resolve(_page_informations);
               }
 
               let medias_list = list_metaFileName.map((metaFileName) => {
@@ -633,7 +657,7 @@ module.exports = (function () {
                   publi_and_medias[slugFolderName].medias =
                     publi_medias[slugFolderName].medias;
 
-                  pageData.publiAndMediaData = publi_and_medias;
+                  _page_informations.publiAndMediaData = publi_and_medias;
 
                   // we need to get the list of original medias in the publi
                   var list_of_linked_medias = [];
@@ -653,8 +677,8 @@ module.exports = (function () {
                       medias_list: list_of_linked_medias,
                     })
                     .then((folders_and_medias) => {
-                      pageData.folderAndMediaData = folders_and_medias;
-                      resolve(pageData);
+                      _page_informations.folderAndMediaData = folders_and_medias;
+                      resolve(_page_informations);
                     });
                 });
             });
@@ -856,6 +880,7 @@ module.exports = (function () {
 
       ffmpeg.ffprobe(vm.full_path, function (err, metadata) {
         const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+        let has_no_audio_track = false;
 
         ffmpeg_cmd.input(vm.full_path);
 
@@ -867,6 +892,7 @@ module.exports = (function () {
         ) {
           dev.logverbose("Has no audio track, adding anullsrc");
           ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+          has_no_audio_track = true;
         }
 
         let temp_video_volume;
@@ -909,7 +935,7 @@ module.exports = (function () {
             inputs: "output",
             outputs: "output",
           });
-          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+          ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
         } else if (effect.type === "colored_filter") {
           if (
             !!effect.color &&
@@ -927,7 +953,7 @@ module.exports = (function () {
               outputs: "output",
             });
             // .complexFilter(["color[c];[0:v][c]overlay=shortest=1"]);
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: color is not set correctly`
@@ -959,7 +985,7 @@ module.exports = (function () {
               outputs: "output",
             });
 
-            if (speed >= 0.5) {
+            if (speed >= 0.5 && !has_no_audio_track) {
               complexFilters.push({
                 filter: "atempo",
                 options: speed,
@@ -981,7 +1007,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -998,7 +1024,7 @@ module.exports = (function () {
               inputs: "output",
               outputs: "output",
             });
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
           } else {
             return reject(
               `Failed to create video for filter: flip is not set correctly`
@@ -1065,7 +1091,8 @@ module.exports = (function () {
               //   outputs: "output"
               // }
             );
-            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a"]);
+            ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);
+
             // if (metadata && metadata.format && metadata.format.duration)
             //   ffmpeg_cmd.duration(metadata.format.duration);
           } else {
@@ -1546,6 +1573,7 @@ module.exports = (function () {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
     socket,
   }) {
     return new Promise(function (resolve, reject) {
@@ -1600,6 +1628,9 @@ module.exports = (function () {
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
         .addOptions(["-map 0:v:0", "-map 1:a:0"])
+        .videoFilters(
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
+        )
         .toFormat("mp4")
         .on("start", function (commandLine) {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
@@ -1626,6 +1657,7 @@ module.exports = (function () {
     medias_with_original_filepath,
     cachePath,
     videoName,
+    resolution,
     socket,
   }) {
     return new Promise(function (resolve, reject) {
@@ -1650,10 +1682,6 @@ module.exports = (function () {
 
       let time_since_last_report = 0;
 
-      let resolution = _calculateResolutionAccordingToRatio(
-        image_files[0].ratio
-      );
-
       dev.logverbose(
         `About to create a speaking picture with resolution = ${JSON.stringify(
           resolution
@@ -1666,9 +1694,9 @@ module.exports = (function () {
         .addOptions(["-shortest"])
         .withAudioCodec("aac")
         .withAudioBitrate("128k")
-        .addOptions(["-tune stillimage"])
+        .addOptions(["-tune stillimage", "-pix_fmt yuv420p"])
         .videoFilters(
-          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=increase`
+          `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`
         )
         .outputFPS(30)
         .toFormat("mp4")
@@ -2058,22 +2086,22 @@ module.exports = (function () {
     });
   }
 
-  function _calculateResolutionAccordingToRatio(ratio) {
-    let default_video_height = 720;
-    let resolution = {
-      width: 0,
-      height: default_video_height,
-    };
+  // function _calculateResolutionAccordingToRatio(ratio) {
+  //   let default_video_height = 720;
+  //   let resolution = {
+  //     width: 0,
+  //     height: default_video_height,
+  //   };
 
-    if (!ratio) {
-      ratio = 0.75;
-    }
+  //   if (!ratio) {
+  //     ratio = 0.75;
+  //   }
 
-    const new_width = 2 * Math.round(default_video_height / ratio / 2);
-    resolution.width = new_width;
+  //   const new_width = 2 * Math.round(default_video_height / ratio / 2);
+  //   resolution.width = new_width;
 
-    return resolution;
-  }
+  //   return resolution;
+  // }
 
   function _notifyFfmpegProgress({ socket, progress }) {
     let not_localized_string;

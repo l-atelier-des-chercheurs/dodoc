@@ -307,6 +307,18 @@ export default {
           amount: this.paged_mode ? 1 : "unlimited",
         },
         {
+          key: "stopmotion",
+          picto: "/images/i_icone-dodoc_anim.svg",
+          enabled: false,
+          amount: this.paged_mode ? 1 : "unlimited",
+        },
+        {
+          key: "vecto",
+          picto: "/images/i_icone-dodoc_vecto.svg",
+          enabled: false,
+          amount: this.paged_mode ? 1 : "unlimited",
+        },
+        {
           key: "file",
           picto: "",
           enabled: false,
@@ -332,15 +344,12 @@ export default {
         if (this.$root.state.dev_mode === "debug")
           console.log(`PlaceholderConstraints • WATCH: available_modes`);
 
-        if (!this.available_modes || !Array.isArray(this.available_modes)) {
-          // this.options.map(o =>
-          //   o.mode_key !== "choices" ? (o.enabled = true) : ""
-          // );
-          return;
-        }
-
         this.options.map((o) => {
-          if (this.available_modes.some((m) => m.mode_key === o.key)) {
+          if (
+            this.available_modes &&
+            Array.isArray(this.available_modes) &&
+            this.available_modes.some((m) => m.mode_key === o.key)
+          ) {
             o.enabled = true;
             const item = this.available_modes.find((m) => m.mode_key === o.key);
             if (item.hasOwnProperty("advanced_text_options"))

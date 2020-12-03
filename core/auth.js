@@ -414,14 +414,7 @@ module.exports = (function () {
 
     const slugFolderName = Object.keys(folders_and_medias)[0];
 
-    const can_see_folder = await canSeeFolder(
-      socket,
-      folders_and_medias[slugFolderName],
-      type
-    );
-
-    if (
-      !(await canSeeFolder(
+    if(!(await canSeeFolder(
         socket,
         folders_and_medias[slugFolderName],
         type
