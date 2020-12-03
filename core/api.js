@@ -271,23 +271,32 @@ module.exports = (function () {
         global.settings.cacheDirname,
         "_medias"
       );
-      fs.mkdirp(cachePath, function () {
-        let pathToTempMedia = path.join(cachePath, mediaName);
 
-        fs.writeFile(pathToTempMedia, fileBuffer, function (err) {
-          if (err) reject(err);
+      fs.ensureDir(cachePath)
+        .then(() => {
+          let pathToTempMedia = path.join(cachePath, mediaName);
 
-          let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
-          const ffmpeg_cmd = new ffmpeg(pathToTempMedia)
-            .audioCodec("aac")
-            .save(pathToMedia)
-            .on("end", function () {
-              console.log("Processing finished !");
-              resolve();
-            });
-          global.ffmpeg_processes.push(ffmpeg_cmd);
+          fs.writeFile(pathToTempMedia, fileBuffer, function (err) {
+            if (err) reject(err);
+
+            let pathToMedia = path.join(
+              getFolderPath(slugFolderName),
+              mediaName
+            );
+            const ffmpeg_cmd = new ffmpeg(pathToTempMedia)
+              .audioCodec("aac")
+              .save(pathToMedia)
+              .on("end", function () {
+                console.log("Processing finished !");
+                resolve();
+              });
+            global.ffmpeg_processes.push(ffmpeg_cmd);
+          });
+        })
+        .catch((err) => {
+          dev.error(`Failed to create cache folder at ${cachePath}`);
+          reject(err);
         });
-      });
     });
   }
 
@@ -306,7 +315,8 @@ module.exports = (function () {
         global.settings.cacheDirname,
         "_medias"
       );
-      fs.mkdirp(cachePath, function () {
+
+      fs.ensureDir(cachePath).then(() => {
         let pathToMedia = path.join(getFolderPath(slugFolderName), mediaName);
         fs.writeFile(pathToMedia, fileBuffer, function (err) {
           if (err) reject(err);
@@ -409,9 +419,8 @@ module.exports = (function () {
         cacheFolderName
       );
 
-      fs.mkdirp(
-        cachePath,
-        function () {
+      fs.ensureDir(cachePath)
+        .then(() => {
           let slugStopmotionPath = getFolderPath(
             path.join(
               global.settings.structure["stopmotions"].path,
@@ -446,12 +455,11 @@ module.exports = (function () {
               .then(() => resolve(cachePath))
               .catch((err) => reject(err));
           });
-        },
-        function (err, p) {
+        })
+        .catch((err) => {
           dev.error(`Failed to create cache folder: ${err}`);
           reject(err);
-        }
-      );
+        });
     });
   }
 

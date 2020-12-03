@@ -1069,7 +1069,7 @@ export default {
       );
       const time_remaining =
         (this.delay_seconds * 1000 - time_since_start) / 1000;
-      return time_remaining;
+      return Math.floor(time_remaining + 0.8);
       // return this.delay_seconds - seconds_ellapsed_since_click;
     },
   },
@@ -1311,7 +1311,6 @@ export default {
       } else if (this.delay_mode_enabled) {
         this.delay_start_time = this.$root.currentTime_millis;
         this.delay_event = window.setTimeout(() => {
-          debugger;
           this.setCapture();
           this.delay_event = false;
         }, this.delay_seconds * 1000);
