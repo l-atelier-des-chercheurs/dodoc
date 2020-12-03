@@ -90,7 +90,7 @@ html
         mode: "!{mode}",
         dev_mode: "!{ isDebug ? "debug" : "production" }",
         noticeOfError: "!{noticeOfError}",
-        is_electron: !!(window && window.process && window.process.type),
+        is_electron: !!(navigator.userAgent.toLowerCase().indexOf(' electron/') > -1),
         is_darwin: !!(window && window.process && window.process.platform === 'darwin'),
         clients: [],
         journal: [],
