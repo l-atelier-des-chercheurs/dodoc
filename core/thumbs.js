@@ -139,20 +139,6 @@ module.exports = (function () {
               });
             });
             makeThumbs.push(makeWaveform);
-          } else if (mediaType === "stl") {
-            let screenshotsAngles = [0];
-            screenshotsAngles.forEach((angle) => {
-              let makeSTLScreenshot = new Promise((resolve, reject) => {
-                _makeSTLScreenshot({
-                  mediaPath,
-                  slugFolderName,
-                  thumbFolderPath,
-                  filename,
-                  angle,
-                });
-                makeThumbs.push(makeScreenshot);
-              });
-            });
           } else if (mediaType === "audio") {
             // make screenshot
             let makeWaveform = new Promise((resolve, reject) => {
