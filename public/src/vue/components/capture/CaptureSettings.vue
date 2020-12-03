@@ -499,14 +499,7 @@ export default {
   },
   computed: {
     all_video_input_devices() {
-      const video_input = this.connected_devices.filter(
-        (d) => d.kind === "videoinput"
-      );
-      const screen_input = {
-        deviceId: "screen_capture",
-        label: "🖥️ " + this.$t("screen_capture"),
-      };
-      return video_input.concat(screen_input);
+      return this.connected_devices.filter((d) => d.kind === "videoinput");
     },
     all_audio_input_devices() {
       return this.connected_devices.filter((d) => d.kind === "audioinput");
@@ -551,20 +544,14 @@ export default {
             } else return devices;
           })
           .then((devices) => {
-            // this.getDesktopCapturer()
-            //   .then((sources) => {
-            //     devices = devices.concat(sources);
-            //   })
-            //   .catch((err) => {})
-            //   .then(() => {
-            return resolve(devices);
-            // });
-            // const screen_infos = sources.reduce((acc, source) => {
-            //                     acc.push(source);
-            //                     return acc;
-            //                   }, []);
-            //                   return resolve(screen_infos);
-            // })
+            this.getDesktopCapturer()
+              .then((sources) => {
+                devices = devices.concat(sources);
+              })
+              .catch((err) => {})
+              .then(() => {
+                return resolve(devices);
+              });
           })
           .catch((err) => {
             return reject(err);
@@ -641,17 +628,19 @@ export default {
     },
     startMediaDeviceFeed(constraints) {
       return new Promise((resolve, reject) => {
-        if (
-          constraints.video.deviceId &&
-          constraints.video.deviceId.exact === "screen_capture"
-        )
+        if (constraints._is_screen_capture === true)
           navigator.mediaDevices
-            .getDisplayMedia({ video: true })
-            .then((stream) => resolve(stream));
+            .getDisplayMedia({
+              audio: true,
+              video: true,
+            })
+            .then((stream) => resolve(stream))
+            .catch((err) => reject(err));
         else
           navigator.mediaDevices
             .getUserMedia(constraints)
-            .then((stream) => resolve(stream));
+            .then((stream) => resolve(stream))
+            .catch((err) => reject(err));
       });
     },
     // getAllAvailableResolutions() {
@@ -686,9 +675,11 @@ export default {
     getDesktopCapturer() {
       return new Promise((resolve, reject) => {
         const { desktopCapturer } = window.require("electron");
+
         desktopCapturer.getSources(
           { types: ["window", "screen"] },
           (err, sources) => {
+            debugger;
             if (err) return reject(err);
             // sources = sources.filter((s) => s.name === "Entire screen");
             sources = sources.map((s) => {
@@ -721,6 +712,14 @@ export default {
                 : false,
             };
           });
+
+          if (!this.$root.state.is_electron) {
+            this.connected_devices.push({
+              deviceId: "screen_capture",
+              kind: "videoinput",
+              label: "🖥️ " + this.$t("screen_capture"),
+            });
+          }
 
           this.is_loading_available_devices = false;
           return resolve();
@@ -760,6 +759,7 @@ export default {
               );
               if (this.last_working_resolution) {
                 this.desired_camera_resolution = this.last_working_resolution;
+                this.last_working_resolution = undefined;
                 setTimeout(() => {
                   this.setCameraStreamFromDefaults().then(() => resolve());
                 }, 500);
@@ -803,25 +803,59 @@ export default {
         video: false,
       };
 
-      // non screen capture devices
-      _constraints.audio = !this.enable_audio
-        ? false
-        : {
-            deviceId: this.selected_devices.audio_input_device.deviceId
-              ? { exact: this.selected_devices.audio_input_device.deviceId }
-              : undefined,
-          };
+      // IF ELECTRON DESKTOP CAPTURER AND VIDEO ENABLED
+      if (
+        this.selected_devices.video_input_device.hasOwnProperty(
+          "chromeMediaSource"
+        ) &&
+        this.selected_devices.video_input_device.chromeMediaSource &&
+        this.enable_video
+      ) {
+        // screen capture devices
+        _constraints = {
+          audio: false,
+          video: {
+            mandatory: {
+              chromeMediaSource: this.selected_devices.video_input_device
+                .chromeMediaSource,
+              chromeMediaSourceId: this.selected_devices.video_input_device
+                .deviceId,
+              minWidth: this.desired_camera_resolution.width,
+              maxWidth: this.desired_camera_resolution.width,
+              minHeight: this.desired_camera_resolution.height,
+              maxHeight: this.desired_camera_resolution.height,
+            },
+          },
+        };
+      } else {
+        _constraints.audio = !this.enable_audio
+          ? false
+          : {
+              deviceId: this.selected_devices.audio_input_device.deviceId
+                ? { exact: this.selected_devices.audio_input_device.deviceId }
+                : undefined,
+            };
 
-      _constraints.video = !this.enable_video
-        ? false
-        : {
-            deviceId: this.selected_devices.video_input_device.deviceId
-              ? { exact: this.selected_devices.video_input_device.deviceId }
-              : undefined,
-            width: { exact: this.desired_camera_resolution.width }, //new syntax
-            height: { exact: this.desired_camera_resolution.height }, //new syntax
-          };
-
+        // IF BROWSER SCREEN CAPTURE
+        if (
+          this.selected_devices.video_input_device &&
+          this.selected_devices.video_input_device.deviceId === "screen_capture"
+        ) {
+          _constraints._is_screen_capture = true;
+          _constraints.video = !this.enable_video ? false : true;
+        } else {
+          // IF BROWSER OR ELECTRON CAMERA FEED
+          _constraints.video = !this.enable_video
+            ? false
+            : {
+                deviceId: this.selected_devices.video_input_device.deviceId
+                  ? { exact: this.selected_devices.video_input_device.deviceId }
+                  : undefined,
+                width: { exact: this.desired_camera_resolution.width }, //new syntax
+                height: { exact: this.desired_camera_resolution.height }, //new syntax
+              };
+        }
+      }
       console.log("Constraints = " + JSON.stringify(_constraints, null, 4));
 
       return _constraints;
