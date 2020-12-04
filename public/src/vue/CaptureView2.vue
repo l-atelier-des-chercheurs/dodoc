@@ -1241,17 +1241,6 @@ export default {
       console.log("METHODS • CaptureView: addImageToStopmotion");
       this.is_sending_image = true;
 
-      const media_editing_timeout = window.setTimeout(() => {
-        if (this.is_sending_image && this.$refs.videoElement) {
-          this.is_sending_image = false;
-          this.$refs.videoElement.play();
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t("notifications.failed_to_save_media"));
-        }
-      }, 5000);
-
       this.$root
         .createMedia({
           slugFolderName: this.current_stopmotion,
@@ -1264,7 +1253,16 @@ export default {
         .then((mdata) => {
           this.is_sending_image = false;
           this.$refs.videoElement.play();
-          window.clearTimeout(media_editing_timeout);
+        })
+        .catch((err) => {
+          if (this.is_sending_image && this.$refs.videoElement) {
+            this.is_sending_image = false;
+            this.$refs.videoElement.play();
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(this.$t("notifications.failed_to_save_media"));
+          }
         });
     },
 
