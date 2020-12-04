@@ -74,6 +74,8 @@ export default {
   computed: {},
   methods: {
     setSinkId() {
+      if (!this.audio_output_deviceId) return;
+
       if (this.media_to_validate.type === "video") {
         this.$refs.videoElement.setSinkId(this.audio_output_deviceId);
       } else if (this.media_to_validate.type === "audio") {
