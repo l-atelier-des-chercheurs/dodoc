@@ -1,5 +1,5 @@
 const electron = require("electron");
-const { app, BrowserWindow, Menu } = electron;
+const { app, BrowserWindow, Menu, shell } = electron;
 const path = require("path");
 
 app.commandLine.appendSwitch("ignore-certificate-errors", "true");
@@ -8,7 +8,6 @@ app.commandLine.appendSwitch("disable-http-cache", "true");
 
 const electronPDFWindow = require("electron-pdf-window");
 
-const { dialog } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 
 module.exports = (function () {
@@ -68,6 +67,13 @@ module.exports = (function () {
             callback(true);
           }
         );
+
+        electron.ipcMain.on("open-item", (e, itemPath) => {
+          shell.openPath(itemPath);
+        });
+        electron.ipcMain.on("open-external", (e, url) => {
+          shell.openExternal(url);
+        });
       });
     },
   };
@@ -96,8 +102,10 @@ module.exports = (function () {
         webPreferences: {
           allowRunningInsecureContent: true,
           nodeIntegration: false,
-          contextIsolation: false,
+          contextIsolation: true,
+          enableRemoteModule: false, // turn off remote
           plugins: true,
+          preload: "preload.js", // use a preload script
         },
       });
 
