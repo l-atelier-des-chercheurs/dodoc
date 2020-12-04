@@ -977,6 +977,8 @@ export default {
     this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
     this.stopFrameGrabber();
 
+    this.$root.settings.ask_before_leaving_capture = false;
+
     if (this.timelapse_event) window.clearInterval(this.timelapse_event);
     if (this.recording_timer_interval)
       window.clearInterval(this.recording_timer_interval);
