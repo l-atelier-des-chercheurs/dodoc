@@ -511,8 +511,7 @@ export default {
         }
 
         this.editor.setSelection(this.editor.getLength(), 0, "api");
-
-        this.$emit("input", this.sanitizeEditorHTML());
+        // this.$emit("input", this.sanitizeEditorHTML());
 
         this.editor.on("text-change", (delta, oldDelta, source) => {
           if (source == "user") {
