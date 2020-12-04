@@ -71,6 +71,26 @@
               {{ d.label }}
             </option>
           </select>
+
+          <div
+            v-if="
+              selected_devices.video_input_device &&
+              selected_devices.video_input_device.deviceId === 'screen_capture'
+            "
+          >
+            <span class="switch switch-xs">
+              <input
+                class="switch"
+                id="showCursor"
+                type="checkbox"
+                v-model="showCursor"
+                true-value="always"
+                false-value="never"
+              />
+              <label for="showCursor">{{ $t("showCursor") }}</label>
+            </span>
+            showCursor = {{ showCursor }}
+          </div>
         </div>
         <div>
           <label>{{ $t("audioinput") }}</label>
@@ -99,6 +119,30 @@
               {{ d.label }}
             </option>
           </select>
+
+          <div v-if="selected_devices.audio_input_device">
+            <span class="switch switch-xs">
+              <input
+                class="switch"
+                id="echoCancellation"
+                type="checkbox"
+                v-model="echoCancellation"
+              />
+              <label for="echoCancellation">{{ $t("echoCancellation") }}</label>
+            </span>
+          </div>
+          <div v-if="selected_devices.audio_input_device">
+            <span class="switch switch-xs">
+              <input
+                class="switch"
+                id="noiseSuppression"
+                type="checkbox"
+                v-model="noiseSuppression"
+              />
+              <label for="noiseSuppression">{{ $t("noiseSuppression") }}</label>
+            </span>
+          </div>
+
           <small
             v-if="
               selected_devices.video_input_device &&
@@ -155,7 +199,14 @@
               </button> -->
         </template>
 
-        <div class="m_captureSettings--settings--resolutions">
+        <small
+          v-if="
+            selected_devices.video_input_device.deviceId === 'screen_capture'
+          "
+        >
+          {{ $t("cant_pick_resolution_when_screen_capture") }}
+        </small>
+        <div class="m_captureSettings--settings--resolutions" v-else>
           <div
             v-for="res in predefined_resolutions.concat(
               custom_camera_resolution
@@ -207,9 +258,10 @@
         </div>
       </div>
 
-      <label>{{ $t("connect_to_other_users") }}</label>
+      <label>{{ $t("remote_access") }}</label>
       <div class="padding-small">
-        <div class="padding-top-small">
+        <small>{{ $t("connect_to_other_users") }}</small>
+        <div>
           <span class="switch switch-xs">
             <input
               class="switch"
@@ -378,6 +430,10 @@ export default {
         height: 720,
       },
 
+      echoCancellation: true,
+      noiseSuppression: true,
+      showCursor: "always",
+
       enable_distant_flux: false,
     };
   },
@@ -510,22 +566,31 @@ export default {
     current_settings() {
       let _settings = "";
 
-      if (!!this.selected_devices.video_input_device)
+      if (!!this.selected_devices.video_input_device) {
         _settings += this.selected_devices.video_input_device.deviceId + "-";
+        if (
+          this.selected_devices.video_input_device.deviceId === "screen_capture"
+        )
+          _settings += this.showCursor + "-";
+      }
 
       if (
         !!this.desired_camera_resolution &&
         !!this.desired_camera_resolution.width &&
         !!this.desired_camera_resolution.height
-      )
+      ) {
         _settings +=
           this.desired_camera_resolution.width +
           "x" +
           this.desired_camera_resolution.height +
           "-";
+      }
 
-      if (!!this.selected_devices.audio_input_device)
+      if (!!this.selected_devices.audio_input_device) {
         _settings += this.selected_devices.audio_input_device.deviceId + "-";
+        _settings += this.noiseSuppression + "-";
+        _settings += this.echoCancellation + "-";
+      }
 
       if (!!this.selected_devices.audio_output_device)
         _settings += this.selected_devices.audio_output_device.deviceId + "-";
@@ -636,6 +701,7 @@ export default {
             if (!constraints.video) return resolve();
 
             if (constraints._is_screen_capture === true) {
+              debugger;
               navigator.mediaDevices
                 .getDisplayMedia({ video: constraints.video, audio: false })
                 .then((stream) => resolve({ type: "videoStream", stream }))
@@ -665,8 +731,6 @@ export default {
             if (!streams) reject("no feed available");
 
             let tracks = [];
-
-            debugger;
 
             const video_stream = streams.find(
               (s) => s && s.type === "videoStream"
@@ -877,6 +941,8 @@ export default {
               deviceId: this.selected_devices.audio_input_device.deviceId
                 ? { exact: this.selected_devices.audio_input_device.deviceId }
                 : undefined,
+              echoCancellation: this.echoCancellation,
+              noiseSuppression: this.noiseSuppression,
             };
 
         if (
@@ -884,7 +950,11 @@ export default {
           this.selected_devices.video_input_device.deviceId === "screen_capture"
         ) {
           _constraints._is_screen_capture = true;
-          _constraints.video = this.enable_video;
+          _constraints.video = !this.enable_video
+            ? false
+            : {
+                cursor: this.showCursor,
+              };
         } else {
           _constraints.video = !this.enable_video
             ? false
@@ -919,6 +989,7 @@ export default {
   flex-flow: column nowrap;
 
   label,
+  small,
   .buttonLink {
     color: inherit;
   }
@@ -951,6 +1022,9 @@ export default {
     background-color: rgba(0, 0, 0, 0.1);
     padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
     border-radius: 6px;
+  }
+  > label {
+    line-height: 2;
   }
 }
 

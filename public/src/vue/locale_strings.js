@@ -156,6 +156,12 @@ module.exports = (function () {
       fr: "Resolutions",
       en: "Resolutions",
     },
+    cant_pick_resolution_when_screen_capture: {
+      fr:
+        "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
+      en:
+        "Selection a specific resolution is not possible with a screen capture.",
+    },
     camera_access_refused: {
       fr:
         "Accès refusé à la caméra et au micro : vous devez accepter leur accès dans le message qui apparaît pour pouvoir utiliser ce panneau.",
@@ -224,6 +230,18 @@ module.exports = (function () {
         "En mode capture d’écran dans l’application do•doc il n’est pas possible d’enregistrer le son simultanément.",
       en:
         "Audio recording is not available when recording the screen in the do•doc app.",
+    },
+    echoCancellation: {
+      fr: "Annulation de l'écho",
+      en: "Echo cancellation",
+    },
+    noiseSuppression: {
+      fr: "Réduction du bruit",
+      en: "Noise suppression",
+    },
+    showCursor: {
+      fr: "Afficher le curseur",
+      en: "Show mouse cursor",
     },
     static_preview: {
       fr: "Image",
@@ -2919,6 +2937,10 @@ module.exports = (function () {
     select_publi_model: {
       fr: "Sélectionner un modèle",
       en: "Select a model",
+    },
+    remote_access: {
+      fr: "Sources distantes",
+      en: "Remote sources",
     },
     connect_to_other_users: {
       fr:
