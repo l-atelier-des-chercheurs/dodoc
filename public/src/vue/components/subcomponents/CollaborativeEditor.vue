@@ -510,6 +510,7 @@ export default {
           this.editor.setContents(doc.data);
         }
 
+        this.editor.history.clear();
         this.editor.setSelection(this.editor.getLength(), 0, "api");
         // this.$emit("input", this.sanitizeEditorHTML());
 
