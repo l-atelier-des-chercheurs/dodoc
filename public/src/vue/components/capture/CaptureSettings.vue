@@ -701,7 +701,6 @@ export default {
             if (!constraints.video) return resolve();
 
             if (constraints._is_screen_capture === true) {
-              debugger;
               navigator.mediaDevices
                 .getDisplayMedia({ video: constraints.video, audio: false })
                 .then((stream) => resolve({ type: "videoStream", stream }))
