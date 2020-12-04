@@ -156,6 +156,18 @@ module.exports = (function () {
       fr: "Resolutions",
       en: "Resolutions",
     },
+    cant_pick_resolution_when_screen_capture: {
+      fr:
+        "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
+      en:
+        "Selection a specific resolution is not possible with a screen capture.",
+    },
+    camera_access_refused: {
+      fr:
+        "Accès refusé à la caméra et au micro : vous devez accepter leur accès dans le message qui apparaît pour pouvoir utiliser ce panneau.",
+      en:
+        "Access to camera and microphone denied: you have to accept to share your camera and microphone to use this pane.",
+    },
     reply: {
       fr: "Répondre",
       en: "Reply",
@@ -212,6 +224,24 @@ module.exports = (function () {
     no_audio_output_available: {
       fr: "Aucune sortie audio disponible",
       en: "No audio output available",
+    },
+    no_audio_for_screen_capture: {
+      fr:
+        "En mode capture d’écran dans l’application do•doc il n’est pas possible d’enregistrer le son simultanément.",
+      en:
+        "Audio recording is not available when recording the screen in the do•doc app.",
+    },
+    echoCancellation: {
+      fr: "Annulation de l'écho",
+      en: "Echo cancellation",
+    },
+    noiseSuppression: {
+      fr: "Réduction du bruit",
+      en: "Noise suppression",
+    },
+    showCursor: {
+      fr: "Afficher le curseur",
+      en: "Show mouse cursor",
     },
     static_preview: {
       fr: "Image",
@@ -2262,6 +2292,10 @@ module.exports = (function () {
       oc: "fòto",
       de: "Foto",
     },
+    screen_capture: {
+      fr: "Capture d’écran",
+      en: "Screen capture",
+    },
     take_picture: {
       fr: "Prendre une photo",
       en: "Take a picture",
@@ -2903,6 +2937,10 @@ module.exports = (function () {
     select_publi_model: {
       fr: "Sélectionner un modèle",
       en: "Select a model",
+    },
+    remote_access: {
+      fr: "Sources distantes",
+      en: "Remote sources",
     },
     connect_to_other_users: {
       fr:
