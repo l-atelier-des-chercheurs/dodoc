@@ -628,19 +628,62 @@ export default {
     },
     startMediaDeviceFeed(constraints) {
       return new Promise((resolve, reject) => {
-        if (constraints._is_screen_capture === true)
-          navigator.mediaDevices
-            .getDisplayMedia({
-              audio: true,
-              video: true,
-            })
-            .then((stream) => resolve(stream))
-            .catch((err) => reject(err));
-        else
-          navigator.mediaDevices
-            .getUserMedia(constraints)
-            .then((stream) => resolve(stream))
-            .catch((err) => reject(err));
+        let processFeeds = [];
+
+        // start video feed
+        processFeeds.push(
+          new Promise((resolve, reject) => {
+            if (!constraints.video) return resolve();
+
+            if (constraints._is_screen_capture === true) {
+              navigator.mediaDevices
+                .getDisplayMedia({ video: constraints.video, audio: false })
+                .then((stream) => resolve({ type: "videoStream", stream }))
+                .catch((err) => reject(err));
+            } else {
+              navigator.mediaDevices
+                .getUserMedia({ video: constraints.video, audio: false })
+                .then((stream) => resolve({ type: "videoStream", stream }))
+                .catch((err) => reject(err));
+            }
+          })
+        );
+
+        // start audio feed
+        processFeeds.push(
+          new Promise((resolve, reject) => {
+            if (!constraints.audio) return resolve();
+            navigator.mediaDevices
+              .getUserMedia({ video: false, audio: constraints.audio })
+              .then((stream) => resolve({ type: "audioStream", stream }))
+              .catch((err) => reject(err));
+          })
+        );
+
+        Promise.all(processFeeds)
+          .then((streams) => {
+            if (!streams) reject("no feed available");
+
+            let tracks = [];
+
+            debugger;
+
+            const video_stream = streams.find(
+              (s) => s && s.type === "videoStream"
+            );
+            if (!!video_stream) tracks.push(...video_stream.stream.getTracks());
+
+            const audio_stream = streams.find(
+              (s) => s && s.type === "audioStream"
+            );
+            if (!!audio_stream)
+              tracks.push(...audio_stream.stream.getAudioTracks());
+
+            let stream = new MediaStream(tracks);
+
+            resolve(stream);
+          })
+          .catch((err) => reject(err));
       });
     },
     // getAllAvailableResolutions() {
@@ -674,8 +717,6 @@ export default {
     // },
     getDesktopCapturer() {
       return new Promise((resolve, reject) => {
-        debugger;
-
         if (!window.electronAPI.desktopCapturer) return;
 
         window.electronAPI
@@ -828,6 +869,8 @@ export default {
           },
         };
       } else {
+        // IF BROWSER SCREEN CAPTURE
+        // IF BROWSER OR ELECTRON CAMERA FEED
         _constraints.audio = !this.enable_audio
           ? false
           : {
@@ -836,15 +879,13 @@ export default {
                 : undefined,
             };
 
-        // IF BROWSER SCREEN CAPTURE
         if (
           this.selected_devices.video_input_device &&
           this.selected_devices.video_input_device.deviceId === "screen_capture"
         ) {
           _constraints._is_screen_capture = true;
-          _constraints.video = !this.enable_video ? false : true;
+          _constraints.video = this.enable_video;
         } else {
-          // IF BROWSER OR ELECTRON CAMERA FEED
           _constraints.video = !this.enable_video
             ? false
             : {
