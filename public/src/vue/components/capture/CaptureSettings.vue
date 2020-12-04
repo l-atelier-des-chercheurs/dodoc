@@ -107,7 +107,7 @@
                 'desktop'
             "
           >
-            audio source unavailable for screen capture
+            {{ $t("no_audio_for_screen_capture") }}
           </small>
         </div>
         <div>
@@ -674,13 +674,13 @@ export default {
     // },
     getDesktopCapturer() {
       return new Promise((resolve, reject) => {
-        const { desktopCapturer } = window.require("electron");
+        debugger;
 
-        desktopCapturer.getSources(
-          { types: ["window", "screen"] },
-          (err, sources) => {
-            debugger;
-            if (err) return reject(err);
+        if (!window.electronAPI.desktopCapturer) return;
+
+        window.electronAPI
+          .desktopCapturer({ types: ["window", "screen"] })
+          .then((sources) => {
             // sources = sources.filter((s) => s.name === "Entire screen");
             sources = sources.map((s) => {
               return {
@@ -692,8 +692,8 @@ export default {
             });
 
             return resolve(sources);
-          }
-        );
+          })
+          .catch((err) => reject(err));
         // .catch((err) => reject(err));
       });
     },

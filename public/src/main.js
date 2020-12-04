@@ -2,7 +2,6 @@ import localstore from "store";
 import jQuery from "jquery";
 window.$ = window.jQuery = jQuery;
 
-debugger;
 if (window.state.is_electron) {
   document.body.addEventListener("click", electronSpecificOpenLink);
 
@@ -12,12 +11,17 @@ if (window.state.is_electron) {
       if (item.classList !== undefined && item.classList.length > 0) {
         if (item.classList.contains("js--openInBrowser")) {
           event.preventDefault();
-          window.ipcRenderer.send("open-external", item.href);
+          window.electronAPI.send("toMain", {
+            type: "open_external",
+            url: item.href,
+          });
           return false;
         } else if (item.classList.contains("js--openInNativeApp")) {
-          // const shell = window.require("electron").shell;
           event.preventDefault();
-          window.ipcRenderer.send("open-item", item.href);
+          window.electronAPI.send("toMain", {
+            type: "open_item",
+            path: item.href,
+          });
           return false;
         }
       }
