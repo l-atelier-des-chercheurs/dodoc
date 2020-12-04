@@ -137,8 +137,8 @@ module.exports = (function () {
                     resolve();
                   });
               });
+              makeThumbs.push(makeScreenshot);
             });
-            makeThumbs.push(makeWaveform);
           } else if (mediaType === "audio") {
             // make screenshot
             let makeWaveform = new Promise((resolve, reject) => {
@@ -191,6 +191,7 @@ module.exports = (function () {
             screenshotsAngles.forEach((angle) => {
               let makeSTLScreenshot = new Promise((resolve, reject) => {
                 _makeSTLScreenshot({
+                  mediaPath,
                   slugFolderName,
                   thumbFolderPath,
                   filename,
