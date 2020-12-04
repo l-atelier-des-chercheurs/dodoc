@@ -2839,6 +2839,10 @@ module.exports = (function () {
       oc: "Recuperar un ligam de cap a aqueste document",
       de: "Einen Link zu diesem Dokument abrufen.",
     },
+    link: {
+      fr: "Lien",
+      en: "Link",
+    },
     format: {
       fr: "Format",
       en: "Format",

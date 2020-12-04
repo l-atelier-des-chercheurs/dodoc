@@ -36,6 +36,14 @@
 
     <div class="m_captureSettings--settings">
       <label>{{ $t("sources") }}</label>
+      <button
+        type="button"
+        class="buttonLink margin-none margin-left padding-bottom-none"
+        @click="refreshAvailableDevices"
+      >
+        {{ $t("reload") }}
+      </button>
+
       <div class="">
         <div class="">
           <label>{{ $t("camera") }}</label>
@@ -60,6 +68,7 @@
         </div>
         <div>
           <label>{{ $t("audioinput") }}</label>
+
           <small v-if="!all_audio_input_devices.length === 0">
             {{ $t("no_audio_input_available") }}
           </small>
@@ -116,6 +125,7 @@
             </option>
           </select>
         </div>
+        <div class="ta-ce"></div>
       </div>
       <label>{{ $t("resolutions") }}</label>
       <div>
