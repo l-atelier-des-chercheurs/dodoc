@@ -3,9 +3,9 @@ const path = require("path"),
   pathToFfmpeg = require("ffmpeg-static"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
-  exifReader = require("exif-reader");
+  exifReader = require("exif-reader"),
+  sharp = require("sharp");
 
-const sharp = require("sharp");
 sharp.cache(false);
 
 const StlThumbnailer = require("node-stl-to-thumbnail");
