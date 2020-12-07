@@ -3510,6 +3510,10 @@ small {
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
+
+    background-color: var(--c-noir);
+    color: white;
+
     // max-height: 120px;
     // justify-content: flex-end;
 
@@ -3550,17 +3554,19 @@ small {
 
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-y: contain;
-      .padding-verysmall;
+      // .padding-verysmall;
+
+      padding: 0 ~"calc(var(--spacing) / 4)";
+      margin-bottom: ~"calc(var(--spacing) / 8)";
+
       // .margin-verysmall;
       scroll-behavior: smooth;
-
-      background-color: @c-gris_clair;
 
       // for some strange reason this prevents stopmotion thumbs
       // from showing in story publi
       // border-radius: 6px;
 
-      .custom_scrollbar(1px, 3px, 2px, rgba(255, 255, 255, 0), #333);
+      .custom_scrollbar(4px, 4px, 2px, rgba(255, 255, 255, 0), white);
 
       counter-reset: compteListe;
 
@@ -3574,7 +3580,6 @@ small {
       > * {
         position: relative;
         overflow: hidden;
-        // background-color: @c-gris_clair;
         // border-radius: 10px;
         // height: 100px;
         width: auto;
@@ -3582,7 +3587,8 @@ small {
         flex: 0 0 auto;
         width: 100px;
         height: 66px;
-        margin-right: 1px;
+        padding: 0 ~"calc(var(--spacing) / 8)";
+
         cursor: pointer;
 
         &::before {
@@ -3590,7 +3596,7 @@ small {
           content: counter(compteListe) " ";
           position: absolute;
           left: 0;
-          top: 0;
+          bottom: 0;
           .padding-veryverysmall;
           .margin-veryverysmall;
           // .c-noir;
@@ -3653,6 +3659,7 @@ small {
       // .bg-rouge;
       flex: 0 0 auto;
       .padding-verysmall;
+      background-color: white;
 
       display: flex;
       flex: row nowrap;
