@@ -45,6 +45,15 @@
             d="M72,0C32.2,0,0,42,0,42s32.2,42,72,42s72-42,72-42S111.8,0,72,0z M72,71.3c-16.5,0-30-13.2-30-29.6
 		c0-16.3,13.4-29.6,30-29.6c16.5,0,30,13.3,30,29.6C102,58,88.5,71.3,72,71.3z"
           />
+          <line
+            x1="20"
+            y1="90"
+            x2="125"
+            y2="-5"
+            :style="toggle_stroke_color"
+            stroke-width="12"
+            stroke-linecap="round"
+          />
         </svg>
       </button>
     </span>
@@ -83,6 +92,10 @@ export default {
       if (this.field_mode === "password") return "fill: var(--c-noir);";
       else return "fill: white;";
     },
+    toggle_stroke_color() {
+      if (this.field_mode === "password") return "stroke: var(--c-noir);";
+      else return "stroke: transparent;";
+    },
   },
   methods: {
     toggleFieldMode() {
@@ -106,7 +119,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.4em;
+  padding: 0.2em;
   background-color: var(--c-gris-clair);
 
   button {
