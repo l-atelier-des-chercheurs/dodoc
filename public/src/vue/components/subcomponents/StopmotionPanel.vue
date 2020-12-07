@@ -583,17 +583,6 @@ export default {
     position: absolute;
     height: 100%;
     width: 100%;
-
-    > * {
-      width: 100%;
-      height: 100%;
-    }
-
-    video {
-      height: 100%;
-      width: 100%;
-      background-color: var(--c-noir);
-    }
   }
 }
 
@@ -653,6 +642,19 @@ export default {
     object-fit: contain;
 
     // .bg-noir;
+  }
+}
+
+.m_stopmotionpanel--videopreview .mediaContainer {
+  > * {
+    width: 100%;
+    height: 100%;
+  }
+
+  video {
+    height: 100%;
+    width: 100%;
+    background-color: var(--c-noir);
   }
 }
 </style>
