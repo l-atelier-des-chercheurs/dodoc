@@ -1255,7 +1255,7 @@ let vm = new Vue({
             catchMediaCreation
           );
           return reject();
-        }, 2000);
+        }, 120000);
 
         const catchMediaCreation = (d) => {
           if (mdata.id === d.id) {
