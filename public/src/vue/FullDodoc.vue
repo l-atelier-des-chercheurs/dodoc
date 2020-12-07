@@ -153,7 +153,6 @@ import TopBar from "./TopBar.vue";
 import ListView from "./ListView.vue";
 import Chats from "./Chats.vue";
 import ProjectView from "./ProjectView.vue";
-// import CaptureView from "./CaptureView.vue";
 import CaptureView2 from "./CaptureView2.vue";
 import EditMedia from "./components/modals/EditMedia.vue";
 import CreateQRModal from "./components/modals/CreateQRModal.vue";
@@ -171,7 +170,6 @@ export default {
     ListView,
     Chats,
     ProjectView,
-    // CaptureView,
     CaptureView2,
     EditMedia,
     CreateQRModal,

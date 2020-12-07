@@ -352,7 +352,7 @@
             />
           </transition>
 
-          <transition name="justCaptured" :duration="400">
+          <transition name="justCaptured" :duration="200">
             <MediaPreviewBeforeValidation
               v-if="media_to_validate"
               :media_to_validate="media_to_validate"
@@ -1732,6 +1732,7 @@ export default {
 .m_captureview2 {
   display: flex;
   flex-flow: row nowrap;
+  max-height: 80vh;
 
   &.is--collapsed {
     .m_captureview2--videoPane--bottom--buttons {
@@ -1770,6 +1771,7 @@ export default {
   .m_captureview2--videoPane--top {
     position: relative;
     margin: 0 auto;
+    min-height: 300px;
 
     flex: 1 1 auto;
     overflow: hidden;
