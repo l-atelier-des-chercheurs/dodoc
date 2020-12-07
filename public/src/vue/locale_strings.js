@@ -3828,6 +3828,14 @@ module.exports = (function () {
         fr: "Cette option existe déjà",
         en: "This option already exists",
       },
+      new_lang_applied: {
+        fr: "Nouvelle langue appliquée",
+        en: "New lang applied",
+      },
+      missing_translation_handled_in: {
+        fr: "Les traductions manquantes seront rédigées en Anglais",
+        en: "Missing translations will be written in English",
+      },
     },
   };
 
