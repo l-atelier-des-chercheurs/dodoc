@@ -700,8 +700,8 @@
                     min="0"
                     max=".9"
                     step="0.01"
+                    :title="stopmotion.onion_skin_opacity"
                   />
-                  {{ stopmotion.onion_skin_opacity }}
                 </div>
 
                 <button
