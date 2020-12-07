@@ -232,4 +232,54 @@ export default {
   },
 };
 </script>
-<style></style>
+<style lang="scss" scoped>
+.m_mediaValidationButtons {
+  position: relative;
+  z-index: 105;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(var(--spacing) / 2);
+  flex: 0 0 auto;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+
+  font-size: var(--font-verysmall);
+  height: auto;
+
+  background-color: var(--c-noir);
+
+  > * {
+    flex: 0 1 180px;
+    display: flex;
+    align-items: center;
+  }
+
+  .m_mediaValidationButtons--overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // background-color: rgba(53, 53, 53, 0.5);
+    --loader-bg-color: transparent;
+    --loader-border-color: var(--c-rouge);
+
+    .m_mediaValidationButtons--overlay--percent {
+      position: absolute;
+      margin-left: 4em;
+    }
+  }
+
+  button {
+    svg {
+      width: 36px;
+      height: 36px;
+    }
+  }
+}
+</style>

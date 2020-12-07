@@ -211,47 +211,6 @@
               </label>-->
           </transition-group>
 
-          <div
-            class="_video_grid_overlay"
-            v-if="
-              enable_grid &&
-              ['photo', 'video', 'stopmotion'].includes(selected_mode)
-            "
-          >
-            <!-- :width="actual_camera_resolution.width" -->
-            <!-- :height="actual_camera_resolution.height" -->
-
-            <svg
-              :width="actual_camera_resolution.width"
-              :height="actual_camera_resolution.height"
-              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
-            >
-              <line
-                v-for="([x1, y1, x2, y2], index) in [
-                  [33, 0, 33, 100],
-                  [66, 0, 66, 100],
-                  [0, 33, 100, 33],
-                  [0, 66, 100, 66],
-                ]"
-                :key="index"
-                :x1="x1 + '%'"
-                :y1="y1 + '%'"
-                :x2="x2 + '%'"
-                :y2="y2 + '%'"
-                vector-effect="non-scaling-stroke"
-              />
-              <rect x="0" y="0" width="100%" height="100%" />
-            </svg>
-
-            <!-- <svg
-              xmlns="http://www.w3.org/2000/svg"
-              version="1.1"
-              :width="actual_camera_resolution.width"
-              :height="actual_camera_resolution.height"
-              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
-            /> -->
-          </div>
-
           <transition name="scaleInFade" mode="out-in" duration="100">
             <label
               v-if="!!delay_before_picture || !!time_before_next_picture"
@@ -270,6 +229,13 @@
               </template> -->
             </label>
           </transition>
+
+          <!-- <transition name="justCaptured" duration="400">
+            <div
+              v-if="capture_button_pressed"
+              class="_just_captured_overlay"
+            ></div>
+          </transition> -->
 
           <transition name="scaleInFade" mode="in-out" duration="100">
             <MediaContent
@@ -296,6 +262,43 @@
               "
             />
           </transition>
+
+          <div
+            class="_video_grid_overlay"
+            v-if="enable_grid && enable_video && !media_to_validate"
+          >
+            <svg
+              :width="actual_camera_resolution.width"
+              :height="actual_camera_resolution.height"
+              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
+            >
+              <line
+                v-for="([x1, y1, x2, y2], index) in grids[current_grid_type]"
+                :key="index"
+                :x1="x1 + '%'"
+                :y1="y1 + '%'"
+                :x2="x2 + '%'"
+                :y2="y2 + '%'"
+                vector-effect="non-scaling-stroke"
+              />
+              <!-- <rect
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+                vector-effect="non-scaling-stroke"
+              /> -->
+            </svg>
+
+            <!-- <svg
+              xmlns="http://www.w3.org/2000/svg"
+              version="1.1"
+              :width="actual_camera_resolution.width"
+              :height="actual_camera_resolution.height"
+              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
+            /> -->
+          </div>
+
           <transition name="fade_fast">
             <div
               class="_settingsTag"
@@ -321,11 +324,23 @@
                 type="button"
                 class="button-nostyle"
                 :class="{ 'is--active': enable_grid }"
-                v-if="['photo', 'video', 'stopmotion'].includes(selected_mode)"
+                v-if="enable_video"
                 @click="enable_grid = !enable_grid"
               >
                 {{ $t("grid").toLowerCase() }}
               </button>
+              <div v-if="enable_video && enable_grid">
+                <button
+                  type="button"
+                  class="button-nostyle"
+                  v-for="grid_type in Object.keys(grids)"
+                  :key="grid_type"
+                  :class="{ 'is--active': current_grid_type === grid_type }"
+                  @click="current_grid_type = grid_type"
+                >
+                  {{ $t(grid_type).toLowerCase() }}
+                </button>
+              </div>
             </div>
           </transition>
 
@@ -337,7 +352,7 @@
             />
           </transition>
 
-          <transition name="fade_fast" :duration="150">
+          <transition name="justCaptured" :duration="400">
             <MediaPreviewBeforeValidation
               v-if="media_to_validate"
               :media_to_validate="media_to_validate"
@@ -897,8 +912,6 @@ export default {
         lines: "/images/i_icone-dodoc_lines.svg",
       },
 
-      enable_grid: false,
-
       media_to_validate: false,
       media_is_being_sent: false,
       media_being_sent_percent: 0,
@@ -910,6 +923,29 @@ export default {
       current_stopmotion: false,
 
       collapse_capture_pane: false,
+
+      enable_grid: false,
+      grids: {
+        halfs: [
+          [50, 0, 50, 100],
+          [0, 50, 100, 50],
+        ],
+        thirds: [
+          [33, 0, 33, 100],
+          [66, 0, 66, 100],
+          [0, 33, 100, 33],
+          [0, 66, 100, 66],
+        ],
+        fourths: [
+          [25, 0, 25, 100],
+          [50, 0, 50, 100],
+          [75, 0, 75, 100],
+          [0, 25, 100, 25],
+          [0, 50, 100, 50],
+          [0, 75, 100, 75],
+        ],
+      },
+      current_grid_type: "halfs",
 
       // selected_devices: {
       //   video_input_device: undefined,
@@ -1044,7 +1080,7 @@ export default {
     },
     media_to_validate: function () {
       console.log(
-        `WATCH • Capture: media_to_validate = ${this.media_to_validate}`
+        `WATCH • Capture: media_to_validate = ${!!this.media_to_validate}`
       );
       if (this.media_to_validate) {
         this.$refs.videoElement.pause();
@@ -1364,7 +1400,7 @@ export default {
     startTimelapseInterval() {
       this.timelapse_start_time = this.$root.currentTime_millis;
       this.timelapse_event = window.setInterval(() => {
-        this.addStopmotionImage();
+        this.setCapture();
         this.timelapse_start_time = this.$root.currentTime_millis;
       }, this.timelapse_interval * 1000);
     },
@@ -1400,7 +1436,7 @@ export default {
       } else if (this.selected_mode === "stopmotion") {
         this.addStopmotionImage();
 
-        if (this.timelapse_mode_enabled) {
+        if (this.timelapse_mode_enabled && !this.is_recording) {
           this.is_recording = true;
           this.startTimelapseInterval();
         }
@@ -1791,7 +1827,7 @@ export default {
     margin: 15px;
     pointer-events: none;
 
-    > * {
+    button {
       display: inline-block;
       background-color: white;
       // border: 2px solid #fff;
@@ -2109,10 +2145,7 @@ export default {
 
   object-fit: contain;
 
-  --c-gridColor: var(--c-rouge);
-  --gridstep: 33.3333%;
-  --grid_width: 2px;
-  --gridstep_before: calc(var(--gridstep) - (var(--grid_width) / 2));
+  --stroke_width: 2px;
 
   svg {
     position: absolute;
@@ -2120,13 +2153,13 @@ export default {
     height: 100%;
     stroke: var(--c-rouge);
     fill: none;
-    padding: 0.5px;
+    // padding: calc(var(--stroke_width) / 2);
 
     line {
-      stroke-width: 2px;
+      stroke-width: var(--stroke_width);
     }
     rect {
-      stroke-width: 2px;
+      stroke-width: var(--stroke_width);
     }
   }
 }
@@ -2154,6 +2187,13 @@ export default {
     background: var(--c-rouge);
     color: white;
   }
+}
+._just_captured_overlay {
+  background-color: var(--c-rouge);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
 }
 </style>
 <style lang="scss">

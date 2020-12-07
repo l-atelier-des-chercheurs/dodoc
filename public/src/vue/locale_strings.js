@@ -2651,6 +2651,19 @@ module.exports = (function () {
       fr: "Grille",
       en: "Grid",
     },
+    halfs: {
+      fr: "Moitiés",
+      en: "Halfs",
+    },
+    thirds: {
+      fr: "Tiers",
+      en: "Thirds",
+    },
+    fourths: {
+      fr: "Quarts",
+      en: "Fourths",
+    },
+
     margin_top: {
       fr: "Marge: haut",
       en: "Margin: top",
