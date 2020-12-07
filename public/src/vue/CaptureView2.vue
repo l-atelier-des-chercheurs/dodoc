@@ -1732,7 +1732,7 @@ export default {
 .m_captureview2 {
   display: flex;
   flex-flow: row nowrap;
-  max-height: 80vh;
+  max-height: 100vh;
 
   &.is--collapsed {
     .m_captureview2--videoPane--bottom--buttons {
