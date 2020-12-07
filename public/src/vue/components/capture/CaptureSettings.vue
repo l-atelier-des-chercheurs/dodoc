@@ -184,6 +184,7 @@
 
         <small
           v-if="
+            selected_devices.video_input_device &&
             selected_devices.video_input_device.deviceId === 'screen_capture'
           "
         >
