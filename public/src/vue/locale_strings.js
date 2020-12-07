@@ -3419,6 +3419,15 @@ module.exports = (function () {
           "Los Iphones and Ipads son pas compatibles amb la fonccionalitat de captura.",
         de: "iPhones und iPads sind nicht mit der Aufnahmefunktion kompatibel.",
       },
+      copied_with_success: {
+        fr: "Copié dans le presse-papier !",
+        en: "Copied to the clipboard",
+      },
+      cant_copy: {
+        fr:
+          "La copie dans le presse-papier a rencontré une erreur et n’a pas pu avoir lieu",
+        en: "The copy to the clipboard failed",
+      },
       imported_files_successfully: {
         fr: "Média importé avec succès",
         en: "Media imported successfully",

@@ -49,21 +49,22 @@
           </span>
         </div>
 
-        <hr class="margin-vert-verysmall" />
+        <!-- <hr class="margin-vert-verysmall" /> -->
 
-        <!-- <button
+        <button
           type="button"
-          class="buttonLink hide_on_print m_qrSnippet--text--printButton"
-          @click.prevent="printQR"
+          class="buttonLink"
+          @click="doCopy(ip)"
+          :disabled="!can_copy_url"
         >
-          {{ $t("print") }}
-        </button> -->
+          {{ $t("copy") }}
+        </button>
 
-        <img
+        <!-- <img
           class="m_qrSnippet--text--dodoclogo"
           :src="'/images/i_logo.svg'"
           draggable="false"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -86,6 +87,7 @@ export default {
   data() {
     return {
       open_in_dodoc: true,
+      can_copy_url: true,
     };
   },
   created() {},
@@ -107,9 +109,6 @@ export default {
     },
   },
   methods: {
-    printQR: function () {
-      window.print();
-    },
     getURLToApp(ip) {
       let url = new URL(window.location);
 
@@ -151,6 +150,28 @@ export default {
         }
       }
       return url;
+    },
+    doCopy(ip) {
+      this.$copyText(this.getURLToApp(ip)).then(
+        (e) => {
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(8000)
+            .success(this.$t("notifications.copied_with_success"));
+
+          this.can_copy_url = false;
+          setTimeout(() => {
+            this.can_copy_url = true;
+          }, 1000);
+        },
+        (e) => {
+          alert("Can not copy");
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.cant_copy") + "<br>" + e);
+        }
+      );
     },
   },
 };

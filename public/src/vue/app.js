@@ -34,6 +34,11 @@ Vue.prototype.$eventHub = new Vue(); // Global event bus
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
 
+// import Clipboard from "v-clipboard";
+// Vue.use(Clipboard);
+import VueClipboard from "vue-clipboard2";
+Vue.use(VueClipboard);
+
 import VueI18n from "vue-i18n";
 Vue.use(VueI18n);
 
