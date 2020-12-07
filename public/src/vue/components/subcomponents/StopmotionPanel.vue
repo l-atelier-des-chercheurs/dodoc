@@ -5,15 +5,6 @@
   >
     <div class="m_stopmotionpanel--toprowbuttons">
       <button
-        type="button"
-        v-if="!validating_video_preview"
-        @click="cancelStopmotion"
-        class="buttonLink"
-      >
-        <span class="text-cap font-verysmall">{{ $t("stop_stopmotion") }}</span>
-      </button>
-
-      <button
         v-if="!show_live_feed"
         type="button"
         :disabled="read_only"
@@ -266,22 +257,6 @@ export default {
       });
       this.validating_video_preview = false;
       this.$emit("update:show_live_feed", true);
-    },
-    cancelStopmotion: function () {
-      this.$alertify
-        .okBtn(this.$t("yes"))
-        .cancelBtn(this.$t("cancel"))
-        .confirm(
-          this.$t("sure_to_cancel_stopmotion"),
-          () => {
-            this.show_previous_photo = false;
-            this.$emit("update:show_live_feed", true);
-            this.$nextTick(() => {
-              this.$emit("close");
-            });
-          },
-          () => {}
-        );
     },
     save: function () {
       this.$emit("saveMedia", this.validating_video_preview.metaFileName);

@@ -156,18 +156,12 @@
               v-html="timer_recording_in_seconds"
             />
 
-            <label
+            <div
               v-if="
                 selected_mode === 'stopmotion' &&
-                is_recording &&
-                timer_recording_in_seconds !== false
+                timelapse_mode_enabled &&
+                !timelapse_event
               "
-              :key="'time_before'"
-              v-html="time_before_next_picture"
-            />
-
-            <div
-              v-if="selected_mode === 'stopmotion' && timelapse_mode_enabled"
               :key="'timelapse_interval'"
               class="record_options"
             >
@@ -260,13 +254,16 @@
 
           <transition name="scaleInFade" mode="out-in" duration="100">
             <label
-              v-if="delay_event"
+              v-if="!!delay_before_picture || !!time_before_next_picture"
               :key="'time_before_' + delay_before_picture"
               mode="out-in"
               class="_delay_timer"
             >
-              <template v-if="delay_before_picture > 0">
+              <template v-if="!!delay_before_picture">
                 {{ delay_before_picture }}
+              </template>
+              <template v-else-if="!!time_before_next_picture">
+                {{ time_before_next_picture }}
               </template>
               <!-- <template v-else>
                 {{ $t("now!") }}
@@ -361,11 +358,7 @@
           :show_live_feed.sync="show_live_feed"
           :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
           @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
-          @close="
-            current_stopmotion = false;
-            is_recording = false;
-            $root.settings.ask_before_leaving_capture = false;
-          "
+          @close="closeStopmotionPanel"
           @new_single_image="updateSingleImage"
         />
       </transition>
@@ -497,6 +490,17 @@
                     </span>
                   </template>
                 </button>
+
+                <button
+                  type="button"
+                  class="bg-orange button-inline _captureButton"
+                  :key="selected_mode + '_pause'"
+                  v-if="selected_mode === 'stopmotion' && is_making_stopmotion"
+                  @mousedown.stop.prevent="stopStopmotion()"
+                  @touchstart.stop.prevent="stopStopmotion()"
+                >
+                  {{ $t("stop_stopmotion") }}
+                </button>
               </div>
               <div>
                 <transition name="fade_fast" mode="out-in">
@@ -504,7 +508,6 @@
                     type="button"
                     v-if="!is_recording"
                     class="bg-orange button-inline _captureButton"
-                    :class="{ 'is--justCaptured': capture_button_pressed }"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="setCaptureInit()"
@@ -544,7 +547,6 @@
                     type="button"
                     v-else-if="is_recording"
                     class="bg-orange button-inline _captureButton"
-                    :class="{ 'is--justCaptured': capture_button_pressed }"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="stopRecording()"
@@ -685,7 +687,8 @@
                   v-if="
                     selected_mode === 'stopmotion' &&
                     stopmotion.onion_skin_img &&
-                    show_live_feed
+                    show_live_feed &&
+                    is_making_stopmotion
                   "
                   class="_mode_accessory_range"
                 >
@@ -694,10 +697,11 @@
                     class="_rtl"
                     type="range"
                     v-model.number="stopmotion.onion_skin_opacity"
-                    min="0.1"
-                    max="1"
+                    min="0"
+                    max=".9"
                     step="0.01"
                   />
+                  {{ stopmotion.onion_skin_opacity }}
                 </div>
 
                 <button
@@ -928,6 +932,7 @@ export default {
       timelapse_mode_enabled: false,
       timelapse_interval: 2,
       timelapse_event: false,
+      timelapse_start_time: false,
 
       delay_mode_enabled: false,
       delay_seconds: 5,
@@ -991,10 +996,9 @@ export default {
 
     this.$root.settings.ask_before_leaving_capture = false;
 
-    if (this.timelapse_event) window.clearInterval(this.timelapse_event);
-    if (this.recording_timer_interval)
-      window.clearInterval(this.recording_timer_interval);
-    if (this.delay_event) window.clearTimeout(this.delay_event);
+    this.stopTimelapseInterval();
+    this.cancelDelay();
+    this.eraseTimer();
 
     this.$refs.videoElement.removeEventListener(
       "loadedmetadata",
@@ -1066,18 +1070,17 @@ export default {
       );
     },
     time_before_next_picture: function () {
-      const time_ellapsed_since_last_capture =
-        this.timer_recording_in_seconds % this.timelapse_interval;
-      if (time_ellapsed_since_last_capture === 0) {
-        return 0;
-      }
-      return (
-        Math.round(
-          (this.timelapse_interval - time_ellapsed_since_last_capture) * 10
-        ) / 10
+      if (!this.timelapse_start_time) return false;
+
+      const time_since_start = +this.$moment(
+        this.$root.currentTime_millis - this.timelapse_start_time
       );
+      const time_remaining =
+        (this.timelapse_interval * 1000 - time_since_start) / 1000;
+      return Math.floor(time_remaining + 0.99);
     },
     delay_before_picture() {
+      if (!this.delay_start_time) return false;
       const time_since_start = +this.$moment(
         this.$root.currentTime_millis - this.delay_start_time
       );
@@ -1189,6 +1192,19 @@ export default {
       // this.updateVideoDisplayedSize();
     },
 
+    stopStopmotion() {
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sure_to_cancel_stopmotion"),
+          () => {
+            this.closeStopmotionPanel();
+          },
+          () => {}
+        );
+    },
+
     startFrameGrabber() {
       const getFrame = () => {
         if (this.$root.state.dev_mode === "debug")
@@ -1279,6 +1295,12 @@ export default {
           }
         });
     },
+    closeStopmotionPanel() {
+      this.current_stopmotion = false;
+      this.is_recording = false;
+      this.$root.settings.ask_before_leaving_capture = false;
+      this.show_live_feed = true;
+    },
 
     captureKeyListener(event) {
       console.log("METHODS • CaptureView: captureKeyListener");
@@ -1318,17 +1340,37 @@ export default {
 
       if (this.delay_mode_enabled && this.delay_event) {
         // cancel delay
-        window.clearTimeout(this.delay_event);
-        this.delay_event = false;
+
+        this.cancelDelay();
       } else if (this.delay_mode_enabled) {
-        this.delay_start_time = this.$root.currentTime_millis;
-        this.delay_event = window.setTimeout(() => {
-          this.setCapture();
-          this.delay_event = false;
-        }, this.delay_seconds * 1000);
+        this.startDelay();
       } else {
         this.setCapture();
       }
+    },
+    startDelay() {
+      this.delay_start_time = this.$root.currentTime_millis;
+      this.delay_event = window.setTimeout(() => {
+        this.setCapture();
+        this.delay_start_time = false;
+        this.delay_event = false;
+      }, this.delay_seconds * 1000);
+    },
+    cancelDelay() {
+      window.clearTimeout(this.delay_event);
+      this.delay_start_time = false;
+      this.delay_event = false;
+    },
+    startTimelapseInterval() {
+      this.timelapse_start_time = this.$root.currentTime_millis;
+      this.timelapse_event = window.setInterval(() => {
+        this.addStopmotionImage();
+        this.timelapse_start_time = this.$root.currentTime_millis;
+      }, this.timelapse_interval * 1000);
+    },
+    stopTimelapseInterval() {
+      window.clearInterval(this.timelapse_event);
+      this.timelapse_start_time = false;
     },
     setCapture() {
       this.capture_button_pressed = true;
@@ -1360,13 +1402,7 @@ export default {
 
         if (this.timelapse_mode_enabled) {
           this.is_recording = true;
-          this.timelapse_event = window.setInterval(() => {
-            this.capture_button_pressed = true;
-            window.setTimeout(() => {
-              this.capture_button_pressed = false;
-            }, 400);
-            this.addStopmotionImage();
-          }, this.timelapse_interval * 1000);
+          this.startTimelapseInterval();
         }
       } else if (this.selected_mode === "vecto") {
         const svgstr = this.$refs.vectoElement.svgstr;
@@ -1390,7 +1426,7 @@ export default {
 
       if (this.selected_mode === "stopmotion" && this.timelapse_mode_enabled) {
         this.is_recording = false;
-        window.clearInterval(this.timelapse_event);
+        this.stopTimelapseInterval();
         return;
       }
       if (this.selected_mode === "video") {
@@ -1951,6 +1987,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 
   font-size: 40vmin;
   color: transparent;
