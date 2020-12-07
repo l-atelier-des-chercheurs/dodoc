@@ -225,12 +225,6 @@ module.exports = (function () {
       fr: "Aucune sortie audio disponible",
       en: "No audio output available",
     },
-    no_audio_for_screen_capture: {
-      fr:
-        "En mode capture d’écran dans l’application do•doc il n’est pas possible d’enregistrer le son simultanément.",
-      en:
-        "Audio recording is not available when recording the screen in the do•doc app.",
-    },
     echoCancellation: {
       fr: "Annulation de l'écho",
       en: "Echo cancellation",

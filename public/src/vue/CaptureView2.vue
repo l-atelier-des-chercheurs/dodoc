@@ -103,86 +103,6 @@
         v-show="!is_validating_stopmotion_video"
       >
         <div class="m_captureview2--videoPane--top--videoContainer">
-          <transition-group
-            tag="div"
-            class="_capture_options"
-            name="slideFromTop"
-          >
-            <label
-              v-if="
-                selected_mode !== 'stopmotion' &&
-                is_recording &&
-                timer_recording_in_seconds !== false
-              "
-              :key="'duration'"
-              v-html="timer_recording_in_seconds"
-            />
-
-            <label
-              v-if="
-                selected_mode === 'stopmotion' &&
-                is_recording &&
-                timer_recording_in_seconds !== false
-              "
-              :key="'time_before'"
-              v-html="time_before_next_picture"
-            />
-
-            <label v-if="delay_event" :key="'time_before'">
-              <template v-if="delay_before_picture > 0">
-                {{ delay_before_picture }}
-              </template>
-              <template v-else>
-                {{ $t("now!") }}
-              </template>
-            </label>
-
-            <div
-              v-if="selected_mode === 'stopmotion' && timelapse_mode_enabled"
-              :key="'timelapse_interval'"
-              class="recording_timer--timelapse"
-            >
-              <label>
-                <span>{{ $t("interval_between_pictures") }}</span>
-                <input type="number" v-model.number="timelapse_interval" />
-                <span>{{ $t("seconds") }}</span>
-              </label>
-            </div>
-
-            <div
-              v-if="delay_mode_enabled && !is_recording && !media_to_validate"
-              :key="'delay_interval'"
-              class="recording_timer--delay"
-            >
-              <label>
-                <span>{{ $t("delay").toLowerCase() }}</span>
-                <input
-                  type="number"
-                  v-model.number="delay_seconds"
-                  min="1"
-                  max="60"
-                />
-                <span>{{ $t("seconds") }}</span>
-              </label>
-            </div>
-
-            <!-- <label 
-                v-if="selected_mode === 'stopmotion' && timelapse_mode_enabled"
-                :key="'disable_interval'"  
-              >
-                <button 
-                  type="button" 
-                  class="button-nostyle text-uc padding-none margin-none c-blanc bg-rouge button-inline"
-                  @click="timelapse_mode_enabled = false"
-                >
-                  <svg class="inline-svg margin-right-verysmall" viewBox="0 0 20 20">
-                    <path stroke="" fill="white" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
-                  </svg>                    
-                  {{ $t('disable') }}
-                </button>                
-              </label>-->
-          </transition-group>
-
           <video
             ref="videoElement"
             autoplay
@@ -220,6 +140,82 @@
             :stream="stream"
             :is_recording="is_recording"
           />
+
+          <transition-group
+            tag="div"
+            class="_capture_options"
+            name="slideFromTop"
+          >
+            <label
+              v-if="
+                selected_mode !== 'stopmotion' &&
+                is_recording &&
+                timer_recording_in_seconds !== false
+              "
+              :key="'duration'"
+              v-html="timer_recording_in_seconds"
+            />
+
+            <label
+              v-if="
+                selected_mode === 'stopmotion' &&
+                is_recording &&
+                timer_recording_in_seconds !== false
+              "
+              :key="'time_before'"
+              v-html="time_before_next_picture"
+            />
+
+            <div
+              v-if="selected_mode === 'stopmotion' && timelapse_mode_enabled"
+              :key="'timelapse_interval'"
+              class="record_options"
+            >
+              <label>
+                <span>{{ $t("interval_between_pictures") }}</span>
+                <input type="number" v-model.number="timelapse_interval" />
+                <span>{{ $t("seconds") }}</span>
+              </label>
+            </div>
+
+            <div
+              v-if="
+                delay_mode_enabled &&
+                !is_recording &&
+                !media_to_validate &&
+                !delay_event
+              "
+              :key="'delay_interval'"
+              class="record_options"
+            >
+              <label>
+                <span>{{ $t("delay").toLowerCase() }}</span>
+                <input
+                  type="number"
+                  v-model.number="delay_seconds"
+                  min="1"
+                  max="60"
+                />
+                <span>{{ $t("seconds") }}</span>
+              </label>
+            </div>
+
+            <!-- <label 
+                v-if="selected_mode === 'stopmotion' && timelapse_mode_enabled"
+                :key="'disable_interval'"  
+              >
+                <button 
+                  type="button" 
+                  class="button-nostyle text-uc padding-none margin-none c-blanc bg-rouge button-inline"
+                  @click="timelapse_mode_enabled = false"
+                >
+                  <svg class="inline-svg margin-right-verysmall" viewBox="0 0 20 20">
+                    <path stroke="" fill="white" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+                  </svg>                    
+                  {{ $t('disable') }}
+                </button>                
+              </label>-->
+          </transition-group>
 
           <div
             class="_video_grid_overlay"
@@ -261,6 +257,22 @@
               :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
             /> -->
           </div>
+
+          <transition name="scaleInFade" mode="out-in" duration="100">
+            <label
+              v-if="delay_event"
+              :key="'time_before_' + delay_before_picture"
+              mode="out-in"
+              class="_delay_timer"
+            >
+              <template v-if="delay_before_picture > 0">
+                {{ delay_before_picture }}
+              </template>
+              <!-- <template v-else>
+                {{ $t("now!") }}
+              </template> -->
+            </label>
+          </transition>
 
           <transition name="scaleInFade" mode="in-out" duration="100">
             <MediaContent
@@ -977,6 +989,8 @@ export default {
     this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
     this.stopFrameGrabber();
 
+    this.$root.settings.ask_before_leaving_capture = false;
+
     if (this.timelapse_event) window.clearInterval(this.timelapse_event);
     if (this.recording_timer_interval)
       window.clearInterval(this.recording_timer_interval);
@@ -1069,7 +1083,7 @@ export default {
       );
       const time_remaining =
         (this.delay_seconds * 1000 - time_since_start) / 1000;
-      return Math.floor(time_remaining + 0.8);
+      return Math.floor(time_remaining + 0.99);
       // return this.delay_seconds - seconds_ellapsed_since_click;
     },
   },
@@ -1241,17 +1255,6 @@ export default {
       console.log("METHODS • CaptureView: addImageToStopmotion");
       this.is_sending_image = true;
 
-      const media_editing_timeout = window.setTimeout(() => {
-        if (this.is_sending_image && this.$refs.videoElement) {
-          this.is_sending_image = false;
-          this.$refs.videoElement.play();
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t("notifications.failed_to_save_media"));
-        }
-      }, 5000);
-
       this.$root
         .createMedia({
           slugFolderName: this.current_stopmotion,
@@ -1264,7 +1267,16 @@ export default {
         .then((mdata) => {
           this.is_sending_image = false;
           this.$refs.videoElement.play();
-          window.clearTimeout(media_editing_timeout);
+        })
+        .catch((err) => {
+          if (this.is_sending_image && this.$refs.videoElement) {
+            this.is_sending_image = false;
+            this.$refs.videoElement.play();
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(this.$t("notifications.failed_to_save_media"));
+          }
         });
     },
 
@@ -1931,6 +1943,28 @@ export default {
   color: white;
 }
 
+._delay_timer {
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 40vmin;
+  color: transparent;
+
+  --c-text-stroke: var(--c-rouge);
+  --c-text-shadow: rgba(0, 0, 0, 0.2);
+  color: var(--c-rouge_fonce);
+
+  -webkit-text-stroke: 1vmin var(--c-text-stroke);
+  // text-shadow: 1vmin 1vmin 0 var(--c-text-shadow),
+  //   -1px -1px 0 var(--c-text-shadow), 1px -1px 0 var(--c-text-shadow),
+  //   -1px 1px 0 var(--c-text-shadow), 1px 1px 0 var(--c-text-shadow);
+}
+
 ._capture_options {
   position: absolute;
   bottom: 0;
@@ -1956,8 +1990,7 @@ export default {
     pointer-events: auto;
   }
 
-  .recording_timer--timelapse,
-  .recording_timer--delay {
+  .record_options {
     max-width: 450px;
     margin: calc(var(--spacing) / 4) auto;
     // .padding-verysmall;
@@ -1994,8 +2027,10 @@ export default {
         border-bottom-color: var(--c-rouge_fonce);
       }
     }
-  }
-  .recording_timer--delay {
+
+    .record_options--timer {
+      font-size: 2em;
+    }
   }
 }
 

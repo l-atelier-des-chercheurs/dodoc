@@ -1,0 +1,24 @@
+name: Admin
+
+----
+
+password: $2a$10$ZR6df36aLT7KCCAqyuAqKecdvWWicV7ys6KF1Bmge1fRR7mqTWPDG
+
+----
+
+date_created: 20201204_183249
+
+----
+
+email: 
+
+----
+
+role: admin
+
+----
+
+nfc_tag: 
+
+----
+
