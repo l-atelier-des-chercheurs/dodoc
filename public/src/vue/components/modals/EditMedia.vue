@@ -102,7 +102,7 @@
 
         <template v-if="showQRModal">
           <hr />
-          <CreateQRCode :slugFolderName="slugProjectName" :media="media" />
+          <QRCodeToResource :slugFolderName="slugProjectName" :media="media" />
         </template>
 
         <button
@@ -634,7 +634,7 @@
 </template>
 <script>
 import MediaContent from "../subcomponents/MediaContent.vue";
-import CreateQRCode from "./qr/CreateQRCode.vue";
+import QRCodeToResource from "./qr/QRCodeToResource.vue";
 import { setTimeout } from "timers";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
@@ -652,7 +652,7 @@ export default {
   },
   components: {
     MediaContent,
-    CreateQRCode,
+    QRCodeToResource,
     AuthorsInput,
     TagsInput,
     ClientsCheckingOut,

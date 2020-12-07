@@ -5,15 +5,6 @@
   >
     <div class="m_stopmotionpanel--toprowbuttons">
       <button
-        type="button"
-        v-if="!validating_video_preview"
-        @click="cancelStopmotion"
-        class="buttonLink"
-      >
-        <span class="text-cap font-verysmall">{{ $t("stop_stopmotion") }}</span>
-      </button>
-
-      <button
         v-if="!show_live_feed"
         type="button"
         :disabled="read_only"
@@ -37,7 +28,7 @@
             show_previous_photo = media;
             $emit('update:show_live_feed', false);
           "
-          class
+          class="m_stopmotionpanel--medias--list--items"
           :class="{
             'is--current_single':
               show_previous_photo.metaFileName === media.metaFileName &&
@@ -53,6 +44,7 @@
           />
         </div>
         <div
+          class="m_stopmotionpanel--medias--list--items"
           :class="{ 'is--current_single': show_live_feed }"
           @click="
             show_previous_photo = medias[medias.length - 1];
@@ -267,22 +259,6 @@ export default {
       this.validating_video_preview = false;
       this.$emit("update:show_live_feed", true);
     },
-    cancelStopmotion: function () {
-      this.$alertify
-        .okBtn(this.$t("yes"))
-        .cancelBtn(this.$t("cancel"))
-        .confirm(
-          this.$t("sure_to_cancel_stopmotion"),
-          () => {
-            this.show_previous_photo = false;
-            this.$emit("update:show_live_feed", true);
-            this.$nextTick(() => {
-              this.$emit("close");
-            });
-          },
-          () => {}
-        );
-    },
     save: function () {
       this.$emit("saveMedia", this.validating_video_preview.metaFileName);
       this.show_previous_photo = false;
@@ -334,4 +310,349 @@ export default {
   },
 };
 </script>
-<style></style>
+<style lang="scss" scoped>
+.m_stopmotionpanel {
+  position: relative;
+  // height: 100%;
+  display: flex;
+  // .bg-noir;
+  flex-flow: column nowrap;
+  flex: 0 0 auto;
+
+  &.is--showing_video_validation {
+    flex-grow: 1;
+  }
+
+  > * {
+    transition: all 0.4s;
+  }
+}
+
+.m_stopmotionpanel--toprowbuttons {
+  position: absolute;
+  left: 0;
+  z-index: 10;
+  bottom: 100%;
+
+  button {
+    background-color: var(--c-noir);
+    color: white;
+  }
+}
+
+.m_stopmotionpanel--medias {
+  // .bg-noir;
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+
+  background-color: var(--c-noir);
+  color: white;
+
+  // max-height: 120px;
+  // justify-content: flex-end;
+
+  // .m_stopmotionpanel--medias--single {
+  //   position: relative;
+  //   flex: 1 1 auto;
+  //   .bg-noir;
+
+  //   .mediaContainer {
+  //     position: absolute;
+  //     height: 100%;
+  //     width: 100%;
+  //     img {
+  //       height: 100%;
+  //       width: 100%;
+  //       margin: 0;
+  //       object-fit: contain;
+  //       object-position: center;
+  //     }
+  //   }
+
+  //   .m_stopmotionpanel--medias--single--removeMedia {
+  //     position: absolute;
+  //     bottom: 0;right: 0;
+  //   }
+  // }
+
+  .m_stopmotionpanel--medias--list {
+    display: block;
+    flex: 1 1 200px;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    // .padding-verysmall;
+
+    padding: 0 calc(var(--spacing) / 4);
+    margin-bottom: calc(var(--spacing) / 8);
+
+    // .margin-verysmall;
+    scroll-behavior: smooth;
+
+    // for some strange reason this prevents stopmotion thumbs
+    // from showing in story publi
+    // border-radius: 6px;
+
+    // .custom_scrollbar(4px, 4px, 2px, rgba(255, 255, 255, 0), white);
+
+    --c-thumbcolor: var(--c-noir);
+    --scrollbar-height: 4px;
+    --scrollbar-padding: 4px;
+    --scrollbar-border: 2px;
+    --c-barbgcolor: rgba(255, 255, 255, 0);
+    --c-thumbcolor: white;
+
+    &::-webkit-scrollbar {
+      height: calc((var(--scrollbar-padding) * 2) + var(--scrollbar-height));
+      width: calc((var(--scrollbar-padding) * 2) + var(--scrollbar-height));
+      background-color: var(--c-barbgcolor);
+    }
+
+    &::-webkit-scrollbar-track,
+    &::-webkit-scrollbar-thumb {
+      border: var(--scrollbar-border) solid rgba(255, 255, 255, 0);
+      border-radius: calc(var(--scrollbar-border) * 4);
+      background-clip: padding-box;
+
+      transition: all 0.4s;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--c-thumbcolor);
+      &:hover {
+        background-color: var(--c-gris);
+        border: var(--scrollbar-border) solid rgba(255, 255, 255, 0);
+      }
+    }
+  }
+
+  counter-reset: compteListe;
+
+  &::before,
+  &::after {
+    // content: '';
+    // height: 100%;
+    // padding-left: 2px;
+  }
+
+  .m_stopmotionpanel--medias--list--items {
+    position: relative;
+    overflow: hidden;
+    // border-radius: 10px;
+    // height: 100px;
+    width: auto;
+    max-height: 100%;
+    flex: 0 0 auto;
+    width: 100px;
+    height: 66px;
+    padding: 0 calc(var(--spacing) / 8);
+
+    cursor: pointer;
+
+    &::before {
+      counter-increment: compteListe 1;
+      content: counter(compteListe) " ";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      padding: calc(var(--spacing) / 16);
+
+      margin: calc(var(--spacing) / 16);
+      // .c-noir;
+      // .c-blanc;
+      text-transform: uppercase;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      font-size: var(--font-verysmall);
+      // font-weight: 600;
+      background-color: var(--c-noir);
+      color: white;
+      border-radius: 2px;
+      line-height: 1;
+      z-index: 1;
+    }
+
+    &:last-child {
+      flex-basis: auto;
+      padding-right: 100px;
+      width: auto;
+
+      video {
+        width: 100px;
+        height: 66px;
+      }
+      &::before {
+        content: attr(data-content);
+        // .bg-bleuvert;
+      }
+      // &::after {
+      //   content:'';
+      //   display: block;
+      //   width: 100px;
+      //   height: 1px;
+      // }
+    }
+
+    &.is--current_single::before {
+      // .c-rouge;
+      color: white;
+      background-color: var(--c-rouge);
+    }
+
+    .mediaContainer {
+      width: 100%;
+      height: 100%;
+      width: auto;
+    }
+  }
+}
+
+.m_stopmotionpanel--medias--validation {
+  // .bg-rouge;
+  flex: 0 0 auto;
+  padding: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 4);
+
+  background-color: white;
+
+  // border: calc(var(--spacing) / 4) solid var(--c-noir);
+  border-radius: calc(var(--spacing) / 4);
+
+  display: flex;
+  flex: row nowrap;
+  justify-content: center;
+  align-items: center;
+
+  --input-height: 2em;
+
+  .m_stopmotionpanel--medias--validation--fpscounter {
+    // .padding-sides-small;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+
+    select {
+      margin-left: calc(var(--spacing) / 8);
+      margin-right: calc(var(--spacing) / 8);
+
+      flex: 0 0 auto;
+      max-width: 50px;
+      font-size: var(--font-small);
+
+      // .bg-noir;
+    }
+    label {
+      margin-left: calc(var(--spacing) / 8);
+      margin-right: calc(var(--spacing) / 8);
+      // display: none;
+
+      // max-width: 80px;
+      font-size: 0.6em;
+      white-space: nowrap;
+    }
+  }
+
+  button {
+    // width: 100%;
+    // height: 100%;
+    padding: 0;
+    // .margin-small;
+    // min-height: 0;
+  }
+}
+
+.m_stopmotionpanel--videopreview {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+
+  .mediaContainer {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+    > * {
+      width: 100%;
+      height: 100%;
+    }
+
+    video {
+      height: 100%;
+      width: 100%;
+      background-color: var(--c-noir);
+    }
+  }
+}
+
+.m_stopmotionpanel--buttons {
+  flex: 0 0 auto;
+  width: 100%;
+  // min-height: 50px;
+  color: var(--c-noir);
+
+  > * {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: calc(var(--spacing) / 2);
+
+    // .bg-noir;
+
+    &:nth-child(1) {
+    }
+    &:nth-child(2) {
+      border-top: 2px solid white;
+      justify-content: center;
+      background-color: var(--c-noir);
+    }
+  }
+
+  label {
+    // color: white;
+  }
+  input[type="number"] {
+    width: 50px;
+  }
+}
+
+.m_stopmotionpanel--loader {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: fade(#fff, 90%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
+<style lang="scss">
+.m_stopmotionpanel--medias--list--items {
+  img,
+  video {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    object-fit: contain;
+
+    // .bg-noir;
+  }
+}
+</style>

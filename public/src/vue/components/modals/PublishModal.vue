@@ -39,7 +39,10 @@
         class="margin-bottom-small"
         v-if="publication.viewing_limited_to === 'everybody'"
       >
-        <CreateQRCode :type="'publications'" :slugFolderName="slugPubliName" />
+        <QRCodeToResource
+          :type="'publications'"
+          :slugFolderName="slugPubliName"
+        />
       </div>
       <div
         class="margin-bottom-small"
@@ -59,7 +62,7 @@
   </Modal>
 </template>
 <script>
-import CreateQRCode from "./qr/CreateQRCode.vue";
+import QRCodeToResource from "./qr/QRCodeToResource.vue";
 
 export default {
   props: {
@@ -69,7 +72,7 @@ export default {
     can_edit_publi: Boolean,
   },
   components: {
-    CreateQRCode,
+    QRCodeToResource,
   },
   data() {
     return {

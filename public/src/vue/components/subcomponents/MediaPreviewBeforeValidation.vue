@@ -90,7 +90,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: var(--c-noir);
+  // background-color: var(--c-noir);
 
   display: flex;
   justify-content: center;
