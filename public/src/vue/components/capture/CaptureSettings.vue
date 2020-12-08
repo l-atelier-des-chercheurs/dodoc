@@ -4,8 +4,6 @@
       <Loader v-if="is_loading_available_devices || is_loading_feed" />
     </transition>
 
-    <!-- <video ref="videoElement" autoplay playsinline muted v-show="false" /> -->
-
     <div class="m_captureSettings--topbar">
       <div class="m_captureSettings--topbar--title">
         <svg
@@ -53,24 +51,27 @@
       <div class="">
         <div class="">
           <label>{{ $t("camera") }}</label>
-          <small v-if="!all_video_input_devices.length === 0">
-            {{ $t("no_video_input_available") }}
-          </small>
-          <select
-            v-else
-            id="devices"
-            name="Video devices"
-            title="devices"
-            v-model="selected_devices.video_input_device"
-          >
-            <option
-              v-for="d in all_video_input_devices"
-              :key="d.deviceId"
-              :value="d"
+
+          <div>
+            <small v-if="all_video_input_devices.length === 0">
+              {{ $t("no_video_input_available") }}
+            </small>
+            <select
+              v-else
+              id="devices"
+              name="Video devices"
+              title="devices"
+              v-model="selected_devices.video_input_device"
             >
-              {{ d.label }}
-            </option>
-          </select>
+              <option
+                v-for="d in all_video_input_devices"
+                :key="d.deviceId"
+                :value="d"
+              >
+                {{ d.label }}
+              </option>
+            </select>
+          </div>
 
           <div
             v-if="
@@ -81,38 +82,42 @@
             <span class="switch switch-xs">
               <input
                 class="switch"
-                id="showCursor"
+                id="show_cursor"
                 type="checkbox"
-                v-model="showCursor"
+                v-model="advanced_capture_options.cursor.enabled"
+                :disabled="!advanced_capture_options.cursor.supported"
                 true-value="always"
                 false-value="never"
               />
-              <label for="showCursor">{{ $t("showCursor") }}</label>
+              <label for="show_cursor">{{ $t("show_cursor") }}</label>
+              <small v-if="!advanced_capture_options.cursor.supported">
+                {{ $t("not_supported_on_this_device") }}
+              </small>
             </span>
-            showCursor = {{ showCursor }}
           </div>
         </div>
         <div>
           <label>{{ $t("audioinput") }}</label>
-
-          <small v-if="!all_audio_input_devices.length === 0">
-            {{ $t("no_audio_input_available") }}
-          </small>
-          <select
-            v-else
-            id="devices"
-            name="Video devices"
-            title="devices"
-            v-model="selected_devices.audio_input_device"
-          >
-            <option
-              v-for="d in all_audio_input_devices"
-              :key="d.deviceId"
-              :value="d"
+          <div>
+            <small v-if="all_audio_input_devices.length === 0">
+              {{ $t("no_audio_input_available") }}
+            </small>
+            <select
+              v-else
+              id="devices"
+              name="Video devices"
+              title="devices"
+              v-model="selected_devices.audio_input_device"
             >
-              {{ d.label }}
-            </option>
-          </select>
+              <option
+                v-for="d in all_audio_input_devices"
+                :key="d.deviceId"
+                :value="d"
+              >
+                {{ d.label }}
+              </option>
+            </select>
+          </div>
 
           <div v-if="selected_devices.audio_input_device">
             <span class="switch switch-xs">
@@ -120,9 +125,15 @@
                 class="switch"
                 id="echoCancellation"
                 type="checkbox"
-                v-model="echoCancellation"
+                :disabled="!advanced_capture_options.echoCancellation.supported"
+                v-model="advanced_capture_options.echoCancellation.enabled"
               />
               <label for="echoCancellation">{{ $t("echoCancellation") }}</label>
+              <small
+                v-if="!advanced_capture_options.echoCancellation.supported"
+              >
+                {{ $t("not_supported_on_this_device") }}
+              </small>
             </span>
           </div>
           <div v-if="selected_devices.audio_input_device">
@@ -131,34 +142,42 @@
                 class="switch"
                 id="noiseSuppression"
                 type="checkbox"
-                v-model="noiseSuppression"
+                :disabled="!advanced_capture_options.noiseSuppression.supported"
+                v-model="advanced_capture_options.noiseSuppression.enabled"
               />
               <label for="noiseSuppression">{{ $t("noiseSuppression") }}</label>
+              <small
+                v-if="!advanced_capture_options.noiseSuppression.supported"
+              >
+                {{ $t("not_supported_on_this_device") }}
+              </small>
             </span>
           </div>
         </div>
         <div>
           <label>{{ $t("audiooutput") }}</label>
-          <small v-if="!all_audio_output_devices.length === 0">
-            {{ $t("no_audio_output_available") }}
-          </small>
-          <select
-            v-else
-            id="devices"
-            name="Video devices"
-            title="devices"
-            v-model="selected_devices.audio_output_device"
-          >
-            <option
-              v-for="d in all_audio_output_devices"
-              :key="d.deviceId"
-              :value="d"
+
+          <div>
+            <small v-if="all_audio_output_devices.length === 0">
+              {{ $t("no_audio_output_available") }}
+            </small>
+            <select
+              v-else
+              id="devices"
+              name="Video devices"
+              title="devices"
+              v-model="selected_devices.audio_output_device"
             >
-              {{ d.label }}
-            </option>
-          </select>
+              <option
+                v-for="d in all_audio_output_devices"
+                :key="d.deviceId"
+                :value="d"
+              >
+                {{ d.label }}
+              </option>
+            </select>
+          </div>
         </div>
-        <div class="ta-ce"></div>
       </div>
       <label>{{ $t("resolutions") }}</label>
       <div>
@@ -414,9 +433,20 @@ export default {
         height: 720,
       },
 
-      echoCancellation: true,
-      noiseSuppression: true,
-      showCursor: "always",
+      advanced_capture_options: {
+        echoCancellation: {
+          supported: undefined,
+          enabled: false,
+        },
+        noiseSuppression: {
+          supported: undefined,
+          enabled: false,
+        },
+        cursor: {
+          supported: undefined,
+          enabled: false,
+        },
+      },
 
       enable_distant_flux: false,
     };
@@ -555,7 +585,7 @@ export default {
         if (
           this.selected_devices.video_input_device.deviceId === "screen_capture"
         )
-          _settings += this.showCursor + "-";
+          _settings += this.advanced_capture_options.cursor.enabled + "-";
       }
 
       if (
@@ -605,6 +635,20 @@ export default {
           .catch((err) => {
             return reject(err);
           });
+      });
+    },
+    setSupportedConstraints() {
+      return new Promise((resolve, reject) => {
+        const supported_constraints = navigator.mediaDevices.getSupportedConstraints();
+        if (!supported_constraints) return resolve();
+
+        Object.entries(this.advanced_capture_options).map(([prop, value]) => {
+          this.advanced_capture_options[
+            prop
+          ].supported = this.advanced_capture_options[prop].enabled =
+            supported_constraints[prop] === true;
+        });
+        return resolve();
       });
     },
     setDefaultInputsAndOutputs() {
@@ -787,29 +831,31 @@ export default {
       return new Promise((resolve, reject) => {
         this.connected_devices = [];
         this.is_loading_available_devices = true;
-        this.listDevices().then((devices) => {
-          this.connected_devices = devices.map((d) => {
-            return {
-              label: d.label,
-              kind: d.kind,
-              deviceId: d.deviceId,
-              chromeMediaSource: d.chromeMediaSource
-                ? d.chromeMediaSource
-                : false,
-            };
-          });
-
-          if (!this.$root.state.is_electron) {
-            this.connected_devices.push({
-              deviceId: "screen_capture",
-              kind: "videoinput",
-              label: "🖥️ " + this.$t("screen_capture"),
+        this.setSupportedConstraints()
+          .then(() => this.listDevices())
+          .then((devices) => {
+            this.connected_devices = devices.map((d) => {
+              return {
+                label: d.label,
+                kind: d.kind,
+                deviceId: d.deviceId,
+                chromeMediaSource: d.chromeMediaSource
+                  ? d.chromeMediaSource
+                  : false,
+              };
             });
-          }
 
-          this.is_loading_available_devices = false;
-          return resolve();
-        });
+            if (!this.$root.state.is_electron) {
+              this.connected_devices.push({
+                deviceId: "screen_capture",
+                kind: "videoinput",
+                label: "🖥️ " + this.$t("screen_capture"),
+              });
+            }
+
+            this.is_loading_available_devices = false;
+            return resolve();
+          });
       });
     },
     setCameraStreamFromDefaults() {
@@ -894,8 +940,10 @@ export default {
           deviceId: this.selected_devices.audio_input_device.deviceId
             ? { exact: this.selected_devices.audio_input_device.deviceId }
             : undefined,
-          echoCancellation: this.echoCancellation,
-          noiseSuppression: this.noiseSuppression,
+          echoCancellation: this.advanced_capture_options.echoCancellation
+            .enabled,
+          noiseSuppression: this.advanced_capture_options.noiseSuppression
+            .enabled,
         };
       }
 
@@ -932,7 +980,7 @@ export default {
           ) {
             _constraints._is_webrtc_screen_capture = true;
             _constraints.video = {
-              cursor: this.showCursor,
+              cursor: this.advanced_capture_options.cursor.enabled,
             };
           } else {
             _constraints.video = {
@@ -1003,6 +1051,19 @@ export default {
     background-color: rgba(0, 0, 0, 0.1);
     padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
     border-radius: 6px;
+
+    > div {
+      padding-top: calc(var(--spacing) / 8);
+      margin-bottom: calc(var(--spacing) / 4);
+
+      > label {
+        margin-bottom: 0;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
   > label {
     line-height: 2;

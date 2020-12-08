@@ -233,7 +233,7 @@ module.exports = (function () {
       fr: "Réduction du bruit",
       en: "Noise suppression",
     },
-    showCursor: {
+    show_cursor: {
       fr: "Afficher le curseur",
       en: "Show mouse cursor",
     },
@@ -1308,6 +1308,10 @@ module.exports = (function () {
       fr: "Créer un compte",
       en: "Create an account",
     },
+    not_supported_on_this_device: {
+      fr: "Non géré sur cet appareil",
+      en: "Not supported on this device",
+    },
     logout: {
       fr: "Se déconnecter",
       en: "Log-out",
@@ -1393,6 +1397,7 @@ module.exports = (function () {
       fr: "Paysage",
       en: "Landscape",
     },
+
     nfc_tag: {
       fr: "Tag NFC",
       en: "Tag NFC",
