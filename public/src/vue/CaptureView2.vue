@@ -1406,6 +1406,7 @@ export default {
     },
     stopTimelapseInterval() {
       window.clearInterval(this.timelapse_event);
+      this.timelapse_event = false;
       this.timelapse_start_time = false;
     },
     setCapture() {
