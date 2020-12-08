@@ -1762,7 +1762,7 @@ export default {
 
   .m_captureview2--videoPane {
     overflow-y: auto;
-    flex: 1 1 auto;
+    flex: 1 1 100px;
 
     display: flex;
     flex-flow: column nowrap;
