@@ -850,6 +850,22 @@
               @save_and_fav="sendMedia({ fav: true })"
             />
           </transition>
+
+          <div
+            v-if="media_to_validate && must_validate_media"
+            class="_download_media_without_validation"
+          >
+            <small>
+              <a
+                ref=""
+                :href="validated_media_href_blob"
+                :download="media_to_validate.temp_name"
+                target="_blank"
+              >
+                {{ $t("or_download_media_on_device") }}
+              </a>
+            </small>
+          </div>
         </div>
       </transition>
     </div>
@@ -1125,6 +1141,10 @@ export default {
         window.location.origin +
         `/_file-upload/${this.type}/${this.slugFolderName}/?socketid=${this.$root.$socketio.socket.id}`
       );
+    },
+    validated_media_href_blob() {
+      if (!this.media_to_validate) return false;
+      return window.URL.createObjectURL(this.media_to_validate.rawData);
     },
     time_before_next_picture: function () {
       if (!this.timelapse_start_time) return false;
@@ -1443,6 +1463,7 @@ export default {
           this.media_to_validate = {
             rawData,
             objectURL: URL.createObjectURL(rawData),
+            temp_name: "image.jpeg",
             type: "image",
           };
         });
@@ -1468,6 +1489,7 @@ export default {
         this.media_to_validate = {
           preview: svgstr,
           rawData: new Blob([svgstr], { type: "image/svg+xml" }),
+          temp_name: "vecto.svg",
           type: "svg",
         };
       } else if (this.selected_mode === "lines") {
@@ -1476,6 +1498,7 @@ export default {
         this.media_to_validate = {
           preview: svgstr,
           rawData: new Blob([svgstr], { type: "image/svg+xml" }),
+          temp_name: "lines.svg",
           type: "svg",
         };
       }
@@ -1502,6 +1525,7 @@ export default {
           this.media_to_validate = {
             rawData: video_blob,
             objectURL: URL.createObjectURL(video_blob),
+            temp_name: "video.webm",
             type: "video",
           };
         });
@@ -1523,6 +1547,7 @@ export default {
             preview,
             rawData: audio_blob,
             objectURL: URL.createObjectURL(audio_blob),
+            temp_name: "audio.wav",
             type: "audio",
           };
         });
@@ -2248,6 +2273,17 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 100;
+}
+._download_media_without_validation {
+  background-color: var(--c-noir);
+  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 4);
+  // margin-top: calc(-0.5 * var(--spacing));
+  line-height: 1;
+  text-align: center;
+
+  a {
+    color: var(--c-gris);
+  }
 }
 </style>
 <style lang="scss">
