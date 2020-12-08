@@ -995,6 +995,11 @@ textarea[readonly],
   border-bottom: 0;
   opacity: 1;
 }
+
+.switch input + label {
+  min-height: var(--switch-size);
+  height: auto;
+}
 .switch input:disabled + label {
   opacity: 0.6;
 }

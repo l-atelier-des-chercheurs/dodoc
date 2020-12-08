@@ -1056,10 +1056,6 @@ export default {
       padding-top: calc(var(--spacing) / 8);
       margin-bottom: calc(var(--spacing) / 4);
 
-      > label {
-        margin-bottom: 0;
-      }
-
       &:last-child {
         margin-bottom: 0;
       }
@@ -1067,6 +1063,9 @@ export default {
   }
   > label {
     line-height: 2;
+  }
+  .switch {
+    margin-top: calc(var(--spacing) / 8);
   }
 }
 
