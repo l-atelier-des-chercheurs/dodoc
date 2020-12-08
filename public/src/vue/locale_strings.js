@@ -162,6 +162,10 @@ module.exports = (function () {
       en:
         "Selection a specific resolution is not possible with a screen capture.",
     },
+    or_download_media_on_device: {
+      fr: "ou télécharger ce média sur votre appareil",
+      en: "or download this media on your device",
+    },
     camera_access_refused: {
       fr:
         "Accès refusé à la caméra et au micro : vous devez accepter leur accès dans le message qui apparaît pour pouvoir utiliser ce panneau.",

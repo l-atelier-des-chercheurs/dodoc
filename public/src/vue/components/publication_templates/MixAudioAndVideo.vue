@@ -34,6 +34,7 @@
           :key="media.metaFileName"
         >
           <MediaMontagePublication
+            :available_buttons="['remove']"
             :media="media"
             :preview_mode="false"
             :read_only="read_only"
