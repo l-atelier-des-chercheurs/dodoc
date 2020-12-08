@@ -945,7 +945,7 @@ export default {
           [0, 75, 100, 75],
         ],
       },
-      current_grid_type: "halfs",
+      current_grid_type: "thirds",
 
       // selected_devices: {
       //   video_input_device: undefined,
@@ -1828,6 +1828,8 @@ export default {
     font-size: var(--font-verysmall);
     margin: 15px;
     pointer-events: none;
+
+    text-align: right;
 
     button {
       display: inline-block;
