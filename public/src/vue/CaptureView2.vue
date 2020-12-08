@@ -851,21 +851,24 @@
             />
           </transition>
 
-          <div
-            v-if="media_to_validate && must_validate_media"
-            class="_download_media_without_validation"
-          >
-            <small>
-              <a
-                ref=""
-                :href="validated_media_href_blob"
-                :download="media_to_validate.temp_name"
-                target="_blank"
-              >
-                {{ $t("or_download_media_on_device") }}
-              </a>
-            </small>
-          </div>
+          <transition name="slideup" :duration="250">
+            <div
+              v-if="media_to_validate && must_validate_media"
+              class="_download_media_without_validation"
+            >
+              <small>
+                <a
+                  ref=""
+                  :href="validated_media_href_blob"
+                  :download="media_to_validate.temp_name"
+                  target="_blank"
+                >
+                  {{ $t("or_download_media_on_device") }} —
+                  {{ $root.formatBytes(media_to_validate.rawData.size) }}
+                </a>
+              </small>
+            </div>
+          </transition>
         </div>
       </transition>
     </div>
