@@ -27,33 +27,35 @@
             !delay_event
           "
         >
-          <button
-            type="button"
-            class="bg-transparent"
-            @mousedown.stop.prevent="previousMode()"
-            @touchstart.stop.prevent="previousMode()"
-          >
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="169px"
-              height="169px"
-              viewBox="0 0 169 169"
-              style="enable-background: new 0 0 169 169"
-              xml:space="preserve"
+          <div class="_arrows">
+            <button
+              type="button"
+              class="bg-transparent"
+              @mousedown.stop.prevent="previousMode()"
+              @touchstart.stop.prevent="previousMode()"
             >
-              <path
-                fill="currentColor"
-                stroke="currentColor"
-                stroke-width="10"
-                stroke-linejoin="round"
-                d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"
-              />
-            </svg>
-          </button>
+              <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="169px"
+                height="169px"
+                viewBox="0 0 169 169"
+                style="enable-background: new 0 0 169 169"
+                xml:space="preserve"
+              >
+                <path
+                  fill="currentColor"
+                  stroke="currentColor"
+                  stroke-width="10"
+                  stroke-linejoin="round"
+                  d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"
+                />
+              </svg>
+            </button>
+          </div>
 
           <div v-for="mode in available_modes" :key="mode">
             <input
@@ -66,36 +68,39 @@
               <div class="_picto">
                 <img :src="available_mode_picto[mode]" />
               </div>
-              <span v-if="!collapse_capture_pane">{{ $t(mode) }}</span>
+              <span v-if="selected_mode === mode">{{ $t(mode) }}</span>
             </label>
           </div>
-          <button
-            type="button"
-            class="bg-transparent"
-            @mousedown.stop.prevent="nextMode()"
-            @touchstart.stop.prevent="nextMode()"
-          >
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="169px"
-              height="169px"
-              viewBox="0 0 169 169"
-              style="enable-background: new 0 0 169 169"
-              xml:space="preserve"
+
+          <div class="_arrows">
+            <button
+              type="button"
+              class="bg-transparent"
+              @mousedown.stop.prevent="nextMode()"
+              @touchstart.stop.prevent="nextMode()"
             >
-              <path
-                fill="currentColor"
-                stroke="currentColor"
-                stroke-width="10"
-                stroke-linejoin="round"
-                d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"
-              />
-            </svg>
-          </button>
+              <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="169px"
+                height="169px"
+                viewBox="0 0 169 169"
+                style="enable-background: new 0 0 169 169"
+                xml:space="preserve"
+              >
+                <path
+                  fill="currentColor"
+                  stroke="currentColor"
+                  stroke-width="10"
+                  stroke-linejoin="round"
+                  d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </transition>
       <div
@@ -118,14 +123,14 @@
           />
 
           <Vecto
-            v-if="selected_mode === 'vecto'"
+            v-if="selected_mode === 'vecto' && !media_to_validate"
             ref="vectoElement"
             :last_frame_from_video="last_frame_from_video"
             :number_of_colors="vecto_number_of_colors"
           />
 
           <Lines
-            v-if="selected_mode === 'lines'"
+            v-if="selected_mode === 'lines' && !media_to_validate"
             ref="vectoElement"
             :last_frame_from_video="last_frame_from_video"
             :angle="lines_angle"
@@ -1042,10 +1047,10 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
-    this.stopFrameGrabber();
 
     this.$root.settings.ask_before_leaving_capture = false;
 
+    this.stopFrameGrabber();
     this.stopTimelapseInterval();
     this.cancelDelay();
     this.eraseTimer();
@@ -1263,6 +1268,8 @@ export default {
           console.log(`CaptureView2 • METHODS : startFrameGrabber`);
         // this.frameGrabber();
 
+        if (this.media_to_validate) return;
+
         const ratio =
           this.actual_camera_resolution.width /
           this.actual_camera_resolution.height;
@@ -1272,7 +1279,6 @@ export default {
           height: 240,
         }).then((image_data) => (this.last_frame_from_video = image_data));
       };
-
       getFrame();
       this.frameGrabber = window.setInterval(getFrame, 300);
     },
@@ -1751,13 +1757,13 @@ export default {
   flex-flow: row nowrap;
   max-height: 100vh;
 
-  &.is--collapsed {
-    .m_captureview2--videoPane--bottom--buttons {
-      > * {
-        padding: 0;
-      }
-    }
-  }
+  // &.is--collapsed {
+  //   .m_captureview2--videoPane--bottom--buttons {
+  //     > * {
+  //       padding: 0;
+  //     }
+  //   }
+  // }
 
   .m_captureview2--settingsPaneButton {
     position: relative;
@@ -1932,9 +1938,26 @@ export default {
     pointer-events: auto;
     // background-color: white;
   }
-  > button {
-    padding-left: 0;
-    padding-right: 0;
+  > ._arrows {
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+
+    button {
+      padding-left: 0;
+      padding-right: 0;
+      min-height: 0;
+    }
+
+    svg {
+      width: 36px;
+      height: 36px;
+      padding: 4px;
+      // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+    }
+
+    &:hover,
+    &:focus {
+      // background-color: var(--c-gris-fonce);
+    }
   }
 
   input {
@@ -1943,7 +1966,8 @@ export default {
     visibility: hidden;
 
     &:not(:checked) + label:not(:hover) {
-      opacity: 0.3;
+      // opacity: 0.3;
+      // background: transparent;
     }
   }
 
@@ -1993,7 +2017,7 @@ export default {
     width: 36px;
     height: 36px;
 
-    margin: calc(var(--spacing) / 8);
+    // margin: calc(var(--spacing) / 8);
 
     padding: 4px;
     color: #fff;
