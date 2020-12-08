@@ -341,6 +341,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
 
+  border-top: 2px solid black;
   background-color: var(--c-noir);
   color: white;
 
