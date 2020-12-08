@@ -129,9 +129,7 @@
       @save_and_fav="saveAndFav()"
     />
 
-    <div class="m_stopmotionpanel--loader" v-if="media_is_being_sent">
-      <span class="loader loader-xs" />
-    </div>
+    <Loader v-if="media_is_being_sent" />
   </div>
 </template>
 <script>
@@ -239,10 +237,6 @@ export default {
           console.log("METHODS • StopmotionPanel: newStopmotionVideo");
           this.validating_video_preview = mdata;
           this.media_is_being_sent = false;
-
-          this.$nextTick(() => {
-            // this.$refs.videoPreview.getElementsByTagName('video')[0].play();
-          });
         });
       this.previousFrameRate = this.frameRate;
       this.validating_video_preview = false;
@@ -347,6 +341,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
 
+  border-top: 2px solid black;
   background-color: var(--c-noir);
   color: white;
 

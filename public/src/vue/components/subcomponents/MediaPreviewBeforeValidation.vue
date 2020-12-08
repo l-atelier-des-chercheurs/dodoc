@@ -119,6 +119,7 @@ export default {
     }
 
     img {
+      object-fit: contain;
     }
 
     > * {

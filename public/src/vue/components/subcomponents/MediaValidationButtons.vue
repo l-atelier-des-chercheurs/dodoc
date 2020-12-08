@@ -147,7 +147,9 @@
     </button>
 
     <div class="m_mediaValidationButtons--overlay" v-if="media_is_being_sent">
-      <span class="loader loader-xs" />
+      <transition name="fade_fast" :duration="150">
+        <Loader />
+      </transition>
       <span
         class="m_mediaValidationButtons--overlay--percent"
         v-html="media_being_sent_percent + '%'"
@@ -265,13 +267,21 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    // background-color: rgba(53, 53, 53, 0.5);
+    background-color: rgba(53, 53, 53, 1);
     --loader-bg-color: transparent;
     --loader-border-color: var(--c-rouge);
 
+    ._loader {
+      background-color: transparent;
+    }
+
     .m_mediaValidationButtons--overlay--percent {
       position: absolute;
-      margin-left: 4em;
+      margin-left: 8em;
+      z-index: 55000;
+      color: white;
+      padding: 2px;
+      border-radius: 4px;
     }
   }
 

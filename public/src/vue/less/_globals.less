@@ -995,12 +995,21 @@ textarea[readonly],
   border-bottom: 0;
   opacity: 1;
 }
+
+.switch input + label {
+  min-height: var(--switch-size);
+  height: auto;
+}
 .switch input:disabled + label {
-  opacity: 1;
+  opacity: 0.6;
 }
 .switch input:checked:disabled + label::before {
   // opacity: 0.4;
   // background-color: @c-rouge_fonce;
+}
+.switch label + small {
+  display: block;
+  margin-top: -0.25rem;
 }
 
 .text-uc {
