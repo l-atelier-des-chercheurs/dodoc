@@ -135,7 +135,7 @@
           />
 
           <AudioEqualizer
-            v-if="selected_mode === 'audio'"
+            v-if="selected_mode === 'audio' && !media_to_validate"
             ref="equalizerElement"
             :stream="stream"
             :is_recording="is_recording"
@@ -217,6 +217,7 @@
               :key="'time_before_' + delay_before_picture"
               mode="out-in"
               class="_delay_timer"
+              :class="{ 'is--timelapse': !!time_before_next_picture }"
             >
               <template v-if="!!delay_before_picture">
                 {{ delay_before_picture }}
@@ -402,9 +403,14 @@
                     !delay_event
                   "
                   type="button"
-                  class="bg-rouge"
+                  class="bg-rouge button-inline"
                   :class="{ 'is--active': show_capture_settings }"
                   @click="show_capture_settings = !show_capture_settings"
+                  :content="$t('settings')"
+                  v-tippy="{
+                    placement: 'right',
+                    delay: [600, 0],
+                  }"
                 >
                   <svg
                     class="inline-svg inline-svg_larger"
@@ -413,7 +419,7 @@
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     x="0px"
                     y="0px"
-                    viewBox="0 0 140 140"
+                    viewBox="15 15 140 140"
                     xml:space="preserve"
                   >
                     <path
@@ -428,9 +434,6 @@
                   c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
                     />
                   </svg>
-                  <span v-if="!collapse_capture_pane" class>{{
-                    $t("settings")
-                  }}</span>
                 </button>
 
                 <button
@@ -515,7 +518,11 @@
                   type="button"
                   class="bg-orange button-inline _captureButton"
                   :key="selected_mode + '_pause'"
-                  v-if="selected_mode === 'stopmotion' && is_making_stopmotion"
+                  v-if="
+                    selected_mode === 'stopmotion' &&
+                    is_making_stopmotion &&
+                    !timelapse_event
+                  "
                   @mousedown.stop.prevent="stopStopmotion()"
                   @touchstart.stop.prevent="stopStopmotion()"
                 >
@@ -576,7 +583,7 @@
                     @mousedown.stop.prevent="stopRecording()"
                     @touchstart.stop.prevent="stopRecording()"
                   >
-                    <span v-if="is_sending_image">
+                    <span v-if="is_sending_image && false">
                       {{ $t("loading") }}
                     </span>
 
@@ -606,7 +613,7 @@
                     type="button"
                     class="_enable_timelapse_button"
                     :class="{ 'is--active': timelapse_mode_enabled }"
-                    v-if="selected_mode === 'stopmotion'"
+                    v-if="selected_mode === 'stopmotion' && !timelapse_event"
                     :content="$t('timelapse')"
                     v-tippy="{
                       placement: 'top',
@@ -709,7 +716,8 @@
                     selected_mode === 'stopmotion' &&
                     stopmotion.onion_skin_img &&
                     show_live_feed &&
-                    is_making_stopmotion
+                    is_making_stopmotion &&
+                    !timelapse_event
                   "
                   class="_mode_accessory_range"
                 >
@@ -1089,10 +1097,12 @@ export default {
         `WATCH • Capture: media_to_validate = ${!!this.media_to_validate}`
       );
       if (this.media_to_validate) {
-        this.$refs.videoElement.pause();
+        if (this.$refs.videoElement) this.$refs.videoElement.pause();
+        if (this.$refs.audioElement) this.$refs.audioElement.pause();
         this.$root.settings.ask_before_leaving_capture = true;
       } else {
-        this.$refs.videoElement.play();
+        if (this.$refs.videoElement) this.$refs.videoElement.play();
+        if (this.$refs.audioElement) this.$refs.audioElement.play();
         this.$root.settings.ask_before_leaving_capture = false;
       }
     },
@@ -1810,6 +1820,7 @@ export default {
         padding: calc(var(--spacing) / 2);
 
         &:nth-child(2) {
+          flex: 1 1 200px;
           text-align: center;
           display: flex;
           flex-flow: row wrap;
@@ -1867,7 +1878,8 @@ export default {
     height: 100%;
 
     video,
-    .mediaContainer img {
+    .mediaContainer img,
+    .m_audioEqualizer {
       position: absolute;
       top: 0;
       left: 0;
@@ -1882,7 +1894,7 @@ export default {
 ._captureButton {
   position: relative;
   // margin: 0 auto;
-  margin: 0 calc(var(--spacing) / 2);
+  margin: 0 calc(var(--spacing) / 4);
 
   > img {
     flex: 0 0 auto;
@@ -2047,6 +2059,13 @@ export default {
   // text-shadow: 1vmin 1vmin 0 var(--c-text-shadow),
   //   -1px -1px 0 var(--c-text-shadow), 1px -1px 0 var(--c-text-shadow),
   //   -1px 1px 0 var(--c-text-shadow), 1px 1px 0 var(--c-text-shadow);
+
+  &.is--timelapse {
+    font-size: 10vmin;
+    -webkit-text-stroke: 0.2vmin var(--c-text-stroke);
+    height: 50%;
+    bottom: 0;
+  }
 }
 
 ._capture_options {
@@ -2131,7 +2150,7 @@ export default {
   }
 }
 ._mode_accessory_range {
-  max-width: 240px;
+  max-width: 200px;
   margin: -5px 0 -5px auto;
   label {
     margin: 0;
