@@ -2303,6 +2303,10 @@ module.exports = (function () {
       fr: "Capturer une vidéo",
       en: "Record a video",
     },
+    record_audio: {
+      fr: "Capturer un son",
+      en: "Record sound",
+    },
     stop_recording: {
       fr: "Arrêter la capture",
       en: "Stop recording",

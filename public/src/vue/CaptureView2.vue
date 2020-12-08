@@ -380,11 +380,16 @@
 
       <transition name="slideup" :duration="150" mode="out-in">
         <div class="m_captureview2--videoPane--bottom">
+          <transition name="fade_fast" :duration="150">
+            <Loader v-if="is_sending_image" />
+          </transition>
+
           <transition name="slideup" :duration="150" mode="out-in">
             <div
               class="m_captureview2--videoPane--bottom--buttons"
               :class="{
                 'is--recording': is_recording && !video_recording_is_paused,
+                'is--sending_image': is_sending_image,
               }"
               v-if="!(media_to_validate && must_validate_media)"
             >
@@ -528,11 +533,7 @@
                     @mousedown.stop.prevent="setCaptureInit()"
                     @touchstart.stop.prevent="setCaptureInit()"
                   >
-                    <span v-if="is_sending_image">
-                      {{ $t("loading") }}
-                    </span>
-
-                    <span v-else-if="delay_event">
+                    <span v-if="delay_event">
                       {{ $t("cancel") }}
                     </span>
 
@@ -542,20 +543,28 @@
                         src="/images/i_record.svg"
                       />
                       &nbsp;
-                      <span v-if="selected_mode === 'photo'">
-                        {{ $t("take_picture") }}</span
-                      >
-                      <span v-else-if="selected_mode === 'video'">
-                        {{ $t("record_video") }}
-                      </span>
-                      <span v-else-if="selected_mode === 'stopmotion'">
-                        <template v-if="!timelapse_mode_enabled">
-                          {{ $t("take_picture") }}
-                        </template>
-                        <template v-else>
-                          {{ $t("start_timelapse") }}
-                        </template>
-                      </span>
+                      <span
+                        v-if="
+                          ['photo', 'vecto', 'lines'].includes(selected_mode)
+                        "
+                        v-html="$t('take_picture')"
+                      />
+                      <span
+                        v-else-if="selected_mode === 'video'"
+                        v-html="$t('record_video')"
+                      />
+                      <span
+                        v-else-if="selected_mode === 'audio'"
+                        v-html="$t('record_audio')"
+                      />
+                      <span
+                        v-else-if="selected_mode === 'stopmotion'"
+                        v-html="
+                          !timelapse_mode_enabled
+                            ? $t('take_picture')
+                            : $t('start_timelapse')
+                        "
+                      />
                     </template>
                   </button>
                   <button
@@ -577,10 +586,7 @@
                         src="/images/i_stop.svg"
                       />
                       &nbsp;
-                      <span v-if="selected_mode === 'video'">
-                        {{ $t("stop_recording") }}
-                      </span>
-                      <span v-else-if="selected_mode === 'audio'">
+                      <span v-if="['video', 'audio'].includes(selected_mode)">
                         {{ $t("stop_recording") }}
                       </span>
                       <span v-else-if="selected_mode === 'stopmotion'">
