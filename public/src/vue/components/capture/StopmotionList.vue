@@ -73,6 +73,7 @@ export default {
   created() {},
   mounted() {
     this.$socketio.listFolders({ type: "stopmotions" });
+    // this.$eventHub.$once("socketio.stopmotions.medias_listed", () => {});
   },
   beforeDestroy() {},
   watch: {},
@@ -88,7 +89,7 @@ export default {
           return true;
       });
 
-      if (!this.has_loaded_stopmotions_content) {
+      if (!this.has_loaded_stopmotions_content && stopmotions.length > 0) {
         stopmotions.map((s) => this.loadStopmotionMedias(s.slugFolderName));
         this.has_loaded_stopmotions_content = true;
       }
@@ -98,6 +99,10 @@ export default {
   },
   methods: {
     loadStopmotionMedias(slugFolderName) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `StopmotionList • METHODS : loadStopmotionMedias — load ${slugFolderName}`
+        );
       if (
         Object.values(this.$root.store.stopmotions[slugFolderName].medias)
           .length === 0
