@@ -839,34 +839,30 @@
                 </template>
               </div>
             </div>
-            <MediaValidationButtons
-              v-else
-              :read_only="read_only"
-              :can_add_to_fav="can_add_to_fav"
-              :media_is_being_sent="media_is_being_sent"
-              :media_being_sent_percent="media_being_sent_percent"
-              @cancel="cancelValidation()"
-              @save="sendMedia({})"
-              @save_and_fav="sendMedia({ fav: true })"
-            />
-          </transition>
+            <div v-else key="validation">
+              <div class="_download_media_without_validation">
+                <small>
+                  <a
+                    ref=""
+                    :href="validated_media_href_blob"
+                    :download="media_to_validate.temp_name"
+                    target="_blank"
+                  >
+                    {{ $t("or_download_media_on_device") }} —
+                    {{ $root.formatBytes(media_to_validate.rawData.size) }}
+                  </a>
+                </small>
+              </div>
 
-          <transition name="slideup" :duration="250">
-            <div
-              v-if="media_to_validate && must_validate_media"
-              class="_download_media_without_validation"
-            >
-              <small>
-                <a
-                  ref=""
-                  :href="validated_media_href_blob"
-                  :download="media_to_validate.temp_name"
-                  target="_blank"
-                >
-                  {{ $t("or_download_media_on_device") }} —
-                  {{ $root.formatBytes(media_to_validate.rawData.size) }}
-                </a>
-              </small>
+              <MediaValidationButtons
+                :read_only="read_only"
+                :can_add_to_fav="can_add_to_fav"
+                :media_is_being_sent="media_is_being_sent"
+                :media_being_sent_percent="media_being_sent_percent"
+                @cancel="cancelValidation()"
+                @save="sendMedia({})"
+                @save_and_fav="sendMedia({ fav: true })"
+              />
             </div>
           </transition>
         </div>
@@ -2281,8 +2277,9 @@ export default {
   background-color: var(--c-noir);
   padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 4);
   // margin-top: calc(-0.5 * var(--spacing));
+  margin-bottom: -0.2em;
   line-height: 1;
-  text-align: center;
+  text-align: right;
 
   a {
     color: var(--c-gris);
