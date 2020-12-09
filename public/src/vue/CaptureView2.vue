@@ -1397,11 +1397,6 @@ export default {
       if (this.frameGrabber) window.clearInterval(this.frameGrabber);
       this.last_frame_from_video = undefined;
     },
-
-    // updateVideoDisplayedSize() {
-    //   debugger;
-    //   // this. this.$refs.videoElement.offsetWidth
-    // },
     addStopmotionImage() {
       const smdata = {
         name:
@@ -1897,6 +1892,7 @@ export default {
   }
 
   .m_captureview2--videoPane {
+    position: relative;
     overflow-y: auto;
     flex: 1 1 100px;
 
