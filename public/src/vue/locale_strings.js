@@ -293,9 +293,13 @@ module.exports = (function () {
       fr: "do•doc distant",
       en: "remote do•doc",
     },
-    stream_currently_shared_with_name: {
-      fr: "Flux vidéo/audio partagé avec le nom ",
-      en: "Stream currently shared with name ",
+    'stream_currently_shared_with_name:': {
+      fr: "Flux vidéo/audio partagé sous le nom&nbsp;:",
+      en: "Stream currently shared with name:",
+    },
+    'stream_shown:': {
+      fr: "Flux utilisé&nbsp;:",
+      en: "Stream used:",
     },
     share_stream: {
       fr: "Partager ce flux",
