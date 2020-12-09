@@ -66,7 +66,18 @@
               v-model="selected_mode"
             />
             <label :for="id + '_' + mode">
-              <div class="_picto">
+              <div
+                class="_picto"
+                :content="$t(mode)"
+                v-tippy="
+                  mode !== selected_mode
+                    ? {
+                        placement: 'bottom',
+                        delay: [600, 0],
+                      }
+                    : ''
+                "
+              >
                 <img :src="available_mode_picto[mode]" />
               </div>
               <span v-if="selected_mode === mode">{{ $t(mode) }}</span>
