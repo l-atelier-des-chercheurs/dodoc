@@ -2378,6 +2378,10 @@ export default {
   line-height: 1;
   text-align: right;
 
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
   a {
     color: var(--c-gris);
   }

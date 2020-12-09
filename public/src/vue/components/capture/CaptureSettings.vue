@@ -1448,7 +1448,7 @@ export default {
   display: block;
   border-color: var(--c-rouge_fonce);
   min-width: 100px;
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 8) 0;
 
   display: flex;
   flex-flow: row wrap;
@@ -1456,6 +1456,10 @@ export default {
 
   input {
     margin: calc(var(--spacing) / 2);
+
+    @media only screen and (max-width: 780px) {
+      margin: calc(var(--spacing) / 4);
+    }
   }
 
   > div {
