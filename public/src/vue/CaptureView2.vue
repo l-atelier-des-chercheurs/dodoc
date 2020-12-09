@@ -1112,6 +1112,8 @@ export default {
       this.selected_mode = this.$root.settings.capture_options.selected_mode;
     else this.selected_mode = this.available_modes[0];
 
+    document.addEventListener("keyup", this.captureKeyListener);
+
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$on(`window.resized`, this.checkCapturePanelSize);
@@ -1141,6 +1143,8 @@ export default {
       `stream.newDistantAccessInformations`,
       this.updateDistantStream
     );
+
+    document.removeEventListener("keyup", this.captureKeyListener);
 
     this.$root.settings.ask_before_leaving_capture = false;
 
@@ -1471,10 +1475,13 @@ export default {
         return false;
       }
 
-      // disabled because it clashes with the input type range from stopmotion panel
-      // if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
-      //   return false;
-      // }
+      // TODO : write captcha to prevent writing to interfere with camera
+      if (
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea"
+      ) {
+        return false;
+      }
 
       switch (event.key) {
         case "w":
@@ -1489,7 +1496,8 @@ export default {
         case "a":
         case "q":
         case " ":
-          this.setCaptureInit();
+          if (!this.is_recording) this.setCaptureInit();
+          else this.stopRecording();
           break;
       }
     },
