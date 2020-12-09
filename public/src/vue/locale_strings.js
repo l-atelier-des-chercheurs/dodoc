@@ -2992,6 +2992,14 @@ module.exports = (function () {
       en:
         "Connect to sources provided by devices currently connected to this do•doc",
     },
+    connect: {
+      fr: "Se connecter",
+      en: "Connect",
+    },
+    hangup: {
+      fr: "raccrocher",
+      en: "hang up",
+    },
     select_publi_model_instructions: {
       fr:
         "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",

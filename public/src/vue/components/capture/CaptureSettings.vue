@@ -46,11 +46,11 @@
             </span>
           </div>
         </label>
-        <label for="RemoteSource">
+        <label for="RemoteSources">
           <div>
             <input
               type="radio"
-              id="RemoteSource"
+              id="RemoteSources"
               value="RemoteSources"
               v-model="current_mode"
             />
@@ -301,37 +301,45 @@
       </div>
       <div v-else-if="current_mode === 'RemoteSources'">
         <div>
+          <transition name="fade_fast" :duration="150">
+            <Loader v-if="access_distant_stream.loading" />
+          </transition>
+
           <!-- <label>{{ $t("remote_access") }}</label> -->
           <small>{{ $t("connect_to_other_users") }}</small>
-          <div class="padding-small">
-            <div>
-              <span class="switch switch-xs">
-                <input class="switch" id="enableDistantFlux" type="checkbox" />
-                <label for="enableDistantFlux">{{ $t("enable") }}</label>
-              </span>
-            </div>
-
-            <div>
-              <button
-                type="button"
-                class="button-thin bg-rouge"
-                @click="stopDistantFlux"
-                :disabled="!is_started"
-              >
-                stop
-              </button>
-
-              <div v-if="is_started">
-                <div>Available as {{ username }}</div>
-                <div>
-                  User to call
-                  <input type="text" v-model="callee_username" />
-                </div>
-                <button type="button" class="buttonLink" @click="call">
-                  call
-                </button>
-              </div>
-            </div>
+          <div class="padding-vert-small padding-bottom-small">
+            <label v-html="$t('name_of_stream')" />
+            <input
+              type="text"
+              v-model.trim="access_distant_stream.callee"
+              required
+              autofocus
+              :disabled="access_distant_stream.enabled"
+            />
+            <button
+              type="button"
+              class="buttonLink bg-rouge"
+              v-if="!access_distant_stream.enabled"
+              :disabled="
+                access_distant_stream.callee.length === 0 ||
+                access_distant_stream.loading
+              "
+              @click="callStream"
+            >
+              {{ $t("connect") }}
+            </button>
+            <button
+              type="button"
+              class="buttonLink bg-rouge"
+              v-if="access_distant_stream.enabled"
+              :disabled="
+                access_distant_stream.callee.length === 0 ||
+                access_distant_stream.loading
+              "
+              @click="hangupStream"
+            >
+              {{ $t("hangup") }}
+            </button>
           </div>
         </div>
       </div>
@@ -340,11 +348,14 @@
       <!-- <small v-if="!desired_camera_resolution">
           Select a camera resolution first
         </small> -->
-      <transition name="fade_fast" :duration="150">
-        <Loader v-if="share_this_stream.status.loading" />
-      </transition>
 
-      <div class="m_captureSettings--updateButton--shareStreamToggle">
+      <div
+        class="m_captureSettings--updateButton--shareStreamToggle"
+        v-if="current_mode === 'LocalSources'"
+      >
+        <transition name="fade_fast" :duration="150">
+          <Loader v-if="share_this_stream.status.loading" />
+        </transition>
         <span class="switch switch-xs">
           <input
             class="switch"
@@ -534,6 +545,12 @@ export default {
         },
       },
 
+      access_distant_stream: {
+        loading: false,
+        enabled: false,
+        callee: "",
+      },
+
       rtcmulti_connection: undefined,
     };
   },
@@ -652,6 +669,8 @@ export default {
     },
     last_working_resolution: {
       handler() {
+        if (!this.last_working_resolution)
+          this.$root.settings.capture_options.last_working_resolution = false;
         this.$root.settings.capture_options.last_working_resolution = JSON.parse(
           JSON.stringify(this.last_working_resolution)
         );
@@ -1010,7 +1029,7 @@ export default {
               );
               if (this.last_working_resolution) {
                 this.desired_camera_resolution = this.last_working_resolution;
-                this.last_working_resolution = undefined;
+                this.last_working_resolution = false;
                 setTimeout(() => {
                   this.setCameraStreamFromDefaults().then(() => resolve());
                 }, 500);
@@ -1120,9 +1139,6 @@ export default {
 
       return _constraints;
     },
-    changeStreamTo(stream) {
-      this.remote_stream = stream;
-    },
     setStreamSharing() {
       return new Promise((resolve, reject) => {
         if (!this.share_this_stream.enabled) {
@@ -1130,42 +1146,12 @@ export default {
           return resolve();
         }
 
-        this.rtcmulti_connection = new RTCMultiConnection();
-        this.rtcmulti_connection.iceServers = [
-          {
-            urls: [
-              "stun:stun.l.google.com:19302",
-              "stun:stun1.l.google.com:19302",
-              "stun:stun2.l.google.com:19302",
-              "stun:stun.l.google.com:19302?transport=udp",
-            ],
-          },
-        ];
-
-        // detect 2G
-        if (
-          navigator.connection &&
-          navigator.connection.type === "cellular" &&
-          navigator.connection.downlinkMax <= 0.115
-        )
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t("bandwidth_very_low_for_stream_sharing"));
+        if (!this.rtcmulti_connection) {
+          this.initRTCMulti();
+        }
 
         if (this.share_this_stream.name.length === 0)
           return reject("missing_stream_name");
-
-        this.rtcmulti_connection.session = {
-          video: true,
-          audio: true,
-          oneway: true,
-        };
-
-        this.rtcmulti_connection.socketURL =
-          "https://rtcmulticonnection.herokuapp.com:443/";
-
-        this.rtcmulti_connection.dontCaptureUserMedia = true;
 
         if (!this.current_stream)
           this.$alertify
@@ -1174,18 +1160,6 @@ export default {
             .error(this.$t("notifications.no_stream_found_while_sharing"));
 
         this.rtcmulti_connection.addStream(this.current_stream);
-
-        this.rtcmulti_connection.onstream = (event) => {
-          console.log("CaptureSettings: onstream");
-          event.mediaElement.volume = 0;
-        };
-        this.rtcmulti_connection.onstreamended = (event) => {
-          console.log("CaptureSettings: onstreamended");
-          this.share_this_stream.status.enabled = false;
-        };
-        this.rtcmulti_connection.onMediaError = (e) => {
-          console.log("CaptureSettings: onMediaError");
-        };
 
         this.rtcmulti_connection.open(
           this.share_this_stream.name,
@@ -1209,6 +1183,95 @@ export default {
 
         return resolve();
       });
+    },
+    callStream() {
+      this.access_distant_stream.loading = true;
+      if (!this.rtcmulti_connection) this.initRTCMulti();
+
+      this.rtcmulti_connection.onstream = (event) => {
+        this.remote_stream = event.stream;
+      };
+
+      this.rtcmulti_connection.checkPresence(
+        this.access_distant_stream.callee,
+        (isOnline, username) => {
+          this.access_distant_stream.loading = false;
+
+          if (!isOnline) {
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(username + " is not online.");
+            return;
+          } else {
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .success(username + " is online.");
+            this.access_distant_stream.enabled = true;
+          }
+          this.rtcmulti_connection.join(username);
+        }
+      );
+    },
+    hangupStream() {
+      this.access_distant_stream.loading = true;
+      this.rtcmulti_connection.disconnectWith(
+        this.access_distant_stream.callee
+      );
+      this.access_distant_stream.loading = false;
+      this.access_distant_stream.enabled = false;
+    },
+    initRTCMulti() {
+      this.rtcmulti_connection = new RTCMultiConnection();
+      this.rtcmulti_connection.iceServers = [
+        {
+          urls: [
+            "stun:stun.l.google.com:19302",
+            "stun:stun1.l.google.com:19302",
+            "stun:stun2.l.google.com:19302",
+            "stun:stun.l.google.com:19302?transport=udp",
+          ],
+        },
+      ];
+
+      // detect 2G
+      if (
+        navigator.connection &&
+        navigator.connection.type === "cellular" &&
+        navigator.connection.downlinkMax <= 0.115
+      )
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("bandwidth_very_low_for_stream_sharing"));
+
+      this.rtcmulti_connection.socketURL =
+        "https://rtcmulticonnection.herokuapp.com:443/";
+
+      this.rtcmulti_connection.dontCaptureUserMedia = true;
+
+      this.rtcmulti_connection.session = {
+        video: true,
+        audio: true,
+        oneway: true,
+      };
+
+      this.rtcmulti_connection.onstream = (event) => {
+        console.log("CaptureSettings: onstream");
+        event.mediaElement.volume = 0;
+      };
+      this.rtcmulti_connection.onstreamended = (event) => {
+        console.log("CaptureSettings: onstreamended");
+        this.share_this_stream.status.enabled = false;
+      };
+      this.rtcmulti_connection.onMediaError = (e) => {
+        console.log("CaptureSettings: onMediaError");
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("stream_sharing_media_error") + e.message);
+      };
     },
     stopSharingStream() {
       if (this.rtcmulti_connection) {
