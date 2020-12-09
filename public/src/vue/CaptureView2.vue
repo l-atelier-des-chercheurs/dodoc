@@ -8,7 +8,7 @@
       :audio_output_deviceId.sync="audio_output_deviceId"
       :enable_audio.sync="enable_audio"
       :enable_video="enable_video"
-      @setStream="(new_stream) => (stream = new_stream)"
+      @setStream="setStream"
       @hasFinishedLoading="hasFinishedLoading"
       @show="show_capture_settings = true"
       @close="show_capture_settings = false"
@@ -120,8 +120,10 @@
         v-show="!is_validating_stopmotion_video"
         :class="{
           'is--being_streamed':
-            stream_sharing_infomations_status &&
-            stream_sharing_infomations_status.enabled,
+            (stream_sharing_informations_status &&
+              stream_sharing_informations_status.enabled) ||
+            (stream_access_informations_status &&
+              stream_access_informations_status.enabled),
         }"
       >
         <div class="m_captureview2--videoPane--top--videoContainer">
@@ -167,6 +169,7 @@
             tag="div"
             class="_capture_options"
             name="slideFromTop"
+            mode="out-in"
           >
             <label
               v-if="
@@ -196,20 +199,42 @@
 
             <div
               v-if="
-                stream_sharing_infomations_status &&
-                stream_sharing_infomations_status.enabled
+                stream_sharing_informations_status &&
+                stream_sharing_informations_status.enabled &&
+                stream_type === 'LocalSources'
               "
               :key="
-                'stream_share_name-' + stream_sharing_infomations_status.name
+                'stream_share_name-' + stream_sharing_informations_status.name
               "
             >
               <label>
-                <span>{{ $t("stream_currently_shared_with_name") }}</span>
+                <span v-html="$t('stream_currently_shared_with_name:')" />
                 <span>
-                  <strong>{{ stream_sharing_infomations_status.name }}</strong>
+                  <strong>{{ stream_sharing_informations_status.name }}</strong>
                 </span>
               </label>
             </div>
+
+            <div
+              v-else-if="
+                stream_access_informations_status &&
+                stream_access_informations_status.enabled &&
+                stream_type === 'RemoteSources'
+              "
+              :key="
+                'stream_share_name-' + stream_access_informations_status.callee
+              "
+            >
+              <label>
+                <span v-html="$t('stream_shown:')" />
+                <span>
+                  <strong>{{
+                    stream_access_informations_status.callee
+                  }}</strong>
+                </span>
+              </label>
+            </div>
+
             <div
               v-if="
                 delay_mode_enabled &&
@@ -1021,6 +1046,8 @@ export default {
       // },
 
       stream: undefined,
+      stream_type: undefined,
+
       audio_output_deviceId: undefined,
 
       show_capture_settings: false,
@@ -1070,7 +1097,8 @@ export default {
       lines_contrast: 1,
       lines_density: 0.25,
 
-      stream_sharing_infomations_status: {},
+      stream_sharing_informations_status: {},
+      stream_access_informations_status: {},
     };
   },
   created() {},
@@ -1091,6 +1119,10 @@ export default {
       `stream.newSharingInformations`,
       this.updateStreamSharing
     );
+    this.$eventHub.$on(
+      `stream.newDistantAccessInformations`,
+      this.updateDistantStream
+    );
 
     this.$refs.videoElement.volume = 0;
     this.$refs.videoElement.addEventListener(
@@ -1104,6 +1136,10 @@ export default {
     this.$eventHub.$off(
       `stream.newSharingInformations`,
       this.updateStreamSharing
+    );
+    this.$eventHub.$off(
+      `stream.newDistantAccessInformations`,
+      this.updateDistantStream
     );
 
     this.$root.settings.ask_before_leaving_capture = false;
@@ -1213,6 +1249,10 @@ export default {
     hasFinishedLoading() {
       this.show_live_feed = true;
     },
+    setStream({ stream, type }) {
+      this.stream = stream;
+      this.stream_type = type;
+    },
     previousMode() {
       console.log("METHODS • CaptureView: previousMode");
       if (
@@ -1253,7 +1293,10 @@ export default {
       }
     },
     updateStreamSharing(val) {
-      this.stream_sharing_infomations_status = val;
+      this.stream_sharing_informations_status = val;
+    },
+    updateDistantStream(val) {
+      this.stream_access_informations_status = val;
     },
     refreshVideoActualSize() {
       this.getVideoActualSize()

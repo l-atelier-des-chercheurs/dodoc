@@ -310,7 +310,7 @@
               v-model.trim="access_distant_stream.callee"
               required
               autofocus
-              :disabled="access_distant_stream.enabled"
+              :disabled="access_distant_stream.status.enabled"
             />
           </div>
         </div>
@@ -374,7 +374,7 @@
           <button
             type="button"
             class="bg-rouge button-wide"
-            v-if="!access_distant_stream.enabled"
+            v-if="!access_distant_stream.status.enabled"
             :disabled="
               access_distant_stream.callee.length === 0 ||
               access_distant_stream.calling
@@ -386,7 +386,7 @@
           <button
             type="button"
             class="bg-rouge button-wide"
-            v-if="access_distant_stream.enabled"
+            v-if="access_distant_stream.status.enabled"
             :disabled="
               access_distant_stream.callee.length === 0 ||
               access_distant_stream.calling
@@ -551,8 +551,11 @@ export default {
 
       access_distant_stream: {
         calling: false,
-        enabled: false,
         callee: "",
+        status: {
+          enabled: false,
+          callee: undefined,
+        },
       },
 
       rtcmulti_connection: undefined,
@@ -661,7 +664,10 @@ export default {
       this.emitStream();
     },
     current_stream: function () {
-      this.$emit("setStream", this.current_stream);
+      this.$emit("setStream", {
+        stream: this.current_stream,
+        type: this.current_mode,
+      });
     },
     selected_devices: {
       handler() {
@@ -686,6 +692,15 @@ export default {
         this.$eventHub.$emit(
           `stream.newSharingInformations`,
           this.share_this_stream.status
+        );
+      },
+      deep: true,
+    },
+    access_distant_stream: {
+      handler() {
+        this.$eventHub.$emit(
+          `stream.newDistantAccessInformations`,
+          this.access_distant_stream.status
         );
       },
       deep: true,
@@ -1245,7 +1260,7 @@ export default {
         if (this.access_distant_stream.calling) {
           this.remote_stream = event.stream;
           this.access_distant_stream.calling = false;
-          this.access_distant_stream.enabled = true;
+          this.access_distant_stream.status.enabled = true;
           clearTimeout(call_timeout);
         }
       };
@@ -1265,6 +1280,7 @@ export default {
               .delay(4000)
               .success(username + " is online.");
           }
+          this.access_distant_stream.status.callee = username;
           this.rtcmulti_connection.join(username);
         }
       );
@@ -1274,7 +1290,7 @@ export default {
         console.log(`CaptureSettings • METHODS : hangupStream`);
 
       this.rtcmulti_connection.leave();
-      this.access_distant_stream.enabled = false;
+      this.access_distant_stream.status.enabled = false;
     },
     initRTCMulti() {
       if (this.$root.state.dev_mode === "debug")
