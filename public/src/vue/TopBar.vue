@@ -7,6 +7,7 @@
         <transition name="BackButton" :duration="500">
           <button
             v-if="has_back_button"
+            :key="'back_button-' + $root.do_navigation.view"
             class="backButton text-ellipsis"
             type="button"
             @click="navigateTo('back')"
