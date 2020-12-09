@@ -213,6 +213,10 @@ module.exports = (function () {
       fr: "Interactif",
       en: "Interactive",
     },
+    active: {
+      fr: "Actif",
+      en: "Active",
+    },
     sources: {
       fr: "Sources",
       en: "Sources",
@@ -230,7 +234,7 @@ module.exports = (function () {
       en: "No audio output available",
     },
     echoCancellation: {
-      fr: "Annulation de l'écho",
+      fr: "Suppression de l'écho",
       en: "Echo cancellation",
     },
     noiseSuppression: {
@@ -280,6 +284,22 @@ module.exports = (function () {
     infos_about_the_media: {
       fr: "Informations sur le média",
       en: "Informations on the media",
+    },
+    stream_local_mode: {
+      fr: "sur cet appareil",
+      en: "on this device",
+    },
+    stream_remote_mode: {
+      fr: "do•doc distant",
+      en: "remote do•doc",
+    },
+    stream_currently_shared_with_name: {
+      fr: "Flux vidéo/audio partagé avec le nom ",
+      en: "Stream currently shared with name ",
+    },
+    share_stream: {
+      fr: "Partager ce flux",
+      en: "Share this stream",
     },
     uploaded: {
       fr: "Importation",
@@ -2911,6 +2931,10 @@ module.exports = (function () {
       oc: "Nom de balhar a la còpia",
       de: "Name der Kopie",
     },
+    name_of_stream: {
+      fr: "Nom du flux",
+      en: "Stream name",
+    },
     template: {
       fr: "Gabarit",
       en: "Template",
@@ -2964,9 +2988,17 @@ module.exports = (function () {
     },
     connect_to_other_users: {
       fr:
-        "Accéder à des sources provenant d’autres appareils connectés actuellement à do•doc",
+        "Accéder à des sources provenant d’autres appareils connectés actuellement à ce do•doc",
       en:
-        "Connect to sources provided by devices currently connected to do•doc",
+        "Connect to sources provided by devices currently connected to this do•doc",
+    },
+    connect: {
+      fr: "Se connecter",
+      en: "Connect",
+    },
+    hangup: {
+      fr: "raccrocher",
+      en: "hang up",
     },
     select_publi_model_instructions: {
       fr:
@@ -3599,7 +3631,7 @@ module.exports = (function () {
         fr:
           "Le flux vidéo n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
         en:
-          "Failed to start camera feed. Try changing the source or the resolution.",
+          "Failed to start camera stream. Try changing the source or the resolution.",
         nl:
           "Videostream kan niet worden gestart .<br>Probeer de bron of de resolutie in de instellingen te wijzigen.",
         oc:
@@ -3617,7 +3649,7 @@ module.exports = (function () {
       failed_to_start_audio_change_source: {
         fr:
           "Le flux audio n’a pas pu être démarré.<br>Essayez de modifier la source dans les réglages.",
-        en: "Failed to start audio feed. Try changing the source.",
+        en: "Failed to start audio stream. Try changing the source.",
         nl:
           "Audiostream kan niet worden gestart.<br>Probeer de bron in de instellingen te wijzigen.",
         oc:
