@@ -301,10 +301,6 @@
       </div>
       <div v-else-if="current_mode === 'RemoteSources'">
         <div>
-          <transition name="fade_fast" :duration="150">
-            <Loader v-if="access_distant_stream.loading" />
-          </transition>
-
           <!-- <label>{{ $t("remote_access") }}</label> -->
           <small>{{ $t("connect_to_other_users") }}</small>
           <div class="padding-vert-small padding-bottom-small">
@@ -316,30 +312,6 @@
               autofocus
               :disabled="access_distant_stream.enabled"
             />
-            <button
-              type="button"
-              class="buttonLink bg-rouge"
-              v-if="!access_distant_stream.enabled"
-              :disabled="
-                access_distant_stream.callee.length === 0 ||
-                access_distant_stream.loading
-              "
-              @click="callStream"
-            >
-              {{ $t("connect") }}
-            </button>
-            <button
-              type="button"
-              class="buttonLink bg-rouge"
-              v-if="access_distant_stream.enabled"
-              :disabled="
-                access_distant_stream.callee.length === 0 ||
-                access_distant_stream.loading
-              "
-              @click="hangupStream"
-            >
-              {{ $t("hangup") }}
-            </button>
           </div>
         </div>
       </div>
@@ -381,18 +353,50 @@
       </div>
 
       <div class="m_captureSettings--updateButton--buttons">
-        <button
-          type="button"
-          class="bg-rouge button-wide"
-          @click="setCameraStreamFromDefaults"
-          :disabled="
-            !desired_camera_resolution ||
-            !selected_devices.video_input_device ||
-            current_settings === stream_current_settings
-          "
-        >
-          {{ $t("update") }}
-        </button>
+        <template v-if="current_mode === 'LocalSources'">
+          <button
+            type="button"
+            class="bg-rouge button-wide"
+            @click="setCameraStreamFromDefaults"
+            :disabled="
+              !desired_camera_resolution ||
+              !selected_devices.video_input_device ||
+              current_settings === stream_current_settings
+            "
+          >
+            {{ $t("update") }}
+          </button>
+        </template>
+        <template v-else-if="current_mode === 'RemoteSources'">
+          <transition name="fade_fast" :duration="150">
+            <Loader v-if="access_distant_stream.calling" />
+          </transition>
+          <button
+            type="button"
+            class="bg-rouge button-wide"
+            v-if="!access_distant_stream.enabled"
+            :disabled="
+              access_distant_stream.callee.length === 0 ||
+              access_distant_stream.calling
+            "
+            @click="callStream"
+          >
+            {{ $t("connect") }}
+          </button>
+          <button
+            type="button"
+            class="bg-rouge button-wide"
+            v-if="access_distant_stream.enabled"
+            :disabled="
+              access_distant_stream.callee.length === 0 ||
+              access_distant_stream.calling
+            "
+            @click="hangupStream"
+          >
+            {{ $t("hangup") }}
+          </button>
+        </template>
+
         <button
           type="button"
           class="bg-rouge buttonLink"
@@ -546,7 +550,7 @@ export default {
       },
 
       access_distant_stream: {
-        loading: false,
+        calling: false,
         enabled: false,
         callee: "",
       },
@@ -738,6 +742,9 @@ export default {
   methods: {
     listDevices() {
       return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : listDevices`);
+
         navigator.mediaDevices
           .enumerateDevices()
           .then((devices) => {
@@ -761,6 +768,9 @@ export default {
       });
     },
     emitStream() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : emitStream`);
+
       if (this.current_mode === "RemoteSources") {
         this.current_stream = this.remote_stream;
       } else if (this.current_mode === "LocalSources") {
@@ -769,6 +779,9 @@ export default {
     },
     setSupportedConstraints() {
       return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : setSupportedConstraints`);
+
         const supported_constraints = navigator.mediaDevices.getSupportedConstraints();
         if (!supported_constraints) return resolve();
 
@@ -782,6 +795,9 @@ export default {
       });
     },
     setDefaultInputsAndOutputs() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : setDefaultInputsAndOutputs`);
+
       if (this.connected_devices.length === 0) return;
 
       // find in $root.settings.capture_options.selected_devices if video_input_device already exists
@@ -818,6 +834,9 @@ export default {
       }
     },
     getDefaultDevice({ key, devices_list }) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : getDefaultDevice`);
+
       // find if this.$root.settings.capture_options.selected_devices has key, and if value is in devices_list
       const previously_used = this.$root.settings.capture_options
         .selected_devices;
@@ -851,6 +870,9 @@ export default {
     },
     startMediaDeviceFeed(constraints) {
       return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : startMediaDeviceFeed`);
+
         let processFeeds = [];
 
         // start video feed
@@ -939,6 +961,9 @@ export default {
       return new Promise((resolve, reject) => {
         if (!window.electronAPI.desktopCapturer) return;
 
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : getDesktopCapturer`);
+
         window.electronAPI
           .desktopCapturer({ types: ["window", "screen"] })
           .then((sources) => {
@@ -959,6 +984,9 @@ export default {
     },
     refreshAvailableDevices() {
       return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : refreshAvailableDevices`);
+
         this.connected_devices = [];
         this.is_loading_available_devices = true;
         this.setSupportedConstraints()
@@ -990,6 +1018,11 @@ export default {
     },
     setCameraStreamFromDefaults() {
       return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(
+            `CaptureSettings • METHODS : setCameraStreamFromDefaults`
+          );
+
         this.stream_current_settings = this.current_settings;
 
         if (!!this.selected_devices.audio_output_device)
@@ -1042,6 +1075,9 @@ export default {
     },
     startCameraStream() {
       return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : startCameraStream`);
+
         //Kill any running streams;
         if (this.local_stream)
           this.local_stream.getTracks().forEach((track) => track.stop());
@@ -1069,6 +1105,11 @@ export default {
       });
     },
     createConstraintsFromSelected() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `CaptureSettings • METHODS : createConstraintsFromSelected`
+        );
+
       let _constraints = {
         audio: false,
         video: false,
@@ -1141,14 +1182,15 @@ export default {
     },
     setStreamSharing() {
       return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : setStreamSharing`);
+
         if (!this.share_this_stream.enabled) {
           this.stopSharingStream();
           return resolve();
         }
 
-        if (!this.rtcmulti_connection) {
-          this.initRTCMulti();
-        }
+        this.initRTCMulti();
 
         if (this.share_this_stream.name.length === 0)
           return reject("missing_stream_name");
@@ -1185,18 +1227,32 @@ export default {
       });
     },
     callStream() {
-      this.access_distant_stream.loading = true;
-      if (!this.rtcmulti_connection) this.initRTCMulti();
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : callStream`);
+
+      this.access_distant_stream.calling = true;
+      this.initRTCMulti();
+
+      const call_timeout = setTimeout(() => {
+        this.access_distant_stream.calling = false;
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error("Failed to call timeout");
+      }, 5000);
 
       this.rtcmulti_connection.onstream = (event) => {
-        this.remote_stream = event.stream;
+        if (this.access_distant_stream.calling) {
+          this.remote_stream = event.stream;
+          this.access_distant_stream.calling = false;
+          this.access_distant_stream.enabled = true;
+          clearTimeout(call_timeout);
+        }
       };
 
       this.rtcmulti_connection.checkPresence(
         this.access_distant_stream.callee,
         (isOnline, username) => {
-          this.access_distant_stream.loading = false;
-
           if (!isOnline) {
             this.$alertify
               .closeLogOnClick(true)
@@ -1208,21 +1264,24 @@ export default {
               .closeLogOnClick(true)
               .delay(4000)
               .success(username + " is online.");
-            this.access_distant_stream.enabled = true;
           }
           this.rtcmulti_connection.join(username);
         }
       );
     },
     hangupStream() {
-      this.access_distant_stream.loading = true;
-      this.rtcmulti_connection.disconnectWith(
-        this.access_distant_stream.callee
-      );
-      this.access_distant_stream.loading = false;
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : hangupStream`);
+
+      this.rtcmulti_connection.leave();
       this.access_distant_stream.enabled = false;
     },
     initRTCMulti() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : initRTCMulti`);
+
+      if (this.rtcmulti_connection) return;
+
       this.rtcmulti_connection = new RTCMultiConnection();
       this.rtcmulti_connection.iceServers = [
         {
@@ -1274,12 +1333,14 @@ export default {
       };
     },
     stopSharingStream() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : stopSharingStream`);
+
       if (this.rtcmulti_connection) {
         this.rtcmulti_connection.getAllParticipants().forEach((pid) => {
           this.rtcmulti_connection.disconnectWith(pid);
         });
         this.rtcmulti_connection.closeSocket();
-        this.rtcmulti_connection = undefined;
       }
     },
   },
@@ -1382,6 +1443,7 @@ export default {
 .m_sideBySideSwitches > * {
   display: block;
   border-color: var(--c-rouge_fonce);
+  min-width: 100px;
 
   display: flex;
   flex-flow: row wrap;
