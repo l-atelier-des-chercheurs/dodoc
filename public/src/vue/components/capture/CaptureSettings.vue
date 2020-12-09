@@ -31,166 +31,204 @@
         <span class>{{ $t("settings") }}</span>
       </div>
     </div>
+    <div>
+      <div class="m_sideBySideSwitches">
+        <label for="LocalSources">
+          <div>
+            <input
+              type="radio"
+              id="LocalSources"
+              value="LocalSources"
+              v-model="current_mode"
+            />
+            <span>
+              {{ $t("stream_local_mode") }}
+            </span>
+          </div>
+        </label>
+        <label for="RemoteSource">
+          <div>
+            <input
+              type="radio"
+              id="RemoteSource"
+              value="RemoteSources"
+              v-model="current_mode"
+            />
+            <span> {{ $t("stream_remote_mode") }} </span>
+          </div>
+        </label>
+      </div>
+    </div>
 
     <div class="m_captureSettings--settings">
-      <div v-if="status === 'not_allowed'">
-        <div class="padding-top-verysmall">
-          {{ $t("camera_access_refused") }}
-        </div>
-      </div>
-
-      <label>{{ $t("sources") }}</label>
-      <button
-        type="button"
-        class="buttonLink margin-none margin-left padding-bottom-none"
-        @click="refreshAvailableDevices"
-      >
-        {{ $t("reload") }}
-      </button>
-
-      <div class="">
-        <div class="">
-          <label>{{ $t("camera") }}</label>
-
-          <div>
-            <small v-if="all_video_input_devices.length === 0">
-              {{ $t("no_video_input_available") }}
-            </small>
-            <select
-              v-else
-              id="devices"
-              name="Video devices"
-              title="devices"
-              v-model="selected_devices.video_input_device"
-            >
-              <option
-                v-for="d in all_video_input_devices"
-                :key="d.deviceId"
-                :value="d"
-              >
-                {{ d.label }}
-              </option>
-            </select>
+      <div v-if="current_mode === 'LocalSources'" class>
+        <div v-if="status === 'not_allowed'">
+          <div class="padding-top-verysmall">
+            {{ $t("camera_access_refused") }}
           </div>
+        </div>
 
-          <div
+        <label>{{ $t("sources") }}</label>
+        <button
+          type="button"
+          class="buttonLink margin-none margin-left padding-bottom-none"
+          @click="refreshAvailableDevices"
+        >
+          {{ $t("reload") }}
+        </button>
+
+        <div class="">
+          <div class="">
+            <label>{{ $t("camera") }}</label>
+
+            <div>
+              <small v-if="all_video_input_devices.length === 0">
+                {{ $t("no_video_input_available") }}
+              </small>
+              <select
+                v-else
+                id="devices"
+                name="Video devices"
+                title="devices"
+                v-model="selected_devices.video_input_device"
+              >
+                <option
+                  v-for="d in all_video_input_devices"
+                  :key="d.deviceId"
+                  :value="d"
+                >
+                  {{ d.label }}
+                </option>
+              </select>
+            </div>
+
+            <div
+              v-if="
+                selected_devices.video_input_device &&
+                selected_devices.video_input_device.deviceId ===
+                  'screen_capture'
+              "
+            >
+              <span class="switch switch-xs">
+                <input
+                  class="switch"
+                  id="show_cursor"
+                  type="checkbox"
+                  v-model="advanced_capture_options.cursor.enabled"
+                  :disabled="!advanced_capture_options.cursor.supported"
+                  true-value="always"
+                  false-value="never"
+                />
+                <label for="show_cursor">{{ $t("show_cursor") }}</label>
+                <small v-if="!advanced_capture_options.cursor.supported">
+                  {{ $t("not_supported_on_this_device") }}
+                </small>
+              </span>
+            </div>
+          </div>
+          <div>
+            <label>{{ $t("audioinput") }}</label>
+            <div>
+              <small v-if="all_audio_input_devices.length === 0">
+                {{ $t("no_audio_input_available") }}
+              </small>
+              <select
+                v-else
+                id="devices"
+                name="Video devices"
+                title="devices"
+                v-model="selected_devices.audio_input_device"
+              >
+                <option
+                  v-for="d in all_audio_input_devices"
+                  :key="d.deviceId"
+                  :value="d"
+                >
+                  {{ d.label }}
+                </option>
+              </select>
+            </div>
+
+            <div v-if="selected_devices.audio_input_device">
+              <span class="switch switch-xs">
+                <input
+                  class="switch"
+                  id="echoCancellation"
+                  type="checkbox"
+                  :disabled="
+                    !advanced_capture_options.echoCancellation.supported
+                  "
+                  v-model="advanced_capture_options.echoCancellation.enabled"
+                />
+                <label for="echoCancellation">{{
+                  $t("echoCancellation")
+                }}</label>
+                <small
+                  v-if="!advanced_capture_options.echoCancellation.supported"
+                >
+                  {{ $t("not_supported_on_this_device") }}
+                </small>
+              </span>
+            </div>
+            <div v-if="selected_devices.audio_input_device">
+              <span class="switch switch-xs">
+                <input
+                  class="switch"
+                  id="noiseSuppression"
+                  type="checkbox"
+                  :disabled="
+                    !advanced_capture_options.noiseSuppression.supported
+                  "
+                  v-model="advanced_capture_options.noiseSuppression.enabled"
+                />
+                <label for="noiseSuppression">{{
+                  $t("noiseSuppression")
+                }}</label>
+                <small
+                  v-if="!advanced_capture_options.noiseSuppression.supported"
+                >
+                  {{ $t("not_supported_on_this_device") }}
+                </small>
+              </span>
+            </div>
+          </div>
+          <div>
+            <label>{{ $t("audiooutput") }}</label>
+
+            <div>
+              <small v-if="all_audio_output_devices.length === 0">
+                {{ $t("no_audio_output_available") }}
+              </small>
+              <select
+                v-else
+                id="devices"
+                name="Video devices"
+                title="devices"
+                v-model="selected_devices.audio_output_device"
+              >
+                <option
+                  v-for="d in all_audio_output_devices"
+                  :key="d.deviceId"
+                  :value="d"
+                >
+                  {{ d.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <label>{{ $t("resolutions") }}</label>
+        <div>
+          <small
             v-if="
-              selected_devices.video_input_device &&
-              selected_devices.video_input_device.deviceId === 'screen_capture'
+              !selected_devices.video_input_device ||
+              !selected_devices.video_input_device.deviceId
             "
           >
-            <span class="switch switch-xs">
-              <input
-                class="switch"
-                id="show_cursor"
-                type="checkbox"
-                v-model="advanced_capture_options.cursor.enabled"
-                :disabled="!advanced_capture_options.cursor.supported"
-                true-value="always"
-                false-value="never"
-              />
-              <label for="show_cursor">{{ $t("show_cursor") }}</label>
-              <small v-if="!advanced_capture_options.cursor.supported">
-                {{ $t("not_supported_on_this_device") }}
-              </small>
-            </span>
-          </div>
-        </div>
-        <div>
-          <label>{{ $t("audioinput") }}</label>
-          <div>
-            <small v-if="all_audio_input_devices.length === 0">
-              {{ $t("no_audio_input_available") }}
-            </small>
-            <select
-              v-else
-              id="devices"
-              name="Video devices"
-              title="devices"
-              v-model="selected_devices.audio_input_device"
-            >
-              <option
-                v-for="d in all_audio_input_devices"
-                :key="d.deviceId"
-                :value="d"
-              >
-                {{ d.label }}
-              </option>
-            </select>
-          </div>
-
-          <div v-if="selected_devices.audio_input_device">
-            <span class="switch switch-xs">
-              <input
-                class="switch"
-                id="echoCancellation"
-                type="checkbox"
-                :disabled="!advanced_capture_options.echoCancellation.supported"
-                v-model="advanced_capture_options.echoCancellation.enabled"
-              />
-              <label for="echoCancellation">{{ $t("echoCancellation") }}</label>
-              <small
-                v-if="!advanced_capture_options.echoCancellation.supported"
-              >
-                {{ $t("not_supported_on_this_device") }}
-              </small>
-            </span>
-          </div>
-          <div v-if="selected_devices.audio_input_device">
-            <span class="switch switch-xs">
-              <input
-                class="switch"
-                id="noiseSuppression"
-                type="checkbox"
-                :disabled="!advanced_capture_options.noiseSuppression.supported"
-                v-model="advanced_capture_options.noiseSuppression.enabled"
-              />
-              <label for="noiseSuppression">{{ $t("noiseSuppression") }}</label>
-              <small
-                v-if="!advanced_capture_options.noiseSuppression.supported"
-              >
-                {{ $t("not_supported_on_this_device") }}
-              </small>
-            </span>
-          </div>
-        </div>
-        <div>
-          <label>{{ $t("audiooutput") }}</label>
-
-          <div>
-            <small v-if="all_audio_output_devices.length === 0">
-              {{ $t("no_audio_output_available") }}
-            </small>
-            <select
-              v-else
-              id="devices"
-              name="Video devices"
-              title="devices"
-              v-model="selected_devices.audio_output_device"
-            >
-              <option
-                v-for="d in all_audio_output_devices"
-                :key="d.deviceId"
-                :value="d"
-              >
-                {{ d.label }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <label>{{ $t("resolutions") }}</label>
-      <div>
-        <small
-          v-if="
-            !selected_devices.video_input_device ||
-            !selected_devices.video_input_device.deviceId
-          "
-        >
-          {{ $t("pick_a_camera") }}
-        </small>
-        <template v-else>
-          <!-- <button
+            {{ $t("pick_a_camera") }}
+          </small>
+          <template v-else>
+            <!-- <button
                 type="button"
                 class="buttonLink"
                 @click="getAllAvailableResolutions"
@@ -199,150 +237,185 @@
                 get all input resolutions for
                 {{ selected_devices.video_input_device.label }}
               </button> -->
-        </template>
+          </template>
 
-        <small
-          v-if="
-            selected_devices.video_input_device &&
-            selected_devices.video_input_device.deviceId === 'screen_capture'
-          "
-        >
-          {{ $t("cant_pick_resolution_when_screen_capture") }}
-        </small>
-        <div class="m_captureSettings--settings--resolutions" v-else>
-          <div
-            v-for="res in predefined_resolutions.concat(
-              custom_camera_resolution
-            )"
-            :key="res.name"
-          >
-            <label :for="res.label">
-              <input
-                type="radio"
-                :id="res.label"
-                :value="res"
-                :disabled="unavailable_camera_resolutions.includes(res.label)"
-                v-model="desired_camera_resolution"
-              />
-              <span
-                >{{ res.label }}
-                <template v-if="res.type !== 'custom'">
-                  •
-                  <template v-if="res.ratio">{{ res.ratio }}</template>
-                  • {{ res.width }}/{{ res.height }})
-                </template>
-              </span>
-            </label>
-          </div>
-
-          <div
+          <small
             v-if="
-              desired_camera_resolution &&
-              desired_camera_resolution.type === 'custom'
+              selected_devices.video_input_device &&
+              selected_devices.video_input_device.deviceId === 'screen_capture'
             "
-            class="margin-bottom-small input-group"
           >
-            <input
-              type="number"
-              min="2"
-              max="4096"
-              step="2"
-              v-model.number="desired_camera_resolution.width"
-            />
-            <span class="font-large padding-verysmall">×</span>
-            <input
-              type="number"
-              min="2"
-              max="2160"
-              step="2"
-              v-model.number="desired_camera_resolution.height"
-            />
+            {{ $t("cant_pick_resolution_when_screen_capture") }}
+          </small>
+          <div class="m_captureSettings--settings--resolutions" v-else>
+            <div
+              v-for="res in predefined_resolutions.concat(
+                custom_camera_resolution
+              )"
+              :key="res.name"
+            >
+              <label :for="res.label">
+                <input
+                  type="radio"
+                  :id="res.label"
+                  :value="res"
+                  :disabled="unavailable_camera_resolutions.includes(res.label)"
+                  v-model="desired_camera_resolution"
+                />
+                <span
+                  >{{ res.label }}
+                  <template v-if="res.type !== 'custom'">
+                    •
+                    <template v-if="res.ratio">{{ res.ratio }}</template>
+                    • {{ res.width }}/{{ res.height }})
+                  </template>
+                </span>
+              </label>
+            </div>
+
+            <div
+              v-if="
+                desired_camera_resolution &&
+                desired_camera_resolution.type === 'custom'
+              "
+              class="margin-bottom-small input-group"
+            >
+              <input
+                type="number"
+                min="2"
+                max="4096"
+                step="2"
+                v-model.number="desired_camera_resolution.width"
+              />
+              <span class="font-large padding-verysmall">×</span>
+              <input
+                type="number"
+                min="2"
+                max="2160"
+                step="2"
+                v-model.number="desired_camera_resolution.height"
+              />
+            </div>
           </div>
         </div>
       </div>
-
-      <label>{{ $t("remote_access") }}</label>
-      <div class="padding-small">
-        <small>{{ $t("connect_to_other_users") }}</small>
+      <div v-else-if="current_mode === 'RemoteSources'">
         <div>
-          <span class="switch switch-xs">
-            <input
-              class="switch"
-              id="enableDistantFlux"
-              type="checkbox"
-              v-model="enable_distant_flux"
-            />
-            <label for="enableDistantFlux">{{ $t("enable") }}</label>
-          </span>
+          <!-- <label>{{ $t("remote_access") }}</label> -->
+          <small>{{ $t("connect_to_other_users") }}</small>
+          <div class="padding-small">
+            <div>
+              <span class="switch switch-xs">
+                <input class="switch" id="enableDistantFlux" type="checkbox" />
+                <label for="enableDistantFlux">{{ $t("enable") }}</label>
+              </span>
+            </div>
+
+            <div>
+              <button
+                type="button"
+                class="button-thin bg-rouge"
+                @click="stopDistantFlux"
+                :disabled="!is_started"
+              >
+                stop
+              </button>
+
+              <div v-if="is_started">
+                <div>Available as {{ username }}</div>
+                <div>
+                  User to call
+                  <input type="text" v-model="callee_username" />
+                </div>
+                <button type="button" class="buttonLink" @click="call">
+                  call
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <DistantFlux2
-          v-if="enable_distant_flux"
-          :stream="stream"
-          @changeStreamTo="
-            (new_stream) => {
-              changeStreamTo(new_stream);
-            }
-          "
-        />
       </div>
     </div>
     <div class="m_captureSettings--updateButton">
       <!-- <small v-if="!desired_camera_resolution">
           Select a camera resolution first
         </small> -->
-      <button
-        type="button"
-        class="bg-rouge button-wide"
-        @click="setCameraStreamFromDefaults"
-        :disabled="
-          !desired_camera_resolution ||
-          !selected_devices.video_input_device ||
-          current_settings === stream_current_settings
-        "
-      >
-        {{ $t("update") }}
-      </button>
-      <!-- {{ current_settings }} -->
-      <button type="button" class="bg-rouge buttonLink" @click="$emit('close')">
-        <span class>{{ $t("close") }}</span>
-      </button>
-      <!-- <small>
-          <span
-            v-if="desired_camera_resolution && desired_camera_resolution.label"
-          >
-            {{ desired_camera_resolution.label }}</span
-          >
-          <span
-            v-if="
-              selected_devices &&
-              selected_devices.video_input_device &&
-              selected_devices.video_input_device.label
-            "
-          >
-            {{ selected_devices.video_input_device.label }}
-          </span>
-        </small> -->
+      <transition name="fade_fast" :duration="150">
+        <Loader v-if="share_this_stream.status.loading" />
+      </transition>
+
+      <div class="m_captureSettings--updateButton--shareStreamToggle">
+        <span class="switch switch-xs">
+          <input
+            class="switch"
+            id="shareStream"
+            type="checkbox"
+            v-model="share_this_stream.enabled"
+          />
+          <label for="shareStream">{{ $t("share_stream") }}</label>
+        </span>
+
+        <div
+          v-if="share_this_stream.enabled"
+          class="padding-sides-small padding-bottom-small"
+        >
+          <label v-html="$t('name_of_stream')" />
+          <input
+            type="text"
+            v-model.trim="share_this_stream.name"
+            required
+            autofocus
+          />
+        </div>
+      </div>
+
+      <div class="m_captureSettings--updateButton--buttons">
+        <button
+          type="button"
+          class="bg-rouge button-wide"
+          @click="setCameraStreamFromDefaults"
+          :disabled="
+            !desired_camera_resolution ||
+            !selected_devices.video_input_device ||
+            current_settings === stream_current_settings
+          "
+        >
+          {{ $t("update") }}
+        </button>
+        <button
+          type="button"
+          class="bg-rouge buttonLink"
+          @click="$emit('close')"
+        >
+          <span class>{{ $t("close") }}</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import DistantFlux2 from "./DistantFlux2.vue";
+import RTCMultiConnection from "rtcmulticonnection";
 
 export default {
   props: {
-    stream: MediaStream,
     audio_output_deviceId: String,
     enable_audio: Boolean,
     enable_video: Boolean,
   },
   components: {
-    DistantFlux2,
+    RTCMultiConnection,
   },
   data() {
     return {
       is_loading_available_devices: false,
       is_loading_feed: false,
       status: undefined,
+
+      current_mode: "LocalSources",
+
+      current_stream: undefined,
+      local_stream: undefined,
+      remote_stream: undefined,
 
       stream_current_settings: undefined,
       desired_camera_resolution: undefined,
@@ -448,7 +521,20 @@ export default {
         },
       },
 
-      enable_distant_flux: false,
+      share_this_stream: {
+        enabled: false,
+        name: `dodoc-${(Math.random().toString(36) + "00000000000000000").slice(
+          2,
+          3 + 2
+        )}`,
+        status: {
+          loading: false,
+          enabled: undefined,
+          name: undefined,
+        },
+      },
+
+      rtcmulti_connection: undefined,
     };
   },
   created() {},
@@ -465,7 +551,7 @@ export default {
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: true })
       .then((stream) => {
-        this.$emit("update:stream", stream);
+        this.local_stream = stream;
         // if ("srcObject" in this.$refs.videoElement) {
         //   this.$refs.videoElement.srcObject = stream;
         // } else {
@@ -490,6 +576,7 @@ export default {
         }
         this.is_loading_feed = false;
         this.$emit("hasFinishedLoading");
+        this.$emit("show");
         return;
       })
       .then(this.refreshAvailableDevices)
@@ -520,10 +607,11 @@ export default {
       });
   },
   beforeDestroy() {
-    if (this.stream)
-      this.stream.getTracks().forEach((track) => {
-        track.stop();
-      });
+    if (this.local_stream)
+      this.local_stream.getTracks().forEach((track) => track.stop());
+    if (this.remote_stream)
+      this.remote_stream.getTracks().forEach((track) => track.stop());
+    this.stopSharingStream();
   },
   watch: {
     "selected_devices.video_input_device": function () {
@@ -542,13 +630,17 @@ export default {
       );
       if (!this.is_loading_feed) this.setCameraStreamFromDefaults();
     },
-    stream: function () {
-      // if ("srcObject" in this.$refs.videoElement) {
-      //   this.$refs.videoElement.srcObject = this.stream;
-      // } else {
-      //   // Avoid using this in new browsers, as it is going away.
-      //   this.$refs.videoElement.src = window.URL.createObjectURL(this.stream);
-      // }
+    local_stream: function () {
+      this.emitStream();
+    },
+    remote_stream: function () {
+      this.emitStream();
+    },
+    current_mode: function () {
+      this.emitStream();
+    },
+    current_stream: function () {
+      this.$emit("setStream", this.current_stream);
     },
     selected_devices: {
       handler() {
@@ -562,6 +654,15 @@ export default {
       handler() {
         this.$root.settings.capture_options.last_working_resolution = JSON.parse(
           JSON.stringify(this.last_working_resolution)
+        );
+      },
+      deep: true,
+    },
+    share_this_stream: {
+      handler() {
+        this.$eventHub.$emit(
+          `stream.newSharingInformations`,
+          this.share_this_stream.status
         );
       },
       deep: true,
@@ -606,6 +707,9 @@ export default {
         _settings += this.echoCancellation + "-";
       }
 
+      if (this.share_this_stream.enabled)
+        _settings += this.share_this_stream.name + "-";
+
       if (!!this.selected_devices.audio_output_device)
         _settings += this.selected_devices.audio_output_device.deviceId + "-";
 
@@ -636,6 +740,13 @@ export default {
             return reject(err);
           });
       });
+    },
+    emitStream() {
+      if (this.current_mode === "RemoteSources") {
+        this.current_stream = this.remote_stream;
+      } else if (this.current_mode === "LocalSources") {
+        this.current_stream = this.local_stream;
+      }
     },
     setSupportedConstraints() {
       return new Promise((resolve, reject) => {
@@ -871,6 +982,14 @@ export default {
         this.startCameraStream()
           .then(() => {
             this.last_working_resolution = this.desired_camera_resolution;
+            return;
+          })
+          .then(() => {
+            this.share_this_stream.status.loading = true;
+            return this.setStreamSharing();
+          })
+          .then(() => {
+            this.share_this_stream.status.loading = false;
             return resolve();
           })
           .catch((error) => {
@@ -905,8 +1024,8 @@ export default {
     startCameraStream() {
       return new Promise((resolve, reject) => {
         //Kill any running streams;
-        if (this.stream)
-          this.stream.getTracks().forEach((track) => track.stop());
+        if (this.local_stream)
+          this.local_stream.getTracks().forEach((track) => track.stop());
 
         let constraints = this.createConstraintsFromSelected();
 
@@ -914,18 +1033,19 @@ export default {
           () => {
             this.startMediaDeviceFeed(constraints)
               .then((stream) => {
-                this.$emit("update:stream", stream);
+                this.local_stream = stream;
                 return resolve();
               })
               .catch((error) => {
                 console.log("getUserMedia error : ", error);
+                this.$emit("show");
                 if (error.name === "NotAllowedError") {
                   this.status = "not_allowed";
                 }
                 return reject(error);
               });
           },
-          this.stream ? 200 : 0
+          this.local_stream ? 200 : 0
         ); //official examples had this at 200
       });
     },
@@ -1001,7 +1121,103 @@ export default {
       return _constraints;
     },
     changeStreamTo(stream) {
-      this.$emit("update:stream", stream);
+      this.remote_stream = stream;
+    },
+    setStreamSharing() {
+      return new Promise((resolve, reject) => {
+        if (!this.share_this_stream.enabled) {
+          this.stopSharingStream();
+          return resolve();
+        }
+
+        this.rtcmulti_connection = new RTCMultiConnection();
+        this.rtcmulti_connection.iceServers = [
+          {
+            urls: [
+              "stun:stun.l.google.com:19302",
+              "stun:stun1.l.google.com:19302",
+              "stun:stun2.l.google.com:19302",
+              "stun:stun.l.google.com:19302?transport=udp",
+            ],
+          },
+        ];
+
+        // detect 2G
+        if (
+          navigator.connection &&
+          navigator.connection.type === "cellular" &&
+          navigator.connection.downlinkMax <= 0.115
+        )
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("bandwidth_very_low_for_stream_sharing"));
+
+        if (this.share_this_stream.name.length === 0)
+          return reject("missing_stream_name");
+
+        this.rtcmulti_connection.session = {
+          video: true,
+          audio: true,
+          oneway: true,
+        };
+
+        this.rtcmulti_connection.socketURL =
+          "https://rtcmulticonnection.herokuapp.com:443/";
+
+        this.rtcmulti_connection.dontCaptureUserMedia = true;
+
+        if (!this.current_stream)
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.no_stream_found_while_sharing"));
+
+        this.rtcmulti_connection.addStream(this.current_stream);
+
+        this.rtcmulti_connection.onstream = (event) => {
+          console.log("CaptureSettings: onstream");
+          event.mediaElement.volume = 0;
+        };
+        this.rtcmulti_connection.onstreamended = (event) => {
+          console.log("CaptureSettings: onstreamended");
+          this.share_this_stream.status.enabled = false;
+        };
+        this.rtcmulti_connection.onMediaError = (e) => {
+          console.log("CaptureSettings: onMediaError");
+        };
+
+        this.rtcmulti_connection.open(
+          this.share_this_stream.name,
+          (isRoomOpened, roomid, error) => {
+            this.is_started = true;
+            this.share_this_stream.status.enabled = true;
+            this.share_this_stream.status.name = roomid;
+
+            if (error) {
+              this.$alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .error(
+                  this.$t("notifications.failed_to_start_stream_sharing") +
+                    " " +
+                    error.message
+                );
+            }
+          }
+        );
+
+        return resolve();
+      });
+    },
+    stopSharingStream() {
+      if (this.rtcmulti_connection) {
+        this.rtcmulti_connection.getAllParticipants().forEach((pid) => {
+          this.rtcmulti_connection.disconnectWith(pid);
+        });
+        this.rtcmulti_connection.closeSocket();
+        this.rtcmulti_connection = undefined;
+      }
     },
   },
 };
@@ -1048,21 +1264,23 @@ export default {
   // padding-bottom: var(--spacing);
 
   > div {
-    background-color: rgba(0, 0, 0, 0.1);
-    padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-    border-radius: 6px;
-
     > div {
-      padding-top: calc(var(--spacing) / 8);
-      margin-bottom: calc(var(--spacing) / 4);
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+      border-radius: 6px;
 
-      &:last-child {
-        margin-bottom: 0;
+      > div {
+        padding-top: calc(var(--spacing) / 8);
+        margin-bottom: calc(var(--spacing) / 4);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
-  }
-  > label {
-    line-height: 2;
+    > label {
+      line-height: 2;
+    }
   }
   .switch {
     margin-top: calc(var(--spacing) / 8);
@@ -1086,12 +1304,55 @@ export default {
 .m_captureSettings--updateButton {
   flex: 0 0 auto;
   border-top: 2px solid var(--c-rouge_fonce);
-  padding: calc(var(--spacing) / 2);
   color: black;
 
   display: flex;
+  flex-flow: column wrap;
+  // align-items: center;
+  // justify-content: center;
+}
+
+.m_sideBySideSwitches {
+  flex-flow: row nowrap;
+}
+
+.m_sideBySideSwitches > * {
+  display: block;
+  border-color: var(--c-rouge_fonce);
+
+  display: flex;
   flex-flow: row wrap;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+
+  input {
+    margin: calc(var(--spacing) / 4);
+  }
+
+  > div {
+    flex: 1 1 0;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+  }
+
+  small {
+    flex: 0 0 100%;
+    background-color: var(--c-rouge_fonce);
+    display: block;
+    text-align: center;
+    font-style: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.m_captureSettings--updateButton--buttons {
+  padding: calc(var(--spacing) / 2);
+}
+.m_captureSettings--updateButton--shareStreamToggle {
+  background-color: var(--c-rouge_fonce);
+  color: white;
+  text-align: center;
 }
 </style>

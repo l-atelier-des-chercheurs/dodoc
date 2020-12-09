@@ -5,11 +5,12 @@
   >
     <CaptureSettings
       v-show="show_capture_settings"
-      :stream.sync="stream"
       :audio_output_deviceId.sync="audio_output_deviceId"
       :enable_audio.sync="enable_audio"
       :enable_video="enable_video"
+      @setStream="(new_stream) => (stream = new_stream)"
       @hasFinishedLoading="hasFinishedLoading"
+      @show="show_capture_settings = true"
       @close="show_capture_settings = false"
     />
 
@@ -106,6 +107,11 @@
       <div
         class="m_captureview2--videoPane--top"
         v-show="!is_validating_stopmotion_video"
+        :class="{
+          'is--being_streamed':
+            stream_sharing_infomations_status &&
+            stream_sharing_infomations_status.enabled,
+        }"
       >
         <div class="m_captureview2--videoPane--top--videoContainer">
           <video
@@ -177,6 +183,22 @@
               </label>
             </div>
 
+            <div
+              v-if="
+                stream_sharing_infomations_status &&
+                stream_sharing_infomations_status.enabled
+              "
+              :key="
+                'stream_share_name-' + stream_sharing_infomations_status.name
+              "
+            >
+              <label>
+                <span>{{ $t("stream_currently_shared_with_name") }}</span>
+                <span>
+                  <strong>{{ stream_sharing_infomations_status.name }}</strong>
+                </span>
+              </label>
+            </div>
             <div
               v-if="
                 delay_mode_enabled &&
@@ -1036,6 +1058,8 @@ export default {
       lines_brightness: 1,
       lines_contrast: 1,
       lines_density: 0.25,
+
+      stream_sharing_infomations_status: {},
     };
   },
   created() {},
@@ -1052,6 +1076,10 @@ export default {
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$on(`window.resized`, this.checkCapturePanelSize);
+    this.$eventHub.$on(
+      `stream.newSharingInformations`,
+      this.updateStreamSharing
+    );
 
     this.$refs.videoElement.volume = 0;
     this.$refs.videoElement.addEventListener(
@@ -1062,6 +1090,10 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
+    this.$eventHub.$off(
+      `stream.newSharingInformations`,
+      this.updateStreamSharing
+    );
 
     this.$root.settings.ask_before_leaving_capture = false;
 
@@ -1208,6 +1240,9 @@ export default {
       } else {
         this.selected_mode = this.available_modes[0];
       }
+    },
+    updateStreamSharing(val) {
+      this.stream_sharing_infomations_status = val;
     },
     refreshVideoActualSize() {
       this.getVideoActualSize()
@@ -1832,6 +1867,10 @@ export default {
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
+
+    &.is--being_streamed {
+      border-bottom: 5px solid var(--c-rouge);
+    }
   }
 
   .m_captureview2--videoPane--bottom {
