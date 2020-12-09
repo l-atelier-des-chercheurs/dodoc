@@ -295,6 +295,7 @@
               v-model.trim="access_distant_stream.callee"
               required
               :disabled="access_distant_stream.status.enabled"
+              @keydown.enter.prevent="callStream"
             />
           </div>
         </div>
