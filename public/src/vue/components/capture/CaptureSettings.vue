@@ -6,29 +6,14 @@
 
     <div class="m_captureSettings--topbar">
       <div class="m_captureSettings--topbar--title">
-        <svg
-          class="inline-svg inline-svg_larger"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          viewBox="0 0 140 140"
-          xml:space="preserve"
-        >
-          <path
-            style="fill: currentColor"
-            d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
-                  c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
-                  c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
-                  c-0.6,0.9-1.8,1.4-2.9,1.2L35.8,66L34,71.8l9.7,4.8c1,0.5,1.7,1.5,1.7,2.6v10c0,1.1-0.6,2.1-1.6,2.6l-9.6,4.9l2,5.9l10.9-1.6
-                  c1.1-0.2,2.2,0.3,2.9,1.2l6,8.1c0.7,0.9,0.8,2.1,0.3,3l-4.8,9.6l5.1,3.6l7.7-7.5c0.8-0.8,2-1,3.1-0.7l9.9,3
-                  c1.1,0.3,1.9,1.3,2.1,2.4l1.9,10.4h6.4l1.7-10.4c0.2-1.1,0.9-2,2-2.4l9.9-3.2c1.1-0.3,2.2-0.1,3.1,0.7l7.8,7.3l5.1-3.7l-4.9-9.4
-                  c-0.5-1-0.4-2.1,0.2-3l6-8.1c0.7-0.9,1.8-1.4,2.9-1.2l10.8,1.5l1.8-5.9l-9.7-4.8C123.3,90.9,122.7,89.9,122.7,88.8z M84,104.5
-                  c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
-          />
-        </svg>
         <span class>{{ $t("settings") }}</span>
+        <button
+          type="button"
+          class="button-nostyle bg-rouge _close_button"
+          @click="$emit('close')"
+        >
+          <img src="/images/i_close_sansfond.svg" draggable="false" />
+        </button>
       </div>
     </div>
     <div>
@@ -309,7 +294,6 @@
               type="text"
               v-model.trim="access_distant_stream.callee"
               required
-              autofocus
               :disabled="access_distant_stream.status.enabled"
             />
           </div>
@@ -397,13 +381,13 @@
           </button>
         </template>
 
-        <button
+        <!-- <button
           type="button"
           class="bg-rouge buttonLink"
           @click="$emit('close')"
         >
           <span class>{{ $t("close") }}</span>
-        </button>
+        </button> -->
       </div>
     </div>
   </div>
@@ -655,13 +639,13 @@ export default {
       if (!this.is_loading_feed) this.setCameraStreamFromDefaults();
     },
     local_stream: function () {
-      this.emitStream();
+      this.setCurrentStream();
     },
     remote_stream: function () {
-      this.emitStream();
+      this.setCurrentStream();
     },
     current_mode: function () {
-      this.emitStream();
+      this.setCurrentStream();
     },
     current_stream: function () {
       this.$emit("setStream", {
@@ -782,9 +766,9 @@ export default {
           });
       });
     },
-    emitStream() {
+    setCurrentStream() {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`CaptureSettings • METHODS : emitStream`);
+        console.log(`CaptureSettings • METHODS : setCurrentStream`);
 
       if (this.current_mode === "RemoteSources") {
         this.current_stream = this.remote_stream;
@@ -1273,6 +1257,9 @@ export default {
               .closeLogOnClick(true)
               .delay(4000)
               .error(username + " is not online.");
+
+            this.access_distant_stream.calling = false;
+            clearTimeout(call_timeout);
             return;
           } else {
             this.$alertify
@@ -1460,13 +1447,14 @@ export default {
   display: block;
   border-color: var(--c-rouge_fonce);
   min-width: 100px;
+  padding: calc(var(--spacing) / 4);
 
   display: flex;
   flex-flow: row wrap;
   align-items: stretch;
 
   input {
-    margin: calc(var(--spacing) / 4);
+    margin: calc(var(--spacing) / 2);
   }
 
   > div {
@@ -1495,5 +1483,14 @@ export default {
   background-color: var(--c-rouge_fonce);
   color: white;
   text-align: center;
+}
+
+._close_button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-height: 0;
+  padding: 0;
+  margin: calc(var(--spacing) / 4);
 }
 </style>
