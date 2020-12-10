@@ -6,8 +6,6 @@
     <CaptureSettings
       v-show="show_capture_settings"
       :audio_output_deviceId.sync="audio_output_deviceId"
-      :enable_audio.sync="enable_audio"
-      :enable_video="enable_video"
       @setStream="setStream"
       @hasFinishedLoading="hasFinishedLoading"
       @show="show_capture_settings = true"
@@ -766,7 +764,7 @@
                     class="switch"
                     id="recordVideoWithAudio"
                     type="checkbox"
-                    v-model="enable_audio"
+                    v-model="enable_audio_in_videos"
                     :disabled="is_recording"
                   />
                   <label for="recordVideoWithAudio">{{
@@ -1052,7 +1050,7 @@ export default {
 
       show_capture_settings: false,
 
-      enable_audio: false,
+      enable_audio_in_videos: true,
       enable_video: true,
 
       is_recording: false,
@@ -1560,9 +1558,11 @@ export default {
         });
       } else if (this.selected_mode === "video") {
         this.video_recording_is_paused = false;
+
         this.startRecordFeed({
           type: "video",
           videoBitsPerSecond: 4112000,
+          remove_audio: this.enable_audio_in_videos,
         });
       } else if (this.selected_mode === "audio") {
         this.startRecordFeed({
@@ -1726,7 +1726,15 @@ export default {
 
     startRecordFeed(options) {
       return new Promise((resolve, reject) => {
-        this.recorder = RecordRTC(this.stream, options);
+        const _stream = this.stream;
+        if (options.hasOwnProperty("remove_audio") && options.remove_audio)
+          _stream
+            .getAudioTracks()
+            .forEach((track) => _stream.removeTrack(track));
+
+        debugger;
+
+        this.recorder = RecordRTC(_stream, options);
         try {
           this.recorder.startRecording();
         } catch (err) {

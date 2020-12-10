@@ -313,7 +313,8 @@
         <transition name="fade_fast" :duration="150">
           <Loader v-if="share_this_stream.status.loading" />
         </transition>
-        <span class="switch switch-xs">
+
+        <div class="switch switch-xs">
           <input
             class="switch"
             id="shareStream"
@@ -321,7 +322,7 @@
             v-model="share_this_stream.enabled"
           />
           <label for="shareStream">{{ $t("share_stream") }}</label>
-        </span>
+        </div>
 
         <div
           v-if="share_this_stream.enabled"
@@ -394,8 +395,6 @@ import RTCMultiConnection from "rtcmulticonnection";
 export default {
   props: {
     audio_output_deviceId: String,
-    enable_audio: Boolean,
-    enable_video: Boolean,
   },
   components: {
     RTCMultiConnection,
@@ -540,7 +539,6 @@ export default {
               err.message
           );
         if (err.message === "Could not start audio source") {
-          this.$emit("update:enable_audio", false);
         }
         this.is_loading_feed = false;
         this.$emit("hasFinishedLoading");
@@ -585,18 +583,6 @@ export default {
     "selected_devices.video_input_device": function () {
       this.unavailable_camera_resolutions = [];
       this.last_working_resolution = false;
-    },
-    enable_audio: function () {
-      console.log(
-        `WATCH • CaptureSettings: enable_audio = ${this.enable_audio}`
-      );
-      if (!this.is_loading_feed) this.setCameraStreamFromDefaults();
-    },
-    enable_video: function () {
-      console.log(
-        `WATCH • CaptureSettings: enable_video = ${this.enable_video}`
-      );
-      if (!this.is_loading_feed) this.setCameraStreamFromDefaults();
     },
     local_stream: function () {
       this.setCurrentStream();
@@ -1085,64 +1071,58 @@ export default {
         video: false,
       };
 
-      if (this.enable_audio) {
-        _constraints.audio = {
-          deviceId: this.selected_devices.audio_input_device.deviceId
-            ? { exact: this.selected_devices.audio_input_device.deviceId }
-            : undefined,
-          echoCancellation: this.advanced_capture_options.echoCancellation
-            .enabled,
-          noiseSuppression: this.advanced_capture_options.noiseSuppression
-            .enabled,
-        };
-      }
+      _constraints.audio = {
+        deviceId: this.selected_devices.audio_input_device.deviceId
+          ? { exact: this.selected_devices.audio_input_device.deviceId }
+          : undefined,
+        echoCancellation: this.advanced_capture_options.echoCancellation
+          .enabled,
+        noiseSuppression: this.advanced_capture_options.noiseSuppression
+          .enabled,
+      };
 
-      if (this.enable_video) {
-        // IF ELECTRON DESKTOP CAPTURER AND VIDEO ENABLED
+      // IF ELECTRON DESKTOP CAPTURER AND VIDEO ENABLED
+      if (
+        this.selected_devices.video_input_device.hasOwnProperty(
+          "chromeMediaSource"
+        ) &&
+        this.selected_devices.video_input_device.chromeMediaSource
+      ) {
+        // screen capture devices
+        _constraints._is_electron_screen_capture = true;
+        _constraints.video = {
+          mandatory: {
+            chromeMediaSource: this.selected_devices.video_input_device
+              .chromeMediaSource,
+            chromeMediaSourceId: this.selected_devices.video_input_device
+              .deviceId,
+            minWidth: this.desired_camera_resolution.width,
+            maxWidth: this.desired_camera_resolution.width,
+            minHeight: this.desired_camera_resolution.height,
+            maxHeight: this.desired_camera_resolution.height,
+          },
+        };
+      } else {
+        // IF BROWSER SCREEN CAPTURE
+        // IF BROWSER OR ELECTRON CAMERA FEED
         if (
-          this.selected_devices.video_input_device.hasOwnProperty(
-            "chromeMediaSource"
-          ) &&
-          this.selected_devices.video_input_device.chromeMediaSource &&
-          this.enable_video
+          this.selected_devices.video_input_device &&
+          this.selected_devices.video_input_device.deviceId === "screen_capture"
         ) {
-          // screen capture devices
-          _constraints._is_electron_screen_capture = true;
+          _constraints._is_webrtc_screen_capture = true;
           _constraints.video = {
-            mandatory: {
-              chromeMediaSource: this.selected_devices.video_input_device
-                .chromeMediaSource,
-              chromeMediaSourceId: this.selected_devices.video_input_device
-                .deviceId,
-              minWidth: this.desired_camera_resolution.width,
-              maxWidth: this.desired_camera_resolution.width,
-              minHeight: this.desired_camera_resolution.height,
-              maxHeight: this.desired_camera_resolution.height,
-            },
+            cursor: this.advanced_capture_options.cursor.enabled,
           };
         } else {
-          // IF BROWSER SCREEN CAPTURE
-          // IF BROWSER OR ELECTRON CAMERA FEED
-          if (
-            this.selected_devices.video_input_device &&
-            this.selected_devices.video_input_device.deviceId ===
-              "screen_capture"
-          ) {
-            _constraints._is_webrtc_screen_capture = true;
-            _constraints.video = {
-              cursor: this.advanced_capture_options.cursor.enabled,
-            };
-          } else {
-            _constraints.video = {
-              deviceId: this.selected_devices.video_input_device.deviceId
-                ? {
-                    exact: this.selected_devices.video_input_device.deviceId,
-                  }
-                : undefined,
-              width: { exact: this.desired_camera_resolution.width }, //new syntax
-              height: { exact: this.desired_camera_resolution.height }, //new syntax
-            };
-          }
+          _constraints.video = {
+            deviceId: this.selected_devices.video_input_device.deviceId
+              ? {
+                  exact: this.selected_devices.video_input_device.deviceId,
+                }
+              : undefined,
+            width: { exact: this.desired_camera_resolution.width }, //new syntax
+            height: { exact: this.desired_camera_resolution.height }, //new syntax
+          };
         }
       }
 
