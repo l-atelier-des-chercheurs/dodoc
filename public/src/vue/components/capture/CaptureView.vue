@@ -935,7 +935,7 @@
   </div>
 </template>
 <script>
-import MediaPreviewBeforeValidation from "../subcomponents/MediaPreviewBeforeValidation.vue";
+import MediaPreviewBeforeValidation from "./MediaPreviewBeforeValidation.vue";
 import MediaValidationButtons from "./MediaValidationButtons.vue";
 import StopmotionPanel from "./StopmotionPanel.vue";
 import MediaContent from "../subcomponents/MediaContent.vue";
