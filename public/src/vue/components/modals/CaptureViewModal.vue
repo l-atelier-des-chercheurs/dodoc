@@ -12,7 +12,7 @@
     </template>
 
     <template slot="preview">
-      <CaptureView2
+      <CaptureView
         :slugFolderName="slugFolderName"
         :type="type"
         :read_only="read_only"
@@ -24,7 +24,7 @@
   </Modal>
 </template>
 <script>
-import CaptureView2 from "../../CaptureView2.vue";
+import CaptureView from "../capture/CaptureView.vue";
 
 export default {
   props: {
@@ -34,7 +34,7 @@ export default {
     available_modes: Array,
   },
   components: {
-    CaptureView2,
+    CaptureView,
   },
   data() {
     return {};

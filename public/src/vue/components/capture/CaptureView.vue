@@ -1,6 +1,6 @@
 <template>
   <div
-    class="m_captureview2"
+    class="m_captureview"
     :class="{ 'is--collapsed': collapse_capture_pane }"
   >
     <CaptureSettings
@@ -14,10 +14,10 @@
       @close="show_capture_settings = false"
     />
 
-    <!-- <div class="m_captureview2--settingsPaneButton">
+    <!-- <div class="m_captureview--settingsPaneButton">
     </div> -->
 
-    <div class="m_captureview2--videoPane">
+    <div class="m_captureview--videoPane">
       <transition name="slidedown" :duration="500">
         <div
           class="_modeSelector"
@@ -116,7 +116,7 @@
         </div>
       </transition>
       <div
-        class="m_captureview2--videoPane--top"
+        class="m_captureview--videoPane--top"
         v-show="!is_validating_stopmotion_video"
         :class="{
           'is--being_streamed':
@@ -126,7 +126,7 @@
               stream_access_informations_status.enabled),
         }"
       >
-        <div class="m_captureview2--videoPane--top--videoContainer">
+        <div class="m_captureview--videoPane--top--videoContainer">
           <video
             ref="videoElement"
             autoplay
@@ -443,14 +443,14 @@
       </transition>
 
       <transition name="slideup" :duration="150" mode="out-in">
-        <div class="m_captureview2--videoPane--bottom">
+        <div class="m_captureview--videoPane--bottom">
           <transition name="fade_fast" :duration="150">
             <Loader v-if="is_sending_image" />
           </transition>
 
           <transition name="slideup" :duration="150" mode="out-in">
             <div
-              class="m_captureview2--videoPane--bottom--buttons"
+              class="m_captureview--videoPane--bottom--buttons"
               :class="{
                 'is--recording': is_recording && !video_recording_is_paused,
                 'is--sending_image': is_sending_image,
@@ -935,16 +935,16 @@
   </div>
 </template>
 <script>
-import MediaPreviewBeforeValidation from "./components/subcomponents/MediaPreviewBeforeValidation.vue";
-import MediaValidationButtons from "./components/subcomponents/MediaValidationButtons.vue";
-import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
-import MediaContent from "./components/subcomponents/MediaContent.vue";
+import MediaPreviewBeforeValidation from "../subcomponents/MediaPreviewBeforeValidation.vue";
+import MediaValidationButtons from "./MediaValidationButtons.vue";
+import StopmotionPanel from "./StopmotionPanel.vue";
+import MediaContent from "../subcomponents/MediaContent.vue";
 
-import CaptureSettings from "./components/capture/CaptureSettings.vue";
-import StopmotionList from "./components/capture/StopmotionList.vue";
-import AudioEqualizer from "./components/capture/AudioEqualizer.vue";
-import Vecto from "./components/capture/Vecto.vue";
-import Lines from "./components/capture/Lines.vue";
+import CaptureSettings from "./CaptureSettings.vue";
+import StopmotionList from "./StopmotionList.vue";
+import AudioEqualizer from "./AudioEqualizer.vue";
+import Vecto from "./Vecto.vue";
+import Lines from "./Lines.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -1311,7 +1311,7 @@ export default {
         .catch((err) => {
           if (this.$root.state.dev_mode === "debug")
             console.log(
-              `CaptureView2 • METHODS : refreshVideoActualSize — couldnt get video size: ` +
+              `CaptureView • METHODS : refreshVideoActualSize — couldnt get video size: ` +
                 err
             );
           // this.$alertify
@@ -1377,7 +1377,7 @@ export default {
     startFrameGrabber() {
       const getFrame = () => {
         if (this.$root.state.dev_mode === "debug")
-          console.log(`CaptureView2 • METHODS : startFrameGrabber`);
+          console.log(`CaptureView • METHODS : startFrameGrabber`);
         // this.frameGrabber();
 
         if (this.media_to_validate) return;
@@ -1396,7 +1396,7 @@ export default {
     },
     stopFrameGrabber() {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`CaptureView2 • METHODS : stopFrameGrabber  `);
+        console.log(`CaptureView • METHODS : stopFrameGrabber  `);
 
       if (this.frameGrabber) window.clearInterval(this.frameGrabber);
       this.last_frame_from_video = undefined;
@@ -1708,7 +1708,7 @@ export default {
             var t1 = performance.now();
             if (this.$root.state.dev_mode === "debug")
               console.log(
-                "CaptureView2 • METHODS : getStaticImageFromVideoElement took " +
+                "CaptureView • METHODS : getStaticImageFromVideoElement took " +
                   (t1 - t0) +
                   " milliseconds."
               );
@@ -1868,20 +1868,20 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.m_captureview2 {
+.m_captureview {
   display: flex;
   flex-flow: row nowrap;
   max-height: 100vh;
 
   // &.is--collapsed {
-  //   .m_captureview2--videoPane--bottom--buttons {
+  //   .m_captureview--videoPane--bottom--buttons {
   //     > * {
   //       padding: 0;
   //     }
   //   }
   // }
 
-  .m_captureview2--settingsPaneButton {
+  .m_captureview--settingsPaneButton {
     position: relative;
     z-index: 1;
     display: flex;
@@ -1899,7 +1899,7 @@ export default {
     }
   }
 
-  .m_captureview2--videoPane {
+  .m_captureview--videoPane {
     position: relative;
     overflow-y: auto;
     flex: 1 1 100px;
@@ -1908,7 +1908,7 @@ export default {
     flex-flow: column nowrap;
   }
 
-  .m_captureview2--videoPane--top {
+  .m_captureview--videoPane--top {
     position: relative;
     margin: 0 auto;
     min-height: 300px;
@@ -1931,12 +1931,12 @@ export default {
     }
   }
 
-  .m_captureview2--videoPane--bottom {
+  .m_captureview--videoPane--bottom {
     position: relative;
     flex: 0 0 auto;
     box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
 
-    .m_captureview2--videoPane--bottom--buttons {
+    .m_captureview--videoPane--bottom--buttons {
       display: flex;
       flex-flow: row wrap;
       justify-content: space-between;
@@ -1999,7 +1999,7 @@ export default {
     }
   }
 
-  .m_captureview2--videoPane--top--videoContainer {
+  .m_captureview--videoPane--top--videoContainer {
     position: relative;
     width: 100%;
     height: 100%;

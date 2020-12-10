@@ -133,7 +133,7 @@
   </div>
 </template>
 <script>
-import MediaContent from "./MediaContent.vue";
+import MediaContent from "../subcomponents/MediaContent.vue";
 import MediaValidationButtons from "./MediaValidationButtons.vue";
 
 export default {
