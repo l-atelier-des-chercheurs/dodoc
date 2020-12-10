@@ -170,7 +170,7 @@
       <template v-else-if="enable_capture_mode">
         <!-- v-if="captureview_in_modal === false && false" -->
         <component
-          :is="!captureview_in_modal ? 'CaptureView2' : 'CaptureViewModal'"
+          :is="!captureview_in_modal ? 'CaptureView' : 'CaptureViewModal'"
           class="is--collapsed"
           :slugFolderName="slugPubliName"
           :type="`publications`"
@@ -193,7 +193,7 @@
   </div>
 </template>
 <script>
-import CaptureView2 from "../../CaptureView2.vue";
+import CaptureView from "../capture/CaptureView.vue";
 import CaptureViewModal from "../modals/CaptureViewModal.vue";
 import UploadFile from "./UploadFile.vue";
 import debounce from "debounce";
@@ -228,7 +228,7 @@ export default {
     },
   },
   components: {
-    CaptureView2,
+    CaptureView,
     CaptureViewModal,
     UploadFile,
   },

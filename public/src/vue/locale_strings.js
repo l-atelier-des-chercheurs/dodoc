@@ -1,6 +1,89 @@
 module.exports = (function () {
   // Ready translated locale messages
   const messages = {
+    // CAMERA
+    "camera2 0, facing back": {
+      fr: "Caméra arrière",
+      nl: "Camera naar achteren gericht ",
+      oc: "Camerà arrièra",
+      de: "Rückfahrkamera",
+    },
+    camera: {
+      fr: "Camera",
+      en: "Camera",
+    },
+    pick_a_camera: {
+      fr: "Sélectionnez une caméra",
+      en: "Pick a camera",
+    },
+    "Entire screen": {
+      fr: "Écran de l’ordinateur",
+      en: "Computer screen",
+    },
+    stream_local_mode: {
+      fr: "sur cet appareil",
+      en: "on this device",
+    },
+    stream_remote_mode: {
+      fr: "do•doc distant",
+      en: "remote do•doc",
+    },
+    "stream_currently_shared_with_name:": {
+      fr: "Flux vidéo/audio partagé sous le nom&nbsp;:",
+      en: "Stream currently shared with name:",
+    },
+    "stream_shown:": {
+      fr: "Flux utilisé&nbsp;:",
+      en: "Stream used:",
+    },
+    share_stream: {
+      fr: "Partager ce flux",
+      en: "Share this stream",
+    },
+    no_stopmotion_created_yet: {
+      fr: "Les animations créées apparaîtront dans ce panneau.",
+      en: "Created stopmotion animations will appear in this list.",
+      nl: "Er is nog geen stopmotion gemaakt: ",
+      oc: "Las animacions creadas apparaisseràn dins aqueste panèu.",
+      de: "Die erstellten Animationen werden in diesen Fenster angezeigt",
+    },
+    device: {
+      fr: "Appareil",
+      en: "Device",
+      nl: "Toestel",
+      oc: "Aparelh",
+      de: "Gerät",
+    },
+    audioinput: {
+      fr: "Entrée audio",
+      en: "Audio input",
+    },
+    audiooutput: {
+      fr: "Sortie audio",
+      en: "Audio output",
+    },
+    "camera2 1, facing front": {
+      fr: "Caméra frontale",
+      nl: "Camera naar voren gericht ",
+      oc: "Camerà frontala",
+      de: "Frontkamera",
+    },
+    volume: {
+      fr: "Volume",
+      en: "Sound level",
+    },
+    dimensions: {
+      fr: "Résolution",
+      en: "Resolution",
+    },
+    onion_skin: {
+      fr: "Pelure d’oignon",
+      en: "Onion skin",
+      nl: "uienschil",
+      oc: "Pelofa de cèba",
+      de: "Überlagerung",
+    },
+
     ascending: {
       fr: "Croissant",
       en: "Ascending",
@@ -284,26 +367,6 @@ module.exports = (function () {
     infos_about_the_media: {
       fr: "Informations sur le média",
       en: "Informations on the media",
-    },
-    stream_local_mode: {
-      fr: "sur cet appareil",
-      en: "on this device",
-    },
-    stream_remote_mode: {
-      fr: "do•doc distant",
-      en: "remote do•doc",
-    },
-    'stream_currently_shared_with_name:': {
-      fr: "Flux vidéo/audio partagé sous le nom&nbsp;:",
-      en: "Stream currently shared with name:",
-    },
-    'stream_shown:': {
-      fr: "Flux utilisé&nbsp;:",
-      en: "Stream used:",
-    },
-    share_stream: {
-      fr: "Partager ce flux",
-      en: "Share this stream",
     },
     uploaded: {
       fr: "Importation",
@@ -625,21 +688,6 @@ module.exports = (function () {
       fr: "Taille",
       en: "Size",
     },
-    volume: {
-      fr: "Volume",
-      en: "Sound level",
-    },
-    dimensions: {
-      fr: "Résolution",
-      en: "Resolution",
-    },
-    onion_skin: {
-      fr: "Pelure d’oignon",
-      en: "Onion skin",
-      nl: "uienschil",
-      oc: "Pelofa de cèba",
-      de: "Überlagerung",
-    },
     file: {
       fr: "Fichier",
       en: "File",
@@ -783,52 +831,6 @@ module.exports = (function () {
       nl: "Bevestig met ENTER.",
       oc: "Validar amb la toca ENTRADA",
       de: "Mit der ENTER-taste bestätigen.",
-    },
-    no_stopmotion_created_yet: {
-      fr: "Les animations créées apparaîtront dans ce panneau.",
-      en: "Created stopmotion animations will appear in this list.",
-      nl: "Er is nog geen stopmotion gemaakt: ",
-      oc: "Las animacions creadas apparaisseràn dins aqueste panèu.",
-      de: "Die erstellten Animationen werden in diesen Fenster angezeigt",
-    },
-    device: {
-      fr: "Appareil",
-      en: "Device",
-      nl: "Toestel",
-      oc: "Aparelh",
-      de: "Gerät",
-    },
-    audioinput: {
-      fr: "Entrée audio",
-      en: "Audio input",
-    },
-    audiooutput: {
-      fr: "Sortie audio",
-      en: "Audio output",
-    },
-    "camera2 1, facing front": {
-      fr: "Caméra frontale",
-      nl: "Camera naar voren gericht ",
-      oc: "Camerà frontala",
-      de: "Frontkamera",
-    },
-    "camera2 0, facing back": {
-      fr: "Caméra arrière",
-      nl: "Camera naar achteren gericht ",
-      oc: "Camerà arrièra",
-      de: "Rückfahrkamera",
-    },
-    camera: {
-      fr: "Camera",
-      en: "Camera",
-    },
-    pick_a_camera: {
-      fr: "Sélectionnez une caméra",
-      en: "Pick a camera",
-    },
-    "Entire screen": {
-      fr: "Écran de l’ordinateur",
-      en: "Computer screen",
     },
     very_slow: {
       fr: "Très lent",
@@ -3631,49 +3633,15 @@ module.exports = (function () {
         oc: "Lo projècte seguent es pas estat trobat:",
         de: "Die folgende Projekt wurde nicht gefunden:",
       },
-      failed_to_start_video_change_source_or_res: {
+      failed_to_start_streams_change_source_or_res: {
         fr:
-          "Le flux vidéo n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
+          "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
         en:
           "Failed to start camera stream. Try changing the source or the resolution.",
-        nl:
-          "Videostream kan niet worden gestart .<br>Probeer de bron of de resolutie in de instellingen te wijzigen.",
-        oc:
-          "Lo flux vidèo es pas estat desmarrat.<br>Ensajatz de modificar la sorça o la resolucion dins los reglatges.",
-        de:
-          "Der Videostrom konnte nicht gestartet werden.<br> Versuchen Sie, die Quelle oder die Auflösung in den Einstellungen zu ändern.",
       },
-      video_source_not_set: {
-        fr: "La source vidéo n’a pas été trouvée.",
-        en: "The source video has not been set.",
-        nl: "Videobron niet gevonden.",
-        oc: "La sorça audio es pas estada trobada.",
-        de: "Die Videoquelle wurde nicht gefunden.",
-      },
-      failed_to_start_audio_change_source: {
-        fr:
-          "Le flux audio n’a pas pu être démarré.<br>Essayez de modifier la source dans les réglages.",
-        en: "Failed to start audio stream. Try changing the source.",
-        nl:
-          "Audiostream kan niet worden gestart.<br>Probeer de bron in de instellingen te wijzigen.",
-        oc:
-          "Lo flux audio es pas estat desmarrat.<br>Ensajatz de modificar la sorça dins los reglatges.",
-        de:
-          "Der Audiostrom konnte nicht gestartet werden.<br> Versuchen Sie, die Quelle in den Einstellungen zu ändern.",
-      },
-      audio_source_not_set: {
-        fr: "La source audio n’a pas été trouvée.",
-        en: "The source audio has not been set.",
-        nl: "Audiobron niet gevonden.",
-        oc: "La sorça audio es pas estada trobada.",
-        de: "Die Audioquelle wurde nicht gefunden.",
-      },
-      video_stream_not_available: {
-        fr: "Erreur : le flux vidéo n’est pas disponible.",
-        en: "Error: Video stream not available.",
-        nl: "Fout : videostream is niet beschikbaar.",
-        oc: "Error : lo flux vidèo es pas disponible",
-        de: "Fehler: der Videostrom ist nicht verfügbar.",
+      failed_to_share_stream: {
+        fr: "Le partage du flux n’a pas pu avoir lieu",
+        en: "Failed to start stream sharing",
       },
       no_content_to_show: {
         fr: "Aucun contenu à afficher.",

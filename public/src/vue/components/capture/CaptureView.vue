@@ -1,23 +1,21 @@
 <template>
   <div
-    class="m_captureview2"
+    class="m_captureview"
     :class="{ 'is--collapsed': collapse_capture_pane }"
   >
     <CaptureSettings
       v-show="show_capture_settings"
       :audio_output_deviceId.sync="audio_output_deviceId"
-      :enable_audio.sync="enable_audio"
-      :enable_video="enable_video"
       @setStream="setStream"
       @hasFinishedLoading="hasFinishedLoading"
       @show="show_capture_settings = true"
       @close="show_capture_settings = false"
     />
 
-    <!-- <div class="m_captureview2--settingsPaneButton">
+    <!-- <div class="m_captureview--settingsPaneButton">
     </div> -->
 
-    <div class="m_captureview2--videoPane">
+    <div class="m_captureview--videoPane">
       <transition name="slidedown" :duration="500">
         <div
           class="_modeSelector"
@@ -116,7 +114,7 @@
         </div>
       </transition>
       <div
-        class="m_captureview2--videoPane--top"
+        class="m_captureview--videoPane--top"
         v-show="!is_validating_stopmotion_video"
         :class="{
           'is--being_streamed':
@@ -126,7 +124,7 @@
               stream_access_informations_status.enabled),
         }"
       >
-        <div class="m_captureview2--videoPane--top--videoContainer">
+        <div class="m_captureview--videoPane--top--videoContainer">
           <video
             ref="videoElement"
             autoplay
@@ -443,14 +441,14 @@
       </transition>
 
       <transition name="slideup" :duration="150" mode="out-in">
-        <div class="m_captureview2--videoPane--bottom">
+        <div class="m_captureview--videoPane--bottom">
           <transition name="fade_fast" :duration="150">
             <Loader v-if="is_sending_image" />
           </transition>
 
           <transition name="slideup" :duration="150" mode="out-in">
             <div
-              class="m_captureview2--videoPane--bottom--buttons"
+              class="m_captureview--videoPane--bottom--buttons"
               :class="{
                 'is--recording': is_recording && !video_recording_is_paused,
                 'is--sending_image': is_sending_image,
@@ -766,7 +764,7 @@
                     class="switch"
                     id="recordVideoWithAudio"
                     type="checkbox"
-                    v-model="enable_audio"
+                    v-model="enable_audio_recording_in_video"
                     :disabled="is_recording"
                   />
                   <label for="recordVideoWithAudio">{{
@@ -935,16 +933,16 @@
   </div>
 </template>
 <script>
-import MediaPreviewBeforeValidation from "./components/subcomponents/MediaPreviewBeforeValidation.vue";
-import MediaValidationButtons from "./components/subcomponents/MediaValidationButtons.vue";
-import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
-import MediaContent from "./components/subcomponents/MediaContent.vue";
+import MediaPreviewBeforeValidation from "./MediaPreviewBeforeValidation.vue";
+import MediaValidationButtons from "./MediaValidationButtons.vue";
+import StopmotionPanel from "./StopmotionPanel.vue";
+import MediaContent from "../subcomponents/MediaContent.vue";
 
-import CaptureSettings from "./components/capture/CaptureSettings.vue";
-import StopmotionList from "./components/capture/StopmotionList.vue";
-import AudioEqualizer from "./components/capture/AudioEqualizer.vue";
-import Vecto from "./components/capture/Vecto.vue";
-import Lines from "./components/capture/Lines.vue";
+import CaptureSettings from "./CaptureSettings.vue";
+import StopmotionList from "./StopmotionList.vue";
+import AudioEqualizer from "./AudioEqualizer.vue";
+import Vecto from "./Vecto.vue";
+import Lines from "./Lines.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -1052,7 +1050,7 @@ export default {
 
       show_capture_settings: false,
 
-      enable_audio: false,
+      enable_audio_recording_in_video: true,
       enable_video: true,
 
       is_recording: false,
@@ -1112,6 +1110,8 @@ export default {
       this.selected_mode = this.$root.settings.capture_options.selected_mode;
     else this.selected_mode = this.available_modes[0];
 
+    document.addEventListener("keyup", this.captureKeyListener);
+
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$on(`window.resized`, this.checkCapturePanelSize);
@@ -1141,6 +1141,8 @@ export default {
       `stream.newDistantAccessInformations`,
       this.updateDistantStream
     );
+
+    document.removeEventListener("keyup", this.captureKeyListener);
 
     this.$root.settings.ask_before_leaving_capture = false;
 
@@ -1307,7 +1309,7 @@ export default {
         .catch((err) => {
           if (this.$root.state.dev_mode === "debug")
             console.log(
-              `CaptureView2 • METHODS : refreshVideoActualSize — couldnt get video size: ` +
+              `CaptureView • METHODS : refreshVideoActualSize — couldnt get video size: ` +
                 err
             );
           // this.$alertify
@@ -1373,7 +1375,7 @@ export default {
     startFrameGrabber() {
       const getFrame = () => {
         if (this.$root.state.dev_mode === "debug")
-          console.log(`CaptureView2 • METHODS : startFrameGrabber`);
+          console.log(`CaptureView • METHODS : startFrameGrabber`);
         // this.frameGrabber();
 
         if (this.media_to_validate) return;
@@ -1392,16 +1394,11 @@ export default {
     },
     stopFrameGrabber() {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`CaptureView2 • METHODS : stopFrameGrabber  `);
+        console.log(`CaptureView • METHODS : stopFrameGrabber  `);
 
       if (this.frameGrabber) window.clearInterval(this.frameGrabber);
       this.last_frame_from_video = undefined;
     },
-
-    // updateVideoDisplayedSize() {
-    //   debugger;
-    //   // this. this.$refs.videoElement.offsetWidth
-    // },
     addStopmotionImage() {
       const smdata = {
         name:
@@ -1476,10 +1473,13 @@ export default {
         return false;
       }
 
-      // disabled because it clashes with the input type range from stopmotion panel
-      // if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
-      //   return false;
-      // }
+      // TODO : write captcha to prevent writing to interfere with camera
+      if (
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea"
+      ) {
+        return false;
+      }
 
       switch (event.key) {
         case "w":
@@ -1494,7 +1494,8 @@ export default {
         case "a":
         case "q":
         case " ":
-          this.setCaptureInit();
+          if (!this.is_recording) this.setCaptureInit();
+          else this.stopRecording();
           break;
       }
     },
@@ -1557,9 +1558,11 @@ export default {
         });
       } else if (this.selected_mode === "video") {
         this.video_recording_is_paused = false;
+
         this.startRecordFeed({
           type: "video",
           videoBitsPerSecond: 4112000,
+          enable_audio_recording_in_video: this.enable_audio_recording_in_video,
         });
       } else if (this.selected_mode === "audio") {
         this.startRecordFeed({
@@ -1705,7 +1708,7 @@ export default {
             var t1 = performance.now();
             if (this.$root.state.dev_mode === "debug")
               console.log(
-                "CaptureView2 • METHODS : getStaticImageFromVideoElement took " +
+                "CaptureView • METHODS : getStaticImageFromVideoElement took " +
                   (t1 - t0) +
                   " milliseconds."
               );
@@ -1723,7 +1726,18 @@ export default {
 
     startRecordFeed(options) {
       return new Promise((resolve, reject) => {
-        this.recorder = RecordRTC(this.stream, options);
+        const _stream = this.stream.clone();
+        if (
+          options.hasOwnProperty("enable_audio_recording_in_video") &&
+          options.enable_audio_recording_in_video === false
+        )
+          _stream
+            .getAudioTracks()
+            .forEach((track) => _stream.removeTrack(track));
+
+        debugger;
+
+        this.recorder = RecordRTC(_stream, options);
         try {
           this.recorder.startRecording();
         } catch (err) {
@@ -1865,20 +1879,20 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.m_captureview2 {
+.m_captureview {
   display: flex;
   flex-flow: row nowrap;
   max-height: 100vh;
 
   // &.is--collapsed {
-  //   .m_captureview2--videoPane--bottom--buttons {
+  //   .m_captureview--videoPane--bottom--buttons {
   //     > * {
   //       padding: 0;
   //     }
   //   }
   // }
 
-  .m_captureview2--settingsPaneButton {
+  .m_captureview--settingsPaneButton {
     position: relative;
     z-index: 1;
     display: flex;
@@ -1896,7 +1910,8 @@ export default {
     }
   }
 
-  .m_captureview2--videoPane {
+  .m_captureview--videoPane {
+    position: relative;
     overflow-y: auto;
     flex: 1 1 100px;
 
@@ -1904,7 +1919,7 @@ export default {
     flex-flow: column nowrap;
   }
 
-  .m_captureview2--videoPane--top {
+  .m_captureview--videoPane--top {
     position: relative;
     margin: 0 auto;
     min-height: 300px;
@@ -1927,12 +1942,12 @@ export default {
     }
   }
 
-  .m_captureview2--videoPane--bottom {
+  .m_captureview--videoPane--bottom {
     position: relative;
     flex: 0 0 auto;
     box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
 
-    .m_captureview2--videoPane--bottom--buttons {
+    .m_captureview--videoPane--bottom--buttons {
       display: flex;
       flex-flow: row wrap;
       justify-content: space-between;
@@ -1995,7 +2010,7 @@ export default {
     }
   }
 
-  .m_captureview2--videoPane--top--videoContainer {
+  .m_captureview--videoPane--top--videoContainer {
     position: relative;
     width: 100%;
     height: 100%;
@@ -2373,6 +2388,10 @@ export default {
   margin-bottom: -0.2em;
   line-height: 1;
   text-align: right;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 
   a {
     color: var(--c-gris);
