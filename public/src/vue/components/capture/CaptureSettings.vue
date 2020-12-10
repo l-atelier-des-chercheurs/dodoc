@@ -579,7 +579,7 @@ export default {
       this.local_stream.getTracks().forEach((track) => track.stop());
     if (this.remote_stream)
       this.remote_stream.getTracks().forEach((track) => track.stop());
-    this.stopSharingStream();
+    this.closeMultiRTC();
   },
   watch: {
     "selected_devices.video_input_device": function () {
@@ -982,35 +982,25 @@ export default {
             `CaptureSettings • METHODS : setCameraStreamFromDefaults`
           );
 
-        this.stream_current_settings = this.current_settings;
-
         if (!!this.selected_devices.audio_output_device)
           this.$emit(
             "update:audio_output_deviceId",
             this.selected_devices.audio_output_device.deviceId
           );
 
-        this.startCameraStream()
+        this.startLocalStream()
           .then(() => {
+            this.stream_current_settings = this.current_settings;
             this.last_working_resolution = this.desired_camera_resolution;
             return;
           })
-          .then(() => {
-            this.share_this_stream.status.loading = true;
-            return this.setStreamSharing();
-          })
-          .then(() => {
-            this.share_this_stream.status.loading = false;
-            return resolve();
-          })
           .catch((error) => {
-            this.stream_current_settings = false;
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
               .error(
                 this.$t(
-                  "notifications.failed_to_start_video_change_source_or_res"
+                  "notifications.failed_to_start_streams_change_source_or_res"
                 ) +
                   "<br>" +
                   error.name
@@ -1031,13 +1021,32 @@ export default {
                 return reject();
               }
             }
+          })
+          .then(() => {
+            this.share_this_stream.status.loading = true;
+            return this.setStreamSharing();
+          })
+          .then(() => {
+            this.share_this_stream.status.loading = false;
+            return resolve();
+          })
+          .catch((error) => {
+            this.share_this_stream.status.loading = false;
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(
+                this.$t("notifications.failed_to_share_stream") +
+                  "<br>" +
+                  error.name
+              );
           });
       });
     },
-    startCameraStream() {
+    startLocalStream() {
       return new Promise((resolve, reject) => {
         if (this.$root.state.dev_mode === "debug")
-          console.log(`CaptureSettings • METHODS : startCameraStream`);
+          console.log(`CaptureSettings • METHODS : startLocalStream`);
 
         //Kill any running streams;
         if (this.local_stream)
@@ -1167,6 +1176,11 @@ export default {
         this.rtcmulti_connection.open(
           this.share_this_stream.name,
           (isRoomOpened, roomid, error) => {
+            if (this.$root.state.dev_mode === "debug")
+              console.log(
+                `CaptureSettings • METHODS : setStreamSharing • opened room ${roomid}`
+              );
+
             this.share_this_stream.status.enabled = true;
             this.share_this_stream.status.name = roomid;
 
@@ -1202,6 +1216,9 @@ export default {
       }, 5000);
 
       this.rtcmulti_connection.onstream = (event) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : callStream • onstream`);
+
         if (this.access_distant_stream.calling) {
           this.remote_stream = event.stream;
           this.access_distant_stream.calling = false;
@@ -1213,6 +1230,10 @@ export default {
       this.rtcmulti_connection.checkPresence(
         this.access_distant_stream.callee,
         (isOnline, username) => {
+          if (this.$root.state.dev_mode === "debug")
+            console.log(
+              `CaptureSettings • METHODS : username • for ${username} and ${isOnline}`
+            );
           if (!isOnline) {
             this.$alertify
               .closeLogOnClick(true)
@@ -1246,7 +1267,10 @@ export default {
 
       if (this.rtcmulti_connection) return;
 
-      this.rtcmulti_connection = new RTCMultiConnection();
+      if (!window.rtcmulti_connection)
+        window.rtcmulti_connection = new RTCMultiConnection();
+      this.rtcmulti_connection = window.rtcmulti_connection;
+
       this.rtcmulti_connection.iceServers = [
         {
           urls: [
@@ -1286,7 +1310,8 @@ export default {
       };
       this.rtcmulti_connection.onstreamended = (event) => {
         console.log("CaptureSettings: onstreamended");
-        this.share_this_stream.status.enabled = false;
+        this.$alertify.closeLogOnClick(true).delay(4000).error("onstreamended");
+        // this.share_this_stream.status.enabled = false;
       };
       this.rtcmulti_connection.onMediaError = (e) => {
         console.log("CaptureSettings: onMediaError");
@@ -1300,15 +1325,20 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log(`CaptureSettings • METHODS : stopSharingStream`);
 
-      if (this.rtcmulti_connection) {
-        this.rtcmulti_connection.getAllParticipants().forEach((pid) => {
-          this.rtcmulti_connection.disconnectWith(pid);
-        });
-        this.rtcmulti_connection.closeSocket();
+      if (!this.rtcmulti_connection) return;
 
-        this.share_this_stream.status.enabled = false;
-        this.share_this_stream.status.name = undefined;
-      }
+      this.rtcmulti_connection.getAllParticipants().forEach((pid) => {
+        this.rtcmulti_connection.disconnectWith(pid);
+      });
+    },
+    closeMultiRTC() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : closeMultiRTC`);
+
+      if (!this.rtcmulti_connection) return;
+
+      this.stopSharingStream();
+      this.rtcmulti_connection.closeSocket();
     },
   },
 };
@@ -1448,6 +1478,7 @@ export default {
   padding: calc(var(--spacing) / 2);
 }
 .m_captureSettings--updateButton--shareStreamToggle {
+  position: relative;
   background-color: var(--c-rouge_fonce);
   color: white;
   text-align: center;
