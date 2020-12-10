@@ -479,6 +479,8 @@ export default {
         },
       },
 
+      rtcmulti_connection: undefined,
+
       share_this_stream: {
         enabled: false,
         name: `dodoc-${(Math.random().toString(36) + "00000000000000000").slice(
@@ -489,6 +491,7 @@ export default {
           loading: false,
           enabled: undefined,
           name: undefined,
+          peers_connected: [],
         },
       },
 
@@ -500,8 +503,6 @@ export default {
           callee: undefined,
         },
       },
-
-      rtcmulti_connection: undefined,
     };
   },
   created() {},
@@ -1164,6 +1165,15 @@ export default {
             this.share_this_stream.status.enabled = true;
             this.share_this_stream.status.name = roomid;
 
+            this.rtcmulti_connection.onNewParticipant = (
+              participantId,
+              userPreferences
+            ) =>
+              this.newParticipantOnStream({ participantId, userPreferences });
+
+            this.rtcmulti_connection.onleave = (participantId) =>
+              this.onParticipantLeave({ participantId });
+
             if (error) {
               this.$alertify
                 .closeLogOnClick(true)
@@ -1179,6 +1189,24 @@ export default {
 
         return resolve();
       });
+    },
+    newParticipantOnStream({ participantId, userPreferences }) {
+      this.share_this_stream.status.peers_connected.push(participantId);
+
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(8000)
+        .success(this.$t("notifications.new_user_connected_to_stream"));
+
+      this.rtcmulti_connection.acceptParticipationRequest(
+        participantId,
+        userPreferences
+      );
+    },
+    onParticipantLeave(participantId) {
+      this.share_this_stream.status.peers_connected.filter(
+        (id) => id !== participantId
+      );
     },
     callStream() {
       if (this.$root.state.dev_mode === "debug")
@@ -1199,6 +1227,11 @@ export default {
         if (this.$root.state.dev_mode === "debug")
           console.log(`CaptureSettings • METHODS : callStream • onstream`);
 
+        event.mediaElement.removeAttribute("src");
+        event.mediaElement.removeAttribute("srcObject");
+        event.mediaElement.muted = true;
+        event.mediaElement.volume = 0;
+
         if (this.access_distant_stream.calling) {
           this.remote_stream = event.stream;
           this.access_distant_stream.calling = false;
@@ -1209,7 +1242,7 @@ export default {
 
       this.rtcmulti_connection.checkPresence(
         this.access_distant_stream.callee,
-        (isOnline, username) => {
+        (isOnline, username, error) => {
           if (this.$root.state.dev_mode === "debug")
             console.log(
               `CaptureSettings • METHODS : username • for ${username} and ${isOnline}`
@@ -1223,12 +1256,12 @@ export default {
             this.access_distant_stream.calling = false;
             clearTimeout(call_timeout);
             return;
-          } else {
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .success(username + " is online.");
           }
+
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(username + " is online.");
           this.access_distant_stream.status.callee = username;
           this.rtcmulti_connection.join(username);
         }
@@ -1307,7 +1340,9 @@ export default {
 
       if (!this.rtcmulti_connection) return;
 
-      this.rtcmulti_connection.getAllParticipants().forEach((pid) => {
+      // only disconnect peers connected to this stream
+
+      this.share_this_stream.status.peers_connected.map((pid) => {
         this.rtcmulti_connection.disconnectWith(pid);
       });
     },
@@ -1456,6 +1491,8 @@ export default {
 
 .m_captureSettings--updateButton--buttons {
   padding: calc(var(--spacing) / 2);
+  display: flex;
+  justify-content: center;
 }
 .m_captureSettings--updateButton--shareStreamToggle {
   position: relative;

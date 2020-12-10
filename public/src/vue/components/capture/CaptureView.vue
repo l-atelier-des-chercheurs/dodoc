@@ -130,6 +130,7 @@
             autoplay
             playsinline
             :src-object.prop.camel="stream"
+            :controls="stream_type === 'RemoteSources'"
             muted
             v-show="
               stream &&
@@ -209,6 +210,19 @@
                 <span v-html="$t('stream_currently_shared_with_name:')" />
                 <span>
                   <strong>{{ stream_sharing_informations_status.name }}</strong>
+                </span>
+                <br />
+                <span
+                  v-if="
+                    stream_sharing_informations_status.peers_connected &&
+                    stream_sharing_informations_status.peers_connected.length >
+                      0
+                  "
+                >
+                  {{ $t("other_users_connected") }} =
+                  {{
+                    stream_sharing_informations_status.peers_connected.length
+                  }}
                 </span>
               </label>
             </div>
@@ -1254,6 +1268,7 @@ export default {
     setStream({ stream, type }) {
       this.stream = stream;
       this.stream_type = type;
+      this.$refs.videoElement.volume = 0;
     },
     previousMode() {
       console.log("METHODS • CaptureView: previousMode");
@@ -1734,8 +1749,6 @@ export default {
           _stream
             .getAudioTracks()
             .forEach((track) => _stream.removeTrack(track));
-
-        debugger;
 
         this.recorder = RecordRTC(_stream, options);
         try {
