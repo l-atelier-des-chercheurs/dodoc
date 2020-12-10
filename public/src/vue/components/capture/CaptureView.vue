@@ -764,7 +764,7 @@
                     class="switch"
                     id="recordVideoWithAudio"
                     type="checkbox"
-                    v-model="enable_audio_in_videos"
+                    v-model="enable_audio_recording_in_video"
                     :disabled="is_recording"
                   />
                   <label for="recordVideoWithAudio">{{
@@ -1050,7 +1050,7 @@ export default {
 
       show_capture_settings: false,
 
-      enable_audio_in_videos: true,
+      enable_audio_recording_in_video: true,
       enable_video: true,
 
       is_recording: false,
@@ -1562,7 +1562,7 @@ export default {
         this.startRecordFeed({
           type: "video",
           videoBitsPerSecond: 4112000,
-          remove_audio: this.enable_audio_in_videos,
+          enable_audio_recording_in_video: this.enable_audio_recording_in_video,
         });
       } else if (this.selected_mode === "audio") {
         this.startRecordFeed({
@@ -1726,8 +1726,11 @@ export default {
 
     startRecordFeed(options) {
       return new Promise((resolve, reject) => {
-        const _stream = this.stream;
-        if (options.hasOwnProperty("remove_audio") && options.remove_audio)
+        const _stream = this.stream.clone();
+        if (
+          options.hasOwnProperty("enable_audio_recording_in_video") &&
+          options.enable_audio_recording_in_video === false
+        )
           _stream
             .getAudioTracks()
             .forEach((track) => _stream.removeTrack(track));
