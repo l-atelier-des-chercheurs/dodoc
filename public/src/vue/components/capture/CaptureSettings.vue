@@ -343,11 +343,6 @@
             type="button"
             class="bg-rouge button-wide"
             @click="setCameraStreamFromDefaults"
-            :disabled="
-              !desired_camera_resolution ||
-              !selected_devices.video_input_device ||
-              current_settings === stream_current_settings
-            "
           >
             {{ $t("update") }}
           </button>
