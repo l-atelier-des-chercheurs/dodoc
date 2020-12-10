@@ -3633,49 +3633,15 @@ module.exports = (function () {
         oc: "Lo projècte seguent es pas estat trobat:",
         de: "Die folgende Projekt wurde nicht gefunden:",
       },
-      failed_to_start_video_change_source_or_res: {
+      failed_to_start_streams_change_source_or_res: {
         fr:
-          "Le flux vidéo n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
+          "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
         en:
           "Failed to start camera stream. Try changing the source or the resolution.",
-        nl:
-          "Videostream kan niet worden gestart .<br>Probeer de bron of de resolutie in de instellingen te wijzigen.",
-        oc:
-          "Lo flux vidèo es pas estat desmarrat.<br>Ensajatz de modificar la sorça o la resolucion dins los reglatges.",
-        de:
-          "Der Videostrom konnte nicht gestartet werden.<br> Versuchen Sie, die Quelle oder die Auflösung in den Einstellungen zu ändern.",
       },
-      video_source_not_set: {
-        fr: "La source vidéo n’a pas été trouvée.",
-        en: "The source video has not been set.",
-        nl: "Videobron niet gevonden.",
-        oc: "La sorça audio es pas estada trobada.",
-        de: "Die Videoquelle wurde nicht gefunden.",
-      },
-      failed_to_start_audio_change_source: {
-        fr:
-          "Le flux audio n’a pas pu être démarré.<br>Essayez de modifier la source dans les réglages.",
-        en: "Failed to start audio stream. Try changing the source.",
-        nl:
-          "Audiostream kan niet worden gestart.<br>Probeer de bron in de instellingen te wijzigen.",
-        oc:
-          "Lo flux audio es pas estat desmarrat.<br>Ensajatz de modificar la sorça dins los reglatges.",
-        de:
-          "Der Audiostrom konnte nicht gestartet werden.<br> Versuchen Sie, die Quelle in den Einstellungen zu ändern.",
-      },
-      audio_source_not_set: {
-        fr: "La source audio n’a pas été trouvée.",
-        en: "The source audio has not been set.",
-        nl: "Audiobron niet gevonden.",
-        oc: "La sorça audio es pas estada trobada.",
-        de: "Die Audioquelle wurde nicht gefunden.",
-      },
-      video_stream_not_available: {
-        fr: "Erreur : le flux vidéo n’est pas disponible.",
-        en: "Error: Video stream not available.",
-        nl: "Fout : videostream is niet beschikbaar.",
-        oc: "Error : lo flux vidèo es pas disponible",
-        de: "Fehler: der Videostrom ist nicht verfügbar.",
+      failed_to_share_stream: {
+        fr: "Le partage du flux n’a pas pu avoir lieu",
+        en: "Failed to start stream sharing",
       },
       no_content_to_show: {
         fr: "Aucun contenu à afficher.",
