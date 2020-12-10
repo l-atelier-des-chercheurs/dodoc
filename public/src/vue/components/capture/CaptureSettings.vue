@@ -1064,7 +1064,9 @@ export default {
                 this.desired_camera_resolution = this.last_working_resolution;
                 this.last_working_resolution = false;
                 setTimeout(() => {
-                  this.setCameraStreamFromDefaults().then(() => resolve());
+                  this.setCameraStreamFromDefaults()
+                    .then(() => resolve())
+                    .catch(() => reject());
                 }, 500);
               } else {
                 return reject();
