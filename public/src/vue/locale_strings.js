@@ -1,6 +1,89 @@
 module.exports = (function () {
   // Ready translated locale messages
   const messages = {
+    // CAMERA
+    "camera2 0, facing back": {
+      fr: "Caméra arrière",
+      nl: "Camera naar achteren gericht ",
+      oc: "Camerà arrièra",
+      de: "Rückfahrkamera",
+    },
+    camera: {
+      fr: "Camera",
+      en: "Camera",
+    },
+    pick_a_camera: {
+      fr: "Sélectionnez une caméra",
+      en: "Pick a camera",
+    },
+    "Entire screen": {
+      fr: "Écran de l’ordinateur",
+      en: "Computer screen",
+    },
+    stream_local_mode: {
+      fr: "sur cet appareil",
+      en: "on this device",
+    },
+    stream_remote_mode: {
+      fr: "do•doc distant",
+      en: "remote do•doc",
+    },
+    "stream_currently_shared_with_name:": {
+      fr: "Flux vidéo/audio partagé sous le nom&nbsp;:",
+      en: "Stream currently shared with name:",
+    },
+    "stream_shown:": {
+      fr: "Flux utilisé&nbsp;:",
+      en: "Stream used:",
+    },
+    share_stream: {
+      fr: "Partager ce flux",
+      en: "Share this stream",
+    },
+    no_stopmotion_created_yet: {
+      fr: "Les animations créées apparaîtront dans ce panneau.",
+      en: "Created stopmotion animations will appear in this list.",
+      nl: "Er is nog geen stopmotion gemaakt: ",
+      oc: "Las animacions creadas apparaisseràn dins aqueste panèu.",
+      de: "Die erstellten Animationen werden in diesen Fenster angezeigt",
+    },
+    device: {
+      fr: "Appareil",
+      en: "Device",
+      nl: "Toestel",
+      oc: "Aparelh",
+      de: "Gerät",
+    },
+    audioinput: {
+      fr: "Entrée audio",
+      en: "Audio input",
+    },
+    audiooutput: {
+      fr: "Sortie audio",
+      en: "Audio output",
+    },
+    "camera2 1, facing front": {
+      fr: "Caméra frontale",
+      nl: "Camera naar voren gericht ",
+      oc: "Camerà frontala",
+      de: "Frontkamera",
+    },
+    volume: {
+      fr: "Volume",
+      en: "Sound level",
+    },
+    dimensions: {
+      fr: "Résolution",
+      en: "Resolution",
+    },
+    onion_skin: {
+      fr: "Pelure d’oignon",
+      en: "Onion skin",
+      nl: "uienschil",
+      oc: "Pelofa de cèba",
+      de: "Überlagerung",
+    },
+
     ascending: {
       fr: "Croissant",
       en: "Ascending",
@@ -284,26 +367,6 @@ module.exports = (function () {
     infos_about_the_media: {
       fr: "Informations sur le média",
       en: "Informations on the media",
-    },
-    stream_local_mode: {
-      fr: "sur cet appareil",
-      en: "on this device",
-    },
-    stream_remote_mode: {
-      fr: "do•doc distant",
-      en: "remote do•doc",
-    },
-    'stream_currently_shared_with_name:': {
-      fr: "Flux vidéo/audio partagé sous le nom&nbsp;:",
-      en: "Stream currently shared with name:",
-    },
-    'stream_shown:': {
-      fr: "Flux utilisé&nbsp;:",
-      en: "Stream used:",
-    },
-    share_stream: {
-      fr: "Partager ce flux",
-      en: "Share this stream",
     },
     uploaded: {
       fr: "Importation",
@@ -625,21 +688,6 @@ module.exports = (function () {
       fr: "Taille",
       en: "Size",
     },
-    volume: {
-      fr: "Volume",
-      en: "Sound level",
-    },
-    dimensions: {
-      fr: "Résolution",
-      en: "Resolution",
-    },
-    onion_skin: {
-      fr: "Pelure d’oignon",
-      en: "Onion skin",
-      nl: "uienschil",
-      oc: "Pelofa de cèba",
-      de: "Überlagerung",
-    },
     file: {
       fr: "Fichier",
       en: "File",
@@ -783,52 +831,6 @@ module.exports = (function () {
       nl: "Bevestig met ENTER.",
       oc: "Validar amb la toca ENTRADA",
       de: "Mit der ENTER-taste bestätigen.",
-    },
-    no_stopmotion_created_yet: {
-      fr: "Les animations créées apparaîtront dans ce panneau.",
-      en: "Created stopmotion animations will appear in this list.",
-      nl: "Er is nog geen stopmotion gemaakt: ",
-      oc: "Las animacions creadas apparaisseràn dins aqueste panèu.",
-      de: "Die erstellten Animationen werden in diesen Fenster angezeigt",
-    },
-    device: {
-      fr: "Appareil",
-      en: "Device",
-      nl: "Toestel",
-      oc: "Aparelh",
-      de: "Gerät",
-    },
-    audioinput: {
-      fr: "Entrée audio",
-      en: "Audio input",
-    },
-    audiooutput: {
-      fr: "Sortie audio",
-      en: "Audio output",
-    },
-    "camera2 1, facing front": {
-      fr: "Caméra frontale",
-      nl: "Camera naar voren gericht ",
-      oc: "Camerà frontala",
-      de: "Frontkamera",
-    },
-    "camera2 0, facing back": {
-      fr: "Caméra arrière",
-      nl: "Camera naar achteren gericht ",
-      oc: "Camerà arrièra",
-      de: "Rückfahrkamera",
-    },
-    camera: {
-      fr: "Camera",
-      en: "Camera",
-    },
-    pick_a_camera: {
-      fr: "Sélectionnez une caméra",
-      en: "Pick a camera",
-    },
-    "Entire screen": {
-      fr: "Écran de l’ordinateur",
-      en: "Computer screen",
     },
     very_slow: {
       fr: "Très lent",
