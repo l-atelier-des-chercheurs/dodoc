@@ -1346,6 +1346,9 @@ export default {
           this.rtcmulti_connection.disconnectWith(pid);
         });
         this.rtcmulti_connection.closeSocket();
+
+        this.share_this_stream.status.enabled = false;
+        this.share_this_stream.status.name = undefined;
       }
     },
   },
