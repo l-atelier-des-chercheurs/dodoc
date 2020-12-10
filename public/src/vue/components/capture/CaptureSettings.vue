@@ -1208,7 +1208,6 @@ export default {
         this.rtcmulti_connection.open(
           this.share_this_stream.name,
           (isRoomOpened, roomid, error) => {
-            this.is_started = true;
             this.share_this_stream.status.enabled = true;
             this.share_this_stream.status.name = roomid;
 
