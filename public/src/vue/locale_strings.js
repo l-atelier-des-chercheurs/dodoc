@@ -3853,6 +3853,10 @@ module.exports = (function () {
         fr: "Les traductions manquantes seront rédigées en Anglais",
         en: "Missing translations will be written in English",
       },
+      failed_to_start_record: {
+        fr: "La capture n’a pas pu démarrer",
+        en: "Failed to start recording",
+      },
     },
   };
 
