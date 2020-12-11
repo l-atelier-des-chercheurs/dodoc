@@ -93,6 +93,7 @@
                 selected_devices.video_input_device.deviceId ===
                   'screen_capture'
               "
+              class="margin-top-veryverysmall"
             >
               <span class="switch switch-xs">
                 <input
@@ -134,7 +135,10 @@
               </select>
             </div>
 
-            <div v-if="selected_devices.audio_input_device">
+            <div
+              v-if="selected_devices.audio_input_device"
+              class="margin-top-veryverysmall"
+            >
               <span class="switch switch-xs">
                 <input
                   class="switch"
@@ -155,7 +159,10 @@
                 </small>
               </span>
             </div>
-            <div v-if="selected_devices.audio_input_device">
+            <div
+              v-if="selected_devices.audio_input_device"
+              class="margin-top-veryverysmall"
+            >
               <span class="switch switch-xs">
                 <input
                   class="switch"
@@ -204,34 +211,28 @@
         </div>
         <label>{{ $t("resolutions") }}</label>
         <div>
-          <small
+          <div
             v-if="
               !selected_devices.video_input_device ||
               !selected_devices.video_input_device.deviceId
             "
           >
-            {{ $t("pick_a_camera") }}
-          </small>
-          <template v-else>
-            <!-- <button
-                type="button"
-                class="buttonLink"
-                @click="getAllAvailableResolutions"
-                :disabled="is_scanning_resolutions"
-              >
-                get all input resolutions for
-                {{ selected_devices.video_input_device.label }}
-              </button> -->
-          </template>
-
-          <small
+            <small>
+              {{ $t("pick_a_camera") }}
+            </small>
+          </div>
+          <div
             v-if="
-              selected_devices.video_input_device &&
-              selected_devices.video_input_device.deviceId === 'screen_capture'
+              (selected_devices.video_input_device &&
+                selected_devices.video_input_device.deviceId ===
+                  'screen_capture') ||
+              selected_devices.video_input_device.chromeMediaSource
             "
           >
-            {{ $t("cant_pick_resolution_when_screen_capture") }}
-          </small>
+            <small>
+              {{ $t("cant_pick_resolution_when_screen_capture") }}
+            </small>
+          </div>
           <div class="m_captureSettings--settings--resolutions" v-else>
             <div
               v-for="res in predefined_resolutions.concat(
@@ -1107,10 +1108,10 @@ export default {
               .chromeMediaSource,
             chromeMediaSourceId: this.selected_devices.video_input_device
               .deviceId,
-            minWidth: this.desired_camera_resolution.width,
-            maxWidth: this.desired_camera_resolution.width,
-            minHeight: this.desired_camera_resolution.height,
-            maxHeight: this.desired_camera_resolution.height,
+            // minWidth: this.desired_camera_resolution.width,
+            // maxWidth: this.desired_camera_resolution.width,
+            // minHeight: this.desired_camera_resolution.height,
+            // maxHeight: this.desired_camera_resolution.height,
           },
         };
       } else {
@@ -1412,17 +1413,18 @@ export default {
 .m_captureSettings--settings {
   overflow-y: auto;
   flex: 1 1 auto;
-  padding: calc(var(--spacing) / 2);
   // padding-bottom: var(--spacing);
 
   > div {
+    padding: calc(var(--spacing) / 2);
+    padding-top: calc(var(--spacing) / 4);
     > div {
       background-color: rgba(0, 0, 0, 0.1);
       padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
       border-radius: 6px;
 
       > div {
-        padding-top: calc(var(--spacing) / 8);
+        padding-top: calc(var(--spacing) / 4);
         margin-bottom: calc(var(--spacing) / 4);
 
         &:last-child {
@@ -1433,9 +1435,6 @@ export default {
     > label {
       line-height: 2;
     }
-  }
-  .switch {
-    margin-top: calc(var(--spacing) / 8);
   }
 }
 
