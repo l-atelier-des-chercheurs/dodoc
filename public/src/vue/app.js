@@ -34,6 +34,9 @@ Vue.prototype.$eventHub = new Vue(); // Global event bus
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
 
+import VueClipboard from "vue-clipboard2";
+Vue.use(VueClipboard);
+
 import VueI18n from "vue-i18n";
 Vue.use(VueI18n);
 
@@ -1246,8 +1249,17 @@ let vm = new Vue({
 
         this.$socketio.createMedia(mdata);
 
+        const editMediaTimeout = setTimeout(() => {
+          this.$eventHub.$off(
+            `socketio.media_created_or_updated`,
+            catchMediaCreation
+          );
+          return reject();
+        }, 120000);
+
         const catchMediaCreation = (d) => {
           if (mdata.id === d.id) {
+            clearTimeout(editMediaTimeout);
             this.$nextTick(() => {
               return resolve(d);
             });
@@ -1258,6 +1270,7 @@ let vm = new Vue({
             );
           }
         };
+
         this.$eventHub.$once(
           `socketio.media_created_or_updated`,
           catchMediaCreation
@@ -1287,8 +1300,17 @@ let vm = new Vue({
 
         this.$socketio.editMedia(mdata);
 
+        const editMediaTimeout = setTimeout(() => {
+          this.$eventHub.$off(
+            `socketio.media_created_or_updated`,
+            catchMediaCreation
+          );
+          return reject();
+        }, 2000);
+
         const catchMediaCreation = (d) => {
           if (mdata.id === d.id) {
+            clearTimeout(editMediaTimeout);
             this.$nextTick(() => {
               return resolve(d);
             });
@@ -1299,6 +1321,7 @@ let vm = new Vue({
             );
           }
         };
+
         this.$eventHub.$once(
           `socketio.media_created_or_updated`,
           catchMediaCreation

@@ -1,6 +1,89 @@
 module.exports = (function () {
   // Ready translated locale messages
   const messages = {
+    // CAMERA
+    "camera2 0, facing back": {
+      fr: "Caméra arrière",
+      nl: "Camera naar achteren gericht ",
+      oc: "Camerà arrièra",
+      de: "Rückfahrkamera",
+    },
+    camera: {
+      fr: "Camera",
+      en: "Camera",
+    },
+    pick_a_camera: {
+      fr: "Sélectionnez une caméra",
+      en: "Pick a camera",
+    },
+    "Entire screen": {
+      fr: "Écran de l’ordinateur",
+      en: "Computer screen",
+    },
+    stream_local_mode: {
+      fr: "sur cet appareil",
+      en: "on this device",
+    },
+    stream_remote_mode: {
+      fr: "do•doc distant",
+      en: "remote do•doc",
+    },
+    "stream_currently_shared_with_name:": {
+      fr: "Flux vidéo/audio partagé sous le nom&nbsp;:",
+      en: "Stream currently shared with name:",
+    },
+    "stream_shown:": {
+      fr: "Flux utilisé&nbsp;:",
+      en: "Stream used:",
+    },
+    share_stream: {
+      fr: "Partager ce flux",
+      en: "Share this stream",
+    },
+    no_stopmotion_created_yet: {
+      fr: "Les animations créées apparaîtront dans ce panneau.",
+      en: "Created stopmotion animations will appear in this list.",
+      nl: "Er is nog geen stopmotion gemaakt: ",
+      oc: "Las animacions creadas apparaisseràn dins aqueste panèu.",
+      de: "Die erstellten Animationen werden in diesen Fenster angezeigt",
+    },
+    device: {
+      fr: "Appareil",
+      en: "Device",
+      nl: "Toestel",
+      oc: "Aparelh",
+      de: "Gerät",
+    },
+    audioinput: {
+      fr: "Entrée audio",
+      en: "Audio input",
+    },
+    audiooutput: {
+      fr: "Sortie audio",
+      en: "Audio output",
+    },
+    "camera2 1, facing front": {
+      fr: "Caméra frontale",
+      nl: "Camera naar voren gericht ",
+      oc: "Camerà frontala",
+      de: "Frontkamera",
+    },
+    volume: {
+      fr: "Volume",
+      en: "Sound level",
+    },
+    dimensions: {
+      fr: "Résolution",
+      en: "Resolution",
+    },
+    onion_skin: {
+      fr: "Pelure d’oignon",
+      en: "Onion skin",
+      nl: "uienschil",
+      oc: "Pelofa de cèba",
+      de: "Überlagerung",
+    },
+
     ascending: {
       fr: "Croissant",
       en: "Ascending",
@@ -156,6 +239,22 @@ module.exports = (function () {
       fr: "Resolutions",
       en: "Resolutions",
     },
+    cant_pick_resolution_when_screen_capture: {
+      fr:
+        "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
+      en:
+        "Selection a specific resolution is not possible with a screen capture.",
+    },
+    or_download_media_on_device: {
+      fr: "ou télécharger ce média sur votre appareil",
+      en: "or download this media on your device",
+    },
+    camera_access_refused: {
+      fr:
+        "Accès refusé à la caméra et au micro : vous devez accepter leur accès dans le message qui apparaît pour pouvoir utiliser ce panneau.",
+      en:
+        "Access to camera and microphone denied: you have to accept to share your camera and microphone to use this pane.",
+    },
     reply: {
       fr: "Répondre",
       en: "Reply",
@@ -197,6 +296,10 @@ module.exports = (function () {
       fr: "Interactif",
       en: "Interactive",
     },
+    active: {
+      fr: "Actif",
+      en: "Active",
+    },
     sources: {
       fr: "Sources",
       en: "Sources",
@@ -212,6 +315,18 @@ module.exports = (function () {
     no_audio_output_available: {
       fr: "Aucune sortie audio disponible",
       en: "No audio output available",
+    },
+    echoCancellation: {
+      fr: "Suppression de l'écho",
+      en: "Echo cancellation",
+    },
+    noiseSuppression: {
+      fr: "Réduction du bruit",
+      en: "Noise suppression",
+    },
+    show_cursor: {
+      fr: "Afficher le curseur",
+      en: "Show mouse cursor",
     },
     static_preview: {
       fr: "Image",
@@ -573,21 +688,6 @@ module.exports = (function () {
       fr: "Taille",
       en: "Size",
     },
-    volume: {
-      fr: "Volume",
-      en: "Sound level",
-    },
-    dimensions: {
-      fr: "Résolution",
-      en: "Resolution",
-    },
-    onion_skin: {
-      fr: "Pelure d’oignon",
-      en: "Onion skin",
-      nl: "uienschil",
-      oc: "Pelofa de cèba",
-      de: "Überlagerung",
-    },
     file: {
       fr: "Fichier",
       en: "File",
@@ -731,52 +831,6 @@ module.exports = (function () {
       nl: "Bevestig met ENTER.",
       oc: "Validar amb la toca ENTRADA",
       de: "Mit der ENTER-taste bestätigen.",
-    },
-    no_stopmotion_created_yet: {
-      fr: "Les animations créées apparaîtront dans ce panneau.",
-      en: "Created stopmotion animations will appear in this list.",
-      nl: "Er is nog geen stopmotion gemaakt: ",
-      oc: "Las animacions creadas apparaisseràn dins aqueste panèu.",
-      de: "Die erstellten Animationen werden in diesen Fenster angezeigt",
-    },
-    device: {
-      fr: "Appareil",
-      en: "Device",
-      nl: "Toestel",
-      oc: "Aparelh",
-      de: "Gerät",
-    },
-    audioinput: {
-      fr: "Entrée audio",
-      en: "Audio input",
-    },
-    audiooutput: {
-      fr: "Sortie audio",
-      en: "Audio output",
-    },
-    "camera2 1, facing front": {
-      fr: "Caméra frontale",
-      nl: "Camera naar voren gericht ",
-      oc: "Camerà frontala",
-      de: "Frontkamera",
-    },
-    "camera2 0, facing back": {
-      fr: "Caméra arrière",
-      nl: "Camera naar achteren gericht ",
-      oc: "Camerà arrièra",
-      de: "Rückfahrkamera",
-    },
-    camera: {
-      fr: "Camera",
-      en: "Camera",
-    },
-    pick_a_camera: {
-      fr: "Sélectionnez une caméra",
-      en: "Pick a camera",
-    },
-    "Entire screen": {
-      fr: "Écran de l’ordinateur",
-      en: "Computer screen",
     },
     very_slow: {
       fr: "Très lent",
@@ -1284,6 +1338,10 @@ module.exports = (function () {
       fr: "Créer un compte",
       en: "Create an account",
     },
+    not_supported_on_this_device: {
+      fr: "Non géré sur cet appareil",
+      en: "Not supported on this device",
+    },
     logout: {
       fr: "Se déconnecter",
       en: "Log-out",
@@ -1369,6 +1427,7 @@ module.exports = (function () {
       fr: "Paysage",
       en: "Landscape",
     },
+
     nfc_tag: {
       fr: "Tag NFC",
       en: "Tag NFC",
@@ -2262,6 +2321,10 @@ module.exports = (function () {
       oc: "fòto",
       de: "Foto",
     },
+    screen_capture: {
+      fr: "Capture d’écran",
+      en: "Screen capture",
+    },
     take_picture: {
       fr: "Prendre une photo",
       en: "Take a picture",
@@ -2269,6 +2332,10 @@ module.exports = (function () {
     record_video: {
       fr: "Capturer une vidéo",
       en: "Record a video",
+    },
+    record_audio: {
+      fr: "Capturer un son",
+      en: "Record sound",
     },
     stop_recording: {
       fr: "Arrêter la capture",
@@ -2623,6 +2690,19 @@ module.exports = (function () {
       fr: "Grille",
       en: "Grid",
     },
+    halfs: {
+      fr: "Moitiés",
+      en: "Halfs",
+    },
+    thirds: {
+      fr: "Tiers",
+      en: "Thirds",
+    },
+    fourths: {
+      fr: "Quarts",
+      en: "Fourths",
+    },
+
     margin_top: {
       fr: "Marge: haut",
       en: "Margin: top",
@@ -2839,6 +2919,10 @@ module.exports = (function () {
       oc: "Recuperar un ligam de cap a aqueste document",
       de: "Einen Link zu diesem Dokument abrufen.",
     },
+    link: {
+      fr: "Lien",
+      en: "Link",
+    },
     format: {
       fr: "Format",
       en: "Format",
@@ -2852,6 +2936,10 @@ module.exports = (function () {
       nl: "Naam die aan de kopie moet worden gegeven",
       oc: "Nom de balhar a la còpia",
       de: "Name der Kopie",
+    },
+    name_of_stream: {
+      fr: "Nom du flux",
+      en: "Stream name",
     },
     template: {
       fr: "Gabarit",
@@ -2900,11 +2988,23 @@ module.exports = (function () {
       fr: "Sélectionner un modèle",
       en: "Select a model",
     },
+    remote_access: {
+      fr: "Sources distantes",
+      en: "Remote sources",
+    },
     connect_to_other_users: {
       fr:
-        "Accéder à des sources provenant d’autres appareils connectés actuellement à do•doc",
+        "Accéder à des sources provenant d’autres appareils connectés actuellement à ce do•doc",
       en:
-        "Connect to sources provided by devices currently connected to do•doc",
+        "Connect to sources provided by devices currently connected to this do•doc",
+    },
+    connect: {
+      fr: "Se connecter",
+      en: "Connect",
+    },
+    hangup: {
+      fr: "raccrocher",
+      en: "hang up",
     },
     select_publi_model_instructions: {
       fr:
@@ -3370,6 +3470,15 @@ module.exports = (function () {
           "Los Iphones and Ipads son pas compatibles amb la fonccionalitat de captura.",
         de: "iPhones und iPads sind nicht mit der Aufnahmefunktion kompatibel.",
       },
+      copied_with_success: {
+        fr: "Copié dans le presse-papier !",
+        en: "Copied to the clipboard",
+      },
+      cant_copy: {
+        fr:
+          "La copie dans le presse-papier a rencontré une erreur et n’a pas pu avoir lieu",
+        en: "The copy to the clipboard failed",
+      },
       imported_files_successfully: {
         fr: "Média importé avec succès",
         en: "Media imported successfully",
@@ -3524,49 +3633,15 @@ module.exports = (function () {
         oc: "Lo projècte seguent es pas estat trobat:",
         de: "Die folgende Projekt wurde nicht gefunden:",
       },
-      failed_to_start_video_change_source_or_res: {
+      failed_to_start_streams_change_source_or_res: {
         fr:
-          "Le flux vidéo n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
+          "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
         en:
-          "Failed to start camera feed. Try changing the source or the resolution.",
-        nl:
-          "Videostream kan niet worden gestart .<br>Probeer de bron of de resolutie in de instellingen te wijzigen.",
-        oc:
-          "Lo flux vidèo es pas estat desmarrat.<br>Ensajatz de modificar la sorça o la resolucion dins los reglatges.",
-        de:
-          "Der Videostrom konnte nicht gestartet werden.<br> Versuchen Sie, die Quelle oder die Auflösung in den Einstellungen zu ändern.",
+          "Failed to start camera stream. Try changing the source or the resolution.",
       },
-      video_source_not_set: {
-        fr: "La source vidéo n’a pas été trouvée.",
-        en: "The source video has not been set.",
-        nl: "Videobron niet gevonden.",
-        oc: "La sorça audio es pas estada trobada.",
-        de: "Die Videoquelle wurde nicht gefunden.",
-      },
-      failed_to_start_audio_change_source: {
-        fr:
-          "Le flux audio n’a pas pu être démarré.<br>Essayez de modifier la source dans les réglages.",
-        en: "Failed to start audio feed. Try changing the source.",
-        nl:
-          "Audiostream kan niet worden gestart.<br>Probeer de bron in de instellingen te wijzigen.",
-        oc:
-          "Lo flux audio es pas estat desmarrat.<br>Ensajatz de modificar la sorça dins los reglatges.",
-        de:
-          "Der Audiostrom konnte nicht gestartet werden.<br> Versuchen Sie, die Quelle in den Einstellungen zu ändern.",
-      },
-      audio_source_not_set: {
-        fr: "La source audio n’a pas été trouvée.",
-        en: "The source audio has not been set.",
-        nl: "Audiobron niet gevonden.",
-        oc: "La sorça audio es pas estada trobada.",
-        de: "Die Audioquelle wurde nicht gefunden.",
-      },
-      video_stream_not_available: {
-        fr: "Erreur : le flux vidéo n’est pas disponible.",
-        en: "Error: Video stream not available.",
-        nl: "Fout : videostream is niet beschikbaar.",
-        oc: "Error : lo flux vidèo es pas disponible",
-        de: "Fehler: der Videostrom ist nicht verfügbar.",
+      failed_to_share_stream: {
+        fr: "Le partage du flux n’a pas pu avoir lieu",
+        en: "Failed to start stream sharing",
       },
       no_content_to_show: {
         fr: "Aucun contenu à afficher.",
@@ -3769,6 +3844,18 @@ module.exports = (function () {
       option_already_exists: {
         fr: "Cette option existe déjà",
         en: "This option already exists",
+      },
+      new_lang_applied: {
+        fr: "Nouvelle langue appliquée",
+        en: "New lang applied",
+      },
+      missing_translation_handled_in: {
+        fr: "Les traductions manquantes seront rédigées en Anglais",
+        en: "Missing translations will be written in English",
+      },
+      failed_to_start_record: {
+        fr: "La capture n’a pas pu démarrer",
+        en: "Failed to start recording",
       },
     },
   };

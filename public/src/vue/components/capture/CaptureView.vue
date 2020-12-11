@@ -1,22 +1,21 @@
 <template>
   <div
-    class="m_captureview2"
+    class="m_captureview"
     :class="{ 'is--collapsed': collapse_capture_pane }"
   >
     <CaptureSettings
       v-show="show_capture_settings"
-      :stream.sync="stream"
       :audio_output_deviceId.sync="audio_output_deviceId"
-      :enable_audio.sync="enable_audio"
-      :enable_video="enable_video"
+      @setStream="setStream"
       @hasFinishedLoading="hasFinishedLoading"
+      @show="show_capture_settings = true"
       @close="show_capture_settings = false"
     />
 
-    <!-- <div class="m_captureview2--settingsPaneButton">
+    <!-- <div class="m_captureview--settingsPaneButton">
     </div> -->
 
-    <div class="m_captureview2--videoPane">
+    <div class="m_captureview--videoPane">
       <transition name="slidedown" :duration="500">
         <div
           class="_modeSelector"
@@ -27,33 +26,35 @@
             !delay_event
           "
         >
-          <button
-            type="button"
-            class="bg-transparent"
-            @mousedown.stop.prevent="previousMode()"
-            @touchstart.stop.prevent="previousMode()"
-          >
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="169px"
-              height="169px"
-              viewBox="0 0 169 169"
-              style="enable-background: new 0 0 169 169"
-              xml:space="preserve"
+          <div class="_arrows">
+            <button
+              type="button"
+              class="bg-transparent"
+              @mousedown.stop.prevent="previousMode()"
+              @touchstart.stop.prevent="previousMode()"
             >
-              <path
-                fill="currentColor"
-                stroke="currentColor"
-                stroke-width="10"
-                stroke-linejoin="round"
-                d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"
-              />
-            </svg>
-          </button>
+              <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="169px"
+                height="169px"
+                viewBox="0 0 169 169"
+                style="enable-background: new 0 0 169 169"
+                xml:space="preserve"
+              >
+                <path
+                  fill="currentColor"
+                  stroke="currentColor"
+                  stroke-width="10"
+                  stroke-linejoin="round"
+                  d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"
+                />
+              </svg>
+            </button>
+          </div>
 
           <div v-for="mode in available_modes" :key="mode">
             <input
@@ -63,50 +64,111 @@
               v-model="selected_mode"
             />
             <label :for="id + '_' + mode">
-              <div class="_picto">
+              <div
+                class="_picto"
+                :content="$t(mode)"
+                v-tippy="
+                  mode !== selected_mode
+                    ? {
+                        placement: 'bottom',
+                        delay: [600, 0],
+                      }
+                    : ''
+                "
+              >
                 <img :src="available_mode_picto[mode]" />
               </div>
-              <span v-if="!collapse_capture_pane">{{ $t(mode) }}</span>
+              <span v-if="selected_mode === mode">{{ $t(mode) }}</span>
             </label>
           </div>
-          <button
-            type="button"
-            class="bg-transparent"
-            @mousedown.stop.prevent="nextMode()"
-            @touchstart.stop.prevent="nextMode()"
-          >
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="169px"
-              height="169px"
-              viewBox="0 0 169 169"
-              style="enable-background: new 0 0 169 169"
-              xml:space="preserve"
+
+          <div class="_arrows">
+            <button
+              type="button"
+              class="bg-transparent"
+              @mousedown.stop.prevent="nextMode()"
+              @touchstart.stop.prevent="nextMode()"
             >
-              <path
-                fill="currentColor"
-                stroke="currentColor"
-                stroke-width="10"
-                stroke-linejoin="round"
-                d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"
-              />
-            </svg>
-          </button>
+              <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="169px"
+                height="169px"
+                viewBox="0 0 169 169"
+                style="enable-background: new 0 0 169 169"
+                xml:space="preserve"
+              >
+                <path
+                  fill="currentColor"
+                  stroke="currentColor"
+                  stroke-width="10"
+                  stroke-linejoin="round"
+                  d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </transition>
       <div
-        class="m_captureview2--videoPane--top"
+        class="m_captureview--videoPane--top"
         v-show="!is_validating_stopmotion_video"
+        :class="{
+          'is--being_streamed':
+            (stream_sharing_informations_status &&
+              stream_sharing_informations_status.enabled) ||
+            (stream_access_informations_status &&
+              stream_access_informations_status.enabled),
+        }"
       >
-        <div class="m_captureview2--videoPane--top--videoContainer">
+        <div class="m_captureview--videoPane--top--videoContainer">
+          <video
+            ref="videoElement"
+            autoplay
+            playsinline
+            :src-object.prop.camel="stream"
+            :controls="stream_type === 'RemoteSources'"
+            muted
+            v-show="
+              stream &&
+              ['photo', 'video', 'stopmotion'].includes(selected_mode) &&
+              show_live_feed &&
+              !(must_validate_media && media_to_validate)
+            "
+          />
+
+          <Vecto
+            v-if="selected_mode === 'vecto' && !media_to_validate"
+            ref="vectoElement"
+            :last_frame_from_video="last_frame_from_video"
+            :number_of_colors="vecto_number_of_colors"
+          />
+
+          <Lines
+            v-if="selected_mode === 'lines' && !media_to_validate"
+            ref="vectoElement"
+            :last_frame_from_video="last_frame_from_video"
+            :angle="lines_angle"
+            :boost_brightness="lines_brightness"
+            :boost_contrast="lines_contrast"
+            :density="lines_density"
+          />
+
+          <AudioEqualizer
+            v-if="selected_mode === 'audio' && !media_to_validate"
+            ref="equalizerElement"
+            :stream="stream"
+            :is_recording="is_recording"
+          />
+
           <transition-group
             tag="div"
             class="_capture_options"
             name="slideFromTop"
+            mode="out-in"
           >
             <label
               v-if="
@@ -118,29 +180,14 @@
               v-html="timer_recording_in_seconds"
             />
 
-            <label
+            <div
               v-if="
                 selected_mode === 'stopmotion' &&
-                is_recording &&
-                timer_recording_in_seconds !== false
+                timelapse_mode_enabled &&
+                !timelapse_event
               "
-              :key="'time_before'"
-              v-html="time_before_next_picture"
-            />
-
-            <label v-if="delay_event" :key="'time_before'">
-              <template v-if="delay_before_picture > 0">
-                {{ delay_before_picture }}
-              </template>
-              <template v-else>
-                {{ $t("now!") }}
-              </template>
-            </label>
-
-            <div
-              v-if="selected_mode === 'stopmotion' && timelapse_mode_enabled"
               :key="'timelapse_interval'"
-              class="recording_timer--timelapse"
+              class="record_options"
             >
               <label>
                 <span>{{ $t("interval_between_pictures") }}</span>
@@ -150,9 +197,65 @@
             </div>
 
             <div
-              v-if="delay_mode_enabled && !is_recording && !media_to_validate"
+              v-if="
+                stream_sharing_informations_status &&
+                stream_sharing_informations_status.enabled &&
+                stream_type === 'LocalSources'
+              "
+              :key="
+                'stream_share_name-' + stream_sharing_informations_status.name
+              "
+            >
+              <label>
+                <span v-html="$t('stream_currently_shared_with_name:')" />
+                <span>
+                  <strong>{{ stream_sharing_informations_status.name }}</strong>
+                </span>
+                <br />
+                <span
+                  v-if="
+                    stream_sharing_informations_status.peers_connected &&
+                    stream_sharing_informations_status.peers_connected.length >
+                      0
+                  "
+                >
+                  {{ $t("other_users_connected") }} =
+                  {{
+                    stream_sharing_informations_status.peers_connected.length
+                  }}
+                </span>
+              </label>
+            </div>
+
+            <div
+              v-else-if="
+                stream_access_informations_status &&
+                stream_access_informations_status.enabled &&
+                stream_type === 'RemoteSources'
+              "
+              :key="
+                'stream_share_name-' + stream_access_informations_status.callee
+              "
+            >
+              <label>
+                <span v-html="$t('stream_shown:')" />
+                <span>
+                  <strong>{{
+                    stream_access_informations_status.callee
+                  }}</strong>
+                </span>
+              </label>
+            </div>
+
+            <div
+              v-if="
+                delay_mode_enabled &&
+                !is_recording &&
+                !media_to_validate &&
+                !delay_event
+              "
               :key="'delay_interval'"
-              class="recording_timer--delay"
+              class="record_options"
             >
               <label>
                 <span>{{ $t("delay").toLowerCase() }}</span>
@@ -183,84 +286,32 @@
               </label>-->
           </transition-group>
 
-          <video
-            ref="videoElement"
-            autoplay
-            playsinline
-            :src-object.prop.camel="stream"
-            muted
-            v-show="
-              stream &&
-              ['photo', 'video', 'stopmotion'].includes(selected_mode) &&
-              show_live_feed &&
-              !(must_validate_media && media_to_validate)
-            "
-          />
-
-          <Vecto
-            v-if="selected_mode === 'vecto'"
-            ref="vectoElement"
-            :last_frame_from_video="last_frame_from_video"
-            :number_of_colors="vecto_number_of_colors"
-          />
-
-          <Lines
-            v-if="selected_mode === 'lines'"
-            ref="vectoElement"
-            :last_frame_from_video="last_frame_from_video"
-            :angle="lines_angle"
-            :boost_brightness="lines_brightness"
-            :boost_contrast="lines_contrast"
-            :density="lines_density"
-          />
-
-          <AudioEqualizer
-            v-if="selected_mode === 'audio'"
-            ref="equalizerElement"
-            :stream="stream"
-            :is_recording="is_recording"
-          />
-
-          <div
-            class="_video_grid_overlay"
-            v-if="
-              enable_grid &&
-              ['photo', 'video', 'stopmotion'].includes(selected_mode)
-            "
-          >
-            <!-- :width="actual_camera_resolution.width" -->
-            <!-- :height="actual_camera_resolution.height" -->
-
-            <svg
-              :width="actual_camera_resolution.width"
-              :height="actual_camera_resolution.height"
-              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
+          <transition name="scaleInFade" mode="out-in" duration="100">
+            <label
+              v-if="!!delay_before_picture || !!time_before_next_picture"
+              :key="'time_before_' + delay_before_picture"
+              mode="out-in"
+              class="_delay_timer"
+              :class="{ 'is--timelapse': !!time_before_next_picture }"
             >
-              <line
-                v-for="([x1, y1, x2, y2], index) in [
-                  [33, 0, 33, 100],
-                  [66, 0, 66, 100],
-                  [0, 33, 100, 33],
-                  [0, 66, 100, 66],
-                ]"
-                :key="index"
-                :x1="x1 + '%'"
-                :y1="y1 + '%'"
-                :x2="x2 + '%'"
-                :y2="y2 + '%'"
-                vector-effect="non-scaling-stroke"
-              />
-              <rect x="0" y="0" width="100%" height="100%" />
-            </svg>
+              <template v-if="!!delay_before_picture">
+                {{ delay_before_picture }}
+              </template>
+              <template v-else-if="!!time_before_next_picture">
+                {{ time_before_next_picture }}
+              </template>
+              <!-- <template v-else>
+                {{ $t("now!") }}
+              </template> -->
+            </label>
+          </transition>
 
-            <!-- <svg
-              xmlns="http://www.w3.org/2000/svg"
-              version="1.1"
-              :width="actual_camera_resolution.width"
-              :height="actual_camera_resolution.height"
-              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
-            /> -->
-          </div>
+          <!-- <transition name="justCaptured" duration="400">
+            <div
+              v-if="capture_button_pressed"
+              class="_just_captured_overlay"
+            ></div>
+          </transition> -->
 
           <transition name="scaleInFade" mode="in-out" duration="100">
             <MediaContent
@@ -287,6 +338,43 @@
               "
             />
           </transition>
+
+          <div
+            class="_video_grid_overlay"
+            v-if="enable_grid && enable_video && !media_to_validate"
+          >
+            <svg
+              :width="actual_camera_resolution.width"
+              :height="actual_camera_resolution.height"
+              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
+            >
+              <line
+                v-for="([x1, y1, x2, y2], index) in grids[current_grid_type]"
+                :key="index"
+                :x1="x1 + '%'"
+                :y1="y1 + '%'"
+                :x2="x2 + '%'"
+                :y2="y2 + '%'"
+                vector-effect="non-scaling-stroke"
+              />
+              <!-- <rect
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+                vector-effect="non-scaling-stroke"
+              /> -->
+            </svg>
+
+            <!-- <svg
+              xmlns="http://www.w3.org/2000/svg"
+              version="1.1"
+              :width="actual_camera_resolution.width"
+              :height="actual_camera_resolution.height"
+              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
+            /> -->
+          </div>
+
           <transition name="fade_fast">
             <div
               class="_settingsTag"
@@ -312,11 +400,23 @@
                 type="button"
                 class="button-nostyle"
                 :class="{ 'is--active': enable_grid }"
-                v-if="['photo', 'video', 'stopmotion'].includes(selected_mode)"
+                v-if="enable_video"
                 @click="enable_grid = !enable_grid"
               >
                 {{ $t("grid").toLowerCase() }}
               </button>
+              <div v-if="enable_video && enable_grid">
+                <button
+                  type="button"
+                  class="button-nostyle"
+                  v-for="grid_type in Object.keys(grids)"
+                  :key="grid_type"
+                  :class="{ 'is--active': current_grid_type === grid_type }"
+                  @click="current_grid_type = grid_type"
+                >
+                  {{ $t(grid_type).toLowerCase() }}
+                </button>
+              </div>
             </div>
           </transition>
 
@@ -328,7 +428,7 @@
             />
           </transition>
 
-          <transition name="fade_fast" :duration="150">
+          <transition name="justCaptured" :duration="200">
             <MediaPreviewBeforeValidation
               v-if="media_to_validate"
               :media_to_validate="media_to_validate"
@@ -349,22 +449,23 @@
           :show_live_feed.sync="show_live_feed"
           :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
           @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
-          @close="
-            current_stopmotion = false;
-            is_recording = false;
-            $root.settings.ask_before_leaving_capture = false;
-          "
+          @close="closeStopmotionPanel"
           @new_single_image="updateSingleImage"
         />
       </transition>
 
       <transition name="slideup" :duration="150" mode="out-in">
-        <div class="m_captureview2--videoPane--bottom">
+        <div class="m_captureview--videoPane--bottom">
+          <transition name="fade_fast" :duration="150">
+            <Loader v-if="is_sending_image" />
+          </transition>
+
           <transition name="slideup" :duration="150" mode="out-in">
             <div
-              class="m_captureview2--videoPane--bottom--buttons"
+              class="m_captureview--videoPane--bottom--buttons"
               :class="{
                 'is--recording': is_recording && !video_recording_is_paused,
+                'is--sending_image': is_sending_image,
               }"
               v-if="!(media_to_validate && must_validate_media)"
             >
@@ -377,9 +478,14 @@
                     !delay_event
                   "
                   type="button"
-                  class="bg-rouge"
+                  class="bg-rouge button-inline"
                   :class="{ 'is--active': show_capture_settings }"
                   @click="show_capture_settings = !show_capture_settings"
+                  :content="$t('settings')"
+                  v-tippy="{
+                    placement: 'right',
+                    delay: [600, 0],
+                  }"
                 >
                   <svg
                     class="inline-svg inline-svg_larger"
@@ -388,7 +494,7 @@
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                     x="0px"
                     y="0px"
-                    viewBox="0 0 140 140"
+                    viewBox="15 15 140 140"
                     xml:space="preserve"
                   >
                     <path
@@ -403,9 +509,6 @@
                   c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
                     />
                   </svg>
-                  <span v-if="!collapse_capture_pane" class>{{
-                    $t("settings")
-                  }}</span>
                 </button>
 
                 <button
@@ -485,6 +588,21 @@
                     </span>
                   </template>
                 </button>
+
+                <button
+                  type="button"
+                  class="bg-orange button-inline _captureButton"
+                  :key="selected_mode + '_pause'"
+                  v-if="
+                    selected_mode === 'stopmotion' &&
+                    is_making_stopmotion &&
+                    !timelapse_event
+                  "
+                  @mousedown.stop.prevent="stopStopmotion()"
+                  @touchstart.stop.prevent="stopStopmotion()"
+                >
+                  {{ $t("stop_stopmotion") }}
+                </button>
               </div>
               <div>
                 <transition name="fade_fast" mode="out-in">
@@ -492,17 +610,12 @@
                     type="button"
                     v-if="!is_recording"
                     class="bg-orange button-inline _captureButton"
-                    :class="{ 'is--justCaptured': capture_button_pressed }"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="setCaptureInit()"
                     @touchstart.stop.prevent="setCaptureInit()"
                   >
-                    <span v-if="is_sending_image">
-                      {{ $t("loading") }}
-                    </span>
-
-                    <span v-else-if="delay_event">
+                    <span v-if="delay_event">
                       {{ $t("cancel") }}
                     </span>
 
@@ -512,33 +625,40 @@
                         src="/images/i_record.svg"
                       />
                       &nbsp;
-                      <span v-if="selected_mode === 'photo'">
-                        {{ $t("take_picture") }}</span
-                      >
-                      <span v-else-if="selected_mode === 'video'">
-                        {{ $t("record_video") }}
-                      </span>
-                      <span v-else-if="selected_mode === 'stopmotion'">
-                        <template v-if="!timelapse_mode_enabled">
-                          {{ $t("take_picture") }}
-                        </template>
-                        <template v-else>
-                          {{ $t("start_timelapse") }}
-                        </template>
-                      </span>
+                      <span
+                        v-if="
+                          ['photo', 'vecto', 'lines'].includes(selected_mode)
+                        "
+                        v-html="$t('take_picture')"
+                      />
+                      <span
+                        v-else-if="selected_mode === 'video'"
+                        v-html="$t('record_video')"
+                      />
+                      <span
+                        v-else-if="selected_mode === 'audio'"
+                        v-html="$t('record_audio')"
+                      />
+                      <span
+                        v-else-if="selected_mode === 'stopmotion'"
+                        v-html="
+                          !timelapse_mode_enabled
+                            ? $t('take_picture')
+                            : $t('start_timelapse')
+                        "
+                      />
                     </template>
                   </button>
                   <button
                     type="button"
                     v-else-if="is_recording"
                     class="bg-orange button-inline _captureButton"
-                    :class="{ 'is--justCaptured': capture_button_pressed }"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="stopRecording()"
                     @touchstart.stop.prevent="stopRecording()"
                   >
-                    <span v-if="is_sending_image">
+                    <span v-if="is_sending_image && false">
                       {{ $t("loading") }}
                     </span>
 
@@ -548,10 +668,7 @@
                         src="/images/i_stop.svg"
                       />
                       &nbsp;
-                      <span v-if="selected_mode === 'video'">
-                        {{ $t("stop_recording") }}
-                      </span>
-                      <span v-else-if="selected_mode === 'audio'">
+                      <span v-if="['video', 'audio'].includes(selected_mode)">
                         {{ $t("stop_recording") }}
                       </span>
                       <span v-else-if="selected_mode === 'stopmotion'">
@@ -571,7 +688,7 @@
                     type="button"
                     class="_enable_timelapse_button"
                     :class="{ 'is--active': timelapse_mode_enabled }"
-                    v-if="selected_mode === 'stopmotion'"
+                    v-if="selected_mode === 'stopmotion' && !timelapse_event"
                     :content="$t('timelapse')"
                     v-tippy="{
                       placement: 'top',
@@ -661,7 +778,7 @@
                     class="switch"
                     id="recordVideoWithAudio"
                     type="checkbox"
-                    v-model="enable_audio"
+                    v-model="enable_audio_recording_in_video"
                     :disabled="is_recording"
                   />
                   <label for="recordVideoWithAudio">{{
@@ -673,7 +790,9 @@
                   v-if="
                     selected_mode === 'stopmotion' &&
                     stopmotion.onion_skin_img &&
-                    show_live_feed
+                    show_live_feed &&
+                    is_making_stopmotion &&
+                    !timelapse_event
                   "
                   class="_mode_accessory_range"
                 >
@@ -682,9 +801,10 @@
                     class="_rtl"
                     type="range"
                     v-model.number="stopmotion.onion_skin_opacity"
-                    min="0.1"
-                    max="1"
+                    min="0"
+                    max=".9"
                     step="0.01"
+                    :title="stopmotion.onion_skin_opacity"
                   />
                 </div>
 
@@ -789,16 +909,31 @@
                 </template>
               </div>
             </div>
-            <MediaValidationButtons
-              v-else
-              :read_only="read_only"
-              :can_add_to_fav="can_add_to_fav"
-              :media_is_being_sent="media_is_being_sent"
-              :media_being_sent_percent="media_being_sent_percent"
-              @cancel="cancelValidation()"
-              @save="sendMedia({})"
-              @save_and_fav="sendMedia({ fav: true })"
-            />
+            <div v-else key="validation">
+              <div class="_download_media_without_validation">
+                <small>
+                  <a
+                    ref=""
+                    :href="validated_media_href_blob"
+                    :download="media_to_validate.temp_name"
+                    target="_blank"
+                  >
+                    {{ $t("or_download_media_on_device") }} —
+                    {{ $root.formatBytes(media_to_validate.rawData.size) }}
+                  </a>
+                </small>
+              </div>
+
+              <MediaValidationButtons
+                :read_only="read_only"
+                :can_add_to_fav="can_add_to_fav"
+                :media_is_being_sent="media_is_being_sent"
+                :media_being_sent_percent="media_being_sent_percent"
+                @cancel="cancelValidation()"
+                @save="sendMedia({})"
+                @save_and_fav="sendMedia({ fav: true })"
+              />
+            </div>
           </transition>
         </div>
       </transition>
@@ -812,16 +947,16 @@
   </div>
 </template>
 <script>
-import MediaPreviewBeforeValidation from "./components/subcomponents/MediaPreviewBeforeValidation.vue";
-import MediaValidationButtons from "./components/subcomponents/MediaValidationButtons.vue";
-import StopmotionPanel from "./components/subcomponents/StopmotionPanel.vue";
-import MediaContent from "./components/subcomponents/MediaContent.vue";
+import MediaPreviewBeforeValidation from "./MediaPreviewBeforeValidation.vue";
+import MediaValidationButtons from "./MediaValidationButtons.vue";
+import StopmotionPanel from "./StopmotionPanel.vue";
+import MediaContent from "../subcomponents/MediaContent.vue";
 
-import CaptureSettings from "./components/capture/CaptureSettings.vue";
-import StopmotionList from "./components/capture/StopmotionList.vue";
-import AudioEqualizer from "./components/capture/AudioEqualizer.vue";
-import Vecto from "./components/capture/Vecto.vue";
-import Lines from "./components/capture/Lines.vue";
+import CaptureSettings from "./CaptureSettings.vue";
+import StopmotionList from "./StopmotionList.vue";
+import AudioEqualizer from "./AudioEqualizer.vue";
+import Vecto from "./Vecto.vue";
+import Lines from "./Lines.vue";
 
 import adapter from "webrtc-adapter";
 
@@ -881,8 +1016,6 @@ export default {
         lines: "/images/i_icone-dodoc_lines.svg",
       },
 
-      enable_grid: false,
-
       media_to_validate: false,
       media_is_being_sent: false,
       media_being_sent_percent: 0,
@@ -895,6 +1028,29 @@ export default {
 
       collapse_capture_pane: false,
 
+      enable_grid: false,
+      grids: {
+        halfs: [
+          [50, 0, 50, 100],
+          [0, 50, 100, 50],
+        ],
+        thirds: [
+          [33, 0, 33, 100],
+          [66, 0, 66, 100],
+          [0, 33, 100, 33],
+          [0, 66, 100, 66],
+        ],
+        fourths: [
+          [25, 0, 25, 100],
+          [50, 0, 50, 100],
+          [75, 0, 75, 100],
+          [0, 25, 100, 25],
+          [0, 50, 100, 50],
+          [0, 75, 100, 75],
+        ],
+      },
+      current_grid_type: "thirds",
+
       // selected_devices: {
       //   video_input_device: undefined,
       //   audio_input_device: undefined,
@@ -902,11 +1058,13 @@ export default {
       // },
 
       stream: undefined,
+      stream_type: undefined,
+
       audio_output_deviceId: undefined,
 
       show_capture_settings: false,
 
-      enable_audio: false,
+      enable_audio_recording_in_video: true,
       enable_video: true,
 
       is_recording: false,
@@ -916,6 +1074,7 @@ export default {
       timelapse_mode_enabled: false,
       timelapse_interval: 2,
       timelapse_event: false,
+      timelapse_start_time: false,
 
       delay_mode_enabled: false,
       delay_seconds: 5,
@@ -949,6 +1108,9 @@ export default {
       lines_brightness: 1,
       lines_contrast: 1,
       lines_density: 0.25,
+
+      stream_sharing_informations_status: {},
+      stream_access_informations_status: {},
     };
   },
   created() {},
@@ -962,9 +1124,19 @@ export default {
       this.selected_mode = this.$root.settings.capture_options.selected_mode;
     else this.selected_mode = this.available_modes[0];
 
+    document.addEventListener("keyup", this.captureKeyListener);
+
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$on(`window.resized`, this.checkCapturePanelSize);
+    this.$eventHub.$on(
+      `stream.newSharingInformations`,
+      this.updateStreamSharing
+    );
+    this.$eventHub.$on(
+      `stream.newDistantAccessInformations`,
+      this.updateDistantStream
+    );
 
     this.$refs.videoElement.volume = 0;
     this.$refs.videoElement.addEventListener(
@@ -975,12 +1147,23 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
-    this.stopFrameGrabber();
+    this.$eventHub.$off(
+      `stream.newSharingInformations`,
+      this.updateStreamSharing
+    );
+    this.$eventHub.$off(
+      `stream.newDistantAccessInformations`,
+      this.updateDistantStream
+    );
 
-    if (this.timelapse_event) window.clearInterval(this.timelapse_event);
-    if (this.recording_timer_interval)
-      window.clearInterval(this.recording_timer_interval);
-    if (this.delay_event) window.clearTimeout(this.delay_event);
+    document.removeEventListener("keyup", this.captureKeyListener);
+
+    this.$root.settings.ask_before_leaving_capture = false;
+
+    this.stopFrameGrabber();
+    this.stopTimelapseInterval();
+    this.cancelDelay();
+    this.eraseTimer();
 
     this.$refs.videoElement.removeEventListener(
       "loadedmetadata",
@@ -1026,13 +1209,15 @@ export default {
     },
     media_to_validate: function () {
       console.log(
-        `WATCH • Capture: media_to_validate = ${this.media_to_validate}`
+        `WATCH • Capture: media_to_validate = ${!!this.media_to_validate}`
       );
       if (this.media_to_validate) {
-        this.$refs.videoElement.pause();
+        if (this.$refs.videoElement) this.$refs.videoElement.pause();
+        if (this.$refs.audioElement) this.$refs.audioElement.pause();
         this.$root.settings.ask_before_leaving_capture = true;
       } else {
-        this.$refs.videoElement.play();
+        if (this.$refs.videoElement) this.$refs.videoElement.play();
+        if (this.$refs.audioElement) this.$refs.audioElement.play();
         this.$root.settings.ask_before_leaving_capture = false;
       }
     },
@@ -1051,31 +1236,39 @@ export default {
         `/_file-upload/${this.type}/${this.slugFolderName}/?socketid=${this.$root.$socketio.socket.id}`
       );
     },
+    validated_media_href_blob() {
+      if (!this.media_to_validate) return false;
+      return window.URL.createObjectURL(this.media_to_validate.rawData);
+    },
     time_before_next_picture: function () {
-      const time_ellapsed_since_last_capture =
-        this.timer_recording_in_seconds % this.timelapse_interval;
-      if (time_ellapsed_since_last_capture === 0) {
-        return 0;
-      }
-      return (
-        Math.round(
-          (this.timelapse_interval - time_ellapsed_since_last_capture) * 10
-        ) / 10
+      if (!this.timelapse_start_time) return false;
+
+      const time_since_start = +this.$moment(
+        this.$root.currentTime_millis - this.timelapse_start_time
       );
+      const time_remaining =
+        (this.timelapse_interval * 1000 - time_since_start) / 1000;
+      return Math.floor(time_remaining + 0.99);
     },
     delay_before_picture() {
+      if (!this.delay_start_time) return false;
       const time_since_start = +this.$moment(
         this.$root.currentTime_millis - this.delay_start_time
       );
       const time_remaining =
         (this.delay_seconds * 1000 - time_since_start) / 1000;
-      return time_remaining;
+      return Math.floor(time_remaining + 0.99);
       // return this.delay_seconds - seconds_ellapsed_since_click;
     },
   },
   methods: {
     hasFinishedLoading() {
       this.show_live_feed = true;
+    },
+    setStream({ stream, type }) {
+      this.stream = stream;
+      this.stream_type = type;
+      this.$refs.videoElement.volume = 0;
     },
     previousMode() {
       console.log("METHODS • CaptureView: previousMode");
@@ -1116,6 +1309,12 @@ export default {
         this.selected_mode = this.available_modes[0];
       }
     },
+    updateStreamSharing(val) {
+      this.stream_sharing_informations_status = val;
+    },
+    updateDistantStream(val) {
+      this.stream_access_informations_status = val;
+    },
     refreshVideoActualSize() {
       this.getVideoActualSize()
         .then(({ width, height }) => {
@@ -1125,7 +1324,7 @@ export default {
         .catch((err) => {
           if (this.$root.state.dev_mode === "debug")
             console.log(
-              `CaptureView2 • METHODS : refreshVideoActualSize — couldnt get video size: ` +
+              `CaptureView • METHODS : refreshVideoActualSize — couldnt get video size: ` +
                 err
             );
           // this.$alertify
@@ -1175,11 +1374,26 @@ export default {
       // this.updateVideoDisplayedSize();
     },
 
+    stopStopmotion() {
+      this.$alertify
+        .okBtn(this.$t("yes"))
+        .cancelBtn(this.$t("cancel"))
+        .confirm(
+          this.$t("sure_to_cancel_stopmotion"),
+          () => {
+            this.closeStopmotionPanel();
+          },
+          () => {}
+        );
+    },
+
     startFrameGrabber() {
       const getFrame = () => {
         if (this.$root.state.dev_mode === "debug")
-          console.log(`CaptureView2 • METHODS : startFrameGrabber`);
+          console.log(`CaptureView • METHODS : startFrameGrabber`);
         // this.frameGrabber();
+
+        if (this.media_to_validate) return;
 
         const ratio =
           this.actual_camera_resolution.width /
@@ -1190,22 +1404,16 @@ export default {
           height: 240,
         }).then((image_data) => (this.last_frame_from_video = image_data));
       };
-
       getFrame();
       this.frameGrabber = window.setInterval(getFrame, 300);
     },
     stopFrameGrabber() {
       if (this.$root.state.dev_mode === "debug")
-        console.log(`CaptureView2 • METHODS : stopFrameGrabber  `);
+        console.log(`CaptureView • METHODS : stopFrameGrabber  `);
 
       if (this.frameGrabber) window.clearInterval(this.frameGrabber);
       this.last_frame_from_video = undefined;
     },
-
-    // updateVideoDisplayedSize() {
-    //   debugger;
-    //   // this. this.$refs.videoElement.offsetWidth
-    // },
     addStopmotionImage() {
       const smdata = {
         name:
@@ -1241,17 +1449,6 @@ export default {
       console.log("METHODS • CaptureView: addImageToStopmotion");
       this.is_sending_image = true;
 
-      const media_editing_timeout = window.setTimeout(() => {
-        if (this.is_sending_image && this.$refs.videoElement) {
-          this.is_sending_image = false;
-          this.$refs.videoElement.play();
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t("notifications.failed_to_save_media"));
-        }
-      }, 5000);
-
       this.$root
         .createMedia({
           slugFolderName: this.current_stopmotion,
@@ -1264,8 +1461,23 @@ export default {
         .then((mdata) => {
           this.is_sending_image = false;
           this.$refs.videoElement.play();
-          window.clearTimeout(media_editing_timeout);
+        })
+        .catch((err) => {
+          if (this.is_sending_image && this.$refs.videoElement) {
+            this.is_sending_image = false;
+            this.$refs.videoElement.play();
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(this.$t("notifications.failed_to_save_media"));
+          }
         });
+    },
+    closeStopmotionPanel() {
+      this.current_stopmotion = false;
+      this.is_recording = false;
+      this.$root.settings.ask_before_leaving_capture = false;
+      this.show_live_feed = true;
     },
 
     captureKeyListener(event) {
@@ -1276,10 +1488,13 @@ export default {
         return false;
       }
 
-      // disabled because it clashes with the input type range from stopmotion panel
-      // if (event.target.tagName.toLowerCase() === 'input' || event.target.tagName.toLowerCase() === 'textarea') {
-      //   return false;
-      // }
+      // TODO : write captcha to prevent writing to interfere with camera
+      if (
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea"
+      ) {
+        return false;
+      }
 
       switch (event.key) {
         case "w":
@@ -1294,7 +1509,8 @@ export default {
         case "a":
         case "q":
         case " ":
-          this.setCaptureInit();
+          if (!this.is_recording) this.setCaptureInit();
+          else this.stopRecording();
           break;
       }
     },
@@ -1306,18 +1522,38 @@ export default {
 
       if (this.delay_mode_enabled && this.delay_event) {
         // cancel delay
-        window.clearTimeout(this.delay_event);
-        this.delay_event = false;
+
+        this.cancelDelay();
       } else if (this.delay_mode_enabled) {
-        this.delay_start_time = this.$root.currentTime_millis;
-        this.delay_event = window.setTimeout(() => {
-          debugger;
-          this.setCapture();
-          this.delay_event = false;
-        }, this.delay_seconds * 1000);
+        this.startDelay();
       } else {
         this.setCapture();
       }
+    },
+    startDelay() {
+      this.delay_start_time = this.$root.currentTime_millis;
+      this.delay_event = window.setTimeout(() => {
+        this.setCapture();
+        this.delay_start_time = false;
+        this.delay_event = false;
+      }, this.delay_seconds * 1000);
+    },
+    cancelDelay() {
+      window.clearTimeout(this.delay_event);
+      this.delay_start_time = false;
+      this.delay_event = false;
+    },
+    startTimelapseInterval() {
+      this.timelapse_start_time = this.$root.currentTime_millis;
+      this.timelapse_event = window.setInterval(() => {
+        this.setCapture();
+        this.timelapse_start_time = this.$root.currentTime_millis;
+      }, this.timelapse_interval * 1000);
+    },
+    stopTimelapseInterval() {
+      window.clearInterval(this.timelapse_event);
+      this.timelapse_event = false;
+      this.timelapse_start_time = false;
     },
     setCapture() {
       this.capture_button_pressed = true;
@@ -1331,14 +1567,17 @@ export default {
           this.media_to_validate = {
             rawData,
             objectURL: URL.createObjectURL(rawData),
+            temp_name: "image.jpeg",
             type: "image",
           };
         });
       } else if (this.selected_mode === "video") {
         this.video_recording_is_paused = false;
+
         this.startRecordFeed({
           type: "video",
           videoBitsPerSecond: 4112000,
+          enable_audio_recording_in_video: this.enable_audio_recording_in_video,
         });
       } else if (this.selected_mode === "audio") {
         this.startRecordFeed({
@@ -1347,21 +1586,16 @@ export default {
       } else if (this.selected_mode === "stopmotion") {
         this.addStopmotionImage();
 
-        if (this.timelapse_mode_enabled) {
+        if (this.timelapse_mode_enabled && !this.is_recording) {
           this.is_recording = true;
-          this.timelapse_event = window.setInterval(() => {
-            this.capture_button_pressed = true;
-            window.setTimeout(() => {
-              this.capture_button_pressed = false;
-            }, 400);
-            this.addStopmotionImage();
-          }, this.timelapse_interval * 1000);
+          this.startTimelapseInterval();
         }
       } else if (this.selected_mode === "vecto") {
         const svgstr = this.$refs.vectoElement.svgstr;
         this.media_to_validate = {
           preview: svgstr,
           rawData: new Blob([svgstr], { type: "image/svg+xml" }),
+          temp_name: "vecto.svg",
           type: "svg",
         };
       } else if (this.selected_mode === "lines") {
@@ -1370,6 +1604,7 @@ export default {
         this.media_to_validate = {
           preview: svgstr,
           rawData: new Blob([svgstr], { type: "image/svg+xml" }),
+          temp_name: "lines.svg",
           type: "svg",
         };
       }
@@ -1379,7 +1614,7 @@ export default {
 
       if (this.selected_mode === "stopmotion" && this.timelapse_mode_enabled) {
         this.is_recording = false;
-        window.clearInterval(this.timelapse_event);
+        this.stopTimelapseInterval();
         return;
       }
       if (this.selected_mode === "video") {
@@ -1396,6 +1631,7 @@ export default {
           this.media_to_validate = {
             rawData: video_blob,
             objectURL: URL.createObjectURL(video_blob),
+            temp_name: "video.webm",
             type: "video",
           };
         });
@@ -1417,6 +1653,7 @@ export default {
             preview,
             rawData: audio_blob,
             objectURL: URL.createObjectURL(audio_blob),
+            temp_name: "audio.wav",
             type: "audio",
           };
         });
@@ -1486,7 +1723,7 @@ export default {
             var t1 = performance.now();
             if (this.$root.state.dev_mode === "debug")
               console.log(
-                "CaptureView2 • METHODS : getStaticImageFromVideoElement took " +
+                "CaptureView • METHODS : getStaticImageFromVideoElement took " +
                   (t1 - t0) +
                   " milliseconds."
               );
@@ -1504,9 +1741,21 @@ export default {
 
     startRecordFeed(options) {
       return new Promise((resolve, reject) => {
-        this.recorder = RecordRTC(this.stream, options);
+        const _stream = this.stream.clone();
+        if (
+          options.hasOwnProperty("enable_audio_recording_in_video") &&
+          options.enable_audio_recording_in_video === false
+        )
+          _stream
+            .getAudioTracks()
+            .forEach((track) => _stream.removeTrack(track));
+
+        this.recorder = RecordRTC(_stream, options);
+
         try {
           this.recorder.startRecording();
+          this.is_recording = true;
+          this.startTimer();
         } catch (err) {
           this.$alertify
             .closeLogOnClick(true)
@@ -1517,9 +1766,6 @@ export default {
                 err.message
             );
         }
-
-        this.is_recording = true;
-        this.startTimer();
       });
     },
 
@@ -1646,19 +1892,20 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.m_captureview2 {
+.m_captureview {
   display: flex;
   flex-flow: row nowrap;
+  max-height: 100vh;
 
-  &.is--collapsed {
-    .m_captureview2--videoPane--bottom--buttons {
-      > * {
-        padding: 0;
-      }
-    }
-  }
+  // &.is--collapsed {
+  //   .m_captureview--videoPane--bottom--buttons {
+  //     > * {
+  //       padding: 0;
+  //     }
+  //   }
+  // }
 
-  .m_captureview2--settingsPaneButton {
+  .m_captureview--settingsPaneButton {
     position: relative;
     z-index: 1;
     display: flex;
@@ -1676,17 +1923,19 @@ export default {
     }
   }
 
-  .m_captureview2--videoPane {
+  .m_captureview--videoPane {
+    position: relative;
     overflow-y: auto;
-    flex: 1 1 auto;
+    flex: 1 1 100px;
 
     display: flex;
     flex-flow: column nowrap;
   }
 
-  .m_captureview2--videoPane--top {
+  .m_captureview--videoPane--top {
     position: relative;
     margin: 0 auto;
+    min-height: 300px;
 
     flex: 1 1 auto;
     overflow: hidden;
@@ -1700,14 +1949,18 @@ export default {
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
+
+    &.is--being_streamed {
+      border-bottom: 5px solid var(--c-rouge);
+    }
   }
 
-  .m_captureview2--videoPane--bottom {
+  .m_captureview--videoPane--bottom {
     position: relative;
     flex: 0 0 auto;
     box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
 
-    .m_captureview2--videoPane--bottom--buttons {
+    .m_captureview--videoPane--bottom--buttons {
       display: flex;
       flex-flow: row wrap;
       justify-content: space-between;
@@ -1718,6 +1971,7 @@ export default {
         padding: calc(var(--spacing) / 2);
 
         &:nth-child(2) {
+          flex: 1 1 200px;
           text-align: center;
           display: flex;
           flex-flow: row wrap;
@@ -1744,7 +1998,9 @@ export default {
     margin: 15px;
     pointer-events: none;
 
-    > * {
+    text-align: right;
+
+    button {
       display: inline-block;
       background-color: white;
       // border: 2px solid #fff;
@@ -1767,13 +2023,14 @@ export default {
     }
   }
 
-  .m_captureview2--videoPane--top--videoContainer {
+  .m_captureview--videoPane--top--videoContainer {
     position: relative;
     width: 100%;
     height: 100%;
 
     video,
-    .mediaContainer img {
+    .mediaContainer img,
+    .m_audioEqualizer {
       position: absolute;
       top: 0;
       left: 0;
@@ -1788,7 +2045,7 @@ export default {
 ._captureButton {
   position: relative;
   // margin: 0 auto;
-  margin: 0 calc(var(--spacing) / 2);
+  margin: 0 calc(var(--spacing) / 4);
 
   > img {
     flex: 0 0 auto;
@@ -1826,9 +2083,26 @@ export default {
     pointer-events: auto;
     // background-color: white;
   }
-  > button {
-    padding-left: 0;
-    padding-right: 0;
+  > ._arrows {
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+
+    button {
+      padding-left: 0;
+      padding-right: 0;
+      min-height: 0;
+    }
+
+    svg {
+      width: 36px;
+      height: 36px;
+      padding: 4px;
+      // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+    }
+
+    &:hover,
+    &:focus {
+      // background-color: var(--c-gris-fonce);
+    }
   }
 
   input {
@@ -1837,7 +2111,8 @@ export default {
     visibility: hidden;
 
     &:not(:checked) + label:not(:hover) {
-      opacity: 0.3;
+      // opacity: 0.3;
+      // background: transparent;
     }
   }
 
@@ -1887,7 +2162,7 @@ export default {
     width: 36px;
     height: 36px;
 
-    margin: calc(var(--spacing) / 8);
+    // margin: calc(var(--spacing) / 8);
 
     padding: 4px;
     color: #fff;
@@ -1932,6 +2207,36 @@ export default {
   color: white;
 }
 
+._delay_timer {
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+
+  font-size: 40vmin;
+  color: transparent;
+
+  --c-text-stroke: var(--c-rouge);
+  --c-text-shadow: rgba(0, 0, 0, 0.2);
+  color: var(--c-rouge_fonce);
+
+  -webkit-text-stroke: 1vmin var(--c-text-stroke);
+  // text-shadow: 1vmin 1vmin 0 var(--c-text-shadow),
+  //   -1px -1px 0 var(--c-text-shadow), 1px -1px 0 var(--c-text-shadow),
+  //   -1px 1px 0 var(--c-text-shadow), 1px 1px 0 var(--c-text-shadow);
+
+  &.is--timelapse {
+    font-size: 10vmin;
+    -webkit-text-stroke: 0.2vmin var(--c-text-stroke);
+    height: 50%;
+    bottom: 0;
+  }
+}
+
 ._capture_options {
   position: absolute;
   bottom: 0;
@@ -1957,8 +2262,7 @@ export default {
     pointer-events: auto;
   }
 
-  .recording_timer--timelapse,
-  .recording_timer--delay {
+  .record_options {
     max-width: 450px;
     margin: calc(var(--spacing) / 4) auto;
     // .padding-verysmall;
@@ -1995,8 +2299,10 @@ export default {
         border-bottom-color: var(--c-rouge_fonce);
       }
     }
-  }
-  .recording_timer--delay {
+
+    .record_options--timer {
+      font-size: 2em;
+    }
   }
 }
 
@@ -2013,7 +2319,7 @@ export default {
   }
 }
 ._mode_accessory_range {
-  max-width: 240px;
+  max-width: 200px;
   margin: -5px 0 -5px auto;
   label {
     margin: 0;
@@ -2038,10 +2344,7 @@ export default {
 
   object-fit: contain;
 
-  --c-gridColor: var(--c-rouge);
-  --gridstep: 33.3333%;
-  --grid_width: 2px;
-  --gridstep_before: calc(var(--gridstep) - (var(--grid_width) / 2));
+  --stroke_width: 2px;
 
   svg {
     position: absolute;
@@ -2049,13 +2352,13 @@ export default {
     height: 100%;
     stroke: var(--c-rouge);
     fill: none;
-    padding: 0.5px;
+    // padding: calc(var(--stroke_width) / 2);
 
     line {
-      stroke-width: 2px;
+      stroke-width: var(--stroke_width);
     }
     rect {
-      stroke-width: 2px;
+      stroke-width: var(--stroke_width);
     }
   }
 }
@@ -2082,6 +2385,29 @@ export default {
   &.is--active {
     background: var(--c-rouge);
     color: white;
+  }
+}
+._just_captured_overlay {
+  background-color: var(--c-rouge);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
+._download_media_without_validation {
+  background-color: var(--c-noir);
+  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 4);
+  // margin-top: calc(-0.5 * var(--spacing));
+  margin-bottom: -0.2em;
+  line-height: 1;
+  text-align: right;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
+  a {
+    color: var(--c-gris);
   }
 }
 </style>

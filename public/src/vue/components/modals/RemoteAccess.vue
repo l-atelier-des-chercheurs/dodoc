@@ -10,11 +10,11 @@
 
     <template slot="preview">
       <div class="m_sideBySideSwitches hide_on_print">
-        <label for="CreateQRCode">
+        <label for="QRCodeToResource">
           <input
             type="radio"
-            id="CreateQRCode"
-            value="CreateQRCode"
+            id="QRCodeToResource"
+            value="QRCodeToResource"
             v-model="current_mode"
           />
           {{ $t("share_access") }}
@@ -31,8 +31,8 @@
       </div>
 
       <div class="font-small">
-        <div v-if="current_mode === 'CreateQRCode'" class>
-          <CreateQRCode :slugFolderName="slugProjectName" />
+        <div v-if="current_mode === 'QRCodeToResource'" class>
+          <QRCodeToResource :slugFolderName="slugProjectName" />
         </div>
 
         <div v-if="current_mode === 'ScanQRCode'" class="m_scanQR">
@@ -44,17 +44,17 @@
 </template>
 <script>
 import ScanQRCode from "./qr/ScanQRCode.vue";
-import CreateQRCode from "./qr/CreateQRCode.vue";
+import QRCodeToResource from "./qr/QRCodeToResource.vue";
 
 export default {
   props: ["read_only", "slugProjectName"],
   components: {
-    CreateQRCode,
+    QRCodeToResource,
     ScanQRCode,
   },
   data() {
     return {
-      current_mode: "CreateQRCode",
+      current_mode: "QRCodeToResource",
     };
   },
   mounted() {},

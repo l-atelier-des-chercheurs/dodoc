@@ -18,7 +18,8 @@
           :required="true"
           :autofocus="true"
           :autoselect="true"
-          :field_type="'new-password'"
+          :field_type="'current-password'"
+          @enter-was-pressed="submitPassword"
         />
       </div>
 

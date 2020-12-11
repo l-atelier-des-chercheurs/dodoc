@@ -74,6 +74,8 @@ export default {
   computed: {},
   methods: {
     setSinkId() {
+      if (!this.audio_output_deviceId) return;
+
       if (this.media_to_validate.type === "video") {
         this.$refs.videoElement.setSinkId(this.audio_output_deviceId);
       } else if (this.media_to_validate.type === "audio") {
@@ -88,7 +90,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: var(--c-noir);
+  // background-color: var(--c-noir);
 
   display: flex;
   justify-content: center;
@@ -117,6 +119,7 @@ export default {
     }
 
     img {
+      object-fit: contain;
     }
 
     > * {
@@ -135,6 +138,8 @@ export default {
 <style lang="scss">
 .m_previewValidation--svg {
   svg {
+    width: 100%;
+    height: 100%;
     max-width: 100%;
     margin: auto;
   }

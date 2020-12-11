@@ -1,5 +1,9 @@
 <template>
-  <Modal @close="$emit('close')" class="m_exportModal" :typeOfModal="'EditMeta'">
+  <Modal
+    @close="$emit('close')"
+    class="m_exportModal"
+    :typeOfModal="'EditMeta'"
+  >
     <template slot="header">
       <span class>{{ $t("export_creation") }}</span>
     </template>
@@ -48,9 +52,7 @@
               {{ $t("notifications.creation_in_progress") }}
             </template>
             <template v-else-if="doc_request_status === 'generated'">
-              {{
-              $t("notifications.doc_created")
-              }}
+              {{ $t("notifications.doc_created") }}
             </template>
           </button>
 
@@ -61,7 +63,8 @@
               :href="link_to_doc"
               target="_blank"
               download
-            >{{ $t("download") }}</a>
+              >{{ $t("download") }}</a
+            >
             <!-- <a 
               v-if="path_to_doc !== false && $root.state.is_electron"
               :href="path_to_doc" target="_blank" 
@@ -77,7 +80,8 @@
                 :href="link_to_doc"
                 target="_blank"
                 class="buttonLink margin-left-none"
-              >{{ $t("open_in_app") }}</a>
+                >{{ $t("open_in_app") }}</a
+              >
 
               <AddCreationToProject
                 :publication="publication"
@@ -115,21 +119,24 @@
             @click="getLink"
             v-if="!show_link_infos"
             :disabled="
-              (publication.hasOwnProperty('editing_limited_to') &&
-                publication.editing_limited_to !== 'everybody') &&
-              (publication.hasOwnProperty('viewing_limited_to') &&
-                publication.viewing_limited_to !== 'everybody')
+              publication.hasOwnProperty('editing_limited_to') &&
+              publication.editing_limited_to !== 'everybody' &&
+              publication.hasOwnProperty('viewing_limited_to') &&
+              publication.viewing_limited_to !== 'everybody'
             "
-          >{{ $t("share") }}</button>
+          >
+            {{ $t("share") }}
+          </button>
 
           <small
             v-if="
               publication.hasOwnProperty('viewing_limited_to') &&
               publication.viewing_limited_to !== 'everybody'
             "
-          >{{ $t("set_visibility_to_everybody") }}</small>
+            >{{ $t("set_visibility_to_everybody") }}</small
+          >
 
-          <CreateQRCode
+          <QRCodeToResource
             v-if="show_link_infos"
             :type="'publications'"
             :slugFolderName="slugPubliName"
@@ -142,7 +149,7 @@
 <script>
 import { setTimeout } from "timers";
 import AddCreationToProject from "../subcomponents/AddCreationToProject.vue";
-import CreateQRCode from "./qr/CreateQRCode.vue";
+import QRCodeToResource from "./qr/QRCodeToResource.vue";
 
 export default {
   props: {
@@ -151,7 +158,7 @@ export default {
   },
   components: {
     AddCreationToProject,
-    CreateQRCode,
+    QRCodeToResource,
   },
   data() {
     return {
@@ -173,10 +180,10 @@ export default {
   beforeDestroy() {},
 
   watch: {
-    export_type: function() {
+    export_type: function () {
       this.doc_request_status = false;
     },
-    pagenumber_to_export: function() {
+    pagenumber_to_export: function () {
       this.doc_request_status = false;
     },
   },

@@ -4,271 +4,417 @@
       <Loader v-if="is_loading_available_devices || is_loading_feed" />
     </transition>
 
-    <!-- <video ref="videoElement" autoplay playsinline muted v-show="false" /> -->
-
     <div class="m_captureSettings--topbar">
       <div class="m_captureSettings--topbar--title">
-        <svg
-          class="inline-svg inline-svg_larger"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          viewBox="0 0 140 140"
-          xml:space="preserve"
-        >
-          <path
-            style="fill: currentColor"
-            d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
-                  c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
-                  c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
-                  c-0.6,0.9-1.8,1.4-2.9,1.2L35.8,66L34,71.8l9.7,4.8c1,0.5,1.7,1.5,1.7,2.6v10c0,1.1-0.6,2.1-1.6,2.6l-9.6,4.9l2,5.9l10.9-1.6
-                  c1.1-0.2,2.2,0.3,2.9,1.2l6,8.1c0.7,0.9,0.8,2.1,0.3,3l-4.8,9.6l5.1,3.6l7.7-7.5c0.8-0.8,2-1,3.1-0.7l9.9,3
-                  c1.1,0.3,1.9,1.3,2.1,2.4l1.9,10.4h6.4l1.7-10.4c0.2-1.1,0.9-2,2-2.4l9.9-3.2c1.1-0.3,2.2-0.1,3.1,0.7l7.8,7.3l5.1-3.7l-4.9-9.4
-                  c-0.5-1-0.4-2.1,0.2-3l6-8.1c0.7-0.9,1.8-1.4,2.9-1.2l10.8,1.5l1.8-5.9l-9.7-4.8C123.3,90.9,122.7,89.9,122.7,88.8z M84,104.5
-                  c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
-          />
-        </svg>
         <span class>{{ $t("settings") }}</span>
+        <button
+          type="button"
+          class="button-nostyle bg-rouge _close_button"
+          @click="$emit('close')"
+        >
+          <img src="/images/i_close_sansfond.svg" draggable="false" />
+        </button>
+      </div>
+    </div>
+    <div>
+      <div class="m_sideBySideSwitches">
+        <label for="LocalSources">
+          <div>
+            <input
+              type="radio"
+              id="LocalSources"
+              value="LocalSources"
+              v-model="current_mode"
+            />
+            <span>
+              {{ $t("stream_local_mode") }}
+            </span>
+          </div>
+        </label>
+        <label for="RemoteSources">
+          <div>
+            <input
+              type="radio"
+              id="RemoteSources"
+              value="RemoteSources"
+              v-model="current_mode"
+            />
+            <span> {{ $t("stream_remote_mode") }} </span>
+          </div>
+        </label>
       </div>
     </div>
 
     <div class="m_captureSettings--settings">
-      <label>{{ $t("sources") }}</label>
-      <div class="">
-        <div class="">
-          <label>{{ $t("camera") }}</label>
-          <small v-if="!all_video_input_devices.length === 0">
-            {{ $t("no_video_input_available") }}
-          </small>
-          <select
-            v-else
-            id="devices"
-            name="Video devices"
-            title="devices"
-            v-model="selected_devices.video_input_device"
-          >
-            <option
-              v-for="d in all_video_input_devices"
-              :key="d.deviceId"
-              :value="d"
-            >
-              {{ d.label }}
-            </option>
-          </select>
+      <div v-if="current_mode === 'LocalSources'" class>
+        <div v-if="status === 'not_allowed'">
+          <div class="padding-top-verysmall">
+            {{ $t("camera_access_refused") }}
+          </div>
         </div>
-        <div>
-          <label>{{ $t("audioinput") }}</label>
-          <small v-if="!all_audio_input_devices.length === 0">
-            {{ $t("no_audio_input_available") }}
-          </small>
-          <select
-            v-else
-            id="devices"
-            name="Video devices"
-            :disabled="
-              selected_devices.video_input_device &&
-              selected_devices.video_input_device.chromeMediaSource &&
-              selected_devices.video_input_device.chromeMediaSource ===
-                'desktop'
-            "
-            title="devices"
-            v-model="selected_devices.audio_input_device"
-          >
-            <option
-              v-for="d in all_audio_input_devices"
-              :key="d.deviceId"
-              :value="d"
-            >
-              {{ d.label }}
-            </option>
-          </select>
-          <small
-            v-if="
-              selected_devices.video_input_device &&
-              selected_devices.video_input_device.chromeMediaSource &&
-              selected_devices.video_input_device.chromeMediaSource ===
-                'desktop'
-            "
-          >
-            audio source unavailable for screen capture
-          </small>
-        </div>
-        <div>
-          <label>{{ $t("audiooutput") }}</label>
-          <small v-if="!all_audio_output_devices.length === 0">
-            {{ $t("no_audio_output_available") }}
-          </small>
-          <select
-            v-else
-            id="devices"
-            name="Video devices"
-            title="devices"
-            v-model="selected_devices.audio_output_device"
-          >
-            <option
-              v-for="d in all_audio_output_devices"
-              :key="d.deviceId"
-              :value="d"
-            >
-              {{ d.label }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <label>{{ $t("resolutions") }}</label>
-      <div>
-        <small
-          v-if="
-            !selected_devices.video_input_device ||
-            !selected_devices.video_input_device.deviceId
-          "
+
+        <label>{{ $t("sources") }}</label>
+        <button
+          type="button"
+          class="buttonLink margin-none margin-left padding-bottom-none"
+          @click="refreshAvailableDevices"
         >
-          {{ $t("pick_a_camera") }}
-        </small>
-        <template v-else>
-          <!-- <button
-                type="button"
-                class="buttonLink"
-                @click="getAllAvailableResolutions"
-                :disabled="is_scanning_resolutions"
+          {{ $t("reload") }}
+        </button>
+
+        <div class="">
+          <div class="">
+            <label>{{ $t("camera") }}</label>
+
+            <div>
+              <small v-if="all_video_input_devices.length === 0">
+                {{ $t("no_video_input_available") }}
+              </small>
+              <select
+                v-else
+                id="devices"
+                name="Video devices"
+                title="devices"
+                v-model="selected_devices.video_input_device"
               >
-                get all input resolutions for
-                {{ selected_devices.video_input_device.label }}
-              </button> -->
-        </template>
+                <option
+                  v-for="d in all_video_input_devices"
+                  :key="d.deviceId"
+                  :value="d"
+                >
+                  {{ d.label }}
+                </option>
+              </select>
+            </div>
 
-        <div class="m_captureSettings--settings--resolutions">
-          <div
-            v-for="res in predefined_resolutions.concat(
-              custom_camera_resolution
-            )"
-            :key="res.name"
-          >
-            <label :for="res.label">
-              <input
-                type="radio"
-                :id="res.label"
-                :value="res"
-                :disabled="unavailable_camera_resolutions.includes(res.label)"
-                v-model="desired_camera_resolution"
-              />
-              <span
-                >{{ res.label }}
-                <template v-if="res.type !== 'custom'">
-                  •
-                  <template v-if="res.ratio">{{ res.ratio }}</template>
-                  • {{ res.width }}/{{ res.height }})
-                </template>
+            <div
+              v-if="
+                selected_devices.video_input_device &&
+                selected_devices.video_input_device.deviceId ===
+                  'screen_capture'
+              "
+              class="margin-top-veryverysmall"
+            >
+              <span class="switch switch-xs">
+                <input
+                  class="switch"
+                  id="show_cursor"
+                  type="checkbox"
+                  v-model="advanced_capture_options.cursor.enabled"
+                  :disabled="!advanced_capture_options.cursor.supported"
+                  true-value="always"
+                  false-value="never"
+                />
+                <label for="show_cursor">{{ $t("show_cursor") }}</label>
+                <small v-if="!advanced_capture_options.cursor.supported">
+                  {{ $t("not_supported_on_this_device") }}
+                </small>
               </span>
-            </label>
+            </div>
           </div>
+          <div>
+            <label>{{ $t("audioinput") }}</label>
+            <div>
+              <small v-if="all_audio_input_devices.length === 0">
+                {{ $t("no_audio_input_available") }}
+              </small>
+              <select
+                v-else
+                id="devices"
+                name="Video devices"
+                title="devices"
+                v-model="selected_devices.audio_input_device"
+              >
+                <option
+                  v-for="d in all_audio_input_devices"
+                  :key="d.deviceId"
+                  :value="d"
+                >
+                  {{ d.label }}
+                </option>
+              </select>
+            </div>
 
+            <div
+              v-if="selected_devices.audio_input_device"
+              class="margin-top-veryverysmall"
+            >
+              <span class="switch switch-xs">
+                <input
+                  class="switch"
+                  id="echoCancellation"
+                  type="checkbox"
+                  :disabled="
+                    !advanced_capture_options.echoCancellation.supported
+                  "
+                  v-model="advanced_capture_options.echoCancellation.enabled"
+                />
+                <label for="echoCancellation">{{
+                  $t("echoCancellation")
+                }}</label>
+                <small
+                  v-if="!advanced_capture_options.echoCancellation.supported"
+                >
+                  {{ $t("not_supported_on_this_device") }}
+                </small>
+              </span>
+            </div>
+            <div
+              v-if="selected_devices.audio_input_device"
+              class="margin-top-veryverysmall"
+            >
+              <span class="switch switch-xs">
+                <input
+                  class="switch"
+                  id="noiseSuppression"
+                  type="checkbox"
+                  :disabled="
+                    !advanced_capture_options.noiseSuppression.supported
+                  "
+                  v-model="advanced_capture_options.noiseSuppression.enabled"
+                />
+                <label for="noiseSuppression">{{
+                  $t("noiseSuppression")
+                }}</label>
+                <small
+                  v-if="!advanced_capture_options.noiseSuppression.supported"
+                >
+                  {{ $t("not_supported_on_this_device") }}
+                </small>
+              </span>
+            </div>
+          </div>
+          <div>
+            <label>{{ $t("audiooutput") }}</label>
+
+            <div>
+              <small v-if="all_audio_output_devices.length === 0">
+                {{ $t("no_audio_output_available") }}
+              </small>
+              <select
+                v-else
+                id="devices"
+                name="Video devices"
+                title="devices"
+                v-model="selected_devices.audio_output_device"
+              >
+                <option
+                  v-for="d in all_audio_output_devices"
+                  :key="d.deviceId"
+                  :value="d"
+                >
+                  {{ d.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <label>{{ $t("resolutions") }}</label>
+        <div>
           <div
             v-if="
-              desired_camera_resolution &&
-              desired_camera_resolution.type === 'custom'
+              !selected_devices.video_input_device ||
+              !selected_devices.video_input_device.deviceId
             "
-            class="margin-bottom-small input-group"
           >
-            <input
-              type="number"
-              min="2"
-              max="4096"
-              step="2"
-              v-model.number="desired_camera_resolution.width"
-            />
-            <span class="font-large padding-verysmall">×</span>
-            <input
-              type="number"
-              min="2"
-              max="2160"
-              step="2"
-              v-model.number="desired_camera_resolution.height"
-            />
+            <small>
+              {{ $t("pick_a_camera") }}
+            </small>
+          </div>
+          <div
+            v-if="
+              (selected_devices.video_input_device &&
+                selected_devices.video_input_device.deviceId ===
+                  'screen_capture') ||
+              selected_devices.video_input_device.chromeMediaSource
+            "
+          >
+            <small>
+              {{ $t("cant_pick_resolution_when_screen_capture") }}
+            </small>
+          </div>
+          <div class="m_captureSettings--settings--resolutions" v-else>
+            <div
+              v-for="res in predefined_resolutions.concat(
+                custom_camera_resolution
+              )"
+              :key="res.name"
+            >
+              <label :for="res.label">
+                <input
+                  type="radio"
+                  :id="res.label"
+                  :value="res"
+                  :disabled="unavailable_camera_resolutions.includes(res.label)"
+                  v-model="desired_camera_resolution"
+                />
+                <span
+                  >{{ res.label }}
+                  <template v-if="res.type !== 'custom'">
+                    •
+                    <template v-if="res.ratio">{{ res.ratio }}</template>
+                    • {{ res.width }}/{{ res.height }})
+                  </template>
+                </span>
+              </label>
+            </div>
+
+            <div
+              v-if="
+                desired_camera_resolution &&
+                desired_camera_resolution.type === 'custom'
+              "
+              class="margin-bottom-small input-group"
+            >
+              <input
+                type="number"
+                min="2"
+                max="4096"
+                step="2"
+                v-model.number="desired_camera_resolution.width"
+              />
+              <span class="font-large padding-verysmall">×</span>
+              <input
+                type="number"
+                min="2"
+                max="2160"
+                step="2"
+                v-model.number="desired_camera_resolution.height"
+              />
+            </div>
           </div>
         </div>
       </div>
-
-      <label>{{ $t("connect_to_other_users") }}</label>
-      <div class="padding-small">
-        <span class="switch switch-xs">
-          <input
-            class="switch"
-            id="enableDistantFlux"
-            type="checkbox"
-            v-model="enable_distant_flux"
-          />
-          <label for="enableDistantFlux">{{ $t("enable") }}</label>
-        </span>
-        <DistantFlux2
-          v-if="enable_distant_flux"
-          :stream="stream"
-          @changeStreamTo="
-            (new_stream) => {
-              changeStreamTo(new_stream);
-            }
-          "
-        />
+      <div v-else-if="current_mode === 'RemoteSources'">
+        <div>
+          <!-- <label>{{ $t("remote_access") }}</label> -->
+          <small>{{ $t("connect_to_other_users") }}</small>
+          <div class="padding-vert-small padding-bottom-small">
+            <label v-html="$t('name_of_stream')" />
+            <input
+              type="text"
+              v-model.trim="access_distant_stream.callee"
+              required
+              :disabled="access_distant_stream.status.enabled"
+              autofocus="autofocus"
+              onfocus="this.select()"
+              @keydown.enter.prevent="callStream"
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div class="m_captureSettings--updateButton">
       <!-- <small v-if="!desired_camera_resolution">
           Select a camera resolution first
         </small> -->
-      <button
-        type="button"
-        class="bg-rouge button-wide"
-        @click="setCameraStreamFromDefaults"
-        :disabled="
-          !desired_camera_resolution ||
-          !selected_devices.video_input_device ||
-          current_settings === stream_current_settings
-        "
+
+      <div
+        class="m_captureSettings--updateButton--shareStreamToggle"
+        v-if="current_mode === 'LocalSources'"
       >
-        {{ $t("update") }}
-      </button>
-      <!-- {{ current_settings }} -->
-      <button type="button" class="bg-rouge buttonLink" @click="$emit('close')">
-        <span class>{{ $t("close") }}</span>
-      </button>
-      <!-- <small>
-          <span
-            v-if="desired_camera_resolution && desired_camera_resolution.label"
+        <transition name="fade_fast" :duration="150">
+          <Loader v-if="share_this_stream.status.loading" />
+        </transition>
+
+        <div class="switch switch-xs">
+          <input
+            class="switch"
+            id="shareStream"
+            type="checkbox"
+            v-model="share_this_stream.enabled"
+          />
+          <label for="shareStream">{{ $t("share_stream") }}</label>
+        </div>
+
+        <div
+          v-if="share_this_stream.enabled"
+          class="padding-sides-small padding-bottom-small"
+        >
+          <label v-html="$t('name_of_stream')" />
+          <input
+            type="text"
+            v-model.trim="share_this_stream.name"
+            required
+            autofocus="autofocus"
+            onfocus="this.select()"
+            @keydown.enter.prevent="setCameraStreamFromDefaults"
+          />
+        </div>
+      </div>
+
+      <div class="m_captureSettings--updateButton--buttons">
+        <template v-if="current_mode === 'LocalSources'">
+          <button
+            type="button"
+            class="bg-rouge button-wide"
+            @click="setCameraStreamFromDefaults"
           >
-            {{ desired_camera_resolution.label }}</span
-          >
-          <span
-            v-if="
-              selected_devices &&
-              selected_devices.video_input_device &&
-              selected_devices.video_input_device.label
+            {{ $t("update") }}
+          </button>
+        </template>
+        <template v-else-if="current_mode === 'RemoteSources'">
+          <transition name="fade_fast" :duration="150">
+            <Loader v-if="access_distant_stream.calling" />
+          </transition>
+          <button
+            type="button"
+            class="bg-rouge button-wide"
+            v-if="!access_distant_stream.status.enabled"
+            :disabled="
+              access_distant_stream.callee.length === 0 ||
+              access_distant_stream.calling
             "
+            @click="callStream"
           >
-            {{ selected_devices.video_input_device.label }}
-          </span>
-        </small> -->
+            {{ $t("connect") }}
+          </button>
+          <button
+            type="button"
+            class="bg-rouge button-wide"
+            v-if="access_distant_stream.status.enabled"
+            :disabled="
+              access_distant_stream.callee.length === 0 ||
+              access_distant_stream.calling
+            "
+            @click="hangupStream"
+          >
+            {{ $t("hangup") }}
+          </button>
+        </template>
+
+        <!-- <button
+          type="button"
+          class="bg-rouge buttonLink"
+          @click="$emit('close')"
+        >
+          <span class>{{ $t("close") }}</span>
+        </button> -->
+      </div>
     </div>
   </div>
 </template>
 <script>
-import DistantFlux2 from "./DistantFlux2.vue";
+import RTCMultiConnection from "rtcmulticonnection";
 
 export default {
   props: {
-    stream: MediaStream,
     audio_output_deviceId: String,
-    enable_audio: Boolean,
-    enable_video: Boolean,
   },
   components: {
-    DistantFlux2,
+    RTCMultiConnection,
   },
   data() {
     return {
       is_loading_available_devices: false,
       is_loading_feed: false,
+      status: undefined,
+
+      current_mode: "LocalSources",
+
+      current_stream: undefined,
+      local_stream: undefined,
+      remote_stream: undefined,
 
       stream_current_settings: undefined,
       desired_camera_resolution: undefined,
@@ -295,60 +441,24 @@ export default {
           height: 1080,
           ratio: "16:9",
         },
-        // {
-        //   label: "UXGA",
-        //   width: 1600,
-        //   height: 1200,
-        //   ratio: "4:3",
-        // },
         {
           label: "720p(HD)",
           width: 1280,
           height: 720,
           ratio: "16:9",
         },
-        // {
-        //   label: "SVGA",
-        //   width: 800,
-        //   height: 600,
-        //   ratio: "4:3",
-        // },
         {
           label: "VGA",
           width: 640,
           height: 480,
           ratio: "4:3",
         },
-        // {
-        //   label: "360p(nHD)",
-        //   width: 640,
-        //   height: 360,
-        //   ratio: "16:9",
-        // },
-        // {
-        //   label: "CIF",
-        //   width: 352,
-        //   height: 288,
-        //   ratio: "4:3",
-        // },
         {
           label: "QVGA",
           width: 320,
           height: 240,
           ratio: "4:3",
         },
-        // {
-        //   label: "QCIF",
-        //   width: 176,
-        //   height: 144,
-        //   ratio: "4:3",
-        // },
-        // {
-        //   label: "QQVGA",
-        //   width: 160,
-        //   height: 120,
-        //   ratio: "4:3",
-        // },
       ],
 
       unavailable_camera_resolutions: [],
@@ -359,7 +469,45 @@ export default {
         height: 720,
       },
 
-      enable_distant_flux: false,
+      advanced_capture_options: {
+        echoCancellation: {
+          supported: undefined,
+          enabled: false,
+        },
+        noiseSuppression: {
+          supported: undefined,
+          enabled: false,
+        },
+        cursor: {
+          supported: undefined,
+          enabled: false,
+        },
+      },
+
+      rtcmulti_connection: undefined,
+
+      share_this_stream: {
+        enabled: false,
+        name: `dodoc-${(Math.random().toString(36) + "00000000000000000").slice(
+          2,
+          3 + 2
+        )}`,
+        status: {
+          loading: false,
+          enabled: undefined,
+          name: undefined,
+          peers_connected: [],
+        },
+      },
+
+      access_distant_stream: {
+        calling: false,
+        callee: "",
+        status: {
+          enabled: false,
+          callee: undefined,
+        },
+      },
     };
   },
   created() {},
@@ -376,7 +524,7 @@ export default {
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: true })
       .then((stream) => {
-        this.$emit("update:stream", stream);
+        this.local_stream = stream;
         // if ("srcObject" in this.$refs.videoElement) {
         //   this.$refs.videoElement.srcObject = stream;
         // } else {
@@ -397,11 +545,10 @@ export default {
               err.message
           );
         if (err.message === "Could not start audio source") {
-          this.$emit("update:enable_audio", false);
         }
-
         this.is_loading_feed = false;
         this.$emit("hasFinishedLoading");
+        this.$emit("show");
         return;
       })
       .then(this.refreshAvailableDevices)
@@ -409,6 +556,7 @@ export default {
         this.setDefaultInputsAndOutputs();
       })
       .catch((err) => {
+        this.is_loading_feed = false;
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
@@ -431,35 +579,31 @@ export default {
       });
   },
   beforeDestroy() {
-    if (this.stream)
-      this.stream.getTracks().forEach((track) => {
-        track.stop();
-      });
+    if (this.local_stream)
+      this.local_stream.getTracks().forEach((track) => track.stop());
+    if (this.remote_stream)
+      this.remote_stream.getTracks().forEach((track) => track.stop());
+    this.closeMultiRTC();
   },
   watch: {
     "selected_devices.video_input_device": function () {
       this.unavailable_camera_resolutions = [];
       this.last_working_resolution = false;
     },
-    enable_audio: function () {
-      console.log(
-        `WATCH • CaptureSettings: enable_audio = ${this.enable_audio}`
-      );
-      if (!this.is_loading_feed) this.setCameraStreamFromDefaults();
+    local_stream: function () {
+      this.setCurrentStream();
     },
-    enable_video: function () {
-      console.log(
-        `WATCH • CaptureSettings: enable_video = ${this.enable_video}`
-      );
-      if (!this.is_loading_feed) this.setCameraStreamFromDefaults();
+    remote_stream: function () {
+      this.setCurrentStream();
     },
-    stream: function () {
-      // if ("srcObject" in this.$refs.videoElement) {
-      //   this.$refs.videoElement.srcObject = this.stream;
-      // } else {
-      //   // Avoid using this in new browsers, as it is going away.
-      //   this.$refs.videoElement.src = window.URL.createObjectURL(this.stream);
-      // }
+    current_mode: function () {
+      this.setCurrentStream();
+    },
+    current_stream: function () {
+      this.$emit("setStream", {
+        stream: this.current_stream,
+        type: this.current_mode,
+      });
     },
     selected_devices: {
       handler() {
@@ -471,8 +615,28 @@ export default {
     },
     last_working_resolution: {
       handler() {
+        if (!this.last_working_resolution)
+          this.$root.settings.capture_options.last_working_resolution = false;
         this.$root.settings.capture_options.last_working_resolution = JSON.parse(
           JSON.stringify(this.last_working_resolution)
+        );
+      },
+      deep: true,
+    },
+    share_this_stream: {
+      handler() {
+        this.$eventHub.$emit(
+          `stream.newSharingInformations`,
+          this.share_this_stream.status
+        );
+      },
+      deep: true,
+    },
+    access_distant_stream: {
+      handler() {
+        this.$eventHub.$emit(
+          `stream.newDistantAccessInformations`,
+          this.access_distant_stream.status
         );
       },
       deep: true,
@@ -491,22 +655,34 @@ export default {
     current_settings() {
       let _settings = "";
 
-      if (!!this.selected_devices.video_input_device)
+      if (!!this.selected_devices.video_input_device) {
         _settings += this.selected_devices.video_input_device.deviceId + "-";
+        if (
+          this.selected_devices.video_input_device.deviceId === "screen_capture"
+        )
+          _settings += this.advanced_capture_options.cursor.enabled + "-";
+      }
 
       if (
         !!this.desired_camera_resolution &&
         !!this.desired_camera_resolution.width &&
         !!this.desired_camera_resolution.height
-      )
+      ) {
         _settings +=
           this.desired_camera_resolution.width +
           "x" +
           this.desired_camera_resolution.height +
           "-";
+      }
 
-      if (!!this.selected_devices.audio_input_device)
+      if (!!this.selected_devices.audio_input_device) {
         _settings += this.selected_devices.audio_input_device.deviceId + "-";
+        _settings += this.noiseSuppression + "-";
+        _settings += this.echoCancellation + "-";
+      }
+
+      if (this.share_this_stream.enabled)
+        _settings += this.share_this_stream.name + "-";
 
       if (!!this.selected_devices.audio_output_device)
         _settings += this.selected_devices.audio_output_device.deviceId + "-";
@@ -517,6 +693,9 @@ export default {
   methods: {
     listDevices() {
       return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : listDevices`);
+
         navigator.mediaDevices
           .enumerateDevices()
           .then((devices) => {
@@ -533,19 +712,43 @@ export default {
               .then(() => {
                 return resolve(devices);
               });
-            // const screen_infos = sources.reduce((acc, source) => {
-            //                     acc.push(source);
-            //                     return acc;
-            //                   }, []);
-            //                   return resolve(screen_infos);
-            // })
           })
           .catch((err) => {
             return reject(err);
           });
       });
     },
+    setCurrentStream() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : setCurrentStream`);
+
+      if (this.current_mode === "RemoteSources") {
+        this.current_stream = this.remote_stream;
+      } else if (this.current_mode === "LocalSources") {
+        this.current_stream = this.local_stream;
+      }
+    },
+    setSupportedConstraints() {
+      return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : setSupportedConstraints`);
+
+        const supported_constraints = navigator.mediaDevices.getSupportedConstraints();
+        if (!supported_constraints) return resolve();
+
+        Object.entries(this.advanced_capture_options).map(([prop, value]) => {
+          this.advanced_capture_options[
+            prop
+          ].supported = this.advanced_capture_options[prop].enabled =
+            supported_constraints[prop] === true;
+        });
+        return resolve();
+      });
+    },
     setDefaultInputsAndOutputs() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : setDefaultInputsAndOutputs`);
+
       if (this.connected_devices.length === 0) return;
 
       // find in $root.settings.capture_options.selected_devices if video_input_device already exists
@@ -581,8 +784,10 @@ export default {
         );
       }
     },
-
     getDefaultDevice({ key, devices_list }) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : getDefaultDevice`);
+
       // find if this.$root.settings.capture_options.selected_devices has key, and if value is in devices_list
       const previously_used = this.$root.settings.capture_options
         .selected_devices;
@@ -613,6 +818,66 @@ export default {
         );
 
       return devices_list[0];
+    },
+    startMediaDeviceFeed(constraints) {
+      return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : startMediaDeviceFeed`);
+
+        let processFeeds = [];
+
+        // start video feed
+        processFeeds.push(
+          new Promise((resolve, reject) => {
+            if (!constraints.video) return resolve();
+            if (constraints._is_webrtc_screen_capture === true) {
+              navigator.mediaDevices
+                .getDisplayMedia({ video: constraints.video, audio: false })
+                .then((stream) => resolve({ type: "videoStream", stream }))
+                .catch((err) => reject(err));
+            } else {
+              navigator.mediaDevices
+                .getUserMedia({ video: constraints.video, audio: false })
+                .then((stream) => resolve({ type: "videoStream", stream }))
+                .catch((err) => reject(err));
+            }
+          })
+        );
+
+        // start audio feed
+        processFeeds.push(
+          new Promise((resolve, reject) => {
+            if (!constraints.audio) return resolve();
+            navigator.mediaDevices
+              .getUserMedia({ video: false, audio: constraints.audio })
+              .then((stream) => resolve({ type: "audioStream", stream }))
+              .catch((err) => reject(err));
+          })
+        );
+
+        Promise.all(processFeeds)
+          .then((streams) => {
+            if (!streams) reject("no feed available");
+
+            let tracks = [];
+
+            const video_stream = streams.find(
+              (s) => s && s.type === "videoStream"
+            );
+            if (!!video_stream) tracks.push(...video_stream.stream.getTracks());
+
+            const audio_stream = streams.find(
+              (s) => s && s.type === "audioStream"
+            );
+            if (!!audio_stream)
+              tracks.push(...audio_stream.stream.getAudioTracks());
+
+            let stream = new MediaStream(tracks);
+
+            resolve(stream);
+          })
+          .catch((err) => reject(err));
+      });
     },
     // getAllAvailableResolutions() {
     //   const all_resolutions = [];
@@ -645,12 +910,14 @@ export default {
     // },
     getDesktopCapturer() {
       return new Promise((resolve, reject) => {
-        const { desktopCapturer } = window.require("electron");
-        desktopCapturer.getSources(
-          { types: ["window", "screen"] },
-          (err, sources) => {
-            if (err) return reject(err);
-            // sources = sources.filter((s) => s.name === "Entire screen");
+        if (!window.electronAPI.desktopCapturer) return;
+
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : getDesktopCapturer`);
+
+        window.electronAPI
+          .desktopCapturer({ types: ["window", "screen"] })
+          .then((sources) => {
             sources = sources.map((s) => {
               return {
                 chromeMediaSource: "desktop",
@@ -661,35 +928,53 @@ export default {
             });
 
             return resolve(sources);
-          }
-        );
+          })
+          .catch((err) => reject(err));
         // .catch((err) => reject(err));
       });
     },
     refreshAvailableDevices() {
       return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : refreshAvailableDevices`);
+
         this.connected_devices = [];
         this.is_loading_available_devices = true;
-        this.listDevices().then((devices) => {
-          this.connected_devices = devices.map((d) => {
-            return {
-              label: d.label,
-              kind: d.kind,
-              deviceId: d.deviceId,
-              chromeMediaSource: d.chromeMediaSource
-                ? d.chromeMediaSource
-                : false,
-            };
-          });
+        this.setSupportedConstraints()
+          .then(() => this.listDevices())
+          .then((devices) => {
+            this.connected_devices = devices.map((d) => {
+              return {
+                label: d.label,
+                kind: d.kind,
+                deviceId: d.deviceId,
+                chromeMediaSource: d.chromeMediaSource
+                  ? d.chromeMediaSource
+                  : false,
+              };
+            });
 
-          this.is_loading_available_devices = false;
-          return resolve();
-        });
+            if (!this.$root.state.is_electron) {
+              this.connected_devices.push({
+                deviceId: "screen_capture",
+                kind: "videoinput",
+                label: "🖥️ " + this.$t("screen_capture"),
+              });
+            }
+
+            this.is_loading_available_devices = false;
+            return resolve();
+          });
       });
     },
     setCameraStreamFromDefaults() {
       return new Promise((resolve, reject) => {
-        this.stream_current_settings = this.current_settings;
+        if (this.$root.state.dev_mode === "debug")
+          console.log(
+            `CaptureSettings • METHODS : setCameraStreamFromDefaults`
+          );
+
+        this.is_loading_feed = true;
 
         if (!!this.selected_devices.audio_output_device)
           this.$emit(
@@ -697,19 +982,21 @@ export default {
             this.selected_devices.audio_output_device.deviceId
           );
 
-        this.startCameraStream()
+        this.startLocalStream()
           .then(() => {
+            this.stream_current_settings = this.current_settings;
             this.last_working_resolution = this.desired_camera_resolution;
-            return resolve();
+            this.is_loading_feed = false;
+            return;
           })
           .catch((error) => {
-            this.stream_current_settings = false;
+            this.is_loading_feed = false;
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
               .error(
                 this.$t(
-                  "notifications.failed_to_start_video_change_source_or_res"
+                  "notifications.failed_to_start_streams_change_source_or_res"
                 ) +
                   "<br>" +
                   error.name
@@ -720,103 +1007,370 @@ export default {
               );
               if (this.last_working_resolution) {
                 this.desired_camera_resolution = this.last_working_resolution;
+                this.last_working_resolution = false;
                 setTimeout(() => {
-                  this.setCameraStreamFromDefaults().then(() => resolve());
+                  this.setCameraStreamFromDefaults()
+                    .then(() => resolve())
+                    .catch(() => reject());
                 }, 500);
               } else {
                 return reject();
               }
             }
+          })
+          .then(() => {
+            this.share_this_stream.status.loading = true;
+            return this.setStreamSharing();
+          })
+          .then(() => {
+            this.share_this_stream.status.loading = false;
+            this.is_loading_feed = false;
+            return resolve();
+          })
+          .catch((error) => {
+            this.share_this_stream.status.loading = false;
+            this.is_loading_feed = false;
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(
+                this.$t("notifications.failed_to_share_stream") +
+                  "<br>" +
+                  error.name
+              );
           });
       });
     },
-    startCameraStream() {
+    startLocalStream() {
       return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : startLocalStream`);
+
         //Kill any running streams;
-        if (this.stream)
-          this.stream.getTracks().forEach((track) => track.stop());
+        if (this.local_stream)
+          this.local_stream.getTracks().forEach((track) => track.stop());
 
         let constraints = this.createConstraintsFromSelected();
 
         setTimeout(
           () => {
-            navigator.mediaDevices
-              .getUserMedia(constraints)
-              .then(gotStream)
-              .then(() => {
+            this.startMediaDeviceFeed(constraints)
+              .then((stream) => {
+                this.local_stream = stream;
                 return resolve();
               })
               .catch((error) => {
                 console.log("getUserMedia error : ", error);
+                this.$emit("show");
+                if (error.name === "NotAllowedError") {
+                  this.status = "not_allowed";
+                }
                 return reject(error);
               });
           },
-          this.stream ? 200 : 0
+          this.local_stream ? 200 : 0
         ); //official examples had this at 200
-
-        const gotStream = (stream) => {
-          this.$emit("update:stream", stream);
-        };
       });
     },
     createConstraintsFromSelected() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `CaptureSettings • METHODS : createConstraintsFromSelected`
+        );
+
       let _constraints = {
         audio: false,
         video: false,
       };
 
-      if (
-        !this.selected_devices.video_input_device.hasOwnProperty(
-          "chromeMediaSource"
-        ) ||
-        !this.selected_devices.video_input_device.chromeMediaSource
-      ) {
-        // non screen capture devices
-        _constraints.audio = !this.enable_audio
-          ? false
-          : {
-              deviceId: this.selected_devices.audio_input_device.deviceId
-                ? { exact: this.selected_devices.audio_input_device.deviceId }
-                : undefined,
-            };
+      _constraints.audio = {
+        deviceId: this.selected_devices.audio_input_device.deviceId
+          ? { exact: this.selected_devices.audio_input_device.deviceId }
+          : undefined,
+        echoCancellation: this.advanced_capture_options.echoCancellation
+          .enabled,
+        noiseSuppression: this.advanced_capture_options.noiseSuppression
+          .enabled,
+      };
 
-        // {
-        //   // optional: [{ sourceId: this._video_input_device.audioinput }],
-        // };
-        _constraints.video = !this.enable_video
-          ? false
-          : {
-              deviceId: this.selected_devices.video_input_device.deviceId
-                ? { exact: this.selected_devices.video_input_device.deviceId }
-                : undefined,
-              width: { exact: this.desired_camera_resolution.width }, //new syntax
-              height: { exact: this.desired_camera_resolution.height }, //new syntax
-            };
-      } else {
+      // IF ELECTRON DESKTOP CAPTURER AND VIDEO ENABLED
+      if (
+        this.selected_devices.video_input_device.hasOwnProperty(
+          "chromeMediaSource"
+        ) &&
+        this.selected_devices.video_input_device.chromeMediaSource
+      ) {
         // screen capture devices
-        _constraints = {
-          audio: false,
-          video: {
-            mandatory: {
-              chromeMediaSource: this.selected_devices.video_input_device
-                .chromeMediaSource,
-              chromeMediaSourceId: this.selected_devices.video_input_device
-                .deviceId,
-              minWidth: this.desired_camera_resolution.width,
-              maxWidth: this.desired_camera_resolution.width,
-              minHeight: this.desired_camera_resolution.height,
-              maxHeight: this.desired_camera_resolution.height,
-            },
+        _constraints._is_electron_screen_capture = true;
+        _constraints.video = {
+          mandatory: {
+            chromeMediaSource: this.selected_devices.video_input_device
+              .chromeMediaSource,
+            chromeMediaSourceId: this.selected_devices.video_input_device
+              .deviceId,
+            // minWidth: this.desired_camera_resolution.width,
+            // maxWidth: this.desired_camera_resolution.width,
+            // minHeight: this.desired_camera_resolution.height,
+            // maxHeight: this.desired_camera_resolution.height,
           },
         };
+      } else {
+        // IF BROWSER SCREEN CAPTURE
+        // IF BROWSER OR ELECTRON CAMERA FEED
+        if (
+          this.selected_devices.video_input_device &&
+          this.selected_devices.video_input_device.deviceId === "screen_capture"
+        ) {
+          _constraints._is_webrtc_screen_capture = true;
+          _constraints.video = {
+            cursor: this.advanced_capture_options.cursor.enabled,
+          };
+        } else {
+          _constraints.video = {
+            deviceId: this.selected_devices.video_input_device.deviceId
+              ? {
+                  exact: this.selected_devices.video_input_device.deviceId,
+                }
+              : undefined,
+            width: { exact: this.desired_camera_resolution.width }, //new syntax
+            height: { exact: this.desired_camera_resolution.height }, //new syntax
+          };
+        }
       }
 
       console.log("Constraints = " + JSON.stringify(_constraints, null, 4));
 
       return _constraints;
     },
-    changeStreamTo(stream) {
-      this.$emit("update:stream", stream);
+    setStreamSharing() {
+      return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : setStreamSharing`);
+
+        if (!this.share_this_stream.enabled) {
+          this.stopSharingStream();
+          return resolve();
+        }
+
+        if (this.share_this_stream.name.length === 0)
+          return reject("missing_stream_name");
+
+        if (!this.local_stream)
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .error(this.$t("notifications.no_stream_found_while_sharing"));
+
+        if (!this.rtcmulti_connection) {
+          this.initRTCMulti();
+        }
+
+        this.rtcmulti_connection.addStream(this.local_stream);
+
+        this.rtcmulti_connection.open(
+          this.share_this_stream.name,
+          (isRoomOpened, roomid, error) => {
+            if (this.$root.state.dev_mode === "debug")
+              console.log(
+                `CaptureSettings • METHODS : setStreamSharing • opened room ${roomid}`
+              );
+
+            this.share_this_stream.status.enabled = true;
+            this.share_this_stream.status.name = roomid;
+
+            this.rtcmulti_connection.onNewParticipant = (
+              participantId,
+              userPreferences
+            ) =>
+              this.newParticipantOnStream({ participantId, userPreferences });
+
+            this.rtcmulti_connection.onleave = (participantId) =>
+              this.onParticipantLeave({ participantId });
+
+            if (error) {
+              this.$alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .error(
+                  this.$t("notifications.failed_to_start_stream_sharing") +
+                    " " +
+                    error.message
+                );
+            }
+          }
+        );
+
+        return resolve();
+      });
+    },
+    newParticipantOnStream({ participantId, userPreferences }) {
+      this.share_this_stream.status.peers_connected.push(participantId);
+
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(8000)
+        .success(this.$t("notifications.new_user_connected_to_stream"));
+
+      this.rtcmulti_connection.acceptParticipationRequest(
+        participantId,
+        userPreferences
+      );
+    },
+    onParticipantLeave(participantId) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `CaptureSettings • METHODS : onParticipantLeave ${participantId}`
+        );
+
+      this.share_this_stream.status.peers_connected.filter(
+        (id) => id !== participantId
+      );
+    },
+    callStream() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : callStream`);
+
+      this.access_distant_stream.calling = true;
+
+      if (!this.rtcmulti_connection) this.initRTCMulti();
+
+      const call_timeout = setTimeout(() => {
+        this.access_distant_stream.calling = false;
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error("Failed to call timeout");
+      }, 5000);
+
+      this.rtcmulti_connection.onstream = (event) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`CaptureSettings • METHODS : callStream • onstream`);
+
+        event.mediaElement.removeAttribute("src");
+        event.mediaElement.removeAttribute("srcObject");
+        event.mediaElement.muted = true;
+        event.mediaElement.volume = 0;
+
+        if (this.access_distant_stream.calling) {
+          this.remote_stream = event.stream;
+          this.access_distant_stream.calling = false;
+          this.access_distant_stream.status.enabled = true;
+          clearTimeout(call_timeout);
+        }
+      };
+
+      this.rtcmulti_connection.checkPresence(
+        this.access_distant_stream.callee,
+        (isOnline, username, error) => {
+          if (this.$root.state.dev_mode === "debug")
+            console.log(
+              `CaptureSettings • METHODS : username • for ${username} and ${isOnline}`
+            );
+          if (!isOnline) {
+            this.$alertify
+              .closeLogOnClick(true)
+              .delay(4000)
+              .error(username + " is not online.");
+
+            this.access_distant_stream.calling = false;
+            clearTimeout(call_timeout);
+            return;
+          }
+
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(4000)
+            .success(username + " is online.");
+          this.access_distant_stream.status.callee = username;
+          this.rtcmulti_connection.join(username);
+        }
+      );
+    },
+    hangupStream() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : hangupStream`);
+
+      this.rtcmulti_connection.leave();
+      this.access_distant_stream.status.enabled = false;
+    },
+    initRTCMulti() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : initRTCMulti`);
+
+      if (!window.rtcmulti_connection)
+        window.rtcmulti_connection = new RTCMultiConnection();
+      this.rtcmulti_connection = window.rtcmulti_connection;
+
+      this.rtcmulti_connection.iceServers = [
+        {
+          urls: [
+            "stun:stun.l.google.com:19302",
+            "stun:stun1.l.google.com:19302",
+            "stun:stun2.l.google.com:19302",
+            "stun:stun.l.google.com:19302?transport=udp",
+          ],
+        },
+      ];
+
+      // detect 2G
+      if (
+        navigator.connection &&
+        navigator.connection.type === "cellular" &&
+        navigator.connection.downlinkMax <= 0.115
+      )
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("bandwidth_very_low_for_stream_sharing"));
+
+      this.rtcmulti_connection.socketURL =
+        "https://rtcmulticonnection.herokuapp.com:443/";
+
+      this.rtcmulti_connection.dontCaptureUserMedia = true;
+
+      this.rtcmulti_connection.session = {
+        video: true,
+        audio: true,
+        oneway: true,
+      };
+
+      this.rtcmulti_connection.onstream = (event) => {
+        console.log("CaptureSettings: onstream");
+        event.mediaElement.volume = 0;
+      };
+      this.rtcmulti_connection.onstreamended = (event) => {
+        console.log("CaptureSettings: onstreamended");
+        this.$alertify.closeLogOnClick(true).delay(4000).error("onstreamended");
+        // this.share_this_stream.status.enabled = false;
+      };
+      this.rtcmulti_connection.onMediaError = (e) => {
+        console.log("CaptureSettings: onMediaError");
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("stream_sharing_media_error") + e.message);
+      };
+    },
+    stopSharingStream() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : stopSharingStream`);
+
+      if (!this.rtcmulti_connection) return;
+
+      // only disconnect peers connected to this stream
+
+      this.share_this_stream.status.peers_connected.map((pid) => {
+        this.rtcmulti_connection.disconnectWith(pid);
+      });
+    },
+    closeMultiRTC() {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`CaptureSettings • METHODS : closeMultiRTC`);
+
+      if (!this.rtcmulti_connection) return;
+
+      this.stopSharingStream();
+      this.rtcmulti_connection.closeSocket();
     },
   },
 };
@@ -833,6 +1387,7 @@ export default {
   flex-flow: column nowrap;
 
   label,
+  small,
   .buttonLink {
     color: inherit;
   }
@@ -858,13 +1413,28 @@ export default {
 .m_captureSettings--settings {
   overflow-y: auto;
   flex: 1 1 auto;
-  padding: calc(var(--spacing) / 2);
   // padding-bottom: var(--spacing);
 
   > div {
-    background-color: rgba(0, 0, 0, 0.1);
-    padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-    border-radius: 6px;
+    padding: calc(var(--spacing) / 2);
+    padding-top: calc(var(--spacing) / 4);
+    > div {
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+      border-radius: 6px;
+
+      > div {
+        padding-top: calc(var(--spacing) / 4);
+        margin-bottom: calc(var(--spacing) / 4);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+    > label {
+      line-height: 2;
+    }
   }
 }
 
@@ -885,12 +1455,73 @@ export default {
 .m_captureSettings--updateButton {
   flex: 0 0 auto;
   border-top: 2px solid var(--c-rouge_fonce);
-  padding: calc(var(--spacing) / 2);
   color: black;
 
   display: flex;
+  flex-flow: column wrap;
+  // align-items: center;
+  // justify-content: center;
+}
+
+.m_sideBySideSwitches {
+  flex-flow: row nowrap;
+}
+
+.m_sideBySideSwitches > * {
+  display: block;
+  border-color: var(--c-rouge_fonce);
+  min-width: 100px;
+  padding: calc(var(--spacing) / 8) 0;
+
+  display: flex;
   flex-flow: row wrap;
-  align-items: center;
+  align-items: stretch;
+
+  input {
+    margin: calc(var(--spacing) / 2);
+
+    @media only screen and (max-width: 780px) {
+      margin: calc(var(--spacing) / 4);
+    }
+  }
+
+  > div {
+    flex: 1 1 0;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+  }
+
+  small {
+    flex: 0 0 100%;
+    background-color: var(--c-rouge_fonce);
+    display: block;
+    text-align: center;
+    font-style: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.m_captureSettings--updateButton--buttons {
+  padding: calc(var(--spacing) / 2);
+  display: flex;
   justify-content: center;
+}
+.m_captureSettings--updateButton--shareStreamToggle {
+  position: relative;
+  background-color: var(--c-rouge_fonce);
+  color: white;
+  text-align: center;
+}
+
+._close_button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-height: 0;
+  padding: 0;
+  margin: calc(var(--spacing) / 4);
 }
 </style>

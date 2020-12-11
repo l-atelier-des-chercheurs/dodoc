@@ -58,7 +58,7 @@
               </transition>
 
               <transition name="CaptureView" :duration="500">
-                <CaptureView2
+                <CaptureView
                   v-if="$root.do_navigation.view === 'CaptureView'"
                   :slugFolderName="$root.do_navigation.current_slugProjectName"
                   :type="`projects`"
@@ -153,8 +153,7 @@ import TopBar from "./TopBar.vue";
 import ListView from "./ListView.vue";
 import Chats from "./Chats.vue";
 import ProjectView from "./ProjectView.vue";
-// import CaptureView from "./CaptureView.vue";
-import CaptureView2 from "./CaptureView2.vue";
+import CaptureView from "./components/capture/CaptureView.vue";
 import EditMedia from "./components/modals/EditMedia.vue";
 import CreateQRModal from "./components/modals/CreateQRModal.vue";
 import Publications from "./Publications.vue";
@@ -171,8 +170,7 @@ export default {
     ListView,
     Chats,
     ProjectView,
-    // CaptureView,
-    CaptureView2,
+    CaptureView,
     EditMedia,
     CreateQRModal,
     Publications,

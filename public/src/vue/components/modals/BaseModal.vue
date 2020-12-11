@@ -7,7 +7,7 @@
         { is_invisible: !showModal },
         { is_minimized: is_minimized },
       ]"
-      @click.self="closeModal"
+      @click.self="backgroundClick"
       :style="`height: ${$root.settings.windowHeight}px`"
     >
       <div
@@ -219,6 +219,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    dontCloseWhenClickingBackground: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -287,6 +291,10 @@ export default {
         this.prevMedia();
         return;
       }
+    },
+    backgroundClick() {
+      if (this.dontCloseWhenClickingBackground) return false;
+      this.closeModal();
     },
     closeModal: function () {
       console.log(
