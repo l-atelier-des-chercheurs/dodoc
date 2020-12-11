@@ -829,7 +829,7 @@
                     class=""
                     type="range"
                     v-model.number="vecto_number_of_colors"
-                    min="1"
+                    min="2"
                     max="7"
                     step="1"
                   />
