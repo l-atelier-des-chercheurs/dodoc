@@ -295,6 +295,8 @@
               v-model.trim="access_distant_stream.callee"
               required
               :disabled="access_distant_stream.status.enabled"
+              autofocus="autofocus"
+              onfocus="this.select()"
               @keydown.enter.prevent="callStream"
             />
           </div>
@@ -333,7 +335,9 @@
             type="text"
             v-model.trim="share_this_stream.name"
             required
-            autofocus
+            autofocus="autofocus"
+            onfocus="this.select()"
+            @keydown.enter.prevent="setCameraStreamFromDefaults"
           />
         </div>
       </div>
@@ -969,6 +973,8 @@ export default {
             `CaptureSettings • METHODS : setCameraStreamFromDefaults`
           );
 
+        this.is_loading_feed = true;
+
         if (!!this.selected_devices.audio_output_device)
           this.$emit(
             "update:audio_output_deviceId",
@@ -979,9 +985,11 @@ export default {
           .then(() => {
             this.stream_current_settings = this.current_settings;
             this.last_working_resolution = this.desired_camera_resolution;
+            this.is_loading_feed = false;
             return;
           })
           .catch((error) => {
+            this.is_loading_feed = false;
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
@@ -1015,10 +1023,12 @@ export default {
           })
           .then(() => {
             this.share_this_stream.status.loading = false;
+            this.is_loading_feed = false;
             return resolve();
           })
           .catch((error) => {
             this.share_this_stream.status.loading = false;
+            this.is_loading_feed = false;
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
@@ -1141,18 +1151,20 @@ export default {
           return resolve();
         }
 
-        this.initRTCMulti();
-
         if (this.share_this_stream.name.length === 0)
           return reject("missing_stream_name");
 
-        if (!this.current_stream)
+        if (!this.local_stream)
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
             .error(this.$t("notifications.no_stream_found_while_sharing"));
 
-        this.rtcmulti_connection.addStream(this.current_stream);
+        if (!this.rtcmulti_connection) {
+          this.initRTCMulti();
+        }
+
+        this.rtcmulti_connection.addStream(this.local_stream);
 
         this.rtcmulti_connection.open(
           this.share_this_stream.name,
@@ -1204,6 +1216,11 @@ export default {
       );
     },
     onParticipantLeave(participantId) {
+      if (this.$root.state.dev_mode === "debug")
+        console.log(
+          `CaptureSettings • METHODS : onParticipantLeave ${participantId}`
+        );
+
       this.share_this_stream.status.peers_connected.filter(
         (id) => id !== participantId
       );
@@ -1213,7 +1230,8 @@ export default {
         console.log(`CaptureSettings • METHODS : callStream`);
 
       this.access_distant_stream.calling = true;
-      this.initRTCMulti();
+
+      if (!this.rtcmulti_connection) this.initRTCMulti();
 
       const call_timeout = setTimeout(() => {
         this.access_distant_stream.calling = false;
@@ -1277,8 +1295,6 @@ export default {
     initRTCMulti() {
       if (this.$root.state.dev_mode === "debug")
         console.log(`CaptureSettings • METHODS : initRTCMulti`);
-
-      if (this.rtcmulti_connection) return;
 
       if (!window.rtcmulti_connection)
         window.rtcmulti_connection = new RTCMultiConnection();
