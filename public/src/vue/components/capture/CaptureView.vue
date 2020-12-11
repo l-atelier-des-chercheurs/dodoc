@@ -1751,8 +1751,11 @@ export default {
             .forEach((track) => _stream.removeTrack(track));
 
         this.recorder = RecordRTC(_stream, options);
+
         try {
           this.recorder.startRecording();
+          this.is_recording = true;
+          this.startTimer();
         } catch (err) {
           this.$alertify
             .closeLogOnClick(true)
@@ -1763,9 +1766,6 @@ export default {
                 err.message
             );
         }
-
-        this.is_recording = true;
-        this.startTimer();
       });
     },
 
