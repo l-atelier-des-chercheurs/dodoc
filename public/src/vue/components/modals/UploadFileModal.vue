@@ -5,6 +5,7 @@
     :typeOfModal="'EditMeta'"
     :askBeforeClosingModal="false"
     :isFile="true"
+    :dontCloseWhenClickingBackground="true"
   >
     <!-- @submit="uploadFiles" -->
     <template slot="header">

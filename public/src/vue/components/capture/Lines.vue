@@ -103,7 +103,7 @@ export default {
         // const mapped_brightness = brightness;
 
         // de 0 à 1 vers 17 à 0
-        if (typeof mapped_brightness !== "number" || mapped_brightness > 10)
+        if (typeof mapped_brightness !== "number" || mapped_brightness > 20)
           return acc;
 
         const posX =
@@ -164,7 +164,6 @@ export default {
 
             const b = (R + R + R + B + G + G + G + G) >> 3;
 
-            // debugger;
             _pixel_array.push({
               x,
               y,
@@ -213,7 +212,7 @@ export default {
   width: 100%;
   height: 100%;
 
-  background: white;
+  // background: white;
   padding: var(--spacing);
 
   svg {

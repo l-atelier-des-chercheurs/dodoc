@@ -58,7 +58,7 @@
             </svg>
           </button>
 
-          <QRCode
+          <RemoteAccess
             v-if="showQRModal"
             :slugProjectName="slugProjectName"
             @close="showQRModal = false"
@@ -229,12 +229,12 @@
 </template>
 <script>
 import Publication from "./Publication.vue";
-import QRCode from "./components/modals/QRCode.vue";
+import RemoteAccess from "./components/modals/RemoteAccess.vue";
 import SettingsModal from "./components/modals/SettingsModal.vue";
 
 export default {
   props: {},
-  components: { Publication, QRCode, SettingsModal },
+  components: { Publication, RemoteAccess, SettingsModal },
   data() {
     return {
       show_all_my_replies: false,

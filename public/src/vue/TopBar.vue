@@ -7,6 +7,7 @@
         <transition name="BackButton" :duration="500">
           <button
             v-if="has_back_button"
+            :key="'back_button-' + $root.do_navigation.view"
             class="backButton text-ellipsis"
             type="button"
             @click="navigateTo('back')"
@@ -182,7 +183,7 @@
           </svg>
         </button>
 
-        <QRCode
+        <RemoteAccess
           v-if="showQRModal"
           :slugProjectName="slugProjectName"
           @close="showQRModal = false"
@@ -354,14 +355,14 @@
   </div>
 </template>
 <script>
-import QRCode from "./components/modals/QRCode.vue";
+import RemoteAccess from "./components/modals/RemoteAccess.vue";
 import SettingsModal from "./components/modals/SettingsModal.vue";
 import Clients from "./components/Clients.vue";
 
 export default {
   props: ["has_back_button", "slugProjectName", "authors", "project"],
   components: {
-    QRCode,
+    RemoteAccess,
     SettingsModal,
     Clients,
   },

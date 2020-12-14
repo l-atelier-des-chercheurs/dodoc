@@ -22,7 +22,7 @@
         <div v-else class="m_uploadFile--image" />
 
         <div :title="f.name" class="m_uploadFile--filename">{{ f.name }}</div>
-        <div class="m_uploadFile--size">{{ formatBytes(f.size) }}</div>
+        <div class="m_uploadFile--size">{{ $root.formatBytes(f.size) }}</div>
         <div
           class="m_uploadFile--action"
           v-if="files_to_upload_meta.hasOwnProperty(f.name)"
@@ -200,26 +200,6 @@ export default {
       //     await sendThisFile(task);
       //   }
       // }
-    },
-    formatBytes(a, b) {
-      if (0 == a) return `0 ${this.$t("bytes")}`;
-
-      var e = [
-        this.$t("bytes"),
-        this.$t("kb"),
-        this.$t("mb"),
-        this.$t("gb"),
-        "TB",
-        "PB",
-        "EB",
-        "ZB",
-        "YB",
-      ];
-
-      var c = 1024,
-        d = b || 2,
-        f = Math.floor(Math.log(a) / Math.log(c));
-      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f];
     },
     getImgPreview(file) {
       return URL.createObjectURL(file);

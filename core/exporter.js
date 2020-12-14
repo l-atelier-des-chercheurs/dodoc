@@ -39,9 +39,8 @@ module.exports = (function () {
           cacheFolderName
         );
 
-        fs.mkdirp(
-          cachePath,
-          function () {
+        fs.ensureDir(cachePath)
+          .then(() => {
             let tasks = [];
 
             const storeHTMLInIndexFile = new Promise((resolve, reject) => {
@@ -200,12 +199,11 @@ module.exports = (function () {
                 dev.error(`Failed to create cache folder: ${err}`);
                 reject(err);
               });
-          },
-          function (err, p) {
+          })
+          .catch((err) => {
             dev.error(`Failed to create cache folder: ${err}`);
             reject(err);
-          }
-        );
+          });
       });
     },
     makePDFForPubli: ({ slugPubliName, options }) => {
@@ -239,110 +237,117 @@ module.exports = (function () {
               height: publiData.height ? publiData.height : 297,
             };
 
-            fs.mkdirp(cachePath, () => {
-              dev.logverbose(
-                `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
-              );
+            fs.ensureDir(cachePath)
+              .then(() => {
+                dev.logverbose(
+                  `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
+                );
 
-              const { BrowserWindow } = require("electron");
+                const { BrowserWindow } = require("electron");
 
-              const browser_window = {
-                width: Math.floor(default_page_size.width * 3.78),
-                height: Math.floor(default_page_size.height * 3.78) + 25, // totally arbitrary value… will have to find better
-              };
+                const browser_window = {
+                  width: Math.floor(default_page_size.width * 3.78),
+                  height: Math.floor(default_page_size.height * 3.78) + 25, // totally arbitrary value… will have to find better
+                };
 
-              dev.logverbose(
-                `EXPORTER — makePDFForPubli : loading URL ${urlToPubli}`
-              );
+                dev.logverbose(
+                  `EXPORTER — makePDFForPubli : loading URL ${urlToPubli}`
+                );
 
-              let win = new BrowserWindow({
-                // width: 800,
-                // height: 600,
-                width: browser_window.width,
-                height: browser_window.height,
-                show: false,
-              });
-              win.loadURL(urlToPubli);
+                let win = new BrowserWindow({
+                  // width: 800,
+                  // height: 600,
+                  width: browser_window.width,
+                  height: browser_window.height,
+                  show: false,
+                  webPreferences: {
+                    contextIsolation: true,
+                    allowRunningInsecureContent: true,
+                  },
+                });
+                win.loadURL(urlToPubli);
 
-              win.webContents.on("did-finish-load", () => {
-                // Use default printing options
-                setTimeout(() => {
-                  if (
-                    !options ||
-                    !options.hasOwnProperty("type") ||
-                    options.type.toLowerCase() === "pdf"
-                  ) {
-                    const pdfName =
-                      slugPubliName +
-                      "-" +
-                      api.getCurrentDate() +
-                      "-" +
-                      (Math.random().toString(36) + "00000000000000000").slice(
-                        2,
-                        3 + 2
-                      ) +
-                      ".pdf";
-                    const docPath = path.join(cachePath, pdfName);
+                win.webContents.on("did-finish-load", () => {
+                  // Use default printing options
+                  setTimeout(() => {
+                    if (
+                      !options ||
+                      !options.hasOwnProperty("type") ||
+                      options.type.toLowerCase() === "pdf"
+                    ) {
+                      const pdfName =
+                        slugPubliName +
+                        "-" +
+                        api.getCurrentDate() +
+                        "-" +
+                        (
+                          Math.random().toString(36) + "00000000000000000"
+                        ).slice(2, 3 + 2) +
+                        ".pdf";
+                      const docPath = path.join(cachePath, pdfName);
 
-                    win.webContents.printToPDF(
-                      {
-                        marginsType: 1,
-                        pageSize: {
-                          width: default_page_size.width * 1000,
-                          height: default_page_size.height * 1000,
-                        },
-                        dpi: 300,
-                        printBackground: true,
-                        printSelectionOnly: false,
-                      },
-                      (error, data) => {
-                        if (error) throw error;
-                        fs.writeFile(docPath, data, (error) => {
+                      win.webContents
+                        .printToPDF({
+                          marginsType: 1,
+                          pageSize: {
+                            width: default_page_size.width * 1000,
+                            height: default_page_size.height * 1000,
+                          },
+                          dpi: 300,
+                          printBackground: true,
+                          printSelectionOnly: false,
+                        })
+                        .then((data) => {
+                          fs.writeFile(docPath, data, (error) => {
+                            if (error) throw error;
+
+                            dev.logverbose(
+                              `EXPORTER — makePDFForPubli : created PDF at ${docPath}`
+                            );
+
+                            resolve({
+                              pdfName,
+                              docPath,
+                            });
+                          });
+                        })
+                        .catch((error) => {
+                          console.log(
+                            `Failed to write PDF to ${docPath}: `,
+                            error
+                          );
+                        });
+                    } else if (options.type.toLowerCase() === "png") {
+                      const imageName =
+                        slugPubliName +
+                        "-" +
+                        api.getCurrentDate() +
+                        "-" +
+                        (
+                          Math.random().toString(36) + "00000000000000000"
+                        ).slice(2, 3 + 2) +
+                        ".png";
+                      const docPath = path.join(cachePath, imageName);
+
+                      win.capturePage().then((image) => {
+                        win.close();
+                        fs.writeFile(docPath, image.toPNG(1.0), (error) => {
                           if (error) throw error;
-
                           dev.logverbose(
-                            `EXPORTER — makePDFForPubli : created PDF at ${docPath}`
+                            `EXPORTER — makePDFForPubli : created image at ${docPath}`
                           );
 
                           resolve({
-                            pdfName,
                             docPath,
+                            imageName,
                           });
                         });
-                      }
-                    );
-                  } else if (options.type.toLowerCase() === "png") {
-                    const imageName =
-                      slugPubliName +
-                      "-" +
-                      api.getCurrentDate() +
-                      "-" +
-                      (Math.random().toString(36) + "00000000000000000").slice(
-                        2,
-                        3 + 2
-                      ) +
-                      ".png";
-                    const docPath = path.join(cachePath, imageName);
-
-                    win.capturePage((image) => {
-                      var conv = image.toPNG(1.0); // to PNG
-
-                      fs.writeFile(docPath, conv, (error) => {
-                        if (error) throw error;
-                        dev.logverbose(
-                          `EXPORTER — makePDFForPubli : created image at ${docPath}`
-                        );
-
-                        resolve({
-                          docPath,
-                          imageName,
-                        });
                       });
-                    });
-                  }
-                }, 1000);
-              });
-            });
+                    }
+                  }, 1000);
+                });
+              })
+              .catch((err) => {});
           });
       });
     },
@@ -410,74 +415,83 @@ module.exports = (function () {
             );
           })
           .then((medias_with_original_filepath) => {
-            fs.mkdirp(cachePath, function () {
-              if (publication_meta.template === "video_assemblage") {
-                _makeVideoAssemblage({
-                  medias_with_original_filepath,
-                  cachePath,
-                  videoName,
-                  resolution,
-                  bitrate,
-                  socket,
-                })
-                  .then(() => {
-                    return resolve(videoName);
+            fs.ensureDir(cachePath)
+              .then(() => {
+                if (publication_meta.template === "video_assemblage") {
+                  _makeVideoAssemblage({
+                    medias_with_original_filepath,
+                    cachePath,
+                    videoName,
+                    resolution,
+                    bitrate,
+                    socket,
                   })
-                  .catch((err) => {
-                    return reject(err.message);
-                  });
-              } else if (publication_meta.template === "mix_audio_and_video") {
-                // merge audio and video
-                // see https://stackoverflow.com/questions/30595594/fluent-ffmpeg-merging-video-and-audio-wrong-frames
-                _mixAudioAndVideo({
-                  medias_with_original_filepath,
-                  cachePath,
-                  videoName,
-                  resolution,
-                  socket,
-                })
-                  .then(() => {
-                    return resolve(videoName);
+                    .then(() => {
+                      return resolve(videoName);
+                    })
+                    .catch((err) => {
+                      return reject(err.message);
+                    });
+                } else if (
+                  publication_meta.template === "mix_audio_and_video"
+                ) {
+                  // merge audio and video
+                  // see https://stackoverflow.com/questions/30595594/fluent-ffmpeg-merging-video-and-audio-wrong-frames
+                  _mixAudioAndVideo({
+                    medias_with_original_filepath,
+                    cachePath,
+                    videoName,
+                    resolution,
+                    socket,
                   })
-                  .catch((err) => {
-                    return reject(`${err}`);
-                  });
-              } else if (publication_meta.template === "mix_audio_and_image") {
-                // merge audio and image
-                _mixAudioAndImage({
-                  medias_with_original_filepath,
-                  cachePath,
-                  videoName,
-                  resolution,
-                  socket,
-                })
-                  .then(() => {
-                    return resolve(videoName);
+                    .then(() => {
+                      return resolve(videoName);
+                    })
+                    .catch((err) => {
+                      return reject(`${err}`);
+                    });
+                } else if (
+                  publication_meta.template === "mix_audio_and_image"
+                ) {
+                  // merge audio and image
+                  _mixAudioAndImage({
+                    medias_with_original_filepath,
+                    cachePath,
+                    videoName,
+                    resolution,
+                    socket,
                   })
-                  .catch((err) => {
-                    return reject(`Failed to make a video: ${err}`);
-                  });
-              } else if (publication_meta.template === "video_effects") {
-                if (!publication_meta.effects)
-                  return reject("Missing effects field");
+                    .then(() => {
+                      return resolve(videoName);
+                    })
+                    .catch((err) => {
+                      return reject(`Failed to make a video: ${err}`);
+                    });
+                } else if (publication_meta.template === "video_effects") {
+                  if (!publication_meta.effects)
+                    return reject("Missing effects field");
 
-                _applyVideoEffects({
-                  medias_with_original_filepath,
-                  effects: publication_meta.effects,
-                  cachePath,
-                  videoName,
-                  resolution,
-                  bitrate,
-                  socket,
-                })
-                  .then(() => {
-                    return resolve(videoName);
+                  _applyVideoEffects({
+                    medias_with_original_filepath,
+                    effects: publication_meta.effects,
+                    cachePath,
+                    videoName,
+                    resolution,
+                    bitrate,
+                    socket,
                   })
-                  .catch((err) => {
-                    return reject(err.message);
-                  });
-              }
-            });
+                    .then(() => {
+                      return resolve(videoName);
+                    })
+                    .catch((err) => {
+                      return reject(err.message);
+                    });
+                }
+              })
+              .catch((err) => {
+                dev.error(`Error : ` + err);
+                reject(err);
+              });
           });
       });
     },
@@ -522,92 +536,77 @@ module.exports = (function () {
           height: video_height,
         };
 
-        fs.mkdirp(cachePath, function () {
-          fs.mkdirp(
-            imagesCachePath,
-            function () {
-              loadPublication(slugPubliName)
-                .then((pageData) => {
-                  let ratio = _getMediaRatioFromFirstFilename(
-                    slugPubliName,
-                    pageData
-                  );
+        fs.ensureDir(cachePath)
+          .then(() => fs.ensureDir(imagesCachePath))
+          .then(() => loadPublication(slugPubliName))
+          .then((pageData) => {
+            let ratio = _getMediaRatioFromFirstFilename(
+              slugPubliName,
+              pageData
+            );
 
-                  if (!ratio) {
-                    ratio = 0.75;
-                  }
-
-                  const new_width = 2 * Math.round(video_height / ratio / 2);
-                  resolution.width = new_width;
-
-                  return _loadMediaFilenameFromPublicationSlugs(
-                    slugPubliName,
-                    pageData
-                  );
-                })
-                .then((imagesFilePathInOrder) => {
-                  numberOfImagesToProcess = imagesFilePathInOrder.length;
-
-                  return _prepareImagesForStopmotion({
-                    imagesFilePathInOrder,
-                    cachePath: imagesCachePath,
-                    resolution,
-                  });
-                })
-                .then((imagesCachePath) => {
-                  dev.logverbose(`About to create stopmotion`);
-                  dev.logverbose(
-                    `Size : ${resolution.width}x${resolution.height}`
-                  );
-                  dev.logverbose(`framerate : ${framerate}`);
-                  dev.logverbose(
-                    `duration : ${numberOfImagesToProcess / framerate}`
-                  );
-                  const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
-                    .input(path.join(imagesCachePath, "img-%04d.jpeg"))
-                    .inputFPS(framerate)
-                    .withVideoCodec("libx264")
-                    .withVideoBitrate("4000k")
-                    .input("anullsrc")
-                    .inputFormat("lavfi")
-                    .duration(numberOfImagesToProcess / framerate)
-                    .size(`${resolution.width}x${resolution.height}`)
-                    .outputFPS(30)
-                    .autopad()
-                    .addOptions(["-preset slow", "-tune animation"])
-                    .toFormat("mp4")
-                    .on("start", function (commandLine) {
-                      dev.logverbose(
-                        "Spawned Ffmpeg with command: \n" + commandLine
-                      );
-                    })
-                    .on("progress", (progress) => {
-                      _notifyFfmpegProgress({ socket, progress });
-                    })
-                    .on("end", () => {
-                      dev.logverbose(`Stopmotion has been completed`);
-                      return resolve(videoName);
-                    })
-                    .on("error", function (err, stdout, stderr) {
-                      dev.error("An error happened: " + err.message);
-                      dev.error("ffmpeg standard output:\n" + stdout);
-                      dev.error("ffmpeg standard error:\n" + stderr);
-                      return reject(error);
-                    })
-                    .save(videoCachePath);
-                  global.ffmpeg_processes.push(ffmpeg_cmd);
-                })
-                .catch((err) => {
-                  dev.error(`Error : ` + err);
-                  reject(err);
-                });
-            },
-            function (err, p) {
-              dev.error(`Failed to create cache folder: ${err}`);
-              reject(err);
+            if (!ratio) {
+              ratio = 0.75;
             }
-          );
-        });
+
+            const new_width = 2 * Math.round(video_height / ratio / 2);
+            resolution.width = new_width;
+
+            return _loadMediaFilenameFromPublicationSlugs(
+              slugPubliName,
+              pageData
+            );
+          })
+          .then((imagesFilePathInOrder) => {
+            numberOfImagesToProcess = imagesFilePathInOrder.length;
+
+            return _prepareImagesForStopmotion({
+              imagesFilePathInOrder,
+              cachePath: imagesCachePath,
+              resolution,
+            });
+          })
+          .then((imagesCachePath) => {
+            dev.logverbose(`About to create stopmotion`);
+            dev.logverbose(`Size : ${resolution.width}x${resolution.height}`);
+            dev.logverbose(`framerate : ${framerate}`);
+            dev.logverbose(`duration : ${numberOfImagesToProcess / framerate}`);
+            const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+              .input(path.join(imagesCachePath, "img-%04d.jpeg"))
+              .inputFPS(framerate)
+              .withVideoCodec("libx264")
+              .withVideoBitrate("4000k")
+              .input("anullsrc")
+              .inputFormat("lavfi")
+              .duration(numberOfImagesToProcess / framerate)
+              .size(`${resolution.width}x${resolution.height}`)
+              .outputFPS(30)
+              .autopad()
+              .addOptions(["-preset slow", "-tune animation"])
+              .toFormat("mp4")
+              .on("start", function (commandLine) {
+                dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+              })
+              .on("progress", (progress) => {
+                _notifyFfmpegProgress({ socket, progress });
+              })
+              .on("end", () => {
+                dev.logverbose(`Stopmotion has been completed`);
+                return resolve(videoName);
+              })
+              .on("error", function (err, stdout, stderr) {
+                dev.error("An error happened: " + err.message);
+                dev.error("ffmpeg standard output:\n" + stdout);
+                dev.error("ffmpeg standard error:\n" + stderr);
+                return reject(error);
+              })
+              .save(videoCachePath);
+            global.ffmpeg_processes.push(ffmpeg_cmd);
+          })
+          .catch((err) => {
+            dev.error(`Error : ` + err);
+            reject(err);
+          });
       });
     },
   };

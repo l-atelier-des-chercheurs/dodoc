@@ -80,14 +80,16 @@ export default {
 
       this.current_draw_percentage++;
       if (this.current_draw_percentage >= number_of_bars) {
-        this.current_draw_percentage = 0;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.clearCanvas();
       }
     },
     clearCanvas() {
       const canvas = this.$refs.canvas;
       const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);
       this.current_draw_percentage = 0;
     },
   },

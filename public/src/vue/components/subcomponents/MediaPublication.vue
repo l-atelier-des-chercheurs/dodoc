@@ -1155,6 +1155,7 @@ export default {
             .closeLogOnClick(true)
             .delay(4000)
             .error(this.$t("notifications.failed_to_save_media"));
+          this.$eventHub.$off(`publication.media_just_edited`);
         }
       }, 5000);
 
