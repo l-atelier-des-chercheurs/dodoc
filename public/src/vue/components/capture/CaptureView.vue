@@ -20,9 +20,6 @@
       @close="show_effects_pane = false"
     />
 
-    <!-- <div class="m_captureview--settingsPaneButton">
-    </div> -->
-
     <div class="m_captureview--videoPane">
       <transition name="slidedown" :duration="500">
         <div
@@ -148,7 +145,8 @@
               v-if="enable_filters"
               :width="actual_camera_resolution.width"
               :height="actual_camera_resolution.height"
-              @click="updateSelectedColor"
+              @mousemove="(e) => updateSelectedColor({ e, type: 'move' })"
+              @click="(e) => updateSelectedColor({ e, type: 'click' })"
             />
           </template>
 
@@ -1329,6 +1327,13 @@ export default {
         if (this.update_last_video_imageData) return false;
 
         const get_video_imageData = () => {
+          if (this.media_to_validate || this.capture_button_pressed) {
+            this.update_last_video_imageData = window.requestAnimationFrame(
+              get_video_imageData
+            );
+            return;
+          }
+
           this.getStaticImageFromVideoElement({ returns: "imageData" })
             .then((imageData) => {
               this.stream_lastImageData = imageData;
@@ -1432,21 +1437,60 @@ export default {
         ];
       }
     },
-    updateSelectedColor(e) {
+    updateSelectedColor({ e, type }) {
       if (!this.$refs.canvasElement) return;
       console.log("CaptureView: METHODS • updateSelectedColor");
+      const px_color = this.getColorInCanvasFromPixelCount(e);
+      this.$eventHub.$emit("captureCanvas.pixelColorUnderMouse", {
+        px_color,
+        type,
+      });
+    },
+    getColorInCanvasFromPixelCount(e) {
+      const getPropsForObjectfitContent = (
+        videoWidth,
+        videoHeight,
+        width,
+        height
+      ) => {
+        let scale, offsetX, offsetY;
+        if (videoHeight / height > videoWidth / width) {
+          (scale = videoHeight / height),
+            (offsetX = (videoWidth - width * scale) / 2),
+            (offsetY = 0);
+        } else {
+          (scale = videoWidth / width),
+            (offsetY = (videoHeight - height * scale) / 2),
+            (offsetX = 0);
+        }
+        return { scale, offsetX, offsetY };
+      };
 
-      const line = e.offsetY,
-        col = e.offsetX,
-        ctx = this.$refs.canvasElement.getContext("2d"),
-        frame = ctx.getImageData(col, line, 1, 1),
-        clicked_px = {
-          r: frame.data[0],
-          g: frame.data[1],
-          b: frame.data[2],
-        };
+      const transformed_props = getPropsForObjectfitContent(
+        this.actual_camera_resolution.width,
+        this.actual_camera_resolution.height,
+        this.$refs.canvasElement.getBoundingClientRect().width,
+        this.$refs.canvasElement.getBoundingClientRect().height
+      );
 
-      this.$eventHub.$emit("captureCanvas.updateSelectedColor", clicked_px);
+      // because of object-fit, we have to adjust the coordinates we get
+      const mouse_pos_x =
+        e.offsetX * transformed_props.scale + transformed_props.offsetX;
+      const mouse_pos_y =
+        e.offsetY * transformed_props.scale + transformed_props.offsetY;
+      // +
+      // (this.$refs.canvasElement.height -
+      //   this.actual_camera_resolution.height) /
+      //   2;
+      const frame = this.$refs.canvasElement
+        .getContext("2d")
+        .getImageData(mouse_pos_x, mouse_pos_y, 1, 1);
+
+      return {
+        r: frame.data[0],
+        g: frame.data[1],
+        b: frame.data[2],
+      };
     },
     nextMode() {
       console.log("CaptureView: METHODS • nextMode");
@@ -1556,7 +1600,7 @@ export default {
           this.actual_camera_resolution.width /
           this.actual_camera_resolution.height;
 
-        this.getStaticImageFromVideoElement({
+        this.getImageDataFromFeed({
           width: 240 * ratio,
           height: 240,
         }).then((image_data) => (this.last_frame_from_video = image_data));
@@ -1583,7 +1627,7 @@ export default {
       };
 
       this.$refs.videoElement.pause();
-      this.getStaticImageFromVideoElement().then((imageData) => {
+      this.getImageDataFromFeed().then((imageData) => {
         if (!this.current_stopmotion) {
           this.$root.settings.ask_before_leaving_capture = true;
           // create stopmotion
@@ -1852,57 +1896,75 @@ export default {
       window.clearInterval(this.recording_timer_interval);
     },
 
-    getImageDataFromFeed() {
+    getImageDataFromFeed({ width, height } = {}) {
       return new Promise((resolve, reject) => {
-        return this.getStaticImageFromVideoElement();
+        if (this.enable_filters && this.$refs.canvasElement) {
+          this.getStaticImageFromVideoElement({
+            width,
+            height,
+            from_element: this.$refs.canvasElement,
+          })
+            .then(resolve)
+            .catch(reject);
+        } else {
+          this.getStaticImageFromVideoElement({ width, height })
+            .then(resolve)
+            .catch(reject);
+        }
       });
     },
 
-    getStaticImageFromVideoElement({ width, height, returns = "blob" } = {}) {
+    getStaticImageFromVideoElement({
+      width,
+      height,
+      returns = "blob",
+      from_element = this.$refs.videoElement,
+    } = {}) {
       return new Promise((resolve, reject) => {
         if (this.$root.state.dev_mode === "debug")
           console.log(
             `CaptureView • METHODS : getStaticImageFromVideoElement of type ${returns}`
           );
 
-        if (!this.$refs.videoElement) {
+        if (!from_element) {
           if (this.$root.state.dev_mode === "debug")
             console.log(
-              `CaptureView • METHODS : getStaticImageFromVideoElement • missing videoElement`
+              `CaptureView • METHODS : getStaticImageFromVideoElement • missing element`
             );
           return reject();
         }
 
         var t0 = performance.now();
+        let _canvas = undefined;
 
-        if (!this.invisible_canvas)
-          this.invisible_canvas = document.createElement("canvas");
+        if (from_element.tagName === "VIDEO") {
+          if (!this.invisible_canvas)
+            this.invisible_canvas = document.createElement("canvas");
 
-        this.invisible_canvas.width = width
-          ? width
-          : this.$refs.videoElement.videoWidth;
-        this.invisible_canvas.height = height
-          ? height
-          : this.$refs.videoElement.videoHeight;
+          _canvas = this.invisible_canvas;
 
-        let invisible_ctx = this.invisible_canvas.getContext("2d");
-        invisible_ctx.drawImage(
-          this.$refs.videoElement,
-          0,
-          0,
-          this.invisible_canvas.width,
-          this.invisible_canvas.height
-        );
+          _canvas.width = width ? width : from_element.videoWidth;
+          _canvas.height = height ? height : from_element.videoHeight;
+
+          let invisible_ctx = _canvas.getContext("2d");
+          invisible_ctx.drawImage(
+            from_element,
+            0,
+            0,
+            _canvas.width,
+            _canvas.height
+          );
+        } else if (from_element.tagName === "CANVAS") {
+          _canvas = from_element;
+        }
 
         if (returns === "blob") {
-          var imageData = this.invisible_canvas.toBlob(
+          var imageData = _canvas.toBlob(
             (imageBlob) => {
-              this.invisible_canvas.remove();
-
               var t1 = performance.now();
               if (this.$root.state.dev_mode === "debug")
                 console.log(
-                  "CaptureView • METHODS : getStaticImageFromVideoElement took " +
+                  "CaptureView • METHODS : getStaticImageFromVideoElement toBlob took " +
                     (t1 - t0) +
                     " milliseconds."
                 );
@@ -1913,12 +1975,18 @@ export default {
             0.95
           );
         } else if (returns === "imageData") {
-          let frame = invisible_ctx.getImageData(
-            0,
-            0,
-            this.invisible_canvas.width,
-            this.invisible_canvas.height
-          );
+          let frame = _canvas
+            .getContext("2d")
+            .getImageData(0, 0, _canvas.width, _canvas.height);
+
+          var t1 = performance.now();
+          if (this.$root.state.dev_mode === "debug")
+            console.log(
+              "CaptureView • METHODS : getStaticImageFromVideoElement getImageData took " +
+                (t1 - t0) +
+                " milliseconds."
+            );
+
           return resolve(frame);
         }
       });
