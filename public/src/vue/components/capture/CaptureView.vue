@@ -130,7 +130,7 @@
         }"
       >
         <div class="m_captureview--videoPane--top--videoContainer">
-          <template v-show="show_videos">
+          <div v-show="show_videos">
             <video
               ref="videoElement"
               autoplay
@@ -148,7 +148,7 @@
               @mousemove="(e) => updateSelectedColor({ e, type: 'move' })"
               @click="(e) => updateSelectedColor({ e, type: 'click' })"
             />
-          </template>
+          </div>
 
           <Vecto
             v-if="selected_mode === 'vecto' && !media_to_validate"
