@@ -12,8 +12,13 @@
       @close="show_capture_settings = false"
     />
 
-    <!-- <div class="m_captureview--settingsPaneButton">
-    </div> -->
+    <CaptureFilters
+      v-show="show_effects_pane"
+      :stream_lastImageData="stream_lastImageData"
+      :enable_filters.sync="enable_filters"
+      @updateImageData="setImageData"
+      @close="show_effects_pane = false"
+    />
 
     <div class="m_captureview--videoPane">
       <transition name="slidedown" :duration="500">
@@ -125,20 +130,25 @@
         }"
       >
         <div class="m_captureview--videoPane--top--videoContainer">
-          <video
-            ref="videoElement"
-            autoplay
-            playsinline
-            :src-object.prop.camel="stream"
-            :controls="stream_type === 'RemoteSources'"
-            muted
-            v-show="
-              stream &&
-              ['photo', 'video', 'stopmotion'].includes(selected_mode) &&
-              show_live_feed &&
-              !(must_validate_media && media_to_validate)
-            "
-          />
+          <template v-show="show_videos">
+            <video
+              ref="videoElement"
+              autoplay
+              playsinline
+              :src-object.prop.camel="stream"
+              :controls="stream_type === 'RemoteSources'"
+              muted
+              v-show="!enable_filters"
+            />
+            <canvas
+              ref="canvasElement"
+              v-if="enable_filters"
+              :width="actual_camera_resolution.width"
+              :height="actual_camera_resolution.height"
+              @mousemove="(e) => updateSelectedColor({ e, type: 'move' })"
+              @click="(e) => updateSelectedColor({ e, type: 'click' })"
+            />
+          </template>
 
           <Vecto
             v-if="selected_mode === 'vecto' && !media_to_validate"
@@ -470,36 +480,38 @@
               v-if="!(media_to_validate && must_validate_media)"
             >
               <div>
-                <button
+                <template
                   v-if="
                     !is_recording &&
                     !is_making_stopmotion &&
                     !is_recording &&
                     !delay_event
                   "
-                  type="button"
-                  class="bg-rouge button-inline"
-                  :class="{ 'is--active': show_capture_settings }"
-                  @click="show_capture_settings = !show_capture_settings"
-                  :content="$t('settings')"
-                  v-tippy="{
-                    placement: 'right',
-                    delay: [600, 0],
-                  }"
                 >
-                  <svg
-                    class="inline-svg inline-svg_larger"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    x="0px"
-                    y="0px"
-                    viewBox="15 15 140 140"
-                    xml:space="preserve"
+                  <button
+                    type="button"
+                    class="bg-rouge button-inline"
+                    :class="{ 'is--active': show_capture_settings }"
+                    @click="show_capture_settings = !show_capture_settings"
+                    :content="$t('settings')"
+                    v-tippy="{
+                      placement: 'right',
+                      delay: [600, 0],
+                    }"
                   >
-                    <path
-                      style="fill: currentColor"
-                      d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
+                    <svg
+                      class="inline-svg inline-svg_larger"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      x="0px"
+                      y="0px"
+                      viewBox="15 15 140 140"
+                      xml:space="preserve"
+                    >
+                      <path
+                        style="fill: currentColor"
+                        d="M122.7,88.8v-10c0-1.1,0.6-2.1,1.6-2.6l9.6-4.9l-2-5.8l-11,1.6c-1.1,0.2-2.2-0.3-2.9-1.2l-6-8.1
                   c-0.7-0.9-0.8-2.1-0.3-3l4.8-9.6l-5.2-3.6l-7.7,7.5c-0.8,0.8-2,1-3.1,0.7l-9.9-3c-1.1-0.3-1.9-1.3-2.1-2.4L86.8,34h-6.4l-1.7,10.4
                   c-0.2,1.1-0.9,2-2,2.4L66.8,50c-1.1,0.3-2.2,0.1-3.1-0.7L55.9,42l-5.1,3.7l4.9,9.4c0.5,1,0.4,2.1-0.2,3l-6,8.2
                   c-0.6,0.9-1.8,1.4-2.9,1.2L35.8,66L34,71.8l9.7,4.8c1,0.5,1.7,1.5,1.7,2.6v10c0,1.1-0.6,2.1-1.6,2.6l-9.6,4.9l2,5.9l10.9-1.6
@@ -507,9 +519,87 @@
                   c1.1,0.3,1.9,1.3,2.1,2.4l1.9,10.4h6.4l1.7-10.4c0.2-1.1,0.9-2,2-2.4l9.9-3.2c1.1-0.3,2.2-0.1,3.1,0.7l7.8,7.3l5.1-3.7l-4.9-9.4
                   c-0.5-1-0.4-2.1,0.2-3l6-8.1c0.7-0.9,1.8-1.4,2.9-1.2l10.8,1.5l1.8-5.9l-9.7-4.8C123.3,90.9,122.7,89.9,122.7,88.8z M84,104.5
                   c-11.7,0-21.1-9.2-21.1-20.5c0-11.3,9.5-20.5,21.1-20.5s21.1,9.2,21.1,20.5C105.1,95.3,95.7,104.5,84,104.5z"
-                    />
-                  </svg>
-                </button>
+                      />
+                    </svg>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="button-inline bg-bleumarine"
+                    :class="{ 'is--active': show_effects_pane }"
+                    @click="show_effects_pane = !show_effects_pane"
+                    :content="$t('settings')"
+                    v-tippy="{
+                      placement: 'right',
+                      delay: [600, 0],
+                    }"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 168 168"
+                      class="inline-svg inline-svg_larger"
+                    >
+                      <path
+                        d="M84.0039,168A84,84,0,1,0,0,84,83.9973,83.9973,0,0,0,84.0039,168Z"
+                        style="fill: #1b2f81"
+                      />
+                      <path
+                        d="M110.3488,72.0093,114.6377,59.36a4.4236,4.4236,0,0,0-1.07-4.59,4.4946,4.4946,0,0,0-4.59-1.0745L96.3334,57.9846,85.62,50a4.5219,4.5219,0,0,0-4.6965-.4029,4.4316,4.4316,0,0,0-2.4409,4.0388l.1714,13.3577L67.7468,74.7049A4.4686,4.4686,0,0,0,68.9974,82.62L79.2565,85.807,38.1043,126.9546a2.3155,2.3155,0,1,0,3.2745,3.2746L82.5311,89.0769l3.1865,10.2638a4.4571,4.4571,0,0,0,3.5664,3.08c.12.0185.579.0556.704.0556a4.4844,4.4844,0,0,0,3.6451-1.88L101.35,89.6883l13.6078.1621a4.6074,4.6074,0,0,0,3.784-2.4316,4.4328,4.4328,0,0,0-.3983-4.6965ZM100.1869,85.0381a2.5322,2.5322,0,0,0-1.9221.9773L90.039,97.6409,85.8149,84.0423a2.3238,2.3238,0,0,0-1.5192-1.5238l-13.8764-4.03,11.8987-8.42a2.3208,2.3208,0,0,0,.9773-1.9221L82.846,53.71l11.6764,8.7168a2.3569,2.3569,0,0,0,2.1259.3381l13.5986-4.8911L105.56,71.6758a2.3135,2.3135,0,0,0,.3428,2.1259l8.8464,11.417Z"
+                        style="
+                          fill: #fc4b60;
+                          stroke: #fc4b60;
+                          stroke-miterlimit: 10;
+                          stroke-width: 2.8346456692913384px;
+                        "
+                      />
+                      <path
+                        d="M58.9467,42.2277h2.3158v2.3158a2.3159,2.3159,0,1,0,4.6317,0V42.2277H68.21a2.3159,2.3159,0,0,0,0-4.6317H65.8942V35.28a2.3159,2.3159,0,0,0-4.6317,0V37.596H58.9467a2.3159,2.3159,0,0,0,0,4.6317Z"
+                        style="
+                          fill: #fc4b60;
+                          stroke: #fc4b60;
+                          stroke-miterlimit: 10;
+                          stroke-width: 2.8346456692913384px;
+                        "
+                      />
+                      <path
+                        d="M49.6834,65.386h2.3158v2.3158a2.3159,2.3159,0,0,0,4.6317,0V65.386h2.3158a2.3159,2.3159,0,0,0,0-4.6317H56.6309V58.4385a2.3159,2.3159,0,0,0-4.6317,0v2.3158H49.6834a2.3159,2.3159,0,0,0,0,4.6317Z"
+                        style="
+                          fill: #fc4b60;
+                          stroke: #fc4b60;
+                          stroke-miterlimit: 10;
+                          stroke-width: 2.8346456692913384px;
+                        "
+                      />
+                      <path
+                        d="M133.0531,102.4392h-2.3158v-2.3158a2.3159,2.3159,0,0,0-4.6317,0v2.3158H123.79a2.3159,2.3159,0,0,0,0,4.6317h2.3158v2.3158a2.3159,2.3159,0,1,0,4.6317,0v-2.3158h2.3158a2.3159,2.3159,0,0,0,0-4.6317Z"
+                        style="
+                          fill: #fc4b60;
+                          stroke: #fc4b60;
+                          stroke-miterlimit: 10;
+                          stroke-width: 2.8346456692913384px;
+                        "
+                      />
+                      <path
+                        d="M109.8949,111.7026H107.579v-2.3159a2.3158,2.3158,0,1,0-4.6316,0v2.3159h-2.3158a2.3158,2.3158,0,1,0,0,4.6316h2.3158V118.65a2.3158,2.3158,0,1,0,4.6316,0v-2.3158h2.3159a2.3158,2.3158,0,0,0,0-4.6316Z"
+                        style="
+                          fill: #fc4b60;
+                          stroke: #fc4b60;
+                          stroke-miterlimit: 10;
+                          stroke-width: 2.8346456692913384px;
+                        "
+                      />
+                      <path
+                        d="M119.1582,46.8594h2.3158v2.3158a2.3158,2.3158,0,1,0,4.6316,0V46.8594h2.3159a2.3159,2.3159,0,0,0,0-4.6317h-2.3159V39.9119a2.3158,2.3158,0,1,0-4.6316,0v2.3158h-2.3158a2.3159,2.3159,0,1,0,0,4.6317Z"
+                        style="
+                          fill: #fc4b60;
+                          stroke: #fc4b60;
+                          stroke-miterlimit: 10;
+                          stroke-width: 2.8346456692913384px;
+                        "
+                      />
+                    </svg>
+                  </button>
+                </template>
 
                 <button
                   type="button"
@@ -829,7 +919,7 @@
                     class=""
                     type="range"
                     v-model.number="vecto_number_of_colors"
-                    min="1"
+                    min="2"
                     max="7"
                     step="1"
                   />
@@ -953,6 +1043,7 @@ import StopmotionPanel from "./StopmotionPanel.vue";
 import MediaContent from "../subcomponents/MediaContent.vue";
 
 import CaptureSettings from "./CaptureSettings.vue";
+import CaptureFilters from "./CaptureFilters.vue";
 import StopmotionList from "./StopmotionList.vue";
 import AudioEqualizer from "./AudioEqualizer.vue";
 import Vecto from "./Vecto.vue";
@@ -995,6 +1086,7 @@ export default {
     StopmotionPanel,
     MediaContent,
     CaptureSettings,
+    CaptureFilters,
     StopmotionList,
     AudioEqualizer,
     Vecto,
@@ -1006,6 +1098,7 @@ export default {
       is_sending_image: false,
 
       id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
+      invisible_canvas: undefined,
 
       available_mode_picto: {
         photo: "/images/i_icone-dodoc_image.svg",
@@ -1063,6 +1156,7 @@ export default {
       audio_output_deviceId: undefined,
 
       show_capture_settings: false,
+      show_effects_pane: false,
 
       enable_audio_recording_in_video: true,
       enable_video: true,
@@ -1111,6 +1205,10 @@ export default {
 
       stream_sharing_informations_status: {},
       stream_access_informations_status: {},
+
+      enable_filters: false,
+      update_last_video_imageData: undefined,
+      stream_lastImageData: undefined,
     };
   },
   created() {},
@@ -1164,6 +1262,9 @@ export default {
     this.stopTimelapseInterval();
     this.cancelDelay();
     this.eraseTimer();
+
+    if (this.update_last_video_imageData)
+      window.cancelAnimationFrame(this.update_last_video_imageData);
 
     this.$refs.videoElement.removeEventListener(
       "loadedmetadata",
@@ -1221,6 +1322,38 @@ export default {
         this.$root.settings.ask_before_leaving_capture = false;
       }
     },
+    enable_filters: function () {
+      if (this.enable_filters) {
+        if (this.update_last_video_imageData) return false;
+
+        const get_video_imageData = () => {
+          if (this.media_to_validate || this.capture_button_pressed) {
+            this.update_last_video_imageData = window.requestAnimationFrame(
+              get_video_imageData
+            );
+            return;
+          }
+
+          this.getStaticImageFromVideoElement({ returns: "imageData" })
+            .then((imageData) => {
+              this.stream_lastImageData = imageData;
+            })
+            .catch((err) => {})
+            .then(
+              () =>
+                (this.update_last_video_imageData = window.requestAnimationFrame(
+                  get_video_imageData
+                ))
+            );
+        };
+        this.update_last_video_imageData = window.requestAnimationFrame(
+          get_video_imageData
+        );
+      } else {
+        window.cancelAnimationFrame(this.update_last_video_imageData);
+        this.update_last_video_imageData = undefined;
+      }
+    },
   },
   computed: {
     is_making_stopmotion() {
@@ -1260,6 +1393,14 @@ export default {
       return Math.floor(time_remaining + 0.99);
       // return this.delay_seconds - seconds_ellapsed_since_click;
     },
+    show_videos() {
+      return (
+        this.stream &&
+        ["photo", "video", "stopmotion"].includes(this.selected_mode) &&
+        this.show_live_feed &&
+        !(this.must_validate_media && this.media_to_validate)
+      );
+    },
   },
   methods: {
     hasFinishedLoading() {
@@ -1269,6 +1410,10 @@ export default {
       this.stream = stream;
       this.stream_type = type;
       this.$refs.videoElement.volume = 0;
+    },
+    setImageData(imageData) {
+      if (!this.$refs.canvasElement) return;
+      this.$refs.canvasElement.getContext("2d").putImageData(imageData, 0, 0);
     },
     previousMode() {
       console.log("METHODS • CaptureView: previousMode");
@@ -1292,8 +1437,64 @@ export default {
         ];
       }
     },
+    updateSelectedColor({ e, type }) {
+      if (!this.$refs.canvasElement) return;
+      console.log("CaptureView: METHODS • updateSelectedColor");
+      const px_color = this.getColorInCanvasFromPixelCount(e);
+      this.$eventHub.$emit("captureCanvas.pixelColorUnderMouse", {
+        px_color,
+        type,
+      });
+    },
+    getColorInCanvasFromPixelCount(e) {
+      const getPropsForObjectfitContent = (
+        videoWidth,
+        videoHeight,
+        width,
+        height
+      ) => {
+        let scale, offsetX, offsetY;
+        if (videoHeight / height > videoWidth / width) {
+          (scale = videoHeight / height),
+            (offsetX = (videoWidth - width * scale) / 2),
+            (offsetY = 0);
+        } else {
+          (scale = videoWidth / width),
+            (offsetY = (videoHeight - height * scale) / 2),
+            (offsetX = 0);
+        }
+        return { scale, offsetX, offsetY };
+      };
+
+      const transformed_props = getPropsForObjectfitContent(
+        this.actual_camera_resolution.width,
+        this.actual_camera_resolution.height,
+        this.$refs.canvasElement.getBoundingClientRect().width,
+        this.$refs.canvasElement.getBoundingClientRect().height
+      );
+
+      // because of object-fit, we have to adjust the coordinates we get
+      const mouse_pos_x =
+        e.offsetX * transformed_props.scale + transformed_props.offsetX;
+      const mouse_pos_y =
+        e.offsetY * transformed_props.scale + transformed_props.offsetY;
+      // +
+      // (this.$refs.canvasElement.height -
+      //   this.actual_camera_resolution.height) /
+      //   2;
+      const frame = this.$refs.canvasElement
+        .getContext("2d")
+        .getImageData(mouse_pos_x, mouse_pos_y, 1, 1);
+
+      return {
+        r: frame.data[0],
+        g: frame.data[1],
+        b: frame.data[2],
+      };
+    },
     nextMode() {
-      console.log("METHODS • CaptureView: nextMode");
+      console.log("CaptureView: METHODS • nextMode");
+
       if (
         this.is_recording ||
         this.media_to_validate ||
@@ -1399,7 +1600,7 @@ export default {
           this.actual_camera_resolution.width /
           this.actual_camera_resolution.height;
 
-        this.getStaticImageFromVideoElement({
+        this.getImageDataFromFeed({
           width: 240 * ratio,
           height: 240,
         }).then((image_data) => (this.last_frame_from_video = image_data));
@@ -1426,7 +1627,7 @@ export default {
       };
 
       this.$refs.videoElement.pause();
-      this.getStaticImageFromVideoElement().then((imageData) => {
+      this.getImageDataFromFeed().then((imageData) => {
         if (!this.current_stopmotion) {
           this.$root.settings.ask_before_leaving_capture = true;
           // create stopmotion
@@ -1563,7 +1764,7 @@ export default {
       this.show_capture_settings = false;
 
       if (this.selected_mode === "photo") {
-        this.getStaticImageFromVideoElement().then((rawData) => {
+        this.getImageDataFromFeed().then((rawData) => {
           this.media_to_validate = {
             rawData,
             objectURL: URL.createObjectURL(rawData),
@@ -1695,47 +1896,99 @@ export default {
       window.clearInterval(this.recording_timer_interval);
     },
 
-    getStaticImageFromVideoElement({ width, height } = {}) {
+    getImageDataFromFeed({ width, height } = {}) {
       return new Promise((resolve, reject) => {
+        if (this.enable_filters && this.$refs.canvasElement) {
+          this.getStaticImageFromVideoElement({
+            width,
+            height,
+            from_element: this.$refs.canvasElement,
+          })
+            .then(resolve)
+            .catch(reject);
+        } else {
+          this.getStaticImageFromVideoElement({ width, height })
+            .then(resolve)
+            .catch(reject);
+        }
+      });
+    },
+
+    getStaticImageFromVideoElement({
+      width,
+      height,
+      returns = "blob",
+      from_element = this.$refs.videoElement,
+    } = {}) {
+      return new Promise((resolve, reject) => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(
+            `CaptureView • METHODS : getStaticImageFromVideoElement of type ${returns}`
+          );
+
+        if (!from_element) {
+          if (this.$root.state.dev_mode === "debug")
+            console.log(
+              `CaptureView • METHODS : getStaticImageFromVideoElement • missing element`
+            );
+          return reject();
+        }
+
         var t0 = performance.now();
+        let _canvas = undefined;
 
-        let invisible_canvas = document.createElement("canvas");
+        if (from_element.tagName === "VIDEO") {
+          if (!this.invisible_canvas)
+            this.invisible_canvas = document.createElement("canvas");
 
-        invisible_canvas.width = width
-          ? width
-          : this.$refs.videoElement.videoWidth;
-        invisible_canvas.height = height
-          ? height
-          : this.$refs.videoElement.videoHeight;
+          _canvas = this.invisible_canvas;
 
-        let invisible_ctx = invisible_canvas.getContext("2d");
-        invisible_ctx.drawImage(
-          this.$refs.videoElement,
-          0,
-          0,
-          invisible_canvas.width,
-          invisible_canvas.height
-        );
-        var imageData = invisible_canvas.toBlob(
-          (imageBlob) => {
-            invisible_canvas.remove();
+          _canvas.width = width ? width : from_element.videoWidth;
+          _canvas.height = height ? height : from_element.videoHeight;
 
-            var t1 = performance.now();
-            if (this.$root.state.dev_mode === "debug")
-              console.log(
-                "CaptureView • METHODS : getStaticImageFromVideoElement took " +
-                  (t1 - t0) +
-                  " milliseconds."
-              );
+          let invisible_ctx = _canvas.getContext("2d");
+          invisible_ctx.drawImage(
+            from_element,
+            0,
+            0,
+            _canvas.width,
+            _canvas.height
+          );
+        } else if (from_element.tagName === "CANVAS") {
+          _canvas = from_element;
+        }
 
-            return resolve(imageBlob);
-          },
-          "image/jpeg",
-          0.95
-        );
-        // if(imageData === "data:,") {
-        //   return reject(this.$t('notifications.video_stream_not_available'));
-        // }
+        if (returns === "blob") {
+          var imageData = _canvas.toBlob(
+            (imageBlob) => {
+              var t1 = performance.now();
+              if (this.$root.state.dev_mode === "debug")
+                console.log(
+                  "CaptureView • METHODS : getStaticImageFromVideoElement toBlob took " +
+                    (t1 - t0) +
+                    " milliseconds."
+                );
+
+              return resolve(imageBlob);
+            },
+            "image/jpeg",
+            0.95
+          );
+        } else if (returns === "imageData") {
+          let frame = _canvas
+            .getContext("2d")
+            .getImageData(0, 0, _canvas.width, _canvas.height);
+
+          var t1 = performance.now();
+          if (this.$root.state.dev_mode === "debug")
+            console.log(
+              "CaptureView • METHODS : getStaticImageFromVideoElement getImageData took " +
+                (t1 - t0) +
+                " milliseconds."
+            );
+
+          return resolve(frame);
+        }
       });
     },
 
@@ -1967,8 +2220,13 @@ export default {
       align-items: center;
 
       > * {
+        display: flex;
         flex: 1 1 100px;
         padding: calc(var(--spacing) / 2);
+
+        > * {
+          margin-right: calc(var(--spacing) / 2);
+        }
 
         &:nth-child(2) {
           flex: 1 1 200px;
@@ -2029,6 +2287,7 @@ export default {
     height: 100%;
 
     video,
+    canvas,
     .mediaContainer img,
     .m_audioEqualizer {
       position: absolute;
