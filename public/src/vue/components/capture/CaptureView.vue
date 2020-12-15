@@ -1328,6 +1328,8 @@ export default {
 
         const get_video_imageData = () => {
           if (this.media_to_validate || this.capture_button_pressed) {
+            // ideally we should use video.requestVideoFrameCallback but support is… lacking
+            // https://caniuse.com/?search=requestVideoFrameCallback
             this.update_last_video_imageData = window.requestAnimationFrame(
               get_video_imageData
             );
@@ -1994,16 +1996,27 @@ export default {
 
     startRecordFeed(options) {
       return new Promise((resolve, reject) => {
-        const _stream = this.stream.clone();
-        if (
-          options.hasOwnProperty("enable_audio_recording_in_video") &&
-          options.enable_audio_recording_in_video === false
-        )
-          _stream
-            .getAudioTracks()
-            .forEach((track) => _stream.removeTrack(track));
+        const finalStream = new MediaStream();
 
-        this.recorder = RecordRTC(_stream, options);
+        // ajouter la vidéo au stream
+
+        const video_source =
+          this.enable_filters && this.$refs.canvasElement
+            ? this.$refs.canvasElement.captureStream()
+            : this.stream;
+        video_source.getVideoTracks().forEach(function (track) {
+          finalStream.addTrack(track);
+        });
+
+        if (
+          !options.hasOwnProperty("enable_audio_recording_in_video") ||
+          options.enable_audio_recording_in_video === true
+        )
+          this.stream
+            .getAudioTracks()
+            .forEach((track) => finalStream.addTrack(track));
+
+        this.recorder = RecordRTC(finalStream, options);
 
         try {
           this.recorder.startRecording();

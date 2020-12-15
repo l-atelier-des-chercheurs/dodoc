@@ -227,6 +227,9 @@ export default {
     processChromaKey(frame) {
       if (!this.enable_chroma_key) return frame;
 
+      // todo : checkbox to enable webgl greenscreen
+      // https://jameshfisher.com/2020/08/11/production-ready-green-screen-in-the-browser/
+
       let l = frame.data.length / 4;
       const key = this.chroma_key_color;
       const d = 255 - this.chroma_key_delta;
