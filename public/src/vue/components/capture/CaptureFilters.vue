@@ -11,7 +11,11 @@
         <label for="enable_filters">{{ $t("enable_filters") }}</label>
       </div>
 
-      <div v-if="enable_filters">
+      <div
+        :class="{
+          'is--disabled': !enable_filters,
+        }"
+      >
         <label>{{ $t("chroma_key(greenscreen)") }}</label>
         <div class="switch switch-xs">
           <input
@@ -156,7 +160,7 @@ export default {
       this.source_stream_resolution.width = frame.width;
       this.source_stream_resolution.height = frame.height;
 
-      this.processChromaKey(frame);
+      if (this.enable_chroma_key) this.processChromaKey(frame);
 
       this.$emit("updateImageData", frame);
     },
@@ -225,8 +229,6 @@ export default {
       if (type === "click") this.setTogglePickColorFromVideo();
     },
     processChromaKey(frame) {
-      if (!this.enable_chroma_key) return frame;
-
       // todo : checkbox to enable webgl greenscreen
       // https://jameshfisher.com/2020/08/11/production-ready-green-screen-in-the-browser/
 
@@ -358,6 +360,16 @@ export default {
         background-color: transparent;
       }
     }
+  }
+}
+
+.is--disabled {
+  filter: grayscale(100%);
+  opacity: 0.7;
+  cursor: not-allowed;
+
+  > * {
+    pointer-events: none;
   }
 }
 </style>
