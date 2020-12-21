@@ -46,14 +46,35 @@
         </div>
 
         <div>
-          <label>{{ $t("delta") }}</label>
+          <label>{{ $t("similarity") }}</label>
           <input
             class="margin-none"
             type="range"
-            v-model.number="chroma_key_delta"
+            v-model.number="chroma_key_settings.similarity"
             min="0"
-            max="255"
-            step="1"
+            max="1"
+            step="0.001"
+          />
+
+          <label>{{ $t("smoothness") }}</label>
+          <input
+            class="margin-none"
+            type="range"
+            v-model.number="chroma_key_settings.smoothness"
+            min="0"
+            max="1"
+            step="0.001"
+          />
+
+          <label>{{ $t("spill") }}</label>
+          <input
+            class="margin-none"
+            type="range"
+            v-model.number="chroma_key_settings.spill"
+            min="0"
+            max="1"
+            step="0.001"
+            value="0.1"
           />
         </div>
 
@@ -105,8 +126,9 @@
 <script>
 export default {
   props: {
-    stream_lastImageData: ImageData,
     enable_filters: Boolean,
+    videoElement: HTMLVideoElement,
+    canvasElement: HTMLCanvasElement,
   },
   components: {},
   data() {
@@ -119,12 +141,16 @@ export default {
         height: undefined,
       },
 
-      chroma_key_color: {
-        r: 0,
-        g: 255,
-        b: 0,
+      chroma_key_settings: {
+        key_color: {
+          r: 0,
+          g: 255,
+          b: 0,
+        }, // 0 -> 1 by 0.001
+        similarity: 0.4, // 0 -> 1 by 0.001
+        smoothness: 0.08, // 0 -> 1 by 0.001
+        spill: 0.1, // 0 -> 1 by 0.001
       },
-      chroma_key_delta: 50,
 
       chroma_key_use_image: false,
       chroma_key_imageData: undefined,
@@ -136,6 +162,49 @@ export default {
       },
 
       enable_pick_color_from_video: false,
+
+      fragment_shader: `
+precision mediump float;
+
+uniform sampler2D tex;
+uniform float texWidth;
+uniform float texHeight;
+
+uniform vec3 keyColor;
+uniform float similarity;
+uniform float smoothness;
+uniform float spill;
+
+// From https://github.com/libretro/glsl-shaders/blob/master/nnedi3/shaders/rgb-to-yuv.glsl
+vec2 RGBtoUV(vec3 rgb) {
+  return vec2(
+    rgb.r * -0.169 + rgb.g * -0.331 + rgb.b *  0.5    + 0.5,
+    rgb.r *  0.5   + rgb.g * -0.419 + rgb.b * -0.081  + 0.5
+  );
+}
+
+vec4 ProcessChromaKey(vec2 texCoord) {
+  vec4 rgba = texture2D(tex, texCoord);
+  float chromaDist = distance(RGBtoUV(texture2D(tex, texCoord).rgb), RGBtoUV(keyColor));
+
+  float baseMask = chromaDist - similarity;
+  float fullMask = pow(clamp(baseMask / smoothness, 0., 1.), 1.5);
+  rgba.a = fullMask;
+
+  float spillVal = pow(clamp(baseMask / spill, 0., 1.), 1.5);
+  float desat = clamp(rgba.r * 0.2126 + rgba.g * 0.7152 + rgba.b * 0.0722, 0., 1.);
+  rgba.rgb = mix(vec3(desat, desat, desat), rgba.rgb, spillVal);
+
+  return rgba;
+}
+
+void main(void) {
+  vec2 texCoord = vec2(gl_FragCoord.x/texWidth, 1.0 - (gl_FragCoord.y/texHeight));
+  vec4 videoColor = ProcessChromaKey(texCoord);
+  vec4 colorA = vec4(0.149,0.141,0.912, 1.);
+  gl_FragColor = mix(videoColor, colorA, vec4(0.));
+}
+      `,
     };
   },
   created() {},
@@ -152,33 +221,26 @@ export default {
     );
   },
   watch: {
-    stream_lastImageData() {
-      if (!this.stream_lastImageData || !this.stream_lastImageData.data)
-        return false;
-
-      const frame = this.stream_lastImageData;
-      this.source_stream_resolution.width = frame.width;
-      this.source_stream_resolution.height = frame.height;
-
-      if (this.enable_chroma_key) this.processChromaKey(frame);
-
-      this.$emit("updateImageData", frame);
-    },
     enable_filters() {
-      if (this.enable !== this.enable_filters)
+      if (this.enable !== this.enable_filters) {
         this.enable = this.enable_filters;
+      }
     },
     enable() {
       this.$emit("update:enable_filters", this.enable);
+      if (this.enable) {
+        this.startChromaKey();
+      }
     },
+    fragment_shader() {},
   },
   computed: {
     chroma_key_color_hex: {
       get() {
-        return this.rgbToHex(this.chroma_key_color);
+        return this.rgbToHex(this.chroma_key_settings.key_color);
       },
       set(value) {
-        this.chroma_key_color = this.hexToRgb(value);
+        this.chroma_key_settings.key_color = this.hexToRgb(value);
       },
     },
     chroma_key_replacement_color_hex: {
@@ -225,7 +287,7 @@ export default {
     pixelColorUnderMouse({ px_color, type }) {
       if (!this.enable_pick_color_from_video) return;
 
-      this.chroma_key_color = px_color;
+      this.chroma_key_settings.key_color = px_color;
       if (type === "click") this.setTogglePickColorFromVideo();
     },
     processChromaKey(frame) {
@@ -233,7 +295,7 @@ export default {
       // https://jameshfisher.com/2020/08/11/production-ready-green-screen-in-the-browser/
 
       let l = frame.data.length / 4;
-      const key = this.chroma_key_color;
+      const key = this.chroma_key_settings.key_color;
       const d = 255 - this.chroma_key_delta;
 
       if (key)
@@ -281,6 +343,107 @@ export default {
 
       return frame;
     },
+    startChromaKey() {
+      const webcamVideoEl = this.videoElement;
+      const displayCanvasEl = this.canvasElement;
+
+      console.log(`CaptureFilters • METHODS : startChromaKey`);
+
+      if (!displayCanvasEl) {
+        console.log(`CaptureFilters • METHODS : startChromaKey / no canvas`);
+        return;
+      }
+
+      const gl = displayCanvasEl.getContext("webgl", {
+        premultipliedAlpha: false,
+      });
+
+      const vs = gl.createShader(gl.VERTEX_SHADER);
+      gl.shaderSource(
+        vs,
+        "attribute vec2 c; void main(void) { gl_Position=vec4(c, 0.0, 1.0); }"
+      );
+      gl.compileShader(vs);
+
+      const fs = gl.createShader(gl.FRAGMENT_SHADER);
+      gl.shaderSource(fs, this.fragment_shader);
+      gl.compileShader(fs);
+      if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(fs));
+      }
+
+      const prog = gl.createProgram();
+      gl.attachShader(prog, vs);
+      gl.attachShader(prog, fs);
+      gl.linkProgram(prog);
+      gl.useProgram(prog);
+
+      const vb = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vb);
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]),
+        gl.STATIC_DRAW
+      );
+
+      const coordLoc = gl.getAttribLocation(prog, "c");
+      gl.vertexAttribPointer(coordLoc, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(coordLoc);
+
+      gl.activeTexture(gl.TEXTURE0);
+      const tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+      const texLoc = gl.getUniformLocation(prog, "tex");
+      const texWidthLoc = gl.getUniformLocation(prog, "texWidth");
+      const texHeightLoc = gl.getUniformLocation(prog, "texHeight");
+      const keyColorLoc = gl.getUniformLocation(prog, "keyColor");
+      const similarityLoc = gl.getUniformLocation(prog, "similarity");
+      const smoothnessLoc = gl.getUniformLocation(prog, "smoothness");
+      const spillLoc = gl.getUniformLocation(prog, "spill");
+
+      const processFrame = () => {
+        displayCanvasEl.width = this.videoElement.videoWidth;
+        displayCanvasEl.height = this.videoElement.videoHeight;
+        gl.viewport(
+          0,
+          0,
+          this.videoElement.videoWidth,
+          this.videoElement.videoHeight
+        );
+        gl.texImage2D(
+          gl.TEXTURE_2D,
+          0,
+          gl.RGB,
+          gl.RGB,
+          gl.UNSIGNED_BYTE,
+          this.videoElement
+        );
+        gl.uniform1i(texLoc, 0);
+        gl.uniform1f(texWidthLoc, this.videoElement.videoWidth);
+        gl.uniform1f(texHeightLoc, this.videoElement.videoHeight);
+
+        const m = this.chroma_key_settings.key_color;
+        gl.uniform3f(keyColorLoc, m.r / 255, m.g / 255, m.b / 255);
+        gl.uniform1f(
+          similarityLoc,
+          parseFloat(this.chroma_key_settings.similarity)
+        );
+        gl.uniform1f(
+          smoothnessLoc,
+          parseFloat(this.chroma_key_settings.smoothness)
+        );
+        gl.uniform1f(spillLoc, parseFloat(this.chroma_key_settings.spill));
+
+        gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+        window.requestAnimationFrame(processFrame);
+      };
+      window.requestAnimationFrame(processFrame);
+    },
     newChromaKeyImage(img) {
       console.log(`CaptureFilters • METHODS : newChromaKeyImage`);
 
@@ -293,8 +456,8 @@ export default {
         const canvas = document.createElement("canvas"),
           ctx = canvas.getContext("2d");
 
-        canvas.width = this.source_stream_resolution.width;
-        canvas.height = this.source_stream_resolution.height;
+        canvas.width = this.videoElement.videoWidth;
+        canvas.height = this.videoElement.videoHeight;
 
         const coverImg = (img, type, c_width, c_height) => {
           const img_ratio = img.height / img.width;

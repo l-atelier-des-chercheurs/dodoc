@@ -14,8 +14,9 @@
 
     <CaptureFilters
       v-show="show_effects_pane"
-      :stream_lastImageData="stream_lastImageData"
       :enable_filters.sync="enable_filters"
+      :videoElement="$refs.videoElement"
+      :canvasElement="$refs.canvasElement"
       @updateImageData="setImageData"
       @close="show_effects_pane = false"
     />
@@ -142,12 +143,12 @@
             />
             <canvas
               ref="canvasElement"
-              v-if="enable_filters"
+              v-show="enable_filters"
               :width="actual_camera_resolution.width"
               :height="actual_camera_resolution.height"
-              @mousemove="(e) => updateSelectedColor({ e, type: 'move' })"
               @click="(e) => updateSelectedColor({ e, type: 'click' })"
             />
+            <!-- @mousemove="(e) => updateSelectedColor({ e, type: 'move' })" -->
           </div>
 
           <Vecto
@@ -1206,9 +1207,8 @@ export default {
       stream_sharing_informations_status: {},
       stream_access_informations_status: {},
 
-      enable_filters: false,
+      enable_filters: true,
       update_last_video_imageData: undefined,
-      stream_lastImageData: undefined,
     };
   },
   created() {},
@@ -1320,40 +1320,6 @@ export default {
         if (this.$refs.videoElement) this.$refs.videoElement.play();
         if (this.$refs.audioElement) this.$refs.audioElement.play();
         this.$root.settings.ask_before_leaving_capture = false;
-      }
-    },
-    enable_filters: function () {
-      if (this.enable_filters) {
-        if (this.update_last_video_imageData) return false;
-
-        const get_video_imageData = () => {
-          if (this.media_to_validate || this.capture_button_pressed) {
-            // ideally we should use video.requestVideoFrameCallback but support is… lacking
-            // https://caniuse.com/?search=requestVideoFrameCallback
-            this.update_last_video_imageData = window.requestAnimationFrame(
-              get_video_imageData
-            );
-            return;
-          }
-
-          this.getStaticImageFromVideoElement({ returns: "imageData" })
-            .then((imageData) => {
-              this.stream_lastImageData = imageData;
-            })
-            .catch((err) => {})
-            .then(
-              () =>
-                (this.update_last_video_imageData = window.requestAnimationFrame(
-                  get_video_imageData
-                ))
-            );
-        };
-        this.update_last_video_imageData = window.requestAnimationFrame(
-          get_video_imageData
-        );
-      } else {
-        window.cancelAnimationFrame(this.update_last_video_imageData);
-        this.update_last_video_imageData = undefined;
       }
     },
   },

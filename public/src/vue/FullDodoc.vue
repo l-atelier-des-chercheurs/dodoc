@@ -284,7 +284,6 @@ export default {
         this.panels_width.doPane = 0;
         this.panels_width.chatPane = 0;
       }
-      debugger;
       this.$eventHub.$emit(`activity_panels_resized`);
     },
     splitterClicked(e) {
