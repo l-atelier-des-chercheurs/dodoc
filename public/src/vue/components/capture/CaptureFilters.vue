@@ -150,18 +150,19 @@ export default {
         similarity: 0.4, // 0 -> 1 by 0.001
         smoothness: 0.08, // 0 -> 1 by 0.001
         spill: 0.1, // 0 -> 1 by 0.001
+        replacement_color: {
+          r: 255,
+          g: 255,
+          b: 255,
+        },
       },
 
       chroma_key_use_image: false,
       chroma_key_imageData: undefined,
 
-      chroma_key_replacement_color: {
-        r: 255,
-        g: 255,
-        b: 255,
-      },
-
       enable_pick_color_from_video: false,
+
+      gl: undefined,
 
       fragment_shader: `
 precision mediump float;
@@ -171,6 +172,7 @@ uniform float texWidth;
 uniform float texHeight;
 
 uniform vec3 keyColor;
+uniform vec3 replacementColor;
 uniform float similarity;
 uniform float smoothness;
 uniform float spill;
@@ -201,8 +203,9 @@ vec4 ProcessChromaKey(vec2 texCoord) {
 void main(void) {
   vec2 texCoord = vec2(gl_FragCoord.x/texWidth, 1.0 - (gl_FragCoord.y/texHeight));
   vec4 videoColor = ProcessChromaKey(texCoord);
-  vec4 colorA = vec4(0.149,0.141,0.912, 1.);
-  gl_FragColor = mix(videoColor, colorA, vec4(0.));
+
+  vec3 mixWithSolid = mix(replacementColor, videoColor.rgb, videoColor.a);
+  gl_FragColor = vec4(mixWithSolid, 1.0);
 }
       `,
     };
@@ -229,10 +232,11 @@ void main(void) {
     enable() {
       this.$emit("update:enable_filters", this.enable);
       if (this.enable) {
-        this.startChromaKey();
+        this.$nextTick(() => {
+          this.startWebGL();
+        });
       }
     },
-    fragment_shader() {},
   },
   computed: {
     chroma_key_color_hex: {
@@ -245,10 +249,10 @@ void main(void) {
     },
     chroma_key_replacement_color_hex: {
       get() {
-        return this.rgbToHex(this.chroma_key_replacement_color);
+        return this.rgbToHex(this.chroma_key_settings.replacement_color);
       },
       set(value) {
-        this.chroma_key_replacement_color = this.hexToRgb(value);
+        this.chroma_key_settings.replacement_color = this.hexToRgb(value);
       },
     },
   },
@@ -311,9 +315,15 @@ void main(void) {
           ) {
             if (!this.chroma_key_use_image) {
               // frame.data[i * 4 + 3] = this.chroma_key_replacement_color;
-              frame.data[i * 4 + 0] = this.chroma_key_replacement_color.r;
-              frame.data[i * 4 + 1] = this.chroma_key_replacement_color.g;
-              frame.data[i * 4 + 2] = this.chroma_key_replacement_color.b;
+              frame.data[
+                i * 4 + 0
+              ] = this.chroma_key_settings.replacement_color.r;
+              frame.data[
+                i * 4 + 1
+              ] = this.chroma_key_settings.replacement_color.g;
+              frame.data[
+                i * 4 + 2
+              ] = this.chroma_key_settings.replacement_color.b;
             } else if (
               this.chroma_key_imageData &&
               this.chroma_key_imageData.data
@@ -343,21 +353,17 @@ void main(void) {
 
       return frame;
     },
-    startChromaKey() {
-      const webcamVideoEl = this.videoElement;
-      const displayCanvasEl = this.canvasElement;
+    startWebGL() {
+      console.log(`CaptureFilters • METHODS : startWebGL`);
 
-      console.log(`CaptureFilters • METHODS : startChromaKey`);
+      const offscreen_canvas = document.createElement("canvas");
+      var destination_canvas = this.canvasElement.getContext("2d");
 
-      if (!displayCanvasEl) {
-        console.log(`CaptureFilters • METHODS : startChromaKey / no canvas`);
-        return;
-      }
-
-      const gl = displayCanvasEl.getContext("webgl", {
+      const gl = offscreen_canvas.getContext("webgl", {
         premultipliedAlpha: false,
       });
 
+      // setting default vertex shader
       const vs = gl.createShader(gl.VERTEX_SHADER);
       gl.shaderSource(
         vs,
@@ -365,9 +371,11 @@ void main(void) {
       );
       gl.compileShader(vs);
 
+      // setting default fragment shader
       const fs = gl.createShader(gl.FRAGMENT_SHADER);
       gl.shaderSource(fs, this.fragment_shader);
       gl.compileShader(fs);
+
       if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
         console.error(gl.getShaderInfoLog(fs));
       }
@@ -402,13 +410,17 @@ void main(void) {
       const texWidthLoc = gl.getUniformLocation(prog, "texWidth");
       const texHeightLoc = gl.getUniformLocation(prog, "texHeight");
       const keyColorLoc = gl.getUniformLocation(prog, "keyColor");
+      const replacementColorLoc = gl.getUniformLocation(
+        prog,
+        "replacementColor"
+      );
       const similarityLoc = gl.getUniformLocation(prog, "similarity");
       const smoothnessLoc = gl.getUniformLocation(prog, "smoothness");
       const spillLoc = gl.getUniformLocation(prog, "spill");
 
       const processFrame = () => {
-        displayCanvasEl.width = this.videoElement.videoWidth;
-        displayCanvasEl.height = this.videoElement.videoHeight;
+        offscreen_canvas.width = this.videoElement.videoWidth;
+        offscreen_canvas.height = this.videoElement.videoHeight;
         gl.viewport(
           0,
           0,
@@ -427,8 +439,18 @@ void main(void) {
         gl.uniform1f(texWidthLoc, this.videoElement.videoWidth);
         gl.uniform1f(texHeightLoc, this.videoElement.videoHeight);
 
-        const m = this.chroma_key_settings.key_color;
-        gl.uniform3f(keyColorLoc, m.r / 255, m.g / 255, m.b / 255);
+        gl.uniform3f(
+          keyColorLoc,
+          this.chroma_key_settings.key_color.r / 255,
+          this.chroma_key_settings.key_color.g / 255,
+          this.chroma_key_settings.key_color.b / 255
+        );
+        gl.uniform3f(
+          replacementColorLoc,
+          this.chroma_key_settings.replacement_color.r / 255,
+          this.chroma_key_settings.replacement_color.g / 255,
+          this.chroma_key_settings.replacement_color.b / 255
+        );
         gl.uniform1f(
           similarityLoc,
           parseFloat(this.chroma_key_settings.similarity)
@@ -440,6 +462,9 @@ void main(void) {
         gl.uniform1f(spillLoc, parseFloat(this.chroma_key_settings.spill));
 
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+
+        destination_canvas.drawImage(offscreen_canvas, 0, 0);
+
         window.requestAnimationFrame(processFrame);
       };
       window.requestAnimationFrame(processFrame);
