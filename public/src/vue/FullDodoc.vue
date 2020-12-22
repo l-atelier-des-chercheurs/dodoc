@@ -11,16 +11,16 @@
     <div class="m_activitiesPanel">
       <splitpanes
         watch-slots
-        @resize="resize($event)"
-        @resized="resized()"
-        @splitter-click="splitterClicked($event)"
+        @resize="resize"
+        @resized="resized"
+        @splitter-click="splitterClicked"
         :data-docpane_isopen="$root.settings.show_publi_panel === true"
         :data-chatpane_isopen="$root.settings.show_chat_panel === true"
       >
         <pane
           class="splitter-pane"
           ref="doPane"
-          min-size="5"
+          min-size="0"
           :size="panels_width.doPane"
         >
           <div
@@ -119,6 +119,13 @@
               />
             </transition>
           </div>
+          <button
+            type="button"
+            class="button-nostyle bg-rouge _close_button"
+            @click="closeChat"
+          >
+            <img src="/images/i_close_sansfond.svg" draggable="false" />
+          </button>
         </pane>
       </splitpanes>
     </div>
@@ -266,9 +273,17 @@ export default {
       this.panels_width.docPane = $event[1].size;
       this.panels_width.chatPane = $event[2].size;
     },
-    resized() {
+    resized($event) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • App: splitpanes resized`);
+
+      this.resize();
+
+      if (this.panels_width.docPane >= 95) {
+        this.panels_width.docPane = 100;
+        this.panels_width.doPane = 0;
+        this.panels_width.chatPane = 0;
+      }
       this.$eventHub.$emit(`activity_panels_resized`);
     },
     splitterClicked(e) {
@@ -308,6 +323,10 @@ export default {
         }
       }
     },
+    closeChat() {
+      this.panels_width.chatPane = 0;
+      this.$root.closeChatPanel();
+    },
     newChatPosted(m) {
       // const chatroom =
       const type = Object.keys(m)[0];
@@ -328,4 +347,17 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._close_button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10000;
+  margin: 0;
+  padding: 0;
+  img {
+    width: 1.5em;
+    height: 1.5em;
+  }
+}
+</style>

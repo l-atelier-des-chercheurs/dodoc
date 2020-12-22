@@ -144,6 +144,76 @@ module.exports = (function () {
       fr: "Direct",
       en: "Live",
     },
+    lines_angle: {
+      fr: "Angle des lignes",
+      en: "Lines angle",
+    },
+    effects: {
+      fr: "Effets",
+      en: "Effects",
+    },
+    enable_effects: {
+      fr: "Activer les effets",
+      en: "Enable effects",
+    },
+    pick_color_in_video: {
+      fr: "Choisir la couleur dans la vidéo",
+      en: "Pick color in the video",
+    },
+    "click_in_video…": {
+      fr: "Cliquez dans la vidéo…",
+      en: "Click in the video…",
+    },
+    similarity: {
+      fr: "Similarité",
+      en: "Similarity",
+    },
+    smoothness: {
+      fr: "Lissage",
+      en: "Smoothness",
+    },
+    spill: {
+      fr: "Débord",
+      en: "Spill",
+    },
+    replace_color_with: {
+      fr: "Remplacer par",
+      en: "Replace with",
+    },
+
+    chroma_key: {
+      fr: "Incrustation (fond vert)",
+      en: "Chroma key (green screen)",
+    },
+    flip_horizontally: {
+      fr: "Retourner horizontallement",
+      en: "Flip horizontally",
+    },
+    flip_vertically: {
+      fr: "Retourner verticallement",
+      en: "Flip vertically",
+    },
+    brightness: {
+      fr: "Luminosité",
+      en: "Brightness",
+    },
+    contrast: {
+      fr: "Contraste",
+      en: "Constrast",
+    },
+    hue: {
+      fr: "Teinte",
+      en: "Hue",
+    },
+    saturation: {
+      fr: "Saturation",
+      en: "Saturation",
+    },
+    lightness: {
+      fr: "Clarté",
+      en: "Lightness",
+    },
+
     no_content_to_show: {
       fr: "Aucun contenu à afficher",
       en: "No content to show",
@@ -770,14 +840,7 @@ module.exports = (function () {
       fr: "Type de calque",
       en: "Layer type",
     },
-    lines_angle: {
-      fr: "Angle des lignes",
-      en: "Lines angle",
-    },
-    brightness: {
-      fr: "Luminosité",
-      en: "Brightness",
-    },
+
     lines_density: {
       fr: "Densité de lignes",
       en: "Lines density",

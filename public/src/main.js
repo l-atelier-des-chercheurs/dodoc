@@ -2,6 +2,23 @@ import localstore from "store";
 import jQuery from "jquery";
 window.$ = window.jQuery = jQuery;
 
+if (window.state.dev_mode === "debug")
+  (function () {
+    var script = document.createElement("script");
+    script.onload = function () {
+      var stats = new Stats();
+      document.body.appendChild(stats.dom);
+      stats.dom.style.left = "auto";
+      stats.dom.style.right = "0px";
+      requestAnimationFrame(function loop() {
+        stats.update();
+        requestAnimationFrame(loop);
+      });
+    };
+    script.src = "//mrdoob.github.io/stats.js/build/stats.min.js";
+    document.head.appendChild(script);
+  })();
+
 if (window.state.is_electron) {
   document.body.addEventListener("click", electronSpecificOpenLink);
 
