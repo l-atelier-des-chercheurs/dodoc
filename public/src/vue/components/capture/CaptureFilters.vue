@@ -16,108 +16,154 @@
           'is--disabled': !enable_filters,
         }"
       >
-        <label>{{ $t("chroma_key(greenscreen)") }}</label>
-        <div class="switch switch-xs">
-          <input
-            class="switch"
-            id="chroma_key"
-            type="checkbox"
-            v-model="enable_chroma_key"
-          />
-          <label for="chroma_key">{{ $t("enable") }}</label>
-        </div>
         <div>
-          <label>{{ $t("color") }}</label>
-          <input
-            type="color"
-            v-model="chroma_key_color_hex"
-            :novalue="chroma_key_color_hex === ''"
-          />
-        </div>
-        <div>
-          <button type="button" @click="setTogglePickColorFromVideo">
-            <template v-if="!enable_pick_color_from_video">
-              {{ $t("pick_color_in_video") }}
-            </template>
-            <template v-else>
-              {{ $t("click_in_video…") }}
-            </template>
-          </button>
-        </div>
-
-        <div>
-          <label>{{ $t("similarity") }}</label>
-          <input
-            class="margin-none"
-            type="range"
-            v-model.number="chroma_key_settings.similarity"
-            min="0"
-            max="1"
-            step="0.001"
-          />
-
-          <label>{{ $t("smoothness") }}</label>
-          <input
-            class="margin-none"
-            type="range"
-            v-model.number="chroma_key_settings.smoothness"
-            min="0"
-            max="1"
-            step="0.001"
-          />
-
-          <label>{{ $t("spill") }}</label>
-          <input
-            class="margin-none"
-            type="range"
-            v-model.number="chroma_key_settings.spill"
-            min="0"
-            max="1"
-            step="0.001"
-            value="0.1"
-          />
-        </div>
-
-        <label>Remplacer la couleur par…</label>
-
-        <div class="switch switch-xs switch_twoway">
-          <label
-            for="chroma_key_use_image"
-            class="cursor-pointer"
+          <div class="switch switch-xs">
+            <input
+              class="switch"
+              id="chroma_key"
+              type="checkbox"
+              v-model="chroma_key_settings.enable"
+            />
+            <label for="chroma_key">{{ $t("chroma_key") }}</label>
+          </div>
+          <div
             :class="{
-              'is--active': !chroma_key_use_image,
+              'is--disabled': !chroma_key_settings.enable,
             }"
           >
-            <span class>{{ $t("color") }}</span>
-          </label>
-          <input
-            type="checkbox"
-            id="chroma_key_use_image"
-            v-model="chroma_key_use_image"
-          />
-          <label
-            for="chroma_key_use_image"
+            <div>
+              <label>{{ $t("color") }}</label>
+              <input
+                type="color"
+                v-model="chroma_key_color_hex"
+                :novalue="chroma_key_color_hex === ''"
+              />
+            </div>
+            <div>
+              <button
+                type="button"
+                class="buttonLink"
+                @click="setTogglePickColorFromVideo"
+              >
+                <template v-if="!enable_pick_color_from_video">
+                  {{ $t("pick_color_in_video") }}
+                </template>
+                <template v-else>
+                  {{ $t("click_in_video…") }}
+                </template>
+              </button>
+            </div>
+
+            <div>
+              <label>{{ $t("similarity") }}</label>
+              <input
+                class="margin-none"
+                type="range"
+                v-model.number="chroma_key_settings.similarity"
+                min="0"
+                max="1"
+                step="0.001"
+              />
+
+              <label>{{ $t("smoothness") }}</label>
+              <input
+                class="margin-none"
+                type="range"
+                v-model.number="chroma_key_settings.smoothness"
+                min="0"
+                max="1"
+                step="0.001"
+              />
+
+              <label>{{ $t("spill") }}</label>
+              <input
+                class="margin-none"
+                type="range"
+                v-model.number="chroma_key_settings.spill"
+                min="0"
+                max="1"
+                step="0.001"
+                value="0.1"
+              />
+            </div>
+
+            <label>{{ $t("replace_color_with") }}</label>
+
+            <div class="switch switch-xs switch_twoway padding-verysmall">
+              <label
+                for="chroma_key_use_image"
+                class="cursor-pointer"
+                :class="{
+                  'is--active': !chroma_key_use_image,
+                }"
+              >
+                <span class>{{ $t("color") }}</span>
+              </label>
+              <input
+                type="checkbox"
+                id="chroma_key_use_image"
+                v-model="chroma_key_settings.replacement_mode"
+                value="color"
+                true-value="image"
+                false-value="color"
+              />
+              <label
+                for="chroma_key_use_image"
+                :class="{
+                  'is--active': chroma_key_use_image,
+                }"
+              >
+                <span class>{{ $t("image") }}</span>
+              </label>
+            </div>
+
+            <div v-if="chroma_key_settings.replacement_mode === 'image'">
+              <ImageSelect
+                :load_from_projects_medias="true"
+                @newPreview="newChromaKeyImage"
+              />
+              <!-- {{ chroma_key_settings.replacement_image }} -->
+            </div>
+            <div v-else>
+              <input
+                type="color"
+                v-model="chroma_key_replacement_color_hex"
+                :novalue="chroma_key_replacement_color_hex === ''"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          v-for="[name, props] in Object.entries(image_filters_settings)"
+          :key="name"
+        >
+          <div class="switch switch-xs">
+            <input
+              class="switch"
+              :id="`${name}_slider`"
+              type="checkbox"
+              v-model="image_filters_settings[name].enable"
+            />
+            <label :for="`${name}_slider`"
+              >{{ $t(name) }} — {{ image_filters_settings[name].value }}</label
+            >
+          </div>
+
+          <div
             :class="{
-              'is--active': chroma_key_use_image,
+              'is--disabled': !image_filters_settings[name].enable,
             }"
           >
-            <span class>{{ $t("image") }}</span>
-          </label>
-        </div>
-
-        <div v-if="chroma_key_use_image">
-          <ImageSelect
-            :load_from_projects_medias="true"
-            @newPreview="newChromaKeyImage"
-          />
-        </div>
-        <div v-else>
-          <label>{{ $t("color") }}</label>
-          <input
-            type="color"
-            v-model="chroma_key_replacement_color_hex"
-            :novalue="chroma_key_replacement_color_hex === ''"
-          />
+            <input
+              class="margin-none"
+              type="range"
+              v-model.number="image_filters_settings[name].value"
+              :min="props.min"
+              :max="props.max"
+              :step="props.step"
+              :title="image_filters_settings[name].value"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -134,7 +180,6 @@ export default {
   data() {
     return {
       enable: this.enable_filters,
-      enable_chroma_key: true,
 
       source_stream_resolution: {
         width: undefined,
@@ -142,40 +187,100 @@ export default {
       },
 
       chroma_key_settings: {
+        enable: false,
         key_color: {
           r: 0,
           g: 255,
           b: 0,
         }, // 0 -> 1 by 0.001
-        similarity: 0.4, // 0 -> 1 by 0.001
+        similarity: 0.04, // 0 -> 1 by 0.001
         smoothness: 0.08, // 0 -> 1 by 0.001
         spill: 0.1, // 0 -> 1 by 0.001
         replacement_color: {
-          r: 255,
-          g: 255,
-          b: 255,
+          r: 252,
+          g: 75,
+          b: 96,
+        },
+        replacement_mode: "color",
+        replacement_image: undefined,
+      },
+
+      image_filters_settings: {
+        brightness: {
+          enable: false,
+          value: 1,
+          order: 0,
+          default: 1,
+          min: 0,
+          max: 2,
+          step: 0.001,
+        },
+        contrast: {
+          enable: false,
+          value: 1,
+          order: 1,
+          default: 1,
+          min: 0,
+          max: 3,
+          step: 0.001,
+        },
+        hue: {
+          enable: false,
+          value: 0,
+          order: 2,
+          default: 0,
+          min: -0.5,
+          max: 0.5,
+          step: 0.001,
+        },
+        saturation: {
+          enable: false,
+          value: 0,
+          order: 3,
+          default: 0,
+          min: -1,
+          max: 1,
+          step: 0.001,
+        },
+        lightness: {
+          enable: false,
+          value: 0,
+          order: 4,
+          default: 0,
+          min: -1,
+          max: 1,
+          step: 0.001,
         },
       },
 
-      chroma_key_use_image: false,
-      chroma_key_imageData: undefined,
-
       enable_pick_color_from_video: false,
 
-      gl: undefined,
+      offscreen_canvas: undefined,
 
       fragment_shader: `
 precision mediump float;
 
-uniform sampler2D tex;
+uniform sampler2D videoTex;
 uniform float texWidth;
 uniform float texHeight;
 
+
 uniform vec3 keyColor;
 uniform vec3 replacementColor;
+uniform sampler2D replacementImage;
+
 uniform float similarity;
 uniform float smoothness;
 uniform float spill;
+uniform int chromaKeyMode;
+
+uniform float brightness;
+uniform float contrast;
+uniform float mid;
+
+uniform float hue;
+uniform float saturation;
+uniform float lightness;
 
 // From https://github.com/libretro/glsl-shaders/blob/master/nnedi3/shaders/rgb-to-yuv.glsl
 vec2 RGBtoUV(vec3 rgb) {
@@ -185,32 +290,146 @@ vec2 RGBtoUV(vec3 rgb) {
   );
 }
 
-vec4 ProcessChromaKey(vec2 texCoord) {
-  vec4 rgba = texture2D(tex, texCoord);
-  float chromaDist = distance(RGBtoUV(texture2D(tex, texCoord).rgb), RGBtoUV(keyColor));
+vec4 ProcessChromaKey(vec2 texCoord, vec4 videoColor) {
+  float chromaDist = distance(RGBtoUV(videoColor.rgb), RGBtoUV(keyColor));
 
   float baseMask = chromaDist - similarity;
   float fullMask = pow(clamp(baseMask / smoothness, 0., 1.), 1.5);
-  rgba.a = fullMask;
+  videoColor.a = fullMask;
 
   float spillVal = pow(clamp(baseMask / spill, 0., 1.), 1.5);
-  float desat = clamp(rgba.r * 0.2126 + rgba.g * 0.7152 + rgba.b * 0.0722, 0., 1.);
-  rgba.rgb = mix(vec3(desat, desat, desat), rgba.rgb, spillVal);
+  float desat = clamp(videoColor.r * 0.2126 + videoColor.g * 0.7152 + videoColor.b * 0.0722, 0., 1.);
+  videoColor.rgb = mix(vec3(desat, desat, desat), videoColor.rgb, spillVal);
 
-  return rgba;
+  return videoColor;
+}
+vec4 ApplyChromaKey(vec2 texCoord, vec4 videoColor)  {
+  vec4 chromaVideoColor = ProcessChromaKey(texCoord, videoColor);
+
+  vec4 replaceWith = vec4(0.0);
+  if(chromaKeyMode == 0) {
+    // color
+    replaceWith = vec4(replacementColor, 1.0);
+  } else if(chromaKeyMode == 1) {
+    // image
+    replaceWith = vec4(texture2D(replacementImage, texCoord));
+  }
+
+  vec4 result = mix(vec4(chromaVideoColor.rgb, 1.0), replaceWith, 1.0 - chromaVideoColor.a);
+  return result;
+}
+
+vec3 RGBtoHCV(vec3 RGB) {
+  float Epsilon = 0.00000000001;
+  // Based on work by Sam Hocevar and Emil Persson
+  vec4 P = (RGB.g < RGB.b) ? vec4(RGB.bg, -1.0, 2.0/3.0) : vec4(RGB.gb, 0.0, -1.0/3.0);
+  vec4 Q = (RGB.r < P.x) ? vec4(P.xyw, RGB.r) : vec4(RGB.r, P.yzx);
+  float C = Q.x - min(Q.w, Q.y);
+  float H = abs((Q.w - Q.y) / (6.0 * C + Epsilon) + Q.z);
+  return vec3(H, C, Q.x);
+}
+vec3 HUEtoRGB(float h) {
+  float r = abs(h * 6.0 - 3.0) - 1.0;
+  float g = 2.0 - abs(h * 6.0 - 2.0);
+  float b = 2.0 - abs(h * 6.0 - 4.0);
+  return clamp(vec3(r, g, b), 0.0, 1.0);
+}
+
+vec3 RGBtoHSL(vec3 RGB) {
+  float Epsilon = 0.00000000001;
+  vec3 HCV = RGBtoHCV(RGB);
+  float L = HCV.z - HCV.y * 0.5;
+  float S = HCV.y / (1.0 - abs(L * 2.0 - 1.0) + Epsilon);
+  return vec3(HCV.x, S, L);
+}
+vec3 HSLtoRGB(vec3 HSL) {
+  vec3 RGB = HUEtoRGB(HSL.x);
+  float C = (1.0 - abs(2.0 * HSL.z - 1.0)) * HSL.y;
+  return (RGB - 0.5) * C + HSL.z;
+}
+float clamp_continuous(float value) {
+  float unit = value;
+
+  if (unit > 1.0) {
+    unit = mod(unit, 1.0);
+  } else if (unit < 0.0) {
+    unit = 1.0 + unit;
+  }
+
+  return unit;
+}
+
+float mix_factor(vec4 range, vec3 hsl) {
+  float mix_factor = 0.0;
+
+  if (hsl.x >= range.x && hsl.x <= range.w) {
+    // lower range
+    if (hsl.x >= range.x && hsl.x < range.y) {
+      mix_factor = smoothstep(range.x, range.y, hsl.x);
+    }
+
+    // target range
+    if (hsl.x >= range.y && hsl.x <= range.z) {
+      mix_factor = 1.0;
+    }
+
+    // upper range
+    if (hsl.x > range.z && hsl.x <= range.w) {
+      mix_factor = 1.0 - smoothstep(range.z, range.w, hsl.x);
+    }
+  }
+
+  vec2 lightness_range = vec2(0.0, 0.08333);
+  vec2 saturation_range = vec2(0.0, 0.08333);
+  mix_factor *= smoothstep(saturation_range.x, saturation_range.y, hsl.y);
+  mix_factor *= smoothstep(lightness_range.x, lightness_range.y, hsl.z);
+
+  return mix_factor;
 }
 
 void main(void) {
+  // get video image
   vec2 texCoord = vec2(gl_FragCoord.x/texWidth, 1.0 - (gl_FragCoord.y/texHeight));
-  vec4 videoColor = ProcessChromaKey(texCoord);
+  vec4 videoColor = texture2D(videoTex, texCoord);
 
-  vec3 mixWithSolid = mix(replacementColor, videoColor.rgb, videoColor.a);
-  gl_FragColor = vec4(mixWithSolid, 1.0);
+
+  // apply chroma key if necessary
+  if (chromaKeyMode != -1) {
+    videoColor = ApplyChromaKey(texCoord, videoColor);
+  }
+
+  // apply brightness, from https://github.com/actionnick/exposure/blob/master/src/shaders/exposure.frag
+  videoColor = mix(videoColor, vec4(1.0, 1.0, 1.0, 1.0), brightness - 1.0);
+  videoColor.a = 1.0;
+
+  // contrast
+  videoColor.r = ((videoColor.r - mid) * contrast) + mid;
+  videoColor.g = ((videoColor.g - mid) * contrast) + mid;
+  videoColor.b = ((videoColor.b - mid) * contrast) + mid;
+  videoColor.a = 1.0;
+
+
+  vec3 hsl = RGBtoHSL(videoColor.rgb);
+
+  vec4 MASTER_RANGE = vec4(0.0, 0.0, 1.0, 1.0);
+
+  float master_mix_factor = mix_factor(MASTER_RANGE, hsl);
+  hsl.x = clamp_continuous(hsl.x + (hue * master_mix_factor));
+  hsl.y = clamp(hsl.y + (saturation * master_mix_factor), 0.0, 1.0);
+  hsl.z = clamp(mix(hsl.z, 1.0, max(0.0, lightness)), 0.0, 1.0);
+  hsl.z = clamp(mix(hsl.z, 0.0, abs(min(0.0, lightness))), 0.0, 1.0);
+
+  videoColor.rgb = HSLtoRGB(hsl);
+
+
+  gl_FragColor = videoColor;
+
 }
       `,
     };
   },
   created() {},
+  updated() {},
   mounted() {
     this.$eventHub.$on(
       "captureCanvas.pixelColorUnderMouse",
@@ -222,6 +441,7 @@ void main(void) {
       "captureCanvas.pixelColorUnderMouse",
       this.pixelColorUnderMouse
     );
+    this.stopWebGL();
   },
   watch: {
     enable_filters() {
@@ -280,11 +500,11 @@ void main(void) {
     },
     setTogglePickColorFromVideo() {
       if (!this.enable_pick_color_from_video) {
-        this.enable_chroma_key = false;
+        this.chroma_key_settings.enable = false;
         this.enable = true;
         this.enable_pick_color_from_video = true;
       } else {
-        this.enable_chroma_key = true;
+        this.chroma_key_settings.enable = true;
         this.enable_pick_color_from_video = false;
       }
     },
@@ -294,72 +514,17 @@ void main(void) {
       this.chroma_key_settings.key_color = px_color;
       if (type === "click") this.setTogglePickColorFromVideo();
     },
-    processChromaKey(frame) {
-      // todo : checkbox to enable webgl greenscreen
-      // https://jameshfisher.com/2020/08/11/production-ready-green-screen-in-the-browser/
-
-      let l = frame.data.length / 4;
-      const key = this.chroma_key_settings.key_color;
-      const d = 255 - this.chroma_key_delta;
-
-      if (key)
-        for (let i = 0; i < l; i++) {
-          let r = frame.data[i * 4 + 0];
-          let g = frame.data[i * 4 + 1];
-          let b = frame.data[i * 4 + 2];
-
-          if (
-            Math.abs(r - key.r) < 250 - d &&
-            Math.abs(g - key.g) < 250 - d &&
-            Math.abs(b - key.b) < 250 - d
-          ) {
-            if (!this.chroma_key_use_image) {
-              // frame.data[i * 4 + 3] = this.chroma_key_replacement_color;
-              frame.data[
-                i * 4 + 0
-              ] = this.chroma_key_settings.replacement_color.r;
-              frame.data[
-                i * 4 + 1
-              ] = this.chroma_key_settings.replacement_color.g;
-              frame.data[
-                i * 4 + 2
-              ] = this.chroma_key_settings.replacement_color.b;
-            } else if (
-              this.chroma_key_imageData &&
-              this.chroma_key_imageData.data
-            ) {
-              try {
-                frame.data[i * 4 + 0] = this.chroma_key_imageData.data[
-                  i * 4 + 0
-                ];
-                frame.data[i * 4 + 1] = this.chroma_key_imageData.data[
-                  i * 4 + 1
-                ];
-                frame.data[i * 4 + 2] = this.chroma_key_imageData.data[
-                  i * 4 + 2
-                ];
-              } catch (e) {
-                console.log(
-                  `CaptureFilters • METHODS : processChromaKey • failed to use chroma_key_image value`
-                );
-              }
-            } else frame.data[i * 4 + 3] = 0;
-          }
-        }
-      else if (this.$root.state.dev_mode === "debug")
-        console.log(
-          `CaptureFilters • METHODS : processChromaKey • no chroma_key color defined`
-        );
-
-      return frame;
-    },
     startWebGL() {
       console.log(`CaptureFilters • METHODS : startWebGL`);
 
-      const offscreen_canvas = document.createElement("canvas");
+      if (this.offscreen_canvas) this.stopWebGL();
+
+      this.offscreen_canvas = document.createElement("canvas");
+      this.offscreen_canvas.classList.add("offscreenCanvas");
+
       var destination_canvas = this.canvasElement.getContext("2d");
 
-      const gl = offscreen_canvas.getContext("webgl", {
+      const gl = this.offscreen_canvas.getContext("webgl", {
         premultipliedAlpha: false,
       });
 
@@ -398,7 +563,7 @@ void main(void) {
       gl.vertexAttribPointer(coordLoc, 2, gl.FLOAT, false, 0, 0);
       gl.enableVertexAttribArray(coordLoc);
 
-      gl.activeTexture(gl.TEXTURE0);
+      gl.activeTexture(gl.TEXTURE0 + 0);
       const tex = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, tex);
 
@@ -406,7 +571,9 @@ void main(void) {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
-      const texLoc = gl.getUniformLocation(prog, "tex");
+      const videoTexLoc = gl.getUniformLocation(prog, "videoTex");
+      gl.uniform1i(videoTexLoc, 0);
+
       const texWidthLoc = gl.getUniformLocation(prog, "texWidth");
       const texHeightLoc = gl.getUniformLocation(prog, "texHeight");
       const keyColorLoc = gl.getUniformLocation(prog, "keyColor");
@@ -414,19 +581,52 @@ void main(void) {
         prog,
         "replacementColor"
       );
+
+      const replacementImageLoc = gl.getUniformLocation(
+        prog,
+        "replacementImage"
+      );
+      gl.uniform1i(replacementImageLoc, 1);
+
       const similarityLoc = gl.getUniformLocation(prog, "similarity");
       const smoothnessLoc = gl.getUniformLocation(prog, "smoothness");
       const spillLoc = gl.getUniformLocation(prog, "spill");
+      const chromaKeyModeLoc = gl.getUniformLocation(prog, "chromaKeyMode");
+      const brightnessLoc = gl.getUniformLocation(prog, "brightness");
+      const contrastLoc = gl.getUniformLocation(prog, "contrast");
+      const midLoc = gl.getUniformLocation(prog, "mid");
+
+      const hueLoc = gl.getUniformLocation(prog, "hue");
+      const saturationLoc = gl.getUniformLocation(prog, "saturation");
+      const lightnessLoc = gl.getUniformLocation(prog, "lightness");
+
+      const imageFiltersLoc = Object.keys(this.image_filters_settings).reduce(
+        (acc, _s) => {
+          acc[_s] = gl.getUniformLocation(prog, _s);
+          return acc;
+        },
+        {}
+      );
+
+      this.loadReplacementImageInShader();
 
       const processFrame = () => {
-        offscreen_canvas.width = this.videoElement.videoWidth;
-        offscreen_canvas.height = this.videoElement.videoHeight;
+        if (!this.offscreen_canvas || !this.enable) return;
+
+        console.log(`CaptureFilters • METHODS : startWebGL • processFrame`);
+
+        this.offscreen_canvas.width = this.videoElement.videoWidth;
+        this.offscreen_canvas.height = this.videoElement.videoHeight;
+
+        // LOADING VIDEO IMAGE TO WEBGL
+        gl.activeTexture(gl.TEXTURE0 + 0);
         gl.viewport(
           0,
           0,
           this.videoElement.videoWidth,
           this.videoElement.videoHeight
         );
+
         gl.texImage2D(
           gl.TEXTURE_2D,
           0,
@@ -435,7 +635,8 @@ void main(void) {
           gl.UNSIGNED_BYTE,
           this.videoElement
         );
-        gl.uniform1i(texLoc, 0);
+        // STOPPED LOADING WEBGL IMAGE
+
         gl.uniform1f(texWidthLoc, this.videoElement.videoWidth);
         gl.uniform1f(texHeightLoc, this.videoElement.videoHeight);
 
@@ -451,6 +652,7 @@ void main(void) {
           this.chroma_key_settings.replacement_color.g / 255,
           this.chroma_key_settings.replacement_color.b / 255
         );
+
         gl.uniform1f(
           similarityLoc,
           parseFloat(this.chroma_key_settings.similarity)
@@ -461,13 +663,39 @@ void main(void) {
         );
         gl.uniform1f(spillLoc, parseFloat(this.chroma_key_settings.spill));
 
+        Object.entries(imageFiltersLoc).map(([name, loc]) => {
+          gl.uniform1f(
+            loc,
+            parseFloat(
+              this.image_filters_settings[name].enable
+                ? this.image_filters_settings[name].value
+                : this.image_filters_settings[name].default
+            )
+          );
+        });
+        gl.uniform1f(midLoc, parseFloat(0.5));
+
+        // check if chroma_key_settings.enable
+        let chromaKeyMode = -1;
+        if (this.chroma_key_settings.enable) {
+          if (this.chroma_key_settings.replacement_mode === "color") {
+            chromaKeyMode = 0;
+          } else if (this.chroma_key_settings.replacement_mode === "image") {
+            chromaKeyMode = 1;
+          }
+        }
+        gl.uniform1i(chromaKeyModeLoc, parseInt(chromaKeyMode));
+
         gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 
-        destination_canvas.drawImage(offscreen_canvas, 0, 0);
+        destination_canvas.drawImage(this.offscreen_canvas, 0, 0);
 
         window.requestAnimationFrame(processFrame);
       };
       window.requestAnimationFrame(processFrame);
+    },
+    stopWebGL() {
+      this.offscreen_canvas = undefined;
     },
     newChromaKeyImage(img) {
       console.log(`CaptureFilters • METHODS : newChromaKeyImage`);
@@ -505,15 +733,53 @@ void main(void) {
 
         coverImg(imageElement, "cover", canvas.width, canvas.height);
 
-        this.chroma_key_imageData = ctx.getImageData(
+        this.chroma_key_settings.replacement_image = ctx.getImageData(
           0,
           0,
           canvas.width,
           canvas.height
         );
 
-        canvas.parentNode.removeChild(canvas);
+        this.loadReplacementImageInShader();
+
+        canvas.remove();
       };
+    },
+    loadReplacementImageInShader() {
+      if (!this.chroma_key_settings.replacement_image) return;
+
+      const gl = this.offscreen_canvas.getContext("webgl", {
+        premultipliedAlpha: false,
+      });
+
+      gl.activeTexture(gl.TEXTURE1);
+      const tex2 = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex2);
+
+      // gl.texImage2D(
+      //   gl.TEXTURE_2D,
+      //   0,
+      //   gl.RGBA,
+      //   1,
+      //   1,
+      //   0,
+      //   gl.RGBA,
+      //   gl.UNSIGNED_BYTE,
+      //   new Uint8Array([0, 0, 255, 255])
+      // );
+
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        this.chroma_key_settings.replacement_image
+      );
+
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     },
   },
 };
@@ -525,6 +791,7 @@ void main(void) {
   max-width: 280px;
   background-color: var(--c-bleumarine);
   padding: calc(var(--spacing) / 8);
+  overflow: auto;
 
   label {
     display: block;
@@ -533,19 +800,20 @@ void main(void) {
   > * {
     background-color: #fff;
     border-radius: 4px;
-    margin: calc(var(--spacing) / 4);
+    margin: calc(var(--spacing) / 2);
     padding: calc(var(--spacing) / 8);
 
     > * {
-      margin-top: calc(var(--spacing) / 2);
-      padding: calc(var(--spacing) / 4);
-      margin: calc(var(--spacing) / 4);
-      background-color: var(--c-gris-clair);
-
       &:first-child {
-        // margin-top: 0;
-        // padding-top: 0;
-        background-color: transparent;
+        padding: calc(var(--spacing) / 4);
+      }
+      &:not(:first-child) {
+        > * {
+          padding: calc(var(--spacing) / 4);
+          margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+          background-color: var(--c-gris-clair);
+          border-radius: 4px;
+        }
       }
     }
   }
@@ -555,6 +823,7 @@ void main(void) {
   filter: grayscale(100%);
   opacity: 0.7;
   cursor: not-allowed;
+  user-select: none;
 
   > * {
     pointer-events: none;

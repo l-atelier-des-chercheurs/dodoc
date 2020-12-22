@@ -774,9 +774,58 @@ module.exports = (function () {
       fr: "Angle des lignes",
       en: "Lines angle",
     },
+    enable_filters: {
+      fr: "Activer les filtres",
+      en: "Enable filters",
+    },
+    pick_color_in_video: {
+      fr: "Choisir la couleur dans la vidéo",
+      en: "Pick color in the video",
+    },
+    "click_in_video…": {
+      fr: "Cliquez dans la vidéo…",
+      en: "Click in the video…",
+    },
+    similarity: {
+      fr: "Similarité",
+      en: "Similarity",
+    },
+    smoothness: {
+      fr: "Lissage",
+      en: "Smoothness",
+    },
+    spill: {
+      fr: "Débord",
+      en: "Spill",
+    },
+    replace_color_with: {
+      fr: "Remplacer par",
+      en: "Replace with",
+    },
+
+    chroma_key: {
+      fr: "Incrustation (fond vert)",
+      en: "Chroma key (green screen)",
+    },
     brightness: {
       fr: "Luminosité",
       en: "Brightness",
+    },
+    contrast: {
+      fr: "Contraste",
+      en: "Constrast",
+    },
+    hue: {
+      fr: "Teinte",
+      en: "Hue",
+    },
+    saturation: {
+      fr: "Saturation",
+      en: "Saturation",
+    },
+    lightness: {
+      fr: "Clarté",
+      en: "Lightness",
     },
     lines_density: {
       fr: "Densité de lignes",

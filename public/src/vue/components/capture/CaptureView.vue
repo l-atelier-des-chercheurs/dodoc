@@ -1207,7 +1207,7 @@ export default {
       stream_sharing_informations_status: {},
       stream_access_informations_status: {},
 
-      enable_filters: true,
+      enable_filters: false,
       update_last_video_imageData: undefined,
     };
   },
