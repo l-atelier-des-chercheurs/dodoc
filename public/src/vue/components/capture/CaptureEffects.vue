@@ -4,18 +4,37 @@
       <div class="switch switch-xs">
         <input
           class="switch"
-          id="enable_filters"
+          id="enable_effects"
           type="checkbox"
           v-model="enable"
         />
-        <label for="enable_filters">{{ $t("enable_filters") }}</label>
+        <label for="enable_effects">{{ $t("enable_effects") }}</label>
       </div>
 
       <div
         :class="{
-          'is--disabled': !enable_filters,
+          'is--disabled': !enable_effects,
         }"
       >
+        <div class="switch switch-xs">
+          <input
+            class="switch"
+            id="flip_horizontally"
+            type="checkbox"
+            v-model="flip_horizontally"
+          />
+          <label for="flip_horizontally">{{ $t("flip_horizontally") }}</label>
+        </div>
+        <div class="switch switch-xs">
+          <input
+            class="switch"
+            id="flip_vertically"
+            type="checkbox"
+            v-model="flip_vertically"
+          />
+          <label for="flip_vertically">{{ $t("flip_vertically") }}</label>
+        </div>
+
         <div>
           <div class="switch switch-xs">
             <input
@@ -172,19 +191,22 @@
 <script>
 export default {
   props: {
-    enable_filters: Boolean,
+    enable_effects: Boolean,
     videoElement: HTMLVideoElement,
     canvasElement: HTMLCanvasElement,
   },
   components: {},
   data() {
     return {
-      enable: this.enable_filters,
+      enable: this.enable_effects,
 
       source_stream_resolution: {
         width: undefined,
         height: undefined,
       },
+
+      flip_horizontally: false,
+      flip_vertically: false,
 
       chroma_key_settings: {
         enable: false,
@@ -264,6 +286,9 @@ uniform sampler2D videoTex;
 uniform float texWidth;
 uniform float texHeight;
 
+
+uniform int flipHorizontally;
+uniform int flipVertically;
 
 uniform vec3 keyColor;
 uniform vec3 replacementColor;
@@ -390,8 +415,13 @@ float mix_factor(vec4 range, vec3 hsl) {
 void main(void) {
   // get video image
   vec2 texCoord = vec2(gl_FragCoord.x/texWidth, 1.0 - (gl_FragCoord.y/texHeight));
-  vec4 videoColor = texture2D(videoTex, texCoord);
 
+  if(flipVertically == 1)
+    texCoord.y = 1.0 - texCoord.y;
+  if(flipHorizontally == 1)
+    texCoord.x = 1.0 - texCoord.x;
+
+  vec4 videoColor = texture2D(videoTex, texCoord);
 
   // apply chroma key if necessary
   if (chromaKeyMode != -1) {
@@ -444,13 +474,13 @@ void main(void) {
     this.stopWebGL();
   },
   watch: {
-    enable_filters() {
-      if (this.enable !== this.enable_filters) {
-        this.enable = this.enable_filters;
+    enable_effects() {
+      if (this.enable !== this.enable_effects) {
+        this.enable = this.enable_effects;
       }
     },
     enable() {
-      this.$emit("update:enable_filters", this.enable);
+      this.$emit("update:enable_effects", this.enable);
       if (this.enable) {
         this.$nextTick(() => {
           this.startWebGL();
@@ -515,7 +545,7 @@ void main(void) {
       if (type === "click") this.setTogglePickColorFromVideo();
     },
     startWebGL() {
-      console.log(`CaptureFilters • METHODS : startWebGL`);
+      console.log(`CaptureEffects • METHODS : startWebGL`);
 
       if (this.offscreen_canvas) this.stopWebGL();
 
@@ -576,12 +606,18 @@ void main(void) {
 
       const texWidthLoc = gl.getUniformLocation(prog, "texWidth");
       const texHeightLoc = gl.getUniformLocation(prog, "texHeight");
+
+      const flipHorizontallyLoc = gl.getUniformLocation(
+        prog,
+        "flipHorizontally"
+      );
+      const flipVerticallyLoc = gl.getUniformLocation(prog, "flipVertically");
+
       const keyColorLoc = gl.getUniformLocation(prog, "keyColor");
       const replacementColorLoc = gl.getUniformLocation(
         prog,
         "replacementColor"
       );
-
       const replacementImageLoc = gl.getUniformLocation(
         prog,
         "replacementImage"
@@ -613,7 +649,7 @@ void main(void) {
       const processFrame = () => {
         if (!this.offscreen_canvas || !this.enable) return;
 
-        console.log(`CaptureFilters • METHODS : startWebGL • processFrame`);
+        console.log(`CaptureEffects • METHODS : startWebGL • processFrame`);
 
         this.offscreen_canvas.width = this.videoElement.videoWidth;
         this.offscreen_canvas.height = this.videoElement.videoHeight;
@@ -639,6 +675,9 @@ void main(void) {
 
         gl.uniform1f(texWidthLoc, this.videoElement.videoWidth);
         gl.uniform1f(texHeightLoc, this.videoElement.videoHeight);
+
+        gl.uniform1i(flipHorizontallyLoc, this.flip_horizontally ? 1 : 0);
+        gl.uniform1i(flipVerticallyLoc, this.flip_vertically ? 1 : 0);
 
         gl.uniform3f(
           keyColorLoc,
@@ -698,7 +737,7 @@ void main(void) {
       this.offscreen_canvas = undefined;
     },
     newChromaKeyImage(img) {
-      console.log(`CaptureFilters • METHODS : newChromaKeyImage`);
+      console.log(`CaptureEffects • METHODS : newChromaKeyImage`);
 
       var imageElement = new Image();
 

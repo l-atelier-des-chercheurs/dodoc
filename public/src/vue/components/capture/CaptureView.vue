@@ -12,9 +12,9 @@
       @close="show_capture_settings = false"
     />
 
-    <CaptureFilters
+    <CaptureEffects
       v-show="show_effects_pane"
-      :enable_filters.sync="enable_filters"
+      :enable_effects.sync="enable_effects"
       :videoElement="$refs.videoElement"
       :canvasElement="$refs.canvasElement"
       @updateImageData="setImageData"
@@ -139,11 +139,11 @@
               :src-object.prop.camel="stream"
               :controls="stream_type === 'RemoteSources'"
               muted
-              v-show="!enable_filters"
+              v-show="!enable_effects"
             />
             <canvas
               ref="canvasElement"
-              v-show="enable_filters"
+              v-show="enable_effects"
               :width="actual_camera_resolution.width"
               :height="actual_camera_resolution.height"
               @click="(e) => updateSelectedColor({ e, type: 'click' })"
@@ -529,7 +529,7 @@
                     class="button-inline bg-bleumarine"
                     :class="{ 'is--active': show_effects_pane }"
                     @click="show_effects_pane = !show_effects_pane"
-                    :content="$t('settings')"
+                    :content="$t('effects')"
                     v-tippy="{
                       placement: 'right',
                       delay: [600, 0],
@@ -1044,7 +1044,7 @@ import StopmotionPanel from "./StopmotionPanel.vue";
 import MediaContent from "../subcomponents/MediaContent.vue";
 
 import CaptureSettings from "./CaptureSettings.vue";
-import CaptureFilters from "./CaptureFilters.vue";
+import CaptureEffects from "./CaptureEffects.vue";
 import StopmotionList from "./StopmotionList.vue";
 import AudioEqualizer from "./AudioEqualizer.vue";
 import Vecto from "./Vecto.vue";
@@ -1087,7 +1087,7 @@ export default {
     StopmotionPanel,
     MediaContent,
     CaptureSettings,
-    CaptureFilters,
+    CaptureEffects,
     StopmotionList,
     AudioEqualizer,
     Vecto,
@@ -1207,7 +1207,7 @@ export default {
       stream_sharing_informations_status: {},
       stream_access_informations_status: {},
 
-      enable_filters: false,
+      enable_effects: false,
       update_last_video_imageData: undefined,
     };
   },
@@ -1866,7 +1866,7 @@ export default {
 
     getImageDataFromFeed({ width, height } = {}) {
       return new Promise((resolve, reject) => {
-        if (this.enable_filters && this.$refs.canvasElement) {
+        if (this.enable_effects && this.$refs.canvasElement) {
           this.getStaticImageFromVideoElement({
             width,
             height,
@@ -1967,7 +1967,7 @@ export default {
         // ajouter la vidéo au stream
 
         const video_source =
-          this.enable_filters && this.$refs.canvasElement
+          this.enable_effects && this.$refs.canvasElement
             ? this.$refs.canvasElement.captureStream()
             : this.stream;
         video_source.getVideoTracks().forEach(function (track) {
