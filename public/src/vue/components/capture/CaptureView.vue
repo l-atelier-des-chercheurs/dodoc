@@ -279,20 +279,6 @@
                 <span>{{ $t("seconds") }}</span>
               </label>
             </div>
-
-            <div
-              v-if="
-                selected_mode === 'video' && enable_audio_recording_in_video
-              "
-              key="tiny_video_equalizer"
-              class="_tiny_equalizer"
-            >
-              <AudioEqualizer
-                :stream="stream"
-                :is_recording="is_recording"
-                :type="'Tiny'"
-              />
-            </div>
           </transition-group>
 
           <transition name="scaleInFade" mode="out-in" duration="100">
@@ -859,22 +845,34 @@
                 </transition>
               </div>
               <div>
-                <span
-                  class="switch switch-xs"
-                  v-if="selected_mode === 'video' && !is_recording"
+                <div
+                  v-if="selected_mode === 'video'"
+                  class="flex-wrap flex-vertically-centered"
                 >
-                  <input
-                    class="switch"
-                    id="recordVideoWithAudio"
-                    type="checkbox"
-                    v-model="enable_audio_recording_in_video"
-                    :disabled="is_recording"
-                  />
-                  <label for="recordVideoWithAudio">{{
-                    $t("with_sound")
-                  }}</label>
-                </span>
+                  <div
+                    v-if="enable_audio_recording_in_video"
+                    class="_tiny_equalizer"
+                  >
+                    <AudioEqualizer
+                      :stream="stream"
+                      :is_recording="is_recording"
+                      :type="'Tiny'"
+                    />
+                  </div>
 
+                  <span class="switch switch-xs" v-if="!is_recording">
+                    <input
+                      class="switch"
+                      id="recordVideoWithAudio"
+                      type="checkbox"
+                      v-model="enable_audio_recording_in_video"
+                      :disabled="is_recording"
+                    />
+                    <label for="recordVideoWithAudio">{{
+                      $t("with_sound")
+                    }}</label>
+                  </span>
+                </div>
                 <div
                   v-if="
                     selected_mode === 'stopmotion' &&
@@ -2540,18 +2538,18 @@ export default {
       font-size: 2em;
     }
   }
+}
 
-  ._tiny_equalizer {
-    margin: calc(var(--spacing) / 4) auto;
+._tiny_equalizer {
+  margin: 0 calc(var(--spacing) / 2);
 
-    .m_audioEqualizer {
-      position: relative;
-      width: 64px;
-      height: 36px;
-      background-color: transparent !important;
-      border-radius: 4px;
-      overflow: hidden;
-    }
+  .m_audioEqualizer {
+    position: relative;
+    width: 64px;
+    height: 36px;
+    background-color: transparent !important;
+    border-radius: 4px;
+    overflow: hidden;
   }
 }
 
