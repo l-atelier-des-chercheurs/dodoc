@@ -49,6 +49,9 @@ export default {
   methods: {
     startEqualizer() {
       if (!!this.audio_activity) this.audio_activity.destroy();
+
+      if (typeof this.stream !== "object") return;
+
       this.audio_activity = audioActivity(this.stream, (level) => {
         // 'level' indicates the audio activity in percentage
         this.current_audio_level = Math.round(level * 100);
