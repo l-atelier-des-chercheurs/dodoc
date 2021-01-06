@@ -279,22 +279,6 @@
                 <span>{{ $t("seconds") }}</span>
               </label>
             </div>
-
-            <!-- <label 
-                v-if="selected_mode === 'stopmotion' && timelapse_mode_enabled"
-                :key="'disable_interval'"  
-              >
-                <button 
-                  type="button" 
-                  class="button-nostyle text-uc padding-none margin-none c-blanc bg-rouge button-inline"
-                  @click="timelapse_mode_enabled = false"
-                >
-                  <svg class="inline-svg margin-right-verysmall" viewBox="0 0 20 20">
-                    <path stroke="" fill="white" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
-                  </svg>                    
-                  {{ $t('disable') }}
-                </button>                
-              </label>-->
           </transition-group>
 
           <transition name="scaleInFade" mode="out-in" duration="100">
@@ -861,22 +845,34 @@
                 </transition>
               </div>
               <div>
-                <span
-                  class="switch switch-xs"
-                  v-if="selected_mode === 'video' && !is_recording"
+                <div
+                  v-if="selected_mode === 'video'"
+                  class="flex-wrap flex-vertically-centered"
                 >
-                  <input
-                    class="switch"
-                    id="recordVideoWithAudio"
-                    type="checkbox"
-                    v-model="enable_audio_recording_in_video"
-                    :disabled="is_recording"
-                  />
-                  <label for="recordVideoWithAudio">{{
-                    $t("with_sound")
-                  }}</label>
-                </span>
+                  <div
+                    v-if="enable_audio_recording_in_video"
+                    class="_tiny_equalizer"
+                  >
+                    <AudioEqualizer
+                      :stream="stream"
+                      :is_recording="is_recording"
+                      :type="'Tiny'"
+                    />
+                  </div>
 
+                  <span class="switch switch-xs" v-if="!is_recording">
+                    <input
+                      class="switch"
+                      id="recordVideoWithAudio"
+                      type="checkbox"
+                      v-model="enable_audio_recording_in_video"
+                      :disabled="is_recording"
+                    />
+                    <label for="recordVideoWithAudio">{{
+                      $t("with_sound")
+                    }}</label>
+                  </span>
+                </div>
                 <div
                   v-if="
                     selected_mode === 'stopmotion' &&
@@ -2216,7 +2212,7 @@ export default {
           justify-content: center;
         }
         &:last-child {
-          text-align: right;
+          justify-content: flex-end;
         }
       }
 
@@ -2541,6 +2537,19 @@ export default {
     .record_options--timer {
       font-size: 2em;
     }
+  }
+}
+
+._tiny_equalizer {
+  margin: 0 calc(var(--spacing) / 2);
+
+  .m_audioEqualizer {
+    position: relative;
+    width: 64px;
+    height: 36px;
+    background-color: transparent !important;
+    border-radius: 4px;
+    overflow: hidden;
   }
 }
 
