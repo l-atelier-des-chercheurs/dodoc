@@ -10,6 +10,10 @@ export default {
   props: {
     stream: MediaStream,
     is_recording: Boolean,
+    type: {
+      type: String,
+      default: "Full",
+    },
   },
   components: {},
   data() {
@@ -45,6 +49,9 @@ export default {
   methods: {
     startEqualizer() {
       if (!!this.audio_activity) this.audio_activity.destroy();
+
+      if (typeof this.stream !== "object") return;
+
       this.audio_activity = audioActivity(this.stream, (level) => {
         // 'level' indicates the audio activity in percentage
         this.current_audio_level = Math.round(level * 100);
@@ -62,11 +69,16 @@ export default {
       else ctx.fillStyle = "#fc4b60";
 
       // draw at pos
-      const number_of_bars = canvas.width / 4;
+      let number_of_bars = canvas.width / 4;
+
+      if (this.type === "Tiny") number_of_bars = canvas.width / 20;
 
       const bar_pos =
         canvas.width * (this.current_draw_percentage / number_of_bars);
-      const bar_width = canvas.width / number_of_bars / 2;
+
+      let bar_width = canvas.width / number_of_bars / 2;
+
+      if (this.type === "Tiny") bar_width = canvas.width / number_of_bars;
 
       let bar_height = (this.current_audio_level / 100) * canvas.height;
       bar_height = Math.max(bar_width, bar_height);
@@ -80,14 +92,16 @@ export default {
 
       this.current_draw_percentage++;
       if (this.current_draw_percentage >= number_of_bars) {
-        this.current_draw_percentage = 0;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.clearCanvas();
       }
     },
     clearCanvas() {
       const canvas = this.$refs.canvas;
       const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);
       this.current_draw_percentage = 0;
     },
   },

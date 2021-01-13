@@ -2,6 +2,23 @@ import localstore from "store";
 import jQuery from "jquery";
 window.$ = window.jQuery = jQuery;
 
+if (window.state.dev_mode === "debug")
+  (function () {
+    var script = document.createElement("script");
+    script.onload = function () {
+      var stats = new Stats();
+      document.body.appendChild(stats.dom);
+      stats.dom.style.left = "auto";
+      stats.dom.style.right = "0px";
+      requestAnimationFrame(function loop() {
+        stats.update();
+        requestAnimationFrame(loop);
+      });
+    };
+    script.src = "//mrdoob.github.io/stats.js/build/stats.min.js";
+    document.head.appendChild(script);
+  })();
+
 if (window.state.is_electron) {
   document.body.addEventListener("click", electronSpecificOpenLink);
 
@@ -10,14 +27,18 @@ if (window.state.is_electron) {
     event.path.every((item) => {
       if (item.classList !== undefined && item.classList.length > 0) {
         if (item.classList.contains("js--openInBrowser")) {
-          const shell = window.require("electron").shell;
           event.preventDefault();
-          shell.openExternal(item.href);
+          window.electronAPI.send("toMain", {
+            type: "open_external",
+            url: item.href,
+          });
           return false;
         } else if (item.classList.contains("js--openInNativeApp")) {
-          const shell = window.require("electron").shell;
           event.preventDefault();
-          shell.openItem(item.getAttribute("href"));
+          window.electronAPI.send("toMain", {
+            type: "open_item",
+            path: item.href,
+          });
           return false;
         }
       }

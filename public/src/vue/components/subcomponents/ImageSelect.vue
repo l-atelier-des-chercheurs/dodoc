@@ -30,8 +30,9 @@
           v-for="project in $root.projects_that_are_accessible"
           :key="project.slugFolderName"
           :value="project.slugFolderName"
-          >{{ project.name }}</option
         >
+          {{ project.name }}
+        </option>
       </select>
       <div
         class="m_imageselect--selectFromMedias--imageList"
@@ -40,7 +41,7 @@
         <template
           v-if="
             getProjectsImages({
-              slugProjectName: show_medias_from_project
+              slugProjectName: show_medias_from_project,
             }) === false
           "
         >
@@ -51,7 +52,7 @@
         <template
           v-else-if="
             getProjectsImages({
-              slugProjectName: this.show_medias_from_project
+              slugProjectName: this.show_medias_from_project,
             }).length === 0
           "
         >
@@ -63,7 +64,7 @@
           v-else
           type="button"
           v-for="image in getProjectsImages({
-            slugProjectName: this.show_medias_from_project
+            slugProjectName: this.show_medias_from_project,
           })"
           :key="image.metaFileName"
           @click="selectThisImageForPreview({ image })"
@@ -97,12 +98,12 @@ export default {
 
     slugProjectName: {
       type: String,
-      default: ""
+      default: "",
     },
     load_from_projects_medias: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   components: {},
   data() {
@@ -112,7 +113,7 @@ export default {
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
 
-      show_medias_from_project: ""
+      show_medias_from_project: "",
     };
   },
 
@@ -125,12 +126,12 @@ export default {
   beforeDestroy() {},
 
   watch: {
-    show_medias_from_project: function() {
+    show_medias_from_project: function () {
       this.$socketio.listMedias({
         type: "projects",
-        slugFolderName: this.show_medias_from_project
+        slugFolderName: this.show_medias_from_project,
       });
-    }
+    },
   },
   computed: {
     _instructions() {
@@ -141,7 +142,7 @@ export default {
     first_project_slug() {
       if (Object.keys(this.$root.store.projects).length === 0) return "";
       return Object.keys(this.$root.store.projects)[0];
-    }
+    },
   },
   methods: {
     getProjectsImages({ slugProjectName }) {
@@ -157,7 +158,7 @@ export default {
 
       const images = Object.values(
         this.$root.store.projects[slugProjectName].medias
-      ).filter(m => m.type === "image");
+      ).filter((m) => m.type === "image");
 
       return images;
     },
@@ -170,20 +171,20 @@ export default {
       var image = new Image();
       var reader = new FileReader();
 
-      reader.onload = e => {
+      reader.onload = (e) => {
         let result = e.target.result;
         this.image = result;
         this.$emit("newPreview", result);
       };
       reader.readAsDataURL(file);
     },
-    removeImage: function(e) {
+    removeImage: function (e) {
       this.image = "";
       this.$emit("newPreview", "");
     },
 
     mediasImagesPreviewURL({ thumbs, size }) {
-      const small_thumb = thumbs.filter(m => m.size === size);
+      const small_thumb = thumbs.filter((m) => m.size === size);
       if (small_thumb.length == 0) {
         return false;
       }
@@ -197,22 +198,24 @@ export default {
       this.image = {
         metaFileName: image.metaFileName,
         slugFolderName: this.show_medias_from_project,
-        type: "projects"
+        type: "projects",
       };
+
+      this.image.thumb = this.getPreviewFromMedias(this.image);
       this.$emit("newPreview", this.image);
     },
     getPreviewFromMedias(image) {
       const slugFolderName = image.slugFolderName;
       const media = this.getProjectsImages({
-        slugProjectName: slugFolderName
-      }).find(m => m.metaFileName === image.metaFileName);
+        slugProjectName: slugFolderName,
+      }).find((m) => m.metaFileName === image.metaFileName);
       const url = this.mediasImagesPreviewURL({
         thumbs: media.thumbs,
-        size: 1600
+        size: 1600,
       });
       return url;
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

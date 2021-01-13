@@ -16,7 +16,7 @@
         {{ $t("create_qr_code_instructions") }}
       </div>
       <div class="margin-bottom-small">
-        <label>URL</label>
+        <label>{{ $t("link") }}/{{ $t("text") }}</label>
         <input
           class="input-big"
           type="text"

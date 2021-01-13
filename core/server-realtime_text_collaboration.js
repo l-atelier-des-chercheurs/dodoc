@@ -5,8 +5,7 @@ ShareDB.types.register(require("rich-text").type);
 
 const WebSocket = require("ws");
 const WebSocketJSONStream = require("websocket-json-stream");
-const http = require("http");
-const uuid = require("uuid");
+const { v4: uuidv4 } = require("uuid");
 const url = require("url");
 const { URLSearchParams } = require("url");
 
@@ -36,7 +35,7 @@ module.exports = function (server) {
       `server-realtime_text_collaboration • sharewss new client connection`
     );
 
-    client.id = uuid();
+    client.id = uuidv4();
     client.isAlive = true;
 
     dev.logverbose(

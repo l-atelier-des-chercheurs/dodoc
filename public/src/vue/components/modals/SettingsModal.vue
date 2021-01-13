@@ -11,6 +11,10 @@
     </template>
 
     <template slot="preview">
+      <transition name="fade_fast" :duration="150">
+        <Loader v-if="is_changing_lang"
+      /></transition>
+
       <div class="margin-sides-medium">
         <div class="margin-vert-small">
           do•doc version {{ $root.state.appVersion }}
@@ -85,11 +89,38 @@ export default {
       new_lang: this.$root.lang.current,
       show_journal: false,
       is_loading_journal: false,
+      is_changing_lang: false,
     };
   },
   watch: {
     new_lang() {
-      this.$root.updateLocalLang(this.new_lang);
+      this.is_changing_lang = true;
+
+      setTimeout(() => {
+        this.$root.updateLocalLang(this.new_lang);
+        setTimeout(() => {
+          this.is_changing_lang = false;
+          this.$alertify
+            .closeLogOnClick(true)
+            .delay(8000)
+            .success(
+              this.$t("notifications.new_lang_applied") +
+                " — " +
+                this.$root.lang.available.find(
+                  (l) => l.key === this.$root.lang.current
+                ).name
+            );
+
+          if (this.$root.lang.current !== "en") {
+            setTimeout(() => {
+              this.$alertify
+                .closeLogOnClick(true)
+                .delay(8000)
+                .log(this.$t("notifications.missing_translation_handled_in"));
+            }, 500);
+          }
+        }, 150);
+      }, 150);
     },
   },
   mounted() {

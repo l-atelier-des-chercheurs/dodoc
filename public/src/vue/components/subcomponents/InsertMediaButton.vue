@@ -193,7 +193,7 @@
   </div>
 </template>
 <script>
-import CaptureView from "../../CaptureView.vue";
+import CaptureView from "../capture/CaptureView.vue";
 import CaptureViewModal from "../modals/CaptureViewModal.vue";
 import UploadFile from "./UploadFile.vue";
 import debounce from "debounce";

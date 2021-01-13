@@ -102,7 +102,7 @@
 
         <template v-if="showQRModal">
           <hr />
-          <CreateQRCode :slugFolderName="slugProjectName" :media="media" />
+          <QRCodeToResource :slugFolderName="slugProjectName" :media="media" />
         </template>
 
         <button
@@ -634,7 +634,7 @@
 </template>
 <script>
 import MediaContent from "../subcomponents/MediaContent.vue";
-import CreateQRCode from "./qr/CreateQRCode.vue";
+import QRCodeToResource from "./qr/QRCodeToResource.vue";
 import { setTimeout } from "timers";
 import AuthorsInput from "../subcomponents/AuthorsInput.vue";
 import TagsInput from "../subcomponents/TagsInput.vue";
@@ -652,7 +652,7 @@ export default {
   },
   components: {
     MediaContent,
-    CreateQRCode,
+    QRCodeToResource,
     AuthorsInput,
     TagsInput,
     ClientsCheckingOut,
@@ -924,33 +924,17 @@ export default {
     editThisMedia: function () {
       console.log("editThisMedia");
 
-      this.$eventHub.$once(
-        "socketio.projects.media_listed",
-        this.editWereSaved
-      );
+      this.is_sending_content_to_server = true;
 
-      this.$root.editMedia({
-        type: "projects",
-        slugFolderName: this.slugProjectName,
-        slugMediaName: this.slugMediaName,
-        data: this.mediadata,
-      });
-
-      // show loader if modifications took more than .25 seconds to happen
-      setTimeout(() => {
-        this.is_sending_content_to_server = true;
-
-        // indicate that changes could not be saved after 5 seconds
-        setTimeout(() => {
-          if (this.is_sending_content_to_server) {
-            this.is_sending_content_to_server = false;
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error(this.$t("notifications.failed_to_save_media"));
-          }
-        }, 5000);
-      }, 250);
+      this.$root
+        .editMedia({
+          type: "projects",
+          slugFolderName: this.slugProjectName,
+          slugMediaName: this.slugMediaName,
+          data: this.mediadata,
+        })
+        .then(this.editWereSaved)
+        .catch(this.editCouldntBeSaved);
     },
     editWereSaved() {
       this.$alertify
@@ -959,6 +943,14 @@ export default {
         .success(this.$t("notifications.successfully_saved"));
       this.is_sending_content_to_server = false;
       this.$emit("close", "");
+    },
+    editCouldntBeSaved() {
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error(this.$t("notifications.failed_to_save_media"));
+
+      this.is_sending_content_to_server = false;
     },
     copyMediaToProject(to_slugFolderName) {
       console.log("copyMediaToProject " + to_slugFolderName);

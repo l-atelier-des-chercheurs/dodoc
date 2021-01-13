@@ -26,7 +26,29 @@
           ref="audioElement"
           :src="media_to_validate.objectURL"
           preload="none"
+          @canplay="updatePaused"
+          @playing="updatePaused"
+          @pause="updatePaused"
         />
+        <div class="play_picto" @click="play" v-if="is_paused">
+          <svg
+            class
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="169px"
+            height="169px"
+            viewBox="0 0 169 169"
+            style="enable-background: new 0 0 169 169"
+            xml:space="preserve"
+          >
+            <path
+              d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
+            />
+          </svg>
+        </div>
       </vue-plyr>
     </div>
     <div
@@ -45,6 +67,8 @@ export default {
   components: {},
   data() {
     return {
+      is_paused: false,
+
       plyr_options: {
         controls: [
           "play-large",
@@ -74,11 +98,20 @@ export default {
   computed: {},
   methods: {
     setSinkId() {
+      if (!this.audio_output_deviceId) return;
+
       if (this.media_to_validate.type === "video") {
         this.$refs.videoElement.setSinkId(this.audio_output_deviceId);
       } else if (this.media_to_validate.type === "audio") {
         this.$refs.audioElement.setSinkId(this.audio_output_deviceId);
       }
+    },
+    play() {
+      this.$refs.audioElement.play();
+    },
+    updatePaused(event) {
+      this.videoElement = event.target;
+      this.is_paused = event.target.paused;
     },
   },
 };
@@ -88,7 +121,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: var(--c-noir);
+  // background-color: var(--c-noir);
 
   display: flex;
   justify-content: center;
@@ -117,6 +150,7 @@ export default {
     }
 
     img {
+      object-fit: contain;
     }
 
     > * {
@@ -126,15 +160,29 @@ export default {
       height: 90%;
 
       &:last-child {
-        height: 10%;
+        height: auto;
       }
     }
+  }
+}
+
+.play_picto {
+  position: absolute;
+  top: 0;
+  left: 0;
+  svg {
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+    border-radius: 50%;
   }
 }
 </style>
 <style lang="scss">
 .m_previewValidation--svg {
   svg {
+    width: 100%;
+    height: 100%;
     max-width: 100%;
     margin: auto;
   }

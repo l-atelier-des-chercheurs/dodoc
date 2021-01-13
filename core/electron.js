@@ -1,5 +1,5 @@
 const electron = require("electron");
-const { app, BrowserWindow, Menu } = electron;
+const { app, BrowserWindow, Menu, shell, ipcMain } = electron;
 const path = require("path");
 
 app.commandLine.appendSwitch("ignore-certificate-errors", "true");
@@ -8,7 +8,6 @@ app.commandLine.appendSwitch("disable-http-cache", "true");
 
 const electronPDFWindow = require("electron-pdf-window");
 
-const { dialog } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 
 module.exports = (function () {
@@ -95,8 +94,11 @@ module.exports = (function () {
 
         webPreferences: {
           allowRunningInsecureContent: true,
-          nodeIntegration: true,
+          nodeIntegration: false,
+          contextIsolation: true,
+          enableRemoteModule: false, // turn off remote
           plugins: true,
+          preload: path.join(__dirname, "preload.js"),
         },
       });
 
@@ -126,6 +128,14 @@ module.exports = (function () {
         console.log(`ELECTRON — createWindow : ready-to-show`);
         win.show();
         win.focus();
+      });
+
+      ipcMain.on("toMain", (event, args) => {
+        if (args.type === "open_path") shell.openPath(args.path);
+        else if (args.type === "open_external") shell.openExternal(args.url);
+
+        // Send result back to renderer process
+        // win.webContents.send("fromMain", responseObj);
       });
 
       return resolve(win);
