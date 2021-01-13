@@ -62,7 +62,6 @@
     "moment": "^2.29.1",
     "node-abi": "^2.19.3",
     "node-localstorage": "^2.1.6",
-    "node-stl-to-thumbnail": "^1.1.0",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
     "platform-folders": "^0.5.2",
