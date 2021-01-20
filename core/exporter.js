@@ -18,7 +18,8 @@ ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function () {
   return {
-    loadPublication: (slugPubliName) => loadPublication(slugPubliName),
+    loadPublication: (slugPubliName) =>
+      loadFolder({ type: "publications", slugFolderName: slugPubliName }),
 
     copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
@@ -609,16 +610,13 @@ module.exports = (function () {
     },
   };
 
-  function loadPublication(slugPubliName) {
+  function loadFolder({ type, slugFolderName }) {
     return new Promise((resolve, reject) => {
       dev.logfunction(
-        `EXPORTER — loadPublication with slugPubliName = ${slugPubliName}`
+        `EXPORTER — loadPublication with type = ${type} and slugFolderName = ${slugFolderName}`
       );
 
       let _page_informations = {};
-
-      let slugFolderName = slugPubliName;
-      let type = "publications";
 
       let publi_and_medias = {};
 
