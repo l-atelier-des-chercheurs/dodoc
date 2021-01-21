@@ -16,6 +16,7 @@
         model_placeholder_media._reply._medias.length > 0,
     }"
   >
+    <!-- 'is--active': is_currently_active, -->
     <!-- <label>{{ $t("placeholder") }} </label> -->
     <div
       v-if="
@@ -108,6 +109,7 @@
           :publi_follows_model="true"
           :modes_allowed="remaining_modes_allowed"
           :captureview_in_modal="captureview_in_modal"
+          :is_currently_active="is_currently_active"
           :can_collapse="
             !(
               !model_placeholder_media._reply ||
@@ -175,6 +177,10 @@
                   :publi_follows_model="true"
                   :modes_allowed="remaining_modes_allowed"
                   :captureview_in_modal="captureview_in_modal"
+                  :is_currently_active="
+                    is_currently_active &&
+                    index === model_placeholder_media._reply._medias.length - 1
+                  "
                   :read_only="read_only"
                   @addMedia="
                     (values) =>
@@ -239,6 +245,7 @@ export default {
     preview_mode: Boolean,
     read_only: Boolean,
     publication_is_submitted: Boolean,
+    is_currently_active: Boolean,
     captureview_in_modal: Boolean,
     paged_mode: {
       type: Boolean,

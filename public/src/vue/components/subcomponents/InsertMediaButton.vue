@@ -8,7 +8,7 @@
   >
     <div
       class="m_insertMediaButton--importHere"
-      v-if="!show_menu"
+      v-if="true || !show_menu"
       :class="{
         'is--active': is_currently_active && !show_drop_container,
       }"
@@ -251,10 +251,13 @@ export default {
   mounted() {
     document.addEventListener("dragover", this.ondragover);
 
+    this.$eventHub.$on("publication.addMedia", this.addMediaFromProject);
+
     this.cancelDragOver = debounce(this.cancelDragOver, 300);
   },
   beforeDestroy() {
     document.removeEventListener("dragover", this.ondragover);
+    this.$eventHub.$off("publication.addMedia", this.addMediaFromProject);
   },
   watch: {
     can_collapse: {
@@ -329,6 +332,16 @@ export default {
 
       this.enable_capture_mode = !this.enable_capture_mode;
     },
+    addMediaFromProject({ values }) {
+      // only enabled for is_currently_active
+      if (!this.is_currently_active) return;
+
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Story • METHODS: addMediaFromProject`);
+
+      this.$emit("addMedia", values);
+    },
+
     updateInputFiles($event) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`InsertMediaButton • METHODS / updateInputFiles`);
