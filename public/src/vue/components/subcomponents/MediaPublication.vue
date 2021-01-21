@@ -188,13 +188,14 @@
             :model_placeholder_media="media"
             :slugPubliName="slugPubliName"
             :publication_is_submitted="publication_is_submitted"
-            :publi_is_model="publi_is_model"
             :preview_mode="preview_mode"
+            :is_currently_active="is_currently_active"
             :read_only="read_only"
             :captureview_in_modal="true"
             :paged_mode="true"
             @addMedia="(values) => addMedia({ values })"
             @editPubliMedia="$emit('editPubliMedia', $event)"
+            @setActive="setActive"
           />
         </template>
       </div>
@@ -757,6 +758,8 @@ export default {
       show_advanced_menu: false,
       show_zindex_number: false,
 
+      is_currently_active: false,
+
       limit_media_to_page: true,
       htmlForEditor: this.media.content ? this.media.content : "",
 
@@ -829,6 +832,7 @@ export default {
       "publication.selected.triggerAction",
       this.triggerAction
     );
+    this.$eventHub.$on("publication.setNewActive", this.disableActive);
 
     window.addEventListener("keydown", this.keyIsPressed);
     window.addEventListener("keyup", this.keyIsUnpressed);
@@ -844,6 +848,7 @@ export default {
       "publication.selected.triggerAction",
       this.triggerAction
     );
+    this.$eventHub.$off("publication.setNewActive", this.disableActive);
 
     window.removeEventListener("keydown", this.keyIsPressed);
     window.removeEventListener("keyup", this.keyIsUnpressed);
@@ -918,6 +923,13 @@ export default {
       if (event.key === "Alt") {
         this.copy_mode_enabled = false;
       }
+    },
+    setActive() {
+      this.$eventHub.$emit("publication.setNewActive");
+      this.is_currently_active = true;
+    },
+    disableActive() {
+      this.is_currently_active = false;
     },
     selectNewMedia(metaFileName) {
       if (metaFileName === this.media.metaFileName)

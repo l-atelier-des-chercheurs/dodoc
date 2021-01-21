@@ -5363,6 +5363,7 @@ small {
     height: 100%;
     max-height: none;
     object-position: center;
+    object-fit: contain !important;
   }
 
   .mediaTextContent {
@@ -6840,7 +6841,7 @@ small {
 
     &.type-placeholder {
       --fill_color: @c-creme;
-      overflow: auto;
+      overflow: visible;
       .m_mediaPlaceholder {
         background-color: var(--fill_color);
       }

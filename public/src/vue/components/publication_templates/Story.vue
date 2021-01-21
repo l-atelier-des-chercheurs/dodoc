@@ -202,16 +202,6 @@ export default {
   },
   created() {},
   mounted() {
-    this.$root.settings.current_publication.accepted_media_type = [
-      "image",
-      "video",
-      "audio",
-      "text",
-      "stl",
-      "document",
-      "other",
-    ];
-
     const getCurrentScroll = () => {
       if (
         this.$refs.publi &&
@@ -222,9 +212,7 @@ export default {
     };
     getCurrentScroll();
   },
-  beforeDestroy() {
-    this.$root.settings.current_publication.accepted_media_type = [];
-  },
+  beforeDestroy() {},
   watch: {
     current_scroll() {
       if (!this.$refs.publi) return 0;
@@ -235,8 +223,6 @@ export default {
       const mediaPlaceholders = this.$refs.publi.querySelectorAll(
         ".m_mediaPlaceholder"
       );
-
-      debugger;
 
       // if pane is scrolled all the way, we should adjust
       let elHeight = this.getPaneHeight();

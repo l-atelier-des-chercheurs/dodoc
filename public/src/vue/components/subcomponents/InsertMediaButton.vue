@@ -266,6 +266,30 @@ export default {
       },
       immediate: true,
     },
+    is_currently_active: {
+      handler() {
+        if (this.is_currently_active) {
+          let accepted_modes = [
+            "image",
+            "video",
+            "audio",
+            "text",
+            "stl",
+            "document",
+            "other",
+          ];
+
+          accepted_modes = Object.keys(this.modes_allowed).map((m) => {
+            if (m === "photo") return "image";
+            if (m === "stopmotion") return "video";
+            return m;
+          });
+
+          this.$root.settings.current_publication.accepted_media_type = accepted_modes;
+        }
+      },
+      immediate: true,
+    },
   },
   computed: {},
   methods: {

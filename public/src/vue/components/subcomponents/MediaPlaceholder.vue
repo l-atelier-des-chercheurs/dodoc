@@ -230,6 +230,24 @@
         />
       </div>
     </div>
+    <div
+      v-if="
+        !is_currently_active &&
+        !publi_is_model &&
+        paged_mode &&
+        (!model_placeholder_media._reply ||
+          !model_placeholder_media._reply._medias ||
+          model_placeholder_media._reply._medias.length === 0)
+      "
+    >
+      <button
+        type="button"
+        class="buttonLink bg-bleuvert"
+        @click="$emit('setActive')"
+      >
+        {{ $t("choose_from_projects") }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -337,11 +355,15 @@ export default {
 
             const number_of_medias_of_this_type = this.model_placeholder_media._reply._medias.filter(
               (m) => {
+                const _type = m.hasOwnProperty("_linked_media")
+                  ? m._linked_media.type
+                  : m.type;
+
                 if (mode === "photo" || mode === "vecto")
-                  return m.type === mode || m.type === "image";
+                  return _type === mode || _type === "image";
                 if (mode === "stopmotion")
-                  return m.type === mode || m.type === "video";
-                return m.type === mode;
+                  return _type === mode || _type === "video";
+                return _type === mode;
               }
             ).length;
 
@@ -366,9 +388,12 @@ export default {
       ) {
         const medias_types = this.model_placeholder_media._reply._medias.reduce(
           (acc, m) => {
-            const type = m.type;
-            if (!acc.hasOwnProperty(type)) acc[type] = 0;
-            acc[type]++;
+            const _type = m.hasOwnProperty("_linked_media")
+              ? m._linked_media.type
+              : m.type;
+
+            if (!acc.hasOwnProperty(_type)) acc[_type] = 0;
+            acc[_type]++;
             return acc;
           },
           {}
