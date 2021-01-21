@@ -706,7 +706,7 @@ let vm = new Vue({
       this.updateClientInfo({
         looking_at_chat: {
           slugFolderName: this.current_chat
-            ? this.current_chat.slugFolderName
+            ? this.current_chat.slug
             : false,
         },
       });
