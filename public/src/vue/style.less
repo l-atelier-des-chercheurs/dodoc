@@ -5149,6 +5149,10 @@ small {
     }
   }
 
+  &.is--active {
+    background-color: @c-bleuvert;
+  }
+
   // in paged publi
   .m_mediaPublication & {
     margin: 0;
@@ -5359,6 +5363,7 @@ small {
     height: 100%;
     max-height: none;
     object-position: center;
+    object-fit: contain !important;
   }
 
   .mediaTextContent {
@@ -5561,7 +5566,7 @@ small {
       transform: translateX(-4px) scale(0.5);
       opacity: 0;
 
-      transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+      transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
     &.is--active {
@@ -6836,7 +6841,7 @@ small {
 
     &.type-placeholder {
       --fill_color: @c-creme;
-      overflow: auto;
+      overflow: visible;
       .m_mediaPlaceholder {
         background-color: var(--fill_color);
       }

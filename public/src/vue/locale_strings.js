@@ -1041,6 +1041,10 @@ module.exports = (function () {
       fr: "Épaisseur du contour",
       en: "Stroke width",
     },
+    choose_from_projects: {
+      fr: "Choisir dans les projets",
+      en: "Choose from projects",
+    },
     adjust: {
       fr: "Ajuster",
       en: "Adjust",

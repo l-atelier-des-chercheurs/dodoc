@@ -22,6 +22,8 @@ module.exports = (function () {
   return {
     loadPublication: (slugPubliName) =>
       loadFolder({ type: "publications", slugFolderName: slugPubliName }),
+    loadFolder: ({ type, slugFolderName }) =>
+      loadFolder({ type, slugFolderName }),
 
     copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
       return new Promise(function (resolve, reject) {
