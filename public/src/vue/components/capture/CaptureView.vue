@@ -425,7 +425,7 @@
 
           <transition name="justCaptured" :duration="200">
             <MediaPreviewBeforeValidation
-              v-if="media_to_validate"
+              v-if="media_to_validate && must_validate_media"
               :media_to_validate="media_to_validate"
               :audio_output_deviceId="audio_output_deviceId"
             />
@@ -996,7 +996,7 @@
                 </template>
               </div>
             </div>
-            <div v-else key="validation">
+            <div v-else-if="must_validate_media" key="validation">
               <div class="_download_media_without_validation">
                 <small>
                   <a
@@ -1308,6 +1308,12 @@ export default {
       console.log(
         `WATCH • Capture: media_to_validate = ${!!this.media_to_validate}`
       );
+
+      if (!this.must_validate_media) {
+        this.sendMedia({});
+        return;
+      }
+
       if (this.media_to_validate) {
         if (this.$refs.videoElement) this.$refs.videoElement.pause();
         if (this.$refs.audioElement) this.$refs.audioElement.pause();
