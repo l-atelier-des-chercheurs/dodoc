@@ -2,48 +2,55 @@
   <div class="m_stopmotionList">
     <template v-if="Object.keys(stopmotions).length > 0">
       <ul>
-        <li v-for="stopmotion in stopmotions" :key="stopmotion.slugFolderName">
+        <li
+          v-for="(stopmotion, index) in stopmotions"
+          :key="stopmotion.slugFolderName"
+          class=""
+        >
           <!-- @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)" -->
-          <div class="padding-verysmall">
-            {{ $root.formatDateToPrecise(stopmotion.date_created) }}
+
+          <div class="_preview">
+            <MediaContent
+              :context="'preview'"
+              :slugFolderName="stopmotion.slugFolderName"
+              :media="mediasPreviewed(stopmotion)[0]"
+              :folderType="'stopmotions'"
+              :preview_size="600"
+            />
           </div>
-          <div
-            v-if="Object.values(stopmotion.medias).length > 0"
-            class="pictures_cont"
-          >
-            <div class="padding-bottom-verysmall">
-              {{ $t("photo") }} = {{ Object.values(stopmotion.medias).length }}
+
+          <label class=""> {{ $t("stopmotion") }} {{ index + 1 }} </label>
+          <DateField
+            :title="'created'"
+            :date="stopmotion.date_created"
+            :show_detail_initially="false"
+          />
+
+          <div class="m_metaField" @click="show_detail = !show_detail">
+            <div class="">
+              {{ $t("photos") }}
             </div>
-            <div class="pictures_list">
-              <div
-                v-for="media in Object.values(stopmotion.medias)"
-                :key="media.slugMediaName"
-              >
-                <!-- v-if="index <= 5" -->
-                <MediaContent
-                  :context="'preview'"
-                  :slugFolderName="stopmotion.slugFolderName"
-                  :media="media"
-                  :folderType="'stopmotions'"
-                  :preview_size="150"
-                />
-              </div>
+            <div class="">
+              {{ Object.values(stopmotion.medias).length }}
             </div>
           </div>
-          <button
-            type="button"
-            class="buttonLink"
-            @click="loadStopmotion(stopmotion.slugFolderName)"
-          >
-            {{ $t("load") }}
-          </button>
-          <button
-            type="button"
-            class="buttonLink"
-            @click="removeStopmotion(stopmotion.slugFolderName)"
-          >
-            {{ $t("remove") }}
-          </button>
+
+          <div class="_options">
+            <button
+              type="button"
+              class="buttonLink"
+              @click="loadStopmotion(stopmotion.slugFolderName)"
+            >
+              {{ $t("load") }}
+            </button>
+            <button
+              type="button"
+              class="buttonLink"
+              @click="removeStopmotion(stopmotion.slugFolderName)"
+            >
+              {{ $t("remove") }}
+            </button>
+          </div>
         </li>
       </ul>
     </template>
@@ -116,6 +123,15 @@ export default {
     loadStopmotion(slugFolderName) {
       this.$emit("loadStopmotion", slugFolderName);
     },
+    mediasPreviewed(stopmotion) {
+      if (
+        typeof stopmotion.medias === "object" &&
+        Object.values(stopmotion.medias).length > 0
+      )
+        return Object.values(stopmotion.medias).slice(0, 1);
+      return [];
+    },
+
     removeStopmotion(slugFolderName) {
       this.$alertify
         .okBtn(this.$t("yes"))
@@ -142,12 +158,12 @@ export default {
   background-color: var(--c-bleumarine);
 
   color: var(--c-bleumarine);
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2);
 
   overflow-y: auto;
   height: 100%;
 
-  border-left: 2px solid var(--c-bleumarine);
+  // border-left: 4px solid var(--c-bleumarine);
   font-size: var(--font-verysmall);
 
   ul {
@@ -164,27 +180,42 @@ export default {
     display: block;
     width: 100%;
     padding: 0;
-    margin-top: calc(var(--spacing) / 8);
-    margin-bottom: calc(var(--spacing) / 8);
-    padding-left: calc(var(--spacing) / 8);
-    padding-left: calc(var(--spacing) / 8);
+    margin: calc(var(--spacing) / 2) 0;
+    overflow: hidden;
 
-    &:hover {
-      background-color: var(--c-bleumarine_clair);
+    // &:hover {
+    //   background-color: var(--c-bleumarine_clair);
+    // }
+
+    label {
+      color: black;
+      // margin: 0;
+      margin-top: 4px;
+    }
+
+    > *:not(._preview) {
+      padding: 0 calc(var(--spacing) / 4);
+    }
+
+    > ._preview {
+      position: relative;
+
+      .mediaContainer {
+      }
     }
 
     .pictures_cont {
-      padding-left: calc(var(--spacing) / 8);
-      padding-left: calc(var(--spacing) / 8);
+      // padding-left: calc(var(--spacing) / 8);
+      // padding-left: calc(var(--spacing) / 8);
     }
 
     .pictures_list {
       display: flex;
       flex-flow: row wrap;
+      background-color: var(--c-bleumarine);
       // justify-content: flex-start;
       // overflow-x: auto;
       // .padding-right-verysmall;
-
       > * {
         flex: 0 0 50px;
         // .padding-left-verysmall;
@@ -206,5 +237,19 @@ export default {
       margin-top: 0;
     }
   }
+}
+._options {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+
+  background-color: var(--c-bleumarine_clair);
+}
+</style>
+<style lang="scss">
+._preview .mediaContainer img {
+  // height: 100%;
+  max-height: 140px;
+  object-fit: contain;
 }
 </style>
