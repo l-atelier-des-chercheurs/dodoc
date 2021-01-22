@@ -13,7 +13,7 @@
             <button
               class="m_listview--openedFolderLabel--backButton"
               type="button"
-              @click="$root.settings.opened_folder = false"
+              @click="$root.closeFolder()"
             >
               ‹
               <span class>{{ $t("back") }}</span>
@@ -306,7 +306,7 @@
                 <button
                   type="button"
                   class="button-nostyle"
-                  @click="toggleFolder(item.name)"
+                  @click="$root.openFolder(item.name)"
                 >
                   {{ $t("open") }}
                 </button>
@@ -886,12 +886,6 @@ export default {
       return this.selected_projects.some(
         (m) => m.slugFolderName === slugFolderName
       );
-    },
-
-    toggleFolder(folder_name) {
-      if (this.$root.settings.opened_folder === folder_name)
-        this.$root.settings.opened_folder = false;
-      else this.$root.settings.opened_folder = folder_name;
     },
 
     urlToPortrait(slug, filename) {

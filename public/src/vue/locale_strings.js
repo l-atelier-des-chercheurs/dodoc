@@ -2388,6 +2388,10 @@ module.exports = (function () {
       oc: "fòto",
       de: "Foto",
     },
+    photos: {
+      fr: "photos",
+      en: "pictures",
+    },
     screen_capture: {
       fr: "Capture d’écran",
       en: "Screen capture",

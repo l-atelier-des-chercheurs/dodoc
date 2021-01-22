@@ -73,12 +73,20 @@ module.exports = function (app) {
 
   // GET
   function showIndex(req, res) {
+    let projectFolder = req.query.folder ? req.query.folder : undefined;
+
     generatePageData(req).then(
       (pageData) => {
         // dev.logpackets(
         //   `Rendering index with data `,
         //   JSON.stringify(pageData, null, 4)
         // );
+        if (projectFolder) {
+          pageData.projectFolder = projectFolder;
+          pageData.type = "projects";
+        }
+        pageData.slugFolderName = undefined;
+
         res.render("index", pageData);
       },
       (err) => {
