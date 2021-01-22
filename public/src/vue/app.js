@@ -347,7 +347,7 @@ let vm = new Vue({
         fav: false,
         type: "",
       },
-      opened_folder: false,
+      opened_project_folder: false,
     },
     lang: {
       available: lang_settings.available,
@@ -1474,7 +1474,7 @@ let vm = new Vue({
     openFolder: function (slugFolderName) {
       if (window.state.dev_mode === "debug")
         console.log(`ROOT EVENT: openFolder: ${slugFolderName}`);
-      this.$root.settings.opened_folder = slugFolderName;
+      this.$root.settings.opened_project_folder = slugFolderName;
 
       history.pushState(
         { folder: slugFolderName },
@@ -1483,7 +1483,7 @@ let vm = new Vue({
       );
     },
     closeFolder: function () {
-      this.$root.settings.opened_folder = false;
+      this.$root.settings.opened_project_folder = false;
 
       history.pushState({ folder: "" }, "", "/");
     },

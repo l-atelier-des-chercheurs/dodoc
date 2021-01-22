@@ -160,7 +160,7 @@ export default {
   },
   data() {
     return {
-      show_folder: !!this.$root.settings.opened_folder,
+      show_folder: !!this.$root.settings.opened_project_folder,
       show_image: false,
       show_keywords: false,
       show_authors: this.$root.current_author,
@@ -168,8 +168,8 @@ export default {
 
       is_sending_content_to_server: false,
 
-      existing_group_name: !!this.$root.settings.opened_folder
-        ? this.$root.settings.opened_folder
+      existing_group_name: !!this.$root.settings.opened_project_folder
+        ? this.$root.settings.opened_project_folder
         : "_none",
       new_group_name: "",
       enable_visible_to_all: false,
