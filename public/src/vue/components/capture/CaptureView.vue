@@ -131,7 +131,7 @@
         }"
       >
         <div class="m_captureview--videoPane--top--videoContainer">
-          <div v-show="show_videos">
+          <div :style="`opacity: ${show_videos ? 1 : 0}`">
             <video
               ref="videoElement"
               autoplay
