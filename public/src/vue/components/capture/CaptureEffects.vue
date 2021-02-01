@@ -235,7 +235,7 @@ export default {
           default: 1,
           min: 0,
           max: 2,
-          step: 0.001,
+          step: 0.01,
         },
         contrast: {
           enable: false,
@@ -244,7 +244,7 @@ export default {
           default: 1,
           min: 0,
           max: 3,
-          step: 0.001,
+          step: 0.01,
         },
         hue: {
           enable: false,
@@ -253,7 +253,7 @@ export default {
           default: 0,
           min: -0.5,
           max: 0.5,
-          step: 0.001,
+          step: 0.01,
         },
         saturation: {
           enable: false,
@@ -262,7 +262,7 @@ export default {
           default: 0,
           min: -1,
           max: 1,
-          step: 0.001,
+          step: 0.01,
         },
         lightness: {
           enable: false,
@@ -271,7 +271,16 @@ export default {
           default: 0,
           min: -1,
           max: 1,
-          step: 0.001,
+          step: 0.01,
+        },
+        dotscreen: {
+          enable: false,
+          value: 10,
+          order: 6,
+          default: 10,
+          min: 3,
+          max: 20,
+          step: 0.01,
         },
       },
 
@@ -281,6 +290,7 @@ export default {
 
       fragment_shader: `
 precision mediump float;
+#define PI 3.1415926538
 
 uniform sampler2D videoTex;
 uniform float texWidth;
@@ -306,6 +316,9 @@ uniform float mid;
 uniform float hue;
 uniform float saturation;
 uniform float lightness;
+
+uniform float dotscreen;
+
 
 // From https://github.com/libretro/glsl-shaders/blob/master/nnedi3/shaders/rgb-to-yuv.glsl
 vec2 RGBtoUV(vec3 rgb) {
@@ -412,6 +425,17 @@ float mix_factor(vec4 range, vec3 hsl) {
   return mix_factor;
 }
 
+float pattern(vec2 texCoord) {
+  float angle = PI / 8.0;
+  float s = sin(angle), c = cos(angle);
+  vec2 tex = texCoord * vec2(texWidth, texHeight) - vec2(0.5, 0.5);
+  vec2 point = vec2(
+      c * tex.x - s * tex.y,
+      s * tex.x + c * tex.y
+  ) * (PI / dotscreen);
+  return (sin(point.x) * sin(point.y)) * 4.0;
+}
+
 void main(void) {
   // get video image
   vec2 texCoord = vec2(gl_FragCoord.x/texWidth, 1.0 - (gl_FragCoord.y/texHeight));
@@ -424,33 +448,51 @@ void main(void) {
   vec4 videoColor = texture2D(videoTex, texCoord);
 
   // apply chroma key if necessary
-  if (chromaKeyMode != -1) {
+  if (chromaKeyMode != -1000) {
     videoColor = ApplyChromaKey(texCoord, videoColor);
   }
 
   // apply brightness, from https://github.com/actionnick/exposure/blob/master/src/shaders/exposure.frag
-  videoColor = mix(videoColor, vec4(1.0, 1.0, 1.0, 1.0), brightness - 1.0);
-  videoColor.a = 1.0;
+  if(brightness != -1000.0) {
+    videoColor = mix(videoColor, vec4(1.0, 1.0, 1.0, 1.0), brightness - 1.0);
+    videoColor.a = 1.0;
+  }
 
   // contrast
-  videoColor.r = ((videoColor.r - mid) * contrast) + mid;
-  videoColor.g = ((videoColor.g - mid) * contrast) + mid;
-  videoColor.b = ((videoColor.b - mid) * contrast) + mid;
-  videoColor.a = 1.0;
+  if(contrast != -1000.0) {
+    videoColor.r = ((videoColor.r - mid) * contrast) + mid;
+    videoColor.g = ((videoColor.g - mid) * contrast) + mid;
+    videoColor.b = ((videoColor.b - mid) * contrast) + mid;
+    videoColor.a = 1.0;
+  }
 
+  // hue, saturation, lightness
+  if(hue != -1000.0 || saturation != -1000.0 || lightness != -1000.0) {
+    vec3 hsl = RGBtoHSL(videoColor.rgb);
+    vec4 MASTER_RANGE = vec4(0.0, 0.0, 1.0, 1.0);
 
-  vec3 hsl = RGBtoHSL(videoColor.rgb);
+    float master_mix_factor = mix_factor(MASTER_RANGE, hsl);
+    // hue
+    if(hue != -1000.0) {
+      hsl.x = clamp_continuous(hsl.x + (hue * master_mix_factor));
+    }
+    // saturation
+    if(saturation != -1000.0) {
+      hsl.y = clamp(hsl.y + (saturation * master_mix_factor), 0.0, 1.0);
+    }
+    // lightness
+    if(lightness != -1000.0) {
+      hsl.z = clamp(mix(hsl.z, 1.0, max(0.0, lightness)), 0.0, 1.0);
+      hsl.z = clamp(mix(hsl.z, 0.0, abs(min(0.0, lightness))), 0.0, 1.0);
+    }
 
-  vec4 MASTER_RANGE = vec4(0.0, 0.0, 1.0, 1.0);
+    videoColor.rgb = HSLtoRGB(hsl);
+  }
 
-  float master_mix_factor = mix_factor(MASTER_RANGE, hsl);
-  hsl.x = clamp_continuous(hsl.x + (hue * master_mix_factor));
-  hsl.y = clamp(hsl.y + (saturation * master_mix_factor), 0.0, 1.0);
-  hsl.z = clamp(mix(hsl.z, 1.0, max(0.0, lightness)), 0.0, 1.0);
-  hsl.z = clamp(mix(hsl.z, 0.0, abs(min(0.0, lightness))), 0.0, 1.0);
-
-  videoColor.rgb = HSLtoRGB(hsl);
-
+  if(dotscreen != -1000.0) {
+    float average = (videoColor.r + videoColor.g + videoColor.b) / 3.0;
+    videoColor = vec4(vec3(average * 10.0 - 5.0 + pattern(texCoord)), videoColor.a);
+  }
 
   gl_FragColor = videoColor;
 
@@ -628,13 +670,7 @@ void main(void) {
       const smoothnessLoc = gl.getUniformLocation(prog, "smoothness");
       const spillLoc = gl.getUniformLocation(prog, "spill");
       const chromaKeyModeLoc = gl.getUniformLocation(prog, "chromaKeyMode");
-      const brightnessLoc = gl.getUniformLocation(prog, "brightness");
-      const contrastLoc = gl.getUniformLocation(prog, "contrast");
       const midLoc = gl.getUniformLocation(prog, "mid");
-
-      const hueLoc = gl.getUniformLocation(prog, "hue");
-      const saturationLoc = gl.getUniformLocation(prog, "saturation");
-      const lightnessLoc = gl.getUniformLocation(prog, "lightness");
 
       const imageFiltersLoc = Object.keys(this.image_filters_settings).reduce(
         (acc, _s) => {
@@ -708,14 +744,15 @@ void main(void) {
             parseFloat(
               this.image_filters_settings[name].enable
                 ? this.image_filters_settings[name].value
-                : this.image_filters_settings[name].default
+                : -1000
             )
           );
         });
         gl.uniform1f(midLoc, parseFloat(0.5));
 
         // check if chroma_key_settings.enable
-        let chromaKeyMode = -1;
+        // -1000 = false
+        let chromaKeyMode = -1000;
         if (this.chroma_key_settings.enable) {
           if (this.chroma_key_settings.replacement_mode === "color") {
             chromaKeyMode = 0;
