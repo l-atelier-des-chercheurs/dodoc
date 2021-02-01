@@ -1380,6 +1380,7 @@ export default {
       this.stream = stream;
       this.stream_type = type;
       this.$refs.videoElement.volume = 0;
+      this.enable_effects = false;
     },
     setImageData(imageData) {
       if (!this.$refs.canvasElement) return;
