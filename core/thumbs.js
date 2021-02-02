@@ -262,7 +262,7 @@ module.exports = (function () {
           } else if (mediaType === "link") {
             let screenshotsScroll = [0];
             screenshotsScroll.forEach((scroll) => {
-              let makeSTLScreenshot = new Promise((resolve, reject) => {
+              let makeLinkScreenshot = new Promise((resolve, reject) => {
                 _makeLinkThumb({
                   slugFolderName,
                   thumbFolderPath,
@@ -313,7 +313,7 @@ module.exports = (function () {
                     resolve();
                   });
               });
-              makeThumbs.push(makeSTLScreenshot);
+              makeThumbs.push(makeLinkScreenshot);
             });
           }
 
@@ -787,8 +787,8 @@ module.exports = (function () {
     angle,
   }) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(
-        `Looking to make a STL screenshot for ${slugFolderName}/${filename}`
+      dev.logfunction(
+        `THUMBS — _makeSTLScreenshot: ${slugFolderName}/${filename}`
       );
 
       // todo : use angle to get screenshots all around an stl
@@ -940,7 +940,7 @@ module.exports = (function () {
 
   function getEXIFDataForVideoAndAudio(mediaPath) {
     return new Promise(function (resolve, reject) {
-      dev.logfunction(`getEXIFDataForVideoAndAudio: ${mediaPath}`);
+      dev.logfunction(`THUMBS — getEXIFDataForVideoAndAudio: ${mediaPath}`);
       ffmpeg.ffprobe(mediaPath, function (err, metadata) {
         if (err || typeof metadata === "undefined") {
           dev.log(`getEXIFDataForVideoAndAudio: PROBE DATA isn’t valid`);
