@@ -407,7 +407,7 @@ module.exports = (function () {
           ? options.bitrate
           : "6000k";
 
-        loadPublication(slugPubliName)
+        loadFolder({ type: "publications", slugFolderName: slugPubliName })
           .then((pageData) => {
             publication_meta = pageData.publiAndMediaData[slugPubliName];
             return _loadMediaFilenameFromPublicationSlugs(
@@ -539,7 +539,9 @@ module.exports = (function () {
 
         fs.ensureDir(cachePath)
           .then(() => fs.ensureDir(imagesCachePath))
-          .then(() => loadPublication(slugPubliName))
+          .then(() =>
+            loadFolder({ type: "publications", slugFolderName: slugPubliName })
+          )
           .then((pageData) => {
             let ratio = _getMediaRatioFromFirstFilename(
               slugPubliName,
@@ -615,7 +617,7 @@ module.exports = (function () {
   function loadFolder({ type, slugFolderName }) {
     return new Promise((resolve, reject) => {
       dev.logfunction(
-        `EXPORTER — loadPublication with type = ${type} and slugFolderName = ${slugFolderName}`
+        `EXPORTER — loadFolder with type = ${type} and slugFolderName = ${slugFolderName}`
       );
 
       let _page_informations = {};
