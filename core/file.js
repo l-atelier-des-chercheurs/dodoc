@@ -1206,6 +1206,7 @@ module.exports = (function () {
                 (meta.type === "text" ||
                   meta.type === "marker" ||
                   meta.type === "embed" ||
+                  meta.type === "link" ||
                   meta.type === "code") &&
                 data.hasOwnProperty("content")
               ) {
@@ -1476,7 +1477,8 @@ module.exports = (function () {
         } else if (
           additionalMeta.type === "text" ||
           additionalMeta.type === "marker" ||
-          additionalMeta.type === "embed"
+          additionalMeta.type === "embed" ||
+          additionalMeta.type === "link"
         ) {
           tasks.push(
             new Promise((resolve, reject) => {
@@ -1799,6 +1801,7 @@ module.exports = (function () {
               (mediaData.type === "text" ||
                 mediaData.type === "marker" ||
                 mediaData.type === "embed" ||
+                mediaData.type === "link" ||
                 mediaData.type === "code") &&
               mediaData.hasOwnProperty("media_filename")
             ) {
@@ -1864,7 +1867,8 @@ module.exports = (function () {
                 mediaData.media_filename,
                 mediaData.type,
                 type,
-                "medias"
+                "medias",
+                mediaData
               )
               .then((thumbData) => {
                 mediaData.thumbs = thumbData;
