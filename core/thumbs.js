@@ -266,7 +266,7 @@ module.exports = (function () {
           } else if (mediaType === "link") {
             let screenshotsScroll = [0];
             screenshotsScroll.forEach((scroll) => {
-              let makeSTLScreenshot = new Promise((resolve, reject) => {
+              let makeLinkScreenshot = new Promise((resolve, reject) => {
                 _makeLinkThumb({
                   slugFolderName,
                   thumbFolderPath,
@@ -317,7 +317,7 @@ module.exports = (function () {
                     resolve();
                   });
               });
-              makeThumbs.push(makeSTLScreenshot);
+              makeThumbs.push(makeLinkScreenshot);
             });
           }
 
