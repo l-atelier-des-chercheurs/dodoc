@@ -37,7 +37,7 @@ module.exports = (function () {
         );
 
         if (!global.settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in global.settings.json`);
+          return reject(`Missing type ${type} in global.settings.json`);
         }
 
         const baseFolderPath = global.settings.structure[type].path;
@@ -232,7 +232,7 @@ module.exports = (function () {
         }
 
         if (!global.settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in global.settings.json`);
+          return reject(`Missing type ${type} in global.settings.json`);
         }
 
         const baseFolderPath = global.settings.structure[type].path;
@@ -330,7 +330,7 @@ module.exports = (function () {
         );
 
         if (!global.settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in global.settings.json`);
+          return reject(`Missing type ${type} in global.settings.json`);
         }
         const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
@@ -418,7 +418,7 @@ module.exports = (function () {
         );
 
         if (!global.settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in global.settings.json`);
+          return reject(`Missing type ${type} in global.settings.json`);
         }
         const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
@@ -484,7 +484,7 @@ module.exports = (function () {
         );
 
         if (!global.settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in global.settings.json`);
+          return reject(`Missing type ${type} in global.settings.json`);
         }
         const baseFolderPath = global.settings.structure[type].path;
         const mainFolderPath = api.getFolderPath(baseFolderPath);
@@ -519,7 +519,7 @@ module.exports = (function () {
         dev.logfunction(`COMMON — copyFolder`);
 
         if (!global.settings.structure.hasOwnProperty(type)) {
-          reject(`Missing type ${type} in global.settings.json`);
+          return reject(`Missing type ${type} in global.settings.json`);
         }
 
         const baseFolderPath = global.settings.structure[type].path;

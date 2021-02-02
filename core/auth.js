@@ -616,7 +616,12 @@ module.exports = (function () {
     let is_admin = false;
 
     // get all session authors
-    const all_authors_informations = await file.getFolder({ type: "authors" });
+    const all_authors_informations = await file
+      .getFolder({ type: "authors" })
+      .catch((err) => {
+        // error : no authors to check
+        return false;
+      });
     const admins_slugs = Object.values(all_authors_informations).reduce(
       (acc, a) => {
         if (a.role === "admin") acc.push(a.slugFolderName);
