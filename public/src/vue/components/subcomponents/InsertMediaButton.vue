@@ -279,14 +279,19 @@ export default {
             "other",
           ];
 
-          accepted_modes = Object.keys(this.modes_allowed).map((m) => {
-            if (m === "photo") return "image";
-            if (m === "stopmotion") return "video";
-            return m;
-          });
+          if (this.modes_allowed !== "all") {
+            accepted_modes = Object.keys(this.modes_allowed).map((m) => {
+              if (m === "photo") return "image";
+              if (m === "stopmotion") return "video";
+              return m;
+            });
+          }
 
-          this.$root.settings.current_publication.accepted_media_type = accepted_modes;
+          this.$nextTick(() => {
+            this.$root.settings.current_publication.accepted_media_type = accepted_modes;
+          });
         }
+        this.$root.settings.current_publication.accepted_media_type = [];
       },
       immediate: true,
     },

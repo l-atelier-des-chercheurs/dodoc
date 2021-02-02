@@ -231,10 +231,14 @@ export default {
         this.current_scroll / (elHeight - this.$refs.publi.offsetHeight) >
         0.9
       ) {
-        this.el_index_currently_visible.insert_button =
-          insertMediaButtons.length - 1;
-        this.el_index_currently_visible.media_placeholder =
-          mediaPlaceholders[mediaPlaceholders.length - 1].dataset.metafilename;
+        if (insertMediaButtons.length > 0)
+          this.el_index_currently_visible.insert_button =
+            insertMediaButtons.length - 1;
+        if (mediaPlaceholders.length > 0)
+          this.el_index_currently_visible.media_placeholder =
+            mediaPlaceholders[
+              mediaPlaceholders.length - 1
+            ].dataset.metafilename;
       }
 
       let index = 0;
@@ -253,8 +257,10 @@ export default {
           break;
         index++;
       }
-      this.el_index_currently_visible.media_placeholder =
-        mediaPlaceholders[index].dataset.metafilename;
+
+      if (index >= 0 && mediaPlaceholders.length > 0)
+        this.el_index_currently_visible.media_placeholder =
+          mediaPlaceholders[index].dataset.metafilename;
     },
   },
   computed: {

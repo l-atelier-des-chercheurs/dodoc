@@ -213,6 +213,10 @@ module.exports = (function () {
       fr: "Clarté",
       en: "Lightness",
     },
+    dotscreen: {
+      fr: "Noir et blanc (tramé)",
+      en: "Black and white (halftone)",
+    },
 
     no_content_to_show: {
       fr: "Aucun contenu à afficher",
