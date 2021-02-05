@@ -23,7 +23,7 @@ module.exports = (function () {
     loadFolder: ({ type, slugFolderName }) =>
       loadFolder({ type, slugFolderName }),
 
-    copyFolderContent: ({ html, folders_and_medias = {}, slugFolderName }) => {
+    copyFolderContent: ({ html, all_medias = [], slugFolderName }) => {
       return new Promise(function (resolve, reject) {
         dev.logfunction(`EXPORTER — copyFolderContent = ${slugFolderName}`);
         // create cache folder that we will need to copy the content
@@ -74,84 +74,67 @@ module.exports = (function () {
               tasks.push(copyFrontEndFiles);
             });
 
-            Object.entries(folders_and_medias).forEach(
-              ([slugFolderName, folderMeta]) => {
-                const fullSlugFolderPath = api.getFolderPath(slugFolderName);
-                const slugFolderInCache = path.join(cachePath, slugFolderName);
+            // for each medias array and type, fetch and copy
 
-                const fullSlugFolderPath_inThumbs = api.getFolderPath(
-                  path.join(global.settings.thumbFolderName, slugFolderName)
-                );
-                const slugFolderInCache_thumbs = path.join(
-                  cachePath,
-                  global.settings.thumbFolderName,
-                  slugFolderName
-                );
+            all_medias.map(({ type, folders_and_medias }) => {
+              Object.entries(folders_and_medias).forEach(
+                ([slugFolderName, folderMeta]) => {
+                  const baseFolderPath = global.settings.structure[type].path;
+                  const mainFolderPath = api.getFolderPath(baseFolderPath);
 
-                Object.entries(folderMeta.medias).forEach(
-                  ([metaFileName, mediaMeta]) => {
-                    if (mediaMeta.hasOwnProperty("media_filename")) {
-                      const media_filename = mediaMeta.media_filename;
+                  const fullSlugFolderPath = path.join(
+                    mainFolderPath,
+                    slugFolderName
+                  );
+                  const slugFolderInCache = path.join(
+                    cachePath,
+                    baseFolderPath,
+                    slugFolderName
+                  );
 
-                      tasks.push(
-                        new Promise((resolve, reject) => {
-                          const fullPathToMedia = path.join(
-                            fullSlugFolderPath,
-                            media_filename
-                          );
-                          const fullPathToMedia_cache = path.join(
-                            slugFolderInCache,
-                            media_filename
-                          );
-                          fs.copy(fullPathToMedia, fullPathToMedia_cache)
-                            .then(() => {
-                              resolve();
-                            })
-                            .catch((err) => {
-                              dev.error(`Failed to copy medias files: ${err}`);
-                              reject(err);
-                            });
-                        })
-                      );
-                    }
-                    if (
-                      mediaMeta.hasOwnProperty("thumbs") &&
-                      typeof mediaMeta.thumbs !== "undefined"
-                    ) {
-                      mediaMeta.thumbs.map((t) => {
-                        if (t && t.hasOwnProperty("path")) {
-                          tasks.push(
-                            new Promise((resolve, reject) => {
-                              let thumb_path = t.path;
-                              if (thumb_path.indexOf("?") > 0) {
-                                thumb_path = thumb_path.substring(
-                                  0,
-                                  thumb_path.indexOf("?")
+                  // const fullSlugFolderPath_inThumbs = api.getFolderPath(
+                  //   path.join(global.settings.thumbFolderName, slugFolderName)
+                  // );
+                  // const slugFolderInCache_thumbs = path.join(
+                  //   cachePath,
+                  //   global.settings.thumbFolderName,
+                  //   slugFolderName
+                  // );
+
+                  Object.entries(folderMeta.medias).forEach(
+                    ([metaFileName, mediaMeta]) => {
+                      if (mediaMeta.hasOwnProperty("media_filename")) {
+                        const media_filename = mediaMeta.media_filename;
+
+                        tasks.push(
+                          new Promise((resolve, reject) => {
+                            const fullPathToMedia = path.join(
+                              fullSlugFolderPath,
+                              media_filename
+                            );
+                            const fullPathToMedia_cache = path.join(
+                              slugFolderInCache,
+                              media_filename
+                            );
+                            fs.copy(fullPathToMedia, fullPathToMedia_cache)
+                              .then(() => {
+                                resolve();
+                              })
+                              .catch((err) => {
+                                dev.error(
+                                  `Failed to copy medias files: ${err}`
                                 );
-                              }
-
-                              const fullPathToThumb = api.getFolderPath(
-                                thumb_path
-                              );
-                              const fullPathToThumb_cache = path.join(
-                                cachePath,
-                                thumb_path
-                              );
-
-                              fs.copy(fullPathToThumb, fullPathToThumb_cache)
-                                .then(() => {
-                                  resolve();
-                                })
-                                .catch((err) => {
-                                  dev.error(
-                                    `Failed to copy thumb files: ${err}`
-                                  );
-                                  reject(err);
-                                });
-                            })
-                          );
-                        } else if (t.hasOwnProperty("thumbsData")) {
-                          t.thumbsData.map((t) => {
+                                reject(err);
+                              });
+                          })
+                        );
+                      }
+                      if (
+                        mediaMeta.hasOwnProperty("thumbs") &&
+                        typeof mediaMeta.thumbs !== "undefined"
+                      ) {
+                        mediaMeta.thumbs.map((t) => {
+                          if (t && t.hasOwnProperty("path")) {
                             tasks.push(
                               new Promise((resolve, reject) => {
                                 let thumb_path = t.path;
@@ -182,14 +165,50 @@ module.exports = (function () {
                                   });
                               })
                             );
-                          });
-                        }
-                      });
+                          } else if (t.hasOwnProperty("thumbsData")) {
+                            t.thumbsData.map((t) => {
+                              tasks.push(
+                                new Promise((resolve, reject) => {
+                                  let thumb_path = t.path;
+                                  if (thumb_path.indexOf("?") > 0) {
+                                    thumb_path = thumb_path.substring(
+                                      0,
+                                      thumb_path.indexOf("?")
+                                    );
+                                  }
+
+                                  const fullPathToThumb = api.getFolderPath(
+                                    thumb_path
+                                  );
+                                  const fullPathToThumb_cache = path.join(
+                                    cachePath,
+                                    thumb_path
+                                  );
+
+                                  fs.copy(
+                                    fullPathToThumb,
+                                    fullPathToThumb_cache
+                                  )
+                                    .then(() => {
+                                      resolve();
+                                    })
+                                    .catch((err) => {
+                                      dev.error(
+                                        `Failed to copy thumb files: ${err}`
+                                      );
+                                      reject(err);
+                                    });
+                                })
+                              );
+                            });
+                          }
+                        });
+                      }
                     }
-                  }
-                );
-              }
-            );
+                  );
+                }
+              );
+            });
 
             Promise.all(tasks)
               .then((d_array) => {
