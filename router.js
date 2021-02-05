@@ -315,7 +315,16 @@ module.exports = function (app) {
       exporter
         .copyFolderContent({
           html,
-          folders_and_medias: pageData.folderAndMediaData,
+          all_medias: [
+            {
+              folders_and_medias: pageData.folderAndMediaData,
+              type: "projects",
+            },
+            {
+              folders_and_medias: pageData.publiAndMediaData,
+              type: "publications",
+            },
+          ],
           slugFolderName: slugPubliName,
         })
         .then(
