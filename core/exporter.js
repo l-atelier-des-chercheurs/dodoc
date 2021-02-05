@@ -118,13 +118,14 @@ module.exports = (function () {
                             );
                             fs.copy(fullPathToMedia, fullPathToMedia_cache)
                               .then(() => {
-                                resolve();
+                                return resolve();
                               })
                               .catch((err) => {
+                                // can happen for placeholders in publi, where it doesnt matter really
                                 dev.error(
                                   `Failed to copy medias files: ${err}`
                                 );
-                                reject(err);
+                                return resolve();
                               });
                           })
                         );
