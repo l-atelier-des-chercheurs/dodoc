@@ -4,7 +4,8 @@ const path = require("path"),
   ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
-  sharp = require("sharp");
+  sharp = require("sharp"),
+  cheerio = require("cheerio");
 
 sharp.cache(false);
 
@@ -260,61 +261,86 @@ module.exports = (function () {
               makeThumbs.push(makeSTLScreenshot);
             });
           } else if (mediaType === "link") {
-            let screenshotsScroll = [0];
-            screenshotsScroll.forEach((scroll) => {
-              let makeLinkScreenshot = new Promise((resolve, reject) => {
-                _makeLinkThumb({
-                  slugFolderName,
-                  thumbFolderPath,
-                  filename,
-                  scroll,
-                  mediaData,
-                })
-                  .then(({ screenshotPath, screenshotName }) => {
-                    // make screenshot, then make thumbs out of each screenshot and push this to thumbs
-                    // naming :
-                    // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
-                    // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
-
-                    let makeThumbsFromScreenshot = [];
-
-                    thumbResolutions.forEach((thumbRes) => {
-                      let makeThumbFromScreenshot = new Promise(
-                        (resolve, reject) => {
-                          _makeImageThumb(
-                            api.getFolderPath(screenshotPath),
-                            thumbFolderPath,
-                            screenshotName,
-                            thumbRes
-                          )
-                            .then((thumbPath) => {
-                              let thumbMeta = {
-                                path: thumbPath,
-                                size: thumbRes,
-                              };
-                              resolve(thumbMeta);
-                            })
-                            .catch((err) => {
-                              dev.error(
-                                `makeMediaThumbs / Failed to make link thumbs with error ${err}`
-                              );
-                              resolve();
-                            });
-                        }
-                      );
-                      makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
-                    });
-                    Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
-                      resolve({ scroll, thumbsData });
-                    });
-                  })
-                  .catch((err) => {
-                    dev.error(`Couldn’t make stl screenshots.`);
-                    resolve();
+            // if link, we’ll get og: title, og: image and og: description from source page
+            // create a .txt file and a thumb for the og: image
+            let makeLinkCard = new Promise((resolve, reject) => {
+              _getLinkOpenGraph({
+                slugFolderName,
+                thumbFolderPath,
+                filename,
+                mediaData,
+              })
+                .then(({ title, description, image }) => {
+                  return resolve({
+                    siteData: {
+                      title,
+                      description,
+                      image,
+                    },
                   });
-              });
-              makeThumbs.push(makeLinkScreenshot);
+                })
+                .catch((err) => {
+                  dev.error(`Couldn’t make link og tags : ${err}`);
+                  return resolve();
+                });
             });
+
+            makeThumbs.push(makeLinkCard);
+
+            // and store
+            // let screenshotsScroll = [0];
+            // screenshotsScroll.forEach((scroll) => {
+            //   let makeLinkScreenshot = new Promise((resolve, reject) => {
+            //     _makeLinkThumb({
+            //       slugFolderName,
+            //       thumbFolderPath,
+            //       filename,
+            //       scroll,
+            //       mediaData,
+            //     })
+            //       .then(({ screenshotPath, screenshotName }) => {
+            //         // make screenshot, then make thumbs out of each screenshot and push this to thumbs
+            //         // naming :
+            //         // - mediaName.0.200.jpeg, mediaName.0.400.jpeg, etc.
+            //         // - mediaName.5.200.jpeg, mediaName.10.400.jpeg, etc.
+            //         let makeThumbsFromScreenshot = [];
+            //         thumbResolutions.forEach((thumbRes) => {
+            //           let makeThumbFromScreenshot = new Promise(
+            //             (resolve, reject) => {
+            //               _makeImageThumb(
+            //                 api.getFolderPath(screenshotPath),
+            //                 thumbFolderPath,
+            //                 screenshotName,
+            //                 thumbRes
+            //               )
+            //                 .then((thumbPath) => {
+            //                   let thumbMeta = {
+            //                     path: thumbPath,
+            //                     size: thumbRes,
+            //                   };
+            //                   resolve(thumbMeta);
+            //                 })
+            //                 .catch((err) => {
+            //                   dev.error(
+            //                     `makeMediaThumbs / Failed to make link thumbs with error ${err}`
+            //                   );
+            //                   resolve();
+            //                 });
+            //             }
+            //           );
+            //           makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
+            //         });
+            //         Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
+            //           resolve({ scroll, thumbsData });
+            //         });
+            //       })
+            //       .catch((err) => {
+            //         dev.error(`Couldn’t make stl screenshots.`);
+            //         resolve();
+            //       });
+            //   });
+            //   makeThumbs.push(makeLinkScreenshot);
+            // });
           }
 
           Promise.all(makeThumbs)
@@ -478,6 +504,8 @@ module.exports = (function () {
           }
 
           // get all thumbs that start with
+
+          // TODO : get all thumbs that match exactly (slugMediaName + . at the end)
           var thumbs = filenames.filter((name) => {
             return name.indexOf(slugMediaName) === 0;
           });
@@ -830,6 +858,146 @@ module.exports = (function () {
     });
   }
 
+  function _getLinkOpenGraph({
+    slugFolderName,
+    thumbFolderPath,
+    filename,
+    mediaData,
+  }) {
+    return new Promise(function (resolve, reject) {
+      dev.logfunction(
+        `THUMBS — _getLinkOpenGraph: ${slugFolderName}/${filename}`
+      );
+
+      let meta_cache_filename = `${filename}.sitemeta.json`;
+      let meta_cache_path = path.join(thumbFolderPath, meta_cache_filename);
+      let meta_cache_fullpath = api.getFolderPath(meta_cache_path);
+
+      fs.pathExists(meta_cache_fullpath).then((exists) => {
+        if (!exists) {
+          const url = mediaData.content;
+          if (!url) {
+            dev.error(`THUMBS — _getLinkOpenGraph / no URL`);
+            return reject(`no url`);
+          }
+
+          _getPageMetadata({ url })
+            .then((_metadata) => {
+              let results = {};
+              if (_metadata.hasOwnProperty("title"))
+                results.title = _metadata.title;
+              if (_metadata.hasOwnProperty("description"))
+                results.description = _metadata.description;
+              if (_metadata.hasOwnProperty("image"))
+                results.image = _metadata.image;
+
+              fs.writeFile(
+                meta_cache_fullpath,
+                JSON.stringify(results),
+                (error) => {
+                  if (error) return reject(error);
+                  dev.logverbose(
+                    `THUMBS — _getLinkOpenGraph : stored meta at ${meta_cache_fullpath}`
+                  );
+                  return resolve(results);
+                }
+              );
+            })
+            .catch((err) => {
+              return reject(err);
+            });
+        } else {
+          dev.logverbose(
+            `Site metadata already exist at path ${meta_cache_fullpath}`
+          );
+
+          fs.readFile(
+            meta_cache_fullpath,
+            global.settings.textEncoding,
+            (err, results) => {
+              return resolve(JSON.parse(results));
+            }
+          );
+        }
+      });
+      // if image
+    });
+  }
+
+  function _getPageMetadata({ url }) {
+    return new Promise((resolve, reject) => {
+      const { BrowserWindow } = require("electron");
+      let win = new BrowserWindow({
+        show: false,
+      });
+
+      win.loadURL(url);
+
+      win.webContents.on("did-finish-load", () => {
+        dev.logverbose(`THUMBS — _getPageMetadata : finished loading page`);
+
+        let code = `var promise = Promise.resolve(document.documentElement.innerHTML); 
+                  promise.then(data => data)`;
+
+        win.webContents.executeJavaScript(code, true).then((html) => {
+          // console.log(html); // will be your innherhtml
+          const parsed_meta = _parseHTMLMetaTags({ html });
+          return resolve(parsed_meta);
+        });
+      });
+      win.webContents.on("did-fail-load", (err) => {
+        dev.error(
+          `THUMBS — _getPageMetadata / Failed to load link page with error ${err}`
+        );
+        return reject(err);
+      });
+    });
+  }
+
+  function _parseHTMLMetaTags({ html }) {
+    var $ = cheerio.load(html);
+
+    var meta = $("meta");
+    var keys = Object.keys(meta);
+
+    var result = {};
+
+    keys.forEach(function (key) {
+      if (
+        meta[key].attribs &&
+        meta[key].attribs.property &&
+        meta[key].attribs.property.indexOf("og") == 0
+      ) {
+        var og = meta[key].attribs.property.split(":");
+
+        if (og.length > 2) {
+          if (result[og[1]]) {
+            if (
+              typeof result[og[1]] == "string" ||
+              result[og[1]] instanceof String
+            ) {
+              var set = {};
+              set["name"] = result[og[1]];
+              set[og[2]] = meta[key].attribs.content;
+              result[og[1]] = set;
+            } else {
+              ex_set = result[og[1]];
+              ex_set[og[2]] = meta[key].attribs.content;
+              result[og[1]] = ex_set;
+            }
+          } else {
+            var set = {};
+            set[og[2]] = meta[key].attribs.content;
+            result[og[1]] = set;
+          }
+        } else {
+          result[og[1]] = meta[key].attribs.content;
+        }
+      }
+    });
+    return result;
+  }
+
   function _makeLinkThumb({
     slugFolderName,
     thumbFolderPath,
@@ -838,10 +1006,7 @@ module.exports = (function () {
     mediaData,
   }) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(
-        `Looking to make a link screenshot for ${slugFolderName}/${filename}`
-      );
-
+      dev.logfunction(`THUMBS — _makeLinkThumb: ${slugFolderName}/${filename}`);
       // todo : use scroll to get screenshots all around an stl
 
       let screenshotName = `${filename}.${scroll}.png`;
@@ -853,7 +1018,10 @@ module.exports = (function () {
         if (!exists) {
           const url = mediaData.content;
 
-          if (!url) return reject();
+          if (!url) {
+            dev.error(`THUMBS — _makeLinkThumb / no URL`);
+            return reject(`no url`);
+          }
 
           screenshotWebsite({
             url,
@@ -862,16 +1030,16 @@ module.exports = (function () {
               fs.writeFile(fullScreenshotPath, image.toPNG(1.0), (error) => {
                 if (error) throw error;
                 dev.logverbose(
-                  `THUMBS — _makeSTLScreenshot : created image at ${fullScreenshotPath}`
+                  `THUMBS — _makeLinkThumb : created image at ${fullScreenshotPath}`
                 );
                 return resolve({ screenshotPath, screenshotName });
               });
             })
             .catch((err) => {
               dev.error(
-                `THUMBS — _makeSTLScreenshot / Failed to make link thumbs with error ${err}`
+                `THUMBS — _makeLinkThumb / Failed to make link thumbs with error ${err}`
               );
-              return reject();
+              return reject(err);
             });
 
           // var thumbnailer = new StlThumbnailer({
@@ -897,7 +1065,7 @@ module.exports = (function () {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`
           );
-          resolve({ screenshotPath, screenshotName });
+          return resolve({ screenshotPath, screenshotName });
         }
       });
     });
