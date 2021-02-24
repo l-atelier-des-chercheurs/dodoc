@@ -926,12 +926,21 @@ module.exports = (function () {
 
   function _getPageMetadata({ url }) {
     return new Promise((resolve, reject) => {
+      dev.logfunction(`THUMBS — _getPageMetadata: ${url}`);
+
       const { BrowserWindow } = require("electron");
       let win = new BrowserWindow({
         show: false,
       });
 
-      win.loadURL(url);
+      function addhttp(url) {
+        if (!/^(?:f|ht)tps?\:\/\//.test(url)) {
+          url = "http://" + url;
+        }
+        return url;
+      }
+      const _url = addhttp(url);
+      win.loadURL(_url);
 
       win.webContents.on("did-finish-load", () => {
         dev.logverbose(`THUMBS — _getPageMetadata : finished loading page`);
@@ -947,9 +956,9 @@ module.exports = (function () {
       });
       win.webContents.on("did-fail-load", (err) => {
         dev.error(
-          `THUMBS — _getPageMetadata / Failed to load link page with error ${err}`
+          `THUMBS — _getPageMetadata / Failed to load link page with error ${err.message}`
         );
-        return reject(err);
+        return reject(err.message);
       });
     });
   }
