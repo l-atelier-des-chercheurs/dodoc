@@ -64,7 +64,7 @@
     "path": "^0.12.7",
     "platform-folders": "^0.4.1",
     "portscanner": "^2.2.0",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "quill-render": "^1.0.5",
     "rich-text": "^4.0.0",
     "sharedb": "^1.1.0",
