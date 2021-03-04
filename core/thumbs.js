@@ -874,18 +874,24 @@ module.exports = (function () {
         `THUMBS — _getLinkOpenGraph: ${slugFolderName}/${filename}`
       );
 
-      let meta_cache_filename = `${filename}.sitemeta.json`;
+      let url = mediaData.content;
+      if (!url) {
+        dev.error(`THUMBS — _getLinkOpenGraph / no URL`);
+        return reject(`no url`);
+      }
+
+      function addhttp(url) {
+        if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
+        return url;
+      }
+      url = addhttp(url);
+
+      let meta_cache_filename = `${api.slug(url)}.sitemeta.json`;
       let meta_cache_path = path.join(thumbFolderPath, meta_cache_filename);
       let meta_cache_fullpath = api.getFolderPath(meta_cache_path);
 
       fs.pathExists(meta_cache_fullpath).then((exists) => {
         if (!exists) {
-          const url = mediaData.content;
-          if (!url) {
-            dev.error(`THUMBS — _getLinkOpenGraph / no URL`);
-            return reject(`no url`);
-          }
-
           _getPageMetadata({ url })
             .then((_metadata) => {
               let results = {};
@@ -952,22 +958,8 @@ module.exports = (function () {
 
           dev.logverbose(`THUMBS — _getPageMetadata : loading URL ${url}`);
 
-          function delay(duration) {
-            return new Promise((resolve) => {
-              setTimeout(() => resolve(), duration);
-            });
-          }
-
-          function addhttp(url) {
-            if (!/^(?:f|ht)tps?\:\/\//.test(url)) {
-              url = "http://" + url;
-            }
-            return url;
-          }
-          const _url = addhttp(url);
-
           page
-            .goto(_url, {
+            .goto(url, {
               waitUntil: "domcontentloaded",
             })
             .then(async () => {
