@@ -1,9 +1,16 @@
 <template>
   <div class="m_publicationsview">
-    <div class="m_actionbar">
-      <div>
-        <div class="m_actionbar--buttonBar">
-          <!-- <button 
+    <!-- <div class="m_actionbar"> -->
+    <CreatePublication
+      v-if="showCreatePublicationModal"
+      :default_name="create_publi_default_name"
+      :default_template="createPubliTemplateKey"
+      @close="showCreatePublicationModal = false"
+      :read_only="read_only"
+    />
+    <div class="_topMenu">
+      <div class="_publiLabel">
+        <!-- <button 
           class="barButton barButton_createPubli"
           type="button"  
           @click="showCreatePublicationModal = true"
@@ -13,156 +20,38 @@
               {{ $t('create_a_publication') }}
           </span>
           </button>-->
+        <!-- <div class="m_actionbar--text"> -->
+        <label class="">
+          {{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}
+        </label>
+        <!-- </div> -->
+      </div>
+      <!-- </div> -->
 
-          <CreatePublication
-            v-if="showCreatePublicationModal"
-            :default_name="create_publi_default_name"
-            :default_template="createPubliTemplateKey"
-            @close="showCreatePublicationModal = false"
-            :read_only="read_only"
+      <div class="m_sideBySideSwitches">
+        <label for="publi_mode_templates">
+          <input
+            type="radio"
+            id="publi_mode_templates"
+            value="templates"
+            v-model="current_mode"
           />
-        </div>
-        <div class="m_actionbar--text">
-          <div>
-            {{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}
-          </div>
-
-          <template v-if="publications.length > 0">
-            <div>
-              {{ $t("showing") }}
-              <span
-                :class="{
-                  'c-rouge': sorted_publications.length !== publications.length,
-                }"
-              >
-                {{ sorted_publications.length }}
-                <template
-                  v-if="sorted_publications.length === publications.length"
-                  >{{ $t("recipes") }}</template
-                >
-                <template v-else>
-                  {{ $t("recipes_of") }}
-                  {{ Object.keys(publications).length }}
-                </template>
-              </span>
-              <template
-                v-if="
-                  $root.allKeywords.length > 0 || $root.all_authors.length > 0
-                "
-              >
-                —
-                <button
-                  type="button"
-                  class="button-nostyle text-uc button-triangle"
-                  :class="{ 'is--active': show_filters }"
-                  @click="show_filters = !show_filters"
-                >
-                  {{ $t("filters") }}
-                </button>
-              </template>
-              <TagsAndAuthorFilters
-                v-if="show_filters"
-                :allKeywords="publis_keywords"
-                :allAuthors="publis_authors"
-                :keywordFilter="$root.settings.publication_filter.keyword"
-                :authorFilter="$root.settings.publication_filter.author"
-                @setKeywordFilter="(a) => $root.setPubliKeywordFilter(a)"
-                @setAuthorFilter="(a) => $root.setPubliAuthorFilter(a)"
-              />
-            </div>
-            <div class="m_searchProject">
-              <button
-                type="button"
-                class="button-nostyle text-uc button-triangle"
-                :class="{
-                  'is--active':
-                    show_search ||
-                    $root.settings.publication_filter.name.length > 0,
-                }"
-                @click="show_search = !show_search"
-              >
-                <svg
-                  class="inline-svg"
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  x="0px"
-                  y="0px"
-                  width="96.2px"
-                  height="96.2px"
-                  viewBox="0 0 96.2 96.2"
-                  style="margin-bottom: -2px"
-                  xml:space="preserve"
-                >
-                  <path
-                    fill="currentColor"
-                    class="st0"
-                    d="M10.3,59.9c11.7,11.7,29.5,13.4,43,5.2l9.7,9.7l21.3,21.3l11.9-11.9L74.9,63l-9.7-9.7c8.2-13.5,6.4-31.3-5.2-43 C46.2-3.4,24-3.4,10.3,10.3C-3.4,24-3.4,46.2,10.3,59.9z M50.8,19.5c8.6,8.6,8.6,22.6,0,31.3c-8.6,8.6-22.6,8.6-31.3,0 c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
-                  />
-                </svg>
-                {{ $t("search") }}
-              </button>
-
-              <div
-                v-if="
-                  show_search || debounce_search_publication_name.length > 0
-                "
-                class="rounded"
-              >
-                <div>{{ $t("recipe_name_to_find") }}</div>
-
-                <div class="input-group">
-                  <input
-                    type="text"
-                    class
-                    v-model="debounce_search_publication_name"
-                  />
-                  <span
-                    class="input-addon"
-                    v-if="debounce_search_publication_name.length > 0"
-                  >
-                    <button
-                      type="button"
-                      :disabled="debounce_search_publication_name.length === 0"
-                      @click="debounce_search_publication_name = ''"
-                    >
-                      ×
-                    </button>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </template>
-        </div>
-      </div>
-      <div class="m_displayMyContent" v-if="$root.current_author">
-        <span>{{ $t("show") }}</span>
-        <select v-model="show_only_my_content">
-          <option :value="true">
-            {{ $t("only_my_recipes").toLowerCase() }}
-          </option>
-          <option :value="false">{{ $t("all_recipes").toLowerCase() }}</option>
-        </select>
+          {{ $t("templates_available") }}
+        </label>
+        <label for="publi_mode_list">
+          <input
+            type="radio"
+            id="publi_mode_list"
+            value="list"
+            v-model="current_mode"
+          />
+          {{ $t("recipes_already_created") }}
+        </label>
       </div>
     </div>
 
-    <div class="m_publiFilter">
-      <label>{{ $t("show_recipes_for_project_first") }}</label>
-      <select v-model="slugProjectName_to_filter">
-        <option key="'all'" value>** {{ $t("all").toLowerCase() }} **</option>
-        <option
-          v-for="project in $root.projects_that_are_accessible"
-          :key="project.slugFolderName"
-          :value="project.slugFolderName"
-        >
-          {{ project.name }} ({{
-            recipesForThisProject(project.slugFolderName).length
-          }})
-        </option>
-      </select>
-    </div>
     <!-- liste des recettes -->
-    <div class="m_recipes">
+    <div class="m_recipes" v-if="current_mode === 'templates'">
       <!-- pour chaque recette -->
       <div
         class="m_recipes--recipe"
@@ -199,72 +88,264 @@
             <span>{{ $t("create") }}</span>
           </button>
         </div>
-
-        <div
-          class="m_recipes--recipe--mealList"
-          v-if="filteredRecipesOfTemplate(recipe.key).length > 0"
-        >
-          <table>
-            <thead>
-              <tr>
-                <th colspan="1">
-                  <label>{{ $t("previous_creations") }}</label>
-                </th>
-                <th colspan="1">
-                  <label>{{ $t("created_date") }}</label>
-                </th>
-                <th colspan="1">
-                  <label>{{ $t("authors") }}</label>
-                </th>
-                <th colspan="1">
-                  <label>{{ $t("number_of_medias") }}</label>
-                </th>
-                <th colspan="1">
-                  <label>{{ $t("attached_to_project") }}</label>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="publication in recipeOfThisTemplate(recipe.key)">
-                <PublicationRow
-                  class="m_recipes--recipe--mealList--meal"
-                  :key="publication.slugFolderName"
-                  :publication="publication"
-                />
-
-                <PublicationRow
-                  v-for="reply in publication._replies"
-                  :key="reply.slugFolderName"
-                  class="m_recipes--recipe--mealList--meal m_recipes--recipe--mealList--meal_replies"
-                  :publication="reply"
-                />
-              </template>
-
-              <tr
-                v-if="!recipe.show_all_recipes"
-                @click="recipe.show_all_recipes = true"
-                class="m_recipes--recipe--mealList--meal"
-              >
-                <td colspan="6">
-                  <button type="button" class="buttonLink margin-none">
-                    {{ $t("show_all") }}
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
 
-    <!-- <div class="m_publicationItems">
-      <div 
+    <div v-else-if="current_mode === 'list'">
+      <div class="m_actionbar">
+        <div>
+          <div class="m_actionbar--text">
+            <template v-if="publications.length > 0">
+              <div>
+                {{ $t("showing") }}
+                <span
+                  :class="{
+                    'c-rouge':
+                      sorted_publications.length !== publications.length,
+                  }"
+                >
+                  {{ sorted_publications.length }}
+                  <template
+                    v-if="sorted_publications.length === publications.length"
+                    >{{ $t("recipes") }}</template
+                  >
+                  <template v-else>
+                    {{ $t("recipes_of") }}
+                    {{ Object.keys(publications).length }}
+                  </template>
+                </span>
+                <template
+                  v-if="
+                    $root.allKeywords.length > 0 || $root.all_authors.length > 0
+                  "
+                >
+                  —
+                  <button
+                    type="button"
+                    class="button-nostyle text-uc button-triangle"
+                    :class="{ 'is--active': show_filters }"
+                    @click="show_filters = !show_filters"
+                  >
+                    {{ $t("filters") }}
+                  </button>
+                </template>
+                <TagsAndAuthorFilters
+                  v-if="show_filters"
+                  :allKeywords="publis_keywords"
+                  :allAuthors="publis_authors"
+                  :keywordFilter="$root.settings.publication_filter.keyword"
+                  :authorFilter="$root.settings.publication_filter.author"
+                  @setKeywordFilter="(a) => $root.setPubliKeywordFilter(a)"
+                  @setAuthorFilter="(a) => $root.setPubliAuthorFilter(a)"
+                />
+              </div>
+              <div class="m_searchProject">
+                <button
+                  type="button"
+                  class="button-nostyle text-uc button-triangle"
+                  :class="{
+                    'is--active':
+                      show_search ||
+                      $root.settings.publication_filter.name.length > 0,
+                  }"
+                  @click="show_search = !show_search"
+                >
+                  <svg
+                    class="inline-svg"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    x="0px"
+                    y="0px"
+                    width="96.2px"
+                    height="96.2px"
+                    viewBox="0 0 96.2 96.2"
+                    style="margin-bottom: -2px"
+                    xml:space="preserve"
+                  >
+                    <path
+                      fill="currentColor"
+                      class="st0"
+                      d="M10.3,59.9c11.7,11.7,29.5,13.4,43,5.2l9.7,9.7l21.3,21.3l11.9-11.9L74.9,63l-9.7-9.7c8.2-13.5,6.4-31.3-5.2-43 C46.2-3.4,24-3.4,10.3,10.3C-3.4,24-3.4,46.2,10.3,59.9z M50.8,19.5c8.6,8.6,8.6,22.6,0,31.3c-8.6,8.6-22.6,8.6-31.3,0 c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
+                    />
+                  </svg>
+                  {{ $t("search") }}
+                </button>
+
+                <div
+                  v-if="
+                    show_search || debounce_search_publication_name.length > 0
+                  "
+                  class="rounded"
+                >
+                  <div>{{ $t("recipe_name_to_find") }}</div>
+
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      class
+                      v-model="debounce_search_publication_name"
+                    />
+                    <span
+                      class="input-addon"
+                      v-if="debounce_search_publication_name.length > 0"
+                    >
+                      <button
+                        type="button"
+                        :disabled="
+                          debounce_search_publication_name.length === 0
+                        "
+                        @click="debounce_search_publication_name = ''"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+        <div class="m_displayMyContent" v-if="$root.current_author">
+          <span>{{ $t("show") }}</span>
+          <select v-model="show_only_my_content">
+            <option :value="true">
+              {{ $t("only_my_recipes").toLowerCase() }}
+            </option>
+            <option :value="false">
+              {{ $t("all_recipes").toLowerCase() }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="m_publiFilter">
+        <label>{{ $t("show_recipes_for_project_first") }}</label>
+        <select v-model="slugProjectName_to_filter">
+          <option key="'all'" value>** {{ $t("all").toLowerCase() }} **</option>
+          <option
+            v-for="project in $root.projects_that_are_accessible"
+            :key="project.slugFolderName"
+            :value="project.slugFolderName"
+          >
+            {{ project.name }} ({{
+              recipesForThisProject(project.slugFolderName).length
+            }})
+          </option>
+        </select>
+      </div>
+
+      <div class="m_mealList" v-if="sorted_publications.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th colspan="1">
+                <label>{{ $t("name") }}</label>
+              </th>
+              <th colspan="1">
+                <label>{{ $t("template") }}</label>
+              </th>
+              <th colspan="1">
+                <label>{{ $t("model") }}</label>
+              </th>
+              <th colspan="1">
+                <label>{{ $t("authors") }}</label>
+              </th>
+              <!-- <th colspan="1">
+              <label>{{ $t("number_of_medias") }}</label>
+            </th>
+            <th colspan="1">
+              <label>{{ $t("attached_to_project") }}</label>
+            </th> -->
+              <th colspan="1">
+                <label>{{ $t("action") }}</label>
+              </th>
+            </tr>
+          </thead>
+          <!-- <tbody> -->
+          <template v-for="publication in organized_recipes">
+            <PublicationRow
+              :key="publication.slugFolderName"
+              class="m_mealList--publis"
+              :publication="publication"
+              :recipes="recipes"
+              @toggleReplies="toggleReplies(publication.slugFolderName)"
+            />
+            <template v-if="show_replies_for === publication.slugFolderName">
+              <tr
+                :key="'replies_label_' + publication.slugFolderName"
+                class="bg-gris_tresclair"
+              >
+                <td colspan="6">
+                  <div
+                    class="flex-wrap flex-space-between flex-vertically-centered"
+                  >
+                    <button
+                      type="button"
+                      class=""
+                      style="
+                        flex-grow: 0;
+                        margin-right: calc(var(--spacing) / 2);
+                      "
+                      @click="show_replies_for = false"
+                    >
+                      {{ $t("retour") }}
+                    </button>
+                    <small v-html="$t('replies_to') + ' ' + publication.name" />
+                  </div>
+                </td>
+              </tr>
+              <PublicationRow
+                v-for="reply in publication._replies"
+                :key="
+                  'replies_' + publication.slugFolderName + reply.slugFolderName
+                "
+                class="m_mealList--reply"
+                :publication="reply"
+                :recipes="recipes"
+              />
+            </template>
+            <!-- <PublicationRow
+              v-for="reply in publication._replies"
+              :key="reply.slugFolderName"
+              class="m_recipes--recipe--mealList--meal m_recipes--recipe--mealList--meal_replies"
+              :publication="reply"
+            /> -->
+          </template>
+          <!-- </tbody> -->
+          <!-- <tr
+            v-if="!recipe.show_all_recipes"
+            @click="recipe.show_all_recipes = true"
+            class="m_recipes--recipe--mealList--meal"
+          >
+            <td colspan="6">
+              <button type="button" class="buttonLink margin-none">
+                {{ $t("show_all") }}
+              </button>
+            </td>
+          </tr> -->
+        </table>
+
+        <!-- <div class="m_repices2--recipe--name">
+          {{ recipe.name }}
+        </div>
+        <div class="m_repices2--recipe--name">
+          {{ recipe.name }}
+        </div>
+        <div class="m_repices2--recipe--name">
+          {{ recipe.name }}
+        </div> -->
+      </div>
+
+      <!-- <div class="m_publicationItems">
+      <div
         v-if="typeof publications === 'object'"
         class="m_publicationItems--item"
         v-for="publication in publications"
         :key="publication.slugFolderName"
       >
-        <h2 class="m_publicationItems--item--title"
+        <h2
+          class="m_publicationItems--item--title"
           @click="openPublication(publication.slugFolderName)"
         >
           {{ publication.name }}
@@ -272,7 +353,7 @@
         <div>
           <div class="m_metaField">
             <div>
-              {{ $t('template') }}
+              {{ $t("template") }}
             </div>
             <div>
               {{ $t(publication.template) }}
@@ -280,31 +361,29 @@
           </div>
           <div class="m_metaField">
             <div>
-              {{ $t('number_of_pages') }}
+              {{ $t("number_of_pages") }}
             </div>
             <div>
               <template v-if="!!publication.pages">
                 {{ Object.keys(publication.pages).length }}
               </template>
-              <template v-else>
-                0
-              </template>
+              <template v-else> 0 </template>
             </div>
           </div>
         </div>
 
-        <button 
-          type="button" 
-          class="button-redthin" 
+        <button
+          type="button"
+          class="button-redthin"
           @click="openPublication(publication.slugFolderName)"
         >
           <span class="">
-            {{ $t('open') }}
+            {{ $t("open") }}
           </span>
         </button>
-
       </div>
-    </div>-->
+    </div> -->
+    </div>
   </div>
 </template>
 <script>
@@ -331,6 +410,8 @@ export default {
       showCreatePublicationModal: false,
       createPubliTemplateKey: false,
 
+      show_replies_for: false,
+
       slugProjectName_to_filter: !!this.$root.do_navigation
         .current_slugProjectName
         ? this.$root.do_navigation.current_slugProjectName
@@ -339,6 +420,7 @@ export default {
       show_only_my_content: false,
       show_search: false,
       show_filters: false,
+      current_mode: "templates",
 
       currentSort: {
         field: "date_created",
@@ -383,6 +465,25 @@ export default {
           instructions: "story_instructions",
           show_all_recipes: false,
           icon: `
+<!-- Generator: Adobe Illustrator 25.2.1, SVG Export Plug-In  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="201px"
+	 height="201px" viewBox="0 0 201 201" style="overflow:visible;enable-background:new 0 0 201 201;" xml:space="preserve">
+	<g id="Calque_6_2_">
+		<g>
+			<rect x="35.7" y="8.8" class="st1" width="129.6" height="183.4" style="fill: #fff;" />
+		</g>
+	</g>
+	<rect x="64.9" y="46.8" width="71.2" height="53.6" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
+	<rect x="64.9" y="145.2" width="71.2" height="39.8" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
+	<rect x="65" y="108" width="71.1" height="5" style="fill:#353535;" />
+	<rect x="65" y="124.5" class="st3" width="71.1" height="5"  style="fill:#353535;"/>
+	<rect x="65" y="116.2" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+	<rect x="65" y="132.7" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+	<rect x="64.9" y="25.9" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+	<rect x="64.9" y="17.6" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+	<rect x="64.9" y="34.1" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+
+</svg>
           `,
         },
         {
@@ -452,8 +553,6 @@ export default {
           icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
   <g id="Calque_6" data-name="Calque 6">
-    <rect x="-38.92" y="-1662.01" width="512" height="2097.07" style="fill: #47998d"/>
-    <rect x="-19.59" y="-12.92" width="460" height="230" rx="10" style="fill: #52c5b9"/>
     <rect y="0.53" width="201" height="201" style="fill: none"/>
     <g>
       <g>
@@ -832,12 +931,42 @@ export default {
       _sorted_publications = _sorted_publications.map((sp) => sp.publication);
       return _sorted_publications;
     },
+    organized_recipes() {
+      const recipes = this.sorted_publications;
+
+      let recipes_with_models = recipes
+        // display replies in list
+        // .filter((r) => !r.follows_model)
+        .map((r) => {
+          if (r.is_model) {
+            const recipes_following_this_model = recipes.filter(
+              (_r) => _r.follows_model && _r.follows_model === r.slugFolderName
+            );
+            if (recipes_following_this_model.length > 0) {
+              r._replies = recipes_following_this_model;
+            }
+          }
+          return r;
+        });
+
+      if (this.show_replies_for)
+        recipes_with_models = recipes_with_models.filter(
+          (r) => r.slugFolderName === this.show_replies_for
+        );
+
+      return recipes_with_models;
+    },
   },
   methods: {
     recipesForThisProject(slugProjectName) {
       return this.sorted_publications.filter(
         (r) => r.attached_to_project === slugProjectName
       );
+    },
+    toggleReplies(slugFolderName) {
+      if (this.show_replies_for === slugFolderName)
+        this.show_replies_for = false;
+      this.show_replies_for = slugFolderName;
     },
     allRecipesOfThisTemplate(template_key) {
       const filtered_recipes = this.sorted_publications.filter(
@@ -850,15 +979,6 @@ export default {
     },
     filteredRecipesOfTemplate(template_key) {
       const recipes = this.allRecipesOfThisTemplate(template_key);
-      if (this.show_only_my_content && this.$root.current_author)
-        return recipes.filter(
-          (r) =>
-            r.authors &&
-            r.authors.some(
-              (a) =>
-                a.slugFolderName === this.$root.current_author.slugFolderName
-            )
-        );
       return recipes;
     },
     recipeOfThisTemplate(template_key) {
@@ -913,6 +1033,7 @@ export default {
 
       return recipes_with_models;
     },
+
     openCreatePublicationModal(recipe_key) {
       this.showCreatePublicationModal = true;
       this.createPubliTemplateKey = recipe_key;
@@ -920,4 +1041,39 @@ export default {
   },
 };
 </script>
-<style></style>
+<style lang="scss" scoped>
+._topMenu {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin: calc(var(--spacing) / 1);
+  margin-right: calc(var(--spacing) / 2);
+  margin-bottom: 0;
+}
+
+._publiLabel {
+  background-color: white;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+
+  label {
+    display: block;
+    margin: 0;
+  }
+}
+
+.m_sideBySideSwitches {
+  // padding-left: var(--spacing);
+  // padding-right: var(--spacing);
+  background-color: white;
+
+  label {
+    // color: white;
+  }
+
+  > * {
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    border-top: 2px solid var(--c-gris-clair);
+    // border-bottom: 0;
+  }
+}
+</style>

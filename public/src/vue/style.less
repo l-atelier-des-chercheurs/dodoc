@@ -3157,8 +3157,8 @@ small {
   .padding-small;
 
   .m_activitiesPanel--doc.is--large & {
-    overflow-y: auto;
-    .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
+    // overflow-y: auto;
+    // .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
   }
 }
 
@@ -3260,10 +3260,66 @@ small {
   }
 }
 
+.m_mealList {
+  .margin-medium;
+  // .padding-sides-small;
+  .bg-blanc;
+
+  table {
+    margin: 0;
+    border: none;
+  }
+
+  thead {
+    position: sticky;
+  }
+
+  .div-table {
+    margin: 0;
+    border: 0;
+    display: table;
+    border-spacing: 5px;
+
+    .div-thead {
+      display: table-row;
+
+      .div-theader {
+        display: table-cell;
+      }
+
+      label {
+        .c-noir;
+        width: 100%;
+        font-size: 60%;
+        // text-align: center;
+      }
+    }
+
+    .div-tr {
+      display: table-row;
+    }
+
+    .div-td {
+      display: table-cell;
+    }
+  }
+}
+
+.m_mealList--publis {
+  // --table-spacing-x: ~"calc(var(--spacing) / 4)";
+  --table-spacing-y: ~"calc(var(--spacing) / 4)";
+  // --table-spacing-y: 0;
+}
+
+.m_mealList--reply {
+  --table-spacing-y: ~"calc(var(--spacing) / 8)";
+  .bg-gris_tresclair;
+}
+
 .m_recipes--recipe--mealList--meal {
   font-size: inherit;
   text-transform: initial;
-  cursor: pointer;
+  // cursor: pointer;
 
   .bg-blanc;
   // .margin-sides-small;
@@ -3287,6 +3343,32 @@ small {
     // .font-folder_title;
     // .font-publi_title;
     margin: 0;
+  }
+
+  ._mealMoreInfos {
+    background-color: var(--c-gris-tresclair);
+    width: 100%;
+    text-align: center;
+
+    td {
+      padding: 0;
+      .padding-small;
+    }
+
+    ._moreInfosButton {
+      .font-verysmall;
+      margin: 0;
+    }
+  }
+}
+._mealReplies {
+  background-color: var(--c-gris-tresclair);
+  width: 100%;
+
+  ._mealReplies--quantity {
+    padding-top: 0;
+    padding-bottom: 0;
+    text-align: center;
   }
 }
 

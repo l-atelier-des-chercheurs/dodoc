@@ -3023,9 +3023,22 @@ module.exports = (function () {
       oc: "Gabarit",
       de: "Vorlage",
     },
+    templates_available: {
+      fr: "Gabarits disponibles",
+      en: "Templates available",
+    },
+
     model: {
       fr: "Modèle",
       en: "Model",
+    },
+    "replies:": {
+      fr: "Réponses&nbsp:",
+      en: "Replies:",
+    },
+    replies_to: {
+      fr: "Réponses à",
+      en: "Replies to",
     },
     publi_is_model: {
       fr: "Cette recette est un modèle",
@@ -3041,6 +3054,10 @@ module.exports = (function () {
     recipes: {
       fr: "Recettes",
       en: "Recipes",
+    },
+    recipes_already_created: {
+      fr: "Recettes créées",
+      en: "Recipes created",
     },
     URL_to_share_for_replies: {
       fr:
@@ -3147,12 +3164,14 @@ module.exports = (function () {
       en: "List of stories created",
     },
     story_summary: {
-      fr: "",
-      en: "",
+      fr: "Créer un récit à exporter en PDF ou en page web.",
+      en: "Creates a one-column story to export as a printable PDF or website.",
     },
     story_instructions: {
-      fr: "",
-      en: "",
+      fr:
+        "Cette recette permet de créer un document enchainant les blocs les uns au dessus des autres.",
+      en:
+        "This recipe can be used to create a one-column responsive document.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make books, leaflets, etc.) or a webpage to upload online.",
     },
     carreau: {
       fr: "Carreau",
@@ -3204,7 +3223,7 @@ module.exports = (function () {
       fr:
         "Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.",
       en:
-        "This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.",
+        "This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, leaflets, newspapers, etc.) or a webpage to upload online.",
       nl:
         "Met dit recept kunt u een document met een exacte indeling en meerdere pagina’s maken.<br> Ondersteunde media: afbeeldingen, video’s, geluid en tekst.<br>Maak een afdrukbare PDF (om posters, flyers, kranten, enz. te maken) of een webpagina om te uploaden.",
       oc:
