@@ -1,66 +1,154 @@
 <template>
-  <tr @click.exact="openPublication">
-    <td>
-      {{ publication.name }}
-      <ProtectedLock
-        :editing_limited_to="publication.editing_limited_to"
-        :is_protected="!can_edit_publi"
-      />
-    </td>
-    <td width="150px">
-      <small>{{ $root.formatDateToHuman(publication.date_created) }}</small>
-    </td>
-    <td width="150px">
-      <div v-if="publication.authors" class="m_authorField">
-        <span
-          v-for="author in publication.authors"
-          v-if="$root.getAuthor(author.slugFolderName)"
-          :key="author.slugFolderName"
-          class="is--active"
-          :class="{
-            'is--loggedInAuthor':
-              $root.current_author &&
-              $root.current_author.slugFolderName === author.slugFolderName,
-          }"
-        >
-          <template v-if="$root.getAuthor(author.slugFolderName)">{{
-            $root.getAuthor(author.slugFolderName).name
-          }}</template>
-          <template v-else>{{ author.slugFolderName }}</template>
-        </span>
-        <ClientsCheckingOut
-          :type="'publications'"
-          :slugFolderName="slugPubliName"
+  <tbody>
+    <tr>
+      <!-- @click.exact="openPublication" -->
+      <td>
+        {{ publication.name }}
+        <ProtectedLock
+          :editing_limited_to="publication.editing_limited_to"
+          :is_protected="!can_edit_publi"
         />
-      </div>
-    </td>
-    <td class="font-verysmall strong">
-      <template v-if="publication.number_of_medias">{{
-        publication.number_of_medias
-      }}</template>
-      <template v-else>—</template>
-    </td>
-    <td class="font-folder_title">
-      <template v-if="attached_project">{{ attached_project.name }}</template>
-      <template v-else>—</template>
-    </td>
-    <td>
-      <AccessController
-        :folder="publication"
-        :context="'short'"
-        :type="'publications'"
-        @openFolder.stop="openPublication"
-      />
-      <button
-        v-if="can_see_publi"
-        type="button"
-        class="m_project--presentation--buttons--openButton button-redthin"
-        @click.stop.exact="openPublication"
-      >
-        <span class>{{ $t("open") }}</span>
-      </button>
-    </td>
-  </tr>
+      </td>
+      <td width="50px" height="50px">
+        <!-- <div class="bg-bleuvert" v-html="publi_template.icon" /> -->
+        <div class="label" v-html="$t(publi_template.key)" />
+      </td>
+      <td width="200px">
+        <!-- <div class="m_metaField"> -->
+        <!-- <div>
+            {{ $t("type") }}
+          </div> -->
+
+        <template v-if="publication.is_model">
+          <div>
+            <small>
+              {{ $t("model") }}
+            </small>
+          </div>
+          <div>
+            <button
+              type="button"
+              v-if="publication.hasOwnProperty('_replies')"
+              class="buttonLink margin-none"
+              @click="$emit('toggleReplies')"
+            >
+              <span
+                v-html="
+                  $t('replies:') +
+                  ' ' +
+                  (!publication.hasOwnProperty('_replies')
+                    ? 0
+                    : publication._replies.length)
+                "
+              />
+            </button>
+          </div>
+        </template>
+        <small
+          v-else-if="!!publication.follows_model"
+          v-html="
+            $t('publi_follows_model:') + ' ' + model_for_this_publication.name
+          "
+        >
+          <!-- {{ $t("follows_model") }} -->
+        </small>
+        <!-- </div> -->
+      </td>
+      <td width="150px">
+        <div v-if="publication.authors" class="m_authorField">
+          <span
+            v-for="author in publication.authors"
+            v-if="$root.getAuthor(author.slugFolderName)"
+            :key="author.slugFolderName"
+            class="is--active"
+            :class="{
+              'is--loggedInAuthor':
+                $root.current_author &&
+                $root.current_author.slugFolderName === author.slugFolderName,
+            }"
+          >
+            <template v-if="$root.getAuthor(author.slugFolderName)">{{
+              $root.getAuthor(author.slugFolderName).name
+            }}</template>
+            <template v-else>{{ author.slugFolderName }}</template>
+          </span>
+          <ClientsCheckingOut
+            :type="'publications'"
+            :slugFolderName="slugPubliName"
+          />
+        </div>
+      </td>
+      <td>
+        <AccessController
+          :folder="publication"
+          :context="'short'"
+          :type="'publications'"
+          @openFolder.stop="openPublication"
+        />
+        <button
+          v-if="can_see_publi"
+          type="button"
+          class="_moreInfosButton buttonLink margin-none"
+          :class="{
+            'is--active': show_more_informations,
+          }"
+          @click.stop.exact="show_more_informations = !show_more_informations"
+        >
+          <span class>{{ $t("more_informations") }}</span>
+        </button>
+
+        <button
+          v-if="can_see_publi"
+          type="button"
+          class="_openButton button-redthin margin-none"
+          @click.stop.exact="openPublication"
+        >
+          <span class>{{ $t("open") }}</span>
+        </button>
+      </td>
+    </tr>
+    <tr class="_mealMoreInfos" v-if="show_more_informations">
+      <td colspan="6">
+        <!-- <button
+            v-if="can_see_publi"
+            type="button"
+            class="_moreInfosButton buttonLink"
+            @click.stop.exact="show_more_informations = !show_more_informations"
+          >
+            <span class>{{ $t("more_informations") }}</span>
+          </button> -->
+
+        <DateField :title="'created'" :date="publication.date_created" />
+
+        <DateField :title="'edited'" :date="publication.date_modified" />
+
+        <div class="m_metaField">
+          <div>
+            {{ $t("number_of_medias") }}
+          </div>
+          <div>
+            <template v-if="publication.number_of_medias">{{
+              publication.number_of_medias
+            }}</template>
+            <template v-else>—</template>
+          </div>
+        </div>
+
+        <div class="m_metaField">
+          <div>
+            {{ $t("attached_to_project") }}
+          </div>
+          <div>
+            <template v-if="attached_project">{{
+              attached_project.name
+            }}</template>
+            <template v-else>—</template>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <!-- <tr v-if="publication.is_model" class="_mealReplies"></tr> -->
+  </tbody>
 </template>
 <script>
 import AccessController from "./subcomponents/AccessController.vue";
@@ -69,11 +157,14 @@ import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 export default {
   props: {
     publication: Object,
+    recipes: Array,
   },
   components: { AccessController, ClientsCheckingOut },
   data() {
     return {
       show_input_pwd: false,
+      show_more_informations: false,
+      show_replies: false,
     };
   },
   created() {},
@@ -109,6 +200,18 @@ export default {
         slugFolderName: this.slugPubliName,
       });
     },
+    publi_template() {
+      return this.recipes.find((r) => r.key === this.publication.template);
+    },
+    model_for_this_publication() {
+      if (!this.publication.follows_model) return false;
+      return Object.values(this.$root.store.publications).find(
+        (p) =>
+          this.publication.template === p.template &&
+          p.is_model === true &&
+          p.slugFolderName === this.publication.follows_model
+      );
+    },
   },
   methods: {
     openPublication() {
@@ -133,5 +236,9 @@ export default {
 <style lang="scss" scoped>
 .font-folder_title {
   font-size: 70%;
+}
+
+._openButton {
+  margin: calc(var(--spacing) / 8);
 }
 </style>
