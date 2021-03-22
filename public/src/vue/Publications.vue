@@ -36,7 +36,7 @@
             value="templates"
             v-model="current_mode"
           />
-          {{ $t("templates_available") }}
+          {{ $t("create_new_recipe") }}
         </label>
         <label for="publi_mode_list">
           <input
@@ -45,7 +45,7 @@
             value="list"
             v-model="current_mode"
           />
-          {{ $t("recipes_already_created") }}
+          {{ $t("show_recipes") }}
         </label>
       </div>
     </div>
@@ -54,39 +54,53 @@
     <div class="m_recipes" v-if="current_mode === 'templates'">
       <!-- pour chaque recette -->
       <div
-        class="m_recipes--recipe"
-        v-for="recipe in recipes"
-        :key="recipe.key"
+        class="m_recipes--type"
+        v-for="recipe_type in recipe_types"
+        :key="recipe_type.key"
       >
-        <div class="m_recipes--recipe--icon" v-html="recipe.icon"></div>
-        <div class="m_recipes--recipe--text">
-          <h2 class>{{ $t(recipe.key) }}</h2>
-          <p class="margin-vert-small">
-            <span v-html="$t(recipe.summary)" class="margin-vert-verysmall" />
-            <br />
-            <button
-              v-if="!recipe.show_instructions && recipe.instructions"
-              type="button"
-              class="buttonLink margin-left-none padding-left-none"
-              @click="recipe.show_instructions = !recipe.show_instructions"
-            >
-              + {{ $t("more_informations") }}
-            </button>
-          </p>
-          <template v-if="recipe.show_instructions">
-            <hr />
-            <p>
-              <span v-html="$t(recipe.instructions)" />
-            </p>
-          </template>
-          <button
-            class="barButton barButton_createPubli"
-            type="button"
-            @click="openCreatePublicationModal(recipe.key)"
-            :disabled="read_only"
+        <label class="c-blanc">{{ $t(recipe_type.label) }}</label>
+        <div class="m_recipes--type--grid">
+          <div
+            v-for="recipe in recipe_type.recipes"
+            :key="recipe.key"
+            class="m_recipe"
           >
-            <span>{{ $t("create") }}</span>
-          </button>
+            <div class="m_recipe--icon" v-html="recipe.icon"></div>
+            <div class="m_recipe--text">
+              <h2 class>{{ $t(recipe.key) }}</h2>
+              <p class="margin-vert-small" v-if="false">
+                <span
+                  v-html="$t(recipe.summary)"
+                  class="margin-vert-verysmall"
+                />
+                <br />
+              </p>
+              <template v-if="recipe.show_instructions">
+                <hr />
+                <p>
+                  <span v-html="$t(recipe.instructions)" />
+                </p>
+              </template>
+            </div>
+            <div class="m_recipe--buttons">
+              <button
+                v-if="!recipe.show_instructions && recipe.instructions"
+                type="button"
+                class="buttonLink c-blanc"
+                @click="recipe.show_instructions = !recipe.show_instructions"
+              >
+                {{ $t("more_informations") }}
+              </button>
+              <button
+                class="barButton barButton_createPubli"
+                type="button"
+                @click="openCreatePublicationModal(recipe.key)"
+                :disabled="read_only"
+              >
+                <span>{{ $t("create") }}</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -101,12 +115,12 @@
                 <span
                   :class="{
                     'c-rouge':
-                      sorted_publications.length !== publications.length,
+                      filtered_publications.length !== publications.length,
                   }"
                 >
-                  {{ sorted_publications.length }}
+                  {{ filtered_publications.length }}
                   <template
-                    v-if="sorted_publications.length === publications.length"
+                    v-if="filtered_publications.length === publications.length"
                     >{{ $t("recipes") }}</template
                   >
                   <template v-else>
@@ -206,33 +220,39 @@
             </template>
           </div>
         </div>
-        <div class="m_displayMyContent" v-if="$root.current_author">
-          <span>{{ $t("show") }}</span>
-          <select v-model="show_only_my_content">
-            <option :value="true">
-              {{ $t("only_my_recipes").toLowerCase() }}
-            </option>
-            <option :value="false">
-              {{ $t("all_recipes").toLowerCase() }}
-            </option>
-          </select>
+        <div class="flex-wrap flex-vertically-centered">
+          <div class="m_displayMyContent" v-if="$root.current_author">
+            <span>{{ $t("show") }}</span>
+            <select v-model="show_only_my_content">
+              <option :value="true">
+                {{ $t("only_my_recipes").toLowerCase() }}
+              </option>
+              <option :value="false">
+                {{ $t("all_recipes").toLowerCase() }}
+              </option>
+            </select>
+          </div>
+          <div class="m_publiFilter">
+            <label>{{ $t("show_recipes_for_project_first") }}</label>
+            <select v-model="slugProjectName_to_filter">
+              <option key="'all'" value>
+                ** {{ $t("all_projects").toLowerCase() }} **
+              </option>
+              <option
+                v-for="project in $root.projects_that_are_accessible"
+                :key="project.slugFolderName"
+                :value="project.slugFolderName"
+                :disabled="
+                  recipesForThisProject(project.slugFolderName).length === 0
+                "
+              >
+                {{ project.name }} ({{
+                  recipesForThisProject(project.slugFolderName).length
+                }})
+              </option>
+            </select>
+          </div>
         </div>
-      </div>
-
-      <div class="m_publiFilter">
-        <label>{{ $t("show_recipes_for_project_first") }}</label>
-        <select v-model="slugProjectName_to_filter">
-          <option key="'all'" value>** {{ $t("all").toLowerCase() }} **</option>
-          <option
-            v-for="project in $root.projects_that_are_accessible"
-            :key="project.slugFolderName"
-            :value="project.slugFolderName"
-          >
-            {{ project.name }} ({{
-              recipesForThisProject(project.slugFolderName).length
-            }})
-          </option>
-        </select>
       </div>
 
       <div class="m_mealList" v-if="sorted_publications.length > 0">
@@ -243,7 +263,7 @@
                 <label>{{ $t("name") }}</label>
               </th>
               <th colspan="1">
-                <label>{{ $t("template") }}</label>
+                <label>{{ $t("type") }}</label>
               </th>
               <th colspan="1">
                 <label>{{ $t("model") }}</label>
@@ -268,7 +288,7 @@
               :key="publication.slugFolderName"
               class="m_mealList--publis"
               :publication="publication"
-              :recipes="recipes"
+              :recipe_types="recipe_types"
               @toggleReplies="toggleReplies(publication.slugFolderName)"
             />
             <template v-if="show_replies_for === publication.slugFolderName">
@@ -302,28 +322,10 @@
                 "
                 class="m_mealList--reply"
                 :publication="reply"
-                :recipes="recipes"
+                :recipe_types="recipe_types"
               />
             </template>
-            <!-- <PublicationRow
-              v-for="reply in publication._replies"
-              :key="reply.slugFolderName"
-              class="m_recipes--recipe--mealList--meal m_recipes--recipe--mealList--meal_replies"
-              :publication="reply"
-            /> -->
           </template>
-          <!-- </tbody> -->
-          <!-- <tr
-            v-if="!recipe.show_all_recipes"
-            @click="recipe.show_all_recipes = true"
-            class="m_recipes--recipe--mealList--meal"
-          >
-            <td colspan="6">
-              <button type="button" class="buttonLink margin-none">
-                {{ $t("show_all") }}
-              </button>
-            </td>
-          </tr> -->
         </table>
 
         <!-- <div class="m_repices2--recipe--name">
@@ -432,14 +434,17 @@ export default {
         .name,
       debounce_search_publication_name_function: undefined,
 
-      recipes: [
+      recipe_types: [
         {
-          key: "page_by_page",
-          summary: "page_by_page_summary",
-          show_instructions: false,
-          instructions: "page_by_page_instructions",
-          show_all_recipes: false,
-          icon: `
+          key: "document",
+          label: "make_a_document",
+          recipes: [
+            {
+              key: "page_by_page",
+              summary: "page_by_page_summary",
+              show_instructions: false,
+              instructions: "page_by_page_instructions",
+              icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
   <title>recipe_icon_page</title>
   <g id="Calque_6" data-name="Calque 6">
@@ -457,14 +462,14 @@ export default {
   </g>
 </svg>
           `,
-        },
-        {
-          key: "story",
-          summary: "story_summary",
-          show_instructions: false,
-          instructions: "story_instructions",
-          show_all_recipes: false,
-          icon: `
+            },
+            {
+              key: "story",
+              summary: "story_summary",
+              show_instructions: false,
+              instructions: "story_instructions",
+
+              icon: `
 <!-- Generator: Adobe Illustrator 25.2.1, SVG Export Plug-In  -->
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="201px"
 	 height="201px" viewBox="0 0 201 201" style="overflow:visible;enable-background:new 0 0 201 201;" xml:space="preserve">
@@ -485,14 +490,14 @@ export default {
 
 </svg>
           `,
-        },
-        {
-          key: "drawing_pad",
-          summary: "drawing_pad_summary",
-          show_instructions: false,
-          instructions: "drawing_pad_instructions",
-          show_all_recipes: false,
-          icon: `
+            },
+            {
+              key: "drawing_pad",
+              summary: "drawing_pad_summary",
+              show_instructions: false,
+              instructions: "drawing_pad_instructions",
+
+              icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
   <title>Fichier 1</title>
   <g id="Calque_2" data-name="Calque 2">
@@ -512,14 +517,20 @@ export default {
 </svg>
 
           `,
+            },
+          ],
         },
         {
-          key: "video_assemblage",
-          summary: "video_assemblage_summary",
-          show_instructions: false,
-          instructions: "video_assemblage_instructions",
-          show_all_recipes: false,
-          icon: `
+          key: "video",
+          label: "make_a_video",
+          recipes: [
+            {
+              key: "video_assemblage",
+              summary: "video_assemblage_summary",
+              show_instructions: false,
+              instructions: "video_assemblage_instructions",
+
+              icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
   <title>recipe_icon_montage</title>
   <g id="Calque_6" data-name="Calque 6">
@@ -543,14 +554,14 @@ export default {
   </g>
 </svg>
           `,
-        },
-        {
-          key: "video_effects",
-          summary: "video_effects_summary",
-          show_instructions: false,
-          instructions: "video_effects_instructions",
-          show_all_recipes: false,
-          icon: `
+            },
+            {
+              key: "video_effects",
+              summary: "video_effects_summary",
+              show_instructions: false,
+              instructions: "video_effects_instructions",
+
+              icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
   <g id="Calque_6" data-name="Calque 6">
     <rect y="0.53" width="201" height="201" style="fill: none"/>
@@ -579,14 +590,14 @@ export default {
   </g>
 </svg>
           `,
-        },
-        {
-          key: "stopmotion_animation",
-          summary: "stopmotion_animation_summary",
-          show_instructions: false,
-          instructions: "stopmotion_animation_instructions",
-          show_all_recipes: false,
-          icon: `
+            },
+            {
+              key: "stopmotion_animation",
+              summary: "stopmotion_animation_summary",
+              show_instructions: false,
+              instructions: "stopmotion_animation_instructions",
+
+              icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
   <title>recipe_icon_stopmotion</title>
   <g id="Calque_6" data-name="Calque 6">
@@ -657,14 +668,14 @@ export default {
   </g>
 </svg>
           `,
-        },
-        {
-          key: "mix_audio_and_video",
-          summary: "mix_audio_and_video_summary",
-          show_instructions: false,
-          instructions: "mix_audio_and_video_instructions",
-          show_all_recipes: false,
-          icon: `
+            },
+            {
+              key: "mix_audio_and_video",
+              summary: "mix_audio_and_video_summary",
+              show_instructions: false,
+              instructions: "mix_audio_and_video_instructions",
+
+              icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
   <title>recipe_icon_video_sound</title>
   <g id="Calque_6" data-name="Calque 6">
@@ -695,14 +706,14 @@ export default {
   </g>
 </svg>
           `,
-        },
-        {
-          key: "mix_audio_and_image",
-          summary: "mix_audio_and_image_summary",
-          show_instructions: false,
-          instructions: "mix_audio_and_image_instructions",
-          show_all_recipes: false,
-          icon: `
+            },
+            {
+              key: "mix_audio_and_image",
+              summary: "mix_audio_and_image_summary",
+              show_instructions: false,
+              instructions: "mix_audio_and_image_instructions",
+
+              icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
   <title>recipe_icon_image_sound</title>
   <g id="Calque_6" data-name="Calque 6">
@@ -730,17 +741,19 @@ export default {
   </g>
 </svg>
           `,
-        },
-        // {
-        //   key: "carreau",
-        //   summary: "carreau_summary",
-        //   show_instructions: false,
-        //   instructions: "carreau_instructions",
-        //   show_all_recipes: false,
-        //   icon: `
+            },
+            // {
+            //   key: "carreau",
+            //   summary: "carreau_summary",
+            //   show_instructions: false,
+            //   instructions: "carreau_instructions",
+            //   show_all_recipes: false,
+            //   icon: `
 
-        //   `
-        // }
+            //   `
+            // }
+          ],
+        },
       ],
     };
   },
@@ -756,12 +769,7 @@ export default {
         ? this.$root.do_navigation.current_slugProjectName
         : "";
     },
-    slugProjectName_to_filter: function () {
-      this.recipes = this.recipes.map((r) => {
-        r.show_all_recipes = false;
-        return r;
-      });
-    },
+
     show_filters: function () {
       if (!this.show_filters) {
         this.$root.settings.publication_filter.keyword = "";
@@ -932,7 +940,7 @@ export default {
       return _sorted_publications;
     },
     organized_recipes() {
-      const recipes = this.sorted_publications;
+      const recipes = this.filtered_publications;
 
       let recipes_with_models = recipes
         // display replies in list
@@ -956,6 +964,11 @@ export default {
 
       return recipes_with_models;
     },
+    filtered_publications() {
+      if (this.slugProjectName_to_filter)
+        return this.recipesForThisProject(this.slugProjectName_to_filter);
+      else return this.sorted_publications;
+    },
   },
   methods: {
     recipesForThisProject(slugProjectName) {
@@ -977,62 +990,6 @@ export default {
       sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
     },
-    filteredRecipesOfTemplate(template_key) {
-      const recipes = this.allRecipesOfThisTemplate(template_key);
-      return recipes;
-    },
-    recipeOfThisTemplate(template_key) {
-      const recipes = this.filteredRecipesOfTemplate(template_key);
-
-      let recipes_with_models = recipes
-        .filter((r) => !r.follows_model)
-        .map((r) => {
-          if (r.is_model) {
-            const recipes_following_this_model = recipes.filter(
-              (_r) => _r.follows_model && _r.follows_model === r.slugFolderName
-            );
-            if (recipes_following_this_model.length > 0) {
-              r._replies = recipes_following_this_model;
-            }
-          }
-          return r;
-        });
-
-      if (!this.recipes.find((r) => r.key === template_key).show_all_recipes) {
-        // if show only part of it
-
-        // if project filter, show only those of that project
-        if (!!this.slugProjectName_to_filter)
-          return recipes_with_models.filter(
-            (r) => r.attached_to_project === this.slugProjectName_to_filter
-          );
-        else return recipes_with_models.slice(0, 3);
-      }
-
-      if (!!this.slugProjectName_to_filter) {
-        // show first that project’s publi, and then all the others
-        const recipes_of_project = recipes_with_models.filter(
-          (r) => r.attached_to_project === this.slugProjectName_to_filter
-        );
-
-        if (recipes_of_project)
-          return recipes_of_project.concat(
-            recipes_with_models.filter(
-              (r) => r.attached_to_project !== this.slugProjectName_to_filter
-            )
-          );
-
-        // return recipes.sort((x, y) => {
-        //   return x.attached_to_project === this.slugProjectName_to_filter
-        //     ? -1
-        //     : y.attached_to_project === this.slugProjectName_to_filter
-        //     ? 1
-        //     : 0;
-        // });
-      }
-
-      return recipes_with_models;
-    },
 
     openCreatePublicationModal(recipe_key) {
       this.showCreatePublicationModal = true;
@@ -1046,9 +1003,16 @@ export default {
   position: sticky;
   top: 0;
   z-index: 100;
-  margin: calc(var(--spacing) / 1);
-  margin-right: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2);
+  margin-right: calc(var(--spacing) / 4);
   margin-bottom: 0;
+}
+
+.m_actionbar {
+  border-bottom: none;
+}
+.m_displayMyContent {
+  margin: calc(var(--spacing) / 4);
 }
 
 ._publiLabel {

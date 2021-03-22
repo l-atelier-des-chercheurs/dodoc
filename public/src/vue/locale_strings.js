@@ -1155,6 +1155,15 @@ module.exports = (function () {
     destination_document: {
       fr: "Document de destination",
     },
+    make_a_document: {
+      fr: "Fabriquer un document",
+      en: "Make a document",
+    },
+    make_a_video: {
+      fr: "Fabriquer une vidéo",
+      en: "Make a video",
+    },
+
     search: {
       fr: "Rechercher",
       en: "Search",
@@ -1234,7 +1243,7 @@ module.exports = (function () {
     },
     add_multiple_videos_files: {
       fr:
-        "Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> en cliquant sur la flèche verte. Les vidéos seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.",
+        "Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> ou <b>image</b> en cliquant sur la flèche verte. Les médias seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.",
       en:
         "Add multiple <b>videos</b> or <b>images</b> from a project to create a new video.",
       nl:
@@ -1268,8 +1277,8 @@ module.exports = (function () {
       de: "Stil",
     },
     show_recipes_for_project_first: {
-      fr: "Afficher en premier les recettes liées au projet",
-      en: "Show recipes attached to this project first",
+      fr: "Afficher uniquement les recettes liées au projet",
+      en: "Show only recipes attached to this project",
     },
     css: {
       fr: "css",
@@ -3023,9 +3032,13 @@ module.exports = (function () {
       oc: "Gabarit",
       de: "Vorlage",
     },
-    templates_available: {
-      fr: "Gabarits disponibles",
-      en: "Templates available",
+    create_new_recipe: {
+      fr: "Créer une nouvelle Recette",
+      en: "Create new recipe",
+    },
+    show_recipes: {
+      fr: "Afficher les Recettes",
+      en: "Show all recipes",
     },
 
     model: {

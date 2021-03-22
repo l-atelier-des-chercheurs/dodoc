@@ -2,18 +2,20 @@
   <tbody>
     <tr>
       <!-- @click.exact="openPublication" -->
-      <td>
+      <td width="30%">
         {{ publication.name }}
         <ProtectedLock
           :editing_limited_to="publication.editing_limited_to"
           :is_protected="!can_edit_publi"
         />
       </td>
-      <td width="50px" height="50px">
-        <!-- <div class="bg-bleuvert" v-html="publi_template.icon" /> -->
-        <div class="label" v-html="$t(publi_template.key)" />
+      <td width="20%">
+        <div class="_template">
+          <div class="icon" v-html="$t(publi_template.icon)" />
+          <div class="label" v-html="$t(publi_template.key)" />
+        </div>
       </td>
-      <td width="200px">
+      <td width="10%">
         <!-- <div class="m_metaField"> -->
         <!-- <div>
             {{ $t("type") }}
@@ -54,7 +56,7 @@
         </small>
         <!-- </div> -->
       </td>
-      <td width="150px">
+      <td width="20%">
         <div v-if="publication.authors" class="m_authorField">
           <span
             v-for="author in publication.authors"
@@ -107,7 +109,7 @@
         </button>
       </td>
     </tr>
-    <tr class="_mealMoreInfos" v-if="show_more_informations">
+    <tr class="_mealMoreInfos bg-gris_tresclair" v-if="show_more_informations">
       <td colspan="6">
         <!-- <button
             v-if="can_see_publi"
@@ -157,7 +159,7 @@ import ClientsCheckingOut from "./subcomponents/ClientsCheckingOut.vue";
 export default {
   props: {
     publication: Object,
-    recipes: Array,
+    recipe_types: Array,
   },
   components: { AccessController, ClientsCheckingOut },
   data() {
@@ -201,7 +203,14 @@ export default {
       });
     },
     publi_template() {
-      return this.recipes.find((r) => r.key === this.publication.template);
+      let template = undefined;
+      debugger;
+      this.recipe_types.map((rt) => {
+        rt.recipes.map((r) => {
+          if (r.key === this.publication.template) template = r;
+        });
+      });
+      return template;
     },
     model_for_this_publication() {
       if (!this.publication.follows_model) return false;
@@ -240,5 +249,22 @@ export default {
 
 ._openButton {
   margin: calc(var(--spacing) / 8);
+}
+._template {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  .icon {
+    width: 1.5em;
+    height: 1.5em;
+    background-color: var(--c-bleuvert);
+    // padding: calc(var(--spacing) / 8);
+  }
+
+  .label {
+    color: var(--c-bleuvert);
+    padding: calc(var(--spacing) / 8);
+  }
 }
 </style>

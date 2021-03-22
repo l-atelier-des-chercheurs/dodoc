@@ -3156,39 +3156,87 @@ small {
 .m_recipes {
   .padding-small;
 
+  // display: flex;
+  // flex-flow: row wrap;
+  // justify-content: flex-start;
+  // align-content: flex-start;
+  // align-items: flex-start;
+
   .m_activitiesPanel--doc.is--large & {
     // overflow-y: auto;
     // .custom_scrollbar(8px, 5px, 6px, transparent, @c-noir);
   }
+
+  .m_recipes--type {
+    .padding-sides-small;
+    .padding-bottom-small;
+    // .padding-top-verysmall;
+
+    .margin-small;
+    .margin-right-verysmall;
+
+    background-color: rgba(51, 51, 51, 0.2);
+    border-radius: 4px;
+
+    > label {
+      // .padding-vert-verysmall;
+    }
+  }
+
+  .m_recipes--type--grid {
+    // .padding-left-small;
+    // border-left: ~"calc(var(--spacing) * .2)" solid white;
+    // padding-left: ~"calc(var(--spacing) * .3)";
+    // background-color: rgba(255, 255, 255, 0.1);
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-auto-rows: max-content;
+    grid-gap: var(--spacing);
+  }
 }
 
-.m_recipes--recipe {
+.m_activitiesPanel--doc:not(.is--large) {
+  .m_mealList {
+    overflow: auto;
+    td {
+      // display: block;
+    }
+  }
+}
+
+.m_recipe {
   border: 4px solid @c-bleuvert;
-  .margin-small;
-  margin-right: 0;
+  // .margin-small;
+  // margin-right: 0;
   .bg-bleuvert;
+
+  flex: 0 1 220px;
 
   border-radius: @t-buttonradius;
 
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: stretch;
+  // display: flex;
+  // flex-flow: row wrap;
+  // justify-content: center;
   // align-items: center;
 
   > * {
     flex: 1 1 auto;
-    .margin-bottom-small;
-    .padding-small;
+    // .margin-bottom-small;
+    .padding-sides-small;
 
     &:last-child {
       margin-bottom: 0;
     }
   }
 
-  .m_recipes--recipe--icon {
-    flex: 0 1 200px;
+  .m_recipe--icon {
+    flex: 0 1 160px;
     min-width: 120px;
-    .margin-top-small;
+    // .margin-top-small;
+    margin: 0;
+    padding: 0;
+    // .padding-top-small;
     // align-self: center;
     // .bg-bleuvert_fonce;
     // .bg-blanc;
@@ -3196,23 +3244,24 @@ small {
 
     svg {
       width: 100%;
-      max-width: 200px;
+      max-width: 160px;
       margin: 0 auto;
     }
   }
 
-  .m_recipes--recipe--text {
+  .m_recipe--text {
     flex-basis: 50%;
     max-width: 44ch;
     .margin-vert-verysmall;
+    padding: 0;
+    .padding-sides-small;
     color: black;
 
     h2 {
       .font-folder_title;
+      .font-medium;
       font-family: "Fira Code";
-      margin-top: 0;
-      .margin-bottom-verysmall;
-      margin-bottom: 0;
+      margin: 0;
     }
 
     p {
@@ -3235,33 +3284,27 @@ small {
       color: black;
     }
   }
-}
-.m_recipes--recipe--mealList {
-  flex-basis: 500px;
-  .padding-small;
-  // max-width: 1200px;
+  .m_recipe--buttons {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
 
-  table {
-    margin: 0;
-    border: 0;
+    .padding-sides-verysmall;
 
-    thead {
-      label {
-        .c-noir;
-        width: 100%;
-        font-size: 60%;
-        // text-align: center;
+    > button {
+      .margin-verysmall;
+
+      &:last-child {
+        // justify-self: flex-end;
       }
     }
-  }
-
-  button {
-    margin: 0;
   }
 }
 
 .m_mealList {
   .margin-medium;
+  .margin-right-small;
   // .padding-sides-small;
   .bg-blanc;
 
@@ -3316,7 +3359,7 @@ small {
   .bg-gris_tresclair;
 }
 
-.m_recipes--recipe--mealList--meal {
+.m_recipe--mealList--meal {
   font-size: inherit;
   text-transform: initial;
   // cursor: pointer;
@@ -3327,7 +3370,7 @@ small {
   .padding-small;
   text-align: left;
 
-  &.m_recipes--recipe--mealList--meal_replies {
+  &.m_recipe--mealList--meal_replies {
     td:first-child {
       font-size: 0.85em;
       &::before {
@@ -3339,7 +3382,7 @@ small {
     }
   }
 
-  .m_recipes--recipe--mealList--mealTitle {
+  .m_recipe--mealList--mealTitle {
     // .font-folder_title;
     // .font-publi_title;
     margin: 0;
