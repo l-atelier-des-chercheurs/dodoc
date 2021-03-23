@@ -462,7 +462,10 @@
                 'is--recording': is_recording && !video_recording_is_paused,
                 'is--sending_image': is_sending_image,
               }"
-              v-if="!(media_to_validate && must_validate_media)"
+              v-if="
+                !(media_to_validate && must_validate_media) &&
+                !is_validating_stopmotion_video
+              "
             >
               <div>
                 <template
@@ -996,7 +999,10 @@
                 </template>
               </div>
             </div>
-            <div v-else-if="must_validate_media" key="validation">
+            <div
+              v-else-if="media_to_validate && must_validate_media"
+              key="validation"
+            >
               <div class="_download_media_without_validation">
                 <small>
                   <a
@@ -1005,8 +1011,10 @@
                     :download="media_to_validate.temp_name"
                     target="_blank"
                   >
-                    {{ $t("or_download_media_on_device") }} —
-                    {{ $root.formatBytes(media_to_validate.rawData.size) }}
+                    {{ $t("or_download_media_on_device") }}
+                    <template v-if="media_to_validate.rawData">
+                      — {{ $root.formatBytes(media_to_validate.rawData.size) }}
+                    </template>
                   </a>
                 </small>
               </div>
@@ -2178,6 +2186,7 @@ export default {
     width: 100%;
     height: 100%;
     background-color: var(--c-noir);
+    background-color: black;
     // padding: calc(var(--spacing) / 2);
 
     display: flex;
