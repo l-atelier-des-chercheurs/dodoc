@@ -37,6 +37,30 @@
               $t("more_informations_on_authors")
             }}</small>
           </div>
+          <div class="_searchField">
+            <label>{{ $t("author_name_to_find") }}</label>
+
+            <div class="input-group">
+              <input
+                type="text"
+                class=""
+                autofocus
+                v-model="debounce_search_author_name"
+              />
+              <span
+                class="input-addon"
+                v-if="debounce_search_author_name.length > 0"
+              >
+                <button
+                  type="button"
+                  :disabled="debounce_search_author_name.length === 0"
+                  @click="debounce_search_author_name = ''"
+                >
+                  ×
+                </button>
+              </span>
+            </div>
+          </div>
         </div>
         <transition-group tag="div" class="m_authorsList" name="list-complete">
           <div class :key="'createAuthor'">
@@ -96,6 +120,10 @@ export default {
       editAuthorSlug: false,
       show_detail: false,
       is_loading: false,
+
+      author_name_filter: "",
+      debounce_search_author_name: "",
+      debounce_search_author_name_function: undefined,
     };
   },
 
@@ -109,7 +137,15 @@ export default {
   },
   beforeDestroy() {},
 
-  watch: {},
+  watch: {
+    debounce_search_author_name: function () {
+      if (this.debounce_search_author_name_function)
+        clearTimeout(this.debounce_search_author_name_function);
+      this.debounce_search_author_name_function = setTimeout(() => {
+        this.author_name_filter = this.debounce_search_author_name;
+      }, 340);
+    },
+  },
   computed: {
     sorted_authors() {
       let sorted_authors = Object.values(this.authors).sort((a, b) =>
@@ -128,10 +164,21 @@ export default {
             )
         );
       }
+
+      if (this.author_name_filter) {
+        sorted_authors = sorted_authors.filter((a) =>
+          a.name.toLowerCase().includes(this.author_name_filter.toLowerCase())
+        );
+      }
+
       return sorted_authors;
     },
   },
   methods: {},
 };
 </script>
-<style></style>
+<style scoped lang="scss">
+._searchField {
+  max-width: 340px;
+}
+</style>

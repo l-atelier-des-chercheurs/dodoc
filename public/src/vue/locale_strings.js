@@ -1176,6 +1176,10 @@ module.exports = (function () {
       oc: "Cercar per nom de projècte",
       de: "Suche nach Projektname",
     },
+    author_name_to_find: {
+      fr: "Rechercher par nom d’auteur",
+      en: "Search by author name",
+    },
     recipe_name_to_find: {
       fr: "Rechercher par nom de recette",
       en: "Search by recipe name",
