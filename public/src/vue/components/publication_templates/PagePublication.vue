@@ -78,15 +78,15 @@
           <button
             type="button"
             class="buttonLink"
-            :class="{ 'is--active': page_settings_panel }"
-            @click="page_settings_panel = !page_settings_panel"
+            :class="{ 'is--active': pages_settings_panel }"
+            @click="pages_settings_panel = !pages_settings_panel"
           >
-            {{ $t("page_settings") }}
+            {{ $t("pages_settings") }}
           </button>
         </div>
 
         <SettingsPane
-          v-if="page_settings_panel"
+          v-if="pages_settings_panel"
           :slugPubliName="slugPubliName"
           :publication="publication"
           :publications_options="publications_options"
@@ -563,7 +563,7 @@ export default {
       show_buttons: false,
       show_restore_options: false,
 
-      page_settings_panel: false,
+      pages_settings_panel: false,
 
       contact_sheet_mode: true,
 

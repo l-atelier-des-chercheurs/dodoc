@@ -9,7 +9,7 @@
             :class="{ 'is--active': show_create_options }"
             @click="show_create_options = !show_create_options"
           >
-            {{ $t("page_settings") }}
+            {{ $t("pages_settings") }}
           </button>
         </label>
       </div> -->
