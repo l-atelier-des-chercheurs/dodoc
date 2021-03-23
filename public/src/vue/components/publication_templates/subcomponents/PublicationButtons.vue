@@ -143,7 +143,7 @@
                   type: 'text',
                   stroke_color: stroke_color !== '' ? stroke_color : '',
                   fill_color: fill_color !== '' ? fill_color : '',
-                  stroke_width: stroke_width,
+                  stroke_width: 0,
                 })
               "
               @touchstart.stop.prevent="
@@ -151,7 +151,7 @@
                   type: 'text',
                   stroke_color: stroke_color !== '' ? stroke_color : '',
                   fill_color: fill_color !== '' ? fill_color : '',
-                  stroke_width: stroke_width,
+                  stroke_width: 0,
                 })
               "
             >
@@ -209,14 +209,14 @@
                 $emit('addMedia', {
                   type: 'free_drawing',
                   stroke_color: stroke_color !== '' ? stroke_color : '#1d327f',
-                  stroke_width: stroke_width,
+                  stroke_width: 0,
                 })
               "
               @touchstart.stop.prevent="
                 $emit('addMedia', {
                   type: 'free_drawing',
                   stroke_color: stroke_color !== '' ? stroke_color : '#1d327f',
-                  stroke_width: stroke_width,
+                  stroke_width: 0,
                 })
               "
             >
