@@ -518,19 +518,19 @@ module.exports = function (app) {
     let type = req.params.type;
     let slugFolderName = req.params.slugFolderName;
 
-    const isSocketAllowed = await isSocketIDAuthorized({
-      socketid: req.query.socketid,
-      type,
-      slugFolderName,
-    }).catch((err) => {
-      sockets.notify({
-        socketid: req.query.socketid,
-        localized_string: `action_not_allowed`,
-        not_localized_string: err.message,
-        type: "error",
-      });
-    });
-    if (!isSocketAllowed) return false;
+    // const isSocketAllowed = await isSocketIDAuthorized({
+    //   socketid: req.query.socketid,
+    //   type,
+    //   slugFolderName,
+    // }).catch((err) => {
+    //   sockets.notify({
+    //     socketid: req.query.socketid,
+    //     localized_string: `action_not_allowed`,
+    //     not_localized_string: err.message,
+    //     type: "error",
+    //   });
+    // });
+    // if (!isSocketAllowed) return false;
 
     importer
       .handleForm({ req, type, slugFolderName })
