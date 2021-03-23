@@ -25,7 +25,7 @@ export default {
     return {
       svgstr: "",
 
-      smoothing: 4,
+      smoothing: 6,
 
       buffer: [],
 
@@ -86,8 +86,7 @@ export default {
     tracePath(event) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`MediaFreeDrawing • METHODS : tracePath`);
-
-      if (this.path) {
+      if (this.path && event.target === this.$refs.svgElement) {
         this.appendToBuffer(this.getMousePosition(event));
         this.updateSvgPath();
       }
