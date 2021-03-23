@@ -1190,7 +1190,7 @@ export default {
       get() {
         return this.media && this.media.hasOwnProperty("stroke_width")
           ? Number.parseFloat(this.media.stroke_width)
-          : 4;
+          : 1;
       },
       set(value) {
         this.updateMediaPubliMeta({ stroke_width: value });
