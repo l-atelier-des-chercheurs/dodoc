@@ -842,17 +842,21 @@ module.exports = (function () {
                 height: 1800,
               },
             ],
-          }).then(function (thumbnails) {
-            // thumbnails is an array (in matching order to your requests) of Canvas objects
-            // you can write them to disk, return them to web users, etc
-            // see node-canvas documentation at https://github.com/Automattic/node-canvas
-            thumbnails[0].toBuffer(function (err, buf) {
-              if (err) return reject();
+          })
+            .then(function (thumbnails) {
+              // thumbnails is an array (in matching order to your requests) of Canvas objects
+              // you can write them to disk, return them to web users, etc
+              // see node-canvas documentation at https://github.com/Automattic/node-canvas
+              thumbnails[0].toBuffer(function (err, buf) {
+                if (err) return reject();
 
-              fs.writeFileSync(fullScreenshotPath, buf);
-              return resolve({ screenshotPath, screenshotName });
+                fs.writeFileSync(fullScreenshotPath, buf);
+                return resolve({ screenshotPath, screenshotName });
+              });
+            })
+            .catch(function (err) {
+              return reject(err);
             });
-          });
         } else {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`
