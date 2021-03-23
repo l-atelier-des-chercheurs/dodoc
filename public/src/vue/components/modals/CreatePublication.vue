@@ -86,8 +86,9 @@
                 v-for="model in model_recipes_of_this_template"
                 :key="model.slugFolderName"
                 :value="model.slugFolderName"
-                >{{ model.name }}</option
               >
+                {{ model.name }}
+              </option>
             </select>
           </div>
         </div>
@@ -153,8 +154,9 @@
               v-for="project in $root.projects_that_are_accessible"
               :key="project.slugFolderName"
               :value="project.slugFolderName"
-              >{{ project.name }}</option
             >
+              {{ project.name }}
+            </option>
           </select>
           <small>{{ $t("attached_to_project_instructions") }}</small>
         </div>
@@ -230,7 +232,7 @@ export default {
       show_password: false,
       show_keywords: false,
       show_authors: this.$root.current_author,
-      show_model_options: true,
+      show_model_options: false,
       publi_follows_model: false,
       show_access_control: true,
     };

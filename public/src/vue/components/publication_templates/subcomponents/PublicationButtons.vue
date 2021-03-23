@@ -9,7 +9,7 @@
             :class="{ 'is--active': show_create_options }"
             @click="show_create_options = !show_create_options"
           >
-            {{ $t("page_settings") }}
+            {{ $t("pages_settings") }}
           </button>
         </label>
       </div> -->
@@ -143,7 +143,7 @@
                   type: 'text',
                   stroke_color: stroke_color !== '' ? stroke_color : '',
                   fill_color: fill_color !== '' ? fill_color : '',
-                  stroke_width: stroke_width,
+                  stroke_width: 0,
                 })
               "
               @touchstart.stop.prevent="
@@ -151,7 +151,7 @@
                   type: 'text',
                   stroke_color: stroke_color !== '' ? stroke_color : '',
                   fill_color: fill_color !== '' ? fill_color : '',
-                  stroke_width: stroke_width,
+                  stroke_width: 0,
                 })
               "
             >
@@ -209,17 +209,43 @@
                 $emit('addMedia', {
                   type: 'free_drawing',
                   stroke_color: stroke_color !== '' ? stroke_color : '#1d327f',
-                  stroke_width: stroke_width,
+                  stroke_width: 0,
                 })
               "
               @touchstart.stop.prevent="
                 $emit('addMedia', {
                   type: 'free_drawing',
                   stroke_color: stroke_color !== '' ? stroke_color : '#1d327f',
-                  stroke_width: stroke_width,
+                  stroke_width: 0,
                 })
               "
             >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="inline-svg inline-svg-larger"
+                width="168px"
+                height="168px"
+                viewBox="0 0 168 168"
+              >
+                <g id="Calque_2" data-name="Calque 2">
+                  <g id="Calque_6" data-name="Calque 6">
+                    <path
+                      d="M84,168A84,84,0,1,0,0,84,83.99,83.99,0,0,0,84,168Z"
+                      style="fill: #52c5b9"
+                    />
+                    <path
+                      d="M49.7157,49.4838c0,95.0028,0,82.0176,34.2843,34.5162s34.2843-56.5014,34.2843,34.8475"
+                      style="
+                        fill: none;
+                        stroke: #1d327f;
+                        stroke-miterlimit: 10;
+                        stroke-width: 15px;
+                      "
+                    />
+                  </g>
+                </g>
+              </svg>
+
               <span>{{ $t("free_draw") }}</span>
             </button>
           </div>
@@ -1164,7 +1190,7 @@ export default {
       get() {
         return this.media && this.media.hasOwnProperty("stroke_width")
           ? Number.parseFloat(this.media.stroke_width)
-          : 4;
+          : 1;
       },
       set(value) {
         this.updateMediaPubliMeta({ stroke_width: value });
