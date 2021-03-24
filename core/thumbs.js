@@ -102,7 +102,16 @@ module.exports = (function () {
             });
           } else if (mediaType === "video") {
             // make screenshot
-            let screenshotsTimemarks = [0];
+            let screenshotsTimemarks = [
+              {
+                key: "00:00:00",
+                filename_suffix: "0",
+              },
+              {
+                key: "50%",
+                filename_suffix: "50pc",
+              },
+            ];
             screenshotsTimemarks.forEach((timeMark) => {
               let makeScreenshot = new Promise((resolve, reject) => {
                 _makeVideoScreenshot(
@@ -146,7 +155,7 @@ module.exports = (function () {
                       makeThumbsFromScreenshot.push(makeThumbFromScreenshot);
                     });
                     Promise.all(makeThumbsFromScreenshot).then((thumbsData) => {
-                      resolve({ timeMark, thumbsData });
+                      resolve({ timeMark: timeMark.key, thumbsData });
                     });
                   })
                   .catch((err) => {
@@ -723,10 +732,10 @@ module.exports = (function () {
   ) {
     return new Promise(function (resolve, reject) {
       dev.logfunction(
-        `THUMBS — _makeVideoScreenshot — Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark}`
+        `THUMBS — _makeVideoScreenshot — Looking to make a video screenshot for ${mediaPath} and timeMark = ${timeMark.key}`
       );
 
-      let screenshotName = `${filename}.${timeMark}.jpeg`;
+      let screenshotName = `${filename}.${timeMark.filename_suffix}.jpeg`;
       let screenshotPath = path.join(thumbFolderPath, screenshotName);
       let fullScreenshotPath = api.getFolderPath(screenshotPath);
 
@@ -747,8 +756,7 @@ module.exports = (function () {
               reject(err.message);
             })
             .screenshots({
-              count: 1,
-              timemarks: ["00:00:00"],
+              timemarks: [timeMark.key],
               filename: screenshotName,
               folder: api.getFolderPath(thumbFolderPath),
             });
