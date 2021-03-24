@@ -180,6 +180,11 @@ module.exports = (function () {
       fr: "Remplacer par",
       en: "Replace with",
     },
+    use_own_risk: {
+      fr:
+        "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
+      en: "Use at your own risk: medias can become invisible in some cases.",
+    },
 
     chroma_key: {
       fr: "Incrustation (fond vert)",
