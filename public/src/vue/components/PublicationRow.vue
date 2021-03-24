@@ -204,7 +204,6 @@ export default {
     },
     publi_template() {
       let template = undefined;
-      debugger;
       this.recipe_types.map((rt) => {
         rt.recipes.map((r) => {
           if (r.key === this.publication.template) template = r;
