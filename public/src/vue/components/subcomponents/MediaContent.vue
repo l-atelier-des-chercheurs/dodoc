@@ -254,8 +254,17 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
+      <template v-if="context === 'preview'">
+        <img
+          :srcset="complexMediaSrcSetAttr({ type: 'page', option: 0 })"
+          :sizes="imageSizesAttr"
+          :src="linkToComplexMediaThumb({ type: 'page', option: 0 })"
+          draggable="false"
+        />
+        <!-- // TODO : set STL/3d picto -->
+      </template>
       <div
-        v-if="context !== 'edit' && context !== 'full'"
+        v-else-if="context !== 'edit' && context !== 'full'"
         class="padding-small font-verysmall"
       >
         <pre
