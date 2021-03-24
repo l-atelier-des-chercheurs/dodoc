@@ -775,7 +775,7 @@
                 </select>
               </div>
               <small>
-                Use at your own risk: medias can become invisible in some cases.
+                {{ $t("use_own_risk") }}
               </small>
             </div>
 
@@ -958,7 +958,7 @@
                     @click="updateMediaPubliMeta({ custom_css: custom_css })"
                     :class="{}"
                   >
-                    {{ $t("send") }}
+                    {{ $t("save") }}
                   </button>
                 </div>
               </div>

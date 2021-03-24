@@ -1,6 +1,5 @@
 const path = require("path"),
   pathToFfmpeg = require("ffmpeg-static"),
-  ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   fs = require("fs-extra"),
   pad = require("pad-left");
@@ -16,7 +15,6 @@ const dev = require("./dev-log"),
   thumbs = require("./thumbs");
 
 ffmpeg.setFfmpegPath(pathToFfmpeg);
-ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function () {
   return {
@@ -899,8 +897,10 @@ module.exports = (function () {
       dev.logfunction("EXPORTER — _applyVideoEffects");
 
       const videoPath = path.join(cachePath, videoName);
-
       const vm = medias_with_original_filepath.find((m) => m.type === "video");
+
+      // just handle a single effect for now — will handle multiple simultaneous effects at once later
+      const effect = effects[0];
 
       ffmpeg.ffprobe(vm.full_path, function (err, metadata) {
         const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
@@ -925,6 +925,7 @@ module.exports = (function () {
 
         if (temp_video_volume)
           ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume]);
+
         // We may need apad at this point, but it conflicts with the reverse effect.
         // please post on github with the video file if you get audio error with this recipe (and read this message…)
 
@@ -948,9 +949,6 @@ module.exports = (function () {
             outputs: "output",
           },
         ];
-
-        // just handle a single effect for now — will handle multiple simultaneous effects at once later
-        const effect = effects[0];
 
         if (effect.type === "black_and_white") {
           complexFilters.push({
@@ -1025,10 +1023,11 @@ module.exports = (function () {
           }
         } else if (effect.type === "rotate") {
           if (effect.rotation === "1" || effect.rotation === "2") {
+            complexFilters = [];
             complexFilters.push({
               filter: "transpose",
               options: effect.rotation,
-              inputs: "output",
+              inputs: "[0]",
               outputs: "output",
             });
             ffmpeg_cmd.withAudioCodec("copy").addOptions(["-map 0:a?"]);

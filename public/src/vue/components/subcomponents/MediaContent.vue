@@ -17,9 +17,21 @@
     <template v-else-if="media.type === 'video'">
       <template v-if="context === 'preview'">
         <img
-          :srcset="complexMediaSrcSetAttr({ type: 'timeMark', option: 0 })"
+          :srcset="
+            complexMediaSrcSetAttr({
+              type: 'timeMark',
+              option: '50%',
+              option_fallback: '00:00:00',
+            })
+          "
           :sizes="imageSizesAttr"
-          :src="linkToComplexMediaThumb({ type: 'timeMark', option: 0 })"
+          :src="
+            linkToComplexMediaThumb({
+              type: 'timeMark',
+              option: '50%',
+              option_fallback: '00:00:00',
+            })
+          "
           draggable="false"
         />
         <div class="">
@@ -59,7 +71,13 @@
           @timeupdate="videoTimeUpdated"
         >
           <video
-            :poster="linkToComplexMediaThumb({ type: 'timeMark', option: 0 })"
+            :poster="
+              linkToComplexMediaThumb({
+                type: 'timeMark',
+                option: '50%',
+                option_fallback: '00:00:00',
+              })
+            "
             :src="mediaURL"
             preload="none"
             :autoplay="autoplay"
@@ -236,8 +254,17 @@
     </template>
 
     <template v-else-if="media.type === 'document'">
+      <template v-if="context === 'preview'">
+        <img
+          :srcset="complexMediaSrcSetAttr({ type: 'page', option: 0 })"
+          :sizes="imageSizesAttr"
+          :src="linkToComplexMediaThumb({ type: 'page', option: 0 })"
+          draggable="false"
+        />
+        <!-- // TODO : set STL/3d picto -->
+      </template>
       <div
-        v-if="context !== 'edit' && context !== 'full'"
+        v-else-if="context !== 'edit' && context !== 'full'"
         class="padding-small font-verysmall"
       >
         <pre
@@ -466,7 +493,7 @@ export default {
         this.$refs.plyr.player.volume = val / 100;
       }
     },
-    linkToComplexMediaThumb: function ({ type, option }) {
+    linkToComplexMediaThumb: function ({ type, option, option_fallback }) {
       if (
         !this.media["thumbs"] ||
         (typeof this.media.thumbs === "object" &&
@@ -478,6 +505,13 @@ export default {
       let firstThumbs = this.media.thumbs.find(
         (t) => !!t && t[type] === option
       );
+
+      if (!firstThumbs || firstThumbs.length === 0) {
+        firstThumbs = this.media.thumbs.find(
+          (t) => !!t && t[type] === option_fallback
+        );
+        if (!firstThumbs || firstThumbs.length === 0) return;
+      }
 
       const small_thumb = firstThumbs.thumbsData.find(
         (m) => m && m.size === this.thumbRes
@@ -492,7 +526,7 @@ export default {
           : "/" + pathToSmallestThumb;
       return pathToSmallestThumb !== undefined ? url : this.mediaURL;
     },
-    complexMediaSrcSetAttr: function ({ type, option }) {
+    complexMediaSrcSetAttr: function ({ type, option, option_fallback }) {
       if (this.element_width_for_sizes === 0) {
         return;
       }
@@ -500,7 +534,12 @@ export default {
       let firstThumbs = this.media.thumbs.filter(
         (t) => !!t && t[type] === option
       );
-      if (!firstThumbs || firstThumbs.length === 0) return;
+      if (!firstThumbs || firstThumbs.length === 0) {
+        let firstThumbs = this.media.thumbs.filter(
+          (t) => !!t && t[type] === option_fallback
+        );
+        if (!firstThumbs || firstThumbs.length === 0) return;
+      }
 
       // get all available sizes
       const img_srcset = firstThumbs[0].thumbsData.reduce((acc, t) => {

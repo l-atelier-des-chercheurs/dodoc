@@ -180,6 +180,11 @@ module.exports = (function () {
       fr: "Remplacer par",
       en: "Replace with",
     },
+    use_own_risk: {
+      fr:
+        "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
+      en: "Use at your own risk: medias can become invisible in some cases.",
+    },
 
     chroma_key: {
       fr: "Incrustation (fond vert)",
@@ -1175,6 +1180,10 @@ module.exports = (function () {
       en: "Search by project name",
       oc: "Cercar per nom de projècte",
       de: "Suche nach Projektname",
+    },
+    author_name_to_find: {
+      fr: "Rechercher par nom d’auteur",
+      en: "Search by author name",
     },
     recipe_name_to_find: {
       fr: "Rechercher par nom de recette",

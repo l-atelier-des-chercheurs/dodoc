@@ -966,8 +966,13 @@ export default {
     },
     filtered_publications() {
       if (this.slugProjectName_to_filter)
-        return this.recipesForThisProject(this.slugProjectName_to_filter);
-      else return this.sorted_publications;
+        if (
+          this.recipesForThisProject(this.slugProjectName_to_filter).length ===
+          0
+        )
+          this.slugProjectName_to_filter = "";
+        else return this.recipesForThisProject(this.slugProjectName_to_filter);
+      return this.sorted_publications;
     },
   },
   methods: {

@@ -462,7 +462,10 @@
                 'is--recording': is_recording && !video_recording_is_paused,
                 'is--sending_image': is_sending_image,
               }"
-              v-if="!(media_to_validate && must_validate_media)"
+              v-if="
+                !(media_to_validate && must_validate_media) &&
+                !is_validating_stopmotion_video
+              "
             >
               <div>
                 <template
@@ -524,10 +527,6 @@
                       viewBox="0 0 168 168"
                       class="inline-svg inline-svg_larger"
                     >
-                      <path
-                        d="M84.0039,168A84,84,0,1,0,0,84,83.9973,83.9973,0,0,0,84.0039,168Z"
-                        style="fill: #1b2f81"
-                      />
                       <path
                         d="M110.3488,72.0093,114.6377,59.36a4.4236,4.4236,0,0,0-1.07-4.59,4.4946,4.4946,0,0,0-4.59-1.0745L96.3334,57.9846,85.62,50a4.5219,4.5219,0,0,0-4.6965-.4029,4.4316,4.4316,0,0,0-2.4409,4.0388l.1714,13.3577L67.7468,74.7049A4.4686,4.4686,0,0,0,68.9974,82.62L79.2565,85.807,38.1043,126.9546a2.3155,2.3155,0,1,0,3.2745,3.2746L82.5311,89.0769l3.1865,10.2638a4.4571,4.4571,0,0,0,3.5664,3.08c.12.0185.579.0556.704.0556a4.4844,4.4844,0,0,0,3.6451-1.88L101.35,89.6883l13.6078.1621a4.6074,4.6074,0,0,0,3.784-2.4316,4.4328,4.4328,0,0,0-.3983-4.6965ZM100.1869,85.0381a2.5322,2.5322,0,0,0-1.9221.9773L90.039,97.6409,85.8149,84.0423a2.3238,2.3238,0,0,0-1.5192-1.5238l-13.8764-4.03,11.8987-8.42a2.3208,2.3208,0,0,0,.9773-1.9221L82.846,53.71l11.6764,8.7168a2.3569,2.3569,0,0,0,2.1259.3381l13.5986-4.8911L105.56,71.6758a2.3135,2.3135,0,0,0,.3428,2.1259l8.8464,11.417Z"
                         style="
@@ -996,7 +995,10 @@
                 </template>
               </div>
             </div>
-            <div v-else-if="must_validate_media" key="validation">
+            <div
+              v-else-if="media_to_validate && must_validate_media"
+              key="validation"
+            >
               <div class="_download_media_without_validation">
                 <small>
                   <a
@@ -1005,8 +1007,10 @@
                     :download="media_to_validate.temp_name"
                     target="_blank"
                   >
-                    {{ $t("or_download_media_on_device") }} —
-                    {{ $root.formatBytes(media_to_validate.rawData.size) }}
+                    {{ $t("or_download_media_on_device") }}
+                    <template v-if="media_to_validate.rawData">
+                      — {{ $root.formatBytes(media_to_validate.rawData.size) }}
+                    </template>
                   </a>
                 </small>
               </div>
@@ -2178,6 +2182,7 @@ export default {
     width: 100%;
     height: 100%;
     background-color: var(--c-noir);
+    background-color: black;
     // padding: calc(var(--spacing) / 2);
 
     display: flex;
