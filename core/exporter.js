@@ -1,6 +1,5 @@
 const path = require("path"),
   pathToFfmpeg = require("ffmpeg-static"),
-  ffprobestatic = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   fs = require("fs-extra"),
   pad = require("pad-left");
@@ -14,7 +13,6 @@ const dev = require("./dev-log"),
   thumbs = require("./thumbs");
 
 ffmpeg.setFfmpegPath(pathToFfmpeg);
-ffmpeg.setFfprobePath(ffprobestatic.path);
 
 module.exports = (function () {
   return {
