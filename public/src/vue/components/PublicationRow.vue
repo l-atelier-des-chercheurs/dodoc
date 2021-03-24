@@ -254,16 +254,23 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
 
-  .icon {
-    width: 1.5em;
-    height: 1.5em;
-    background-color: var(--c-bleuvert);
-    // padding: calc(var(--spacing) / 8);
-  }
-
   .label {
     color: var(--c-bleuvert);
     padding: calc(var(--spacing) / 8);
+  }
+}
+</style>
+
+<style lang="scss">
+._template .icon {
+  border-radius: 2px;
+  background-color: var(--c-bleuvert);
+  // padding: calc(var(--spacing) / 8);
+
+  svg {
+    display: block;
+    width: 2em;
+    height: 2em;
   }
 }
 </style>
