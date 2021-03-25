@@ -32,7 +32,7 @@
             !delay_event
           "
         >
-          <div class="_arrows">
+          <div class="_arrows" v-if="available_modes.length > 1">
             <button
               type="button"
               class="bg-transparent"
@@ -88,7 +88,7 @@
             </label>
           </div>
 
-          <div class="_arrows">
+          <div class="_arrows" v-if="available_modes.length > 1">
             <button
               type="button"
               class="bg-transparent"
@@ -1072,6 +1072,10 @@ export default {
         "lines",
       ],
     },
+    return_temp_media: {
+      type: Boolean,
+      default: false,
+    },
     can_add_to_fav: {
       type: Boolean,
       default: true,
@@ -2013,6 +2017,11 @@ export default {
         console.log(`METHODS • CaptureView: sendMedia with fav=${fav}`);
         if (this.$root.state.dev_mode === "debug")
           console.log(`METHODS • CaptureView / sendMedia`);
+
+        if (this.return_temp_media) {
+          this.$emit("tempMedia", this.media_to_validate);
+          return resolve();
+        }
 
         const timeCreated = this.$moment().format("YYYYMMDD_HHmmss");
         const randomString = (

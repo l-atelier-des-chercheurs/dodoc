@@ -2006,8 +2006,8 @@ module.exports = (function () {
       de: "Importieren einer Bilddatei",
     },
     or_choose_from_image_medias: {
-      fr: "Ou choisir un média image",
-      en: "Or choose from image medias",
+      fr: "Ou choisir un média image dans un projet",
+      en: "Or choose from image medias in a project",
       oc: "O causir un mèdia imatge",
       de: "Oder ein Bildmedium auswählen",
     },

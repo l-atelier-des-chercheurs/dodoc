@@ -2,7 +2,7 @@
   <Modal
     @close="$emit('close')"
     class="m_exportModal"
-    :typeOfModal="'ExportVideo'"
+    :typeOfModal="'EditMeta'"
   >
     <template slot="header">
       <span class>{{ $t("export_creation") }}</span>
