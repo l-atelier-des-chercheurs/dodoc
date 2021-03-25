@@ -68,7 +68,10 @@
         </button>
       </td>
     </tr>
-    <tr class="_mealModel" v-if="publication.is_model">
+    <tr
+      class="_mealModel"
+      v-if="publication.is_model || !!publication.follows_model"
+    >
       <td colspan="6">
         <template v-if="publication.is_model">
           <div>

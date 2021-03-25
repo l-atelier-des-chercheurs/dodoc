@@ -265,9 +265,9 @@
               <th colspan="1">
                 <label>{{ $t("type") }}</label>
               </th>
-              <th colspan="1">
+              <!-- <th colspan="1">
                 <label>{{ $t("model") }}</label>
-              </th>
+              </th> -->
               <th colspan="1">
                 <label>{{ $t("authors") }}</label>
               </th>
