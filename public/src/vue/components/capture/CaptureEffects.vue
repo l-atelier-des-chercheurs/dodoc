@@ -835,8 +835,6 @@ void main(void) {
       };
     },
     loadReplacementImageInShader() {
-      debugger;
-
       const gl = this.offscreen_canvas.getContext("webgl", {
         premultipliedAlpha: false,
       });
