@@ -15,47 +15,6 @@
           <div class="label" v-html="$t(publi_template.key)" />
         </div>
       </td>
-      <td width="10%">
-        <!-- <div class="m_metaField"> -->
-        <!-- <div>
-            {{ $t("type") }}
-          </div> -->
-
-        <template v-if="publication.is_model">
-          <div>
-            <small>
-              {{ $t("model") }}
-            </small>
-          </div>
-          <div>
-            <button
-              type="button"
-              v-if="publication.hasOwnProperty('_replies')"
-              class="buttonLink margin-none"
-              @click="$emit('toggleReplies')"
-            >
-              <span
-                v-html="
-                  $t('replies:') +
-                  ' ' +
-                  (!publication.hasOwnProperty('_replies')
-                    ? 0
-                    : publication._replies.length)
-                "
-              />
-            </button>
-          </div>
-        </template>
-        <small
-          v-else-if="!!publication.follows_model"
-          v-html="
-            $t('publi_follows_model:') + ' ' + model_for_this_publication.name
-          "
-        >
-          <!-- {{ $t("follows_model") }} -->
-        </small>
-        <!-- </div> -->
-      </td>
       <td width="20%">
         <div v-if="publication.authors" class="m_authorField">
           <span
@@ -109,7 +68,46 @@
         </button>
       </td>
     </tr>
-    <tr class="_mealMoreInfos bg-gris_tresclair" v-if="show_more_informations">
+    <tr class="_mealModel" v-if="publication.is_model">
+      <td colspan="6">
+        <template v-if="publication.is_model">
+          <div>
+            <small>
+              {{ $t("model") }}
+            </small>
+            <button
+              type="button"
+              v-if="publication.hasOwnProperty('_replies')"
+              class="buttonLink margin-none"
+              :class="{
+                'is--active': show_replies,
+              }"
+              @click="toggleReplies"
+            >
+              <span
+                v-html="
+                  $t('replies:') +
+                  ' ' +
+                  (!publication.hasOwnProperty('_replies')
+                    ? 0
+                    : publication._replies.length)
+                "
+              />
+            </button>
+          </div>
+        </template>
+        <small
+          v-else-if="!!publication.follows_model"
+          v-html="
+            $t('publi_follows_model:') + ' ' + model_for_this_publication.name
+          "
+        >
+          <!-- {{ $t("follows_model") }} -->
+        </small>
+        <!-- </div> -->
+      </td>
+    </tr>
+    <tr class="_mealMoreInfos" v-if="show_more_informations">
       <td colspan="6">
         <!-- <button
             v-if="can_see_publi"
@@ -222,6 +220,10 @@ export default {
     },
   },
   methods: {
+    toggleReplies() {
+      this.show_replies = !this.show_replies;
+      this.$emit("toggleReplies", this.show_replies);
+    },
     openPublication() {
       if (this.$root.state.dev_mode === "debug")
         console.log(
