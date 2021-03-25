@@ -84,9 +84,12 @@
             </div>
             <div class="m_recipe--buttons">
               <button
-                v-if="!recipe.show_instructions && recipe.instructions"
+                v-if="recipe.instructions"
                 type="button"
                 class="buttonLink c-blanc"
+                :class="{
+                  'is--active': recipe.show_instructions,
+                }"
                 @click="recipe.show_instructions = !recipe.show_instructions"
               >
                 {{ $t("more_informations") }}
