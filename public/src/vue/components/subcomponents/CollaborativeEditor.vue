@@ -67,6 +67,7 @@ var fonts = [
   "Archivo Black",
   "Spectral",
   "Krub",
+  "OpenDyslexic",
 ];
 var FontAttributor = Quill.import("attributors/style/font");
 FontAttributor.whitelist = fonts;

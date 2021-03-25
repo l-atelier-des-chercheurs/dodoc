@@ -1973,7 +1973,10 @@ html[lang="fr"] .ql-tooltip[data-mode="link"]::before {
   width: 115px !important;
 }
 .ql-picker.ql-font {
-  width: 125px !important;
+  width: 160px !important;
+
+  &::before {
+  }
 }
 
 html[lang="fr"] .ql-picker.ql-header .ql-picker-label::before,
@@ -2117,4 +2120,9 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
 .ql-picker.ql-font .ql-picker-item[data-value="Krub"]::before {
   content: "Krub";
   font-family: "Krub";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="OpenDyslexic"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="OpenDyslexic"]::before {
+  content: "OpenDyslexic";
+  font-family: "OpenDyslexic";
 }
