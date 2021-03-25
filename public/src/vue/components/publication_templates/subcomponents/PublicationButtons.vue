@@ -725,7 +725,7 @@
                   type="range"
                   min="0"
                   max="1"
-                  step="0.01"
+                  step="0.1"
                   v-model="opacity"
                 />
               </div>
@@ -837,7 +837,7 @@
                   type="range"
                   min="0"
                   max="20"
-                  step="1"
+                  step="0.1"
                   v-model="stroke_width"
                 />
               </div>
@@ -1146,7 +1146,6 @@ export default {
           : 1;
       },
       set(value) {
-        if (value > 90 && value < 110) value = 100;
         this.updateMediaPubliMeta({ opacity: value });
       },
     },
