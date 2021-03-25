@@ -211,8 +211,12 @@ export default {
       setTimeout(getCurrentScroll, 400);
     };
     getCurrentScroll();
+
+    window.addEventListener("paste", this.handlePaste);
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    window.removeEventListener("paste", this.handlePaste);
+  },
   watch: {
     current_scroll() {
       if (!this.$refs.publi) return 0;
@@ -287,6 +291,17 @@ export default {
         window.getComputedStyle(el).getPropertyValue("margin-bottom")
       );
       return elHeight;
+    },
+
+    handlePaste(e) {
+      if (e.clipboardData.files) {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(
+            `Story — METHODS • handlePaste: for files.length = ${e.clipboardData.files.length}`
+          );
+
+        this.$eventHub.$emit("importMedia.paste", e.clipboardData.files);
+      }
     },
     toggleTransition({ position, metaFileName }) {
       if (this.$root.state.dev_mode === "debug")

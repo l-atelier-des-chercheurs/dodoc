@@ -99,6 +99,7 @@
                 type="file"
                 multiple
                 :id="`insert_file_${id}`"
+                ref="fileInput"
                 name="file"
                 @change="updateInputFiles($event)"
                 accept
@@ -250,13 +251,14 @@ export default {
   created() {},
   mounted() {
     document.addEventListener("dragover", this.ondragover);
-
+    this.$eventHub.$on("importMedia.paste", this.onPaste);
     this.$eventHub.$on("publication.addMedia", this.addMediaFromProject);
 
     this.cancelDragOver = debounce(this.cancelDragOver, 300);
   },
   beforeDestroy() {
     document.removeEventListener("dragover", this.ondragover);
+    this.$eventHub.$off("importMedia.paste", this.onPaste);
     this.$eventHub.$off("publication.addMedia", this.addMediaFromProject);
   },
   watch: {
@@ -315,6 +317,17 @@ export default {
       this.$emit("addMedia", val);
 
       this.show_menu = false;
+    },
+    onPaste(files) {
+      if (this.is_currently_active) {
+        if (!this.show_menu) this.show_menu = true;
+
+        // this.$refs.fileInput.files = files;
+        this.$nextTick(() => {
+          this.selected_files = files;
+          debugger;
+        });
+      }
     },
     createPlaceholderMedia() {
       this.$emit("addMedia", {
