@@ -119,13 +119,13 @@
               />
             </transition>
           </div>
-          <button
+          <!-- <button
             type="button"
             class="button-nostyle bg-rouge _close_button"
             @click="closeChat"
           >
             <img src="/images/i_close_sansfond.svg" draggable="false" />
-          </button>
+          </button> -->
         </pane>
       </splitpanes>
     </div>

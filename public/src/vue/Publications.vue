@@ -84,9 +84,12 @@
             </div>
             <div class="m_recipe--buttons">
               <button
-                v-if="!recipe.show_instructions && recipe.instructions"
+                v-if="recipe.instructions"
                 type="button"
                 class="buttonLink c-blanc"
+                :class="{
+                  'is--active': recipe.show_instructions,
+                }"
                 @click="recipe.show_instructions = !recipe.show_instructions"
               >
                 {{ $t("more_informations") }}
@@ -265,9 +268,9 @@
               <th colspan="1">
                 <label>{{ $t("type") }}</label>
               </th>
-              <th colspan="1">
+              <!-- <th colspan="1">
                 <label>{{ $t("model") }}</label>
-              </th>
+              </th> -->
               <th colspan="1">
                 <label>{{ $t("authors") }}</label>
               </th>
@@ -289,7 +292,7 @@
               class="m_mealList--publis"
               :publication="publication"
               :recipe_types="recipe_types"
-              @toggleReplies="toggleReplies(publication.slugFolderName)"
+              @toggleReplies="toggleReplies($event, publication.slugFolderName)"
             />
             <template v-if="show_replies_for === publication.slugFolderName">
               <tr
@@ -981,10 +984,9 @@ export default {
         (r) => r.attached_to_project === slugProjectName
       );
     },
-    toggleReplies(slugFolderName) {
-      if (this.show_replies_for === slugFolderName)
-        this.show_replies_for = false;
-      this.show_replies_for = slugFolderName;
+    toggleReplies($event, slugFolderName) {
+      if ($event) this.show_replies_for = slugFolderName;
+      else this.show_replies_for = false;
     },
     allRecipesOfThisTemplate(template_key) {
       const filtered_recipes = this.sorted_publications.filter(

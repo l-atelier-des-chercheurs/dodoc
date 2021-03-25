@@ -1192,9 +1192,8 @@ export default {
       // );
     },
     roundMediaVal(val) {
-      if (this.page.snap_to_grid)
+      if (this.page.snap_to_grid && this.page.gridstep > 0)
         return Math.round(val / this.page.gridstep) * this.page.gridstep;
-
       return +val.toFixed(1);
     },
 

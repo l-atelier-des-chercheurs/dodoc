@@ -109,7 +109,7 @@ module.exports = (function () {
         app.setAboutPanelOptions({
           applicationName: global.appInfos.name,
           applicationVersion: app.getVersion(),
-          copyright: "Released under the Creative Commons license.",
+          copyright: "Released under the free software GNU AGPL license.",
         });
       }
 

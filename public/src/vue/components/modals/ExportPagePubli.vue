@@ -14,12 +14,37 @@
           <div class="margin-bottom-small">
             <div v-html="$t('get_pdf')" />
           </div>
-          <div class="margin-bottom-small">
+          <div class="">
             <label>{{ $t("type") }}</label>
-            <select v-model="export_type">
-              <option value="pdf">{{ $t("multipage_pdf") }}</option>
-              <option value="png">{{ $t("singlepage_image") }}</option>
-            </select>
+
+            <div class="">
+              <label for="pdf">
+                <div>
+                  <input
+                    type="radio"
+                    id="pdf"
+                    value="pdf"
+                    v-model="export_type"
+                  />
+                  <span>
+                    {{ $t("multipage_pdf") }}
+                  </span>
+                </div>
+              </label>
+            </div>
+            <div>
+              <label for="png">
+                <div>
+                  <input
+                    type="radio"
+                    id="png"
+                    value="png"
+                    v-model="export_type"
+                  />
+                  <span> {{ $t("singlepage_image") }} </span>
+                </div>
+              </label>
+            </div>
           </div>
 
           <div
