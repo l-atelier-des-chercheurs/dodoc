@@ -139,6 +139,7 @@
             <div v-if="chroma_key_settings.replacement_mode === 'image'">
               <ImageSelect
                 :load_from_projects_medias="true"
+                :slugProjectName="slugProjectName"
                 @newPreview="newChromaKeyImage"
               />
               <!-- {{ chroma_key_settings.replacement_image }} -->
@@ -226,6 +227,8 @@ export default {
         replacement_mode: "color",
         replacement_image: undefined,
       },
+
+      slugProjectName: "",
 
       image_filters_settings: {
         brightness: {
@@ -500,7 +503,11 @@ void main(void) {
       `,
     };
   },
-  created() {},
+  created() {
+    if (this.$root.do_navigation.current_slugProjectName) {
+      this.slugProjectName = this.$root.do_navigation.current_slugProjectName;
+    }
+  },
   updated() {},
   mounted() {
     this.$eventHub.$on(
@@ -776,6 +783,12 @@ void main(void) {
     newChromaKeyImage(img) {
       console.log(`CaptureEffects • METHODS : newChromaKeyImage`);
 
+      if (img === false) {
+        this.chroma_key_settings.replacement_image = undefined;
+        this.loadReplacementImageInShader();
+        return;
+      }
+
       var imageElement = new Image();
 
       if (typeof img === "string") imageElement.src = img;
@@ -822,7 +835,7 @@ void main(void) {
       };
     },
     loadReplacementImageInShader() {
-      if (!this.chroma_key_settings.replacement_image) return;
+      debugger;
 
       const gl = this.offscreen_canvas.getContext("webgl", {
         premultipliedAlpha: false,
@@ -844,14 +857,15 @@ void main(void) {
       //   new Uint8Array([0, 0, 255, 255])
       // );
 
-      gl.texImage2D(
-        gl.TEXTURE_2D,
-        0,
-        gl.RGBA,
-        gl.RGBA,
-        gl.UNSIGNED_BYTE,
-        this.chroma_key_settings.replacement_image
-      );
+      if (this.chroma_key_settings.replacement_image)
+        gl.texImage2D(
+          gl.TEXTURE_2D,
+          0,
+          gl.RGBA,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          this.chroma_key_settings.replacement_image
+        );
 
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);

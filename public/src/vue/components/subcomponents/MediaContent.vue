@@ -256,11 +256,16 @@
     <template v-else-if="media.type === 'document'">
       <template v-if="context === 'preview'">
         <img
-          :srcset="complexMediaSrcSetAttr({ type: 'page', option: 0 })"
+          v-if="linkToComplexMediaThumb({ type: 'page', option: 0 })"
+          :srcset="linkToComplexMediaThumb({ type: 'page', option: 0 })"
           :sizes="imageSizesAttr"
           :src="linkToComplexMediaThumb({ type: 'page', option: 0 })"
           draggable="false"
         />
+        <pre v-else
+          >{{ media.media_filename }}
+        </pre>
+
         <!-- // TODO : set STL/3d picto -->
       </template>
       <div

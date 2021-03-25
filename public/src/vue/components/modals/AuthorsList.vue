@@ -38,9 +38,16 @@
             }}</small>
           </div>
           <div class="_searchField">
-            <label>{{ $t("author_name_to_find") }}</label>
+            <button
+              type="button"
+              class="button-nostyle text-uc button-triangle"
+              :class="{ 'is--active': show_authors_search }"
+              @click="show_authors_search = !show_authors_search"
+            >
+              <label>{{ $t("author_name_to_find") }}</label>
+            </button>
 
-            <div class="input-group">
+            <div class="input-group" v-if="show_authors_search">
               <input
                 type="text"
                 class=""
@@ -120,6 +127,8 @@ export default {
       editAuthorSlug: false,
       show_detail: false,
       is_loading: false,
+
+      show_authors_search: false,
 
       author_name_filter: "",
       debounce_search_author_name: "",
