@@ -121,11 +121,11 @@
                 {{ $t("showing") }}
                 <span
                   :class="{
-                    'c-rouge':
+                    'c-rouge bg-blanc':
                       filtered_publications.length !== publications.length,
                   }"
                 >
-                  {{ filtered_publications.length }}
+                  &nbsp;{{ filtered_publications.length }}
                   <template
                     v-if="filtered_publications.length === publications.length"
                     >{{ $t("recipes") }}</template
@@ -165,11 +165,14 @@
                   type="button"
                   class="button-nostyle text-uc button-triangle"
                   :class="{
-                    'is--active':
+                    'is--active ':
                       show_search ||
                       $root.settings.publication_filter.name.length > 0,
                   }"
-                  @click="show_search = !show_search"
+                  @click="
+                    show_search = !show_search;
+                    debounce_search_publication_name = '';
+                  "
                 >
                   <svg
                     class="inline-svg"
@@ -1036,6 +1039,14 @@ export default {
     display: block;
     margin: 0;
     color: inherit;
+  }
+}
+
+.m_searchProject {
+  .button-triangle.is--active {
+    // color: var(--c-rouge_clair);
+    text-shadow: 0px 0px 2px var(--c-rouge_clair);
+    // -webkit-text-stroke: 0.1px white;
   }
 }
 
