@@ -294,7 +294,7 @@ export default {
     },
 
     handlePaste(e) {
-      if (e.clipboardData.files) {
+      if (e.clipboardData.files && e.clipboardData.files.length > 0) {
         if (this.$root.state.dev_mode === "debug")
           console.log(
             `Story — METHODS • handlePaste: for files.length = ${e.clipboardData.files.length}`
