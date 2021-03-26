@@ -891,6 +891,7 @@
                     max=".9"
                     step="0.01"
                     :title="stopmotion.onion_skin_opacity"
+                    data-use="onionskin"
                   />
                 </div>
 
@@ -1670,7 +1671,9 @@ export default {
 
       // TODO : write captcha to prevent writing to interfere with camera
       if (
-        event.target.tagName.toLowerCase() === "input" ||
+        (event.target.tagName.toLowerCase() === "input" &&
+          (!event.target.dataset ||
+            event.target.dataset.use !== "onionskin")) ||
         event.target.tagName.toLowerCase() === "textarea"
       ) {
         return false;
