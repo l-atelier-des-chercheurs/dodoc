@@ -11,7 +11,7 @@
       </td>
       <td width="20%">
         <div class="_template">
-          <div class="icon" v-html="$t(publi_template.icon)" />
+          <!-- <div class="icon" v-html="$t(publi_template.icon)" /> -->
           <div class="label" v-html="$t(publi_template.key)" />
         </div>
       </td>

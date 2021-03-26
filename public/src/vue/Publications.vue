@@ -8,9 +8,9 @@
       @close="showCreatePublicationModal = false"
       :read_only="read_only"
     />
-    <div class="_topMenu">
-      <div class="_publiLabel">
-        <!-- <button 
+    <!-- <div class="_topMenu"> -->
+    <div class="_publiLabel">
+      <!-- <button 
           class="barButton barButton_createPubli"
           type="button"  
           @click="showCreatePublicationModal = true"
@@ -20,35 +20,35 @@
               {{ $t('create_a_publication') }}
           </span>
           </button>-->
-        <!-- <div class="m_actionbar--text"> -->
-        <label class="">
-          {{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}
-        </label>
-        <!-- </div> -->
-      </div>
+      <!-- <div class="m_actionbar--text"> -->
+      <label class="">
+        {{ $t("cooking_pot") }}&nbsp;: {{ $t("cooking_pot_instructions") }}
+      </label>
       <!-- </div> -->
-
-      <div class="m_sideBySideSwitches">
-        <label for="publi_mode_templates">
-          <input
-            type="radio"
-            id="publi_mode_templates"
-            value="templates"
-            v-model="current_mode"
-          />
-          {{ $t("create_new_recipe") }}
-        </label>
-        <label for="publi_mode_list">
-          <input
-            type="radio"
-            id="publi_mode_list"
-            value="list"
-            v-model="current_mode"
-          />
-          {{ $t("show_recipes") }}
-        </label>
-      </div>
+      <!-- </div> -->
     </div>
+
+    <div class="m_sideBySideSwitches">
+      <label for="publi_mode_templates">
+        <input
+          type="radio"
+          id="publi_mode_templates"
+          value="templates"
+          v-model="current_mode"
+        />
+        {{ $t("create_new_recipe") }}
+      </label>
+      <label for="publi_mode_list">
+        <input
+          type="radio"
+          id="publi_mode_list"
+          value="list"
+          v-model="current_mode"
+        />
+        {{ $t("show_recipes") }}
+      </label>
+    </div>
+    <!-- </div> -->
 
     <!-- liste des recettes -->
     <div class="m_recipes" v-if="current_mode === 'templates'">
@@ -58,7 +58,9 @@
         v-for="recipe_type in recipe_types"
         :key="recipe_type.key"
       >
-        <label class="c-blanc">{{ $t(recipe_type.label) }}</label>
+        <div class="c-blanc font-folder_title padding-vert-small">
+          {{ $t(recipe_type.label) }}
+        </div>
         <div class="m_recipes--type--grid">
           <div
             v-for="recipe in recipe_type.recipes"
@@ -66,8 +68,21 @@
             class="m_recipe"
           >
             <div class="m_recipe--icon" v-html="recipe.icon"></div>
+
             <div class="m_recipe--text">
               <h2 class>{{ $t(recipe.key) }}</h2>
+              <button
+                v-if="recipe.instructions"
+                type="button"
+                class="buttonLink c-noir margin-none"
+                :class="{
+                  'is--active': recipe.show_instructions,
+                }"
+                @click="recipe.show_instructions = !recipe.show_instructions"
+              >
+                {{ $t("more_informations") }}
+              </button>
+
               <p class="margin-vert-small" v-if="false">
                 <span
                   v-html="$t(recipe.summary)"
@@ -83,17 +98,6 @@
               </template>
             </div>
             <div class="m_recipe--buttons">
-              <button
-                v-if="recipe.instructions"
-                type="button"
-                class="buttonLink c-blanc"
-                :class="{
-                  'is--active': recipe.show_instructions,
-                }"
-                @click="recipe.show_instructions = !recipe.show_instructions"
-              >
-                {{ $t("more_informations") }}
-              </button>
               <button
                 class="barButton barButton_createPubli"
                 type="button"
@@ -117,11 +121,11 @@
                 {{ $t("showing") }}
                 <span
                   :class="{
-                    'c-rouge':
+                    'c-rouge bg-blanc':
                       filtered_publications.length !== publications.length,
                   }"
                 >
-                  {{ filtered_publications.length }}
+                  &nbsp;{{ filtered_publications.length }}
                   <template
                     v-if="filtered_publications.length === publications.length"
                     >{{ $t("recipes") }}</template
@@ -161,11 +165,14 @@
                   type="button"
                   class="button-nostyle text-uc button-triangle"
                   :class="{
-                    'is--active':
+                    'is--active ':
                       show_search ||
                       $root.settings.publication_filter.name.length > 0,
                   }"
-                  @click="show_search = !show_search"
+                  @click="
+                    show_search = !show_search;
+                    debounce_search_publication_name = '';
+                  "
                 >
                   <svg
                     class="inline-svg"
@@ -1007,9 +1014,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topMenu {
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: relative;
   margin: calc(var(--spacing) / 2);
   margin-right: calc(var(--spacing) / 4);
   margin-bottom: 0;
@@ -1023,19 +1028,36 @@ export default {
 }
 
 ._publiLabel {
-  background-color: white;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  // background-color: white;
+  color: white;
+  margin: calc(var(--spacing) / 2);
+  margin-left: calc(var(--spacing) / 1);
+  margin-right: calc(var(--spacing) / 1);
+  // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 
   label {
     display: block;
     margin: 0;
+    color: inherit;
+  }
+}
+
+.m_searchProject {
+  .button-triangle.is--active {
+    // color: var(--c-rouge_clair);
+    text-shadow: 0px 0px 2px var(--c-rouge_clair);
+    // -webkit-text-stroke: 0.1px white;
   }
 }
 
 .m_sideBySideSwitches {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   // padding-left: var(--spacing);
   // padding-right: var(--spacing);
   background-color: white;
+  border: none;
 
   label {
     // color: white;
@@ -1043,7 +1065,7 @@ export default {
 
   > * {
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-    border-top: 2px solid var(--c-gris-clair);
+    // border-top: 2px solid var(--c-gris-clair);
     // border-bottom: 0;
   }
 }
