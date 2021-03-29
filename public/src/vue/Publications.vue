@@ -1075,6 +1075,7 @@ export default {
   // padding-left: var(--spacing);
   // padding-right: var(--spacing);
   border: none;
+  background-color: white;
 
   label {
     // color: white;
