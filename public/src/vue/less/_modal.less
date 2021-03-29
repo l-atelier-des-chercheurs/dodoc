@@ -73,7 +73,6 @@
 
     .m_modal--container--content {
       border: 30px solid @c-blanc;
-      border-radius: 20px;
     }
   }
 
@@ -82,7 +81,8 @@
     position: relative;
 
     background-color: #fff;
-    border-radius: 2px;
+    border-radius: var(--button-radius);
+
     .boxs-card-0;
     // border: 1px solid @c-gris_clair;
 
@@ -121,6 +121,7 @@
         overflow: hidden;
 
         #app:not(.is--wide) & {
+          border-radius: 0;
           // height: auto;
         }
       }
@@ -152,6 +153,12 @@
 }
 
 .m_modal--mask {
+  &.typeOfModal-EditMeta {
+    .m_modal--sidebar {
+      border-left: none;
+      border-radius: var(--button-radius);
+    }
+  }
   &.typeOfModal-LargeAndScroll {
     // padding-top: @t-skipline;
     .padding-vert-large;
@@ -176,9 +183,6 @@
     }
   }
   &.typeOfModal-ExportVideo {
-    .m_modal--container {
-      // max-width: @t-panelWidth * 4;
-    }
   }
 
   &.typeOfModal-LargeAndNoScroll {
@@ -198,6 +202,7 @@
         }
       }
       .m_modal--sidebar {
+        border-radius: var(--button-radius);
         #app:not(.is--wide) & {
           // margin-top: 50vh;
           margin-bottom: 3em;
@@ -319,7 +324,8 @@
       .margin-sides-medium;
 
       > label ~ div {
-        .padding-small;
+        .padding-verysmall;
+        // .padding-bottom-veryverysmall;
         border: 1px solid @c-gris_clair;
         border-radius: 4px;
 
@@ -368,6 +374,8 @@
 // if no preview, then sidebar takes the whole width
 
 .m_modal--preview {
+  border-radius: var(--button-radius) 0 0 var(--button-radius);
+
   .mediaContainer {
     height: 100%;
     overflow: hidden;

@@ -141,7 +141,9 @@ export default {
     MediaPublication,
   },
   data() {
-    return {};
+    return {
+      reply_currently_active: false,
+    };
   },
   created() {},
   mounted() {

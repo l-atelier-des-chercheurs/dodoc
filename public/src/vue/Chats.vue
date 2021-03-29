@@ -1,7 +1,7 @@
 <template>
   <div class="m_chatsview">
     <div class="m_actionbar">
-      <div class="m_actionbar--buttonBar"></div>
+      <!-- <div class="m_actionbar--buttonBar"></div> -->
       <div class="m_actionbar--text">{{ $t("channels_instructions") }}</div>
     </div>
 
@@ -36,7 +36,7 @@
           </template>
         </div>
 
-        <div class="m_actionbar" style="margin-left: 0px; margin-right: 0px;">
+        <div class="m_actionbar" style="margin-left: 0px; margin-right: 0px">
           <div>
             <div class="m_actionbar--text">
               {{ $t("showing") }}

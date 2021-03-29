@@ -144,6 +144,85 @@ module.exports = (function () {
       fr: "Direct",
       en: "Live",
     },
+    lines_angle: {
+      fr: "Angle des lignes",
+      en: "Lines angle",
+    },
+    effects: {
+      fr: "Effets",
+      en: "Effects",
+    },
+    enable_effects: {
+      fr: "Activer les effets",
+      en: "Enable effects",
+    },
+    pick_color_in_video: {
+      fr: "Choisir la couleur dans la vidéo",
+      en: "Pick color in the video",
+    },
+    "click_in_video…": {
+      fr: "Cliquez dans la vidéo…",
+      en: "Click in the video…",
+    },
+    similarity: {
+      fr: "Similarité",
+      en: "Similarity",
+    },
+    smoothness: {
+      fr: "Lissage",
+      en: "Smoothness",
+    },
+    spill: {
+      fr: "Débord",
+      en: "Spill",
+    },
+    replace_color_with: {
+      fr: "Remplacer par",
+      en: "Replace with",
+    },
+    use_own_risk: {
+      fr:
+        "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
+      en: "Use at your own risk: medias can become invisible in some cases.",
+    },
+
+    chroma_key: {
+      fr: "Incrustation (fond vert)",
+      en: "Chroma key (green screen)",
+    },
+    flip_horizontally: {
+      fr: "Retourner horizontallement",
+      en: "Flip horizontally",
+    },
+    flip_vertically: {
+      fr: "Retourner verticallement",
+      en: "Flip vertically",
+    },
+    brightness: {
+      fr: "Luminosité",
+      en: "Brightness",
+    },
+    contrast: {
+      fr: "Contraste",
+      en: "Constrast",
+    },
+    hue: {
+      fr: "Teinte",
+      en: "Hue",
+    },
+    saturation: {
+      fr: "Saturation",
+      en: "Saturation",
+    },
+    lightness: {
+      fr: "Clarté",
+      en: "Lightness",
+    },
+    dotscreen: {
+      fr: "Noir et blanc (tramé)",
+      en: "Black and white (halftone)",
+    },
+
     no_content_to_show: {
       fr: "Aucun contenu à afficher",
       en: "No content to show",
@@ -699,9 +778,21 @@ module.exports = (function () {
       fr: "PDF (toutes les pages)",
       en: "PDF (all pages)",
     },
+    multipage_pdf_instructions: {
+      fr:
+        "Un PDF peut être imprimé ou partagé par mail mais les médias ne seront pas interactifs (vidéos et enregistrements sonore impossible à lire).",
+      en:
+        "A PDF can be printed or sent in an email but embed files (audio, video, source files) will not be playable or downloadable.",
+    },
     singlepage_image: {
       fr: "Image (une seule page)",
       en: "Image (single page)",
+    },
+    singlepage_image_instructions: {
+      fr:
+        "L’image exportée pourra être téléchargée ou utilisée dans une autre recette (écran-titre dans un montage vidéo, image associée à un son pour faire une vidéo, etc.).",
+      en:
+        "The image can be downloaded or used in another recipe (title screen in a video montage, image associated with a sound to make a new video, etc.).",
     },
     add_to_project: {
       fr: "Ajouter au projet&nbsp;:",
@@ -770,14 +861,7 @@ module.exports = (function () {
       fr: "Type de calque",
       en: "Layer type",
     },
-    lines_angle: {
-      fr: "Angle des lignes",
-      en: "Lines angle",
-    },
-    brightness: {
-      fr: "Luminosité",
-      en: "Brightness",
-    },
+
     lines_density: {
       fr: "Densité de lignes",
       en: "Lines density",
@@ -978,6 +1062,10 @@ module.exports = (function () {
       fr: "Épaisseur du contour",
       en: "Stroke width",
     },
+    choose_from_projects: {
+      fr: "Choisir dans les projets",
+      en: "Choose from projects",
+    },
     adjust: {
       fr: "Ajuster",
       en: "Adjust",
@@ -1084,6 +1172,15 @@ module.exports = (function () {
     destination_document: {
       fr: "Document de destination",
     },
+    make_a_document: {
+      fr: "Fabriquer un document",
+      en: "Make a document",
+    },
+    make_a_video: {
+      fr: "Fabriquer une vidéo",
+      en: "Make a video",
+    },
+
     search: {
       fr: "Rechercher",
       en: "Search",
@@ -1095,6 +1192,10 @@ module.exports = (function () {
       en: "Search by project name",
       oc: "Cercar per nom de projècte",
       de: "Suche nach Projektname",
+    },
+    author_name_to_find: {
+      fr: "Rechercher par nom d’auteur",
+      en: "Search by author name",
     },
     recipe_name_to_find: {
       fr: "Rechercher par nom de recette",
@@ -1163,7 +1264,7 @@ module.exports = (function () {
     },
     add_multiple_videos_files: {
       fr:
-        "Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> en cliquant sur la flèche verte. Les vidéos seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.",
+        "Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> ou <b>image</b> en cliquant sur la flèche verte. Les médias seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.",
       en:
         "Add multiple <b>videos</b> or <b>images</b> from a project to create a new video.",
       nl:
@@ -1197,8 +1298,8 @@ module.exports = (function () {
       de: "Stil",
     },
     show_recipes_for_project_first: {
-      fr: "Afficher en premier les recettes liées au projet",
-      en: "Show recipes attached to this project first",
+      fr: "Afficher uniquement les recettes liées au projet",
+      en: "Show only recipes attached to this project",
     },
     css: {
       fr: "css",
@@ -1917,8 +2018,8 @@ module.exports = (function () {
       de: "Importieren einer Bilddatei",
     },
     or_choose_from_image_medias: {
-      fr: "Ou choisir un média image",
-      en: "Or choose from image medias",
+      fr: "Ou choisir un média image dans un projet",
+      en: "Or choose from image medias in a project",
       oc: "O causir un mèdia imatge",
       de: "Oder ein Bildmedium auswählen",
     },
@@ -2057,9 +2158,9 @@ module.exports = (function () {
       oc: "Reglatges",
       de: "Einstellungen",
     },
-    page_settings: {
-      fr: "Réglages de la page",
-      en: "Page settings",
+    pages_settings: {
+      fr: "Réglages des pages",
+      en: "Pages settings",
     },
     stopmotion_list: {
       fr: "Liste des animations",
@@ -2320,6 +2421,10 @@ module.exports = (function () {
       nl: "foto",
       oc: "fòto",
       de: "Foto",
+    },
+    photos: {
+      fr: "photos",
+      en: "pictures",
     },
     screen_capture: {
       fr: "Capture d’écran",
@@ -2876,9 +2981,9 @@ module.exports = (function () {
     },
     get_pdf: {
       fr:
-        "Pour récupérer un PDF de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
+        "Pour récupérer un PDF ou une image de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
       en:
-        "To download a PDF of this recipe (for example, to print it), click here:",
+        "To download a PDF or an image of this recipe (for example, to print it), click here:",
       nl:
         "Als u een PDF van deze publicatie wilt maken (bijvoorbeeld om deze af te drukken), klik op de knop hieronder:",
       oc:
@@ -2948,9 +3053,26 @@ module.exports = (function () {
       oc: "Gabarit",
       de: "Vorlage",
     },
+    create_new_recipe: {
+      fr: "Créer une nouvelle Recette",
+      en: "Create new recipe",
+    },
+    show_recipes: {
+      fr: "Afficher les Recettes",
+      en: "Show all recipes",
+    },
+
     model: {
       fr: "Modèle",
       en: "Model",
+    },
+    "replies:": {
+      fr: "Réponses&nbsp:",
+      en: "Replies:",
+    },
+    replies_to: {
+      fr: "Réponses à",
+      en: "Replies to",
     },
     publi_is_model: {
       fr: "Cette recette est un modèle",
@@ -2966,6 +3088,10 @@ module.exports = (function () {
     recipes: {
       fr: "Recettes",
       en: "Recipes",
+    },
+    recipes_already_created: {
+      fr: "Recettes créées",
+      en: "Recipes created",
     },
     URL_to_share_for_replies: {
       fr:
@@ -3072,12 +3198,14 @@ module.exports = (function () {
       en: "List of stories created",
     },
     story_summary: {
-      fr: "",
-      en: "",
+      fr: "Créer un récit à exporter en PDF ou en page web.",
+      en: "Creates a one-column story to export as a printable PDF or website.",
     },
     story_instructions: {
-      fr: "",
-      en: "",
+      fr:
+        "Cette recette permet de créer un document enchainant les blocs les uns au dessus des autres.",
+      en:
+        "This recipe can be used to create a one-column responsive document.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make books, leaflets, etc.) or a webpage to upload online.",
     },
     carreau: {
       fr: "Carreau",
@@ -3129,7 +3257,7 @@ module.exports = (function () {
       fr:
         "Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.",
       en:
-        "This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.",
+        "This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, leaflets, newspapers, etc.) or a webpage to upload online.",
       nl:
         "Met dit recept kunt u een document met een exacte indeling en meerdere pagina’s maken.<br> Ondersteunde media: afbeeldingen, video’s, geluid en tekst.<br>Maak een afdrukbare PDF (om posters, flyers, kranten, enz. te maken) of een webpagina om te uploaden.",
       oc:

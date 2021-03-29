@@ -69,7 +69,7 @@
           {{ $t("portrait") }}
         </button>
       </label>
-      <template v-if="show_image">
+      <div class="border-left padding-sides-verysmall" v-if="show_image">
         <ImageSelect
           @newPreview="
             (value) => {
@@ -79,7 +79,7 @@
           :instructions="$t('select_portrait_image')"
           :load_from_projects_medias="true"
         />
-      </template>
+      </div>
     </div>
 
     <!-- NFC tag(s) -->

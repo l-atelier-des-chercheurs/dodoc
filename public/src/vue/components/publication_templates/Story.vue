@@ -53,11 +53,15 @@
                 publication.medias_slugs.length === 0
               )
             "
-            :is_currently_active="index_currently_visible === 0"
+            :is_currently_active="
+              el_index_currently_visible.insert_button === 0
+            "
             :slugPubliName="slugPubliName"
             :publi_is_model="publication.is_model"
             :read_only="read_only"
-            @addMedia="(values) => addMedia({ values, in_position: 'start' })"
+            @addMedia="
+              (values) => $emit('addMedia', { values, in_position: 'start' })
+            "
             @insertMedias="
               ({ metaFileNames }) =>
                 $emit('insertMediasInList', {
@@ -70,16 +74,25 @@
 
         <transition-group tag="div" name="StoryModules" appear :duration="700">
           <template v-for="(media, index) in medias_in_order">
+            <!-- <div :key="'index_' + media.metaFileName">
+              {{ el_index_currently_visible.insert_button }}
+              {{ media.metaFileName }}
+              {{ current_scroll }}
+            </div> -->
             <MediaPlaceholder
               v-if="media.type === 'placeholder' && model_for_this_publication"
               :key="`placeholder_${media.metaFileName}`"
+              :data-metafilename="media.metaFileName"
               :model_placeholder_media="media"
               :slugPubliName="slugPubliName"
               :publi_is_model="publication.is_model"
               :publication_is_submitted="publication_is_submitted"
               :preview_mode="preview_mode"
+              :is_currently_active="
+                el_index_currently_visible.media_placeholder ===
+                media.metaFileName
+              "
               :read_only="read_only || !can_edit_publi"
-              @addMedia="(values) => addMedia({ values })"
               @editPubliMedia="$emit('editPubliMedia', $event)"
             />
 
@@ -111,12 +124,17 @@
                   !model_for_this_publication
                 "
                 :slugPubliName="slugPubliName"
-                :is_currently_active="index_currently_visible === index + 1"
+                :is_currently_active="
+                  el_index_currently_visible.insert_button === index + 1
+                "
                 :publi_is_model="publication.is_model"
                 :read_only="read_only"
                 @addMedia="
                   (values) =>
-                    addMedia({ values, right_after_meta: media.metaFileName })
+                    $emit('addMedia', {
+                      values,
+                      right_after_meta: media.metaFileName,
+                    })
                 "
                 @insertMedias="
                   ({ metaFileNames }) =>
@@ -175,21 +193,15 @@ export default {
       show_export_modal: false,
       show_media_options: false,
       current_scroll: 0,
+
+      el_index_currently_visible: {
+        insert_button: 0,
+        media_placeholder: 0,
+      },
     };
   },
   created() {},
   mounted() {
-    this.$eventHub.$on("publication.addMedia", this.addMediaAtIndex);
-    this.$root.settings.current_publication.accepted_media_type = [
-      "image",
-      "video",
-      "audio",
-      "text",
-      "stl",
-      "document",
-      "other",
-    ];
-
     const getCurrentScroll = () => {
       if (
         this.$refs.publi &&
@@ -199,51 +211,68 @@ export default {
       setTimeout(getCurrentScroll, 400);
     };
     getCurrentScroll();
+
+    window.addEventListener("paste", this.handlePaste);
   },
   beforeDestroy() {
-    this.$eventHub.$off("publication.addMedia", this.addMediaAtIndex);
-    this.$root.settings.current_publication.accepted_media_type = [];
+    window.removeEventListener("paste", this.handlePaste);
   },
-  watch: {},
-  computed: {
-    publication_is_submitted() {
-      if (!!this.publication.date_submitted) return true;
-      return false;
-    },
-    index_currently_visible() {
-      this.current_scroll;
+  watch: {
+    current_scroll() {
       if (!this.$refs.publi) return 0;
 
       const insertMediaButtons = this.$refs.publi.querySelectorAll(
         ".m_insertMediaButton"
       );
+      const mediaPlaceholders = this.$refs.publi.querySelectorAll(
+        ".m_mediaPlaceholder"
+      );
 
       // if pane is scrolled all the way, we should adjust
-      var el = this.$refs.publi.firstElementChild;
-      var elHeight = el.offsetHeight;
-      elHeight += parseInt(
-        window.getComputedStyle(el).getPropertyValue("margin-top")
-      );
-      elHeight += parseInt(
-        window.getComputedStyle(el).getPropertyValue("margin-bottom")
-      );
+      let elHeight = this.getPaneHeight();
 
       if (
         this.current_scroll / (elHeight - this.$refs.publi.offsetHeight) >
         0.9
       ) {
-        return insertMediaButtons.length - 1;
+        if (insertMediaButtons.length > 0)
+          this.el_index_currently_visible.insert_button =
+            insertMediaButtons.length - 1;
+        if (mediaPlaceholders.length > 0)
+          this.el_index_currently_visible.media_placeholder =
+            mediaPlaceholders[
+              mediaPlaceholders.length - 1
+            ].dataset.metafilename;
       }
 
       let index = 0;
       for (const insert of insertMediaButtons) {
         // loop until we get insert.offsetTop > this.current_scroll;
-        if (insert.offsetTop > this.current_scroll + 80) break;
-
+        if (insert.offsetTop + insert.offsetHeight > this.current_scroll + 120)
+          break;
         index++;
       }
-      return index;
+      this.el_index_currently_visible.insert_button = index;
+
+      index = 0;
+      for (const insert of mediaPlaceholders) {
+        // loop until we get insert.offsetTop > this.current_scroll;
+        if (insert.offsetTop + insert.offsetHeight > this.current_scroll + 120)
+          break;
+        index++;
+      }
+
+      if (index >= 0 && mediaPlaceholders.length > 0)
+        this.el_index_currently_visible.media_placeholder =
+          mediaPlaceholders[index].dataset.metafilename;
     },
+  },
+  computed: {
+    publication_is_submitted() {
+      if (!!this.publication.date_submitted) return true;
+      return false;
+    },
+
     url_to_publi() {
       let url = this.$root.getURL();
       if (!url) return false;
@@ -252,33 +281,34 @@ export default {
     },
   },
   methods: {
+    getPaneHeight() {
+      let el = this.$refs.publi.firstElementChild;
+      let elHeight = el.offsetHeight;
+      elHeight += parseInt(
+        window.getComputedStyle(el).getPropertyValue("margin-top")
+      );
+      elHeight += parseInt(
+        window.getComputedStyle(el).getPropertyValue("margin-bottom")
+      );
+      return elHeight;
+    },
+
+    handlePaste(e) {
+      if (e.clipboardData.files && e.clipboardData.files.length > 0) {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(
+            `Story — METHODS • handlePaste: for files.length = ${e.clipboardData.files.length} with size ${e.clipboardData.files[0].size}`
+          );
+
+        this.$eventHub.$emit("importMedia.paste", e.clipboardData.files);
+      }
+    },
     toggleTransition({ position, metaFileName }) {
       if (this.$root.state.dev_mode === "debug")
         console.log(
           `METHODS • VideoPublication: toggleTransition for metaFileName = ${metaFileName} and position = ${position}`
         );
       this.$emit("editPubliMedia", { metaFileName, val });
-    },
-    addMediaAtIndex(d) {
-      if (this.$root.state.dev_mode === "debug")
-        console.log(
-          `Story • METHODS: addMediaAtIndex with this.index_currently_visible = ${this.index_currently_visible}`
-        );
-
-      if (this.index_currently_visible === 0) {
-        d.in_position = "start";
-      } else if (
-        this.index_currently_visible > 0 &&
-        this.index_currently_visible <= this.medias_in_order.length
-      ) {
-        d.right_after_meta = this.medias_in_order[
-          this.index_currently_visible - 1
-        ].metaFileName;
-      }
-      this.addMedia(d);
-    },
-    addMedia(d) {
-      this.$emit("addMedia", d);
     },
     mediaPosition(index) {
       if (index === 0) return "first";

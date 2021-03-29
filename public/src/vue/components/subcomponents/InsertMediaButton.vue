@@ -8,7 +8,7 @@
   >
     <div
       class="m_insertMediaButton--importHere"
-      v-if="!show_menu"
+      v-if="true || !show_menu"
       :class="{
         'is--active': is_currently_active && !show_drop_container,
       }"
@@ -99,6 +99,7 @@
                 type="file"
                 multiple
                 :id="`insert_file_${id}`"
+                ref="fileInput"
                 name="file"
                 @change="updateInputFiles($event)"
                 accept
@@ -250,16 +251,49 @@ export default {
   created() {},
   mounted() {
     document.addEventListener("dragover", this.ondragover);
+    this.$eventHub.$on("importMedia.paste", this.onPaste);
+    this.$eventHub.$on("publication.addMedia", this.addMediaFromProject);
 
     this.cancelDragOver = debounce(this.cancelDragOver, 300);
   },
   beforeDestroy() {
     document.removeEventListener("dragover", this.ondragover);
+    this.$eventHub.$off("importMedia.paste", this.onPaste);
+    this.$eventHub.$off("publication.addMedia", this.addMediaFromProject);
   },
   watch: {
     can_collapse: {
       handler() {
         if (!this.can_collapse) this.show_menu = true;
+      },
+      immediate: true,
+    },
+    is_currently_active: {
+      handler() {
+        if (this.is_currently_active) {
+          let accepted_modes = [
+            "image",
+            "video",
+            "audio",
+            "text",
+            "stl",
+            "document",
+            "other",
+          ];
+
+          if (this.modes_allowed !== "all") {
+            accepted_modes = Object.keys(this.modes_allowed).map((m) => {
+              if (m === "photo") return "image";
+              if (m === "stopmotion") return "video";
+              return m;
+            });
+          }
+
+          this.$nextTick(() => {
+            this.$root.settings.current_publication.accepted_media_type = accepted_modes;
+          });
+        }
+        this.$root.settings.current_publication.accepted_media_type = [];
       },
       immediate: true,
     },
@@ -283,6 +317,16 @@ export default {
       this.$emit("addMedia", val);
 
       this.show_menu = false;
+    },
+    onPaste(files) {
+      if (this.is_currently_active) {
+        if (!this.show_menu) this.show_menu = true;
+
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`Story • METHODS: onPaste`);
+
+        this.selected_files = Array.from(files);
+      }
     },
     createPlaceholderMedia() {
       this.$emit("addMedia", {
@@ -329,6 +373,16 @@ export default {
 
       this.enable_capture_mode = !this.enable_capture_mode;
     },
+    addMediaFromProject({ values }) {
+      // only enabled for is_currently_active
+      if (!this.is_currently_active) return;
+
+      if (this.$root.state.dev_mode === "debug")
+        console.log(`Story • METHODS: addMediaFromProject`);
+
+      this.$emit("addMedia", values);
+    },
+
     updateInputFiles($event) {
       if (this.$root.state.dev_mode === "debug")
         console.log(`InsertMediaButton • METHODS / updateInputFiles`);

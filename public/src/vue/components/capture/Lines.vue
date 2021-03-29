@@ -164,7 +164,6 @@ export default {
 
             const b = (R + R + R + B + G + G + G + G) >> 3;
 
-            // debugger;
             _pixel_array.push({
               x,
               y,

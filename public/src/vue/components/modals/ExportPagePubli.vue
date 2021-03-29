@@ -14,20 +14,50 @@
           <div class="margin-bottom-small">
             <div v-html="$t('get_pdf')" />
           </div>
-          <div class="margin-bottom-small">
+          <div class="">
             <label>{{ $t("type") }}</label>
-            <select v-model="export_type">
-              <option value="pdf">{{ $t("multipage_pdf") }}</option>
-              <option value="png">{{ $t("singlepage_image") }}</option>
-            </select>
+
+            <div class="">
+              <label for="pdf">
+                <div>
+                  <input
+                    type="radio"
+                    id="pdf"
+                    value="pdf"
+                    v-model="export_type"
+                  />
+                  <span>
+                    {{ $t("multipage_pdf") }}
+                  </span>
+                </div>
+              </label>
+            </div>
+
+            <div>
+              <label for="png">
+                <div>
+                  <input
+                    type="radio"
+                    id="png"
+                    value="png"
+                    v-model="export_type"
+                  />
+                  <span> {{ $t("singlepage_image") }} </span>
+                </div>
+              </label>
+            </div>
+            <small>
+              <template v-if="export_type === 'pdf'">
+                {{ $t("multipage_pdf_instructions") }}
+              </template>
+              <template v-if="export_type === 'png'">
+                {{ $t("singlepage_image_instructions") }}
+              </template>
+            </small>
           </div>
 
           <div
-            v-if="
-              export_type === 'png' &&
-              Array.isArray(publication.pages) &&
-              publication.pages.length > 1
-            "
+            v-if="export_type === 'png' && Array.isArray(publication.pages)"
             class="margin-bottom-small"
           >
             <label>{{ $t("page") }}</label>

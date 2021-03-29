@@ -115,6 +115,10 @@ button,
     .button-thin;
     background-color: @c-rouge;
     color: white;
+    &:hover,
+    &:active {
+      background-color: @c-rouge_fonce;
+    }
   }
   &.button-greenthin {
     .button-thin;
@@ -279,7 +283,8 @@ button,
     background-color: @c-gris;
   }
 
-  &.bg-noir {
+  &.bg-noir,
+  &.c-blanc {
     &:hover {
       background-color: @c-gris_fonce;
     }
@@ -1245,6 +1250,10 @@ input[type="file"] {
     background-color: @c-rouge;
     color: white;
     border: 0px solid currentColor;
+
+    &:hover {
+      background-color: var(--c-rouge_fonce);
+    }
   }
 
   // &.inputfile-2:focus + label,

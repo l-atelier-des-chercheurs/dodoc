@@ -73,12 +73,20 @@ module.exports = function (app) {
 
   // GET
   function showIndex(req, res) {
+    let projectFolder = req.query.folder ? req.query.folder : undefined;
+
     generatePageData(req).then(
       (pageData) => {
         // dev.logpackets(
         //   `Rendering index with data `,
         //   JSON.stringify(pageData, null, 4)
         // );
+        if (projectFolder) {
+          pageData.projectFolder = projectFolder;
+          pageData.type = "projects";
+        }
+        pageData.slugFolderName = undefined;
+
         res.render("index", pageData);
       },
       (err) => {
@@ -307,7 +315,16 @@ module.exports = function (app) {
       exporter
         .copyFolderContent({
           html,
-          folders_and_medias: pageData.folderAndMediaData,
+          all_medias: [
+            {
+              folders_and_medias: pageData.folderAndMediaData,
+              type: "projects",
+            },
+            {
+              folders_and_medias: pageData.publiAndMediaData,
+              type: "publications",
+            },
+          ],
           slugFolderName: slugPubliName,
         })
         .then(
@@ -501,19 +518,19 @@ module.exports = function (app) {
     let type = req.params.type;
     let slugFolderName = req.params.slugFolderName;
 
-    const isSocketAllowed = await isSocketIDAuthorized({
-      socketid: req.query.socketid,
-      type,
-      slugFolderName,
-    }).catch((err) => {
-      sockets.notify({
-        socketid: req.query.socketid,
-        localized_string: `action_not_allowed`,
-        not_localized_string: err.message,
-        type: "error",
-      });
-    });
-    if (!isSocketAllowed) return false;
+    // const isSocketAllowed = await isSocketIDAuthorized({
+    //   socketid: req.query.socketid,
+    //   type,
+    //   slugFolderName,
+    // }).catch((err) => {
+    //   sockets.notify({
+    //     socketid: req.query.socketid,
+    //     localized_string: `action_not_allowed`,
+    //     not_localized_string: err.message,
+    //     type: "error",
+    //   });
+    // });
+    // if (!isSocketAllowed) return false;
 
     importer
       .handleForm({ req, type, slugFolderName })

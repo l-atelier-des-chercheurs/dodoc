@@ -1029,10 +1029,12 @@ module.exports = (function () {
       `COMMON - sendMedias for type = ${type}, slugFolderName = ${slugFolderName}, metaFileName = ${metaFileName} and id = ${id}`
     );
 
-    let foldersData = await file.getFolder({ type, slugFolderName }).catch((err) => {
-      dev.error(`No folder found: ${err}`);
-      throw err;
-    });
+    let foldersData = await file
+      .getFolder({ type, slugFolderName })
+      .catch((err) => {
+        dev.error(`No folder found: ${err}`);
+        throw err;
+      });
 
     const list_metaFileName = await file.getMediaMetaNames({
       type,

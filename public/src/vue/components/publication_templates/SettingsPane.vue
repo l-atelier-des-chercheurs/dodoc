@@ -186,7 +186,7 @@ export default {
       new_height: 0,
       new_template: "",
       new_style: "",
-      new_gridstep: 0,
+      new_gridstep: 1,
       new_snap_to_grid: false,
       new_margin_left: 0,
       new_margin_top: 0,

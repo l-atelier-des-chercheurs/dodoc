@@ -2,7 +2,7 @@
   <Modal
     @close="$emit('close')"
     class="m_exportModal"
-    :typeOfModal="'ExportVideo'"
+    :typeOfModal="'EditMeta'"
   >
     <template slot="header">
       <span class>{{ $t("export_creation") }}</span>
@@ -13,21 +13,22 @@
         <div class>
           <div class="margin-bottom-small">{{ instructions }}</div>
 
-          <div class="margin-bottom-small">
+          <div class="margin-bottom-small" v-if="!is_rotation_effect">
             <label>{{ $t("quality") }}</label>
             <select v-model="resolution">
               <option
                 v-for="q in available_qualities"
                 :value="q.resolution"
                 :key="q.resolution.height"
-                >{{ q.label }}</option
               >
-              <option :value="'draft'" :key="'draft'"
-                >→ {{ $t("draft").toLowerCase() }}</option
-              >
-              <option :value="'custom'" :key="'custom'"
-                >↓ {{ $t("custom").toLowerCase() }}</option
-              >
+                {{ q.label }}
+              </option>
+              <option :value="'draft'" :key="'draft'">
+                → {{ $t("draft").toLowerCase() }}
+              </option>
+              <option :value="'custom'" :key="'custom'">
+                ↓ {{ $t("custom").toLowerCase() }}
+              </option>
             </select>
             <div v-if="resolution === 'draft'">
               <small>{{ $t("video_export_draft_instructions") }}</small>
@@ -38,9 +39,7 @@
               </small>
             </div>
             <div v-else class="label">
-              <span class="text-lc">
-                {{ resolution.height }}p
-              </span>
+              <span class="text-lc"> {{ resolution.height }}p </span>
             </div>
           </div>
 
@@ -219,6 +218,9 @@ export default {
           return true;
       }
       return false;
+    },
+    is_rotation_effect() {
+      return !!this.publication.effects.find((e) => e.type === "rotate");
     },
   },
   methods: {

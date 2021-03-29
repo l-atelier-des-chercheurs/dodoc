@@ -16,7 +16,9 @@
       }"
       :disabled="read_only"
       @click="toggleAuthorName(author_slug)"
-    >{{ $root.getAuthor(author_slug).name }}</button>
+    >
+      {{ $root.getAuthor(author_slug).name }}
+    </button>
     <button
       type="button"
       @click="show_all_authors = true"

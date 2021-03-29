@@ -347,7 +347,7 @@ let vm = new Vue({
         fav: false,
         type: "",
       },
-      opened_folder: false,
+      opened_project_folder: false,
     },
     lang: {
       available: lang_settings.available,
@@ -429,7 +429,10 @@ let vm = new Vue({
 
     // if a slugFolderName or a metaFileName is requested, load the content of that folder rightaway
     // we are probably in a webbrowser that accesses a subfolder or a media
-    if (this.store.request.type && this.store.request.slugFolderName) {
+    if (
+      this.store.request.projectFolder ||
+      (this.store.request.type && this.store.request.slugFolderName)
+    ) {
       this.$eventHub.$once("socketio.authentificated", () => {
         this.$socketio.listFolders({ type: this.store.request.type });
       });
@@ -437,9 +440,17 @@ let vm = new Vue({
       this.$eventHub.$once(
         `socketio.${this.store.request.type}.folders_listed`,
         () => {
-          if (this.store.request.type === "projects")
+          if (this.store.request.projectFolder)
+            this.openFolder(this.store.request.projectFolder);
+          if (
+            this.store.request.type === "projects" &&
+            this.store.request.slugFolderName
+          )
             this.openProject(this.store.request.slugFolderName);
-          if (this.store.request.type === "publications") {
+          if (
+            this.store.request.type === "publications" &&
+            this.store.request.slugFolderName
+          ) {
             this.settings.current_publication.slug = this.store.request.slugFolderName;
           }
         }
@@ -705,9 +716,7 @@ let vm = new Vue({
     current_chat() {
       this.updateClientInfo({
         looking_at_chat: {
-          slugFolderName: this.current_chat
-            ? this.current_chat.slugFolderName
-            : false,
+          slugFolderName: this.current_chat ? this.current_chat.slug : false,
         },
       });
     },
@@ -1461,6 +1470,22 @@ let vm = new Vue({
       }
 
       return false;
+    },
+    openFolder: function (slugFolderName) {
+      if (window.state.dev_mode === "debug")
+        console.log(`ROOT EVENT: openFolder: ${slugFolderName}`);
+      this.$root.settings.opened_project_folder = slugFolderName;
+
+      history.pushState(
+        { folder: slugFolderName },
+        slugFolderName,
+        "?folder=" + slugFolderName
+      );
+    },
+    closeFolder: function () {
+      this.$root.settings.opened_project_folder = false;
+
+      history.pushState({ folder: "" }, "", "/");
     },
     openProject: function (slugProjectName) {
       if (window.state.dev_mode === "debug")

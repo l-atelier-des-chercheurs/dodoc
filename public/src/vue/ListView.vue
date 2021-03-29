@@ -1,19 +1,19 @@
 <template>
   <div
     class="m_listview"
-    :class="{ 'is--folder': !!$root.settings.opened_folder }"
+    :class="{ 'is--folder': !!$root.settings.opened_project_folder }"
   >
     <main class="m_projects">
       <transition name="fade_fast" :duration="150">
         <div
           class="m_listview--openedFolderLabel"
-          v-if="!!$root.settings.opened_folder"
+          v-if="!!$root.settings.opened_project_folder"
         >
           <div>
             <button
               class="m_listview--openedFolderLabel--backButton"
               type="button"
-              @click="$root.settings.opened_folder = false"
+              @click="$root.closeFolder()"
             >
               ‹
               <span class>{{ $t("back") }}</span>
@@ -27,9 +27,9 @@
               <!-- <button
               type="button"
               class="button-nostyle"
-              @click="$root.settings.opened_folder = false"
+              @click="$root.settings.opened_project_folder = false"
               >-->
-              {{ $root.settings.opened_folder }}
+              {{ $root.settings.opened_project_folder }}
               <!-- &nbsp;×
               </button>-->
             </label>
@@ -306,7 +306,7 @@
                 <button
                   type="button"
                   class="button-nostyle"
-                  @click="toggleFolder(item.name)"
+                  @click="$root.openFolder(item.name)"
                 >
                   {{ $t("open") }}
                 </button>
@@ -542,9 +542,9 @@ export default {
 
         // if folder is opened and project is not part of it
         if (
-          !!this.$root.settings.opened_folder &&
+          !!this.$root.settings.opened_project_folder &&
           (!project.hasOwnProperty("folder") ||
-            project.folder !== this.$root.settings.opened_folder)
+            project.folder !== this.$root.settings.opened_project_folder)
         ) {
           continue;
         }
@@ -697,7 +697,7 @@ export default {
           if (
             !!name &&
             name !== "znot-groupped" &&
-            !this.$root.settings.opened_folder
+            !this.$root.settings.opened_project_folder
           ) {
             acc.push({
               type: "folder",
@@ -886,12 +886,6 @@ export default {
       return this.selected_projects.some(
         (m) => m.slugFolderName === slugFolderName
       );
-    },
-
-    toggleFolder(folder_name) {
-      if (this.$root.settings.opened_folder === folder_name)
-        this.$root.settings.opened_folder = false;
-      else this.$root.settings.opened_folder = folder_name;
     },
 
     urlToPortrait(slug, filename) {

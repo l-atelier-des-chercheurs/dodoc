@@ -414,7 +414,8 @@ module.exports = (function () {
 
     const slugFolderName = Object.keys(folders_and_medias)[0];
 
-    if(!(await canSeeFolder(
+    if (
+      !(await canSeeFolder(
         socket,
         folders_and_medias[slugFolderName],
         type
@@ -540,15 +541,22 @@ module.exports = (function () {
       return true;
     }
 
-    if (!!pwd && String(pwd) === String(global.session_password)) {
+    if (!pwd) {
+      // no session password
+      dev.logverbose(`Session password is set but no password were submitted`);
+      return false;
+    }
+
+    if (String(pwd) === String(global.session_password)) {
       // has session password, is good
       dev.logverbose(`Has session password, is valid`);
       return true;
-    } else {
-      // has session password, is wrong
-      dev.logverbose(`Expected pwd: ${global.session_password}`);
-      dev.logverbose(`Submitted pwd: ${pwd}`);
     }
+
+    // has session password, is wrong
+    dev.logverbose(`Submitted session pwd not valid.`);
+    dev.logverbose(`Expected pwd: ${global.session_password}`);
+    dev.logverbose(`Submitted pwd: ${pwd}`);
     return false;
   }
 
@@ -608,7 +616,12 @@ module.exports = (function () {
     let is_admin = false;
 
     // get all session authors
-    const all_authors_informations = await file.getFolder({ type: "authors" });
+    const all_authors_informations = await file
+      .getFolder({ type: "authors" })
+      .catch((err) => {
+        // error : no authors to check
+        return false;
+      });
     const admins_slugs = Object.values(all_authors_informations).reduce(
       (acc, a) => {
         if (a.role === "admin") acc.push(a.slugFolderName);
