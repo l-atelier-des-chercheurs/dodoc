@@ -297,7 +297,7 @@ export default {
       if (e.clipboardData.files && e.clipboardData.files.length > 0) {
         if (this.$root.state.dev_mode === "debug")
           console.log(
-            `Story — METHODS • handlePaste: for files.length = ${e.clipboardData.files.length}`
+            `Story — METHODS • handlePaste: for files.length = ${e.clipboardData.files.length} with size ${e.clipboardData.files[0].size}`
           );
 
         this.$eventHub.$emit("importMedia.paste", e.clipboardData.files);
