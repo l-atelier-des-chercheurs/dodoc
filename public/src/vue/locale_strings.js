@@ -2871,13 +2871,6 @@ module.exports = (function () {
       oc: "Exportar",
       de: "Exportieren",
     },
-    export_as_pdf: {
-      fr: "Export PDF",
-      en: "Export as PDF",
-      nl: "Exporteren als PDF",
-      oc: "Expòrt PDF",
-      de: "Im PDF-Format exportieren",
-    },
     new_window: {
       fr: "Nouvelle fenêtre",
       en: "New Window",
@@ -2981,7 +2974,7 @@ module.exports = (function () {
     },
     get_pdf: {
       fr:
-        "Pour récupérer un PDF ou une image de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
+        "Pour récupérer un document PDF ou une image de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
       en:
         "To download a PDF or an image of this recipe (for example, to print it), click here:",
       nl:
