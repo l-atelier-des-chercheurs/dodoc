@@ -74,7 +74,7 @@ import qrcode from "@xkeshi/vue-qrcode";
 
 export default {
   props: {
-    slugFolderName: String,
+    slugFolderName: [Boolean, String],
     media: Object,
     type: {
       type: String,

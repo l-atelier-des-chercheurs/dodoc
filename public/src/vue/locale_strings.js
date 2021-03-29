@@ -778,9 +778,21 @@ module.exports = (function () {
       fr: "PDF (toutes les pages)",
       en: "PDF (all pages)",
     },
+    multipage_pdf_instructions: {
+      fr:
+        "Un PDF peut être imprimé ou partagé par mail mais les médias ne seront pas interactifs (vidéos et enregistrements sonore impossible à lire).",
+      en:
+        "A PDF can be printed or sent in an email but embed files (audio, video, source files) will not be playable or downloadable.",
+    },
     singlepage_image: {
       fr: "Image (une seule page)",
       en: "Image (single page)",
+    },
+    singlepage_image_instructions: {
+      fr:
+        "L’image exportée pourra être téléchargée ou utilisée dans une autre recette (écran-titre dans un montage vidéo, image associée à un son pour faire une vidéo, etc.).",
+      en:
+        "The image can be downloaded or used in another recipe (title screen in a video montage, image associated with a sound to make a new video, etc.).",
     },
     add_to_project: {
       fr: "Ajouter au projet&nbsp;:",
@@ -2969,9 +2981,9 @@ module.exports = (function () {
     },
     get_pdf: {
       fr:
-        "Pour récupérer un PDF de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
+        "Pour récupérer un PDF ou une image de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
       en:
-        "To download a PDF of this recipe (for example, to print it), click here:",
+        "To download a PDF or an image of this recipe (for example, to print it), click here:",
       nl:
         "Als u een PDF van deze publicatie wilt maken (bijvoorbeeld om deze af te drukken), klik op de knop hieronder:",
       oc:

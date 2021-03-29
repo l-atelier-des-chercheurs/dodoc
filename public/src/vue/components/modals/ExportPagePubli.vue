@@ -32,6 +32,7 @@
                 </div>
               </label>
             </div>
+
             <div>
               <label for="png">
                 <div>
@@ -45,14 +46,18 @@
                 </div>
               </label>
             </div>
+            <small>
+              <template v-if="export_type === 'pdf'">
+                {{ $t("multipage_pdf_instructions") }}
+              </template>
+              <template v-if="export_type === 'png'">
+                {{ $t("singlepage_image_instructions") }}
+              </template>
+            </small>
           </div>
 
           <div
-            v-if="
-              export_type === 'png' &&
-              Array.isArray(publication.pages) &&
-              publication.pages.length > 1
-            "
+            v-if="export_type === 'png' && Array.isArray(publication.pages)"
             class="margin-bottom-small"
           >
             <label>{{ $t("page") }}</label>

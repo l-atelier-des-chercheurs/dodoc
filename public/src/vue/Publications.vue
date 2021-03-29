@@ -1074,7 +1074,6 @@ export default {
   z-index: 100;
   // padding-left: var(--spacing);
   // padding-right: var(--spacing);
-  background-color: white;
   border: none;
 
   label {
@@ -1082,7 +1081,7 @@ export default {
   }
 
   > * {
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
     // border-top: 2px solid var(--c-gris-clair);
     // border-bottom: 0;
   }
