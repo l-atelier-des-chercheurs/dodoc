@@ -1042,28 +1042,26 @@ export default {
   }
 }
 
-.m_searchProject {
-  .button-triangle {
-    position: relative;
+.button-triangle {
+  position: relative;
 
-    &.is--active {
-      // color: white;
-      // color: var(--c-rouge_clair);
-      // text-shadow: 0px 0px 2px var(--c-rouge_clair);
-      // -webkit-text-stroke: 0.5px var(--c-rouge_clair);
+  &.is--active {
+    // color: white;
+    // color: var(--c-rouge_clair);
+    // text-shadow: 0px 0px 2px var(--c-rouge_clair);
+    // -webkit-text-stroke: 0.5px var(--c-rouge_clair);
 
-      &::before {
-        content: "";
-        position: absolute;
-        z-index: -1;
-        left: calc(var(--spacing) / -6);
-        right: calc(var(--spacing) / -8);
-        // width: 100%;
-        top: calc(var(--spacing) / 4);
-        bottom: calc(var(--spacing) / 4);
+    &::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      left: calc(var(--spacing) / -6);
+      right: calc(var(--spacing) / -8);
+      // width: 100%;
+      top: calc(var(--spacing) / 4);
+      bottom: calc(var(--spacing) / 4);
 
-        background: white;
-      }
+      background: white;
     }
   }
 }
