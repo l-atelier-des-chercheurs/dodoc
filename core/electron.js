@@ -90,10 +90,7 @@ module.exports = (function () {
         titleBarStyle: "hidden",
         show: true,
         title: "do•doc",
-        icon: path.join(
-          global.appRoot,
-          os.platform() === "win32" ? "build/icon.ico" : "build/icon.png"
-        ),
+        icon: path.join(global.appRoot, "build", "icon.png"),
 
         webPreferences: {
           allowRunningInsecureContent: true,
