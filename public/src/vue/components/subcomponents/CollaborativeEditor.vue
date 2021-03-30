@@ -7,6 +7,7 @@
       'is--read_only': read_only,
       'is--focused': is_focused,
       'has--noToolbar': specific_toolbar && specific_toolbar.length === 0,
+      'has--multiCursor': show_cursors,
     }"
   >
     <!-- connection_state : {{ connection_state }}
