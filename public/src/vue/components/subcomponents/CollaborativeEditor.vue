@@ -54,6 +54,8 @@ ShareDB.types.register(require("rich-text").type);
 
 var fonts = [
   "",
+  "Luciole",
+  "OpenDyslexic",
   "Alegreya",
   "Roboto Mono",
   "Roboto",
@@ -67,7 +69,6 @@ var fonts = [
   "Archivo Black",
   "Spectral",
   "Krub",
-  "OpenDyslexic",
 ];
 var FontAttributor = Quill.import("attributors/style/font");
 FontAttributor.whitelist = fonts;
