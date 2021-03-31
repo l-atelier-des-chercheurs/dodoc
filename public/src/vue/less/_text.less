@@ -1564,7 +1564,8 @@ html[lang="fr"] .ql-tooltip[data-mode="link"]::before {
 
   &.has--multiCursor {
     ::selection {
-      background: transparent;
+      // problamtic : double clicking a word doesnt highlight it with quill-cursor, and captions in stories dont have highlight
+      // background: transparent;
     }
   }
 
