@@ -122,15 +122,18 @@
                 <span
                   :class="{
                     'c-rouge bg-blanc':
-                      filtered_publications.length !== publications.length,
+                      sorted_publications.length !== publications.length,
                   }"
                 >
-                  &nbsp;{{ filtered_publications.length }}
                   <template
-                    v-if="filtered_publications.length === publications.length"
-                    >{{ $t("recipes") }}</template
+                    v-if="sorted_publications.length === publications.length"
                   >
+                    {{ sorted_publications.length }}
+                    {{ $t("recipes") }}
+                  </template>
                   <template v-else>
+                    &nbsp;
+                    {{ sorted_publications.length }}
                     {{ $t("recipes_of") }}
                     {{ Object.keys(publications).length }}
                   </template>
@@ -154,10 +157,19 @@
                   v-if="show_filters"
                   :allKeywords="publis_keywords"
                   :allAuthors="publis_authors"
+                  :allProjects="projects_with_recipes_linked"
                   :keywordFilter="$root.settings.publication_filter.keyword"
                   :authorFilter="$root.settings.publication_filter.author"
-                  @setKeywordFilter="(a) => $root.setPubliKeywordFilter(a)"
-                  @setAuthorFilter="(a) => $root.setPubliAuthorFilter(a)"
+                  :projectFilter="$root.settings.publication_filter.project"
+                  @setKeywordFilter="
+                    toggleFilter({ type: 'keyword', value: $event })
+                  "
+                  @setAuthorFilter="
+                    toggleFilter({ type: 'author', value: $event })
+                  "
+                  @setProjectFilter="
+                    toggleFilter({ type: 'project', value: $event })
+                  "
                 />
               </div>
               <div class="m_searchProject">
@@ -230,7 +242,9 @@
             </template>
           </div>
         </div>
-        <div class="flex-wrap flex-vertically-centered">
+        <div
+          class="flex-wrap flex-horizontally-centered flex-vertically-centered"
+        >
           <div class="m_displayMyContent" v-if="$root.current_author">
             <span>{{ $t("show") }}</span>
             <select v-model="show_only_my_content">
@@ -242,7 +256,8 @@
               </option>
             </select>
           </div>
-          <div class="m_publiFilter">
+
+          <!-- <div class="m_publiFilter">
             <label>{{ $t("show_recipes_for_project_first") }}</label>
             <select v-model="slugProjectName_to_filter">
               <option key="'all'" value>
@@ -261,12 +276,38 @@
                 }})
               </option>
             </select>
-          </div>
+          </div> -->
         </div>
       </div>
+      <div class="_filterRecipeByTemplate">
+        <template v-for="{ key, label, recipes } in recipe_types">
+          <!-- {{ $t(label) }} -->
+          <button
+            type="button"
+            v-for="{ key, icon, label } in recipes"
+            :key="key"
+            class="bg-bleuvert _filterRecipeByTemplate--recipe"
+            :content="$t(key)"
+            v-tippy="{
+              placement: 'bottom',
+              delay: [600, 0],
+            }"
+            :class="{
+              'is--active': $root.settings.publication_filter.template === key,
+            }"
+            @click="toggleFilter({ type: 'template', value: key })"
+          >
+            <div class="_filterRecipeByTemplate--recipe--icon" v-html="icon" />
+            <label>{{ label }}</label>
+            <small class="_filterRecipeByTemplate--recipe--text">{{
+              recipesWithTemplate(key).length
+            }}</small>
+          </button>
+        </template>
+      </div>
 
-      <div class="m_mealList" v-if="sorted_publications.length > 0">
-        <table>
+      <div class="m_mealList">
+        <table v-if="sorted_publications.length > 0">
           <thead>
             <tr>
               <th colspan="1">
@@ -337,16 +378,21 @@
             </template>
           </template>
         </table>
-
-        <!-- <div class="m_repices2--recipe--name">
-          {{ recipe.name }}
+        <div
+          class="_removeFilters"
+          v-if="
+            publications.length > 0 &&
+            sorted_publications.length !== publications.length
+          "
+        >
+          <button
+            type="button"
+            class="buttonLink c-blanc"
+            @click="removeFilters"
+          >
+            {{ $t("remove_filters_and_show_all") }}
+          </button>
         </div>
-        <div class="m_repices2--recipe--name">
-          {{ recipe.name }}
-        </div>
-        <div class="m_repices2--recipe--name">
-          {{ recipe.name }}
-        </div> -->
       </div>
 
       <!-- <div class="m_publicationItems">
@@ -774,10 +820,14 @@ export default {
 
   watch: {
     "$root.do_navigation.current_slugProjectName": function () {
-      this.slugProjectName_to_filter = !!this.$root.do_navigation
-        .current_slugProjectName
-        ? this.$root.do_navigation.current_slugProjectName
-        : "";
+      if (!!this.$root.do_navigation.current_slugProjectName)
+        this.show_filters = true;
+      this.toggleFilter({
+        type: "project",
+        value: !!this.$root.do_navigation.current_slugProjectName
+          ? this.$root.do_navigation.current_slugProjectName
+          : "",
+      });
     },
 
     show_filters: function () {
@@ -785,6 +835,7 @@ export default {
         this.$root.settings.publication_filter.keyword = "";
         this.$root.settings.publication_filter.author = "";
         this.$root.settings.publication_filter.name = "";
+        this.$root.settings.publication_filter.project = "";
         this.debounce_search_publication_name = "";
       }
     },
@@ -848,6 +899,25 @@ export default {
               )
           )
             continue;
+        }
+
+        if (this.$root.settings.publication_filter.template !== "") {
+          if (
+            !publication.template ||
+            publication.template !==
+              this.$root.settings.publication_filter.template
+          )
+            continue;
+        }
+
+        if (this.$root.settings.publication_filter.project !== "") {
+          if (
+            !publication.attached_to_project ||
+            publication.attached_to_project !==
+              this.$root.settings.publication_filter.project
+          ) {
+            continue;
+          }
         }
 
         if (this.show_only_my_content && this.$root.current_author) {
@@ -950,7 +1020,7 @@ export default {
       return _sorted_publications;
     },
     organized_recipes() {
-      const recipes = this.filtered_publications;
+      const recipes = this.sorted_publications;
 
       let recipes_with_models = recipes
         // display replies in list
@@ -974,26 +1044,39 @@ export default {
 
       return recipes_with_models;
     },
-    filtered_publications() {
-      if (this.slugProjectName_to_filter)
-        if (
-          this.recipesForThisProject(this.slugProjectName_to_filter).length ===
-          0
-        )
-          this.slugProjectName_to_filter = "";
-        else return this.recipesForThisProject(this.slugProjectName_to_filter);
-      return this.sorted_publications;
+    projects_with_recipes_linked() {
+      return this.$root.all_projects.filter((p) => {
+        const _linked_recipes = this.recipesForThisProject(p.slugFolderName);
+        return _linked_recipes && _linked_recipes.length > 0;
+      });
     },
   },
   methods: {
     recipesForThisProject(slugProjectName) {
-      return this.sorted_publications.filter(
+      if (!this.publications || this.publications.length === 0) return [];
+
+      return this.publications.filter(
         (r) => r.attached_to_project === slugProjectName
+      );
+    },
+    recipesWithTemplate(template_key) {
+      // if (!this.publications || this.publications.length === 0) return [];
+      return this.sorted_publications.filter(
+        (r) => r.template === template_key
       );
     },
     toggleReplies($event, slugFolderName) {
       if ($event) this.show_replies_for = slugFolderName;
       else this.show_replies_for = false;
+    },
+    removeFilters() {
+      this.$root.settings.publication_filter.keyword = "";
+      this.$root.settings.publication_filter.author = "";
+      this.$root.settings.publication_filter.name = "";
+      this.$root.settings.publication_filter.project = "";
+      this.$root.settings.publication_filter.template = "";
+      this.debounce_search_publication_name = "";
+      this.show_only_my_content = false;
     },
     allRecipesOfThisTemplate(template_key) {
       const filtered_recipes = this.sorted_publications.filter(
@@ -1003,6 +1086,10 @@ export default {
       let sorted_recipes = this.$_.sortBy(filtered_recipes, "date_created");
       sorted_recipes = sorted_recipes.reverse();
       return sorted_recipes;
+    },
+    toggleFilter({ type, value }) {
+      this.$root.settings.publication_filter[type] =
+        this.$root.settings.publication_filter[type] === value ? "" : value;
     },
 
     openCreatePublicationModal(recipe_key) {
@@ -1070,8 +1157,6 @@ export default {
   position: sticky;
   top: 0;
   z-index: 100;
-  // padding-left: var(--spacing);
-  // padding-right: var(--spacing);
   border: none;
   background-color: white;
 
@@ -1080,9 +1165,75 @@ export default {
   }
 
   > * {
+    padding-left: calc(var(--spacing) / 1);
+    padding-right: calc(var(--spacing) / 1);
     // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
     // border-top: 2px solid var(--c-gris-clair);
     // border-bottom: 0;
   }
+}
+
+._removeFilters {
+  border: 2px dashed var(--c-bleuvert);
+  background-color: var(--c-bleuvert_fonce);
+  text-align: center;
+  // background-color: var(--c-bleuvert_fonce);
+
+  table + & {
+    border-top: none;
+  }
+
+  button {
+  }
+}
+
+._filterRecipeByTemplate {
+  display: flex;
+  flex-flow: row wrap;
+  margin-top: calc(var(--spacing) / 1);
+  margin-left: calc(var(--spacing) / 1);
+  margin-right: calc(var(--spacing) / 4);
+  // margin-bottom: calc(var(--spacing) / -4);
+}
+._filterRecipeByTemplate--recipe {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  margin: 0;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  margin-right: calc(var(--spacing) / 4);
+  margin-bottom: calc(var(--spacing) / 4);
+
+  &:hover {
+    border: 2px solid var(--c-noir);
+    background-color: var(--c-bleuvert);
+  }
+
+  &.is--active {
+    background-color: var(--c-noir);
+  }
+}
+._filterRecipeByTemplate--recipe--icon {
+  // padding: calc(var(--spacing) / 4);
+  padding: 0 calc(var(--spacing) / 8);
+
+  // svg {
+  //   width: 2em;
+  //   height: 2em;
+  // }
+}
+._filterRecipeByTemplate--recipe--text {
+  color: white;
+  font-weight: bold;
+  padding: 0 calc(var(--spacing) / 8);
+}
+</style>
+<style lang="scss">
+._filterRecipeByTemplate--recipe--icon svg {
+  width: 1.5em;
+  height: 1.5em;
 }
 </style>

@@ -277,7 +277,7 @@ export default {
       if (this.$root.state.dev_mode === "debug")
         console.log(`METHODS • App: splitpanes resized`);
 
-      this.resize();
+      this.resize($event);
 
       if (this.panels_width.docPane >= 95) {
         this.panels_width.docPane = 100;

@@ -1823,6 +1823,10 @@ module.exports = (function () {
       oc: "Filtre de mèdias",
       de: "Medienfilter",
     },
+    remove_filters_and_show_all: {
+      fr: "Supprimer tous les filtres pour afficher toute la liste",
+      en: "Remove all filters to show everything",
+    },
     no_projects_yet: {
       fr:
         "Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc !",
