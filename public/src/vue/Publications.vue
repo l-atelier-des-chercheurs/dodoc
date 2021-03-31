@@ -299,9 +299,9 @@
           >
             <div class="_filterRecipeByTemplate--recipe--icon" v-html="icon" />
             <label>{{ label }}</label>
-            <small class="_filterRecipeByTemplate--recipe--text">{{
+            <!-- <small class="_filterRecipeByTemplate--recipe--text">{{
               recipesWithTemplate(key).length
-            }}</small>
+            }}</small> -->
           </button>
         </template>
       </div>
@@ -1218,7 +1218,7 @@ export default {
 }
 ._filterRecipeByTemplate--recipe--icon {
   // padding: calc(var(--spacing) / 4);
-  padding: 0 calc(var(--spacing) / 8);
+  // padding: 0 calc(var(--spacing) / 16);
 
   // svg {
   //   width: 2em;
@@ -1233,7 +1233,7 @@ export default {
 </style>
 <style lang="scss">
 ._filterRecipeByTemplate--recipe--icon svg {
-  width: 1.5em;
-  height: 1.5em;
+  width: 2em;
+  height: 2em;
 }
 </style>
