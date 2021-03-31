@@ -356,20 +356,20 @@ export default {
       this.selected_files = [];
     },
     toggleCapture() {
-      if (this.is_iOS_device) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(8000)
-          .error(this.$t("notifications.ios_not_compatible_with_capture"));
-        setTimeout(() => {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(8000)
-            .success(this.$t("notifications.instead_import_with_this_button"));
-        }, 1500);
+      // if (this.is_iOS_device) {
+      //   this.$alertify
+      //     .closeLogOnClick(true)
+      //     .delay(8000)
+      //     .error(this.$t("notifications.ios_not_compatible_with_capture"));
+      //   setTimeout(() => {
+      //     this.$alertify
+      //       .closeLogOnClick(true)
+      //       .delay(8000)
+      //       .success(this.$t("notifications.instead_import_with_this_button"));
+      //   }, 1500);
 
-        return;
-      }
+      //   return;
+      // }
 
       this.enable_capture_mode = !this.enable_capture_mode;
     },
