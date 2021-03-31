@@ -322,11 +322,10 @@ export default {
       if (this.is_currently_active) {
         if (!this.show_menu) this.show_menu = true;
 
-        // this.$refs.fileInput.files = files;
-        this.$nextTick(() => {
-          this.selected_files = files;
-          debugger;
-        });
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`Story • METHODS: onPaste`);
+
+        this.selected_files = Array.from(files);
       }
     },
     createPlaceholderMedia() {

@@ -15,6 +15,8 @@ More information:
 do•doc is free and open source.
 The code is licensed under AGPLv3, and the graphic assets (icons, pictograms, user interface) are under a CC-BY-SA license.
 
+The font Luciole is licensed under the Creative Commons Attribution 4.0 and embedded with permission.
+
 # Install do•doc
 
 ### Method 1 — the easy way

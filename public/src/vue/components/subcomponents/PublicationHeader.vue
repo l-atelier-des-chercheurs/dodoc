@@ -16,7 +16,7 @@
       <div class="m_publicationMeta--topbar--name">
         <button
           type="button"
-          class="m_publicationMeta--topbar--backbutton"
+          class="m_publicationMeta--topbar--backbutton bg-noir"
           v-if="
             !(
               [

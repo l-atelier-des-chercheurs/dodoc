@@ -92,7 +92,11 @@ button,
     color: #fff;
     &:hover,
     &:active {
-      .bg-bleuvert_fonce;
+      background-color: @c-bleuvert_fonce;
+    }
+
+    &.is--active {
+      .c-noir;
     }
   }
   &.bg-bleumarine {
@@ -115,6 +119,10 @@ button,
     .button-thin;
     background-color: @c-rouge;
     color: white;
+    &:hover,
+    &:active {
+      background-color: @c-rouge_fonce;
+    }
   }
   &.button-greenthin {
     .button-thin;

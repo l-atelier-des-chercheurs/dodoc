@@ -7,6 +7,7 @@
       'is--read_only': read_only,
       'is--focused': is_focused,
       'has--noToolbar': specific_toolbar && specific_toolbar.length === 0,
+      'has--multiCursor': show_cursors,
     }"
   >
     <!-- connection_state : {{ connection_state }}
@@ -54,6 +55,8 @@ ShareDB.types.register(require("rich-text").type);
 
 var fonts = [
   "",
+  "Luciole",
+  "OpenDyslexic",
   "Alegreya",
   "Roboto Mono",
   "Roboto",
@@ -67,7 +70,6 @@ var fonts = [
   "Archivo Black",
   "Spectral",
   "Krub",
-  "OpenDyslexic",
 ];
 var FontAttributor = Quill.import("attributors/style/font");
 FontAttributor.whitelist = fonts;

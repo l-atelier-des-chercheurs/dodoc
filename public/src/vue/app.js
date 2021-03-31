@@ -340,6 +340,8 @@ let vm = new Vue({
         keyword: "",
         author: "",
         name: "",
+        project: "",
+        template: "",
       },
       media_filter: {
         keyword: "",
@@ -786,9 +788,15 @@ let vm = new Vue({
         return acc;
       }, []);
     },
+    all_projects() {
+      const type = "projects";
+      const _all_projects = Object.values(this.store[type]);
+      if (!_all_projects) return [];
+      return _all_projects;
+    },
     projects_that_are_accessible() {
       const type = "projects";
-      return Object.values(this.store[type]).filter((p) =>
+      return this.all_projects.filter((p) =>
         this.canSeeFolder({ type, slugFolderName: p.slugFolderName })
       );
     },
@@ -1574,20 +1582,6 @@ let vm = new Vue({
         this.settings.media_filter.keyword = newKeywordFilter;
       } else {
         this.settings.media_filter.keyword = "";
-      }
-    },
-    setPubliKeywordFilter(newKeywordFilter) {
-      if (this.settings.publication_filter.keyword !== newKeywordFilter) {
-        this.settings.publication_filter.keyword = newKeywordFilter;
-      } else {
-        this.settings.publication_filter.keyword = "";
-      }
-    },
-    setPubliAuthorFilter(newAuthorFilter) {
-      if (this.settings.publication_filter.author !== newAuthorFilter) {
-        this.settings.publication_filter.author = newAuthorFilter;
-      } else {
-        this.settings.publication_filter.author = "";
       }
     },
     setMediaAuthorFilter(newAuthorFilter) {

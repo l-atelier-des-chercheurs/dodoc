@@ -790,19 +790,30 @@ body {
   display: flex;
   flex-flow: row wrap;
 
+  label,
+  input {
+    cursor: pointer;
+  }
+
   > * {
     flex: 1 1 120px;
     margin: 0;
-    padding: 0;
+    padding: ~"calc(var(--spacing) / 2)" ~"calc(var(--spacing) / 2)";
     border-bottom: 2px solid var(--c-gris-clair);
     border-right: 2px solid var(--c-gris-clair);
     display: flex;
     align-items: center;
+    // text-align: center;
+
+    &:hover {
+      background-color: var(--c-gris-clair);
+    }
 
     input {
       display: block;
       flex: 0 0 auto;
-      margin: ~"calc(var(--spacing) / 2)";
+      margin-right: ~"calc(var(--spacing) / 4)";
+      // margin: ~"calc(var(--spacing) / 2)";
     }
 
     &:last-child {
@@ -1102,6 +1113,11 @@ small {
   .m_projectview {
     .m_project {
       height: 100%;
+    }
+
+    .m_project--presentation.is--full {
+      height: 100%;
+      overflow: auto;
     }
 
     .m_project--library {
@@ -3333,6 +3349,7 @@ small {
 .m_mealList {
   .margin-medium;
   .margin-right-small;
+  margin-top: 0;
   // .padding-sides-small;
   .bg-blanc;
 
@@ -3548,8 +3565,8 @@ small {
     }
 
     .m_publicationMeta--topbar--backbutton {
-      .bg-noir;
-      .c-blanc;
+      // .bg-noir;
+      // .c-blanc;
       min-height: 0;
       min-width: 0;
       width: 2em;
@@ -3557,6 +3574,9 @@ small {
       .margin-right-small;
       border-radius: 50%;
       font-weight: 400;
+
+      &:hover {
+      }
     }
 
     .m_publicationMeta--topbar--title {
@@ -5127,7 +5147,7 @@ small {
 
     .margin-vert-medium;
     .padding-bottom-medium;
-    margin-bottom: 50vh;
+    margin-bottom: 65vh;
     padding-top: 1px;
 
     .m_publicationview.is--survey & {
@@ -5136,7 +5156,8 @@ small {
     }
 
     .m_publicationMeta {
-      top: @t-skipline / 2;
+      // top: @t-skipline / 2;
+      top: 0;
       // top: 0;
       // margin-top: 0;
       // margin: 0;
