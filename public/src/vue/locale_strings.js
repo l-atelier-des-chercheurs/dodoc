@@ -2008,6 +2008,10 @@ module.exports = (function () {
       oc: "Importar de mèdias",
       de: "Alle Medien importieren",
     },
+    retry: {
+      fr: "Réessayer",
+      en: "Retry",
+    },
     select_files_to_import: {
       fr: "Sélectionner les fichiers à importer",
       en: "Select files to import",
