@@ -1,0 +1,42 @@
+date_created: 20210326_203609
+
+----
+
+date_modified: 20210326_203733
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-2.png
+
+----
+
+file_meta: 
+
+-
+size: 259073
+-
+width: 635
+-
+height: 696
+-
+ratio: 1.096
+
+
+----
+
+caption: &lt;p class=&quot;is--focused&quot;&gt;Exemple de liste de sources vidéos disponibles dans la version logiciel de do•doc. &lt;&#x2F;p&gt;
+
+----
+

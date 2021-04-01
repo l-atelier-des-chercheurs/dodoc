@@ -1,0 +1,42 @@
+date_created: 20210326_200303
+
+----
+
+date_modified: 20210326_200304
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-3.png
+
+----
+
+file_meta: 
+
+-
+size: 20061
+-
+width: 1230
+-
+height: 146
+-
+ratio: 0.1187
+
+
+----
+
+ratio: 0.1187
+
+----
+

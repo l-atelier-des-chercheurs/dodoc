@@ -1,0 +1,42 @@
+date_created: 20210331_174226
+
+----
+
+date_modified: 20210331_174308
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-25.png
+
+----
+
+file_meta: 
+
+-
+size: 1647546
+-
+width: 2352
+-
+height: 1724
+-
+ratio: 0.7330
+
+
+----
+
+caption: &lt;p class=&quot;is--focused&quot;&gt;Mode LIGNES : comme le mode FORMES, fichier tracé&#x2F;vectoriel utilisable en fablab.&lt;&#x2F;p&gt;
+
+----
+

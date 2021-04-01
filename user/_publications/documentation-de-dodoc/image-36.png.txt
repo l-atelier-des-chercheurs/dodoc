@@ -1,0 +1,42 @@
+date_created: 20210401_151017
+
+----
+
+date_modified: 20210401_151017
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-36.png
+
+----
+
+file_meta: 
+
+-
+size: 40912
+-
+width: 760
+-
+height: 428
+-
+ratio: 0.5632
+
+
+----
+
+ratio: 0.5632
+
+----
+
