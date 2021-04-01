@@ -9,7 +9,10 @@
         >
           <!-- @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)" -->
 
-          <div class="_preview">
+          <div
+            class="_preview"
+            @click="loadStopmotion(stopmotion.slugFolderName)"
+          >
             <MediaContent
               :context="'preview'"
               :slugFolderName="stopmotion.slugFolderName"
