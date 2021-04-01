@@ -298,7 +298,11 @@
             @click="toggleFilter({ type: 'template', value: key })"
           >
             <div class="_filterRecipeByTemplate--recipe--icon" v-html="icon" />
-            <label>{{ label }}</label>
+            <label
+              class="padding-verysmall margin-none c-blanc"
+              v-if="$root.settings.publication_filter.template === key"
+              >{{ $t(key) }}</label
+            >
             <!-- <small class="_filterRecipeByTemplate--recipe--text">{{
               recipesWithTemplate(key).length
             }}</small> -->
