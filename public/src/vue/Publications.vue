@@ -279,6 +279,7 @@
           </div> -->
         </div>
       </div>
+
       <div class="_filterRecipeByTemplate">
         <template v-for="{ key, label, recipes } in recipe_types">
           <!-- {{ $t(label) }} -->
@@ -308,6 +309,24 @@
             }}</small> -->
           </button>
         </template>
+      </div>
+
+      <div
+        class="switch switch-xs margin-sides-medium"
+        v-if="$root.do_navigation.current_slugProjectName"
+      >
+        <input
+          class="switch"
+          id="showOnlyProject"
+          type="checkbox"
+          v-model="$root.settings.publication_filter.project"
+          :true-value="$root.do_navigation.current_slugProjectName"
+          false-value="''"
+        />
+        <label for="showOnlyProject" class="c-blanc"
+          >{{ $t("show_only_recipes_for_project") }}
+          {{ $root.current_project.name }}</label
+        >
       </div>
 
       <div class="m_mealList">
@@ -833,8 +852,8 @@ export default {
 
   watch: {
     "$root.do_navigation.current_slugProjectName": function () {
-      if (!!this.$root.do_navigation.current_slugProjectName)
-        this.show_filters = true;
+      // if (!!this.$root.do_navigation.current_slugProjectName)
+      // this.show_filters = true;
       this.toggleFilter({
         type: "project",
         value: !!this.$root.do_navigation.current_slugProjectName
@@ -1203,7 +1222,7 @@ export default {
 ._filterRecipeByTemplate {
   display: flex;
   flex-flow: row wrap;
-  margin-top: calc(var(--spacing) / 1);
+  margin-top: calc(var(--spacing) / 4);
   margin-left: calc(var(--spacing) / 1);
   margin-right: calc(var(--spacing) / 4);
   // margin-bottom: calc(var(--spacing) / -4);
