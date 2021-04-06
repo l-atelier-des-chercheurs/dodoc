@@ -219,6 +219,7 @@ export default {
     return {
       show_password_field: false,
       showCurrentPassword: false,
+      entered_password: "",
     };
   },
   created() {},
