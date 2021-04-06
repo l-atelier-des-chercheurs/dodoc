@@ -819,7 +819,16 @@ export default {
   },
 
   created() {},
-  mounted() {},
+  mounted() {
+    if (
+      this.$root.settings.publication_filter.keyword !== "" ||
+      this.$root.settings.publication_filter.author !== "" ||
+      this.$root.settings.publication_filter.name !== "" ||
+      this.$root.settings.publication_filter.project !== ""
+    ) {
+      this.current_mode = "list";
+    }
+  },
   beforeDestroy() {},
 
   watch: {
