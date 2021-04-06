@@ -1,0 +1,32 @@
+date_created: 20210331_180120
+
+----
+
+date_modified: 20210331_181710
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: text
+
+----
+
+media_filename: text-20210331_180120-n0d.md
+
+----
+
+file_meta: 
+
+-
+size: 0
+
+
+----
+

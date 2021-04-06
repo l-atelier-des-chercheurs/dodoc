@@ -71,6 +71,15 @@
         >
           <span>{{ $t("qr_code") }}</span>
         </button>
+
+        <button
+          type="button"
+          class="barButton barButton_recipes bg-bleuvert"
+          @click="openPubliPaneToPubliWithFilterProject"
+          :disabled="read_only"
+        >
+          <span>{{ $t("recipes") }}</span>
+        </button>
       </div>
 
       <div class="m_actionbar--text">
@@ -381,7 +390,6 @@ export default {
           m.metaFileName === metaFileName && m.slugFolderName === slugFolderName
       );
     },
-    media_created(m) {},
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === "debug") {
         console.log("METHODS • MediaLibrary: openMediaModal");
@@ -405,18 +413,18 @@ export default {
         });
     },
     openCapture() {
-      if (this.is_iOS_device) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(8000)
-          .error(this.$t("notifications.ios_not_compatible_with_capture"));
-        setTimeout(() => {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(8000)
-            .success(this.$t("notifications.instead_import_with_this_button"));
-        }, 1500);
-      }
+      // if (this.is_iOS_device) {
+      //   this.$alertify
+      //     .closeLogOnClick(true)
+      //     .delay(8000)
+      //     .error(this.$t("notifications.ios_not_compatible_with_capture"));
+      //   setTimeout(() => {
+      //     this.$alertify
+      //       .closeLogOnClick(true)
+      //       .delay(8000)
+      //       .success(this.$t("notifications.instead_import_with_this_button"));
+      //   }, 1500);
+      // }
       this.$root.do_navigation.view = "CaptureView";
     },
     openQRCodeModal() {
@@ -424,6 +432,11 @@ export default {
         slugFolderName: this.slugProjectName,
         type: "projects",
       });
+    },
+    openPubliPaneToPubliWithFilterProject() {
+      this.$root.openPubliPanel();
+      this.$root.settings.publication_filter.project = this.slugProjectName;
+      this.$eventHub.$emit("resizePanels", [{}, { size: 50 }, {}]);
     },
     updateInputFiles($event) {
       if (this.$root.state.dev_mode === "debug") {

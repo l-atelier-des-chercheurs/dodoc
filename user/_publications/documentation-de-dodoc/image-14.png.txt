@@ -1,0 +1,42 @@
+date_created: 20210331_172051
+
+----
+
+date_modified: 20210331_172329
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-14.png
+
+----
+
+file_meta: 
+
+-
+size: 2197326
+-
+width: 2272
+-
+height: 1668
+-
+ratio: 0.7342
+
+
+----
+
+caption: &lt;p class=&quot;is--focused&quot;&gt;En cours d’enregistrement d’une vidéo avec du son. L’option METTRE EN PAUSE permet de suspendre l’enregistrement pour reprendre l’enregistrement après, tandis qu’ARRÊTER LA CAPTURE termine l’enregistrement et affiche l’écran de validation ci-dessous.&lt;&#x2F;p&gt;
+
+----
+

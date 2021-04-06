@@ -9,10 +9,32 @@
         type="button"
         :disabled="read_only"
         @click="removeMedia(show_previous_photo.metaFileName)"
-        class="buttonLink m_stopmotionpanel--medias--single--removeMedia"
+        class="buttonLink bg-noir"
       >
         <span class>{{ $t("remove_this_image") }}</span>
       </button>
+
+      <div
+        class="m_stopmotionpanel--toprowbuttons--counter"
+        v-if="!show_live_feed"
+      >
+        <button
+          type="button"
+          class="buttonLink bg-noir"
+          @click="prevImage"
+          :disabled="image_index_currently_shown === 0"
+        >
+          ←
+        </button>
+        <label class="c-blanc"
+          >{{ $t("image") }} {{ image_index_currently_shown + 1 }}/{{
+            medias.length
+          }}</label
+        >
+        <button type="button" class="buttonLink bg-noir" @click="nextImage">
+          →
+        </button>
+      </div>
     </div>
 
     <div class="m_stopmotionpanel--medias" v-if="!validating_video_preview">
@@ -46,10 +68,7 @@
         <div
           class="m_stopmotionpanel--medias--list--items"
           :class="{ 'is--current_single': show_live_feed }"
-          @click="
-            show_previous_photo = medias[medias.length - 1];
-            $emit('update:show_live_feed', true);
-          "
+          @click="showVideoFeed"
           :key="'live_feed'"
           :data-content="$t('live')"
         >
@@ -215,6 +234,12 @@ export default {
         return [];
       }
     },
+    image_index_currently_shown() {
+      if (!this.show_previous_photo) return false;
+      return this.medias.findIndex(
+        (m) => m.metaFileName === this.show_previous_photo.metaFileName
+      );
+    },
   },
   methods: {
     assembleStopmotionMedias: function () {
@@ -242,6 +267,29 @@ export default {
       this.validating_video_preview = false;
       this.media_is_being_sent = true;
       this.$emit("update:show_live_feed", false);
+    },
+    showVideoFeed() {
+      this.show_previous_photo = this.medias[this.medias.length - 1];
+      this.$emit("update:show_live_feed", true);
+    },
+    prevImage() {
+      if (this.image_index_currently_shown === false) return false;
+      this.show_previous_photo = this.medias[
+        this.image_index_currently_shown - 1
+      ];
+    },
+    nextImage() {
+      if (this.image_index_currently_shown === false) return false;
+
+      // already at latest photo
+      if (this.image_index_currently_shown === this.medias.length - 1) {
+        this.showVideoFeed();
+        return;
+      }
+
+      this.show_previous_photo = this.medias[
+        this.image_index_currently_shown + 1
+      ];
     },
     backToStopmotion: function () {
       console.log("METHODS • StopmotionPanel: backToStopmotion");
@@ -327,10 +375,31 @@ export default {
   left: 0;
   z-index: 10;
   bottom: 100%;
+  width: 100%;
 
-  button {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  > * {
+    // background-color: var(--c-noir);
+    // color: white;
+    margin: calc(var(--spacing) / 4);
+
+    > button {
+      margin: 0;
+    }
+  }
+
+  > .m_stopmotionpanel--toprowbuttons--counter {
+    margin: 0;
+    padding: 0;
     background-color: var(--c-noir);
     color: white;
+    border-radius: var(--button-radius);
+
+    button {
+    }
   }
 }
 

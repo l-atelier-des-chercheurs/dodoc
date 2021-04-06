@@ -491,6 +491,10 @@ module.exports = (function () {
       fr: "Seulement mes recettes",
       en: "My recipes",
     },
+    show_only_recipes_for_project: {
+      fr: "Afficher uniquement les recette rattachées au projet",
+      en: "Show only recipes linked to project",
+    },
     only_channels_i_participate_in: {
       fr: "les discussions accessibles",
       en: "Only topics I can read",
@@ -2007,6 +2011,10 @@ module.exports = (function () {
       nl: "Importeer media",
       oc: "Importar de mèdias",
       de: "Alle Medien importieren",
+    },
+    retry: {
+      fr: "Réessayer",
+      en: "Retry",
     },
     select_files_to_import: {
       fr: "Sélectionner les fichiers à importer",

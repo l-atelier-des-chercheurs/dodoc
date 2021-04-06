@@ -279,6 +279,7 @@
           </div> -->
         </div>
       </div>
+
       <div class="_filterRecipeByTemplate">
         <template v-for="{ key, label, recipes } in recipe_types">
           <!-- {{ $t(label) }} -->
@@ -298,12 +299,34 @@
             @click="toggleFilter({ type: 'template', value: key })"
           >
             <div class="_filterRecipeByTemplate--recipe--icon" v-html="icon" />
-            <label>{{ label }}</label>
-            <small class="_filterRecipeByTemplate--recipe--text">{{
+            <label
+              class="padding-verysmall margin-none c-blanc"
+              v-if="$root.settings.publication_filter.template === key"
+              >{{ $t(key) }}</label
+            >
+            <!-- <small class="_filterRecipeByTemplate--recipe--text">{{
               recipesWithTemplate(key).length
-            }}</small>
+            }}</small> -->
           </button>
         </template>
+      </div>
+
+      <div
+        class="switch switch-xs margin-sides-medium"
+        v-if="$root.do_navigation.current_slugProjectName"
+      >
+        <input
+          class="switch"
+          id="showOnlyProject"
+          type="checkbox"
+          v-model="$root.settings.publication_filter.project"
+          :true-value="$root.do_navigation.current_slugProjectName"
+          false-value="''"
+        />
+        <label for="showOnlyProject" class="c-blanc"
+          >{{ $t("show_only_recipes_for_project") }}
+          {{ $root.current_project.name }}</label
+        >
       </div>
 
       <div class="m_mealList">
@@ -547,33 +570,33 @@ export default {
 </svg>
           `,
             },
-            {
-              key: "drawing_pad",
-              summary: "drawing_pad_summary",
-              show_instructions: false,
-              instructions: "drawing_pad_instructions",
+            //             {
+            //               key: "drawing_pad",
+            //               summary: "drawing_pad_summary",
+            //               show_instructions: false,
+            //               instructions: "drawing_pad_instructions",
 
-              icon: `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>Fichier 1</title>
-  <g id="Calque_2" data-name="Calque 2">
-    <g id="Calque_6" data-name="Calque 6">
-      <rect x="13.92" y="35.39" width="173.15" height="129.86" style="fill: #fff"/>
-      <rect x="26.17" y="45.02" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
-      <rect x="127.82" y="81.05" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
-      <circle cx="36.99" cy="81.05" r="5.95" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
-      <g>
-        <path d="M69.78,69.42c41.68,0,5.66,33.94,50.44,35.13" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
-        <polygon points="115.83 108.09 119.58 104.51 116 100.76 119.11 100.83 122.69 104.58 118.94 108.16 115.83 108.09" style="fill: #353535"/>
-      </g>
-      <polygon points="77.64 108.18 107.23 137.81 48.02 137.81 77.64 108.18" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
-      <rect width="201" height="201" style="fill: none"/>
-    </g>
-  </g>
-</svg>
+            //               icon: `
+            // <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+            //   <title>Fichier 1</title>
+            //   <g id="Calque_2" data-name="Calque 2">
+            //     <g id="Calque_6" data-name="Calque 6">
+            //       <rect x="13.92" y="35.39" width="173.15" height="129.86" style="fill: #fff"/>
+            //       <rect x="26.17" y="45.02" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+            //       <rect x="127.82" y="81.05" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+            //       <circle cx="36.99" cy="81.05" r="5.95" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+            //       <g>
+            //         <path d="M69.78,69.42c41.68,0,5.66,33.94,50.44,35.13" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+            //         <polygon points="115.83 108.09 119.58 104.51 116 100.76 119.11 100.83 122.69 104.58 118.94 108.16 115.83 108.09" style="fill: #353535"/>
+            //       </g>
+            //       <polygon points="77.64 108.18 107.23 137.81 48.02 137.81 77.64 108.18" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+            //       <rect width="201" height="201" style="fill: none"/>
+            //     </g>
+            //   </g>
+            // </svg>
 
-          `,
-            },
+            //           `,
+            //             },
           ],
         },
         {
@@ -815,13 +838,22 @@ export default {
   },
 
   created() {},
-  mounted() {},
+  mounted() {
+    if (
+      this.$root.settings.publication_filter.keyword !== "" ||
+      this.$root.settings.publication_filter.author !== "" ||
+      this.$root.settings.publication_filter.name !== "" ||
+      this.$root.settings.publication_filter.project !== ""
+    ) {
+      this.current_mode = "list";
+    }
+  },
   beforeDestroy() {},
 
   watch: {
     "$root.do_navigation.current_slugProjectName": function () {
-      if (!!this.$root.do_navigation.current_slugProjectName)
-        this.show_filters = true;
+      // if (!!this.$root.do_navigation.current_slugProjectName)
+      // this.show_filters = true;
       this.toggleFilter({
         type: "project",
         value: !!this.$root.do_navigation.current_slugProjectName
@@ -1190,7 +1222,7 @@ export default {
 ._filterRecipeByTemplate {
   display: flex;
   flex-flow: row wrap;
-  margin-top: calc(var(--spacing) / 1);
+  margin-top: calc(var(--spacing) / 4);
   margin-left: calc(var(--spacing) / 1);
   margin-right: calc(var(--spacing) / 4);
   // margin-bottom: calc(var(--spacing) / -4);
@@ -1218,7 +1250,7 @@ export default {
 }
 ._filterRecipeByTemplate--recipe--icon {
   // padding: calc(var(--spacing) / 4);
-  padding: 0 calc(var(--spacing) / 8);
+  // padding: 0 calc(var(--spacing) / 16);
 
   // svg {
   //   width: 2em;
@@ -1233,7 +1265,7 @@ export default {
 </style>
 <style lang="scss">
 ._filterRecipeByTemplate--recipe--icon svg {
-  width: 1.5em;
-  height: 1.5em;
+  width: 2em;
+  height: 2em;
 }
 </style>

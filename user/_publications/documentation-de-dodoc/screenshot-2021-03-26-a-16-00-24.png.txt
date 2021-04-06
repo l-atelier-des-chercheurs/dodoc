@@ -1,0 +1,42 @@
+date_created: 20210326_160030
+
+----
+
+date_modified: 20210326_164715
+
+----
+
+caption: &lt;p class=&quot;is--focused&quot;&gt;Emplacement de stockage des contenus de do•doc installé sur un ordinateur avec Ubuntu.&lt;&#x2F;p&gt;
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: screenshot-2021-03-26-a-16-00-24.png
+
+----
+
+file_meta: 
+
+-
+size: 152380
+-
+width: 928
+-
+height: 637
+-
+ratio: 0.6864
+
+
+----
+

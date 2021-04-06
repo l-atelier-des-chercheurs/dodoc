@@ -390,8 +390,8 @@ export default {
   computed: {
     mediaURL: function () {
       return this.$root.state.mode === "export_publication"
-        ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`
-        : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}`;
+        ? `./${this.subfolder}${this.slugFolderName}/${this.media.media_filename}?v=${this.timestamp}`
+        : `/${this.subfolder}${this.slugFolderName}/${this.media.media_filename}?v=${this.timestamp}`;
     },
     subfolder: function () {
       switch (this.folderType) {
@@ -401,6 +401,11 @@ export default {
           return "_stopmotions/";
       }
       return "";
+    },
+    timestamp() {
+      if (this.media.date_created)
+        return +this.$moment(this.media.date_created);
+      else return +new Date();
     },
     thumbRes: function () {
       return this.context === "preview"
