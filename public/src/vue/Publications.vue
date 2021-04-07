@@ -531,7 +531,6 @@ export default {
               instructions: "page_by_page_instructions",
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>recipe_icon_page</title>
   <g id="Calque_6" data-name="Calque 6">
     <g>
       <rect x="35.68" y="8.83" width="129.64" height="183.35" style="fill: #fff"/>
@@ -617,7 +616,6 @@ export default {
 
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>recipe_icon_montage</title>
   <g id="Calque_6" data-name="Calque 6">
     <g>
       <g>
@@ -684,7 +682,6 @@ export default {
 
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>recipe_icon_stopmotion</title>
   <g id="Calque_6" data-name="Calque 6">
     <g>
       <g>
@@ -762,7 +759,6 @@ export default {
 
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>recipe_icon_video_sound</title>
   <g id="Calque_6" data-name="Calque 6">
     <g>
       <g>
@@ -800,7 +796,6 @@ export default {
 
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>recipe_icon_image_sound</title>
   <g id="Calque_6" data-name="Calque 6">
     <g>
       <g>
