@@ -120,6 +120,14 @@
                       >
                         {{ $t("filters") }}
                       </button>
+                      <button
+                        type="button"
+                        class="button-nostyle text-uc padding-left-verysmall"
+                        v-if="has_filters_enabled"
+                        @click="removeAllFilters"
+                      >
+                        {{ $t("remove_filters") }}
+                      </button>
                     </template>
                     <TagsAndAuthorFilters
                       v-if="show_filters"
@@ -225,6 +233,14 @@
                       @click="show_filters = !show_filters"
                     >
                       {{ $t("filters") }}
+                    </button>
+                    <button
+                      type="button"
+                      class="button-nostyle text-uc padding-left-verysmall"
+                      v-if="has_filters_enabled"
+                      @click="removeAllFilters"
+                    >
+                      {{ $t("remove_filters") }}
                     </button>
                   </template>
                   <TagsAndAuthorFilters
@@ -478,14 +494,7 @@ export default {
     },
     show_filters: function () {
       if (!this.show_filters) {
-        this.$root.settings.project_filter.keyword = "";
-        this.$root.settings.project_filter.author = "";
-        this.$root.settings.project_filter.name = "";
-        this.debounce_search_project_name = "";
-        this.$root.settings.media_filter.keyword = "";
-        this.$root.settings.media_filter.author = "";
-        this.$root.settings.media_filter.fav = false;
-        this.$root.settings.media_filter.type = false;
+        // this.removeAllFilters();
       }
     },
     debounce_search_project_name: function () {
@@ -511,6 +520,18 @@ export default {
     },
     mediaTypes() {
       return this.$root.getAllTypesFrom(this.filteredMedias);
+    },
+    has_filters_enabled() {
+      return (
+        this.$root.settings.project_filter.keyword !== "" ||
+        this.$root.settings.project_filter.author !== "" ||
+        this.$root.settings.project_filter.name !== "" ||
+        this.debounce_search_project_name !== "" ||
+        this.$root.settings.media_filter.keyword !== "" ||
+        this.$root.settings.media_filter.author !== "" ||
+        this.$root.settings.media_filter.fav !== false ||
+        this.$root.settings.media_filter.type !== ""
+      );
     },
     sortedProjects: function () {
       var sortable = [];
@@ -772,6 +793,16 @@ export default {
   methods: {
     setSort(newSort) {
       this.currentSort = newSort;
+    },
+    removeAllFilters() {
+      this.$root.settings.project_filter.keyword = "";
+      this.$root.settings.project_filter.author = "";
+      this.$root.settings.project_filter.name = "";
+      this.debounce_search_project_name = "";
+      this.$root.settings.media_filter.keyword = "";
+      this.$root.settings.media_filter.author = "";
+      this.$root.settings.media_filter.fav = false;
+      this.$root.settings.media_filter.type = "";
     },
 
     toggleSelectMedia({ slugFolderName, metaFileName }) {

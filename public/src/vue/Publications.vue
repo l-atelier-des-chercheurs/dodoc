@@ -152,6 +152,14 @@
                   >
                     {{ $t("filters") }}
                   </button>
+                  <button
+                    type="button"
+                    class="button-nostyle text-uc padding-sides-verysmall bg-bleuvert"
+                    v-if="has_filters_enabled"
+                    @click="removeAllFilters"
+                  >
+                    {{ $t("remove_filters") }}
+                  </button>
                 </template>
                 <TagsAndAuthorFilters
                   v-if="show_filters"
@@ -321,7 +329,7 @@
           type="checkbox"
           v-model="$root.settings.publication_filter.project"
           :true-value="$root.do_navigation.current_slugProjectName"
-          false-value="''"
+          false-value=""
         />
         <label for="showOnlyProject" class="c-blanc"
           >{{ $t("show_only_recipes_for_project") }}
@@ -415,7 +423,7 @@
           <button
             type="button"
             class="buttonLink c-blanc"
-            @click="removeFilters"
+            @click="removeAllFilters"
           >
             {{ $t("remove_filters_and_show_all") }}
           </button>
@@ -531,7 +539,6 @@ export default {
               instructions: "page_by_page_instructions",
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>recipe_icon_page</title>
   <g id="Calque_6" data-name="Calque 6">
     <g>
       <rect x="35.68" y="8.83" width="129.64" height="183.35" style="fill: #fff"/>
@@ -617,7 +624,6 @@ export default {
 
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>recipe_icon_montage</title>
   <g id="Calque_6" data-name="Calque 6">
     <g>
       <g>
@@ -684,7 +690,6 @@ export default {
 
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>recipe_icon_stopmotion</title>
   <g id="Calque_6" data-name="Calque 6">
     <g>
       <g>
@@ -762,7 +767,6 @@ export default {
 
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>recipe_icon_video_sound</title>
   <g id="Calque_6" data-name="Calque 6">
     <g>
       <g>
@@ -800,7 +804,6 @@ export default {
 
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <title>recipe_icon_image_sound</title>
   <g id="Calque_6" data-name="Calque 6">
     <g>
       <g>
@@ -873,11 +876,12 @@ export default {
     },
     show_filters: function () {
       if (!this.show_filters) {
-        this.$root.settings.publication_filter.keyword = "";
-        this.$root.settings.publication_filter.author = "";
-        this.$root.settings.publication_filter.name = "";
-        this.$root.settings.publication_filter.project = "";
-        this.debounce_search_publication_name = "";
+        // this.removeAllFilters();
+        // this.$root.settings.publication_filter.keyword = "";
+        // this.$root.settings.publication_filter.author = "";
+        // this.$root.settings.publication_filter.name = "";
+        // this.$root.settings.publication_filter.project = "";
+        // this.debounce_search_publication_name = "";
       }
     },
     debounce_search_publication_name: function () {
@@ -895,7 +899,17 @@ export default {
     publis_authors: function () {
       return this.$root.getAllAuthorsFrom(this.publications);
     },
-
+    has_filters_enabled() {
+      return (
+        this.$root.settings.publication_filter.keyword !== "" ||
+        this.$root.settings.publication_filter.author !== "" ||
+        this.$root.settings.publication_filter.name !== "" ||
+        this.$root.settings.publication_filter.project !== "" ||
+        this.$root.settings.publication_filter.template !== "" ||
+        this.debounce_search_publication_name !== "" ||
+        this.show_only_my_content !== false
+      );
+    },
     create_publi_default_name() {
       let number_of_recipes =
         this.allRecipesOfThisTemplate(this.createPubliTemplateKey).length + 1;
@@ -1100,6 +1114,15 @@ export default {
         (r) => r.attached_to_project === slugProjectName
       );
     },
+    removeAllFilters() {
+      this.$root.settings.publication_filter.keyword = "";
+      this.$root.settings.publication_filter.author = "";
+      this.$root.settings.publication_filter.name = "";
+      this.$root.settings.publication_filter.project = "";
+      this.$root.settings.publication_filter.template = "";
+      this.debounce_search_publication_name = "";
+      this.show_only_my_content = false;
+    },
     recipesWithTemplate(template_key) {
       // if (!this.publications || this.publications.length === 0) return [];
       return this.sorted_publications.filter(
@@ -1109,15 +1132,6 @@ export default {
     toggleReplies($event, slugFolderName) {
       if ($event) this.show_replies_for = slugFolderName;
       else this.show_replies_for = false;
-    },
-    removeFilters() {
-      this.$root.settings.publication_filter.keyword = "";
-      this.$root.settings.publication_filter.author = "";
-      this.$root.settings.publication_filter.name = "";
-      this.$root.settings.publication_filter.project = "";
-      this.$root.settings.publication_filter.template = "";
-      this.debounce_search_publication_name = "";
-      this.show_only_my_content = false;
     },
     allRecipesOfThisTemplate(template_key) {
       const filtered_recipes = this.sorted_publications.filter(

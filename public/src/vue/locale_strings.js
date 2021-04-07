@@ -2209,6 +2209,10 @@ module.exports = (function () {
       oc: "Suprimir l'imatge",
       de: "Dieses Bild löschen",
     },
+    remove_filters: {
+      fr: "Supprimer les filtres",
+      en: "Remove all filters",
+    },
     remove_layer: {
       fr: "Supprimer le calque",
       en: "Remove layer",
