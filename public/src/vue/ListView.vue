@@ -247,8 +247,8 @@
           </div>
         </div>
         <div class="m_displayMyContent" v-if="$root.current_author">
-          <span>{{ $t("show") }}</span>
-          <select v-model="show_only_my_content">
+          <span class="font-small">{{ $t("show") }}</span>
+          <select v-model="show_only_my_content" class="select-s">
             <option :value="true">
               <template v-if="!show_medias_instead_of_projects">{{
                 $t("only_my_projects").toLowerCase()

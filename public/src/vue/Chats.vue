@@ -55,8 +55,8 @@
           </div>
 
           <div class="m_displayMyContent" v-if="$root.current_author">
-            <span>{{ $t("show") }}</span>
-            <select v-model="show_only_content_i_can_access">
+            <span class="font-small">{{ $t("show") }}</span>
+            <select v-model="show_only_content_i_can_access" class="select-s">
               <option :value="true">
                 {{ $t("only_channels_i_participate_in").toLowerCase() }}
               </option>
