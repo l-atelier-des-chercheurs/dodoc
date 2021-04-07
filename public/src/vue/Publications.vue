@@ -321,7 +321,7 @@
           type="checkbox"
           v-model="$root.settings.publication_filter.project"
           :true-value="$root.do_navigation.current_slugProjectName"
-          false-value="''"
+          false-value=""
         />
         <label for="showOnlyProject" class="c-blanc"
           >{{ $t("show_only_recipes_for_project") }}
