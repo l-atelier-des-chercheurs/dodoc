@@ -246,8 +246,8 @@
           class="flex-wrap flex-horizontally-centered flex-vertically-centered"
         >
           <div class="m_displayMyContent" v-if="$root.current_author">
-            <span>{{ $t("show") }}</span>
-            <select v-model="show_only_my_content">
+            <span class="font-small">{{ $t("show") }}</span>
+            <select v-model="show_only_my_content" class="select-s">
               <option :value="true">
                 {{ $t("only_my_recipes").toLowerCase() }}
               </option>
@@ -361,6 +361,10 @@
             <PublicationRow
               :key="publication.slugFolderName"
               class="m_mealList--publis"
+              :class="{
+                'was--justOpened':
+                  last_publication_opened === publication.slugFolderName,
+              }"
               :publication="publication"
               :recipe_types="recipe_types"
               @toggleReplies="toggleReplies($event, publication.slugFolderName)"
@@ -508,6 +512,8 @@ export default {
         type: "date",
         order: "descending",
       },
+
+      last_publication_opened: false,
 
       debounce_search_publication_name: this.$root.settings.publication_filter
         .name,
@@ -861,7 +867,10 @@ export default {
           : "",
       });
     },
-
+    "$root.settings.current_publication.slug": function () {
+      if (this.$root.settings.current_publication.slug)
+        this.last_publication_opened = this.$root.settings.current_publication.slug;
+    },
     show_filters: function () {
       if (!this.show_filters) {
         this.$root.settings.publication_filter.keyword = "";

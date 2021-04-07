@@ -1809,7 +1809,7 @@ small {
 
 .m_displayMyContent {
   display: block;
-  max-width: 340px;
+  max-width: 300px;
   width: 90%;
   background-color: @c-noir;
   color: white;
@@ -3403,6 +3403,10 @@ small {
   // --table-spacing-x: ~"calc(var(--spacing) / 4)";
   --table-spacing-y: ~"calc(var(--spacing) / 4)";
   // --table-spacing-y: 0;
+
+  &.was--justOpened {
+    border: 2px solid @c-gris_fonce;
+  }
 }
 
 .m_mealList--reply {
