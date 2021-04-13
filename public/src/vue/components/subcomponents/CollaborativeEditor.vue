@@ -56,6 +56,8 @@ ShareDB.types.register(require("rich-text").type);
 var fonts = [
   "",
   "Luciole",
+  "Belle Allure CE",
+  "Belle Allure CM",
   "OpenDyslexic",
   "Alegreya",
   "Roboto Mono",
