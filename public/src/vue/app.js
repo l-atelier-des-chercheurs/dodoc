@@ -682,15 +682,15 @@ let vm = new Vue({
       },
       deep: true,
     },
-
-    current_project() {
-      this.updateClientInfo({
-        looking_at_project: {
-          slugFolderName: this.current_project
-            ? this.current_project.slugFolderName
-            : false,
-        },
-      });
+    current_project: function (new_project, old_project) {
+      if (new_project.slugFolderName !== old_project.slugFolderName)
+        this.updateClientInfo({
+          looking_at_project: {
+            slugFolderName: this.current_project
+              ? this.current_project.slugFolderName
+              : false,
+          },
+        });
     },
     current_publication() {
       this.updateClientInfo({
@@ -1698,7 +1698,7 @@ let vm = new Vue({
     updateClientInfo(val) {
       if (this.$socketio.socket) {
         if (window.state.dev_mode === "debug")
-          console.log(`ROOT EVENT: updateClientInfo`);
+          console.log(`ROOT EVENT: updateClientInfo ${JSON.stringify(val)}`);
 
         this.$socketio.socket.emit("updateClientInfo", val);
       }
