@@ -200,6 +200,8 @@ button,
   }
 
   &.button-triangle {
+    background: transparent;
+
     &::after {
       content: "";
       display: inline-block;
@@ -219,7 +221,7 @@ button,
       transition: transform 0.5s, color 0.5s;
     }
 
-    &:hover {
+    &:not([disabled]):hover {
       .bg-transparent;
 
       &::after {
