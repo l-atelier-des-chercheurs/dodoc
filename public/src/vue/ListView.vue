@@ -335,6 +335,7 @@
                 class="is--collapsed"
                 v-for="project in item.content"
                 :key="project.slugFolderName"
+                :context="'in_folder'"
                 :project="project"
                 :read_only="read_only"
                 :is_selected="projectIsSelected(project.slugFolderName)"
