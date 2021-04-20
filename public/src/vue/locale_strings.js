@@ -99,6 +99,15 @@ module.exports = (function () {
       oc: "Descreissent",
       de: "Absteigend",
     },
+    most_recent_first: {
+      fr: "Le plus récent en premier",
+      en: "Most recent first",
+    },
+    oldest_first: {
+      fr: "Le plus ancien en premier",
+      en: "Oldest first",
+    },
+
     create_a_project: {
       fr: "Créer un projet",
       en: "Create a project",
