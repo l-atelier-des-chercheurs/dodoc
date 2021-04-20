@@ -201,9 +201,21 @@ button,
 
   &.button-triangle {
     &::after {
-      content: "◄";
+      content: "";
       display: inline-block;
-      margin-left: 0.5em;
+
+      @t-tsize: 0.75em;
+      width: @t-tsize;
+      height: @t-tsize;
+      border: @t-tsize / 1.8 solid transparent;
+      border-right: @t-tsize solid currentColor;
+      box-sizing: border-box;
+
+      margin-left: -@t-tsize / 2;
+      margin-bottom: -0em;
+
+      transform-origin: 75% 40%;
+
       transition: transform 0.5s, color 0.5s;
     }
 
@@ -340,6 +352,10 @@ strong,
 b,
 .strong {
   font-weight: 500;
+}
+
+.normal {
+  font-weight: 400;
 }
 
 .c-blanc {

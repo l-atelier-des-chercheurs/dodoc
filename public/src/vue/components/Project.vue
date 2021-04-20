@@ -112,7 +112,7 @@
           @click.shift.left.exact="$emit('toggleSelect')"
           @click.meta.left.exact="$emit('toggleSelect')"
         >
-          <span v-if="!project.folder" class>{{ $t("open") }}</span>
+          <span v-if="context !== 'in_folder'" class>{{ $t("open") }}</span>
           <svg
             version="1.1"
             class="m_project--presentation--buttons--openButton--icon inline-svg"
@@ -393,6 +393,7 @@ export default {
     read_only: Boolean,
     context: String,
     is_selected: Boolean,
+    is_in_folderview: Boolean,
   },
   components: {
     EditProject,
