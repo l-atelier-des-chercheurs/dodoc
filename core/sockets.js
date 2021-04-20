@@ -955,11 +955,16 @@ module.exports = (function () {
     await sendFolders({ type, slugFolderName: new_slugFolderName, id });
   }
 
-  function onUpdateNetworkInfos() {
+  function onUpdateNetworkInfos(socket) {
     dev.logfunction(`EVENT - onUpdateNetworkInfos`);
     api.getNetworkInfos().then(
       (localNetworkInfos) => {
-        api.sendEventWithContent("newNetworkInfos", localNetworkInfos, io);
+        api.sendEventWithContent(
+          "newNetworkInfos",
+          localNetworkInfos,
+          io,
+          socket
+        );
       },
       function (err, p) {
         dev.error(`Err while getting local IP: ${err}`);
