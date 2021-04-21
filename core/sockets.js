@@ -50,6 +50,12 @@ module.exports = (function () {
       }
     }).on("connection", function (socket) {
       dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
+      dev.log(
+        `Clients connected currently : ${
+          Object.keys(io.sockets.connected).length
+        }`
+      );
+
       socket._data = {};
 
       var onevent = socket.onevent;
@@ -1133,6 +1139,12 @@ module.exports = (function () {
 
   function onClientDisconnect(socket) {
     sendClients();
+
+    dev.log(
+      `Clients connected currently : ${
+        Object.keys(io.sockets.connected).length
+      }`
+    );
   }
 
   async function onLoadJournal(socket) {

@@ -29,8 +29,6 @@ module.exports = (function () {
       parseDate(date, format),
     storeData: (mpath, d, e) => storeData(mpath, d, e),
     parseData: (d) => parseData(d),
-    eventAndContent: (sendEvent, objectJson) =>
-      eventAndContent(sendEvent, objectJson),
     sendEventWithContent: (sendEvent, objectContent, io, socket) =>
       sendEventWithContent(sendEvent, objectContent, io, socket),
     getNetworkInfos: () => getNetworkInfos(),
@@ -143,52 +141,30 @@ module.exports = (function () {
     });
   }
 
-  function eventAndContent(sendEvent, objectJson) {
-    var eventContentJSON = {
-      socketevent: sendEvent,
-      content: objectJson,
-    };
-    return eventContentJSON;
-  }
-
   function sendEventWithContent(sendEvent, objectContent, io, socket) {
-    let eventAndContentJson = eventAndContent(sendEvent, objectContent);
-    let eventAndContentJson_string = JSON.stringify(
-      eventAndContentJson.socketevent,
-      null,
-      4
-    );
-    if (socket) {
+    let eventAndContentJson = {
+      socketevent: sendEvent,
+      content: objectContent,
+    };
+
+    dev.logpackets({
+      str: `sendEventWithContent ${
+        socket && socket.id ? `for user ` + socket.id : "for all users"
+      } with type ${eventAndContentJson.socketevent}`,
+      obj: eventAndContentJson.content,
+    });
+
+    if (socket)
       // content sent only to one user
-      dev.logpackets(
-        `sendEventWithContent for user ${socket.id} = ${eventAndContentJson_string}`
-      );
       socket.emit(
         eventAndContentJson["socketevent"],
         eventAndContentJson["content"]
       );
-    } else {
-      // content broadcasted to all connected users
-      dev.logpackets(
-        `sendEventWithContent for all users = ${eventAndContentJson_string}`
-      );
+    else
       io.sockets.emit(
         eventAndContentJson["socketevent"],
         eventAndContentJson["content"]
       );
-    }
-    // dev.logpackets(
-    //   `sendEventWithContent — sending packet with content = ${JSON.stringify(
-    //     eventAndContentJson['content'],
-    //     null,
-    //     4
-    //   )}`
-    // );
-    dev.logpackets(
-      `eventAndContentJson — sending packet with string length = ${
-        JSON.stringify(eventAndContentJson["content"]).length
-      }`
-    );
   }
 
   // from http://stackoverflow.com/a/8440736
