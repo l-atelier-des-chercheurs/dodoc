@@ -28,8 +28,7 @@ module.exports = dev = (function () {
       console.log("Debug mode is Enabled");
       console.log("---");
       dev.logfunction("(log) magenta is for functions");
-      dev.logpackets("(log) green is for packets");
-      dev.logpackets("(log) green is for packets");
+      dev.logpackets({ str: "(log) green is for packets" });
       if (isVerboseMode) {
         dev.logverbose("(dev and verbose) gray for regular parsing data");
       }
@@ -62,17 +61,19 @@ module.exports = dev = (function () {
       _sendToConsole(logArgs, gutil.colors.gray);
     }
   }
-  function logpackets() {
+  function logpackets({ str, obj }) {
     if (!logToFile && !isDebugMode) return;
     // green
-    var args = Array.prototype.slice.call(arguments);
-    var logArgs = "* ".concat(args);
+    let log_string = "* ";
+
+    if (str) log_string += str;
+    if (obj) log_string += JSON.stringify(obj);
 
     if (logToFile) {
-      _sendToLogFile(logArgs);
+      _sendToLogFile(log_string);
     }
     if (isDebugMode) {
-      _sendToConsole(logArgs, gutil.colors.green);
+      _sendToConsole(log_string, gutil.colors.green);
     }
   }
   function logfunction() {
