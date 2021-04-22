@@ -71,6 +71,15 @@
         >
           <span>{{ $t("qr_code") }}</span>
         </button>
+
+        <button
+          type="button"
+          class="barButton barButton_recipes bg-bleuvert"
+          @click="openPubliPaneToPubliWithFilterProject"
+          :disabled="read_only"
+        >
+          <span>{{ $t("recipes") }}</span>
+        </button>
       </div>
 
       <div class="m_actionbar--text">
@@ -89,6 +98,14 @@
             @click="show_filters = !show_filters"
           >
             {{ $t("filters") }}
+          </button>
+          <button
+            type="button"
+            class="button-nostyle text-uc padding-left-verysmall"
+            v-if="has_filters_enabled"
+            @click="removeAllFilters"
+          >
+            {{ $t("remove_filters") }}
           </button>
         </template>
 
@@ -124,8 +141,9 @@
               'is--active': !folded_days.includes(day),
             }"
             @click="toggleDayFolding(day)"
-            v-html="!folded_days.includes(day) ? $t('fold') : $t('unfold')"
-          />
+          >
+            {{ !folded_days.includes(day) ? $t("fold") : $t("unfold") }}&nbsp;
+          </button>
         </h3>
         <div class="m_mediaShowAll" v-if="!folded_days.includes(day)">
           <div v-for="media in medias" :key="media.slugMediaName">
@@ -296,6 +314,14 @@ export default {
       );
       return sortedMedias.reverse();
     },
+    has_filters_enabled() {
+      return (
+        this.$root.settings.media_filter.keyword !== "" ||
+        this.$root.settings.media_filter.author !== "" ||
+        this.$root.settings.media_filter.fav !== false ||
+        this.$root.settings.media_filter.type !== ""
+      );
+    },
     groupedMedias: function () {
       let mediaGroup = this.$_.groupBy(this.sortedMedias, (media) => {
         let _date;
@@ -347,6 +373,12 @@ export default {
         });
       }
     },
+    removeAllFilters() {
+      this.$root.settings.media_filter.author = "";
+      this.$root.settings.media_filter.keyword = "";
+      this.$root.settings.media_filter.fav = false;
+      this.$root.settings.media_filter.type = "";
+    },
     toggleSelectMedia({ slugFolderName, metaFileName }) {
       if (this.mediaIsSelected({ slugFolderName, metaFileName })) {
         this.selected_medias = this.selected_medias.filter(
@@ -381,7 +413,6 @@ export default {
           m.metaFileName === metaFileName && m.slugFolderName === slugFolderName
       );
     },
-    media_created(m) {},
     openMediaModal(metaFileName) {
       if (this.$root.state.dev_mode === "debug") {
         console.log("METHODS • MediaLibrary: openMediaModal");
@@ -405,18 +436,18 @@ export default {
         });
     },
     openCapture() {
-      if (this.is_iOS_device) {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(8000)
-          .error(this.$t("notifications.ios_not_compatible_with_capture"));
-        setTimeout(() => {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(8000)
-            .success(this.$t("notifications.instead_import_with_this_button"));
-        }, 1500);
-      }
+      // if (this.is_iOS_device) {
+      //   this.$alertify
+      //     .closeLogOnClick(true)
+      //     .delay(8000)
+      //     .error(this.$t("notifications.ios_not_compatible_with_capture"));
+      //   setTimeout(() => {
+      //     this.$alertify
+      //       .closeLogOnClick(true)
+      //       .delay(8000)
+      //       .success(this.$t("notifications.instead_import_with_this_button"));
+      //   }, 1500);
+      // }
       this.$root.do_navigation.view = "CaptureView";
     },
     openQRCodeModal() {
@@ -424,6 +455,11 @@ export default {
         slugFolderName: this.slugProjectName,
         type: "projects",
       });
+    },
+    openPubliPaneToPubliWithFilterProject() {
+      this.$root.openPubliPanel();
+      this.$root.settings.publication_filter.project = this.slugProjectName;
+      this.$eventHub.$emit("resizePanels", [{}, { size: 50 }, {}]);
     },
     updateInputFiles($event) {
       if (this.$root.state.dev_mode === "debug") {

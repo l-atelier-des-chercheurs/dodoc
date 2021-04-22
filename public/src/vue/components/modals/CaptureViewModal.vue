@@ -7,7 +7,7 @@
     :is_loading="is_sending_content_to_server"
   >
     <template slot="header">
-      <span class>{{ $t("edit_a_chat") }}</span>
+      <span class>{{ $t("capture") }}</span>
     </template>
 
     <template slot="preview">

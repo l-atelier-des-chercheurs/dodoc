@@ -1,0 +1,42 @@
+date_created: 20210331_173811
+
+----
+
+date_modified: 20210331_173821
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-22.png
+
+----
+
+file_meta: 
+
+-
+size: 588747
+-
+width: 2352
+-
+height: 1698
+-
+ratio: 0.7219
+
+
+----
+
+caption: &lt;p class=&quot;is--focused&quot;&gt;Écran de validation du son.&lt;&#x2F;p&gt;
+
+----
+

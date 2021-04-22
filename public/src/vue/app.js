@@ -340,6 +340,8 @@ let vm = new Vue({
         keyword: "",
         author: "",
         name: "",
+        project: "",
+        template: "",
       },
       media_filter: {
         keyword: "",
@@ -680,15 +682,15 @@ let vm = new Vue({
       },
       deep: true,
     },
-
-    current_project() {
-      this.updateClientInfo({
-        looking_at_project: {
-          slugFolderName: this.current_project
-            ? this.current_project.slugFolderName
-            : false,
-        },
-      });
+    current_project: function (new_project, old_project) {
+      if (new_project.slugFolderName !== old_project.slugFolderName)
+        this.updateClientInfo({
+          looking_at_project: {
+            slugFolderName: this.current_project
+              ? this.current_project.slugFolderName
+              : false,
+          },
+        });
     },
     current_publication() {
       this.updateClientInfo({
@@ -786,9 +788,15 @@ let vm = new Vue({
         return acc;
       }, []);
     },
+    all_projects() {
+      const type = "projects";
+      const _all_projects = Object.values(this.store[type]);
+      if (!_all_projects) return [];
+      return _all_projects;
+    },
     projects_that_are_accessible() {
       const type = "projects";
-      return Object.values(this.store[type]).filter((p) =>
+      return this.all_projects.filter((p) =>
         this.canSeeFolder({ type, slugFolderName: p.slugFolderName })
       );
     },
@@ -1315,7 +1323,7 @@ let vm = new Vue({
             catchMediaCreation
           );
           return reject();
-        }, 2000);
+        }, 10000);
 
         const catchMediaCreation = (d) => {
           if (mdata.id === d.id) {
@@ -1576,20 +1584,6 @@ let vm = new Vue({
         this.settings.media_filter.keyword = "";
       }
     },
-    setPubliKeywordFilter(newKeywordFilter) {
-      if (this.settings.publication_filter.keyword !== newKeywordFilter) {
-        this.settings.publication_filter.keyword = newKeywordFilter;
-      } else {
-        this.settings.publication_filter.keyword = "";
-      }
-    },
-    setPubliAuthorFilter(newAuthorFilter) {
-      if (this.settings.publication_filter.author !== newAuthorFilter) {
-        this.settings.publication_filter.author = newAuthorFilter;
-      } else {
-        this.settings.publication_filter.author = "";
-      }
-    },
     setMediaAuthorFilter(newAuthorFilter) {
       if (this.settings.media_filter.author !== newAuthorFilter) {
         this.settings.media_filter.author = newAuthorFilter;
@@ -1704,7 +1698,7 @@ let vm = new Vue({
     updateClientInfo(val) {
       if (this.$socketio.socket) {
         if (window.state.dev_mode === "debug")
-          console.log(`ROOT EVENT: updateClientInfo`);
+          console.log(`ROOT EVENT: updateClientInfo ${JSON.stringify(val)}`);
 
         this.$socketio.socket.emit("updateClientInfo", val);
       }

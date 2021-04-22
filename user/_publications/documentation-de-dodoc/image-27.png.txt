@@ -1,0 +1,42 @@
+date_created: 20210331_180831
+
+----
+
+date_modified: 20210331_181046
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-27.png
+
+----
+
+file_meta: 
+
+-
+size: 861566
+-
+width: 2552
+-
+height: 1758
+-
+ratio: 0.6889
+
+
+----
+
+caption: &lt;p class=&quot;is--focused&quot;&gt;Après la sélection du ou des fichiers à importer, ce menu apparaît et indique la progression des envois. Si l’envoi n’a pu se faire en totalité, l’option RÉESSAYER apparaitra et vous pourrez relancer ce transfert.&lt;&#x2F;p&gt;
+
+----
+

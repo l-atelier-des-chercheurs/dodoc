@@ -99,6 +99,24 @@
         </button>
       </div>
     </div>
+    <div
+      v-if="allProjects && allProjects.length > 0"
+      class="padding-sides-small"
+    >
+      <label>{{ $t("projects") }}</label>
+      <div class="m_authorField margin-bottom-none">
+        <button
+          v-for="{ name, slugFolderName: project_slug } in allProjects"
+          :key="project_slug"
+          :class="{
+            'is--active': projectFilter === project_slug,
+          }"
+          @click="$emit('setProjectFilter', project_slug)"
+        >
+          {{ name }}
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -106,12 +124,14 @@ export default {
   props: {
     keywordFilter: String,
     authorFilter: String,
+    projectFilter: String,
     favFilter: {
       type: Boolean,
       default: false,
     },
     allKeywords: Array,
     allAuthors: Array,
+    allProjects: Array,
     allTypes: {
       type: Array,
       default: () => [],

@@ -1562,6 +1562,13 @@ html[lang="fr"] .ql-tooltip[data-mode="link"]::before {
     }
   }
 
+  &.has--multiCursor {
+    ::selection {
+      // problamtic : double clicking a word doesnt highlight it with quill-cursor, and captions in stories dont have highlight
+      // background: transparent;
+    }
+  }
+
   &.has--noToolbar {
     .ql-toolbar {
       display: none;
@@ -1771,9 +1778,6 @@ html[lang="fr"] .ql-tooltip[data-mode="link"]::before {
     margin-top: 1.4375em;
     margin-bottom: 0em;
   }
-
-  h1,
-  h2,
   ul,
   ol,
   pre,
@@ -1783,7 +1787,6 @@ html[lang="fr"] .ql-tooltip[data-mode="link"]::before {
     margin-bottom: ~"calc(var(--spacing) / 2)";
   }
 
-  h3,
   p,
   li {
     margin-top: 0;
@@ -2137,4 +2140,19 @@ html[lang="fr"] .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
 .ql-picker.ql-font .ql-picker-item[data-value="OpenDyslexic"]::before {
   content: "OpenDyslexic";
   font-family: "OpenDyslexic";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Luciole"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Luciole"]::before {
+  content: "Luciole";
+  font-family: "Luciole";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Belle Allure CE"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Belle Allure CE"]::before {
+  content: "Belle Allure CE";
+  font-family: "Belle Allure CE";
+}
+.ql-picker.ql-font .ql-picker-label[data-value="Belle Allure CM"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Belle Allure CM"]::before {
+  content: "Belle Allure CM";
+  font-family: "Belle Allure CM";
 }

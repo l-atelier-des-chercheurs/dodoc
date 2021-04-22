@@ -789,7 +789,6 @@ body {
 .m_sideBySideSwitches {
   display: flex;
   flex-flow: row wrap;
-  background-color: white;
 
   label,
   input {
@@ -1810,7 +1809,7 @@ small {
 
 .m_displayMyContent {
   display: block;
-  max-width: 340px;
+  max-width: 300px;
   width: 90%;
   background-color: @c-noir;
   color: white;
@@ -2006,6 +2005,12 @@ small {
     color: @c-noir;
     &::before {
       background-image: url("/images/i_qr_code.svg");
+    }
+  }
+  &.barButton_recipes {
+    color: @c-bleumarine;
+    &::before {
+      background-image: url("/images/i_recipes.svg");
     }
   }
 }
@@ -3350,6 +3355,7 @@ small {
 .m_mealList {
   .margin-medium;
   .margin-right-small;
+  margin-top: 0;
   // .padding-sides-small;
   .bg-blanc;
 
@@ -3397,6 +3403,10 @@ small {
   // --table-spacing-x: ~"calc(var(--spacing) / 4)";
   --table-spacing-y: ~"calc(var(--spacing) / 4)";
   // --table-spacing-y: 0;
+
+  &.was--justOpened {
+    border: 2px solid @c-gris_fonce;
+  }
 }
 
 .m_mealList--reply {

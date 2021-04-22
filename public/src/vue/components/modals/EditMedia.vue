@@ -984,6 +984,10 @@ export default {
           // setTimeout(() => {
           //   this.show_saved_icon = false;
           // }, 200);
+        })
+        .catch(() => {
+          this.is_loading_or_saving = false;
+          this.adjust_mode = false;
         });
     },
   },

@@ -40,7 +40,7 @@
             <label>{{ $t("protected_by_pass") }}</label>
           </div> -->
 
-    <div
+    <!-- <div
       class="m_metaField"
       v-if="
         !can_edit_folder &&
@@ -50,8 +50,8 @@
       "
     >
       <div>{{ $t("only_authors_can_open") }}</div>
-    </div>
-    <div
+    </div> -->
+    <!-- <div
       class="m_metaField"
       v-else-if="
         !can_edit_folder &&
@@ -61,7 +61,7 @@
       "
     >
       <div>{{ $t("only_password_can_open") }}</div>
-    </div>
+    </div> -->
 
     <template
       v-if="
@@ -219,6 +219,7 @@ export default {
     return {
       show_password_field: false,
       showCurrentPassword: false,
+      entered_password: "",
     };
   },
   created() {},

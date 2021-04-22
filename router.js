@@ -32,21 +32,6 @@ module.exports = function (app) {
 
   remote_api.init(app);
 
-  // app.ws('/_collaborative-editing', collaborativeEditing);
-
-  function collaborativeEditing(ws, req) {
-    console.log("WebSocket sharedb event");
-
-    ws.on("message", (msg) => {
-      console.log("WebSocket was closed");
-      ws.send(msg);
-    });
-
-    ws.on("close", () => {
-      console.log("WebSocket was closed");
-    });
-  }
-
   /**
    * routing functions
    */

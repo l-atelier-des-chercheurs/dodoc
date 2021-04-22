@@ -1,0 +1,42 @@
+date_created: 20210331_170421
+
+----
+
+date_modified: 20210331_173640
+
+----
+
+caption: &lt;p class=&quot;is--focused&quot;&gt;Après la capture, mode de validation pour confirmer que l’enregistrement correspond bien à celui souhaité. À noter qu’il est possible de télécharger le média directement, sans l’enregistrer dans do•doc avec le lien &lt;em&gt;&lt;u&gt;télécharger ce média sur votre appareil&lt;&#x2F;u&gt;&lt;&#x2F;em&gt; à droite, en bas.&lt;&#x2F;p&gt;
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-11.png
+
+----
+
+file_meta: 
+
+-
+size: 5442149
+-
+width: 2468
+-
+height: 1868
+-
+ratio: 0.7569
+
+
+----
+

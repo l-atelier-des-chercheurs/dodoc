@@ -220,7 +220,11 @@ export default {
       return false;
     },
     is_rotation_effect() {
-      return !!this.publication.effects.find((e) => e.type === "rotate");
+      return (
+        this.publication.effects &&
+        Array.isArray(this.publication.effects) &&
+        this.publication.effects.find((e) => e.type === "rotate")
+      );
     },
   },
   methods: {

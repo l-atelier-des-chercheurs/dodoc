@@ -115,10 +115,55 @@
                       <button
                         type="button"
                         class="button-nostyle text-uc button-triangle"
+                        :class="{ 'is--active': show_order }"
+                        @click="show_order = !show_order"
+                      >
+                        {{ $t("in_the_order") }}
+                      </button>
+
+                      <div
+                        v-if="show_order"
+                        class="flex-wrap tiny-width margin-left-none bg-blanc rounded padding-verysmall normal"
+                      >
+                        <select
+                          v-model="currentSort.field"
+                          class="select-xs margin-verysmall"
+                        >
+                          <option
+                            v-for="{ field, label } in sort_options"
+                            :value="field"
+                            :key="field"
+                            v-html="$t(label)"
+                          />
+                        </select>
+                        <select
+                          v-model="currentSort.order"
+                          class="select-xs margin-verysmall"
+                        >
+                          <option
+                            v-for="{ key, label } in sort_orders"
+                            :value="key"
+                            :key="key"
+                            v-html="$t(label)"
+                          />
+                        </select>
+                      </div>
+                      —
+                      <button
+                        type="button"
+                        class="button-nostyle text-uc button-triangle"
                         :class="{ 'is--active': show_filters }"
                         @click="show_filters = !show_filters"
                       >
                         {{ $t("filters") }}
+                      </button>
+                      <button
+                        type="button"
+                        class="button-nostyle text-uc padding-left-verysmall"
+                        v-if="has_filters_enabled"
+                        @click="removeAllFilters"
+                      >
+                        {{ $t("remove_filters") }}
                       </button>
                     </template>
                     <TagsAndAuthorFilters
@@ -226,6 +271,14 @@
                     >
                       {{ $t("filters") }}
                     </button>
+                    <button
+                      type="button"
+                      class="button-nostyle text-uc padding-left-verysmall"
+                      v-if="has_filters_enabled"
+                      @click="removeAllFilters"
+                    >
+                      {{ $t("remove_filters") }}
+                    </button>
                   </template>
                   <TagsAndAuthorFilters
                     v-if="show_filters"
@@ -247,8 +300,8 @@
           </div>
         </div>
         <div class="m_displayMyContent" v-if="$root.current_author">
-          <span>{{ $t("show") }}</span>
-          <select v-model="show_only_my_content">
+          <span class="font-small">{{ $t("show") }}</span>
+          <select v-model="show_only_my_content" class="select-s">
             <option :value="true">
               <template v-if="!show_medias_instead_of_projects">{{
                 $t("only_my_projects").toLowerCase()
@@ -319,6 +372,7 @@
                 class="is--collapsed"
                 v-for="project in item.content"
                 :key="project.slugFolderName"
+                :context="'in_folder'"
                 :project="project"
                 :read_only="read_only"
                 :is_selected="projectIsSelected(project.slugFolderName)"
@@ -426,8 +480,36 @@ export default {
         type: "date",
         order: "descending",
       },
+      sort_options: [
+        {
+          field: "date_created",
+          type: "date",
+          label: "created",
+        },
+        {
+          field: "date_modified",
+          type: "date",
+          label: "edited",
+        },
+        // {
+        //   field: "name",
+        //   type: "alph",
+        //   label: "name",
+        // },
+      ],
+      sort_orders: [
+        {
+          key: "descending",
+          label: "most_recent_first",
+        },
+        {
+          key: "ascending",
+          label: "oldest_first",
+        },
+      ],
 
       show_filters: false,
+      show_order: false,
       show_search: false,
       selected_medias: [],
       selected_projects: [],
@@ -478,14 +560,7 @@ export default {
     },
     show_filters: function () {
       if (!this.show_filters) {
-        this.$root.settings.project_filter.keyword = "";
-        this.$root.settings.project_filter.author = "";
-        this.$root.settings.project_filter.name = "";
-        this.debounce_search_project_name = "";
-        this.$root.settings.media_filter.keyword = "";
-        this.$root.settings.media_filter.author = "";
-        this.$root.settings.media_filter.fav = false;
-        this.$root.settings.media_filter.type = false;
+        // this.removeAllFilters();
       }
     },
     debounce_search_project_name: function () {
@@ -511,6 +586,18 @@ export default {
     },
     mediaTypes() {
       return this.$root.getAllTypesFrom(this.filteredMedias);
+    },
+    has_filters_enabled() {
+      return (
+        this.$root.settings.project_filter.keyword !== "" ||
+        this.$root.settings.project_filter.author !== "" ||
+        this.$root.settings.project_filter.name !== "" ||
+        this.debounce_search_project_name !== "" ||
+        this.$root.settings.media_filter.keyword !== "" ||
+        this.$root.settings.media_filter.author !== "" ||
+        this.$root.settings.media_filter.fav !== false ||
+        this.$root.settings.media_filter.type !== ""
+      );
     },
     sortedProjects: function () {
       var sortable = [];
@@ -680,16 +767,35 @@ export default {
       //   return acc;
       // }, []);
 
-      const projects_sorted_by_folder = this.$_.groupBy(
-        this.sortedProjects,
-        (p) => {
-          return !!p.folder ? p.folder : "znot-groupped";
-        }
-      );
+      // const projects_sorted_by_folder = this.$_.groupBy(
+      //   this.sortedProjects,
+      //   (p) => {
+      //     return !!p.folder ? p.folder : "znot-groupped";
+      //   }
+      // );
 
-      if (projects_sorted_by_folder.length === 0) {
-        return [];
-      }
+      // get all projects
+      // group those with folder, otherwise don’t
+
+      return this.sortedProjects.reduce((acc, p) => {
+        if (p.folder && !this.$root.settings.opened_project_folder) {
+          if (acc.find((pf) => pf.name === p.folder))
+            acc.find((pf) => pf.name === p.folder).content.push(p);
+          else
+            acc.push({
+              type: "folder",
+              name: p.folder,
+              content: [p],
+            });
+        } else {
+          acc.push({
+            type: "project",
+            content: p,
+          });
+        }
+        // this.$root.settings.opened_project_folder
+        return acc;
+      }, []);
 
       const folders_and_projects = Object.entries(projects_sorted_by_folder)
         .sort((a, b) => a[0].localeCompare(b[0]))
@@ -772,6 +878,16 @@ export default {
   methods: {
     setSort(newSort) {
       this.currentSort = newSort;
+    },
+    removeAllFilters() {
+      this.$root.settings.project_filter.keyword = "";
+      this.$root.settings.project_filter.author = "";
+      this.$root.settings.project_filter.name = "";
+      this.debounce_search_project_name = "";
+      this.$root.settings.media_filter.keyword = "";
+      this.$root.settings.media_filter.author = "";
+      this.$root.settings.media_filter.fav = false;
+      this.$root.settings.media_filter.type = "";
     },
 
     toggleSelectMedia({ slugFolderName, metaFileName }) {

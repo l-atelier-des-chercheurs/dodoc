@@ -50,6 +50,12 @@ module.exports = (function () {
       }
     }).on("connection", function (socket) {
       dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
+      dev.log(
+        `Clients connected currently : ${
+          Object.keys(io.sockets.connected).length
+        }`
+      );
+
       socket._data = {};
 
       var onevent = socket.onevent;
@@ -955,11 +961,16 @@ module.exports = (function () {
     await sendFolders({ type, slugFolderName: new_slugFolderName, id });
   }
 
-  function onUpdateNetworkInfos() {
+  function onUpdateNetworkInfos(socket) {
     dev.logfunction(`EVENT - onUpdateNetworkInfos`);
     api.getNetworkInfos().then(
       (localNetworkInfos) => {
-        api.sendEventWithContent("newNetworkInfos", localNetworkInfos, io);
+        api.sendEventWithContent(
+          "newNetworkInfos",
+          localNetworkInfos,
+          io,
+          socket
+        );
       },
       function (err, p) {
         dev.error(`Err while getting local IP: ${err}`);
@@ -1128,6 +1139,12 @@ module.exports = (function () {
 
   function onClientDisconnect(socket) {
     sendClients();
+
+    dev.log(
+      `Clients connected currently : ${
+        Object.keys(io.sockets.connected).length
+      }`
+    );
   }
 
   async function onLoadJournal(socket) {

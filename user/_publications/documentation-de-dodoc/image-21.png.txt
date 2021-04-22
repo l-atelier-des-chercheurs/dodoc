@@ -1,0 +1,42 @@
+date_created: 20210331_174645
+
+----
+
+date_modified: 20210331_180050
+
+----
+
+caption: 
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-21.png
+
+----
+
+file_meta: 
+
+-
+size: 966862
+-
+width: 2352
+-
+height: 1724
+-
+ratio: 0.7330
+
+
+----
+

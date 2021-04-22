@@ -1,16 +1,24 @@
 <template>
-  <tbody>
+  <tbody
+    class="m_publicationRow"
+    :class="{
+      'is--model': publication.is_model,
+      'is--reply': !!publication.follows_model,
+    }"
+  >
     <tr>
       <!-- @click.exact="openPublication" -->
       <td width="30%">
-        {{ publication.name }}
+        <span class="_publiNameInRow">
+          {{ publication.name }}
+        </span>
         <ProtectedLock
           :editing_limited_to="publication.editing_limited_to"
           :is_protected="!can_edit_publi"
         />
       </td>
       <td width="20%">
-        <div class="_template">
+        <div class="_template" v-if="publi_template">
           <!-- <div class="icon" v-html="$t(publi_template.icon)" /> -->
           <div class="label" v-html="$t(publi_template.key)" />
         </div>
@@ -254,6 +262,11 @@ export default {
 ._openButton {
   margin: calc(var(--spacing) / 8);
 }
+._publiNameInRow {
+  font-family: "Fira Sans";
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
 ._template {
   display: flex;
   flex-flow: row nowrap;
@@ -262,6 +275,25 @@ export default {
   .label {
     color: var(--c-bleuvert);
     padding: calc(var(--spacing) / 8);
+  }
+}
+.m_publicationRow {
+  // border: 2px solid transparent;
+
+  &.is--reply,
+  &.is--model {
+    > :first-child {
+      td {
+        border-bottom: none;
+      }
+    }
+  }
+
+  &:hover {
+    // background: var(--c-bleuvert_clair);
+    // --table-border-color: var(--c-bleuvert);
+
+    background: var(--c-gris-tresclair);
   }
 }
 </style>

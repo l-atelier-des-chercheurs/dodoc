@@ -1,0 +1,32 @@
+date_created: 20210401_151312
+
+----
+
+date_modified: 20210401_151501
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: text
+
+----
+
+media_filename: text-20210401_151312-qev.md
+
+----
+
+file_meta: 
+
+-
+size: 0
+
+
+----
+

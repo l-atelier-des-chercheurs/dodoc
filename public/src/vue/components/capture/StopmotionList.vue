@@ -9,7 +9,10 @@
         >
           <!-- @mouseenter="loadStopmotionMedias(stopmotion.slugFolderName)" -->
 
-          <div class="_preview">
+          <div
+            class="_preview"
+            @click="loadStopmotion(stopmotion.slugFolderName)"
+          >
             <MediaContent
               :context="'preview'"
               :slugFolderName="stopmotion.slugFolderName"
@@ -159,6 +162,8 @@ export default {
 
   color: var(--c-bleumarine);
   padding: calc(var(--spacing) / 2);
+  padding-top: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 2);
 
   overflow-y: auto;
   height: 100%;

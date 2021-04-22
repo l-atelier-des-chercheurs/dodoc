@@ -4,7 +4,8 @@ module.exports = (function () {
     // CAMERA
     "camera2 0, facing back": {
       fr: "Caméra arrière",
-      nl: "Camera naar achteren gericht ",
+      fr: "Back camera",
+      nl: "Camera naar achteren gericht",
       oc: "Camerà arrièra",
       de: "Rückfahrkamera",
     },
@@ -98,6 +99,15 @@ module.exports = (function () {
       oc: "Descreissent",
       de: "Absteigend",
     },
+    most_recent_first: {
+      fr: "Le plus récent en premier",
+      en: "Most recent first",
+    },
+    oldest_first: {
+      fr: "Le plus ancien en premier",
+      en: "Oldest first",
+    },
+
     create_a_project: {
       fr: "Créer un projet",
       en: "Create a project",
@@ -489,6 +499,10 @@ module.exports = (function () {
     only_my_recipes: {
       fr: "Seulement mes recettes",
       en: "My recipes",
+    },
+    show_only_recipes_for_project: {
+      fr: "Afficher uniquement les recette rattachées au projet",
+      en: "Show only recipes linked to project",
     },
     only_channels_i_participate_in: {
       fr: "les discussions accessibles",
@@ -1822,6 +1836,10 @@ module.exports = (function () {
       oc: "Filtre de mèdias",
       de: "Medienfilter",
     },
+    remove_filters_and_show_all: {
+      fr: "Supprimer tous les filtres pour afficher toute la liste",
+      en: "Remove all filters to show everything",
+    },
     no_projects_yet: {
       fr:
         "Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc !",
@@ -2002,6 +2020,10 @@ module.exports = (function () {
       nl: "Importeer media",
       oc: "Importar de mèdias",
       de: "Alle Medien importieren",
+    },
+    retry: {
+      fr: "Réessayer",
+      en: "Retry",
     },
     select_files_to_import: {
       fr: "Sélectionner les fichiers à importer",
@@ -2195,6 +2217,10 @@ module.exports = (function () {
       en: "Remove image",
       oc: "Suprimir l'imatge",
       de: "Dieses Bild löschen",
+    },
+    remove_filters: {
+      fr: "Supprimer les filtres",
+      en: "Remove all filters",
     },
     remove_layer: {
       fr: "Supprimer le calque",
@@ -2871,13 +2897,6 @@ module.exports = (function () {
       oc: "Exportar",
       de: "Exportieren",
     },
-    export_as_pdf: {
-      fr: "Export PDF",
-      en: "Export as PDF",
-      nl: "Exporteren als PDF",
-      oc: "Expòrt PDF",
-      de: "Im PDF-Format exportieren",
-    },
     new_window: {
       fr: "Nouvelle fenêtre",
       en: "New Window",
@@ -2981,7 +3000,7 @@ module.exports = (function () {
     },
     get_pdf: {
       fr:
-        "Pour récupérer un PDF ou une image de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
+        "Pour récupérer un document PDF ou une image de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
       en:
         "To download a PDF or an image of this recipe (for example, to print it), click here:",
       nl:
