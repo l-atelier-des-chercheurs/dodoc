@@ -51,7 +51,8 @@
               <input
                 type="text"
                 class=""
-                autofocus
+                autofocus="autofocus"
+                ref="searchField"
                 v-model="debounce_search_author_name"
               />
               <span
@@ -153,6 +154,15 @@ export default {
       this.debounce_search_author_name_function = setTimeout(() => {
         this.author_name_filter = this.debounce_search_author_name;
       }, 340);
+    },
+    show_authors_search() {
+      if (this.show_authors_search) {
+        this.$nextTick(() => {
+          this.$nextTick(() => {
+            if (this.$refs.searchField) this.$refs.searchField.focus();
+          });
+        });
+      }
     },
   },
   computed: {
