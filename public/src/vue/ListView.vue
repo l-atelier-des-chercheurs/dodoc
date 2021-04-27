@@ -215,7 +215,7 @@
                       v-if="
                         show_search || debounce_search_project_name.length > 0
                       "
-                      class="rounded"
+                      class="rounded small-width"
                     >
                       <div>{{ $t("project_name_to_find") }}</div>
 
