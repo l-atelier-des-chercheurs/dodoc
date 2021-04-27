@@ -215,7 +215,7 @@
                       v-if="
                         show_search || debounce_search_project_name.length > 0
                       "
-                      class="rounded"
+                      class="rounded small-width"
                     >
                       <div>{{ $t("project_name_to_find") }}</div>
 
@@ -224,6 +224,8 @@
                           type="text"
                           class
                           v-model="debounce_search_project_name"
+                          ref="searchField"
+                          autofocus="autofocus"
                         />
                         <span
                           class="input-addon"
@@ -561,6 +563,13 @@ export default {
     show_filters: function () {
       if (!this.show_filters) {
         // this.removeAllFilters();
+      }
+    },
+    show_search() {
+      if (this.show_search) {
+        this.$nextTick(() => {
+          if (this.$refs.searchField) this.$refs.searchField.focus();
+        });
       }
     },
     debounce_search_project_name: function () {

@@ -206,15 +206,15 @@ button,
       content: "";
       display: inline-block;
 
-      @t-tsize: 0.75em;
+      @t-tsize: 0.6em;
       width: @t-tsize;
       height: @t-tsize;
-      border: @t-tsize / 1.8 solid transparent;
+      border: @t-tsize / 1.4 solid transparent;
       border-right: @t-tsize solid currentColor;
       box-sizing: border-box;
-
-      margin-left: -@t-tsize / 2;
-      margin-bottom: -0em;
+      vertical-align: middle;
+      margin-left: -@t-tsize / 1.5;
+      margin-bottom: 0.2em;
 
       transform-origin: 75% 40%;
 
@@ -334,6 +334,9 @@ button,
   &.is--active {
     background-color: transparent;
     color: inherit;
+  }
+  &:hover {
+    background: transparent;
   }
 }
 
@@ -1459,6 +1462,9 @@ th {
   margin-right: auto;
 }
 
+.small-width {
+  max-width: 320px;
+}
 .tiny-width {
   max-width: 200px;
   margin-left: auto;

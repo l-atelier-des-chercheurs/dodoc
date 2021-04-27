@@ -154,7 +154,7 @@
                   </button>
                   <button
                     type="button"
-                    class="button-nostyle text-uc padding-sides-verysmall bg-bleuvert"
+                    class="button-nostyle text-uc padding-sides-verysmall bg-transparent"
                     v-if="has_filters_enabled"
                     @click="removeAllFilters"
                   >
@@ -220,7 +220,7 @@
                   v-if="
                     show_search || debounce_search_publication_name.length > 0
                   "
-                  class="rounded"
+                  class="rounded small-width"
                 >
                   <div>{{ $t("recipe_name_to_find") }}</div>
 
