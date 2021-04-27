@@ -40,11 +40,11 @@
           <div class="_searchField">
             <button
               type="button"
-              class="button-nostyle text-uc button-triangle"
+              class="button-nostyle text-uc label button-triangle"
               :class="{ 'is--active': show_authors_search }"
               @click="show_authors_search = !show_authors_search"
             >
-              <label>{{ $t("author_name_to_find") }}</label>
+              {{ $t("author_name_to_find") }}
             </button>
 
             <div class="input-group" v-if="show_authors_search">
