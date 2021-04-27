@@ -142,7 +142,7 @@
             }"
             @click="toggleDayFolding(day)"
           >
-            {{ !folded_days.includes(day) ? $t("fold") : $t("unfold") }}&nbsp;
+            {{ !folded_days.includes(day) ? $t("fold") : $t("unfold") }}
           </button>
         </h3>
         <div class="m_mediaShowAll" v-if="!folded_days.includes(day)">

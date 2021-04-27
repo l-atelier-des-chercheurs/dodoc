@@ -40,18 +40,19 @@
           <div class="_searchField">
             <button
               type="button"
-              class="button-nostyle text-uc button-triangle"
+              class="button-nostyle text-uc label button-triangle"
               :class="{ 'is--active': show_authors_search }"
               @click="show_authors_search = !show_authors_search"
             >
-              <label>{{ $t("author_name_to_find") }}</label>
+              {{ $t("author_name_to_find") }}
             </button>
 
             <div class="input-group" v-if="show_authors_search">
               <input
                 type="text"
                 class=""
-                autofocus
+                autofocus="autofocus"
+                ref="searchField"
                 v-model="debounce_search_author_name"
               />
               <span
@@ -153,6 +154,15 @@ export default {
       this.debounce_search_author_name_function = setTimeout(() => {
         this.author_name_filter = this.debounce_search_author_name;
       }, 340);
+    },
+    show_authors_search() {
+      if (this.show_authors_search) {
+        this.$nextTick(() => {
+          this.$nextTick(() => {
+            if (this.$refs.searchField) this.$refs.searchField.focus();
+          });
+        });
+      }
     },
   },
   computed: {
