@@ -1,0 +1,28 @@
+date_created: 20190630_225551
+
+----
+
+date_modified: 20190630_225615
+
+----
+
+date_uploaded: 20190630_225555
+
+----
+
+media_filename: mise-en-forme-css-20190611-120720-rb3.pdf
+
+----
+
+type: document
+
+----
+
+fav: false
+
+----
+
+caption: Aide à la mise en forme pour les recettes &quot;Document page à page&quot;
+
+----
+

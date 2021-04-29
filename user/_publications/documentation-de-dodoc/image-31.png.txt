@@ -1,0 +1,42 @@
+date_created: 20210401_144246
+
+----
+
+date_modified: 20210401_144305
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-31.png
+
+----
+
+file_meta: 
+
+-
+size: 70851
+-
+width: 1532
+-
+height: 826
+-
+ratio: 0.5392
+
+
+----
+
+caption: &lt;p class=&quot;is--focused&quot;&gt;Curseur d’un utilisateur identifié, ici Louis E.&lt;&#x2F;p&gt;
+
+----
+

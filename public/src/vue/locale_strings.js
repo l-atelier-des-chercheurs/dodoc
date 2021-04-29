@@ -1,746 +1,4010 @@
-module.exports = (function() {
+module.exports = (function () {
   // Ready translated locale messages
   const messages = {
-    fr: {
-      ascending: 'Croissant',
-      descending: 'Décroissant',
-      create_a_project: 'Créer un projet',
-      create_a_publication: 'Créer une publication',
-      publication: 'Publication',
-      name: 'Nom',
-      project_name: 'Nom du projet',
-      created_date: 'Date de création',
-      uploaded: 'Importation',
-      created: 'Création',
-      edited: 'Édition',
-      sent_date: 'Date d’envoi',
-      for_the_placement_on_timeline: '(pour le placement sur la timeline)',
-      type: 'Type',
-      color: 'Couleur',
-      keywords: 'Mots-clés',
-      share: 'Partage',
-      author: 'Auteur(s)',
-      download: 'Télécharger',
-      caption: 'Légende',
-      formatting: 'Mise en forme',
-      smoothing: 'Lissage',
-      onion_skin: 'Pelure d’oignon',
-      'file:': 'Fichier&nbsp;:',
-      add_to_project: 'Ajouter au projet&nbsp;:',
-      input_password: 'Renseigner le mot de passe ci-dessous :',
-      validate_with_enter: 'Valider avec la touche ENTRÉE.',
-      no_stopmotion_created_yet:
-        'Les animations créées apparaîtront dans ce panneau.',
-      device: 'Appareil',
-      'camera2 1, facing front': 'Caméra frontale',
-      'camera2 0, facing back': 'Caméra arrière',
-
-      very_slow: 'Très lent',
-      slow: 'Lent',
-      speed_medium: 'Normal',
-      fast: 'Rapide',
-
-      remember_password_on_this_device: 'Sauvegarder pour cet appareil',
-
-      cooking_pot: 'La marmite',
-      text_overflow: 'Texte en excès',
-      move_to_foreground: 'Mettre au premier plan',
-      move_to_background: 'Mettre à l’arrière plan',
-      'layer:': 'Calque&nbsp;:',
-      css_settings: 'Règlages CSS',
-      edit_content: 'Modifier le contenu',
-      adjust: 'Ajuster',
-
-      show_all: 'Tout afficher',
-      cooking_pot_instructions:
-        'Mélangez des médias pour en créer des nouveaux !',
-      untitled: 'Sans titre',
-      mix_audio_and_video: 'Son sur une vidéo',
-      mix_audio_and_image: 'Son sur une image',
-      add_sound_video_file:
-        'Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.',
-      add_sound_image_file:
-        'Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>image</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une image et une piste sonore.',
-      add_multiple_videos_files:
-        'Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> en cliquant sur la flèche verte. Les vidéos seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.',
-      add_multiple_images:
-        'Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera une vidéo.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.',
-      style: 'style',
-      css: 'css',
-      write_some_CSS_code_for_example:
-        'Écrivez ici du code CSS, <br>par exemple <code>color: blue;</code>',
-      framerate: 'images par seconde',
-      timelapse: 'déclenchement automatique',
-      seconds_per_image: 'secondes par image',
-      seconds: 'secondes',
-      quality: 'qualité',
-      bytes: 'octets',
-      kb: 'ko',
-      mb: 'Mo',
-      gb: 'Go',
-      duration: 'Durée',
-      send: 'Envoyer',
-      open_in_dodoc: 'Ouvrir dans do•doc',
-      connect_to_dodoc: 'Accéder à do•doc',
-
-      login: 'S’identifier',
-      help: 'Aide',
-      date: 'Date',
-      portrait: 'Portrait',
-      nfc_tag: 'Tag NFC',
-      yes: 'Oui',
-      cancel: 'Annuler',
-      back: 'Retour',
-      sureToRemoveAuthor: 'Êtes-vous sûr de vouloir supprimer cet auteur ?',
-      show_all_authors: 'Afficher l’ensemble des auteurs',
-      changes_not_saved_sureToCloseModal:
-        'Des modifications ont eu lieu, souhaitez-vous les enregistrer ?',
-      save_changes: 'Enregistrer les modifications',
-      close_the_window: 'Annuler',
-      sureToRemovePubli:
-        'Êtes-vous sûr de vouloir supprimer cette publication ?',
-      sure_to_cancel_stopmotion:
-        'Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu "Liste des animations"',
-      validate_media: 'Valider le média',
-      add_keyword: 'Ajouter un mot-clé',
-      add: 'Ajouter',
-      close: 'Fermer',
-
-      very_high: 'Très élevée (1080p)',
-      high: 'Élevée (720p)',
-      medium: 'Moyenne (640p)',
-      low: 'Basse (360p)',
-
-      showing: 'Affichage de',
-      media_filter: 'Filtre de médias',
-      no_projects_yet:
-        'Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc !',
-      projects_of: 'projets sur',
-      medias_of: 'médias sur',
-      projects: 'Projets',
-      project: 'Projet',
-      medias: 'Médias',
-      media: 'Média',
-      authors: 'Auteurs',
-      authors_list: 'Liste des auteurs',
-      create_an_author: 'Créer un auteur',
-      favorite_medias: 'Média favoris',
-      all_medias: 'Tous les médias',
-      create_text: 'Écrire',
-      import: 'Importer',
-      import_all_files: 'Importer tous les fichiers',
-      import_medias: 'Importer des médias',
-      select_files_to_import: 'Sélectionner les fichiers à importer',
-      select_cover_image: 'Sélectionner une image de couverture',
-      select_portrait_image: 'Sélectionner une image de portrait',
-      add_to_recipe: 'Ajouter à la recette',
-      add_a_page: 'Ajouter une page',
-      insert_a_page_here: 'Insérer une page ici',
-      add_a_page_before: 'Ajouter une page avant celle-ci',
-      add_a_page_after: 'Ajouter une page après celle-ci',
-      add_a_page_here: 'Ajouter une page ici',
-      remove_this_page: '▲ Supprimer cette page ▲',
-
-      anonymous: 'anonyme',
-      other_users: 'autres utilisateurs',
-      other_users_connected: 'autres utilisateurs connectés',
-
-      mix_medias: 'Mélanger des médias',
-
-      made_with_dodoc:
-        'Page web réalisée avec l’application libre et gratuite do•doc',
-
-      loading: 'chargement',
-      open: 'Ouvrir',
-      save: 'Enregistrer',
-      as_favorite: '+ favoris',
-      edit: 'Éditer',
-      width: 'Largeur',
-      height: 'Hauteur',
-      zoom: 'Zoom',
-      settings: 'Règlages',
-      stopmotion_list: 'Liste des animations',
-
-      print: 'Imprimer',
-      create: 'Créer',
-      remove: 'Supprimer',
-      withdraw: 'Enlever',
-      remove_this_image: 'Supprimer cette image',
-      password: 'Mot de passe',
-      password_required_to_open: 'Mot de passe requis',
-      show_password: 'Afficher le mot de passe',
-      hide: 'Cacher',
-      protected_by_pass: 'protégé par mot de passe',
-      password_instructions:
-        'Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce projet.',
-      author_instructions:
-        'Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).',
-
-      sort_by: 'Organiser par',
-      by: 'par',
-      in_the_order: 'Dans l’ordre',
-      public: 'Public',
-      fav: 'Favoris',
-      content: 'Contenu',
-      edit: 'Modifier',
-
-      'lang:': 'Changer la langue&nbsp;:',
-      lang: 'Changer la langue',
-      share_access: 'Accéder depuis d’autres appareils',
-
-      photo: 'photo',
-      video: 'vidéo',
-      stopmotion: 'animation',
-      audio: 'son',
-      vecto: 'formes',
-      image: 'image',
-      text: 'texte',
-      document: 'document',
-      other: 'autre',
-      with_sound: 'avec le son',
-      generate: 'Générer',
-
-      select: 'Sélectionner',
-      unselect: 'Dé-sélectionner',
-
-      toconnectwithanotherdevice:
-        'Pour accéder à cet élément avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web, ou bien scannez le code QR&nbsp;: ',
-      sureToRemoveProject: 'Êtes-vous sûr de vouloir supprimer ce projet ?',
-      sureToRemoveMedia: 'Êtes-vous sûr de vouloir supprimer ce média ?',
-
-      edit_the_media: 'Éditer le média',
-      edit_project: 'Éditer le projet',
-      edit_publication: 'Éditer la recette',
-      drop_here_to_import: 'Déposez vos contenus ici pour les importer',
-
-      capture: 'Capturer',
-      current: 'Actuellement',
-      currently: 'Actuellement',
-      update: 'Mettre à jour',
-
-      more_information:
-        'Pour plus d’information, consultez la <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation</a> ou <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contactez</a> les auteurs de ce logiciel.',
-      no_media_in_folder: 'Aucun média dans ce dossier.',
-      no_public_media_in_folder: 'Aucun média public dans ce dossier.',
-      auto_scroll: 'défilement<br>automatique',
-      scale: 'échelle&nbsp;:',
-      scale_items: {
-        second: 'sec',
-        minute: 'min',
-        hour: 'h',
-        half_day: '½j',
-        day: 'j'
-      },
-
-      more_informations: 'Plus d’infos',
-      contents_are_stored: 'Les contenus de ce dossier sont enregistrés dans ',
-      folder_information: 'Informations du dossier',
-      calendar: 'Calendrier',
-      now: 'en ce moment',
-      list: 'Liste',
-      fullscreen: 'Plein écran',
-      preview: 'Aperçu',
-      filter: 'Filtre',
-      filters: 'Filtres',
-      header_left: 'En-tête gauche',
-      header_right: 'En-tête droite',
-      gridstep: 'Pas de la grille d’alignement',
-      margin_top: 'Marge: haut',
-      margin_left: 'Marge: gauche',
-      margin_right: 'Marge: droite',
-      margin_bottom: 'Marge: bas',
-      number_of_medias: 'Nombre de médias',
-      number_of_pages: 'Nombre de pages',
-      show_page_numbers:
-        'Afficher le nombre de page dans le coin en bas à droite',
-
-      export_folder: 'Exporter en format WEB',
-      export: 'Exporter',
-      export_as_pdf: 'Export PDF',
-      new_window: 'Nouvelle fenêtre',
-      previous_creations: 'Créations précédentes',
-      export_video_instructions:
-        'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la publication.',
-      export_audio_video_mix_instructions:
-        'Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de la vidéo sélectionnés.',
-      export_audio_image_mix_instructions:
-        'Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de l’image sélectionnés.',
-      export_stopmotion_instructions:
-        'Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la publication.',
-      make_video: 'Fabriquer une vidéo',
-      interval_between_pictures: 'Intervalle entre chaque photo',
-
-      publication_list: 'Liste des publications',
-      export_creation: 'Exportation d’une création',
-      get_pdf:
-        'Pour récupérer un PDF de cette publication (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:',
-      download_pdf: 'Télécharger un PDF',
-      get_website:
-        'Pour récupérer un site web contenant cette publication (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:',
-      download_website: 'Télécharger une version web',
-      open_in_app: 'Afficher',
-      format: 'Format',
-      template: 'Gabarit',
-      standard: 'Standard',
-      'feuille de choux': 'Feuille de Choux',
-      'human tech days': 'Human Tech Days',
-      page_by_page: 'Document page à page',
-      video_assemblage: 'Montage vidéo',
-      stopmotion_animation: 'Animation image par image',
-      web: 'Page web',
-      back_to_project: 'Retour au projet',
-
-      page_by_page_summary:
-        'Créer un PDF imprimable ou une page web à mettre en ligne.',
-      page_by_page_instructions: `Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.`,
-      video_assemblage_summary:
-        'Créer un montage vidéo à partir d’images et de vidéos.',
-      video_assemblage_instructions: `Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos ou images bout à bout.<br> Médias acceptés : des vidéos et des images.<br>Créera une nouvelle vidéo.`,
-      stopmotion_animation_summary:
-        'Assembler des images pour créer une vidéo.',
-      stopmotion_animation_instructions: `Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.`,
-      mix_audio_and_video_summary: 'Ajouter ou remplacer du son sur une vidéo.',
-      mix_audio_and_video_instructions: `Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.`,
-      mix_audio_and_image_summary: 'Ajouter du son sur une image.',
-      mix_audio_and_image_instructions: `Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo de la durée de la piste sonore.`,
-
-      last_modified: 'Dernière modification',
-      remote_access: 'Accès depuis d’autres appareils',
-      img_per_second: 'Images par seconde',
-      sent: 'Envoyé',
-      disable: 'Désactiver',
-      previous_media: 'Média précédent',
-      next_media: 'Média suivant',
-      minimize_media: 'Utiliser comme référence',
-
-      notifications: {
-        ios_not_compatible_with_capture:
-          'Les iPhones et les iPads ne sont pas compatibles avec la fonctionnalité de Capture.',
-        instead_import_with_this_button:
-          'Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.',
-        media_was_sent: 'Le média a été enregistré.',
-        media_couldnt_be_sent:
-          'Le média n’a pas pu être enregistré à cause d’une erreur de connexion.',
-        file_was_sent: 'Le fichier a été enregistré.',
-        file_upload_not_allowed:
-          'Votre navigateur web ne prend pas en charge l’envoi de fichiers.',
-        connection_active: 'La connexion au serveur est active.',
-        connection_lost: 'La connexion au serveur a été perdue.',
-        contents_wont_be_editable:
-          'Les modifications et ajouts ne seront plus pris en compte.',
-        connection_error: 'La connexion au serveur n’a pu se faire.',
-        media_has_been_added_successfully: 'Le média a bien été transféré',
-        wrong_password_for_dodoc:
-          'Le mot de passe envoyé n’est pas valide. Veuillez réessayer.',
-        loading_dodoc: 'Chargement de do•doc en cours…',
-        'wrong_password_for_folder:':
-          'Le mot de passe n’est pas le bon pour le dossier&nbsp;:',
-        'created_edited_media:':
-          'Création ou édition d’un média pour le dossier&nbsp;:',
-        project_name_exists:
-          'Ce nom de projet existe déjà, utilisez-en un autre.',
-        publi_name_exists:
-          'Ce nom de publication existe déjà, utilisez-en un autre.',
-        author_name_exists:
-          'Ce nom d’auteur existe déjà, utilisez-en un autre.',
-        folder_name_needs_alphanumeric_characters:
-          'Les noms de dossier doivent contenir au moins un caractère alphanumérique.',
-        'failed_to_get_folder:': 'Le dossier suivant n’a pas été trouvé:',
-        failed_to_start_video_change_source_or_res:
-          'Le flux vidéo n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.',
-        video_source_not_set: 'La source vidéo n’a pas été trouvée.',
-        failed_to_start_audio_change_source:
-          'Le flux audio n’a pas pu être démarré.<br>Essayez de modifier la source dans les réglages.',
-        audio_source_not_set: 'La source audio n’a pas été trouvée.',
-        video_stream_not_available:
-          'Erreur : le flux vidéo n’est pas disponible.',
-        no_content_found_with_nfc_tag:
-          'Scan d’un tag NFC réussi, associez-lui un auteur ou un média pour commencer.',
-        author_found_with_nfc_tag:
-          'Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:',
-        medias_uploaded: 'Tous les médias ont bien étés enregistrés.',
-        medias_upload_failed:
-          'Erreur&nbsp;: certains médias n’ont pas pu être enregistrés.',
-        video_converted: 'La vidéo a été convertie et ajoutée au projet.',
-        project_has_been_removed:
-          'Ce projet vient d’être supprimé par quelqu’un d’autre.',
-        wrong_password_for: 'Mot de passe erroné pour ',
-        creating_video: 'En cours de création de la vidéo…',
-        preparing_video_from_montage: 'Préparation des vidéos du montage',
-        finished_creating_recipe:
-          'La recette est terminée et peut être consultée !',
-        creation_in_progress: 'En cours de création…',
-        connected_to_dodoc: 'Connection à do•doc active',
-        using_saved_password:
-          'Connection à do•doc en utilisant le mot de passe enregistré',
-        pdf_created: 'Le PDF a été créé',
-        video_created: 'La vidéo a été créée',
-        video_creation_failed: 'La vidéo n’a pas pu être créée'
-      }
+    // CAMERA
+    "camera2 0, facing back": {
+      fr: "Caméra arrière",
+      fr: "Back camera",
+      nl: "Camera naar achteren gericht",
+      oc: "Camerà arrièra",
+      de: "Rückfahrkamera",
     },
-    en: {
-      ascending: 'Ascending',
-      descending: 'Descending',
-      create_a_project: 'Create a project',
-      create_a_publication: 'Create a publication',
-      name: 'Name',
-      project_name: 'Project name',
-      created_date: 'Created date',
-      uploaded: 'Uploaded',
-      created: 'Created',
-      edited: 'Edited',
-      sent_date: 'Sent date',
-      for_the_placement_on_timeline: '(used for the position on the timeline)',
-      type: 'Type',
-      color: 'Color',
-      keywords: 'Keywords',
-      author: 'Author(s)',
-      share: 'Share',
-      download: 'Download',
-      caption: 'Caption',
-      formatting: 'Formatting',
+    camera: {
+      fr: "Camera",
+      en: "Camera",
+    },
+    pick_a_camera: {
+      fr: "Sélectionnez une caméra",
+      en: "Pick a camera",
+    },
+    "Entire screen": {
+      fr: "Écran de l’ordinateur",
+      en: "Computer screen",
+    },
+    stream_local_mode: {
+      fr: "sur cet appareil",
+      en: "on this device",
+    },
+    stream_remote_mode: {
+      fr: "do•doc distant",
+      en: "remote do•doc",
+    },
+    "stream_currently_shared_with_name:": {
+      fr: "Flux vidéo/audio partagé sous le nom&nbsp;:",
+      en: "Stream currently shared with name:",
+    },
+    "stream_shown:": {
+      fr: "Flux utilisé&nbsp;:",
+      en: "Stream used:",
+    },
+    share_stream: {
+      fr: "Partager ce flux",
+      en: "Share this stream",
+    },
+    no_stopmotion_created_yet: {
+      fr: "Les animations créées apparaîtront dans ce panneau.",
+      en: "Created stopmotion animations will appear in this list.",
+      nl: "Er is nog geen stopmotion gemaakt: ",
+      oc: "Las animacions creadas apparaisseràn dins aqueste panèu.",
+      de: "Die erstellten Animationen werden in diesen Fenster angezeigt",
+    },
+    device: {
+      fr: "Appareil",
+      en: "Device",
+      nl: "Toestel",
+      oc: "Aparelh",
+      de: "Gerät",
+    },
+    audioinput: {
+      fr: "Entrée audio",
+      en: "Audio input",
+    },
+    audiooutput: {
+      fr: "Sortie audio",
+      en: "Audio output",
+    },
+    "camera2 1, facing front": {
+      fr: "Caméra frontale",
+      nl: "Camera naar voren gericht ",
+      oc: "Camerà frontala",
+      de: "Frontkamera",
+    },
+    volume: {
+      fr: "Volume",
+      en: "Sound level",
+    },
+    dimensions: {
+      fr: "Résolution",
+      en: "Resolution",
+    },
+    onion_skin: {
+      fr: "Pelure d’oignon",
+      en: "Onion skin",
+      nl: "uienschil",
+      oc: "Pelofa de cèba",
+      de: "Überlagerung",
+    },
 
-      login: 'Login',
-      help: 'Help',
-      date: 'Date',
-      smoothing: 'smoothing',
-      onion_skin: 'Onion skin',
-      'file:': 'File&nbsp;:',
-      add_to_project: 'Add to project:',
-      input_password: 'Input the password here:',
-      validate_with_enter: 'Validate with ENTER.',
-      no_stopmotion_created_yet:
-        'Created stopmotion animations will appear in this list.',
-      device: 'Device',
+    ascending: {
+      fr: "Croissant",
+      en: "Ascending",
+      nl: "Toenemend",
+      oc: "Creissent",
+      de: "Aufsteigend",
+    },
+    descending: {
+      fr: "Décroissant",
+      en: "Descending",
+      nl: "Afnemend",
+      oc: "Descreissent",
+      de: "Absteigend",
+    },
+    most_recent_first: {
+      fr: "Le plus récent en premier",
+      en: "Most recent first",
+    },
+    oldest_first: {
+      fr: "Le plus ancien en premier",
+      en: "Oldest first",
+    },
 
-      very_slow: 'Very slow',
-      slow: 'Slow',
-      speed_medium: 'Normal',
-      fast: 'Fast',
+    create_a_project: {
+      fr: "Créer un projet",
+      en: "Create a project",
+      nl: "Project aanmaken ",
+      oc: "Crear un projècte",
+      de: "Ein Projekt erstellen",
+    },
+    create_a_publication: {
+      fr: "Créer une recette",
+      en: "Create a recipe",
+      nl: "Publicatie aanmaken ",
+      oc: "Crear una recepta",
+      de: "Eine Publikation erstellen",
+    },
+    create_a_chat: {
+      fr: "Créer une discussion",
+      en: "Create a room",
+    },
+    create_qr_code: {
+      fr: "Créer un code QR",
+      en: "Create a QR code",
+    },
+    edit_a_chat: {
+      fr: "Éditer une discussion",
+      en: "Edit a room",
+    },
+    edit_title: {
+      fr: "Modifier le titre",
+      en: "Edit the title",
+    },
+    chat_name: {
+      fr: "Nom du sujet",
+      en: "Topic",
+    },
+    pinned_to_the_top_of_the_list: {
+      fr: "Épingler en haut de la liste",
+      en: "Pin to the top",
+    },
+    pinned: {
+      fr: "Épinglées",
+      en: "Pinned",
+    },
+    live: {
+      fr: "Direct",
+      en: "Live",
+    },
+    lines_angle: {
+      fr: "Angle des lignes",
+      en: "Lines angle",
+    },
+    effects: {
+      fr: "Effets",
+      en: "Effects",
+    },
+    enable_effects: {
+      fr: "Activer les effets",
+      en: "Enable effects",
+    },
+    pick_color_in_video: {
+      fr: "Choisir la couleur dans la vidéo",
+      en: "Pick color in the video",
+    },
+    "click_in_video…": {
+      fr: "Cliquez dans la vidéo…",
+      en: "Click in the video…",
+    },
+    similarity: {
+      fr: "Similarité",
+      en: "Similarity",
+    },
+    smoothness: {
+      fr: "Lissage",
+      en: "Smoothness",
+    },
+    spill: {
+      fr: "Débord",
+      en: "Spill",
+    },
+    replace_color_with: {
+      fr: "Remplacer par",
+      en: "Replace with",
+    },
+    use_own_risk: {
+      fr:
+        "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
+      en: "Use at your own risk: medias can become invisible in some cases.",
+    },
 
-      remember_password_on_this_device: 'Remember for this device',
+    chroma_key: {
+      fr: "Incrustation (fond vert)",
+      en: "Chroma key (green screen)",
+    },
+    flip_horizontally: {
+      fr: "Retourner horizontallement",
+      en: "Flip horizontally",
+    },
+    flip_vertically: {
+      fr: "Retourner verticallement",
+      en: "Flip vertically",
+    },
+    brightness: {
+      fr: "Luminosité",
+      en: "Brightness",
+    },
+    contrast: {
+      fr: "Contraste",
+      en: "Constrast",
+    },
+    hue: {
+      fr: "Teinte",
+      en: "Hue",
+    },
+    saturation: {
+      fr: "Saturation",
+      en: "Saturation",
+    },
+    lightness: {
+      fr: "Clarté",
+      en: "Lightness",
+    },
+    dotscreen: {
+      fr: "Noir et blanc (tramé)",
+      en: "Black and white (halftone)",
+    },
 
-      cooking_pot: 'Cooking pot',
-      text_overflow: 'Overflow text',
-      move_to_foreground: 'Move to foreground',
-      move_to_background: 'Move to background',
-      'layer:': 'Layer:',
-      css_settings: 'CSS settings',
-      edit_content: 'Edit content',
-      adjust: 'Adjust',
+    no_content_to_show: {
+      fr: "Aucun contenu à afficher",
+      en: "No content to show",
+    },
+    fold: {
+      fr: "Replier",
+      en: "Fold",
+    },
+    qr_code: {
+      fr: "code QR",
+      en: "QR code",
+    },
+    unfold: {
+      fr: "Déplier",
+      en: "Unfold",
+    },
+    create_new_folder: {
+      fr: "créer un nouveau dossier",
+      en: "create new folder",
+    },
+    create_qr_code_instructions: {
+      fr:
+        "Écrire un lien pour créer un code QR. Vous pouvez ensuite le télécharger, l’imprimer ou l’intégrer à un document page à page ou à un récit.",
+      en:
+        "Write a link to create the corresponding QR Code to download, print or insert inside a paged document or a story.",
+    },
+    manage_access: {
+      fr: "Gérer l’accès au contenu",
+      en: "Manage access",
+    },
+    no_message_yet: {
+      fr: "Aucun message à afficher pour l’instant…",
+      en: "No message to display yet…",
+    },
+    login_after_creation: {
+      fr: "S’identifier dans la foulée",
+      en: "Login after creation",
+    },
+    advanced_text_bloc: {
+      fr: "Permettre la mise en forme du texte",
+      en: "Allow text layout",
+    },
+    only_numbers: {
+      fr: "Nombres uniquement",
+      en: "Numbers only",
+    },
+    amount: {
+      fr: "Nombre",
+      en: "Amount",
+    },
+    unlimited: {
+      fr: "Illimité",
+      en: "Unlimited",
+    },
+    publication: {
+      fr: "Recette",
+      en: "Recipe",
+      nl: "Publicatie",
+      oc: "Recepta",
+      de: "Publikation",
+    },
+    loop_play: {
+      fr: "Jouer en boucle",
+      en: "Loop at the end of media",
+    },
+    basic_player: {
+      fr: "Afficher seulement le bouton lecture",
+      en: "Only show play button",
+    },
+    set_visibility_to_everybody: {
+      fr:
+        "Ce contenu est actuellement en privé et ne peut donc pas être partagé. Pour le partager, cochez VISIBLE PAR TOUT LE MONDE dans les options du contenu.",
+      en:
+        "This content is currently set to private and cannot be shared. To get a link to share it, change its options to VISIBLE FOR EVERYONE.",
+    },
+    display_on_website: {
+      fr: "Rendre visible sur ",
+      en: "Display on ",
+    },
+    medias_selected: {
+      fr: "média(s) sélectionné(s)",
+      en: "media(s) selected",
+    },
+    projects_selected: {
+      fr: "projet(s) sélectionné(s)",
+      en: "project(s) selected",
+    },
+    number_of_medias: {
+      fr: "Nombre de médias",
+      en: "Amount of medias",
+    },
+    resolutions: {
+      fr: "Resolutions",
+      en: "Resolutions",
+    },
+    cant_pick_resolution_when_screen_capture: {
+      fr:
+        "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
+      en:
+        "Selection a specific resolution is not possible with a screen capture.",
+    },
+    or_download_media_on_device: {
+      fr: "ou télécharger ce média sur votre appareil",
+      en: "or download this media on your device",
+    },
+    camera_access_refused: {
+      fr:
+        "Accès refusé à la caméra et au micro : vous devez accepter leur accès dans le message qui apparaît pour pouvoir utiliser ce panneau.",
+      en:
+        "Access to camera and microphone denied: you have to accept to share your camera and microphone to use this pane.",
+    },
+    reply: {
+      fr: "Répondre",
+      en: "Reply",
+    },
+    name: {
+      fr: "Nom",
+      en: "Name",
+      nl: "Naam",
+      oc: "Nom",
+      de: "Name",
+    },
+    name_or_pseudo: {
+      fr: "Nom ou pseudonyme",
+      en: "Name or nickname",
+    },
+    project_name: {
+      fr: "Nom du projet",
+      en: "Project name",
+      nl: "Naam van het project",
+      oc: "Nom del projècte",
+      de: "Projektname",
+    },
+    created_date: {
+      fr: "Date de création",
+      en: "Created date",
+      nl: "Datum van oprichting",
+      oc: "Data de creacion",
+      de: "Erstellungsdatum",
+    },
+    none: {
+      fr: "aucun",
+      en: "none",
+    },
+    none_f: {
+      fr: "aucune",
+      en: "none",
+    },
+    interactive_preview: {
+      fr: "Interactif",
+      en: "Interactive",
+    },
+    active: {
+      fr: "Actif",
+      en: "Active",
+    },
+    sources: {
+      fr: "Sources",
+      en: "Sources",
+    },
+    no_video_input_available: {
+      fr: "Aucune source vidéo disponible",
+      en: "No video source available",
+    },
+    no_audio_input_available: {
+      fr: "Aucune source audio disponible",
+      en: "No audio source available",
+    },
+    no_audio_output_available: {
+      fr: "Aucune sortie audio disponible",
+      en: "No audio output available",
+    },
+    echoCancellation: {
+      fr: "Suppression de l'écho",
+      en: "Echo cancellation",
+    },
+    noiseSuppression: {
+      fr: "Réduction du bruit",
+      en: "Noise suppression",
+    },
+    show_cursor: {
+      fr: "Afficher le curseur",
+      en: "Show mouse cursor",
+    },
+    static_preview: {
+      fr: "Image",
+      en: "Static",
+    },
+    preview: {
+      fr: "Aperçu",
+      en: "Preview",
+    },
+    advanced_options: {
+      fr: "Options avancées",
+      en: "Advanced options",
+    },
+    bold: {
+      fr: "Gras",
+      en: "Bold",
+    },
+    italic: {
+      fr: "Italique",
+      en: "Italic",
+    },
+    large: {
+      fr: "Grand",
+      en: "Large",
+    },
+    small: {
+      fr: "Petit",
+      en: "Small",
+    },
+    "answers_given:": {
+      fr: "Enregistré&nbsp;:",
+      en: "Saved:",
+    },
+    "answer_type_expected:": {
+      fr: "Format(s) accepté(s)&nbsp;:",
+      en: "Accepted format(s):",
+    },
+    infos_about_the_media: {
+      fr: "Informations sur le média",
+      en: "Informations on the media",
+    },
+    uploaded: {
+      fr: "Importation",
+      en: "Uploaded",
+      nl: "Geüpload",
+      oc: "Importacion",
+      de: "Import",
+    },
+    messages: {
+      fr: "Messages",
+      en: "Messages",
+    },
+    unread_messages: {
+      fr: "Messages non-lus",
+      en: "Unread messages",
+    },
+    no_media_on_this_page: {
+      fr: "Aucun média à afficher sur cette page",
+      en: "No media on this page",
+    },
+    show_older_messages: {
+      fr: "Voir les messages plus anciens",
+      en: "See older messages",
+    },
+    show: {
+      fr: "Afficher",
+      en: "Show",
+    },
+    load: {
+      fr: "Charger",
+      en: "Load",
+    },
+    only_my_projects: {
+      fr: "Seulement mes projets",
+      en: "My projects",
+    },
+    only_my_medias: {
+      fr: "Seulement mes médias",
+      en: "My medias",
+    },
+    only_my_recipes: {
+      fr: "Seulement mes recettes",
+      en: "My recipes",
+    },
+    show_only_recipes_for_project: {
+      fr: "Afficher uniquement les recette rattachées au projet",
+      en: "Show only recipes linked to project",
+    },
+    only_channels_i_participate_in: {
+      fr: "les discussions accessibles",
+      en: "Only topics I can read",
+    },
+    all_projects: {
+      fr: "Tous les projets",
+      en: "All projects",
+    },
+    all_medias: {
+      fr: "Tous les médias",
+      en: "All medias",
+    },
+    all_recipes: {
+      fr: "Toutes les recettes",
+      en: "All recipes",
+    },
+    all_channels: {
+      fr: "Toutes les discussions",
+      en: "All topics",
+    },
+    channels_of: {
+      fr: "Discussions sur",
+      en: "Topics of",
+    },
+    created: {
+      fr: "Création",
+      en: "Created",
+      nl: "Gemaakt ",
+      oc: "Creacion",
+      de: "Erstellung",
+    },
+    edited: {
+      fr: "Édition",
+      en: "Edited",
+      nl: "Bewerkt",
+      oc: "Edicion",
+      de: "Bearbeitung",
+    },
+    sent_date: {
+      fr: "Date d’envoi",
+      en: "Sent date",
+      nl: "Verzendingsdatum",
+      oc: "Data de mandadís",
+      de: "Versanddatum",
+    },
+    attached_to_project: {
+      fr: "Rattachée au projet",
+      en: "Attached to project",
+    },
+    type: {
+      fr: "Type",
+      en: "Type",
+      nl: "Type",
+      oc: "Tipe",
+      de: "Typ",
+    },
+    color: {
+      fr: "Couleur",
+      en: "Color",
+      nl: "Kleur",
+      oc: "Color",
+      de: "Farbe",
+    },
+    keywords: {
+      fr: "Mots-clés",
+      en: "Keywords",
+      nl: "Kernwoorden",
+      oc: "Mots-claus",
+      de: "Schlüsselwörter",
+    },
+    share: {
+      fr: "Partage",
+      en: "Share",
+      nl: "Deel",
+      oc: "Partatge",
+      de: "Teilung",
+    },
+    copy: {
+      fr: "Copier",
+      en: "Copy",
+      nl: "Kopiëren",
+      oc: "Copiar",
+      de: "Kopieren",
+    },
+    author: {
+      fr: "Auteur(s)",
+      en: "Author(s)",
+      nl: "Auteur",
+      oc: "Autor",
+      de: "Autor(en)",
+    },
+    action: {
+      fr: "Action",
+      en: "Action",
+    },
+    detail: {
+      fr: "Détail",
+      en: "Detail",
+    },
+    account: {
+      fr: "Compte",
+      en: "Account",
+    },
+    role: {
+      fr: "Rôle",
+      en: "Role",
+    },
+    admin: {
+      fr: "Administrateur",
+      en: "Administrator",
+    },
+    only_available_to_admins: {
+      fr: "Fonctionnalité uniquement accessible aux administrateurs",
+      en: "Feature only available to admins",
+    },
+    contributor: {
+      fr: "Contributeur",
+      en: "Contributor",
+    },
+    participant: {
+      fr: "Participant",
+      en: "Participant",
+    },
+    journal: {
+      fr: "Journal des activités",
+      en: "Journal of activities",
+    },
+    entries: {
+      fr: "Entrées",
+      en: "Entries",
+    },
+    to: {
+      fr: "à",
+      en: "to",
+    },
+    of: {
+      fr: "de",
+      en: "of",
+    },
+    created_folder: {
+      fr: "A créé un dossier",
+      en: "Has created a folder",
+    },
+    edited_folder: {
+      fr: "A modifié un dossier",
+      en: "Has edited a folder",
+    },
+    removed_folder: {
+      fr: "A supprimé un dossier",
+      en: "Has removed a folder",
+    },
+    message_was_removed: {
+      fr: "Ce message a été supprimé",
+      en: "This message was removed",
+    },
+    created_media: {
+      fr: "A créé un média",
+      en: "Has created a media",
+    },
+    created_media_meta: {
+      fr: "A créé un média meta",
+      en: "Has created a media meta",
+    },
+    edited_media: {
+      fr: "A modifié un média",
+      en: "Has edited a media",
+    },
+    copied_media: {
+      fr: "A copié un média",
+      en: "Has copied a media",
+    },
+    removed_media: {
+      fr: "A supprimé un média",
+      en: "Has removed a media",
+    },
+    exported_pdf: {
+      fr: "A exporté un PDF",
+      en: "Has exported a PDF",
+    },
+    exported_video: {
+      fr: "A exporté une vidéo",
+      en: "Has exported a video",
+    },
+    exported_stopmotion: {
+      fr: "A exporté une animation image par image",
+      en: "Has exported a stopmotion",
+    },
+    copied_folder: {
+      fr: "A copié un dossier",
+      en: "Has copied a folder",
+    },
+    reload: {
+      fr: "Recharger",
+      en: "Reload",
+    },
+    download: {
+      fr: "Télécharger",
+      en: "Download",
+      nl: "Downloaden",
+      oc: "Telecargar",
+      de: "Herunterladen",
+    },
+    caption: {
+      fr: "Légende",
+      en: "Caption",
+      nl: "Bijschrift",
+      oc: "Legenda",
+      de: "Legende",
+    },
+    add_caption: {
+      fr: "Ajouter une légende",
+      en: "Add a caption",
+    },
+    edit_caption: {
+      fr: "Modifier la légende",
+      en: "Edit caption",
+    },
+    add_instructions: {
+      fr: "Ajouter des instructions",
+      en: "Add instructions",
+    },
+    edit_instructions: {
+      fr: "Modifier les instructions",
+      en: "Edit instructions",
+    },
+    hide_instructions_when_fulfilled: {
+      fr: "Masquer une fois renseigné",
+      en: "Hide instructions when filled",
+    },
+    instructions: {
+      fr: "Instructions",
+      en: "Instructions",
+    },
+    formatting: {
+      fr: "Mise en forme",
+      en: "Formatting",
+      nl: "Opmaak",
+      oc: "Mesa en forma",
+      de: "Formatierung",
+    },
+    smoothing: {
+      fr: "Lissage",
+      en: "smoothing",
+      nl: "effen",
+      oc: "Lissatge",
+      de: "Glättungmodus",
+    },
+    create_an_account_or_login_to_participate: {
+      fr:
+        "Créez un compte ou identifiez-vous avec un compte existant pour participer",
+      en: "Create an account or login using an existing account to participate",
+    },
+    login_to_edit_existing_participation: {
+      fr:
+        "Identifiez-vous avec le compte créé précédemment pour modifier vos réponses",
+      en: "Login with an existing account to edit your replies",
+    },
+    custom: {
+      fr: "Personnalisé",
+      en: "Custom",
+    },
+    header: {
+      fr: "En-tête",
+      en: "Header",
+    },
+    sizes_and_margins: {
+      fr: "Tailles et marges",
+      en: "Sizes and margins",
+    },
+    margin: {
+      fr: "Marge",
+      en: "Margin",
+    },
+    size: {
+      fr: "Taille",
+      en: "Size",
+    },
+    file: {
+      fr: "Fichier",
+      en: "File",
+      nl: "Bestand",
+      oc: "Fichièr",
+      de: "Datei",
+    },
+    multipage_pdf: {
+      fr: "PDF (toutes les pages)",
+      en: "PDF (all pages)",
+    },
+    multipage_pdf_instructions: {
+      fr:
+        "Un PDF peut être imprimé ou partagé par mail mais les médias ne seront pas interactifs (vidéos et enregistrements sonore impossible à lire).",
+      en:
+        "A PDF can be printed or sent in an email but embed files (audio, video, source files) will not be playable or downloadable.",
+    },
+    singlepage_image: {
+      fr: "Image (une seule page)",
+      en: "Image (single page)",
+    },
+    singlepage_image_instructions: {
+      fr:
+        "L’image exportée pourra être téléchargée ou utilisée dans une autre recette (écran-titre dans un montage vidéo, image associée à un son pour faire une vidéo, etc.).",
+      en:
+        "The image can be downloaded or used in another recipe (title screen in a video montage, image associated with a sound to make a new video, etc.).",
+    },
+    add_to_project: {
+      fr: "Ajouter au projet&nbsp;:",
+      en: "Add to project:",
+      nl: "Toevoegen aan project:",
+      oc: "Apondre al projècte",
+      de: "Zum Projekt hinzufügen",
+    },
+    add_to_existing_folder: {
+      fr: "Ajouter à un dossier existant&nbsp;:",
+      en: "Add to existing folder:",
+    },
+    "folder_currently_open:": {
+      fr: "Dossier actuellement ouvert&nbsp;:",
+      en: "Currently opened folder",
+    },
+    currently_open: {
+      fr: "Actuellement ouvert",
+      en: "Currently open",
+    },
+    group: {
+      fr: "Regrouper",
+      en: "Group",
+    },
+    no_text_content: {
+      fr: "Champ texte vide…",
+      en: "Text field is empty…",
+    },
+    no_numbers: {
+      fr: "Champ nombre vide…",
+      en: "Number field is empty…",
+    },
+    ungroup: {
+      fr: "Dégrouper",
+      en: "Ungroup",
+    },
+    new_folder_name: {
+      fr: "Nom du nouveau dossier&nbsp;:",
+      en: "Name of the new folder:",
+    },
+    layers: {
+      fr: "Calques",
+      en: "Layers",
+    },
+    layer_name: {
+      fr: "Nom du calque",
+      en: "Layer name",
+    },
+    layer_order: {
+      fr: "Ordre d’empilement",
+      en: "Order in the stack",
+    },
+    layer_order_instructions: {
+      fr: "Plus cette valeur est haute et plus le bloc sera au premier plan.",
+      en: "The higher the value the higher in the stack of blocs.",
+    },
+    drawing_layer_1: {
+      fr: "Calque dessin 1",
+      en: "Drawing layer 1",
+    },
+    media_layer_1: {
+      fr: "Calque média 1",
+      en: "Media layer 1",
+    },
+    layer_type: {
+      fr: "Type de calque",
+      en: "Layer type",
+    },
 
-      show_all: 'Show all',
-      cooking_pot_instructions:
-        'Mix a single or multiple medias to create new medias!',
-      untitled: 'Untitled',
-      framerate: 'images per second',
-      timelapse: 'timelapse',
-      seconds_per_image: 'seconds per image',
-      seconds: 'seconds',
-      quality: 'quality',
+    lines_density: {
+      fr: "Densité de lignes",
+      en: "Lines density",
+    },
+    drawing_layer_instructions: {
+      fr: "Permet de dessiner, tracer des formes, etc.",
+      en: "Allows for the drawing of lines, geometric shapes, etc.",
+    },
+    medias_layer_instructions: {
+      fr: "Permet de placer des médias (images, vidéos, etc.)",
+      en: "Allows the importation of medias (images, videos, etc.)",
+    },
+    select_layer_to_add_media_to: {
+      fr: "Sélectionnez d’abord le calque sur lequel placer le média",
+      en: "Select first the layer the media will be on",
+    },
+    input_password: {
+      fr: "Renseigner le mot de passe ci-dessous :",
+      en: "Input the password here:",
+      nl: "Wachtwoord invoeren:",
+      oc: "Entresenhar lo mot de Santa-Clara çai-jos :",
+      de: "Kennwort bitte hier eingeben",
+    },
+    reveal_password: {
+      fr: "Révéler le mot de passe",
+      en: "Reveal password",
+    },
+    hide_password: {
+      fr: "Masquer le mot de passe",
+      en: "Hide password",
+    },
+    change_password: {
+      fr: "Modifier le mot de passe",
+      en: "Change password",
+    },
+    add_password: {
+      fr: "Protéger par un mot de passe",
+      en: "Protect with a password",
+    },
+    old_password: {
+      fr: "Ancien mot de passe",
+      en: "Old password",
+    },
+    new_password: {
+      fr: "Nouveau mot de passe",
+      en: "New password",
+    },
+    validate_with_enter: {
+      fr: "Valider avec la touche ENTRÉE.",
+      en: "Validate with ENTER.",
+      nl: "Bevestig met ENTER.",
+      oc: "Validar amb la toca ENTRADA",
+      de: "Mit der ENTER-taste bestätigen.",
+    },
+    very_slow: {
+      fr: "Très lent",
+      en: "Very slow",
+      nl: "Zeer traag",
+      oc: "Fòrça lent",
+      de: "Sehr langsam",
+    },
+    slow: {
+      fr: "Lent",
+      en: "Slow",
+      nl: "Traag",
+      oc: "Lent",
+      de: "Langsam",
+    },
+    speed_medium: {
+      fr: "Normal",
+      en: "Normal",
+      nl: "Normaal",
+      oc: "Normal",
+      de: "Normal",
+    },
+    fast: {
+      fr: "Rapide",
+      en: "Fast",
+      nl: "Snel",
+      oc: "Rapid",
+      de: "Schnell",
+    },
+    forget_password: {
+      fr: "Oublier le mot de passe",
+      en: "Forget password",
+      nl: "Wachtwoord vergeten",
+      oc: "Doblidar lo mot de Santa-Clara",
+      de: "Vergessen Sie das Passwort",
+    },
+    forget_password_and_close: {
+      fr: "Oublier le mot de passe et fermer",
+      en: "Forget password and close",
+      nl: "Wachtwoord vergeten en sluiten",
+      oc: "Doblidar lo mot de Santa-Clara e clavar",
+      de: "Vergessen Sie das Passwort und schließen sie",
+    },
+    remember_password_on_this_device: {
+      fr: "Sauvegarder pour cet appareil",
+      en: "Remember for this device",
+      nl: "Wachtwoord onthouden op dit toestel",
+      oc: "Salvagardar per aqueste aparelh",
+      de: "Für dieses Gerät speichern",
+    },
+    cooking_pot: {
+      fr: "La marmite",
+      en: "Cooking pot",
+      nl: "De ketel",
+      oc: "L'ola",
+      de: "Der Topf",
+    },
+    channels_instructions: {
+      fr:
+        "Espaces de discussion : échangez avec les autres utilisateurs en créant un sujet !",
+      en: "Chat rooms: share with other users by creating a topic!",
+    },
+    channels_list: {
+      fr: "Liste des discussions",
+      en: "List of topics",
+    },
+    last_read_message: {
+      fr: "Dernier message lu",
+      en: "Last message read",
+    },
+    copy_of: {
+      fr: "Copie de",
+      en: "Copy of",
+      nl: "Kopie van",
+      oc: "Còpia de",
+      de: "Kopie von",
+    },
+    text_overflow: {
+      fr: "Texte en excès",
+      en: "Overflow text",
+      nl: "Tekstoverloop",
+      oc: "Tèxte en excès",
+      de: "Textüberlauf",
+    },
+    move: {
+      fr: "Déplacer",
+      en: "Move",
+    },
+    move_to_foreground: {
+      fr: "Mettre au premier plan",
+      en: "Move to foreground",
+      nl: "Op de voorgrond plaatsen. ",
+      oc: "Botar al primièr plan",
+      de: "In den Vordergrund stellen",
+    },
+    move_to_background: {
+      fr: "Mettre à l’arrière plan",
+      en: "Move to background",
+      nl: "Op de achtergrond plaatsen",
+      oc: "Botar al rèire plan",
+      de: "In den Hintergrund stellen",
+    },
+    "layer:": {
+      fr: "Calque&nbsp;:",
+      en: "Layer:",
+      nl: "Laag:",
+      oc: "Calca",
+      de: "Schicht",
+    },
+    css_settings: {
+      fr: "Réglages CSS",
+      en: "CSS settings",
+      nl: "CSS instellingen",
+      oc: "Reglatges CSS",
+      de: "CSS Einstellungen",
+    },
+    edit_content: {
+      fr: "Modifier le contenu",
+      en: "Edit content",
+      nl: "Inhoud wijzigen ",
+      oc: "Modificar lo contengut",
+      de: "Inhalt bearbeiten",
+    },
+    edit_original_media: {
+      fr: "Modifier le média original",
+      en: "Edit original media content",
+    },
+    opacity: {
+      fr: "Opacité",
+      en: "Opacity",
+    },
+    blend_mode: {
+      fr: "Mode de fusion",
+      en: "Blend mode",
+    },
+    stroke_color: {
+      fr: "Couleur du contour",
+      en: "Stroke color",
+    },
+    fill_color: {
+      fr: "Couleur du fond",
+      en: "Fill color",
+    },
+    stroke_width: {
+      fr: "Épaisseur du contour",
+      en: "Stroke width",
+    },
+    choose_from_projects: {
+      fr: "Choisir dans les projets",
+      en: "Choose from projects",
+    },
+    adjust: {
+      fr: "Ajuster",
+      en: "Adjust",
+      nl: "Wijzigen",
+      oc: "Ajustar",
+      de: "Anpassen",
+    },
+    adjust_infos: {
+      fr: "Vous pourrez toujours revenir au média d’origine si nécessaire.",
+      en:
+        "You will always be able to go back to the original media if necessary.",
+    },
+    restore: {
+      fr: "Restaurer",
+      en: "Restore",
+    },
+    lock_in_place: {
+      fr: "Verrouiller sur place",
+      en: "Lock in position",
+    },
+    unlock: {
+      fr: "Déverouiller",
+      en: "Unlock",
+    },
+    rotate_clockwise: {
+      fr: "Pivoter vers la droite",
+      en: "Rotate clockwise",
+      oc: "Virar cap a drecha",
+      de: "Nach Rechts einschwenken",
+    },
+    optimize: {
+      fr: "Optimiser",
+      en: "Optimize",
+    },
+    optimize_instructions: {
+      fr:
+        "Convertir le média vidéo ou audio pour optimiser la compatibilité avec tous les appareils et réduire le poids (codec vidéo mp4/h264, codec audio mp3).",
+      en:
+        "Encode the video or audio media to maximize compatibility and minimize filesize (video codec mp4/h264 and audio codec aac).",
+    },
+    trim: {
+      fr: "Raccourcir",
+      en: "Trim",
+    },
+    trim_instructions: {
+      fr:
+        "Indiquez le début et la fin souhaités.\nVous pouvez lire et mettre la vidéo en pause puis utiliser les boutons en bas de la vidéo pour copier le temps de lecture.",
+      en:
+        "Input the beginning and end to trim the video.\nYou can play and pause the video, then use the buttons beneath the video to paste the playback time.",
+    },
+    playback: {
+      fr: "Lecture",
+      en: "Playback",
+    },
+    trim_help: {
+      fr: "Modification du début et de la fin de la coupe",
+      en: "Adjusting the beginning and end of the media",
+    },
+    beginning: {
+      fr: "Début",
+      en: "Beginning",
+    },
+    end: {
+      fr: "Fin",
+      en: "End",
+    },
+    play_video_from_this_moment: {
+      fr: "Lire la vidéo à partir de ce moment là",
+      en: "Play video starting at this moment",
+    },
+    use_current_time: {
+      fr: "Copier le temps du lecteur",
+      en: "Copy playback time",
+    },
+    set_as_beginning: {
+      fr: "placer le début",
+      en: "set the beginning",
+    },
+    set_as_end: {
+      fr: "placer la fin",
+      en: "set the end",
+    },
+    replace: {
+      fr: "Remplacer",
+      en: "Replace",
+    },
+    test: {
+      fr: "Tester",
+      en: "Test",
+    },
+    revert_to_original: {
+      fr: "Revenir à l’original",
+      en: "Revert to original",
+      oc: "Tornar a l'original",
+      de: "Zurück zum Original",
+    },
+    duplicate: {
+      fr: "Dupliquer",
+      en: "Duplicate",
+      nl: "Dupliceren",
+      oc: "Duplicar",
+      de: "Duplikat",
+    },
+    destination_document: {
+      fr: "Document de destination",
+    },
+    make_a_document: {
+      fr: "Fabriquer un document",
+      en: "Make a document",
+    },
+    make_a_video: {
+      fr: "Fabriquer une vidéo",
+      en: "Make a video",
+    },
 
-      bytes: 'bytes',
-      kb: 'KB',
-      mb: 'MB',
-      gb: 'GB',
-      duration: 'Duration',
-      send: 'Send',
-      open_in_dodoc: 'Open in do•doc',
-      connect_to_dodoc: 'Open do•doc',
+    search: {
+      fr: "Rechercher",
+      en: "Search",
+      oc: "Cercar",
+      de: "Suchen",
+    },
+    project_name_to_find: {
+      fr: "Rechercher par nom de projet",
+      en: "Search by project name",
+      oc: "Cercar per nom de projècte",
+      de: "Suche nach Projektname",
+    },
+    author_name_to_find: {
+      fr: "Rechercher par nom d’auteur",
+      en: "Search by author name",
+    },
+    recipe_name_to_find: {
+      fr: "Rechercher par nom de recette",
+      en: "Search by recipe name",
+    },
+    show_all: {
+      fr: "Tout afficher",
+      en: "Show all",
+      nl: "Alles tonen",
+      oc: "Afichar tot",
+      de: "Zeige alles",
+    },
+    all: {
+      fr: "Tous",
+      en: "All",
+    },
+    cooking_pot_instructions: {
+      fr: "Mélangez des médias pour en créer de nouveaux !",
+      en: "Mix a single or multiple medias to create new medias!",
+      nl: "Meng bestanden om nieuwe bestanden te maken !",
+      oc: "Mesclar de mèdias per ne crear de novèls !",
+      de: "Mischen Sie Medien um neue zu erstellen",
+    },
+    untitled: {
+      fr: "Sans titre",
+      en: "Untitled",
+      nl: "Zonder naam",
+      oc: "Sens títol",
+      de: "Ohne Titel",
+    },
+    mix_audio_and_video: {
+      fr: "Son sur une vidéo",
+      en: "Sound + video",
+      nl: "Video- en geluidsbestanden combineren",
+      oc: "Son sus una vidèo",
+      de: "Audio und Video mischen",
+    },
+    mix_audio_and_image: {
+      fr: "Son sur une image",
+      en: "Sound + image",
+      nl: "Foto- en geluidsbestanden combineren",
+      oc: "Son sus un imatge",
+      de: "Audio und Bild mischen",
+    },
+    add_sound_video_file: {
+      fr:
+        "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.",
+      en: "Add a <b>sound</b> and a <b>video</b> media to create a new video.",
+      nl:
+        "Open een project en voeg een <b>geluidsbestand</b> en een <b>videobestand</b> toe door op de groene pijl te klikken .<br>Als u exporteert, wordt een nieuwe video gemaakt .<br>Ondersteunde bestandstypen : video en geluid.",
+      oc:
+        "Dubrissètz un projècte e apondètz un mèdia <b>son</b> e un mèdia <b>vidèo</b> en cliquant sus la sageta verda.<br>L’exportacion crearà una novèla vidèo.<br>mèdias acceptats : una vidèo e una pista sonora.",
+      de:
+        "Öffnen Sie ein Projekt und fügen Sie ein Medium hinzu <b>Ton </b>und ein Medium <b>Video</b> durch Klicken auf den grünen Pfeil.<br> Beim Export wird ein neues Video erstellt.<br>Aktzeptierte Medien: ein Vidéo und eine Tonspur.",
+    },
+    add_sound_image_file: {
+      fr:
+        "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>image</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une image et une piste sonore.",
+      en: "Add a <b>sound</b> and an <b>image</b> media to create a new video.",
+      nl:
+        "Open een project en voeg een <b>geluidsbestand</b> en een <b>fotobestand</b> toe door op de groene pijl te klikken .<br>Als u exporteert, wordt een nieuwe video gemaakt .<br>Ondersteunde bestandstypen : foto en geluid.",
+      oc:
+        "Dubrissètz un projècte e apondètz un mèdia <b>son</b> e un mèdia <b>imatge</b> en cliquant sus la sageta verda.<br>L’exportacion crearà una nouvèla vidèo.<br>mèdias acceptats : un imatge e una pista sonora.",
+      de:
+        "Öffnen Sie ein Projekt und fügen Sie ein Medium hinzu <b>Ton </b>und ein Medium <b>Bild</b> durch klicken auf den grünen Pfeil.<br> Beim Export wird ein neues Video erstellt.<br>Aktzeptierte Medien: ein Video und eine Tonspur.",
+    },
+    add_multiple_videos_files: {
+      fr:
+        "Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> ou <b>image</b> en cliquant sur la flèche verte. Les médias seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.",
+      en:
+        "Add multiple <b>videos</b> or <b>images</b> from a project to create a new video.",
+      nl:
+        "Open een project en voeg meerdere <b>video</b>bestanden toe door op de groene pijl te klikken . Video’s worden in volgorde van toevoeging na elkaar geplaatst.<br>Als u exporteert, wordt een nieuwe video gemaakt .<br> Ondersteunde bestandstypen : alleen video’s van hetzelfde formaat.",
+      oc:
+        "Dubrissètz un projècte e apondètz mantunes mèdias <b>vidèo</b> en cliquant sus la sageta verda. Las vidèos seràn mesas bout à bout dins l’òrdre d’apondon.<br>L’exportacion crearà una nouvèla vidèo.<br>mèdias acceptats : unicament de vidèos de meteissa talha.",
+      de:
+        "Öffnen Sie ein Projekt und fügen Sie mehrere Medien hinzu<b> Video </b>durch Klicken auf den grünen Pfeil.<br>Beim Export wird ein neues Video erstellt.<br> Akzeptierte Medien: nur Videos der gleichen Größe.",
+    },
+    add_one_video_file: {
+      fr:
+        "Ouvrez un projet et ajoutez un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.",
+      en: "Add a single <b>video</b> and select a filter or an effect to mix.",
+    },
+    add_multiple_images: {
+      fr:
+        "Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera une vidéo.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.",
+      en: "Add multiple <b>image</b> medias to create a video.",
+      nl:
+        "Open een project en voeg verschillende <b>foto</b>bestanden toe door op de groene pijl te klikken. Foto’s worden in volgorde van toevoeging na elkaar geplaatst. Exporteer de beelden en pas de schuifsnelheid van de beelden aan.<br>Als u exporteert, wordt een nieuwe video gemaakt .<br> Ondersteunde bestandstypen : enkel fotobetanden. De afmetingen van het eerste beeld bepalen of de uiteindelijke video als portret of landschap is ingedeeld.",
+      oc:
+        "Dubrissètz un projècte e apondètz mantunes mèdias <b>imatge</b> en cliquant sus la sageta verda. Los imatges seràn botats bout à bout dins l’òrdre d’apondon. Exportatz la séquence et reglatz la vitessa de défilement des images.<br>L’exportation créera una vidèo.<br>mèdias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidèo finala es en retrach o paisatge.",
+      de:
+        "Öffnen Sie ein Projekt und fügen Sie mehrere Medien hinzu<b> Bild </b>durch Klicken auf den grünen Pfeil. Die Bilder werden in der Reihenfolge der Addition aneinandergereiht. Exportieren Sie die Sequenz und stellen Sie die Bildfrequenz ein.<br>Media akzeptiren nur Bilder. Die Abmessungen des ersten Bildes bestimmen ob sich das endgültiege Video in Hoch-oder-Querformat befindet.",
+    },
+    style: {
+      fr: "style",
+      en: "style",
+      nl: "stijl",
+      oc: "estil",
+      de: "Stil",
+    },
+    show_recipes_for_project_first: {
+      fr: "Afficher uniquement les recettes liées au projet",
+      en: "Show only recipes attached to this project",
+    },
+    css: {
+      fr: "css",
+      en: "css",
+      nl: "css",
+      oc: "css",
+      de: "css",
+    },
+    write_some_CSS_code_for_example: {
+      fr: "Écrivez ici du code CSS, <br>par exemple <code>color: blue;</code>",
+      en: "Write here some CSS code, <br>for example <code>color: blue;</code>",
+      nl: "Noteer hier CSS code, <br>bijvoorbeeld <code>color: blue;</code>",
+      oc:
+        "Escrigatz aicí de còde CSS, <br>per exemple <code>color: blue;</code>",
+      de:
+        "Schreiben sie hier CSS Code,<br>zum Beispiel<code >Farbe:blau;</code>",
+    },
+    framerate: {
+      fr: "images par seconde",
+      en: "images per second",
+      nl: "beelden per seconde, ",
+      oc: "imatges per seconda",
+      de: "Bilder pro Sekunde",
+    },
+    timelapse: {
+      fr: "time-lapse",
+      en: "time-lapse",
+      nl: "tijdsverloop ",
+      oc: "delargament automatic",
+      de: "automatische Auslösung",
+    },
+    delay: {
+      fr: "Retardateur",
+      en: "Delay",
+    },
+    start_timelapse: {
+      fr: "Démarrer le time-lapse",
+      en: "Start time-lapse",
+    },
+    stop_timelapse: {
+      fr: "Interrompre le time-lapse",
+      en: "Stop time-lapse",
+    },
+    seconds_per_image: {
+      fr: "secondes par image",
+      en: "seconds per image",
+      nl: "seconden per beeld",
+      oc: "secondas per imatge",
+      de: "sekunden pro Bild",
+    },
+    seconds: {
+      fr: "secondes",
+      en: "seconds",
+      nl: "seconden",
+      oc: "secondas",
+      de: "Sekunden",
+    },
+    quality: {
+      fr: "qualité",
+      en: "quality",
+      nl: "kwaliteit",
+      oc: "qualitat",
+      de: "Qualität",
+    },
+    bytes: {
+      fr: "octets",
+      en: "bytes",
+      nl: "bytes",
+      oc: "octets",
+      de: "Bytes",
+    },
+    kb: {
+      fr: "ko",
+      en: "KB",
+      nl: "kb",
+      oc: "ko",
+      de: "KB",
+    },
+    mb: {
+      fr: "Mo",
+      en: "MB",
+      nl: "Mb",
+      oc: "Mo",
+      de: "MB",
+    },
+    gb: {
+      fr: "Go",
+      en: "GB",
+      nl: "Gb",
+      oc: "Go",
+      de: "GB",
+    },
+    duration: {
+      fr: "Durée",
+      en: "Duration",
+      nl: "Duur",
+      oc: "Durada",
+      de: "Dauer",
+    },
+    new_duration: {
+      fr: "Nouvelle durée",
+      en: "New duration",
+    },
+    send: {
+      fr: "Envoyer",
+      en: "Send",
+      nl: "Verzenden",
+      oc: "Mandar",
+      de: "Senden",
+    },
+    open_in_dodoc: {
+      fr: "Ouvrir dans do•doc",
+      en: "Open in do•doc",
+      nl: "Openen in do•doc",
+      oc: "Dubrir dins do•doc",
+      de: "Öffnen sie in do•doc",
+    },
+    connect_to_dodoc: {
+      fr: "Accéder à do•doc",
+      en: "Open do•doc",
+      nl: "Toegang tot do•doc",
+      oc: "Accedir a do•doc",
+      de: "Verbinden sie zu do•doc",
+    },
+    currently_connected: {
+      fr: "Connecté en ce moment",
+      en: "Currently connected",
+    },
+    login: {
+      fr: "S’identifier",
+      en: "Login",
+      nl: "Inloggen",
+      oc: "S'identificar",
+      de: "Anmeldung",
+    },
+    create_account: {
+      fr: "Créer un compte",
+      en: "Create an account",
+    },
+    not_supported_on_this_device: {
+      fr: "Non géré sur cet appareil",
+      en: "Not supported on this device",
+    },
+    logout: {
+      fr: "Se déconnecter",
+      en: "Log-out",
+    },
+    login_to_access: {
+      fr:
+        "Identifiez vous en créant un auteur ou en cliquant sur votre nom si c’est déjà fait !",
+      en:
+        "Login by creating an author or clicking or your name to access do•doc.",
+    },
+    login_to_post: {
+      fr: "Identifiez-vous pour envoyer un message",
+      en: "Login to send a message",
+    },
+    post_a_message: {
+      fr: "Envoyez un message",
+      en: "Send a message",
+    },
+    login_to_create_channel: {
+      fr: "Identifiez-vous pour créer un sujet",
+      en: "Login to create a topic",
+    },
+    adding_password_warning: {
+      fr:
+        "Attention ! Si vous ajoutez ou modifiez un mot de passe tous les utilisateurs qui y sont actuellement connectés devront le renseigner avant de pouvoir continuer à contribuer.",
+      en:
+        "Warning! Adding or changing the password will disconnect all users until they enter the new password.",
+      nl:
+        "Opgelet! Als u een wachtwoord toevoegt of wijzigt, moeten alle gebruikers die er momenteel mee verbonden zijn dit invoeren voordat ze een bijdrage kunnen blijven leveren..",
+      oc:
+        "Avisa ! Si volètz apondre o modificar un mot de passa totes los utilizaires que i son ara conectats deuràn l'entresenhar abans que de poder continuar.",
+      de:
+        "Achtung! Wenn Sie en Passwort hinzufügen oder ändern, müssen ihn alle derzeit eingeloggten Benutzer informieren, bevor sie weiterhin Beiträge leisten können.",
+    },
+    removing_password_warning: {
+      fr:
+        "Si vous retirez le mot de passe tous les utilisateurs qui ont accès à do•doc pourront modifier le projet.",
+      en:
+        "Removing the password for this project will allow everyone to access, edit and delete it.",
+      nl:
+        "Als u het wachtwoord verwijdert, kunnen alle gebruikers die toegang hebben tot do•doc het project wijzigen.",
+      oc:
+        "Si tiratz lo mot de Santa-Clara totes los utilizaires qu'an accès a do•doc poiràn modificar lo projècte.",
+      de:
+        "Wenn Sie das Passwort entfernen, können alle Benutzer, die Zugriff auf do•doc haben, das Projekt bearbeiten.",
+    },
+    help: {
+      fr: "Aide",
+      en: "Help",
+      nl: "Hulp",
+      oc: "Ajuda",
+      de: "Hilfe",
+    },
+    email: {
+      fr: "Adresse mail",
+      en: "Email",
+    },
+    email_instructions: {
+      fr:
+        "Optionnel. Sera uniquement utilisé pour vous notifier d’un message sur do•doc et ne sera pas visible aux autres utilisateurs à l’exception des administrateurs.",
+      en:
+        "Optional. Will only be used to let you know of a new personal message, and will never be shown to other users except for administrators.",
+    },
+    date: {
+      fr: "Date",
+      en: "Date",
+      nl: "Datum",
+      oc: "Data",
+      de: "Datum",
+    },
+    portrait: {
+      fr: "Portrait",
+      en: "Portrait",
+      nl: "Portret",
+      oc: "Retrach",
+      de: "Porträt",
+    },
+    image_ratio_portrait: {
+      fr: "Portrait",
+      en: "Portrait",
+    },
+    image_ratio_landscape: {
+      fr: "Paysage",
+      en: "Landscape",
+    },
 
-      portrait: 'Portrait',
-      nfc_tag: 'Tag NFC',
-      yes: 'Yes',
-      cancel: 'Cancel',
-      back: 'Back',
-      sureToRemoveAuthor: 'Do you really want to delete this author?',
-      show_all_authors: 'Show all authors',
-      changes_not_saved_sureToCloseModal:
-        'All changes were not saved. Do you really want to close this window?',
-      save_changes: 'Save changes first',
-      close_the_window: 'Close anyway',
-      sureToRemovePubli: 'Do you really want to delete this publication?',
-      sure_to_cancel_stopmotion:
-        'Do you really want to cancel this stopmotion? You can resume making it by clicking on "Stopmotion list"',
-      validate_media: 'Validate the media',
-      add_keyword: 'Add a keyword',
-      add: 'Add',
-      close: 'Fermer',
+    nfc_tag: {
+      fr: "Tag NFC",
+      en: "Tag NFC",
+      nl: "Tag NFC",
+      oc: "Tag NFC",
+      de: "NFC Tag",
+    },
+    nfc_tag_instructions: {
+      fr:
+        "Vous pouvez associer un tag NFC (un carte, une pastille, etc.) à un auteur à l’aide d’un boitier compatible à brancher en USB, pour utiliser un objet pour vous identifier.",
+      en:
+        "You can pair a NFC tag (a card, a badge, etc.) to an author using a device connected via USB, to login using an object.",
+    },
+    pair_a_nfc_tag: {
+      fr: "Associer un tag NFC",
+      en: "Pair an NFC tag",
+    },
+    scan_a_nfc_tag: {
+      fr: "Scanner le tag NFC maintenant…",
+      en: "Scan the NFC tag now…",
+    },
+    "now!": {
+      fr: "Maintenant !",
+      en: "Now!",
+    },
+    yes: {
+      fr: "Oui",
+      en: "Yes",
+      nl: "ja",
+      oc: "Òc",
+      de: "Ja",
+    },
+    no: {
+      fr: "Non",
+      en: "No",
+    },
+    cancel: {
+      fr: "Annuler",
+      en: "Cancel",
+      nl: "Annuleren",
+      oc: "Anullar",
+      de: "Abbrechen",
+    },
+    back: {
+      fr: "Retour",
+      en: "Back",
+      nl: "Terug",
+      oc: "Tornar",
+      de: "Rückkehr",
+    },
+    published: {
+      fr: "Publié",
+      en: "Published",
+    },
+    remove_published_date: {
+      fr: "Retirer la date de publication",
+      en: "Remove published date",
+    },
+    alreadyAnsweredThatModel: {
+      fr:
+        "Vous avez déjà répondu à ce modèle, êtes-vous sur de vouloir y répondre à nouveau ?",
+      en:
+        "You have already replied to this model, would you like to reply again?",
+    },
+    sureToRemoveYourselfFromAuthors: {
+      fr:
+        "Êtes-vous sûr de vouloir vous retirer de la liste des auteurs ? Vous ne pourrez plus modifier ce contenu.",
+      en:
+        "Do you really want to remove yourself from the list of authors? You won’t be able to edit this content anymore.",
+    },
+    sureToLockAndPublish: {
+      fr:
+        "Êtes-vous sûr de vouloir publier ce récit ? Vous ne pourrez plus le modifier.",
+      en:
+        "Do you really want to publish this story? You won’t be able to edit anymore.",
+    },
+    sureToRemoveAuthor: {
+      fr:
+        "Êtes-vous sûr de vouloir supprimer cet auteur ? Tous les médias, projets et recettes associés seront conservés.",
+      en:
+        "Do you really want to delete this author? All medias, projects and recipes will be kept.",
+      nl: "Weet u zeker dat u deze auteur wilt verwijderen ?",
+      oc:
+        "Sètz segur de voler suprimir aqueste autor ? Totes los mèdias, projèctes e recèptas associadas seràn servadas.",
+      de: "Sind Sie sicher, dass Sie diesen Autor löschen wollen?",
+    },
+    sureToRemovePlaceholder: {
+      fr:
+        "Êtes-vous sûr de vouloir supprimer ce bloc éditable ? Cela supprimera également tous les contenus ajoutés par des contributeurs dans d’autres ",
+      en:
+        "Do you really want to remove this editable block? This will also remove all content added in this block in recipe following this model.",
+    },
+    sure_to_remove_chat: {
+      fr: "Êtes-vous sûr de vouloir supprimer ce sujet et tout son contenu ?",
+      en: "Do you really want to delete this topic and all its content?",
+    },
+    sure_to_leave_recording: {
+      fr:
+        "Êtes-vous sûr de vouloir sortir du panneau de capture ? Si oui l’enregistrement en cours ne sera pas conservé.",
+      en:
+        "Do you really want to leave the capture panel? If yes then this recording will be discarded.",
+    },
+    sure_to_remove_stopmotion: {
+      fr: "Êtes-vous sûr de vouloir supprimer cette animation ?",
+      en: "Do you really want to delete this stopmotion?",
+    },
+    sureToRemoveSelection: {
+      fr: "Êtes-vous sûr de vouloir supprimer cette sélection ?",
+      en: "Do you really want to delete this selection?",
+    },
+    show_removed_pages: {
+      fr: "Afficher les pages supprimées",
+      en: "Show removed pages",
+    },
+    show_all_authors: {
+      fr: "Afficher l’ensemble des auteurs",
+      en: "Show all authors",
+      nl: "Bekijk alle auteurs",
+      oc: "Afichar totes los autors",
+      de: "Liste aller Autoren anzeigen",
+    },
+    show_all_keywords: {
+      fr: "Afficher l’ensemble des mots-clés",
+      en: "Show all keywords",
+      nl: "Bekijk alle kernwoord",
+      oc: "Afichar totes los mots-claus",
+      de: "Alle Stichworte anzeigen",
+    },
+    hide_all_keywords: {
+      fr: "Masquer l’ensemble des mots-clés",
+      en: "Hide all keywords",
+      oc: "Amagar totes los mots-claus",
+      de: "Ausblenden alle Stichwörter",
+    },
+    all_tags: {
+      fr: "Liste des mots-clés disponibles",
+      en: "List of keywords available",
+      oc: "Tièra dels mots-claus disponibles",
+      de: "Liste der verfügbaren Stichwörter",
+    },
+    changes_not_saved_sureToCloseModal: {
+      fr: "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
+      en:
+        "All changes were not saved. Do you really want to close this window?",
+      nl: "Er zijn wijzigingen gebeurd , wilt u deze opslaan?",
+      oc: "De modificacions se faguèron, desiratz de las enregistrar ?",
+      de: "Änderungen wurden vorgenommen, wollen Sie sie speichern?",
+    },
+    save_changes: {
+      fr: "Oui, enregistrer les modifications",
+      en: "Yes, save changes",
+      nl: "Ja, wijzigingen opslaan. ",
+      oc: "Òc, enregistrar las modificacions",
+      de: "Ja, Änderungen speichern",
+    },
+    move_page_position: {
+      fr: "Déplacer la page",
+      en: "Move page to position",
+    },
+    position: {
+      fr: "Position",
+      en: "Position",
+    },
+    create_empty_page: {
+      fr: "Ajouter une page vide",
+      en: "Add an empty page",
+    },
+    show_all_pages: {
+      fr: "Retour à la liste des pages",
+      en: "All pages",
+    },
+    close_the_window: {
+      fr: "Non, fermer sans enregistrer",
+      en: "No, close without saving",
+      nl: "Nee, sluiten zonder opslaan",
+      oc: "Non, clavar sens enregistrar",
+      de: "Nein, schliessen Sie ohne zu speichern",
+    },
+    sureToRemovePubli: {
+      fr: "Êtes-vous sûr de vouloir supprimer cette recette ?",
+      en: "Do you really want to delete this recipe?",
+      nl: "Weet u zeker dat u deze publicatie wilt verwijderen?",
+      oc: "Sètz segur de voler suprimir aquesta recèpta ?",
+      de: "Sind sie sicher dass sie diese Publikation löschen möchten ?",
+    },
+    publiHasPubliRelyingOnItCantDelete: {
+      fr:
+        "Ce modèle est utilisé comme référence par une ou plusieurs recettes réponses et ne peut donc pas être supprimé.",
+      en:
+        "This model is used by one or more reply recipes and cannot be deleted as long as this is the case.",
+    },
+    sure_to_cancel_stopmotion: {
+      fr:
+        "Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu <i>Liste des animations</i>",
+      en:
+        "Do you really want to cancel this stopmotion? You can resume making it by clicking on <i>Stopmotion list</i>",
+      nl:
+        "Weet je zeker dat je deze animatie wilt stoppen? U kunt het terugvinden in het menu <i>Lijst van animaties</i>.",
+      oc:
+        "Sètz segur de voler arestar aquesta animacion ? La poiretz tornar trobar dins lo menut <i>Tièra de las animacions<i>",
+      de:
+        "Sind Sie sicher, dass Sie diese Animation stoppen wollen? Sie finden sie im Menü <i>Liste der Animationen<i>",
+    },
+    validate_media: {
+      fr: "Valider le média",
+      en: "Validate the media",
+      nl: "Media valideren",
+      oc: "Validar lo mèdia",
+      de: "Medium überprüfen",
+    },
+    validate: {
+      fr: "Valider",
+      en: "Validate",
+    },
+    add_keyword: {
+      fr: "Ajouter un mot-clé",
+      en: "Add a keyword",
+      nl: "Kernwoord toevoegen",
+      oc: "Apondre un mot-clau",
+      de: "Ein Stichwort hinzufügen",
+    },
+    add: {
+      fr: "Ajouter",
+      en: "Add",
+      nl: "Toevoegen",
+      oc: "Apondre",
+      de: "Hinzufügen",
+    },
+    close: {
+      fr: "Fermer",
+      en: "Fermer",
+      nl: "Sluiten",
+      oc: "Clavar",
+      de: "Schliessen",
+    },
+    very_high: {
+      fr: "Très élevée",
+      en: "Very high",
+      nl: "Zeer hoog",
+      oc: "Fòrça nauta",
+      de: "Hochragend",
+    },
+    high: {
+      fr: "Élevée",
+      en: "High",
+      nl: "Hoog",
+      oc: "Nauta",
+      de: "Hochgezogen",
+    },
+    medium: {
+      fr: "Moyenne",
+      en: "Medium",
+      nl: "Medium",
+      oc: "Mejana",
+      de: "Mittelgrösse",
+    },
+    low: {
+      fr: "Basse",
+      en: "Low",
+      nl: "Laag",
+      oc: "Bassa",
+      de: "Niedrig",
+    },
+    draft: {
+      fr: "Ébauche",
+      en: "Draft",
+    },
+    video_export_draft_instructions: {
+      fr:
+        "Ce mode permet de rapidement créer le résultat d’un recette pour tester le rythme et les niveaux sonores, au détriment de la qualité de l’image. La vidéo résultante ne pourra pas être enregistré.",
+      en:
+        "This mode is the most convenient to test the rythm and the audio levels, with a mediocre image quality. The resulting video cannot be saved.",
+    },
+    video_export_custom_quality_instructions: {
+      fr:
+        "Réglez ci-dessous la largeur × la hauteur, en pixels. Utilisez uniquement des valeurs entières et paires.",
+      en:
+        "Set custom width × height in the following fields, in pixels. Use only whole, even values.",
+    },
+    showing: {
+      fr: "Affichage de",
+      en: "Showing",
+      nl: "Weergave ",
+      oc: "Affichatge de",
+      de: "Anzeige",
+    },
+    media_filter: {
+      fr: "Filtre de médias",
+      en: "Medias filter",
+      nl: "Bestandsfilter",
+      oc: "Filtre de mèdias",
+      de: "Medienfilter",
+    },
+    remove_filters_and_show_all: {
+      fr: "Supprimer tous les filtres pour afficher toute la liste",
+      en: "Remove all filters to show everything",
+    },
+    no_projects_yet: {
+      fr:
+        "Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc !",
+      en: "No projects yet, create one to start using do•doc!",
+      nl:
+        "Er is nog geen project, maak er een aan om do•doc in gebruik te nemen!",
+      oc:
+        "Pas de projèctes encara, creatz-ne un per començar d'utilizar do•doc !",
+      de:
+        "Es gibt noch kein Projekt, erstellen Sie eines, um mit der Arbeit zu beginnen",
+    },
+    projects_of: {
+      fr: "projets sur",
+      en: "projects of",
+      nl: "projecten van",
+      oc: "projèctes sus",
+      de: "Projekte auf",
+    },
+    recipes_of: {
+      fr: "recettes sur",
+      en: "recipes of",
+    },
+    medias_of: {
+      fr: "médias sur",
+      en: "medias of",
+      nl: "bestanden van",
+      oc: "mèdias sus",
+      de: "Medien auf",
+    },
+    projects: {
+      fr: "Projets",
+      en: "Projects",
+      nl: "Projecten",
+      oc: "Projèctes",
+      de: "Projekte",
+    },
+    project: {
+      fr: "Projet",
+      en: "Project",
+      nl: "Project",
+      oc: "Projècte",
+      de: "Projekt",
+    },
+    folder: {
+      fr: "Dossier",
+      en: "Folder",
+    },
+    add_a_cover_image: {
+      fr: "Ajouter une image de couverture",
+      en: "Add a cover image",
+      de: "Coverbild auswählen",
+    },
+    medias: {
+      fr: "Médias",
+      en: "Medias",
+      nl: "Bestanden",
+      oc: "Mèdias",
+      de: "Medien",
+    },
+    text_and_medias: {
+      fr: "Médias et textes",
+      en: "Medias and texts",
+    },
+    media: {
+      fr: "Média",
+      en: "Media",
+      nl: "Media",
+      oc: "Mèdia",
+      de: "Medium",
+    },
+    authors: {
+      fr: "Auteurs",
+      en: "Authors",
+      nl: "Auteurs",
+      oc: "Autors",
+      de: "Autoren",
+    },
+    participants: {
+      fr: "Participants",
+      en: "Participants",
+    },
+    authors_list: {
+      fr: "Liste des auteurs",
+      en: "List of authors",
+      nl: "Lijt van auteurs",
+      oc: "Tièra dels autors",
+      de: "Autorenliste",
+    },
+    create_an_author: {
+      fr: "Créer un auteur",
+      en: "Create an author",
+      nl: "Maak een auteur aan",
+      oc: "Crear un autor",
+      de: "einen Autor erstellen",
+    },
+    who_can_edit: {
+      fr: "Qui peut contribuer",
+      en: "Who can contribute",
+    },
+    consultation: {
+      fr: "Consultation",
+      en: "Consultation",
+    },
+    visible_to_all: {
+      fr: "Visible par tout le monde",
+      en: "Visible for everyone",
+    },
+    visible_to_authors: {
+      fr: "Visible par les auteurs uniquement",
+      en: "Visible for authors only",
+    },
+    visible_to_nobody: {
+      fr: "Visible pour personne",
+      en: "Visible for noone",
+    },
+    only_authors: {
+      fr: "Seulement les auteurs",
+      en: "Only authors",
+    },
+    protected_by_authors: {
+      fr: "Protégé par les auteurs",
+      en: "Protected by authors",
+    },
+    with_password: {
+      fr: "Avec un mot de passe",
+      en: "With a password",
+    },
+    everybody: {
+      fr: "Tout le monde",
+      en: "Everybody",
+    },
+    favorite_medias: {
+      fr: "Média favoris",
+      en: "Favorite medias",
+      nl: "Favoriete media",
+      oc: "Mèdia favorit",
+      de: "Lieblingsmedien",
+    },
+    all_medias: {
+      fr: "Tous les médias",
+      en: "All medias",
+      nl: "Alle media",
+      oc: "Totes los mèdias",
+      de: "Alle Medien",
+    },
+    write: {
+      fr: "Écrire",
+      en: "Write",
+      nl: "Schrijven",
+      oc: "Escriure",
+      de: "Schreiben",
+    },
+    placeholder: {
+      fr: "Bloc éditable",
+      en: "Editable bloc",
+    },
+    divider: {
+      fr: "Séparateur",
+      en: "Divider",
+    },
+    import: {
+      fr: "Importer",
+      en: "Import",
+      nl: "Importeren",
+      oc: "Importar",
+      de: "Importieren",
+    },
+    import_all_files: {
+      fr: "Importer tous les fichiers",
+      en: "Import all files",
+      nl: "Importeer alle bestanden",
+      oc: "Importar totes los fichièrs",
+      de: "Alle Dateien importieren",
+    },
+    import_medias: {
+      fr: "Importer des médias",
+      en: "Import medias",
+      nl: "Importeer media",
+      oc: "Importar de mèdias",
+      de: "Alle Medien importieren",
+    },
+    retry: {
+      fr: "Réessayer",
+      en: "Retry",
+    },
+    select_files_to_import: {
+      fr: "Sélectionner les fichiers à importer",
+      en: "Select files to import",
+      nl: "Selecteer bestanden om te importeren ",
+      oc: "Seleccionar los fichièrs d'importar",
+      de: "Zu importierende Dateien auswählen",
+    },
+    upload_from_device: {
+      fr: "Importer un fichier image",
+      en: "Upload an image file",
+      nl: "Selecteer een omslagafbeelding",
+      oc: "Importar un fichièr imatge",
+      de: "Importieren einer Bilddatei",
+    },
+    or_choose_from_image_medias: {
+      fr: "Ou choisir un média image dans un projet",
+      en: "Or choose from image medias in a project",
+      oc: "O causir un mèdia imatge",
+      de: "Oder ein Bildmedium auswählen",
+    },
+    select_portrait_image: {
+      fr: "Importer un fichier image",
+      en: "Import an image file",
+      nl: "Selecteer een portretfoto",
+      oc: "Importar un fichièr imatge",
+      de: "Porträtbild auswählen",
+    },
+    add_to_recipe: {
+      fr: "Ajouter à la recette",
+      en: "Add to recipe",
+      nl: "Toevoegen aan recept",
+      oc: "Apondre a la recèpta",
+      de: "Zum Rezept hinzufügen",
+    },
+    add_a_page: {
+      fr: "Ajouter une page",
+      en: "Add a page",
+      nl: "Een pagina toevoegen",
+      oc: "Apondre una pagina",
+      de: "Eine Seite hinzufügen",
+    },
+    insert_a_page_here: {
+      fr: "Insérer une page ici",
+      en: "Insert a page here",
+      nl: "Hier een pagina invoegen",
+      oc: "Inserir una pagina aicí",
+      de: "Eine Seite davor hinzufügen",
+    },
+    insert_medias_here: {
+      fr: "Insérer un média ici",
+      en: "Insert a media here",
+    },
+    anonymous: {
+      fr: "anonyme",
+      en: "anonymous",
+      nl: "anoniem",
+      oc: "anonime",
+      de: "anonym",
+    },
+    other_users: {
+      fr: "autres utilisateurs",
+      en: "other users",
+      nl: "andere gebruikers",
+      oc: "autres utilizaires",
+      de: "Andere Benutzer",
+    },
+    other_users_connected: {
+      fr: "autres utilisateurs connectés",
+      en: "other user connected",
+      nl: "andere verbonden gebruikers",
+      oc: "autres utilizaires connectats",
+      de: "Andere verbundene Benutzer",
+    },
+    mix_medias: {
+      fr: "Mélanger des médias",
+      en: "Mix medias",
+      nl: "Mengen van media",
+      oc: "Mesclar de mèdias",
+      de: "Die Medien mischen",
+    },
+    made_with_dodoc: {
+      fr: "Page web réalisée avec l’application libre et gratuite do•doc",
+      en: "Webpage made with do•doc, a free and open-source app",
+      nl: "Webpagina gerealiseerd met de gratis applicatie do•doc",
+      oc: "Pagina web creada amb l'aplicacion liura e gratuita do•doc",
+      de:
+        "Webseite erstellt mit der kostenlosen und quelloffenen Anwendung do•doc",
+    },
+    loading: {
+      fr: "chargement",
+      en: "loading",
+      nl: "laden",
+      oc: "cargament",
+      de: "laden",
+    },
+    open: {
+      fr: "Ouvrir",
+      en: "Open",
+      nl: "Openen",
+      oc: "Dubrir",
+      de: "Öffnen",
+    },
+    save: {
+      fr: "Enregistrer",
+      en: "Save",
+      nl: "Opslaan",
+      oc: "Enregistrar",
+      de: "Speichern",
+    },
+    as_favorite: {
+      fr: "+ favoris",
+      en: "+ favourite",
+      nl: "toevoegen aan favorieten",
+      oc: "+ favorits",
+      de: "als Favorit",
+    },
+    edit: {
+      fr: "Modifier",
+      en: "Edit",
+      nl: "Wijzigen",
+      oc: "Modificar",
+      de: "Bearbeiten",
+    },
+    width: {
+      fr: "Largeur",
+      en: "Width",
+      nl: "Breedte",
+      oc: "Largor",
+      de: "Breite",
+    },
+    height: {
+      fr: "Hauteur",
+      en: "Height",
+      nl: "Hoogte",
+      oc: "Nautor",
+      de: "Höhe",
+    },
+    zoom: {
+      fr: "Zoom",
+      en: "Zoom",
+      nl: "Zoom",
+      oc: "Zoom",
+      de: "Zoom",
+    },
+    reset: {
+      fr: "Remettre à 1",
+      en: "Reset",
+    },
+    settings: {
+      fr: "Réglages",
+      en: "Settings",
+      nl: "Instellingen",
+      oc: "Reglatges",
+      de: "Einstellungen",
+    },
+    pages_settings: {
+      fr: "Réglages des pages",
+      en: "Pages settings",
+    },
+    stopmotion_list: {
+      fr: "Liste des animations",
+      en: "Stopmotion list",
+      nl: "Lijst van animaties",
+      oc: "Tièra de las animacions",
+      de: "Liste der Animationen",
+    },
+    print: {
+      fr: "Imprimer",
+      en: "Print",
+      nl: "Afdrukken",
+      oc: "Estampar",
+      de: "Druken",
+    },
+    create: {
+      fr: "Créer",
+      en: "Create",
+      nl: "Aanmaken",
+      oc: "Crear",
+      de: "Erstellen",
+    },
+    remove: {
+      fr: "Supprimer",
+      en: "Remove",
+      nl: "Verwijderen",
+      oc: "Suprimir",
+      de: "Löschen",
+    },
+    remove_image: {
+      fr: "Supprimer l’image",
+      en: "Remove image",
+      oc: "Suprimir l'imatge",
+      de: "Dieses Bild löschen",
+    },
+    remove_filters: {
+      fr: "Supprimer les filtres",
+      en: "Remove all filters",
+    },
+    remove_layer: {
+      fr: "Supprimer le calque",
+      en: "Remove layer",
+    },
+    remove_selection: {
+      fr: "Supprimer la sélection",
+      en: "Remove selection",
+    },
+    withdraw: {
+      fr: "Enlever",
+      en: "Withdraw",
+      nl: "Terugtrekken",
+      oc: "Tirar",
+      de: "Enfernen",
+    },
+    remove_this_image: {
+      fr: "Supprimer cette image",
+      en: "Remove this image",
+      nl: "Dit beeld verwijderen",
+      oc: "Suprimir aqueste imatge",
+      de: "Dieses Bild löschen",
+    },
+    password: {
+      fr: "Mot de passe",
+      en: "Password",
+      nl: "Wachtwoord",
+      oc: "Mot de Santa Clara",
+      de: "Kennwort",
+    },
+    password_required_to_open: {
+      fr: "Mot de passe requis",
+      en: "Password required",
+      nl: "Wachtwoord vereist",
+      oc: "Mot de Santa Clara requesit",
+      de: "Kennwort zum Öffnen der Datei",
+    },
+    password_required_to_edit: {
+      fr: "Mot de passe requis pour contribuer",
+      en: "Password required to contribute",
+    },
+    only_authors_can_open: {
+      fr: "Accès limité aux auteurs",
+      en: "Access limited to authors",
+    },
+    only_password_can_open: {
+      fr: "Accès limité par mot de passe",
+      en: "Access limited with password",
+    },
+    ask_to_be_added_to_authors: {
+      fr: "Demander à être rajouté aux auteurs pour contribuer",
+      en: "Request to be added to authors list to contribute",
+    },
+    login_to_access_project: {
+      fr: "Identifiez-vous pour accéder",
+      en: "Login to access",
+    },
+    login_to_edit_project: {
+      fr: "Identifiez-vous pour contribuer",
+      en: "Login to contribute",
+    },
+    show_password: {
+      fr: "Afficher le mot de passe",
+      en: "Show password",
+      nl: "Wachtwoord tonen ",
+      oc: "Afichar lo mot de Santa Clara",
+      de: "Kennwort anzeigen",
+    },
+    hide: {
+      fr: "Cacher",
+      en: "Hide",
+      nl: "Verbergen",
+      oc: "Amagar",
+      de: "Ausblenden",
+    },
+    transition_fade: {
+      fr: "Transition : fondu enchaîné",
+      en: "Transition: fade",
+    },
+    linked_media_wasnt_found: {
+      fr: "Le média lié n’a pas été trouvé parmis les projets.",
+      en: "The linked media wasn’t found amongst the projects.",
+    },
+    protected_by_pass: {
+      fr: "protégé par mot de passe",
+      en: "protected by password",
+      nl: "Beveiligd met een wachtwoord. ",
+      oc: "protegit per mot de Santa Clara",
+      de: "Passwortgeschützt",
+    },
+    font_size: {
+      fr: "Taille de la police",
+      en: "Font-size",
+    },
+    import_medias_from_projects_or_create_shapes_here: {
+      fr:
+        "Importez des médias situés dans les projets ou créez des blocs avec les options ci-dessous.",
+      en:
+        "Import medias from projects or create new blocs with the following options.",
+    },
+    click_on_a_bloc_to_edit_its_presentation: {
+      fr: "Cliquez sur un bloc pour modifier son aspect",
+      en: "Click on a bloc to change its aspect",
+    },
+    password_instructions: {
+      fr:
+        "Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce contenu.",
+      en:
+        "If set, only users with the password will be able to open this content.",
+      nl:
+        "Indien van toepassing, alleen gebruikers met dit wachtwoord kunnen dit project openen.",
+      oc:
+        "Si existent, sonque los utilizaires tenent aqueste mot de Santa Clara poiràn dubrir aqueste projècte.",
+      de:
+        "Wenn vorhanden, können nur Benutzer mit diesem Passwort dieses Projekt öffnen",
+    },
+    author_instructions: {
+      fr:
+        "Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
+      en: "To create authors, close this window and click on (AUTHORS).",
+      nl:
+        "Om auteurs aan te maken, sluit dit venster en klik op de knop (AUTEURS).",
+      oc:
+        "Per crear d'autors, clavatz aquesta fenèstra e clicatz sul boton (AUTORS).",
+    },
+    access_control: {
+      fr: "Collaboration",
+      en: "Collaboration",
+    },
+    attached_to_project_instructions: {
+      fr:
+        "Ce champ est utilisé pour retrouver plus facilement les recettes en lien avec un projet.",
+      en:
+        "This information is used only to make it easier to find all the recipes linked to a specific project.",
+    },
+    translate_dodoc_instructions: {
+      fr:
+        "Pour proposer une nouvelle traduction, rendez-vous sur le <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum dédié</a> ou contactez-nous par mail : <a href='mailto:info@latelier-des-chercheurs.fr?subject=traduire%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
+      en:
+        "To translate do•doc, consult the following <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum post (in french)</a> or get in touch via email: <a href='mailto:info@latelier-des-chercheurs.fr?subject=translate%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
+    },
+    when_logged_as_author_content_will_be_tagged: {
+      fr:
+        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes que vous créez porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
+      en:
+        "When logged in as an author all projects, medias and recipes you create will be tagged with your name.",
+    },
+    more_informations_on_authors: {
+      fr:
+        "Vous pourrez ajouter d’autres co-auteurs directement dans les projets, médias et recettes. Si vous supprimez un auteur, tous les médias, projets et recettes conserveront le nom d’auteur et ne seront pas supprimées.",
+      en:
+        "You can add co-authors in the projects, medias and recipes. If you remove an author, all the projects, medias and recipes will keep this author name and won’t be removed.",
+      oc:
+        "Poiretz apondre d'autres co-autors directament dins los projèctes, mèdias e recèptas. Si suprimissètz un autor, totes los mèdias, projèctes e recèptas servaràn lo nom d'autor e seràn pas suprimidas.",
+      de:
+        "Sie können weitere Co-Autoren direkt in Projekte, Medien und Rezepte eintragen. Wenn Sie einen Autor entfernen, behalten alle Medien, Projekte und Rezepte den Namen des Autors und werden nicht gelöscht.",
+    },
+    sort_by: {
+      fr: "Organiser par",
+      en: "Sort by",
+      nl: "Sorteer volgens",
+      oc: "Organizar per",
+      de: "Organisiert von",
+    },
+    by: {
+      fr: "par",
+      en: "by",
+      nl: "per",
+      oc: "per",
+      de: "von",
+    },
+    in_the_order: {
+      fr: "Dans l’ordre",
+      en: "In the order",
+      nl: "In volgorde",
+      oc: "Dins l'òrdre",
+      de: "in der Reihenfolge",
+    },
+    public: {
+      fr: "Public",
+      en: "Public",
+      nl: "Publiek",
+      oc: "Public",
+      de: "Publikum",
+    },
+    fav: {
+      fr: "Favoris",
+      en: "Favourite",
+      nl: "Favoriet",
+      oc: "Favorits",
+      de: "Favoriten",
+    },
+    content: {
+      fr: "Contenu",
+      en: "Content",
+      nl: "Inhoud",
+      oc: "Contengut",
+      de: "Inhalt",
+    },
+    lang: {
+      fr: "Changer la langue",
+      en: "Select lang",
+      nl: "De taal wijzigen",
+      oc: "Cambiar la lenga",
+      de: "Die Sprache ändern",
+    },
+    share_access: {
+      fr: "Accéder depuis d’autres appareils",
+      en: "Access from other devices",
+      nl: "Toegang verlenen via andere toestellen ",
+      oc: "Accedir dins d'autres aparelhs",
+      de: "Zugriff von anderen Geräten freigeben",
+    },
+    scan_qr_code: {
+      fr: "Scanner un code QR",
+      en: "Scan a QR code",
+      nl: "QR-code scannen ",
+      oc: "Escanerizar un còde QR",
+      de: "QR-Code scannen",
+    },
+    photo: {
+      fr: "photo",
+      en: "picture",
+      nl: "foto",
+      oc: "fòto",
+      de: "Foto",
+    },
+    photos: {
+      fr: "photos",
+      en: "pictures",
+    },
+    screen_capture: {
+      fr: "Capture d’écran",
+      en: "Screen capture",
+    },
+    take_picture: {
+      fr: "Prendre une photo",
+      en: "Take a picture",
+    },
+    record_video: {
+      fr: "Capturer une vidéo",
+      en: "Record a video",
+    },
+    record_audio: {
+      fr: "Capturer un son",
+      en: "Record sound",
+    },
+    stop_recording: {
+      fr: "Arrêter la capture",
+      en: "Stop recording",
+    },
+    pause_recording: {
+      fr: "Mettre en pause",
+      en: "Pause recording",
+    },
+    unpause_recording: {
+      fr: "Relancer l’enregistrement",
+      en: "Resume recording",
+    },
+    video: {
+      fr: "vidéo",
+      en: "video",
+      nl: "video",
+      oc: "vidèo",
+      de: "Video",
+    },
+    stl: {
+      fr: "STL",
+      en: "STL",
+    },
+    stopmotion: {
+      fr: "animation",
+      en: "stopmotion",
+      nl: "animatie",
+      oc: "animacion",
+      de: "Animation",
+    },
+    audio: {
+      fr: "son",
+      en: "sound",
+      nl: "geluid",
+      oc: "son",
+      de: "Ton",
+    },
+    vecto: {
+      fr: "formes",
+      en: "shapes",
+      nl: "vormen",
+      oc: "formas",
+      de: "Formen",
+    },
+    lines: {
+      fr: "lignes",
+      en: "lines",
+    },
+    image: {
+      fr: "image",
+      en: "image",
+      nl: "beeld",
+      oc: "imatge",
+      de: "Bild",
+    },
+    text: {
+      fr: "texte",
+      en: "text",
+      nl: "tekst",
+      oc: "tèxte",
+      de: "Text",
+    },
+    choices: {
+      fr: "Choix multiples",
+      en: "Multiple choices",
+    },
+    single_choice: {
+      fr: "Un choix unique",
+      en: "Single choice",
+    },
+    multiple_choices_possible: {
+      fr: "Plusieurs choix possibles",
+      en: "Multiple choices possibles",
+    },
+    document: {
+      fr: "document",
+      en: "document",
+      nl: "document",
+      oc: "document",
+      de: "Dokument",
+    },
+    other: {
+      fr: "autre",
+      en: "other",
+      nl: "andere",
+      oc: "autre",
+      de: "Sonstige",
+    },
+    with_sound: {
+      fr: "avec le son",
+      en: "with sound",
+      nl: "met geluid",
+      oc: "amb lo son",
+      de: "mit Ton",
+    },
+    generate: {
+      fr: "Générer",
+      en: "Generate",
+      nl: "Genereren",
+      oc: "Generar",
+      de: "Generieren",
+    },
+    select: {
+      fr: "Sélection",
+      en: "Select",
+      nl: "Selecteren",
+      oc: "Seleccionar",
+      de: "Auswählen",
+    },
+    unselect: {
+      fr: "Dé-sélectionner",
+      en: "Unselect",
+      nl: "Deselecteren",
+      oc: "Deseleccionar",
+      de: "Auswahl aufheben",
+    },
+    ellipsis: {
+      fr: "Ellipse",
+      en: "Ellipsis",
+    },
+    rectangle: {
+      fr: "Rectangle",
+      en: "Rectangle",
+    },
+    line: {
+      fr: "Ligne",
+      en: "Line",
+    },
+    free_draw: {
+      fr: "Dessin libre",
+      en: "Free drawing",
+    },
+    arrow: {
+      fr: "Flèche",
+      en: "Arrow",
+    },
+    toconnectwithanotherdevice: {
+      fr:
+        "Pour accéder à cet élément avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web, ou bien scannez le code QR&nbsp;: ",
+      en:
+        "To access this do•doc element with another device, first connect it to the same wifi network, then type this adress in your browser or scan this QR code:",
+      nl:
+        "Om dit item met een ander apparaat te openen , maak verbinding met hetzelfde wifi-netwerk en voer vervolgens de volgende URL in een webbrowser in, of scan de QR-code: ",
+      oc:
+        "Per accedir aqueste element amb un autre aparelh, conectatz-vos al meteis ret wifi puèi dintratz l'url seguenta dins un navigador web, o escanerizatz lo còde QR :",
+      de:
+        "Um mit einem anderen Gerät auf dieses Element zuzugreifen, verbinden Sie sich zum gleichen Wifi-Netzwerk und geben Sie die folgende Url in einem Webbrowser ein oder scannen Sie den Code QR :",
+    },
+    sureToRemoveProject: {
+      fr: "Êtes-vous sûr de vouloir supprimer ce projet ?",
+      en: "Do you really want to delete this project?",
+      nl: "Weet u zeker dat u dit project wilt verwijderen?",
+      oc: "Sètz segur de voler suprimir aqueste projècte ?",
+      de: "Sind Sie sicher, dass Sie dieses Projekt zu entfernen?",
+    },
+    sureToRemoveMedia: {
+      fr: "Êtes-vous sûr de vouloir supprimer ce média ?",
+      en: "Do you really want to delete this media?",
+      nl: "Weet u zeker dat u deze media wilt verwijderen?",
+      oc: "Sètz segur de voler suprimir aqueste mèdia ?",
+      de: "Sind Sie sicher, dass Sie dieses  Medium zu entfernen?",
+    },
+    sure_to_remove_message: {
+      fr: "Êtes-vous sûr de vouloir supprimer ce message ?",
+      en: "Do you really want to delete this message?",
+    },
+    sureToRemovePage: {
+      fr: "Êtes-vous sûr de vouloir supprimer cette page ?",
+      en: "Do you really want to delete this page?",
+    },
+    sureToRemoveLayer: {
+      fr: "Êtes-vous sûr de vouloir supprimer ce calque ?",
+      en: "Do you really want to delete this layer?",
+    },
+    edit_the_media: {
+      fr: "Éditer le média",
+      en: "Edit media",
+      nl: "Media bewerken",
+      oc: "Editar lo mèdia",
+      de: "Media bearbeiten",
+    },
+    edit_project: {
+      fr: "Éditer le projet",
+      en: "Edit project",
+      nl: "Project bewerken",
+      oc: "Editar lo projècte",
+      de: "Projekt bearbeiten",
+    },
+    edit_publication: {
+      fr: "Éditer la recette",
+      en: "Edit recipe",
+      nl: "Recept bewerken",
+      oc: "Editar la recèpta",
+      de: "Rezept bearbeiten",
+    },
+    switch_fit_mode: {
+      fr: "Change le mode de remplissage",
+      en: "Switch fit mode",
+    },
+    drop_here_to_import: {
+      fr: "Déposez les médias ici pour les importer",
+      en: "Drop the files here to import",
+      nl: "Laad de bestanden hier om te importeren ",
+      oc: "Depausatz vòstres contenguts aicí per los importar",
+      de: "Hier zum Importieren ablegen",
+    },
+    capture: {
+      fr: "Capturer",
+      en: "Capture",
+      nl: "Vastleggen",
+      oc: "Capturar",
+      de: "Aufnahme",
+    },
+    current: {
+      fr: "Actuellement",
+      en: "Current",
+      nl: "Nu",
+      oc: "Ara",
+      de: "Aktuell",
+    },
+    currently: {
+      fr: "Actuellement",
+      en: "Now",
+      nl: "Momenteel",
+      oc: "Ara",
+      de: "Derzeit",
+    },
+    update: {
+      fr: "Mettre à jour",
+      en: "Update",
+      nl: "Bijwerken",
+      oc: "Metre a jorn",
+      de: "Aktualisieren",
+    },
+    more_information: {
+      fr:
+        "Pour plus d’information, consultez la <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation</a> ou <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contactez</a> les auteurs de ce logiciel.",
+      en:
+        "For more informations, read the <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation (in french)</a> or <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contact</a> the creators of this app.",
+      nl:
+        "Voor meer informatie. , bezoek <a href='https://latelierdes-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentatie</a> ou <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contacteer</a> de auteurs van dit programma.",
+      oc:
+        "Per mai d’informacion, consultatz la <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation</a> o <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contactatz</a> los autors d'aqueste logicial.",
+      de:
+        "Für mehr Informationen schauen sie bei <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>Dokumentation (auf Französisch)</a> oder <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>kontaktieren Sie </a> die Autoren dieser Software.",
+    },
+    no_images_to_show: {
+      fr: "Aucun média image à afficher.",
+      en: "No image to show.",
+      oc: "Cap de mèdia imatge d'afichar.",
+      de: "Keine Bildmedien zur Anzeige.",
+    },
+    more_informations: {
+      fr: "Plus d’infos",
+      en: "More infos",
+      nl: "Meer info",
+      oc: "Mai d'infos",
+      de: "Mehr Informationen",
+    },
+    contents_are_stored: {
+      fr: "Les contenus de ce dossier sont enregistrés dans ",
+      en: "Contents for this folder are stored in ",
+      nl: "De inhoud van dit bestand wordt opgeslagen in ",
+      oc: "Los contenguts d'aqueste dorsièr son enregistrats dins",
+      de: "Der Inhalt dieses Ordners wird gespeichert in",
+    },
+    folder_information: {
+      fr: "Informations du dossier",
+      en: "Folder informations",
+      nl: "map-info",
+      oc: "Informacions del dorsièr",
+      de: "Dateiinformationen",
+    },
+    calendar: {
+      fr: "Calendrier",
+      en: "Calendar",
+      nl: "Kalender",
+      oc: "Calendièr",
+      de: "Kalender",
+    },
+    now: {
+      fr: "en ce moment",
+      en: "now",
+      nl: "op dit moment",
+      oc: "d'aquesta passa",
+      de: "Jetzt",
+    },
+    list: {
+      fr: "Liste",
+      en: "List",
+      nl: "Lijst",
+      oc: "Tièra",
+      de: "Liste",
+    },
+    fullscreen: {
+      fr: "Plein écran",
+      en: "Fullscreen",
+      nl: "Volledig scherm",
+      oc: "Plen ecran",
+      de: "Vollbild",
+    },
+    cover_image: {
+      fr: "Image de couverture",
+      en: "Cover image",
+      oc: "Imatge de cobertura",
+      de: "Coverbild",
+    },
+    filter: {
+      fr: "Filtre",
+      en: "Filter",
+      nl: "Filter",
+      oc: "Filtre",
+      de: "Filter",
+    },
+    filters: {
+      fr: "Filtres",
+      en: "Filters",
+      nl: "Filters",
+      oc: "Filtres",
+      de: "Filter",
+    },
+    header_left: {
+      fr: "En-tête gauche",
+      en: "Left header text",
+      nl: "Linker koptekst",
+      oc: "Entèsta esquèrra",
+      de: "Kopfzeile links",
+    },
+    header_right: {
+      fr: "En-tête droite",
+      en: "Right header text",
+      nl: "Rechtse koptekst",
+      oc: "Entèsta drecha",
+      de: "Kopfzeile rechts",
+    },
+    gridstep: {
+      fr: "Pas de la grille d’alignement",
+      en: "Step of alignment grid",
+      nl: "Geen uitlijningsrooster ",
+      oc: "Cap de grilhas d'alinhament",
+      de: "Ausrichtungsgitterabstand",
+    },
+    snap_to_grid: {
+      fr: "Magnétisme",
+      en: "Snap to grid",
+      nl: "Magnetisme",
+      oc: "Magnetisme",
+      de: "Magnetismus",
+    },
+    grid: {
+      fr: "Grille",
+      en: "Grid",
+    },
+    halfs: {
+      fr: "Moitiés",
+      en: "Halfs",
+    },
+    thirds: {
+      fr: "Tiers",
+      en: "Thirds",
+    },
+    fourths: {
+      fr: "Quarts",
+      en: "Fourths",
+    },
 
-      very_high: 'Very high (1080p)',
-      high: 'High (1080p)',
-      medium: 'Medium (640p)',
-      low: 'Low (360p)',
+    margin_top: {
+      fr: "Marge: haut",
+      en: "Margin: top",
+      nl: "Marge boven",
+      oc: "Marge: naut",
+      de: "Marge: oben",
+    },
+    margin_left: {
+      fr: "Marge: gauche",
+      en: "Margin: left",
+      nl: "Marge links",
+      oc: "Marge: esquèr",
+      de: "Marge: links",
+    },
+    margin_right: {
+      fr: "Marge: droite",
+      en: "Margin: right",
+      nl: "Marge rechts",
+      oc: "Marge: drech",
+      de: "Marge: rechts",
+    },
+    margin_bottom: {
+      fr: "Marge: bas",
+      en: "Margin: bottom",
+      nl: "Marge beneden",
+      oc: "Marge: bas",
+      de: "Marge: unten",
+    },
+    number_of_medias: {
+      fr: "Nombre de médias",
+      en: "Number of medias",
+      nl: "Aantal media",
+      oc: "Nombre de mèdias",
+      de: "Anzahl der Medien",
+    },
+    number_of_pages: {
+      fr: "Nombre de pages",
+      en: "Number of pages",
+      nl: "Aantal pagina’s",
+      oc: "Nombre de paginas",
+      de: "Anzahl der Seiten",
+    },
+    show_page_numbers: {
+      fr: "Afficher le numéro de page dans le coin en bas à droite",
+      en: "Show page number in the bottom-right corner",
+      nl: "Geef het paginanummer in de rechterbenedenhoek weer ",
+      oc: "Afichar lo numèro de pagina dins lo caire en bas a drech",
+      de: "Zeigen sie die Seitenzahl in der rechten unteren Ecke an",
+    },
+    export_folder: {
+      fr: "Exporter en format WEB",
+      en: "Export as a webpage",
+      nl: "Exporteren in web formaat",
+      oc: "Exportar en format web",
+      de: "Im WEB-Format exportieren",
+    },
+    export: {
+      fr: "Exporter",
+      en: "Export",
+      nl: "Exporteren",
+      oc: "Exportar",
+      de: "Exportieren",
+    },
+    new_window: {
+      fr: "Nouvelle fenêtre",
+      en: "New Window",
+      nl: "Nieuw venster ",
+      oc: "Novèla fenèstra",
+      de: "Neues Fenster",
+    },
+    previous_creations: {
+      fr: "Créations précédentes",
+      en: "Previous creations",
+      nl: "Vorige creaties",
+      oc: "Creacions precedentas",
+      de: "Vorheriger Kreationen",
+    },
+    export_video_instructions: {
+      fr:
+        "Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la recette.",
+      en: "Click this button to generate a video from multiple source videos.",
+      nl:
+        "Klik op de knop om een video te maken van de video’s die aan de publicatie zijn toegevoegd.",
+      oc:
+        "Clicatz sul boton per lançar la creacion d'una sola vidèo a partir de las vidèos apondudas a la recèpta.",
+      de:
+        "Klicken Sie auf die Schaltfläche um mit der Erstellung eines einzelnen Vidéos aus den Vidéos zu beginnen die der Veröffentlichung hinzugefügt wurden",
+    },
+    export_audio_video_mix_instructions: {
+      fr:
+        "Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de la vidéo sélectionnés.",
+      en:
+        "Click this button to generate a video from the sound and video selected.",
+      nl:
+        "Klik op de knop om een video te maken van het geselecteerde geluid en de geselecteerde video.",
+      oc:
+        "Clicar sul boton per lançar la creacion d'una vidèo dins dels son e de la vidèo seleccionats.",
+      de:
+        "Klicken Sie auf auf die Schaltfläche um die Erstellung eines Videos aus dem gewählten Ton und Video zu beginnen.",
+    },
+    export_audio_image_mix_instructions: {
+      fr:
+        "Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de l’image sélectionnés.",
+      en:
+        "Click this button to generate a video from the sound and image selected.",
+      nl:
+        "Klik op de knop om een video te maken van het geselecteerde geluid en het geselecteerde beeld.",
+      oc:
+        "Clicar sul boton per lançar la creacion d'una vidèo dins dels son e de l'imatge seleccionats.",
+      de:
+        "Klicken Sie auf die Schaltfläche um die Erstellung eines Videos aus dem gewählten Ton und Bild zu starten.",
+    },
+    export_stopmotion_instructions: {
+      fr:
+        "Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la recette.",
+      en:
+        "Click this button to generate a video from images you have selected.",
+      nl:
+        "Klik op de knop om een video te maken van de afbeeldingen die aan de publicatie zijn toegevoegd.",
+      oc:
+        "Clicar sul boton per lançar la creacion d'una sola vidèo en partir dels imatges aponduts a la recèpta.",
+      de:
+        "Klicken Sie auf die Schaltfläche, um die Erstellung eines einzelnen Videos aus den zur Veröffentlichung hinzugefügten Bildern zu starten.",
+    },
+    make_video: {
+      fr: "Fabriquer une vidéo",
+      en: "Make a video",
+      nl: "Maak een video",
+      oc: "Fargar una vidèo",
+      de: "Ein Video erstellen",
+    },
+    add_solid_color: {
+      fr: "Ajouter un aplat de couleur",
+      en: "Add solid color",
+    },
+    number_of_colors: {
+      fr: "Nombre de couleur(s)",
+      en: "Quantity of color(s)",
+    },
+    select_color: {
+      fr: "Changer la couleur",
+      en: "change the color",
+    },
+    interval_between_pictures: {
+      fr: "Intervalle entre chaque photo",
+      en: "Interval between photos",
+      nl: "Interval tussen elk beeld",
+      oc: "Interval entre cada fòto",
+      de: "Intervall zwischen jedem Foto",
+    },
+    publication_list: {
+      fr: "Liste des recettes",
+      en: "Recipes list",
+      nl: "Lijst van publicaties",
+      oc: "Tièra de las recèptas",
+      de: "Rezepturliste",
+    },
+    export_creation: {
+      fr: "Exportation d’une création",
+      en: "Export a creation",
+      nl: "Exporteer een creatie",
+      oc: "Exportacion d'una creacion",
+      de: "Exporterstellung",
+    },
+    get_pdf: {
+      fr:
+        "Pour récupérer un document PDF ou une image de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
+      en:
+        "To download a PDF or an image of this recipe (for example, to print it), click here:",
+      nl:
+        "Als u een PDF van deze publicatie wilt maken (bijvoorbeeld om deze af te drukken), klik op de knop hieronder:",
+      oc:
+        "Per recuperar un PDF d'aquesta recèpta (per exemple per l'estampar), clicatz sul boton çai-jos :",
+      de:
+        "Um ein PDF dieser Veröffentlichung zu erhalten (z.B.um es auszudrucken), klicken Sie auf die Schaltfläche unten.",
+    },
+    get_website: {
+      fr:
+        "Pour récupérer un site web contenant cette recette (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:",
+      en:
+        "To download a website version of this recipe (for example, to publish online), click here:",
+      nl:
+        "Als u een website van deze publicatie wilt maken (bijvoorbeeld om deze online te delen), klikt u op de knop hieronder:",
+      oc:
+        "Per recuperar un sit web contenent aquesta recèpta (per exemple per la difusar en linha), clicatz sul boton çai-jos :",
+      de:
+        "Um eine Webseite mit dieser Veröffentlichung abzurufen (z. B um sie online zu verteilen ), klicken Sie auf die Schaltfläche unten.",
+    },
+    download_website: {
+      fr: "Télécharger une version web",
+      en: "Download a website",
+      nl: "Download website",
+      oc: "Telecargar una version web",
+      de: "Eine Webversion herunterladen",
+    },
+    open_in_app: {
+      fr: "Afficher",
+      en: "Open",
+      nl: "Tonen",
+      oc: "Afichar",
+      de: "In App öffnen",
+    },
+    get_a_link: {
+      fr: "Récupérer un lien vers ce document&nbsp;:",
+      en: "Get a link to this document&nbsp;:",
+      nl: "Een koppeling naar dit document ophalen:",
+      oc: "Recuperar un ligam de cap a aqueste document",
+      de: "Einen Link zu diesem Dokument abrufen.",
+    },
+    link: {
+      fr: "Lien",
+      en: "Link",
+    },
+    format: {
+      fr: "Format",
+      en: "Format",
+      nl: "Format",
+      oc: "Format",
+      de: "Format",
+    },
+    name_of_copy: {
+      fr: "Nom à donner à la copie",
+      en: "Name of the copy",
+      nl: "Naam die aan de kopie moet worden gegeven",
+      oc: "Nom de balhar a la còpia",
+      de: "Name der Kopie",
+    },
+    name_of_stream: {
+      fr: "Nom du flux",
+      en: "Stream name",
+    },
+    template: {
+      fr: "Gabarit",
+      en: "Template",
+      nl: "sjabloon",
+      oc: "Gabarit",
+      de: "Vorlage",
+    },
+    create_new_recipe: {
+      fr: "Créer une nouvelle Recette",
+      en: "Create new recipe",
+    },
+    show_recipes: {
+      fr: "Afficher les Recettes",
+      en: "Show all recipes",
+    },
 
-      showing: 'Showing',
-      media_filter: 'Medias filter',
-      no_projects_yet: 'No projects yet, create one to start using do•doc!',
-      projects_of: 'projects of',
-      medias_of: 'medias of',
-      projects: 'Projects',
-      project: 'Project',
-      medias: 'Medias',
-      media: 'Media',
-      authors: 'Authors',
-      authors_list: 'List of authors',
-      create_an_author: 'Create an author',
-      favorite_medias: 'Favorite medias',
-      all_medias: 'All medias',
-      create_text: 'Write',
-      import: 'Import',
-      import_medias: 'Import medias',
-      import_all_files: 'Import all files',
-      select_files_to_import: 'Select files to import',
-      select_cover_image: 'Select a cover image',
-      select_portrait_image: 'Select a portrait',
-      add_to_recipe: 'Add to recipe',
-      add_a_page: 'Add a page',
-      insert_a_page_here: 'Insert a page here',
-      add_a_page_before: 'Add a page before this one',
-      add_a_page_after: 'Add a page after this one',
-      add_a_page_here: 'Add a page here',
-      remove_this_page: '▲ Remove this page ▲',
+    model: {
+      fr: "Modèle",
+      en: "Model",
+    },
+    "replies:": {
+      fr: "Réponses&nbsp:",
+      en: "Replies:",
+    },
+    replies_to: {
+      fr: "Réponses à",
+      en: "Replies to",
+    },
+    publi_is_model: {
+      fr: "Cette recette est un modèle",
+      en: "This recipe is a model",
+    },
+    publi_is_model_instructions: {
+      fr:
+        "Si actif, cette recette pourra être utilisée comme référence lors de la création d’autres recettes.",
+      en:
+        "If enabled, this recipe can be selected as a model for other recipes to lean on.",
+    },
 
-      anonymous: 'anonymous',
-      other_users: 'other users',
-      other_users_connected: 'other user connected',
+    recipes: {
+      fr: "Recettes",
+      en: "Recipes",
+    },
+    recipes_already_created: {
+      fr: "Recettes créées",
+      en: "Recipes created",
+    },
+    URL_to_share_for_replies: {
+      fr:
+        "Pour générer des réponses basées sur ce modèle, partagez cette adresse",
+      en: "To generate replies based on this model, share this URL",
+    },
+    URL_to_edit_in_simple_interface: {
+      fr: "Pour accéder au récit dans l’interface simplifiée",
+      en: "Click here to open this story in a dedicated page",
+    },
+    no_models_yet: {
+      fr: "Aucune recette modèle n’a été créé pour l’instant",
+      en: "No models recipe have been created yet",
+    },
+    "publi_follows_model:": {
+      fr: "Cette recette suit le modèle&nbsp:",
+      en: "This recipe has model:",
+    },
+    select_publi_model: {
+      fr: "Sélectionner un modèle",
+      en: "Select a model",
+    },
+    remote_access: {
+      fr: "Sources distantes",
+      en: "Remote sources",
+    },
+    connect_to_other_users: {
+      fr:
+        "Accéder à des sources provenant d’autres appareils connectés actuellement à ce do•doc",
+      en:
+        "Connect to sources provided by devices currently connected to this do•doc",
+    },
+    connect: {
+      fr: "Se connecter",
+      en: "Connect",
+    },
+    hangup: {
+      fr: "raccrocher",
+      en: "hang up",
+    },
+    select_publi_model_instructions: {
+      fr:
+        "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",
+      en: "If enabled, this recipe will display the model’s medias and guides.",
+    },
+    archived: {
+      fr: "Archiver",
+      en: "Archived",
+    },
+    archived_explanation: {
+      fr: "Document archivé&nbsp;: il ne peut plus être modifié.",
+      en: "Document is archived: it cannot be edited anymore.",
+    },
+    "type_of_expected_contents:": {
+      fr: "Type de contenus attendus&nbsp;:",
+      en: "Type of expected contents:",
+    },
+    standard: {
+      fr: "Standard",
+      en: "Standard",
+      nl: "standaard",
+      oc: "Estandard",
+      de: "Standart",
+    },
+    "feuille de choux": {
+      fr: "Feuille de Choux",
+      en: "Feuille de Choux",
+      nl: "koolblad",
+      oc: "Feuille de Choux",
+      de: "Kohlblätter",
+    },
+    "human tech days": {
+      fr: "Human Tech Days",
+      en: "Human Tech Days",
+      nl: "Human Tech Days",
+      oc: "Human Tech Days",
+      de: "Mensch-Technik Tage",
+    },
+    days: {
+      fr: "Jours",
+      en: "Days",
+    },
+    page_by_page: {
+      fr: "Document page à page",
+      en: "Paged document",
+      nl: "Document pagina per pagina",
+      oc: "Document pagina per pagina",
+      de: "Seite zu Seite Dokument",
+    },
+    story: {
+      fr: "Récit",
+      en: "Story",
+    },
+    stories: {
+      fr: "Récits",
+      en: "Stories",
+    },
+    see_all_my_stories: {
+      fr: "Consulter tous mes récits",
+      en: "See all my stories",
+    },
+    list_of_stories: {
+      fr: "Liste des récits créés",
+      en: "List of stories created",
+    },
+    story_summary: {
+      fr: "Créer un récit à exporter en PDF ou en page web.",
+      en: "Creates a one-column story to export as a printable PDF or website.",
+    },
+    story_instructions: {
+      fr:
+        "Cette recette permet de créer un document enchainant les blocs les uns au dessus des autres.",
+      en:
+        "This recipe can be used to create a one-column responsive document.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make books, leaflets, etc.) or a webpage to upload online.",
+    },
+    carreau: {
+      fr: "Carreau",
+      nl: "Tegel",
+      oc: "Carreau",
+      de: "Kachel",
+    },
+    video_assemblage: {
+      fr: "Montage vidéo",
+      en: "Video editing",
+      nl: "Videobewerking",
+      oc: "Montatge vidèo",
+      de: "Videobearbeartung",
+    },
+    stopmotion_animation: {
+      fr: "Animation image par image",
+      en: "Stopmotion animation",
+      nl: "Stopmotion animatie",
+      oc: "Animacion imatge per imatge",
+      de: "Einzelbild für Bild Animation",
+    },
+    stop_stopmotion: {
+      fr: "Arrêter cette animation",
+      en: "Stop stopmotion",
+    },
+    web: {
+      fr: "Page web",
+      en: "Webpage",
+      nl: "Webpagina",
+      oc: "Pagina web",
+      de: "Webseite",
+    },
+    back_to_project: {
+      fr: "Retour au projet",
+      en: "Back to project",
+      nl: "Terug naar project",
+      oc: "Tornar al projècte",
+      de: "Zurük zum Projeckt",
+    },
+    page_by_page_summary: {
+      fr: "Créer un PDF imprimable ou une page web à mettre en ligne.",
+      en: "Creates a printable PDF or website to upload online.",
+      nl: "Maak een afdrukbare PDF of webpagina om te uploaden.",
+      oc: "Crear un PDF estampable o una pagina web de botar en linha.",
+      de:
+        "Eine druckfähige PDF-Datei oder eine Webseite, die Sie online stellen können.",
+    },
+    page_by_page_instructions: {
+      fr:
+        "Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.",
+      en:
+        "This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, leaflets, newspapers, etc.) or a webpage to upload online.",
+      nl:
+        "Met dit recept kunt u een document met een exacte indeling en meerdere pagina’s maken.<br> Ondersteunde media: afbeeldingen, video’s, geluid en tekst.<br>Maak een afdrukbare PDF (om posters, flyers, kranten, enz. te maken) of een webpagina om te uploaden.",
+      oc:
+        "Aquesta recèpta permet de crear un document amb un format precís e mantunas paginas.<br>Mèdias acceptats : imatges, vidèos, sons e tèxtes.<br>Crearà un PDF estampable (per faire d'afichas, tractes, jornals, eca.) o una pagina web de botar en linha.",
+      de:
+        "Dieses Rezept ermöglicht es Ihnen ein Dokument mit einem präzisen Format und mehreren Seiten zu erstellen.<br> Zulässige Medien : Bilder, Videos, Töne und Texte. <br> 'Eine druckfähige PDF-Datei (um Plakate, Flyer, Zeitungen, etc. herzustellen) oder eine Webseite, die Sie online stellen können wird erstellt.",
+    },
+    video_assemblage_summary: {
+      fr: "Créer un montage vidéo à partir d’images et de vidéos.",
+      en: "Creates a video from images and videos.",
+      nl: "Maak een videomontage van afbeeldingen en video’s.",
+      oc: "Crear un montatge vidèo en partir d'imatges e de vidèos.",
+      de: "Eine Videomontage aus Bildern und Videos erstellen.",
+    },
+    video_assemblage_instructions: {
+      fr:
+        "Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos ou images bout à bout.<br> Médias acceptés : des vidéos et des images.<br>Créera une nouvelle vidéo.",
+      en:
+        "This recipe creates a video from multiple source images and videos, one after the other.<br>Accepted medias: images and videos.<br>Will create a new video.",
+      nl:
+        "Dit recept stelt voor om een video montage te maken door meerdere video’s of afbeeldingen na elkaar te plaatsen.<br> Ondersteunde media: video’s en afbeeldingen.<br>Maakt een nieuwe video.",
+      oc:
+        "Aquesta recèpta prepausa de crear un montatge vidèo en botant mantunas vidèos o imatges cap a cap.<br>Mèdias acceptats imatges e vidèos.<br> Crearà una novèla vidèo.",
+      de:
+        "Dieses Rezept ermöglicht es Ihnen, eine Videomontage zu erstellen, indem Sie mehrere Videos oder Bilder aneinander reihen. <br> Zulässige Medien : Videos und Bilder.<br> Wird ein neues Video erstellen.",
+    },
+    stopmotion_animation_summary: {
+      fr: "Assembler des images pour créer une vidéo.",
+      en: "Creates a video from images shown for a specific period of time.",
+      nl: "Beelden samenvoegen om een video te maken.",
+      oc: "Assemblar d'imatges per crear una vidèo.",
+      de: "Zusammenfügen von Bildern zum Erstellen eines Videos.",
+    },
+    stopmotion_animation_instructions: {
+      fr:
+        "Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.",
+      en:
+        "This recipe takes any number of images as inputs and creates a single video with images displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.",
+      nl:
+        "Met dit recept kunt u een onbeperkt aantal beelden samenvoegen om een videosequentie te maken waarin deze beelden na elkaar verschijnen aan een in te stellen snelheid.<br> Ondersteunde media: enkel afbeeldingen. De afmetingen van het eerste beeld bepalen of de uiteindelijke video als portret of landschap is ingedeeld.<br>Maakt een nieuwe video.",
+      oc:
+        "Aquesta recèpta permet d'assemblar un nombre illimitat d'imatges per crear una sequéncia vidèo que i desfilan a una vitessa reglabla.<br> Mèdias acceptats : sonque d'imatges. Las dimensions del primièr imatge determina si la vidèo finala es en retrach o paisatge.<br> Crearà una novèla vidèo.",
+      de:
+        "Dieses Rezept erlaubt das Zusammenfügen einer unbegrenzten Anzahl von Bildern zu einer Videosequenz, in der sie mit einer einstellbaren Geschwindigkeit scrollen. <br> Zulässige Medien : nur Bilder. Die Größe des ersten Frames bestimmt, ob das endgültige Video im Hoch- oder Querformat vorliegt.<br> Wird ein neues Video erstellen.",
+    },
+    mix_audio_and_video_summary: {
+      fr: "Ajouter ou remplacer du son sur une vidéo.",
+      en: "Add or replace sound that’s on a video.",
+      nl: "Geluid op een video toevoegen of vervangen.",
+      oc: "Apondre o remplaçar de son sus una vidèo.",
+      de: "Hinzufügen oder Ersetzen von Ton zu einem Video.",
+    },
+    mix_audio_and_video_instructions: {
+      fr:
+        "Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.",
+      en:
+        "This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.",
+      nl:
+        "Dit recept gebruikt een videobestand en een audionummer. Hiermee wordt de soundtrack aan de video toegevoegd of vervangen door het gekozen geluidsbestand.<br> Ondersteunde media: video- en geluidsbestanden.<br>Maakt een nieuwe video met de lengte van de langste media.",
+      oc:
+        "Aquesta recèpta pren una vidèo e una pista audio. Apond o remplça la banda sonora de la vidèo amb la qu'es seleccionada.<br>Mèdias acceptats: una vidèo e una pista sonora.<br>Crearà una novèla vidèo de la duradadel mai long mèdia.",
+      de:
+        "Dieses Rezept nimmt eine Video und eine Tonspur.  Er fügt die Tonspur des Videos hinzu oder ersetzt ihn durch der ausgewählten Tonspur.<br> Zulässige Medien : ein Video und eine Tonspur.<br> Wird ein neues Video mit der längsten Medienlänge erstellen.",
+    },
+    drawing_pad: {
+      fr: "Bloc dessin",
+      en: "Drawing pad",
+    },
+    drawing: {
+      fr: "Dessin libre",
+      en: "Drawing",
+    },
+    drawing_pad_summary: {
+      fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables.",
+      en: "Draw, annotate, mind map, etc.",
+    },
+    drawing_pad_instructions: {
+      fr: "Dessinez, annotez, créez des visuels interactifs ou imprimables.",
+      en: "Draw, annotate, mind map, etc.",
+    },
+    mix_audio_and_image_summary: {
+      fr: "Ajouter du son sur une image.",
+      en: "Add sound to an image to create a video.",
+      nl: "Geluid toevoegen aan een beeld.",
+      oc: "Apondre de son sus un imatge.",
+      de: "Ton zum Video hinzufügen.",
+    },
+    mix_audio_and_image_instructions: {
+      fr:
+        "Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo de la durée de la piste sonore.",
+      en:
+        "This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.",
+      nl:
+        "Dit recept gebruikt een beeld- en een geluidsbetand. Het maakt het mogelijk om <i>sprekende beelden te maken .<br> Ondersteunde media: beeld- en geluidsbestand.<br>Maakt een video met de duur van het geluidsbestand.",
+      oc:
+        "Aquesta recèpta pren un imatge e una p ista audio. Permet de crear d'<i>imatges parlantas<i>.<br> Mèdias acceptats : un imatge e una pista sonora.<br>Crearà una vidèo de la durada de la pista sonora.",
+      de:
+        "Dieses Rezept nimmt ein Bild und eine Audiospur auf.  Es erlaubt Ihnen, <i>sprechende Bilder zu erstellen</i>.<br> Zulässige Medien : ein Bild und eine Tonspur.<br>Wird ein Video über die Dauer der Tonspur  erstellen.",
+    },
+    video_effects: {
+      fr: "Effets vidéo",
+      en: "Video effects",
+    },
+    video_effects_summary: {
+      fr: "Appliquer des effets et filtres sur une vidéo.",
+      en: "Apply video effects and filters to a video.",
+    },
+    video_effects_instructions: {
+      fr:
+        "Liste des effets et filtres disponibles : noir et blanc, ralenti, accéléré, inversion de la lecture, rotation et miroir.<br>Média accepté : une seule vidéo.",
+      en:
+        "Video effects and filters available: black and white, speed up, slow down, play backwards, rotate and miroir.<br>Accepted media: a single video.",
+    },
+    effect: {
+      fr: "Effet",
+      en: "Effect",
+    },
+    black_and_white: {
+      fr: "Noir et blanc",
+      en: "Black and white",
+    },
+    watermark: {
+      fr: "Habillage",
+      en: "Watermark",
+    },
+    watermark_instructions: {
+      fr:
+        "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
+      en: "Choose an image to place in the top-right corner of the video.",
+    },
+    colored_filter: {
+      fr: "Filtre coloré",
+      en: "Colored filter",
+    },
+    filters_color: {
+      fr: "Couleur du filtre",
+      en: "Filter’s color",
+    },
+    slow_down: {
+      fr: "Ralentir",
+      en: "Slow down",
+    },
+    slowing_video_down_limit: {
+      fr:
+        "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
+      en:
+        "Warning! The audio track will be removed (if it exists) because the slow down is too low. To keep the audio track select a value between 0.5 and 1.",
+    },
+    speed_up: {
+      fr: "Accélérer",
+      en: "Speed up",
+    },
+    a_little: {
+      fr: "Un peu",
+      en: "A little",
+    },
+    a_lot: {
+      fr: "Beaucoup",
+      en: "A lot",
+    },
+    clockwise: {
+      fr: "Dans le sens des aiguilles d’une montre",
+      en: "Clockwise",
+    },
+    counterclockwise: {
+      fr: "Dans le sens inverse des aiguilles d’une montre",
+      en: "Counterclockwise",
+    },
+    reverse: {
+      fr: "Inverser le début et la fin",
+      en: "Reverse",
+    },
+    rotate: {
+      fr: "Pivoter",
+      en: "Rotate",
+    },
+    "error:": {
+      fr: "Erreur&nbsp;:",
+      en: "Error:",
+    },
+    mirror: {
+      fr: "Miroir",
+      en: "Mirror",
+    },
+    horizontal_flip: {
+      fr: "Retournement horizontal",
+      en: "Horizontal flip",
+    },
+    vertical_flip: {
+      fr: "Retournement vertical",
+      en: "Vertical flip",
+    },
+    both: {
+      fr: "Les deux",
+      en: "Both",
+    },
+    last_message: {
+      fr: "Dernier message",
+      en: "Last message",
+    },
+    save_following_address_and_come_back_later: {
+      fr: "Enregistrez l’adresse suivante pour finaliser plus tard.",
+      en: "Save this URL to connect again and finish in the future.",
+    },
+    finished_writing_reply: {
+      fr: "Votre document est terminé ?",
+      en: "Your document is finished?",
+    },
+    finalize_story: {
+      fr: "Finalisez votre récit",
+      en: "Finalize your story",
+    },
+    carreau_summary: {
+      fr: "Empiler des médias pour créer en temps réel des présentations.",
+      en: "Stack multiple medias on a single surface to project content.",
+      nl: "Media samenvoegen om real-time presentaties te maken.",
+      oc: "Apilar de mèdias per crear en temps real de presentacion.",
+      de: "Medien stapeln um Echtzeit Präsentationen zu erstellen.",
+    },
+    carreau_instructions: {
+      fr:
+        "Cette recette permet de collaborer à plusieurs sur la même surface pour présenter des médias de différent type. Ouvrez une nouvelle fenêtre vers cette recette en plein écran sur un projecteur pour afficher uniquement la surface.<br> Médias acceptés : images, vidéos, sons.",
+      en:
+        "Use this mode to show multiple medias on a large projection or screen, for example by opening a browser and clicking on the fullscreen button.<br>Accepted medias: images, videos and sounds.",
+      nl:
+        "Met dit recept kunt u met meerdere op hetzelfde platform samenwerken om verschillende soorten media te presenteren. Open een nieuw venster naar dit recept op volledig scherm met een projector om alleen het platform weer te geven.<br>Ondersteunde media: afbeeldingen, video’s, geluidsbestanden.",
+      oc:
+        "Aquesta recèpta permet de collaborar a mantunes sus la m eteissa susfacia per presentar de mèdias de diferents tipe. Dubriscatz una novèla fenèstra de cap a-aquesta recèpta en plen ecran sus un projector per afichar sonque la susfacia.<br> Mèdias acceptats : imatges, vidèos, sons.",
+      de:
+        "Dieses Rezept erlaubt es mehreren Personen, auf der gleichen Oberfläche zusammenzuarbeiten, um verschiedene Arten von Medien zu präsentieren. Öffnen Sie ein neues Fenster zu diesem Rezept im Vollbildmodus auf einem Projektor, um nur die Oberfläche anzuzeigen. .<br>  Zulässige Medien : Bilder, Videos, Töne.",
+    },
+    last_modified: {
+      fr: "Dernière modification",
+      en: "Last modified",
+      nl: "laatst gewijzigd",
+      oc: "Darrièra modificacion",
+      de: "Letzte Änderung",
+    },
+    open_project: {
+      fr: "Afficher le projet",
+      en: "Show the project",
+      oc: "Afichar lo projècte",
+      de: "Projekt anzeigen",
+    },
+    remote_access: {
+      fr: "Accès depuis d’autres appareils",
+      en: "Acces from other devices",
+      nl: "Toegang vanaf andere apparaten",
+      oc: "Accès dins d'autres aparelhs",
+      de: "Zugriff von anderen Geräten",
+    },
+    img_per_second: {
+      fr: "Images par seconde",
+      en: "Images per second",
+      nl: "Beelden per seconde",
+      oc: "Imatges per seconda",
+      de: "Bilder pro Sekunde",
+    },
+    sent: {
+      fr: "Envoyé",
+      en: "Sent",
+      nl: "Verzonden",
+      oc: "Mandat",
+      de: "Gesendet",
+    },
+    enable: {
+      fr: "Activer",
+      en: "Enable",
+    },
+    disable: {
+      fr: "Désactiver",
+      en: "Disable",
+      nl: "uitschakelen",
+      oc: "Desactivar",
+      de: "Deaktivieren",
+    },
+    previous_media: {
+      fr: "Média précédent",
+      en: "Previous media",
+      nl: "Vorige media ",
+      oc: "Mèdia precedent",
+      de: "Vorherige Medien",
+    },
+    nobody: {
+      fr: "Personne (archivé)",
+      en: "Nobody (archived)",
+    },
+    next_media: {
+      fr: "Média suivant",
+      en: "Next media",
+      nl: "Volgende media ",
+      oc: "Mèdia seguent",
+      de: "Nächste Medien",
+    },
+    next_page: {
+      fr: "Page suivante",
+      en: "Next page",
+    },
+    previous_page: {
+      fr: "Page précédente",
+      en: "Previous page",
+    },
+    page: {
+      fr: "Page",
+      en: "Page",
+    },
+    "current_page:": {
+      fr: "Page actuelle&nbsp;:",
+      en: "Current page:",
+    },
+    minimize_media: {
+      fr: "Utiliser comme référence",
+      en: "Use as a reference",
+      nl: "gebruik als verwijzing",
+      oc: "Utilizar coma una referéncia",
+      de: "Als Referenz verwenden",
+    },
+    remember_project_password_for_this_device: {
+      fr: "Se souvenir du mot de passe pour cet appareil",
+      en: "Remember password for this device",
+      nl: "Het wachtwoord op dit apparaat onthouden",
+      oc: "Se remembrar del mot de Santa Clara per aqueste aparelh",
+      de: "Das Passwort für dieses Gerät merken",
+    },
+    empty_content: {
+      fr: "Vider le journal",
+      en: "Empty the journal",
+    },
 
-      mix_medias: 'Mix medias',
-
-      made_with_dodoc: 'Webpage made with do•doc, a free and open-source app',
-
-      loading: 'loading',
-      open: 'Open',
-      save: 'Save',
-      as_favorite: '+ favourite',
-      edit: 'Edit',
-      print: 'Print',
-      create: 'Create',
-      remove: 'Remove',
-      withdraw: 'Withdraw',
-      remove_this_image: 'Remove this image',
-      password: 'Mot de passe',
-      password_required_to_open: 'Password required',
-      show_password: 'Show password',
-      hide: 'Hide',
-      protected_by_pass: 'protected by password',
-      password_instructions:
-        'If set, only users with the password will be able to open this project.',
-      author_instructions:
-        'To create authors, close this window and click on (AUTHORS).',
-
-      sort_by: 'Sort by',
-      by: 'by',
-      in_the_order: 'In the order',
-      public: 'Public',
-      fav: 'Favourite',
-      content: 'Content',
-      edit: 'Edit',
-      width: 'Width',
-      height: 'Height',
-      zoom: 'Zoom',
-      settings: 'Settings',
-      stopmotion_list: 'Stopmotion list',
-
-      'lang:': 'Select lang:',
-      lang: 'Select lang',
-      share_access: 'Access from other devices',
-
-      photo: 'picture',
-      video: 'video',
-      stopmotion: 'stop motion',
-      audio: 'sound',
-      vecto: 'shapes',
-      image: 'image',
-      text: 'text',
-      document: 'document',
-      other: 'other',
-      with_sound: 'with sound',
-      generate: 'Generate',
-
-      export: 'Export',
-      export_as_pdf: 'Export as PDF',
-      new_window: 'New Window',
-      export_video_instructions:
-        'Click this button to generate a video from multiple source videos.',
-      export_audio_video_mix_instructions:
-        'Click this button to generate a video from the sound and video selected.',
-      export_audio_image_mix_instructions:
-        'Click this button to generate a video from the sound and image selected.',
-      export_stopmotion_instructions:
-        'Click this button to generate a video from images you have selected.',
-      make_video: 'Make a video',
-      interval_between_pictures: 'Interval between photos',
-
-      select: 'Select',
-      unselect: 'Un-select',
-
-      toconnectwithanotherdevice:
-        'To access this do•doc element with another device, first connect it to the same wifi network, then type this adress in your browser or scan this QR code:',
-      sureToRemoveProject: 'Do you really want to delete this project?',
-      sureToRemoveMedia: 'Do you really want to delete this media?',
-
-      publication: 'Publication',
-      edit_the_media: 'Edit media',
-      edit_project: 'Edit project',
-      edit_publication: 'Edit recipe',
-      drop_here_to_import: 'Drop your content here to import',
-
-      capture: 'Capture',
-      current: 'Current',
-      currently: 'Now',
-      update: 'Update',
-
-      more_information:
-        'For more informations, read the <a href="https://latelier-des-chercheurs.fr/docs/manuel-dodoc" class="js--openInBrowser" target="_blank">documentation (in french)</a> or <a href="mailto:info@latelier-des-chercheurs.fr?subject=do•doc" class="js--openInBrowser" target="_blank">contact</a> the creators of this app.',
-
-      no_media_in_folder: 'No media in this folder.',
-      no_public_media_in_folder: 'No public media in this folder.',
-      auto_scroll: 'autoscroll',
-      scale: 'scale:',
-      scale_items: {
-        second: 'sec',
-        minute: 'min',
-        hour: 'h',
-        half_day: '½d',
-        day: 'd'
+    notifications: {
+      ios_not_compatible_with_capture: {
+        fr:
+          "Les iPhones et les iPads ne sont pas compatibles avec la fonctionnalité de Capture.",
+        en:
+          "iPhones and iPads are not currently compatible with the <i>capture</i> page.",
+        nl: "IPhones en iPads zijn niet compatibel met de opnamefunctie.",
+        oc:
+          "Los Iphones and Ipads son pas compatibles amb la fonccionalitat de captura.",
+        de: "iPhones und iPads sind nicht mit der Aufnahmefunktion kompatibel.",
+      },
+      copied_with_success: {
+        fr: "Copié dans le presse-papier !",
+        en: "Copied to the clipboard",
+      },
+      cant_copy: {
+        fr:
+          "La copie dans le presse-papier a rencontré une erreur et n’a pas pu avoir lieu",
+        en: "The copy to the clipboard failed",
+      },
+      imported_files_successfully: {
+        fr: "Média importé avec succès",
+        en: "Media imported successfully",
+      },
+      models_must_be_visible_to_everybody: {
+        fr: "Attention ! Les modèles doivent être visibles par tout le monde.",
+        en: "Warning! Models must be visible to everybody.",
+      },
+      instead_import_with_this_button: {
+        fr:
+          "Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.",
+        en:
+          "Instead import or capture photos and videos here in the import modal.",
+        nl:
+          "Gebruik in plaats daarvan de invoerfunctie hierboven om foto’s en video’s te maken of te importeren vanaf uw apparaat",
+        oc:
+          "Utilizatz puslèu la fonccionalitat d'impòrt çai-sus per pree de fòtos e de vidèos o n'importar dins de vòstre aparelh",
+        de:
+          "Verwenden Sie stattdessen Die Importfunktion oben , um Fotos und Videos aufzunehmen oder von Ihrer Kamera zu importieren.",
+      },
+      action_not_allowed: {
+        fr:
+          "Cette action n’est pas permise. Êtes-vous bien auteur de ce contenu et/ou possédez-vous le mot de passe associé ?",
+        en:
+          "This action was blocked. Are you the author of this content and/or do you have the password?",
+      },
+      cant_open_chat: {
+        fr:
+          "Identifiez-vous et vérifiez que vous faites partie de la liste des participants à cette discussion pour y accéder.",
+        en:
+          "Login and check that your account is amongst the participants to open this topic.",
+      },
+      media_was_sent: {
+        fr: "Le média a été enregistré.",
+        en: "The media was sent.",
+        nl: "Media is opgenomen.",
+        oc: "Lo mèdia es estat enregistrat.",
+        de: "Die Medien wurden aufgezeichnet",
+      },
+      media_couldnt_be_sent: {
+        fr:
+          "Le média n’a pas pu être enregistré à cause d’une erreur de connexion.",
+        en: "The media was not sent because of a connexion error.",
+        nl: "Media kon niet worden opgeslagen vanwege verbindingsfout.",
+        oc:
+          "Lo mèdia es pas estat enregistrat per causa d'una error de connexion.",
+        de:
+          "Das Medium konnte aufgrund eines Verbindungsfehlers nicht gespeichert werden.",
+      },
+      file_was_sent: {
+        fr: "Le fichier a été enregistré.",
+        en: "The file was sent.",
+        nl: "Het bestand is opgeslagen.",
+        oc: "Lo mèdia es estat enregistrat",
+        de: "Die Datei wurde gespeichert.",
       },
 
-      more_informations: 'More infos',
-      contents_are_stored: 'Contents for this folder are stored in ',
-      folder_information: 'Folder information',
-      calendar: 'Calendar',
-      now: 'now',
-      list: 'List',
-      fullscreen: 'Fullscreen',
-      preview: 'Preview',
-      filter: 'Filter',
-      filters: 'Filters',
-      header_left: 'Left header text',
-      header_right: 'Right header text',
-      gridstep: 'Step of alignment grid',
-      margin_top: 'Margin: top',
-      margin_left: 'Margin: left',
-      margin_right: 'Margin: right',
-      margin_bottom: 'Margin: bottom',
-      number_of_medias: 'Number of medias',
-      number_of_pages: 'Number of pages',
-      show_page_numbers: 'Show page number in the bottom-right corner',
+      connection_active: {
+        fr: "La connexion au serveur est active.",
+        en: "The connection to the server is active.",
+        nl: "Serververbinding is actief.",
+        oc: "La connexion al servidor es activa.",
+        de: "Die Verbindung zum Server ist aktiv.",
+      },
+      connection_lost: {
+        fr: "La connexion au serveur a été perdue.",
+        en: "The connection to the server was lost.",
+        nl: "Serververbinding is verbroken.",
+        oc: "La connexion al servidor es estada perduda",
+        de: "Die Verbindung zum Server wurde unterbrochen.",
+      },
+      contents_wont_be_editable: {
+        fr: "Les modifications et ajouts ne seront plus pris en compte.",
+        en: "Content editing is disabled.",
+        nl: "Wijzigingen en aanvullingen zullen niet langer mogelijk zijn.",
+        oc: "Las modofocacions e los apondons seràn pas pus pres en compte.",
+        de: "Änderungen und Ergänzungen werden nicht mehr berücksichtigt.",
+      },
+      failed_to_save_media: {
+        fr:
+          "Les modifications du média n’ont pas pu avoir lieu, vérifiez que votre connexion est toujours active et rééssayez.",
+        en:
+          "Changes to this media couldn’t be saved, check that the connection is active and try again.",
+      },
+      successfully_saved: {
+        fr: "Les modifications ont bien été prises en compte.",
+        en: "Changes were successfully saved.",
+      },
+      you_can_close_this_window: {
+        fr: "Vous pouvez fermer cet onglet.",
+        en: "You can close this tab.",
+      },
 
-      export_folder: 'Export as a webpage',
-      export: 'Export',
-
-      publication_list: 'Publications list',
-      export_creation: 'Export a creation',
-      get_pdf:
-        'To download a PDF of this publication (for example, to print it), click here:',
-      download_pdf: 'Download PDF',
-      get_website:
-        'To download a website version of this publication (for example, to publish online), click here:',
-      download_website: 'Download a website',
-      open_in_app: 'Open',
-      format: 'Format',
-      template: 'Template',
-      page_by_page: 'Paged document',
-      video_assemblage: 'Video editing',
-      web: 'Webpage',
-      back_to_project: 'Back to project',
-
-      previous_creations: 'Previous creations',
-      stopmotion_animation: 'Stopmotion animation',
-
-      page_by_page_instructions: `This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, tracts, newspapers, etc.) or a webpage to upload online.`,
-      video_assemblage_summary: `Creates a video from images and videos.`,
-      video_assemblage_instructions: `This recipe creates a video from multiple source images and videos, one after the other.<br>Accepted medias: images and videos.<br>Will create a new video.`,
-      stopmotion_animation_summary:
-        'Creates a video from images showcasing at specific speed.',
-      stopmotion_animation_instructions: `This recipe takes any number of images as inputs and creates a single video with images displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.`,
-      mix_audio_and_video_summary: 'Add or replace sound on a video.',
-      mix_audio_and_video_instructions: `This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.`,
-      mix_audio_and_image_summary: 'Add sound on an image.',
-      mix_audio_and_image_instructions: `This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.`,
-
-      add_sound_video_file:
-        'Add a <b>sound</b> and a <b>video</b> media to create a new video.',
-      add_sound_image_file:
-        'Add a <b>sound</b> and an <b>image</b> media to create a new video.',
-      mix_audio_and_video: 'Add (or replace) sound on a video',
-      mix_audio_and_image: 'Add sound to an image',
-      add_multiple_videos_files:
-        'Add multiple <b>video</b> medias to create a new video.',
-      add_multiple_images:
-        'Add multiple <b>image</b> medias to create a video.',
-      style: 'style',
-      css: 'css',
-      write_some_CSS_code_for_example:
-        'Write here some CSS code, <br>for example <code>color: blue;</code>',
-
-      last_modified: 'Last modified',
-      remote_access: 'Acces from other devices',
-      img_per_second: 'Images per second',
-      sent: 'Sent',
-      disable: 'Disable',
-
-      notifications: {
-        ios_not_compatible_with_capture:
-          'iPhones and iPads are not currently compatible with the <i>capture</i> page.',
-        instead_import_with_this_button:
-          'Instead import or capture photos and videos here in the import modal.',
-        media_was_sent: 'The media was sent.',
-        media_couldnt_be_sent:
-          'The media was not sent because of a connexion error.',
-        file_was_sent: 'The file was sent.',
-        file_upload_not_allowed: 'File upload is not allowed by this browser.',
-        media_has_been_added_successfully: 'The media was successfully added.',
-        connection_active: 'The connection to the server is active.',
-        connection_lost: 'The connection to the server was lost.',
-        contents_wont_be_editable: 'Content editing is disabled.',
-        connection_error:
-          'The connection to the server could not be established.',
-        wrong_password_for_dodoc: 'Wrong password, please try again.',
-        loading_dodoc: 'Loading do•doc…',
-        'wrong_password_for_folder:': 'Wrong password or folder missing for:',
-        'created_edited_media:':
-          'A media has been created or edited in folder:',
-        project_name_exists:
-          'This project name already exists. Please use another.',
-        publi_name_exists:
-          'This publication name already exists. Please use another.',
-        author_name_exists:
-          'This author name already exists. Please use another.',
-        folder_name_needs_alphanumeric_characters:
-          'Folder names need to contain at least one alphanumeric character.',
-        'failed_to_get_folder:': 'Failed to get the requested folder:',
-        failed_to_start_video_change_source_or_res:
-          'Failed to start camera feed. Try changing the source or the resolution.',
-        video_source_not_set: 'The source video has not been set.',
-        failed_to_start_audio_change_source:
-          'Failed to start audio feed. Try changing the source.',
-        audio_source_not_set: 'The source audio has not been set.',
-        video_stream_not_available: 'Error: Video stream not available.',
-        no_content_found_with_nfc_tag:
-          'NFC tag detected, bind it to an author or a media to start.',
-        author_found_with_nfc_tag:
-          'NFC tag detected, the following author will be logged-in:',
-        medias_uploaded: 'All medias were imported successfully.',
-        medias_upload_failed: 'Error: some medias failed to import.',
-        video_converted:
-          'The video was converted successfully and added to the project.',
-        project_has_been_removed:
-          'This project just got removed by another user.',
-        wrong_password_for: 'Wrong password for project ',
-        creating_video: 'Creating video…',
-        preparing_video_from_montage: 'Pre-processing videos from the montage',
-        finished_creating_recipe: 'The recipe was successfully completed!',
-        creation_in_progress: 'Creation in progress…',
-        connected_to_dodoc: 'Connection to do•doc active',
-        using_saved_password:
-          'Connecting to do•doc using the password that was saved',
-        pdf_created: 'PDF created',
-        video_created: 'The video was created',
-        video_creation_failed: 'The video was not created'
-      }
-    }
+      connection_error: {
+        fr: "La connexion au serveur n’a pu se faire.",
+        en: "The connection to the server could not be established.",
+        nl: "De verbinding met de server kan niet worden gemaakt.",
+        oc: "La connexion al servidor s'es pas poscuda far",
+        de: "Die Verbindung zum Server konnte nicht hergestellt werden.",
+      },
+      media_has_been_added_successfully: {
+        fr: "Le média a bien été transféré",
+        en: "The media was successfully added.",
+        nl: "Media is overgebracht",
+        oc: "Lo mèdia es ben estat transferit",
+        de: "Die Medien wurden erfolgreich übertragen.",
+      },
+      wrong_password_for_dodoc: {
+        fr: "Le mot de passe envoyé n’est pas valide. Veuillez réessayer.",
+        en: "Wrong password, please try again.",
+        nl: "Het gebruikte wachtwoord is ongeldig. Probeer het opnieuw.",
+        oc:
+          "Lo mot de Santa Clara mandat es pas valid. Volgatz tornar ensajar.",
+        de:
+          "Das gesendete Passwort ist ungültig. Bitte versuchen Sie es nochmal.",
+      },
+      loading_dodoc: {
+        fr: "Chargement de do•doc en cours…",
+        en: "Loading do•doc…",
+        nl: "Do•doc is aan het laden …",
+        oc: "Cargament de do•doc en cors…",
+        de: "Laden des laufenden do•doc…",
+      },
+      "created_edited_media:": {
+        fr: "Création ou édition d’un média pour le dossier&nbsp;:",
+        en: "A media has been created or edited in folder:",
+        nl: "Media voor dit onderdeel aanmaken of bewerken:",
+        oc: "Creacion o edicion d'un mèdia pel dorsièr:",
+        de: "Erstellen oder Bearbeiten von Medien für die Datei.",
+      },
+      name_already_exists: {
+        fr: "Ce nom existe déjà, utilisez-en un autre.",
+        en: "This name already exists. Please use another.",
+        nl: "Deze naam bestaat al, gebruik een andere.",
+        oc: "Aqueste nom existís ja, utilisatz ne un autre.",
+        de: "Dieser Name existiert bereits, verwenden Sie einen anderen.",
+      },
+      folder_name_needs_alphanumeric_characters: {
+        fr:
+          "Les noms de dossier doivent contenir au moins un caractère alphanumérique.",
+        en: "Folder names need to contain at least one alphanumeric character.",
+        nl: "Bestandsnamen moeten ten minste een alfanumeriek teken bevatten.",
+        oc:
+          "Los noms de dorsièrs devon conténer au mens un caractèr alfanumeric.",
+        de:
+          "Dateinamen müssen mindestens ein alphanumerisches Zeichen enthalten.",
+      },
+      "failed_to_get_folder:": {
+        fr: "Le projet suivant n’a pas été trouvé:",
+        en: "Failed to get the requested project:",
+        nl: "Het volgende project is niet gevonden:",
+        oc: "Lo projècte seguent es pas estat trobat:",
+        de: "Die folgende Projekt wurde nicht gefunden:",
+      },
+      failed_to_start_streams_change_source_or_res: {
+        fr:
+          "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
+        en:
+          "Failed to start camera stream. Try changing the source or the resolution.",
+      },
+      failed_to_share_stream: {
+        fr: "Le partage du flux n’a pas pu avoir lieu",
+        en: "Failed to start stream sharing",
+      },
+      no_content_to_show: {
+        fr: "Aucun contenu à afficher.",
+        en: "No content to display.",
+      },
+      no_content_found_with_nfc_tag: {
+        fr:
+          "Scan d’un tag NFC réussi, associez-lui un auteur ou un média pour commencer.",
+        en: "NFC tag detected, bind it to an author or a media to start.",
+        nl: "NFC tag gevonden, koppel een auteur of media om te beginnen.",
+        oc:
+          "Escan d'un tag NFC capitat, associatz-li un autor o un mèdia per començar.",
+        de:
+          "NFC-Tag-Scan erfolgreich, verbinden Sie ihm zunächst einen Autor oder ein Medienunternehmen.",
+      },
+      author_found_with_nfc_tag: {
+        fr: "Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:",
+        en: "NFC tag detected, the following author will be logged-in:",
+        nl: "NFC tag gevonden, activatie van de volgende auteur:",
+        oc: "Escan d'un tag NFC capitat, activacion de l'autor seguent:",
+        de: "NFC-Tag-Scan erfolgreich, Aktivierung des folgenden Autors:",
+      },
+      medias_uploaded: {
+        fr: "Tous les médias ont bien étés enregistrés.",
+        en: "All medias were imported successfully.",
+        nl: "Alle media zijn opgenomen.",
+        oc: "Totes los mèdias son ben estat enregistrats",
+        de: "Alle Medien wurden gut aufgenommen.",
+      },
+      medias_upload_failed: {
+        fr: "Erreur&nbsp;: certains médias n’ont pas pu être enregistrés.",
+        en: "Error: some medias failed to import.",
+        nl: "Foutmelding: sommige media kunnen niet worden opgenomen.",
+        oc: "Error: d'unes mèdias son pas estat enregistrats",
+        de: "Fehler: einige Medien konnten nicht aufgenommen werden.",
+      },
+      video_converted: {
+        fr: "La vidéo a été convertie et ajoutée au projet.",
+        en: "The video was converted successfully and added to the project.",
+        nl: "De video is geconverteerd en toegevoegd aan het project.",
+        oc: "La vidèo es estada convertida e aponduda al projècte.",
+        de: "Das Video wurde konvertiert und dem Projekt hinzugefügt.",
+      },
+      project_has_been_removed: {
+        fr: "Ce projet vient d’être supprimé par quelqu’un d’autre.",
+        en: "This project just got removed by another user.",
+        nl: "Dit project werd zojuist door iemand anders verwijderd.",
+        oc: "Aqueste projècte ven d'èsser suprimit per qualqu'un mai.",
+        de: "Dieses Projekt wurde gerade von jemandem gelöscht.",
+      },
+      wrong_password: {
+        fr: "Mot de passe erroné",
+        en: "Wrong password",
+        nl: "Onjuist wachtwoord",
+        oc: "Mot de Santa Clara erronèu",
+        de: "Falsches Passwort",
+      },
+      password_is_valid: {
+        fr: "Mot de passe accepté",
+        en: "Password is valid",
+      },
+      connected_as: {
+        fr: "Connecté comme  ",
+        en: "Connected as ",
+      },
+      creating_video: {
+        fr: "En cours de création de la vidéo…",
+        en: "Creating video…",
+        nl: "De video wordt gemaakt…",
+        oc: "En cors de creacion de la vidèo...",
+        de: "Im Prozess der Erstellung des Videos…",
+      },
+      creating_audio: {
+        fr: "En cours de création du son…",
+        en: "Creating audio…",
+      },
+      preparing_video_from_montage: {
+        fr: "Préparation des vidéos du montage",
+        en: "Pre-processing videos from the montage",
+        nl: "Voorbereiding van het bewerken van video’s",
+        oc: "Preparacion de las vidèos del montatge",
+        de: "Vorbereitung der Videos der Montage.",
+      },
+      finished_creating_recipe: {
+        fr: "La recette est terminée et peut être consultée !",
+        en: "The recipe was successfully completed!",
+        nl: "Het recept is afgewerkt en kan worden bekeken!",
+        oc: "La recèpta es acabada e pòt èsser consultada",
+        de: "Das Rezept ist fertig und kann eingesehen werden!",
+      },
+      media_copied_successfully: {
+        fr: "La copie du média a été réalisée avec succès.",
+        en: "The media was copied successfully.",
+        nl: "De kopie van de media is gemaakt.",
+        oc: "La còpia del mèdia es estada reailzada amb succès",
+        de: "Die Kopie der Medien wurde erfolgreich erstellt.",
+      },
+      creation_in_progress: {
+        fr: "En cours de création…",
+        en: "Creation in progress…",
+        nl: "In opmaak…",
+        oc: "En cors de creacion...",
+        de: "Im Prozess der Erstellung…",
+      },
+      connected_to_dodoc: {
+        fr: "Connection à do•doc active",
+        en: "Connection to do•doc active",
+        nl: "verbinding met do•doc actief",
+        oc: "Connexion a do•doc activa",
+        de: "do•doc-Verbindung aktiv",
+      },
+      using_saved_password: {
+        fr: "Connection à do•doc en utilisant le mot de passe enregistré",
+        en: "Connecting to do•doc using the password that was saved",
+        nl: "Verbinding met do•doc met het opgeslagen wachtwoord",
+        oc: "Connexion a do•doc en utilizant lo mot de Santa Clara enregistrat",
+        de: "Anmeldung zu do•doc mit dem registrierten Passwort.",
+      },
+      connecting_using_saved_account: {
+        fr: "Identification automatique en tant que ",
+        en: "Automatic login as ",
+      },
+      doc_created: {
+        fr: "Le document a été créé",
+        en: "The document was created",
+        nl: "De document is gemaakt",
+        oc: "Lo document es estat creat",
+        de: "Das Dokument wurde erstellt.",
+      },
+      video_created: {
+        fr: "La vidéo a été créée",
+        en: "The video was created",
+        nl: "De video is gemaakt",
+        oc: "La vidèo es estada creada",
+        de: "Das Video wurde erstellt.",
+      },
+      video_creation_failed: {
+        fr: "La vidéo n’a pas pu être créée",
+        en: "The video was not created",
+        nl: "Video kan niet worden gemaakt ",
+        oc: "La vidèo es pas estada creada",
+        de: "Das Video konnte nicht erstellt werden.",
+      },
+      copy_in_progress: {
+        fr: "Copie en cours…",
+        en: "Copy in progress…",
+        nl: "Laden van de kopie…",
+        oc: "Còpia en cors…",
+        de: "Kopie…",
+      },
+      copy_completed: {
+        fr: "Copie terminée",
+        en: "Copy finished",
+        nl: "Kopiëren geslaagd",
+        oc: "Còpia acabada",
+        de: "Kopie komplett",
+      },
+      password_added_or_changed: {
+        fr: "Le mot de passe de ce contenu a été ajouté ou modifié.",
+        en: "The password for this content has been added or changed.",
+      },
+      enter_password_to_reopen: {
+        fr: "Entrez le nouveau mot de passe pour le rouvrir",
+        en: "Enter the new password to reopen",
+      },
+      enter_password_to_select: {
+        fr: "Renseignez le mot de passe du projet pour pouvoir le sélectionner",
+        en: "Enter this project’s password to select it",
+      },
+      need_to_be_author_to_post: {
+        fr:
+          "Identifiez-vous en tant qu’auteur pour pouvoir poster dans le chat.",
+        en: "Login as an author to post in the chat.",
+      },
+      new_chat_posted_in: {
+        fr: "Nouveau message publié dans le sujet ",
+        en: "New message in chat ",
+      },
+      if_only_authors_select_authors: {
+        fr:
+          "Sélectionnez au moins un auteur qui pourra accéder et modifier ce contenu",
+        en:
+          "Select at least one author who will be able to access and edit this content",
+      },
+      access_or_editing_restricted_to_authors: {
+        fr:
+          "Attention : la modification est limité aux auteurs ou aux personnes possédant le mot de passe.",
+        en: "Warning: editing is restricted to authors or with a password",
+      },
+      "account_does_not_exist:": {
+        fr: "Le compte demandé n’existe pas&nbsp;:",
+        en: "The requested account does not exist:",
+      },
+      account_not_associated_to_this_ressource: {
+        fr:
+          "Ce compte existe bien mais n’est pas autorisé à accéder à cette ressource. Avez-vous la bonne URL ?",
+        en:
+          "This account exists but is not associated to this content. Do you have the right link?",
+      },
+      option_already_exists: {
+        fr: "Cette option existe déjà",
+        en: "This option already exists",
+      },
+      new_lang_applied: {
+        fr: "Nouvelle langue appliquée",
+        en: "New lang applied",
+      },
+      missing_translation_handled_in: {
+        fr: "Les traductions manquantes seront rédigées en Anglais",
+        en: "Missing translations will be written in English",
+      },
+      failed_to_start_record: {
+        fr: "La capture n’a pas pu démarrer",
+        en: "Failed to start recording",
+      },
+    },
   };
 
   return messages;

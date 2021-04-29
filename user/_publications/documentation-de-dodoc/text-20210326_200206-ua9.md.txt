@@ -1,0 +1,32 @@
+date_created: 20210326_200206
+
+----
+
+date_modified: 20210326_201452
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: text
+
+----
+
+media_filename: text-20210326_200206-ua9.md
+
+----
+
+file_meta: 
+
+-
+size: 0
+
+
+----
+

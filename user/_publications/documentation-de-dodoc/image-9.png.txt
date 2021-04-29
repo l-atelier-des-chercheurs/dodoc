@@ -1,0 +1,42 @@
+date_created: 20210331_165839
+
+----
+
+date_modified: 20210331_170532
+
+----
+
+caption: &lt;p class=&quot;is--focused&quot;&gt;Mode PHOTO : permet d’enregistrer une image du flux vidéo actuel avec le bouton PRENDRE UNE PHOTO. À noter le pictogramme en forme d’horloge qui permet d’accéder au retardateur. &lt;&#x2F;p&gt;
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: image-9.png
+
+----
+
+file_meta: 
+
+-
+size: 6863356
+-
+width: 2716
+-
+height: 2038
+-
+ratio: 0.7504
+
+
+----
+

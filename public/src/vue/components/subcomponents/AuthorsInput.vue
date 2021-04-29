@@ -1,18 +1,32 @@
 <template>
   <div class="m_authorField">
-    <button 
-      v-for="author in allAuthors" 
+    <button
+      v-for="author_slug in all_authors_slugs"
+      v-if="
+        !read_only ||
+        (read_only && authors.some((a) => a.slugFolderName === author_slug))
+      "
       type="button"
-      :key="author.name"
-      :class="{ 
-        'is--active': authors.filter(a => a.name === author.name).length > 0,
-        'is--loggedInAuthor': $root.settings.current_author.name === author.name
+      :key="author_slug"
+      :class="{
+        'is--active': authors.some((a) => a.slugFolderName === author_slug),
+        'is--loggedInAuthor':
+          $root.current_author &&
+          $root.current_author.slugFolderName === author_slug,
       }"
-      @click="toggleAuthorName(author.name)"
+      :disabled="read_only"
+      @click="toggleAuthorName(author_slug)"
     >
-      {{ author.name }}
+      {{ $root.getAuthor(author_slug).name }}
     </button>
-    <button type="button" @click="show_all_authors = true" v-if="max_authors_displayed_at_first <= allAuthors.length && !show_all_authors"
+    <button
+      type="button"
+      @click="show_all_authors = true"
+      v-if="
+        max_authors_displayed_at_first <= all_authors_slugs.length &&
+        !show_all_authors &&
+        !read_only
+      "
       class="m_authorField--show_all_authors"
       v-html="$t('show_all_authors')"
     />
@@ -20,77 +34,77 @@
 </template>
 <script>
 export default {
-  props: ['currentAuthors'],
-  components: {
+  props: {
+    currentAuthors: Array,
+    read_only: {
+      type: Boolean,
+      default: false,
+    },
   },
+  components: {},
   data() {
     return {
-      authors: this.currentAuthors !== undefined && this.currentAuthors !== '' ? this.currentAuthors.slice() : [],
       show_all_authors: false,
-      max_authors_displayed_at_first: 8
-    }
+      max_authors_displayed_at_first: 8,
+      authors: [],
+    };
   },
-  
-  created() {
-  },
+
+  created() {},
   mounted() {
     // this.allAuthors = this.getAllUniqueAuthors();
   },
-  beforeDestroy() {
-  },
+  beforeDestroy() {},
 
   watch: {
+    currentAuthors: {
+      handler() {
+        this.authors = !!this.currentAuthors ? this.currentAuthors.slice() : [];
+      },
+      deep: true,
+      immediate: true,
+    },
   },
   computed: {
-    allAuthors() {
-      const allAuthors = this.authors.concat(this.$root.allAuthors);
-      let nameList = [];
+    all_authors_slugs() {
+      let _all_authors_slugs = [];
 
-      if(this.$root.settings.current_author.hasOwnProperty('name')) {
-        allAuthors.unshift(this.$root.settings.current_author);
-      }
+      if (this.$root.current_author)
+        _all_authors_slugs.push(this.$root.current_author.slugFolderName);
 
-      let unique_authors = allAuthors.filter(a => {
-        if(nameList.indexOf(a.name) === -1) {
-          nameList.push(a.name);
-          return true;
-        }
-        return false;
+      this.authors.map((a) => {
+        if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
+          _all_authors_slugs.push(a.slugFolderName);
       });
 
-      if(this.show_all_authors) {
-        return unique_authors;
-      } else {
-        return unique_authors.slice(0, this.max_authors_displayed_at_first);
-      }
-    }
+      this.$root.all_authors.map((a) => {
+        if (a.slugFolderName && !_all_authors_slugs.includes(a.slugFolderName))
+          if (
+            this.show_all_authors ||
+            _all_authors_slugs.length < this.max_authors_displayed_at_first
+          )
+            _all_authors_slugs.push(a.slugFolderName);
+      });
+
+      return _all_authors_slugs;
+    },
   },
+
   methods: {
-    // getAllUniqueAuthors() {
-    //   const allAuthors = this.authors.concat(this.$root.allAuthors);
-    //   let nameList = [];
-    //   return allAuthors.filter(a => {
-    //     if(nameList.indexOf(a.name) === -1) {
-    //       nameList.push(a.name);
-    //       return true;
-    //     }
-    //     return false;
-    //   });
-    // },
-    toggleAuthorName: function(authorName) {
-      // authorName is already in authors, then remove it
-      if(this.authors.filter(a => a.name === authorName).length > 0) {
-        this.authors = this.authors.filter(a => a.name !== authorName);
+    toggleAuthorName: function (author_slug) {
+      // author_slug is already in authors, then remove it
+      if (this.authors.some((a) => a.slugFolderName === author_slug)) {
+        this.authors = this.authors.filter(
+          (a) => a.slugFolderName !== author_slug
+        );
       } else {
         this.authors.push({
-          name: authorName
+          slugFolderName: author_slug,
         });
       }
-      this.$emit('authorsChanged', this.authors);
-    }
-  }
-}
+      this.$emit("update:currentAuthors", this.authors);
+    },
+  },
+};
 </script>
-<style>
-
-</style>
+<style></style>

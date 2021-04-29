@@ -1,0 +1,32 @@
+date_created: 20210326_182612
+
+----
+
+date_modified: 20210331_161403
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: text
+
+----
+
+media_filename: text-20210326_182612-5wn.md
+
+----
+
+file_meta: 
+
+-
+size: 0
+
+
+----
+

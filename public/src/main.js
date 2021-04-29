@@ -1,23 +1,44 @@
-import localstore from 'store';
-import jQuery from 'jquery';
+import localstore from "store";
+import jQuery from "jquery";
 window.$ = window.jQuery = jQuery;
 
+if (window.state.dev_mode === "debug")
+  (function () {
+    var script = document.createElement("script");
+    script.onload = function () {
+      var stats = new Stats();
+      document.body.appendChild(stats.dom);
+      stats.dom.style.left = "auto";
+      stats.dom.style.right = "0px";
+      requestAnimationFrame(function loop() {
+        stats.update();
+        requestAnimationFrame(loop);
+      });
+    };
+    script.src = "//mrdoob.github.io/stats.js/build/stats.min.js";
+    document.head.appendChild(script);
+  })();
+
 if (window.state.is_electron) {
-  document.body.addEventListener('click', electronSpecificOpenLink);
+  document.body.addEventListener("click", electronSpecificOpenLink);
 
   // If click on a link with a specific class, open in the browser and not in electron.
   function electronSpecificOpenLink(event) {
-    event.path.every(item => {
+    event.path.every((item) => {
       if (item.classList !== undefined && item.classList.length > 0) {
-        if (item.classList.contains('js--openInBrowser')) {
-          const shell = window.require('electron').shell;
+        if (item.classList.contains("js--openInBrowser")) {
           event.preventDefault();
-          shell.openExternal(item.href);
+          window.electronAPI.send("toMain", {
+            type: "open_external",
+            url: item.href,
+          });
           return false;
-        } else if (item.classList.contains('js--openInNativeApp')) {
-          const shell = window.require('electron').shell;
+        } else if (item.classList.contains("js--openInNativeApp")) {
           event.preventDefault();
-          shell.openItem(item.getAttribute('href'));
+          window.electronAPI.send("toMain", {
+            type: "open_item",
+            path: item.href,
+          });
           return false;
         }
       }
@@ -27,8 +48,8 @@ if (window.state.is_electron) {
 }
 
 document.addEventListener(
-  'dragover',
-  function(event) {
+  "dragover",
+  function (event) {
     event.preventDefault();
     return false;
   },
@@ -36,8 +57,8 @@ document.addEventListener(
 );
 
 document.addEventListener(
-  'drop',
-  function(event) {
+  "drop",
+  function (event) {
     event.preventDefault();
     return false;
   },
@@ -64,57 +85,58 @@ document.addEventListener(
  * @license     http://www.opensource.org/licenses/BSD-3-Clause New BSD license
  * @version     1.0
  */
-(function($) {
-  $.barcodeListener = function(context, options) {
+
+(function ($) {
+  $.barcodeListener = function (context, options) {
     var $defaults = {
-      support: [8, 10, 12, 13]
+      support: [8, 10, 12, 13],
     };
 
     var $this = this;
     $this.element = $(context);
     $this.timeout = 0;
-    $this.code = '';
+    $this.code = "";
     $this.settings = {};
 
-    $this.init = function() {
+    $this.init = function () {
       $this.settings = $.extend({}, $defaults, options);
-      $this.element.on('keypress', function(e) {
+      $this.element.on("keypress", function (e) {
         $this.listen(e);
       });
     };
 
-    $this.listen = function(e) {
+    $this.listen = function (e) {
       var $char = $this.validateKey(e.which);
       if ($char === 13) {
         $this.validate();
       } else if ($char !== false) {
-        if ($this.code == '') {
+        if ($this.code == "") {
           setTimeout($this.clear(), 1000);
         }
         $this.add($char);
       }
     };
 
-    $this.validate = function() {
+    $this.validate = function () {
       var $tmp = $this.code;
       if ($this.settings.support.indexOf($tmp.length) > -1) {
         var $d = new Date(),
           $interval = $d.getTime() - $this.timeout;
         $this.clear();
         if ($interval < 1000) {
-          $this.element.trigger('barcode.valid', [$tmp]);
+          $this.element.trigger("barcode.valid", [$tmp]);
         }
       } else {
         $this.clear();
       }
     };
 
-    $this.clear = function() {
-      $this.code = '';
+    $this.clear = function () {
+      $this.code = "";
       $this.timeout = 0;
     };
 
-    $this.validateKey = function(keycode) {
+    $this.validateKey = function (keycode) {
       const azerty_mapping = [224, 38, 233, 34, 39, 40, 167, 232, 33, 231];
       const qwerty_mapping = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
 
@@ -135,7 +157,7 @@ document.addEventListener(
       }
     };
 
-    $this.add = function(char) {
+    $this.add = function (char) {
       if ($this.timeout === 0) {
         var $d = new Date();
         $this.timeout = $d.getTime();
@@ -146,25 +168,25 @@ document.addEventListener(
     $this.init();
   };
 
-  $.fn.barcodeListener = function(options) {
-    return this.each(function() {
-      if (undefined == $(this).data('barcodeListener')) {
+  $.fn.barcodeListener = function (options) {
+    return this.each(function () {
+      if (undefined == $(this).data("barcodeListener")) {
         var plugin = new $.barcodeListener(this, options);
-        $(this).data('barcodeListener', plugin);
+        $(this).data("barcodeListener", plugin);
       }
     });
   };
 })(jQuery);
 
-$('body')
+$("body")
   .barcodeListener()
-  .on('barcode.valid', function(e, code) {
+  .on("barcode.valid", function (e, code) {
     window.dispatchEvent(
-      new CustomEvent('tag.newTagDetected', {
-        detail: code
+      new CustomEvent("tag.newTagDetected", {
+        detail: code,
       })
     );
     e.preventDefault();
   });
 
-import app from './vue/app.js';
+import app from "./vue/app.js";

@@ -1,0 +1,42 @@
+date_created: 20210326_170100
+
+----
+
+date_modified: 20210326_170202
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: image
+
+----
+
+media_filename: screenshot-2021-03-26-a-17-00-57.png
+
+----
+
+file_meta: 
+
+-
+size: 228997
+-
+width: 1223
+-
+height: 795
+-
+ratio: 0.6500
+
+
+----
+
+caption: &lt;p class=&quot;is--focused&quot;&gt;Capture d’écran de la version webapp située sur le domaine &lt;a href=&quot;https:&#x2F;&#x2F;test.dodoc.fr&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;https:&#x2F;&#x2F;test.dodoc.fr&lt;&#x2F;a&gt;. Celle-ci est installée sur un serveur distant chez l’hébergeur Digital Ocean, c’est à dire sur un ordinateur sous Linux qui tourne 24 heures sur 24.&lt;&#x2F;p&gt;
+
+----
+

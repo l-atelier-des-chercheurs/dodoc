@@ -1,0 +1,32 @@
+date_created: 20210331_161309
+
+----
+
+date_modified: 20210331_164231
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: text
+
+----
+
+media_filename: text-20210331_161309-yvd.md
+
+----
+
+file_meta: 
+
+-
+size: 0
+
+
+----
+
