@@ -42,12 +42,12 @@ module.exports = (function () {
     "stream_shown:": {
       fr: "Flux utilisé&nbsp;:",
       en: "Stream used:",
-      oc : "Flus utilizat&nbsp;:",
+      oc: "Flus utilizat&nbsp;:",
     },
     share_stream: {
       fr: "Partager ce flux",
       en: "Share this stream",
-      oc : "Partejar aqueste flus",
+      oc: "Partejar aqueste flus",
     },
     no_stopmotion_created_yet: {
       fr: "Les animations créées apparaîtront dans ce panneau.",
@@ -278,13 +278,14 @@ module.exports = (function () {
       en: "create new folder",
       oc: "crear un novèl dorsièr",
     },
-    
+
     create_qr_code_instructions: {
       fr:
         "Écrire un lien pour créer un code QR. Vous pouvez ensuite le télécharger, l’imprimer ou l’intégrer à un document page à page ou à un récit.",
       en:
         "Write a link to create the corresponding QR Code to download, print or insert inside a paged document or a story.",
-      oc: "Escriure un ligam per crear un còdi QR. Lo podètz puèi telecargar, l'estampar o l'integrar a un document pagina a pagina o a un raconte.",
+      oc:
+        "Escriure un ligam per crear un còdi QR. Lo podètz puèi telecargar, l'estampar o l'integrar a un document pagina a pagina o a un raconte.",
     },
     manage_access: {
       fr: "Gérer l’accès au contenu",
@@ -343,13 +344,13 @@ module.exports = (function () {
         "Ce contenu est actuellement en privé et ne peut donc pas être partagé. Pour le partager, cochez VISIBLE PAR TOUT LE MONDE dans les options du contenu.",
       en:
         "This content is currently set to private and cannot be shared. To get a link to share it, change its options to VISIBLE FOR EVERYONE.",
-      oc: "Aqueste contengut es actualament en privat e pòt pas ésser partejat. Per lo partejar, clicatz VISIBLE PER TOT LO MOND dins las opcions del contengut. ",
+      oc:
+        "Aqueste contengut es actualament en privat e pòt pas ésser partejat. Per lo partejar, clicatz VISIBLE PER TOT LO MOND dins las opcions del contengut. ",
     },
     display_on_website: {
       fr: "Rendre visible sur ",
       en: "Display on ",
       oc: "Rendre visible sus",
-
     },
     medias_selected: {
       fr: "média(s) sélectionné(s)",
@@ -376,7 +377,8 @@ module.exports = (function () {
         "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
       en:
         "Selection a specific resolution is not possible with a screen capture.",
-      oc: "La seleccion de la resolucion es pas compatibla amb la captura d'ecran.",
+      oc:
+        "La seleccion de la resolucion es pas compatibla amb la captura d'ecran.",
     },
     or_download_media_on_device: {
       fr: "ou télécharger ce média sur votre appareil",
@@ -388,7 +390,8 @@ module.exports = (function () {
         "Accès refusé à la caméra et au micro : vous devez accepter leur accès dans le message qui apparaît pour pouvoir utiliser ce panneau.",
       en:
         "Access to camera and microphone denied: you have to accept to share your camera and microphone to use this pane.",
-      oc: "Accès refusat a la camerà e al micrò : devètz acceptar lor accès din slo messatge qu'apareis per poder utilizar aqueste panèu.",
+      oc:
+        "Accès refusat a la camerà e al micrò : devètz acceptar lor accès din slo messatge qu'apareis per poder utilizar aqueste panèu.",
     },
     reply: {
       fr: "Répondre",
@@ -566,7 +569,7 @@ module.exports = (function () {
     only_my_projects: {
       fr: "Seulement mes projets",
       en: "My projects",
-      oc: "Solament mos projèctes"
+      oc: "Solament mos projèctes",
     },
     only_my_medias: {
       fr: "Seulement mes médias",
@@ -748,7 +751,7 @@ module.exports = (function () {
     edited_folder: {
       fr: "A modifié un dossier",
       en: "Has edited a folder",
-      oc:  modificat un dorsièr",
+      oc: "A modificat un dorsièr",
     },
     removed_folder: {
       fr: "A supprimé un dossier",
@@ -872,13 +875,15 @@ module.exports = (function () {
       fr:
         "Créez un compte ou identifiez-vous avec un compte existant pour participer",
       en: "Create an account or login using an existing account to participate",
-      oc: "Crear un compte o identificatz-vos amb un compte existent per participar",
+      oc:
+        "Crear un compte o identificatz-vos amb un compte existent per participar",
     },
     login_to_edit_existing_participation: {
       fr:
         "Identifiez-vous avec le compte créé précédemment pour modifier vos réponses",
       en: "Login with an existing account to edit your replies",
-      oc: "Identificatz-vos amb lo compte creat per abans per modificar vòstras responsas",
+      oc:
+        "Identificatz-vos amb lo compte creat per abans per modificar vòstras responsas",
     },
     custom: {
       fr: "Personnalisé",
@@ -999,7 +1004,8 @@ module.exports = (function () {
     layer_order_instructions: {
       fr: "Plus cette valeur est haute et plus le bloc sera au premier plan.",
       en: "The higher the value the higher in the stack of blocs.",
-      oc: "D'ont mai la valor serà nauta d'ont mai lo blòc serà al primièr plan.",
+      oc:
+        "D'ont mai la valor serà nauta d'ont mai lo blòc serà al primièr plan.",
     },
     drawing_layer_1: {
       fr: "Calque dessin 1",
@@ -1151,7 +1157,8 @@ module.exports = (function () {
       fr:
         "Espaces de discussion : échangez avec les autres utilisateurs en créant un sujet !",
       en: "Chat rooms: share with other users by creating a topic!",
-      oc: "Espaci de discutida : escambiatz amb los autres utilzaires en creant un subjècte !",
+      oc:
+        "Espaci de discutida : escambiatz amb los autres utilzaires en creant un subjècte !",
     },
     channels_list: {
       fr: "Liste des discussions",
@@ -1267,7 +1274,7 @@ module.exports = (function () {
     restore: {
       fr: "Restaurer",
       en: "Restore",
-      oc: "Restaurar
+      oc: "Restaurar",
     },
     lock_in_place: {
       fr: "Verrouiller sur place",
@@ -1295,7 +1302,8 @@ module.exports = (function () {
         "Convertir le média vidéo ou audio pour optimiser la compatibilité avec tous les appareils et réduire le poids (codec vidéo mp4/h264, codec audio mp3).",
       en:
         "Encode the video or audio media to maximize compatibility and minimize filesize (video codec mp4/h264 and audio codec aac).",
-      oc: "Convertir lo mèdia video o audiò per optimizar la compatibilitat amb totes los aparelhs e redusir lo pes (codec video mp4/h264, codec audio mp3).",
+      oc:
+        "Convertir lo mèdia video o audiò per optimizar la compatibilitat amb totes los aparelhs e redusir lo pes (codec video mp4/h264, codec audio mp3).",
     },
     trim: {
       fr: "Raccourcir",
@@ -1307,7 +1315,8 @@ module.exports = (function () {
         "Indiquez le début et la fin souhaités.\nVous pouvez lire et mettre la vidéo en pause puis utiliser les boutons en bas de la vidéo pour copier le temps de lecture.",
       en:
         "Input the beginning and end to trim the video.\nYou can play and pause the video, then use the buttons beneath the video to paste the playback time.",
-      oc: "Indicatz la debuta e la fin desirada.\nPodètz legir e metre la video en pausa puèi utilizar los botons en bas de la video per copiar lo temps de lectura.",
+      oc:
+        "Indicatz la debuta e la fin desirada.\nPodètz legir e metre la video en pausa puèi utilizar los botons en bas de la video per copiar lo temps de lectura.",
     },
     playback: {
       fr: "Lecture",
@@ -1484,7 +1493,8 @@ module.exports = (function () {
       fr:
         "Ouvrez un projet et ajoutez un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.",
       en: "Add a single <b>video</b> and select a filter or an effect to mix.",
-      oc: "Dubrissètz un projècte e apondètz un mèdia <b>video</b> en cliquant sus la sageta verda.<br>L'exportacion crearà una novèla video.",
+      oc:
+        "Dubrissètz un projècte e apondètz un mèdia <b>video</b> en cliquant sus la sageta verda.<br>L'exportacion crearà una novèla video.",
     },
     add_multiple_images: {
       fr:
@@ -1668,7 +1678,8 @@ module.exports = (function () {
         "Identifiez vous en créant un auteur ou en cliquant sur votre nom si c’est déjà fait !",
       en:
         "Login by creating an author or clicking or your name to access do•doc.",
-      oc: "Identificatz-vos en creant un autor o en cliquant sus vòstre nom si es ja fach !",
+      oc:
+        "Identificatz-vos en creant un autor o en cliquant sus vòstre nom si es ja fach !",
     },
     login_to_post: {
       fr: "Identifiez-vous pour envoyer un message",
@@ -1726,7 +1737,8 @@ module.exports = (function () {
         "Optionnel. Sera uniquement utilisé pour vous notifier d’un message sur do•doc et ne sera pas visible aux autres utilisateurs à l’exception des administrateurs.",
       en:
         "Optional. Will only be used to let you know of a new personal message, and will never be shown to other users except for administrators.",
-      oc: "Opcional. Serà unicament utilizat per vos notificar qu'un messatge sus do•doc e serà pas visible pels autres utilizaires manca pels administrators.",
+      oc:
+        "Opcional. Serà unicament utilizat per vos notificar qu'un messatge sus do•doc e serà pas visible pels autres utilizaires manca pels administrators.",
     },
     date: {
       fr: "Date",
@@ -1765,7 +1777,8 @@ module.exports = (function () {
         "Vous pouvez associer un tag NFC (un carte, une pastille, etc.) à un auteur à l’aide d’un boitier compatible à brancher en USB, pour utiliser un objet pour vous identifier.",
       en:
         "You can pair a NFC tag (a card, a badge, etc.) to an author using a device connected via USB, to login using an object.",
-      oc: "Podètz associar un tag NFC (una carta, una pastilha, etc.) a un autor amb l'ajuda d'un bostièr compatible a brancar en USB per utilizar un objècte per vos identificar.",
+      oc:
+        "Podètz associar un tag NFC (una carta, una pastilha, etc.) a un autor amb l'ajuda d'un bostièr compatible a brancar en USB per utilizar un objècte per vos identificar.",
     },
     pair_a_nfc_tag: {
       fr: "Associer un tag NFC",
@@ -1780,7 +1793,7 @@ module.exports = (function () {
     "now!": {
       fr: "Maintenant !",
       en: "Now!",
-      oc: "Ara"
+      oc: "Ara",
     },
     yes: {
       fr: "Oui",
@@ -1823,21 +1836,24 @@ module.exports = (function () {
         "Vous avez déjà répondu à ce modèle, êtes-vous sur de vouloir y répondre à nouveau ?",
       en:
         "You have already replied to this model, would you like to reply again?",
-      oc: "Avètz ja respondut a aquel modèl, sètz segur d'i voler respondre tornar mai ?"
+      oc:
+        "Avètz ja respondut a aquel modèl, sètz segur d'i voler respondre tornar mai ?",
     },
     sureToRemoveYourselfFromAuthors: {
       fr:
         "Êtes-vous sûr de vouloir vous retirer de la liste des auteurs ? Vous ne pourrez plus modifier ce contenu.",
       en:
         "Do you really want to remove yourself from the list of authors? You won’t be able to edit this content anymore.",
-      oc: "Sètz segur de vos voler retirar de la tièra dels autors ? Poiretz pas pus modificar aqueste contengut.",
+      oc:
+        "Sètz segur de vos voler retirar de la tièra dels autors ? Poiretz pas pus modificar aqueste contengut.",
     },
     sureToLockAndPublish: {
       fr:
         "Êtes-vous sûr de vouloir publier ce récit ? Vous ne pourrez plus le modifier.",
       en:
         "Do you really want to publish this story? You won’t be able to edit anymore.",
-      oc: "Sètz segur de voler publicar aqueste raconte ? Poiretz pas pus lo modificar",
+      oc:
+        "Sètz segur de voler publicar aqueste raconte ? Poiretz pas pus lo modificar",
     },
     sureToRemoveAuthor: {
       fr:
@@ -1854,7 +1870,8 @@ module.exports = (function () {
         "Êtes-vous sûr de vouloir supprimer ce bloc éditable ? Cela supprimera également tous les contenus ajoutés par des contributeurs dans d’autres ",
       en:
         "Do you really want to remove this editable block? This will also remove all content added in this block in recipe following this model.",
-      oc: "Sètz segur de voler suprimir aquest blòc editable ? Aquò suprimirà tanben totes os contenguts aponduts per de contributors dins d'autres",
+      oc:
+        "Sètz segur de voler suprimir aquest blòc editable ? Aquò suprimirà tanben totes os contenguts aponduts per de contributors dins d'autres",
     },
     sure_to_remove_chat: {
       fr: "Êtes-vous sûr de vouloir supprimer ce sujet et tout son contenu ?",
@@ -1866,7 +1883,8 @@ module.exports = (function () {
         "Êtes-vous sûr de vouloir sortir du panneau de capture ? Si oui l’enregistrement en cours ne sera pas conservé.",
       en:
         "Do you really want to leave the capture panel? If yes then this recording will be discarded.",
-      oc: "Sètz segur de voler sortir del panèu de captura ? Si òc l'enregistrament en cors serà pas servat.",
+      oc:
+        "Sètz segur de voler sortir del panèu de captura ? Si òc l'enregistrament en cors serà pas servat.",
     },
     sure_to_remove_stopmotion: {
       fr: "Êtes-vous sûr de vouloir supprimer cette animation ?",
@@ -1963,7 +1981,8 @@ module.exports = (function () {
         "Ce modèle est utilisé comme référence par une ou plusieurs recettes réponses et ne peut donc pas être supprimé.",
       en:
         "This model is used by one or more reply recipes and cannot be deleted as long as this is the case.",
-      oc: "Aqueste modèl es utilizat coma referéncia per una o mantunas recèptas responsas e pòt pas doncas èsser suprimidas",
+      oc:
+        "Aqueste modèl es utilizat coma referéncia per una o mantunas recèptas responsas e pòt pas doncas èsser suprimidas",
     },
     sure_to_cancel_stopmotion: {
       fr:
@@ -2048,14 +2067,16 @@ module.exports = (function () {
         "Ce mode permet de rapidement créer le résultat d’un recette pour tester le rythme et les niveaux sonores, au détriment de la qualité de l’image. La vidéo résultante ne pourra pas être enregistré.",
       en:
         "This mode is the most convenient to test the rythm and the audio levels, with a mediocre image quality. The resulting video cannot be saved.",
-      oc: "Aqueste mòde permet de crear rapidament la resulta d'una recèpta per testar lo ritme e los nivèls sonòrs, al detriment de la qualitat de l'imatge. La video resultanta poirà pas èsser enregistrada.",
+      oc:
+        "Aqueste mòde permet de crear rapidament la resulta d'una recèpta per testar lo ritme e los nivèls sonòrs, al detriment de la qualitat de l'imatge. La video resultanta poirà pas èsser enregistrada.",
     },
     video_export_custom_quality_instructions: {
       fr:
         "Réglez ci-dessous la largeur × la hauteur, en pixels. Utilisez uniquement des valeurs entières et paires.",
       en:
         "Set custom width × height in the following fields, in pixels. Use only whole, even values.",
-      oc: "Reglatz çai-jos la larjor x la nautor en pixels. Utilizatz pas que de valors entièras e paras.",
+      oc:
+        "Reglatz çai-jos la larjor x la nautor en pixels. Utilizatz pas que de valors entièras e paras.",
     },
     showing: {
       fr: "Affichage de",
@@ -2584,7 +2605,8 @@ module.exports = (function () {
         "Importez des médias situés dans les projets ou créez des blocs avec les options ci-dessous.",
       en:
         "Import medias from projects or create new blocs with the following options.",
-      oc: "Importatz de mèdias situits dins los projèctes o crear de blòcs amb las opcions çai-jos.",
+      oc:
+        "Importatz de mèdias situits dins los projèctes o crear de blòcs amb las opcions çai-jos.",
     },
     click_on_a_bloc_to_edit_its_presentation: {
       fr: "Cliquez sur un bloc pour modifier son aspect",
@@ -2622,21 +2644,24 @@ module.exports = (function () {
         "Ce champ est utilisé pour retrouver plus facilement les recettes en lien avec un projet.",
       en:
         "This information is used only to make it easier to find all the recipes linked to a specific project.",
-      oc: "Aqueste camp es utilizat per trapar mai aisidament las recèptas en ligam amb lo projècte.",
+      oc:
+        "Aqueste camp es utilizat per trapar mai aisidament las recèptas en ligam amb lo projècte.",
     },
     translate_dodoc_instructions: {
       fr:
         "Pour proposer une nouvelle traduction, rendez-vous sur le <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum dédié</a> ou contactez-nous par mail : <a href='mailto:info@latelier-des-chercheurs.fr?subject=traduire%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
       en:
         "To translate do•doc, consult the following <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum post (in french)</a> or get in touch via email: <a href='mailto:info@latelier-des-chercheurs.fr?subject=translate%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
-      oc: "Per prepausar una novèla traduccion rendètz-vos sus <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum dedicat</a> o nos contactar per mail : <a href='mailto:info@latelier-des-chercheurs.fr?subject=traduire%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
+      oc:
+        "Per prepausar una novèla traduccion rendètz-vos sus <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum dedicat</a> o nos contactar per mail : <a href='mailto:info@latelier-des-chercheurs.fr?subject=traduire%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
     },
     when_logged_as_author_content_will_be_tagged: {
       fr:
         "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes que vous créez porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
       en:
         "When logged in as an author all projects, medias and recipes you create will be tagged with your name.",
-      oc: "Quand sètz identificatz coma autor totes los projèctes, mèdias e recèptas que creatz portaràn vòstre nom. Sonque vos los poiretz modificar o suprimir.",
+      oc:
+        "Quand sètz identificatz coma autor totes los projèctes, mèdias e recèptas que creatz portaràn vòstre nom. Sonque vos los poiretz modificar o suprimir.",
     },
     more_informations_on_authors: {
       fr:
@@ -3129,7 +3154,6 @@ module.exports = (function () {
       oc: "Quarts",
     },
 
-
     margin_top: {
       fr: "Marge: haut",
       en: "Margin: top",
@@ -3412,7 +3436,8 @@ module.exports = (function () {
         "Si actif, cette recette pourra être utilisée comme référence lors de la création d’autres recettes.",
       en:
         "If enabled, this recipe can be selected as a model for other recipes to lean on.",
-      oc: "Si actiu, aquesta recèpta poirà èsser utilizada coma referéncia al moment de la creacion d'autras recèptas",
+      oc:
+        "Si actiu, aquesta recèpta poirà èsser utilizada coma referéncia al moment de la creacion d'autras recèptas",
     },
 
     recipes: {
@@ -3428,7 +3453,8 @@ module.exports = (function () {
       fr:
         "Pour générer des réponses basées sur ce modèle, partagez cette adresse",
       en: "To generate replies based on this model, share this URL",
-      oc: "Per generar de responsas basadas sus aqueste modèl, partejatz aquesta adreiça",
+      oc:
+        "Per generar de responsas basadas sus aqueste modèl, partejatz aquesta adreiça",
     },
     URL_to_edit_in_simple_interface: {
       fr: "Pour accéder au récit dans l’interface simplifiée",
@@ -3460,7 +3486,8 @@ module.exports = (function () {
         "Accéder à des sources provenant d’autres appareils connectés actuellement à ce do•doc",
       en:
         "Connect to sources provided by devices currently connected to this do•doc",
-      oc: "Accedir a de fonts provenent d'autres aparelhs connectats arar a aqueste do•doc",
+      oc:
+        "Accedir a de fonts provenent d'autres aparelhs connectats arar a aqueste do•doc",
     },
     connect: {
       fr: "Se connecter",
@@ -3476,7 +3503,8 @@ module.exports = (function () {
       fr:
         "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",
       en: "If enabled, this recipe will display the model’s medias and guides.",
-      oc: "Si actiu aquesta recèpta tornarà prene los mèdias e repèris plaçats dins lo modèl",
+      oc:
+        "Si actiu aquesta recèpta tornarà prene los mèdias e repèris plaçats dins lo modèl",
     },
     archived: {
       fr: "Archiver",
@@ -3726,7 +3754,8 @@ module.exports = (function () {
         "Liste des effets et filtres disponibles : noir et blanc, ralenti, accéléré, inversion de la lecture, rotation et miroir.<br>Média accepté : une seule vidéo.",
       en:
         "Video effects and filters available: black and white, speed up, slow down, play backwards, rotate and miroir.<br>Accepted media: a single video.",
-      oc: "Tièra dels efièches e filtres disponibles : negre e blanc, ralentit, accelerat, inversion de la lectura, rotacion e miralh.<br>Mèdia acceptat : una sola video.",
+      oc:
+        "Tièra dels efièches e filtres disponibles : negre e blanc, ralentit, accelerat, inversion de la lectura, rotacion e miralh.<br>Mèdia acceptat : una sola video.",
     },
     effect: {
       fr: "Effet",
@@ -3747,7 +3776,8 @@ module.exports = (function () {
       fr:
         "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
       en: "Choose an image to place in the top-right corner of the video.",
-      oc: "Seleccionatz un imatge a plaçar dins lo caire superior drech de la video.",
+      oc:
+        "Seleccionatz un imatge a plaçar dins lo caire superior drech de la video.",
     },
     colored_filter: {
       fr: "Filtre coloré",
@@ -3769,7 +3799,8 @@ module.exports = (function () {
         "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
       en:
         "Warning! The audio track will be removed (if it exists) because the slow down is too low. To keep the audio track select a value between 0.5 and 1.",
-      oc: "Avisa ! La pista audiò serà suprimida (si existís) perque la vitessa desirada es tròp lenta. Per servar e convertir lo son causissètz una vitessa entre 0,5 e 1.",
+      oc:
+        "Avisa ! La pista audiò serà suprimida (si existís) perque la vitessa desirada es tròp lenta. Per servar e convertir lo son causissètz una vitessa entre 0,5 e 1.",
     },
     speed_up: {
       fr: "Accélérer",
@@ -3972,7 +4003,7 @@ module.exports = (function () {
     empty_content: {
       fr: "Vider le journal",
       en: "Empty the journal",
-        oc: "Vojar lo jornal",
+      oc: "Vojar lo jornal",
     },
     notifications: {
       ios_not_compatible_with_capture: {
@@ -3994,7 +4025,8 @@ module.exports = (function () {
         fr:
           "La copie dans le presse-papier a rencontré une erreur et n’a pas pu avoir lieu",
         en: "The copy to the clipboard failed",
-        oc: "La còpia dins lo premsa-papièr a rescontrat una error e es pas estada facha",
+        oc:
+          "La còpia dins lo premsa-papièr a rescontrat una error e es pas estada facha",
       },
       imported_files_successfully: {
         fr: "Média importé avec succès",
@@ -4023,14 +4055,16 @@ module.exports = (function () {
           "Cette action n’est pas permise. Êtes-vous bien auteur de ce contenu et/ou possédez-vous le mot de passe associé ?",
         en:
           "This action was blocked. Are you the author of this content and/or do you have the password?",
-        oc: "Aquesta accion es pas autorizada. Sètz l'autor d'aqueste contengut e/o tenètz lo mot de Santa Clara associat ?",
+        oc:
+          "Aquesta accion es pas autorizada. Sètz l'autor d'aqueste contengut e/o tenètz lo mot de Santa Clara associat ?",
       },
       cant_open_chat: {
         fr:
           "Identifiez-vous et vérifiez que vous faites partie de la liste des participants à cette discussion pour y accéder.",
         en:
           "Login and check that your account is amongst the participants to open this topic.",
-        oc: "Identificatz-vos e verificatz que fasètz partida de la tièra dels participants a aquesta discutida per i accedir.",
+        oc:
+          "Identificatz-vos e verificatz que fasètz partida de la tièra dels participants a aquesta discutida per i accedir.",
       },
       media_was_sent: {
         fr: "Le média a été enregistré.",
@@ -4082,7 +4116,8 @@ module.exports = (function () {
           "Les modifications du média n’ont pas pu avoir lieu, vérifiez que votre connexion est toujours active et rééssayez.",
         en:
           "Changes to this media couldn’t be saved, check that the connection is active and try again.",
-        oc: "Las modificacions del mèdia son pas estadas salvadas, verificatz que vòstra conneccion es totjorn activa e tornatz ensajar.",
+        oc:
+          "Las modificacions del mèdia son pas estadas salvadas, verificatz que vòstra conneccion es totjorn activa e tornatz ensajar.",
       },
       successfully_saved: {
         fr: "Les modifications ont bien été prises en compte.",
@@ -4160,7 +4195,8 @@ module.exports = (function () {
           "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
         en:
           "Failed to start camera stream. Try changing the source or the resolution.",
-        oc: "Lo flus video e audiò es pas estat demarrat.<br>Ensajatz de modificar la font o la resolucion dins los reglatges.",
+        oc:
+          "Lo flus video e audiò es pas estat demarrat.<br>Ensajatz de modificar la font o la resolucion dins los reglatges.",
       },
       failed_to_share_stream: {
         fr: "Le partage du flux n’a pas pu avoir lieu",
@@ -4331,7 +4367,8 @@ module.exports = (function () {
       password_added_or_changed: {
         fr: "Le mot de passe de ce contenu a été ajouté ou modifié.",
         en: "The password for this content has been added or changed.",
-        oc: "lo mot de Santa Clara d'aqueste contengut es estat apondut o modificat",
+        oc:
+          "lo mot de Santa Clara d'aqueste contengut es estat apondut o modificat",
       },
       enter_password_to_reopen: {
         fr: "Entrez le nouveau mot de passe pour le rouvrir",
@@ -4341,8 +4378,8 @@ module.exports = (function () {
       enter_password_to_select: {
         fr: "Renseignez le mot de passe du projet pour pouvoir le sélectionner",
         en: "Enter this project’s password to select it",
-        oc: "Entratz lo mot de Santa Clara del projècte per lo poder seleccionar",
-
+        oc:
+          "Entratz lo mot de Santa Clara del projècte per lo poder seleccionar",
       },
       need_to_be_author_to_post: {
         fr:
@@ -4360,13 +4397,15 @@ module.exports = (function () {
           "Sélectionnez au moins un auteur qui pourra accéder et modifier ce contenu",
         en:
           "Select at least one author who will be able to access and edit this content",
-        oc: "Seleccionatz au mens un autor que poirà accedir e modificar aqueste contengut",
+        oc:
+          "Seleccionatz au mens un autor que poirà accedir e modificar aqueste contengut",
       },
       access_or_editing_restricted_to_authors: {
         fr:
           "Attention : la modification est limité aux auteurs ou aux personnes possédant le mot de passe.",
         en: "Warning: editing is restricted to authors or with a password",
-        oc: "Avisa : La modificacion es limitada als autors e alas personas qu'an lo mot de Santa Clara.",
+        oc:
+          "Avisa : La modificacion es limitada als autors e alas personas qu'an lo mot de Santa Clara.",
       },
       "account_does_not_exist:": {
         fr: "Le compte demandé n’existe pas&nbsp;:",
@@ -4378,7 +4417,8 @@ module.exports = (function () {
           "Ce compte existe bien mais n’est pas autorisé à accéder à cette ressource. Avez-vous la bonne URL ?",
         en:
           "This account exists but is not associated to this content. Do you have the right link?",
-        oc: "Aqueste compte existíß plan mas es pas autorizat d'accedir a aquesta ressorça. Avètz la bona URL ?",
+        oc:
+          "Aqueste compte existíß plan mas es pas autorizat d'accedir a aquesta ressorça. Avètz la bona URL ?",
       },
       option_already_exists: {
         fr: "Cette option existe déjà",
