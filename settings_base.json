@@ -7,43 +7,48 @@
   "userDirname": "dodoc2",
   "cache_content": true,
 
-  "contentDirname" : "user",
-  "cacheDirname" : "dodoc_cache",
-  "metaFileext" : ".txt",
-  "thumbExt" : ".jpeg",
+  "contentDirname": "user",
+  "cacheDirname": "dodoc_cache",
+  "metaFileext": ".txt",
+  "thumbExt": ".jpeg",
   "thumbFormat": "jpeg",
-  "folderMetaFilename" : "meta",
-  "folderPreviewFilename" : "meta_preview",
+  "folderMetaFilename": "meta",
+  "folderPreviewFilename": "meta_preview",
 
   "privateKeyPath": "",
   "certificatePath": "",
 
-  "metaDateFormat" : "YYYYMMDD_HHmmss",
-  "textEncoding" : "UTF-8",
-  "thumbFolderName" : "_thumbs",
-  "deletedFolderName" : "_bin",
+  "metaDateFormat": "YYYYMMDD_HHmmss",
+  "textEncoding": "UTF-8",
+  "thumbFolderName": "_thumbs",
+  "deletedFolderName": "_bin",
 
-  "mediaThumbQuality" : 70,
-  "maxFileSizeForUpload": 10000, 
+  "ffmpeg_options": {
+    "priority": 0,
+    "timeout": 600
+  },
 
-  "regexpMatchFolderNames" : "^([^.]+)$",
-  "regexpGetFileExtension" : "\\.[^.]*$",
-  "regexpRemoveFileExtension" : "(.+?)(\\.[^.]*$|$)",
+  "mediaThumbQuality": 70,
+  "maxFileSizeForUpload": 10000,
+
+  "regexpMatchFolderNames": "^([^.]+)$",
+  "regexpGetFileExtension": "\\.[^.]*$",
+  "regexpRemoveFileExtension": "(.+?)(\\.[^.]*$|$)",
 
   "api": {
     "enabled": false,
     "allow_all_domains": false,
-    "domains_whitelist": []
+    "domains_whitelist": ["localhost"]
   },
 
-  "structure" : {
+  "structure": {
     "projects": {
       "path": "",
       "preview": {
         "width": 1200,
         "height": 1200,
         "thumbs": {
-          "resolutions": [50, 320, 640]          
+          "resolutions": [50, 320, 640]
         }
       },
       "fields": {
@@ -57,20 +62,33 @@
         },
         "date_modified": {
           "type": "date",
-          "default": "current"
+          "default": "current",
+          "override": true
         },
         "password": {
-          "type": "string",
-          "read_only": true        
+          "type": "string"
         },
         "authors": {
           "type": "array"
         },
         "keywords": {
           "type": "array"
-        },      
+        },
         "description": {
           "type": "string"
+        },
+        "folder": {
+          "type": "string"
+        },
+        "editing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "with_password", "only_authors", "nobody"],
+          "default": "everybody"
+        },
+        "viewing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "only_authors", ""],
+          "default": "everybody"
         }
       },
       "medias": {
@@ -83,12 +101,12 @@
             "default": "current",
             "read_only": true
           },
-          "date_modified" : {
+          "date_modified": {
             "type": "date",
             "default": "current",
             "override": true
           },
-          "date_uploaded" : {
+          "date_uploaded": {
             "type": "date",
             "default": "current",
             "read_only": true
@@ -101,17 +119,26 @@
           },
           "type": {
             "type": "string",
-            "options": ["image", "video", "audio", "text", "document", "other"],
+            "options": [
+              "image",
+              "video",
+              "audio",
+              "text",
+              "code",
+              "stl",
+              "document",
+              "other"
+            ],
             "default": "other"
           },
           "fav": {
             "type": "boolean",
             "default": false
           },
-          "ratio" : {
+          "ratio": {
             "type": "number"
           },
-          "duration" : {
+          "duration": {
             "type": "number"
           },
           "authors": {
@@ -119,12 +146,16 @@
           },
           "keywords": {
             "type": "array"
-          },      
+          },
           "caption": {
             "type": "string"
-          }  
+          },
+          "file_meta": {
+            "type": "array",
+            "read_only": true
+          }
         }
-      } 
+      }
     },
     "authors": {
       "path": "_authors",
@@ -132,7 +163,7 @@
         "width": 1200,
         "height": 1200,
         "thumbs": {
-          "resolutions": [180, 640]          
+          "resolutions": [50, 180, 640]
         }
       },
       "fields": {
@@ -141,13 +172,31 @@
         },
         "password": {
           "type": "string",
-          "read_only": true        
+          "transform": "crypt"
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "email": {
+          "type": "string",
+          "show_only_to": ["self", "admin"]
+        },
+        "role": {
+          "type": "string",
+          "options": ["contributor", "participant", "admin"],
+          "default": "contributor",
+          "only_admin_can_edit": true
         },
         "description": {
           "type": "string"
         },
         "nfc_tag": {
           "type": "string"
+        },
+        "last_messages_read_in_channels": {
+          "type": "array"
         }
       }
     },
@@ -157,7 +206,7 @@
         "width": 1200,
         "height": 1200,
         "thumbs": {
-          "resolutions": [180, 640]          
+          "resolutions": [180, 640]
         }
       },
       "fields": {
@@ -165,15 +214,25 @@
           "type": "string"
         },
         "password": {
-          "type": "string",
-          "read_only": true        
+          "type": "string"
         },
         "authors": {
           "type": "array"
         },
         "keywords": {
           "type": "array"
-        },      
+        },
+
+        "editing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "with_password", "only_authors", "nobody"],
+          "default": "everybody"
+        },
+        "viewing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "only_authors", ""],
+          "default": "everybody"
+        },
         "date_created": {
           "type": "date",
           "default": "current",
@@ -181,20 +240,40 @@
         },
         "date_modified": {
           "type": "date",
-          "default": "current"
+          "default": "current",
+          "override": true
+        },
+        "date_submitted": {
+          "type": "date"
         },
         "description": {
           "type": "string"
         },
+        "attached_to_project": {
+          "type": "string"
+        },
+        "show_on_external_domain": {
+          "type": "boolean"
+        },
         "template": {
           "type": "string",
-          "options": ["page_by_page", "video_assemblage", "stopmotion_animation", "mix_audio_and_video", "mix_audio_and_image"],
-          "default": "page_by_page"          
+          "options": [
+            "page_by_page",
+            "carreau",
+            "video_assemblage",
+            "stopmotion_animation",
+            "mix_audio_and_video",
+            "mix_audio_and_image",
+            "drawing_pad",
+            "video_effects",
+            "story"
+          ],
+          "default": "page_by_page"
         },
         "style": {
           "type": "string",
           "options": ["standard", "feuille de choux", "human tech days"],
-          "default": "standard"          
+          "default": "standard"
         },
         "width": {
           "type": "number"
@@ -226,14 +305,39 @@
         "gridstep": {
           "type": "number"
         },
+        "snap_to_grid": {
+          "type": "boolean"
+        },
         "pages": {
+          "type": "array"
+        },
+        "removed_pages": {
+          "type": "array"
+        },
+        "layers": {
           "type": "array"
         },
         "medias_slugs": {
           "type": "array"
+        },
+        "effects": {
+          "type": "array"
+        },
+        "is_model": {
+          "type": "boolean"
+        },
+        "follows_model": {
+          "type": "string"
+        },
+        "number_of_medias": {
+          "type": "number",
+          "only_admin_can_edit": true
         }
       },
       "medias": {
+        "thumbs": {
+          "resolutions": [180, 360, 1600]
+        },
         "fields": {
           "slugProjectName": {
             "type": "string"
@@ -241,9 +345,30 @@
           "slugMediaName": {
             "type": "string"
           },
+          "date_created": {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
           "date_modified": {
             "type": "date",
-            "default": "current"
+            "default": "current",
+            "override": true
+          },
+          "caption": {
+            "type": "string"
+          },
+          "instructions": {
+            "type": "string"
+          },
+          "hide_instructions_when_fulfilled": {
+            "type": "boolean"
+          },
+          "available_modes": {
+            "type": "array"
+          },
+          "answers": {
+            "type": "string"
           },
           "authors": {
             "type": "array"
@@ -252,6 +377,38 @@
             "type": "string"
           },
           "page_id": {
+            "type": "string"
+          },
+          "layer_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "options": [
+              "text",
+              "placeholder",
+              "divider",
+              "solid_color",
+              "rectangle",
+              "free_drawing",
+              "ellipsis",
+              "line",
+              "arrow",
+
+              "image",
+              "video",
+              "audio",
+              "code",
+              "stl",
+              "document",
+              "other"
+            ],
+            "default": "other"
+          },
+          "color": {
+            "type": "string"
+          },
+          "media_filename": {
             "type": "string"
           },
           "duration": {
@@ -268,6 +425,15 @@
               "max": 100
             }
           },
+          "drawing_paths": {
+            "type": "string"
+          },
+          "transition_in": {
+            "type": "string"
+          },
+          "transition_out": {
+            "type": "string"
+          },
           "x": {
             "type": "number"
           },
@@ -283,12 +449,68 @@
           "height": {
             "type": "number"
           },
+          "fit_mode": {
+            "type": "string"
+          },
+          "locked_in_place": {
+            "type": "boolean"
+          },
+          "plain_text": {
+            "type": "boolean"
+          },
+          "only_numbers": {
+            "type": "boolean"
+          },
+          "force_text_style": {
+            "type": "string"
+          },
+          "loop_play": {
+            "type": "boolean"
+          },
+          "basic_player": {
+            "type": "boolean"
+          },
           "z_index": {
             "type": "number",
             "clip": {
               "min": -20000,
               "max": 20000
             }
+          },
+          "canvas_information": {
+            "type": "string",
+            "escape": false
+          },
+          "file_meta": {
+            "type": "array",
+            "read_only": true
+          },
+          "margin": {
+            "type": "number"
+          },
+          "font_size_percent": {
+            "type": "number"
+          },
+          "opacity": {
+            "type": "number"
+          },
+          "blend_mode": {
+            "type": "string"
+          },
+          "fill_color": {
+            "type": "string"
+          },
+          "stroke_color": {
+            "type": "string"
+          },
+          "stroke_width": {
+            "type": "number"
+          },
+          "placeholder_meta_reference": {
+            "type": "string"
+          },
+          "placeholder_medias_slugs": {
+            "type": "array"
           }
         }
       }
@@ -303,12 +525,20 @@
         },
         "date_modified": {
           "type": "date",
-          "default": "current"
+          "default": "current",
+          "override": true
         },
         "authors": {
           "type": "array"
         },
         "linked_project": {
+          "type": "string",
+          "comment": "is_deprecated_and_replaced_with_linked_folder"
+        },
+        "linked_folder": {
+          "type": "string"
+        },
+        "linked_type": {
           "type": "string"
         }
       },
@@ -317,7 +547,7 @@
           "resolutions": [150, 1200]
         },
         "fields": {
-          "date_uploaded" : {
+          "date_uploaded": {
             "type": "date",
             "default": "current",
             "read_only": true
@@ -332,9 +562,69 @@
           },
           "authors": {
             "type": "array"
+          },
+          "file_meta": {
+            "type": "array",
+            "read_only": true
           }
         }
-      } 
+      }
+    },
+    "chats": {
+      "path": "_chats",
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified": {
+          "type": "date",
+          "default": "current",
+          "override": true
+        },
+        "authors": {
+          "type": "array"
+        },
+        "editing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "only_authors", "nobody"],
+          "default": "everybody"
+        },
+        "viewing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "only_authors", ""],
+          "default": "everybody"
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "number_of_medias": {
+          "type": "number",
+          "only_admin_can_edit": true
+        }
+      },
+      "medias": {
+        "fields": {
+          "date_created": {
+            "type": "date",
+            "default": "current",
+            "read_only": true
+          },
+          "text": {
+            "type": "string"
+          },
+          "authors": {
+            "type": "array"
+          }
+        }
+      }
     }
   }
 }

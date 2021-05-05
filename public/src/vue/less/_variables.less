@@ -6,46 +6,63 @@
 @t-systemBarHeight: 22px;
 @t-hauteur_topbar: 70px;
 
-
 @c-bleumarine: #1d327f;
-@c-bleuvert: #52C5B9;
-@c-orange: #FFBE32;
-@c-rouge: #FC4B60;
+@c-bleuvert: #52c5b9;
+@c-orange: #ffbe32;
+@c-rouge: #fc4b60;
 
-@c-bleumarine_clair: #BEC6E5;
-@c-bleuvert_clair: #A5E5DA;
-@c-orange_clair: #FFD892;
-@c-rouge_clair: #FF808C;
+@c-bleumarine_clair: #bec6e5;
+@c-bleuvert_clair: #a5e5da;
+@c-orange_clair: #ffd892;
+@c-rouge_clair: #ff808c;
 
 @c-bleumarine_fonce: #12224c;
-@c-bleuvert_fonce: #47998D;
-@c-orange_fonce: #d19833;
+@c-bleuvert_fonce: #47998d;
+// @c-orange_fonce: #d19833;
+@c-orange_fonce: hsl(41, 90%, 50%);
 @c-rouge_fonce: #cc334a;
+// @c-rouge_fonce: hsl(353, 93%, 60%);
 
 @c-blanc: #fff;
 @c-creme: #f4f3ef;
-@c-gris: #B9B9B9;
+@c-gris: #b9b9b9;
 @c-gris_clair: #e5e5e5;
-@c-gris_tresclair: #F1F1F1;
-@c-gris_fonce: #535353;
+@c-gris_tresclair: #f1f1f1;
+@c-gris_fonce: #666666;
 @c-noir: #353535;
 
-@c-border: #000;
+@c-border: @c-gris;
 @c-body_bg: @c-creme;
-
-
 
 :root {
   --body-color: black;
   --body-bg-color: #fff;
   --table-stripe-bg-color: #eee;
   --color-primary: @c-rouge;
+  --c-rouge: @c-rouge;
+  --c-rouge_fonce: @c-rouge_fonce;
+  --c-rouge_clair: @c-rouge_clair;
   --c-noir: @c-noir;
   --c-orange: @c-orange;
+  --c-bleuvert: @c-bleuvert;
+  --c-bleuvert_clair: @c-bleuvert_clair;
+  --c-bleuvert_fonce: @c-bleuvert_fonce;
+  --c-creme: @c-creme;
+  --c-gris: @c-gris;
+  --c-gris-clair: @c-gris_clair;
+  --c-gris-tresclair: @c-gris_tresclair;
+  --c-gris-fonce: @c-gris_fonce;
+  --c-bleumarine: @c-bleumarine;
+  --c-bleumarine_clair: @c-bleumarine_clair;
+  --spacing: @t-skipline;
+  --color-folder: @c-orange_clair;
+  --folder_border_radius: 6px;
 
-  --font-family: 'Fira';
+  --font-family: "Fira";
 
   --font-size: 1.1rem; /* Most browsers use a default font size of 16px */
+  --font-verysmall: 0.8rem; /* Most browsers use a default font size of 16px */
+  --font-large: 1.5rem; /* Most browsers use a default font size of 16px */
   --input-font-size-big: 1.4rem;
 
   --line-height: 1.35;
@@ -54,4 +71,7 @@
   --input-border-color: @c-gris;
   --input-border-color-focus: @c-orange;
 
+  --button-radius: @t-buttonradius;
+
+  --table-border-color: @c-gris_clair;
 }

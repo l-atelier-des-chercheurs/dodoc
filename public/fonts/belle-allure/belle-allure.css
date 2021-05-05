@@ -1,0 +1,36 @@
+@font-face {
+  font-family: "Belle Allure CE";
+  src: url("BelleAllureCE-Fin.woff2") format("woff2"),
+    url("BelleAllureCE-Fin.woff") format("woff");
+
+  font-style: normal;
+  font-weight: normal;
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-family: "Belle Allure CE";
+  src: url("BelleAllureCE-Gros.woff2") format("woff2"),
+    url("BelleAllureCE-Gros.woff") format("woff");
+
+  font-style: normal;
+  font-weight: bold;
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-family: "Belle Allure CM";
+  src: url("BelleAllureCM-Fin.woff2") format("woff2"),
+    url("BelleAllureCM-Fin.woff") format("woff");
+
+  font-style: normal;
+  font-weight: normal;
+  text-rendering: optimizeLegibility;
+}
+@font-face {
+  font-family: "Belle Allure CM";
+  src: url("BelleAllureCM-Gros.woff2") format("woff2"),
+    url("BelleAllureCM-Gros.woff") format("woff");
+
+  font-style: normal;
+  font-weight: bold;
+  text-rendering: optimizeLegibility;
+}

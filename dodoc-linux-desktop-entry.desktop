@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=do•doc
+Comment=A documentation tool for creativity.
+Exec=do•doc
+Icon=./build/icon.png
+Terminal=false

@@ -1,0 +1,32 @@
+date_created: 20210326_161755
+
+----
+
+date_modified: 20210326_181805
+
+----
+
+authors: 
+
+-
+slugFolderName: louis-e
+
+
+----
+
+type: text
+
+----
+
+media_filename: text-20210326_161755-ogl.md
+
+----
+
+file_meta: 
+
+-
+size: 0
+
+
+----
+
