@@ -1,5 +1,5 @@
 const path = require("path"),
-  pathToFfmpeg = require("ffmpeg-static"),
+  { ffmpegPath, ffprobePath } = require("ffmpeg-ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   fs = require("fs-extra"),
   pad = require("pad-left");
@@ -12,7 +12,8 @@ const dev = require("./dev-log"),
   file = require("./file"),
   thumbs = require("./thumbs");
 
-ffmpeg.setFfmpegPath(pathToFfmpeg);
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   return {
@@ -144,9 +145,8 @@ module.exports = (function () {
                                   );
                                 }
 
-                                const fullPathToThumb = api.getFolderPath(
-                                  thumb_path
-                                );
+                                const fullPathToThumb =
+                                  api.getFolderPath(thumb_path);
                                 const fullPathToThumb_cache = path.join(
                                   cachePath,
                                   thumb_path
@@ -176,9 +176,8 @@ module.exports = (function () {
                                     );
                                   }
 
-                                  const fullPathToThumb = api.getFolderPath(
-                                    thumb_path
-                                  );
+                                  const fullPathToThumb =
+                                    api.getFolderPath(thumb_path);
                                   const fullPathToThumb_cache = path.join(
                                     cachePath,
                                     thumb_path
@@ -697,7 +696,8 @@ module.exports = (function () {
                       medias_list: list_of_linked_medias,
                     })
                     .then((folders_and_medias) => {
-                      _page_informations.folderAndMediaData = folders_and_medias;
+                      _page_informations.folderAndMediaData =
+                        folders_and_medias;
                       resolve(_page_informations);
                     });
                 });
@@ -1800,6 +1800,8 @@ module.exports = (function () {
                 "Setting output to duration: " + metadata.format.duration
               );
               ffmpeg_cmd.duration(metadata.format.duration);
+            } else {
+              dev.logverbose("No metadata found for input: " + vm.full_path);
             }
 
             // check if has audio track or not
@@ -1851,7 +1853,10 @@ module.exports = (function () {
                 ffmpeg.ffprobe(temp_video_path, function (err, _metadata) {
                   return resolve({
                     temp_video_path,
-                    duration: _metadata.format.duration,
+                    duration:
+                      _metadata && _metadata.format && _metadata.format.duration
+                        ? _metadata.format.duration
+                        : "",
                   });
                 });
               })
