@@ -57,16 +57,20 @@ module.exports = (function () {
         }`
       );
 
-      const ip =
-        socket.handshake && socket.handshake.address
-          ? socket.handshake.address
-          : "";
-      const user_agent =
+      let ip = "";
+      if (socket.handshake && socket.handshake.address)
+        if (socket.handshake.address.address)
+          ip = socket.handshake.address.address;
+        else ip = socket.handshake.address;
+
+      let user_agent = "";
+      if (
         socket.handshake &&
         socket.handshake.headers &&
         socket.handshake.headers["user-agent"]
-          ? socket.handshake.headers["user-agent"]
-          : "";
+      )
+        user_agent = socket.handshake.headers["user-agent"];
+
       access.append({
         ip,
         user_agent,
