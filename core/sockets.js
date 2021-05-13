@@ -58,10 +58,15 @@ module.exports = (function () {
       );
 
       let ip = "";
-      if (socket.handshake && socket.handshake.address)
-        if (socket.handshake.address.address)
-          ip = socket.handshake.address.address;
-        else ip = socket.handshake.address;
+      if (socket.handshake) {
+        if (socket.handshake.headers && socket.handshake.headers["x-real-ip"]) {
+          // need to add the following to nginx .conf
+          // proxy_set_header X-Real-IP $remote_addr;
+          ip = socket.handshake.headers["x-real-ip"];
+        } else if (socket.handshake.address) {
+          ip = socket.handshake.address;
+        }
+      }
 
       let user_agent = "";
       if (
