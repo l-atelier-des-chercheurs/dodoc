@@ -123,8 +123,8 @@ module.exports = (function () {
 
       socket.on("disconnect", (d) => onClientDisconnect(socket));
 
-      socket.on("loadJournal", (d) => onLoadJournal(socket));
-      socket.on("emptyJournal", (d) => onEmptyJournal(socket));
+      socket.on("loadJournal", (d) => onLoadJournal(socket, d));
+      socket.on("emptyJournal", (d) => onEmptyJournal(socket, d));
     });
   }
 
@@ -1171,8 +1171,8 @@ module.exports = (function () {
     );
   }
 
-  async function onLoadJournal(socket) {
-    dev.logfunction(`EVENT - onLoadJournal`);
+  async function onLoadJournal(socket, { type = "changelog" } = {}) {
+    dev.logfunction(`EVENT - onLoadJournal for type = ${type}`);
 
     const socket_is_admin = await auth.isSocketSessionAdmin(socket);
     if (!socket_is_admin) {
@@ -1187,12 +1187,15 @@ module.exports = (function () {
       throw `Non-admin attempted to load journal`;
     }
 
-    const journal_content = await changelog.read();
+    let journal_content;
+    if (type === "changelog") journal_content = await changelog.read();
+    if (type === "access") journal_content = await access.read();
+
     api.sendEventWithContent("loadJournal", journal_content, io, socket);
   }
 
-  async function onEmptyJournal(socket) {
-    dev.logfunction(`EVENT - onEmptyJournal`);
+  async function onEmptyJournal(socket, { type = "changelog" } = {}) {
+    dev.logfunction(`EVENT - onEmptyJournal for type = ${type}`);
 
     const socket_is_admin = await auth.isSocketSessionAdmin(socket);
     if (!socket_is_admin) {
@@ -1207,7 +1210,9 @@ module.exports = (function () {
       throw `Non-admin attempted to empty journal`;
     }
 
-    await changelog.empty();
+    if (type === "changelog") journal_content = await changelog.empty();
+    if (type === "access") journal_content = await access.empty();
+
     await onLoadJournal(socket);
   }
 
