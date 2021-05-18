@@ -435,8 +435,8 @@ module.exports = (function () {
           loadJournal(jdata) {
             this.socket.emit("loadJournal", jdata);
           },
-          emptyJournal() {
-            this.socket.emit("emptyJournal");
+          emptyJournal(jdata) {
+            this.socket.emit("emptyJournal", jdata);
           },
         },
       });

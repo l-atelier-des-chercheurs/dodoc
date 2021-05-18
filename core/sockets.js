@@ -1213,7 +1213,7 @@ module.exports = (function () {
     if (type === "changelog") journal_content = await changelog.empty();
     if (type === "access") journal_content = await access.empty();
 
-    await onLoadJournal(socket);
+    await onLoadJournal(socket, { type });
   }
 
   return API;

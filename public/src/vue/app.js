@@ -37,10 +37,6 @@ Vue.use(PortalVue);
 import VueClipboard from "vue-clipboard2";
 Vue.use(VueClipboard);
 
-import VueFusionCharts from "vue-fusioncharts";
-import FusionCharts from "fusioncharts";
-import TimeSeries from "fusioncharts/fusioncharts.timeseries";
-Vue.use(VueFusionCharts, FusionCharts, TimeSeries);
 
 import VueI18n from "vue-i18n";
 Vue.use(VueI18n);

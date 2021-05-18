@@ -211,8 +211,7 @@ module.exports = (function () {
       en: "Replace with",
     },
     use_own_risk: {
-      fr:
-        "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
+      fr: "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
       en: "Use at your own risk: medias can become invisible in some cases.",
     },
 
@@ -279,13 +278,14 @@ module.exports = (function () {
       oc: "crear un novèl dorsièr",
     },
 
+    show_returning_visitors: {
+      fr: "Comptabiliser aussi les visiteurs qui reviennent sur le site",
+      en: "Show returning visitors as well",
+    },
     create_qr_code_instructions: {
-      fr:
-        "Écrire un lien pour créer un code QR. Vous pouvez ensuite le télécharger, l’imprimer ou l’intégrer à un document page à page ou à un récit.",
-      en:
-        "Write a link to create the corresponding QR Code to download, print or insert inside a paged document or a story.",
-      oc:
-        "Escriure un ligam per crear un còdi QR. Lo podètz puèi telecargar, l'estampar o l'integrar a un document pagina a pagina o a un raconte.",
+      fr: "Écrire un lien pour créer un code QR. Vous pouvez ensuite le télécharger, l’imprimer ou l’intégrer à un document page à page ou à un récit.",
+      en: "Write a link to create the corresponding QR Code to download, print or insert inside a paged document or a story.",
+      oc: "Escriure un ligam per crear un còdi QR. Lo podètz puèi telecargar, l'estampar o l'integrar a un document pagina a pagina o a un raconte.",
     },
     manage_access: {
       fr: "Gérer l’accès au contenu",
@@ -340,12 +340,9 @@ module.exports = (function () {
       oc: "Afichar pas que lo boton lectura",
     },
     set_visibility_to_everybody: {
-      fr:
-        "Ce contenu est actuellement en privé et ne peut donc pas être partagé. Pour le partager, cochez VISIBLE PAR TOUT LE MONDE dans les options du contenu.",
-      en:
-        "This content is currently set to private and cannot be shared. To get a link to share it, change its options to VISIBLE FOR EVERYONE.",
-      oc:
-        "Aqueste contengut es actualament en privat e pòt pas ésser partejat. Per lo partejar, clicatz VISIBLE PER TOT LO MOND dins las opcions del contengut. ",
+      fr: "Ce contenu est actuellement en privé et ne peut donc pas être partagé. Pour le partager, cochez VISIBLE PAR TOUT LE MONDE dans les options du contenu.",
+      en: "This content is currently set to private and cannot be shared. To get a link to share it, change its options to VISIBLE FOR EVERYONE.",
+      oc: "Aqueste contengut es actualament en privat e pòt pas ésser partejat. Per lo partejar, clicatz VISIBLE PER TOT LO MOND dins las opcions del contengut. ",
     },
     display_on_website: {
       fr: "Rendre visible sur ",
@@ -373,12 +370,9 @@ module.exports = (function () {
       oc: "Resolucions",
     },
     cant_pick_resolution_when_screen_capture: {
-      fr:
-        "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
-      en:
-        "Selection a specific resolution is not possible with a screen capture.",
-      oc:
-        "La seleccion de la resolucion es pas compatibla amb la captura d'ecran.",
+      fr: "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
+      en: "Selection a specific resolution is not possible with a screen capture.",
+      oc: "La seleccion de la resolucion es pas compatibla amb la captura d'ecran.",
     },
     or_download_media_on_device: {
       fr: "ou télécharger ce média sur votre appareil",
@@ -386,12 +380,9 @@ module.exports = (function () {
       oc: "o telecargar aqueste mèdia sus vòstre aparelh",
     },
     camera_access_refused: {
-      fr:
-        "Accès refusé à la caméra et au micro : vous devez accepter leur accès dans le message qui apparaît pour pouvoir utiliser ce panneau.",
-      en:
-        "Access to camera and microphone denied: you have to accept to share your camera and microphone to use this pane.",
-      oc:
-        "Accès refusat a la camerà e al micrò : devètz acceptar lor accès din slo messatge qu'apareis per poder utilizar aqueste panèu.",
+      fr: "Accès refusé à la caméra et au micro : vous devez accepter leur accès dans le message qui apparaît pour pouvoir utiliser ce panneau.",
+      en: "Access to camera and microphone denied: you have to accept to share your camera and microphone to use this pane.",
+      oc: "Accès refusat a la camerà e al micrò : devètz acceptar lor accès din slo messatge qu'apareis per poder utilizar aqueste panèu.",
     },
     reply: {
       fr: "Répondre",
@@ -872,18 +863,14 @@ module.exports = (function () {
       de: "Glättungmodus",
     },
     create_an_account_or_login_to_participate: {
-      fr:
-        "Créez un compte ou identifiez-vous avec un compte existant pour participer",
+      fr: "Créez un compte ou identifiez-vous avec un compte existant pour participer",
       en: "Create an account or login using an existing account to participate",
-      oc:
-        "Crear un compte o identificatz-vos amb un compte existent per participar",
+      oc: "Crear un compte o identificatz-vos amb un compte existent per participar",
     },
     login_to_edit_existing_participation: {
-      fr:
-        "Identifiez-vous avec le compte créé précédemment pour modifier vos réponses",
+      fr: "Identifiez-vous avec le compte créé précédemment pour modifier vos réponses",
       en: "Login with an existing account to edit your replies",
-      oc:
-        "Identificatz-vos amb lo compte creat per abans per modificar vòstras responsas",
+      oc: "Identificatz-vos amb lo compte creat per abans per modificar vòstras responsas",
     },
     custom: {
       fr: "Personnalisé",
@@ -922,10 +909,8 @@ module.exports = (function () {
       en: "PDF (all pages)",
     },
     multipage_pdf_instructions: {
-      fr:
-        "Un PDF peut être imprimé ou partagé par mail mais les médias ne seront pas interactifs (vidéos et enregistrements sonore impossible à lire).",
-      en:
-        "A PDF can be printed or sent in an email but embed files (audio, video, source files) will not be playable or downloadable.",
+      fr: "Un PDF peut être imprimé ou partagé par mail mais les médias ne seront pas interactifs (vidéos et enregistrements sonore impossible à lire).",
+      en: "A PDF can be printed or sent in an email but embed files (audio, video, source files) will not be playable or downloadable.",
       oc: "PDF (totas las paginas)",
     },
     singlepage_image: {
@@ -933,10 +918,8 @@ module.exports = (function () {
       en: "Image (single page)",
     },
     singlepage_image_instructions: {
-      fr:
-        "L’image exportée pourra être téléchargée ou utilisée dans une autre recette (écran-titre dans un montage vidéo, image associée à un son pour faire une vidéo, etc.).",
-      en:
-        "The image can be downloaded or used in another recipe (title screen in a video montage, image associated with a sound to make a new video, etc.).",
+      fr: "L’image exportée pourra être téléchargée ou utilisée dans une autre recette (écran-titre dans un montage vidéo, image associée à un son pour faire une vidéo, etc.).",
+      en: "The image can be downloaded or used in another recipe (title screen in a video montage, image associated with a sound to make a new video, etc.).",
       oc: "Imatge (una sola pagina)",
     },
     add_to_project: {
@@ -1004,8 +987,7 @@ module.exports = (function () {
     layer_order_instructions: {
       fr: "Plus cette valeur est haute et plus le bloc sera au premier plan.",
       en: "The higher the value the higher in the stack of blocs.",
-      oc:
-        "D'ont mai la valor serà nauta d'ont mai lo blòc serà al primièr plan.",
+      oc: "D'ont mai la valor serà nauta d'ont mai lo blòc serà al primièr plan.",
     },
     drawing_layer_1: {
       fr: "Calque dessin 1",
@@ -1154,11 +1136,9 @@ module.exports = (function () {
       de: "Der Topf",
     },
     channels_instructions: {
-      fr:
-        "Espaces de discussion : échangez avec les autres utilisateurs en créant un sujet !",
+      fr: "Espaces de discussion : échangez avec les autres utilisateurs en créant un sujet !",
       en: "Chat rooms: share with other users by creating a topic!",
-      oc:
-        "Espaci de discutida : escambiatz amb los autres utilzaires en creant un subjècte !",
+      oc: "Espaci de discutida : escambiatz amb los autres utilzaires en creant un subjècte !",
     },
     channels_list: {
       fr: "Liste des discussions",
@@ -1267,8 +1247,7 @@ module.exports = (function () {
     },
     adjust_infos: {
       fr: "Vous pourrez toujours revenir au média d’origine si nécessaire.",
-      en:
-        "You will always be able to go back to the original media if necessary.",
+      en: "You will always be able to go back to the original media if necessary.",
       oc: "Poiretz totjorn tornar al mèdia d'origina si es necite",
     },
     restore: {
@@ -1298,12 +1277,9 @@ module.exports = (function () {
       oc: "Optimizar",
     },
     optimize_instructions: {
-      fr:
-        "Convertir le média vidéo ou audio pour optimiser la compatibilité avec tous les appareils et réduire le poids (codec vidéo mp4/h264, codec audio mp3).",
-      en:
-        "Encode the video or audio media to maximize compatibility and minimize filesize (video codec mp4/h264 and audio codec aac).",
-      oc:
-        "Convertir lo mèdia video o audiò per optimizar la compatibilitat amb totes los aparelhs e redusir lo pes (codec video mp4/h264, codec audio mp3).",
+      fr: "Convertir le média vidéo ou audio pour optimiser la compatibilité avec tous les appareils et réduire le poids (codec vidéo mp4/h264, codec audio mp3).",
+      en: "Encode the video or audio media to maximize compatibility and minimize filesize (video codec mp4/h264 and audio codec aac).",
+      oc: "Convertir lo mèdia video o audiò per optimizar la compatibilitat amb totes los aparelhs e redusir lo pes (codec video mp4/h264, codec audio mp3).",
     },
     trim: {
       fr: "Raccourcir",
@@ -1311,12 +1287,9 @@ module.exports = (function () {
       oc: "Acorchir",
     },
     trim_instructions: {
-      fr:
-        "Indiquez le début et la fin souhaités.\nVous pouvez lire et mettre la vidéo en pause puis utiliser les boutons en bas de la vidéo pour copier le temps de lecture.",
-      en:
-        "Input the beginning and end to trim the video.\nYou can play and pause the video, then use the buttons beneath the video to paste the playback time.",
-      oc:
-        "Indicatz la debuta e la fin desirada.\nPodètz legir e metre la video en pausa puèi utilizar los botons en bas de la video per copiar lo temps de lectura.",
+      fr: "Indiquez le début et la fin souhaités.\nVous pouvez lire et mettre la vidéo en pause puis utiliser les boutons en bas de la vidéo pour copier le temps de lecture.",
+      en: "Input the beginning and end to trim the video.\nYou can play and pause the video, then use the buttons beneath the video to paste the playback time.",
+      oc: "Indicatz la debuta e la fin desirada.\nPodètz legir e metre la video en pausa puèi utilizar los botons en bas de la video per copiar lo temps de lectura.",
     },
     playback: {
       fr: "Lecture",
@@ -1456,56 +1429,37 @@ module.exports = (function () {
       de: "Audio und Bild mischen",
     },
     add_sound_video_file: {
-      fr:
-        "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.",
+      fr: "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.",
       en: "Add a <b>sound</b> and a <b>video</b> media to create a new video.",
-      nl:
-        "Open een project en voeg een <b>geluidsbestand</b> en een <b>videobestand</b> toe door op de groene pijl te klikken .<br>Als u exporteert, wordt een nieuwe video gemaakt .<br>Ondersteunde bestandstypen : video en geluid.",
-      oc:
-        "Dubrissètz un projècte e apondètz un mèdia <b>son</b> e un mèdia <b>video</b> en cliquant sus la sageta verda.<br>L’exportacion crearà una novèla video.<br>mèdias acceptats : una video e una pista sonora.",
-      de:
-        "Öffnen Sie ein Projekt und fügen Sie ein Medium hinzu <b>Ton </b>und ein Medium <b>Video</b> durch Klicken auf den grünen Pfeil.<br> Beim Export wird ein neues Video erstellt.<br>Aktzeptierte Medien: ein Vidéo und eine Tonspur.",
+      nl: "Open een project en voeg een <b>geluidsbestand</b> en een <b>videobestand</b> toe door op de groene pijl te klikken .<br>Als u exporteert, wordt een nieuwe video gemaakt .<br>Ondersteunde bestandstypen : video en geluid.",
+      oc: "Dubrissètz un projècte e apondètz un mèdia <b>son</b> e un mèdia <b>video</b> en cliquant sus la sageta verda.<br>L’exportacion crearà una novèla video.<br>mèdias acceptats : una video e una pista sonora.",
+      de: "Öffnen Sie ein Projekt und fügen Sie ein Medium hinzu <b>Ton </b>und ein Medium <b>Video</b> durch Klicken auf den grünen Pfeil.<br> Beim Export wird ein neues Video erstellt.<br>Aktzeptierte Medien: ein Vidéo und eine Tonspur.",
     },
     add_sound_image_file: {
-      fr:
-        "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>image</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une image et une piste sonore.",
+      fr: "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>image</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une image et une piste sonore.",
       en: "Add a <b>sound</b> and an <b>image</b> media to create a new video.",
-      nl:
-        "Open een project en voeg een <b>geluidsbestand</b> en een <b>fotobestand</b> toe door op de groene pijl te klikken .<br>Als u exporteert, wordt een nieuwe video gemaakt .<br>Ondersteunde bestandstypen : foto en geluid.",
-      oc:
-        "Dubrissètz un projècte e apondètz un mèdia <b>son</b> e un mèdia <b>imatge</b> en clicant sus la sageta verda.<br>L’exportacion crearà una novèla video.<br>mèdias acceptats : un imatge e una pista sonora.",
-      de:
-        "Öffnen Sie ein Projekt und fügen Sie ein Medium hinzu <b>Ton </b>und ein Medium <b>Bild</b> durch klicken auf den grünen Pfeil.<br> Beim Export wird ein neues Video erstellt.<br>Aktzeptierte Medien: ein Video und eine Tonspur.",
+      nl: "Open een project en voeg een <b>geluidsbestand</b> en een <b>fotobestand</b> toe door op de groene pijl te klikken .<br>Als u exporteert, wordt een nieuwe video gemaakt .<br>Ondersteunde bestandstypen : foto en geluid.",
+      oc: "Dubrissètz un projècte e apondètz un mèdia <b>son</b> e un mèdia <b>imatge</b> en clicant sus la sageta verda.<br>L’exportacion crearà una novèla video.<br>mèdias acceptats : un imatge e una pista sonora.",
+      de: "Öffnen Sie ein Projekt und fügen Sie ein Medium hinzu <b>Ton </b>und ein Medium <b>Bild</b> durch klicken auf den grünen Pfeil.<br> Beim Export wird ein neues Video erstellt.<br>Aktzeptierte Medien: ein Video und eine Tonspur.",
     },
     add_multiple_videos_files: {
-      fr:
-        "Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> en cliquant sur la flèche verte. Les vidéos seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.",
-      en:
-        "Add multiple <b>videos</b> or <b>images</b> from a project to create a new video.",
-      nl:
-        "Open een project en voeg meerdere <b>video</b>bestanden toe door op de groene pijl te klikken . Video’s worden in volgorde van toevoeging na elkaar geplaatst.<br>Als u exporteert, wordt een nieuwe video gemaakt .<br> Ondersteunde bestandstypen : alleen video’s van hetzelfde formaat.",
-      oc:
-        "Dubrissètz un projècte e apondètz mantunes mèdias <b>video</b> en clicant sus la sageta verda. Las videos seràn mesas cap a cap dins l’òrdre d’apondon.<br>L’exportacion crearà una novèla video.<br>mèdias acceptats : unicament de videos de meteissa talha.",
-      de:
-        "Öffnen Sie ein Projekt und fügen Sie mehrere Medien hinzu<b> Video </b>durch Klicken auf den grünen Pfeil.<br>Beim Export wird ein neues Video erstellt.<br> Akzeptierte Medien: nur Videos der gleichen Größe.",
+      fr: "Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> en cliquant sur la flèche verte. Les vidéos seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.",
+      en: "Add multiple <b>videos</b> or <b>images</b> from a project to create a new video.",
+      nl: "Open een project en voeg meerdere <b>video</b>bestanden toe door op de groene pijl te klikken . Video’s worden in volgorde van toevoeging na elkaar geplaatst.<br>Als u exporteert, wordt een nieuwe video gemaakt .<br> Ondersteunde bestandstypen : alleen video’s van hetzelfde formaat.",
+      oc: "Dubrissètz un projècte e apondètz mantunes mèdias <b>video</b> en clicant sus la sageta verda. Las videos seràn mesas cap a cap dins l’òrdre d’apondon.<br>L’exportacion crearà una novèla video.<br>mèdias acceptats : unicament de videos de meteissa talha.",
+      de: "Öffnen Sie ein Projekt und fügen Sie mehrere Medien hinzu<b> Video </b>durch Klicken auf den grünen Pfeil.<br>Beim Export wird ein neues Video erstellt.<br> Akzeptierte Medien: nur Videos der gleichen Größe.",
     },
     add_one_video_file: {
-      fr:
-        "Ouvrez un projet et ajoutez un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.",
+      fr: "Ouvrez un projet et ajoutez un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.",
       en: "Add a single <b>video</b> and select a filter or an effect to mix.",
-      oc:
-        "Dubrissètz un projècte e apondètz un mèdia <b>video</b> en cliquant sus la sageta verda.<br>L'exportacion crearà una novèla video.",
+      oc: "Dubrissètz un projècte e apondètz un mèdia <b>video</b> en cliquant sus la sageta verda.<br>L'exportacion crearà una novèla video.",
     },
     add_multiple_images: {
-      fr:
-        "Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera una video.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.",
+      fr: "Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera una video.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.",
       en: "Add multiple <b>image</b> medias to create a video.",
-      nl:
-        "Open een project en voeg verschillende <b>foto</b>bestanden toe door op de groene pijl te klikken. Foto’s worden in volgorde van toevoeging na elkaar geplaatst. Exporteer de beelden en pas de schuifsnelheid van de beelden aan.<br>Als u exporteert, wordt een nieuwe video gemaakt .<br> Ondersteunde bestandstypen : enkel fotobetanden. De afmetingen van het eerste beeld bepalen of de uiteindelijke video als portret of landschap is ingedeeld.",
-      oc:
-        "Dubrissètz un projècte e apondètz mantunes mèdias <b>imatge</b> en cliquant sus la sageta verda. Los imatges seràn botats cap a cap dins l’òrdre d’apondon. Exportatz la sequéncia e reglatz la vitessa de desfilament dels imatges.<br>L’exportacion crearà una video.<br>Mèdias acceptats : unicament dels imatges. Las dimensions del primièr imatge determina si la video finala es en retrach o paisatge.",
-      de:
-        "Öffnen Sie ein Projekt und fügen Sie mehrere Medien hinzu<b> Bild </b>durch Klicken auf den grünen Pfeil. Die Bilder werden in der Reihenfolge der Addition aneinandergereiht. Exportieren Sie die Sequenz und stellen Sie die Bildfrequenz ein.<br>Media akzeptiren nur Bilder. Die Abmessungen des ersten Bildes bestimmen ob sich das endgültiege Video in Hoch-oder-Querformat befindet.",
+      nl: "Open een project en voeg verschillende <b>foto</b>bestanden toe door op de groene pijl te klikken. Foto’s worden in volgorde van toevoeging na elkaar geplaatst. Exporteer de beelden en pas de schuifsnelheid van de beelden aan.<br>Als u exporteert, wordt een nieuwe video gemaakt .<br> Ondersteunde bestandstypen : enkel fotobetanden. De afmetingen van het eerste beeld bepalen of de uiteindelijke video als portret of landschap is ingedeeld.",
+      oc: "Dubrissètz un projècte e apondètz mantunes mèdias <b>imatge</b> en cliquant sus la sageta verda. Los imatges seràn botats cap a cap dins l’òrdre d’apondon. Exportatz la sequéncia e reglatz la vitessa de desfilament dels imatges.<br>L’exportacion crearà una video.<br>Mèdias acceptats : unicament dels imatges. Las dimensions del primièr imatge determina si la video finala es en retrach o paisatge.",
+      de: "Öffnen Sie ein Projekt und fügen Sie mehrere Medien hinzu<b> Bild </b>durch Klicken auf den grünen Pfeil. Die Bilder werden in der Reihenfolge der Addition aneinandergereiht. Exportieren Sie die Sequenz und stellen Sie die Bildfrequenz ein.<br>Media akzeptiren nur Bilder. Die Abmessungen des ersten Bildes bestimmen ob sich das endgültiege Video in Hoch-oder-Querformat befindet.",
     },
     style: {
       fr: "style",
@@ -1530,10 +1484,8 @@ module.exports = (function () {
       fr: "Écrivez ici du code CSS, <br>par exemple <code>color: blue;</code>",
       en: "Write here some CSS code, <br>for example <code>color: blue;</code>",
       nl: "Noteer hier CSS code, <br>bijvoorbeeld <code>color: blue;</code>",
-      oc:
-        "Escrigatz aicí de còde CSS, <br>per exemple <code>color: blau;</code>",
-      de:
-        "Schreiben sie hier CSS Code,<br>zum Beispiel<code >Farbe:blau;</code>",
+      oc: "Escrigatz aicí de còde CSS, <br>per exemple <code>color: blau;</code>",
+      de: "Schreiben sie hier CSS Code,<br>zum Beispiel<code >Farbe:blau;</code>",
     },
     framerate: {
       fr: "images par seconde",
@@ -1674,12 +1626,9 @@ module.exports = (function () {
       oc: "Se deconnectar",
     },
     login_to_access: {
-      fr:
-        "Identifiez vous en créant un auteur ou en cliquant sur votre nom si c’est déjà fait !",
-      en:
-        "Login by creating an author or clicking or your name to access do•doc.",
-      oc:
-        "Identificatz-vos en creant un autor o en cliquant sus vòstre nom si es ja fach !",
+      fr: "Identifiez vous en créant un auteur ou en cliquant sur votre nom si c’est déjà fait !",
+      en: "Login by creating an author or clicking or your name to access do•doc.",
+      oc: "Identificatz-vos en creant un autor o en cliquant sus vòstre nom si es ja fach !",
     },
     login_to_post: {
       fr: "Identifiez-vous pour envoyer un message",
@@ -1697,28 +1646,18 @@ module.exports = (function () {
       oc: "Iden    tificatz vos per crear un subjècte",
     },
     adding_password_warning: {
-      fr:
-        "Attention ! Si vous ajoutez ou modifiez un mot de passe tous les utilisateurs qui y sont actuellement connectés devront le renseigner avant de pouvoir continuer à contribuer.",
-      en:
-        "Warning! Adding or changing the password will disconnect all users until they enter the new password.",
-      nl:
-        "Opgelet! Als u een wachtwoord toevoegt of wijzigt, moeten alle gebruikers die er momenteel mee verbonden zijn dit invoeren voordat ze een bijdrage kunnen blijven leveren..",
-      oc:
-        "Avisa ! Si volètz apondre o modificar un mot de Santa-Clara totes los utilizaires que i son ara conectats deuràn l'entresenhar abans que de poder continuar.",
-      de:
-        "Achtung! Wenn Sie en Passwort hinzufügen oder ändern, müssen ihn alle derzeit eingeloggten Benutzer informieren, bevor sie weiterhin Beiträge leisten können.",
+      fr: "Attention ! Si vous ajoutez ou modifiez un mot de passe tous les utilisateurs qui y sont actuellement connectés devront le renseigner avant de pouvoir continuer à contribuer.",
+      en: "Warning! Adding or changing the password will disconnect all users until they enter the new password.",
+      nl: "Opgelet! Als u een wachtwoord toevoegt of wijzigt, moeten alle gebruikers die er momenteel mee verbonden zijn dit invoeren voordat ze een bijdrage kunnen blijven leveren..",
+      oc: "Avisa ! Si volètz apondre o modificar un mot de Santa-Clara totes los utilizaires que i son ara conectats deuràn l'entresenhar abans que de poder continuar.",
+      de: "Achtung! Wenn Sie en Passwort hinzufügen oder ändern, müssen ihn alle derzeit eingeloggten Benutzer informieren, bevor sie weiterhin Beiträge leisten können.",
     },
     removing_password_warning: {
-      fr:
-        "Si vous retirez le mot de passe tous les utilisateurs qui ont accès à do•doc pourront modifier le projet.",
-      en:
-        "Removing the password for this project will allow everyone to access, edit and delete it.",
-      nl:
-        "Als u het wachtwoord verwijdert, kunnen alle gebruikers die toegang hebben tot do•doc het project wijzigen.",
-      oc:
-        "Si tiratz lo mot de Santa-Clara totes los utilizaires qu'an accès a do•doc poiràn modificar lo projècte.",
-      de:
-        "Wenn Sie das Passwort entfernen, können alle Benutzer, die Zugriff auf do•doc haben, das Projekt bearbeiten.",
+      fr: "Si vous retirez le mot de passe tous les utilisateurs qui ont accès à do•doc pourront modifier le projet.",
+      en: "Removing the password for this project will allow everyone to access, edit and delete it.",
+      nl: "Als u het wachtwoord verwijdert, kunnen alle gebruikers die toegang hebben tot do•doc het project wijzigen.",
+      oc: "Si tiratz lo mot de Santa-Clara totes los utilizaires qu'an accès a do•doc poiràn modificar lo projècte.",
+      de: "Wenn Sie das Passwort entfernen, können alle Benutzer, die Zugriff auf do•doc haben, das Projekt bearbeiten.",
     },
     help: {
       fr: "Aide",
@@ -1733,12 +1672,9 @@ module.exports = (function () {
       oc: "Adreiça mail",
     },
     email_instructions: {
-      fr:
-        "Optionnel. Sera uniquement utilisé pour vous notifier d’un message sur do•doc et ne sera pas visible aux autres utilisateurs à l’exception des administrateurs.",
-      en:
-        "Optional. Will only be used to let you know of a new personal message, and will never be shown to other users except for administrators.",
-      oc:
-        "Opcional. Serà unicament utilizat per vos notificar qu'un messatge sus do•doc e serà pas visible pels autres utilizaires manca pels administrators.",
+      fr: "Optionnel. Sera uniquement utilisé pour vous notifier d’un message sur do•doc et ne sera pas visible aux autres utilisateurs à l’exception des administrateurs.",
+      en: "Optional. Will only be used to let you know of a new personal message, and will never be shown to other users except for administrators.",
+      oc: "Opcional. Serà unicament utilizat per vos notificar qu'un messatge sus do•doc e serà pas visible pels autres utilizaires manca pels administrators.",
     },
     date: {
       fr: "Date",
@@ -1773,12 +1709,9 @@ module.exports = (function () {
       de: "NFC Tag",
     },
     nfc_tag_instructions: {
-      fr:
-        "Vous pouvez associer un tag NFC (un carte, une pastille, etc.) à un auteur à l’aide d’un boitier compatible à brancher en USB, pour utiliser un objet pour vous identifier.",
-      en:
-        "You can pair a NFC tag (a card, a badge, etc.) to an author using a device connected via USB, to login using an object.",
-      oc:
-        "Podètz associar un tag NFC (una carta, una pastilha, etc.) a un autor amb l'ajuda d'un bostièr compatible a brancar en USB per utilizar un objècte per vos identificar.",
+      fr: "Vous pouvez associer un tag NFC (un carte, une pastille, etc.) à un auteur à l’aide d’un boitier compatible à brancher en USB, pour utiliser un objet pour vous identifier.",
+      en: "You can pair a NFC tag (a card, a badge, etc.) to an author using a device connected via USB, to login using an object.",
+      oc: "Podètz associar un tag NFC (una carta, una pastilha, etc.) a un autor amb l'ajuda d'un bostièr compatible a brancar en USB per utilizar un objècte per vos identificar.",
     },
     pair_a_nfc_tag: {
       fr: "Associer un tag NFC",
@@ -1832,46 +1765,31 @@ module.exports = (function () {
       oc: "Retirar la data de publicacion",
     },
     alreadyAnsweredThatModel: {
-      fr:
-        "Vous avez déjà répondu à ce modèle, êtes-vous sur de vouloir y répondre à nouveau ?",
-      en:
-        "You have already replied to this model, would you like to reply again?",
-      oc:
-        "Avètz ja respondut a aquel modèl, sètz segur d'i voler respondre tornar mai ?",
+      fr: "Vous avez déjà répondu à ce modèle, êtes-vous sur de vouloir y répondre à nouveau ?",
+      en: "You have already replied to this model, would you like to reply again?",
+      oc: "Avètz ja respondut a aquel modèl, sètz segur d'i voler respondre tornar mai ?",
     },
     sureToRemoveYourselfFromAuthors: {
-      fr:
-        "Êtes-vous sûr de vouloir vous retirer de la liste des auteurs ? Vous ne pourrez plus modifier ce contenu.",
-      en:
-        "Do you really want to remove yourself from the list of authors? You won’t be able to edit this content anymore.",
-      oc:
-        "Sètz segur de vos voler retirar de la tièra dels autors ? Poiretz pas pus modificar aqueste contengut.",
+      fr: "Êtes-vous sûr de vouloir vous retirer de la liste des auteurs ? Vous ne pourrez plus modifier ce contenu.",
+      en: "Do you really want to remove yourself from the list of authors? You won’t be able to edit this content anymore.",
+      oc: "Sètz segur de vos voler retirar de la tièra dels autors ? Poiretz pas pus modificar aqueste contengut.",
     },
     sureToLockAndPublish: {
-      fr:
-        "Êtes-vous sûr de vouloir publier ce récit ? Vous ne pourrez plus le modifier.",
-      en:
-        "Do you really want to publish this story? You won’t be able to edit anymore.",
-      oc:
-        "Sètz segur de voler publicar aqueste raconte ? Poiretz pas pus lo modificar",
+      fr: "Êtes-vous sûr de vouloir publier ce récit ? Vous ne pourrez plus le modifier.",
+      en: "Do you really want to publish this story? You won’t be able to edit anymore.",
+      oc: "Sètz segur de voler publicar aqueste raconte ? Poiretz pas pus lo modificar",
     },
     sureToRemoveAuthor: {
-      fr:
-        "Êtes-vous sûr de vouloir supprimer cet auteur ? Tous les médias, projets et recettes associés seront conservés.",
-      en:
-        "Do you really want to delete this author? All medias, projects and recipes will be kept.",
+      fr: "Êtes-vous sûr de vouloir supprimer cet auteur ? Tous les médias, projets et recettes associés seront conservés.",
+      en: "Do you really want to delete this author? All medias, projects and recipes will be kept.",
       nl: "Weet u zeker dat u deze auteur wilt verwijderen ?",
-      oc:
-        "Sètz segur de voler suprimir aqueste autor ? Totes los mèdias, projèctes e recèptas associadas seràn servadas.",
+      oc: "Sètz segur de voler suprimir aqueste autor ? Totes los mèdias, projèctes e recèptas associadas seràn servadas.",
       de: "Sind Sie sicher, dass Sie diesen Autor löschen wollen?",
     },
     sureToRemovePlaceholder: {
-      fr:
-        "Êtes-vous sûr de vouloir supprimer ce bloc éditable ? Cela supprimera également tous les contenus ajoutés par des contributeurs dans d’autres ",
-      en:
-        "Do you really want to remove this editable block? This will also remove all content added in this block in recipe following this model.",
-      oc:
-        "Sètz segur de voler suprimir aquest blòc editable ? Aquò suprimirà tanben totes os contenguts aponduts per de contributors dins d'autres",
+      fr: "Êtes-vous sûr de vouloir supprimer ce bloc éditable ? Cela supprimera également tous les contenus ajoutés par des contributeurs dans d’autres ",
+      en: "Do you really want to remove this editable block? This will also remove all content added in this block in recipe following this model.",
+      oc: "Sètz segur de voler suprimir aquest blòc editable ? Aquò suprimirà tanben totes os contenguts aponduts per de contributors dins d'autres",
     },
     sure_to_remove_chat: {
       fr: "Êtes-vous sûr de vouloir supprimer ce sujet et tout son contenu ?",
@@ -1879,12 +1797,9 @@ module.exports = (function () {
       oc: "Sètz segur de voler suprimir aqueste subjècte e tot son contengut ?",
     },
     sure_to_leave_recording: {
-      fr:
-        "Êtes-vous sûr de vouloir sortir du panneau de capture ? Si oui l’enregistrement en cours ne sera pas conservé.",
-      en:
-        "Do you really want to leave the capture panel? If yes then this recording will be discarded.",
-      oc:
-        "Sètz segur de voler sortir del panèu de captura ? Si òc l'enregistrament en cors serà pas servat.",
+      fr: "Êtes-vous sûr de vouloir sortir du panneau de capture ? Si oui l’enregistrement en cours ne sera pas conservé.",
+      en: "Do you really want to leave the capture panel? If yes then this recording will be discarded.",
+      oc: "Sètz segur de voler sortir del panèu de captura ? Si òc l'enregistrament en cors serà pas servat.",
     },
     sure_to_remove_stopmotion: {
       fr: "Êtes-vous sûr de vouloir supprimer cette animation ?",
@@ -1929,8 +1844,7 @@ module.exports = (function () {
     },
     changes_not_saved_sureToCloseModal: {
       fr: "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
-      en:
-        "All changes were not saved. Do you really want to close this window?",
+      en: "All changes were not saved. Do you really want to close this window?",
       nl: "Er zijn wijzigingen gebeurd , wilt u deze opslaan?",
       oc: "De modificacions se faguèron, desiratz de las enregistrar ?",
       de: "Änderungen wurden vorgenommen, wollen Sie sie speichern?",
@@ -1977,24 +1891,16 @@ module.exports = (function () {
       de: "Sind sie sicher dass sie diese Publikation löschen möchten ?",
     },
     publiHasPubliRelyingOnItCantDelete: {
-      fr:
-        "Ce modèle est utilisé comme référence par une ou plusieurs recettes réponses et ne peut donc pas être supprimé.",
-      en:
-        "This model is used by one or more reply recipes and cannot be deleted as long as this is the case.",
-      oc:
-        "Aqueste modèl es utilizat coma referéncia per una o mantunas recèptas responsas e pòt pas doncas èsser suprimidas",
+      fr: "Ce modèle est utilisé comme référence par une ou plusieurs recettes réponses et ne peut donc pas être supprimé.",
+      en: "This model is used by one or more reply recipes and cannot be deleted as long as this is the case.",
+      oc: "Aqueste modèl es utilizat coma referéncia per una o mantunas recèptas responsas e pòt pas doncas èsser suprimidas",
     },
     sure_to_cancel_stopmotion: {
-      fr:
-        "Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu <i>Liste des animations</i>",
-      en:
-        "Do you really want to cancel this stopmotion? You can resume making it by clicking on <i>Stopmotion list</i>",
-      nl:
-        "Weet je zeker dat je deze animatie wilt stoppen? U kunt het terugvinden in het menu <i>Lijst van animaties</i>.",
-      oc:
-        "Sètz segur de voler arestar aquesta animacion ? La poiretz tornar trobar dins lo menut <i>Tièra de las animacions<i>",
-      de:
-        "Sind Sie sicher, dass Sie diese Animation stoppen wollen? Sie finden sie im Menü <i>Liste der Animationen<i>",
+      fr: "Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu <i>Liste des animations</i>",
+      en: "Do you really want to cancel this stopmotion? You can resume making it by clicking on <i>Stopmotion list</i>",
+      nl: "Weet je zeker dat je deze animatie wilt stoppen? U kunt het terugvinden in het menu <i>Lijst van animaties</i>.",
+      oc: "Sètz segur de voler arestar aquesta animacion ? La poiretz tornar trobar dins lo menut <i>Tièra de las animacions<i>",
+      de: "Sind Sie sicher, dass Sie diese Animation stoppen wollen? Sie finden sie im Menü <i>Liste der Animationen<i>",
     },
     validate_media: {
       fr: "Valider le média",
@@ -2063,20 +1969,14 @@ module.exports = (function () {
       oc: "Escapol",
     },
     video_export_draft_instructions: {
-      fr:
-        "Ce mode permet de rapidement créer le résultat d’un recette pour tester le rythme et les niveaux sonores, au détriment de la qualité de l’image. La vidéo résultante ne pourra pas être enregistré.",
-      en:
-        "This mode is the most convenient to test the rythm and the audio levels, with a mediocre image quality. The resulting video cannot be saved.",
-      oc:
-        "Aqueste mòde permet de crear rapidament la resulta d'una recèpta per testar lo ritme e los nivèls sonòrs, al detriment de la qualitat de l'imatge. La video resultanta poirà pas èsser enregistrada.",
+      fr: "Ce mode permet de rapidement créer le résultat d’un recette pour tester le rythme et les niveaux sonores, au détriment de la qualité de l’image. La vidéo résultante ne pourra pas être enregistré.",
+      en: "This mode is the most convenient to test the rythm and the audio levels, with a mediocre image quality. The resulting video cannot be saved.",
+      oc: "Aqueste mòde permet de crear rapidament la resulta d'una recèpta per testar lo ritme e los nivèls sonòrs, al detriment de la qualitat de l'imatge. La video resultanta poirà pas èsser enregistrada.",
     },
     video_export_custom_quality_instructions: {
-      fr:
-        "Réglez ci-dessous la largeur × la hauteur, en pixels. Utilisez uniquement des valeurs entières et paires.",
-      en:
-        "Set custom width × height in the following fields, in pixels. Use only whole, even values.",
-      oc:
-        "Reglatz çai-jos la larjor x la nautor en pixels. Utilizatz pas que de valors entièras e paras.",
+      fr: "Réglez ci-dessous la largeur × la hauteur, en pixels. Utilisez uniquement des valeurs entières et paires.",
+      en: "Set custom width × height in the following fields, in pixels. Use only whole, even values.",
+      oc: "Reglatz çai-jos la larjor x la nautor en pixels. Utilizatz pas que de valors entièras e paras.",
     },
     showing: {
       fr: "Affichage de",
@@ -2097,15 +1997,11 @@ module.exports = (function () {
       en: "Remove all filters to show everything",
     },
     no_projects_yet: {
-      fr:
-        "Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc !",
+      fr: "Il n’y a pas encore de projet, créez-en un pour commencer à utiliser do•doc !",
       en: "No projects yet, create one to start using do•doc!",
-      nl:
-        "Er is nog geen project, maak er een aan om do•doc in gebruik te nemen!",
-      oc:
-        "Pas de projèctes encara, creatz-ne un per començar d'utilizar do•doc !",
-      de:
-        "Es gibt noch kein Projekt, erstellen Sie eines, um mit der Arbeit zu beginnen",
+      nl: "Er is nog geen project, maak er een aan om do•doc in gebruik te nemen!",
+      oc: "Pas de projèctes encara, creatz-ne un per començar d'utilizar do•doc !",
+      de: "Es gibt noch kein Projekt, erstellen Sie eines, um mit der Arbeit zu beginnen",
     },
     projects_of: {
       fr: "projets sur",
@@ -2383,8 +2279,7 @@ module.exports = (function () {
       en: "Webpage made with do•doc, a free and open-source app",
       nl: "Webpagina gerealiseerd met de gratis applicatie do•doc",
       oc: "Pagina web creada amb l'aplicacion liura e gratuita do•doc",
-      de:
-        "Webseite erstellt mit der kostenlosen und quelloffenen Anwendung do•doc",
+      de: "Webseite erstellt mit der kostenlosen und quelloffenen Anwendung do•doc",
     },
     loading: {
       fr: "chargement",
@@ -2601,12 +2496,9 @@ module.exports = (function () {
       oc: "Talha de la polissa",
     },
     import_medias_from_projects_or_create_shapes_here: {
-      fr:
-        "Importez des médias situés dans les projets ou créez des blocs avec les options ci-dessous.",
-      en:
-        "Import medias from projects or create new blocs with the following options.",
-      oc:
-        "Importatz de mèdias situits dins los projèctes o crear de blòcs amb las opcions çai-jos.",
+      fr: "Importez des médias situés dans les projets ou créez des blocs avec les options ci-dessous.",
+      en: "Import medias from projects or create new blocs with the following options.",
+      oc: "Importatz de mèdias situits dins los projèctes o crear de blòcs amb las opcions çai-jos.",
     },
     click_on_a_bloc_to_edit_its_presentation: {
       fr: "Cliquez sur un bloc pour modifier son aspect",
@@ -2614,25 +2506,17 @@ module.exports = (function () {
       oc: "Cliquatz sus un blòc per modificar son aspècte",
     },
     password_instructions: {
-      fr:
-        "Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce contenu.",
-      en:
-        "If set, only users with the password will be able to open this content.",
-      nl:
-        "Indien van toepassing, alleen gebruikers met dit wachtwoord kunnen dit project openen.",
-      oc:
-        "Si existent, sonque los utilizaires tenent aqueste mot de Santa Clara poiràn dubrir aqueste projècte.",
-      de:
-        "Wenn vorhanden, können nur Benutzer mit diesem Passwort dieses Projekt öffnen",
+      fr: "Si existant, seul les utilisateurs possédant ce mot de passe pourront ouvrir ce contenu.",
+      en: "If set, only users with the password will be able to open this content.",
+      nl: "Indien van toepassing, alleen gebruikers met dit wachtwoord kunnen dit project openen.",
+      oc: "Si existent, sonque los utilizaires tenent aqueste mot de Santa Clara poiràn dubrir aqueste projècte.",
+      de: "Wenn vorhanden, können nur Benutzer mit diesem Passwort dieses Projekt öffnen",
     },
     author_instructions: {
-      fr:
-        "Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
+      fr: "Pour créer des auteurs, fermez cette fenêtre et cliquez sur le bouton (AUTEURS).",
       en: "To create authors, close this window and click on (AUTHORS).",
-      nl:
-        "Om auteurs aan te maken, sluit dit venster en klik op de knop (AUTEURS).",
-      oc:
-        "Per crear d'autors, clavatz aquesta fenèstra e clicatz sul boton (AUTORS).",
+      nl: "Om auteurs aan te maken, sluit dit venster en klik op de knop (AUTEURS).",
+      oc: "Per crear d'autors, clavatz aquesta fenèstra e clicatz sul boton (AUTORS).",
     },
     access_control: {
       fr: "Collaboration",
@@ -2640,38 +2524,25 @@ module.exports = (function () {
       oc: "Collaboracion",
     },
     attached_to_project_instructions: {
-      fr:
-        "Ce champ est utilisé pour retrouver plus facilement les recettes en lien avec un projet.",
-      en:
-        "This information is used only to make it easier to find all the recipes linked to a specific project.",
-      oc:
-        "Aqueste camp es utilizat per trapar mai aisidament las recèptas en ligam amb lo projècte.",
+      fr: "Ce champ est utilisé pour retrouver plus facilement les recettes en lien avec un projet.",
+      en: "This information is used only to make it easier to find all the recipes linked to a specific project.",
+      oc: "Aqueste camp es utilizat per trapar mai aisidament las recèptas en ligam amb lo projècte.",
     },
     translate_dodoc_instructions: {
-      fr:
-        "Pour proposer une nouvelle traduction, rendez-vous sur le <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum dédié</a> ou contactez-nous par mail : <a href='mailto:info@latelier-des-chercheurs.fr?subject=traduire%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
-      en:
-        "To translate do•doc, consult the following <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum post (in french)</a> or get in touch via email: <a href='mailto:info@latelier-des-chercheurs.fr?subject=translate%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
-      oc:
-        "Per prepausar una novèla traduccion rendètz-vos sus <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum dedicat</a> o nos contactar per mail : <a href='mailto:info@latelier-des-chercheurs.fr?subject=traduire%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
+      fr: "Pour proposer une nouvelle traduction, rendez-vous sur le <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum dédié</a> ou contactez-nous par mail : <a href='mailto:info@latelier-des-chercheurs.fr?subject=traduire%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
+      en: "To translate do•doc, consult the following <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum post (in french)</a> or get in touch via email: <a href='mailto:info@latelier-des-chercheurs.fr?subject=translate%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
+      oc: "Per prepausar una novèla traduccion rendètz-vos sus <a href='https://forum.latelier-des-chercheurs.fr/t/traduire-do-doc-comment-s-y-prendre/' class='js--openInBrowser' target='_blank'>forum dedicat</a> o nos contactar per mail : <a href='mailto:info@latelier-des-chercheurs.fr?subject=traduire%20do•doc' class='js--openInBrowser' target='_blank'>info@latelier-des-chercheurs.fr</a>.",
     },
     when_logged_as_author_content_will_be_tagged: {
-      fr:
-        "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes que vous créez porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
-      en:
-        "When logged in as an author all projects, medias and recipes you create will be tagged with your name.",
-      oc:
-        "Quand sètz identificatz coma autor totes los projèctes, mèdias e recèptas que creatz portaràn vòstre nom. Sonque vos los poiretz modificar o suprimir.",
+      fr: "Lorsque vous êtes identifié comme auteur tous les projets, médias et recettes que vous créez porteront votre nom. Vous seul pourrez les modifier ou les supprimez.",
+      en: "When logged in as an author all projects, medias and recipes you create will be tagged with your name.",
+      oc: "Quand sètz identificatz coma autor totes los projèctes, mèdias e recèptas que creatz portaràn vòstre nom. Sonque vos los poiretz modificar o suprimir.",
     },
     more_informations_on_authors: {
-      fr:
-        "Vous pourrez ajouter d’autres co-auteurs directement dans les projets, médias et recettes. Si vous supprimez un auteur, tous les médias, projets et recettes conserveront le nom d’auteur et ne seront pas supprimées.",
-      en:
-        "You can add co-authors in the projects, medias and recipes. If you remove an author, all the projects, medias and recipes will keep this author name and won’t be removed.",
-      oc:
-        "Poiretz apondre d'autres co-autors directament dins los projèctes, mèdias e recèptas. Si suprimissètz un autor, totes los mèdias, projèctes e recèptas servaràn lo nom d'autor e seràn pas suprimidas.",
-      de:
-        "Sie können weitere Co-Autoren direkt in Projekte, Medien und Rezepte eintragen. Wenn Sie einen Autor entfernen, behalten alle Medien, Projekte und Rezepte den Namen des Autors und werden nicht gelöscht.",
+      fr: "Vous pourrez ajouter d’autres co-auteurs directement dans les projets, médias et recettes. Si vous supprimez un auteur, tous les médias, projets et recettes conserveront le nom d’auteur et ne seront pas supprimées.",
+      en: "You can add co-authors in the projects, medias and recipes. If you remove an author, all the projects, medias and recipes will keep this author name and won’t be removed.",
+      oc: "Poiretz apondre d'autres co-autors directament dins los projèctes, mèdias e recèptas. Si suprimissètz un autor, totes los mèdias, projèctes e recèptas servaràn lo nom d'autor e seràn pas suprimidas.",
+      de: "Sie können weitere Co-Autoren direkt in Projekte, Medien und Rezepte eintragen. Wenn Sie einen Autor entfernen, behalten alle Medien, Projekte und Rezepte den Namen des Autors und werden nicht gelöscht.",
     },
     sort_by: {
       fr: "Organiser par",
@@ -2917,16 +2788,11 @@ module.exports = (function () {
       oc: "Sageta",
     },
     toconnectwithanotherdevice: {
-      fr:
-        "Pour accéder à cet élément avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web, ou bien scannez le code QR&nbsp;: ",
-      en:
-        "To access this do•doc element with another device, first connect it to the same wifi network, then type this adress in your browser or scan this QR code:",
-      nl:
-        "Om dit item met een ander apparaat te openen , maak verbinding met hetzelfde wifi-netwerk en voer vervolgens de volgende URL in een webbrowser in, of scan de QR-code: ",
-      oc:
-        "Per accedir aqueste element amb un autre aparelh, conectatz-vos al meteis ret wifi puèi dintratz l'url seguenta dins un navigador web, o escanerizatz lo còdi QR :",
-      de:
-        "Um mit einem anderen Gerät auf dieses Element zuzugreifen, verbinden Sie sich zum gleichen Wifi-Netzwerk und geben Sie die folgende Url in einem Webbrowser ein oder scannen Sie den Code QR :",
+      fr: "Pour accéder à cet élément avec un autre appareil, connectez vous au même réseau wifi puis entrez l’url suivante dans un navigateur web, ou bien scannez le code QR&nbsp;: ",
+      en: "To access this do•doc element with another device, first connect it to the same wifi network, then type this adress in your browser or scan this QR code:",
+      nl: "Om dit item met een ander apparaat te openen , maak verbinding met hetzelfde wifi-netwerk en voer vervolgens de volgende URL in een webbrowser in, of scan de QR-code: ",
+      oc: "Per accedir aqueste element amb un autre aparelh, conectatz-vos al meteis ret wifi puèi dintratz l'url seguenta dins un navigador web, o escanerizatz lo còdi QR :",
+      de: "Um mit einem anderen Gerät auf dieses Element zuzugreifen, verbinden Sie sich zum gleichen Wifi-Netzwerk und geben Sie die folgende Url in einem Webbrowser ein oder scannen Sie den Code QR :",
     },
     sureToRemoveProject: {
       fr: "Êtes-vous sûr de vouloir supprimer ce projet ?",
@@ -3019,16 +2885,11 @@ module.exports = (function () {
       de: "Aktualisieren",
     },
     more_information: {
-      fr:
-        "Pour plus d’information, consultez la <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation</a> ou <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contactez</a> les auteurs de ce logiciel.",
-      en:
-        "For more informations, read the <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation (in french)</a> or <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contact</a> the creators of this app.",
-      nl:
-        "Voor meer informatie. , bezoek <a href='https://latelierdes-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentatie</a> ou <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contacteer</a> de auteurs van dit programma.",
-      oc:
-        "Per mai d’informacions, consultatz la <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation</a> o <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contactatz</a> los autors d'aqueste logicial.",
-      de:
-        "Für mehr Informationen schauen sie bei <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>Dokumentation (auf Französisch)</a> oder <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>kontaktieren Sie </a> die Autoren dieser Software.",
+      fr: "Pour plus d’information, consultez la <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation</a> ou <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contactez</a> les auteurs de ce logiciel.",
+      en: "For more informations, read the <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation (in french)</a> or <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contact</a> the creators of this app.",
+      nl: "Voor meer informatie. , bezoek <a href='https://latelierdes-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentatie</a> ou <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contacteer</a> de auteurs van dit programma.",
+      oc: "Per mai d’informacions, consultatz la <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>documentation</a> o <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>contactatz</a> los autors d'aqueste logicial.",
+      de: "Für mehr Informationen schauen sie bei <a href='https://latelier-des-chercheurs.fr/docs/manuel-dodoc' class='js--openInBrowser' target='_blank'>Dokumentation (auf Französisch)</a> oder <a href='mailto:info@latelier-des-chercheurs.fr?subject=do•doc' class='js--openInBrowser' target='_blank'>kontaktieren Sie </a> die Autoren dieser Software.",
     },
     no_images_to_show: {
       fr: "Aucun média image à afficher.",
@@ -3239,51 +3100,32 @@ module.exports = (function () {
       de: "Vorheriger Kreationen",
     },
     export_video_instructions: {
-      fr:
-        "Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la recette.",
+      fr: "Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des vidéos ajoutées à la recette.",
       en: "Click this button to generate a video from multiple source videos.",
-      nl:
-        "Klik op de knop om een video te maken van de video’s die aan de publicatie zijn toegevoegd.",
-      oc:
-        "Clicatz sul boton per lançar la creacion d'una sola video a partir de las videos apondudas a la recèpta.",
-      de:
-        "Klicken Sie auf die Schaltfläche um mit der Erstellung eines einzelnen Vidéos aus den Vidéos zu beginnen die der Veröffentlichung hinzugefügt wurden",
+      nl: "Klik op de knop om een video te maken van de video’s die aan de publicatie zijn toegevoegd.",
+      oc: "Clicatz sul boton per lançar la creacion d'una sola video a partir de las videos apondudas a la recèpta.",
+      de: "Klicken Sie auf die Schaltfläche um mit der Erstellung eines einzelnen Vidéos aus den Vidéos zu beginnen die der Veröffentlichung hinzugefügt wurden",
     },
     export_audio_video_mix_instructions: {
-      fr:
-        "Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de la vidéo sélectionnés.",
-      en:
-        "Click this button to generate a video from the sound and video selected.",
-      nl:
-        "Klik op de knop om een video te maken van het geselecteerde geluid en de geselecteerde video.",
-      oc:
-        "Clicar sul boton per lançar la creacion d'una video dins dels son e de la video seleccionats.",
-      de:
-        "Klicken Sie auf auf die Schaltfläche um die Erstellung eines Videos aus dem gewählten Ton und Video zu beginnen.",
+      fr: "Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de la vidéo sélectionnés.",
+      en: "Click this button to generate a video from the sound and video selected.",
+      nl: "Klik op de knop om een video te maken van het geselecteerde geluid en de geselecteerde video.",
+      oc: "Clicar sul boton per lançar la creacion d'una video dins dels son e de la video seleccionats.",
+      de: "Klicken Sie auf auf die Schaltfläche um die Erstellung eines Videos aus dem gewählten Ton und Video zu beginnen.",
     },
     export_audio_image_mix_instructions: {
-      fr:
-        "Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de l’image sélectionnés.",
-      en:
-        "Click this button to generate a video from the sound and image selected.",
-      nl:
-        "Klik op de knop om een video te maken van het geselecteerde geluid en het geselecteerde beeld.",
-      oc:
-        "Clicar sul boton per lançar la creacion d'una video dins dels son e de l'imatge seleccionats.",
-      de:
-        "Klicken Sie auf die Schaltfläche um die Erstellung eines Videos aus dem gewählten Ton und Bild zu starten.",
+      fr: "Cliquez sur le bouton pour lancer la création d’une vidéo à partir du son et de l’image sélectionnés.",
+      en: "Click this button to generate a video from the sound and image selected.",
+      nl: "Klik op de knop om een video te maken van het geselecteerde geluid en het geselecteerde beeld.",
+      oc: "Clicar sul boton per lançar la creacion d'una video dins dels son e de l'imatge seleccionats.",
+      de: "Klicken Sie auf die Schaltfläche um die Erstellung eines Videos aus dem gewählten Ton und Bild zu starten.",
     },
     export_stopmotion_instructions: {
-      fr:
-        "Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la recette.",
-      en:
-        "Click this button to generate a video from images you have selected.",
-      nl:
-        "Klik op de knop om een video te maken van de afbeeldingen die aan de publicatie zijn toegevoegd.",
-      oc:
-        "Cliquar sul boton per lançar la creacion d'una sola video en partir dels imatges aponduts a la recèpta.",
-      de:
-        "Klicken Sie auf die Schaltfläche, um die Erstellung eines einzelnen Videos aus den zur Veröffentlichung hinzugefügten Bildern zu starten.",
+      fr: "Cliquez sur le bouton pour lancer la création d’une seule vidéo à partir des images ajoutées à la recette.",
+      en: "Click this button to generate a video from images you have selected.",
+      nl: "Klik op de knop om een video te maken van de afbeeldingen die aan de publicatie zijn toegevoegd.",
+      oc: "Cliquar sul boton per lançar la creacion d'una sola video en partir dels imatges aponduts a la recèpta.",
+      de: "Klicken Sie auf die Schaltfläche, um die Erstellung eines einzelnen Videos aus den zur Veröffentlichung hinzugefügten Bildern zu starten.",
     },
     make_video: {
       fr: "Fabriquer une vidéo",
@@ -3329,28 +3171,18 @@ module.exports = (function () {
       de: "Exporterstellung",
     },
     get_pdf: {
-      fr:
-        "Pour récupérer un document PDF ou une image de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
-      en:
-        "To download a PDF or an image of this recipe (for example, to print it), click here:",
-      nl:
-        "Als u een PDF van deze publicatie wilt maken (bijvoorbeeld om deze af te drukken), klik op de knop hieronder:",
-      oc:
-        "Per recuperar un PDF d'aquesta recèpta (per exemple per l'estampar), cliquatz sul boton çai-jos :",
-      de:
-        "Um ein PDF dieser Veröffentlichung zu erhalten (z.B.um es auszudrucken), klicken Sie auf die Schaltfläche unten.",
+      fr: "Pour récupérer un document PDF ou une image de cette recette (par exemple pour l’imprimer), cliquez sur le bouton ci-dessous&nbsp;:",
+      en: "To download a PDF or an image of this recipe (for example, to print it), click here:",
+      nl: "Als u een PDF van deze publicatie wilt maken (bijvoorbeeld om deze af te drukken), klik op de knop hieronder:",
+      oc: "Per recuperar un PDF d'aquesta recèpta (per exemple per l'estampar), cliquatz sul boton çai-jos :",
+      de: "Um ein PDF dieser Veröffentlichung zu erhalten (z.B.um es auszudrucken), klicken Sie auf die Schaltfläche unten.",
     },
     get_website: {
-      fr:
-        "Pour récupérer un site web contenant cette recette (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:",
-      en:
-        "To download a website version of this recipe (for example, to publish online), click here:",
-      nl:
-        "Als u een website van deze publicatie wilt maken (bijvoorbeeld om deze online te delen), klikt u op de knop hieronder:",
-      oc:
-        "Per recuperar un sit web contenent aquesta recèpta (per exemple per la difusar en linha), clicatz sul boton çai-jos :",
-      de:
-        "Um eine Webseite mit dieser Veröffentlichung abzurufen (z. B um sie online zu verteilen ), klicken Sie auf die Schaltfläche unten.",
+      fr: "Pour récupérer un site web contenant cette recette (par exemple pour la diffuser en ligne), cliquez sur le bouton ci-dessous&nbsp;:",
+      en: "To download a website version of this recipe (for example, to publish online), click here:",
+      nl: "Als u een website van deze publicatie wilt maken (bijvoorbeeld om deze online te delen), klikt u op de knop hieronder:",
+      oc: "Per recuperar un sit web contenent aquesta recèpta (per exemple per la difusar en linha), clicatz sul boton çai-jos :",
+      de: "Um eine Webseite mit dieser Veröffentlichung abzurufen (z. B um sie online zu verteilen ), klicken Sie auf die Schaltfläche unten.",
     },
     download_website: {
       fr: "Télécharger une version web",
@@ -3432,12 +3264,9 @@ module.exports = (function () {
       oc: "Aquesta recèpta es un modèl",
     },
     publi_is_model_instructions: {
-      fr:
-        "Si actif, cette recette pourra être utilisée comme référence lors de la création d’autres recettes.",
-      en:
-        "If enabled, this recipe can be selected as a model for other recipes to lean on.",
-      oc:
-        "Si actiu, aquesta recèpta poirà èsser utilizada coma referéncia al moment de la creacion d'autras recèptas",
+      fr: "Si actif, cette recette pourra être utilisée comme référence lors de la création d’autres recettes.",
+      en: "If enabled, this recipe can be selected as a model for other recipes to lean on.",
+      oc: "Si actiu, aquesta recèpta poirà èsser utilizada coma referéncia al moment de la creacion d'autras recèptas",
     },
 
     recipes: {
@@ -3450,11 +3279,9 @@ module.exports = (function () {
       oc: "Recèptas",
     },
     URL_to_share_for_replies: {
-      fr:
-        "Pour générer des réponses basées sur ce modèle, partagez cette adresse",
+      fr: "Pour générer des réponses basées sur ce modèle, partagez cette adresse",
       en: "To generate replies based on this model, share this URL",
-      oc:
-        "Per generar de responsas basadas sus aqueste modèl, partejatz aquesta adreiça",
+      oc: "Per generar de responsas basadas sus aqueste modèl, partejatz aquesta adreiça",
     },
     URL_to_edit_in_simple_interface: {
       fr: "Pour accéder au récit dans l’interface simplifiée",
@@ -3482,12 +3309,9 @@ module.exports = (function () {
       oc: "Fonts distantas",
     },
     connect_to_other_users: {
-      fr:
-        "Accéder à des sources provenant d’autres appareils connectés actuellement à ce do•doc",
-      en:
-        "Connect to sources provided by devices currently connected to this do•doc",
-      oc:
-        "Accedir a de fonts provenent d'autres aparelhs connectats arar a aqueste do•doc",
+      fr: "Accéder à des sources provenant d’autres appareils connectés actuellement à ce do•doc",
+      en: "Connect to sources provided by devices currently connected to this do•doc",
+      oc: "Accedir a de fonts provenent d'autres aparelhs connectats arar a aqueste do•doc",
     },
     connect: {
       fr: "Se connecter",
@@ -3500,11 +3324,9 @@ module.exports = (function () {
       oc: "copar",
     },
     select_publi_model_instructions: {
-      fr:
-        "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",
+      fr: "Si actif, cette recette reprendra les médias et repères placés dans le modèle.",
       en: "If enabled, this recipe will display the model’s medias and guides.",
-      oc:
-        "Si actiu aquesta recèpta tornarà prene los mèdias e repèris plaçats dins lo modèl",
+      oc: "Si actiu aquesta recèpta tornarà prene los mèdias e repèris plaçats dins lo modèl",
     },
     archived: {
       fr: "Archiver",
@@ -3579,10 +3401,8 @@ module.exports = (function () {
       en: "Creates a one-column story to export as a printable PDF or website.",
     },
     story_instructions: {
-      fr:
-        "Cette recette permet de créer un document enchainant les blocs les uns au dessus des autres.",
-      en:
-        "This recipe can be used to create a one-column responsive document.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make books, leaflets, etc.) or a webpage to upload online.",
+      fr: "Cette recette permet de créer un document enchainant les blocs les uns au dessus des autres.",
+      en: "This recipe can be used to create a one-column responsive document.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make books, leaflets, etc.) or a webpage to upload online.",
     },
     carreau: {
       fr: "Carreau",
@@ -3628,20 +3448,14 @@ module.exports = (function () {
       en: "Creates a printable PDF or website to upload online.",
       nl: "Maak een afdrukbare PDF of webpagina om te uploaden.",
       oc: "Crear un PDF estampable o una pagina web de botar en linha.",
-      de:
-        "Eine druckfähige PDF-Datei oder eine Webseite, die Sie online stellen können.",
+      de: "Eine druckfähige PDF-Datei oder eine Webseite, die Sie online stellen können.",
     },
     page_by_page_instructions: {
-      fr:
-        "Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.",
-      en:
-        "This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, leaflets, newspapers, etc.) or a webpage to upload online.",
-      nl:
-        "Met dit recept kunt u een document met een exacte indeling en meerdere pagina’s maken.<br> Ondersteunde media: afbeeldingen, video’s, geluid en tekst.<br>Maak een afdrukbare PDF (om posters, flyers, kranten, enz. te maken) of een webpagina om te uploaden.",
-      oc:
-        "Aquesta recèpta permet de crear un document amb un format precís e mantunas paginas.<br>Mèdias acceptats : imatges, videos, sons e tèxtes.<br>Crearà un PDF estampable (per faire d'afichas, tractes, jornals, eca.) o una pagina web de botar en linha.",
-      de:
-        "Dieses Rezept ermöglicht es Ihnen ein Dokument mit einem präzisen Format und mehreren Seiten zu erstellen.<br> Zulässige Medien : Bilder, Videos, Töne und Texte. <br> 'Eine druckfähige PDF-Datei (um Plakate, Flyer, Zeitungen, etc. herzustellen) oder eine Webseite, die Sie online stellen können wird erstellt.",
+      fr: "Cette recette permet de créer un document avec un format précis et plusieurs pages.<br> Médias acceptés : images, vidéos, sons et textes.<br>Créera un PDF imprimable (pour faire des affiches, tracts, journaux, etc.) ou une page web à mettre en ligne.",
+      en: "This recipe can be used to create a paged document with a specific size.<br>Accepted medias: images, videos, sounds and texts.<br>Will create a PDF that can be printed (to make posters, leaflets, newspapers, etc.) or a webpage to upload online.",
+      nl: "Met dit recept kunt u een document met een exacte indeling en meerdere pagina’s maken.<br> Ondersteunde media: afbeeldingen, video’s, geluid en tekst.<br>Maak een afdrukbare PDF (om posters, flyers, kranten, enz. te maken) of een webpagina om te uploaden.",
+      oc: "Aquesta recèpta permet de crear un document amb un format precís e mantunas paginas.<br>Mèdias acceptats : imatges, videos, sons e tèxtes.<br>Crearà un PDF estampable (per faire d'afichas, tractes, jornals, eca.) o una pagina web de botar en linha.",
+      de: "Dieses Rezept ermöglicht es Ihnen ein Dokument mit einem präzisen Format und mehreren Seiten zu erstellen.<br> Zulässige Medien : Bilder, Videos, Töne und Texte. <br> 'Eine druckfähige PDF-Datei (um Plakate, Flyer, Zeitungen, etc. herzustellen) oder eine Webseite, die Sie online stellen können wird erstellt.",
     },
     video_assemblage_summary: {
       fr: "Créer un montage vidéo à partir d’images et de vidéos.",
@@ -3651,16 +3465,11 @@ module.exports = (function () {
       de: "Eine Videomontage aus Bildern und Videos erstellen.",
     },
     video_assemblage_instructions: {
-      fr:
-        "Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos ou images bout à bout.<br> Médias acceptés : des vidéos et des images.<br>Créera une nouvelle vidéo.",
-      en:
-        "This recipe creates a video from multiple source images and videos, one after the other.<br>Accepted medias: images and videos.<br>Will create a new video.",
-      nl:
-        "Dit recept stelt voor om een video montage te maken door meerdere video’s of afbeeldingen na elkaar te plaatsen.<br> Ondersteunde media: video’s en afbeeldingen.<br>Maakt een nieuwe video.",
-      oc:
-        "Aquesta recèpta prepausa de crear un montatge video en botant mantunas videos o imatges cap a cap.<br>Mèdias acceptats imatges e videos.<br> Crearà una novèla video.",
-      de:
-        "Dieses Rezept ermöglicht es Ihnen, eine Videomontage zu erstellen, indem Sie mehrere Videos oder Bilder aneinander reihen. <br> Zulässige Medien : Videos und Bilder.<br> Wird ein neues Video erstellen.",
+      fr: "Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos ou images bout à bout.<br> Médias acceptés : des vidéos et des images.<br>Créera une nouvelle vidéo.",
+      en: "This recipe creates a video from multiple source images and videos, one after the other.<br>Accepted medias: images and videos.<br>Will create a new video.",
+      nl: "Dit recept stelt voor om een video montage te maken door meerdere video’s of afbeeldingen na elkaar te plaatsen.<br> Ondersteunde media: video’s en afbeeldingen.<br>Maakt een nieuwe video.",
+      oc: "Aquesta recèpta prepausa de crear un montatge video en botant mantunas videos o imatges cap a cap.<br>Mèdias acceptats imatges e videos.<br> Crearà una novèla video.",
+      de: "Dieses Rezept ermöglicht es Ihnen, eine Videomontage zu erstellen, indem Sie mehrere Videos oder Bilder aneinander reihen. <br> Zulässige Medien : Videos und Bilder.<br> Wird ein neues Video erstellen.",
     },
     stopmotion_animation_summary: {
       fr: "Assembler des images pour créer une vidéo.",
@@ -3670,16 +3479,11 @@ module.exports = (function () {
       de: "Zusammenfügen von Bildern zum Erstellen eines Videos.",
     },
     stopmotion_animation_instructions: {
-      fr:
-        "Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.",
-      en:
-        "This recipe takes any number of images as inputs and creates a single video with images displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.",
-      nl:
-        "Met dit recept kunt u een onbeperkt aantal beelden samenvoegen om een videosequentie te maken waarin deze beelden na elkaar verschijnen aan een in te stellen snelheid.<br> Ondersteunde media: enkel afbeeldingen. De afmetingen van het eerste beeld bepalen of de uiteindelijke video als portret of landschap is ingedeeld.<br>Maakt een nieuwe video.",
-      oc:
-        "Aquesta recèpta permet d'assemblar un nombre illimitat d'imatges per crear una sequéncia video que i desfilan a una vitessa reglabla.<br> Mèdias acceptats : sonque d'imatges. Las dimensions del primièr imatge determina si la video finala es en retrach o paisatge.<br> Crearà una novèla video.",
-      de:
-        "Dieses Rezept erlaubt das Zusammenfügen einer unbegrenzten Anzahl von Bildern zu einer Videosequenz, in der sie mit einer einstellbaren Geschwindigkeit scrollen. <br> Zulässige Medien : nur Bilder. Die Größe des ersten Frames bestimmt, ob das endgültige Video im Hoch- oder Querformat vorliegt.<br> Wird ein neues Video erstellen.",
+      fr: "Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.",
+      en: "This recipe takes any number of images as inputs and creates a single video with images displayed at a specific speed.<br>Accepted medias: images of any size. The first image will determine if the video will be in portrait or landscape.<br>Will create a new video.",
+      nl: "Met dit recept kunt u een onbeperkt aantal beelden samenvoegen om een videosequentie te maken waarin deze beelden na elkaar verschijnen aan een in te stellen snelheid.<br> Ondersteunde media: enkel afbeeldingen. De afmetingen van het eerste beeld bepalen of de uiteindelijke video als portret of landschap is ingedeeld.<br>Maakt een nieuwe video.",
+      oc: "Aquesta recèpta permet d'assemblar un nombre illimitat d'imatges per crear una sequéncia video que i desfilan a una vitessa reglabla.<br> Mèdias acceptats : sonque d'imatges. Las dimensions del primièr imatge determina si la video finala es en retrach o paisatge.<br> Crearà una novèla video.",
+      de: "Dieses Rezept erlaubt das Zusammenfügen einer unbegrenzten Anzahl von Bildern zu einer Videosequenz, in der sie mit einer einstellbaren Geschwindigkeit scrollen. <br> Zulässige Medien : nur Bilder. Die Größe des ersten Frames bestimmt, ob das endgültige Video im Hoch- oder Querformat vorliegt.<br> Wird ein neues Video erstellen.",
     },
     mix_audio_and_video_summary: {
       fr: "Ajouter ou remplacer du son sur une vidéo.",
@@ -3689,16 +3493,11 @@ module.exports = (function () {
       de: "Hinzufügen oder Ersetzen von Ton zu einem Video.",
     },
     mix_audio_and_video_instructions: {
-      fr:
-        "Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.",
-      en:
-        "This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.",
-      nl:
-        "Dit recept gebruikt een videobestand en een audionummer. Hiermee wordt de soundtrack aan de video toegevoegd of vervangen door het gekozen geluidsbestand.<br> Ondersteunde media: video- en geluidsbestanden.<br>Maakt een nieuwe video met de lengte van de langste media.",
-      oc:
-        "Aquesta recèpta pren una video e una pista audio. Apond o remplça la banda sonora de la video amb la qu'es seleccionada.<br>Mèdias acceptats: una video e una pista sonora.<br>Crearà una novèla video de la duradadel mai long mèdia.",
-      de:
-        "Dieses Rezept nimmt eine Video und eine Tonspur.  Er fügt die Tonspur des Videos hinzu oder ersetzt ihn durch der ausgewählten Tonspur.<br> Zulässige Medien : ein Video und eine Tonspur.<br> Wird ein neues Video mit der längsten Medienlänge erstellen.",
+      fr: "Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.",
+      en: "This recipe mixes a video and an audio track to create a new video where they are played at the same time.<br>Accepted medias: a video and a sound track.<br>Will create a new video.",
+      nl: "Dit recept gebruikt een videobestand en een audionummer. Hiermee wordt de soundtrack aan de video toegevoegd of vervangen door het gekozen geluidsbestand.<br> Ondersteunde media: video- en geluidsbestanden.<br>Maakt een nieuwe video met de lengte van de langste media.",
+      oc: "Aquesta recèpta pren una video e una pista audio. Apond o remplça la banda sonora de la video amb la qu'es seleccionada.<br>Mèdias acceptats: una video e una pista sonora.<br>Crearà una novèla video de la duradadel mai long mèdia.",
+      de: "Dieses Rezept nimmt eine Video und eine Tonspur.  Er fügt die Tonspur des Videos hinzu oder ersetzt ihn durch der ausgewählten Tonspur.<br> Zulässige Medien : ein Video und eine Tonspur.<br> Wird ein neues Video mit der längsten Medienlänge erstellen.",
     },
     drawing_pad: {
       fr: "Bloc dessin",
@@ -3728,16 +3527,11 @@ module.exports = (function () {
       de: "Ton zum Video hinzufügen.",
     },
     mix_audio_and_image_instructions: {
-      fr:
-        "Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo de la durée de la piste sonore.",
-      en:
-        "This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.",
-      nl:
-        "Dit recept gebruikt een beeld- en een geluidsbetand. Het maakt het mogelijk om <i>sprekende beelden te maken .<br> Ondersteunde media: beeld- en geluidsbestand.<br>Maakt een video met de duur van het geluidsbestand.",
-      oc:
-        "Aquesta recèpta pren un imatge e una p ista audio. Permet de crear d'<i>imatges parlantas<i>.<br> Mèdias acceptats : un imatge e una pista sonora.<br>Crearà una video de la durada de la pista sonora.",
-      de:
-        "Dieses Rezept nimmt ein Bild und eine Audiospur auf.  Es erlaubt Ihnen, <i>sprechende Bilder zu erstellen</i>.<br> Zulässige Medien : ein Bild und eine Tonspur.<br>Wird ein Video über die Dauer der Tonspur  erstellen.",
+      fr: "Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo de la durée de la piste sonore.",
+      en: "This recipe mixes an image with an audio track to create a <i>speaking image</i><br>Accepted medias: an image and a sound track.<br>Will create a new video.",
+      nl: "Dit recept gebruikt een beeld- en een geluidsbetand. Het maakt het mogelijk om <i>sprekende beelden te maken .<br> Ondersteunde media: beeld- en geluidsbestand.<br>Maakt een video met de duur van het geluidsbestand.",
+      oc: "Aquesta recèpta pren un imatge e una p ista audio. Permet de crear d'<i>imatges parlantas<i>.<br> Mèdias acceptats : un imatge e una pista sonora.<br>Crearà una video de la durada de la pista sonora.",
+      de: "Dieses Rezept nimmt ein Bild und eine Audiospur auf.  Es erlaubt Ihnen, <i>sprechende Bilder zu erstellen</i>.<br> Zulässige Medien : ein Bild und eine Tonspur.<br>Wird ein Video über die Dauer der Tonspur  erstellen.",
     },
     video_effects: {
       fr: "Effets vidéo",
@@ -3750,12 +3544,9 @@ module.exports = (function () {
       oc: "Aplicar d'efièches e filtres sus una video",
     },
     video_effects_instructions: {
-      fr:
-        "Liste des effets et filtres disponibles : noir et blanc, ralenti, accéléré, inversion de la lecture, rotation et miroir.<br>Média accepté : une seule vidéo.",
-      en:
-        "Video effects and filters available: black and white, speed up, slow down, play backwards, rotate and miroir.<br>Accepted media: a single video.",
-      oc:
-        "Tièra dels efièches e filtres disponibles : negre e blanc, ralentit, accelerat, inversion de la lectura, rotacion e miralh.<br>Mèdia acceptat : una sola video.",
+      fr: "Liste des effets et filtres disponibles : noir et blanc, ralenti, accéléré, inversion de la lecture, rotation et miroir.<br>Média accepté : une seule vidéo.",
+      en: "Video effects and filters available: black and white, speed up, slow down, play backwards, rotate and miroir.<br>Accepted media: a single video.",
+      oc: "Tièra dels efièches e filtres disponibles : negre e blanc, ralentit, accelerat, inversion de la lectura, rotacion e miralh.<br>Mèdia acceptat : una sola video.",
     },
     effect: {
       fr: "Effet",
@@ -3773,11 +3564,9 @@ module.exports = (function () {
       oc: "Filigrana",
     },
     watermark_instructions: {
-      fr:
-        "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
+      fr: "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
       en: "Choose an image to place in the top-right corner of the video.",
-      oc:
-        "Seleccionatz un imatge a plaçar dins lo caire superior drech de la video.",
+      oc: "Seleccionatz un imatge a plaçar dins lo caire superior drech de la video.",
     },
     colored_filter: {
       fr: "Filtre coloré",
@@ -3795,12 +3584,9 @@ module.exports = (function () {
       oc: "Ralentir",
     },
     slowing_video_down_limit: {
-      fr:
-        "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
-      en:
-        "Warning! The audio track will be removed (if it exists) because the slow down is too low. To keep the audio track select a value between 0.5 and 1.",
-      oc:
-        "Avisa ! La pista audiò serà suprimida (si existís) perque la vitessa desirada es tròp lenta. Per servar e convertir lo son causissètz una vitessa entre 0,5 e 1.",
+      fr: "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
+      en: "Warning! The audio track will be removed (if it exists) because the slow down is too low. To keep the audio track select a value between 0.5 and 1.",
+      oc: "Avisa ! La pista audiò serà suprimida (si existís) perque la vitessa desirada es tròp lenta. Per servar e convertir lo son causissètz una vitessa entre 0,5 e 1.",
     },
     speed_up: {
       fr: "Accélérer",
@@ -3890,16 +3676,11 @@ module.exports = (function () {
       de: "Medien stapeln um Echtzeit Präsentationen zu erstellen.",
     },
     carreau_instructions: {
-      fr:
-        "Cette recette permet de collaborer à plusieurs sur la même surface pour présenter des médias de différent type. Ouvrez une nouvelle fenêtre vers cette recette en plein écran sur un projecteur pour afficher uniquement la surface.<br> Médias acceptés : images, vidéos, sons.",
-      en:
-        "Use this mode to show multiple medias on a large projection or screen, for example by opening a browser and clicking on the fullscreen button.<br>Accepted medias: images, videos and sounds.",
-      nl:
-        "Met dit recept kunt u met meerdere op hetzelfde platform samenwerken om verschillende soorten media te presenteren. Open een nieuw venster naar dit recept op volledig scherm met een projector om alleen het platform weer te geven.<br>Ondersteunde media: afbeeldingen, video’s, geluidsbestanden.",
-      oc:
-        "Aquesta recèpta permet de collaborar a mantunes sus la m eteissa susfacia per presentar de mèdias de diferents tipe. Dubriscatz una novèla fenèstra de cap a-aquesta recèpta en plen ecran sus un projector per afichar sonque la susfacia.<br> Mèdias acceptats : imatges, videos, sons.",
-      de:
-        "Dieses Rezept erlaubt es mehreren Personen, auf der gleichen Oberfläche zusammenzuarbeiten, um verschiedene Arten von Medien zu präsentieren. Öffnen Sie ein neues Fenster zu diesem Rezept im Vollbildmodus auf einem Projektor, um nur die Oberfläche anzuzeigen. .<br>  Zulässige Medien : Bilder, Videos, Töne.",
+      fr: "Cette recette permet de collaborer à plusieurs sur la même surface pour présenter des médias de différent type. Ouvrez une nouvelle fenêtre vers cette recette en plein écran sur un projecteur pour afficher uniquement la surface.<br> Médias acceptés : images, vidéos, sons.",
+      en: "Use this mode to show multiple medias on a large projection or screen, for example by opening a browser and clicking on the fullscreen button.<br>Accepted medias: images, videos and sounds.",
+      nl: "Met dit recept kunt u met meerdere op hetzelfde platform samenwerken om verschillende soorten media te presenteren. Open een nieuw venster naar dit recept op volledig scherm met een projector om alleen het platform weer te geven.<br>Ondersteunde media: afbeeldingen, video’s, geluidsbestanden.",
+      oc: "Aquesta recèpta permet de collaborar a mantunes sus la m eteissa susfacia per presentar de mèdias de diferents tipe. Dubriscatz una novèla fenèstra de cap a-aquesta recèpta en plen ecran sus un projector per afichar sonque la susfacia.<br> Mèdias acceptats : imatges, videos, sons.",
+      de: "Dieses Rezept erlaubt es mehreren Personen, auf der gleichen Oberfläche zusammenzuarbeiten, um verschiedene Arten von Medien zu präsentieren. Öffnen Sie ein neues Fenster zu diesem Rezept im Vollbildmodus auf einem Projektor, um nur die Oberfläche anzuzeigen. .<br>  Zulässige Medien : Bilder, Videos, Töne.",
     },
     last_modified: {
       fr: "Dernière modification",
@@ -4007,13 +3788,10 @@ module.exports = (function () {
     },
     notifications: {
       ios_not_compatible_with_capture: {
-        fr:
-          "Les iPhones et les iPads ne sont pas compatibles avec la fonctionnalité de Capture.",
-        en:
-          "iPhones and iPads are not currently compatible with the <i>capture</i> page.",
+        fr: "Les iPhones et les iPads ne sont pas compatibles avec la fonctionnalité de Capture.",
+        en: "iPhones and iPads are not currently compatible with the <i>capture</i> page.",
         nl: "IPhones en iPads zijn niet compatibel met de opnamefunctie.",
-        oc:
-          "Los Iphones and Ipads son pas compatibles amb la fonccionalitat de captura.",
+        oc: "Los Iphones and Ipads son pas compatibles amb la fonccionalitat de captura.",
         de: "iPhones und iPads sind nicht mit der Aufnahmefunktion kompatibel.",
       },
       copied_with_success: {
@@ -4022,11 +3800,9 @@ module.exports = (function () {
         oc: "Copiat dins lo premsa-papièr",
       },
       cant_copy: {
-        fr:
-          "La copie dans le presse-papier a rencontré une erreur et n’a pas pu avoir lieu",
+        fr: "La copie dans le presse-papier a rencontré une erreur et n’a pas pu avoir lieu",
         en: "The copy to the clipboard failed",
-        oc:
-          "La còpia dins lo premsa-papièr a rescontrat una error e es pas estada facha",
+        oc: "La còpia dins lo premsa-papièr a rescontrat una error e es pas estada facha",
       },
       imported_files_successfully: {
         fr: "Média importé avec succès",
@@ -4039,32 +3815,21 @@ module.exports = (function () {
         oc: "Avisa ! Los modèls dèvon èsser visibles per totes.",
       },
       instead_import_with_this_button: {
-        fr:
-          "Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.",
-        en:
-          "Instead import or capture photos and videos here in the import modal.",
-        nl:
-          "Gebruik in plaats daarvan de invoerfunctie hierboven om foto’s en video’s te maken of te importeren vanaf uw apparaat",
-        oc:
-          "Utilizatz puslèu la fonccionalitat d'impòrt çai-sus per pree de fòtos e de videos o n'importar dins de vòstre aparelh",
-        de:
-          "Verwenden Sie stattdessen Die Importfunktion oben , um Fotos und Videos aufzunehmen oder von Ihrer Kamera zu importieren.",
+        fr: "Utilisez plutôt la fonctionnalité d’import ci-dessus pour prendre des photos et des vidéos ou en importer depuis votre appareil.",
+        en: "Instead import or capture photos and videos here in the import modal.",
+        nl: "Gebruik in plaats daarvan de invoerfunctie hierboven om foto’s en video’s te maken of te importeren vanaf uw apparaat",
+        oc: "Utilizatz puslèu la fonccionalitat d'impòrt çai-sus per pree de fòtos e de videos o n'importar dins de vòstre aparelh",
+        de: "Verwenden Sie stattdessen Die Importfunktion oben , um Fotos und Videos aufzunehmen oder von Ihrer Kamera zu importieren.",
       },
       action_not_allowed: {
-        fr:
-          "Cette action n’est pas permise. Êtes-vous bien auteur de ce contenu et/ou possédez-vous le mot de passe associé ?",
-        en:
-          "This action was blocked. Are you the author of this content and/or do you have the password?",
-        oc:
-          "Aquesta accion es pas autorizada. Sètz l'autor d'aqueste contengut e/o tenètz lo mot de Santa Clara associat ?",
+        fr: "Cette action n’est pas permise. Êtes-vous bien auteur de ce contenu et/ou possédez-vous le mot de passe associé ?",
+        en: "This action was blocked. Are you the author of this content and/or do you have the password?",
+        oc: "Aquesta accion es pas autorizada. Sètz l'autor d'aqueste contengut e/o tenètz lo mot de Santa Clara associat ?",
       },
       cant_open_chat: {
-        fr:
-          "Identifiez-vous et vérifiez que vous faites partie de la liste des participants à cette discussion pour y accéder.",
-        en:
-          "Login and check that your account is amongst the participants to open this topic.",
-        oc:
-          "Identificatz-vos e verificatz que fasètz partida de la tièra dels participants a aquesta discutida per i accedir.",
+        fr: "Identifiez-vous et vérifiez que vous faites partie de la liste des participants à cette discussion pour y accéder.",
+        en: "Login and check that your account is amongst the participants to open this topic.",
+        oc: "Identificatz-vos e verificatz que fasètz partida de la tièra dels participants a aquesta discutida per i accedir.",
       },
       media_was_sent: {
         fr: "Le média a été enregistré.",
@@ -4074,14 +3839,11 @@ module.exports = (function () {
         de: "Die Medien wurden aufgezeichnet",
       },
       media_couldnt_be_sent: {
-        fr:
-          "Le média n’a pas pu être enregistré à cause d’une erreur de connexion.",
+        fr: "Le média n’a pas pu être enregistré à cause d’une erreur de connexion.",
         en: "The media was not sent because of a connexion error.",
         nl: "Media kon niet worden opgeslagen vanwege verbindingsfout.",
-        oc:
-          "Lo mèdia es pas estat enregistrat per causa d'una error de connexion.",
-        de:
-          "Das Medium konnte aufgrund eines Verbindungsfehlers nicht gespeichert werden.",
+        oc: "Lo mèdia es pas estat enregistrat per causa d'una error de connexion.",
+        de: "Das Medium konnte aufgrund eines Verbindungsfehlers nicht gespeichert werden.",
       },
       file_was_sent: {
         fr: "Le fichier a été enregistré.",
@@ -4112,12 +3874,9 @@ module.exports = (function () {
         de: "Änderungen und Ergänzungen werden nicht mehr berücksichtigt.",
       },
       failed_to_save_media: {
-        fr:
-          "Les modifications du média n’ont pas pu avoir lieu, vérifiez que votre connexion est toujours active et rééssayez.",
-        en:
-          "Changes to this media couldn’t be saved, check that the connection is active and try again.",
-        oc:
-          "Las modificacions del mèdia son pas estadas salvadas, verificatz que vòstra conneccion es totjorn activa e tornatz ensajar.",
+        fr: "Les modifications du média n’ont pas pu avoir lieu, vérifiez que votre connexion est toujours active et rééssayez.",
+        en: "Changes to this media couldn’t be saved, check that the connection is active and try again.",
+        oc: "Las modificacions del mèdia son pas estadas salvadas, verificatz que vòstra conneccion es totjorn activa e tornatz ensajar.",
       },
       successfully_saved: {
         fr: "Les modifications ont bien été prises en compte.",
@@ -4147,10 +3906,8 @@ module.exports = (function () {
         fr: "Le mot de passe envoyé n’est pas valide. Veuillez réessayer.",
         en: "Wrong password, please try again.",
         nl: "Het gebruikte wachtwoord is ongeldig. Probeer het opnieuw.",
-        oc:
-          "Lo mot de Santa Clara mandat es pas valid. Volgatz tornar ensajar.",
-        de:
-          "Das gesendete Passwort ist ungültig. Bitte versuchen Sie es nochmal.",
+        oc: "Lo mot de Santa Clara mandat es pas valid. Volgatz tornar ensajar.",
+        de: "Das gesendete Passwort ist ungültig. Bitte versuchen Sie es nochmal.",
       },
       loading_dodoc: {
         fr: "Chargement de do•doc en cours…",
@@ -4174,14 +3931,11 @@ module.exports = (function () {
         de: "Dieser Name existiert bereits, verwenden Sie einen anderen.",
       },
       folder_name_needs_alphanumeric_characters: {
-        fr:
-          "Les noms de dossier doivent contenir au moins un caractère alphanumérique.",
+        fr: "Les noms de dossier doivent contenir au moins un caractère alphanumérique.",
         en: "Folder names need to contain at least one alphanumeric character.",
         nl: "Bestandsnamen moeten ten minste een alfanumeriek teken bevatten.",
-        oc:
-          "Los noms de dorsièrs devon conténer au mens un caractèr alfanumeric.",
-        de:
-          "Dateinamen müssen mindestens ein alphanumerisches Zeichen enthalten.",
+        oc: "Los noms de dorsièrs devon conténer au mens un caractèr alfanumeric.",
+        de: "Dateinamen müssen mindestens ein alphanumerisches Zeichen enthalten.",
       },
       "failed_to_get_folder:": {
         fr: "Le projet suivant n’a pas été trouvé:",
@@ -4191,12 +3945,9 @@ module.exports = (function () {
         de: "Die folgende Projekt wurde nicht gefunden:",
       },
       failed_to_start_streams_change_source_or_res: {
-        fr:
-          "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
-        en:
-          "Failed to start camera stream. Try changing the source or the resolution.",
-        oc:
-          "Lo flus video e audiò es pas estat demarrat.<br>Ensajatz de modificar la font o la resolucion dins los reglatges.",
+        fr: "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
+        en: "Failed to start camera stream. Try changing the source or the resolution.",
+        oc: "Lo flus video e audiò es pas estat demarrat.<br>Ensajatz de modificar la font o la resolucion dins los reglatges.",
       },
       failed_to_share_stream: {
         fr: "Le partage du flux n’a pas pu avoir lieu",
@@ -4209,14 +3960,11 @@ module.exports = (function () {
         oc: "Cap de contengut a afichar",
       },
       no_content_found_with_nfc_tag: {
-        fr:
-          "Scan d’un tag NFC réussi, associez-lui un auteur ou un média pour commencer.",
+        fr: "Scan d’un tag NFC réussi, associez-lui un auteur ou un média pour commencer.",
         en: "NFC tag detected, bind it to an author or a media to start.",
         nl: "NFC tag gevonden, koppel een auteur of media om te beginnen.",
-        oc:
-          "Escan d'un tag NFC capitat, associatz-li un autor o un mèdia per començar.",
-        de:
-          "NFC-Tag-Scan erfolgreich, verbinden Sie ihm zunächst einen Autor oder ein Medienunternehmen.",
+        oc: "Escan d'un tag NFC capitat, associatz-li un autor o un mèdia per començar.",
+        de: "NFC-Tag-Scan erfolgreich, verbinden Sie ihm zunächst einen Autor oder ein Medienunternehmen.",
       },
       author_found_with_nfc_tag: {
         fr: "Scan d’un tag NFC réussi, activation de l’auteur suivant&nbsp;:",
@@ -4367,8 +4115,7 @@ module.exports = (function () {
       password_added_or_changed: {
         fr: "Le mot de passe de ce contenu a été ajouté ou modifié.",
         en: "The password for this content has been added or changed.",
-        oc:
-          "lo mot de Santa Clara d'aqueste contengut es estat apondut o modificat",
+        oc: "lo mot de Santa Clara d'aqueste contengut es estat apondut o modificat",
       },
       enter_password_to_reopen: {
         fr: "Entrez le nouveau mot de passe pour le rouvrir",
@@ -4378,12 +4125,10 @@ module.exports = (function () {
       enter_password_to_select: {
         fr: "Renseignez le mot de passe du projet pour pouvoir le sélectionner",
         en: "Enter this project’s password to select it",
-        oc:
-          "Entratz lo mot de Santa Clara del projècte per lo poder seleccionar",
+        oc: "Entratz lo mot de Santa Clara del projècte per lo poder seleccionar",
       },
       need_to_be_author_to_post: {
-        fr:
-          "Identifiez-vous en tant qu’auteur pour pouvoir poster dans le chat.",
+        fr: "Identifiez-vous en tant qu’auteur pour pouvoir poster dans le chat.",
         en: "Login as an author to post in the chat.",
         oc: "Identificatz-vos en tant qu'autor per poder postar dins lo chat.",
       },
@@ -4393,19 +4138,14 @@ module.exports = (function () {
         oc: "Novèl messatge publicat dins lo  subjècte",
       },
       if_only_authors_select_authors: {
-        fr:
-          "Sélectionnez au moins un auteur qui pourra accéder et modifier ce contenu",
-        en:
-          "Select at least one author who will be able to access and edit this content",
-        oc:
-          "Seleccionatz au mens un autor que poirà accedir e modificar aqueste contengut",
+        fr: "Sélectionnez au moins un auteur qui pourra accéder et modifier ce contenu",
+        en: "Select at least one author who will be able to access and edit this content",
+        oc: "Seleccionatz au mens un autor que poirà accedir e modificar aqueste contengut",
       },
       access_or_editing_restricted_to_authors: {
-        fr:
-          "Attention : la modification est limité aux auteurs ou aux personnes possédant le mot de passe.",
+        fr: "Attention : la modification est limité aux auteurs ou aux personnes possédant le mot de passe.",
         en: "Warning: editing is restricted to authors or with a password",
-        oc:
-          "Avisa : La modificacion es limitada als autors e alas personas qu'an lo mot de Santa Clara.",
+        oc: "Avisa : La modificacion es limitada als autors e alas personas qu'an lo mot de Santa Clara.",
       },
       "account_does_not_exist:": {
         fr: "Le compte demandé n’existe pas&nbsp;:",
@@ -4413,12 +4153,9 @@ module.exports = (function () {
         oc: "Lo compte demandat existís pas",
       },
       account_not_associated_to_this_ressource: {
-        fr:
-          "Ce compte existe bien mais n’est pas autorisé à accéder à cette ressource. Avez-vous la bonne URL ?",
-        en:
-          "This account exists but is not associated to this content. Do you have the right link?",
-        oc:
-          "Aqueste compte existíß plan mas es pas autorizat d'accedir a aquesta ressorça. Avètz la bona URL ?",
+        fr: "Ce compte existe bien mais n’est pas autorisé à accéder à cette ressource. Avez-vous la bonne URL ?",
+        en: "This account exists but is not associated to this content. Do you have the right link?",
+        oc: "Aqueste compte existíß plan mas es pas autorizat d'accedir a aquesta ressorça. Avètz la bona URL ?",
       },
       option_already_exists: {
         fr: "Cette option existe déjà",
