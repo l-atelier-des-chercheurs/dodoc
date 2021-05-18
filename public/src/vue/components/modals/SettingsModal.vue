@@ -159,7 +159,7 @@ export default {
     },
   },
   mounted() {
-    if (this.$root.current_author_is_admin) this.loadAccess();
+    // if (this.$root.current_author_is_admin) this.loadAccess();
   },
   computed: {},
   methods: {
