@@ -1,6 +1,6 @@
 <template>
   <div class="m_accessJournal">
-    <div class="switch switch-xs">
+    <!-- <div class="switch switch-xs">
       <input
         class="switch"
         id="showReturning"
@@ -10,22 +10,57 @@
       <label for="showReturning" class="">
         {{ $t("show_returning_visitors") }}
       </label>
-    </div>
+    </div> -->
 
-    <div v-for="(counts, day) in aggregated_days" :key="day" class="_singleDay">
-      <div class="_singleDay--day">
-        {{ day }}
-      </div>
-      <div class="_singleDay--bar">
-        <div class="_singleDay--bar--new" :style="barStyle(counts.new)" />
-        <div
-          v-if="show_returning"
-          class="_singleDay--bar--returning"
-          :style="barStyle(counts.returning)"
-        />
-      </div>
-      <div class="_singleDay--count">{{ counts.total }}</div>
-    </div>
+    <label class="_visitorsNew">
+      {{ $t("new_visitors") }}
+    </label>
+    <label class="_visitorsReturning">
+      {{ $t("returning_visitors") }}
+    </label>
+
+    <table class="table-bordered margin-vert-verysmall">
+      <thead>
+        <tr>
+          <th>{{ $t("date") }}</th>
+          <th>{{ $t("visitors") }}</th>
+          <th>{{ $t("new") }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-if="Object.keys(aggregated_days).length === 0"
+          class="bg-gris_tresclair"
+        >
+          <td colspan="4">
+            <small class>{{ $t("no_content_to_show") }}</small>
+          </td>
+        </tr>
+
+        <tr
+          v-for="(counts, day) in aggregated_days"
+          :key="day"
+          class="_singleDay font-small"
+        >
+          <td class="_singleDay--day">{{ day }}</td>
+          <td class="_singleDay--count">
+            <span class="_visitorsNew">{{ counts.new }}</span> +
+            <span class="_visitorsReturning">{{ counts.returning }}</span> =
+            <span class="">{{ counts.total }}</span>
+          </td>
+          <td class="_singleDay--bar">
+            <div
+              class="_singleDay--bar--new _visitorsNew"
+              :style="barStyle(counts.new)"
+            />
+            <div
+              class="_singleDay--bar--returning _visitorsReturning"
+              :style="barStyle(counts.returning)"
+            />
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 <script>
@@ -35,9 +70,7 @@ export default {
   },
   components: {},
   data() {
-    return {
-      show_returning: false,
-    };
+    return {};
   },
   created() {},
   mounted() {},
@@ -65,7 +98,7 @@ export default {
       return this.access_entries.reduce(
         (acc, { timestamp, ip, user_agent }) => {
           const id = ip + "|" + user_agent;
-          if (!this.show_returning && visitors.includes(id)) return acc;
+          // if (!this.show_returning && visitors.includes(id)) return acc;
 
           const date = this.$moment(+timestamp).format("LL");
           if (!acc.hasOwnProperty(date))
@@ -120,11 +153,6 @@ export default {
 }
 
 ._singleDay {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: stretch;
-
   font-size: var(--font-size-small);
   font-family: Fira Mono;
   text-transform: lowercase;
@@ -139,12 +167,6 @@ export default {
 }
 
 ._singleDay--day {
-  width: 12em;
-  flex: 0 0 auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 ._singleDay--bar {
@@ -152,24 +174,18 @@ export default {
   flex: 1 1 auto;
 
   display: flex;
-  flex-flow: row nowrap;
 
   > * {
     height: 1.5em;
   }
 }
 
-._singleDay--bar--new {
+._visitorsNew {
   background: var(--color-bar-new);
 }
-._singleDay--bar--returning {
+._visitorsReturning {
   background: var(--color-bar-returning);
 }
 ._singleDay--count {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 4em;
 }
 </style>
