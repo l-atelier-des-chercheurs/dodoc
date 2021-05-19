@@ -282,6 +282,19 @@ module.exports = (function () {
       fr: "Comptabiliser aussi les visiteurs qui reviennent sur le site",
       en: "Show returning visitors as well",
     },
+    visitors: {
+      fr: "Visiteurs",
+      en: "Visitors",
+    },
+    returning_visitors: {
+      fr: "Visiteurs déjà venus",
+      en: "Returning visitors",
+    },
+    new_visitors: {
+      fr: "Nouveaux visiteurs",
+      en: "New visitors",
+    },
+
     create_qr_code_instructions: {
       fr: "Écrire un lien pour créer un code QR. Vous pouvez ensuite le télécharger, l’imprimer ou l’intégrer à un document page à page ou à un récit.",
       en: "Write a link to create the corresponding QR Code to download, print or insert inside a paged document or a story.",
@@ -291,6 +304,10 @@ module.exports = (function () {
       fr: "Gérer l’accès au contenu",
       en: "Manage access",
       oc: "Gerir l'accés al contengut",
+    },
+    access: {
+      fr: "Accès",
+      en: "Access",
     },
     no_message_yet: {
       fr: "Aucun message à afficher pour l’instant…",
