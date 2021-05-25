@@ -22,7 +22,7 @@
     "@johmun/vue-tags-input": "^2.1.0",
     "@xkeshi/vue-qrcode": "^1.0.0",
     "alertify.js": "^1.0.12",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "debounce": "^1.2.0",
     "i18n": "^0.13.2",
     "imagetracerjs": "^1.2.6",
