@@ -3,7 +3,8 @@ const dev = require("./dev-log"),
   auth = require("./auth"),
   exporter = require("./exporter"),
   file = require("./file"),
-  changelog = require("./changelog");
+  changelog = require("./changelog"),
+  access = require("./access");
 
 const bcrypt = require("bcryptjs");
 
@@ -56,6 +57,29 @@ module.exports = (function () {
         }`
       );
 
+      let ip = "";
+      if (socket.handshake) {
+        if (socket.handshake.headers && socket.handshake.headers["x-real-ip"]) {
+          // need to add the following to nginx .conf
+          // proxy_set_header X-Real-IP $remote_addr;
+          ip = socket.handshake.headers["x-real-ip"];
+        } else if (socket.handshake.address) {
+          ip = socket.handshake.address;
+        }
+      }
+
+      let user_agent = "";
+      if (
+        socket.handshake &&
+        socket.handshake.headers &&
+        socket.handshake.headers["user-agent"]
+      )
+        user_agent = socket.handshake.headers["user-agent"];
+
+      access.append({
+        ip,
+        user_agent,
+      });
       socket._data = {};
 
       var onevent = socket.onevent;
@@ -99,8 +123,8 @@ module.exports = (function () {
 
       socket.on("disconnect", (d) => onClientDisconnect(socket));
 
-      socket.on("loadJournal", (d) => onLoadJournal(socket));
-      socket.on("emptyJournal", (d) => onEmptyJournal(socket));
+      socket.on("loadJournal", (d) => onLoadJournal(socket, d));
+      socket.on("emptyJournal", (d) => onEmptyJournal(socket, d));
     });
   }
 
@@ -1147,8 +1171,8 @@ module.exports = (function () {
     );
   }
 
-  async function onLoadJournal(socket) {
-    dev.logfunction(`EVENT - onLoadJournal`);
+  async function onLoadJournal(socket, { type = "changelog" } = {}) {
+    dev.logfunction(`EVENT - onLoadJournal for type = ${type}`);
 
     const socket_is_admin = await auth.isSocketSessionAdmin(socket);
     if (!socket_is_admin) {
@@ -1163,12 +1187,15 @@ module.exports = (function () {
       throw `Non-admin attempted to load journal`;
     }
 
-    const journal_content = await changelog.read();
+    let journal_content;
+    if (type === "changelog") journal_content = await changelog.read();
+    if (type === "access") journal_content = await access.read();
+
     api.sendEventWithContent("loadJournal", journal_content, io, socket);
   }
 
-  async function onEmptyJournal(socket) {
-    dev.logfunction(`EVENT - onEmptyJournal`);
+  async function onEmptyJournal(socket, { type = "changelog" } = {}) {
+    dev.logfunction(`EVENT - onEmptyJournal for type = ${type}`);
 
     const socket_is_admin = await auth.isSocketSessionAdmin(socket);
     if (!socket_is_admin) {
@@ -1183,8 +1210,10 @@ module.exports = (function () {
       throw `Non-admin attempted to empty journal`;
     }
 
-    await changelog.empty();
-    await onLoadJournal(socket);
+    if (type === "changelog") journal_content = await changelog.empty();
+    if (type === "access") journal_content = await access.empty();
+
+    await onLoadJournal(socket, { type });
   }
 
   return API;
