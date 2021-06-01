@@ -262,7 +262,8 @@ module.exports = (function () {
 
           _onLoadJournal(data) {
             console.log("Received _onLoadJournal packet.");
-            this.$eventHub.$emit(`socketio.journal.is_loaded`, data);
+            window.state.journal = data;
+            this.$eventHub.$emit(`socketio.journal.is_loaded`);
           },
 
           // for projects, authors and publications
@@ -279,8 +280,9 @@ module.exports = (function () {
             //   k !== "medias" ? delete window.store[type][slugFolderName][k] : ""
             // );
 
-            const is_new_folder =
-              !window.store[type].hasOwnProperty(slugFolderName);
+            const is_new_folder = !window.store[type].hasOwnProperty(
+              slugFolderName
+            );
 
             if (is_new_folder) {
               window.store[type] = Object.assign(
@@ -432,11 +434,11 @@ module.exports = (function () {
           updateNetworkInfos() {
             this.socket.emit("updateNetworkInfos");
           },
-          loadJournal(jdata) {
-            this.socket.emit("loadJournal", jdata);
+          loadJournal() {
+            this.socket.emit("loadJournal");
           },
-          emptyJournal(jdata) {
-            this.socket.emit("emptyJournal", jdata);
+          emptyJournal() {
+            this.socket.emit("emptyJournal");
           },
         },
       });

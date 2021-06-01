@@ -5,7 +5,7 @@ const path = require("path"),
   slugg = require("slugg"),
   os = require("os"),
   writeFileAtomic = require("write-file-atomic"),
-  { ffmpegPath, ffprobePath } = require("ffmpeg-ffprobe-static"),
+  pathToFfmpeg = require("ffmpeg-static"),
   ffmpeg = require("fluent-ffmpeg"),
   pad = require("pad-left");
 
@@ -13,8 +13,7 @@ const sharp = require("sharp");
 
 const dev = require("./dev-log");
 
-ffmpeg.setFfmpegPath(ffmpegPath);
-ffmpeg.setFfprobePath(ffprobePath);
+ffmpeg.setFfmpegPath(pathToFfmpeg);
 
 module.exports = (function () {
   const API = {

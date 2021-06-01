@@ -1,5 +1,5 @@
 const path = require("path"),
-  { ffmpegPath, ffprobePath } = require("ffmpeg-ffprobe-static"),
+  pathToFfmpeg = require("ffmpeg-static"),
   ffmpeg = require("fluent-ffmpeg"),
   fs = require("fs-extra"),
   pad = require("pad-left");
@@ -7,15 +7,12 @@ const path = require("path"),
 const sharp = require("sharp");
 sharp.cache(false);
 
-const puppeteer = require("puppeteer");
-
 const dev = require("./dev-log"),
   api = require("./api"),
   file = require("./file"),
   thumbs = require("./thumbs");
 
-ffmpeg.setFfmpegPath(ffmpegPath);
-ffmpeg.setFfprobePath(ffprobePath);
+ffmpeg.setFfmpegPath(pathToFfmpeg);
 
 module.exports = (function () {
   return {
@@ -136,9 +133,7 @@ module.exports = (function () {
                         typeof mediaMeta.thumbs !== "undefined"
                       ) {
                         mediaMeta.thumbs.map((t) => {
-                          if (!t || typeof t !== "object") return;
-
-                          if (t.hasOwnProperty("path")) {
+                          if (t && t.hasOwnProperty("path")) {
                             tasks.push(
                               new Promise((resolve, reject) => {
                                 let thumb_path = t.path;
@@ -149,8 +144,9 @@ module.exports = (function () {
                                   );
                                 }
 
-                                const fullPathToThumb =
-                                  api.getFolderPath(thumb_path);
+                                const fullPathToThumb = api.getFolderPath(
+                                  thumb_path
+                                );
                                 const fullPathToThumb_cache = path.join(
                                   cachePath,
                                   thumb_path
@@ -180,8 +176,9 @@ module.exports = (function () {
                                     );
                                   }
 
-                                  const fullPathToThumb =
-                                    api.getFolderPath(thumb_path);
+                                  const fullPathToThumb = api.getFolderPath(
+                                    thumb_path
+                                  );
                                   const fullPathToThumb_cache = path.join(
                                     cachePath,
                                     thumb_path
@@ -259,117 +256,117 @@ module.exports = (function () {
               height: publiData.height ? publiData.height : 297,
             };
 
-            fs.ensureDir(cachePath).then(() => {
-              dev.logverbose(
-                `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
-              );
+            fs.ensureDir(cachePath)
+              .then(() => {
+                dev.logverbose(
+                  `EXPORTER — makePDFForPubli : created cache folder at path ${cachePath}`
+                );
 
-              let browser;
+                const { BrowserWindow } = require("electron");
 
-              puppeteer
-                .launch({
-                  headless: true,
-                  ignoreHTTPSErrors: true,
-                  args: ["--no-sandbox", "--font-render-hinting=none"],
-                })
-                .then((_browser) => {
-                  browser = _browser;
-                  return browser.newPage();
-                })
-                .then((page) => {
-                  page.setViewport({
-                    width: Math.floor(default_page_size.width * 3.7795),
-                    height: Math.floor(default_page_size.height * 3.7795), // totally arbitrary value… will have to find better
-                    deviceScaleFactor: 2,
-                  });
+                const browser_window = {
+                  width: Math.floor(default_page_size.width * 3.78),
+                  height: Math.floor(default_page_size.height * 3.78) + 25, // totally arbitrary value… will have to find better
+                };
 
-                  dev.logverbose(
-                    `EXPORTER — makePDFForPubli : loading URL ${urlToPubli}`
-                  );
+                dev.logverbose(
+                  `EXPORTER — makePDFForPubli : loading URL ${urlToPubli}`
+                );
 
-                  page
-                    .goto(urlToPubli, {
-                      waitUntil: "networkidle2",
-                    })
-                    .then(() => {
-                      if (
-                        !options ||
-                        !options.hasOwnProperty("type") ||
-                        options.type.toLowerCase() === "pdf"
-                      ) {
-                        const pdfName =
-                          slugPubliName +
-                          "-" +
-                          api.getCurrentDate() +
-                          "-" +
-                          (
-                            Math.random().toString(36) + "00000000000000000"
-                          ).slice(2, 3 + 2) +
-                          ".pdf";
-                        const docPath = path.join(cachePath, pdfName);
+                let win = new BrowserWindow({
+                  // width: 800,
+                  // height: 600,
+                  width: browser_window.width,
+                  height: browser_window.height,
+                  show: false,
+                  webPreferences: {
+                    contextIsolation: true,
+                    allowRunningInsecureContent: true,
+                  },
+                });
+                win.loadURL(urlToPubli);
 
-                        page.emulateMedia("print");
-                        page
-                          .pdf({
-                            path: docPath,
-                            printBackground: true,
-                            width: `${default_page_size.width}mm`,
-                            height: `${default_page_size.height}mm`,
-                          })
-                          .then(() => {
+                win.webContents.on("did-finish-load", () => {
+                  // Use default printing options
+                  setTimeout(() => {
+                    if (
+                      !options ||
+                      !options.hasOwnProperty("type") ||
+                      options.type.toLowerCase() === "pdf"
+                    ) {
+                      const pdfName =
+                        slugPubliName +
+                        "-" +
+                        api.getCurrentDate() +
+                        "-" +
+                        (
+                          Math.random().toString(36) + "00000000000000000"
+                        ).slice(2, 3 + 2) +
+                        ".pdf";
+                      const docPath = path.join(cachePath, pdfName);
+
+                      win.webContents
+                        .printToPDF({
+                          marginsType: 1,
+                          pageSize: {
+                            width: default_page_size.width * 1000,
+                            height: default_page_size.height * 1000,
+                          },
+                          dpi: 300,
+                          printBackground: true,
+                          printSelectionOnly: false,
+                        })
+                        .then((data) => {
+                          fs.writeFile(docPath, data, (error) => {
+                            if (error) throw error;
+
                             dev.logverbose(
                               `EXPORTER — makePDFForPubli : created PDF at ${docPath}`
                             );
-
-                            browser.close();
 
                             resolve({
                               pdfName,
                               docPath,
                             });
                           });
-                      } else if (options.type.toLowerCase() === "png") {
-                        const imageName =
-                          slugPubliName +
-                          "-" +
-                          api.getCurrentDate() +
-                          "-" +
-                          (
-                            Math.random().toString(36) + "00000000000000000"
-                          ).slice(2, 3 + 2) +
-                          ".png";
-                        const docPath = path.join(cachePath, imageName);
+                        })
+                        .catch((error) => {
+                          console.log(
+                            `Failed to write PDF to ${docPath}: `,
+                            error
+                          );
+                        });
+                    } else if (options.type.toLowerCase() === "png") {
+                      const imageName =
+                        slugPubliName +
+                        "-" +
+                        api.getCurrentDate() +
+                        "-" +
+                        (
+                          Math.random().toString(36) + "00000000000000000"
+                        ).slice(2, 3 + 2) +
+                        ".png";
+                      const docPath = path.join(cachePath, imageName);
 
-                        page
-                          .screenshot({
-                            clip: {
-                              x: 0,
-                              y: 0,
-                              width: Math.floor(
-                                default_page_size.width * 3.7795
-                              ),
-                              height: Math.floor(
-                                default_page_size.height * 3.7795
-                              ), // totally arbitrary value… will have to find better
-                            },
-                            path: docPath,
-                          })
-                          .then(() => {
-                            dev.logverbose(
-                              `EXPORTER — makePDFForPubli : created image at ${docPath}`
-                            );
+                      win.capturePage().then((image) => {
+                        win.close();
+                        fs.writeFile(docPath, image.toPNG(1.0), (error) => {
+                          if (error) throw error;
+                          dev.logverbose(
+                            `EXPORTER — makePDFForPubli : created image at ${docPath}`
+                          );
 
-                            browser.close();
-
-                            resolve({
-                              docPath,
-                              imageName,
-                            });
+                          resolve({
+                            docPath,
+                            imageName,
                           });
-                      }
-                    });
+                        });
+                      });
+                    }
+                  }, 1000);
                 });
-            });
+              })
+              .catch((err) => {});
           });
       });
     },
@@ -700,8 +697,7 @@ module.exports = (function () {
                       medias_list: list_of_linked_medias,
                     })
                     .then((folders_and_medias) => {
-                      _page_informations.folderAndMediaData =
-                        folders_and_medias;
+                      _page_informations.folderAndMediaData = folders_and_medias;
                       resolve(_page_informations);
                     });
                 });
@@ -1804,8 +1800,6 @@ module.exports = (function () {
                 "Setting output to duration: " + metadata.format.duration
               );
               ffmpeg_cmd.duration(metadata.format.duration);
-            } else {
-              dev.logverbose("No metadata found for input: " + vm.full_path);
             }
 
             // check if has audio track or not
@@ -1857,10 +1851,7 @@ module.exports = (function () {
                 ffmpeg.ffprobe(temp_video_path, function (err, _metadata) {
                   return resolve({
                     temp_video_path,
-                    duration:
-                      _metadata && _metadata.format && _metadata.format.duration
-                        ? _metadata.format.duration
-                        : "",
+                    duration: _metadata.format.duration,
                   });
                 });
               })

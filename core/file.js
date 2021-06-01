@@ -729,8 +729,9 @@ module.exports = (function () {
               }
 
               // if original media is absent (for example, a publication that lists medias that aren’t there anymore)
-              folders_and_medias[slugFolderName].medias[metaFileName] =
-                mediaMeta;
+              folders_and_medias[slugFolderName].medias[
+                metaFileName
+              ] = mediaMeta;
               return;
             });
 
@@ -837,7 +838,6 @@ module.exports = (function () {
                 case ".mp3":
                 case ".wav":
                 case ".m4a":
-                case ".ogg":
                   additionalMeta.type = "audio";
                   break;
                 case ".md":

@@ -1,4 +1,4 @@
-/dist/
+dist/
 settings.json
 
 ####### NODE ########
@@ -37,4 +37,3 @@ Temporary Items
 .apdisk
 
 changelog.csv
-access.csv

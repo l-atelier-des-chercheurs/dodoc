@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "9.1.2-dev",
+  "version": "9.1.0",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -16,8 +16,15 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "node .",
-    "debug": "node --inspect . --debug --debug --verbose"
+    "start": "electron .",
+    "debug": "electron --inspect=5858 . --debug --verbose",
+    "debug-brk": "electron --inspect=5858 . --debug-brk --verbose",
+    "node-start": "node .",
+    "node-debug": "node . --inspect=5858 --debug --verbose",
+    "node-debug-brk": "node . --inspect=5858 --debug-brk --verbose",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
     "node": "12.18.3",
@@ -50,26 +57,25 @@
     "csv-parser": "^2.3.4",
     "csv-writer": "^1.6.0",
     "dodoc-parsedown": "github:louis-ev/dodoc-parsedown#master",
+    "electron-pdf-window": "^1.0.12",
+    "electron-window-state": "^5.0.3",
     "exif-reader": "^1.0.3",
     "express": "^4.17.1",
-    "ffmpeg-ffprobe-static": "*",
+    "ffmpeg-static": "^4.2.7",
     "fluent-ffmpeg": "^2.1.2",
     "formidable": "^1.2.2",
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
     "gulp-util": "^3.0.8",
-    "ip-anonymize": "^0.1.0",
     "memory-cache": "^0.2.0",
     "moment": "^2.29.1",
     "node-abi": "^2.19.3",
     "node-localstorage": "^2.1.6",
-    "node-stl-to-thumbnail": "^1.1.0",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
     "platform-folders": "^0.5.2",
     "portscanner": "^2.2.0",
     "pug": "^3.0.0",
-    "puppeteer": "^2.1.1",
     "quill-render": "^1.0.5",
     "rich-text": "^4.1.0",
     "sharedb": "^1.5.2",
@@ -86,6 +92,10 @@
     "ws": "^7.4.0"
   },
   "devDependencies": {
+    "electron": "11.0.3",
+    "electron-builder": "^22.9.1",
+    "electron-packager": "^15.1.0",
+    "electron-rebuild": "^2.3.4",
     "node-gyp": "^7.1.2"
   }
 }
