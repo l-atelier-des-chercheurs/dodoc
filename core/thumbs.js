@@ -1,6 +1,6 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  pathToFfmpeg = require("ffmpeg-static"),
+  { ffmpegPath, ffprobePath } = require("ffmpeg-ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
   sharp = require("sharp"),
@@ -8,10 +8,14 @@ const path = require("path"),
 
 sharp.cache(false);
 
+const StlThumbnailer = require("node-stl-to-thumbnail");
+const puppeteer = require("puppeteer");
+
 const dev = require("./dev-log"),
   api = require("./api");
 
-ffmpeg.setFfmpegPath(pathToFfmpeg);
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
@@ -221,6 +225,7 @@ module.exports = (function () {
             screenshotsAngles.forEach((angle) => {
               let makeSTLScreenshot = new Promise((resolve, reject) => {
                 _makeSTLScreenshot({
+                  mediaPath,
                   slugFolderName,
                   thumbFolderPath,
                   filename,
@@ -874,6 +879,7 @@ module.exports = (function () {
   }
 
   function _makeSTLScreenshot({
+    mediaPath,
     slugFolderName,
     thumbFolderPath,
     filename,
@@ -892,32 +898,36 @@ module.exports = (function () {
 
       // check first if it exists, resolve if it does
       fs.pathExists(fullScreenshotPath).then((exists) => {
+        // if userDir folder doesn't exist yet at destination
         if (!exists) {
-          const url = `${global.appInfos.homeURL}/libs/stl/show_stl.html?mediaURL=/${slugFolderName}/${filename}`;
-
-          screenshotWebsite({
-            url,
+          var thumbnailer = new StlThumbnailer({
+            filePath: mediaPath,
+            requestThumbnails: [
+              {
+                width: 1800,
+                height: 1800,
+              },
+            ],
           })
-            .then((image) => {
-              fs.writeFile(fullScreenshotPath, image.toPNG(1.0), (error) => {
-                if (error) throw error;
-                dev.logverbose(
-                  `THUMBS — _makeSTLScreenshot : created image at ${fullScreenshotPath}`
-                );
+            .then(function (thumbnails) {
+              // thumbnails is an array (in matching order to your requests) of Canvas objects
+              // you can write them to disk, return them to web users, etc
+              // see node-canvas documentation at https://github.com/Automattic/node-canvas
+              thumbnails[0].toBuffer(function (err, buf) {
+                if (err) return reject();
+
+                fs.writeFileSync(fullScreenshotPath, buf);
                 return resolve({ screenshotPath, screenshotName });
               });
             })
-            .catch((err) => {
-              dev.error(
-                `THUMBS — _makeSTLScreenshot / Failed to make stl thumbs with error ${err}`
-              );
-              return reject();
+            .catch(function (err) {
+              return reject(err);
             });
         } else {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`
           );
-          return resolve({ screenshotPath, screenshotName });
+          resolve({ screenshotPath, screenshotName });
         }
       });
     });
@@ -1046,33 +1056,53 @@ module.exports = (function () {
 
   function _getPageMetadata({ url }) {
     return new Promise((resolve, reject) => {
-      dev.logfunction(`THUMBS — _getPageMetadata: ${url}`);
+      let browser;
 
-      const { BrowserWindow } = require("electron");
-      let win = new BrowserWindow({
-        show: false,
-      });
+      puppeteer
+        .launch({
+          headless: true,
+          ignoreHTTPSErrors: true,
+          args: ["--no-sandbox", "--font-render-hinting=none"],
+        })
+        .then((_browser) => {
+          browser = _browser;
+          return browser.newPage();
+        })
+        .then(async (page) => {
+          page.setViewport({
+            width: 1800,
+            height: 1800,
+            deviceScaleFactor: 2,
+          });
 
-      win.loadURL(url);
+          dev.logverbose(`THUMBS — _getPageMetadata : loading URL ${url}`);
 
-      win.webContents.on("did-finish-load", () => {
-        dev.logverbose(`THUMBS — _getPageMetadata : finished loading page`);
+          page
+            .goto(url, {
+              waitUntil: "domcontentloaded",
+            })
+            .then(async () => {
+              let html = await page.evaluate(
+                () => document.documentElement.innerHTML
+              );
+              browser.close();
 
-        let code = `var promise = Promise.resolve(document.documentElement.innerHTML); 
-                  promise.then(data => data)`;
+              dev.logverbose(
+                `THUMBS — _getPageMetadata : finished loading page`
+              );
 
-        win.webContents.executeJavaScript(code, true).then((html) => {
-          // console.log(html); // will be your innherhtml
-          const parsed_meta = _parseHTMLMetaTags({ html });
-          return resolve(parsed_meta);
+              // console.log(html); // will be your innherhtml
+              const parsed_meta = _parseHTMLMetaTags({ html });
+              return resolve(parsed_meta);
+            })
+            .catch((err) => {
+              browser.close();
+              dev.error(
+                `THUMBS — _getPageMetadata / Failed to load link page with error ${err.message}`
+              );
+              return reject(err.message);
+            });
         });
-      });
-      win.webContents.on("did-fail-load", (err) => {
-        dev.error(
-          `THUMBS — _getPageMetadata / Failed to load link page with error ${err.message}`
-        );
-        return reject(err.message);
-      });
     });
   }
 
@@ -1149,7 +1179,7 @@ module.exports = (function () {
             url,
           })
             .then((image) => {
-              fs.writeFile(fullScreenshotPath, image.toPNG(1.0), (error) => {
+              fs.writeFile(fullScreenshotPath, image, (error) => {
                 if (error) throw error;
                 dev.logverbose(
                   `THUMBS — _makeLinkThumb : created image at ${fullScreenshotPath}`
@@ -1163,26 +1193,6 @@ module.exports = (function () {
               );
               return reject(err);
             });
-
-          // var thumbnailer = new StlThumbnailer({
-          //   filePath: mediaPath,
-          //   requestThumbnails: [
-          //     {
-          //       width: 1800,
-          //       height: 1800,
-          //     },
-          //   ],
-          // }).then(function (thumbnails) {
-          //   // thumbnails is an array (in matching order to your requests) of Canvas objects
-          //   // you can write them to disk, return them to web users, etc
-          //   // see node-canvas documentation at https://github.com/Automattic/node-canvas
-          //   thumbnails[0].toBuffer(function (err, buf) {
-          //     if (err) return reject();
-
-          //     fs.writeFileSync(fullScreenshotPath, buf);
-          //     return resolve({ screenshotPath, screenshotName });
-          //   });
-          // });
         } else {
           dev.logverbose(
             `Screenshots already exist at path ${fullScreenshotPath}`
@@ -1197,34 +1207,62 @@ module.exports = (function () {
     return new Promise(function (resolve, reject) {
       dev.logfunction(`THUMBS — screenshotWebsite url ${url}`);
 
-      const { BrowserWindow } = require("electron");
+      /* puppeteer version: can’t work for now because of missing extensions */
+      let browser;
 
-      let win = new BrowserWindow({
-        // width: 800,
-        // height: 600,
-        width: 1800,
-        height: 1800,
-        show: false,
-        webPreferences: {
-          contextIsolation: true,
-          allowRunningInsecureContent: true,
-        },
-      });
-      win.loadURL(url);
-
-      win.webContents.on("did-stop-loading", async () => {
-        dev.logverbose(`THUMBS — _makeSTLScreenshot : finished loading page`);
-        // Use default printing options
-        setTimeout(() => {
-          win.capturePage().then((image) => {
-            win.close();
-            return resolve(image);
+      puppeteer
+        .launch({
+          headless: true,
+          ignoreHTTPSErrors: true,
+          args: ["--no-sandbox", "--font-render-hinting=none"],
+        })
+        .then((_browser) => {
+          browser = _browser;
+          return browser.newPage();
+        })
+        .then(async (page) => {
+          page.setViewport({
+            width: 1800,
+            height: 1800,
+            deviceScaleFactor: 2,
           });
-        }, 1000);
-      });
-      win.webContents.on("did-fail-load", (err) => {
-        return reject(err);
-      });
+
+          dev.logverbose(`THUMBS — screenshotWebsite : loading URL ${url}`);
+
+          function delay(duration) {
+            return new Promise((resolve) => {
+              setTimeout(() => resolve(), duration);
+            });
+          }
+
+          page
+            .goto(url, {
+              waitUntil: "domcontentloaded",
+            })
+            .then(() => delay(1500))
+            .then(async () => {
+              const image = await page.screenshot({
+                type: "png",
+                clip: {
+                  x: 0,
+                  y: 0,
+                  width: 1800,
+                  height: 1800,
+                },
+              });
+
+              dev.logverbose(`THUMBS — screenshotWebsite : created image`);
+              browser.close();
+              return resolve(image);
+            })
+            .catch((err) => {
+              browser.close();
+              dev.error(
+                `THUMBS — screenshotWebsite : failed to make STL screenshot = ${err}`
+              );
+              return reject();
+            });
+        });
     });
   }
 
