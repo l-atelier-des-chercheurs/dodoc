@@ -290,12 +290,10 @@ export default {
           }
 
           this.$nextTick(() => {
-            this.$root.settings.current_publication.accepted_media_type =
-              accepted_modes;
+            this.$root.settings.current_publication.accepted_media_type = accepted_modes;
           });
-        } else {
-          // this.$root.settings.current_publication.accepted_media_type = [];
         }
+        this.$root.settings.current_publication.accepted_media_type = [];
       },
       immediate: true,
     },
