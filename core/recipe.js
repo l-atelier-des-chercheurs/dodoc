@@ -1,10 +1,11 @@
 const fs = require("fs-extra"),
   path = require("path"),
   sharp = require("sharp"),
-  pathToFfmpeg = require("ffmpeg-static"),
+  { ffmpegPath, ffprobePath } = require("ffmpeg-ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg");
 
-ffmpeg.setFfmpegPath(pathToFfmpeg);
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   return {
