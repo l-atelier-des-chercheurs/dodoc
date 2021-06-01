@@ -37,6 +37,7 @@ Vue.use(PortalVue);
 import VueClipboard from "vue-clipboard2";
 Vue.use(VueClipboard);
 
+
 import VueI18n from "vue-i18n";
 Vue.use(VueI18n);
 
@@ -453,7 +454,8 @@ let vm = new Vue({
             this.store.request.type === "publications" &&
             this.store.request.slugFolderName
           ) {
-            this.settings.current_publication.slug = this.store.request.slugFolderName;
+            this.settings.current_publication.slug =
+              this.store.request.slugFolderName;
           }
         }
       );
@@ -547,7 +549,8 @@ let vm = new Vue({
       // });
 
       if (this.state.local_options.session_password === "has_pass") {
-        var session_storage_pwd = this.$auth.getSessionPasswordFromLocalStorage();
+        var session_storage_pwd =
+          this.$auth.getSessionPasswordFromLocalStorage();
         if (session_storage_pwd) {
           this.$socketio.connect(session_storage_pwd);
 
@@ -706,7 +709,8 @@ let vm = new Vue({
         let editing_media = {};
 
         if (this.media_modal.open) {
-          editing_media.slugFolderName = this.media_modal.current_slugProjectName;
+          editing_media.slugFolderName =
+            this.media_modal.current_slugProjectName;
           editing_media.metaFileName = this.media_modal.current_metaFileName;
         }
         this.updateClientInfo({
@@ -1025,8 +1029,8 @@ let vm = new Vue({
       const total_number_of_messages_in_chat = chat.number_of_medias;
 
       // find media with meta
-      const last_messages_read_in_channels = this.current_author
-        .last_messages_read_in_channels;
+      const last_messages_read_in_channels =
+        this.current_author.last_messages_read_in_channels;
 
       if (last_messages_read_in_channels) {
         const existing_info = last_messages_read_in_channels.find(
