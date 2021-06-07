@@ -81,7 +81,7 @@
     "rich-text": "^4.1.0",
     "sharedb": "^1.5.2",
     "sharedb-logger": "^0.1.4",
-    "sharp": "^0.26.3",
+    "sharp": "^0.28.3",
     "slugg": "^1.2.1",
     "socket.io": "^2.3.0",
     "source-map": "^0.7.3",
