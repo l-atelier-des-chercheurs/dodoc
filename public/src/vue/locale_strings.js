@@ -4,7 +4,7 @@ module.exports = (function () {
     // CAMERA
     "camera2 0, facing back": {
       fr: "Caméra arrière",
-      fr: "Back camera",
+      en: "Back camera",
       nl: "Camera naar achteren gericht",
       oc: "Camerà arrièra",
       de: "Rückfahrkamera",
