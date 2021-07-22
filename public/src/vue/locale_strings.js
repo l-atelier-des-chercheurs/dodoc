@@ -1313,7 +1313,6 @@ module.exports = (function () {
       nl: "Wachtwoord onthouden op dit toestel",
       oc: "Salvagardar per aqueste aparelh",
       de: "Passwort auf diesem Gerät speichern",
-      valié,
     },
     cooking_pot: {
       fr: "La marmite",
