@@ -3731,6 +3731,10 @@ module.exports = (function () {
       oc: "Raconte",
       de: "Erzählung",
     },
+    summary: {
+      fr: "Sommaire",
+      en: "Summary",
+    },
     stories: {
       fr: "Récits",
       en: "Stories",
