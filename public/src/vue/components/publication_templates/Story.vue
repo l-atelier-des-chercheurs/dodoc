@@ -39,6 +39,32 @@
           @close="$root.closePublication"
         />
 
+        <div class="margin-sides-medium padding-sides-small _summaryButton">
+          <button
+            type="button"
+            class="buttonLink"
+            :class="{
+              'is--active': show_summary,
+            }"
+            @click="show_summary = !show_summary"
+          >
+            {{ $t("summary") }}
+          </button>
+          <div v-if="show_summary" class="_summary">
+            <div v-for="(title, index) in summary" :key="index">
+              <button
+                type="button"
+                class="button-nostyle _summary--item"
+                @click="goToNode(title.node)"
+              >
+                <span :class="`_summary${title.tag}`">
+                  {{ title.text }}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="_story_insert_placeholders">
           <InsertMediaButton
             v-if="
@@ -194,6 +220,8 @@ export default {
       show_media_options: false,
       current_scroll: 0,
 
+      show_summary: false,
+
       el_index_currently_visible: {
         insert_button: 0,
         media_placeholder: 0,
@@ -272,12 +300,50 @@ export default {
       if (!!this.publication.date_submitted) return true;
       return false;
     },
-
     url_to_publi() {
       let url = this.$root.getURL();
       if (!url) return false;
       url.pathname = `_publications/survey/${this.publication.slugFolderName}`;
       return url;
+    },
+    summary() {
+      if (!this.$el) return [];
+      this.medias_in_order;
+
+      return [...this.$el.querySelectorAll("h1, h2, h3")].reduce(
+        (acc, node) => {
+          acc.push({
+            text: node.innerText,
+            node,
+            tag: node.tagName,
+          });
+          return acc;
+        },
+        []
+      );
+      // const text_medias = this.medias_in_order.filter((m) => m.type === "text");
+
+      // this.medias_in_order
+      //   .filter((m) => m.type === "text")
+      //   .reduce((acc, media) => {
+      //     if(media.content) {
+
+      //       // find all h1 and h2 in content
+      //       var div=document.createElement('div');
+      //       div.innerHTML=data;
+
+      //       acc.push()
+      //     }
+      //     return acc;
+      //   }, []);
+      // return [
+      //   {
+      //     title: "Titre 1",
+      //   },
+      //   {
+      //     title: "Titre 2",
+      //   },
+      // ];
     },
   },
   methods: {
@@ -315,7 +381,44 @@ export default {
       if (index === this.medias_in_order.length - 1) return "last";
       return "";
     },
+    goToNode(node) {
+      node.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+    },
   },
 };
 </script>
-<style></style>
+<style lang="scss">
+._summary {
+  background-color: var(--c-gris-tresclair);
+  margin: 0 calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4) 0 calc(var(--spacing) / 2);
+  border-radius: var(--input-border-radius);
+}
+._summary--item {
+  padding: 0 calc(var(--spacing) / 2);
+
+  margin: 0;
+}
+
+._summaryH1 {
+  font-weight: 700;
+  // font-size: 1.5em;
+}
+._summaryH2 {
+  padding-left: calc(var(--spacing));
+  // font-size: 1.25em;
+  // font-weight: 700;
+}
+._summaryH3 {
+  padding-left: calc(var(--spacing) * 2);
+  // font-weight: 500;
+
+  &::before {
+    content: "•";
+  }
+}
+</style>
