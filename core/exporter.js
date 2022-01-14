@@ -106,7 +106,7 @@ module.exports = (function () {
                         const media_filename = mediaMeta.media_filename;
 
                         tasks.push(
-                          new Promise((resolve, reject) => {
+                          new Promise((resolve) => {
                             const fullPathToMedia = path.join(
                               fullSlugFolderPath,
                               media_filename
@@ -216,7 +216,7 @@ module.exports = (function () {
                 resolve(cachePath);
               })
               .catch((err) => {
-                dev.error(`Failed to create cache folder: ${err}`);
+                dev.error(`Failed to copy to cache folder: ${err}`);
                 reject(err);
               });
           })
