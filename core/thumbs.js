@@ -1100,6 +1100,7 @@ module.exports = (function () {
       });
 
       win.loadURL(url);
+      win.webContents.setAudioMuted(true);
 
       win.webContents.on("did-finish-load", () => {
         dev.logverbose(`THUMBS — _getPageMetadata : finished loading page`);
@@ -1107,9 +1108,11 @@ module.exports = (function () {
         let code = `var promise = Promise.resolve(document.documentElement.innerHTML); 
                   promise.then(data => data)`;
 
+        if (!win || !win.webContents) return reject();
         win.webContents.executeJavaScript(code, true).then((html) => {
           // console.log(html); // will be your innherhtml
           const parsed_meta = _parseHTMLMetaTags({ html });
+          win.close();
           return resolve(parsed_meta);
         });
       });
