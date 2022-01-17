@@ -67,6 +67,7 @@
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
     "gulp-util": "^3.0.8",
+    "image-downloader": "^4.0.3",
     "ip-anonymize": "^0.1.0",
     "memory-cache": "^0.2.0",
     "moment": "^2.29.1",
