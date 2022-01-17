@@ -318,6 +318,7 @@ module.exports = (function () {
                           printSelectionOnly: false,
                         })
                         .then((data) => {
+                          win.close();
                           fs.writeFile(docPath, data, (error) => {
                             if (error) throw error;
 
