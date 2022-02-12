@@ -4,7 +4,8 @@ const path = require("path"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
   sharp = require("sharp"),
-  cheerio = require("cheerio");
+  cheerio = require("cheerio"),
+  download = require("image-downloader");
 
 sharp.cache(false);
 
@@ -341,12 +342,13 @@ module.exports = (function () {
                 filename,
                 mediaData,
               })
-                .then(({ title, description, image }) => {
+                .then(({ title, description, image, local_image }) => {
                   return resolve({
                     siteData: {
                       title,
                       description,
                       image,
+                      local_image,
                     },
                   });
                 })
@@ -1018,20 +1020,63 @@ module.exports = (function () {
                 results.title = _metadata.title;
               if (_metadata.hasOwnProperty("description"))
                 results.description = _metadata.description;
-              if (_metadata.hasOwnProperty("image"))
-                results.image = _metadata.image;
+              if (_metadata.hasOwnProperty("image")) {
+                let image_url;
+                if (typeof _metadata.image === "string")
+                  image_url = _metadata.image;
+                else if (
+                  typeof _metadata.image === "object" &&
+                  _metadata.image.hasOwnProperty("name")
+                )
+                  image_url = _metadata.image.name;
 
-              fs.writeFile(
-                meta_cache_fullpath,
-                JSON.stringify(results),
-                (error) => {
-                  if (error) return reject(error);
-                  dev.logverbose(
-                    `THUMBS — _getLinkOpenGraph : stored meta at ${meta_cache_fullpath}`
-                  );
-                  return resolve(results);
+                if (image_url) {
+                  results.image = image_url;
                 }
-              );
+              }
+
+              new Promise((resolve, reject) => {
+                if (results.image) {
+                  const image_ext = results.image.split(".").pop();
+                  const image_filename = "preview." + image_ext;
+
+                  let siteimage_cache_filename =
+                    api.slug(url) + "." + image_filename;
+                  let siteimage_cache_path = path.join(
+                    thumbFolderPath,
+                    siteimage_cache_filename
+                  );
+                  let siteimage_cache_fullpath =
+                    api.getFolderPath(siteimage_cache_path);
+
+                  download
+                    .image({
+                      url: results.image,
+                      dest: siteimage_cache_fullpath,
+                      extractFilename: false,
+                    })
+                    .then(() => {
+                      results.local_image = siteimage_cache_path;
+                      return resolve(results);
+                    })
+                    .catch((err) => {
+                      dev.error(`Couldn’t download site image : ${err}`);
+                      return resolve(results);
+                    });
+                } else return resolve(results);
+              }).then(() => {
+                fs.writeFile(
+                  meta_cache_fullpath,
+                  JSON.stringify(results),
+                  (error) => {
+                    if (error) return reject(error);
+                    dev.logverbose(
+                      `THUMBS — _getLinkOpenGraph : stored meta at ${meta_cache_fullpath}`
+                    );
+                    return resolve(results);
+                  }
+                );
+              });
             })
             .catch((err) => {
               return reject(err);
@@ -1045,7 +1090,8 @@ module.exports = (function () {
             meta_cache_fullpath,
             global.settings.textEncoding,
             (err, results) => {
-              return resolve(JSON.parse(results));
+              if (results) return resolve(JSON.parse(results));
+              return resolve({});
             }
           );
         }
@@ -1113,6 +1159,12 @@ module.exports = (function () {
     var keys = Object.keys(meta);
 
     var result = {};
+
+    dev.logverbose(
+      `THUMBS — _parseHTMLMetaTags : using cheerio to parse HTML tags ${keys.join(
+        ","
+      )}`
+    );
 
     keys.forEach(function (key) {
       if (
