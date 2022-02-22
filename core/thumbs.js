@@ -1006,6 +1006,12 @@ module.exports = (function () {
         if (!exists) {
           _getPageMetadata({ url })
             .then((_metadata) => {
+              function endsWithAny(suffixes, string) {
+                return suffixes.some(function (suffix) {
+                  return string.endsWith(suffix);
+                });
+              }
+
               let results = {};
               if (_metadata.hasOwnProperty("title"))
                 results.title = _metadata.title;
@@ -1024,6 +1030,11 @@ module.exports = (function () {
                 if (image_url) {
                   results.image = image_url;
                 }
+              }
+
+              if (!results.image) {
+                if (endsWithAny([".jpg", ".jpeg", ".png", ".gif"], url))
+                  results.image = url;
               }
 
               new Promise((resolve, reject) => {
@@ -1045,13 +1056,16 @@ module.exports = (function () {
                       url: results.image,
                       dest: siteimage_cache_fullpath,
                       extractFilename: false,
+                      rejectUnauthorized: false,
                     })
                     .then(() => {
                       results.local_image = siteimage_cache_path;
                       return resolve(results);
                     })
                     .catch((err) => {
-                      dev.error(`Couldn’t download site image : ${err}`);
+                      dev.error(
+                        `Couldn’t download site image ${results.image} to ${siteimage_cache_fullpath} : ${err}`
+                      );
                       return resolve(results);
                     });
                 } else return resolve(results);
@@ -1103,13 +1117,15 @@ module.exports = (function () {
       win.loadURL(url);
       win.webContents.setAudioMuted(true);
 
-      win.webContents.on("did-finish-load", () => {
+      win.webContents.once("did-finish-load", () => {
         dev.logverbose(`THUMBS — _getPageMetadata : finished loading page`);
 
         let code = `var promise = Promise.resolve(document.documentElement.innerHTML); 
                   promise.then(data => data)`;
 
-        if (!win || !win.webContents) return reject();
+        if (!win || win.isDestroyed() || !win.webContents) {
+          return reject();
+        }
         win.webContents.executeJavaScript(code, true).then((html) => {
           // console.log(html); // will be your innherhtml
           const parsed_meta = _parseHTMLMetaTags({ html });
@@ -1117,7 +1133,7 @@ module.exports = (function () {
           return resolve(parsed_meta);
         });
       });
-      win.webContents.on(
+      win.webContents.once(
         "did-fail-load",
         (event, code, desc, url, isMainFrame) => {
           dev.error(
@@ -1133,52 +1149,82 @@ module.exports = (function () {
 
   function _parseHTMLMetaTags({ html }) {
     var $ = cheerio.load(html);
-
-    var meta = $("meta");
-    var keys = Object.keys(meta);
-
-    var result = {};
+    var page_meta = {};
 
     dev.logverbose(
-      `THUMBS — _parseHTMLMetaTags : using cheerio to parse HTML tags ${keys.join(
-        ","
-      )}`
+      `THUMBS — _parseHTMLMetaTags : using cheerio to parse HTML tags`
     );
 
-    keys.forEach(function (key) {
-      if (
-        meta[key].attribs &&
-        meta[key].attribs.property &&
-        meta[key].attribs.property.indexOf("og") == 0
-      ) {
-        var og = meta[key].attribs.property.split(":");
+    if ($('meta[property="og:title"]').attr("content")) {
+      page_meta.title = $('meta[property="og:title"]').attr("content");
+    } else if ($("title").text()) {
+      page_meta.title = $("title").text();
+    }
 
-        if (og.length > 2) {
-          if (result[og[1]]) {
-            if (
-              typeof result[og[1]] == "string" ||
-              result[og[1]] instanceof String
-            ) {
-              var set = {};
-              set["name"] = result[og[1]];
-              set[og[2]] = meta[key].attribs.content;
-              result[og[1]] = set;
-            } else {
-              ex_set = result[og[1]];
-              ex_set[og[2]] = meta[key].attribs.content;
-              result[og[1]] = ex_set;
-            }
-          } else {
-            var set = {};
-            set[og[2]] = meta[key].attribs.content;
-            result[og[1]] = set;
-          }
-        } else {
-          result[og[1]] = meta[key].attribs.content;
-        }
-      }
-    });
-    return result;
+    if ($('meta[property="og:description"]').attr("content")) {
+      page_meta.description = $('meta[property="og:description"]').attr(
+        "content"
+      );
+    } else if ($('meta[name="description"]').attr("content")) {
+      page_meta.description = $('meta[name="description"]').attr("content");
+    }
+
+    if ($('meta[property="og:image"]').attr("content")) {
+      page_meta.image = $('meta[property="og:image"]').attr("content");
+    }
+
+    // see https://gist.github.com/waltir/82c94c834de630f9030f95f1d8ba81cf#file-cheerio_meta-js
+    //   let post = {
+    //     title: $('h1').text(),
+    //     canonical: $('link[rel="canonical"]').attr('href'),
+    //     description: $('meta[name="description"]').attr('content'),
+    //     // Get OG Values
+    //     og_title: $('meta[property="og:title"]').attr('content'),
+    //     og_url: $('meta[property="og:url"]').attr('content'),
+    //     og_img: $('meta[property="og:image"]').attr('content'),
+    //     og_type: $('meta[property="og:type"]').attr('content'),
+    //     // Get Twitter Values
+    //     twitter_site: $('meta[name="twitter:site"]').attr('content'),
+    //     twitter_domain: $('meta[name="twitter:domain"]').attr('content'),
+    //     twitter_img_src: $('meta[name="twitter:image:src"]').attr('content'),
+    //     // Get Facebook Values
+    //     fb_appid: $('meta[property="fb:app_id"]').attr('content'),
+    //     fb_pages: $('meta[property="fb:pages"]').attr('content'),
+    // }
+    // keys.forEach(function (key) {
+    //   if (
+    //     meta[key].attribs &&
+    //     meta[key].attribs.property &&
+    //     meta[key].attribs.property.indexOf("og") == 0
+    //   ) {
+    //     var og = meta[key].attribs.property.split(":");
+
+    //     if (og.length > 2) {
+    //       if (result[og[1]]) {
+    //         if (
+    //           typeof result[og[1]] == "string" ||
+    //           result[og[1]] instanceof String
+    //         ) {
+    //           var set = {};
+    //           set["name"] = result[og[1]];
+    //           set[og[2]] = meta[key].attribs.content;
+    //           result[og[1]] = set;
+    //         } else {
+    //           ex_set = result[og[1]];
+    //           ex_set[og[2]] = meta[key].attribs.content;
+    //           result[og[1]] = ex_set;
+    //         }
+    //       } else {
+    //         var set = {};
+    //         set[og[2]] = meta[key].attribs.content;
+    //         result[og[1]] = set;
+    //       }
+    //     } else {
+    //       result[og[1]] = meta[key].attribs.content;
+    //     }
+    //   }
+    // });
+    return page_meta;
   }
 
   function _makeLinkThumb({
