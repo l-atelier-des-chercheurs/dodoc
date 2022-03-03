@@ -647,104 +647,43 @@ module.exports = (function () {
     },
     readMediaAndThumbs: ({ type, slugFolderName, metaFileName }) =>
       readMediaAndThumbs({ type, slugFolderName, metaFileName }),
-    readMediaList: ({ type, medias_list }) => {
-      return new Promise(function (resolve, reject) {
-        dev.logfunction(
-          `COMMON — readMediaList: medias_list = ${JSON.stringify(
-            medias_list
-          )}}`
-        );
+    readMediaList: async ({ type, medias_list }) => {
+      dev.logfunction(
+        `COMMON — readMediaList: medias_list = ${JSON.stringify(medias_list)}}`
+      );
 
-        if (medias_list.length === 0) {
-          return resolve({});
-        }
+      if (medias_list.length === 0) {
+        return {};
+      }
 
-        var allMediasData = [];
-        medias_list.forEach(({ slugFolderName, metaFileName }) => {
-          if (!slugFolderName || !metaFileName) {
-            return;
-          }
+      let folders_and_medias = {};
 
-          let fmeta = new Promise((resolve, reject) => {
-            readMediaAndThumbs({
-              type,
-              slugFolderName,
-              metaFileName,
-            }).then((meta) => {
-              if (!meta) {
-                // case of non-existent media
-                // we need to return the absence of meta for this media
-                return resolve({
-                  slugFolderName,
-                  mediaMeta: {
-                    metaFileName,
-                    _isAbsent: true,
-                  },
-                });
-              }
-              meta.metaFileName = metaFileName;
-              resolve({
-                slugFolderName,
-                mediaMeta: meta,
-              });
-            });
-          });
-          allMediasData.push(fmeta);
+      for (const { slugFolderName, metaFileName } of medias_list) {
+        if (!slugFolderName || !metaFileName) return;
+
+        if (!folders_and_medias.hasOwnProperty(slugFolderName))
+          folders_and_medias[slugFolderName] = {
+            medias: {},
+          };
+
+        let meta = await readMediaAndThumbs({
+          type,
+          slugFolderName,
+          metaFileName,
         });
 
-        Promise.all(allMediasData)
-          .then((mediasMeta) => {
-            dev.logverbose(
-              `readMediaList: gathered all metas, now processing : 
-              `
-            );
-            // ${
-            //     JSON.stringify(
-            //     mediasMeta,
-            //     null,
-            //     4
-            //   )
-            //   }
+        if (!meta)
+          // case of non-existent media
+          // we need to return the absence of meta for this media
+          meta = {
+            _isAbsent: true,
+          };
+        meta.metaFileName = metaFileName;
 
-            // reunite array items as a single big object
-            let folders_and_medias = {};
+        folders_and_medias[slugFolderName].medias[metaFileName] = meta;
+      }
 
-            mediasMeta.map((d) => {
-              // dev.logverbose(
-              //   `readMediaList: analyzing ${JSON.stringify(d, null, 4)}`
-              // );
-
-              if (Object.keys(d).length === 0 && d.constructor === Object) {
-                return;
-              }
-
-              const slugFolderName = d.slugFolderName;
-              const mediaMeta = d.mediaMeta;
-              const metaFileName = mediaMeta.metaFileName;
-
-              if (!folders_and_medias.hasOwnProperty(slugFolderName)) {
-                folders_and_medias[slugFolderName] = {
-                  medias: {},
-                };
-              }
-
-              // if original media is absent (for example, a publication that lists medias that aren’t there anymore)
-              folders_and_medias[slugFolderName].medias[metaFileName] =
-                mediaMeta;
-              return;
-            });
-
-            dev.logverbose(
-              `All medias meta have been processed`
-              // JSON.stringify(folders_and_medias, null, 4)
-            );
-            resolve(folders_and_medias);
-          })
-          .catch((err) => {
-            dev.error(`Failed readMediaList with ${err}`);
-            reject();
-          });
-      });
+      return folders_and_medias;
     },
 
     createMediaMeta: ({ type, slugFolderName, additionalMeta }) => {
