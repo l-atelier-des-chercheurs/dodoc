@@ -71,7 +71,7 @@
     "memory-cache": "^0.2.0",
     "moment": "^2.29.1",
     "node-abi": "^2.19.3",
-    "node-fetch": "^3.2.1",
+    "node-fetch": "^2.6.7",
     "node-localstorage": "^2.1.6",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
