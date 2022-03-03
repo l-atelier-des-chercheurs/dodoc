@@ -5,7 +5,8 @@ const path = require("path"),
   exifReader = require("exif-reader"),
   sharp = require("sharp"),
   cheerio = require("cheerio"),
-  download = require("image-downloader");
+  fetch = require("node-fetch"),
+  https = require("https");
 
 sharp.cache(false);
 
@@ -975,139 +976,116 @@ module.exports = (function () {
     });
   }
 
-  function _getLinkOpenGraph({
+  async function _getLinkOpenGraph({
     slugFolderName,
     thumbFolderPath,
     filename,
     mediaData,
   }) {
-    return new Promise(function (resolve, reject) {
-      dev.logfunction(
-        `THUMBS — _getLinkOpenGraph: ${slugFolderName}/${filename}`
+    dev.logfunction(
+      `THUMBS — _getLinkOpenGraph: ${slugFolderName}/${filename}`
+    );
+
+    let url = mediaData.content;
+    if (!url) {
+      dev.error(`THUMBS — _getLinkOpenGraph / no URL`);
+      throw `no url`;
+    }
+
+    function addhttp(url) {
+      if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
+      return url;
+    }
+    url = addhttp(url);
+
+    let meta_cache_filename = `${api.slug(url)}.sitemeta.json`;
+    let meta_cache_path = path.join(thumbFolderPath, meta_cache_filename);
+    let meta_cache_fullpath = api.getFolderPath(meta_cache_path);
+
+    if (await fs.pathExists(meta_cache_fullpath)) {
+      dev.logverbose(
+        `Site metadata already exist at path ${meta_cache_fullpath}`
       );
 
-      let url = mediaData.content;
-      if (!url) {
-        dev.error(`THUMBS — _getLinkOpenGraph / no URL`);
-        return reject(`no url`);
+      try {
+        const results = await fs.readFileSync(
+          meta_cache_fullpath,
+          global.settings.textEncoding
+        );
+        return JSON.parse(results);
+      } catch (err) {
+        dev.error(`Err while reading stored opengraph meta: ${err}`);
+        return {};
       }
+    }
 
-      function addhttp(url) {
-        if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
-        return url;
-      }
-      url = addhttp(url);
+    let results = {};
 
-      let meta_cache_filename = `${api.slug(url)}.sitemeta.json`;
-      let meta_cache_path = path.join(thumbFolderPath, meta_cache_filename);
-      let meta_cache_fullpath = api.getFolderPath(meta_cache_path);
-
-      fs.pathExists(meta_cache_fullpath).then((exists) => {
-        if (!exists) {
-          _getPageMetadata({ url })
-            .then((_metadata) => {
-              function endsWithAny(suffixes, string) {
-                return suffixes.some(function (suffix) {
-                  return string.endsWith(suffix);
-                });
-              }
-
-              let results = {};
-              if (_metadata.hasOwnProperty("title"))
-                results.title = _metadata.title;
-              if (_metadata.hasOwnProperty("description"))
-                results.description = _metadata.description;
-              if (_metadata.hasOwnProperty("image")) {
-                let image_url;
-                if (typeof _metadata.image === "string")
-                  image_url = _metadata.image;
-                else if (
-                  typeof _metadata.image === "object" &&
-                  _metadata.image.hasOwnProperty("name")
-                )
-                  image_url = _metadata.image.name;
-
-                if (image_url) {
-                  results.image = image_url;
-                }
-              }
-
-              if (!results.image) {
-                if (endsWithAny([".jpg", ".jpeg", ".png", ".gif"], url))
-                  results.image = url;
-              }
-
-              new Promise((resolve, reject) => {
-                if (results.image) {
-                  const image_ext = results.image.split(".").pop();
-                  const image_filename = "preview." + image_ext;
-
-                  let siteimage_cache_filename =
-                    api.slug(url) + "." + image_filename;
-                  let siteimage_cache_path = path.join(
-                    thumbFolderPath,
-                    siteimage_cache_filename
-                  );
-                  let siteimage_cache_fullpath =
-                    api.getFolderPath(siteimage_cache_path);
-
-                  download
-                    .image({
-                      url: results.image,
-                      dest: siteimage_cache_fullpath,
-                      extractFilename: false,
-                      rejectUnauthorized: false,
-                    })
-                    .then(() => {
-                      results.local_image = siteimage_cache_path;
-                      return resolve(results);
-                    })
-                    .catch((err) => {
-                      dev.error(
-                        `Couldn’t download site image ${results.image} to ${siteimage_cache_fullpath} : ${err}`
-                      );
-                      return resolve(results);
-                    });
-                } else return resolve(results);
-              }).then(() => {
-                fs.writeFile(
-                  meta_cache_fullpath,
-                  JSON.stringify(results),
-                  (error) => {
-                    if (error) return reject(error);
-                    dev.logverbose(
-                      `THUMBS — _getLinkOpenGraph : stored meta at ${meta_cache_fullpath}`
-                    );
-                    return resolve(results);
-                  }
-                );
-              });
-            })
-            .catch((err) => {
-              return reject(err);
-            });
-        } else {
-          dev.logverbose(
-            `Site metadata already exist at path ${meta_cache_fullpath}`
-          );
-
-          fs.readFile(
-            meta_cache_fullpath,
-            global.settings.textEncoding,
-            (err, results) => {
-              if (results) return resolve(JSON.parse(results));
-              return resolve({});
-            }
-          );
-        }
-      });
-      // if image
+    const _metadata = await _getPageMetadata({ url }).catch((err) => {
+      dev.error(`THUMBS — _getLinkOpenGraph / failed loading meta ${err}`);
     });
+
+    if (_metadata && _metadata.hasOwnProperty("title"))
+      results.title = _metadata.title;
+    if (_metadata && _metadata.hasOwnProperty("description"))
+      results.description = _metadata.description;
+
+    if (_metadata && _metadata.hasOwnProperty("image")) {
+      let image_url;
+      if (typeof _metadata.image === "string") image_url = _metadata.image;
+      else if (
+        typeof _metadata.image === "object" &&
+        _metadata.image.hasOwnProperty("name")
+      )
+        image_url = _metadata.image.name;
+
+      if (image_url) results.image = image_url;
+    }
+
+    if (!results.image) {
+      function endsWithAny(suffixes, string) {
+        return suffixes.some(function (suffix) {
+          return string.endsWith(suffix);
+        });
+      }
+
+      if (endsWithAny([".jpg", ".jpeg", ".png", ".gif"], url))
+        results.image = url;
+    }
+
+    if (results.image) {
+      try {
+        results.local_image = await _fetchImage({
+          thumbFolderPath,
+          site_url: url,
+          image_url: results.image,
+        });
+      } catch (err) {
+        dev.error(
+          `Couldn’t download site image ${url} to ${thumbFolderPath} : ${err}`
+        );
+      }
+    }
+
+    try {
+      await fs.writeFileSync(meta_cache_fullpath, JSON.stringify(results));
+      dev.logverbose(
+        `THUMBS — _getLinkOpenGraph : stored meta ${JSON.stringify(
+          results
+        )} at ${meta_cache_fullpath}`
+      );
+      return results;
+    } catch (err) {
+      dev.error(
+        `THUMBS — _getLinkOpenGraph : failed storing meta at ${meta_cache_fullpath} : ${err}`
+      );
+      throw err;
+    }
   }
 
   function _getPageMetadata({ url }) {
     return new Promise((resolve, reject) => {
-      dev.logfunction(`THUMBS — _getPageMetadata: ${url}`);
+      dev.logfunction(`THUMBS — _getPageMetadata : ${url}`);
 
       const { BrowserWindow } = require("electron");
       let win = new BrowserWindow({
@@ -1117,8 +1095,19 @@ module.exports = (function () {
       win.loadURL(url);
       win.webContents.setAudioMuted(true);
 
+      let page_timeout = setTimeout(() => {
+        clearTimeout(page_timeout);
+        dev.error(`THUMBS — _getPageMetadata : page timeout for ${url}`);
+        win.close();
+        return reject();
+      }, 10_000);
+
       win.webContents.once("did-finish-load", () => {
-        dev.logverbose(`THUMBS — _getPageMetadata : finished loading page`);
+        dev.logverbose(
+          `THUMBS — _getPageMetadata : finished loading page ${url}`
+        );
+
+        clearTimeout(page_timeout);
 
         let code = `var promise = Promise.resolve(document.documentElement.innerHTML); 
                   promise.then(data => data)`;
@@ -1139,6 +1128,7 @@ module.exports = (function () {
           dev.error(
             `THUMBS — _getPageMetadata / Failed to load link page for ${url}`
           );
+          clearTimeout(page_timeout);
           dev.error("did-fail-load: ", event, code, desc, url, isMainFrame);
           win.close();
           return reject();
@@ -1171,8 +1161,13 @@ module.exports = (function () {
 
     if ($('meta[property="og:image"]').attr("content")) {
       page_meta.image = $('meta[property="og:image"]').attr("content");
+    } else if ($('meta[name="og:image"]').attr("content")) {
+      page_meta.image = $('meta[name="og:image"]').attr("content");
+    } else if ($('link[rel="shortcut icon"]').attr("href")) {
+      page_meta.image = $('link[rel="shortcut icon"][type="image/png"]').attr(
+        "href"
+      );
     }
-
     // see https://gist.github.com/waltir/82c94c834de630f9030f95f1d8ba81cf#file-cheerio_meta-js
     //   let post = {
     //     title: $('h1').text(),
@@ -1347,6 +1342,43 @@ module.exports = (function () {
         }
       });
     });
+  }
+
+  async function _fetchImage({ thumbFolderPath, site_url, image_url }) {
+    dev.logfunction(`THUMBS — _fetchImage: ${thumbFolderPath} to ${image_url}`);
+
+    const url = new URL(image_url, site_url).href;
+
+    const image_ext = url.split(".").pop();
+    const image_filename = "preview." + image_ext;
+
+    let siteimage_cache_filename = api.slug(url) + "." + image_filename;
+    let siteimage_cache_path = path.join(
+      thumbFolderPath,
+      siteimage_cache_filename
+    );
+    let siteimage_cache_fullpath = api.getFolderPath(siteimage_cache_path);
+
+    let headers = {};
+    if (url.includes("https://"))
+      headers.agent = new https.Agent({
+        rejectUnauthorized: false,
+      });
+
+    try {
+      const fimg = await fetch(url, headers);
+      const fimgb = await fimg.buffer();
+      await _createOrGetImageThumb({
+        mediaPath: fimgb,
+        fullThumbPath: siteimage_cache_fullpath,
+        thumbRes: 1400,
+      });
+      dev.logverbose(`THUMBS — _fetchImage: image fetched`);
+      return siteimage_cache_path;
+    } catch (err) {
+      dev.error(`THUMBS — _fetchImage: ${err}`);
+      throw err;
+    }
   }
 
   return API;
