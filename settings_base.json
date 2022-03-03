@@ -6,6 +6,7 @@
   "userDirPath": "documents",
   "userDirname": "dodoc2",
   "cache_content": true,
+  "removePermanently": false,
 
   "contentDirname": "user",
   "cacheDirname": "dodoc_cache",

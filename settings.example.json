@@ -1,6 +1,7 @@
 {
   "desired_port": 8080,
   "userDirname": "dodoc2",
+  "removePermanently": false,
 
   "api": {
     "enabled": false,
