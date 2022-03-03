@@ -395,7 +395,13 @@ module.exports = (function () {
       })
       .catch((err) => {
         dev.error(`Failed to remove folder: ${err}`);
-        reject(err);
+        notify({
+          socket,
+          socketid: socket.id,
+          localized_string: `action_not_allowed`,
+          not_localized_string: `Error: removing folder failed ${slugFolderName} ${err}`,
+          type: "error",
+        });
       });
 
     changelog.append({
