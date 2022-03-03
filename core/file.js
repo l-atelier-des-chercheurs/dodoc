@@ -30,490 +30,216 @@ module.exports = (function () {
         });
       });
     },
-    getFolder: ({ type, slugFolderName }) => {
-      return new Promise(function (resolve, reject) {
-        dev.logfunction(
-          `COMMON — getFolder type = ${type} with slugFolderName = ${slugFolderName}`
+    getFolder: async ({ type, slugFolderName }) => {
+      if (!slugFolderName)
+        dev.error(`COMMON — getFolder / missing slugFolderName`);
+
+      dev.logfunction(
+        `COMMON — getFolder type = ${type} with slugFolderName = ${slugFolderName}`
+      );
+
+      const cached = cache.get({ type, slugFolderName });
+      if (cached) {
+        dev.logverbose(
+          `COMMON — getFolder / returning cache instead of parsing files.`
         );
+        return { [slugFolderName]: cached };
+      }
 
-        if (!global.settings.structure.hasOwnProperty(type)) {
-          return reject(`Missing type ${type} in global.settings.json`);
-        }
+      const folder_path = api.getFullPath({ type, slugFolderName });
+      const metaFolderPath = path.join(folder_path, "meta.txt");
 
-        const baseFolderPath = global.settings.structure[type].path;
-        const mainFolderPath = api.getFolderPath(baseFolderPath);
+      /*** ****/
+      let folder_meta = await _readMetaFile(metaFolderPath);
+      folder_meta = _sanitizeMetaFromFile({ type, meta: folder_meta });
+      folder_meta.slugFolderName = slugFolderName;
 
-        _getFolderSlugs(mainFolderPath).then((folders) => {
-          if (folders.length === 0) {
-            resolve();
-          }
+      if (global.settings.structure[type].hasOwnProperty("medias"))
+        folder_meta.medias = {};
 
-          var allFoldersData = [];
+      // For each folder, find a preview (if it exists)
+      if (global.settings.structure[type].hasOwnProperty("preview")) {
+        dev.logverbose(`Finding preview for folder = ${slugFolderName}`);
+        const preview = await _getFolderPreview({ type, slugFolderName });
+        if (preview) folder_meta.preview = preview;
+      }
 
-          if (
-            slugFolderName !== undefined &&
-            folders.includes(slugFolderName)
-          ) {
-            folders = [slugFolderName];
-          }
-
-          folders.forEach((slugFolderName) => {
-            const thisFolderPath = path.join(mainFolderPath, slugFolderName);
-
-            const cached = cache.get({ type, slugFolderName });
-            if (cached) {
-              dev.logverbose(
-                `COMMON — getFolder / returning cache instead of parsing files.`
-              );
-              if (slugFolderName) {
-                allFoldersData.push({ [slugFolderName]: cached });
-              } else {
-                allFoldersData.push(cached);
-              }
-            } else {
-              // For each folder, read their meta file
-              allFoldersData.push(
-                new Promise((resolve, reject) => {
-                  dev.logverbose(`Finding meta for folder = ${thisFolderPath}`);
-                  const metaFolderPath = path.join(
-                    thisFolderPath,
-                    global.settings.folderMetaFilename +
-                      global.settings.metaFileext
-                  );
-
-                  readMetaFile(metaFolderPath)
-                    .then((meta) => {
-                      meta = _sanitizeMetaFromFile({ type, meta });
-                      meta.slugFolderName = slugFolderName;
-
-                      if (
-                        global.settings.structure[type].hasOwnProperty("medias")
-                      ) {
-                        meta.medias = {};
-                      }
-
-                      // meta.fullFolderPath = thisFolderPath;
-
-                      resolve({ [slugFolderName]: meta });
-                    })
-                    .catch((err) => {
-                      dev.error(
-                        `Couldn’t read folder meta, most probably because it doesn’t exist: ${err}`
-                      );
-                      resolve({});
-                    });
-                })
-              );
-
-              // For each folder, find a preview (if it exists)
-              if (global.settings.structure[type].hasOwnProperty("preview")) {
-                allFoldersData.push(
-                  new Promise((resolve, reject) => {
-                    dev.logverbose(
-                      `Finding preview for folder = ${slugFolderName}`
-                    );
-
-                    const preview_name =
-                      global.settings.folderPreviewFilename +
-                      global.settings.thumbExt;
-                    const pathToPreview = path.join(
-                      thisFolderPath,
-                      preview_name
-                    );
-
-                    fs.access(pathToPreview, fs.F_OK, (err) => {
-                      if (err) {
-                        return resolve();
-                      }
-
-                      thumbs
-                        .makeMediaThumbs(
-                          slugFolderName,
-                          preview_name,
-                          "image",
-                          type,
-                          "preview"
-                        )
-                        .then((thumbData) => {
-                          resolve({
-                            [slugFolderName]: {
-                              preview: thumbData,
-                            },
-                          });
-                        })
-                        .catch((err) => {
-                          resolve();
-                        });
-                    });
-                  })
-                );
-              }
-
-              // For each folder, find how many medias they have
-              if (
-                global.settings.structure[type].hasOwnProperty("medias") &&
-                global.settings.structure[type].fields.hasOwnProperty(
-                  "number_of_medias"
-                )
-              ) {
-                allFoldersData.push(
-                  new Promise((resolve, reject) => {
-                    dev.logverbose(`Figuring out how many medias they have`);
-                    API.getMediaMetaNames({ type, slugFolderName }).then(
-                      (list_metaFileName) => {
-                        resolve({
-                          [slugFolderName]: {
-                            number_of_medias: list_metaFileName.length,
-                          },
-                        });
-                      }
-                    );
-                  })
-                );
-              }
-            }
-          });
-          Promise.all(allFoldersData).then((parsedFoldersData) => {
-            dev.logverbose(`All folders meta have been processed`);
-
-            // on se balade dans l’array, on attrappe la key
-            // et on merge tout ça dans un nouvel objet du type :
-            /*
-              { 
-                mon-dossier: {
-                  name: "Mon Dossier",
-                  date_crated: "",
-                  preview: "meta_preview.jpeg"
-                },
-                mon-deuxième-dossier: { 
-
-                }
-              }
-            */
-            // Reunite array items as a single big object
-            let flatObjFoldersData = {};
-            parsedFoldersData.forEach((fmeta) => {
-              if (!!fmeta && Object.keys(fmeta).length > 0) {
-                let slugFolderName = Object.keys(fmeta)[0];
-                if (!flatObjFoldersData.hasOwnProperty(slugFolderName)) {
-                  flatObjFoldersData[slugFolderName] = {};
-                }
-                Object.assign(
-                  flatObjFoldersData[slugFolderName],
-                  fmeta[slugFolderName]
-                );
-              }
-            });
-
-            Object.keys(flatObjFoldersData).forEach((slugFolderName) => {
-              cache.put(
-                { type, slugFolderName },
-                JSON.parse(JSON.stringify(flatObjFoldersData[slugFolderName]))
-              );
-            });
-
-            resolve(flatObjFoldersData);
-          });
+      if (
+        global.settings.structure[type].hasOwnProperty("medias") &&
+        global.settings.structure[type].fields.hasOwnProperty(
+          "number_of_medias"
+        )
+      ) {
+        const list_metaFileName = await API.getMediaMetaNames({
+          type,
+          slugFolderName,
         });
-      });
+        folder_meta.number_of_medias = list_metaFileName.length;
+      }
+
+      cache.put({ type, slugFolderName }, folder_meta);
+      return { [slugFolderName]: folder_meta };
     },
-    createFolder: ({ type, data }) => {
-      return new Promise(function (resolve, reject) {
-        dev.logfunction(
-          `COMMON — createFolder : will create a new folder for type = ${type} with: ${JSON.stringify(
-            data,
-            null,
-            4
-          )}`
-        );
+    getFolders: async ({ type }) => {
+      dev.logfunction(`COMMON — getFolders type = ${type}`);
 
-        if (!data.hasOwnProperty("name")) {
-          data.name = "Untitled Folder";
-        }
+      if (!global.settings.structure.hasOwnProperty(type))
+        throw `Missing type ${type} in global.settings.json`;
 
-        if (!global.settings.structure.hasOwnProperty(type)) {
-          return reject(`Missing type ${type} in global.settings.json`);
-        }
+      const folder_slugs = await _getFolderSlugs({ type });
+      if (folder_slugs.length === 0) return {};
 
-        const baseFolderPath = global.settings.structure[type].path;
-        const mainFolderPath = api.getFolderPath(baseFolderPath);
+      let all_folders_data = {};
+      for (let slugFolderName of folder_slugs) {
+        const folder_meta = await API.getFolder({ type, slugFolderName });
+        Object.assign(all_folders_data, folder_meta);
+      }
 
-        _getFolderSlugs(mainFolderPath).then((folders) => {
-          const reference_name = data.hasOwnProperty("desired_foldername")
-            ? data.desired_foldername
-            : data.name;
-          let slugFolderName = api.slug(reference_name);
-          if (slugFolderName === "") {
-            slugFolderName = "untitled";
-          }
+      return all_folders_data;
+    },
+    createFolder: async ({ type, data }) => {
+      dev.logfunction(
+        `COMMON — createFolder : will create a new folder 
+        for type = ${type} with: ${JSON.stringify(data)}`
+      );
 
-          if (folders.length > 0) {
-            let index = 0;
-            let newSlugFolderName = slugFolderName;
-            while (folders.indexOf(newSlugFolderName) !== -1) {
-              index++;
-              newSlugFolderName = `${slugFolderName}-${index}`;
-            }
-            slugFolderName = newSlugFolderName;
-            dev.logverbose(`Proposed slug: ${slugFolderName}`);
-          }
+      if (!data.hasOwnProperty("name")) data.name = "Untitled Folder";
+      if (!global.settings.structure.hasOwnProperty(type))
+        throw `Missing type ${type} in global.settings.json`;
 
-          const thisFolderPath = path.join(mainFolderPath, slugFolderName);
-          dev.logverbose(`Making a new folder at path ${thisFolderPath}`);
+      let slugFolderName = data.hasOwnProperty("desired_foldername")
+        ? api.slug(data.desired_foldername)
+        : api.slug(data.name);
+      if (slugFolderName === "") slugFolderName = api.slug(`untitled-${type}`);
 
-          fs.ensureDir(thisFolderPath)
-            .then(() => {
-              let tasks = [];
+      slugFolderName = await _preventFolderOverride({
+        type,
+        slugFolderName,
+      });
 
-              if (
-                data.hasOwnProperty("preview_rawdata") &&
-                global.settings.structure[type].hasOwnProperty("preview")
-              ) {
-                tasks.push(
-                  _storeFoldersPreview(
-                    slugFolderName,
-                    type,
-                    data.preview_rawdata
-                  )
-                );
-              }
+      const folder_path = api.getFullPath({ type, slugFolderName });
+      dev.logverbose(`Making a new folder at path ${folder_path}`);
 
-              tasks.push(
-                new Promise(function (resolve, reject) {
-                  data = _makeDefaultMetaFromStructure({
-                    type,
-                    method: "create",
-                    existing: data,
-                  });
+      await fs.ensureDir(folder_path);
 
-                  const metaFolderPath = path.join(
-                    thisFolderPath,
-                    global.settings.folderMetaFilename +
-                      global.settings.metaFileext
-                  );
+      if (
+        data.hasOwnProperty("preview_rawdata") &&
+        global.settings.structure[type].hasOwnProperty("preview")
+      )
+        await _storeFoldersPreview(slugFolderName, type, data.preview_rawdata);
 
-                  api
-                    .storeData(metaFolderPath, data, "create")
-                    .then(function (meta) {
-                      dev.logverbose(
-                        `New folder meta file created at path: ${metaFolderPath} with meta: ${JSON.stringify(
-                          meta,
-                          null,
-                          4
-                        )}`
-                      );
-                      resolve();
-                    })
-                    .catch((err) => {
-                      reject(err);
-                    });
-                })
-              );
+      data = _makeDefaultMetaFromStructure({
+        type,
+        method: "create",
+        existing: data,
+      });
 
-              Promise.all(tasks).then(() => {
-                resolve(slugFolderName);
-              });
-            })
-            .catch((err) => {
-              dev.error(`Failed to create folder ${slugFolderName}: ${err}`);
-              reject(err);
-            });
+      const meta_path = path.join(folder_path, "meta.txt");
+
+      const meta = await api
+        .storeData(meta_path, data, "create")
+        .catch((err) => {
+          throw err;
         });
-      });
+
+      dev.logverbose(
+        `New folder meta file created at path: ${meta_path} 
+        with meta: ${JSON.stringify(meta)}`
+      );
+
+      return slugFolderName;
     },
-    editFolder: ({ type, slugFolderName, foldersData, newFoldersData }) => {
-      return new Promise(function (resolve, reject) {
-        dev.logfunction(
-          `COMMON — editFolder : will edit folder with type = ${type} and slugFolderName = ${slugFolderName}
-          with ${JSON.stringify(newFoldersData, null, 4)} 
-          with existing data ${JSON.stringify(foldersData, null, 4)}`
+    editFolder: async ({
+      type,
+      slugFolderName,
+      foldersData,
+      newFoldersData,
+    }) => {
+      dev.logfunction(
+        `COMMON — editFolder : will edit folder with type = ${type} and slugFolderName = ${slugFolderName}
+          with ${JSON.stringify(newFoldersData)} 
+          with existing data ${JSON.stringify(foldersData)}`
+      );
+
+      if (!global.settings.structure.hasOwnProperty(type))
+        throw `Missing type ${type} in global.settings.json`;
+
+      if (
+        newFoldersData &&
+        newFoldersData.hasOwnProperty("preview_rawdata") &&
+        global.settings.structure[type].hasOwnProperty("preview")
+      )
+        _storeFoldersPreview(
+          slugFolderName,
+          type,
+          newFoldersData.preview_rawdata
         );
 
-        if (!global.settings.structure.hasOwnProperty(type)) {
-          return reject(`Missing type ${type} in global.settings.json`);
-        }
-        const baseFolderPath = global.settings.structure[type].path;
-        const mainFolderPath = api.getFolderPath(baseFolderPath);
+      foldersData = _makeDefaultMetaFromStructure({
+        type,
+        method: "create",
+        existing: foldersData,
+      });
+      newFoldersData = _makeDefaultMetaFromStructure({
+        type,
+        method: "update",
+        existing: newFoldersData,
+      });
 
-        const thisFolderPath = path.join(mainFolderPath, slugFolderName);
-        let tasks = [];
+      // overwrite stored obj with new informations
+      Object.assign(foldersData, newFoldersData);
 
-        if (
-          newFoldersData.hasOwnProperty("preview_rawdata") &&
-          global.settings.structure[type].hasOwnProperty("preview")
-        ) {
-          dev.logverbose("Updating folders preview");
-          let preview_rawdata = newFoldersData.preview_rawdata;
-          // store preview with sharp
-          tasks.push(
-            _storeFoldersPreview(slugFolderName, type, preview_rawdata)
-          );
-        }
+      const meta_path = api.getFullPath({
+        type,
+        slugFolderName,
+        file_name: "meta.txt",
+      });
 
-        let updateFoldersMeta = new Promise((resolve, reject) => {
-          dev.logverbose("Updating folders meta");
-          // cleaning up stored meta
-          foldersData = _makeDefaultMetaFromStructure({
-            type,
-            method: "create",
-            existing: foldersData,
-          });
-
-          newFoldersData = _makeDefaultMetaFromStructure({
-            type,
-            method: "update",
-            existing: newFoldersData,
-          });
-
-          // overwrite stored obj with new informations
-          Object.assign(foldersData, newFoldersData);
-
-          const metaFolderPath = path.join(
-            thisFolderPath,
-            global.settings.folderMetaFilename + global.settings.metaFileext
-          );
-
-          api.storeData(metaFolderPath, foldersData, "update").then(
-            function (meta) {
-              dev.logverbose(
-                `Update folder meta file at path: ${metaFolderPath} with meta: ${JSON.stringify(
-                  meta,
-                  null,
-                  4
-                )}`
-              );
-              resolve(meta);
-            },
-            function (err) {
-              reject(`Couldn't update folder meta: ${err}`);
-            }
-          );
+      const meta = await api
+        .storeData(meta_path, foldersData, "update")
+        .catch((err) => {
+          throw err;
         });
-        tasks.push(updateFoldersMeta);
 
-        Promise.all(tasks)
-          .then((metas) => {
-            dev.logverbose(
-              `COMMON — editFolder : now resolving with meta ${JSON.stringify(
-                metas[0] ? metas[0] : metas[1]
-              )}`
-            );
-            // only deleting from cache because a specific getFolder with slugFolderName is coming right after
-            cache.del({ type, slugFolderName });
-            resolve({ slugFolderName, meta: metas[0] ? metas[0] : metas[1] });
-          })
-          .catch((err) => {
-            dev.error(
-              `Failed to edit folder slugFolderName = ${slugFolderName}: ${err}`
-            );
-            reject(err);
-          });
-      });
+      dev.logverbose(
+        `COMMON — editFolder : now resolving with meta ${JSON.stringify(meta)}`
+      );
+
+      cache.del({ type, slugFolderName: slugFolderName });
+
+      return {
+        meta,
+      };
     },
-    updateFolderEdited: ({ type, slugFolderName, foldersData }) => {
-      return new Promise(function (resolve, reject) {
-        dev.logfunction(
-          `COMMON — updateFolderEdited : will update folder with type = ${type} and slugFolderName = ${slugFolderName}
-          with existing data ${JSON.stringify(foldersData, null, 4)}`
-        );
 
-        if (!global.settings.structure.hasOwnProperty(type)) {
-          return reject(`Missing type ${type} in global.settings.json`);
-        }
-        const baseFolderPath = global.settings.structure[type].path;
-        const mainFolderPath = api.getFolderPath(baseFolderPath);
+    removeFolder: async ({ type, slugFolderName }) => {
+      dev.logfunction(
+        `COMMON — removeFolder : will remove folder: ${slugFolderName}`
+      );
 
-        const thisFolderPath = path.join(mainFolderPath, slugFolderName);
-        let tasks = [];
+      if (!global.settings.structure.hasOwnProperty(type))
+        throw `Missing type ${type} in global.settings.json`;
 
-        let updateFoldersMeta = new Promise((resolve, reject) => {
-          dev.logverbose("Updating folders meta");
-          // cleaning up stored meta
-          foldersData = _makeDefaultMetaFromStructure({
-            type,
-            method: "create",
-            existing: foldersData,
-          });
+      try {
+        if (global.settings.removePermanently === true)
+          await _removeFolder({ type, slugFolderName });
+        else await _moveFolderToBin({ type, slugFolderName });
 
-          const metaFolderPath = path.join(
-            thisFolderPath,
-            global.settings.folderMetaFilename + global.settings.metaFileext
-          );
+        await thumbs.removeFolderThumbs(slugFolderName, type);
+        cache.del({ type, slugFolderName });
 
-          api.storeData(metaFolderPath, foldersData, "update").then(
-            function (meta) {
-              dev.logverbose(
-                `Update folder meta file at path: ${metaFolderPath} with meta: ${JSON.stringify(
-                  meta,
-                  null,
-                  4
-                )}`
-              );
-              resolve(meta);
-            },
-            function (err) {
-              reject(`Couldn't update folder meta: ${err}`);
-            }
-          );
-        });
-        tasks.push(updateFoldersMeta);
+        // await hyperplateau ? par exemple :
+        // await hyperdrive.remove({ slugFolderName });
 
-        Promise.all(tasks)
-          .then((metas) => {
-            dev.logverbose(
-              `COMMON — editFolder : now resolving with meta ${JSON.stringify(
-                metas[0] ? metas[0] : metas[1]
-              )}`
-            );
-            // only deleting from cache because a specific getFolder with slugFolderName is coming right after
-            cache.del({ type, slugFolderName });
-            resolve({ slugFolderName, meta: metas[0] ? metas[0] : metas[1] });
-          })
-          .catch((err) => {
-            dev.error(
-              `Failed to edit folder slugFolderName = ${slugFolderName}: ${err}`
-            );
-            reject(err);
-          });
-      });
-    },
-    removeFolder: ({ type, slugFolderName }) => {
-      return new Promise(function (resolve, reject) {
-        dev.logfunction(
-          `COMMON — removeFolder : will remove folder: ${slugFolderName}`
-        );
-
-        if (!global.settings.structure.hasOwnProperty(type)) {
-          return reject(`Missing type ${type} in global.settings.json`);
-        }
-        const baseFolderPath = global.settings.structure[type].path;
-        const mainFolderPath = api.getFolderPath(baseFolderPath);
-
-        const thisFolderPath = path.join(mainFolderPath, slugFolderName);
-        const movedFolderPath = path.join(
-          mainFolderPath,
-          global.settings.deletedFolderName,
-          slugFolderName
-        );
-
-        fs.move(thisFolderPath, movedFolderPath, { overwrite: true })
-          .then(() => thumbs.removeFolderThumbs(slugFolderName, type))
-          .then(() => {
-            dev.logfunction(
-              `COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`
-            );
-            cache.del({ type, slugFolderName });
-            resolve();
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
+        return;
+      } catch (err) {
+        throw err;
+      }
     },
     copyFolder: ({
       type,
       slugFolderName: old_slugFolderName,
-      new_folder_name,
+      new_slugFolderName,
     }) => {
       return new Promise(function (resolve, reject) {
         dev.logfunction(`COMMON — copyFolder`);
@@ -522,11 +248,8 @@ module.exports = (function () {
           return reject(`Missing type ${type} in global.settings.json`);
         }
 
-        const baseFolderPath = global.settings.structure[type].path;
-        const mainFolderPath = api.getFolderPath(baseFolderPath);
-
-        _getFolderSlugs(mainFolderPath).then((folders) => {
-          let new_slugFolderName = api.slug(new_folder_name);
+        _getFolderSlugs({ type }).then((folders) => {
+          let new_slugFolderName = api.slug(new_slugFolderName);
           if (new_slugFolderName === "") {
             new_slugFolderName = "untitled";
           }
@@ -542,8 +265,14 @@ module.exports = (function () {
             dev.logverbose(`Proposed slug: ${new_slugFolderName}`);
           }
 
-          const oldFolderPath = path.join(mainFolderPath, old_slugFolderName);
-          const newFolderPath = path.join(mainFolderPath, new_slugFolderName);
+          const oldFolderPath = api.getFullPath({
+            type,
+            slugFolderName: old_slugFolderName,
+          });
+          const newFolderPath = api.getFullPath({
+            type,
+            slugFolderName: new_slugFolderName,
+          });
           dev.logverbose(`Copying folder to path ${newFolderPath}`);
 
           fs.copy(oldFolderPath, newFolderPath)
@@ -555,7 +284,7 @@ module.exports = (function () {
                     slugFolderName: new_slugFolderName,
                     foldersData: foldersData[new_slugFolderName],
                     newFoldersData: {
-                      name: new_folder_name,
+                      name: new_slugFolderName,
                     },
                   }).then(() => {
                     return resolve(new_slugFolderName);
@@ -613,15 +342,11 @@ module.exports = (function () {
                 _metaFileName
               ) &&
               // endswith global.settings.metaFileext
-              _metaFileName.endsWith(global.settings.metaFileext) &&
+              _metaFileName.endsWith(".txt") &&
               // not meta.txt
-              _metaFileName !==
-                global.settings.folderMetaFilename +
-                  global.settings.metaFileext &&
+              _metaFileName !== "meta.txt" &&
               // not a folder preview
-              _metaFileName !==
-                global.settings.folderPreviewFilename +
-                  global.settings.thumbExt &&
+              _metaFileName !== "meta_preview.jpeg" &&
               // not a dotfile
               _metaFileName.indexOf(".") !== 0 &&
               // if has metaFileName, only if it matches
@@ -652,12 +377,9 @@ module.exports = (function () {
         `COMMON — readMediaList: medias_list = ${JSON.stringify(medias_list)}}`
       );
 
-      if (medias_list.length === 0) {
-        return {};
-      }
+      if (medias_list.length === 0) return {};
 
       let folders_and_medias = {};
-
       for (const { slugFolderName, metaFileName } of medias_list) {
         if (!slugFolderName || !metaFileName) return;
 
@@ -672,9 +394,9 @@ module.exports = (function () {
           metaFileName,
         });
 
+        // case of non-existent media
+        // we need to return the absence of meta for this media
         if (!meta)
-          // case of non-existent media
-          // we need to return the absence of meta for this media
           meta = {
             _isAbsent: true,
           };
@@ -705,34 +427,27 @@ module.exports = (function () {
         if (additionalMeta.hasOwnProperty("media_filename")) {
           mediaName = additionalMeta.media_filename;
 
-          const baseFolderPath = global.settings.structure[type].path;
-          const mainFolderPath = api.getFolderPath(baseFolderPath);
+          const folder_path = api.getFullPath({ type, slugFolderName });
 
-          let slugFolderPath = api.getFolderPath(
-            path.join(global.settings.structure[type].path, slugFolderName)
-          );
-          mediaPath = path.join(slugFolderPath, mediaName);
-          metaFileName = mediaName + global.settings.metaFileext;
+          mediaPath = path.join(folder_path, mediaName);
+          metaFileName = mediaName + ".txt";
         } else if (additionalMeta.hasOwnProperty("desired_filename")) {
           let randomString = (
             Math.random().toString(36) + "00000000000000000"
           ).slice(2, 3 + 2);
           metaFileName = `${api.slug(
             additionalMeta.desired_filename
-          )}-${randomString}${global.settings.metaFileext}`;
+          )}-${randomString}.txt`;
         } else {
           let timeCreated = api.getCurrentDate();
           let randomString = (
             Math.random().toString(36) + "00000000000000000"
           ).slice(2, 3 + 2);
-          metaFileName = `${timeCreated}-${randomString}${global.settings.metaFileext}`;
+          metaFileName = `${timeCreated}-${randomString}.txt`;
         }
 
-        let slugFolderPath = api.getFolderPath(
-          path.join(global.settings.structure[type].path, slugFolderName)
-        );
-
-        const metaFilePath = path.join(slugFolderPath, metaFileName);
+        const folder_path = api.getFullPath({ type, slugFolderName });
+        const metaFilePath = path.join(folder_path, metaFileName);
 
         // check that a meta with this name doesn't exist already
         fs.access(metaFilePath, fs.F_OK, function (err) {
@@ -1111,13 +826,8 @@ module.exports = (function () {
               let tasks = [];
 
               let updateMediaMeta = new Promise((resolve, reject) => {
-                let slugFolderPath = api.getFolderPath(
-                  path.join(
-                    global.settings.structure[type].path,
-                    slugFolderName
-                  )
-                );
-                let mediaMetaPath = path.join(slugFolderPath, metaFileName);
+                const folder_path = api.getFullPath({ type, slugFolderName });
+                let mediaMetaPath = path.join(folder_path, metaFileName);
 
                 api.storeData(mediaMetaPath, meta, "update").then(
                   (meta) => {
@@ -1144,6 +854,8 @@ module.exports = (function () {
               if (
                 (meta.type === "text" ||
                   meta.type === "marker" ||
+                  meta.type === "planning" ||
+                  meta.type === "composition" ||
                   meta.type === "embed" ||
                   meta.type === "link" ||
                   meta.type === "code") &&
@@ -1153,37 +865,14 @@ module.exports = (function () {
                 dev.logverbose(`New content: ${data.content}`);
 
                 let updateTextMedia = new Promise((resolve, reject) => {
-                  function getMediaFilename(meta, metaFileName) {
-                    if (
-                      global.settings.structure[
-                        type
-                      ].medias.fields.hasOwnProperty("media_filename")
-                    ) {
-                      if (meta.hasOwnProperty("media_filename")) {
-                        return meta.media_filename;
-                      }
-                      // Legacy : if no filename in meta file when it is expected in blueprint
-                      // then it means its in the name of the text file
-                      else {
-                        const metaFileName_without_ext = new RegExp(
-                          global.settings.regexpRemoveFileExtension,
-                          "i"
-                        ).exec(metaFileName)[1];
+                  let mediaFileName = _legacyGetMediaFilename({
+                    type,
+                    meta,
+                    metaFileName,
+                  });
 
-                        if (metaFileName_without_ext.includes("."))
-                          return metaFileName_without_ext;
-                      }
-                    }
-                  }
-                  let mediaFileName = getMediaFilename(meta, metaFileName);
-
-                  let slugFolderPath = api.getFolderPath(
-                    path.join(
-                      global.settings.structure[type].path,
-                      slugFolderName
-                    )
-                  );
-                  let mediaPath = path.join(slugFolderPath, mediaFileName);
+                  const folder_path = api.getFullPath({ type, slugFolderName });
+                  let mediaPath = path.join(folder_path, mediaFileName);
 
                   let content = validator.escape(data.content + "");
                   api
@@ -1211,86 +900,47 @@ module.exports = (function () {
           });
       });
     },
-    removeMedia: ({ type, slugFolderName, metaFileName }) => {
-      return new Promise(function (resolve, reject) {
-        dev.logfunction(
-          `COMMON — removeMedia : will remove media at path: ${slugFolderName}/${metaFileName}`
-        );
+    removeMedia: async ({ type, slugFolderName, metaFileName }) => {
+      dev.logfunction(
+        `COMMON — removeMedia : will remove media at path: ${slugFolderName}/${metaFileName}`
+      );
 
-        readMediaMeta({ type, slugFolderName, metaFileName }).then((meta) => {
-          // Legacy : if no filename in meta file when it is expected in blueprint
-          // then it means its in the name of the text file
-          function getMediaFilename(meta, metaFileName) {
-            if (
-              global.settings.structure[type].medias.fields.hasOwnProperty(
-                "media_filename"
-              )
-            ) {
-              if (meta.hasOwnProperty("media_filename")) {
-                return meta.media_filename;
-              } else {
-                const metaFileName_without_ext = new RegExp(
-                  global.settings.regexpRemoveFileExtension,
-                  "i"
-                ).exec(metaFileName)[1];
-
-                if (metaFileName_without_ext.includes("."))
-                  return metaFileName_without_ext;
-              }
-            } else {
-              return "";
-            }
-          }
-          let mediaFileName = getMediaFilename(meta, metaFileName);
-
-          let slugFolderPath = api.getFolderPath(
-            path.join(global.settings.structure[type].path, slugFolderName)
-          );
-
-          let mediaMetaPath = path.join(slugFolderPath, metaFileName);
-          let movedMediaMetaPath = path.join(
-            slugFolderPath,
-            global.settings.deletedFolderName,
-            metaFileName
-          );
-
-          fs.move(mediaMetaPath, movedMediaMetaPath, { overwrite: true })
-            .then(() => {
-              if (mediaFileName === "") {
-                return resolve();
-              }
-              let mediaPath = path.join(slugFolderPath, mediaFileName);
-              let movedMediaPath = path.join(
-                slugFolderPath,
-                global.settings.deletedFolderName,
-                mediaFileName
-              );
-              return fs.move(mediaPath, movedMediaPath, {
-                overwrite: true,
-              });
-            })
-            .catch((err) => {
-              dev.error(`Failed to delete/move media: ${err}`);
-              return;
-            })
-            .then(() => {
-              cache.del({
-                type: type + "/" + "medias",
-                slugFolderName: slugFolderName + "/" + metaFileName,
-              });
-              cache.del({ type, slugFolderName });
-
-              return thumbs.removeMediaThumbs(
-                slugFolderName,
-                type,
-                mediaFileName
-              );
-            })
-            .then(() => {
-              resolve();
-            });
-        });
+      const meta = await readMediaMeta({
+        type,
+        slugFolderName,
+        metaFileName,
       });
+
+      let mediaFileName = _legacyGetMediaFilename({ type, meta, metaFileName });
+
+      try {
+        if (global.settings.removePermanently === true)
+          await _removeMedia({
+            type,
+            slugFolderName,
+            metaFileName,
+            mediaFileName,
+          });
+        else
+          await _moveMediaToBin({
+            type,
+            slugFolderName,
+            metaFileName,
+            mediaFileName,
+          });
+
+        cache.del({
+          type: type + "/" + "medias",
+          slugFolderName: slugFolderName + "/" + metaFileName,
+        });
+
+        /* Should not be necessary, need to test */
+        // cache.del({ type, slugFolderName });
+
+        return thumbs.removeMediaThumbs(slugFolderName, type, mediaFileName);
+      } catch (err) {
+        throw err;
+      }
     },
     createMedia: ({
       type,
@@ -1330,9 +980,8 @@ module.exports = (function () {
         // - 'text' -> store content with storeData
 
         let tasks = [];
-        let slugFolderPath = api.getFolderPath(
-          path.join(global.settings.structure[type].path, slugFolderName)
-        );
+
+        const folder_path = api.getFullPath({ type, slugFolderName });
 
         // MOST OF THIS CODE ISN’T USED ANYMORE
         // before, for the capture page, dodoc, used to send medias with socketio as base64 strings
@@ -1345,7 +994,7 @@ module.exports = (function () {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += ".jpeg";
-              let pathToMedia = path.join(slugFolderPath, mediaName);
+              let pathToMedia = path.join(folder_path, mediaName);
 
               let imageBuffer = rawData;
 
@@ -1353,7 +1002,7 @@ module.exports = (function () {
                 .rotate()
                 .flatten()
                 .withMetadata()
-                .toFormat(global.settings.thumbFormat, {
+                .toFormat("jpeg", {
                   quality: global.settings.mediaThumbQuality,
                 })
                 .toFile(pathToMedia, function (err, info) {
@@ -1370,7 +1019,6 @@ module.exports = (function () {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += ".webm";
-              let pathToMedia = path.join(slugFolderPath, mediaName);
 
               // only works for projects media (root) for now
               api
@@ -1403,7 +1051,7 @@ module.exports = (function () {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += ".svg";
-              let pathToMedia = path.join(slugFolderPath, mediaName);
+              let pathToMedia = path.join(folder_path, mediaName);
               additionalMeta.type = "image";
 
               var fileBuffer = new Buffer(rawData, "base64");
@@ -1416,13 +1064,14 @@ module.exports = (function () {
         } else if (
           additionalMeta.type === "text" ||
           additionalMeta.type === "marker" ||
-          additionalMeta.type === "embed" ||
-          additionalMeta.type === "link"
+          additionalMeta.type === "planning" ||
+          additionalMeta.type === "composition" ||
+          additionalMeta.type === "embed"
         ) {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += ".md";
-              let pathToMedia = path.join(slugFolderPath, mediaName);
+              let pathToMedia = path.join(folder_path, mediaName);
 
               api.storeData(pathToMedia, rawData, "create").then(
                 function (meta) {
@@ -1439,7 +1088,7 @@ module.exports = (function () {
           tasks.push(
             new Promise((resolve, reject) => {
               mediaName += ".mp4";
-              let pathToMedia = path.join(slugFolderPath, mediaName);
+              let pathToMedia = path.join(folder_path, mediaName);
               additionalMeta.type = "video";
 
               // only works for projects media (root) for now
@@ -1618,7 +1267,7 @@ module.exports = (function () {
                         return reject(err);
                       }
 
-                      readMetaFile(destination_metaFilePath).then((meta) => {
+                      _readMetaFile(destination_metaFilePath).then((meta) => {
                         d_array.map((i) => {
                           Object.assign(meta, i);
                         });
@@ -1711,7 +1360,7 @@ module.exports = (function () {
         }
 
         dev.logverbose(`Found meta there: ${metaFile}`);
-        readMetaFile(metaFile)
+        _readMetaFile(metaFile)
           .then((mediaData) => {
             mediaData = _sanitizeMetaFromFile({
               type,
@@ -1719,26 +1368,19 @@ module.exports = (function () {
               meta: mediaData,
             });
 
-            // Legacy : if no filename in meta file when it is expected in blueprint
-            // then it means its in the name of the text file
-            if (
-              !mediaData.hasOwnProperty("media_filename") &&
-              global.settings.structure[type].medias.fields.hasOwnProperty(
-                "media_filename"
-              )
-            ) {
-              const metaFileName_without_ext = new RegExp(
-                global.settings.regexpRemoveFileExtension,
-                "i"
-              ).exec(metaFileName)[1];
+            const _metaFileName = _legacyGetMediaFilename({
+              type,
+              meta: mediaData,
+              metaFileName,
+            });
 
-              if (metaFileName_without_ext.includes("."))
-                mediaData.media_filename = metaFileName_without_ext;
-            }
+            mediaData.media_filename = _metaFileName;
 
             if (
               (mediaData.type === "text" ||
                 mediaData.type === "marker" ||
+                mediaData.type === "planning" ||
+                mediaData.type === "composition" ||
                 mediaData.type === "embed" ||
                 mediaData.type === "link" ||
                 mediaData.type === "code") &&
@@ -1832,9 +1474,9 @@ module.exports = (function () {
         });
     });
   }
-  function readMetaFile(metaPath) {
+  function _readMetaFile(metaPath) {
     return new Promise(function (resolve, reject) {
-      dev.logfunction(`COMMON — readMetaFile: ${metaPath}`);
+      dev.logfunction(`COMMON — _readMetaFile: ${metaPath}`);
       var metaFileContent = fs.readFileSync(
         metaPath,
         global.settings.textEncoding
@@ -1844,36 +1486,65 @@ module.exports = (function () {
     });
   }
 
-  function _getFolderSlugs(mainFolderPath) {
-    return new Promise(function (resolve, reject) {
-      dev.logfunction(`COMMON — _getFolderSlugs in ${mainFolderPath}`);
-      fs.readdir(mainFolderPath, (err, filenames) => {
-        if (err) {
-          dev.logverbose(`Couldn't read content dir: ${err}`);
-          return resolve([]);
-        }
-        if (filenames === undefined) {
-          dev.error(`No folder found: ${err}`);
-          return resolve([]);
-        }
+  async function _getFolderSlugs({ type }) {
+    dev.logfunction(`COMMON — _getFolderSlugs for type ${type}`);
 
-        var folders = filenames.filter(function (thisSlugFolderName) {
-          // is a folder
-          return (
-            new RegExp(global.settings.regexpMatchFolderNames, "i").test(
-              thisSlugFolderName
-            ) &&
-            // if doesn’t start with _ (these folders are generated by the tool, can’t be created through the interface)
-            thisSlugFolderName.indexOf("_") !== 0
-          );
-        });
+    const folder_path = api.getFullPath({ type });
+    try {
+      let folders = (await fs.readdir(folder_path, { withFileTypes: true }))
+        .filter(
+          (dirent) =>
+            dirent.isDirectory() &&
+            !["_", "."].some((word) => dirent.name.startsWith(word))
+        )
+        .map((dirent) => dirent.name);
+      dev.logverbose(
+        `COMMON — _getFolderSlugs / number of folders that match in ${folder_path} = ${folders.length}.`
+      );
+      return folders;
+    } catch (err) {
+      dev.logverbose(`COMMON — _getFolderSlugs / no dir or no folder.`);
+      return [];
+    }
+  }
 
-        dev.logverbose(
-          `Number of folders that match in ${mainFolderPath} = ${folders.length}. Folder(s) is(are) ${folders}`
-        );
-        return resolve(folders);
-      });
-    });
+  async function _preventFolderOverride({ type, slugFolderName }) {
+    const all_folders_names = await _getFolderSlugs({ type });
+
+    if (all_folders_names.length > 0) {
+      let index = 0;
+      let new_slugFolderName = slugFolderName;
+      while (all_folders_names.indexOf(new_slugFolderName) !== -1) {
+        index++;
+        new_slugFolderName = `${slugFolderName}-${index}`;
+      }
+      slugFolderName = new_slugFolderName;
+      dev.logverbose(`Proposed slug: ${slugFolderName}`);
+    }
+
+    return slugFolderName;
+  }
+
+  async function _getFolderPreview({ type, slugFolderName }) {
+    dev.logfunction(
+      `COMMON — _getFolderPreview : will get preview for type ${type} and folder ${slugFolderName}`
+    );
+    const preview_name = "meta_preview.jpeg";
+    const folder_path = api.getFullPath({ type, slugFolderName });
+    const pathToPreview = path.join(folder_path, preview_name);
+
+    // check if preview exists, otherwise return
+    if (!(await fs.pathExists(pathToPreview))) return false;
+
+    const thumbData = thumbs.makeMediaThumbs(
+      slugFolderName,
+      preview_name,
+      "image",
+      type,
+      "preview"
+    );
+
+    return thumbData;
   }
 
   function _storeFoldersPreview(slugFolderName, type, preview_rawdata) {
@@ -1886,8 +1557,7 @@ module.exports = (function () {
       const mainFolderPath = api.getFolderPath(baseFolderPath);
       const thisFolderPath = path.join(mainFolderPath, slugFolderName);
 
-      const preview_filename =
-        global.settings.folderPreviewFilename + global.settings.thumbExt;
+      const preview_filename = "meta_preview.jpeg";
 
       const pathToPreview = path.join(thisFolderPath, preview_filename);
 
@@ -1967,7 +1637,7 @@ module.exports = (function () {
               )
               .flatten({ background: "white" })
               .withMetadata()
-              .toFormat(global.settings.thumbFormat, {
+              .toFormat("jpeg", {
                 quality: global.settings.mediaThumbQuality,
               })
               .toFile(pathToPreview)
@@ -2382,6 +2052,114 @@ module.exports = (function () {
         resolve({ _meta });
       });
     });
+  }
+
+  async function _removeFolder({ type, slugFolderName }) {
+    const mainFolderPath = api.getFolderPath(
+      global.settings.structure[type].path
+    );
+    const thisFolderPath = path.join(mainFolderPath, slugFolderName);
+
+    try {
+      await fs.remove(thisFolderPath);
+    } catch (err) {
+      throw err;
+    }
+  }
+  async function _moveFolderToBin({ type, slugFolderName }) {
+    const mainFolderPath = api.getFolderPath(
+      global.settings.structure[type].path
+    );
+
+    const thisFolderPath = path.join(mainFolderPath, slugFolderName);
+    const movedFolderPath = path.join(
+      mainFolderPath,
+      global.settings.deletedFolderName,
+      slugFolderName
+    );
+
+    try {
+      await fs.move(thisFolderPath, movedFolderPath, { overwrite: true });
+      dev.logfunction(
+        `COMMON — removeFolder : folder ${slugFolderName} has been moved to ${movedFolderPath}`
+      );
+      return;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async function _removeMedia({
+    type,
+    slugFolderName,
+    metaFileName,
+    mediaFileName,
+  }) {
+    const slugFolderPath = api.getFolderPath(
+      path.join(global.settings.structure[type].path, slugFolderName)
+    );
+    const mediaMetaPath = path.join(slugFolderPath, metaFileName);
+
+    try {
+      await fs.remove(mediaMetaPath);
+      if (mediaFileName === "") return;
+      await fs.remove(path.join(slugFolderPath, mediaFileName));
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async function _moveMediaToBin({
+    type,
+    slugFolderName,
+    metaFileName,
+    mediaFileName,
+  }) {
+    const slugFolderPath = api.getFolderPath(
+      path.join(global.settings.structure[type].path, slugFolderName)
+    );
+
+    const mediaMetaPath = path.join(slugFolderPath, metaFileName);
+    const movedMediaMetaPath = path.join(
+      slugFolderPath,
+      global.settings.deletedFolderName,
+      metaFileName
+    );
+
+    try {
+      await fs.move(mediaMetaPath, movedMediaMetaPath, { overwrite: true });
+      if (mediaFileName === "") return;
+
+      const mediaPath = path.join(slugFolderPath, mediaFileName);
+      const movedMediaPath = path.join(
+        slugFolderPath,
+        global.settings.deletedFolderName,
+        mediaFileName
+      );
+      await fs.move(mediaPath, movedMediaPath, {
+        overwrite: true,
+      });
+    } catch (err) {
+      dev.error(`Failed to delete/move media: ${err}`);
+      return;
+    }
+  }
+
+  // Legacy: if no filename in meta file when it is expected in blueprint
+  // then it means its in the name of the text file
+  function _legacyGetMediaFilename({ type, meta, metaFileName }) {
+    if (global.settings.structure[type].medias.fields.media_filename) {
+      if (meta.media_filename) return meta.media_filename;
+      else {
+        const metaFileName_without_ext = new RegExp(
+          global.settings.regexpRemoveFileExtension,
+          "i"
+        ).exec(metaFileName)[1];
+        if (metaFileName_without_ext.includes("."))
+          return metaFileName_without_ext;
+      }
+    }
+    return "";
   }
 
   return API;

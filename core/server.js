@@ -94,5 +94,5 @@ module.exports = function (router) {
 };
 
 function isURLToForbiddenFiles(url) {
-  return url.includes(global.settings.metaFileext);
+  return url.includes(".txt");
 }
