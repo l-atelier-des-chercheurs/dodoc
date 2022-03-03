@@ -6,12 +6,10 @@
   "userDirPath": "documents",
   "userDirname": "dodoc2",
   "cache_content": true,
+  "removePermanently": false,
 
   "contentDirname": "user",
   "cacheDirname": "dodoc_cache",
-  "metaFileext": ".txt",
-  "thumbExt": ".jpeg",
-  "thumbFormat": "jpeg",
   "folderMetaFilename": "meta",
   "folderPreviewFilename": "meta_preview",
 

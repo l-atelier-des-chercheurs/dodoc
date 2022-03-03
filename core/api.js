@@ -19,6 +19,16 @@ ffmpeg.setFfprobePath(ffprobePath);
 module.exports = (function () {
   const API = {
     getFolderPath: (slugFolderName = "") => getFolderPath(slugFolderName),
+    getFullPath: ({ type, slugFolderName = "", file_name = "" }) => {
+      if (!global.settings.structure.hasOwnProperty(type))
+        throw `Missing type ${type} in global.settings.json`;
+
+      const base_path = path.join(
+        global.pathToUserContent,
+        global.settings.structure[type].path
+      );
+      return path.join(base_path, slugFolderName, file_name);
+    },
     findFirstFilenameNotTaken: (thisPath, fileName) =>
       findFirstFilenameNotTaken(thisPath, fileName),
     getCurrentDate: (format = global.settings.metaDateFormat) =>
@@ -44,12 +54,8 @@ module.exports = (function () {
     makeStopmotionFromImageSequence: (d) => makeStopmotionFromImageSequence(d),
   };
 
-  function _getUserPath() {
-    return global.pathToUserContent;
-  }
-
   function getFolderPath(slugFolderName = "") {
-    return path.join(_getUserPath(), slugFolderName);
+    return path.join(global.pathToUserContent, slugFolderName);
   }
 
   function getCurrentDate(f) {
@@ -91,7 +97,7 @@ module.exports = (function () {
       fileNameWithoutExtension = slug(fileNameWithoutExtension);
 
       let newFileName = `${fileNameWithoutExtension}${fileExtension}`;
-      let newMetaFileName = `${newFileName}${global.settings.metaFileext}`;
+      let newMetaFileName = `${newFileName}.txt`;
       let newPathToFile = path.join(thisPath, newFileName);
       let newPathToMeta = path.join(thisPath, newMetaFileName);
       let index = 0;
@@ -108,7 +114,7 @@ module.exports = (function () {
           );
           index++;
           newFileName = `${fileNameWithoutExtension}-${index}${fileExtension}`;
-          newMetaFileName = `${newFileName}${global.settings.metaFileext}`;
+          newMetaFileName = `${newFileName}.txt`;
           newPathToFile = path.join(thisPath, newFileName);
           newPathToMeta = path.join(thisPath, newMetaFileName);
         }
