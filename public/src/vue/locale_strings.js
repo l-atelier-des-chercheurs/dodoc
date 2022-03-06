@@ -1582,7 +1582,9 @@ module.exports = (function () {
     make_a_video: {
       fr: "Fabriquer une vidéo",
       en: "Make a video",
-      de: "ein Video drehen",
+      nl: "Maak een video",
+      oc: "Fargar una video",
+      de: "Ein Video erstellen",
     },
     search: {
       fr: "Rechercher",
@@ -3449,13 +3451,6 @@ module.exports = (function () {
       nl: "Klik op de knop om een video te maken van de afbeeldingen die aan de publicatie zijn toegevoegd.",
       oc: "Cliquar sul boton per lançar la creacion d'una sola video en partir dels imatges aponduts a la recèpta.",
       de: "Klicken Sie auf die Schaltfläche, um die Erstellung eines einzelnen Videos aus den zur Veröffentlichung hinzugefügten Bildern zu starten.",
-    },
-    make_video: {
-      fr: "Fabriquer une vidéo",
-      en: "Make a video",
-      nl: "Maak een video",
-      oc: "Fargar una video",
-      de: "Ein Video erstellen",
     },
     add_solid_color: {
       fr: "Ajouter un aplat de couleur",
