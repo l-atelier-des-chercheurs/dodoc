@@ -65,7 +65,7 @@
             @click="downloadVideo"
           >
             <template v-if="!video_request_status">{{
-              $t("make_video")
+              $t("make_a_video")
             }}</template>
             <template v-else-if="video_request_status === 'waiting_for_server'">
               <span class="loader loader-xs" />

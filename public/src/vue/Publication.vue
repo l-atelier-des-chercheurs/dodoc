@@ -127,6 +127,23 @@
       @editPubliFolder="editPubliFolder"
       @addMedia="addMediaOrdered"
     />
+    <FaceMasks
+      v-else-if="publication.template === 'face_masks'"
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      :medias_in_order="medias_in_order"
+      :read_only="read_only"
+      :can_edit_publi="can_edit_publi"
+      :can_see_publi="can_see_publi"
+      :preview_mode="preview_mode"
+      @removePubliMedia="orderedRemovePubliMedia"
+      @editPubliMedia="editPubliMedia"
+      @editPubliFolder="editPubliFolder"
+      @duplicateMedia="orderedDuplicateMedia"
+      @changeMediaOrder="changeMediaOrder"
+      @addMedia="addMediaOrdered"
+      @togglePreviewMode="preview_mode = !preview_mode"
+    />
     <!-- <Carreau
       v-if="
         $root.settings.current_publication.slug !== false &&
@@ -159,6 +176,7 @@ import VideoEffects from "./components/publication_templates/VideoEffects.vue";
 import StopmotionAnimation from "./components/publication_templates/StopmotionAnimation.vue";
 import MixAudioAndVideo from "./components/publication_templates/MixAudioAndVideo.vue";
 import MixAudioAndImage from "./components/publication_templates/MixAudioAndImage.vue";
+import FaceMasks from "./components/publication_templates/FaceMasks.vue";
 // import Carreau from "./components/publication_templates/Carreau.vue";
 
 import PublishModal from "./components/modals/PublishModal.vue";
@@ -177,6 +195,7 @@ export default {
     StopmotionAnimation,
     MixAudioAndVideo,
     MixAudioAndImage,
+    FaceMasks,
     PublishModal,
   },
   data() {
@@ -335,16 +354,17 @@ export default {
               ) &&
               Array.isArray(placeholder_reply_media.placeholder_medias_slugs)
             ) {
-              const reply_medias = placeholder_reply_media.placeholder_medias_slugs.reduce(
-                (acc, { slugMediaName }) => {
-                  const corresponding_media = this.medias.find(
-                    (m) => m.metaFileName === slugMediaName
-                  );
-                  if (corresponding_media) acc.push(corresponding_media);
-                  return acc;
-                },
-                []
-              );
+              const reply_medias =
+                placeholder_reply_media.placeholder_medias_slugs.reduce(
+                  (acc, { slugMediaName }) => {
+                    const corresponding_media = this.medias.find(
+                      (m) => m.metaFileName === slugMediaName
+                    );
+                    if (corresponding_media) acc.push(corresponding_media);
+                    return acc;
+                  },
+                  []
+                );
               if (reply_medias.length > 0) {
                 media._reply._medias = reply_medias;
               }
@@ -424,16 +444,17 @@ export default {
               ) &&
               Array.isArray(placeholder_reply_media.placeholder_medias_slugs)
             ) {
-              const reply_medias = placeholder_reply_media.placeholder_medias_slugs.reduce(
-                (acc, { slugMediaName }) => {
-                  const corresponding_media = this.medias.find(
-                    (m) => m.metaFileName === slugMediaName
-                  );
-                  if (corresponding_media) acc.push(corresponding_media);
-                  return acc;
-                },
-                []
-              );
+              const reply_medias =
+                placeholder_reply_media.placeholder_medias_slugs.reduce(
+                  (acc, { slugMediaName }) => {
+                    const corresponding_media = this.medias.find(
+                      (m) => m.metaFileName === slugMediaName
+                    );
+                    if (corresponding_media) acc.push(corresponding_media);
+                    return acc;
+                  },
+                  []
+                );
               if (reply_medias.length > 0) {
                 media._reply._medias = reply_medias;
               }
@@ -508,9 +529,8 @@ export default {
           publi_media.hasOwnProperty("slugProjectName") &&
           publi_media.hasOwnProperty("slugMediaName")
         ) {
-          const original_media_meta = this.$root.getOriginalMediaMeta(
-            publi_media
-          );
+          const original_media_meta =
+            this.$root.getOriginalMediaMeta(publi_media);
 
           // case of missing project media locally
           if (!original_media_meta) {
@@ -731,9 +751,8 @@ export default {
       );
 
       if (new_index_in_slugs === undefined) {
-        const adjacent_media_meta = this.medias_in_order[
-          current_media_index + dir
-        ].metaFileName;
+        const adjacent_media_meta =
+          this.medias_in_order[current_media_index + dir].metaFileName;
 
         new_index_in_slugs = this.publication.medias_slugs.findIndex(
           (m) => m.slugMediaName === adjacent_media_meta

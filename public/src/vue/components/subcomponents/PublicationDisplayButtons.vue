@@ -115,7 +115,6 @@
           delay: [600, 0],
         }"
       >
-        <!-- Generator: Adobe Illustrator 25.0.0, SVG Export Plug-In  -->
         <svg
           class="inline-svg inline-svg_larger"
           version="1.1"
