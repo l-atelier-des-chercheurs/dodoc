@@ -4146,6 +4146,12 @@ module.exports = (function () {
       oc: "Pagina precedenta",
       de: "Vorherige Seite",
     },
+    previous_page: {
+      fr: "Page précédente",
+      en: "Previous page",
+      oc: "Pagina precedenta",
+      de: "Vorherige Seite",
+    },
     page: {
       fr: "Page",
       en: "Page",

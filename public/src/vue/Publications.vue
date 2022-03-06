@@ -523,8 +523,8 @@ export default {
 
       last_publication_opened: false,
 
-      debounce_search_publication_name: this.$root.settings.publication_filter
-        .name,
+      debounce_search_publication_name:
+        this.$root.settings.publication_filter.name,
       debounce_search_publication_name_function: undefined,
 
       recipe_types: [
@@ -842,6 +842,24 @@ export default {
             // }
           ],
         },
+        {
+          key: "exhibition",
+          label: "prepare_an_exhibition",
+          recipes: [
+            {
+              key: "face_masks",
+              summary: "face_masks_summary",
+              show_instructions: false,
+              instructions: "face_masks_instructions",
+
+              icon: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+  <rect x="67" y="67" width="67" height="67" style="fill: #fff"/>
+</svg>
+              `,
+            },
+          ],
+        },
       ],
     };
   },
@@ -872,7 +890,8 @@ export default {
     },
     "$root.settings.current_publication.slug": function () {
       if (this.$root.settings.current_publication.slug)
-        this.last_publication_opened = this.$root.settings.current_publication.slug;
+        this.last_publication_opened =
+          this.$root.settings.current_publication.slug;
     },
     show_filters: function () {
       if (!this.show_filters) {
@@ -888,7 +907,8 @@ export default {
       if (this.debounce_search_publication_name_function)
         clearTimeout(this.debounce_search_publication_name_function);
       this.debounce_search_publication_name_function = setTimeout(() => {
-        this.$root.settings.publication_filter.name = this.debounce_search_publication_name;
+        this.$root.settings.publication_filter.name =
+          this.debounce_search_publication_name;
       }, 340);
     },
   },

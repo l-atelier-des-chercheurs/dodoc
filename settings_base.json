@@ -264,7 +264,8 @@
             "mix_audio_and_image",
             "drawing_pad",
             "video_effects",
-            "story"
+            "story",
+            "face_masks"
           ],
           "default": "page_by_page"
         },
