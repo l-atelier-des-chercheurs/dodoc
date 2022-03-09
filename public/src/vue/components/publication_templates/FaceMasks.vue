@@ -25,6 +25,31 @@
     />
 
     <template v-if="!preview_mode">
+      <div
+        class="m_publicationNavMenu"
+        v-if="
+          ![
+            'export_publication',
+            'print_publication',
+            'link_publication',
+          ].includes($root.state.mode)
+        "
+      >
+        <div class="m_publicationNavMenu--settings">
+          <div class="">
+            <label for="play_masks_randomly">{{
+              $t("play_masks_randomly")
+            }}</label>
+            <input
+              id="play_masks_randomly"
+              type="checkbox"
+              v-model="play_masks_randomly"
+              @change="updatePlayMasks"
+            />
+          </div>
+        </div>
+      </div>
+
       <!-- Preview mode: add/remove/reorder images -->
       <div class="margin-medium" v-if="medias_in_order.length === 0">
         <p>
@@ -128,7 +153,10 @@
       </transition-group>
     </template>
     <template v-else>
-      <FaceMaskModule :medias="medias_in_order" />
+      <FaceMaskModule
+        :medias="medias_in_order"
+        :play_masks_randomly="play_masks_randomly"
+      />
     </template>
   </div>
 </template>
@@ -157,6 +185,9 @@ export default {
   data() {
     return {
       show_export_modal: false,
+      play_masks_randomly: this.publication.play_masks_randomly
+        ? this.publication.play_masks_randomly
+        : false,
     };
   },
   created() {},
@@ -168,11 +199,26 @@ export default {
     this.$root.settings.current_publication.accepted_media_type = [];
     this.$eventHub.$off("publication.addMedia", this.addMedia);
   },
-  watch: {},
+  watch: {
+    "publication.play_masks_randomly"() {
+      this.$nextTick(() => {
+        this.play_masks_randomly = this.publication.play_masks_randomly;
+      });
+    },
+  },
   computed: {},
   methods: {
     addMedia(d) {
       this.$emit("addMedia", d);
+    },
+    updatePlayMasks() {
+      this.$root.editFolder({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        data: {
+          play_masks_randomly: this.play_masks_randomly,
+        },
+      });
     },
   },
 };

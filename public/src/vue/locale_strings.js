@@ -786,6 +786,10 @@ module.exports = (function () {
       oc: "Copiar",
       de: "Kopieren",
     },
+    copy_link: {
+      fr: "Copier le lien",
+      en: "Copy link",
+    },
     author: {
       fr: "Auteur(s)",
       en: "Author(s)",
@@ -1813,8 +1817,8 @@ module.exports = (function () {
       de: "Senden",
     },
     open_in_dodoc: {
-      fr: "Ouvrir dans do•doc",
-      en: "Open in do•doc",
+      fr: "Afficher dans do•doc",
+      en: "Display in do•doc",
       nl: "Openen in do•doc",
       oc: "Dubrir dins do•doc",
       de: "Öffnen sie in do•doc",
@@ -3388,6 +3392,18 @@ module.exports = (function () {
       nl: "Geef het paginanummer in de rechterbenedenhoek weer ",
       oc: "Afichar lo numèro de pagina dins lo caire en bas a drech",
       de: "Zeigen sie die Seitenzahl in der rechten unteren Ecke an",
+    },
+    mask: {
+      fr: "Masque",
+      en: "Mask"
+    },
+    play_masks_randomly: {
+      fr: "Jouer les masques dans un ordre aléatoire",
+      en: "Play masks in a random order",
+    },
+    show_another_masks: {
+      fr: "masque suivant",
+      en: "next mask",
     },
     export_folder: {
       fr: "Exporter en format WEB",
