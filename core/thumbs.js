@@ -1097,6 +1097,9 @@ module.exports = (function () {
       dev.logfunction(`THUMBS — _getPageMetadata : ${url}`);
       let browser;
 
+      if (url.includes("vimeo.com"))
+        url += "?access_token=7607d980b70782d069e7141c4e7c436a";
+
       puppeteer
         .launch({
           headless: true,
