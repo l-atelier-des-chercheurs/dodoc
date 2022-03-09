@@ -1092,6 +1092,9 @@ module.exports = (function () {
         show: false,
       });
 
+      if (url.includes("vimeo.com"))
+        url += "?access_token=7607d980b70782d069e7141c4e7c436a";
+
       win.loadURL(url);
       win.webContents.setAudioMuted(true);
 
