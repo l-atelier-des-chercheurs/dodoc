@@ -6,6 +6,7 @@ var fs = require("fs");
 var path = require("path");
 var bodyParser = require("body-parser");
 const compression = require("compression");
+const socketio = require("socket.io");
 
 var dev = require("./dev-log");
 
@@ -53,7 +54,7 @@ module.exports = function (router) {
       ? https.createServer(options, app)
       : http.createServer(app);
 
-  var io = require("socket.io").listen(server, { cookie: false });
+  var io = socketio.listen(server, { cookie: false });
 
   dev.logverbose("Starting server 2");
   sockets.init(app, io);

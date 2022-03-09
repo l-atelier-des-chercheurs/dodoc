@@ -115,7 +115,7 @@ module.exports = (function () {
   }) {
     return new Promise(function (resolve, reject) {
       dev.logfunction("IMPORTER — renameAndConvertMediaAndCreateMeta");
-      api.findFirstFilenameNotTaken(uploadDir, fileMeta.name).then(
+      api.findFirstFilenameNotTaken(uploadDir, fileMeta.originalFilename).then(
         async function (newFileName) {
           dev.logverbose(`Following filename is available: ${newFileName}`);
 
@@ -134,7 +134,7 @@ module.exports = (function () {
           await file
             .convertAndSaveMedia({
               uploadDir,
-              tempPath: fileMeta.path,
+              tempPath: fileMeta.filepath,
               newFileName,
               socketid,
             })
