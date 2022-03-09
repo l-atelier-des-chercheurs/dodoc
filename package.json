@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "9.2.1-dev",
+  "version": "9.3.0-dev",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -78,7 +78,7 @@
     "pug": "^3.0.2",
     "quill-render": "^1.0.5",
     "rich-text": "^4.1.0",
-    "sharedb": "^2.2.5",
+    "sharedb": "^1.5.2",
     "sharedb-logger": "^0.1.4",
     "sharp": "^0.30.2",
     "slugg": "^1.2.1",
@@ -89,7 +89,7 @@
     "validator": "^13.7.0",
     "websocket-json-stream": "0.0.3",
     "write-file-atomic": "^4.0.1",
-    "ws": "^8.5.0"
+    "ws": "^7.4.0"
   },
   "devDependencies": {
     "electron": "17.1.1",
