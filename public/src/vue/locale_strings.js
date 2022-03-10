@@ -3395,7 +3395,7 @@ module.exports = (function () {
     },
     mask: {
       fr: "Masque",
-      en: "Mask"
+      en: "Mask",
     },
     play_masks_randomly: {
       fr: "Jouer les masques dans un ordre aléatoire",
@@ -3924,6 +3924,20 @@ module.exports = (function () {
       en: "Video effects and filters available: black and white, speed up, slow down, play backwards, rotate and miroir.<br>Accepted media: a single video.",
       oc: "Tièra dels efièches e filtres disponibles : negre e blanc, ralentit, accelerat, inversion de la lectura, rotacion e miralh.<br>Mèdia acceptat : una sola video.",
       de: "Liste der verfügbaren Effekte und Filter: Schwarz und Weiß, Zeitlupe, Zeitraffer, Rückwärtswiedergabe, Drehen und Spiegeln.<br>Akzeptierte Medien: Ein einzelnes Video.",
+    },
+    face_masks: {
+      fr: "Les masques",
+      en: "Face masks",
+    },
+    face_masks_summary: {
+      fr: "Créer une galerie de masques interactifs !",
+      en: "Create a gallery of interactive masks!",
+    },
+    face_masks_instructions: {
+      fr: `Cette recette utilise un gabarit spécifique à imprimer, puis à dessiner et à prendre en photo. 
+          Ces dessins seront ensuite projetés sur le visage à l’aide de la caméra frontale d’un smartphone, d’une tablette ou d’un ordinateur.
+          <br>Média accepté : des images avec ou sans légende.`,
+      en: "",
     },
     effect: {
       fr: "Effet",
