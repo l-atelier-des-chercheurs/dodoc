@@ -301,6 +301,9 @@
         "show_page_number": {
           "type": "boolean"
         },
+        "play_masks_randomly": {
+          "type": "boolean"
+        },
         "gridstep": {
           "type": "number"
         },

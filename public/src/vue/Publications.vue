@@ -71,6 +71,9 @@
 
             <div class="m_recipe--text">
               <h2 class>{{ $t(recipe.key) }}</h2>
+              <p class="margin-vert-small" v-if="true">
+                <span v-html="$t(recipe.summary)" class="" />
+              </p>
               <button
                 v-if="recipe.instructions"
                 type="button"
@@ -83,13 +86,6 @@
                 {{ $t("more_informations") }}
               </button>
 
-              <p class="margin-vert-small" v-if="false">
-                <span
-                  v-html="$t(recipe.summary)"
-                  class="margin-vert-verysmall"
-                />
-                <br />
-              </p>
               <template v-if="recipe.show_instructions">
                 <hr />
                 <p>

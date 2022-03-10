@@ -1,6 +1,10 @@
 <template>
   <div class="m_faceMaskModule">
     <div class="m_faceMaskModule--inner" ref="fmInner" :key="curr_image" />
+    <transition name="fade_fast">
+      <div v-if="is_loading" class="m_faceMaskModule--curtain" />
+    </transition>
+
     <!-- <div id="container">
       <video
         src="./video.mp4"
@@ -15,58 +19,72 @@
 
     <div class="_navImageButton" v-if="!is_loading">
       <div class="_navImageButton--inner">
-        <button type="button" @click="prevImage" :disabled="curr_image === 0">
-          <svg
-            class="inline-svg inline-svg_larger"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="70.8px"
-            height="65px"
-            viewBox="0 0 70.8 65"
-            style="overflow: visible; enable-background: new 0 0 70.8 65"
-            xml:space="preserve"
+        <div
+          class="_navImageButton--inner--caption"
+          v-if="media_images[curr_image].caption"
+          v-html="media_images[curr_image].caption"
+        />
+        <template v-if="play_masks_randomly">
+          <button
+            v-if="media_images.length > 1"
+            type="button"
+            class="button-greenthin"
+            @click="pickRandomMask"
           >
-            <defs></defs>
-            <g>
+            {{ $t("show_another_masks") }}
+          </button>
+        </template>
+        <template v-else>
+          <button type="button" @click="prevImage" :disabled="curr_image === 0">
+            <svg
+              class="inline-svg inline-svg_larger"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="70.8px"
+              height="65px"
+              viewBox="0 0 70.8 65"
+              style="overflow: visible; enable-background: new 0 0 70.8 65"
+              xml:space="preserve"
+            >
               <path
                 d="M41.9,10.8l-4.6,5c-2,2.1-3.8,3.8-5.5,5.1c-1.7,1.3-3.6,2.5-5.7,3.6h44.7v15.8H26c2.2,1.1,4.1,2.3,5.7,3.6
 		c1.6,1.3,3.5,3,5.5,5.1l4.6,5L29.3,65L0,32.5L29.3,0L41.9,10.8z"
               />
-            </g>
-          </svg>
-        </button>
-        <span
-          >{{ $t("image") }} {{ curr_image + 1 }}/{{
-            media_images.length
-          }}</span
-        >
-        <button
-          type="button"
-          @click="nextImage"
-          :disabled="curr_image === media_images.length - 1"
-        >
-          <svg
-            class="inline-svg inline-svg_larger"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="70.8px"
-            height="65px"
-            viewBox="0 0 70.8 65"
-            style="overflow: visible; enable-background: new 0 0 70.8 65"
-            xml:space="preserve"
+            </svg>
+          </button>
+          <span class="font-small"
+            >{{ $t("mask") }} {{ curr_image + 1 }}/{{
+              media_images.length
+            }}</span
           >
-            <path
-              d="M29,54.2l4.6-5c2-2.1,3.8-3.8,5.5-5.1c1.7-1.3,3.6-2.5,5.7-3.6L0,40.4l0-15.8l44.8,0c-2.2-1.1-4.1-2.3-5.7-3.6
+          <button
+            type="button"
+            @click="nextImage"
+            :disabled="curr_image === media_images.length - 1"
+          >
+            <svg
+              class="inline-svg inline-svg_larger"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              width="70.8px"
+              height="65px"
+              viewBox="0 0 70.8 65"
+              style="overflow: visible; enable-background: new 0 0 70.8 65"
+              xml:space="preserve"
+            >
+              <path
+                d="M29,54.2l4.6-5c2-2.1,3.8-3.8,5.5-5.1c1.7-1.3,3.6-2.5,5.7-3.6L0,40.4l0-15.8l44.8,0c-2.2-1.1-4.1-2.3-5.7-3.6
 		c-1.6-1.3-3.5-3-5.5-5.1l-4.6-5L41.5,0l29.3,32.5L41.5,65L29,54.2z"
-            />
-          </svg>
-        </button>
+              />
+            </svg>
+          </button>
+        </template>
       </div>
     </div>
   </div>
@@ -75,11 +93,12 @@
 export default {
   props: {
     medias: Array,
+    play_masks_randomly: Boolean,
   },
   components: {},
   data() {
     return {
-      is_loading: false,
+      is_loading: true,
       mindarThree: {},
       curr_image: 0,
 
@@ -101,9 +120,12 @@ export default {
   },
   computed: {
     media_images() {
-      return this.medias.map(
-        (m) => m._linked_media.thumbs.find((t) => t.size === 1600).path
-      );
+      return this.medias.map((m) => {
+        return {
+          thumb: m._linked_media.thumbs.find((t) => t.size === 1600).path,
+          caption: m._linked_media.caption,
+        };
+      });
     },
   },
   methods: {
@@ -115,9 +137,12 @@ export default {
           : "/libs/ar/mindar-face-three.prod.js";
 
       this.$loadScript(path_to_mindar).then(() => {
+        if (this.$root.state.dev_mode === "debug")
+          console.log(`FaceMaskModule: startFaceTracking / mindar has loaded`);
+
         const THREE = window.MINDAR.FACE.THREE;
         this.mindarThree = new window.MINDAR.FACE.MindARThree({
-          container: document.querySelector(".m_faceMaskModule--inner"),
+          container: this.$refs.fmInner,
         });
         const { renderer, scene, camera } = this.mindarThree;
 
@@ -130,7 +155,7 @@ export default {
         // const texture = new THREE.VideoTexture(video);
 
         this.curr_texture = new THREE.TextureLoader().load(
-          "/" + this.media_images[this.curr_image]
+          "/" + this.media_images[this.curr_image].thumb
         );
         // "./video.mp4"
         // "/canonical_face_model_uv_visualization_bis.png"
@@ -142,9 +167,9 @@ export default {
         // this.mindarThree._resize = function () {};
 
         this.mindarThree.start().then(() => {
+          this.is_loading = false;
           renderer.setAnimationLoop(() => {
             renderer.render(scene, camera);
-            this.is_loading = false;
           });
         });
       });
@@ -159,12 +184,20 @@ export default {
     prevImage() {
       this.curr_image--;
     },
+    pickRandomMask() {
+      const pickRndInArr = () =>
+        Math.floor(this.media_images.length * Math.random());
+
+      let other_mask_index = pickRndInArr();
+      while (other_mask_index === this.curr_image)
+        other_mask_index = pickRndInArr();
+      this.curr_image = other_mask_index;
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 .m_faceMaskModule {
-  // background: blue;
   top: 0;
   left: 0;
   width: 100%;
@@ -172,6 +205,24 @@ export default {
   position: absolute;
   overflow: hidden;
 }
+.m_faceMaskModule--inner {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+}
+
+.m_faceMaskModule--curtain {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 1);
+}
+
 ._navImageButton {
   position: absolute;
   bottom: 0;
@@ -181,17 +232,30 @@ export default {
   display: flex;
   justify-content: center;
   margin: calc(var(--spacing) * 1);
+}
 
-  ._navImageButton--inner {
-    border-radius: 6px;
-    background: white;
-    background: var(--c-creme);
-    pointer-events: auto;
-    padding: calc(var(--spacing) / 4);
-  }
+._navImageButton--inner {
+  border-radius: 6px;
+  background: white;
+  // background: var(--c-creme);
+  pointer-events: auto;
+  padding: calc(var(--spacing) / 4);
 
-  > button {
+  text-align: center;
+
+  .button-greenthin {
+    margin: 0;
   }
+}
+._navImageButton--inner--caption {
+  padding: calc(var(--spacing) / 4);
+  font-family: "Fira Mono";
+  font-size: 10pt;
+  // margin-top: 0.5em;
+  white-space: pre-wrap;
+}
+
+> button {
 }
 </style>
 <style lang="scss">
