@@ -1066,7 +1066,9 @@ module.exports = (function () {
           additionalMeta.type === "marker" ||
           additionalMeta.type === "planning" ||
           additionalMeta.type === "composition" ||
-          additionalMeta.type === "embed"
+          additionalMeta.type === "embed" ||
+          additionalMeta.type === "link" ||
+          additionalMeta.type === "code"
         ) {
           tasks.push(
             new Promise((resolve, reject) => {
