@@ -120,12 +120,18 @@ export default {
   },
   computed: {
     media_images() {
-      return this.medias.map((m) => {
-        return {
-          thumb: m._linked_media.thumbs.find((t) => t.size === 1600).path,
-          caption: m._linked_media.caption,
-        };
-      });
+      return this.medias.reduce((acc, m) => {
+        const thumb =
+          m._linked_media && m._linked_media.thumbs
+            ? m._linked_media.thumbs.find((t) => t.size === 1600).path
+            : false;
+        if (thumb)
+          acc.push({
+            thumb,
+            caption: m._linked_media.caption ? m._linked_media.caption : "",
+          });
+        return acc;
+      }, []);
     },
   },
   methods: {
