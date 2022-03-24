@@ -1106,7 +1106,7 @@ module.exports = (function () {
           ignoreHTTPSErrors: true,
           args: ["--no-sandbox", "--font-render-hinting=none"],
         })
-        .then((_browser) => {
+        .then(async (_browser) => {
           browser = _browser;
 
           const page = await browser.newPage();
@@ -1120,9 +1120,9 @@ module.exports = (function () {
           dev.logverbose(`THUMBS — _getPageMetadata : loading URL ${url}`);
 
           let page_timeout = setTimeout(() => {
-            clearTimeout(page_timeout);
             dev.error(`THUMBS — _getPageMetadata : page timeout for ${url}`);
-            win.close();
+            clearTimeout(page_timeout);
+            browser.close();
             return reject();
           }, 10_000);
 
@@ -1131,15 +1131,16 @@ module.exports = (function () {
               waitUntil: "domcontentloaded",
             })
             .then(async () => {
-              clearTimeout(page_timeout);
+              dev.logverbose(
+                `THUMBS — _getPageMetadata : finished loading page ${url}`
+              );
+
               let html = await page.evaluate(
                 () => document.documentElement.innerHTML
               );
-              browser.close();
 
-              dev.logverbose(
-                `THUMBS — _getPageMetadata : finished loading page`
-              );
+              clearTimeout(page_timeout);
+              browser.close();
 
               // console.log(html); // will be your innherhtml
               const parsed_meta = _parseHTMLMetaTags({ html });
