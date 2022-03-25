@@ -19,6 +19,7 @@
 
     <div class="_navImageButton" v-if="!is_loading">
       <div class="_navImageButton--inner">
+        {{ media_images }}
         <div
           class="_navImageButton--inner--caption"
           v-if="media_images[curr_image].caption"
@@ -121,10 +122,27 @@ export default {
   computed: {
     media_images() {
       return this.medias.reduce((acc, m) => {
-        const thumb =
-          m._linked_media && m._linked_media.thumbs
-            ? m._linked_media.thumbs.find((t) => t.size === 1600).path
-            : false;
+        if (!m._linked_media || !m._linked_media.thumbs) return acc;
+
+        function endsWithAny(suffixes, string) {
+          return suffixes.some(function (suffix) {
+            return string.endsWith(suffix);
+          });
+        }
+        let thumb;
+
+        if (
+          endsWithAny(
+            [".gif", ".svg", ".png"],
+            m._linked_media.media_filename.toLowerCase()
+          )
+        ) {
+          thumb = `${m._linked_media.slugProjectName}/${
+            m._linked_media.media_filename
+          }?v=${+this.$moment(m._linked_media.date_created)}`;
+        } else {
+          thumb = m._linked_media.thumbs.find((t) => t.size === 1600).path;
+        }
         if (thumb)
           acc.push({
             thumb,
