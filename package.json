@@ -93,7 +93,7 @@
     "ws": "^7.4.0"
   },
   "devDependencies": {
-    "electron": "11.0.3",
+    "electron": "13.6.6",
     "electron-builder": "^22.9.1",
     "electron-packager": "^15.1.0",
     "electron-rebuild": "^2.3.4",
