@@ -122,7 +122,7 @@ module.exports = (function () {
         // no file of this name has been found
       }
       dev.logverbose(`3. this filename is not taken : ${newFileName}`);
-      resolve(newFileName);
+      return resolve(newFileName);
     });
   }
 
