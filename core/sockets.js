@@ -232,7 +232,10 @@ module.exports = (function () {
 
     await sendFolders({ type, slugFolderName, id });
   }
-  async function onEditFolder(socket, { type, slugFolderName, data, id }) {
+  async function onEditFolder(
+    socket,
+    { type, slugFolderName, data, id, update_date_modified = false }
+  ) {
     dev.logfunction(
       `EVENT - onEditFolder for type = ${type}, 
       slugFolderName = ${slugFolderName}, data = ${JSON.stringify(data)}`
@@ -252,15 +255,17 @@ module.exports = (function () {
             not_localized_string: `Error: folder can’t be edited ${slugFolderName} ${err}`,
             type: "error",
           });
-        }))
+        })) &&
+      update_date_modified === false
     )
       return;
 
-    data = await auth.preventFieldsEditingDependingOnRole({
-      socket,
-      type,
-      meta: data,
-    });
+    if (!update_date_modified)
+      data = await auth.preventFieldsEditingDependingOnRole({
+        socket,
+        type,
+        meta: data,
+      });
 
     // check if password is crypted and should change
     const password_field_options =
@@ -340,11 +345,12 @@ module.exports = (function () {
       });
     }
 
-    changelog.append({
-      author: auth.getSocketAuthors(socket),
-      action: "edited_folder",
-      detail: { type, slugFolderName, data },
-    });
+    if (!update_date_modified)
+      changelog.append({
+        author: auth.getSocketAuthors(socket),
+        action: "edited_folder",
+        detail: { type, slugFolderName, data },
+      });
 
     await sendFolders({ type, slugFolderName, id });
   }
@@ -353,7 +359,12 @@ module.exports = (function () {
     dev.logfunction(
       `EVENT - updateFolderModified for type = ${type}, slugFolderName = ${slugFolderName}`
     );
-    onEditFolder(undefined, { type, slugFolderName, data: {} });
+    onEditFolder(undefined, {
+      type,
+      slugFolderName,
+      data: {},
+      update_date_modified: true,
+    });
   }
 
   async function onRemoveFolder(socket, { type, slugFolderName }) {
