@@ -1324,12 +1324,13 @@ module.exports = (function () {
         // Use default printing options
         setTimeout(() => {
           win.capturePage().then((image) => {
-            win.close();
+            if (win) win.close();
             return resolve(image);
           });
         }, 1000);
       });
       win.webContents.on("did-fail-load", (err) => {
+        if (win) win.close();
         return reject(err);
       });
     });
