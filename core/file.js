@@ -169,7 +169,7 @@ module.exports = (function () {
         newFoldersData.hasOwnProperty("preview_rawdata") &&
         global.settings.structure[type].hasOwnProperty("preview")
       )
-        _storeFoldersPreview(
+        await _storeFoldersPreview(
           slugFolderName,
           type,
           newFoldersData.preview_rawdata
@@ -1589,7 +1589,7 @@ module.exports = (function () {
           );
         })
         .then(() => {
-          if (preview_rawdata === "") {
+          if (preview_rawdata === "" || !preview_rawdata) {
             dev.logverbose(
               `COMMON — _storeFoldersPreview : No new preview data found, returning.`
             );
