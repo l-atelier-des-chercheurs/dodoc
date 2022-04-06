@@ -381,7 +381,7 @@ module.exports = (function () {
 
       let folders_and_medias = {};
       for (const { slugFolderName, metaFileName } of medias_list) {
-        if (!slugFolderName || !metaFileName) return;
+        if (!slugFolderName || !metaFileName) continue;
 
         if (!folders_and_medias.hasOwnProperty(slugFolderName))
           folders_and_medias[slugFolderName] = {
