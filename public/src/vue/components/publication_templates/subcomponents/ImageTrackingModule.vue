@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- <img :src="mind_and_results[0].result" /> -->
     <div ref="imInner" />
 
     <pre>
@@ -37,11 +38,13 @@ export default {
   computed: {
     mind_and_results() {
       return this.ar_blocks.reduce((acc, block) => {
-        if (block.mind && block.result) {
+        if (block.mind && block.result._linked_media) {
           acc.push({
             // id: block.id,
-            mind: this.makeURL({ media: block.mind }),
-            result: this.makeURL({ media: block.result }),
+            mind: `/_publications/${this.slugPubliName}/${block.mind.media_filename}`,
+            result: block.result._linked_media.thumbs.find(
+              (t) => t.size === 1600
+            ).path,
           });
         }
         return acc;
@@ -49,11 +52,6 @@ export default {
     },
   },
   methods: {
-    makeURL({ media }) {
-      return `_publications/${this.slugPubliName}/${
-        media.media_filename
-      }?v=${+this.$moment(media.date_created)}`;
-    },
     initAR() {
       this.is_loading = true;
       const path_to_mindar =
@@ -70,7 +68,7 @@ export default {
         const THREE = window.MINDAR.IMAGE.THREE;
         this.mindarThree = new window.MINDAR.IMAGE.MindARThree({
           container: this.$refs.imInner,
-          imageTargetSrc: this.mind_and_results[0].file_path,
+          imageTargetSrc: this.mind_and_results[0].mind,
         });
         const { renderer, scene, camera } = this.mindarThree;
         const anchor = this.mindarThree.addAnchor(0);
@@ -88,6 +86,15 @@ export default {
             renderer.render(scene, camera);
           })
         );
+
+        // detect target found
+        this.$refs.imInner.addEventListener("targetFound", (event) => {
+          console.log("target found");
+        });
+        // detect target lost
+        this.$refs.imInner.addEventListener("targetLost", (event) => {
+          console.log("target lost");
+        });
       });
     },
   },
