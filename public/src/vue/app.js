@@ -64,6 +64,19 @@ Vue.component("Loader", {
   `,
 });
 
+Vue.config.ignoredElements = [
+  "a-scene",
+  "a-entity",
+  "a-camera",
+  "a-assets",
+  "a-image",
+  "a-box",
+  "a-sky",
+  "a-sphere",
+  "a-cylinder",
+  "a-plane",
+];
+
 import ProtectedLock from "./components/subcomponents/ProtectedLock.vue";
 Vue.component("ProtectedLock", ProtectedLock);
 
