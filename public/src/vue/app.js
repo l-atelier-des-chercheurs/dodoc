@@ -37,7 +37,6 @@ Vue.use(PortalVue);
 import VueClipboard from "vue-clipboard2";
 Vue.use(VueClipboard);
 
-
 import VueI18n from "vue-i18n";
 Vue.use(VueI18n);
 
@@ -139,22 +138,27 @@ Vue.prototype.$moment = moment;
 
 Vue.prototype.$loadScript = function (src) {
   return new Promise(function (resolve, reject) {
-    if (document.querySelector('script[src="' + src + '"]')) {
-      resolve();
+    let shouldAppend = false;
+    let el = document.querySelector('script[src="' + src + '"]');
+    if (!el) {
+      el = document.createElement("script");
+      el.type = "text/javascript";
+      el.async = true;
+      el.src = src;
+      shouldAppend = true;
+    } else if (el.hasAttribute("data-loaded")) {
+      resolve(el);
       return;
     }
 
-    const el = document.createElement("script");
-
-    el.type = "text/javascript";
-    el.async = true;
-    el.src = src;
-
-    el.addEventListener("load", resolve);
     el.addEventListener("error", reject);
     el.addEventListener("abort", reject);
+    el.addEventListener("load", function loadScriptHandler() {
+      el.setAttribute("data-loaded", true);
+      resolve(el);
+    });
 
-    document.head.appendChild(el);
+    if (shouldAppend) document.head.appendChild(el);
   });
 };
 
