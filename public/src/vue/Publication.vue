@@ -144,6 +144,23 @@
       @addMedia="addMediaOrdered"
       @togglePreviewMode="preview_mode = !preview_mode"
     />
+    <ImageTracking
+      v-else-if="publication.template === 'image_tracking'"
+      :slugPubliName="slugPubliName"
+      :publication="publication"
+      :paged_medias="paged_medias"
+      :read_only="read_only"
+      :can_edit_publi="can_edit_publi"
+      :can_see_publi="can_see_publi"
+      :preview_mode="preview_mode"
+      :model_for_this_publication="model_for_this_publication"
+      @togglePreviewMode="preview_mode = !preview_mode"
+      @editPubliMedia="editPubliMedia"
+      @addMedia="addMedia"
+      @openPublishModal="openPublishModal"
+      @removePubliMedia="removePubliMedia"
+    />
+    />
     <!-- <Carreau
       v-if="
         $root.settings.current_publication.slug !== false &&
@@ -177,6 +194,7 @@ import StopmotionAnimation from "./components/publication_templates/StopmotionAn
 import MixAudioAndVideo from "./components/publication_templates/MixAudioAndVideo.vue";
 import MixAudioAndImage from "./components/publication_templates/MixAudioAndImage.vue";
 import FaceMasks from "./components/publication_templates/FaceMasks.vue";
+import ImageTracking from "./components/publication_templates/ImageTracking.vue";
 // import Carreau from "./components/publication_templates/Carreau.vue";
 
 import PublishModal from "./components/modals/PublishModal.vue";
@@ -196,6 +214,7 @@ export default {
     MixAudioAndVideo,
     MixAudioAndImage,
     FaceMasks,
+    ImageTracking,
     PublishModal,
   },
   data() {
@@ -662,6 +681,14 @@ export default {
             this.$eventHub.$emit("publication.just_added_media", mdata);
             return resolve(mdata);
           });
+      });
+    },
+
+    removePubliMedia({ metaFileName }) {
+      this.$root.removeMedia({
+        type: "publications",
+        slugFolderName: this.slugPubliName,
+        slugMediaName: metaFileName,
       });
     },
 

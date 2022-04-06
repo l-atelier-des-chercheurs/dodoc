@@ -5148,6 +5148,50 @@ small {
   }
 }
 
+.m_imageTracking {
+  .padding-verysmall;
+  .padding-sides-medium;
+  margin: 0 auto;
+  .margin-vert-small;
+  // max-width: 1024px;
+  width: 100%;
+
+  counter-reset: compteListe;
+
+  align-items: start;
+
+  > * {
+    .bg-blanc;
+    .margin-vert-small;
+    margin-inline: auto;
+    .boxs-card-2;
+    max-width: 480px;
+    border-radius: @t-buttonradius;
+    // margin-left: -@t-buttonradius;
+    // margin-right: -@t-buttonradius;
+    // flex: 0 0 100px;
+    position: relative;
+    transition: all 0.4s;
+  }
+
+  .m_imageTracking--block {
+    display: flex;
+    flex-flow: row nowrap;
+    background: white;
+  }
+
+  .m_imageTracking--block--media {
+    // width: 160px;
+    flex: 0 0 50%;
+    .padding-verysmall;
+
+    &.is--target {
+    }
+    &:not(.is--target) {
+    }
+  }
+}
+
 @t-maxStoryWidth: 680px;
 
 .m_storyPublication {

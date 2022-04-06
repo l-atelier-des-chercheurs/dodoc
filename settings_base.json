@@ -265,7 +265,8 @@
             "drawing_pad",
             "video_effects",
             "story",
-            "face_masks"
+            "face_masks",
+            "image_tracking"
           ],
           "default": "page_by_page"
         },
@@ -403,7 +404,8 @@
               "code",
               "stl",
               "document",
-              "other"
+              "other",
+              "target"
             ],
             "default": "other"
           },
@@ -442,6 +444,9 @@
           "y": {
             "type": "number"
           },
+          "is_target_of": {
+            "type": "string"
+          },
           "rotate": {
             "type": "number"
           },
@@ -453,6 +458,9 @@
           },
           "fit_mode": {
             "type": "string"
+          },
+          "is_ar_target": {
+            "type": "boolean"
           },
           "locked_in_place": {
             "type": "boolean"

@@ -1123,6 +1123,23 @@ module.exports = (function () {
                 });
             })
           );
+        } else if (additionalMeta.type === "other") {
+          tasks.push(
+            new Promise((resolve, reject) => {
+              if (additionalMeta.extension)
+                mediaName += "." + additionalMeta.extension;
+              let pathToMedia = path.join(folder_path, mediaName);
+
+              var fileBuffer = new Buffer(rawData, "base64");
+              fs.writeFile(pathToMedia, fileBuffer)
+                .then(() => {
+                  resolve();
+                })
+                .catch((err) => {
+                  reject(err);
+                });
+            })
+          );
         }
 
         Promise.all(tasks)
