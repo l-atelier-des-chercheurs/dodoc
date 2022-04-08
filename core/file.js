@@ -169,7 +169,7 @@ module.exports = (function () {
         newFoldersData.hasOwnProperty("preview_rawdata") &&
         global.settings.structure[type].hasOwnProperty("preview")
       )
-        _storeFoldersPreview(
+        await _storeFoldersPreview(
           slugFolderName,
           type,
           newFoldersData.preview_rawdata
@@ -381,7 +381,7 @@ module.exports = (function () {
 
       let folders_and_medias = {};
       for (const { slugFolderName, metaFileName } of medias_list) {
-        if (!slugFolderName || !metaFileName) return;
+        if (!slugFolderName || !metaFileName) continue;
 
         if (!folders_and_medias.hasOwnProperty(slugFolderName))
           folders_and_medias[slugFolderName] = {
@@ -1123,6 +1123,23 @@ module.exports = (function () {
                 });
             })
           );
+        } else if (additionalMeta.type === "other") {
+          tasks.push(
+            new Promise((resolve, reject) => {
+              if (additionalMeta.extension)
+                mediaName += "." + additionalMeta.extension;
+              let pathToMedia = path.join(folder_path, mediaName);
+
+              var fileBuffer = new Buffer(rawData, "base64");
+              fs.writeFile(pathToMedia, fileBuffer)
+                .then(() => {
+                  resolve();
+                })
+                .catch((err) => {
+                  reject(err);
+                });
+            })
+          );
         }
 
         Promise.all(tasks)
@@ -1589,7 +1606,7 @@ module.exports = (function () {
           );
         })
         .then(() => {
-          if (preview_rawdata === "") {
+          if (preview_rawdata === "" || !preview_rawdata) {
             dev.logverbose(
               `COMMON — _storeFoldersPreview : No new preview data found, returning.`
             );

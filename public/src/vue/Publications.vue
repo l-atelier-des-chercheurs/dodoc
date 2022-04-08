@@ -847,7 +847,17 @@ export default {
               summary: "face_masks_summary",
               show_instructions: false,
               instructions: "face_masks_instructions",
-
+              icon: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+  <rect x="67" y="67" width="67" height="67" style="fill: #fff"/>
+</svg>
+              `,
+            },
+            {
+              key: "image_tracking",
+              summary: "image_tracking_summary",
+              show_instructions: false,
+              instructions: "image_tracking_instructions",
               icon: `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
   <rect x="67" y="67" width="67" height="67" style="fill: #fff"/>

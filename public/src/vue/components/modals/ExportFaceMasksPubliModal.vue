@@ -11,8 +11,8 @@
     <template slot="sidebar">
       <div class="margin-sides-medium font-small">
         <div class>
-          <p>{{ $t("export_stopmotion_instructions") }}</p>
-          <hr />
+          <!-- <p>{{ $t("export_stopmotion_instructions") }}</p> -->
+          <!-- <hr /> -->
 
           <div class="margin-bottom-small">
             <QRCodeToResource

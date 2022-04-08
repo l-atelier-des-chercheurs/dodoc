@@ -3939,6 +3939,27 @@ module.exports = (function () {
           <br>Média accepté : des images avec ou sans légende.`,
       en: "",
     },
+    image_tracking: {
+      fr: "Réalité augmentée",
+      en: "Augmented reality",
+    },
+    image_tracking_summary: {
+      fr: "",
+      en: "",
+    },
+    image_tracking_instructions: {
+      fr: ``,
+      en: "",
+    },
+    target_image: {
+      fr: "Image cible",
+      en: "Target image",
+    },
+    image_shown: {
+      fr: "Image affichée",
+      en: "Image shown",
+    },
+
     effect: {
       fr: "Effet",
       en: "Effect",
