@@ -69,7 +69,7 @@
     "gulp-util": "^3.0.8",
     "ip-anonymize": "^0.1.0",
     "memory-cache": "^0.2.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "node-abi": "^2.19.3",
     "node-localstorage": "^2.1.6",
     "pad-left": "^2.1.0",
