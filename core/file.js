@@ -50,7 +50,10 @@ module.exports = (function () {
       const metaFolderPath = path.join(folder_path, "meta.txt");
 
       /*** ****/
-      let folder_meta = await _readMetaFile(metaFolderPath);
+      let folder_meta = await _readMetaFile(metaFolderPath).catch(() => {
+        dev.error(`Missing ${metaFolderPath}`);
+        return false;
+      });
       folder_meta = _sanitizeMetaFromFile({ type, meta: folder_meta });
       folder_meta.slugFolderName = slugFolderName;
 
