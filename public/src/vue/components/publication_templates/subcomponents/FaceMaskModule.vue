@@ -19,7 +19,6 @@
 
     <div class="_navImageButton" v-if="!is_loading">
       <div class="_navImageButton--inner">
-        {{ media_images }}
         <div
           class="_navImageButton--inner--caption"
           v-if="media_images[curr_image].caption"
