@@ -9,7 +9,7 @@
 
       <template v-if="!is_loading">
         <a-scene
-          :mindar-image="`imageTargetSrc: ${mind_and_results[0].mind}; filterMinCF:0.1; filterBeta: 10;`"
+          :mindar-image="`imageTargetSrc: ${mind_and_results[0].mind};`"
           vr-mode-ui="enabled: false"
           device-orientation-permission-ui="enabled: false"
           color-space="sRGB"
@@ -173,6 +173,8 @@ export default {
   position: absolute;
   width: 100vw;
   height: 100vh;
+  height: -webkit-fill-available;
+
   top: 0;
 }
 ._refImg {
