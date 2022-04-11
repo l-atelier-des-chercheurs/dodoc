@@ -160,7 +160,6 @@
       @openPublishModal="openPublishModal"
       @removePubliMedia="removePubliMedia"
     />
-    />
     <!-- <Carreau
       v-if="
         $root.settings.current_publication.slug !== false &&

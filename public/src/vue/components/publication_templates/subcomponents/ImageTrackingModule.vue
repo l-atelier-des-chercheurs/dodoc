@@ -1,7 +1,11 @@
 <template>
   <portal to="modal_container">
-    <div>
-      <img :src="'/' + mind_and_results[0].target" class="_refImg" />
+    <div class="m_imageTrackingModule">
+      <!-- <pre>
+      {{ ar_blocks[0].result }}
+      {{ mind_and_results[0] }}
+      </pre> -->
+      <!-- <img :src="'/' + mind_and_results[0].target" class="_refImg" /> -->
 
       <template v-if="!is_loading">
         <a-scene
@@ -12,7 +16,7 @@
           renderer="colorManagement: true, physicallyCorrectLights"
         >
           <a-assets>
-            <img id="result" :src="'/' + mind_and_results[0].result" />
+            <img id="result" :src="'/' + mind_and_results[0].result.src" />
           </a-assets>
 
           <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -21,7 +25,7 @@
             <a-plane
               src="#result"
               position="0 0 0"
-              height="0.552"
+              :height="mind_and_results[0].result.ratio"
               width="1"
               rotation="0 0 0"
             ></a-plane>
@@ -88,12 +92,26 @@ export default {
     mind_and_results() {
       return this.ar_blocks.reduce((acc, block) => {
         if (block.mind && block.result._linked_media) {
+          const w = block.result._linked_media.file_meta.find((m) =>
+            m.hasOwnProperty("width")
+          ).width;
+          const h = block.result._linked_media.file_meta.find((m) =>
+            m.hasOwnProperty("height")
+          ).height;
+          let ratio = 1;
+          if (w && h) {
+            ratio = Number(h) / Number(w);
+          }
+
           acc.push({
             // id: block.id,
             mind: `/_publications/${this.slugPubliName}/${block.mind.media_filename}`,
-            result: block.result._linked_media.thumbs.find(
-              (t) => t.size === 1600
-            ).path,
+            result: {
+              src: block.result._linked_media.thumbs.find(
+                (t) => t.size === 1600
+              ).path,
+              ratio,
+            },
             target: block.target._linked_media.thumbs.find(
               (t) => t.size === 1600
             ).path,
@@ -150,7 +168,16 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.m_imageTrackingModule {
+  overflow: hidden;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+}
 ._refImg {
+  position: absolute;
+
   width: 50px;
 }
 </style>
