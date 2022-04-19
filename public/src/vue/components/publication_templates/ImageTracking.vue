@@ -51,7 +51,7 @@
               :key="'create_page'"
               @click="removeBlock(ar_block.id)"
             >
-              {{ $t("remove_block") }}
+              {{ $t("remove") }}
             </button>
           </div>
 
@@ -96,21 +96,6 @@
             </div>
           </div>
         </div>
-        <div>
-          <button
-            type="button"
-            class=""
-            v-if="can_edit_publi"
-            :key="'create_page'"
-            @click="
-              insertPageAtIndex(
-                publication.pages ? publication.pages.length + 1 : 0
-              )
-            "
-          >
-            {{ $t("create_block") }}
-          </button>
-        </div>
 
         <div class="margin-small" v-if="all_targets.length > 0">
           <template v-if="can_edit_publi && !current_mind">
@@ -122,6 +107,21 @@
           <div v-else-if="!current_mind">{{ $t("missing_mind_file") }}</div>
           <div v-else-if="current_mind">{{ $t("has_mind_file") }}</div>
         </div>
+      </div>
+      <div>
+        <button
+          type="button"
+          class=""
+          v-if="can_edit_publi"
+          :key="'create_page'"
+          @click="
+            insertPageAtIndex(
+              publication.pages ? publication.pages.length + 1 : 0
+            )
+          "
+        >
+          {{ $t("create_block") }}
+        </button>
       </div>
     </template>
     <template v-else-if="paged_medias && Object.keys(paged_medias).length > 0">

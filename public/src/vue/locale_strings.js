@@ -3943,6 +3943,10 @@ module.exports = (function () {
       fr: "Réalité augmentée",
       en: "Augmented reality",
     },
+    create_block: {
+      fr: "Créer un groupe",
+      en: "Create group",
+    },
     image_tracking_summary: {
       fr: "",
       en: "",
