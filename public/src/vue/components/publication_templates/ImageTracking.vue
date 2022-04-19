@@ -32,11 +32,12 @@
       </div>
       <div v-else class="m_imageTracking">
         <div
-          v-for="ar_block in ar_blocks"
+          v-for="(ar_block, index) in ar_blocks"
           :key="ar_block.id"
           class="m_imageTracking--block"
         >
-          <div v-if="!ar_block.target && !ar_block.mind && !ar_block.result">
+          <label class="_index">{{ index + 1 }}</label>
+          <div v-if="!ar_block.target && !ar_block.result">
             <div class="padding-verysmall">
               <small class="">
                 Commencez par ajouter l’image cible, celle qui déclenchera
@@ -67,29 +68,12 @@
                 @removePubliMedia="
                   removeFromBlock({
                     id: ar_block.id,
-                    media_types: ['target', 'mind'],
+                    media_types: ['target'],
                   })
                 "
                 @editPubliMedia="$emit('editPubliMedia', $event)"
                 @duplicateMedia="$emit('duplicateMedia', $event)"
               />
-
-              <div class="margin-small">
-                <template
-                  v-if="can_edit_publi && !ar_block.mind && ar_block.target"
-                >
-                  <ImageTrackingMakeTarget
-                    :media="ar_block.target"
-                    :slugPubliName="slugPubliName"
-                  />
-                </template>
-                <div v-else-if="ar_block.target && !ar_block.mind">
-                  missing mind
-                </div>
-                <div v-else-if="ar_block.target && ar_block.mind">
-                  ok, has mind
-                </div>
-              </div>
             </div>
             <img
               class="_targetResultGroup--arrow"
@@ -112,26 +96,38 @@
             </div>
           </div>
         </div>
-      </div>
-      <div>
-        <button
-          type="button"
-          class=""
-          v-if="can_edit_publi"
-          :key="'create_page'"
-          @click="
-            insertPageAtIndex(
-              publication.pages ? publication.pages.length + 1 : 0
-            )
-          "
-        >
-          {{ $t("create_block") }}
-        </button>
+        <div>
+          <button
+            type="button"
+            class=""
+            v-if="can_edit_publi"
+            :key="'create_page'"
+            @click="
+              insertPageAtIndex(
+                publication.pages ? publication.pages.length + 1 : 0
+              )
+            "
+          >
+            {{ $t("create_block") }}
+          </button>
+        </div>
+
+        <div class="margin-small" v-if="all_targets.length > 0">
+          <template v-if="can_edit_publi && !current_mind">
+            <ImageTrackingMakeTarget
+              :medias="all_targets"
+              :slugPubliName="slugPubliName"
+            />
+          </template>
+          <div v-else-if="!current_mind">{{ $t("missing_mind_file") }}</div>
+          <div v-else-if="current_mind">{{ $t("has_mind_file") }}</div>
+        </div>
       </div>
     </template>
     <template v-else-if="paged_medias && Object.keys(paged_medias).length > 0">
       <ImageTrackingModule
         :ar_blocks="ar_blocks"
+        :mind="current_mind"
         :slugPubliName="slugPubliName"
       />
     </template>
@@ -197,13 +193,27 @@ export default {
         if (medias)
           medias.map((m) => {
             if (m.is_ar_target) obj.target = m;
-            else if (m.media_filename.endsWith(".mind")) obj.mind = m;
             else obj.result = m;
           });
 
         acc.push(obj);
         return acc;
       }, []);
+    },
+    all_targets() {
+      return this.ar_blocks.reduce((acc, ab) => {
+        if (ab.target) acc.push(ab.target);
+        return acc;
+      }, []);
+    },
+    current_mind() {
+      const targets_metafilename = this.all_targets.map((m) => m.metaFileName);
+      const mind = Object.values(this.publication.medias).find(
+        (m) =>
+          m.hasOwnProperty("is_mind_for") &&
+          m.is_mind_for === targets_metafilename.join("/")
+      );
+      return mind;
     },
   },
   methods: {
@@ -213,8 +223,6 @@ export default {
 
       const last_block = this.ar_blocks[this.ar_blocks.length - 1];
       values.page_id = last_block.id;
-
-      debugger;
 
       if (!last_block.target) values.is_ar_target = true;
 
@@ -259,7 +267,7 @@ export default {
           `METHODS • Publication: imagetracking removeBlock id = ${id}`
         );
 
-      this.removeFromBlock({ id, media_types: ["target", "mind", "result"] });
+      this.removeFromBlock({ id, media_types: ["target", "result"] });
 
       this.$root.editFolder({
         type: "publications",
@@ -272,7 +280,7 @@ export default {
     removeFromBlock({ id, media_types }) {
       const block = this.ar_blocks.find((b) => b.id === id);
 
-      // target, mind and result
+      // target and result
       media_types.map((mt) => {
         if (block[mt])
           this.$emit("removePubliMedia", {
@@ -302,5 +310,12 @@ export default {
     flex: 0 0 4em;
     width: 4em;
   }
+}
+
+._index {
+  position: absolute;
+  right: 100%;
+  padding: calc(var(--spacing) / 4);
+  color: black;
 }
 </style>

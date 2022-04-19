@@ -22,7 +22,7 @@ import UploadFile from "../../subcomponents/UploadFile.vue";
 
 export default {
   props: {
-    media: Object,
+    medias: Array,
     slugPubliName: String,
   },
   components: {
@@ -32,7 +32,6 @@ export default {
     return {
       exportedBuffer: undefined,
       current_progress: false,
-      selected_files: [],
 
       is_sending_target: false,
     };
@@ -42,8 +41,13 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    target_thumb() {
-      return this.media._linked_media.thumbs.find((t) => t.size === 1600).path;
+    targets_metafilename() {
+      return this.medias.map((m) => m.metaFileName);
+    },
+    targets_thumbs() {
+      return this.medias.map(
+        (m) => m._linked_media.thumbs.find((t) => t.size === 1600).path
+      );
     },
   },
   methods: {
@@ -61,54 +65,57 @@ export default {
 
         const compiler = new window.MINDAR.IMAGE.Compiler();
 
+        let tasks = [];
+        this.targets_thumbs.map((tt) => {
+          tasks.push(
+            new Promise((resolve) => this.loadImage(tt).then(resolve))
+          );
+        });
+
         // from https://github.com/hiukim/mind-ar-js/blob/master/examples/image-tracking/compile.html
-        this.loadImage(this.target_thumb)
-          .then((image) => {
-            if (this.$root.state.dev_mode === "debug")
-              console.log(`ImageTrackingMakeTarget: image loaded`);
+        Promise.all(tasks).then((images) => {
+          if (this.$root.state.dev_mode === "debug")
+            console.log(`ImageTrackingMakeTarget: image loaded`);
 
-            return compiler.compileImageTargets([image], (progress) => {
+          compiler
+            .compileImageTargets(images, (progress) => {
               this.current_progress = progress.toFixed(2);
-            });
-          })
-          .then((dataList) => {
-            return compiler.exportData();
-          })
-          .then((exportedBuffer) => {
-            // var blob = new Blob([buffer]);
-            // aLink.href = window.URL.createObjectURL(blob);
+            })
+            .then((dataList) => {
+              return compiler.exportData();
+            })
+            .then((exportedBuffer) => {
+              // var blob = new Blob([buffer]);
+              // aLink.href = window.URL.createObjectURL(blob);
 
-            // todo : save .mind file somewhere serverside to use when previewing
-            this.current_progress = 100;
-            this.is_sending_target = true;
+              // todo : save .mind file somewhere serverside to use when previewing
+              this.current_progress = 100;
+              this.is_sending_target = true;
 
-            this.$root
-              .createMedia({
+              return this.$root.createMedia({
                 slugFolderName: this.slugPubliName,
                 type: "publications",
                 rawData: new Blob([exportedBuffer]),
                 additionalMeta: {
                   type: "other",
                   extension: "mind",
-                  page_id: this.media.page_id,
+                  is_mind_for: this.targets_metafilename.join("/"),
                 },
-              })
-              .then((mdata) => {
-                this.current_progress = false;
-                this.is_sending_target = false;
-                this.$refs.videoElement.play();
-              })
-              .catch((err) => {
-                this.current_progress = false;
-                this.is_sending_target = false;
-                this.$alertify
-                  .closeLogOnClick(true)
-                  .delay(4000)
-                  .error(this.$t("notifications.failed_to_save_media"));
               });
-
-            this.selected_files = [exportedBuffer];
-          });
+            })
+            .then((mdata) => {
+              this.current_progress = false;
+              this.is_sending_target = false;
+            })
+            .catch((err) => {
+              this.current_progress = false;
+              this.is_sending_target = false;
+              this.$alertify
+                .closeLogOnClick(true)
+                .delay(4000)
+                .error(this.$t("notifications.failed_to_save_media"));
+            });
+        });
       });
     },
     loadImage(src) {
@@ -120,23 +127,6 @@ export default {
         //img.src = src
       });
     },
-    compileFiles(image) {
-      // let _start = new Date().getTime();
-      // const dataList = await console.log(
-      //   "exec time compile: ",
-      //   new Date().getTime() - _start
-      // );
-      // for (let i = 0; i < dataList.length; i++) {
-      //   showData(dataList[i]);
-      // }
-      // const exportedBuffer = await compiler.exportData();
-      // document
-      //   .getElementById("downloadButton")
-      //   .addEventListener("click", function () {
-      //     download(exportedBuffer);
-      //   });
-    },
-    uploadTarget() {},
   },
 };
 </script>
