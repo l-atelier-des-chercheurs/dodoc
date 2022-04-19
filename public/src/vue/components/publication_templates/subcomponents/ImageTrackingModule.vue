@@ -1,31 +1,37 @@
 <template>
   <portal to="modal_container">
     <div class="m_imageTrackingModule">
-      <!-- <pre>
-      {{ ar_blocks[0].result }}
-      {{ mind_and_results[0] }}
-      </pre> -->
-      <!-- <img :src="'/' + mind_and_results[0].target" class="_refImg" /> -->
+      <!-- results = {{ results }}<br /><br />
+      mind_file = {{ mind_file }}<br /> -->
 
       <template v-if="!is_loading">
         <a-scene
-          :mindar-image="`imageTargetSrc: ${mind_and_results[0].mind};`"
+          :mindar-image="`imageTargetSrc: ${mind_file};`"
           vr-mode-ui="enabled: false"
           device-orientation-permission-ui="enabled: false"
           color-space="sRGB"
           renderer="colorManagement: true, physicallyCorrectLights"
         >
           <a-assets>
-            <img id="result" :src="'/' + mind_and_results[0].result.src" />
+            <img
+              v-for="(result, index) in results"
+              :key="`result-${index}`"
+              :id="`result-${index}`"
+              :src="'/' + result.src"
+            />
           </a-assets>
 
           <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-          <a-entity mindar-image-target="targetIndex: 0">
+          <a-entity
+            v-for="(result, index) in results"
+            :mindar-image-target="`targetIndex: ${index}`"
+            :key="`result-${index}`"
+          >
             <a-plane
-              src="#result"
+              :src="`#result-${index}`"
               position="0 0 0"
-              :height="mind_and_results[0].result.ratio"
+              :height="result.ratio"
               width="1"
               rotation="0 0 0"
             ></a-plane>
@@ -54,10 +60,6 @@
           </a-entity>
         </a-scene>
       </template>
-
-      <!-- <pre>
-      {{ mind_and_results }}
-    </pre> -->
     </div>
   </portal>
 </template>
@@ -65,6 +67,7 @@
 export default {
   props: {
     ar_blocks: Array,
+    mind: Object,
     slugPubliName: String,
   },
   components: {},
@@ -81,17 +84,20 @@ export default {
     this.mindarThree.renderer.setAnimationLoop(null);
   },
   watch: {
-    mind_and_results: {
+    results: {
       handler() {
-        if (this.mind_and_results.length > 0) this.initAR();
+        if (this.results.length > 0) this.initAR();
       },
       immediate: true,
     },
   },
   computed: {
-    mind_and_results() {
+    mind_file() {
+      return `/_publications/${this.slugPubliName}/${this.mind.media_filename}`;
+    },
+    results() {
       return this.ar_blocks.reduce((acc, block) => {
-        if (block.mind && block.result._linked_media) {
+        if (block.result._linked_media) {
           const w = block.result._linked_media.file_meta.find((m) =>
             m.hasOwnProperty("width")
           ).width;
@@ -104,18 +110,22 @@ export default {
           }
 
           acc.push({
-            // id: block.id,
-            mind: `/_publications/${this.slugPubliName}/${block.mind.media_filename}`,
-            result: {
-              src: block.result._linked_media.thumbs.find(
-                (t) => t.size === 1600
-              ).path,
-              ratio,
-            },
-            target: block.target._linked_media.thumbs.find(
-              (t) => t.size === 1600
-            ).path,
+            src: block.result._linked_media.thumbs.find((t) => t.size === 1600)
+              .path,
+            ratio,
           });
+
+          // acc.push({
+          //   result: {
+          //     src: block.result._linked_media.thumbs.find(
+          //       (t) => t.size === 1600
+          //     ).path,
+          //     ratio,
+          //   },
+          // target: block.target._linked_media.thumbs.find(
+          //   (t) => t.size === 1600
+          // ).path,
+          // });
         }
         return acc;
       }, []);

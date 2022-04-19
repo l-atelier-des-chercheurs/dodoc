@@ -404,8 +404,7 @@
               "code",
               "stl",
               "document",
-              "other",
-              "target"
+              "other"
             ],
             "default": "other"
           },
@@ -444,9 +443,6 @@
           "y": {
             "type": "number"
           },
-          "is_target_of": {
-            "type": "string"
-          },
           "rotate": {
             "type": "number"
           },
@@ -461,6 +457,9 @@
           },
           "is_ar_target": {
             "type": "boolean"
+          },
+          "is_mind_for": {
+            "type": "string"
           },
           "locked_in_place": {
             "type": "boolean"
