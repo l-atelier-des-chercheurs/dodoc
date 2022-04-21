@@ -989,6 +989,7 @@ module.exports = (function () {
     // rename and move page-1.png
     const src = path.join(_pdf_folder, "page-1.png");
     await fs.move(src, fullScreenshotPath);
+    await fs.remove(_pdf_folder);
 
     return { screenshotPath, screenshotName };
 
