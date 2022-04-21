@@ -68,7 +68,7 @@
     "platform-folders": "^0.5.4",
     "portscanner": "^2.2.0",
     "pug": "^3.0.2",
-    "puppeteer": "^2.1.1",
+    "puppeteer": "^3.3.0",
     "quill-render": "^1.0.5",
     "rich-text": "^4.1.0",
     "sharedb": "^1.5.2",

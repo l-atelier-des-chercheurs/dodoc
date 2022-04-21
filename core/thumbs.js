@@ -972,7 +972,7 @@ module.exports = (function () {
             },
           })
             .then((image) => {
-              fs.writeFile(fullScreenshotPath, image.toPNG(1.0), (error) => {
+              fs.writeFile(fullScreenshotPath, image, (error) => {
                 if (error) throw error;
                 dev.logverbose(
                   `THUMBS — _makePDFScreenshot : created image at ${fullScreenshotPath}`
@@ -982,7 +982,7 @@ module.exports = (function () {
             })
             .catch((err) => {
               dev.error(
-                `THUMBS — _makePDFScreenshot / Failed to make stl thumbs with error ${err}`
+                `THUMBS — _makePDFScreenshot / Failed to make thumbs with error ${err}`
               );
               return reject();
             });
@@ -1307,71 +1307,77 @@ module.exports = (function () {
     });
   }
 
-  function screenshotWebsite({ url, width = 1800, height = 1800, rect }) {
-    return new Promise(function (resolve, reject) {
-      width = Math.round(width);
-      height = Math.round(height);
+  async function screenshotWebsite({ url, width = 1800, height = 1800, rect }) {
+    width = Math.round(width);
+    height = Math.round(height);
 
-      dev.logfunction(
-        `THUMBS — screenshotWebsite url ${url} width ${width} height ${height} rect ${JSON.stringify(
-          rect
-        )}`
+    dev.logfunction(
+      `THUMBS — screenshotWebsite url ${url} width ${width} height ${height} rect ${JSON.stringify(
+        rect
+      )}`
+    );
+
+    let browser;
+
+    try {
+      browser = await puppeteer.launch({
+        headless: true,
+        ignoreHTTPSErrors: true,
+        args: ["--no-sandbox", "--font-render-hinting=none"],
+      });
+
+      dev.logverbose(
+        `THUMBS — screenshotWebsite : puppeteer browser launched, making new page`
       );
 
-      /* puppeteer version: can’t work for now because of missing extensions */
-      let browser;
+      const page = await browser.newPage();
+      page.setViewport({
+        width,
+        height,
+        deviceScaleFactor: 1,
+      });
 
-      puppeteer
-        .launch({
-          headless: true,
-          ignoreHTTPSErrors: true,
-          args: ["--no-sandbox", "--font-render-hinting=none"],
-        })
-        .then((_browser) => {
-          browser = _browser;
-          return browser.newPage();
-        })
-        .then(async (page) => {
-          page.setViewport({
-            width,
-            height,
-            deviceScaleFactor: 2,
-          });
+      dev.logverbose(`THUMBS — screenshotWebsite : loading URL ${url}`);
 
-          dev.logverbose(`THUMBS — screenshotWebsite : loading URL ${url}`);
+      await page.goto(
+        url,
+        // "https://gist.github.com/rcarmo/cf698b52832d0ec356c147cf9c9ad898",
+        {
+          waitUntil: "domcontentloaded",
+        }
+      );
 
-          function delay(duration) {
-            return new Promise((resolve) => {
-              setTimeout(() => resolve(), duration);
-            });
-          }
+      dev.logverbose(`THUMBS — screenshotWebsite : page created`);
 
-          page
-            .goto(url, {
-              waitUntil: "domcontentloaded",
-            })
-            .then(() => delay(1500))
-            .then(async () => {
-              const image = await page.screenshot({
-                type: "png",
-                clip: {
-                  rect,
-                },
-              });
-
-              dev.logverbose(`THUMBS — screenshotWebsite : created image`);
-              browser.close();
-              return resolve(image);
-            })
-            .catch((err) => {
-              browser.close();
-              dev.error(
-                `THUMBS — screenshotWebsite : failed to make STL screenshot = ${err}`
-              );
-              return reject();
-            });
+      function sleep(ms) {
+        return new Promise((resolve) => {
+          setTimeout(resolve, ms);
         });
-    });
+      }
+      await sleep(1000);
+
+      const clip = rect ? rect : {};
+
+      const image = await page
+        .screenshot({
+          type: "png",
+          clip,
+        })
+        .catch((err) => {
+          throw err;
+        });
+
+      dev.logverbose(`THUMBS — screenshotWebsite : created image`);
+
+      browser.close();
+      return image;
+    } catch (err) {
+      if (browser) browser.close();
+      dev.error(
+        `THUMBS — screenshotWebsite : failed to make screenshot = ${err}`
+      );
+      throw err;
+    }
   }
 
   function getEXIFDataForVideoAndAudio(mediaPath) {
