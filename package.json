@@ -73,6 +73,7 @@
     "node-fetch": "^2.6.7",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
+    "pdf-extractor": "^2.0.0",
     "platform-folders": "^0.5.4",
     "portscanner": "^2.2.0",
     "pug": "^3.0.2",
