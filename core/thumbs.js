@@ -957,8 +957,19 @@ module.exports = (function () {
         if (!exists) {
           const url = `${global.appInfos.homeURL}/${slugFolderName}/${filename}`;
 
+          const padding = 6;
+          const top_toolbar_height = 54;
+
           screenshotWebsite({
             url,
+            width: 2100 / 3 + padding,
+            height: 2970 / 3 + top_toolbar_height,
+            rect: {
+              x: padding,
+              y: top_toolbar_height + padding,
+              width: 2100 / 3 - padding * 2,
+              height: 2970 / 3 - padding * 2 - 2,
+            },
           })
             .then((image) => {
               fs.writeFile(fullScreenshotPath, image.toPNG(1.0), (error) => {
@@ -1296,9 +1307,16 @@ module.exports = (function () {
     });
   }
 
-  function screenshotWebsite({ url }) {
+  function screenshotWebsite({ url, width = 1800, height = 1800, rect }) {
     return new Promise(function (resolve, reject) {
-      dev.logfunction(`THUMBS — screenshotWebsite url ${url}`);
+      width = Math.round(width);
+      height = Math.round(height);
+
+      dev.logfunction(
+        `THUMBS — screenshotWebsite url ${url} width ${width} height ${height} rect ${JSON.stringify(
+          rect
+        )}`
+      );
 
       /* puppeteer version: can’t work for now because of missing extensions */
       let browser;
@@ -1315,8 +1333,8 @@ module.exports = (function () {
         })
         .then(async (page) => {
           page.setViewport({
-            width: 1800,
-            height: 1800,
+            width,
+            height,
             deviceScaleFactor: 2,
           });
 
@@ -1337,10 +1355,7 @@ module.exports = (function () {
               const image = await page.screenshot({
                 type: "png",
                 clip: {
-                  x: 0,
-                  y: 0,
-                  width: 1800,
-                  height: 1800,
+                  rect,
                 },
               });
 
