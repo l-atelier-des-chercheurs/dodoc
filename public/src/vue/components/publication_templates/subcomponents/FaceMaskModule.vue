@@ -234,7 +234,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.55);
+  // background-color: rgba(0, 0, 0, 0.55);
 }
 
 .m_faceMaskModule--curtain {
