@@ -1,6 +1,7 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  { ffmpegPath, ffprobePath } = require("ffmpeg-ffprobe-static"),
+  ffmpegPath = require("ffmpeg-static"),
+  { path: ffprobePath } = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
   sharp = require("sharp"),

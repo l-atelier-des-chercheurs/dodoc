@@ -4,7 +4,6 @@ var http = require("http");
 var https = require("https");
 var fs = require("fs");
 var path = require("path");
-var bodyParser = require("body-parser");
 const compression = require("compression");
 const socketio = require("socket.io");
 
@@ -78,8 +77,8 @@ module.exports = function (router) {
     express.static(path.join(global.appRoot, global.settings.cacheDirname))
   );
 
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json()); // To parse the incoming requests with JSON payloads
   app.locals.pretty = true;
 
   setup_realtime_collaboration(server);

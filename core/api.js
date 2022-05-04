@@ -5,7 +5,8 @@ const path = require("path"),
   slugg = require("slugg"),
   os = require("os"),
   writeFileAtomic = require("write-file-atomic"),
-  { ffmpegPath, ffprobePath } = require("ffmpeg-ffprobe-static"),
+  ffmpegPath = require("ffmpeg-static"),
+  { path: ffprobePath } = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   pad = require("pad-left");
 

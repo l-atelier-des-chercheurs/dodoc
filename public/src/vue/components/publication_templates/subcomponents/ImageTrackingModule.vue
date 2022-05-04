@@ -1,10 +1,9 @@
 <template>
   <portal to="modal_container">
     <div class="m_imageTrackingModule">
-      <!-- results = {{ results }}<br /><br />
-      mind_file = {{ mind_file }}<br /> -->
+      <!-- <pre>results = {{ results }}</pre> -->
 
-      <template v-if="!is_loading">
+      <template v-if="!is_loading && mind_file">
         <a-scene
           :mindar-image="`imageTargetSrc: ${mind_file};`"
           vr-mode-ui="enabled: false"
@@ -13,12 +12,24 @@
           renderer="colorManagement: true, physicallyCorrectLights"
         >
           <a-assets>
-            <img
-              v-for="(result, index) in results"
-              :key="`result-${index}`"
-              :id="`result-${index}`"
-              :src="'/' + result.src"
-            />
+            <template v-for="(result, index) in results">
+              <img
+                v-if="result.type === 'image'"
+                :key="`result-${index}`"
+                :id="`result-${index}`"
+                :src="'/' + result.src"
+              />
+              <video
+                v-if="result.type === 'video'"
+                :key="`result-${index}`"
+                :id="`result-${index}`"
+                :src="'/' + result.src"
+                preload="auto"
+                autoplay
+                loop="true"
+                muted
+              />
+            </template>
           </a-assets>
 
           <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -34,7 +45,7 @@
               :height="result.ratio"
               width="1"
               rotation="0 0 0"
-            ></a-plane>
+            />
             <!-- <a-image
               src="#result"
               width="1"
@@ -93,39 +104,42 @@ export default {
   },
   computed: {
     mind_file() {
+      if (!this.mind || !this.mind.media_filename) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.missing_mind_file"));
+        return false;
+      }
+
       return `/_publications/${this.slugPubliName}/${this.mind.media_filename}`;
     },
     results() {
       return this.ar_blocks.reduce((acc, block) => {
         if (block.result._linked_media) {
+          let result = {};
+
+          if (block.result._linked_media.type === "image") {
+            result.src = block.result._linked_media.thumbs.find(
+              (t) => t.size === 1600
+            ).path;
+          } else if (block.result._linked_media.type === "video") {
+            result.src = `${block.result._linked_media.slugProjectName}/${block.result._linked_media.media_filename}`;
+            // result.src = `${block.result._linked_media.slugFolderName}/${block.result._linked_media.media_filename}`;
+          }
+
+          result.type = block.result._linked_media.type;
+
           const w = block.result._linked_media.file_meta.find((m) =>
             m.hasOwnProperty("width")
           ).width;
           const h = block.result._linked_media.file_meta.find((m) =>
             m.hasOwnProperty("height")
           ).height;
-          let ratio = 1;
-          if (w && h) {
-            ratio = Number(h) / Number(w);
-          }
+          result.ratio = 1;
+          if (w && h) result.ratio = Number(h) / Number(w);
 
-          acc.push({
-            src: block.result._linked_media.thumbs.find((t) => t.size === 1600)
-              .path,
-            ratio,
-          });
-
-          // acc.push({
-          //   result: {
-          //     src: block.result._linked_media.thumbs.find(
-          //       (t) => t.size === 1600
-          //     ).path,
-          //     ratio,
-          //   },
-          // target: block.target._linked_media.thumbs.find(
-          //   (t) => t.size === 1600
-          // ).path,
-          // });
+          if (result.src) acc.push(result);
         }
         return acc;
       }, []);
