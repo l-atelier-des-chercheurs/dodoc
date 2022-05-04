@@ -1,5 +1,6 @@
 const path = require("path"),
-  { ffmpegPath, ffprobePath } = require("ffmpeg-ffprobe-static"),
+  ffmpegPath = require("ffmpeg-static"),
+  { path: ffprobePath } = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   fs = require("fs-extra"),
   pad = require("pad-left");
