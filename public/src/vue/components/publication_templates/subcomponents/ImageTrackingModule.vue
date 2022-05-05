@@ -1,78 +1,58 @@
 <template>
-  <portal to="modal_container">
-    <div class="m_imageTrackingModule">
-      <!-- <pre>results = {{ results }}</pre> -->
+  <!-- <portal to="modal_container"> -->
+  <div class="m_imageTrackingModule">
+    <pre>results = {{ results }}</pre>
 
-      <template v-if="!is_loading && mind_file">
-        <a-scene
-          :mindar-image="`imageTargetSrc: ${mind_file};`"
-          vr-mode-ui="enabled: false"
-          device-orientation-permission-ui="enabled: false"
-          color-space="sRGB"
-          renderer="colorManagement: true, physicallyCorrectLights"
-        >
-          <a-assets>
-            <template v-for="(result, index) in results">
+    <template v-if="!is_loading && mind_file">
+      <a-scene
+        :mindar-image="`imageTargetSrc: ${mind_file};`"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false"
+        color-space="sRGB"
+        renderer="colorManagement: true, physicallyCorrectLights"
+      >
+        <a-assets>
+          <template v-for="(medias, index) in results">
+            <template v-for="(media, _index) in medias">
               <img
-                v-if="result.type === 'image'"
-                :key="`result-${index}`"
+                v-if="media.type === 'image'"
+                :key="`result-${index}+${_index}`"
                 :id="`result-${index}`"
-                :src="'/' + result.src"
+                :src="'/' + media.src"
               />
               <video
-                v-if="result.type === 'video'"
-                :key="`result-${index}`"
+                v-if="media.type === 'video'"
+                :key="`result-${index}+${_index}`"
                 :id="`result-${index}`"
-                :src="'/' + result.src"
+                :src="'/' + media.src"
                 preload="auto"
                 autoplay
                 loop="true"
                 muted
               />
             </template>
-          </a-assets>
+          </template>
+        </a-assets>
 
-          <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-          <a-entity
-            v-for="(result, index) in results"
-            :mindar-image-target="`targetIndex: ${index}`"
-            :key="`result-${index}`"
-          >
-            <a-plane
-              :src="`#result-${index}`"
-              position="0 0 0"
-              :height="result.ratio"
-              width="1"
-              rotation="0 0 0"
-            />
-            <!-- <a-image
-              src="#result"
-              width="1"
-              height="1"
-              rotation="0 0 0 "
-              position="0 0 0.1"
-            ></a-image> -->
-            <!-- <a-plane
-            src="#result"
+        <a-entity
+          v-for="(result, index) in results"
+          :mindar-image-target="`targetIndex: ${index}`"
+          :key="`result-${index}`"
+        >
+          <a-plane
+            :src="`#result-${index}`"
             position="0 0 0"
-            height="0.552"
+            :height="result.ratio"
             width="1"
             rotation="0 0 0"
-          ></a-plane> -->
-            <!-- <a-plane
-            color="blue"
-            opaciy="0.5"
-            position="0 0 0"
-            height="1"
-            width="1"
-            rotation="0 0 0"
-          ></a-plane> -->
-          </a-entity>
-        </a-scene>
-      </template>
-    </div>
-  </portal>
+          />
+        </a-entity>
+      </a-scene>
+    </template>
+  </div>
+  <!-- </portal> -->
 </template>
 <script>
 export default {
@@ -115,31 +95,39 @@ export default {
       return `/_publications/${this.slugPubliName}/${this.mind.media_filename}`;
     },
     results() {
-      return this.ar_blocks.reduce((acc, block) => {
-        if (block.result._linked_media) {
-          let result = {};
+      return this.ar_blocks.reduce((acc, block, index) => {
+        if (block.results && block.results.length > 0) {
+          acc[index] = [];
 
-          if (block.result._linked_media.type === "image") {
-            result.src = block.result._linked_media.thumbs.find(
-              (t) => t.size === 1600
-            ).path;
-          } else if (block.result._linked_media.type === "video") {
-            result.src = `${block.result._linked_media.slugProjectName}/${block.result._linked_media.media_filename}`;
-            // result.src = `${block.result._linked_media.slugFolderName}/${block.result._linked_media.media_filename}`;
-          }
+          block.results.map((media) => {
+            if (media._linked_media) {
+              let result = {};
 
-          result.type = block.result._linked_media.type;
+              if (media._linked_media.type === "image") {
+                result.src = media._linked_media.thumbs.find(
+                  (t) => t.size === 1600
+                ).path;
+              } else if (media._linked_media.type === "video") {
+                result.src = `${media._linked_media.slugProjectName}/${media._linked_media.media_filename}`;
+                // result.src = `${media._linked_media.slugFolderName}/${media._linked_media.media_filename}`;
+              }
 
-          const w = block.result._linked_media.file_meta.find((m) =>
-            m.hasOwnProperty("width")
-          ).width;
-          const h = block.result._linked_media.file_meta.find((m) =>
-            m.hasOwnProperty("height")
-          ).height;
-          result.ratio = 1;
-          if (w && h) result.ratio = Number(h) / Number(w);
+              result.type = media._linked_media.type;
+              result.ratio = 1;
 
-          if (result.src) acc.push(result);
+              if (media._linked_media.file_meta) {
+                const w = media._linked_media.file_meta.find((m) =>
+                  m.hasOwnProperty("width")
+                ).width;
+                const h = media._linked_media.file_meta.find((m) =>
+                  m.hasOwnProperty("height")
+                ).height;
+                if (w && h) result.ratio = Number(h) / Number(w);
+              }
+
+              if (result.src) acc[index].push(result);
+            }
+          });
         }
         return acc;
       }, []);
@@ -164,6 +152,16 @@ export default {
               `ImageTrackingModule: startImageTracking / mindar has loaded`
             );
           this.is_loading = false;
+
+          this.$nextTick(() => {
+            this.$nextTick(() => {
+              this.$el.querySelectorAll("a-entity").forEach((target, index) => {
+                target.addEventListener("targetFound", (event) => {
+                  console.log("target found for", index);
+                });
+              });
+            });
+          });
 
           // const THREE = window.MINDAR.IMAGE.THREE;
           // this.mindarThree = new window.MINDAR.IMAGE.MindARThree({
