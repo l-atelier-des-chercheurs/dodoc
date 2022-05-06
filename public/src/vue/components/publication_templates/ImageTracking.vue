@@ -45,7 +45,8 @@
             <div class="padding-verysmall">
               <small class="">
                 Commencez par ajouter l’image cible, celle qui déclenchera
-                l’affichage d’une autre image, d’une vidéo ou d’un son
+                l’affichage d’une ou plusieurs autres images, une vidéo et/ou un
+                son.
               </small>
             </div>
             <button
@@ -104,7 +105,7 @@
           </div>
         </div>
       </div>
-      <div>
+      <div class="_createBlock">
         <button
           type="button"
           class=""
@@ -163,6 +164,7 @@ export default {
     this.$root.settings.current_publication.accepted_media_type = [
       "image",
       "video",
+      "audio",
     ];
     this.$eventHub.$on("publication.addMedia", this.addMedia);
   },
@@ -317,5 +319,11 @@ export default {
   right: 100%;
   padding: calc(var(--spacing) / 4);
   color: black;
+}
+
+._createBlock {
+  display: flex;
+  justify-content: center;
+  margin: calc(var(--spacing));
 }
 </style>

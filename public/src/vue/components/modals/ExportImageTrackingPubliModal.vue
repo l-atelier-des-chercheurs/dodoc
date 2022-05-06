@@ -17,12 +17,7 @@
           />
         </template>
         <div v-else-if="!current_mind">{{ $t("missing_mind_file") }}</div>
-        <div v-else-if="current_mind">{{ $t("has_mind_file") }}</div>
-
-        <div class>
-          <!-- <p>{{ $t("export_stopmotion_instructions") }}</p> -->
-          <!-- <hr /> -->
-
+        <div v-else-if="current_mind">
           <div class="margin-bottom-small">
             <QRCodeToResource
               :type="'publications'"

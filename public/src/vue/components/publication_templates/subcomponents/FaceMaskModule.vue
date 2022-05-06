@@ -136,7 +136,9 @@ export default {
             m._linked_media.media_filename.toLowerCase()
           )
         ) {
-          thumb = `${m._linked_media.slugProjectName}/${
+          const prefix =
+            this.$root.state.mode === "export_publication" ? "./" : "/";
+          thumb = `${prefix}${m._linked_media.slugProjectName}/${
             m._linked_media.media_filename
           }?v=${+this.$moment(m._linked_media.date_created)}`;
         } else {
