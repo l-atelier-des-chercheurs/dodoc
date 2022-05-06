@@ -4,13 +4,15 @@
     :class="{ 'is--preview': preview_mode }"
     ref="panel"
   >
-    <PublicationHeader
-      :slugPubliName="slugPubliName"
-      :publication="publication"
-      :medias="paged_medias"
-      @export="show_export_modal = true"
-      @close="$root.closePublication"
-    />
+    <template v-if="!preview_mode">
+      <PublicationHeader
+        :slugPubliName="slugPubliName"
+        :publication="publication"
+        :medias="paged_medias"
+        @export="show_export_modal = true"
+        @close="$root.closePublication"
+      />
+    </template>
 
     <ExportImageTrackingPubliModal
       v-if="show_export_modal"
