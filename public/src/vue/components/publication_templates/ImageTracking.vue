@@ -4,19 +4,23 @@
     :class="{ 'is--preview': preview_mode }"
     ref="panel"
   >
-    <PublicationHeader
-      :slugPubliName="slugPubliName"
-      :publication="publication"
-      :medias="paged_medias"
-      @export="show_export_modal = true"
-      @close="$root.closePublication"
-    />
+    <template v-if="!preview_mode">
+      <PublicationHeader
+        :slugPubliName="slugPubliName"
+        :publication="publication"
+        :medias="paged_medias"
+        @export="show_export_modal = true"
+        @close="$root.closePublication"
+      />
+    </template>
 
-    <ExportFaceMasksPubliModal
+    <ExportImageTrackingPubliModal
       v-if="show_export_modal"
       :publication="publication"
-      @close="show_export_modal = false"
+      :all_targets="all_targets"
+      :current_mind="current_mind"
       :slugPubliName="slugPubliName"
+      @close="show_export_modal = false"
     />
 
     <PublicationDisplayButtons
@@ -37,7 +41,7 @@
           class="m_imageTracking--block"
         >
           <label class="_index">{{ index + 1 }}</label>
-          <div v-if="!ar_block.target && !ar_block.result">
+          <div v-if="!ar_block.target && !ar_block.results">
             <div class="padding-verysmall">
               <small class="">
                 Commencez par ajouter l’image cible, celle qui déclenchera
@@ -84,28 +88,20 @@
               <label>
                 {{ $t("image_shown") }}
               </label>
-              <MediaMontagePublication
-                v-if="ar_block.result"
-                :media="ar_block.result"
-                :preview_mode="false"
-                :read_only="read_only"
-                @removePubliMedia="$emit('removePubliMedia', $event)"
-                @editPubliMedia="$emit('editPubliMedia', $event)"
-                @duplicateMedia="$emit('duplicateMedia', $event)"
-              />
+              <template v-if="ar_block.results">
+                <MediaMontagePublication
+                  v-for="result in ar_block.results"
+                  :key="result.metaFileName"
+                  :media="result"
+                  :preview_mode="false"
+                  :read_only="read_only"
+                  @removePubliMedia="$emit('removePubliMedia', $event)"
+                  @editPubliMedia="$emit('editPubliMedia', $event)"
+                  @duplicateMedia="$emit('duplicateMedia', $event)"
+                />
+              </template>
             </div>
           </div>
-        </div>
-
-        <div class="margin-small" v-if="all_targets.length > 0">
-          <template v-if="can_edit_publi && !current_mind">
-            <ImageTrackingMakeTarget
-              :medias="all_targets"
-              :slugPubliName="slugPubliName"
-            />
-          </template>
-          <div v-else-if="!current_mind">{{ $t("missing_mind_file") }}</div>
-          <div v-else-if="current_mind">{{ $t("has_mind_file") }}</div>
         </div>
       </div>
       <div>
@@ -137,8 +133,7 @@
 import PublicationHeader from "../subcomponents/PublicationHeader.vue";
 import PublicationDisplayButtons from "../subcomponents/PublicationDisplayButtons.vue";
 import MediaMontagePublication from "../subcomponents/MediaMontagePublication.vue";
-import ExportFaceMasksPubliModal from "../modals/ExportFaceMasksPubliModal.vue";
-import ImageTrackingMakeTarget from "./subcomponents/ImageTrackingMakeTarget.vue";
+import ExportImageTrackingPubliModal from "../modals/ExportImageTrackingPubliModal.vue";
 import ImageTrackingModule from "./subcomponents/ImageTrackingModule.vue";
 
 export default {
@@ -155,8 +150,7 @@ export default {
     PublicationHeader,
     PublicationDisplayButtons,
     MediaMontagePublication,
-    ExportFaceMasksPubliModal,
-    ImageTrackingMakeTarget,
+    ExportImageTrackingPubliModal,
     ImageTrackingModule,
   },
   data() {
@@ -186,7 +180,7 @@ export default {
         return [];
       }
 
-      // make block with page_id, target, mind, result
+      // make block with page_id, target, mind, results
       return this.publication.pages.reduce((acc, pages) => {
         let obj = {
           id: pages.id,
@@ -196,7 +190,10 @@ export default {
         if (medias)
           medias.map((m) => {
             if (m.is_ar_target) obj.target = m;
-            else obj.result = m;
+            else {
+              if (!obj.results) obj.results = [];
+              obj.results.push(m);
+            }
           });
 
         acc.push(obj);

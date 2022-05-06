@@ -1,75 +1,69 @@
 <template>
   <portal to="modal_container">
     <div class="m_imageTrackingModule">
-      <!-- <pre>results = {{ results }}</pre> -->
+      <!-- currently_visible = {{ currently_visible }}
+      <pre>slideshows = {{ slideshows }}</pre> -->
 
       <template v-if="!is_loading && mind_file">
         <a-scene
-          :mindar-image="`imageTargetSrc: ${mind_file};`"
+          :mindar-image="`imageTargetSrc: ${mind_file}; filterMinCF:0.1; filterBeta: 10;`"
           vr-mode-ui="enabled: false"
           device-orientation-permission-ui="enabled: false"
           color-space="sRGB"
           renderer="colorManagement: true, physicallyCorrectLights"
+          ref="a-scene"
         >
           <a-assets>
-            <template v-for="(result, index) in results">
-              <img
-                v-if="result.type === 'image'"
-                :key="`result-${index}`"
-                :id="`result-${index}`"
-                :src="'/' + result.src"
-              />
-              <video
-                v-if="result.type === 'video'"
-                :key="`result-${index}`"
-                :id="`result-${index}`"
-                :src="'/' + result.src"
-                preload="auto"
-                autoplay
-                loop="true"
-                muted
-              />
+            <template v-for="(medias, index) in slideshows">
+              <template v-for="(media, _index) in medias">
+                <img
+                  v-if="media.type === 'image'"
+                  :key="`result-${index}+${_index}`"
+                  :id="`result-${index}+${_index}`"
+                  :src="'/' + media.src"
+                />
+                <video
+                  v-if="media.type === 'video'"
+                  :key="`result-${index}+${_index}`"
+                  :id="`result-${index}+${_index}`"
+                  :src="'/' + media.src"
+                  preload="auto"
+                  autoplay
+                  loop="true"
+                  muted
+                />
+              </template>
             </template>
           </a-assets>
 
           <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
           <a-entity
-            v-for="(result, index) in results"
+            v-for="(medias, index) in slideshows"
             :mindar-image-target="`targetIndex: ${index}`"
             :key="`result-${index}`"
           >
             <a-plane
-              :src="`#result-${index}`"
+              :src="`#result-${index}+${currently_visible[index]}`"
+              :key="`#result-${index}+${currently_visible[index]}`"
               position="0 0 0"
-              :height="result.ratio"
+              :height="medias[currently_visible[index]].ratio"
               width="1"
               rotation="0 0 0"
             />
-            <!-- <a-image
-              src="#result"
-              width="1"
-              height="1"
-              rotation="0 0 0 "
-              position="0 0 0.1"
-            ></a-image> -->
-            <!-- <a-plane
-            src="#result"
-            position="0 0 0"
-            height="0.552"
-            width="1"
-            rotation="0 0 0"
-          ></a-plane> -->
-            <!-- <a-plane
-            color="blue"
-            opaciy="0.5"
-            position="0 0 0"
-            height="1"
-            width="1"
-            rotation="0 0 0"
-          ></a-plane> -->
           </a-entity>
         </a-scene>
+
+        <div class="_bottomRow">
+          <button
+            type="button"
+            class="_nextBtn"
+            @click="nextItem"
+            v-if="currently_active_target !== false"
+          >
+            {{ $t("next_media") }}
+          </button>
+        </div>
       </template>
     </div>
   </portal>
@@ -86,6 +80,8 @@ export default {
     return {
       mindarThree: undefined,
       is_loading: true,
+      currently_active_target: false,
+      currently_visible: [],
     };
   },
   created() {},
@@ -95,9 +91,12 @@ export default {
     this.mindarThree.renderer.setAnimationLoop(null);
   },
   watch: {
-    results: {
+    slideshows: {
       handler() {
-        if (this.results.length > 0) this.initAR();
+        if (this.slideshows.length > 0) {
+          this.slideshows.map((m) => this.currently_visible.push(0));
+          this.initAR();
+        }
       },
       immediate: true,
     },
@@ -114,32 +113,40 @@ export default {
 
       return `/_publications/${this.slugPubliName}/${this.mind.media_filename}`;
     },
-    results() {
-      return this.ar_blocks.reduce((acc, block) => {
-        if (block.result._linked_media) {
-          let result = {};
+    slideshows() {
+      return this.ar_blocks.reduce((acc, block, index) => {
+        if (block.results && block.results.length > 0) {
+          acc[index] = [];
 
-          if (block.result._linked_media.type === "image") {
-            result.src = block.result._linked_media.thumbs.find(
-              (t) => t.size === 1600
-            ).path;
-          } else if (block.result._linked_media.type === "video") {
-            result.src = `${block.result._linked_media.slugProjectName}/${block.result._linked_media.media_filename}`;
-            // result.src = `${block.result._linked_media.slugFolderName}/${block.result._linked_media.media_filename}`;
-          }
+          block.results.map((media) => {
+            if (media._linked_media) {
+              let result = {};
 
-          result.type = block.result._linked_media.type;
+              if (media._linked_media.type === "image") {
+                result.src = media._linked_media.thumbs.find(
+                  (t) => t.size === 1600
+                ).path;
+              } else if (media._linked_media.type === "video") {
+                result.src = `${media._linked_media.slugProjectName}/${media._linked_media.media_filename}`;
+                // result.src = `${media._linked_media.slugFolderName}/${media._linked_media.media_filename}`;
+              }
 
-          const w = block.result._linked_media.file_meta.find((m) =>
-            m.hasOwnProperty("width")
-          ).width;
-          const h = block.result._linked_media.file_meta.find((m) =>
-            m.hasOwnProperty("height")
-          ).height;
-          result.ratio = 1;
-          if (w && h) result.ratio = Number(h) / Number(w);
+              result.type = media._linked_media.type;
+              result.ratio = 1;
 
-          if (result.src) acc.push(result);
+              if (media._linked_media.file_meta) {
+                const w = media._linked_media.file_meta.find((m) =>
+                  m.hasOwnProperty("width")
+                ).width;
+                const h = media._linked_media.file_meta.find((m) =>
+                  m.hasOwnProperty("height")
+                ).height;
+                if (w && h) result.ratio = Number(h) / Number(w);
+              }
+
+              if (result.src) acc[index].push(result);
+            }
+          });
         }
         return acc;
       }, []);
@@ -165,6 +172,22 @@ export default {
             );
           this.is_loading = false;
 
+          this.$nextTick(() => {
+            this.$nextTick(() => {
+              this.$refs[`a-scene`]
+                .querySelectorAll("a-entity")
+                .forEach((target, index) => {
+                  target.addEventListener("targetFound", (event) => {
+                    this.currently_active_target = index;
+                  });
+                  target.addEventListener("targetLost", (event) => {
+                    if (this.currently_active_target === index)
+                      this.currently_active_target = false;
+                  });
+                });
+            });
+          });
+
           // const THREE = window.MINDAR.IMAGE.THREE;
           // this.mindarThree = new window.MINDAR.IMAGE.MindARThree({
           //   container: this.$refs.imInner,
@@ -188,6 +211,23 @@ export default {
           // );
         });
     },
+    nextItem() {
+      if (this.currently_active_target === false) return false;
+
+      debugger;
+
+      const current_slideshow = this.slideshows[this.currently_active_target];
+      const visible_media_index =
+        this.currently_visible[this.currently_active_target];
+      const new_media_index =
+        (visible_media_index + 1) % current_slideshow.length;
+
+      this.$set(
+        this.currently_visible,
+        this.currently_active_target,
+        new_media_index
+      );
+    },
   },
 };
 </script>
@@ -205,5 +245,20 @@ export default {
   position: absolute;
 
   width: 50px;
+}
+
+._nextBtn {
+  // position: absolute;
+  // top: 0;
+}
+
+._bottomRow {
+  position: fixed;
+  bottom: 0;
+  z-index: 100;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: calc(var(--spacing) / 2);
 }
 </style>

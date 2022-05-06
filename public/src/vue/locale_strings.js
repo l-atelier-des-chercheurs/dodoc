@@ -3959,6 +3959,9 @@ module.exports = (function () {
       fr: "Image cible",
       en: "Target image",
     },
+    create_target: {
+      fr: "Compiler les images cibles",
+    },
     image_shown: {
       fr: "Image affichée",
       en: "Image shown",
