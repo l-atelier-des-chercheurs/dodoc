@@ -455,6 +455,9 @@
           "fit_mode": {
             "type": "string"
           },
+          "is_audio_of": {
+            "type": "string"
+          },
           "is_ar_target": {
             "type": "boolean"
           },

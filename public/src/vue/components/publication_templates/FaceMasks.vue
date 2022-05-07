@@ -63,11 +63,14 @@
       >
         <div
           class="m_stopmotionAnimationPublication--media"
-          v-for="(media, index) in medias_in_order"
-          :key="media.metaFileName"
+          :class="{
+            'is--active': enable_add_audio_for === image.metaFileName,
+          }"
+          v-for="({ image, audio }, index) in images_and_audios"
+          :key="image.metaFileName"
         >
           <MediaMontagePublication
-            :media="media"
+            :media="image"
             :preview_mode="false"
             :read_only="read_only"
             @removePubliMedia="$emit('removePubliMedia', $event)"
@@ -82,7 +85,7 @@
               :disabled="index === 0"
               @click.stop="
                 $emit('changeMediaOrder', {
-                  metaFileName: media.metaFileName,
+                  metaFileName: image.metaFileName,
                   dir: -1,
                 })
               "
@@ -99,7 +102,7 @@
                 class="select-xs"
                 @change="
                   $emit('changeMediaOrder', {
-                    metaFileName: media.metaFileName,
+                    metaFileName: image.metaFileName,
                     new_index_in_slugs: $event.target.value - 1,
                   })
                 "
@@ -119,7 +122,7 @@
               class="m_stopmotionAnimationPublication--media--move--moveRight"
               @click.stop="
                 $emit('changeMediaOrder', {
-                  metaFileName: media.metaFileName,
+                  metaFileName: image.metaFileName,
                   dir: +1,
                 })
               "
@@ -131,6 +134,36 @@
                 />
               </svg>
             </button>
+          </div>
+          <div class="m_stopmotionAnimationPublication--media--audio">
+            <button
+              v-if="!audio"
+              type="button"
+              class="button-bluethin"
+              :class="{
+                'is--active': enable_add_audio_for === image.metaFileName,
+              }"
+              :disabled="
+                enable_add_audio_for &&
+                enable_add_audio_for !== image.metaFileName
+              "
+              @click="
+                enable_add_audio_for === image.metaFileName
+                  ? (enable_add_audio_for = false)
+                  : (enable_add_audio_for = image.metaFileName)
+              "
+            >
+              {{ $t("add_audio") }}
+            </button>
+            <MediaMontagePublication
+              v-else
+              :media="audio"
+              :preview_mode="false"
+              :read_only="read_only"
+              @removePubliMedia="$emit('removePubliMedia', $event)"
+              @editPubliMedia="$emit('editPubliMedia', $event)"
+              @duplicateMedia="$emit('duplicateMedia', $event)"
+            />
           </div>
 
           <!-- <div class="m_metaField">
@@ -154,7 +187,7 @@
     </template>
     <template v-else>
       <FaceMaskModule
-        :medias="medias_in_order"
+        :images_and_audios="images_and_audios"
         :play_masks_randomly="play_masks_randomly"
       />
     </template>
@@ -188,6 +221,8 @@ export default {
       play_masks_randomly: this.publication.play_masks_randomly
         ? this.publication.play_masks_randomly
         : false,
+
+      enable_add_audio_for: false,
     };
   },
   created() {},
@@ -205,11 +240,48 @@ export default {
         this.play_masks_randomly = this.publication.play_masks_randomly;
       });
     },
+    enable_add_audio_for() {
+      if (this.enable_add_audio_for === false)
+        this.$root.settings.current_publication.accepted_media_type = ["image"];
+      else
+        this.$root.settings.current_publication.accepted_media_type = ["audio"];
+    },
   },
-  computed: {},
+  computed: {
+    images_and_audios() {
+      // [
+      //   {
+      //     image: {},
+      //     audio: {}
+      //   }
+      // ]
+
+      const all_images = this.medias_in_order.filter(
+        (media) => media._linked_media.type === "image"
+      );
+      return all_images.reduce((acc, image) => {
+        let obj = { image };
+
+        const audio = this.medias_in_order.find(
+          (m) => m.is_audio_of === image.metaFileName
+        );
+        if (audio) obj.audio = audio;
+
+        acc.push(obj);
+        // if (media.type === "audio" && media.hasOwnProperty("is_audio_of")) {
+        //   const image = all_images.find(i => i.metaFileName === media.is_audio_of);
+        //   acc.push
+
+        return acc;
+      }, []);
+    },
+  },
   methods: {
     addMedia(d) {
+      if (this.enable_add_audio_for)
+        d.values.is_audio_of = this.enable_add_audio_for;
       this.$emit("addMedia", d);
+      this.enable_add_audio_for = false;
     },
     updatePlayMasks() {
       this.$root.editFolder({
@@ -223,4 +295,20 @@ export default {
   },
 };
 </script>
-<style></style>
+<style scoped lang="scss">
+.m_stopmotionAnimationPublication {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.m_stopmotionAnimationPublication--media {
+  &.is--active {
+    border: 4px dashed var(--c-bleumarine);
+  }
+}
+
+.m_stopmotionAnimationPublication--media--audio {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+</style>

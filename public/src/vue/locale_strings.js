@@ -546,6 +546,10 @@ module.exports = (function () {
       oc: "Cap de sortida audiò disponibla",
       de: "Kein Audioausgang verfügbar",
     },
+    add_audio: {
+      fr: "Associer un son",
+      en: "Soundtrack",
+    },
     echoCancellation: {
       fr: "Suppression de l'écho",
       en: "Echo cancellation",
