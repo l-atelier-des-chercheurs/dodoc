@@ -19,60 +19,61 @@
 
     <div class="_navImageButton" v-if="!is_loading">
       <div class="_navImageButton--inner">
-        <div
-          class="_navImageButton--inner--caption"
-          v-if="media_images[curr_image].caption"
-          v-html="media_images[curr_image].caption"
-        />
-
-        <div class="_navImageButton--inner--audio" v-if="current_audio_src">
-          <button type="button" class="play_picto" @click="playAudio">
-            <svg
-              class
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              width="169px"
-              height="169px"
-              viewBox="0 0 169 169"
-              style="enable-background: new 0 0 169 169"
-              xml:space="preserve"
-            >
-              <path
-                v-if="!is_playing"
-                d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
-              />
-              <template v-else>
+        <div class="flex-nowrap">
+          <div class="_navImageButton--inner--audio" v-if="current_audio_src">
+            <button type="button" class="play_picto" @click="playAudio">
+              <svg
+                class
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="169px"
+                height="169px"
+                viewBox="0 0 169 169"
+                style="enable-background: new 0 0 169 169"
+                xml:space="preserve"
+              >
                 <path
-                  id="FOND_3_"
-                  style="fill: #ffbe32"
-                  d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84
+                  v-if="!is_playing"
+                  d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
+                />
+                <template v-else>
+                  <path
+                    id="FOND_3_"
+                    style="fill: #ffbe32"
+                    d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84
 			C168,37.6,130.4,0,84,0z"
-                />
-                <rect
-                  id="CENTRE_3_"
-                  x="35"
-                  y="46.7"
-                  style="fill: #ff3e51"
-                  width="38"
-                  height="76"
-                />
-                <rect
-                  id="CENTRE_3_"
-                  x="93"
-                  y="46.7"
-                  style="fill: #ff3e51"
-                  width="38"
-                  height="76"
-                />
-              </template>
-            </svg>
-          </button>
-          <audio ref="audioTrack">
-            <source :src="current_audio_src" />
-          </audio>
+                  />
+                  <rect
+                    id="CENTRE_3_"
+                    x="35"
+                    y="46.7"
+                    style="fill: #ff3e51"
+                    width="38"
+                    height="76"
+                  />
+                  <rect
+                    id="CENTRE_3_"
+                    x="93"
+                    y="46.7"
+                    style="fill: #ff3e51"
+                    width="38"
+                    height="76"
+                  />
+                </template>
+              </svg>
+            </button>
+            <audio ref="audioTrack">
+              <source :src="current_audio_src" />
+            </audio>
+          </div>
+          <div
+            class="_navImageButton--inner--caption"
+            v-if="media_images[curr_image].caption"
+            v-html="media_images[curr_image].caption"
+          />
         </div>
 
         <template v-if="play_masks_randomly">
@@ -195,8 +196,6 @@ export default {
             return string.endsWith(suffix);
           });
         }
-        let thumb;
-
         if (
           endsWithAny(
             [".gif", ".svg", ".png"],
@@ -226,7 +225,7 @@ export default {
           }
 
           if (image._linked_media.caption)
-            result.caption = image._linked_media.captionl;
+            result.caption = image._linked_media.caption;
 
           acc.push(result);
         }
