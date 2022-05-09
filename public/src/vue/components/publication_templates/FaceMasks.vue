@@ -136,6 +136,7 @@
             </button>
           </div>
           <div class="m_stopmotionAnimationPublication--media--audio">
+            <hr />
             <button
               v-if="!audio"
               type="button"
@@ -297,7 +298,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .m_stopmotionAnimationPublication {
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
 .m_stopmotionAnimationPublication--media {
@@ -307,8 +308,12 @@ export default {
 }
 
 .m_stopmotionAnimationPublication--media--audio {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
+  // display: flex;
+  // flex-flow: row nowrap;
+  // justify-content: center;
+}
+</style>
+<style lang="scss">
+.m_stopmotionAnimationPublication--media {
 }
 </style>
