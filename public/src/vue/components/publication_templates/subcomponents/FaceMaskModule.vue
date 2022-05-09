@@ -314,6 +314,9 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  height: 100vh;
+  height: -webkit-fill-available;
+
   position: absolute;
   overflow: hidden;
 }
@@ -338,7 +341,7 @@ export default {
 ._navImageButton {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  width: calc(100% - var(--spacing) * 2);
   z-index: 5;
   pointer-events: none;
   display: flex;
@@ -357,6 +360,19 @@ export default {
 
   .button-greenthin {
     margin: 0;
+  }
+}
+
+._navImageButton--inner--audio {
+  flex: 1 0 auto;
+
+  .play_picto {
+    padding: calc(var(--spacing) / 4);
+
+    svg {
+      width: 30px;
+      height: 30px;
+    }
   }
 }
 ._navImageButton--inner--caption {
