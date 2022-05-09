@@ -5,11 +5,11 @@
       audio_to_play =
       {{ audio_to_play }}<br />
       <pre>slideshows = {{ slideshows }}</pre> -->
-      {{ currently_visible[currently_active_target] }}
+      <!-- {{ currently_visible[currently_active_target] }} -->
 
       <template v-if="!is_loading && mind_file">
         <a-scene
-          :mindar-image="`imageTargetSrc: ${mind_file}; filterMinCF:0.1; filterBeta: 10;`"
+          :mindar-image="`imageTargetSrc: ${mind_file};`"
           vr-mode-ui="enabled: false"
           device-orientation-permission-ui="enabled: false"
           color-space="sRGB"
