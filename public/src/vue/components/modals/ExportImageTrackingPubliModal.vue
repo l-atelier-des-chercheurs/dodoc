@@ -16,8 +16,7 @@
             :slugPubliName="slugPubliName"
           />
         </template>
-        <div v-else-if="!current_mind">{{ $t("missing_mind_file") }}</div>
-        <div v-else-if="current_mind">
+        <div v-else>
           <div class="margin-bottom-small">
             <QRCodeToResource
               :type="'publications'"

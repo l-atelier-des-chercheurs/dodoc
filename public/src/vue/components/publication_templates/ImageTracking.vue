@@ -4,7 +4,7 @@
     :class="{ 'is--preview': preview_mode }"
     ref="panel"
   >
-    <template v-if="!preview_mode">
+    <template v-if="$root.state.mode !== 'link_publication'">
       <PublicationHeader
         :slugPubliName="slugPubliName"
         :publication="publication"
@@ -23,12 +23,12 @@
       @close="show_export_modal = false"
     />
 
-    <PublicationDisplayButtons
+    <!-- <PublicationDisplayButtons
       :preview_mode="preview_mode"
       @togglePreviewMode="$emit('togglePreviewMode')"
-    />
+    /> -->
 
-    <template v-if="!preview_mode">
+    <template v-if="$root.state.mode !== 'link_publication'">
       <div class="margin-medium" v-if="ar_blocks.length === 0">
         <p>
           <small class="c-blanc" v-html="$t('add_multiple_images')" />
@@ -68,7 +68,7 @@
               <MediaMontagePublication
                 v-if="ar_block.target"
                 :media="ar_block.target"
-                :preview_mode="false"
+                :preview_mode="!can_edit_publi"
                 :read_only="read_only"
                 @removePubliMedia="
                   removeFromBlock({
@@ -94,7 +94,7 @@
                   v-for="result in ar_block.results"
                   :key="result.metaFileName"
                   :media="result"
-                  :preview_mode="false"
+                  :preview_mode="!can_edit_publi"
                   :read_only="read_only"
                   @removePubliMedia="$emit('removePubliMedia', $event)"
                   @editPubliMedia="$emit('editPubliMedia', $event)"

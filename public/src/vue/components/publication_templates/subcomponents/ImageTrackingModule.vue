@@ -9,7 +9,7 @@
 
       <template v-if="!is_loading && mind_file">
         <a-scene
-          :mindar-image="`imageTargetSrc: ${mind_file};`"
+          :mindar-image="`imageTargetSrc: ${mind_file}; missTolerance: 2; warmupTolerance: 2; filterMinCF:0.02; filterBeta: 10;`"
           vr-mode-ui="enabled: false"
           device-orientation-permission-ui="enabled: false"
           color-space="sRGB"
