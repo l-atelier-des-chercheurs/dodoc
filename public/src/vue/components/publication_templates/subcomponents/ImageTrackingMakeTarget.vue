@@ -46,7 +46,7 @@ export default {
     },
     targets_thumbs() {
       return this.medias.map(
-        (m) => m._linked_media.thumbs.find((t) => t.size === 1600).path
+        (m) => m._linked_media.thumbs.find((t) => t.size === 360).path
       );
     },
   },
