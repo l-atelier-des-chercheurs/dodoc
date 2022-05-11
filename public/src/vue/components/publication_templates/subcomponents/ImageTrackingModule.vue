@@ -6,6 +6,12 @@
       {{ audio_to_play }}<br />
       <pre>slideshows = {{ slideshows }}</pre> -->
       <!-- {{ currently_visible[currently_active_target] }} -->
+      <!-- is_loading = {{ is_loading }}<br />
+      mind_file = {{ mind_file }} <br />
+      currently_active_target = {{ currently_active_target }} <br />
+      <pre>
+        slideshows = {{ slideshows }}  
+      </pre> -->
 
       <template v-if="!is_loading && mind_file">
         <a-scene
@@ -23,13 +29,13 @@
                   v-if="media.type === 'image'"
                   :key="`result-${index}+${_index}`"
                   :id="`result-${index}+${_index}`"
-                  :src="'/' + media.src"
+                  :src="media.src"
                 />
                 <video
                   v-if="media.type === 'video'"
                   :key="`result-${index}+${_index}`"
                   :id="`result-${index}+${_index}`"
-                  :src="'/' + media.src"
+                  :src="media.src"
                   preload="auto"
                   autoplay
                   loop="true"
@@ -159,9 +165,9 @@ export default {
               let result = {};
 
               if (media._linked_media.type === "image") {
-                result.src = media._linked_media.thumbs.find(
-                  (t) => t.size === 1600
-                ).path;
+                result.src =
+                  `/` +
+                  media._linked_media.thumbs.find((t) => t.size === 1600).path;
               } else if (
                 ["video", "audio"].includes(media._linked_media.type)
               ) {
@@ -209,25 +215,24 @@ export default {
             console.log(
               `ImageTrackingModule: startImageTracking / mindar has loaded`
             );
+
           this.is_loading = false;
 
-          this.$nextTick(() => {
-            this.$nextTick(() => {
-              this.$refs[`a-scene`]
-                .querySelectorAll("a-entity")
-                .forEach((target, index) => {
-                  target.addEventListener("targetFound", (event) => {
-                    this.currently_active_target = index;
-
-                    this.startAudioFile();
-                  });
-                  target.addEventListener("targetLost", (event) => {
-                    if (this.currently_active_target === index)
-                      this.currently_active_target = false;
-                  });
+          setTimeout(() => {
+            if (!this.$refs[`a-scene`]) return false;
+            this.$refs[`a-scene`]
+              .querySelectorAll("a-entity")
+              .forEach((target, index) => {
+                target.addEventListener("targetFound", (event) => {
+                  this.currently_active_target = index;
+                  this.startAudioFile();
                 });
-            });
-          });
+                target.addEventListener("targetLost", (event) => {
+                  if (this.currently_active_target === index)
+                    this.currently_active_target = false;
+                });
+              });
+          }, 500);
 
           // const THREE = window.MINDAR.IMAGE.THREE;
           // this.mindarThree = new window.MINDAR.IMAGE.MindARThree({
