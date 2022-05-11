@@ -16,6 +16,9 @@
         style="position: absolute; opacity: 0"
       />
     </div> -->
+    <!-- <pre>
+      {{ media_images }}
+    </pre> -->
 
     <div class="_navImageButton" v-if="!is_loading">
       <div class="_navImageButton--inner">
@@ -203,7 +206,7 @@ export default {
           )
         ) {
           const prefix =
-            this.$root.state.mode === "export_publication" ? "./" : "/";
+            this.$root.state.mode === "link_publication" ? "./" : "/";
           result.thumb = `${prefix}${image._linked_media.slugProjectName}/${
             image._linked_media.media_filename
           }?v=${+this.$moment(image._linked_media.date_created)}`;
@@ -245,6 +248,11 @@ export default {
         if (this.$root.state.dev_mode === "debug")
           console.log(`FaceMaskModule: startFaceTracking / mindar has loaded`);
 
+        if (!this.$refs.fmInner) {
+          this.is_loading = true;
+          return false;
+        }
+
         const THREE = window.MINDAR.FACE.THREE;
         this.mindarThree = new window.MINDAR.FACE.MindARThree({
           container: this.$refs.fmInner,
@@ -260,7 +268,7 @@ export default {
         // const texture = new THREE.VideoTexture(video);
 
         this.curr_texture = new THREE.TextureLoader().load(
-          "/" + this.media_images[this.curr_image].thumb
+          this.media_images[this.curr_image].thumb
         );
         // "./video.mp4"
         // "/canonical_face_model_uv_visualization_bis.png"
