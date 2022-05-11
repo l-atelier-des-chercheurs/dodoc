@@ -16,9 +16,9 @@
         style="position: absolute; opacity: 0"
       />
     </div> -->
-    <!-- <pre>
+    <pre>
       {{ media_images }}
-    </pre> -->
+    </pre>
 
     <div class="_navImageButton" v-if="!is_loading">
       <div class="_navImageButton--inner">
@@ -205,26 +205,19 @@ export default {
             image._linked_media.media_filename.toLowerCase()
           )
         ) {
-          const prefix =
-            this.$root.state.mode === "link_publication" ? "./" : "/";
-          result.thumb = `${prefix}${image._linked_media.slugProjectName}/${
+          result.thumb = `/${image._linked_media.slugProjectName}/${
             image._linked_media.media_filename
           }?v=${+this.$moment(image._linked_media.date_created)}`;
         } else {
-          result.thumb = image._linked_media.thumbs.find(
-            (t) => t.size === 1600
-          ).path;
+          result.thumb =
+            "/" + image._linked_media.thumbs.find((t) => t.size === 1600).path;
         }
 
         if (result.thumb) {
           if (audio) {
-            const prefix =
-              this.$root.state.mode === "export_publication" ? "./" : "/";
-            result.audio_src = `${prefix}${
-              audio._linked_media.slugProjectName
-            }/${audio._linked_media.media_filename}?v=${+this.$moment(
-              audio._linked_media.date_created
-            )}`;
+            result.audio_src = `/${audio._linked_media.slugProjectName}/${
+              audio._linked_media.media_filename
+            }?v=${+this.$moment(audio._linked_media.date_created)}`;
           }
 
           if (image._linked_media.caption)
