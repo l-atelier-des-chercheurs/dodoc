@@ -13,8 +13,6 @@
         slideshows = {{ slideshows }}  
       </pre> -->
 
-      {{ current_media }}
-
       <template v-if="!is_loading && mind_file">
         <a-scene
           :mindar-image="`imageTargetSrc: ${mind_file}; missTolerance: 2; warmupTolerance: 2; filterMinCF:0.02; filterBeta: 10;`"
