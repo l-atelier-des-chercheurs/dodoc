@@ -1,11 +1,11 @@
 <template>
   <portal to="modal_container">
     <div class="m_imageTrackingModule">
-      <!-- currently_visible = {{ currently_visible }}<br />
+      <!-- currently_visible_for_slideshows = {{ currently_visible_for_slideshows }}<br />
       audio_to_play =
       {{ audio_to_play }}<br />
       <pre>slideshows = {{ slideshows }}</pre> -->
-      <!-- {{ currently_visible[currently_active_target] }} -->
+      <!-- {{ currently_visible_for_slideshows[currently_active_target] }} -->
       <!-- is_loading = {{ is_loading }}<br />
       mind_file = {{ mind_file }} <br />
       currently_active_target = {{ currently_active_target }} <br />
@@ -25,22 +25,26 @@
           <a-assets>
             <template v-for="({ visuals }, index) in slideshows">
               <template v-for="(media, _index) in visuals">
-                <img
-                  v-if="media.type === 'image'"
-                  :key="`result-${index}+${_index}`"
-                  :id="`result-${index}+${_index}`"
-                  :src="media.src"
-                />
-                <video
-                  v-if="media.type === 'video'"
-                  :key="`result-${index}+${_index}`"
-                  :id="`result-${index}+${_index}`"
-                  :src="media.src"
-                  preload="auto"
-                  autoplay
-                  loop="true"
-                  muted
-                />
+                <template
+                  v-if="_index === currently_visible_for_slideshows[index]"
+                >
+                  <img
+                    v-if="media.type === 'image'"
+                    :key="`result-${index}+${_index}`"
+                    :id="`result-${index}+${_index}`"
+                    :src="media.src"
+                  />
+                  <video
+                    v-if="media.type === 'video'"
+                    :key="`result-${index}+${_index}`"
+                    :id="`result-${index}+${_index}`"
+                    :src="media.src"
+                    preload="auto"
+                    autoplay
+                    loop="true"
+                    muted
+                  />
+                </template>
               </template>
             </template>
           </a-assets>
@@ -53,10 +57,10 @@
             :key="`result-${index}`"
           >
             <a-plane
-              :src="`#result-${index}+${currently_visible[index]}`"
-              :key="`#result-${index}+${currently_visible[index]}`"
+              :src="`#result-${index}+${currently_visible_for_slideshows[index]}`"
+              :key="`#result-${index}+${currently_visible_for_slideshows[index]}`"
               position="0 0 0"
-              :height="visuals[currently_visible[index]].ratio"
+              :height="visuals[currently_visible_for_slideshows[index]].ratio"
               width="1"
               rotation="0 0 0"
             />
@@ -68,7 +72,13 @@
             <audio ref="audioTrack">
               <source :src="audio_to_play" />
             </audio>
-            <button type="button" @click="playAudio">
+            <button
+              type="button"
+              @click="playAudio"
+              :class="{
+                'is--active': is_playing,
+              }"
+            >
               <svg
                 class
                 version="1.1"
@@ -119,8 +129,9 @@ export default {
       mindarThree: undefined,
       is_loading: true,
       currently_active_target: false,
-      currently_visible: [],
+      currently_visible_for_slideshows: [],
       audio_to_play: false,
+      is_playing: false,
     };
   },
   created() {},
@@ -133,7 +144,9 @@ export default {
     slideshows: {
       handler() {
         if (this.slideshows.length > 0) {
-          this.slideshows.map((m) => this.currently_visible.push(0));
+          this.slideshows.map((m) =>
+            this.currently_visible_for_slideshows.push(0)
+          );
           this.initAR();
         }
       },
@@ -267,6 +280,8 @@ export default {
     playAudio() {
       if (this.$refs.audioTrack.paused) this.$refs.audioTrack.play();
       else this.$refs.audioTrack.pause();
+
+      this.is_playing = !this.$refs.audioTrack.paused;
     },
     nextItem() {
       if (this.currently_active_target === false) return false;
@@ -274,12 +289,12 @@ export default {
       const current_slideshow =
         this.slideshows[this.currently_active_target].visuals;
       const visible_media_index =
-        this.currently_visible[this.currently_active_target];
+        this.currently_visible_for_slideshows[this.currently_active_target];
       const new_media_index =
         (visible_media_index + 1) % current_slideshow.length;
 
       this.$set(
-        this.currently_visible,
+        this.currently_visible_for_slideshows,
         this.currently_active_target,
         new_media_index
       );
