@@ -16,9 +16,9 @@
         style="position: absolute; opacity: 0"
       />
     </div> -->
-    <pre>
+    <!-- <pre>
       {{ media_images }}
-    </pre>
+    </pre> -->
 
     <div class="_navImageButton" v-if="!is_loading">
       <div class="_navImageButton--inner">
