@@ -13,6 +13,8 @@
         slideshows = {{ slideshows }}  
       </pre> -->
 
+      {{ current_media }}
+
       <template v-if="!is_loading && mind_file">
         <a-scene
           :mindar-image="`imageTargetSrc: ${mind_file}; missTolerance: 2; warmupTolerance: 2; filterMinCF:0.02; filterBeta: 10;`"
@@ -99,6 +101,12 @@
             </button>
           </template>
 
+          <div
+            class="_navImageButton--inner--caption"
+            v-if="current_media.caption"
+            v-html="current_media.caption"
+          />
+
           <button
             type="button"
             class="_nextBtn"
@@ -165,6 +173,26 @@ export default {
 
       return `/_publications/${this.slugPubliName}/${this.mind.media_filename}`;
     },
+
+    current_media() {
+      if (
+        this.currently_active_target !== false &&
+        this.slideshows[this.currently_active_target].visuals.length > 0
+      ) {
+        const visible_media_index =
+          this.currently_visible_for_slideshows[this.currently_active_target];
+
+        const media =
+          this.slideshows[this.currently_active_target].visuals[
+            visible_media_index
+          ];
+        return media;
+      }
+      return false;
+    },
+    current_caption() {
+      return "plop";
+    },
     slideshows() {
       return this.ar_blocks.reduce((acc, block, index) => {
         if (block.results && block.results.length > 0) {
@@ -196,6 +224,9 @@ export default {
                 media: media,
               });
               result.ratio = result.ratio === false ? 1 : result.ratio;
+
+              if (media._linked_media.caption)
+                result.caption = media._linked_media.caption;
 
               if (result.src) {
                 if (["image", "video"].includes(result.type))
@@ -339,5 +370,15 @@ export default {
 
   gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 2);
+}
+
+._navImageButton--inner--caption {
+  padding: calc(var(--spacing) / 4);
+  font-family: "Fira Mono";
+  font-size: 10pt;
+  // margin-top: 0.5em;
+  white-space: pre-wrap;
+
+  background: white;
 }
 </style>
