@@ -3409,6 +3409,10 @@ module.exports = (function () {
       fr: "masque suivant",
       en: "next mask",
     },
+    next: {
+      fr: "suivant",
+      en: "next",
+    },
     export_folder: {
       fr: "Exporter en format WEB",
       en: "Export as a webpage",
