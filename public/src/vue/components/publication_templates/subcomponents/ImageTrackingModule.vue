@@ -166,7 +166,7 @@ export default {
                 ["video", "audio"].includes(media._linked_media.type)
               ) {
                 const prefix =
-                  this.$root.state.mode === "export_publication" ? "./" : "/";
+                  this.$root.state.mode === "link_publication" ? "./" : "/";
                 result.src = `${prefix}${media._linked_media.slugProjectName}/${
                   media._linked_media.media_filename
                 }?v=${+this.$moment(media._linked_media.date_created)}`;
