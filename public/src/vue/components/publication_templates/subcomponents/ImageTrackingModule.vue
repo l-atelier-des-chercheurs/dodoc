@@ -1,11 +1,17 @@
 <template>
   <portal to="modal_container">
     <div class="m_imageTrackingModule">
-      <!-- currently_visible = {{ currently_visible }}<br />
+      <!-- currently_visible_for_slideshows = {{ currently_visible_for_slideshows }}<br />
       audio_to_play =
       {{ audio_to_play }}<br />
       <pre>slideshows = {{ slideshows }}</pre> -->
-      <!-- {{ currently_visible[currently_active_target] }} -->
+      <!-- {{ currently_visible_for_slideshows[currently_active_target] }} -->
+      <!-- is_loading = {{ is_loading }}<br />
+      mind_file = {{ mind_file }} <br />
+      currently_active_target = {{ currently_active_target }} <br />
+      <pre>
+        slideshows = {{ slideshows }}  
+      </pre> -->
 
       <template v-if="!is_loading && mind_file">
         <a-scene
@@ -19,22 +25,26 @@
           <a-assets>
             <template v-for="({ visuals }, index) in slideshows">
               <template v-for="(media, _index) in visuals">
-                <img
-                  v-if="media.type === 'image'"
-                  :key="`result-${index}+${_index}`"
-                  :id="`result-${index}+${_index}`"
-                  :src="'/' + media.src"
-                />
-                <video
-                  v-if="media.type === 'video'"
-                  :key="`result-${index}+${_index}`"
-                  :id="`result-${index}+${_index}`"
-                  :src="'/' + media.src"
-                  preload="auto"
-                  autoplay
-                  loop="true"
-                  muted
-                />
+                <template
+                  v-if="_index === currently_visible_for_slideshows[index]"
+                >
+                  <img
+                    v-if="media.type === 'image'"
+                    :key="`result-${index}+${_index}`"
+                    :id="`result-${index}+${_index}`"
+                    :src="media.src"
+                  />
+                  <video
+                    v-if="media.type === 'video'"
+                    :key="`result-${index}+${_index}`"
+                    :id="`result-${index}+${_index}`"
+                    :src="media.src"
+                    preload="auto"
+                    autoplay
+                    loop="true"
+                    muted
+                  />
+                </template>
               </template>
             </template>
           </a-assets>
@@ -47,10 +57,10 @@
             :key="`result-${index}`"
           >
             <a-plane
-              :src="`#result-${index}+${currently_visible[index]}`"
-              :key="`#result-${index}+${currently_visible[index]}`"
+              :src="`#result-${index}+${currently_visible_for_slideshows[index]}`"
+              :key="`#result-${index}+${currently_visible_for_slideshows[index]}`"
               position="0 0 0"
-              :height="visuals[currently_visible[index]].ratio"
+              :height="visuals[currently_visible_for_slideshows[index]].ratio"
               width="1"
               rotation="0 0 0"
             />
@@ -62,7 +72,13 @@
             <audio ref="audioTrack">
               <source :src="audio_to_play" />
             </audio>
-            <button type="button" @click="playAudio">
+            <button
+              type="button"
+              @click="playAudio"
+              :class="{
+                'is--active': is_playing,
+              }"
+            >
               <svg
                 class
                 version="1.1"
@@ -82,6 +98,12 @@
               </svg>
             </button>
           </template>
+
+          <div
+            class="_navImageButton--inner--caption"
+            v-if="current_media.caption"
+            v-html="current_media.caption"
+          />
 
           <button
             type="button"
@@ -113,8 +135,9 @@ export default {
       mindarThree: undefined,
       is_loading: true,
       currently_active_target: false,
-      currently_visible: [],
+      currently_visible_for_slideshows: [],
       audio_to_play: false,
+      is_playing: false,
     };
   },
   created() {},
@@ -127,7 +150,9 @@ export default {
     slideshows: {
       handler() {
         if (this.slideshows.length > 0) {
-          this.slideshows.map((m) => this.currently_visible.push(0));
+          this.slideshows.map((m) =>
+            this.currently_visible_for_slideshows.push(0)
+          );
           this.initAR();
         }
       },
@@ -146,6 +171,26 @@ export default {
 
       return `/_publications/${this.slugPubliName}/${this.mind.media_filename}`;
     },
+
+    current_media() {
+      if (
+        this.currently_active_target !== false &&
+        this.slideshows[this.currently_active_target].visuals.length > 0
+      ) {
+        const visible_media_index =
+          this.currently_visible_for_slideshows[this.currently_active_target];
+
+        const media =
+          this.slideshows[this.currently_active_target].visuals[
+            visible_media_index
+          ];
+        return media;
+      }
+      return false;
+    },
+    current_caption() {
+      return "plop";
+    },
     slideshows() {
       return this.ar_blocks.reduce((acc, block, index) => {
         if (block.results && block.results.length > 0) {
@@ -159,9 +204,9 @@ export default {
               let result = {};
 
               if (media._linked_media.type === "image") {
-                result.src = media._linked_media.thumbs.find(
-                  (t) => t.size === 1600
-                ).path;
+                result.src =
+                  `/` +
+                  media._linked_media.thumbs.find((t) => t.size === 1600).path;
               } else if (
                 ["video", "audio"].includes(media._linked_media.type)
               ) {
@@ -177,6 +222,9 @@ export default {
                 media: media,
               });
               result.ratio = result.ratio === false ? 1 : result.ratio;
+
+              if (media._linked_media.caption)
+                result.caption = media._linked_media.caption;
 
               if (result.src) {
                 if (["image", "video"].includes(result.type))
@@ -209,25 +257,24 @@ export default {
             console.log(
               `ImageTrackingModule: startImageTracking / mindar has loaded`
             );
+
           this.is_loading = false;
 
-          this.$nextTick(() => {
-            this.$nextTick(() => {
-              this.$refs[`a-scene`]
-                .querySelectorAll("a-entity")
-                .forEach((target, index) => {
-                  target.addEventListener("targetFound", (event) => {
-                    this.currently_active_target = index;
-
-                    this.startAudioFile();
-                  });
-                  target.addEventListener("targetLost", (event) => {
-                    if (this.currently_active_target === index)
-                      this.currently_active_target = false;
-                  });
+          setTimeout(() => {
+            if (!this.$refs[`a-scene`]) return false;
+            this.$refs[`a-scene`]
+              .querySelectorAll("a-entity")
+              .forEach((target, index) => {
+                target.addEventListener("targetFound", (event) => {
+                  this.currently_active_target = index;
+                  this.startAudioFile();
                 });
-            });
-          });
+                target.addEventListener("targetLost", (event) => {
+                  if (this.currently_active_target === index)
+                    this.currently_active_target = false;
+                });
+              });
+          }, 500);
 
           // const THREE = window.MINDAR.IMAGE.THREE;
           // this.mindarThree = new window.MINDAR.IMAGE.MindARThree({
@@ -262,6 +309,8 @@ export default {
     playAudio() {
       if (this.$refs.audioTrack.paused) this.$refs.audioTrack.play();
       else this.$refs.audioTrack.pause();
+
+      this.is_playing = !this.$refs.audioTrack.paused;
     },
     nextItem() {
       if (this.currently_active_target === false) return false;
@@ -269,12 +318,12 @@ export default {
       const current_slideshow =
         this.slideshows[this.currently_active_target].visuals;
       const visible_media_index =
-        this.currently_visible[this.currently_active_target];
+        this.currently_visible_for_slideshows[this.currently_active_target];
       const new_media_index =
         (visible_media_index + 1) % current_slideshow.length;
 
       this.$set(
-        this.currently_visible,
+        this.currently_visible_for_slideshows,
         this.currently_active_target,
         new_media_index
       );
@@ -319,5 +368,15 @@ export default {
 
   gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 2);
+}
+
+._navImageButton--inner--caption {
+  padding: calc(var(--spacing) / 4);
+  font-family: "Fira Mono";
+  font-size: 10pt;
+  // margin-top: 0.5em;
+  white-space: pre-wrap;
+
+  background: white;
 }
 </style>
