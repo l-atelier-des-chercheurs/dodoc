@@ -170,10 +170,14 @@ export default {
   },
   watch: {
     curr_image() {
+      this.is_loading = true;
       const curr_texture = new window.MINDAR.FACE.THREE.TextureLoader().load(
         this.media_images[this.curr_image].thumb,
         () => {
           this.faceMesh.material.map = curr_texture;
+          setTimeout(() => {
+            this.is_loading = false;
+          }, 500);
         }
       );
 
