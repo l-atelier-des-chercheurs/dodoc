@@ -171,9 +171,11 @@ export default {
   watch: {
     curr_image() {
       const curr_texture = new window.MINDAR.FACE.THREE.TextureLoader().load(
-        this.media_images[this.curr_image].thumb
+        this.media_images[this.curr_image].thumb,
+        () => {
+          this.faceMesh.material.map = curr_texture;
+        }
       );
-      this.faceMesh.material.map = curr_texture;
 
       // this.stopFaceTracking();
       // this.startFaceTracking();
