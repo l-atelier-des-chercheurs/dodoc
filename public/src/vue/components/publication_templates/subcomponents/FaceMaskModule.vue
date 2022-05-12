@@ -1,6 +1,6 @@
 <template>
   <div class="m_faceMaskModule">
-    <div class="m_faceMaskModule--inner" ref="fmInner" :key="curr_image" />
+    <div class="m_faceMaskModule--inner" ref="fmInner" />
     <transition name="fade_fast">
       <div v-if="is_loading" class="m_faceMaskModule--curtain" />
     </transition>
@@ -156,10 +156,9 @@ export default {
       is_loading: true,
       mindarThree: {},
       curr_image: 0,
+      faceMesh: undefined,
 
       is_playing: false,
-
-      curr_texture: undefined,
     };
   },
   created() {},
@@ -171,8 +170,13 @@ export default {
   },
   watch: {
     curr_image() {
-      this.stopFaceTracking();
-      this.startFaceTracking();
+      const curr_texture = new window.MINDAR.FACE.THREE.TextureLoader().load(
+        this.media_images[this.curr_image].thumb
+      );
+      this.faceMesh.material.map = curr_texture;
+
+      // this.stopFaceTracking();
+      // this.startFaceTracking();
     },
   },
   computed: {
@@ -246,29 +250,31 @@ export default {
           return false;
         }
 
-        const THREE = window.MINDAR.FACE.THREE;
         this.mindarThree = new window.MINDAR.FACE.MindARThree({
           container: this.$refs.fmInner,
         });
         const { renderer, scene, camera } = this.mindarThree;
 
-        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        const light = new window.MINDAR.FACE.THREE.HemisphereLight(
+          0xffffff,
+          0xbbbbff,
+          1
+        );
         scene.add(light);
 
-        const faceMesh = this.mindarThree.addFaceMesh();
-
+        this.faceMesh = this.mindarThree.addFaceMesh();
         // const video = document.getElementById("video");
         // const texture = new THREE.VideoTexture(video);
 
-        this.curr_texture = new THREE.TextureLoader().load(
+        const curr_texture = new window.MINDAR.FACE.THREE.TextureLoader().load(
           this.media_images[this.curr_image].thumb
         );
         // "./video.mp4"
         // "/canonical_face_model_uv_visualization_bis.png"
-        faceMesh.material.map = this.curr_texture;
-        faceMesh.material.transparent = true;
-        faceMesh.material.needsUpdate = true;
-        scene.add(faceMesh);
+        this.faceMesh.material.map = curr_texture;
+        this.faceMesh.material.transparent = true;
+        this.faceMesh.material.needsUpdate = true;
+        scene.add(this.faceMesh);
 
         // this.mindarThree._resize = function () {};
 
