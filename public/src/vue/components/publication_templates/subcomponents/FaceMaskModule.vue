@@ -164,6 +164,7 @@ export default {
   created() {},
   mounted() {
     this.startFaceTracking();
+    this.$el.style.height = this.$root.settings.windowHeight + "px";
   },
   beforeDestroy() {
     this.stopFaceTracking();
@@ -328,7 +329,6 @@ export default {
   width: 100%;
   height: 100%;
   height: 100vh;
-  height: -webkit-fill-available;
 
   position: absolute;
   overflow: hidden;
