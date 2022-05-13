@@ -172,15 +172,19 @@ export default {
   watch: {
     curr_image() {
       this.is_loading = true;
-      const curr_texture = new window.MINDAR.FACE.THREE.TextureLoader().load(
-        this.media_images[this.curr_image].thumb,
-        () => {
-          this.faceMesh.material.map = curr_texture;
-          setTimeout(() => {
-            this.is_loading = false;
-          }, 500);
-        }
-      );
+
+      // wait for fade_fast animation to complete
+      setTimeout(() => {
+        const curr_texture = new window.MINDAR.FACE.THREE.TextureLoader().load(
+          this.media_images[this.curr_image].thumb,
+          () => {
+            this.faceMesh.material.map = curr_texture;
+            setTimeout(() => {
+              this.is_loading = false;
+            }, 200);
+          }
+        );
+      }, 200);
 
       // this.stopFaceTracking();
       // this.startFaceTracking();
