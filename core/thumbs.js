@@ -10,7 +10,6 @@ const path = require("path"),
   https = require("https");
 
 const { BrowserWindow } = require("electron");
-const PdfExtractor = require("pdf-extractor").PdfExtractor;
 
 sharp.cache(false);
 
@@ -956,6 +955,14 @@ module.exports = (function () {
       `${filename}-${page}`
     );
     await fs.ensureDir(_pdf_folder);
+
+    let PdfExtractor;
+    try {
+      PdfExtractor = require("pdf-extractor").PdfExtractor;
+    } catch (err) {
+      dev.error(`THUMBS — _makePDFScreenshot / No pdfextractor found ${err}`);
+      throw err;
+    }
 
     pdfExtractor = new PdfExtractor(_pdf_folder, {
       viewportScale: (width, height) => {
