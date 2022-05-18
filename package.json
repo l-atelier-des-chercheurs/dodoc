@@ -99,6 +99,6 @@
     "node-gyp": "^9.0.0"
   },
   "optionalDependencies": {
-    "pdf-extractor": "^2.0.0"    
+    "pdf-extractor": "^2.0.0"
   }
 }
