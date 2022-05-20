@@ -464,7 +464,7 @@ export default {
       ) {
         return false;
       }
-      const thumb = this.project.preview.filter((p) => p.size === 640);
+      const thumb = this.project.preview.filter((p) => p && p.size === 640);
       if (thumb.length > 0) {
         return `${thumb[0].path}`;
       }

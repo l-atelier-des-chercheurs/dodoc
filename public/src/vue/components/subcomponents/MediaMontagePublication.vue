@@ -124,6 +124,7 @@
 
     <button
       type="button"
+      v-if="!preview_mode"
       class="_advanced_menu_button _no_underline"
       :class="{ 'is--active': show_advanced_menu }"
       @mousedown.stop.prevent="show_advanced_menu = !show_advanced_menu"

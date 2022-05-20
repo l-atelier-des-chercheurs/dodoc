@@ -88,12 +88,9 @@ module.exports = (function () {
 
         acc.push(async () => {
           // get all folders slugs and passwords
-          const foldersData = await file.getFolder({ type }).catch((err) => {
-            dev.error(`Failed to get folder data: ${err}`);
-            return [];
-          });
-
-          if (!foldersData) return [];
+          const foldersData = await file
+            .getFolders({ type })
+            .catch((err) => []);
 
           dev.logverbose(
             `AUTH — setAuthenticate : got folder data, now checking against user_folder_passwords[${type}]`
@@ -617,11 +614,12 @@ module.exports = (function () {
 
     // get all session authors
     const all_authors_informations = await file
-      .getFolder({ type: "authors" })
+      .getFolders({ type: "authors" })
       .catch((err) => {
-        // error : no authors to check
-        return false;
+        dev.logverbose(`AUTH — isSocketLoggedInAsAdmin: ${is_admin}`);
+        return is_admin;
       });
+
     const admins_slugs = Object.values(all_authors_informations).reduce(
       (acc, a) => {
         if (a.role === "admin") acc.push(a.slugFolderName);

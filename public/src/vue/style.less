@@ -2070,26 +2070,27 @@ small {
 .m_qrSnippet {
   .padding-none;
   // .margin-vert-medium;
-  .button-inline;
+  // .button-inline;
   cursor: initial;
   .bg-creme;
   border-radius: @t-buttonradius;
   // border: 4px solid @c-creme;
+
+  .m_qrSnippet--url {
+    display: block;
+    .padding-small;
+    text-align: center;
+  }
 
   .m_qrSnippet--text {
     position: relative;
     // .button;
     text-align: center;
     .text-cap;
-    .margin-small;
+    .padding-sides-small;
     margin-top: 0;
     background-color: transparent;
     width: 100%;
-    a {
-      display: block;
-      background-color: transparent;
-      text-decoration: none;
-    }
 
     .m_qrSnippet--text--dodoclogo {
       float: left;
@@ -2104,7 +2105,7 @@ small {
 
   .m_qrSnippet--motif {
     width: 100%;
-    .margin-small;
+    .padding-small;
     canvas {
       .bg-gris_tresclair;
       .padding-verysmall;
@@ -3315,8 +3316,6 @@ small {
     }
 
     p {
-      .margin-vert-small;
-      .margin-bottom-medium;
       .font-small;
       line-height: 1.4;
     }
@@ -3708,7 +3707,7 @@ small {
   }
 
   > div {
-    .bg-gris_tresclair;
+    // .bg-gris_tresclair;
     .padding-sides-verysmall;
     border-radius: 4px;
     .margin-vert-verysmall;
@@ -4948,6 +4947,11 @@ small {
       right: -5px;
     }
 
+    .m_stopmotionAnimationPublication--media img {
+      max-height: 200px;
+      object-fit: scale-down;
+    }
+
     .m_stopmotionAnimationPublication--media--move {
       display: flex;
       justify-content: space-between;
@@ -5145,6 +5149,50 @@ small {
           bottom: 0;
         }
       }
+    }
+  }
+}
+
+.m_imageTracking {
+  .padding-verysmall;
+  .padding-sides-medium;
+  margin: 0 auto;
+  .margin-vert-small;
+  // max-width: 1024px;
+  width: 100%;
+
+  counter-reset: compteListe;
+
+  align-items: start;
+
+  > * {
+    .bg-blanc;
+    .margin-vert-small;
+    margin-inline: auto;
+    .boxs-card-2;
+    max-width: 480px;
+    border-radius: @t-buttonradius;
+    // margin-left: -@t-buttonradius;
+    // margin-right: -@t-buttonradius;
+    // flex: 0 0 100px;
+    position: relative;
+    transition: all 0.4s;
+  }
+
+  .m_imageTracking--block {
+    display: flex;
+    flex-flow: row nowrap;
+    background: white;
+  }
+
+  .m_imageTracking--block--media {
+    // width: 160px;
+    flex: 0 0 50%;
+    .padding-verysmall;
+
+    &.is--target {
+    }
+    &:not(.is--target) {
     }
   }
 }
@@ -8298,6 +8346,13 @@ body[data-mode="export_publication"],
 body[data-mode="link_publication"] {
   .m_publicationview--pages {
     padding: 0 !important;
+  }
+
+  .m_publicationSettings {
+    position: fixed;
+  }
+  .m_storyPublication--content {
+    margin-bottom: 50px;
   }
 
   .m_publicationview--pages--pageContainer {

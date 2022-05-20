@@ -6,12 +6,10 @@
   "userDirPath": "documents",
   "userDirname": "dodoc2",
   "cache_content": true,
+  "removePermanently": false,
 
   "contentDirname": "user",
   "cacheDirname": "dodoc_cache",
-  "metaFileext": ".txt",
-  "thumbExt": ".jpeg",
-  "thumbFormat": "jpeg",
   "folderMetaFilename": "meta",
   "folderPreviewFilename": "meta_preview",
 
@@ -266,7 +264,9 @@
             "mix_audio_and_image",
             "drawing_pad",
             "video_effects",
-            "story"
+            "story",
+            "face_masks",
+            "image_tracking"
           ],
           "default": "page_by_page"
         },
@@ -300,6 +300,9 @@
           "type": "number"
         },
         "show_page_number": {
+          "type": "boolean"
+        },
+        "play_masks_randomly": {
           "type": "boolean"
         },
         "gridstep": {
@@ -450,6 +453,15 @@
             "type": "number"
           },
           "fit_mode": {
+            "type": "string"
+          },
+          "is_audio_of": {
+            "type": "string"
+          },
+          "is_ar_target": {
+            "type": "boolean"
+          },
+          "is_mind_for": {
             "type": "string"
           },
           "locked_in_place": {

@@ -133,6 +133,18 @@ button,
       background-color: @c-gris;
     }
   }
+  &.button-bluethin {
+    .button-thin;
+    background-color: @c-bleumarine;
+    color: white;
+
+    &:disabled {
+      background-color: @c-gris;
+    }
+    &.is--active {
+      background-color: @c-bleumarine_fonce;
+    }
+  }
 
   &.button-bg_rounded {
     > * {
@@ -782,6 +794,11 @@ b,
 
 .button-small {
   .font-small;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .button-round {
