@@ -9,4 +9,7 @@ console.log("plop");
 new Vue({
   router,
   render: (h) => h(App),
+  data: {
+    url_to_api: window.location.origin + "/api",
+  },
 }).$mount("#app");
