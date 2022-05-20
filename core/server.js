@@ -60,9 +60,9 @@ module.exports = function (router) {
 
   dev.logverbose("Starting express-settings");
 
-  app.set("port", global.appInfos.port); // Server's port number
-  app.set("views", global.appRoot); // Specify the views folder
-  app.set("view engine", "pug"); // View engine is Pug
+  app.set("port", global.appInfos.port); //Server's port number
+  app.set("views", global.appRoot); //Specify the views folder
+  app.set("view engine", "pug"); //View engine is Pug
 
   app.use(function (req, res, next) {
     if (isURLToForbiddenFiles(req.url)) {
@@ -72,7 +72,11 @@ module.exports = function (router) {
     }
   });
   app.use(express.static(global.pathToUserContent));
-  app.use(express.static(path.join(global.appRoot, "public")));
+
+  if (global.settings.frontEnd === "app")
+    app.use(express.static(path.join(global.appRoot, "app", "dist")));
+  else app.use(express.static(path.join(global.appRoot, "public")));
+
   app.use(
     express.static(path.join(global.appRoot, global.settings.cacheDirname))
   );
