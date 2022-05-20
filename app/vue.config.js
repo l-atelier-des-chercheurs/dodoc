@@ -12,6 +12,7 @@ module.exports = defineConfig({
   },
   devServer: {
     https: true,
+    port: 35500,
     headers: { "Access-Control-Allow-Origin": "*" },
     devMiddleware: {
       writeToDisk: true,

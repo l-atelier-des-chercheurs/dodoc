@@ -10,7 +10,8 @@ const auth = require("./core/auth"),
   exporter = require("./core/exporter"),
   importer = require("./core/importer"),
   sockets = require("./core/sockets"),
-  remote_api = require("./core/remote_api");
+  remote_api = require("./core/remote_api"),
+  api2 = require("./core2/api2");
 
 module.exports = function (app) {
   /**
@@ -31,6 +32,8 @@ module.exports = function (app) {
   app.post("/_file-upload/:type/:slugFolderName", postFile);
 
   remote_api.init(app);
+
+  if (global.settings.frontEnd === "app") api2.init(app);
 
   /**
    * routing functions

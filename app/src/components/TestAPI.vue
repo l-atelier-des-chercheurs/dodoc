@@ -2,6 +2,7 @@
   <div>
     Test API
     <button type="button" @click="getProjects">Fetch projects</button>
+    {{ projects }}
   </div>
 </template>
 <script>
@@ -9,7 +10,9 @@ export default {
   props: {},
   components: {},
   data() {
-    return {};
+    return {
+      projects: null,
+    };
   },
   created() {},
   mounted() {},
@@ -17,13 +20,11 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async populateProjects() {
+    async getProjects() {
+      // TODO
       try {
-        const users = await axios.get(
-          "https://jsonplaceholder.typicode.com/users"
-        );
-
-        this.users = users.data;
+        const url = this.$root.url_to_api + "/projects";
+        this.projects = await this.$http.get(url);
       } catch (e) {
         console.log(e);
       }
