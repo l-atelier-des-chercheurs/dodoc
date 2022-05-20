@@ -1,0 +1,9 @@
+@font-face {
+  src: url('./OutputSansVariable-VF-Testing.eot'); /* IE < 9 */
+  src: url('./OutputSansVariable-VF-Testing.eot?#') format('embedded-opentype'),
+    /* IE 9 */ url('./OutputSansVariable-VF-Testing.woff2') format('woff2'),
+    url('./OutputSansVariable-VF-Testing.woff') format('woff');
+  font-family: 'OutputSansVariable';
+  font-style: normal;
+  font-weight: normal;
+}
