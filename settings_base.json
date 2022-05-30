@@ -4,7 +4,7 @@
   "desired_port": 8080,
   "redirect_port": "",
   "userDirPath": "documents",
-  "userDirname": "dodoc2",
+  "userDirname": "dodoc3",
   "cache_content": true,
   "removePermanently": false,
 
@@ -637,6 +637,68 @@
           }
         }
       }
+    }
+  },
+  "schema": {
+    "projects": {
+      "path": "projects",
+      "preview": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [50, 320, 640]
+        }
+      },
+      "fields": {
+        "name": {
+          "type": "string"
+        },
+        "date_created": {
+          "type": "date",
+          "default": "current",
+          "read_only": true
+        },
+        "date_modified": {
+          "type": "date",
+          "default": "current",
+          "override": true
+        },
+        "password": {
+          "type": "string"
+        },
+        "authors": {
+          "type": "array"
+        },
+        "keywords": {
+          "type": "array"
+        },
+        "description": {
+          "type": "string"
+        },
+        "folder": {
+          "type": "string"
+        },
+        "editing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "with_password", "only_authors", "nobody"],
+          "default": "everybody"
+        },
+        "viewing_limited_to": {
+          "type": "string",
+          "options": ["everybody", "only_authors", ""],
+          "default": "everybody"
+        }
+      },
+      "files": {},
+      "children": {}
+    },
+    "publications": {
+      "path": "projects",
+      "children": [
+        {
+          "path": "medias"
+        }
+      ]
     }
   }
 }

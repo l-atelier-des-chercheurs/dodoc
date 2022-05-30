@@ -6,19 +6,11 @@ date_created: 20180524_132345
 
 ----
 
-date_modified: 20180524_132345
+date_modified: 20220518_165535
 
 ----
 
 password: 
-
-----
-
-authors: 
-
-----
-
-preview: meta_preview.jpeg
 
 ----
 
@@ -32,3 +24,15 @@ title: Découpe laser
 title: Installation
 -
 title: Impression 3D
+
+
+----
+
+editing_limited_to: everybody
+
+----
+
+viewing_limited_to: everybody
+
+----
+

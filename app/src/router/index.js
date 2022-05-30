@@ -11,6 +11,7 @@ const routes = [
     name: "home",
     component: HomeView,
   },
+  { path: "/api2" },
   {
     path: "/about",
     name: "about",

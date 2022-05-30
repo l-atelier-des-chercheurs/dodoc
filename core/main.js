@@ -34,6 +34,11 @@ module.exports = async function ({ router }) {
 
   let win;
   if (is_electron) {
+    if (dev.isDebug())
+      try {
+        // require("electron-reloader")(module);
+      } catch {}
+
     win = await require("./electron")
       .init()
       .catch((err) => {

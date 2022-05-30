@@ -76,12 +76,29 @@ module.exports = dev = (function () {
       _sendToConsole(log_string, gutil.colors.green);
     }
   }
-  function logfunction() {
+  function logfunction(...args) {
     if (!logToFile && !isDebugMode) return;
 
     // magenta
-    var args = Array.prototype.slice.call(arguments);
-    var logArgs = "~ ".concat(args);
+
+    const named_vars = args.map((arg) => {
+      if (typeof arg === "string") return arg;
+      const key = Object.keys(arg)[0];
+
+      let value = Object.values(arg)[0];
+      if (typeof value === "object") {
+        value = JSON.stringify(value);
+      }
+
+      return `${key} = ${value}`;
+      // var name = Object.keys(arg);
+      // var value = arg[name];
+      // return { name: value };
+      // return { name: value };
+    });
+
+    const fct_name = logfunction.caller.name;
+    var logArgs = `~ ${fct_name} – ${named_vars}`;
 
     if (logToFile) {
       _sendToLogFile(logArgs);

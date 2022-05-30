@@ -32,7 +32,7 @@
   },
   "build": {
     "electronVersion": "17.1.1",
-    "appId": "dodoc2",
+    "appId": "dodoc",
     "productName": "do•doc",
     "asar": false,
     "mac": {
@@ -68,8 +68,8 @@
     "gulp-util": "^3.0.8",
     "ip-anonymize": "^0.1.0",
     "memory-cache": "^0.2.0",
-    "node-fetch": "^2.6.7",
     "moment": "^2.29.3",
+    "node-fetch": "^2.6.7",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
     "platform-folders": "^0.6.0",
@@ -95,6 +95,7 @@
     "electron-builder": "^23.0.3",
     "electron-packager": "^15.5.1",
     "electron-rebuild": "^3.2.7",
+    "electron-reloader": "^1.2.3",
     "node-gyp": "^9.0.0"
   },
   "optionalDependencies": {
