@@ -7,7 +7,6 @@ const utils = require("./utils"),
 // all items (projects, medias, etc.) must have those props :
 // date_created
 // date_modified
-//
 // file_meta
 
 // cache structure :
@@ -134,6 +133,24 @@ module.exports = (function () {
 
       return meta;
     },
+    removeFolder: async ({ folder_type, folder_slug }) => {
+      dev.logfunction({ folder_type, folder_slug });
+
+      try {
+        if (global.settings.removePermanently === true)
+          await _removeFolderForGood({ folder_type, folder_slug });
+        else await _moveFolderToBin({ folder_type, folder_slug });
+
+        await thumbs.removeFolderThumbs({ folder_type, folder_slug });
+
+        // TODO remove from cache
+        // cache.del({ type, slugFolderName });
+
+        return;
+      } catch (err) {
+        throw err;
+      }
+    },
   };
 
   async function _getFolderSlugs({ folder_type }) {
@@ -164,11 +181,15 @@ module.exports = (function () {
     let meta = {};
     const fields = global.settings.schema[folder_type].fields;
 
-    // pick props from new_meta using schema
     Object.entries(fields).map(([field_name, opt]) => {
-      // if(opt.type)
-      debugger;
+      if (new_meta.hasOwnProperty(field_name)) {
+        meta[field_name] = new_meta[field_name];
+        // Todo Validator
+      }
     });
+
+    meta.date_created = meta.date_modified = utils.getCurrentDate();
+    return meta;
   }
 
   function _cleanNewMeta({ folder_type, new_meta }) {
@@ -264,6 +285,38 @@ module.exports = (function () {
       new_folder_slug = `${folder_slug}-${index}`;
     }
     return new_folder_slug;
+  }
+
+  async function _removeFolderForGood({ folder_type, folder_slug }) {
+    const full_folder_path = utils.getPathToUserContent(
+      global.settings.schema[folder_type].path,
+      folder_slug
+    );
+
+    try {
+      await fs.remove(full_folder_path);
+      return;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async function _moveFolderToBin({ folder_type, folder_slug }) {
+    const full_folder_path = utils.getPathToUserContent(
+      global.settings.schema[folder_type].path,
+      folder_slug
+    );
+    const bin_folder_path = utils.getPathToUserContent(
+      global.settings.schema[folder_type].path,
+      global.settings.deletedFolderName,
+      folder_slug
+    );
+
+    try {
+      await fs.move(full_folder_path, bin_folder_path, { overwrite: true });
+      return;
+    } catch (err) {
+      throw err;
+    }
   }
 
   return API;

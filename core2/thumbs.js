@@ -23,6 +23,9 @@ module.exports = (function () {
     makeFolderPreview: ({ folder_type, folder_slug }) =>
       makeFolderPreview({ folder_type, folder_slug }),
 
+    removeFolderThumbs: ({ folder_type, folder_slug }) =>
+      removeFolderThumbs({ folder_type, folder_slug }),
+
     getEXIFDataForImage: (mediaPath) => getEXIFDataForImage(mediaPath),
     getMediaEXIF: (d) => getMediaEXIF(d),
     getTimestampFromEXIF: (mediaPath) => getTimestampFromEXIF(mediaPath),
@@ -50,6 +53,21 @@ module.exports = (function () {
     });
 
     return paths;
+  }
+
+  async function removeFolderThumbs({ folder_type, folder_slug }) {
+    dev.logfunction({
+      folder_type,
+      folder_slug,
+    });
+
+    const full_path_to_thumb = utils.getPathToUserContent(
+      global.settings.thumbFolderName,
+      global.settings.schema[folder_type].path,
+      folder_slug
+    );
+
+    return await fs.remove(full_path_to_thumb);
   }
 
   async function _getThumbFolderPath(...paths) {

@@ -4,6 +4,9 @@ import router from "./router";
 
 Vue.config.productionTip = false;
 
+import custom_socketio from "../adc-core/socketio.js";
+Vue.prototype.$socketio = custom_socketio.init(i18n, auth, alertify);
+
 import axios from "axios";
 const instance = axios.create({
   baseURL: window.location.origin + "/api",

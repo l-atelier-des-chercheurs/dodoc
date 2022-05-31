@@ -3,10 +3,6 @@
     Test API
     <input type="text" v-model="path" />
     <button type="button" @click="getProjects">Fetch projects</button>
-    <pre>
-      {{ projects }}
-    </pre>
-
     fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
 
@@ -57,7 +53,7 @@ export default {
         const response = await this.$http.post(url, {
           title: this.new_project_title,
         });
-        this.projects = response.data;
+        // this.projects = response.data;
         this.fetch_status = "success";
       } catch (e) {
         this.fetch_status = "error";

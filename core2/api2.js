@@ -35,6 +35,11 @@ module.exports = (function () {
       [cors(_corsCheck), _sessionPasswordCheck],
       _updateResource
     );
+    app.delete(
+      "/api2/:type/:slug",
+      [cors(_corsCheck), _sessionPasswordCheck],
+      _removeResource
+    );
   }
 
   function _corsCheck(req, callback) {
@@ -131,6 +136,33 @@ module.exports = (function () {
       // push only new fields EMIT with socketio
       myEmitter.emit("event", 1, 2, 3, 4, 5);
 
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.json(d);
+    } catch (err) {
+      dev.error("Failed to update expected content: " + err);
+      res.status(500).send(err);
+    }
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  }
+
+  async function _removeResource(req, res, next) {
+    let folder_type = req.params.type;
+    let folder_slug = req.params.slug;
+
+    dev.logfunction({ folder_type, folder_slug });
+
+    if (!folder_type) return res.status(422).send("Missing folder_type field");
+    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
+
+    const hrstart = process.hrtime();
+
+    try {
+      const d = await file.removeFolder({
+        folder_type,
+        folder_slug,
+      });
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.json(d);
     } catch (err) {

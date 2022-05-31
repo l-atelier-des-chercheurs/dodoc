@@ -14,7 +14,7 @@
   "privateKeyPath": "",
   "certificatePath": "",
 
-  "metaDateFormat": "YYYYMMDD_HHmmss",
+  "metaDateFormat": "DD-MM-YYYY HH:mm:ss Z",
   "thumbFolderName": "thumbs",
   "deletedFolderName": "_bin",
 

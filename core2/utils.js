@@ -32,11 +32,14 @@ module.exports = (function () {
         throw err;
       }
     },
+    getCurrentDate() {
+      return moment().format(global.settings.metaDateFormat);
+    },
   };
 
   function _parseDate(date, f) {
     if (moment(date, f, true).isValid()) {
-      return moment(date, f).format("DD-MM-YYYY HH:mm:ss Z");
+      return moment(date, f).format(global.settings.metaDateFormat);
     } else {
       return "";
     }
