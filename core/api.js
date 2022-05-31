@@ -1,6 +1,6 @@
 const path = require("path"),
   moment = require("moment"),
-  parsedown = require("dodoc-parsedown"),
+  // parsedown = require("dodoc-parsedown"),
   fs = require("fs-extra"),
   slugg = require("slugg"),
   os = require("os"),

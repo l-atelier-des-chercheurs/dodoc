@@ -33,7 +33,7 @@ module.exports = function (app) {
 
   remote_api.init(app);
 
-  if (global.settings.frontEnd === "app") api2.init(app);
+  if (global.settings.frontEnd === "app") return api2.init(app);
 
   /**
    * routing functions

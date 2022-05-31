@@ -48,6 +48,7 @@
     }
   },
   "dependencies": {
+    "@iarna/toml": "^2.2.5",
     "archiver": "^5.3.1",
     "bcryptjs": "^2.4.3",
     "cheerio": "^0.22.0",
@@ -55,7 +56,6 @@
     "cors": "^2.8.5",
     "csv-parser": "^3.0.0",
     "csv-writer": "^1.6.0",
-    "dodoc-parsedown": "github:louis-ev/dodoc-parsedown#master",
     "electron-pdf-window": "^1.0.12",
     "electron-window-state": "^5.0.3",
     "exif-reader": "^1.0.3",

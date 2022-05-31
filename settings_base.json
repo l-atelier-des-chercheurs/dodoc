@@ -10,15 +10,12 @@
 
   "contentDirname": "user",
   "cacheDirname": "dodoc_cache",
-  "folderMetaFilename": "meta",
-  "folderPreviewFilename": "meta_preview",
 
   "privateKeyPath": "",
   "certificatePath": "",
 
   "metaDateFormat": "YYYYMMDD_HHmmss",
-  "textEncoding": "UTF-8",
-  "thumbFolderName": "_thumbs",
+  "thumbFolderName": "thumbs",
   "deletedFolderName": "_bin",
 
   "ffmpeg_options": {
@@ -650,24 +647,8 @@
         }
       },
       "fields": {
-        "name": {
+        "title": {
           "type": "string"
-        },
-        "date_created": {
-          "type": "date",
-          "default": "current",
-          "read_only": true
-        },
-        "date_modified": {
-          "type": "date",
-          "default": "current",
-          "override": true
-        },
-        "password": {
-          "type": "string"
-        },
-        "authors": {
-          "type": "array"
         },
         "keywords": {
           "type": "array"
@@ -677,16 +658,6 @@
         },
         "folder": {
           "type": "string"
-        },
-        "editing_limited_to": {
-          "type": "string",
-          "options": ["everybody", "with_password", "only_authors", "nobody"],
-          "default": "everybody"
-        },
-        "viewing_limited_to": {
-          "type": "string",
-          "options": ["everybody", "only_authors", ""],
-          "default": "everybody"
         }
       },
       "files": {},

@@ -1,61 +1,36 @@
 const path = require("path"),
   moment = require("moment"),
-  parsedown = require("dodoc-parsedown"),
-  validator = require("validator");
+  TOML = require("@iarna/toml"),
+  slugg = require("slugg"),
+  validator = require("validator"),
+  writeFileAtomic = require("write-file-atomic");
 
 module.exports = (function () {
   const API = {
-    sanitizeMetaFromFile({ folder_type, meta }) {
-      dev.logfunction({ folder_type });
-      let new_meta = {};
-
-      // const fields =
-      //   type_two === undefined
-      //     ? global.settings.structure[type].fields
-      //     : global.settings.structure[type][type_two].fields;
-      const fields = global.settings.schema[folder_type].fields;
-
-      if (!fields) throw `no fields matching ${folder_type}`;
-
-      Object.keys(meta).forEach((key) => {
-        if (fields[key]?.hasOwnProperty("type")) {
-          const fieldType = fields[key].type;
-          if (fieldType === "date") {
-            new_meta[key] = _parseDate(meta[key]);
-          } else if (fieldType === "string") {
-            new_meta[key] = validator.unescape(meta[key]);
-          } else if (fieldType === "number") {
-            new_meta[key] = validator.toFloat(meta[key]);
-          } else if (fieldType === "boolean") {
-            new_meta[key] = validator.toBoolean(meta[key]);
-          } else if (fieldType === "array") {
-            new_meta[key] = meta[key];
-          } else {
-            dev.error(`Unexpected field type ${fieldType}.`);
-          }
-        }
-      });
-
-      return new_meta;
-    },
-
     parseMeta(d) {
-      dev.logfunction();
-      return parsedown.parse(d);
+      return TOML.parse(d);
     },
 
-    makeFullPath({ folder_type }, ...paths) {
-      if (!global.settings.schema.hasOwnProperty(folder_type))
-        throw `Missing type ${folder_type} in global.settings.json`;
+    getPathToUserContent(...paths) {
+      return path.join(global.pathToUserContent, ...paths);
+    },
 
-      let _full_path = path.join(
-        global.pathToUserContent,
-        global.settings.schema[folder_type].path
-      );
+    slug(term) {
+      dev.logfunction({ term });
+      return slugg(term);
+    },
 
-      if (paths) _full_path = path.join(_full_path, ...paths);
+    async storeMeta({ path, meta }) {
+      dev.logfunction({ path, meta });
 
-      return _full_path;
+      if (typeof meta === "object") meta = TOML.stringify(meta);
+
+      try {
+        await writeFileAtomic(path, meta);
+        return;
+      } catch (err) {
+        throw err;
+      }
     },
   };
 

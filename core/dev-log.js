@@ -76,29 +76,18 @@ module.exports = dev = (function () {
       _sendToConsole(log_string, gutil.colors.green);
     }
   }
-  function logfunction(...args) {
+  function logfunction(arg) {
     if (!logToFile && !isDebugMode) return;
 
     // magenta
+    let content = "";
 
-    const named_vars = args.map((arg) => {
-      if (typeof arg === "string") return arg;
-      const key = Object.keys(arg)[0];
+    if (typeof arg === "string") content = arg;
 
-      let value = Object.values(arg)[0];
-      if (typeof value === "object") {
-        value = JSON.stringify(value);
-      }
-
-      return `${key} = ${value}`;
-      // var name = Object.keys(arg);
-      // var value = arg[name];
-      // return { name: value };
-      // return { name: value };
-    });
+    if (typeof arg === "object") content = JSON.stringify(arg);
 
     const fct_name = logfunction.caller.name;
-    var logArgs = `~ ${fct_name} – ${named_vars}`;
+    var logArgs = `~ ${fct_name} – ${content}`;
 
     if (logToFile) {
       _sendToLogFile(logArgs);
@@ -118,7 +107,9 @@ module.exports = dev = (function () {
 
   function performance() {
     var args = Array.prototype.slice.call(arguments);
-    var logArgs = "% ".concat(args);
+
+    const fct_name = performance.caller.name;
+    var logArgs = `~ ${fct_name} - `.concat(args);
 
     _sendToLogFile(logArgs);
     _sendToConsole(logArgs, gutil.colors.yellow);

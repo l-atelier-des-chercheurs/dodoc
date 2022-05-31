@@ -1,38 +1,9 @@
-name: Exemple de projet
+title = "Exemple de projet"
+keywords = [ "do•doc", "Découpe laser", "Installation", "Impression 3D" ]
 
-----
-
-date_created: 20180524_132345
-
-----
-
-date_modified: 20220518_165535
-
-----
-
-password: 
-
-----
-
-keywords: 
-
--
-title: do•doc
--
-title: Découpe laser
--
-title: Installation
--
-title: Impression 3D
-
-
-----
-
-editing_limited_to: everybody
-
-----
-
-viewing_limited_to: everybody
-
-----
-
+[infos]
+date_created = 1979-05-27T07:32:00Z
+date_modified = 1979-05-27T07:32:00Z
+who_can_edit = "everybody"
+who_can_view = "everybody"
+password = ""

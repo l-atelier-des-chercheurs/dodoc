@@ -6,20 +6,38 @@
     <pre>
       {{ projects }}
     </pre>
+
     fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
+
+    <input type="text" v-model="new_project_title" />
+    <button type="button" @click="createProject">Create</button>
+
+    <ProjectView
+      v-for="project in projects"
+      :project="project"
+      :key="project.slug"
+    />
   </div>
 </template>
 <script>
+import ProjectView from "@/components/ProjectView.vue";
+
 export default {
   props: {},
-  components: {},
+  components: {
+    ProjectView,
+  },
   data() {
     return {
       projects: null,
       fetch_status: null,
       fetch_error: null,
       path: "/projects",
+
+      new_project_title: (
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 3 + 2),
     };
   },
   created() {},
@@ -30,6 +48,22 @@ export default {
   watch: {},
   computed: {},
   methods: {
+    async createProject() {
+      this.fetch_status = "pending";
+      this.fetch_error = null;
+
+      try {
+        const url = this.$root.url_to_api + this.path;
+        const response = await this.$http.post(url, {
+          title: this.new_project_title,
+        });
+        this.projects = response.data;
+        this.fetch_status = "success";
+      } catch (e) {
+        this.fetch_status = "error";
+        this.fetch_error = e.response.data;
+      }
+    },
     async getProjects() {
       this.projects = null;
       this.fetch_status = "pending";
@@ -43,7 +77,6 @@ export default {
       } catch (e) {
         this.fetch_status = "error";
         this.fetch_error = e.response.data;
-        debugger;
       }
     },
   },
