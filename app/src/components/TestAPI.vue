@@ -6,7 +6,8 @@
 
     <input type="text" v-model="new_project_title" />
     <button type="button" @click="createProject">Create</button>
-
+    <br />
+    <br />
     <ProjectView
       v-for="project in projects"
       :project="project"

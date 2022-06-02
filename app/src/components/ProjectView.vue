@@ -1,23 +1,29 @@
 <template>
   <div class="m_project">
-    {{ project.title }}
-    {{ project.slug }}
+    {{ project.title }} <br />
     <input type="text" v-model="new_title" />
-
+    <br />
     <button type="button" @click="updateProject">save</button>
+    <input type="file" />import
     <button type="button" @click="removeProject">delete</button>
 
-    fetch_status = {{ fetch_status }} <br />
+    <SendMedia />
+
+    <!-- fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
-    response = {{ response }} <br />
+    response = {{ response }} <br /> -->
   </div>
 </template>
 <script>
+import SendMedia from "./fields/SendMedia.vue";
+
 export default {
   props: {
     project: Object,
   },
-  components: {},
+  components: {
+    SendMedia,
+  },
   data() {
     return {
       new_title: this.project.title,
