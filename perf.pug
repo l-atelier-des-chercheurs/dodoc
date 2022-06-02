@@ -1,0 +1,23 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Document
+  body 
+    - var n = 0;
+    while n < 200
+      - ++n
+      = n
+      iframe(width="250" height="400" src="https://localhost:8080")
+
+  style. 
+    body {
+      margin: 0;
+    }
+
+    iframe {
+      margin: 0;
+      border: none;
+    }

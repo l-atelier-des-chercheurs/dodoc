@@ -1,15 +1,11 @@
 <template>
   <div>
-    Test API
+    <h1>Test API</h1>
     <input type="text" v-model="path" />
     <button type="button" @click="getProjects">Fetch projects</button>
 
     <input type="text" v-model="new_project_title" />
     <button type="button" @click="createProject">Create</button>
-
-    <br />
-    fetch_status = {{ fetch_status }} <br />
-    fetch_error = {{ fetch_error }} <br />
 
     <ProjectView
       v-for="project in projects"

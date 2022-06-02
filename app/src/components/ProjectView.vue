@@ -1,6 +1,7 @@
 <template>
   <div class="m_project">
-    {{ project }}
+    {{ project.title }}
+    {{ project.slug }}
     <input type="text" v-model="new_title" />
 
     <button type="button" @click="updateProject">save</button>

@@ -24,6 +24,15 @@ export default function () {
         this.socket.on("createFolder", (content) => {
           window.store.projects.push(content);
         });
+        this.socket.on("editFolder", (content) => {
+          const project_index = window.store.projects.findIndex(
+            (project) => project.slug === content.slug
+          );
+          // update props
+          Object.entries(content).map(([key, value]) => {
+            window.store.projects[project_index][key] = value;
+          });
+        });
         this.socket.on("removeFolder", (folder_slug) => {
           window.store.projects = window.store.projects.filter(
             (project) => project.slug !== folder_slug

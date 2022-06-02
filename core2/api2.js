@@ -15,6 +15,7 @@ module.exports = (function () {
     dev.logfunction();
 
     app.get("/", loadIndex);
+    app.get("/_perf", loadPerf);
 
     app.options("/api2/*", cors());
 
@@ -32,7 +33,7 @@ module.exports = (function () {
     app.post(
       "/api2/:type/:slug",
       [cors(_corsCheck), _sessionPasswordCheck],
-      _updateResource
+      _updateFolder
     );
     app.delete(
       "/api2/:type/:slug",
@@ -55,6 +56,9 @@ module.exports = (function () {
 
   function loadIndex(rea, res) {
     res.render("index");
+  }
+  function loadPerf(rea, res) {
+    res.render("perf");
   }
   async function _getResource(req, res, next) {
     let folder_type = req.params.type;
@@ -105,7 +109,6 @@ module.exports = (function () {
         new_meta: content,
       });
       res.status(200).json({ status: "ok" });
-      dev.logverbose("status");
     } catch (err) {
       dev.error("Failed to update expected content: " + err);
       res.status(500).send(err);
@@ -123,7 +126,7 @@ module.exports = (function () {
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
 
-  async function _updateResource(req, res, next) {
+  async function _updateFolder(req, res, next) {
     let folder_type = req.params.type;
     let folder_slug = req.params.slug;
     const content = req.body;
@@ -144,9 +147,14 @@ module.exports = (function () {
         folder_slug,
         new_meta: content,
       });
+      res.status(200).json({ status: "ok" });
 
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.json(d);
+      // push update to all if
+      const folder_meta = await file.getFolder({
+        folder_type,
+        folder_slug,
+      });
+      notifier.emit("editFolder", folder_meta);
     } catch (err) {
       dev.error("Failed to update expected content: " + err);
       res.status(500).send(err);
@@ -168,17 +176,18 @@ module.exports = (function () {
     const hrstart = process.hrtime();
 
     try {
-      const d = await file.removeFolder({
+      folder_slug = await file.removeFolder({
         folder_type,
         folder_slug,
       });
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.json(d);
-      notifier.emit("removeFolder", d);
+      // res.setHeader("Access-Control-Allow-Origin", "*");
+      res.status(200).json({ status: "ok" });
     } catch (err) {
-      dev.error("Failed to update expected content: " + err);
+      dev.error("Failed to remove expected content: " + err);
       res.status(500).send(err);
     }
+
+    notifier.emit("removeFolder", folder_slug);
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);

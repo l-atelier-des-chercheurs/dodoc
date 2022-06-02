@@ -34,17 +34,15 @@ module.exports = (function () {
       // }
     });
 
-    io.on("connection", (socket) => {
+    io.on("connection", async (socket) => {
       dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
-      // dev.log(
-      //   `Clients connected currently : ${
-      //     Object.keys(io.sockets.connected).length
-      //   }`
-      // );
 
-      setTimeout(() => {
-        socket.emit("msg", "hello world");
-      }, 2000);
+      const sockets = await io.fetchSockets();
+      dev.log(`Clients connected currently : ${Object.keys(sockets).length}`);
+
+      // setTimeout(() => {
+      // socket.emit("msg", "hello world");
+      // }, 2000);
 
       let ip = "";
       if (socket.handshake) {
@@ -83,6 +81,9 @@ module.exports = (function () {
 
       notifier.on("createFolder", (content) => {
         socket.emit("createFolder", content);
+      });
+      notifier.on("editFolder", (content) => {
+        socket.emit("editFolder", content);
       });
       notifier.on("removeFolder", (content) => {
         socket.emit("removeFolder", content);
