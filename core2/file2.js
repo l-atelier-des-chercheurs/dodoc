@@ -146,7 +146,7 @@ module.exports = (function () {
         // TODO remove from cache
         // cache.del({ type, slugFolderName });
 
-        return;
+        return folder_slug;
       } catch (err) {
         throw err;
       }

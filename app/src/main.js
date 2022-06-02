@@ -4,8 +4,8 @@ import router from "./router";
 
 Vue.config.productionTip = false;
 
-import custom_socketio from "../adc-core/socketio.js";
-Vue.prototype.$socketio = custom_socketio.init(i18n, auth, alertify);
+import custom_socketio from "./adc-core/socketio.js";
+Vue.prototype.$socketio = custom_socketio();
 
 import axios from "axios";
 const instance = axios.create({
@@ -21,5 +21,9 @@ new Vue({
   render: (h) => h(App),
   data: {
     url_to_api: window.location.origin + "/api2",
+    store: window.store,
+  },
+  mounted() {
+    this.$socketio.connect();
   },
 }).$mount("#app");

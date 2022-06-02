@@ -11,7 +11,7 @@ const auth = require("./core/auth"),
   importer = require("./core/importer"),
   sockets = require("./core/sockets"),
   remote_api = require("./core/remote_api"),
-  api2 = require("./core2/api2");
+  ;
 
 module.exports = function (app) {
   /**
@@ -32,8 +32,6 @@ module.exports = function (app) {
   app.post("/_file-upload/:type/:slugFolderName", postFile);
 
   remote_api.init(app);
-
-  if (global.settings.frontEnd === "app") return api2.init(app);
 
   /**
    * routing functions

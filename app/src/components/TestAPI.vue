@@ -3,11 +3,13 @@
     Test API
     <input type="text" v-model="path" />
     <button type="button" @click="getProjects">Fetch projects</button>
-    fetch_status = {{ fetch_status }} <br />
-    fetch_error = {{ fetch_error }} <br />
 
     <input type="text" v-model="new_project_title" />
     <button type="button" @click="createProject">Create</button>
+
+    <br />
+    fetch_status = {{ fetch_status }} <br />
+    fetch_error = {{ fetch_error }} <br />
 
     <ProjectView
       v-for="project in projects"
@@ -26,7 +28,6 @@ export default {
   },
   data() {
     return {
-      projects: null,
       fetch_status: null,
       fetch_error: null,
       path: "/projects",
@@ -42,7 +43,11 @@ export default {
   },
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    projects() {
+      return this.$root.store.projects;
+    },
+  },
   methods: {
     async createProject() {
       this.fetch_status = "pending";
@@ -50,10 +55,10 @@ export default {
 
       try {
         const url = this.$root.url_to_api + this.path;
-        const response = await this.$http.post(url, {
+        await this.$http.post(url, {
           title: this.new_project_title,
+          requested_folder_name: this.new_project_title,
         });
-        // this.projects = response.data;
         this.fetch_status = "success";
       } catch (e) {
         this.fetch_status = "error";
@@ -61,14 +66,13 @@ export default {
       }
     },
     async getProjects() {
-      this.projects = null;
       this.fetch_status = "pending";
       this.fetch_error = null;
 
       try {
         const url = this.$root.url_to_api + this.path;
         const response = await this.$http.get(url);
-        this.projects = response.data;
+        window.store.projects = response.data;
         this.fetch_status = "success";
       } catch (e) {
         this.fetch_status = "error";
