@@ -1,7 +1,8 @@
 const cors = require("cors");
 const url = require("url");
 
-const file = require("./file2");
+const folder = require("./folder");
+const file = require("./file");
 const notifier = require("./notifier");
 
 module.exports = (function () {
@@ -29,6 +30,11 @@ module.exports = (function () {
       "/api2/:type",
       [cors(_corsCheck), _sessionPasswordCheck],
       _createFolder
+    );
+    app.post(
+      "/api2/:type/:slug/_uploadFile",
+      [cors(_corsCheck), _sessionPasswordCheck],
+      _uploadFile
     );
     app.post(
       "/api2/:type/:slug",
@@ -78,8 +84,8 @@ module.exports = (function () {
 
     try {
       let d;
-      if (!folder_slug) d = await file.getFolders({ folder_type });
-      else d = await file.getFolder({ folder_type, folder_slug });
+      if (!folder_slug) d = await folder.getFolders({ folder_type });
+      else d = await folder.getFolder({ folder_type, folder_slug });
 
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.json(d);
@@ -104,7 +110,7 @@ module.exports = (function () {
     // create
 
     try {
-      new_folder_slug = await file.createFolder({
+      new_folder_slug = await folder.createFolder({
         folder_type,
         new_meta: content,
       });
@@ -115,7 +121,7 @@ module.exports = (function () {
     }
 
     if (new_folder_slug) {
-      const new_folder_meta = await file.getFolder({
+      const new_folder_meta = await folder.getFolder({
         folder_type,
         folder_slug: new_folder_slug,
       });
@@ -142,7 +148,7 @@ module.exports = (function () {
     const hrstart = process.hrtime();
 
     try {
-      const d = await file.updateFolderMeta({
+      const d = await folder.updateFolderMeta({
         folder_type,
         folder_slug,
         new_meta: content,
@@ -150,7 +156,7 @@ module.exports = (function () {
       res.status(200).json({ status: "ok" });
 
       // push update to all if
-      const folder_meta = await file.getFolder({
+      const folder_meta = await folder.getFolder({
         folder_type,
         folder_slug,
       });
@@ -176,7 +182,7 @@ module.exports = (function () {
     const hrstart = process.hrtime();
 
     try {
-      folder_slug = await file.removeFolder({
+      folder_slug = await folder.removeFolder({
         folder_type,
         folder_slug,
       });
@@ -188,6 +194,36 @@ module.exports = (function () {
     }
 
     notifier.emit("removeFolder", folder_slug);
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  }
+
+  async function _uploadFile(req, res, next) {
+    let folder_type = req.params.type;
+    let folder_slug = req.params.slug;
+
+    dev.logfunction({ folder_type, folder_slug });
+
+    if (!folder_type) return res.status(422).send("Missing folder_type field");
+    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
+
+    const hrstart = process.hrtime();
+
+    try {
+      file_slug = await file.createMedia({
+        req,
+        folder_type,
+        folder_slug,
+      });
+      // res.setHeader("Access-Control-Allow-Origin", "*");
+      res.status(200).json({ status: "ok" });
+    } catch (err) {
+      dev.error("Failed to remove expected content: " + err);
+      res.status(500).send(err);
+    }
+
+    notifier.emit("createMedia", folder_slug);
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);

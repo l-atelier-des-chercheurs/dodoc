@@ -1,14 +1,23 @@
 <template>
   <div>
     <input type="file" multiple @change="updateInputFiles($event)" />
-    <UploadFiles :selected_files="selected_files" />
+
+    <UploadFiles
+      v-if="selected_files.length > 0"
+      :selected_files="selected_files"
+      :folder_type="folder_type"
+      :folder_slug="folder_slug"
+    />
   </div>
 </template>
 <script>
 import UploadFiles from "@/components/fields/UploadFiles";
 
 export default {
-  props: {},
+  props: {
+    folder_type: String,
+    folder_slug: String,
+  },
   components: { UploadFiles },
   data() {
     return {

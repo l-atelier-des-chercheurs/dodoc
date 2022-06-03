@@ -4,10 +4,9 @@
     <input type="text" v-model="new_title" />
     <br />
     <button type="button" @click="updateProject">save</button>
-    <input type="file" />import
     <button type="button" @click="removeProject">delete</button>
 
-    <SendMedia />
+    <SendMedia :folder_type="'projects'" :folder_slug="project.slug" />
 
     <!-- fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
@@ -15,7 +14,7 @@
   </div>
 </template>
 <script>
-import SendMedia from "./fields/SendMedia.vue";
+import SendMedia from "./SendMedia.vue";
 
 export default {
   props: {
@@ -44,10 +43,12 @@ export default {
       this.fetch_error = null;
 
       try {
-        const url = this.$root.url_to_api + "/projects/" + this.project.slug;
-        const response = await this.$http.post(url, {
-          title: this.new_title,
-        });
+        const response = await this.$axios.post(
+          `/projects/${this.project.slug}`,
+          {
+            title: this.new_title,
+          }
+        );
 
         this.response = response.data;
         this.fetch_status = "success";
@@ -61,8 +62,9 @@ export default {
       this.fetch_error = null;
 
       try {
-        const url = this.$root.url_to_api + "/projects/" + this.project.slug;
-        const response = await this.$http.delete(url);
+        const response = await this.$axios.delete(
+          `/projects/${this.project.slug}`
+        );
         this.response = response.data;
         this.fetch_status = "success";
       } catch (e) {

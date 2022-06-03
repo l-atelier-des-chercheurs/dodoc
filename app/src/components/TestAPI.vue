@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1>Test API</h1>
-    <input type="text" v-model="path" />
     <button type="button" @click="getProjects">Fetch projects</button>
 
     <input type="text" v-model="new_project_title" />
@@ -27,7 +26,6 @@ export default {
     return {
       fetch_status: null,
       fetch_error: null,
-      path: "/projects",
 
       new_project_title: (
         Math.random().toString(36) + "00000000000000000"
@@ -51,8 +49,7 @@ export default {
       this.fetch_error = null;
 
       try {
-        const url = this.$root.url_to_api + this.path;
-        await this.$http.post(url, {
+        await this.$axios.post("/projects", {
           title: this.new_project_title,
           requested_folder_name: this.new_project_title,
         });
@@ -67,8 +64,7 @@ export default {
       this.fetch_error = null;
 
       try {
-        const url = this.$root.url_to_api + this.path;
-        const response = await this.$http.get(url);
+        const response = await this.$axios.get("/projects");
         window.store.projects = response.data;
         this.fetch_status = "success";
       } catch (e) {
