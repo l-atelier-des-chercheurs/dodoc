@@ -13,12 +13,11 @@ module.exports = async function () {
 
   console.log(`App is electron : ${is_electron}`);
   console.log(`Starting app ${global.appInfos.name}`);
-  console.log(process.versions);
+  console.log(`Node = ${process.versions.node}`);
+  console.log(`ARgs = ${process.argv.join(",")}`);
 
-  const debug =
-    process.argv.length >= 4 ? process.argv[3] === "--debug" : false;
-  const verbose =
-    process.argv.length >= 5 ? process.argv[4] === "--verbose" : false;
+  const debug = process.argv.length > 0 && process.argv.includes("--debug");
+  const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
   const logToFile = false;
 
   dev.init(debug, verbose, logToFile);
@@ -78,6 +77,16 @@ module.exports = async function () {
 
 async function setupApp() {
   dev.log(`——— Starting app version ${global.appInfos.version}`);
+
+  dev.logfunction(`test string`);
+  dev.logfunction(`test string + valeur ${global.appInfos.version}`);
+  dev.logfunction(`test plusieurs`, `strings`);
+  dev.logfunction({ test: "objet" });
+  dev.logfunction({ test: "plusieurs", propriété: "un objet" });
+  dev.logfunction({ test: "plusieurs" }, { objets: "à la suite" });
+  dev.logfunction(`une chaine et un`, { objet: "à la suite" });
+  dev.logfunction(["un", "array", "de", "valeurs"]);
+
   global.tempStorage = getPath.getCacheFolder();
   global.ffmpeg_processes = [];
 

@@ -1,6 +1,8 @@
 <template>
   <div class="m_project">
     {{ project.title }} <br />
+    date_created = {{ project.date_created }} / date_modified =
+    {{ project.date_modified }}
     <input type="text" v-model="new_title" />
     <br />
     <button type="button" @click="updateProject">save</button>

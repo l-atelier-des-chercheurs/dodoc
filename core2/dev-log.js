@@ -25,7 +25,7 @@ module.exports = dev = (function () {
     console.log(`Init module with debug = ${d} and verbose = ${v}`);
 
     if (isDebugMode) {
-      console.log("Debug mode is Enabled");
+      console.log("Debug mode is enabled");
       console.log("---");
       dev.logfunction("(log) magenta is for functions");
       dev.logpackets({ str: "(log) green is for packets" });
@@ -76,18 +76,23 @@ module.exports = dev = (function () {
       _sendToConsole(log_string, gutil.colors.green);
     }
   }
-  function logfunction(arg) {
+  function logfunction() {
     if (!logToFile && !isDebugMode) return;
 
     // magenta
-    let content = "";
+    let content = [];
 
-    if (typeof arg === "string") content = arg;
-
-    if (typeof arg === "object") content = JSON.stringify(arg);
-
-    const fct_name = logfunction.caller.name;
-    var logArgs = `~ ${fct_name} – ${content}`;
+    if (typeof arguments === "string") {
+      content.push(arguments);
+    } else if (typeof arguments === "object") {
+      const args = Array.prototype.slice.call(arguments);
+      args.map((arg) => {
+        if (typeof arg === "string") content.push(arg);
+        else if (Array.isArray(arg)) content.push(arg.join(", "));
+        else if (typeof arg === "object") content.push(_customStringify(arg));
+      });
+    }
+    var logArgs = `~ ${logfunction.caller.name} – ${content.join(" / ")}`;
 
     if (logToFile) {
       _sendToLogFile(logArgs);
@@ -118,6 +123,10 @@ module.exports = dev = (function () {
   function _sendToLogFile(logArgs) {}
   function _sendToConsole(logArgs, color = gutil.colors.white) {
     gutil.log(color(logArgs));
+  }
+
+  function _customStringify(obj) {
+    return JSON.stringify(obj);
   }
 
   return API;

@@ -156,11 +156,13 @@ module.exports = (function () {
       res.status(200).json({ status: "ok" });
 
       // push update to all if
-      const folder_meta = await folder.getFolder({
-        folder_type,
-        folder_slug,
-      });
-      notifier.emit("editFolder", folder_meta);
+      // const folder_meta = await folder.getFolder({
+      //   folder_type,
+      //   folder_slug,
+      // });
+      d.slug = folder_slug;
+
+      notifier.emit("editFolder", d);
     } catch (err) {
       dev.error("Failed to update expected content: " + err);
       res.status(500).send(err);
@@ -219,11 +221,11 @@ module.exports = (function () {
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
     } catch (err) {
-      dev.error("Failed to remove expected content: " + err);
+      dev.error("Failed to upload file: " + err);
       res.status(500).send(err);
     }
 
-    notifier.emit("createMedia", folder_slug);
+    // notifier.emit("createMedia", folder_slug);
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);

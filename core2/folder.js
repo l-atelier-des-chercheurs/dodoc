@@ -68,11 +68,12 @@ module.exports = (function () {
       dev.logfunction({ folder_type, new_meta });
 
       // generate unique slug from time, or use meta.requested_folder_name
-      let folder_slug = new_meta.requested_folder_name
-        ? new_meta.requested_folder_name
-        : `untitled-${folder_type}`;
+      let folder_slug = "";
 
-      folder_slug = utils.slug(folder_slug);
+      if (new_meta.requested_folder_name)
+        folder_slug = utils.slug(new_meta.requested_folder_name);
+
+      if (folder_slug === "") folder_slug = `untitled-${folder_type}`;
 
       folder_slug = await _preventFolderOverride({ folder_type, folder_slug });
 
@@ -117,7 +118,7 @@ module.exports = (function () {
         new_meta,
       });
 
-      const meta = Object.assign(folder_meta, clean_meta);
+      const meta = Object.assign({}, folder_meta, clean_meta);
 
       // TODO update date_modified in meta
       // folder_meta.infos.date_modified
@@ -131,7 +132,14 @@ module.exports = (function () {
 
       // update cache with meta
 
-      return meta;
+      // return changed meta only
+      const changed_meta = Object.keys(meta).reduce((acc, key) => {
+        if (JSON.stringify(meta[key]) !== JSON.stringify(folder_meta[key]))
+          acc[key] = meta[key];
+        return acc;
+      }, {});
+
+      return changed_meta;
     },
     removeFolder: async ({ folder_type, folder_slug }) => {
       dev.logfunction({ folder_type, folder_slug });

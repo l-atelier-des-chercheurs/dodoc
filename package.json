@@ -17,11 +17,9 @@
   },
   "scripts": {
     "start": "electron .",
-    "debug": "electron --inspect=5858 . --debug --verbose",
-    "debug-brk": "electron --inspect=5858 . --debug-brk --verbose",
+    "debug": "electron --inspect=5858 . -- --debug --verbose",
     "node-start": "node .",
-    "node-debug": "node . --inspect=5858 --debug --verbose",
-    "node-debug-brk": "node . --inspect=5858 --debug-brk --verbose",
+    "node-debug": "node . --inspect=5858 -- --debug --verbose",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "postinstall": "electron-builder install-app-deps"

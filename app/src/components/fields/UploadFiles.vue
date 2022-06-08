@@ -94,18 +94,17 @@ export default {
       let formData = new FormData();
       formData.append("file", f, filename);
 
-      let meta = {
-        fileCreationDate: modified,
-        // authors: this.$root.current_author
-        //   ? [{ folder_slug: this.$root.current_author.folder_slug }]
-        //   : "",
-      };
-      formData.append(filename, JSON.stringify(meta));
+      let additional_meta = {};
 
-      const socketid = this.$socketio.socket.id;
-      if (socketid !== undefined) {
-        formData.append("socketid", socketid);
-      }
+      if (modified) additional_meta.fileCreationDate = modified;
+      if (this.$root.current_author)
+        additional_meta.authors = [
+          { slugFolderName: this.$root.current_author.slugFolderName },
+        ];
+      if (this.$socketio.socket.id)
+        additional_meta.socketid = this.$socketio.socket.id;
+
+      formData.append(filename, JSON.stringify(additional_meta));
 
       const path = `/${this.folder_type}/${this.folder_slug}/_uploadFile`;
       console.log(`Posting to path ${path}`);

@@ -24,7 +24,7 @@
   },
 
   "mediaThumbQuality": 70,
-  "maxFileSizeForUpload": 10000,
+  "maxFileSizeInMoForUpload": 10000,
 
   "regexpMatchFolderNames": "^([^.]+)$",
   "regexpGetFileExtension": "\\.[^.]*$",

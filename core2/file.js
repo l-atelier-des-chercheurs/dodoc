@@ -1,6 +1,6 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  formidable = require("formidable");
+  { IncomingForm } = require("formidable");
 
 const utils = require("./utils"),
   thumbs = require("./thumbs");
@@ -10,134 +10,101 @@ module.exports = (function () {
     createMedia: async ({ req, folder_type, folder_slug }) => {
       dev.logfunction({ folder_type, folder_slug });
 
-      _handleForm({ req, folder_type, folder_slug });
+      if (!global.settings.schema[folder_type].hasOwnProperty("files"))
+        dev.error(`no files allowed on ${folder_type}`);
 
-      // generate unique slug from time, or use meta.requested_folder_name
-      // let folder_slug = new_meta.requested_folder_name
-      //   ? new_meta.requested_folder_name
-      //   : `untitled-${folder_type}`;
+      const file_meta = await _handleForm({
+        req,
+        folder_type,
+        folder_slug,
+      }).catch((err) => {
+        dev.error(`Failed to handle form`, err);
+      });
+      dev.log(`File uploaded`, file_meta);
     },
   };
 
-  async function _handleForm({ req, folder_type, folder_slug }) {
+  function _handleForm({ req, folder_type, folder_slug }) {
     dev.logfunction({ folder_type, folder_slug });
-
-    let form = new formidable.IncomingForm();
-    form.multiples = false;
-    form.maxFileSize = global.settings.maxFileSizeForUpload * 1024 * 1024;
-
-    let socketid = "";
-
-    // store all uploads in the folder directory
-    const folder_path = utils.getPathToUserContent(
-      global.settings.schema[folder_type].path,
-      folder_slug
-    );
-    form.uploadDir = folder_path;
-
-    let all_files_meta = [];
-    let field_values = {};
-    form.on("field", (name, value) => {
-      if (name === "socketid") socketid = value;
-      try {
-        field_values[name] = JSON.parse(value);
-      } catch (e) {}
-    });
-
-    // every time a file has been uploaded successfully,
-    form.on("file", (field, uploadedFile) => {
-      dev.logverbose(
-        `File uploaded: – field: ${field} – file: ${JSON.stringify(
-          uploadedFile,
-          null,
-          4
-        )}.`
+    return new Promise((resolve, reject) => {
+      const folder_path = utils.getPathToUserContent(
+        global.settings.schema[folder_type].path,
+        folder_slug
       );
-      let newFile = uploadedFile;
-      for (let fileName in field_values) {
-        if (fileName === newFile.name) {
-          newFile = Object.assign({}, newFile, {
-            additionalMeta: field_values[fileName],
-          });
-        }
-      }
-      all_files_meta.push(newFile);
-    });
 
-    form
-      .on("error", (err) => {
-        throw err;
-      })
-      .on("aborted", (err) => {
-        throw err;
+      const form = new IncomingForm({
+        uploadDir: folder_path,
+        multiples: false,
+        maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
       });
 
-    form.once("end", async () => {
-      dev.logverbose(`All files downloaded ${all_files_meta.length}`);
-      if (all_files_meta.length === 0)
-        throw { message: "No file meta to parse" };
+      let socketid = "";
+      let file_meta = {};
 
-      let meta_filenames = [];
-      for (var i in all_files_meta) {
-        let metaFileName = await _renameUploadedFile({
-          folder_path,
-          file_meta: all_files_meta[i],
-        }).catch((err) => {
-          throw err;
+      form.on("field", (name, value) => {
+        dev.logverbose(`Field gotten`, { name }, { value });
+        // if(name === "additional_meta")
+        // file_meta.fields =
+
+        // if (name === "socketid") socketid = value;
+        // try {
+        //   field_values[name] = JSON.parse(value);
+        // } catch (e) {}
+      });
+
+      // every time a file has been uploaded successfully,
+      form.on("file", (field, uploadedFile) => {
+        dev.logverbose(
+          `File uploaded: – field: ${field} – file: ${JSON.stringify(
+            uploadedFile
+          )}.`
+        );
+        file_meta.file = uploadedFile;
+      });
+
+      form
+        .on("error", (err) => {
+          return reject(err);
+        })
+        .on("aborted", (err) => {
+          return reject(err);
         });
-        // dev.logverbose(`Following filename is available: ${newFileName}`);
 
-        // if (fileMeta.hasOwnProperty("additionalMeta")) {
-        //   dev.logverbose(
-        //     `Has additional meta: ${JSON.stringify(
-        //       fileMeta.additionalMeta,
-        //       null,
-        //       4
-        //     )}`
-        //   );
-        // } else {
-        //   fileMeta.additionalMeta = {};
-        // }
+      form.once("end", async () => {
+        dev.logverbose(`Files downloaded`);
+        dev.logfunction({ file_meta });
+        if (!file_meta.file || !file_meta.file.filepath)
+          throw { message: "No file meta to parse" };
 
-        // // try {
-        // //   newFileName = await file.convertAndSaveMedia({
-        // //     uploadDir,
-        // //     tempPath: fileMeta.filepath,
-        // //     newFileName,
-        // //     socketid,
-        // //   });
-        // // } catch (err) {
-        // //   throw err;
-        // // }
+        let files_to_import;
+        let media_filename = await _renameUploadedFile({
+          folder_path,
+          originalFilename: file_meta.originalFilename,
+          filepath: file_meta.filepath,
+        }).catch((err) => {
+          return reject(err);
+        });
+        dev.logfunction({ file_meta });
 
-        // fileMeta.additionalMeta.media_filename = newFileName;
+        return resolve({
+          media_filename,
+          file_meta,
+        });
+      });
 
-        // // create media meta here
-        // // const metaFileName = await sockets.createMediaMeta({
-        // //   folder_type,
-        // //   folder_slug,
-        // //   additionalMeta: fileMeta.additionalMeta,
-        // // });
-
-        // return metaFileName;
-
-        meta_filenames.push(metaFileName);
-      }
-
-      return {
-        meta_filenames,
-      };
+      form.parse(req);
     });
-
-    // parse the incoming request containing the form data
-    form.parse(req);
   }
 
-  async function _renameUploadedFile({ folder_path, file_meta }) {
-    dev.logfunction({ folder_path, file_meta });
+  async function _renameUploadedFile({
+    folder_path,
+    originalFilename,
+    filepath,
+  }) {
+    dev.logfunction({ folder_path, originalFilename, filepath });
 
     // get original filename
-    let original_filename = file_meta.originalFilename;
+    let original_filename = originalFilename;
 
     // check if available, create new name if necessary
     new_filename = await _preventFileOverride({
@@ -148,8 +115,8 @@ module.exports = (function () {
     const new_path = path.join(folder_path, new_filename);
 
     try {
-      await fs.move(file_meta.filepath, new_path, { overwrite: false });
-      return;
+      await fs.move(filepath, new_path, { overwrite: false });
+      return new_filename;
     } catch (err) {
       throw err;
     }

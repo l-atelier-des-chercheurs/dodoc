@@ -15,12 +15,10 @@ module.exports = async function ({ router }) {
 
   console.log(`App is electron : ${is_electron}`);
   console.log(`Starting app ${global.appInfos.name}`);
-  console.log(process.versions);
+  console.log(`Node = ${process.versions.node}`);
 
-  const debug =
-    process.argv.length >= 4 ? process.argv[3] === "--debug" : false;
-  const verbose =
-    process.argv.length >= 5 ? process.argv[4] === "--verbose" : false;
+  const debug = process.argv.length > 0 && process.argv.includes("--debug");
+  const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
   const logToFile = false;
 
   dev.init(debug, verbose, logToFile);
