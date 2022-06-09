@@ -1,7 +1,14 @@
 <template>
-  <span>
-    <span v-if="!edit_mode" v-html="content" />
-    <sl-textarea
+  <span class="_titleField">
+    <span v-if="!edit_mode" v-text="new_content" />
+    <sl-input v-else type="text" v-sl-model="new_content" />
+    <!-- <span
+      ref="content"
+      v-text="new_content"
+      @input="new_content = $event.target.value"
+      :contenteditable="edit_mode"
+    /> -->
+    <!-- <sl-textarea
       v-else
       :help="help ? $t(help) : ''"
       :placeholder="$t('add_text_here')"
@@ -9,7 +16,7 @@
       resize="auto"
       :disabled="is_saving"
       :readonly="!edit_mode"
-    />
+    /> -->
     <sl-tooltip :content="$t('edit')">
       <sl-button
         size="small"
@@ -90,4 +97,13 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._titleField {
+  display: flex;
+}
+
+sl-input::part(base) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+</style>

@@ -96,6 +96,9 @@ export default {
 
       let additional_meta = {};
 
+      additional_meta.caption = "will show up because of schema";
+      additional_meta.title = "will not show up because of schema";
+
       if (modified) additional_meta.fileCreationDate = modified;
       if (this.$root.current_author)
         additional_meta.authors = [

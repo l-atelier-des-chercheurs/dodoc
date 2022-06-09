@@ -13,7 +13,7 @@ module.exports = (function () {
       if (!global.settings.schema[folder_type].hasOwnProperty("files"))
         dev.error(`no files allowed on ${folder_type}`);
 
-      const file_meta = await _handleForm({
+      const { filename, filepath, additional_meta } = await _handleForm({
         req,
         folder_type,
         folder_slug,
@@ -22,39 +22,30 @@ module.exports = (function () {
       });
 
       dev.log(`New file uploaded to`, { folder_type }, { folder_slug });
-      dev.logverbose(JSON.stringify(file_meta, null, 4));
+      dev.logverbose({ filename, filepath, additional_meta });
 
-      // file_meta.media_filename;
-      // file_meta.file_meta.additional_meta; // custom meta from FE
-
-      let new_meta;
-      if (file_meta.file_meta.additional_meta)
-        new_meta = file_meta.file_meta.additional_meta;
-
-      console.log(JSON.stringify(new_meta, null, 4));
-
-      let valid_meta = utils.validateMeta({
-        fields: global.settings.schema[folder_type].files.fields,
-        new_meta,
+      const extracted_meta = await _extractAdditionalMetaFromFile({
+        additional_meta,
+        filename,
+        filepath,
       });
 
-      // use fileCreationDate
-      if (new_meta.fileCreationDate)
-        valid_meta.date_created = utils.parseDate(new_meta.fileCreationDate);
+      // user added meta
+      const valid_meta = utils.validateMeta({
+        fields: global.settings.schema[folder_type].files.fields,
+        new_meta: additional_meta,
+      });
 
-      valid_meta.date_uploaded = valid_meta.date_modified =
-        utils.getCurrentDate();
+      const meta = Object.assign({}, valid_meta, extracted_meta);
 
-      valid_meta.media_filename = file_meta.media_filename;
-
-      // more fields : add file uploaded date, add type of media field
       // file-specific metas will be added when getting files, the same as thumbs, and stored alongside
+      // - date created
 
       await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
-        file_slug: valid_meta.media_filename + ".txt",
-        meta: valid_meta,
+        file_slug: filename + ".txt",
+        meta,
       });
 
       // make meta for file
@@ -76,11 +67,12 @@ module.exports = (function () {
       });
 
       let socketid = "";
-      let file_meta = {};
+      let file = null;
+      let additional_meta = {};
 
       form.on("field", (name, value) => {
         dev.logverbose(`Field gotten`, name, value);
-        file_meta.additional_meta = JSON.parse(value);
+        additional_meta = JSON.parse(value);
 
         // if (name === "socketid") socketid = value;
         // try {
@@ -95,7 +87,7 @@ module.exports = (function () {
             uploadedFile
           )}.`
         );
-        file_meta.file = uploadedFile;
+        file = uploadedFile;
       });
 
       form
@@ -108,22 +100,21 @@ module.exports = (function () {
 
       form.once("end", async () => {
         dev.logverbose(`Files downloaded`);
-        dev.logverbose({ file_meta });
-        if (!file_meta.file || !file_meta.file.filepath)
-          throw { message: "No file meta to parse" };
+        dev.logverbose({ file });
+        if (!file || !file.filepath) throw { message: "No file meta to parse" };
 
-        let media_filename = await _renameUploadedFile({
+        let { new_path, new_filename } = await _renameUploadedFile({
           folder_path,
-          originalFilename: file_meta.file.originalFilename,
-          filepath: file_meta.file.filepath,
+          originalFilename: file.originalFilename,
+          filepath: file.filepath,
         }).catch((err) => {
           return reject(err);
         });
-        dev.logverbose({ file_meta });
 
         return resolve({
-          media_filename,
-          file_meta,
+          filename: new_filename,
+          filepath: new_path,
+          additional_meta,
         });
       });
 
@@ -151,7 +142,7 @@ module.exports = (function () {
 
     try {
       await fs.move(filepath, new_path, { overwrite: false });
-      return new_filename;
+      return { new_path, new_filename };
     } catch (err) {
       throw err;
     }
@@ -181,6 +172,74 @@ module.exports = (function () {
       new_filename_without_ext = `${original_filename_without_ext}-${index}`;
     }
     return new_filename_without_ext + ext;
+  }
+
+  async function _extractAdditionalMetaFromFile({
+    additional_meta,
+    filename,
+    filepath,
+  }) {
+    dev.logfunction();
+
+    let new_meta = {};
+
+    // use fileCreationDate
+    if (additional_meta.fileCreationDate)
+      new_meta.date_created = utils.parseDate(additional_meta.fileCreationDate);
+    else {
+      // TODO fs stat
+      // await fs.stat(filepath);
+    }
+
+    new_meta.date_uploaded = new_meta.date_modified = utils.getCurrentDate();
+
+    new_meta.media_filename = filename;
+
+    // set correct file type from additional meta or filename
+    const ext = path.extname(filename);
+
+    switch (ext.toLowerCase()) {
+      case ".jpeg":
+      case ".jpg":
+      case ".webp":
+      case ".png":
+      case ".gif":
+      case ".tiff":
+      case ".tif":
+      case ".dng":
+      case ".svg":
+        new_meta.type = "image";
+        break;
+      case ".mp4":
+      case ".flv":
+      case ".mov":
+      case ".webm":
+      case ".avi":
+        new_meta.type = "video";
+        break;
+      case ".stl":
+        new_meta.type = "stl";
+        break;
+      case ".mp3":
+      case ".wav":
+      case ".m4a":
+      case ".ogg":
+        new_meta.type = "audio";
+        break;
+      case ".md":
+      case ".rtf":
+        new_meta.type = "text";
+        break;
+      // case ".ino":
+      //   additionalMeta.type = "code";
+      //   break;
+      case ".pdf":
+        new_meta.type = "document";
+        break;
+    }
+    dev.logfunction(`Type determined to be ${new_meta.type}`);
+
+    return new_meta;
   }
 
   return API;

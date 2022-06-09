@@ -660,7 +660,13 @@
           "type": "string"
         }
       },
-      "files": {},
+      "files": {
+        "fields": {
+          "caption": {
+            "type": "string"
+          }
+        }
+      },
       "children": {}
     },
     "publications": {
