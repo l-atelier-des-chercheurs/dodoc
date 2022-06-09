@@ -35,15 +35,41 @@ module.exports = (function () {
     getCurrentDate() {
       return moment().format(global.settings.metaDateFormat);
     },
-  };
+    parseDate(date, f) {
+      if (moment(date, f, true).isValid()) {
+        return moment(date, f).format(global.settings.metaDateFormat);
+      } else {
+        return "";
+      }
+    },
 
-  function _parseDate(date, f) {
-    if (moment(date, f, true).isValid()) {
-      return moment(date, f).format(global.settings.metaDateFormat);
-    } else {
-      return "";
-    }
-  }
+    validateMeta({ fields, new_meta }) {
+      let meta = {};
+
+      if (fields)
+        Object.entries(fields).map(([field_name, opt]) => {
+          if (new_meta.hasOwnProperty(field_name)) {
+            meta[field_name] = new_meta[field_name];
+            // TODO Validator
+          }
+        });
+
+      return meta;
+    },
+
+    async saveMetaAtPath({ folder_type, folder_slug, file_slug, meta }) {
+      dev.logfunction({ folder_type, folder_slug, file_slug, meta });
+
+      const meta_path = API.getPathToUserContent(
+        global.settings.schema[folder_type].path,
+        folder_slug,
+        file_slug
+      );
+
+      await API.storeMeta({ path: meta_path, meta });
+      return;
+    },
+  };
 
   return API;
 })();

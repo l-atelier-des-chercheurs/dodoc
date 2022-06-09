@@ -36,7 +36,7 @@ module.exports = (function () {
       [cors(_corsCheck), _sessionPasswordCheck],
       _uploadFile
     );
-    app.post(
+    app.patch(
       "/api2/:type/:slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _updateFolder

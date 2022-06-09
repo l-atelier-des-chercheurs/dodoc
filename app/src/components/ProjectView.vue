@@ -1,9 +1,20 @@
 <template>
   <div class="m_project">
-    {{ project.title }} <br />
-    date_created = {{ project.date_created }} / date_modified =
-    {{ project.date_modified }}
-    <input type="text" v-model="new_title" />
+    <h1>
+      <TitleField
+        :field_name="'title'"
+        :content="project.title"
+        :show_label="false"
+        :path_to_resource="`/projects/${project.slug}`"
+      />
+    </h1>
+
+    <TextField
+      field_name="description"
+      :content="project.description"
+      :path_to_resource="`/projects/${project.slug}`"
+    />
+
     <br />
     <button type="button" @click="updateProject">save</button>
     <button type="button" @click="removeProject">delete</button>

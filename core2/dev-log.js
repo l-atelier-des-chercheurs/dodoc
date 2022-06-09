@@ -50,16 +50,15 @@ module.exports = dev = (function () {
   function logverbose() {
     if (!logToFile && !isVerboseMode) return;
 
-    // gray
-    var args = Array.prototype.slice.call(arguments);
-    var logArgs = "- ".concat(args);
+    const message =
+      `- ` +
+      _createLogMessage({
+        fct_name: logverbose.caller.name,
+        args: arguments,
+      });
 
-    if (logToFile) {
-      _sendToLogFile(logArgs);
-    }
-    if (isDebugMode && isVerboseMode) {
-      _sendToConsole(logArgs, gutil.colors.gray);
-    }
+    if (logToFile) _sendToLogFile(message);
+    if (isDebugMode) _sendToConsole(message, gutil.colors.gray);
   }
   function logpackets({ str, obj }) {
     if (!logToFile && !isDebugMode) return;
@@ -79,27 +78,15 @@ module.exports = dev = (function () {
   function logfunction() {
     if (!logToFile && !isDebugMode) return;
 
-    // magenta
-    let content = [];
-
-    if (typeof arguments === "string") {
-      content.push(arguments);
-    } else if (typeof arguments === "object") {
-      const args = Array.prototype.slice.call(arguments);
-      args.map((arg) => {
-        if (typeof arg === "string") content.push(arg);
-        else if (Array.isArray(arg)) content.push(arg.join(", "));
-        else if (typeof arg === "object") content.push(_customStringify(arg));
+    const message =
+      `~ ` +
+      _createLogMessage({
+        fct_name: logfunction.caller.name,
+        args: arguments,
       });
-    }
-    var logArgs = `~ ${logfunction.caller.name} – ${content.join(" / ")}`;
 
-    if (logToFile) {
-      _sendToLogFile(logArgs);
-    }
-    if (isDebugMode) {
-      _sendToConsole(logArgs, gutil.colors.magenta);
-    }
+    if (logToFile) _sendToLogFile(message);
+    if (isDebugMode) _sendToConsole(message, gutil.colors.magenta);
   }
   function error() {
     // red
@@ -127,6 +114,22 @@ module.exports = dev = (function () {
 
   function _customStringify(obj) {
     return JSON.stringify(obj);
+  }
+
+  function _createLogMessage({ fct_name, args }) {
+    let content = [];
+
+    if (typeof args === "string") {
+      content.push(args);
+    } else if (typeof args === "object") {
+      args = Array.prototype.slice.call(args);
+      args.map((arg) => {
+        if (typeof arg === "string") content.push(arg);
+        else if (Array.isArray(arg)) content.push(arg.join(", "));
+        else if (typeof arg === "object") content.push(_customStringify(arg));
+      });
+    }
+    return `${fct_name} – ${content.join(" / ")}`;
   }
 
   return API;

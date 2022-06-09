@@ -20,7 +20,44 @@ module.exports = (function () {
       }).catch((err) => {
         dev.error(`Failed to handle form`, err);
       });
-      dev.log(`File uploaded`, file_meta);
+
+      dev.log(`New file uploaded to`, { folder_type }, { folder_slug });
+      dev.logverbose(JSON.stringify(file_meta, null, 4));
+
+      // file_meta.media_filename;
+      // file_meta.file_meta.additional_meta; // custom meta from FE
+
+      let new_meta;
+      if (file_meta.file_meta.additional_meta)
+        new_meta = file_meta.file_meta.additional_meta;
+
+      console.log(JSON.stringify(new_meta, null, 4));
+
+      let valid_meta = utils.validateMeta({
+        fields: global.settings.schema[folder_type].files.fields,
+        new_meta,
+      });
+
+      // use fileCreationDate
+      if (new_meta.fileCreationDate)
+        valid_meta.date_created = utils.parseDate(new_meta.fileCreationDate);
+
+      valid_meta.date_uploaded = valid_meta.date_modified =
+        utils.getCurrentDate();
+
+      valid_meta.media_filename = file_meta.media_filename;
+
+      // more fields : add file uploaded date, add type of media field
+      // file-specific metas will be added when getting files, the same as thumbs, and stored alongside
+
+      await utils.saveMetaAtPath({
+        folder_type,
+        folder_slug,
+        file_slug: valid_meta.media_filename + ".txt",
+        meta: valid_meta,
+      });
+
+      // make meta for file
     },
   };
 
@@ -42,9 +79,8 @@ module.exports = (function () {
       let file_meta = {};
 
       form.on("field", (name, value) => {
-        dev.logverbose(`Field gotten`, { name }, { value });
-        // if(name === "additional_meta")
-        // file_meta.fields =
+        dev.logverbose(`Field gotten`, name, value);
+        file_meta.additional_meta = JSON.parse(value);
 
         // if (name === "socketid") socketid = value;
         // try {
@@ -72,19 +108,18 @@ module.exports = (function () {
 
       form.once("end", async () => {
         dev.logverbose(`Files downloaded`);
-        dev.logfunction({ file_meta });
+        dev.logverbose({ file_meta });
         if (!file_meta.file || !file_meta.file.filepath)
           throw { message: "No file meta to parse" };
 
-        let files_to_import;
         let media_filename = await _renameUploadedFile({
           folder_path,
-          originalFilename: file_meta.originalFilename,
-          filepath: file_meta.filepath,
+          originalFilename: file_meta.file.originalFilename,
+          filepath: file_meta.file.filepath,
         }).catch((err) => {
           return reject(err);
         });
-        dev.logfunction({ file_meta });
+        dev.logverbose({ file_meta });
 
         return resolve({
           media_filename,
@@ -129,7 +164,7 @@ module.exports = (function () {
       await fs.readdir(folder_path, { withFileTypes: true })
     ).map((item) => path.parse(item.name).name);
 
-    dev.logfunction({ all_files_and_folders_names_without_ext });
+    dev.logverbose({ all_files_and_folders_names_without_ext });
 
     if (all_files_and_folders_names_without_ext.length === 0)
       return original_filename;

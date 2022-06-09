@@ -84,16 +84,19 @@ module.exports = (function () {
 
       await fs.ensureDir(path_to_folder);
 
-      const clean_meta = _makeNewMeta({
-        folder_type,
+      let valid_meta = utils.validateMeta({
+        fields: global.settings.schema[folder_type].fields,
         new_meta,
       });
 
-      await _saveMetaAtPath({
+      valid_meta.date_created = valid_meta.date_modified =
+        utils.getCurrentDate();
+
+      await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
         file_slug: "meta.txt",
-        meta: clean_meta,
+        meta: valid_meta,
       });
 
       // store preview if it exists
@@ -123,7 +126,7 @@ module.exports = (function () {
       // TODO update date_modified in meta
       // folder_meta.infos.date_modified
 
-      await _saveMetaAtPath({
+      await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
         file_slug: "meta.txt",
@@ -185,21 +188,6 @@ module.exports = (function () {
     }
   }
 
-  function _makeNewMeta({ folder_type, new_meta }) {
-    let meta = {};
-    const fields = global.settings.schema[folder_type].fields;
-
-    Object.entries(fields).map(([field_name, opt]) => {
-      if (new_meta.hasOwnProperty(field_name)) {
-        meta[field_name] = new_meta[field_name];
-        // Todo Validator
-      }
-    });
-
-    meta.date_created = meta.date_modified = utils.getCurrentDate();
-    return meta;
-  }
-
   function _cleanNewMeta({ folder_type, new_meta }) {
     dev.logfunction({ folder_type, new_meta });
 
@@ -224,24 +212,6 @@ module.exports = (function () {
     let meta = utils.parseMeta(meta_file_content);
 
     return meta;
-  }
-
-  async function _saveMetaAtPath({
-    folder_type,
-    folder_slug,
-    file_slug,
-    meta,
-  }) {
-    dev.logfunction({ folder_type, folder_slug, file_slug, meta });
-
-    const meta_path = utils.getPathToUserContent(
-      global.settings.schema[folder_type].path,
-      folder_slug,
-      file_slug
-    );
-
-    await utils.storeMeta({ path: meta_path, meta });
-    return;
   }
 
   async function _getFolderPreview({ folder_type, folder_slug }) {
