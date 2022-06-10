@@ -21,30 +21,35 @@ module.exports = (function () {
     app.options("/api2/*", cors());
 
     app.get(
-      "/api2/:type?/:slug?",
+      "/api2/:folder_type?/:folder_slug?",
       [cors(_corsCheck), _sessionPasswordCheck],
       _getResource
     );
 
     app.post(
-      "/api2/:type",
+      "/api2/:folder_type",
       [cors(_corsCheck), _sessionPasswordCheck],
       _createFolder
     );
     app.post(
-      "/api2/:type/:slug/_uploadFile",
+      "/api2/:folder_type/:folder_slug/_uploadFile",
       [cors(_corsCheck), _sessionPasswordCheck],
       _uploadFile
     );
     app.patch(
-      "/api2/:type/:slug",
+      "/api2/:folder_type/:folder_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _updateFolder
     );
     app.delete(
-      "/api2/:type/:slug",
+      "/api2/:folder_type/:folder_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _removeFolder
+    );
+    app.delete(
+      "/api2/:folder_type/:folder_slug/:meta_slug",
+      [cors(_corsCheck), _sessionPasswordCheck],
+      _removeFile
     );
   }
 
@@ -67,25 +72,20 @@ module.exports = (function () {
     res.render("perf");
   }
   async function _getResource(req, res, next) {
-    let folder_type = req.params.type;
-    let folder_slug = req.params.slug;
+    let folder_type = req.params.folder_type;
+    let folder_slug = req.params.folder_slug;
     dev.logfunction({ folder_type, folder_slug });
 
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!global.settings.schema.hasOwnProperty(folder_type))
       return res.status(422).send("Missing schema for folder_type");
 
-    //  possible queries :
-    // - projects,
-    // - projects/files,
-    // - projects/specific.txt, publications, etc.
-
     const hrstart = process.hrtime();
 
     try {
       let d;
       if (!folder_slug) d = await folder.getFolders({ folder_type });
-      else d = await folder.getFolder({ folder_type, folder_slug });
+      else d = await file.getFiles({ folder_type, folder_slug });
 
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.json(d);
@@ -133,8 +133,8 @@ module.exports = (function () {
   }
 
   async function _updateFolder(req, res, next) {
-    let folder_type = req.params.type;
-    let folder_slug = req.params.slug;
+    let folder_type = req.params.folder_type;
+    let folder_slug = req.params.folder_slug;
     const content = req.body;
 
     dev.logfunction({ folder_type, folder_slug, content });
@@ -173,8 +173,8 @@ module.exports = (function () {
   }
 
   async function _removeFolder(req, res, next) {
-    let folder_type = req.params.type;
-    let folder_slug = req.params.slug;
+    let folder_type = req.params.folder_type;
+    let folder_slug = req.params.folder_slug;
 
     dev.logfunction({ folder_type, folder_slug });
 
@@ -200,10 +200,40 @@ module.exports = (function () {
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
+  async function _removeFile(req, res, next) {
+    let folder_type = req.params.folder_type;
+    let folder_slug = req.params.folder_slug;
+    let meta_slug = req.params.meta_slug;
+
+    dev.logfunction({ folder_type, folder_slug });
+
+    if (!folder_type) return res.status(422).send("Missing folder_type field");
+    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
+    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
+
+    const hrstart = process.hrtime();
+
+    try {
+      folder_slug = await folder.removeFolder({
+        folder_type,
+        folder_slug,
+      });
+      // res.setHeader("Access-Control-Allow-Origin", "*");
+      res.status(200).json({ status: "ok" });
+    } catch (err) {
+      dev.error("Failed to remove expected content: " + err);
+      res.status(500).send(err);
+    }
+
+    notifier.emit("removeFolder", folder_slug);
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  }
 
   async function _uploadFile(req, res, next) {
-    let folder_type = req.params.type;
-    let folder_slug = req.params.slug;
+    let folder_type = req.params.folder_type;
+    let folder_slug = req.params.folder_slug;
 
     dev.logfunction({ folder_type, folder_slug });
 
@@ -213,7 +243,7 @@ module.exports = (function () {
     const hrstart = process.hrtime();
 
     try {
-      file_slug = await file.createMedia({
+      file_slug = await file.importFile({
         req,
         folder_type,
         folder_slug,
@@ -225,7 +255,7 @@ module.exports = (function () {
       res.status(500).send(err);
     }
 
-    // notifier.emit("createMedia", folder_slug);
+    // notifier.emit("importFile", folder_slug);
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);

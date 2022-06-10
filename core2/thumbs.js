@@ -22,7 +22,48 @@ module.exports = (function () {
   const API = {
     makeFolderPreview: ({ folder_type, folder_slug }) =>
       makeFolderPreview({ folder_type, folder_slug }),
+    makeThumbForMedia: async ({
+      media_type,
+      media_filename,
+      folder_type,
+      folder_slug,
+    }) => {
+      // make/get thumbs for medias with specific types
 
+      dev.logfunction({
+        media_type,
+        media_filename,
+        folder_type,
+        folder_slug,
+      });
+
+      const filethumbs_resolutions =
+        global.settings.schema[folder_type].files?.thumbs?.resolutions;
+      if (!filethumbs_resolutions) return false;
+
+      let thumbs = {};
+
+      const path_to_thumb_folder = await _getThumbFolderPath(
+        folder_type,
+        folder_slug
+      );
+      const full_media_path = utils.getPathToUserContent(
+        folder_type,
+        folder_slug,
+        media_filename
+      );
+
+      if (media_type === "image") {
+        thumbs = await _makeImageThumbsFor({
+          full_media_path,
+          media_filename,
+          path_to_thumb_folder,
+          resolutions: filethumbs_resolutions,
+        });
+      }
+
+      return thumbs;
+    },
     removeFolderThumbs: ({ folder_type, folder_slug }) =>
       removeFolderThumbs({ folder_type, folder_slug }),
 
@@ -34,14 +75,14 @@ module.exports = (function () {
   async function makeFolderPreview({ folder_type, folder_slug }) {
     const preview_name = "meta_preview.jpeg";
     const full_preview_path = utils.getPathToUserContent(
-      global.settings.schema[folder_type].path,
+      folder_type,
       folder_slug,
       preview_name
     );
 
     const preview_schema = global.settings.schema[folder_type].preview;
     const path_to_thumb_folder = await _getThumbFolderPath(
-      global.settings.schema[folder_type].path,
+      folder_type,
       folder_slug
     );
 
@@ -63,7 +104,7 @@ module.exports = (function () {
 
     const full_path_to_thumb = utils.getPathToUserContent(
       global.settings.thumbFolderName,
-      global.settings.schema[folder_type].path,
+      folder_type,
       folder_slug
     );
 

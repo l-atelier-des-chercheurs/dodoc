@@ -7,7 +7,7 @@ const utils = require("./utils"),
 
 module.exports = (function () {
   const API = {
-    createMedia: async ({ req, folder_type, folder_slug }) => {
+    importFile: async ({ req, folder_type, folder_slug }) => {
       dev.logfunction({ folder_type, folder_slug });
 
       if (!global.settings.schema[folder_type].hasOwnProperty("files"))
@@ -44,21 +44,60 @@ module.exports = (function () {
       await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
-        file_slug: filename + ".txt",
+        file_slug: filename + ".meta.txt",
         meta,
       });
 
       // make meta for file
+    },
+
+    getFiles: async ({ folder_type, folder_slug }) => {
+      dev.logfunction({ folder_type, folder_slug });
+
+      const meta_filenames = await _getMetasInFolder({
+        folder_type,
+        folder_slug,
+      });
+
+      const metas = [];
+      for (const meta_filename of meta_filenames) {
+        try {
+          dev.logverbose(`reading ${meta_filename}`);
+
+          let meta = await utils.readMetaFile({
+            folder_type,
+            folder_slug,
+            file_slug: meta_filename,
+          });
+          meta.slug = meta_filename;
+
+          const _thumbs = await thumbs.makeThumbForMedia({
+            media_type: meta.type,
+            media_filename: meta.media_filename,
+            folder_type,
+            folder_slug,
+          });
+          if (_thumbs) meta._thumbs = _thumbs;
+
+          const _metas = await thumbs.makeMetaForMedia({});
+          if (_metas) meta._metas = _metas;
+
+          metas.push(meta);
+        } catch (err) {
+          dev.error(err);
+        }
+      }
+
+      // generate thumb if necessary (media_filename or link)
+
+      return metas;
     },
   };
 
   function _handleForm({ req, folder_type, folder_slug }) {
     dev.logfunction({ folder_type, folder_slug });
     return new Promise((resolve, reject) => {
-      const folder_path = utils.getPathToUserContent(
-        global.settings.schema[folder_type].path,
-        folder_slug
-      );
+      const folder_path = utils.getPathToUserContent(folder_type, folder_slug);
 
       const form = new IncomingForm({
         uploadDir: folder_path,
@@ -230,6 +269,9 @@ module.exports = (function () {
       case ".rtf":
         new_meta.type = "text";
         break;
+      case ".url":
+        new_meta.type = "url";
+        break;
       // case ".ino":
       //   additionalMeta.type = "code";
       //   break;
@@ -240,6 +282,25 @@ module.exports = (function () {
     dev.logfunction(`Type determined to be ${new_meta.type}`);
 
     return new_meta;
+  }
+
+  async function _getMetasInFolder({ folder_type, folder_slug }) {
+    dev.logfunction({ folder_type, folder_slug });
+
+    const folder_path = utils.getPathToUserContent(folder_type, folder_slug);
+
+    try {
+      let files = (await fs.readdir(folder_path, { withFileTypes: true }))
+        .filter(
+          (dirent) => !dirent.isDirectory() && dirent.name.endsWith(".meta.txt")
+        )
+        .map((dirent) => dirent.name);
+      dev.logfunction({ files });
+      return files;
+    } catch (err) {
+      dev.logfunction("No files found");
+      return [];
+    }
   }
 
   return API;

@@ -1,5 +1,6 @@
 <template>
   <div class="m_project">
+    {{ project.slug }}
     <h1>
       <TitleField
         :field_name="'title'"
@@ -21,6 +22,7 @@
 
     <SendMedia :folder_type="'projects'" :folder_slug="project.slug" />
 
+    <ProjectLibrary :project_slug="project.slug" :project="project" />
     <!-- fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
     response = {{ response }} <br /> -->
@@ -28,6 +30,7 @@
 </template>
 <script>
 import SendMedia from "./SendMedia.vue";
+import ProjectLibrary from "./ProjectLibrary.vue";
 
 export default {
   props: {
@@ -35,6 +38,7 @@ export default {
   },
   components: {
     SendMedia,
+    ProjectLibrary,
   },
   data() {
     return {

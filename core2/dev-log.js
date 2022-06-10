@@ -113,7 +113,10 @@ module.exports = dev = (function () {
   }
 
   function _customStringify(obj) {
-    return JSON.stringify(obj);
+    // JSON does not allow undefined values
+    return JSON.stringify(obj, (key, value) =>
+      value === undefined ? "__undefined__" : value
+    );
   }
 
   function _createLogMessage({ fct_name, args }) {

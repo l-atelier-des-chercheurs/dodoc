@@ -44,7 +44,7 @@ module.exports = (function () {
       dev.logfunction({ folder_type, folder_slug });
 
       // TODO cache unique folder
-      let folder_meta = await _readMetaFile({
+      let folder_meta = await utils.readMetaFile({
         folder_type,
         folder_slug,
         file_slug: "meta.txt",
@@ -57,7 +57,7 @@ module.exports = (function () {
       });
       if (folder_preview) folder_meta.preview = folder_preview;
 
-      // get number of files if files in schema
+      // TODO get number of files if files in schema
 
       // add to cache
 
@@ -78,7 +78,7 @@ module.exports = (function () {
       folder_slug = await _preventFolderOverride({ folder_type, folder_slug });
 
       const path_to_folder = utils.getPathToUserContent(
-        global.settings.schema[folder_type].path,
+        folder_type,
         folder_slug
       );
 
@@ -109,7 +109,7 @@ module.exports = (function () {
       dev.logfunction({ folder_type, folder_slug, new_meta });
 
       // get folder meta
-      let folder_meta = await _readMetaFile({
+      let folder_meta = await utils.readMetaFile({
         folder_type,
         folder_slug,
         file_slug: "meta.txt",
@@ -167,9 +167,7 @@ module.exports = (function () {
   async function _getFolderSlugs({ folder_type }) {
     dev.logfunction({ folder_type });
 
-    const folder_path = utils.getPathToUserContent(
-      global.settings.schema[folder_type].path
-    );
+    const folder_path = utils.getPathToUserContent(folder_type);
 
     try {
       let folders = (await fs.readdir(folder_path, { withFileTypes: true }))
@@ -199,21 +197,6 @@ module.exports = (function () {
     return new_meta;
   }
 
-  async function _readMetaFile({ folder_type, folder_slug, file_slug }) {
-    dev.logfunction({ folder_type, folder_slug });
-
-    const meta_path = utils.getPathToUserContent(
-      global.settings.schema[folder_type].path,
-      folder_slug,
-      file_slug
-    );
-
-    const meta_file_content = await fs.readFile(meta_path, "UTF-8");
-    let meta = utils.parseMeta(meta_file_content);
-
-    return meta;
-  }
-
   async function _getFolderPreview({ folder_type, folder_slug }) {
     dev.logfunction({ folder_type, folder_slug });
 
@@ -222,7 +205,7 @@ module.exports = (function () {
 
     const preview_name = "meta_preview.jpeg";
     const preview_path = utils.getPathToUserContent(
-      global.settings.schema[folder_type].path,
+      folder_type,
       folder_slug,
       preview_name
     );
@@ -267,7 +250,7 @@ module.exports = (function () {
 
   async function _removeFolderForGood({ folder_type, folder_slug }) {
     const full_folder_path = utils.getPathToUserContent(
-      global.settings.schema[folder_type].path,
+      folder_type,
       folder_slug
     );
 
@@ -280,11 +263,11 @@ module.exports = (function () {
   }
   async function _moveFolderToBin({ folder_type, folder_slug }) {
     const full_folder_path = utils.getPathToUserContent(
-      global.settings.schema[folder_type].path,
+      folder_type,
       folder_slug
     );
     const bin_folder_path = utils.getPathToUserContent(
-      global.settings.schema[folder_type].path,
+      folder_type,
       global.settings.deletedFolderName,
       folder_slug
     );

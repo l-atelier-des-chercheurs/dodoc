@@ -78,14 +78,15 @@ module.exports = async function () {
 async function setupApp() {
   dev.log(`——— Starting app version ${global.appInfos.version}`);
 
-  dev.logfunction(`test string`);
-  dev.logfunction(`test string + valeur ${global.appInfos.version}`);
-  dev.logfunction(`test plusieurs`, `strings`);
-  dev.logfunction({ test: "objet" });
-  dev.logfunction({ test: "plusieurs", propriété: "un objet" });
-  dev.logfunction({ test: "plusieurs" }, { objets: "à la suite" });
-  dev.logfunction(`une chaine et un`, { objet: "à la suite" });
-  dev.logfunction(["un", "array", "de", "valeurs"]);
+  // dev.logfunction(`test string`);
+  // dev.logfunction(`test string + valeur ${global.appInfos.version}`);
+  // dev.logfunction(`test plusieurs`, `strings`);
+  // dev.logfunction({ test: "objet" });
+  // dev.logfunction({ "est-undefined": undefined });
+  // dev.logfunction({ test: "plusieurs", propriété: "un objet" });
+  // dev.logfunction({ test: "plusieurs" }, { objets: "à la suite" });
+  // dev.logfunction(`une chaine et un`, { objet: "à la suite" });
+  // dev.logfunction(["un", "array", "de", "valeurs"]);
 
   global.tempStorage = getPath.getCacheFolder();
   global.ffmpeg_processes = [];

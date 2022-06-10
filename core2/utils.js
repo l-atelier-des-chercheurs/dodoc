@@ -3,6 +3,7 @@ const path = require("path"),
   TOML = require("@iarna/toml"),
   slugg = require("slugg"),
   validator = require("validator"),
+  fs = require("fs-extra"),
   writeFileAtomic = require("write-file-atomic");
 
 module.exports = (function () {
@@ -43,6 +44,21 @@ module.exports = (function () {
       }
     },
 
+    async readMetaFile({ folder_type, folder_slug, file_slug }) {
+      dev.logfunction({ folder_type, folder_slug });
+
+      const meta_path = API.getPathToUserContent(
+        folder_type,
+        folder_slug,
+        file_slug
+      );
+
+      const meta_file_content = await fs.readFile(meta_path, "UTF-8");
+      let meta = API.parseMeta(meta_file_content);
+
+      return meta;
+    },
+
     validateMeta({ fields, new_meta }) {
       let meta = {};
 
@@ -61,7 +77,7 @@ module.exports = (function () {
       dev.logfunction({ folder_type, folder_slug, file_slug, meta });
 
       const meta_path = API.getPathToUserContent(
-        global.settings.schema[folder_type].path,
+        folder_type,
         folder_slug,
         file_slug
       );

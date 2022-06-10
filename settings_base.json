@@ -638,7 +638,6 @@
   },
   "schema": {
     "projects": {
-      "path": "projects",
       "preview": {
         "width": 1200,
         "height": 1200,
@@ -661,6 +660,9 @@
         }
       },
       "files": {
+        "thumbs": {
+          "resolutions": [180, 360, 1600]
+        },
         "fields": {
           "caption": {
             "type": "string"
@@ -670,7 +672,6 @@
       "children": {}
     },
     "publications": {
-      "path": "projects",
       "children": [
         {
           "path": "medias"
