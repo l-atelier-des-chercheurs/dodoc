@@ -77,10 +77,15 @@ module.exports = (function () {
             folder_type,
             folder_slug,
           });
-          if (_thumbs) meta._thumbs = _thumbs;
+          if (_thumbs) meta.thumbs = _thumbs;
 
-          const _metas = await thumbs.makeMetaForMedia({});
-          if (_metas) meta._metas = _metas;
+          const _metas = await thumbs.makeMetaForFile({
+            media_type: meta.type,
+            media_filename: meta.media_filename,
+            folder_type,
+            folder_slug,
+          });
+          if (_metas) meta.metas = _metas;
 
           metas.push(meta);
         } catch (err) {
@@ -91,6 +96,30 @@ module.exports = (function () {
       // generate thumb if necessary (media_filename or link)
 
       return metas;
+    },
+
+    updateFile: async ({ folder_type, folder_slug, meta_slug }) => {
+      // TODO
+      return;
+    },
+
+    removeFile: async ({ folder_type, folder_slug, meta_slug }) => {
+      dev.logfunction({ folder_type, folder_slug, meta_slug });
+
+      try {
+        if (global.settings.removePermanently === true)
+          await _removeFileForGood({ folder_type, folder_slug, meta_slug });
+        else await _moveFileToBin({ folder_type, folder_slug, meta_slug });
+
+        await thumbs.removeFolderThumbs({ folder_type, folder_slug });
+
+        // TODO remove from cache
+        // cache.del({ type, slugFolderName });
+
+        return folder_slug;
+      } catch (err) {
+        throw err;
+      }
     },
   };
 
@@ -140,11 +169,16 @@ module.exports = (function () {
       form.once("end", async () => {
         dev.logverbose(`Files downloaded`);
         dev.logverbose({ file });
+
         if (!file || !file.filepath) throw { message: "No file meta to parse" };
+
+        // make url-compatible media filenames
+        const { name, ext } = path.parse(file.originalFilename);
+        const slugged_original_filename = utils.slug(name) + ext;
 
         let { new_path, new_filename } = await _renameUploadedFile({
           folder_path,
-          originalFilename: file.originalFilename,
+          originalFilename: slugged_original_filename,
           filepath: file.filepath,
         }).catch((err) => {
           return reject(err);
@@ -301,6 +335,78 @@ module.exports = (function () {
       dev.logfunction("No files found");
       return [];
     }
+  }
+
+  async function _removeFileForGood({ folder_type, folder_slug, meta_slug }) {
+    const _all_file_paths = await _getAllFilesRelatedToMeta({
+      folder_type,
+      folder_slug,
+      meta_slug,
+    });
+
+    try {
+      for (const file_path of _all_file_paths) {
+        await fs.remove(file_path);
+      }
+      return;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async function _moveFileToBin({ folder_type, folder_slug, meta_slug }) {
+    const _all_file_paths = await _getAllFilesRelatedToMeta({
+      folder_type,
+      folder_slug,
+      meta_slug,
+    });
+
+    try {
+      for (const file_path of _all_file_paths) {
+        var path_in_bin = file_path.replace(
+          path.join(folder_type, folder_slug),
+          path.join(folder_type, folder_slug, global.settings.deletedFolderName)
+        );
+        dev.logverbose({ file_path, path_in_bin });
+        await fs.move(file_path, path_in_bin, { overwrite: true });
+      }
+      return;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async function _getAllFilesRelatedToMeta({
+    folder_type,
+    folder_slug,
+    meta_slug,
+  }) {
+    let paths = [];
+
+    const full_meta_path = utils.getPathToUserContent(
+      folder_type,
+      folder_slug,
+      meta_slug
+    );
+    paths.push(full_meta_path);
+
+    let meta = await utils.readMetaFile({
+      folder_type,
+      folder_slug,
+      file_slug: meta_slug,
+    });
+    const media_filename = meta.media_filename;
+
+    const full_media_path = utils.getPathToUserContent(
+      folder_type,
+      folder_slug,
+      media_filename
+    );
+    paths.push(full_media_path);
+
+    dev.logfunction({ paths });
+
+    return paths;
   }
 
   return API;

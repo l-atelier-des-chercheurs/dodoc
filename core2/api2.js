@@ -46,6 +46,12 @@ module.exports = (function () {
       [cors(_corsCheck), _sessionPasswordCheck],
       _removeFolder
     );
+
+    app.patch(
+      "/api2/:folder_type/:folder_slug/:meta_slug",
+      [cors(_corsCheck), _sessionPasswordCheck],
+      _updateFile
+    );
     app.delete(
       "/api2/:folder_type/:folder_slug/:meta_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
@@ -99,7 +105,7 @@ module.exports = (function () {
   }
 
   async function _createFolder(req, res, next) {
-    let folder_type = req.params.type;
+    let folder_type = req.params.folder_type;
     const content = req.body;
 
     dev.logfunction({ folder_type, content });
@@ -200,23 +206,25 @@ module.exports = (function () {
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
-  async function _removeFile(req, res, next) {
+
+  async function _updateFile(req, res, next) {
     let folder_type = req.params.folder_type;
     let folder_slug = req.params.folder_slug;
     let meta_slug = req.params.meta_slug;
 
-    dev.logfunction({ folder_type, folder_slug });
+    dev.logfunction({ folder_type, folder_slug, meta_slug });
 
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!folder_slug) return res.status(422).send("Missing folder_slug field");
-    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
+    if (!meta_slug) return res.status(422).send("Missing meta_slug field");
 
     const hrstart = process.hrtime();
 
     try {
-      folder_slug = await folder.removeFolder({
+      folder_slug = await file.updateFile({
         folder_type,
         folder_slug,
+        meta_slug,
       });
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
@@ -225,7 +233,39 @@ module.exports = (function () {
       res.status(500).send(err);
     }
 
-    notifier.emit("removeFolder", folder_slug);
+    notifier.emit("updateFile", { folder_type, folder_slug, meta_slug });
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  }
+
+  async function _removeFile(req, res, next) {
+    let folder_type = req.params.folder_type;
+    let folder_slug = req.params.folder_slug;
+    let meta_slug = req.params.meta_slug;
+
+    dev.logfunction({ folder_type, folder_slug, meta_slug });
+
+    if (!folder_type) return res.status(422).send("Missing folder_type field");
+    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
+    if (!meta_slug) return res.status(422).send("Missing meta_slug field");
+
+    const hrstart = process.hrtime();
+
+    try {
+      folder_slug = await file.removeFile({
+        folder_type,
+        folder_slug,
+        meta_slug,
+      });
+      // res.setHeader("Access-Control-Allow-Origin", "*");
+      res.status(200).json({ status: "ok" });
+    } catch (err) {
+      dev.error("Failed to remove expected content: " + err);
+      res.status(500).send(err);
+    }
+
+    notifier.emit("removeFile", { folder_type, folder_slug, meta_slug });
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);

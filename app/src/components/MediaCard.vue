@@ -2,6 +2,7 @@
   <div>
     <img :src="file.thumbs[180]" />
     <button type="button" @click="removeFile">Remove</button>
+    <pre>{{ file }}</pre>
   </div>
 </template>
 <script>
@@ -21,10 +22,12 @@ export default {
   computed: {},
   methods: {
     async removeFile() {
+      debugger;
       try {
         const response = await this.$axios.delete(
           `/projects/${this.project_slug}/${this.file.slug}`
         );
+        debugger;
         this.response = response.data;
         this.fetch_status = "success";
       } catch (e) {

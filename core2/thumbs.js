@@ -60,14 +60,50 @@ module.exports = (function () {
           path_to_thumb_folder,
           resolutions: filethumbs_resolutions,
         });
+      } else if (media_type === "video") {
       }
 
       return thumbs;
     },
+
+    makeMetaForFile: async ({
+      media_type,
+      media_filename,
+      folder_type,
+      folder_slug,
+    }) => {
+      // get width, height, ratio, gps, duration, exif, size
+
+      dev.logfunction({
+        media_type,
+        media_filename,
+        folder_type,
+        folder_slug,
+      });
+
+      let metas = {};
+
+      const path_to_thumb_folder = await _getThumbFolderPath(
+        folder_type,
+        folder_slug
+      );
+      const full_media_path = utils.getPathToUserContent(
+        folder_type,
+        folder_slug,
+        media_filename
+      );
+
+      if (media_type === "image") {
+        const exif = await _readImageExif({ full_media_path });
+        if (exif) metas.exif = exif;
+      }
+
+      return metas;
+    },
+
     removeFolderThumbs: ({ folder_type, folder_slug }) =>
       removeFolderThumbs({ folder_type, folder_slug }),
 
-    getEXIFDataForImage: (mediaPath) => getEXIFDataForImage(mediaPath),
     getMediaEXIF: (d) => getMediaEXIF(d),
     getTimestampFromEXIF: (mediaPath) => getTimestampFromEXIF(mediaPath),
   };
@@ -173,6 +209,34 @@ module.exports = (function () {
       .catch((err) => {
         throw err;
       });
+  }
+
+  async function _readImageExif({ full_media_path }) {
+    dev.logfunction({ full_media_path });
+
+    const metadata = await sharp(full_media_path).metadata();
+
+    if (!metadata) return false;
+
+    dev.logverbose(`Gotten metadata`, { metadata });
+
+    let extracted_metadata = {};
+    if (metadata.width) extracted_metadata.width = metadata.width;
+    if (metadata.height) extracted_metadata.height = metadata.height;
+    if (extracted_metadata.width && extracted_metadata.height)
+      extracted_metadata.ratio = Number.parseFloat(
+        extracted_metadata.height / extracted_metadata.width
+      ).toPrecision(4);
+
+    if (metadata.exif) {
+      try {
+        const exif = exifReader(metadata.exif);
+        dev.logfunction({ exif });
+        if (exif?.gps) extracted_metadata.gps = exif.gps;
+      } catch (err) {}
+    }
+
+    return extracted_metadata;
   }
 
   return API;

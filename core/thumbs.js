@@ -456,9 +456,9 @@ module.exports = (function () {
             meta.ratio = Number.parseFloat(ratio).toPrecision(4);
 
             if (exifdata.exif) {
-              var parsed_exif_data = exifReader(exifdata.exif);
+              const parsed_exif_data = exifReader(exifdata.exif);
               if (parsed_exif_data && parsed_exif_data.hasOwnProperty("gps")) {
-                meta.gps = JSON.stringify(parsed_exif_data.gps);
+                meta.gps = JSON.parse(parsed_exif_data.gps);
               }
             }
 
