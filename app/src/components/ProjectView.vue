@@ -59,7 +59,7 @@ export default {
       this.fetch_error = null;
 
       try {
-        const response = await this.$axios.post(
+        const response = await this.$axios.patch(
           `/projects/${this.project.slug}`,
           {
             title: this.new_title,

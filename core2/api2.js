@@ -221,16 +221,15 @@ module.exports = (function () {
         folder_slug,
       });
       // res.setHeader("Access-Control-Allow-Origin", "*");
-      res.status(200).json({ status: "ok" });
+      res.status(200).json({ meta_filename });
 
       const file_meta = await file.getFile({
         folder_type,
         folder_slug,
         meta_filename,
       });
-      notifier.emit("newFile", { folder_type, folder_slug, file_meta });
 
-      notifier.emit("", {});
+      notifier.emit("newFile", { folder_type, folder_slug, file_meta });
     } catch (err) {
       dev.error("Failed to upload file: " + err);
       res.status(500).send(err);

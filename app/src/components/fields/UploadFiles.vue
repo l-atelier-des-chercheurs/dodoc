@@ -17,6 +17,7 @@
         <img
           v-if="!!f.type && f.type.includes('image') && index < 5"
           class="m_uploadFile--image"
+          width="50"
           :src="getImgPreview(f)"
         />
         <div v-else class="m_uploadFile--image" />
@@ -71,8 +72,6 @@ export default {
       files_to_upload: this.selected_files,
       files_to_upload_meta: {},
       upload_percentages: 0,
-
-      list_of_uploaded_files: [],
     };
   },
   watch: {},
@@ -112,7 +111,7 @@ export default {
       const path = `/${this.folder_type}/${this.folder_slug}/_uploadFile`;
       console.log(`Posting to path ${path}`);
 
-      let x = await this.$axios
+      let res = await this.$axios
         .post(path, formData, {
           headers: { "Content-Type": "multipart/form-data" },
           onUploadProgress: (progressEvent) => {
@@ -131,7 +130,7 @@ export default {
       this.files_to_upload_meta[filename].status = "success";
       this.files_to_upload_meta[filename].upload_percentages = 100;
 
-      this.list_of_uploaded_files.push(x.data.metaFileNames[0]);
+      return res.data.meta_filename;
     },
     async sendAllFiles() {
       // const executeSequentially = (array) => {
@@ -148,11 +147,13 @@ export default {
 
       //   });
 
+      let list_of_added_metas = [];
       for (const file of this.files_to_upload) {
-        await this.sendThisFile(file);
+        const meta_filename = await this.sendThisFile(file);
+        if (meta_filename) list_of_added_metas.push(meta_filename);
       }
 
-      this.$emit("insertMedias", this.list_of_uploaded_files);
+      this.$emit("importedMedias", list_of_added_metas);
       this.$emit("close", "");
       // const test = async () => {
       //   for (let task of Array.from(Array(this.files_to_upload.length).keys()).map()) {

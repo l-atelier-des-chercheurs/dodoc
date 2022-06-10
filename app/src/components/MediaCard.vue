@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_mediaCard">
     Card
     <img :src="file.thumbs[180]" />
     {{ file.caption }}
@@ -11,7 +11,7 @@
     />
 
     <button type="button" @click="removeFile">Remove</button>
-    <pre>{{ file }}</pre>
+    <!-- <pre>{{ file }}</pre> -->
   </div>
 </template>
 <script>
@@ -36,13 +36,31 @@ export default {
   },
   computed: {},
   methods: {
-    async updateCaptiont() {},
+    async updateCaption() {
+      this.fetch_status = "pending";
+      this.fetch_error = null;
+
+      try {
+        const response = await this.$axios.patch(
+          `/projects/${this.project_slug}/${this.file.slug}`,
+          {
+            caption: this.new_caption,
+          }
+        );
+
+        this.response = response.data;
+        this.fetch_status = "success";
+      } catch (e) {
+        this.fetch_status = "error";
+        this.fetch_error = e.response.data;
+      }
+    },
+
     async removeFile() {
       try {
         const response = await this.$axios.delete(
           `/projects/${this.project_slug}/${this.file.slug}`
         );
-        debugger;
         this.response = response.data;
         this.fetch_status = "success";
       } catch (e) {
@@ -53,4 +71,9 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._mediaCard {
+  width: 300px;
+  border: 1px solid black;
+}
+</style>

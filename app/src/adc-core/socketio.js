@@ -19,7 +19,7 @@ export default function () {
         });
 
         this.socket.onAny((eventName, ...args) => {
-          this.$alertify.delay(14000).success(eventName + JSON.stringify(args));
+          this.$alertify.delay(4000).success(eventName + JSON.stringify(args));
         });
         this.socket.on("createFolder", ({ folder_type, meta }) => {
           window.store[folder_type].push(meta);
@@ -27,13 +27,13 @@ export default function () {
         this.socket.on(
           "updateFolder",
           ({ folder_type, folder_slug, changed_meta }) => {
-            const folder_index = this.findFolderIndex({
+            const folder = this.findFolder({
               folder_type,
               folder_slug,
             });
             // update props
             Object.entries(changed_meta).map(([key, value]) => {
-              this.$set(window.store[folder_type][folder_index], key, value);
+              this.$set(folder, key, value);
             });
           }
         );
@@ -42,39 +42,48 @@ export default function () {
             folder_type,
             folder_slug,
           });
-
           window.store[folder_type].splice(folder_index, 1);
         });
 
         this.socket.on("newFile", ({ folder_type, folder_slug, file_meta }) => {
-          const folder_index = this.findFolderIndex({
+          const folder = this.findFolder({
             folder_type,
             folder_slug,
           });
-          if (
-            !Object.prototype.hasOwnProperty.call(
-              window.store[folder_type][folder_index],
-              "files"
-            )
-          )
-            this.$set(
-              window.store[folder_type][folder_index],
-              "files",
-              new Array()
-            );
-          window.store[folder_type][folder_index].files.push(file_meta);
+          if (!Object.prototype.hasOwnProperty.call(folder, "files"))
+            this.$set(folder, "files", new Array());
+          folder.files.push(file_meta);
         });
         this.socket.on(
           "updateFile",
-          ({ folder_type, folder_slug, file_meta }) => {
-            // TODO find file
-            // update props
+          ({ folder_type, folder_slug, meta_slug, changed_meta }) => {
+            folder_type;
+            folder_slug;
+            meta_slug;
+            changed_meta;
+
+            const file = this.findFileInFolder({
+              folder_type,
+              folder_slug,
+              meta_slug,
+            });
+
+            if (file)
+              Object.entries(changed_meta).map(([key, value]) => {
+                this.$set(file, key, value);
+              });
           }
         );
         this.socket.on(
           "removeFile",
-          ({ folder_type, folder_slug, file_meta }) => {
-            // todo remove file
+          ({ folder_type, folder_slug, meta_slug }) => {
+            const folder = this.findFolder({ folder_type, folder_slug });
+            const file_index = this.findFileIndexInFolder({
+              folder_type,
+              folder_slug,
+              meta_slug,
+            });
+            if (file_index >= 0) folder.files.splice(file_index, 1);
           }
         );
       },
@@ -88,6 +97,17 @@ export default function () {
         return window.store[folder_type].find(
           (folder) => folder.slug === folder_slug
         );
+      },
+      findFileIndexInFolder({ folder_type, folder_slug, meta_slug }) {
+        const folder = this.findFolder({ folder_type, folder_slug });
+        if (folder.files)
+          return folder.files.findIndex((f) => f.slug === meta_slug);
+        return false;
+      },
+      findFileInFolder({ folder_type, folder_slug, meta_slug }) {
+        const folder = this.findFolder({ folder_type, folder_slug });
+        if (folder.files) return folder.files.find((f) => f.slug === meta_slug);
+        return false;
       },
     },
   });

@@ -1,11 +1,7 @@
 <template>
   <div>
     <button type="button" @click="loadLibrary">Charger la bibliothèque</button>
-    <!-- <div v-for="file of all_files" :key="file.slug">
-      {{ file.slug }}
-      {{ project_slug }}
-    </div> -->
-    {{ project.files }}
+
     <div v-for="file of all_files" :key="file.slug">
       <MediaCard :file="file" :project_slug="project_slug" />
     </div>

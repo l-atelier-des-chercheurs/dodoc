@@ -7,6 +7,7 @@
       :selected_files="selected_files"
       :folder_type="folder_type"
       :folder_slug="folder_slug"
+      @importedMedias="mediaJustImported"
     />
   </div>
 </template>
@@ -33,6 +34,12 @@ export default {
     updateInputFiles($event) {
       this.selected_files = Array.from($event.target.files);
       $event.target.value = "";
+    },
+    mediaJustImported(list_of_added_metas) {
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(list_of_added_metas);
     },
   },
 };
