@@ -12,6 +12,7 @@ module.exports = defineConfig({
   },
   devServer: {
     https: true,
+    proxy: "https://localhost:8080",
     port: 35500,
     headers: { "Access-Control-Allow-Origin": "*" },
     devMiddleware: {

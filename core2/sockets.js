@@ -82,11 +82,21 @@ module.exports = (function () {
       notifier.on("createFolder", (content) => {
         socket.emit("createFolder", content);
       });
-      notifier.on("editFolder", (content) => {
-        socket.emit("editFolder", content);
+      notifier.on("updateFolder", (content) => {
+        socket.emit("updateFolder", content);
       });
       notifier.on("removeFolder", (content) => {
         socket.emit("removeFolder", content);
+      });
+
+      notifier.on("newFile", (content) => {
+        socket.emit("newFile", content);
+      });
+      notifier.on("updateFile", (content) => {
+        socket.emit("updateFile", content);
+      });
+      notifier.on("removeFile", (content) => {
+        socket.emit("removeFile", content);
       });
 
       // socket.on("authenticate", (d) => onAuthenticate(socket, d));

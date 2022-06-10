@@ -1,6 +1,5 @@
 <template>
   <div class="m_project">
-    {{ project.slug }}
     <h1>
       <TitleField
         :field_name="'title'"
@@ -94,7 +93,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .m_project {
-  border: 1px solid black;
+  background: #eee;
   padding: 1rem;
 }
 </style>

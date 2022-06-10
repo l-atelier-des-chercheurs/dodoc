@@ -1,7 +1,12 @@
 <template>
   <div>
     <button type="button" @click="loadLibrary">Charger la bibliothèque</button>
-    <div v-for="file of project.files" :key="file.slug">
+    <!-- <div v-for="file of all_files" :key="file.slug">
+      {{ file.slug }}
+      {{ project_slug }}
+    </div> -->
+    {{ project.files }}
+    <div v-for="file of all_files" :key="file.slug">
       <MediaCard :file="file" :project_slug="project_slug" />
     </div>
   </div>
@@ -29,7 +34,11 @@ export default {
   },
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    all_files() {
+      return this.project.files;
+    },
+  },
   methods: {
     async loadLibrary() {
       this.fetch_status = "pending";
@@ -43,7 +52,6 @@ export default {
         const project_index = window.store.projects.findIndex(
           (project) => project.slug === this.project_slug
         );
-
         this.$set(window.store.projects[project_index], "files", response.data);
 
         this.fetch_status = "success";

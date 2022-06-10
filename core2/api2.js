@@ -26,32 +26,38 @@ module.exports = (function () {
       _getResource
     );
 
+    // create folder
     app.post(
       "/api2/:folder_type",
       [cors(_corsCheck), _sessionPasswordCheck],
       _createFolder
     );
-    app.post(
-      "/api2/:folder_type/:folder_slug/_uploadFile",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _uploadFile
-    );
+    // update folder
     app.patch(
       "/api2/:folder_type/:folder_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _updateFolder
     );
+    // remove folder
     app.delete(
       "/api2/:folder_type/:folder_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _removeFolder
     );
 
+    // upload file
+    app.post(
+      "/api2/:folder_type/:folder_slug/_uploadFile",
+      [cors(_corsCheck), _sessionPasswordCheck],
+      _uploadFile
+    );
+    // update file
     app.patch(
       "/api2/:folder_type/:folder_slug/:meta_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _updateFile
     );
+    // remove file
     app.delete(
       "/api2/:folder_type/:folder_slug/:meta_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
@@ -113,7 +119,6 @@ module.exports = (function () {
     const hrstart = process.hrtime();
 
     let new_folder_slug;
-    // create
 
     try {
       new_folder_slug = await folder.createFolder({
@@ -121,17 +126,15 @@ module.exports = (function () {
         new_meta: content,
       });
       res.status(200).json({ status: "ok" });
-    } catch (err) {
-      dev.error("Failed to update expected content: " + err);
-      res.status(500).send(err);
-    }
 
-    if (new_folder_slug) {
       const new_folder_meta = await folder.getFolder({
         folder_type,
         folder_slug: new_folder_slug,
       });
-      notifier.emit("createFolder", new_folder_meta);
+      notifier.emit("createFolder", { folder_type, meta: new_folder_meta });
+    } catch (err) {
+      dev.error("Failed to update expected content: " + err);
+      res.status(500).send(err);
     }
 
     let hrend = process.hrtime(hrstart);
@@ -154,21 +157,14 @@ module.exports = (function () {
     const hrstart = process.hrtime();
 
     try {
-      const d = await folder.updateFolderMeta({
+      const changed_meta = await folder.updateFolderMeta({
         folder_type,
         folder_slug,
         new_meta: content,
       });
       res.status(200).json({ status: "ok" });
 
-      // push update to all if
-      // const folder_meta = await folder.getFolder({
-      //   folder_type,
-      //   folder_slug,
-      // });
-      d.slug = folder_slug;
-
-      notifier.emit("editFolder", d);
+      notifier.emit("updateFolder", { folder_type, folder_slug, changed_meta });
     } catch (err) {
       dev.error("Failed to update expected content: " + err);
       res.status(500).send(err);
@@ -196,12 +192,49 @@ module.exports = (function () {
       });
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
+
+      notifier.emit("removeFolder", { folder_type, folder_slug });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
       res.status(500).send(err);
     }
 
-    notifier.emit("removeFolder", folder_slug);
+    let hrend = process.hrtime(hrstart);
+    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  }
+
+  async function _uploadFile(req, res, next) {
+    let folder_type = req.params.folder_type;
+    let folder_slug = req.params.folder_slug;
+
+    dev.logfunction({ folder_type, folder_slug });
+
+    if (!folder_type) return res.status(422).send("Missing folder_type field");
+    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
+
+    const hrstart = process.hrtime();
+
+    try {
+      meta_filename = await file.importFile({
+        req,
+        folder_type,
+        folder_slug,
+      });
+      // res.setHeader("Access-Control-Allow-Origin", "*");
+      res.status(200).json({ status: "ok" });
+
+      const file_meta = await file.getFile({
+        folder_type,
+        folder_slug,
+        meta_filename,
+      });
+      notifier.emit("newFile", { folder_type, folder_slug, file_meta });
+
+      notifier.emit("", {});
+    } catch (err) {
+      dev.error("Failed to upload file: " + err);
+      res.status(500).send(err);
+    }
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
@@ -211,29 +244,37 @@ module.exports = (function () {
     let folder_type = req.params.folder_type;
     let folder_slug = req.params.folder_slug;
     let meta_slug = req.params.meta_slug;
+    const content = req.body;
 
     dev.logfunction({ folder_type, folder_slug, meta_slug });
 
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!folder_slug) return res.status(422).send("Missing folder_slug field");
     if (!meta_slug) return res.status(422).send("Missing meta_slug field");
+    if (!content) return res.status(422).send("Missing body");
 
     const hrstart = process.hrtime();
 
     try {
-      folder_slug = await file.updateFile({
+      const changed_meta = await file.updateFile({
         folder_type,
         folder_slug,
         meta_slug,
+        new_meta: content,
       });
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
+
+      notifier.emit("updateFile", {
+        folder_type,
+        folder_slug,
+        meta_slug,
+        changed_meta,
+      });
     } catch (err) {
-      dev.error("Failed to remove expected content: " + err);
+      dev.error("Failed to update content: " + err);
       res.status(500).send(err);
     }
-
-    notifier.emit("updateFile", { folder_type, folder_slug, meta_slug });
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
@@ -260,42 +301,16 @@ module.exports = (function () {
       });
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
+
+      notifier.emit("removeFile", {
+        folder_type,
+        folder_slug,
+        meta_slug,
+      });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
       res.status(500).send(err);
     }
-
-    notifier.emit("removeFile", { folder_type, folder_slug, meta_slug });
-
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
-  }
-
-  async function _uploadFile(req, res, next) {
-    let folder_type = req.params.folder_type;
-    let folder_slug = req.params.folder_slug;
-
-    dev.logfunction({ folder_type, folder_slug });
-
-    if (!folder_type) return res.status(422).send("Missing folder_type field");
-    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
-
-    const hrstart = process.hrtime();
-
-    try {
-      file_slug = await file.importFile({
-        req,
-        folder_type,
-        folder_slug,
-      });
-      // res.setHeader("Access-Control-Allow-Origin", "*");
-      res.status(200).json({ status: "ok" });
-    } catch (err) {
-      dev.error("Failed to upload file: " + err);
-      res.status(500).send(err);
-    }
-
-    // notifier.emit("importFile", folder_slug);
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);

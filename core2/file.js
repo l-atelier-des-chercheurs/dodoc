@@ -41,14 +41,16 @@ module.exports = (function () {
       // file-specific metas will be added when getting files, the same as thumbs, and stored alongside
       // - date created
 
+      const meta_filename = filename + ".meta.txt";
+
       await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
-        file_slug: filename + ".meta.txt",
+        file_slug: meta_filename,
         meta,
       });
 
-      // make meta for file
+      return meta_filename;
     },
 
     getFiles: async ({ folder_type, folder_slug }) => {
@@ -64,28 +66,11 @@ module.exports = (function () {
         try {
           dev.logverbose(`reading ${meta_filename}`);
 
-          let meta = await utils.readMetaFile({
+          const meta = await API.getFile({
             folder_type,
             folder_slug,
-            file_slug: meta_filename,
+            meta_filename,
           });
-          meta.slug = meta_filename;
-
-          const _thumbs = await thumbs.makeThumbForMedia({
-            media_type: meta.type,
-            media_filename: meta.media_filename,
-            folder_type,
-            folder_slug,
-          });
-          if (_thumbs) meta.thumbs = _thumbs;
-
-          const _metas = await thumbs.makeMetaForFile({
-            media_type: meta.type,
-            media_filename: meta.media_filename,
-            folder_type,
-            folder_slug,
-          });
-          if (_metas) meta.metas = _metas;
 
           metas.push(meta);
         } catch (err) {
@@ -97,10 +82,67 @@ module.exports = (function () {
 
       return metas;
     },
+    getFile: async ({ folder_type, folder_slug, meta_filename }) => {
+      dev.logfunction({ folder_type, folder_slug, meta_filename });
 
-    updateFile: async ({ folder_type, folder_slug, meta_slug }) => {
-      // TODO
-      return;
+      let meta = await utils.readMetaFile({
+        folder_type,
+        folder_slug,
+        file_slug: meta_filename,
+      });
+      meta.slug = meta_filename;
+
+      const _thumbs = await thumbs.makeThumbForMedia({
+        media_type: meta.type,
+        media_filename: meta.media_filename,
+        folder_type,
+        folder_slug,
+      });
+      if (_thumbs) meta.thumbs = _thumbs;
+
+      const _metas = await thumbs.makeMetaForFile({
+        media_type: meta.type,
+        media_filename: meta.media_filename,
+        folder_type,
+        folder_slug,
+      });
+      if (_metas) meta.metas = _metas;
+      return meta;
+    },
+
+    updateFile: async ({ folder_type, folder_slug, meta_slug, new_meta }) => {
+      dev.logfunction({ folder_type, folder_slug, meta_slug, new_meta });
+
+      if (!global.settings.schema[folder_type].files?.fields)
+        throw `no fields for files in ${folder_type}`;
+
+      let folder_meta = await utils.readMetaFile({
+        folder_type,
+        folder_slug,
+        file_slug: meta_slug,
+      });
+
+      const clean_meta = _cleanNewMeta({
+        folder_type,
+        new_meta,
+      });
+
+      const meta = Object.assign({}, folder_meta, clean_meta);
+
+      await utils.saveMetaAtPath({
+        folder_type,
+        folder_slug,
+        file_slug: meta_slug,
+        meta,
+      });
+
+      const changed_meta = Object.keys(meta).reduce((acc, key) => {
+        if (JSON.stringify(meta[key]) !== JSON.stringify(folder_meta[key]))
+          acc[key] = meta[key];
+        return acc;
+      }, {});
+
+      return changed_meta;
     },
 
     removeFile: async ({ folder_type, folder_slug, meta_slug }) => {
@@ -407,6 +449,17 @@ module.exports = (function () {
     dev.logfunction({ paths });
 
     return paths;
+  }
+
+  function _cleanNewMeta({ folder_type, new_meta }) {
+    dev.logfunction({ folder_type, new_meta });
+
+    global.settings.schema[folder_type].files.fields;
+
+    // check fields that exist in schema
+    // TODO
+
+    return new_meta;
   }
 
   return API;

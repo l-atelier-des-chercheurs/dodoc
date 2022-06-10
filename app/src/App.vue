@@ -37,4 +37,7 @@ body {
 [contenteditable] {
   outline: 1px solid gray;
 }
+h1 {
+  margin: 0;
+}
 </style>

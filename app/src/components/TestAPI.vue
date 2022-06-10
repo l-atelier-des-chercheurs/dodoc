@@ -54,6 +54,10 @@ export default {
           requested_folder_name: this.new_project_title,
         });
         this.fetch_status = "success";
+
+        this.new_project_title = (
+          Math.random().toString(36) + "00000000000000000"
+        ).slice(2, 3 + 2);
       } catch (e) {
         this.fetch_status = "error";
         this.fetch_error = e.response.data;
