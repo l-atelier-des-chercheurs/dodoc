@@ -3,6 +3,7 @@
     Card
     <img :src="file.thumbs[180]" />
     {{ file.caption }}
+    {{ file.thumbs }}
 
     <TextField
       field_name="caption"

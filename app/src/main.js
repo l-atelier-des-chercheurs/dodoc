@@ -4,6 +4,8 @@ import router from "./router";
 
 Vue.config.productionTip = false;
 
+Vue.prototype.$eventHub = new Vue(); // Global event bus
+
 import i18n from "./adc-core/i18n.js";
 
 import custom_socketio from "./adc-core/socketio.js";
@@ -42,8 +44,28 @@ new Vue({
   render: (h) => h(App),
   data: {
     store: window.store,
+
+    is_connected: false,
   },
   mounted() {
     this.$socketio.connect();
+    this.$eventHub.$on("connect", this.socketConnected);
+    this.$eventHub.$on("reconnect", this.socketConnected);
+    this.$eventHub.$on("disconnect", this.socketDisconnected);
+  },
+  methods: {
+    socketConnected() {
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(
+          `Connected or reconnected with id ${this.$socketio.socket.id}`
+        );
+      this.is_connected = true;
+    },
+    socketDisconnected() {
+      this.$alertify.closeLogOnClick(true).delay(4000).error(`Disconnected`);
+      this.is_connected = true;
+    },
   },
 }).$mount("#app");

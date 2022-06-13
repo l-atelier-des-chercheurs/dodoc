@@ -15,7 +15,15 @@ export default function () {
 
         // client-side
         this.socket.on("connect", () => {
-          console.log(this.socket.id); // x8WIv7-mJelg7on_ALbx
+          console.log(this.socket.id);
+          this.$eventHub.$emit("connect", { socketid: this.socket.id });
+        });
+        this.socket.on("reconnect", () => {
+          console.log(this.socket.id);
+          this.$eventHub.$emit("reconnect", { socketid: this.socket.id });
+        });
+        this.socket.on("disconnect", () => {
+          this.$eventHub.$emit("disconnect");
         });
 
         this.socket.onAny((eventName, ...args) => {

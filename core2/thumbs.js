@@ -61,6 +61,14 @@ module.exports = (function () {
           resolutions: filethumbs_resolutions,
         });
       } else if (media_type === "video") {
+        // extract preview at 0, 50% and 100% for video
+        // make thumbs for each
+        // thumbs = await makeVideoPreviewFor({
+        //   full_media_path,
+        //   media_filename,
+        //   path_to_thumb_folder,
+        //   resolutions: filethumbs_resolutions,
+        // });
       }
 
       return thumbs;
