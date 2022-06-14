@@ -14,6 +14,7 @@ module.exports = defineConfig({
     https: true,
     proxy: "https://localhost:8080",
     port: 35500,
+    allowedHosts: "all",
     headers: { "Access-Control-Allow-Origin": "*" },
     devMiddleware: {
       writeToDisk: true,

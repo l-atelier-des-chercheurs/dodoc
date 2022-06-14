@@ -133,25 +133,18 @@ export default {
       return res.data.meta_filename;
     },
     async sendAllFiles() {
-      // const executeSequentially = (array) => {
-      //   return this.sendThisFile(this.files_to_upload[array.shift()]).then(
-      //     (x) => {
-      //       return array.length === 0 ? x : executeSequentially(array);
-      //     }
-      //   );
-      // };
-
-      // executeSequentially(
-      //   Array.from(Array(this.files_to_upload.length).keys())
-      // ).then(() => {
-
-      //   });
-
       let list_of_added_metas = [];
-      for (const file of this.files_to_upload) {
-        const meta_filename = await this.sendThisFile(file);
-        if (meta_filename) list_of_added_metas.push(meta_filename);
-      }
+
+      // send same file for performance
+      // for (let i = 0; i < 150; i++) {
+      const meta_filename = await this.sendThisFile(this.files_to_upload[0]);
+      if (meta_filename) list_of_added_metas.push(meta_filename);
+      // }
+
+      // for (const file of this.files_to_upload) {
+      //   const meta_filename = await this.sendThisFile(file);
+      //   if (meta_filename) list_of_added_metas.push(meta_filename);
+      // }
 
       this.$emit("importedMedias", list_of_added_metas);
       this.$emit("close", "");

@@ -1,9 +1,11 @@
 <template>
   <div>
     <button type="button" @click="loadLibrary">Charger la bibliothèque</button>
-
-    <div v-for="file of all_files" :key="file.slug">
-      <MediaCard :file="file" :project_slug="project_slug" />
+    {{ all_files.length }}
+    <div class="_lib">
+      <div v-for="file of all_files" :key="file.slug">
+        <MediaCard :file="file" :project_slug="project_slug" />
+      </div>
     </div>
   </div>
 </template>
@@ -26,13 +28,13 @@ export default {
   },
   created() {},
   mounted() {
-    this.loadLibrary();
+    // this.loadLibrary();
   },
   beforeDestroy() {},
   watch: {},
   computed: {
     all_files() {
-      return this.project.files;
+      return this.project.files || [];
     },
   },
   methods: {
@@ -59,4 +61,9 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._lib {
+  display: flex;
+  flex-flow: row wrap;
+}
+</style>

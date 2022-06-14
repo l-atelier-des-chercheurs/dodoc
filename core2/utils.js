@@ -45,7 +45,7 @@ module.exports = (function () {
     },
 
     async readMetaFile({ folder_type, folder_slug, file_slug }) {
-      dev.logfunction({ folder_type, folder_slug });
+      dev.logfunction({ folder_type, folder_slug, file_slug });
 
       const meta_path = API.getPathToUserContent(
         folder_type,
@@ -84,6 +84,10 @@ module.exports = (function () {
 
       await API.storeMeta({ path: meta_path, meta });
       return;
+    },
+
+    makeRatio({ w, h }) {
+      return +Number.parseFloat(h / w).toPrecision(4);
     },
   };
 

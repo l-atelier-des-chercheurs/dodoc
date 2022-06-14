@@ -61,15 +61,15 @@ export default function () {
     locale: lang_settings.current, // set locale
     fallbackLocale: "en",
     messages: {
-      en: {
-        message: {
-          hello: "hello world",
-        },
+      fr: {
+        hello: "bonjour monde",
+        edit: "modifier",
+        caption: "légende",
       },
-      ja: {
-        message: {
-          hello: "こんにちは、世界",
-        },
+      en: {
+        hello: "hello world",
+        edit: "edit",
+        caption: "caption",
       },
     }, // set locale messages
   });

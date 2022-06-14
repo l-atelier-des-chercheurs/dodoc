@@ -65,7 +65,7 @@ new Vue({
     },
     socketDisconnected() {
       this.$alertify.closeLogOnClick(true).delay(4000).error(`Disconnected`);
-      this.is_connected = true;
+      this.is_connected = false;
     },
   },
 }).$mount("#app");

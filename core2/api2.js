@@ -78,7 +78,7 @@ module.exports = (function () {
   }
 
   function loadIndex(rea, res) {
-    res.render("index");
+    res.render("index2");
   }
   function loadPerf(rea, res) {
     res.render("perf");

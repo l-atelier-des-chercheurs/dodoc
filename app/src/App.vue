@@ -5,8 +5,12 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </nav> -->
-    <div :style="`background-color: ${$root.is_connected ? 'green' : 'red'}`">
-      Hello
+    <div
+      :style="`background-color: ${
+        $root.is_connected ? 'rgba(0, 255, 0, .5)' : 'rgba(255, 0, 0, .5);'
+      }`"
+    >
+      Connected = {{ $root.is_connected }}
     </div>
     <router-view />
   </div>

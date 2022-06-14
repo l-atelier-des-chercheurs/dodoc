@@ -1,4 +1,5 @@
 var gutil = require("gulp-util");
+var path = require("path");
 
 module.exports = dev = (function () {
   let isDebugMode = false;
@@ -9,6 +10,7 @@ module.exports = dev = (function () {
     init: (isDebug, isVerbose, logToFile) => {
       return initModule(isDebug, isVerbose, logToFile);
     },
+    space: space,
     log: log,
     logverbose: logverbose,
     logpackets: logpackets,
@@ -41,11 +43,23 @@ module.exports = dev = (function () {
     return;
   }
 
+  function space() {
+    if (!logToFile && !isVerboseMode) return;
+
+    if (logToFile) _sendToLogFile(``);
+    if (isDebugMode) _sendToConsole(``);
+  }
+
   function log() {
-    var args = Array.prototype.slice.call(arguments);
-    var logArgs = args;
-    _sendToLogFile(logArgs);
-    _sendToConsole(logArgs, gutil.colors.white);
+    if (!logToFile && !isVerboseMode) return;
+
+    const message = _createLogMessage({
+      fct: log,
+      args: arguments,
+    });
+
+    if (logToFile) _sendToLogFile(message);
+    if (isDebugMode) _sendToConsole(message);
   }
   function logverbose() {
     if (!logToFile && !isVerboseMode) return;
@@ -53,7 +67,7 @@ module.exports = dev = (function () {
     const message =
       `- ` +
       _createLogMessage({
-        fct_name: logverbose.caller.name,
+        fct: logverbose,
         args: arguments,
       });
 
@@ -81,7 +95,7 @@ module.exports = dev = (function () {
     const message =
       `~ ` +
       _createLogMessage({
-        fct_name: logfunction.caller.name,
+        fct: logfunction,
         args: arguments,
       });
 
@@ -119,8 +133,11 @@ module.exports = dev = (function () {
     );
   }
 
-  function _createLogMessage({ fct_name, args }) {
+  function _createLogMessage({ fct, args }) {
     let content = [];
+
+    const fct_filename = _getFunctionFilename();
+    const fct_name = fct.caller.name;
 
     if (typeof args === "string") {
       content.push(args);
@@ -132,8 +149,22 @@ module.exports = dev = (function () {
         else if (typeof arg === "object") content.push(_customStringify(arg));
       });
     }
-    return `${fct_name} – ${content.join(" / ")}`;
+
+    let str = "";
+    if (fct_filename) str += `${fct_filename} • `;
+    if (fct_name) str += `${fct_name} – `;
+    return str + content.join(" / ");
   }
 
+  function _getFunctionFilename() {
+    const err = new Error();
+    Error.prepareStackTrace = (_, stack) => stack;
+
+    const stack = err.stack;
+    Error.prepareStackTrace = undefined;
+
+    const filename = stack[3].getFileName();
+    return path.parse(filename).name.toUpperCase();
+  }
   return API;
 })();

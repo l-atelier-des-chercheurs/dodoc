@@ -1,9 +1,11 @@
 <template>
   <div class="_mediaCard">
     Card
-    <img :src="file.thumbs[180]" />
+    <img :src="thumb" />
     {{ file.caption }}
-    {{ file.thumbs }}
+    <pre>
+      {{ file }}
+    </pre>
 
     <TextField
       field_name="caption"
@@ -35,7 +37,13 @@ export default {
       this.new_caption = this.file.caption;
     },
   },
-  computed: {},
+  computed: {
+    thumb() {
+      if (this.file.type === "image") return this.file.thumbs[180];
+      if (this.file.type === "video") return this.file.thumbs["00:00:00"][180];
+      return false;
+    },
+  },
   methods: {
     async updateCaption() {
       this.fetch_status = "pending";
@@ -76,5 +84,6 @@ export default {
 ._mediaCard {
   width: 300px;
   border: 1px solid black;
+  overflow: auto;
 }
 </style>

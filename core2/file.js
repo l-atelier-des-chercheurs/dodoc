@@ -100,7 +100,7 @@ module.exports = (function () {
       });
       if (_thumbs) meta.thumbs = _thumbs;
 
-      const _metas = await thumbs.makeMetaForFile({
+      const _metas = await thumbs.getMetaForFile({
         media_type: meta.type,
         media_filename: meta.media_filename,
         folder_type,
