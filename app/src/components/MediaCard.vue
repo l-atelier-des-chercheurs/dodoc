@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     thumb() {
-      if (["image", "audio"].includes(this.file.type))
+      if (["image", "audio", "stl"].includes(this.file.type))
         return this.file.thumbs[180];
       if (this.file.type === "video") return this.file.thumbs["00:00:00"][180];
       return false;

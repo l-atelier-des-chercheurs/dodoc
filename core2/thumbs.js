@@ -7,7 +7,8 @@ const path = require("path"),
   sharp = require("sharp"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
-  https = require("https");
+  https = require("https"),
+  StlThumbnailer = require("stl-thumbnailer-node");
 
 const { BrowserWindow } = require("electron");
 
@@ -127,7 +128,7 @@ module.exports = (function () {
         return infos;
       }
 
-      let infos;
+      let infos = {};
       if (media_type === "image")
         infos = await _readImageExif({ full_media_path });
       else if (media_type === "video" || media_type === "audio")
@@ -463,9 +464,55 @@ module.exports = (function () {
   }) {
     dev.logfunction({ full_media_path });
 
-    const thumb_name = `${media_filename}.wf.png`;
+    const angle = [10, 50, 100]; // optional: specify the angle of the view for thumbnailing. This is the camera's position vector, the opposite of the direction the camera is looking.
+
+    const thumb_name = `${media_filename}.${angle.join("-")}.png`;
     const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
     const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
+
+    if (!(await fs.pathExists(full_path_to_thumb))) {
+      dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
+      await _makeSTLPreview({
+        full_media_path,
+        full_path_to_thumb,
+        angle,
+      });
+      dev.logverbose(`Made screenshot at`, full_path_to_thumb);
+    } else {
+      dev.logverbose(`Found screenshot at`, full_path_to_thumb);
+    }
+
+    return await _makeImageThumbsFor({
+      full_media_path: full_path_to_thumb,
+      media_filename: thumb_name,
+      path_to_thumb_folder,
+      resolutions,
+    });
+  }
+
+  function _makeSTLPreview({ full_media_path, full_path_to_thumb, angle }) {
+    return new Promise(function (resolve, reject) {
+      new StlThumbnailer({
+        filePath: full_media_path,
+        requestThumbnails: [
+          {
+            width: 2200,
+            height: 2200,
+            cameraAngle: angle,
+          },
+        ],
+      }).then(function (thumbnails) {
+        // thumbnails is an array (in matching order to your requests) of Canvas objects
+        // you can write them to disk, return them to web users, etc
+        // see node-canvas documentation at https://github.com/Automattic/node-canvas
+        thumbnails[0].toBuffer(async (err, buf) => {
+          if (err) return reject(err);
+
+          await fs.outputFile(full_path_to_thumb, buf);
+          return resolve();
+        });
+      });
+    });
   }
 
   async function _readVideoAudioExif({ full_media_path }) {
@@ -517,11 +564,11 @@ module.exports = (function () {
     return new Promise(function (resolve, reject) {
       dev.logverbose(`getting file infos with fs.stat`);
       fs.stat(full_media_path)
-        .then((stats) =>
-          resolve({
+        .then((stats) => {
+          return resolve({
             size: stats.size,
-          })
-        )
+          });
+        })
         .catch((err) => {
           return reject(err);
         });
