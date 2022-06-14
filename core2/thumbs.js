@@ -68,15 +68,20 @@ module.exports = (function () {
           path_to_thumb_folder,
           resolutions: filethumbs_resolutions,
         });
-
-        // extract preview at 0, 50% and 100% for video
-        // make thumbs for each
-        // thumbs = await makeVideoPreviewFor({
-        //   full_media_path,
-        //   media_filename,
-        //   path_to_thumb_folder,
-        //   resolutions: filethumbs_resolutions,
-        // });
+      } else if (media_type === "audio") {
+        thumbs = await _makeAudioThumbsFor({
+          full_media_path,
+          media_filename,
+          path_to_thumb_folder,
+          resolutions: filethumbs_resolutions,
+        });
+      } else if (media_type === "stl") {
+        thumbs = await _makeSTLThumbsFor({
+          full_media_path,
+          media_filename,
+          path_to_thumb_folder,
+          resolutions: filethumbs_resolutions,
+        });
       }
 
       return thumbs;
@@ -122,13 +127,15 @@ module.exports = (function () {
         return infos;
       }
 
-      let metas = {};
-
       let infos;
       if (media_type === "image")
         infos = await _readImageExif({ full_media_path });
-      else if (media_type === "video")
-        infos = await _readVideoExif({ full_media_path });
+      else if (media_type === "video" || media_type === "audio")
+        infos = await _readVideoAudioExif({ full_media_path });
+
+      // read file infos
+      const file_infos = await _readFileInfos({ full_media_path });
+      if (file_infos) infos.file = file_infos;
 
       if (infos) {
         utils.storeMeta({ path: path_to_infos_file, meta: infos });
@@ -136,14 +143,10 @@ module.exports = (function () {
       }
       return false;
     },
-
     removeFolderThumbs: ({ folder_type, folder_slug }) =>
       removeFolderThumbs({ folder_type, folder_slug }),
     removeFileThumbs: ({ folder_type, folder_slug, meta_slug }) =>
       removeFileThumbs({ folder_type, folder_slug, meta_slug }),
-
-    getMediaEXIF: (d) => getMediaEXIF(d),
-    getTimestampFromEXIF: (mediaPath) => getTimestampFromEXIF(mediaPath),
   };
 
   async function makeFolderPreview({ folder_type, folder_slug }) {
@@ -347,16 +350,16 @@ module.exports = (function () {
       const thumb_folder = utils.getPathToUserContent(path_to_thumb_folder);
 
       if (!(await fs.pathExists(full_path_to_thumb))) {
-        dev.log(`Missing screenshot at`, full_path_to_thumb);
+        dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
         await _makeVideoScreenshotFromPath({
           thumb_name,
           thumb_folder,
           full_media_path,
           timemark_key: timemark.key,
         });
-        dev.log(`Made screenshot at`, full_path_to_thumb);
+        dev.logverbose(`Made screenshot at`, full_path_to_thumb);
       } else {
-        dev.log(`Found screenshot at`, full_path_to_thumb);
+        dev.logverbose(`Found screenshot at`, full_path_to_thumb);
       }
 
       const thumbs = await _makeImageThumbsFor({
@@ -378,15 +381,15 @@ module.exports = (function () {
     full_media_path,
     timemark_key,
   }) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       dev.logfunction({ thumb_name, thumb_folder, timemark_key });
 
       ffmpeg(full_media_path)
         // setup event handlers
-        .on("end", function (files) {
+        .on("end", () => {
           return resolve();
         })
-        .on("error", function (err) {
+        .on("error", (err) => {
           dev.error(`ffmpeg failed: ${err.message}`);
           return reject(err.message);
         })
@@ -398,11 +401,78 @@ module.exports = (function () {
     });
   }
 
-  async function _readVideoExif({ full_media_path }) {
+  async function _makeAudioThumbsFor({
+    full_media_path,
+    media_filename,
+    path_to_thumb_folder,
+    resolutions,
+  }) {
+    dev.logfunction({ full_media_path });
+
+    const thumb_name = `${media_filename}.wf.png`;
+    const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
+    const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
+
+    if (!(await fs.pathExists(full_path_to_thumb))) {
+      dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
+      await _makeAudioWaveforms({
+        full_media_path,
+        full_path_to_thumb,
+      });
+      dev.logverbose(`Made screenshot at`, full_path_to_thumb);
+    } else {
+      dev.logverbose(`Found screenshot at`, full_path_to_thumb);
+    }
+
+    return await _makeImageThumbsFor({
+      full_media_path: full_path_to_thumb,
+      media_filename: thumb_name,
+      path_to_thumb_folder,
+      resolutions,
+    });
+  }
+
+  function _makeAudioWaveforms({ full_media_path, full_path_to_thumb }) {
+    return new Promise((resolve, reject) => {
+      dev.logfunction({ full_media_path, full_path_to_thumb });
+
+      ffmpeg()
+        .input(full_media_path)
+        .input(`color=white:s=3000x2000`)
+        .inputFormat("lavfi")
+        .complexFilter(
+          "[0:a]aformat=channel_layouts=mono,showwavespic=s=3000x2000:colors=#fc4b60[fg];[1:v][fg]overlay=format=auto"
+        )
+        .outputOptions(["-vframes 1"])
+        // setup event handlers
+        .on("end", () => {
+          return resolve();
+        })
+        .on("error", function (err) {
+          return reject(err.message);
+        })
+        .save(full_path_to_thumb);
+    });
+  }
+
+  async function _makeSTLThumbsFor({
+    full_media_path,
+    media_filename,
+    path_to_thumb_folder,
+    resolutions,
+  }) {
+    dev.logfunction({ full_media_path });
+
+    const thumb_name = `${media_filename}.wf.png`;
+    const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
+    const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
+  }
+
+  async function _readVideoAudioExif({ full_media_path }) {
     try {
       dev.logfunction({ full_media_path });
 
-      const metadata = await _ffprobeVideo({ full_media_path });
+      const metadata = await _ffprobeVideoAudio({ full_media_path });
 
       dev.log({ metadata });
 
@@ -431,7 +501,7 @@ module.exports = (function () {
     }
   }
 
-  async function _ffprobeVideo({ full_media_path }) {
+  function _ffprobeVideoAudio({ full_media_path }) {
     return new Promise(function (resolve, reject) {
       dev.logverbose(`getting probe data`);
       ffmpeg.ffprobe(full_media_path, (err, metadata) => {
@@ -440,6 +510,21 @@ module.exports = (function () {
         }
         return resolve(metadata);
       });
+    });
+  }
+
+  function _readFileInfos({ full_media_path }) {
+    return new Promise(function (resolve, reject) {
+      dev.logverbose(`getting file infos with fs.stat`);
+      fs.stat(full_media_path)
+        .then((stats) =>
+          resolve({
+            size: stats.size,
+          })
+        )
+        .catch((err) => {
+          return reject(err);
+        });
     });
   }
 

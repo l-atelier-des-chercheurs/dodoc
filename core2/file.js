@@ -315,7 +315,7 @@ module.exports = (function () {
     if (additional_meta.fileCreationDate)
       new_meta.date_created = utils.parseDate(additional_meta.fileCreationDate);
     else {
-      // TODO fs stat
+      // TODO fs stat ?
       // await fs.stat(filepath);
     }
 

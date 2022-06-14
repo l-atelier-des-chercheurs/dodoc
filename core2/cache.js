@@ -10,7 +10,7 @@ module.exports = (function () {
     init: () => {
       const options = {
         max: 3000,
-        maxSize: 10_000_000,
+        maxSize: 1_000_000,
         sizeCalculation: (value) => {
           // if (typeof value === "string") return value.length;
           if (typeof value === "object") return JSON.stringify(value).length;
