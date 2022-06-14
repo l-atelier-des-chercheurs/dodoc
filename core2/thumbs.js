@@ -8,7 +8,8 @@ const path = require("path"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
   https = require("https"),
-  StlThumbnailer = require("stl-thumbnailer-node");
+  StlThumbnailer = require("stl-thumbnailer-node"),
+  PdfExtractor = require("pdf-extractor").PdfExtractor;
 
 const { BrowserWindow } = require("electron");
 
@@ -43,8 +44,6 @@ module.exports = (function () {
         global.settings.schema[folder_type].files?.thumbs?.resolutions;
       if (!filethumbs_resolutions) return false;
 
-      let thumbs = {};
-
       const path_to_thumb_folder = await _getThumbFolderPath(
         folder_type,
         folder_slug
@@ -55,35 +54,56 @@ module.exports = (function () {
         media_filename
       );
 
+      let settings;
       if (media_type === "image") {
-        thumbs = await _makeImageThumbsFor({
-          full_media_path,
-          media_filename,
-          path_to_thumb_folder,
-          resolutions: filethumbs_resolutions,
-        });
       } else if (media_type === "video") {
-        thumbs = await _makeVideoThumbsFor({
-          full_media_path,
-          media_filename,
-          path_to_thumb_folder,
-          resolutions: filethumbs_resolutions,
-        });
+        settings = [
+          {
+            timemark: "00:00:00",
+            suffix: "0",
+            ext: "jpeg",
+          },
+          {
+            timemark: "50%",
+            suffix: "50pc",
+            ext: "jpeg",
+          },
+        ];
       } else if (media_type === "audio") {
-        thumbs = await _makeAudioThumbsFor({
-          full_media_path,
-          media_filename,
-          path_to_thumb_folder,
-          resolutions: filethumbs_resolutions,
-        });
+        settings = [
+          {
+            suffix: "waveform",
+            ext: "png",
+          },
+        ];
       } else if (media_type === "stl") {
-        thumbs = await _makeSTLThumbsFor({
-          full_media_path,
-          media_filename,
-          path_to_thumb_folder,
-          resolutions: filethumbs_resolutions,
-        });
+        settings = [
+          {
+            camera_angle: [10, 50, 100],
+            suffix: "0",
+            ext: "png",
+          },
+        ];
+      } else if (media_type === "document") {
+        settings = [
+          {
+            suffix: "page-1",
+            page: 1,
+            ext: "png",
+          },
+        ];
+      } else {
+        return false;
       }
+
+      const thumbs = await makeThumbFor({
+        media_type,
+        full_media_path,
+        media_filename,
+        path_to_thumb_folder,
+        resolutions: filethumbs_resolutions,
+        settings,
+      });
 
       return thumbs;
     },
@@ -149,6 +169,81 @@ module.exports = (function () {
     removeFileThumbs: ({ folder_type, folder_slug, meta_slug }) =>
       removeFileThumbs({ folder_type, folder_slug, meta_slug }),
   };
+
+  async function makeThumbFor({
+    media_type,
+    full_media_path,
+    media_filename,
+    path_to_thumb_folder,
+    resolutions,
+    settings,
+  }) {
+    dev.logfunction({ full_media_path });
+
+    let thumb_paths = {};
+
+    if (!settings) {
+      thumb_paths = await _makeImageThumbsFor({
+        full_media_path,
+        media_filename,
+        path_to_thumb_folder,
+        resolutions,
+      });
+    } else {
+      for (const setting of settings) {
+        const thumb_name = `${media_filename}.${setting.suffix}.${setting.ext}`;
+        const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
+        const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
+
+        const thumb_folder = utils.getPathToUserContent(path_to_thumb_folder);
+
+        if (!(await fs.pathExists(full_path_to_thumb))) {
+          dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
+
+          if (media_type === "video")
+            await _makeVideoScreenshotFromPath({
+              thumb_name,
+              thumb_folder,
+              full_media_path,
+              timemark_key: setting.timemark,
+            });
+          else if (media_type === "audio")
+            await _makeAudioWaveforms({
+              full_media_path,
+              full_path_to_thumb,
+            });
+          else if (media_type === "stl")
+            await _makeSTLPreview({
+              full_media_path,
+              full_path_to_thumb,
+              camera_angle: setting.camera_angle,
+            });
+          else if (media_type === "document")
+            await _makeDocumentPreview({
+              full_media_path,
+              thumb_folder,
+              full_path_to_thumb,
+              page: setting.page,
+            });
+
+          dev.logverbose(`Made screenshot at`, full_path_to_thumb);
+        } else {
+          dev.logverbose(`Found screenshot at`, full_path_to_thumb);
+        }
+
+        const thumbs = await _makeImageThumbsFor({
+          full_media_path: full_path_to_thumb,
+          media_filename: thumb_name,
+          path_to_thumb_folder,
+          resolutions,
+        });
+
+        thumb_paths[setting.suffix] = thumbs;
+      }
+    }
+
+    return thumb_paths;
+  }
 
   async function makeFolderPreview({ folder_type, folder_slug }) {
     const preview_name = "meta_preview.jpeg";
@@ -323,59 +418,6 @@ module.exports = (function () {
     return extracted_metadata;
   }
 
-  async function _makeVideoThumbsFor({
-    full_media_path,
-    media_filename,
-    path_to_thumb_folder,
-    resolutions,
-  }) {
-    dev.logfunction({ full_media_path });
-
-    let thumb_paths = {};
-    let screenshots_timemarks = [
-      {
-        key: "00:00:00",
-        filename_suffix: "0",
-      },
-      {
-        key: "50%",
-        filename_suffix: "50pc",
-      },
-    ];
-
-    for (const timemark of screenshots_timemarks) {
-      const thumb_name = `${media_filename}.${timemark.filename_suffix}.jpeg`;
-      const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
-      const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
-
-      const thumb_folder = utils.getPathToUserContent(path_to_thumb_folder);
-
-      if (!(await fs.pathExists(full_path_to_thumb))) {
-        dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
-        await _makeVideoScreenshotFromPath({
-          thumb_name,
-          thumb_folder,
-          full_media_path,
-          timemark_key: timemark.key,
-        });
-        dev.logverbose(`Made screenshot at`, full_path_to_thumb);
-      } else {
-        dev.logverbose(`Found screenshot at`, full_path_to_thumb);
-      }
-
-      const thumbs = await _makeImageThumbsFor({
-        full_media_path: full_path_to_thumb,
-        media_filename: thumb_name,
-        path_to_thumb_folder,
-        resolutions,
-      });
-
-      thumb_paths[timemark.key] = thumbs;
-    }
-
-    return thumb_paths;
-  }
-
   async function _makeVideoScreenshotFromPath({
     thumb_name,
     thumb_folder,
@@ -402,37 +444,6 @@ module.exports = (function () {
     });
   }
 
-  async function _makeAudioThumbsFor({
-    full_media_path,
-    media_filename,
-    path_to_thumb_folder,
-    resolutions,
-  }) {
-    dev.logfunction({ full_media_path });
-
-    const thumb_name = `${media_filename}.wf.png`;
-    const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
-    const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
-
-    if (!(await fs.pathExists(full_path_to_thumb))) {
-      dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
-      await _makeAudioWaveforms({
-        full_media_path,
-        full_path_to_thumb,
-      });
-      dev.logverbose(`Made screenshot at`, full_path_to_thumb);
-    } else {
-      dev.logverbose(`Found screenshot at`, full_path_to_thumb);
-    }
-
-    return await _makeImageThumbsFor({
-      full_media_path: full_path_to_thumb,
-      media_filename: thumb_name,
-      path_to_thumb_folder,
-      resolutions,
-    });
-  }
-
   function _makeAudioWaveforms({ full_media_path, full_path_to_thumb }) {
     return new Promise((resolve, reject) => {
       dev.logfunction({ full_media_path, full_path_to_thumb });
@@ -456,41 +467,11 @@ module.exports = (function () {
     });
   }
 
-  async function _makeSTLThumbsFor({
+  function _makeSTLPreview({
     full_media_path,
-    media_filename,
-    path_to_thumb_folder,
-    resolutions,
+    full_path_to_thumb,
+    camera_angle,
   }) {
-    dev.logfunction({ full_media_path });
-
-    const angle = [10, 50, 100]; // optional: specify the angle of the view for thumbnailing. This is the camera's position vector, the opposite of the direction the camera is looking.
-
-    const thumb_name = `${media_filename}.${angle.join("-")}.png`;
-    const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
-    const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
-
-    if (!(await fs.pathExists(full_path_to_thumb))) {
-      dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
-      await _makeSTLPreview({
-        full_media_path,
-        full_path_to_thumb,
-        angle,
-      });
-      dev.logverbose(`Made screenshot at`, full_path_to_thumb);
-    } else {
-      dev.logverbose(`Found screenshot at`, full_path_to_thumb);
-    }
-
-    return await _makeImageThumbsFor({
-      full_media_path: full_path_to_thumb,
-      media_filename: thumb_name,
-      path_to_thumb_folder,
-      resolutions,
-    });
-  }
-
-  function _makeSTLPreview({ full_media_path, full_path_to_thumb, angle }) {
     return new Promise(function (resolve, reject) {
       new StlThumbnailer({
         filePath: full_media_path,
@@ -498,7 +479,7 @@ module.exports = (function () {
           {
             width: 2200,
             height: 2200,
-            cameraAngle: angle,
+            cameraAngle: camera_angle,
           },
         ],
       }).then(function (thumbnails) {
@@ -513,6 +494,43 @@ module.exports = (function () {
         });
       });
     });
+  }
+
+  async function _makeDocumentPreview({
+    full_media_path,
+    thumb_folder,
+    full_path_to_thumb,
+    page,
+  }) {
+    dev.logfunction({ full_media_path, full_path_to_thumb, page });
+
+    const temp_pdf_doc = path.join(thumb_folder, "_temp_pdf");
+    await fs.ensureDir(temp_pdf_doc);
+
+    let pdf_extractor = new PdfExtractor(temp_pdf_doc, {
+      viewportScale: (width, height) => {
+        if (width > height) return 1100 / width;
+        return 800 / width;
+      },
+      pageRange: [page, page],
+    });
+
+    await pdf_extractor.parse(full_media_path).catch((err) => {
+      dev.error(err);
+    });
+
+    dev.logverbose(`Created temp pdf folder`);
+
+    try {
+      const src = path.join(temp_pdf_doc, "page-1.png");
+      await fs.move(src, full_path_to_thumb);
+      await fs.remove(temp_pdf_doc);
+    } catch (err) {
+      await fs.remove(temp_pdf_doc);
+      throw err;
+    }
+
+    dev.logverbose(`Moved/removed temp pdf folder`);
   }
 
   async function _readVideoAudioExif({ full_media_path }) {

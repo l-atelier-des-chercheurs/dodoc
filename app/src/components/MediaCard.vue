@@ -39,9 +39,11 @@ export default {
   },
   computed: {
     thumb() {
-      if (["image", "audio", "stl"].includes(this.file.type))
-        return this.file.thumbs[180];
+      if (this.file.type === "image") return this.file.thumbs[180];
       if (this.file.type === "video") return this.file.thumbs["00:00:00"][180];
+      if (this.file.type === "audio") return this.file.thumbs.waveform[180];
+      if (this.file.type === "stl") return this.file.thumbs["0"][180];
+      if (this.file.type === "document") return this.file.thumbs["page-1"][180];
       return false;
     },
   },
