@@ -44,11 +44,11 @@ module.exports = (function () {
       dev.logfunction({ folder_type, folder_slug });
 
       // TODO cache unique folder
-      let folder_meta = await utils.readMetaFile({
+      let folder_meta = await utils.readMetaFile(
         folder_type,
         folder_slug,
-        file_slug: "meta.txt",
-      });
+        "meta.txt"
+      );
       folder_meta.slug = folder_slug;
 
       let folder_preview = await _getFolderPreview({
@@ -109,11 +109,11 @@ module.exports = (function () {
       dev.logfunction({ folder_type, folder_slug, new_meta });
 
       // get folder meta
-      let folder_meta = await utils.readMetaFile({
+      let folder_meta = await utils.readMetaFile(
         folder_type,
         folder_slug,
-        file_slug: "meta.txt",
-      });
+        "meta.txt"
+      );
 
       // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the typ
       const clean_meta = _cleanNewMeta({

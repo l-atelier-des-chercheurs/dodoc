@@ -65,6 +65,7 @@
     "fs-extra": "^10.1.0",
     "gulp-util": "^3.0.8",
     "ip-anonymize": "^0.1.0",
+    "lru-cache": "^7.10.1",
     "memory-cache": "^0.2.0",
     "moment": "^2.29.3",
     "node-fetch": "^2.6.7",

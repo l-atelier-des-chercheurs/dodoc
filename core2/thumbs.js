@@ -69,8 +69,6 @@ module.exports = (function () {
           resolutions: filethumbs_resolutions,
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 10_000));
-
         // extract preview at 0, 50% and 100% for video
         // make thumbs for each
         // thumbs = await makeVideoPreviewFor({
@@ -84,7 +82,7 @@ module.exports = (function () {
       return thumbs;
     },
 
-    getMetaForFile: async ({
+    getInfosForFile: async ({
       media_type,
       media_filename,
       folder_type,
@@ -99,26 +97,50 @@ module.exports = (function () {
         folder_slug,
       });
 
-      let metas = {};
-
       const full_media_path = utils.getPathToUserContent(
         folder_type,
         folder_slug,
         media_filename
       );
 
-      let exif;
-      if (media_type === "image")
-        exif = await _readImageExif({ full_media_path });
-      else if (media_type === "video")
-        exif = await _readVideoExif({ full_media_path });
+      const infos_filename = media_filename + ".infos.txt";
+      const path_to_infos_file = utils.getPathToUserContent(
+        global.settings.thumbFolderName,
+        folder_type,
+        folder_slug,
+        infos_filename
+      );
 
-      if (exif) metas.exif = exif;
-      return metas;
+      if (await fs.pathExists(path_to_infos_file)) {
+        dev.logverbose(`has infos file`);
+        const infos = utils.readMetaFile(
+          global.settings.thumbFolderName,
+          folder_type,
+          folder_slug,
+          infos_filename
+        );
+        return infos;
+      }
+
+      let metas = {};
+
+      let infos;
+      if (media_type === "image")
+        infos = await _readImageExif({ full_media_path });
+      else if (media_type === "video")
+        infos = await _readVideoExif({ full_media_path });
+
+      if (infos) {
+        utils.storeMeta({ path: path_to_infos_file, meta: infos });
+        return infos;
+      }
+      return false;
     },
 
     removeFolderThumbs: ({ folder_type, folder_slug }) =>
       removeFolderThumbs({ folder_type, folder_slug }),
+    removeFileThumbs: ({ folder_type, folder_slug, meta_slug }) =>
+      removeFileThumbs({ folder_type, folder_slug, meta_slug }),
 
     getMediaEXIF: (d) => getMediaEXIF(d),
     getTimestampFromEXIF: (mediaPath) => getTimestampFromEXIF(mediaPath),
@@ -161,6 +183,44 @@ module.exports = (function () {
     );
 
     return await fs.remove(full_path_to_thumb);
+  }
+  async function removeFileThumbs({ folder_type, folder_slug, meta_slug }) {
+    dev.logfunction({
+      folder_type,
+      folder_slug,
+      meta_slug,
+    });
+
+    let meta = await utils.readMetaFile(folder_type, folder_slug, meta_slug);
+    const media_filename = meta.media_filename;
+
+    const full_path_to_thumb = utils.getPathToUserContent(
+      global.settings.thumbFolderName,
+      folder_type,
+      folder_slug
+    );
+
+    try {
+      dev.logfunction(`Looking for thumbs starting with ${media_filename}`);
+      let files = (
+        await fs.readdir(full_path_to_thumb, { withFileTypes: true })
+      )
+        .filter(
+          (dirent) =>
+            !dirent.isDirectory() && dirent.name.startsWith(media_filename)
+        )
+        .map((dirent) => dirent.name);
+      dev.logfunction({ files });
+
+      for (const filename of files) {
+        await fs.remove(path.join(full_path_to_thumb, filename));
+      }
+
+      return;
+    } catch (err) {
+      dev.logverbose("No thumbs to remove");
+      return;
+    }
   }
 
   async function _getThumbFolderPath(...paths) {
@@ -206,6 +266,8 @@ module.exports = (function () {
       }
       thumb_paths[resolution] = path_to_thumb;
     }
+
+    dev.logfunction(`Made / found thumbs`);
 
     return thumb_paths;
   }

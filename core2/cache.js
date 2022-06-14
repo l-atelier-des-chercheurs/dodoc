@@ -1,64 +1,54 @@
-const cache = require("memory-cache");
+const LRU = require("lru-cache");
 
 // TODO rewrite
 
 module.exports = (function () {
-  let caches = {};
-  let is_enabled = false;
+  let _lru_cache;
+  let _is_enabled = false;
 
   return {
-    enable: () => (is_enabled = true),
-    get: ({ type, slugFolderName }) => {
-      if (!is_enabled) {
-        return null;
-      }
-
-      dev.logfunction(`CACHE — get ${type}/${slugFolderName}`);
-
-      if (!caches.hasOwnProperty(type)) {
-        dev.logverbose("--> no cache");
-        return null;
-      }
-
-      if (slugFolderName) {
-        const meta = caches[type].get(slugFolderName);
-        if (!meta) {
-          dev.logverbose("--> no cache");
-          return null;
-        }
-        dev.logverbose("--> has cache");
-        return meta;
-      } else {
-        dev.logverbose("--> has cache");
-        let obj = {};
-        caches[type].keys().forEach((k) => {
-          obj[k] = caches[type].get(k);
-        });
-        return obj;
-      }
+    init: () => {
+      const options = {
+        max: 3000,
+        maxSize: 10_000_000,
+        sizeCalculation: (value) => {
+          // if (typeof value === "string") return value.length;
+          if (typeof value === "object") return JSON.stringify(value).length;
+          return value.length;
+        },
+      };
+      _lru_cache = new LRU(options);
+      _is_enabled = true;
     },
-    put: ({ type, slugFolderName }, value) => {
-      if (!is_enabled) {
-        return null;
-      }
+    get: ({ key }) => {
+      if (!_is_enabled) return;
 
-      dev.logfunction(`CACHE — put ${type}/${slugFolderName}`);
-      if (!caches.hasOwnProperty(type)) {
-        caches[type] = new cache.Cache();
-      }
-      caches[type].put(slugFolderName, value);
+      const val = _lru_cache.get(key);
+      if (val) dev.logfunction(`has cache for ${key}`);
+      else dev.logfunction(`no cache for ${key}`);
+
+      return val;
     },
-    del: ({ type, slugFolderName }) => {
-      if (!is_enabled) {
-        return null;
-      }
+    set: ({ key, value }) => {
+      if (!_is_enabled) return;
 
-      dev.logfunction(`CACHE — del ${type}/${slugFolderName}`);
-      if (!caches.hasOwnProperty(type)) {
-        return null;
-      }
-      // if editing a key we need to remove the general one as well
-      caches[type].del(slugFolderName);
+      dev.logfunction(`set ${key}`);
+      const val = _lru_cache.set(key, value);
+      return val;
+    },
+    delete: ({ key }) => {
+      if (!_is_enabled) return;
+
+      dev.logfunction(`delete ${key}`);
+      const val = _lru_cache.delete(key);
+      return val;
+    },
+    printStatus: () => {
+      if (!_is_enabled) return dev.log("cache is not enabled");
+
+      dev.log(
+        `cache is enabled, number of items = ${_lru_cache.size}, size = ${_lru_cache.calculatedSize}`
+      );
     },
   };
 })();

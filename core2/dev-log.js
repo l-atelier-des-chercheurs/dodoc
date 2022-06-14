@@ -51,15 +51,13 @@ module.exports = dev = (function () {
   }
 
   function log() {
-    if (!logToFile && !isVerboseMode) return;
-
     const message = _createLogMessage({
       fct: log,
       args: arguments,
     });
 
     if (logToFile) _sendToLogFile(message);
-    if (isDebugMode) _sendToConsole(message);
+    _sendToConsole(message);
   }
   function logverbose() {
     if (!logToFile && !isVerboseMode) return;
@@ -82,12 +80,8 @@ module.exports = dev = (function () {
     if (str) log_string += str;
     if (obj) log_string += JSON.stringify(obj);
 
-    if (logToFile) {
-      _sendToLogFile(log_string);
-    }
-    if (isDebugMode) {
-      _sendToConsole(log_string, gutil.colors.green);
-    }
+    if (logToFile) _sendToLogFile(log_string);
+    if (isDebugMode) _sendToConsole(log_string, gutil.colors.green);
   }
   function logfunction() {
     if (!logToFile && !isDebugMode) return;
@@ -107,7 +101,7 @@ module.exports = dev = (function () {
     var args = Array.prototype.slice.call(arguments);
     var logArgs = "ERROR! ".concat(args);
 
-    _sendToLogFile(logArgs);
+    if (logToFile) _sendToLogFile(logArgs);
     _sendToConsole(logArgs, gutil.colors.red);
   }
 
@@ -117,7 +111,7 @@ module.exports = dev = (function () {
     const fct_name = performance.caller.name;
     var logArgs = `~ ${fct_name} - `.concat(args);
 
-    _sendToLogFile(logArgs);
+    if (logToFile) _sendToLogFile(logArgs);
     _sendToConsole(logArgs, gutil.colors.yellow);
   }
 

@@ -11,10 +11,9 @@ const dev = require("./dev-log"),
 module.exports = async function () {
   const is_electron = process.versions.hasOwnProperty("electron");
 
-  console.log(`App is electron : ${is_electron}`);
-  console.log(`Starting app ${global.appInfos.name}`);
+  console.log(`App is ${is_electron ? "electron" : "node"}`);
+  console.log(`Starting = ${global.appInfos.name}`);
   console.log(`Node = ${process.versions.node}`);
-  console.log(`ARgs = ${process.argv.join(",")}`);
 
   const debug = process.argv.length > 0 && process.argv.includes("--debug");
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
@@ -91,7 +90,7 @@ async function setupApp() {
   global.tempStorage = getPath.getCacheFolder();
   global.ffmpeg_processes = [];
 
-  if (global.settings.cache_content === true) cache.enable();
+  if (global.settings.cache_content === true) cache.init();
 
   await cleanCacheFolder().catch((err) => {
     throw err;

@@ -1,9 +1,10 @@
 const cors = require("cors");
 const url = require("url");
 
-const folder = require("./folder");
-const file = require("./file");
-const notifier = require("./notifier");
+const folder = require("./folder"),
+  file = require("./file"),
+  notifier = require("./notifier"),
+  cache = require("./cache");
 
 module.exports = (function () {
   const API = {
@@ -26,38 +27,32 @@ module.exports = (function () {
       _getResource
     );
 
-    // create folder
     app.post(
       "/api2/:folder_type",
       [cors(_corsCheck), _sessionPasswordCheck],
       _createFolder
     );
-    // update folder
     app.patch(
       "/api2/:folder_type/:folder_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _updateFolder
     );
-    // remove folder
     app.delete(
       "/api2/:folder_type/:folder_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _removeFolder
     );
 
-    // upload file
     app.post(
       "/api2/:folder_type/:folder_slug/_uploadFile",
       [cors(_corsCheck), _sessionPasswordCheck],
       _uploadFile
     );
-    // update file
     app.patch(
       "/api2/:folder_type/:folder_slug/:meta_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _updateFile
     );
-    // remove file
     app.delete(
       "/api2/:folder_type/:folder_slug/:meta_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
@@ -108,6 +103,8 @@ module.exports = (function () {
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+
+    cache.printStatus();
   }
 
   async function _createFolder(req, res, next) {

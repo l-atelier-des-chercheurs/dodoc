@@ -3,7 +3,8 @@ const path = require("path"),
   { IncomingForm } = require("formidable");
 
 const utils = require("./utils"),
-  thumbs = require("./thumbs");
+  thumbs = require("./thumbs"),
+  cache = require("./cache");
 
 module.exports = (function () {
   const API = {
@@ -79,17 +80,21 @@ module.exports = (function () {
       }
 
       // generate thumb if necessary (media_filename or link)
-
       return metas;
     },
     getFile: async ({ folder_type, folder_slug, meta_filename }) => {
       dev.logfunction({ folder_type, folder_slug, meta_filename });
 
-      let meta = await utils.readMetaFile({
+      const d = cache.get({
+        key: `${folder_type}/${folder_slug}/${meta_filename}`,
+      });
+      if (d) return d;
+
+      let meta = await utils.readMetaFile(
         folder_type,
         folder_slug,
-        file_slug: meta_filename,
-      });
+        meta_filename
+      );
       meta.slug = meta_filename;
 
       const _thumbs = await thumbs.makeThumbForMedia({
@@ -100,13 +105,19 @@ module.exports = (function () {
       });
       if (_thumbs) meta.thumbs = _thumbs;
 
-      const _metas = await thumbs.getMetaForFile({
+      const infos = await thumbs.getInfosForFile({
         media_type: meta.type,
         media_filename: meta.media_filename,
         folder_type,
         folder_slug,
       });
-      if (_metas) meta.metas = _metas;
+      if (infos) meta.infos = infos;
+
+      cache.set({
+        key: `${folder_type}/${folder_slug}/${meta_filename}`,
+        value: meta,
+      });
+
       return meta;
     },
 
@@ -116,11 +127,11 @@ module.exports = (function () {
       if (!global.settings.schema[folder_type].files?.fields)
         throw `no fields for files in ${folder_type}`;
 
-      let folder_meta = await utils.readMetaFile({
+      let folder_meta = await utils.readMetaFile(
         folder_type,
         folder_slug,
-        file_slug: meta_slug,
-      });
+        meta_slug
+      );
 
       const clean_meta = _cleanNewMeta({
         folder_type,
@@ -149,14 +160,16 @@ module.exports = (function () {
       dev.logfunction({ folder_type, folder_slug, meta_slug });
 
       try {
+        // todo remove file thumbs
+        await thumbs.removeFileThumbs({ folder_type, folder_slug, meta_slug });
+
         if (global.settings.removePermanently === true)
           await _removeFileForGood({ folder_type, folder_slug, meta_slug });
         else await _moveFileToBin({ folder_type, folder_slug, meta_slug });
 
-        await thumbs.removeFolderThumbs({ folder_type, folder_slug });
-
-        // TODO remove from cache
-        // cache.del({ type, slugFolderName });
+        cache.delete({
+          key: `${folder_type}/${folder_slug}/${meta_slug}`,
+        });
 
         return folder_slug;
       } catch (err) {
@@ -432,11 +445,7 @@ module.exports = (function () {
     );
     paths.push(full_meta_path);
 
-    let meta = await utils.readMetaFile({
-      folder_type,
-      folder_slug,
-      file_slug: meta_slug,
-    });
+    let meta = await utils.readMetaFile(folder_type, folder_slug, meta_slug);
     const media_filename = meta.media_filename;
 
     const full_media_path = utils.getPathToUserContent(
