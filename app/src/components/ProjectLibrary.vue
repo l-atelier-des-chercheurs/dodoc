@@ -1,5 +1,6 @@
 <template>
   <div>
+    <button type="button" @click="createTextMedia">Créer du texte</button>
     <button type="button" @click="loadLibrary">Charger la bibliothèque</button>
     {{ all_files.length }}
     <div class="_lib">
@@ -57,6 +58,29 @@ export default {
         this.fetch_status = "error";
         this.fetch_error = e.response.data;
       }
+    },
+    async createTextMedia() {
+      let formData = new FormData();
+      const filename = "texte.txt";
+
+      const content = "https://www.apluscestmieux.org/cyclotour";
+      const _file_to_upload = new Blob([content], { type: "text/plain" });
+      formData.append("file", _file_to_upload, filename);
+
+      const path = `/projects/${this.project_slug}/_uploadFile`;
+
+      let res = await this.$axios
+        .post(path, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          this.files_to_upload_meta[filename].status = "failed";
+          this.files_to_upload_meta[filename].upload_percentages = 0;
+          throw err;
+        });
+
+      res.data.meta_filename;
     },
   },
 };

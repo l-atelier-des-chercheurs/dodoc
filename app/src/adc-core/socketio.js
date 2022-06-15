@@ -34,13 +34,13 @@ export default function () {
         });
         this.socket.on(
           "updateFolder",
-          ({ folder_type, folder_slug, changed_meta }) => {
+          ({ folder_type, folder_slug, changed_data }) => {
             const folder = this.findFolder({
               folder_type,
               folder_slug,
             });
             // update props
-            Object.entries(changed_meta).map(([key, value]) => {
+            Object.entries(changed_data).map(([key, value]) => {
               this.$set(folder, key, value);
             });
           }
@@ -64,11 +64,11 @@ export default function () {
         });
         this.socket.on(
           "updateFile",
-          ({ folder_type, folder_slug, meta_slug, changed_meta }) => {
+          ({ folder_type, folder_slug, meta_slug, changed_data }) => {
             folder_type;
             folder_slug;
             meta_slug;
-            changed_meta;
+            changed_data;
 
             const file = this.findFileInFolder({
               folder_type,
@@ -77,7 +77,7 @@ export default function () {
             });
 
             if (file)
-              Object.entries(changed_meta).map(([key, value]) => {
+              Object.entries(changed_data).map(([key, value]) => {
                 this.$set(file, key, value);
               });
           }

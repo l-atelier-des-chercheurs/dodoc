@@ -109,9 +109,9 @@ module.exports = (function () {
 
   async function _createFolder(req, res, next) {
     let folder_type = req.params.folder_type;
-    const content = req.body;
+    const data = req.body;
 
-    dev.logfunction({ folder_type, content });
+    dev.logfunction({ folder_type, data });
 
     const hrstart = process.hrtime();
 
@@ -120,7 +120,7 @@ module.exports = (function () {
     try {
       new_folder_slug = await folder.createFolder({
         folder_type,
-        new_meta: content,
+        data,
       });
       res.status(200).json({ status: "ok" });
 
@@ -141,27 +141,27 @@ module.exports = (function () {
   async function _updateFolder(req, res, next) {
     let folder_type = req.params.folder_type;
     let folder_slug = req.params.folder_slug;
-    const content = req.body;
+    const data = req.body;
 
-    dev.logfunction({ folder_type, folder_slug, content });
+    dev.logfunction({ folder_type, folder_slug, data });
 
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!global.settings.schema.hasOwnProperty(folder_type))
       return res.status(422).send("Missing schema for folder_type");
     if (!folder_slug) return res.status(422).send("Missing folder slug");
-    if (!content) return res.status(422).send("Missing body");
+    if (!data) return res.status(422).send("Missing body");
 
     const hrstart = process.hrtime();
 
     try {
-      const changed_meta = await folder.updateFolderMeta({
+      const changed_data = await folder.updateFolder({
         folder_type,
         folder_slug,
-        new_meta: content,
+        data,
       });
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("updateFolder", { folder_type, folder_slug, changed_meta });
+      notifier.emit("updateFolder", { folder_type, folder_slug, changed_data });
     } catch (err) {
       dev.error("Failed to update expected content: " + err);
       res.status(500).send(err);
@@ -240,23 +240,23 @@ module.exports = (function () {
     let folder_type = req.params.folder_type;
     let folder_slug = req.params.folder_slug;
     let meta_slug = req.params.meta_slug;
-    const content = req.body;
+    const data = req.body;
 
     dev.logfunction({ folder_type, folder_slug, meta_slug });
 
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!folder_slug) return res.status(422).send("Missing folder_slug field");
     if (!meta_slug) return res.status(422).send("Missing meta_slug field");
-    if (!content) return res.status(422).send("Missing body");
+    if (!data) return res.status(422).send("Missing body");
 
     const hrstart = process.hrtime();
 
     try {
-      const changed_meta = await file.updateFile({
+      const changed_data = await file.updateFile({
         folder_type,
         folder_slug,
         meta_slug,
-        new_meta: content,
+        data,
       });
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
@@ -265,7 +265,7 @@ module.exports = (function () {
         folder_type,
         folder_slug,
         meta_slug,
-        changed_meta,
+        changed_data,
       });
     } catch (err) {
       dev.error("Failed to update content: " + err);

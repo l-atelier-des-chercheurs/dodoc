@@ -92,6 +92,15 @@ module.exports = (function () {
             ext: "png",
           },
         ];
+      } else if (media_type === "url") {
+        // TODO get URL metadata and preview
+        settings = [
+          {
+            suffix: "sitemeta",
+            preview_ext: "jpeg",
+          },
+        ];
+        return false;
       } else {
         return false;
       }

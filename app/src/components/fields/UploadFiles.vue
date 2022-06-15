@@ -81,9 +81,8 @@ export default {
   beforeDestroy() {},
   computed: {},
   methods: {
-    async sendThisFile(f) {
-      const filename = f.name;
-      const modified = f.lastModified;
+    async sendThisFile(_file_to_upload) {
+      const filename = _file_to_upload.name;
 
       this.$set(this.files_to_upload_meta, filename, {
         upload_percentages: 0,
@@ -91,22 +90,22 @@ export default {
       });
 
       let formData = new FormData();
-      formData.append("file", f, filename);
+      formData.append("file", _file_to_upload, filename);
 
-      let additional_meta = {};
-
-      additional_meta.caption = "will show up because of schema";
-      additional_meta.title = "will not show up because of schema";
-
-      if (modified) additional_meta.fileCreationDate = modified;
-      if (this.$root.current_author)
-        additional_meta.authors = [
-          { slugFolderName: this.$root.current_author.slugFolderName },
-        ];
-      if (this.$socketio.socket.id)
-        additional_meta.socketid = this.$socketio.socket.id;
-
-      formData.append(filename, JSON.stringify(additional_meta));
+      (() => {
+        let additional_meta = {};
+        if (_file_to_upload.lastModified)
+          additional_meta.fileCreationDate = _file_to_upload.lastModified;
+        // if (this.$root.current_author)
+        //   additional_meta.authors = [
+        //     { slugFolderName: this.$root.current_author.slugFolderName },
+        //   ];
+        // if (this.$socketio.socket.id)
+        //   additional_meta.socketid = this.$socketio.socket.id;
+        // additional_meta.caption = "will show up because of schema";
+        // additional_meta.title = "will not show up because of schema";
+        formData.append(filename, JSON.stringify(additional_meta));
+      })();
 
       const path = `/${this.folder_type}/${this.folder_slug}/_uploadFile`;
       console.log(`Posting to path ${path}`);

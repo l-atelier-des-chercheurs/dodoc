@@ -52,6 +52,14 @@ module.exports = (function () {
       return API.parseMeta(meta_file_content);
     },
 
+    async readFileContent(...paths) {
+      dev.logfunction({ paths });
+
+      const media_path = API.getPathToUserContent(...paths);
+      const media_file_content = await fs.readFile(media_path, "UTF-8");
+      return media_file_content;
+    },
+
     validateMeta({ fields, new_meta }) {
       let meta = {};
 

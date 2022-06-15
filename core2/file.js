@@ -97,6 +97,14 @@ module.exports = (function () {
       );
       meta.slug = meta_filename;
 
+      // read media file content if file is text
+      if (meta.media_filename && meta.type === "text")
+        meta.content = await utils.readFileContent(
+          folder_type,
+          folder_slug,
+          meta.media_filename
+        );
+
       const _thumbs = await thumbs.makeThumbForMedia({
         media_type: meta.type,
         media_filename: meta.media_filename,
@@ -121,25 +129,28 @@ module.exports = (function () {
       return meta;
     },
 
-    updateFile: async ({ folder_type, folder_slug, meta_slug, new_meta }) => {
-      dev.logfunction({ folder_type, folder_slug, meta_slug, new_meta });
+    updateFile: async ({ folder_type, folder_slug, meta_slug, data }) => {
+      dev.logfunction({ folder_type, folder_slug, meta_slug, data });
 
-      if (!global.settings.schema[folder_type].files?.fields)
-        throw `no fields for files in ${folder_type}`;
+      let meta = await utils.readMetaFile(folder_type, folder_slug, meta_slug);
+      const previous_meta = { ...meta };
 
-      let folder_meta = await utils.readMetaFile(
-        folder_type,
-        folder_slug,
-        meta_slug
-      );
+      let { content, ...new_meta } = data;
 
-      const clean_meta = _cleanNewMeta({
-        folder_type,
-        new_meta,
-      });
+      // update meta file
+      if (new_meta) {
+        const clean_meta = _cleanNewMeta({
+          folder_type,
+          new_meta,
+        });
+        Object.assign(meta, clean_meta);
+      }
 
-      const meta = Object.assign({}, folder_meta, clean_meta);
+      // TODO update media
+      if (content) {
+      }
 
+      meta.date_modified = utils.getCurrentDate();
       await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
@@ -147,13 +158,15 @@ module.exports = (function () {
         meta,
       });
 
-      const changed_meta = Object.keys(meta).reduce((acc, key) => {
-        if (JSON.stringify(meta[key]) !== JSON.stringify(folder_meta[key]))
+      const changed_data = Object.keys(meta).reduce((acc, key) => {
+        if (JSON.stringify(meta[key]) !== JSON.stringify(previous_meta[key]))
           acc[key] = meta[key];
         return acc;
       }, {});
 
-      return changed_meta;
+      if (content) changed_data.content = content;
+
+      return changed_data;
     },
 
     removeFile: async ({ folder_type, folder_slug, meta_slug }) => {
@@ -356,6 +369,7 @@ module.exports = (function () {
         break;
       case ".md":
       case ".rtf":
+      case ".txt":
         new_meta.type = "text";
         break;
       case ".url":
@@ -467,6 +481,8 @@ module.exports = (function () {
 
     // check fields that exist in schema
     // TODO
+
+    // prevent editing fields such as date_created
 
     return new_meta;
   }

@@ -64,16 +64,16 @@ module.exports = (function () {
       return folder_meta;
     },
 
-    createFolder: async ({ folder_type, new_meta }) => {
-      dev.logfunction({ folder_type, new_meta });
+    createFolder: async ({ folder_type, data }) => {
+      dev.logfunction({ folder_type, data });
 
       // generate unique slug from time, or use meta.requested_folder_name
-      let folder_slug = "";
+      let folder_slug = `untitled-${folder_type}`;
 
-      if (new_meta.requested_folder_name)
-        folder_slug = utils.slug(new_meta.requested_folder_name);
+      if (data?.requested_folder_name)
+        folder_slug = utils.slug(data.requested_folder_name);
 
-      if (folder_slug === "") folder_slug = `untitled-${folder_type}`;
+      let { preview, ...meta } = data;
 
       folder_slug = await _preventFolderOverride({ folder_type, folder_slug });
 
@@ -84,48 +84,14 @@ module.exports = (function () {
 
       await fs.ensureDir(path_to_folder);
 
-      let valid_meta = utils.validateMeta({
-        fields: global.settings.schema[folder_type].fields,
-        new_meta,
-      });
+      if (meta) {
+        meta = utils.validateMeta({
+          fields: global.settings.schema[folder_type].fields,
+          new_meta: meta,
+        });
+      }
 
-      valid_meta.date_created = valid_meta.date_modified =
-        utils.getCurrentDate();
-
-      await utils.saveMetaAtPath({
-        folder_type,
-        folder_slug,
-        file_slug: "meta.txt",
-        meta: valid_meta,
-      });
-
-      // store preview if it exists
-
-      // return folder_slug
-      return folder_slug;
-    },
-
-    updateFolderMeta: async ({ folder_type, folder_slug, new_meta }) => {
-      dev.logfunction({ folder_type, folder_slug, new_meta });
-
-      // get folder meta
-      let folder_meta = await utils.readMetaFile(
-        folder_type,
-        folder_slug,
-        "meta.txt"
-      );
-
-      // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the typ
-      const clean_meta = _cleanNewMeta({
-        folder_type,
-        new_meta,
-      });
-
-      const meta = Object.assign({}, folder_meta, clean_meta);
-
-      // TODO update date_modified in meta
-      // folder_meta.infos.date_modified
-
+      meta.date_created = meta.date_modified = utils.getCurrentDate();
       await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
@@ -133,11 +99,49 @@ module.exports = (function () {
         meta,
       });
 
-      // update cache with meta
+      // TODO store preview if it exists
+      if (preview) {
+      }
+
+      return folder_slug;
+    },
+
+    updateFolder: async ({ folder_type, folder_slug, data }) => {
+      dev.logfunction({ folder_type, folder_slug, data });
+
+      // get folder meta
+      let meta = await utils.readMetaFile(folder_type, folder_slug, "meta.txt");
+      const previous_meta = { ...meta };
+
+      let { preview, ...new_meta } = data;
+
+      // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the typ
+      if (new_meta) {
+        const clean_meta = _cleanNewMeta({
+          folder_type,
+          new_meta,
+        });
+        Object.assign(meta, clean_meta);
+      }
+
+      meta.date_modified = utils.getCurrentDate();
+      await utils.saveMetaAtPath({
+        folder_type,
+        folder_slug,
+        file_slug: "meta.txt",
+        meta,
+      });
+
+      // TODO update pre view
+      // rename preview to cover
+      if (preview) {
+      }
+
+      // TODO update
 
       // return changed meta only
       const changed_meta = Object.keys(meta).reduce((acc, key) => {
-        if (JSON.stringify(meta[key]) !== JSON.stringify(folder_meta[key]))
+        if (JSON.stringify(meta[key]) !== JSON.stringify(previous_meta[key]))
           acc[key] = meta[key];
         return acc;
       }, {});
