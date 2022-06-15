@@ -97,12 +97,15 @@ module.exports = dev = (function () {
     if (isDebugMode) _sendToConsole(message, gutil.colors.magenta);
   }
   function error() {
-    // red
-    var args = Array.prototype.slice.call(arguments);
-    var logArgs = "ERROR! ".concat(args);
+    const message =
+      `ERROR! ` +
+      _createLogMessage({
+        fct: error,
+        args: arguments,
+      });
 
-    if (logToFile) _sendToLogFile(logArgs);
-    _sendToConsole(logArgs, gutil.colors.red);
+    if (logToFile) _sendToLogFile(message);
+    _sendToConsole(message, gutil.colors.red);
   }
 
   function performance() {
@@ -130,9 +133,6 @@ module.exports = dev = (function () {
   function _createLogMessage({ fct, args }) {
     let content = [];
 
-    const fct_filename = _getFunctionFilename();
-    const fct_name = fct.caller.name;
-
     if (typeof args === "string") {
       content.push(args);
     } else if (typeof args === "object") {
@@ -143,6 +143,9 @@ module.exports = dev = (function () {
         else if (typeof arg === "object") content.push(_customStringify(arg));
       });
     }
+
+    const fct_filename = _getFunctionFilename();
+    const fct_name = fct.caller.name;
 
     let str = "";
     if (fct_filename) str += `${fct_filename} • `;

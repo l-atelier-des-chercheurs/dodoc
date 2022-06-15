@@ -105,13 +105,15 @@ module.exports = (function () {
         return false;
       }
 
-      const thumbs = await makeThumbFor({
+      const thumbs = await _makeThumbFor({
         media_type,
         full_media_path,
         media_filename,
         path_to_thumb_folder,
         resolutions: filethumbs_resolutions,
         settings,
+      }).catch((err) => {
+        throw err;
       });
 
       return thumbs;
@@ -179,7 +181,7 @@ module.exports = (function () {
       removeFileThumbs({ folder_type, folder_slug, meta_slug }),
   };
 
-  async function makeThumbFor({
+  async function _makeThumbFor({
     media_type,
     full_media_path,
     media_filename,
