@@ -75,7 +75,7 @@ Most install errors (and especially the _Module version mismatch._) are due to n
 **The first thing to check is whether you use the right version of node.js: it must be version 16.13.0.
 To know the version you are running, write `node -v` in a terminal window.**
 
-The reason you have to use this version of node.js is because this app uses Electron, a tool to package node.js and a webbrowser as native apps. The version of Electron this app is using is version 17.1.1, and it uses node version 16.13.0. However, when native modules are built, they are built using the local node version and not Electron’s. Hence, you have to run the exact same version as Electron to prevent this type of error to happen.
+The reason you have to use this version of node.js is because this app uses Electron, a tool to package node.js and a webbrowser as native apps. The version of Electron this app is using is version 17.4.7, and it uses node version 16.13.0. However, when native modules are built, they are built using the local node version and not Electron’s. Hence, you have to run the exact same version as Electron to prevent this type of error to happen.
 
 Because switching between node version is annoying, it is recommended to use [nvm](https://github.com/creationix/nvm) to do so ([nvm windows](https://github.com/coreybutler/nvm-windows) for Windows).
 
@@ -87,7 +87,7 @@ Here are a few other things you can try (but only after making sure you run the 
 
 ```
 # Electron's version.
-export npm_config_target=17.1.1
+export npm_config_target=17.4.7
 # The architecture of Electron, can be ia32 or x64.
 export npm_config_arch=x64
 export npm_config_target_arch=x64
