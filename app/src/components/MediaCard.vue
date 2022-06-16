@@ -47,6 +47,7 @@ export default {
         if (this.file.type === "stl") return this.file.thumbs["0"][180];
         if (this.file.type === "document")
           return this.file.thumbs["page-1"][180];
+        if (this.file.type === "url") return this.file.thumbs["ogimage"][180];
       } catch (err) {
         return false;
       }

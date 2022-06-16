@@ -241,7 +241,6 @@ module.exports = (function () {
               full_media_path,
               full_path_to_thumb,
             });
-
           dev.logverbose(`Made screenshot at`, full_path_to_thumb);
         } else {
           dev.logverbose(`Found screenshot at`, full_path_to_thumb);
@@ -556,15 +555,10 @@ module.exports = (function () {
     const url = await await fs.readFile(full_media_path, "UTF-8");
     if (!url) throw "no url";
 
-    const page_metadata = await _getPageMetadata({ url });
+    const { image } = await _getPageMetadata({ url });
 
-    dev.logfunction({ url, page_metadata });
-
-    await fs.outputFile(full_path_to_thumb, page_metadata);
-
-    // get link og:image or favicon
-
-    // store it at full_path_to_thumb
+    if (image) await _fetchImageAndSave({ url, image, full_path_to_thumb });
+    else throw new Error("No image to download");
   }
 
   async function _readVideoAudioExif({ full_media_path }) {
@@ -628,6 +622,8 @@ module.exports = (function () {
   }
 
   async function _getPageMetadata({ url }) {
+    dev.logfunction({ url });
+
     function addhttp(url) {
       if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
       return url;
@@ -639,16 +635,12 @@ module.exports = (function () {
       headers.agent = new https.Agent({
         rejectUnauthorized: false,
       });
-    try {
-      dev.logfunction({ url });
-      const response = await fetch(url, headers);
-      const html = await response.text;
 
-      const obj = _parseHTMLMetaTags({ html });
-      return obj;
-    } catch (err) {
-      throw err;
-    }
+    const response = await fetch(url, headers);
+    const html = await response.text();
+
+    const obj = _parseHTMLMetaTags({ html });
+    return obj;
   }
 
   function _parseHTMLMetaTags({ html }) {
@@ -669,11 +661,31 @@ module.exports = (function () {
     const image =
       $('meta[property="og:image"]').attr("content") ||
       $('meta[name="og:image"]').attr("content") ||
-      $('link[rel="shortcut icon"]').attr("href");
+      $('link[rel="shortcut icon"]').attr("href") ||
+      $('link[rel="icon"]').attr("href");
 
     if (image) page_meta.image = image;
 
     return page_meta;
+  }
+
+  async function _fetchImageAndSave({ url, image, full_path_to_thumb }) {
+    dev.logfunction({ url, image, full_path_to_thumb });
+
+    const full_url = new URL(image, url).href;
+    dev.logfunction({ full_url });
+
+    let headers = {};
+    if (url.includes("https://"))
+      headers.agent = new https.Agent({
+        rejectUnauthorized: false,
+      });
+
+    const _image = await fetch(full_url);
+    const image_buffer = await _image.buffer();
+    await sharp(image_buffer).toFile(full_path_to_thumb);
+
+    return;
   }
 
   return API;
