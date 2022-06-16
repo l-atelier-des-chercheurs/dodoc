@@ -96,11 +96,10 @@ module.exports = (function () {
         // TODO get URL metadata and preview
         settings = [
           {
-            suffix: "sitemeta",
-            preview_ext: "jpeg",
+            suffix: "ogimage",
+            ext: "jpeg",
           },
         ];
-        return false;
       } else {
         return false;
       }
@@ -113,6 +112,7 @@ module.exports = (function () {
         resolutions: filethumbs_resolutions,
         settings,
       }).catch((err) => {
+        dev.error(err);
         throw err;
       });
 
@@ -235,6 +235,11 @@ module.exports = (function () {
               thumb_folder,
               full_path_to_thumb,
               page: setting.page,
+            });
+          else if (media_type === "url")
+            await _makeLinkPreview({
+              full_media_path,
+              full_path_to_thumb,
             });
 
           dev.logverbose(`Made screenshot at`, full_path_to_thumb);
@@ -544,6 +549,24 @@ module.exports = (function () {
     dev.logverbose(`Moved/removed temp pdf folder`);
   }
 
+  async function _makeLinkPreview({ full_media_path, full_path_to_thumb }) {
+    dev.logfunction({ full_media_path, full_path_to_thumb });
+
+    // get content for full_media_path
+    const url = await await fs.readFile(full_media_path, "UTF-8");
+    if (!url) throw "no url";
+
+    const page_metadata = await _getPageMetadata({ url });
+
+    dev.logfunction({ url, page_metadata });
+
+    await fs.outputFile(full_path_to_thumb, page_metadata);
+
+    // get link og:image or favicon
+
+    // store it at full_path_to_thumb
+  }
+
   async function _readVideoAudioExif({ full_media_path }) {
     try {
       dev.logfunction({ full_media_path });
@@ -602,6 +625,55 @@ module.exports = (function () {
           return reject(err);
         });
     });
+  }
+
+  async function _getPageMetadata({ url }) {
+    function addhttp(url) {
+      if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
+      return url;
+    }
+    url = addhttp(url);
+
+    let headers = {};
+    if (url.includes("https://"))
+      headers.agent = new https.Agent({
+        rejectUnauthorized: false,
+      });
+    try {
+      dev.logfunction({ url });
+      const response = await fetch(url, headers);
+      const html = await response.text;
+
+      const obj = _parseHTMLMetaTags({ html });
+      return obj;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  function _parseHTMLMetaTags({ html }) {
+    dev.logfunction({ html });
+
+    const $ = cheerio.load(html);
+    const page_meta = {};
+
+    const title =
+      $('meta[property="og:title"]').attr("content") || $("title").text();
+    if (title) page_meta.title = title;
+
+    const description =
+      $('meta[property="og:description"]').attr("content") ||
+      $('meta[name="description"]').attr("content");
+    if (description) page_meta.description = description;
+
+    const image =
+      $('meta[property="og:image"]').attr("content") ||
+      $('meta[name="og:image"]').attr("content") ||
+      $('link[rel="shortcut icon"]').attr("href");
+
+    if (image) page_meta.image = image;
+
+    return page_meta;
   }
 
   return API;

@@ -96,13 +96,14 @@ module.exports = dev = (function () {
     if (logToFile) _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, gutil.colors.magenta);
   }
-  function error() {
-    const message =
+  function error(err) {
+    let message =
       `ERROR! ` +
       _createLogMessage({
         fct: error,
-        args: arguments,
       });
+
+    message += err.message;
 
     if (logToFile) _sendToLogFile(message);
     _sendToConsole(message, gutil.colors.red);

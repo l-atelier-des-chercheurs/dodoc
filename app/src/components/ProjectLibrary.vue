@@ -1,6 +1,7 @@
 <template>
   <div>
-    <button type="button" @click="createTextMedia">Créer du texte</button>
+    <button type="button" @click="createText">Créer du texte</button>
+    <button type="button" @click="createLink">Créer un lien</button>
     <button type="button" @click="loadLibrary">Charger la bibliothèque</button>
     {{ all_files.length }}
     <div class="_lib">
@@ -59,13 +60,37 @@ export default {
         this.fetch_error = e.response.data;
       }
     },
-    async createTextMedia() {
-      let formData = new FormData();
+    async createText() {
       const filename = "texte.txt";
+      const content = "PLOP PLIP";
 
-      const content = "https://www.apluscestmieux.org/cyclotour";
+      const additional_meta = {
+        caption: "plip",
+      };
+
+      this.uploadText({ filename, content, additional_meta });
+    },
+
+    async createLink() {
+      const filename = "mon-lien.txt";
+      const content = "https://www.plurality-university.org/";
+
+      const additional_meta = {
+        type: "url",
+        caption: "plop",
+      };
+
+      this.uploadText({ filename, content, additional_meta });
+    },
+
+    async uploadText({ filename, content, additional_meta }) {
+      let formData = new FormData();
+
       const _file_to_upload = new Blob([content], { type: "text/plain" });
       formData.append("file", _file_to_upload, filename);
+
+      if (additional_meta)
+        formData.append(filename, JSON.stringify(additional_meta));
 
       const path = `/projects/${this.project_slug}/_uploadFile`;
 

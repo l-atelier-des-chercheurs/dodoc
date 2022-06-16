@@ -98,7 +98,7 @@ module.exports = (function () {
       meta.slug = meta_filename;
 
       // read media file content if file is text
-      if (meta.media_filename && meta.type === "text")
+      if (meta.media_filename.endsWith("txt"))
         meta.content = await utils.readFileContent(
           folder_type,
           folder_slug,
@@ -152,6 +152,7 @@ module.exports = (function () {
 
       // TODO update media
       if (content) {
+        // TODO remove thumbs
       }
 
       meta.date_modified = utils.getCurrentDate();
@@ -340,53 +341,53 @@ module.exports = (function () {
 
     new_meta.media_filename = filename;
 
-    // set correct file type from additional meta or filename
-    const ext = path.extname(filename);
+    if (additional_meta.type) {
+      new_meta.type = additional_meta.type;
+    } else {
+      const ext = path.extname(filename);
 
-    switch (ext.toLowerCase()) {
-      case ".jpeg":
-      case ".jpg":
-      case ".webp":
-      case ".png":
-      case ".gif":
-      case ".tiff":
-      case ".tif":
-      case ".dng":
-      case ".svg":
-        new_meta.type = "image";
-        break;
-      case ".mp4":
-      case ".flv":
-      case ".mov":
-      case ".webm":
-      case ".avi":
-        new_meta.type = "video";
-        break;
-      case ".stl":
-        new_meta.type = "stl";
-        break;
-      case ".mp3":
-      case ".wav":
-      case ".m4a":
-      case ".ogg":
-        new_meta.type = "audio";
-        break;
-      case ".md":
-      case ".rtf":
-      case ".txt":
-        new_meta.type = "text";
-        break;
-      case ".url":
-        new_meta.type = "url";
-        break;
-      // case ".ino":
-      //   additionalMeta.type = "code";
-      //   break;
-      case ".pdf":
-        new_meta.type = "document";
-        break;
+      switch (ext.toLowerCase()) {
+        case ".jpeg":
+        case ".jpg":
+        case ".webp":
+        case ".png":
+        case ".gif":
+        case ".tiff":
+        case ".tif":
+        case ".dng":
+        case ".svg":
+          new_meta.type = "image";
+          break;
+        case ".mp4":
+        case ".flv":
+        case ".mov":
+        case ".webm":
+        case ".avi":
+          new_meta.type = "video";
+          break;
+        case ".stl":
+          new_meta.type = "stl";
+          break;
+        case ".mp3":
+        case ".wav":
+        case ".m4a":
+        case ".ogg":
+          new_meta.type = "audio";
+          break;
+        case ".md":
+        case ".rtf":
+        case ".txt":
+          new_meta.type = "text";
+          break;
+        // case ".ino":
+        //   additionalMeta.type = "code";
+        //   break;
+        case ".pdf":
+          new_meta.type = "document";
+          break;
+      }
+      dev.logfunction(`Type determined to be ${new_meta.type}`);
     }
-    dev.logfunction(`Type determined to be ${new_meta.type}`);
 
     return new_meta;
   }

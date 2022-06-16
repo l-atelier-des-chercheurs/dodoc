@@ -88,6 +88,7 @@
     "validator": "^13.7.0",
     "websocket-json-stream": "0.0.3",
     "write-file-atomic": "^4.0.1",
+    "pdf-extractor": "^2.1.2",
     "ws": "^8.6.0"
   },
   "devDependencies": {
@@ -97,8 +98,5 @@
     "electron-rebuild": "^3.2.7",
     "electron-reloader": "^1.2.3",
     "node-gyp": "^9.0.0"
-  },
-  "optionalDependencies": {
-    "pdf-extractor": "^2.1.2"
   }
 }
