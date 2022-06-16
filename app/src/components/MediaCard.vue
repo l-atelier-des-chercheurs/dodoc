@@ -1,17 +1,21 @@
 <template>
   <div class="_mediaCard">
-    Card
-    <img :src="thumb" />
+    <img :src="thumb" size="50" />
     {{ file.caption }}
-    <pre>
-      {{ file }}
-    </pre>
-
     <TextField
       field_name="caption"
       :content="file.caption"
       :path_to_resource="`/projects/${this.project_slug}/${this.file.slug}`"
     />
+
+    <details>
+      <summary>Details</summary>
+
+      <pre>
+      {{ file }}
+    </pre
+      >
+    </details>
 
     <button type="button" @click="removeFile">Remove</button>
     <!-- <pre>{{ file }}</pre> -->

@@ -1,13 +1,13 @@
 <template>
   <div class="m_project">
-    <h1>
+    <strong>
       <TitleField
         :field_name="'title'"
         :content="project.title"
         :show_label="false"
         :path_to_resource="`/projects/${project.slug}`"
       />
-    </h1>
+    </strong>
 
     <TextField
       field_name="description"

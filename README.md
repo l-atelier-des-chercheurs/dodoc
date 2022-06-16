@@ -89,8 +89,8 @@ Here are a few other things you can try (but only after making sure you run the 
 # Electron's version.
 export npm_config_target=17.4.7
 # The architecture of Electron, can be ia32 or x64.
-export npm_config_arch=x64
-export npm_config_target_arch=x64
+export npm_config_arch=arm64
+export npm_config_target_arch=arm64
 # Download headers for Electron.
 export npm_config_disturl=https://atom.io/download/electron
 # Tell node-pre-gyp that we are building for Electron.
@@ -105,6 +105,12 @@ HOME=~/.electron-gyp npm install
 
 ```
 ./node_modules/.bin/electron-builder install-app-deps
+```
+
+4. use electron-rebuilt as well
+
+```
+./node_modules/.bin/electron-rebuild
 ```
 
 **sharp on ubuntu**
