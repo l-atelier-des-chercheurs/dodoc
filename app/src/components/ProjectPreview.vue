@@ -19,26 +19,19 @@
     <button type="button" @click="updateProject">save</button>
     <button type="button" @click="removeProject">delete</button>
 
-    <SendMedia :folder_type="'projects'" :folder_slug="project.slug" />
+    <router-link :to="`/projet/${project.slug}`">Ouvrir</router-link>
 
-    <ProjectLibrary :project_slug="project.slug" :project="project" />
     <!-- fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
     response = {{ response }} <br /> -->
   </div>
 </template>
 <script>
-import SendMedia from "./SendMedia.vue";
-import ProjectLibrary from "./ProjectLibrary.vue";
-
 export default {
   props: {
     project: Object,
   },
-  components: {
-    SendMedia,
-    ProjectLibrary,
-  },
+  components: {},
   data() {
     return {
       new_title: this.project.title,
@@ -46,6 +39,8 @@ export default {
       fetch_status: null,
       fetch_error: null,
       response: null,
+
+      show_lib: false,
     };
   },
   created() {},

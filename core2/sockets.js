@@ -77,30 +77,46 @@ module.exports = (function () {
         onevent.call(this, packet); // additional call to catch-all
       };
 
-      socket.on("*", (event, data) => dev.log(`RECEIVED EVENT: ${event}`));
-
-      notifier.on("createFolder", (content) => {
-        socket.emit("createFolder", content);
+      socket.on("joinRoom", ({ room }) => {
+        dev.logpackets(`socket ${socket.id} is joining ${room}`);
+        socket.join(room);
       });
-      notifier.on("updateFolder", (content) => {
-        socket.emit("updateFolder", content);
+      socket.on("leaveRoom", ({ room }) => {
+        dev.logpackets(`socket ${socket.id} is leaving ${room}`);
+        socket.leave(room);
       });
-      notifier.on("removeFolder", (content) => {
-        socket.emit("removeFolder", content);
+      socket.on("disconnect", () => {
+        console.log(`user ${socket.id} disconnected`);
       });
-
-      notifier.on("newFile", (content) => {
-        socket.emit("newFile", content);
-      });
-      notifier.on("updateFile", (content) => {
-        socket.emit("updateFile", content);
-      });
-      notifier.on("removeFile", (content) => {
-        socket.emit("removeFile", content);
-      });
-
-      // socket.on("authenticate", (d) => onAuthenticate(socket, d));
     });
+
+    // https://socket.io/fr/docs/v3/emit-cheatsheet/
+    notifier.on("createFolder", (path, content) => {
+      io.to(path).emit("createFolder", content);
+    });
+    notifier.on("updateFolder", (path, content) => {
+      // notify all connected
+      io.to(path).emit("updateFolder", content);
+    });
+    notifier.on("removeFolder", (path, content) => {
+      // notify all connected
+      io.to(path).emit("removeFolder", content);
+    });
+
+    notifier.on("newFile", (content) => {
+      // notify only those in the room
+      io.in("").emit("newFile", content);
+    });
+    notifier.on("updateFile", (content) => {
+      // notify only those in the room
+      socket.emit("updateFile", content);
+    });
+    notifier.on("removeFile", (content) => {
+      // notify only those in the room
+      socket.emit("removeFile", content);
+    });
+
+    io.on("*", (event, data) => dev.log(`RECEIVED EVENT: ${event}`));
   }
 
   return API;

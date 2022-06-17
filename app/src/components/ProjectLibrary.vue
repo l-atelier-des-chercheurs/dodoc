@@ -29,9 +29,7 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    // this.loadLibrary();
-  },
+  mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -60,6 +58,8 @@ export default {
         this.fetch_error = e.response.data;
       }
     },
+    subscribeToProject() {},
+
     async createText() {
       const filename = "texte.txt";
       const content = "PLOP PLIP";

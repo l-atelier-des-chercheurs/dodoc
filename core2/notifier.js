@@ -1,3 +1,12 @@
-let EventEmitter = require("events").EventEmitter;
-let notifier = new EventEmitter();
-module.exports = notifier;
+var EventEmitter2 = require("eventemitter2");
+var notifier = new EventEmitter2({
+  wildcard: true,
+});
+
+module.exports = (function () {
+  notifier.onAny((event, path, data) => {
+    dev.logfunction({ event, path, data });
+  });
+
+  return notifier;
+})();

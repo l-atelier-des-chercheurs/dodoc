@@ -1,21 +1,26 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import AboutView from "../views/AboutView.vue";
+import ProjectsView from "../views/ProjectsView.vue";
+import ProjectView from "../views/ProjectView.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "home",
+    name: "Accueil",
     component: HomeView,
   },
-  { path: "/api2" },
   {
-    path: "/about",
-    name: "about",
-    component: AboutView,
+    path: "/projets",
+    name: "Projets",
+    component: ProjectsView,
+  },
+  {
+    path: "/projet/:slug",
+    name: "projet",
+    component: ProjectView,
     // component: () =>
     //   import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },

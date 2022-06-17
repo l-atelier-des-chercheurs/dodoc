@@ -7,7 +7,7 @@
     <button type="button" @click="createProject">Create</button>
     <br />
     <br />
-    <ProjectView
+    <ProjectPreview
       v-for="project in projects"
       :project="project"
       :key="project.slug"
@@ -15,12 +15,12 @@
   </div>
 </template>
 <script>
-import ProjectView from "@/components/ProjectView.vue";
+import ProjectPreview from "@/components/ProjectPreview.vue";
 
 export default {
   props: {},
   components: {
-    ProjectView,
+    ProjectPreview,
   },
   data() {
     return {
@@ -33,10 +33,13 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    this.getProjects();
+  async mounted() {
+    await this.getProjects();
+    this.$socketio.join({ room: "projects" });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$socketio.leave({ room: "projects" });
+  },
   watch: {},
   computed: {
     projects() {

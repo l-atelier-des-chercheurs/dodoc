@@ -1,20 +1,18 @@
 <template>
   <div class="">
     <NextZoning />
-    <TestAPI />
+
+    <router-link to="/projets">Les projets</router-link>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import NextZoning from "@/components/NextZoning.vue";
-import TestAPI from "@/components/TestAPI.vue";
 
 export default {
-  name: "HomeView",
   components: {
     NextZoning,
-    TestAPI,
   },
 };
 </script>

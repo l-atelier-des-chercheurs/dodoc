@@ -9,21 +9,27 @@ export default function () {
       socket: "",
     },
     methods: {
-      connect() {
-        let opts = {};
-        this.socket = io(opts);
+      init() {
+        this.socket = io({
+          // TODO : only connect when user logs in ?
+          // autoConnect: false,
+        });
 
         // client-side
         this.socket.on("connect", () => {
           console.log(this.socket.id);
-          this.$eventHub.$emit("connect", { socketid: this.socket.id });
+          this.$eventHub.$emit("socketio.connect", {
+            socketid: this.socket.id,
+          });
         });
         this.socket.on("reconnect", () => {
           console.log(this.socket.id);
-          this.$eventHub.$emit("reconnect", { socketid: this.socket.id });
+          this.$eventHub.$emit("socketio.reconnect", {
+            socketid: this.socket.id,
+          });
         });
         this.socket.on("disconnect", () => {
-          this.$eventHub.$emit("disconnect");
+          this.$eventHub.$emit("socketio.disconnect");
         });
 
         this.socket.onAny((eventName, ...args) => {
@@ -116,6 +122,13 @@ export default function () {
         const folder = this.findFolder({ folder_type, folder_slug });
         if (folder.files) return folder.files.find((f) => f.slug === meta_slug);
         return false;
+      },
+
+      join({ room }) {
+        this.socket.emit("joinRoom", { room });
+      },
+      leave({ room }) {
+        this.socket.emit("leaveRoom", { room });
       },
     },
   });

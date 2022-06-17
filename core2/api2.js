@@ -16,48 +16,47 @@ module.exports = (function () {
   function _initAPI(app) {
     dev.logfunction();
 
-    app.get("/", loadIndex);
     app.get("/_perf", loadPerf);
-
-    app.options("/api2/*", cors());
-
+    app.options("/_api2/*", cors());
     app.get(
-      "/api2/:folder_type?/:folder_slug?",
+      "/_api2/:folder_type?/:folder_slug?",
       [cors(_corsCheck), _sessionPasswordCheck],
       _getResource
     );
 
     app.post(
-      "/api2/:folder_type",
+      "/_api2/:folder_type",
       [cors(_corsCheck), _sessionPasswordCheck],
       _createFolder
     );
     app.patch(
-      "/api2/:folder_type/:folder_slug",
+      "/_api2/:folder_type/:folder_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _updateFolder
     );
     app.delete(
-      "/api2/:folder_type/:folder_slug",
+      "/_api2/:folder_type/:folder_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _removeFolder
     );
 
     app.post(
-      "/api2/:folder_type/:folder_slug/_uploadFile",
+      "/_api2/:folder_type/:folder_slug/_uploadFile",
       [cors(_corsCheck), _sessionPasswordCheck],
       _uploadFile
     );
     app.patch(
-      "/api2/:folder_type/:folder_slug/:meta_slug",
+      "/_api2/:folder_type/:folder_slug/:meta_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _updateFile
     );
     app.delete(
-      "/api2/:folder_type/:folder_slug/:meta_slug",
+      "/_api2/:folder_type/:folder_slug/:meta_slug",
       [cors(_corsCheck), _sessionPasswordCheck],
       _removeFile
     );
+
+    app.get("/*", loadIndex);
   }
 
   function _corsCheck(req, callback) {
@@ -73,6 +72,7 @@ module.exports = (function () {
   }
 
   function loadIndex(rea, res) {
+    dev.logfunction();
     res.render("index2");
   }
   function loadPerf(rea, res) {
@@ -128,7 +128,11 @@ module.exports = (function () {
         folder_type,
         folder_slug: new_folder_slug,
       });
-      notifier.emit("createFolder", { folder_type, meta: new_folder_meta });
+
+      notifier.emit("createFolder", `${folder_type}`, {
+        folder_type,
+        meta: new_folder_meta,
+      });
     } catch (err) {
       dev.error("Failed to update expected content: " + err);
       res.status(500).send(err);
@@ -161,7 +165,11 @@ module.exports = (function () {
       });
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("updateFolder", { folder_type, folder_slug, changed_data });
+      notifier.emit("updateFolder", `${folder_type}`, {
+        folder_type,
+        folder_slug,
+        changed_data,
+      });
     } catch (err) {
       dev.error("Failed to update expected content: " + err);
       res.status(500).send(err);
@@ -190,7 +198,10 @@ module.exports = (function () {
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("removeFolder", { folder_type, folder_slug });
+      notifier.emit("removeFolder", `${folder_type}`, {
+        folder_type,
+        folder_slug,
+      });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
       res.status(500).send(err);
@@ -226,7 +237,11 @@ module.exports = (function () {
         meta_filename,
       });
 
-      notifier.emit("newFile", { folder_type, folder_slug, file_meta });
+      notifier.emit("newFile", `${folder_type}/${folder_slug}`, {
+        folder_type,
+        folder_slug,
+        file_meta,
+      });
     } catch (err) {
       dev.error("Failed to upload file: " + err);
       res.status(500).send(err);
@@ -261,7 +276,7 @@ module.exports = (function () {
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("updateFile", {
+      notifier.emit("updateFile", `${folder_type}/${folder_slug}`, {
         folder_type,
         folder_slug,
         meta_slug,
@@ -298,7 +313,7 @@ module.exports = (function () {
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("removeFile", {
+      notifier.emit("removeFile", `${folder_type}/${folder_slug}`, {
         folder_type,
         folder_slug,
         meta_slug,
