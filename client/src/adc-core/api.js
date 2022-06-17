@@ -134,8 +134,7 @@ export default function () {
       },
 
       async getFolders({ folder_type }) {
-        // fetch folders: if it doesnt exist in this.store, we fetch all
-        // if it does and no deconnexion happened, everything should be valid
+        // fetch folders: only fetch if necessary
         const response = await this.$axios.get(`/${folder_type}`);
         const d = response.data;
         this.$set(this.store, folder_type, d);

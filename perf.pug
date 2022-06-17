@@ -6,12 +6,22 @@ html
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Document
   body 
-    - var n = 0;
-    while n < 5
-      - ++n
-      = n
-      iframe(width="250" height="400" src="https://localhost:8080")
+    <div id="app">
+      <input type="number" v-model.number="count" /><br>
+      <template v-for="i in Array(count).fill(undefined)">
+        <iframe src="https://localhost:8080" width="300" height="400">
+        </iframe>
+      </template>
+    </div>
 
+  script(src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js")
+  script.
+    var app = new Vue({
+      el: '#app',
+      data: {
+        count: 5
+      }
+    })
   style. 
     body {
       margin: 0;
