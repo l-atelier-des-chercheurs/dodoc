@@ -26,7 +26,7 @@ module.exports = (function () {
       //     socket.handshake.query.hashed_session_password
       //   )
       // ) {
-      dev.log(`CONNECTION ALLOWED`);
+      dev.logsockets(`CONNECTION ALLOWED`);
       next();
       // } else {
       //   dev.error(`CONNECTION DENIED`);
@@ -35,10 +35,12 @@ module.exports = (function () {
     });
 
     io.on("connection", async (socket) => {
-      dev.log(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
+      dev.logsockets(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
 
       const sockets = await io.fetchSockets();
-      dev.log(`Clients connected currently : ${Object.keys(sockets).length}`);
+      dev.logsockets(
+        `Clients connected currently : ${Object.keys(sockets).length}`
+      );
 
       // setTimeout(() => {
       // socket.emit("msg", "hello world");
@@ -78,15 +80,15 @@ module.exports = (function () {
       };
 
       socket.on("joinRoom", ({ room }) => {
-        dev.logpackets(`socket ${socket.id} is joining ${room}`);
+        dev.logsockets(`socket ${socket.id} is joining ${room}`);
         socket.join(room);
       });
       socket.on("leaveRoom", ({ room }) => {
-        dev.logpackets(`socket ${socket.id} is leaving ${room}`);
+        dev.logsockets(`socket ${socket.id} is leaving ${room}`);
         socket.leave(room);
       });
       socket.on("disconnect", () => {
-        console.log(`user ${socket.id} disconnected`);
+        dev.logsockets(`user ${socket.id} disconnected`);
       });
     });
 
@@ -116,7 +118,9 @@ module.exports = (function () {
       socket.emit("removeFile", content);
     });
 
-    io.on("*", (event, data) => dev.log(`RECEIVED EVENT: ${event}`));
+    io.on("*", (event, data) =>
+      dev.logsockets(`RECEIVED EVENT: ${event} with data.length ${data.length}`)
+    );
   }
 
   return API;

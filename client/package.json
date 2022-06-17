@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "16.13.0",
+    "node": "16.14.2",
     "npm": "*"
   },
   "scripts": {
@@ -16,6 +16,7 @@
     "@shoelace-style/vue-sl-model": "^1.0.0",
     "alertify.js": "^1.0.12",
     "axios": "^0.27.2",
+    "axios-debug-log": "^0.8.4",
     "core-js": "^3.8.3",
     "socket.io-client": "^4.5.1",
     "store": "^2.0.12",

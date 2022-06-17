@@ -95,7 +95,4 @@ html
   body(data-mode=mode)
     #app
 
-    if(global.settings.frontEnd === 'app')
-      script(src=path_prefix + "bundle.js")
-    else  
-      script(src=path_prefix + "dist/build.js")
+    script(src=path_prefix + "bundle.js")

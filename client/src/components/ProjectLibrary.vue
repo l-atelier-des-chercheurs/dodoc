@@ -38,26 +38,26 @@ export default {
     },
   },
   methods: {
-    async loadLibrary() {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
+    // async loadLibrary() {
+    //   this.fetch_status = "pending";
+    //   this.fetch_error = null;
 
-      try {
-        const response = await this.$axios.get(
-          `/projects/${this.project_slug}`
-        );
+    //   try {
+    //     const response = await this.$axios.get(
+    //       `/projects/${this.project_slug}`
+    //     );
 
-        const project_index = window.store.projects.findIndex(
-          (project) => project.slug === this.project_slug
-        );
-        this.$set(window.store.projects[project_index], "files", response.data);
+    //     const project_index = window.store.projects.findIndex(
+    //       (project) => project.slug === this.project_slug
+    //     );
+    //     this.$set(window.store.projects[project_index], "files", response.data);
 
-        this.fetch_status = "success";
-      } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
-      }
-    },
+    //     this.fetch_status = "success";
+    //   } catch (e) {
+    //     this.fetch_status = "error";
+    //     this.fetch_error = e.response.data;
+    //   }
+    // },
     subscribeToProject() {},
 
     async createText() {
@@ -92,7 +92,7 @@ export default {
       if (additional_meta)
         formData.append(filename, JSON.stringify(additional_meta));
 
-      const path = `/projects/${this.project_slug}/_uploadFile`;
+      const path = `/projects/${this.project_slug}/_upload`;
 
       let res = await this.$axios
         .post(path, formData, {

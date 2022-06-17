@@ -13,12 +13,12 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/projets",
+    path: "/projects",
     name: "Projets",
     component: ProjectsView,
   },
   {
-    path: "/projet/:slug",
+    path: "/project/:slug",
     name: "projet",
     component: ProjectView,
     // component: () =>

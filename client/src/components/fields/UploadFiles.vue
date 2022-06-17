@@ -100,14 +100,14 @@ export default {
         //   additional_meta.authors = [
         //     { slugFolderName: this.$root.current_author.slugFolderName },
         //   ];
-        // if (this.$socketio.socket.id)
-        //   additional_meta.socketid = this.$socketio.socket.id;
+        // if (this.$api.socket.id)
+        //   additional_meta.socketid = this.$api.socket.id;
         // additional_meta.caption = "will show up because of schema";
         // additional_meta.title = "will not show up because of schema";
         formData.append(filename, JSON.stringify(additional_meta));
       })();
 
-      const path = `/${this.folder_type}/${this.folder_slug}/_uploadFile`;
+      const path = `/${this.folder_type}/${this.folder_slug}/_upload`;
       console.log(`Posting to path ${path}`);
 
       let res = await this.$axios

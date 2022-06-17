@@ -19,9 +19,14 @@ module.exports = (function () {
     app.get("/_perf", loadPerf);
     app.options("/_api2/*", cors());
     app.get(
-      "/_api2/:folder_type?/:folder_slug?",
+      "/_api2/:folder_type",
       [cors(_corsCheck), _sessionPasswordCheck],
-      _getResource
+      _getFolders
+    );
+    app.get(
+      "/_api2/:folder_type/:folder_slug",
+      [cors(_corsCheck), _sessionPasswordCheck],
+      _getFolderWithFiles
     );
 
     app.post(
@@ -41,7 +46,7 @@ module.exports = (function () {
     );
 
     app.post(
-      "/_api2/:folder_type/:folder_slug/_uploadFile",
+      "/_api2/:folder_type/:folder_slug/_upload",
       [cors(_corsCheck), _sessionPasswordCheck],
       _uploadFile
     );
@@ -73,34 +78,53 @@ module.exports = (function () {
 
   function loadIndex(rea, res) {
     dev.logfunction();
-    res.render("index2");
+    let d = {};
+    d.schema = global.settings.schema;
+    res.render("index2", d);
   }
   function loadPerf(rea, res) {
     res.render("perf");
   }
-  async function _getResource(req, res, next) {
+  async function _getFolders(req, res, next) {
     let folder_type = req.params.folder_type;
-    let folder_slug = req.params.folder_slug;
-    dev.logfunction({ folder_type, folder_slug });
+    dev.logfunction({ folder_type });
 
-    if (!folder_type) return res.status(422).send("Missing folder_type field");
-    if (!global.settings.schema.hasOwnProperty(folder_type))
+    if (!global.settings.schema[folder_type])
       return res.status(422).send("Missing schema for folder_type");
 
     const hrstart = process.hrtime();
 
     try {
-      let d;
-      if (!folder_slug) d = await folder.getFolders({ folder_type });
-      else d = await file.getFiles({ folder_type, folder_slug });
-
+      const d = await folder.getFolders({ folder_type });
       res.setHeader("Access-Control-Allow-Origin", "*");
+      dev.logpackets({ d });
       res.json(d);
     } catch (err) {
       dev.error("Failed to get expected content: " + err);
       res.status(500).send(err);
     }
 
+    let hrend = process.hrtime(hrstart);
+    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+
+    cache.printStatus();
+  }
+
+  async function _getFolderWithFiles(req, res, next) {
+    let { folder_type, folder_slug } = req.params;
+    dev.logfunction({ folder_type, folder_slug });
+
+    if (!global.settings.schema[folder_type].files)
+      return res.status(422).send("No files for folder_type");
+
+    const hrstart = process.hrtime();
+
+    try {
+      const folder_meta = await folder.getFolder({ folder_type, folder_slug });
+      const files = await file.getFiles({ folder_type, folder_slug });
+      folder_meta.files = files;
+      res.json(folder_meta);
+    } catch (err) {}
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
 

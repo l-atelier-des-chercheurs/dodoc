@@ -30,7 +30,7 @@ Download the latest release from the [release page](https://github.com/l-atelier
 
 ### Method 2 — the long way
 
-_You need [node.js version 16.13.0](https://nodejs.org/download/release/v16.13.0/) and [python 2.7](https://www.python.org/) to install this app with this method. On Windows, you also need to install Microsoft’s Windows Build Tools by following the instructions [here](https://github.com/Microsoft/nodejs-guidelines/blob/master/windows-environment.md#prerequisites)._
+_You need [node.js version 16.14.2](https://nodejs.org/download/release/v16.14.2/) and [python 2.7](https://www.python.org/) to install this app with this method. On Windows, you also need to install Microsoft’s Windows Build Tools by following the instructions [here](https://github.com/Microsoft/nodejs-guidelines/blob/master/windows-environment.md#prerequisites)._
 
 #### 1. Download this repository
 
@@ -72,10 +72,10 @@ npm start
 
 Most install errors (and especially the _Module version mismatch._) are due to native packages such as [sharp](https://github.com/lovell/sharp), a powerful image manipulation library.
 
-**The first thing to check is whether you use the right version of node.js: it must be version 16.13.0.
+**The first thing to check is whether you use the right version of node.js: it must be version 16.14.2.
 To know the version you are running, write `node -v` in a terminal window.**
 
-The reason you have to use this version of node.js is because this app uses Electron, a tool to package node.js and a webbrowser as native apps. The version of Electron this app is using is version 17.4.7, and it uses node version 16.13.0. However, when native modules are built, they are built using the local node version and not Electron’s. Hence, you have to run the exact same version as Electron to prevent this type of error to happen.
+The reason you have to use this version of node.js is because this app uses Electron, a tool to package node.js and a webbrowser as native apps. The version of Electron this app is using is version 19.0.4, and it uses node version 16.14.2. However, when native modules are built, they are built using the local node version and not Electron’s. Hence, you have to run the exact same version as Electron to prevent this type of error to happen.
 
 Because switching between node version is annoying, it is recommended to use [nvm](https://github.com/creationix/nvm) to do so ([nvm windows](https://github.com/coreybutler/nvm-windows) for Windows).
 
@@ -87,7 +87,7 @@ Here are a few other things you can try (but only after making sure you run the 
 
 ```
 # Electron's version.
-export npm_config_target=17.4.7
+export npm_config_target=19.0.4
 # The architecture of Electron, can be ia32 or x64.
 export npm_config_arch=arm64
 export npm_config_target_arch=arm64

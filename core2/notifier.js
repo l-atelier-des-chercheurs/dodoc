@@ -7,6 +7,5 @@ module.exports = (function () {
   notifier.onAny((event, path, data) => {
     dev.logfunction({ event, path, data });
   });
-
   return notifier;
 })();

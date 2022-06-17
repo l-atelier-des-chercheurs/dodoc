@@ -2,7 +2,7 @@
   <div class="">
     <NextZoning />
 
-    <router-link to="/projets">Les projets</router-link>
+    <router-link to="/projects">Les projets</router-link>
   </div>
 </template>
 

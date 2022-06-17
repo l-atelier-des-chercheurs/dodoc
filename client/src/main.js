@@ -8,8 +8,11 @@ Vue.prototype.$eventHub = new Vue(); // Global event bus
 
 import i18n from "./adc-core/i18n.js";
 
-import socketio from "./adc-core/socketio.js";
-Vue.prototype.$socketio = socketio();
+import alertify from "alertify.js";
+Vue.prototype.$alertify = alertify;
+
+import api from "./adc-core/api.js";
+Vue.prototype.$api = api();
 
 // import "@shoelace-style/shoelace/dist/themes/light.css";
 // import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path";
@@ -29,12 +32,23 @@ Vue.component("MetaFieldHeader", MetaFieldHeader);
 import SaveCancelButtons from "@/components/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
 
+import "axios-debug-log/enable";
 import axios from "axios";
 const instance = axios.create({
   baseURL: window.location.origin + "/_api2",
   // headers: {
   //   Origin: window.location.origin,
   // },
+});
+instance.interceptors.request.use((request) => {
+  alertify
+    .delay(4000)
+    .success(
+      `${request.method} + ${request.url} + ${
+        request.data ? JSON.stringify(request.data) : "no-data"
+      }`
+    );
+  return request;
 });
 Vue.prototype.$axios = instance;
 
@@ -48,19 +62,17 @@ new Vue({
     is_connected: false,
   },
   mounted() {
-    this.$socketio.init();
+    this.$api.init();
     this.$eventHub.$on("socketio.connect", this.socketConnected);
-    this.$eventHub.$on("reconnect", this.socketConnected);
-    this.$eventHub.$on("disconnect", this.socketDisconnected);
+    this.$eventHub.$on("socketio.reconnect", this.socketConnected);
+    this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
   },
   methods: {
     socketConnected() {
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
-        .success(
-          `Connected or reconnected with id ${this.$socketio.socket.id}`
-        );
+        .success(`Connected or reconnected with id ${this.$api.socket.id}`);
       this.is_connected = true;
     },
     socketDisconnected() {

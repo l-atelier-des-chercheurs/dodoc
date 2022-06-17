@@ -1,8 +1,7 @@
 <template>
   <div>
-    <h1>Test API</h1>
-    <button type="button" @click="getProjects">Fetch projects</button>
-
+    <router-link to="/">Accueil</router-link>
+    <h1>Projets</h1>
     <input type="text" v-model="new_project_title" />
     <button type="button" @click="createProject">Create</button>
     <br />
@@ -30,22 +29,22 @@ export default {
       new_project_title: (
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2),
+
+      projects: null,
     };
   },
   created() {},
   async mounted() {
-    await this.getProjects();
-    this.$socketio.join({ room: "projects" });
+    this.projects = await this.$api.getFolders({
+      folder_type: "projects",
+    });
+    this.$api.join({ room: "projects" });
   },
   beforeDestroy() {
-    this.$socketio.leave({ room: "projects" });
+    this.$api.leave({ room: "projects" });
   },
   watch: {},
-  computed: {
-    projects() {
-      return this.$root.store.projects;
-    },
-  },
+  computed: {},
   methods: {
     async createProject() {
       this.fetch_status = "pending";
@@ -61,19 +60,6 @@ export default {
         this.new_project_title = (
           Math.random().toString(36) + "00000000000000000"
         ).slice(2, 3 + 2);
-      } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
-      }
-    },
-    async getProjects() {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
-
-      try {
-        const response = await this.$axios.get("/projects");
-        window.store.projects = response.data;
-        this.fetch_status = "success";
       } catch (e) {
         this.fetch_status = "error";
         this.fetch_error = e.response.data;

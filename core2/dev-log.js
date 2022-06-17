@@ -1,5 +1,5 @@
-var gutil = require("gulp-util");
-var path = require("path");
+const path = require("path"),
+  chalk = require("chalk");
 
 module.exports = dev = (function () {
   let isDebugMode = false;
@@ -14,6 +14,7 @@ module.exports = dev = (function () {
     log: log,
     logverbose: logverbose,
     logpackets: logpackets,
+    logsockets: logsockets,
     logfunction: logfunction,
     error: error,
     performance: performance,
@@ -30,7 +31,8 @@ module.exports = dev = (function () {
       console.log("Debug mode is enabled");
       console.log("---");
       dev.logfunction("(log) magenta is for functions");
-      dev.logpackets({ str: "(log) green is for packets" });
+      dev.logpackets("(log) green is for packets");
+      dev.logsockets("(purple) green is for sockets");
       if (isVerboseMode) {
         dev.logverbose("(dev and verbose) gray for regular parsing data");
       }
@@ -70,18 +72,33 @@ module.exports = dev = (function () {
       });
 
     if (logToFile) _sendToLogFile(message);
-    if (isDebugMode) _sendToConsole(message, gutil.colors.gray);
+    if (isDebugMode) _sendToConsole(message, chalk.gray);
   }
-  function logpackets({ str, obj }) {
-    if (!logToFile && !isDebugMode) return;
-    // green
-    let log_string = "* ";
+  function logpackets() {
+    if (!logToFile && !isVerboseMode) return;
 
-    if (str) log_string += str;
-    if (obj) log_string += JSON.stringify(obj);
+    const message =
+      `* ` +
+      _createLogMessage({
+        fct: logpackets,
+        args: arguments,
+      });
 
-    if (logToFile) _sendToLogFile(log_string);
-    if (isDebugMode) _sendToConsole(log_string, gutil.colors.green);
+    if (logToFile) _sendToLogFile(message);
+    if (isDebugMode) _sendToConsole(message, chalk.green);
+  }
+  function logsockets() {
+    if (!logToFile && !isVerboseMode) return;
+
+    const message =
+      `→ ` +
+      _createLogMessage({
+        fct: logsockets,
+        args: arguments,
+      });
+
+    if (logToFile) _sendToLogFile(message);
+    if (isDebugMode) _sendToConsole(message, chalk.purple);
   }
   function logfunction() {
     if (!logToFile && !isDebugMode) return;
@@ -94,7 +111,7 @@ module.exports = dev = (function () {
       });
 
     if (logToFile) _sendToLogFile(message);
-    if (isDebugMode) _sendToConsole(message, gutil.colors.magenta);
+    if (isDebugMode) _sendToConsole(message, chalk.magenta);
   }
   function error(err) {
     let message =
@@ -106,7 +123,7 @@ module.exports = dev = (function () {
     message += err.message;
 
     if (logToFile) _sendToLogFile(message);
-    _sendToConsole(message, gutil.colors.red);
+    _sendToConsole(message, chalk.red);
   }
 
   function performance() {
@@ -116,12 +133,12 @@ module.exports = dev = (function () {
     var logArgs = `~ ${fct_name} - `.concat(args);
 
     if (logToFile) _sendToLogFile(logArgs);
-    _sendToConsole(logArgs, gutil.colors.yellow);
+    _sendToConsole(logArgs, chalk.yellow);
   }
 
   function _sendToLogFile(logArgs) {}
-  function _sendToConsole(logArgs, color = gutil.colors.white) {
-    gutil.log(color(logArgs));
+  function _sendToConsole(logArgs, color = chalk.white) {
+    console.log(color(logArgs));
   }
 
   function _customStringify(obj) {

@@ -1,12 +1,15 @@
 <template>
   <div class="">
-    {{ $route.params.slugFolderName }}
-    <SendMedia :folder_type="'projects'" :folder_slug="project.slug" />
-    <ProjectLibrary
-      v-if="show_lib"
-      :project_slug="project.slug"
-      :project="project"
-    />
+    <router-link to="/projects">Tous les projets</router-link>
+
+    Projet
+    <template v-if="is_loading">
+      <sl-spinner></sl-spinner>
+    </template>
+    <template v-else>
+      <SendMedia :folder_type="'projects'" :folder_slug="project_slug" />
+      <ProjectLibrary :project_slug="project_slug" :project="project" />
+    </template>
   </div>
 </template>
 
@@ -22,13 +25,30 @@ export default {
     ProjectLibrary,
   },
   data() {
-    return {};
+    return {
+      project_slug: this.$route.params.slug,
+      is_loading: true,
+      project: null,
+    };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  async mounted() {
+    this.project = await this.$api.getFolder({
+      folder_type: "projects",
+      folder_slug: this.project_slug,
+    });
+    this.$api.join({ room: `projects/${this.project_slug}` });
+    this.is_loading = false;
+  },
+  beforeDestroy() {
+    this.$api.leave({ room: `projects/${this.project_slug}` });
+  },
   watch: {},
-  computed: {},
+  computed: {
+    // project() {
+    // return window.store.projects?.find((p) => p.slug === this.project_slug);
+    // },
+  },
   methods: {},
 };
 </script>

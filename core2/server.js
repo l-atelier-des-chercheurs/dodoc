@@ -73,7 +73,10 @@ module.exports = function () {
   });
 
   app.use(express.static(global.pathToUserContent));
-  app.use("/_app", express.static(path.join(global.appRoot, "app", "dist")));
+  app.use(
+    "/_client",
+    express.static(path.join(global.appRoot, "client", "dist"))
+  );
   app.use(
     "/_cache",
     express.static(path.join(global.appRoot, global.settings.cacheDirname))

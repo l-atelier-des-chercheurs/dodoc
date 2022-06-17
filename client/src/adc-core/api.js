@@ -1,15 +1,20 @@
 import { io } from "socket.io-client";
 import Vue from "vue";
-import alertify from "alertify.js";
-Vue.prototype.$alertify = alertify;
 
 export default function () {
   return new Vue({
     data: {
       socket: "",
+      store: {},
     },
     methods: {
       init() {
+        this.initSchema();
+        this.initSocketio();
+      },
+
+      initSchema() {},
+      initSocketio() {
         this.socket = io({
           // TODO : only connect when user logs in ?
           // autoConnect: false,
@@ -36,7 +41,7 @@ export default function () {
           this.$alertify.delay(4000).success(eventName + JSON.stringify(args));
         });
         this.socket.on("createFolder", ({ folder_type, meta }) => {
-          window.store[folder_type].push(meta);
+          this.store[folder_type].push(meta);
         });
         this.socket.on(
           "updateFolder",
@@ -56,38 +61,11 @@ export default function () {
             folder_type,
             folder_slug,
           });
-          window.store[folder_type].splice(folder_index, 1);
+          this.store[folder_type].splice(folder_index, 1);
         });
 
-        this.socket.on("newFile", ({ folder_type, folder_slug, file_meta }) => {
-          const folder = this.findFolder({
-            folder_type,
-            folder_slug,
-          });
-          if (!Object.prototype.hasOwnProperty.call(folder, "files"))
-            this.$set(folder, "files", new Array());
-          folder.files.push(file_meta);
-        });
-        this.socket.on(
-          "updateFile",
-          ({ folder_type, folder_slug, meta_slug, changed_data }) => {
-            folder_type;
-            folder_slug;
-            meta_slug;
-            changed_data;
-
-            const file = this.findFileInFolder({
-              folder_type,
-              folder_slug,
-              meta_slug,
-            });
-
-            if (file)
-              Object.entries(changed_data).map(([key, value]) => {
-                this.$set(file, key, value);
-              });
-          }
-        );
+        this.socket.on("newFile", this.appendFile);
+        this.socket.on("updateFile", this.updateFile);
         this.socket.on(
           "removeFile",
           ({ folder_type, folder_slug, meta_slug }) => {
@@ -103,12 +81,13 @@ export default function () {
       },
 
       findFolderIndex({ folder_type, folder_slug }) {
-        return window.store[folder_type].findIndex(
+        return this.store[folder_type].findIndex(
           (folder) => folder.slug === folder_slug
         );
       },
       findFolder({ folder_type, folder_slug }) {
-        return window.store[folder_type].find(
+        if (!this.store[folder_type]) return false;
+        return this.store[folder_type].find(
           (folder) => folder.slug === folder_slug
         );
       },
@@ -120,8 +99,31 @@ export default function () {
       },
       findFileInFolder({ folder_type, folder_slug, meta_slug }) {
         const folder = this.findFolder({ folder_type, folder_slug });
-        if (folder.files) return folder.files.find((f) => f.slug === meta_slug);
+        if (folder?.files)
+          return folder.files.find((f) => f.slug === meta_slug);
         return false;
+      },
+
+      appendFile({ folder_type, folder_slug, file_meta }) {
+        const folder = this.findFolder({
+          folder_type,
+          folder_slug,
+        });
+        if (!Object.prototype.hasOwnProperty.call(folder, "files"))
+          this.$set(folder, "files", new Array());
+        folder.files.push(file_meta);
+      },
+      updateFile({ folder_type, folder_slug, meta_slug, changed_data }) {
+        const file = this.findFileInFolder({
+          folder_type,
+          folder_slug,
+          meta_slug,
+        });
+
+        if (file)
+          Object.entries(changed_data).map(([key, value]) => {
+            this.$set(file, key, value);
+          });
       },
 
       join({ room }) {
@@ -129,6 +131,24 @@ export default function () {
       },
       leave({ room }) {
         this.socket.emit("leaveRoom", { room });
+      },
+
+      async getFolders({ folder_type }) {
+        // fetch folders: if it doesnt exist in this.store, we fetch all
+        // if it does and no deconnexion happened, everything should be valid
+        const response = await this.$axios.get(`/${folder_type}`);
+        const d = response.data;
+        this.$set(this.store, folder_type, d);
+        return d;
+      },
+      async getFolder({ folder_type, folder_slug }) {
+        const response = await this.$axios.get(
+          `/${folder_type}/${folder_slug}`
+        );
+        const d = response.data;
+
+        this.$set(this.store, folder_type, d);
+        return d;
       },
     },
   });

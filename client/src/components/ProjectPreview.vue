@@ -19,7 +19,7 @@
     <button type="button" @click="updateProject">save</button>
     <button type="button" @click="removeProject">delete</button>
 
-    <router-link :to="`/projet/${project.slug}`">Ouvrir</router-link>
+    <router-link :to="`/project/${project.slug}`">Ouvrir</router-link>
 
     <!-- fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
