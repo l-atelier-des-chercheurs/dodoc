@@ -1,6 +1,11 @@
 <template>
-  <div class="_mediaCard">
-    <img v-if="thumb" :src="thumb" size="50" />
+  <sl-card class="card-overview">
+    <sl-responsive-media slot="image" aspect-ratio="1:1">
+      <img v-if="thumb" :src="thumb" />
+    </sl-responsive-media>
+
+    <strong>{{ file.type }}</strong>
+
     {{ file.caption }}
     <TextField
       field_name="caption"
@@ -9,17 +14,16 @@
     />
 
     <details>
-      <summary>Details</summary>
-
-      <pre>
-      {{ file }}
-    </pre
-      >
+      <summary>Brut</summary>
+      <pre v-html="file" />
     </details>
 
-    <button type="button" @click="removeFile">Remove</button>
-    <!-- <pre>{{ file }}</pre> -->
-  </div>
+    <div slot="footer">
+      <sl-button variant="primary" @click="removeFile" pill>
+        Supprimer
+      </sl-button>
+    </div>
+  </sl-card>
 </template>
 <script>
 export default {
@@ -104,7 +108,7 @@ export default {
 <style lang="scss" scoped>
 ._mediaCard {
   width: 300px;
-  border: 1px solid black;
+  background: #eee;
   overflow: auto;
 }
 </style>

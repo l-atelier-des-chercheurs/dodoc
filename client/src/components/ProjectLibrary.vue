@@ -1,7 +1,29 @@
 <template>
   <div>
     <button type="button" @click="createText">Créer du texte</button>
-    <button type="button" @click="createLink">Créer un lien</button>
+    <button
+      type="button"
+      @click="show_create_link_field = !show_create_link_field"
+    >
+      Ajouter un site web
+    </button>
+
+    <form
+      v-if="show_create_link_field"
+      class="input-validation-required"
+      @submit.prevent="createLink"
+    >
+      <sl-input
+        variant="url"
+        label="URL"
+        placeholder="https://example.com/"
+        required
+        v-sl-model="url_to"
+      />
+      <br />
+      <sl-button type="submit" variant="primary">Ajouter</sl-button>
+    </form>
+
     <div class="_lib">
       <div v-for="file of all_files" :key="file.slug">
         <MediaCard :file="file" :project_slug="project_slug" />
@@ -24,6 +46,9 @@ export default {
     return {
       fetch_status: null,
       fetch_error: null,
+
+      show_create_link_field: false,
+      url_to: "https://latelier-des-chercheurs.fr/",
     };
   },
   created() {},
@@ -56,7 +81,6 @@ export default {
     //     this.fetch_error = e.response.data;
     //   }
     // },
-    subscribeToProject() {},
 
     async createText() {
       const filename = "texte.txt";
@@ -70,12 +94,11 @@ export default {
     },
 
     async createLink() {
-      const filename = "mon-lien.txt";
-      const content = "https://www.plurality-university.org/";
+      const filename = this.url_to;
+      const content = this.url_to;
 
       const additional_meta = {
         type: "url",
-        caption: "plop",
       };
 
       this.uploadText({ filename, content, additional_meta });

@@ -1,9 +1,22 @@
 <template>
   <div class="">
-    <router-link to="/projects">Tous les projets</router-link>
-
-    <h1>Projet</h1>
-
+    <sl-breadcrumb>
+      <sl-breadcrumb-item>
+        <router-link to="/">Accueil</router-link>
+      </sl-breadcrumb-item>
+      <sl-breadcrumb-item>
+        <router-link to="/projects">Projets</router-link>
+      </sl-breadcrumb-item>
+      <sl-breadcrumb-item>
+        <template v-if="is_loading">
+          <sl-spinner></sl-spinner>
+        </template>
+        <template v-else>
+          {{ project.title }}
+        </template>
+      </sl-breadcrumb-item>
+    </sl-breadcrumb>
+    <h3>Projet</h3>
     <template v-if="is_loading">
       <sl-spinner></sl-spinner>
     </template>
@@ -11,6 +24,8 @@
       <div v-if="error.status === 404">Projet introuvable</div>
     </template>
     <template v-else>
+      <h1>{{ project.title }}</h1>
+      <br />
       <SendMedia :folder_type="'projects'" :folder_slug="project_slug" />
       <ProjectLibrary :project_slug="project_slug" :project="project" />
     </template>
