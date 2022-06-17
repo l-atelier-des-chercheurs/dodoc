@@ -24,6 +24,7 @@
       <sl-button type="submit" variant="primary">Ajouter</sl-button>
     </form>
 
+    Médias = {{ all_files.length }}
     <div class="_lib">
       <div v-for="file of all_files" :key="file.slug">
         <MediaCard :file="file" :project_slug="project_slug" />

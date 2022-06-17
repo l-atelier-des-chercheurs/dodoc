@@ -128,19 +128,16 @@ export default {
 
       this.files_to_upload_meta[filename].status = "success";
       this.files_to_upload_meta[filename].upload_percentages = 100;
+      setTimeout(() => {
+        delete this.files_to_upload_meta[filename];
+      }, 1000);
 
       return res.data.meta_filename;
     },
     async sendAllFiles() {
       let list_of_added_metas = [];
 
-      // send same file for performance
-      // for (let i = 0; i < 150; i++) {
-      // const meta_filename = await this.sendThisFile(this.files_to_upload[0]);
-      // if (meta_filename) list_of_added_metas.push(meta_filename);
-      // }
-
-      // for (let i = 0; i < 150; i++) {
+      // for (let i = 0; i < 10; i++) {
       for (const file of this.files_to_upload) {
         const meta_filename = await this.sendThisFile(file);
         if (meta_filename) list_of_added_metas.push(meta_filename);
@@ -149,11 +146,6 @@ export default {
 
       this.$emit("importedMedias", list_of_added_metas);
       this.$emit("close", "");
-      // const test = async () => {
-      //   for (let task of Array.from(Array(this.files_to_upload.length).keys()).map()) {
-      //     await sendThisFile(task);
-      //   }
-      // }
     },
     getImgPreview(file) {
       return URL.createObjectURL(file);

@@ -99,7 +99,6 @@ export default function () {
           folder_type,
           folder_slug,
         });
-        debugger;
         if (!folder.files) this.$set(folder, "files", new Array());
         folder.files.push(file_meta);
       },
@@ -155,8 +154,6 @@ export default function () {
         folders = folders.filter((f) => f.slug !== folder_slug);
         folders.push(d);
         this.store[folder_type] = folders;
-
-        debugger;
 
         return d;
       },
