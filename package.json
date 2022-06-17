@@ -16,33 +16,12 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "electron .",
-    "debug": "electron --inspect=5858 . -- --debug --verbose",
-    "node-start": "node .",
-    "node-debug": "node . --inspect=5858 -- --debug --verbose",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "postinstall": "electron-builder install-app-deps"
+    "start": "node .",
+    "debug": "node . --inspect=5858 -- --debug --verbose"
   },
   "engines": {
     "node": "16.14.2",
     "npm": "*"
-  },
-  "build": {
-    "electronVersion": "19.0.4",
-    "appId": "dodoc",
-    "productName": "do•doc",
-    "mac": {
-      "category": "public.app-category.education"
-    },
-    "linux": {
-      "target": "AppImage"
-    },
-    "appImage": {
-      "synopsis": "A documentation tool for creativity.",
-      "category": "Game",
-      "desktop": "dodoc-linux-desktop-entry.desktop"
-    }
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
@@ -54,8 +33,6 @@
     "cors": "^2.8.5",
     "csv-parser": "^3.0.0",
     "csv-writer": "^1.6.0",
-    "electron-pdf-window": "^1.0.12",
-    "electron-window-state": "^5.0.3",
     "eventemitter2": "^6.4.5",
     "exif-reader": "^1.0.3",
     "express": "^4.18.1",
@@ -92,9 +69,6 @@
     "ws": "^8.8.0"
   },
   "devDependencies": {
-    "electron": "19.0.4",
-    "electron-builder": "^23.0.3",
-    "electron-rebuild": "^3.2.7",
     "node-gyp": "^9.0.0"
   }
 }
