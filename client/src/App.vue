@@ -12,7 +12,11 @@
     >
       Connected = {{ $root.is_connected }}
     </div>
-    Store : {{ $api.store }}
+    <details>
+      <summary>$api.store</summary>
+    </details>
+    {{ $api.store }}
+
     <router-view />
   </div>
 </template>

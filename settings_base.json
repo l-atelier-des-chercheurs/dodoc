@@ -15,7 +15,6 @@
   "certificatePath": "",
 
   "metaDateFormat": "DD-MM-YYYY HH:mm:ss Z",
-  "thumbFolderName": "thumbs",
   "deletedFolderName": "_bin",
 
   "ffmpeg_options": {

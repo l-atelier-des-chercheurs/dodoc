@@ -40,44 +40,13 @@ export default function () {
         this.socket.onAny((eventName, ...args) => {
           this.$alertify.delay(4000).success(eventName + JSON.stringify(args));
         });
-        this.socket.on("createFolder", ({ folder_type, meta }) => {
-          this.store[folder_type].push(meta);
-        });
-        this.socket.on(
-          "updateFolder",
-          ({ folder_type, folder_slug, changed_data }) => {
-            const folder = this.findFolder({
-              folder_type,
-              folder_slug,
-            });
-            // update props
-            Object.entries(changed_data).map(([key, value]) => {
-              this.$set(folder, key, value);
-            });
-          }
-        );
-        this.socket.on("removeFolder", ({ folder_type, folder_slug }) => {
-          const folder_index = this.findFolderIndex({
-            folder_type,
-            folder_slug,
-          });
-          this.store[folder_type].splice(folder_index, 1);
-        });
+        this.socket.on("createFolder", this.createFolder);
+        this.socket.on("updateFolder", this.updateFolder);
+        this.socket.on("removeFolder", this.removeFolder);
 
-        this.socket.on("newFile", this.appendFile);
+        this.socket.on("newFile", this.newFile);
         this.socket.on("updateFile", this.updateFile);
-        this.socket.on(
-          "removeFile",
-          ({ folder_type, folder_slug, meta_slug }) => {
-            const folder = this.findFolder({ folder_type, folder_slug });
-            const file_index = this.findFileIndexInFolder({
-              folder_type,
-              folder_slug,
-              meta_slug,
-            });
-            if (file_index >= 0) folder.files.splice(file_index, 1);
-          }
-        );
+        this.socket.on("removeFile", this.removeFile);
       },
 
       findFolderIndex({ folder_type, folder_slug }) {
@@ -104,13 +73,34 @@ export default function () {
         return false;
       },
 
-      appendFile({ folder_type, folder_slug, file_meta }) {
+      createFolder({ folder_type, meta }) {
+        this.store[folder_type].push(meta);
+      },
+      updateFolder({ folder_type, folder_slug, changed_data }) {
         const folder = this.findFolder({
           folder_type,
           folder_slug,
         });
-        if (!Object.prototype.hasOwnProperty.call(folder, "files"))
-          this.$set(folder, "files", new Array());
+        // update props
+        Object.entries(changed_data).map(([key, value]) => {
+          this.$set(folder, key, value);
+        });
+      },
+      removeFolder({ folder_type, folder_slug }) {
+        const folder_index = this.findFolderIndex({
+          folder_type,
+          folder_slug,
+        });
+        this.store[folder_type].splice(folder_index, 1);
+      },
+
+      newFile({ folder_type, folder_slug, file_meta }) {
+        const folder = this.findFolder({
+          folder_type,
+          folder_slug,
+        });
+        debugger;
+        if (!folder.files) this.$set(folder, "files", new Array());
         folder.files.push(file_meta);
       },
       updateFile({ folder_type, folder_slug, meta_slug, changed_data }) {
@@ -124,6 +114,15 @@ export default function () {
           Object.entries(changed_data).map(([key, value]) => {
             this.$set(file, key, value);
           });
+      },
+      removeFile({ folder_type, folder_slug, meta_slug }) {
+        const folder = this.findFolder({ folder_type, folder_slug });
+        const file_index = this.findFileIndexInFolder({
+          folder_type,
+          folder_slug,
+          meta_slug,
+        });
+        if (file_index >= 0) folder.files.splice(file_index, 1);
       },
 
       join({ room }) {
@@ -141,12 +140,24 @@ export default function () {
         return d;
       },
       async getFolder({ folder_type, folder_slug }) {
+        // check if folder exists in store first, and if not invalidated
+
         const response = await this.$axios.get(
           `/${folder_type}/${folder_slug}`
         );
+
         const d = response.data;
 
-        this.$set(this.store, folder_type, d);
+        if (!Object.prototype.hasOwnProperty.call(this.store, folder_type))
+          this.$set(this.store, folder_type, new Array());
+
+        let folders = this.store[folder_type];
+        folders = folders.filter((f) => f.slug !== folder_slug);
+        folders.push(d);
+        this.store[folder_type] = folders;
+
+        debugger;
+
         return d;
       },
     },

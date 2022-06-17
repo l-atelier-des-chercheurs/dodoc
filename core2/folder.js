@@ -44,11 +44,11 @@ module.exports = (function () {
       dev.logfunction({ folder_type, folder_slug });
 
       // TODO cache unique folder
-      let folder_meta = await utils.readMetaFile(
-        folder_type,
-        folder_slug,
-        "meta.txt"
-      );
+      let folder_meta = await utils
+        .readMetaFile(folder_type, folder_slug, "meta.txt")
+        .catch((err) => {
+          throw err;
+        });
       folder_meta.slug = folder_slug;
 
       let folder_preview = await _getFolderPreview({

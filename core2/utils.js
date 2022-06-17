@@ -48,7 +48,11 @@ module.exports = (function () {
       dev.logfunction({ paths });
 
       const meta_path = API.getPathToUserContent(...paths);
-      const meta_file_content = await fs.readFile(meta_path, "UTF-8");
+      const meta_file_content = await fs
+        .readFile(meta_path, "UTF-8")
+        .catch((err) => {
+          throw err;
+        });
       return API.parseMeta(meta_file_content);
     },
 

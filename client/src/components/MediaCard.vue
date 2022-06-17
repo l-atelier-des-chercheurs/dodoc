@@ -1,6 +1,6 @@
 <template>
   <div class="_mediaCard">
-    <img :src="thumb" size="50" />
+    <img v-if="thumb" :src="thumb" size="50" />
     {{ file.caption }}
     <TextField
       field_name="caption"
@@ -43,19 +43,26 @@ export default {
   },
   computed: {
     thumb() {
+      if (!this.file.thumbs) return false;
+
+      let thumb_path = "";
+
       try {
-        if (this.file.type === "image") return this.file.thumbs[180];
+        if (this.file.type === "image") thumb_path = this.file.thumbs[180];
         if (this.file.type === "video")
-          return this.file.thumbs["00:00:00"][180];
-        if (this.file.type === "audio") return this.file.thumbs.waveform[180];
-        if (this.file.type === "stl") return this.file.thumbs["0"][180];
+          thumb_path = this.file.thumbs["00:00:00"][180];
+        if (this.file.type === "audio")
+          thumb_path = this.file.thumbs.waveform[180];
+        if (this.file.type === "stl") thumb_path = this.file.thumbs["0"][180];
         if (this.file.type === "document")
-          return this.file.thumbs["page-1"][180];
-        if (this.file.type === "url") return this.file.thumbs["ogimage"][180];
+          thumb_path = this.file.thumbs["page-1"][180];
+        if (this.file.type === "url")
+          thumb_path = this.file.thumbs["ogimage"][180];
       } catch (err) {
         return false;
       }
-      return false;
+
+      return `/thumbs/projects/${this.project_slug}/${thumb_path}`;
     },
   },
   methods: {

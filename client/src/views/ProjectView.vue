@@ -2,9 +2,13 @@
   <div class="">
     <router-link to="/projects">Tous les projets</router-link>
 
-    Projet
+    <h1>Projet</h1>
+
     <template v-if="is_loading">
       <sl-spinner></sl-spinner>
+    </template>
+    <template v-else-if="error">
+      <div v-if="error.status === 404">Projet introuvable</div>
     </template>
     <template v-else>
       <SendMedia :folder_type="'projects'" :folder_slug="project_slug" />
@@ -28,17 +32,25 @@ export default {
     return {
       project_slug: this.$route.params.slug,
       is_loading: true,
+      error: null,
       project: null,
     };
   },
   created() {},
-  async mounted() {
-    this.project = await this.$api.getFolder({
-      folder_type: "projects",
-      folder_slug: this.project_slug,
-    });
-    this.$api.join({ room: `projects/${this.project_slug}` });
-    this.is_loading = false;
+  mounted() {
+    this.$api
+      .getFolder({
+        folder_type: "projects",
+        folder_slug: this.project_slug,
+      })
+      .then((project) => {
+        this.project = project;
+        this.$api.join({ room: `projects/${this.project_slug}` });
+      })
+      .catch((err) => {
+        this.error = err.response;
+      })
+      .then(() => (this.is_loading = false));
   },
   beforeDestroy() {
     this.$api.leave({ room: `projects/${this.project_slug}` });

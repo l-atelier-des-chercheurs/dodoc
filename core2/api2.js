@@ -124,7 +124,11 @@ module.exports = (function () {
       const files = await file.getFiles({ folder_type, folder_slug });
       folder_meta.files = files;
       res.json(folder_meta);
-    } catch (err) {}
+    } catch (err) {
+      dev.error(err);
+      if (err.code === "ENOENT") res.status(404).send();
+      else res.status(500).send(err);
+    }
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
 
@@ -276,9 +280,7 @@ module.exports = (function () {
   }
 
   async function _updateFile(req, res, next) {
-    let folder_type = req.params.folder_type;
-    let folder_slug = req.params.folder_slug;
-    let meta_slug = req.params.meta_slug;
+    let { folder_type, folder_slug, meta_slug } = req.params;
     const data = req.body;
 
     dev.logfunction({ folder_type, folder_slug, meta_slug });

@@ -142,7 +142,7 @@ module.exports = (function () {
 
       const infos_filename = media_filename + ".infos.txt";
       const path_to_infos_file = utils.getPathToUserContent(
-        global.settings.thumbFolderName,
+        "thumbs",
         folder_type,
         folder_slug,
         infos_filename
@@ -151,7 +151,7 @@ module.exports = (function () {
       if (await fs.pathExists(path_to_infos_file)) {
         dev.logverbose(`has infos file`);
         const infos = utils.readMetaFile(
-          global.settings.thumbFolderName,
+          "thumbs",
           folder_type,
           folder_slug,
           infos_filename
@@ -291,7 +291,7 @@ module.exports = (function () {
     });
 
     const full_path_to_thumb = utils.getPathToUserContent(
-      global.settings.thumbFolderName,
+      "thumbs",
       folder_type,
       folder_slug
     );
@@ -309,7 +309,7 @@ module.exports = (function () {
     const media_filename = meta.media_filename;
 
     const full_path_to_thumb = utils.getPathToUserContent(
-      global.settings.thumbFolderName,
+      "thumbs",
       folder_type,
       folder_slug
     );
@@ -338,10 +338,7 @@ module.exports = (function () {
   }
 
   async function _getThumbFolderPath(...paths) {
-    const relative_path_to_thumb_folder = path.join(
-      global.settings.thumbFolderName,
-      ...paths
-    );
+    const relative_path_to_thumb_folder = path.join("thumbs", ...paths);
     const path_to_thumb_folder = utils.getPathToUserContent(
       relative_path_to_thumb_folder
     );
@@ -378,7 +375,7 @@ module.exports = (function () {
         });
         dev.log(`--> made thumb`);
       }
-      thumb_paths[resolution] = path_to_thumb;
+      thumb_paths[resolution] = thumb_name;
     }
 
     dev.logfunction(`Made / found thumbs`);

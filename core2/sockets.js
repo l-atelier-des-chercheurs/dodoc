@@ -12,14 +12,15 @@ const notifier = require("./notifier");
 
 module.exports = (function () {
   dev.log(`Sockets module initialized`);
-  let app;
   let io;
 
   const API = {
-    init: (app, io) => init(app, io),
+    init: (io) => init(io),
   };
 
-  function init(io) {
+  function init(_io) {
+    io = _io;
+
     io.use(function (socket, next) {
       // if (
       //   auth.isSubmittedSessionPasswordValid(
@@ -82,10 +83,14 @@ module.exports = (function () {
       socket.on("joinRoom", ({ room }) => {
         dev.logsockets(`socket ${socket.id} is joining ${room}`);
         socket.join(room);
+
+        roomStatus(socket);
       });
       socket.on("leaveRoom", ({ room }) => {
         dev.logsockets(`socket ${socket.id} is leaving ${room}`);
         socket.leave(room);
+
+        roomStatus(socket);
       });
       socket.on("disconnect", () => {
         dev.logsockets(`user ${socket.id} disconnected`);
@@ -93,34 +98,35 @@ module.exports = (function () {
     });
 
     // https://socket.io/fr/docs/v3/emit-cheatsheet/
-    notifier.on("createFolder", (path, content) => {
-      io.to(path).emit("createFolder", content);
+    notifier.on("createFolder", (room, content) => {
+      io.to(room).emit("createFolder", content);
     });
-    notifier.on("updateFolder", (path, content) => {
-      // notify all connected
-      io.to(path).emit("updateFolder", content);
+    notifier.on("updateFolder", (room, content) => {
+      io.to(room).emit("updateFolder", content);
     });
-    notifier.on("removeFolder", (path, content) => {
-      // notify all connected
-      io.to(path).emit("removeFolder", content);
+    notifier.on("removeFolder", (room, content) => {
+      io.to(room).emit("removeFolder", content);
     });
 
-    notifier.on("newFile", (content) => {
-      // notify only those in the room
-      io.in("").emit("newFile", content);
+    notifier.on("newFile", (room, content) => {
+      io.to(room).emit("newFile", content);
     });
-    notifier.on("updateFile", (content) => {
-      // notify only those in the room
-      socket.emit("updateFile", content);
+    notifier.on("updateFile", (room, content) => {
+      io.to(room).emit("updateFile", content);
     });
-    notifier.on("removeFile", (content) => {
-      // notify only those in the room
-      socket.emit("removeFile", content);
+    notifier.on("removeFile", (room, content) => {
+      io.to(room).emit("removeFile", content);
     });
 
     io.on("*", (event, data) =>
       dev.logsockets(`RECEIVED EVENT: ${event} with data.length ${data.length}`)
     );
+  }
+
+  function roomStatus(socket) {
+    for (const [key, value] of socket.adapter.rooms) {
+      console.log(key + " = " + JSON.stringify(Array.from(value.entries())));
+    }
   }
 
   return API;

@@ -2,8 +2,6 @@
   <div>
     <button type="button" @click="createText">Créer du texte</button>
     <button type="button" @click="createLink">Créer un lien</button>
-    <button type="button" @click="loadLibrary">Charger la bibliothèque</button>
-    {{ all_files.length }}
     <div class="_lib">
       <div v-for="file of all_files" :key="file.slug">
         <MediaCard :file="file" :project_slug="project_slug" />
@@ -34,7 +32,7 @@ export default {
   watch: {},
   computed: {
     all_files() {
-      return this.project.files || [];
+      return this.project?.files || [];
     },
   },
   methods: {
