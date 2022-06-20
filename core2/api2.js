@@ -4,6 +4,7 @@ const url = require("url");
 const folder = require("./folder"),
   file = require("./file"),
   notifier = require("./notifier"),
+  utils = require("./utils"),
   cache = require("./cache");
 
 module.exports = (function () {
@@ -18,6 +19,12 @@ module.exports = (function () {
 
     app.get("/_perf", loadPerf);
     app.options("/_api2/*", cors());
+
+    app.get(
+      "/_api2/_ip",
+      [cors(_corsCheck), _sessionPasswordCheck],
+      _getLocalNetworkInfos
+    );
     app.get(
       "/_api2/:folder_type",
       [cors(_corsCheck), _sessionPasswordCheck],
@@ -28,7 +35,6 @@ module.exports = (function () {
       [cors(_corsCheck), _sessionPasswordCheck],
       _getFolderWithFiles
     );
-
     app.post(
       "/_api2/:folder_type",
       [cors(_corsCheck), _sessionPasswordCheck],
@@ -83,7 +89,9 @@ module.exports = (function () {
     res.render("index2", d);
   }
   function loadPerf(rea, res) {
-    res.render("perf");
+    let d = {};
+    d.local_ips = utils.getLocalIP();
+    res.render("perf", d);
   }
   async function _getFolders(req, res, next) {
     let folder_type = req.params.folder_type;
@@ -348,6 +356,17 @@ module.exports = (function () {
       dev.error("Failed to remove expected content: " + err);
       res.status(500).send(err);
     }
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  }
+
+  function _getLocalNetworkInfos(req, res, next) {
+    dev.logfunction();
+    const hrstart = process.hrtime();
+
+    const local_ips = utils.getLocalIP();
+    res.status(200).json(local_ips);
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);

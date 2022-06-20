@@ -33,8 +33,8 @@ export default function () {
             socketid: this.socket.id,
           });
         });
-        this.socket.on("disconnect", () => {
-          this.$eventHub.$emit("socketio.disconnect");
+        this.socket.on("disconnect", (reason) => {
+          this.$eventHub.$emit("socketio.disconnect", reason);
         });
 
         this.socket.onAny((eventName, ...args) => {
@@ -47,6 +47,13 @@ export default function () {
         this.socket.on("newFile", this.newFile);
         this.socket.on("updateFile", this.updateFile);
         this.socket.on("removeFile", this.removeFile);
+      },
+
+      disconnectSocket() {
+        this.socket.disconnect();
+      },
+      reconnectSocket() {
+        this.socket.connect();
       },
 
       findFolderIndex({ folder_type, folder_slug }) {

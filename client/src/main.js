@@ -75,8 +75,11 @@ new Vue({
         .success(`Connected or reconnected with id ${this.$api.socket.id}`);
       this.is_connected = true;
     },
-    socketDisconnected() {
-      this.$alertify.closeLogOnClick(true).delay(4000).error(`Disconnected`);
+    socketDisconnected(reason) {
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error(`Disconnected ${reason}`);
       this.is_connected = false;
     },
   },
