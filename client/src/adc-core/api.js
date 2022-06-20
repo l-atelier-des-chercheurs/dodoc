@@ -33,8 +33,8 @@ export default function () {
             socketid: this.socket.id,
           });
         });
-        this.socket.on("disconnect", () => {
-          this.$eventHub.$emit("socketio.disconnect");
+        this.socket.on("disconnect", (reason) => {
+          this.$eventHub.$emit("socketio.disconnect", reason);
         });
 
         this.socket.onAny((eventName, ...args) => {
