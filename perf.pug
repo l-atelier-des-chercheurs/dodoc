@@ -9,10 +9,10 @@ html
     <div id="app">
       <input type="url" v-model="url" /><br>
       <input type="number" v-model.number="count" /><br>
-      <template v-for="i in Array(count).fill(undefined)">
-        <iframe :src="url" width="400" height="500">
+      <div class="iframes">
+        <iframe v-for="i in Array(count).fill(undefined)" :key="i" :src="url" width="400" height="500">
         </iframe>
-      </template>
+      </div>
     </div>
 
   script(src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js")
@@ -25,7 +25,7 @@ html
     var app = new Vue({
       el: '#app',
       data: {
-        count: 5,
+        count: 8,
         url: `${window.location.origin}`,
         local_ips
       }
@@ -33,9 +33,15 @@ html
     
   style. 
     body {
-      margin: 0;
+      margin: 10px;
     }
 
+    .iframes {
+      display: flex;
+      flex-flow: row wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
     iframe {
       margin: 0;
       border: none;
