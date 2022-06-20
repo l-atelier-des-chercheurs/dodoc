@@ -7,19 +7,27 @@ html
     title Document
   body 
     <div id="app">
+      <input type="url" v-model="url" /><br>
       <input type="number" v-model.number="count" /><br>
       <template v-for="i in Array(count).fill(undefined)">
-        <iframe src="https://localhost:8080" width="400" height="500">
+        <iframe :src="url" width="400" height="500">
         </iframe>
       </template>
     </div>
 
   script(src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js")
   script.
+    const local_ips = !{JSON.stringify(local_ips)};
+    function firstIP() {
+      return Object.values(local_ips)[0][0];
+    }
+
     var app = new Vue({
       el: '#app',
       data: {
-        count: 5
+        count: 5,
+        url: `${window.location.origin}`,
+        local_ips
       }
     })
     
