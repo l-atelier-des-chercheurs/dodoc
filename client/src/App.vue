@@ -1,13 +1,7 @@
 -
 <template>
   <div id="app">
-    <div
-      :style="`background-color: ${
-        $root.is_connected ? 'rgba(0, 255, 0, .5)' : 'rgba(255, 0, 0, .5);'
-      }`"
-    >
-      Connected = {{ $root.is_connected }}
-    </div>
+    <SocketStatus />
     <details>
       <summary>$api.store</summary>
       {{ $api.store }}
@@ -16,7 +10,25 @@
     <router-view />
   </div>
 </template>
+<script>
+import SocketStatus from "./components/SocketStatus.vue";
 
+export default {
+  props: {},
+  components: {
+    SocketStatus,
+  },
+  data() {
+    return {};
+  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+  watch: {},
+  computed: {},
+  methods: {},
+};
+</script>
 <style lang="scss">
 :root {
   /* Fonts */

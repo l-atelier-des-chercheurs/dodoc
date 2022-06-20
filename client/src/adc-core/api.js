@@ -49,6 +49,13 @@ export default function () {
         this.socket.on("removeFile", this.removeFile);
       },
 
+      disconnectSocket() {
+        this.socket.disconnect();
+      },
+      reconnectSocket() {
+        this.socket.connect();
+      },
+
       findFolderIndex({ folder_type, folder_slug }) {
         return this.store[folder_type].findIndex(
           (folder) => folder.slug === folder_slug
