@@ -4,12 +4,16 @@
       <img v-if="thumb" :src="thumb" />
     </sl-responsive-media>
 
-    <strong>{{ file.type }}</strong>
-
-    {{ file.caption }}
+    <strong>Type de fichier : {{ file.type }}</strong>
+    <br />
     <TextField
       field_name="caption"
       :content="file.caption"
+      :path_to_resource="`/projects/${this.project_slug}/${this.file.slug}`"
+    />
+    <TextField
+      field_name="content"
+      :content="file.content"
       :path_to_resource="`/projects/${this.project_slug}/${this.file.slug}`"
     />
 

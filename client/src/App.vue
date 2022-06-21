@@ -63,6 +63,11 @@ body {
   margin: 0;
 }
 
+b,
+strong {
+  font-weight: bold;
+}
+
 .pageContent {
   margin: var(--padding);
 }
