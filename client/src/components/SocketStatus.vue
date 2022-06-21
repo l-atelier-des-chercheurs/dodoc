@@ -41,6 +41,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._socketStatus {
+  padding: var(--padding);
   background: rgba(255, 0, 0, 0.5);
 
   &.is--connected {

@@ -2,12 +2,15 @@
 <template>
   <div id="app">
     <SocketStatus />
-    <details>
-      <summary>$api.store</summary>
-      {{ $api.store }}
-    </details>
 
-    <router-view />
+    <div class="pageContent">
+      <details>
+        <summary>$api.store</summary>
+        {{ $api.store }}
+      </details>
+
+      <router-view />
+    </div>
   </div>
 </template>
 <script>
@@ -37,6 +40,8 @@ export default {
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol";
   --sl-font-serif: Georgia, "Times New Roman", serif;
+
+  --padding: 0.5rem;
 }
 
 body {
@@ -52,6 +57,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+
+body {
+  margin: 0;
+}
+
+.pageContent {
+  margin: var(--padding);
 }
 
 [contenteditable] {

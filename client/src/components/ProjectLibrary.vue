@@ -25,10 +25,15 @@
     </form>
 
     Médias = {{ all_files.length }}
+    <br />
+    <br />
     <div class="_lib">
-      <div v-for="file of all_files" :key="file.slug">
-        <MediaCard :file="file" :project_slug="project_slug" />
-      </div>
+      <MediaCard
+        v-for="file of all_files"
+        :key="file.slug"
+        :file="file"
+        :project_slug="project_slug"
+      />
     </div>
   </div>
 </template>
@@ -134,7 +139,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._lib {
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--padding);
 }
 </style>

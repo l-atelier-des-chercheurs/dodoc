@@ -12,11 +12,13 @@
     <button type="button" @click="createProject">Create</button>
     <br />
     <br />
-    <ProjectPreview
-      v-for="project in projects"
-      :project="project"
-      :key="project.slug"
-    />
+    <div class="_projects">
+      <ProjectPreview
+        v-for="project in projects"
+        :project="project"
+        :key="project.slug"
+      />
+    </div>
   </div>
 </template>
 <script>
@@ -74,4 +76,10 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--padding);
+}
+</style>
