@@ -128,9 +128,6 @@ export default {
 
       this.files_to_upload_meta[filename].status = "success";
       this.files_to_upload_meta[filename].upload_percentages = 100;
-      setTimeout(() => {
-        delete this.files_to_upload_meta[filename];
-      }, 1000);
 
       return res.data.meta_filename;
     },
@@ -143,7 +140,6 @@ export default {
         if (meta_filename) list_of_added_metas.push(meta_filename);
       }
       // }
-
       this.$emit("importedMedias", list_of_added_metas);
       this.$emit("close", "");
     },
