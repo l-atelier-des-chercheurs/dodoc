@@ -14,15 +14,6 @@ Vue.prototype.$alertify = alertify;
 import api from "./adc-core/api.js";
 Vue.prototype.$api = api();
 
-// import "@shoelace-style/shoelace/dist/themes/light.css";
-// import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path";
-// setBasePath(
-//   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.75/dist/"
-// );
-import ShoelaceModelDirective from "@shoelace-style/vue-sl-model";
-Vue.config.ignoredElements = [/^sl-/];
-Vue.use(ShoelaceModelDirective);
-
 import TitleField from "@/components/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
 import TextField from "@/components/fields/TextField.vue";
