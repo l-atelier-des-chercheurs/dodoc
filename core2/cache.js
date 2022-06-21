@@ -1,7 +1,5 @@
 const LRU = require("lru-cache");
 
-// TODO rewrite
-
 module.exports = (function () {
   let _lru_cache;
   let _is_enabled = false;

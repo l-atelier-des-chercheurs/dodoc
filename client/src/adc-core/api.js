@@ -16,9 +16,13 @@ export default function () {
       initSchema() {},
       initSocketio() {
         this.socket = io({
-          // TODO : only connect when user logs in ?
-          // autoConnect: false,
+          autoConnect: false,
         });
+
+        const sessionID = localStorage.getItem("sessionID");
+        if (sessionID) this.socket.auth = { sessionID };
+
+        this.socket.connect();
 
         // client-side
         this.socket.on("connect", () => {
@@ -32,6 +36,16 @@ export default function () {
           this.$eventHub.$emit("socketio.reconnect", {
             socketid: this.socket.id,
           });
+        });
+        this.socket.on("session", ({ sessionID, userID }) => {
+          // attach the session ID to the next reconnection attempts
+          this.socket.auth = { sessionID };
+          localStorage.setItem("sessionID", sessionID);
+          this.socket.userID = userID;
+        });
+
+        this.socket.on("connect_error", (reason) => {
+          this.$eventHub.$emit("socketio.connect_error", reason);
         });
         this.socket.on("disconnect", (reason) => {
           this.$eventHub.$emit("socketio.disconnect", reason);

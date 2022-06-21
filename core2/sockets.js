@@ -7,8 +7,9 @@
 //   access = require("./access");
 
 // const bcrypt = require("bcryptjs");
-const dev = require("./dev-log");
-const notifier = require("./notifier");
+const dev = require("./dev-log"),
+  notifier = require("./notifier"),
+  sessionStore = require("./sessionStore");
 
 module.exports = (function () {
   dev.log(`Sockets module initialized`);
@@ -27,25 +28,64 @@ module.exports = (function () {
       //     socket.handshake.query.hashed_session_password
       //   )
       // ) {
-      dev.logsockets(`CONNECTION ALLOWED`);
-      next();
       // } else {
       //   dev.error(`CONNECTION DENIED`);
       //   next(new Error("Authentication error"));
       // }
+
+      // check if socket has a session_id
+
+      // if it does, check if it matches one in the store
+
+      // if it does, return what's in the store
+
+      // else create a session ID
+
+      try {
+        dev.logsockets(`initSessionID`);
+        const { sessionID, userID } = sessionStore.get({
+          sessionID: socket.handshake.auth.sessionID,
+        });
+        dev.logsockets(`initSessionID`);
+        socket.sessionID = sessionID;
+        socket.userID = userID;
+      } catch (err) {
+        dev.error(err);
+        return next(err);
+      }
+
+      dev.logverbose({ sessions: sessionStore.findAllSessions() });
+
+      next();
     });
 
     io.on("connection", async (socket) => {
       dev.logsockets(`RECEIVED CONNECTION FROM SOCKET.id: ${socket.id}`);
 
+      dev.logsockets({
+        sessionID: socket.sessionID,
+        userID: socket.userID,
+      });
+
+      // persist session
+      // see https://github.com/socketio/socket.io/blob/992c9380c34b9a67c03dd503c26d008836f2899b/examples/private-messaging/server/index.js
+      sessionStore.saveSession(socket.sessionID, {
+        userID: socket.userID,
+        connected: true,
+      });
+
+      // rejoin rooms indicated in session
+
+      // emit session details
+      socket.emit("session", {
+        sessionID: socket.sessionID,
+        userID: socket.userID,
+      });
+
       const sockets = await io.fetchSockets();
       dev.logsockets(
-        `Clients connected currently : ${Object.keys(sockets).length}`
+        `Sockets connected currently : ${Object.keys(sockets).length}`
       );
-
-      // setTimeout(() => {
-      // socket.emit("msg", "hello world");
-      // }, 2000);
 
       let ip = "";
       if (socket.handshake) {
@@ -79,6 +119,11 @@ module.exports = (function () {
         packet.data = ["*"].concat(args);
         onevent.call(this, packet); // additional call to catch-all
       };
+      // socket.on("*", (event, data) =>
+      //   dev.logsockets(
+      //     `RECEIVED EVENT: ${event} with data.length ${data.length}`
+      //   )
+      // );
 
       socket.on("joinRoom", ({ room }) => {
         dev.logsockets(`socket ${socket.id} is joining ${room}`);
@@ -117,10 +162,6 @@ module.exports = (function () {
     notifier.on("removeFile", (room, content) => {
       io.to(room).emit("removeFile", content);
     });
-
-    io.on("*", (event, data) =>
-      dev.logsockets(`RECEIVED EVENT: ${event} with data.length ${data.length}`)
-    );
   }
 
   function roomStatus(socket) {
