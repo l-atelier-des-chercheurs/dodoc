@@ -62,6 +62,8 @@ module.exports = (function () {
         folder_slug,
       });
 
+      // no caching here to get more flexibility with lru cache (busting medias with few access, etc.)
+
       const metas = [];
       for (const meta_filename of meta_filenames) {
         try {
@@ -150,7 +152,7 @@ module.exports = (function () {
         Object.assign(meta, clean_meta);
       }
 
-      // TODO update media
+      // TODO update media filename (text, image, etc.)
       if (content) {
         // TODO remove thumbs
       }
@@ -170,6 +172,10 @@ module.exports = (function () {
       }, {});
 
       if (content) changed_data.content = content;
+
+      cache.delete({
+        key: `${folder_type}/${folder_slug}/${meta_slug}`,
+      });
 
       return changed_data;
     },

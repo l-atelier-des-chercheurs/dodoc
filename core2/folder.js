@@ -2,21 +2,8 @@ const path = require("path"),
   fs = require("fs-extra");
 
 const utils = require("./utils"),
-  thumbs = require("./thumbs");
-
-// all items (projects, medias, etc.) must have those props :
-// date_created
-// date_modified
-// file_meta
-
-// cache structure :
-/* 
-[{
-  path: 'projects/',
-
-}]
-
-*/
+  thumbs = require("./thumbs"),
+  cache = require("./cache");
 
 module.exports = (function () {
   const API = {
@@ -43,7 +30,11 @@ module.exports = (function () {
     getFolder: async ({ folder_type, folder_slug }) => {
       dev.logfunction({ folder_type, folder_slug });
 
-      // TODO cache unique folder
+      const d = cache.get({
+        key: `${folder_type}/${folder_slug}`,
+      });
+      if (d) return d;
+
       let folder_meta = await utils
         .readMetaFile(folder_type, folder_slug, "meta.txt")
         .catch((err) => {
@@ -59,7 +50,10 @@ module.exports = (function () {
 
       // TODO get number of files if files in schema
 
-      // add to cache
+      cache.set({
+        key: `${folder_type}/${folder_slug}`,
+        value: folder_meta,
+      });
 
       return folder_meta;
     },
@@ -135,6 +129,7 @@ module.exports = (function () {
       // TODO update pre view
       // rename preview to cover
       if (preview) {
+        await thumbs.removeFolderThumbs({ folder_type, folder_slug });
       }
 
       // TODO update
@@ -145,6 +140,10 @@ module.exports = (function () {
           acc[key] = meta[key];
         return acc;
       }, {});
+
+      cache.delete({
+        key: `${folder_type}/${folder_slug}`,
+      });
 
       return changed_meta;
     },
@@ -157,9 +156,9 @@ module.exports = (function () {
         else await _moveFolderToBin({ folder_type, folder_slug });
 
         await thumbs.removeFolderThumbs({ folder_type, folder_slug });
-
-        // TODO remove from cache
-        // cache.del({ type, slugFolderName });
+        cache.delete({
+          key: `${folder_type}/${folder_slug}`,
+        });
 
         return folder_slug;
       } catch (err) {
