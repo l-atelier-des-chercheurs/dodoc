@@ -53,8 +53,7 @@ export default {
 
       try {
         if (this.file.type === "image") thumb_path = this.file.thumbs[180];
-        if (this.file.type === "video")
-          thumb_path = this.file.thumbs["00:00:00"][180];
+        if (this.file.type === "video") thumb_path = this.file.thumbs["0"][180];
         if (this.file.type === "audio")
           thumb_path = this.file.thumbs.waveform[180];
         if (this.file.type === "stl") thumb_path = this.file.thumbs["0"][180];

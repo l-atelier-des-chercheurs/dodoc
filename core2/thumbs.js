@@ -23,8 +23,8 @@ ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
-    makeFolderPreview: ({ folder_type, folder_slug }) =>
-      makeFolderPreview({ folder_type, folder_slug }),
+    makeFolderCover: ({ folder_type, folder_slug }) =>
+      makeFolderCover({ folder_type, folder_slug }),
     makeThumbForMedia: async ({
       media_type,
       media_filename,
@@ -93,7 +93,6 @@ module.exports = (function () {
           },
         ];
       } else if (media_type === "url") {
-        // TODO get URL metadata and preview
         settings = [
           {
             suffix: "ogimage",
@@ -224,20 +223,20 @@ module.exports = (function () {
               full_path_to_thumb,
             });
           else if (media_type === "stl")
-            await _makeSTLPreview({
+            await _makeSTLThumbs({
               full_media_path,
               full_path_to_thumb,
               camera_angle: setting.camera_angle,
             });
           else if (media_type === "document")
-            await _makeDocumentPreview({
+            await _makeDocumentThumbs({
               full_media_path,
               thumb_folder,
               full_path_to_thumb,
               page: setting.page,
             });
           else if (media_type === "url")
-            await _makeLinkPreview({
+            await _makeLinkThumbs({
               full_media_path,
               full_path_to_thumb,
             });
@@ -260,25 +259,25 @@ module.exports = (function () {
     return thumb_paths;
   }
 
-  async function makeFolderPreview({ folder_type, folder_slug }) {
-    const preview_name = "meta_preview.jpeg";
-    const full_preview_path = utils.getPathToUserContent(
+  async function makeFolderCover({ folder_type, folder_slug }) {
+    const cover_name = "meta_cover.jpeg";
+    const full_cover_path = utils.getPathToUserContent(
       folder_type,
       folder_slug,
-      preview_name
+      cover_name
     );
 
-    const preview_schema = global.settings.schema[folder_type].preview;
+    const cover_schema = global.settings.schema[folder_type].cover;
     const path_to_thumb_folder = await _getThumbFolderPath(
       folder_type,
       folder_slug
     );
 
     const paths = await _makeImageThumbsFor({
-      full_media_path: full_preview_path,
-      media_filename: preview_name,
+      full_media_path: full_cover_path,
+      media_filename: cover_name,
       path_to_thumb_folder,
-      resolutions: preview_schema.thumbs.resolutions,
+      resolutions: cover_schema.thumbs.resolutions,
     });
 
     return paths;
@@ -479,7 +478,7 @@ module.exports = (function () {
     });
   }
 
-  function _makeSTLPreview({
+  function _makeSTLThumbs({
     full_media_path,
     full_path_to_thumb,
     camera_angle,
@@ -508,7 +507,7 @@ module.exports = (function () {
     });
   }
 
-  async function _makeDocumentPreview({
+  async function _makeDocumentThumbs({
     full_media_path,
     thumb_folder,
     full_path_to_thumb,
@@ -545,7 +544,7 @@ module.exports = (function () {
     dev.logverbose(`Moved/removed temp pdf folder`);
   }
 
-  async function _makeLinkPreview({ full_media_path, full_path_to_thumb }) {
+  async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {
     dev.logfunction({ full_media_path, full_path_to_thumb });
 
     // get content for full_media_path
