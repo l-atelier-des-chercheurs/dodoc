@@ -2,21 +2,8 @@ const path = require("path"),
   fs = require("fs-extra");
 
 const utils = require("./utils"),
-  thumbs = require("./thumbs");
-
-// all items (projects, medias, etc.) must have those props :
-// date_created
-// date_modified
-// file_meta
-
-// cache structure :
-/* 
-[{
-  path: 'projects/',
-
-}]
-
-*/
+  thumbs = require("./thumbs"),
+  cache = require("./cache");
 
 module.exports = (function () {
   const API = {
@@ -43,7 +30,11 @@ module.exports = (function () {
     getFolder: async ({ folder_type, folder_slug }) => {
       dev.logfunction({ folder_type, folder_slug });
 
-      // TODO cache unique folder
+      const d = cache.get({
+        key: `${folder_type}/${folder_slug}`,
+      });
+      if (d) return d;
+
       let folder_meta = await utils
         .readMetaFile(folder_type, folder_slug, "meta.txt")
         .catch((err) => {
@@ -51,15 +42,18 @@ module.exports = (function () {
         });
       folder_meta.slug = folder_slug;
 
-      let folder_preview = await _getFolderPreview({
+      let cover = await _getFolderCover({
         folder_type,
         folder_slug,
       });
-      if (folder_preview) folder_meta.preview = folder_preview;
+      if (cover) folder_meta.cover = cover;
 
       // TODO get number of files if files in schema
 
-      // add to cache
+      cache.set({
+        key: `${folder_type}/${folder_slug}`,
+        value: folder_meta,
+      });
 
       return folder_meta;
     },
@@ -73,7 +67,7 @@ module.exports = (function () {
       if (data?.requested_folder_name)
         folder_slug = utils.slug(data.requested_folder_name);
 
-      let { preview, ...meta } = data;
+      let { cover, ...meta } = data;
 
       folder_slug = await _preventFolderOverride({ folder_type, folder_slug });
 
@@ -99,8 +93,8 @@ module.exports = (function () {
         meta,
       });
 
-      // TODO store preview if it exists
-      if (preview) {
+      // TODO store cover if it exists
+      if (cover) {
       }
 
       return folder_slug;
@@ -113,7 +107,7 @@ module.exports = (function () {
       let meta = await utils.readMetaFile(folder_type, folder_slug, "meta.txt");
       const previous_meta = { ...meta };
 
-      let { preview, ...new_meta } = data;
+      let { cover, ...new_meta } = data;
 
       // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the typ
       if (new_meta) {
@@ -132,9 +126,9 @@ module.exports = (function () {
         meta,
       });
 
-      // TODO update pre view
-      // rename preview to cover
-      if (preview) {
+      // TODO update cover
+      if (cover) {
+        // remove cover thumbs
       }
 
       // TODO update
@@ -145,6 +139,10 @@ module.exports = (function () {
           acc[key] = meta[key];
         return acc;
       }, {});
+
+      cache.delete({
+        key: `${folder_type}/${folder_slug}`,
+      });
 
       return changed_meta;
     },
@@ -157,9 +155,9 @@ module.exports = (function () {
         else await _moveFolderToBin({ folder_type, folder_slug });
 
         await thumbs.removeFolderThumbs({ folder_type, folder_slug });
-
-        // TODO remove from cache
-        // cache.del({ type, slugFolderName });
+        cache.delete({
+          key: `${folder_type}/${folder_slug}`,
+        });
 
         return folder_slug;
       } catch (err) {
@@ -201,32 +199,23 @@ module.exports = (function () {
     return new_meta;
   }
 
-  async function _getFolderPreview({ folder_type, folder_slug }) {
+  async function _getFolderCover({ folder_type, folder_slug }) {
     dev.logfunction({ folder_type, folder_slug });
 
-    const preview = global.settings.schema[folder_type].preview;
-    if (!preview) return false;
+    const cover = global.settings.schema[folder_type].cover;
+    if (!cover) return false;
 
-    const preview_name = "meta_preview.jpeg";
-    const preview_path = utils.getPathToUserContent(
+    const cover_name = "meta_cover.jpeg";
+    const cover_path = utils.getPathToUserContent(
       folder_type,
       folder_slug,
-      preview_name
+      cover_name
     );
 
-    if (!(await fs.pathExists(preview_path))) return false;
+    if (!(await fs.pathExists(cover_path))) return false;
 
-    // TODO
-    // const thumb_meta = await thumbs.makeMediaThumbs(
-    //   folder_slug,
-    //   preview_name,
-    //   "image",
-    //   type,
-    //   "preview"
-    // );
-
-    dev.logverbose(`Folder has preview`);
-    const thumb_meta = await thumbs.makeFolderPreview({
+    dev.logverbose(`folder has cover`);
+    const thumb_meta = await thumbs.makeFolderCover({
       folder_type,
       folder_slug,
     });

@@ -58,7 +58,6 @@ new Vue({
   render: (h) => h(App),
   data: {
     store: window.store,
-
     is_connected: false,
   },
   mounted() {
@@ -66,6 +65,12 @@ new Vue({
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
+    this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
+  },
+  watch: {
+    "$api.socket.connected": function () {
+      this.is_connected = this.$api.socket.connected;
+    },
   },
   methods: {
     socketConnected() {
@@ -73,14 +78,18 @@ new Vue({
         .closeLogOnClick(true)
         .delay(4000)
         .success(`Connected or reconnected with id ${this.$api.socket.id}`);
-      this.is_connected = true;
     },
     socketDisconnected(reason) {
       this.$alertify
         .closeLogOnClick(true)
         .delay(4000)
         .error(`Disconnected ${reason}`);
-      this.is_connected = false;
+    },
+    socketConnectError(reason) {
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error(`Connect error ${reason}`);
     },
   },
 }).$mount("#app");

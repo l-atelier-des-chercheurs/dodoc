@@ -40,6 +40,7 @@ export default {
         .closeLogOnClick(true)
         .delay(4000)
         .success(list_of_added_metas);
+      this.selected_files = [];
     },
   },
 };

@@ -98,7 +98,7 @@ module.exports = dev = (function () {
       });
 
     if (logToFile) _sendToLogFile(message);
-    if (isDebugMode) _sendToConsole(message, chalk.purple);
+    if (isDebugMode) _sendToConsole(message, chalk.cyan);
   }
   function logfunction() {
     if (!logToFile && !isDebugMode) return;

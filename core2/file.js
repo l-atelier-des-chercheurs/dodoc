@@ -62,6 +62,8 @@ module.exports = (function () {
         folder_slug,
       });
 
+      // no caching here to get more flexibility with lru cache (busting medias with few access, etc.)
+
       const metas = [];
       for (const meta_filename of meta_filenames) {
         try {
@@ -150,8 +152,17 @@ module.exports = (function () {
         Object.assign(meta, clean_meta);
       }
 
-      // TODO update media
-      if (content) {
+      if (typeof content !== "undefined") {
+        if (typeof content !== "string")
+          throw new Error("Content (text) is not a string");
+
+        // TODO update media filename (text, image, etc.)
+        await utils.saveMetaAtPath({
+          folder_type,
+          folder_slug,
+          file_slug: meta.media_filename,
+          meta: content,
+        });
         // TODO remove thumbs
       }
 
@@ -163,13 +174,18 @@ module.exports = (function () {
         meta,
       });
 
+      // dev.log({ meta, previous_meta });
       const changed_data = Object.keys(meta).reduce((acc, key) => {
         if (JSON.stringify(meta[key]) !== JSON.stringify(previous_meta[key]))
           acc[key] = meta[key];
         return acc;
       }, {});
 
-      if (content) changed_data.content = content;
+      if (typeof content !== "undefined") changed_data.content = content;
+
+      cache.delete({
+        key: `${folder_type}/${folder_slug}/${meta_slug}`,
+      });
 
       return changed_data;
     },

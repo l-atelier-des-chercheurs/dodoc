@@ -5,7 +5,7 @@
       'is--connected': $root.is_connected,
     }"
   >
-    Connected = {{ $root.is_connected }}
+    Connected as {{ $api.socket.userID }}
     |
     <button
       type="button"

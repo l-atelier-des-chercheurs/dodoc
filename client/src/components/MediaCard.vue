@@ -4,12 +4,16 @@
       <img v-if="thumb" :src="thumb" />
     </sl-responsive-media>
 
-    <strong>{{ file.type }}</strong>
-
-    {{ file.caption }}
+    <strong>Type de fichier : {{ file.type }}</strong>
+    <br />
     <TextField
       field_name="caption"
       :content="file.caption"
+      :path_to_resource="`/projects/${this.project_slug}/${this.file.slug}`"
+    />
+    <TextField
+      field_name="content"
+      :content="file.content"
       :path_to_resource="`/projects/${this.project_slug}/${this.file.slug}`"
     />
 
@@ -53,8 +57,7 @@ export default {
 
       try {
         if (this.file.type === "image") thumb_path = this.file.thumbs[180];
-        if (this.file.type === "video")
-          thumb_path = this.file.thumbs["00:00:00"][180];
+        if (this.file.type === "video") thumb_path = this.file.thumbs["0"][180];
         if (this.file.type === "audio")
           thumb_path = this.file.thumbs.waveform[180];
         if (this.file.type === "stl") thumb_path = this.file.thumbs["0"][180];

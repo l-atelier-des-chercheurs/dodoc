@@ -6,7 +6,7 @@
     <div class="pageContent">
       <details>
         <summary>$api.store</summary>
-        {{ $api.store }}
+        <pre>{{ $api.store }}</pre>
       </details>
 
       <router-view />
@@ -61,6 +61,11 @@ body {
 
 body {
   margin: 0;
+}
+
+b,
+strong {
+  font-weight: bold;
 }
 
 .pageContent {

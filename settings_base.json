@@ -637,7 +637,7 @@
   },
   "schema": {
     "projects": {
-      "preview": {
+      "cover": {
         "width": 1200,
         "height": 1200,
         "thumbs": {
