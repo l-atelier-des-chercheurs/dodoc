@@ -1,5 +1,5 @@
 <template>
-  <div class="m_project">
+  <div class="_project">
     <strong>
       <TitleField
         :field_name="'title'"
@@ -87,7 +87,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.m_project {
+._project {
   background: #eee;
   padding: 1rem;
 }
