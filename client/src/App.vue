@@ -41,7 +41,34 @@ export default {
     "Segoe UI Symbol";
   --sl-font-serif: Georgia, "Times New Roman", serif;
 
-  --padding: 0.5rem;
+  --spacing: 0.9rem;
+  --border-width: 1pt;
+  --border-color: #222;
+  --page-height: 11in;
+  --active-color: rgb(52, 122, 213);
+
+  --c-orange: #f9ca00;
+  --c-rouge: #ff3e51;
+  --c-bleu: #2c75c5;
+  --c-noir: #333;
+  --c-gris: #eff2f3;
+  --c-vert: hsl(143, 69%, 55%);
+  --c-vert_fonce: hsl(143, 69%, 40%);
+
+  --active-color: var(--c-orange);
+  // --active-color: #aaa;
+  --color-WriteUp: #fff;
+  --color-MediaLibrary: var(--c-orange);
+  --color-Composition: var(--c-bleu);
+  --color-Capture: var(--c-rouge);
+  --color-Planning: var(--c-gris);
+  --color-Team: var(--c-vert);
+
+  --scrollbar-height: 1px;
+  --scrollbar-padding: 3px;
+  --scrollbar-border: 2px;
+  --c-barbgcolor: rgba(255, 255, 255, 0);
+  --c-thumbcolor: black;
 }
 
 body {
@@ -69,7 +96,7 @@ strong {
 }
 
 .pageContent {
-  margin: var(--padding);
+  margin: var(--spacing);
 }
 
 [contenteditable] {
