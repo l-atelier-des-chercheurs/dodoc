@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div class="_projectLibrary">
+    <SendMedia :folder_type="'projects'" :folder_slug="project_slug" />
+
     <button type="button" @click="createText">Créer du texte</button>
     <button
       type="button"
@@ -21,7 +23,7 @@
     Médias = {{ all_files.length }}
     <br />
     <br />
-    <div class="_lib">
+    <div class="_projectLibrary--lib">
       <MediaCard
         v-for="file of all_files"
         :key="file.slug"
@@ -32,6 +34,7 @@
   </div>
 </template>
 <script>
+import SendMedia from "@/components/SendMedia.vue";
 import MediaCard from "@/components/MediaCard.vue";
 
 export default {
@@ -40,6 +43,7 @@ export default {
     project: Object,
   },
   components: {
+    SendMedia,
     MediaCard,
   },
   data() {
@@ -132,9 +136,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._lib {
+._projectLibrary {
+  background: var(--color-MediaLibrary);
+}
+
+._projectLibrary--lib {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--spacing);
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
 }
 </style>

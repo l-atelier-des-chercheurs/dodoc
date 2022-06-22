@@ -1,6 +1,23 @@
 <template>
   <div>
-    <input type="file" multiple @change="updateInputFiles($event)" />
+    <label for="add_file" class="_boldBtn">
+      <span>importer</span>
+      <input
+        type="file"
+        multiple="multiple"
+        id="add_file"
+        name="file"
+        accept=""
+        style="
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          position: absolute;
+          opacity: 0;
+        "
+        @change="updateInputFiles($event)"
+      />
+    </label>
 
     <UploadFiles
       v-if="selected_files.length > 0"

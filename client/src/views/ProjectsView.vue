@@ -1,10 +1,41 @@
 <template>
   <div class="pageContent">
-    <router-link to="/">accueil</router-link>
-    <h1>Projets</h1>
-    <input type="text" v-model="new_project_title" />
-    <button type="button" @click="createProject">Create</button>
-    <br />
+    <div class="_title">
+      <h1>Projets</h1>
+      <div>
+        <sl-button
+          size="small"
+          variant="text"
+          pill
+          @click="$refs.createModal.show()"
+        >
+          <sl-icon slot="suffix" name="box-arrow-in-up-right"></sl-icon>
+          créer
+        </sl-button>
+      </div>
+    </div>
+
+    <sl-dialog
+      ref="createModal"
+      label="Créer un projet"
+      class="dialog-overview"
+    >
+      <sl-input
+        type="text"
+        autofocus
+        placeholder="Titre du nouveau projet"
+        v-sl-model="new_project_title"
+      />
+      <sl-button
+        variant="primary"
+        slot="footer"
+        :loading="is_creating_project"
+        @click="createProject"
+      >
+        créer
+      </sl-button>
+    </sl-dialog>
+
     <br />
     <div class="_projects">
       <ProjectPreview
@@ -25,14 +56,9 @@ export default {
   },
   data() {
     return {
-      fetch_status: null,
-      fetch_error: null,
-
-      new_project_title: (
-        Math.random().toString(36) + "00000000000000000"
-      ).slice(2, 3 + 2),
-
+      new_project_title: "",
       projects: null,
+      is_creating_project: false,
     };
   },
   created() {},
@@ -49,22 +75,19 @@ export default {
   computed: {},
   methods: {
     async createProject() {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
+      this.is_creating_project = true;
 
       try {
         await this.$axios.post("/projects", {
           title: this.new_project_title,
           requested_folder_name: this.new_project_title,
         });
-        this.fetch_status = "success";
-
-        this.new_project_title = (
-          Math.random().toString(36) + "00000000000000000"
-        ).slice(2, 3 + 2);
+        this.is_creating_project = false;
+        this.$refs.createModal.hide();
+        this.new_project_title = "";
       } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
+        this.$alertify.closeLogOnClick(true).delay(4000).error(e.response.data);
+        this.is_creating_project = false;
       }
     },
   },
@@ -72,8 +95,17 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projects {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  display: flex;
+  flex-flow: row wrap;
   gap: var(--spacing);
+  justify-content: center;
+
+  > * {
+    flex: 0 0 220px;
+  }
+}
+
+._title {
+  text-align: center;
 }
 </style>

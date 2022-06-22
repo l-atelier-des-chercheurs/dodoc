@@ -3,28 +3,7 @@
   <div id="app" class="">
     <SocketStatus />
 
-    <!-- <nav class="bg-gray-100 px-5 py-3 rounded-md w-full">
-      <ol class="list-reset flex">
-        <li>
-          <router-link to="/" class="text-blue-600 hover:text-blue-700">
-            Accueil
-          </router-link>
-        </li>
-        <li><span class="text-gray-500 mx-2">/</span></li>
-        <li>
-          <router-link to="/projects" class="text-blue-600 hover:text-blue-700">
-            Projets
-          </router-link>
-        </li>
-        <li><span class="text-gray-500 mx-2">/</span></li>
-        <li class="text-gray-500">
-          <router-link to="/" class="text-blue-600 hover:text-blue-700">
-            Le projet
-          </router-link>
-        </li>
-      </ol>
-    </nav> -->
-
+    <BreadCrumbs />
     <div class="">
       <router-view />
     </div>
@@ -32,11 +11,13 @@
 </template>
 <script>
 import SocketStatus from "./components/SocketStatus.vue";
+import BreadCrumbs from "./components/nav/BreadCrumbs.vue";
 
 export default {
   props: {},
   components: {
     SocketStatus,
+    BreadCrumbs,
   },
   data() {
     return {};
@@ -49,7 +30,7 @@ export default {
   methods: {},
 };
 </script>
-<style lang="postcss">
+<style lang="scss">
 :root {
   /* Fonts */
   --spacing: 0.9rem;
@@ -60,7 +41,7 @@ export default {
 
   --c-orange: #f9ca00;
   --c-rouge: #ff3e51;
-  --c-bleu: #2c75c5;
+  --c-bleu: hsl(211, 63%, 47%);
   --c-noir: #333;
   --c-gris: #eff2f3;
   --c-vert: hsl(143, 69%, 55%);
@@ -81,6 +62,28 @@ export default {
   --scrollbar-border: 2px;
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
+
+  $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
+
+  @each $size in $sizes {
+    $i: index($sizes, $size);
+    --sl-color-success-#{$size}: hsl(143, 69%, #{82% - $i * 5});
+  }
+  @each $size in $sizes {
+    $i: index($sizes, $size);
+    --sl-color-primary-#{$size}: hsl(211, 63%, #{98% - $i * 5});
+  }
+  @each $size in $sizes {
+    $i: index($sizes, $size);
+    --sl-color-warning-#{$size}: hsl(36, 96%, #{90% - $i * 5});
+  }
+  @each $size in $sizes {
+    $i: index($sizes, $size);
+    --sl-color-info-#{$size}: hsl(0, 0%, #{88% - $i * 0.5});
+  }
+
+  --sl-input-color: black;
+  --sl-input-height-small: 1.5rem;
 }
 
 * {
@@ -99,9 +102,12 @@ body {
 }
 
 #app {
-  font-family: "Work Sans";
+  /* font-family: "Work Sans"; */
+  font-family: "IBM Plex Sans";
   font-style: normal;
   font-weight: 300;
+
+  font-size: 85%;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -133,5 +139,15 @@ strong {
 }
 h1 {
   margin: 0;
+}
+
+._boldBtn {
+  font-weight: 700;
+
+  font-variant: small-caps;
+}
+img {
+  max-width: 100%;
+  height: auto;
 }
 </style>

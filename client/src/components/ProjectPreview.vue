@@ -1,25 +1,18 @@
 <template>
   <div class="_project">
     <strong>
-      <TitleField
-        :field_name="'title'"
-        :content="project.title"
-        :show_label="false"
-        :path_to_resource="`/projects/${project.slug}`"
-      />
+      {{ project.title }}
     </strong>
+    {{ project.description }}
 
-    <TextField
-      field_name="description"
-      :content="project.description"
-      :path_to_resource="`/projects/${project.slug}`"
-    />
-
+    <DateField title="plop" :date="project.date_created" />
     <br />
-    <button type="button" class="button" @click="updateProject">save</button>
-    <button type="button" class="button" @click="removeProject">delete</button>
+    <!-- <button type="button" class="button" @click="updateProject">save</button>
+    <button type="button" class="button" @click="removeProject">delete</button> -->
 
-    <router-link :to="`/projects/${project.slug}`">Ouvrir</router-link>
+    <router-link :to="`/projects/${project.slug}`" class="_boldBtn">
+      ouvrir
+    </router-link>
 
     <!-- fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
@@ -88,7 +81,14 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._project {
-  background: #eee;
-  padding: 1rem;
+  position: relative;
+  border: 1px solid black;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+}
+
+._editBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 </style>

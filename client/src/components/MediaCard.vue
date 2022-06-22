@@ -1,31 +1,6 @@
 <template>
-  <div>
+  <div class="_mediaCard">
     <img v-if="thumb" :src="thumb" />
-
-    <strong>Type de fichier : {{ file.type }}</strong>
-    <br />
-    <TextField
-      field_name="caption"
-      :content="file.caption"
-      :path_to_resource="`/projects/${this.project_slug}/${this.file.slug}`"
-    />
-    <TextField
-      field_name="content"
-      :content="file.content"
-      :path_to_resource="`/projects/${this.project_slug}/${this.file.slug}`"
-    />
-
-    <details>
-      <summary>Brut</summary>
-      <pre v-html="file" />
-    </details>
-
-    <button
-      class="ring-2 ring-purple-500 ring-offset-4 ring-offset-purple-100 rounded-full"
-    >
-      Save Changes
-    </button>
-    <button class="rounded-full" @click="removeFile">Supprimer</button>
   </div>
 </template>
 <script>
@@ -109,8 +84,15 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._mediaCard {
-  width: 300px;
-  background: #eee;
-  overflow: auto;
+  position: relative;
+  background: rgba(255, 255, 255, 0.2);
+  aspect-ratio: 1/1;
+  img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-width: none;
+  }
 }
 </style>

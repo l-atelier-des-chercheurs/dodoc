@@ -14,6 +14,9 @@ Vue.prototype.$alertify = alertify;
 import api from "./adc-core/api.js";
 Vue.prototype.$api = api();
 
+import ShoelaceModelDirective from "@shoelace-style/vue-sl-model";
+Vue.use(ShoelaceModelDirective);
+
 import TitleField from "@/components/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
 import TextField from "@/components/fields/TextField.vue";
@@ -22,6 +25,8 @@ import MetaFieldHeader from "@/components/fields/MetaFieldHeader.vue";
 Vue.component("MetaFieldHeader", MetaFieldHeader);
 import SaveCancelButtons from "@/components/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
+import DateField from "@/components/fields/DateField.vue";
+Vue.component("DateField", DateField);
 
 import "axios-debug-log/enable";
 import axios from "axios";
