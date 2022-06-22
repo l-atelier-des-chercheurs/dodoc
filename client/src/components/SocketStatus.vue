@@ -22,6 +22,11 @@
     >
       disconnect
     </button>
+
+    <details>
+      <summary>$api.store</summary>
+      <pre>{{ $api.store }}</pre>
+    </details>
   </div>
 </template>
 <script>
@@ -41,7 +46,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._socketStatus {
-  padding: var(--spacing);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: calc(var(--spacing) / 2);
   background: rgba(255, 0, 0, 0.5);
 
   &.is--connected {

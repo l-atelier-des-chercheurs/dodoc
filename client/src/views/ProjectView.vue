@@ -1,12 +1,8 @@
 <template>
-  <div class="">
-    <h3>Projet</h3>
-    <template v-if="is_loading">
-      <button type="button" class="bg-indigo-500 ..." disabled>
-        <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"></svg>
-        Processing...
-      </button>
-    </template>
+  <div class="pageContent">
+    <router-link to="/">accueil</router-link>
+    <router-link to="/projects">projets</router-link>
+    <template v-if="is_loading">Chargement…</template>
     <template v-else-if="error">
       <div v-if="error.status === 404">Projet introuvable</div>
     </template>

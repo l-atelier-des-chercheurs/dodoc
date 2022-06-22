@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="pageContent">
+    <router-link to="/">accueil</router-link>
     <h1>Projets</h1>
     <input type="text" v-model="new_project_title" />
     <button type="button" @click="createProject">Create</button>

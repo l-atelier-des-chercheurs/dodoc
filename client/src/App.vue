@@ -1,9 +1,9 @@
 -
 <template>
-  <div id="app" class="bg-gray-100">
+  <div id="app" class="">
     <SocketStatus />
 
-    <nav class="bg-gray-100 px-5 py-3 rounded-md w-full">
+    <!-- <nav class="bg-gray-100 px-5 py-3 rounded-md w-full">
       <ol class="list-reset flex">
         <li>
           <router-link to="/" class="text-blue-600 hover:text-blue-700">
@@ -23,14 +23,9 @@
           </router-link>
         </li>
       </ol>
-    </nav>
+    </nav> -->
 
-    <div class="pageContent">
-      <details>
-        <summary>$api.store</summary>
-        <pre>{{ $api.store }}</pre>
-      </details>
-
+    <div class="">
       <router-view />
     </div>
   </div>
@@ -57,12 +52,6 @@ export default {
 <style lang="postcss">
 :root {
   /* Fonts */
-  --sl-font-mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-  --sl-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol";
-  --sl-font-serif: Georgia, "Times New Roman", serif;
-
   --spacing: 0.9rem;
   --border-width: 1pt;
   --border-color: #222;
@@ -80,6 +69,7 @@ export default {
   --active-color: var(--c-orange);
   /* --active-color: #aaa; */
   --color-WriteUp: #fff;
+
   --color-MediaLibrary: var(--c-orange);
   --color-Composition: var(--c-bleu);
   --color-Capture: var(--c-rouge);
@@ -93,19 +83,36 @@ export default {
   --c-thumbcolor: black;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
   background: white;
 }
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+}
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  font-family: "Karla";
+  font-family: "Work Sans";
   font-style: normal;
   font-weight: 300;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: var(--c-noir);
+
+  min-height: 100%;
+}
+
+hr {
+  border-top: 1px solid var(--c-noir);
+  border-bottom: 0 solid #000;
 }
 
 body {
@@ -118,7 +125,7 @@ strong {
 }
 
 .pageContent {
-  margin: var(--spacing);
+  padding: var(--spacing);
 }
 
 [contenteditable] {
