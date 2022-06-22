@@ -1,8 +1,6 @@
 <template>
-  <sl-card class="card-overview">
-    <sl-responsive-media slot="image" aspect-ratio="1:1">
-      <img v-if="thumb" :src="thumb" />
-    </sl-responsive-media>
+  <div>
+    <img v-if="thumb" :src="thumb" />
 
     <strong>Type de fichier : {{ file.type }}</strong>
     <br />
@@ -22,12 +20,13 @@
       <pre v-html="file" />
     </details>
 
-    <div slot="footer">
-      <sl-button variant="primary" @click="removeFile" pill>
-        Supprimer
-      </sl-button>
-    </div>
-  </sl-card>
+    <button
+      class="ring-2 ring-purple-500 ring-offset-4 ring-offset-purple-100 rounded-full"
+    >
+      Save Changes
+    </button>
+    <button class="rounded-full" @click="removeFile">Supprimer</button>
+  </div>
 </template>
 <script>
 export default {

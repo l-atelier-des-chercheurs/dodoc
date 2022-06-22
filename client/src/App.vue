@@ -1,7 +1,29 @@
 -
 <template>
-  <div id="app">
+  <div id="app" class="bg-gray-100">
     <SocketStatus />
+
+    <nav class="bg-gray-100 px-5 py-3 rounded-md w-full">
+      <ol class="list-reset flex">
+        <li>
+          <router-link to="/" class="text-blue-600 hover:text-blue-700">
+            Accueil
+          </router-link>
+        </li>
+        <li><span class="text-gray-500 mx-2">/</span></li>
+        <li>
+          <router-link to="/projects" class="text-blue-600 hover:text-blue-700">
+            Projets
+          </router-link>
+        </li>
+        <li><span class="text-gray-500 mx-2">/</span></li>
+        <li class="text-gray-500">
+          <router-link to="/" class="text-blue-600 hover:text-blue-700">
+            Le projet
+          </router-link>
+        </li>
+      </ol>
+    </nav>
 
     <div class="pageContent">
       <details>
@@ -32,7 +54,7 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss">
+<style lang="postcss">
 :root {
   /* Fonts */
   --sl-font-mono: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
@@ -56,7 +78,7 @@ export default {
   --c-vert_fonce: hsl(143, 69%, 40%);
 
   --active-color: var(--c-orange);
-  // --active-color: #aaa;
+  /* --active-color: #aaa; */
   --color-WriteUp: #fff;
   --color-MediaLibrary: var(--c-orange);
   --color-Composition: var(--c-bleu);

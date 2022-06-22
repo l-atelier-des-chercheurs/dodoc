@@ -1,9 +1,7 @@
 <template>
   <div class="">
-    <sl-breadcrumb>
-      <sl-breadcrumb-item>Accueil</sl-breadcrumb-item>
-    </sl-breadcrumb>
     Aller aux <router-link to="/projects">projets</router-link>
+    Hello ! Hello
     <NextZoning />
   </div>
 </template>

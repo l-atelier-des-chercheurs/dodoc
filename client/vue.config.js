@@ -12,11 +12,19 @@ module.exports = defineConfig({
   },
   devServer: {
     https: true,
-    proxy: "https://localhost:8080",
+    // proxy: "https://localhost:8080",
     port: 35500,
     allowedHosts: "all",
     headers: { "Access-Control-Allow-Origin": "*" },
+    // proxy: {
+    //   "^/": {
+    //     target: "http://localhost:8080",
+    //     ws: true,
+    //     changeOrigin: true,
+    //   },
+    // },
     devMiddleware: {
+      publicPath: "/_client",
       writeToDisk: true,
     },
   },

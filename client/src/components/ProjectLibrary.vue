@@ -13,15 +13,9 @@
       class="input-validation-required"
       @submit.prevent="createLink"
     >
-      <sl-input
-        variant="url"
-        label="URL"
-        placeholder="https://example.com/"
-        required
-        v-sl-model="url_to"
-      />
+      <input type="url" required v-model="url_to" />
       <br />
-      <sl-button type="submit" variant="primary">Ajouter</sl-button>
+      <input type="submit" />
     </form>
 
     Médias = {{ all_files.length }}

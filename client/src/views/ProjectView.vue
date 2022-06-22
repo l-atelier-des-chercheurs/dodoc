@@ -1,24 +1,11 @@
 <template>
   <div class="">
-    <sl-breadcrumb>
-      <sl-breadcrumb-item>
-        <router-link to="/">Accueil</router-link>
-      </sl-breadcrumb-item>
-      <sl-breadcrumb-item>
-        <router-link to="/projects">Projets</router-link>
-      </sl-breadcrumb-item>
-      <sl-breadcrumb-item>
-        <template v-if="is_loading">
-          <sl-spinner></sl-spinner>
-        </template>
-        <template v-else>
-          {{ project.title }}
-        </template>
-      </sl-breadcrumb-item>
-    </sl-breadcrumb>
     <h3>Projet</h3>
     <template v-if="is_loading">
-      <sl-spinner></sl-spinner>
+      <button type="button" class="bg-indigo-500 ..." disabled>
+        <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"></svg>
+        Processing...
+      </button>
     </template>
     <template v-else-if="error">
       <div v-if="error.status === 404">Projet introuvable</div>
