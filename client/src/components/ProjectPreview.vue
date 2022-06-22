@@ -4,8 +4,9 @@
       {{ project.title }}
     </strong>
     {{ project.description }}
+    {{ project.date_created }}
 
-    <DateField title="plop" :date="project.date_created" />
+    <DateField :title="'date_created'" :date="project.date_created" />
     <br />
     <!-- <button type="button" class="button" @click="updateProject">save</button>
     <button type="button" class="button" @click="removeProject">delete</button> -->

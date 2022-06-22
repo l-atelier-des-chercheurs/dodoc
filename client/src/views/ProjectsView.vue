@@ -39,7 +39,7 @@
     <br />
     <div class="_projects">
       <ProjectPreview
-        v-for="project in projects"
+        v-for="project in sorted_projects"
         :project="project"
         :key="project.slug"
       />
@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       new_project_title: "",
-      projects: null,
+      projects: [],
       is_creating_project: false,
     };
   },
@@ -72,7 +72,17 @@ export default {
     this.$api.leave({ room: "projects" });
   },
   watch: {},
-  computed: {},
+  computed: {
+    sorted_projects() {
+      const _projects = this.projects.slice();
+      return _projects.sort(function (a, b) {
+        let valA = a.date_created;
+        let valB = b.date_created;
+        if (valA === valB) return 0;
+        return valA < valB ? -1 : 1;
+      });
+    },
+  },
   methods: {
     async createProject() {
       this.is_creating_project = true;

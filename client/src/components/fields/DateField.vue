@@ -1,6 +1,5 @@
 <template>
   <div class="m_metaField" @click="show_detail = !show_detail">
-    PLOP
     <div>{{ $t(title) }}</div>
     <div>
       <template v-if="!show_detail">{{ formatDateToHuman(date) }} </template>
@@ -31,10 +30,10 @@ export default {
   computed: {},
   methods: {
     formatDateToHuman(date) {
-      return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LL");
+      return this.$moment(date).format("LL");
     },
     formatDateToPrecise(date) {
-      return this.$moment(date, "YYYY-MM-DD HH:mm:ss").format("LTS L");
+      return this.$moment(date).format("LTS L");
     },
   },
 };
