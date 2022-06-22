@@ -35,16 +35,11 @@ module.exports = (function () {
       }
     },
     getCurrentDate() {
-      return moment().format(global.settings.metaDateFormat);
+      return new Date();
     },
-    parseDate(date, f) {
-      if (moment(date, f, true).isValid()) {
-        return moment(date, f).format(global.settings.metaDateFormat);
-      } else {
-        return "";
-      }
+    parseDate(date) {
+      return new Date(date);
     },
-
     async readMetaFile(...paths) {
       dev.logfunction({ paths });
 
