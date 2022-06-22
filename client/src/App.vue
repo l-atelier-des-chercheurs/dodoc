@@ -30,6 +30,7 @@ export default {
   methods: {},
 };
 </script>
+<style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
 <style lang="scss">
 :root {
   /* Fonts */
@@ -149,5 +150,112 @@ h1 {
 img {
   max-width: 100%;
   height: auto;
+}
+</style>
+
+<style lang="scss">
+.splitpanes__pane {
+  // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+  // border-radius: 4px;
+  // overflow: hidden;
+}
+
+.splitpanes .splitpanes__splitter {
+  position: relative;
+  background-color: transparent;
+  // border-left: 1px solid #eee;
+  z-index: 100;
+  border: 0px;
+
+  pointer-events: none;
+}
+
+.splitpanes--vertical > .splitpanes__splitter {
+  width: 1px;
+  margin-left: -1px;
+  border-right: 1px solid black;
+}
+.splitpanes--horizontal > .splitpanes__splitter {
+  height: 1px;
+  border-bottom: 1px solid black;
+}
+
+.splitpanes__splitter:before {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 30px;
+
+  left: calc(50% - 15px);
+  top: calc(50% - 15px);
+
+  transition: opacity 0.4s;
+  // background-color: rgba(255, 255, 0, 1);
+  opacity: 1;
+  z-index: 10;
+  pointer-events: auto;
+  cursor: pointer;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+}
+
+.splitpanes--dragging .splitpanes__splitter {
+  border-style: dashed;
+}
+
+.splitpanes--dragging .splitpanes__splitter::before {
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+}
+
+.splitpanes__splitter:hover:before {
+  // opacity: 1;
+}
+.splitpanes--vertical > .splitpanes__splitter::before {
+}
+.splitpanes--horizontal > .splitpanes__splitter::before {
+}
+
+.splitpanes__splitter:after {
+  content: "";
+  position: absolute;
+  top: auto;
+  bottom: auto;
+  top: calc(50% - 10px);
+  pointer-events: none;
+  // top: 50%;
+
+  transform: rotate(45deg);
+
+  width: 2px;
+  height: 20px;
+
+  transition: transform 0.4s;
+  background-color: #000;
+  opacity: 1;
+  z-index: 11;
+}
+.splitpanes__splitter:hover {
+  border-style: dashed;
+}
+.splitpanes__splitter:hover:after {
+  opacity: 1;
+  transform: rotate(90deg);
+}
+
+.splitpanes--vertical > .splitpanes__splitter:after {
+  // left: -10px;
+  // right: -10px;
+  // height: 100%;
+}
+.splitpanes--horizontal > .splitpanes__splitter:after {
+  transform: rotate(135deg);
+  left: 50%;
+  // top: -10px;
+  // bottom: -10px;
+  // width: 100%;
+}
+.splitpanes--horizontal > .splitpanes__splitter:hover:after {
+  transform: rotate(180deg);
 }
 </style>

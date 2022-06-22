@@ -65,11 +65,13 @@ export default function () {
         hello: "bonjour monde",
         edit: "modifier",
         caption: "légende",
+        date_created: "création",
       },
       en: {
         hello: "hello world",
         edit: "edit",
         caption: "caption",
+        date_created: "created",
       },
     }, // set locale messages
   });

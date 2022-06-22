@@ -30,10 +30,22 @@ export default {
   computed: {},
   methods: {
     formatDateToHuman(date) {
-      return this.$moment(date).format("LL");
+      let options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+      return new Date(date).toLocaleDateString(undefined, options);
     },
     formatDateToPrecise(date) {
-      return this.$moment(date).format("LTS L");
+      let options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      };
+      return new Date(date).toLocaleDateString(undefined, options);
     },
   },
 };

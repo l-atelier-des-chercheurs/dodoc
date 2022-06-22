@@ -15,6 +15,7 @@ import api from "./adc-core/api.js";
 Vue.prototype.$api = api();
 
 import ShoelaceModelDirective from "@shoelace-style/vue-sl-model";
+Vue.config.ignoredElements = [/^sl-/];
 Vue.use(ShoelaceModelDirective);
 
 import TitleField from "@/components/fields/TitleField.vue";

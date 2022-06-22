@@ -4,15 +4,15 @@
       {{ project.title }}
     </strong>
     {{ project.description }}
+    <br />
     {{ project.date_created }}
-
     <DateField :title="'date_created'" :date="project.date_created" />
     <br />
     <!-- <button type="button" class="button" @click="updateProject">save</button>
     <button type="button" class="button" @click="removeProject">delete</button> -->
 
-    <router-link :to="`/projects/${project.slug}`" class="_boldBtn">
-      ouvrir
+    <router-link :to="`/projects/${project.slug}`" class="">
+      <sl-button size="small" variant="primary" pill>ouvrir</sl-button>
     </router-link>
 
     <!-- fetch_status = {{ fetch_status }} <br />

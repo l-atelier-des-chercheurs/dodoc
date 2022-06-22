@@ -5,20 +5,28 @@
       <div v-if="error.status === 404">Projet introuvable</div>
     </template>
     <template v-else>
+      <PaneList :panes.sync="panes" />
       <h1>{{ project.title }}</h1>
+
+      <div class="_panes">
+        <ProjectPanes :panes="panes" />
+      </div>
       <ProjectLibrary :project_slug="project_slug" :project="project" />
     </template>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
 import ProjectLibrary from "@/components/ProjectLibrary.vue";
+import PaneList from "@/components/nav/PaneList.vue";
+import ProjectPanes from "@/components/ProjectPanes.vue";
 
 export default {
   props: {},
   components: {
     ProjectLibrary,
+    PaneList,
+    ProjectPanes,
   },
   data() {
     return {
@@ -26,6 +34,8 @@ export default {
       is_loading: true,
       error: null,
       project: null,
+
+      panes: [],
     };
   },
   created() {},
@@ -53,6 +63,23 @@ export default {
     // return window.store.projects?.find((p) => p.slug === this.project_slug);
     // },
   },
-  methods: {},
+  methods: {
+    updatePanes(panes) {
+      panes;
+      debugger;
+    },
+  },
 };
 </script>
+<style lang="scss" scoped>
+._panes {
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  > * {
+    height: 100%;
+  }
+}
+</style>
