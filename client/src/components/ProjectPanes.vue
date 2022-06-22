@@ -5,9 +5,7 @@
     :key="JSON.stringify(panes.map((p) => p.key))"
   >
     <template v-if="panes.filter((p) => p.enabled).length === 0">
-      <div class="m_project--noPane">
-        <i>Aucune panneau n’est actif</i>
-      </div>
+      <div><i>Aucune panneau n’est actif</i></div>
     </template>
     <template v-else v-for="pane in panes">
       <pane
@@ -25,7 +23,7 @@
         min-size="5"
         ref="MediaLibrary"
       >
-        MEDIALIB
+        <ProjectLibrary :project="project" />
       </pane>
 
       <pane
@@ -59,14 +57,17 @@
 </template>
 <script>
 import { Splitpanes, Pane } from "splitpanes";
+import ProjectLibrary from "@/components/ProjectLibrary.vue";
 
 export default {
   props: {
     panes: Array,
+    project: Object,
   },
   components: {
     Splitpanes,
     Pane,
+    ProjectLibrary,
   },
   data() {
     return {};

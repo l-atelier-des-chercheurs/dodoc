@@ -1,6 +1,6 @@
 <template>
   <div class="_projectLibrary">
-    <SendMedia :folder_type="'projects'" :folder_slug="project_slug" />
+    <SendMedia :folder_type="'projects'" :folder_slug="project.slug" />
 
     <button type="button" @click="createText">Créer du texte</button>
     <button
@@ -28,7 +28,7 @@
         v-for="file of all_files"
         :key="file.slug"
         :file="file"
-        :project_slug="project_slug"
+        :project_slug="project.slug"
       />
     </div>
   </div>
@@ -39,7 +39,6 @@ import MediaCard from "@/components/MediaCard.vue";
 
 export default {
   props: {
-    project_slug: String,
     project: Object,
   },
   components: {
@@ -117,7 +116,7 @@ export default {
       if (additional_meta)
         formData.append(filename, JSON.stringify(additional_meta));
 
-      const path = `/projects/${this.project_slug}/_upload`;
+      const path = `/projects/${this.project.slug}/_upload`;
 
       let res = await this.$axios
         .post(path, formData, {

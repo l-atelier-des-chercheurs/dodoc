@@ -9,22 +9,19 @@
       <h1>{{ project.title }}</h1>
 
       <div class="_panes">
-        <ProjectPanes :panes="panes" />
+        <ProjectPanes :panes="panes" :project="project" />
       </div>
-      <ProjectLibrary :project_slug="project_slug" :project="project" />
     </template>
   </div>
 </template>
 
 <script>
-import ProjectLibrary from "@/components/ProjectLibrary.vue";
 import PaneList from "@/components/nav/PaneList.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
 
 export default {
   props: {},
   components: {
-    ProjectLibrary,
     PaneList,
     ProjectPanes,
   },
