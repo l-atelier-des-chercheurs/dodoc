@@ -49,6 +49,7 @@ new Vue({
   render: (h) => h(App),
   data: {
     store: window.store,
+    app_infos: window.app_infos,
     is_connected: false,
   },
   mounted() {
