@@ -1,14 +1,39 @@
 <template>
-  <div class="_projectLibrary">
-    <SendMedia :folder_type="'projects'" :folder_slug="project.slug" />
-
-    <button type="button" @click="createText">Créer du texte</button>
-    <button
+  <div class="_mediaLibrary">
+    <label for="add_file" class="_boldBtn">
+      <sl-button variant="text">
+        <span>importer</span>
+      </sl-button>
+      <input
+        type="file"
+        multiple="multiple"
+        id="add_file"
+        name="file"
+        accept=""
+        style="
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          position: absolute;
+          opacity: 0;
+        "
+        @change="updateInputFiles($event)"
+      />
+    </label>
+    <!-- <sl-button @click="createText">Créer du texte</sl-button>
+    <sl-button
       type="button"
       @click="show_create_link_field = !show_create_link_field"
     >
       Ajouter un site web
-    </button>
+    </sl-button> -->
+    <UploadFiles
+      v-if="selected_files.length > 0"
+      :selected_files="selected_files"
+      :folder_type="'projects'"
+      :folder_slug="project.slug"
+      @importedMedias="mediaJustImported"
+    />
 
     <form
       v-if="show_create_link_field"
@@ -21,9 +46,7 @@
     </form>
 
     Médias = {{ all_files.length }}
-    <br />
-    <br />
-    <div class="_projectLibrary--lib">
+    <div class="_mediaLibrary--lib">
       <MediaCard
         v-for="file of all_files"
         :key="file.slug"
@@ -34,7 +57,7 @@
   </div>
 </template>
 <script>
-import SendMedia from "@/components/SendMedia.vue";
+import UploadFiles from "@/components/fields/UploadFiles";
 import MediaCard from "@/components/MediaCard.vue";
 
 export default {
@@ -42,13 +65,15 @@ export default {
     project: Object,
   },
   components: {
-    SendMedia,
+    UploadFiles,
     MediaCard,
   },
   data() {
     return {
       fetch_status: null,
       fetch_error: null,
+
+      selected_files: [],
 
       show_create_link_field: false,
       url_to: "https://latelier-des-chercheurs.fr/",
@@ -64,26 +89,17 @@ export default {
     },
   },
   methods: {
-    // async loadLibrary() {
-    //   this.fetch_status = "pending";
-    //   this.fetch_error = null;
-
-    //   try {
-    //     const response = await this.$axios.get(
-    //       `/projects/${this.project_slug}`
-    //     );
-
-    //     const project_index = window.store.projects.findIndex(
-    //       (project) => project.slug === this.project_slug
-    //     );
-    //     this.$set(window.store.projects[project_index], "files", response.data);
-
-    //     this.fetch_status = "success";
-    //   } catch (e) {
-    //     this.fetch_status = "error";
-    //     this.fetch_error = e.response.data;
-    //   }
-    // },
+    updateInputFiles($event) {
+      this.selected_files = Array.from($event.target.files);
+      $event.target.value = "";
+    },
+    mediaJustImported(list_of_added_metas) {
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(list_of_added_metas);
+      this.selected_files = [];
+    },
 
     async createText() {
       const filename = "texte.txt";
@@ -135,11 +151,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._projectLibrary {
+._mediaLibrary {
   background: var(--color-MediaLibrary);
+  height: 100%;
 }
 
-._projectLibrary--lib {
+._mediaLibrary--lib {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: calc(var(--spacing) / 2);

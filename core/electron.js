@@ -83,7 +83,7 @@ module.exports = (function () {
         backgroundColor: "#EBEBEB",
         titleBarStyle: "hidden",
         show: true,
-        title: "do•doc",
+        title: global.appInfos.productName,
         icon: path.join(global.appRoot, "build", "icon.png"),
 
         webPreferences: {

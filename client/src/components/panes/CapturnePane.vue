@@ -1,17 +1,12 @@
 <template>
-  <div></div>
+  <div>CAPTURE</div>
 </template>
 <script>
 export default {
-  props: {
-    folder_type: String,
-    folder_slug: String,
-  },
-  components: { UploadFiles },
+  props: {},
+  components: {},
   data() {
-    return {
-      selected_files: [],
-    };
+    return {};
   },
   created() {},
   mounted() {},

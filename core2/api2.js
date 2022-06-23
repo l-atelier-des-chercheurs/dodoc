@@ -240,7 +240,7 @@ module.exports = (function () {
       });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
-      res.status(500).send(err);
+      res.status(404).send(err);
     }
 
     let hrend = process.hrtime(hrstart);
@@ -354,7 +354,7 @@ module.exports = (function () {
       });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
-      res.status(500).send(err);
+      res.status(404).send(err);
     }
 
     let hrend = process.hrtime(hrstart);

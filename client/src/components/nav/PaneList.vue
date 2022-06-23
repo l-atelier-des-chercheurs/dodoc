@@ -50,7 +50,7 @@ export default {
       project_panes: [],
       default_project_panes: [
         {
-          key: "Planning",
+          key: "Journal",
           enabled: true,
         },
         {

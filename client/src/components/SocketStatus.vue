@@ -48,9 +48,11 @@ export default {
 ._socketStatus {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  width: calc(100% - calc(var(--spacing)));
   padding: calc(var(--spacing) / 2);
   background: rgba(255, 0, 0, 0.5);
+  margin: calc(var(--spacing) / 2);
+  border-radius: 8px;
 
   &.is--connected {
     background: rgba(0, 255, 0, 0.5);

@@ -3,7 +3,6 @@
   <div id="app" class="">
     <SocketStatus />
 
-    <BreadCrumbs />
     <div class="">
       <router-view />
     </div>
@@ -11,13 +10,11 @@
 </template>
 <script>
 import SocketStatus from "./components/SocketStatus.vue";
-import BreadCrumbs from "./components/nav/BreadCrumbs.vue";
 
 export default {
   props: {},
   components: {
     SocketStatus,
-    BreadCrumbs,
   },
   data() {
     return {};
@@ -55,7 +52,7 @@ export default {
   --color-MediaLibrary: var(--c-orange);
   --color-Composition: var(--c-bleu);
   --color-Capture: var(--c-rouge);
-  --color-Planning: var(--c-gris);
+  --color-Journal: var(--c-gris);
   --color-Team: var(--c-vert);
 
   --scrollbar-height: 1px;

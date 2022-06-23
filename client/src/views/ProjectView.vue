@@ -1,17 +1,18 @@
 <template>
-  <div class="">
-    <template v-if="is_loading">Chargement…</template>
-    <template v-else-if="error">
-      <div v-if="error.status === 404">Projet introuvable</div>
-    </template>
-    <template v-else>
-      <PaneList :panes.sync="panes" />
-      <h1>{{ project.title }}</h1>
-
-      <div class="_panes">
-        <ProjectPanes :panes="panes" :project="project" />
-      </div>
-    </template>
+  <div class="_projectView">
+    <div class="_topbar">
+      <template v-if="is_loading">Chargement…</template>
+      <template v-else-if="error">
+        <div v-if="error.status === 404">Projet introuvable</div>
+      </template>
+      <template v-else>
+        <PaneList :panes.sync="panes" />
+        <h1>{{ project.title }}</h1>
+      </template>
+    </div>
+    <div class="_panes" v-if="!is_loading && !error">
+      <ProjectPanes :panes="panes" :project="project" />
+    </div>
   </div>
 </template>
 
@@ -69,12 +70,25 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._projectView {
+  height: 100vh;
+  max-height: -webkit-fill-available;
+
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+._topbar {
+  background: blue;
+}
+
 ._panes {
   height: 100%;
   display: flex;
   flex-flow: row nowrap;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+
   > * {
     height: 100%;
   }

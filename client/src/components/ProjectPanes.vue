@@ -9,12 +9,12 @@
     </template>
     <template v-else v-for="pane in panes">
       <pane
-        v-if="pane.key === 'WriteUp' && pane.enabled"
+        v-if="pane.key === 'Journal' && pane.enabled"
         :key="pane.key"
         min-size="5"
-        ref="WriteUp"
+        ref="Journal"
       >
-        WRITEUP
+        <JournalPane />
       </pane>
 
       <pane
@@ -23,7 +23,7 @@
         min-size="5"
         ref="MediaLibrary"
       >
-        <ProjectLibrary :project="project" />
+        <MediaLibrary :project="project" />
       </pane>
 
       <pane
@@ -32,16 +32,7 @@
         min-size="5"
         ref="Capture"
       >
-        CAPTURE
-      </pane>
-
-      <pane
-        v-if="pane.key === 'Planning' && pane.enabled"
-        :key="pane.key"
-        min-size="5"
-        ref="Planning"
-      >
-        PLANNING
+        <CapturnePane :project="project" />
       </pane>
 
       <pane
@@ -57,7 +48,9 @@
 </template>
 <script>
 import { Splitpanes, Pane } from "splitpanes";
-import ProjectLibrary from "@/components/ProjectLibrary.vue";
+import JournalPane from "@/components/panes/JournalPane.vue";
+import MediaLibrary from "@/components/panes/MediaLibrary.vue";
+import CapturnePane from "@/components/panes/CapturnePane.vue";
 
 export default {
   props: {
@@ -67,7 +60,9 @@ export default {
   components: {
     Splitpanes,
     Pane,
-    ProjectLibrary,
+    JournalPane,
+    MediaLibrary,
+    CapturnePane,
   },
   data() {
     return {};

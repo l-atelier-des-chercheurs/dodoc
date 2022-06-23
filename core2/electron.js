@@ -81,7 +81,7 @@ module.exports = (function () {
         width: mainWindowState.width,
         height: mainWindowState.height,
         backgroundColor: "#EBEBEB",
-        titleBarStyle: "hidden",
+        // titleBarStyle: "hidden",
         show: true,
         title: "do•doc",
         icon: path.join(global.appRoot, "build", "icon.png"),
