@@ -16,6 +16,25 @@ const dev = require("./dev-log"),
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
+/* 
+
+    some ffmpeg recommandations first 
+    https://stackoverflow.com/a/65301400
+
+    FFMPEG is a power eater. The total number of core/memory requirement will depend majorly on how much video you want to process. 
+    In my case, We only wanted to support upto 500MB videos so our test for 4K video processing is fitting the need but if you have 
+    larger video requirement then you have to test with more RAM/CPU core at hand
+
+    It's never a good idea to run parallel FFMPEG. Processing videos in a batch-wise will ensure optimum use of available resources 
+    and lesser chance for breaking your system in the middle of the night
+
+    Always run FFMPEG in an isolated machine away from your webserver, database, mail server, etc
+    Increasing resource is not always the answer. While we tend to first conclude that more resource === more stability is not always 
+    right. I've read enough thread about how even 64GB Ram with 32 core fails to keep up with FFMPEG so your best bet is to first improve 
+    your command or segregate commands into smaller command to handle the resources as effectively as possible
+
+*/
+
 module.exports = (function () {
   return {
     loadPublication: (slugPubliName) =>
