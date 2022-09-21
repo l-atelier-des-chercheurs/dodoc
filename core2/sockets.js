@@ -6,6 +6,8 @@
 //   changelog = require("./changelog"),
 //   access = require("./access");
 
+// TODO : make changelog, and access modules
+
 // const bcrypt = require("bcryptjs");
 const dev = require("./dev-log"),
   notifier = require("./notifier"),
