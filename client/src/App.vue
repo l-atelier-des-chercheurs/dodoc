@@ -2,6 +2,7 @@
 <template>
   <div id="app" class="">
     <SocketStatus />
+    <TopBar />
     <AdminPanel v-if="false" />
 
     <div class="">
@@ -12,12 +13,14 @@
 <script>
 import SocketStatus from "./components/SocketStatus.vue";
 import AdminPanel from "./adc-core/AdminPanel.vue";
+import TopBar from "@/components/TopBar.vue";
 
 export default {
   props: {},
   components: {
     SocketStatus,
     AdminPanel,
+    TopBar,
   },
   data() {
     return {};

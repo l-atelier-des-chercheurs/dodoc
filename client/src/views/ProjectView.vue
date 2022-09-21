@@ -1,42 +1,42 @@
 <template>
-  <div class="_projectView">
-    <div class="_topbar">
-      <template v-if="is_loading">Chargement…</template>
-      <template v-else-if="error">
-        <div v-if="error.status === 404">Projet introuvable</div>
-      </template>
-      <template v-else>
-        <sl-breadcrumb>
-          <sl-breadcrumb-item @click="$router.push('/')">
-            <sl-icon slot="prefix" name="house-door-fill" />
-            do•doc
-          </sl-breadcrumb-item>
-          <sl-breadcrumb-item @click="$router.push('/projects')">
-            Projets
-          </sl-breadcrumb-item>
-          <sl-breadcrumb-item @click="$router.replace({ query: {} })">
-            {{ project.title }}
-          </sl-breadcrumb-item>
-        </sl-breadcrumb>
+  <div class="_projectView pageContent">
+    <div class="">
+      <div class="_projectPres">
+        <h1>
+          {{ project.title }}
+        </h1>
+        <DateField :title="'date_created'" :date="project.date_created" />
+        Ajouter des mots-clés <br />
+        Ajouter une image de couverture <br />
+      </div>
+
+      <div>
+        <h2>1. Collecter</h2>
+        <div>bibliothèque de médias</div>
+        <div>"capturer"</div>
+        <div>"importer"</div>
+        <h2>2. Remixer</h2>
+        <h2>3. Raconter</h2>
 
         <PaneList class="_paneList" :panes.sync="projectpanes" />
-      </template>
-    </div>
-    <div class="_panes" v-if="!is_loading && !error">
-      <ProjectPanes :projectpanes.sync="projectpanes" :project="project" />
+
+        {{ projectpanes }}
+
+        <ProjectArticles :project="project" :articles="articles" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import PaneList from "@/components/nav/PaneList.vue";
-import ProjectPanes from "@/components/ProjectPanes.vue";
+import ProjectArticles from "@/components/ProjectArticles.vue";
+import PaneList from "../components/nav/PaneList.vue";
 
 export default {
   props: {},
   components: {
+    ProjectArticles,
     PaneList,
-    ProjectPanes,
   },
   data() {
     return {
@@ -83,9 +83,9 @@ export default {
     },
   },
   computed: {
-    // project() {
-    // return window.store.projects?.find((p) => p.slug === this.project_slug);
-    // },
+    articles() {
+      return this.project.files.filter((f) => f.is_article === true) || [];
+    },
   },
   methods: {
     updateQueryPanes() {
@@ -106,11 +106,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projectView {
-  height: 100vh;
-  max-height: -webkit-fill-available;
-
-  display: flex;
-  flex-flow: column nowrap;
 }
 
 ._topbar {
@@ -120,12 +115,6 @@ export default {
   // justify-content: space-between;
   gap: calc(var(--spacing));
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-
-  border-bottom: 1px solid black;
-
-  ._paneList {
-    flex: 1 1 auto;
-  }
 }
 
 ._panes {

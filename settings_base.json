@@ -330,6 +330,9 @@
           },
           "caption": {
             "type": "string"
+          },
+          "is_article": {
+            "type": "boolean"
           }
         }
       },
