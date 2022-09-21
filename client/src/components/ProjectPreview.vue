@@ -13,9 +13,6 @@
     <router-link :to="`/projects/${project.slug}`" class="">
       <sl-button size="small" variant="primary" pill>ouvrir</sl-button>
     </router-link>
-    <sl-button size="small" variant="default" @click="removeProject" pill>
-      supprimer
-    </sl-button>
 
     <!-- fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
@@ -87,8 +84,15 @@ export default {
 <style lang="scss" scoped>
 ._project {
   position: relative;
-  border: 1px solid black;
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  background-color: #fff;
+
+  border-radius: 6px;
+  border-bottom: 2px solid #b9b9b9;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+    transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 ._editBtn {

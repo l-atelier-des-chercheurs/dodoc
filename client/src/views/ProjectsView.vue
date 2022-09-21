@@ -101,13 +101,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projects {
-  display: flex;
-  flex-flow: row wrap;
-  gap: var(--spacing);
-  justify-content: center;
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-gap: calc(var(--spacing) / 1);
+  align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 
   > * {
-    flex: 0 0 220px;
   }
 }
 

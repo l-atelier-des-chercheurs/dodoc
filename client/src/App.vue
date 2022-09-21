@@ -1,7 +1,7 @@
 -
 <template>
   <div id="app" class="">
-    <!-- <SocketStatus /> -->
+    <SocketStatus />
     <AdminPanel v-if="false" />
 
     <div class="">
@@ -43,16 +43,8 @@ export default {
   --c-gris: #eff2f3;
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
-
   --active-color: var(--c-vert);
-  /* --active-color: #aaa; */
-  --color-WriteUp: #fff;
-
-  --color-MediaLibrary: var(--c-orange);
-  --color-Composition: var(--c-bleu);
-  --color-Capture: var(--c-rouge);
-  --color-Journal: var(--c-gris);
-  --color-Team: var(--c-vert);
+  --c-bodybg: #f4f3ef;
 
   --scrollbar-height: 1px;
   --scrollbar-padding: 3px;
@@ -96,6 +88,7 @@ export default {
 html,
 body {
   background: white;
+  background-color: var(--c-bodybg);
   accent-color: var(--c-vert);
 }
 

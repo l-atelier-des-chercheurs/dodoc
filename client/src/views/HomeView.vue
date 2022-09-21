@@ -1,13 +1,10 @@
 <template>
   <div class="_homeView">
     <div class="_homeView--content">
-      <h1>PLATEAU</h1>
+      <h1>do•doc</h1>
       <small>{{ $root.app_infos.version }}</small>
       <hr />
-      <p>
-        Plateau est un outil de documentation pour les projets et workshops
-        participatifs.
-      </p>
+      <p>Plate-forme de documentation pour fablab à l'école.</p>
       <p>
         <router-link to="/projects">Afficher les projets</router-link>
       </p>
@@ -24,7 +21,6 @@ export default {
 </script>
 <style lang="scss">
 ._homeView {
-  background: var(--c-vert);
   padding: var(--spacing);
 
   height: 100vh;

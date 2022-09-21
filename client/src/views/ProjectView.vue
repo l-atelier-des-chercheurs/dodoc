@@ -9,7 +9,7 @@
         <sl-breadcrumb>
           <sl-breadcrumb-item @click="$router.push('/')">
             <sl-icon slot="prefix" name="house-door-fill" />
-            Plateau
+            do•doc
           </sl-breadcrumb-item>
           <sl-breadcrumb-item @click="$router.push('/projects')">
             Projets
