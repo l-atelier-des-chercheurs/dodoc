@@ -1,7 +1,8 @@
 -
 <template>
   <div id="app" class="">
-    <SocketStatus />
+    <!-- <SocketStatus /> -->
+    <AdminPanel v-if="false" />
 
     <div class="">
       <router-view />
@@ -10,11 +11,13 @@
 </template>
 <script>
 import SocketStatus from "./components/SocketStatus.vue";
+import AdminPanel from "./adc-core/AdminPanel.vue";
 
 export default {
   props: {},
   components: {
     SocketStatus,
+    AdminPanel,
   },
   data() {
     return {};
@@ -30,22 +33,18 @@ export default {
 <style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
 <style lang="scss">
 :root {
-  /* Fonts */
-  --spacing: 0.9rem;
-  --border-width: 1pt;
-  --border-color: #222;
-  --page-height: 11in;
-  --active-color: rgb(52, 122, 213);
+  --spacing: var(--sl-spacing-medium);
 
   --c-orange: #f9ca00;
   --c-rouge: #ff3e51;
   --c-bleu: hsl(211, 63%, 47%);
+  --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: #333;
   --c-gris: #eff2f3;
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
-  --active-color: var(--c-orange);
+  --active-color: var(--c-vert);
   /* --active-color: #aaa; */
   --color-WriteUp: #fff;
 
@@ -61,6 +60,12 @@ export default {
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
 
+  --indicator-color: var(--c-vert) !important;
+
+  --sl-font-sans: "IBM Plex Sans";
+  --sl-font-serif: "IBM Plex Serif";
+  --sl-font-mono: "IBM Plex Mono";
+
   $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
 
   @each $size in $sizes {
@@ -69,7 +74,7 @@ export default {
   }
   @each $size in $sizes {
     $i: index($sizes, $size);
-    --sl-color-primary-#{$size}: hsl(211, 63%, #{98% - $i * 5});
+    --sl-color-primary-#{$size}: hsl(221, 63%, #{98% - $i * 5});
   }
   @each $size in $sizes {
     $i: index($sizes, $size);
@@ -91,25 +96,39 @@ export default {
 html,
 body {
   background: white;
+  accent-color: var(--c-vert);
 }
+
+::selection {
+  background: var(--c-bleu_clair);
+}
+
 html {
   height: 100%;
+
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 300;
+
+  font-size: 95%;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--c-noir);
 }
 body {
   min-height: 100%;
 }
 
+button {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
 #app {
   /* font-family: "Work Sans"; */
-  font-family: "IBM Plex Sans";
-  font-style: normal;
-  font-weight: 300;
-
-  font-size: 85%;
-
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: var(--c-noir);
 
   min-height: 100%;
 }
@@ -123,9 +142,24 @@ body {
   margin: 0;
 }
 
+._metaField {
+  display: flex;
+  gap: calc(var(--spacing) / 2);
+
+  > *:first-child {
+    font-variant: small-caps;
+    font-weight: 700;
+  }
+}
+
+.buttonLink {
+  font-variant: small-caps;
+  font-weight: 700;
+}
+
 b,
 strong {
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .pageContent {
@@ -141,7 +175,6 @@ h1 {
 
 ._boldBtn {
   font-weight: 700;
-
   font-variant: small-caps;
 }
 img {
@@ -155,6 +188,7 @@ img {
   // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
   // border-radius: 4px;
   // overflow: hidden;
+  transition: none !important;
 }
 
 .splitpanes .splitpanes__splitter {
@@ -180,11 +214,11 @@ img {
 .splitpanes__splitter:before {
   content: "";
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
 
-  left: calc(50% - 15px);
-  top: calc(50% - 15px);
+  left: calc(50% - 20px);
+  top: calc(50% - 20px);
 
   transition: opacity 0.4s;
   // background-color: rgba(255, 255, 0, 1);
@@ -224,7 +258,7 @@ img {
 
   transform: rotate(45deg);
 
-  width: 2px;
+  width: 3px;
   height: 20px;
 
   transition: transform 0.4s;
@@ -239,20 +273,49 @@ img {
   opacity: 1;
   transform: rotate(90deg);
 }
-
-.splitpanes--vertical > .splitpanes__splitter:after {
-  // left: -10px;
-  // right: -10px;
-  // height: 100%;
-}
 .splitpanes--horizontal > .splitpanes__splitter:after {
   transform: rotate(135deg);
   left: 50%;
-  // top: -10px;
-  // bottom: -10px;
-  // width: 100%;
 }
 .splitpanes--horizontal > .splitpanes__splitter:hover:after {
   transform: rotate(180deg);
+}
+
+.fade {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
+.fade_fast {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
+
+.slideup {
+  &-enter-active,
+  &-leave-active {
+    transform: translateY(0);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: translateY(100%);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
 }
 </style>

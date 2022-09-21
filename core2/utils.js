@@ -1,5 +1,4 @@
 const path = require("path"),
-  moment = require("moment"),
   TOML = require("@iarna/toml"),
   slugg = require("slugg"),
   validator = require("validator"),
@@ -54,10 +53,8 @@ module.exports = (function () {
 
     async readFileContent(...paths) {
       dev.logfunction({ paths });
-
-      const media_path = API.getPathToUserContent(...paths);
-      const media_file_content = await fs.readFile(media_path, "UTF-8");
-      return media_file_content;
+      const file_path = API.getPathToUserContent(...paths);
+      return await fs.readFile(file_path, "UTF-8");
     },
 
     validateMeta({ fields, new_meta }) {

@@ -7,6 +7,7 @@ module.exports = defineConfig({
       splitChunks: false,
     },
   },
+  runtimeCompiler: true,
   css: {
     extract: false,
   },

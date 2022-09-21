@@ -3,14 +3,15 @@ const path = require("path");
 const fs = require("fs-extra");
 const portscanner = require("portscanner");
 
-const server = require("./server");
-const dev = require("./dev-log"),
-  cache = require("./cache");
+const server = require("./server"),
+  dev = require("./dev-log"),
+  cache = require("./cache"),
+  utils = require("./utils");
 // auth = require("./auth");
 
-module.exports = async function () {
-  const is_electron = process.versions.hasOwnProperty("electron");
+const is_electron = process.versions.hasOwnProperty("electron");
 
+module.exports = async function () {
   console.log(`App is ${is_electron ? "electron" : "node"}`);
   console.log(`Starting = ${global.appInfos.name}`);
   console.log(`Node = ${process.versions.node}`);
@@ -29,31 +30,15 @@ module.exports = async function () {
   }
 
   let win;
-  if (is_electron) {
-    if (dev.isDebug())
-      try {
-        // require("electron-reloader")(module);
-      } catch {}
-
+  if (is_electron)
     win = await require("./electron")
       .init()
       .catch((err) => {
-        dev.error(`Error code: ${err}`);
+        dev.error(err);
       });
 
-    global.sourcePathInApp = path.join(
-      `${global.appRoot.replace(`${path.sep}app.asar`, "")}`,
-      `${global.settings.contentDirname}`
-    );
-  } else {
-    global.sourcePathInApp = path.join(
-      `${global.appRoot}`,
-      `${global.settings.contentDirname}`
-    );
-  }
-
   await setupApp().catch((err) => {
-    dev.error(`Error code: ${err}`);
+    dev.error(err);
 
     if (is_electron) {
       const { dialog } = require("electron");
@@ -96,7 +81,16 @@ async function setupApp() {
     throw err;
   });
 
-  global.pathToUserContent = await copyAndRenameUserFolder().catch((err) => {
+  let full_default_path = path.join(`${global.appRoot}`, `content`);
+  if (is_electron)
+    full_default_path = path.join(
+      `${global.appRoot.replace(`${path.sep}app.asar`, "")}`,
+      `content`
+    );
+
+  global.pathToUserContent = await copyAndRenameUserFolder(
+    full_default_path
+  ).catch((err) => {
     throw err;
   });
   dev.log("Will store contents in: " + global.pathToUserContent);
@@ -110,7 +104,7 @@ async function setupApp() {
       global.settings.desired_port + 20
     )
     .catch((err) => {
-      dev.error(`err ${err}`);
+      dev.error(err);
       throw err;
     });
 
@@ -121,36 +115,32 @@ async function setupApp() {
   return;
 }
 
-function copyAndRenameUserFolder() {
-  return new Promise(function (resolve, reject) {
-    const userDirPath = getPath.getDocumentsFolder();
+async function copyAndRenameUserFolder(full_default_path) {
+  dev.logfunction({ full_default_path });
 
-    const pathToUserContent = path.join(
-      userDirPath,
-      global.settings.userDirname
+  let full_path_to_content;
+
+  // two cases:
+  if (global.settings.contentPath.startsWith("/")) {
+    // otherwise if starts with '/' then its a path to the folder itself
+    full_path_to_content = global.settings.contentPath;
+  } else {
+    // if contentPath is just a name, thats the name of the folder inside /Documents
+    const user_dir_path = getPath.getDocumentsFolder();
+    full_path_to_content = path.join(
+      user_dir_path,
+      global.settings.contentPath
     );
-    fs.access(pathToUserContent, fs.F_OK, function (err) {
-      // if userDir folder doesn't exist yet at destination
-      if (err) {
-        dev.log(
-          `Content folder ${global.settings.userDirname} does not already exists in ${userDirPath} -> duplicating ${global.settings.contentDirname} to create a new one`
-        );
-        fs.copy(global.sourcePathInApp, pathToUserContent, function (err) {
-          if (err) {
-            dev.error(`Failed to copy: ${err}`);
-            return reject(err);
-          }
-          return resolve(pathToUserContent);
-        });
-      } else {
-        dev.log(
-          `Content folder ${global.settings.userDirname} already exists in ${userDirPath}`
-        );
-        dev.log(`-> not creating a new one`);
-        return resolve(pathToUserContent);
-      }
-    });
-  });
+  }
+
+  if (!(await fs.pathExists(full_path_to_content))) {
+    dev.log(
+      `-> content folder does not already exists at ${full_path_to_content} -> duplicating content folder to create a new one`
+    );
+    await fs.copy(full_default_path, full_path_to_content);
+  } else dev.log(`-> not creating a new one`);
+
+  return full_path_to_content;
 }
 
 function cleanCacheFolder() {
@@ -166,6 +156,10 @@ function cleanCacheFolder() {
         return reject(err);
       });
   });
+}
+
+async function readAppMeta() {
+  utils.readMetaFile();
 }
 
 // function readsession_metaFile() {
@@ -185,25 +179,25 @@ function cleanCacheFolder() {
 //   });
 // }
 
-function _parseSessionMeta(session_meta) {
-  const { session_password, new_account_default_role } = session_meta;
+// function _parseSessionMeta(session_meta) {
+//   const { session_password, new_account_default_role } = session_meta;
 
-  if (session_password) {
-    const pass = session_password.trim();
-    dev.log("Found session password in meta.txt set to", pass);
-    // global.session_password = auth.hashCode(pass);
-  }
+//   if (session_password) {
+//     const pass = session_password.trim();
+//     dev.log("Found session password in meta.txt set to", pass);
+//     // global.session_password = auth.hashCode(pass);
+//   }
 
-  if (new_account_default_role) {
-    dev.log("Found new_account_default_role, set to", new_account_default_role);
-    global.settings.structure.authors.fields.role.default =
-      new_account_default_role;
-  }
+//   if (new_account_default_role) {
+//     dev.log("Found new_account_default_role, set to", new_account_default_role);
+//     global.settings.structure.authors.fields.role.default =
+//       new_account_default_role;
+//   }
 
-  ["force_login", "simple_login", "require_email", "force_author_password"].map(
-    (rule) => {
-      if (session_meta[rule] === "true") global.session_options[rule] = true;
-      else global.session_options[rule] = false;
-    }
-  );
-}
+//   ["force_login", "simple_login", "require_email", "force_author_password"].map(
+//     (rule) => {
+//       if (session_meta[rule] === "true") global.session_options[rule] = true;
+//       else global.session_options[rule] = false;
+//     }
+//   );
+// }

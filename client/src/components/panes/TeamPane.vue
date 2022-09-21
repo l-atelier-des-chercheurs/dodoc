@@ -1,5 +1,5 @@
 <template>
-  <div>CAPTURE</div>
+  <div class="_teamPane">Team</div>
 </template>
 <script>
 export default {
@@ -16,4 +16,10 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._teamPane {
+  background: var(--color-Team);
+  height: 100%;
+  overflow: auto;
+}
+</style>

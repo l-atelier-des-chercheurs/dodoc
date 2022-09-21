@@ -15,11 +15,7 @@
       </div>
     </div>
 
-    <sl-dialog
-      ref="createModal"
-      label="Créer un projet"
-      class="dialog-overview"
-    >
+    <sl-dialog ref="createModal" label="Créer un projet" class="">
       <sl-input
         type="text"
         autofocus

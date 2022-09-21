@@ -99,7 +99,6 @@ module.exports = (function () {
       );
       meta.slug = meta_filename;
 
-      // read media file content if file is text
       if (meta.media_filename.endsWith("txt"))
         meta.content = await utils.readFileContent(
           folder_type,
@@ -134,6 +133,14 @@ module.exports = (function () {
 
       return meta;
     },
+    getArchives: async ({ folder_type, folder_slug, meta_filename }) => {
+      dev.logfunction({ folder_type, folder_slug, meta_filename });
+      return await _readArchives({
+        folder_type,
+        folder_slug,
+        meta_filename,
+      });
+    },
 
     updateFile: async ({ folder_type, folder_slug, meta_slug, data }) => {
       dev.logfunction({ folder_type, folder_slug, meta_slug, data });
@@ -156,13 +163,43 @@ module.exports = (function () {
         if (typeof content !== "string")
           throw new Error("Content (text) is not a string");
 
-        // TODO update media filename (text, image, etc.)
-        await utils.saveMetaAtPath({
+        // check if content is different from previous content, return early if that's the case
+        const previous_content = await utils.readFileContent(
           folder_type,
           folder_slug,
-          file_slug: meta.media_filename,
-          meta: content,
-        });
+          meta.media_filename
+        );
+        if (previous_content === content)
+          throw new Error("content not changed");
+
+        dev.logfunction(
+          `Content is supposed to be updated`,
+          { previous_content },
+          { content },
+          { type: meta.type },
+          { media_filename: meta.media_filename }
+        );
+
+        if (global.settings.versioning === true)
+          _archiveVersion({
+            folder_type,
+            folder_slug,
+            media_filename: meta.media_filename,
+          });
+
+        // TODO update media (text, image, etc.)
+        if (meta.type === "text")
+          await utils
+            .saveMetaAtPath({
+              folder_type,
+              folder_slug,
+              file_slug: meta.media_filename,
+              meta: content,
+            })
+            .catch((err) => {
+              throw err;
+            });
+
         // TODO remove thumbs
       }
 
@@ -395,12 +432,11 @@ module.exports = (function () {
         case ".txt":
           new_meta.type = "text";
           break;
-        // case ".ino":
-        //   additionalMeta.type = "code";
-        //   break;
         case ".pdf":
           new_meta.type = "document";
           break;
+        default:
+          new_meta.type = "other";
       }
       dev.logfunction(`Type determined to be ${new_meta.type}`);
     }
@@ -458,7 +494,11 @@ module.exports = (function () {
           path.join(folder_type, folder_slug, global.settings.deletedFolderName)
         );
         dev.logverbose({ file_path, path_in_bin });
-        await fs.move(file_path, path_in_bin, { overwrite: true });
+        await fs
+          .move(file_path, path_in_bin, { overwrite: true })
+          .catch((err) => {
+            // don't catch error if missing target at path (can be an "…_archives" folder)
+          });
       }
       return;
     } catch (err) {
@@ -490,6 +530,14 @@ module.exports = (function () {
     );
     paths.push(full_media_path);
 
+    const archive_folder_name = path.parse(media_filename).name + "_archives";
+    const full_archive_path = utils.getPathToUserContent(
+      folder_type,
+      folder_slug,
+      archive_folder_name
+    );
+    paths.push(full_archive_path);
+
     dev.logfunction({ paths });
 
     return paths;
@@ -506,6 +554,107 @@ module.exports = (function () {
     // prevent editing fields such as date_created
 
     return new_meta;
+  }
+
+  async function _archiveVersion({ folder_type, folder_slug, media_filename }) {
+    dev.logfunction(arguments[0]);
+    const media_path = utils.getPathToUserContent(
+      folder_type,
+      folder_slug,
+      media_filename
+    );
+
+    const archive_folder_name = path.parse(media_filename).name + "_archives";
+    const archived_folder_path = utils.getPathToUserContent(
+      folder_type,
+      folder_slug,
+      archive_folder_name
+    );
+    await fs.ensureDir(archived_folder_path);
+
+    try {
+      // keep file name, append -1, -2, etc. if necessary to prevent override
+      // const archived_media_filename = await _preventFileOverride({
+      //   folder_path: archived_folder_path,
+      //   original_filename: media_filename,
+      // });
+
+      // use timestamp to mark time archived
+      const archived_media_filename =
+        +utils.getCurrentDate() + path.parse(media_filename).ext;
+
+      const archived_media_path = path.join(
+        archived_folder_path,
+        archived_media_filename
+      );
+
+      await fs.move(media_path, archived_media_path, {
+        overwrite: true,
+      });
+      return;
+    } catch (err) {
+      throw err;
+    }
+  }
+  async function _readArchives({ folder_type, folder_slug, meta_filename }) {
+    dev.logfunction(arguments[0]);
+
+    let meta = await utils.readMetaFile(
+      folder_type,
+      folder_slug,
+      meta_filename
+    );
+
+    const archive_folder_name =
+      path.parse(meta.media_filename).name + "_archives";
+    const archived_folder_path = utils.getPathToUserContent(
+      folder_type,
+      folder_slug,
+      archive_folder_name
+    );
+
+    // get a list of all files in archives folder
+
+    // if .txt, read content
+
+    // return an array
+    /*
+    [
+      {
+        filename: "some-numbers.txt",
+        content: "Hello\nWorld"
+      },
+      …
+    ]
+    */
+
+    try {
+      let filenames = (
+        await fs.readdir(archived_folder_path, { withFileTypes: true })
+      )
+        .filter((dirent) => !dirent.isDirectory())
+        .map((dirent) => dirent.name);
+      dev.logfunction({ filenames });
+
+      const files_content = [];
+      for (const filename of filenames) {
+        const content = await utils.readFileContent(
+          folder_type,
+          folder_slug,
+          archive_folder_name,
+          filename
+        );
+        const date = +path.parse(filename).name;
+        files_content.push({
+          date,
+          filename,
+          content,
+        });
+      }
+      return files_content;
+    } catch (err) {
+      throw err;
+    }
   }
 
   return API;

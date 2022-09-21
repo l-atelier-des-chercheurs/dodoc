@@ -81,6 +81,8 @@ export default {
       this.fetch_error = null;
 
       try {
+        // TODO use updateItem
+
         const response = await this.$axios.patch(this.path_to_resource, {
           [this.field_name]: this.new_content,
         });

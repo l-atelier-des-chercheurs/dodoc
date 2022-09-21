@@ -66,12 +66,14 @@ export default function () {
         edit: "modifier",
         caption: "légende",
         date_created: "création",
+        date_modified: "dernière modification",
       },
       en: {
         hello: "hello world",
         edit: "edit",
         caption: "caption",
         date_created: "created",
+        date_modified: "last edited",
       },
     }, // set locale messages
   });

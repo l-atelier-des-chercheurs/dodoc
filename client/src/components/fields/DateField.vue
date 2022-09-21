@@ -1,5 +1,5 @@
 <template>
-  <div class="m_metaField" @click="show_detail = !show_detail">
+  <div class="_metaField" @click="show_detail = !show_detail">
     <div>{{ $t(title) }}</div>
     <div>
       <template v-if="!show_detail">{{ formatDateToHuman(date) }} </template>
@@ -11,7 +11,7 @@
 export default {
   props: {
     title: String,
-    date: String,
+    date: [Number, String],
     show_detail_initially: {
       type: Boolean,
       default: false,
@@ -28,26 +28,7 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {
-    formatDateToHuman(date) {
-      let options = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      return new Date(date).toLocaleDateString(undefined, options);
-    },
-    formatDateToPrecise(date) {
-      let options = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      return new Date(date).toLocaleDateString(undefined, options);
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss"></style>

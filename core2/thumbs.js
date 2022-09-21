@@ -11,12 +11,9 @@ const path = require("path"),
   StlThumbnailer = require("stl-thumbnailer-node"),
   PdfExtractor = require("pdf-extractor").PdfExtractor;
 
-const { BrowserWindow } = require("electron");
-
 sharp.cache(false);
 
 const utils = require("./utils");
-const { ffprobe } = require("fluent-ffmpeg");
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
@@ -361,7 +358,7 @@ module.exports = (function () {
     let thumb_paths = {};
 
     for (const resolution of resolutions) {
-      const thumb_name = `${media_filename}.${resolution}.jpeg`;
+      let thumb_name = `${media_filename}.${resolution}.jpeg`;
       const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
       const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
 
@@ -374,6 +371,19 @@ module.exports = (function () {
         });
         dev.log(`--> made thumb`);
       }
+
+      // append modified timestamp to buste caching
+      // example: sending an image, removing it, then sending another image with the same name
+      // caching client-side will be wrong
+      try {
+        const { mtimems } = await _readFileInfos({
+          full_media_path: full_path_to_thumb,
+        });
+        if (mtimems) thumb_name += "?v=" + mtimems;
+      } catch (err) {
+        dev.error(err);
+      }
+
       thumb_paths[resolution] = thumb_name;
     }
 
@@ -609,6 +619,7 @@ module.exports = (function () {
         .then((stats) => {
           return resolve({
             size: stats.size,
+            mtimems: Math.floor(stats.mtimeMs),
           });
         })
         .catch((err) => {

@@ -5,15 +5,17 @@
     </strong>
     {{ project.description }}
     <br />
-    {{ project.date_created }}
     <DateField :title="'date_created'" :date="project.date_created" />
     <br />
-    <!-- <button type="button" class="button" @click="updateProject">save</button>
-    <button type="button" class="button" @click="removeProject">delete</button> -->
+    <!-- <input type="text" v-model="new_title" />
+    <button type="button" class="button" @click="updateProject">save</button> -->
 
     <router-link :to="`/projects/${project.slug}`" class="">
       <sl-button size="small" variant="primary" pill>ouvrir</sl-button>
     </router-link>
+    <sl-button size="small" variant="default" @click="removeProject" pill>
+      supprimer
+    </sl-button>
 
     <!-- fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
@@ -46,6 +48,8 @@ export default {
     async updateProject() {
       this.fetch_status = "pending";
       this.fetch_error = null;
+
+      // TODO use updateItem
 
       try {
         const response = await this.$axios.patch(

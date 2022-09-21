@@ -6,12 +6,24 @@
         <div v-if="error.status === 404">Projet introuvable</div>
       </template>
       <template v-else>
-        <PaneList :panes.sync="panes" />
-        <h1>{{ project.title }}</h1>
+        <sl-breadcrumb>
+          <sl-breadcrumb-item @click="$router.push('/')">
+            <sl-icon slot="prefix" name="house-door-fill" />
+            Plateau
+          </sl-breadcrumb-item>
+          <sl-breadcrumb-item @click="$router.push('/projects')">
+            Projets
+          </sl-breadcrumb-item>
+          <sl-breadcrumb-item @click="$router.replace({ query: {} })">
+            {{ project.title }}
+          </sl-breadcrumb-item>
+        </sl-breadcrumb>
+
+        <PaneList class="_paneList" :panes.sync="projectpanes" />
       </template>
     </div>
     <div class="_panes" v-if="!is_loading && !error">
-      <ProjectPanes :panes="panes" :project="project" />
+      <ProjectPanes :projectpanes.sync="projectpanes" :project="project" />
     </div>
   </div>
 </template>
@@ -33,7 +45,7 @@ export default {
       error: null,
       project: null,
 
-      panes: [],
+      projectpanes: [],
     };
   },
   created() {},
@@ -55,16 +67,39 @@ export default {
   beforeDestroy() {
     this.$api.leave({ room: `projects/${this.project_slug}` });
   },
-  watch: {},
+  watch: {
+    $route: {
+      handler() {
+        let projectpanes = this.$route.query?.projectpanes;
+        if (projectpanes) this.projectpanes = JSON.parse(projectpanes);
+      },
+      immediate: true,
+    },
+    projectpanes: {
+      handler() {
+        this.updateQueryPanes();
+      },
+      deep: true,
+    },
+  },
   computed: {
     // project() {
     // return window.store.projects?.find((p) => p.slug === this.project_slug);
     // },
   },
   methods: {
-    updatePanes(panes) {
-      panes;
-      debugger;
+    updateQueryPanes() {
+      let query = {};
+
+      if (this.projectpanes)
+        query.projectpanes = JSON.stringify(this.projectpanes);
+      if (
+        this.$route.query &&
+        JSON.stringify(this.$route.query) === JSON.stringify(query)
+      )
+        return false;
+
+      this.$router.replace({ query });
     },
   },
 };
@@ -79,7 +114,18 @@ export default {
 }
 
 ._topbar {
-  background: blue;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  // justify-content: space-between;
+  gap: calc(var(--spacing));
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+
+  border-bottom: 1px solid black;
+
+  ._paneList {
+    flex: 1 1 auto;
+  }
 }
 
 ._panes {

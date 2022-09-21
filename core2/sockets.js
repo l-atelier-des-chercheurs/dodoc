@@ -142,24 +142,24 @@ module.exports = (function () {
     });
 
     // https://socket.io/fr/docs/v3/emit-cheatsheet/
-    notifier.on("createFolder", (room, content) => {
-      io.to("content/" + room).emit("createFolder", content);
+    notifier.on("folderCreated", (room, content) => {
+      io.to("content/" + room).emit("folderCreated", content);
     });
-    notifier.on("updateFolder", (room, content) => {
-      io.to("content/" + room).emit("updateFolder", content);
+    notifier.on("folderUpdated", (room, content) => {
+      io.to("content/" + room).emit("folderUpdated", content);
     });
-    notifier.on("removeFolder", (room, content) => {
-      io.to("content/" + room).emit("removeFolder", content);
+    notifier.on("folderRemoved", (room, content) => {
+      io.to("content/" + room).emit("folderRemoved", content);
     });
 
-    notifier.on("newFile", (room, content) => {
-      io.to("content/" + room).emit("newFile", content);
+    notifier.on("fileCreated", (room, content) => {
+      io.to("content/" + room).emit("fileCreated", content);
     });
-    notifier.on("updateFile", (room, content) => {
-      io.to("content/" + room).emit("updateFile", content);
+    notifier.on("fileUpdated", (room, content) => {
+      io.to("content/" + room).emit("fileUpdated", content);
     });
-    notifier.on("removeFile", (room, content) => {
-      io.to("content/" + room).emit("removeFile", content);
+    notifier.on("fileRemoved", (room, content) => {
+      io.to("content/" + room).emit("fileRemoved", content);
     });
   }
 
