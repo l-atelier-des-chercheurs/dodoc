@@ -15,8 +15,8 @@ html
     style.
       @import "!{path_prefix}_client/fonts/fonts.css";
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.75/dist/themes/light.css" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.75/dist/shoelace.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.82/dist/themes/light.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.82/dist/shoelace.js"></script>
 
     script.
       /***********
@@ -31,9 +31,6 @@ html
         schema: !{JSON.stringify(schema)},
         version: "!{global.appInfos.version}",
       }
-
-
-
 
 
       /* state contains settings data, time and client specific data */
@@ -57,7 +54,6 @@ html
       //-   mode: "!{mode}",
       //-   dev_mode: "!{ isDebug ? "debug" : "production" }",
       //-   noticeOfError: "!{noticeOfError}",
-      //-   is_electron: !!(navigator.userAgent.toLowerCase().indexOf(' electron/') > -1),
       //-   is_darwin: !!(navigator.userAgent.toLowerCase().indexOf(' electron/') > -1 && ['Macintosh', 'MacIntel'].includes(window.navigator.platform)),
       //-   clients: [],
       //-   journal: [],
@@ -70,4 +66,5 @@ html
   body(data-mode=mode)
     #app
 
+    //- script(src="http")
     script(src=path_prefix + "_client/bundle.js")

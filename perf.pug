@@ -4,13 +4,13 @@ html
     meta(charset="UTF-8")
     meta(http-equiv="X-UA-Compatible", content="IE=edge")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Document
+    title Perf tester
   body 
     <div id="app">
       <input type="url" v-model="url" /><br>
       <input type="number" v-model.number="count" /><br>
       <div class="iframes">
-        <iframe v-for="i in Array(count).fill(undefined)" :key="i" :src="url" width="400" height="500">
+        <iframe v-for="i in Array(count).fill(undefined)" :key="i" :src="url" width="500" height="700">
         </iframe>
       </div>
     </div>
@@ -25,7 +25,7 @@ html
     var app = new Vue({
       el: '#app',
       data: {
-        count: 8,
+        count: 4,
         url: `${window.location.origin}`,
         local_ips
       }

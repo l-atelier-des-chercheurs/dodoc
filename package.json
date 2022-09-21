@@ -55,6 +55,7 @@
     "csv-parser": "^3.0.0",
     "csv-writer": "^1.6.0",
     "electron-pdf-window": "^1.0.12",
+    "electron-store": "^8.0.2",
     "electron-window-state": "^5.0.3",
     "eventemitter2": "^6.4.5",
     "exif-reader": "^1.0.3",
