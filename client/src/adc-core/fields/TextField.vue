@@ -1,22 +1,25 @@
 <template>
-  <span class="">
-    <sl-input
-      :label="label"
-      :readonly="!edit_mode"
-      :filled="!edit_mode"
+  <div class="">
+    <MetaFieldHeader
+      :title="label"
+      :help_text="help_text"
+      :edit_mode.sync="edit_mode"
+      :is_saving="is_saving"
+      @save="updateField"
+      @cancel="cancel"
+    />
+
+    <div v-if="!edit_mode" v-html="content" />
+    <sl-textarea
+      v-else
+      :help="help ? $t(help) : ''"
+      :placeholder="$t('add_text_here')"
       v-sl-model="new_content"
-      :help-text="help_text"
-    >
-      <sl-tooltip :content="$t('edit')">
-        <sl-icon-button
-          name="pencil-fill"
-          label="Edit"
-          slot="suffix"
-          @click="edit_mode = !edit_mode"
-        />
-      </sl-tooltip>
-    </sl-input>
-  </span>
+      resize="auto"
+      :disabled="is_saving"
+      :readonly="!edit_mode"
+    />
+  </div>
 </template>
 <script>
 export default {
@@ -57,6 +60,8 @@ export default {
       this.edit_mode = false;
       this.is_saving = false;
       this.new_content = this.content;
+
+      // todo interrupt path
     },
     async updateField() {
       this.is_saving = true;
@@ -64,7 +69,6 @@ export default {
 
       try {
         // TODO use updateItem
-
         const response = await this.$axios.patch(this.path_to_resource, {
           [this.field_name]: this.new_content,
         });
@@ -82,10 +86,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._titleField {
-  display: flex;
-}
-
 sl-input::part(base) {
   font-size: inherit;
   font-weight: inherit;

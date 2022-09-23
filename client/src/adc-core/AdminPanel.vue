@@ -25,11 +25,9 @@
   </sl-dialog>
 </template>
 <script>
-import TextField from "@/adc-core/fields/TextField.vue";
-
 export default {
   props: {},
-  components: { TextField },
+  components: {},
   data() {
     return {
       path_to_content: undefined,

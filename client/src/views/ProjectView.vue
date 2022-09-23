@@ -37,16 +37,12 @@
 
         <br />
 
-        <div class="_label">Description du projet</div>
-        <div class="">Presse-livre à découper à la découpeuse laser.</div>
-
         <TextField
-          :field_name="'informations'"
-          :help="'informations_help'"
-          :content="dataset.informations"
-          type="datasets"
-          :slugFolderName="slugFolderName"
-          level="Folder"
+          :label="$t('project_description')"
+          :help_text="$t('project_description_help_text')"
+          :field_name="'description'"
+          :content="project.description"
+          :path_to_resource="`/projects/${project_slug}`"
         />
 
         <br />

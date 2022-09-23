@@ -20,14 +20,19 @@ Vue.use(ShoelaceModelDirective);
 
 import TitleField from "@/components/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
-import TextField from "@/components/fields/TextField.vue";
+
+import TextField from "@/adc-core/fields/TextField.vue";
 Vue.component("TextField", TextField);
-import MetaFieldHeader from "@/components/fields/MetaFieldHeader.vue";
+
+import MetaFieldHeader from "@/adc-core/fields/MetaFieldHeader.vue";
 Vue.component("MetaFieldHeader", MetaFieldHeader);
+
 import SaveCancelButtons from "@/components/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
+
 import DateField from "@/components/fields/DateField.vue";
 Vue.component("DateField", DateField);
+
 Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
   template: `
