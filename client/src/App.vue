@@ -1,7 +1,6 @@
 -
 <template>
   <div id="app" class="">
-    <SocketStatus />
     <TopBar />
     <AdminPanel v-if="false" />
 
@@ -11,14 +10,12 @@
   </div>
 </template>
 <script>
-import SocketStatus from "./components/SocketStatus.vue";
-import AdminPanel from "./adc-core/AdminPanel.vue";
+import AdminPanel from "@/adc-core/AdminPanel.vue";
 import TopBar from "@/components/TopBar.vue";
 
 export default {
   props: {},
   components: {
-    SocketStatus,
     AdminPanel,
     TopBar,
   },
@@ -38,8 +35,10 @@ export default {
 :root {
   --spacing: var(--sl-spacing-medium);
 
-  --c-orange: #f9ca00;
-  --c-rouge: #ff3e51;
+  --c-bleumarine: #1d327f;
+  --c-bleuvert: #52c5b9;
+  --c-orange: #ffbe32;
+  --c-rouge: #fc4b60;
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: #333;
@@ -54,12 +53,18 @@ export default {
   --scrollbar-border: 2px;
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
+  --border-radius: 10px;
+
+  --color-Capturer: var(--c-rouge);
+  --color-Collecter: var(--c-orange);
+  --color-Remixer: var(--c-bleuvert);
+  --color-Partager: var(--c-bleumarine);
 
   --indicator-color: var(--c-vert) !important;
 
-  --sl-font-sans: "IBM Plex Sans";
+  --sl-font-sans: "Fira Sans";
   --sl-font-serif: "IBM Plex Serif";
-  --sl-font-mono: "IBM Plex Mono";
+  --sl-font-mono: "Fira Mono";
 
   $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
 
@@ -102,9 +107,9 @@ body {
 html {
   height: 100%;
 
-  font-family: "IBM Plex Sans";
+  font-family: "Fira Sans";
   font-style: normal;
-  font-weight: 300;
+  font-weight: 400;
 
   font-size: 95%;
 
@@ -134,18 +139,23 @@ hr {
   border-bottom: 0 solid #000;
 }
 
-body {
-  margin: 0;
+._label {
+  font-variant: small-caps;
+  text-transform: lowercase;
+  font-weight: 800;
+
+  // font-size: var(--sl-font-size-small);
+  color: #666;
 }
 
 ._metaField {
   display: flex;
+  // flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
+}
 
-  > *:first-child {
-    font-variant: small-caps;
-    font-weight: 700;
-  }
+body {
+  margin: 0;
 }
 
 .buttonLink {

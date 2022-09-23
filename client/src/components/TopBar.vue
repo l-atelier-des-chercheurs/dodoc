@@ -2,8 +2,7 @@
   <div class="_topbar">
     <sl-breadcrumb>
       <sl-breadcrumb-item @click="$router.push('/')">
-        <sl-icon slot="prefix" name="house-door-fill" />
-        do•doc
+        <img :src="`${$root.publicPath}i_logo.svg`" class="_logo" />
       </sl-breadcrumb-item>
       <sl-breadcrumb-item @click="$router.push('/projects')">
         Projets
@@ -13,12 +12,17 @@
         <!-- {{ project.title }} -->
       </sl-breadcrumb-item>
     </sl-breadcrumb>
+    <SocketStatus />
   </div>
 </template>
 <script>
+import SocketStatus from "@/components/SocketStatus.vue";
+
 export default {
   props: {},
-  components: {},
+  components: {
+    SocketStatus,
+  },
   data() {
     return {};
   },
@@ -27,9 +31,7 @@ export default {
   beforeDestroy() {},
   watch: {
     $route: {
-      handler() {
-        debugger;
-      },
+      handler() {},
       immediate: true,
     },
   },
@@ -37,4 +39,23 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._topbar {
+  // position: absolute;
+  width: 100%;
+  background: white;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) * 2);
+  align-content: center;
+
+  sl-breadcrumb {
+    flex: 1 1 auto;
+  }
+}
+
+._logo {
+  width: 4em;
+  height: 2em;
+}
+</style>

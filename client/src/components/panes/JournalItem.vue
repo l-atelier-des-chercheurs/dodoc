@@ -73,7 +73,7 @@ export default {
   computed: {},
   methods: {
     async removeText() {
-      await this.$api.deleteItem({
+      await this.$api.deleteFile({
         folder_type: "projects",
         folder_slug: this.project_slug,
         meta_slug: this.file.slug,

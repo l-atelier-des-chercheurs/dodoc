@@ -83,6 +83,8 @@ export default {
     async createProject() {
       this.is_creating_project = true;
 
+      // TODO replace with $api
+
       try {
         await this.$axios.post("/projects", {
           title: this.new_project_title,

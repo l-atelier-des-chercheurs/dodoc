@@ -6,7 +6,9 @@ export default function () {
     data: {
       socket: "",
       store: {},
+      is_logged_in: false,
     },
+    created() {},
     methods: {
       init() {
         this.initSchema();
@@ -196,6 +198,25 @@ export default function () {
         const d = response.data;
         return d;
       },
+      async updateFolder({ folder_type, folder_slug, new_meta }) {
+        // const fetch_status = "pending";
+        // const fetch_error = null;
+        let path = ``;
+        path += `/${folder_type}`;
+        path += `/${folder_slug}`;
+        const response = await this.$axios.patch(path, new_meta);
+        return response.data;
+      },
+      async deleteFolder({ folder_type, folder_slug }) {
+        try {
+          const response = await this.$axios.delete(
+            `/${folder_type}/${folder_slug}`
+          );
+          return response.data;
+        } catch (e) {
+          throw e.response.data;
+        }
+      },
 
       async uploadText({
         folder_type,
@@ -219,7 +240,6 @@ export default function () {
           additional_meta,
         });
       },
-
       async uploadFile({
         folder_type,
         folder_slug,
@@ -251,15 +271,6 @@ export default function () {
         return res.data.meta_filename;
       },
 
-      async updateFolder({ folder_type, folder_slug, new_meta }) {
-        // const fetch_status = "pending";
-        // const fetch_error = null;
-        let path = ``;
-        path += `/${folder_type}`;
-        path += `/${folder_slug}`;
-        const response = await this.$axios.patch(path, new_meta);
-        return response.data;
-      },
       async updateFile({ folder_type, folder_slug, meta_slug, new_meta }) {
         let path = ``;
         path += `/${folder_type}`;
@@ -268,18 +279,13 @@ export default function () {
         const response = await this.$axios.patch(path, new_meta);
         return response.data;
       },
-
-      async deleteItem({ folder_type, folder_slug, meta_slug }) {
-        // const fetch_status = "pending";
-        // const fetch_error = null;
+      async deleteFile({ folder_type, folder_slug, meta_slug }) {
         try {
           const response = await this.$axios.delete(
             `/${folder_type}/${folder_slug}/${meta_slug}`
           );
-          // const fetch_status = "success";
           return response.data;
         } catch (e) {
-          // this.fetch_status = "error";
           throw e.response.data;
         }
       },

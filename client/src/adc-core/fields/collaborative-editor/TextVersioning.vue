@@ -139,7 +139,6 @@ export default {
       this.$emit("restore", content);
     },
     onHide() {
-      debugger;
       this.$emit("close");
     },
   },

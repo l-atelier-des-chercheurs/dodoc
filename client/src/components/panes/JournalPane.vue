@@ -21,6 +21,15 @@
           <!-- {{ file.content.length }} -->
         </div>
 
+        <JournalItem
+          :file="file"
+          :project_slug="project.slug"
+          :line_selected="line_selected"
+          :scrollingContainer="$refs.journal"
+          @close="closeEntry"
+          @lineClicked="lineClicked"
+        />
+
         <sl-icon name="arrow-right" style="font-size: 1.4em" />
       </div>
 

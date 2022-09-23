@@ -19,27 +19,36 @@
         :useDragHandle="true"
       >
         <SlickItem
-          v-for="(item, index) in project_panes"
+          v-for="(item, index) in possible_project_panes"
           :index="index"
           class="_paneItem"
+          :class="{
+            'is--enabled': project_panes.some((p) => p.type === item.type),
+          }"
           :style="`--color-active: var(--color-${item.type});`"
           :key="item.key"
         >
-          <div class="">
-            <!-- <div v-handle class="_inlineBtn _handle" /> -->
-            <div v-handle class="_inlineBtn">
+          <div class="_btn" @click="togglePane($event, item)">
+            <!-- <div v-handle class="_inlineBtn">
               <sl-icon-button
                 name="grip-vertical"
-                label="Supprimer"
-                @click="removePane(index)"
+                label="Déplacer"
               />
-            </div>
-            <span>{{ $t(item.type) }}</span>
-            <div class="_inlineBtn _remove">
+            </div> -->
+            <span
+              class="_icon"
+              v-if="getIcon(item.type)"
+              v-html="getIcon(item.type)"
+            />
+            <span>{{ index + 1 }} • {{ $t(item.type) }}</span>
+            <div
+              v-if="project_panes.some((p) => p.type === item.type)"
+              class="_inlineBtn _remove"
+            >
               <sl-icon-button
                 name="x"
                 label="Supprimer"
-                @click="removePane(index)"
+                @click.stop="removePane(index)"
               />
             </div>
           </div>
@@ -47,7 +56,7 @@
       </SlickList>
       <!-- <sl-icon name="plus-square-fill" label="Panneaux" />
       <sl-icon name="plus" label="Panneaux" /> -->
-      <sl-dropdown>
+      <!-- <sl-dropdown>
         <sl-button slot="trigger" variant="primary" circle>
           <sl-icon name="plus" label="Panneaux" />
         </sl-button>
@@ -60,7 +69,7 @@
             @click="newPaneSelected(pane)"
           />
         </sl-menu>
-      </sl-dropdown>
+      </sl-dropdown> -->
     </component>
 
     <!-- // TODO -->
@@ -95,24 +104,21 @@ export default {
       project_panes: [],
       possible_project_panes: [
         {
-          type: "Journal",
-          pad: {},
-          size: 50,
+          type: "Capturer",
+          mode: false,
         },
         {
-          type: "MediaLibrary",
+          type: "Collecter",
           focus: false,
           focus_height: 0,
-          size: 50,
         },
         {
-          type: "Capture",
-          mode: false,
-          size: 50,
+          type: "Remixer",
+          pad: {},
         },
         {
-          type: "Team",
-          size: 50,
+          type: "Partager",
+          pad: {},
         },
       ],
     };
@@ -157,29 +163,54 @@ export default {
     newPaneSelected(pane) {
       // $evt.detail.item.value;
       pane.key = (Math.random().toString(36) + "00000000000000000").slice(2, 5);
+      // this.project_panes = [];
+      pane.size = this.project_panes.length > 0 ? 50 : 100;
+
       this.project_panes.push(pane);
     },
     removePane(index) {
       this.project_panes.splice(index, 1);
+    },
+    togglePane($event, pane) {
+      if (this.project_panes.some((p) => p.type === pane.type)) {
+        this.project_panes = this.project_panes.filter(
+          (p) => p.type !== pane.type
+        );
+        return;
+      }
+      $event.target.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+
+      this.newPaneSelected(pane);
+    },
+    getIcon(type) {
+      if (type === "Capturer")
+        return `
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
+          <path id="FOND_2_" style="fill:var(--c-orange);" d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84
+            C168,37.6,130.4,0,84,0z"/>
+          <path id="CENTRE_2_" style="fill:var(--c-rouge);" d="M84,41.3c-23.6,0-42.7,19.1-42.7,42.7c0,23.6,19.1,42.7,42.7,42.7
+            c23.6,0,42.7-19.1,42.7-42.7C126.7,60.4,107.6,41.3,84,41.3z"/>
+        </svg>
+        `;
+
+      return false;
     },
   },
 };
 </script>
 <style lang="scss">
 ._paneList {
-  ._paneList2 {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-  }
-
-  &.is--mobile {
-    ._paneList--list {
-      // flex-flow: row;
-      align-items: center;
-      flex-flow: column nowrap;
-    }
-  }
+  // font-size: var(--sl-font-size-large);
+  // max-width: 1024px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 ._paneList--list {
@@ -188,25 +219,19 @@ export default {
   height: auto;
   display: flex;
   flex-flow: row wrap;
-  justify-content: flex-end;
+  justify-content: center;
   // justify-content: flex-end;
   white-space: nowrap;
 
   overflow: auto;
 
   > * {
-    flex: 0 0 auto;
-    margin-right: calc(var(--spacing) / 2);
-    margin-top: calc(var(--spacing) / 4);
-    margin-bottom: calc(var(--spacing) / 4);
-
-    display: -webkit-box;
-    display: -ms-flexbox;
+    flex: 1 1 25%;
     display: flex;
+    justify-content: center;
     align-items: center;
     // width: 100%;
 
-    background-color: #fff;
     // border-bottom: 1px solid #efefef;
 
     user-select: none;
@@ -224,46 +249,50 @@ export default {
   text-decoration: none;
   // overrided by pane type color
   --color-active: #ccc;
-  --height-panebutton: 32px;
+  // --height-panebutton: 32px;
 
-  > div {
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    // color: white;
-    // padding: 0 var(--spacing);
-    border-radius: calc(var(--height-panebutton) / 2);
-    height: var(--height-panebutton);
-    transition: all 0.4s ease-out;
+  color: var(--color-active);
 
-    span {
-      text-decoration: none;
-      margin-bottom: 0.2em;
-    }
-  }
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  // border-radius: 4px;
 
-  &[for="enable_pane_for_WriteUp"] > div {
-    border: 1px solid transparent;
-  }
-
-  div {
-    // background-color: #ccc;
-    // border-color: var(--color-active);
-    // border-color: black;
-    background: var(--color-active);
+  &.is--enabled {
+    color: white;
+    background-color: var(--color-active);
   }
 }
 
 ._inlineBtn {
   position: relative;
   display: block;
-  width: var(--height-panebutton);
-  height: var(--height-panebutton);
+  // width: var(--height-panebutton);
+  // height: var(--height-panebutton);
 
   // margin: -8px 2px -8px calc(-1 * var(--spacing));
 
   // padding: 10px;
   border: 1px solid transparent;
   border-radius: 50%;
+}
+
+._btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
+  transition: all 0.4s ease-out;
+  cursor: pointer;
+
+  width: 100%;
+  height: 100%;
+  //
+}
+
+._icon {
+  width: 2em;
+  height: 2em;
 }
 </style>

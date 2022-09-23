@@ -2,6 +2,7 @@ const { defineConfig } = require("@vue/cli-service");
 
 module.exports = defineConfig({
   transpileDependencies: true,
+  publicPath: "/_client",
   configureWebpack: {
     optimization: {
       splitChunks: false,
@@ -25,7 +26,6 @@ module.exports = defineConfig({
     //   },
     // },
     devMiddleware: {
-      publicPath: "/_client",
       writeToDisk: true,
     },
   },

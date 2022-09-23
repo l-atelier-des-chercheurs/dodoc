@@ -1,42 +1,117 @@
 <template>
-  <div class="_projectView pageContent">
-    <div class="">
-      <div class="_projectPres">
+  <div class="_projectView">
+    <sl-spinner style="--indicator-color: currentColor" v-if="!project" />
+    <div class="_projectInfos" v-else>
+      <div
+        class="_projectInfos--cover"
+        ref="coverImage"
+        :class="{
+          'is--fullscreen': is_fullscreen,
+        }"
+      >
+        <img :src="`${$root.publicPath}large_project_image.jpg`" />
+        <button
+          type="button"
+          class="_fsButton"
+          v-text="!is_fullscreen ? 'agrandir' : 'réduire'"
+          @click="toggleFs"
+        />
+      </div>
+      <div class="_projectInfos--meta">
         <h1>
           {{ project.title }}
         </h1>
+
+        <div class="avatar-group">
+          Par
+          <sl-avatar
+            image="https://images.unsplash.com/photo-1490150028299-bf57d78394e0?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80&crop=right"
+            label="Avatar 1 of 4"
+          ></sl-avatar>
+
+          <sl-avatar
+            image="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&crop=left&q=80"
+            label="Avatar 2 of 4"
+          ></sl-avatar>
+        </div>
+
+        <br />
+
+        <div class="_label">Description du projet</div>
+        <div class="">Presse-livre à découper à la découpeuse laser.</div>
+
+        <TextField
+          :field_name="'informations'"
+          :help="'informations_help'"
+          :content="dataset.informations"
+          type="datasets"
+          :slugFolderName="slugFolderName"
+          level="Folder"
+        />
+
+        <br />
+
+        <div class="_label">mots-clés</div>
+        <sl-badge variant="primary" pill>Primary</sl-badge>
+        <sl-badge variant="success" pill>Success</sl-badge>
+        <sl-badge variant="neutral" pill>Neutral</sl-badge>
+
+        <button type="button" class="">ajouter</button>
+
+        <!-- <sl-tree>
+          <sl-tree-item>
+            Informations
+            <sl-tree-item>
+              Date de création
+              <sl-tree-item>
+                <DateField
+                  :date="project.date_uploaded"
+                  :show_detail_initially="true"
+                />
+              </sl-tree-item>
+            </sl-tree-item>
+            <sl-tree-item>
+              Date de dernière modification
+              <sl-tree-item>
+                <DateField
+                  :date="project.date_modified"
+                  :show_detail_initially="true"
+                />
+              </sl-tree-item>
+            </sl-tree-item>
+            <sl-tree-item>
+              Supprimer ce projet
+              <sl-tree-item>
+                <sl-button @click="deleteFolder" size="small"
+                  >Confirmer</sl-button
+                >
+              </sl-tree-item>
+            </sl-tree-item>
+          </sl-tree-item>
+        </sl-tree> -->
+
         <DateField :title="'date_created'" :date="project.date_created" />
-        Ajouter des mots-clés <br />
-        Ajouter une image de couverture <br />
       </div>
+    </div>
 
-      <div>
-        <h2>1. Collecter</h2>
-        <div>bibliothèque de médias</div>
-        <div>"capturer"</div>
-        <div>"importer"</div>
-        <h2>2. Remixer</h2>
-        <h2>3. Raconter</h2>
-
-        <PaneList class="_paneList" :panes.sync="projectpanes" />
-
-        {{ projectpanes }}
-
-        <ProjectArticles :project="project" :articles="articles" />
+    <div class="_projectPanesAndList">
+      <PaneList2 class="_paneList" :panes.sync="projectpanes" />
+      <div class="_panes" v-if="!is_loading && !error">
+        <ProjectPanes :projectpanes.sync="projectpanes" :project="project" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import ProjectArticles from "@/components/ProjectArticles.vue";
-import PaneList from "../components/nav/PaneList.vue";
+import PaneList2 from "@/components/nav/PaneList2.vue";
+import ProjectPanes from "@/components/ProjectPanes.vue";
 
 export default {
   props: {},
   components: {
-    ProjectArticles,
-    PaneList,
+    PaneList2,
+    ProjectPanes,
   },
   data() {
     return {
@@ -45,11 +120,15 @@ export default {
       error: null,
       project: null,
 
+      is_fullscreen: false,
+
       projectpanes: [],
     };
   },
   created() {},
   mounted() {
+    document.addEventListener("fullscreenchange", this.detectFullScreen);
+
     this.$api
       .getFolder({
         folder_type: "projects",
@@ -65,6 +144,7 @@ export default {
       .then(() => (this.is_loading = false));
   },
   beforeDestroy() {
+    document.removeEventListener("fullscreenchange", this.detectFullScreen);
     this.$api.leave({ room: `projects/${this.project_slug}` });
   },
   watch: {
@@ -84,10 +164,17 @@ export default {
   },
   computed: {
     articles() {
-      return this.project.files.filter((f) => f.is_article === true) || [];
+      return this.project.files.filter((f) => f.is_journal === true) || [];
     },
   },
   methods: {
+    async deleteFolder() {
+      await this.$api.deleteFolder({
+        folder_type: "projects",
+        folder_slug: this.project_slug,
+      });
+      this.$router.push("/projects");
+    },
     updateQueryPanes() {
       let query = {};
 
@@ -99,7 +186,23 @@ export default {
       )
         return false;
 
-      this.$router.replace({ query });
+      this.$router.push({ query });
+    },
+    detectFullScreen() {
+      if (document.fullscreenElement) {
+        this.is_fullscreen = true;
+        // window.addEventListener("popstate", this.quitFSOnBack);
+      } else {
+        this.is_fullscreen = false;
+        this.$nextTick(() => {
+          // window.removeEventListener("popstate", this.quitFSOnBack);
+        });
+      }
+    },
+    toggleFs() {
+      const elem = this.$refs.coverImage;
+      if (!this.is_fullscreen) elem.requestFullscreen().catch((err) => err);
+      else document.exitFullscreen();
     },
   },
 };
@@ -108,24 +211,73 @@ export default {
 ._projectView {
 }
 
-._topbar {
+._projectInfos {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  // justify-content: space-between;
-  gap: calc(var(--spacing));
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) * 2) auto;
+  margin: 0 auto;
+  // padding: 0 calc(var(--spacing) * 2);
+  background: white;
+  // border-radius: var(--border-radius);
+  overflow: hidden;
+
+  // min-height: 50vh;
+  width: 100%;
 }
 
-._panes {
-  height: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+._projectInfos--cover {
+  position: relative;
+  width: 50%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  max-height: 70vh;
 
-  > * {
+  img {
+    position: absolute;
+    width: 100%;
     height: 100%;
+    object-fit: cover;
   }
+
+  &.is--fullscreen img {
+    object-fit: contain;
+  }
+}
+._fsButton {
+  position: absolute;
+  bottom: 0;
+  margin: calc(var(--spacing) / 1);
+  border-radius: 4px;
+}
+
+._projectInfos--meta {
+  flex: 1 1 33ch;
+  padding: calc(var(--spacing));
+}
+
+._projectPanesAndList {
+  position: relative;
+  height: 100vh;
+
+  display: flex;
+  flex-flow: column nowrap;
+
+  ._paneList {
+    flex: 0 0 auto;
+  }
+  ._panes {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.avatar-group sl-avatar:not(:first-of-type) {
+  margin-left: -1rem;
+}
+
+.avatar-group sl-avatar::part(base) {
+  border: solid 2px var(--sl-color-neutral-0);
 }
 </style>

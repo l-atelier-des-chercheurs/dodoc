@@ -331,7 +331,7 @@
           "caption": {
             "type": "string"
           },
-          "is_article": {
+          "is_journal": {
             "type": "boolean"
           }
         }

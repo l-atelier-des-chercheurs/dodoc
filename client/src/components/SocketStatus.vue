@@ -6,7 +6,7 @@
     }"
   >
     <div class="_socketStatus--content">
-      Connected as {{ $api.socket.userID }}
+      Connecté en tant que {{ $api.socket.userID }}
       |
       <button
         type="button"
@@ -23,6 +23,16 @@
       >
         disconnect
       </button>
+      |
+      <span class="">
+        <input
+          type="checkbox"
+          id="loggedin"
+          name="loggedin"
+          v-model="$api.is_logged_in"
+        />
+        <label for="loggedin">identifié</label>
+      </span>
     </div>
   </div>
 </template>
@@ -43,18 +53,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._socketStatus {
-  position: absolute;
-  z-index: 1500;
-  bottom: 0;
-  width: 100%;
+  // position: absolute;
+  // z-index: 1500;
+  // top: 0;
+  // width: 100%;
   pointer-events: none;
 
-  margin: calc(var(--spacing) / 2) 0;
+  // margin: calc(var(--spacing) / 2) 0;
 
   ._socketStatus--content {
     pointer-events: auto;
     margin: 0 auto;
-    max-width: 50ch;
+    // max-width: 50ch;
     background: var(--c-rouge);
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
     border-radius: 8px;

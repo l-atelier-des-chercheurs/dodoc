@@ -56,7 +56,7 @@ export default {
         filename: "article-" + title + ".txt",
         additional_meta: {
           title,
-          is_article: true,
+          is_journal: true,
         },
       });
       meta_filename;

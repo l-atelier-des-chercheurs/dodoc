@@ -8,9 +8,6 @@
         :size="lib_pane_size"
       >
         <label for="add_file" class="_boldBtn">
-          <sl-button variant="text">
-            <span>importer</span>
-          </sl-button>
           <input
             type="file"
             multiple="multiple"
@@ -151,15 +148,16 @@ export default {
   },
   methods: {
     scrollToMediaTile(slug) {
-      const focused_tile = this.$refs.mediaTiles.querySelector(
-        `[data-fileslug="${slug}"]`
-      );
-      if (focused_tile)
-        focused_tile.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "nearest",
-        });
+      slug;
+      // const focused_tile = this.$refs.mediaTiles.querySelector(
+      //   `[data-fileslug="${slug}"]`
+      // );
+      // if (focused_tile)
+      // focused_tile.scrollIntoView({
+      //   behavior: "smooth",
+      //   block: "center",
+      //   inline: "nearest",
+      // });
     },
     updateInputFiles($event) {
       this.selected_files = Array.from($event.target.files);
@@ -214,7 +212,7 @@ export default {
     },
 
     async removeMedia(slug) {
-      await this.$api.deleteItem({
+      await this.$api.deleteFile({
         folder_type: "projects",
         folder_slug: this.project.slug,
         meta_slug: slug,
@@ -226,7 +224,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._mediaLibrary {
-  background: var(--color-MediaLibrary);
+  background: var(--color-Collecter);
   height: 100%;
   overflow: auto;
 

@@ -69,6 +69,7 @@ new Vue({
     is_connected: false,
     is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
     dev_mode: true,
+    publicPath: process.env.BASE_URL,
 
     window: {
       innerWidth: window.innerWidth,
@@ -94,7 +95,8 @@ new Vue({
   },
   computed: {
     is_mobile_view() {
-      return this.window.innerWidth < 700;
+      return false;
+      // return this.window.innerWidth < 700;
     },
   },
   methods: {
