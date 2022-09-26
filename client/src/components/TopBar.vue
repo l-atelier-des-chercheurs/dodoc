@@ -1,17 +1,29 @@
 <template>
   <div class="_topbar">
-    <sl-breadcrumb>
-      <sl-breadcrumb-item @click="$router.push('/')">
-        <img :src="`${$root.publicPath}i_logo.svg`" class="_logo" />
-      </sl-breadcrumb-item>
-      <sl-breadcrumb-item @click="$router.push('/projects')">
-        Projets
-      </sl-breadcrumb-item>
-      <sl-breadcrumb-item @click="$router.replace({ query: {} })">
-        nom du projet
-        <!-- {{ project.title }} -->
-      </sl-breadcrumb-item>
-    </sl-breadcrumb>
+    <nav aria-label="Breadcrumb" class="_breadcrumb">
+      <ul v-if="$route.path !== '/'">
+        <li class="_logo">
+          <router-link :to="`/`">
+            <img :src="`${$root.publicPath}i_logo.svg`" class="" />
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="`/projects`">Les projets</router-link>
+        </li>
+        <li v-if="$route.name === 'projet'">
+          <router-link :to="$route.path" replace>
+            <!-- {{ project.title }} -->
+            <sl-spinner
+              style="--indicator-color: currentColor"
+              v-if="!project_name"
+            />
+            <span v-else>
+              {{ project_name }}
+            </span>
+          </router-link>
+        </li>
+      </ul>
+    </nav>
     <SocketStatus />
   </div>
 </template>
@@ -24,10 +36,14 @@ export default {
     SocketStatus,
   },
   data() {
-    return {};
+    return {
+      project_name: null,
+    };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$eventHub.$on("nav.projectName", this.setProjectName);
+  },
   beforeDestroy() {},
   watch: {
     $route: {
@@ -36,26 +52,61 @@ export default {
     },
   },
   computed: {},
-  methods: {},
+  methods: {
+    setProjectName(project_name) {
+      this.project_name = project_name;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
 ._topbar {
+  position: relative;
+  z-index: 5;
   // position: absolute;
   width: 100%;
-  background: white;
   display: flex;
   flex-flow: row nowrap;
   gap: calc(var(--spacing) * 2);
   align-content: center;
 
-  sl-breadcrumb {
+  background: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  ._breadcrumb {
     flex: 1 1 auto;
   }
 }
 
+._breadcrumb {
+  padding: 0 0.5rem;
+  ul {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+
+    &:not(:last-child)::after {
+      display: inline-block;
+      margin: 0 0.25rem;
+      content: "→";
+    }
+  }
+}
+
 ._logo {
-  width: 4em;
-  height: 2em;
+  flex: 0 0 auto;
+
+  img {
+    width: 8em;
+    height: 2.6em;
+  }
 }
 </style>

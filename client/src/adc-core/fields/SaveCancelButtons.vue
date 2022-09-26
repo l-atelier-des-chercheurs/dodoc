@@ -7,12 +7,10 @@
     <sl-button
       :size="pill_size"
       pill
-      type="success"
+      type="submit"
       :loading="is_saving"
       :disabled="!enable_save"
-      submit
       ref="save"
-      @click="$emit('save')"
     >
       <sl-icon name="check-circle-fill" />
       <template v-if="save_text !== undefined">{{ save_text }}</template>

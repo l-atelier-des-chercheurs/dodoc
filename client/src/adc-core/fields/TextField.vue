@@ -1,25 +1,28 @@
 <template>
-  <div class="">
+  <form class="input-validation-required" @submit.prevent="updateText">
     <MetaFieldHeader
       :title="label"
       :help_text="help_text"
       :edit_mode.sync="edit_mode"
       :is_saving="is_saving"
-      @save="updateField"
       @cancel="cancel"
     />
 
-    <div v-if="!edit_mode" v-html="content" />
-    <sl-textarea
+    <component v-if="!edit_mode" :is="tag" v-html="content" />
+
+    <component
       v-else
-      :help="help ? $t(help) : ''"
+      :is="tag === 'p' ? 'sl-textarea' : 'sl-input'"
+      type="text"
       :placeholder="$t('add_text_here')"
       v-sl-model="new_content"
       resize="auto"
       :disabled="is_saving"
       :readonly="!edit_mode"
+      :required="required"
+      :maxlength="maxlength"
     />
-  </div>
+  </form>
 </template>
 <script>
 export default {
@@ -36,6 +39,18 @@ export default {
       default: "",
     },
     path_to_resource: String,
+    required: {
+      type: Boolean,
+      default: false,
+    },
+    maxlength: {
+      type: [Boolean, Number],
+      default: false,
+    },
+    tag: {
+      type: String,
+      default: "p",
+    },
   },
   components: {},
   data() {
@@ -63,7 +78,9 @@ export default {
 
       // todo interrupt path
     },
-    async updateField() {
+    async updateText() {
+      debugger;
+
       this.is_saving = true;
       this.fetch_error = null;
 

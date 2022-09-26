@@ -1,20 +1,27 @@
 <template>
   <div class="_metaFieldHeader">
-    <div class="_label" v-html="title" />
+    <div class="_label" v-if="title" v-html="title" />
 
     <!-- <transition name="fade" mode="out-in"> -->
     <template v-if="edit_mode !== undefined">
       &nbsp;
-      <sl-tooltip :content="$t('edit')">
-        <sl-button
-          size="small"
-          v-if="!edit_mode"
-          circle
-          @click="$emit('update:edit_mode', true)"
-        >
+      <!-- <sl-button
+        size="small"
+        v-if="!edit_mode"
+        circle
+        @click="$emit('update:edit_mode', true)"
+      >
+        <sl-tooltip :content="$t('edit')">
           <sl-icon name="pencil-fill" />
-        </sl-button>
-      </sl-tooltip>
+        </sl-tooltip>
+      </sl-button> -->
+
+      <sl-icon-button
+        v-if="!edit_mode"
+        name="pencil-fill"
+        :label="$t('edit')"
+        @click="$emit('update:edit_mode', true)"
+      />
 
       <SaveCancelButtons
         v-if="edit_mode"

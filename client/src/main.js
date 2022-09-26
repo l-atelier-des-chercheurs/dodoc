@@ -27,7 +27,7 @@ Vue.component("TextField", TextField);
 import MetaFieldHeader from "@/adc-core/fields/MetaFieldHeader.vue";
 Vue.component("MetaFieldHeader", MetaFieldHeader);
 
-import SaveCancelButtons from "@/components/fields/SaveCancelButtons.vue";
+import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
 
 import DateField from "@/components/fields/DateField.vue";

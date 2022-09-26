@@ -7,7 +7,7 @@
           size="small"
           variant="text"
           pill
-          @click="$refs.createModal.show()"
+          @click="show_create_modal = true"
         >
           <sl-icon slot="suffix" name="box-arrow-in-up-right"></sl-icon>
           créer
@@ -15,24 +15,11 @@
       </div>
     </div>
 
-    <sl-dialog ref="createModal" label="Créer un projet" class="">
-      <sl-input
-        type="text"
-        autofocus
-        placeholder="Titre du nouveau projet"
-        v-sl-model="new_project_title"
-      />
-      <sl-button
-        variant="primary"
-        slot="footer"
-        :loading="is_creating_project"
-        @click="createProject"
-      >
-        créer
-      </sl-button>
-    </sl-dialog>
+    <CreateProject
+      v-if="show_create_modal"
+      @close="show_create_modal = false"
+    />
 
-    <br />
     <div class="_projects">
       <ProjectPreview
         v-for="project in sorted_projects"
@@ -44,17 +31,18 @@
 </template>
 <script>
 import ProjectPreview from "@/components/ProjectPreview.vue";
+import CreateProject from "@/components/modals/CreateProject.vue";
 
 export default {
   props: {},
   components: {
     ProjectPreview,
+    CreateProject,
   },
   data() {
     return {
-      new_project_title: "",
       projects: [],
-      is_creating_project: false,
+      show_create_modal: false,
     };
   },
   created() {},
@@ -79,26 +67,7 @@ export default {
       });
     },
   },
-  methods: {
-    async createProject() {
-      this.is_creating_project = true;
-
-      // TODO replace with $api
-
-      try {
-        await this.$axios.post("/projects", {
-          title: this.new_project_title,
-          requested_folder_name: this.new_project_title,
-        });
-        this.is_creating_project = false;
-        this.$refs.createModal.hide();
-        this.new_project_title = "";
-      } catch (e) {
-        this.$alertify.closeLogOnClick(true).delay(4000).error(e.response.data);
-        this.is_creating_project = false;
-      }
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>

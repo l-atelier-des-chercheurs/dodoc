@@ -18,9 +18,19 @@
         />
       </div>
       <div class="_projectInfos--meta">
-        <h1>
+        <TextField
+          :help_text="$t('project_title_help_text')"
+          :field_name="'title'"
+          :content="project.title"
+          :path_to_resource="`/projects/${project_slug}`"
+          :required="true"
+          :maxlength="20"
+          :tag="'h2'"
+        />
+
+        <!-- <h1>
           {{ project.title }}
-        </h1>
+        </h1> -->
 
         <div class="avatar-group">
           Par
@@ -44,6 +54,8 @@
           :content="project.description"
           :path_to_resource="`/projects/${project_slug}`"
         />
+
+        {{ project.description }}
 
         <br />
 
@@ -132,6 +144,7 @@ export default {
       })
       .then((project) => {
         this.project = project;
+        this.$eventHub.$emit("nav.projectName", this.project.title);
         this.$api.join({ room: `projects/${this.project_slug}` });
       })
       .catch((err) => {
