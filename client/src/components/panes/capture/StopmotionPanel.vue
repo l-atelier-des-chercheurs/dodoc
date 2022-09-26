@@ -9,7 +9,7 @@
         type="button"
         :disabled="read_only"
         @click="removeMedia(show_previous_photo.metaFileName)"
-        class="buttonLink bg-noir"
+        class="u-buttonLink bg-noir"
       >
         <span class>{{ $t("remove_this_image") }}</span>
       </button>
@@ -20,7 +20,7 @@
       >
         <button
           type="button"
-          class="buttonLink bg-noir"
+          class="u-buttonLink bg-noir"
           @click="prevImage"
           :disabled="image_index_currently_shown === 0"
         >
@@ -31,7 +31,7 @@
             medias.length
           }}</label
         >
-        <button type="button" class="buttonLink bg-noir" @click="nextImage">
+        <button type="button" class="u-buttonLink bg-noir" @click="nextImage">
           →
         </button>
       </div>
@@ -116,7 +116,7 @@
 
         <!-- <button
           type="button"
-          class="buttonLink padding-verysmall margin-none"
+          class="u-buttonLink padding-verysmall margin-none"
           :class="{ 'is--active': show_advanced_menu }"
           @mousedown.stop.prevent="
             show_advanced_menu = !show_advanced_menu;

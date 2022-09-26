@@ -8,7 +8,11 @@
       @cancel="cancel"
     />
 
-    <component v-if="!edit_mode" :is="tag" v-html="content" />
+    <component
+      v-if="!edit_mode"
+      :is="tag"
+      v-html="content.replace(/(?:\r\n|\r|\n)/g, '<br />')"
+    />
 
     <component
       v-else
@@ -106,5 +110,9 @@ export default {
 sl-input::part(base) {
   font-size: inherit;
   font-weight: inherit;
+}
+
+p {
+  margin: 0;
 }
 </style>

@@ -23,7 +23,7 @@
         User to call
         <input type="text" v-model="callee_username" />
       </div>
-      <button type="button" class="buttonLink" @click="call">call</button>
+      <button type="button" class="u-buttonLink" @click="call">call</button>
     </div>
   </div>
 </template>

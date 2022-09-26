@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 
 Vue.config.productionTip = false;
+const debug_mode = false;
 
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
@@ -55,11 +56,12 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((request) => {
-  alertify.delay(4000).log(
-    `⤒ — ${request.method} + ${request.url}
+  if (debug_mode)
+    alertify.delay(4000).log(
+      `⤒ — ${request.method} + ${request.url}
       ${request.data ? `+ ` + JSON.stringify(request.data).slice(0, 20) : ""}
       `
-  );
+    );
   return request;
 });
 Vue.prototype.$axios = instance;
@@ -82,7 +84,7 @@ new Vue({
     },
   },
   mounted() {
-    this.$api.init();
+    this.$api.init({ debug_mode });
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
@@ -106,10 +108,11 @@ new Vue({
   },
   methods: {
     socketConnected() {
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .success(`Connected or reconnected with id ${this.$api.socket.id}`);
+      if (this.debug_mode)
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(`Connected or reconnected with id ${this.$api.socket.id}`);
     },
     socketDisconnected(reason) {
       this.$alertify

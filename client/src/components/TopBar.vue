@@ -7,21 +7,25 @@
             <img :src="`${$root.publicPath}i_logo.svg`" class="" />
           </router-link>
         </li>
+        <sl-icon-button name="arrow-right-short" label="" />
         <li>
           <router-link :to="`/projects`">Les projets</router-link>
         </li>
-        <li v-if="$route.name === 'projet'">
-          <router-link :to="$route.path" replace>
-            <!-- {{ project.title }} -->
-            <sl-spinner
-              style="--indicator-color: currentColor"
-              v-if="!project_name"
-            />
-            <span v-else>
-              {{ project_name }}
-            </span>
-          </router-link>
-        </li>
+        <template v-if="$route.name === 'projet'">
+          <sl-icon-button name="arrow-right-short" label="" />
+          <li>
+            <router-link :to="$route.path" replace>
+              <!-- {{ project.title }} -->
+              <sl-spinner
+                style="--indicator-color: currentColor"
+                v-if="!project_name"
+              />
+              <span v-else>
+                {{ project_name }}
+              </span>
+            </router-link>
+          </li>
+        </template>
       </ul>
     </nav>
     <SocketStatus />
@@ -93,11 +97,11 @@ export default {
     display: flex;
     align-items: center;
 
-    &:not(:last-child)::after {
-      display: inline-block;
-      margin: 0 0.25rem;
-      content: "→";
-    }
+    // &:not(:last-child)::after {
+    //   display: inline-block;
+    //   margin: 0 0.25rem;
+    //   content: "→";
+    // }
   }
 }
 

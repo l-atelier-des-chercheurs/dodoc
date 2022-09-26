@@ -61,7 +61,7 @@
             <div>
               <button
                 type="button"
-                class="buttonLink"
+                class="u-buttonLink"
                 @click="setTogglePickColorFromVideo"
               >
                 <template v-if="!enable_pick_color_from_video">

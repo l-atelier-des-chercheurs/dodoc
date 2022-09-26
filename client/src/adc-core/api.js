@@ -7,10 +7,12 @@ export default function () {
       socket: "",
       store: {},
       is_logged_in: false,
+      debug_mode: false,
     },
     created() {},
     methods: {
-      init() {
+      init({ debug_mode }) {
+        this.debug_mode = debug_mode;
         this.initSchema();
         this.initSocketio();
       },
@@ -62,9 +64,10 @@ export default function () {
           //   _args[0].changed_data.content =
           //     _args[0].changed_data?.content.slice(0, 15) +
           //     "[…] (truncated content)";
-          this.$alertify
-            .delay(4000)
-            .log(`⤓ ` + eventName + JSON.stringify(_args));
+          if (this.debug_mode)
+            this.$alertify
+              .delay(4000)
+              .log(`⤓ ` + eventName + JSON.stringify(_args));
         });
         this.socket.on("folderCreated", this.folderCreated);
         this.socket.on("folderUpdated", this.folderUpdated);

@@ -1,9 +1,8 @@
 <template>
   <div class="_homeView">
     <div class="_homeView--content">
-      <h1>do•doc</h1>
+      <img :src="`${$root.publicPath}i_logo.svg`" class="" />
       <small>{{ $root.app_infos.version }}</small>
-      <hr />
       <p>Plate-forme de documentation pour fablab à l'école.</p>
       <p>
         <router-link to="/projects">Afficher les projets</router-link>

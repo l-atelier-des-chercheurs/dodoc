@@ -2,7 +2,9 @@
   <div class="_projetPanes">
     <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
       <template v-if="projectpanes.length === 0">
-        <pane><span class="_msg">Aucun panneau n’est actif</span></pane>
+        <pane>
+          <span class="_msg">Choisissez un panneau ci-dessus</span>
+        </pane>
       </template>
       <pane
         v-for="pane in projectpanes"
@@ -24,7 +26,7 @@
         />
         <RemixPane v-if="pane.type === 'Remixer'" :project="project" />
         <JournalPane
-          v-if="pane.type === 'Partager'"
+          v-if="pane.type === 'Documenter'"
           :project="project"
           :opened_journal_entry="pane.pad"
           @update:opened_journal_entry="pane.pad = $event"
@@ -87,7 +89,7 @@ export default {
   display: flex;
   place-content: center;
   font-style: italic;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) * 2);
   background: #eee;
 }
 </style>

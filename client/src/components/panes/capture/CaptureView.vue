@@ -927,7 +927,7 @@
 
                 <button
                   type="button"
-                  class="buttonLink"
+                  class="u-buttonLink"
                   v-if="selected_mode === 'lines'"
                   @click="show_lines_settings = !show_lines_settings"
                   :class="{ 'is--active': show_lines_settings }"
@@ -1231,7 +1231,7 @@ export default {
     // else
     this.selected_mode = this.available_modes[0];
 
-    document.addEventListener("keyup", this.captureKeyListener);
+    // document.addEventListener("keyup", this.captureKeyListener);
 
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
@@ -1263,7 +1263,7 @@ export default {
       this.updateDistantStream
     );
 
-    document.removeEventListener("keyup", this.captureKeyListener);
+    // document.removeEventListener("keyup", this.captureKeyListener);
 
     this.ask_before_leaving_capture = false;
 

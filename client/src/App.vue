@@ -58,7 +58,7 @@ export default {
   --color-Capturer: var(--c-rouge);
   --color-Collecter: var(--c-orange);
   --color-Remixer: var(--c-bleuvert);
-  --color-Partager: var(--c-bleumarine);
+  --color-Documenter: var(--c-bleumarine);
 
   --indicator-color: var(--c-vert) !important;
 
@@ -121,6 +121,15 @@ body {
   min-height: 100%;
 }
 
+a {
+  color: var(--c-bleu);
+  text-underline-offset: 0.1em;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 button {
   appearance: none;
   border: none;
@@ -139,7 +148,7 @@ hr {
   border-bottom: 0 solid #000;
 }
 
-._label {
+.u-label {
   font-variant: small-caps;
   text-transform: lowercase;
   font-weight: 800;
@@ -158,7 +167,7 @@ body {
   margin: 0;
 }
 
-.buttonLink {
+.u-buttonLink {
   font-variant: small-caps;
   font-weight: 700;
 }
@@ -168,15 +177,44 @@ strong {
   font-weight: 700;
 }
 
-.pageContent {
-  padding: var(--spacing);
-}
-
 [contenteditable] {
   outline: 1px solid gray;
 }
 h1 {
   margin: 0;
+}
+h2 {
+}
+
+.card-header {
+  ul {
+    margin: 0;
+    padding: 0 calc(var(--spacing) / 2);
+  }
+}
+
+sl-card,
+.u-card {
+  background-color: #fff;
+  border-radius: 6px;
+  // border-bottom: 2px solid #b9b9b9;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+    transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &::part(base) {
+    border: none;
+    box-shadow: none;
+  }
+
+  &::part(header) {
+    margin: 0;
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  }
+  &::part(body) {
+    padding: calc(var(--spacing) / 1);
+  }
 }
 
 ._boldBtn {

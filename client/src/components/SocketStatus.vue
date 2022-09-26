@@ -6,7 +6,7 @@
     }"
   >
     <div class="_socketStatus--content">
-      Connecté en tant que {{ $api.socket.userID }}
+      <!-- Connecté en tant que {{ $api.socket.userID }}
       |
       <button
         type="button"
@@ -23,7 +23,7 @@
       >
         disconnect
       </button>
-      |
+      | -->
       <span class="">
         <input
           type="checkbox"
@@ -71,7 +71,7 @@ export default {
   }
   &.is--connected {
     ._socketStatus--content {
-      background: var(--c-vert);
+      // background: var(--c-vert);
     }
   }
 }

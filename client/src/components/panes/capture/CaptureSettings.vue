@@ -56,7 +56,7 @@
         <label>{{ $t("sources") }}</label>
         <button
           type="button"
-          class="buttonLink margin-none margin-left padding-bottom-none"
+          class="u-buttonLink margin-none margin-left padding-bottom-none"
           @click="refreshAvailableDevices"
         >
           {{ $t("reload") }}
@@ -385,7 +385,7 @@
 
         <!-- <button
           type="button"
-          class="bg-rouge buttonLink"
+          class="bg-rouge u-buttonLink"
           @click="$emit('close')"
         >
           <span class>{{ $t("close") }}</span>
@@ -1380,7 +1380,7 @@ export default {
 
   label,
   small,
-  .buttonLink {
+  .u-buttonLink {
     color: inherit;
   }
 }

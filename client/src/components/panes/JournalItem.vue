@@ -1,11 +1,5 @@
 <template>
-  <div class="_journalItem">
-    <div class="_backToList" @click="$emit('close')">
-      <sl-button @click.stop="$emit('close')" size="small">
-        <sl-icon slot="prefix" name="arrow-left" />
-        {{ $t("back") }}
-      </sl-button>
-    </div>
+  <div class="_journalItem u-card">
     <div class="_journalItem--content">
       <div class="_entryTitle">
         {{ file.title }}
@@ -89,15 +83,17 @@ export default {
 }
 
 ._journalItem {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+  // position: absolute;
+  // top: 0;
+  // bottom: 0;
+  // width: 100%;
+  // height: 100%;
+  // overflow: auto;
 
-  display: flex;
-  flex-flow: column nowrap;
+  // display: flex;
+  // flex-flow: column nowrap;
+  max-width: 80ch;
+  margin: calc(var(--spacing) * 2) auto;
 
   ._backToList {
     width: 100%;

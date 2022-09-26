@@ -19,16 +19,16 @@
         :useDragHandle="true"
       >
         <SlickItem
-          v-for="(item, index) in possible_project_panes"
+          v-for="(pane, index) in possible_project_panes"
           :index="index"
           class="_paneItem"
           :class="{
-            'is--enabled': project_panes.some((p) => p.type === item.type),
+            'is--enabled': project_panes.some((p) => p.type === pane.type),
           }"
-          :style="`--color-active: var(--color-${item.type});`"
-          :key="item.key"
+          :style="`--color-active: var(--color-${pane.type});`"
+          :key="pane.type"
         >
-          <div class="_btn" @click="togglePane($event, item)">
+          <div class="_btn" @click="replacePane($event, pane)">
             <!-- <div v-handle class="_inlineBtn">
               <sl-icon-button
                 name="grip-vertical"
@@ -37,18 +37,25 @@
             </div> -->
             <span
               class="_icon"
-              v-if="getIcon(item.type)"
-              v-html="getIcon(item.type)"
+              v-if="getIcon(pane.type)"
+              v-html="getIcon(pane.type)"
             />
-            <span>{{ index + 1 }} • {{ $t(item.type) }}</span>
+            <span>{{ index + 1 }} • {{ $t(pane.type) }}</span>
             <div
-              v-if="project_panes.some((p) => p.type === item.type)"
+              v-if="project_panes.some((p) => p.type === pane.type)"
               class="_inlineBtn _remove"
             >
               <sl-icon-button
-                name="x"
+                name="x-lg"
                 label="Supprimer"
-                @click.stop="removePane(index)"
+                @click.stop="removePane(pane.type)"
+              />
+            </div>
+            <div v-else-if="project_panes.length > 0" class="_inlineBtn">
+              <sl-icon-button
+                name="plus-lg"
+                label="Ajouter"
+                @click.stop="addPane($event, pane)"
               />
             </div>
           </div>
@@ -117,7 +124,7 @@ export default {
           pad: {},
         },
         {
-          type: "Partager",
+          type: "Documenter",
           pad: {},
         },
       ],
@@ -160,31 +167,31 @@ export default {
   },
   computed: {},
   methods: {
-    newPaneSelected(pane) {
-      // $evt.detail.item.value;
-      pane.key = (Math.random().toString(36) + "00000000000000000").slice(2, 5);
-      // this.project_panes = [];
-      pane.size = this.project_panes.length > 0 ? 50 : 100;
-
-      this.project_panes.push(pane);
+    removePane(type) {
+      this.project_panes = this.project_panes.filter((pp) => pp.type !== type);
     },
-    removePane(index) {
-      this.project_panes.splice(index, 1);
+    replacePane($event, pane) {
+      this.project_panes = [];
+      this.addPane($event, pane);
+      // if (this.project_panes.some((p) => p.type === pane.type)) {
+      //   this.project_panes = this.project_panes.filter(
+      //     (p) => p.type !== pane.type
+      //   );
+      //   return;
+      // } else this.addPane($event, pane);
     },
-    togglePane($event, pane) {
-      if (this.project_panes.some((p) => p.type === pane.type)) {
-        this.project_panes = this.project_panes.filter(
-          (p) => p.type !== pane.type
-        );
-        return;
-      }
+    addPane($event, pane) {
       $event.target.scrollIntoView({
         behavior: "smooth",
         block: "start",
         inline: "nearest",
       });
 
-      this.newPaneSelected(pane);
+      // pane.key = (Math.random().toString(36) + "00000000000000000").slice(2, 5);
+      pane.size = this.project_panes.length > 0 ? 50 : 100;
+      this.project_panes.push(pane);
+
+      // reorder
     },
     getIcon(type) {
       if (type === "Capturer")
@@ -207,6 +214,8 @@ export default {
 ._paneList {
   // font-size: var(--sl-font-size-large);
   // max-width: 1024px;
+  position: relative;
+  z-index: 10;
   width: 100%;
   margin: 0 auto;
   background-color: #fff;
@@ -222,11 +231,13 @@ export default {
   justify-content: center;
   // justify-content: flex-end;
   white-space: nowrap;
+  // margin: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
 
   overflow: auto;
 
   > * {
-    flex: 1 1 25%;
+    flex: 0 0 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -247,20 +258,21 @@ export default {
   text-decoration: none;
   padding: 0;
   text-decoration: none;
-  // overrided by pane type color
-  --color-active: #ccc;
-  // --height-panebutton: 32px;
-
-  color: var(--color-active);
 
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 0.03em;
+
   // border-radius: 4px;
+  color: var(--color-active);
 
   &.is--enabled {
     color: white;
     background-color: var(--color-active);
+  }
+
+  sl-icon-button::part(base) {
+    color: currentColor;
   }
 }
 
@@ -273,15 +285,15 @@ export default {
   // margin: -8px 2px -8px calc(-1 * var(--spacing));
 
   // padding: 10px;
-  border: 1px solid transparent;
   border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 ._btn {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   gap: calc(var(--spacing) / 2);
   transition: all 0.4s ease-out;
   cursor: pointer;

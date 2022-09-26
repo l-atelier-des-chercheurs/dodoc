@@ -166,7 +166,7 @@ export default {
 }
 
 ._archiveText {
-  background: var(--color-Journal);
+  background: var(--c-gris);
   padding: calc(var(--spacing) / 2);
   width: 100%;
   // max-height: 150px;

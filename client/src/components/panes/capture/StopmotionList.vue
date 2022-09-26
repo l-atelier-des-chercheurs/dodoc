@@ -42,14 +42,14 @@
           <div class="_options">
             <button
               type="button"
-              class="buttonLink"
+              class="u-buttonLink"
               @click="loadStopmotion(stopmotion.slugFolderName)"
             >
               {{ $t("load") }}
             </button>
             <button
               type="button"
-              class="buttonLink"
+              class="u-buttonLink"
               @click="removeStopmotion(stopmotion.slugFolderName)"
             >
               {{ $t("remove") }}

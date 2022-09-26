@@ -6,20 +6,15 @@
         :key="file.slug"
         :file="file"
         :project_slug="project.slug"
-        class="_journal--entry"
         :class="{
           'was--justOpened': file.slug === entry_just_opened,
         }"
-        @click="openEntry({ slug: file.slug })"
       >
-        <div>
+        <!-- <div>
           <div class="_journal--entry--title">
             {{ file.title }}
           </div>
-          <!-- <DateField :title="'date_created'" :date="file.date_uploaded" />
-          <DateField :title="'date_modified'" :date="file.date_modified" /> -->
-          <!-- {{ file.content.length }} -->
-        </div>
+        </div> -->
 
         <JournalItem
           :file="file"
@@ -30,7 +25,7 @@
           @lineClicked="lineClicked"
         />
 
-        <sl-icon name="arrow-right" style="font-size: 1.4em" />
+        <!-- <sl-icon name="arrow-right" style="font-size: 1.4em" /> -->
       </div>
 
       <div class="_createForm">
@@ -56,7 +51,7 @@
       <div class="_overlay" v-if="entry_opened" @click="closeEntry" />
     </transition>
 
-    <transition name="slideup">
+    <!-- <transition name="slideup">
       <JournalItem
         v-if="entry_opened"
         :file="entry_opened"
@@ -66,7 +61,7 @@
         @close="closeEntry"
         @lineClicked="lineClicked"
       />
-    </transition>
+    </transition> -->
   </div>
 </template>
 <script>
@@ -152,17 +147,17 @@ export default {
 <style lang="scss" scoped>
 ._journal {
   position: relative;
-  background: var(--color-Journal);
+  // background: var(--color-Journal);
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
 }
 
 ._journal--items {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  overflow: auto;
+  // height: 100%;
+  // width: 100%;
+  // position: absolute;
+  // top: 0;
+  // overflow: auto;
 }
 
 ._createForm {
@@ -177,10 +172,10 @@ export default {
   padding: calc(var(--spacing) / 1);
   cursor: pointer;
 
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: center;
+  // display: flex;
+  // flex-flow: row wrap;
+  // justify-content: space-between;
+  // align-items: center;
 
   ._journal--entry--title {
     font-size: var(--sl-font-size-x-large);

@@ -1,5 +1,5 @@
 <template>
-  <div class="pageContent">
+  <div class="_projectsView">
     <div class="_title">
       <h1>Projets</h1>
       <div>
@@ -71,11 +71,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._projectsView {
+  padding: calc(var(--spacing) * 2);
+}
 ._projects {
   display: grid;
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
-  align-items: start;
+  align-items: center;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 
   > * {

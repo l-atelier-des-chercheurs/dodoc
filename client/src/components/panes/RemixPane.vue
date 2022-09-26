@@ -21,7 +21,7 @@
             <button
               v-if="recipe.instructions"
               type="button"
-              class="buttonLink c-noir margin-none"
+              class="u-buttonLink c-noir margin-none"
               :class="{
                 'is--active': recipe.show_instructions,
               }"
@@ -454,13 +454,6 @@ export default {
     border: none;
     border-top: 2px solid black;
     width: 1em;
-  }
-
-  button {
-    // .margin-top-medium;
-  }
-  .buttonLink {
-    // color: black;
   }
 }
 .m_recipe--buttons {

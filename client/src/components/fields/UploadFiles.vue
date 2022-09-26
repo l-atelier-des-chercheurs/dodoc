@@ -29,7 +29,7 @@
         <div class="_uploadFile--action">
           <button
             type="button"
-            class="buttonLink"
+            class="u-buttonLink"
             @click="sendThisFile(f)"
             :disabled="files_to_upload_meta[f.name].status !== 'failed'"
           >

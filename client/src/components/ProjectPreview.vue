@@ -1,8 +1,8 @@
 <template>
-  <div class="_project">
-    <strong>
+  <sl-card class="_project u-card">
+    <h2 slot="header" class="u-card--header">
       {{ project.title }}
-    </strong>
+    </h2>
     {{ project.description }}
     <br />
     <DateField :title="'date_created'" :date="project.date_created" />
@@ -17,7 +17,7 @@
     <!-- fetch_status = {{ fetch_status }} <br />
     fetch_error = {{ fetch_error }} <br />
     response = {{ response }} <br /> -->
-  </div>
+  </sl-card>
 </template>
 <script>
 export default {
@@ -84,15 +84,7 @@ export default {
 <style lang="scss" scoped>
 ._project {
   position: relative;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-  background-color: #fff;
-
-  border-radius: 6px;
-  border-bottom: 2px solid #b9b9b9;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-
-  transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
-    transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 }
 
 ._editBtn {
