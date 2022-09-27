@@ -34,17 +34,22 @@
 
         <hr />
 
-        <!-- <h1>
-          {{ project.title }}
-        </h1> -->
+        <TitleField
+          :field_name="'description'"
+          :label="$t('project_description')"
+          :content="project.description"
+          :path="`/projects/${project_slug}`"
+          :required="true"
+          :maxlength="240"
+        />
 
-        <TextField
+        <!-- <TextField
           :label="$t('project_description')"
           :help_text="$t('project_description_help_text')"
           :field_name="'description'"
           :content="project.description"
           :path_to_resource="`/projects/${project_slug}`"
-        />
+        /> -->
         <!-- <sl-rating label="Rating" readonly value="3"></sl-rating> -->
 
         <br />

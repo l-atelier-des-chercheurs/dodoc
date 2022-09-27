@@ -1,40 +1,67 @@
 <template>
   <span class="_titleField">
+    <label for="" v-if="label" class="u-label">
+      {{ label }}
+    </label>
+    <span
+      ref="content"
+      :contenteditable="edit_mode"
+      :key="content"
+      @input="current_character_count = $event.target.innerText.length"
+      >{{ new_content }}</span
+    >
     <template v-if="!edit_mode">
-      <span style="white-space: pre-wrap">{{ new_content }}</span>
       <sl-button
         variant="default"
         class="_editBtn"
         size="small"
         circle
-        @click="edit_mode = true"
+        @click="enableEditMode"
       >
         <sl-icon name="pencil-fill" :label="$t('edit')" />
       </sl-button>
     </template>
 
-    <template v-else>
-      <span class="_cont" :data-value="new_content">
+    <transition name="fade_fast" v-else>
+      <!-- <span class="_cont" :data-value="new_content">
         <textarea
           :placeholder="$t('add_text_here')"
           :required="required"
           v-model="new_content"
           rows="1"
         />
-      </span>
-      <SaveCancelButtons
-        :is_saving="is_saving"
-        :pill_size="''"
-        @save="updateText"
-        @cancel="cancel"
-      />
-    </template>
+      </span> -->
+      <div class="_footer">
+        <div v-if="maxlength">
+          <small
+            class="_maxlength"
+            :class="{
+              'is--invalid': current_character_count > maxlength,
+            }"
+            v-if="maxlength"
+          >
+            {{ current_character_count }} ≤ {{ maxlength }}
+          </small>
+        </div>
+        <SaveCancelButtons
+          :is_saving="is_saving"
+          :pill_size="''"
+          :allow_save="allow_save"
+          @save="updateText"
+          @cancel="cancel"
+        />
+      </div>
+    </transition>
   </span>
 </template>
 <script>
 export default {
   props: {
     field_name: String,
+    label: {
+      type: String,
+      default: "",
+    },
     content: {
       type: String,
       default: "",
@@ -55,6 +82,8 @@ export default {
       edit_mode: false,
       is_saving: false,
       new_content: this.content,
+
+      current_character_count: undefined,
     };
   },
   created() {},
@@ -65,8 +94,34 @@ export default {
       this.new_content = this.content;
     },
   },
-  computed: {},
+  computed: {
+    allow_save() {
+      if (this.maxlength && this.current_character_count > this.maxlength)
+        return false;
+      return true;
+    },
+  },
   methods: {
+    enableEditMode() {
+      this.edit_mode = true;
+      this.$nextTick(() => {
+        this.$nextTick(() => {
+          const field = this.$refs.content;
+
+          var range = document.createRange();
+          var sel = window.getSelection();
+          const l = field.childNodes[0].length;
+
+          range.setStart(field.childNodes[0], l);
+          range.collapse(true);
+
+          sel.removeAllRanges();
+          sel.addRange(range);
+
+          this.current_character_count = this.new_content.length;
+        });
+      });
+    },
     cancel() {
       this.edit_mode = false;
       this.is_saving = false;
@@ -75,6 +130,7 @@ export default {
     },
     async updateText() {
       this.is_saving = true;
+      this.new_content = this.$refs.content.innerText;
 
       try {
         const new_meta = {
@@ -104,9 +160,31 @@ export default {
 <style lang="scss" scoped>
 ._titleField {
   width: 100%;
+
+  span {
+    white-space: pre-wrap;
+  }
 }
+label {
+  display: block;
+}
+
 ._editBtn {
   margin-left: calc(var(--spacing) / 2);
+}
+
+._footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+._maxlength {
+  &.is--invalid {
+    color: var(--c-rouge);
+  }
 }
 
 ._cont {

@@ -1,15 +1,9 @@
 .u-label {
   font-variant: small-caps;
   text-transform: lowercase;
-  font-weight: 800;
+  font-weight: 600;
 
-  // font-size: var(--sl-font-size-small);
-  color: #666;
-
-  font-size: var(--sl-font-size-small);
   font-family: var(--sl-font-mono);
-  text-transform: uppercase;
-  font-weight: 500;
   letter-spacing: 0.05em;
   color: #666;
   margin-right: 0.81rem;
@@ -67,22 +61,39 @@ input[type="time"],
 input[type="url"],
 input[type="week"],
 select,
-textarea,
-.u-input {
+textarea {
   all: unset;
+}
 
+input[type="color"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="month"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="time"],
+input[type="url"],
+input[type="week"],
+select,
+textarea,
+.u-input,
+[contenteditable="true"] {
   display: block;
   width: 100%;
 
   font-family: var(--input-font-family);
-  font-size: var(--input-font-size);
+  font-size: inherit;
   font-weight: var(--input-font-weight);
   color: var(--input-color);
-  border-bottom: solid 3px var(--input-border-color);
+  border-bottom: solid var(--input-border-width) var(--input-border-color);
   border-radius: var(--input-border-radius);
   background-color: var(--c-gris);
   height: var(--input-height);
-  line-height: var(--input-height);
+  // line-height: var(--input-height);
   vertical-align: middle;
 
   padding-left: calc(var(--component-spacing) * 0.5);
@@ -101,8 +112,10 @@ textarea,
   }
 }
 
-textarea {
+textarea,
+[contenteditable="true"] {
   height: auto;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 
 img,

@@ -1,15 +1,15 @@
 <template>
   <sl-button-group>
-    <sl-button :size="pill_size" pill type="info" @click="$emit('cancel')">
+    <sl-button :size="pill_size" pill variant="info" @click="$emit('cancel')">
       <sl-icon name="x-circle" />
       {{ $t("cancel") }}
     </sl-button>
     <sl-button
       :size="pill_size"
       pill
-      type="submit"
+      variant="success"
       :loading="is_saving"
-      :disabled="!enable_save"
+      :disabled="!allow_save"
       @click="$emit('save')"
     >
       <sl-icon name="check-circle-fill" />
@@ -33,8 +33,8 @@ export default {
       type: String,
       default: "small",
     },
-    enable_save: {
-      type: [Boolean, String],
+    allow_save: {
+      type: Boolean,
       default: true,
     },
   },

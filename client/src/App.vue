@@ -71,8 +71,8 @@ export default {
   --input-color: var(--body-color);
   --input-border-color: var(--c-gris_fonce);
   --input-border-color-focus: var(--active-color);
-  --input-border-width: 1px;
-  --input-border-radius: var(--component-border-radius);
+  --input-border-width: 3px;
+  --input-border-radius: 3px;
   --input-bg-color: var(--color-white);
   --input-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
   --input-readonly-bg-color: var(--component-bg-color);
@@ -146,7 +146,7 @@ html {
   font-style: normal;
   font-weight: 400;
 
-  font-size: 90%;
+  font-size: 100%;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -198,9 +198,6 @@ strong {
   font-weight: 700;
 }
 
-[contenteditable] {
-  outline: 1px solid gray;
-}
 h1 {
   margin: 0;
 }
