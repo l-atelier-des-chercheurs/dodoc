@@ -8,6 +8,7 @@
           variant="text"
           pill
           @click="show_create_modal = true"
+          v-if="$api.is_logged_in"
         >
           <sl-icon slot="suffix" name="box-arrow-in-up-right"></sl-icon>
           créer
@@ -20,6 +21,16 @@
       @close="show_create_modal = false"
     />
 
+    <h2>Finalisés</h2>
+    <div class="_projects">
+      <ProjectPreview
+        v-for="project in sorted_projects"
+        :project="project"
+        :key="project.slug"
+      />
+    </div>
+    <hr />
+    <h2>En cours</h2>
     <div class="_projects">
       <ProjectPreview
         v-for="project in sorted_projects"

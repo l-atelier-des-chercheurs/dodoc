@@ -17,16 +17,21 @@
           @click="toggleFs"
         />
       </div>
+      <br />
+      <br />
       <div class="_projectInfos--meta">
-        <TextField
-          :help_text="$t('project_title_help_text')"
-          :field_name="'title'"
-          :content="project.title"
-          :path_to_resource="`/projects/${project_slug}`"
-          :required="true"
-          :maxlength="40"
-          :tag="'h1'"
-        />
+        <!-- :help_text="$t('project_title_help_text')" -->
+        <!-- :field_name="'title'" -->
+        <h1>
+          <TitleField
+            :content="project.title"
+            :path="`/projects/${project_slug}`"
+            :required="true"
+            :maxlength="40"
+          />
+        </h1>
+
+        <hr />
 
         <!-- <h1>
           {{ project.title }}
@@ -95,6 +100,30 @@
             label="Avatar 2 of 4"
           ></sl-avatar>
         </div>
+      </sl-card>
+
+      <sl-card class="u-card">
+        <div slot="header">
+          Mots-clés
+          <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
+        </div>
+
+        <div class="_label">mots-clés</div>
+        <sl-badge variant="primary" pill>Primary</sl-badge>
+        <sl-badge variant="success" pill>Success</sl-badge>
+        <sl-badge variant="neutral" pill>Neutral</sl-badge>
+
+        <button type="button" class="">ajouter</button>
+      </sl-card>
+      <sl-card class="u-card">
+        <div slot="header">
+          Statut
+          <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
+        </div>
+        <select>
+          <option>En cours</option>
+          <option>Finalisé</option>
+        </select>
       </sl-card>
 
       <sl-card class="u-card">

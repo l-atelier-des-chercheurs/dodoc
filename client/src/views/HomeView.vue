@@ -4,9 +4,12 @@
       <img :src="`${$root.publicPath}i_logo.svg`" class="" />
       <small>{{ $root.app_infos.version }}</small>
       <p>Plate-forme de documentation pour fablab à l'école.</p>
+      <h2>Plop</h2>
       <p>
         <router-link to="/projects">Afficher les projets</router-link>
       </p>
+      Vous pouvez aussi aller voir la plate-forme des labs de Canopé :
+      <a href="https://eduvelopers.org/">https://eduvelopers.org/</a>
     </div>
   </div>
 </template>

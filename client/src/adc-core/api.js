@@ -201,15 +201,6 @@ export default function () {
         const d = response.data;
         return d;
       },
-      async updateFolder({ folder_type, folder_slug, new_meta }) {
-        // const fetch_status = "pending";
-        // const fetch_error = null;
-        let path = ``;
-        path += `/${folder_type}`;
-        path += `/${folder_slug}`;
-        const response = await this.$axios.patch(path, new_meta);
-        return response.data;
-      },
       async deleteFolder({ folder_type, folder_slug }) {
         try {
           const response = await this.$axios.delete(
@@ -274,11 +265,7 @@ export default function () {
         return res.data.meta_filename;
       },
 
-      async updateFile({ folder_type, folder_slug, meta_slug, new_meta }) {
-        let path = ``;
-        path += `/${folder_type}`;
-        path += `/${folder_slug}`;
-        path += `/${meta_slug}`;
+      async updateMeta({ path, new_meta }) {
         const response = await this.$axios.patch(path, new_meta);
         return response.data;
       },

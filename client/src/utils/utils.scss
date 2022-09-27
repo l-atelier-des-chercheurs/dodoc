@@ -1,0 +1,127 @@
+.u-label {
+  font-variant: small-caps;
+  text-transform: lowercase;
+  font-weight: 800;
+
+  // font-size: var(--sl-font-size-small);
+  color: #666;
+
+  font-size: var(--sl-font-size-small);
+  font-family: var(--sl-font-mono);
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: #666;
+  margin-right: 0.81rem;
+}
+
+.u-title {
+  margin: 0;
+  font-size: var(--sl-font-size-x-large);
+  letter-spacing: 0.03em;
+  word-break: break-word;
+}
+
+.u-card {
+  background-color: #fff;
+  border-radius: 6px;
+  // border-bottom: 2px solid #b9b9b9;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
+    transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &::part(base) {
+    border: none;
+    box-shadow: none;
+  }
+
+  &::part(header) {
+    margin: 0;
+    padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  }
+  &::part(body) {
+    padding: calc(var(--spacing) / 1);
+  }
+}
+
+.u-buttonLink {
+  font-variant: small-caps;
+  font-weight: 700;
+}
+
+.u-bigbutton {
+}
+
+input[type="color"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="month"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="time"],
+input[type="url"],
+input[type="week"],
+select,
+textarea .u-input {
+  all: unset;
+
+  display: block;
+  width: 100%;
+
+  font-family: var(--input-font-family);
+  font-size: var(--input-font-size);
+  font-weight: var(--input-font-weight);
+  color: var(--input-color);
+  border-bottom: solid 3px var(--input-border-color);
+  border-radius: var(--input-border-radius);
+  background-color: var(--c-gris);
+  height: var(--input-height);
+  line-height: var(--input-height);
+  vertical-align: middle;
+
+  padding-left: calc(var(--component-spacing) * 0.5);
+  padding-right: calc(var(--component-spacing) * 0.5);
+  margin: 0;
+
+  transition: all 0.25s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--input-border-color-focus);
+  }
+
+  &.bg-blanc {
+    background-color: white;
+  }
+}
+
+img,
+video,
+audio,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+input:required {
+  background-size: 16px 16px;
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-image: radial-gradient(var(--c-rouge) 18%, transparent 25%);
+
+  transition: background-size 0.2s;
+
+  &:focus {
+    background-size: 20px 20px;
+  }
+}

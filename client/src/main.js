@@ -19,7 +19,7 @@ import ShoelaceModelDirective from "@shoelace-style/vue-sl-model";
 Vue.config.ignoredElements = [/^sl-/];
 Vue.use(ShoelaceModelDirective);
 
-import TitleField from "@/components/fields/TitleField.vue";
+import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
 
 import TextField from "@/adc-core/fields/TextField.vue";

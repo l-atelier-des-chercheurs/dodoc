@@ -32,6 +32,8 @@ export default {
 </script>
 <style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
 <style lang="scss">
+@import "@/utils/utils.scss";
+
 :root {
   --spacing: var(--sl-spacing-medium);
 
@@ -43,9 +45,12 @@ export default {
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: #333;
   --c-gris: #eff2f3;
+  --c-gris_fonce: hsl(195, 14%, 75%);
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
-  --active-color: var(--c-vert);
+
+  --active-color: var(--c-orange);
+
   --c-bodybg: #f4f3ef;
 
   --scrollbar-height: 1px;
@@ -54,6 +59,32 @@ export default {
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
   --border-radius: 10px;
+
+  --input-font-family: inherit;
+  --input-font-size: var(--font-size);
+  --input-font-size-small: 0.8rem;
+  --input-font-size-big: 1.2rem;
+  --input-font-weight: inherit;
+  --input-height: 3rem;
+  --input-height-big: 2.75rem;
+  --input-height-small: 1.5rem;
+  --input-color: var(--body-color);
+  --input-border-color: var(--c-gris_fonce);
+  --input-border-color-focus: var(--active-color);
+  --input-border-width: 1px;
+  --input-border-radius: var(--component-border-radius);
+  --input-bg-color: var(--color-white);
+  --input-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
+  --input-readonly-bg-color: var(--component-bg-color);
+  --input-range-track-color: var(--component-bg-color);
+  --input-range-track-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
+  --input-range-thumb-color: var(--color-primary);
+  --input-range-thumb-height: 2rem;
+
+  --input-invalid-color: var(--state-danger);
+  --input-invalid-border-color: var(--state-danger);
+  --input-valid-color: var(--state-success);
+  --input-valid-border-color: var(--state-success);
 
   --color-Capturer: var(--c-rouge);
   --color-Collecter: var(--c-orange);
@@ -87,10 +118,14 @@ export default {
 
   --sl-input-color: black;
   --sl-input-height-small: 1.5rem;
+  --sl-font-size-x-large: 1.66rem;
 }
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html,
@@ -111,7 +146,7 @@ html {
   font-style: normal;
   font-weight: 400;
 
-  font-size: 95%;
+  font-size: 90%;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -148,15 +183,6 @@ hr {
   border-bottom: 0 solid #000;
 }
 
-.u-label {
-  font-variant: small-caps;
-  text-transform: lowercase;
-  font-weight: 800;
-
-  // font-size: var(--sl-font-size-small);
-  color: #666;
-}
-
 ._metaField {
   display: flex;
   // flex-flow: row wrap;
@@ -165,11 +191,6 @@ hr {
 
 body {
   margin: 0;
-}
-
-.u-buttonLink {
-  font-variant: small-caps;
-  font-weight: 700;
 }
 
 b,
@@ -193,30 +214,6 @@ h2 {
   }
 }
 
-sl-card,
-.u-card {
-  background-color: #fff;
-  border-radius: 6px;
-  // border-bottom: 2px solid #b9b9b9;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-
-  transition: box-shadow 0.4s cubic-bezier(0.19, 1, 0.22, 1),
-    transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &::part(base) {
-    border: none;
-    box-shadow: none;
-  }
-
-  &::part(header) {
-    margin: 0;
-    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-  }
-  &::part(body) {
-    padding: calc(var(--spacing) / 1);
-  }
-}
-
 ._boldBtn {
   font-weight: 700;
   font-variant: small-caps;
@@ -226,7 +223,6 @@ img {
   height: auto;
 }
 </style>
-
 <style lang="scss">
 .splitpanes__pane {
   // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);

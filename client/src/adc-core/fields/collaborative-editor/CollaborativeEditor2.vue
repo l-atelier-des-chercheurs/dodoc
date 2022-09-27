@@ -347,10 +347,9 @@ export default {
       };
 
       try {
-        await this.$api.updateFile({
-          folder_type: this.folder_type,
-          folder_slug: this.folder_slug,
-          meta_slug: this.file.slug,
+        let path = `/${this.folder_type}/${this.folder_slug}/${this.file.slug}`;
+        await this.$api.updateMeta({
+          path,
           new_meta,
         });
         this.is_loading_or_saving = false;

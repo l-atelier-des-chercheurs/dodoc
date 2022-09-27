@@ -1,6 +1,6 @@
 <template>
   <sl-card class="_project u-card">
-    <h2 slot="header" class="u-card--header">
+    <h2 slot="header" class="u-card--header u-title">
       {{ project.title }}
     </h2>
     {{ project.description }}

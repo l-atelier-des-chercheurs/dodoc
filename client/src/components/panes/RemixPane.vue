@@ -85,34 +85,34 @@ export default {
 </svg>
           `,
             },
-            {
-              key: "story",
-              summary: "story_summary",
-              show_instructions: false,
-              instructions: "story_instructions",
+            //             {
+            //               key: "story",
+            //               summary: "story_summary",
+            //               show_instructions: false,
+            //               instructions: "story_instructions",
 
-              icon: `
-<!-- Generator: Adobe Illustrator 25.2.1, SVG Export Plug-In  -->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="201px"
-	 height="201px" viewBox="0 0 201 201" style="overflow:visible;enable-background:new 0 0 201 201;" xml:space="preserve">
-	<g id="Calque_6_2_">
-		<g>
-			<rect x="35.7" y="8.8" class="st1" width="129.6" height="183.4" style="fill: #fff;" />
-		</g>
-	</g>
-	<rect x="64.9" y="46.8" width="71.2" height="53.6" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
-	<rect x="64.9" y="145.2" width="71.2" height="39.8" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
-	<rect x="65" y="108" width="71.1" height="5" style="fill:#353535;" />
-	<rect x="65" y="124.5" class="st3" width="71.1" height="5"  style="fill:#353535;"/>
-	<rect x="65" y="116.2" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-	<rect x="65" y="132.7" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-	<rect x="64.9" y="25.9" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-	<rect x="64.9" y="17.6" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-	<rect x="64.9" y="34.1" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+            //               icon: `
+            // <!-- Generator: Adobe Illustrator 25.2.1, SVG Export Plug-In  -->
+            // <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="201px"
+            // 	 height="201px" viewBox="0 0 201 201" style="overflow:visible;enable-background:new 0 0 201 201;" xml:space="preserve">
+            // 	<g id="Calque_6_2_">
+            // 		<g>
+            // 			<rect x="35.7" y="8.8" class="st1" width="129.6" height="183.4" style="fill: #fff;" />
+            // 		</g>
+            // 	</g>
+            // 	<rect x="64.9" y="46.8" width="71.2" height="53.6" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
+            // 	<rect x="64.9" y="145.2" width="71.2" height="39.8" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
+            // 	<rect x="65" y="108" width="71.1" height="5" style="fill:#353535;" />
+            // 	<rect x="65" y="124.5" class="st3" width="71.1" height="5"  style="fill:#353535;"/>
+            // 	<rect x="65" y="116.2" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+            // 	<rect x="65" y="132.7" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+            // 	<rect x="64.9" y="25.9" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+            // 	<rect x="64.9" y="17.6" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+            // 	<rect x="64.9" y="34.1" class="st3" width="71.1" height="5" style="fill:#353535;"/>
 
-</svg>
-          `,
-            },
+            // </svg>
+            //           `,
+            //             },
             //             {
             //               key: "drawing_pad",
             //               summary: "drawing_pad_summary",

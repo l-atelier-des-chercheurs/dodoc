@@ -1,6 +1,24 @@
 <template>
   <div class="_journal" ref="journal">
     <div class="_journal--items">
+      <div class="_createForm">
+        <sl-button
+          variant="text"
+          @click="show_create_entry = !show_create_entry"
+        >
+          Créer une entrée
+        </sl-button>
+        <form
+          v-if="show_create_entry"
+          class="input-validation-required"
+          @submit.prevent="createText"
+        >
+          <sl-input name="title" label="Titre" required />
+          <br />
+          <sl-button type="submit" variant="primary">Créer</sl-button>
+        </form>
+      </div>
+
       <div
         v-for="file of files"
         :key="file.slug"
@@ -26,24 +44,6 @@
         />
 
         <!-- <sl-icon name="arrow-right" style="font-size: 1.4em" /> -->
-      </div>
-
-      <div class="_createForm">
-        <sl-button
-          variant="text"
-          @click="show_create_entry = !show_create_entry"
-        >
-          Créer une entrée
-        </sl-button>
-        <form
-          v-if="show_create_entry"
-          class="input-validation-required"
-          @submit.prevent="createText"
-        >
-          <sl-input name="title" label="Titre" required />
-          <br />
-          <sl-button type="submit" variant="primary">Créer</sl-button>
-        </form>
       </div>
     </div>
 

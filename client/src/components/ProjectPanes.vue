@@ -3,7 +3,7 @@
     <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
       <template v-if="projectpanes.length === 0">
         <pane>
-          <span class="_msg">Choisissez un panneau ci-dessus</span>
+          <span class="_msg">Choisissez un panneau ci-dessus !</span>
         </pane>
       </template>
       <pane
