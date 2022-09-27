@@ -67,7 +67,8 @@ input[type="time"],
 input[type="url"],
 input[type="week"],
 select,
-textarea .u-input {
+textarea,
+.u-input {
   all: unset;
 
   display: block;
@@ -100,6 +101,10 @@ textarea .u-input {
   }
 }
 
+textarea {
+  height: auto;
+}
+
 img,
 video,
 audio,
@@ -113,7 +118,8 @@ svg {
   user-select: none;
 }
 
-input:required {
+input:required,
+textarea:required {
   background-size: 16px 16px;
   background-position: top right;
   background-repeat: no-repeat;

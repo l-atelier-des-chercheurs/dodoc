@@ -67,6 +67,8 @@ export default function () {
         caption: "légende",
         date_created: "création",
         date_modified: "dernière modification",
+        cancel: "annuler",
+        save: "enregistrer",
       },
       en: {
         hello: "hello world",
@@ -74,6 +76,8 @@ export default function () {
         caption: "caption",
         date_created: "created",
         date_modified: "last edited",
+        cancel: "cancel",
+        save: "save",
       },
     }, // set locale messages
   });

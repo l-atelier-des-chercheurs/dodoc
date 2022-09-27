@@ -10,18 +10,20 @@
       type="submit"
       :loading="is_saving"
       :disabled="!enable_save"
-      ref="save"
+      @click="$emit('save')"
     >
       <sl-icon name="check-circle-fill" />
-      <template v-if="save_text !== undefined">{{ save_text }}</template>
-      <template v-else>{{ $t("save") }}</template>
+      {{ $t(save_text) }}
     </sl-button>
   </sl-button-group>
 </template>
 <script>
 export default {
   props: {
-    save_text: String,
+    save_text: {
+      type: String,
+      default: "save",
+    },
     is_saving: Boolean,
     autofocus_save: {
       type: Boolean,

@@ -17,13 +17,14 @@
           @click="toggleFs"
         />
       </div>
-      <br />
+
       <br />
       <div class="_projectInfos--meta">
         <!-- :help_text="$t('project_title_help_text')" -->
         <!-- :field_name="'title'" -->
         <h1>
           <TitleField
+            :field_name="'title'"
             :content="project.title"
             :path="`/projects/${project_slug}`"
             :required="true"

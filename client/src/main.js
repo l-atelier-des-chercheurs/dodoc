@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 
 Vue.config.productionTip = false;
-const debug_mode = false;
+const debug_mode = true;
 
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
