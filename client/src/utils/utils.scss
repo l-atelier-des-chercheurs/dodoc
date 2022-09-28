@@ -120,6 +120,12 @@ textarea,
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 
+input.u-input-small {
+  font-size: var(--input-font-size-small);
+  height: var(--input-height-small);
+  line-height: var(--input-height-small);
+}
+
 .is--allowEditable {
 }
 

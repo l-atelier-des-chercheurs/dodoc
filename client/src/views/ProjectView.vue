@@ -22,17 +22,16 @@
       <div class="_projectInfos--meta">
         <!-- :help_text="$t('project_title_help_text')" -->
         <!-- :field_name="'title'" -->
-        <h1>
-          <TitleField
-            :field_name="'title'"
-            :field_type="'string'"
-            :label="$t('title')"
-            :content="project.title"
-            :path="`/projects/${project_slug}`"
-            :required="true"
-            :maxlength="40"
-          />
-        </h1>
+        <TitleField
+          :field_name="'title'"
+          :field_type="'string'"
+          :label="$t('title')"
+          :content="project.title"
+          :path="`/projects/${project_slug}`"
+          :required="true"
+          :maxlength="40"
+          :tag="'h1'"
+        />
 
         <br />
 
@@ -47,9 +46,8 @@
 
         <br />
 
-        <TitleField
+        <TagsField
           :field_name="'keywords'"
-          :field_type="'array'"
           :label="$t('keywords')"
           :content="project.keywords"
           :path="`/projects/${project_slug}`"

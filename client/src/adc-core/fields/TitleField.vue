@@ -4,52 +4,55 @@
       <label for="" class="u-label">{{ label }}</label>
     </div>
 
-    <template v-if="!can_be_edited">
-      <span v-text="new_content" />
-    </template>
-
-    <template v-else>
-      <span
-        ref="content"
-        :contenteditable="edit_mode"
-        :required="edit_mode && required"
-        :key="edit_mode + content"
-        @input="current_character_count = $event.target.innerText.length"
-        v-text="new_content"
-      />
-
-      <template v-if="!edit_mode">
-        <sl-button
-          variant="neutral"
-          class="_editBtn"
-          size="small"
-          circle
-          @click="enableEditMode"
-        >
-          <sl-icon name="pencil-fill" :label="$t('edit')" />
-        </sl-button>
+    <component :is="tag" class="_container">
+      <template v-if="!can_be_edited">
+        <span class="_content" v-text="new_content" />
       </template>
-      <transition name="fade_fast" v-else>
-        <div class="_footer">
-          <div
-            v-if="maxlength"
-            class="_maxlength"
-            :class="{
-              'is--invalid': !allow_save,
-            }"
+
+      <template v-else>
+        <span
+          ref="content"
+          class="_content"
+          :contenteditable="edit_mode"
+          :required="edit_mode && required"
+          :key="edit_mode + content"
+          @input="current_character_count = $event.target.innerText.length"
+          v-text="new_content"
+        />
+
+        <template v-if="!edit_mode">
+          <sl-button
+            variant="neutral"
+            class="_editBtn"
+            size="small"
+            circle
+            @click="enableEditMode"
           >
-            {{ current_character_count }} ≤ {{ maxlength }}
+            <sl-icon name="pencil-fill" :label="$t('edit')" />
+          </sl-button>
+        </template>
+        <transition name="fade_fast" v-else>
+          <div class="_footer">
+            <div
+              v-if="maxlength"
+              class="_maxlength"
+              :class="{
+                'is--invalid': !allow_save,
+              }"
+            >
+              {{ current_character_count }} ≤ {{ maxlength }}
+            </div>
+            <SaveCancelButtons
+              class="_scb"
+              :is_saving="is_saving"
+              :allow_save="allow_save"
+              @save="updateText"
+              @cancel="cancel"
+            />
           </div>
-          <SaveCancelButtons
-            class="_scb"
-            :is_saving="is_saving"
-            :allow_save="allow_save"
-            @save="updateText"
-            @cancel="cancel"
-          />
-        </div>
-      </transition>
-    </template>
+        </transition>
+      </template>
+    </component>
   </span>
 </template>
 <script>
@@ -65,6 +68,10 @@ export default {
       default: "",
     },
     path: String,
+    tag: {
+      type: String,
+      default: "p",
+    },
     required: {
       type: Boolean,
       default: false,
@@ -171,7 +178,7 @@ export default {
 ._titleField {
   width: 100%;
 
-  span {
+  ._content {
     white-space: pre-wrap;
   }
 }
@@ -202,6 +209,10 @@ export default {
   &.is--invalid {
     color: var(--c-rouge);
   }
+}
+
+._container {
+  margin: 0;
 }
 
 ._cont {
