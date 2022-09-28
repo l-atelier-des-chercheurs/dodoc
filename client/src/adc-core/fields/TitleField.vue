@@ -6,7 +6,8 @@
     <span
       ref="content"
       :contenteditable="edit_mode"
-      :key="content"
+      :required="edit_mode && required"
+      :key="edit_mode + content"
       @input="current_character_count = $event.target.innerText.length"
       >{{ new_content }}</span
     >
@@ -36,7 +37,7 @@
           <small
             class="_maxlength"
             :class="{
-              'is--invalid': current_character_count > maxlength,
+              'is--invalid': !allow_save,
             }"
             v-if="maxlength"
           >
@@ -98,6 +99,7 @@ export default {
     allow_save() {
       if (this.maxlength && this.current_character_count > this.maxlength)
         return false;
+      if (this.required && this.current_character_count === 0) return false;
       return true;
     },
   },
@@ -126,6 +128,14 @@ export default {
       this.edit_mode = false;
       this.is_saving = false;
       this.new_content = this.content;
+
+      this.$nextTick(() => {
+        // this.content = "";
+        // this.$nextTick(() => {
+        // this.content = this.new_content;
+        // });
+      });
+
       // todo interrupt updateMeta
     },
     async updateText() {

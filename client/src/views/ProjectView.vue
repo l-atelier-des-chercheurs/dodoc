@@ -39,7 +39,6 @@
           :label="$t('project_description')"
           :content="project.description"
           :path="`/projects/${project_slug}`"
-          :required="true"
           :maxlength="240"
         />
 
