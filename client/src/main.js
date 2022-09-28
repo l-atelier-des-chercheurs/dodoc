@@ -22,6 +22,9 @@ Vue.use(ShoelaceModelDirective);
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
 
+import KeywordsField from "@/adc-core/fields/KeywordsField.vue";
+Vue.component("KeywordsField", KeywordsField);
+
 import TextField from "@/adc-core/fields/TextField.vue";
 Vue.component("TextField", TextField);
 

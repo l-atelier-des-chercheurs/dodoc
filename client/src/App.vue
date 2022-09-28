@@ -3,7 +3,6 @@
   <div id="app" class="">
     <TopBar />
     <AdminPanel v-if="false" />
-
     <div class="">
       <router-view />
     </div>
@@ -49,8 +48,6 @@ export default {
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
-  --active-color: var(--c-orange);
-
   --c-bodybg: #f4f3ef;
 
   --scrollbar-height: 1px;
@@ -72,7 +69,7 @@ export default {
   --input-border-color: var(--c-gris_fonce);
   --input-border-color-focus: var(--active-color);
   --input-border-width: 3px;
-  --input-border-radius: 3px;
+  --input-border-radius: 6px;
   --input-bg-color: var(--color-white);
   --input-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
   --input-readonly-bg-color: var(--component-bg-color);
@@ -92,6 +89,7 @@ export default {
   --color-Documenter: var(--c-bleumarine);
 
   --indicator-color: var(--c-vert) !important;
+  --active-color: var(--sl-color-primary-400);
 
   --sl-font-sans: "Fira Sans";
   --sl-font-serif: "IBM Plex Serif";
@@ -105,7 +103,14 @@ export default {
   }
   @each $size in $sizes {
     $i: index($sizes, $size);
-    --sl-color-primary-#{$size}: hsl(221, 63%, #{98% - $i * 5});
+    // bleu
+    --sl-color-primary-#{$size}: hsl(211, 93%, #{98% - $i * 5});
+    // orange
+    // --sl-color-primary-#{$size}: hsl(41, 100%, #{98% - $i * 5});
+    // rouge
+    // --sl-color-primary-#{$size}: hsl(353, 100%, #{98% - $i * 5});
+    // bleuvert
+    // --sl-color-primary-#{$size}: hsl(174, 50%, #{98% - $i * 5});
   }
   @each $size in $sizes {
     $i: index($sizes, $size);

@@ -69,6 +69,8 @@ export default function () {
         date_modified: "dernière modification",
         cancel: "annuler",
         save: "enregistrer",
+        description: "description",
+        keywords: "mots-clés",
       },
       en: {
         hello: "hello world",
@@ -78,6 +80,8 @@ export default function () {
         date_modified: "last edited",
         cancel: "cancel",
         save: "save",
+        description: "description",
+        keywords: "keywords",
       },
     }, // set locale messages
   });

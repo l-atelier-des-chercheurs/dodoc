@@ -25,6 +25,8 @@
         <h1>
           <TitleField
             :field_name="'title'"
+            :field_type="'string'"
+            :label="$t('title')"
             :content="project.title"
             :path="`/projects/${project_slug}`"
             :required="true"
@@ -32,16 +34,26 @@
           />
         </h1>
 
-        <hr />
+        <br />
 
         <TitleField
           :field_name="'description'"
-          :label="$t('project_description')"
+          :field_type="'string'"
+          :label="$t('description')"
           :content="project.description"
           :path="`/projects/${project_slug}`"
           :maxlength="240"
         />
 
+        <br />
+
+        <TitleField
+          :field_name="'keywords'"
+          :field_type="'array'"
+          :label="$t('keywords')"
+          :content="project.keywords"
+          :path="`/projects/${project_slug}`"
+        />
         <!-- <TextField
           :label="$t('project_description')"
           :help_text="$t('project_description_help_text')"

@@ -1,58 +1,55 @@
 <template>
   <span class="_titleField">
-    <label for="" v-if="label" class="u-label">
-      {{ label }}
-    </label>
-    <span
-      ref="content"
-      :contenteditable="edit_mode"
-      :required="edit_mode && required"
-      :key="edit_mode + content"
-      @input="current_character_count = $event.target.innerText.length"
-      >{{ new_content }}</span
-    >
-    <template v-if="!edit_mode">
-      <sl-button
-        variant="default"
-        class="_editBtn"
-        size="small"
-        circle
-        @click="enableEditMode"
-      >
-        <sl-icon name="pencil-fill" :label="$t('edit')" />
-      </sl-button>
+    <div class="_topLabel" v-if="label">
+      <label for="" class="u-label">{{ label }}</label>
+    </div>
+
+    <template v-if="!can_be_edited">
+      <span v-text="new_content" />
     </template>
 
-    <transition name="fade_fast" v-else>
-      <!-- <span class="_cont" :data-value="new_content">
-        <textarea
-          :placeholder="$t('add_text_here')"
-          :required="required"
-          v-model="new_content"
-          rows="1"
-        />
-      </span> -->
-      <div class="_footer">
-        <div v-if="maxlength">
-          <small
+    <template v-else>
+      <span
+        ref="content"
+        :contenteditable="edit_mode"
+        :required="edit_mode && required"
+        :key="edit_mode + content"
+        @input="current_character_count = $event.target.innerText.length"
+        v-text="new_content"
+      />
+
+      <template v-if="!edit_mode">
+        <sl-button
+          variant="neutral"
+          class="_editBtn"
+          size="small"
+          circle
+          @click="enableEditMode"
+        >
+          <sl-icon name="pencil-fill" :label="$t('edit')" />
+        </sl-button>
+      </template>
+      <transition name="fade_fast" v-else>
+        <div class="_footer">
+          <div
+            v-if="maxlength"
             class="_maxlength"
             :class="{
               'is--invalid': !allow_save,
             }"
-            v-if="maxlength"
           >
             {{ current_character_count }} ≤ {{ maxlength }}
-          </small>
+          </div>
+          <SaveCancelButtons
+            class="_scb"
+            :is_saving="is_saving"
+            :allow_save="allow_save"
+            @save="updateText"
+            @cancel="cancel"
+          />
         </div>
-        <SaveCancelButtons
-          :is_saving="is_saving"
-          :pill_size="''"
-          :allow_save="allow_save"
-          @save="updateText"
-          @cancel="cancel"
-        />
-      </div>
-    </transition>
+      </transition>
+    </template>
   </span>
 </template>
 <script>
@@ -96,6 +93,9 @@ export default {
     },
   },
   computed: {
+    can_be_edited() {
+      return this.$api.is_logged_in;
+    },
     allow_save() {
       if (this.maxlength && this.current_character_count > this.maxlength)
         return false;
@@ -175,7 +175,7 @@ export default {
     white-space: pre-wrap;
   }
 }
-label {
+._topLabel {
   display: block;
 }
 
@@ -186,12 +186,19 @@ label {
 ._footer {
   display: flex;
   justify-content: space-between;
+  flex-flow: row wrap;
   font-size: 1rem;
   font-weight: 400;
   margin: 0;
+  padding: calc(var(--spacing) / 4) 0;
+  gap: calc(var(--spacing) / 4);
 }
 
 ._maxlength {
+  flex: 0 0 auto;
+  font-weight: 500;
+  font-size: var(--sl-font-size-x-small);
+
   &.is--invalid {
     color: var(--c-rouge);
   }
@@ -218,5 +225,8 @@ label {
     visibility: hidden;
     white-space: pre-wrap;
   }
+}
+
+._scb {
 }
 </style>

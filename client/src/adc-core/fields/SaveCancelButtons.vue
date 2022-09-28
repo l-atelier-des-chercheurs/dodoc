@@ -1,12 +1,11 @@
 <template>
-  <sl-button-group>
-    <sl-button :size="pill_size" pill variant="info" @click="$emit('cancel')">
-      <sl-icon name="x-circle" />
+  <div class="_saveCancelBtns">
+    <sl-button :size="pill_size" variant="info" @click="$emit('cancel')">
+      <sl-icon name="x-circle-fill" />
       {{ $t("cancel") }}
     </sl-button>
     <sl-button
       :size="pill_size"
-      pill
       variant="success"
       :loading="is_saving"
       :disabled="!allow_save"
@@ -15,7 +14,7 @@
       <sl-icon name="check-circle-fill" />
       {{ $t(save_text) }}
     </sl-button>
-  </sl-button-group>
+  </div>
 </template>
 <script>
 export default {
@@ -53,7 +52,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-sl-button-group::part(base) {
-  // text-align: right;
+._saveCancelBtns {
+  display: flex;
+  gap: calc(var(--spacing) / 4);
 }
 </style>
