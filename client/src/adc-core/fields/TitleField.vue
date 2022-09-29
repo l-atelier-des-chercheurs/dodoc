@@ -35,7 +35,7 @@
           <div class="_footer">
             <div
               v-if="maxlength"
-              class="_maxlength"
+              class="maxlength"
               :class="{
                 'is--invalid': !allow_save,
               }"
@@ -199,16 +199,6 @@ export default {
   margin: 0;
   padding: calc(var(--spacing) / 4) 0;
   gap: calc(var(--spacing) / 4);
-}
-
-._maxlength {
-  flex: 0 0 auto;
-  font-weight: 500;
-  font-size: var(--sl-font-size-x-small);
-
-  &.is--invalid {
-    color: var(--c-rouge);
-  }
 }
 
 ._container {

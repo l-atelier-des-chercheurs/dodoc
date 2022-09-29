@@ -71,6 +71,7 @@ export default function () {
         save: "enregistrer",
         description: "description",
         keywords: "mots-clés",
+        add: "ajouter",
       },
       en: {
         hello: "hello world",

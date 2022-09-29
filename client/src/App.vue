@@ -58,13 +58,15 @@ export default {
   --border-radius: 10px;
 
   --input-font-family: inherit;
-  --input-font-size: var(--font-size);
-  --input-font-size-small: 0.8rem;
-  --input-font-size-big: 1.2rem;
+  --input-font-size: 1em;
+  --input-font-size-small: 0.8em;
+  --input-font-size-big: 1.2em;
   --input-font-weight: inherit;
-  --input-height: 3rem;
-  --input-height-big: 2.75rem;
-  --input-height-small: 1.5rem;
+  --input-height: 2.5em;
+  // --input-height-big: 3em;
+  // --input-height-small: 1.5em;
+  --sl-input-height-small: 1.5rem;
+
   --input-color: var(--body-color);
   --input-border-color: var(--c-gris_fonce);
   --input-border-color-focus: var(--active-color);
@@ -122,7 +124,6 @@ export default {
   }
 
   --sl-input-color: black;
-  --sl-input-height-small: 1.5rem;
   --sl-font-size-x-large: 1.66rem;
 }
 

@@ -4,13 +4,14 @@
       <label for="" class="u-label">{{ label }}</label>
     </div>
 
-    <span class="_tagsList">
+    <span class="_tagsList" v-if="new_tags.length > 0">
       <sl-tag
         v-for="tag in new_tags"
         :key="tag"
+        variant="success"
         size="small"
         :removable="edit_mode"
-        @click="removeTag(tag)"
+        @click="edit_mode ? removeTag(tag) : ''"
       >
         {{ tag }}
       </sl-tag>
@@ -20,7 +21,7 @@
       <template v-if="!edit_mode">
         <sl-button
           variant="neutral"
-          class="_editBtn"
+          class="_inlineBtns"
           size="small"
           circle
           @click="enableEditMode"
@@ -30,22 +31,41 @@
       </template>
 
       <template v-else>
-        <!-- // options : append tag, remove existing -->
-        <form class="" @submit.prevent="newTag">
-          <input
-            type="text"
-            class="u-input-small"
-            required
-            v-model="new_tag_name"
-          />
-          <input type="submit" :value="$t('submit')" />
-        </form>
+        <!-- create new tag -->
 
-        <div class="_footer">
+        <sl-button
+          variant="primary"
+          class="_inlineBtns"
+          size="small"
+          pill
+          v-if="create_new_tag === false"
+          @click="create_new_tag = true"
+        >
+          <sl-icon name="plus-square" />
+          {{ $t("add") }}
+        </sl-button>
+
+        <template v-else>
+          <TextInput
+            v-model="new_tag_name"
+            :maxlength="40"
+            :required="true"
+            @toggleValidity="($event) => (allow_save_newkeyword = $event)"
+          />
           <SaveCancelButtons
             class="_scb"
             :is_saving="is_saving"
-            :allow_save="allow_save"
+            :allow_save="allow_save_newkeyword"
+            :save_text="'valider'"
+            @save="newTag"
+            @cancel="cancel"
+          />
+        </template>
+
+        <div class="_footer" v-if="create_new_tag === false">
+          <SaveCancelButtons
+            class="_scb"
+            :is_saving="is_saving"
             @save="updateText"
             @cancel="cancel"
           />
@@ -76,8 +96,10 @@ export default {
 
       new_tags: this.content,
       new_tag_name: "",
+      create_new_tag: false,
 
-      current_character_count: undefined,
+      maxlength: 30,
+      allow_save_newkeyword: false,
     };
   },
   created() {},
@@ -92,12 +114,6 @@ export default {
     can_be_edited() {
       return this.$api.is_logged_in;
     },
-    allow_save() {
-      if (this.maxlength && this.current_character_count > this.maxlength)
-        return false;
-      if (this.required && this.current_character_count === 0) return false;
-      return true;
-    },
   },
   methods: {
     enableEditMode() {
@@ -106,6 +122,11 @@ export default {
     newTag() {
       this.new_tags.push(this.new_tag_name);
       this.new_tag_name = "";
+      this.create_new_tag = false;
+    },
+    cancelNewTag() {
+      this.new_tag_name = "";
+      this.create_new_tag = false;
     },
     removeTag(tag) {
       this.new_tags = this.new_tags.filter((t) => t !== tag);
@@ -153,14 +174,15 @@ export default {
   display: inline-flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 4);
+  margin-right: calc(var(--spacing) / 4);
 }
 
 ._topLabel {
   display: block;
 }
 
-._editBtn {
-  margin-left: calc(var(--spacing) / 2);
+._inlineBtns {
+  // margin-left: calc(var(--spacing) / 2);
 }
 
 ._footer {
@@ -172,5 +194,9 @@ export default {
   margin: 0;
   padding: calc(var(--spacing) / 4) 0;
   gap: calc(var(--spacing) / 4);
+}
+
+._addNewTagForm {
+  padding: calc(var(--spacing) / 4) 0;
 }
 </style>

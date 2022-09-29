@@ -64,6 +64,7 @@ input[type="week"],
 select,
 textarea {
   all: unset;
+  box-sizing: border-box;
 }
 
 input[type="color"],
@@ -87,7 +88,7 @@ textarea,
   width: 100%;
 
   font-family: var(--input-font-family);
-  font-size: inherit;
+  font-size: var(--input-font-size);
   font-weight: var(--input-font-weight);
   color: var(--input-color);
   border: solid var(--input-border-width) var(--input-border-color);
@@ -97,8 +98,8 @@ textarea,
   // line-height: var(--input-height);
   vertical-align: middle;
 
-  padding-left: calc(var(--component-spacing) * 0.5);
-  padding-right: calc(var(--component-spacing) * 0.5);
+  padding-left: calc(var(--spacing) * 0.5);
+  padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
   transition: all 0.25s;
@@ -123,7 +124,6 @@ textarea,
 input.u-input-small {
   font-size: var(--input-font-size-small);
   height: var(--input-height-small);
-  line-height: var(--input-height-small);
 }
 
 .is--allowEditable {
@@ -163,6 +163,6 @@ select {
   background-size: 0.75rem;
   padding-top: 0;
   padding-bottom: 0;
-  padding-right: calc(var(--component-spacing) * 0.5 + 1rem);
+  padding-right: calc(var(--spacing) * 0.5 + 1rem);
   min-width: 0px;
 }

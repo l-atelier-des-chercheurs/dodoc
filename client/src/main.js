@@ -25,6 +25,9 @@ Vue.component("TitleField", TitleField);
 import TagsField from "@/adc-core/fields/TagsField.vue";
 Vue.component("TagsField", TagsField);
 
+import TextInput from "@/adc-core/fields/TextInput.vue";
+Vue.component("TextInput", TextInput);
+
 import TextField from "@/adc-core/fields/TextField.vue";
 Vue.component("TextField", TextField);
 
