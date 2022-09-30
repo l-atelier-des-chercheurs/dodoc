@@ -303,7 +303,7 @@
         "width": 1200,
         "height": 1200,
         "thumbs": {
-          "resolutions": [50, 320, 640]
+          "resolutions": [50, 320, 640, 1200]
         }
       },
       "fields": {

@@ -83,8 +83,6 @@ export default {
       // todo interrupt path
     },
     async updateText() {
-      debugger;
-
       this.is_saving = true;
       this.fetch_error = null;
 

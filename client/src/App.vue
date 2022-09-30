@@ -39,7 +39,10 @@ export default {
   --c-bleumarine: #1d327f;
   --c-bleuvert: #52c5b9;
   --c-orange: #ffbe32;
+
   --c-rouge: #fc4b60;
+  --c-rouge_fonce: #cc334a;
+
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: #333;

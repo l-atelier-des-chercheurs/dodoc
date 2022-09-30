@@ -15,63 +15,58 @@
       >
         {{ tag }}
       </sl-tag>
+
+      <sl-button
+        v-if="can_be_edited && !edit_mode"
+        variant="neutral"
+        class="_inlineBtns"
+        size="small"
+        circle
+        @click="enableEditMode"
+      >
+        <sl-icon name="pencil-fill" :label="$t('edit')" />
+      </sl-button>
+
+      <sl-button
+        v-else-if="create_new_tag === false"
+        variant="primary"
+        class="_inlineBtns"
+        size="small"
+        pill
+        @click="create_new_tag = true"
+      >
+        <sl-icon name="plus-square" />
+        {{ $t("add") }}
+      </sl-button>
     </span>
 
-    <template v-if="can_be_edited">
-      <template v-if="!edit_mode">
-        <sl-button
-          variant="neutral"
-          class="_inlineBtns"
-          size="small"
-          circle
-          @click="enableEditMode"
-        >
-          <sl-icon name="pencil-fill" :label="$t('edit')" />
-        </sl-button>
+    <div class="_footer" v-if="edit_mode">
+      <template v-if="create_new_tag">
+        <TextInput
+          :content.sync="new_tag_name"
+          :maxlength="20"
+          :required="true"
+          @toggleValidity="($event) => (allow_save_newkeyword = $event)"
+        />
+        <SaveCancelButtons
+          class="_scb"
+          :is_saving="is_saving"
+          :allow_save="allow_save_newkeyword"
+          :save_text="'valider'"
+          @save="newTag"
+          @cancel="cancelNewTag"
+        />
       </template>
 
-      <template v-else>
-        <!-- create new tag -->
-
-        <sl-button
-          variant="primary"
-          class="_inlineBtns"
-          size="small"
-          pill
-          v-if="create_new_tag === false"
-          @click="create_new_tag = true"
-        >
-          <sl-icon name="plus-square" />
-          {{ $t("add") }}
-        </sl-button>
-
-        <template v-else>
-          <TextInput
-            v-model="new_tag_name"
-            :maxlength="40"
-            :required="true"
-            @toggleValidity="($event) => (allow_save_newkeyword = $event)"
-          />
-          <SaveCancelButtons
-            class="_scb"
-            :is_saving="is_saving"
-            :allow_save="allow_save_newkeyword"
-            :save_text="'valider'"
-            @save="newTag"
-            @cancel="cancel"
-          />
-        </template>
-
-        <div class="_footer" v-if="create_new_tag === false">
-          <SaveCancelButtons
-            class="_scb"
-            :is_saving="is_saving"
-            @save="updateText"
-            @cancel="cancel"
-          />
-        </div>
-      </template>
-    </template>
+      <div v-else>
+        <SaveCancelButtons
+          class="_scb"
+          :is_saving="is_saving"
+          @save="updateText"
+          @cancel="cancel"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -98,7 +93,6 @@ export default {
       new_tag_name: "",
       create_new_tag: false,
 
-      maxlength: 30,
       allow_save_newkeyword: false,
     };
   },

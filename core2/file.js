@@ -277,9 +277,9 @@ module.exports = (function () {
       // every time a file has been uploaded successfully,
       form.on("file", (field, uploadedFile) => {
         dev.logverbose(
-          `File uploaded: – field: ${field} – file: ${JSON.stringify(
-            uploadedFile
-          )}.`
+          `File uploaded: 
+            – field: ${field} 
+            – file: ${JSON.stringify(uploadedFile)}.`
         );
         file = uploadedFile;
       });

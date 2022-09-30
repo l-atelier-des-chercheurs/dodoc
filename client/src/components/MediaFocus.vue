@@ -18,16 +18,12 @@
   </div>
 </template>
 <script>
-import MediaContent from "@/components/MediaContent.vue";
-
 export default {
   props: {
     file: Object,
     project_slug: String,
   },
-  components: {
-    MediaContent,
-  },
+  components: {},
   data() {
     return {
       is_dragged: false,

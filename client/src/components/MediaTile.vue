@@ -17,17 +17,13 @@
   </div>
 </template>
 <script>
-import MediaContent from "@/components/MediaContent.vue";
-
 export default {
   props: {
     file: Object,
     project_slug: String,
     is_focused: Boolean,
   },
-  components: {
-    MediaContent,
-  },
+  components: {},
   data() {
     return { is_dragged: false };
   },

@@ -21,12 +21,15 @@ Vue.use(ShoelaceModelDirective);
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
-
 import TagsField from "@/adc-core/fields/TagsField.vue";
 Vue.component("TagsField", TagsField);
+import CoverField from "@/adc-core/fields/CoverField.vue";
+Vue.component("CoverField", CoverField);
 
 import TextInput from "@/adc-core/fields/TextInput.vue";
 Vue.component("TextInput", TextInput);
+import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
+Vue.component("ImageSelect", ImageSelect);
 
 import TextField from "@/adc-core/fields/TextField.vue";
 Vue.component("TextField", TextField);
@@ -37,8 +40,14 @@ Vue.component("MetaFieldHeader", MetaFieldHeader);
 import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
 
-import DateField from "@/components/fields/DateField.vue";
+import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);
+
+import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
+Vue.component("UploadFiles", UploadFiles);
+
+import MediaContent from "@/adc-core/fields/MediaContent.vue";
+Vue.component("MediaContent", MediaContent);
 
 Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
@@ -51,6 +60,8 @@ Vue.component("LoaderSpinner", {
 
 import FormatDates from "./mixins/FormatDates";
 Vue.mixin(FormatDates);
+import Medias from "./mixins/Medias";
+Vue.mixin(Medias);
 
 import "axios-debug-log/enable";
 import axios from "axios";

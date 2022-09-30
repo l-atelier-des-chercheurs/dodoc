@@ -27,28 +27,12 @@ export default {
   watch: {},
   computed: {
     thumb() {
-      if (!this.file.thumbs) return false;
-
-      let thumb_path = "";
-
-      try {
-        if (this.file.type === "image")
-          thumb_path = this.file.thumbs[this.resolution];
-        if (this.file.type === "video")
-          thumb_path = this.file.thumbs["0"][this.resolution];
-        if (this.file.type === "audio")
-          thumb_path = this.file.thumbs.waveform[this.resolution];
-        if (this.file.type === "stl")
-          thumb_path = this.file.thumbs["0"][this.resolution];
-        if (this.file.type === "document")
-          thumb_path = this.file.thumbs["page-1"][this.resolution];
-        if (this.file.type === "url")
-          thumb_path = this.file.thumbs["ogimage"][this.resolution];
-      } catch (err) {
-        return false;
-      }
-
-      return `/thumbs/projects/${this.project_slug}/${thumb_path}`;
+      return this.makeRelativeURLFromThumbs({
+        thumbs: this.file.thumbs,
+        type: this.file.type,
+        project_slug: this.project_slug,
+        resolution: this.resolution,
+      });
     },
   },
   methods: {

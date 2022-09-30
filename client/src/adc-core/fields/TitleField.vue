@@ -5,57 +5,45 @@
     </div>
 
     <component :is="tag" class="_container">
-      <template v-if="!can_be_edited">
-        <span class="_content" v-text="new_content" />
+      <template v-if="!can_be_edited || (can_be_edited && !edit_mode)">
+        <span class="_content" v-text="content" />
       </template>
+      <TextInput
+        v-else
+        :content.sync="new_content"
+        tag="span"
+        :required="required"
+        :maxlength="maxlength"
+        :key="edit_mode + content"
+        @toggleValidity="($event) => (allow_save = $event)"
+      />
 
-      <template v-else>
-        <span
-          ref="content"
-          class="_content"
-          :contenteditable="edit_mode"
-          :required="edit_mode && required"
-          :key="edit_mode + content"
-          @input="current_character_count = $event.target.innerText.length"
-          v-text="new_content"
-        />
-
-        <template v-if="!edit_mode">
-          <sl-button
-            variant="neutral"
-            class="_editBtn"
-            size="small"
-            circle
-            @click="enableEditMode"
-          >
-            <sl-icon name="pencil-fill" :label="$t('edit')" />
-          </sl-button>
-        </template>
-        <transition name="fade_fast" v-else>
-          <div class="_footer">
-            <div
-              v-if="maxlength"
-              class="maxlength"
-              :class="{
-                'is--invalid': !allow_save,
-              }"
-            >
-              {{ current_character_count }} ≤ {{ maxlength }}
-            </div>
-            <SaveCancelButtons
-              class="_scb"
-              :is_saving="is_saving"
-              :allow_save="allow_save"
-              @save="updateText"
-              @cancel="cancel"
-            />
-          </div>
-        </transition>
+      <template v-if="can_be_edited">
+        <sl-button
+          v-if="!edit_mode"
+          variant="neutral"
+          class="_editBtn"
+          size="small"
+          circle
+          @click="enableEditMode"
+        >
+          <sl-icon name="pencil-fill" :label="$t('edit')" />
+        </sl-button>
+        <div class="_footer" v-else>
+          <SaveCancelButtons
+            class="_scb"
+            :is_saving="is_saving"
+            :allow_save="allow_save"
+            @save="updateText"
+            @cancel="cancel"
+          />
+        </div>
       </template>
     </component>
   </span>
 </template>
 <script>
+import TextInput from "./TextInput.vue";
 export default {
   props: {
     field_name: String,
@@ -81,7 +69,7 @@ export default {
       default: false,
     },
   },
-  components: {},
+  components: { TextInput },
   data() {
     return {
       edit_mode: false,
@@ -89,6 +77,7 @@ export default {
       new_content: this.content,
 
       current_character_count: undefined,
+      allow_save: false,
     };
   },
   created() {},
@@ -103,33 +92,10 @@ export default {
     can_be_edited() {
       return this.$api.is_logged_in;
     },
-    allow_save() {
-      if (this.maxlength && this.current_character_count > this.maxlength)
-        return false;
-      if (this.required && this.current_character_count === 0) return false;
-      return true;
-    },
   },
   methods: {
     enableEditMode() {
       this.edit_mode = true;
-      this.$nextTick(() => {
-        this.$nextTick(() => {
-          const field = this.$refs.content;
-
-          var range = document.createRange();
-          var sel = window.getSelection();
-          const l = field.childNodes[0].length;
-
-          range.setStart(field.childNodes[0], l);
-          range.collapse(true);
-
-          sel.removeAllRanges();
-          sel.addRange(range);
-
-          this.current_character_count = this.new_content.length;
-        });
-      });
     },
     cancel() {
       this.edit_mode = false;
@@ -147,7 +113,6 @@ export default {
     },
     async updateText() {
       this.is_saving = true;
-      this.new_content = this.$refs.content.innerText;
 
       try {
         const new_meta = {
@@ -179,7 +144,7 @@ export default {
   width: 100%;
 
   ._content {
-    white-space: pre-wrap;
+    white-space: break-spaces;
   }
 }
 ._topLabel {
@@ -192,7 +157,7 @@ export default {
 
 ._footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-flow: row wrap;
   font-size: 1rem;
   font-weight: 400;
@@ -224,7 +189,7 @@ export default {
   &::after {
     content: attr(data-value) " ";
     visibility: hidden;
-    white-space: pre-wrap;
+    white-space: break-spaces;
   }
 }
 

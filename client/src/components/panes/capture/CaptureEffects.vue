@@ -141,7 +141,7 @@
             <div v-if="chroma_key_settings.replacement_mode === 'image'">
               <ImageSelect
                 :load_from_projects_medias="true"
-                :slugProjectName="slugProjectName"
+                :project_slug="project_slug"
                 @newPreview="newChromaKeyImage"
               />
               <!-- {{ chroma_key_settings.replacement_image }} -->
@@ -230,7 +230,7 @@ export default {
         replacement_image: undefined,
       },
 
-      slugProjectName: "",
+      project_slug: "",
 
       image_filters_settings: {
         brightness: {
@@ -506,8 +506,8 @@ void main(void) {
     };
   },
   created() {
-    // if (this.$root.do_navigation.current_slugProjectName) {
-    //   this.slugProjectName = this.$root.do_navigation.current_slugProjectName;
+    // if (this.$root.do_navigation.current_project_slug) {
+    //   this.project_slug = this.$root.do_navigation.current_project_slug;
     // }
   },
   updated() {},

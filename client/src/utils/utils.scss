@@ -7,6 +7,8 @@
   font-size: var(--sl-font-size-medium);
   letter-spacing: 0.05em;
   color: #999;
+
+  line-height: 1;
   // margin-right: calc(var(--spacing) / 4);
 }
 
@@ -87,11 +89,12 @@ textarea,
   display: block;
   width: 100%;
 
-  font-family: var(--input-font-family);
-  font-size: var(--input-font-size);
-  font-weight: var(--input-font-weight);
-  color: var(--input-color);
-  border: solid var(--input-border-width) var(--input-border-color);
+  // font-family: var(--input-font-family);
+  // font-size: var(--input-font-size);
+  // font-weight: var(--input-font-weight);
+  // color: var(--input-color);
+  color: inherit;
+  // border: solid var(--input-border-width) var(--input-border-color);
   border-radius: var(--input-border-radius);
   background-color: var(--c-gris);
   height: var(--input-height);
@@ -165,4 +168,65 @@ select {
   padding-bottom: 0;
   padding-right: calc(var(--spacing) * 0.5 + 1rem);
   min-width: 0px;
+}
+
+input[type="file"] {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+
+  + label {
+    display: flex;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+
+    cursor: pointer;
+    overflow: hidden;
+    word-break: break-word;
+
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+    // margin-bottom: @t-skipline / 2;
+    margin-bottom: 0;
+
+    // border-radius: 5px;
+    // min-height: 3.3125rem;
+
+    transition: color 1s;
+  }
+
+  :focus + label,
+  &.has-focus + label {
+    outline: 1px dotted var(--c-rouge);
+    outline: -webkit-focus-ring-color auto 5px;
+  }
+
+  + label * {
+    display: block;
+  }
+
+  + label svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    fill: currentColor;
+    margin-right: calc(var(--spacing) / 1);
+  }
+
+  &.inputfile-2 + label {
+    background-color: var(--c-rouge);
+    color: white;
+    border: 0px solid currentColor;
+
+    &:hover {
+      background-color: var(--c-rouge_fonce);
+    }
+  }
 }

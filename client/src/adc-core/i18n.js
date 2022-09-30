@@ -72,6 +72,7 @@ export default function () {
         description: "description",
         keywords: "mots-clés",
         add: "ajouter",
+        title: "titre",
       },
       en: {
         hello: "hello world",

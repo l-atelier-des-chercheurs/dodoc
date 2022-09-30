@@ -1,101 +1,12 @@
 <template>
   <div class="_projectView">
     <sl-spinner style="--indicator-color: currentColor" v-if="!project" />
-    <div class="_projectInfos u-card" v-else>
-      <div
-        class="_projectInfos--cover"
-        ref="coverImage"
-        :class="{
-          'is--fullscreen': is_fullscreen,
-        }"
-      >
-        <img :src="`${$root.publicPath}large_project_image.jpg`" />
-        <button
-          type="button"
-          class="_fsButton u-buttonLink"
-          v-text="!is_fullscreen ? 'agrandir' : 'réduire'"
-          @click="toggleFs"
-        />
-      </div>
-
-      <br />
-      <div class="_projectInfos--meta">
-        <!-- :help_text="$t('project_title_help_text')" -->
-        <!-- :field_name="'title'" -->
-        <TitleField
-          :field_name="'title'"
-          :field_type="'string'"
-          :label="$t('title')"
-          :content="project.title"
-          :path="`/projects/${project_slug}`"
-          :required="true"
-          :maxlength="40"
-          :tag="'h1'"
-        />
-
-        <br />
-
-        <TitleField
-          :field_name="'description'"
-          :field_type="'string'"
-          :label="$t('description')"
-          :content="project.description"
-          :path="`/projects/${project_slug}`"
-          :maxlength="240"
-        />
-
-        <br />
-
-        <TagsField
-          :field_name="'keywords'"
-          :label="$t('keywords')"
-          :content="project.keywords"
-          :path="`/projects/${project_slug}`"
-        />
-        <!-- <TextField
-          :label="$t('project_description')"
-          :help_text="$t('project_description_help_text')"
-          :field_name="'description'"
-          :content="project.description"
-          :path_to_resource="`/projects/${project_slug}`"
-        /> -->
-        <!-- <sl-rating label="Rating" readonly value="3"></sl-rating> -->
-
-        <br />
-
-        <!-- <sl-tree>
-          <sl-tree-item>
-            Informations
-            <sl-tree-item>
-              Date de création
-              <sl-tree-item>
-                <DateField
-                  :date="project.date_created"
-                  :show_detail_initially="true"
-                />
-              </sl-tree-item>
-            </sl-tree-item>
-            <sl-tree-item>
-              Date de dernière modification
-              <sl-tree-item>
-                <DateField
-                  :date="project.date_modified"
-                  :show_detail_initially="true"
-                />
-              </sl-tree-item>
-            </sl-tree-item>
-            <sl-tree-item>
-              Supprimer ce projet
-              <sl-tree-item>
-                <sl-button @click="deleteFolder" size="small"
-                  >Confirmer</sl-button
-                >
-              </sl-tree-item>
-            </sl-tree-item>
-          </sl-tree-item>
-        </sl-tree> -->
-      </div>
-    </div>
+    <ProjectPreview
+      v-else
+      :project="project"
+      context="full"
+      :can_edit_project="can_edit_project"
+    />
 
     <div class="_meta">
       <sl-card class="u-card">
@@ -252,12 +163,14 @@
 </template>
 
 <script>
+import ProjectPreview from "@/components/ProjectPreview.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
 
 export default {
   props: {},
   components: {
+    ProjectPreview,
     PaneList2,
     ProjectPanes,
   },
@@ -268,15 +181,13 @@ export default {
       error: null,
       project: null,
 
-      is_fullscreen: false,
-
       projectpanes: [],
+
+      can_edit_project: false,
     };
   },
   created() {},
   mounted() {
-    document.addEventListener("fullscreenchange", this.detectFullScreen);
-
     this.$api
       .getFolder({
         folder_type: "projects",
@@ -284,7 +195,7 @@ export default {
       })
       .then((project) => {
         this.project = project;
-        this.$eventHub.$emit("nav.projectName", this.project.title);
+        this.$eventHub.$emit("received.project", this.project);
         this.$api.join({ room: `projects/${this.project_slug}` });
       })
       .catch((err) => {
@@ -293,7 +204,6 @@ export default {
       .then(() => (this.is_loading = false));
   },
   beforeDestroy() {
-    document.removeEventListener("fullscreenchange", this.detectFullScreen);
     this.$api.leave({ room: `projects/${this.project_slug}` });
   },
   watch: {
@@ -337,84 +247,11 @@ export default {
 
       this.$router.push({ query });
     },
-    detectFullScreen() {
-      if (document.fullscreenElement) {
-        this.is_fullscreen = true;
-        // window.addEventListener("popstate", this.quitFSOnBack);
-      } else {
-        this.is_fullscreen = false;
-        this.$nextTick(() => {
-          // window.removeEventListener("popstate", this.quitFSOnBack);
-        });
-      }
-    },
-    toggleFs() {
-      const elem = this.$refs.coverImage;
-      if (!this.is_fullscreen) elem.requestFullscreen().catch((err) => err);
-      else document.exitFullscreen();
-    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._projectView {
-}
-
-._projectInfos {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: stretch;
-
-  margin: 0 auto;
-  margin: calc(var(--spacing) * 2) auto;
-  // padding: 0 calc(var(--spacing) * 2);
-  background: white;
-  // border-radius: var(--border-radius);
-  overflow: hidden;
-
-  // max-width: 800px;
-
-  // min-height: 50vh;
-  width: 100%;
-  max-width: 80vmin;
-
-  > * {
-    flex: 1 1 200px;
-  }
-}
-
-._projectInfos--cover {
-  position: relative;
-  overflow: hidden;
-  // min-height: 50vh;
-  width: 100%;
-  aspect-ratio: 1/1;
-  max-width: 100vh;
-
-  img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  &.is--fullscreen img {
-    object-fit: contain;
-  }
-}
-._fsButton {
-  position: absolute;
-  bottom: 0;
-  margin: calc(var(--spacing) / 1);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.7);
-}
-
-._projectInfos--meta {
-  display: flex;
-  flex-flow: column nowrap;
-  padding: calc(var(--spacing));
-  place-content: center;
 }
 
 ._projectPanesAndList {

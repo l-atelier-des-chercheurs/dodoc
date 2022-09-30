@@ -1,12 +1,21 @@
 <template>
   <div>
     <input
+      v-if="tag === 'input'"
+      ref="field"
       type="text"
       class=""
-      required
+      :required="required"
       :placeholder="'…'"
-      :maxlength="maxlength"
-      @input="$emit('input', $event.target.value)"
+      @input="$emit('update:content', $event.target.value)"
+    />
+    <span
+      v-else-if="tag === 'span'"
+      ref="field"
+      class="_content"
+      :contenteditable="true"
+      :required="required"
+      @input="$emit('update:content', $event.target.innerText)"
     />
 
     <div
@@ -16,14 +25,18 @@
         'is--invalid': !validity,
       }"
     >
-      {{ value.length }} ≤ {{ maxlength }}
+      {{ content.length }} ≤ {{ maxlength }}
     </div>
   </div>
 </template>
 <script>
 export default {
   props: {
-    value: {
+    tag: {
+      type: String,
+      default: "input",
+    },
+    content: {
       type: String,
       default: "",
     },
@@ -41,20 +54,55 @@ export default {
     return {};
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.tag === "span") {
+      this.$refs.field.innerText = this.content;
+      this.focusSpanAtEnd();
+    } else if (this.tag === "input") {
+      this.$refs.field.focus();
+    }
+  },
   beforeDestroy() {},
   watch: {
-    validity() {
-      this.$emit("toggleValidity", this.validity);
+    validity: {
+      handler() {
+        this.$emit("toggleValidity", this.validity);
+      },
+      immediate: true,
     },
   },
   computed: {
     validity() {
-      if (this.required && this.value.length === 0) return false;
+      if (this.required && this.content.length === 0) return false;
+      if (this.maxlength && this.content.length > this.maxlength) return false;
       return true;
     },
   },
-  methods: {},
+  methods: {
+    focusSpanAtEnd() {
+      function placeCaretAtEnd(el) {
+        el.focus();
+        if (
+          typeof window.getSelection != "undefined" &&
+          typeof document.createRange != "undefined"
+        ) {
+          var range = document.createRange();
+          range.selectNodeContents(el);
+          range.collapse(false);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } else if (typeof document.body.createTextRange != "undefined") {
+          var textRange = document.body.createTextRange();
+          textRange.moveToElementText(el);
+          textRange.collapse(false);
+          textRange.select();
+        }
+      }
+      const field = this.$refs.field;
+      placeCaretAtEnd(field);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

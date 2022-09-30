@@ -26,6 +26,7 @@
       <ProjectPreview
         v-for="project in sorted_projects"
         :project="project"
+        context="list"
         :key="project.slug"
       />
     </div>
@@ -35,6 +36,7 @@
       <ProjectPreview
         v-for="project in sorted_projects"
         :project="project"
+        context="list"
         :key="project.slug"
       />
     </div>
@@ -89,7 +91,7 @@ export default {
   display: grid;
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
-  align-items: center;
+  align-items: flex-start;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 
   > * {

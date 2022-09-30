@@ -89,7 +89,6 @@
 import { Splitpanes, Pane } from "splitpanes";
 
 import MediaFocus from "@/components/MediaFocus";
-import UploadFiles from "@/components/fields/UploadFiles";
 import MediaTile from "@/components/MediaTile.vue";
 
 export default {
@@ -103,7 +102,6 @@ export default {
     Pane,
     MediaTile,
     MediaFocus,
-    UploadFiles,
   },
   data() {
     return {

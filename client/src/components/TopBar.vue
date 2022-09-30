@@ -18,10 +18,10 @@
               <!-- {{ project.title }} -->
               <sl-spinner
                 style="--indicator-color: currentColor"
-                v-if="!project_name"
+                v-if="!project"
               />
               <span v-else>
-                {{ project_name }}
+                {{ project.title }}
               </span>
             </router-link>
           </li>
@@ -41,12 +41,12 @@ export default {
   },
   data() {
     return {
-      project_name: null,
+      project: null,
     };
   },
   created() {},
   mounted() {
-    this.$eventHub.$on("nav.projectName", this.setProjectName);
+    this.$eventHub.$on("received.project", this.setProject);
   },
   beforeDestroy() {},
   watch: {
@@ -57,8 +57,8 @@ export default {
   },
   computed: {},
   methods: {
-    setProjectName(project_name) {
-      this.project_name = project_name;
+    setProject(project) {
+      this.project = project;
     },
   },
 };
