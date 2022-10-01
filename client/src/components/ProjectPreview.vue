@@ -107,9 +107,9 @@ export default {
   computed: {
     cover_thumb() {
       return this.makeRelativeURLFromThumbs({
-        thumbs: this.cover,
+        thumbs: this.project.cover,
         type: "image",
-        project_slug: this.project_slug,
+        project_slug: this.project.slug,
         resolution: 1200,
       });
     },

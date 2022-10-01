@@ -212,10 +212,11 @@ module.exports = (function () {
   }
 
   async function _updateFolder(req, res, next) {
-    let { folder_type, folder_slug } = req.params;
+    let { folder_type, folder_slug, cover } = req.params;
     const data = req.body;
+    const update_cover = req.query && req.query.hasOwnProperty("cover");
 
-    dev.logfunction({ folder_type, folder_slug, data });
+    dev.logfunction({ folder_type, folder_slug, data, update_cover });
 
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!global.settings.schema.hasOwnProperty(folder_type))
@@ -230,6 +231,7 @@ module.exports = (function () {
         folder_type,
         folder_slug,
         data,
+        update_cover_req: update_cover ? req : false,
       });
       res.status(200).json({ status: "ok" });
 
@@ -283,6 +285,43 @@ module.exports = (function () {
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
+
+  // async function _updateCover(req, res, next) {
+  //   let { folder_type, folder_slug } = req.params;
+
+  //   dev.logfunction({ folder_type, folder_slug });
+
+  //   if (!folder_type) return res.status(422).send("Missing folder_type field");
+  //   if (!folder_slug) return res.status(422).send("Missing folder_slug field");
+
+  //   const hrstart = process.hrtime();
+
+  //   try {
+  //     const changed_data = await folder.updateFolder({
+  //       folder_type,
+  //       folder_slug,
+  //       req,
+  //     });
+
+  //     // notify
+  //     notifier.emit("folderUpdated", `${folder_type}`, {
+  //       folder_type,
+  //       folder_slug,
+  //       changed_data,
+  //     });
+  //     notifier.emit("folderUpdated", `${folder_type}/${folder_slug}`, {
+  //       folder_type,
+  //       folder_slug,
+  //       changed_data,
+  //     });
+  //   } catch (err) {
+  //     dev.error("Failed to upload file: " + err);
+  //     res.status(500).send(err);
+  //   }
+
+  //   let hrend = process.hrtime(hrstart);
+  //   dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  // }
 
   async function _uploadFile(req, res, next) {
     let { folder_type, folder_slug } = req.params;

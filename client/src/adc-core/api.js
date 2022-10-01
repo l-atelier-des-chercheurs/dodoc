@@ -254,7 +254,7 @@ export default function () {
           .post(path, formData, {
             headers: { "Content-Type": "multipart/form-data" },
             onUploadProgress: (progressEvent) => {
-              onProgress(progressEvent);
+              if (onProgress) onProgress(progressEvent);
             },
           })
           .catch((err) => {
@@ -269,6 +269,34 @@ export default function () {
         const response = await this.$axios.patch(path, new_meta);
         return response.data;
       },
+
+      async updateCover({
+        folder_type,
+        folder_slug,
+        filename,
+        rawData,
+        onProgress,
+      }) {
+        let formData = new FormData();
+        formData.append("file", rawData, filename);
+
+        const path = `/${folder_type}/${folder_slug}?cover`;
+
+        await this.$axios
+          .patch(path, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+            onUploadProgress: (progressEvent) => {
+              if (onProgress) onProgress(progressEvent);
+            },
+          })
+          .catch((err) => {
+            this.$alertify.delay(4000).error(err);
+            throw err;
+          });
+
+        return;
+      },
+
       async deleteFile({ folder_type, folder_slug, meta_slug }) {
         try {
           const response = await this.$axios.delete(

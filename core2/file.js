@@ -1,6 +1,5 @@
 const path = require("path"),
-  fs = require("fs-extra"),
-  { IncomingForm } = require("formidable");
+  fs = require("fs-extra");
 
 const utils = require("./utils"),
   thumbs = require("./thumbs"),
@@ -14,21 +13,37 @@ module.exports = (function () {
       if (!global.settings.schema[folder_type].hasOwnProperty("files"))
         dev.error(`no files allowed on ${folder_type}`);
 
-      const { filename, filepath, additional_meta } = await _handleForm({
-        req,
-        folder_type,
-        folder_slug,
+      const { folder_path, originalFilename, filepath, additional_meta } =
+        await utils
+          .handleForm({
+            req,
+            folder_type,
+            folder_slug,
+          })
+          .catch((err) => {
+            dev.error(`Failed to handle form`, err);
+          });
+
+      // filename, filepath, additional_meta
+      // make url-compatible media filenames
+      const { name, ext } = path.parse(originalFilename);
+      const slugged_original_filename = utils.slug(name) + ext;
+
+      let { new_path, new_filename } = await _renameUploadedFile({
+        folder_path,
+        originalFilename: slugged_original_filename,
+        filepath,
       }).catch((err) => {
-        dev.error(`Failed to handle form`, err);
+        return reject(err);
       });
 
       dev.log(`New file uploaded to`, { folder_type }, { folder_slug });
-      dev.logverbose({ filename, filepath, additional_meta });
+      dev.logverbose({ new_filename, new_path, additional_meta });
 
       const extracted_meta = await _extractAdditionalMetaFromFile({
         additional_meta,
-        filename,
-        filepath,
+        filename: new_filename,
+        filepath: new_path,
       });
 
       // user added meta
@@ -42,7 +57,7 @@ module.exports = (function () {
       // file-specific metas will be added when getting files, the same as thumbs, and stored alongside
       // - date created
 
-      const meta_filename = filename + ".meta.txt";
+      const meta_filename = new_filename + ".meta.txt";
 
       await utils.saveMetaAtPath({
         folder_type,
@@ -248,78 +263,6 @@ module.exports = (function () {
       }
     },
   };
-
-  function _handleForm({ req, folder_type, folder_slug }) {
-    dev.logfunction({ folder_type, folder_slug });
-    return new Promise((resolve, reject) => {
-      const folder_path = utils.getPathToUserContent(folder_type, folder_slug);
-
-      const form = new IncomingForm({
-        uploadDir: folder_path,
-        multiples: false,
-        maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
-      });
-
-      let socketid = "";
-      let file = null;
-      let additional_meta = {};
-
-      form.on("field", (name, value) => {
-        dev.logverbose(`Field gotten`, name, value);
-        additional_meta = JSON.parse(value);
-
-        // if (name === "socketid") socketid = value;
-        // try {
-        //   field_values[name] = JSON.parse(value);
-        // } catch (e) {}
-      });
-
-      // every time a file has been uploaded successfully,
-      form.on("file", (field, uploadedFile) => {
-        dev.logverbose(
-          `File uploaded: 
-            – field: ${field} 
-            – file: ${JSON.stringify(uploadedFile)}.`
-        );
-        file = uploadedFile;
-      });
-
-      form
-        .on("error", (err) => {
-          return reject(err);
-        })
-        .on("aborted", (err) => {
-          return reject(err);
-        });
-
-      form.once("end", async () => {
-        dev.logverbose(`Files downloaded`);
-        dev.logverbose({ file });
-
-        if (!file || !file.filepath) throw { message: "No file meta to parse" };
-
-        // make url-compatible media filenames
-        const { name, ext } = path.parse(file.originalFilename);
-        const slugged_original_filename = utils.slug(name) + ext;
-
-        let { new_path, new_filename } = await _renameUploadedFile({
-          folder_path,
-          originalFilename: slugged_original_filename,
-          filepath: file.filepath,
-        }).catch((err) => {
-          return reject(err);
-        });
-
-        return resolve({
-          filename: new_filename,
-          filepath: new_path,
-          additional_meta,
-        });
-      });
-
-      form.parse(req);
-    });
-  }
 
   async function _renameUploadedFile({
     folder_path,

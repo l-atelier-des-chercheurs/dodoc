@@ -4,7 +4,11 @@ const path = require("path"),
   validator = require("validator"),
   fs = require("fs-extra"),
   writeFileAtomic = require("write-file-atomic"),
-  { networkInterfaces } = require("os");
+  { networkInterfaces } = require("os"),
+  sharp = require("sharp"),
+  { IncomingForm } = require("formidable");
+
+sharp.cache(false);
 
 module.exports = (function () {
   const API = {
@@ -107,6 +111,94 @@ module.exports = (function () {
       }
 
       return results;
+    },
+
+    async handleForm({ req, folder_type, folder_slug }) {
+      return new Promise((resolve, reject) => {
+        dev.logfunction({ folder_type, folder_slug });
+        const folder_path = API.getPathToUserContent(folder_type, folder_slug);
+
+        const form = new IncomingForm({
+          uploadDir: folder_path,
+          multiples: false,
+          maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
+        });
+
+        let socketid = "";
+        let file = null;
+        let additional_meta = {};
+
+        form.on("field", (name, value) => {
+          dev.logverbose(`Field gotten`, name, value);
+          additional_meta = JSON.parse(value);
+
+          // if (name === "socketid") socketid = value;
+          // try {
+          //   field_values[name] = JSON.parse(value);
+          // } catch (e) {}
+        });
+
+        // every time a file has been uploaded successfully,
+        form.on("file", (field, uploadedFile) => {
+          dev.logverbose(
+            `File uploaded: 
+                – field: ${field} 
+                – file: ${JSON.stringify(uploadedFile)}.`
+          );
+          file = uploadedFile;
+        });
+
+        form
+          .on("error", (err) => {
+            return reject(err);
+          })
+          .on("aborted", (err) => {
+            return reject(err);
+          });
+
+        form.once("end", async () => {
+          dev.logverbose(`File downloaded`);
+          dev.logverbose({ file });
+
+          if (!file || !file.filepath)
+            throw { message: "No file meta to parse" };
+
+          return resolve({
+            folder_path,
+            originalFilename: file.originalFilename,
+            filepath: file.filepath,
+            additional_meta,
+          });
+        });
+
+        form.parse(req);
+      });
+    },
+
+    async makeImageFromPath({ full_path, new_path, resolution }) {
+      await sharp(full_path)
+        .rotate()
+        .resize(resolution, resolution, {
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .flatten({ background: "white" })
+        .withMetadata()
+        .toFormat("jpeg", {
+          quality: global.settings.mediaThumbQuality,
+        })
+        .toFile(new_path)
+        .catch((err) => {
+          throw err;
+        });
+    },
+
+    async getImageMetadata({ full_media_path }) {
+      return await sharp(full_media_path).metadata();
+    },
+
+    async imageBufferToFile({ image_buffer, full_path_to_thumb }) {
+      return await sharp(image_buffer).toFile(full_path_to_thumb);
     },
   };
 
