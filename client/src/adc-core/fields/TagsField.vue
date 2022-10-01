@@ -15,9 +15,11 @@
       >
         {{ tag }}
       </sl-tag>
+    </span>
 
+    <template v-if="can_be_edited">
       <sl-button
-        v-if="can_be_edited && !edit_mode"
+        v-if="!edit_mode"
         variant="neutral"
         class="_inlineBtns"
         size="small"
@@ -26,10 +28,9 @@
       >
         <sl-icon name="pencil-fill" :label="$t('edit')" />
       </sl-button>
-
       <sl-button
         v-else-if="create_new_tag === false"
-        variant="primary"
+        variant="default"
         class="_inlineBtns"
         size="small"
         pill
@@ -38,7 +39,7 @@
         <sl-icon name="plus-square" />
         {{ $t("add") }}
       </sl-button>
-    </span>
+    </template>
 
     <div class="_footer" v-if="edit_mode">
       <template v-if="create_new_tag">

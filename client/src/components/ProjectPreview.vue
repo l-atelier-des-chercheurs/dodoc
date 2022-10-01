@@ -209,7 +209,7 @@ export default {
 ._projectInfos--meta {
   display: flex;
   flex-flow: column nowrap;
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
   place-content: center;
 }
 
