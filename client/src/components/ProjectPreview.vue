@@ -24,6 +24,7 @@
         :cover="project.cover"
         :project_slug="project.slug"
         :path="`/projects/${project.slug}`"
+        :can_edit="can_edit_project"
       />
     </div>
 
@@ -39,6 +40,7 @@
         :required="true"
         :maxlength="40"
         :tag="context === 'full' ? 'h1' : 'h2'"
+        :can_edit="can_edit_project"
       />
 
       <br />
@@ -50,6 +52,7 @@
         :content="project.description"
         :path="`/projects/${project.slug}`"
         :maxlength="240"
+        :can_edit="can_edit_project"
       />
 
       <br />
@@ -59,6 +62,7 @@
         :label="$t('keywords')"
         :content="project.keywords"
         :path="`/projects/${project.slug}`"
+        :can_edit="can_edit_project"
       />
 
       <br />

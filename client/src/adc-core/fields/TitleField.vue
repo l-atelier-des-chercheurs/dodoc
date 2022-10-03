@@ -5,7 +5,7 @@
     </div>
 
     <component :is="tag" class="_container">
-      <template v-if="!can_be_edited || (can_be_edited && !edit_mode)">
+      <template v-if="!can_edit || (can_edit && !edit_mode)">
         <span class="_content" v-text="content" />
       </template>
       <TextInput
@@ -18,7 +18,7 @@
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
-      <template v-if="can_be_edited">
+      <template v-if="can_edit">
         <sl-button
           v-if="!edit_mode"
           variant="neutral"
@@ -68,6 +68,9 @@ export default {
       type: [Boolean, Number],
       default: false,
     },
+    can_edit: {
+      type: Boolean,
+    },
   },
   components: { TextInput },
   data() {
@@ -88,11 +91,7 @@ export default {
       this.new_content = this.content;
     },
   },
-  computed: {
-    can_be_edited() {
-      return this.$api.is_logged_in;
-    },
-  },
+  computed: {},
   methods: {
     enableEditMode() {
       this.edit_mode = true;

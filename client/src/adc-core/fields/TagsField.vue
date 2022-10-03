@@ -17,7 +17,7 @@
       </sl-tag>
     </span>
 
-    <template v-if="can_be_edited">
+    <template v-if="can_edit">
       <sl-button
         v-if="!edit_mode"
         variant="neutral"
@@ -83,6 +83,7 @@ export default {
       default: () => [],
     },
     path: String,
+    can_edit: Boolean,
   },
   components: {},
   data() {
@@ -105,11 +106,7 @@ export default {
       this.new_tags = this.content;
     },
   },
-  computed: {
-    can_be_edited() {
-      return this.$api.is_logged_in;
-    },
-  },
+  computed: {},
   methods: {
     enableEditMode() {
       this.edit_mode = true;

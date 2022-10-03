@@ -9,24 +9,7 @@
     />
 
     <div class="_meta">
-      <sl-card class="u-card">
-        <div slot="header">
-          Auteur.rice
-          <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
-        </div>
-        <div class="avatar-group">
-          Par
-          <sl-avatar
-            image="https://images.unsplash.com/photo-1490150028299-bf57d78394e0?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80&crop=right"
-            label="Avatar 1 of 4"
-          ></sl-avatar>
-
-          <sl-avatar
-            image="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&crop=left&q=80"
-            label="Avatar 2 of 4"
-          ></sl-avatar>
-        </div>
-      </sl-card>
+      <CardAuthor />
 
       <sl-card class="u-card">
         <div slot="header">
@@ -46,7 +29,7 @@
           Statut
           <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
         </div>
-        <select>
+        <select :disabled="!can_edit_project">
           <option>En cours</option>
           <option>Finalisé</option>
         </select>
@@ -154,9 +137,16 @@
     </div>
 
     <div class="_projectPanesAndList">
-      <PaneList2 class="_paneList" :panes.sync="projectpanes" />
+      <PaneList2
+        class="_paneList"
+        v-if="can_edit_project"
+        :panes.sync="projectpanes"
+      />
       <div class="_panes" v-if="!is_loading && !error">
-        <ProjectPanes :projectpanes.sync="projectpanes" :project="project" />
+        <ProjectPanes
+          :projectpanes.sync="current_projectpanes"
+          :project="project"
+        />
       </div>
     </div>
   </div>
@@ -166,6 +156,7 @@
 import ProjectPreview from "@/components/ProjectPreview.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
+import CardAuthor from "@/components/CardAuthor.vue";
 
 export default {
   props: {},
@@ -173,6 +164,7 @@ export default {
     ProjectPreview,
     PaneList2,
     ProjectPanes,
+    CardAuthor,
   },
   data() {
     return {
@@ -182,8 +174,6 @@ export default {
       project: null,
 
       projectpanes: [],
-
-      can_edit_project: false,
     };
   },
   created() {},
@@ -224,6 +214,19 @@ export default {
   computed: {
     articles() {
       return this.project.files.filter((f) => f.is_journal === true) || [];
+    },
+    can_edit_project() {
+      return this.$api.is_logged_in;
+    },
+    current_projectpanes() {
+      if (this.can_edit_project) return this.projectpanes;
+      return [
+        {
+          type: "Documenter",
+          pad: {},
+          size: 100,
+        },
+      ];
     },
   },
   methods: {
@@ -283,8 +286,8 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  gap: calc(var(--spacing) * 2);
-  margin: calc(var(--spacing) * 2) auto;
+  gap: calc(var(--spacing) * 1);
+  margin: calc(var(--spacing) * 1) auto;
 
   > * {
     flex: 0 1 240px;

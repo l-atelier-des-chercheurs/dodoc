@@ -313,6 +313,9 @@
         "keywords": {
           "type": "array"
         },
+        "materials": {
+          "type": "array"
+        },
         "description": {
           "type": "string"
         },
