@@ -54,7 +54,7 @@
           class="_scb"
           :is_saving="is_saving"
           :allow_save="allow_save_newkeyword"
-          :save_text="'valider'"
+          :save_text="'create'"
           @save="newTag"
           @cancel="cancelNewTag"
         />

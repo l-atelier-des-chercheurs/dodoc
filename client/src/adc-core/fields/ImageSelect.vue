@@ -35,7 +35,7 @@
           </span>
         </button>
 
-        <!-- <CaptureView
+        <CaptureView
           v-if="enable_capture_mode"
           :can_add_to_fav="false"
           :available_modes="['photo']"
@@ -43,7 +43,7 @@
           :must_validate_media="false"
           @close="enable_capture_mode = false"
           @tempMedia="tempMedia"
-        /> -->
+        />
 
         <div v-if="enable_capture_mode">
           <button
@@ -129,7 +129,7 @@
   </div>
 </template>
 <script>
-// import CaptureView from "../capture/CaptureView.vue";
+import CaptureView from "@/adc-core/CapturePane.vue";
 
 export default {
   props: {
@@ -147,7 +147,7 @@ export default {
     },
   },
   components: {
-    // CaptureView,
+    CaptureView,
   },
   data() {
     return {

@@ -74,6 +74,7 @@ export default function () {
         add: "ajouter",
         title: "titre",
         contributors: "Contributeur·rice·s",
+        create: "créer",
       },
       en: {
         hello: "hello world",

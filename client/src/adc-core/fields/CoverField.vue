@@ -15,7 +15,6 @@
       <div v-else class="_cover--picker">
         <ImageSelect
           v-if="edit_mode"
-          class="_imageSelect"
           :existing_preview="false"
           :project_slug="project_slug"
           @newPreview="
@@ -109,15 +108,13 @@ export default {
   padding: calc(var(--spacing) / 4);
   max-width: 320px;
   margin: calc(var(--spacing) / 4);
-  background: white;
+
   display: flex;
   justify-content: center;
   flex-flow: column nowrap;
   place-items: center;
-  position: relative;
-}
 
-._imageSelect {
+  gap: calc(var(--spacing) / 2);
 }
 
 ._cover {
