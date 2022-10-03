@@ -171,6 +171,12 @@ select {
   min-width: 0px;
 }
 
+sl-tag[size="small"] {
+  &::part(base) {
+    height: calc(var(--sl-input-height-small) * 1);
+  }
+}
+
 input[type="file"] {
   width: 0.1px;
   height: 0.1px;

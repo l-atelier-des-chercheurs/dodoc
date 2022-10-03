@@ -48,6 +48,7 @@
           :maxlength="20"
           :required="true"
           @toggleValidity="($event) => (allow_save_newkeyword = $event)"
+          @onEnter="onEnter"
         />
         <SaveCancelButtons
           class="_scb"
@@ -130,6 +131,9 @@ export default {
 
       // todo interrupt updateMeta
     },
+    onEnter() {
+      this.newTag();
+    },
     async updateText() {
       this.is_saving = true;
 
@@ -179,8 +183,10 @@ export default {
 
 ._footer {
   display: flex;
-  justify-content: space-between;
-  flex-flow: row wrap;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+
   font-size: 1rem;
   font-weight: 400;
   margin: 0;

@@ -12,7 +12,7 @@
         <sl-icon name="pencil-fill" :label="$t('edit')" />
       </sl-button>
 
-      <template v-else>
+      <div v-else class="_cover--picker">
         <ImageSelect
           v-if="edit_mode"
           class="_imageSelect"
@@ -34,7 +34,7 @@
             @cancel="cancel"
           />
         </div>
-      </template>
+      </div>
     </template>
   </div>
 </template>
@@ -103,11 +103,27 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._cover {
+._cover--picker {
+  position: relative;
+  background: white;
+  padding: calc(var(--spacing) / 4);
+  max-width: 320px;
+  margin: calc(var(--spacing) / 4);
+  background: white;
+  display: flex;
+  justify-content: center;
+  flex-flow: column nowrap;
+  place-items: center;
+  position: relative;
 }
 
 ._imageSelect {
-  position: relative;
-  background: white;
+}
+
+._cover {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: calc(var(--spacing) / 4);
 }
 </style>

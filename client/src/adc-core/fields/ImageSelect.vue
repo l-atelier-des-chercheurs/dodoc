@@ -1,7 +1,7 @@
 <template>
-  <div class="m_imageselect">
+  <div class="_imageselect">
     <template v-if="!image">
-      <div class="m_imageselect--upload">
+      <div class="_imageselect--upload">
         <input
           type="file"
           accept="image/*"
@@ -19,7 +19,7 @@
         </label>
       </div>
 
-      <div class="m_imageselect--takePhoto">
+      <div class="_imageselect--takePhoto">
         <button
           type="button"
           class="bg-orange button-inline _captureButton"
@@ -58,7 +58,7 @@
       </div>
 
       <!-- <div
-        class="m_imageselect--selectFromMedias"
+        class="_imageselect--selectFromMedias"
         v-if="load_from_projects_medias"
       >
         <label>{{ $t("or_choose_from_image_medias") }}</label>
@@ -73,7 +73,7 @@
           </option>
         </select>
         <div
-          class="m_imageselect--selectFromMedias--imageList"
+          class="_imageselect--selectFromMedias--imageList"
           v-if="!!show_medias_from_project"
         >
           <template
@@ -115,7 +115,7 @@
       </div> -->
     </template>
 
-    <div class="m_imageselect--image" v-else>
+    <div class="_imageselect--image" v-else>
       <img v-if="typeof image === 'string'" :src="image" draggable="false" />
       <img
         v-if="typeof image === 'object'"
@@ -290,6 +290,9 @@ export default {
 <style scoped lang="scss">
 img {
   width: 200px;
+}
+
+._imageselect {
 }
 
 ._close_button {

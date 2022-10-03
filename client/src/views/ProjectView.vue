@@ -1,154 +1,147 @@
 <template>
   <div class="_projectView">
     <sl-spinner style="--indicator-color: currentColor" v-if="!project" />
-    <ProjectPreview
-      v-else
-      :project="project"
-      context="full"
-      :can_edit_project="can_edit_project"
-    />
+    <div v-else-if="fetch_project_error">
+      {{ fetch_project_error }}
+    </div>
+    <template v-else>
+      <ProjectPreview
+        :project="project"
+        context="full"
+        :can_edit_project="can_edit_project"
+      />
 
-    <div class="_meta">
-      <CardAuthor />
+      <div class="_meta">
+        <CardAuthor :project="project" :can_edit_project="can_edit_project" />
+        <CardMachines :project="project" :can_edit_project="can_edit_project" />
 
-      <sl-card class="u-card">
-        <div slot="header">
-          Mots-clés
-          <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
-        </div>
+        <sl-card class="u-card">
+          <div slot="header">
+            Statut
+            <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
+          </div>
+          <select :disabled="!can_edit_project">
+            <option>En cours</option>
+            <option>Finalisé</option>
+          </select>
+        </sl-card>
 
-        <div class="_label">mots-clés</div>
-        <sl-badge variant="primary" pill>Primary</sl-badge>
-        <sl-badge variant="success" pill>Success</sl-badge>
-        <sl-badge variant="neutral" pill>Neutral</sl-badge>
+        <sl-card class="u-card">
+          <div slot="header">
+            Fichiers à télécharger
+            <sl-icon-button
+              name="file-earmark-fill"
+              label="Avatar"
+            ></sl-icon-button>
+          </div>
+          <div class="">
+            <ul class="widget-content list-group list-group-lg no-bg auto">
+              <li
+                ng-repeat="file in project.project_caos_attributes"
+                class="list-group-item no-b clearfix ng-scope"
+              >
+                <a
+                  target="_blank"
+                  ng-href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
+                  download="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
+                  class="ng-binding"
+                  href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
+                  ><i class="fa fa-arrow-circle-o-down"> </i>
+                  éléphant_serre_livre.svg</a
+                >
+              </li>
+              <li
+                ng-repeat="file in project.project_caos_attributes"
+                class="list-group-item no-b clearfix ng-scope"
+              >
+                <a
+                  target="_blank"
+                  ng-href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
+                  download="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
+                  class="ng-binding"
+                  href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
+                >
+                  <sl-icon-button
+                    name="file-earmark-arrow-down-fill"
+                    label="Avatar"
+                  />
+                  éléphant.svg
+                </a>
+              </li>
+              <li
+                ng-repeat="file in project.project_caos_attributes"
+                class="list-group-item no-b clearfix ng-scope"
+              >
+                <a
+                  target="_blank"
+                  ng-href="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
+                  download="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
+                  class="ng-binding"
+                  href="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
+                  ><i class="fa fa-arrow-circle-o-down"> </i>
+                  éléphant_serre_livre_b...</a
+                >
+              </li>
+              <!-- end ngRepeat: file in project.project_caos_attributes -->
+            </ul>
+          </div>
+        </sl-card>
 
-        <button type="button" class="">ajouter</button>
-      </sl-card>
-      <sl-card class="u-card">
-        <div slot="header">
-          Statut
-          <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
-        </div>
-        <select :disabled="!can_edit_project">
-          <option>En cours</option>
-          <option>Finalisé</option>
-        </select>
-      </sl-card>
-
-      <sl-card class="u-card">
-        <div slot="header">
-          Fichiers à télécharger
-          <sl-icon-button
-            name="file-earmark-fill"
-            label="Avatar"
-          ></sl-icon-button>
-        </div>
-        <div class="">
+        <sl-card class="u-card">
+          <div slot="header">
+            Machines et matériaux
+            <sl-icon-button name="nut-fill" label="Avatar"></sl-icon-button>
+          </div>
           <ul class="widget-content list-group list-group-lg no-bg auto">
             <li
-              ng-repeat="file in project.project_caos_attributes"
+              ng-repeat="machine in project.machines"
               class="list-group-item no-b clearfix ng-scope"
             >
               <a
-                target="_blank"
-                ng-href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
-                download="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
+                ui-sref="app.public.machines_show({id: machine.id})"
                 class="ng-binding"
-                href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
-                ><i class="fa fa-arrow-circle-o-down"> </i>
-                éléphant_serre_livre.svg</a
+                href="#!/machines/1"
+                >Découpeuse laser Speedy 300</a
               >
             </li>
             <li
-              ng-repeat="file in project.project_caos_attributes"
-              class="list-group-item no-b clearfix ng-scope"
+              ng-repeat="component in project.components"
+              class="list-group-item no-b clearfix ng-binding ng-scope"
             >
-              <a
-                target="_blank"
-                ng-href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-                download="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-                class="ng-binding"
-                href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-              >
-                <sl-icon-button
-                  name="file-earmark-arrow-down-fill"
-                  label="Avatar"
-                />
-                éléphant.svg
-              </a>
+              Bois Medium
             </li>
-            <li
-              ng-repeat="file in project.project_caos_attributes"
-              class="list-group-item no-b clearfix ng-scope"
-            >
-              <a
-                target="_blank"
-                ng-href="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
-                download="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
-                class="ng-binding"
-                href="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
-                ><i class="fa fa-arrow-circle-o-down"> </i>
-                éléphant_serre_livre_b...</a
-              >
-            </li>
-            <!-- end ngRepeat: file in project.project_caos_attributes -->
           </ul>
-        </div>
-      </sl-card>
+        </sl-card>
 
-      <sl-card class="u-card">
-        <div slot="header">
-          Machines et matériaux
-          <sl-icon-button name="nut-fill" label="Avatar"></sl-icon-button>
-        </div>
-        <ul class="widget-content list-group list-group-lg no-bg auto">
-          <li
-            ng-repeat="machine in project.machines"
-            class="list-group-item no-b clearfix ng-scope"
-          >
-            <a
-              ui-sref="app.public.machines_show({id: machine.id})"
-              class="ng-binding"
-              href="#!/machines/1"
-              >Découpeuse laser Speedy 300</a
-            >
-          </li>
-          <li
-            ng-repeat="component in project.components"
-            class="list-group-item no-b clearfix ng-binding ng-scope"
-          >
-            Bois Medium
-          </li>
-        </ul>
-      </sl-card>
-
-      <sl-card class="u-card">
-        <div slot="header">
-          License
-          <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
-        </div>
-        <div class="panel-body ng-binding">
-          <strong>BY NC SA</strong>
-          <br />
-          Attribution + Pas d'Utilisation Commerciale + Partage dans les mêmes
-          conditions
-        </div>
-      </sl-card>
-    </div>
-
-    <div class="_projectPanesAndList">
-      <PaneList2
-        class="_paneList"
-        v-if="can_edit_project"
-        :panes.sync="projectpanes"
-      />
-      <div class="_panes" v-if="!is_loading && !error">
-        <ProjectPanes
-          :projectpanes.sync="current_projectpanes"
-          :project="project"
-        />
+        <sl-card class="u-card">
+          <div slot="header">
+            License
+            <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
+          </div>
+          <div class="panel-body ng-binding">
+            <strong>BY NC SA</strong>
+            <br />
+            Attribution + Pas d'Utilisation Commerciale + Partage dans les mêmes
+            conditions
+          </div>
+        </sl-card>
       </div>
-    </div>
+
+      <div class="_projectPanesAndList">
+        <PaneList2
+          class="_paneList"
+          v-if="can_edit_project"
+          :panes.sync="projectpanes"
+        />
+        <div class="_panes">
+          <ProjectPanes
+            :projectpanes="current_projectpanes"
+            :project="project"
+            @update:projectpanes="projectpanes = $event"
+          />
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -157,6 +150,7 @@ import ProjectPreview from "@/components/ProjectPreview.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
 import CardAuthor from "@/components/CardAuthor.vue";
+import CardMachines from "@/components/CardMachines.vue";
 
 export default {
   props: {},
@@ -165,33 +159,32 @@ export default {
     PaneList2,
     ProjectPanes,
     CardAuthor,
+    CardMachines,
   },
   data() {
     return {
       project_slug: this.$route.params.slug,
-      is_loading: true,
-      error: null,
+      fetch_project_error: null,
       project: null,
 
       projectpanes: [],
     };
   },
   created() {},
-  mounted() {
-    this.$api
+  async mounted() {
+    const project = await this.$api
       .getFolder({
         folder_type: "projects",
         folder_slug: this.project_slug,
       })
-      .then((project) => {
-        this.project = project;
-        this.$eventHub.$emit("received.project", this.project);
-        this.$api.join({ room: `projects/${this.project_slug}` });
-      })
       .catch((err) => {
-        this.error = err.response;
-      })
-      .then(() => (this.is_loading = false));
+        this.fetch_project_error = err.response;
+        this.is_loading = false;
+      });
+
+    this.project = project;
+    this.$eventHub.$emit("received.project", this.project);
+    this.$api.join({ room: `projects/${this.project_slug}` });
   },
   beforeDestroy() {
     this.$api.leave({ room: `projects/${this.project_slug}` });

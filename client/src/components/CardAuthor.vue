@@ -1,8 +1,17 @@
 <template>
   <ProjectCard>
     <div slot="header">
-      Auteur.rice
-      <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
+      <label for="" class="u-label">{{ $t("contributors") }}</label>
+      <sl-button
+        v-if="!edit_mode && can_edit_project"
+        variant="neutral"
+        class="_inlineBtns"
+        size="small"
+        circle
+        @click="edit_mode = true"
+      >
+        <sl-icon name="pencil-fill" :label="$t('edit')" />
+      </sl-button>
     </div>
     <div class="avatar-group">
       Par
@@ -22,10 +31,13 @@
 import ProjectCard from "@/components/ProjectCard.vue";
 
 export default {
-  props: {},
+  props: {
+    project: Object,
+    can_edit_project: Boolean,
+  },
   components: { ProjectCard },
   data() {
-    return {};
+    return { edit_mode: false };
   },
   created() {},
   mounted() {},

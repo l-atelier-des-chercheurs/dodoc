@@ -8,6 +8,7 @@
       :required="required"
       :placeholder="'…'"
       @input="$emit('update:content', $event.target.value)"
+      @keyup.enter="$emit('onEnter')"
     />
     <span
       v-else-if="tag === 'span'"
@@ -16,6 +17,7 @@
       :contenteditable="true"
       :required="required"
       @input="$emit('update:content', $event.target.innerText)"
+      @keyup.enter="$emit('onEnter')"
     />
 
     <div

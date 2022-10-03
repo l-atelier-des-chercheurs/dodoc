@@ -73,6 +73,7 @@ export default function () {
         keywords: "mots-clés",
         add: "ajouter",
         title: "titre",
+        contributors: "Contributeur·rice·s",
       },
       en: {
         hello: "hello world",
