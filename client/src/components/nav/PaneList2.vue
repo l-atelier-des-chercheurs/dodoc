@@ -209,15 +209,15 @@ export default {
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
        viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
             <path style="fill:var(--c-rouge);" d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"/>
-            <path d="m42 42h21.6v21h-21.6z"/>
-            <path d="m73.2 42h21.6v21h-21.6z"/>
-            <path d="m104.4 42h21.6v21h-21.6z"/>
-            <path d="m42 73.5h21.6v21h-21.6z"/>
-            <path d="m73.2 73.5h21.6v21h-21.6z"/>
-            <path d="m104.4 73.5h21.6v21h-21.6z"/>
-            <path d="m42 105h21.6v21h-21.6z"/>
-            <path d="m73.2 105h21.6v21h-21.6z"/>
-            <path d="m104.4 105h21.6v21h-21.6z"/>
+            <path style="fill:var(--c-orange);" d="m42 42h21.6v21h-21.6z"/>
+            <path style="fill:var(--c-orange);" d="m73.2 42h21.6v21h-21.6z"/>
+            <path style="fill:var(--c-orange);" d="m104.4 42h21.6v21h-21.6z"/>
+            <path style="fill:var(--c-orange);" d="m42 73.5h21.6v21h-21.6z"/>
+            <path style="fill:var(--c-orange);" d="m73.2 73.5h21.6v21h-21.6z"/>
+            <path style="fill:var(--c-orange);" d="m104.4 73.5h21.6v21h-21.6z"/>
+            <path style="fill:var(--c-orange);" d="m42 105h21.6v21h-21.6z"/>
+            <path style="fill:var(--c-orange);" d="m73.2 105h21.6v21h-21.6z"/>
+            <path style="fill:var(--c-orange);" d="m104.4 105h21.6v21h-21.6z"/>
           </svg>
             `;
 

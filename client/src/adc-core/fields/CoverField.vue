@@ -74,6 +74,7 @@ export default {
     },
     async updateCover() {
       this.is_saving = true;
+      debugger;
 
       try {
         await this.$api.updateCover({

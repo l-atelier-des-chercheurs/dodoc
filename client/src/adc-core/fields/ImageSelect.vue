@@ -129,7 +129,7 @@
   </div>
 </template>
 <script>
-import CaptureView from "@/adc-core/CapturePane.vue";
+import CaptureView from "@/adc-core/capture/CaptureView.vue";
 
 export default {
   props: {
@@ -214,7 +214,6 @@ export default {
       this.createImage(file).then((res) => {
         setTimeout(() => {
           this.image = res;
-          // this.$emit("newPreview", res);
         }, 20);
       });
     },
@@ -231,22 +230,18 @@ export default {
       this.$emit("newPreview", false);
     },
 
-    tempMedia($event) {
-      // this.image = $event.rawData;
-      // setTimeout(() => {
-      //   this.$emit("newPreview", $event.rawData);
-      // }, 1000);
-      this.createImage($event.rawData)
-        .then((res) => {
-          this.image = res;
-          this.$emit("newPreview", res);
-        })
-        .catch(() => {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error("failed to load photo");
-        });
+    async tempMedia($event) {
+      const file = new File([$event.rawData], "filename");
+      this.$emit("newPreview", file);
+
+      const res = await this.createImage($event.rawData).catch(() => {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error("failed to load photo");
+      });
+
+      this.image = res;
       this.enable_capture_mode = false;
     },
 

@@ -8,7 +8,7 @@
   </div>
 </template>
 <script>
-import CaptureView from "./capture/CaptureView.vue";
+import CaptureView from "@/adc-core/capture/CaptureView.vue";
 
 export default {
   props: {
