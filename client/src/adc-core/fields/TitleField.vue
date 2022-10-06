@@ -6,7 +6,11 @@
 
     <component :is="tag" class="_container">
       <template v-if="!can_edit || (can_edit && !edit_mode)">
-        <span class="_content" v-text="content" />
+        <span
+          class="_content"
+          v-if="content && content !== ' '"
+          v-text="content"
+        />
       </template>
       <TextInput
         v-else
@@ -21,8 +25,8 @@
       <template v-if="can_edit">
         <sl-button
           v-if="!edit_mode"
-          variant="neutral"
-          class="_editBtn"
+          variant="primary"
+          class="editBtn"
           size="small"
           circle
           @click="enableEditMode"
@@ -144,14 +148,14 @@ export default {
 
   ._content {
     white-space: break-spaces;
+    margin-right: calc(var(--spacing) / 2);
   }
 }
 ._topLabel {
   display: block;
 }
 
-._editBtn {
-  margin-left: calc(var(--spacing) / 2);
+.editBtn {
 }
 
 ._footer {

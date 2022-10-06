@@ -20,8 +20,8 @@
     <template v-if="can_edit">
       <sl-button
         v-if="!edit_mode"
-        variant="neutral"
-        class="_inlineBtns"
+        variant="primary"
+        class="editBtn"
         size="small"
         circle
         @click="enableEditMode"
@@ -31,7 +31,7 @@
       <sl-button
         v-else-if="create_new_tag === false"
         variant="default"
-        class="_inlineBtns"
+        class=""
         size="small"
         pill
         @click="create_new_tag = true"
@@ -64,7 +64,7 @@
         <SaveCancelButtons
           class="_scb"
           :is_saving="is_saving"
-          @save="updateText"
+          @save="updateTags"
           @cancel="cancel"
         />
       </div>
@@ -134,7 +134,7 @@ export default {
     onEnter() {
       this.newTag();
     },
-    async updateText() {
+    async updateTags() {
       this.is_saving = true;
 
       try {
@@ -175,10 +175,6 @@ export default {
 
 ._topLabel {
   display: block;
-}
-
-._inlineBtns {
-  // margin-left: calc(var(--spacing) / 2);
 }
 
 ._footer {

@@ -46,6 +46,7 @@ export default {
         await this.$axios.post("/projects", {
           title: this.new_project_title,
           requested_folder_name: this.new_project_title,
+          status: "current",
         });
         this.is_creating_project = false;
         this.$el.hide();

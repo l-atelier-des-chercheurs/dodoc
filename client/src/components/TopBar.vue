@@ -1,7 +1,7 @@
 <template>
-  <div class="_topbar">
+  <div class="_topbar" v-if="$route.path !== '/'">
     <nav aria-label="Breadcrumb" class="_breadcrumb">
-      <ul v-if="$route.path !== '/'">
+      <ul>
         <li class="_logo">
           <router-link :to="`/`">
             <img :src="`${$root.publicPath}i_logo.svg`" class="" />
@@ -76,6 +76,9 @@ export default {
 
   background: white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  min-height: 60px;
+  user-select: none;
 
   ._breadcrumb {
     flex: 1 1 auto;

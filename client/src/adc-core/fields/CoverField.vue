@@ -3,8 +3,8 @@
     <template v-if="can_be_edited">
       <sl-button
         v-if="!edit_mode"
-        variant="neutral"
-        class="_editBtn"
+        variant="primary"
+        class="editBtn"
         size="small"
         circle
         @click="enableEditMode"
@@ -74,7 +74,6 @@ export default {
     },
     async updateCover() {
       this.is_saving = true;
-      debugger;
 
       try {
         await this.$api.updateCover({
@@ -122,6 +121,6 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 1);
 }
 </style>

@@ -17,8 +17,14 @@
     <component :is="`style`" v-html="quill_styles" />
     <div ref="editBtn" class="_btnContainer">
       <small class="_btnRow">
-        <sl-button @click="toggleEdit" size="small" class="_editBtn">
-          <sl-icon slot="prefix" name="pencil" />
+        <sl-button
+          variant="primary"
+          class="editBtn"
+          size="small"
+          pill
+          @click="toggleEdit"
+        >
+          <sl-icon name="pencil-fill" :label="$t('edit')" />
           <template v-if="!editor_is_enabled"> Modifier </template>
           <template v-else> Arrêter les modifications </template>
         </sl-button>

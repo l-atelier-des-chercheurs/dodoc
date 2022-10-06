@@ -25,6 +25,8 @@ import TagsField from "@/adc-core/fields/TagsField.vue";
 Vue.component("TagsField", TagsField);
 import CoverField from "@/adc-core/fields/CoverField.vue";
 Vue.component("CoverField", CoverField);
+import SelectField from "@/adc-core/fields/SelectField.vue";
+Vue.component("SelectField", SelectField);
 
 import TextInput from "@/adc-core/fields/TextInput.vue";
 Vue.component("TextInput", TextInput);

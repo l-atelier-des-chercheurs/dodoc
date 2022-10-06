@@ -14,17 +14,7 @@
       <div class="_meta">
         <CardAuthor :project="project" :can_edit_project="can_edit_project" />
         <CardMachines :project="project" :can_edit_project="can_edit_project" />
-
-        <sl-card class="u-card">
-          <div slot="header">
-            Statut
-            <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
-          </div>
-          <select :disabled="!can_edit_project">
-            <option>En cours</option>
-            <option>Finalisé</option>
-          </select>
-        </sl-card>
+        <CardStatus :project="project" :can_edit_project="can_edit_project" />
 
         <sl-card class="u-card">
           <div slot="header">
@@ -151,6 +141,7 @@ import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
 import CardAuthor from "@/components/CardAuthor.vue";
 import CardMachines from "@/components/CardMachines.vue";
+import CardStatus from "@/components/CardStatus.vue";
 
 export default {
   props: {},
@@ -160,6 +151,7 @@ export default {
     ProjectPanes,
     CardAuthor,
     CardMachines,
+    CardStatus,
   },
   data() {
     return {

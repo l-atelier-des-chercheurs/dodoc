@@ -22,7 +22,7 @@
     />
 
     <h2>Finalisés</h2>
-    <div class="_projects">
+    <div class="_projectsList">
       <ProjectPreview
         v-for="project in sorted_projects"
         :project="project"
@@ -32,7 +32,7 @@
     </div>
     <hr />
     <h2>En cours</h2>
-    <div class="_projects">
+    <div class="_projectsList">
       <ProjectPreview
         v-for="project in sorted_projects"
         :project="project"
@@ -87,12 +87,15 @@ export default {
 ._projectsView {
   padding: calc(var(--spacing) * 2);
 }
-._projects {
+._projectsList {
   display: grid;
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
   align-items: flex-start;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+
+  border-radius: 6px;
+  overflow: hidden;
 
   > * {
   }

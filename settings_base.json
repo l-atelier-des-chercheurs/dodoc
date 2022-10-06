@@ -321,6 +321,11 @@
         },
         "folder": {
           "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "options": ["draft", "invisible", "finished"],
+          "default": "draft"
         }
       },
       "files": {

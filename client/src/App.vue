@@ -51,7 +51,8 @@ export default {
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
-  --c-bodybg: #f4f3ef;
+  --c-bodybg: hsl(48, 19%, 95%);
+  --body-bg-pattern-color: hsl(48, 19%, 88%);
 
   --scrollbar-height: 1px;
   --scrollbar-padding: 3px;
@@ -139,8 +140,49 @@ export default {
 
 html,
 body {
-  background: white;
+  // background: white;
   background-color: var(--c-bodybg);
+  background-size: 6px 6px;
+
+  // diagonal lines
+  // background-image: repeating-linear-gradient(
+  //   45deg,
+  //   var(--body-bg-pattern-color) 0,
+  //   var(--body-bg-pattern-color) 0.6000000000000001px,
+  //   var(--c-bodybg) 0,
+  //   var(--c-bodybg) 50%
+  // );
+
+  // cross
+  background: radial-gradient(
+      circle,
+      transparent 20%,
+      var(--c-bodybg) 20%,
+      var(--c-bodybg) 80%,
+      transparent 80%,
+      transparent
+    ),
+    radial-gradient(
+        circle,
+        transparent 20%,
+        var(--c-bodybg) 20%,
+        var(--c-bodybg) 80%,
+        transparent 80%,
+        transparent
+      )
+      15px 15px,
+    linear-gradient(
+        var(--body-bg-pattern-color) 1.2000000000000002px,
+        transparent 1.2000000000000002px
+      )
+      0 -0.6000000000000001px,
+    linear-gradient(
+        90deg,
+        var(--body-bg-pattern-color) 1.2000000000000002px,
+        var(--c-bodybg) 1.2000000000000002px
+      ) -0.6000000000000001px 0;
+  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+
   accent-color: var(--c-vert);
 }
 

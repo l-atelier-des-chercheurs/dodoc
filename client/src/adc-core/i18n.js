@@ -75,6 +75,12 @@ export default function () {
         title: "titre",
         contributors: "Contributeur·rice·s",
         create: "créer",
+        upload_from_device: "Importer une image",
+        import_instructions: "Importer depuis un autre appareil",
+        progress: "État d’avancement",
+        draft: "Brouillon",
+        invisible: "Invisible",
+        finished: "Finalisé",
       },
       en: {
         hello: "hello world",
