@@ -5,104 +5,112 @@
       {{ fetch_project_error }}
     </div>
     <template v-else>
-      <ProjectPreview
-        :project="project"
-        context="full"
-        :can_edit_project="can_edit_project"
-      />
+      <div class="_topContent">
+        <ProjectPreview
+          :project="project"
+          context="full"
+          :can_edit_project="can_edit_project"
+        />
 
-      <div class="_meta">
-        <CardAuthor :project="project" :can_edit_project="can_edit_project" />
-        <CardMachines :project="project" :can_edit_project="can_edit_project" />
-        <CardStatus :project="project" :can_edit_project="can_edit_project" />
-        <CardLicense :project="project" :can_edit_project="can_edit_project" />
+        <div class="_projectMeta">
+          <CardAuthor :project="project" :can_edit_project="can_edit_project" />
+          <CardMachines
+            :project="project"
+            :can_edit_project="can_edit_project"
+          />
+          <CardStatus :project="project" :can_edit_project="can_edit_project" />
+          <CardLicense
+            :project="project"
+            :can_edit_project="can_edit_project"
+          />
 
-        <sl-card class="u-card">
-          <div slot="header">
-            Fichiers à télécharger
-            <sl-icon-button
-              name="file-earmark-fill"
-              label="Avatar"
-            ></sl-icon-button>
-          </div>
-          <div class="">
+          <sl-card class="u-card">
+            <div slot="header">
+              Fichiers à télécharger
+              <sl-icon-button
+                name="file-earmark-fill"
+                label="Avatar"
+              ></sl-icon-button>
+            </div>
+            <div class="">
+              <ul class="widget-content list-group list-group-lg no-bg auto">
+                <li
+                  ng-repeat="file in project.project_caos_attributes"
+                  class="list-group-item no-b clearfix ng-scope"
+                >
+                  <a
+                    target="_blank"
+                    ng-href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
+                    download="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
+                    class="ng-binding"
+                    href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
+                    ><i class="fa fa-arrow-circle-o-down"> </i>
+                    éléphant_serre_livre.svg</a
+                  >
+                </li>
+                <li
+                  ng-repeat="file in project.project_caos_attributes"
+                  class="list-group-item no-b clearfix ng-scope"
+                >
+                  <a
+                    target="_blank"
+                    ng-href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
+                    download="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
+                    class="ng-binding"
+                    href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
+                  >
+                    <sl-icon-button
+                      name="file-earmark-arrow-down-fill"
+                      label="Avatar"
+                    />
+                    éléphant.svg
+                  </a>
+                </li>
+                <li
+                  ng-repeat="file in project.project_caos_attributes"
+                  class="list-group-item no-b clearfix ng-scope"
+                >
+                  <a
+                    target="_blank"
+                    ng-href="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
+                    download="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
+                    class="ng-binding"
+                    href="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
+                    ><i class="fa fa-arrow-circle-o-down"> </i>
+                    éléphant_serre_livre_b...</a
+                  >
+                </li>
+                <!-- end ngRepeat: file in project.project_caos_attributes -->
+              </ul>
+            </div>
+          </sl-card>
+
+          <sl-card class="u-card">
+            <div slot="header">
+              Machines et matériaux
+              <sl-icon-button name="nut-fill" label="Avatar"></sl-icon-button>
+            </div>
             <ul class="widget-content list-group list-group-lg no-bg auto">
               <li
-                ng-repeat="file in project.project_caos_attributes"
+                ng-repeat="machine in project.machines"
                 class="list-group-item no-b clearfix ng-scope"
               >
                 <a
-                  target="_blank"
-                  ng-href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
-                  download="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
+                  ui-sref="app.public.machines_show({id: machine.id})"
                   class="ng-binding"
-                  href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
-                  ><i class="fa fa-arrow-circle-o-down"> </i>
-                  éléphant_serre_livre.svg</a
+                  href="#!/machines/1"
+                  >Découpeuse laser Speedy 300</a
                 >
               </li>
               <li
-                ng-repeat="file in project.project_caos_attributes"
-                class="list-group-item no-b clearfix ng-scope"
+                ng-repeat="component in project.components"
+                class="list-group-item no-b clearfix ng-binding ng-scope"
               >
-                <a
-                  target="_blank"
-                  ng-href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-                  download="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-                  class="ng-binding"
-                  href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-                >
-                  <sl-icon-button
-                    name="file-earmark-arrow-down-fill"
-                    label="Avatar"
-                  />
-                  éléphant.svg
-                </a>
+                Bois Medium
               </li>
-              <li
-                ng-repeat="file in project.project_caos_attributes"
-                class="list-group-item no-b clearfix ng-scope"
-              >
-                <a
-                  target="_blank"
-                  ng-href="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
-                  download="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
-                  class="ng-binding"
-                  href="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
-                  ><i class="fa fa-arrow-circle-o-down"> </i>
-                  éléphant_serre_livre_b...</a
-                >
-              </li>
-              <!-- end ngRepeat: file in project.project_caos_attributes -->
             </ul>
-          </div>
-        </sl-card>
-
-        <sl-card class="u-card">
-          <div slot="header">
-            Machines et matériaux
-            <sl-icon-button name="nut-fill" label="Avatar"></sl-icon-button>
-          </div>
-          <ul class="widget-content list-group list-group-lg no-bg auto">
-            <li
-              ng-repeat="machine in project.machines"
-              class="list-group-item no-b clearfix ng-scope"
-            >
-              <a
-                ui-sref="app.public.machines_show({id: machine.id})"
-                class="ng-binding"
-                href="#!/machines/1"
-                >Découpeuse laser Speedy 300</a
-              >
-            </li>
-            <li
-              ng-repeat="component in project.components"
-              class="list-group-item no-b clearfix ng-binding ng-scope"
-            >
-              Bois Medium
-            </li>
-          </ul>
-        </sl-card>
+          </sl-card>
+        </div>
       </div>
 
       <div class="_projectPanesAndList">
@@ -257,7 +265,7 @@ export default {
   border: solid 2px var(--sl-color-neutral-0);
 }
 
-._meta {
+._projectMeta {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -268,5 +276,10 @@ export default {
   > * {
     flex: 0 1 240px;
   }
+}
+
+._topContent {
+  max-width: 120vh;
+  margin: 0 auto;
 }
 </style>

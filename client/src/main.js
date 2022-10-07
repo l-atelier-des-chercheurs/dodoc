@@ -27,6 +27,8 @@ import CoverField from "@/adc-core/fields/CoverField.vue";
 Vue.component("CoverField", CoverField);
 import SelectField from "@/adc-core/fields/SelectField.vue";
 Vue.component("SelectField", SelectField);
+import RadioField from "@/adc-core/fields/RadioField.vue";
+Vue.component("RadioField", RadioField);
 
 import TextInput from "@/adc-core/fields/TextInput.vue";
 Vue.component("TextInput", TextInput);

@@ -189,16 +189,9 @@ export default {
   align-items: stretch;
 
   margin: 0 auto;
-  // margin-top: calc(var(--spacing) * 2);
-  // background: white;
-  // border-radius: 0;
   overflow: hidden;
 
-  // max-width: 800px;
-
-  // min-height: 50vh;
   width: 100%;
-  max-width: 150vh;
 
   > * {
     flex: 1 1 260px;
