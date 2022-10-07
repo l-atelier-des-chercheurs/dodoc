@@ -112,6 +112,7 @@ export default {
   flex: 0 0 auto;
   font-weight: 500;
   font-size: var(--sl-font-size-x-small);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
   &.is--invalid {
     color: var(--c-rouge);

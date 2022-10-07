@@ -5,7 +5,7 @@
       <sl-icon name="file-earmark-spreadsheet" />
     </div>
     <div class="">
-      <SelectField
+      <RadioField
         :field_name="'license'"
         :content="project.license"
         :path="`/projects/${project.slug}`"
