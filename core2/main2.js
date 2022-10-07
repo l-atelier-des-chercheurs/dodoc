@@ -133,6 +133,10 @@ async function copyAndRenameUserFolder(full_default_path) {
     );
   }
 
+  // TODO check for a text file with dodoc version number
+  // for example, a meta.txt file in /dodoc that says "dodoc_version: 10" and makes sure that content are formatted for dodoc 10
+  // ie make sur its not a dodoc 9 folder, which would break dodoc badly
+
   if (!(await fs.pathExists(full_path_to_content))) {
     dev.log(
       `-> content folder does not already exists at ${full_path_to_content} -> duplicating content folder to create a new one`

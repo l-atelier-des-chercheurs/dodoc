@@ -72,7 +72,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   gap: calc(var(--spacing) * 2);
-  align-content: center;
+  align-items: center;
 
   background: white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);

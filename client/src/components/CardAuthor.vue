@@ -1,7 +1,11 @@
 <template>
   <ProjectCard>
-    <div slot="header">
-      <label for="" class="u-label">{{ $t("contributors") }}</label>
+    <label for="" class="u-label">{{ $t("contributors") }}</label>
+    <div class="_listOfAuthors">
+      <div v-for="contrib in fake_contrib" :key="contrib.name">
+        <sl-avatar :image="contrib.image" />
+        {{ contrib.name }}
+      </div>
       <sl-button
         v-if="!edit_mode && can_edit_project"
         variant="primary"
@@ -12,12 +16,6 @@
       >
         <sl-icon name="pencil-fill" :label="$t('edit')" />
       </sl-button>
-    </div>
-    <div class="">
-      <div v-for="contrib in fake_contrib" :key="contrib.name">
-        <sl-avatar :image="contrib.image" />
-        {{ contrib.name }}
-      </div>
     </div>
   </ProjectCard>
 </template>
@@ -60,4 +58,11 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._listOfAuthors {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) 0;
+}
+</style>

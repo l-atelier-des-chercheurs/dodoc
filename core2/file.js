@@ -167,7 +167,7 @@ module.exports = (function () {
 
       // update meta file
       if (new_meta) {
-        const clean_meta = _cleanNewMeta({
+        const clean_meta = utils.cleanNewMeta({
           folder_type,
           new_meta,
         });
@@ -484,19 +484,6 @@ module.exports = (function () {
     dev.logfunction({ paths });
 
     return paths;
-  }
-
-  function _cleanNewMeta({ folder_type, new_meta }) {
-    dev.logfunction({ folder_type, new_meta });
-
-    global.settings.schema[folder_type].files.fields;
-
-    // check fields that exist in schema
-    // TODO
-
-    // prevent editing fields such as date_created
-
-    return new_meta;
   }
 
   async function _archiveVersion({ folder_type, folder_slug, media_filename }) {

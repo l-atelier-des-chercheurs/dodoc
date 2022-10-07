@@ -52,7 +52,7 @@ export default {
   --c-vert_fonce: hsl(143, 69%, 40%);
 
   --c-bodybg: hsl(48, 19%, 95%);
-  --body-bg-pattern-color: hsl(48, 19%, 88%);
+  --body-bg-pattern-color: hsl(48, 19%, 93%);
 
   --scrollbar-height: 1px;
   --scrollbar-padding: 3px;
@@ -104,8 +104,12 @@ export default {
   $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
 
   @each $size in $sizes {
+    // vert
+    // $i: index($sizes, $size);
+    // --sl-color-success-#{$size}: hsl(143, 69%, #{82% - $i * 5});
+    // bleuvert
     $i: index($sizes, $size);
-    --sl-color-success-#{$size}: hsl(143, 69%, #{82% - $i * 5});
+    --sl-color-success-#{$size}: hsl(174, 60%, #{82% - $i * 5});
   }
   @each $size in $sizes {
     $i: index($sizes, $size);

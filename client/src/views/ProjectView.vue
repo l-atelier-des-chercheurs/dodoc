@@ -15,6 +15,7 @@
         <CardAuthor :project="project" :can_edit_project="can_edit_project" />
         <CardMachines :project="project" :can_edit_project="can_edit_project" />
         <CardStatus :project="project" :can_edit_project="can_edit_project" />
+        <CardLicense :project="project" :can_edit_project="can_edit_project" />
 
         <sl-card class="u-card">
           <div slot="header">
@@ -102,19 +103,6 @@
             </li>
           </ul>
         </sl-card>
-
-        <sl-card class="u-card">
-          <div slot="header">
-            License
-            <sl-icon-button name="person-fill" label="Avatar"></sl-icon-button>
-          </div>
-          <div class="panel-body ng-binding">
-            <strong>BY NC SA</strong>
-            <br />
-            Attribution + Pas d'Utilisation Commerciale + Partage dans les mêmes
-            conditions
-          </div>
-        </sl-card>
       </div>
 
       <div class="_projectPanesAndList">
@@ -142,6 +130,7 @@ import ProjectPanes from "@/components/ProjectPanes.vue";
 import CardAuthor from "@/components/CardAuthor.vue";
 import CardMachines from "@/components/CardMachines.vue";
 import CardStatus from "@/components/CardStatus.vue";
+import CardLicense from "@/components/CardLicense.vue";
 
 export default {
   props: {},
@@ -152,6 +141,7 @@ export default {
     CardAuthor,
     CardMachines,
     CardStatus,
+    CardLicense,
   },
   data() {
     return {
@@ -272,7 +262,8 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   gap: calc(var(--spacing) * 1);
-  margin: calc(var(--spacing) * 1) auto;
+  margin: 0 auto;
+  padding: calc(var(--spacing) * 1);
 
   > * {
     flex: 0 1 240px;

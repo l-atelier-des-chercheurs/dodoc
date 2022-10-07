@@ -1,12 +1,18 @@
 <template>
   <div class="_saveCancelBtns">
-    <sl-button :size="pill_size" variant="info" @click="$emit('cancel')">
+    <sl-button
+      :size="pill_size"
+      variant="default"
+      pill
+      @click="$emit('cancel')"
+    >
       <sl-icon name="x-circle-fill" />
       {{ $t("cancel") }}
     </sl-button>
     <sl-button
       :size="pill_size"
       variant="success"
+      pill
       :loading="is_saving"
       :disabled="!allow_save"
       @click="$emit('save')"

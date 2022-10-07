@@ -1,12 +1,12 @@
 .u-label {
   font-variant: small-caps;
   text-transform: lowercase;
-  font-weight: 600;
+  font-weight: 500;
 
-  font-family: var(--sl-font-mono);
+  // font-family: var(--sl-font-mono);
   font-size: var(--sl-font-size-medium);
   letter-spacing: 0.05em;
-  color: #999;
+  color: #666;
 
   line-height: 1;
   // margin-right: calc(var(--spacing) / 4);
@@ -193,6 +193,12 @@ select {
 sl-tag[size="small"] {
   &::part(base) {
     height: calc(var(--sl-input-height-small) * 1);
+  }
+}
+
+sl-button[variant="semitransparent"] {
+  &::part(base) {
+    background: rgba(255, 255, 255, 0.7);
   }
 }
 

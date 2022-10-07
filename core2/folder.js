@@ -112,9 +112,9 @@ module.exports = (function () {
 
       let { ...new_meta } = data;
 
-      // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the typ
+      // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the type
       if (new_meta) {
-        const clean_meta = _cleanNewMeta({
+        const clean_meta = utils.cleanNewMeta({
           folder_type,
           new_meta,
         });
@@ -227,17 +227,6 @@ module.exports = (function () {
       dev.logfunction("No dir or folder found");
       return [];
     }
-  }
-
-  function _cleanNewMeta({ folder_type, new_meta }) {
-    dev.logfunction({ folder_type, new_meta });
-
-    global.settings.schema[folder_type];
-
-    // check fields that exist in schema
-    // TODO
-
-    return new_meta;
   }
 
   async function _getFolderCover({ folder_type, folder_slug }) {

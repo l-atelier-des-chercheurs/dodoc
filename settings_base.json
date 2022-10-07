@@ -326,6 +326,11 @@
           "type": "string",
           "options": ["draft", "invisible", "finished"],
           "default": "draft"
+        },
+        "license": {
+          "type": "string",
+          "options": ["CC", "all_rights_reserved", "copyleft"],
+          "default": "CC"
         }
       },
       "files": {

@@ -9,9 +9,10 @@
     >
       <template v-if="cover_thumb">
         <img :src="cover_thumb" />
-        <button
+        <sl-button
           v-if="context === 'full'"
-          type="button"
+          size="small"
+          variant="semitransparent"
           class="_fsButton u-buttonLink"
           v-text="!is_fullscreen ? 'agrandir' : 'réduire'"
           @click="toggleFs"
@@ -30,45 +31,45 @@
     </div>
 
     <div class="_projectInfos--meta">
-      <div class="_content">
-        <TitleField
-          :field_name="'title'"
-          :label="$t('title')"
-          :content="project.title"
-          :path="`/projects/${project.slug}`"
-          :required="true"
-          :maxlength="40"
-          :tag="context === 'full' ? 'h1' : 'h2'"
-          :can_edit="can_edit_project"
-        />
+      <!-- <div class="_content"> -->
+      <TitleField
+        :field_name="'title'"
+        :label="$t('title')"
+        :content="project.title"
+        :path="`/projects/${project.slug}`"
+        :required="true"
+        :maxlength="40"
+        :tag="context === 'full' ? 'h1' : 'h2'"
+        :can_edit="can_edit_project"
+      />
 
-        <TitleField
-          :field_name="'description'"
-          :label="$t('description')"
-          :content="project.description"
-          :path="`/projects/${project.slug}`"
-          :maxlength="280"
-          :can_edit="can_edit_project"
-        />
+      <TitleField
+        :field_name="'description'"
+        :label="$t('description')"
+        :content="project.description"
+        :path="`/projects/${project.slug}`"
+        :maxlength="280"
+        :can_edit="can_edit_project"
+      />
 
-        <TagsField
-          :field_name="'keywords'"
-          :label="$t('keywords')"
-          :content="project.keywords"
-          :path="`/projects/${project.slug}`"
-          :can_edit="can_edit_project"
-        />
+      <TagsField
+        :field_name="'keywords'"
+        :label="$t('keywords')"
+        :content="project.keywords"
+        :path="`/projects/${project.slug}`"
+        :can_edit="can_edit_project"
+      />
 
-        <br />
+      <br />
 
-        <router-link
-          :to="`/projects/${project.slug}`"
-          class=""
-          v-if="context === 'list'"
-        >
-          <sl-button size="small" variant="primary" pill>ouvrir</sl-button>
-        </router-link>
-      </div>
+      <router-link
+        :to="`/projects/${project.slug}`"
+        class=""
+        v-if="context === 'list'"
+      >
+        <sl-button size="small" variant="primary" pill>ouvrir</sl-button>
+      </router-link>
+      <!-- </div> -->
     </div>
   </div>
 </template>
@@ -188,9 +189,9 @@ export default {
   align-items: stretch;
 
   margin: 0 auto;
-  margin-top: calc(var(--spacing) * 2);
-  background: white;
-  border-radius: 0;
+  // margin-top: calc(var(--spacing) * 2);
+  // background: white;
+  // border-radius: 0;
   overflow: hidden;
 
   // max-width: 800px;
@@ -200,7 +201,7 @@ export default {
   max-width: 150vh;
 
   > * {
-    flex: 1 1 200px;
+    flex: 1 1 260px;
   }
 }
 
@@ -210,6 +211,12 @@ export default {
   gap: calc(var(--spacing) * 1);
   padding: calc(var(--spacing) * 1);
   place-content: center;
+
+  transition: all 0.4s;
+
+  > * {
+    max-width: 66ch;
+  }
 }
 
 ._imageSelect {
@@ -246,8 +253,6 @@ export default {
     position: absolute;
     bottom: 0;
     margin: calc(var(--spacing) / 1);
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.7);
   }
 }
 

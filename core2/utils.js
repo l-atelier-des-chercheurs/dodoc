@@ -61,20 +61,6 @@ module.exports = (function () {
       return await fs.readFile(file_path, "UTF-8");
     },
 
-    validateMeta({ fields, new_meta }) {
-      let meta = {};
-
-      if (fields)
-        Object.entries(fields).map(([field_name, opt]) => {
-          if (new_meta.hasOwnProperty(field_name)) {
-            meta[field_name] = new_meta[field_name];
-            // TODO Validator
-          }
-        });
-
-      return meta;
-    },
-
     async saveMetaAtPath({ folder_type, folder_slug, file_slug, meta }) {
       dev.logfunction({ folder_type, folder_slug, file_slug, meta });
 
@@ -90,6 +76,28 @@ module.exports = (function () {
 
     makeRatio({ w, h }) {
       return +Number.parseFloat(h / w).toPrecision(4);
+    },
+
+    validateMeta({ fields, new_meta }) {
+      let meta = {};
+
+      if (fields)
+        Object.entries(fields).map(([field_name, opt]) => {
+          if (new_meta.hasOwnProperty(field_name)) {
+            meta[field_name] = new_meta[field_name];
+            // TODO Validator
+          }
+        });
+      // see cleanNewMeta
+
+      return meta;
+    },
+    cleanNewMeta({ folder_type, new_meta }) {
+      dev.logfunction({ folder_type, new_meta });
+      // check fields in schema, make sure user added fields are allowed and with the right formatting
+      // merge with validateMeta ?
+      global.settings.schema[folder_type];
+      return new_meta;
     },
 
     getLocalIP() {

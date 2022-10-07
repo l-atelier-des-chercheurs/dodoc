@@ -1,36 +1,42 @@
 <template>
-  <div>
-    <template>
+  <div class="_selectField">
+    <div class="_sameRow">
       <select v-model="new_content" :disabled="!edit_mode">
         <option
-          v-for="(option, index) in options"
-          :key="index"
-          :value="option"
-          v-text="$t(option)"
+          v-for="option in options"
+          :key="option.key"
+          :value="option.key"
+          v-text="$t(option.key)"
         />
       </select>
-    </template>
+      <template v-if="can_edit">
+        <sl-button
+          v-if="!edit_mode"
+          variant="primary"
+          class="editBtn"
+          size="small"
+          circle
+          @click="enableEditMode"
+        >
+          <sl-icon name="pencil-fill" :label="$t('edit')" />
+        </sl-button>
+      </template>
+    </div>
 
-    <template v-if="can_edit">
-      <sl-button
-        v-if="!edit_mode"
-        variant="primary"
-        class="editBtn"
-        size="small"
-        circle
-        @click="enableEditMode"
-      >
-        <sl-icon name="pencil-fill" :label="$t('edit')" />
-      </sl-button>
-      <div class="_footer" v-else>
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          @save="updateSelect"
-          @cancel="cancel"
-        />
-      </div>
-    </template>
+    <div v-if="instructions">
+      <small>
+        {{ $t(instructions) }}
+      </small>
+    </div>
+
+    <div class="_footer" v-if="edit_mode">
+      <SaveCancelButtons
+        class="_scb"
+        :is_saving="is_saving"
+        @save="updateSelect"
+        @cancel="cancel"
+      />
+    </div>
   </div>
 </template>
 <script>
@@ -62,7 +68,13 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    instructions() {
+      const new_opt = this.options.find((o) => o.key === this.new_content);
+      if (new_opt) return new_opt.text;
+      return false;
+    },
+  },
   methods: {
     enableEditMode() {
       this.edit_mode = true;
@@ -108,4 +120,20 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._selectField {
+  widows: 100%;
+}
+
+._sameRow {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+}
+
+._footer {
+  margin-top: calc(var(--spacing) / 4);
+}
+</style>

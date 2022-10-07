@@ -79,8 +79,25 @@ export default function () {
         import_instructions: "Importer depuis un autre appareil",
         progress: "État d’avancement",
         draft: "Brouillon",
+        draft_status_explanations:
+          "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
         invisible: "Invisible",
+        invisible_status_explanations:
+          "Le projet sera masqué et inaccessible à tout le monde, sauf à ses contributeurs.",
         finished: "Finalisé",
+        finished_status_explanations:
+          "Ce projet sera affiché en haut de la page d'accueil.",
+
+        license: "Licence",
+
+        creativecommons_by_nc_sa: "Creative Commons BY NC SA",
+        creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",
+
+        all_rights_reserved: "Tous Droits Réservés",
+        all_rights_reserved_explanations: "<i>Explications à ajouter</i>",
+
+        copyleft: "Art Libre / Copyleft",
+        copyleft_explanations: "<i>Explications à ajouter</i>",
       },
       en: {
         hello: "hello world",
