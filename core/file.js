@@ -1199,7 +1199,8 @@ module.exports = (function () {
               global.settings.structure[type].medias.fields.hasOwnProperty(
                 "media_filename"
               ) &&
-              media_data.hasOwnProperty("media_filename")
+              media_data.hasOwnProperty("media_filename") &&
+              media_data.media_filename
             ) {
               let copy_media = new Promise((resolve, reject) => {
                 // copier le media_filename dans le nouveau dossier avec le premier nom disponible
