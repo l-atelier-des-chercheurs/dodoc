@@ -278,7 +278,7 @@ export default function () {
         onProgress,
       }) {
         let formData = new FormData();
-        formData.append("file", rawData, filename);
+        if (rawData) formData.append("file", rawData, filename);
 
         const path = `/${folder_type}/${folder_slug}?cover`;
 

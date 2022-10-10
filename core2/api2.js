@@ -212,7 +212,7 @@ module.exports = (function () {
   }
 
   async function _updateFolder(req, res, next) {
-    let { folder_type, folder_slug, cover } = req.params;
+    let { folder_type, folder_slug } = req.params;
     const data = req.body;
     const update_cover = req.query && req.query.hasOwnProperty("cover");
 
@@ -233,6 +233,7 @@ module.exports = (function () {
         data,
         update_cover_req: update_cover ? req : false,
       });
+
       res.status(200).json({ status: "ok" });
 
       // TODO improve here

@@ -137,8 +137,22 @@ module.exports = (function () {
 
       if (update_cover_req) {
         await thumbs.removeFolderCover({ folder_type, folder_slug });
-        changed_meta.cover = await API.importCover({
+        await fs.remove(
+          utils.getPathToUserContent(
+            folder_type,
+            folder_slug,
+            "meta_cover.jpeg"
+          )
+        );
+
+        // TODO improved legibility
+        await API.saveCover({
           req: update_cover_req,
+          folder_type,
+          folder_slug,
+        }).catch((err) => {});
+
+        changed_meta.cover = await _getFolderCover({
           folder_type,
           folder_slug,
         });
@@ -169,7 +183,7 @@ module.exports = (function () {
       }
     },
 
-    importCover: async ({ req, folder_type, folder_slug }) => {
+    saveCover: async ({ req, folder_type, folder_slug }) => {
       dev.logfunction({ folder_type, folder_slug });
 
       if (!global.settings.schema[folder_type].hasOwnProperty("cover")) {
@@ -184,7 +198,7 @@ module.exports = (function () {
           folder_slug,
         })
         .catch((err) => {
-          dev.error(`Failed to handle form`, err);
+          return;
         });
 
       const cover_name = "meta_cover.jpeg";
@@ -198,12 +212,7 @@ module.exports = (function () {
       });
       await fs.remove(filepath);
 
-      let cover = await _getFolderCover({
-        folder_type,
-        folder_slug,
-      });
-
-      return cover;
+      return;
     },
   };
 
@@ -232,8 +241,7 @@ module.exports = (function () {
   async function _getFolderCover({ folder_type, folder_slug }) {
     dev.logfunction({ folder_type, folder_slug });
 
-    const cover = global.settings.schema[folder_type].cover;
-    if (!cover) return false;
+    if (!global.settings.schema[folder_type].cover) return false;
 
     const cover_name = "meta_cover.jpeg";
     const cover_path = utils.getPathToUserContent(

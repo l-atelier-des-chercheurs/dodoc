@@ -169,7 +169,7 @@ module.exports = (function () {
           dev.logverbose({ file });
 
           if (!file || !file.filepath)
-            throw { message: "No file meta to parse" };
+            return reject(new Error("No file to parse"));
 
           return resolve({
             folder_path,

@@ -223,7 +223,7 @@ export default {
     },
     removeImage: function () {
       this.image = "";
-      this.$emit("newPreview", false);
+      this.$emit("newPreview", "");
     },
 
     async tempMedia($event) {

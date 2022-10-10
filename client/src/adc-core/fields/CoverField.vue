@@ -15,8 +15,8 @@
       <div v-else class="_cover--picker">
         <ImageSelect
           v-if="edit_mode"
-          :existing_preview="false"
           :project_slug="project_slug"
+          :existing_preview="existing_preview"
           @newPreview="
             (value) => {
               new_cover_raw = value;
@@ -62,6 +62,14 @@ export default {
   computed: {
     can_be_edited() {
       return this.$api.is_logged_in;
+    },
+    existing_preview() {
+      return this.makeRelativeURLFromThumbs({
+        thumbs: this.cover,
+        type: "image",
+        project_slug: this.project_slug,
+        resolution: 320,
+      });
     },
   },
   methods: {
