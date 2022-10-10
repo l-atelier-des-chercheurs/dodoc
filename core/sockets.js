@@ -970,7 +970,7 @@ module.exports = (function () {
     )
       return;
 
-    const new_slugFolderName = await file.copyFolder({
+    new_folder_name = await file.copyFolder({
       type,
       slugFolderName,
       new_folder_name,
@@ -982,7 +982,7 @@ module.exports = (function () {
       detail: { type, slugFolderName, new_folder_name },
     });
 
-    await sendFolders({ type, slugFolderName: new_slugFolderName, id });
+    await sendFolders({ type, slugFolderName: new_folder_name, id });
   }
 
   function onUpdateNetworkInfos(socket) {
