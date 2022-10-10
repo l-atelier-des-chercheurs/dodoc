@@ -99,6 +99,11 @@ export default {
 
   > * {
   }
+
+  ::v-deep ._projectInfos {
+    min-height: 100%;
+    display: block;
+  }
 }
 
 ._title {

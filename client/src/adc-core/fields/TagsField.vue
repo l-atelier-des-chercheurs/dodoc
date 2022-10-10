@@ -45,7 +45,7 @@
       <template v-if="create_new_tag">
         <TextInput
           :content.sync="new_tag_name"
-          :maxlength="20"
+          :maxlength="maxlength"
           :required="true"
           @toggleValidity="($event) => (allow_save_newkeyword = $event)"
           @onEnter="onEnter"
@@ -84,6 +84,10 @@ export default {
       default: () => [],
     },
     path: String,
+    maxlength: {
+      type: [Boolean, Number],
+      default: 30,
+    },
     can_edit: Boolean,
   },
   components: {},

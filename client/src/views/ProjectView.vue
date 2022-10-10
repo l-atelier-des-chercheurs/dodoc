@@ -84,32 +84,6 @@
               </ul>
             </div>
           </sl-card>
-
-          <sl-card class="u-card">
-            <div slot="header">
-              Machines et matériaux
-              <sl-icon-button name="nut-fill" label="Avatar"></sl-icon-button>
-            </div>
-            <ul class="widget-content list-group list-group-lg no-bg auto">
-              <li
-                ng-repeat="machine in project.machines"
-                class="list-group-item no-b clearfix ng-scope"
-              >
-                <a
-                  ui-sref="app.public.machines_show({id: machine.id})"
-                  class="ng-binding"
-                  href="#!/machines/1"
-                  >Découpeuse laser Speedy 300</a
-                >
-              </li>
-              <li
-                ng-repeat="component in project.components"
-                class="list-group-item no-b clearfix ng-binding ng-scope"
-              >
-                Bois Medium
-              </li>
-            </ul>
-          </sl-card>
         </div>
       </div>
 

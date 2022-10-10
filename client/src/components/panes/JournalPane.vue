@@ -6,7 +6,7 @@
           variant="text"
           @click="show_create_entry = !show_create_entry"
         >
-          Créer une entrée
+          <sl-icon name="plus" label="Panneaux" />
         </sl-button>
         <form
           v-if="show_create_entry"

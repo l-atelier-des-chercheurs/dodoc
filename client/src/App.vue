@@ -146,9 +146,9 @@ html,
 body {
   // background: white;
   background-color: var(--c-bodybg);
-  background-size: 6px 6px;
 
   // diagonal lines
+  // background-size: 6px 6px;
   // background-image: repeating-linear-gradient(
   //   45deg,
   //   var(--body-bg-pattern-color) 0,

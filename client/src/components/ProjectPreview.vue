@@ -188,6 +188,8 @@ export default {
   flex-flow: row wrap;
   align-items: stretch;
 
+  // min-height: 100%;
+
   margin: 0 auto;
   overflow: hidden;
 
@@ -224,6 +226,37 @@ export default {
   width: 100%;
   aspect-ratio: 1/1;
   // max-width: 100vh;
+
+  --color1: transparent;
+  --color2: var(--c-gris);
+  background: radial-gradient(
+      circle,
+      transparent 20%,
+      var(--color1) 20%,
+      var(--color1) 80%,
+      transparent 80%,
+      transparent
+    ),
+    radial-gradient(
+        circle,
+        transparent 20%,
+        var(--color1) 20%,
+        var(--color1) 80%,
+        transparent 80%,
+        transparent
+      )
+      15px 15px,
+    linear-gradient(
+        var(--color2) 1.2000000000000002px,
+        transparent 1.2000000000000002px
+      )
+      0 -0.6000000000000001px,
+    linear-gradient(
+        90deg,
+        var(--color2) 1.2000000000000002px,
+        var(--color1) 1.2000000000000002px
+      ) -0.6000000000000001px 0;
+  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
 
   img {
     position: absolute;
