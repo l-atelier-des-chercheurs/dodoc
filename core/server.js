@@ -73,9 +73,7 @@ module.exports = function (router) {
   });
   app.use(express.static(global.pathToUserContent));
 
-  if (global.settings.frontEnd === "app")
-    app.use(express.static(path.join(global.appRoot, "app", "dist")));
-  else app.use(express.static(path.join(global.appRoot, "public")));
+  app.use(express.static(path.join(global.appRoot, "public")));
 
   app.use(
     express.static(path.join(global.appRoot, global.settings.cacheDirname))
