@@ -32,6 +32,7 @@
   "regexpMatchFolderNames": "^([^.]+)$",
   "regexpGetFileExtension": "\\.[^.]*$",
   "regexpRemoveFileExtension": "(.+?)(\\.[^.]*$|$)",
+  "frontEnd": "client",
 
   "api": {
     "enabled": false,

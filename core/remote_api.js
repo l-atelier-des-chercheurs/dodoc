@@ -278,9 +278,8 @@ module.exports = (function () {
                   if (!meta) {
                     // case of non-existent media (was removed recently for example)
                   } else {
-                    foldersData[slugFolderName].medias[
-                      k
-                    ]._source_media_meta = meta;
+                    foldersData[slugFolderName].medias[k]._source_media_meta =
+                      meta;
                   }
                   return resolve();
                 });

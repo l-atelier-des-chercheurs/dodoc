@@ -68,10 +68,10 @@ html
 
         local_options: {
           session_password: "!{global.session_password ? 'has_pass' : ''}",
-          force_login: !{global.force_login},
-          simple_login: !{global.simple_login},
-          require_email: !{global.require_email},
-          force_author_password: !{global.force_author_password},
+          force_login: !{global.session_options.force_login ? global.session_options.force_login : false},
+          simple_login: !{global.session_options.simple_login ? global.session_options.simple_login : false},
+          require_email: !{global.session_options.require_email ? global.session_options.require_email : false},
+          force_author_password: !{global.session_options.force_author_password ? global.session_options.force_author_password : false},
         },
 
         localNetworkInfos: {},
@@ -93,4 +93,8 @@ html
     #app
 
     script(src="/socket.io.js")
-    script(src=path_prefix + "dist/build.js")
+
+    if(global.settings.frontEnd === 'app')
+      script(src=path_prefix + "bundle.js")
+    else  
+      script(src=path_prefix + "dist/build.js")
