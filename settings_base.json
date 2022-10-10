@@ -190,6 +190,9 @@
         "description": {
           "type": "string"
         },
+        "keywords": {
+          "type": "array"
+        },
         "nfc_tag": {
           "type": "string"
         },

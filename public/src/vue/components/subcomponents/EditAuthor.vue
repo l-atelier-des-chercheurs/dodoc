@@ -67,6 +67,26 @@
       </template>
     </div>
 
+    <!-- Keywords -->
+    <div class="margin-bottom-small">
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_keywords }"
+          @click="show_keywords = !show_keywords"
+        >
+          {{ $t("keywords") }}
+        </button>
+      </label>
+      <template v-if="show_keywords">
+        <TagsInput
+          :keywords="authordata.keywords"
+          @tagsChanged="(newTags) => (authordata.keywords = newTags)"
+        />
+      </template>
+    </div>
+
     <div class="margin-bottom-small">
       <label>
         <button
@@ -136,16 +156,22 @@
   </form>
 </template>
 <script>
+import TagsInput from "../subcomponents/TagsInput.vue";
+
 export default {
   props: {
     read_only: Boolean,
     author: Object,
   },
-  components: {},
+  components: {
+    TagsInput,
+  },
   data() {
     return {
       show_image: !!this.author.preview,
+      show_keywords: !!this.author.keywords,
       show_nfc: !!this.author.nfc_tag,
+
       show_password: false,
 
       possible_roles: ["contributor", "participant", "admin"],
@@ -154,6 +180,7 @@ export default {
         name: this.author.name,
         email: this.author.email,
         role: this.author.role,
+        keywords: this.author.keywords,
         password: "",
         _old_password: "",
         nfc_tag: this.author.nfc_tag,

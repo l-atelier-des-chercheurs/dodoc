@@ -37,6 +37,16 @@
               $t("more_informations_on_authors")
             }}</small>
           </div>
+
+          <hr />
+
+          <TagsAndAuthorFilters
+            :allKeywords="authorsKeywords"
+            :keywordFilter="author_keyword_filter"
+            @setKeywordFilter="toggleKeywordFilter($event)"
+            class="padding-none"
+          />
+
           <div class="_searchField">
             <button
               type="button"
@@ -44,6 +54,25 @@
               :class="{ 'is--active': show_authors_search }"
               @click="show_authors_search = !show_authors_search"
             >
+              <svg
+                class="inline-svg"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px"
+                y="0px"
+                width="96.2px"
+                height="96.2px"
+                viewBox="0 0 96.2 96.2"
+                style="margin-bottom: -2px"
+                xml:space="preserve"
+              >
+                <path
+                  fill="currentColor"
+                  class="st0"
+                  d="M10.3,59.9c11.7,11.7,29.5,13.4,43,5.2l9.7,9.7l21.3,21.3l11.9-11.9L74.9,63l-9.7-9.7c8.2-13.5,6.4-31.3-5.2-43 C46.2-3.4,24-3.4,10.3,10.3C-3.4,24-3.4,46.2,10.3,59.9z M50.8,19.5c8.6,8.6,8.6,22.6,0,31.3c-8.6,8.6-22.6,8.6-31.3,0 c-8.6-8.6-8.6-22.6,0-31.3C28.1,10.8,42.1,10.8,50.8,19.5z"
+                />
+              </svg>
               {{ $t("author_name_to_find") }}
             </button>
 
@@ -70,6 +99,7 @@
             </div>
           </div>
         </div>
+
         <transition-group tag="div" class="m_authorsList" name="list-complete">
           <div class :key="'createAuthor'">
             <div class="m_authorsList--createAuthor">
@@ -89,14 +119,12 @@
             </div>
           </div>
 
-          <template v-if="Object.keys(sorted_authors).length > 0">
-            <template v-for="author in sorted_authors">
-              <Author
-                :author="author"
-                :key="author.slugFolderName"
-                @close="$emit('close')"
-              />
-            </template>
+          <template v-for="author in filtered_authors">
+            <Author
+              :author="author"
+              :key="author.slugFolderName"
+              @close="$emit('close')"
+            />
           </template>
         </transition-group>
       </div>
@@ -106,6 +134,7 @@
 <script>
 import Author from "./../subcomponents/Author.vue";
 import CreateAuthor from "./../subcomponents/CreateAuthor.vue";
+import TagsAndAuthorFilters from "../../components/subcomponents/TagsAndAuthorFilters.vue";
 
 export default {
   props: {
@@ -121,6 +150,7 @@ export default {
   components: {
     Author,
     CreateAuthor,
+    TagsAndAuthorFilters,
   },
   data() {
     return {
@@ -134,6 +164,8 @@ export default {
       author_name_filter: "",
       debounce_search_author_name: "",
       debounce_search_author_name_function: undefined,
+
+      author_keyword_filter: "",
     };
   },
 
@@ -166,34 +198,56 @@ export default {
     },
   },
   computed: {
+    authorsKeywords: function () {
+      return this.$root.getAllKeywordsFrom(this.authors);
+    },
+
     sorted_authors() {
-      let sorted_authors = Object.values(this.authors).sort((a, b) =>
+      return Object.values(this.authors).sort((a, b) =>
         a.name && b.name ? a.name.localeCompare(b.name) : false
       );
+    },
+    filtered_authors() {
+      let filtered_authors = this.sorted_authors;
 
       // move current author to top
       if (this.$root.current_author) {
-        sorted_authors.some(
+        filtered_authors.some(
           (item, idx) =>
             item.slugFolderName === this.$root.current_author.slugFolderName &&
-            sorted_authors.unshift(
+            filtered_authors.unshift(
               // remove the found item, in-place (by index with splice),
               // returns an array of a single item removed
-              sorted_authors.splice(idx, 1)[0]
+              filtered_authors.splice(idx, 1)[0]
             )
         );
       }
 
       if (this.author_name_filter) {
-        sorted_authors = sorted_authors.filter((a) =>
+        filtered_authors = filtered_authors.filter((a) =>
           a.name.toLowerCase().includes(this.author_name_filter.toLowerCase())
         );
       }
 
-      return sorted_authors;
+      if (this.author_keyword_filter) {
+        filtered_authors = filtered_authors.filter((a) => {
+          return (
+            a.hasOwnProperty("keywords") &&
+            typeof a.keywords === "object" &&
+            a.keywords.some((k) => k.title === this.author_keyword_filter)
+          );
+        });
+      }
+
+      return filtered_authors;
     },
   },
-  methods: {},
+  methods: {
+    toggleKeywordFilter(value) {
+      this.author_keyword_filter =
+        this.author_keyword_filter === value ? "" : value;
+    },
+  },
 };
 </script>
 <style scoped lang="scss">

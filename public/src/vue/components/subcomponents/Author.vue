@@ -100,6 +100,22 @@
         <div class="m_author--role" v-if="author.role">
           <label>{{ $t(author.role) }}</label>
         </div>
+        <div class="m_author--keywords" v-if="author.keywords">
+          <div class="m_keywordField">
+            <span
+              v-for="keyword in author.keywords"
+              :key="keyword.title"
+              :class="[
+                'tagcolorid_' + (parseInt(keyword.title, 36) % 2),
+                {
+                  'is--active':
+                    $root.settings.project_filter.keyword === keyword.title,
+                },
+              ]"
+              >{{ keyword.title }}</span
+            >
+          </div>
+        </div>
 
         <div class="m_author--connected" v-if="author_is_connected" @click.stop>
           <label class="">
