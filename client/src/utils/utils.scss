@@ -48,21 +48,30 @@
   letter-spacing: 0.06em;
 }
 
-.u-button_big {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-  border-radius: var(--input-border-radius);
-}
-
 .u-button {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  font-size: var(--input-font-size-small);
+  text-decoration: none;
+  color: inherit;
 
   svg,
   .inlineSVG {
     width: 2em;
     height: 2em;
   }
+}
+.u-button_red {
+  background-color: var(--c-rouge);
+  color: white;
+}
+.u-button_big {
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  border-radius: var(--input-border-radius);
 }
 
 input[type="color"],

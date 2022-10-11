@@ -59,17 +59,17 @@
         :path="`/projects/${project.slug}`"
         :can_edit="can_edit_project"
       />
+    </div>
 
-      <br />
-
+    <div class="_projectInfos--open">
       <router-link
         :to="`/projects/${project.slug}`"
-        class=""
+        class="u-button u-button_big u-button_red"
         v-if="context === 'list'"
       >
-        <sl-button size="small" variant="primary" pill>ouvrir</sl-button>
+        ouvrir&nbsp;
+        <sl-icon name="arrow-up-right" />
       </router-link>
-      <!-- </div> -->
     </div>
   </div>
 </template>
@@ -188,7 +188,8 @@ export default {
   flex-flow: row wrap;
   align-items: stretch;
 
-  // min-height: 100%;
+  border-bottom: 2px solid #b9b9b9;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
   margin: 0 auto;
   overflow: hidden;
@@ -203,8 +204,8 @@ export default {
 ._projectInfos--meta {
   display: flex;
   flex-flow: column nowrap;
-  gap: calc(var(--spacing) * 1);
-  padding: calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) * 1);
   place-content: center;
 
   transition: all 0.4s;
@@ -284,5 +285,11 @@ export default {
 
 ._content {
   max-width: 80ch;
+}
+
+._projectInfos--open {
+  display: flex;
+  justify-content: center;
+  margin: calc(var(--spacing) * 1);
 }
 </style>
