@@ -5,6 +5,7 @@
       ref="coverImage"
       :class="{
         'is--fullscreen': is_fullscreen,
+        'is--empty': !cover_thumb,
       }"
     >
       <template v-if="cover_thumb">
@@ -61,11 +62,10 @@
       />
     </div>
 
-    <div class="_projectInfos--open">
+    <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link
         :to="`/projects/${project.slug}`"
         class="u-button u-button_big u-button_red"
-        v-if="context === 'list'"
       >
         ouvrir&nbsp;
         <sl-icon name="arrow-up-right" />
@@ -230,34 +230,37 @@ export default {
 
   --color1: transparent;
   --color2: var(--c-gris);
-  background: radial-gradient(
-      circle,
-      transparent 20%,
-      var(--color1) 20%,
-      var(--color1) 80%,
-      transparent 80%,
-      transparent
-    ),
-    radial-gradient(
+
+  &.is--empty {
+    background: radial-gradient(
         circle,
         transparent 20%,
         var(--color1) 20%,
         var(--color1) 80%,
         transparent 80%,
         transparent
-      )
-      15px 15px,
-    linear-gradient(
-        var(--color2) 1.2000000000000002px,
-        transparent 1.2000000000000002px
-      )
-      0 -0.6000000000000001px,
-    linear-gradient(
-        90deg,
-        var(--color2) 1.2000000000000002px,
-        var(--color1) 1.2000000000000002px
-      ) -0.6000000000000001px 0;
-  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+      ),
+      radial-gradient(
+          circle,
+          transparent 20%,
+          var(--color1) 20%,
+          var(--color1) 80%,
+          transparent 80%,
+          transparent
+        )
+        15px 15px,
+      linear-gradient(
+          var(--color2) 1.2000000000000002px,
+          transparent 1.2000000000000002px
+        )
+        0 -0.6000000000000001px,
+      linear-gradient(
+          90deg,
+          var(--color2) 1.2000000000000002px,
+          var(--color1) 1.2000000000000002px
+        ) -0.6000000000000001px 0;
+    background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+  }
 
   img {
     position: absolute;

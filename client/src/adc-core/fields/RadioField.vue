@@ -4,19 +4,28 @@
       {{ $t(new_content) }}
     </template>
     <template v-else>
-      <sl-radio-group
+      <!-- <sl-radio-group
         v-model="new_content"
         label="Select an option"
         name="a"
         value="1"
-      >
-        <div v-for="option in options" :key="option.key">
-          <sl-radio :value="option.key" v-text="$t(option.key)" />
-          <small v-html="$t(option.text)" />
-          <br />
-          <br />
+      > -->
+      <div v-for="option in options" :key="option.key">
+        <div>
+          <input
+            type="radio"
+            v-model="new_content"
+            :name="option.key"
+            :id="'radioi-' + option.key"
+            :value="option.key"
+          />
+          <label :for="'radioi-' + option.key">{{ $t(option.key) }}</label>
         </div>
-      </sl-radio-group>
+        <small v-html="$t(option.text)" />
+        <br />
+        <br />
+      </div>
+      <!-- </sl-radio-group> -->
     </template>
 
     <!-- <select v-model="new_content" :disabled="!edit_mode">

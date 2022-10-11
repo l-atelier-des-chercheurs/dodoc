@@ -738,7 +738,7 @@ export default {
       height: auto;
       overflow: visible;
 
-      margin: 0 0 0 calc(var(--spacing) * 2);
+      padding: 0 0 0 calc(var(--spacing) * 2);
       background-color: white;
 
       padding-bottom: calc(1.42em * 10);

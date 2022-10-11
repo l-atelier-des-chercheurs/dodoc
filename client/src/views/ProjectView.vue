@@ -255,5 +255,6 @@ export default {
 ._topContent {
   max-width: 120vh;
   margin: 0 auto;
+  padding: calc(var(--spacing) / 2);
 }
 </style>

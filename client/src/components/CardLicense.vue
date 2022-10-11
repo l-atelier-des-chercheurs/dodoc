@@ -33,11 +33,15 @@ export default {
         },
         {
           key: "all_rights_reserved",
-          text: "invisible_status_explanations",
+          text: "all_rights_reserved_explanations",
         },
         {
           key: "copyleft",
           text: "copyleft_explanations",
+        },
+        {
+          key: "custom_licence",
+          text: "custom_licence_explanations",
         },
       ],
     };

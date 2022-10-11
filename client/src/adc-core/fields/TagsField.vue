@@ -174,7 +174,7 @@ export default {
   display: inline-flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 4);
-  margin-right: calc(var(--spacing) / 2);
+  margin-right: calc(var(--spacing) / 4);
 }
 
 ._topLabel {
