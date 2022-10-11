@@ -1,9 +1,0 @@
-title = "Exemple de projet"
-keywords = [ "do•doc", "Découpe laser", "Installation", "Impression 3D" ]
-
-[infos]
-date_created = 1979-05-27T07:32:00Z
-date_modified = 1979-05-27T07:32:00Z
-who_can_edit = "everybody"
-who_can_view = "everybody"
-password = ""

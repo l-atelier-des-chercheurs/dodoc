@@ -4,17 +4,13 @@ const path = require("path"),
   { path: ffprobePath } = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
-  sharp = require("sharp"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
   https = require("https"),
   StlThumbnailer = require("stl-thumbnailer-node"),
   PdfExtractor = require("pdf-extractor").PdfExtractor;
 
-sharp.cache(false);
-
 const utils = require("./utils");
-const { ffprobe } = require("fluent-ffmpeg");
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
@@ -174,6 +170,8 @@ module.exports = (function () {
     },
     removeFolderThumbs: ({ folder_type, folder_slug }) =>
       removeFolderThumbs({ folder_type, folder_slug }),
+    removeFolderCover: ({ folder_type, folder_slug }) =>
+      removeFolderCover({ folder_type, folder_slug }),
     removeFileThumbs: ({ folder_type, folder_slug, meta_slug }) =>
       removeFileThumbs({ folder_type, folder_slug, meta_slug }),
   };
@@ -295,6 +293,17 @@ module.exports = (function () {
 
     return await fs.remove(full_path_to_thumb);
   }
+  async function removeFolderCover({ folder_type, folder_slug }) {
+    dev.logfunction({
+      folder_type,
+      folder_slug,
+    });
+    return await _removeAllThumbsForFile({
+      folder_type,
+      folder_slug,
+      media_filename: "meta_cover.jpeg",
+    });
+  }
   async function removeFileThumbs({ folder_type, folder_slug, meta_slug }) {
     dev.logfunction({
       folder_type,
@@ -305,6 +314,18 @@ module.exports = (function () {
     let meta = await utils.readMetaFile(folder_type, folder_slug, meta_slug);
     const media_filename = meta.media_filename;
 
+    return await _removeAllThumbsForFile({
+      folder_type,
+      folder_slug,
+      media_filename,
+    });
+  }
+
+  async function _removeAllThumbsForFile({
+    folder_type,
+    folder_slug,
+    media_filename,
+  }) {
     const full_path_to_thumb = utils.getPathToUserContent(
       "thumbs",
       folder_type,
@@ -326,7 +347,6 @@ module.exports = (function () {
       for (const filename of files) {
         await fs.remove(path.join(full_path_to_thumb, filename));
       }
-
       return;
     } catch (err) {
       dev.logverbose("No thumbs to remove");
@@ -359,19 +379,32 @@ module.exports = (function () {
     let thumb_paths = {};
 
     for (const resolution of resolutions) {
-      const thumb_name = `${media_filename}.${resolution}.jpeg`;
+      let thumb_name = `${media_filename}.${resolution}.jpeg`;
       const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
       const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
 
       if (!(await fs.pathExists(full_path_to_thumb))) {
         dev.log(`Missing thumb at`, full_path_to_thumb);
-        await _makeImageFromPath({
+        await utils.makeImageFromPath({
           full_path: full_media_path,
           new_path: full_path_to_thumb,
           resolution,
         });
         dev.log(`--> made thumb`);
       }
+
+      // append modified timestamp to buste caching
+      // example: sending an image, removing it, then sending another image with the same name
+      // caching client-side will be wrong
+      try {
+        const { mtimems } = await _readFileInfos({
+          full_media_path: full_path_to_thumb,
+        });
+        if (mtimems) thumb_name += "?v=" + mtimems;
+      } catch (err) {
+        dev.error(err);
+      }
+
       thumb_paths[resolution] = thumb_name;
     }
 
@@ -380,28 +413,10 @@ module.exports = (function () {
     return thumb_paths;
   }
 
-  async function _makeImageFromPath({ full_path, new_path, resolution }) {
-    await sharp(full_path)
-      .rotate()
-      .resize(resolution, resolution, {
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .flatten({ background: "white" })
-      .withMetadata()
-      .toFormat("jpeg", {
-        quality: global.settings.mediaThumbQuality,
-      })
-      .toFile(new_path)
-      .catch((err) => {
-        throw err;
-      });
-  }
-
   async function _readImageExif({ full_media_path }) {
     dev.logfunction({ full_media_path });
 
-    const metadata = await sharp(full_media_path).metadata();
+    const metadata = await utils.getImageMetadata({ full_media_path });
 
     if (!metadata) return false;
 
@@ -607,6 +622,7 @@ module.exports = (function () {
         .then((stats) => {
           return resolve({
             size: stats.size,
+            mtimems: Math.floor(stats.mtimeMs),
           });
         })
         .catch((err) => {
@@ -677,8 +693,8 @@ module.exports = (function () {
 
     const _image = await fetch(full_url);
     const image_buffer = await _image.buffer();
-    await sharp(image_buffer).toFile(full_path_to_thumb);
 
+    await utils.imageBufferToFile({ image_buffer, full_path_to_thumb });
     return;
   }
 

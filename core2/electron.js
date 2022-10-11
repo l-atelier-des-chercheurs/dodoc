@@ -1,4 +1,11 @@
-const { app, BrowserWindow, Menu, shell, ipcMain } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  shell,
+  ipcMain,
+  dialog,
+} = require("electron");
 const path = require("path");
 
 app.commandLine.appendSwitch("ignore-certificate-errors", "true");
@@ -8,18 +15,25 @@ app.commandLine.appendSwitch("disable-http-cache", "true");
 const electronPDFWindow = require("electron-pdf-window");
 
 const windowStateKeeper = require("electron-window-state");
+const Store = require("electron-store");
 
 module.exports = (function () {
+  const store = new Store();
+  let win;
+
   return {
     init: () => {
       return new Promise(function (resolve, reject) {
-        let win;
+        // check if a custom storage path was set
+        const custom_storage_path = store.get("custom_content_path");
+        if (custom_storage_path)
+          global.settings.contentPath = custom_storage_path;
 
         // This method will be called when Electron has finished
         // initialization and is ready to create browser windows.
         // Some APIs can only be used after this event occurs.
         app.on("ready", () => {
-          console.log(`ELECTRON — init : ready`);
+          dev.log(`ELECTRON — init : ready`);
           createWindow().then((_win) => {
             dev.logfunction(`ELECTRON — init : ready / window created`);
             win = _win;
@@ -67,7 +81,7 @@ module.exports = (function () {
 
   function createWindow() {
     return new Promise(function (resolve, reject) {
-      console.log(`ELECTRON — createWindow`);
+      dev.logfunction();
 
       let mainWindowState = windowStateKeeper({
         defaultWidth: 1000,
@@ -81,9 +95,9 @@ module.exports = (function () {
         width: mainWindowState.width,
         height: mainWindowState.height,
         backgroundColor: "#EBEBEB",
-        titleBarStyle: "hidden",
+        // titleBarStyle: "hidden",
         show: true,
-        title: "do•doc",
+        title: global.appInfos.productName,
         icon: path.join(global.appRoot, "build", "icon.png"),
 
         webPreferences: {
@@ -111,7 +125,7 @@ module.exports = (function () {
 
       // Emitted when the window is closed.
       win.on("closed", () => {
-        console.log(`ELECTRON — createWindow : closed`);
+        dev.log(`ELECTRON — createWindow : closed`);
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
@@ -119,7 +133,7 @@ module.exports = (function () {
       });
 
       win.on("ready-to-show", function () {
-        console.log(`ELECTRON — createWindow : ready-to-show`);
+        dev.log(`ELECTRON — createWindow : ready-to-show`);
         win.show();
         win.focus();
       });
@@ -127,12 +141,27 @@ module.exports = (function () {
       ipcMain.on("toMain", (event, args) => {
         if (args.type === "open_path") shell.openPath(args.path);
         else if (args.type === "open_external") shell.openExternal(args.url);
+        else if (args.type === "get_path") _pickPath();
 
         // Send result back to renderer process
         // win.webContents.send("fromMain", responseObj);
       });
 
       return resolve(win);
+    });
+  }
+
+  async function _pickPath() {
+    dev.logfunction();
+    const result = await dialog.showOpenDialog(win, {
+      properties: ["openDirectory", "createDirectory"],
+    });
+    if (result.canceled) return false;
+
+    const path_to_content = result.filePaths[0];
+    win.webContents.send("fromMain", {
+      type: "new_path",
+      path_to_content,
     });
   }
 
@@ -268,7 +297,7 @@ module.exports = (function () {
       },
     ];
 
-    menu = Menu.buildFromTemplate(template);
+    const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
   }
 })();

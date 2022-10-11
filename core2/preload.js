@@ -26,7 +26,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
         thumbnail: el.thumbnail.toDataURL(),
       }));
     } catch (err) {
-      log.error(`${ns}${fn} error getting sources: ${err}`);
+      dev.error(`${ns}${fn} error getting sources: ${err}`);
       throw err;
     }
   },

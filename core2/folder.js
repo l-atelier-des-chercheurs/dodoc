@@ -49,7 +49,6 @@ module.exports = (function () {
       if (cover) folder_meta.cover = cover;
 
       // TODO get number of files if files in schema
-
       cache.set({
         key: `${folder_type}/${folder_slug}`,
         value: folder_meta,
@@ -99,19 +98,23 @@ module.exports = (function () {
 
       return folder_slug;
     },
-
-    updateFolder: async ({ folder_type, folder_slug, data }) => {
+    updateFolder: async ({
+      folder_type,
+      folder_slug,
+      data,
+      update_cover_req,
+    }) => {
       dev.logfunction({ folder_type, folder_slug, data });
 
       // get folder meta
       let meta = await utils.readMetaFile(folder_type, folder_slug, "meta.txt");
       const previous_meta = { ...meta };
 
-      let { cover, ...new_meta } = data;
+      let { ...new_meta } = data;
 
-      // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the typ
+      // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the type
       if (new_meta) {
-        const clean_meta = _cleanNewMeta({
+        const clean_meta = utils.cleanNewMeta({
           folder_type,
           new_meta,
         });
@@ -126,19 +129,34 @@ module.exports = (function () {
         meta,
       });
 
-      // TODO update cover
-      if (cover) {
-        // remove cover thumbs
-      }
-
-      // TODO update
-
-      // return changed meta only
-      const changed_meta = Object.keys(meta).reduce((acc, key) => {
+      let changed_meta = Object.keys(meta).reduce((acc, key) => {
         if (JSON.stringify(meta[key]) !== JSON.stringify(previous_meta[key]))
           acc[key] = meta[key];
         return acc;
       }, {});
+
+      if (update_cover_req) {
+        await thumbs.removeFolderCover({ folder_type, folder_slug });
+        await fs.remove(
+          utils.getPathToUserContent(
+            folder_type,
+            folder_slug,
+            "meta_cover.jpeg"
+          )
+        );
+
+        // TODO improved legibility
+        await API.saveCover({
+          req: update_cover_req,
+          folder_type,
+          folder_slug,
+        }).catch((err) => {});
+
+        changed_meta.cover = await _getFolderCover({
+          folder_type,
+          folder_slug,
+        });
+      }
 
       cache.delete({
         key: `${folder_type}/${folder_slug}`,
@@ -164,6 +182,38 @@ module.exports = (function () {
         throw err;
       }
     },
+
+    saveCover: async ({ req, folder_type, folder_slug }) => {
+      dev.logfunction({ folder_type, folder_slug });
+
+      if (!global.settings.schema[folder_type].hasOwnProperty("cover")) {
+        dev.error(`no cover allowed on ${folder_type}`);
+        return;
+      }
+
+      const { folder_path, filepath } = await utils
+        .handleForm({
+          req,
+          folder_type,
+          folder_slug,
+        })
+        .catch((err) => {
+          return;
+        });
+
+      const cover_name = "meta_cover.jpeg";
+      const full_path_to_thumb = path.join(folder_path, cover_name);
+
+      // TODO read filepath with sharp,
+      await utils.makeImageFromPath({
+        full_path: filepath,
+        new_path: full_path_to_thumb,
+        resolution: 2000,
+      });
+      await fs.remove(filepath);
+
+      return;
+    },
   };
 
   async function _getFolderSlugs({ folder_type }) {
@@ -188,22 +238,10 @@ module.exports = (function () {
     }
   }
 
-  function _cleanNewMeta({ folder_type, new_meta }) {
-    dev.logfunction({ folder_type, new_meta });
-
-    global.settings.schema[folder_type];
-
-    // check fields that exist in schema
-    // TODO
-
-    return new_meta;
-  }
-
   async function _getFolderCover({ folder_type, folder_slug }) {
     dev.logfunction({ folder_type, folder_slug });
 
-    const cover = global.settings.schema[folder_type].cover;
-    if (!cover) return false;
+    if (!global.settings.schema[folder_type].cover) return false;
 
     const cover_name = "meta_cover.jpeg";
     const cover_path = utils.getPathToUserContent(

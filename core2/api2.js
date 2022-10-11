@@ -26,6 +26,11 @@ module.exports = (function () {
       _getLocalNetworkInfos
     );
     app.get(
+      "/_api2/_admin",
+      [cors(_corsCheck), _sessionPasswordCheck],
+      _getAdminInfos
+    );
+    app.get(
       "/_api2/:folder_type",
       [cors(_corsCheck), _sessionPasswordCheck],
       _getFolders
@@ -35,6 +40,12 @@ module.exports = (function () {
       [cors(_corsCheck), _sessionPasswordCheck],
       _getFolderWithFiles
     );
+    app.get(
+      "/_api2/:folder_type/:folder_slug/:meta_slug/_archives",
+      [cors(_corsCheck), _sessionPasswordCheck],
+      _getArchives
+    );
+
     app.post(
       "/_api2/:folder_type",
       [cors(_corsCheck), _sessionPasswordCheck],
@@ -143,6 +154,28 @@ module.exports = (function () {
     cache.printStatus();
   }
 
+  async function _getArchives(req, res, next) {
+    let { folder_type, folder_slug, meta_slug } = req.params;
+    dev.logfunction({ folder_type, folder_slug });
+
+    const hrstart = process.hrtime();
+
+    try {
+      const file_archives = await file.getArchives({
+        folder_type,
+        folder_slug,
+        meta_filename: meta_slug,
+      });
+      res.json(file_archives);
+    } catch (err) {
+      dev.error(err);
+      res.status(500).send(err);
+    }
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  }
+
   async function _createFolder(req, res, next) {
     let folder_type = req.params.folder_type;
     const data = req.body;
@@ -165,7 +198,7 @@ module.exports = (function () {
         folder_slug: new_folder_slug,
       });
 
-      notifier.emit("createFolder", `${folder_type}`, {
+      notifier.emit("folderCreated", `${folder_type}`, {
         folder_type,
         meta: new_folder_meta,
       });
@@ -179,11 +212,11 @@ module.exports = (function () {
   }
 
   async function _updateFolder(req, res, next) {
-    let folder_type = req.params.folder_type;
-    let folder_slug = req.params.folder_slug;
+    let { folder_type, folder_slug } = req.params;
     const data = req.body;
+    const update_cover = req.query && req.query.hasOwnProperty("cover");
 
-    dev.logfunction({ folder_type, folder_slug, data });
+    dev.logfunction({ folder_type, folder_slug, data, update_cover });
 
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!global.settings.schema.hasOwnProperty(folder_type))
@@ -198,10 +231,18 @@ module.exports = (function () {
         folder_type,
         folder_slug,
         data,
+        update_cover_req: update_cover ? req : false,
       });
+
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("updateFolder", `${folder_type}`, {
+      // TODO improve here
+      notifier.emit("folderUpdated", `${folder_type}`, {
+        folder_type,
+        folder_slug,
+        changed_data,
+      });
+      notifier.emit("folderUpdated", `${folder_type}/${folder_slug}`, {
         folder_type,
         folder_slug,
         changed_data,
@@ -216,8 +257,7 @@ module.exports = (function () {
   }
 
   async function _removeFolder(req, res, next) {
-    let folder_type = req.params.folder_type;
-    let folder_slug = req.params.folder_slug;
+    let { folder_type, folder_slug } = req.params;
 
     dev.logfunction({ folder_type, folder_slug });
 
@@ -234,22 +274,58 @@ module.exports = (function () {
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("removeFolder", `${folder_type}`, {
+      notifier.emit("folderRemoved", `${folder_type}`, {
         folder_type,
         folder_slug,
       });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
-      res.status(500).send(err);
+      res.status(404).send(err);
     }
 
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
 
+  // async function _updateCover(req, res, next) {
+  //   let { folder_type, folder_slug } = req.params;
+
+  //   dev.logfunction({ folder_type, folder_slug });
+
+  //   if (!folder_type) return res.status(422).send("Missing folder_type field");
+  //   if (!folder_slug) return res.status(422).send("Missing folder_slug field");
+
+  //   const hrstart = process.hrtime();
+
+  //   try {
+  //     const changed_data = await folder.updateFolder({
+  //       folder_type,
+  //       folder_slug,
+  //       req,
+  //     });
+
+  //     // notify
+  //     notifier.emit("folderUpdated", `${folder_type}`, {
+  //       folder_type,
+  //       folder_slug,
+  //       changed_data,
+  //     });
+  //     notifier.emit("folderUpdated", `${folder_type}/${folder_slug}`, {
+  //       folder_type,
+  //       folder_slug,
+  //       changed_data,
+  //     });
+  //   } catch (err) {
+  //     dev.error("Failed to upload file: " + err);
+  //     res.status(500).send(err);
+  //   }
+
+  //   let hrend = process.hrtime(hrstart);
+  //   dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  // }
+
   async function _uploadFile(req, res, next) {
-    let folder_type = req.params.folder_type;
-    let folder_slug = req.params.folder_slug;
+    let { folder_type, folder_slug } = req.params;
 
     dev.logfunction({ folder_type, folder_slug });
 
@@ -273,7 +349,7 @@ module.exports = (function () {
         meta_filename,
       });
 
-      notifier.emit("newFile", `${folder_type}/${folder_slug}`, {
+      notifier.emit("fileCreated", `${folder_type}/${folder_slug}`, {
         folder_type,
         folder_slug,
         file_meta,
@@ -310,14 +386,14 @@ module.exports = (function () {
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("updateFile", `${folder_type}/${folder_slug}`, {
+      notifier.emit("fileUpdated", `${folder_type}/${folder_slug}`, {
         folder_type,
         folder_slug,
         meta_slug,
         changed_data,
       });
     } catch (err) {
-      dev.error("Failed to update content: " + err);
+      dev.error("Failed to update content: " + err.message);
       res.status(500).send(err);
     }
 
@@ -326,9 +402,7 @@ module.exports = (function () {
   }
 
   async function _removeFile(req, res, next) {
-    let folder_type = req.params.folder_type;
-    let folder_slug = req.params.folder_slug;
-    let meta_slug = req.params.meta_slug;
+    let { folder_type, folder_slug, meta_slug } = req.params;
 
     dev.logfunction({ folder_type, folder_slug, meta_slug });
 
@@ -347,14 +421,14 @@ module.exports = (function () {
       // res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("removeFile", `${folder_type}/${folder_slug}`, {
+      notifier.emit("fileRemoved", `${folder_type}/${folder_slug}`, {
         folder_type,
         folder_slug,
         meta_slug,
       });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
-      res.status(500).send(err);
+      res.status(404).send(err);
     }
 
     let hrend = process.hrtime(hrstart);
@@ -363,13 +437,16 @@ module.exports = (function () {
 
   function _getLocalNetworkInfos(req, res, next) {
     dev.logfunction();
-    const hrstart = process.hrtime();
-
     const local_ips = utils.getLocalIP();
     res.status(200).json(local_ips);
-
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  }
+  function _getAdminInfos(req, res, next) {
+    // TODO only available to admins
+    dev.logfunction();
+    // get storage path
+    res.status(200).json({
+      pathToUserContent: pathToUserContent,
+    });
   }
 
   return API;

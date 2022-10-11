@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 
 Vue.config.productionTip = false;
+const debug_mode = true;
 
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
@@ -14,23 +15,57 @@ Vue.prototype.$alertify = alertify;
 import api from "./adc-core/api.js";
 Vue.prototype.$api = api();
 
-// import "@shoelace-style/shoelace/dist/themes/light.css";
-// import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path";
-// setBasePath(
-//   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.75/dist/"
-// );
 import ShoelaceModelDirective from "@shoelace-style/vue-sl-model";
 Vue.config.ignoredElements = [/^sl-/];
 Vue.use(ShoelaceModelDirective);
 
-import TitleField from "@/components/fields/TitleField.vue";
+import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
-import TextField from "@/components/fields/TextField.vue";
+import TagsField from "@/adc-core/fields/TagsField.vue";
+Vue.component("TagsField", TagsField);
+import CoverField from "@/adc-core/fields/CoverField.vue";
+Vue.component("CoverField", CoverField);
+import SelectField from "@/adc-core/fields/SelectField.vue";
+Vue.component("SelectField", SelectField);
+import RadioField from "@/adc-core/fields/RadioField.vue";
+Vue.component("RadioField", RadioField);
+
+import TextInput from "@/adc-core/fields/TextInput.vue";
+Vue.component("TextInput", TextInput);
+import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
+Vue.component("ImageSelect", ImageSelect);
+
+import TextField from "@/adc-core/fields/TextField.vue";
 Vue.component("TextField", TextField);
-import MetaFieldHeader from "@/components/fields/MetaFieldHeader.vue";
+
+import MetaFieldHeader from "@/adc-core/fields/MetaFieldHeader.vue";
 Vue.component("MetaFieldHeader", MetaFieldHeader);
-import SaveCancelButtons from "@/components/fields/SaveCancelButtons.vue";
+
+import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
+
+import DateField from "@/adc-core/fields/DateField.vue";
+Vue.component("DateField", DateField);
+
+import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
+Vue.component("UploadFiles", UploadFiles);
+
+import MediaContent from "@/adc-core/fields/MediaContent.vue";
+Vue.component("MediaContent", MediaContent);
+
+Vue.component("LoaderSpinner", {
+  name: "LoaderSpinner",
+  template: `
+    <div class="_loader">
+      <span class="loader" />
+    </div>
+  `,
+});
+
+import FormatDates from "./mixins/FormatDates";
+Vue.mixin(FormatDates);
+import Medias from "./mixins/Medias";
+Vue.mixin(Medias);
 
 import "axios-debug-log/enable";
 import axios from "axios";
@@ -40,13 +75,13 @@ const instance = axios.create({
   //   Origin: window.location.origin,
   // },
 });
+
 instance.interceptors.request.use((request) => {
-  alertify
-    .delay(4000)
-    .success(
-      `${request.method} + ${request.url} + ${
-        request.data ? JSON.stringify(request.data) : "no-data"
-      }`
+  if (debug_mode)
+    alertify.delay(4000).log(
+      `⤒ — ${request.method} + ${request.url}
+      ${request.data ? `+ ` + JSON.stringify(request.data).slice(0, 20) : ""}
+      `
     );
   return request;
 });
@@ -58,26 +93,47 @@ new Vue({
   render: (h) => h(App),
   data: {
     store: window.store,
+    app_infos: window.app_infos,
     is_connected: false,
+    is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
+    dev_mode: true,
+    publicPath: process.env.BASE_URL,
+
+    window: {
+      innerWidth: window.innerWidth,
+      innerHeight: window.innerHeight,
+    },
   },
   mounted() {
-    this.$api.init();
+    this.$api.init({ debug_mode });
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
     this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
+
+    window.addEventListener("resize", () => {
+      this.window.innerWidth = window.innerWidth;
+      this.window.innerHeight = window.innerHeight;
+    });
   },
   watch: {
     "$api.socket.connected": function () {
       this.is_connected = this.$api.socket.connected;
     },
   },
+  computed: {
+    is_mobile_view() {
+      return false;
+      // return this.window.innerWidth < 700;
+    },
+  },
   methods: {
     socketConnected() {
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .success(`Connected or reconnected with id ${this.$api.socket.id}`);
+      if (this.debug_mode)
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(`Connected or reconnected with id ${this.$api.socket.id}`);
     },
     socketDisconnected(reason) {
       this.$alertify
@@ -90,6 +146,26 @@ new Vue({
         .closeLogOnClick(true)
         .delay(4000)
         .error(`Connect error ${reason}`);
+    },
+    formatBytes(a, b) {
+      if (0 == a) return `0 ${this.$t("bytes")}`;
+
+      var e = [
+        this.$t("bytes"),
+        this.$t("kb"),
+        this.$t("mb"),
+        this.$t("gb"),
+        "TB",
+        "PB",
+        "EB",
+        "ZB",
+        "YB",
+      ];
+
+      var c = 1024,
+        d = b || 2,
+        f = Math.floor(Math.log(a) / Math.log(c));
+      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f];
     },
   },
 }).$mount("#app");

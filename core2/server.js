@@ -8,8 +8,8 @@ var path = require("path"),
 const { Server } = require("socket.io");
 
 const sockets = require("./sockets"),
-  api2 = require("./api2");
-// setup_realtime_collaboration = require("./server-realtime_text_collaboration.js");
+  api2 = require("./api2"),
+  serverRTC = require("./serverRTC.js");
 
 module.exports = function () {
   dev.logverbose("Starting server 1");
@@ -86,7 +86,7 @@ module.exports = function () {
   app.use(express.json()); // To parse the incoming requests with JSON payloads
   app.locals.pretty = true;
 
-  // setup_realtime_collaboration(server);
+  serverRTC(server);
   api2.init(app);
 
   dev.logverbose("Starting server 3");

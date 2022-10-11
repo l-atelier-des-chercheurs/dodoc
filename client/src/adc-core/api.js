@@ -6,9 +6,13 @@ export default function () {
     data: {
       socket: "",
       store: {},
+      is_logged_in: true,
+      debug_mode: false,
     },
+    created() {},
     methods: {
-      init() {
+      init({ debug_mode }) {
+        this.debug_mode = debug_mode;
         this.initSchema();
         this.initSocketio();
       },
@@ -52,15 +56,26 @@ export default function () {
         });
 
         this.socket.onAny((eventName, ...args) => {
-          this.$alertify.delay(4000).success(eventName + JSON.stringify(args));
+          // truncate long strings in content (long texts for example)
+          const _args = JSON.parse(JSON.stringify(args));
+          if (_args[0].changed_data?.content)
+            _args[0].changed_data.content = "…";
+          // if (_args[0].changed_data?.content)
+          //   _args[0].changed_data.content =
+          //     _args[0].changed_data?.content.slice(0, 15) +
+          //     "[…] (truncated content)";
+          if (this.debug_mode)
+            this.$alertify
+              .delay(4000)
+              .log(`⤓ ` + eventName + JSON.stringify(_args));
         });
-        this.socket.on("createFolder", this.createFolder);
-        this.socket.on("updateFolder", this.updateFolder);
-        this.socket.on("removeFolder", this.removeFolder);
+        this.socket.on("folderCreated", this.folderCreated);
+        this.socket.on("folderUpdated", this.folderUpdated);
+        this.socket.on("folderRemoved", this.folderRemoved);
 
-        this.socket.on("newFile", this.newFile);
-        this.socket.on("updateFile", this.updateFile);
-        this.socket.on("removeFile", this.removeFile);
+        this.socket.on("fileCreated", this.fileCreated);
+        this.socket.on("fileUpdated", this.fileUpdated);
+        this.socket.on("fileRemoved", this.fileRemoved);
       },
 
       disconnectSocket() {
@@ -94,10 +109,10 @@ export default function () {
         return false;
       },
 
-      createFolder({ folder_type, meta }) {
+      folderCreated({ folder_type, meta }) {
         this.store[folder_type].push(meta);
       },
-      updateFolder({ folder_type, folder_slug, changed_data }) {
+      folderUpdated({ folder_type, folder_slug, changed_data }) {
         const folder = this.findFolder({
           folder_type,
           folder_slug,
@@ -107,7 +122,7 @@ export default function () {
           this.$set(folder, key, value);
         });
       },
-      removeFolder({ folder_type, folder_slug }) {
+      folderRemoved({ folder_type, folder_slug }) {
         const folder_index = this.findFolderIndex({
           folder_type,
           folder_slug,
@@ -115,7 +130,7 @@ export default function () {
         this.store[folder_type].splice(folder_index, 1);
       },
 
-      newFile({ folder_type, folder_slug, file_meta }) {
+      fileCreated({ folder_type, folder_slug, file_meta }) {
         const folder = this.findFolder({
           folder_type,
           folder_slug,
@@ -123,7 +138,7 @@ export default function () {
         if (!folder.files) this.$set(folder, "files", new Array());
         folder.files.push(file_meta);
       },
-      updateFile({ folder_type, folder_slug, meta_slug, changed_data }) {
+      fileUpdated({ folder_type, folder_slug, meta_slug, changed_data }) {
         const file = this.findFileInFolder({
           folder_type,
           folder_slug,
@@ -135,7 +150,7 @@ export default function () {
             this.$set(file, key, value);
           });
       },
-      removeFile({ folder_type, folder_slug, meta_slug }) {
+      fileRemoved({ folder_type, folder_slug, meta_slug }) {
         const folder = this.findFolder({ folder_type, folder_slug });
         const file_index = this.findFileIndexInFolder({
           folder_type,
@@ -152,16 +167,17 @@ export default function () {
         this.socket.emit("leaveRoom", { room });
       },
 
+      async getSettings() {
+        const response = await this.$axios.get(`/_admin`);
+        return response.data;
+      },
       async getFolders({ folder_type }) {
-        // fetch folders: only fetch if necessary
         const response = await this.$axios.get(`/${folder_type}`);
         const d = response.data;
         this.$set(this.store, folder_type, d);
         return d;
       },
       async getFolder({ folder_type, folder_slug }) {
-        // check if folder exists in store first, and if not invalidated
-
         const response = await this.$axios.get(
           `/${folder_type}/${folder_slug}`
         );
@@ -177,6 +193,119 @@ export default function () {
         this.store[folder_type] = folders;
 
         return d;
+      },
+      async getArchives({ folder_type, folder_slug, meta_slug }) {
+        const response = await this.$axios.get(
+          `/${folder_type}/${folder_slug}/${meta_slug}/_archives`
+        );
+        const d = response.data;
+        return d;
+      },
+      async deleteFolder({ folder_type, folder_slug }) {
+        try {
+          const response = await this.$axios.delete(
+            `/${folder_type}/${folder_slug}`
+          );
+          return response.data;
+        } catch (e) {
+          throw e.response.data;
+        }
+      },
+
+      async uploadText({
+        folder_type,
+        folder_slug,
+        filename,
+        content = "",
+        additional_meta,
+      }) {
+        let formData = new FormData();
+
+        const file = new Blob([content], { type: "text/plain" });
+
+        if (additional_meta)
+          formData.append(filename, JSON.stringify(additional_meta));
+
+        await this.uploadFile({
+          folder_type,
+          folder_slug,
+          filename,
+          file,
+          additional_meta,
+        });
+      },
+      async uploadFile({
+        folder_type,
+        folder_slug,
+        filename,
+        file,
+        additional_meta,
+        onProgress,
+      }) {
+        let formData = new FormData();
+        formData.append("file", file, filename);
+
+        if (additional_meta)
+          formData.append(filename, JSON.stringify(additional_meta));
+
+        const path = `/${folder_type}/${folder_slug}/_upload`;
+
+        let res = await this.$axios
+          .post(path, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+            onUploadProgress: (progressEvent) => {
+              if (onProgress) onProgress(progressEvent);
+            },
+          })
+          .catch((err) => {
+            this.$alertify.delay(4000).error(err);
+            throw err;
+          });
+
+        return res.data.meta_filename;
+      },
+
+      async updateMeta({ path, new_meta }) {
+        const response = await this.$axios.patch(path, new_meta);
+        return response.data;
+      },
+
+      async updateCover({
+        folder_type,
+        folder_slug,
+        filename,
+        rawData,
+        onProgress,
+      }) {
+        let formData = new FormData();
+        if (rawData) formData.append("file", rawData, filename);
+
+        const path = `/${folder_type}/${folder_slug}?cover`;
+
+        await this.$axios
+          .patch(path, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+            onUploadProgress: (progressEvent) => {
+              if (onProgress) onProgress(progressEvent);
+            },
+          })
+          .catch((err) => {
+            this.$alertify.delay(4000).error(err);
+            throw err;
+          });
+
+        return;
+      },
+
+      async deleteFile({ folder_type, folder_slug, meta_slug }) {
+        try {
+          const response = await this.$axios.delete(
+            `/${folder_type}/${folder_slug}/${meta_slug}`
+          );
+          return response.data;
+        } catch (e) {
+          throw e.response.data;
+        }
       },
     },
   });

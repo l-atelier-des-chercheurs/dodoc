@@ -3,18 +3,16 @@
   "host": "localhost",
   "desired_port": 8080,
   "redirect_port": "",
-  "userDirPath": "documents",
-  "userDirname": "dodoc3",
   "cache_content": true,
   "removePermanently": false,
+  "versioning": true,
 
-  "contentDirname": "user",
   "cacheDirname": "dodoc_cache",
+  "contentPath": "dodoc",
 
   "privateKeyPath": "",
   "certificatePath": "",
 
-  "metaDateFormat": "DD-MM-YYYY HH:mm:ss Z",
   "deletedFolderName": "_bin",
 
   "ffmpeg_options": {
@@ -60,7 +58,8 @@
           "override": true
         },
         "password": {
-          "type": "string"
+          "type": "string",
+          "read_only": true
         },
         "authors": {
           "type": "array"
@@ -90,6 +89,9 @@
           "resolutions": [180, 360, 1600]
         },
         "fields": {
+          "name": {
+            "type": "string"
+          },
           "date_created": {
             "type": "date",
             "default": "current",
@@ -143,10 +145,6 @@
           },
           "caption": {
             "type": "string"
-          },
-          "file_meta": {
-            "type": "array",
-            "read_only": true
           }
         }
       }
@@ -177,16 +175,16 @@
           "type": "string",
           "show_only_to": ["self", "admin"]
         },
+        "keywords": {
+          "type": "array"
+        },
         "role": {
           "type": "string",
-          "options": ["contributor", "participant", "admin"],
+          "options": ["contributor", "admin"],
           "default": "contributor",
           "only_admin_can_edit": true
         },
         "description": {
-          "type": "string"
-        },
-        "nfc_tag": {
           "type": "string"
         },
         "last_messages_read_in_channels": {
@@ -194,335 +192,7 @@
         }
       }
     },
-    "publications": {
-      "path": "_publications",
-      "preview": {
-        "width": 1200,
-        "height": 1200,
-        "thumbs": {
-          "resolutions": [180, 640]
-        }
-      },
-      "fields": {
-        "name": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        },
-        "authors": {
-          "type": "array"
-        },
-        "keywords": {
-          "type": "array"
-        },
 
-        "editing_limited_to": {
-          "type": "string",
-          "options": ["everybody", "with_password", "only_authors", "nobody"],
-          "default": "everybody"
-        },
-        "viewing_limited_to": {
-          "type": "string",
-          "options": ["everybody", "only_authors", ""],
-          "default": "everybody"
-        },
-        "date_created": {
-          "type": "date",
-          "default": "current",
-          "read_only": true
-        },
-        "date_modified": {
-          "type": "date",
-          "default": "current",
-          "override": true
-        },
-        "date_submitted": {
-          "type": "date"
-        },
-        "description": {
-          "type": "string"
-        },
-        "attached_to_project": {
-          "type": "string"
-        },
-        "show_on_external_domain": {
-          "type": "boolean"
-        },
-        "template": {
-          "type": "string",
-          "options": [
-            "page_by_page",
-            "carreau",
-            "video_assemblage",
-            "stopmotion_animation",
-            "mix_audio_and_video",
-            "mix_audio_and_image",
-            "drawing_pad",
-            "video_effects",
-            "story",
-            "face_masks",
-            "image_tracking"
-          ],
-          "default": "page_by_page"
-        },
-        "style": {
-          "type": "string",
-          "options": ["standard", "feuille de choux", "human tech days"],
-          "default": "standard"
-        },
-        "width": {
-          "type": "number"
-        },
-        "height": {
-          "type": "number"
-        },
-        "header_left": {
-          "type": "string"
-        },
-        "header_right": {
-          "type": "string"
-        },
-        "margin_left": {
-          "type": "number"
-        },
-        "margin_right": {
-          "type": "number"
-        },
-        "margin_top": {
-          "type": "number"
-        },
-        "margin_bottom": {
-          "type": "number"
-        },
-        "show_page_number": {
-          "type": "boolean"
-        },
-        "play_masks_randomly": {
-          "type": "boolean"
-        },
-        "gridstep": {
-          "type": "number"
-        },
-        "snap_to_grid": {
-          "type": "boolean"
-        },
-        "pages": {
-          "type": "array"
-        },
-        "removed_pages": {
-          "type": "array"
-        },
-        "layers": {
-          "type": "array"
-        },
-        "medias_slugs": {
-          "type": "array"
-        },
-        "effects": {
-          "type": "array"
-        },
-        "is_model": {
-          "type": "boolean"
-        },
-        "follows_model": {
-          "type": "string"
-        },
-        "number_of_medias": {
-          "type": "number",
-          "only_admin_can_edit": true
-        }
-      },
-      "medias": {
-        "thumbs": {
-          "resolutions": [180, 360, 1600]
-        },
-        "fields": {
-          "slugProjectName": {
-            "type": "string"
-          },
-          "slugMediaName": {
-            "type": "string"
-          },
-          "date_created": {
-            "type": "date",
-            "default": "current",
-            "read_only": true
-          },
-          "date_modified": {
-            "type": "date",
-            "default": "current",
-            "override": true
-          },
-          "caption": {
-            "type": "string"
-          },
-          "instructions": {
-            "type": "string"
-          },
-          "hide_instructions_when_fulfilled": {
-            "type": "boolean"
-          },
-          "available_modes": {
-            "type": "array"
-          },
-          "answers": {
-            "type": "string"
-          },
-          "authors": {
-            "type": "array"
-          },
-          "custom_css": {
-            "type": "string"
-          },
-          "page_id": {
-            "type": "string"
-          },
-          "layer_id": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "options": [
-              "text",
-              "placeholder",
-              "divider",
-              "solid_color",
-              "rectangle",
-              "free_drawing",
-              "ellipsis",
-              "line",
-              "arrow",
-
-              "image",
-              "video",
-              "audio",
-              "code",
-              "stl",
-              "document",
-              "other"
-            ],
-            "default": "other"
-          },
-          "color": {
-            "type": "string"
-          },
-          "media_filename": {
-            "type": "string"
-          },
-          "duration": {
-            "type": "number",
-            "clip": {
-              "min": 0,
-              "max": 999
-            }
-          },
-          "volume": {
-            "type": "number",
-            "clip": {
-              "min": 0,
-              "max": 100
-            }
-          },
-          "drawing_paths": {
-            "type": "string"
-          },
-          "transition_in": {
-            "type": "string"
-          },
-          "transition_out": {
-            "type": "string"
-          },
-          "x": {
-            "type": "number"
-          },
-          "y": {
-            "type": "number"
-          },
-          "rotate": {
-            "type": "number"
-          },
-          "width": {
-            "type": "number"
-          },
-          "height": {
-            "type": "number"
-          },
-          "fit_mode": {
-            "type": "string"
-          },
-          "is_audio_of": {
-            "type": "string"
-          },
-          "is_ar_target": {
-            "type": "boolean"
-          },
-          "is_mind_for": {
-            "type": "string"
-          },
-          "locked_in_place": {
-            "type": "boolean"
-          },
-          "plain_text": {
-            "type": "boolean"
-          },
-          "only_numbers": {
-            "type": "boolean"
-          },
-          "force_text_style": {
-            "type": "string"
-          },
-          "loop_play": {
-            "type": "boolean"
-          },
-          "basic_player": {
-            "type": "boolean"
-          },
-          "z_index": {
-            "type": "number",
-            "clip": {
-              "min": -20000,
-              "max": 20000
-            }
-          },
-          "canvas_information": {
-            "type": "string",
-            "escape": false
-          },
-          "file_meta": {
-            "type": "array",
-            "read_only": true
-          },
-          "margin": {
-            "type": "number"
-          },
-          "font_size_percent": {
-            "type": "number"
-          },
-          "opacity": {
-            "type": "number"
-          },
-          "blend_mode": {
-            "type": "string"
-          },
-          "fill_color": {
-            "type": "string"
-          },
-          "stroke_color": {
-            "type": "string"
-          },
-          "stroke_width": {
-            "type": "number"
-          },
-          "placeholder_meta_reference": {
-            "type": "string"
-          },
-          "placeholder_medias_slugs": {
-            "type": "array"
-          }
-        }
-      }
-    },
     "stopmotions": {
       "path": "_stopmotions",
       "fields": {
@@ -540,13 +210,6 @@
           "type": "array"
         },
         "linked_project": {
-          "type": "string",
-          "comment": "is_deprecated_and_replaced_with_linked_folder"
-        },
-        "linked_folder": {
-          "type": "string"
-        },
-        "linked_type": {
           "type": "string"
         }
       },
@@ -570,10 +233,6 @@
           },
           "authors": {
             "type": "array"
-          },
-          "file_meta": {
-            "type": "array",
-            "read_only": true
           }
         }
       }
@@ -616,6 +275,9 @@
         "number_of_medias": {
           "type": "number",
           "only_admin_can_edit": true
+        },
+        "linked_project": {
+          "type": "string"
         }
       },
       "medias": {
@@ -641,7 +303,7 @@
         "width": 1200,
         "height": 1200,
         "thumbs": {
-          "resolutions": [50, 320, 640]
+          "resolutions": [50, 320, 640, 1200]
         }
       },
       "fields": {
@@ -651,11 +313,24 @@
         "keywords": {
           "type": "array"
         },
+        "materials": {
+          "type": "array"
+        },
         "description": {
           "type": "string"
         },
         "folder": {
           "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "options": ["draft", "invisible", "finished"],
+          "default": "draft"
+        },
+        "license": {
+          "type": "string",
+          "options": ["CC", "all_rights_reserved", "copyleft"],
+          "default": "CC"
         }
       },
       "files": {
@@ -663,19 +338,18 @@
           "resolutions": [180, 360, 1600]
         },
         "fields": {
+          "title": {
+            "type": "string"
+          },
           "caption": {
             "type": "string"
+          },
+          "is_journal": {
+            "type": "boolean"
           }
         }
       },
       "children": {}
-    },
-    "publications": {
-      "children": [
-        {
-          "path": "medias"
-        }
-      ]
     }
   }
 }
