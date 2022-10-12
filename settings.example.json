@@ -1,6 +1,6 @@
 {
   "desired_port": 8080,
-  "userDirname": "dodoc",
+  "contentPath": "dodoc",
   "removePermanently": false,
 
   "api": {
