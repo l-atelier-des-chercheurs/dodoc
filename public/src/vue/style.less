@@ -570,8 +570,8 @@ body {
 
   .m_authorsList--createAuthor,
   .m_authorsList--editAuthor {
-    .padding-small;
-    .margin-small;
+    .padding-verysmall;
+    .margin-verysmall;
     position: relative;
     border: 4px dashed @c-bleumarine_clair;
     background-color: #fff;
@@ -602,8 +602,8 @@ body {
 
 .m_author {
   position: relative;
-  .padding-small;
-  .margin-small;
+  .padding-verysmall;
+  .margin-verysmall;
   min-height: 200px;
   line-height: 1.3;
 
@@ -626,10 +626,10 @@ body {
     // text-transform: initial;
     // font-weight: normal;
     // background-color: transparent;
-    .padding-sides-small;
+    .padding-small;
 
     > * {
-      .margin-bottom-small;
+      .margin-bottom-verysmall;
     }
   }
 
@@ -650,10 +650,17 @@ body {
     font-weight: 200;
     max-width: 15ch;
     letter-spacing: -0.01em;
+    word-break: break-word;
   }
 
   .m_author--email {
     .font-verysmall;
+  }
+
+  .m_author--keywords {
+    flex-flow: row wrap;
+    display: flex;
+    justify-content: center;
   }
 
   .m_author--removeButton {

@@ -82,6 +82,25 @@
       </div>
     </div>
 
+    <!-- Keywords -->
+    <div class="margin-bottom-small">
+      <label>
+        <button
+          type="button"
+          class="button-nostyle text-uc button-triangle"
+          :class="{ 'is--active': show_keywords }"
+          @click="show_keywords = !show_keywords"
+        >
+          {{ $t("keywords") }}
+        </button>
+      </label>
+      <div v-if="show_keywords">
+        <TagsInput
+          @tagsChanged="(newTags) => (authordata.keywords = newTags)"
+        />
+      </div>
+    </div>
+
     <!-- NFC tag(s) -->
     <div class="margin-bottom-small" v-if="mode !== 'simple_login'">
       <label>
@@ -157,16 +176,21 @@
   </form>
 </template>
 <script>
+import TagsInput from "../subcomponents/TagsInput.vue";
+
 export default {
   props: {
     read_only: Boolean,
     mode: String,
   },
-  components: {},
+  components: {
+    TagsInput,
+  },
   data() {
     return {
       show_password: true,
       show_image: false,
+      show_keywords: false,
       show_nfc: false,
       possible_roles: ["contributor", "participant", "admin"],
       authordata: {
@@ -174,6 +198,7 @@ export default {
         email: "",
         password: "",
         role: "contributor",
+        keywords: [],
         nfc_tag: "",
       },
       preview: undefined,
