@@ -24,7 +24,7 @@
     <h2>Finalisés</h2>
     <div class="_projectsList">
       <ProjectPreview
-        v-for="project in sorted_projects"
+        v-for="project in finalized_projects"
         :project="project"
         context="list"
         :key="project.slug"
@@ -34,7 +34,7 @@
     <h2>En cours</h2>
     <div class="_projectsList">
       <ProjectPreview
-        v-for="project in sorted_projects"
+        v-for="project in draft_projects"
         :project="project"
         context="list"
         :key="project.slug"
@@ -78,6 +78,12 @@ export default {
         if (valA === valB) return 0;
         return valA < valB ? -1 : 1;
       });
+    },
+    finalized_projects() {
+      return this.sorted_projects.filter((p) => p.status === "finished");
+    },
+    draft_projects() {
+      return this.sorted_projects.filter((p) => p.status === "draft");
     },
   },
   methods: {},
