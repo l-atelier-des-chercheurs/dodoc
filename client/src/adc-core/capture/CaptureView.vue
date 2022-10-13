@@ -1110,13 +1110,12 @@ export default {
       ask_before_leaving_capture: false,
 
       available_mode_picto: {
-        photo: this.$root.publicPath + "legacy/images/i_icone-dodoc_image.svg",
-        video: this.$root.publicPath + "legacy/images/i_icone-dodoc_video.svg",
-        stopmotion:
-          this.$root.publicPath + "legacy/images/i_icone-dodoc_anim.svg",
-        audio: this.$root.publicPath + "legacy/images/i_icone-dodoc_audio.svg",
-        vecto: this.$root.publicPath + "legacy/images/i_icone-dodoc_vecto.svg",
-        lines: this.$root.publicPath + "legacy/images/i_icone-dodoc_lines.svg",
+        photo: this.$root.publicPath + "images/i_icone-dodoc_image.svg",
+        video: this.$root.publicPath + "images/i_icone-dodoc_video.svg",
+        stopmotion: this.$root.publicPath + "images/i_icone-dodoc_anim.svg",
+        audio: this.$root.publicPath + "images/i_icone-dodoc_audio.svg",
+        vecto: this.$root.publicPath + "images/i_icone-dodoc_vecto.svg",
+        lines: this.$root.publicPath + "images/i_icone-dodoc_lines.svg",
       },
 
       media_to_validate: false,
