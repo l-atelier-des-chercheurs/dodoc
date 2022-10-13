@@ -27,7 +27,7 @@
         >
           <img
             class="inlineSVG"
-            :src="$root.publicPath + 'legacy/images/i_record.svg'"
+            :src="$root.publicPath + 'images/i_record.svg'"
           />
           &nbsp;
           <span>
