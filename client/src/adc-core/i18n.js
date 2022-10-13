@@ -98,6 +98,8 @@ export default function () {
 
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
+
+        machines_and_materials: "Machines et matériaux",
       },
       en: {
         hello: "hello world",
