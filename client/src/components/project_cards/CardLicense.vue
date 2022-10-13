@@ -1,16 +1,16 @@
 <template>
   <ProjectCard>
     <div slot="header">
-      {{ $t("progress") }}
-      <sl-icon name="globe" />
+      {{ $t("license") }}
+      <sl-icon name="file-earmark-spreadsheet" />
     </div>
     <div class="">
-      <SelectField
-        :field_name="'status'"
-        :content="project.status"
+      <RadioField
+        :field_name="'license'"
+        :content="project.license"
         :path="`/projects/${project.slug}`"
         :can_edit="can_edit_project"
-        :options="status_options"
+        :options="license_options"
       />
     </div>
   </ProjectCard>
@@ -26,22 +26,24 @@ export default {
   components: { ProjectCard },
   data() {
     return {
-      status_options: [
+      license_options: [
         {
-          key: "draft",
-          text: "draft_status_explanations",
+          key: "creativecommons_by_nc_sa",
+          text: "creativecommons_by_nc_sa_explanations",
         },
         {
-          key: "invisible",
-          text: "invisible_status_explanations",
+          key: "all_rights_reserved",
+          text: "all_rights_reserved_explanations",
         },
         {
-          key: "finished",
-          text: "finished_status_explanations",
+          key: "copyleft",
+          text: "copyleft_explanations",
+        },
+        {
+          key: "custom_licence",
+          text: "custom_licence_explanations",
         },
       ],
-      // temp value, that uses
-      visible_value: this.project.status,
     };
   },
   created() {},

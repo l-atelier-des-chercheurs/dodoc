@@ -210,6 +210,21 @@ sl-button[variant="semitransparent"] {
     background: rgba(255, 255, 255, 0.7);
   }
 }
+sl-button[variant="edit"] {
+  &::part(base) {
+    background: var(--c-orange);
+    border: none;
+    // border: 2px solid var(--c-orange);
+    // fill: white;
+  }
+
+  &:hover,
+  &:active {
+    &::part(base) {
+      background: var(--c-orange_fonce);
+    }
+  }
+}
 
 input[type="file"] {
   width: 0.1px;
@@ -267,4 +282,13 @@ input[type="file"] {
       background-color: var(--c-rouge_fonce);
     }
   }
+}
+
+.fieldCaption {
+  font-weight: 500;
+  font-size: var(--sl-font-size-x-small);
+}
+
+.u-colorRed {
+  color: var(--c-rouge);
 }

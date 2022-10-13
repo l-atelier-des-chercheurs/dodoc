@@ -53,6 +53,14 @@ Vue.component("UploadFiles", UploadFiles);
 import MediaContent from "@/adc-core/fields/MediaContent.vue";
 Vue.component("MediaContent", MediaContent);
 
+Vue.component("EditBtn", {
+  name: "EditBtn",
+  template: `
+  <sl-button variant="edit" class="editBtn" size="small" circle @click="$emit('click')">
+    <sl-icon name="pencil-fill" :label="$t('edit')" />
+  </sl-button>
+`,
+});
 Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
   template: `

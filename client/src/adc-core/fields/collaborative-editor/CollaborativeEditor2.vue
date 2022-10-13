@@ -18,7 +18,7 @@
     <div ref="editBtn" class="_btnContainer">
       <small class="_btnRow">
         <sl-button
-          variant="primary"
+          variant="edit"
           class="editBtn"
           size="small"
           pill

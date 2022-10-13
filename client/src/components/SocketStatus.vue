@@ -27,11 +27,11 @@
       <span class="">
         <input
           type="checkbox"
-          id="loggedin"
-          name="loggedin"
+          id="debug_mode"
+          name="debug_mode"
           v-model="$api.debug_mode"
         />
-        <label for="loggedin">debugger</label>
+        <label for="debug_mode">debugger</label>
       </span>
       <span class="">
         <input

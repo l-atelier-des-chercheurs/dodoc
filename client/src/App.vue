@@ -39,6 +39,7 @@ export default {
   --c-bleumarine: #1d327f;
   --c-bleuvert: #52c5b9;
   --c-orange: #ffbe32;
+  --c-orange_fonce: hsl(41, 100%, 45%);
 
   --c-rouge: #fc4b60;
   --c-rouge_fonce: #cc334a;
@@ -113,14 +114,13 @@ export default {
   }
   @each $size in $sizes {
     $i: index($sizes, $size);
-    // bleu
-    --sl-color-primary-#{$size}: hsl(211, 93%, #{98% - $i * 5});
+    // --sl-color-edit-#{$size}: hsl(211, 93%, #{98% - $i * 5});
     // orange
-    // --sl-color-primary-#{$size}: hsl(41, 100%, #{98% - $i * 5});
+    --sl-color-edit-#{$size}: hsl(41, 100%, #{98% - $i * 5});
     // rouge
-    // --sl-color-primary-#{$size}: hsl(353, 100%, #{98% - $i * 5});
+    // --sl-color-edit-#{$size}: hsl(353, 100%, #{98% - $i * 5});
     // bleuvert
-    // --sl-color-primary-#{$size}: hsl(174, 50%, #{98% - $i * 5});
+    // --sl-color-edit-#{$size}: hsl(174, 50%, #{98% - $i * 5});
   }
   @each $size in $sizes {
     $i: index($sizes, $size);

@@ -1,40 +1,28 @@
 <template>
   <div class="_cover">
-    <template v-if="can_be_edited">
-      <sl-button
-        v-if="!edit_mode"
-        variant="primary"
-        class="editBtn"
-        size="small"
-        circle
-        @click="enableEditMode"
-      >
-        <sl-icon name="pencil-fill" :label="$t('edit')" />
-      </sl-button>
+    <EditBtn v-if="!edit_mode" @click="enableEditMode" />
+    <div v-else class="_cover--picker">
+      <ImageSelect
+        v-if="edit_mode"
+        :project_slug="project_slug"
+        :existing_preview="existing_preview"
+        @newPreview="
+          (value) => {
+            new_cover_raw = value;
+          }
+        "
+      />
 
-      <div v-else class="_cover--picker">
-        <ImageSelect
-          v-if="edit_mode"
-          :project_slug="project_slug"
-          :existing_preview="existing_preview"
-          @newPreview="
-            (value) => {
-              new_cover_raw = value;
-            }
-          "
+      <div class="_footer">
+        <SaveCancelButtons
+          class="_scb"
+          :is_saving="is_saving"
+          :allow_save="allow_save"
+          @save="updateCover"
+          @cancel="cancel"
         />
-
-        <div class="_footer">
-          <SaveCancelButtons
-            class="_scb"
-            :is_saving="is_saving"
-            :allow_save="allow_save"
-            @save="updateCover"
-            @cancel="cancel"
-          />
-        </div>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 <script>
@@ -60,9 +48,6 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    can_be_edited() {
-      return this.$api.is_logged_in;
-    },
     existing_preview() {
       return this.makeRelativeURLFromThumbs({
         thumbs: this.cover,
