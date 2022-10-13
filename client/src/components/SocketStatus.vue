@@ -29,6 +29,15 @@
           type="checkbox"
           id="loggedin"
           name="loggedin"
+          v-model="$api.debug_mode"
+        />
+        <label for="loggedin">debugger</label>
+      </span>
+      <span class="">
+        <input
+          type="checkbox"
+          id="loggedin"
+          name="loggedin"
           v-model="$api.is_logged_in"
         />
         <label for="loggedin">identifié</label>
