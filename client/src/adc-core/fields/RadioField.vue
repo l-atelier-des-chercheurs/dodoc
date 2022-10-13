@@ -36,18 +36,7 @@
           v-text="$t(option.key)"
         />
       </select> -->
-    <template v-if="can_edit">
-      <sl-button
-        v-if="!edit_mode"
-        variant="primary"
-        class="editBtn"
-        size="small"
-        circle
-        @click="enableEditMode"
-      >
-        <sl-icon name="pencil-fill" :label="$t('edit')" />
-      </sl-button>
-    </template>
+    <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
     <div v-if="!edit_mode && instructions">
       <small v-html="$t(instructions)" />
@@ -91,7 +80,11 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    content() {
+      this.new_content = this.content;
+    },
+  },
   computed: {
     instructions() {
       const new_opt = this.options.find((o) => o.key === this.new_content);

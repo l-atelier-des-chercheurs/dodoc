@@ -23,16 +23,7 @@
       />
 
       <template v-if="can_edit">
-        <sl-button
-          v-if="!edit_mode"
-          variant="primary"
-          class="editBtn"
-          size="small"
-          circle
-          @click="enableEditMode"
-        >
-          <sl-icon name="pencil-fill" :label="$t('edit')" />
-        </sl-button>
+        <EditBtn v-if="!edit_mode" @click="enableEditMode" />
         <div class="_footer" v-else>
           <SaveCancelButtons
             class="_scb"
@@ -153,9 +144,6 @@ export default {
 }
 ._topLabel {
   display: block;
-}
-
-.editBtn {
 }
 
 ._footer {

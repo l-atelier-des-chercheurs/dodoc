@@ -29,6 +29,7 @@
           v-if="pane.type === 'Documenter'"
           :project="project"
           :opened_journal_entry="pane.pad"
+          :can_edit="can_edit_project"
           @update:opened_journal_entry="pane.pad = $event"
         />
       </pane>
@@ -46,6 +47,7 @@ export default {
   props: {
     projectpanes: Array,
     project: Object,
+    can_edit_project: Boolean,
   },
   components: {
     Splitpanes,

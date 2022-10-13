@@ -6,8 +6,8 @@
       pill
       @click="$emit('cancel')"
     >
-      <sl-icon name="x-circle-fill" />
-      {{ $t("cancel") }}
+      <sl-icon name="x-circle" />
+      {{ $t("back") }}
     </sl-button>
     <sl-button
       :size="pill_size"

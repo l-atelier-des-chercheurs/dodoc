@@ -15,10 +15,10 @@
     />
 
     <component :is="`style`" v-html="quill_styles" />
-    <div ref="editBtn" class="_btnContainer">
+    <div ref="editBtn" class="_btnContainer" v-if="can_edit">
       <small class="_btnRow">
         <sl-button
-          variant="primary"
+          variant="edit"
           class="editBtn"
           size="small"
           pill
@@ -106,6 +106,7 @@ export default {
     file: Object,
     scrollingContainer: HTMLElement,
     line_selected: [Boolean, Number],
+    can_edit: Boolean,
   },
   components: {
     TextVersioning,
@@ -143,7 +144,6 @@ export default {
   created() {},
   mounted() {
     this.initEditor();
-
     // this.enableEditor();
   },
   beforeDestroy() {

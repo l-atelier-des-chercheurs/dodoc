@@ -22,12 +22,11 @@
       <div v-else class="_noImage" />
 
       <CoverField
-        v-if="context === 'full'"
+        v-if="context === 'full' && can_edit_project"
         class=""
         :cover="project.cover"
         :project_slug="project.slug"
         :path="`/projects/${project.slug}`"
-        :can_edit="can_edit_project"
       />
     </div>
 
@@ -54,6 +53,7 @@
       />
 
       <TagsField
+        v-if="project.keywords || can_edit_project"
         :field_name="'keywords'"
         :label="$t('keywords')"
         :content="project.keywords"
@@ -175,12 +175,6 @@ export default {
 ._project {
   position: relative;
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-}
-
-._editBtn {
-  position: absolute;
-  top: 0;
-  right: 0;
 }
 
 ._projectInfos {

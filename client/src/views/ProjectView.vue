@@ -24,66 +24,10 @@
             :can_edit_project="can_edit_project"
           />
 
-          <sl-card class="u-card">
-            <div slot="header">
-              Fichiers à télécharger
-              <sl-icon-button
-                name="file-earmark-fill"
-                label="Avatar"
-              ></sl-icon-button>
-            </div>
-            <div class="">
-              <ul class="widget-content list-group list-group-lg no-bg auto">
-                <li
-                  ng-repeat="file in project.project_caos_attributes"
-                  class="list-group-item no-b clearfix ng-scope"
-                >
-                  <a
-                    target="_blank"
-                    ng-href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
-                    download="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
-                    class="ng-binding"
-                    href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
-                    ><i class="fa fa-arrow-circle-o-down"> </i>
-                    éléphant_serre_livre.svg</a
-                  >
-                </li>
-                <li
-                  ng-repeat="file in project.project_caos_attributes"
-                  class="list-group-item no-b clearfix ng-scope"
-                >
-                  <a
-                    target="_blank"
-                    ng-href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-                    download="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-                    class="ng-binding"
-                    href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
-                  >
-                    <sl-icon-button
-                      name="file-earmark-arrow-down-fill"
-                      label="Avatar"
-                    />
-                    éléphant.svg
-                  </a>
-                </li>
-                <li
-                  ng-repeat="file in project.project_caos_attributes"
-                  class="list-group-item no-b clearfix ng-scope"
-                >
-                  <a
-                    target="_blank"
-                    ng-href="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
-                    download="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
-                    class="ng-binding"
-                    href="/uploads/project_cao/103/%C3%A9l%C3%A9phant_serre_livre_base.svg"
-                    ><i class="fa fa-arrow-circle-o-down"> </i>
-                    éléphant_serre_livre_b...</a
-                  >
-                </li>
-                <!-- end ngRepeat: file in project.project_caos_attributes -->
-              </ul>
-            </div>
-          </sl-card>
+          <CardDownloads
+            :project="project"
+            :can_edit_project="can_edit_project"
+          />
         </div>
       </div>
 
@@ -97,6 +41,7 @@
           <ProjectPanes
             :projectpanes="current_projectpanes"
             :project="project"
+            :can_edit_project="can_edit_project"
             @update:projectpanes="projectpanes = $event"
           />
         </div>
@@ -109,10 +54,11 @@
 import ProjectPreview from "@/components/ProjectPreview.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
-import CardAuthor from "@/components/CardAuthor.vue";
-import CardMachines from "@/components/CardMachines.vue";
-import CardStatus from "@/components/CardStatus.vue";
-import CardLicense from "@/components/CardLicense.vue";
+import CardAuthor from "@/components/project_cards/CardAuthor.vue";
+import CardMachines from "@/components/project_cards/CardMachines.vue";
+import CardStatus from "@/components/project_cards/CardStatus.vue";
+import CardLicense from "@/components/project_cards/CardLicense.vue";
+import CardDownloads from "@/components/project_cards/CardDownloads.vue";
 
 export default {
   props: {},
@@ -124,6 +70,7 @@ export default {
     CardMachines,
     CardStatus,
     CardLicense,
+    CardDownloads,
   },
   data() {
     return {

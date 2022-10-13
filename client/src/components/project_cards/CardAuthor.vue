@@ -6,16 +6,8 @@
         <sl-avatar :image="contrib.image" />
         {{ contrib.name }}
       </div>
-      <sl-button
-        v-if="!edit_mode && can_edit_project"
-        variant="primary"
-        class="editBtn"
-        size="small"
-        circle
-        @click="edit_mode = true"
-      >
-        <sl-icon name="pencil-fill" :label="$t('edit')" />
-      </sl-button>
+
+      <EditBtn v-if="can_edit_project && !edit_mode" @click="enableEditMode" />
     </div>
   </ProjectCard>
 </template>
@@ -55,7 +47,11 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    enableEditMode() {
+      this.edit_mode = true;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

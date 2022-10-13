@@ -17,27 +17,19 @@
       </sl-tag>
     </span>
 
+    <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
+
     <template v-if="can_edit">
       <sl-button
-        v-if="!edit_mode"
-        variant="primary"
-        class="editBtn"
-        size="small"
-        circle
-        @click="enableEditMode"
-      >
-        <sl-icon name="pencil-fill" :label="$t('edit')" />
-      </sl-button>
-      <sl-button
-        v-else-if="create_new_tag === false"
+        v-if="edit_mode && create_new_tag === false"
         variant="default"
         class=""
         size="small"
         pill
         @click="create_new_tag = true"
       >
-        <sl-icon name="plus-square" />
-        {{ $t("add") }}
+        <sl-icon name="plus-square" :label="$t('add')" />
+        <!-- {{ $t("add") }} -->
       </sl-button>
     </template>
 
@@ -50,10 +42,13 @@
           @toggleValidity="($event) => (allow_save_newkeyword = $event)"
           @onEnter="onEnter"
         />
+        <div v-if="new_tag_name_already_exists" class="fieldCaption u-colorRed">
+          {{ $t("already_added") }}
+        </div>
         <SaveCancelButtons
           class="_scb"
           :is_saving="is_saving"
-          :allow_save="allow_save_newkeyword"
+          :allow_save="allow_save_newkeyword && !new_tag_name_already_exists"
           :save_text="'create'"
           @save="newTag"
           @cancel="cancelNewTag"
@@ -111,7 +106,11 @@ export default {
       this.new_tags = this.content;
     },
   },
-  computed: {},
+  computed: {
+    new_tag_name_already_exists() {
+      return this.new_tags.includes(this.new_tag_name);
+    },
+  },
   methods: {
     enableEditMode() {
       this.edit_mode = true;

@@ -22,9 +22,9 @@
 
     <div
       v-if="maxlength"
-      class="_maxlength"
+      class="_maxlength fieldCaption"
       :class="{
-        'is--invalid': !validity,
+        'u-colorRed': !validity,
       }"
     >
       {{ content.length }} ≤ {{ maxlength }}
@@ -110,12 +110,6 @@ export default {
 <style lang="scss" scoped>
 ._maxlength {
   flex: 0 0 auto;
-  font-weight: 500;
-  font-size: var(--sl-font-size-x-small);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-
-  &.is--invalid {
-    color: var(--c-rouge);
-  }
 }
 </style>

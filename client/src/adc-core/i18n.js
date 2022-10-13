@@ -68,6 +68,7 @@ export default function () {
         date_created: "création",
         date_modified: "dernière modification",
         cancel: "annuler",
+        back: "retour",
         save: "enregistrer",
         description: "description",
         keywords: "mots-clés",
@@ -100,6 +101,8 @@ export default function () {
         copyleft_explanations: "<i>Explications à ajouter</i>",
 
         machines_and_materials: "Machines et matériaux",
+
+        already_added: "Déjà ajouté",
       },
       en: {
         hello: "hello world",
