@@ -9,6 +9,7 @@
         :file="file"
         :project_slug="project_slug"
         :resolution="1600"
+        :context="'full'"
       />
     </div>
     <sl-button-group class="_focusBtns">
