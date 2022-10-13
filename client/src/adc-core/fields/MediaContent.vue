@@ -1,6 +1,16 @@
 <template>
   <div class="_mediaContent">
-    <img v-if="thumb" :src="thumb" />
+    <template v-if="file.type === 'image'">
+      <img :src="thumb" />
+    </template>
+    <template v-else-if="file.type === 'video'">
+      <template v-if="context === 'preview'">
+        <img :src="thumb" />
+      </template>
+      <template v-else>
+        <video :src="file_full_path" controls />
+      </template>
+    </template>
     <span v-else>
       <sl-icon name="file-earmark-arrow-down" /><br />
       {{ file.media_filename }}
@@ -15,6 +25,15 @@ export default {
     resolution: {
       type: Number,
       default: 180,
+    },
+    context: {
+      type: String,
+      default: "preview",
+      // preview, full
+    },
+    subfolder: {
+      type: String,
+      default: "projects",
     },
   },
   components: {},
@@ -33,6 +52,14 @@ export default {
         project_slug: this.project_slug,
         resolution: this.resolution,
       });
+    },
+    file_full_path() {
+      const path = `/${this.subfolder}/${this.project_slug}/${this.file.media_filename}?v=${this.timestamp}`;
+      return path;
+    },
+    timestamp() {
+      if (this.file.date_created) return +new Date(this.file.date_created);
+      else return +new Date();
     },
   },
   methods: {
