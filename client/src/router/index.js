@@ -1,8 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import ProjectsView from "../views/ProjectsView.vue";
-import ProjectView from "../views/ProjectView.vue";
 
 Vue.use(VueRouter);
 
@@ -15,14 +13,14 @@ const routes = [
   {
     path: "/projects",
     name: "Projets",
-    component: ProjectsView,
+    component: () =>
+      import(/* webpackChunkName: "ProjectView" */ "../views/ProjectsView.vue"),
   },
   {
     path: "/projects/:slug",
     name: "projet",
-    component: ProjectView,
-    // component: () =>
-    //   import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    component: () =>
+      import(/* webpackChunkName: "ProjectView" */ "../views/ProjectView.vue"),
   },
 ];
 
