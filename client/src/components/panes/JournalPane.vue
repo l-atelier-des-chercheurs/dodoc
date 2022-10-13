@@ -1,12 +1,13 @@
 <template>
   <div class="_journal" ref="journal">
     <div class="_journal--items">
-      <div class="_createForm">
+      <div class="_createForm" v-if="can_edit">
         <sl-button
           variant="text"
           @click="show_create_entry = !show_create_entry"
         >
           <sl-icon name="plus" label="Panneaux" />
+          {{ $t("create") }}
         </sl-button>
         <form
           v-if="show_create_entry"
@@ -14,6 +15,14 @@
           @submit.prevent="createText"
         >
           <sl-input name="title" label="Titre" required />
+          <br />
+          <select name="Type de bloc" id="cars">
+            <option value="volvo">Texte et image</option>
+            <option value="saab">Caroussel d'images</option>
+            <option value="mercedes">Vidéo</option>
+            <option value="audi">Player audio</option>
+          </select>
+
           <br />
           <sl-button type="submit" variant="primary">Créer</sl-button>
         </form>
@@ -39,6 +48,7 @@
           :project_slug="project.slug"
           :line_selected="line_selected"
           :scrollingContainer="$refs.journal"
+          :can_edit="can_edit"
           @close="closeEntry"
           @lineClicked="lineClicked"
         />
@@ -71,6 +81,7 @@ export default {
   props: {
     project: Object,
     opened_journal_entry: Object,
+    can_edit: Boolean,
   },
   components: {
     JournalItem,
@@ -162,6 +173,10 @@ export default {
 
 ._createForm {
   padding: var(--spacing);
+  max-width: 66ch;
+  margin: 0 auto;
+  // background: white;
+  text-align: center;
 }
 
 ._journal--entry {

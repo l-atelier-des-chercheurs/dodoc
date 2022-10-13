@@ -41,6 +41,7 @@
           <ProjectPanes
             :projectpanes="current_projectpanes"
             :project="project"
+            :can_edit_project="can_edit_project"
             @update:projectpanes="projectpanes = $event"
           />
         </div>

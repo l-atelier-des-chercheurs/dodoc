@@ -40,6 +40,7 @@
         :file="file"
         :scrollingContainer="$el"
         :line_selected="line_selected"
+        :can_edit="can_edit"
         @lineClicked="$emit('lineClicked', $event)"
       />
     </div>
@@ -53,6 +54,7 @@ export default {
     file: Object,
     project_slug: String,
     line_selected: [Boolean, Number],
+    can_edit: Boolean,
   },
   components: {
     CollaborativeEditor2,

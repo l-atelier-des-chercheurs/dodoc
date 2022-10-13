@@ -12,7 +12,6 @@
         :can_edit="can_edit_project"
         :options="status_options"
       />
-      {{ project.status }}
     </div>
   </ProjectCard>
 </template>
