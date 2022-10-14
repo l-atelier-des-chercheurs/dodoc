@@ -1,6 +1,8 @@
 <template>
   <ProjectCard>
-    <label for="" class="u-label">{{ $t("contributors") }}</label>
+    <div slot="header">
+      {{ $t("contributors") }}
+    </div>
     <div class="_listOfAuthors">
       <div v-for="contrib in fake_contrib" :key="contrib.name">
         <sl-avatar :image="contrib.image" />

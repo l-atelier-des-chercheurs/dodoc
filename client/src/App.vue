@@ -38,6 +38,7 @@ export default {
 
   --c-bleumarine: #1d327f;
   --c-bleuvert: #52c5b9;
+  --c-bleuvert_fonce: hsl(174, 50%, 30%);
   --c-orange: #ffbe32;
   --c-orange_fonce: hsl(41, 100%, 45%);
 
@@ -96,7 +97,7 @@ export default {
   --color-Documenter: var(--c-bleumarine);
 
   --indicator-color: var(--c-vert) !important;
-  --active-color: var(--sl-color-primary-400);
+  --active-color: var(--c-bleuvert);
 
   --sl-font-sans: "Fira Sans";
   --sl-font-serif: "IBM Plex Serif";
@@ -111,16 +112,6 @@ export default {
     // bleuvert
     $i: index($sizes, $size);
     --sl-color-success-#{$size}: hsl(174, 60%, #{82% - $i * 5});
-  }
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    // --sl-color-edit-#{$size}: hsl(211, 93%, #{98% - $i * 5});
-    // orange
-    --sl-color-edit-#{$size}: hsl(41, 100%, #{98% - $i * 5});
-    // rouge
-    // --sl-color-edit-#{$size}: hsl(353, 100%, #{98% - $i * 5});
-    // bleuvert
-    // --sl-color-edit-#{$size}: hsl(174, 50%, #{98% - $i * 5});
   }
   @each $size in $sizes {
     $i: index($sizes, $size);

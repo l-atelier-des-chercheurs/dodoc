@@ -107,11 +107,13 @@ export default {
     },
     async updateText() {
       this.is_saving = true;
+      await new Promise((r) => setTimeout(r, 1000));
 
       try {
         const new_meta = {
           [this.field_name]: this.new_content,
         };
+
         await this.$api.updateMeta({
           path: this.path,
           new_meta,
@@ -121,7 +123,6 @@ export default {
         this.is_saving = false;
       } catch (e) {
         this.is_saving = false;
-        this.edit_mode = false;
 
         this.$alertify
           .closeLogOnClick(true)

@@ -129,12 +129,18 @@ textarea,
   padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
+  border-color: var(--c-gris_fonce);
+  border-width: 3px;
+  border-style: dotted;
+
   transition: all 0.25s;
 
+  &:hover,
   &:focus {
     outline: none;
     border-color: var(--input-border-color-focus);
-    background-color: var(--c-gris);
+    // background-color: var(--c-gris);
+    // background-color: var(--c-bleu_clair);
   }
 
   &.bg-blanc {
@@ -212,7 +218,7 @@ sl-button[variant="semitransparent"] {
 }
 sl-button[variant="edit"] {
   &::part(base) {
-    background: var(--c-orange);
+    background: var(--c-bleuvert);
     border: none;
     // border: 2px solid var(--c-orange);
     // fill: white;
@@ -221,7 +227,7 @@ sl-button[variant="edit"] {
   &:hover,
   &:active {
     &::part(base) {
-      background: var(--c-orange_fonce);
+      background: var(--c-bleuvert_fonce);
     }
   }
 }
