@@ -14,9 +14,7 @@
     </div>
 
     <div v-if="instructions">
-      <small>
-        {{ $t(instructions) }}
-      </small>
+      <small v-html="$t(instructions)" />
     </div>
 
     <div class="_footer" v-if="edit_mode">

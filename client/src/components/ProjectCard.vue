@@ -1,6 +1,6 @@
 <template>
   <sl-card class="u-card">
-    <div slot="header" v-if="$slots['header']">
+    <div slot="header" v-if="$slots['header']" class="u-label">
       <slot name="header" />
     </div>
     <slot />
