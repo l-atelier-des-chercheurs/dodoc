@@ -90,6 +90,7 @@ export default function () {
           "Ce projet sera affiché en haut de la page d'accueil.",
 
         license: "Licence",
+        files: "Fichiers",
 
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",

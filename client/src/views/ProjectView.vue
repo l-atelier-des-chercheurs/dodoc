@@ -24,10 +24,7 @@
             :can_edit_project="can_edit_project"
           />
 
-          <CardDownloads
-            :project="project"
-            :can_edit_project="can_edit_project"
-          />
+          <CardFiles :project="project" :can_edit_project="can_edit_project" />
         </div>
       </div>
 
@@ -58,7 +55,7 @@ import CardAuthor from "@/components/project_cards/CardAuthor.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
 import CardStatus from "@/components/project_cards/CardStatus.vue";
 import CardLicense from "@/components/project_cards/CardLicense.vue";
-import CardDownloads from "@/components/project_cards/CardDownloads.vue";
+import CardFiles from "@/components/project_cards/CardFiles.vue";
 
 export default {
   props: {},
@@ -70,7 +67,7 @@ export default {
     CardMachines,
     CardStatus,
     CardLicense,
-    CardDownloads,
+    CardFiles,
   },
   data() {
     return {
