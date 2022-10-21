@@ -174,20 +174,19 @@ module.exports = (function () {
   }
 
   /**************************************************************** FOLDER ********************************/
-  async function onListFolders(socket, data) {
+  async function onListFolders(socket, { type }) {
     dev.logfunction(`EVENT - onListFolders`);
-    if (!data || !data.hasOwnProperty("type")) {
+    if (!type) {
       dev.error(`Missing type field`);
       return;
     }
-    const type = data.type;
     const hrstart = process.hrtime();
 
     await sendFolders({ type, socket });
 
     let hrend = process.hrtime(hrstart);
     dev.performance(
-      `PERFORMANCE — listFolders for type = ${data.type} : ${hrend[0]}s ${
+      `PERFORMANCE — listFolders for type = ${type} : ${hrend[0]}s ${
         hrend[1] / 1000000
       }ms`
     );
@@ -233,11 +232,13 @@ module.exports = (function () {
 
     await sendFolders({ type, slugFolderName, id });
   }
-  async function onEditFolder(socket, { type, slugFolderName, data, id }) {
+  async function onEditFolder(
+    socket,
+    { type, slugFolderName, data, id, update_date_modified = false }
+  ) {
     dev.logfunction(
-      `EVENT - onEditFolder for type = ${type}, slugFolderName = ${slugFolderName}, data = ${JSON.stringify(
-        data
-      )}`
+      `EVENT - onEditFolder for type = ${type}, 
+      slugFolderName = ${slugFolderName}, data = ${JSON.stringify(data)}`
     );
 
     const foldersData = await file.getFolder({ type, slugFolderName });
@@ -249,20 +250,22 @@ module.exports = (function () {
           dev.error(`Failed to edit folder: ${err}`);
           notify({
             socket,
-            socketid: socket.id,
+            socketid: socket?.id,
             localized_string: `action_not_allowed`,
             not_localized_string: `Error: folder can’t be edited ${slugFolderName} ${err}`,
             type: "error",
           });
-        }))
+        })) &&
+      update_date_modified === false
     )
       return;
 
-    data = await auth.preventFieldsEditingDependingOnRole({
-      socket,
-      type,
-      meta: data,
-    });
+    if (!update_date_modified)
+      data = await auth.preventFieldsEditingDependingOnRole({
+        socket,
+        type,
+        meta: data,
+      });
 
     // check if password is crypted and should change
     const password_field_options =
@@ -342,11 +345,12 @@ module.exports = (function () {
       });
     }
 
-    changelog.append({
-      author: auth.getSocketAuthors(socket),
-      action: "edited_folder",
-      detail: { type, slugFolderName, data },
-    });
+    if (!update_date_modified)
+      changelog.append({
+        author: auth.getSocketAuthors(socket),
+        action: "edited_folder",
+        detail: { type, slugFolderName, data },
+      });
 
     await sendFolders({ type, slugFolderName, id });
   }
@@ -355,16 +359,12 @@ module.exports = (function () {
     dev.logfunction(
       `EVENT - updateFolderModified for type = ${type}, slugFolderName = ${slugFolderName}`
     );
-
-    const foldersData = await file.getFolder({ type, slugFolderName });
-
-    await file.updateFolderEdited({
+    onEditFolder(undefined, {
       type,
       slugFolderName,
-      foldersData: Object.values(foldersData)[0],
+      data: {},
+      update_date_modified: true,
     });
-
-    await sendFolders({ type, slugFolderName });
   }
 
   async function onRemoveFolder(socket, { type, slugFolderName }) {
@@ -495,7 +495,7 @@ module.exports = (function () {
         throw err;
       });
 
-    onEditFolder(undefined, { type, slugFolderName, data: {} });
+    updateFolderModified({ type, slugFolderName });
 
     changelog.append({
       author: undefined,
@@ -556,7 +556,7 @@ module.exports = (function () {
         throw err;
       });
 
-    onEditFolder(socket, { type, slugFolderName, data: {} });
+    updateFolderModified({ type, slugFolderName });
 
     changelog.append({
       author: auth.getSocketAuthors(socket),
@@ -710,7 +710,7 @@ module.exports = (function () {
         reject(err);
       });
 
-    await onEditFolder(socket, { type, slugFolderName, data: {} });
+    updateFolderModified({ type, slugFolderName });
 
     changelog.append({
       author: auth.getSocketAuthors(socket),
@@ -970,7 +970,7 @@ module.exports = (function () {
     )
       return;
 
-    const new_slugFolderName = await file.copyFolder({
+    new_folder_name = await file.copyFolder({
       type,
       slugFolderName,
       new_folder_name,
@@ -982,7 +982,7 @@ module.exports = (function () {
       detail: { type, slugFolderName, new_folder_name },
     });
 
-    await sendFolders({ type, slugFolderName: new_slugFolderName, id });
+    await sendFolders({ type, slugFolderName: new_folder_name, id });
   }
 
   function onUpdateNetworkInfos(socket) {
@@ -1011,12 +1011,15 @@ module.exports = (function () {
       `COMMON - sendFolders for type = ${type} and slugFolderName = ${slugFolderName}`
     );
 
-    let foldersData = await file
-      .getFolder({ type, slugFolderName })
-      .catch((err) => {
-        dev.error(`No folder found: ${err}`);
-        throw err;
-      });
+    let foldersData = {};
+    try {
+      foldersData = slugFolderName
+        ? await file.getFolder({ type, slugFolderName })
+        : await file.getFolders({ type });
+    } catch (err) {
+      dev.error(`Error listing folder(s): ${err}`);
+      throw err;
+    }
 
     // if folder creation, we get an ID to open the folder straight away
     if (foldersData !== undefined && slugFolderName && id) {

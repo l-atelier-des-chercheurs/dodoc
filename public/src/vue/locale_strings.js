@@ -546,6 +546,10 @@ module.exports = (function () {
       oc: "Cap de sortida audiò disponibla",
       de: "Kein Audioausgang verfügbar",
     },
+    add_audio: {
+      fr: "Associer un son",
+      en: "Soundtrack",
+    },
     echoCancellation: {
       fr: "Suppression de l'écho",
       en: "Echo cancellation",
@@ -785,6 +789,10 @@ module.exports = (function () {
       nl: "Kopiëren",
       oc: "Copiar",
       de: "Kopieren",
+    },
+    copy_link: {
+      fr: "Copier le lien",
+      en: "Copy link",
     },
     author: {
       fr: "Auteur(s)",
@@ -1582,7 +1590,9 @@ module.exports = (function () {
     make_a_video: {
       fr: "Fabriquer une vidéo",
       en: "Make a video",
-      de: "ein Video drehen",
+      nl: "Maak een video",
+      oc: "Fargar una video",
+      de: "Ein Video erstellen",
     },
     search: {
       fr: "Rechercher",
@@ -1811,8 +1821,8 @@ module.exports = (function () {
       de: "Senden",
     },
     open_in_dodoc: {
-      fr: "Ouvrir dans do•doc",
-      en: "Open in do•doc",
+      fr: "Afficher dans do•doc",
+      en: "Display in do•doc",
       nl: "Openen in do•doc",
       oc: "Dubrir dins do•doc",
       de: "Öffnen sie in do•doc",
@@ -3387,6 +3397,22 @@ module.exports = (function () {
       oc: "Afichar lo numèro de pagina dins lo caire en bas a drech",
       de: "Zeigen sie die Seitenzahl in der rechten unteren Ecke an",
     },
+    mask: {
+      fr: "Masque",
+      en: "Mask",
+    },
+    play_masks_randomly: {
+      fr: "Jouer les masques dans un ordre aléatoire",
+      en: "Play masks in a random order",
+    },
+    show_another_masks: {
+      fr: "masque suivant",
+      en: "next mask",
+    },
+    next: {
+      fr: "suivant",
+      en: "next",
+    },
     export_folder: {
       fr: "Exporter en format WEB",
       en: "Export as a webpage",
@@ -3449,13 +3475,6 @@ module.exports = (function () {
       nl: "Klik op de knop om een video te maken van de afbeeldingen die aan de publicatie zijn toegevoegd.",
       oc: "Cliquar sul boton per lançar la creacion d'una sola video en partir dels imatges aponduts a la recèpta.",
       de: "Klicken Sie auf die Schaltfläche, um die Erstellung eines einzelnen Videos aus den zur Veröffentlichung hinzugefügten Bildern zu starten.",
-    },
-    make_video: {
-      fr: "Fabriquer une vidéo",
-      en: "Make a video",
-      nl: "Maak een video",
-      oc: "Fargar una video",
-      de: "Ein Video erstellen",
     },
     add_solid_color: {
       fr: "Ajouter un aplat de couleur",
@@ -3914,6 +3933,48 @@ module.exports = (function () {
       oc: "Tièra dels efièches e filtres disponibles : negre e blanc, ralentit, accelerat, inversion de la lectura, rotacion e miralh.<br>Mèdia acceptat : una sola video.",
       de: "Liste der verfügbaren Effekte und Filter: Schwarz und Weiß, Zeitlupe, Zeitraffer, Rückwärtswiedergabe, Drehen und Spiegeln.<br>Akzeptierte Medien: Ein einzelnes Video.",
     },
+    face_masks: {
+      fr: "Les masques",
+      en: "Face masks",
+    },
+    face_masks_summary: {
+      fr: "Créer une galerie de masques interactifs !",
+      en: "Create a gallery of interactive masks!",
+    },
+    face_masks_instructions: {
+      fr: `Cette recette utilise un gabarit spécifique à imprimer, puis à dessiner et à prendre en photo. 
+          Ces dessins seront ensuite projetés sur le visage à l’aide de la caméra frontale d’un smartphone, d’une tablette ou d’un ordinateur.
+          <br>Média accepté : des images avec ou sans légende.`,
+      en: "",
+    },
+    image_tracking: {
+      fr: "Réalité augmentée",
+      en: "Augmented reality",
+    },
+    create_block: {
+      fr: "Créer un groupe",
+      en: "Create group",
+    },
+    image_tracking_summary: {
+      fr: "",
+      en: "",
+    },
+    image_tracking_instructions: {
+      fr: ``,
+      en: "",
+    },
+    target_image: {
+      fr: "Image cible",
+      en: "Target image",
+    },
+    create_target: {
+      fr: "Compiler les images cibles",
+    },
+    image_shown: {
+      fr: "Image affichée",
+      en: "Image shown",
+    },
+
     effect: {
       fr: "Effet",
       en: "Effect",
@@ -4144,6 +4205,12 @@ module.exports = (function () {
       en: "Next page",
       oc: "Pagina seguenta",
       de: "Nächste Seite",
+    },
+    previous_page: {
+      fr: "Page précédente",
+      en: "Previous page",
+      oc: "Pagina precedenta",
+      de: "Vorherige Seite",
     },
     previous_page: {
       fr: "Page précédente",

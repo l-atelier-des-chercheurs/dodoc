@@ -4,8 +4,8 @@ var http = require("http");
 var https = require("https");
 var fs = require("fs");
 var path = require("path");
-var bodyParser = require("body-parser");
 const compression = require("compression");
+const socketio = require("socket.io");
 
 var dev = require("./dev-log");
 
@@ -53,7 +53,7 @@ module.exports = function (router) {
       ? https.createServer(options, app)
       : http.createServer(app);
 
-  var io = require("socket.io").listen(server);
+  var io = socketio.listen(server, { cookie: false });
 
   dev.logverbose("Starting server 2");
   sockets.init(app, io);
@@ -72,13 +72,15 @@ module.exports = function (router) {
     }
   });
   app.use(express.static(global.pathToUserContent));
+
   app.use(express.static(path.join(global.appRoot, "public")));
+
   app.use(
     express.static(path.join(global.appRoot, global.settings.cacheDirname))
   );
 
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json()); // To parse the incoming requests with JSON payloads
   app.locals.pretty = true;
 
   setup_realtime_collaboration(server);
@@ -94,5 +96,5 @@ module.exports = function (router) {
 };
 
 function isURLToForbiddenFiles(url) {
-  return url.includes(global.settings.metaFileext);
+  return url.includes(".txt");
 }

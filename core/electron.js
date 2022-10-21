@@ -1,5 +1,4 @@
-const electron = require("electron");
-const { app, BrowserWindow, Menu, shell, ipcMain } = electron;
+const { app, BrowserWindow, Menu, shell, ipcMain } = require("electron");
 const path = require("path");
 
 app.commandLine.appendSwitch("ignore-certificate-errors", "true");
@@ -14,11 +13,6 @@ module.exports = (function () {
   return {
     init: () => {
       return new Promise(function (resolve, reject) {
-        global.sourcePathInApp = path.join(
-          `${global.appRoot.replace(`${path.sep}app.asar`, "")}`,
-          `${global.settings.contentDirname}`
-        );
-
         let win;
 
         // This method will be called when Electron has finished
@@ -27,7 +21,7 @@ module.exports = (function () {
         app.on("ready", () => {
           console.log(`ELECTRON — init : ready`);
           createWindow().then((_win) => {
-            console.log(`ELECTRON — init : ready / window created`);
+            dev.logfunction(`ELECTRON — init : ready / window created`);
             win = _win;
             return resolve(win);
           });
@@ -35,7 +29,7 @@ module.exports = (function () {
 
         // Quit when all windows are closed.
         app.on("window-all-closed", () => {
-          console.log(`ELECTRON — init : window-all-closed`);
+          dev.logfunction(`ELECTRON — init : window-all-closed`);
           // On macOS it is common for applications and their menu bar
           // to stay active until the user quits explicitly with Cmd + Q
           // if (process.platform !== 'darwin') {
@@ -45,7 +39,7 @@ module.exports = (function () {
         });
 
         app.on("activate", () => {
-          console.log(`ELECTRON — init : activate`);
+          dev.logfunction(`ELECTRON — init : activate`);
           // On macOS it's common to re-create a window in the app when the
           // dock icon is clicked and there are no other windows open.
           if (win === null) {
@@ -60,7 +54,7 @@ module.exports = (function () {
         app.on(
           "certificate-error",
           (event, webContents, url, error, certificate, callback) => {
-            console.log(`ELECTRON — init : certificate-error`);
+            dev.logfunction(`ELECTRON — init : certificate-error`);
             // On certificate error we disable default behaviour (stop loading the page)
             // and we then say "it is all fine - true" to the callback
             event.preventDefault();
@@ -87,7 +81,7 @@ module.exports = (function () {
         width: mainWindowState.width,
         height: mainWindowState.height,
         backgroundColor: "#EBEBEB",
-        titleBarStyle: "hidden",
+        titleBarStyle: process.platform === "darwin" ? "hidden" : "",
         show: true,
         title: "do•doc",
         icon: path.join(global.appRoot, "build", "icon.png"),

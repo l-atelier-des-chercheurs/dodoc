@@ -52,17 +52,6 @@
       "
     >
       <div class="m_publicationNavMenu--settings">
-        <!-- <div>
-          <button
-            type="button"
-            class="buttonLink"
-            v-if="!contact_sheet_mode"
-            @click="showAllPages"
-          >
-            {{ $t("show_all_pages") }}
-          </button>
-        </div> -->
-
         <div
           class="_settings_pane_button"
           v-if="
