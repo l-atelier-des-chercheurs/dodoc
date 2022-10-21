@@ -96,8 +96,5 @@
     "electron-packager": "^15.5.1",
     "electron-rebuild": "^3.2.7",
     "node-gyp": "^9.0.0"
-  },
-  "optionalDependencies": {
-    "pdf-extractor": "^2.2.0"
   }
 }
