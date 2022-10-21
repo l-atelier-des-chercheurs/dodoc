@@ -68,8 +68,8 @@
     "gulp-util": "^3.0.8",
     "ip-anonymize": "^0.1.0",
     "memory-cache": "^0.2.0",
-    "node-fetch": "^2.6.7",
     "moment": "^2.29.3",
+    "node-fetch": "^2.6.7",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
     "platform-folders": "^0.6.0",
@@ -79,7 +79,7 @@
     "rich-text": "^4.1.0",
     "sharedb": "^1.5.2",
     "sharedb-logger": "^0.1.4",
-    "sharp": "0.30.6",
+    "sharp": "^0.31.1",
     "slugg": "^1.2.1",
     "socket.io": "^2.3.0",
     "source-map": "^0.7.3",
@@ -98,6 +98,6 @@
     "node-gyp": "^9.0.0"
   },
   "optionalDependencies": {
-    "pdf-extractor": "^2.1.2"
+    "pdf-extractor": "^2.2.0"
   }
 }
