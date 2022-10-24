@@ -107,7 +107,7 @@ export default {
     },
     async updateText() {
       this.is_saving = true;
-      await new Promise((r) => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 500));
 
       try {
         const new_meta = {
@@ -142,9 +142,6 @@ export default {
     white-space: break-spaces;
     margin-right: calc(var(--spacing) / 2);
   }
-}
-._topLabel {
-  display: block;
 }
 
 ._footer {

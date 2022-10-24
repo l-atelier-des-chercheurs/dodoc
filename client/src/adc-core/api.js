@@ -6,7 +6,7 @@ export default function () {
     data: {
       socket: "",
       store: {},
-      is_logged_in: false,
+      is_logged_in: true,
       debug_mode: false,
     },
     created() {},
@@ -200,6 +200,18 @@ export default function () {
         );
         const d = response.data;
         return d;
+      },
+
+      async createFolder({ folder_type, additional_meta }) {
+        try {
+          const response = await this.$axios.post(
+            `/${folder_type}`,
+            additional_meta
+          );
+          return response.data.new_folder_slug;
+        } catch (e) {
+          throw e.response.data;
+        }
       },
       async deleteFolder({ folder_type, folder_slug }) {
         try {

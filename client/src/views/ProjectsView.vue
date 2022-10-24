@@ -19,6 +19,7 @@
     <CreateProject
       v-if="show_create_modal"
       @close="show_create_modal = false"
+      @openNewProject="openNewProject"
     />
 
     <h2>Finalisés</h2>
@@ -86,7 +87,12 @@ export default {
       return this.sorted_projects.filter((p) => p.status === "draft");
     },
   },
-  methods: {},
+  methods: {
+    openNewProject(new_folder_slug) {
+      this.show_create_modal = false;
+      this.$router.push(`/projects/${new_folder_slug}`);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

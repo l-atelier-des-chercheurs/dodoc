@@ -197,7 +197,7 @@ module.exports = (function () {
         data,
       });
       dev.logpackets({ status: "folder was created" });
-      res.status(200).json({ status: "ok" });
+      res.status(200).json({ new_folder_slug });
 
       const new_folder_meta = await folder.getFolder({
         folder_type,

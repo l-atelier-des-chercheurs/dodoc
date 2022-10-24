@@ -8,7 +8,7 @@
       <sl-tag
         v-for="tag in new_tags"
         :key="tag"
-        variant="success"
+        variant="primary"
         size="small"
         :removable="edit_mode"
         @click="edit_mode ? removeTag(tag) : ''"

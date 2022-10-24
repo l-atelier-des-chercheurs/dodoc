@@ -147,7 +147,6 @@ async function copyAndRenameUserFolder(full_default_path) {
   return full_path_to_content;
 }
 
-// ie make sure its not a dodoc 9 folder, which would break dodoc badly
 async function contentFolderIsValid(full_path) {
   if (!(await fs.pathExists(full_path))) return false;
 
@@ -162,6 +161,8 @@ async function contentFolderIsValid(full_path) {
   const meta = utils.parseMeta(meta_file_content);
 
   if (!meta.dodoc_version || meta.dodoc_version !== "10") return false;
+
+  // TODO improved here: if folder is not valid, create in a subfolder called dodoc-next
 
   return true;
 }

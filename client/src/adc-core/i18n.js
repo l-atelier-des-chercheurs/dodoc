@@ -84,7 +84,7 @@ export default function () {
           "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
         invisible: "Invisible",
         invisible_status_explanations:
-          "Le projet sera masqué et inaccessible à tout le monde, sauf à ses contributeurs.",
+          "Le projet sera masqué et inaccessible à tous sauf à ses contributeurs.",
         finished: "Finalisé",
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d'accueil.",
@@ -104,6 +104,8 @@ export default function () {
         machines_and_materials: "Machines et matériaux",
 
         already_added: "Déjà ajouté",
+        create_and_open: "Créer et ouvrir",
+        create_a_project: "Créer un projet",
       },
       en: {
         hello: "hello world",

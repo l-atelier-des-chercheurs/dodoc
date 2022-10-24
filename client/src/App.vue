@@ -61,7 +61,7 @@ export default {
   --scrollbar-border: 2px;
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
-  --border-radius: 10px;
+  --border-radius: 6px;
 
   --input-font-family: inherit;
   --input-font-size: 1em;

@@ -29,6 +29,8 @@ import SelectField from "@/adc-core/fields/SelectField.vue";
 Vue.component("SelectField", SelectField);
 import RadioField from "@/adc-core/fields/RadioField.vue";
 Vue.component("RadioField", RadioField);
+import BaseModal2 from "@/adc-core/modal/BaseModal2.vue";
+Vue.component("BaseModal2", BaseModal2);
 
 import TextInput from "@/adc-core/fields/TextInput.vue";
 Vue.component("TextInput", TextInput);
