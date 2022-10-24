@@ -81,7 +81,7 @@ export default {
     path: String,
     maxlength: {
       type: [Boolean, Number],
-      default: 30,
+      default: 40,
     },
     can_edit: Boolean,
   },
