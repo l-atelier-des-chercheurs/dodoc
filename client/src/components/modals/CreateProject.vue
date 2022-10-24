@@ -63,8 +63,6 @@ export default {
             status: "draft",
           },
         });
-        this.is_creating_project = false;
-
         setTimeout(() => {
           this.$emit("openNewProject", new_folder_slug);
         }, 500);

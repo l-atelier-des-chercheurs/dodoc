@@ -1,5 +1,5 @@
 <template>
-  <dialog @click="possiblyClose">
+  <dialog @click.self="possiblyClose">
     <header>
       <h2>{{ title }}</h2>
     </header>
