@@ -133,33 +133,46 @@ async function copyAndRenameUserFolder(full_default_path) {
     );
   }
 
-  // TODO check for a text file with dodoc version number
-  // for example, a meta.txt file in /dodoc that says "dodoc_version: 10" and makes sure that content are formatted for dodoc 10
-  // ie make sur its not a dodoc 9 folder, which would break dodoc badly
+  // if path to content exists
 
-  if (!(await fs.pathExists(full_path_to_content))) {
+  if (await contentFolderIsValid(full_path_to_content)) {
+    dev.log(`-> content folder is valid: ${full_path_to_content}`);
+  } else {
     dev.log(
-      `-> content folder does not already exists at ${full_path_to_content} -> duplicating content folder to create a new one`
+      `-> content folder does not already exists at ${full_path_to_content}. Duplicating content folder to create a new one.`
     );
     await fs.copy(full_default_path, full_path_to_content);
-  } else dev.log(`-> not creating a new one`);
+  }
 
   return full_path_to_content;
 }
 
-function cleanCacheFolder() {
-  return new Promise(function (resolve, reject) {
-    let cachePath = path.join(global.tempStorage, global.settings.cacheDirname);
-    dev.log(`Emptying temp folder ${cachePath}`);
-    fs.emptyDir(cachePath)
-      .then(() => {
-        resolve();
-      })
-      .catch((err) => {
-        dev.error(err);
-        return reject(err);
-      });
+// ie make sure its not a dodoc 9 folder, which would break dodoc badly
+async function contentFolderIsValid(full_path) {
+  if (!(await fs.pathExists(full_path))) return false;
+
+  const path_to_content_meta = path.join(full_path, "meta.txt");
+  if (!(await fs.pathExists(path_to_content_meta))) return false;
+
+  const meta_file_content = await fs
+    .readFile(path_to_content_meta, "UTF-8")
+    .catch((err) => {
+      return false;
+    });
+  const meta = utils.parseMeta(meta_file_content);
+
+  if (!meta.dodoc_version || meta.dodoc_version !== "10") return false;
+
+  return true;
+}
+
+async function cleanCacheFolder() {
+  let cachePath = path.join(global.tempStorage, global.settings.cacheDirname);
+  dev.log(`Emptying temp folder ${cachePath}`);
+  await fs.emptyDir(cachePath).catch((err) => {
+    throw err;
   });
+  return;
 }
 
 async function readAppMeta() {

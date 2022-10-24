@@ -8,7 +8,7 @@
   "versioning": true,
 
   "cacheDirname": "dodoc_cache",
-  "contentPath": "dodoc",
+  "contentPath": "dodoc_next",
 
   "privateKeyPath": "",
   "certificatePath": "",
