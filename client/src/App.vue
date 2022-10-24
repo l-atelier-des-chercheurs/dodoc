@@ -94,7 +94,7 @@ export default {
   --color-Capturer: var(--c-rouge);
   --color-Collecter: var(--c-orange);
   --color-Remixer: var(--c-bleuvert);
-  --color-Documenter: var(--c-bleumarine);
+  --color-Publier: var(--c-bleumarine);
 
   --indicator-color: var(--c-vert) !important;
   --active-color: var(--c-bleuvert);

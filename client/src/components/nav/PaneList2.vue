@@ -124,7 +124,7 @@ export default {
           pad: {},
         },
         {
-          type: "Documenter",
+          type: "Publier",
           pad: {},
         },
       ],

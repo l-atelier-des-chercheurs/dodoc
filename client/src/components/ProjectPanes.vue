@@ -26,7 +26,7 @@
         />
         <RemixPane v-if="pane.type === 'Remixer'" :project="project" />
         <JournalPane
-          v-if="pane.type === 'Documenter'"
+          v-if="pane.type === 'Publier'"
           :project="project"
           :opened_journal_entry="pane.pad"
           :can_edit="can_edit_project"

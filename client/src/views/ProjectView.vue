@@ -123,7 +123,7 @@ export default {
       if (this.can_edit_project) return this.projectpanes;
       return [
         {
-          type: "Documenter",
+          type: "Publier",
           pad: {},
           size: 100,
         },
