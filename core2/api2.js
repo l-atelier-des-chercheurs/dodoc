@@ -116,6 +116,7 @@ module.exports = (function () {
     try {
       const d = await folder.getFolders({ folder_type });
       res.setHeader("Access-Control-Allow-Origin", "*");
+
       dev.logpackets({ d });
       res.json(d);
     } catch (err) {
@@ -142,6 +143,8 @@ module.exports = (function () {
       const folder_meta = await folder.getFolder({ folder_type, folder_slug });
       const files = await file.getFiles({ folder_type, folder_slug });
       folder_meta.files = files;
+
+      dev.logpackets({ folder_meta });
       res.json(folder_meta);
     } catch (err) {
       dev.error(err);
@@ -166,6 +169,8 @@ module.exports = (function () {
         folder_slug,
         meta_filename: meta_slug,
       });
+
+      dev.logpackets({ file_archives });
       res.json(file_archives);
     } catch (err) {
       dev.error(err);
@@ -191,6 +196,7 @@ module.exports = (function () {
         folder_type,
         data,
       });
+      dev.logpackets({ status: "folder was created" });
       res.status(200).json({ status: "ok" });
 
       const new_folder_meta = await folder.getFolder({
@@ -233,7 +239,7 @@ module.exports = (function () {
         data,
         update_cover_req: update_cover ? req : false,
       });
-
+      dev.logpackets({ status: "folder was updated" });
       res.status(200).json({ status: "ok" });
 
       // TODO improve here
@@ -271,7 +277,7 @@ module.exports = (function () {
         folder_type,
         folder_slug,
       });
-      // res.setHeader("Access-Control-Allow-Origin", "*");
+      dev.logpackets({ status: "folder was removed" });
       res.status(200).json({ status: "ok" });
 
       notifier.emit("folderRemoved", `${folder_type}`, {
@@ -340,7 +346,7 @@ module.exports = (function () {
         folder_type,
         folder_slug,
       });
-      // res.setHeader("Access-Control-Allow-Origin", "*");
+      dev.logpackets({ status: `uploaded file ${meta_filename}` });
       res.status(200).json({ meta_filename });
 
       const file_meta = await file.getFile({
@@ -383,7 +389,7 @@ module.exports = (function () {
         meta_slug,
         data,
       });
-      // res.setHeader("Access-Control-Allow-Origin", "*");
+      dev.logpackets({ status: "file was updated" });
       res.status(200).json({ status: "ok" });
 
       notifier.emit("fileUpdated", `${folder_type}/${folder_slug}`, {
@@ -418,7 +424,7 @@ module.exports = (function () {
         folder_slug,
         meta_slug,
       });
-      // res.setHeader("Access-Control-Allow-Origin", "*");
+      dev.logpackets({ status: "file was removed" });
       res.status(200).json({ status: "ok" });
 
       notifier.emit("fileRemoved", `${folder_type}/${folder_slug}`, {
@@ -438,12 +444,16 @@ module.exports = (function () {
   function _getLocalNetworkInfos(req, res, next) {
     dev.logfunction();
     const local_ips = utils.getLocalIP();
+
+    dev.logpackets({ local_ips });
     res.status(200).json(local_ips);
   }
   function _getAdminInfos(req, res, next) {
     // TODO only available to admins
     dev.logfunction();
     // get storage path
+
+    dev.logpackets();
     res.status(200).json({
       pathToUserContent: pathToUserContent,
     });

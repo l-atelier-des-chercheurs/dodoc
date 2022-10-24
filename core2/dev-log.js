@@ -30,9 +30,9 @@ module.exports = dev = (function () {
     if (isDebugMode) {
       console.log("Debug mode is enabled");
       console.log("---");
-      dev.logfunction("(log) magenta is for functions");
-      dev.logpackets("(log) green is for packets");
-      dev.logsockets("(purple) green is for sockets");
+      dev.logfunction("logfunction = magenta");
+      dev.logpackets("logpackets = green");
+      dev.logsockets("logsockets = cyan");
       if (isVerboseMode) {
         dev.logverbose("(dev and verbose) gray for regular parsing data");
       }
