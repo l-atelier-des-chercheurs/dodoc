@@ -6,9 +6,7 @@ const path = require("path"),
   exifReader = require("exif-reader"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
-  https = require("https"),
-  StlThumbnailer = require("stl-thumbnailer-node"),
-  PdfExtractor = require("pdf-extractor").PdfExtractor;
+  https = require("https");
 
 const utils = require("./utils");
 
@@ -497,6 +495,7 @@ module.exports = (function () {
     camera_angle,
   }) {
     return new Promise(function (resolve, reject) {
+      const StlThumbnailer = require("stl-thumbnailer-node");
       new StlThumbnailer({
         filePath: full_media_path,
         requestThumbnails: [
@@ -531,17 +530,23 @@ module.exports = (function () {
     const temp_pdf_doc = path.join(thumb_folder, "_temp_pdf");
     await fs.ensureDir(temp_pdf_doc);
 
-    let pdf_extractor = new PdfExtractor(temp_pdf_doc, {
-      viewportScale: (width, height) => {
-        if (width > height) return 1100 / width;
-        return 800 / width;
-      },
-      pageRange: [page, page],
-    });
-
-    await pdf_extractor.parse(full_media_path).catch((err) => {
-      dev.error(err);
-    });
+    try {
+      let pdf_extractor = new require("pdf-extractor").PdfExtractor(
+        temp_pdf_doc,
+        {
+          viewportScale: (width, height) => {
+            if (width > height) return 1100 / width;
+            return 800 / width;
+          },
+          pageRange: [page, page],
+        }
+      );
+      await pdf_extractor.parse(full_media_path).catch((err) => {
+        dev.error(err);
+      });
+    } catch (err) {
+      throw err;
+    }
 
     dev.logverbose(`Created temp pdf folder`);
 
