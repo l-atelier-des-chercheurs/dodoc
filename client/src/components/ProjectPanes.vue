@@ -3,7 +3,9 @@
     <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
       <template v-if="projectpanes.length === 0">
         <pane>
-          <span class="_msg">Choisissez un panneau ci-dessus !</span>
+          <span class="_msg u-instructions">
+            Choisissez un panneau ci-dessus !
+          </span>
         </pane>
       </template>
       <pane
@@ -25,7 +27,7 @@
           @update:media_focused="pane.focus = $event"
         />
         <RemixPane v-if="pane.type === 'Remixer'" :project="project" />
-        <JournalPane
+        <PublierPane
           v-if="pane.type === 'Publier'"
           :project="project"
           :opened_journal_entry="pane.pad"
@@ -41,7 +43,7 @@ import { Splitpanes, Pane } from "splitpanes";
 import CapturePane from "@/components/panes/CapturePane.vue";
 import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 import RemixPane from "@/components/panes/RemixPane.vue";
-import JournalPane from "@/components/panes/JournalPane.vue";
+import PublierPane from "@/components/panes/PublierPane.vue";
 
 export default {
   props: {
@@ -52,7 +54,7 @@ export default {
   components: {
     Splitpanes,
     Pane,
-    JournalPane,
+    PublierPane,
     MediaLibrary,
     RemixPane,
     CapturePane,
@@ -90,8 +92,6 @@ export default {
   height: 100%;
   display: flex;
   place-content: center;
-  font-style: italic;
-  padding: calc(var(--spacing) * 2);
   background: #eee;
 }
 </style>

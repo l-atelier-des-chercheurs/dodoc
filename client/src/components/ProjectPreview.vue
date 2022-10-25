@@ -13,11 +13,14 @@
         <sl-button
           v-if="context === 'full'"
           size="small"
-          variant="semitransparent"
+          variant="neutral"
           class="_fsButton u-buttonLink"
-          v-text="!is_fullscreen ? 'agrandir' : 'réduire'"
           @click="toggleFs"
-        />
+        >
+          <sl-icon
+            :name="!is_fullscreen ? 'arrows-fullscreen' : 'fullscreen-exit'"
+          />
+        </sl-button>
       </template>
       <div v-else class="_noImage" />
 
@@ -34,7 +37,7 @@
       <!-- <div class="_content"> -->
       <TitleField
         :field_name="'title'"
-        :label="$t('title')"
+        :label="context === 'full' ? $t('title') : ''"
         :content="project.title"
         :path="`/projects/${project.slug}`"
         :required="true"
@@ -45,7 +48,7 @@
 
       <TitleField
         :field_name="'description'"
-        :label="$t('description')"
+        :label="context === 'full' ? $t('description') : ''"
         :content="project.description"
         :path="`/projects/${project.slug}`"
         :maxlength="280"

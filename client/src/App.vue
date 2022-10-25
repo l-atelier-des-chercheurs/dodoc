@@ -64,9 +64,9 @@ export default {
   --border-radius: 6px;
 
   --input-font-family: inherit;
-  --input-font-size: 1em;
-  --input-font-size-small: 0.8em;
-  --input-font-size-big: 1.2em;
+  --input-font-size: 1rem;
+  --input-font-size-small: 0.8rem;
+  --input-font-size-big: 1.2rem;
   --input-font-weight: inherit;
   --input-height: 2.5em;
   // --input-height-big: 3em;
@@ -192,7 +192,7 @@ html {
   font-style: normal;
   font-weight: 400;
 
-  font-size: 100%;
+  font-size: 90%;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -257,9 +257,17 @@ h2 {
   }
 }
 
+ul {
+  padding: 0;
+}
+
 ._boldBtn {
   font-weight: 700;
   font-variant: small-caps;
+}
+
+small {
+  font-size: var(--sl-font-size-small);
 }
 img {
   max-width: 100%;

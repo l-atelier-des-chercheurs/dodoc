@@ -5,6 +5,9 @@
       v-for="recipe_type in recipe_types"
       :key="recipe_type.key"
     >
+      <div class="u-instructions u-padding-small">
+        Annotez, assemblez, déformez vos photos, vidéos, sons.
+      </div>
       <div class="">
         {{ $t(recipe_type.label) }}
       </div>
@@ -58,90 +61,86 @@ export default {
   data() {
     return {
       recipe_types: [
-        {
-          key: "document",
-          label: "make_a_document",
-          recipes: [
-            {
-              key: "page_by_page",
-              summary: "page_by_page_summary",
-              show_instructions: false,
-              instructions: "page_by_page_instructions",
-              icon: `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-  <g id="Calque_6" data-name="Calque 6">
-    <g>
-      <rect x="35.68" y="8.83" width="129.64" height="183.35" style="fill: #fff"/>
-      <rect x="46.15" y="31.82" width="39.07" height="27.55" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.0944702326735385px"/>
-      <rect x="118.95" y="68.62" width="35.9" height="53.44" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 1.9170289512680598px"/>
-      <rect x="46.15" y="68.62" width="63.37" height="53.44" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.161211202864444px"/>
-      <rect x="73.36" y="136.54" width="54.27" height="4.99" style="fill: #353535"/>
-      <rect x="73.36" y="153.02" width="54.27" height="4.99" style="fill: #353535"/>
-      <rect x="73.36" y="144.78" width="54.27" height="4.99" style="fill: #353535"/>
-      <rect x="73.36" y="161.26" width="54.27" height="4.99" style="fill: #353535"/>
-      <line x1="46.15" y1="22.57" x2="154.85" y2="22.57" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 1.8953584524134504px"/>
-    </g>
-  </g>
-</svg>
-          `,
-            },
-            //             {
-            //               key: "story",
-            //               summary: "story_summary",
-            //               show_instructions: false,
-            //               instructions: "story_instructions",
-
-            //               icon: `
-            // <!-- Generator: Adobe Illustrator 25.2.1, SVG Export Plug-In  -->
-            // <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="201px"
-            // 	 height="201px" viewBox="0 0 201 201" style="overflow:visible;enable-background:new 0 0 201 201;" xml:space="preserve">
-            // 	<g id="Calque_6_2_">
-            // 		<g>
-            // 			<rect x="35.7" y="8.8" class="st1" width="129.6" height="183.4" style="fill: #fff;" />
-            // 		</g>
-            // 	</g>
-            // 	<rect x="64.9" y="46.8" width="71.2" height="53.6" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
-            // 	<rect x="64.9" y="145.2" width="71.2" height="39.8" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
-            // 	<rect x="65" y="108" width="71.1" height="5" style="fill:#353535;" />
-            // 	<rect x="65" y="124.5" class="st3" width="71.1" height="5"  style="fill:#353535;"/>
-            // 	<rect x="65" y="116.2" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-            // 	<rect x="65" y="132.7" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-            // 	<rect x="64.9" y="25.9" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-            // 	<rect x="64.9" y="17.6" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-            // 	<rect x="64.9" y="34.1" class="st3" width="71.1" height="5" style="fill:#353535;"/>
-
-            // </svg>
-            //           `,
-            //             },
-            //             {
-            //               key: "drawing_pad",
-            //               summary: "drawing_pad_summary",
-            //               show_instructions: false,
-            //               instructions: "drawing_pad_instructions",
-
-            //               icon: `
-            // <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
-            //   <title>Fichier 1</title>
-            //   <g id="Calque_2" data-name="Calque 2">
-            //     <g id="Calque_6" data-name="Calque 6">
-            //       <rect x="13.92" y="35.39" width="173.15" height="129.86" style="fill: #fff"/>
-            //       <rect x="26.17" y="45.02" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
-            //       <rect x="127.82" y="81.05" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
-            //       <circle cx="36.99" cy="81.05" r="5.95" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
-            //       <g>
-            //         <path d="M69.78,69.42c41.68,0,5.66,33.94,50.44,35.13" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
-            //         <polygon points="115.83 108.09 119.58 104.51 116 100.76 119.11 100.83 122.69 104.58 118.94 108.16 115.83 108.09" style="fill: #353535"/>
-            //       </g>
-            //       <polygon points="77.64 108.18 107.23 137.81 48.02 137.81 77.64 108.18" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
-            //       <rect width="201" height="201" style="fill: none"/>
-            //     </g>
-            //   </g>
-            // </svg>
-
-            //           `,
-            //             },
-          ],
-        },
+        // {
+        //   key: "document",
+        //   label: "make_a_document",
+        //   recipes: [
+        //             {
+        //               key: "page_by_page",
+        //               summary: "page_by_page_summary",
+        //               show_instructions: false,
+        //               instructions: "page_by_page_instructions",
+        //               icon: `
+        // <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+        //   <g id="Calque_6" data-name="Calque 6">
+        //     <g>
+        //       <rect x="35.68" y="8.83" width="129.64" height="183.35" style="fill: #fff"/>
+        //       <rect x="46.15" y="31.82" width="39.07" height="27.55" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.0944702326735385px"/>
+        //       <rect x="118.95" y="68.62" width="35.9" height="53.44" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 1.9170289512680598px"/>
+        //       <rect x="46.15" y="68.62" width="63.37" height="53.44" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.161211202864444px"/>
+        //       <rect x="73.36" y="136.54" width="54.27" height="4.99" style="fill: #353535"/>
+        //       <rect x="73.36" y="153.02" width="54.27" height="4.99" style="fill: #353535"/>
+        //       <rect x="73.36" y="144.78" width="54.27" height="4.99" style="fill: #353535"/>
+        //       <rect x="73.36" y="161.26" width="54.27" height="4.99" style="fill: #353535"/>
+        //       <line x1="46.15" y1="22.57" x2="154.85" y2="22.57" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 1.8953584524134504px"/>
+        //     </g>
+        //   </g>
+        // </svg>
+        //           `,
+        //             },
+        //             {
+        //               key: "story",
+        //               summary: "story_summary",
+        //               show_instructions: false,
+        //               instructions: "story_instructions",
+        //               icon: `
+        // <!-- Generator: Adobe Illustrator 25.2.1, SVG Export Plug-In  -->
+        // <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="201px"
+        // 	 height="201px" viewBox="0 0 201 201" style="overflow:visible;enable-background:new 0 0 201 201;" xml:space="preserve">
+        // 	<g id="Calque_6_2_">
+        // 		<g>
+        // 			<rect x="35.7" y="8.8" class="st1" width="129.6" height="183.4" style="fill: #fff;" />
+        // 		</g>
+        // 	</g>
+        // 	<rect x="64.9" y="46.8" width="71.2" height="53.6" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
+        // 	<rect x="64.9" y="145.2" width="71.2" height="39.8" style="fill:none;stroke:#353535;stroke-width:1.917;stroke-miterlimit:10;" />
+        // 	<rect x="65" y="108" width="71.1" height="5" style="fill:#353535;" />
+        // 	<rect x="65" y="124.5" class="st3" width="71.1" height="5"  style="fill:#353535;"/>
+        // 	<rect x="65" y="116.2" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+        // 	<rect x="65" y="132.7" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+        // 	<rect x="64.9" y="25.9" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+        // 	<rect x="64.9" y="17.6" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+        // 	<rect x="64.9" y="34.1" class="st3" width="71.1" height="5" style="fill:#353535;"/>
+        // </svg>
+        //           `,
+        //             },
+        //             {
+        //               key: "drawing_pad",
+        //               summary: "drawing_pad_summary",
+        //               show_instructions: false,
+        //               instructions: "drawing_pad_instructions",
+        //               icon: `
+        // <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+        //   <title>Fichier 1</title>
+        //   <g id="Calque_2" data-name="Calque 2">
+        //     <g id="Calque_6" data-name="Calque 6">
+        //       <rect x="13.92" y="35.39" width="173.15" height="129.86" style="fill: #fff"/>
+        //       <rect x="26.17" y="45.02" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+        //       <rect x="127.82" y="81.05" width="37.98" height="48.24" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+        //       <circle cx="36.99" cy="81.05" r="5.95" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+        //       <g>
+        //         <path d="M69.78,69.42c41.68,0,5.66,33.94,50.44,35.13" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+        //         <polygon points="115.83 108.09 119.58 104.51 116 100.76 119.11 100.83 122.69 104.58 118.94 108.16 115.83 108.09" style="fill: #353535"/>
+        //       </g>
+        //       <polygon points="77.64 108.18 107.23 137.81 48.02 137.81 77.64 108.18" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2.16121px"/>
+        //       <rect width="201" height="201" style="fill: none"/>
+        //     </g>
+        //   </g>
+        // </svg>
+        //           `,
+        //             },
+        // ],
+        // },
         {
           key: "video",
           label: "make_a_video",

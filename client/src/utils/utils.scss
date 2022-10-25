@@ -19,6 +19,14 @@
   word-break: break-word;
 }
 
+.u-instructions {
+  font-style: italic;
+}
+
+.u-padding-small {
+  padding: calc(var(--spacing) / 2);
+}
+
 .u-card {
   background-color: #fff;
   border-radius: 6px;
@@ -241,12 +249,12 @@ input[type="file"] {
   z-index: -1;
 
   + label {
-    display: flex;
+    display: inline-flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
 
-    width: 100%;
+    // width: 100%;
     max-width: 380px;
     text-align: center;
 
@@ -258,7 +266,7 @@ input[type="file"] {
     border-radius: var(--input-border-radius);
     margin-bottom: 0;
 
-    transition: color 1s;
+    transition: color 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   :focus + label,

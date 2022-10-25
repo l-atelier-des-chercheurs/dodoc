@@ -344,7 +344,7 @@
           "caption": {
             "type": "string"
           },
-          "is_journal": {
+          "is_publication": {
             "type": "boolean"
           }
         }

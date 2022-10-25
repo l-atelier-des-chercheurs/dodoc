@@ -110,6 +110,6 @@ export default {
 <style lang="scss" scoped>
 ._maxlength {
   flex: 0 0 auto;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4) 0;
 }
 </style>
