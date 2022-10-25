@@ -192,7 +192,7 @@ html {
   font-style: normal;
   font-weight: 400;
 
-  font-size: 90%;
+  font-size: 95%;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -258,7 +258,7 @@ h2 {
 }
 
 ul {
-  padding: 0;
+  padding: calc(var(--spacing) / 2);
 }
 
 ._boldBtn {

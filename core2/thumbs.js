@@ -76,7 +76,7 @@ module.exports = (function () {
             ext: "png",
           },
         ];
-      } else if (media_type === "document") {
+      } else if (media_type === "pdf") {
         settings = [
           {
             suffix: "page-1",
@@ -222,8 +222,8 @@ module.exports = (function () {
               full_path_to_thumb,
               camera_angle: setting.camera_angle,
             });
-          else if (media_type === "document")
-            await _makeDocumentThumbs({
+          else if (media_type === "pdf")
+            await _makePDFThumbs({
               full_media_path,
               thumb_folder,
               full_path_to_thumb,
@@ -519,7 +519,7 @@ module.exports = (function () {
     });
   }
 
-  async function _makeDocumentThumbs({
+  async function _makePDFThumbs({
     full_media_path,
     thumb_folder,
     full_path_to_thumb,
@@ -531,16 +531,14 @@ module.exports = (function () {
     await fs.ensureDir(temp_pdf_doc);
 
     try {
-      let pdf_extractor = new require("pdf-extractor").PdfExtractor(
-        temp_pdf_doc,
-        {
-          viewportScale: (width, height) => {
-            if (width > height) return 1100 / width;
-            return 800 / width;
-          },
-          pageRange: [page, page],
-        }
-      );
+      const PdfExtractor = require("pdf-extractor").PdfExtractor;
+      let pdf_extractor = new PdfExtractor(temp_pdf_doc, {
+        viewportScale: (width, height) => {
+          if (width > height) return 1100 / width;
+          return 800 / width;
+        },
+        pageRange: [page, page],
+      });
       await pdf_extractor.parse(full_media_path).catch((err) => {
         dev.error(err);
       });

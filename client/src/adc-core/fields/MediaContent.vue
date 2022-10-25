@@ -11,7 +11,14 @@
         <video :src="file_full_path" controls />
       </template>
     </template>
+    <template v-else-if="file.type === 'pdf'">
+      <img :src="thumb" />
+    </template>
+    <template v-else-if="file.type === 'stl'">
+      <img :src="thumb" />
+    </template>
     <span v-else>
+      {{ file.type }}
       <sl-icon name="file-earmark-arrow-down" /><br />
       {{ file.media_filename }}
     </span>

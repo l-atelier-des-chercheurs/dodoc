@@ -10,7 +10,7 @@ export default {
         if (type === "video") thumb_path = thumbs["0"][resolution];
         if (type === "audio") thumb_path = thumbs.waveform[resolution];
         if (type === "stl") thumb_path = thumbs["0"][resolution];
-        if (type === "document") thumb_path = thumbs["page-1"][resolution];
+        if (type === "pdf") thumb_path = thumbs["page-1"][resolution];
         if (type === "url") thumb_path = thumbs["ogimage"][resolution];
       } catch (err) {
         return false;

@@ -376,7 +376,7 @@ module.exports = (function () {
           new_meta.type = "text";
           break;
         case ".pdf":
-          new_meta.type = "document";
+          new_meta.type = "pdf";
           break;
         default:
           new_meta.type = "other";

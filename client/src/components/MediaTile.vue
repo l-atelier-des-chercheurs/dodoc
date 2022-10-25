@@ -94,7 +94,7 @@ export default {
 
   &.is--focused {
     // border: 2px solid var(--c-vert);
-    background: var(--c-vert);
+    background: black;
   }
 }
 </style>

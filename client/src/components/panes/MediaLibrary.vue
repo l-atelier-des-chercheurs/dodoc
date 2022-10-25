@@ -49,6 +49,8 @@
           @close="selected_files = []"
         />
 
+        <br />
+
         <form
           v-if="show_create_link_field"
           class="input-validation-required"
