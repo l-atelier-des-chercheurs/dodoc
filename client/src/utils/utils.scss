@@ -67,6 +67,9 @@
   text-decoration: none;
   color: inherit;
 
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  border-radius: var(--input-border-radius);
+
   svg,
   .inlineSVG {
     width: 2em;
@@ -78,8 +81,7 @@
   color: white;
 }
 .u-button_big {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-  border-radius: var(--input-border-radius);
+  font-size: var(--input-font-size-big);
 }
 
 input[type="color"],

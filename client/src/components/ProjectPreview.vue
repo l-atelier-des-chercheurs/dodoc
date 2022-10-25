@@ -68,7 +68,7 @@
     <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link
         :to="`/projects/${project.slug}`"
-        class="u-button u-button_big u-button_red"
+        class="u-button u-button_red"
       >
         ouvrir&nbsp;
         <sl-icon name="arrow-up-right" />
