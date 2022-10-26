@@ -43,7 +43,7 @@
 
     <h2>Finalisés</h2>
     <div class="_projectsList">
-      <ProjectPreview
+      <ProjectPresentation
         v-for="project in finalized_projects"
         :project="project"
         context="list"
@@ -53,7 +53,7 @@
     <hr />
     <h2>En cours</h2>
     <div class="_projectsList">
-      <ProjectPreview
+      <ProjectPresentation
         v-for="project in draft_projects"
         :project="project"
         context="list"
@@ -63,13 +63,13 @@
   </div>
 </template>
 <script>
-import ProjectPreview from "@/components/ProjectPreview.vue";
+import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import CreateProject from "@/components/modals/CreateProject.vue";
 
 export default {
   props: {},
   components: {
-    ProjectPreview,
+    ProjectPresentation,
     CreateProject,
   },
   data() {

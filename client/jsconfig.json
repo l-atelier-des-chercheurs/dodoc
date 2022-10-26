@@ -7,7 +7,6 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "exclude": ["node_modules"],
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   }
 }

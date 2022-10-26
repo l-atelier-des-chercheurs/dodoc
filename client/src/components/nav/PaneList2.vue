@@ -28,7 +28,11 @@
           :style="`--color-active: var(--color-${pane.type});`"
           :key="pane.type"
         >
-          <div class="_btn" @click="replacePane($event, pane)">
+          <div
+            class="_btn"
+            :ref="`pane_${pane.type}`"
+            @click="replacePane($event, pane)"
+          >
             <!-- <div v-handle class="_inlineBtn">
               <sl-icon-button
                 name="grip-vertical"
@@ -138,7 +142,14 @@ export default {
     // if (this.project_panes.length === 0)
     //   this.project_panes = this.default_project_panes.slice();
   },
-  mounted() {},
+  mounted() {
+    // this.$nextTick(() => {
+    //   const lib = this.possible_project_panes.find(
+    //     (pp) => pp.type === "Collecter"
+    //   );
+    //   this.project_panes.push(lib);
+    // });
+  },
   beforeDestroy() {},
   watch: {
     panes: {
@@ -338,9 +349,6 @@ export default {
   // padding: 10px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.3);
-}
-
-._addPaneBtn {
 }
 
 ._btn {

@@ -176,10 +176,6 @@ export default {
   margin-right: calc(var(--spacing) / 4);
 }
 
-._topLabel {
-  display: block;
-}
-
 ._footer {
   display: flex;
   flex-flow: column nowrap;

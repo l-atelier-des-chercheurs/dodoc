@@ -1,5 +1,11 @@
 <template>
-  <div class="_projectInfos u-card">
+  <div
+    class="_projectInfos"
+    :class="{
+      'is--preview': context === 'list',
+      'u-card': context === 'list',
+    }"
+  >
     <div
       class="_projectInfos--cover"
       ref="coverImage"
@@ -74,16 +80,40 @@
         <sl-icon name="arrow-up-right" />
       </router-link>
     </div>
+
+    <div class="_projectMeta" v-if="context === 'full'">
+      <CardMeta :project="project" :can_edit_project="can_edit_project" />
+      <CardAuthor :project="project" :can_edit_project="can_edit_project" />
+      <CardMachines :project="project" :can_edit_project="can_edit_project" />
+      <CardStatus :project="project" :can_edit_project="can_edit_project" />
+      <CardLicense :project="project" :can_edit_project="can_edit_project" />
+
+      <CardFiles :project="project" :can_edit_project="can_edit_project" />
+    </div>
   </div>
 </template>
 <script>
+import CardMeta from "@/components/project_cards/CardMeta.vue";
+import CardAuthor from "@/components/project_cards/CardAuthor.vue";
+import CardMachines from "@/components/project_cards/CardMachines.vue";
+import CardStatus from "@/components/project_cards/CardStatus.vue";
+import CardLicense from "@/components/project_cards/CardLicense.vue";
+import CardFiles from "@/components/project_cards/CardFiles.vue";
+
 export default {
   props: {
     project: Object,
     context: String,
     can_edit_project: Boolean,
   },
-  components: {},
+  components: {
+    CardMeta,
+    CardAuthor,
+    CardMachines,
+    CardStatus,
+    CardLicense,
+    CardFiles,
+  },
   data() {
     return {
       new_title: this.project.title,
@@ -91,6 +121,8 @@ export default {
       fetch_status: null,
       fetch_error: null,
       response: null,
+
+      confirm_remove: false,
 
       preview_rawdata: null,
       show_lib: false,
@@ -156,21 +188,6 @@ export default {
         this.fetch_error = e.response.data;
       }
     },
-    async removeProject() {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
-
-      try {
-        const response = await this.$axios.delete(
-          `/projects/${this.project.slug}`
-        );
-        this.response = response.data;
-        this.fetch_status = "success";
-      } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
-      }
-    },
   },
 };
 </script>
@@ -185,13 +202,16 @@ export default {
   flex-flow: row wrap;
   align-items: stretch;
 
-  border-bottom: 2px solid #b9b9b9;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-
   margin: 0 auto;
   overflow: hidden;
+  background: white;
 
   width: 100%;
+
+  &.is--preview {
+    border-bottom: 2px solid #b9b9b9;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
 
   > * {
     flex: 1 1 260px;
@@ -291,5 +311,16 @@ export default {
   display: flex;
   justify-content: center;
   margin: calc(var(--spacing) * 1);
+}
+
+._projectMeta {
+  overflow: auto;
+  // aspect-ratio: 1/1;
+  aspect-ratio: 1/1;
+  flex: 0 1 220px;
+
+  > * {
+    // flex: 0 1 240px;
+  }
 }
 </style>

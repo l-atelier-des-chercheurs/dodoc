@@ -6,26 +6,11 @@
     </div>
     <template v-else>
       <div class="_topContent">
-        <ProjectPreview
+        <ProjectPresentation
           :project="project"
           context="full"
           :can_edit_project="can_edit_project"
         />
-
-        <div class="_projectMeta">
-          <CardAuthor :project="project" :can_edit_project="can_edit_project" />
-          <CardMachines
-            :project="project"
-            :can_edit_project="can_edit_project"
-          />
-          <CardStatus :project="project" :can_edit_project="can_edit_project" />
-          <CardLicense
-            :project="project"
-            :can_edit_project="can_edit_project"
-          />
-
-          <CardFiles :project="project" :can_edit_project="can_edit_project" />
-        </div>
       </div>
 
       <div class="_projectPanesAndList">
@@ -48,26 +33,16 @@
 </template>
 
 <script>
-import ProjectPreview from "@/components/ProjectPreview.vue";
+import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
-import CardAuthor from "@/components/project_cards/CardAuthor.vue";
-import CardMachines from "@/components/project_cards/CardMachines.vue";
-import CardStatus from "@/components/project_cards/CardStatus.vue";
-import CardLicense from "@/components/project_cards/CardLicense.vue";
-import CardFiles from "@/components/project_cards/CardFiles.vue";
 
 export default {
   props: {},
   components: {
-    ProjectPreview,
+    ProjectPresentation,
     PaneList2,
     ProjectPanes,
-    CardAuthor,
-    CardMachines,
-    CardStatus,
-    CardLicense,
-    CardFiles,
   },
   data() {
     return {
@@ -131,13 +106,6 @@ export default {
     },
   },
   methods: {
-    async deleteFolder() {
-      await this.$api.deleteFolder({
-        folder_type: "projects",
-        folder_slug: this.project_slug,
-      });
-      this.$router.push("/projects");
-    },
     updateQueryPanes() {
       let query = {};
 
@@ -155,9 +123,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._projectView {
-}
-
 ._projectPanesAndList {
   position: relative;
   height: 100vh;
@@ -183,22 +148,9 @@ export default {
   border: solid 2px var(--sl-color-neutral-0);
 }
 
-._projectMeta {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  gap: calc(var(--spacing) * 1);
-  margin: 0 auto;
-  padding: calc(var(--spacing) * 1);
-
-  > * {
-    flex: 0 1 240px;
-  }
-}
-
 ._topContent {
-  max-width: 120vh;
+  // max-width: 120vh;
   margin: 0 auto;
-  padding: calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 2);
 }
 </style>

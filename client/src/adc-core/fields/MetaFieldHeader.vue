@@ -1,5 +1,5 @@
 <template>
-  <div class="_metaFieldHeader">
+  <div class="metaFieldHeader">
     <div class="u-label" v-if="title" v-html="title" />
 
     <!-- <transition name="fade" mode="out-in"> -->
@@ -59,7 +59,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._metaFieldHeader {
+.metaFieldHeader {
   display: flex;
 }
 </style>

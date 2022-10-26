@@ -229,10 +229,10 @@ hr {
   border-bottom: 0 solid #000;
 }
 
-._metaField {
-  display: flex;
+.metaField {
+  // display: flex;
   // flex-flow: row wrap;
-  gap: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
 }
 
 body {
