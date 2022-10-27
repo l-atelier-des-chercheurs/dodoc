@@ -124,6 +124,7 @@ export default {
 
   --sl-input-color: black;
   --sl-font-size-x-large: 1.66rem;
+  --sl-font-size-xx-large: 2rem;
 }
 
 * {
@@ -235,6 +236,17 @@ hr {
   // gap: calc(var(--spacing) / 2);
 }
 
+.authorLabel {
+  flex-basis: auto;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+  border-radius: 4px;
+  background-color: #e5e5e5;
+  color: #666;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+}
+
 body {
   margin: 0;
 }
@@ -246,8 +258,11 @@ strong {
 
 h1 {
   margin: 0;
+  font-size: var(--sl-font-size-xx-large);
 }
 h2 {
+  margin: 0;
+  font-size: var(--sl-font-size-x-large);
 }
 
 .card-header {

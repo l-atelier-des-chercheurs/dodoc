@@ -12,13 +12,6 @@
   // margin-right: calc(var(--spacing) / 4);
 }
 
-.u-title {
-  margin: 0;
-  font-size: var(--sl-font-size-x-large);
-  letter-spacing: 0.03em;
-  word-break: break-word;
-}
-
 .u-instructions {
   font-style: italic;
 }
@@ -43,7 +36,8 @@
 
   &::part(header) {
     margin: 0;
-    padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+    font-weight: 700;
+    // padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
   }
   &::part(body) {
     padding: calc(var(--spacing) / 1);

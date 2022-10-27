@@ -60,15 +60,6 @@
         :maxlength="280"
         :can_edit="can_edit_project"
       />
-
-      <TagsField
-        v-if="project.keywords || can_edit_project"
-        :field_name="'keywords'"
-        :label="$t('keywords')"
-        :content="project.keywords"
-        :path="`/projects/${project.slug}`"
-        :can_edit="can_edit_project"
-      />
     </div>
 
     <div class="_projectInfos--open" v-if="context === 'list'">
@@ -80,40 +71,16 @@
         <sl-icon name="arrow-up-right" />
       </router-link>
     </div>
-
-    <div class="_projectMeta" v-if="context === 'full'">
-      <CardMeta :project="project" :can_edit_project="can_edit_project" />
-      <CardAuthor :project="project" :can_edit_project="can_edit_project" />
-      <CardMachines :project="project" :can_edit_project="can_edit_project" />
-      <CardStatus :project="project" :can_edit_project="can_edit_project" />
-      <CardLicense :project="project" :can_edit_project="can_edit_project" />
-
-      <CardFiles :project="project" :can_edit_project="can_edit_project" />
-    </div>
   </div>
 </template>
 <script>
-import CardMeta from "@/components/project_cards/CardMeta.vue";
-import CardAuthor from "@/components/project_cards/CardAuthor.vue";
-import CardMachines from "@/components/project_cards/CardMachines.vue";
-import CardStatus from "@/components/project_cards/CardStatus.vue";
-import CardLicense from "@/components/project_cards/CardLicense.vue";
-import CardFiles from "@/components/project_cards/CardFiles.vue";
-
 export default {
   props: {
     project: Object,
     context: String,
     can_edit_project: Boolean,
   },
-  components: {
-    CardMeta,
-    CardAuthor,
-    CardMachines,
-    CardStatus,
-    CardLicense,
-    CardFiles,
-  },
+  components: {},
   data() {
     return {
       new_title: this.project.title,
@@ -311,16 +278,5 @@ export default {
   display: flex;
   justify-content: center;
   margin: calc(var(--spacing) * 1);
-}
-
-._projectMeta {
-  overflow: auto;
-  // aspect-ratio: 1/1;
-  aspect-ratio: 1/1;
-  flex: 0 1 220px;
-
-  > * {
-    // flex: 0 1 240px;
-  }
 }
 </style>

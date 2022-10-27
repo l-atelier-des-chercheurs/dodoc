@@ -3,33 +3,22 @@
     <div slot="header">
       {{ $t("informations") }}
     </div>
-    <sl-tree>
-      <sl-tree-item>
-        Métadonnées
-        <sl-tree-item>
-          <DateField
-            :title="'date_created'"
-            :date="project.date_created"
-            :show_detail_initially="true"
-          />
-        </sl-tree-item>
-        <sl-tree-item>
-          <DateField
-            :title="'date_modified'"
-            :date="project.date_modified"
-            :show_detail_initially="true"
-          />
-        </sl-tree-item>
-      </sl-tree-item>
-      <sl-tree-item>
-        Supprimer ce projet
-        <sl-tree-item>
-          <button type="button" @click="removeProject">
-            Confirmer la suppression
-          </button>
-        </sl-tree-item>
-      </sl-tree-item>
-    </sl-tree>
+    <DateField
+      :title="'date_created'"
+      :date="project.date_created"
+      :show_detail_initially="true"
+    />
+    <br />
+    <DateField
+      :title="'date_modified'"
+      :date="project.date_modified"
+      :show_detail_initially="true"
+    />
+    <br />
+    Supprimer ce projet
+    <button type="button" @click="removeProject">
+      Confirmer la suppression
+    </button>
   </ProjectCard>
 </template>
 <script>

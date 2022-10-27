@@ -56,8 +56,8 @@ export default {
           text: "copyleft_explanations",
         },
         {
-          key: "custom_licence",
-          text: "custom_licence_explanations",
+          key: "custom_lisense",
+          text: "custom_license_explanations",
         },
       ],
     };

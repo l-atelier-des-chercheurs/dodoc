@@ -1,12 +1,12 @@
 <template>
-  <div class="_projectCard">
+  <sl-card class="_projectCard u-card">
     <!-- <sl-card class="u-card"> -->
-    <div slot="header" v-if="$slots['header']" class="u-label">
+    <header slot="header" v-if="$slots['header']" class="">
       <slot name="header" />
-    </div>
+    </header>
     <slot />
     <!-- </sl-card> -->
-  </div>
+  </sl-card>
 </template>
 <script>
 export default {
@@ -27,7 +27,8 @@ export default {
 ._projectCard {
   // border: 1px solid #000;
   // border-bottom: 0;
-  padding: calc(var(--spacing) * 1) 0;
+  // padding: calc(var(--spacing) * 1) 0;
+  // margin: calc(var(--spacing) / 2);
 
   &:last-child {
     // border-bottom: 1px solid #000;

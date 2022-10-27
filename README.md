@@ -148,3 +148,16 @@ npm run build
 ```
 
 This will create minified JS files in the `public/dist` folder.
+
+---
+
+# Status and visibility
+
+Folders have a native status variable set to either draft, invisible or finished. Folder with no value set are considered drafts.
+
+Draft or finished folder are "public" : anyone can get its metadata.
+Invisible folder can only be listed by their respective authors.
+
+---
+
+Files have a public toggle: when false, noone can list them except for the folders authors. When truc, anyone can list them as long as the folder is not invisible.
