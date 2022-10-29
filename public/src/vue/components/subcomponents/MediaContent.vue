@@ -280,8 +280,10 @@
     </template>
 
     <template v-else-if="media.type === 'other'">
-      <div class="padding-small font-verysmall">
-        <pre>{{ media.media_filename }}</pre>
+      <div class="font-verysmall">
+        <a :href="mediaURL" target="_blank" :download="media.media_filename">
+          <pre>{{ media.media_filename }}</pre>
+        </a>
       </div>
     </template>
   </div>
