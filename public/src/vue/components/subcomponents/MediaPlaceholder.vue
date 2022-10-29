@@ -237,7 +237,8 @@
         paged_mode &&
         (!model_placeholder_media._reply ||
           !model_placeholder_media._reply._medias ||
-          model_placeholder_media._reply._medias.length === 0)
+          model_placeholder_media._reply._medias.length === 0) &&
+        $root.store.request.display !== 'survey'
       "
     >
       <button
@@ -291,9 +292,8 @@ export default {
           this.model_placeholder_media._reply &&
           this.model_placeholder_media._reply.answers
         ) {
-          this.choices_selected = this.model_placeholder_media._reply.answers.split(
-            "|"
-          );
+          this.choices_selected =
+            this.model_placeholder_media._reply.answers.split("|");
         }
       },
       immediate: true,
@@ -353,8 +353,8 @@ export default {
           if (opts.hasOwnProperty("amount") && opts.amount) {
             const amount_of_type = opts.amount;
 
-            const number_of_medias_of_this_type = this.model_placeholder_media._reply._medias.filter(
-              (m) => {
+            const number_of_medias_of_this_type =
+              this.model_placeholder_media._reply._medias.filter((m) => {
                 const _type = m.hasOwnProperty("_linked_media")
                   ? m._linked_media.type
                   : m.type;
@@ -364,8 +364,7 @@ export default {
                 if (mode === "stopmotion")
                   return _type === mode || _type === "video";
                 return _type === mode;
-              }
-            ).length;
+              }).length;
 
             if (number_of_medias_of_this_type >= amount_of_type)
               delete _modes_allowed[mode];
@@ -457,8 +456,8 @@ export default {
             type: "publications",
             additionalMeta: {
               type: "placeholder",
-              placeholder_meta_reference: this.model_placeholder_media
-                .metaFileName,
+              placeholder_meta_reference:
+                this.model_placeholder_media.metaFileName,
               placeholder_medias_slugs: [],
             },
           })
@@ -618,12 +617,13 @@ export default {
         (m) => m.slugMediaName === metaFileName
       );
 
-      const current_media_index = this.model_placeholder_media._reply._medias.findIndex(
-        (m) => m.metaFileName === metaFileName
-      );
-      const adjacent_media_meta = this.model_placeholder_media._reply._medias[
-        current_media_index + dir
-      ].metaFileName;
+      const current_media_index =
+        this.model_placeholder_media._reply._medias.findIndex(
+          (m) => m.metaFileName === metaFileName
+        );
+      const adjacent_media_meta =
+        this.model_placeholder_media._reply._medias[current_media_index + dir]
+          .metaFileName;
 
       const new_index_in_slugs = medias_slugs.findIndex(
         (m) => m.slugMediaName === adjacent_media_meta
