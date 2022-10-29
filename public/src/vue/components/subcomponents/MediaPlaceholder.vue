@@ -201,6 +201,7 @@
             </template>
             <template v-else>
               <MediaPublicationReply
+                class="m_mediaPlaceholder--replies--paged"
                 :key="media.metaFileName"
                 :media="media"
                 :preview_mode="preview_mode"
@@ -668,4 +669,12 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss">
+.m_mediaPlaceholder--replies--paged {
+  position: relative;
+
+  pre {
+    margin: 0;
+  }
+}
+</style>
