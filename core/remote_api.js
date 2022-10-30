@@ -150,8 +150,12 @@ module.exports = (function () {
 
       let foldersData;
 
-      file
-        .getFolder({ type, slugFolderName })
+      new Promise((r) => setTimeout(r, 1000))
+        .then(() => {
+          if (slugFolderName) return file.getFolder({ type, slugFolderName });
+          return file.getFolders({ type });
+        })
+
         .then((_foldersData) => {
           if (_foldersData === undefined) {
             return reject("No folder found with name " + slugFolderName);
