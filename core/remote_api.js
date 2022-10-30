@@ -150,7 +150,7 @@ module.exports = (function () {
 
       let foldersData;
 
-      new Promise((r) => setTimeout(r, 1000))
+      new Promise((r) => setTimeout(r, 1))
         .then(() => {
           if (slugFolderName) return file.getFolder({ type, slugFolderName });
           return file.getFolders({ type });
