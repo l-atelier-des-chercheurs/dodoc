@@ -159,7 +159,7 @@ module.exports = (function () {
       str: `sendEventWithContent ${
         socket && socket.id ? `for user ` + socket.id : "for all users"
       } with type ${eventAndContentJson.socketevent}`,
-      obj: eventAndContentJson.content,
+      // obj: eventAndContentJson.content,
     });
 
     if (socket)
