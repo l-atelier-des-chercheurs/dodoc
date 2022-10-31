@@ -1778,10 +1778,7 @@ module.exports = (function () {
               if (existing[key].startsWith("$")) {
                 output_obj[key] = existing[key];
               } else {
-                output_obj[key] = bcrypt.hashSync(
-                  validator.escape(existing[key] + ""),
-                  10
-                );
+                output_obj[key] = bcrypt.hashSync(existing[key] + "", 10);
               }
             } else {
               output_obj[key] = "";
