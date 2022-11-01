@@ -14,9 +14,26 @@
 
       <br />
 
-      <sl-switch>{{ $t("invisible") }}</sl-switch>
-      <div>
-        <small>{{ $t("invisible_status_explanations") }}</small>
+      <div class="">
+        <!-- <input
+          type="checkbox"
+          id="new_project_is_public"
+          name="new_project_is_public"
+          v-model="new_project_is_public"
+        />
+        <label for="new_project_is_public">{{ $t("public") }}</label>
+        <div>
+          <small>{{ $t("public_status_explanations") }}</small>
+        </div> -->
+
+        <ToggleInput
+          :content.sync="new_project_is_public"
+          :label="$t('public')"
+          :options="{
+            true: $t('public_status_explanations'),
+            false: $t('not_public_status_explanations'),
+          }"
+        />
       </div>
 
       <br />
@@ -29,6 +46,12 @@
       >
         {{ $t("create_and_open") }}
       </sl-button>
+
+      <template v-if="error_msg">
+        <br />
+        <br />
+        <div class="u-errorMsg" v-text="error_msg" />
+      </template>
     </form>
   </BaseModal2>
 </template>
@@ -39,9 +62,13 @@ export default {
   data() {
     return {
       new_project_title: "",
+      new_project_is_public: true,
+
       is_creating_project: false,
 
       allow_save: false,
+
+      error_msg: "",
     };
   },
   created() {},
@@ -61,13 +88,17 @@ export default {
             title: this.new_project_title,
             requested_folder_name: this.new_project_title,
             status: "draft",
+            public: this.new_project_is_public,
           },
         });
         setTimeout(() => {
           this.$emit("openNewProject", new_folder_slug);
         }, 500);
-      } catch (e) {
-        this.$alertify.closeLogOnClick(true).delay(4000).error(e.response.data);
+      } catch (err) {
+        this.error_msg = "Error: " + err.message;
+        setTimeout(() => {
+          this.error_msg = "";
+        }, 5000);
         this.is_creating_project = false;
       }
     },

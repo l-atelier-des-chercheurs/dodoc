@@ -199,10 +199,10 @@ export default {
   overflow-y: hidden;
   background: #999;
   background: var(--c-noir);
-  background: var(--c-gris_fonce);
+  background: var(--c-gris);
 
-  padding: calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 1);
 
   > * {
     flex: 0 0 200px;

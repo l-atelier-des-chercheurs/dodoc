@@ -332,10 +332,11 @@ module.exports = (function () {
       // TODO fs stat ?
       // await fs.stat(filepath);
     }
-
     new_meta.date_uploaded = new_meta.date_modified = utils.getCurrentDate();
-
     new_meta.media_filename = filename;
+
+    // set status (see readme)
+    new_meta.public = additional_meta.public ? additional_meta.public : false;
 
     if (additional_meta.type) {
       new_meta.type = additional_meta.type;

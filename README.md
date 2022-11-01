@@ -151,13 +151,16 @@ This will create minified JS files in the `public/dist` folder.
 
 ---
 
-# Status and visibility
+# How the core works
 
-Folders have a native status variable set to either draft, invisible or finished. Folder with no value set are considered drafts.
+Everything is structured in folders/files, so as to mirror the content in the filesystem. No database is used, almost all the content are saved in the content folder (by default /Documents/dodoc_next).
 
-Draft or finished folder are "public" : anyone can get its metadata.
-Invisible folder can only be listed by their respective authors.
+Folders contain a meta.txt file and media files (images, videos, audios, 3D/stl, texts, or any other kind of files).
 
----
+## Status and visibility
 
-Files have a public toggle: when false, noone can list them except for the folders authors. When truc, anyone can list them as long as the folder is not invisible.
+Each folder and each file have a "public" property, which defines who can see them:
+
+- by default, it is set to **false** (if it doesnt exist it is considered false as well). In this situation, only creators of the ressource can see it.
+
+- if set to true, anyone can see it

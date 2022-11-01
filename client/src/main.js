@@ -21,24 +21,29 @@ Vue.use(ShoelaceModelDirective);
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
+import AuthorField from "@/adc-core/fields/AuthorField.vue";
+Vue.component("AuthorField", AuthorField);
 import TagsField from "@/adc-core/fields/TagsField.vue";
 Vue.component("TagsField", TagsField);
 import CoverField from "@/adc-core/fields/CoverField.vue";
 Vue.component("CoverField", CoverField);
 import SelectField from "@/adc-core/fields/SelectField.vue";
 Vue.component("SelectField", SelectField);
+import ToggleField from "@/adc-core/fields/ToggleField.vue";
+Vue.component("ToggleField", ToggleField);
 import RadioField from "@/adc-core/fields/RadioField.vue";
 Vue.component("RadioField", RadioField);
-import BaseModal2 from "@/adc-core/modal/BaseModal2.vue";
-Vue.component("BaseModal2", BaseModal2);
-
-import TextInput from "@/adc-core/fields/TextInput.vue";
-Vue.component("TextInput", TextInput);
 import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
 Vue.component("ImageSelect", ImageSelect);
-
-import TextField from "@/adc-core/fields/TextField.vue";
-Vue.component("TextField", TextField);
+//
+import BaseModal2 from "@/adc-core/modal/BaseModal2.vue";
+Vue.component("BaseModal2", BaseModal2);
+//
+import TextInput from "@/adc-core/inputs/TextInput.vue";
+Vue.component("TextInput", TextInput);
+import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
+Vue.component("ToggleInput", ToggleInput);
+//
 
 import MetaFieldHeader from "@/adc-core/fields/MetaFieldHeader.vue";
 Vue.component("MetaFieldHeader", MetaFieldHeader);

@@ -37,12 +37,15 @@ export default {
   --spacing: var(--sl-spacing-medium);
 
   --c-bleumarine: #1d327f;
+  --c-bleumarine_clair: #bec6e5;
   --c-bleuvert: #52c5b9;
+  --c-bleuvert_clair: #010101;
   --c-bleuvert_fonce: hsl(174, 50%, 30%);
   --c-orange: #ffbe32;
+  --c-orange_clair: #ffd892;
   --c-orange_fonce: hsl(41, 100%, 45%);
-
   --c-rouge: #fc4b60;
+  --c-rouge_clair: #ff808c;
   --c-rouge_fonce: #cc334a;
 
   --c-bleu: hsl(211, 63%, 47%);
@@ -102,6 +105,8 @@ export default {
   --sl-font-sans: "Fira Sans";
   --sl-font-serif: "IBM Plex Serif";
   --sl-font-mono: "Fira Mono";
+
+  --padding: var(--spacing);
 
   $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
 

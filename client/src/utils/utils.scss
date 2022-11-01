@@ -44,6 +44,11 @@
   }
 }
 
+.u-errorMsg {
+  color: var(--c-rouge);
+  font-style: italic;
+}
+
 .u-buttonLink {
   font-variant: small-caps;
   font-weight: 500;
@@ -124,7 +129,8 @@ textarea,
   color: inherit;
   // border: solid var(--input-border-width) var(--input-border-color);
   border-radius: var(--input-border-radius);
-  background-color: var(--c-gris);
+  // background-color: var(--c-gris);
+  background: white;
   height: var(--input-height);
   line-height: var(--input-height);
   vertical-align: middle;
@@ -223,8 +229,10 @@ sl-button[variant="semitransparent"] {
 sl-button[variant="edit"] {
   &::part(base) {
     background: var(--c-bleuvert);
+    background: transparent;
+    color: var(--c-bleuvert);
     border: none;
-    // border: 2px solid var(--c-orange);
+    border: 1px solid currentColor;
     // fill: white;
   }
 
@@ -232,6 +240,9 @@ sl-button[variant="edit"] {
   &:active {
     &::part(base) {
       background: var(--c-bleuvert_fonce);
+      background: var(--c-bleuvert);
+      color: white;
+      border: none;
     }
   }
 }

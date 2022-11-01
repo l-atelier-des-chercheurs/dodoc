@@ -209,8 +209,8 @@ module.exports = (function () {
         meta: new_folder_meta,
       });
     } catch (err) {
-      dev.error("Failed to update expected content: " + err);
-      res.status(500).send(err);
+      dev.error("Failed to create folder: " + err.message);
+      res.status(500).send({ message: err.message, error: err });
     }
 
     let hrend = process.hrtime(hrstart);
@@ -254,8 +254,8 @@ module.exports = (function () {
         changed_data,
       });
     } catch (err) {
-      dev.error("Failed to update expected content: " + err);
-      res.status(500).send(err);
+      dev.error("Failed to create folder: " + err.message);
+      res.status(500).send({ message: err.message });
     }
 
     let hrend = process.hrtime(hrstart);

@@ -40,7 +40,7 @@ export default {
           text: "copyleft_explanations",
         },
         {
-          key: "custom_lisense",
+          key: "custom_license",
           text: "custom_license_explanations",
         },
       ],

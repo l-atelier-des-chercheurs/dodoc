@@ -83,8 +83,11 @@ export default function () {
         draft_status_explanations:
           "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
         invisible: "Invisible",
-        invisible_status_explanations:
-          "Le projet sera masqué et inaccessible à tous sauf à ses contributeurs.",
+        public: "Public",
+        public_status_explanations:
+          "Le projet sera visible et accessible à tous.",
+        not_public_status_explanations:
+          "Le projet ne sera visible qu’à ses contributeurs.",
         finished: "Finalisé",
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d'accueil.",

@@ -79,7 +79,14 @@ module.exports = (function () {
     },
 
     validateMeta({ fields, new_meta }) {
+      dev.logfunction({ fields, new_meta });
       let meta = {};
+
+      const predefined_fields = {
+        public: { type: "boolean" },
+        authors: { type: "array" },
+      };
+      fields = Object.assign({}, fields, predefined_fields);
 
       if (fields)
         Object.entries(fields).map(([field_name, opt]) => {

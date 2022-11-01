@@ -5,6 +5,18 @@
       <sl-icon name="globe" />
     </div>
     <div class="">
+      <ToggleField
+        :label="$t('public')"
+        :field_name="'public'"
+        :content="project.public"
+        :path="`/projects/${project.slug}`"
+        :options="{
+          true: $t('public_status_explanations'),
+          false: $t('not_public_status_explanations'),
+        }"
+        :can_edit="can_edit_project"
+      />
+      <br />
       <SelectField
         :field_name="'status'"
         :content="project.status"

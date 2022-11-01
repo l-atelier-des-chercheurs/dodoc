@@ -3,17 +3,9 @@
     <div slot="header">
       {{ $t("informations") }}
     </div>
-    <DateField
-      :title="'date_created'"
-      :date="project.date_created"
-      :show_detail_initially="true"
-    />
+    <DateField :title="'date_created'" :date="project.date_created" />
     <br />
-    <DateField
-      :title="'date_modified'"
-      :date="project.date_modified"
-      :show_detail_initially="true"
-    />
+    <DateField :title="'date_modified'" :date="project.date_modified" />
     <br />
     Supprimer ce projet
     <button type="button" @click="removeProject">

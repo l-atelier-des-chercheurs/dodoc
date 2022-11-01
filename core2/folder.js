@@ -65,6 +65,7 @@ module.exports = (function () {
 
       if (data?.requested_folder_name)
         folder_slug = utils.slug(data.requested_folder_name);
+      if (!data?.authors) throw new Error(`Missing authors`);
 
       let { cover, ...meta } = data;
 
@@ -77,24 +78,28 @@ module.exports = (function () {
 
       await fs.ensureDir(path_to_folder);
 
-      if (meta) {
-        meta = utils.validateMeta({
-          fields: global.settings.schema[folder_type].fields,
-          new_meta: meta,
-        });
-      }
+      let valid_meta = meta
+        ? utils.validateMeta({
+            fields: global.settings.schema[folder_type].fields,
+            new_meta: meta,
+          })
+        : {};
 
-      meta.date_created = meta.date_modified = utils.getCurrentDate();
+      // set date_created field
+      valid_meta.date_created = valid_meta.date_modified =
+        utils.getCurrentDate();
+
+      // set status (see readme)
+      valid_meta.public = valid_meta.public ? valid_meta.public : false;
+
       await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
         file_slug: "meta.txt",
-        meta,
+        meta: valid_meta,
       });
 
       // TODO store cover if it exists
-      if (cover) {
-      }
 
       return folder_slug;
     },

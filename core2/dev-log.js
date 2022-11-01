@@ -113,14 +113,13 @@ module.exports = dev = (function () {
     if (logToFile) _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.magenta);
   }
-  function error(err) {
-    let message =
-      `ERROR! ` +
+  function error() {
+    const message =
+      `~ ` +
       _createLogMessage({
-        fct: error,
+        fct: logfunction,
+        args: arguments,
       });
-
-    message += err.message;
 
     if (logToFile) _sendToLogFile(message);
     _sendToConsole(message, chalk.red);
@@ -163,7 +162,7 @@ module.exports = dev = (function () {
     }
 
     const fct_filename = _getFunctionFilename();
-    const fct_name = fct.caller.name;
+    const fct_name = fct.caller?.name;
 
     let str = "";
     if (fct_filename) str += `${fct_filename} • `;
