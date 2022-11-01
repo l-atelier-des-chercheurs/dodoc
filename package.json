@@ -16,8 +16,8 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "node .",
-    "debug": "node --inspect . --debug --debug --verbose"
+    "start": "node . --unhandled-rejections=warn",
+    "debug": "node --inspect . --debug --debug --verbose --unhandled-rejections=warn"
   },
   "engines": {
     "node": "16.13.0",
