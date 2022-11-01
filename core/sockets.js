@@ -1072,7 +1072,8 @@ module.exports = (function () {
       .getFolder({ type, slugFolderName })
       .catch((err) => {
         dev.error(`No folder found: ${err}`);
-        throw err;
+        // throw err;
+        return false;
       });
 
     const list_metaFileName = await file.getMediaMetaNames({
