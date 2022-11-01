@@ -1074,11 +1074,16 @@ module.exports = (function () {
         throw err;
       });
 
-    const list_metaFileName = await file.getMediaMetaNames({
-      type,
-      slugFolderName,
-      metaFileName,
-    });
+    const list_metaFileName = await file
+      .getMediaMetaNames({
+        type,
+        slugFolderName,
+        metaFileName,
+      })
+      .catch((err) => {
+        dev.error(`No folder found: ${err}`);
+        throw err;
+      });
 
     let medias_list = list_metaFileName.map((_metaFileName) => {
       return {
