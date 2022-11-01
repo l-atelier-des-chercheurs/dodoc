@@ -1018,7 +1018,8 @@ module.exports = (function () {
         : await file.getFolders({ type });
     } catch (err) {
       dev.error(`Error listing folder(s): ${err}`);
-      throw err;
+      // throw err;
+      return;
     }
 
     // if folder creation, we get an ID to open the folder straight away
