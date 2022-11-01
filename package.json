@@ -20,7 +20,7 @@
     "debug": "electron --inspect=5858 . --debug --verbose",
     "debug-brk": "electron --inspect=5858 . --debug-brk --verbose",
     "node-start": "node .",
-    "node-debug": "node . --inspect=5858 --debug --verbose",
+    "node-debug": "node . --inspect=5858 --debug --verbose --unhandled-rejections=warn",
     "node-debug-brk": "node . --inspect=5858 --debug-brk --verbose",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",

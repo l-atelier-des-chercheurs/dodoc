@@ -1018,8 +1018,7 @@ module.exports = (function () {
         : await file.getFolders({ type });
     } catch (err) {
       dev.error(`Error listing folder(s): ${err}`);
-      // throw err;
-      return;
+      throw err;
     }
 
     // if folder creation, we get an ID to open the folder straight away
@@ -1072,8 +1071,7 @@ module.exports = (function () {
       .getFolder({ type, slugFolderName })
       .catch((err) => {
         dev.error(`No folder found: ${err}`);
-        // throw err;
-        return false;
+        throw err;
       });
 
     const list_metaFileName = await file.getMediaMetaNames({
