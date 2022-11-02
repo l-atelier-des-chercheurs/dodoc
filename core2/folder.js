@@ -127,7 +127,7 @@ module.exports = (function () {
 
       // get folder meta
       let meta = await utils.readMetaFile(folder_type, folder_slug, "meta.txt");
-      const previous_meta = { ...meta };
+      const previous_meta = JSON.parse(JSON.stringify(meta));
 
       let { ...new_meta } = data;
 

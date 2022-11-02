@@ -1,8 +1,8 @@
 <template>
   <div class="_projectsView">
-    <pre>
+    <!-- <pre>
        {{ projects }}
-    </pre>
+    </pre> -->
     <div class="_title">
       <h1>Projets</h1>
       <div>

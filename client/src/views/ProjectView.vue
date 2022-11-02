@@ -5,9 +5,9 @@
       {{ fetch_project_error }}
     </div>
     <template v-else>
-      <pre>
+      <!-- <pre>
        {{ project }}
-      </pre>
+      </pre> -->
       <div class="_topContent">
         <ProjectPresentation
           :project="project"
