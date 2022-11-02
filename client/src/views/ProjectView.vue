@@ -5,6 +5,9 @@
       {{ fetch_project_error }}
     </div>
     <template v-else>
+      <pre>
+       {{ project }}
+      </pre>
       <div class="_topContent">
         <ProjectPresentation
           :project="project"
@@ -127,7 +130,7 @@ export default {
   },
   computed: {
     articles() {
-      return this.project.files.filter((f) => f.is_journal === true) || [];
+      return this.project.$files.filter((f) => f.is_journal === true) || [];
     },
     can_edit_project() {
       return this.$api.is_logged_in;

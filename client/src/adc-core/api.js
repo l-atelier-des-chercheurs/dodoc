@@ -58,11 +58,11 @@ export default function () {
         this.socket.onAny((eventName, ...args) => {
           // truncate long strings in content (long texts for example)
           const _args = JSON.parse(JSON.stringify(args));
-          if (_args[0].changed_data?.content)
-            _args[0].changed_data.content = "…";
-          // if (_args[0].changed_data?.content)
-          //   _args[0].changed_data.content =
-          //     _args[0].changed_data?.content.slice(0, 15) +
+          if (_args[0].changed_data?.$content)
+            _args[0].changed_data.$content = "…";
+          // if (_args[0].changed_data?.$content)
+          //   _args[0].changed_data.$content =
+          //     _args[0].changed_data?.$content.slice(0, 15) +
           //     "[…] (truncated content)";
           if (this.debug_mode)
             this.$alertify
@@ -87,25 +87,25 @@ export default function () {
 
       findFolderIndex({ folder_type, folder_slug }) {
         return this.store[folder_type].findIndex(
-          (folder) => folder.slug === folder_slug
+          (folder) => folder.$slug === folder_slug
         );
       },
       findFolder({ folder_type, folder_slug }) {
         if (!this.store[folder_type]) return false;
         return this.store[folder_type].find(
-          (folder) => folder.slug === folder_slug
+          (folder) => folder.$slug === folder_slug
         );
       },
       findFileIndexInFolder({ folder_type, folder_slug, meta_slug }) {
         const folder = this.findFolder({ folder_type, folder_slug });
-        if (folder.files)
-          return folder.files.findIndex((f) => f.slug === meta_slug);
+        if (folder.$files)
+          return folder.$files.findIndex((f) => f.$slug === meta_slug);
         return false;
       },
       findFileInFolder({ folder_type, folder_slug, meta_slug }) {
         const folder = this.findFolder({ folder_type, folder_slug });
-        if (folder?.files)
-          return folder.files.find((f) => f.slug === meta_slug);
+        if (folder?.$files)
+          return folder.$files.find((f) => f.$slug === meta_slug);
         return false;
       },
 
@@ -135,8 +135,8 @@ export default function () {
           folder_type,
           folder_slug,
         });
-        if (!folder.files) this.$set(folder, "files", new Array());
-        folder.files.push(file_meta);
+        if (!folder.$files) this.$set(folder, "files", new Array());
+        folder.$files.push(file_meta);
       },
       fileUpdated({ folder_type, folder_slug, meta_slug, changed_data }) {
         const file = this.findFileInFolder({
@@ -157,7 +157,7 @@ export default function () {
           folder_slug,
           meta_slug,
         });
-        if (file_index >= 0) folder.files.splice(file_index, 1);
+        if (file_index >= 0) folder.$files.splice(file_index, 1);
       },
 
       join({ room }) {
@@ -188,7 +188,7 @@ export default function () {
           this.$set(this.store, folder_type, new Array());
 
         let folders = this.store[folder_type];
-        folders = folders.filter((f) => f.slug !== folder_slug);
+        folders = folders.filter((f) => f.$slug !== folder_slug);
         folders.push(d);
         this.store[folder_type] = folders;
 

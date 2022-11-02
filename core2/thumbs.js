@@ -33,7 +33,7 @@ module.exports = (function () {
       });
 
       const filethumbs_resolutions =
-        global.settings.schema[folder_type].files?.thumbs?.resolutions;
+        global.settings.schema[folder_type].$files?.thumbs?.resolutions;
       if (!filethumbs_resolutions) return false;
 
       const path_to_thumb_folder = await _getThumbFolderPath(
@@ -157,8 +157,9 @@ module.exports = (function () {
         infos = await _readVideoAudioExif({ full_media_path });
 
       // read file infos
-      const file_infos = await _readFileInfos({ full_media_path });
-      if (file_infos) infos.file = file_infos;
+      const { size, mtimems } = await _readFileInfos({ full_media_path });
+      if (size) infos.file_size = size;
+      if (mtimems) infos.mtimems = mtimems;
 
       if (infos) {
         utils.storeMeta({ path: path_to_infos_file, meta: infos });
@@ -261,7 +262,7 @@ module.exports = (function () {
       cover_name
     );
 
-    const cover_schema = global.settings.schema[folder_type].cover;
+    const cover_schema = global.settings.schema[folder_type].$cover;
     const path_to_thumb_folder = await _getThumbFolderPath(
       folder_type,
       folder_slug
@@ -310,7 +311,7 @@ module.exports = (function () {
     });
 
     let meta = await utils.readMetaFile(folder_type, folder_slug, meta_slug);
-    const media_filename = meta.media_filename;
+    const media_filename = meta.$infos.media_filename;
 
     return await _removeAllThumbsForFile({
       folder_type,

@@ -299,7 +299,7 @@
   },
   "schema": {
     "projects": {
-      "cover": {
+      "$cover": {
         "width": 1200,
         "height": 1200,
         "thumbs": {
@@ -328,7 +328,7 @@
           "default": "CC"
         }
       },
-      "files": {
+      "$files": {
         "thumbs": {
           "resolutions": [180, 360, 1600]
         },

@@ -1,5 +1,8 @@
 <template>
   <div class="_projectsView">
+    <pre>
+       {{ projects }}
+    </pre>
     <div class="_title">
       <h1>Projets</h1>
       <div>
@@ -47,7 +50,7 @@
         v-for="project in finalized_projects"
         :project="project"
         context="list"
-        :key="project.slug"
+        :key="project.$slug"
       />
     </div>
     <hr />
@@ -57,7 +60,7 @@
         v-for="project in draft_projects"
         :project="project"
         context="list"
-        :key="project.slug"
+        :key="project.$slug"
       />
     </div>
   </div>
@@ -103,7 +106,7 @@ export default {
       return this.sorted_projects.filter((p) => p.status === "finished");
     },
     draft_projects() {
-      return this.sorted_projects.filter((p) => p.status === "draft");
+      return this.sorted_projects.filter((p) => p.status !== "finished");
     },
   },
   methods: {

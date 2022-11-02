@@ -10,7 +10,7 @@ module.exports = (function () {
     importFile: async ({ req, folder_type, folder_slug }) => {
       dev.logfunction({ folder_type, folder_slug });
 
-      if (!global.settings.schema[folder_type].hasOwnProperty("files"))
+      if (!global.settings.schema[folder_type].hasOwnProperty("$files"))
         dev.error(`no files allowed on ${folder_type}`);
 
       const { folder_path, originalFilename, filepath, additional_meta } =
@@ -47,12 +47,11 @@ module.exports = (function () {
       });
 
       // user added meta
-      const valid_meta = utils.validateMeta({
-        fields: global.settings.schema[folder_type].files.fields,
+      const meta = utils.validateMeta({
+        fields: global.settings.schema[folder_type].$files.fields,
         new_meta: additional_meta,
       });
-
-      const meta = Object.assign({}, valid_meta, extracted_meta);
+      meta.$infos = extracted_meta;
 
       // file-specific metas will be added when getting files, the same as thumbs, and stored alongside
       // - date created
@@ -112,34 +111,37 @@ module.exports = (function () {
         folder_slug,
         meta_filename
       );
-      meta.slug = meta_filename;
+      meta.$slug = meta_filename;
 
-      if (meta.media_filename.endsWith("txt"))
-        meta.content = await utils.readFileContent(
+      const media_filename = meta.$infos.media_filename;
+      const media_type = meta.$infos.type;
+
+      if (media_filename.endsWith("txt"))
+        meta.$content = await utils.readFileContent(
           folder_type,
           folder_slug,
-          meta.media_filename
+          media_filename
         );
 
       const _thumbs = await thumbs
         .makeThumbForMedia({
-          media_type: meta.type,
-          media_filename: meta.media_filename,
+          media_type,
+          media_filename,
           folder_type,
           folder_slug,
         })
         .catch((err) => {
           dev.error(err);
         });
-      if (_thumbs) meta.thumbs = _thumbs;
+      if (_thumbs) meta.$thumbs = _thumbs;
 
-      const infos = await thumbs.getInfosForFile({
-        media_type: meta.type,
-        media_filename: meta.media_filename,
+      const file_infos = await thumbs.getInfosForFile({
+        media_type,
+        media_filename,
         folder_type,
         folder_slug,
       });
-      if (infos) meta.infos = infos;
+      if (file_infos) meta.$infos.file_infos = file_infos;
 
       cache.set({
         key: `${folder_type}/${folder_slug}/${meta_filename}`,
@@ -163,7 +165,7 @@ module.exports = (function () {
       let meta = await utils.readMetaFile(folder_type, folder_slug, meta_slug);
       const previous_meta = { ...meta };
 
-      let { content, ...new_meta } = data;
+      let { $content, ...new_meta } = data;
 
       // update meta file
       if (new_meta) {
@@ -174,8 +176,8 @@ module.exports = (function () {
         Object.assign(meta, clean_meta);
       }
 
-      if (typeof content !== "undefined") {
-        if (typeof content !== "string")
+      if (typeof $content !== "undefined") {
+        if (typeof $content !== "string")
           throw new Error("Content (text) is not a string");
 
         // check if content is different from previous content, return early if that's the case
@@ -184,13 +186,13 @@ module.exports = (function () {
           folder_slug,
           meta.media_filename
         );
-        if (previous_content === content)
+        if (previous_content === $content)
           throw new Error("content not changed");
 
         dev.logfunction(
           `Content is supposed to be updated`,
           { previous_content },
-          { content },
+          { $content },
           { type: meta.type },
           { media_filename: meta.media_filename }
         );
@@ -209,7 +211,7 @@ module.exports = (function () {
               folder_type,
               folder_slug,
               file_slug: meta.media_filename,
-              meta: content,
+              meta: $content,
             })
             .catch((err) => {
               throw err;
@@ -233,7 +235,7 @@ module.exports = (function () {
         return acc;
       }, {});
 
-      if (typeof content !== "undefined") changed_data.content = content;
+      if (typeof $content !== "undefined") changed_data.$content = $content;
 
       cache.delete({
         key: `${folder_type}/${folder_slug}/${meta_slug}`,
@@ -408,6 +410,8 @@ module.exports = (function () {
   }
 
   async function _removeFileForGood({ folder_type, folder_slug, meta_slug }) {
+    dev.logfunction({ folder_type, folder_slug, meta_slug });
+
     const _all_file_paths = await _getAllFilesRelatedToMeta({
       folder_type,
       folder_slug,
@@ -425,6 +429,8 @@ module.exports = (function () {
   }
 
   async function _moveFileToBin({ folder_type, folder_slug, meta_slug }) {
+    dev.logfunction({ folder_type, folder_slug, meta_slug });
+
     const _all_file_paths = await _getAllFilesRelatedToMeta({
       folder_type,
       folder_slug,
@@ -465,7 +471,7 @@ module.exports = (function () {
     paths.push(full_meta_path);
 
     let meta = await utils.readMetaFile(folder_type, folder_slug, meta_slug);
-    const media_filename = meta.media_filename;
+    const media_filename = meta.$infos.media_filename;
 
     const full_media_path = utils.getPathToUserContent(
       folder_type,
@@ -537,7 +543,7 @@ module.exports = (function () {
     );
 
     const archive_folder_name =
-      path.parse(meta.media_filename).name + "_archives";
+      path.parse(meta.$infos.media_filename).name + "_archives";
     const archived_folder_path = utils.getPathToUserContent(
       folder_type,
       folder_slug,

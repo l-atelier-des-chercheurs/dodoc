@@ -86,9 +86,11 @@ export default {
           folder_type: "projects",
           additional_meta: {
             title: this.new_project_title,
-            requested_folder_name: this.new_project_title,
             status: "draft",
-            public: this.new_project_is_public,
+            $infos: {
+              public: this.new_project_is_public,
+              authors: ["1-louis", "11-emilie"],
+            },
           },
         });
         setTimeout(() => {

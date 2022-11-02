@@ -157,6 +157,30 @@ Everything is structured in folders/files, so as to mirror the content in the fi
 
 Folders contain a meta.txt file and media files (images, videos, audios, 3D/stl, texts, or any other kind of files).
 
+## Properties and values
+
+### Folders
+
+Default values are:
+
+- $slug (string) (folder name, can’t be changed)
+- $cover (object) (if a meta_cover.jpeg is present in the root of the folder)
+- $infos (object) (contains **date_created**, **date_modified**, **authors**, **public**, **size**)
+
+Custom values can be defined in the schema property in settings_base.json.
+
+### Files
+
+Each file has default values and custom values as well.
+Default values are:
+
+- $slug (string) (meta txt filename)
+- $infos (object) (contains **media_filename**, **mtimems** (last modified time for media file), **date_created**, **date_modified**, **authors**, **public**, **size**)
+- $thumbs (object) (list of possible media image thumbs)
+- $content (string) (text content of a file)
+
+Custom values can be defined in the schema property in settings_base.json.
+
 ## Status and visibility
 
 Each folder and each file have a "public" property, which defines who can see them:

@@ -44,7 +44,7 @@
           v-if="selected_files.length > 0"
           :selected_files="selected_files"
           :folder_type="'projects'"
-          :folder_slug="project.slug"
+          :folder_slug="project.$slug"
           @importedMedias="mediaJustImported"
           @close="selected_files = []"
         />
@@ -66,11 +66,11 @@
         <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
           <MediaTile
             v-for="file of medias"
-            :key="file.slug"
-            :project_slug="project.slug"
+            :key="file.$slug"
+            :project_slug="project.$slug"
             :file="file"
-            :is_focused="media_focused === file.slug"
-            :data-fileslug="file.slug"
+            :is_focused="media_focused === file.$slug"
+            :data-fileslug="file.$slug"
             @toggleMediaFocus="(slug) => toggleMediaFocus(slug)"
           />
         </div>
@@ -84,11 +84,11 @@
         <transition name="fade_fast" mode="out-in">
           <MediaFocus
             v-if="focused_media"
-            :key="focused_media.slug"
+            :key="focused_media.$slug"
             :file="focused_media"
-            :project_slug="project.slug"
-            @remove="removeMedia(focused_media.slug)"
-            @close="toggleMediaFocus(focused_media.slug)"
+            :project_slug="project.$slug"
+            @remove="removeMedia(focused_media.$slug)"
+            @close="toggleMediaFocus(focused_media.$slug)"
           />
         </transition>
       </pane>
@@ -139,13 +139,14 @@ export default {
   watch: {},
   computed: {
     medias() {
-      return this.project.files.filter((f) => !f.is_journal) || [];
+      return this.project.$files.filter((f) => !f.is_journal) || [];
     },
     focused_media() {
       const _focused_media =
-        this.project.files.find((f) => f.slug === this.media_focused) || false;
+        this.project.$files.find((f) => f.$slug === this.media_focused) ||
+        false;
       if (_focused_media && this.$refs.mediaTiles)
-        this.scrollToMediaTile(_focused_media.slug);
+        this.scrollToMediaTile(_focused_media.$slug);
 
       return _focused_media;
     },
@@ -225,7 +226,7 @@ export default {
     async removeMedia(slug) {
       await this.$api.deleteFile({
         folder_type: "projects",
-        folder_slug: this.project.slug,
+        folder_slug: this.project.$slug,
         meta_slug: slug,
       });
       this.toggleMediaFocus(slug);

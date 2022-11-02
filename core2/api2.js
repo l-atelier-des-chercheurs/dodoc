@@ -134,7 +134,7 @@ module.exports = (function () {
     let { folder_type, folder_slug } = req.params;
     dev.logfunction({ folder_type, folder_slug });
 
-    if (!global.settings.schema[folder_type].files)
+    if (!global.settings.schema[folder_type].$files)
       return res.status(422).send("No files for folder_type");
 
     const hrstart = process.hrtime();
@@ -142,7 +142,7 @@ module.exports = (function () {
     try {
       const folder_meta = await folder.getFolder({ folder_type, folder_slug });
       const files = await file.getFiles({ folder_type, folder_slug });
-      folder_meta.files = files;
+      folder_meta.$files = files;
 
       dev.logpackets({ folder_meta });
       res.json(folder_meta);

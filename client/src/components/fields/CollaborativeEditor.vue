@@ -746,7 +746,7 @@ export default {
       this.editor.blur();
 
       if (media.type === "image") {
-        const thumb = media.thumbs.find((m) => m.size === 1600);
+        const thumb = media.$thumbs.find((m) => m.size === 1600);
         if (thumb) {
           // this.editor.insertText(index, "\n", Quill.sources.USER);
           this.editor.insertEmbed(

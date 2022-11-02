@@ -5,6 +5,9 @@
       @dragstart="startMediaDrag($event)"
       @dragend="endMediaDrag()"
     >
+      <pre>
+        {{ file }}
+      </pre>
       <MediaContent
         :file="file"
         :project_slug="project_slug"

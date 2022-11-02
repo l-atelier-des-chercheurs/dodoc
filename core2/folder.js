@@ -40,13 +40,13 @@ module.exports = (function () {
         .catch((err) => {
           throw err;
         });
-      folder_meta.slug = folder_slug;
+      folder_meta.$slug = folder_slug;
 
       let cover = await _getFolderCover({
         folder_type,
         folder_slug,
       });
-      if (cover) folder_meta.cover = cover;
+      if (cover) folder_meta.$cover = cover;
 
       // TODO get number of files if files in schema
       cache.set({
@@ -60,14 +60,12 @@ module.exports = (function () {
     createFolder: async ({ folder_type, data }) => {
       dev.logfunction({ folder_type, data });
 
-      // generate unique slug from time, or use meta.requested_folder_name
       let folder_slug = `untitled-${folder_type}`;
 
-      if (data?.requested_folder_name)
-        folder_slug = utils.slug(data.requested_folder_name);
-      if (!data?.authors) throw new Error(`Missing authors`);
+      if (data?.title) folder_slug = utils.slug(data.title);
+      if (!data?.$infos?.authors) throw new Error(`Missing authors`);
 
-      let { cover, ...meta } = data;
+      let { $cover, ...meta } = data;
 
       folder_slug = await _preventFolderOverride({ folder_type, folder_slug });
 
@@ -85,12 +83,28 @@ module.exports = (function () {
           })
         : {};
 
-      // set date_created field
-      valid_meta.date_created = valid_meta.date_modified =
-        utils.getCurrentDate();
+      valid_meta.$infos;
 
-      // set status (see readme)
-      valid_meta.public = valid_meta.public ? valid_meta.public : false;
+      // set date_created field
+      // valid_meta.$infos.date_created = valid_meta.$infos.date_modified =
+      //   utils.getCurrentDate();
+
+      // // set status (see readme)
+      // valid_meta.$infos.public = valid_meta.$infos.public
+      //   ? valid_meta.$infos.public
+      //   : false;
+
+      valid_meta = {
+        title: "hello world",
+        description: `Curabitur tempus ipsum sed nisi viverra, in luctus nibh mattis. Praesent at ante molestie, viverra diam in, congue magna. Pellentesque molestie mi ac mauris condimentum, non dapibus nisl aliquet. Pellentesque convallis, nunc vitae tincidunt vehicula, enim eros molestie odio, sed vehicula ipsum nisl id dolor. Cras commodo mauris in sapien maximus ultricies. Nam tortor ante, suscipit non nunc nec, fringilla porta arcu. Ut vel urna diam. Integer magna massa, viverra nec sagittis non, dictum vitae nisl. Phasellus efficitur mauris in condimentum porta. Vivamus rutrum enim ac ante malesuada efficitur. Nam vitae nisl nec massa tempus pretium quis in urna. 
+        Suspendisse potenti. Donec condimentum leo sed varius ullamcorper. Suspendisse neque tortor, elementum a mollis id, ornare ac nibh.`,
+        keywords: ["plop", "plip"],
+        $infos: {
+          public: true,
+          authors: ["12-louis", "14-marion"],
+          date_created: new Date(),
+        },
+      };
 
       await utils.saveMetaAtPath({
         folder_type,
@@ -126,7 +140,7 @@ module.exports = (function () {
         Object.assign(meta, clean_meta);
       }
 
-      meta.date_modified = utils.getCurrentDate();
+      meta.$infos.date_modified = utils.getCurrentDate();
       await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
@@ -150,14 +164,14 @@ module.exports = (function () {
           )
         );
 
-        // TODO improved legibility
+        // TODO improve legibility
         await API.saveCover({
           req: update_cover_req,
           folder_type,
           folder_slug,
         }).catch((err) => {});
 
-        changed_meta.cover = await _getFolderCover({
+        changed_meta.$cover = await _getFolderCover({
           folder_type,
           folder_slug,
         });
@@ -191,7 +205,7 @@ module.exports = (function () {
     saveCover: async ({ req, folder_type, folder_slug }) => {
       dev.logfunction({ folder_type, folder_slug });
 
-      if (!global.settings.schema[folder_type].hasOwnProperty("cover")) {
+      if (!global.settings.schema[folder_type].hasOwnProperty("$cover")) {
         dev.error(`no cover allowed on ${folder_type}`);
         return;
       }
@@ -246,7 +260,7 @@ module.exports = (function () {
   async function _getFolderCover({ folder_type, folder_slug }) {
     dev.logfunction({ folder_type, folder_slug });
 
-    if (!global.settings.schema[folder_type].cover) return false;
+    if (!global.settings.schema[folder_type].$cover) return false;
 
     const cover_name = "meta_cover.jpeg";
     const cover_path = utils.getPathToUserContent(

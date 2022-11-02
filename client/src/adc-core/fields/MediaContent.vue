@@ -54,8 +54,8 @@ export default {
   computed: {
     thumb() {
       return this.makeRelativeURLFromThumbs({
-        thumbs: this.file.thumbs,
-        type: this.file.type,
+        thumbs: this.file.$thumbs,
+        type: this.file.$infos.type,
         project_slug: this.project_slug,
         resolution: this.resolution,
       });
@@ -75,7 +75,7 @@ export default {
     //   this.fetch_error = null;
     //   try {
     //     const response = await this.$axios.patch(
-    //       `/projects/${this.project_slug}/${this.file.slug}`,
+    //       `/projects/${this.project_slug}/${this.file.$slug}`,
     //       {
     //         caption: this.new_caption,
     //       }
@@ -90,7 +90,7 @@ export default {
     // async removeFile() {
     //   try {
     //     const response = await this.$axios.delete(
-    //       `/projects/${this.project_slug}/${this.file.slug}`
+    //       `/projects/${this.project_slug}/${this.file.$slug}`
     //     );
     //     this.response = response.data;
     //     this.fetch_status = "success";

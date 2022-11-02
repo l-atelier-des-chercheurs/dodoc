@@ -7,7 +7,7 @@
       <TagsField
         :field_name="'materials'"
         :content="project.materials"
-        :path="`/projects/${project.slug}`"
+        :path="`/projects/${project.$slug}`"
         :can_edit="can_edit_project"
       />
     </div>

@@ -34,9 +34,9 @@ z
       <CoverField
         v-if="context === 'full' && can_edit_project"
         class=""
-        :cover="project.cover"
-        :project_slug="project.slug"
-        :path="`/projects/${project.slug}`"
+        :cover="project.$cover"
+        :project_slug="project.$slug"
+        :path="`/projects/${project.$slug}`"
       />
     </div>
 
@@ -46,7 +46,7 @@ z
         :field_name="'title'"
         :label="context === 'full' ? $t('title') : ''"
         :content="project.title"
-        :path="`/projects/${project.slug}`"
+        :path="`/projects/${project.$slug}`"
         :required="true"
         :maxlength="40"
         :tag="context === 'full' ? 'h1' : 'h2'"
@@ -56,7 +56,7 @@ z
       <AuthorField
         :label="context === 'full' ? $t('contributors') : ''"
         :content="project.authors"
-        :path="`/projects/${project.slug}`"
+        :path="`/projects/${project.$slug}`"
         :can_edit="can_edit_project"
       />
 
@@ -64,7 +64,7 @@ z
         :field_name="'description'"
         :label="context === 'full' ? $t('description') : ''"
         :content="project.description"
-        :path="`/projects/${project.slug}`"
+        :path="`/projects/${project.$slug}`"
         :maxlength="280"
         :can_edit="can_edit_project"
       />
@@ -72,7 +72,7 @@ z
 
     <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link
-        :to="`/projects/${project.slug}`"
+        :to="`/projects/${project.$slug}`"
         class="u-button u-button_red"
       >
         ouvrir&nbsp;
@@ -117,9 +117,9 @@ export default {
   computed: {
     cover_thumb() {
       return this.makeRelativeURLFromThumbs({
-        thumbs: this.project.cover,
+        thumbs: this.project.$cover,
         type: "image",
-        project_slug: this.project.slug,
+        project_slug: this.project.$slug,
         resolution: 1200,
       });
     },
@@ -150,7 +150,7 @@ export default {
 
       try {
         const response = await this.$axios.patch(
-          `/projects/${this.project.slug}`,
+          `/projects/${this.project.$slug}`,
           {
             title: this.new_title,
           }

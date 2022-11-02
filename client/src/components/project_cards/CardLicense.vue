@@ -8,7 +8,7 @@
       <RadioField
         :field_name="'license'"
         :content="project.license"
-        :path="`/projects/${project.slug}`"
+        :path="`/projects/${project.$slug}`"
         :can_edit="can_edit_project"
         :options="license_options"
       />
