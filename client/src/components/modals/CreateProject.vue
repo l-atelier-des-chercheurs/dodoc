@@ -87,10 +87,9 @@ export default {
           additional_meta: {
             title: this.new_project_title,
             status: "draft",
-            $infos: {
-              public: this.new_project_is_public,
-              authors: ["1-louis", "11-emilie"],
-            },
+            license: "CC",
+            $public: this.new_project_is_public,
+            $authors: ["1-louis", "11-emilie"],
           },
         });
         setTimeout(() => {

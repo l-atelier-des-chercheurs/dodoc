@@ -19,11 +19,13 @@
 
         <div class="_projectMeta">
           <CardMeta :project="project" :can_edit_project="can_edit_project" />
+
           <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
           <CardKeywords
             :project="project"
             :can_edit_project="can_edit_project"
           />
+
           <CardMachines
             :project="project"
             :can_edit_project="can_edit_project"
@@ -34,7 +36,7 @@
             :can_edit_project="can_edit_project"
           />
 
-          <CardFiles :project="project" :can_edit_project="can_edit_project" />
+          <!-- <CardFiles :project="project" :can_edit_project="can_edit_project" /> -->
         </div>
       </div>
 
@@ -68,7 +70,7 @@ import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
 import CardStatus from "@/components/project_cards/CardStatus.vue";
 import CardLicense from "@/components/project_cards/CardLicense.vue";
-import CardFiles from "@/components/project_cards/CardFiles.vue";
+// import CardFiles from "@/components/project_cards/CardFiles.vue";
 
 export default {
   props: {},
@@ -83,7 +85,7 @@ export default {
     CardMachines,
     CardStatus,
     CardLicense,
-    CardFiles,
+    // CardFiles,
   },
   data() {
     return {

@@ -106,7 +106,7 @@ export default {
     },
     async updateText() {
       this.is_saving = true;
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise((r) => setTimeout(r, 200));
 
       try {
         const new_meta = {

@@ -41,7 +41,13 @@ z
     </div>
 
     <div class="_projectInfos--meta">
-      <!-- <div class="_content"> -->
+      <AuthorField
+        :label="context === 'full' ? $t('contributors') : ''"
+        :authors_slugs="project.$authors"
+        :path="`/projects/${project.$slug}`"
+        :can_edit="can_edit_project"
+      />
+
       <TitleField
         :field_name="'title'"
         :label="context === 'full' ? $t('title') : ''"
@@ -50,13 +56,6 @@ z
         :required="true"
         :maxlength="40"
         :tag="context === 'full' ? 'h1' : 'h2'"
-        :can_edit="can_edit_project"
-      />
-
-      <AuthorField
-        :label="context === 'full' ? $t('contributors') : ''"
-        :content="project.authors"
-        :path="`/projects/${project.$slug}`"
         :can_edit="can_edit_project"
       />
 
@@ -217,11 +216,11 @@ export default {
   overflow: hidden;
   // min-height: 50vh;
   width: 100%;
-  aspect-ratio: 1/1;
+  aspect-ratio: 3/2;
   border: 1px solid var(--color2);
   // max-width: 100vh;
 
-  --color1: transparent;
+  --color1: var(--c-gris_clair);
   --color2: var(--c-gris);
 
   &.is--empty {

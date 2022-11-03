@@ -53,6 +53,8 @@
         </div>
       </div>
 
+      <small>{{ $t("or_paste_an_image") }}</small>
+
       <!-- <div
         class="_imageselect--selectFromMedias"
         v-if="load_from_projects_medias"
@@ -159,9 +161,12 @@ export default {
 
   created() {},
   mounted() {
+    window.addEventListener("paste", this.handlePaste);
     this.show_medias_from_project = this.project_slug ? this.project_slug : "";
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    window.removeEventListener("paste", this.handlePaste);
+  },
 
   watch: {
     // show_medias_from_project: function () {
@@ -200,11 +205,34 @@ export default {
 
     //   return images;
     // },
+    handlePaste(e) {
+      if (e.clipboardData.files && e.clipboardData.files.length > 0) {
+        console.log(
+          `Story — METHODS • handlePaste: for files.length = ${e.clipboardData.files.length} with size ${e.clipboardData.files[0].size}`
+        );
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log("Importation depuis presse-papier");
+
+        this.$nextTick(() => {
+          const file = e.clipboardData.files[0];
+          this.setNewPreview(file);
+        });
+      } else {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.no_image_in_clipboard"));
+      }
+    },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       const file = files[0];
-
+      this.setNewPreview(file);
+    },
+    setNewPreview(file) {
       this.$emit("newPreview", file);
 
       this.createImage(file).then((res) => {

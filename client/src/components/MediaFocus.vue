@@ -5,14 +5,20 @@
       @dragstart="startMediaDrag($event)"
       @dragend="endMediaDrag()"
     >
-      <!-- <pre>
-        {{ file }}
-      </pre> -->
+      <DebugBtn :content="file" />
+
       <MediaContent
         :file="file"
         :project_slug="project_slug"
         :resolution="1600"
         :context="'full'"
+      />
+      <TitleField
+        label="caption"
+        :field_name="'caption'"
+        :content="file.caption"
+        :path="`/projects/${project_slug}/${file.$slug}`"
+        :can_edit="true"
       />
     </div>
     <sl-button-group class="_focusBtns">

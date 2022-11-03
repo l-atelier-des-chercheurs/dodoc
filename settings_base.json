@@ -333,9 +333,6 @@
           "resolutions": [180, 360, 1600]
         },
         "fields": {
-          "title": {
-            "type": "string"
-          },
           "caption": {
             "type": "string"
           },

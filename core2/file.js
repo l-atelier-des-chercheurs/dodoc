@@ -40,6 +40,7 @@ module.exports = (function () {
       dev.log(`New file uploaded to`, { folder_type }, { folder_slug });
       dev.logverbose({ new_filename, new_path, additional_meta });
 
+      // TODO rewrite, a bit messy
       const extracted_meta = await _extractAdditionalMetaFromFile({
         additional_meta,
         filename: new_filename,
@@ -47,14 +48,11 @@ module.exports = (function () {
       });
 
       // user added meta
-      const meta = utils.validateMeta({
+      let meta = utils.validateMeta({
         fields: global.settings.schema[folder_type].$files.fields,
         new_meta: additional_meta,
       });
-      meta.$infos = extracted_meta;
-
-      // file-specific metas will be added when getting files, the same as thumbs, and stored alongside
-      // - date created
+      meta = Object.assign({}, meta, extracted_meta);
 
       const meta_filename = new_filename + ".meta.txt";
 
@@ -113,8 +111,8 @@ module.exports = (function () {
       );
       meta.$slug = meta_filename;
 
-      const media_filename = meta.$infos.media_filename;
-      const media_type = meta.$infos.type;
+      const media_filename = meta.$media_filename;
+      const media_type = meta.$type;
 
       if (media_filename.endsWith("txt"))
         meta.$content = await utils.readFileContent(
@@ -141,7 +139,7 @@ module.exports = (function () {
         folder_type,
         folder_slug,
       });
-      if (file_infos) meta.$infos.file_infos = file_infos;
+      if (file_infos) meta.$infos = file_infos;
 
       cache.set({
         key: `${folder_type}/${folder_slug}/${meta_filename}`,
@@ -184,7 +182,7 @@ module.exports = (function () {
         const previous_content = await utils.readFileContent(
           folder_type,
           folder_slug,
-          meta.media_filename
+          meta.$media_filename
         );
         if (previous_content === $content)
           throw new Error("content not changed");
@@ -193,24 +191,24 @@ module.exports = (function () {
           `Content is supposed to be updated`,
           { previous_content },
           { $content },
-          { type: meta.type },
-          { media_filename: meta.media_filename }
+          { $type: meta.$type },
+          { $media_filename: meta.$media_filename }
         );
 
         if (global.settings.versioning === true)
           _archiveVersion({
             folder_type,
             folder_slug,
-            media_filename: meta.media_filename,
+            media_filename: meta.$media_filename,
           });
 
         // TODO update media (text, image, etc.)
-        if (meta.type === "text")
+        if (meta.$type === "text")
           await utils
             .saveMetaAtPath({
               folder_type,
               folder_slug,
-              file_slug: meta.media_filename,
+              file_slug: meta.$media_filename,
               meta: $content,
             })
             .catch((err) => {
@@ -327,21 +325,23 @@ module.exports = (function () {
 
     let new_meta = {};
 
-    // use fileCreationDate
-    if (additional_meta.fileCreationDate)
-      new_meta.date_created = utils.parseDate(additional_meta.fileCreationDate);
+    if (additional_meta.$date_created)
+      new_meta.$date_created = utils.parseDate(additional_meta.$date_created);
     else {
       // TODO fs stat ?
       // await fs.stat(filepath);
     }
-    new_meta.date_uploaded = new_meta.date_modified = utils.getCurrentDate();
-    new_meta.media_filename = filename;
+
+    new_meta.$date_uploaded = new_meta.$date_modified = utils.getCurrentDate();
+    new_meta.$media_filename = filename;
 
     // set status (see readme)
-    new_meta.public = additional_meta.public ? additional_meta.public : false;
+    new_meta.$public = additional_meta.$public
+      ? additional_meta.$public
+      : false;
 
-    if (additional_meta.type) {
-      new_meta.type = additional_meta.type;
+    if (additional_meta.$type) {
+      new_meta.$type = additional_meta.$type;
     } else {
       const ext = path.extname(filename);
 
@@ -355,36 +355,36 @@ module.exports = (function () {
         case ".tif":
         case ".dng":
         case ".svg":
-          new_meta.type = "image";
+          new_meta.$type = "image";
           break;
         case ".mp4":
         case ".flv":
         case ".mov":
         case ".webm":
         case ".avi":
-          new_meta.type = "video";
+          new_meta.$type = "video";
           break;
         case ".stl":
-          new_meta.type = "stl";
+          new_meta.$type = "stl";
           break;
         case ".mp3":
         case ".wav":
         case ".m4a":
         case ".ogg":
-          new_meta.type = "audio";
+          new_meta.$type = "audio";
           break;
         case ".md":
         case ".rtf":
         case ".txt":
-          new_meta.type = "text";
+          new_meta.$type = "text";
           break;
         case ".pdf":
-          new_meta.type = "pdf";
+          new_meta.$type = "pdf";
           break;
         default:
-          new_meta.type = "other";
+          new_meta.$type = "other";
       }
-      dev.logfunction(`Type determined to be ${new_meta.type}`);
+      dev.logfunction(`Type determined to be ${new_meta.$type}`);
     }
 
     return new_meta;
@@ -471,7 +471,7 @@ module.exports = (function () {
     paths.push(full_meta_path);
 
     let meta = await utils.readMetaFile(folder_type, folder_slug, meta_slug);
-    const media_filename = meta.$infos.media_filename;
+    const media_filename = meta.$media_filename;
 
     const full_media_path = utils.getPathToUserContent(
       folder_type,
@@ -543,7 +543,7 @@ module.exports = (function () {
     );
 
     const archive_folder_name =
-      path.parse(meta.$infos.media_filename).name + "_archives";
+      path.parse(meta.$media_filename).name + "_archives";
     const archived_folder_path = utils.getPathToUserContent(
       folder_type,
       folder_slug,

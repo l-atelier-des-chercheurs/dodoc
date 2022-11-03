@@ -82,6 +82,7 @@ module.exports = (function () {
   }
 
   function _corsCheck(req, callback) {
+    console.log();
     dev.logfunction();
 
     // dev.logverbose(`API2 — _corsCheck : ${JSON.stringify(req.headers)}`);

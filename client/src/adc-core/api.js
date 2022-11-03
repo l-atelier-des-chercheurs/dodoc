@@ -162,9 +162,11 @@ export default function () {
 
       join({ room }) {
         this.socket.emit("joinRoom", { room });
+        // todo rejoin room after disconnect
       },
       leave({ room }) {
         this.socket.emit("leaveRoom", { room });
+        // todo rejoin room after disconnect
       },
 
       async getSettings() {

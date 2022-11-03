@@ -44,8 +44,8 @@
               v-if="getIcon(pane.type)"
               v-html="getIcon(pane.type)"
             />
-            <span>{{ $t(pane.type) }}</span>
-            <!-- <span>{{ index + 1 }} • {{ $t(pane.type) }}</span> -->
+            <!-- <span>{{ $t(pane.type) }}</span> -->
+            <span>{{ index + 1 }} • {{ $t(pane.type) }}</span>
             <div
               v-if="project_panes.some((p) => p.type === pane.type)"
               class="_inlineBtn"

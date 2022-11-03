@@ -7,8 +7,8 @@
     <div class="">
       <ToggleField
         :label="$t('public')"
-        :field_name="'public'"
-        :content="project.public"
+        :field_name="'$public'"
+        :content="project.$public"
         :path="`/projects/${project.$slug}`"
         :options="{
           true: $t('public_status_explanations'),
@@ -42,10 +42,6 @@ export default {
         {
           key: "draft",
           text: "draft_status_explanations",
-        },
-        {
-          key: "invisible",
-          text: "invisible_status_explanations",
         },
         {
           key: "finished",

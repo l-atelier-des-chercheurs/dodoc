@@ -63,7 +63,7 @@ module.exports = (function () {
       let folder_slug = `untitled-${folder_type}`;
 
       if (data?.title) folder_slug = utils.slug(data.title);
-      if (!data?.$infos?.authors) throw new Error(`Missing authors`);
+      if (!data?.$authors) throw new Error(`Missing authors`);
 
       let { $cover, ...meta } = data;
 
@@ -83,28 +83,12 @@ module.exports = (function () {
           })
         : {};
 
-      valid_meta.$infos;
-
       // set date_created field
-      // valid_meta.$infos.date_created = valid_meta.$infos.date_modified =
-      //   utils.getCurrentDate();
+      valid_meta.$date_created = valid_meta.$date_modified =
+        utils.getCurrentDate();
 
-      // // set status (see readme)
-      // valid_meta.$infos.public = valid_meta.$infos.public
-      //   ? valid_meta.$infos.public
-      //   : false;
-
-      valid_meta = {
-        title: "hello world",
-        description: `Curabitur tempus ipsum sed nisi viverra, in luctus nibh mattis. Praesent at ante molestie, viverra diam in, congue magna. Pellentesque molestie mi ac mauris condimentum, non dapibus nisl aliquet. Pellentesque convallis, nunc vitae tincidunt vehicula, enim eros molestie odio, sed vehicula ipsum nisl id dolor. Cras commodo mauris in sapien maximus ultricies. Nam tortor ante, suscipit non nunc nec, fringilla porta arcu. Ut vel urna diam. Integer magna massa, viverra nec sagittis non, dictum vitae nisl. Phasellus efficitur mauris in condimentum porta. Vivamus rutrum enim ac ante malesuada efficitur. Nam vitae nisl nec massa tempus pretium quis in urna. 
-        Suspendisse potenti. Donec condimentum leo sed varius ullamcorper. Suspendisse neque tortor, elementum a mollis id, ornare ac nibh.`,
-        keywords: ["plop", "plip"],
-        $infos: {
-          public: true,
-          authors: ["12-louis", "14-marion"],
-          date_created: new Date(),
-        },
-      };
+      // set status (see readme)
+      valid_meta.$public = valid_meta.$public ? valid_meta.$public : false;
 
       await utils.saveMetaAtPath({
         folder_type,
@@ -140,7 +124,7 @@ module.exports = (function () {
         Object.assign(meta, clean_meta);
       }
 
-      meta.$infos.date_modified = utils.getCurrentDate();
+      meta.$date_modified = utils.getCurrentDate();
       await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
@@ -148,6 +132,7 @@ module.exports = (function () {
         meta,
       });
 
+      // todo deep compare
       let changed_meta = Object.keys(meta).reduce((acc, key) => {
         if (JSON.stringify(meta[key]) !== JSON.stringify(previous_meta[key]))
           acc[key] = meta[key];

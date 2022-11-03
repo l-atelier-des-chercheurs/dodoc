@@ -109,6 +109,10 @@ export default function () {
         already_added: "Déjà ajouté",
         create_and_open: "Créer et ouvrir",
         create_a_project: "Créer un projet",
+
+        or_paste_an_image: "Ou coller une image depuis le presse-papier",
+        "notifications.no_image_in_clipboard":
+          "Votre presse-papier ne contient pas d'images",
       },
       en: {
         hello: "hello world",

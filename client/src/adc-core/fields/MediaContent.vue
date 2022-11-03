@@ -1,9 +1,9 @@
 <template>
   <div class="_mediaContent">
-    <template v-if="file.type === 'image'">
+    <template v-if="file.$type === 'image'">
       <img :src="thumb" />
     </template>
-    <template v-else-if="file.type === 'video'">
+    <template v-else-if="file.$type === 'video'">
       <template v-if="context === 'preview'">
         <img :src="thumb" />
       </template>
@@ -11,14 +11,14 @@
         <video :src="file_full_path" controls />
       </template>
     </template>
-    <template v-else-if="file.type === 'pdf'">
+    <template v-else-if="file.$type === 'pdf'">
       <img :src="thumb" />
     </template>
-    <template v-else-if="file.type === 'stl'">
+    <template v-else-if="file.$type === 'stl'">
       <img :src="thumb" />
     </template>
     <span v-else>
-      {{ file.type }}
+      {{ file.$type }}
       <sl-icon name="file-earmark-arrow-down" /><br />
       {{ file.media_filename }}
     </span>
@@ -55,7 +55,7 @@ export default {
     thumb() {
       return this.makeRelativeURLFromThumbs({
         thumbs: this.file.$thumbs,
-        type: this.file.$infos.type,
+        type: this.file.$type,
         project_slug: this.project_slug,
         resolution: this.resolution,
       });

@@ -83,8 +83,8 @@ module.exports = (function () {
       let meta = {};
 
       const predefined_fields = {
-        public: { type: "boolean" },
-        authors: { type: "array" },
+        $public: { type: "boolean" },
+        $authors: { type: "array" },
       };
       fields = Object.assign({}, fields, predefined_fields);
 

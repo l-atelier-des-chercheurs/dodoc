@@ -483,9 +483,9 @@ export default {
 
       this.editor.blur();
 
-      const { type, caption, slug } = media;
+      const { $type, caption, $slug } = media;
 
-      if (type === "image") {
+      if ($type === "image") {
         const thumb_path = media.$thumbs[1600];
         if (thumb_path) {
           // this.editor.insertText(index, "\n", Quill.sources.USER);
@@ -495,14 +495,14 @@ export default {
             {
               type,
               caption,
-              meta_filename: slug,
+              meta_filename: $slug,
               src: `/thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
             },
             Quill.sources.USER
           );
           // this.editor.setSelection(index + 1, Quill.sources.SILENT);
         }
-      } else if (type === "video") {
+      } else if ($type === "video") {
         // this.editor.insertText(index, "\n", Quill.sources.USER);
         this.editor.insertEmbed(
           index,
@@ -510,20 +510,20 @@ export default {
           {
             type,
             caption,
-            meta_filename: slug,
+            meta_filename: $slug,
             src: mediaURL,
           },
           Quill.sources.USER
         );
         // this.editor.setSelection(index + 1, Quill.sources.SILENT);
-      } else if (media.type === "audio") {
+      } else if ($type === "audio") {
         this.editor.insertEmbed(
           index,
           "media",
           {
             type,
             caption,
-            meta_filename: slug,
+            meta_filename: $slug,
             src: mediaURL,
           },
           Quill.sources.USER

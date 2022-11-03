@@ -150,6 +150,8 @@ module.exports = (function () {
         return infos;
       }
 
+      const hrstart = process.hrtime();
+
       let infos = {};
       if (media_type === "image")
         infos = await _readImageExif({ full_media_path });
@@ -158,8 +160,11 @@ module.exports = (function () {
 
       // read file infos
       const { size, mtimems } = await _readFileInfos({ full_media_path });
-      if (size) infos.file_size = size;
+      if (size) infos.size = size;
       if (mtimems) infos.mtimems = mtimems;
+
+      let hrend = process.hrtime(hrstart);
+      dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
 
       if (infos) {
         utils.storeMeta({ path: path_to_infos_file, meta: infos });
@@ -311,7 +316,7 @@ module.exports = (function () {
     });
 
     let meta = await utils.readMetaFile(folder_type, folder_slug, meta_slug);
-    const media_filename = meta.$infos.media_filename;
+    const media_filename = meta.$media_filename;
 
     return await _removeAllThumbsForFile({
       folder_type,

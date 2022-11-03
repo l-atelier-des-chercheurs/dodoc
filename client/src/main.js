@@ -35,6 +35,8 @@ import RadioField from "@/adc-core/fields/RadioField.vue";
 Vue.component("RadioField", RadioField);
 import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
 Vue.component("ImageSelect", ImageSelect);
+import DebugBtn from "@/adc-core/DebugBtn.vue";
+Vue.component("DebugBtn", DebugBtn);
 //
 import BaseModal2 from "@/adc-core/modal/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);
@@ -43,6 +45,8 @@ import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);
 import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
 Vue.component("ToggleInput", ToggleInput);
+import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
+Vue.component("AuthorPicker", AuthorPicker);
 //
 
 import MetaFieldHeader from "@/adc-core/fields/MetaFieldHeader.vue";
@@ -59,6 +63,9 @@ Vue.component("UploadFiles", UploadFiles);
 
 import MediaContent from "@/adc-core/fields/MediaContent.vue";
 Vue.component("MediaContent", MediaContent);
+
+import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
+Vue.component("AuthorTag", AuthorTag);
 
 Vue.component("EditBtn", {
   name: "EditBtn",
@@ -81,6 +88,8 @@ import FormatDates from "./mixins/FormatDates";
 Vue.mixin(FormatDates);
 import Medias from "./mixins/Medias";
 Vue.mixin(Medias);
+import Authors from "./mixins/Authors";
+Vue.mixin(Authors);
 
 import "axios-debug-log/enable";
 import axios from "axios";
