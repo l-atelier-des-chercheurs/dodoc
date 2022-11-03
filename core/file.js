@@ -80,7 +80,8 @@ module.exports = (function () {
         folder_meta.number_of_medias = list_metaFileName.length;
       }
 
-      cache.put({ type, slugFolderName }, folder_meta);
+      if (type !== "authors") cache.put({ type, slugFolderName }, folder_meta);
+
       return { [slugFolderName]: folder_meta };
     },
     getFolders: async ({ type }) => {
