@@ -73,7 +73,7 @@ export default {
           keywords: ["plip"],
         },
       });
-      await new Promise((r) => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 500));
       await this.$api.deleteFolder({
         folder_type: "projects",
         folder_slug: new_folder_slug,
