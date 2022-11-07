@@ -7,6 +7,8 @@
     >
       <DebugBtn :content="file" />
 
+      {{ file.$infos.hash }}
+
       <MediaContent
         :file="file"
         :project_slug="project_slug"

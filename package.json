@@ -67,6 +67,7 @@
     "fs-extra": "^10.1.0",
     "ip-anonymize": "^0.1.0",
     "lru-cache": "^7.14.0",
+    "md5-file": "^5.0.0",
     "node-fetch": "^2.6.7",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
@@ -92,7 +93,7 @@
     "node-gyp": "^9.3.0"
   },
   "optionalDependencies": {
-    "stl-thumbnailer-node": "^1.2.1",
-    "pdf-extractor": "^2.2.0"
+    "pdf-extractor": "^2.2.0",
+    "stl-thumbnailer-node": "^1.2.1"
   }
 }

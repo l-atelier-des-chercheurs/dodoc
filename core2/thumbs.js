@@ -159,9 +159,10 @@ module.exports = (function () {
         infos = await _readVideoAudioExif({ full_media_path });
 
       // read file infos
-      const { size, mtimems } = await _readFileInfos({ full_media_path });
+      const { size, mtimems, hash } = await _readFileInfos({ full_media_path });
       if (size) infos.size = size;
       if (mtimems) infos.mtimems = mtimems;
+      if (hash) infos.hash = hash;
 
       let hrend = process.hrtime(hrstart);
       dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
@@ -614,7 +615,7 @@ module.exports = (function () {
 
   function _ffprobeVideoAudio({ full_media_path }) {
     return new Promise(function (resolve, reject) {
-      dev.logverbose(`getting probe data`);
+      dev.logfunction({ full_media_path });
       ffmpeg.ffprobe(full_media_path, (err, metadata) => {
         if (err || typeof metadata === "undefined") {
           return reject(err);
@@ -624,20 +625,27 @@ module.exports = (function () {
     });
   }
 
-  function _readFileInfos({ full_media_path }) {
-    return new Promise(function (resolve, reject) {
-      dev.logverbose(`getting file infos with fs.stat`);
-      fs.stat(full_media_path)
-        .then((stats) => {
-          return resolve({
-            size: stats.size,
-            mtimems: Math.floor(stats.mtimeMs),
-          });
-        })
-        .catch((err) => {
-          return reject(err);
-        });
-    });
+  async function _readFileInfos({ full_media_path }) {
+    dev.logfunction({ full_media_path });
+
+    const hrstart = process.hrtime();
+    const props = {};
+
+    try {
+      const { size, mtimeMs } = await fs.stat(full_media_path);
+      props.size = size;
+      props.mtimems = Math.floor(mtimeMs);
+    } catch (e) {}
+
+    try {
+      const hash = await utils.md5FromFile({ full_media_path });
+      props.hash = hash;
+    } catch (e) {}
+
+    let hrend = process.hrtime(hrstart);
+    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+
+    return props;
   }
 
   async function _getPageMetadata({ url }) {

@@ -6,7 +6,8 @@ const path = require("path"),
   writeFileAtomic = require("write-file-atomic"),
   { networkInterfaces } = require("os"),
   sharp = require("sharp"),
-  { IncomingForm } = require("formidable");
+  { IncomingForm } = require("formidable"),
+  md5File = require("md5-file");
 
 sharp.cache(false);
 
@@ -214,6 +215,10 @@ module.exports = (function () {
 
     async imageBufferToFile({ image_buffer, full_path_to_thumb }) {
       return await sharp(image_buffer).toFile(full_path_to_thumb);
+    },
+
+    async md5FromFile({ full_media_path }) {
+      return await md5File(full_media_path);
     },
   };
 
