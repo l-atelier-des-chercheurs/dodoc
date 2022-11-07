@@ -113,6 +113,7 @@ export default function () {
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
           "Votre presse-papier ne contient pas d'images",
+        "notifications.project_was_removed": "Ce projet vient d’être supprimé",
       },
       en: {
         hello: "hello world",

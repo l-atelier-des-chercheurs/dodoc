@@ -109,10 +109,14 @@ export default {
       });
 
     this.project = project;
+
     this.$eventHub.$emit("received.project", this.project);
+    this.$eventHub.$on("folder.removed", this.closeOnRemove);
+
     this.$api.join({ room: `projects/${this.project_slug}` });
   },
   beforeDestroy() {
+    this.$eventHub.$off("folder.removed", this.closeOnRemove);
     this.$api.leave({ room: `projects/${this.project_slug}` });
   },
   watch: {
@@ -161,6 +165,15 @@ export default {
         return false;
 
       this.$router.push({ query });
+    },
+    closeOnRemove({ folder_type, folder_slug }) {
+      if (folder_type === "projects" && folder_slug === this.project_slug) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(this.$t("notifications.project_was_removed"));
+        this.$router.push("/projects");
+      }
     },
   },
 };

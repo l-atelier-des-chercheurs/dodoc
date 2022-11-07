@@ -9,7 +9,6 @@
         :maxlength="40"
         :required="true"
         @toggleValidity="($event) => (allow_save = $event)"
-        @onEnter="createProject"
       />
 
       <br />
@@ -89,12 +88,12 @@ export default {
             status: "draft",
             license: "CC",
             $public: this.new_project_is_public,
-            $authors: ["1-louis", "11-emilie"],
+            $authors: ["louis", "pauline"],
           },
         });
         setTimeout(() => {
           this.$emit("openNewProject", new_folder_slug);
-        }, 500);
+        }, 50);
       } catch (err) {
         this.error_msg = "Error: " + err.message;
         setTimeout(() => {

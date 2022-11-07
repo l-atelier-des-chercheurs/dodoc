@@ -128,6 +128,7 @@ export default function () {
           folder_slug,
         });
         this.store[folder_type].splice(folder_index, 1);
+        this.$eventHub.$emit("folder.removed", { folder_type, folder_slug });
       },
 
       fileCreated({ folder_type, folder_slug, file_meta }) {

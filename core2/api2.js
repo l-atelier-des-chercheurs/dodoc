@@ -285,6 +285,10 @@ module.exports = (function () {
         folder_type,
         folder_slug,
       });
+      notifier.emit("folderRemoved", `${folder_type}/${folder_slug}`, {
+        folder_type,
+        folder_slug,
+      });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
       res.status(404).send(err);

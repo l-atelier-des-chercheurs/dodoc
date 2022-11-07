@@ -149,7 +149,7 @@ export default {
     },
     async updateAuthors() {
       this.is_saving = true;
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise((r) => setTimeout(r, 50));
 
       try {
         const new_meta = {
