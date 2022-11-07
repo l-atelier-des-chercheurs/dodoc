@@ -6,7 +6,8 @@
     }"
   >
     <div class="_socketStatus--content">
-      <!-- Connecté en tant que {{ $api.socket.userID }}
+      Connecté en tant que {{ $api.socket.userID }}
+      <!-- 
       |
       <button
         type="button"

@@ -35,6 +35,9 @@
           </svg>
           créer
         </button>
+        <br />
+        <ProjectsTester v-if="$api.debug_mode" />
+        <br />
       </div>
     </div>
 
@@ -68,17 +71,20 @@
 <script>
 import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import CreateProject from "@/components/modals/CreateProject.vue";
+import ProjectsTester from "@/adc-core/tests/ProjectsTester.vue";
 
 export default {
   props: {},
   components: {
     ProjectPresentation,
     CreateProject,
+    ProjectsTester,
   },
   data() {
     return {
       projects: [],
       show_create_modal: false,
+      routine_is_started: false,
     };
   },
   created() {},

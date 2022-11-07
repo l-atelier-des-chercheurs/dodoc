@@ -47,7 +47,7 @@ export default {
         });
         this.response = response.data;
         this.fetch_status = "success";
-        this.$router.push("/projects");
+        // this.$router.push("/projects");
       } catch (e) {
         this.fetch_status = "error";
         this.fetch_error = e.response.data;
