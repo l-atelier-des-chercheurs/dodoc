@@ -13,17 +13,8 @@
           :project="project"
           context="full"
           :can_edit_project="can_edit_project"
+          :show_more_informations.sync="show_more_informations"
         />
-
-        <div class="_tabButton">
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="show_more_informations = !show_more_informations"
-          >
-            {{ $t("more_infos") }}
-          </button>
-        </div>
 
         <!-- Metadonnées, Auteurs, Mots-clés, Machines, Statut, Licence -->
 

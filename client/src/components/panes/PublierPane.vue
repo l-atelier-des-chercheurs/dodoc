@@ -7,9 +7,11 @@
     </div>
     <button type="button">Nouvelle publication</button>
     <select name="Type de bloc" id="cars">
-      <option value="volvo">Page à page</option>
-      <option value="mercedes">Journal</option>
-      <option value="saab">Tutoriel</option>
+      <option value="page">Page à page</option>
+      <option value="journal">Journal</option>
+      <option value="tutorial">Tutoriel</option>
+      <option value="presentation">Présentation par page</option>
+      <option value="carreau">carreau.js</option>
     </select>
   </div>
 </template>

@@ -5,9 +5,7 @@
       v-for="recipe_type in recipe_types"
       :key="recipe_type.key"
     >
-      <div class="u-instructions u-padding-small">
-        Annotez, assemblez, déformez vos photos, vidéos, sons.
-      </div>
+      <div class="u-instructions u-padding-small"></div>
       <div class="">
         {{ $t(recipe_type.label) }}
       </div>

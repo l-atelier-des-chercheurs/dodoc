@@ -1,12 +1,6 @@
 <template>
   <div class="_mediaLibrary">
-    <div class="u-instructions u-padding-small">
-      Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer
-      et les organiser dans des groupes.
-      <br />
-      Vous pouvez aussi importer des fichiers (photos, vidéos, audios, 3D, PDF
-      ou autre) depuis vos appareils.
-    </div>
+    <div class="u-instructions u-padding-small"></div>
     <splitpanes horizontal :dbl-click-splitter="false" @resized="resized">
       <pane
         min-size="5"

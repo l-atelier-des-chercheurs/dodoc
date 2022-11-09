@@ -15,7 +15,20 @@
         min-size="5"
         :size="pane.size"
         :data-size="pane.size"
+        :style="`--color-type: var(--color-${pane.type});`"
       >
+        <div
+          class="_floatingMsg"
+          :key="`instructions.pane_${pane.type}`"
+          v-if="show_instructions"
+        >
+          <span v-html="$t(`instructions.pane.${pane.type}`)"></span>
+          <sl-icon-button
+            name="x-circle-fill"
+            label="Fermer"
+            @click.stop="show_instructions = false"
+          />
+        </div>
         <CapturePane v-if="pane.type === 'Capturer'" :project="project" />
         <MediaLibrary
           v-else-if="pane.type === 'Collecter'"
@@ -60,13 +73,23 @@ export default {
     CapturePane,
   },
   data() {
-    return {};
+    return {
+      show_instructions: true,
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
-  computed: {},
+  watch: {
+    panes_enabled() {
+      this.show_instructions = true;
+    },
+  },
+  computed: {
+    panes_enabled() {
+      return this.projectpanes.map((pp) => pp.type);
+    },
+  },
   methods: {
     resized(_projectpanessizes) {
       console.log(`Project / methods: resized`);
@@ -93,5 +116,18 @@ export default {
   display: flex;
   place-content: center;
   background: #eee;
+}
+
+._floatingMsg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10000;
+  background: white;
+  max-width: 44ch;
+  padding: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2);
+  border-radius: 8px;
+  border: 2px solid var(--color-type);
 }
 </style>

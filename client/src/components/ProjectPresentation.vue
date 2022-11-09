@@ -67,6 +67,18 @@ z
         :maxlength="280"
         :can_edit="can_edit_project"
       />
+
+      <div class="_tabButton" v-if="context === 'full'">
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="
+            $emit('update:show_more_informations', !show_more_informations)
+          "
+        >
+          {{ $t("more_infos") }}
+        </button>
+      </div>
     </div>
 
     <div class="_projectInfos--open" v-if="context === 'list'">
@@ -86,6 +98,7 @@ export default {
     project: Object,
     context: String,
     can_edit_project: Boolean,
+    show_more_informations: Boolean,
   },
   components: {},
   data() {
@@ -216,9 +229,9 @@ export default {
   overflow: hidden;
   // min-height: 50vh;
   width: 100%;
-  aspect-ratio: 3/2;
+  aspect-ratio: 1/1;
   border: 1px solid var(--color2);
-  max-width: 40vw;
+  max-width: 50vw;
 
   --color1: var(--c-gris);
   --color2: var(--c-gris_clair);

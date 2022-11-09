@@ -117,6 +117,17 @@ export default function () {
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
 
         more_infos: "Plus d’informations",
+
+        "instructions.pane.Capturer":
+          "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
+        "instructions.pane.Collecter": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
+          <br />
+          Vous pouvez aussi importer des fichiers (photos, vidéos, audios, 3D, PDF ou autre) depuis vos appareils.`,
+        "instructions.pane.Remixer":
+          "Recadrez, raccourcissez, assemblez et annotez vos médias.",
+        "instructions.pane.Publier": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
+          <br />
+          Elles contiendront du texte et des éléments que vous avez collecté.`,
       },
       en: {
         hello: "hello world",
