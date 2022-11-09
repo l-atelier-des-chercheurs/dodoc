@@ -2,7 +2,7 @@
   <div>
     <form class="input-validation-required" @submit.prevent="createAuthor">
       <div class="_topLabel">
-        <label for="" class="u-label">{{ $t("title") }}</label>
+        <label for="" class="u-label">{{ $t("name") }}</label>
       </div>
       <TextInput
         :content.sync="new_author_name"

@@ -24,6 +24,7 @@
         :can_edit="can_edit_project"
         :options="status_options"
       />
+      <div class="u-wips" />
     </div>
   </ProjectCard>
 </template>

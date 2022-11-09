@@ -50,8 +50,9 @@
               v-if="project_panes.some((p) => p.type === pane.type)"
               class="_inlineBtn"
             >
+              <!-- name="x-lg" -->
               <sl-icon-button
-                name="x-lg"
+                name="x-circle-fill"
                 label="Fermer"
                 @click.stop="removePane(pane.type)"
               />
@@ -61,7 +62,7 @@
               class="_inlineBtn _addPaneBtn"
             >
               <sl-icon-button
-                name="plus-circle"
+                name="plus-circle-fill"
                 label="Ajouter"
                 @click.stop="addPane($event, pane)"
               />
@@ -309,7 +310,7 @@ export default {
 
     user-select: none;
 
-    transition: all 0.4s;
+    transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 
@@ -348,7 +349,7 @@ export default {
 
   // padding: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  // background: rgba(255, 255, 255, 0.3);
 }
 
 ._btn {
@@ -357,7 +358,7 @@ export default {
   align-items: center;
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   gap: calc(var(--spacing) / 2);
-  transition: all 0.4s ease-out;
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   cursor: pointer;
 
   width: 100%;

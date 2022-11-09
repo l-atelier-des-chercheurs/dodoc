@@ -37,7 +37,7 @@
     </button>
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
 
-    <div>
+    <div class="_socketStatus">
       <SocketStatus />
     </div>
   </div>
@@ -85,7 +85,7 @@ export default {
   // position: absolute;
   width: 100%;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   gap: calc(var(--spacing) * 2);
   align-items: center;
 
@@ -96,7 +96,7 @@ export default {
   user-select: none;
 
   > * {
-    flex: 1 1 auto;
+    flex: 1 1 0;
   }
 
   > ._subscribeBtn {
@@ -106,6 +106,8 @@ export default {
 
 ._subscribeBtn {
   background: var(--c-bleumarine_clair);
+  padding: calc(var(--spacing) / 2);
+  border-radius: 4px;
 }
 
 ._breadcrumb {
@@ -129,6 +131,11 @@ export default {
     //   content: "→";
     // }
   }
+}
+
+._socketStatus {
+  display: flex;
+  justify-content: flex-end;
 }
 
 ._logo {

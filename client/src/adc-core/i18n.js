@@ -74,6 +74,7 @@ export default function () {
         keywords: "mots-clés",
         add: "ajouter",
         title: "titre",
+        name: "nom",
         contributors: "Contributeur·rice·s",
         create: "créer",
         upload_from_device: "Importer une image",
