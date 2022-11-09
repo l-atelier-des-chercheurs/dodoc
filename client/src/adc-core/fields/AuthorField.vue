@@ -39,6 +39,8 @@
           @onEnter="onEnter"
         /> -->
 
+      <div class="u-wips" />
+
       <div class="_topLabel">
         <label for="" class="u-label">{{ $t("add_authors") }}</label>
       </div>

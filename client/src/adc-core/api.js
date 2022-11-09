@@ -226,6 +226,17 @@ export default function () {
           throw e.response.data;
         }
       },
+      async loginToFolder({ folder_type, folder_slug, auth_infos }) {
+        try {
+          const response = await this.$axios.post(
+            `/${folder_type}/${folder_slug}/_login`,
+            auth_infos
+          );
+          return response.data;
+        } catch (e) {
+          throw e.response.data;
+        }
+      },
 
       async uploadText({
         folder_type,

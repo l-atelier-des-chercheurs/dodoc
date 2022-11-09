@@ -44,6 +44,7 @@ export default {
 dialog {
   width: 100%;
   max-width: 400px;
+  z-index: 1000;
 
   background-color: #fff;
   border: none;
@@ -57,7 +58,7 @@ dialog {
 
   &[open],
   &::backdrop {
-    animation: show 500ms ease;
+    animation: show 250ms cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 

@@ -177,7 +177,7 @@ async function cleanCacheFolder() {
 }
 
 async function readAppMeta() {
-  utils.readMetaFile();
+  // utils.readMetaFile();
 }
 
 // function readsession_metaFile() {

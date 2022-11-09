@@ -169,6 +169,7 @@ Default values are:
 - $date_modified (date) = when the folder was last edited
 - $files (Array) = list of all the files in this folder
 - $public (Boolean) = if the folder is visible to everyone or just its authors, can be edited by authors
+- $password (string, stored as hash) = limit editing or viewing (depending on $public) to users with password
 - $slug (string) = folder name, can’t be changed
 - $infos (object) = data gathered from the folder itself
   - size (Number) = size in bytes
@@ -204,6 +205,10 @@ Custom values can be defined in the schema property in settings_base.json.
 
 Each folder and each file have a "public" property, which defines who can see them:
 
-- by default, it is set to **false** (if it doesnt exist it is considered false as well). In this situation, only creators of the ressource can see it.
-
+- by default, it is set to **false** (if it doesnt exist it is considered false as well). In this situation, only authors of the ressource can see it.
 - if set to true, anyone can see it
+
+If a folder has a password, then it protects this ressource and its content in the following way:
+
+- if public, only those with the password or corresponding token can edit it
+- if not public, only those with the password or token can see and edit it

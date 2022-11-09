@@ -61,6 +61,11 @@ module.exports = (function () {
       [cors(_corsCheck), _sessionPasswordCheck],
       _removeFolder
     );
+    app.post(
+      "/_api2/:folder_type/:folder_slug/_login",
+      [cors(_corsCheck), _sessionPasswordCheck],
+      _loginToFolder
+    );
 
     app.post(
       "/_api2/:folder_type/:folder_slug/_upload",
@@ -225,6 +230,10 @@ module.exports = (function () {
 
     dev.logfunction({ folder_type, folder_slug, data, update_cover });
 
+    // check if header contains a valid jwt that certifies that user is author
+    // if (auth.checkFolderForAuth({ folder_type, folder_slug }))
+    //   res.status(422).send("Not allowed");
+
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!global.settings.schema.hasOwnProperty(folder_type))
       return res.status(422).send("Missing schema for folder_type");
@@ -255,7 +264,7 @@ module.exports = (function () {
         changed_data,
       });
     } catch (err) {
-      dev.error("Failed to create folder: " + err.message);
+      dev.error("Failed to update folder: " + err.message);
       res.status(500).send({ message: err.message });
     }
 
@@ -297,43 +306,28 @@ module.exports = (function () {
     let hrend = process.hrtime(hrstart);
     dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
+  async function _loginToFolder(req, res, next) {
+    let { folder_type, folder_slug } = req.params;
+    const data = req.body;
 
-  // async function _updateCover(req, res, next) {
-  //   let { folder_type, folder_slug } = req.params;
+    dev.logfunction({ folder_type, folder_slug });
 
-  //   dev.logfunction({ folder_type, folder_slug });
+    if (!data || !data.hasOwnProperty("$password"))
+      return res.status(422).send("Missing password field");
 
-  //   if (!folder_type) return res.status(422).send("Missing folder_type field");
-  //   if (!folder_slug) return res.status(422).send("Missing folder_slug field");
-
-  //   const hrstart = process.hrtime();
-
-  //   try {
-  //     const changed_data = await folder.updateFolder({
-  //       folder_type,
-  //       folder_slug,
-  //       req,
-  //     });
-
-  //     // notify
-  //     notifier.emit("folderUpdated", `${folder_type}`, {
-  //       folder_type,
-  //       folder_slug,
-  //       changed_data,
-  //     });
-  //     notifier.emit("folderUpdated", `${folder_type}/${folder_slug}`, {
-  //       folder_type,
-  //       folder_slug,
-  //       changed_data,
-  //     });
-  //   } catch (err) {
-  //     dev.error("Failed to upload file: " + err);
-  //     res.status(500).send(err);
-  //   }
-
-  //   let hrend = process.hrtime(hrstart);
-  //   dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
-  // }
+    try {
+      await folder.login({
+        folder_type,
+        folder_slug,
+        submitted_password: data.$password,
+      });
+      dev.logpackets({ status: "logged in to folder" });
+      res.status(200).json({ status: "ok" });
+    } catch (err) {
+      dev.error(`Failed to login to folder: ${err.message}`);
+      res.status(404).send("Folder is missing");
+    }
+  }
 
   async function _uploadFile(req, res, next) {
     let { folder_type, folder_slug } = req.params;

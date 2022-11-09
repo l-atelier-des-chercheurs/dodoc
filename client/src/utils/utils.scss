@@ -16,6 +16,23 @@
   font-style: italic;
 }
 
+.u-wips {
+  position: relative;
+  text-align: center;
+  margin: calc(var(--spacing) / 2) 0;
+
+  &::before {
+    content: "en chantier :)";
+    font-family: "Fira Code";
+    background: var(--c-orange);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
+    border-radius: 6px;
+    transform: rotate(-6deg);
+    position: relative;
+    display: inline-block;
+  }
+}
+
 .u-padding-small {
   padding: calc(var(--spacing) / 2);
 }
@@ -53,6 +70,7 @@
   font-variant: small-caps;
   font-weight: 500;
   letter-spacing: 0.06em;
+  text-transform: lowercase;
 }
 
 .u-button {

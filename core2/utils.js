@@ -7,7 +7,8 @@ const path = require("path"),
   { networkInterfaces } = require("os"),
   sharp = require("sharp"),
   { IncomingForm } = require("formidable"),
-  md5File = require("md5-file");
+  md5File = require("md5-file"),
+  crypto = require("crypto");
 
 sharp.cache(false);
 
@@ -48,6 +49,7 @@ module.exports = (function () {
       dev.logfunction({ paths });
 
       const meta_path = API.getPathToUserContent(...paths);
+
       const meta_file_content = await fs
         .readFile(meta_path, "UTF-8")
         .catch((err) => {
@@ -86,14 +88,23 @@ module.exports = (function () {
       const predefined_fields = {
         $public: { type: "boolean" },
         $authors: { type: "array" },
+        $password: { type: "string" },
       };
       fields = Object.assign({}, fields, predefined_fields);
 
       if (fields)
         Object.entries(fields).map(([field_name, opt]) => {
-          if (new_meta.hasOwnProperty(field_name)) {
+          if (
+            new_meta.hasOwnProperty(field_name) &&
+            opt.type === "string" &&
+            new_meta[field_name] !== ""
+          ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
+          } else {
+            if (opt.required === true)
+              // field is required in schema but not present in user-submitted object
+              throw new Error(`Required field *${field_name}* is missing`);
           }
         });
       // see cleanNewMeta
@@ -219,6 +230,22 @@ module.exports = (function () {
 
     async md5FromFile({ full_media_path }) {
       return await md5File(full_media_path);
+    },
+
+    // see https://stackoverflow.com/a/67038052
+    hashPassword({ password, salt = global.settings.password_salt }) {
+      const buf = crypto.scryptSync(password, salt, 64).toString("hex");
+      return `${buf.toString("hex")}.${salt}`;
+    },
+
+    checkPassword({ submitted_password, stored_password_with_salt }) {
+      // check if password matches stored_password once it is hashed
+      const [stored_password, salt] = stored_password_with_salt.split(".");
+      const submitted_password_with_salt = API.hashPassword({
+        password: submitted_password,
+        salt,
+      });
+      return submitted_password_with_salt === stored_password_with_salt;
     },
   };
 

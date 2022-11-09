@@ -4,7 +4,11 @@
     <TopBar />
     <AdminPanel v-if="false" />
     <div class="">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition name="fade">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </div>
   </div>
 </template>

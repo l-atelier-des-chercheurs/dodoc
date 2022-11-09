@@ -84,7 +84,6 @@ export default {
     return {
       projects: [],
       show_create_modal: false,
-      routine_is_started: false,
     };
   },
   created() {},
@@ -138,6 +137,7 @@ export default {
   overflow: hidden;
 
   > * {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   }
 
   ::v-deep ._projectInfos {

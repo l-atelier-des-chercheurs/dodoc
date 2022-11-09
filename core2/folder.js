@@ -48,6 +48,10 @@ module.exports = (function () {
       });
       if (cover) folder_meta.$cover = cover;
 
+      // remove $password from this object
+      if (folder_meta.$password && folder_meta.$password.length > 0)
+        folder_meta.$password = "_active";
+
       // TODO get number of files if files in schema
       cache.set({
         key: `${folder_type}/${folder_slug}`,
@@ -61,9 +65,7 @@ module.exports = (function () {
       dev.logfunction({ folder_type, data });
 
       let folder_slug = `untitled-${folder_type}`;
-
-      if (data?.title) folder_slug = utils.slug(data.title);
-      if (!data?.$authors) throw new Error(`Missing authors`);
+      if (data?.requested_slug) folder_slug = utils.slug(data.requested_slug);
 
       let { $cover, ...meta } = data;
 
@@ -73,8 +75,6 @@ module.exports = (function () {
         folder_type,
         folder_slug
       );
-
-      await fs.ensureDir(path_to_folder);
 
       let valid_meta = meta
         ? utils.validateMeta({
@@ -90,6 +90,14 @@ module.exports = (function () {
       // set status (see readme)
       valid_meta.$public = valid_meta.$public ? valid_meta.$public : false;
 
+      if (valid_meta.$password) {
+        // encrypt before store
+        valid_meta.$password = await utils.hashPassword({
+          password: valid_meta.$password,
+        });
+      }
+
+      await fs.ensureDir(path_to_folder);
       await utils.saveMetaAtPath({
         folder_type,
         folder_slug,
@@ -216,6 +224,33 @@ module.exports = (function () {
       });
       await fs.remove(filepath);
 
+      return;
+    },
+
+    login: async ({ folder_type, folder_slug, submitted_password }) => {
+      dev.logfunction({ folder_type, folder_slug, submitted_password });
+
+      // get folder meta
+      let folder_meta = await utils
+        .readMetaFile(folder_type, folder_slug, "meta.txt")
+        .catch((err) => {
+          throw err;
+        });
+
+      // check if folder has a password
+      if (
+        !folder_meta.hasOwnProperty("$password") ||
+        folder_meta.$password === ""
+      )
+        throw new Error("Folder doesn’t have any password");
+
+      const submitted_password_matches = utils.checkPassword({
+        submitted_password,
+        stored_password_with_salt: folder_meta.$password,
+      });
+      if (!submitted_password_matches) {
+        throw new Error("Submitted password doesn’t match");
+      }
       return;
     },
   };

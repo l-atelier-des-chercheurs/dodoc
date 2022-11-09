@@ -15,9 +15,19 @@
           :can_edit_project="can_edit_project"
         />
 
+        <div class="_tabButton">
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="show_more_informations = !show_more_informations"
+          >
+            {{ $t("more_infos") }}
+          </button>
+        </div>
+
         <!-- Metadonnées, Auteurs, Mots-clés, Machines, Statut, Licence -->
 
-        <div class="_projectMeta">
+        <div class="_projectMeta" v-if="show_more_informations">
           <CardMeta :project="project" :can_edit_project="can_edit_project" />
 
           <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
@@ -92,6 +102,8 @@ export default {
       project_slug: this.$route.params.slug,
       fetch_project_error: null,
       project: null,
+
+      show_more_informations: false,
 
       projectpanes: [],
     };
@@ -219,14 +231,25 @@ export default {
   background: var(--c-noir);
   background: var(--c-gris);
 
-  padding: calc(var(--spacing) / 1);
-  gap: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
 
   > * {
     flex: 0 0 200px;
     max-height: 200px;
     overflow: auto;
     // flex: 0 1 240px;
+  }
+}
+
+._tabButton {
+  text-align: center;
+  background: var(--c-gris);
+  padding: calc(var(--spacing) / 2);
+
+  > * {
+    background: white;
+    border-radius: 4px;
   }
 }
 </style>

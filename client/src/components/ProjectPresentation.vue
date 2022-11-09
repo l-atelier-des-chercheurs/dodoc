@@ -218,10 +218,10 @@ export default {
   width: 100%;
   aspect-ratio: 3/2;
   border: 1px solid var(--color2);
-  // max-width: 100vh;
+  max-width: 40vw;
 
-  --color1: var(--c-gris_clair);
-  --color2: var(--c-gris);
+  --color1: var(--c-gris);
+  --color2: var(--c-gris_clair);
 
   &.is--empty {
     background: radial-gradient(
@@ -286,5 +286,14 @@ export default {
   display: flex;
   justify-content: center;
   margin: calc(var(--spacing) * 1);
+
+  a {
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    &:hover,
+    &:focus {
+      transform: translateY(-4px) rotate(-2deg);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    }
+  }
 }
 </style>

@@ -89,4 +89,8 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._topLabel {
+  text-align: left;
+}
+</style>

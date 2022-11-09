@@ -85,6 +85,7 @@ export default {
           folder_type: "projects",
           additional_meta: {
             title: this.new_project_title,
+            requested_slug: this.new_project_title,
             status: "draft",
             license: "CC",
             $public: this.new_project_is_public,

@@ -114,6 +114,8 @@ export default function () {
         "notifications.no_image_in_clipboard":
           "Votre presse-papier ne contient pas d'images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
+
+        more_infos: "Plus d’informations",
       },
       en: {
         hello: "hello world",

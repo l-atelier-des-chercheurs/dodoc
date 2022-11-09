@@ -28,20 +28,35 @@
         </template>
       </ul>
     </nav>
-    <SocketStatus />
+    <button
+      type="button"
+      class="_subscribeBtn"
+      @click="show_authors_modal = true"
+    >
+      Inscription
+    </button>
+    <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
+
+    <div>
+      <SocketStatus />
+    </div>
   </div>
 </template>
 <script>
 import SocketStatus from "@/components/SocketStatus.vue";
+import AuthorList from "@/adc-core/author/AuthorList.vue";
 
 export default {
   props: {},
   components: {
     SocketStatus,
+    AuthorList,
   },
   data() {
     return {
       project: null,
+
+      show_authors_modal: true,
     };
   },
   created() {},
@@ -80,9 +95,17 @@ export default {
   min-height: 60px;
   user-select: none;
 
-  ._breadcrumb {
+  > * {
     flex: 1 1 auto;
   }
+
+  > ._subscribeBtn {
+    flex-grow: 0;
+  }
+}
+
+._subscribeBtn {
+  background: var(--c-bleumarine_clair);
 }
 
 ._breadcrumb {
