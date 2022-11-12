@@ -212,3 +212,72 @@ If a folder has a password, then it protects this ressource and its content in t
 
 - if public, only those with the password or corresponding token can edit it
 - if not public, only those with the password or token can see and edit it
+
+## Recursivity
+
+Path to ressource is decomposed like this:
+
+`/type-of-ressource/name-of-ressource/type-of-child-ressource/name-of-child-ressource`
+
+For example, with the following schema:
+
+```
+{
+  "schema": {
+    "projects": {
+      "$cover": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [50, 320, 640, 1200]
+        }
+      },
+      "fields": {
+        "title": {
+          "type": "string"
+        }
+      },
+      "$files": {
+        "thumbs": {
+          "resolutions": [180, 360, 1600]
+        },
+        "fields": {
+          "caption": {
+            "type": "string"
+          }
+        }
+      },
+      "$folders": {
+        "publications": {
+          "$cover": {
+            "width": 1200,
+            "height": 1200,
+            "thumbs": {
+              "resolutions": [50, 320, 640, 1200]
+            }
+          },
+          "fields": {
+            "title": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Then the following routes will redirect to:
+
+- /projects
+  --> returns a list of all folders in /projects with their metas
+
+- /projects/bonjour
+  --> returns the meta of a single "bonjour" folder with a list of all their files with their metas
+
+- /projects/bonjour/publications
+  --> returns a list of all folders in /projects/bonjour/publications with their metas
+
+- /projects/bonjour/publications/first-tutorial
+  --> return the meta of a single "first-tutorial" folder with a list of all their files with their metas

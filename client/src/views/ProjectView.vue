@@ -102,9 +102,8 @@ export default {
   created() {},
   async mounted() {
     const project = await this.$api
-      .getFolder({
-        folder_type: "projects",
-        folder_slug: this.project_slug,
+      .getFolders({
+        path: `projects/${this.project_slug}`,
       })
       .catch((err) => {
         this.fetch_project_error = err.response;

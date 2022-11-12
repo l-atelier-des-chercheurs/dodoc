@@ -52,7 +52,7 @@ export default {
       // TODO replace with $api
       try {
         await this.$api.createFolder({
-          folder_type: "authors",
+          path: "/authors",
           additional_meta: {
             name: this.new_author_name,
             requested_slug: this.new_author_name,

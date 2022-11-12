@@ -55,8 +55,7 @@ export default {
   data() {
     return {
       project: null,
-
-      show_authors_modal: true,
+      show_authors_modal: false,
     };
   },
   created() {},

@@ -1,5 +1,6 @@
-const cors = require("cors");
-const url = require("url");
+const cors = require("cors"),
+  url = require("url"),
+  path = require("path");
 
 const folder = require("./folder"),
   file = require("./file"),
@@ -18,77 +19,38 @@ module.exports = (function () {
     dev.logfunction();
 
     app.get("/_perf", loadPerf);
-    app.options("/_api2/*", cors());
 
-    app.get(
-      "/_api2/_ip",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _getLocalNetworkInfos
-    );
-    app.get(
-      "/_api2/_admin",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _getAdminInfos
-    );
-    app.get(
-      "/_api2/:folder_type",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _getFolders
-    );
-    app.get(
-      "/_api2/:folder_type/:folder_slug",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _getFolderWithFiles
-    );
-    app.get(
-      "/_api2/:folder_type/:folder_slug/:meta_slug/_archives",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _getArchives
-    );
+    app.use("/_api2/*", [cors(_corsCheck), _sessionPasswordCheck]);
+    // app.options("/_api2/*", cors());
 
-    app.post(
-      "/_api2/:folder_type",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _createFolder
-    );
-    app.patch(
-      "/_api2/:folder_type/:folder_slug",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _updateFolder
-    );
-    app.delete(
-      "/_api2/:folder_type/:folder_slug",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _removeFolder
-    );
-    app.post(
-      "/_api2/:folder_type/:folder_slug/_login",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _loginToFolder
-    );
+    app.get("/_api2/_ip", _getLocalNetworkInfos);
+    app.get("/_api2/_admin", _getAdminInfos);
 
-    app.post(
-      "/_api2/:folder_type/:folder_slug/_upload",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _uploadFile
-    );
-    app.patch(
-      "/_api2/:folder_type/:folder_slug/:meta_slug",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _updateFile
-    );
-    app.delete(
-      "/_api2/:folder_type/:folder_slug/:meta_slug",
-      [cors(_corsCheck), _sessionPasswordCheck],
-      _removeFile
-    );
+    // 1st level folders
+    app.get("/_api2/*.+*", _getFile);
+    app.get("/_api2/*", _getFolders);
+
+    app.post("/_api2/*/_upload", _uploadFile);
+    app.post("/_api2/*", _createFolder);
+
+    // app.post("/_api2/:folder_type/:folder_slug/_upload", _uploadFile);
+
+    // app.post("/_api2/:folder_type", _createFolder);
+    // app.post("/_api2/:folder_type/:folder_slug/_upload", _uploadFile);
+    // app.patch("/_api2/:folder_type/:folder_slug", _updateFolder);
+    // app.delete("/_api2/:folder_type/:folder_slug", _removeFolder);
+    // app.post("/_api2/:folder_type/:folder_slug/_login", _loginToFolder);
+
+    // // 1st level files
+    // app.patch("/_api2/:folder_type/:folder_slug/:meta_slug+.", _updateFile);
+    // app.delete("/_api2/:folder_type/:folder_slug/:meta_slug", _removeFile);
 
     app.get("/*", loadIndex);
   }
 
   function _corsCheck(req, callback) {
     console.log();
-    dev.logfunction();
+    // dev.logfunction();
 
     // dev.logverbose(`API2 — _corsCheck : ${JSON.stringify(req.headers)}`);
     // check origin
@@ -100,7 +62,7 @@ module.exports = (function () {
   }
 
   function loadIndex(rea, res) {
-    dev.logfunction();
+    dev.logapi();
     let d = {};
     d.schema = global.settings.schema;
     res.render("index2", d);
@@ -110,17 +72,40 @@ module.exports = (function () {
     d.local_ips = utils.getLocalIP();
     res.render("perf", d);
   }
-  async function _getFolders(req, res, next) {
-    let folder_type = req.params.folder_type;
-    dev.logfunction({ folder_type });
 
-    if (!global.settings.schema[folder_type])
-      return res.status(422).send("Missing schema for folder_type");
+  async function _getFolders(req, res, next) {
+    const relative_path = req.path.substring(7);
+
+    const { folder_type, folder_slug, subfolder_type, subfolder_slug } =
+      await utils.parseAndCheckSchema({ relative_path }).catch((err) => {
+        return res.status(422).send(err.message);
+      });
+    dev.logapi({ folder_type, folder_slug, subfolder_type, subfolder_slug });
 
     const hrstart = process.hrtime();
 
     try {
-      const d = await folder.getFolders({ folder_type });
+      let d;
+
+      // todo improved legibility
+      // one single route for all GET, which analyses if it ends with a filename (dot in the name)
+      // if it does, fetch file infos (file.getFile)
+      // otherwise, if it ends with a folder type from the schema, fetch all the folders located in the path (folder.getFolders)
+      // otherwise, look for a folder with a meta.txt in this spot (folder.getFolder)
+
+      if (!folder_slug || (subfolder_type && !subfolder_slug)) {
+        d = await folder.getFolders({ relative_path });
+      } else if (
+        (folder_slug && !subfolder_type) ||
+        (subfolder_type && subfolder_slug)
+      ) {
+        d = await folder.getFolder({ relative_path });
+        const files = await file.getFiles({ relative_path });
+        d.$files = files;
+
+        // TODO bug : $files end up in the cache, somehow
+      }
+
       res.setHeader("Access-Control-Allow-Origin", "*");
 
       dev.logpackets({ d });
@@ -136,43 +121,22 @@ module.exports = (function () {
     cache.printStatus();
   }
 
-  async function _getFolderWithFiles(req, res, next) {
-    let { folder_type, folder_slug } = req.params;
-    dev.logfunction({ folder_type, folder_slug });
+  async function _getFile(req, res, next) {
+    const relative_path = req.path.substring(7);
 
-    if (!global.settings.schema[folder_type].$files)
-      return res.status(422).send("No files for folder_type");
+    // TODO improved legibility
 
-    const hrstart = process.hrtime();
-
-    try {
-      const folder_meta = await folder.getFolder({ folder_type, folder_slug });
-      const files = await file.getFiles({ folder_type, folder_slug });
-      folder_meta.$files = files;
-
-      dev.logpackets({ folder_meta });
-      res.json(folder_meta);
-    } catch (err) {
-      dev.error(err);
-      if (err.code === "ENOENT") res.status(404).send();
-      else res.status(500).send(err);
-    }
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
-
-    cache.printStatus();
-  }
-
-  async function _getArchives(req, res, next) {
-    let { folder_type, folder_slug, meta_slug } = req.params;
-    dev.logfunction({ folder_type, folder_slug });
+    const { meta_slug } = await utils
+      .parseAndCheckSchema({ relative_path })
+      .catch((err) => {
+        return res.status(422).send(err.message);
+      });
 
     const hrstart = process.hrtime();
 
     try {
       const file_archives = await file.getArchives({
-        folder_type,
-        folder_slug,
+        relative_path,
         meta_filename: meta_slug,
       });
 
@@ -188,30 +152,38 @@ module.exports = (function () {
   }
 
   async function _createFolder(req, res, next) {
-    let folder_type = req.params.folder_type;
+    const relative_path = req.path.substring(7);
+
+    const { folder_type, folder_slug, subfolder_type } = await utils
+      .parseAndCheckSchema({ relative_path })
+      .catch((err) => {
+        return res.status(422).send(err.message);
+      });
     const data = req.body;
 
-    dev.logfunction({ folder_type, data });
+    dev.logapi({
+      folder_type,
+      folder_slug,
+      subfolder_type,
+      data,
+    });
 
     const hrstart = process.hrtime();
 
     let new_folder_slug;
 
     try {
-      new_folder_slug = await folder.createFolder({
-        folder_type,
-        data,
-      });
+      new_folder_slug = await folder.createFolder({ relative_path, data });
       dev.logpackets({ status: "folder was created" });
       res.status(200).json({ new_folder_slug });
 
+      const _relative_path = path.join(relative_path, new_folder_slug);
       const new_folder_meta = await folder.getFolder({
-        folder_type,
-        folder_slug: new_folder_slug,
+        relative_path: _relative_path,
       });
 
-      notifier.emit("folderCreated", `${folder_type}`, {
-        folder_type,
+      notifier.emit("folderCreated", relative_path, {
+        path: relative_path,
         meta: new_folder_meta,
       });
     } catch (err) {
@@ -224,20 +196,15 @@ module.exports = (function () {
   }
 
   async function _updateFolder(req, res, next) {
-    let { folder_type, folder_slug } = req.params;
     const data = req.body;
     const update_cover = req.query && req.query.hasOwnProperty("cover");
 
-    dev.logfunction({ folder_type, folder_slug, data, update_cover });
+    dev.logapi({ folder_type, folder_slug, data, update_cover });
 
     // check if header contains a valid jwt that certifies that user is author
     // if (auth.checkFolderForAuth({ folder_type, folder_slug }))
     //   res.status(422).send("Not allowed");
 
-    if (!folder_type) return res.status(422).send("Missing folder_type field");
-    if (!global.settings.schema.hasOwnProperty(folder_type))
-      return res.status(422).send("Missing schema for folder_type");
-    if (!folder_slug) return res.status(422).send("Missing folder slug");
     if (!data) return res.status(422).send("Missing body");
 
     const hrstart = process.hrtime();
@@ -275,7 +242,7 @@ module.exports = (function () {
   async function _removeFolder(req, res, next) {
     let { folder_type, folder_slug } = req.params;
 
-    dev.logfunction({ folder_type, folder_slug });
+    dev.logapi({ folder_type, folder_slug });
 
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!folder_slug) return res.status(422).send("Missing folder_slug field");
@@ -310,7 +277,7 @@ module.exports = (function () {
     let { folder_type, folder_slug } = req.params;
     const data = req.body;
 
-    dev.logfunction({ folder_type, folder_slug });
+    dev.logapi({ folder_type, folder_slug });
 
     if (!data || !data.hasOwnProperty("$password"))
       return res.status(422).send("Missing password field");
@@ -330,16 +297,15 @@ module.exports = (function () {
   }
 
   async function _uploadFile(req, res, next) {
-    let { folder_type, folder_slug } = req.params;
-
-    dev.logfunction({ folder_type, folder_slug });
-
-    if (!folder_type) return res.status(422).send("Missing folder_type field");
-    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
-
-    const hrstart = process.hrtime();
+    const relative_path = req.path.substring(7);
 
     try {
+      const { folder_type, folder_slug, subfolder_type, subfolder_slug } =
+        await utils.parseAndCheckSchema({ relative_path });
+      dev.logapi({ folder_type, folder_slug, subfolder_type, subfolder_slug });
+
+      const hrstart = process.hrtime();
+
       meta_filename = await file.importFile({
         req,
         folder_type,
@@ -372,7 +338,7 @@ module.exports = (function () {
     let { folder_type, folder_slug, meta_slug } = req.params;
     const data = req.body;
 
-    dev.logfunction({ folder_type, folder_slug, meta_slug });
+    dev.logapi({ folder_type, folder_slug, meta_slug });
 
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!folder_slug) return res.status(422).send("Missing folder_slug field");
@@ -409,7 +375,7 @@ module.exports = (function () {
   async function _removeFile(req, res, next) {
     let { folder_type, folder_slug, meta_slug } = req.params;
 
-    dev.logfunction({ folder_type, folder_slug, meta_slug });
+    dev.logapi({ folder_type, folder_slug, meta_slug });
 
     if (!folder_type) return res.status(422).send("Missing folder_type field");
     if (!folder_slug) return res.status(422).send("Missing folder_slug field");
@@ -441,7 +407,7 @@ module.exports = (function () {
   }
 
   function _getLocalNetworkInfos(req, res, next) {
-    dev.logfunction();
+    dev.logapi();
     const local_ips = utils.getLocalIP();
 
     dev.logpackets({ local_ips });
@@ -449,7 +415,7 @@ module.exports = (function () {
   }
   function _getAdminInfos(req, res, next) {
     // TODO only available to admins
-    dev.logfunction();
+    dev.logapi();
     // get storage path
 
     dev.logpackets();

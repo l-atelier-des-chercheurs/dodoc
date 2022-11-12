@@ -27,13 +27,13 @@ module.exports = (function () {
       return slugg(term);
     },
 
-    async storeMeta({ path, meta }) {
-      dev.logfunction({ path, meta });
+    async storeMeta({ _path, meta }) {
+      dev.logfunction({ _path, meta });
 
       if (typeof meta === "object") meta = TOML.stringify(meta);
 
       try {
-        await writeFileAtomic(path, meta);
+        await writeFileAtomic(_path, meta);
         return;
       } catch (err) {
         throw err;
@@ -64,16 +64,11 @@ module.exports = (function () {
       return await fs.readFile(file_path, "UTF-8");
     },
 
-    async saveMetaAtPath({ folder_type, folder_slug, file_slug, meta }) {
-      dev.logfunction({ folder_type, folder_slug, file_slug, meta });
+    async saveMetaAtPath({ relative_path, file_slug, meta }) {
+      dev.logfunction({ relative_path, file_slug, meta });
 
-      const meta_path = API.getPathToUserContent(
-        folder_type,
-        folder_slug,
-        file_slug
-      );
-
-      await API.storeMeta({ path: meta_path, meta });
+      const meta_path = API.getPathToUserContent(relative_path, file_slug);
+      await API.storeMeta({ _path: meta_path, meta });
       return;
     },
 
@@ -111,11 +106,14 @@ module.exports = (function () {
 
       return meta;
     },
-    cleanNewMeta({ folder_type, new_meta }) {
-      dev.logfunction({ folder_type, new_meta });
+    async cleanNewMeta({ relative_path, new_meta }) {
+      dev.logfunction({ relative_path, new_meta });
       // check fields in schema, make sure user added fields are allowed and with the right formatting
       // merge with validateMeta ?
-      global.settings.schema[folder_type];
+
+      const { schema } = await API.parseAndCheckSchema({ relative_path });
+      schema;
+
       return new_meta;
     },
 
@@ -140,10 +138,10 @@ module.exports = (function () {
       return results;
     },
 
-    async handleForm({ req, folder_type, folder_slug }) {
+    async handleForm({ req, relative_path }) {
       return new Promise((resolve, reject) => {
-        dev.logfunction({ folder_type, folder_slug });
-        const folder_path = API.getPathToUserContent(folder_type, folder_slug);
+        dev.logfunction({ relative_path });
+        const folder_path = API.getPathToUserContent(relative_path);
 
         const form = new IncomingForm({
           uploadDir: folder_path,
@@ -233,7 +231,7 @@ module.exports = (function () {
     },
 
     // see https://stackoverflow.com/a/67038052
-    hashPassword({ password, salt = global.settings.password_salt }) {
+    async hashPassword({ password, salt = global.settings.password_salt }) {
       const buf = crypto.scryptSync(password, salt, 64).toString("hex");
       return `${buf.toString("hex")}.${salt}`;
     },
@@ -246,6 +244,43 @@ module.exports = (function () {
         salt,
       });
       return submitted_password_with_salt === stored_password_with_salt;
+    },
+
+    async parseAndCheckSchema({ relative_path }) {
+      dev.logfunction({ relative_path });
+
+      const items_in_path = relative_path.split("/");
+
+      // var [folder_type, folder_slug, subfolder_type, subfolder_slug] =
+      //   items_in_path;
+      // var [folder_type, folder_slug, subfolder_type, subfolder_slug] =
+      //   items_in_path;
+
+      let obj = {};
+
+      if (items_in_path.length > 0) obj.folder_type = items_in_path[0];
+      if (items_in_path.length > 1) obj.folder_slug = items_in_path[1];
+      if (items_in_path.length > 2)
+        if (items_in_path[2].includes(".")) obj.meta_slug = items_in_path[2];
+        else obj.subfolder_type = items_in_path[2];
+      if (items_in_path.length > 3) obj.subfolder_slug = items_in_path[3];
+      if (items_in_path.length > 4) obj.submeta_slug = items_in_path[4];
+
+      if (!global.settings.schema[obj.folder_type])
+        throw new Error(`Missing schema for folder_type ${obj.folder_type}`);
+      if (
+        obj.subfolder_type &&
+        !global.settings.schema[obj.folder_type].$folders[obj.subfolder_type]
+      )
+        throw new Error(
+          `Missing schema for subfolder_type ${obj.subfolder_type}`
+        );
+
+      obj.schema = obj.subfolder_type
+        ? global.settings.schema[obj.folder_type].$folders[obj.subfolder_type]
+        : global.settings.schema[obj.folder_type];
+
+      return obj;
     },
   };
 

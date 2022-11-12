@@ -43,7 +43,7 @@ export default {
       this.routine_is_started = true;
 
       const new_folder_slug = await this.$api.createFolder({
-        folder_type: "projects",
+        path: "/projects",
         additional_meta: {
           title: "Z test project " + this.$api.socket.userID,
           $authors: ["1-louis"],

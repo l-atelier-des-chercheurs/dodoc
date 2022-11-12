@@ -15,34 +15,27 @@ ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
-    makeFolderCover: ({ folder_type, folder_slug }) =>
-      makeFolderCover({ folder_type, folder_slug }),
+    makeFolderCover: ({ relative_path }) => makeFolderCover({ relative_path }),
     makeThumbForMedia: async ({
       media_type,
       media_filename,
-      folder_type,
-      folder_slug,
+      relative_path,
     }) => {
       // make/get thumbs for medias with specific types
       dev.space();
       dev.logfunction({
         media_type,
         media_filename,
-        folder_type,
-        folder_slug,
+        relative_path,
       });
 
-      const filethumbs_resolutions =
-        global.settings.schema[folder_type].$files?.thumbs?.resolutions;
+      const { schema } = utils.parseAndCheckSchema({ relative_path });
+      const filethumbs_resolutions = schema.$files?.thumbs?.resolutions;
       if (!filethumbs_resolutions) return false;
 
-      const path_to_thumb_folder = await _getThumbFolderPath(
-        folder_type,
-        folder_slug
-      );
+      const path_to_thumb_folder = await _getThumbFolderPath(relative_path);
       const full_media_path = utils.getPathToUserContent(
-        folder_type,
-        folder_slug,
+        relative_path,
         media_filename
       );
 
@@ -110,32 +103,24 @@ module.exports = (function () {
       return thumbs;
     },
 
-    getInfosForFile: async ({
-      media_type,
-      media_filename,
-      folder_type,
-      folder_slug,
-    }) => {
+    getInfosForFile: async ({ media_type, media_filename, relative_path }) => {
       // get width, height, ratio, gps, duration, exif, size
 
       dev.logfunction({
         media_type,
         media_filename,
-        folder_type,
-        folder_slug,
+        relative_path,
       });
 
       const full_media_path = utils.getPathToUserContent(
-        folder_type,
-        folder_slug,
+        relative_path,
         media_filename
       );
 
       const infos_filename = media_filename + ".infos.txt";
       const path_to_infos_file = utils.getPathToUserContent(
         "thumbs",
-        folder_type,
-        folder_slug,
+        relative_path,
         infos_filename
       );
 
@@ -143,8 +128,7 @@ module.exports = (function () {
         dev.logverbose(`has infos file`);
         const infos = utils.readMetaFile(
           "thumbs",
-          folder_type,
-          folder_slug,
+          relative_path,
           infos_filename
         );
         return infos;
@@ -168,17 +152,17 @@ module.exports = (function () {
       dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
 
       if (infos) {
-        utils.storeMeta({ path: path_to_infos_file, meta: infos });
+        utils.storeMeta({ _path: path_to_infos_file, meta: infos });
         return infos;
       }
       return false;
     },
-    removeFolderThumbs: ({ folder_type, folder_slug }) =>
-      removeFolderThumbs({ folder_type, folder_slug }),
-    removeFolderCover: ({ folder_type, folder_slug }) =>
-      removeFolderCover({ folder_type, folder_slug }),
-    removeFileThumbs: ({ folder_type, folder_slug, meta_slug }) =>
-      removeFileThumbs({ folder_type, folder_slug, meta_slug }),
+    removeFolderThumbs: ({ relative_path }) =>
+      removeFolderThumbs({ relative_path }),
+    removeFolderCover: ({ relative_path }) =>
+      removeFolderCover({ relative_path }),
+    removeFileThumbs: ({ relative_path, meta_slug }) =>
+      removeFileThumbs({ relative_path, meta_slug }),
   };
 
   async function _makeThumbFor({
@@ -260,19 +244,16 @@ module.exports = (function () {
     return thumb_paths;
   }
 
-  async function makeFolderCover({ folder_type, folder_slug }) {
+  async function makeFolderCover({ relative_path }) {
     const cover_name = "meta_cover.jpeg";
     const full_cover_path = utils.getPathToUserContent(
-      folder_type,
-      folder_slug,
+      relative_path,
       cover_name
     );
 
-    const cover_schema = global.settings.schema[folder_type].$cover;
-    const path_to_thumb_folder = await _getThumbFolderPath(
-      folder_type,
-      folder_slug
-    );
+    const { schema } = await utils.parseAndCheckSchema({ relative_path });
+    const cover_schema = schema.$cover;
+    const path_to_thumb_folder = await _getThumbFolderPath(relative_path);
 
     const paths = await _makeImageThumbsFor({
       full_media_path: full_cover_path,
@@ -284,57 +265,46 @@ module.exports = (function () {
     return paths;
   }
 
-  async function removeFolderThumbs({ folder_type, folder_slug }) {
+  async function removeFolderThumbs({ relative_path }) {
     dev.logfunction({
-      folder_type,
-      folder_slug,
+      relative_path,
     });
 
     const full_path_to_thumb = utils.getPathToUserContent(
       "thumbs",
-      folder_type,
-      folder_slug
+      relative_path
     );
 
     return await fs.remove(full_path_to_thumb);
   }
-  async function removeFolderCover({ folder_type, folder_slug }) {
+  async function removeFolderCover({ relative_path }) {
     dev.logfunction({
-      folder_type,
-      folder_slug,
+      relative_path,
     });
     return await _removeAllThumbsForFile({
-      folder_type,
-      folder_slug,
+      relative_path,
       media_filename: "meta_cover.jpeg",
     });
   }
-  async function removeFileThumbs({ folder_type, folder_slug, meta_slug }) {
+  async function removeFileThumbs({ relative_path, meta_slug }) {
     dev.logfunction({
-      folder_type,
-      folder_slug,
+      relative_path,
       meta_slug,
     });
 
-    let meta = await utils.readMetaFile(folder_type, folder_slug, meta_slug);
+    let meta = await utils.readMetaFile(relative_path, meta_slug);
     const media_filename = meta.$media_filename;
 
     return await _removeAllThumbsForFile({
-      folder_type,
-      folder_slug,
+      relative_path,
       media_filename,
     });
   }
 
-  async function _removeAllThumbsForFile({
-    folder_type,
-    folder_slug,
-    media_filename,
-  }) {
+  async function _removeAllThumbsForFile({ relative_path, media_filename }) {
     const full_path_to_thumb = utils.getPathToUserContent(
       "thumbs",
-      folder_type,
-      folder_slug
+      relative_path
     );
 
     try {

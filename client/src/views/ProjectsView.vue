@@ -89,7 +89,7 @@ export default {
   created() {},
   async mounted() {
     this.projects = await this.$api.getFolders({
-      folder_type: "projects",
+      path: `projects`,
     });
     this.$api.join({ room: "projects" });
   },

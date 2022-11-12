@@ -38,7 +38,7 @@ export default {
   created() {},
   async mounted() {
     this.authors = await this.$api.getFolders({
-      folder_type: "authors",
+      path: `/authors`,
     });
     this.$api.join({ room: "authors" });
   },

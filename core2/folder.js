@@ -7,19 +7,19 @@ const utils = require("./utils"),
 
 module.exports = (function () {
   const API = {
-    getFolders: async ({ folder_type }) => {
-      dev.logfunction({ folder_type });
+    getFolders: async ({ relative_path }) => {
+      dev.logfunction({ relative_path });
       // TODO cache get all folders
 
-      const folders_slugs = await _getFolderSlugs({ folder_type });
+      const folders_slugs = await _getFolderSlugs({ relative_path });
 
       const all_folders_with_meta = [];
       for (let folder_slug of folders_slugs) {
+        const path_to_folder = path.join(relative_path, folder_slug);
         const folder_meta = await API.getFolder({
-          folder_type,
-          folder_slug,
+          relative_path: path_to_folder,
         }).catch((err) => {
-          dev.error(`Error with folder`, folder_slug, err);
+          dev.error(err);
         });
         if (folder_meta) all_folders_with_meta.push(folder_meta);
       }
@@ -27,24 +27,27 @@ module.exports = (function () {
       return all_folders_with_meta;
     },
 
-    getFolder: async ({ folder_type, folder_slug }) => {
-      dev.logfunction({ folder_type, folder_slug });
+    getFolder: async ({ relative_path }) => {
+      dev.logfunction({ relative_path });
+
+      const { schema, folder_slug, subfolder_slug } =
+        await utils.parseAndCheckSchema({ relative_path });
 
       const d = cache.get({
-        key: `${folder_type}/${folder_slug}`,
+        key: relative_path,
       });
       if (d) return d;
 
       let folder_meta = await utils
-        .readMetaFile(folder_type, folder_slug, "meta.txt")
+        .readMetaFile(relative_path, "meta.txt")
         .catch((err) => {
           throw err;
         });
-      folder_meta.$slug = folder_slug;
+      folder_meta.$slug = subfolder_slug ? subfolder_slug : folder_slug;
 
       let cover = await _getFolderCover({
-        folder_type,
-        folder_slug,
+        schema,
+        relative_path,
       });
       if (cover) folder_meta.$cover = cover;
 
@@ -54,31 +57,31 @@ module.exports = (function () {
 
       // TODO get number of files if files in schema
       cache.set({
-        key: `${folder_type}/${folder_slug}`,
+        key: relative_path,
         value: folder_meta,
       });
 
       return folder_meta;
     },
 
-    createFolder: async ({ folder_type, data }) => {
-      dev.logfunction({ folder_type, data });
+    createFolder: async ({ relative_path, data }) => {
+      dev.logfunction({ relative_path, data });
 
-      let folder_slug = `untitled-${folder_type}`;
+      let folder_slug = `untitled`;
       if (data?.requested_slug) folder_slug = utils.slug(data.requested_slug);
 
       let { $cover, ...meta } = data;
 
-      folder_slug = await _preventFolderOverride({ folder_type, folder_slug });
+      folder_slug = await _preventFolderOverride({
+        relative_path,
+        folder_slug,
+      });
 
-      const path_to_folder = utils.getPathToUserContent(
-        folder_type,
-        folder_slug
-      );
+      const { schema } = await utils.parseAndCheckSchema({ relative_path });
 
       let valid_meta = meta
         ? utils.validateMeta({
-            fields: global.settings.schema[folder_type].fields,
+            fields: schema.fields,
             new_meta: meta,
           })
         : {};
@@ -97,10 +100,14 @@ module.exports = (function () {
         });
       }
 
+      const path_to_folder = utils.getPathToUserContent(
+        relative_path,
+        folder_slug
+      );
       await fs.ensureDir(path_to_folder);
+
       await utils.saveMetaAtPath({
-        folder_type,
-        folder_slug,
+        relative_path: path.join(relative_path, folder_slug),
         file_slug: "meta.txt",
         meta: valid_meta,
       });
@@ -125,8 +132,8 @@ module.exports = (function () {
 
       // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the type
       if (new_meta) {
-        const clean_meta = utils.cleanNewMeta({
-          folder_type,
+        const clean_meta = await utils.cleanNewMeta({
+          relative_path,
           new_meta,
         });
         Object.assign(meta, clean_meta);
@@ -134,8 +141,7 @@ module.exports = (function () {
 
       meta.$date_modified = utils.getCurrentDate();
       await utils.saveMetaAtPath({
-        folder_type,
-        folder_slug,
+        relative_path,
         file_slug: "meta.txt",
         meta,
       });
@@ -255,10 +261,10 @@ module.exports = (function () {
     },
   };
 
-  async function _getFolderSlugs({ folder_type }) {
-    dev.logfunction({ folder_type });
+  async function _getFolderSlugs({ relative_path }) {
+    dev.logfunction({ relative_path });
 
-    const folder_path = utils.getPathToUserContent(folder_type);
+    const folder_path = utils.getPathToUserContent(relative_path);
 
     try {
       let folders = (await fs.readdir(folder_path, { withFileTypes: true }))
@@ -277,33 +283,28 @@ module.exports = (function () {
     }
   }
 
-  async function _getFolderCover({ folder_type, folder_slug }) {
-    dev.logfunction({ folder_type, folder_slug });
+  async function _getFolderCover({ schema, relative_path }) {
+    dev.logfunction({ schema, relative_path });
 
-    if (!global.settings.schema[folder_type].$cover) return false;
+    if (!schema.$cover) return false;
 
     const cover_name = "meta_cover.jpeg";
-    const cover_path = utils.getPathToUserContent(
-      folder_type,
-      folder_slug,
-      cover_name
-    );
+    const cover_path = utils.getPathToUserContent(relative_path, cover_name);
 
     if (!(await fs.pathExists(cover_path))) return false;
 
     dev.logverbose(`folder has cover`);
     const thumb_meta = await thumbs.makeFolderCover({
-      folder_type,
-      folder_slug,
+      relative_path,
     });
 
     return thumb_meta;
   }
 
-  async function _preventFolderOverride({ folder_type, folder_slug }) {
-    dev.logfunction({ folder_type, folder_slug });
+  async function _preventFolderOverride({ relative_path, folder_slug }) {
+    dev.logfunction({ relative_path, folder_slug });
 
-    const folders_slugs = await _getFolderSlugs({ folder_type });
+    const folders_slugs = await _getFolderSlugs({ relative_path });
     dev.logfunction({ folders_slugs });
 
     if (folders_slugs.length === 0) return folder_slug;

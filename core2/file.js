@@ -7,18 +7,24 @@ const utils = require("./utils"),
 
 module.exports = (function () {
   const API = {
-    importFile: async ({ req, folder_type, folder_slug }) => {
-      dev.logfunction({ folder_type, folder_slug });
+    importFile: async ({ req, relative_path }) => {
+      dev.logfunction({ relative_path });
 
-      if (!global.settings.schema[folder_type].hasOwnProperty("$files"))
-        dev.error(`no files allowed on ${folder_type}`);
+      const { schema } = await utils
+        .parseAndCheckSchema({ relative_path })
+        .catch((err) => {
+          return res.status(422).send(err.message);
+        });
+      dev.logapi({ schema });
+
+      if (!schema.hasOwnProperty("$files"))
+        dev.error(`no files allowed for ${relative_path}`);
 
       const { folder_path, originalFilename, filepath, additional_meta } =
         await utils
           .handleForm({
             req,
-            folder_type,
-            folder_slug,
+            relative_path,
           })
           .catch((err) => {
             dev.error(`Failed to handle form`, err);
@@ -37,7 +43,7 @@ module.exports = (function () {
         return reject(err);
       });
 
-      dev.log(`New file uploaded to`, { folder_type }, { folder_slug });
+      dev.log(`New file uploaded to`, { relative_path });
       dev.logverbose({ new_filename, new_path, additional_meta });
 
       // TODO rewrite, a bit messy
@@ -57,8 +63,7 @@ module.exports = (function () {
       const meta_filename = new_filename + ".meta.txt";
 
       await utils.saveMetaAtPath({
-        folder_type,
-        folder_slug,
+        relative_path,
         file_slug: meta_filename,
         meta,
       });
@@ -66,12 +71,11 @@ module.exports = (function () {
       return meta_filename;
     },
 
-    getFiles: async ({ folder_type, folder_slug }) => {
-      dev.logfunction({ folder_type, folder_slug });
+    getFiles: async ({ relative_path }) => {
+      dev.logfunction({ relative_path });
 
       const meta_filenames = await _getMetasInFolder({
-        folder_type,
-        folder_slug,
+        relative_path,
       });
 
       // no caching here to get more flexibility with lru cache (busting medias with few access, etc.)
@@ -82,8 +86,7 @@ module.exports = (function () {
           dev.logverbose(`reading ${meta_filename}`);
 
           const meta = await API.getFile({
-            folder_type,
-            folder_slug,
+            relative_path,
             meta_filename,
           });
 
@@ -96,19 +99,15 @@ module.exports = (function () {
       // generate thumb if necessary (media_filename or link)
       return metas;
     },
-    getFile: async ({ folder_type, folder_slug, meta_filename }) => {
-      dev.logfunction({ folder_type, folder_slug, meta_filename });
+    getFile: async ({ relative_path, meta_filename }) => {
+      dev.logfunction({ relative_path, meta_filename });
 
       const d = cache.get({
-        key: `${folder_type}/${folder_slug}/${meta_filename}`,
+        key: `${relative_path}/${meta_filename}`,
       });
       if (d) return d;
 
-      let meta = await utils.readMetaFile(
-        folder_type,
-        folder_slug,
-        meta_filename
-      );
+      let meta = await utils.readMetaFile(relative_path, meta_filename);
       meta.$slug = meta_filename;
 
       const media_filename = meta.$media_filename;
@@ -116,8 +115,7 @@ module.exports = (function () {
 
       if (media_filename.endsWith("txt"))
         meta.$content = await utils.readFileContent(
-          folder_type,
-          folder_slug,
+          relative_path,
           media_filename
         );
 
@@ -125,8 +123,7 @@ module.exports = (function () {
         .makeThumbForMedia({
           media_type,
           media_filename,
-          folder_type,
-          folder_slug,
+          relative_path,
         })
         .catch((err) => {
           dev.error(err);
@@ -136,23 +133,21 @@ module.exports = (function () {
       const file_infos = await thumbs.getInfosForFile({
         media_type,
         media_filename,
-        folder_type,
-        folder_slug,
+        relative_path,
       });
       if (file_infos) meta.$infos = file_infos;
 
       cache.set({
-        key: `${folder_type}/${folder_slug}/${meta_filename}`,
+        key: `${relative_path}/${meta_filename}`,
         value: meta,
       });
 
       return meta;
     },
-    getArchives: async ({ folder_type, folder_slug, meta_filename }) => {
-      dev.logfunction({ folder_type, folder_slug, meta_filename });
+    getArchives: async ({ relative_path, meta_filename }) => {
+      dev.logfunction({ relative_path, meta_filename });
       return await _readArchives({
-        folder_type,
-        folder_slug,
+        relative_path,
         meta_filename,
       });
     },
@@ -167,8 +162,8 @@ module.exports = (function () {
 
       // update meta file
       if (new_meta) {
-        const clean_meta = utils.cleanNewMeta({
-          folder_type,
+        const clean_meta = await utils.cleanNewMeta({
+          relative_path,
           new_meta,
         });
         Object.assign(meta, clean_meta);
@@ -206,8 +201,7 @@ module.exports = (function () {
         if (meta.$type === "text")
           await utils
             .saveMetaAtPath({
-              folder_type,
-              folder_slug,
+              relative_path,
               file_slug: meta.$media_filename,
               meta: $content,
             })
@@ -220,8 +214,7 @@ module.exports = (function () {
 
       meta.date_modified = utils.getCurrentDate();
       await utils.saveMetaAtPath({
-        folder_type,
-        folder_slug,
+        relative_path,
         file_slug: meta_slug,
         meta,
       });
@@ -390,10 +383,10 @@ module.exports = (function () {
     return new_meta;
   }
 
-  async function _getMetasInFolder({ folder_type, folder_slug }) {
-    dev.logfunction({ folder_type, folder_slug });
+  async function _getMetasInFolder({ relative_path }) {
+    dev.logfunction({ relative_path });
 
-    const folder_path = utils.getPathToUserContent(folder_type, folder_slug);
+    const folder_path = utils.getPathToUserContent(relative_path);
 
     try {
       let files = (await fs.readdir(folder_path, { withFileTypes: true }))

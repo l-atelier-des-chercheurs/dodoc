@@ -109,8 +109,8 @@ export default function () {
         return false;
       },
 
-      folderCreated({ folder_type, meta }) {
-        this.store[folder_type].push(meta);
+      folderCreated({ path, meta }) {
+        this.store[path].push(meta);
       },
       folderUpdated({ folder_type, folder_slug, changed_data }) {
         const folder = this.findFolder({
@@ -171,46 +171,44 @@ export default function () {
       },
 
       async getSettings() {
-        const response = await this.$axios.get(`/_admin`);
+        const response = await this.$axios.get(`_admin`);
         return response.data;
       },
-      async getFolders({ folder_type }) {
-        const response = await this.$axios.get(`/${folder_type}`);
+      async getFolders({ path }) {
+        const response = await this.$axios.get(path);
         const d = response.data;
-        this.$set(this.store, folder_type, d);
+        this.$set(this.store, path, d);
         return d;
       },
-      async getFolder({ folder_type, folder_slug }) {
-        const response = await this.$axios.get(
-          `/${folder_type}/${folder_slug}`
-        );
 
-        const d = response.data;
+      // async getFolder({ folder_type, folder_slug }) {
+      //   const response = await this.$axios.get(
+      //     `/${folder_type}/${folder_slug}`
+      //   );
 
-        if (!Object.prototype.hasOwnProperty.call(this.store, folder_type))
-          this.$set(this.store, folder_type, new Array());
+      //   const d = response.data;
 
-        let folders = this.store[folder_type];
-        folders = folders.filter((f) => f.$slug !== folder_slug);
-        folders.push(d);
-        this.store[folder_type] = folders;
+      //   if (!Object.prototype.hasOwnProperty.call(this.store, folder_type))
+      //     this.$set(this.store, folder_type, new Array());
 
-        return d;
-      },
+      //   let folders = this.store[folder_type];
+      //   folders = folders.filter((f) => f.$slug !== folder_slug);
+      //   folders.push(d);
+      //   this.store[folder_type] = folders;
+
+      //   return d;
+      // },
       async getArchives({ folder_type, folder_slug, meta_slug }) {
         const response = await this.$axios.get(
-          `/${folder_type}/${folder_slug}/${meta_slug}/_archives`
+          `${folder_type}/${folder_slug}/${meta_slug}`
         );
         const d = response.data;
         return d;
       },
 
-      async createFolder({ folder_type, additional_meta }) {
+      async createFolder({ path, additional_meta }) {
         try {
-          const response = await this.$axios.post(
-            `/${folder_type}`,
-            additional_meta
-          );
+          const response = await this.$axios.post(path, additional_meta);
           return response.data.new_folder_slug;
         } catch (e) {
           throw e.response.data;

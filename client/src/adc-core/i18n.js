@@ -110,6 +110,7 @@ export default function () {
         already_added: "Déjà ajouté",
         create_and_open: "Créer et ouvrir",
         create_a_project: "Créer un projet",
+        create_a_publication: "Créer une publication",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":

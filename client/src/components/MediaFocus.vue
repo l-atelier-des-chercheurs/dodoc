@@ -22,6 +22,7 @@
         :path="`/projects/${project_slug}/${file.$slug}`"
         :can_edit="true"
       />
+      {{ `/projects/${project_slug}/${file.$slug}` }}
     </div>
     <sl-button-group class="_focusBtns">
       <sl-button size="small" @click="$emit('close')">Fermer</sl-button>

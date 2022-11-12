@@ -1,11 +1,11 @@
 <template>
-  <BaseModal2 :title="$t('create_a_project')" @close="$emit('close')">
-    <form class="input-validation-required" @submit.prevent="createProject">
+  <BaseModal2 :title="$t('create_a_publication')" @close="$emit('close')">
+    <form class="input-validation-required" @submit.prevent="createPublication">
       <div class="_topLabel">
         <label for="" class="u-label">{{ $t("title") }}</label>
       </div>
       <TextInput
-        :content.sync="new_project_title"
+        :content.sync="new_publication_title"
         :maxlength="40"
         :required="true"
         @toggleValidity="($event) => (allow_save = $event)"
@@ -14,19 +14,8 @@
       <br />
 
       <div class="">
-        <!-- <input
-          type="checkbox"
-          id="new_project_is_public"
-          name="new_project_is_public"
-          v-model="new_project_is_public"
-        />
-        <label for="new_project_is_public">{{ $t("public") }}</label>
-        <div>
-          <small>{{ $t("public_status_explanations") }}</small>
-        </div> -->
-
         <ToggleInput
-          :content.sync="new_project_is_public"
+          :content.sync="new_publication_is_public"
           :label="$t('public')"
           :options="{
             true: $t('public_status_explanations'),
@@ -40,7 +29,7 @@
       <sl-button
         variant="primary"
         slot="footer"
-        :loading="is_creating_project"
+        :loading="is_creating_publication"
         type="submit"
       >
         {{ $t("create_and_open") }}
@@ -56,14 +45,16 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    project_slug: String,
+  },
   components: {},
   data() {
     return {
-      new_project_title: "",
-      new_project_is_public: true,
+      new_publication_title: "",
+      new_publication_is_public: true,
 
-      is_creating_project: false,
+      is_creating_publication: false,
 
       allow_save: false,
 
@@ -76,20 +67,16 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async createProject() {
-      this.is_creating_project = true;
+    async createPublication() {
+      this.is_creating_publication = true;
 
       // TODO replace with $api
       try {
         const new_folder_slug = await this.$api.createFolder({
-          path: `/projects`,
+          path: `/projects/${this.project_slug}/publications`,
           additional_meta: {
-            title: this.new_project_title,
-            requested_slug: this.new_project_title,
-            status: "draft",
-            license: "CC",
-            $public: this.new_project_is_public,
-            $authors: ["louis", "pauline"],
+            title: this.new_publication_title,
+            requested_slug: this.new_publication_title,
           },
         });
         setTimeout(() => {
@@ -100,7 +87,7 @@ export default {
         setTimeout(() => {
           this.error_msg = "";
         }, 5000);
-        this.is_creating_project = false;
+        this.is_creating_publication = false;
       }
     },
   },
