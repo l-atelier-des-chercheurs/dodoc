@@ -216,8 +216,8 @@ export default {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--color2);
-  flex: 0 1 60vh;
-  max-height: 60vw;
+  flex: 0 1 60vmin;
+  max-height: 60vmin;
   aspect-ratio: 1/1;
 
   --color1: var(--c-gris);
