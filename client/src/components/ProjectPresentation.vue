@@ -67,18 +67,6 @@ z
         :maxlength="280"
         :can_edit="can_edit_project"
       />
-
-      <div class="_tabButton" v-if="context === 'full'">
-        <button
-          type="button"
-          class="u-buttonLink"
-          @click="
-            $emit('update:show_more_informations', !show_more_informations)
-          "
-        >
-          {{ $t("more_infos") }}
-        </button>
-      </div>
     </div>
 
     <div class="_projectInfos--open" v-if="context === 'list'">
@@ -98,7 +86,7 @@ export default {
     project: Object,
     context: String,
     can_edit_project: Boolean,
-    show_more_informations: Boolean,
+    // show_more_informations: Boolean,
   },
   components: {},
   data() {
@@ -193,7 +181,7 @@ export default {
   overflow: hidden;
   background: white;
 
-  width: 100%;
+  // width: 100%;
 
   &.is--preview {
     border-bottom: 2px solid #b9b9b9;
@@ -227,11 +215,10 @@ export default {
 ._projectInfos--cover {
   position: relative;
   overflow: hidden;
-  // min-height: 50vh;
-  width: 100%;
-  aspect-ratio: 1/1;
   border: 1px solid var(--color2);
-  max-width: 50vw;
+  flex: 0 1 60vh;
+  max-height: 60vw;
+  aspect-ratio: 1/1;
 
   --color1: var(--c-gris);
   --color2: var(--c-gris_clair);

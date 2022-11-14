@@ -26,7 +26,9 @@ export default {
 <style lang="scss" scoped>
 ._projectCard {
   // border: 1px solid #000;
-  // border-bottom: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
   // padding: calc(var(--spacing) * 1) 0;
   // margin: calc(var(--spacing) / 2);
 

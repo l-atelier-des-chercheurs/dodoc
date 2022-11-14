@@ -304,6 +304,7 @@ img {
   // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
   // border-radius: 4px;
   // overflow: hidden;
+  position: relative;
   transition: none !important;
 }
 

@@ -13,14 +13,11 @@
           :project="project"
           context="full"
           :can_edit_project="can_edit_project"
-          :show_more_informations.sync="show_more_informations"
         />
-
         <!-- Metadonnées, Auteurs, Mots-clés, Machines, Statut, Licence -->
-
-        <div class="_projectMeta" v-if="show_more_informations">
+        <div class="_projectMeta">
           <CardMeta :project="project" :can_edit_project="can_edit_project" />
-
+          <CardStatus :project="project" :can_edit_project="can_edit_project" />
           <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
           <CardKeywords
             :project="project"
@@ -31,7 +28,6 @@
             :project="project"
             :can_edit_project="can_edit_project"
           />
-          <CardStatus :project="project" :can_edit_project="can_edit_project" />
           <CardLicense
             :project="project"
             :can_edit_project="can_edit_project"
@@ -93,8 +89,6 @@ export default {
       project_slug: this.$route.params.slug,
       fetch_project_error: null,
       project: null,
-
-      show_more_informations: false,
 
       projectpanes: [],
     };
@@ -207,28 +201,38 @@ export default {
 }
 
 ._topContent {
-  // max-width: 120vh;
+  display: flex;
+  flex-flow: row wrap;
   margin: 0 auto;
-  // padding: calc(var(--spacing) / 2);
+
+  > * {
+    flex: 1 0 320px;
+
+    &._projectMeta {
+      flex: 0 0 240px;
+    }
+  }
 }
 
 ._projectMeta {
   display: flex;
-  flex-flow: row nowrap;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  background: #999;
-  background: var(--c-noir);
-  background: var(--c-gris);
+  flex-flow: column nowrap;
 
-  padding: calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 2);
+  max-height: 60vh;
+  overflow: auto;
+
+  // padding: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
 
   > * {
-    flex: 0 0 200px;
-    max-height: 200px;
-    overflow: auto;
-    // flex: 0 1 240px;
+    border: 1px solid #eee;
+
+    &:first-child {
+      border-top: 0 solid #000;
+    }
+    &:not(:last-child) {
+      border-bottom: 0 solid #000;
+    }
   }
 }
 
