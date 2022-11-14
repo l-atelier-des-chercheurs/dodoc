@@ -8,8 +8,8 @@
       v-if="show_archives"
       :folder_type="folder_type"
       :folder_slug="folder_slug"
-      :meta_slug="file.slug"
-      :current_content="file.content"
+      :meta_slug="file.$slug"
+      :current_content="file.$content"
       @close="show_archives = false"
       @restore="restoreVersion"
     />
@@ -150,13 +150,13 @@ export default {
     this.disableEditor();
   },
   watch: {
-    "file.content"() {
+    "file.$content"() {
       if (
         !this.is_collaborative ||
         (this.is_collaborative && !this.editor_is_enabled)
       ) {
         this.$nextTick(() => {
-          this.editor.root.innerHTML = this.file.content;
+          this.editor.root.innerHTML = this.file.$content;
         });
       }
     },
@@ -223,7 +223,7 @@ export default {
         readOnly: !this.editor_is_enabled,
         scrollingContainer: this.scrollingContainer,
       });
-      if (this.file.content) this.editor.root.innerHTML = this.file.content;
+      if (this.file.$content) this.editor.root.innerHTML = this.file.$content;
 
       this.setStatusButton();
 
@@ -349,11 +349,11 @@ export default {
       this.is_loading_or_saving = true;
 
       const new_meta = {
-        content: this.getEditorContent(),
+        $content: this.getEditorContent(),
       };
 
       try {
-        let path = `/${this.folder_type}/${this.folder_slug}/${this.file.slug}`;
+        let path = `/${this.folder_type}/${this.folder_slug}/${this.file.$slug}`;
         await this.$api.updateMeta({
           path,
           new_meta,
@@ -377,7 +377,7 @@ export default {
 
       // const requested_querystring = "?" + params.toString();
       const path_to_meta =
-        this.folder_type + "_" + this.folder_slug + "_" + this.file.slug;
+        this.folder_type + "_" + this.folder_slug + "_" + this.file.$slug;
 
       const requested_resource_url =
         (location.protocol === "https:" ? "wss" : "ws") +
@@ -483,10 +483,10 @@ export default {
 
       this.editor.blur();
 
-      const { type, caption, slug } = media;
+      const { $type, caption, $slug } = media;
 
-      if (type === "image") {
-        const thumb_path = media.thumbs[1600];
+      if ($type === "image") {
+        const thumb_path = media.$thumbs[1600];
         if (thumb_path) {
           // this.editor.insertText(index, "\n", Quill.sources.USER);
           this.editor.insertEmbed(
@@ -495,14 +495,14 @@ export default {
             {
               type,
               caption,
-              meta_filename: slug,
+              meta_filename: $slug,
               src: `/thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
             },
             Quill.sources.USER
           );
           // this.editor.setSelection(index + 1, Quill.sources.SILENT);
         }
-      } else if (type === "video") {
+      } else if ($type === "video") {
         // this.editor.insertText(index, "\n", Quill.sources.USER);
         this.editor.insertEmbed(
           index,
@@ -510,20 +510,20 @@ export default {
           {
             type,
             caption,
-            meta_filename: slug,
+            meta_filename: $slug,
             src: mediaURL,
           },
           Quill.sources.USER
         );
         // this.editor.setSelection(index + 1, Quill.sources.SILENT);
-      } else if (media.type === "audio") {
+      } else if ($type === "audio") {
         this.editor.insertEmbed(
           index,
           "media",
           {
             type,
             caption,
-            meta_filename: slug,
+            meta_filename: $slug,
             src: mediaURL,
           },
           Quill.sources.USER

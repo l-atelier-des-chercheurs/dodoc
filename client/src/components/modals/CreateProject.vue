@@ -1,13 +1,41 @@
 <template>
-  <sl-dialog ref="createModal" label="Créer un projet" class="">
+  <BaseModal2 :title="$t('create_a_project')" @close="$emit('close')">
     <form class="input-validation-required" @submit.prevent="createProject">
-      <sl-input
-        type="text"
-        autofocus
-        placeholder="Titre du nouveau projet"
-        v-sl-model="new_project_title"
-        required
+      <div class="_topLabel">
+        <label for="" class="u-label">{{ $t("title") }}</label>
+      </div>
+      <TextInput
+        :content.sync="new_project_title"
+        :maxlength="40"
+        :required="true"
+        @toggleValidity="($event) => (allow_save = $event)"
       />
+
+      <br />
+
+      <div class="">
+        <!-- <input
+          type="checkbox"
+          id="new_project_is_public"
+          name="new_project_is_public"
+          v-model="new_project_is_public"
+        />
+        <label for="new_project_is_public">{{ $t("public") }}</label>
+        <div>
+          <small>{{ $t("public_status_explanations") }}</small>
+        </div> -->
+
+        <ToggleInput
+          :content.sync="new_project_is_public"
+          :label="$t('public')"
+          :options="{
+            true: $t('public_status_explanations'),
+            false: $t('not_public_status_explanations'),
+          }"
+        />
+      </div>
+
+      <br />
       <!-- todo : validate properly -->
       <sl-button
         variant="primary"
@@ -15,10 +43,16 @@
         :loading="is_creating_project"
         type="submit"
       >
-        créer
+        {{ $t("create_and_open") }}
       </sl-button>
+
+      <template v-if="error_msg">
+        <br />
+        <br />
+        <div class="u-errorMsg" v-text="error_msg" />
+      </template>
     </form>
-  </sl-dialog>
+  </BaseModal2>
 </template>
 <script>
 export default {
@@ -27,13 +61,17 @@ export default {
   data() {
     return {
       new_project_title: "",
+      new_project_is_public: true,
+
       is_creating_project: false,
+
+      allow_save: false,
+
+      error_msg: "",
     };
   },
   created() {},
-  mounted() {
-    this.$el.show();
-  },
+  mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {},
@@ -43,21 +81,25 @@ export default {
 
       // TODO replace with $api
       try {
-        await this.$axios.post("/projects", {
-          title: this.new_project_title,
-          requested_folder_name: this.new_project_title,
-          status: "draft",
+        const new_folder_slug = await this.$api.createFolder({
+          path: `/projects`,
+          additional_meta: {
+            title: this.new_project_title,
+            requested_slug: this.new_project_title,
+            status: "draft",
+            license: "CC",
+            $public: this.new_project_is_public,
+            $authors: ["louis", "pauline"],
+          },
         });
-        this.is_creating_project = false;
-        this.$el.hide();
-
         setTimeout(() => {
-          this.$emit("close");
-        }, 500);
-
-        this.new_project_title = "";
-      } catch (e) {
-        this.$alertify.closeLogOnClick(true).delay(4000).error(e.response.data);
+          this.$emit("openNewProject", new_folder_slug);
+        }, 50);
+      } catch (err) {
+        this.error_msg = "Error: " + err.message;
+        setTimeout(() => {
+          this.error_msg = "";
+        }, 5000);
         this.is_creating_project = false;
       }
     },

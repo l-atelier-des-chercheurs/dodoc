@@ -5,13 +5,26 @@
       <sl-icon name="globe" />
     </div>
     <div class="">
+      <ToggleField
+        :label="$t('public')"
+        :field_name="'$public'"
+        :content="project.$public"
+        :path="`/projects/${project.$slug}`"
+        :options="{
+          true: $t('public_status_explanations'),
+          false: $t('not_public_status_explanations'),
+        }"
+        :can_edit="can_edit_project"
+      />
+      <br />
       <SelectField
         :field_name="'status'"
         :content="project.status"
-        :path="`/projects/${project.slug}`"
+        :path="`/projects/${project.$slug}`"
         :can_edit="can_edit_project"
         :options="status_options"
       />
+      <div class="u-wips" />
     </div>
   </ProjectCard>
 </template>
@@ -30,10 +43,6 @@ export default {
         {
           key: "draft",
           text: "draft_status_explanations",
-        },
-        {
-          key: "invisible",
-          text: "invisible_status_explanations",
         },
         {
           key: "finished",

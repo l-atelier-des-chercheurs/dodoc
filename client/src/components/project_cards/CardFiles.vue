@@ -5,8 +5,9 @@
       <sl-icon name="file-earmark-arrow-down" />
     </div>
     <div class="">
-      <ul>
+      <ul class="_fileList">
         <li>
+          <sl-icon name="file-earmark-arrow-down" />
           <a
             target="_blank"
             ng-href="/uploads/project_cao/102/%C3%A9l%C3%A9phant.svg"
@@ -17,6 +18,7 @@
           >
         </li>
         <li>
+          <sl-icon name="file-earmark-arrow-down" />
           <a
             target="_blank"
             ng-href="/uploads/project_cao/101/%C3%A9l%C3%A9phant_serre_livre.svg"
@@ -41,26 +43,7 @@ export default {
   },
   components: { ProjectCard },
   data() {
-    return {
-      license_options: [
-        {
-          key: "creativecommons_by_nc_sa",
-          text: "creativecommons_by_nc_sa_explanations",
-        },
-        {
-          key: "all_rights_reserved",
-          text: "all_rights_reserved_explanations",
-        },
-        {
-          key: "copyleft",
-          text: "copyleft_explanations",
-        },
-        {
-          key: "custom_licence",
-          text: "custom_licence_explanations",
-        },
-      ],
-    };
+    return {};
   },
   created() {},
   mounted() {},
@@ -70,4 +53,22 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._fileList {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  li {
+    margin: calc(var(--spacing) / 4) 0;
+    padding: calc(var(--spacing) / 4);
+    border-radius: var(--button-radius);
+
+    border: 1px solid black;
+    display: flex;
+    word-break: break-word;
+    align-items: center;
+    gap: calc(var(--spacing) / 4);
+  }
+}
+</style>

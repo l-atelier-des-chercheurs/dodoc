@@ -6,7 +6,7 @@ export default function () {
     data: {
       socket: "",
       store: {},
-      is_logged_in: false,
+      is_logged_in: true,
       debug_mode: false,
     },
     created() {},
@@ -58,11 +58,11 @@ export default function () {
         this.socket.onAny((eventName, ...args) => {
           // truncate long strings in content (long texts for example)
           const _args = JSON.parse(JSON.stringify(args));
-          if (_args[0].changed_data?.content)
-            _args[0].changed_data.content = "…";
-          // if (_args[0].changed_data?.content)
-          //   _args[0].changed_data.content =
-          //     _args[0].changed_data?.content.slice(0, 15) +
+          if (_args[0].changed_data?.$content)
+            _args[0].changed_data.$content = "…";
+          // if (_args[0].changed_data?.$content)
+          //   _args[0].changed_data.$content =
+          //     _args[0].changed_data?.$content.slice(0, 15) +
           //     "[…] (truncated content)";
           if (this.debug_mode)
             this.$alertify
@@ -87,30 +87,30 @@ export default function () {
 
       findFolderIndex({ folder_type, folder_slug }) {
         return this.store[folder_type].findIndex(
-          (folder) => folder.slug === folder_slug
+          (folder) => folder.$slug === folder_slug
         );
       },
       findFolder({ folder_type, folder_slug }) {
         if (!this.store[folder_type]) return false;
         return this.store[folder_type].find(
-          (folder) => folder.slug === folder_slug
+          (folder) => folder.$slug === folder_slug
         );
       },
       findFileIndexInFolder({ folder_type, folder_slug, meta_slug }) {
         const folder = this.findFolder({ folder_type, folder_slug });
-        if (folder.files)
-          return folder.files.findIndex((f) => f.slug === meta_slug);
+        if (folder.$files)
+          return folder.$files.findIndex((f) => f.$slug === meta_slug);
         return false;
       },
       findFileInFolder({ folder_type, folder_slug, meta_slug }) {
         const folder = this.findFolder({ folder_type, folder_slug });
-        if (folder?.files)
-          return folder.files.find((f) => f.slug === meta_slug);
+        if (folder?.$files)
+          return folder.$files.find((f) => f.$slug === meta_slug);
         return false;
       },
 
-      folderCreated({ folder_type, meta }) {
-        this.store[folder_type].push(meta);
+      folderCreated({ path, meta }) {
+        this.store[path].push(meta);
       },
       folderUpdated({ folder_type, folder_slug, changed_data }) {
         const folder = this.findFolder({
@@ -128,6 +128,7 @@ export default function () {
           folder_slug,
         });
         this.store[folder_type].splice(folder_index, 1);
+        this.$eventHub.$emit("folder.removed", { folder_type, folder_slug });
       },
 
       fileCreated({ folder_type, folder_slug, file_meta }) {
@@ -135,8 +136,8 @@ export default function () {
           folder_type,
           folder_slug,
         });
-        if (!folder.files) this.$set(folder, "files", new Array());
-        folder.files.push(file_meta);
+        if (!folder.$files) this.$set(folder, "files", new Array());
+        folder.$files.push(file_meta);
       },
       fileUpdated({ folder_type, folder_slug, meta_slug, changed_data }) {
         const file = this.findFileInFolder({
@@ -157,54 +158,77 @@ export default function () {
           folder_slug,
           meta_slug,
         });
-        if (file_index >= 0) folder.files.splice(file_index, 1);
+        if (file_index >= 0) folder.$files.splice(file_index, 1);
       },
 
       join({ room }) {
         this.socket.emit("joinRoom", { room });
+        // todo rejoin room after disconnect
       },
       leave({ room }) {
         this.socket.emit("leaveRoom", { room });
+        // todo rejoin room after disconnect
       },
 
       async getSettings() {
-        const response = await this.$axios.get(`/_admin`);
+        const response = await this.$axios.get(`_admin`);
         return response.data;
       },
-      async getFolders({ folder_type }) {
-        const response = await this.$axios.get(`/${folder_type}`);
+      async getFolders({ path }) {
+        const response = await this.$axios.get(path);
         const d = response.data;
-        this.$set(this.store, folder_type, d);
+        this.$set(this.store, path, d);
         return d;
       },
-      async getFolder({ folder_type, folder_slug }) {
-        const response = await this.$axios.get(
-          `/${folder_type}/${folder_slug}`
-        );
 
-        const d = response.data;
+      // async getFolder({ folder_type, folder_slug }) {
+      //   const response = await this.$axios.get(
+      //     `/${folder_type}/${folder_slug}`
+      //   );
 
-        if (!Object.prototype.hasOwnProperty.call(this.store, folder_type))
-          this.$set(this.store, folder_type, new Array());
+      //   const d = response.data;
 
-        let folders = this.store[folder_type];
-        folders = folders.filter((f) => f.slug !== folder_slug);
-        folders.push(d);
-        this.store[folder_type] = folders;
+      //   if (!Object.prototype.hasOwnProperty.call(this.store, folder_type))
+      //     this.$set(this.store, folder_type, new Array());
 
-        return d;
-      },
+      //   let folders = this.store[folder_type];
+      //   folders = folders.filter((f) => f.$slug !== folder_slug);
+      //   folders.push(d);
+      //   this.store[folder_type] = folders;
+
+      //   return d;
+      // },
       async getArchives({ folder_type, folder_slug, meta_slug }) {
         const response = await this.$axios.get(
-          `/${folder_type}/${folder_slug}/${meta_slug}/_archives`
+          `${folder_type}/${folder_slug}/${meta_slug}`
         );
         const d = response.data;
         return d;
+      },
+
+      async createFolder({ path, additional_meta }) {
+        try {
+          const response = await this.$axios.post(path, additional_meta);
+          return response.data.new_folder_slug;
+        } catch (e) {
+          throw e.response.data;
+        }
       },
       async deleteFolder({ folder_type, folder_slug }) {
         try {
           const response = await this.$axios.delete(
             `/${folder_type}/${folder_slug}`
+          );
+          return response.data;
+        } catch (e) {
+          throw e.response.data;
+        }
+      },
+      async loginToFolder({ folder_type, folder_slug, auth_infos }) {
+        try {
+          const response = await this.$axios.post(
+            `/${folder_type}/${folder_slug}/_login`,
+            auth_infos
           );
           return response.data;
         } catch (e) {

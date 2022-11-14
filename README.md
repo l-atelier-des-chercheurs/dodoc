@@ -148,3 +148,136 @@ npm run build
 ```
 
 This will create minified JS files in the `public/dist` folder.
+
+---
+
+# How the core works
+
+Everything is structured in folders/files, so as to mirror the content in the filesystem. No database is used, almost all the content are saved in the content folder (by default /Documents/dodoc_next).
+
+Folders contain a meta.txt file and media files (images, videos, audios, 3D/stl, texts, or any other kind of files).
+
+## Properties and values
+
+### Folders
+
+Default values are:
+
+- $authors (Array) = list of author slugs, can be edited by users
+- $cover (object) = if a meta_cover.jpeg is present in the root of the folder, can be edited by authors
+- $date_created (date) = when the folder was created
+- $date_modified (date) = when the folder was last edited
+- $files (Array) = list of all the files in this folder
+- $public (Boolean) = if the folder is visible to everyone or just its authors, can be edited by authors
+- $password (string, stored as hash) = limit editing or viewing (depending on $public) to users with password
+- $slug (string) = folder name, can’t be changed
+- $infos (object) = data gathered from the folder itself
+  - size (Number) = size in bytes
+
+Custom values can be defined in the schema property in settings_base.json.
+
+### Files
+
+Each file has default values and custom values as well.
+Default values are:
+
+- $slug (string) = meta txt filename
+- $date_created (date) = when the file was created
+- $date_uploaded (date) = when the file was uploaded
+- $date_modified (date) = when the file was last edited
+- $media_filename (string) = name of the file
+- $type (string) = type of media file among the following: _image, video, audio, stl, text, pdf, other_
+- $authors (Array) = list of author slugs, can be edited by users
+- $public (Boolean) = if the folder is visible to everyone or just its authors, can be edited by authors
+- $thumbs (object) = list of possible media image thumbs
+- $content (string) = text content of a file
+- $infos (object) = data gathered from the file itself
+  - mtimems (date) = last modified time for media file
+  - width (Number) = for images
+  - height (Number) = for images
+  - ratio (Number) = for images
+  - size (Number) = size in bytes
+  - gps (Object)
+
+Custom values can be defined in the schema property in settings_base.json.
+
+## Status and visibility
+
+Each folder and each file have a "public" property, which defines who can see them:
+
+- by default, it is set to **false** (if it doesnt exist it is considered false as well). In this situation, only authors of the ressource can see it.
+- if set to true, anyone can see it
+
+If a folder has a password, then it protects this ressource and its content in the following way:
+
+- if public, only those with the password or corresponding token can edit it
+- if not public, only those with the password or token can see and edit it
+
+## Recursivity
+
+Path to ressource is decomposed like this:
+
+`/type-of-ressource/name-of-ressource/type-of-child-ressource/name-of-child-ressource`
+
+For example, with the following schema:
+
+```
+{
+  "schema": {
+    "projects": {
+      "$cover": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [50, 320, 640, 1200]
+        }
+      },
+      "fields": {
+        "title": {
+          "type": "string"
+        }
+      },
+      "$files": {
+        "thumbs": {
+          "resolutions": [180, 360, 1600]
+        },
+        "fields": {
+          "caption": {
+            "type": "string"
+          }
+        }
+      },
+      "$folders": {
+        "publications": {
+          "$cover": {
+            "width": 1200,
+            "height": 1200,
+            "thumbs": {
+              "resolutions": [50, 320, 640, 1200]
+            }
+          },
+          "fields": {
+            "title": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Then the following routes will redirect to:
+
+- /projects
+  --> returns a list of all folders in /projects with their metas
+
+- /projects/bonjour
+  --> returns the meta of a single "bonjour" folder with a list of all their files with their metas
+
+- /projects/bonjour/publications
+  --> returns a list of all folders in /projects/bonjour/publications with their metas
+
+- /projects/bonjour/publications/first-tutorial
+  --> return the meta of a single "first-tutorial" folder with a list of all their files with their metas

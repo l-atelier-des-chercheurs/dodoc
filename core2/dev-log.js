@@ -15,6 +15,7 @@ module.exports = dev = (function () {
     logverbose: logverbose,
     logpackets: logpackets,
     logsockets: logsockets,
+    logapi: logapi,
     logfunction: logfunction,
     error: error,
     performance: performance,
@@ -30,9 +31,10 @@ module.exports = dev = (function () {
     if (isDebugMode) {
       console.log("Debug mode is enabled");
       console.log("---");
-      dev.logfunction("(log) magenta is for functions");
-      dev.logpackets("(log) green is for packets");
-      dev.logsockets("(purple) green is for sockets");
+      dev.logfunction("logfunction = magenta");
+      dev.logapi("logapi = blue");
+      dev.logpackets("logpackets = green");
+      dev.logsockets("logsockets = cyan");
       if (isVerboseMode) {
         dev.logverbose("(dev and verbose) gray for regular parsing data");
       }
@@ -113,14 +115,26 @@ module.exports = dev = (function () {
     if (logToFile) _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.magenta);
   }
-  function error(err) {
-    let message =
-      `ERROR! ` +
+  function logapi() {
+    if (!logToFile && !isDebugMode) return;
+
+    const message =
+      `↓ ` +
       _createLogMessage({
-        fct: error,
+        fct: logapi,
+        args: arguments,
       });
 
-    message += err.message;
+    if (logToFile) _sendToLogFile(message);
+    if (isDebugMode) _sendToConsole(message, chalk.blue);
+  }
+  function error() {
+    const message =
+      `~ ` +
+      _createLogMessage({
+        fct: logfunction,
+        args: arguments,
+      });
 
     if (logToFile) _sendToLogFile(message);
     _sendToConsole(message, chalk.red);
@@ -163,7 +177,7 @@ module.exports = dev = (function () {
     }
 
     const fct_filename = _getFunctionFilename();
-    const fct_name = fct.caller.name;
+    const fct_name = fct.caller?.name;
 
     let str = "";
     if (fct_filename) str += `${fct_filename} • `;

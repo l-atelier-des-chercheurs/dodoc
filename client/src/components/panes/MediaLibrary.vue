@@ -1,5 +1,6 @@
 <template>
   <div class="_mediaLibrary">
+    <div class="u-instructions u-padding-small"></div>
     <splitpanes horizontal :dbl-click-splitter="false" @resized="resized">
       <pane
         min-size="5"
@@ -7,25 +8,25 @@
         ref="topLib"
         :size="lib_pane_size"
       >
-        <label for="add_file" class="_boldBtn">
-          <input
-            type="file"
-            multiple="multiple"
-            :id="id + '-add_file'"
-            name="file"
-            accept=""
-            class="inputfile-2"
-            @change="updateInputFiles($event)"
-          />
-          <label :for="id + '-add_file'">
-            <svg width="20" height="17" viewBox="0 0 20 17">
-              <path
-                d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-              />
-            </svg>
-            {{ $t("import_instructions") }}
-          </label>
+        <!-- <label for="add_file" class="_boldBtn"> -->
+        <input
+          type="file"
+          multiple="multiple"
+          :id="id + '-add_file'"
+          name="file"
+          accept=""
+          class="inputfile-2"
+          @change="updateInputFiles($event)"
+        />
+        <label :for="id + '-add_file'">
+          <svg width="20" height="17" viewBox="0 0 20 17">
+            <path
+              d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+            />
+          </svg>
+          {{ $t("import") }}
         </label>
+        <!-- </label> -->
         <!-- <sl-button @click="createText">Créer du texte</sl-button>
     <sl-button
       type="button"
@@ -37,10 +38,12 @@
           v-if="selected_files.length > 0"
           :selected_files="selected_files"
           :folder_type="'projects'"
-          :folder_slug="project.slug"
+          :folder_slug="project.$slug"
           @importedMedias="mediaJustImported"
           @close="selected_files = []"
         />
+
+        <br />
 
         <form
           v-if="show_create_link_field"
@@ -57,11 +60,11 @@
         <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
           <MediaTile
             v-for="file of medias"
-            :key="file.slug"
-            :project_slug="project.slug"
+            :key="file.$slug"
+            :project_slug="project.$slug"
             :file="file"
-            :is_focused="media_focused === file.slug"
-            :data-fileslug="file.slug"
+            :is_focused="media_focused === file.$slug"
+            :data-fileslug="file.$slug"
             @toggleMediaFocus="(slug) => toggleMediaFocus(slug)"
           />
         </div>
@@ -75,11 +78,11 @@
         <transition name="fade_fast" mode="out-in">
           <MediaFocus
             v-if="focused_media"
-            :key="focused_media.slug"
+            :key="focused_media.$slug"
             :file="focused_media"
-            :project_slug="project.slug"
-            @remove="removeMedia(focused_media.slug)"
-            @close="toggleMediaFocus(focused_media.slug)"
+            :project_slug="project.$slug"
+            @remove="removeMedia(focused_media.$slug)"
+            @close="toggleMediaFocus(focused_media.$slug)"
           />
         </transition>
       </pane>
@@ -130,13 +133,14 @@ export default {
   watch: {},
   computed: {
     medias() {
-      return this.project.files.filter((f) => !f.is_journal) || [];
+      return this.project.$files.filter((f) => !f.is_journal) || [];
     },
     focused_media() {
       const _focused_media =
-        this.project.files.find((f) => f.slug === this.media_focused) || false;
+        this.project.$files.find((f) => f.$slug === this.media_focused) ||
+        false;
       if (_focused_media && this.$refs.mediaTiles)
-        this.scrollToMediaTile(_focused_media.slug);
+        this.scrollToMediaTile(_focused_media.$slug);
 
       return _focused_media;
     },
@@ -216,7 +220,7 @@ export default {
     async removeMedia(slug) {
       await this.$api.deleteFile({
         folder_type: "projects",
-        folder_slug: this.project.slug,
+        folder_slug: this.project.$slug,
         meta_slug: slug,
       });
       this.toggleMediaFocus(slug);

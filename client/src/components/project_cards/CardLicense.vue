@@ -8,7 +8,7 @@
       <RadioField
         :field_name="'license'"
         :content="project.license"
-        :path="`/projects/${project.slug}`"
+        :path="`/projects/${project.$slug}`"
         :can_edit="can_edit_project"
         :options="license_options"
       />
@@ -40,8 +40,8 @@ export default {
           text: "copyleft_explanations",
         },
         {
-          key: "custom_licence",
-          text: "custom_licence_explanations",
+          key: "custom_license",
+          text: "custom_license_explanations",
         },
       ],
     };

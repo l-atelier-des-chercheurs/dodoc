@@ -5,12 +5,24 @@
       @dragstart="startMediaDrag($event)"
       @dragend="endMediaDrag()"
     >
+      <DebugBtn :content="file" />
+
+      {{ file.$infos.hash }}
+
       <MediaContent
         :file="file"
         :project_slug="project_slug"
         :resolution="1600"
         :context="'full'"
       />
+      <TitleField
+        label="caption"
+        :field_name="'caption'"
+        :content="file.caption"
+        :path="`/projects/${project_slug}/${file.$slug}`"
+        :can_edit="true"
+      />
+      {{ `/projects/${project_slug}/${file.$slug}` }}
     </div>
     <sl-button-group class="_focusBtns">
       <sl-button size="small" @click="$emit('close')">Fermer</sl-button>

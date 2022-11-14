@@ -9,7 +9,7 @@
           class="inputfile-2"
           @change="onFileChange"
         />
-        <label :for="id" class="u-button u-button_big">
+        <label :for="id" class="u-button">
           <svg width="20" height="17" viewBox="0 0 20 17">
             <path
               d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
@@ -22,7 +22,7 @@
       <div class="_imageselect--takePhoto">
         <button
           type="button"
-          class="u-button u-button_big"
+          class="u-button"
           @click="enable_capture_mode = true"
         >
           <img
@@ -52,6 +52,8 @@
           </button>
         </div>
       </div>
+
+      <small>{{ $t("or_paste_an_image") }}</small>
 
       <!-- <div
         class="_imageselect--selectFromMedias"
@@ -159,9 +161,12 @@ export default {
 
   created() {},
   mounted() {
+    window.addEventListener("paste", this.handlePaste);
     this.show_medias_from_project = this.project_slug ? this.project_slug : "";
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    window.removeEventListener("paste", this.handlePaste);
+  },
 
   watch: {
     // show_medias_from_project: function () {
@@ -200,11 +205,34 @@ export default {
 
     //   return images;
     // },
+    handlePaste(e) {
+      if (e.clipboardData.files && e.clipboardData.files.length > 0) {
+        console.log(
+          `Story — METHODS • handlePaste: for files.length = ${e.clipboardData.files.length} with size ${e.clipboardData.files[0].size}`
+        );
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log("Importation depuis presse-papier");
+
+        this.$nextTick(() => {
+          const file = e.clipboardData.files[0];
+          this.setNewPreview(file);
+        });
+      } else {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("notifications.no_image_in_clipboard"));
+      }
+    },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       const file = files[0];
-
+      this.setNewPreview(file);
+    },
+    setNewPreview(file) {
       this.$emit("newPreview", file);
 
       this.createImage(file).then((res) => {

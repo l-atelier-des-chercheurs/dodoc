@@ -1,11 +1,12 @@
 <template>
   <sl-dialog ref="createModal" label="Règlages admin" class="" open>
     <div class="">
-      <TextField
+      // TODO REPLACE
+      <!-- <TextField
         :label="'Chemin de stockage des contenus'"
         :help_text="'Indiquez ici l’emplacement du dossier de stockage des contenus'"
         :content="new_path_to_content"
-      />
+      /> -->
       <br />
 
       <button type="button" @click="changeStorage">

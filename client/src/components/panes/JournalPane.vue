@@ -106,7 +106,7 @@ export default {
       return this.opened_journal_entry.line;
     },
     files() {
-      return this.project.files.filter((f) => f.is_journal === true) || [];
+      return this.project.$files.filter((f) => f.is_journal === true) || [];
     },
   },
   methods: {

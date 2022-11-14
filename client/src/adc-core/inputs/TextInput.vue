@@ -18,6 +18,7 @@
       :required="required"
       @input="$emit('update:content', $event.target.innerText)"
       @keyup.enter="$emit('onEnter')"
+      @paste.prevent="onPaste"
     />
 
     <div
@@ -104,12 +105,38 @@ export default {
       const field = this.$refs.field;
       placeCaretAtEnd(field);
     },
+    onPaste(e) {
+      // Get the copied text from the clipboard
+      const text = e.clipboardData
+        ? (e.originalEvent || e).clipboardData.getData("text/plain")
+        : // For IE
+        window.clipboardData
+        ? window.clipboardData.getData("Text")
+        : "";
+
+      if (document.queryCommandSupported("insertText")) {
+        document.execCommand("insertText", false, text);
+      } else {
+        // Insert text at the current position of caret
+        const range = document.getSelection().getRangeAt(0);
+        range.deleteContents();
+
+        const textNode = document.createTextNode(text);
+        range.insertNode(textNode);
+        range.selectNodeContents(textNode);
+        range.collapse(false);
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._maxlength {
   flex: 0 0 auto;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4) 0;
 }
 </style>

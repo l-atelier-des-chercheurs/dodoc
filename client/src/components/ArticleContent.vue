@@ -71,7 +71,7 @@ export default {
       await this.$api.deleteFile({
         folder_type: "projects",
         folder_slug: this.project_slug,
-        meta_slug: this.article.slug,
+        meta_slug: this.article.$slug,
       });
     },
   },

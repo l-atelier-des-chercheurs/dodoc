@@ -8,7 +8,7 @@
       <sl-tag
         v-for="tag in new_tags"
         :key="tag"
-        variant="success"
+        variant="primary"
         size="small"
         :removable="edit_mode"
         @click="edit_mode ? removeTag(tag) : ''"
@@ -81,7 +81,7 @@ export default {
     path: String,
     maxlength: {
       type: [Boolean, Number],
-      default: 30,
+      default: 40,
     },
     can_edit: Boolean,
   },
@@ -174,10 +174,6 @@ export default {
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 4);
   margin-right: calc(var(--spacing) / 4);
-}
-
-._topLabel {
-  display: block;
 }
 
 ._footer {

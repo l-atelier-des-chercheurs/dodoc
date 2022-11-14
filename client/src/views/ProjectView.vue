@@ -5,15 +5,28 @@
       {{ fetch_project_error }}
     </div>
     <template v-else>
+      <!-- <pre>
+       {{ project }}
+      </pre> -->
       <div class="_topContent">
-        <ProjectPreview
+        <ProjectPresentation
           :project="project"
           context="full"
           :can_edit_project="can_edit_project"
+          :show_more_informations.sync="show_more_informations"
         />
 
-        <div class="_projectMeta">
-          <CardAuthor :project="project" :can_edit_project="can_edit_project" />
+        <!-- Metadonnées, Auteurs, Mots-clés, Machines, Statut, Licence -->
+
+        <div class="_projectMeta" v-if="show_more_informations">
+          <CardMeta :project="project" :can_edit_project="can_edit_project" />
+
+          <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
+          <CardKeywords
+            :project="project"
+            :can_edit_project="can_edit_project"
+          />
+
           <CardMachines
             :project="project"
             :can_edit_project="can_edit_project"
@@ -24,7 +37,7 @@
             :can_edit_project="can_edit_project"
           />
 
-          <CardFiles :project="project" :can_edit_project="can_edit_project" />
+          <!-- <CardFiles :project="project" :can_edit_project="can_edit_project" /> -->
         </div>
       </div>
 
@@ -48,26 +61,32 @@
 </template>
 
 <script>
-import ProjectPreview from "@/components/ProjectPreview.vue";
+import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
-import CardAuthor from "@/components/project_cards/CardAuthor.vue";
+
+import CardMeta from "@/components/project_cards/CardMeta.vue";
+// import CardAuthor from "@/components/project_cards/CardAuthor.vue";
+import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
 import CardStatus from "@/components/project_cards/CardStatus.vue";
 import CardLicense from "@/components/project_cards/CardLicense.vue";
-import CardFiles from "@/components/project_cards/CardFiles.vue";
+// import CardFiles from "@/components/project_cards/CardFiles.vue";
 
 export default {
   props: {},
   components: {
-    ProjectPreview,
+    ProjectPresentation,
     PaneList2,
     ProjectPanes,
-    CardAuthor,
+
+    CardMeta,
+    // CardAuthor,
+    CardKeywords,
     CardMachines,
     CardStatus,
     CardLicense,
-    CardFiles,
+    // CardFiles,
   },
   data() {
     return {
@@ -75,15 +94,16 @@ export default {
       fetch_project_error: null,
       project: null,
 
+      show_more_informations: false,
+
       projectpanes: [],
     };
   },
   created() {},
   async mounted() {
     const project = await this.$api
-      .getFolder({
-        folder_type: "projects",
-        folder_slug: this.project_slug,
+      .getFolders({
+        path: `projects/${this.project_slug}`,
       })
       .catch((err) => {
         this.fetch_project_error = err.response;
@@ -91,10 +111,14 @@ export default {
       });
 
     this.project = project;
+
     this.$eventHub.$emit("received.project", this.project);
+    this.$eventHub.$on("folder.removed", this.closeOnRemove);
+
     this.$api.join({ room: `projects/${this.project_slug}` });
   },
   beforeDestroy() {
+    this.$eventHub.$off("folder.removed", this.closeOnRemove);
     this.$api.leave({ room: `projects/${this.project_slug}` });
   },
   watch: {
@@ -114,7 +138,7 @@ export default {
   },
   computed: {
     articles() {
-      return this.project.files.filter((f) => f.is_journal === true) || [];
+      return this.project.$files.filter((f) => f.is_journal === true) || [];
     },
     can_edit_project() {
       return this.$api.is_logged_in;
@@ -123,7 +147,7 @@ export default {
       if (this.can_edit_project) return this.projectpanes;
       return [
         {
-          type: "Documenter",
+          type: "Publier",
           pad: {},
           size: 100,
         },
@@ -131,13 +155,6 @@ export default {
     },
   },
   methods: {
-    async deleteFolder() {
-      await this.$api.deleteFolder({
-        folder_type: "projects",
-        folder_slug: this.project_slug,
-      });
-      this.$router.push("/projects");
-    },
     updateQueryPanes() {
       let query = {};
 
@@ -151,13 +168,19 @@ export default {
 
       this.$router.push({ query });
     },
+    closeOnRemove({ folder_type, folder_slug }) {
+      if (folder_type === "projects" && folder_slug === this.project_slug) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(this.$t("notifications.project_was_removed"));
+        this.$router.push("/projects");
+      }
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
-._projectView {
-}
-
 ._projectPanesAndList {
   position: relative;
   height: 100vh;
@@ -183,22 +206,40 @@ export default {
   border: solid 2px var(--sl-color-neutral-0);
 }
 
+._topContent {
+  // max-width: 120vh;
+  margin: 0 auto;
+  // padding: calc(var(--spacing) / 2);
+}
+
 ._projectMeta {
   display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  gap: calc(var(--spacing) * 1);
-  margin: 0 auto;
-  padding: calc(var(--spacing) * 1);
+  flex-flow: row nowrap;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  background: #999;
+  background: var(--c-noir);
+  background: var(--c-gris);
+
+  padding: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
 
   > * {
-    flex: 0 1 240px;
+    flex: 0 0 200px;
+    max-height: 200px;
+    overflow: auto;
+    // flex: 0 1 240px;
   }
 }
 
-._topContent {
-  max-width: 120vh;
-  margin: 0 auto;
+._tabButton {
+  text-align: center;
+  background: var(--c-gris);
   padding: calc(var(--spacing) / 2);
+
+  > * {
+    background: white;
+    border-radius: 4px;
+  }
 }
 </style>

@@ -28,20 +28,34 @@
         </template>
       </ul>
     </nav>
-    <SocketStatus />
+    <button
+      type="button"
+      class="_subscribeBtn"
+      @click="show_authors_modal = true"
+    >
+      Inscription
+    </button>
+    <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
+
+    <div class="_socketStatus">
+      <SocketStatus />
+    </div>
   </div>
 </template>
 <script>
 import SocketStatus from "@/components/SocketStatus.vue";
+import AuthorList from "@/adc-core/author/AuthorList.vue";
 
 export default {
   props: {},
   components: {
     SocketStatus,
+    AuthorList,
   },
   data() {
     return {
       project: null,
+      show_authors_modal: false,
     };
   },
   created() {},
@@ -70,7 +84,7 @@ export default {
   // position: absolute;
   width: 100%;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   gap: calc(var(--spacing) * 2);
   align-items: center;
 
@@ -80,9 +94,19 @@ export default {
   min-height: 60px;
   user-select: none;
 
-  ._breadcrumb {
-    flex: 1 1 auto;
+  > * {
+    flex: 1 1 0;
   }
+
+  > ._subscribeBtn {
+    flex-grow: 0;
+  }
+}
+
+._subscribeBtn {
+  background: var(--c-bleumarine_clair);
+  padding: calc(var(--spacing) / 2);
+  border-radius: 4px;
 }
 
 ._breadcrumb {
@@ -106,6 +130,11 @@ export default {
     //   content: "→";
     // }
   }
+}
+
+._socketStatus {
+  display: flex;
+  justify-content: flex-end;
 }
 
 ._logo {

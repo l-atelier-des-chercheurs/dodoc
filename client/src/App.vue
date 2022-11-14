@@ -4,7 +4,11 @@
     <TopBar />
     <AdminPanel v-if="false" />
     <div class="">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition name="fade">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </div>
   </div>
 </template>
@@ -37,18 +41,22 @@ export default {
   --spacing: var(--sl-spacing-medium);
 
   --c-bleumarine: #1d327f;
+  --c-bleumarine_clair: #bec6e5;
   --c-bleuvert: #52c5b9;
+  --c-bleuvert_clair: #010101;
   --c-bleuvert_fonce: hsl(174, 50%, 30%);
   --c-orange: #ffbe32;
+  --c-orange_clair: #ffd892;
   --c-orange_fonce: hsl(41, 100%, 45%);
-
   --c-rouge: #fc4b60;
+  --c-rouge_clair: #ff808c;
   --c-rouge_fonce: #cc334a;
 
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: #333;
   --c-gris: #eff2f3;
+  --c-gris_clair: hsl(195, 14%, 98%);
   --c-gris_fonce: hsl(195, 14%, 75%);
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
@@ -61,12 +69,12 @@ export default {
   --scrollbar-border: 2px;
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
-  --border-radius: 10px;
+  --border-radius: 6px;
 
   --input-font-family: inherit;
-  --input-font-size: 1em;
-  --input-font-size-small: 0.8em;
-  --input-font-size-big: 1.2em;
+  --input-font-size: 1rem;
+  --input-font-size-small: 0.8rem;
+  --input-font-size-big: 1.2rem;
   --input-font-weight: inherit;
   --input-height: 2.5em;
   // --input-height-big: 3em;
@@ -94,7 +102,7 @@ export default {
   --color-Capturer: var(--c-rouge);
   --color-Collecter: var(--c-orange);
   --color-Remixer: var(--c-bleuvert);
-  --color-Documenter: var(--c-bleumarine);
+  --color-Publier: var(--c-bleumarine);
 
   --indicator-color: var(--c-vert) !important;
   --active-color: var(--c-bleuvert);
@@ -102,6 +110,8 @@ export default {
   --sl-font-sans: "Fira Sans";
   --sl-font-serif: "IBM Plex Serif";
   --sl-font-mono: "Fira Mono";
+
+  --padding: var(--spacing);
 
   $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
 
@@ -124,6 +134,7 @@ export default {
 
   --sl-input-color: black;
   --sl-font-size-x-large: 1.66rem;
+  --sl-font-size-xx-large: 2rem;
 }
 
 * {
@@ -192,7 +203,7 @@ html {
   font-style: normal;
   font-weight: 400;
 
-  font-size: 100%;
+  font-size: 95%;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -229,10 +240,21 @@ hr {
   border-bottom: 0 solid #000;
 }
 
-._metaField {
-  display: flex;
+.metaField {
+  // display: flex;
   // flex-flow: row wrap;
-  gap: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
+}
+
+.authorLabel {
+  flex-basis: auto;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+  border-radius: 4px;
+  background-color: #e5e5e5;
+  color: #666;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 
 body {
@@ -246,8 +268,11 @@ strong {
 
 h1 {
   margin: 0;
+  font-size: var(--sl-font-size-xx-large);
 }
 h2 {
+  margin: 0;
+  font-size: var(--sl-font-size-x-large);
 }
 
 .card-header {
@@ -257,9 +282,17 @@ h2 {
   }
 }
 
+ul {
+  padding: calc(var(--spacing) / 2);
+}
+
 ._boldBtn {
   font-weight: 700;
   font-variant: small-caps;
+}
+
+small {
+  font-size: var(--sl-font-size-small);
 }
 img {
   max-width: 100%;

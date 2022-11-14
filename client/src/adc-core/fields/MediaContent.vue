@@ -1,9 +1,9 @@
 <template>
   <div class="_mediaContent">
-    <template v-if="file.type === 'image'">
+    <template v-if="file.$type === 'image'">
       <img :src="thumb" />
     </template>
-    <template v-else-if="file.type === 'video'">
+    <template v-else-if="file.$type === 'video'">
       <template v-if="context === 'preview'">
         <img :src="thumb" />
       </template>
@@ -11,7 +11,14 @@
         <video :src="file_full_path" controls />
       </template>
     </template>
+    <template v-else-if="file.$type === 'pdf'">
+      <img :src="thumb" />
+    </template>
+    <template v-else-if="file.$type === 'stl'">
+      <img :src="thumb" />
+    </template>
     <span v-else>
+      {{ file.$type }}
       <sl-icon name="file-earmark-arrow-down" /><br />
       {{ file.media_filename }}
     </span>
@@ -47,8 +54,8 @@ export default {
   computed: {
     thumb() {
       return this.makeRelativeURLFromThumbs({
-        thumbs: this.file.thumbs,
-        type: this.file.type,
+        thumbs: this.file.$thumbs,
+        type: this.file.$type,
         project_slug: this.project_slug,
         resolution: this.resolution,
       });
@@ -68,7 +75,7 @@ export default {
     //   this.fetch_error = null;
     //   try {
     //     const response = await this.$axios.patch(
-    //       `/projects/${this.project_slug}/${this.file.slug}`,
+    //       `/projects/${this.project_slug}/${this.file.$slug}`,
     //       {
     //         caption: this.new_caption,
     //       }
@@ -83,7 +90,7 @@ export default {
     // async removeFile() {
     //   try {
     //     const response = await this.$axios.delete(
-    //       `/projects/${this.project_slug}/${this.file.slug}`
+    //       `/projects/${this.project_slug}/${this.file.$slug}`
     //     );
     //     this.response = response.data;
     //     this.fetch_status = "success";

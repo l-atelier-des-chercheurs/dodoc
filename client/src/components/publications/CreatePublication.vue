@@ -1,0 +1,96 @@
+<template>
+  <BaseModal2 :title="$t('create_a_publication')" @close="$emit('close')">
+    <form class="input-validation-required" @submit.prevent="createPublication">
+      <div class="_topLabel">
+        <label for="" class="u-label">{{ $t("title") }}</label>
+      </div>
+      <TextInput
+        :content.sync="new_publication_title"
+        :maxlength="40"
+        :required="true"
+        @toggleValidity="($event) => (allow_save = $event)"
+      />
+
+      <br />
+
+      <div class="">
+        <ToggleInput
+          :content.sync="new_publication_is_public"
+          :label="$t('public')"
+          :options="{
+            true: $t('public_status_explanations'),
+            false: $t('not_public_status_explanations'),
+          }"
+        />
+      </div>
+
+      <br />
+      <!-- todo : validate properly -->
+      <sl-button
+        variant="primary"
+        slot="footer"
+        :loading="is_creating_publication"
+        type="submit"
+      >
+        {{ $t("create_and_open") }}
+      </sl-button>
+
+      <template v-if="error_msg">
+        <br />
+        <br />
+        <div class="u-errorMsg" v-text="error_msg" />
+      </template>
+    </form>
+  </BaseModal2>
+</template>
+<script>
+export default {
+  props: {
+    project_slug: String,
+  },
+  components: {},
+  data() {
+    return {
+      new_publication_title: "",
+      new_publication_is_public: true,
+
+      is_creating_publication: false,
+
+      allow_save: false,
+
+      error_msg: "",
+    };
+  },
+  created() {},
+  mounted() {},
+  beforeDestroy() {},
+  watch: {},
+  computed: {},
+  methods: {
+    async createPublication() {
+      this.is_creating_publication = true;
+
+      // TODO replace with $api
+      try {
+        const new_folder_slug = await this.$api.createFolder({
+          path: `/projects/${this.project_slug}/publications`,
+          additional_meta: {
+            title: this.new_publication_title,
+            requested_slug: this.new_publication_title,
+          },
+        });
+        setTimeout(() => {
+          this.$emit("openNewProject", new_folder_slug);
+        }, 50);
+      } catch (err) {
+        this.error_msg = "Error: " + err.message;
+        setTimeout(() => {
+          this.error_msg = "";
+        }, 5000);
+        this.is_creating_publication = false;
+      }
+    },
+  },
+};
+</script>
+<style lang="scss" scoped></style>

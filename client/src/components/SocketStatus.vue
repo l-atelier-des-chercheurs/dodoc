@@ -6,7 +6,8 @@
     }"
   >
     <div class="_socketStatus--content">
-      <!-- Connecté en tant que {{ $api.socket.userID }}
+      <small>Connecté :{{ $api.socket.userID }}</small>
+      <!-- 
       |
       <button
         type="button"
@@ -24,6 +25,7 @@
         disconnect
       </button>
       | -->
+      <br />
       <span class="">
         <input
           type="checkbox"

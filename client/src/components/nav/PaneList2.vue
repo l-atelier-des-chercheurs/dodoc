@@ -28,7 +28,11 @@
           :style="`--color-active: var(--color-${pane.type});`"
           :key="pane.type"
         >
-          <div class="_btn" @click="replacePane($event, pane)">
+          <div
+            class="_btn"
+            :ref="`pane_${pane.type}`"
+            @click="replacePane($event, pane)"
+          >
             <!-- <div v-handle class="_inlineBtn">
               <sl-icon-button
                 name="grip-vertical"
@@ -40,20 +44,25 @@
               v-if="getIcon(pane.type)"
               v-html="getIcon(pane.type)"
             />
+            <!-- <span>{{ $t(pane.type) }}</span> -->
             <span>{{ index + 1 }} • {{ $t(pane.type) }}</span>
             <div
               v-if="project_panes.some((p) => p.type === pane.type)"
-              class="_inlineBtn _remove"
+              class="_inlineBtn"
             >
+              <!-- name="x-lg" -->
               <sl-icon-button
-                name="x-lg"
-                label="Supprimer"
+                name="x-circle-fill"
+                label="Fermer"
                 @click.stop="removePane(pane.type)"
               />
             </div>
-            <div v-else-if="project_panes.length > 0" class="_inlineBtn">
+            <div
+              v-else-if="project_panes.length > 0"
+              class="_inlineBtn _addPaneBtn"
+            >
               <sl-icon-button
-                name="plus-lg"
+                name="plus-circle-fill"
                 label="Ajouter"
                 @click.stop="addPane($event, pane)"
               />
@@ -124,7 +133,7 @@ export default {
           pad: {},
         },
         {
-          type: "Documenter",
+          type: "Publier",
           pad: {},
         },
       ],
@@ -134,7 +143,14 @@ export default {
     // if (this.project_panes.length === 0)
     //   this.project_panes = this.default_project_panes.slice();
   },
-  mounted() {},
+  mounted() {
+    // this.$nextTick(() => {
+    //   const lib = this.possible_project_panes.find(
+    //     (pp) => pp.type === "Collecter"
+    //   );
+    //   this.project_panes.push(lib);
+    // });
+  },
   beforeDestroy() {},
   watch: {
     panes: {
@@ -181,17 +197,27 @@ export default {
       // } else this.addPane($event, pane);
     },
     addPane($event, pane) {
+      console.log(`PaneList2 / addPane`);
+
       $event.target.scrollIntoView({
         behavior: "smooth",
         block: "start",
         inline: "nearest",
       });
 
-      // pane.key = (Math.random().toString(36) + "00000000000000000").slice(2, 5);
-      pane.size = this.project_panes.length > 0 ? 50 : 100;
-      this.project_panes.push(pane);
+      let pp = JSON.parse(JSON.stringify(this.project_panes));
+      pp.push(pane);
 
-      // reorder
+      const sortingArr = this.possible_project_panes.map((p) => p.type);
+      pp.sort(
+        (a, b) => sortingArr.indexOf(a.type) - sortingArr.indexOf(b.type)
+      );
+      pp = pp.map((p) => {
+        p.size = 100 / pp.length;
+        return p;
+      });
+
+      this.project_panes = pp;
     },
     getIcon(type) {
       if (type === "Capturer")
@@ -219,7 +245,28 @@ export default {
             <path style="fill:var(--c-orange);" d="m73.2 105h21.6v21h-21.6z"/>
             <path style="fill:var(--c-orange);" d="m104.4 105h21.6v21h-21.6z"/>
           </svg>
-            `;
+        `;
+      else if (type === "Remixer")
+        return `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+            <circle cx="84.13" cy="84" r="84" style="fill: var(--c-bleuvert)"/>
+            <path d="M115.33,27.75A4.07,4.07,0,0,1,118,25.89a4.44,4.44,0,0,1,3.48.67,4.51,4.51,0,0,1,2,3,4.13,4.13,0,0,1-.7,3.17l-10.6,14.72h-8.91ZM90.85,28.89A5.87,5.87,0,1,1,85,34.76,5.87,5.87,0,0,1,90.85,28.89Zm-21.39-10a8.53,8.53,0,1,1-8.53,8.53A8.54,8.54,0,0,1,69.46,18.92ZM45.51,50.58h77v8.78h-77ZM49.35,67.3h69.3c9.74,8.63,15.1,20.17,15.1,32.56a42.54,42.54,0,0,1-9.38,26.47L119.63,121l-4.41-5-4.41,5-6.35,7.18L98.11,121l-4.41-5-4.41,5-6.35,7.18L76.59,121l-4.41-5-4.41,5-6.35,7.18L55.07,121l-4.41-5-4.41,5-3.6,4.08a42.38,42.38,0,0,1-8.4-25.2C34.26,87.47,39.61,75.93,49.35,67.3ZM35.24,136.49h5.15l10.28-11.63L61.42,137l10.76-12.17L82.94,137,93.7,124.86,104.46,137l10.75-12.17,10.28,11.63h5.15v8.59H35.24Z" 
+              style="fill: var(--c-bleumarine)"/>
+          </svg>
+        `;
+      else if (type === "Publier")
+        return `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
+            <circle cx="84" cy="84" r="84" style="fill: var(--c-bleumarine)"/>
+            <path d="M129.4,143.86H38.62V25.42H129.4Z" style="fill: var(--c-bleuvert)"/>
+            <rect x="53.82" y="39.01" width="26.85" height="10.37" style="fill: var(--c-bleumarine)"/>
+            <rect x="53.82" y="54.17" width="26.84" height="9.53" style="fill: var(--c-bleumarine)"/>
+            <rect x="87.34" y="39.01" width="26.85" height="24.68" style="fill: var(--c-bleumarine)"/>
+            <rect x="53.76" y="71.22" width="60.49" height="29.07" style="fill: var(--c-bleumarine)"/>
+            <rect x="53.76" y="105.8" width="26.85" height="23.66" style="fill: var(--c-bleumarine)"/>
+            <rect x="87.35" y="105.8" width="26.85" height="23.66" style="fill: var(--c-bleumarine)"/>
+          </svg>
+        `;
 
       return false;
     },
@@ -263,7 +310,7 @@ export default {
 
     user-select: none;
 
-    transition: all 0.4s;
+    transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 
@@ -302,7 +349,7 @@ export default {
 
   // padding: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  // background: rgba(255, 255, 255, 0.3);
 }
 
 ._btn {
@@ -311,7 +358,7 @@ export default {
   align-items: center;
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   gap: calc(var(--spacing) / 2);
-  transition: all 0.4s ease-out;
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   cursor: pointer;
 
   width: 100%;
@@ -320,7 +367,7 @@ export default {
 }
 
 ._icon {
-  width: 2em;
-  height: 2em;
+  width: 2rem;
+  height: 2rem;
 }
 </style>

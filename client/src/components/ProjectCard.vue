@@ -1,9 +1,11 @@
 <template>
-  <sl-card class="u-card">
-    <div slot="header" v-if="$slots['header']" class="u-label">
+  <sl-card class="_projectCard u-card">
+    <!-- <sl-card class="u-card"> -->
+    <header slot="header" v-if="$slots['header']" class="">
       <slot name="header" />
-    </div>
+    </header>
     <slot />
+    <!-- </sl-card> -->
   </sl-card>
 </template>
 <script>
@@ -21,4 +23,15 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._projectCard {
+  // border: 1px solid #000;
+  // border-bottom: 0;
+  // padding: calc(var(--spacing) * 1) 0;
+  // margin: calc(var(--spacing) / 2);
+
+  &:last-child {
+    // border-bottom: 1px solid #000;
+  }
+}
+</style>

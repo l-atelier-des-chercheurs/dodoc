@@ -1,5 +1,12 @@
+z
 <template>
-  <div class="_projectInfos u-card">
+  <div
+    class="_projectInfos"
+    :class="{
+      'is--preview': context === 'list',
+      'u-card': context === 'list',
+    }"
+  >
     <div
       class="_projectInfos--cover"
       ref="coverImage"
@@ -13,30 +20,39 @@
         <sl-button
           v-if="context === 'full'"
           size="small"
-          variant="semitransparent"
+          variant="neutral"
           class="_fsButton u-buttonLink"
-          v-text="!is_fullscreen ? 'agrandir' : 'réduire'"
           @click="toggleFs"
-        />
+        >
+          <sl-icon
+            :name="!is_fullscreen ? 'arrows-fullscreen' : 'fullscreen-exit'"
+          />
+        </sl-button>
       </template>
       <div v-else class="_noImage" />
 
       <CoverField
         v-if="context === 'full' && can_edit_project"
         class=""
-        :cover="project.cover"
-        :project_slug="project.slug"
-        :path="`/projects/${project.slug}`"
+        :cover="project.$cover"
+        :project_slug="project.$slug"
+        :path="`/projects/${project.$slug}`"
       />
     </div>
 
     <div class="_projectInfos--meta">
-      <!-- <div class="_content"> -->
+      <AuthorField
+        :label="context === 'full' ? $t('contributors') : ''"
+        :authors_slugs="project.$authors"
+        :path="`/projects/${project.$slug}`"
+        :can_edit="can_edit_project"
+      />
+
       <TitleField
         :field_name="'title'"
-        :label="$t('title')"
+        :label="context === 'full' ? $t('title') : ''"
         :content="project.title"
-        :path="`/projects/${project.slug}`"
+        :path="`/projects/${project.$slug}`"
         :required="true"
         :maxlength="40"
         :tag="context === 'full' ? 'h1' : 'h2'"
@@ -45,27 +61,30 @@
 
       <TitleField
         :field_name="'description'"
-        :label="$t('description')"
+        :label="context === 'full' ? $t('description') : ''"
         :content="project.description"
-        :path="`/projects/${project.slug}`"
+        :path="`/projects/${project.$slug}`"
         :maxlength="280"
         :can_edit="can_edit_project"
       />
 
-      <TagsField
-        v-if="project.keywords || can_edit_project"
-        :field_name="'keywords'"
-        :label="$t('keywords')"
-        :content="project.keywords"
-        :path="`/projects/${project.slug}`"
-        :can_edit="can_edit_project"
-      />
+      <div class="_tabButton" v-if="context === 'full'">
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="
+            $emit('update:show_more_informations', !show_more_informations)
+          "
+        >
+          {{ $t("more_infos") }}
+        </button>
+      </div>
     </div>
 
     <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link
-        :to="`/projects/${project.slug}`"
-        class="u-button u-button_big u-button_red"
+        :to="`/projects/${project.$slug}`"
+        class="u-button u-button_red"
       >
         ouvrir&nbsp;
         <sl-icon name="arrow-up-right" />
@@ -79,6 +98,7 @@ export default {
     project: Object,
     context: String,
     can_edit_project: Boolean,
+    show_more_informations: Boolean,
   },
   components: {},
   data() {
@@ -88,6 +108,8 @@ export default {
       fetch_status: null,
       fetch_error: null,
       response: null,
+
+      confirm_remove: false,
 
       preview_rawdata: null,
       show_lib: false,
@@ -107,9 +129,9 @@ export default {
   computed: {
     cover_thumb() {
       return this.makeRelativeURLFromThumbs({
-        thumbs: this.project.cover,
+        thumbs: this.project.$cover,
         type: "image",
-        project_slug: this.project.slug,
+        project_slug: this.project.$slug,
         resolution: 1200,
       });
     },
@@ -140,27 +162,12 @@ export default {
 
       try {
         const response = await this.$axios.patch(
-          `/projects/${this.project.slug}`,
+          `/projects/${this.project.$slug}`,
           {
             title: this.new_title,
           }
         );
 
-        this.response = response.data;
-        this.fetch_status = "success";
-      } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
-      }
-    },
-    async removeProject() {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
-
-      try {
-        const response = await this.$axios.delete(
-          `/projects/${this.project.slug}`
-        );
         this.response = response.data;
         this.fetch_status = "success";
       } catch (e) {
@@ -182,13 +189,16 @@ export default {
   flex-flow: row wrap;
   align-items: stretch;
 
-  border-bottom: 2px solid #b9b9b9;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-
   margin: 0 auto;
   overflow: hidden;
+  background: white;
 
   width: 100%;
+
+  &.is--preview {
+    border-bottom: 2px solid #b9b9b9;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
 
   > * {
     flex: 1 1 260px;
@@ -199,7 +209,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) * 1);
   place-content: center;
 
   transition: all 0.4s;
@@ -220,10 +230,11 @@ export default {
   // min-height: 50vh;
   width: 100%;
   aspect-ratio: 1/1;
-  // max-width: 100vh;
+  border: 1px solid var(--color2);
+  max-width: 50vw;
 
-  --color1: transparent;
-  --color2: var(--c-gris);
+  --color1: var(--c-gris);
+  --color2: var(--c-gris_clair);
 
   &.is--empty {
     background: radial-gradient(
@@ -288,5 +299,14 @@ export default {
   display: flex;
   justify-content: center;
   margin: calc(var(--spacing) * 1);
+
+  a {
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    &:hover,
+    &:focus {
+      transform: translateY(-4px) rotate(-2deg);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    }
+  }
 }
 </style>

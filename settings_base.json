@@ -8,8 +8,9 @@
   "versioning": true,
 
   "cacheDirname": "dodoc_cache",
-  "contentPath": "dodoc",
+  "contentPath": "dodoc_next",
 
+  "password_salt": "19f26e402586e2faa8da4c98a35f1b20d6b033c6097befa8be3486a829587fe2f90a832bd3ff9d42710a4da095a2ce285b009f0c3730cd9b8e1af3eb84df6611",
   "privateKeyPath": "",
   "certificatePath": "",
 
@@ -299,7 +300,7 @@
   },
   "schema": {
     "projects": {
-      "cover": {
+      "$cover": {
         "width": 1200,
         "height": 1200,
         "thumbs": {
@@ -322,34 +323,62 @@
         "folder": {
           "type": "string"
         },
-        "status": {
-          "type": "string",
-          "options": ["draft", "invisible", "finished"],
-          "default": "draft"
-        },
         "license": {
           "type": "string",
           "options": ["CC", "all_rights_reserved", "copyleft"],
           "default": "CC"
         }
       },
-      "files": {
+      "$files": {
         "thumbs": {
           "resolutions": [180, 360, 1600]
         },
         "fields": {
-          "title": {
-            "type": "string"
-          },
           "caption": {
             "type": "string"
           },
-          "is_journal": {
+          "is_publication": {
             "type": "boolean"
           }
         }
       },
-      "children": {}
+      "$folders": {
+        "publications": {
+          "$cover": {
+            "width": 1200,
+            "height": 1200,
+            "thumbs": {
+              "resolutions": [50, 320, 640, 1200]
+            }
+          },
+          "fields": {
+            "title": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "authors": {
+      "$cover": {
+        "width": 1200,
+        "height": 1200,
+        "thumbs": {
+          "resolutions": [50, 320, 640, 1200]
+        }
+      },
+      "fields": {
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "role": {
+          "type": "string",
+          "options": ["contributor", "admin"],
+          "default": "contributor",
+          "only_admins_can_edit": true
+        }
+      }
     }
   }
 }

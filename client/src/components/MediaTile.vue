@@ -12,7 +12,7 @@
       :class="{
         'is--focused': is_focused,
       }"
-      @click="$emit('toggleMediaFocus', file.slug)"
+      @click="$emit('toggleMediaFocus', file.$slug)"
     />
   </div>
 </template>
@@ -94,7 +94,7 @@ export default {
 
   &.is--focused {
     // border: 2px solid var(--c-vert);
-    background: var(--c-vert);
+    background: black;
   }
 }
 </style>

@@ -38,7 +38,6 @@
   </span>
 </template>
 <script>
-import TextInput from "./TextInput.vue";
 export default {
   props: {
     field_name: String,
@@ -67,7 +66,7 @@ export default {
       type: Boolean,
     },
   },
-  components: { TextInput },
+  components: {},
   data() {
     return {
       edit_mode: false,
@@ -107,7 +106,7 @@ export default {
     },
     async updateText() {
       this.is_saving = true;
-      await new Promise((r) => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 50));
 
       try {
         const new_meta = {
@@ -142,9 +141,6 @@ export default {
     white-space: break-spaces;
     margin-right: calc(var(--spacing) / 2);
   }
-}
-._topLabel {
-  display: block;
 }
 
 ._footer {
