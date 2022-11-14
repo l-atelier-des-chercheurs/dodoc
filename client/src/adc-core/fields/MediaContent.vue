@@ -61,8 +61,7 @@ export default {
       });
     },
     file_full_path() {
-      const path = `/${this.subfolder}/${this.project_slug}/${this.file.media_filename}?v=${this.timestamp}`;
-      return path;
+      return `${this.file.$path}?v=${this.timestamp}`;
     },
     timestamp() {
       if (this.file.date_created) return +new Date(this.file.date_created);

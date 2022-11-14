@@ -16,6 +16,8 @@ export default {
         return false;
       }
 
+      // todo make this work with subfolders
+
       return `/thumbs/projects/${project_slug}/${thumb_path}`;
     },
   },

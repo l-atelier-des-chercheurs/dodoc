@@ -86,7 +86,6 @@ export default {
   },
   data() {
     return {
-      project_slug: this.$route.params.slug,
       fetch_project_error: null,
       project: null,
 
@@ -96,9 +95,10 @@ export default {
   created() {},
   async mounted() {
     const project = await this.$api
-      .getFolders({
-        path: `projects/${this.project_slug}`,
+      .getFolder({
+        path: this.$route.path,
       })
+
       .catch((err) => {
         this.fetch_project_error = err.response;
         this.is_loading = false;
@@ -108,12 +108,11 @@ export default {
 
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
-
-    this.$api.join({ room: `projects/${this.project_slug}` });
+    this.$api.join({ room: this.project.$path });
   },
   beforeDestroy() {
     this.$eventHub.$off("folder.removed", this.closeOnRemove);
-    this.$api.leave({ room: `projects/${this.project_slug}` });
+    this.$api.leave({ room: this.project.$path });
   },
   watch: {
     $route: {
@@ -162,8 +161,8 @@ export default {
 
       this.$router.push({ query });
     },
-    closeOnRemove({ folder_type, folder_slug }) {
-      if (folder_type === "projects" && folder_slug === this.project_slug) {
+    closeOnRemove({ path }) {
+      if (path === this.project.$path) {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
@@ -218,7 +217,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 
-  max-height: 60vh;
+  max-height: 50vh;
   overflow: auto;
 
   // padding: calc(var(--spacing) / 2);

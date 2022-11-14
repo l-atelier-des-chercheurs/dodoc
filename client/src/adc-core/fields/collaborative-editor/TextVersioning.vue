@@ -75,9 +75,7 @@
 <script>
 export default {
   props: {
-    folder_type: String,
-    folder_slug: String,
-    meta_slug: String,
+    path: String,
     current_content: String,
   },
   components: {},
@@ -89,7 +87,7 @@ export default {
   },
   created() {},
   mounted() {
-    this.getArchives();
+    this.getAllArchives({ path });
     this.$refs.showArchives.show();
   },
   beforeDestroy() {},
@@ -111,11 +109,9 @@ export default {
     },
   },
   methods: {
-    async getArchives() {
+    async getAllArchives() {
       this.archives = await this.$api.getArchives({
-        folder_type: this.folder_type,
-        folder_slug: this.folder_slug,
-        meta_slug: this.meta_slug,
+        path: this.path,
       });
 
       this.archives.push({

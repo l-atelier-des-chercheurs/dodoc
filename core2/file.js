@@ -103,12 +103,12 @@ module.exports = (function () {
       dev.logfunction({ relative_path, meta_filename });
 
       const d = cache.get({
-        key: `${relative_path}/${meta_filename}`,
+        key: relative_path,
       });
       if (d) return d;
 
       let meta = await utils.readMetaFile(relative_path, meta_filename);
-      meta.$slug = meta_filename;
+      meta.$path = relative_path;
 
       const media_filename = meta.$media_filename;
       const media_type = meta.$type;

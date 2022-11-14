@@ -28,16 +28,20 @@ module.exports = (function () {
 
     // 1st level folders
     app.get("/_api2/*.+*", _getFile);
+
     app.get("/_api2/*", _getFolders);
+    app.patch("/_api2/*", _updateFolder);
+    app.delete("/_api2/*", _removeFolder);
 
     app.post("/_api2/*/_upload", _uploadFile);
     app.post("/_api2/*", _createFolder);
+
+    app.get("/_api2/*.+*", _getFile);
 
     // app.post("/_api2/:folder_type/:folder_slug/_upload", _uploadFile);
 
     // app.post("/_api2/:folder_type", _createFolder);
     // app.post("/_api2/:folder_type/:folder_slug/_upload", _uploadFile);
-    // app.patch("/_api2/:folder_type/:folder_slug", _updateFolder);
     // app.delete("/_api2/:folder_type/:folder_slug", _removeFolder);
     // app.post("/_api2/:folder_type/:folder_slug/_login", _loginToFolder);
 
@@ -50,9 +54,8 @@ module.exports = (function () {
 
   function _corsCheck(req, callback) {
     console.log();
-    // dev.logfunction();
-
-    // dev.logverbose(`API2 — _corsCheck : ${JSON.stringify(req.headers)}`);
+    // dev.logfunction({  });
+    dev.logverbose(`API2 — _corsCheck : ${JSON.stringify(req.headers)}`);
     // check origin
 
     callback(null, { origin: true });
@@ -74,7 +77,7 @@ module.exports = (function () {
   }
 
   async function _getFolders(req, res, next) {
-    const relative_path = req.path.substring(7);
+    const relative_path = utils.cleanReqPath(req.path);
 
     const { folder_type, folder_slug, subfolder_type, subfolder_slug } =
       await utils.parseAndCheckSchema({ relative_path }).catch((err) => {
@@ -122,7 +125,7 @@ module.exports = (function () {
   }
 
   async function _getFile(req, res, next) {
-    const relative_path = req.path.substring(7);
+    const relative_path = utils.cleanReqPath(req.path);
 
     // TODO improved legibility
 
@@ -152,7 +155,7 @@ module.exports = (function () {
   }
 
   async function _createFolder(req, res, next) {
-    const relative_path = req.path.substring(7);
+    const relative_path = utils.cleanReqPath(req.path);
 
     const { folder_type, folder_slug, subfolder_type } = await utils
       .parseAndCheckSchema({ relative_path })
@@ -196,40 +199,47 @@ module.exports = (function () {
   }
 
   async function _updateFolder(req, res, next) {
-    const data = req.body;
-    const update_cover = req.query && req.query.hasOwnProperty("cover");
+    const relative_path = utils.cleanReqPath(req.path);
 
-    dev.logapi({ folder_type, folder_slug, data, update_cover });
+    const { folder_type, folder_slug, subfolder_type } = await utils
+      .parseAndCheckSchema({ relative_path })
+      .catch((err) => {
+        return res.status(422).send(err.message);
+      });
+
+    const data = req.body;
+    if (!data) return res.status(422).send("Missing body");
+
+    const update_cover = req.query?.hasOwnProperty("cover");
+    dev.logapi({
+      folder_type,
+      folder_slug,
+      subfolder_type,
+      data,
+      update_cover,
+    });
 
     // check if header contains a valid jwt that certifies that user is author
     // if (auth.checkFolderForAuth({ folder_type, folder_slug }))
     //   res.status(422).send("Not allowed");
 
-    if (!data) return res.status(422).send("Missing body");
-
     const hrstart = process.hrtime();
 
     try {
       const changed_data = await folder.updateFolder({
-        folder_type,
-        folder_slug,
+        relative_path,
         data,
         update_cover_req: update_cover ? req : false,
       });
       dev.logpackets({ status: "folder was updated" });
       res.status(200).json({ status: "ok" });
 
-      // TODO improve here
-      notifier.emit("folderUpdated", `${folder_type}`, {
-        folder_type,
-        folder_slug,
+      const infos = {
+        path: relative_path,
         changed_data,
-      });
-      notifier.emit("folderUpdated", `${folder_type}/${folder_slug}`, {
-        folder_type,
-        folder_slug,
-        changed_data,
-      });
+      };
+      notifier.emit("folderUpdated", relative_path, infos);
+      notifier.emit("folderUpdated", utils.getPathParent(relative_path), infos);
     } catch (err) {
       dev.error("Failed to update folder: " + err.message);
       res.status(500).send({ message: err.message });
@@ -240,31 +250,28 @@ module.exports = (function () {
   }
 
   async function _removeFolder(req, res, next) {
-    let { folder_type, folder_slug } = req.params;
+    const relative_path = utils.cleanReqPath(req.path);
 
-    dev.logapi({ folder_type, folder_slug });
+    const { folder_type, folder_slug, subfolder_type } = await utils
+      .parseAndCheckSchema({ relative_path })
+      .catch((err) => {
+        return res.status(422).send(err.message);
+      });
 
-    if (!folder_type) return res.status(422).send("Missing folder_type field");
-    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
+    dev.logapi({ folder_type, folder_slug, subfolder_type });
 
     const hrstart = process.hrtime();
 
     try {
-      folder_slug = await folder.removeFolder({
-        folder_type,
-        folder_slug,
+      await folder.removeFolder({
+        relative_path,
       });
       dev.logpackets({ status: "folder was removed" });
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("folderRemoved", `${folder_type}`, {
-        folder_type,
-        folder_slug,
-      });
-      notifier.emit("folderRemoved", `${folder_type}/${folder_slug}`, {
-        folder_type,
-        folder_slug,
-      });
+      const infos = { path: relative_path };
+      notifier.emit("folderRemoved", relative_path, infos);
+      notifier.emit("folderRemoved", utils.getPathParent(relative_path), infos);
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
       res.status(404).send(err);
@@ -297,7 +304,7 @@ module.exports = (function () {
   }
 
   async function _uploadFile(req, res, next) {
-    const relative_path = req.path.substring(7);
+    const relative_path = utils.cleanReqPath(req.path);
 
     try {
       const { folder_type, folder_slug, subfolder_type, subfolder_slug } =

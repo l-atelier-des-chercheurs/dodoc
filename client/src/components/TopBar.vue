@@ -40,6 +40,10 @@
     <div class="_socketStatus">
       <SocketStatus />
     </div>
+
+    <!-- <pre>
+      {{ $api.store }}
+    </pre> -->
   </div>
 </template>
 <script>

@@ -12,7 +12,7 @@
       :class="{
         'is--focused': is_focused,
       }"
-      @click="$emit('toggleMediaFocus', file.$slug)"
+      @click="$emit('toggleMediaFocus', file.$path)"
     />
   </div>
 </template>

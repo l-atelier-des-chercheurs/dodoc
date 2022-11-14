@@ -36,7 +36,7 @@ z
         class=""
         :cover="project.$cover"
         :project_slug="project.$slug"
-        :path="`/projects/${project.$slug}`"
+        :path="project.$path"
       />
     </div>
 
@@ -44,7 +44,7 @@ z
       <AuthorField
         :label="context === 'full' ? $t('contributors') : ''"
         :authors_slugs="project.$authors"
-        :path="`/projects/${project.$slug}`"
+        :path="project.$path"
         :can_edit="can_edit_project"
       />
 
@@ -52,7 +52,7 @@ z
         :field_name="'title'"
         :label="context === 'full' ? $t('title') : ''"
         :content="project.title"
-        :path="`/projects/${project.$slug}`"
+        :path="project.$path"
         :required="true"
         :maxlength="40"
         :tag="context === 'full' ? 'h1' : 'h2'"
@@ -63,7 +63,7 @@ z
         :field_name="'description'"
         :label="context === 'full' ? $t('description') : ''"
         :content="project.description"
-        :path="`/projects/${project.$slug}`"
+        :path="project.$path"
         :maxlength="280"
         :can_edit="can_edit_project"
       />
@@ -71,7 +71,7 @@ z
 
     <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link
-        :to="`/projects/${project.$slug}`"
+        :to="{ path: '/' + project.$path }"
         class="u-button u-button_red"
       >
         ouvrir&nbsp;
@@ -149,14 +149,12 @@ export default {
       // TODO use updateItem
 
       try {
-        const response = await this.$axios.patch(
-          `/projects/${this.project.$slug}`,
-          {
+        this.response = await this.$api.updateMeta({
+          path: this.project.$path,
+          new_meta: {
             title: this.new_title,
-          }
-        );
-
-        this.response = response.data;
+          },
+        });
         this.fetch_status = "success";
       } catch (e) {
         this.fetch_status = "error";
@@ -216,8 +214,8 @@ export default {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--color2);
-  flex: 0 1 60vmin;
-  max-height: 60vmin;
+  flex: 0 1 50vmin;
+  max-height: 50vmin;
   aspect-ratio: 1/1;
 
   --color1: var(--c-gris);

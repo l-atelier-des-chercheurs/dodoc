@@ -84,51 +84,54 @@ export default function () {
       reconnectSocket() {
         this.socket.connect();
       },
-
-      findFolderIndex({ folder_type, folder_slug }) {
-        return this.store[folder_type].findIndex(
-          (folder) => folder.$slug === folder_slug
-        );
-      },
-      findFolder({ folder_type, folder_slug }) {
-        if (!this.store[folder_type]) return false;
-        return this.store[folder_type].find(
-          (folder) => folder.$slug === folder_slug
-        );
-      },
-      findFileIndexInFolder({ folder_type, folder_slug, meta_slug }) {
-        const folder = this.findFolder({ folder_type, folder_slug });
-        if (folder.$files)
-          return folder.$files.findIndex((f) => f.$slug === meta_slug);
-        return false;
-      },
-      findFileInFolder({ folder_type, folder_slug, meta_slug }) {
-        const folder = this.findFolder({ folder_type, folder_slug });
-        if (folder?.$files)
-          return folder.$files.find((f) => f.$slug === meta_slug);
-        return false;
-      },
-
       folderCreated({ path, meta }) {
+        if (!this.store[path]) this.store[path] = [];
         this.store[path].push(meta);
+        this.$set(this.store, meta.$path, meta);
       },
-      folderUpdated({ folder_type, folder_slug, changed_data }) {
-        const folder = this.findFolder({
-          folder_type,
-          folder_slug,
-        });
-        // update props
-        Object.entries(changed_data).map(([key, value]) => {
-          this.$set(folder, key, value);
-        });
+      folderUpdated({ path, changed_data }) {
+        const updateProps = ({ changed_data, folder_to_update }) => {
+          Object.entries(changed_data).map(([key, value]) => {
+            this.$set(folder_to_update, key, value);
+          });
+        };
+
+        // updated folder $path
+        if (Object.prototype.hasOwnProperty.call(this.store, path)) {
+          updateProps({ changed_data, folder_to_update: this.store[path] });
+        }
+
+        // parent folder path
+        const parent_folder_path = path.substr(0, path.lastIndexOf("/"));
+        if (
+          Object.prototype.hasOwnProperty.call(this.store, parent_folder_path)
+        ) {
+          const folder_to_update = this.store[parent_folder_path].find(
+            (f) => f.$path === path
+          );
+          updateProps({ changed_data, folder_to_update });
+        }
+
+        // update
       },
-      folderRemoved({ folder_type, folder_slug }) {
-        const folder_index = this.findFolderIndex({
-          folder_type,
-          folder_slug,
-        });
-        this.store[folder_type].splice(folder_index, 1);
-        this.$eventHub.$emit("folder.removed", { folder_type, folder_slug });
+      folderRemoved({ path }) {
+        this.$delete(this.store, path);
+
+        if (Object.prototype.hasOwnProperty.call(this.store, path)) {
+          this.store.$delete(path);
+        }
+
+        const parent_folder_path = path.substr(0, path.lastIndexOf("/"));
+        if (
+          Object.prototype.hasOwnProperty.call(this.store, parent_folder_path)
+        ) {
+          const folder_index = this.store[parent_folder_path].findIndex(
+            (f) => f.$path === path
+          );
+          this.store[parent_folder_path].splice(folder_index, 1);
+        }
+
+        this.$eventHub.$emit("folder.removed", { path });
       },
 
       fileCreated({ folder_type, folder_slug, file_meta }) {
@@ -176,11 +179,20 @@ export default function () {
       },
       async getFolders({ path }) {
         const response = await this.$axios.get(path);
-        const d = response.data;
-        this.$set(this.store, path, d);
-        return d;
-      },
+        const folders = response.data;
+        // folders.map((f) => this.$set(this.store, f.$path, f));
 
+        this.$set(this.store, path, folders);
+
+        // we use the store to trigger updates to array if item is updated
+        return folders;
+      },
+      async getFolder({ path }) {
+        const response = await this.$axios.get(path);
+        const folder = response.data;
+        this.$set(this.store, folder.$path, folder);
+        return folder;
+      },
       // async getFolder({ folder_type, folder_slug }) {
       //   const response = await this.$axios.get(
       //     `/${folder_type}/${folder_slug}`
@@ -198,10 +210,8 @@ export default function () {
 
       //   return d;
       // },
-      async getArchives({ folder_type, folder_slug, meta_slug }) {
-        const response = await this.$axios.get(
-          `${folder_type}/${folder_slug}/${meta_slug}`
-        );
+      async getArchives({ path }) {
+        const response = await this.$axios.get(path);
         const d = response.data;
         return d;
       },
@@ -214,11 +224,9 @@ export default function () {
           throw e.response.data;
         }
       },
-      async deleteFolder({ folder_type, folder_slug }) {
+      async deleteFolder({ path }) {
         try {
-          const response = await this.$axios.delete(
-            `/${folder_type}/${folder_slug}`
-          );
+          const response = await this.$axios.delete(path);
           return response.data;
         } catch (e) {
           throw e.response.data;
@@ -321,11 +329,9 @@ export default function () {
         return;
       },
 
-      async deleteFile({ folder_type, folder_slug, meta_slug }) {
+      async deleteFile({ path }) {
         try {
-          const response = await this.$axios.delete(
-            `/${folder_type}/${folder_slug}/${meta_slug}`
-          );
+          const response = await this.$axios.delete(path);
           return response.data;
         } catch (e) {
           throw e.response.data;

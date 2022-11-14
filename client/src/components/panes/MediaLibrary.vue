@@ -78,11 +78,11 @@
         <transition name="fade_fast" mode="out-in">
           <MediaFocus
             v-if="focused_media"
-            :key="focused_media.$slug"
+            :key="focused_media.$path"
             :file="focused_media"
-            :project_slug="project.$slug"
-            @remove="removeMedia(focused_media.$slug)"
-            @close="toggleMediaFocus(focused_media.$slug)"
+            :project_slug="project.$path"
+            @remove="removeMedia(focused_media.$path)"
+            @close="toggleMediaFocus(focused_media.$path)"
           />
         </transition>
       </pane>
@@ -203,11 +203,11 @@ export default {
       const focus_pane_height = Number(panes[1].size.toFixed(1));
       this.$emit("update:focus_height", focus_pane_height);
     },
-    toggleMediaFocus(slug) {
-      if (!slug || this.media_focused === slug) {
+    toggleMediaFocus(path) {
+      if (!path || this.media_focused === path) {
         this.$emit("update:media_focused", null);
       } else {
-        this.$emit("update:media_focused", slug);
+        this.$emit("update:media_focused", path);
         if (this.focus_height === 0) this.$emit("update:focus_height", 50);
         // debugger;
         // this.resized([
@@ -217,13 +217,11 @@ export default {
       }
     },
 
-    async removeMedia(slug) {
+    async removeMedia(path) {
       await this.$api.deleteFile({
-        folder_type: "projects",
-        folder_slug: this.project.$slug,
-        meta_slug: slug,
+        path,
       });
-      this.toggleMediaFocus(slug);
+      this.toggleMediaFocus(path);
     },
   },
 };

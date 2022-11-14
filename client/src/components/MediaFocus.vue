@@ -19,10 +19,10 @@
         label="caption"
         :field_name="'caption'"
         :content="file.caption"
-        :path="`/projects/${project_slug}/${file.$slug}`"
+        :path="file.$path"
         :can_edit="true"
       />
-      {{ `/projects/${project_slug}/${file.$slug}` }}
+      {{ file.$path }}
     </div>
     <sl-button-group class="_focusBtns">
       <sl-button size="small" @click="$emit('close')">Fermer</sl-button>

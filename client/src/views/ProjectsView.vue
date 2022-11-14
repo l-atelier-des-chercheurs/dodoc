@@ -53,7 +53,7 @@
         v-for="project in finalized_projects"
         :project="project"
         context="list"
-        :key="project.$slug"
+        :key="project.$path"
       />
     </div>
     <hr />
@@ -63,7 +63,7 @@
         v-for="project in draft_projects"
         :project="project"
         context="list"
-        :key="project.$slug"
+        :key="project.$path"
       />
     </div>
   </div>
@@ -138,6 +138,7 @@ export default {
 
   > * {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
   }
 
   ::v-deep ._projectInfos {

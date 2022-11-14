@@ -43,14 +43,14 @@ export default {
       this.routine_is_started = true;
 
       const new_folder_slug = await this.$api.createFolder({
-        path: "/projects",
+        path: "projects",
         additional_meta: {
           title: "Z test project " + this.$api.socket.userID,
           $authors: ["1-louis"],
         },
       });
       await this.$api.updateMeta({
-        path: `/projects/${new_folder_slug}`,
+        path: `projects/${new_folder_slug}`,
         new_meta: {
           $authors: ["louis", "pauline"],
         },
@@ -62,21 +62,20 @@ export default {
         },
       });
       await this.$api.updateMeta({
-        path: `/projects/${new_folder_slug}`,
+        path: `projects/${new_folder_slug}`,
         new_meta: {
           keywords: ["plop"],
         },
       });
       await this.$api.updateMeta({
-        path: `/projects/${new_folder_slug}`,
+        path: `projects/${new_folder_slug}`,
         new_meta: {
           keywords: ["plip"],
         },
       });
       await new Promise((r) => setTimeout(r, 500));
       await this.$api.deleteFolder({
-        folder_type: "projects",
-        folder_slug: new_folder_slug,
+        path: `projects/${new_folder_slug}`,
       });
       await new Promise((r) => setTimeout(r, 250));
 

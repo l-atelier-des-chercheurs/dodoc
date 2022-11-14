@@ -246,6 +246,9 @@ module.exports = (function () {
       return submitted_password_with_salt === stored_password_with_salt;
     },
 
+    getPathParent(path) {
+      return path.substr(0, path.lastIndexOf("/"));
+    },
     async parseAndCheckSchema({ relative_path }) {
       dev.logfunction({ relative_path });
 
@@ -281,6 +284,12 @@ module.exports = (function () {
         : global.settings.schema[obj.folder_type];
 
       return obj;
+    },
+
+    cleanReqPath(path) {
+      let p = path.substring(7);
+      if (p.endsWith("/")) p = p.slice(0, -1);
+      return p;
     },
   };
 

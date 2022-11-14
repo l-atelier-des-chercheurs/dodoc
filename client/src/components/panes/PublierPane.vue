@@ -1,11 +1,5 @@
 <template>
   <div>
-    <div class="_msg u-instructions u-padding-small">
-      Créez ici des publications : journal du projet, tutoriel, livret, etc.
-      <br />
-      Elles contiendront du texte et des éléments que vous avez collecté.
-    </div>
-
     <button type="button" @click="show_create_publication = true">
       <sl-icon name="plus" label="Panneaux" />
       {{ $t("create") }}

@@ -5,10 +5,10 @@
 
       <NewAuthor />
 
-      <div v-for="author in authors" :key="author.$slug">
+      <div v-for="author in authors" :key="author.$path">
         {{ author.name }} <br />
         <small>{{ author }}</small>
-        <button type="button" @click="removeAuthor(author.$slug)">x</button>
+        <button type="button" @click="removeAuthor(author.$path)">x</button>
         <br /><br />
       </div>
 
@@ -38,7 +38,7 @@ export default {
   created() {},
   async mounted() {
     this.authors = await this.$api.getFolders({
-      path: `/authors`,
+      path: `authors`,
     });
     this.$api.join({ room: "authors" });
   },
@@ -46,10 +46,9 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async removeAuthor(slug) {
+    async removeAuthor(path) {
       await this.$api.deleteFolder({
-        folder_type: "authors",
-        folder_slug: slug,
+        path,
       });
     },
     async loginAs() {

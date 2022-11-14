@@ -170,7 +170,7 @@ Default values are:
 - $files (Array) = list of all the files in this folder
 - $public (Boolean) = if the folder is visible to everyone or just its authors, can be edited by authors
 - $password (string, stored as hash) = limit editing or viewing (depending on $public) to users with password
-- $slug (string) = folder name, can’t be changed
+- $path (string) = path to folder, matches filesystem structure and URL, can’t be changed
 - $infos (object) = data gathered from the folder itself
   - size (Number) = size in bytes
 
@@ -181,7 +181,7 @@ Custom values can be defined in the schema property in settings_base.json.
 Each file has default values and custom values as well.
 Default values are:
 
-- $slug (string) = meta txt filename
+- $path (string) = path to meta text file, matches filesystem structure and URL, can’t be changed
 - $date_created (date) = when the file was created
 - $date_uploaded (date) = when the file was uploaded
 - $date_modified (date) = when the file was last edited

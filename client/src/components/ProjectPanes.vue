@@ -22,12 +22,14 @@
           :key="`instructions.pane_${pane.type}`"
           v-if="show_instructions"
         >
-          <span v-html="$t(`instructions.pane.${pane.type}`)"></span>
-          <sl-icon-button
-            name="x-circle-fill"
-            label="Fermer"
-            @click.stop="show_instructions = false"
-          />
+          <div>
+            <span v-html="$t(`instructions.pane.${pane.type}`)"></span>
+            <sl-icon-button
+              name="x-circle-fill"
+              label="Fermer"
+              @click.stop="show_instructions = false"
+            />
+          </div>
         </div>
         <CapturePane v-if="pane.type === 'Capturer'" :project="project" />
         <MediaLibrary
@@ -122,12 +124,20 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
+  width: 100%;
   z-index: 10000;
-  background: white;
-  max-width: 44ch;
-  padding: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 2);
-  border-radius: 8px;
-  border: 2px solid var(--color-type);
+  text-align: center;
+  pointer-events: none;
+  padding: calc(var(--spacing) / 1);
+
+  > div {
+    background: white;
+    max-width: 54ch;
+    padding: calc(var(--spacing) / 2);
+    margin: 0 auto;
+    border-radius: 8px;
+    border: 2px solid var(--color-type);
+    pointer-events: auto;
+  }
 }
 </style>
