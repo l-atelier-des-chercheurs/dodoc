@@ -17,20 +17,23 @@
         :data-size="pane.size"
         :style="`--color-type: var(--color-${pane.type});`"
       >
-        <div
-          class="_floatingMsg"
-          :key="`instructions.pane_${pane.type}`"
-          v-if="show_instructions"
-        >
-          <div>
-            <span v-html="$t(`instructions.pane.${pane.type}`)"></span>
-            <sl-icon-button
-              name="x-circle-fill"
-              label="Fermer"
-              @click.stop="show_instructions = false"
-            />
+        <transition name="fade_fast">
+          <div
+            class="_floatingMsg"
+            :key="`instructions.pane_${pane.type}`"
+            v-if="show_instructions"
+            @click.self="show_instructions = false"
+          >
+            <div>
+              <span v-html="$t(`instructions.pane.${pane.type}`)"></span>
+              <sl-icon-button
+                name="x-circle-fill"
+                label="Fermer"
+                @click.stop="show_instructions = false"
+              />
+            </div>
           </div>
-        </div>
+        </transition>
         <CapturePane v-if="pane.type === 'Capturer'" :project="project" />
         <MediaLibrary
           v-else-if="pane.type === 'Collecter'"
@@ -83,8 +86,9 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
-    panes_enabled() {
-      this.show_instructions = true;
+    panes_enabled(val, oldVal) {
+      if (JSON.stringify(val) !== JSON.stringify(oldVal))
+        this.show_instructions = true;
     },
   },
   computed: {
@@ -125,19 +129,38 @@ export default {
   left: 0;
   top: 0;
   width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+
   z-index: 10000;
   text-align: center;
-  pointer-events: none;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) * 2);
+
+  cursor: pointer;
 
   > div {
+    position: relative;
+    background: var(--color-type);
     background: white;
     max-width: 54ch;
     padding: calc(var(--spacing) / 2);
     margin: 0 auto;
-    border-radius: 8px;
-    border: 2px solid var(--color-type);
+    border: 2px solid var(--c-gris);
+    border-radius: 4px;
     pointer-events: auto;
+
+    cursor: default;
+  }
+
+  sl-icon-button {
+    position: absolute;
+    top: -1em;
+    right: -1em;
+    color: currentColor;
+
+    &::part(base) {
+      color: currentColor;
+    }
   }
 }
 </style>

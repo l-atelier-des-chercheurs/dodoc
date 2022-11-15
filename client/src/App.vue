@@ -435,4 +435,16 @@ img {
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
+.slidedown {
+  &-enter-active,
+  &-leave-active {
+    transform: translateY(0);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: translateY(-100%);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
 </style>
