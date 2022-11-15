@@ -11,7 +11,7 @@
 
       <MediaContent
         :file="file"
-        :project_slug="project_slug"
+        :project_path="project_path"
         :resolution="1600"
         :context="'full'"
       />
@@ -34,7 +34,7 @@
 export default {
   props: {
     file: Object,
-    project_slug: String,
+    project_path: String,
   },
   components: {},
   data() {

@@ -46,7 +46,7 @@
 <script>
 export default {
   props: {
-    project_slug: String,
+    project_path: String,
   },
   components: {},
   data() {
@@ -73,7 +73,7 @@ export default {
       // TODO replace with $api
       try {
         const new_folder_slug = await this.$api.createFolder({
-          path: `/projects/${this.project_slug}/publications`,
+          path: `${this.project_path}/publications`,
           additional_meta: {
             title: this.new_publication_title,
             requested_slug: this.new_publication_title,

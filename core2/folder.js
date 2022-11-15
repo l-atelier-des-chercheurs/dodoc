@@ -7,17 +7,19 @@ const utils = require("./utils"),
 
 module.exports = (function () {
   const API = {
-    getFolders: async ({ relative_path }) => {
-      dev.logfunction({ relative_path });
+    getFolders: async ({ path_to_type }) => {
+      dev.logfunction({ path_to_type });
       // TODO cache get all folders
 
-      const folders_slugs = await _getFolderSlugs({ relative_path });
+      const folders_slugs = await _getFolderSlugs({
+        path_to_type,
+      });
 
       const all_folders_with_meta = [];
       for (let folder_slug of folders_slugs) {
-        const path_to_folder = path.join(relative_path, folder_slug);
+        const path_to_folder = path.join(path_to_type, folder_slug);
         const folder_meta = await API.getFolder({
-          relative_path: path_to_folder,
+          path_to_folder,
         }).catch((err) => {
           dev.error(err);
         });
@@ -27,27 +29,28 @@ module.exports = (function () {
       return all_folders_with_meta;
     },
 
-    getFolder: async ({ relative_path }) => {
-      dev.logfunction({ relative_path });
+    getFolder: async ({ path_to_folder }) => {
+      dev.logfunction({ path_to_folder });
 
-      const { schema, folder_slug, subfolder_slug } =
-        await utils.parseAndCheckSchema({ relative_path });
+      const { schema } = await utils.parseAndCheckSchema({
+        relative_path: path_to_folder,
+      });
 
       const d = cache.get({
-        key: relative_path,
+        key: path_to_folder,
       });
       if (d) return d;
 
       let folder_meta = await utils
-        .readMetaFile(relative_path, "meta.txt")
+        .readMetaFile(path_to_folder, "meta.txt")
         .catch((err) => {
           throw err;
         });
-      folder_meta.$path = relative_path;
+      folder_meta.$path = path_to_folder;
 
       if (schema.$cover) {
         let cover = await _getFolderCover({
-          relative_path,
+          path_to_folder,
         });
         if (cover) folder_meta.$cover = cover;
       }
@@ -58,15 +61,15 @@ module.exports = (function () {
 
       // TODO get number of files if files in schema
       cache.set({
-        key: relative_path,
+        key: path_to_folder,
         value: folder_meta,
       });
 
       return folder_meta;
     },
 
-    createFolder: async ({ relative_path, data }) => {
-      dev.logfunction({ relative_path, data });
+    createFolder: async ({ path_to_type, data }) => {
+      dev.logfunction({ path_to_type, data });
 
       let folder_slug = `untitled`;
       if (data?.requested_slug) folder_slug = utils.slug(data.requested_slug);
@@ -74,11 +77,13 @@ module.exports = (function () {
       let { $cover, ...meta } = data;
 
       folder_slug = await _preventFolderOverride({
-        relative_path,
+        path_to_type,
         folder_slug,
       });
 
-      const { schema } = await utils.parseAndCheckSchema({ relative_path });
+      const { schema } = await utils.parseAndCheckSchema({
+        relative_path: path_to_type,
+      });
 
       let valid_meta = meta
         ? utils.validateMeta({
@@ -102,14 +107,13 @@ module.exports = (function () {
       }
 
       const path_to_folder = utils.getPathToUserContent(
-        relative_path,
+        path_to_type,
         folder_slug
       );
       await fs.ensureDir(path_to_folder);
 
       await utils.saveMetaAtPath({
-        relative_path: path.join(relative_path, folder_slug),
-        file_slug: "meta.txt",
+        relative_path: path.join(path_to_type, folder_slug),
         meta: valid_meta,
       });
 
@@ -117,11 +121,11 @@ module.exports = (function () {
 
       return folder_slug;
     },
-    updateFolder: async ({ relative_path, data, update_cover_req }) => {
-      dev.logfunction({ relative_path, data });
+    updateFolder: async ({ path_to_folder, data, update_cover_req }) => {
+      dev.logfunction({ path_to_folder, data });
 
       // get folder meta
-      let meta = await utils.readMetaFile(relative_path, "meta.txt");
+      let meta = await utils.readMetaFile(path_to_folder, "meta.txt");
       const previous_meta = JSON.parse(JSON.stringify(meta));
 
       let { ...new_meta } = data;
@@ -129,7 +133,7 @@ module.exports = (function () {
       // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the type
       if (new_meta) {
         const clean_meta = await utils.cleanNewMeta({
-          relative_path,
+          relative_path: path_to_folder,
           new_meta,
         });
         Object.assign(meta, clean_meta);
@@ -137,8 +141,7 @@ module.exports = (function () {
 
       meta.$date_modified = utils.getCurrentDate();
       await utils.saveMetaAtPath({
-        relative_path,
-        file_slug: "meta.txt",
+        relative_path: path_to_folder,
         meta,
       });
 
@@ -150,39 +153,39 @@ module.exports = (function () {
       }, {});
 
       if (update_cover_req) {
-        await thumbs.removeFolderCover({ relative_path });
+        await thumbs.removeFolderCover({ path_to_folder });
         await fs.remove(
-          utils.getPathToUserContent(relative_path, "meta_cover.jpeg")
+          utils.getPathToUserContent(path_to_folder, "meta_cover.jpeg")
         );
 
         // TODO improve legibility
         await API.saveCover({
           req: update_cover_req,
-          relative_path,
+          path_to_folder,
         }).catch((err) => {});
 
         changed_meta.$cover = await _getFolderCover({
-          relative_path,
+          path_to_folder,
         });
       }
 
       cache.delete({
-        key: relative_path,
+        key: path_to_folder,
       });
 
       return changed_meta;
     },
-    removeFolder: async ({ relative_path }) => {
-      dev.logfunction({ relative_path });
+    removeFolder: async ({ path_to_folder }) => {
+      dev.logfunction({ path_to_folder });
 
       try {
         if (global.settings.removePermanently === true)
-          await _removeFolderForGood({ relative_path });
-        else await _moveFolderToBin({ relative_path });
+          await _removeFolderForGood({ path_to_folder });
+        else await _moveFolderToBin({ path_to_folder });
 
-        await thumbs.removeFolderThumbs({ relative_path });
+        await thumbs.removeFolderThumbs({ path_to_folder });
         cache.delete({
-          key: relative_path,
+          key: path_to_folder,
         });
 
         return;
@@ -191,11 +194,11 @@ module.exports = (function () {
       }
     },
 
-    saveCover: async ({ req, relative_path }) => {
-      dev.logfunction({ relative_path });
+    saveCover: async ({ req, path_to_folder }) => {
+      dev.logfunction({ path_to_folder });
 
       const { schema, folder_type } = await utils.parseAndCheckSchema({
-        relative_path,
+        relative_path: path_to_folder,
       });
 
       if (!schema.hasOwnProperty("$cover")) {
@@ -203,25 +206,28 @@ module.exports = (function () {
         return;
       }
 
-      const { folder_path, filepath } = await utils
+      const { path_to_temp_file } = await utils
         .handleForm({
+          path_to_folder,
           req,
-          relative_path,
         })
         .catch((err) => {
           return;
         });
 
       const cover_name = "meta_cover.jpeg";
-      const full_path_to_thumb = path.join(folder_path, cover_name);
+      const full_path_to_thumb = utils.getPathToUserContent(
+        path_to_folder,
+        cover_name
+      );
 
       // TODO read filepath with sharp,
       await utils.makeImageFromPath({
-        full_path: filepath,
+        full_path: path_to_temp_file,
         new_path: full_path_to_thumb,
         resolution: 2000,
       });
-      await fs.remove(filepath);
+      await fs.remove(path_to_temp_file);
 
       return;
     },
@@ -254,13 +260,14 @@ module.exports = (function () {
     },
   };
 
-  async function _getFolderSlugs({ relative_path }) {
-    dev.logfunction({ relative_path });
-
-    const folder_path = utils.getPathToUserContent(relative_path);
+  async function _getFolderSlugs({ path_to_type }) {
+    dev.logfunction({ path_to_type });
+    const full_path_to_folder = utils.getPathToUserContent(path_to_type);
 
     try {
-      let folders = (await fs.readdir(folder_path, { withFileTypes: true }))
+      let folders = (
+        await fs.readdir(full_path_to_folder, { withFileTypes: true })
+      )
         .filter(
           (dirent) =>
             dirent.isDirectory() &&
@@ -276,26 +283,26 @@ module.exports = (function () {
     }
   }
 
-  async function _getFolderCover({ schema, relative_path }) {
-    dev.logfunction({ schema, relative_path });
+  async function _getFolderCover({ schema, path_to_folder }) {
+    dev.logfunction({ schema, path_to_folder });
 
     const cover_name = "meta_cover.jpeg";
-    const cover_path = utils.getPathToUserContent(relative_path, cover_name);
+    const cover_path = utils.getPathToUserContent(path_to_folder, cover_name);
 
     if (!(await fs.pathExists(cover_path))) return false;
 
     dev.logverbose(`folder has cover`);
     const thumb_meta = await thumbs.makeFolderCover({
-      relative_path,
+      path_to_folder,
     });
 
     return thumb_meta;
   }
 
-  async function _preventFolderOverride({ relative_path, folder_slug }) {
-    dev.logfunction({ relative_path, folder_slug });
+  async function _preventFolderOverride({ path_to_type, folder_slug }) {
+    dev.logfunction({ path_to_type, folder_slug });
 
-    const folders_slugs = await _getFolderSlugs({ relative_path });
+    const folders_slugs = await _getFolderSlugs({ path_to_type });
     dev.logfunction({ folders_slugs });
 
     if (folders_slugs.length === 0) return folder_slug;
@@ -310,35 +317,42 @@ module.exports = (function () {
     return new_folder_slug;
   }
 
-  async function _removeFolderForGood({ relative_path }) {
+  async function _removeFolderForGood({ path_to_folder }) {
     try {
-      await fs.remove(utils.getPathToUserContent(relative_path));
+      await fs.remove(utils.getPathToUserContent(path_to_folder));
     } catch (err) {
       throw err;
     }
   }
-  async function _moveFolderToBin({ relative_path }) {
-    const full_folder_path = utils.getPathToUserContent(relative_path);
+  async function _moveFolderToBin({ path_to_folder }) {
+    const bin_folder_path =
+      path_to_folder.substr(0, path_to_folder.lastIndexOf("/")) +
+      "/" +
+      global.settings.deletedFolderName +
+      "/" +
+      path_to_folder.substr(path_to_folder.lastIndexOf("/") + 1);
 
-    const { folder_type, folder_slug, subfolder_type, subfolder_slug } =
-      await utils.parseAndCheckSchema({ relative_path });
+    const full_folder_path = utils.getPathToUserContent(path_to_folder);
+    const full_bin_folder_path = utils.getPathToUserContent(bin_folder_path);
 
-    const bin_folder_path = subfolder_slug
-      ? utils.getPathToUserContent(
-          folder_type,
-          folder_slug,
-          subfolder_type,
-          global.settings.deletedFolderName,
-          subfolder_slug
-        )
-      : utils.getPathToUserContent(
-          folder_type,
-          global.settings.deletedFolderName,
-          folder_slug
-        );
+    // const bin_folder_path = subfolder_slug
+    // ? utils.getPathToUserContent(
+    //     folder_type,
+    //     folder_slug,
+    //     subfolder_type,
+    //     global.settings.deletedFolderName,
+    //     subfolder_slug
+    //   )
+    // : utils.getPathToUserContent(
+    //     folder_type,
+    //     global.settings.deletedFolderName,
+    //     folder_slug
+    //   );
 
     try {
-      await fs.move(full_folder_path, bin_folder_path, { overwrite: true });
+      await fs.move(full_folder_path, full_bin_folder_path, {
+        overwrite: true,
+      });
       return;
     } catch (err) {
       throw err;

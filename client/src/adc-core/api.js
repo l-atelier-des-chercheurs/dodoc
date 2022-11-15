@@ -85,7 +85,7 @@ export default function () {
         this.socket.connect();
       },
       folderCreated({ path, meta }) {
-        if (!this.store[path]) this.store[path] = [];
+        if (!this.store[path]) this.store[path] = new Array();
         this.store[path].push(meta);
         this.$set(this.store, meta.$path, meta);
       },
@@ -134,34 +134,31 @@ export default function () {
         this.$eventHub.$emit("folder.removed", { path });
       },
 
-      fileCreated({ folder_type, folder_slug, file_meta }) {
-        const folder = this.findFolder({
-          folder_type,
-          folder_slug,
-        });
+      fileCreated({ path_to_folder, meta }) {
+        const folder = this.store[path_to_folder];
         if (!folder.$files) this.$set(folder, "files", new Array());
-        folder.$files.push(file_meta);
+        folder.$files.push(meta);
       },
-      fileUpdated({ folder_type, folder_slug, meta_slug, changed_data }) {
-        const file = this.findFileInFolder({
-          folder_type,
-          folder_slug,
-          meta_slug,
-        });
-
+      fileUpdated({ path_to_folder, path_to_meta, changed_data }) {
+        const folder = this.store[path_to_folder];
+        const file = folder.$files.find((file) => file.$path === path_to_meta);
         if (file)
           Object.entries(changed_data).map(([key, value]) => {
             this.$set(file, key, value);
           });
       },
-      fileRemoved({ folder_type, folder_slug, meta_slug }) {
-        const folder = this.findFolder({ folder_type, folder_slug });
-        const file_index = this.findFileIndexInFolder({
-          folder_type,
-          folder_slug,
-          meta_slug,
-        });
-        if (file_index >= 0) folder.$files.splice(file_index, 1);
+      fileRemoved({ path_to_folder, path_to_meta }) {
+        const folder = this.store[path_to_folder];
+        folder.$files = folder.$files.filter(
+          (file) => file.$path !== path_to_meta
+        );
+        // const folder = this.findFolder({ folder_type, folder_slug });
+        // const file_index = this.findFileIndexInFolder({
+        //   folder_type,
+        //   folder_slug,
+        //   meta_filename,
+        // });
+        // if (file_index >= 0) folder.$files.splice(file_index, 1);
       },
 
       join({ room }) {
@@ -244,13 +241,7 @@ export default function () {
         }
       },
 
-      async uploadText({
-        folder_type,
-        folder_slug,
-        filename,
-        content = "",
-        additional_meta,
-      }) {
+      async uploadText({ path, filename, content = "", additional_meta }) {
         let formData = new FormData();
 
         const file = new Blob([content], { type: "text/plain" });
@@ -259,28 +250,20 @@ export default function () {
           formData.append(filename, JSON.stringify(additional_meta));
 
         await this.uploadFile({
-          folder_type,
-          folder_slug,
+          path,
           filename,
           file,
           additional_meta,
         });
       },
-      async uploadFile({
-        folder_type,
-        folder_slug,
-        filename,
-        file,
-        additional_meta,
-        onProgress,
-      }) {
+      async uploadFile({ path, filename, file, additional_meta, onProgress }) {
         let formData = new FormData();
         formData.append("file", file, filename);
 
         if (additional_meta)
           formData.append(filename, JSON.stringify(additional_meta));
 
-        const path = `/${folder_type}/${folder_slug}/_upload`;
+        path = `${path}/_upload`;
 
         let res = await this.$axios
           .post(path, formData, {
@@ -302,17 +285,11 @@ export default function () {
         return response.data;
       },
 
-      async updateCover({
-        folder_type,
-        folder_slug,
-        filename,
-        rawData,
-        onProgress,
-      }) {
+      async updateCover({ path, rawData, onProgress }) {
         let formData = new FormData();
-        if (rawData) formData.append("file", rawData, filename);
+        if (rawData) formData.append("file", rawData, "cover");
 
-        const path = `/${folder_type}/${folder_slug}?cover`;
+        path = path + `?cover`;
 
         await this.$axios
           .patch(path, formData, {

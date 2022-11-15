@@ -99,8 +99,6 @@ Quill.register("modules/cardEditable", CardEditableModule);
 
 export default {
   props: {
-    folder_type: String,
-    folder_slug: String,
     file: Object,
     scrollingContainer: HTMLElement,
     line_selected: [Boolean, Number],
@@ -467,6 +465,7 @@ export default {
     },
     addMediaAtIndex(index, media) {
       console.log(`CollaborativeEditor • addMediaAtIndex ${index}`);
+      // TODO fix
       const mediaURL = `./${this.folder_slug}/${media.media_filename}`;
       // const mediaURL =
       //   this.$root.state.mode === "export_publication"

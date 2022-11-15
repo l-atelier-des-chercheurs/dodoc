@@ -35,7 +35,6 @@ z
         v-if="context === 'full' && can_edit_project"
         class=""
         :cover="project.$cover"
-        :project_slug="project.$slug"
         :path="project.$path"
       />
     </div>
@@ -119,7 +118,7 @@ export default {
       return this.makeRelativeURLFromThumbs({
         thumbs: this.project.$cover,
         type: "image",
-        project_slug: this.project.$slug,
+        project_path: this.project.$path,
         resolution: 1200,
       });
     },

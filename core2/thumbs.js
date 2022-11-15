@@ -15,27 +15,30 @@ ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
-    makeFolderCover: ({ relative_path }) => makeFolderCover({ relative_path }),
+    makeFolderCover: ({ path_to_folder }) =>
+      makeFolderCover({ path_to_folder }),
     makeThumbForMedia: async ({
       media_type,
       media_filename,
-      relative_path,
+      path_to_folder,
     }) => {
       // make/get thumbs for medias with specific types
       dev.space();
       dev.logfunction({
         media_type,
         media_filename,
-        relative_path,
+        path_to_folder,
       });
 
-      const { schema } = utils.parseAndCheckSchema({ relative_path });
+      const { schema } = await utils.parseAndCheckSchema({
+        relative_path: path_to_folder,
+      });
       const filethumbs_resolutions = schema.$files?.thumbs?.resolutions;
       if (!filethumbs_resolutions) return false;
 
-      const path_to_thumb_folder = await _getThumbFolderPath(relative_path);
+      const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
       const full_media_path = utils.getPathToUserContent(
-        relative_path,
+        path_to_folder,
         media_filename
       );
 
@@ -103,35 +106,36 @@ module.exports = (function () {
       return thumbs;
     },
 
-    getInfosForFile: async ({ media_type, media_filename, relative_path }) => {
+    getInfosForFile: async ({ media_type, media_filename, path_to_folder }) => {
       // get width, height, ratio, gps, duration, exif, size
 
       dev.logfunction({
         media_type,
         media_filename,
-        relative_path,
+        path_to_folder,
       });
 
       const full_media_path = utils.getPathToUserContent(
-        relative_path,
+        path_to_folder,
         media_filename
       );
 
       const infos_filename = media_filename + ".infos.txt";
       const path_to_infos_file = utils.getPathToUserContent(
         "thumbs",
-        relative_path,
+        path_to_folder,
         infos_filename
       );
 
-      if (await fs.pathExists(path_to_infos_file)) {
-        dev.logverbose(`has infos file`);
-        const infos = utils.readMetaFile(
+      try {
+        const infos = await utils.readMetaFile(
           "thumbs",
-          relative_path,
+          path_to_folder,
           infos_filename
         );
         return infos;
+      } catch (err) {
+        dev.error(err);
       }
 
       const hrstart = process.hrtime();
@@ -152,17 +156,17 @@ module.exports = (function () {
       dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
 
       if (infos) {
-        utils.storeMeta({ _path: path_to_infos_file, meta: infos });
+        utils.storeContent({ full_path: path_to_infos_file, meta: infos });
         return infos;
       }
       return false;
     },
-    removeFolderThumbs: ({ relative_path }) =>
-      removeFolderThumbs({ relative_path }),
-    removeFolderCover: ({ relative_path }) =>
-      removeFolderCover({ relative_path }),
-    removeFileThumbs: ({ relative_path, meta_slug }) =>
-      removeFileThumbs({ relative_path, meta_slug }),
+    removeFolderThumbs: ({ path_to_folder }) =>
+      removeFolderThumbs({ path_to_folder }),
+    removeFolderCover: ({ path_to_folder }) =>
+      removeFolderCover({ path_to_folder }),
+    removeFileThumbs: ({ path_to_folder, meta_filename }) =>
+      removeFileThumbs({ path_to_folder, meta_filename }),
   };
 
   async function _makeThumbFor({
@@ -244,16 +248,18 @@ module.exports = (function () {
     return thumb_paths;
   }
 
-  async function makeFolderCover({ relative_path }) {
+  async function makeFolderCover({ path_to_folder }) {
     const cover_name = "meta_cover.jpeg";
     const full_cover_path = utils.getPathToUserContent(
-      relative_path,
+      path_to_folder,
       cover_name
     );
 
-    const { schema } = await utils.parseAndCheckSchema({ relative_path });
+    const { schema } = await utils.parseAndCheckSchema({
+      relative_path: path_to_folder,
+    });
     const cover_schema = schema.$cover;
-    const path_to_thumb_folder = await _getThumbFolderPath(relative_path);
+    const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
 
     const paths = await _makeImageThumbsFor({
       full_media_path: full_cover_path,
@@ -265,46 +271,38 @@ module.exports = (function () {
     return paths;
   }
 
-  async function removeFolderThumbs({ relative_path }) {
-    dev.logfunction({
-      relative_path,
-    });
-
-    const full_path_to_thumb = utils.getPathToUserContent(
-      "thumbs",
-      relative_path
+  async function removeFolderThumbs({ path_to_folder }) {
+    dev.logfunction({ path_to_folder });
+    return await fs.remove(
+      utils.getPathToUserContent("thumbs", path_to_folder)
     );
-
-    return await fs.remove(full_path_to_thumb);
   }
-  async function removeFolderCover({ relative_path }) {
-    dev.logfunction({
-      relative_path,
-    });
+  async function removeFolderCover({ path_to_folder }) {
+    dev.logfunction({ path_to_folder });
     return await _removeAllThumbsForFile({
-      relative_path,
+      path_to_folder,
       media_filename: "meta_cover.jpeg",
     });
   }
-  async function removeFileThumbs({ relative_path, meta_slug }) {
+  async function removeFileThumbs({ path_to_folder, meta_filename }) {
     dev.logfunction({
-      relative_path,
-      meta_slug,
+      path_to_folder,
+      meta_filename,
     });
 
-    let meta = await utils.readMetaFile(relative_path, meta_slug);
+    let meta = await utils.readMetaFile(path_to_folder, meta_filename);
     const media_filename = meta.$media_filename;
 
     return await _removeAllThumbsForFile({
-      relative_path,
+      path_to_folder,
       media_filename,
     });
   }
 
-  async function _removeAllThumbsForFile({ relative_path, media_filename }) {
+  async function _removeAllThumbsForFile({ path_to_folder, media_filename }) {
     const full_path_to_thumb = utils.getPathToUserContent(
       "thumbs",
-      relative_path
+      path_to_folder
     );
 
     try {

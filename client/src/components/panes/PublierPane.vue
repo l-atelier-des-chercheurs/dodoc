@@ -7,7 +7,7 @@
 
     <CreatePublication
       v-if="show_create_publication"
-      :project_slug="project.$slug"
+      :project_path="project.$path"
       @close="show_create_publication = false"
     />
 
@@ -42,7 +42,6 @@ export default {
       this.publications = await this.$api.getFolders({
         path,
       });
-      debugger;
       this.$api.join({ room: path });
     },
   },

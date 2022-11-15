@@ -28,8 +28,7 @@
 <script>
 export default {
   props: {
-    cover: Object,
-    project_slug: String,
+    cover: [Boolean, Object],
     path: String,
   },
   components: {},
@@ -52,7 +51,7 @@ export default {
       return this.makeRelativeURLFromThumbs({
         thumbs: this.cover,
         type: "image",
-        project_slug: this.project_slug,
+        project_path: this.path,
         resolution: 320,
       });
     },
@@ -70,9 +69,7 @@ export default {
 
       try {
         await this.$api.updateCover({
-          folder_type: "projects",
-          folder_slug: this.project_slug,
-          filename: "cover",
+          path: this.path,
           rawData: this.new_cover_raw,
           // onProgress,
         });

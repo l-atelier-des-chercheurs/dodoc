@@ -38,8 +38,6 @@
 
     <div v-html="article.text" />
     <CollaborativeEditor2
-      :folder_type="'projects'"
-      :folder_slug="project_slug"
       :file="article"
       :scrollingContainer="$el"
       :line_selected="line_selected"
@@ -53,7 +51,6 @@ import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/Collabo
 export default {
   props: {
     article: Object,
-    project_slug: String,
   },
   components: {
     CollaborativeEditor2,

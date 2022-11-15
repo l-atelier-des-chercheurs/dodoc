@@ -1,8 +1,9 @@
 <template>
   <div class="_capturePane">
     <CaptureView
-      :slugFolderName="project.$slug"
+      :slugFolderName="project.$path"
       :type="'projects'"
+      :path="project.$path"
       :read_only="false"
     />
   </div>

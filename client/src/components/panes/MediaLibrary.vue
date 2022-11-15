@@ -37,8 +37,7 @@
         <UploadFiles
           v-if="selected_files.length > 0"
           :selected_files="selected_files"
-          :folder_type="'projects'"
-          :folder_slug="project.$slug"
+          :path="project.$path"
           @importedMedias="mediaJustImported"
           @close="selected_files = []"
         />
@@ -60,11 +59,11 @@
         <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
           <MediaTile
             v-for="file of medias"
-            :key="file.$slug"
-            :project_slug="project.$slug"
+            :key="file.$path"
+            :project_path="project.$path"
             :file="file"
-            :is_focused="media_focused === file.$slug"
-            :data-fileslug="file.$slug"
+            :is_focused="media_focused === file.$path"
+            :data-filepath="file.$path"
             @toggleMediaFocus="(slug) => toggleMediaFocus(slug)"
           />
         </div>
@@ -80,7 +79,7 @@
             v-if="focused_media"
             :key="focused_media.$path"
             :file="focused_media"
-            :project_slug="project.$path"
+            :project_path="project.$path"
             @remove="removeMedia(focused_media.$path)"
             @close="toggleMediaFocus(focused_media.$path)"
           />
@@ -137,10 +136,10 @@ export default {
     },
     focused_media() {
       const _focused_media =
-        this.project.$files.find((f) => f.$slug === this.media_focused) ||
+        this.project.$files.find((f) => f.$path === this.media_focused) ||
         false;
       if (_focused_media && this.$refs.mediaTiles)
-        this.scrollToMediaTile(_focused_media.$slug);
+        this.scrollToMediaTile(_focused_media.$path);
 
       return _focused_media;
     },
@@ -156,7 +155,7 @@ export default {
     scrollToMediaTile(slug) {
       slug;
       // const focused_tile = this.$refs.mediaTiles.querySelector(
-      //   `[data-fileslug="${slug}"]`
+      //   `[data-filepath="${slug}"]`
       // );
       // if (focused_tile)
       // focused_tile.scrollIntoView({

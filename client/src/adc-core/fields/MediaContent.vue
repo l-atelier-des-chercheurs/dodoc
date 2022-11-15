@@ -28,7 +28,7 @@
 export default {
   props: {
     file: Object,
-    project_slug: String,
+    project_path: String,
     resolution: {
       type: Number,
       default: 180,
@@ -37,10 +37,6 @@ export default {
       type: String,
       default: "preview",
       // preview, full
-    },
-    subfolder: {
-      type: String,
-      default: "projects",
     },
   },
   components: {},
@@ -56,7 +52,7 @@ export default {
       return this.makeRelativeURLFromThumbs({
         thumbs: this.file.$thumbs,
         type: this.file.$type,
-        project_slug: this.project_slug,
+        project_path: this.project_path,
         resolution: this.resolution,
       });
     },
