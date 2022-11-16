@@ -1063,6 +1063,7 @@ export default {
     slugFolderName: String,
     type: String,
     read_only: Boolean,
+    path: String,
     available_modes: {
       type: Array,
       default: () => [
@@ -2012,7 +2013,7 @@ export default {
 
       // TODO : possibilité de cancel
       let res = await this.$axios
-        .post(`/${this.type}/${this.slugFolderName}/_upload`, formData, {
+        .post(`${this.path}/_upload`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
           onUploadProgress: function (progressEvent) {
             console.log(

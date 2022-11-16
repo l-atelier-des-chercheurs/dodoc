@@ -1,5 +1,8 @@
 <template>
   <div class="_projectView">
+    <!-- <pre>
+      {{ $api.store }}
+    </pre> -->
     <sl-spinner style="--indicator-color: currentColor" v-if="!project" />
     <div v-else-if="fetch_project_error">
       {{ fetch_project_error }}
@@ -13,14 +16,11 @@
           :project="project"
           context="full"
           :can_edit_project="can_edit_project"
-          :show_more_informations.sync="show_more_informations"
         />
-
         <!-- Metadonnées, Auteurs, Mots-clés, Machines, Statut, Licence -->
-
-        <div class="_projectMeta" v-if="show_more_informations">
+        <div class="_projectMeta">
           <CardMeta :project="project" :can_edit_project="can_edit_project" />
-
+          <CardStatus :project="project" :can_edit_project="can_edit_project" />
           <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
           <CardKeywords
             :project="project"
@@ -31,7 +31,6 @@
             :project="project"
             :can_edit_project="can_edit_project"
           />
-          <CardStatus :project="project" :can_edit_project="can_edit_project" />
           <CardLicense
             :project="project"
             :can_edit_project="can_edit_project"
@@ -45,6 +44,7 @@
         <PaneList2
           class="_paneList"
           v-if="can_edit_project"
+          :project_title="project.title"
           :panes.sync="projectpanes"
         />
         <div class="_panes">
@@ -90,36 +90,22 @@ export default {
   },
   data() {
     return {
-      project_slug: this.$route.params.slug,
       fetch_project_error: null,
       project: null,
-
-      show_more_informations: false,
 
       projectpanes: [],
     };
   },
   created() {},
   async mounted() {
-    const project = await this.$api
-      .getFolders({
-        path: `projects/${this.project_slug}`,
-      })
-      .catch((err) => {
-        this.fetch_project_error = err.response;
-        this.is_loading = false;
-      });
-
-    this.project = project;
-
+    await this.listProjects();
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
-
-    this.$api.join({ room: `projects/${this.project_slug}` });
+    this.$api.join({ room: this.project.$path });
   },
   beforeDestroy() {
     this.$eventHub.$off("folder.removed", this.closeOnRemove);
-    this.$api.leave({ room: `projects/${this.project_slug}` });
+    this.$api.leave({ room: this.project.$path });
   },
   watch: {
     $route: {
@@ -155,6 +141,17 @@ export default {
     },
   },
   methods: {
+    async listProjects() {
+      const project = await this.$api
+        .getFolder({
+          path: this.$route.path,
+        })
+        .catch((err) => {
+          this.fetch_project_error = err.response;
+          this.is_loading = false;
+        });
+      this.project = project;
+    },
     updateQueryPanes() {
       let query = {};
 
@@ -168,8 +165,8 @@ export default {
 
       this.$router.push({ query });
     },
-    closeOnRemove({ folder_type, folder_slug }) {
-      if (folder_type === "projects" && folder_slug === this.project_slug) {
+    closeOnRemove({ path }) {
+      if (path === this.project.$path) {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
@@ -207,28 +204,38 @@ export default {
 }
 
 ._topContent {
-  // max-width: 120vh;
+  display: flex;
+  flex-flow: row wrap;
   margin: 0 auto;
-  // padding: calc(var(--spacing) / 2);
+
+  > * {
+    flex: 1 0 320px;
+
+    &._projectMeta {
+      flex: 0 0 240px;
+    }
+  }
 }
 
 ._projectMeta {
   display: flex;
-  flex-flow: row nowrap;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  background: #999;
-  background: var(--c-noir);
-  background: var(--c-gris);
+  flex-flow: column nowrap;
 
-  padding: calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 2);
+  max-height: 50vh;
+  overflow: auto;
+
+  // padding: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
 
   > * {
-    flex: 0 0 200px;
-    max-height: 200px;
-    overflow: auto;
-    // flex: 0 1 240px;
+    border: 1px solid var(--c-gris);
+
+    &:first-child {
+      border-top: 0 solid #000;
+    }
+    &:not(:last-child) {
+      border-bottom: 0 solid #000;
+    }
   }
 }
 

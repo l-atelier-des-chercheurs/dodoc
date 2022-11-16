@@ -304,6 +304,7 @@ img {
   // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
   // border-radius: 4px;
   // overflow: hidden;
+  position: relative;
   transition: none !important;
 }
 
@@ -431,6 +432,18 @@ img {
   &-enter,
   &-leave-to {
     transform: translateY(100%);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
+.slidedown {
+  &-enter-active,
+  &-leave-active {
+    transform: translateY(0);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: translateY(-100%);
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }

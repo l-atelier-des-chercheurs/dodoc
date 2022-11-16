@@ -20,48 +20,99 @@ module.exports = (function () {
 
     app.get("/_perf", loadPerf);
 
+    // todo forbiddenFiles txt
+    // app.use(forbiddenFiles);
     app.use("/_api2/*", [cors(_corsCheck), _sessionPasswordCheck]);
     // app.options("/_api2/*", cors());
 
     app.get("/_api2/_ip", _getLocalNetworkInfos);
     app.get("/_api2/_admin", _getAdminInfos);
 
-    // 1st level folders
-    app.get("/_api2/*.+*", _getFile);
-    app.get("/_api2/*", _getFolders);
+    /* FILES */
+    app.get(
+      [
+        "/_api2/:folder_type/:folder_slug/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
+      ],
+      _getFile
+    );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/_upload",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/_upload",
+      ],
+      _uploadFile
+    );
+    app.patch(
+      [
+        "/_api2/:folder_type/:folder_slug/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
+      ],
+      _updateFile
+    );
+    app.delete(
+      [
+        "/_api2/:folder_type/:folder_slug/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
+      ],
+      _removeFile
+    );
 
-    app.post("/_api2/*/_upload", _uploadFile);
-    app.post("/_api2/*", _createFolder);
+    /* FOLDERS */
+    app.get(
+      [
+        "/_api2/:folder_type",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type",
+      ],
+      _getFolders
+    );
+    app.post(
+      [
+        "/_api2/:folder_type",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type",
+      ],
+      _createFolder
+    );
 
-    // app.post("/_api2/:folder_type/:folder_slug/_upload", _uploadFile);
-
-    // app.post("/_api2/:folder_type", _createFolder);
-    // app.post("/_api2/:folder_type/:folder_slug/_upload", _uploadFile);
-    // app.patch("/_api2/:folder_type/:folder_slug", _updateFolder);
-    // app.delete("/_api2/:folder_type/:folder_slug", _removeFolder);
+    app.get(
+      [
+        "/_api2/:folder_type/:folder_slug",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
+      ],
+      _getFolder
+    );
     // app.post("/_api2/:folder_type/:folder_slug/_login", _loginToFolder);
-
-    // // 1st level files
-    // app.patch("/_api2/:folder_type/:folder_slug/:meta_slug+.", _updateFile);
-    // app.delete("/_api2/:folder_type/:folder_slug/:meta_slug", _removeFile);
+    app.patch(
+      [
+        "/_api2/:folder_type/:folder_slug",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
+      ],
+      _updateFolder
+    );
+    app.delete(
+      [
+        "/_api2/:folder_type/:folder_slug",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
+      ],
+      _removeFolder
+    );
 
     app.get("/*", loadIndex);
   }
 
   function _corsCheck(req, callback) {
     console.log();
-    // dev.logfunction();
+    dev.logapi({ path: req.path }, { params: req.params });
 
-    // dev.logverbose(`API2 — _corsCheck : ${JSON.stringify(req.headers)}`);
-    // check origin
-
+    // TODO check origin
     callback(null, { origin: true });
   }
   function _sessionPasswordCheck(req, res, next) {
+    // TODO
     next();
   }
 
-  function loadIndex(rea, res) {
+  function loadIndex(req, res) {
     dev.logapi();
     let d = {};
     d.schema = global.settings.schema;
@@ -74,336 +125,241 @@ module.exports = (function () {
   }
 
   async function _getFolders(req, res, next) {
-    const relative_path = req.path.substring(7);
-
-    const { folder_type, folder_slug, subfolder_type, subfolder_slug } =
-      await utils.parseAndCheckSchema({ relative_path }).catch((err) => {
-        return res.status(422).send(err.message);
-      });
-    dev.logapi({ folder_type, folder_slug, subfolder_type, subfolder_slug });
-
-    const hrstart = process.hrtime();
+    const { path_to_type } = utils.makePathFromReq(req);
 
     try {
-      let d;
-
-      // todo improved legibility
-      // one single route for all GET, which analyses if it ends with a filename (dot in the name)
-      // if it does, fetch file infos (file.getFile)
-      // otherwise, if it ends with a folder type from the schema, fetch all the folders located in the path (folder.getFolders)
-      // otherwise, look for a folder with a meta.txt in this spot (folder.getFolder)
-
-      if (!folder_slug || (subfolder_type && !subfolder_slug)) {
-        d = await folder.getFolders({ relative_path });
-      } else if (
-        (folder_slug && !subfolder_type) ||
-        (subfolder_type && subfolder_slug)
-      ) {
-        d = await folder.getFolder({ relative_path });
-        const files = await file.getFiles({ relative_path });
-        d.$files = files;
-
-        // TODO bug : $files end up in the cache, somehow
-      }
-
+      let d = await folder.getFolders({ path_to_type });
       res.setHeader("Access-Control-Allow-Origin", "*");
-
       dev.logpackets({ d });
       res.json(d);
     } catch (err) {
       dev.error("Failed to get expected content: " + err);
       res.status(500).send(err);
     }
-
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
-
     cache.printStatus();
   }
-
-  async function _getFile(req, res, next) {
-    const relative_path = req.path.substring(7);
-
-    // TODO improved legibility
-
-    const { meta_slug } = await utils
-      .parseAndCheckSchema({ relative_path })
-      .catch((err) => {
-        return res.status(422).send(err.message);
-      });
-
-    const hrstart = process.hrtime();
-
-    try {
-      const file_archives = await file.getArchives({
-        relative_path,
-        meta_filename: meta_slug,
-      });
-
-      dev.logpackets({ file_archives });
-      res.json(file_archives);
-    } catch (err) {
-      dev.error(err);
-      res.status(500).send(err);
-    }
-
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
-  }
-
   async function _createFolder(req, res, next) {
-    const relative_path = req.path.substring(7);
+    const { path_to_type, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_type });
 
-    const { folder_type, folder_slug, subfolder_type } = await utils
-      .parseAndCheckSchema({ relative_path })
-      .catch((err) => {
-        return res.status(422).send(err.message);
-      });
-    const data = req.body;
-
-    dev.logapi({
-      folder_type,
-      folder_slug,
-      subfolder_type,
-      data,
-    });
-
-    const hrstart = process.hrtime();
-
-    let new_folder_slug;
+    // TODO check if schema allows it
+    // return res.status(422).send(err.message);
 
     try {
-      new_folder_slug = await folder.createFolder({ relative_path, data });
-      dev.logpackets({ status: "folder was created" });
+      const new_folder_slug = await folder.createFolder({
+        path_to_type,
+        data,
+      });
+      dev.logpackets(`folder was created with name ${new_folder_slug}`);
       res.status(200).json({ new_folder_slug });
 
-      const _relative_path = path.join(relative_path, new_folder_slug);
+      const path_to_folder = path.join(path_to_type, new_folder_slug);
       const new_folder_meta = await folder.getFolder({
-        relative_path: _relative_path,
+        path_to_folder,
       });
 
-      notifier.emit("folderCreated", relative_path, {
-        path: relative_path,
+      notifier.emit("folderCreated", path_to_type, {
+        path: path_to_type,
         meta: new_folder_meta,
       });
     } catch (err) {
       dev.error("Failed to create folder: " + err.message);
       res.status(500).send({ message: err.message, error: err });
     }
+  }
 
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  async function _getFolder(req, res, next) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    try {
+      let d = JSON.parse(
+        JSON.stringify(await folder.getFolder({ path_to_folder }))
+      );
+      const files = await file.getFiles({ path_to_folder });
+      d.$files = files;
+      // TODO bug : $files end up in the cache, somehow
+
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      dev.logpackets({ d });
+      res.json(d);
+    } catch (err) {
+      dev.error("Failed to get expected content: " + err);
+      res.status(500).send(err);
+    }
+    cache.printStatus();
   }
 
   async function _updateFolder(req, res, next) {
-    const data = req.body;
-    const update_cover = req.query && req.query.hasOwnProperty("cover");
+    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    const update_cover = req.query?.hasOwnProperty("cover");
+    dev.logapi({ path_to_folder, data, update_cover });
 
-    dev.logapi({ folder_type, folder_slug, data, update_cover });
+    // TODO check if schema allows it, if data exists
+    // return res.status(422).send(err.message);
 
-    // check if header contains a valid jwt that certifies that user is author
+    // TODO check if header contains a valid jwt that certifies that user is author
     // if (auth.checkFolderForAuth({ folder_type, folder_slug }))
     //   res.status(422).send("Not allowed");
 
-    if (!data) return res.status(422).send("Missing body");
-
-    const hrstart = process.hrtime();
-
     try {
       const changed_data = await folder.updateFolder({
-        folder_type,
-        folder_slug,
+        path_to_folder,
         data,
         update_cover_req: update_cover ? req : false,
       });
       dev.logpackets({ status: "folder was updated" });
       res.status(200).json({ status: "ok" });
 
-      // TODO improve here
-      notifier.emit("folderUpdated", `${folder_type}`, {
-        folder_type,
-        folder_slug,
+      notifier.emit("folderUpdated", path_to_folder, {
+        path: path_to_folder,
         changed_data,
       });
-      notifier.emit("folderUpdated", `${folder_type}/${folder_slug}`, {
-        folder_type,
-        folder_slug,
+      notifier.emit("folderUpdated", path_to_type, {
+        path: path_to_folder,
         changed_data,
       });
     } catch (err) {
       dev.error("Failed to update folder: " + err.message);
       res.status(500).send({ message: err.message });
     }
-
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
 
   async function _removeFolder(req, res, next) {
-    let { folder_type, folder_slug } = req.params;
-
-    dev.logapi({ folder_type, folder_slug });
-
-    if (!folder_type) return res.status(422).send("Missing folder_type field");
-    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
-
-    const hrstart = process.hrtime();
+    const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
 
     try {
-      folder_slug = await folder.removeFolder({
-        folder_type,
-        folder_slug,
+      await folder.removeFolder({
+        path_to_folder,
       });
       dev.logpackets({ status: "folder was removed" });
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("folderRemoved", `${folder_type}`, {
-        folder_type,
-        folder_slug,
-      });
-      notifier.emit("folderRemoved", `${folder_type}/${folder_slug}`, {
-        folder_type,
-        folder_slug,
-      });
+      notifier.emit("folderRemoved", path_to_folder, { path: path_to_folder });
+      notifier.emit("folderRemoved", path_to_type, { path: path_to_folder });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
       res.status(404).send(err);
     }
-
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
   async function _loginToFolder(req, res, next) {
-    let { folder_type, folder_slug } = req.params;
-    const data = req.body;
-
-    dev.logapi({ folder_type, folder_slug });
-
-    if (!data || !data.hasOwnProperty("$password"))
-      return res.status(422).send("Missing password field");
-
-    try {
-      await folder.login({
-        folder_type,
-        folder_slug,
-        submitted_password: data.$password,
-      });
-      dev.logpackets({ status: "logged in to folder" });
-      res.status(200).json({ status: "ok" });
-    } catch (err) {
-      dev.error(`Failed to login to folder: ${err.message}`);
-      res.status(404).send("Folder is missing");
-    }
+    // try {
+    //   await folder.login({
+    //     folder_type,
+    //     folder_slug,
+    //     submitted_password: data.$password,
+    //   });
+    //   dev.logpackets({ status: "logged in to folder" });
+    //   res.status(200).json({ status: "ok" });
+    // } catch (err) {
+    //   dev.error(`Failed to login to folder: ${err.message}`);
+    // res.status(404).send("Folder is missing");
+    // }
   }
 
   async function _uploadFile(req, res, next) {
-    const relative_path = req.path.substring(7);
+    const { path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
 
     try {
-      const { folder_type, folder_slug, subfolder_type, subfolder_slug } =
-        await utils.parseAndCheckSchema({ relative_path });
-      dev.logapi({ folder_type, folder_slug, subfolder_type, subfolder_slug });
+      dev.logapi({ path_to_folder });
 
-      const hrstart = process.hrtime();
-
-      meta_filename = await file.importFile({
+      const meta_filename = await file.importFile({
+        path_to_folder,
         req,
-        folder_type,
-        folder_slug,
       });
-      dev.logpackets({ status: `uploaded file ${meta_filename}` });
-      res.status(200).json({ meta_filename });
-
-      const file_meta = await file.getFile({
-        folder_type,
-        folder_slug,
+      dev.logpackets({
+        status: `uploaded file`,
+        path_to_folder,
         meta_filename,
       });
+      res.status(200).json({ meta_filename });
 
-      notifier.emit("fileCreated", `${folder_type}/${folder_slug}`, {
-        folder_type,
-        folder_slug,
-        file_meta,
+      const meta = await file.getFile({
+        path_to_meta: path.join(path_to_folder, meta_filename),
       });
+      notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
     } catch (err) {
       dev.error("Failed to upload file: " + err);
       res.status(500).send(err);
     }
+  }
 
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
+  async function _getFile(req, res, next) {
+    const { path_to_folder, path_to_meta, meta_filename } =
+      utils.makePathFromReq(req);
+    // no filename found in params, user may be requesting folders
+    if (!path_to_meta) return next();
+
+    dev.logapi({ path_to_meta });
+
+    try {
+      const meta = await file.getFile({
+        path_to_meta,
+      });
+      const file_archives = await file
+        .getArchives({
+          path_to_folder,
+          meta_filename,
+        })
+        .catch(() => {});
+      if (file_archives) meta.$archives = file_archives;
+
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      dev.logpackets({ meta });
+      res.json(meta);
+    } catch (err) {
+      dev.error("Failed to upload file: " + err);
+      res.status(500).send(err);
+    }
   }
 
   async function _updateFile(req, res, next) {
-    let { folder_type, folder_slug, meta_slug } = req.params;
-    const data = req.body;
-
-    dev.logapi({ folder_type, folder_slug, meta_slug });
-
-    if (!folder_type) return res.status(422).send("Missing folder_type field");
-    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
-    if (!meta_slug) return res.status(422).send("Missing meta_slug field");
-    if (!data) return res.status(422).send("Missing body");
-
-    const hrstart = process.hrtime();
+    const { path_to_folder, path_to_meta, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, path_to_meta, data });
 
     try {
       const changed_data = await file.updateFile({
-        folder_type,
-        folder_slug,
-        meta_slug,
+        path_to_folder,
+        path_to_meta,
         data,
       });
       dev.logpackets({ status: "file was updated" });
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("fileUpdated", `${folder_type}/${folder_slug}`, {
-        folder_type,
-        folder_slug,
-        meta_slug,
+      notifier.emit("fileUpdated", path_to_folder, {
+        path_to_folder,
+        path_to_meta,
         changed_data,
       });
     } catch (err) {
       dev.error("Failed to update content: " + err.message);
       res.status(500).send(err);
     }
-
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
 
   async function _removeFile(req, res, next) {
-    let { folder_type, folder_slug, meta_slug } = req.params;
-
-    dev.logapi({ folder_type, folder_slug, meta_slug });
-
-    if (!folder_type) return res.status(422).send("Missing folder_type field");
-    if (!folder_slug) return res.status(422).send("Missing folder_slug field");
-    if (!meta_slug) return res.status(422).send("Missing meta_slug field");
-
-    const hrstart = process.hrtime();
+    const { path_to_folder, meta_filename, path_to_meta } =
+      utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, meta_filename });
 
     try {
-      folder_slug = await file.removeFile({
-        folder_type,
-        folder_slug,
-        meta_slug,
+      await file.removeFile({
+        path_to_folder,
+        meta_filename,
       });
-      dev.logpackets({ status: "file was removed" });
+      dev.logpackets(`file ${meta_filename} was removed`);
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("fileRemoved", `${folder_type}/${folder_slug}`, {
-        folder_type,
-        folder_slug,
-        meta_slug,
+      notifier.emit("fileRemoved", path_to_folder, {
+        path_to_folder,
+        path_to_meta,
       });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
       res.status(404).send(err);
     }
-
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
   }
 
   function _getLocalNetworkInfos(req, res, next) {

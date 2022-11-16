@@ -1,7 +1,7 @@
 export default {
   computed: {},
   methods: {
-    makeRelativeURLFromThumbs({ thumbs, type, project_slug, resolution }) {
+    makeRelativeURLFromThumbs({ thumbs, type, project_path, resolution }) {
       if (!thumbs) return false;
 
       let thumb_path = "";
@@ -16,7 +16,9 @@ export default {
         return false;
       }
 
-      return `/thumbs/projects/${project_slug}/${thumb_path}`;
+      // todo make this work with subfolders
+
+      return `/thumbs/${project_path}/${thumb_path}`;
     },
   },
 };

@@ -118,8 +118,7 @@ export default {
       if (!title) throw new Error("Missing title");
 
       const meta_filename = await this.$api.uploadText({
-        folder_type: "projects",
-        folder_slug: this.project.slug,
+        path: this.project.$path,
         filename: "journal-" + title + ".txt",
         additional_meta: {
           is_journal: true,

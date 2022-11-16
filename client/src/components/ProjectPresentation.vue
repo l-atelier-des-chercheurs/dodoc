@@ -35,8 +35,7 @@ z
         v-if="context === 'full' && can_edit_project"
         class=""
         :cover="project.$cover"
-        :project_slug="project.$slug"
-        :path="`/projects/${project.$slug}`"
+        :path="project.$path"
       />
     </div>
 
@@ -44,7 +43,7 @@ z
       <AuthorField
         :label="context === 'full' ? $t('contributors') : ''"
         :authors_slugs="project.$authors"
-        :path="`/projects/${project.$slug}`"
+        :path="project.$path"
         :can_edit="can_edit_project"
       />
 
@@ -52,7 +51,7 @@ z
         :field_name="'title'"
         :label="context === 'full' ? $t('title') : ''"
         :content="project.title"
-        :path="`/projects/${project.$slug}`"
+        :path="project.$path"
         :required="true"
         :maxlength="40"
         :tag="context === 'full' ? 'h1' : 'h2'"
@@ -63,27 +62,15 @@ z
         :field_name="'description'"
         :label="context === 'full' ? $t('description') : ''"
         :content="project.description"
-        :path="`/projects/${project.$slug}`"
+        :path="project.$path"
         :maxlength="280"
         :can_edit="can_edit_project"
       />
-
-      <div class="_tabButton" v-if="context === 'full'">
-        <button
-          type="button"
-          class="u-buttonLink"
-          @click="
-            $emit('update:show_more_informations', !show_more_informations)
-          "
-        >
-          {{ $t("more_infos") }}
-        </button>
-      </div>
     </div>
 
     <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link
-        :to="`/projects/${project.$slug}`"
+        :to="{ path: '/' + project.$path }"
         class="u-button u-button_red"
       >
         ouvrir&nbsp;
@@ -98,7 +85,7 @@ export default {
     project: Object,
     context: String,
     can_edit_project: Boolean,
-    show_more_informations: Boolean,
+    // show_more_informations: Boolean,
   },
   components: {},
   data() {
@@ -131,7 +118,7 @@ export default {
       return this.makeRelativeURLFromThumbs({
         thumbs: this.project.$cover,
         type: "image",
-        project_slug: this.project.$slug,
+        project_path: this.project.$path,
         resolution: 1200,
       });
     },
@@ -161,14 +148,12 @@ export default {
       // TODO use updateItem
 
       try {
-        const response = await this.$axios.patch(
-          `/projects/${this.project.$slug}`,
-          {
+        this.response = await this.$api.updateMeta({
+          path: this.project.$path,
+          new_meta: {
             title: this.new_title,
-          }
-        );
-
-        this.response = response.data;
+          },
+        });
         this.fetch_status = "success";
       } catch (e) {
         this.fetch_status = "error";
@@ -193,7 +178,7 @@ export default {
   overflow: hidden;
   background: white;
 
-  width: 100%;
+  // width: 100%;
 
   &.is--preview {
     border-bottom: 2px solid #b9b9b9;
@@ -227,11 +212,9 @@ export default {
 ._projectInfos--cover {
   position: relative;
   overflow: hidden;
-  // min-height: 50vh;
-  width: 100%;
+  flex: 0 1 50vmin;
+  max-height: 50vmin;
   aspect-ratio: 1/1;
-  border: 1px solid var(--color2);
-  max-width: 50vw;
 
   --color1: var(--c-gris);
   --color2: var(--c-gris_clair);

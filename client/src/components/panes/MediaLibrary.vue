@@ -1,6 +1,5 @@
 <template>
   <div class="_mediaLibrary">
-    <div class="u-instructions u-padding-small"></div>
     <splitpanes horizontal :dbl-click-splitter="false" @resized="resized">
       <pane
         min-size="5"
@@ -8,63 +7,55 @@
         ref="topLib"
         :size="lib_pane_size"
       >
-        <!-- <label for="add_file" class="_boldBtn"> -->
-        <input
-          type="file"
-          multiple="multiple"
-          :id="id + '-add_file'"
-          name="file"
-          accept=""
-          class="inputfile-2"
-          @change="updateInputFiles($event)"
-        />
-        <label :for="id + '-add_file'">
-          <svg width="20" height="17" viewBox="0 0 20 17">
-            <path
-              d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-            />
-          </svg>
-          {{ $t("import") }}
-        </label>
-        <!-- </label> -->
-        <!-- <sl-button @click="createText">Créer du texte</sl-button>
-    <sl-button
-      type="button"
-      @click="show_create_link_field = !show_create_link_field"
-    >
-      Ajouter un site web
-    </sl-button> -->
-        <UploadFiles
-          v-if="selected_files.length > 0"
-          :selected_files="selected_files"
-          :folder_type="'projects'"
-          :folder_slug="project.$slug"
-          @importedMedias="mediaJustImported"
-          @close="selected_files = []"
-        />
+        <div class="_topSection">
+          <input
+            type="file"
+            multiple="multiple"
+            :id="id + '-add_file'"
+            name="file"
+            accept=""
+            class="inputfile-2"
+            @change="updateInputFiles($event)"
+          />
+          <label :for="id + '-add_file'">
+            <svg width="20" height="17" viewBox="0 0 20 17">
+              <path
+                d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+              />
+            </svg>
+            {{ $t("import") }}
+          </label>
+          <UploadFiles
+            v-if="selected_files.length > 0"
+            :selected_files="selected_files"
+            :path="project.$path"
+            @importedMedias="mediaJustImported"
+            @close="selected_files = []"
+          />
 
-        <br />
-
-        <form
-          v-if="show_create_link_field"
-          class="input-validation-required"
-          @submit.prevent="createLink"
-        >
-          <input type="url" required v-model="url_to" />
           <br />
-          <input type="submit" />
-        </form>
 
-        Médias = {{ medias.length }}
+          <form
+            v-if="show_create_link_field"
+            class="input-validation-required"
+            @submit.prevent="createLink"
+          >
+            <input type="url" required v-model="url_to" />
+            <br />
+            <input type="submit" />
+          </form>
+
+          Nombre de médias = {{ medias.length }}
+        </div>
 
         <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
           <MediaTile
             v-for="file of medias"
-            :key="file.$slug"
-            :project_slug="project.$slug"
+            :key="file.$path"
+            :project_path="project.$path"
             :file="file"
-            :is_focused="media_focused === file.$slug"
-            :data-fileslug="file.$slug"
+            :is_focused="media_focused === file.$path"
+            :data-filepath="file.$path"
             @toggleMediaFocus="(slug) => toggleMediaFocus(slug)"
           />
         </div>
@@ -78,11 +69,11 @@
         <transition name="fade_fast" mode="out-in">
           <MediaFocus
             v-if="focused_media"
-            :key="focused_media.$slug"
+            :key="focused_media.$path"
             :file="focused_media"
-            :project_slug="project.$slug"
-            @remove="removeMedia(focused_media.$slug)"
-            @close="toggleMediaFocus(focused_media.$slug)"
+            :project_path="project.$path"
+            @remove="removeMedia(focused_media.$path)"
+            @close="toggleMediaFocus(focused_media.$path)"
           />
         </transition>
       </pane>
@@ -137,10 +128,10 @@ export default {
     },
     focused_media() {
       const _focused_media =
-        this.project.$files.find((f) => f.$slug === this.media_focused) ||
+        this.project.$files.find((f) => f.$path === this.media_focused) ||
         false;
       if (_focused_media && this.$refs.mediaTiles)
-        this.scrollToMediaTile(_focused_media.$slug);
+        this.scrollToMediaTile(_focused_media.$path);
 
       return _focused_media;
     },
@@ -156,7 +147,7 @@ export default {
     scrollToMediaTile(slug) {
       slug;
       // const focused_tile = this.$refs.mediaTiles.querySelector(
-      //   `[data-fileslug="${slug}"]`
+      //   `[data-filepath="${slug}"]`
       // );
       // if (focused_tile)
       // focused_tile.scrollIntoView({
@@ -203,11 +194,11 @@ export default {
       const focus_pane_height = Number(panes[1].size.toFixed(1));
       this.$emit("update:focus_height", focus_pane_height);
     },
-    toggleMediaFocus(slug) {
-      if (!slug || this.media_focused === slug) {
+    toggleMediaFocus(path) {
+      if (!path || this.media_focused === path) {
         this.$emit("update:media_focused", null);
       } else {
-        this.$emit("update:media_focused", slug);
+        this.$emit("update:media_focused", path);
         if (this.focus_height === 0) this.$emit("update:focus_height", 50);
         // debugger;
         // this.resized([
@@ -217,13 +208,11 @@ export default {
       }
     },
 
-    async removeMedia(slug) {
+    async removeMedia(path) {
       await this.$api.deleteFile({
-        folder_type: "projects",
-        folder_slug: this.project.$slug,
-        meta_slug: slug,
+        path,
       });
-      this.toggleMediaFocus(slug);
+      this.toggleMediaFocus(path);
     },
   },
 };
@@ -256,5 +245,12 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+._topSection {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2);
 }
 </style>

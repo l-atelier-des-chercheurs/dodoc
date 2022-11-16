@@ -66,11 +66,10 @@ module.exports = function () {
   app.set("views", global.appRoot); //Specify the views folder
   app.set("view engine", "pug"); //View engine is Pug
 
-  app.use(function (req, res, next) {
-    // if (req.url.includes(".txt")) res.status(403).send(`Access not allowed.`);
-    // else next();
-    next();
-  });
+  // app.use(function (req, res, next) {
+  // if (req.url.includes(".txt")) res.status(403).send(`Access not allowed.`);
+  // else next();
+  // });
 
   app.use(express.static(global.pathToUserContent));
   app.use(

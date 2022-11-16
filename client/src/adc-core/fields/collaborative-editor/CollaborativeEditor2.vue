@@ -6,9 +6,7 @@
   >
     <TextVersioning
       v-if="show_archives"
-      :folder_type="folder_type"
-      :folder_slug="folder_slug"
-      :meta_slug="file.$slug"
+      :path="file.$path"
       :current_content="file.$content"
       @close="show_archives = false"
       @restore="restoreVersion"
@@ -101,8 +99,6 @@ Quill.register("modules/cardEditable", CardEditableModule);
 
 export default {
   props: {
-    folder_type: String,
-    folder_slug: String,
     file: Object,
     scrollingContainer: HTMLElement,
     line_selected: [Boolean, Number],
@@ -353,7 +349,7 @@ export default {
       };
 
       try {
-        let path = `/${this.folder_type}/${this.folder_slug}/${this.file.$slug}`;
+        let path = this.file.$path;
         await this.$api.updateMeta({
           path,
           new_meta,
@@ -376,8 +372,7 @@ export default {
       // });
 
       // const requested_querystring = "?" + params.toString();
-      const path_to_meta =
-        this.folder_type + "_" + this.folder_slug + "_" + this.file.$slug;
+      const path_to_meta = this.file.$path.replaceAll("/", "_");
 
       const requested_resource_url =
         (location.protocol === "https:" ? "wss" : "ws") +
@@ -470,6 +465,7 @@ export default {
     },
     addMediaAtIndex(index, media) {
       console.log(`CollaborativeEditor • addMediaAtIndex ${index}`);
+      // TODO fix
       const mediaURL = `./${this.folder_slug}/${media.media_filename}`;
       // const mediaURL =
       //   this.$root.state.mode === "export_publication"
@@ -483,7 +479,7 @@ export default {
 
       this.editor.blur();
 
-      const { $type, caption, $slug } = media;
+      const { $type, caption, $path } = media;
 
       if ($type === "image") {
         const thumb_path = media.$thumbs[1600];
@@ -495,8 +491,9 @@ export default {
             {
               type,
               caption,
-              meta_filename: $slug,
-              src: `/thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
+              // TODO update with $path
+              // meta_filename: $slug,
+              // src: `/thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
             },
             Quill.sources.USER
           );
@@ -510,6 +507,7 @@ export default {
           {
             type,
             caption,
+            // TODO update with $path
             meta_filename: $slug,
             src: mediaURL,
           },
@@ -523,6 +521,7 @@ export default {
           {
             type,
             caption,
+            // TODO update with $path
             meta_filename: $slug,
             src: mediaURL,
           },

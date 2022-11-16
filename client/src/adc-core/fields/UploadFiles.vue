@@ -66,8 +66,7 @@
 export default {
   props: {
     selected_files: Array,
-    folder_type: String,
-    folder_slug: String,
+    path: String,
     read_only: {
       type: Boolean,
       default: false,
@@ -119,8 +118,7 @@ export default {
 
       let meta_filename = await this.$api
         .uploadFile({
-          folder_type: this.folder_type,
-          folder_slug: this.folder_slug,
+          path: this.path,
           filename,
           file,
           additional_meta,

@@ -11,7 +11,7 @@
 
       <MediaContent
         :file="file"
-        :project_slug="project_slug"
+        :project_path="project_path"
         :resolution="1600"
         :context="'full'"
       />
@@ -19,10 +19,10 @@
         label="caption"
         :field_name="'caption'"
         :content="file.caption"
-        :path="`/projects/${project_slug}/${file.$slug}`"
+        :path="file.$path"
         :can_edit="true"
       />
-      {{ `/projects/${project_slug}/${file.$slug}` }}
+      {{ file.$path }}
     </div>
     <sl-button-group class="_focusBtns">
       <sl-button size="small" @click="$emit('close')">Fermer</sl-button>
@@ -34,7 +34,7 @@
 export default {
   props: {
     file: Object,
-    project_slug: String,
+    project_path: String,
   },
   components: {},
   data() {

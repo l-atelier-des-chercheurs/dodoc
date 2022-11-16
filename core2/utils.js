@@ -27,13 +27,13 @@ module.exports = (function () {
       return slugg(term);
     },
 
-    async storeMeta({ _path, meta }) {
-      dev.logfunction({ _path, meta });
+    async storeContent({ full_path, meta }) {
+      dev.logfunction({ full_path, meta });
 
       if (typeof meta === "object") meta = TOML.stringify(meta);
 
       try {
-        await writeFileAtomic(_path, meta);
+        await writeFileAtomic(full_path, meta);
         return;
       } catch (err) {
         throw err;
@@ -49,7 +49,6 @@ module.exports = (function () {
       dev.logfunction({ paths });
 
       const meta_path = API.getPathToUserContent(...paths);
-
       const meta_file_content = await fs
         .readFile(meta_path, "UTF-8")
         .catch((err) => {
@@ -64,11 +63,10 @@ module.exports = (function () {
       return await fs.readFile(file_path, "UTF-8");
     },
 
-    async saveMetaAtPath({ relative_path, file_slug, meta }) {
+    async saveMetaAtPath({ relative_path, file_slug = "meta.txt", meta }) {
       dev.logfunction({ relative_path, file_slug, meta });
-
       const meta_path = API.getPathToUserContent(relative_path, file_slug);
-      await API.storeMeta({ _path: meta_path, meta });
+      await API.storeContent({ full_path: meta_path, meta });
       return;
     },
 
@@ -96,6 +94,13 @@ module.exports = (function () {
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
+          } else if (
+            new_meta.hasOwnProperty(field_name) &&
+            opt.type === "array" &&
+            Array.isArray(new_meta[field_name])
+          ) {
+            meta[field_name] = new_meta[field_name];
+            // TODO Validator
           } else {
             if (opt.required === true)
               // field is required in schema but not present in user-submitted object
@@ -111,7 +116,9 @@ module.exports = (function () {
       // check fields in schema, make sure user added fields are allowed and with the right formatting
       // merge with validateMeta ?
 
-      const { schema } = await API.parseAndCheckSchema({ relative_path });
+      const { schema } = await API.parseAndCheckSchema({
+        relative_path,
+      });
       schema;
 
       return new_meta;
@@ -138,13 +145,12 @@ module.exports = (function () {
       return results;
     },
 
-    async handleForm({ req, relative_path }) {
+    async handleForm({ path_to_folder, req }) {
       return new Promise((resolve, reject) => {
-        dev.logfunction({ relative_path });
-        const folder_path = API.getPathToUserContent(relative_path);
+        dev.logfunction({ path_to_folder });
 
         const form = new IncomingForm({
-          uploadDir: folder_path,
+          uploadDir: API.getPathToUserContent(path_to_folder),
           multiples: false,
           maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
         });
@@ -189,9 +195,8 @@ module.exports = (function () {
             return reject(new Error("No file to parse"));
 
           return resolve({
-            folder_path,
             originalFilename: file.originalFilename,
-            filepath: file.filepath,
+            path_to_temp_file: file.filepath,
             additional_meta,
           });
         });
@@ -246,25 +251,25 @@ module.exports = (function () {
       return submitted_password_with_salt === stored_password_with_salt;
     },
 
+    getPathParent(path) {
+      return path.substr(0, path.lastIndexOf("/"));
+    },
     async parseAndCheckSchema({ relative_path }) {
       dev.logfunction({ relative_path });
 
-      const items_in_path = relative_path.split("/");
-
-      // var [folder_type, folder_slug, subfolder_type, subfolder_slug] =
-      //   items_in_path;
-      // var [folder_type, folder_slug, subfolder_type, subfolder_slug] =
-      //   items_in_path;
+      let items_in_path = relative_path.split("/");
+      items_in_path = items_in_path.filter((i) => i !== "_upload");
 
       let obj = {};
 
       if (items_in_path.length > 0) obj.folder_type = items_in_path[0];
       if (items_in_path.length > 1) obj.folder_slug = items_in_path[1];
       if (items_in_path.length > 2)
-        if (items_in_path[2].includes(".")) obj.meta_slug = items_in_path[2];
+        if (items_in_path[2].includes("."))
+          obj.meta_filename = items_in_path[2];
         else obj.subfolder_type = items_in_path[2];
       if (items_in_path.length > 3) obj.subfolder_slug = items_in_path[3];
-      if (items_in_path.length > 4) obj.submeta_slug = items_in_path[4];
+      if (items_in_path.length > 4) obj.submeta_filename = items_in_path[4];
 
       if (!global.settings.schema[obj.folder_type])
         throw new Error(`Missing schema for folder_type ${obj.folder_type}`);
@@ -279,6 +284,42 @@ module.exports = (function () {
       obj.schema = obj.subfolder_type
         ? global.settings.schema[obj.folder_type].$folders[obj.subfolder_type]
         : global.settings.schema[obj.folder_type];
+
+      return obj;
+    },
+
+    cleanReqPath(path) {
+      let p = path.substring(7);
+      if (p.endsWith("/")) p = p.slice(0, -1);
+      return p;
+    },
+
+    makePathFromReq(req) {
+      let {
+        folder_type,
+        folder_slug,
+        subfolder_type,
+        subfolder_slug,
+        meta_filename,
+      } = req.params;
+
+      const obj = {};
+      obj.path_to_type = !subfolder_type
+        ? `${folder_type}`
+        : `${folder_type}/${folder_slug}/${subfolder_type}`;
+
+      if (folder_slug)
+        obj.path_to_folder = !subfolder_slug
+          ? `${folder_type}/${folder_slug}`
+          : `${folder_type}/${folder_slug}/${subfolder_type}/${subfolder_slug}`;
+
+      if (meta_filename && meta_filename.includes(".")) {
+        obj.meta_filename = meta_filename;
+        obj.path_to_meta = !subfolder_slug
+          ? `${folder_type}/${folder_slug}/${meta_filename}`
+          : `${folder_type}/${folder_slug}/${subfolder_type}/${subfolder_slug}/${meta_filename}`;
+      }
+      if (req.body) obj.data = req.body;
 
       return obj;
     },

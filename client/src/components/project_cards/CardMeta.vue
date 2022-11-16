@@ -42,8 +42,7 @@ export default {
 
       try {
         const response = await this.$api.deleteFolder({
-          folder_type: "projects",
-          folder_slug: this.project.$slug,
+          path: this.project.$path,
         });
         this.response = response.data;
         this.fetch_status = "success";

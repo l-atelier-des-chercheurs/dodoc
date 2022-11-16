@@ -1,28 +1,65 @@
 <template>
   <div>
-    <div class="_msg u-instructions u-padding-small">
-      Créez ici des publications : journal du projet, tutoriel, livret, etc.
-      <br />
-      Elles contiendront du texte et des éléments que vous avez collecté.
+    <div class="_topBtn">
+      <button
+        type="button"
+        class="u-button u-button_bleuvert u-button_big"
+        v-if="$api.is_logged_in"
+        @click="show_create_publication = true"
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 168 168"
+          style="enable-background: new 0 0 168 168"
+          xml:space="preserve"
+        >
+          <polygon
+            style="fill: white"
+            points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
+          />
+        </svg>
+        {{ $t("create") }}
+      </button>
     </div>
-
-    <button type="button" @click="show_create_publication = true">
-      <sl-icon name="plus" label="Panneaux" />
-      {{ $t("create") }}
-    </button>
 
     <CreatePublication
       v-if="show_create_publication"
-      :project_slug="project.$slug"
+      :project_path="project.$path"
       @close="show_create_publication = false"
     />
 
-    <button type="button" @click="listPublications">Lister publications</button>
-    publications = {{ publications }}
+    <div class="_publications">
+      <div v-for="publication in publications" :key="publication.$path">
+        {{ publication.$path }}
+      </div>
+      <div class="_publications--list">
+        <PublicationPreview
+          image_name="publi_apercu.png"
+          title="Pyramide Etalans"
+          type="Page à page"
+        />
+        <PublicationPreview
+          image_name="publi_apercu-2.png"
+          title="Séminaire Mandela"
+          type="Page à page"
+        />
+        <PublicationPreview
+          image_name="publi_nunicons.png"
+          title="Nunicons 3D"
+          type="Fiche projet <i>Je Fabrique mon Matériel Pédagogique</i>"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import CreatePublication from "@/components/publications/CreatePublication.vue";
+import PublicationPreview from "@/components/publications/PublicationPreview.vue";
 
 export default {
   props: {
@@ -30,6 +67,7 @@ export default {
   },
   components: {
     CreatePublication,
+    PublicationPreview,
   },
   data() {
     return {
@@ -38,24 +76,41 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  async mounted() {
+    const path = `${this.project.$path}/publications`;
+    this.publications = await this.$api.getFolders({
+      path,
+    });
+    this.$api.join({ room: path });
+  },
   beforeDestroy() {},
   watch: {},
   computed: {},
   methods: {
-    async listPublications() {
-      const path = `projects/${this.project.$slug}/publications`;
-      this.publications = await this.$api.getFolders({
-        path,
-      });
-      debugger;
-      this.$api.join({ room: path });
+    openEntry({ slug }) {
+      this.$emit("update:opened_journal_entry", { slug });
+    },
+    closeEntry() {
+      this.entry_just_opened = this.opened_journal_entry.slug;
+      this.$emit("update:opened_journal_entry", {});
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-._msg {
-  padding: calc(var(--spacing) * 2);
+._topBtn {
+  display: flex;
+  place-content: center;
+  margin: calc(var(--spacing) * 2);
+}
+._publications {
+  margin: calc(var(--spacing) * 2);
+}
+._publications--list {
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-gap: calc(var(--spacing) * 2);
+  align-items: flex-start;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 </style>

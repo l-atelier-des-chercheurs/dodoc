@@ -5,14 +5,14 @@
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
-    <MediaContent :file="file" :project_slug="project_slug" />
+    <MediaContent :file="file" :project_path="project_path" />
     <button
       type="button"
       class="_focusMediaBtn"
       :class="{
         'is--focused': is_focused,
       }"
-      @click="$emit('toggleMediaFocus', file.$slug)"
+      @click="$emit('toggleMediaFocus', file.$path)"
     />
   </div>
 </template>
@@ -20,7 +20,7 @@
 export default {
   props: {
     file: Object,
-    project_slug: String,
+    project_path: String,
     is_focused: Boolean,
   },
   components: {},

@@ -70,9 +70,7 @@ export default {
   methods: {
     async removeText() {
       await this.$api.deleteFile({
-        folder_type: "projects",
-        folder_slug: this.project_slug,
-        meta_slug: this.file.slug,
+        path: this.file.$path,
       });
     },
   },

@@ -96,7 +96,6 @@ export default {
   },
   computed: {
     allow_save() {
-      debugger;
       return (
         JSON.stringify(this.new_authors_slugs) !==
         JSON.stringify(this.authors_slugs)

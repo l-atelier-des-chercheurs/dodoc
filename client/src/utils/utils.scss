@@ -96,6 +96,20 @@
 .u-button_red {
   background-color: var(--c-rouge);
   color: white;
+
+  &:hover,
+  &:focus {
+    background-color: var(--c-rouge_fonce);
+  }
+}
+.u-button_bleuvert {
+  background-color: var(--c-bleuvert);
+  color: white;
+
+  &:hover,
+  &:focus {
+    background-color: var(--c-bleuvert_fonce);
+  }
 }
 .u-button_big {
   font-size: var(--input-font-size-big);
@@ -247,10 +261,10 @@ sl-button[variant="semitransparent"] {
 sl-button[variant="edit"] {
   &::part(base) {
     background: var(--c-bleuvert);
-    background: white;
-    color: var(--c-bleuvert);
+    // color: var(--c-bleuvert);
+    color: white;
     border: none;
-    border: 1px solid currentColor;
+    border: 1px solid var(--c-bleuvert);
     // fill: white;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
@@ -258,11 +272,12 @@ sl-button[variant="edit"] {
   &:hover,
   &:active {
     &::part(base) {
-      transform: scale(1.2);
-      background: var(--c-bleuvert_fonce);
+      // transform: scale(1.02);
       background: var(--c-bleuvert);
+      background: var(--c-bleuvert_fonce);
       color: white;
-      border: none;
+      // border-color: white;
+      // border: none;
     }
   }
 }
