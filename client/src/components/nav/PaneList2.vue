@@ -12,6 +12,14 @@
       placement="top"
       ref="drawer"
     >
+      <span
+        class="_projectTitle"
+        :class="{
+          'is--shown': is_stickied_to_top,
+        }"
+      >
+        {{ project_title }}
+      </span>
       <SlickList
         class="_paneList--list"
         axis="x"
@@ -70,6 +78,7 @@
           </div>
         </SlickItem>
       </SlickList>
+      <span />
       <!-- <sl-icon name="plus-square-fill" label="Panneaux" />
       <sl-icon name="plus" label="Panneaux" /> -->
       <!-- <sl-dropdown>
@@ -107,6 +116,7 @@ import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 export default {
   props: {
     panes: Array,
+    project_title: String,
   },
   components: {
     SlickItem,
@@ -116,6 +126,7 @@ export default {
   data() {
     return {
       show_panelist: false,
+      is_stickied_to_top: false,
 
       project_panes: [],
       possible_project_panes: [
@@ -150,8 +161,11 @@ export default {
     //   );
     //   this.project_panes.push(lib);
     // });
+    document.addEventListener("scroll", this.detectTopOfWindow);
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    document.removeEventListener("scroll", this.detectTopOfWindow);
+  },
   watch: {
     panes: {
       handler() {
@@ -183,6 +197,11 @@ export default {
   },
   computed: {},
   methods: {
+    detectTopOfWindow() {
+      if (this.$el.getBoundingClientRect().y <= 0)
+        this.is_stickied_to_top = true;
+      else this.is_stickied_to_top = false;
+    },
     removePane(type) {
       this.project_panes = this.project_panes.filter((pp) => pp.type !== type);
     },
@@ -278,24 +297,38 @@ export default {
   // font-size: var(--sl-font-size-large);
   // max-width: 1024px;
   position: relative;
+  overflow: hidden;
   z-index: 10;
   width: 100%;
   margin: 0 auto;
   background-color: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  border-top: 1px solid var(--c-gris);
+  // border-bottom: 0;
+}
+
+._paneList2 {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+
+  > * {
+    flex: 0 0 auto;
+
+    &._paneList--list {
+      flex: 1 1 auto;
+    }
+  }
 }
 
 ._paneList--list {
   // flex-basis: 300px;
 
-  height: auto;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  // justify-content: flex-end;
   white-space: nowrap;
-  // margin: calc(var(--spacing) / 2);
-  // gap: calc(var(--spacing) / 2);
+  height: auto;
 
   overflow: auto;
 
@@ -369,5 +402,19 @@ export default {
 ._icon {
   width: 2rem;
   height: 2rem;
+}
+
+._projectTitle {
+  padding: calc(var(--spacing) / 2) calc(var(--spacing));
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(-100%);
+
+  transition: 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--shown {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

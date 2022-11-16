@@ -33,7 +33,7 @@
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
             />
           </svg>
-          créer
+          {{ $t("create") }}
         </button>
         <br />
         <ProjectsTester v-if="$api.debug_mode" />
@@ -47,7 +47,7 @@
       @openNewProject="openNewProject"
     />
 
-    <h2>Finalisés</h2>
+    <h3>Finalisés</h3>
     <div class="_projectsList">
       <ProjectPresentation
         v-for="project in finalized_projects"
@@ -57,7 +57,8 @@
       />
     </div>
     <hr />
-    <h2>En cours</h2>
+
+    <h3>En cours</h3>
     <div class="_projectsList">
       <ProjectPresentation
         v-for="project in draft_projects"

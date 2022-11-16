@@ -21,7 +21,7 @@
           <div
             class="_floatingMsg"
             :key="`instructions.pane_${pane.type}`"
-            v-if="show_instructions"
+            v-if="show_instructions && $api.is_logged_in"
             @click.self="show_instructions = false"
           >
             <div>
@@ -132,7 +132,7 @@ export default {
   height: 100%;
   backdrop-filter: blur(5px);
 
-  z-index: 10000;
+  z-index: 10;
   text-align: center;
   padding: calc(var(--spacing) * 2);
 

@@ -1,33 +1,6 @@
 <template>
   <div class="_topbar" v-if="$route.path !== '/'">
-    <nav aria-label="Breadcrumb" class="_breadcrumb">
-      <ul>
-        <li class="_logo">
-          <router-link :to="`/`">
-            <img :src="`${$root.publicPath}i_logo.svg`" class="" />
-          </router-link>
-        </li>
-        <sl-icon-button name="arrow-right-short" label="" />
-        <li>
-          <router-link :to="`/projects`">Les projets</router-link>
-        </li>
-        <template v-if="$route.name === 'projet'">
-          <sl-icon-button name="arrow-right-short" label="" />
-          <li>
-            <router-link :to="$route.path" replace>
-              <!-- {{ project.title }} -->
-              <sl-spinner
-                style="--indicator-color: currentColor"
-                v-if="!project"
-              />
-              <span v-else>
-                {{ project.title }}
-              </span>
-            </router-link>
-          </li>
-        </template>
-      </ul>
-    </nav>
+    <BreadCrumbs />
     <button
       type="button"
       class="_subscribeBtn"
@@ -40,32 +13,27 @@
     <div class="_socketStatus">
       <SocketStatus />
     </div>
-
-    <!-- <pre>
-      {{ $api.store }}
-    </pre> -->
   </div>
 </template>
 <script>
 import SocketStatus from "@/components/SocketStatus.vue";
 import AuthorList from "@/adc-core/author/AuthorList.vue";
+import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
 
 export default {
   props: {},
   components: {
     SocketStatus,
     AuthorList,
+    BreadCrumbs,
   },
   data() {
     return {
-      project: null,
       show_authors_modal: false,
     };
   },
   created() {},
-  mounted() {
-    this.$eventHub.$on("received.project", this.setProject);
-  },
+  mounted() {},
   beforeDestroy() {},
   watch: {
     $route: {
@@ -74,11 +42,7 @@ export default {
     },
   },
   computed: {},
-  methods: {
-    setProject(project) {
-      this.project = project;
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
@@ -113,40 +77,8 @@ export default {
   border-radius: 4px;
 }
 
-._breadcrumb {
-  padding: 0 0.5rem;
-  ul {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  li {
-    display: flex;
-    align-items: center;
-
-    // &:not(:last-child)::after {
-    //   display: inline-block;
-    //   margin: 0 0.25rem;
-    //   content: "→";
-    // }
-  }
-}
-
 ._socketStatus {
   display: flex;
   justify-content: flex-end;
-}
-
-._logo {
-  flex: 0 0 auto;
-
-  img {
-    width: 8em;
-    height: 2.6em;
-  }
 }
 </style>

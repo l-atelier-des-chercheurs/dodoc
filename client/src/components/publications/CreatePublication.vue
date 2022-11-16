@@ -79,9 +79,8 @@ export default {
             requested_slug: this.new_publication_title,
           },
         });
-        setTimeout(() => {
-          this.$emit("openNewProject", new_folder_slug);
-        }, 50);
+        new_folder_slug;
+        this.$emit("close");
       } catch (err) {
         this.error_msg = "Error: " + err.message;
         setTimeout(() => {

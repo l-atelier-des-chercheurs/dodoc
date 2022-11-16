@@ -1,5 +1,8 @@
 <template>
   <div class="_projectView">
+    <!-- <pre>
+      {{ $api.store }}
+    </pre> -->
     <sl-spinner style="--indicator-color: currentColor" v-if="!project" />
     <div v-else-if="fetch_project_error">
       {{ fetch_project_error }}
@@ -41,6 +44,7 @@
         <PaneList2
           class="_paneList"
           v-if="can_edit_project"
+          :project_title="project.title"
           :panes.sync="projectpanes"
         />
         <div class="_panes">
@@ -94,18 +98,7 @@ export default {
   },
   created() {},
   async mounted() {
-    const project = await this.$api
-      .getFolder({
-        path: this.$route.path,
-      })
-
-      .catch((err) => {
-        this.fetch_project_error = err.response;
-        this.is_loading = false;
-      });
-
-    this.project = project;
-
+    await this.listProjects();
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
     this.$api.join({ room: this.project.$path });
@@ -148,6 +141,17 @@ export default {
     },
   },
   methods: {
+    async listProjects() {
+      const project = await this.$api
+        .getFolder({
+          path: this.$route.path,
+        })
+        .catch((err) => {
+          this.fetch_project_error = err.response;
+          this.is_loading = false;
+        });
+      this.project = project;
+    },
     updateQueryPanes() {
       let query = {};
 
@@ -224,7 +228,7 @@ export default {
   // gap: calc(var(--spacing) / 2);
 
   > * {
-    border: 1px solid #eee;
+    border: 1px solid var(--c-gris);
 
     &:first-child {
       border-top: 0 solid #000;

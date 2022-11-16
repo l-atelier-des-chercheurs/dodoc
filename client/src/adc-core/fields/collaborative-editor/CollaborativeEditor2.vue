@@ -479,7 +479,7 @@ export default {
 
       this.editor.blur();
 
-      const { $type, caption, $slug } = media;
+      const { $type, caption, $path } = media;
 
       if ($type === "image") {
         const thumb_path = media.$thumbs[1600];

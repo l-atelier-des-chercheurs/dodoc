@@ -1,18 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-            x="0px"
-            y="0px"
-viewBox="0 0 90 90"
-            style="enable-background: new 0 0 90 90"
-            xml:space="preserve"
-          >
-            <path
-              d="M48,0v42h42V0H48z M84,36H54V6h30V36z M13,77h16V61H13V77z M0,90h42V48H0V90z M6,54h30v30H6V54z M63,48H48v13h15V48z M69,54
-              h8v7h-8v12h-8v-8h-9v8h5v9h-9v8h21v-8h13v-9h-5v-8h13V48H69V54z M0,42h42V0H0V42z M6,6h30v30H6V6z M90,90v-8h-8v8H90z M13,29h16V13
-              H13V29z M77,13H61v16h16V13z"
-            />
-          </svg>
+<svg enable-background="new 0 0 90 90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg"><path d="m48 0v42h42v-42zm36 36h-30v-30h30zm-71 41h16v-16h-16zm-13 13h42v-42h-42zm6-36h30v30h-30zm57-6h-15v13h15zm6 6h8v7h-8v12h-8v-8h-9v8h5v9h-9v8h21v-8h13v-9h-5v-8h13v-17h-21zm-69-12h42v-42h-42zm6-36h30v30h-30zm84 84v-8h-8v8zm-77-61h16v-16h-16zm64-16h-16v16h16z"/></svg>
