@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="_topBtn">
+      <h2>Publications</h2>
       <button
         type="button"
         class="u-button u-button_bleuvert u-button_big"
