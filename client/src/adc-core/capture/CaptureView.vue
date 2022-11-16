@@ -2158,6 +2158,11 @@ export default {
         }
       }
 
+      button {
+        width: 3em;
+        height: 3em;
+      }
+
       &.is--recording {
         background-color: var(--c-orange);
       }
