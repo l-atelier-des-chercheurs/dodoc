@@ -2136,6 +2136,11 @@ export default {
       justify-content: space-between;
       align-items: center;
 
+      button {
+        width: 3em;
+        height: 3em;
+      }
+
       > * {
         display: flex;
         flex: 1 1 100px;
