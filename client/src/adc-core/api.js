@@ -6,7 +6,7 @@ export default function () {
     data: {
       socket: "",
       store: {},
-      is_logged_in: true,
+      is_logged_in: false,
       debug_mode: false,
     },
     created() {},
