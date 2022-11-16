@@ -34,9 +34,9 @@
     />
 
     <div class="_publications">
-      <!-- <div v-for="publication in publications" :key="publication.$path">
+      <div v-for="publication in publications" :key="publication.$path">
         {{ publication.$path }}
-      </div> -->
+      </div>
       <div class="_publications--list">
         <PublicationPreview
           image_name="publi_apercu.png"
