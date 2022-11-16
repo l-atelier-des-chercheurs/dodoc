@@ -3,8 +3,18 @@
     <img :src="`${$root.publicPath}${image_name}`" class="" />
     <header class="">
       {{ title }}<br />
-      <small>{{ type }}</small>
+      <small v-html="type"></small>
     </header>
+
+    <div class="_projectInfos--open" v-if="context === 'list'">
+      <router-link
+        :to="{ path: '/' + project.$path }"
+        class="u-button u-button_red"
+      >
+        ouvrir&nbsp;
+        <sl-icon name="arrow-up-right" />
+      </router-link>
+    </div>
 
     <!-- {{ publication.title }} -->
     <!-- <button type="button" @click="removePublication">Supprimer</button> -->

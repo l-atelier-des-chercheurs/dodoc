@@ -96,6 +96,20 @@
 .u-button_red {
   background-color: var(--c-rouge);
   color: white;
+
+  &:hover,
+  &:focus {
+    background-color: var(--c-rouge_fonce);
+  }
+}
+.u-button_bleuvert {
+  background-color: var(--c-bleuvert);
+  color: white;
+
+  &:hover,
+  &:focus {
+    background-color: var(--c-bleuvert_fonce);
+  }
 }
 .u-button_big {
   font-size: var(--input-font-size-big);

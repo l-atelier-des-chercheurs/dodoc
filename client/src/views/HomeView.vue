@@ -6,21 +6,8 @@
       <p>
         <router-link to="/projects">Afficher les projets</router-link>
       </p>
-
-      <i
-        >Le projet « FabLab à l’école » offre aux établissements scolaires
-        bénéficiaires la possibilité́ de disposer d’un FabLab clé en main et prêt
-        à l’emploi. <br /><br />
-
-        « FabLab à l’école » repose en effet non seulement sur la fourniture
-        d’un parc de machines adaptées (imprimante 3D, scie à chantourner,
-        découpeuse vinyle, machine à coudre, fraiseuse graveuse…), mais aussi
-        sur la mise à disposition de nombreuses ressources et de scénarios
-        d’usages adossés aux programmes scolaires, et sur la réalisation de
-        prestations de formation à destination des enseignants. UNE INITIATIVE
-        D’UNIVERSCIENCE PORTÉE PAR RÉSEAU CANOPÉ, OPÉRATEUR DU MINISTÈRE DE
-        L’ÉDUCATION NATIONALE, DE LA JEUNESSE ET DES SPORTS "
-      </i>
+      <p v-html="desc" />
+      <EditBtn @click="enableEditMode" />
     </div>
     <small class="_versionNumber">version {{ $root.app_infos.version }}</small>
   </div>
@@ -30,7 +17,28 @@
 // @ is an alias to /src
 
 export default {
+  props: {},
   components: {},
+  data() {
+    return {
+      desc: `
+<i>
+  Le projet « FabLab à l’école » offre aux établissements scolaires
+  bénéficiaires la possibilité́ de disposer d’un FabLab clé en main et prêt
+  à l’emploi. <br /><br />
+
+  « FabLab à l’école » repose en effet non seulement sur la fourniture
+  d’un parc de machines adaptées (imprimante 3D, scie à chantourner,
+  découpeuse vinyle, machine à coudre, fraiseuse graveuse…), mais aussi
+  sur la mise à disposition de nombreuses ressources et de scénarios
+  d’usages adossés aux programmes scolaires, et sur la réalisation de
+  prestations de formation à destination des enseignants. UNE INITIATIVE
+  D’UNIVERSCIENCE PORTÉE PAR RÉSEAU CANOPÉ, OPÉRATEUR DU MINISTÈRE DE
+  L’ÉDUCATION NATIONALE, DE LA JEUNESSE ET DES SPORTS "
+</i>
+      `,
+    };
+  },
 };
 </script>
 <style lang="scss">

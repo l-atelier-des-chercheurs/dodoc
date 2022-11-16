@@ -3,7 +3,7 @@
     <div class="_topBtn">
       <button
         type="button"
-        class="u-button u-button_red u-button_big"
+        class="u-button u-button_bleuvert u-button_big"
         v-if="$api.is_logged_in"
         @click="show_create_publication = true"
       >
@@ -17,13 +17,8 @@
           style="enable-background: new 0 0 168 168"
           xml:space="preserve"
         >
-          <path
-            style="fill: #fc4b60"
-            d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
-		C110.5-8.2,57.5-8.2,24.6,24.4z"
-          />
           <polygon
-            style="fill: #ffbe32"
+            style="fill: white"
             points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
           />
