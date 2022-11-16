@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div class="_topLabel" v-if="label">
+    <div
+      class="_topLabel"
+      v-if="label && (new_authors_slugs.length > 0 || can_edit)"
+    >
       <label for="" class="u-label">{{ label }}</label>
     </div>
 

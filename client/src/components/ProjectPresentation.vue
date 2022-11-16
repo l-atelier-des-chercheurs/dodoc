@@ -212,8 +212,10 @@ export default {
 ._projectInfos--cover {
   position: relative;
   overflow: hidden;
-  flex: 0 1 50vmin;
-  max-height: 50vmin;
+  flex: 1 1 40vmin;
+  // max-height: 40vmin;
+  min-width: 320px;
+  min-height: 320px;
   aspect-ratio: 1/1;
 
   --color1: var(--c-gris);

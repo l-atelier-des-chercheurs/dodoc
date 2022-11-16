@@ -49,7 +49,7 @@
         />
         <div class="_panes">
           <ProjectPanes
-            :projectpanes="current_projectpanes"
+            :projectpanes="projectpanes"
             :project="project"
             :can_edit_project="can_edit_project"
             @update:projectpanes="projectpanes = $event"
@@ -98,7 +98,7 @@ export default {
   },
   created() {},
   async mounted() {
-    await this.listProjects();
+    await this.listProject();
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
     this.$api.join({ room: this.project.$path });
@@ -121,6 +121,19 @@ export default {
       },
       deep: true,
     },
+    "$api.is_logged_in": {
+      handler() {
+        if (this.projectpanes.length === 0)
+          this.projectpanes = [
+            {
+              type: "Publier",
+              pad: {},
+              size: 100,
+            },
+          ];
+      },
+      immediate: true,
+    },
   },
   computed: {
     articles() {
@@ -129,19 +142,9 @@ export default {
     can_edit_project() {
       return this.$api.is_logged_in;
     },
-    current_projectpanes() {
-      if (this.can_edit_project) return this.projectpanes;
-      return [
-        {
-          type: "Publier",
-          pad: {},
-          size: 100,
-        },
-      ];
-    },
   },
   methods: {
-    async listProjects() {
+    async listProject() {
       const project = await this.$api
         .getFolder({
           path: this.$route.path,
@@ -221,7 +224,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 
-  max-height: 50vh;
+  max-height: 40vmin;
   overflow: auto;
 
   // padding: calc(var(--spacing) / 2);

@@ -1,19 +1,19 @@
 <template>
   <sl-card class="u-card">
-    <img :src="`${$root.publicPath}${image_name}`" class="" />
+    <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
     <header class="">
-      {{ title }}<br />
-      <small v-html="type"></small>
+      {{ publication.title }}<br />
+      <small v-if="publication.type" v-html="publication.type" />
     </header>
-
-    <div class="_projectInfos--open" v-if="context === 'list'">
-      <router-link
-        :to="{ path: '/' + project.$path }"
+    <div class="">
+      <button
+        type="button"
         class="u-button u-button_red"
+        @click="$emit('open')"
       >
         ouvrir&nbsp;
         <sl-icon name="arrow-up-right" />
-      </router-link>
+      </button>
     </div>
 
     <!-- {{ publication.title }} -->
