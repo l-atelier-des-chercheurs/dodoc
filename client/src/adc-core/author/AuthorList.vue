@@ -47,7 +47,7 @@ export default {
   computed: {},
   methods: {
     async removeAuthor(path) {
-      await this.$api.deleteFolder({
+      await this.$api.deleteItem({
         path,
       });
     },

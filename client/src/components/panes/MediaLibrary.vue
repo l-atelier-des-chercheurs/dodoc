@@ -209,7 +209,7 @@ export default {
     },
 
     async removeMedia(path) {
-      await this.$api.deleteFile({
+      await this.$api.deleteItem({
         path,
       });
       this.toggleMediaFocus(path);

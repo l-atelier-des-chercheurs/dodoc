@@ -198,7 +198,7 @@ export default {
   computed: {},
   methods: {
     detectTopOfWindow() {
-      if (this.$el.getBoundingClientRect().y <= 0)
+      if (this.$el.getBoundingClientRect().y <= 10)
         this.is_stickied_to_top = true;
       else this.is_stickied_to_top = false;
     },

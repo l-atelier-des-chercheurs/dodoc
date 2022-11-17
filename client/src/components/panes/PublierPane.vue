@@ -2,7 +2,7 @@
   <div>
     <PublicationsList
       v-if="!publication_opened || !publication_opened.slug"
-      :project_path="project"
+      :project_path="project.$path"
       :can_edit="can_edit"
       @togglePubli="$emit('update:publication_opened', $event)"
     />

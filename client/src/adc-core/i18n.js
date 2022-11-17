@@ -95,6 +95,7 @@ export default function () {
 
         license: "Licence",
         files: "Fichiers",
+        template: "Gabarit",
 
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",
@@ -140,6 +141,7 @@ export default function () {
         save: "save",
         description: "description",
         keywords: "keywords",
+        template: "Template",
       },
     }, // set locale messages
   });

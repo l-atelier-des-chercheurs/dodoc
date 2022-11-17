@@ -65,7 +65,7 @@ export default {
   computed: {},
   methods: {
     async removeArticle() {
-      await this.$api.deleteFile({
+      await this.$api.deleteItem({
         path: this.article.$path,
       });
     },

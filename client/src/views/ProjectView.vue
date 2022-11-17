@@ -17,27 +17,6 @@
           context="full"
           :can_edit_project="can_edit_project"
         />
-        <!-- Metadonnées, Auteurs, Mots-clés, Machines, Statut, Licence -->
-        <div class="_projectMeta">
-          <CardMeta :project="project" :can_edit_project="can_edit_project" />
-          <CardStatus :project="project" :can_edit_project="can_edit_project" />
-          <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
-          <CardKeywords
-            :project="project"
-            :can_edit_project="can_edit_project"
-          />
-
-          <CardMachines
-            :project="project"
-            :can_edit_project="can_edit_project"
-          />
-          <CardLicense
-            :project="project"
-            :can_edit_project="can_edit_project"
-          />
-
-          <!-- <CardFiles :project="project" :can_edit_project="can_edit_project" /> -->
-        </div>
       </div>
 
       <div class="_projectPanesAndList">
@@ -65,28 +44,12 @@ import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
 
-import CardMeta from "@/components/project_cards/CardMeta.vue";
-// import CardAuthor from "@/components/project_cards/CardAuthor.vue";
-import CardKeywords from "@/components/project_cards/CardKeywords.vue";
-import CardMachines from "@/components/project_cards/CardMachines.vue";
-import CardStatus from "@/components/project_cards/CardStatus.vue";
-import CardLicense from "@/components/project_cards/CardLicense.vue";
-// import CardFiles from "@/components/project_cards/CardFiles.vue";
-
 export default {
   props: {},
   components: {
     ProjectPresentation,
     PaneList2,
     ProjectPanes,
-
-    CardMeta,
-    // CardAuthor,
-    CardKeywords,
-    CardMachines,
-    CardStatus,
-    CardLicense,
-    // CardFiles,
   },
   data() {
     return {
@@ -207,39 +170,6 @@ export default {
 }
 
 ._topContent {
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0 auto;
-
-  > * {
-    flex: 1 0 320px;
-
-    &._projectMeta {
-      flex: 0 0 240px;
-    }
-  }
-}
-
-._projectMeta {
-  display: flex;
-  flex-flow: column nowrap;
-
-  max-height: 40vmin;
-  overflow: auto;
-
-  // padding: calc(var(--spacing) / 2);
-  // gap: calc(var(--spacing) / 2);
-
-  > * {
-    border: 1px solid var(--c-gris);
-
-    &:first-child {
-      border-top: 0 solid #000;
-    }
-    &:not(:last-child) {
-      border-bottom: 0 solid #000;
-    }
-  }
 }
 
 ._tabButton {

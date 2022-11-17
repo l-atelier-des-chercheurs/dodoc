@@ -69,7 +69,7 @@ export default {
   computed: {},
   methods: {
     async removeText() {
-      await this.$api.deleteFile({
+      await this.$api.deleteItem({
         path: this.file.$path,
       });
     },

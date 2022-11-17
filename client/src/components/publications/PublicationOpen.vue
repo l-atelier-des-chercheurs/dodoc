@@ -5,17 +5,39 @@
       {{ fetch_publication_error }}
     </div>
     <template v-else>
-      {{ publication.title }}
-      {{ publication.title }}
+      <TitleField
+        label="title"
+        :field_name="'title'"
+        :content="publication.title"
+        :path="publication.$path"
+        :can_edit="true"
+      />
+      <TitleField
+        label="template"
+        :field_name="'template'"
+        :content="publication.template"
+        :path="publication.$path"
+        :can_edit="true"
+      />
+      <button type="button" @click="removePublication()">Supprimer</button>
+      <button type="button" @click="$emit('close')">Fermer</button>
+      <StoryTemplate
+        v-if="publication.template === 'story'"
+        :publication="publication"
+      />
     </template>
   </div>
 </template>
 <script>
+import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
+
 export default {
   props: {
     publication_slug: String,
   },
-  components: {},
+  components: {
+    StoryTemplate,
+  },
   data() {
     return {
       publication: null,
@@ -51,6 +73,16 @@ export default {
           .log(this.$t("notifications.publication_was_removed"));
         this.$emit("close");
       }
+    },
+    async removePublication() {
+      await this.$api
+        .deleteItem({
+          path: this.publication.$path,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
     },
   },
 };

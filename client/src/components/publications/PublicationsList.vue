@@ -28,6 +28,9 @@
       </button>
     </div>
 
+    show_create_publication = {{ show_create_publication }}
+    {{ project_path }}
+
     <CreatePublication
       v-if="show_create_publication"
       :project_path="project_path"

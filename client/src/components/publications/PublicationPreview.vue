@@ -3,7 +3,7 @@
     <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
     <header class="">
       {{ publication.title }}<br />
-      <small v-if="publication.type" v-html="publication.type" />
+      <small v-if="publication.template" v-html="publication.template" />
     </header>
     <div class="">
       <button
@@ -39,7 +39,7 @@ export default {
   computed: {},
   methods: {
     async removePublication() {
-      await this.$api.deleteFolder({ path: this.publication.$path });
+      await this.$api.deleteItem({ path: this.publication.$path });
     },
   },
 };

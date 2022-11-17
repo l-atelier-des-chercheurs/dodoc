@@ -197,12 +197,12 @@ module.exports = (function () {
     saveCover: async ({ req, path_to_folder }) => {
       dev.logfunction({ path_to_folder });
 
-      const { schema, folder_type } = await utils.parseAndCheckSchema({
+      const { schema } = await utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
 
       if (!schema.hasOwnProperty("$cover")) {
-        dev.error(`no cover allowed on ${folder_type}`);
+        dev.error(`no cover allowed on ${path_to_folder}`);
         return;
       }
 
@@ -334,20 +334,6 @@ module.exports = (function () {
 
     const full_folder_path = utils.getPathToUserContent(path_to_folder);
     const full_bin_folder_path = utils.getPathToUserContent(bin_folder_path);
-
-    // const bin_folder_path = subfolder_slug
-    // ? utils.getPathToUserContent(
-    //     folder_type,
-    //     folder_slug,
-    //     subfolder_type,
-    //     global.settings.deletedFolderName,
-    //     subfolder_slug
-    //   )
-    // : utils.getPathToUserContent(
-    //     folder_type,
-    //     global.settings.deletedFolderName,
-    //     folder_slug
-    //   );
 
     try {
       await fs.move(full_folder_path, full_bin_folder_path, {

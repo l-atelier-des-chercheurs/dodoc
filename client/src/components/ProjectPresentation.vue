@@ -39,7 +39,7 @@ z
       />
     </div>
 
-    <div class="_projectInfos--meta">
+    <div class="_projectInfos--infos">
       <AuthorField
         :label="context === 'full' ? $t('contributors') : ''"
         :authors_slugs="project.$authors"
@@ -68,6 +68,16 @@ z
       />
     </div>
 
+    <div class="_projectInfos--meta" v-if="context === 'full'">
+      <CardMeta :project="project" :can_edit_project="can_edit_project" />
+      <CardStatus :project="project" :can_edit_project="can_edit_project" />
+      <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
+      <CardKeywords :project="project" :can_edit_project="can_edit_project" />
+      <CardMachines :project="project" :can_edit_project="can_edit_project" />
+      <CardLicense :project="project" :can_edit_project="can_edit_project" />
+      <!-- <CardFiles :project="project" :can_edit_project="can_edit_project" /> -->
+    </div>
+
     <div class="_projectInfos--open" v-if="context === 'list'">
       <router-link
         :to="{ path: '/' + project.$path }"
@@ -80,6 +90,14 @@ z
   </div>
 </template>
 <script>
+import CardMeta from "@/components/project_cards/CardMeta.vue";
+// import CardAuthor from "@/components/project_cards/CardAuthor.vue";
+import CardKeywords from "@/components/project_cards/CardKeywords.vue";
+import CardMachines from "@/components/project_cards/CardMachines.vue";
+import CardStatus from "@/components/project_cards/CardStatus.vue";
+import CardLicense from "@/components/project_cards/CardLicense.vue";
+// import CardFiles from "@/components/project_cards/CardFiles.vue";
+
 export default {
   props: {
     project: Object,
@@ -87,7 +105,15 @@ export default {
     can_edit_project: Boolean,
     // show_more_informations: Boolean,
   },
-  components: {},
+  components: {
+    CardMeta,
+    // CardAuthor,
+    CardKeywords,
+    CardMachines,
+    CardStatus,
+    CardLicense,
+    // CardFiles,
+  },
   data() {
     return {
       new_title: this.project.title,
@@ -186,11 +212,18 @@ export default {
   }
 
   > * {
-    flex: 1 1 260px;
+    flex: 10 1 0;
+
+    &._projectInfos--cover {
+      // flex: 1 1 40vmin;
+    }
+    &._projectInfos--meta {
+      flex: 1 0 260px;
+    }
   }
 }
 
-._projectInfos--meta {
+._projectInfos--infos {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
@@ -212,7 +245,6 @@ export default {
 ._projectInfos--cover {
   position: relative;
   overflow: hidden;
-  flex: 1 1 40vmin;
   // max-height: 40vmin;
   min-width: 320px;
   min-height: 320px;
@@ -276,8 +308,26 @@ export default {
   }
 }
 
-._content {
-  max-width: 80ch;
+._projectInfos--meta {
+  display: flex;
+  flex-flow: column nowrap;
+
+  // max-height: 40vmin;
+  overflow: auto;
+
+  // padding: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
+
+  > * {
+    border: 1px solid var(--c-gris);
+
+    &:first-child {
+      border-top: 0 solid #000;
+    }
+    &:not(:last-child) {
+      border-bottom: 0 solid #000;
+    }
+  }
 }
 
 ._projectInfos--open {
