@@ -67,6 +67,7 @@ export default function () {
         caption: "légende",
         date_created: "date de création",
         date_modified: "dernière modification",
+        date_uploaded: "date d’envoi",
         cancel: "annuler",
         back: "retour",
         save: "enregistrer",
@@ -119,6 +120,7 @@ export default function () {
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
 
         more_infos: "Plus d’informations",
+        informations: "Informations",
 
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

@@ -372,6 +372,7 @@ module.exports = (function () {
         case ".flv":
         case ".mov":
         case ".webm":
+        case ".webp":
         case ".avi":
           new_meta.$type = "video";
           break;

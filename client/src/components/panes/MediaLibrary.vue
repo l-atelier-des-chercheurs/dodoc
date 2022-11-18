@@ -1,90 +1,73 @@
 <template>
   <div class="_mediaLibrary">
-    <splitpanes horizontal :dbl-click-splitter="false" @resized="resized">
-      <pane
-        min-size="5"
-        class="_mediaLibrary--lib"
-        ref="topLib"
-        :size="lib_pane_size"
+    <div class="_topSection">
+      <input
+        type="file"
+        multiple="multiple"
+        :id="id + '-add_file'"
+        name="file"
+        accept=""
+        class="inputfile-2"
+        @change="updateInputFiles($event)"
+      />
+      <label :for="id + '-add_file'">
+        <svg width="20" height="17" viewBox="0 0 20 17">
+          <path
+            d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+          />
+        </svg>
+        {{ $t("import") }}
+      </label>
+      <UploadFiles
+        v-if="selected_files.length > 0"
+        :selected_files="selected_files"
+        :path="project.$path"
+        @importedMedias="mediaJustImported"
+        @close="selected_files = []"
+      />
+
+      <br />
+
+      <form
+        v-if="show_create_link_field"
+        class="input-validation-required"
+        @submit.prevent="createLink"
       >
-        <div class="_topSection">
-          <input
-            type="file"
-            multiple="multiple"
-            :id="id + '-add_file'"
-            name="file"
-            accept=""
-            class="inputfile-2"
-            @change="updateInputFiles($event)"
-          />
-          <label :for="id + '-add_file'">
-            <svg width="20" height="17" viewBox="0 0 20 17">
-              <path
-                d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-              />
-            </svg>
-            {{ $t("import") }}
-          </label>
-          <UploadFiles
-            v-if="selected_files.length > 0"
-            :selected_files="selected_files"
-            :path="project.$path"
-            @importedMedias="mediaJustImported"
-            @close="selected_files = []"
-          />
+        <input type="url" required v-model="url_to" />
+        <br />
+        <input type="submit" />
+      </form>
 
-          <br />
+      Nombre de médias = {{ medias.length }}
+    </div>
+    media_just_focused {{ media_just_focused }}
 
-          <form
-            v-if="show_create_link_field"
-            class="input-validation-required"
-            @submit.prevent="createLink"
-          >
-            <input type="url" required v-model="url_to" />
-            <br />
-            <input type="submit" />
-          </form>
-
-          Nombre de médias = {{ medias.length }}
-        </div>
-
-        <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
-          <MediaTile
-            v-for="file of medias"
-            :key="file.$path"
-            :project_path="project.$path"
-            :file="file"
-            :is_focused="media_focused === file.$path"
-            :data-filepath="file.$path"
-            @toggleMediaFocus="(slug) => toggleMediaFocus(slug)"
-          />
-        </div>
-      </pane>
-      <pane
-        min-size="5"
-        class="_mediaLibrary--focusPane"
-        ref="bottomLib"
-        :size="focus_pane_size"
-      >
-        <transition name="fade_fast" mode="out-in">
-          <MediaFocus
-            v-if="focused_media"
-            :key="focused_media.$path"
-            :file="focused_media"
-            :project_path="project.$path"
-            @remove="removeMedia(focused_media.$path)"
-            @close="toggleMediaFocus(focused_media.$path)"
-          />
-        </transition>
-      </pane>
-    </splitpanes>
+    <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
+      <MediaTile
+        v-for="file of medias"
+        :key="file.$path"
+        :project_path="project.$path"
+        :file="file"
+        :was_focused="media_just_focused === file.$path"
+        :data-filepath="file.$path"
+        @toggleMediaFocus="(path) => toggleMediaFocus(path)"
+      />
+    </div>
+    <transition name="fade_fast" mode="out-in">
+      <MediaModal
+        v-if="focused_media"
+        :key="focused_media.$path"
+        :file="focused_media"
+        :project_path="project.$path"
+        @remove="removeMedia(focused_media.$path)"
+        @close="toggleMediaFocus(focused_media.$path)"
+      />
+    </transition>
   </div>
 </template>
 <script>
-import { Splitpanes, Pane } from "splitpanes";
-
-import MediaFocus from "@/components/MediaFocus";
 import MediaTile from "@/components/MediaTile.vue";
+import MediaModal from "@/components/MediaModal";
 
 export default {
   props: {
@@ -93,10 +76,8 @@ export default {
     media_focused: [Boolean, String],
   },
   components: {
-    Splitpanes,
-    Pane,
     MediaTile,
-    MediaFocus,
+    MediaModal,
   },
   data() {
     return {
@@ -109,6 +90,7 @@ export default {
       url_to: "https://latelier-des-chercheurs.fr/",
 
       focuspane_height_when_opened: this.focus_height,
+      media_just_focused: undefined,
     };
   },
   created() {},
@@ -117,7 +99,7 @@ export default {
 
     if (this.media_focused)
       this.$nextTick(() => {
-        this.scrollToMediaTile(this.media_focused);
+        // this.scrollToMediaTile(this.media_focused);
       });
   },
   beforeDestroy() {},
@@ -144,8 +126,8 @@ export default {
     },
   },
   methods: {
-    scrollToMediaTile(slug) {
-      slug;
+    scrollToMediaTile(path) {
+      path;
       // const focused_tile = this.$refs.mediaTiles.querySelector(
       //   `[data-filepath="${slug}"]`
       // );
@@ -199,6 +181,7 @@ export default {
         this.$emit("update:media_focused", null);
       } else {
         this.$emit("update:media_focused", path);
+        this.media_just_focused = path;
         if (this.focus_height === 0) this.$emit("update:focus_height", 50);
         // debugger;
         // this.resized([

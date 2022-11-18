@@ -48,8 +48,8 @@ export default {
       default: true,
     },
     maxlength: {
-      type: Number,
-      default: -1,
+      type: [Boolean, Number],
+      default: false,
     },
   },
   components: {},
