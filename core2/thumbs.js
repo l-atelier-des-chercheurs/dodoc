@@ -135,7 +135,8 @@ module.exports = (function () {
         );
         return infos;
       } catch (err) {
-        dev.error(err);
+        // no existing infos file, let's create it
+        // dev.error(err);
       }
 
       const hrstart = process.hrtime();
@@ -596,22 +597,16 @@ module.exports = (function () {
   async function _readFileInfos({ full_media_path }) {
     dev.logfunction({ full_media_path });
 
-    const hrstart = process.hrtime();
     const props = {};
-
     try {
       const { size, mtimeMs } = await fs.stat(full_media_path);
       props.size = size;
       props.mtimems = Math.floor(mtimeMs);
     } catch (e) {}
-
     try {
       const hash = await utils.md5FromFile({ full_media_path });
       props.hash = hash;
     } catch (e) {}
-
-    let hrend = process.hrtime(hrstart);
-    dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
 
     return props;
   }

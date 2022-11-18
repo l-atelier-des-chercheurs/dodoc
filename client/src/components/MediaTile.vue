@@ -70,7 +70,7 @@ export default {
       position: absolute;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       max-width: none;
     }
   }

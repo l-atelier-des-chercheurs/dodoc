@@ -8,14 +8,20 @@
         Supprimer média
       </button>
     </div>
+
+    <MediaPicker :publication_path="publication.$path" />
   </div>
 </template>
 <script>
+import MediaPicker from "@/components/publications/MediaPicker.vue";
+
 export default {
   props: {
     publication: Object,
   },
-  components: {},
+  components: {
+    MediaPicker,
+  },
   data() {
     return {
       medias: [],

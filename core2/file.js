@@ -16,11 +16,15 @@ module.exports = (function () {
       const fields = schema.$files.fields;
 
       let additional_meta = {};
+      let extracted_meta = {};
 
       // if req.body has content, this means there is no files to process
-      if (Object.keys(req.body) && Object.keys(req.body).length)
+      if (Object.keys(req.body) && Object.keys(req.body).length) {
         additional_meta = req.body;
-      else {
+        extracted_meta = await _extractAdditionalMetaFromFile({
+          additional_meta,
+        });
+      } else {
         const {
           originalFilename,
           path_to_temp_file,
@@ -47,26 +51,22 @@ module.exports = (function () {
           return reject(err);
         });
 
+        extracted_meta = await _extractAdditionalMetaFromFile({
+          additional_meta,
+          filename: new_filename,
+          filepath: new_path,
+        });
+
         dev.log(`New file uploaded to`, { path_to_folder });
         dev.logverbose({ new_filename, new_path, additional_meta });
       }
 
       // user added meta
-      let meta = utils.validateMeta({
+      let validated_meta = utils.validateMeta({
         fields,
         new_meta: additional_meta,
       });
-
-      // TODO rewrite, a bit messy
-      const extracted_meta =
-        typeof new_filename !== "undefined"
-          ? await _extractAdditionalMetaFromFile({
-              additional_meta,
-              filename: new_filename,
-              filepath: new_path,
-            })
-          : await _extractAdditionalMetaFromFile({ additional_meta });
-      meta = Object.assign({}, meta, extracted_meta);
+      const meta = Object.assign({}, validated_meta, extracted_meta);
 
       const prefix_filename =
         typeof new_filename !== "undefined"

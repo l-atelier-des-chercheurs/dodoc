@@ -5,6 +5,7 @@
       {{ fetch_publication_error }}
     </div>
     <template v-else>
+      {{ publication }}
       <TitleField
         label="title"
         :field_name="'title'"
@@ -19,7 +20,9 @@
         :path="publication.$path"
         :can_edit="true"
       />
-      <button type="button" @click="removePublication()">Supprimer</button>
+      <button type="button" @click="removePublication()">
+        Supprimer {{ publication.$path }}
+      </button>
       <button type="button" @click="$emit('close')">Fermer</button>
       <StoryTemplate
         v-if="publication.template === 'story'"
