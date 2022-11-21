@@ -41,7 +41,7 @@ export default {
       this.fetch_error = null;
 
       try {
-        const response = await this.$api.deleteFolder({
+        const response = await this.$api.deleteItem({
           path: this.project.$path,
         });
         this.response = response.data;

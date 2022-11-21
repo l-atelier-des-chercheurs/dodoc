@@ -78,7 +78,7 @@ export default {
         },
       });
       await new Promise((r) => setTimeout(r, 500));
-      await this.$api.deleteFolder({
+      await this.$api.deleteItem({
         path: `projects/${new_folder_slug}`,
       });
       await new Promise((r) => setTimeout(r, 250));

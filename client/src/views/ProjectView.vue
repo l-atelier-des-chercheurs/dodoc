@@ -17,27 +17,6 @@
           context="full"
           :can_edit_project="can_edit_project"
         />
-        <!-- Metadonnées, Auteurs, Mots-clés, Machines, Statut, Licence -->
-        <div class="_projectMeta">
-          <CardMeta :project="project" :can_edit_project="can_edit_project" />
-          <CardStatus :project="project" :can_edit_project="can_edit_project" />
-          <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
-          <CardKeywords
-            :project="project"
-            :can_edit_project="can_edit_project"
-          />
-
-          <CardMachines
-            :project="project"
-            :can_edit_project="can_edit_project"
-          />
-          <CardLicense
-            :project="project"
-            :can_edit_project="can_edit_project"
-          />
-
-          <!-- <CardFiles :project="project" :can_edit_project="can_edit_project" /> -->
-        </div>
       </div>
 
       <div class="_projectPanesAndList">
@@ -49,7 +28,7 @@
         />
         <div class="_panes">
           <ProjectPanes
-            :projectpanes="current_projectpanes"
+            :projectpanes="projectpanes"
             :project="project"
             :can_edit_project="can_edit_project"
             @update:projectpanes="projectpanes = $event"
@@ -65,28 +44,12 @@ import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
 
-import CardMeta from "@/components/project_cards/CardMeta.vue";
-// import CardAuthor from "@/components/project_cards/CardAuthor.vue";
-import CardKeywords from "@/components/project_cards/CardKeywords.vue";
-import CardMachines from "@/components/project_cards/CardMachines.vue";
-import CardStatus from "@/components/project_cards/CardStatus.vue";
-import CardLicense from "@/components/project_cards/CardLicense.vue";
-// import CardFiles from "@/components/project_cards/CardFiles.vue";
-
 export default {
   props: {},
   components: {
     ProjectPresentation,
     PaneList2,
     ProjectPanes,
-
-    CardMeta,
-    // CardAuthor,
-    CardKeywords,
-    CardMachines,
-    CardStatus,
-    CardLicense,
-    // CardFiles,
   },
   data() {
     return {
@@ -98,7 +61,7 @@ export default {
   },
   created() {},
   async mounted() {
-    await this.listProjects();
+    await this.listProject();
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
     this.$api.join({ room: this.project.$path });
@@ -121,6 +84,19 @@ export default {
       },
       deep: true,
     },
+    "$api.is_logged_in": {
+      handler() {
+        if (this.projectpanes.length === 0)
+          this.projectpanes = [
+            {
+              type: "Publier",
+              pad: {},
+              size: 100,
+            },
+          ];
+      },
+      immediate: true,
+    },
   },
   computed: {
     articles() {
@@ -129,19 +105,9 @@ export default {
     can_edit_project() {
       return this.$api.is_logged_in;
     },
-    current_projectpanes() {
-      if (this.can_edit_project) return this.projectpanes;
-      return [
-        {
-          type: "Publier",
-          pad: {},
-          size: 100,
-        },
-      ];
-    },
   },
   methods: {
-    async listProjects() {
+    async listProject() {
       const project = await this.$api
         .getFolder({
           path: this.$route.path,
@@ -204,39 +170,6 @@ export default {
 }
 
 ._topContent {
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0 auto;
-
-  > * {
-    flex: 1 0 320px;
-
-    &._projectMeta {
-      flex: 0 0 240px;
-    }
-  }
-}
-
-._projectMeta {
-  display: flex;
-  flex-flow: column nowrap;
-
-  max-height: 50vh;
-  overflow: auto;
-
-  // padding: calc(var(--spacing) / 2);
-  // gap: calc(var(--spacing) / 2);
-
-  > * {
-    border: 1px solid var(--c-gris);
-
-    &:first-child {
-      border-top: 0 solid #000;
-    }
-    &:not(:last-child) {
-      border-bottom: 0 solid #000;
-    }
-  }
 }
 
 ._tabButton {

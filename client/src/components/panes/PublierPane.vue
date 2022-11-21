@@ -1,101 +1,41 @@
 <template>
   <div>
-    <div class="_topBtn">
-      <h2>Publications</h2>
-      <button
-        type="button"
-        class="u-button u-button_bleuvert u-button_big"
-        v-if="$api.is_logged_in"
-        @click="show_create_publication = true"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          viewBox="0 0 168 168"
-          style="enable-background: new 0 0 168 168"
-          xml:space="preserve"
-        >
-          <polygon
-            style="fill: white"
-            points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
-		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
-          />
-        </svg>
-        {{ $t("create") }}
-      </button>
-    </div>
-
-    <CreatePublication
-      v-if="show_create_publication"
+    <PublicationsList
+      v-if="!publication_opened || !publication_opened.slug"
       :project_path="project.$path"
-      @close="show_create_publication = false"
+      :can_edit="can_edit"
+      @togglePubli="$emit('update:publication_opened', $event)"
     />
-
-    <div class="_publications">
-      <div v-for="publication in publications" :key="publication.$path">
-        {{ publication.$path }}
-      </div>
-      <div class="_publications--list">
-        <PublicationPreview
-          image_name="publi_apercu.png"
-          title="Pyramide Etalans"
-          type="Page à page"
-        />
-        <PublicationPreview
-          image_name="publi_apercu-2.png"
-          title="Séminaire Mandela"
-          type="Page à page"
-        />
-        <PublicationPreview
-          image_name="publi_nunicons.png"
-          title="Nunicons 3D"
-          type="Fiche projet <i>Je Fabrique mon Matériel Pédagogique</i>"
-        />
-      </div>
-    </div>
+    <PublicationOpen
+      v-else
+      :publication_slug="publication_opened.slug"
+      @close="$emit('update:publication_opened', {})"
+    />
   </div>
 </template>
 <script>
-import CreatePublication from "@/components/publications/CreatePublication.vue";
-import PublicationPreview from "@/components/publications/PublicationPreview.vue";
+import PublicationsList from "@/components/publications/PublicationsList.vue";
+import PublicationOpen from "@/components/publications/PublicationOpen.vue";
 
 export default {
   props: {
     project: Object,
+    publication_opened: Object,
+    can_edit: Boolean,
   },
   components: {
-    CreatePublication,
-    PublicationPreview,
+    PublicationsList,
+    PublicationOpen,
   },
   data() {
-    return {
-      show_create_publication: false,
-      publications: [],
-    };
+    return {};
   },
   created() {},
-  async mounted() {
-    const path = `${this.project.$path}/publications`;
-    this.publications = await this.$api.getFolders({
-      path,
-    });
-    this.$api.join({ room: path });
-  },
+  mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {
-    openEntry({ slug }) {
-      this.$emit("update:opened_journal_entry", { slug });
-    },
-    closeEntry() {
-      this.entry_just_opened = this.opened_journal_entry.slug;
-      this.$emit("update:opened_journal_entry", {});
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>

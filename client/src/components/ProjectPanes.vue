@@ -48,9 +48,9 @@
         <PublierPane
           v-if="pane.type === 'Publier'"
           :project="project"
-          :opened_journal_entry="pane.pad"
+          :publication_opened="pane.pad"
           :can_edit="can_edit_project"
-          @update:opened_journal_entry="pane.pad = $event"
+          @update:publication_opened="pane.pad = $event"
         />
       </pane>
     </splitpanes>

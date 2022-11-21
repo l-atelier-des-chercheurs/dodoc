@@ -114,7 +114,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._selectField {
-  widows: 100%;
 }
 
 ._sameRow {

@@ -14,6 +14,23 @@
       <br />
 
       <div class="">
+        <select v-model="new_publication_template">
+          <option
+            v-for="option in template_options"
+            :key="option.key"
+            :value="option.key"
+            v-text="$t(option.key)"
+          />
+        </select>
+
+        <div v-if="false">
+          <small v-html="$t(instructions)" />
+        </div>
+      </div>
+
+      <br />
+
+      <div class="">
         <ToggleInput
           :content.sync="new_publication_is_public"
           :label="$t('public')"
@@ -53,10 +70,22 @@ export default {
     return {
       new_publication_title: "",
       new_publication_is_public: true,
+      new_publication_template: "story",
 
       is_creating_publication: false,
 
       allow_save: false,
+
+      template_options: [
+        {
+          key: "story",
+          text: "story",
+        },
+        {
+          key: "page_by_page",
+          text: "page_by_page",
+        },
+      ],
 
       error_msg: "",
     };
@@ -76,6 +105,7 @@ export default {
           path: `${this.project_path}/publications`,
           additional_meta: {
             title: this.new_publication_title,
+            template: this.new_publication_template,
             requested_slug: this.new_publication_title,
           },
         });

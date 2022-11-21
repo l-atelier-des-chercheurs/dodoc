@@ -15,8 +15,21 @@ module.exports = (function () {
       });
       const fields = schema.$files.fields;
 
-      const { originalFilename, path_to_temp_file, additional_meta } =
-        await utils
+      let additional_meta = {};
+      let extracted_meta = {};
+
+      // if req.body has content, this means there is no files to process
+      if (Object.keys(req.body) && Object.keys(req.body).length) {
+        additional_meta = req.body;
+        extracted_meta = await _extractAdditionalMetaFromFile({
+          additional_meta,
+        });
+      } else {
+        const {
+          originalFilename,
+          path_to_temp_file,
+          additional_meta: additional_meta,
+        } = await utils
           .handleForm({
             path_to_folder,
             req,
@@ -25,42 +38,42 @@ module.exports = (function () {
             dev.error(`Failed to handle form`, err);
           });
 
-      // filename, filepath, additional_meta
-      // make url-compatible media filenames
-      const { name, ext } = path.parse(originalFilename);
-      const slugged_original_filename = utils.slug(name) + ext;
+        // filename, filepath, additional_meta
+        // make url-compatible media filenames
+        const { name, ext } = path.parse(originalFilename);
+        const slugged_original_filename = utils.slug(name) + ext;
 
-      let { new_path, new_filename } = await _renameUploadedFile({
-        path_to_folder,
-        originalFilename: slugged_original_filename,
-        path_to_temp_file,
-      }).catch((err) => {
-        return reject(err);
-      });
+        let { new_path, new_filename } = await _renameUploadedFile({
+          path_to_folder,
+          originalFilename: slugged_original_filename,
+          path_to_temp_file,
+        }).catch((err) => {
+          return reject(err);
+        });
 
-      dev.log(`New file uploaded to`, { path_to_folder });
-      dev.logverbose({ new_filename, new_path, additional_meta });
+        extracted_meta = await _extractAdditionalMetaFromFile({
+          additional_meta,
+          filename: new_filename,
+          filepath: new_path,
+        });
 
-      // TODO rewrite, a bit messy
-      const extracted_meta = await _extractAdditionalMetaFromFile({
-        additional_meta,
-        filename: new_filename,
-        filepath: new_path,
-      });
+        dev.log(`New file uploaded to`, { path_to_folder });
+        dev.logverbose({ new_filename, new_path, additional_meta });
+      }
 
       // user added meta
-      let meta = utils.validateMeta({
+      let validated_meta = utils.validateMeta({
         fields,
         new_meta: additional_meta,
       });
-      meta = Object.assign({}, meta, extracted_meta);
+      const meta = Object.assign({}, validated_meta, extracted_meta);
 
-      const meta_filename = new_filename + ".meta.txt";
+      const prefix_filename =
+        typeof new_filename !== "undefined"
+          ? new_filename
+          : "infos-" + +meta.$date_uploaded;
+      const meta_filename = prefix_filename + ".meta.txt";
 
-      const path_to_meta = utils.getPathToUserContent(
-        path_to_folder,
-        meta_filename
-      );
       await utils.saveMetaAtPath({
         relative_path: path_to_folder,
         file_slug: meta_filename,
@@ -113,7 +126,7 @@ module.exports = (function () {
 
       const path_to_folder = utils.getPathParent(path_to_meta);
 
-      if (media_filename.endsWith("txt"))
+      if (media_filename && media_filename.endsWith(".txt"))
         meta.$content = await utils.readFileContent(
           path_to_folder,
           media_filename
@@ -130,12 +143,14 @@ module.exports = (function () {
         });
       if (_thumbs) meta.$thumbs = _thumbs;
 
-      const file_infos = await thumbs.getInfosForFile({
-        media_type,
-        media_filename,
-        path_to_folder,
-      });
-      if (file_infos) meta.$infos = file_infos;
+      if (media_filename) {
+        const file_infos = await thumbs.getInfosForFile({
+          media_type,
+          media_filename,
+          path_to_folder,
+        });
+        if (file_infos) meta.$infos = file_infos;
+      }
 
       cache.set({
         key: path_to_meta,
@@ -330,7 +345,7 @@ module.exports = (function () {
     }
 
     new_meta.$date_uploaded = new_meta.$date_modified = utils.getCurrentDate();
-    new_meta.$media_filename = filename;
+    if (filename) new_meta.$media_filename = filename;
 
     // set status (see readme)
     new_meta.$public = additional_meta.$public
@@ -339,9 +354,8 @@ module.exports = (function () {
 
     if (additional_meta.$type) {
       new_meta.$type = additional_meta.$type;
-    } else {
+    } else if (filename) {
       const ext = path.extname(filename);
-
       switch (ext.toLowerCase()) {
         case ".jpeg":
         case ".jpg":
@@ -358,6 +372,7 @@ module.exports = (function () {
         case ".flv":
         case ".mov":
         case ".webm":
+        case ".webp":
         case ".avi":
           new_meta.$type = "video";
           break;
@@ -436,7 +451,7 @@ module.exports = (function () {
 
     try {
       for (const file_path of _all_file_paths) {
-        var path_in_bin = file_path.replace(
+        const path_in_bin = file_path.replace(
           path.join(path_to_folder),
           path.join(path_to_folder, global.settings.deletedFolderName)
         );
@@ -464,6 +479,8 @@ module.exports = (function () {
 
     let meta = await utils.readMetaFile(path_to_folder, meta_filename);
     const media_filename = meta.$media_filename;
+
+    if (!media_filename) return paths;
 
     const full_media_path = utils.getPathToUserContent(
       path_to_folder,

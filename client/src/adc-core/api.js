@@ -6,7 +6,7 @@ export default function () {
     data: {
       socket: "",
       store: {},
-      is_logged_in: false,
+      is_logged_in: true,
       debug_mode: false,
     },
     created() {},
@@ -152,13 +152,6 @@ export default function () {
         folder.$files = folder.$files.filter(
           (file) => file.$path !== path_to_meta
         );
-        // const folder = this.findFolder({ folder_type, folder_slug });
-        // const file_index = this.findFileIndexInFolder({
-        //   folder_type,
-        //   folder_slug,
-        //   meta_filename,
-        // });
-        // if (file_index >= 0) folder.$files.splice(file_index, 1);
       },
 
       join({ room }) {
@@ -190,23 +183,6 @@ export default function () {
         this.$set(this.store, folder.$path, folder);
         return folder;
       },
-      // async getFolder({ folder_type, folder_slug }) {
-      //   const response = await this.$axios.get(
-      //     `/${folder_type}/${folder_slug}`
-      //   );
-
-      //   const d = response.data;
-
-      //   if (!Object.prototype.hasOwnProperty.call(this.store, folder_type))
-      //     this.$set(this.store, folder_type, new Array());
-
-      //   let folders = this.store[folder_type];
-      //   folders = folders.filter((f) => f.$slug !== folder_slug);
-      //   folders.push(d);
-      //   this.store[folder_type] = folders;
-
-      //   return d;
-      // },
       async getArchives({ path }) {
         const response = await this.$axios.get(path);
         const d = response.data;
@@ -217,14 +193,6 @@ export default function () {
         try {
           const response = await this.$axios.post(path, additional_meta);
           return response.data.new_folder_slug;
-        } catch (e) {
-          throw e.response.data;
-        }
-      },
-      async deleteFolder({ path }) {
-        try {
-          const response = await this.$axios.delete(path);
-          return response.data;
         } catch (e) {
           throw e.response.data;
         }
@@ -257,17 +225,25 @@ export default function () {
         });
       },
       async uploadFile({ path, filename, file, additional_meta, onProgress }) {
-        let formData = new FormData();
-        formData.append("file", file, filename);
+        // if no file binary to send, we'll only create a meta file with additional_meta
+        let data;
+        let headers;
 
-        if (additional_meta)
-          formData.append(filename, JSON.stringify(additional_meta));
+        if (file) {
+          data = new FormData();
+          data.append("file", file, filename);
+          if (additional_meta)
+            data.append(filename, JSON.stringify(additional_meta));
+          headers = { "Content-Type": "multipart/form-data" };
+        } else {
+          data = additional_meta;
+        }
 
         path = `${path}/_upload`;
 
         let res = await this.$axios
-          .post(path, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
+          .post(path, data, {
+            headers,
             onUploadProgress: (progressEvent) => {
               if (onProgress) onProgress(progressEvent);
             },
@@ -306,7 +282,7 @@ export default function () {
         return;
       },
 
-      async deleteFile({ path }) {
+      async deleteItem({ path }) {
         try {
           const response = await this.$axios.delete(path);
           return response.data;

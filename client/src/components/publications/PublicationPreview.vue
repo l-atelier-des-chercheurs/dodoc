@@ -1,19 +1,19 @@
 <template>
   <sl-card class="u-card">
-    <img :src="`${$root.publicPath}${image_name}`" class="" />
+    <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
     <header class="">
-      {{ title }}<br />
-      <small v-html="type"></small>
+      {{ publication.title }}<br />
+      <small v-if="publication.template" v-html="publication.template" />
     </header>
-
-    <div class="_projectInfos--open" v-if="context === 'list'">
-      <router-link
-        :to="{ path: '/' + project.$path }"
+    <div class="">
+      <button
+        type="button"
         class="u-button u-button_red"
+        @click="$emit('open')"
       >
         ouvrir&nbsp;
         <sl-icon name="arrow-up-right" />
-      </router-link>
+      </button>
     </div>
 
     <!-- {{ publication.title }} -->
@@ -39,7 +39,7 @@ export default {
   computed: {},
   methods: {
     async removePublication() {
-      await this.$api.deleteFolder({ path: this.publication.$path });
+      await this.$api.deleteItem({ path: this.publication.$path });
     },
   },
 };

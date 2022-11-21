@@ -1,6 +1,9 @@
 <template>
   <div
     class="_mediaTile"
+    :class="{
+      'was--focused': was_focused,
+    }"
     :draggable="true"
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
@@ -9,9 +12,6 @@
     <button
       type="button"
       class="_focusMediaBtn"
-      :class="{
-        'is--focused': is_focused,
-      }"
       @click="$emit('toggleMediaFocus', file.$path)"
     />
   </div>
@@ -21,7 +21,7 @@ export default {
   props: {
     file: Object,
     project_path: String,
-    is_focused: Boolean,
+    was_focused: Boolean,
   },
   components: {},
   data() {
@@ -56,6 +56,13 @@ export default {
   overflow: hidden;
   border-radius: 3px;
 
+  transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.was--focused {
+    // border: 2px solid var(--c-vert);
+    background: var(--c-noir);
+  }
+
   &[data-type="text"],
   &[data-type="other"] {
     display: flex;
@@ -70,7 +77,7 @@ export default {
       position: absolute;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       max-width: none;
     }
   }
@@ -82,19 +89,13 @@ export default {
   inset: 0;
   width: 100%;
   background: transparent;
-  opacity: 0.5;
+  opacity: 0.3;
   transition: all 0.1s linear;
 
   &:hover {
     background: white;
-    background: black;
     // background: rgba(255, 255, 255, 0.35);
     transition: none;
-  }
-
-  &.is--focused {
-    // border: 2px solid var(--c-vert);
-    background: black;
   }
 }
 </style>

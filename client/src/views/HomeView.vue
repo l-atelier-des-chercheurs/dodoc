@@ -7,7 +7,7 @@
         <router-link to="/projects">Afficher les projets</router-link>
       </p>
       <p v-html="desc" />
-      <EditBtn @click="enableEditMode" />
+      <EditBtn />
     </div>
     <small class="_versionNumber">version {{ $root.app_infos.version }}</small>
   </div>
