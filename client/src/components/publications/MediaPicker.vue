@@ -12,6 +12,15 @@
       <sl-icon name="plus-circle-fill" :label="$t('edit')" />
       {{ $t("add_media") }}
     </sl-button>
+    <sl-button
+      size="small"
+      variant="default"
+      pill
+      @click="show_media_picker = false"
+    >
+      <sl-icon name="x-circle" />
+      {{ $t("back") }}
+    </sl-button>
 
     <div v-if="show_media_picker">
       <sl-spinner
@@ -40,8 +49,8 @@
             <MediaLibrary
               :project="source_project"
               :focus_height="focus_height"
-              @update:focus_height="focus_height = $event"
               :media_focused="focus"
+              @update:focus_height="focus_height = $event"
               @update:media_focused="focus = $event"
             />
           </template>
@@ -102,11 +111,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._mediaPicker {
+  position: relative;
   display: block;
   max-width: 320px;
   margin: calc(var(--spacing) / 4) 0;
   padding: calc(var(--spacing) / 4);
-  border-radius: 8px;
-  border: 1px solid black;
+  border-radius: 4px;
+  background: white;
+  // border: 1px solid black;
 }
 </style>

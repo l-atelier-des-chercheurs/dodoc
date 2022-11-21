@@ -40,7 +40,6 @@
 
       Nombre de médias = {{ medias.length }}
     </div>
-    media_just_focused {{ media_just_focused }}
 
     <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
       <MediaTile
@@ -72,7 +71,6 @@ import MediaModal from "@/components/MediaModal";
 export default {
   props: {
     project: Object,
-    focus_height: Number,
     media_focused: [Boolean, String],
   },
   components: {
@@ -89,7 +87,6 @@ export default {
       show_create_link_field: false,
       url_to: "https://latelier-des-chercheurs.fr/",
 
-      focuspane_height_when_opened: this.focus_height,
       media_just_focused: undefined,
     };
   },
@@ -116,13 +113,6 @@ export default {
         this.scrollToMediaTile(_focused_media.$path);
 
       return _focused_media;
-    },
-    lib_pane_size() {
-      return 100 - this.focus_pane_size;
-    },
-    focus_pane_size() {
-      if (!this.focused_media) return 0;
-      return this.focus_height;
     },
   },
   methods: {
@@ -172,22 +162,12 @@ export default {
       this.$api.uploadText({ filename, content, additional_meta });
     },
 
-    resized(panes) {
-      const focus_pane_height = Number(panes[1].size.toFixed(1));
-      this.$emit("update:focus_height", focus_pane_height);
-    },
     toggleMediaFocus(path) {
       if (!path || this.media_focused === path) {
         this.$emit("update:media_focused", null);
       } else {
         this.$emit("update:media_focused", path);
         this.media_just_focused = path;
-        if (this.focus_height === 0) this.$emit("update:focus_height", 50);
-        // debugger;
-        // this.resized([
-        //   { size: 100 - this.focuspane_height_when_opened },
-        //   { size: this.focuspane_height_when_opened },
-        // ]);
       }
     },
 

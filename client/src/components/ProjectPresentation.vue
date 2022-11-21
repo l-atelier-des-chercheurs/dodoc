@@ -218,7 +218,8 @@ export default {
       // flex: 1 1 40vmin;
     }
     &._projectInfos--meta {
-      flex: 1 0 260px;
+      flex: 0 0 260px;
+      max-height: calc((100vw - 260px) / 2);
     }
   }
 }
@@ -311,6 +312,7 @@ export default {
 ._projectInfos--meta {
   display: flex;
   flex-flow: column nowrap;
+  font-size: 90%;
 
   // max-height: 40vmin;
   overflow: auto;

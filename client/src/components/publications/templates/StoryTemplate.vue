@@ -1,7 +1,8 @@
 <template>
   <div>
-    le publication story ici
-    <button type="button" @click="createMedia">Créer un média</button>
+    // Lister medias_list
+    {{ publication.medias_list }}
+
     <div v-for="file in publication.$files" :key="file.$path">
       {{ file }}
       <button type="button" @click="removeFile(file.$path)">

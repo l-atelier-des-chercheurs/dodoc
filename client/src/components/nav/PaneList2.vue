@@ -18,7 +18,8 @@
           'is--shown': is_stickied_to_top,
         }"
       >
-        {{ project_title }}
+        <img v-if="cover_thumb" :src="cover_thumb" />
+        {{ project.title }}
       </span>
       <SlickList
         class="_paneList--list"
@@ -116,7 +117,7 @@ import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 export default {
   props: {
     panes: Array,
-    project_title: String,
+    project: Object,
   },
   components: {
     SlickItem,
@@ -195,7 +196,16 @@ export default {
       }
     },
   },
-  computed: {},
+  computed: {
+    cover_thumb() {
+      return this.makeRelativeURLFromThumbs({
+        thumbs: this.project.$cover,
+        type: "image",
+        project_path: this.project.$path,
+        resolution: 50,
+      });
+    },
+  },
   methods: {
     detectTopOfWindow() {
       if (this.$el.getBoundingClientRect().y <= 10)
@@ -405,7 +415,12 @@ export default {
 }
 
 ._projectTitle {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   font-weight: 700;
   opacity: 0;
   transform: translateY(-100%);

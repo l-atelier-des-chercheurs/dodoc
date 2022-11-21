@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_publierPane">
     <PublicationsList
       v-if="!publication_opened || !publication_opened.slug"
       :project_path="project.$path"
@@ -39,19 +39,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._topBtn {
-  display: flex;
-  place-content: center;
+._publierPane {
   margin: calc(var(--spacing) * 2);
-}
-._publications {
-  margin: calc(var(--spacing) * 2);
-}
-._publications--list {
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) * 2);
-  align-items: flex-start;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 </style>

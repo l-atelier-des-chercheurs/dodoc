@@ -87,7 +87,7 @@ export default {
   position: absolute;
   // padding: 1px;
   inset: 0;
-  padding: calc(var(--spacing) * 3);
+  padding: 4%;
   // background: rgba(253, 253, 253, 0.7);
 
   ._mediaModal--overlay {
@@ -138,6 +138,7 @@ export default {
     &._preview {
       position: relative;
       flex: 10 1 320px;
+      height: 50%;
     }
     &._meta {
       background: white;
