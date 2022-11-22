@@ -1,65 +1,72 @@
 <template>
   <div class="_mediaLibrary">
-    <div class="_topSection">
-      <input
-        type="file"
-        multiple="multiple"
-        :id="id + '-add_file'"
-        name="file"
-        accept=""
-        class="inputfile-2"
-        @change="updateInputFiles($event)"
-      />
-      <label :for="id + '-add_file'">
-        <svg width="20" height="17" viewBox="0 0 20 17">
-          <path
-            d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-          />
-        </svg>
-        {{ $t("import") }}
-      </label>
-      <UploadFiles
-        v-if="selected_files.length > 0"
-        :selected_files="selected_files"
-        :path="project.$path"
-        @importedMedias="mediaJustImported"
-        @close="selected_files = []"
-      />
+    <section class="_scrollBox">
+      <div class="_topSection">
+        <input
+          type="file"
+          multiple="multiple"
+          :id="id + '-add_file'"
+          name="file"
+          accept=""
+          class="inputfile-2"
+          @change="updateInputFiles($event)"
+        />
+        <label :for="id + '-add_file'">
+          <svg width="20" height="17" viewBox="0 0 20 17">
+            <path
+              d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+            />
+          </svg>
+          {{ $t("import") }}
+        </label>
+        <UploadFiles
+          v-if="selected_files.length > 0"
+          :selected_files="selected_files"
+          :path="project.$path"
+          @importedMedias="mediaJustImported"
+          @close="selected_files = []"
+        />
 
-      <br />
-
-      <form
-        v-if="show_create_link_field"
-        class="input-validation-required"
-        @submit.prevent="createLink"
-      >
-        <input type="url" required v-model="url_to" />
         <br />
-        <input type="submit" />
-      </form>
 
-      Nombre de médias = {{ medias.length }}
-    </div>
+        <form
+          v-if="show_create_link_field"
+          class="input-validation-required"
+          @submit.prevent="createLink"
+        >
+          <input type="url" required v-model="url_to" />
+          <br />
+          <input type="submit" />
+        </form>
 
-    <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
-      <MediaTile
-        v-for="file of medias"
-        :key="file.$path"
-        :project_path="project.$path"
-        :file="file"
-        :was_focused="media_just_focused === file.$path"
-        :data-filepath="file.$path"
-        @toggleMediaFocus="(path) => toggleMediaFocus(path)"
-      />
-    </div>
+        <small v-if="medias.length === 0"> Aucun média dans ce projet </small>
+        <small v-if="medias.length">
+          Nombre de médias = {{ medias.length }}
+        </small>
+      </div>
+
+      <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
+        <MediaTile
+          v-for="file of medias"
+          :key="file.$path"
+          :project_path="project.$path"
+          :file="file"
+          :was_focused="media_just_focused === file.$path"
+          :data-filepath="file.$path"
+          @toggleMediaFocus="(path) => toggleMediaFocus(path)"
+        />
+      </div>
+    </section>
     <transition name="fade_fast" mode="out-in">
       <MediaModal
         v-if="focused_media"
         :key="focused_media.$path"
         :file="focused_media"
         :project_path="project.$path"
+        :select_mode="select_mode"
         @remove="removeMedia(focused_media.$path)"
         @close="toggleMediaFocus(focused_media.$path)"
+        @select="selectMedia(focused_media.$path)"
       />
     </transition>
   </div>
@@ -72,6 +79,10 @@ export default {
   props: {
     project: Object,
     media_focused: [Boolean, String],
+    select_mode: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     MediaTile,
@@ -170,7 +181,9 @@ export default {
         this.media_just_focused = path;
       }
     },
-
+    selectMedia(path) {
+      this.$emit("selectMedia", path);
+    },
     async removeMedia(path) {
       await this.$api.deleteItem({
         path,
@@ -182,11 +195,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._mediaLibrary {
+  position: relative;
   background: var(--color-Collecter);
   height: 100%;
-  overflow: auto;
 
   --active-color: var(--c-vert);
+}
+
+._scrollBox {
+  height: 100%;
+  overflow: auto;
 }
 
 ._mediaLibrary--lib {
@@ -212,6 +230,7 @@ export default {
 
 ._topSection {
   display: flex;
+  flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 2);

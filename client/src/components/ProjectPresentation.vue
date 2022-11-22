@@ -142,9 +142,9 @@ export default {
   computed: {
     cover_thumb() {
       return this.makeRelativeURLFromThumbs({
-        thumbs: this.project.$cover,
-        type: "image",
-        project_path: this.project.$path,
+        $thumbs: this.project.$cover,
+        $type: "image",
+        $path: this.project.$path,
         resolution: 1200,
       });
     },
@@ -170,8 +170,6 @@ export default {
     async updateProject() {
       this.fetch_status = "pending";
       this.fetch_error = null;
-
-      // TODO use updateItem
 
       try {
         this.response = await this.$api.updateMeta({

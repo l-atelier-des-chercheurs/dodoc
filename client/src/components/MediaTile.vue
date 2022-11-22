@@ -8,7 +8,7 @@
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
-    <MediaContent :file="file" :project_path="project_path" />
+    <MediaContent :file="file" />
     <button
       type="button"
       class="_focusMediaBtn"

@@ -39,8 +39,6 @@
           v-else-if="pane.type === 'Collecter'"
           :key="pane.key"
           :project="project"
-          :focus_height="pane.focus_height"
-          @update:focus_height="pane.focus_height = $event"
           :media_focused="pane.focus"
           @update:media_focused="pane.focus = $event"
         />

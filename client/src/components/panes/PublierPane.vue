@@ -8,6 +8,7 @@
     />
     <PublicationOpen
       v-else
+      :project_path="project.$path"
       :publication_slug="publication_opened.slug"
       @close="$emit('update:publication_opened', {})"
     />

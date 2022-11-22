@@ -37,6 +37,7 @@ import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue
 
 export default {
   props: {
+    project_path: String,
     publication_slug: String,
   },
   components: {
@@ -61,7 +62,7 @@ export default {
     async listPublication() {
       const publication = await this.$api
         .getFolder({
-          path: this.$route.path + `publications/${this.publication_slug}`,
+          path: `${this.project_path}/publications/${this.publication_slug}`,
         })
         .catch((err) => {
           this.fetch_publication_error = err.response;
