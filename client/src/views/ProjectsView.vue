@@ -4,7 +4,8 @@
        {{ projects }}
     </pre> -->
     <div class="_title">
-      <h1>Projets</h1>
+      <h1>Les projets</h1>
+      <br />
       <div>
         <button
           type="button"
@@ -125,14 +126,14 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projectsView {
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
 }
 ._projectsList {
   display: grid;
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
   align-items: flex-start;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 
   border-radius: 6px;
   overflow: hidden;

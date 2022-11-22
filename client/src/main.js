@@ -77,11 +77,7 @@ Vue.component("EditBtn", {
 });
 Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
-  template: `
-    <div class="_loader">
-      <span class="loader" />
-    </div>
-  `,
+  template: `<sl-spinner style="--indicator-color: currentColor" />`,
 });
 
 import FormatDates from "./mixins/FormatDates";
@@ -90,6 +86,10 @@ import Medias from "./mixins/Medias";
 Vue.mixin(Medias);
 import Authors from "./mixins/Authors";
 Vue.mixin(Authors);
+
+Array.prototype.move = function (from, to) {
+  this.splice(to, 0, this.splice(from, 1)[0]);
+};
 
 import "axios-debug-log/enable";
 import axios from "axios";

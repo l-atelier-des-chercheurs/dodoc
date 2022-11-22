@@ -41,6 +41,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publierPane {
-  margin: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 2);
+  overflow: auto;
+  height: 100%;
 }
 </style>

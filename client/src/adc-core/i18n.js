@@ -122,6 +122,11 @@ export default function () {
         more_infos: "Plus d’informations",
         informations: "Informations",
 
+        remove: "Supprimer",
+        move_up: "Remonter",
+        move_down: "Descendre",
+        source_project: "Projet source",
+
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
         "instructions.pane.Collecter": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.

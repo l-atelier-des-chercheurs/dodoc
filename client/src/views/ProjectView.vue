@@ -3,39 +3,43 @@
     <!-- <pre>
       {{ $api.store }}
     </pre> -->
-    <sl-spinner style="--indicator-color: currentColor" v-if="!project" />
-    <div v-else-if="fetch_project_error">
-      {{ fetch_project_error }}
-    </div>
-    <template v-else>
-      <!-- <pre>
+    <transition name="fade_fast" mode="out-in">
+      <div class="_spinner" v-if="!project" key="loader">
+        <LoaderSpinner />
+      </div>
+      <div v-else-if="fetch_project_error" key="err">
+        {{ fetch_project_error }}
+      </div>
+      <div v-else key="project">
+        <!-- <pre>
        {{ project }}
       </pre> -->
-      <div class="_topContent">
-        <ProjectPresentation
-          :project="project"
-          context="full"
-          :can_edit_project="can_edit_project"
-        />
-      </div>
-
-      <div class="_projectPanesAndList">
-        <PaneList2
-          class="_paneList"
-          v-if="can_edit_project"
-          :project="project"
-          :panes.sync="projectpanes"
-        />
-        <div class="_panes">
-          <ProjectPanes
-            :projectpanes="projectpanes"
+        <div class="_topContent">
+          <ProjectPresentation
             :project="project"
+            context="full"
             :can_edit_project="can_edit_project"
-            @update:projectpanes="projectpanes = $event"
           />
         </div>
+
+        <div class="_projectPanesAndList">
+          <PaneList2
+            class="_paneList"
+            v-if="can_edit_project"
+            :project="project"
+            :panes.sync="projectpanes"
+          />
+          <div class="_panes">
+            <ProjectPanes
+              :projectpanes="projectpanes"
+              :project="project"
+              :can_edit_project="can_edit_project"
+              @update:projectpanes="projectpanes = $event"
+            />
+          </div>
+        </div>
       </div>
-    </template>
+    </transition>
   </div>
 </template>
 
@@ -144,6 +148,19 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._projectView {
+  position: relative;
+  min-height: calc(100vh - 60px);
+}
+._spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
 ._projectPanesAndList {
   position: relative;
   height: 100vh;
