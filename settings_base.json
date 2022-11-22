@@ -377,6 +377,9 @@
               },
               "size": {
                 "type": "number"
+              },
+              "align": {
+                "type": "string"
               }
             }
           }

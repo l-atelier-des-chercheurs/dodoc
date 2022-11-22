@@ -93,20 +93,6 @@ export default {
         return _meta_name === meta_filename;
       });
     },
-    async resize({ meta_filename, new_size }) {
-      const file = this.findFileFromMetaFilename(meta_filename);
-      await this.$api
-        .updateMeta({
-          path: file.$path,
-          new_meta: {
-            size: new_size,
-          },
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
-    },
     async moveTo({ meta_filename, dir }) {
       let list_of_metas = this.list_of_metas.slice();
       const target_meta_index = list_of_metas.findIndex(
