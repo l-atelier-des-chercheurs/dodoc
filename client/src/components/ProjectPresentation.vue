@@ -40,32 +40,38 @@ z
     </div>
 
     <div class="_projectInfos--infos">
-      <AuthorField
-        :label="context === 'full' ? $t('contributors') : ''"
-        :authors_slugs="project.$authors"
-        :path="project.$path"
-        :can_edit="can_edit_project"
-      />
+      <div class="u-padding_round">
+        <AuthorField
+          :label="context === 'full' ? $t('contributors') : ''"
+          :authors_slugs="project.$authors"
+          :path="project.$path"
+          :can_edit="can_edit_project"
+        />
 
-      <TitleField
-        :field_name="'title'"
-        :label="context === 'full' ? $t('title') : ''"
-        :content="project.title"
-        :path="project.$path"
-        :required="true"
-        :maxlength="40"
-        :tag="context === 'full' ? 'h1' : 'h2'"
-        :can_edit="can_edit_project"
-      />
+        <TitleField
+          :field_name="'title'"
+          :label="context === 'full' ? $t('title') : ''"
+          :content="project.title"
+          :path="project.$path"
+          :required="true"
+          :maxlength="40"
+          :tag="context === 'full' ? 'h1' : 'h2'"
+          :can_edit="can_edit_project"
+        />
 
-      <TitleField
-        :field_name="'description'"
-        :label="context === 'full' ? $t('description') : ''"
-        :content="project.description"
-        :path="project.$path"
-        :maxlength="280"
-        :can_edit="can_edit_project"
-      />
+        <TitleField
+          :field_name="'description'"
+          :label="
+            context === 'full' && (project.description || can_edit_project)
+              ? $t('description')
+              : ''
+          "
+          :content="project.description"
+          :path="project.$path"
+          :maxlength="280"
+          :can_edit="can_edit_project"
+        />
+      </div>
     </div>
 
     <div class="_projectInfos--meta" v-if="context === 'full'">
@@ -210,13 +216,13 @@ export default {
   }
 
   > * {
-    flex: 10 1 0;
+    flex: 10 1 320px;
 
     &._projectInfos--cover {
       // flex: 1 1 40vmin;
     }
     &._projectInfos--meta {
-      flex: 0 0 260px;
+      flex: 1 0 260px;
       max-height: calc((100vw - 260px) / 2);
     }
   }
@@ -226,7 +232,6 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) * 1);
   place-content: center;
 
   transition: all 0.4s;
@@ -245,8 +250,8 @@ export default {
   position: relative;
   overflow: hidden;
   // max-height: 40vmin;
-  min-width: 320px;
-  min-height: 320px;
+  min-width: 280px;
+  min-height: 280px;
   aspect-ratio: 1/1;
 
   --color1: var(--c-gris);
@@ -319,6 +324,7 @@ export default {
   // gap: calc(var(--spacing) / 2);
 
   > * {
+    flex: 0 0 260px;
     border: 1px solid var(--c-gris);
 
     &:first-child {

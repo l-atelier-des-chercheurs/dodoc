@@ -366,13 +366,19 @@
               ],
               "default": "page_by_page"
             },
-            "medias_list": {
+            "metas_list": {
               "type": "array"
             }
           },
           "$files": {
             "fields": {
               "path_to_source_media": {
+                "type": "string"
+              },
+              "size": {
+                "type": "number"
+              },
+              "align": {
                 "type": "string"
               }
             }

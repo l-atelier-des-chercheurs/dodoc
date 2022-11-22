@@ -1,6 +1,10 @@
 <template>
   <div class="_mediaPicker">
     <div>
+      <sl-button size="small" variant="default" pill @click="hideMediaPicker">
+        <sl-icon name="x-circle" />
+        {{ $t("back") }}
+      </sl-button>
       <sl-button
         variant="edit"
         class="editBtn"
@@ -10,10 +14,6 @@
       >
         <sl-icon name="plus-circle-fill" :label="$t('edit')" />
         {{ $t("add_media") }}
-      </sl-button>
-      <sl-button size="small" variant="default" pill @click="hideMediaPicker">
-        <sl-icon name="x-circle" />
-        {{ $t("back") }}
       </sl-button>
     </div>
 
@@ -121,7 +121,9 @@ export default {
 ._mediaPicker {
   position: relative;
   display: block;
-  width: 320px;
+  max-width: 330px;
+  width: 100%;
+
   // max-height: 50vh;
   margin: calc(var(--spacing) / 4) 0;
   padding: calc(var(--spacing) / 4);

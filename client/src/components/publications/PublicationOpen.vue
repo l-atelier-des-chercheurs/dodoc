@@ -11,17 +11,23 @@
           :field_name="'title'"
           :content="publication.title"
           :path="publication.$path"
-          :can_edit="true"
+          :can_edit="$api.is_logged_in"
         />
         <TitleField
           :label="$t('template')"
           :field_name="'template'"
           :content="publication.template"
           :path="publication.$path"
-          :can_edit="true"
+          :can_edit="$api.is_logged_in"
         />
         <div>
-          <button type="button" @click="removePublication()">Supprimer</button>
+          <button
+            type="button"
+            v-if="$api.is_logged_in"
+            @click="removePublication()"
+          >
+            Supprimer
+          </button>
           <button type="button" @click="$emit('close')">Fermer</button>
         </div>
       </div>

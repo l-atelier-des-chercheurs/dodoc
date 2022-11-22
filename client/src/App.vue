@@ -452,4 +452,24 @@ img {
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
+
+.StoryModules {
+  &-enter-active,
+  &-leave-active,
+  &-move {
+    transition: 700ms cubic-bezier(0.19, 1, 0.22, 1) !important;
+    transition-property: opacity, transform;
+    transform-origin: center top;
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+  }
+  &-enter-to {
+    opacity: 1;
+  }
+  &-leave-active {
+    position: absolute;
+  }
+}
 </style>
