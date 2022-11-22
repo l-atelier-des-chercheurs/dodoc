@@ -74,13 +74,18 @@ module.exports = (function () {
           : "infos-" + +meta.$date_uploaded;
       const meta_filename = prefix_filename + ".meta.txt";
 
+      let new_meta_filename = await _preventFileOverride({
+        path_to_folder,
+        original_filename: meta_filename,
+      });
+
       await utils.saveMetaAtPath({
         relative_path: path_to_folder,
-        file_slug: meta_filename,
+        file_slug: new_meta_filename,
         meta,
       });
 
-      return meta_filename;
+      return new_meta_filename;
     },
 
     getFiles: async ({ path_to_folder }) => {
@@ -281,15 +286,13 @@ module.exports = (function () {
 
     // get original filename
     let original_filename = originalFilename;
-    const full_path_to_folder = utils.getPathToUserContent(path_to_folder);
 
     // check if available, create new name if necessary
-    new_filename = await _preventFileOverride({
-      full_path_to_folder,
+    let new_filename = await _preventFileOverride({
+      path_to_folder,
       original_filename,
     });
-
-    const new_path = path.join(full_path_to_folder, new_filename);
+    const new_path = utils.getPathToUserContent(path_to_folder, new_filename);
 
     try {
       await fs.move(path_to_temp_file, new_path, { overwrite: false });
@@ -299,15 +302,19 @@ module.exports = (function () {
     }
   }
 
-  async function _preventFileOverride({
-    full_path_to_folder,
-    original_filename,
-  }) {
-    dev.logfunction({ full_path_to_folder, original_filename });
+  async function _preventFileOverride({ path_to_folder, original_filename }) {
+    dev.logfunction({ path_to_folder, original_filename });
+
+    const full_path_to_folder = utils.getPathToUserContent(path_to_folder);
+
+    const getFilenameWithoutExt = (filename) =>
+      filename.substring(0, filename.indexOf("."));
+    const getFilenameExt = (filename) =>
+      filename.substring(filename.indexOf("."), filename.length);
 
     let all_files_and_folders_names_without_ext = (
       await fs.readdir(full_path_to_folder, { withFileTypes: true })
-    ).map((item) => path.parse(item.name).name);
+    ).map(({ name }) => getFilenameWithoutExt(name));
 
     dev.logverbose({ all_files_and_folders_names_without_ext });
 
@@ -315,9 +322,10 @@ module.exports = (function () {
       return original_filename;
 
     let index = 0;
-    let original_filename_without_ext = path.parse(original_filename).name;
+    let original_filename_without_ext =
+      getFilenameWithoutExt(original_filename);
     let new_filename_without_ext = original_filename_without_ext;
-    let ext = path.parse(original_filename).ext;
+    let ext = getFilenameExt(original_filename);
 
     while (
       all_files_and_folders_names_without_ext.includes(new_filename_without_ext)

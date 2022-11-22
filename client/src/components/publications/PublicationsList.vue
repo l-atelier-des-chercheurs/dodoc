@@ -27,27 +27,25 @@
         {{ $t("create") }}
       </button>
     </div>
-
-    show_create_publication = {{ show_create_publication }}
-    {{ project_path }}
-
     <CreatePublication
       v-if="show_create_publication"
       :project_path="project_path"
       @close="show_create_publication = false"
+      @openPubli="$emit('togglePubli', { slug: $event })"
     />
+    <br />
 
     <div class="_publications">
-      <div v-for="publication in publications" :key="publication.$path">
-        <PublicationPreview
-          :publication="publication"
-          @open="openEntry(publication.$path)"
-        />
-      </div>
       <div class="_publications--list">
+        <div v-for="publication in publications" :key="publication.$path">
+          <PublicationPreview
+            :publication="publication"
+            image_name="publi_apercu.png"
+            @open="openEntry(publication.$path)"
+          />
+        </div>
         <!-- 
         <PublicationPreview
-          image_name="publi_apercu.png"
           title="Pyramide Etalans"
           type="Page à page"
         />
@@ -104,4 +102,12 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._publications--list {
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-gap: calc(var(--spacing) * 2);
+  align-items: flex-start;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+</style>

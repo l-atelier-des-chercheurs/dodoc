@@ -102,7 +102,6 @@ export default {
         {
           type: "MediaLibrary",
           focus: false,
-          focus_height: 0,
           size: 50,
         },
         {

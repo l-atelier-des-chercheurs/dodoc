@@ -109,8 +109,7 @@ export default {
             requested_slug: this.new_publication_title,
           },
         });
-        new_folder_slug;
-        this.$emit("close");
+        this.$emit("openPubli", new_folder_slug);
       } catch (err) {
         this.error_msg = "Error: " + err.message;
         setTimeout(() => {

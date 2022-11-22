@@ -9,15 +9,10 @@
         @dragend="endMediaDrag()"
       >
         <!-- <DebugBtn :content="file" /> -->
-        <MediaContent
-          :file="file"
-          :project_path="project_path"
-          :resolution="1600"
-          :context="'full'"
-        />
+        <MediaContent :file="file" :resolution="1600" :context="'full'" />
       </div>
-      <div class="_meta">
-        <h2>{{ $t("informations") }}</h2>
+      <div class="_meta" v-if="!select_mode">
+        <h3>{{ $t("informations") }}</h3>
         <small>{{ file.$media_filename }}</small>
         <hr />
         <TitleField
@@ -37,6 +32,18 @@
           <sl-button size="small" @click="$emit('remove')">Supprimer</sl-button>
         </sl-button-group>
       </div>
+      <div class="_selectBtn" v-else>
+        <button type="button" class="u-buttonLink" @click="$emit('close')">
+          {{ $t("cancel") }}
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_bleuvert u-button_big"
+          @click="$emit('select')"
+        >
+          {{ $t("select") }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -45,6 +52,7 @@ export default {
   props: {
     file: Object,
     project_path: String,
+    select_mode: Boolean,
   },
   components: {},
   data() {
@@ -87,7 +95,7 @@ export default {
   position: absolute;
   // padding: 1px;
   inset: 0;
-  padding: calc(var(--spacing) * 3);
+  padding: 4%;
   // background: rgba(253, 253, 253, 0.7);
 
   ._mediaModal--overlay {
@@ -127,6 +135,14 @@ export default {
   padding: calc(var(--spacing) / 1);
 }
 
+._selectBtn {
+  display: flex;
+  place-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: calc(var(--spacing) / 1);
+}
+
 ._mediaModal--content {
   position: relative;
   height: 100%;
@@ -138,6 +154,7 @@ export default {
     &._preview {
       position: relative;
       flex: 10 1 320px;
+      // height: 50%;
     }
     &._meta {
       background: white;

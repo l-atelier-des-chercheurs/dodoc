@@ -1,24 +1,33 @@
 export default {
   computed: {},
   methods: {
-    makeRelativeURLFromThumbs({ thumbs, type, project_path, resolution }) {
-      if (!thumbs) return false;
+    makeRelativeURLFromThumbs({ $type, $path, $thumbs, resolution }) {
+      if (!$thumbs) return false;
 
       let thumb_path = "";
       try {
-        if (type === "image") thumb_path = thumbs[resolution];
-        if (type === "video") thumb_path = thumbs["0"][resolution];
-        if (type === "audio") thumb_path = thumbs.waveform[resolution];
-        if (type === "stl") thumb_path = thumbs["0"][resolution];
-        if (type === "pdf") thumb_path = thumbs["page-1"][resolution];
-        if (type === "url") thumb_path = thumbs["ogimage"][resolution];
+        if ($type === "image") thumb_path = $thumbs[resolution];
+        if ($type === "video") thumb_path = $thumbs["0"][resolution];
+        if ($type === "audio") thumb_path = $thumbs.waveform[resolution];
+        if ($type === "stl") thumb_path = $thumbs["0"][resolution];
+        if ($type === "pdf") thumb_path = $thumbs["page-1"][resolution];
+        if ($type === "url") thumb_path = $thumbs["ogimage"][resolution];
       } catch (err) {
         return false;
       }
 
       // todo make this work with subfolders
-
-      return `/thumbs/${project_path}/${thumb_path}`;
+      return `/thumbs/${$path}/${thumb_path}`;
+    },
+    getSourceMedia({ source_media_path }) {
+      const project_path = source_media_path.substring(
+        0,
+        source_media_path.lastIndexOf("/")
+      );
+      return this.$api.store[project_path]?.$files?.find(
+        ({ $path }) => $path === source_media_path
+      );
+      // const source_project = this.$api.store.find()
     },
   },
 };

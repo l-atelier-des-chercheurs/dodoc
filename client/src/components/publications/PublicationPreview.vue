@@ -1,6 +1,6 @@
 <template>
   <sl-card class="u-card">
-    <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
+    <img :src="`${$root.publicPath}${image_name}`" class="" />
     <header class="">
       {{ publication.title }}<br />
       <small v-if="publication.template" v-html="publication.template" />

@@ -23,7 +23,7 @@
         <PaneList2
           class="_paneList"
           v-if="can_edit_project"
-          :project_title="project.title"
+          :project="project"
           :panes.sync="projectpanes"
         />
         <div class="_panes">

@@ -142,9 +142,9 @@ export default {
   computed: {
     cover_thumb() {
       return this.makeRelativeURLFromThumbs({
-        thumbs: this.project.$cover,
-        type: "image",
-        project_path: this.project.$path,
+        $thumbs: this.project.$cover,
+        $type: "image",
+        $path: this.project.$path,
         resolution: 1200,
       });
     },
@@ -170,8 +170,6 @@ export default {
     async updateProject() {
       this.fetch_status = "pending";
       this.fetch_error = null;
-
-      // TODO use updateItem
 
       try {
         this.response = await this.$api.updateMeta({
@@ -218,7 +216,8 @@ export default {
       // flex: 1 1 40vmin;
     }
     &._projectInfos--meta {
-      flex: 1 0 260px;
+      flex: 0 0 260px;
+      max-height: calc((100vw - 260px) / 2);
     }
   }
 }
@@ -311,6 +310,7 @@ export default {
 ._projectInfos--meta {
   display: flex;
   flex-flow: column nowrap;
+  font-size: 90%;
 
   // max-height: 40vmin;
   overflow: auto;

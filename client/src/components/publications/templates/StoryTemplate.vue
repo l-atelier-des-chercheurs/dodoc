@@ -1,19 +1,29 @@
 <template>
   <div>
-    le publication story ici
-    <button type="button" @click="createMedia">Créer un média</button>
-    <div v-for="file in publication.$files" :key="file.$path">
-      {{ file }}
-      <button type="button" @click="removeFile(file.$path)">
-        Supprimer média
-      </button>
+    // Lister medias_list
+
+    <div class="_mediasList">
+      medias_list = {{ medias_list }}
+      <div v-for="meta_filename in medias_list" :key="meta_filename">
+        <MediaPublication
+          :publication_file="findFileFromMetaFilename(meta_filename)"
+          @remove="removePublicationMedia(meta_filename)"
+        />
+      </div>
     </div>
 
-    <MediaPicker :publication_path="publication.$path" />
+    <br /><br />
+
+    {{ publication.$files.map((f) => f.$path) }}
+    <MediaPicker
+      :publication_path="publication.$path"
+      @selectMedia="appendMedia"
+    />
   </div>
 </template>
 <script>
 import MediaPicker from "@/components/publications/MediaPicker.vue";
+import MediaPublication from "@/components/publications/MediaPublication.vue";
 
 export default {
   props: {
@@ -21,6 +31,7 @@ export default {
   },
   components: {
     MediaPicker,
+    MediaPublication,
   },
   data() {
     return {
@@ -32,25 +43,69 @@ export default {
   async mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    medias_list() {
+      if (
+        this.publication.medias_list &&
+        Array.isArray(this.publication.medias_list)
+      )
+        return this.publication.medias_list;
+      else return [];
+    },
+  },
   methods: {
-    async createMedia() {
-      await this.$api
+    async appendMedia(path) {
+      let meta_filename = await this.$api
         .uploadFile({
           path: this.publication.$path,
           additional_meta: {
-            path_to_source_media: "plop",
+            path_to_source_media: path,
           },
         })
         .catch((err) => {
           this.$alertify.delay(4000).error(err);
           throw err;
         });
+
+      this.fetch_status = "pending";
+      this.fetch_error = null;
+
+      try {
+        const medias_list = this.medias_list.slice();
+        medias_list.push(meta_filename);
+
+        this.response = await this.$api.updateMeta({
+          path: this.publication.$path,
+          new_meta: {
+            medias_list,
+          },
+        });
+        this.fetch_status = "success";
+      } catch (e) {
+        this.fetch_status = "error";
+        this.fetch_error = e.response.data;
+      }
     },
-    async removeFile(path) {
+    findFileFromMetaFilename(meta_filename) {
+      return this.publication.$files.find((f) => {
+        const _meta_name = f.$path.substring(f.$path.lastIndexOf("/") + 1);
+        return _meta_name === meta_filename;
+      });
+    },
+    async removePublicationMedia(meta_filename) {
+      let medias_list = this.medias_list.slice();
+      medias_list = medias_list.filter((_mf) => _mf !== meta_filename);
+      this.response = await this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta: {
+          medias_list,
+        },
+      });
+
+      const file = this.findFileFromMetaFilename(meta_filename);
       await this.$api
         .deleteItem({
-          path,
+          path: file.$path,
         })
         .catch((err) => {
           this.$alertify.delay(4000).error(err);

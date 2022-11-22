@@ -274,6 +274,10 @@ h2 {
   margin: 0;
   font-size: var(--sl-font-size-x-large);
 }
+h3 {
+  margin: 0;
+  font-size: var(--sl-font-size-large);
+}
 
 .card-header {
   ul {
@@ -305,6 +309,7 @@ img {
   // border-radius: 4px;
   // overflow: hidden;
   position: relative;
+  height: auto;
   transition: none !important;
 }
 

@@ -49,9 +49,9 @@ export default {
   computed: {
     existing_preview() {
       return this.makeRelativeURLFromThumbs({
-        thumbs: this.cover,
-        type: "image",
-        project_path: this.path,
+        $thumbs: this.cover,
+        $type: "image",
+        $path: this.path,
         resolution: 320,
       });
     },

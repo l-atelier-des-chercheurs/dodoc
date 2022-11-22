@@ -18,7 +18,8 @@
           'is--shown': is_stickied_to_top,
         }"
       >
-        {{ project_title }}
+        <img v-if="cover_thumb" :src="cover_thumb" />
+        {{ project.title }}
       </span>
       <SlickList
         class="_paneList--list"
@@ -56,7 +57,7 @@
             <span>{{ index + 1 }} • {{ $t(pane.type) }}</span>
             <div
               v-if="project_panes.some((p) => p.type === pane.type)"
-              class="_inlineBtn"
+              class="_inlineBtn _removePaneBtn"
             >
               <!-- name="x-lg" -->
               <sl-icon-button
@@ -116,7 +117,7 @@ import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 export default {
   props: {
     panes: Array,
-    project_title: String,
+    project: Object,
   },
   components: {
     SlickItem,
@@ -137,7 +138,6 @@ export default {
         {
           type: "Collecter",
           focus: false,
-          focus_height: 0,
         },
         {
           type: "Remixer",
@@ -195,7 +195,16 @@ export default {
       }
     },
   },
-  computed: {},
+  computed: {
+    cover_thumb() {
+      return this.makeRelativeURLFromThumbs({
+        $thumbs: this.project.$cover,
+        $type: "image",
+        $path: this.project.$path,
+        resolution: 50,
+      });
+    },
+  },
   methods: {
     detectTopOfWindow() {
       if (this.$el.getBoundingClientRect().y <= 10)
@@ -385,11 +394,26 @@ export default {
   // background: rgba(255, 255, 255, 0.3);
 }
 
+._addPaneBtn {
+  &:hover,
+  &:focus {
+    background: var(--color-active);
+    color: white;
+  }
+}
+._removePaneBtn {
+  &:hover,
+  &:focus {
+    background: white;
+    color: var(--color-active);
+  }
+}
+
 ._btn {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   cursor: pointer;
@@ -405,7 +429,12 @@ export default {
 }
 
 ._projectTitle {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   font-weight: 700;
   opacity: 0;
   transform: translateY(-100%);
@@ -415,6 +444,12 @@ export default {
   &.is--shown {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  img {
+    width: 2rem;
+    height: 2rem;
+    object-fit: cover;
   }
 }
 </style>

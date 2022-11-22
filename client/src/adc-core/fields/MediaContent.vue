@@ -28,7 +28,6 @@
 export default {
   props: {
     file: Object,
-    project_path: String,
     resolution: {
       type: Number,
       default: 180,
@@ -49,10 +48,14 @@ export default {
   watch: {},
   computed: {
     thumb() {
+      const path_to_parent = this.file.$path.substring(
+        0,
+        this.file.$path.lastIndexOf("/")
+      );
       return this.makeRelativeURLFromThumbs({
-        thumbs: this.file.$thumbs,
-        type: this.file.$type,
-        project_path: this.project_path,
+        $thumbs: this.file.$thumbs,
+        $type: this.file.$type,
+        $path: path_to_parent,
         resolution: this.resolution,
       });
     },

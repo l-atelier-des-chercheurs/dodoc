@@ -5,25 +5,26 @@
       {{ fetch_publication_error }}
     </div>
     <template v-else>
-      {{ publication }}
-      <TitleField
-        label="title"
-        :field_name="'title'"
-        :content="publication.title"
-        :path="publication.$path"
-        :can_edit="true"
-      />
-      <TitleField
-        label="template"
-        :field_name="'template'"
-        :content="publication.template"
-        :path="publication.$path"
-        :can_edit="true"
-      />
-      <button type="button" @click="removePublication()">
-        Supprimer {{ publication.$path }}
-      </button>
-      <button type="button" @click="$emit('close')">Fermer</button>
+      <div class="_topbar">
+        <TitleField
+          :label="$t('title')"
+          :field_name="'title'"
+          :content="publication.title"
+          :path="publication.$path"
+          :can_edit="true"
+        />
+        <TitleField
+          :label="$t('template')"
+          :field_name="'template'"
+          :content="publication.template"
+          :path="publication.$path"
+          :can_edit="true"
+        />
+        <div>
+          <button type="button" @click="removePublication()">Supprimer</button>
+          <button type="button" @click="$emit('close')">Fermer</button>
+        </div>
+      </div>
       <StoryTemplate
         v-if="publication.template === 'story'"
         :publication="publication"
@@ -36,6 +37,7 @@ import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue
 
 export default {
   props: {
+    project_path: String,
     publication_slug: String,
   },
   components: {
@@ -60,7 +62,7 @@ export default {
     async listPublication() {
       const publication = await this.$api
         .getFolder({
-          path: this.$route.path + `publications/${this.publication_slug}`,
+          path: `${this.project_path}/publications/${this.publication_slug}`,
         })
         .catch((err) => {
           this.fetch_publication_error = err.response;
@@ -90,4 +92,11 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._topbar {
+  display: flex;
+  width: 100%;
+  background: white;
+  padding: calc(var(--spacing) / 2);
+}
+</style>

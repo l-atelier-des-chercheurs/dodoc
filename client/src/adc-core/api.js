@@ -16,7 +16,6 @@ export default function () {
         this.initSchema();
         this.initSocketio();
       },
-
       initSchema() {},
       initSocketio() {
         this.socket = io({
@@ -153,7 +152,6 @@ export default function () {
           (file) => file.$path !== path_to_meta
         );
       },
-
       join({ room }) {
         this.socket.emit("joinRoom", { room });
         // todo rejoin room after disconnect
@@ -181,7 +179,7 @@ export default function () {
         const response = await this.$axios.get(path);
         const folder = response.data;
         this.$set(this.store, folder.$path, folder);
-        return folder;
+        return this.store[folder.$path];
       },
       async getArchives({ path }) {
         const response = await this.$axios.get(path);
