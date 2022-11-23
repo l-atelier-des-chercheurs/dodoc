@@ -145,34 +145,12 @@ export default {
     },
     mediaJustImported(list_of_added_metas) {
       list_of_added_metas;
+      // todo add focus ring to indicate medias just sent
       // this.$alertify
       //   .closeLogOnClick(true)
       //   .delay(4000)
       //   .success(list_of_added_metas);
     },
-
-    async createText() {
-      const filename = "texte.txt";
-      const content = "PLOP PLIP";
-
-      const additional_meta = {
-        caption: "plip",
-      };
-
-      this.$api.uploadText({ filename, content, additional_meta });
-    },
-
-    async createLink() {
-      const filename = this.url_to;
-      const content = this.url_to;
-
-      const additional_meta = {
-        type: "url",
-      };
-
-      this.$api.uploadText({ filename, content, additional_meta });
-    },
-
     toggleMediaFocus(path) {
       if (!path || this.media_focused === path) {
         this.$emit("update:media_focused", null);

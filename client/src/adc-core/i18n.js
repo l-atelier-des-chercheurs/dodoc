@@ -94,6 +94,7 @@ export default function () {
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d'accueil.",
 
+        medias: "Médias",
         license: "Licence",
         files: "Fichiers",
         template: "Gabarit",
@@ -126,6 +127,10 @@ export default function () {
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",
+
+        disconnect_warning:
+          "Vous avez été déconnectés. Veuillez recharger la page pour vous reconnecter à do•doc.",
+        reload_page: "Recharger cette page",
 
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

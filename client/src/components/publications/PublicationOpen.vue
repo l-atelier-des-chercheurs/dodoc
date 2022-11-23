@@ -104,5 +104,7 @@ export default {
   width: 100%;
   background: white;
   padding: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 1) auto;
+  max-width: 800px;
 }
 </style>

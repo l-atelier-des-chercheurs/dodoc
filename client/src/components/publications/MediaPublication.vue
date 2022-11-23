@@ -6,10 +6,7 @@
       placement="bottom-end"
       distance="4"
     >
-      <sl-button slot="trigger" caret>
-        <!-- <sl-icon name="x-circle" /> -->
-        <!-- {{ $t("edit") }} -->
-      </sl-button>
+      <sl-button slot="trigger" circle caret size="small" />
       <sl-menu>
         <sl-menu-item
           :disabled="!publication_file.size || publication_file.size === 100"
@@ -70,14 +67,27 @@
       :resolution="1600"
       :context="'full'"
     />
+    <CollaborativeEditor2
+      v-else-if="publication_file.$type === 'text'"
+      :path="publication_file.$path"
+      :content="publication_file.$content"
+      :scrollingContainer="$el"
+      :line_selected="false"
+      :can_edit="$api.is_logged_in"
+      @lineClicked="$emit('lineClicked', $event)"
+    />
   </div>
 </template>
 <script>
+import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
+
 export default {
   props: {
     publication_file: Object,
   },
-  components: {},
+  components: {
+    CollaborativeEditor2,
+  },
   data() {
     return {};
   },
@@ -88,6 +98,8 @@ export default {
   computed: {
     source_file() {
       const source_media_path = this.publication_file.path_to_source_media;
+      if (!source_media_path) return false;
+
       return this.getSourceMedia({ source_media_path });
     },
     media_styles() {
@@ -121,15 +133,18 @@ export default {
 <style lang="scss" scoped>
 ._mediaPublication {
   position: relative;
+  // float: left;
   width: calc(var(--media-width) * 1%);
-
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  min-height: calc(var(--spacing) * 3);
 }
 
 ._dropdown {
   position: absolute;
   top: 0;
   right: 0;
-  margin: calc(var(--spacing) / 4);
+  z-index: 10;
+  margin: calc(var(--spacing) / 2);
 }
 </style>

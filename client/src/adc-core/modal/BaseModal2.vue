@@ -1,6 +1,6 @@
 <template>
   <dialog @click.self="possiblyClose">
-    <header>
+    <header v-if="title">
       <h2>{{ title }}</h2>
     </header>
     <div class="_content">

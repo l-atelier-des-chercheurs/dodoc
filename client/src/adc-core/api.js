@@ -215,7 +215,7 @@ export default function () {
         if (additional_meta)
           formData.append(filename, JSON.stringify(additional_meta));
 
-        await this.uploadFile({
+        return await this.uploadFile({
           path,
           filename,
           file,

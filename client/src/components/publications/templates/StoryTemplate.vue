@@ -17,8 +17,9 @@
 
     <!-- {{ publication.$files.map((f) => f.$path) }} -->
     <MediaPicker
+      v-if="$api.is_logged_in"
       :publication_path="publication.$path"
-      @selectMedia="appendMedia"
+      @appendMetaFilenameToList="appendMetaFilenameToList"
     />
   </div>
 </template>
@@ -55,22 +56,9 @@ export default {
     },
   },
   methods: {
-    async appendMedia(path) {
-      let meta_filename = await this.$api
-        .uploadFile({
-          path: this.publication.$path,
-          additional_meta: {
-            path_to_source_media: path,
-          },
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
-
+    async appendMetaFilenameToList({ meta_filename }) {
       this.fetch_status = "pending";
       this.fetch_error = null;
-
       try {
         const list_of_metas = this.list_of_metas.slice();
         list_of_metas.push(meta_filename);
@@ -81,6 +69,9 @@ export default {
             list_of_metas,
           },
         });
+
+        debugger;
+
         this.fetch_status = "success";
       } catch (e) {
         this.fetch_status = "error";
@@ -142,7 +133,7 @@ export default {
   justify-content: center;
   flex-flow: column nowrap;
   align-items: center;
-  text-align: center;
+  // text-align: center;
   background: white;
   gap: calc(var(--spacing) / 1);
   padding: calc(var(--spacing) / 1);
@@ -153,9 +144,7 @@ export default {
 
 ._mediaPublication {
   position: relative;
-  // max-width: 100vh;
-  // width: auto;
-  margin-bottom: calc(var(--spacing) / 1);
+  margin-bottom: calc(var(--spacing) * 2);
 
   ::v-deep > * {
     // height: 100%;

@@ -1,13 +1,16 @@
 <template>
   <div
     class="_collaborativeEditor"
+    :class="{
+      'is--editable': can_edit,
+    }"
     :data-editable="editor_is_enabled"
     @click="editorClick"
   >
     <TextVersioning
       v-if="show_archives"
-      :path="file.$path"
-      :current_content="file.$content"
+      :path="path"
+      :current_content="content"
       @close="show_archives = false"
       @restore="restoreVersion"
     />
@@ -99,7 +102,8 @@ Quill.register("modules/cardEditable", CardEditableModule);
 
 export default {
   props: {
-    file: Object,
+    path: String,
+    content: String,
     scrollingContainer: HTMLElement,
     line_selected: [Boolean, Number],
     can_edit: Boolean,
@@ -146,13 +150,13 @@ export default {
     this.disableEditor();
   },
   watch: {
-    "file.$content"() {
+    content() {
       if (
         !this.is_collaborative ||
         (this.is_collaborative && !this.editor_is_enabled)
       ) {
         this.$nextTick(() => {
-          this.editor.root.innerHTML = this.file.$content;
+          this.editor.root.innerHTML = this.content;
         });
       }
     },
@@ -219,7 +223,7 @@ export default {
         readOnly: !this.editor_is_enabled,
         scrollingContainer: this.scrollingContainer,
       });
-      if (this.file.$content) this.editor.root.innerHTML = this.file.$content;
+      if (this.content) this.editor.root.innerHTML = this.content;
 
       this.setStatusButton();
 
@@ -349,9 +353,8 @@ export default {
       };
 
       try {
-        let path = this.file.$path;
         await this.$api.updateMeta({
-          path,
+          path: this.path,
           new_meta,
         });
         this.is_loading_or_saving = false;
@@ -372,7 +375,7 @@ export default {
       // });
 
       // const requested_querystring = "?" + params.toString();
-      const path_to_meta = this.file.$path.replaceAll("/", "_");
+      const path_to_meta = this.path.replaceAll("/", "_");
 
       const requested_resource_url =
         (location.protocol === "https:" ? "wss" : "ws") +
@@ -480,6 +483,7 @@ export default {
       this.editor.blur();
 
       const { $type, caption, $path } = media;
+      $path;
 
       if ($type === "image") {
         const thumb_path = media.$thumbs[1600];
@@ -489,7 +493,7 @@ export default {
             index,
             "media",
             {
-              type,
+              type: $type,
               caption,
               // TODO update with $path
               // meta_filename: $slug,
@@ -505,10 +509,10 @@ export default {
           index,
           "media",
           {
-            type,
+            type: $type,
             caption,
             // TODO update with $path
-            meta_filename: $slug,
+            meta_filename: $path,
             src: mediaURL,
           },
           Quill.sources.USER
@@ -519,10 +523,10 @@ export default {
           index,
           "media",
           {
-            type,
+            type: $type,
             caption,
             // TODO update with $path
-            meta_filename: $slug,
+            meta_filename: $path,
             src: mediaURL,
           },
           Quill.sources.USER
@@ -652,17 +656,32 @@ export default {
 ._collaborativeEditor {
   position: relative;
   font-size: 100%;
-  border-top: var(--border-size) solid var(--editor-bg);
+  // border-top: var(--border-size) solid var(--editor-bg);
 
-  --toolbar-bg: white;
+  --toolbar-bg: var(--editor-bg);
   --editor-bg: #eee;
   --button-size: 32px;
   --border-size: 4px;
+
+  &:not(.is--editable) {
+    border: none;
+    ::v-deep .ql-toolbar {
+      display: none;
+    }
+  }
 
   ::v-deep .ql-toolbar {
     position: sticky;
     top: 0;
     z-index: 2;
+    padding: calc(var(--spacing) / 2);
+
+    display: flex;
+    flex-flow: row wrap;
+    gap: calc(var(--spacing) / 2);
+    justify-content: center;
+    align-items: center;
+
     font-size: inherit;
     font-family: inherit;
     font-weight: normal;
@@ -671,7 +690,7 @@ export default {
 
     // border-radius: 0.5em;
     border: none;
-    border-bottom: var(--border-size) dotted var(--editor-bg);
+    // border-bottom: var(--border-size) dotted var(--editor-bg);
     // border-bottom-style: double;
 
     button,
@@ -697,8 +716,10 @@ export default {
     }
 
     .ql-formats {
-      margin-right: calc(var(--spacing) / 2);
-      margin-bottom: calc(var(--spacing) / 2);
+      // margin-right: calc(var(--spacing) / 2);
+      // margin-bottom: calc(var(--spacing) / 2);
+      margin: 0;
+
       .ql-font {
         background: var(--editor-bg);
       }
@@ -708,11 +729,15 @@ export default {
       .ql-picker {
         height: var(--button-size);
       }
+      .ql-picker-label {
+        text-align: left;
+      }
       .ql-picker-label::before {
         line-height: var(--button-size);
       }
     }
   }
+
   ::v-deep {
     .ql-container {
       font-size: inherit;
@@ -740,7 +765,7 @@ export default {
       padding: 0 0 0 calc(var(--spacing) * 2);
       background-color: white;
 
-      padding-bottom: calc(1.42em * 10);
+      padding-bottom: calc(1.42em * 5);
 
       @import "./imports/mainText.scss";
 

@@ -44,6 +44,12 @@
         />
         <label for="loggedin">identifié</label>
       </span>
+      <BaseModal2 v-if="show_warning" @close="$emit('close')">
+        {{ $t("disconnect_warning") }} <br />
+        <button type="button" @click="$router.go()">
+          {{ $t("reload_page") }}
+        </button>
+      </BaseModal2>
     </div>
   </div>
 </template>
@@ -52,14 +58,22 @@ export default {
   props: {},
   components: {},
   data() {
-    return {};
+    return {
+      show_warning: false,
+    };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
+  },
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    socketDisconnected() {
+      this.show_warning = true;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -85,5 +99,11 @@ export default {
       // background: var(--c-vert);
     }
   }
+}
+
+._showDisconnectWarning {
+  position: fixed;
+  inset: 0;
+  background: rgba(53, 53, 53, 0.7);
 }
 </style>

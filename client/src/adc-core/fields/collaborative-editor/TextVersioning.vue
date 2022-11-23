@@ -1,6 +1,7 @@
 <template>
   <div>
-    <sl-dialog ref="showArchives" label="Archives" class="" @sl-hide="onHide">
+    <BaseModal2 :title="$t('list_of_archives')" @close="$emit('close')">
+      <!-- <sl-dialog ref="showArchives" label="Archives" class="" @sl-hide="onHide"> -->
       <div class="_archives" v-if="archives">
         <!-- not sure why sl-select doesnt work here -->
         <div class="_topbar">
@@ -69,7 +70,8 @@
       >
         {{ $t("restore_this_version") }}
       </sl-button>
-    </sl-dialog>
+      <!-- </sl-dialog> -->
+    </BaseModal2>
   </div>
 </template>
 <script>
@@ -87,8 +89,8 @@ export default {
   },
   created() {},
   mounted() {
-    this.getAllArchives({ path });
-    this.$refs.showArchives.show();
+    this.getAllArchives({ path: this.path });
+    // this.$refs.showArchives.show();
   },
   beforeDestroy() {},
   watch: {},
@@ -110,18 +112,15 @@ export default {
   },
   methods: {
     async getAllArchives() {
-      this.archives = await this.$api.getArchives({
+      const { $archives } = await this.$api.getArchives({
         path: this.path,
       });
-
+      this.archives = $archives;
       this.archives.push({
         filename: "current",
         content: this.current_content,
       });
-
       this.archives.reverse();
-
-      // this.selected_archive_filename = this.archives[0].filename;
     },
     olderVersion() {
       this.selected_archive_filename =
