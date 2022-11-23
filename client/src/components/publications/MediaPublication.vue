@@ -15,23 +15,23 @@
           100%
         </sl-menu-item>
         <sl-menu-item
-          :disabled="publication_file.size === 50"
-          @click="updateMeta({ size: 50 })"
+          :disabled="publication_file.size === 66.6"
+          @click="updateMeta({ size: 66.6 })"
         >
-          50%
+          2/3
         </sl-menu-item>
         <sl-menu-item
-          :disabled="publication_file.size === 33"
-          @click="updateMeta({ size: 33 })"
+          :disabled="publication_file.size === 33.3"
+          @click="updateMeta({ size: 33.3 })"
         >
-          33%
+          1/3
         </sl-menu-item>
 
         <sl-menu-item
           :disabled="
-            !publication_file.align || publication_file.align === 'start'
+            !publication_file.align || publication_file.align === 'left'
           "
-          @click="updateMeta({ align: 'start' })"
+          @click="updateMeta({ align: 'left' })"
         >
           <sl-icon name="align-start" />
         </sl-menu-item>
@@ -42,8 +42,8 @@
           <sl-icon name="align-center" />
         </sl-menu-item>
         <sl-menu-item
-          :disabled="publication_file.align === 'end'"
-          @click="updateMeta({ align: 'end' })"
+          :disabled="publication_file.align === 'right'"
+          @click="updateMeta({ align: 'right' })"
         >
           <sl-icon name="align-end" />
         </sl-menu-item>
@@ -103,16 +103,25 @@ export default {
       return this.getSourceMedia({ source_media_path });
     },
     media_styles() {
-      const margins =
-        this.publication_file.align === "center"
-          ? { "margin-left": "auto", "margin-right": "auto" }
-          : this.publication_file.align === "end"
-          ? { "margin-left": "auto", "margin-right": "0" }
-          : "";
+      let margin_left = 0;
+      if (this.publication_file.align === "center")
+        if (this.publication_file.size === 66.6) margin_left = 16.6;
+        else if (this.publication_file.size === 33.3) margin_left = 33.3;
+      if (this.publication_file.align === "right")
+        if (this.publication_file.size === 66.6) margin_left = 33.3;
+        else if (this.publication_file.size === 33.3) margin_left = 66.6;
 
-      return Object.assign({}, margins, {
+      // const margins =
+      //   this.publication_file.align === "center"
+      //     ? { "margin-left": "auto", "margin-right": "auto" }
+      //     : this.publication_file.align === "end"
+      //     ? { "margin-left": "auto", "margin-right": "0" }
+      //     : "";
+
+      return {
         "--media-width": this.publication_file.size || 100,
-      });
+        "--margin-left": margin_left,
+      };
     },
   },
   methods: {
@@ -135,6 +144,7 @@ export default {
   position: relative;
   // float: left;
   width: calc(var(--media-width) * 1%);
+  margin-left: calc(var(--margin-left) * 1%);
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   min-height: calc(var(--spacing) * 3);
