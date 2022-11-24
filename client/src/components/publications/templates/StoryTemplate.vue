@@ -152,6 +152,10 @@ export default {
   max-width: 800px;
 }
 
+._mediasList {
+  width: 100%;
+}
+
 ._mediaPublication {
   position: relative;
   margin-bottom: calc(var(--spacing) * 2);
