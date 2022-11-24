@@ -236,9 +236,7 @@ export default function () {
         } else {
           data = additional_meta;
         }
-
         path = `${path}/_upload`;
-
         let res = await this.$axios
           .post(path, data, {
             headers,

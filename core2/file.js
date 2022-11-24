@@ -30,7 +30,7 @@ module.exports = (function () {
         const {
           originalFilename,
           path_to_temp_file,
-          additional_meta: additional_meta,
+          additional_meta: _additional_meta,
         } = await utils
           .handleForm({
             path_to_folder,
@@ -39,6 +39,8 @@ module.exports = (function () {
           .catch((err) => {
             dev.error(`Failed to handle form`, err);
           });
+
+        additional_meta = _additional_meta;
 
         // filename, filepath, additional_meta
         // make url-compatible media filenames

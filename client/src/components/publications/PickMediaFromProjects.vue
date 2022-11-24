@@ -67,10 +67,13 @@ export default {
   },
   computed: {},
   methods: {
-    selectMedia(path) {
+    selectMedia(path_to_source_media) {
       // TODO if path matches a media that is not in this project,
       // we need to copy this media to this project first then link that media instead
-      this.$emit("selectMedia", path);
+      this.$emit("selectMedia", {
+        path_to_source_media,
+        module_type: "gallery",
+      });
       this.$emit("close");
     },
     async loadProjects() {

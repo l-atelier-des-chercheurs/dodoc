@@ -18,13 +18,13 @@
           :disabled="publication_file.size === 66.6"
           @click="updateMeta({ size: 66.6 })"
         >
-          2/3
+          66%
         </sl-menu-item>
         <sl-menu-item
           :disabled="publication_file.size === 33.3"
           @click="updateMeta({ size: 33.3 })"
         >
-          1/3
+          33%
         </sl-menu-item>
 
         <sl-menu-item
@@ -48,11 +48,14 @@
           <sl-icon name="align-end" />
         </sl-menu-item>
 
-        <sl-menu-item @click="$emit('moveUp')">
+        <sl-menu-item :disabled="position === 'first'" @click="$emit('moveUp')">
           {{ $t("move_up") }}
           <sl-icon name="arrow-up-square" />
         </sl-menu-item>
-        <sl-menu-item @click="$emit('moveDown')">
+        <sl-menu-item
+          :disabled="position === 'last'"
+          @click="$emit('moveDown')"
+        >
           {{ $t("move_down") }}
           <sl-icon name="arrow-down-square" />
         </sl-menu-item>
@@ -61,14 +64,13 @@
         </sl-menu-item>
       </sl-menu>
     </sl-dropdown>
-    <MediaContent
-      v-if="source_file"
-      :file="source_file"
-      :resolution="1600"
-      :context="'full'"
+    <GalleryModule
+      v-if="publication_file.module_type === 'gallery'"
+      :type="publication_file.module_type"
+      :medias="publication_file.source_medias"
     />
     <CollaborativeEditor2
-      v-else-if="publication_file.$type === 'text'"
+      v-else-if="publication_file.module_type === 'text'"
       :path="publication_file.$path"
       :content="publication_file.$content"
       :scrollingContainer="$el"
@@ -79,13 +81,16 @@
   </div>
 </template>
 <script>
+import GalleryModule from "@/components/publications/modules/GalleryModule.vue";
 import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
 
 export default {
   props: {
     publication_file: Object,
+    position: String,
   },
   components: {
+    GalleryModule,
     CollaborativeEditor2,
   },
   data() {
@@ -96,12 +101,6 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    source_file() {
-      const source_media_path = this.publication_file.path_to_source_media;
-      if (!source_media_path) return false;
-
-      return this.getSourceMedia({ source_media_path });
-    },
     media_styles() {
       let margin_left = 0;
       if (this.publication_file.align === "center")

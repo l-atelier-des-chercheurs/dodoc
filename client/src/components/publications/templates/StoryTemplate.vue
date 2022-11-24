@@ -2,10 +2,20 @@
   <div class="_storyTemplate">
     <div class="_mediasList">
       <transition-group tag="div" name="StoryModules" appear :duration="700">
-        <div v-for="meta_filename in list_of_metas" :key="meta_filename">
+        <div
+          v-for="(meta_filename, index) in list_of_metas"
+          :key="meta_filename"
+        >
           <MediaPublication
             class="_mediaPublication"
             :publication_file="findFileFromMetaFilename(meta_filename)"
+            :position="
+              index === 0
+                ? 'first'
+                : index === list_of_metas.length - 1
+                ? 'last'
+                : 'inbetween'
+            "
             @resize="resize({ meta_filename, new_size: $event })"
             @moveUp="moveTo({ meta_filename, dir: -1 })"
             @moveDown="moveTo({ meta_filename, dir: +1 })"
@@ -69,9 +79,6 @@ export default {
             list_of_metas,
           },
         });
-
-        debugger;
-
         this.fetch_status = "success";
       } catch (e) {
         this.fetch_status = "error";
@@ -89,6 +96,9 @@ export default {
       const target_meta_index = list_of_metas.findIndex(
         (m) => m === meta_filename
       );
+      if (target_meta_index + dir < 0) return false;
+      else if (target_meta_index + dir > list_of_metas.length - 1) return false;
+
       list_of_metas.move(target_meta_index, target_meta_index + dir);
       this.response = await this.updatePubliMeta({ list_of_metas });
     },
@@ -136,7 +146,7 @@ export default {
   // text-align: center;
   background: white;
   gap: calc(var(--spacing) / 1);
-  padding: calc(var(--spacing) / 1);
+  // padding: calc(var(--spacing) / 1);
   margin: calc(var(--spacing) / 1) auto;
 
   max-width: 800px;

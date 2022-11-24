@@ -31,6 +31,7 @@
         {{ $t("create_text") }}
       </button>
 
+      <br />
       <!-- select from this or another project library -->
       <PickMediaFromProjects
         :publication_path="publication_path"
@@ -60,6 +61,10 @@ export default {
   watch: {},
   computed: {},
   methods: {
+    // todo : ajout d'une propriété pour identifier le module_type choisi
+    // - gallery
+    // Ajout d'un média. Bouton pour en picker un deuxième, qui s'ajoute dans l'array source_medias
+
     showMediaPicker() {
       this.show_media_picker = true;
     },
@@ -71,6 +76,7 @@ export default {
       const content = "";
       const additional_meta = {
         caption: "plip",
+        module_type: "text",
       };
 
       const meta_filename = await this.$api.uploadText({
@@ -81,12 +87,18 @@ export default {
       });
       this.$emit("appendMetaFilenameToList", { meta_filename });
     },
-    async appendMediaFromProject(path_to_source_media) {
+    async appendMediaFromProject({ path_to_source_media, module_type }) {
+      const source_medias = [
+        {
+          path: path_to_source_media,
+        },
+      ];
       const meta_filename = await this.$api
         .uploadFile({
           path: this.publication_path,
           additional_meta: {
-            path_to_source_media,
+            source_medias,
+            module_type,
           },
         })
         .catch((err) => {

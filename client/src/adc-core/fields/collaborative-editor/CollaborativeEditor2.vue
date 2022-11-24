@@ -32,7 +32,7 @@
 
         <sl-button
           v-if="editor_is_enabled"
-          @click="show_archives = true"
+          @click="show_archives = !show_archives"
           size="small"
         >
           <sl-icon slot="prefix" name="archive" />
@@ -679,7 +679,7 @@ export default {
     display: flex;
     flex-flow: row wrap;
     gap: calc(var(--spacing) / 2);
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 
     font-size: inherit;
@@ -693,6 +693,9 @@ export default {
     // border-bottom: var(--border-size) dotted var(--editor-bg);
     // border-bottom-style: double;
 
+    &::after {
+      display: none;
+    }
     button,
     svg {
       color: currentColor;
@@ -731,10 +734,20 @@ export default {
       }
       .ql-picker-label {
         text-align: left;
+        padding: 4px;
+        background: white;
       }
       .ql-picker-label::before {
-        line-height: var(--button-size);
+        // line-height: var(--button-size);
       }
+    }
+
+    ._btnContainer {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // background-color: var(--editor-bg);
     }
   }
 
@@ -765,7 +778,7 @@ export default {
       padding: 0 0 0 calc(var(--spacing) * 2);
       background-color: white;
 
-      padding-bottom: calc(1.42em * 5);
+      padding-bottom: calc(var(--spacing) * 1);
 
       @import "./imports/mainText.scss";
 
@@ -843,12 +856,6 @@ export default {
 ._collaborativeEditor:not([data-editable="true"]) {
   ::v-deep .ql-formats {
     display: none;
-  }
-  ._btnContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    // background-color: var(--editor-bg);
   }
 }
 
