@@ -61,7 +61,9 @@ export default {
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
     this.$api.join({ room: this.publication.$path });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.publication.$path });
+  },
   watch: {},
   computed: {},
   methods: {

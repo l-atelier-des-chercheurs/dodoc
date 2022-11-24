@@ -84,6 +84,7 @@ export default {
   },
   data() {
     return {
+      path: `projects`,
       projects: [],
       show_create_modal: false,
     };
@@ -91,12 +92,12 @@ export default {
   created() {},
   async mounted() {
     this.projects = await this.$api.getFolders({
-      path: `projects`,
+      path: this.path,
     });
-    this.$api.join({ room: "projects" });
+    this.$api.join({ room: this.path });
   },
   beforeDestroy() {
-    this.$api.leave({ room: "projects" });
+    this.$api.leave({ room: this.path });
   },
   watch: {},
   computed: {
