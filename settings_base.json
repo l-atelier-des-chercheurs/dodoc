@@ -372,8 +372,11 @@
           },
           "$files": {
             "fields": {
-              "path_to_source_media": {
+              "module_type": {
                 "type": "string"
+              },
+              "source_medias": {
+                "type": "array"
               },
               "size": {
                 "type": "number"

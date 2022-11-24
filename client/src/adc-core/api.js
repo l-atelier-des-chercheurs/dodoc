@@ -169,11 +169,9 @@ export default function () {
         const response = await this.$axios.get(path);
         const folders = response.data;
         // folders.map((f) => this.$set(this.store, f.$path, f));
-
         this.$set(this.store, path, folders);
-
         // we use the store to trigger updates to array if item is updated
-        return folders;
+        return this.store[path];
       },
       async getFolder({ path }) {
         const response = await this.$axios.get(path);
@@ -215,7 +213,7 @@ export default function () {
         if (additional_meta)
           formData.append(filename, JSON.stringify(additional_meta));
 
-        await this.uploadFile({
+        return await this.uploadFile({
           path,
           filename,
           file,
@@ -236,9 +234,7 @@ export default function () {
         } else {
           data = additional_meta;
         }
-
         path = `${path}/_upload`;
-
         let res = await this.$axios
           .post(path, data, {
             headers,

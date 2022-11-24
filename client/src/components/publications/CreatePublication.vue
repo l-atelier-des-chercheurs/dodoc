@@ -20,6 +20,7 @@
             :key="option.key"
             :value="option.key"
             v-text="$t(option.key)"
+            :disabled="option.disabled"
           />
         </select>
 
@@ -84,6 +85,7 @@ export default {
         {
           key: "page_by_page",
           text: "page_by_page",
+          disabled: true,
         },
       ],
 

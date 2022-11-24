@@ -61,7 +61,9 @@ export default {
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
     this.$api.join({ room: this.publication.$path });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.publication.$path });
+  },
   watch: {},
   computed: {},
   methods: {
@@ -104,5 +106,7 @@ export default {
   width: 100%;
   background: white;
   padding: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 1) auto;
+  max-width: 800px;
 }
 </style>

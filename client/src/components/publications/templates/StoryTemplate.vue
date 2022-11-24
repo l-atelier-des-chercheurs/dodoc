@@ -2,10 +2,20 @@
   <div class="_storyTemplate">
     <div class="_mediasList">
       <transition-group tag="div" name="StoryModules" appear :duration="700">
-        <div v-for="meta_filename in list_of_metas" :key="meta_filename">
+        <div
+          v-for="(meta_filename, index) in list_of_metas"
+          :key="meta_filename"
+        >
           <MediaPublication
             class="_mediaPublication"
             :publication_file="findFileFromMetaFilename(meta_filename)"
+            :position="
+              index === 0
+                ? 'first'
+                : index === list_of_metas.length - 1
+                ? 'last'
+                : 'inbetween'
+            "
             @resize="resize({ meta_filename, new_size: $event })"
             @moveUp="moveTo({ meta_filename, dir: -1 })"
             @moveDown="moveTo({ meta_filename, dir: +1 })"
@@ -17,8 +27,9 @@
 
     <!-- {{ publication.$files.map((f) => f.$path) }} -->
     <MediaPicker
+      v-if="$api.is_logged_in"
       :publication_path="publication.$path"
-      @selectMedia="appendMedia"
+      @appendMetaFilenameToList="appendMetaFilenameToList"
     />
   </div>
 </template>
@@ -55,22 +66,9 @@ export default {
     },
   },
   methods: {
-    async appendMedia(path) {
-      let meta_filename = await this.$api
-        .uploadFile({
-          path: this.publication.$path,
-          additional_meta: {
-            path_to_source_media: path,
-          },
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
-
+    async appendMetaFilenameToList({ meta_filename }) {
       this.fetch_status = "pending";
       this.fetch_error = null;
-
       try {
         const list_of_metas = this.list_of_metas.slice();
         list_of_metas.push(meta_filename);
@@ -98,6 +96,9 @@ export default {
       const target_meta_index = list_of_metas.findIndex(
         (m) => m === meta_filename
       );
+      if (target_meta_index + dir < 0) return false;
+      else if (target_meta_index + dir > list_of_metas.length - 1) return false;
+
       list_of_metas.move(target_meta_index, target_meta_index + dir);
       this.response = await this.updatePubliMeta({ list_of_metas });
     },
@@ -142,20 +143,22 @@ export default {
   justify-content: center;
   flex-flow: column nowrap;
   align-items: center;
-  text-align: center;
+  // text-align: center;
   background: white;
   gap: calc(var(--spacing) / 1);
-  padding: calc(var(--spacing) / 1);
+  // padding: calc(var(--spacing) / 1);
   margin: calc(var(--spacing) / 1) auto;
 
   max-width: 800px;
 }
 
+._mediasList {
+  width: 100%;
+}
+
 ._mediaPublication {
   position: relative;
-  // max-width: 100vh;
-  // width: auto;
-  margin-bottom: calc(var(--spacing) / 1);
+  margin-bottom: calc(var(--spacing) * 2);
 
   ::v-deep > * {
     // height: 100%;

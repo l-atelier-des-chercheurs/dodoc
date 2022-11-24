@@ -1,48 +1,52 @@
 <template>
-  <div>
-    <sl-dialog ref="showArchives" label="Archives" class="" @sl-hide="onHide">
-      <div class="_archives" v-if="archives">
-        <!-- not sure why sl-select doesnt work here -->
-        <div class="_topbar">
-          <sl-button
-            variant="default"
-            size="small"
-            pill
-            :disabled="archive_shown_index === 0"
-            @click="newerVersion"
-          >
-            <sl-icon name="arrow-up" />
-            récent
-          </sl-button>
+  <BaseModal2
+    :title="$t('list_of_archives')"
+    class="_modal"
+    @close="$emit('close')"
+  >
+    <!-- <sl-dialog ref="showArchives" label="Archives" class="" @sl-hide="onHide"> -->
+    <div class="_archives" v-if="archives">
+      <!-- not sure why sl-select doesnt work here -->
+      <div class="_topbar">
+        <sl-button
+          variant="default"
+          size="small"
+          pill
+          :disabled="archive_shown_index === 0"
+          @click="newerVersion"
+        >
+          <sl-icon name="arrow-up" />
+          récent
+        </sl-button>
 
-          <select v-model="selected_archive_filename">
-            <option
-              v-for="(archive, index) in archives"
-              :value="archive.filename"
-              :key="archive.filename"
-              v-text="
-                archive.filename === 'current'
-                  ? $t('current')
-                  : formatDateToPrecise(archive.date) +
-                    ' - version ' +
-                    (archives.length - index)
-              "
-            />
-          </select>
+        <select v-model="selected_archive_filename">
+          <option
+            v-for="(archive, index) in archives"
+            :value="archive.filename"
+            :key="archive.filename"
+            v-text="
+              archive.filename === 'current'
+                ? $t('current')
+                : formatDateToPrecise(archive.date) +
+                  ' - version ' +
+                  (archives.length - index)
+            "
+          />
+        </select>
 
-          <sl-button
-            variant="default"
-            size="small"
-            pill
-            :disabled="archive_shown_index === archives.length - 1"
-            @click="olderVersion"
-          >
-            <sl-icon name="arrow-down" label="Plus ancien" pill />
-            ancient
-          </sl-button>
-        </div>
+        <sl-button
+          variant="default"
+          size="small"
+          pill
+          :disabled="archive_shown_index === archives.length - 1"
+          @click="olderVersion"
+        >
+          <sl-icon name="arrow-down" label="Plus ancien" pill />
+          ancient
+        </sl-button>
+      </div>
 
-        <!-- <sl-select v-sl-model="selected_archive_filename">
+      <!-- <sl-select v-sl-model="selected_archive_filename">
           <sl-menu-item
             v-for="archive in archives"
             :value="archive.filename"
@@ -51,26 +55,26 @@
           />
         </sl-select> -->
 
-        <div
-          v-if="
-            archive_shown &&
-            (archive_shown.content || archive_shown.content === '')
-          "
-        >
-          <!-- <DateField :show_detail_initially="true" :date="archive_shown.date" /> -->
-          <div class="_archiveText" v-html="archive_shown.content" />
-        </div>
-      </div>
-      <sl-button
-        slot="footer"
-        variant="primary"
-        :disabled="selected_archive_filename === 'current'"
-        @click="restoreVersion(archive_shown.content)"
+      <div
+        v-if="
+          archive_shown &&
+          (archive_shown.content || archive_shown.content === '')
+        "
       >
-        {{ $t("restore_this_version") }}
-      </sl-button>
-    </sl-dialog>
-  </div>
+        <!-- <DateField :show_detail_initially="true" :date="archive_shown.date" /> -->
+        <div class="_archiveText" v-html="archive_shown.content" />
+      </div>
+    </div>
+    <sl-button
+      slot="footer"
+      variant="primary"
+      :disabled="selected_archive_filename === 'current'"
+      @click="restoreVersion(archive_shown.content)"
+    >
+      {{ $t("restore_this_version") }}
+    </sl-button>
+    <!-- </sl-dialog> -->
+  </BaseModal2>
 </template>
 <script>
 export default {
@@ -87,8 +91,8 @@ export default {
   },
   created() {},
   mounted() {
-    this.getAllArchives({ path });
-    this.$refs.showArchives.show();
+    this.getAllArchives({ path: this.path });
+    // this.$refs.showArchives.show();
   },
   beforeDestroy() {},
   watch: {},
@@ -110,18 +114,15 @@ export default {
   },
   methods: {
     async getAllArchives() {
-      this.archives = await this.$api.getArchives({
+      const { $archives } = await this.$api.getArchives({
         path: this.path,
       });
-
+      this.archives = $archives;
       this.archives.push({
         filename: "current",
         content: this.current_content,
       });
-
       this.archives.reverse();
-
-      // this.selected_archive_filename = this.archives[0].filename;
     },
     olderVersion() {
       this.selected_archive_filename =
@@ -154,9 +155,14 @@ export default {
   }
 }
 
+._modal {
+  max-width: 600px;
+}
+
 ._topbar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin: calc(var(--spacing) / 1) 0;
   gap: calc(var(--spacing) / 1);
 }

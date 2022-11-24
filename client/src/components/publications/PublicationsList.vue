@@ -78,17 +78,22 @@ export default {
     PublicationPreview,
   },
   data() {
-    return { show_create_publication: false, publications: [] };
+    return {
+      path: `${this.project_path}/publications`,
+      show_create_publication: false,
+      publications: [],
+    };
   },
   created() {},
   async mounted() {
-    const path = `${this.project_path}/publications`;
     this.publications = await this.$api.getFolders({
-      path,
+      path: this.path,
     });
-    this.$api.join({ room: path });
+    this.$api.join({ room: this.path });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.path });
+  },
   watch: {},
   computed: {},
   methods: {

@@ -560,6 +560,7 @@ export default {
       this.socket = new ReconnectingWebSocket(this.requested_resource_url);
       const connection = new ShareDB.Connection(this.socket);
       connection.on("state", (state, reason) => {
+        reason;
         this.connection_state = state.toString();
       });
 

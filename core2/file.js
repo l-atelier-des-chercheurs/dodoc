@@ -17,6 +17,7 @@ module.exports = (function () {
 
       let additional_meta = {};
       let extracted_meta = {};
+      let meta_filename = undefined;
 
       // if req.body has content, this means there is no files to process
       if (Object.keys(req.body) && Object.keys(req.body).length) {
@@ -24,11 +25,12 @@ module.exports = (function () {
         extracted_meta = await _extractAdditionalMetaFromFile({
           additional_meta,
         });
+        meta_filename = "infos-" + +extracted_meta.$date_uploaded + ".meta.txt";
       } else {
         const {
           originalFilename,
           path_to_temp_file,
-          additional_meta: additional_meta,
+          additional_meta: _additional_meta,
         } = await utils
           .handleForm({
             path_to_folder,
@@ -37,6 +39,8 @@ module.exports = (function () {
           .catch((err) => {
             dev.error(`Failed to handle form`, err);
           });
+
+        additional_meta = _additional_meta;
 
         // filename, filepath, additional_meta
         // make url-compatible media filenames
@@ -57,8 +61,15 @@ module.exports = (function () {
           filepath: new_path,
         });
 
+        meta_filename = new_filename + ".meta.txt";
+
         dev.log(`New file uploaded to`, { path_to_folder });
-        dev.logverbose({ new_filename, new_path, additional_meta });
+        dev.logverbose({
+          new_filename,
+          new_path,
+          additional_meta,
+          meta_filename,
+        });
       }
 
       // user added meta
@@ -67,12 +78,6 @@ module.exports = (function () {
         new_meta: additional_meta,
       });
       const meta = Object.assign({}, validated_meta, extracted_meta);
-
-      const prefix_filename =
-        typeof new_filename !== "undefined"
-          ? new_filename
-          : "infos-" + +meta.$date_uploaded;
-      const meta_filename = prefix_filename + ".meta.txt";
 
       let new_meta_filename = await _preventFileOverride({
         path_to_folder,

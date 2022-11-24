@@ -121,16 +121,12 @@ module.exports = (function () {
       );
 
       const infos_filename = media_filename + ".infos.txt";
-      const path_to_infos_file = utils.getPathToUserContent(
-        "thumbs",
-        path_to_folder,
-        infos_filename
-      );
+
+      const path_to_thumb_folder = await _getThumbFolderPath(path_to_folder);
 
       try {
         const infos = await utils.readMetaFile(
-          "thumbs",
-          path_to_folder,
+          path_to_thumb_folder,
           infos_filename
         );
         return infos;
@@ -157,6 +153,10 @@ module.exports = (function () {
       dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
 
       if (infos) {
+        const path_to_infos_file = utils.getPathToUserContent(
+          path_to_thumb_folder,
+          infos_filename
+        );
         utils.storeContent({ full_path: path_to_infos_file, meta: infos });
         return infos;
       }
