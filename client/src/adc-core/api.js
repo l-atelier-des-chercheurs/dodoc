@@ -169,11 +169,9 @@ export default function () {
         const response = await this.$axios.get(path);
         const folders = response.data;
         // folders.map((f) => this.$set(this.store, f.$path, f));
-
         this.$set(this.store, path, folders);
-
         // we use the store to trigger updates to array if item is updated
-        return folders;
+        return this.store[path];
       },
       async getFolder({ path }) {
         const response = await this.$axios.get(path);
