@@ -33,8 +33,6 @@ import ToggleField from "@/adc-core/fields/ToggleField.vue";
 Vue.component("ToggleField", ToggleField);
 import RadioField from "@/adc-core/fields/RadioField.vue";
 Vue.component("RadioField", RadioField);
-import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
-Vue.component("ImageSelect", ImageSelect);
 import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
 //

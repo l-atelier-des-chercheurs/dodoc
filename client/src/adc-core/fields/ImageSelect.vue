@@ -127,8 +127,6 @@
   </div>
 </template>
 <script>
-import CaptureView from "@/adc-core/capture/CaptureView.vue";
-
 export default {
   props: {
     existing_preview: [Boolean, String],
@@ -145,7 +143,7 @@ export default {
     },
   },
   components: {
-    CaptureView,
+    CaptureView: () => import("@/adc-core/capture/CaptureView.vue"),
   },
   data() {
     return {
