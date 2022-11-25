@@ -1,6 +1,6 @@
 <template>
   <div class="_mediaPicker">
-    <div>
+    <div class="_addMediaBtn">
       <sl-button
         variant="edit"
         class="editBtn"
@@ -64,7 +64,12 @@ export default {
 <style lang="scss" scoped>
 ._mediaPicker {
   width: 100%;
-  background: var(--c-gris_clair);
+  // background: var(--c-gris_clair);
   margin: 0 auto;
+}
+
+._addMediaBtn {
+  text-align: center;
+  padding: calc(var(--spacing) * 1);
 }
 </style>

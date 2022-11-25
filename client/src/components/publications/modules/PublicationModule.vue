@@ -106,6 +106,15 @@
               <sl-icon name="align-end" />
             </button>
           </div>
+
+          <div class="_buttonRow">
+            <button type="button" class="u-button" disabled>
+              {{ $t("duplicate") }}
+            </button>
+            <button type="button" class="u-button" @click="$emit('remove')">
+              {{ $t("remove") }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -179,8 +188,9 @@ export default {
   computed: {
     first_media() {
       if (!this.publimodule.source_medias) return [];
-      const path = this.publimodule.source_medias[0];
-      return this.getSourceMedia({ source_media_path: path });
+      const { path } = this.publimodule.source_medias[0];
+      if (path) return this.getSourceMedia({ source_media_path: path });
+      return false;
     },
     media_styles() {
       let margin_left = 0;
@@ -214,7 +224,7 @@ export default {
 <style lang="scss" scoped>
 ._publicationModule {
   position: relative;
-  padding: calc(var(--spacing) * 1);
+  padding: 0 calc(var(--spacing) * 1);
 
   ._content {
     min-height: calc(var(--spacing) * 3);
@@ -226,6 +236,7 @@ export default {
 
 ._sideOptions {
   position: absolute;
+  top: 0;
   height: 100%;
   right: 100%;
   background: var(--c-bleuvert_fonce);
@@ -240,11 +251,11 @@ export default {
 }
 
 ._sideBtns {
+  display: block;
   width: var(--side-width);
   height: var(--side-width);
   padding: 0;
   border-radius: calc(var(--side-width) / 2);
-
   background: transparent;
 
   &:hover,

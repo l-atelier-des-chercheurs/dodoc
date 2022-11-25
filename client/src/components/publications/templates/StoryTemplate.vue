@@ -155,12 +155,9 @@ export default {
   justify-content: center;
   flex-flow: column nowrap;
   align-items: center;
-  // text-align: center;
   background: white;
-  gap: calc(var(--spacing) / 1);
-
-  margin: calc(var(--spacing) / 1) auto;
-
+  margin: 0 auto var(--spacing);
+  padding: calc(var(--spacing) / 1) 0;
   max-width: 800px;
 }
 

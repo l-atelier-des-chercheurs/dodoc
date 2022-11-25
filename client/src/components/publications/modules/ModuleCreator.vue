@@ -94,7 +94,7 @@ export default {
       if (this.type_selected === "text") {
         const text_meta_filename = await this.createText();
         const text_meta_path = this.publication_path + "/" + text_meta_filename;
-        meta.source_medias = [text_meta_path];
+        meta.source_medias = [{ path: text_meta_path }];
       }
 
       const meta_filename = await this.createMetaForModule({
