@@ -36,15 +36,14 @@
         </svg>
         {{ $t("create_a_project") }}
       </button>
+      <CreateProject
+        v-if="show_create_modal"
+        @close="show_create_modal = false"
+        @openNewProject="openNewProject"
+      />
     </div>
 
     <ProjectsTester v-if="$api.debug_mode" />
-
-    <CreateProject
-      v-if="show_create_modal"
-      @close="show_create_modal = false"
-      @openNewProject="openNewProject"
-    />
 
     <div class="">
       <h3>Projets finalisés</h3>
