@@ -662,6 +662,7 @@ export default {
   --editor-bg: #eee;
   --button-size: 32px;
   --border-size: 4px;
+  --quill-options-size: 2.2rem;
 
   &:not(.is--editable) {
     border: none;
@@ -717,11 +718,31 @@ export default {
     .ql-picker.ql-font {
       width: 140px;
     }
+    .ql-color-picker,
+    .ql-icon-picker {
+      width: var(--quill-options-size);
+    }
 
     .ql-formats {
       // margin-right: calc(var(--spacing) / 2);
       // margin-bottom: calc(var(--spacing) / 2);
       margin: 0;
+      display: flex;
+      flex-flow: row nowrap;
+      border: 2px solid var(--c-gris-clair);
+      border-radius: 12px;
+      background: #fff;
+
+      button,
+      > *:not(.ql-size):not(.ql-header):not(.ql-font) .ql-picker-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        svg {
+          width: var(--quill-buttons-size);
+          height: var(--quill-buttons-size);
+        }
+      }
 
       .ql-font {
         background: var(--editor-bg);
@@ -742,7 +763,91 @@ export default {
       }
     }
 
-    ._btnContainer {
+    .ql-picker.ql-header {
+      width: 115px !important;
+    }
+    .ql-picker.ql-font {
+      width: 160px !important;
+
+      &::before {
+      }
+    }
+
+    html & .ql-picker.ql-header {
+      .ql-picker-label,
+      .ql-picker-item {
+        &::before {
+          content: "Regular text";
+        }
+      }
+    }
+    html[lang="fr"] & .ql-picker.ql-header {
+      .ql-picker-label,
+      .ql-picker-item {
+        &::before {
+          content: "Texte courant";
+        }
+
+        &[data-value="1"]::before {
+          content: "Titre 1";
+          font-weight: 700;
+        }
+        &[data-value="2"]::before {
+          content: "Titre 2";
+          font-weight: 700;
+        }
+        &[data-value="3"]::before {
+          content: "Titre 3";
+          font-weight: 700;
+        }
+        &[data-value="4"]::before {
+          content: "Titre 4";
+          font-weight: 700;
+        }
+      }
+    }
+
+    // .ql-picker.ql-size .ql-picker-label[data-value="75%"]::before,
+    // .ql-picker.ql-size .ql-picker-item[data-value="75%"]::before {
+    //   content: "Small";
+    //   font-size: 70% !important;
+
+    //   html[lang="fr"] & {
+    //     content: "Petit";
+    //   }
+    // }
+    // .ql-picker.ql-size .ql-picker-label:not([data-value])::before,
+    // .ql-picker.ql-size .ql-picker-item:not([data-value])::before {
+    //   content: "Regular";
+    //   font-size: 100% !important;
+
+    //   html[lang="fr"] & {
+    //     content: "Normal";
+    //   }
+    // }
+    // .ql-picker.ql-size .ql-picker-label[data-value="150%"]::before,
+    // .ql-picker.ql-size .ql-picker-item[data-value="150%"]::before {
+    //   content: "Large";
+    //   font-size: 150% !important;
+
+    //   html[lang="fr"] & {
+    //     content: "Grand";
+    //   }
+    // }
+    // .ql-picker.ql-size .ql-picker-label[data-value="300%"]::before,
+    // .ql-picker.ql-size .ql-picker-item[data-value="300%"]::before {
+    //   content: "Huge";
+    //   font-size: 300% !important;
+
+    //   html[lang="fr"] & {
+    //     content: "Énorme";
+    //   }
+    // }
+
+    .ql-picker.ql-size .ql-picker-label[data-value]::before {
+      font-size: 100% !important;
+    }
+    z ._btnContainer {
       width: 100%;
       display: flex;
       justify-content: center;
@@ -753,7 +858,7 @@ export default {
 
   ::v-deep {
     .ql-container {
-      font-size: inherit;
+      font-size: 110%;
       font-family: inherit;
       font-weight: normal;
       background-color: var(--toolbar-bg);

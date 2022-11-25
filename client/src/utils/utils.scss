@@ -14,10 +14,7 @@
 
 .u-instructions {
   font-style: italic;
-}
-
-.u-padding_round {
-  padding: calc(var(--spacing) * 1);
+  color: var(--c-gris_fonce);
 }
 
 .u-wips {
@@ -75,10 +72,11 @@
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: lowercase;
+  background: transparent;
 }
 
 .u-button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
@@ -95,6 +93,10 @@
   .inlineSVG {
     width: 2em;
     height: 2em;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
   }
 }
 .u-button_red {

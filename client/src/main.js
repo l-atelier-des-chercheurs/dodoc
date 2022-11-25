@@ -3,8 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 
 Vue.config.productionTip = false;
-const debug_mode = true;
 
+const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
 import i18n from "./adc-core/i18n.js";
@@ -33,8 +33,6 @@ import ToggleField from "@/adc-core/fields/ToggleField.vue";
 Vue.component("ToggleField", ToggleField);
 import RadioField from "@/adc-core/fields/RadioField.vue";
 Vue.component("RadioField", RadioField);
-import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
-Vue.component("ImageSelect", ImageSelect);
 import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
 //
@@ -134,6 +132,9 @@ new Vue({
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
     this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
+
+    const html = document.documentElement; // returns the html tag
+    html.setAttribute("lang", "fr");
 
     window.addEventListener("resize", () => {
       this.window.innerWidth = window.innerWidth;

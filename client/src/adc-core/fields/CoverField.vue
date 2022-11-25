@@ -26,12 +26,15 @@
   </div>
 </template>
 <script>
+import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
 export default {
   props: {
     cover: [Boolean, Object],
     path: String,
   },
-  components: {},
+  components: {
+    ImageSelect,
+  },
   data() {
     return {
       selected_file: [],

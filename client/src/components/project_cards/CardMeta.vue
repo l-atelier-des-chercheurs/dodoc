@@ -7,8 +7,21 @@
     <br />
     <DateField :title="'date_modified'" :date="project.$date_modified" />
     <br />
-    Supprimer ce projet
-    <button type="button" @click="removeProject">
+    <button
+      type="button"
+      class="u-buttonLink"
+      @click="show_confirm_delete = !show_confirm_delete"
+    >
+      Supprimer ce projet
+    </button>
+    <br />
+    <br />
+    <button
+      class="u-button u-button_red"
+      type="button"
+      v-if="show_confirm_delete"
+      @click="removeProject"
+    >
       Confirmer la suppression
     </button>
   </ProjectCard>
@@ -25,6 +38,7 @@ export default {
   data() {
     return {
       edit_mode: false,
+      show_confirm_delete: false,
     };
   },
   created() {},

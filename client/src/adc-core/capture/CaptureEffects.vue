@@ -192,13 +192,17 @@
   </div>
 </template>
 <script>
+import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
+
 export default {
   props: {
     enable_effects: Boolean,
     videoElement: HTMLVideoElement,
     canvasElement: HTMLCanvasElement,
   },
-  components: {},
+  components: {
+    ImageSelect,
+  },
   data() {
     return {
       enable: this.enable_effects,

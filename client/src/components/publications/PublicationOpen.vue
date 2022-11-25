@@ -9,6 +9,7 @@
         <TitleField
           :label="$t('title')"
           :field_name="'title'"
+          :tag="'h2'"
           :content="publication.title"
           :path="publication.$path"
           :can_edit="$api.is_logged_in"
@@ -18,17 +19,20 @@
           :field_name="'template'"
           :content="publication.template"
           :path="publication.$path"
-          :can_edit="$api.is_logged_in"
+          :can_edit="false"
         />
-        <div>
+        <div class="_buttonRow">
           <button
             type="button"
+            class="u-buttonLink"
             v-if="$api.is_logged_in"
             @click="removePublication()"
           >
             Supprimer
           </button>
-          <button type="button" @click="$emit('close')">Fermer</button>
+          <button type="button" class="u-buttonLink" @click="$emit('close')">
+            Fermer
+          </button>
         </div>
       </div>
       <StoryTemplate
@@ -105,8 +109,15 @@ export default {
   display: flex;
   width: 100%;
   background: white;
-  padding: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 1) auto;
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
+  margin: calc(var(--spacing) / 1) auto 0;
+
+  border-bottom: 2px solid var(--c-gris_fonce);
   max-width: 800px;
+}
+
+._buttonRow {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

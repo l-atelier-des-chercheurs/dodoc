@@ -116,6 +116,7 @@ module.exports = (function () {
     dev.logapi();
     let d = {};
     d.schema = global.settings.schema;
+    d.debug_mode = dev.isDebug();
     res.render("index2", d);
   }
   function loadPerf(rea, res) {

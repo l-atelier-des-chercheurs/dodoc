@@ -6,13 +6,15 @@ export default function () {
     data: {
       socket: "",
       store: {},
-      is_logged_in: true,
+      is_logged_in: false,
       debug_mode: false,
     },
     created() {},
     methods: {
       init({ debug_mode }) {
         this.debug_mode = debug_mode;
+        this.is_logged_in = this.debug_mode;
+
         this.initSchema();
         this.initSocketio();
       },
