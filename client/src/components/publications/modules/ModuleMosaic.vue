@@ -1,11 +1,5 @@
 <template>
   <div class="_moduleMosaic">
-    Mosaic
-    <MediaPicker
-      v-if="$api.is_logged_in"
-      :publication_path="publication_path"
-      @selectMedia="selectMedia"
-    />
     <div v-for="media in medias" :key="media.$path">
       <MediaContent
         v-if="media"
@@ -14,6 +8,11 @@
         :context="'full'"
       />
     </div>
+    <MediaPicker
+      v-if="$api.is_logged_in"
+      :publication_path="publication_path"
+      @selectMedia="selectMedia"
+    />
   </div>
 </template>
 <script>

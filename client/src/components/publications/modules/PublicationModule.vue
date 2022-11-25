@@ -1,6 +1,16 @@
 <template>
   <div class="_publicationModule" :style="media_styles">
-    <div class="_menu">
+    <
+    <div
+      class="_menu"
+      :class="{
+        'is--overlaid': publimodule.module_type !== 'text',
+      }"
+    >
+      <sl-button variant="default" size="small" pill>
+        {{ $t(`module.label.${publimodule.module_type}`) }}
+      </sl-button>
+
       <sl-dropdown
         v-if="$api.is_logged_in"
         class="_dropdown"
@@ -67,6 +77,7 @@
         </sl-menu>
       </sl-dropdown>
     </div>
+
     <ModuleMosaic
       v-if="publimodule.module_type === 'mosaic'"
       :publimodule="publimodule"
@@ -169,10 +180,19 @@ export default {
 }
 
 ._menu {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 10;
-  margin: calc(var(--spacing) / 2);
+  width: 100%;
+
+  padding: calc(var(--spacing) / 2);
+
+  display: flex;
+  justify-content: flex-end;
+  gap: calc(var(--spacing) / 4);
+
+  &.is--overlaid {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+  }
 }
 </style>

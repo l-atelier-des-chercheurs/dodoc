@@ -14,7 +14,14 @@
     >
       Supprimer ce projet
     </button>
-    <button type="button" v-if="show_confirm_delete" @click="removeProject">
+    <br />
+    <br />
+    <button
+      class="u-button u-button_red"
+      type="button"
+      v-if="show_confirm_delete"
+      @click="removeProject"
+    >
       Confirmer la suppression
     </button>
   </ProjectCard>
