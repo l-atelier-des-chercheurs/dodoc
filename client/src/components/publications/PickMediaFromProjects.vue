@@ -72,7 +72,6 @@ export default {
       // we need to copy this media to this project first then link that media instead
       this.$emit("selectMedia", {
         path_to_source_media,
-        module_type: "gallery",
       });
       this.$emit("close");
     },

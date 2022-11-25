@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div v-for="source_file in source_files" :key="source_file.$path">
+    ModuleCarousel
+    <div v-for="media in medias" :key="media.$path">
       <MediaContent
-        v-if="source_file"
-        :file="source_file"
+        v-if="media"
+        :file="media"
         :resolution="1600"
         :context="'full'"
       />
@@ -13,7 +14,7 @@
 <script>
 export default {
   props: {
-    type: String,
+    publimodule: Object,
     medias: Array,
   },
   components: {},
@@ -24,14 +25,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    source_files() {
-      if (!this.medias) return false;
-      return this.medias.map(({ path }) =>
-        this.getSourceMedia({ source_media_path: path })
-      );
-    },
-  },
+  computed: {},
   methods: {},
 };
 </script>

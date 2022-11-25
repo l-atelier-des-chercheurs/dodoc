@@ -128,9 +128,14 @@ export default function () {
         move_down: "Descendre",
         source_project: "Projet source",
 
+        "module.label.text": "Bloc de texte",
+        "module.label.mosaic": "Mosaïque de médias",
+        "module.label.carousel": "Caroussel",
+
         disconnect_warning:
           "Vous avez été déconnectés. Veuillez recharger la page pour vous reconnecter à do•doc.",
         reload_page: "Recharger cette page",
+        type_of_module: "Type de module",
 
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

@@ -20,11 +20,11 @@ export default {
       return `/thumbs/${$path}/${thumb_path}`;
     },
     getSourceMedia({ source_media_path }) {
-      const project_path = source_media_path.substring(
+      const folder_path = source_media_path.substring(
         0,
         source_media_path.lastIndexOf("/")
       );
-      return this.$api.store[project_path]?.$files?.find(
+      return this.$api.store[folder_path]?.$files?.find(
         ({ $path }) => $path === source_media_path
       );
       // const source_project = this.$api.store.find()

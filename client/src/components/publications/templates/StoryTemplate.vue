@@ -3,16 +3,16 @@
     <div class="_mediasList">
       <transition-group tag="div" name="StoryModules" appear :duration="700">
         <div
-          v-for="(meta_filename, index) in list_of_metas"
+          v-for="(meta_filename, index) in modules_list"
           :key="meta_filename"
         >
-          <MediaPublication
+          <PublicationModule
             class="_mediaPublication"
-            :publication_file="findFileFromMetaFilename(meta_filename)"
+            :publimodule="findFileFromMetaFilename(meta_filename)"
             :position="
               index === 0
                 ? 'first'
-                : index === list_of_metas.length - 1
+                : index === modules_list.length - 1
                 ? 'last'
                 : 'inbetween'
             "
@@ -25,25 +25,24 @@
       </transition-group>
     </div>
 
-    <!-- {{ publication.$files.map((f) => f.$path) }} -->
-    <MediaPicker
+    <ModuleCreator
       v-if="$api.is_logged_in"
       :publication_path="publication.$path"
-      @appendMetaFilenameToList="appendMetaFilenameToList"
+      @appendModuleMetaFilenameToList="appendModuleMetaFilenameToList"
     />
   </div>
 </template>
 <script>
-import MediaPicker from "@/components/publications/MediaPicker.vue";
-import MediaPublication from "@/components/publications/MediaPublication.vue";
+import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
+import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
 export default {
   props: {
     publication: Object,
   },
   components: {
-    MediaPicker,
-    MediaPublication,
+    ModuleCreator,
+    PublicationModule,
   },
   data() {
     return {
@@ -56,27 +55,38 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    list_of_metas() {
+    modules_list() {
       if (
-        this.publication.list_of_metas &&
-        Array.isArray(this.publication.list_of_metas)
-      )
-        return this.publication.list_of_metas;
-      else return [];
+        this.publication.modules_list &&
+        Array.isArray(this.publication.modules_list)
+      ) {
+        const modules_list = this.publication.modules_list.reduce(
+          (acc, meta_filename) => {
+            const _module = this.findFileFromMetaFilename(meta_filename);
+            if (_module) {
+              acc.push(meta_filename);
+            }
+            return acc;
+          },
+          []
+        );
+        return modules_list;
+      }
+      return [];
     },
   },
   methods: {
-    async appendMetaFilenameToList({ meta_filename }) {
+    async appendModuleMetaFilenameToList({ meta_filename }) {
       this.fetch_status = "pending";
       this.fetch_error = null;
       try {
-        const list_of_metas = this.list_of_metas.slice();
-        list_of_metas.push(meta_filename);
+        const modules_list = this.modules_list.slice();
+        modules_list.push(meta_filename);
 
         this.response = await this.$api.updateMeta({
           path: this.publication.$path,
           new_meta: {
-            list_of_metas,
+            modules_list,
           },
         });
         this.fetch_status = "success";
@@ -92,23 +102,23 @@ export default {
       });
     },
     async moveTo({ meta_filename, dir }) {
-      let list_of_metas = this.list_of_metas.slice();
-      const target_meta_index = list_of_metas.findIndex(
+      let modules_list = this.modules_list.slice();
+      const target_meta_index = modules_list.findIndex(
         (m) => m === meta_filename
       );
       if (target_meta_index + dir < 0) return false;
-      else if (target_meta_index + dir > list_of_metas.length - 1) return false;
+      else if (target_meta_index + dir > modules_list.length - 1) return false;
 
-      list_of_metas.move(target_meta_index, target_meta_index + dir);
-      this.response = await this.updatePubliMeta({ list_of_metas });
+      modules_list.move(target_meta_index, target_meta_index + dir);
+      this.response = await this.updatePubliMeta({ modules_list });
     },
     async removePublicationMedia(meta_filename) {
-      let list_of_metas = this.list_of_metas.slice();
-      list_of_metas = list_of_metas.filter((_mf) => _mf !== meta_filename);
+      let modules_list = this.modules_list.slice();
+      modules_list = modules_list.filter((_mf) => _mf !== meta_filename);
       this.response = await this.$api.updateMeta({
         path: this.publication.$path,
         new_meta: {
-          list_of_metas,
+          modules_list,
         },
       });
 

@@ -25,7 +25,12 @@ module.exports = (function () {
         extracted_meta = await _extractAdditionalMetaFromFile({
           additional_meta,
         });
-        meta_filename = "infos-" + +extracted_meta.$date_uploaded + ".meta.txt";
+
+        const prefix = additional_meta.requested_slug
+          ? utils.slug(additional_meta.requested_slug)
+          : "infos";
+        meta_filename =
+          prefix + "-" + +extracted_meta.$date_uploaded + ".meta.txt";
       } else {
         const {
           originalFilename,

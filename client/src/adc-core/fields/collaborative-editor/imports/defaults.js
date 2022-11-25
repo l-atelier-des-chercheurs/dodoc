@@ -80,9 +80,9 @@ export const toolbar = {
       { align: "justify" },
     ],
     ["code-block"],
-    ["divider"],
+    // ["divider"],
     ["clean"],
-    ["status"],
+    // ["status"],
   ],
   handlers: {
     divider: function () {

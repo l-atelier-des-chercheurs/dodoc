@@ -366,7 +366,7 @@
               ],
               "default": "page_by_page"
             },
-            "metas_list": {
+            "modules_list": {
               "type": "array"
             }
           },
