@@ -1,39 +1,41 @@
 <template>
-  <div class="_pickMediaFromProject">
-    <sl-spinner
-      style="--indicator-color: currentColor"
-      v-if="projects.length === 0"
-    />
-    <template v-else>
-      <label for="" class="u-label">{{ $t("source_project") }}</label>
-      <select v-model="source_project_path">
-        <option
-          v-for="project in projects"
-          :key="project.$path"
-          :value="project.$path"
-          v-text="project.title"
-        />
-      </select>
-
-      <template v-if="source_project_path">
-        <label for="" class="u-label">{{ $t("medias") }}</label>
-        <sl-spinner
-          style="--indicator-color: currentColor"
-          v-if="!source_project"
-        />
-        <template v-else>
-          <MediaLibrary
-            class="_mediaLib"
-            :project="source_project"
-            :media_focused="media_focused"
-            :select_mode="true"
-            @update:media_focused="media_focused = $event"
-            @selectMedia="selectMedia"
+  <BaseModal2 @close="$emit('close')">
+    <div class="_pickMediaFromProject">
+      <sl-spinner
+        style="--indicator-color: currentColor"
+        v-if="projects.length === 0"
+      />
+      <template v-else>
+        <label for="" class="u-label">{{ $t("source_project") }}</label>
+        <select v-model="source_project_path">
+          <option
+            v-for="project in projects"
+            :key="project.$path"
+            :value="project.$path"
+            v-text="project.title"
           />
+        </select>
+
+        <template v-if="source_project_path">
+          <label for="" class="u-label">{{ $t("medias") }}</label>
+          <sl-spinner
+            style="--indicator-color: currentColor"
+            v-if="!source_project"
+          />
+          <template v-else>
+            <MediaLibrary
+              class="_mediaLib"
+              :project="source_project"
+              :media_focused="media_focused"
+              :select_mode="true"
+              @update:media_focused="media_focused = $event"
+              @selectMedia="selectMedia"
+            />
+          </template>
         </template>
       </template>
-    </template>
-  </div>
+    </div>
+  </BaseModal2>
 </template>
 <script>
 import MediaLibrary from "@/components/panes/MediaLibrary.vue";

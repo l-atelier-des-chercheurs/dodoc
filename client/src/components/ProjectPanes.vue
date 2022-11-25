@@ -4,7 +4,7 @@
       <template v-if="projectpanes.length === 0">
         <pane>
           <span class="_msg u-instructions u-padding-small">
-            Choisissez un panneau ci-dessus !
+            Choisissez un panneau ci-dessus pour démarrer !
           </span>
         </pane>
       </template>

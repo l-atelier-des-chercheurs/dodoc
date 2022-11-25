@@ -3,44 +3,42 @@
     <!-- <pre>
        {{ projects }}
     </pre> -->
-    <div class="_title">
+    <!-- <div class="_title">
       <h1>Les projets</h1>
-      <br />
-      <div>
-        <button
-          type="button"
-          class="u-button u-button_red u-button_big"
-          v-if="$api.is_logged_in"
-          @click="show_create_modal = true"
+    </div> -->
+    <div class="">
+      <button
+        type="button"
+        class="u-button u-button_red u-button_big"
+        v-if="$api.is_logged_in"
+        @click="show_create_modal = true"
+      >
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 168 168"
+          style="enable-background: new 0 0 168 168"
+          xml:space="preserve"
         >
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            viewBox="0 0 168 168"
-            style="enable-background: new 0 0 168 168"
-            xml:space="preserve"
-          >
-            <path
-              style="fill: #fc4b60"
-              d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
+          <path
+            style="fill: #fc4b60"
+            d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
 		C110.5-8.2,57.5-8.2,24.6,24.4z"
-            />
-            <polygon
-              style="fill: #ffbe32"
-              points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+          />
+          <polygon
+            style="fill: #ffbe32"
+            points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
-            />
-          </svg>
-          {{ $t("create") }}
-        </button>
-        <br />
-        <ProjectsTester v-if="$api.debug_mode" />
-        <br />
-      </div>
+          />
+        </svg>
+        {{ $t("create_a_project") }}
+      </button>
     </div>
+
+    <ProjectsTester v-if="$api.debug_mode" />
 
     <CreateProject
       v-if="show_create_modal"
@@ -48,25 +46,32 @@
       @openNewProject="openNewProject"
     />
 
-    <h3>Finalisés</h3>
-    <div class="_projectsList">
-      <ProjectPresentation
-        v-for="project in finalized_projects"
-        :project="project"
-        context="list"
-        :key="project.$path"
-      />
-    </div>
-    <hr />
+    <div class="">
+      <h3>Projets finalisés</h3>
+      <div class="_projectsList">
+        <div v-if="finalized_projects.length === 0" class="u-instructions">
+          {{ $t("no_finalized_proejcts") }}
+        </div>
 
-    <h3>En cours</h3>
-    <div class="_projectsList">
-      <ProjectPresentation
-        v-for="project in draft_projects"
-        :project="project"
-        context="list"
-        :key="project.$path"
-      />
+        <ProjectPresentation
+          v-for="project in finalized_projects"
+          :project="project"
+          context="list"
+          :key="project.$path"
+        />
+      </div>
+    </div>
+
+    <div class="">
+      <h3>Projets en cours</h3>
+      <div class="_projectsList">
+        <ProjectPresentation
+          v-for="project in draft_projects"
+          :project="project"
+          context="list"
+          :key="project.$path"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -127,7 +132,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projectsView {
-  padding: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) * 2);
+
+  > * {
+    margin-bottom: var(--spacing);
+  }
 }
 ._projectsList {
   display: grid;
@@ -138,6 +147,7 @@ export default {
 
   border-radius: 6px;
   overflow: hidden;
+  margin-top: calc(var(--spacing) / 4);
 
   > * {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);

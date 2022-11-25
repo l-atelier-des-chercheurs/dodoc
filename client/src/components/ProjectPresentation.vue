@@ -40,38 +40,36 @@ z
     </div>
 
     <div class="_projectInfos--infos">
-      <div class="u-padding_round">
-        <AuthorField
-          :label="context === 'full' ? $t('contributors') : ''"
-          :authors_slugs="project.$authors"
-          :path="project.$path"
-          :can_edit="can_edit_project"
-        />
+      <AuthorField
+        :label="context === 'full' ? $t('contributors') : ''"
+        :authors_slugs="project.$authors"
+        :path="project.$path"
+        :can_edit="can_edit_project"
+      />
 
-        <TitleField
-          :field_name="'title'"
-          :label="context === 'full' ? $t('title') : ''"
-          :content="project.title"
-          :path="project.$path"
-          :required="true"
-          :maxlength="40"
-          :tag="context === 'full' ? 'h1' : 'h2'"
-          :can_edit="can_edit_project"
-        />
+      <TitleField
+        :field_name="'title'"
+        :label="context === 'full' ? $t('title') : ''"
+        :content="project.title"
+        :path="project.$path"
+        :required="true"
+        :maxlength="40"
+        :tag="context === 'full' ? 'h1' : 'h2'"
+        :can_edit="can_edit_project"
+      />
 
-        <TitleField
-          :field_name="'description'"
-          :label="
-            context === 'full' && (project.description || can_edit_project)
-              ? $t('description')
-              : ''
-          "
-          :content="project.description"
-          :path="project.$path"
-          :maxlength="280"
-          :can_edit="can_edit_project"
-        />
-      </div>
+      <TitleField
+        :field_name="'description'"
+        :label="
+          context === 'full' && (project.description || can_edit_project)
+            ? $t('description')
+            : ''
+        "
+        :content="project.description"
+        :path="project.$path"
+        :maxlength="280"
+        :can_edit="can_edit_project"
+      />
     </div>
 
     <div class="_projectInfos--meta" v-if="context === 'full'">
@@ -231,8 +229,10 @@ export default {
 ._projectInfos--infos {
   display: flex;
   flex-flow: column nowrap;
-  gap: calc(var(--spacing) / 2);
   place-content: center;
+
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
 
   transition: all 0.4s;
 
@@ -324,7 +324,7 @@ export default {
   // gap: calc(var(--spacing) / 2);
 
   > * {
-    flex: 0 0 260px;
+    flex: 1 1 260px;
     border: 1px solid var(--c-gris);
 
     &:first-child {

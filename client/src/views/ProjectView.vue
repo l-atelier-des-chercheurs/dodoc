@@ -90,14 +90,15 @@ export default {
     },
     "$api.is_logged_in": {
       handler() {
-        if (this.projectpanes.length === 0)
-          this.projectpanes = [
-            {
-              type: "Publier",
-              pad: {},
-              size: 100,
-            },
-          ];
+        if (!this.$api.is_logged_in)
+          if (this.projectpanes.length === 0)
+            this.projectpanes = [
+              {
+                type: "Publier",
+                pad: {},
+                size: 100,
+              },
+            ];
       },
       immediate: true,
     },

@@ -3,8 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 
 Vue.config.productionTip = false;
-const debug_mode = true;
 
+const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
 import i18n from "./adc-core/i18n.js";

@@ -91,6 +91,7 @@ export default function () {
         not_public_status_explanations:
           "Le projet ne sera visible qu’à ses contributeurs.",
         finished: "Finalisé",
+        no_finalized_proejcts: "Aucun projet finalisé pour le moment",
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d'accueil.",
 
