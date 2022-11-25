@@ -78,7 +78,7 @@
 }
 
 .u-button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
@@ -95,6 +95,10 @@
   .inlineSVG {
     width: 2em;
     height: 2em;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
   }
 }
 .u-button_red {

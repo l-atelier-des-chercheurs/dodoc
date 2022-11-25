@@ -45,5 +45,6 @@ export default {
   // padding-bottom: calc(var(--spacing) * 4);
   overflow: auto;
   height: 100%;
+  background: var(--color-Publier);
 }
 </style>

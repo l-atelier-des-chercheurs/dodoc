@@ -43,8 +43,8 @@ export default {
   --c-bleumarine: #1d327f;
   --c-bleumarine_clair: #bec6e5;
   --c-bleuvert: #52c5b9;
-  --c-bleuvert_clair: #010101;
-  --c-bleuvert_fonce: hsl(174, 50%, 30%);
+  --c-bleuvert_clair: hsl(174, 50%, 81%);
+  --c-bleuvert_fonce: hsl(174, 50%, 41%);
   --c-orange: #ffbe32;
   --c-orange_clair: #ffd892;
   --c-orange_fonce: hsl(41, 100%, 45%);
@@ -101,8 +101,8 @@ export default {
 
   --color-Capturer: var(--c-rouge);
   --color-Collecter: var(--c-orange);
-  --color-Remixer: var(--c-bleuvert);
-  --color-Publier: var(--c-bleumarine);
+  --color-Remixer: var(--c-bleumarine);
+  --color-Publier: var(--c-bleuvert);
 
   --indicator-color: var(--c-vert) !important;
   --active-color: var(--c-bleuvert);
@@ -203,7 +203,7 @@ html {
   font-style: normal;
   font-weight: 400;
 
-  font-size: 95%;
+  font-size: 90%;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

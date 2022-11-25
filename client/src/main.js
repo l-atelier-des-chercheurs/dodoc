@@ -133,6 +133,9 @@ new Vue({
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
     this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
 
+    const html = document.documentElement; // returns the html tag
+    html.setAttribute("lang", "fr");
+
     window.addEventListener("resize", () => {
       this.window.innerWidth = window.innerWidth;
       this.window.innerHeight = window.innerHeight;

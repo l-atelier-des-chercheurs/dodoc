@@ -10,7 +10,9 @@
             class="_mediaPublication"
             :publimodule="findFileFromMetaFilename(meta_filename)"
             :position="
-              index === 0
+              modules_list.length === 1
+                ? 'alone'
+                : index === 0
                 ? 'first'
                 : index === modules_list.length - 1
                 ? 'last'
@@ -156,7 +158,7 @@ export default {
   // text-align: center;
   background: white;
   gap: calc(var(--spacing) / 1);
-  // padding: calc(var(--spacing) / 1);
+
   margin: calc(var(--spacing) / 1) auto;
 
   max-width: 800px;
