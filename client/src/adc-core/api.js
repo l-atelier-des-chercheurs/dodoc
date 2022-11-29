@@ -4,10 +4,14 @@ import Vue from "vue";
 export default function () {
   return new Vue({
     data: {
-      socket: "",
+      socket: null,
       store: {},
       is_logged_in: false,
       debug_mode: false,
+      tokenpath: {
+        token: "",
+        path: "",
+      },
     },
     created() {},
     methods: {
@@ -26,6 +30,16 @@ export default function () {
 
         const sessionID = localStorage.getItem("sessionID");
         if (sessionID) this.socket.auth = { sessionID };
+
+        const tokenpath = localStorage.getItem("tokenpath");
+        if (tokenpath) {
+          try {
+            const { token, path } = JSON.parse(tokenpath);
+            this.tokenpath = { token, path };
+          } catch (err) {
+            /**/
+          }
+        }
 
         this.socket.connect();
 
@@ -198,7 +212,10 @@ export default function () {
       async loginToFolder({ path, auth_infos }) {
         try {
           const response = await this.$axios.post(`${path}/_login`, auth_infos);
-          return response.data;
+          const token = response.data.token;
+          this.tokenpath = { token, path };
+          localStorage.setItem("tokenpath", JSON.stringify({ token, path }));
+          return;
         } catch (e) {
           if (e.response.data.code)
             throw _getErrorMsgFromCode(e.response.data.code);

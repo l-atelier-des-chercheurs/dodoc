@@ -8,14 +8,14 @@
       v-if="edit_mode"
       name="x"
       label="Supprimer"
-      @click="$emit('remove', slug)"
+      @click="$emit('remove', path)"
     />
   </div>
 </template>
 <script>
 export default {
   props: {
-    slug: String,
+    path: String,
     edit_mode: {
       type: Boolean,
       default: false,
@@ -29,7 +29,7 @@ export default {
   },
   created() {},
   mounted() {
-    this.author = this.getAuthor(this.slug);
+    this.author = this.getAuthor(this.path);
   },
   beforeDestroy() {},
   watch: {},

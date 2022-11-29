@@ -4,9 +4,17 @@ const utils = require("./utils"),
   crypto = require("crypto");
 
 module.exports = (function () {
+  let tokens = new Map();
+
   const API = {
     async createAndStoreToken({ path_to_folder }) {
-      return "mytoken";
+      dev.logfunction({ path_to_folder });
+      // todo replace with jwt with expiration
+      // https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
+      const token = crypto.randomBytes(32).toString("hex");
+      tokens.set(token, path_to_folder);
+      dev.logverbose("set new token", { token, path_to_folder });
+      return token;
     },
     async hashPassword({ password, salt = global.settings.password_salt }) {
       // see https://stackoverflow.com/a/67038052

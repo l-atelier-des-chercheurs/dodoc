@@ -6,7 +6,12 @@
       class="_subscribeBtn"
       @click="show_authors_modal = true"
     >
-      Inscription
+      <template v-if="$api.tokenpath.path">
+        {{ $api.tokenpath.path }}
+        ///
+        {{ $api.tokenpath.token }}
+      </template>
+      <template v-else> Inscription </template>
     </button>
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
 

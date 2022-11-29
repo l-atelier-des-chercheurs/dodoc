@@ -2,18 +2,18 @@
   <div>
     <div
       class="_topLabel"
-      v-if="label && (new_authors_slugs.length > 0 || can_edit)"
+      v-if="label && (new_authors_paths.length > 0 || can_edit)"
     >
       <label for="" class="u-label">{{ label }}</label>
     </div>
 
     <div class="_authors">
-      <template v-for="author_slug in new_authors_slugs">
+      <template v-for="author_path in new_authors_paths">
         <AuthorTag
-          :slug="author_slug"
-          :key="author_slug"
+          :path="author_path"
+          :key="author_path"
           :edit_mode="edit_mode"
-          @remove="removeAuthor(author_slug)"
+          @remove="removeAuthor(author_path)"
         />
       </template>
       <!-- <sl-button
@@ -48,7 +48,7 @@
         <label for="" class="u-label">{{ $t("add_authors") }}</label>
       </div>
       <AuthorPicker
-        :current_authors="new_authors_slugs"
+        :current_authors="new_authors_paths"
         @addAuthor="addAuthor"
       />
 
@@ -71,7 +71,7 @@ export default {
       type: String,
       default: "",
     },
-    authors_slugs: {
+    authors_paths: {
       type: Array,
       default: () => [],
     },
@@ -85,67 +85,45 @@ export default {
     return {
       edit_mode: false,
       is_saving: false,
-      new_authors_slugs: JSON.parse(JSON.stringify(this.authors_slugs)),
-      // new_authors_slugs: ["pauline", "louis"],
+      new_authors_paths: JSON.parse(JSON.stringify(this.authors_paths)),
+      // new_authors_paths: ["pauline", "louis"],
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {
-    authors_slugs() {
-      this.new_authors_slugs = JSON.parse(JSON.stringify(this.authors_slugs));
+    authors_paths() {
+      this.new_authors_paths = JSON.parse(JSON.stringify(this.authors_paths));
     },
   },
   computed: {
     allow_save() {
       return (
-        JSON.stringify(this.new_authors_slugs) !==
-        JSON.stringify(this.authors_slugs)
+        JSON.stringify(this.new_authors_paths) !==
+        JSON.stringify(this.authors_paths)
       );
     },
-    // authors_list() {
-    // return [
-    //   {
-    //     name: "Louis",
-    //     slug: "louis",
-    //     image:
-    //       "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-    //   },
-    //   {
-    //     name: "Pauline",
-    //     slug: "pauline",
-    //     image:
-    //       "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&crop=left&q=80",
-    //   },
-    //   {
-    //     name: "Sarah",
-    //     slug: "sarah",
-    //     image:
-    //       "https://images.unsplash.com/photo-1490150028299-bf57d78394e0?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=256&h=256&q=80&crop=right",
-    //   },
-    // ];
-    // },
   },
   methods: {
     enableEditMode() {
       this.edit_mode = true;
     },
-    addAuthor(slug) {
-      this.new_authors_slugs.push(slug);
+    addAuthor(path) {
+      this.new_authors_paths.push(path);
     },
-    removeAuthor(slug) {
-      this.new_authors_slugs = this.new_authors_slugs.filter((a) => a !== slug);
+    removeAuthor(path) {
+      this.new_authors_paths = this.new_authors_paths.filter((a) => a !== path);
     },
     cancel() {
       this.edit_mode = false;
       this.is_saving = false;
-      this.new_authors_slugs = JSON.parse(JSON.stringify(this.authors_slugs));
+      this.new_authors_paths = JSON.parse(JSON.stringify(this.authors_paths));
 
       this.$nextTick(() => {
         // this.content = "";
         // this.$nextTick(() => {
-        // this.content = this.new_authors_slugs;
+        // this.content = this.new_authors_paths;
         // });
       });
 
@@ -157,7 +135,7 @@ export default {
 
       try {
         const new_meta = {
-          $authors: this.new_authors_slugs,
+          $authors: this.new_authors_paths,
         };
 
         await this.$api.updateMeta({

@@ -42,7 +42,7 @@ z
     <div class="_projectInfos--infos">
       <AuthorField
         :label="context === 'full' ? $t('contributors') : ''"
-        :authors_slugs="project.$authors"
+        :authors_paths="project.$authors"
         :path="project.$path"
         :can_edit="can_edit_project"
       />
@@ -70,6 +70,7 @@ z
         :maxlength="280"
         :can_edit="can_edit_project"
       />
+      <DebugBtn v-if="context === 'full'" :content="project" />
     </div>
 
     <div class="_projectInfos--meta" v-if="context === 'full'">

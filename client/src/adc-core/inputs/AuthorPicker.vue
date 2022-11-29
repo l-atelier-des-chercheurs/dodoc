@@ -1,11 +1,11 @@
 <template>
   <div class="_authorPicker">
     <div
-      v-for="author_slug in all_authors_except_current"
-      :key="author_slug"
-      @click="$emit('addAuthor', author_slug)"
+      v-for="author_path in all_authors_except_current"
+      :key="author_path"
+      @click="$emit('addAuthor', author_path)"
     >
-      <AuthorTag :slug="author_slug" :key="author_slug" />
+      <AuthorTag :path="author_path" :key="author_path" />
     </div>
   </div>
 </template>
@@ -24,7 +24,7 @@ export default {
   watch: {},
   computed: {
     all_authors_except_current() {
-      return ["louis", "pauline", "sarah"].filter(
+      return ["authors/louis", "authors/pauline", "authors/sarah"].filter(
         (a) => !this.current_authors.includes(a)
       );
     },
