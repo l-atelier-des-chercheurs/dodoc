@@ -94,6 +94,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug",
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
       ],
+      _authenticateToken,
       _updateFolder
     );
     app.delete(
@@ -101,6 +102,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug",
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
       ],
+      _authenticateToken,
       _removeFolder
     );
 
@@ -117,6 +119,44 @@ module.exports = (function () {
   function _sessionPasswordCheck(req, res, next) {
     // TODO
     next();
+  }
+  async function _authenticateToken(req, res, next) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    // check if path and token match,
+    // and either :
+    // - if path matches the path of the folder that is about to be edited (for example, user authors/louis editing authors/louis)
+    // - or if path is amongst the folder $authors
+    // if so, then next(), otherwise return 401
+    // ref = https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
+
+    try {
+      const { token, token_path } = JSON.parse(req.headers.authorization);
+      if (!token || !token_path) throw new Error(`no_token_set`);
+
+      auth.checkToken({ token, token_path });
+
+      // if we are here, that means that the token is valid and path is valid
+      // if token path and req path are the same, that means
+      if (path_to_folder === token_path) {
+        dev.logapi("Token path and folder path are identical, next");
+        return next();
+      }
+
+      // we need to check if token path is included in $authors
+      // for example "authors/louis"
+      const folder_meta = await folder.getFolder({ path_to_folder });
+      if (
+        folder_meta.$authors.length > 0 &&
+        !folder_meta.$authors.includes(token_path)
+      )
+        throw new Error(`author_not_allowed`);
+
+      return next();
+    } catch (err) {
+      return res.status(401).send(err.message);
+    }
   }
 
   function loadIndex(req, res) {
@@ -203,13 +243,6 @@ module.exports = (function () {
     const update_cover = req.query?.hasOwnProperty("cover");
     dev.logapi({ path_to_folder, data, update_cover });
 
-    // TODO check if schema allows it, if data exists
-    // return res.status(422).send(err.message);
-
-    // TODO check if header contains a valid jwt that certifies that user is author
-    // if (auth.checkFolderForAuth({ folder_type, folder_slug }))
-    //   res.status(422).send("Not allowed");
-
     try {
       const changed_data = await folder.updateFolder({
         path_to_folder,
@@ -248,7 +281,7 @@ module.exports = (function () {
       const token = await auth.createAndStoreToken({
         path_to_folder,
       });
-      dev.logpackets({ status: "logged in to folder", token });
+      dev.logpackets({ status: "logged in to folder", path_to_folder, token });
       res.status(200).json({ status: "ok", token });
     } catch (err) {
       dev.error("Failed to login to folder: " + err.message);

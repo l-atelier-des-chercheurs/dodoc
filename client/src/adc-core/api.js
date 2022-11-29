@@ -6,18 +6,25 @@ export default function () {
     data: {
       socket: null,
       store: {},
-      is_logged_in: false,
       debug_mode: false,
       tokenpath: {
         token: "",
-        path: "",
+        token_path: "",
       },
     },
     created() {},
+    watch: {
+      "tokenpath.token"() {
+        const { token, token_path } = this.tokenpath;
+        this.$axios.defaults.headers.common["Authorization"] = JSON.stringify({
+          token,
+          token_path,
+        });
+      },
+    },
     methods: {
       init({ debug_mode }) {
         this.debug_mode = debug_mode;
-        this.is_logged_in = this.debug_mode;
 
         this.initSchema();
         this.initSocketio();
@@ -34,8 +41,8 @@ export default function () {
         const tokenpath = localStorage.getItem("tokenpath");
         if (tokenpath) {
           try {
-            const { token, path } = JSON.parse(tokenpath);
-            this.tokenpath = { token, path };
+            const { token, token_path } = JSON.parse(tokenpath);
+            this.tokenpath = { token, token_path };
           } catch (err) {
             /**/
           }
@@ -213,8 +220,11 @@ export default function () {
         try {
           const response = await this.$axios.post(`${path}/_login`, auth_infos);
           const token = response.data.token;
-          this.tokenpath = { token, path };
-          localStorage.setItem("tokenpath", JSON.stringify({ token, path }));
+          this.tokenpath = { token, token_path: path };
+          localStorage.setItem(
+            "tokenpath",
+            JSON.stringify({ token, token_path: path })
+          );
           return;
         } catch (e) {
           if (e.response.data.code)
@@ -269,7 +279,13 @@ export default function () {
       },
 
       async updateMeta({ path, new_meta }) {
-        const response = await this.$axios.patch(path, new_meta);
+        const response = await this.$axios
+          .patch(path, new_meta)
+          .catch((err) => {
+            this.onError(err);
+            throw err;
+          });
+
         return response.data;
       },
 
@@ -287,7 +303,7 @@ export default function () {
             },
           })
           .catch((err) => {
-            this.$alertify.delay(4000).error(err);
+            this.onError(err);
             throw err;
           });
 
@@ -301,6 +317,31 @@ export default function () {
         } catch (e) {
           throw e.response.data;
         }
+      },
+
+      resetToken() {
+        this.tokenpath = { token: "", token_path: "" };
+        localStorage.setItem("tokenpath", undefined);
+      },
+
+      onError(err) {
+        if (err.response.data === "token_does_not_exist") {
+          // invalidate token
+          this.resetToken();
+          this.$alertify
+            .delay(4000)
+            .error(
+              this.$t(
+                "notifications.connection_information_invalid_please_login"
+              )
+            );
+        }
+        this.$alertify.delay(4000).error(err);
+      },
+    },
+    computed: {
+      is_identified() {
+        return this.tokenpath.token !== "";
       },
     },
   });
