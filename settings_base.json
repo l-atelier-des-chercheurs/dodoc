@@ -3,7 +3,7 @@
   "host": "localhost",
   "desired_port": 8080,
   "redirect_port": "",
-  "cache_content": false,
+  "cache_content": true,
   "removePermanently": false,
   "versioning": true,
 
