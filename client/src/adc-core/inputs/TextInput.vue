@@ -62,6 +62,7 @@ export default {
       this.$refs.field.innerText = this.content;
       this.focusSpanAtEnd();
     } else if (this.tag === "input") {
+      this.$refs.field.value = this.content;
       this.$refs.field.focus();
     }
   },

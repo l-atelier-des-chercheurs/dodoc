@@ -163,7 +163,7 @@ Folders contain a meta.txt file and media files (images, videos, audios, 3D/stl,
 
 Default values are:
 
-- $authors (Array) = list of author slugs, can be edited by users
+- $authors (Array) = list of authors paths, can be edited by users
 - $cover (object) = if a meta_cover.jpeg is present in the root of the folder, can be edited by authors
 - $date_created (date) = when the folder was created
 - $date_modified (date) = when the folder was last edited
@@ -187,7 +187,7 @@ Default values are:
 - $date_modified (date) = when the file was last edited
 - $media_filename (string) = name of the file
 - $type (string) = type of media file among the following: _image, video, audio, stl, text, pdf, other_
-- $authors (Array) = list of author slugs, can be edited by users
+- $authors (Array) = list of authors paths, can be edited by users
 - $public (Boolean) = if the folder is visible to everyone or just its authors, can be edited by authors
 - $thumbs (object) = list of possible media image thumbs
 - $content (string) = text content of a file

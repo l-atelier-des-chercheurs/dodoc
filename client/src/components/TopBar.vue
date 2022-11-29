@@ -29,7 +29,7 @@ export default {
   },
   data() {
     return {
-      show_authors_modal: false,
+      show_authors_modal: true,
     };
   },
   created() {},

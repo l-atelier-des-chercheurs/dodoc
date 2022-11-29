@@ -76,10 +76,11 @@ module.exports = function () {
     "/_client",
     express.static(path.join(global.appRoot, "client", "dist"))
   );
-  app.use(
-    "/_cache",
-    express.static(path.join(global.appRoot, global.settings.cacheDirname))
-  );
+  // not used yet
+  // app.use(
+  //   "/_cache",
+  //   express.static(path.join(global.appRoot, global.settings.cacheDirname))
+  // );
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // To parse the incoming requests with JSON payloads

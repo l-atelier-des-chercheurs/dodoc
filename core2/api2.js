@@ -6,7 +6,8 @@ const folder = require("./folder"),
   file = require("./file"),
   notifier = require("./notifier"),
   utils = require("./utils"),
-  cache = require("./cache");
+  cache = require("./cache"),
+  auth = require("./auth");
 
 module.exports = (function () {
   const API = {
@@ -68,6 +69,13 @@ module.exports = (function () {
     );
     app.post(
       [
+        "/_api2/:folder_type/:folder_slug/_login",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/_login",
+      ],
+      _loginToFolder
+    );
+    app.post(
+      [
         "/_api2/:folder_type",
         "/_api2/:folder_type/:folder_slug/:subfolder_type",
       ],
@@ -81,7 +89,6 @@ module.exports = (function () {
       ],
       _getFolder
     );
-    // app.post("/_api2/:folder_type/:folder_slug/_login", _loginToFolder);
     app.patch(
       [
         "/_api2/:folder_type/:folder_slug",
@@ -225,6 +232,29 @@ module.exports = (function () {
       res.status(500).send({ message: err.message });
     }
   }
+  async function _loginToFolder(req, res, next) {
+    const { path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, data });
+
+    try {
+      await folder.login({
+        path_to_folder,
+        submitted_password: data.$password,
+      });
+
+      // if no throwing error, we generate a token, store it node/electron side and send it back to the client
+      // this token matches a path such as authors/louis
+      // any folder that has authors can only be updated/removed by users with a valid token corresponding to those authors
+      const token = await auth.createAndStoreToken({
+        path_to_folder,
+      });
+      dev.logpackets({ status: "logged in to folder", token });
+      res.status(200).json({ status: "ok", token });
+    } catch (err) {
+      dev.error("Failed to login to folder: " + err.message);
+      res.status(500).send({ code: err.code });
+    }
+  }
 
   async function _removeFolder(req, res, next) {
     const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
@@ -243,20 +273,6 @@ module.exports = (function () {
       dev.error("Failed to remove expected content: " + err);
       res.status(404).send(err);
     }
-  }
-  async function _loginToFolder(req, res, next) {
-    // try {
-    //   await folder.login({
-    //     folder_type,
-    //     folder_slug,
-    //     submitted_password: data.$password,
-    //   });
-    //   dev.logpackets({ status: "logged in to folder" });
-    //   res.status(200).json({ status: "ok" });
-    // } catch (err) {
-    //   dev.error(`Failed to login to folder: ${err.message}`);
-    // res.status(404).send("Folder is missing");
-    // }
   }
 
   async function _uploadFile(req, res, next) {
@@ -278,6 +294,7 @@ module.exports = (function () {
       res.status(200).json({ meta_filename });
 
       const meta = await file.getFile({
+        path_to_folder,
         path_to_meta: path.join(path_to_folder, meta_filename),
       });
       notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
@@ -297,6 +314,7 @@ module.exports = (function () {
 
     try {
       const meta = await file.getFile({
+        path_to_folder,
         path_to_meta,
       });
       const file_archives = await file

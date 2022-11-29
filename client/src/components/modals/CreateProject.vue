@@ -89,7 +89,7 @@ export default {
             status: "draft",
             license: "CC",
             $public: this.new_project_is_public,
-            $authors: ["louis", "pauline"],
+            $authors: ["authors/louis", "authors/pauline"],
           },
         });
         setTimeout(() => {

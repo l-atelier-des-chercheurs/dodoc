@@ -3,7 +3,7 @@
     <div>
       <div class="u-wips" />
 
-      <NewAuthor />
+      <CreateAuthor />
 
       <div v-for="author in authors" :key="author.$path">
         {{ author.name }} <br />
@@ -12,21 +12,31 @@
         <br /><br />
       </div>
 
+      <div class="_topLabel">
+        <label for="" class="u-label">{{ $t("slug") }}</label>
+      </div>
       <input type="text" v-model="login_to_slug" />
-      <button type="button" @click="loginAs">login</button>
+      <button
+        type="button"
+        :disabled="login_to_slug.length === 0"
+        @click="loginAs"
+      >
+        login
+      </button>
 
-      <button type="button" @click="$emit('close')">fermer</button>
+      response = {{ response }}
+
       <button type="button" @click="$emit('close')">fermer</button>
     </div>
   </BaseModal2>
 </template>
 <script>
-import NewAuthor from "@/adc-core/author/NewAuthor.vue";
+import CreateAuthor from "@/adc-core/author/CreateAuthor.vue";
 
 export default {
   props: {},
   components: {
-    NewAuthor,
+    CreateAuthor,
   },
   data() {
     return {
@@ -53,17 +63,19 @@ export default {
     },
     async loginAs() {
       this.response = "";
-      this.response = await this.$api
-        .loginToFolder({
-          folder_type: "authors",
-          folder_slug: this.login_to_slug,
+
+      try {
+        this.response = await this.$api.loginToFolder({
+          path: "authors/" + this.login_to_slug,
           auth_infos: {
             $password: "123",
           },
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
         });
+      } catch (err) {
+        this.response = err;
+        this.$alertify.delay(4000).error(err);
+        return false;
+      }
     },
   },
 };

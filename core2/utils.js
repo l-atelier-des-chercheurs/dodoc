@@ -7,8 +7,7 @@ const path = require("path"),
   { networkInterfaces } = require("os"),
   sharp = require("sharp"),
   { IncomingForm } = require("formidable"),
-  md5File = require("md5-file"),
-  crypto = require("crypto");
+  md5File = require("md5-file");
 
 sharp.cache(false);
 
@@ -235,25 +234,6 @@ module.exports = (function () {
       return await md5File(full_media_path);
     },
 
-    // see https://stackoverflow.com/a/67038052
-    async hashPassword({ password, salt = global.settings.password_salt }) {
-      const buf = crypto.scryptSync(password, salt, 64).toString("hex");
-      return `${buf.toString("hex")}.${salt}`;
-    },
-
-    checkPassword({ submitted_password, stored_password_with_salt }) {
-      // check if password matches stored_password once it is hashed
-      const [stored_password, salt] = stored_password_with_salt.split(".");
-      const submitted_password_with_salt = API.hashPassword({
-        password: submitted_password,
-        salt,
-      });
-      return submitted_password_with_salt === stored_password_with_salt;
-    },
-
-    getPathParent(path) {
-      return path.substr(0, path.lastIndexOf("/"));
-    },
     async parseAndCheckSchema({ relative_path }) {
       dev.logfunction({ relative_path });
 

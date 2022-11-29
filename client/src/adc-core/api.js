@@ -195,15 +195,14 @@ export default function () {
           throw e.response.data;
         }
       },
-      async loginToFolder({ folder_type, folder_slug, auth_infos }) {
+      async loginToFolder({ path, auth_infos }) {
         try {
-          const response = await this.$axios.post(
-            `/${folder_type}/${folder_slug}/_login`,
-            auth_infos
-          );
+          const response = await this.$axios.post(`${path}/_login`, auth_infos);
           return response.data;
         } catch (e) {
-          throw e.response.data;
+          if (e.response.data.code)
+            throw _getErrorMsgFromCode(e.response.data.code);
+          else throw e.response.data;
         }
       },
 
@@ -288,4 +287,10 @@ export default function () {
       },
     },
   });
+}
+
+function _getErrorMsgFromCode(code) {
+  if (code === "ENOENT") return "folder_is_missing";
+
+  return "missing error message, code = " + code;
 }

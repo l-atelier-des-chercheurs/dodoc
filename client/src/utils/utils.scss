@@ -171,6 +171,8 @@ textarea,
   // background: white;
   height: var(--input-height);
   line-height: var(--input-height);
+  line-height: inherit;
+
   vertical-align: middle;
 
   padding-left: calc(var(--spacing) * 0.5);
@@ -199,7 +201,6 @@ textarea,
 textarea,
 [contenteditable="true"] {
   height: auto;
-  line-height: inherit;
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 

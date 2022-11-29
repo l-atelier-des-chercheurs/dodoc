@@ -11,6 +11,16 @@
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
+      <div class="_topLabel">
+        <label for="" class="u-label">{{ $t("password") }}</label>
+      </div>
+      <TextInput
+        :content.sync="new_author_password"
+        :maxlength="40"
+        :required="true"
+        @toggleValidity="($event) => (allow_save = $event)"
+      />
+
       <sl-button
         variant="primary"
         slot="footer"
@@ -36,6 +46,7 @@ export default {
   data() {
     return {
       new_author_name: "",
+      new_author_password: "123",
       is_creating_author: false,
       error_msg: "",
     };
@@ -57,7 +68,7 @@ export default {
             name: this.new_author_name,
             requested_slug: this.new_author_name,
             $public: true,
-            $password: "123",
+            $password: this.new_author_password,
           },
         });
         this.new_author_name = "";
