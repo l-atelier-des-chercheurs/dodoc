@@ -19,24 +19,35 @@
       </template>
       <button type="button" v-else @click="logout">logout</button>
 
-      <button
-        type="button"
-        class="u-button"
-        @click="show_create_author = !show_create_author"
-      >
-        {{ $t("create_author") }}
-      </button>
-      <CreateAuthor v-if="show_create_author" />
-
       <br /><br />
 
-      <AuthorCard
-        v-for="author in authors"
-        :key="author.$path"
-        :author="author"
-      />
+      <template v-if="!$api.is_identified">
+        <button
+          type="button"
+          class="u-button"
+          @click="show_create_author = !show_create_author"
+        >
+          {{ $t("create_author") }}
+        </button>
+        <CreateAuthor v-if="show_create_author" />
 
-      <button type="button" @click="$emit('close')">fermer</button>
+        <br /><br />
+
+        <button
+          type="button"
+          class="u-button"
+          @click="show_authors_list = !show_authors_list"
+        >
+          {{ $t("show_all_authors") }}
+        </button>
+        <template v-if="show_authors_list">
+          <AuthorCard
+            v-for="author in authors"
+            :key="author.$path"
+            :author="author"
+          />
+        </template>
+      </template>
     </div>
   </BaseModal2>
 </template>
@@ -54,6 +65,7 @@ export default {
     return {
       authors: [],
       show_create_author: false,
+      show_authors_list: false,
       login_to_slug: "",
       response: "",
     };

@@ -2,6 +2,17 @@
   <div class="_createAuthor">
     <form class="input-validation-required" @submit.prevent="createAuthor">
       <div class="_topLabel">
+        <label for="" class="u-label">{{ $t("email") }}</label>
+      </div>
+      <TextInput
+        :content.sync="new_author_email"
+        :maxlength="60"
+        :required="true"
+        :input_type="'email'"
+        @toggleValidity="($event) => (allow_save = $event)"
+      />
+
+      <div class="_topLabel">
         <label for="" class="u-label">{{ $t("name") }}</label>
       </div>
       <TextInput
@@ -42,6 +53,7 @@ export default {
   components: {},
   data() {
     return {
+      new_author_email: "",
       new_author_name: "",
       new_author_password: "123",
       is_creating_author: false,
@@ -62,6 +74,7 @@ export default {
         await this.$api.createFolder({
           path: "/authors",
           additional_meta: {
+            email: this.new_author_email,
             name: this.new_author_name,
             requested_slug: this.new_author_name,
             $public: true,

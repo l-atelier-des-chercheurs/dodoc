@@ -3,7 +3,7 @@
     <input
       v-if="tag === 'input'"
       ref="field"
-      type="text"
+      :type="input_type"
       class=""
       :required="required"
       :placeholder="'…'"
@@ -38,6 +38,10 @@ export default {
     tag: {
       type: String,
       default: "input",
+    },
+    input_type: {
+      type: String,
+      default: "text",
     },
     content: {
       type: String,
