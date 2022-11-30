@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_createAuthor">
     <form class="input-validation-required" @submit.prevent="createAuthor">
       <div class="_topLabel">
         <label for="" class="u-label">{{ $t("name") }}</label>
@@ -21,21 +21,18 @@
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
-      <sl-button
-        variant="primary"
+      <button
         slot="footer"
         :loading="is_creating_author"
+        class="u-button"
         type="submit"
       >
         {{ $t("create") }}
-      </sl-button>
+      </button>
 
       <template v-if="error_msg">
-        <br />
-        <br />
         <div class="u-errorMsg" v-text="error_msg" />
       </template>
-      <hr />
     </form>
   </div>
 </template>
@@ -83,4 +80,11 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._createAuthor {
+  border: 2px solid var(--c-gris);
+  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) 0;
+  border-radius: 4px;
+}
+</style>

@@ -10,7 +10,7 @@
       <button
         type="button"
         class="u-button u-button_red u-button_big"
-        v-if="$api.is_logged_in"
+        v-if="$api.is_identified"
         @click="show_create_modal = true"
       >
         <svg

@@ -232,6 +232,23 @@ export default function () {
           else throw e.response.data;
         }
       },
+      async logoutFromFolder() {
+        const auth_infos = {
+          token: this.tokenpath.token,
+        };
+        const path = this.tokenpath.token_path;
+        try {
+          // remove token locally
+          this.resetToken();
+          // remove token on the server
+          await this.$axios.post(`${path}/_logout`, auth_infos);
+          return;
+        } catch (e) {
+          if (e.response.data.code)
+            throw _getErrorMsgFromCode(e.response.data.code);
+          else throw e.response.data;
+        }
+      },
 
       async uploadText({ path, filename, content = "", additional_meta }) {
         let formData = new FormData();
@@ -311,12 +328,13 @@ export default function () {
       },
 
       async deleteItem({ path }) {
-        try {
-          const response = await this.$axios.delete(path);
-          return response.data;
-        } catch (e) {
-          throw e.response.data;
-        }
+        const response = await this.$axios.delete(path).catch((err) => {
+          debugger;
+          this.onError(err);
+          throw err;
+        });
+
+        return response.data;
       },
 
       resetToken() {
@@ -335,6 +353,12 @@ export default function () {
                 "notifications.connection_information_invalid_please_login"
               )
             );
+        } else if (err.response.data === "author_not_allowed") {
+          // invalidate token
+          this.resetToken();
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("notifications.author_not_allowed"));
         }
         this.$alertify.delay(4000).error(err);
       },

@@ -67,13 +67,8 @@ module.exports = (function () {
       ],
       _getFolders
     );
-    app.post(
-      [
-        "/_api2/:folder_type/:folder_slug/_login",
-        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/_login",
-      ],
-      _loginToFolder
-    );
+    app.post(["/_api2/:folder_type/:folder_slug/_login"], _loginToFolder);
+    app.post(["/_api2/:folder_type/:folder_slug/_logout"], _logoutFromFolder);
     app.post(
       [
         "/_api2/:folder_type",
@@ -132,6 +127,9 @@ module.exports = (function () {
     // ref = https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 
     try {
+      if (!req.headers || !req.headers.authorization)
+        throw new Error(`no_authorization_set`);
+
       const { token, token_path } = JSON.parse(req.headers.authorization);
       if (!token || !token_path) throw new Error(`no_token_set`);
 
@@ -155,7 +153,8 @@ module.exports = (function () {
 
       return next();
     } catch (err) {
-      return res.status(401).send(err.message);
+      dev.error(err.message);
+      return res.status(401).send({ message: err.message });
     }
   }
 
@@ -252,6 +251,8 @@ module.exports = (function () {
       dev.logpackets({ status: "folder was updated" });
       res.status(200).json({ status: "ok" });
 
+      // TODO if $password is updated successfully, then revoke all tokens except current
+
       notifier.emit("folderUpdated", path_to_folder, {
         path: path_to_folder,
         changed_data,
@@ -288,6 +289,26 @@ module.exports = (function () {
       res.status(500).send({ code: err.code });
     }
   }
+  async function _logoutFromFolder(req, res, next) {
+    const { path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, data });
+
+    try {
+      await auth.revokeToken({
+        path_to_folder,
+        token_to_revoke: data.token,
+      });
+      dev.logpackets({
+        status: "logged out from folder",
+        token: data.token,
+        path_to_folder,
+      });
+      res.status(200).json({ status: "ok" });
+    } catch (err) {
+      dev.error("Failed to logout from folder: " + err.message);
+      res.status(500).send({ code: err.code });
+    }
+  }
 
   async function _removeFolder(req, res, next) {
     const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
@@ -299,6 +320,8 @@ module.exports = (function () {
       });
       dev.logpackets({ status: "folder was removed" });
       res.status(200).json({ status: "ok" });
+
+      await auth.removeAllTokensForFolder({ token_path: path_to_folder });
 
       notifier.emit("folderRemoved", path_to_folder, { path: path_to_folder });
       notifier.emit("folderRemoved", path_to_type, { path: path_to_folder });

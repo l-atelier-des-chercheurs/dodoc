@@ -88,9 +88,9 @@ export default {
       },
       deep: true,
     },
-    "$api.is_logged_in": {
+    "$api.is_identified": {
       handler() {
-        if (!this.$api.is_logged_in)
+        if (!this.$api.is_identified)
           if (this.projectpanes.length === 0)
             this.projectpanes = [
               {
@@ -108,7 +108,9 @@ export default {
       return this.project.$files.filter((f) => f.is_journal === true) || [];
     },
     can_edit_project() {
-      return this.$api.is_logged_in;
+      if (this.$api.tokenpath.token_path)
+        return this.project.$authors.includes(this.$api.tokenpath.token_path);
+      return false;
     },
   },
   methods: {

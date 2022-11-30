@@ -25,7 +25,7 @@
         <div v-else class="_mediaPickerTile">
           <MediaPicker
             class=""
-            v-if="$api.is_logged_in"
+            v-if="can_edit"
             :publication_path="publication_path"
             @selectMedia="selectMedia"
           />
@@ -42,6 +42,7 @@ import MediaPicker from "@/components/publications/MediaPicker.vue";
 export default {
   props: {
     publimodule: Object,
+    can_edit: Boolean,
   },
   components: {
     MediaPicker,

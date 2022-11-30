@@ -12,7 +12,7 @@
           :tag="'h2'"
           :content="publication.title"
           :path="publication.$path"
-          :can_edit="$api.is_logged_in"
+          :can_edit="can_edit"
         />
         <TitleField
           :label="$t('template')"
@@ -25,7 +25,7 @@
           <button
             type="button"
             class="u-buttonLink"
-            v-if="$api.is_logged_in"
+            v-if="can_edit"
             @click="removePublication()"
           >
             Supprimer
@@ -38,6 +38,7 @@
       <StoryTemplate
         v-if="publication.template === 'story'"
         :publication="publication"
+        :can_edit="can_edit"
       />
     </template>
   </div>
@@ -49,6 +50,7 @@ export default {
   props: {
     project_path: String,
     publication_slug: String,
+    can_edit: Boolean,
   },
   components: {
     StoryTemplate,

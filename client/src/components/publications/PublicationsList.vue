@@ -5,7 +5,7 @@
       <button
         type="button"
         class="u-button u-button_bleuvert u-button_big"
-        v-if="$api.is_logged_in"
+        v-if="can_edit"
         @click="show_create_publication = true"
       >
         <svg

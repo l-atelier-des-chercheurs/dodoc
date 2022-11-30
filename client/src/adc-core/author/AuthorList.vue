@@ -3,28 +3,38 @@
     <div>
       <div class="u-wips" />
 
-      <CreateAuthor />
+      <template v-if="!$api.is_identified">
+        <div class="_topLabel">
+          <label for="" class="u-label">{{ $t("slug") }}</label>
+        </div>
+        <input type="text" v-model="login_to_slug" />
+        <button
+          type="button"
+          class="u-button"
+          :disabled="login_to_slug.length === 0"
+          @click="loginAs"
+        >
+          login
+        </button>
+      </template>
+      <button type="button" v-else @click="logout">logout</button>
 
-      <div v-for="author in authors" :key="author.$path">
-        {{ author.name }} <br />
-        <small>{{ author }}</small>
-        <button type="button" @click="removeAuthor(author.$path)">x</button>
-        <br /><br />
-      </div>
-
-      <div class="_topLabel">
-        <label for="" class="u-label">{{ $t("slug") }}</label>
-      </div>
-      <input type="text" v-model="login_to_slug" />
       <button
         type="button"
-        :disabled="login_to_slug.length === 0"
-        @click="loginAs"
+        class="u-button"
+        @click="show_create_author = !show_create_author"
       >
-        login
+        {{ $t("create_author") }}
       </button>
+      <CreateAuthor v-if="show_create_author" />
 
-      response = {{ response }}
+      <br /><br />
+
+      <AuthorCard
+        v-for="author in authors"
+        :key="author.$path"
+        :author="author"
+      />
 
       <button type="button" @click="$emit('close')">fermer</button>
     </div>
@@ -32,15 +42,18 @@
 </template>
 <script>
 import CreateAuthor from "@/adc-core/author/CreateAuthor.vue";
+import AuthorCard from "@/adc-core/author/AuthorCard.vue";
 
 export default {
   props: {},
   components: {
     CreateAuthor,
+    AuthorCard,
   },
   data() {
     return {
       authors: [],
+      show_create_author: false,
       login_to_slug: "",
       response: "",
     };
@@ -71,6 +84,15 @@ export default {
             $password: "123",
           },
         });
+      } catch (err) {
+        this.response = err;
+        this.$alertify.delay(4000).error(err);
+        return false;
+      }
+    },
+    async logout() {
+      try {
+        this.reponse = await this.$api.logoutFromFolder();
       } catch (err) {
         this.response = err;
         this.$alertify.delay(4000).error(err);

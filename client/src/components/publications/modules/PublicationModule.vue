@@ -1,6 +1,6 @@
 <template>
   <div class="_publicationModule">
-    <div class="_sideOptions">
+    <div class="_sideOptions" v-if="can_edit">
       <button
         type="button"
         class="_sideBtns _moveBefore"
@@ -141,11 +141,13 @@
       <ModuleMosaic
         v-if="publimodule.module_type === 'mosaic'"
         :publimodule="publimodule"
+        :can_edit="can_edit"
         @updateMeta="updateMeta"
       />
       <ModuleCarousel
         v-else-if="publimodule.module_type === 'carousel'"
         :publimodule="publimodule"
+        :can_edit="can_edit"
       />
       <CollaborativeEditor2
         v-else-if="publimodule.module_type === 'text'"
@@ -153,7 +155,7 @@
         :content="first_media.$content"
         :scrollingContainer="$el"
         :line_selected="false"
-        :can_edit="$api.is_logged_in"
+        :can_edit="can_edit"
         @lineClicked="$emit('lineClicked', $event)"
       />
     </div>
@@ -170,6 +172,7 @@ export default {
   props: {
     publimodule: Object,
     module_position: String,
+    can_edit: Boolean,
   },
   components: {
     ModuleMosaic,

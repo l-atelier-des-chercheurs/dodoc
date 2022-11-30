@@ -53,6 +53,18 @@ module.exports = (function () {
     async updateTokensFile() {
       await writeFileAtomic(path_to_tokens, JSON.stringify(tokens, null, 2));
     },
+
+    async revokeToken({ path_to_folder, token_to_revoke }) {
+      API.checkToken({ token: token_to_revoke, token_path: path_to_folder });
+      delete tokens[token_to_revoke];
+      API.updateTokensFile();
+      return;
+    },
+
+    async removeAllTokensForFolder({ token_path }) {
+      tokens = tokens.find((t) => t.token_path !== token_path);
+      API.updateTokensFile();
+    },
   };
   return API;
 })();

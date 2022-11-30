@@ -244,8 +244,7 @@ select {
   background-position: right 0.4rem center;
   background-repeat: no-repeat;
   background-size: 0.75rem;
-  padding-top: 0;
-  padding-bottom: 0;
+  padding: calc(var(--spacing) / 2);
   padding-right: calc(var(--spacing) * 0.5 + 1rem);
   min-width: 0px;
 

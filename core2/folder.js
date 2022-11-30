@@ -237,7 +237,6 @@ module.exports = (function () {
       dev.logfunction({ path_to_folder, submitted_password });
 
       // get folder meta
-
       let folder_meta = await utils
         .readMetaFile(path_to_folder, "meta.txt")
         .catch((err) => {

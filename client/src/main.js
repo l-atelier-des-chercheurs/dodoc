@@ -47,9 +47,6 @@ import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
 //
 
-import MetaFieldHeader from "@/adc-core/fields/MetaFieldHeader.vue";
-Vue.component("MetaFieldHeader", MetaFieldHeader);
-
 import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
 

@@ -89,7 +89,7 @@ export default {
             status: "draft",
             license: "CC",
             $public: this.new_project_is_public,
-            $authors: ["authors/louis", "authors/pauline"],
+            $authors: [this.$api.tokenpath.token_path],
           },
         });
         setTimeout(() => {

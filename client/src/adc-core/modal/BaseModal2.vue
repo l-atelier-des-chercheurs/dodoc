@@ -1,5 +1,5 @@
 <template>
-  <dialog @click.self="possiblyClose">
+  <dialog @cancel.prevent="closeModal" @click.self="possiblyClose">
     <header v-if="title">
       <h2>{{ title }}</h2>
     </header>
@@ -34,8 +34,14 @@ export default {
         event.clientX < rect.left ||
         event.clientX > rect.right
       ) {
-        this.$emit("close");
+        this.closeModal();
       }
+    },
+    closeModal() {
+      this.$el.close();
+      setTimeout(() => {
+        this.$emit("close");
+      }, 400);
     },
   },
 };
@@ -56,9 +62,10 @@ dialog {
     background: rgba(53, 53, 53, 0.7);
   }
 
-  &[open],
+  &[open] {
+    animation: reveal 400ms cubic-bezier(0.19, 1, 0.22, 1);
+  }
   &::backdrop {
-    animation: show 250ms cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 
@@ -77,9 +84,10 @@ header {
   padding: var(--spacing) calc(var(--spacing) * 1.5);
 }
 
-@keyframes show {
+@keyframes reveal {
   0% {
     opacity: 0;
+    transform: translate(0, 30px);
   }
 }
 </style>

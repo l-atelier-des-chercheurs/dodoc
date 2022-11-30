@@ -21,7 +21,7 @@
           <div
             class="_floatingMsg"
             :key="`instructions.pane_${pane.type}`"
-            v-if="show_instructions && $api.is_logged_in"
+            v-if="show_instructions && can_edit_project"
             @click.self="show_instructions = false"
           >
             <div>
