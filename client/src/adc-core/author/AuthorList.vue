@@ -10,6 +10,8 @@
         @clickRight="current_mode = 'create'"
       />
 
+      <br />
+
       <LoginAs v-if="current_mode === 'login'" :authors="authors" />
       <CreateAuthor v-else-if="current_mode === 'create'" />
 

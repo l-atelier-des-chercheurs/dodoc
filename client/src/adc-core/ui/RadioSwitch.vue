@@ -82,6 +82,7 @@ Usage: codyhouse.co/license
 ul,
 menu {
   list-style: none;
+  margin: 0;
 }
 
 /* icons */

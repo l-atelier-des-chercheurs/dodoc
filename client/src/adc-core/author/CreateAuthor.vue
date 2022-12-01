@@ -103,9 +103,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._createAuthor {
-  border: 2px solid var(--c-gris);
-  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 2) 0;
-  border-radius: 4px;
+  // border: 2px solid var(--c-gris);
+  // padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  // margin: calc(var(--spacing) / 2) 0;
+  // border-radius: 4px;
 }
 </style>
