@@ -1,5 +1,5 @@
 <template>
-  <sl-dialog ref="createModal" label="Règlages admin" class="" open>
+  <BaseModal2 :title="$t('settings')" @close="$emit('close')">
     <div class="">
       // TODO REPLACE
       <!-- <TextField
@@ -9,21 +9,22 @@
       /> -->
       <br />
 
-      <button type="button" @click="changeStorage">
+      <button type="button" class="u-button" @click="changeStorage">
         Changer l'emplacement du stockage
       </button>
-      |
+      <br />
       <button
         type="button"
+        class="u-button"
         @click="saveNewPathToContent"
         v-if="new_path_to_content !== path_to_content"
       >
         Valider
       </button>
       |
-      <button type="button">Redémarrer</button>
+      <button type="button" class="u-button">Redémarrer</button>
     </div>
-  </sl-dialog>
+  </BaseModal2>
 </template>
 <script>
 export default {

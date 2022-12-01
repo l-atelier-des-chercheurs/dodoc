@@ -107,6 +107,8 @@ export default function () {
         files: "Fichiers",
         template: "Gabarit",
 
+        settings: "Règlages",
+
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",
 

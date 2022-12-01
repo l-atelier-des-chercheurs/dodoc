@@ -2,7 +2,6 @@
 <template>
   <div id="app" class="">
     <TopBar />
-    <AdminPanel v-if="false" />
     <div class="">
       <router-view v-slot="{ Component }">
         <transition name="fade">
@@ -13,13 +12,11 @@
   </div>
 </template>
 <script>
-import AdminPanel from "@/adc-core/AdminPanel.vue";
 import TopBar from "@/components/TopBar.vue";
 
 export default {
   props: {},
   components: {
-    AdminPanel,
     TopBar,
   },
   data() {
