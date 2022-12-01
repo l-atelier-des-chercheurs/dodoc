@@ -12,8 +12,10 @@
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
+      <br />
+
       <div class="_topLabel">
-        <label for="" class="u-label">{{ $t("name") }}</label>
+        <label for="" class="u-label">{{ $t("name_or_pseudonym") }}</label>
       </div>
       <TextInput
         :content.sync="new_author_name"
@@ -22,15 +24,21 @@
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
+      <br />
+
       <div class="_topLabel">
         <label for="" class="u-label">{{ $t("password") }}</label>
       </div>
       <TextInput
         :content.sync="new_author_password"
-        :maxlength="40"
+        :minlength="4"
+        :maxlength="24"
         :required="true"
+        :input_type="'password'"
         @toggleValidity="($event) => (allow_save = $event)"
       />
+
+      <br />
 
       <button
         slot="footer"
@@ -55,7 +63,7 @@ export default {
     return {
       new_author_email: "",
       new_author_name: "",
-      new_author_password: "123",
+      new_author_password: "",
       is_creating_author: false,
       error_msg: "",
     };

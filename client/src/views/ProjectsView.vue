@@ -43,7 +43,7 @@
       />
     </div>
 
-    <ProjectsTester v-if="$api.debug_mode" />
+    <ProjectsTester v-if="$api.debug_mode && $api.is_identified" />
 
     <div class="">
       <h3>Projets finalisés</h3>

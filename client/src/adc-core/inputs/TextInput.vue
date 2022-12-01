@@ -1,15 +1,16 @@
 <template>
   <div>
-    <input
-      v-if="tag === 'input'"
-      ref="field"
-      :type="input_type"
-      class=""
-      :required="required"
-      :placeholder="'…'"
-      @input="$emit('update:content', $event.target.value)"
-      @keyup.enter="$emit('onEnter')"
-    />
+    <template v-if="tag === 'input'">
+      <input
+        ref="field"
+        :type="current_input_type"
+        class=""
+        :required="required"
+        :placeholder="'…'"
+        @input="$emit('update:content', $event.target.value)"
+        @keyup.enter="$emit('onEnter')"
+      />
+    </template>
     <span
       v-else-if="tag === 'span'"
       ref="field"
@@ -22,13 +23,30 @@
     />
 
     <div
-      v-if="maxlength"
-      class="_maxlength fieldCaption"
+      class="_notices fieldCaption"
       :class="{
         'u-colorRed': !validity,
       }"
     >
-      {{ content.length }} ≤ {{ maxlength }}
+      <div>
+        <template v-if="minlength || maxlength">
+          <template v-if="minlength">{{ minlength }} ≤ </template>
+          {{ content.length }}
+          <template v-if="maxlength"> ≤ {{ maxlength }}</template>
+        </template>
+      </div>
+      <div v-if="input_type === 'password'">
+        <button
+          type="button"
+          class="u-buttonLink _revealBtn"
+          :class="{
+            'is--active': show_password_in_clear,
+          }"
+          @click="toggleInputType"
+        >
+          reveal
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -51,6 +69,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    minlength: {
+      type: [Boolean, Number],
+      default: false,
+    },
     maxlength: {
       type: [Boolean, Number],
       default: false,
@@ -58,7 +80,9 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      show_password_in_clear: false,
+    };
   },
   created() {},
   mounted() {
@@ -82,8 +106,16 @@ export default {
   computed: {
     validity() {
       if (this.required && this.content.length === 0) return false;
+      if (this.minlength && this.content.length < this.minlength) return false;
       if (this.maxlength && this.content.length > this.maxlength) return false;
       return true;
+    },
+    current_input_type() {
+      if (this.input_type === "password") {
+        if (this.show_password_in_clear) return "text";
+        else return "password";
+      }
+      return this.input_type;
     },
   },
   methods: {
@@ -136,12 +168,22 @@ export default {
         selection.addRange(range);
       }
     },
+    toggleInputType() {
+      this.show_password_in_clear = !this.show_password_in_clear;
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
-._maxlength {
+._notices {
   flex: 0 0 auto;
-  padding: calc(var(--spacing) / 4) 0;
+  // padding: calc(var(--spacing) / 4);
+  padding: 0;
+
+  display: flex;
+  justify-content: space-between;
+}
+._revealBtn {
+  padding: 0;
 }
 </style>

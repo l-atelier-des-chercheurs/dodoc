@@ -73,6 +73,11 @@
   letter-spacing: 0.06em;
   text-transform: lowercase;
   background: transparent;
+  line-height: 1;
+
+  &.is--active {
+    color: var(--c-bleuvert);
+  }
 }
 
 .u-button {
@@ -97,6 +102,10 @@
 
   &[disabled] {
     cursor: not-allowed;
+  }
+
+  &.is--active {
+    background: var(--c-bleuvert);
   }
 }
 .u-button_red {
@@ -179,10 +188,6 @@ textarea,
   padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
-  // border-color: var(--c-gris_fonce);
-  // border-width: 2px;
-  // border-style: dashed;
-
   transition: all 0.25s;
 
   &:hover,
@@ -195,6 +200,14 @@ textarea,
 
   &.bg-blanc {
     background-color: white;
+  }
+  &[required] {
+    background-size: 16px 16px;
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-image: radial-gradient(var(--c-rouge) 18%, transparent 25%);
+
+    transition: background-size 0.2s;
   }
 }
 
@@ -223,19 +236,6 @@ svg {
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-
-[required] {
-  background-size: 16px 16px;
-  background-position: top right;
-  background-repeat: no-repeat;
-  background-image: radial-gradient(var(--c-rouge) 18%, transparent 25%);
-
-  transition: background-size 0.2s;
-
-  &:focus {
-    background-size: 20px 20px;
-  }
 }
 
 select {

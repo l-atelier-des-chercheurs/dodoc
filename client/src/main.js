@@ -38,6 +38,8 @@ Vue.component("DebugBtn", DebugBtn);
 //
 import BaseModal2 from "@/adc-core/modal/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);
+import RadioSwitch from "@/adc-core/ui/RadioSwitch.vue";
+Vue.component("RadioSwitch", RadioSwitch);
 //
 import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);

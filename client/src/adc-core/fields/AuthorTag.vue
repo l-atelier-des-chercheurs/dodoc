@@ -1,6 +1,6 @@
 <template>
   <div v-if="author" class="_author">
-    <img :src="author.image" />
+    <img v-if="author.image" :src="author.image" />
     <span>
       {{ author.name }}
     </span>

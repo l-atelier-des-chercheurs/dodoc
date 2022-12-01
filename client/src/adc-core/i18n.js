@@ -76,8 +76,14 @@ export default function () {
         add: "ajouter",
         title: "titre",
         name: "nom",
+        signup: "s’inscrire",
+        login: "s’identifier",
+        logout: "se déconnecter",
+        name_or_pseudonym: "nom ou pseudonyme",
         contributors: "Contributeur·rice·s",
         create: "créer",
+        create_account: "créer un compte",
+        list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
         import_instructions: "Importer depuis un autre appareil",
         progress: "État d’avancement",
@@ -94,6 +100,7 @@ export default function () {
         no_finalized_proejcts: "Aucun projet finalisé pour le moment",
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d'accueil.",
+        no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
 
         medias: "Médias",
         license: "Licence",
