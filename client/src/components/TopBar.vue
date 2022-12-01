@@ -1,23 +1,22 @@
 <template>
-  <div class="_topbar" v-if="$route.path !== '/'">
+  <div
+    class="_topbar"
+    :class="{
+      'is--homepage': $route.path === '/',
+    }"
+  >
     <BreadCrumbs />
     <button
       type="button"
       class="_subscribeBtn"
       @click="show_authors_modal = true"
     >
-      <template
-        v-if="$api.tokenpath.token_path && getAuthor($api.tokenpath.token_path)"
-      >
-        {{ getAuthor($api.tokenpath.token_path).name }}
+      <template v-if="connected_as">
+        {{ connected_as.name }}
       </template>
       <template v-else>Inscription</template>
     </button>
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
-
-    <div class="_socketStatus">
-      <SocketStatus />
-    </div>
 
     <div class="_topRightButtons">
       <button type="button" @click="show_admin_panel = !show_admin_panel">
@@ -38,7 +37,6 @@
   </div>
 </template>
 <script>
-import SocketStatus from "@/components/SocketStatus.vue";
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
 import AdminPanel from "@/adc-core/AdminPanel.vue";
@@ -46,14 +44,13 @@ import AdminPanel from "@/adc-core/AdminPanel.vue";
 export default {
   props: {},
   components: {
-    SocketStatus,
     AuthorList,
     BreadCrumbs,
     AdminPanel,
   },
   data() {
     return {
-      show_authors_modal: true,
+      show_authors_modal: false,
       show_admin_panel: false,
     };
   },
@@ -78,7 +75,7 @@ export default {
   width: 100%;
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) * 2);
+  gap: calc(var(--spacing) / 2);
   align-items: center;
 
   background: white;
@@ -86,6 +83,11 @@ export default {
 
   min-height: 60px;
   user-select: none;
+
+  &.is--homepage {
+    background: transparent;
+    box-shadow: none;
+  }
 
   > * {
     flex: 1 1 0;
@@ -100,11 +102,6 @@ export default {
   background: var(--c-bleumarine_clair);
   padding: calc(var(--spacing) / 2);
   border-radius: 4px;
-}
-
-._socketStatus {
-  display: flex;
-  justify-content: flex-end;
 }
 
 ._topRightButtons {

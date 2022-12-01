@@ -20,6 +20,10 @@ export default function () {
           token,
           token_path,
         });
+
+        debugger;
+
+        if (token) this.getFolder({ path: token_path });
       },
     },
     methods: {
@@ -42,7 +46,8 @@ export default function () {
         if (tokenpath) {
           try {
             const { token, token_path } = JSON.parse(tokenpath);
-            this.tokenpath = { token, token_path };
+            this.tokenpath.token = token;
+            this.tokenpath.token_path = token_path;
           } catch (err) {
             /**/
           }
@@ -220,7 +225,8 @@ export default function () {
         try {
           const response = await this.$axios.post(`${path}/_login`, auth_infos);
           const token = response.data.token;
-          this.tokenpath = { token, token_path: path };
+          this.tokenpath.token = token;
+          this.tokenpath.token_path = path;
           localStorage.setItem(
             "tokenpath",
             JSON.stringify({ token, token_path: path })
@@ -329,7 +335,6 @@ export default function () {
 
       async deleteItem({ path }) {
         const response = await this.$axios.delete(path).catch((err) => {
-          debugger;
           this.onError(err);
           throw err;
         });
@@ -338,7 +343,8 @@ export default function () {
       },
 
       resetToken() {
-        this.tokenpath = { token: "", token_path: "" };
+        this.tokenpath.token = "";
+        this.tokenpath.token_path = "";
         localStorage.setItem("tokenpath", undefined);
       },
 
@@ -363,11 +369,7 @@ export default function () {
         this.$alertify.delay(4000).error(err);
       },
     },
-    computed: {
-      is_identified() {
-        return this.tokenpath.token !== "";
-      },
-    },
+    computed: {},
   });
 }
 

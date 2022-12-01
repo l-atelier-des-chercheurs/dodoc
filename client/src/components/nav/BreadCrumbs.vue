@@ -6,24 +6,26 @@
           <img :src="`${$root.publicPath}i_logo.svg`" class="" />
         </router-link>
       </li>
-      <sl-icon-button name="arrow-right-short" label="" />
-      <li>
-        <router-link :to="`/projects`">Les projets</router-link>
-      </li>
-      <template v-if="$route.name === 'projet'">
+      <template v-if="$route.path !== '/'">
         <sl-icon-button name="arrow-right-short" label="" />
         <li>
-          <router-link :to="$route.path" replace>
-            <!-- {{ project.title }} -->
-            <sl-spinner
-              style="--indicator-color: currentColor"
-              v-if="!project"
-            />
-            <span v-else>
-              {{ project.title }}
-            </span>
-          </router-link>
+          <router-link :to="`/projects`">Les projets</router-link>
         </li>
+        <template v-if="$route.name === 'projet'">
+          <sl-icon-button name="arrow-right-short" label="" />
+          <li>
+            <router-link :to="$route.path" replace>
+              <!-- {{ project.title }} -->
+              <sl-spinner
+                style="--indicator-color: currentColor"
+                v-if="!project"
+              />
+              <span v-else>
+                {{ project.title }}
+              </span>
+            </router-link>
+          </li>
+        </template>
       </template>
     </ul>
   </nav>

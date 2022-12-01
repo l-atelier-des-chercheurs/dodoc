@@ -88,8 +88,7 @@ z
         :to="{ path: '/' + project.$path }"
         class="u-button u-button_red"
       >
-        ouvrir&nbsp;
-        <sl-icon name="arrow-up-right" />
+        {{ $t("open") }}&nbsp;<sl-icon name="arrow-up-right" />
       </router-link>
     </div>
   </div>

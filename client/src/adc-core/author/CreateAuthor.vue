@@ -79,7 +79,7 @@ export default {
 
       // TODO replace with $api
       try {
-        await this.$api.createFolder({
+        const author_slug = await this.$api.createFolder({
           path: "/authors",
           additional_meta: {
             email: this.new_author_email,
@@ -90,6 +90,13 @@ export default {
           },
         });
         this.new_author_name = "";
+        await this.$api.loginToFolder({
+          path: "authors/" + author_slug,
+          auth_infos: {
+            $password: this.new_author_password,
+          },
+        });
+        this.$emit("close");
       } catch (err) {
         this.error_msg = "Error: " + err.message;
         setTimeout(() => {

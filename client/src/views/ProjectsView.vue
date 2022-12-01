@@ -10,7 +10,7 @@
       <button
         type="button"
         class="u-button u-button_red u-button_big"
-        v-if="$api.is_identified"
+        v-if="is_identified"
         @click="show_create_modal = true"
       >
         <svg
@@ -43,7 +43,7 @@
       />
     </div>
 
-    <ProjectsTester v-if="$api.debug_mode && $api.is_identified" />
+    <ProjectsTester v-if="$api.debug_mode && is_identified" />
 
     <div class="">
       <h3>Projets finalisés</h3>

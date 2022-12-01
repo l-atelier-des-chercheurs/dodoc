@@ -88,9 +88,9 @@ export default {
       },
       deep: true,
     },
-    "$api.is_identified": {
+    is_identified: {
       handler() {
-        if (!this.$api.is_identified)
+        if (!this.is_identified)
           if (this.projectpanes.length === 0)
             this.projectpanes = [
               {

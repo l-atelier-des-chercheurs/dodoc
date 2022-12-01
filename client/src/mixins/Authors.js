@@ -1,7 +1,22 @@
 export default {
-  computed: {},
+  computed: {
+    connected_as() {
+      if (this.$api.tokenpath.token_path)
+        return this.getAuthor(this.$api.tokenpath.token_path);
+      return false;
+    },
+    is_identified() {
+      return this.$api.tokenpath.token !== "";
+    },
+    is_admin() {
+      // TODO
+      return this.is_identified;
+    },
+  },
   methods: {
     getAuthor(author_path) {
+      if (this.$api.store[author_path]) return this.$api.store[author_path];
+
       const folder_path = author_path.substring(
         0,
         author_path.lastIndexOf("/")

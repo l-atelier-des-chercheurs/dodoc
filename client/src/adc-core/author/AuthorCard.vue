@@ -4,7 +4,7 @@
     <br />
     {{ author.email }}
     <br />
-    <button type="button" class="u-button" @click="removeAuthor">
+    <button type="button" class="u-button" v-if="is_self" @click="removeAuthor">
       {{ $t("remove") }}
     </button>
   </div>
@@ -22,12 +22,19 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    is_self() {
+      if (this.connected_as)
+        return this.connected_as.$path === this.author.$path;
+      return false;
+    },
+  },
   methods: {
     async removeAuthor() {
       await this.$api.deleteItem({
         path: this.author.$path,
       });
+      await this.$api.logoutFromFolder();
     },
   },
 };

@@ -62,7 +62,9 @@ module.exports = (function () {
     },
 
     async removeAllTokensForFolder({ token_path }) {
-      tokens = tokens.find((t) => t.token_path !== token_path);
+      Object.entries(tokens).find(([token, tp]) => {
+        if (tp === token_path) delete tokens[token];
+      });
       API.updateTokensFile();
     },
   };

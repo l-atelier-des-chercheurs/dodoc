@@ -1,22 +1,6 @@
 <template>
   <div class="_homeView">
-    <div class="_floatinProjectBtn">
-      <router-link class="u-button u-button_red" to="/projects">
-        {{ $t("show_projects") }}&nbsp;<sl-icon name="arrow-up-right" />
-      </router-link>
-    </div>
-
-    <div class="_homeView--content">
-      <img :src="`${$root.publicPath}i_logo.svg`" class="" />
-
-      <router-link v-if="is_admin" class="u-button" to="/projects">
-        {{ $t("instance_settings") }}&nbsp;<sl-icon name="cog" />
-      </router-link>
-
-      <p>La Plate-forme de documentation pour fablab à l'école.</p>
-      <p v-html="desc" />
-      <EditBtn />
-    </div>
+    <div class="_homeView--content"></div>
     <small class="_versionNumber">version {{ $root.app_infos.version }}</small>
   </div>
 </template>
@@ -91,8 +75,5 @@ export default {
   > * {
     pointer-events: auto;
   }
-}
-
-._settingBtn {
 }
 </style>

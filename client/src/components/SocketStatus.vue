@@ -25,7 +25,7 @@
         disconnect
       </button>
       | -->
-      <br />
+
       <span class="">
         <input
           type="checkbox"

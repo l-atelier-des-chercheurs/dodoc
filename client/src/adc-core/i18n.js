@@ -100,6 +100,7 @@ export default function () {
         no_finalized_proejcts: "Aucun projet finalisé pour le moment",
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d'accueil.",
+        show_projects: "Afficher les projets",
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
 
         medias: "Médias",
@@ -121,6 +122,7 @@ export default function () {
         machines_and_materials: "Machines et matériaux",
 
         already_added: "Déjà ajouté",
+        open: "ouvrir",
         create_and_open: "Créer et ouvrir",
         create_a_project: "Créer un projet",
         create_a_publication: "Créer une publication",
@@ -146,6 +148,7 @@ export default function () {
           "Vous avez été déconnectés. Veuillez recharger la page pour vous reconnecter à do•doc.",
         reload_page: "Recharger cette page",
         type_of_module: "Type de module",
+        instance_settings: "Réglages de cette instance do•doc",
 
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

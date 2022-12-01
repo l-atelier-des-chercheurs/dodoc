@@ -1,11 +1,11 @@
 <template>
   <div>
-    <form v-if="!$api.is_identified" @submit.prevent="login">
+    <form v-if="!is_identified" @submit.prevent="login">
       <div class="_topLabel">
         <label for="" class="u-label">{{ $t("name_or_pseudonym") }}</label>
       </div>
       <TextInput
-        :content.sync="input_slug"
+        :content.sync="name_of_account"
         :required="true"
         :input_type="'text'"
         @toggleValidity="($event) => (allow_save = $event)"
@@ -23,7 +23,9 @@
 
       <button type="submit" class="u-button">{{ $t("login") }}</button>
     </form>
-    <button type="button" v-else @click="logout">{{ $t("logout") }}</button>
+    <button type="button" class="u-button u-button_red" v-else @click="logout">
+      {{ $t("logout") }}
+    </button>
   </div>
 </template>
 <script>
@@ -34,7 +36,7 @@ export default {
   components: {},
   data() {
     return {
-      input_slug: "",
+      name_of_account: "",
       input_password: "",
       response: "",
     };
@@ -49,8 +51,14 @@ export default {
       this.response = "";
 
       try {
+        const author = this.authors.find(
+          (a) => a.name === this.name_of_account
+        );
+        const path = author.$path;
+        debugger;
+
         this.response = await this.$api.loginToFolder({
-          path: "authors/" + this.input_slug,
+          path,
           auth_infos: {
             $password: this.input_password,
           },
