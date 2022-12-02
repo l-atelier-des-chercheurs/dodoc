@@ -55,7 +55,6 @@ export default {
           (a) => a.name === this.name_of_account
         );
         const path = author.$path;
-        debugger;
 
         this.response = await this.$api.loginToFolder({
           path,

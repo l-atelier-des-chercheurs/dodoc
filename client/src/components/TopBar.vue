@@ -19,7 +19,7 @@
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
 
     <div class="_topRightButtons">
-      <button type="button" @click="show_admin_panel = !show_admin_panel">
+      <button type="button" @click="show_settings = !show_settings">
         <svg
           enable-background="new 0 0 168 168"
           viewBox="0 0 168 168"
@@ -32,26 +32,23 @@
           />
         </svg>
       </button>
-      <AdminPanel v-if="show_admin_panel" @close="show_admin_panel = false" />
     </div>
   </div>
 </template>
 <script>
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
-import AdminPanel from "@/adc-core/AdminPanel.vue";
 
 export default {
   props: {},
   components: {
     AuthorList,
     BreadCrumbs,
-    AdminPanel,
   },
   data() {
     return {
       show_authors_modal: false,
-      show_admin_panel: false,
+      // show_settings: false,
     };
   },
   created() {},

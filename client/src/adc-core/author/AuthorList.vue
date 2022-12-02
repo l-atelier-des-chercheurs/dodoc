@@ -73,7 +73,9 @@ export default {
     });
     this.$api.join({ room: "authors" });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: "authors" });
+  },
   watch: {},
   computed: {},
   methods: {},

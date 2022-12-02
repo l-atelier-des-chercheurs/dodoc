@@ -1,7 +1,7 @@
 <template>
   <div class="_homeView">
     <div class="_floatinProjectBtn">
-      <router-link class="u-button u-button_red" to="/projects">
+      <router-link class="u-button u-button_red u-button_big" to="/projects">
         {{ $t("show_projects") }}&nbsp;<sl-icon name="arrow-up-right" />
       </router-link>
     </div>
@@ -9,9 +9,16 @@
     <div class="_homeView--content">
       <img :src="`${$root.publicPath}i_logo.svg`" class="" />
 
-      <router-link v-if="is_admin" class="u-button" to="/projects">
-        {{ $t("instance_settings") }}&nbsp;<sl-icon name="cog" />
-      </router-link>
+      <button
+        type="button"
+        v-if="is_admin"
+        class="u-button u-button_bleuvert"
+        @click="show_settings_modal = !show_settings_modal"
+      >
+        <sl-icon name="gear-fill" />&nbsp;{{ $t("settings") }}
+      </button>
+
+      <AdminSettings v-if="show_settings_modal" />
 
       <p>La Plate-forme de documentation pour fablab à l'école.</p>
       <p v-html="desc" />
@@ -22,11 +29,14 @@
 </template>
 
 <script>
-// @ is an alias to /src
+// import SocketStatus from "@/components/.vue";
+import AdminSettings from "@/adc-core/AdminSettings.vue";
 
 export default {
   props: {},
-  components: {},
+  components: {
+    AdminSettings,
+  },
   data() {
     return {
       desc: `
@@ -45,6 +55,8 @@ export default {
   L’ÉDUCATION NATIONALE, DE LA JEUNESSE ET DES SPORTS "
 </i>
       `,
+
+      show_settings_modal: true,
     };
   },
 };

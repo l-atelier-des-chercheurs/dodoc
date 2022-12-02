@@ -20,9 +20,6 @@ export default function () {
           token,
           token_path,
         });
-
-        debugger;
-
         if (token) this.getFolder({ path: token_path });
       },
     },
@@ -103,6 +100,8 @@ export default function () {
         this.socket.on("fileCreated", this.fileCreated);
         this.socket.on("fileUpdated", this.fileUpdated);
         this.socket.on("fileRemoved", this.fileRemoved);
+
+        this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
       },
 
       disconnectSocket() {
@@ -138,8 +137,6 @@ export default function () {
           );
           updateProps({ changed_data, folder_to_update });
         }
-
-        // update
       },
       folderRemoved({ path }) {
         this.$delete(this.store, path);
@@ -180,6 +177,7 @@ export default function () {
           (file) => file.$path !== path_to_meta
         );
       },
+
       join({ room }) {
         this.socket.emit("joinRoom", { room });
         // todo rejoin room after disconnect
@@ -191,6 +189,25 @@ export default function () {
 
       async getSettings() {
         const response = await this.$axios.get(`_admin`);
+        const admin_settings = response.data;
+        this.$set(this.store, "_admin", admin_settings);
+        return this.store["_admin"];
+      },
+      adminSettingsUpdated({ changed_data }) {
+        debugger;
+        if (this.store["_admin"])
+          Object.entries(changed_data).map(([key, value]) => {
+            this.$set(this.store["_admin"], key, value);
+          });
+      },
+
+      async editSettings(settings) {
+        const response = await this.$axios
+          .patch(`_admin`, settings)
+          .catch((err) => {
+            this.onError(err);
+            throw err;
+          });
         return response.data;
       },
       async getFolders({ path }) {

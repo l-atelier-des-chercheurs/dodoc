@@ -143,6 +143,7 @@ module.exports = (function () {
     });
 
     // https://socket.io/fr/docs/v3/emit-cheatsheet/
+    // todo bypass:
     notifier.on("folderCreated", (room, content) => {
       io.to("content/" + room).emit("folderCreated", content);
     });
@@ -161,6 +162,10 @@ module.exports = (function () {
     });
     notifier.on("fileRemoved", (room, content) => {
       io.to("content/" + room).emit("fileRemoved", content);
+    });
+
+    notifier.on("adminSettingsUpdated", (room, content) => {
+      io.to("content/" + room).emit("adminSettingsUpdated", content);
     });
   }
 

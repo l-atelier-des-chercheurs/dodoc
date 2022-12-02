@@ -76,7 +76,6 @@ export default function () {
         add: "ajouter",
         title: "titre",
         name: "nom",
-        signup: "s’inscrire",
         login: "s’identifier",
         logout: "se déconnecter",
         name_or_pseudonym: "nom ou pseudonyme",
@@ -108,7 +107,8 @@ export default function () {
         files: "Fichiers",
         template: "Gabarit",
 
-        settings: "Règlages",
+        settings: "Réglages",
+        path_to_content: "Chemin du stockage des contenus",
 
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",
@@ -148,7 +148,6 @@ export default function () {
           "Vous avez été déconnectés. Veuillez recharger la page pour vous reconnecter à do•doc.",
         reload_page: "Recharger cette page",
         type_of_module: "Type de module",
-        instance_settings: "Réglages de cette instance do•doc",
 
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

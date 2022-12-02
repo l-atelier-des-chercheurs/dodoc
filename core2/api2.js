@@ -4,6 +4,7 @@ const cors = require("cors"),
 
 const folder = require("./folder"),
   file = require("./file"),
+  settings = require("./settings"),
   notifier = require("./notifier"),
   utils = require("./utils"),
   cache = require("./cache"),
@@ -28,6 +29,7 @@ module.exports = (function () {
 
     app.get("/_api2/_ip", _getLocalNetworkInfos);
     app.get("/_api2/_admin", _getAdminInfos);
+    app.patch("/_api2/_admin", _setAdminInfos);
 
     /* FILES */
     app.get(
@@ -444,15 +446,24 @@ module.exports = (function () {
     dev.logpackets({ local_ips });
     res.status(200).json(local_ips);
   }
-  function _getAdminInfos(req, res, next) {
+
+  async function _getAdminInfos(req, res, next) {
     // TODO only available to admins
     dev.logapi();
-    // get storage path
+    const admin_infos = await settings.get();
+    res.status(200).json(admin_infos);
+  }
+  async function _setAdminInfos(req, res, next) {
+    // TODO only available to admins
+    const { data } = utils.makePathFromReq(req);
+    dev.logapi();
 
-    dev.logpackets();
-    res.status(200).json({
-      pathToUserContent: pathToUserContent,
-    });
+    const changed_data = await settings.set({ input_meta: data });
+
+    dev.logpackets({ status: "adminSettings were updated" });
+    res.status(200).json({ status: "ok" });
+
+    notifier.emit("adminSettingsUpdated", "_admin", { changed_data });
   }
 
   return API;

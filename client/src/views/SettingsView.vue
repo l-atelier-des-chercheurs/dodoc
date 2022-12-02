@@ -1,6 +1,5 @@
 <template>
-  <div class="_homeView">
-    <div class="_homeView--content"></div>
+  <div class="_settingsView">
     <small class="_versionNumber">version {{ $root.app_infos.version }}</small>
   </div>
 </template>

@@ -31,8 +31,8 @@
       </div>
       <TextInput
         :content.sync="new_author_password"
-        :minlength="4"
-        :maxlength="24"
+        :minlength="3"
+        :maxlength="20"
         :required="true"
         :input_type="'password'"
         @toggleValidity="($event) => (allow_save = $event)"

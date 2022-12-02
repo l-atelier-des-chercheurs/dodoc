@@ -11,12 +11,6 @@ const routes = [
       import(/* webpackChunkName: "HomeView" */ "../views/HomeView.vue"),
   },
   {
-    path: "/settings",
-    name: "Réglages",
-    component: () =>
-      import(/* webpackChunkName: "HomeView" */ "../views/SettingsView.vue"),
-  },
-  {
     path: "/projects",
     name: "Projets",
     component: () =>

@@ -283,8 +283,14 @@ h3 {
   }
 }
 
-ul {
-  padding: calc(var(--spacing) / 2);
+ul,
+ol {
+  margin: calc(var(--spacing) / 1);
+  padding: 0;
+
+  li {
+    margin: calc(var(--spacing) / 4);
+  }
 }
 
 ._boldBtn {
