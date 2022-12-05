@@ -1,44 +1,43 @@
 <template>
-  <span class="_titleField">
+  <span class="_pickNativePath">
     <div class="_topLabel" v-if="label">
       <label for="" class="u-label">{{ label }}</label>
     </div>
 
-    <component :is="tag" class="_container">
-      <template v-if="!can_edit || (can_edit && !edit_mode)">
-        <span
-          class="_content"
-          v-if="content && content !== ' '"
-          v-text="content"
-        />
-      </template>
-      <TextInput
-        v-else
-        :content.sync="new_content"
-        tag="span"
-        :required="required"
-        :input_type="input_type"
-        :maxlength="maxlength"
-        :key="edit_mode + content"
-        @toggleValidity="($event) => (allow_save = $event)"
-      />
+    <div class="_sameLine">
+      <input type="text" required readonly v-model="new_content" />
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
-    </component>
+    </div>
 
     <div v-if="edit_mode && instructions">
       <small v-html="instructions" />
     </div>
 
+    <br />
+
     <template v-if="can_edit">
-      <div class="_footer" v-if="edit_mode">
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          :allow_save="allow_save"
-          @save="updateText"
-          @cancel="cancel"
-        />
-      </div>
+      <template v-if="edit_mode">
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          @click="changeStorage"
+        >
+          Sélectionner un chemin sur le disque
+        </button>
+
+        <br />
+        <br />
+
+        <div class="_footer">
+          <SaveCancelButtons
+            class="_scb"
+            :is_saving="is_saving"
+            :allow_save="allow_save"
+            @save="updateText"
+            @cancel="cancel"
+          />
+        </div>
+      </template>
     </template>
   </span>
 </template>
@@ -54,25 +53,13 @@ export default {
       type: String,
       default: "",
     },
-    input_type: {
-      type: String,
-      default: "text",
-    },
     content: {
       type: String,
       default: "",
     },
     path: String,
-    tag: {
-      type: String,
-      default: "p",
-    },
     required: {
       type: Boolean,
-      default: false,
-    },
-    maxlength: {
-      type: [Boolean, Number],
       default: false,
     },
     can_edit: {
@@ -102,6 +89,18 @@ export default {
   methods: {
     enableEditMode() {
       this.edit_mode = true;
+    },
+    changeStorage() {
+      window.electronAPI.send("toMain", {
+        type: "get_path",
+      });
+      window.electronAPI.receive("fromMain", ({ type, path_to_content }) => {
+        if (type === "new_path") {
+          this.new_content = path_to_content;
+          this.edit_mode = true;
+          this.allow_save = this.new_content !== this.content;
+        }
+      });
     },
     cancel() {
       this.edit_mode = false;
@@ -147,7 +146,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._titleField {
+._pickNativePath {
   width: 100%;
 
   ._content {
@@ -159,6 +158,7 @@ export default {
 ._footer {
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-flow: row wrap;
   font-size: 1rem;
   font-weight: 400;
@@ -195,5 +195,12 @@ export default {
 }
 
 ._scb {
+}
+
+._sameLine {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
 }
 </style>

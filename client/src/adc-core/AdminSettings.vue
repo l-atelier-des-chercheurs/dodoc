@@ -1,61 +1,103 @@
 <template>
   <BaseModal2 :title="$t('settings')" @close="$emit('close')">
     <div class="">
-      <ul>
-        <li>
-          nom de l'instance (par exemple, Documentation du fablab A, do•doc de
-          la classe de C) (apparaîtra dans l'onglet du navigateur et sur la page
-          d’accueil)
-        </li>
-        <li>logo/favicon (format carré, 512*512)</li>
-        <li>
-          choisir un emplacement pour le stockage du dossier des contenus, ou
-          utiliser l’emplacement par défaut dans Mes Documents (ou utiliser un
-          emplacement masqué, dans le disque dur, pour éviter que des projets
-          protégés ne soient modifiés par des gens qui savent ou trouver le
-          dossier des contenus ?)
-        </li>
-        <li>accès et contribution</li>
-        <ul>
-          <li>limiter l'accès à cette plate-forme avec un mot de passe</li>
-          <li>
-            tout le monde peut s'inscrire pour créer des projets <br />OU<br />
-            un mot de passe général est obligatoire pour créer un compte
-          </li>
-        </ul>
-      </ul>
+      <sl-tab-group>
+        <sl-tab slot="nav" panel="informations">
+          {{ $t("informations") }}
+        </sl-tab>
+        <sl-tab slot="nav" panel="access_control">
+          {{ $t("access_control") }}
+        </sl-tab>
+        <sl-tab slot="nav" panel="storage">
+          {{ $t("storage") }}
+        </sl-tab>
 
-      {{ $api.store["_admin"] }}
+        <sl-tab-panel name="informations">
+          <TitleField
+            :field_name="'name_of_instance'"
+            :label="$t('name_of_instance')"
+            :instructions="$t('name_of_instance_instructions')"
+            :content="settings.name_of_instance"
+            :path="'_admin'"
+            tag="h1"
+            :required="true"
+            :maxlength="40"
+            :can_edit="true"
+          />
 
-      <TitleField
-        :field_name="'name_of_instance'"
-        :label="$t('name_of_instance')"
-        :content="settings.name_of_instance"
-        :path="'_admin'"
-        :required="true"
-        :maxlength="40"
-        :can_edit="true"
-      />
+          <br />
 
-      <!-- <TextField
-        :label="'Chemin de stockage des contenus'"
-        :help_text="'Indiquez ici l’emplacement du dossier de stockage des contenus'"
-        :content="new_path_to_content"
-      /> -->
-      <!-- <br /> -->
-      <!-- <button type="button" class="u-button" @click="changeStorage">
-        Changer l'emplacement du stockage
-      </button>
-      <br /> -->
-      <button
-        type="button"
-        class="u-button"
-        @click="saveNewPathToContent"
-        v-if="new_path_to_content !== path_to_content"
-      >
-        Valider
-      </button>
-      <button type="button" class="u-button">Redémarrer</button>
+          <TitleField
+            :field_name="'description_of_instance'"
+            :label="$t('description_of_instance')"
+            :instructions="$t('description_of_instance_instructions')"
+            :content="settings.description_of_instance"
+            :path="'_admin'"
+            :required="false"
+            :can_edit="true"
+          />
+
+          <br />
+
+          <div class="_topLabel">
+            <label for="" class="u-label">{{ $t("logo") }}</label>
+          </div>
+          // à venir
+          <CoverField :cover="settings.logo" :path="'_admin'" />
+        </sl-tab-panel>
+        <sl-tab-panel name="access_control">
+          <TitleField
+            :field_name="'general_password'"
+            :label="$t('general_password')"
+            :instructions="$t('general_password_instructions')"
+            :content="settings.general_password"
+            :path="'_admin'"
+            :input_type="'password'"
+            :required="false"
+            :can_edit="true"
+          />
+
+          <br />
+
+          <TitleField
+            :field_name="'signup_password'"
+            :label="$t('signup_password')"
+            :instructions="$t('signup_password_instructions')"
+            :content="settings.signup_password"
+            :path="'_admin'"
+            :required="false"
+            :can_edit="true"
+          />
+
+          <br />
+
+          <div class="u-instructions">
+            {{ $t("restart_to_apply") }}
+          </div>
+        </sl-tab-panel>
+        <sl-tab-panel name="storage">
+          <PickNativePath
+            :field_name="'pathToUserContent'"
+            :label="$t('path_to_content')"
+            :instructions="$t('path_to_content_instructions')"
+            :content="settings.pathToUserContent"
+            :path="'_admin'"
+            :required="true"
+            :can_edit="$root.is_electron"
+          />
+
+          <br />
+          <div class="u-instructions">
+            {{ $t("restart_to_apply") }}
+          </div>
+        </sl-tab-panel>
+      </sl-tab-group>
+
+      <!-- seulement modifiable dans la version appli/electron (à configurer côté code source par le dev dans la version server) -->
+
+      <!-- <button type="button" class="u-button" @click="restartDodoc">
+        {{ $t("restart") }}
+      </button> -->
     </div>
   </BaseModal2>
 </template>
@@ -72,10 +114,7 @@ export default {
   },
   created() {},
   async mounted() {
-    // this.$api.editSettings()
     this.settings = await this.$api.getSettings();
-    // this.path_to_content = this.new_path_to_content =
-    //   settings.pathToUserContent;
     this.$api.join({ room: "_admin" });
   },
   beforeDestroy() {
@@ -84,16 +123,8 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    changeStorage() {
-      window.electronAPI.send("toMain", {
-        type: "get_path",
-      });
-
-      window.electronAPI.receive("fromMain", ({ type, path_to_content }) => {
-        if (type === "new_path") {
-          this.new_path_to_content = path_to_content;
-        }
-      });
+    restartDodoc() {
+      this.$api.restartDodoc();
     },
     saveNewPathToContent() {},
   },

@@ -5,15 +5,26 @@
 
       <RadioSwitch
         v-if="!is_identified"
-        :label_left="$t('login')"
-        @clickLeft="current_mode = 'login'"
-        :label_right="$t('create_account')"
-        @clickRight="current_mode = 'create'"
+        :content.sync="current_mode"
+        :options="[
+          {
+            label: $t('login'),
+            value: 'login',
+          },
+          {
+            label: $t('create_account'),
+            value: 'create',
+          },
+        ]"
       />
 
       <br />
 
-      <LoginAs v-if="current_mode === 'login'" :authors="authors" />
+      <LoginAs
+        v-if="current_mode === 'login'"
+        :authors="authors"
+        @close="$emit('close')"
+      />
       <CreateAuthor
         v-else-if="current_mode === 'create'"
         @close="$emit('close')"
@@ -35,7 +46,7 @@
         class="u-button"
         @click="show_authors_list = !show_authors_list"
       >
-        {{ $t("show_all") }} ({{ authors.length }})
+        {{ $t("show_list") }} ({{ authors.length }})
       </button>
       <div class="_listOfAuthors" v-if="show_authors_list">
         <AuthorCard
@@ -71,6 +82,10 @@ export default {
     this.authors = await this.$api.getFolders({
       path: `authors`,
     });
+
+    // if no authors, then switch to register
+    if (this.authors.length === 0) this.current_mode = "create";
+
     this.$api.join({ room: "authors" });
   },
   beforeDestroy() {

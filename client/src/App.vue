@@ -37,8 +37,9 @@ export default {
 :root {
   --spacing: var(--sl-spacing-medium);
 
-  --c-bleumarine: #1d327f;
-  --c-bleumarine_clair: #bec6e5;
+  --c-bleumarine: hsl(227, 63%, 41%);
+  --c-bleumarine_clair: hsl(227, 63%, 81%);
+  --c-bleumarine_fonce: hsl(227, 63%, 11%);
   --c-bleuvert: #52c5b9;
   --c-bleuvert_clair: hsl(174, 50%, 81%);
   --c-bleuvert_fonce: hsl(174, 50%, 41%);
@@ -51,10 +52,10 @@ export default {
 
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
-  --c-noir: #333;
-  --c-gris: #eff2f3;
-  --c-gris_clair: hsl(195, 14%, 98%);
-  --c-gris_fonce: hsl(195, 14%, 75%);
+  --c-noir: #hsl(0, 0%, 15%);
+  --c-gris: hsl(195, 14%, 93%);
+  --c-gris_clair: hsl(195, 14%, 97%);
+  --c-gris_fonce: hsl(195, 14%, 55%);
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 

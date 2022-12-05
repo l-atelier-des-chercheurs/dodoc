@@ -21,6 +21,8 @@ Vue.use(ShoelaceModelDirective);
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
+import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
+Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";
 Vue.component("AuthorField", AuthorField);
 import TagsField from "@/adc-core/fields/TagsField.vue";
@@ -70,6 +72,15 @@ Vue.component("EditBtn", {
   <sl-button variant="edit" class="editBtn" size="small" circle @click="$emit('click')">
     <sl-icon name="pencil-fill" :label="$t('edit')" />
   </sl-button>
+`,
+});
+Vue.component("SectionLabel", {
+  name: "SectionLabel",
+  props: ["text"],
+  template: `
+  <label for="" class="u-label u-sectionLabel">
+    <span>{{ text }}</span>
+  </label>
 `,
 });
 Vue.component("LoaderSpinner", {

@@ -1,4 +1,5 @@
 .u-label {
+  display: block;
   font-variant: small-caps;
   text-transform: lowercase;
   font-weight: 500;
@@ -10,6 +11,36 @@
 
   line-height: 1;
   // margin-right: calc(var(--spacing) / 4);
+}
+
+.u-sectionLabel {
+  display: block;
+  width: 100%;
+  font-size: var(--sl-font-size-medium);
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-align: center;
+
+  background: var(--c-bleumarine);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  color: white;
+  border-radius: 4px;
+
+  margin-bottom: calc(var(--spacing) / 1);
+
+  > * {
+    // display: inline-block;
+  }
+
+  // &::before {
+  //   content: "en chantier :)";
+  //   font-family: "Fira Code";
+  //   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
+  //   border-radius: 6px;
+  //   transform: rotate(-6deg);
+  //   position: relative;
+  //   display: inline-block;
+  // }
 }
 
 .u-instructions {
@@ -126,8 +157,22 @@
     background-color: var(--c-bleuvert_fonce);
   }
 }
+.u-button_bleumarine {
+  background-color: var(--c-bleumarine);
+  color: white;
+
+  &:hover,
+  &:focus {
+    background-color: var(--c-bleumarine_fonce);
+  }
+}
+.u-button_small {
+  font-size: var(--input-font-size-small);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+}
 .u-button_big {
   font-size: var(--input-font-size-big);
+  min-height: 2.9em;
 }
 
 input[type="color"],

@@ -7,12 +7,12 @@
           type="radio"
           name="radio-switch-name"
           id="radio-1"
-          value=""
-          checked
-          @change="$emit('clickLeft')"
+          :value="options[0].value"
+          :checked="content === options[0].value"
+          @input="(event) => $emit('update:content', event.target.value)"
         />
         <label class="radio-switch__label" for="radio-1">
-          {{ label_left }}
+          {{ options[0].label }}
         </label>
       </li>
 
@@ -22,11 +22,12 @@
           type="radio"
           name="radio-switch-name"
           id="radio-2"
-          value=""
-          @change="$emit('clickRight')"
+          :value="options[1].value"
+          :checked="content === options[1].value"
+          @input="(event) => $emit('update:content', event.target.value)"
         />
         <label class="radio-switch__label" for="radio-2">
-          {{ label_right }}
+          {{ options[1].label }}
         </label>
         <div aria-hidden="true" class="radio-switch__marker"></div>
       </li>
@@ -36,8 +37,8 @@
 <script>
 export default {
   props: {
-    label_left: String,
-    label_right: String,
+    content: String,
+    options: Array,
   },
   components: {},
   data() {

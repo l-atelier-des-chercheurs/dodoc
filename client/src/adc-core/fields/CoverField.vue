@@ -31,6 +31,7 @@ export default {
   props: {
     cover: [Boolean, Object],
     path: String,
+    project_slug: String,
   },
   components: {
     ImageSelect,
@@ -108,12 +109,5 @@ export default {
   place-items: center;
 
   gap: calc(var(--spacing) / 2);
-}
-
-._cover {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  padding: calc(var(--spacing) / 1);
 }
 </style>

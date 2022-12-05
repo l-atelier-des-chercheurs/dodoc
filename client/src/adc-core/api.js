@@ -20,7 +20,13 @@ export default function () {
           token,
           token_path,
         });
-        if (token) this.getFolder({ path: token_path });
+        if (token)
+          this.getFolder({ path: token_path }).catch((err) => {
+            err;
+            // token in localstorage matches an author that was since deleted
+            // remove token
+            this.resetToken();
+          });
       },
     },
     methods: {
@@ -194,11 +200,13 @@ export default function () {
         return this.store["_admin"];
       },
       adminSettingsUpdated({ changed_data }) {
-        debugger;
         if (this.store["_admin"])
           Object.entries(changed_data).map(([key, value]) => {
             this.$set(this.store["_admin"], key, value);
           });
+      },
+      async restartDodoc() {
+        return await this.$axios.post(`_admin`);
       },
 
       async editSettings(settings) {

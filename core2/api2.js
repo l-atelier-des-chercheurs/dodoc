@@ -30,6 +30,7 @@ module.exports = (function () {
     app.get("/_api2/_ip", _getLocalNetworkInfos);
     app.get("/_api2/_admin", _getAdminInfos);
     app.patch("/_api2/_admin", _setAdminInfos);
+    app.post("/_api2/_restart", _restart);
 
     /* FILES */
     app.get(
@@ -160,11 +161,21 @@ module.exports = (function () {
     }
   }
 
-  function loadIndex(req, res) {
+  async function loadIndex(req, res) {
     dev.logapi();
     let d = {};
     d.schema = global.settings.schema;
     d.debug_mode = dev.isDebug();
+
+    // get instance name
+    // get logo/favicon
+    // get session password
+    // get author creation password
+    const { name_of_instance, description_of_instance } = await settings.get();
+    if (name_of_instance) d.name_of_instance = name_of_instance;
+    if (description_of_instance)
+      d.description_of_instance = description_of_instance;
+
     res.render("index2", d);
   }
   function loadPerf(rea, res) {
@@ -456,14 +467,23 @@ module.exports = (function () {
   async function _setAdminInfos(req, res, next) {
     // TODO only available to admins
     const { data } = utils.makePathFromReq(req);
-    dev.logapi();
+    dev.logapi({ data });
 
-    const changed_data = await settings.set({ input_meta: data });
+    try {
+      const changed_data = await settings.set({ input_meta: data });
 
-    dev.logpackets({ status: "adminSettings were updated" });
-    res.status(200).json({ status: "ok" });
+      dev.logpackets({ status: "adminSettings were updated" });
+      res.status(200).json({ status: "ok" });
 
-    notifier.emit("adminSettingsUpdated", "_admin", { changed_data });
+      notifier.emit("adminSettingsUpdated", "_admin", { changed_data });
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  }
+  async function _restart(req, res, next) {
+    dev.logapi({ data });
+    // TODO only available to admins
+    notifier.emit("restart");
   }
 
   return API;

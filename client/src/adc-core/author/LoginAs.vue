@@ -21,7 +21,9 @@
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
-      <button type="submit" class="u-button">{{ $t("login") }}</button>
+      <button type="submit" class="u-button u-button_bleuvert">
+        {{ $t("login") }}
+      </button>
     </form>
     <button type="button" class="u-button u-button_red" v-else @click="logout">
       {{ $t("logout") }}
@@ -62,6 +64,7 @@ export default {
             $password: this.input_password,
           },
         });
+        this.$emit("close");
       } catch (err) {
         this.response = err;
         this.$alertify.delay(4000).error(err);

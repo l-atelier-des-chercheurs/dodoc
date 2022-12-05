@@ -76,12 +76,27 @@ export default function () {
         add: "ajouter",
         title: "titre",
         name: "nom",
+        name_of_instance: "Nom de l’instance",
+        name_of_instance_instructions: `Par exemple, <i>Documentation du fablab</i>, <i>do•doc de la classe de C</i>, etc.
+          Apparaîtra dans l’onglet du navigateur sur la page d’accueil et dans la barre de navigation.`,
+        description_of_instance: "Description de l’instance",
+        description_of_instance_instructions: `
+          Apparaîtra sur la page d’accueil uniquement.
+          `,
+        general_password: "mot de passe général",
+        general_password_instructions:
+          "Limiter l’accès aux visiteurs munis de ce mot de passe. Si le champ est vide, l’accès sera ouvert à tou·te·s.",
+        signup_password: "mot de passe pour la création d’un compte",
+        signup_password_instructions:
+          "Limiter la création de compte (et donc de projets) aux personnes munis de ce mot de passe. Si le champ est vide, toutes les personnes qui accèdent pourront se créer un compte et publier des contenus.",
+
         login: "s’identifier",
         logout: "se déconnecter",
         name_or_pseudonym: "nom ou pseudonyme",
         contributors: "Contributeur·rice·s",
         create: "créer",
         create_account: "créer un compte",
+        show_list: "Afficher la liste",
         list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
         import_instructions: "Importer depuis un autre appareil",
@@ -96,11 +111,14 @@ export default function () {
         not_public_status_explanations:
           "Le projet ne sera visible qu’à ses contributeurs.",
         finished: "Finalisé",
+        no_draft_proejcts: "Aucun projet en brouillon pour le moment",
         no_finalized_proejcts: "Aucun projet finalisé pour le moment",
         finished_status_explanations:
-          "Ce projet sera affiché en haut de la page d'accueil.",
+          "Ce projet sera affiché en haut de la page d’accueil.",
         show_projects: "Afficher les projets",
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
+        restart_to_apply: "Relancez do•doc pour appliquer",
+        restart: "Relancer do•doc",
 
         medias: "Médias",
         license: "Licence",
@@ -109,6 +127,11 @@ export default function () {
 
         settings: "Réglages",
         path_to_content: "Chemin du stockage des contenus",
+        path_to_content_instructions: `Attention, fonctionnalité avancée !
+          Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,
+
+        access_control: "Contrôle des accès",
+        storage: "Stockage",
 
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",
@@ -129,7 +152,7 @@ export default function () {
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
-          "Votre presse-papier ne contient pas d'images",
+          "Votre presse-papier ne contient pas d’images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
 
         more_infos: "Plus d’informations",

@@ -16,7 +16,10 @@ module.exports = (function () {
   })();
 
   const API = {
-    async hashPassword({ password, salt = global.settings.password_salt }) {
+    async hashPassword({
+      password,
+      salt = crypto.randomBytes(32).toString("hex"),
+    }) {
       // see https://stackoverflow.com/a/67038052
       const buf = crypto.scryptSync(password, salt, 64).toString("hex");
       return `${buf.toString("hex")}.${salt}`;
@@ -60,6 +63,8 @@ module.exports = (function () {
       API.updateTokensFile();
       return;
     },
+
+    // SALT ?
 
     async removeAllTokensForFolder({ token_path }) {
       Object.entries(tokens).find(([token, tp]) => {

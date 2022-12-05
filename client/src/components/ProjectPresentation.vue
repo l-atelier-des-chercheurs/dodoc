@@ -33,7 +33,7 @@ z
 
       <CoverField
         v-if="context === 'full' && can_edit_project"
-        class=""
+        class="_coverPicker"
         :cover="project.$cover"
         :path="project.$path"
       />
@@ -349,5 +349,12 @@ export default {
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
   }
+}
+
+._coverPicker {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: calc(var(--spacing) / 1);
 }
 </style>

@@ -5,12 +5,8 @@
       'is--homepage': $route.path === '/',
     }"
   >
-    <BreadCrumbs />
-    <button
-      type="button"
-      class="_subscribeBtn"
-      @click="show_authors_modal = true"
-    >
+    <BreadCrumbs :style="$route.path === '/' ? 'visibility: hidden' : ''" />
+    <button type="button" class="_subscribeBtn" @click="showAuthorModal">
       <template v-if="connected_as">
         {{ connected_as.name }}
       </template>
@@ -19,7 +15,16 @@
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
 
     <div class="_topRightButtons">
-      <button type="button" @click="show_settings = !show_settings">
+      <button
+        type="button"
+        class="u-button"
+        disabled
+        @click="show_lang_modal = !show_lang_modal"
+      >
+        {{ current_lang_code }}
+      </button>
+
+      <!-- <button type="button" @click="show_settings = !show_settings">
         <svg
           enable-background="new 0 0 168 168"
           viewBox="0 0 168 168"
@@ -31,7 +36,7 @@
         2-2.4l9.9-3.2c1.1-.3 2.2-.1 3.1.7l7.8 7.3 5.1-3.7-4.9-9.4c-.5-1-.4-2.1.2-3l6-8.1c.7-.9 1.8-1.4 2.9-1.2l10.8 1.5 1.8-5.9-9.7-4.8c-1.1-.6-1.7-1.6-1.7-2.7zm-38.7 15.7c-11.7 0-21.1-9.2-21.1-20.5s9.5-20.5 21.1-20.5 21.1 9.2 21.1 20.5-9.4 20.5-21.1 20.5z"
           />
         </svg>
-      </button>
+      </button> -->
     </div>
   </div>
 </template>
@@ -49,19 +54,33 @@ export default {
     return {
       show_authors_modal: false,
       // show_settings: false,
+      show_lang_modal: false,
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off(`toolbar.openAuthor`, this.showAuthorModal);
+  },
   watch: {
     $route: {
       handler() {},
       immediate: true,
     },
   },
-  computed: {},
-  methods: {},
+  computed: {
+    current_lang_code() {
+      this.$i18n.availableLocales;
+      return this.$i18n.locale;
+    },
+  },
+  methods: {
+    showAuthorModal() {
+      this.show_authors_modal = true;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
