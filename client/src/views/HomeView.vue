@@ -1,7 +1,10 @@
 <template>
   <div class="_homeView">
     <div class="_floatinProjectBtn">
-      <router-link class="u-button u-button_red u-button_big" to="/projects">
+      <router-link
+        class="u-button u-button_red u-button_big u-button_floating"
+        to="/projects"
+      >
         {{ $t("show_projects") }}&nbsp;<sl-icon name="arrow-up-right" />
       </router-link>
     </div>
@@ -18,15 +21,22 @@
 
       <p v-html="description" />
 
+      <p>
+        {{ $t("contactmail_of_instance") }}
+        <a :href="'mailto:' + contact_email" target="_blank">
+          {{ contact_email }}
+        </a>
+      </p>
+
       <small class="_versionNumber">
         <button
           type="button"
-          v-if="is_admin"
           class="u-button u-button_bleuvert"
           @click="show_settings_modal = !show_settings_modal"
         >
           <sl-icon name="gear-fill" />&nbsp;{{ $t("settings") }}
         </button>
+        <template v-if="is_admin"> – </template>
         version {{ $root.app_infos.version }}
       </small>
     </div>
@@ -44,7 +54,7 @@ export default {
   },
   data() {
     return {
-      show_settings_modal: true,
+      show_settings_modal: false,
     };
   },
   computed: {
@@ -52,10 +62,13 @@ export default {
       return this.$root.app_infos.name_of_instance;
     },
     description() {
-      return this.$root.app_infos.description_of_instance.replace(
+      return this.$root.app_infos.presentation_of_instance.replace(
         /(?:\r\n|\r|\n)/g,
         "<br />"
       );
+    },
+    contact_email() {
+      return this.$root.app_infos.contactmail_of_instance;
     },
   },
 };
@@ -89,6 +102,7 @@ export default {
   // position: absolute;
   // bottom: 0;
   // left: 0;
+  margin-top: calc(var(--spacing) * 4);
   text-align: center;
   padding: calc(var(--spacing) / 4);
 }

@@ -2,6 +2,12 @@
 <template>
   <div id="app" class="">
     <TopBar />
+
+    <GeneralPasswordModal
+      v-if="show_general_password_modal"
+      @close="show_general_password_modal = false"
+    />
+
     <div class="">
       <router-view v-slot="{ Component }">
         <transition name="fade">
@@ -13,21 +19,39 @@
 </template>
 <script>
 import TopBar from "@/components/TopBar.vue";
+import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 
 export default {
   props: {},
   components: {
     TopBar,
+    GeneralPasswordModal,
   },
   data() {
-    return {};
+    return {
+      show_general_password_modal: false,
+    };
   },
-  created() {},
+  created() {
+    this.$eventHub.$on(
+      `app.prompt_general_password`,
+      this.promptGeneralPassword
+    );
+  },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off(
+      `app.prompt_general_password`,
+      this.promptGeneralPassword
+    );
+  },
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    promptGeneralPassword() {
+      this.show_general_password_modal = true;
+    },
+  },
 };
 </script>
 <style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
@@ -55,7 +79,7 @@ export default {
   --c-noir: #hsl(0, 0%, 15%);
   --c-gris: hsl(195, 14%, 93%);
   --c-gris_clair: hsl(195, 14%, 97%);
-  --c-gris_fonce: hsl(195, 14%, 55%);
+  --c-gris_fonce: hsl(195, 14%, 45%);
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
@@ -67,6 +91,7 @@ export default {
   --scrollbar-border: 2px;
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
+  --label-color: #666;
   --border-radius: 6px;
 
   --input-font-family: inherit;

@@ -9,7 +9,7 @@
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </div>
 
-    <div v-if="edit_mode && instructions">
+    <div v-if="edit_mode && instructions" class="u-instructions">
       <small v-html="instructions" />
     </div>
 

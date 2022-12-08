@@ -14,7 +14,7 @@
     <span
       v-else-if="tag === 'span'"
       ref="field"
-      class="_content"
+      class="u-input _content"
       :contenteditable="true"
       :required="required"
       @input="$emit('update:content', $event.target.innerText)"
@@ -44,7 +44,7 @@
           }"
           @click="toggleInputType"
         >
-          reveal
+          {{ $t("reveal") }}
         </button>
       </div>
     </div>

@@ -252,14 +252,12 @@ module.exports = (function () {
       if (items_in_path.length > 4) obj.submeta_filename = items_in_path[4];
 
       if (!global.settings.schema[obj.folder_type])
-        throw new Error(`Missing schema for folder_type ${obj.folder_type}`);
+        throw new Error(`no_schema_for_folder`);
       if (
         obj.subfolder_type &&
         !global.settings.schema[obj.folder_type].$folders[obj.subfolder_type]
       )
-        throw new Error(
-          `Missing schema for subfolder_type ${obj.subfolder_type}`
-        );
+        throw new Error(`no_schema_for_subfolder`);
 
       obj.schema = obj.subfolder_type
         ? global.settings.schema[obj.folder_type].$folders[obj.subfolder_type]

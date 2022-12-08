@@ -12,6 +12,10 @@ module.exports = (function () {
       dev.logfunction({ path_to_type });
       // TODO cache get all folders
 
+      const { schema } = await utils.parseAndCheckSchema({
+        relative_path: path_to_type,
+      });
+
       const folders_slugs = await _getFolderSlugs({
         path_to_type,
       });
@@ -66,7 +70,7 @@ module.exports = (function () {
         value: folder_meta,
       });
 
-      return folder_meta;
+      return JSON.parse(JSON.stringify(folder_meta));
     },
 
     createFolder: async ({ path_to_type, data }) => {

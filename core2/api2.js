@@ -24,10 +24,12 @@ module.exports = (function () {
 
     // todo forbiddenFiles txt
     // app.use(forbiddenFiles);
-    app.use("/_api2/*", [cors(_corsCheck), _sessionPasswordCheck]);
+    app.use("/_api2/*", [cors(_corsCheck)]);
     // app.options("/_api2/*", cors());
 
-    app.get("/_api2/_ip", _getLocalNetworkInfos);
+    app.get("/_api2/_ip", _generalPasswordCheck, _getLocalNetworkInfos);
+    app.get("/_api2/_checkGeneralPassword", _checkGeneralPassword);
+    app.get("/_api2/_authCheck", _generalPasswordCheck, _checkToken);
     app.get("/_api2/_admin", _getAdminInfos);
     app.patch("/_api2/_admin", _setAdminInfos);
     app.post("/_api2/_restart", _restart);
@@ -38,6 +40,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:meta_filename",
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
       ],
+      _generalPasswordCheck,
       _getFile
     );
     app.post(
@@ -45,6 +48,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/_upload",
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/_upload",
       ],
+      _generalPasswordCheck,
       _uploadFile
     );
     app.patch(
@@ -52,6 +56,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:meta_filename",
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
       ],
+      _generalPasswordCheck,
       _updateFile
     );
     app.delete(
@@ -59,6 +64,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:meta_filename",
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
       ],
+      _generalPasswordCheck,
       _removeFile
     );
 
@@ -68,15 +74,25 @@ module.exports = (function () {
         "/_api2/:folder_type",
         "/_api2/:folder_type/:folder_slug/:subfolder_type",
       ],
+      _generalPasswordCheck,
       _getFolders
     );
-    app.post(["/_api2/:folder_type/:folder_slug/_login"], _loginToFolder);
-    app.post(["/_api2/:folder_type/:folder_slug/_logout"], _logoutFromFolder);
+    app.post(
+      ["/_api2/:folder_type/:folder_slug/_login"],
+      _generalPasswordCheck,
+      _loginToFolder
+    );
+    app.post(
+      ["/_api2/:folder_type/:folder_slug/_logout"],
+      _generalPasswordCheck,
+      _logoutFromFolder
+    );
     app.post(
       [
         "/_api2/:folder_type",
         "/_api2/:folder_type/:folder_slug/:subfolder_type",
       ],
+      _generalPasswordCheck,
       _createFolder
     );
 
@@ -85,6 +101,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug",
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
       ],
+      _generalPasswordCheck,
       _getFolder
     );
     app.patch(
@@ -92,6 +109,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug",
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
       ],
+      _generalPasswordCheck,
       _authenticateToken,
       _updateFolder
     );
@@ -100,6 +118,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug",
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug",
       ],
+      _generalPasswordCheck,
       _authenticateToken,
       _removeFolder
     );
@@ -114,10 +133,52 @@ module.exports = (function () {
     // TODO check origin
     callback(null, { origin: true });
   }
-  function _sessionPasswordCheck(req, res, next) {
-    // TODO
-    next();
+
+  // the only route available is index,
+  async function _generalPasswordCheck(req, res, next) {
+    const { general_password } = await settings.get();
+    // no general password, do not interfere
+    if (!general_password) return next();
+
+    try {
+      // if there is a general password and no authorization header
+      if (!req.headers || !req.headers.authorization)
+        throw new Error(`no_general_password_submitted`);
+
+      const { general_password: submitted_general_password } = JSON.parse(
+        req.headers.authorization
+      );
+      if (!submitted_general_password)
+        throw new Error(`no_general_password_submitted`);
+      if (submitted_general_password !== general_password)
+        throw new Error(`wrong_general_password`);
+
+      return next();
+    } catch (err) {
+      dev.error(err.message);
+      return res.status(401).send({ message: err.message });
+    }
   }
+  async function _checkGeneralPassword(req, res, next) {
+    dev.logapi();
+    const { general_password } = await settings.get();
+    if (!general_password) throw new Error(`no_general_password_set`);
+
+    try {
+      return _generalPasswordCheck(req, res, next);
+    } catch (err) {}
+  }
+  async function _checkToken(req, res, next) {
+    dev.logapi();
+    const { token, token_path } = JSON.parse(req.headers.authorization);
+    try {
+      auth.checkToken({ token, token_path });
+    } catch (err) {
+      dev.error(err.message);
+      return res.status(403).send({ message: err.message });
+    }
+  }
+
   async function _authenticateToken(req, res, next) {
     const { path_to_folder } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
@@ -126,12 +187,12 @@ module.exports = (function () {
     // and either :
     // - if path matches the path of the folder that is about to be edited (for example, user authors/louis editing authors/louis)
     // - or if path is amongst the folder $authors
-    // if so, then next(), otherwise return 401
+    // if so, then next(), otherwise return 403
     // ref = https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 
     try {
       if (!req.headers || !req.headers.authorization)
-        throw new Error(`no_authorization_set`);
+        throw new Error(`no_token_set`);
 
       const { token, token_path } = JSON.parse(req.headers.authorization);
       if (!token || !token_path) throw new Error(`no_token_set`);
@@ -157,7 +218,7 @@ module.exports = (function () {
       return next();
     } catch (err) {
       dev.error(err.message);
-      return res.status(401).send({ message: err.message });
+      return res.status(403).send({ message: err.message });
     }
   }
 
@@ -171,10 +232,21 @@ module.exports = (function () {
     // get logo/favicon
     // get session password
     // get author creation password
-    const { name_of_instance, description_of_instance } = await settings.get();
+    const {
+      name_of_instance,
+      presentation_of_instance,
+      contactmail_of_instance,
+      general_password,
+      signup_password,
+    } = await settings.get();
     if (name_of_instance) d.name_of_instance = name_of_instance;
-    if (description_of_instance)
-      d.description_of_instance = description_of_instance;
+    if (presentation_of_instance)
+      d.presentation_of_instance = presentation_of_instance;
+    if (contactmail_of_instance)
+      d.contactmail_of_instance = contactmail_of_instance;
+
+    d.has_general_password = !!general_password;
+    d.has_signup_password = !!signup_password;
 
     res.render("index2", d);
   }
@@ -194,8 +266,9 @@ module.exports = (function () {
       res.json(d);
     } catch (err) {
       dev.error("Failed to get expected content: " + err);
-      res.status(500).send(err);
+      _sendErrorToClient({ res, err });
     }
+
     cache.printStatus();
   }
   async function _createFolder(req, res, next) {
@@ -233,19 +306,15 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      let d = JSON.parse(
-        JSON.stringify(await folder.getFolder({ path_to_folder }))
-      );
+      let d = await folder.getFolder({ path_to_folder });
       const files = await file.getFiles({ path_to_folder });
       d.$files = files;
-      // TODO bug : $files end up in the cache, somehow
-
       res.setHeader("Access-Control-Allow-Origin", "*");
       dev.logpackets({ d });
       res.json(d);
     } catch (err) {
       dev.error("Failed to get expected content: " + err);
-      res.status(500).send(err);
+      _sendErrorToClient({ res, err });
     }
     cache.printStatus();
   }
@@ -458,6 +527,8 @@ module.exports = (function () {
     res.status(200).json(local_ips);
   }
 
+  async function _checkAuth(req, res, next) {}
+
   async function _getAdminInfos(req, res, next) {
     // TODO only available to admins
     dev.logapi();
@@ -484,6 +555,16 @@ module.exports = (function () {
     dev.logapi({ data });
     // TODO only available to admins
     notifier.emit("restart");
+  }
+
+  function _sendErrorToClient({ res, err }) {
+    if (err.code === "ENOENT") {
+      res.status(404).send({ message: "no_such_file_or_folder" });
+    } else if (err.message) {
+      res.status(500).send({ message: err.message });
+    } else {
+      debugger;
+    }
   }
 
   return API;

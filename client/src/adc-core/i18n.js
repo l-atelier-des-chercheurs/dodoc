@@ -79,16 +79,22 @@ export default function () {
         name_of_instance: "Nom de l’instance",
         name_of_instance_instructions: `Par exemple, <i>Documentation du fablab</i>, <i>do•doc de la classe de C</i>, etc.
           Apparaîtra dans l’onglet du navigateur sur la page d’accueil et dans la barre de navigation.`,
-        description_of_instance: "Description de l’instance",
-        description_of_instance_instructions: `
+        presentation_of_instance: "Présentation de l’instance",
+        presentation_of_instance_instructions: `
           Apparaîtra sur la page d’accueil uniquement.
           `,
         general_password: "mot de passe général",
-        general_password_instructions:
-          "Limiter l’accès aux visiteurs munis de ce mot de passe. Si le champ est vide, l’accès sera ouvert à tou·te·s.",
+        general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
+        peut afficher un email de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
+        general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
+        Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
+
+        contactmail_of_instance: `Adresse e-mail de contact`,
+        contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
+
         signup_password: "mot de passe pour la création d’un compte",
         signup_password_instructions:
-          "Limiter la création de compte (et donc de projets) aux personnes munis de ce mot de passe. Si le champ est vide, toutes les personnes qui accèdent pourront se créer un compte et publier des contenus.",
+          "Limiter la création de compte (et donc de projets) aux personnes munis de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent se créer un compte et publier des contenus.",
 
         login: "s’identifier",
         logout: "se déconnecter",
@@ -119,6 +125,7 @@ export default function () {
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
         restart_to_apply: "Relancez do•doc pour appliquer",
         restart: "Relancer do•doc",
+        reveal: "Révéler",
 
         medias: "Médias",
         license: "Licence",
@@ -149,6 +156,9 @@ export default function () {
         create_and_open: "Créer et ouvrir",
         create_a_project: "Créer un projet",
         create_a_publication: "Créer une publication",
+
+        project_title_instructions: "",
+        project_desc_instructions: "",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":

@@ -11,33 +11,19 @@ export default function () {
         token: "",
         token_path: "",
       },
+      general_password: "",
+
+      // todo replace is_identified, create route to test
+      is_correctly_logged_in: false,
     },
     created() {},
-    watch: {
-      "tokenpath.token"() {
-        const { token, token_path } = this.tokenpath;
-        this.$axios.defaults.headers.common["Authorization"] = JSON.stringify({
-          token,
-          token_path,
-        });
-        if (token)
-          this.getFolder({ path: token_path }).catch((err) => {
-            err;
-            // token in localstorage matches an author that was since deleted
-            // remove token
-            this.resetToken();
-          });
-      },
-    },
+    watch: {},
     methods: {
-      init({ debug_mode }) {
+      async init({ debug_mode }) {
         this.debug_mode = debug_mode;
-
-        this.initSchema();
-        this.initSocketio();
+        await this.initSocketio();
       },
-      initSchema() {},
-      initSocketio() {
+      async initSocketio() {
         this.socket = io({
           autoConnect: false,
         });
@@ -45,17 +31,9 @@ export default function () {
         const sessionID = localStorage.getItem("sessionID");
         if (sessionID) this.socket.auth = { sessionID };
 
-        const tokenpath = localStorage.getItem("tokenpath");
-        if (tokenpath) {
-          try {
-            const { token, token_path } = JSON.parse(tokenpath);
-            this.tokenpath.token = token;
-            this.tokenpath.token_path = token_path;
-          } catch (err) {
-            /**/
-          }
-        }
+        await this.checkAuthFromStorage();
 
+        // todo also use token for socketio connection
         this.socket.connect();
 
         // client-side
@@ -109,7 +87,57 @@ export default function () {
 
         this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
       },
+      async checkAuthFromStorage() {
+        let auth = {};
 
+        const tokenpath = localStorage.getItem("tokenpath");
+        try {
+          const { token, token_path } = JSON.parse(tokenpath);
+          auth.token = token;
+          auth.token_path = token_path;
+        } catch (err) {
+          err;
+        }
+
+        const general_password = localStorage.getItem("general_password");
+        if (general_password) auth.general_password = general_password;
+
+        const Authorization = JSON.stringify(auth);
+
+        debugger;
+
+        // check with route
+        await this.$axios
+          .get("_authCheck", {
+            headers: {
+              Authorization,
+            },
+          })
+          .catch((err) => {
+            err;
+            // if there is an error, we return here
+            return;
+          });
+
+        // Todo change all this? if a user has a valid token and token_path,
+        // then they must also have access
+        // so for users that are not logged in but have the password,
+        // they should get a token with a path that looks like
+        // token_path: "/"
+        // --> meaning they can read content, but not update anything
+        debugger;
+
+        this.token = auth.token;
+        this.token_path = auth.token_path;
+        this.general_password = auth.general_password;
+      },
+      setAuthorizationHeader() {
+        this.$axios.defaults.headers.common["Authorization"] = JSON.stringify({
+          token: this.tokenpath.token,
+          token_path: this.tokenpath.token_path,
+          general_password: this.general_password,
+        });
+      },
       disconnectSocket() {
         this.socket.disconnect();
       },
@@ -219,7 +247,10 @@ export default function () {
         return response.data;
       },
       async getFolders({ path }) {
-        const response = await this.$axios.get(path);
+        const response = await this.$axios.get(path).catch((err) => {
+          this.onError(err);
+          throw err;
+        });
         const folders = response.data;
         // folders.map((f) => this.$set(this.store, f.$path, f));
         this.$set(this.store, path, folders);
@@ -250,12 +281,14 @@ export default function () {
         try {
           const response = await this.$axios.post(`${path}/_login`, auth_infos);
           const token = response.data.token;
+
           this.tokenpath.token = token;
           this.tokenpath.token_path = path;
           localStorage.setItem(
             "tokenpath",
             JSON.stringify({ token, token_path: path })
           );
+          this.setAuthorizationHeader();
           return;
         } catch (e) {
           if (e.response.data.code)
@@ -279,6 +312,28 @@ export default function () {
             throw _getErrorMsgFromCode(e.response.data.code);
           else throw e.response.data;
         }
+      },
+
+      async submitGeneralPassword({ password }) {
+        // TODO
+        await this.$axios
+          .get(`_checkGeneralPassword`, {
+            headers: {
+              Authorization: JSON.stringify({ general_password: password }),
+            },
+          })
+          .catch((err) => {
+            if (err.response?.data?.message === "wrong_general_password")
+              throw new Error(`wrong_general_password`);
+            // expected error, no _ can exist
+          });
+        localStorage.setItem("general_password", password);
+        this.general_password = password;
+        this.setAuthorizationHeader();
+        return true;
+      },
+      disconnectFromGeneralPassword() {
+        // todo
       },
 
       async uploadText({ path, filename, content = "", additional_meta }) {

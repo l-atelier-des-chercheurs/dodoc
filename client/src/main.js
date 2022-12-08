@@ -38,7 +38,7 @@ Vue.component("RadioField", RadioField);
 import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
 //
-import BaseModal2 from "@/adc-core/modal/BaseModal2.vue";
+import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);
 import RadioSwitch from "@/adc-core/ui/RadioSwitch.vue";
 Vue.component("RadioSwitch", RadioSwitch);
@@ -136,8 +136,8 @@ new Vue({
       innerHeight: window.innerHeight,
     },
   },
-  mounted() {
-    this.$api.init({ debug_mode });
+  async mounted() {
+    await this.$api.init({ debug_mode });
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);

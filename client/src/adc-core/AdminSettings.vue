@@ -28,12 +28,25 @@
           <br />
 
           <TitleField
-            :field_name="'description_of_instance'"
-            :label="$t('description_of_instance')"
-            :instructions="$t('description_of_instance_instructions')"
-            :content="settings.description_of_instance"
+            :field_name="'presentation_of_instance'"
+            :label="$t('presentation_of_instance')"
+            :instructions="$t('presentation_of_instance_instructions')"
+            :content="settings.presentation_of_instance"
             :path="'_admin'"
             :required="false"
+            :can_edit="true"
+          />
+
+          <br />
+
+          <TitleField
+            :field_name="'contactmail_of_instance'"
+            :label="$t('contactmail_of_instance')"
+            :instructions="$t('contactmail_of_instance_instructions')"
+            :content="settings.contactmail_of_instance"
+            :path="'_admin'"
+            :required="false"
+            :input_type="'email'"
             :can_edit="true"
           />
 
@@ -44,6 +57,12 @@
           </div>
           // à venir
           <CoverField :cover="settings.logo" :path="'_admin'" />
+
+          <br />
+
+          <div class="u-instructions">
+            {{ $t("restart_to_apply") }}
+          </div>
         </sl-tab-panel>
         <sl-tab-panel name="access_control">
           <TitleField
@@ -85,7 +104,6 @@
             :required="true"
             :can_edit="$root.is_electron"
           />
-
           <br />
           <div class="u-instructions">
             {{ $t("restart_to_apply") }}

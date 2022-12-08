@@ -111,9 +111,14 @@ export default {
   },
   created() {},
   async mounted() {
-    this.projects = await this.$api.getFolders({
-      path: this.path,
-    });
+    this.projects = await this.$api
+      .getFolders({
+        path: this.path,
+      })
+      .catch((err_msg) => {
+        err_msg;
+        return;
+      });
     this.$api.join({ room: this.path });
   },
   beforeDestroy() {

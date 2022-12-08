@@ -56,6 +56,7 @@ z
         :maxlength="40"
         :tag="context === 'full' ? 'h1' : 'h2'"
         :can_edit="can_edit_project"
+        :instructions="$t('project_title_instructions')"
       />
 
       <TitleField
@@ -69,6 +70,7 @@ z
         :path="project.$path"
         :maxlength="280"
         :can_edit="can_edit_project"
+        :instructions="$t('project_desc_instructions')"
       />
       <DebugBtn v-if="context === 'full'" :content="project" />
     </div>

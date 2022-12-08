@@ -82,6 +82,10 @@ header {
 
 ._content {
   padding: var(--spacing) calc(var(--spacing) * 1.5);
+
+  > *:first-child {
+    margin-top: 0;
+  }
 }
 
 @keyframes reveal {

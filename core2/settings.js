@@ -1,15 +1,13 @@
-const utils = require("./utils"),
-  cache = require("./cache");
+const utils = require("./utils");
 
 module.exports = (function () {
+  let local_cache = undefined;
+
   const API = {
     get: async () => {
       dev.logfunction();
 
-      const d = cache.get({
-        key: "admin_settings",
-      });
-      if (d) return d;
+      if (local_cache) return local_cache;
 
       let meta = {};
       try {
@@ -18,10 +16,7 @@ module.exports = (function () {
 
       meta.pathToUserContent = global.pathToUserContent;
 
-      cache.set({
-        key: "admin_settings",
-        value: meta,
-      });
+      local_cache = JSON.parse(JSON.stringify(meta));
 
       return meta;
     },
@@ -52,9 +47,7 @@ module.exports = (function () {
         return acc;
       }, {});
 
-      cache.delete({
-        key: "admin_settings",
-      });
+      local_cache = undefined;
 
       return changed_meta;
     },

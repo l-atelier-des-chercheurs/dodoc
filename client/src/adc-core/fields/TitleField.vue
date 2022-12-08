@@ -1,7 +1,15 @@
 <template>
   <span class="_titleField">
     <div class="_topLabel" v-if="label">
-      <label for="" class="u-label">{{ label }}</label>
+      <label for="" class="u-label">
+        {{ label }}
+        <span v-if="instructions">
+          <sl-icon-button
+            name="info-circle"
+            @click="show_instructions = !show_instructions"
+          />
+        </span>
+      </label>
     </div>
 
     <component :is="tag" class="_container">
@@ -15,7 +23,7 @@
       <TextInput
         v-else
         :content.sync="new_content"
-        tag="span"
+        :tag="input_type === 'text' ? 'span' : 'input'"
         :required="required"
         :input_type="input_type"
         :maxlength="maxlength"
@@ -25,8 +33,10 @@
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </component>
 
-    <div v-if="edit_mode && instructions">
-      <small v-html="instructions" />
+    <div class="u-instructions">
+      <template v-if="show_instructions">
+        <small v-html="instructions" />
+      </template>
     </div>
 
     <template v-if="can_edit">
@@ -88,6 +98,7 @@ export default {
 
       current_character_count: undefined,
       allow_save: false,
+      show_instructions: false,
     };
   },
   created() {},
@@ -194,6 +205,13 @@ export default {
   }
 }
 
-._scb {
+._topLabel {
+  // display: flex;
+  // flex-flow: row wrap;
+  // gap: calc(var(--spacing) / 4);
+
+  .u-label {
+    // margin-bottom: 0;
+  }
 }
 </style>
