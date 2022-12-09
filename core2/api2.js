@@ -373,16 +373,18 @@ module.exports = (function () {
   }
   async function _logoutFromFolder(req, res, next) {
     const { path_to_folder, data } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder, data });
+    const token = data.token;
+    dev.logapi({ path_to_folder, token });
 
     try {
+      // not sure we need to check token before revoking it
+      // auth.checkToken({ token, token_path: path_to_folder });
       await auth.revokeToken({
-        path_to_folder,
-        token_to_revoke: data.token,
+        token_to_revoke: token,
       });
       dev.logpackets({
         status: "logged out from folder",
-        token: data.token,
+        token,
         path_to_folder,
       });
       res.status(200).json({ status: "ok" });
@@ -558,6 +560,7 @@ module.exports = (function () {
   }
 
   function _sendErrorToClient({ res, err }) {
+    // TODO handle all errors
     if (err.code === "ENOENT") {
       res.status(404).send({ message: "no_such_file_or_folder" });
     } else if (err.message) {

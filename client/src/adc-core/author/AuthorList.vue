@@ -3,36 +3,51 @@
     <div>
       <!-- <div class="u-wips" /> -->
 
-      <RadioSwitch
-        v-if="!is_identified"
-        :content.sync="current_mode"
-        :options="[
-          {
-            label: $t('login'),
-            value: 'login',
-          },
-          {
-            label: $t('create_account'),
-            value: 'create',
-          },
-        ]"
-      />
+      <template v-if="!is_identified">
+        <RadioSwitch
+          :content.sync="current_mode"
+          :options="[
+            {
+              label: $t('login'),
+              value: 'login',
+            },
+            {
+              label: $t('create_account'),
+              value: 'create',
+            },
+          ]"
+        />
 
-      <br />
+        <br />
 
-      <LoginAs
-        v-if="current_mode === 'login'"
-        :authors="authors"
-        @close="$emit('close')"
-      />
-      <CreateAuthor
-        v-else-if="current_mode === 'create'"
-        @close="$emit('close')"
-      />
+        <LoginAs
+          v-if="current_mode === 'login'"
+          :authors="authors"
+          @close="$emit('close')"
+        />
+        <CreateAuthor
+          v-else-if="current_mode === 'create'"
+          @close="$emit('close')"
+        />
+        <br />
+        <hr />
+        <br />
+      </template>
 
-      <br />
-      <hr />
-      <br />
+      <AuthorCard
+        v-else-if="connected_as"
+        :key="connected_as.$path"
+        :author="connected_as"
+      />
+      <button
+        v-if="is_identified"
+        type="button"
+        class="u-button u-button_red"
+        @click="logout"
+      >
+        {{ $t("logout") }}
+      </button>
+
       <div class="_topLabel">
         <label for="" class="u-label">{{ $t("list_of_contributors") }}</label>
       </div>
@@ -93,7 +108,17 @@ export default {
   },
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    async logout() {
+      try {
+        this.reponse = await this.$api.logoutFromFolder();
+      } catch (err) {
+        this.response = err;
+        this.$alertify.delay(4000).error(err);
+        return false;
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

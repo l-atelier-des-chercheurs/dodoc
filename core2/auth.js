@@ -39,7 +39,7 @@ module.exports = (function () {
       // todo replace with jwt with expiration
       // https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
       const token = crypto.randomBytes(32).toString("hex");
-      tokens[token] = { token_path: path_to_folder, created: +new Date() };
+      tokens[token] = { token_path: path_to_folder, issued: +new Date() };
 
       API.updateTokensFile();
       dev.logverbose("set new token", { token, path_to_folder });
@@ -50,6 +50,18 @@ module.exports = (function () {
         throw new Error(`token_does_not_exist`);
       if (tokens[token].token_path !== token_path)
         throw new Error(`token_path_mismatch`);
+
+      // check if token isn't expired
+      const issued = tokens[token].issued;
+      const expires_after_hours = 0.0001;
+      const hours_since_issued = (+new Date() - issued) / (1000 * 3600);
+
+      if (hours_since_issued > expires_after_hours) {
+        API.revokeToken({ token_to_revoke: token });
+        // check if other tokens are also expired and remove them?
+        throw new Error(`token_expired`);
+      }
+
       return;
     },
 
@@ -57,18 +69,24 @@ module.exports = (function () {
       await writeFileAtomic(path_to_tokens, JSON.stringify(tokens, null, 2));
     },
 
-    async revokeToken({ path_to_folder, token_to_revoke }) {
-      API.checkToken({ token: token_to_revoke, token_path: path_to_folder });
-      delete tokens[token_to_revoke];
-      API.updateTokensFile();
+    async removeObsoleteTokens() {
+      Object.entries(tokens).find(([token, tp]) => {
+        const issued = tp.issued;
+        debugger;
+        // if (tp.issued) delete tokens[token];
+      });
+      await API.updateTokensFile();
       return;
     },
-
-    // SALT ?
-
+    async revokeToken({ token_to_revoke }) {
+      delete tokens[token_to_revoke];
+      await API.updateTokensFile();
+      return;
+    },
     async removeAllTokensForFolder({ token_path }) {
+      dev.logfunction({ token_path });
       Object.entries(tokens).find(([token, tp]) => {
-        if (tp === token_path) delete tokens[token];
+        if (tp.token_path === token_path) delete tokens[token];
       });
       API.updateTokensFile();
     },

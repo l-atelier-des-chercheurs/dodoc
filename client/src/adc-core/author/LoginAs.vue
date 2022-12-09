@@ -25,9 +25,6 @@
         {{ $t("login") }}
       </button>
     </form>
-    <button type="button" class="u-button u-button_red" v-else @click="logout">
-      {{ $t("logout") }}
-    </button>
   </div>
 </template>
 <script>
@@ -65,15 +62,6 @@ export default {
           },
         });
         this.$emit("close");
-      } catch (err) {
-        this.response = err;
-        this.$alertify.delay(4000).error(err);
-        return false;
-      }
-    },
-    async logout() {
-      try {
-        this.reponse = await this.$api.logoutFromFolder();
       } catch (err) {
         this.response = err;
         this.$alertify.delay(4000).error(err);

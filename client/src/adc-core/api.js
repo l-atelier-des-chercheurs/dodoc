@@ -31,7 +31,8 @@ export default function () {
         const sessionID = localStorage.getItem("sessionID");
         if (sessionID) this.socket.auth = { sessionID };
 
-        await this.checkAuthFromStorage();
+        await this._setAuthFromStorage();
+        this.setAuthorizationHeader();
 
         // todo also use token for socketio connection
         this.socket.connect();
@@ -87,37 +88,31 @@ export default function () {
 
         this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
       },
-      async checkAuthFromStorage() {
-        let auth = {};
-
+      async _setAuthFromStorage() {
         const tokenpath = localStorage.getItem("tokenpath");
         try {
           const { token, token_path } = JSON.parse(tokenpath);
-          auth.token = token;
-          auth.token_path = token_path;
+          this.tokenpath.token = token;
+          this.tokenpath.token_path = token_path;
         } catch (err) {
           err;
         }
 
         const general_password = localStorage.getItem("general_password");
-        if (general_password) auth.general_password = general_password;
-
-        const Authorization = JSON.stringify(auth);
-
-        debugger;
+        if (general_password) this.general_password = general_password;
 
         // check with route
-        await this.$axios
-          .get("_authCheck", {
-            headers: {
-              Authorization,
-            },
-          })
-          .catch((err) => {
-            err;
-            // if there is an error, we return here
-            return;
-          });
+        // await this.$axios
+        //   .get("_authCheck", {
+        //     headers: {
+        //       Authorization,
+        //     },
+        //   })
+        //   .catch((err) => {
+        //     err;
+        //     // if there is an error, we return here
+        //     return;
+        //   });
 
         // Todo change all this? if a user has a valid token and token_path,
         // then they must also have access
@@ -125,11 +120,7 @@ export default function () {
         // they should get a token with a path that looks like
         // token_path: "/"
         // --> meaning they can read content, but not update anything
-        debugger;
-
-        this.token = auth.token;
-        this.token_path = auth.token_path;
-        this.general_password = auth.general_password;
+        // debugger;
       },
       setAuthorizationHeader() {
         this.$axios.defaults.headers.common["Authorization"] = JSON.stringify({
@@ -284,6 +275,7 @@ export default function () {
 
           this.tokenpath.token = token;
           this.tokenpath.token_path = path;
+
           localStorage.setItem(
             "tokenpath",
             JSON.stringify({ token, token_path: path })
@@ -429,8 +421,7 @@ export default function () {
       },
 
       onError(err) {
-        if (err.response.data === "token_does_not_exist") {
-          // invalidate token
+        if (err.response.data?.message === "token_does_not_exist") {
           this.resetToken();
           this.$alertify
             .delay(4000)
@@ -439,13 +430,22 @@ export default function () {
                 "notifications.connection_information_invalid_please_login"
               )
             );
-        } else if (err.response.data === "author_not_allowed") {
+        } else if (err.response.data?.message === "token_expired") {
+          this.resetToken();
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("notifications.please_reconnect_to_edit"));
+        } else if (err.response.data?.message === "author_not_allowed") {
           // invalidate token
           this.resetToken();
           this.$alertify
             .delay(4000)
             .error(this.$t("notifications.author_not_allowed"));
         }
+
+        debugger;
+
+        this.setAuthorizationHeader();
         this.$alertify.delay(4000).error(err);
       },
     },
