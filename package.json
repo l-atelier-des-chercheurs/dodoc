@@ -60,7 +60,7 @@
     "electron-pdf-window": "^1.0.12",
     "electron-window-state": "^5.0.3",
     "exif-reader": "^1.0.3",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "ffmpeg-ffprobe-static": "*",
     "fluent-ffmpeg": "^2.1.2",
     "formidable": "^1.2.2",
