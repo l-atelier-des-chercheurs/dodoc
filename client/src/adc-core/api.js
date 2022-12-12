@@ -26,6 +26,7 @@ export default function () {
         await this.$api.getFolders({
           path: `authors`,
         });
+        this.$api.join({ room: "authors" });
       },
       async initSocketio() {
         console.log("initSocketio");

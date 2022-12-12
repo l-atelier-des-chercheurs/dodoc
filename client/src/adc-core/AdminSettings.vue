@@ -22,7 +22,7 @@
             tag="h1"
             :required="true"
             :maxlength="40"
-            :can_edit="true"
+            :can_edit="is_admin"
           />
 
           <br />
@@ -34,7 +34,7 @@
             :content="settings.presentation_of_instance"
             :path="'_admin'"
             :required="false"
-            :can_edit="true"
+            :can_edit="is_admin"
           />
 
           <br />
@@ -47,14 +47,15 @@
             :path="'_admin'"
             :required="false"
             :input_type="'email'"
-            :can_edit="true"
+            :can_edit="is_admin"
           />
 
           <br />
 
           <DLabel :str="$t('logo')" />
-          // à venir
-          <CoverField :cover="settings.logo" :path="'_admin'" />
+          <div class="u-wips" />
+
+          <CoverField v-if="can_edit" :cover="settings.logo" :path="'_admin'" />
 
           <br />
 
@@ -71,7 +72,7 @@
             :path="'_admin'"
             :input_type="'password'"
             :required="false"
-            :can_edit="true"
+            :can_edit="is_admin"
           />
 
           <br />
@@ -83,7 +84,7 @@
             :content="settings.signup_password"
             :path="'_admin'"
             :required="false"
-            :can_edit="true"
+            :can_edit="is_admin"
           />
 
           <br />
@@ -100,7 +101,7 @@
             :content="settings.pathToUserContent"
             :path="'_admin'"
             :required="true"
-            :can_edit="$root.is_electron"
+            :can_edit="is_admin && $root.is_electron"
           />
           <br />
           <div class="u-instructions">

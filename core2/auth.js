@@ -3,6 +3,8 @@ const crypto = require("crypto"),
   path = require("path"),
   writeFileAtomic = require("write-file-atomic");
 
+const folder = require("./folder");
+
 module.exports = (function () {
   let tokens = {};
   const path_to_tokens = path.join(global.appRoot, "tokens.json");
@@ -16,24 +18,6 @@ module.exports = (function () {
   })();
 
   const API = {
-    async hashPassword({
-      password,
-      salt = crypto.randomBytes(32).toString("hex"),
-    }) {
-      // see https://stackoverflow.com/a/67038052
-      const buf = crypto.scryptSync(password, salt, 64).toString("hex");
-      return `${buf.toString("hex")}.${salt}`;
-    },
-    async checkPassword({ submitted_password, stored_password_with_salt }) {
-      // check if password matches stored_password once it is hashed
-      const [stored_password, salt] = stored_password_with_salt.split(".");
-      const submitted_password_with_salt = await API.hashPassword({
-        password: submitted_password,
-        salt,
-      });
-      return submitted_password_with_salt === stored_password_with_salt;
-    },
-
     async createAndStoreToken({ path_to_folder }) {
       dev.logfunction({ path_to_folder });
       // todo replace with jwt with expiration
@@ -65,7 +49,23 @@ module.exports = (function () {
 
       return;
     },
-
+    async isAuthorIncluded({ path_to_folder, author_path }) {
+      const folder_meta = await folder.getFolder({ path_to_folder });
+      if (!folder_meta.$authors) throw new Error(`no_author_listed`);
+      if (
+        folder_meta.$authors.length > 0 &&
+        !folder_meta.$authors.includes(author_path)
+      ) {
+        throw new Error(`author_not_allowed`);
+      }
+      return true;
+    },
+    async isAuthorAdmin({ author_path }) {
+      const author_meta = await folder.getFolder({
+        path_to_folder: author_path,
+      });
+      return author_meta.role === "admin";
+    },
     async updateTokensFile() {
       await writeFileAtomic(path_to_tokens, JSON.stringify(tokens, null, 2));
     },

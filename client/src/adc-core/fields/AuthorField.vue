@@ -6,7 +6,6 @@
     />
 
     <div class="_authors">
-      {{ new_authors_paths }}
       <template v-for="author_path in new_authors_paths">
         <AuthorTag
           :path="author_path"

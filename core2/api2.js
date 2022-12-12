@@ -208,23 +208,17 @@ module.exports = (function () {
       if (!token || !token_path) throw new Error(`no_token_set`);
 
       auth.checkToken({ token, token_path });
-
-      // if we are here, that means that the token is valid and path is valid
-      // if token path and req path are the same, that means
+      if (await auth.isAuthorAdmin({ author_path: token_path })) {
+        dev.logapi("Author is admin, next");
+        return next();
+      }
       if (path_to_folder === token_path) {
         dev.logapi("Token path and folder path are identical, next");
         return next();
       }
+      await auth.isAuthorIncluded({ path_to_folder, author_path: token_path });
 
-      // we need to check if token path is included in $authors
-      // for example "authors/louis"
-      const folder_meta = await folder.getFolder({ path_to_folder });
-      if (
-        folder_meta.$authors.length > 0 &&
-        !folder_meta.$authors.includes(token_path)
-      )
-        throw new Error(`author_not_allowed`);
-
+      dev.logapi("Author allowed, next");
       return next();
     } catch (err) {
       dev.error(err.message);

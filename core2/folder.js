@@ -3,8 +3,7 @@ const path = require("path"),
 
 const utils = require("./utils"),
   thumbs = require("./thumbs"),
-  cache = require("./cache"),
-  auth = require("./auth");
+  cache = require("./cache");
 
 module.exports = (function () {
   const API = {
@@ -106,7 +105,7 @@ module.exports = (function () {
 
       if (valid_meta.$password) {
         // encrypt before store
-        valid_meta.$password = await auth.hashPassword({
+        valid_meta.$password = await utils.hashPassword({
           password: valid_meta.$password,
         });
       }
@@ -254,7 +253,7 @@ module.exports = (function () {
       )
         throw new Error("Folder doesn’t have any password");
 
-      const submitted_password_matches = await auth.checkPassword({
+      const submitted_password_matches = await utils.checkPassword({
         submitted_password,
         stored_password_with_salt: folder_meta.$password,
       });

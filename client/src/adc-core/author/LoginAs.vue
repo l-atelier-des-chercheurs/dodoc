@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form v-if="!is_identified" @submit.prevent="login">
+    <form v-if="!connected_as" @submit.prevent="login">
       <TextInput
         :content.sync="name_of_account"
         :label_str="'name_or_pseudonym'"

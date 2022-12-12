@@ -8,6 +8,7 @@ const path = require("path"),
   sharp = require("sharp"),
   { IncomingForm } = require("formidable"),
   md5File = require("md5-file");
+crypto = require("crypto");
 
 sharp.cache(false);
 
@@ -300,6 +301,24 @@ module.exports = (function () {
       if (req.body) obj.data = req.body;
 
       return obj;
+    },
+
+    async hashPassword({
+      password,
+      salt = crypto.randomBytes(32).toString("hex"),
+    }) {
+      // see https://stackoverflow.com/a/67038052
+      const buf = crypto.scryptSync(password, salt, 64).toString("hex");
+      return `${buf.toString("hex")}.${salt}`;
+    },
+    async checkPassword({ submitted_password, stored_password_with_salt }) {
+      // check if password matches stored_password once it is hashed
+      const [stored_password, salt] = stored_password_with_salt.split(".");
+      const submitted_password_with_salt = await API.hashPassword({
+        password: submitted_password,
+        salt,
+      });
+      return submitted_password_with_salt === stored_password_with_salt;
     },
   };
 

@@ -3,7 +3,7 @@
     <div>
       <!-- <div class="u-wips" /> -->
 
-      <template v-if="!is_identified">
+      <template v-if="!connected_as">
         <RadioSwitch
           :content.sync="current_mode"
           :options="[
@@ -39,17 +39,18 @@
         :key="connected_as.$path"
         :author="connected_as"
       />
-      <button
-        v-if="is_identified"
-        type="button"
-        class="u-button u-button_red"
-        @click="logout"
-      >
-        {{ $t("logout") }}
-      </button>
+
+      <br />
+
+      <template v-if="connected_as">
+        <button type="button" class="u-button u-button_red" @click="logout">
+          {{ $t("logout") }}
+        </button>
+        <br />
+        <br />
+      </template>
 
       <DLabel :str="$t('list_of_contributors')" />
-
       <small v-if="authors.length === 0">
         {{ $t("no_accounts_yet") }}
       </small>
@@ -59,7 +60,7 @@
         class="u-button"
         @click="show_authors_list = !show_authors_list"
       >
-        {{ $t("show_list") }} ({{ authors.length }})
+        {{ $t("show_list") }} ({{ authors_except_self.length }})
       </button>
       <div class="_listOfAuthors" v-if="show_authors_list">
         <AuthorCard
@@ -95,15 +96,10 @@ export default {
     this.authors = await this.$api.getFolders({
       path: `authors`,
     });
-
     // if no authors, then switch to register
     if (this.authors.length === 0) this.current_mode = "create";
-
-    this.$api.join({ room: "authors" });
   },
-  beforeDestroy() {
-    this.$api.leave({ room: "authors" });
-  },
+  beforeDestroy() {},
   watch: {},
   computed: {
     authors_except_self() {

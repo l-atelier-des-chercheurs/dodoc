@@ -1,6 +1,16 @@
 <template>
   <div class="_authorCard">
-    {{ author.name }}
+    <TitleField
+      :field_name="'name'"
+      :label="$t('name')"
+      :content="author.name"
+      :path="author.$path"
+      :required="true"
+      :minlength="3"
+      :maxlength="40"
+      :tag="'h2'"
+      :can_edit="is_self"
+    />
     <small>
       {{ author.$path }}
     </small>
@@ -9,7 +19,12 @@
     <br />
     {{ author.email }}
     <br />
-    <button type="button" class="u-button" v-if="is_self" @click="removeAuthor">
+    <button
+      type="button"
+      class="u-button"
+      v-if="is_self || is_admin"
+      @click="removeAuthor"
+    >
       {{ $t("remove") }}
     </button>
   </div>
@@ -39,7 +54,7 @@ export default {
       await this.$api.deleteItem({
         path: this.author.$path,
       });
-      await this.$api.logoutFromFolder();
+      if (this.is_self) await this.$api.logoutFromFolder();
     },
   },
 };

@@ -10,7 +10,7 @@
       <button
         type="button"
         class="u-button u-button_red u-button_big"
-        v-if="is_identified"
+        v-if="connected_as"
         @click="show_create_modal = true"
       >
         <svg
@@ -56,7 +56,7 @@
       />
     </div>
 
-    <ProjectsTester v-if="$api.debug_mode && is_identified" />
+    <ProjectsTester v-if="$api.debug_mode && is_admin" />
 
     <div class="">
       <h3>Projets finalisés</h3>

@@ -108,8 +108,13 @@ export default {
       return this.project.$files.filter((f) => f.is_journal === true) || [];
     },
     can_edit_project() {
-      if (this.$api.tokenpath.token_path)
-        return this.project.$authors.includes(this.$api.tokenpath.token_path);
+      if (!this.connected_as) return false;
+      if (this.connected_as.role === "admin") return true;
+      if (
+        Array.isArray(this.project.$authors) &&
+        this.project.$authors.includes(this.connected_as.$path)
+      )
+        return true;
       return false;
     },
   },
