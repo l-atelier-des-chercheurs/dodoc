@@ -15,8 +15,8 @@
 
       <div class="" v-else>
         <router-view v-slot="{ Component }">
-          <transition name="fade">
-            <component :is="Component" />
+          <transition name="fade" mode="out-in">
+            <component :is="Component" :key="$route.path" />
           </transition>
         </router-view>
       </div>
@@ -442,12 +442,12 @@ img {
   &-enter-active,
   &-leave-active {
     opacity: 1;
-    transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter,
   &-leave-to {
     opacity: 0;
-    transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 .fade_fast {
