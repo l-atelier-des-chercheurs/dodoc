@@ -1,9 +1,8 @@
 <template>
   <BaseModal2 :title="$t('create_a_project')" @close="$emit('close')">
     <form class="input-validation-required" @submit.prevent="createProject">
-      <div class="_topLabel">
-        <label for="" class="u-label">{{ $t("title") }}</label>
-      </div>
+      <DLabel :str="$t('title')" />
+
       <TextInput
         :content.sync="new_project_title"
         :maxlength="40"
@@ -89,7 +88,7 @@ export default {
             status: "draft",
             license: "CC",
             $public: this.new_project_is_public,
-            $authors: ["louis", "pauline"],
+            $authors: [this.$api.tokenpath.token_path],
           },
         });
         setTimeout(() => {

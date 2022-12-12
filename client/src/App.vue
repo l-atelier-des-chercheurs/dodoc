@@ -1,36 +1,63 @@
 -
 <template>
   <div id="app" class="">
-    <TopBar />
-    <AdminPanel v-if="false" />
-    <div class="">
-      <router-view v-slot="{ Component }">
-        <transition name="fade">
-          <component :is="Component" />
-        </transition>
-      </router-view>
+    <div class="_spinner" v-if="$root.is_loading" key="loader">
+      <LoaderSpinner />
     </div>
+
+    <template v-else>
+      <TopBar />
+
+      <GeneralPasswordModal
+        v-if="show_general_password_modal"
+        @close="show_general_password_modal = false"
+      />
+
+      <div class="" v-else>
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" :key="$route.path" />
+          </transition>
+        </router-view>
+      </div>
+    </template>
   </div>
 </template>
 <script>
-import AdminPanel from "@/adc-core/AdminPanel.vue";
 import TopBar from "@/components/TopBar.vue";
+import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 
 export default {
   props: {},
   components: {
-    AdminPanel,
     TopBar,
+    GeneralPasswordModal,
   },
   data() {
-    return {};
+    return {
+      show_general_password_modal: false,
+    };
   },
-  created() {},
+  created() {
+    this.$eventHub.$on(
+      `app.prompt_general_password`,
+      this.promptGeneralPassword
+    );
+  },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off(
+      `app.prompt_general_password`,
+      this.promptGeneralPassword
+    );
+  },
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    promptGeneralPassword() {
+      this.show_general_password_modal = true;
+    },
+  },
 };
 </script>
 <style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
@@ -40,8 +67,9 @@ export default {
 :root {
   --spacing: var(--sl-spacing-medium);
 
-  --c-bleumarine: #1d327f;
-  --c-bleumarine_clair: #bec6e5;
+  --c-bleumarine: hsl(227, 63%, 41%);
+  --c-bleumarine_clair: hsl(227, 63%, 81%);
+  --c-bleumarine_fonce: hsl(227, 63%, 11%);
   --c-bleuvert: #52c5b9;
   --c-bleuvert_clair: hsl(174, 50%, 81%);
   --c-bleuvert_fonce: hsl(174, 50%, 41%);
@@ -54,10 +82,10 @@ export default {
 
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
-  --c-noir: #333;
-  --c-gris: #eff2f3;
-  --c-gris_clair: hsl(195, 14%, 98%);
-  --c-gris_fonce: hsl(195, 14%, 75%);
+  --c-noir: hsl(0, 0%, 15%);
+  --c-gris: hsl(195, 14%, 93%);
+  --c-gris_clair: hsl(195, 14%, 97%);
+  --c-gris_fonce: hsl(195, 14%, 45%);
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
@@ -69,7 +97,8 @@ export default {
   --scrollbar-border: 2px;
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
-  --border-radius: 6px;
+  --label-color: var(--c-gris_fonce);
+  --border-radius: 18px;
 
   --input-font-family: inherit;
   --input-font-size: 1rem;
@@ -286,8 +315,14 @@ h3 {
   }
 }
 
-ul {
-  padding: calc(var(--spacing) / 2);
+ul,
+ol {
+  margin: calc(var(--spacing) / 1);
+  padding: 0;
+
+  li {
+    margin: calc(var(--spacing) / 4);
+  }
 }
 
 ._boldBtn {
@@ -407,12 +442,12 @@ img {
   &-enter-active,
   &-leave-active {
     opacity: 1;
-    transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter,
   &-leave-to {
     opacity: 0;
-    transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 .fade_fast {

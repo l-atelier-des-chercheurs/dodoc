@@ -1,38 +1,94 @@
 <template>
-  <BaseModal2 :title="$t('authors')" @close="$emit('close')">
+  <BaseModal2 :title="$t('contributors')" @close="$emit('close')">
     <div>
-      <div class="u-wips" />
+      <!-- <div class="u-wips" /> -->
 
-      <NewAuthor />
+      <template v-if="!connected_as">
+        <RadioSwitch
+          :content.sync="current_mode"
+          :options="[
+            {
+              label: $t('login'),
+              value: 'login',
+            },
+            {
+              label: $t('create_account'),
+              value: 'create',
+            },
+          ]"
+        />
 
-      <div v-for="author in authors" :key="author.$path">
-        {{ author.name }} <br />
-        <small>{{ author }}</small>
-        <button type="button" @click="removeAuthor(author.$path)">x</button>
-        <br /><br />
+        <br />
+
+        <LoginAs
+          v-if="current_mode === 'login'"
+          :authors="authors"
+          @close="$emit('close')"
+        />
+        <CreateAuthor
+          v-else-if="current_mode === 'create'"
+          @close="$emit('close')"
+        />
+        <br />
+        <hr />
+        <br />
+      </template>
+
+      <AuthorCard
+        v-else-if="connected_as"
+        :key="connected_as.$path"
+        :author="connected_as"
+      />
+
+      <br />
+
+      <template v-if="connected_as">
+        <button type="button" class="u-button u-button_red" @click="logout">
+          {{ $t("logout") }}
+        </button>
+        <br />
+        <br />
+      </template>
+
+      <DLabel :str="$t('list_of_contributors')" />
+      <small v-if="authors.length === 0">
+        {{ $t("no_accounts_yet") }}
+      </small>
+      <button
+        type="button"
+        v-else
+        class="u-button"
+        @click="show_authors_list = !show_authors_list"
+      >
+        {{ $t("show_list") }} ({{ authors_except_self.length }})
+      </button>
+      <div class="_listOfAuthors" v-if="show_authors_list">
+        <AuthorCard
+          v-for="author in authors_except_self"
+          :key="author.$path"
+          :author="author"
+        />
       </div>
-
-      <input type="text" v-model="login_to_slug" />
-      <button type="button" @click="loginAs">login</button>
-
-      <button type="button" @click="$emit('close')">fermer</button>
-      <button type="button" @click="$emit('close')">fermer</button>
     </div>
   </BaseModal2>
 </template>
 <script>
-import NewAuthor from "@/adc-core/author/NewAuthor.vue";
+import CreateAuthor from "@/adc-core/author/CreateAuthor.vue";
+import AuthorCard from "@/adc-core/author/AuthorCard.vue";
+import LoginAs from "@/adc-core/author/LoginAs.vue";
 
 export default {
   props: {},
   components: {
-    NewAuthor,
+    CreateAuthor,
+    AuthorCard,
+    LoginAs,
   },
   data() {
     return {
+      current_mode: "login",
+      show_authors_list: false,
       authors: [],
-      login_to_slug: "",
-      response: "",
     };
   },
   created() {},
@@ -40,32 +96,36 @@ export default {
     this.authors = await this.$api.getFolders({
       path: `authors`,
     });
-    this.$api.join({ room: "authors" });
+    // if no authors, then switch to register
+    if (this.authors.length === 0) this.current_mode = "create";
   },
   beforeDestroy() {},
   watch: {},
-  computed: {},
-  methods: {
-    async removeAuthor(path) {
-      await this.$api.deleteItem({
-        path,
-      });
+  computed: {
+    authors_except_self() {
+      if (this.connected_as)
+        return this.authors.filter((a) => a.$path !== this.connected_as.$path);
+      return this.authors;
     },
-    async loginAs() {
-      this.response = "";
-      this.response = await this.$api
-        .loginToFolder({
-          folder_type: "authors",
-          folder_slug: this.login_to_slug,
-          auth_infos: {
-            $password: "123",
-          },
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-        });
+  },
+  methods: {
+    async logout() {
+      try {
+        this.reponse = await this.$api.logoutFromFolder();
+      } catch (err) {
+        this.response = err;
+        this.$alertify.delay(4000).error(err);
+        return false;
+      }
     },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._listOfAuthors {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 4) 0;
+}
+</style>

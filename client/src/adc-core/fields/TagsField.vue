@@ -1,8 +1,6 @@
 <template>
   <div class="_tagsField">
-    <div class="_topLabel" v-if="label">
-      <label for="" class="u-label">{{ label }}</label>
-    </div>
+    <DLabel v-if="label" :str="label" />
 
     <span class="_tagsList" v-if="new_tags.length > 0">
       <sl-tag

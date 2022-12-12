@@ -7,8 +7,8 @@ const path = require("path"),
   { networkInterfaces } = require("os"),
   sharp = require("sharp"),
   { IncomingForm } = require("formidable"),
-  md5File = require("md5-file"),
-  crypto = require("crypto");
+  md5File = require("md5-file");
+crypto = require("crypto");
 
 sharp.cache(false);
 
@@ -235,25 +235,6 @@ module.exports = (function () {
       return await md5File(full_media_path);
     },
 
-    // see https://stackoverflow.com/a/67038052
-    async hashPassword({ password, salt = global.settings.password_salt }) {
-      const buf = crypto.scryptSync(password, salt, 64).toString("hex");
-      return `${buf.toString("hex")}.${salt}`;
-    },
-
-    checkPassword({ submitted_password, stored_password_with_salt }) {
-      // check if password matches stored_password once it is hashed
-      const [stored_password, salt] = stored_password_with_salt.split(".");
-      const submitted_password_with_salt = API.hashPassword({
-        password: submitted_password,
-        salt,
-      });
-      return submitted_password_with_salt === stored_password_with_salt;
-    },
-
-    getPathParent(path) {
-      return path.substr(0, path.lastIndexOf("/"));
-    },
     async parseAndCheckSchema({ relative_path }) {
       dev.logfunction({ relative_path });
 
@@ -272,14 +253,12 @@ module.exports = (function () {
       if (items_in_path.length > 4) obj.submeta_filename = items_in_path[4];
 
       if (!global.settings.schema[obj.folder_type])
-        throw new Error(`Missing schema for folder_type ${obj.folder_type}`);
+        throw new Error(`no_schema_for_folder`);
       if (
         obj.subfolder_type &&
         !global.settings.schema[obj.folder_type].$folders[obj.subfolder_type]
       )
-        throw new Error(
-          `Missing schema for subfolder_type ${obj.subfolder_type}`
-        );
+        throw new Error(`no_schema_for_subfolder`);
 
       obj.schema = obj.subfolder_type
         ? global.settings.schema[obj.folder_type].$folders[obj.subfolder_type]
@@ -322,6 +301,24 @@ module.exports = (function () {
       if (req.body) obj.data = req.body;
 
       return obj;
+    },
+
+    async hashPassword({
+      password,
+      salt = crypto.randomBytes(32).toString("hex"),
+    }) {
+      // see https://stackoverflow.com/a/67038052
+      const buf = crypto.scryptSync(password, salt, 64).toString("hex");
+      return `${buf.toString("hex")}.${salt}`;
+    },
+    async checkPassword({ submitted_password, stored_password_with_salt }) {
+      // check if password matches stored_password once it is hashed
+      const [stored_password, salt] = stored_password_with_salt.split(".");
+      const submitted_password_with_salt = await API.hashPassword({
+        password: submitted_password,
+        salt,
+      });
+      return submitted_password_with_salt === stored_password_with_salt;
     },
   };
 

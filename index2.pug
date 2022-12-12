@@ -9,7 +9,8 @@ html
     meta(name="pinterest" content="nopin")
     meta(name="robots" content="noindex")
 
-    title
+    title.  
+      !{name_of_instance}
 
     link(href="favicon.ico" id="favicon" rel="icon" type="image/x-icon")
     style.
@@ -31,6 +32,13 @@ html
         schema: !{JSON.stringify(schema)},
         version: "!{global.appInfos.version}",
         debug_mode: !{debug_mode},
+      
+        name_of_instance: `!{name_of_instance}`,
+        presentation_of_instance: `!{presentation_of_instance}`,
+        contactmail_of_instance: `!{contactmail_of_instance}`,
+
+        has_general_password: !{has_general_password},
+        has_signup_password: !{has_signup_password},
       }
 
 

@@ -3,7 +3,7 @@
     <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
       <template v-if="projectpanes.length === 0">
         <pane>
-          <span class="_msg u-instructions u-padding-small">
+          <span class="_msg u-instructions">
             Choisissez un panneau ci-dessus pour démarrer !
           </span>
         </pane>
@@ -21,7 +21,7 @@
           <div
             class="_floatingMsg"
             :key="`instructions.pane_${pane.type}`"
-            v-if="show_instructions && $api.is_logged_in"
+            v-if="show_instructions && can_edit_project"
             @click.self="show_instructions = false"
           >
             <div>
@@ -120,6 +120,8 @@ export default {
   display: flex;
   place-content: center;
   background: #eee;
+
+  padding: calc(var(--spacing) * 1);
 }
 
 ._floatingMsg {

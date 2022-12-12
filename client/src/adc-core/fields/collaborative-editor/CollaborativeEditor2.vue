@@ -729,7 +729,7 @@ export default {
       margin: 0;
       display: flex;
       flex-flow: row nowrap;
-      border: 2px solid var(--c-gris-clair);
+      border: 2px solid var(--c-gris_clair);
       border-radius: 12px;
       background: #fff;
 

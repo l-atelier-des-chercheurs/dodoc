@@ -76,8 +76,36 @@ export default function () {
         add: "ajouter",
         title: "titre",
         name: "nom",
+        name_of_instance: "Nom de l’instance",
+        name_of_instance_instructions: `Par exemple, <i>Documentation du fablab</i>, <i>do•doc de la classe de C</i>, etc.
+          Apparaîtra dans l’onglet du navigateur sur la page d’accueil et dans la barre de navigation.`,
+        presentation_of_instance: "Présentation de l’instance",
+        presentation_of_instance_instructions: `
+          Apparaîtra sur la page d’accueil uniquement.
+          `,
+        general_password: "mot de passe général",
+        general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
+        peut afficher un email de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
+        general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
+        Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
+
+        contactmail_of_instance: `Adresse e-mail de contact`,
+        contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
+
+        signup_password: "mot de passe pour la création d’un compte",
+        signup_password_instructions:
+          "Limiter la création de compte (et donc de projets) aux personnes munis de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent se créer un compte et publier des contenus.",
+
+        login: "s’identifier",
+        logout: "se déconnecter",
+        name_or_pseudonym: "nom ou pseudonyme",
         contributors: "Contributeur·rice·s",
+        contributor: "Contributeur·rice",
+        admin: "Administrateur·rice",
         create: "créer",
+        create_account: "créer un compte",
+        show_list: "Afficher la liste",
+        list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
         import_instructions: "Importer depuis un autre appareil",
         progress: "État d’avancement",
@@ -91,14 +119,28 @@ export default function () {
         not_public_status_explanations:
           "Le projet ne sera visible qu’à ses contributeurs.",
         finished: "Finalisé",
+        no_draft_proejcts: "Aucun projet en brouillon pour le moment",
         no_finalized_proejcts: "Aucun projet finalisé pour le moment",
         finished_status_explanations:
-          "Ce projet sera affiché en haut de la page d'accueil.",
+          "Ce projet sera affiché en haut de la page d’accueil.",
+        show_projects: "Afficher les projets",
+        no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
+        restart_to_apply: "Relancez do•doc pour appliquer",
+        restart: "Relancer do•doc",
+        reveal: "Révéler",
 
         medias: "Médias",
         license: "Licence",
         files: "Fichiers",
         template: "Gabarit",
+
+        settings: "Réglages",
+        path_to_content: "Chemin du stockage des contenus",
+        path_to_content_instructions: `Attention, fonctionnalité avancée !
+          Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,
+
+        access_control: "Contrôle des accès",
+        storage: "Stockage",
 
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",
@@ -112,13 +154,19 @@ export default function () {
         machines_and_materials: "Machines et matériaux",
 
         already_added: "Déjà ajouté",
+        open: "ouvrir",
         create_and_open: "Créer et ouvrir",
         create_a_project: "Créer un projet",
         create_a_publication: "Créer une publication",
 
+        project_title_instructions:
+          "Le titre est aussi utilisé sur la page d’accueil.",
+        project_desc_instructions:
+          "La description est affichée sur la page d’accueil.",
+
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
-          "Votre presse-papier ne contient pas d'images",
+          "Votre presse-papier ne contient pas d’images",
         "notifications.project_was_removed": "Ce projet vient d’être supprimé",
 
         more_infos: "Plus d’informations",
@@ -128,6 +176,9 @@ export default function () {
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",
+
+        save_on_this_device: "Sauvegarder pour cet appareil",
+        will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
         "module.label.text": "Bloc de texte",
         "module.label.mosaic": "Mosaïque de médias",

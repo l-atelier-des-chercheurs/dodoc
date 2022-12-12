@@ -18,6 +18,7 @@
                 ? 'last'
                 : 'inbetween'
             "
+            :can_edit="can_edit"
             @resize="resize({ meta_filename, new_size: $event })"
             @moveUp="moveTo({ meta_filename, dir: -1 })"
             @moveDown="moveTo({ meta_filename, dir: +1 })"
@@ -28,7 +29,7 @@
     </div>
 
     <ModuleCreator
-      v-if="$api.is_logged_in"
+      v-if="can_edit"
       :publication_path="publication.$path"
       @appendModuleMetaFilenameToList="appendModuleMetaFilenameToList"
     />
@@ -41,6 +42,7 @@ import PublicationModule from "@/components/publications/modules/PublicationModu
 export default {
   props: {
     publication: Object,
+    can_edit: Boolean,
   },
   components: {
     ModuleCreator,

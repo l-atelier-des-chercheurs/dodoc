@@ -11,6 +11,10 @@ module.exports = (function () {
       dev.logfunction({ path_to_type });
       // TODO cache get all folders
 
+      const { schema } = await utils.parseAndCheckSchema({
+        relative_path: path_to_type,
+      });
+
       const folders_slugs = await _getFolderSlugs({
         path_to_type,
       });
@@ -65,7 +69,7 @@ module.exports = (function () {
         value: folder_meta,
       });
 
-      return folder_meta;
+      return JSON.parse(JSON.stringify(folder_meta));
     },
 
     createFolder: async ({ path_to_type, data }) => {
@@ -232,12 +236,12 @@ module.exports = (function () {
       return;
     },
 
-    login: async ({ folder_type, folder_slug, submitted_password }) => {
-      dev.logfunction({ folder_type, folder_slug, submitted_password });
+    login: async ({ path_to_folder, submitted_password }) => {
+      dev.logfunction({ path_to_folder, submitted_password });
 
       // get folder meta
       let folder_meta = await utils
-        .readMetaFile(folder_type, folder_slug, "meta.txt")
+        .readMetaFile(path_to_folder, "meta.txt")
         .catch((err) => {
           throw err;
         });
@@ -249,7 +253,7 @@ module.exports = (function () {
       )
         throw new Error("Folder doesn’t have any password");
 
-      const submitted_password_matches = utils.checkPassword({
+      const submitted_password_matches = await utils.checkPassword({
         submitted_password,
         stored_password_with_salt: folder_meta.$password,
       });

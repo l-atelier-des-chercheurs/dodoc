@@ -1,19 +1,29 @@
 <template>
   <div>
-    <input
-      v-if="tag === 'input'"
-      ref="field"
-      type="text"
-      class=""
-      :required="required"
-      :placeholder="'…'"
-      @input="$emit('update:content', $event.target.value)"
-      @keyup.enter="$emit('onEnter')"
+    <DLabel
+      v-if="label_str"
+      :for_attr="'_input_' + label_str"
+      :str="$t(label_str)"
     />
+
+    <template v-if="tag === 'input'">
+      <input
+        ref="field"
+        :type="current_input_type"
+        :name="label_str"
+        :id="'_input_' + label_str"
+        :autocomplete="autocomplete"
+        class=""
+        :required="required"
+        :placeholder="'…'"
+        @input="$emit('update:content', $event.target.value)"
+        @keyup.enter="$emit('onEnter')"
+      />
+    </template>
     <span
       v-else-if="tag === 'span'"
       ref="field"
-      class="_content"
+      class="u-input _content"
       :contenteditable="true"
       :required="required"
       @input="$emit('update:content', $event.target.innerText)"
@@ -22,13 +32,31 @@
     />
 
     <div
-      v-if="maxlength"
-      class="_maxlength fieldCaption"
+      class="_notices fieldCaption"
       :class="{
         'u-colorRed': !validity,
       }"
+      v-if="minlength || maxlength || input_type === 'password'"
     >
-      {{ content.length }} ≤ {{ maxlength }}
+      <div>
+        <template v-if="minlength || maxlength">
+          <template v-if="minlength">{{ minlength }} ≤ </template>
+          {{ content.length }}
+          <template v-if="maxlength"> ≤ {{ maxlength }}</template>
+        </template>
+      </div>
+      <div v-if="input_type === 'password'">
+        <button
+          type="button"
+          class="u-buttonLink _revealBtn"
+          :class="{
+            'is--active': show_password_in_clear,
+          }"
+          @click="toggleInputType"
+        >
+          {{ $t("reveal") }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -39,6 +67,16 @@ export default {
       type: String,
       default: "input",
     },
+    label_str: {
+      type: String,
+    },
+    input_type: {
+      type: String,
+      default: "text",
+    },
+    autocomplete: {
+      type: String,
+    },
     content: {
       type: String,
       default: "",
@@ -47,6 +85,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    minlength: {
+      type: [Boolean, Number],
+      default: false,
+    },
     maxlength: {
       type: [Boolean, Number],
       default: false,
@@ -54,7 +96,9 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      show_password_in_clear: false,
+    };
   },
   created() {},
   mounted() {
@@ -62,6 +106,7 @@ export default {
       this.$refs.field.innerText = this.content;
       this.focusSpanAtEnd();
     } else if (this.tag === "input") {
+      this.$refs.field.value = this.content;
       this.$refs.field.focus();
     }
   },
@@ -77,8 +122,16 @@ export default {
   computed: {
     validity() {
       if (this.required && this.content.length === 0) return false;
+      if (this.minlength && this.content.length < this.minlength) return false;
       if (this.maxlength && this.content.length > this.maxlength) return false;
       return true;
+    },
+    current_input_type() {
+      if (this.input_type === "password") {
+        if (this.show_password_in_clear) return "text";
+        else return "password";
+      }
+      return this.input_type;
     },
   },
   methods: {
@@ -131,12 +184,22 @@ export default {
         selection.addRange(range);
       }
     },
+    toggleInputType() {
+      this.show_password_in_clear = !this.show_password_in_clear;
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
-._maxlength {
+._notices {
   flex: 0 0 auto;
-  padding: calc(var(--spacing) / 4) 0;
+  // padding: calc(var(--spacing) / 4);
+  padding: 0;
+
+  display: flex;
+  justify-content: space-between;
+}
+._revealBtn {
+  padding: 0;
 }
 </style>

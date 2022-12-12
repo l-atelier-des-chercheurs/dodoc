@@ -13,7 +13,7 @@
     </sl-button>
 
     <template v-if="show_media_picker">
-      <label for="" class="u-label">{{ $t("type_of_module") }}</label>
+      <DLabel :str="$t('type_of_module')" />
       <select v-model="type_selected">
         <option
           v-for="option in options"

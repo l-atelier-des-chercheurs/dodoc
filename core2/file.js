@@ -114,6 +114,7 @@ module.exports = (function () {
 
           const path_to_meta = path.join(path_to_folder, meta_filename);
           const meta = await API.getFile({
+            path_to_folder,
             path_to_meta,
           });
 
@@ -125,8 +126,8 @@ module.exports = (function () {
 
       return metas;
     },
-    getFile: async ({ path_to_meta }) => {
-      dev.logfunction({ path_to_meta });
+    getFile: async ({ path_to_folder, path_to_meta }) => {
+      dev.logfunction({ path_to_folder, path_to_meta });
 
       const d = cache.get({
         key: path_to_meta,
@@ -138,8 +139,6 @@ module.exports = (function () {
 
       const media_filename = meta.$media_filename;
       const media_type = meta.$type;
-
-      const path_to_folder = utils.getPathParent(path_to_meta);
 
       if (media_filename && media_filename.endsWith(".txt"))
         meta.$content = await utils.readFileContent(

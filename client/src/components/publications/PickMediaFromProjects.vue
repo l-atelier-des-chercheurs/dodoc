@@ -6,7 +6,7 @@
         v-if="projects.length === 0"
       />
       <template v-else>
-        <label for="" class="u-label">{{ $t("source_project") }}</label>
+        <DLabel :str="$t('source_project')" />
         <select v-model="source_project_path">
           <option
             v-for="project in projects"
@@ -17,7 +17,7 @@
         </select>
 
         <template v-if="source_project_path">
-          <label for="" class="u-label">{{ $t("medias") }}</label>
+          <DLabel :str="$t('medias')" />
           <sl-spinner
             style="--indicator-color: currentColor"
             v-if="!source_project"

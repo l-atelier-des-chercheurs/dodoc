@@ -21,6 +21,8 @@ Vue.use(ShoelaceModelDirective);
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
+import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
+Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";
 Vue.component("AuthorField", AuthorField);
 import TagsField from "@/adc-core/fields/TagsField.vue";
@@ -36,8 +38,10 @@ Vue.component("RadioField", RadioField);
 import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
 //
-import BaseModal2 from "@/adc-core/modal/BaseModal2.vue";
+import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);
+import RadioSwitch from "@/adc-core/ui/RadioSwitch.vue";
+Vue.component("RadioSwitch", RadioSwitch);
 //
 import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);
@@ -46,9 +50,6 @@ Vue.component("ToggleInput", ToggleInput);
 import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
 //
-
-import MetaFieldHeader from "@/adc-core/fields/MetaFieldHeader.vue";
-Vue.component("MetaFieldHeader", MetaFieldHeader);
 
 import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
@@ -65,12 +66,25 @@ Vue.component("MediaContent", MediaContent);
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
 Vue.component("AuthorTag", AuthorTag);
 
+import DLabel from "@/adc-core/fields/DLabel.vue";
+Vue.component("DLabel", DLabel);
+
 Vue.component("EditBtn", {
   name: "EditBtn",
   template: `
   <sl-button variant="edit" class="editBtn" size="small" circle @click="$emit('click')">
     <sl-icon name="pencil-fill" :label="$t('edit')" />
   </sl-button>
+`,
+});
+
+Vue.component("SectionLabel", {
+  name: "SectionLabel",
+  props: ["text"],
+  template: `
+  <label for="" class="u-label u-sectionLabel">
+    <span>{{ text }}</span>
+  </label>
 `,
 });
 Vue.component("LoaderSpinner", {
@@ -116,6 +130,7 @@ new Vue({
   data: {
     store: window.store,
     app_infos: window.app_infos,
+    is_loading: true,
     is_connected: false,
     is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
     dev_mode: true,
@@ -126,13 +141,13 @@ new Vue({
       innerHeight: window.innerHeight,
     },
   },
-  mounted() {
-    this.$api.init({ debug_mode });
+  async mounted() {
+    await this.$api.init({ debug_mode });
+
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
     this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
-
     const html = document.documentElement; // returns the html tag
     html.setAttribute("lang", "fr");
 
@@ -140,6 +155,8 @@ new Vue({
       this.window.innerWidth = window.innerWidth;
       this.window.innerHeight = window.innerHeight;
     });
+
+    this.is_loading = false;
   },
   watch: {
     "$api.socket.connected": function () {

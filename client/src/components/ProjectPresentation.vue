@@ -33,7 +33,7 @@ z
 
       <CoverField
         v-if="context === 'full' && can_edit_project"
-        class=""
+        class="_coverPicker"
         :cover="project.$cover"
         :path="project.$path"
       />
@@ -42,7 +42,7 @@ z
     <div class="_projectInfos--infos">
       <AuthorField
         :label="context === 'full' ? $t('contributors') : ''"
-        :authors_slugs="project.$authors"
+        :authors_paths="project.$authors"
         :path="project.$path"
         :can_edit="can_edit_project"
       />
@@ -56,6 +56,7 @@ z
         :maxlength="40"
         :tag="context === 'full' ? 'h1' : 'h2'"
         :can_edit="can_edit_project"
+        :instructions="$t('project_title_instructions')"
       />
 
       <TitleField
@@ -69,7 +70,9 @@ z
         :path="project.$path"
         :maxlength="280"
         :can_edit="can_edit_project"
+        :instructions="$t('project_desc_instructions')"
       />
+      <DebugBtn v-if="context === 'full'" :content="project" />
     </div>
 
     <div class="_projectInfos--meta" v-if="context === 'full'">
@@ -87,8 +90,7 @@ z
         :to="{ path: '/' + project.$path }"
         class="u-button u-button_red"
       >
-        ouvrir&nbsp;
-        <sl-icon name="arrow-up-right" />
+        {{ $t("open") }}&nbsp;<sl-icon name="arrow-up-right" />
       </router-link>
     </div>
   </div>
@@ -349,5 +351,12 @@ export default {
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
   }
+}
+
+._coverPicker {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: calc(var(--spacing) / 1);
 }
 </style>

@@ -10,7 +10,7 @@
       <button
         type="button"
         class="u-button u-button_red u-button_big"
-        v-if="$api.is_logged_in"
+        v-if="connected_as"
         @click="show_create_modal = true"
       >
         <svg
@@ -36,6 +36,19 @@
         </svg>
         {{ $t("create_a_project") }}
       </button>
+
+      <template v-else>
+        Vous devez
+        <button
+          type="button"
+          class="u-button u-button_bleumarine u-button_small"
+          @click="$eventHub.$emit(`toolbar.openAuthor`)"
+        >
+          vous inscrire
+        </button>
+        pour pouvoir créer ou rejoindre un projet.
+      </template>
+
       <CreateProject
         v-if="show_create_modal"
         @close="show_create_modal = false"
@@ -43,7 +56,7 @@
       />
     </div>
 
-    <ProjectsTester v-if="$api.debug_mode" />
+    <ProjectsTester v-if="$api.debug_mode && is_admin" />
 
     <div class="">
       <h3>Projets finalisés</h3>
@@ -64,6 +77,9 @@
     <div class="">
       <h3>Projets en cours</h3>
       <div class="_projectsList">
+        <div v-if="draft_projects.length === 0" class="u-instructions">
+          {{ $t("no_draft_proejcts") }}
+        </div>
         <ProjectPresentation
           v-for="project in draft_projects"
           :project="project"
@@ -95,9 +111,14 @@ export default {
   },
   created() {},
   async mounted() {
-    this.projects = await this.$api.getFolders({
-      path: this.path,
-    });
+    this.projects = await this.$api
+      .getFolders({
+        path: this.path,
+      })
+      .catch((err_msg) => {
+        err_msg;
+        return;
+      });
     this.$api.join({ room: this.path });
   },
   beforeDestroy() {

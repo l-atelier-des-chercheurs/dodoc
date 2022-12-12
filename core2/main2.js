@@ -120,9 +120,11 @@ async function copyAndRenameUserFolder(full_default_path) {
 
   let full_path_to_content;
 
+  // TODO
+
   // two cases:
   if (global.settings.contentPath.startsWith("/")) {
-    // otherwise if starts with '/' then its a path to the folder itself
+    // if starts with '/' then its a path to the folder itself
     full_path_to_content = global.settings.contentPath;
   } else {
     // if contentPath is just a name, thats the name of the folder inside /Documents

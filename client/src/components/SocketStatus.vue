@@ -25,7 +25,7 @@
         disconnect
       </button>
       | -->
-      <br />
+
       <span class="">
         <input
           type="checkbox"
@@ -35,7 +35,7 @@
         />
         <label for="debug_mode">debugger</label>
       </span>
-      <span class="">
+      <!-- <span class="">
         <input
           type="checkbox"
           id="loggedin"
@@ -43,7 +43,7 @@
           v-model="$api.is_logged_in"
         />
         <label for="loggedin">identifié</label>
-      </span>
+      </span> -->
       <BaseModal2 v-if="show_warning" @close="$emit('close')">
         {{ $t("disconnect_warning") }} <br />
         <button type="button" @click="$router.go()">

@@ -4,22 +4,32 @@ import Vue from "vue";
 export default function () {
   return new Vue({
     data: {
-      socket: "",
+      socket: null,
       store: {},
-      is_logged_in: false,
       debug_mode: false,
+      tokenpath: {
+        token: "",
+        token_path: "",
+      },
+      general_password: "",
+
+      // todo replace is_identified, create route to test
+      is_correctly_logged_in: false,
     },
     created() {},
+    watch: {},
     methods: {
-      init({ debug_mode }) {
+      async init({ debug_mode }) {
         this.debug_mode = debug_mode;
-        this.is_logged_in = this.debug_mode;
+        await this.initSocketio();
 
-        this.initSchema();
-        this.initSocketio();
+        await this.$api.getFolders({
+          path: `authors`,
+        });
+        this.$api.join({ room: "authors" });
       },
-      initSchema() {},
-      initSocketio() {
+      async initSocketio() {
+        console.log("initSocketio");
         this.socket = io({
           autoConnect: false,
         });
@@ -27,6 +37,10 @@ export default function () {
         const sessionID = localStorage.getItem("sessionID");
         if (sessionID) this.socket.auth = { sessionID };
 
+        await this._setAuthFromStorage();
+        this.setAuthorizationHeader();
+
+        // todo also use token for socketio connection
         this.socket.connect();
 
         // client-side
@@ -77,8 +91,55 @@ export default function () {
         this.socket.on("fileCreated", this.fileCreated);
         this.socket.on("fileUpdated", this.fileUpdated);
         this.socket.on("fileRemoved", this.fileRemoved);
-      },
 
+        this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
+      },
+      async _setAuthFromStorage() {
+        let auth = {};
+
+        const tokenpath = localStorage.getItem("tokenpath");
+        try {
+          const { token, token_path } = JSON.parse(tokenpath);
+          auth.token = token;
+          auth.token_path = token_path;
+        } catch (err) {
+          err;
+        }
+
+        const general_password = localStorage.getItem("general_password");
+        if (general_password) auth.general_password = general_password;
+
+        const Authorization = JSON.stringify(auth);
+
+        // check with route
+        const response = await this.$axios.get("_authCheck", {
+          headers: {
+            Authorization,
+          },
+        });
+
+        if (auth.general_password && response.data.general_password_is_valid)
+          this.general_password = auth.general_password;
+
+        if (auth.token && auth.token_path && response.data.token_is_valid) {
+          this.tokenpath.token = auth.token;
+          this.tokenpath.token_path = auth.token_path;
+        }
+
+        // Todo change all this? if a user has a valid token and token_path,
+        // then they must also have access
+        // so for users that are not logged in but have the password,
+        // they should get a token with a path that looks like
+        // token_path: "/"
+        // --> meaning they can read content, but not update anything
+      },
+      setAuthorizationHeader() {
+        this.$axios.defaults.headers.common["Authorization"] = JSON.stringify({
+          token: this.tokenpath.token,
+          token_path: this.tokenpath.token_path,
+          general_password: this.general_password,
+        });
+      },
       disconnectSocket() {
         this.socket.disconnect();
       },
@@ -112,8 +173,6 @@ export default function () {
           );
           updateProps({ changed_data, folder_to_update });
         }
-
-        // update
       },
       folderRemoved({ path }) {
         this.$delete(this.store, path);
@@ -154,6 +213,7 @@ export default function () {
           (file) => file.$path !== path_to_meta
         );
       },
+
       join({ room }) {
         this.socket.emit("joinRoom", { room });
         // todo rejoin room after disconnect
@@ -165,10 +225,36 @@ export default function () {
 
       async getSettings() {
         const response = await this.$axios.get(`_admin`);
+        const admin_settings = response.data;
+        this.$set(this.store, "_admin", admin_settings);
+        return this.store["_admin"];
+      },
+      adminSettingsUpdated({ changed_data }) {
+        if (this.store["_admin"])
+          Object.entries(changed_data).map(([key, value]) => {
+            this.$set(this.store["_admin"], key, value);
+          });
+      },
+      async restartDodoc() {
+        return await this.$axios.post(`_admin`);
+      },
+
+      async editSettings(settings) {
+        const response = await this.$axios
+          .patch(`_admin`, settings)
+          .catch((err) => {
+            this.onError(err);
+            throw err;
+          });
         return response.data;
       },
       async getFolders({ path }) {
-        const response = await this.$axios.get(path);
+        if (this.store[path]) return this.store[path];
+
+        const response = await this.$axios.get(path).catch((err) => {
+          this.onError(err);
+          throw err;
+        });
         const folders = response.data;
         // folders.map((f) => this.$set(this.store, f.$path, f));
         this.$set(this.store, path, folders);
@@ -195,16 +281,74 @@ export default function () {
           throw e.response.data;
         }
       },
-      async loginToFolder({ folder_type, folder_slug, auth_infos }) {
+      async loginToFolder({ path, auth_infos }) {
         try {
-          const response = await this.$axios.post(
-            `/${folder_type}/${folder_slug}/_login`,
-            auth_infos
+          const response = await this.$axios.post(`${path}/_login`, auth_infos);
+          const token = response.data.token;
+
+          this.tokenpath.token = token;
+          this.tokenpath.token_path = path;
+
+          // TODO : bug after login, no storage in local ?
+
+          localStorage.setItem(
+            "tokenpath",
+            JSON.stringify({ token, token_path: path })
           );
-          return response.data;
+          this.setAuthorizationHeader();
+          return;
         } catch (e) {
-          throw e.response.data;
+          if (e.response.data.code)
+            throw _getErrorMsgFromCode(e.response.data.code);
+          else throw e.response.data;
         }
+      },
+      async logoutFromFolder() {
+        const auth_infos = {
+          token: this.tokenpath.token,
+        };
+        const path = this.tokenpath.token_path;
+        try {
+          // remove token locally
+          this.resetToken();
+          // remove token on the server
+          await this.$axios.post(`${path}/_logout`, auth_infos);
+          return;
+        } catch (e) {
+          if (e.response.data.code)
+            throw _getErrorMsgFromCode(e.response.data.code);
+          else throw e.response.data;
+        }
+      },
+
+      async submitGeneralPassword({
+        password,
+        remember_on_this_device = false,
+      }) {
+        // TODO
+        await this.$axios
+          .get(`_checkGeneralPassword`, {
+            headers: {
+              Authorization: JSON.stringify({ general_password: password }),
+            },
+          })
+          .catch((err) => {
+            this.onError(err);
+            throw err;
+            // expected error, no _ can exist
+          });
+
+        if (remember_on_this_device)
+          localStorage.setItem("general_password", password);
+
+        this.general_password = password;
+        this.setAuthorizationHeader();
+        return true;
+      },
+      disconnectFromGeneralPassword() {
+        localStorage.setItem("general_password", "");
+        this.general_password = "";
+        this.setAuthorizationHeader();
       },
 
       async uploadText({ path, filename, content = "", additional_meta }) {
@@ -253,7 +397,13 @@ export default function () {
       },
 
       async updateMeta({ path, new_meta }) {
-        const response = await this.$axios.patch(path, new_meta);
+        const response = await this.$axios
+          .patch(path, new_meta)
+          .catch((err) => {
+            this.onError(err);
+            throw err;
+          });
+
         return response.data;
       },
 
@@ -271,7 +421,7 @@ export default function () {
             },
           })
           .catch((err) => {
-            this.$alertify.delay(4000).error(err);
+            this.onError(err);
             throw err;
           });
 
@@ -279,13 +429,50 @@ export default function () {
       },
 
       async deleteItem({ path }) {
-        try {
-          const response = await this.$axios.delete(path);
-          return response.data;
-        } catch (e) {
-          throw e.response.data;
+        const response = await this.$axios.delete(path).catch((err) => {
+          this.onError(err);
+          throw err;
+        });
+
+        return response.data;
+      },
+
+      resetToken() {
+        this.tokenpath.token = "";
+        this.tokenpath.token_path = "";
+        localStorage.setItem("tokenpath", undefined);
+      },
+
+      onError(err) {
+        console.error(err.response.data?.message);
+        if (err.response.data?.message === "token_does_not_exist") {
+          this.resetToken();
+        } else if (err.response.data?.message === "token_expired") {
+          this.resetToken();
+        } else if (err.response.data?.message === "wrong_general_password") {
+          err;
+        } else if (
+          err.response.data?.message === "no_general_password_submitted"
+        ) {
+          this.$eventHub.$emit("app.prompt_general_password");
+        } else if (err.response.data?.message === "author_not_allowed") {
+          // invalidate token
+          // this.resetToken();
+          // this.$alertify
+          //   .delay(4000)
+          //   .error(this.$t("notifications.author_not_allowed"));
         }
+
+        this.setAuthorizationHeader();
+        this.$alertify.delay(4000).error(err);
       },
     },
+    computed: {},
   });
+}
+
+function _getErrorMsgFromCode(code) {
+  if (code === "ENOENT") return "folder_is_missing";
+
+  return "missing error message, code = " + code;
 }

@@ -1,25 +1,64 @@
 .u-label {
-  font-variant: small-caps;
-  text-transform: lowercase;
+  display: block;
+  // font-variant: small-caps;
+  text-transform: uppercase;
   font-weight: 500;
 
   // font-family: var(--sl-font-mono);
-  font-size: var(--sl-font-size-medium);
-  letter-spacing: 0.05em;
-  color: #666;
+  font-size: var(--sl-font-size-small);
+  letter-spacing: 0.02em;
+  color: var(--label-color);
+  // color: var(--c-gris_fonce);
 
-  line-height: 1;
+  margin-bottom: calc(var(--spacing) / 4);
+
+  // line-height: 1;
   // margin-right: calc(var(--spacing) / 4);
+
+  sl-icon-button::part(base) {
+    padding: 0;
+    color: currentColor;
+  }
+}
+
+.u-sectionLabel {
+  display: block;
+  width: 100%;
+  font-size: var(--sl-font-size-medium);
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-align: center;
+
+  background: var(--c-bleumarine);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  color: white;
+  border-radius: 4px;
+
+  margin-bottom: calc(var(--spacing) / 1);
+
+  > * {
+    // display: inline-block;
+  }
+
+  // &::before {
+  //   content: "en chantier :)";
+  //   font-family: "Fira Code";
+  //   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
+  //   border-radius: 6px;
+  //   transform: rotate(-6deg);
+  //   position: relative;
+  //   display: inline-block;
+  // }
 }
 
 .u-instructions {
   font-style: italic;
-  // color: var(--c-gris_fonce);
+  color: var(--label-color);
 }
 
 .u-wips {
   position: relative;
-  text-align: center;
+  // text-align: center;
   margin: calc(var(--spacing) / 2) 0;
 
   &::before {
@@ -73,6 +112,11 @@
   letter-spacing: 0.06em;
   text-transform: lowercase;
   background: transparent;
+  line-height: 1;
+
+  &.is--active {
+    color: var(--c-bleuvert);
+  }
 }
 
 .u-button {
@@ -98,10 +142,21 @@
   &[disabled] {
     cursor: not-allowed;
   }
+
+  &.is--active {
+    background: var(--c-bleuvert);
+  }
+}
+.u-button_floating {
+  box-shadow: 0px 5px 24px currentColor;
 }
 .u-button_red {
   background-color: var(--c-rouge);
   color: white;
+
+  &.u-button_floating {
+    box-shadow: 0px 5px 24px var(--c-rouge);
+  }
 
   &:hover,
   &:focus {
@@ -117,8 +172,22 @@
     background-color: var(--c-bleuvert_fonce);
   }
 }
+.u-button_bleumarine {
+  background-color: var(--c-bleumarine);
+  color: white;
+
+  &:hover,
+  &:focus {
+    background-color: var(--c-bleumarine_fonce);
+  }
+}
+.u-button_small {
+  font-size: var(--input-font-size-small);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+}
 .u-button_big {
   font-size: var(--input-font-size-big);
+  min-height: 2.9em;
 }
 
 input[type="color"],
@@ -171,15 +240,13 @@ textarea,
   // background: white;
   height: var(--input-height);
   line-height: var(--input-height);
+  line-height: inherit;
+
   vertical-align: middle;
 
   padding-left: calc(var(--spacing) * 0.5);
   padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
-
-  // border-color: var(--c-gris_fonce);
-  // border-width: 2px;
-  // border-style: dashed;
 
   transition: all 0.25s;
 
@@ -194,13 +261,20 @@ textarea,
   &.bg-blanc {
     background-color: white;
   }
+  &[required] {
+    background-size: 16px 16px;
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-image: radial-gradient(var(--c-rouge) 18%, transparent 25%);
+
+    transition: background-size 0.2s;
+  }
 }
 
 textarea,
 [contenteditable="true"] {
   height: auto;
-  line-height: inherit;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 }
 
 input.u-input-small {
@@ -224,27 +298,13 @@ svg {
   user-select: none;
 }
 
-[required] {
-  background-size: 16px 16px;
-  background-position: top right;
-  background-repeat: no-repeat;
-  background-image: radial-gradient(var(--c-rouge) 18%, transparent 25%);
-
-  transition: background-size 0.2s;
-
-  &:focus {
-    background-size: 20px 20px;
-  }
-}
-
 select {
   position: relative;
   background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='41px' height='26px' viewBox='0 0 41 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpolygon id='Path-3' fill='%23000000' points='0 5.38215461 19.9830489 25.3652035 40.1398855 5.20836689 34.9315186 0 19.8691842 15.0623344 4.83971338 0.0328636246'%3E%3C/polygon%3E%3C/g%3E%3C/svg%3E%0A");
   background-position: right 0.4rem center;
   background-repeat: no-repeat;
   background-size: 0.75rem;
-  padding-top: 0;
-  padding-bottom: 0;
+  padding: calc(var(--spacing) / 2);
   padding-right: calc(var(--spacing) * 0.5 + 1rem);
   min-width: 0px;
 
@@ -282,6 +342,7 @@ sl-button[variant="edit"] {
       background: var(--c-bleuvert);
       background: var(--c-bleuvert_fonce);
       color: white;
+
       // border-color: white;
       // border: none;
     }
