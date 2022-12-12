@@ -52,9 +52,7 @@
 
           <br />
 
-          <div class="_topLabel">
-            <label for="" class="u-label">{{ $t("logo") }}</label>
-          </div>
+          <DLabel :str="$t('logo')" />
           // à venir
           <CoverField :cover="settings.logo" :path="'_admin'" />
 

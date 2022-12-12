@@ -22,8 +22,13 @@ export default function () {
       async init({ debug_mode }) {
         this.debug_mode = debug_mode;
         await this.initSocketio();
+
+        await this.$api.getFolders({
+          path: `authors`,
+        });
       },
       async initSocketio() {
+        console.log("initSocketio");
         this.socket = io({
           autoConnect: false,
         });
@@ -89,30 +94,36 @@ export default function () {
         this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
       },
       async _setAuthFromStorage() {
+        let auth = {};
+
         const tokenpath = localStorage.getItem("tokenpath");
         try {
           const { token, token_path } = JSON.parse(tokenpath);
-          this.tokenpath.token = token;
-          this.tokenpath.token_path = token_path;
+          auth.token = token;
+          auth.token_path = token_path;
         } catch (err) {
           err;
         }
 
         const general_password = localStorage.getItem("general_password");
-        if (general_password) this.general_password = general_password;
+        if (general_password) auth.general_password = general_password;
+
+        const Authorization = JSON.stringify(auth);
 
         // check with route
-        // await this.$axios
-        //   .get("_authCheck", {
-        //     headers: {
-        //       Authorization,
-        //     },
-        //   })
-        //   .catch((err) => {
-        //     err;
-        //     // if there is an error, we return here
-        //     return;
-        //   });
+        const response = await this.$axios.get("_authCheck", {
+          headers: {
+            Authorization,
+          },
+        });
+
+        if (auth.general_password && response.data.general_password_is_valid)
+          this.general_password = auth.general_password;
+
+        if (auth.token && auth.token_path && response.data.token_is_valid) {
+          this.tokenpath.token = auth.token;
+          this.tokenpath.token_path = auth.token_path;
+        }
 
         // Todo change all this? if a user has a valid token and token_path,
         // then they must also have access
@@ -120,7 +131,6 @@ export default function () {
         // they should get a token with a path that looks like
         // token_path: "/"
         // --> meaning they can read content, but not update anything
-        // debugger;
       },
       setAuthorizationHeader() {
         this.$axios.defaults.headers.common["Authorization"] = JSON.stringify({
@@ -238,6 +248,8 @@ export default function () {
         return response.data;
       },
       async getFolders({ path }) {
+        if (this.store[path]) return this.store[path];
+
         const response = await this.$axios.get(path).catch((err) => {
           this.onError(err);
           throw err;
@@ -276,6 +288,8 @@ export default function () {
           this.tokenpath.token = token;
           this.tokenpath.token_path = path;
 
+          // TODO : bug after login, no storage in local ?
+
           localStorage.setItem(
             "tokenpath",
             JSON.stringify({ token, token_path: path })
@@ -306,7 +320,10 @@ export default function () {
         }
       },
 
-      async submitGeneralPassword({ password }) {
+      async submitGeneralPassword({
+        password,
+        remember_on_this_device = false,
+      }) {
         // TODO
         await this.$axios
           .get(`_checkGeneralPassword`, {
@@ -315,17 +332,22 @@ export default function () {
             },
           })
           .catch((err) => {
-            if (err.response?.data?.message === "wrong_general_password")
-              throw new Error(`wrong_general_password`);
+            this.onError(err);
+            throw err;
             // expected error, no _ can exist
           });
-        localStorage.setItem("general_password", password);
+
+        if (remember_on_this_device)
+          localStorage.setItem("general_password", password);
+
         this.general_password = password;
         this.setAuthorizationHeader();
         return true;
       },
       disconnectFromGeneralPassword() {
-        // todo
+        localStorage.setItem("general_password", "");
+        this.general_password = "";
+        this.setAuthorizationHeader();
       },
 
       async uploadText({ path, filename, content = "", additional_meta }) {
@@ -421,29 +443,24 @@ export default function () {
       },
 
       onError(err) {
+        console.error(err.response.data?.message);
         if (err.response.data?.message === "token_does_not_exist") {
           this.resetToken();
-          this.$alertify
-            .delay(4000)
-            .error(
-              this.$t(
-                "notifications.connection_information_invalid_please_login"
-              )
-            );
         } else if (err.response.data?.message === "token_expired") {
           this.resetToken();
-          this.$alertify
-            .delay(4000)
-            .error(this.$t("notifications.please_reconnect_to_edit"));
+        } else if (err.response.data?.message === "wrong_general_password") {
+          err;
+        } else if (
+          err.response.data?.message === "no_general_password_submitted"
+        ) {
+          this.$eventHub.$emit("app.prompt_general_password");
         } else if (err.response.data?.message === "author_not_allowed") {
           // invalidate token
-          this.resetToken();
-          this.$alertify
-            .delay(4000)
-            .error(this.$t("notifications.author_not_allowed"));
+          // this.resetToken();
+          // this.$alertify
+          //   .delay(4000)
+          //   .error(this.$t("notifications.author_not_allowed"));
         }
-
-        debugger;
 
         this.setAuthorizationHeader();
         this.$alertify.delay(4000).error(err);

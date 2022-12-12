@@ -100,6 +100,8 @@ export default function () {
         logout: "se déconnecter",
         name_or_pseudonym: "nom ou pseudonyme",
         contributors: "Contributeur·rice·s",
+        contributor: "Contributeur·rice",
+        admin: "Administrateur·rice",
         create: "créer",
         create_account: "créer un compte",
         show_list: "Afficher la liste",
@@ -157,8 +159,10 @@ export default function () {
         create_a_project: "Créer un projet",
         create_a_publication: "Créer une publication",
 
-        project_title_instructions: "",
-        project_desc_instructions: "",
+        project_title_instructions:
+          "Le titre est aussi utilisé sur la page d’accueil.",
+        project_desc_instructions:
+          "La description est affichée sur la page d’accueil.",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
@@ -172,6 +176,9 @@ export default function () {
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",
+
+        save_on_this_device: "Sauvegarder pour cet appareil",
+        will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
         "module.label.text": "Bloc de texte",
         "module.label.mosaic": "Mosaïque de médias",

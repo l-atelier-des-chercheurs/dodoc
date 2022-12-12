@@ -1,9 +1,18 @@
 <template>
   <div>
+    <DLabel
+      v-if="label_str"
+      :for_attr="'_input_' + label_str"
+      :str="$t(label_str)"
+    />
+
     <template v-if="tag === 'input'">
       <input
         ref="field"
         :type="current_input_type"
+        :name="label_str"
+        :id="'_input_' + label_str"
+        :autocomplete="autocomplete"
         class=""
         :required="required"
         :placeholder="'…'"
@@ -27,6 +36,7 @@
       :class="{
         'u-colorRed': !validity,
       }"
+      v-if="minlength || maxlength || input_type === 'password'"
     >
       <div>
         <template v-if="minlength || maxlength">
@@ -57,9 +67,15 @@ export default {
       type: String,
       default: "input",
     },
+    label_str: {
+      type: String,
+    },
     input_type: {
       type: String,
       default: "text",
+    },
+    autocomplete: {
+      type: String,
     },
     content: {
       type: String,

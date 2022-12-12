@@ -1,9 +1,7 @@
 <template>
   <BaseModal2 :title="$t('create_a_publication')" @close="$emit('close')">
     <form class="input-validation-required" @submit.prevent="createPublication">
-      <div class="_topLabel">
-        <label for="" class="u-label">{{ $t("title") }}</label>
-      </div>
+      <DLabel :str="$t('title')" />
       <TextInput
         :content.sync="new_publication_title"
         :maxlength="40"

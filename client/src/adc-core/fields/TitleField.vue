@@ -1,16 +1,11 @@
 <template>
   <span class="_titleField">
-    <div class="_topLabel" v-if="label">
-      <label for="" class="u-label">
-        {{ label }}
-        <span v-if="instructions">
-          <sl-icon-button
-            name="info-circle"
-            @click="show_instructions = !show_instructions"
-          />
-        </span>
-      </label>
-    </div>
+    <DLabel
+      v-if="label"
+      class="_label"
+      :str="label"
+      :show_instructions.sync="show_instructions"
+    />
 
     <component :is="tag" class="_container">
       <template v-if="!can_edit || (can_edit && !edit_mode)">
@@ -165,6 +160,10 @@ export default {
     white-space: break-spaces;
     margin-right: calc(var(--spacing) / 2);
   }
+
+  &:hover > ._label {
+    color: var(--c-bleuvert);
+  }
 }
 
 ._footer {
@@ -202,16 +201,6 @@ export default {
     content: attr(data-value) " ";
     visibility: hidden;
     white-space: break-spaces;
-  }
-}
-
-._topLabel {
-  // display: flex;
-  // flex-flow: row wrap;
-  // gap: calc(var(--spacing) / 4);
-
-  .u-label {
-    // margin-bottom: 0;
   }
 }
 </style>

@@ -66,6 +66,9 @@ Vue.component("MediaContent", MediaContent);
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
 Vue.component("AuthorTag", AuthorTag);
 
+import DLabel from "@/adc-core/fields/DLabel.vue";
+Vue.component("DLabel", DLabel);
+
 Vue.component("EditBtn", {
   name: "EditBtn",
   template: `
@@ -74,6 +77,7 @@ Vue.component("EditBtn", {
   </sl-button>
 `,
 });
+
 Vue.component("SectionLabel", {
   name: "SectionLabel",
   props: ["text"],
@@ -126,6 +130,7 @@ new Vue({
   data: {
     store: window.store,
     app_infos: window.app_infos,
+    is_loading: true,
     is_connected: false,
     is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
     dev_mode: true,
@@ -138,11 +143,11 @@ new Vue({
   },
   async mounted() {
     await this.$api.init({ debug_mode });
+
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
     this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
-
     const html = document.documentElement; // returns the html tag
     html.setAttribute("lang", "fr");
 
@@ -150,6 +155,8 @@ new Vue({
       this.window.innerWidth = window.innerWidth;
       this.window.innerHeight = window.innerHeight;
     });
+
+    this.is_loading = false;
   },
   watch: {
     "$api.socket.connected": function () {

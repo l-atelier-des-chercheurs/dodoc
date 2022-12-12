@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="_topLabel">
-      <label for="" class="u-label">routine</label>
-    </div>
+    <DLabel :str="'routine'" />
 
     <template v-if="!routine_is_started">
       <button

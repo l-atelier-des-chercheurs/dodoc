@@ -49,14 +49,14 @@ export default {
 <style lang="scss" scoped>
 dialog {
   width: 100%;
-  max-width: 400px;
+  max-width: 480px;
   z-index: 1000;
 
   background-color: #fff;
   border: none;
   padding: 0;
   border-radius: var(--border-radius);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
 
   &::backdrop {
     background: rgba(53, 53, 53, 0.7);
@@ -70,7 +70,7 @@ dialog {
 }
 
 header {
-  padding: var(--spacing) calc(var(--spacing) * 1.5);
+  padding: calc(var(--spacing) * 1.5);
   border-bottom: 2px solid #e5e5e5;
   width: 100%;
   h2 {

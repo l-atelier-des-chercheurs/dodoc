@@ -9,17 +9,25 @@
     </p>
 
     <form @submit.prevent="submitGeneralPassword">
-      <div class="_topLabel">
-        <label for="" class="u-label">
-          {{ $t("password") }}
-        </label>
-      </div>
+      <DLabel :str="$t('password')" />
       <TextInput
         :content.sync="password_to_submit"
         :required="true"
         :input_type="'password'"
         @toggleValidity="($event) => (allow_send = $event)"
       />
+
+      <ToggleInput
+        :content.sync="remember_on_this_device"
+        :label="$t('save_on_this_device')"
+        :options="{
+          true: $t('will_use_cookies'),
+          false: $t('will_use_cookies'),
+        }"
+      />
+
+      <br />
+
       <button
         type="submit"
         :disabled="!allow_send"
@@ -38,6 +46,7 @@ export default {
     return {
       password_to_submit: "",
       allow_send: false,
+      remember_on_this_device: true,
     };
   },
   created() {},
@@ -54,6 +63,7 @@ export default {
       try {
         this.response = await this.$api.submitGeneralPassword({
           password: this.password_to_submit,
+          remember_on_this_device: this.remember_on_this_device,
         });
         this.$emit("close");
       } catch (err) {

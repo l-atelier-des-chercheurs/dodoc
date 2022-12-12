@@ -1,42 +1,50 @@
 <template>
   <div class="_createAuthor">
     <form class="input-validation-required" @submit.prevent="createAuthor">
-      <div class="_topLabel">
-        <label for="" class="u-label">{{ $t("email") }}</label>
-      </div>
       <TextInput
         :content.sync="new_author_email"
-        :maxlength="60"
+        :label_str="'email'"
         :required="true"
         :input_type="'email'"
+        :autocomplete="'email'"
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
       <br />
 
-      <div class="_topLabel">
-        <label for="" class="u-label">{{ $t("name_or_pseudonym") }}</label>
-      </div>
       <TextInput
         :content.sync="new_author_name"
-        :maxlength="40"
+        :label_str="'name_or_pseudonym'"
         :required="true"
+        :maxlength="40"
+        :autocomplete="'username'"
         @toggleValidity="($event) => (allow_save = $event)"
       />
 
       <br />
 
-      <div class="_topLabel">
-        <label for="" class="u-label">{{ $t("password") }}</label>
-      </div>
       <TextInput
         :content.sync="new_author_password"
+        :label_str="$t('password')"
         :minlength="3"
         :maxlength="20"
         :required="true"
         :input_type="'password'"
+        :autocomplete="'new-password'"
         @toggleValidity="($event) => (allow_save = $event)"
       />
+
+      <br />
+
+      <DLabel :str="$t('role')" />
+      <select v-model="new_author_role">
+        <option
+          v-for="option in author_roles"
+          :key="option"
+          :value="option"
+          v-text="$t(option)"
+        />
+      </select>
 
       <br />
 
@@ -64,6 +72,9 @@ export default {
       new_author_email: "",
       new_author_name: "",
       new_author_password: "",
+      new_author_role: "contributor",
+
+      author_roles: ["contributor", "admin"],
       is_creating_author: false,
       error_msg: "",
     };
@@ -85,6 +96,7 @@ export default {
             email: this.new_author_email,
             name: this.new_author_name,
             requested_slug: this.new_author_name,
+            role: this.new_author_role,
             $public: true,
             $password: this.new_author_password,
           },

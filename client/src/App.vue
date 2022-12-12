@@ -1,20 +1,26 @@
 -
 <template>
   <div id="app" class="">
-    <TopBar />
-
-    <GeneralPasswordModal
-      v-if="show_general_password_modal"
-      @close="show_general_password_modal = false"
-    />
-
-    <div class="">
-      <router-view v-slot="{ Component }">
-        <transition name="fade">
-          <component :is="Component" />
-        </transition>
-      </router-view>
+    <div class="_spinner" v-if="$root.is_loading" key="loader">
+      <LoaderSpinner />
     </div>
+
+    <template v-else>
+      <TopBar />
+
+      <GeneralPasswordModal
+        v-if="show_general_password_modal"
+        @close="show_general_password_modal = false"
+      />
+
+      <div class="" v-else>
+        <router-view v-slot="{ Component }">
+          <transition name="fade">
+            <component :is="Component" />
+          </transition>
+        </router-view>
+      </div>
+    </template>
   </div>
 </template>
 <script>
@@ -76,7 +82,7 @@ export default {
 
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
-  --c-noir: #hsl(0, 0%, 15%);
+  --c-noir: hsl(0, 0%, 15%);
   --c-gris: hsl(195, 14%, 93%);
   --c-gris_clair: hsl(195, 14%, 97%);
   --c-gris_fonce: hsl(195, 14%, 45%);
@@ -91,8 +97,8 @@ export default {
   --scrollbar-border: 2px;
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
-  --label-color: #666;
-  --border-radius: 6px;
+  --label-color: var(--c-gris_fonce);
+  --border-radius: 18px;
 
   --input-font-family: inherit;
   --input-font-size: 1rem;

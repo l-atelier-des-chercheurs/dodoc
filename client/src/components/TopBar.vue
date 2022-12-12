@@ -58,8 +58,10 @@ export default {
     };
   },
   created() {},
-  mounted() {
+  async mounted() {
     this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
+
+    await this.getCurrentAuthor();
   },
   beforeDestroy() {
     this.$eventHub.$off(`toolbar.openAuthor`, this.showAuthorModal);
@@ -79,6 +81,11 @@ export default {
   methods: {
     showAuthorModal() {
       this.show_authors_modal = true;
+    },
+    async getCurrentAuthor() {
+      await this.$api.getFolder({
+        path: this.$api.tokenpath.token_path,
+      });
     },
   },
 };

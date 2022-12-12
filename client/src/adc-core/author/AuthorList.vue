@@ -48,9 +48,7 @@
         {{ $t("logout") }}
       </button>
 
-      <div class="_topLabel">
-        <label for="" class="u-label">{{ $t("list_of_contributors") }}</label>
-      </div>
+      <DLabel :str="$t('list_of_contributors')" />
 
       <small v-if="authors.length === 0">
         {{ $t("no_accounts_yet") }}
@@ -65,7 +63,7 @@
       </button>
       <div class="_listOfAuthors" v-if="show_authors_list">
         <AuthorCard
-          v-for="author in authors"
+          v-for="author in authors_except_self"
           :key="author.$path"
           :author="author"
         />
@@ -107,7 +105,13 @@ export default {
     this.$api.leave({ room: "authors" });
   },
   watch: {},
-  computed: {},
+  computed: {
+    authors_except_self() {
+      if (this.connected_as)
+        return this.authors.filter((a) => a.$path !== this.connected_as.$path);
+      return this.authors;
+    },
+  },
   methods: {
     async logout() {
       try {

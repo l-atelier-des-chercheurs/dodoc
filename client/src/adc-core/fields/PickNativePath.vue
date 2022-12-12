@@ -1,8 +1,6 @@
 <template>
   <span class="_pickNativePath">
-    <div class="_topLabel" v-if="label">
-      <label for="" class="u-label">{{ label }}</label>
-    </div>
+    <DLabel :str="label" />
 
     <div class="_sameLine">
       <input type="text" required readonly v-model="new_content" />

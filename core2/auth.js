@@ -53,10 +53,11 @@ module.exports = (function () {
 
       // check if token isn't expired
       const issued = tokens[token].issued;
-      const expires_after_hours = 0.0001;
-      const hours_since_issued = (+new Date() - issued) / (1000 * 3600);
+      // 7 days
+      const expires_after_minutes = 60 * 24 * 7;
+      const minutes_since_issued = (+new Date() - issued) / (1000 * 60);
 
-      if (hours_since_issued > expires_after_hours) {
+      if (minutes_since_issued > expires_after_minutes) {
         API.revokeToken({ token_to_revoke: token });
         // check if other tokens are also expired and remove them?
         throw new Error(`token_expired`);
@@ -72,7 +73,7 @@ module.exports = (function () {
     async removeObsoleteTokens() {
       Object.entries(tokens).find(([token, tp]) => {
         const issued = tp.issued;
-        debugger;
+        // TODO
         // if (tp.issued) delete tokens[token];
       });
       await API.updateTokensFile();

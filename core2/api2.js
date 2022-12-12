@@ -29,7 +29,7 @@ module.exports = (function () {
 
     app.get("/_api2/_ip", _generalPasswordCheck, _getLocalNetworkInfos);
     app.get("/_api2/_checkGeneralPassword", _checkGeneralPassword);
-    app.get("/_api2/_authCheck", _generalPasswordCheck, _checkToken);
+    app.get("/_api2/_authCheck", _checkGeneralPasswordAndToken);
     app.get("/_api2/_admin", _getAdminInfos);
     app.patch("/_api2/_admin", _setAdminInfos);
     app.post("/_api2/_restart", _restart);
@@ -136,6 +136,7 @@ module.exports = (function () {
 
   // the only route available is index,
   async function _generalPasswordCheck(req, res, next) {
+    dev.logapi();
     const { general_password } = await settings.get();
     // no general password, do not interfere
     if (!general_password) return next();
@@ -153,7 +154,7 @@ module.exports = (function () {
       if (submitted_general_password !== general_password)
         throw new Error(`wrong_general_password`);
 
-      return next();
+      if (next) return next();
     } catch (err) {
       dev.error(err.message);
       return res.status(401).send({ message: err.message });
@@ -165,18 +166,27 @@ module.exports = (function () {
     if (!general_password) throw new Error(`no_general_password_set`);
 
     try {
-      return _generalPasswordCheck(req, res, next);
+      try {
+        await _generalPasswordCheck(req, res);
+        res.status(200).json({ status: "ok" });
+      } catch (err) {}
     } catch (err) {}
   }
-  async function _checkToken(req, res, next) {
+  async function _checkGeneralPasswordAndToken(req, res, next) {
     dev.logapi();
-    const { token, token_path } = JSON.parse(req.headers.authorization);
+    let response = {};
     try {
+      await _generalPasswordCheck(req, res);
+      response.general_password_is_valid = true;
+    } catch (err) {}
+
+    try {
+      const { token, token_path } = JSON.parse(req.headers.authorization);
       auth.checkToken({ token, token_path });
-    } catch (err) {
-      dev.error(err.message);
-      return res.status(403).send({ message: err.message });
-    }
+      response.token_is_valid = true;
+    } catch (err) {}
+
+    return res.json(response);
   }
 
   async function _authenticateToken(req, res, next) {

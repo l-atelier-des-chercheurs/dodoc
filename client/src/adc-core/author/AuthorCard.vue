@@ -1,6 +1,11 @@
 <template>
   <div class="_authorCard">
     {{ author.name }}
+    <small>
+      {{ author.$path }}
+    </small>
+    <br />
+    {{ author.role }}
     <br />
     {{ author.email }}
     <br />

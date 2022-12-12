@@ -1,13 +1,12 @@
 <template>
   <div>
-    <div
-      class="_topLabel"
+    <DLabel
       v-if="label && (new_authors_paths.length > 0 || can_edit)"
-    >
-      <label for="" class="u-label">{{ label }}</label>
-    </div>
+      :str="label"
+    />
 
     <div class="_authors">
+      {{ new_authors_paths }}
       <template v-for="author_path in new_authors_paths">
         <AuthorTag
           :path="author_path"
@@ -44,9 +43,7 @@
 
       <div class="u-wips" />
 
-      <div class="_topLabel">
-        <label for="" class="u-label">{{ $t("add_authors") }}</label>
-      </div>
+      <DLabel :str="$t('add_authors')" />
       <AuthorPicker
         :current_authors="new_authors_paths"
         @addAuthor="addAuthor"
