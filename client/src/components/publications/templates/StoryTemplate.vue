@@ -9,7 +9,7 @@
           <PublicationModule
             class="_mediaPublication"
             :publimodule="findFileFromMetaFilename(meta_filename)"
-            :position="
+            :module_position="
               modules_list.length === 1
                 ? 'alone'
                 : index === 0

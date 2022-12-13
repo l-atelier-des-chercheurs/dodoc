@@ -49,6 +49,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/_upload",
       ],
       _generalPasswordCheck,
+      _authenticateToken,
       _uploadFile
     );
     app.patch(
@@ -57,6 +58,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
+      _authenticateToken,
       _updateFile
     );
     app.delete(
@@ -65,6 +67,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
+      _authenticateToken,
       _removeFile
     );
 

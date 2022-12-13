@@ -94,6 +94,21 @@ export default function () {
 
         this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
       },
+      disconnectSocket() {
+        this.socket.disconnect();
+      },
+      reconnectSocket() {
+        this.socket.connect();
+      },
+      join({ room }) {
+        this.socket.emit("joinRoom", { room });
+        // todo rejoin room after disconnect
+      },
+      leave({ room }) {
+        this.socket.emit("leaveRoom", { room });
+        // todo rejoin room after disconnect
+      },
+
       async _setAuthFromStorage() {
         let auth = {};
 
@@ -139,12 +154,6 @@ export default function () {
           token_path: this.tokenpath.token_path,
           general_password: this.general_password,
         });
-      },
-      disconnectSocket() {
-        this.socket.disconnect();
-      },
-      reconnectSocket() {
-        this.socket.connect();
       },
       folderCreated({ path, meta }) {
         if (!this.store[path]) this.store[path] = new Array();
@@ -212,15 +221,6 @@ export default function () {
         folder.$files = folder.$files.filter(
           (file) => file.$path !== path_to_meta
         );
-      },
-
-      join({ room }) {
-        this.socket.emit("joinRoom", { room });
-        // todo rejoin room after disconnect
-      },
-      leave({ room }) {
-        this.socket.emit("leaveRoom", { room });
-        // todo rejoin room after disconnect
       },
 
       async getSettings() {

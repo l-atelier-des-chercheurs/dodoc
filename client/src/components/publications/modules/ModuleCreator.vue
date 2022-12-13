@@ -11,51 +11,63 @@
     >
       <sl-icon name="plus-circle-fill" :label="$t('edit')" />
     </sl-button>
-
-    <template v-if="show_media_picker">
-      <DLabel :str="$t('type_of_module')" />
-      <select v-model="type_selected">
-        <option
-          v-for="option in options"
-          :key="option.key"
-          :value="option.key"
-          v-text="$t(option.label)"
+    <div v-else class="_typePicker">
+      <div class="">
+        <DLabel :str="$t('add_media')" />
+        <MediaPicker
+          :publication_path="publication_path"
+          @selectMedia="selectMedia"
         />
-      </select>
-
-      <div v-if="selected_option && selected_option.instructions">
-        <small v-html="$t(selected_option.instructions)" />
       </div>
 
-      <br />
+      <div class="">
+        <button type="button" class="u-button" @click="createText">
+          {{ $t("add_text") }}
+        </button>
+      </div>
 
-      <SaveCancelButtons
-        class="_scb"
-        :is_saving="is_saving"
-        :save_text="'create'"
-        @save="createModule"
-        @cancel="show_media_picker = false"
-      />
-    </template>
+      <div class="">
+        <DLabel :str="$t('create_a_module')" />
+        <select v-model="type_selected">
+          <option
+            v-for="option in options"
+            :key="option.key"
+            :value="option.key"
+            v-text="$t(option.label)"
+          />
+        </select>
+        <div v-if="selected_option && selected_option.instructions">
+          <small v-html="$t(selected_option.instructions)" />
+        </div>
+
+        <br />
+
+        <SaveCancelButtons
+          class="_scb"
+          :is_saving="is_saving"
+          :save_text="'create'"
+          @save="createModule({ module_type: type_selected })"
+          @cancel="show_media_picker = false"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
+import MediaPicker from "@/components/publications/MediaPicker.vue";
 export default {
   props: {
     publication_path: String,
   },
-  components: {},
+  components: {
+    MediaPicker,
+  },
   data() {
     return {
       show_media_picker: false,
 
       type_selected: "",
       options: [
-        {
-          key: "text",
-          label: "module.label.text",
-          instructions: "module.instructions.text",
-        },
         {
           key: "mosaic",
           label: "module.label.mosaic",
@@ -83,23 +95,38 @@ export default {
     },
   },
   methods: {
-    async createModule() {
+    selectMedia({ path_to_source_media }) {
+      this.createModule({
+        module_type: "single",
+        source_medias: [{ path: path_to_source_media }],
+      });
+    },
+
+    async createText() {
       this.is_saving = true;
 
-      let meta = {
-        module_type: this.type_selected,
-        source_medias: [],
-      };
+      const text_meta_filename = await this.$api.uploadText({
+        path: this.publication_path,
+        filename: "text.txt",
+        content: "",
+        additional_meta: {
+          caption: "plip",
+          module_type: this.module_type,
+        },
+      });
+      const text_meta_path = this.publication_path + "/" + text_meta_filename;
+      const source_medias = [{ path: text_meta_path }];
 
-      if (this.type_selected === "text") {
-        const text_meta_filename = await this.createText();
-        const text_meta_path = this.publication_path + "/" + text_meta_filename;
-        meta.source_medias = [{ path: text_meta_path }];
-      }
+      this.createModule({
+        module_type: "text",
+        source_medias,
+      });
+    },
 
+    async createModule({ module_type, source_medias = [] }) {
       const meta_filename = await this.createMetaForModule({
-        module_type: meta.module_type,
-        source_medias: meta.source_medias,
+        module_type,
+        source_medias,
       });
       this.$emit("appendModuleMetaFilenameToList", { meta_filename });
 
@@ -121,18 +148,17 @@ export default {
           throw err;
         });
     },
-    async createText() {
-      return await this.$api.uploadText({
-        path: this.publication_path,
-        filename: "text.txt",
-        content: "",
-        additional_meta: {
-          caption: "plip",
-          module_type: this.module_type,
-        },
-      });
-    },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._typePicker {
+  display: flex;
+  gap: calc(var(--spacing) / 2);
+
+  > * {
+    padding: calc(var(--spacing) / 2);
+    background: var(--c-gris_clair);
+  }
+}
+</style>

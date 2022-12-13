@@ -138,8 +138,14 @@
     </div>
 
     <div class="_content" :style="media_styles">
+      <ModuleSingle
+        v-if="publimodule.module_type === 'single'"
+        :publimodule="publimodule"
+        :can_edit="can_edit"
+        @updateMeta="updateMeta"
+      />
       <ModuleMosaic
-        v-if="publimodule.module_type === 'mosaic'"
+        v-else-if="publimodule.module_type === 'mosaic'"
         :publimodule="publimodule"
         :can_edit="can_edit"
         @updateMeta="updateMeta"
@@ -150,7 +156,7 @@
         :can_edit="can_edit"
       />
       <CollaborativeEditor2
-        v-else-if="publimodule.module_type === 'text'"
+        v-else-if="publimodule.module_type === 'text' && first_media"
         :path="first_media.$path"
         :content="first_media.$content"
         :scrollingContainer="$el"
@@ -158,10 +164,12 @@
         :can_edit="can_edit"
         @lineClicked="$emit('lineClicked', $event)"
       />
+      <small v-else>Nothing to display</small>
     </div>
   </div>
 </template>
 <script>
+import ModuleSingle from "@/components/publications/modules/ModuleSingle.vue";
 import ModuleMosaic from "@/components/publications/modules/ModuleMosaic.vue";
 import ModuleCarousel from "@/components/publications/modules/ModuleCarousel.vue";
 import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
@@ -175,6 +183,7 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    ModuleSingle,
     ModuleMosaic,
     ModuleCarousel,
     CollaborativeEditor2,
@@ -190,7 +199,11 @@ export default {
   watch: {},
   computed: {
     first_media() {
-      if (!this.publimodule.source_medias) return [];
+      if (
+        !this.publimodule.source_medias ||
+        this.publimodule.source_medias.length === 0
+      )
+        return false;
       const { path } = this.publimodule.source_medias[0];
       if (path) return this.getSourceMedia({ source_media_path: path });
       return false;
@@ -230,7 +243,7 @@ export default {
   padding: 0 calc(var(--spacing) * 1);
 
   ._content {
-    min-height: calc(var(--spacing) * 3);
+    min-height: calc(24px * 3);
     width: calc(var(--module-width) * 1%);
     margin-left: calc(var(--module-margin-left) * 1%);
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);

@@ -12,7 +12,7 @@
             :resolution="1600"
             :context="'full'"
           />
-          <div class="_removeMedia">
+          <div class="_removeMedia" v-if="can_edit">
             <button
               type="button"
               class="u-buttonLink"
@@ -94,15 +94,14 @@ export default {
 
   > ._mediaGrid--item {
     position: relative;
+    aspect-ratio: 1/1;
+    overflow: hidden;
 
     ::v-deep ._mediaContent {
-      // height: 100%;
-      // width: 100%;
-
       img {
-        aspect-ratio: 1/1;
-        overflow: hidden;
-        border-radius: 4px;
+        position: absolute;
+        height: 100%;
+        width: 100%;
         object-fit: cover;
       }
     }

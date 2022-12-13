@@ -1,13 +1,13 @@
 <template>
   <span class="_pickNativePath">
-    <DLabel :str="label" />
+    <DLabel :str="label" :show_instructions.sync="show_instructions" />
 
     <div class="_sameLine">
       <input type="text" required readonly v-model="new_content" />
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </div>
 
-    <div v-if="edit_mode && instructions" class="u-instructions">
+    <div v-if="show_instructions" class="u-instructions">
       <small v-html="instructions" />
     </div>
 
@@ -73,6 +73,8 @@ export default {
 
       current_character_count: undefined,
       allow_save: false,
+
+      show_instructions: false,
     };
   },
   created() {},

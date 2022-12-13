@@ -50,6 +50,9 @@ export default {
   }
 
   sl-icon-button {
+    color: var(--label-color);
+    margin: calc(-1 * var(--sl-spacing-x-small)) 0;
+
     &::part(base) {
       // padding: calc(var(--spacing) / 4);
       color: currentColor;

@@ -159,6 +159,9 @@ export default function () {
         create_a_project: "Créer un projet",
         create_a_publication: "Créer une publication",
 
+        add_media: "Ajouter un média",
+        add_text: "Ajouter du texte",
+
         project_title_instructions:
           "Le titre est aussi utilisé sur la page d’accueil.",
         project_desc_instructions:
@@ -172,6 +175,7 @@ export default function () {
         more_infos: "Plus d’informations",
         informations: "Informations",
 
+        duplicate: "Dupliquer",
         remove: "Supprimer",
         move_up: "Remonter",
         move_down: "Descendre",
@@ -187,7 +191,8 @@ export default function () {
         disconnect_warning:
           "Vous avez été déconnectés. Veuillez recharger la page pour vous reconnecter à do•doc.",
         reload_page: "Recharger cette page",
-        type_of_module: "Type de module",
+
+        create_a_module: "Créer un module",
 
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
