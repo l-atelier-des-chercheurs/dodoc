@@ -138,14 +138,8 @@
     </div>
 
     <div class="_content" :style="media_styles">
-      <ModuleSingle
-        v-if="publimodule.module_type === 'single'"
-        :publimodule="publimodule"
-        :can_edit="can_edit"
-        @updateMeta="updateMeta"
-      />
       <ModuleMosaic
-        v-else-if="publimodule.module_type === 'mosaic'"
+        v-if="publimodule.module_type === 'mosaic'"
         :publimodule="publimodule"
         :can_edit="can_edit"
         @updateMeta="updateMeta"
@@ -169,7 +163,6 @@
   </div>
 </template>
 <script>
-import ModuleSingle from "@/components/publications/modules/ModuleSingle.vue";
 import ModuleMosaic from "@/components/publications/modules/ModuleMosaic.vue";
 import ModuleCarousel from "@/components/publications/modules/ModuleCarousel.vue";
 import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
@@ -183,7 +176,6 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    ModuleSingle,
     ModuleMosaic,
     ModuleCarousel,
     CollaborativeEditor2,

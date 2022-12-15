@@ -6,27 +6,42 @@
       variant="edit"
       class="default"
       circle
-      v-if="!show_media_picker"
-      @click="show_media_picker = true"
+      v-if="!show_module_selector"
+      @click="show_module_selector = true"
     >
       <sl-icon name="plus-circle-fill" :label="$t('edit')" />
     </sl-button>
     <div v-else class="_typePicker">
-      <div class="">
+      <!-- <div class="">
         <DLabel :str="$t('add_media')" />
         <MediaPicker
           :publication_path="publication_path"
           @selectMedia="selectMedia"
         />
-      </div>
+      </div> -->
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="createText"
+      >
+        {{ $t("add_text") }}
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        v-if="!show_media_picker"
+        @click="show_media_picker = true"
+      >
+        {{ $t("add_medias") }}
+      </button>
+      <MediaPicker
+        v-else
+        :publication_path="publication_path"
+        @selectMedia="createMosaic"
+        @close="show_media_picker = false"
+      />
 
-      <div class="">
-        <button type="button" class="u-button" @click="createText">
-          {{ $t("add_text") }}
-        </button>
-      </div>
-
-      <div class="">
+      <!-- <div class="">
         <DLabel :str="$t('create_a_module')" />
         <select v-model="type_selected">
           <option
@@ -49,7 +64,7 @@
           @save="createModule({ module_type: type_selected })"
           @cancel="show_media_picker = false"
         />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -64,21 +79,22 @@ export default {
   },
   data() {
     return {
+      show_module_selector: false,
       show_media_picker: false,
 
       type_selected: "",
-      options: [
-        {
-          key: "mosaic",
-          label: "module.label.mosaic",
-          instructions: "module.instructions.mosaic",
-        },
-        {
-          key: "carousel",
-          label: "module.label.carousel",
-          instructions: "module.instructions.carousel",
-        },
-      ],
+      // options: [
+      //   {
+      //     key: "mosaic",
+      //     label: "module.label.mosaic",
+      //     instructions: "module.instructions.mosaic",
+      //   },
+      //   {
+      //     key: "carousel",
+      //     label: "module.label.carousel",
+      //     instructions: "module.instructions.carousel",
+      //   },
+      // ],
 
       is_saving: false,
     };
@@ -95,11 +111,12 @@ export default {
     },
   },
   methods: {
-    selectMedia({ path_to_source_media }) {
+    createMosaic({ path_to_source_media }) {
       this.createModule({
-        module_type: "single",
+        module_type: "mosaic",
         source_medias: [{ path: path_to_source_media }],
       });
+      this.show_media_picker = false;
     },
 
     async createText() {
@@ -154,11 +171,12 @@ export default {
 <style lang="scss" scoped>
 ._typePicker {
   display: flex;
+  flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
 
   > * {
-    padding: calc(var(--spacing) / 2);
-    background: var(--c-gris_clair);
+    // padding: calc(var(--spacing) / 2);
+    // background: var(--c-gris_clair);
   }
 }
 </style>

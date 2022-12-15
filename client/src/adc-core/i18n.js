@@ -160,6 +160,7 @@ export default function () {
         create_a_publication: "Créer une publication",
 
         add_media: "Ajouter un média",
+        add_medias: "Ajouter des médias",
         add_text: "Ajouter du texte",
 
         project_title_instructions:
@@ -187,6 +188,8 @@ export default function () {
         "module.label.text": "Bloc de texte",
         "module.label.mosaic": "Mosaïque de médias",
         "module.label.carousel": "Caroussel",
+        object_fit_cover: "Remplir le cadre",
+        object_fit_contain: "Remplir sans dépasser",
 
         disconnect_warning:
           "Vous avez été déconnectés. Veuillez recharger la page pour vous reconnecter à do•doc.",

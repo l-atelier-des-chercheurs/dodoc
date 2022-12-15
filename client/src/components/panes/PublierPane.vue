@@ -10,7 +10,6 @@
       v-else
       :project_path="project.$path"
       :publication_slug="publication_opened.slug"
-      :can_edit="can_edit"
       @close="$emit('update:publication_opened', {})"
     />
   </div>
