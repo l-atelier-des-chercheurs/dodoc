@@ -39,8 +39,7 @@
           @toggleValidity="($event) => (allow_save_newkeyword = $event)"
           @onEnter="onEnter"
         /> -->
-
-      <div class="u-wips" />
+      <!-- <div class="u-wips" /> -->
 
       <DLabel :str="$t('add_authors')" />
       <AuthorPicker
