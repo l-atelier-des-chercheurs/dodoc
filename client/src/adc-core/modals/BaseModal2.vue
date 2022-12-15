@@ -6,7 +6,9 @@
     <div class="_content">
       <slot />
     </div>
-    <div class="_footer"></div>
+    <div class="_footer">
+      <slot name="footer" />
+    </div>
   </dialog>
 </template>
 <script>
