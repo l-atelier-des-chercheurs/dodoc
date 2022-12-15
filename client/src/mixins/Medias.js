@@ -19,6 +19,11 @@ export default {
       // todo make this work with subfolders
       return `/thumbs/${$path}/${thumb_path}`;
     },
+    makeMediaFilePath({ $path, $media_filename }) {
+      const path_to_parent_folder = $path.substring(0, $path.lastIndexOf("/"));
+      const full_path = path_to_parent_folder + "/" + $media_filename;
+      return full_path;
+    },
     getSourceMedia({ source_media_path }) {
       const folder_path = source_media_path.substring(
         0,

@@ -60,10 +60,14 @@ export default {
       });
     },
     file_full_path() {
-      return `${this.file.$path}?v=${this.timestamp}`;
+      const p = this.makeMediaFilePath({
+        $path: this.file.$path,
+        $media_filename: this.file.$media_filename,
+      });
+      return `/${p}?v=${this.timestamp}`;
     },
     timestamp() {
-      if (this.file.date_created) return +new Date(this.file.date_created);
+      if (this.file.$date_created) return +new Date(this.file.$date_created);
       else return +new Date();
     },
   },
