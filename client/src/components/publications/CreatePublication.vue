@@ -107,6 +107,8 @@ export default {
             title: this.new_publication_title,
             template: this.new_publication_template,
             requested_slug: this.new_publication_title,
+            $public: this.new_publication_is_public,
+            $authors: [this.$api.tokenpath.token_path],
           },
         });
         this.$emit("openPubli", new_folder_slug);
