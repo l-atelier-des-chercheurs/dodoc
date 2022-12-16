@@ -1,5 +1,5 @@
 <template>
-  <div class="_selectField">
+  <div class="_radioField">
     <template v-if="!edit_mode">
       {{ $t(new_content) }}
     </template>
@@ -139,7 +139,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._selectField {
-  widows: 100%;
 }
 
 ._footer {

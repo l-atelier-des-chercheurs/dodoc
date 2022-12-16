@@ -42,11 +42,13 @@ export default {
       status_options: [
         {
           key: "draft",
-          text: "draft_status_explanations",
+          text: this.$t("draft"),
+          instruction: "draft_status_explanations",
         },
         {
           key: "finished",
-          text: "finished_status_explanations",
+          text: this.$t("finished"),
+          instruction: "finished_status_explanations",
         },
       ],
       // temp value, that uses

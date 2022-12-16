@@ -6,28 +6,7 @@ export default function () {
   Vue.use(VueI18n);
 
   let lang_settings = {
-    available: [
-      {
-        key: "fr",
-        name: "Français",
-      },
-      {
-        key: "en",
-        name: "English",
-      },
-      {
-        key: "de",
-        name: "Deutsch",
-      },
-      {
-        key: "nl",
-        name: "Nederlands",
-      },
-      {
-        key: "oc",
-        name: "Occitan",
-      },
-    ],
+    available: ["fr", "en", "de", "nl", "oc"],
     default: "en",
     current: "",
     init: function () {
@@ -38,7 +17,7 @@ export default function () {
       // return;
 
       if (localstore_lang !== undefined) {
-        if (this.available.find((l) => l.key === localstore_lang)) {
+        if (this.available.includes(localstore_lang)) {
           this.current = localstore_lang;
         }
       }
@@ -47,10 +26,10 @@ export default function () {
         // set current lang from window.navigator.language
         // window.navigator.language can be 'fr', 'en', or 'fr-FR'
         let browser_lang_available = this.available.find((l) => {
-          return window.navigator.language.includes(l.key);
+          return window.navigator.language.includes(l);
         });
         this.current = browser_lang_available
-          ? browser_lang_available.key
+          ? browser_lang_available
           : this.default;
       }
     },
@@ -91,6 +70,8 @@ export default function () {
 
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
+
+        ui_lang_select: "Choix de la langue de l’interface",
 
         signup_password: "mot de passe pour la création d’un compte",
         signup_password_instructions:
@@ -220,6 +201,9 @@ export default function () {
         keywords: "keywords",
         template: "Template",
       },
+      de: {},
+      nl: {},
+      oc: {},
     }, // set locale messages
   });
 

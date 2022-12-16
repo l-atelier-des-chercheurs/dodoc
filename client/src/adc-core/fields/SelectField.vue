@@ -6,7 +6,7 @@
           v-for="option in options"
           :key="option.key"
           :value="option.key"
-          v-text="$t(option.key)"
+          v-text="option.text"
         />
       </select>
 
@@ -63,7 +63,7 @@ export default {
   computed: {
     instructions() {
       const new_opt = this.options.find((o) => o.key === this.new_content);
-      if (new_opt) return new_opt.text;
+      if (new_opt) return new_opt.instruction;
       return false;
     },
   },
@@ -85,8 +85,13 @@ export default {
       // todo interrupt updateMeta
     },
     async updateSelect() {
-      this.is_saving = true;
+      if (!this.path) {
+        this.$emit("update", this.new_content);
+        this.edit_mode = false;
+        return;
+      }
 
+      this.is_saving = true;
       try {
         const new_meta = {
           [this.field_name]: this.new_content,

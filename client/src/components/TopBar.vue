@@ -18,11 +18,12 @@
       <button
         type="button"
         class="u-button"
-        disabled
         @click="show_lang_modal = !show_lang_modal"
       >
         {{ current_lang_code }}
       </button>
+
+      <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
 
       <!-- <button type="button" @click="show_settings = !show_settings">
         <svg
@@ -42,12 +43,14 @@
 </template>
 <script>
 import AuthorList from "@/adc-core/author/AuthorList.vue";
+import LangModal from "@/adc-core/lang/LangModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
 
 export default {
   props: {},
   components: {
     AuthorList,
+    LangModal,
     BreadCrumbs,
   },
   data() {
@@ -130,6 +133,7 @@ export default {
 ._topRightButtons {
   display: flex;
   justify-content: flex-end;
+  padding: 0 calc(var(--spacing) / 4);
 
   button {
     width: 3rem;
