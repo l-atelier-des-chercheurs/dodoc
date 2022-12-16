@@ -193,8 +193,9 @@ module.exports = (function () {
   }
 
   async function _authenticateToken(req, res, next) {
-    const { path_to_folder } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder });
+    const { path_to_folder, path_to_parent_folder } =
+      utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, path_to_parent_folder });
 
     // check if path and token match,
     // and either :
@@ -219,7 +220,18 @@ module.exports = (function () {
         dev.logapi("Token path and folder path are identical, next");
         return next();
       }
-      await auth.isAuthorIncluded({ path_to_folder, author_path: token_path });
+
+      // if folder is child/has parent, the parent's authors will determine who can edit this child
+      if (path_to_parent_folder)
+        await auth.isAuthorIncluded({
+          path_to_folder: path_to_parent_folder,
+          author_path: token_path,
+        });
+      else
+        await auth.isAuthorIncluded({
+          path_to_folder,
+          author_path: token_path,
+        });
 
       dev.logapi("Author allowed, next");
       return next();
