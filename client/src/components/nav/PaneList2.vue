@@ -305,7 +305,8 @@ export default {
 ._paneList {
   // font-size: var(--sl-font-size-large);
   // max-width: 1024px;
-  position: relative;
+  position: sticky;
+  top: 0;
   overflow: hidden;
   z-index: 10;
   width: 100%;

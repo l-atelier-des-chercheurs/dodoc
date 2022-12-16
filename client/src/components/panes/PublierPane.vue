@@ -10,6 +10,7 @@
       v-else
       :project_path="project.$path"
       :publication_slug="publication_opened.slug"
+      :can_edit="can_edit"
       @close="$emit('update:publication_opened', {})"
     />
   </div>
@@ -43,8 +44,8 @@ export default {
 ._publierPane {
   padding: calc(var(--spacing) * 2);
   // padding-bottom: calc(var(--spacing) * 4);
-  overflow: auto;
-  height: 100%;
+  // overflow: auto;
+  // height: 100%;
   background: var(--color-Publier);
 }
 </style>

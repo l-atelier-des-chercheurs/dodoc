@@ -56,7 +56,7 @@
       />
     </div>
 
-    <ProjectsTester v-if="$api.debug_mode && is_admin" />
+    <ProjectsTester v-if="is_admin" />
 
     <div class="">
       <h3>Projets finalisés</h3>

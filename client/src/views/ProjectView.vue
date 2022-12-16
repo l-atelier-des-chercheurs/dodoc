@@ -171,7 +171,7 @@ export default {
 
 ._projectPanesAndList {
   position: relative;
-  height: 100vh;
+  // height: 100vh;
 
   display: flex;
   flex-flow: column nowrap;
@@ -181,8 +181,8 @@ export default {
   }
   ._panes {
     flex: 1 1 auto;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    // overflow-y: auto;
+    // -webkit-overflow-scrolling: touch;
   }
 }
 

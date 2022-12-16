@@ -1,5 +1,10 @@
 <template>
-  <div class="_projetPanes">
+  <div
+    class="_projetPanes"
+    :class="{
+      'has--multiplePanes': projectpanes.length > 1,
+    }"
+  >
     <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
       <template v-if="projectpanes.length === 0">
         <pane>
@@ -110,10 +115,17 @@ export default {
 <style lang="scss" scoped>
 ._projetPanes {
   position: relative;
-  width: 100%;
-  height: 100%;
-}
-._pane {
+  // width: 100%;
+  // height: 100%;
+
+  ::v-deep ._pane > * {
+    min-height: calc(100vh - 44px);
+  }
+
+  &.has--multiplePanes ::v-deep ._pane {
+    height: calc(100vh - 44px);
+    overflow: auto;
+  }
 }
 ._msg {
   height: 100%;

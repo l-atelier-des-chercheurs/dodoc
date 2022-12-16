@@ -57,6 +57,7 @@ export default {
   props: {
     project_path: String,
     publication_slug: String,
+    can_edit: Boolean,
   },
   components: {
     StoryTemplate,
@@ -79,14 +80,7 @@ export default {
   watch: {},
   computed: {
     can_edit_publication() {
-      if (!this.connected_as) return false;
-      if (this.connected_as.role === "admin") return true;
-      if (
-        Array.isArray(this.publication.$authors) &&
-        this.publication.$authors.includes(this.connected_as.$path)
-      )
-        return true;
-      return false;
+      return this.can_edit;
     },
   },
   methods: {

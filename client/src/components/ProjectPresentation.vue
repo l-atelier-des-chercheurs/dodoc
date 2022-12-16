@@ -324,6 +324,9 @@ export default {
   font-size: 90%;
   overflow: auto;
 
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+
   // padding: calc(var(--spacing) / 2);
   // gap: calc(var(--spacing) / 2);
 
@@ -331,8 +334,7 @@ export default {
     flex: 1 1 260px;
 
     background: white;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    margin: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+    box-shadow: 0 1px 6px rgb(0 0 0 / 20%);
     border-radius: 8px;
 
     &:first-child {
