@@ -2,12 +2,10 @@
   <div class="_storyTemplate">
     <div class="_mediasList">
       <transition-group tag="div" name="StoryModules" appear :duration="700">
-        <div
-          v-for="(meta_filename, index) in modules_list"
-          :key="meta_filename"
-        >
+        <template v-for="(meta_filename, index) in modules_list">
           <PublicationModule
             class="_mediaPublication"
+            :key="meta_filename"
             :publimodule="findFileFromMetaFilename(meta_filename)"
             :module_position="
               modules_list.length === 1
@@ -24,15 +22,28 @@
             @moveDown="moveTo({ meta_filename, dir: +1 })"
             @remove="removePublicationMedia(meta_filename)"
           />
-        </div>
+          <div class="_spacer" :key="'mc_' + index">
+            <ModuleCreator
+              v-if="can_edit"
+              :publication_path="publication.$path"
+              @addModule="
+                ({ meta_filename }) =>
+                  insertModuleMetaFilenameToList({
+                    meta_filename,
+                    index: index + 1,
+                  })
+              "
+            />
+          </div>
+        </template>
       </transition-group>
     </div>
 
-    <ModuleCreator
+    <!-- <ModuleCreator
       v-if="can_edit"
       :publication_path="publication.$path"
-      @appendModuleMetaFilenameToList="appendModuleMetaFilenameToList"
-    />
+      @addModule="appendModuleMetaFilenameToList"
+    /> -->
   </div>
 </template>
 <script>
@@ -81,17 +92,35 @@ export default {
   },
   methods: {
     async appendModuleMetaFilenameToList({ meta_filename }) {
+      const modules_list = this.modules_list.slice();
+      modules_list.push(meta_filename);
+
+      await this.updateMeta({
+        new_meta: {
+          modules_list,
+        },
+      });
+
+      this.toggleNewModuleEdit({ meta_filename });
+    },
+    async insertModuleMetaFilenameToList({ meta_filename, index }) {
+      const modules_list = this.modules_list.slice();
+      modules_list.splice(index, 0, meta_filename);
+
+      await this.updateMeta({
+        new_meta: {
+          modules_list,
+        },
+      });
+      this.toggleNewModuleEdit({ meta_filename });
+    },
+    async updateMeta({ new_meta }) {
       this.fetch_status = "pending";
       this.fetch_error = null;
       try {
-        const modules_list = this.modules_list.slice();
-        modules_list.push(meta_filename);
-
         this.response = await this.$api.updateMeta({
           path: this.publication.$path,
-          new_meta: {
-            modules_list,
-          },
+          new_meta,
         });
         this.fetch_status = "success";
       } catch (e) {
@@ -148,6 +177,12 @@ export default {
         new_meta,
       });
     },
+    toggleNewModuleEdit({ meta_filename }) {
+      setTimeout(() => {
+        console.log(`emit module.enable_edit.${meta_filename}`);
+        this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
+      }, 50);
+    },
   },
 };
 </script>
@@ -158,7 +193,7 @@ export default {
   flex-flow: column nowrap;
   align-items: center;
   background: white;
-  margin: 0 auto var(--spacing);
+  margin: 0 auto calc(var(--spacing) * 8);
   padding: calc(var(--spacing) / 1) 0;
   max-width: 800px;
 }
@@ -169,10 +204,18 @@ export default {
 
 ._mediaPublication {
   position: relative;
-  margin-bottom: calc(var(--spacing) * 2);
+  // margin-bottom: calc(var(--spacing) * 2);
+  margin-bottom: 0;
 
   ::v-deep > * {
     // height: 100%;
   }
+}
+._spacer {
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--spacing) / 4);
 }
 </style>

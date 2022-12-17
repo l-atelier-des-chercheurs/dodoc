@@ -71,7 +71,7 @@ export default function () {
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
 
-        ui_lang_select: "Choix de la langue de l’interface",
+        ui_lang_select: "Langue de l’interface",
 
         signup_password: "mot de passe pour la création d’un compte",
         signup_password_instructions:
@@ -128,6 +128,8 @@ export default function () {
 
         all_rights_reserved: "Tous Droits Réservés",
         all_rights_reserved_explanations: "<i>Explications à ajouter</i>",
+
+        drop_here: "Déposer ici",
 
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
@@ -200,6 +202,8 @@ export default function () {
         description: "description",
         keywords: "keywords",
         template: "Template",
+
+        ui_lang_select: "Interface language",
       },
       de: {},
       nl: {},

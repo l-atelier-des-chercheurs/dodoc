@@ -279,6 +279,9 @@ export default {
     async enableEditor() {
       if (this.is_collaborative) await this.startCollaborative();
       this.editor.enable();
+      // todo set focus
+      this.editor.focus();
+
       this.editor_is_enabled = true;
     },
     disableEditor() {

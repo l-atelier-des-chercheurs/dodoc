@@ -141,6 +141,8 @@ export default {
   justify-content: center;
   width: 100%;
   gap: calc(var(--spacing) / 1);
+
+  background: white;
 }
 
 ._mediaModal--content {

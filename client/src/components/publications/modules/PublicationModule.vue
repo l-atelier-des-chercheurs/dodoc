@@ -151,6 +151,7 @@
       />
       <CollaborativeEditor2
         v-else-if="publimodule.module_type === 'text' && first_media"
+        ref="textBloc"
         :path="first_media.$path"
         :content="first_media.$content"
         :scrollingContainer="$el"
@@ -186,7 +187,13 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    const meta_filename = this.publimodule.$path.split("/").at(-1);
+    this.$eventHub.$on(
+      `module.enable_edit.${meta_filename}`,
+      this.enableEditForText
+    );
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -226,6 +233,16 @@ export default {
           throw err;
         });
     },
+    enableEditForText() {
+      this.$el.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+      this.$nextTick(() => {
+        if (this.$refs.textBloc) this.$refs.textBloc.enableEditor();
+      });
+    },
   },
 };
 </script>
@@ -247,7 +264,7 @@ export default {
   top: 0;
   height: 100%;
   right: 100%;
-  background: var(--c-bleuvert_fonce);
+  background: rgba(0, 0, 0, 0.1);
 
   display: flex;
   flex-flow: column nowrap;
@@ -268,7 +285,7 @@ export default {
 
   &:hover,
   &:focus {
-    background: var(--c-bleuvert_clair);
+    background: rgba(0, 0, 0, 0.1);
   }
 }
 

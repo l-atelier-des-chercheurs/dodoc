@@ -3,8 +3,9 @@
     class="_mediaTile"
     :class="{
       'was--focused': was_focused,
+      'is--dragged': is_dragged,
     }"
-    :draggable="true"
+    draggable="true"
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
   >
@@ -38,6 +39,8 @@ export default {
       this.is_dragged = true;
       $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
       $event.dataTransfer.effectAllowed = "move";
+
+      debugger;
       this.$eventHub.$emit(`mediadrag.start`);
     },
     endMediaDrag() {
@@ -61,6 +64,9 @@ export default {
   &.was--focused {
     // border: 2px solid var(--c-vert);
     background: var(--c-noir);
+  }
+  &.is--dragged {
+    opacity: 0.5;
   }
 
   &[data-type="text"],

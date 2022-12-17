@@ -1,17 +1,16 @@
 <template>
-  <div>
-    <!-- // TODO : add module or add media -->
-
-    <sl-button
-      variant="edit"
-      class="default"
-      circle
-      v-if="!show_module_selector"
-      @click="show_module_selector = true"
-    >
-      <sl-icon name="plus-circle-fill" :label="$t('edit')" />
-    </sl-button>
-    <div v-else class="_typePicker">
+  <div
+    class="_moduleCreator"
+    :class="{
+      'is--highlighted': is_highlighted,
+      'is--dragover': is_dragover,
+    }"
+    @dragover="onDragover"
+    @dragenter="onDragEnter"
+    @dragleave="onDragLeave"
+    @drop="onDrop"
+  >
+    <div v-if="show_module_selector && !is_highlighted" class="_typePicker">
       <!-- <div class="">
         <DLabel :str="$t('add_media')" />
         <MediaPicker
@@ -40,32 +39,23 @@
         @selectMedia="createMosaic"
         @close="show_media_picker = false"
       />
-
-      <!-- <div class="">
-        <DLabel :str="$t('create_a_module')" />
-        <select v-model="type_selected">
-          <option
-            v-for="option in options"
-            :key="option.key"
-            :value="option.key"
-            v-text="$t(option.label)"
-          />
-        </select>
-        <div v-if="selected_option && selected_option.instructions">
-          <small v-html="$t(selected_option.instructions)" />
-        </div>
-
-        <br />
-
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          :save_text="'create'"
-          @save="createModule({ module_type: type_selected })"
-          @cancel="show_media_picker = false"
-        />
-      </div> -->
     </div>
+
+    <span v-if="is_highlighted" class="u-button u-button_bleuvert _dropNotice">
+      {{ $t("drop_here") }}
+    </span>
+    <sl-icon-button
+      v-else-if="!show_module_selector"
+      name="plus-circle-fill"
+      :label="$t('add')"
+      @click="show_module_selector = true"
+    />
+    <sl-icon-button
+      v-else
+      name="x-circle-fill"
+      :label="$t('close')"
+      @click="show_module_selector = false"
+    />
   </div>
 </template>
 <script>
@@ -82,7 +72,9 @@ export default {
       show_module_selector: false,
       show_media_picker: false,
 
-      type_selected: "",
+      is_highlighted: false,
+      is_dragover: false,
+
       // options: [
       //   {
       //     key: "mosaic",
@@ -99,20 +91,20 @@ export default {
       is_saving: false,
     };
   },
-  created() {
-    this.type_selected = this.options[0].key;
+  created() {},
+  mounted() {
+    this.$eventHub.$on(`mediadrag.start`, this.highlightZone);
+    this.$eventHub.$on(`mediadrag.end`, this.unhighlightZone);
   },
-  mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off(`mediadrag.start`, this.highlightZone);
+    this.$eventHub.$off(`mediadrag.end`, this.unhighlightZone);
+  },
   watch: {},
-  computed: {
-    selected_option() {
-      return this.options.find((o) => o.key === this.type_selected);
-    },
-  },
+  computed: {},
   methods: {
-    createMosaic({ path_to_source_media }) {
-      this.createModule({
+    async createMosaic({ path_to_source_media }) {
+      await this.createModule({
         module_type: "mosaic",
         source_medias: [{ path: path_to_source_media }],
       });
@@ -134,7 +126,7 @@ export default {
       const text_meta_path = this.publication_path + "/" + text_meta_filename;
       const source_medias = [{ path: text_meta_path }];
 
-      this.createModule({
+      await this.createModule({
         module_type: "text",
         source_medias,
       });
@@ -145,7 +137,7 @@ export default {
         module_type,
         source_medias,
       });
-      this.$emit("appendModuleMetaFilenameToList", { meta_filename });
+      this.$emit("addModule", { meta_filename });
 
       this.is_saving = false;
     },
@@ -165,10 +157,94 @@ export default {
           throw err;
         });
     },
+
+    highlightZone() {
+      this.is_highlighted = true;
+    },
+    unhighlightZone() {
+      this.is_highlighted = false;
+      this.is_dragover = false;
+    },
+    onDragover($event) {
+      $event.preventDefault();
+    },
+    onDragEnter($event) {
+      $event.preventDefault();
+      this.is_dragover = true;
+    },
+    onDragLeave($event) {
+      $event.preventDefault();
+      this.is_dragover = false;
+    },
+    async onDrop($event) {
+      $event.preventDefault();
+      $event.dataTransfer.dropEffect = "link";
+
+      if (!$event.dataTransfer.getData("text/plain")) return false;
+
+      const file = JSON.parse($event.dataTransfer.getData("text/plain"));
+      const path_to_source_media = file.$path;
+
+      await this.createMosaic({ path_to_source_media });
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
+._moduleCreator {
+  display: flex;
+  place-content: center;
+  align-items: center;
+  width: 100%;
+
+  // color: var(--c-bleuvert_clair);
+  border-radius: 1rem;
+
+  --color-1: white;
+  --color-2: white;
+
+  background: radial-gradient(
+      circle,
+      transparent 20%,
+      var(--color-1) 20%,
+      var(--color-1) 80%,
+      transparent 80%,
+      transparent
+    ),
+    radial-gradient(
+        circle,
+        transparent 20%,
+        var(--color-1) 20%,
+        var(--color-1) 80%,
+        transparent 80%,
+        transparent
+      )
+      15px 15px,
+    linear-gradient(
+        var(--color-2) 1.2000000000000002px,
+        transparent 1.2000000000000002px
+      )
+      0 -0.6000000000000001px,
+    linear-gradient(
+        90deg,
+        var(--color-2) 1.2000000000000002px,
+        var(--color-1) 1.2000000000000002px
+      ) -0.6000000000000001px 0;
+  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--highlighted {
+    // background: var(--c-bleuvert_clair);
+    --color-2: var(--c-bleuvert);
+  }
+  &.is--dragover {
+    // background: var(--c-bleuvert);
+    background: var(--c-bleuvert);
+    --color-2: white;
+  }
+}
+
 ._typePicker {
   display: flex;
   flex-flow: row wrap;
@@ -178,5 +254,9 @@ export default {
     // padding: calc(var(--spacing) / 2);
     // background: var(--c-gris_clair);
   }
+}
+
+._dropNotice {
+  pointer-events: none;
 }
 </style>

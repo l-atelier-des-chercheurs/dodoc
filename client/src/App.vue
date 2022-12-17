@@ -98,7 +98,7 @@ export default {
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
   --label-color: var(--c-gris_fonce);
-  --border-radius: 18px;
+  --border-radius: 12px;
 
   --input-font-family: inherit;
   --input-font-size: 1rem;
@@ -177,7 +177,7 @@ html,
 body {
   // background: white;
   background-color: var(--c-bodybg);
-
+  scroll-behavior: smooth;
   // diagonal lines
   // background-size: 6px 6px;
   // background-image: repeating-linear-gradient(
