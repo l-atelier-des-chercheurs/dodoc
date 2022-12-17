@@ -42,9 +42,7 @@ export default {
       ],
     };
   },
-  created() {
-    debugger;
-  },
+  created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},

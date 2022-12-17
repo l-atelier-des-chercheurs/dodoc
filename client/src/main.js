@@ -42,6 +42,8 @@ import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);
 import RadioSwitch from "@/adc-core/ui/RadioSwitch.vue";
 Vue.component("RadioSwitch", RadioSwitch);
+import DropZone from "@/adc-core/ui/DropZone.vue";
+Vue.component("DropZone", DropZone);
 //
 import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);

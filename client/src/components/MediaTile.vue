@@ -39,8 +39,6 @@ export default {
       this.is_dragged = true;
       $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
       $event.dataTransfer.effectAllowed = "move";
-
-      debugger;
       this.$eventHub.$emit(`mediadrag.start`);
     },
     endMediaDrag() {

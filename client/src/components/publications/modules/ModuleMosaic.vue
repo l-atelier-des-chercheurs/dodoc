@@ -93,6 +93,10 @@
           @selectMedia="selectMedia"
           @close="show_media_picker = false"
         />
+
+        <div class="_dropzone" v-if="show_dropzone">
+          <DropZone @mediaDropped="selectMedia" />
+        </div>
       </div>
     </div>
   </div>
@@ -114,11 +118,18 @@ export default {
   data() {
     return {
       show_media_picker: false,
+      show_dropzone: false,
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on(`mediadrag.start`, this.showDropzone);
+    this.$eventHub.$on(`mediadrag.end`, this.hideDropzone);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off(`mediadrag.start`, this.showDropzone);
+    this.$eventHub.$off(`mediadrag.end`, this.hideDropzone);
+  },
   watch: {},
   computed: {
     publication_path() {
@@ -160,12 +171,19 @@ export default {
       props["--object-fit"] = media_with_linked.objectFit || "cover";
       return props;
     },
+    showDropzone() {
+      this.show_dropzone = true;
+    },
+    hideDropzone() {
+      this.show_dropzone = false;
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._moduleMosaic {
   --number_of_medias: 1;
+  position: relative;
 }
 ._mediaGrid {
   position: relative;
@@ -224,6 +242,16 @@ export default {
     background: white;
     border-radius: 4px;
     // background: rgba(255, 255, 255, 0.7);
+  }
+}
+
+._dropzone {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  ::v-deep ._dropNotice {
+    transform: rotate(-90deg);
   }
 }
 </style>

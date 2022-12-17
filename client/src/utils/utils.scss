@@ -175,6 +175,15 @@
     background-color: var(--c-bleuvert_fonce);
   }
 }
+.u-button_orange {
+  background-color: var(--c-orange);
+  color: white;
+
+  &:hover,
+  &:focus {
+    background-color: var(--c-orange_fonce);
+  }
+}
 .u-button_bleumarine {
   background-color: var(--c-bleumarine);
   color: white;

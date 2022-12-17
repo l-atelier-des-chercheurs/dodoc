@@ -31,7 +31,6 @@ export default {
   watch: {},
   computed: {
     all_authors_except_current() {
-      debugger;
       return this.all_authors_path.filter(
         (a) => !this.current_authors.includes(a)
       );
