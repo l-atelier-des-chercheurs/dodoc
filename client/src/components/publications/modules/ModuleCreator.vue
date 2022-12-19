@@ -43,9 +43,9 @@
       @click="show_module_selector = false"
     />
 
-    <template v-if="show_dropzone">
-      <DropZone @mediaDropped="createMosaic" />
-    </template>
+    <transition name="dropzone" :duration="150">
+      <DropZone v-if="show_dropzone" @mediaDropped="createMosaic" />
+    </transition>
   </div>
 </template>
 <script>

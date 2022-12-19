@@ -9,7 +9,7 @@
     @dragleave="onDragLeave"
     @drop="onDrop"
   >
-    <div class="u-button u-button_orange _dropNotice">
+    <div class="u-button u-button_bleuvert _dropNotice">
       {{ $t("drop_here") }}
     </div>
   </div>
@@ -68,8 +68,8 @@ export default {
   justify-content: center;
 
   --color-1: transparent;
-  // --color-2: var(--c-bleuvert);
-  --color-2: var(--c-orange);
+  --color-2: var(--c-bleuvert);
+  // --color-2: var(--c-orange);
 
   background: radial-gradient(
       circle,

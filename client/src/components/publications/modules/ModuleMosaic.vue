@@ -94,9 +94,11 @@
           @close="show_media_picker = false"
         />
 
-        <div class="_dropzone" v-if="show_dropzone">
-          <DropZone @mediaDropped="selectMedia" />
-        </div>
+        <transition name="dropzone" :duration="150">
+          <div class="_dropzone" v-if="show_dropzone">
+            <DropZone @mediaDropped="selectMedia" />
+          </div>
+        </transition>
       </div>
     </div>
   </div>
