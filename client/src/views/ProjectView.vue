@@ -111,6 +111,18 @@ export default {
       },
       deep: true,
     },
+    display_as_public: {
+      handler() {
+        if (this.display_as_public)
+          this.projectpanes = [
+            {
+              type: "Publier",
+              pad: {},
+              size: 100,
+            },
+          ];
+      },
+    },
     // is_identified: {
     //   handler() {
     //     if (!this.is_identified)
