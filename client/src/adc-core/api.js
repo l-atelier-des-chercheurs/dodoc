@@ -13,6 +13,8 @@ export default function () {
       },
       general_password: "",
 
+      rooms_joined: [],
+
       // todo replace is_identified, create route to test
       is_correctly_logged_in: false,
     },
@@ -45,24 +47,19 @@ export default function () {
 
         // client-side
         this.socket.on("connect", () => {
-          console.log(this.socket.id);
+          console.log("connect " + this.socket.id);
           this.$eventHub.$emit("socketio.connect", {
             socketid: this.socket.id,
           });
+          this.rejoinRooms();
         });
-        this.socket.on("reconnect", () => {
-          console.log(this.socket.id);
-          this.$eventHub.$emit("socketio.reconnect", {
-            socketid: this.socket.id,
-          });
-        });
+
         this.socket.on("session", ({ sessionID, userID }) => {
           // attach the session ID to the next reconnection attempts
           this.socket.auth = { sessionID };
           localStorage.setItem("sessionID", sessionID);
           this.socket.userID = userID;
         });
-
         this.socket.on("connect_error", (reason) => {
           this.$eventHub.$emit("socketio.connect_error", reason);
         });
@@ -102,11 +99,18 @@ export default function () {
       },
       join({ room }) {
         this.socket.emit("joinRoom", { room });
-        // todo rejoin room after disconnect
+        this.rooms_joined.push(room);
       },
       leave({ room }) {
         this.socket.emit("leaveRoom", { room });
-        // todo rejoin room after disconnect
+        this.rooms_joined = this.rooms_joined.filter((rj) => rj !== room);
+      },
+      rejoinRooms() {
+        console.log("rejoinRooms" + this.rooms_joined.join(", "));
+
+        this.rooms_joined.map((rj) =>
+          this.socket.emit("joinRoom", { room: rj })
+        );
       },
 
       async _setAuthFromStorage() {
@@ -155,6 +159,7 @@ export default function () {
           general_password: this.general_password,
         });
       },
+
       folderCreated({ path, meta }) {
         if (!this.store[path]) this.store[path] = new Array();
         this.store[path].push(meta);

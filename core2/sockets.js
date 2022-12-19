@@ -74,8 +74,6 @@ module.exports = (function () {
         connected: true,
       });
 
-      // rejoin rooms indicated in session
-
       // emit session details
       socket.emit("session", {
         sessionID: socket.sessionID,
@@ -126,19 +124,18 @@ module.exports = (function () {
       // );
 
       socket.on("joinRoom", ({ room }) => {
-        dev.logsockets(`socket ${socket.id} is joining ${room}`);
+        dev.logsockets(`ROOMS — socket ${socket.id} is joining ${room}`);
         socket.join("content/" + room);
-
-        roomStatus(socket);
+        // roomStatus(socket);
       });
       socket.on("leaveRoom", ({ room }) => {
-        dev.logsockets(`socket ${socket.id} is leaving ${room}`);
+        dev.logsockets(`ROOMS — socket ${socket.id} is leaving ${room}`);
         socket.leave("content/" + room);
 
-        roomStatus(socket);
+        // roomStatus(socket);
       });
       socket.on("disconnect", () => {
-        dev.logsockets(`user ${socket.id} disconnected`);
+        dev.logsockets(`ROOMS — socket ${socket.id} disconnected`);
       });
     });
 
@@ -170,7 +167,7 @@ module.exports = (function () {
   }
 
   function roomStatus(socket) {
-    dev.logverbose("rooms");
+    dev.logverbose("ROOMS — status");
     for (const [key, value] of socket.adapter.rooms) {
       if (key.startsWith("content/"))
         dev.logverbose(
