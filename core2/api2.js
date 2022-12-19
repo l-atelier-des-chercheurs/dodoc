@@ -142,10 +142,10 @@ module.exports = (function () {
     const { general_password } = await settings.get();
     if (!general_password) return next ? next() : undefined;
 
-    if (!req.headers || !req.headers.authorization)
-      throw new Error(`no_general_password_submitted`);
-
     try {
+      if (!req.headers || !req.headers.authorization)
+        throw new Error(`no_general_password_submitted`);
+
       const { general_password: submitted_general_password } = JSON.parse(
         req.headers.authorization
       );
