@@ -158,11 +158,6 @@ new Vue({
       this.window.innerWidth = window.innerWidth;
       this.window.innerHeight = window.innerHeight;
     });
-
-    await this.$api.getFolders({
-      path: `authors`,
-    });
-    this.$api.join({ room: "authors" });
   },
   watch: {
     "$api.socket.connected": function () {
