@@ -68,7 +68,6 @@
     <sl-button
       slot="footer"
       variant="primary"
-      :disabled="selected_archive_filename === 'current'"
       @click="restoreVersion(archive_shown.content)"
     >
       {{ $t("restore_this_version") }}

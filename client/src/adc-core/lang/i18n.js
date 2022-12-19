@@ -123,6 +123,10 @@ export default function () {
         access_control: "Contrôle des accès",
         storage: "Stockage",
 
+        saving: "Enregistrement…",
+        saved: "OK !",
+        connected: "Connecté",
+
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",
 
@@ -146,10 +150,13 @@ export default function () {
         add_medias: "Ajouter des médias",
         add_text: "Ajouter du texte",
 
+        project_author_instructions:
+          "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer ce projet et ses contenus.",
         project_title_instructions:
           "Le titre est aussi utilisé sur la page d’accueil.",
         project_desc_instructions:
-          "La description est affichée sur la page d’accueil.",
+          "La description est aussi affichée sur la page d’accueil.",
+        add_authors: "Ajouter des contributeur·rice·s",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
@@ -165,6 +172,7 @@ export default function () {
         move_down: "Descendre",
         source_project: "Projet source",
 
+        current: "Actuel",
         save_on_this_device: "Sauvegarder pour cet appareil",
         will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
@@ -179,6 +187,8 @@ export default function () {
         reload_page: "Recharger cette page",
 
         create_a_module: "Créer un module",
+        list_of_archives: "Liste des archives",
+        restore_this_version: "Restaurer cette version",
 
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
