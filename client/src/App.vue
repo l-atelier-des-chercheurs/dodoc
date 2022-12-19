@@ -12,7 +12,7 @@
       />
 
       <template v-else>
-        <TopBar />
+        <TopBar v-if="$route.path !== '/'" />
         <div class="">
           <router-view v-slot="{ Component }">
             <transition name="fade" mode="out-in">
