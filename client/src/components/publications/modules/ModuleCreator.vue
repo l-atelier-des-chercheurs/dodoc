@@ -36,6 +36,7 @@
       :label="$t('add')"
       @click="show_module_selector = true"
     />
+
     <sl-icon-button
       v-else
       name="x-circle-fill"
@@ -101,8 +102,6 @@ export default {
     },
 
     async createText() {
-      this.is_saving = true;
-
       const text_meta_filename = await this.$api.uploadText({
         path: this.publication_path,
         filename: "text.txt",
@@ -127,8 +126,7 @@ export default {
         source_medias,
       });
       this.$emit("addModule", { meta_filename });
-
-      this.is_saving = false;
+      this.show_module_selector = false;
     },
 
     async createMetaForModule({ module_type, source_medias }) {
@@ -164,7 +162,7 @@ export default {
   align-items: center;
   width: 100%;
 
-  // color: var(--c-bleuvert_clair);
+  color: var(--c-bleuvert);
   border-radius: 1rem;
 }
 
@@ -181,5 +179,10 @@ export default {
 
 ._dropNotice {
   pointer-events: none;
+}
+
+sl-icon-button::part(base) {
+  font-size: 1.5em;
+  color: var(--c-bleuvert);
 }
 </style>
