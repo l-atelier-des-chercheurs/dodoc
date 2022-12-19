@@ -69,7 +69,7 @@ module.exports = (function () {
         value: folder_meta,
       });
 
-      return JSON.parse(JSON.stringify(folder_meta));
+      return folder_meta;
     },
 
     createFolder: async ({ path_to_type, data }) => {

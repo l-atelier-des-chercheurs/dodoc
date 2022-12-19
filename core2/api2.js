@@ -322,7 +322,9 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      let d = await folder.getFolder({ path_to_folder });
+      let d = JSON.parse(
+        JSON.stringify(await folder.getFolder({ path_to_folder }))
+      );
       const files = await file.getFiles({ path_to_folder });
       d.$files = files;
       res.setHeader("Access-Control-Allow-Origin", "*");
