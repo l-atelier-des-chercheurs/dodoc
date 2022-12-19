@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="_toggleInput">
     <input
       ref="field"
       :id="id"
@@ -53,6 +53,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._toggleInput {
+  display: flex;
+  flex-flow: row nowrap;
+}
 ._maxlength {
   flex: 0 0 auto;
   padding: calc(var(--spacing) / 4) 0;
