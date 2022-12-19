@@ -45,6 +45,7 @@ z
         :authors_paths="project.$authors"
         :path="project.$path"
         :can_edit="can_edit_project"
+        :instructions="$t('project_author_instructions')"
       />
 
       <br />
