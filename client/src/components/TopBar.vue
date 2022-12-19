@@ -111,10 +111,11 @@ export default {
   gap: calc(var(--spacing) / 2);
   align-items: center;
 
+  padding: calc(var(--spacing) / 2) 0;
   background: white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
-  min-height: 60px;
+  // min-height: 60px;
   user-select: none;
 
   &.is--homepage {
@@ -142,7 +143,8 @@ export default {
 ._topRightButtons {
   display: flex;
   justify-content: flex-end;
-  padding: 0 calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 2);
+  padding: 0 calc(var(--spacing) / 2);
 
   button {
     width: 3rem;
