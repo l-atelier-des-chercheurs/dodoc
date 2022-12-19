@@ -456,7 +456,7 @@ export default function () {
         } else if (err.response.data?.message === "token_expired") {
           this.resetToken();
         } else if (err.response.data?.message === "wrong_general_password") {
-          err;
+          this.$eventHub.$emit("app.prompt_general_password");
         } else if (
           err.response.data?.message === "no_general_password_submitted"
         ) {

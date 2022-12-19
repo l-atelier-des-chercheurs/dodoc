@@ -111,6 +111,18 @@ export default {
       },
       deep: true,
     },
+    display_as_public: {
+      handler() {
+        if (this.display_as_public)
+          this.projectpanes = [
+            {
+              type: "Publier",
+              pad: {},
+              size: 100,
+            },
+          ];
+      },
+    },
     // is_identified: {
     //   handler() {
     //     if (!this.is_identified)
@@ -232,16 +244,15 @@ export default {
 }
 
 ._displayAsPublic {
-  position: relative;
+  position: fixed;
   z-index: 100;
-  // bottom: 0;
-  // left: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  padding: calc(var(--spacing) / 4) 0;
+  padding: calc(var(--spacing) / 1);
 
   display: flex;
   justify-content: center;
-  background: white;
 
   width: 100%;
   pointer-events: none;
@@ -249,6 +260,12 @@ export default {
   > ._displayAsPublic--content {
     pointer-events: auto;
     background: var(--c-bleuvert);
+    border: 2px solid var(--c-bleuvert_fonce);
+    border-radius: 8px;
+
+    > * {
+      padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+    }
   }
 }
 </style>

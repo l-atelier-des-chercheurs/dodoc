@@ -77,11 +77,11 @@ z
         :can_edit="can_edit_project"
         :instructions="$t('project_desc_instructions')"
       />
-      <DebugBtn v-if="context === 'full'" :content="project" />
+      <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
     </div>
 
     <div class="_projectInfos--meta" v-if="context === 'full'">
-      <CardMeta :project="project" :can_edit_project="can_edit_project" />
+      <CardMeta :project="project" :can_edit="can_edit_project" />
       <CardStatus :project="project" :can_edit_project="can_edit_project" />
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
       <CardKeywords :project="project" :can_edit_project="can_edit_project" />
@@ -206,7 +206,7 @@ export default {
 
 ._projectInfos {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   align-items: stretch;
 
   margin: 0 auto;
@@ -220,6 +220,10 @@ export default {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   }
 
+  @media only screen and (max-width: 780px) {
+    flex-flow: row wrap;
+  }
+
   > * {
     flex: 10 1 320px;
 
@@ -228,7 +232,6 @@ export default {
     }
     &._projectInfos--meta {
       flex: 1 0 260px;
-      max-height: calc((100vw - 260px) / 2);
     }
   }
 }
@@ -327,12 +330,15 @@ export default {
 
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  max-height: calc((100vw - 260px) / 2);
 
-  // padding: calc(var(--spacing) / 2);
-  // gap: calc(var(--spacing) / 2);
+  @media only screen and (max-width: 980px) {
+    flex-flow: row nowrap;
+    max-height: none;
+  }
 
   > * {
-    flex: 1 1 260px;
+    flex: 1 0 260px;
 
     background: white;
     box-shadow: 0 1px 6px rgb(0 0 0 / 20%);

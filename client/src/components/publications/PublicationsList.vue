@@ -37,7 +37,10 @@
 
     <div class="_publications">
       <div class="_publications--list">
-        <div v-for="publication in publications" :key="publication.$path">
+        <div
+          v-for="publication in sorted_publications"
+          :key="publication.$path"
+        >
           <PublicationPreview
             :publication="publication"
             image_name="publi_apercu.png"
@@ -95,7 +98,14 @@ export default {
     this.$api.leave({ room: this.path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    sorted_publications() {
+      const _publications = this.publications.slice();
+      return _publications.sort(
+        (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
+      );
+    },
+  },
   methods: {
     openEntry(path) {
       const publication_slug = path.split("/").at(-1);

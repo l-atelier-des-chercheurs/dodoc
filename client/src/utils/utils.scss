@@ -117,6 +117,9 @@
   background: transparent;
   line-height: 1;
 
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+
   &.is--active {
     color: var(--c-bleuvert);
   }

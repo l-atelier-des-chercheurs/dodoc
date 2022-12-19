@@ -1,5 +1,10 @@
 <template>
-  <div class="_publierPane">
+  <div
+    class="_publierPane"
+    :class="{
+      'is--editable': can_edit,
+    }"
+  >
     <PublicationsList
       v-if="!publication_opened || !publication_opened.slug"
       :project_path="project.$path"
@@ -46,6 +51,9 @@ export default {
   // padding-bottom: calc(var(--spacing) * 4);
   // overflow: auto;
   // height: 100%;
-  // background: var(--color-Publier);
+
+  &.is--editable {
+    background: var(--color-Publier);
+  }
 }
 </style>

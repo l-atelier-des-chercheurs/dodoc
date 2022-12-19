@@ -39,11 +39,11 @@
       </transition-group>
     </div>
 
-    <!-- <ModuleCreator
-      v-if="can_edit"
+    <ModuleCreator
+      v-if="can_edit && (!modules_list || modules_list.length === 0)"
       :publication_path="publication.$path"
       @addModule="appendModuleMetaFilenameToList"
-    /> -->
+    />
   </div>
 </template>
 <script>
