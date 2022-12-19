@@ -559,7 +559,7 @@ module.exports = (function () {
 
       let extracted_metadata = {};
       if (metadata.format?.duration)
-        extracted_metadata.duration = metadata.format.duration;
+        extracted_metadata.duration = +metadata.format.duration.toPrecision(3);
       if (metadata.format?.tags?.location)
         extracted_metadata.location = metadata.format.tags.location;
       if (metadata.format?.tags?.["com.apple.quicktime.location.ISO6709"])
