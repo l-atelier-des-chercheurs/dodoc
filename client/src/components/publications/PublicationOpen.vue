@@ -5,6 +5,10 @@
       {{ fetch_publication_error }}
     </div>
     <template v-else>
+      <button type="button" class="u-buttonLink" @click="$emit('close')">
+        {{ $t("close") }}
+      </button>
+
       <div class="_topbar">
         <TitleField
           :label="$t('title')"
@@ -14,19 +18,19 @@
           :path="publication.$path"
           :can_edit="can_edit_publication"
         />
-        <TitleField
+        <!-- <TitleField
           :label="$t('template')"
           :field_name="'template'"
           :content="publication.template"
           :path="publication.$path"
           :can_edit="false"
-        />
-        <AuthorField
+        /> -->
+        <!-- <AuthorField
           :label="$t('contributors')"
           :authors_paths="publication.$authors"
           :path="publication.$path"
           :can_edit="can_edit_publication"
-        />
+        /> -->
 
         <div class="_buttonRow">
           <button
@@ -35,10 +39,7 @@
             v-if="can_edit_publication"
             @click="removePublication()"
           >
-            Supprimer
-          </button>
-          <button type="button" class="u-buttonLink" @click="$emit('close')">
-            Fermer
+            {{ $t("remove") }}
           </button>
         </div>
       </div>
