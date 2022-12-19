@@ -60,8 +60,18 @@
 
     <div class="">
       <h3>Projets finalisés</h3>
-      <div class="_projectsList">
-        <div v-if="finalized_projects.length === 0" class="u-instructions">
+      <transition-group
+        class="_projectsList"
+        tag="div"
+        name="StoryModules"
+        appear
+        :duration="700"
+      >
+        <div
+          v-if="finalized_projects.length === 0"
+          class="u-instructions"
+          key="no_content"
+        >
           {{ $t("no_finalized_proejcts") }}
         </div>
 
@@ -71,13 +81,23 @@
           context="list"
           :key="project.$path"
         />
-      </div>
+      </transition-group>
     </div>
 
     <div class="">
       <h3>Projets en cours</h3>
-      <div class="_projectsList">
-        <div v-if="draft_projects.length === 0" class="u-instructions">
+      <transition-group
+        class="_projectsList"
+        tag="div"
+        name="StoryModules"
+        appear
+        :duration="700"
+      >
+        <div
+          v-if="draft_projects.length === 0"
+          class="u-instructions"
+          key="no_content"
+        >
           {{ $t("no_draft_proejcts") }}
         </div>
         <ProjectPresentation
@@ -86,7 +106,7 @@
           context="list"
           :key="project.$path"
         />
-      </div>
+      </transition-group>
     </div>
   </div>
 </template>
@@ -128,12 +148,9 @@ export default {
   computed: {
     sorted_projects() {
       const _projects = this.projects.slice();
-      return _projects.sort(function (a, b) {
-        let valA = a.date_created;
-        let valB = b.date_created;
-        if (valA === valB) return 0;
-        return valA < valB ? -1 : 1;
-      });
+      return _projects.sort(
+        (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
+      );
     },
     finalized_projects() {
       return this.sorted_projects.filter((p) => p.status === "finished");
