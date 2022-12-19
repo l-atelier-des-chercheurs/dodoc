@@ -6,12 +6,15 @@
     }"
   >
     <BreadCrumbs :style="$route.path === '/' ? 'visibility: hidden' : ''" />
-    <button type="button" class="_subscribeBtn" @click="showAuthorModal">
-      <template v-if="connected_as">
-        {{ connected_as.name }}
-      </template>
-      <template v-else>Inscription</template>
-    </button>
+    <div class="_subscribeBtn">
+      <button type="button" class="_authorBtn" @click="showAuthorModal">
+        <template v-if="connected_as">
+          {{ connected_as.name }}
+        </template>
+        <template v-else>Inscription</template>
+      </button>
+    </div>
+
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
 
     <div class="_topRightButtons">
@@ -125,9 +128,11 @@ export default {
 }
 
 ._subscribeBtn {
-  background: var(--c-bleumarine_clair);
-  padding: calc(var(--spacing) / 2);
-  border-radius: 4px;
+  ._authorBtn {
+    background: var(--c-bleumarine_clair);
+    padding: calc(var(--spacing) / 2);
+    border-radius: 4px;
+  }
 }
 
 ._topRightButtons {
