@@ -2,7 +2,7 @@
   <div
     class="_projetPanes"
     :class="{
-      'has--multiplePanes': projectpanes.length > 1,
+      'has--multiplePanes': can_edit_project,
     }"
   >
     <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
