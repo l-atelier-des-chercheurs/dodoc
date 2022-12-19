@@ -9,20 +9,21 @@
     <br />
     <button
       type="button"
-      class="u-buttonLink"
+      class="u-button u-button_red"
+      v-if="can_edit"
       @click="show_confirm_delete = !show_confirm_delete"
     >
-      Supprimer ce projet
+      {{ $t("remove") }}
     </button>
     <br />
     <br />
     <button
-      class="u-button u-button_red"
+      class="u-buttonLink"
       type="button"
       v-if="show_confirm_delete"
       @click="removeProject"
     >
-      Confirmer la suppression
+      {{ $t("confirm_removal") }}
     </button>
   </ProjectCard>
 </template>
@@ -32,7 +33,7 @@ import ProjectCard from "@/components/ProjectCard.vue";
 export default {
   props: {
     project: Object,
-    can_edit_project: Boolean,
+    can_edit: Boolean,
   },
   components: { ProjectCard },
   data() {

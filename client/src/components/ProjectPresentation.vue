@@ -77,11 +77,11 @@ z
         :can_edit="can_edit_project"
         :instructions="$t('project_desc_instructions')"
       />
-      <DebugBtn v-if="context === 'full'" :content="project" />
+      <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
     </div>
 
     <div class="_projectInfos--meta" v-if="context === 'full'">
-      <CardMeta :project="project" :can_edit_project="can_edit_project" />
+      <CardMeta :project="project" :can_edit="can_edit_project" />
       <CardStatus :project="project" :can_edit_project="can_edit_project" />
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
       <CardKeywords :project="project" :can_edit_project="can_edit_project" />
