@@ -89,6 +89,9 @@ header {
     margin-top: 0;
   }
 }
+._footer {
+  text-align: center;
+}
 
 @keyframes reveal {
   0% {
