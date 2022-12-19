@@ -53,6 +53,7 @@ export default function () {
         description: "description",
         keywords: "mots-clés",
         add: "ajouter",
+        access: "accéder",
         title: "titre",
         name: "nom",
         name_of_instance: "Nom de l’instance",
@@ -149,6 +150,8 @@ export default function () {
         add_media: "Ajouter un média",
         add_medias: "Ajouter des médias",
         add_text: "Ajouter du texte",
+
+        display_as_public: "Afficher la vue publique",
 
         project_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer ce projet et ses contenus.",

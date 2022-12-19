@@ -65,8 +65,12 @@ export default {
   },
   created() {},
   async mounted() {
-    this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
+    await this.$api.getFolders({
+      path: `authors`,
+    });
+    this.$api.join({ room: "authors" });
 
+    this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
     await this.getCurrentAuthor();
   },
   beforeDestroy() {

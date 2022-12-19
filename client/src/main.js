@@ -145,6 +145,7 @@ new Vue({
   },
   async mounted() {
     await this.$api.init({ debug_mode });
+    this.is_loading = false;
 
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
@@ -158,7 +159,10 @@ new Vue({
       this.window.innerHeight = window.innerHeight;
     });
 
-    this.is_loading = false;
+    await this.$api.getFolders({
+      path: `authors`,
+    });
+    this.$api.join({ room: "authors" });
   },
   watch: {
     "$api.socket.connected": function () {

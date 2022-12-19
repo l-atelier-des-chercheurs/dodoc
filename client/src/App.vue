@@ -6,20 +6,21 @@
     </div>
 
     <template v-else>
-      <TopBar />
-
       <GeneralPasswordModal
         v-if="show_general_password_modal"
         @close="show_general_password_modal = false"
       />
 
-      <div class="" v-else>
-        <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" :key="$route.path" />
-          </transition>
-        </router-view>
-      </div>
+      <template v-else>
+        <TopBar />
+        <div class="">
+          <router-view v-slot="{ Component }">
+            <transition name="fade" mode="out-in">
+              <component :is="Component" :key="$route.path" />
+            </transition>
+          </router-view>
+        </div>
+      </template>
     </template>
   </div>
 </template>

@@ -1,16 +1,17 @@
 <template>
   <div class="_toggleInput">
-    <input
-      ref="field"
-      :id="id"
-      :name="label"
-      type="checkbox"
-      :disabled="disabled"
-      :checked="content"
-      @change="$emit('update:content', $event.target.checked)"
-    />
-    <label :for="id">{{ label }}</label>
-
+    <div class="_inputLabel">
+      <input
+        ref="field"
+        :id="id"
+        :name="label"
+        type="checkbox"
+        :disabled="disabled"
+        :checked="content"
+        @change="$emit('update:content', $event.target.checked)"
+      />
+      <label :for="id">{{ label }}</label>
+    </div>
     <div v-if="current_instruction" class="fieldCaption">
       {{ current_instruction }}
     </div>
@@ -54,6 +55,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._toggleInput {
+}
+._inputLabel {
   display: flex;
   flex-flow: row nowrap;
 }
