@@ -59,6 +59,7 @@ export default {
 ._inputLabel {
   display: flex;
   flex-flow: row nowrap;
+  align-items: center;
 }
 ._maxlength {
   flex: 0 0 auto;

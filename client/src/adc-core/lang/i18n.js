@@ -116,6 +116,7 @@ export default function () {
         files: "Fichiers",
         template: "Gabarit",
 
+        close: "Fermer",
         settings: "Réglages",
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
@@ -171,6 +172,7 @@ export default function () {
 
         duplicate: "Dupliquer",
         remove: "Supprimer",
+        confirm_removal: "Confirmer la suppression",
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",

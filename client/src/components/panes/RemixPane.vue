@@ -389,11 +389,11 @@ export default {
 }
 
 .m_recipe {
-  background: var(--c-bleuvert);
+  background: var(--c-bleumarine);
 }
 
 .m_recipes--type {
-  background-color: rgba(51, 51, 51, 0.2);
+  // background-color: rgba(51, 51, 51, 0.2);
   border-radius: 4px;
 
   > label {

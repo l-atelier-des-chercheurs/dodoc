@@ -16,7 +16,7 @@
     />
 
     <component :is="`style`" v-html="quill_styles" />
-    <div ref="editBtn" class="_btnContainer" v-if="can_edit">
+    <div ref="editBtn" class="_btnContainer" v-show="can_edit">
       <small class="_btnRow">
         <sl-button
           variant="edit"
