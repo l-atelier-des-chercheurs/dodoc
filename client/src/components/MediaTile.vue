@@ -10,6 +10,7 @@
     @dragend="endMediaDrag()"
   >
     <MediaContent :file="file" />
+    <span v-if="duration" class="_duration">{{ duration }}</span>
     <button
       type="button"
       class="_focusMediaBtn"
@@ -32,7 +33,15 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    duration() {
+      if (this.file.$infos?.duration)
+        return this.formatDurationToHoursMinutesSeconds(
+          this.file.$infos.duration
+        );
+      return false;
+    },
+  },
   methods: {
     startMediaDrag($event) {
       console.log(`MediaFocus / startMediaDrag`);
@@ -60,8 +69,9 @@ export default {
   transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.was--focused {
-    // border: 2px solid var(--c-vert);
-    background: var(--c-noir);
+    transform: translate3d(0, -5px, 0);
+    // border: 2px solid var(--c-noit);
+    // background: rgba(51, 51, 51, 0.8);
   }
   &.is--dragged {
     opacity: 0.5;
@@ -101,5 +111,13 @@ export default {
     // background: rgba(255, 255, 255, 0.35);
     transition: none;
   }
+}
+
+._duration {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 0 calc(var(--spacing) / 4);
 }
 </style>
