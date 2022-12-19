@@ -17,11 +17,10 @@
     <template v-else-if="file.$type === 'stl'">
       <img :src="thumb" />
     </template>
-    <span v-else>
-      {{ file.$type }}
-      <sl-icon name="file-earmark-arrow-down" /><br />
-      {{ file.media_filename }}
-    </span>
+    <small v-else class="u-fontCode fieldCaption _fileName">
+      <sl-icon name="file-earmark" /><br />
+      {{ file.$media_filename }}
+    </small>
   </div>
 </template>
 <script>
@@ -104,4 +103,8 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._fileName {
+  padding: calc(var(--spacing) / 4);
+}
+</style>
