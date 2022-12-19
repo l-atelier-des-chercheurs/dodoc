@@ -18,14 +18,25 @@
           <ProjectPresentation
             :project="project"
             context="full"
-            :can_edit_project="can_edit_project"
+            :can_edit_project="can_edit_project && !display_as_public"
           />
+        </div>
+
+        <div class="_displayAsPublic">
+          <div class="_displayAsPublic--content">
+            <ToggleInput
+              class="u-button u-button_bleuvert"
+              v-if="can_edit_project"
+              :content.sync="display_as_public"
+              :label="$t('display_as_public')"
+            />
+          </div>
         </div>
 
         <div class="_projectPanesAndList">
           <PaneList2
             class="_paneList"
-            v-if="can_edit_project"
+            v-if="can_edit_project && !display_as_public"
             :project="project"
             :panes.sync="projectpanes"
           />
@@ -33,7 +44,7 @@
             <ProjectPanes
               :projectpanes="projectpanes"
               :project="project"
-              :can_edit_project="can_edit_project"
+              :can_edit_project="can_edit_project && !display_as_public"
               @update:projectpanes="projectpanes = $event"
             />
           </div>
@@ -60,6 +71,8 @@ export default {
       fetch_project_error: null,
       project: null,
 
+      display_as_public: false,
+
       projectpanes: [],
     };
   },
@@ -69,6 +82,8 @@ export default {
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
     this.$api.join({ room: this.project.$path });
+
+    //
   },
   beforeDestroy() {
     this.$eventHub.$off("folder.removed", this.closeOnRemove);
@@ -79,6 +94,14 @@ export default {
       handler() {
         let projectpanes = this.$route.query?.projectpanes;
         if (projectpanes) this.projectpanes = JSON.parse(projectpanes);
+        else if (!this.can_edit_project)
+          this.projectpanes = [
+            {
+              type: "Publier",
+              pad: {},
+              size: 100,
+            },
+          ];
       },
       immediate: true,
     },
@@ -88,20 +111,20 @@ export default {
       },
       deep: true,
     },
-    is_identified: {
-      handler() {
-        if (!this.is_identified)
-          if (this.projectpanes.length === 0)
-            this.projectpanes = [
-              {
-                type: "Publier",
-                pad: {},
-                size: 100,
-              },
-            ];
-      },
-      immediate: true,
-    },
+    // is_identified: {
+    //   handler() {
+    //     if (!this.is_identified)
+    //       if (this.projectpanes.length === 0)
+    //         this.projectpanes = [
+    //           {
+    //             type: "Publier",
+    //             pad: {},
+    //             size: 100,
+    //           },
+    //         ];
+    //   },
+    //   immediate: true,
+    // },
   },
   computed: {
     articles() {
@@ -171,7 +194,7 @@ export default {
 
 ._projectPanesAndList {
   position: relative;
-  height: 100vh;
+  // height: 100vh;
 
   display: flex;
   flex-flow: column nowrap;
@@ -181,8 +204,8 @@ export default {
   }
   ._panes {
     flex: 1 1 auto;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    // overflow-y: auto;
+    // -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -205,6 +228,27 @@ export default {
   > * {
     background: white;
     border-radius: 4px;
+  }
+}
+
+._displayAsPublic {
+  position: relative;
+  z-index: 100;
+  // bottom: 0;
+  // left: 0;
+  width: 100%;
+  padding: calc(var(--spacing) / 4) 0;
+
+  display: flex;
+  justify-content: center;
+  background: white;
+
+  width: 100%;
+  pointer-events: none;
+
+  > ._displayAsPublic--content {
+    pointer-events: auto;
+    background: var(--c-bleuvert);
   }
 }
 </style>

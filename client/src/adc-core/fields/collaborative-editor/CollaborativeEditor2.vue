@@ -43,14 +43,14 @@
           <transition name="fade_fast" mode="out-in">
             <span v-if="is_loading_or_saving" key="saving">
               <sl-spinner style="--indicator-color: currentColor" />
-              {{ $t("saving…") }}
+              {{ $t("saving") }}
             </span>
             <span v-else-if="show_saved_icon" key="saved">
               <sl-icon name="check-circle" />
               {{ $t("saved") }}
             </span>
             <span v-else key="connected">
-              <b>{{ rtc.connection_state }}</b>
+              <b>{{ $t(rtc.connection_state) }}</b>
             </span>
           </transition>
         </div>
@@ -279,6 +279,9 @@ export default {
     async enableEditor() {
       if (this.is_collaborative) await this.startCollaborative();
       this.editor.enable();
+      // todo set focus
+      this.editor.focus();
+
       this.editor_is_enabled = true;
     },
     disableEditor() {

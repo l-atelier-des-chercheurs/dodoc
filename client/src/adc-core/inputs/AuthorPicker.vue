@@ -16,15 +16,22 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      all_authors_path: [],
+    };
   },
-  created() {},
-  mounted() {},
+  async created() {
+    const all_authors = await this.$api.getFolders({
+      path: `authors`,
+    });
+    this.all_authors_path = all_authors.map(({ $path }) => $path);
+  },
+  async mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
     all_authors_except_current() {
-      return ["authors/louis", "authors/pauline", "authors/sarah"].filter(
+      return this.all_authors_path.filter(
         (a) => !this.current_authors.includes(a)
       );
     },
@@ -39,7 +46,14 @@ export default {
 }
 
 ._authorPicker {
-  border: 2px solid var(--c-bleumarine);
+  // border: 2px solid var(--c-bleumarine);
   padding: calc(var(--spacing) / 4);
+
+  display: flex;
+  flex-flow: row wrap;
+
+  > * {
+    cursor: pointer;
+  }
 }
 </style>

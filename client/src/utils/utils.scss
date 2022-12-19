@@ -79,7 +79,7 @@
 
 .u-card {
   background-color: #fff;
-  border-radius: 6px;
+  border-radius: 0;
   // border-bottom: 2px solid #b9b9b9;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
@@ -94,6 +94,9 @@
   &::part(header) {
     margin: 0;
     font-weight: 700;
+    background-color: var(--c-gris_clair);
+    // color: white;
+    border-bottom: none;
     // padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
   }
   &::part(body) {
@@ -170,6 +173,15 @@
   &:hover,
   &:focus {
     background-color: var(--c-bleuvert_fonce);
+  }
+}
+.u-button_orange {
+  background-color: var(--c-orange);
+  color: white;
+
+  &:hover,
+  &:focus {
+    background-color: var(--c-orange_fonce);
   }
 }
 .u-button_bleumarine {
@@ -415,4 +427,12 @@ input[type="file"] {
 
 .u-colorRed {
   color: var(--c-rouge);
+}
+
+.u-colorBleuvert {
+  color: var(--c-bleuvert);
+}
+
+.u-fontCode {
+  font-family: "Fira Code";
 }

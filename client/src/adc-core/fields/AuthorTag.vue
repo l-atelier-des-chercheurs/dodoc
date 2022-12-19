@@ -55,4 +55,9 @@ export default {
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   }
 }
+sl-icon-button::part(base) {
+  padding-top: 0;
+  padding-bottom: 0;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+}
 </style>

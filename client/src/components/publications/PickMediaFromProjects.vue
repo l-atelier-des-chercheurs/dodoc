@@ -99,7 +99,7 @@ export default {
 ._pickMediaFromProject {
   position: relative;
   display: block;
-  max-width: 330px;
+  max-width: 480px;
   width: 100%;
 
   // max-height: 50vh;

@@ -93,7 +93,7 @@ export default {
 
       current_character_count: undefined,
       allow_save: false,
-      show_instructions: false,
+      show_instructions: this.instructions ? false : undefined,
     };
   },
   created() {},

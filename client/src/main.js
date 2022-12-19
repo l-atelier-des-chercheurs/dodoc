@@ -7,12 +7,12 @@ Vue.config.productionTip = false;
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
-import i18n from "./adc-core/i18n.js";
+import i18n from "@/adc-core/lang/i18n.js";
 
 import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
 
-import api from "./adc-core/api.js";
+import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
 import ShoelaceModelDirective from "@shoelace-style/vue-sl-model";
@@ -42,6 +42,8 @@ import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);
 import RadioSwitch from "@/adc-core/ui/RadioSwitch.vue";
 Vue.component("RadioSwitch", RadioSwitch);
+import DropZone from "@/adc-core/ui/DropZone.vue";
+Vue.component("DropZone", DropZone);
 //
 import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);
@@ -92,11 +94,11 @@ Vue.component("LoaderSpinner", {
   template: `<sl-spinner style="--indicator-color: currentColor" />`,
 });
 
-import FormatDates from "./mixins/FormatDates";
+import FormatDates from "@/mixins/FormatDates";
 Vue.mixin(FormatDates);
-import Medias from "./mixins/Medias";
+import Medias from "@/mixins/Medias";
 Vue.mixin(Medias);
-import Authors from "./mixins/Authors";
+import Authors from "@/mixins/Authors";
 Vue.mixin(Authors);
 
 Array.prototype.move = function (from, to) {
@@ -143,6 +145,7 @@ new Vue({
   },
   async mounted() {
     await this.$api.init({ debug_mode });
+    this.is_loading = false;
 
     this.$eventHub.$on("socketio.connect", this.socketConnected);
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
@@ -156,7 +159,10 @@ new Vue({
       this.window.innerHeight = window.innerHeight;
     });
 
-    this.is_loading = false;
+    await this.$api.getFolders({
+      path: `authors`,
+    });
+    this.$api.join({ room: "authors" });
   },
   watch: {
     "$api.socket.connected": function () {

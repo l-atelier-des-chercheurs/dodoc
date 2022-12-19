@@ -44,8 +44,8 @@ export default {
 ._publierPane {
   padding: calc(var(--spacing) * 2);
   // padding-bottom: calc(var(--spacing) * 4);
-  overflow: auto;
-  height: 100%;
-  background: var(--color-Publier);
+  // overflow: auto;
+  // height: 100%;
+  // background: var(--color-Publier);
 }
 </style>

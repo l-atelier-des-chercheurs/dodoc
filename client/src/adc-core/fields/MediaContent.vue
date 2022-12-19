@@ -17,11 +17,10 @@
     <template v-else-if="file.$type === 'stl'">
       <img :src="thumb" />
     </template>
-    <span v-else>
-      {{ file.$type }}
-      <sl-icon name="file-earmark-arrow-down" /><br />
-      {{ file.media_filename }}
-    </span>
+    <small v-else class="u-fontCode fieldCaption _fileName">
+      <sl-icon name="file-earmark" /><br />
+      {{ file.$media_filename }}
+    </small>
   </div>
 </template>
 <script>
@@ -60,10 +59,14 @@ export default {
       });
     },
     file_full_path() {
-      return `${this.file.$path}?v=${this.timestamp}`;
+      const p = this.makeMediaFilePath({
+        $path: this.file.$path,
+        $media_filename: this.file.$media_filename,
+      });
+      return `/${p}?v=${this.timestamp}`;
     },
     timestamp() {
-      if (this.file.date_created) return +new Date(this.file.date_created);
+      if (this.file.$date_created) return +new Date(this.file.$date_created);
       else return +new Date();
     },
   },
@@ -100,4 +103,8 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._fileName {
+  padding: calc(var(--spacing) / 4);
+}
+</style>

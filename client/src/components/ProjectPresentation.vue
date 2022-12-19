@@ -45,7 +45,10 @@ z
         :authors_paths="project.$authors"
         :path="project.$path"
         :can_edit="can_edit_project"
+        :instructions="$t('project_author_instructions')"
       />
+
+      <br />
 
       <TitleField
         :field_name="'title'"
@@ -58,6 +61,8 @@ z
         :can_edit="can_edit_project"
         :instructions="$t('project_title_instructions')"
       />
+
+      <br />
 
       <TitleField
         :field_name="'description'"
@@ -318,22 +323,26 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   font-size: 90%;
-
-  // max-height: 40vmin;
   overflow: auto;
+
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
   // padding: calc(var(--spacing) / 2);
   // gap: calc(var(--spacing) / 2);
 
   > * {
     flex: 1 1 260px;
-    border: 1px solid var(--c-gris);
+
+    background: white;
+    box-shadow: 0 1px 6px rgb(0 0 0 / 20%);
+    border-radius: 8px;
 
     &:first-child {
-      border-top: 0 solid #000;
+      // border-top: 0 solid #000;
     }
     &:not(:last-child) {
-      border-bottom: 0 solid #000;
+      // border-bottom: 0 solid #000;
     }
   }
 }

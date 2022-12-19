@@ -292,6 +292,9 @@ module.exports = (function () {
           ? `${folder_type}/${folder_slug}`
           : `${folder_type}/${folder_slug}/${subfolder_type}/${subfolder_slug}`;
 
+      if (folder_slug && subfolder_slug)
+        obj.path_to_parent_folder = `${folder_type}/${folder_slug}`;
+
       if (meta_filename && meta_filename.includes(".")) {
         obj.meta_filename = meta_filename;
         obj.path_to_meta = !subfolder_slug

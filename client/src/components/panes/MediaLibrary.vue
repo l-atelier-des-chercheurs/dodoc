@@ -47,7 +47,7 @@
 
       <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
         <MediaTile
-          v-for="file of medias"
+          v-for="file of sorted_medias"
           :key="file.$path"
           :project_path="project.$path"
           :file="file"
@@ -115,6 +115,15 @@ export default {
   computed: {
     medias() {
       return this.project.$files.filter((f) => !f.is_journal) || [];
+    },
+    sorted_medias() {
+      const _medias = JSON.parse(JSON.stringify(this.medias));
+
+      _medias.sort(
+        (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
+      );
+
+      return _medias;
     },
     focused_media() {
       const _focused_media =

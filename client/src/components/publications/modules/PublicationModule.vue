@@ -150,7 +150,8 @@
         :can_edit="can_edit"
       />
       <CollaborativeEditor2
-        v-else-if="publimodule.module_type === 'text'"
+        v-else-if="publimodule.module_type === 'text' && first_media"
+        ref="textBloc"
         :path="first_media.$path"
         :content="first_media.$content"
         :scrollingContainer="$el"
@@ -158,6 +159,7 @@
         :can_edit="can_edit"
         @lineClicked="$emit('lineClicked', $event)"
       />
+      <small v-else>Nothing to display</small>
     </div>
   </div>
 </template>
@@ -185,12 +187,22 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    const meta_filename = this.publimodule.$path.split("/").at(-1);
+    this.$eventHub.$on(
+      `module.enable_edit.${meta_filename}`,
+      this.enableEditForText
+    );
+  },
   beforeDestroy() {},
   watch: {},
   computed: {
     first_media() {
-      if (!this.publimodule.source_medias) return [];
+      if (
+        !this.publimodule.source_medias ||
+        this.publimodule.source_medias.length === 0
+      )
+        return false;
       const { path } = this.publimodule.source_medias[0];
       if (path) return this.getSourceMedia({ source_media_path: path });
       return false;
@@ -221,6 +233,16 @@ export default {
           throw err;
         });
     },
+    enableEditForText() {
+      this.$el.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+      this.$nextTick(() => {
+        if (this.$refs.textBloc) this.$refs.textBloc.enableEditor();
+      });
+    },
   },
 };
 </script>
@@ -230,7 +252,7 @@ export default {
   padding: 0 calc(var(--spacing) * 1);
 
   ._content {
-    min-height: calc(var(--spacing) * 3);
+    min-height: calc(24px * 3);
     width: calc(var(--module-width) * 1%);
     margin-left: calc(var(--module-margin-left) * 1%);
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -242,7 +264,7 @@ export default {
   top: 0;
   height: 100%;
   right: 100%;
-  background: var(--c-bleuvert_fonce);
+  background: rgba(0, 0, 0, 0.05);
 
   display: flex;
   flex-flow: column nowrap;
@@ -263,7 +285,7 @@ export default {
 
   &:hover,
   &:focus {
-    background: var(--c-bleuvert_clair);
+    background: rgba(0, 0, 0, 0.1);
   }
 }
 

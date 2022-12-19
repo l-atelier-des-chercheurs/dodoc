@@ -305,7 +305,8 @@ export default {
 ._paneList {
   // font-size: var(--sl-font-size-large);
   // max-width: 1024px;
-  position: relative;
+  position: sticky;
+  top: 0;
   overflow: hidden;
   z-index: 10;
   width: 100%;
@@ -313,6 +314,7 @@ export default {
   background-color: #fff;
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   border-top: 1px solid var(--c-gris);
+  border-bottom: 1px solid var(--c-gris);
   // border-bottom: 0;
 }
 

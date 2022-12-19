@@ -6,28 +6,7 @@ export default function () {
   Vue.use(VueI18n);
 
   let lang_settings = {
-    available: [
-      {
-        key: "fr",
-        name: "Français",
-      },
-      {
-        key: "en",
-        name: "English",
-      },
-      {
-        key: "de",
-        name: "Deutsch",
-      },
-      {
-        key: "nl",
-        name: "Nederlands",
-      },
-      {
-        key: "oc",
-        name: "Occitan",
-      },
-    ],
+    available: ["fr", "en", "de", "nl", "oc"],
     default: "en",
     current: "",
     init: function () {
@@ -38,7 +17,7 @@ export default function () {
       // return;
 
       if (localstore_lang !== undefined) {
-        if (this.available.find((l) => l.key === localstore_lang)) {
+        if (this.available.includes(localstore_lang)) {
           this.current = localstore_lang;
         }
       }
@@ -47,10 +26,10 @@ export default function () {
         // set current lang from window.navigator.language
         // window.navigator.language can be 'fr', 'en', or 'fr-FR'
         let browser_lang_available = this.available.find((l) => {
-          return window.navigator.language.includes(l.key);
+          return window.navigator.language.includes(l);
         });
         this.current = browser_lang_available
-          ? browser_lang_available.key
+          ? browser_lang_available
           : this.default;
       }
     },
@@ -74,6 +53,7 @@ export default function () {
         description: "description",
         keywords: "mots-clés",
         add: "ajouter",
+        access: "accéder",
         title: "titre",
         name: "nom",
         name_of_instance: "Nom de l’instance",
@@ -91,6 +71,8 @@ export default function () {
 
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
+
+        ui_lang_select: "Langue de l’interface",
 
         signup_password: "mot de passe pour la création d’un compte",
         signup_password_instructions:
@@ -142,11 +124,17 @@ export default function () {
         access_control: "Contrôle des accès",
         storage: "Stockage",
 
+        saving: "Enregistrement…",
+        saved: "OK !",
+        connected: "Connecté",
+
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",
 
         all_rights_reserved: "Tous Droits Réservés",
         all_rights_reserved_explanations: "<i>Explications à ajouter</i>",
+
+        drop_here: "Déposer ici",
 
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
@@ -159,10 +147,19 @@ export default function () {
         create_a_project: "Créer un projet",
         create_a_publication: "Créer une publication",
 
+        add_media: "Ajouter un média",
+        add_medias: "Ajouter des médias",
+        add_text: "Ajouter du texte",
+
+        display_as_public: "Afficher la vue publique",
+
+        project_author_instructions:
+          "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer ce projet et ses contenus.",
         project_title_instructions:
           "Le titre est aussi utilisé sur la page d’accueil.",
         project_desc_instructions:
-          "La description est affichée sur la page d’accueil.",
+          "La description est aussi affichée sur la page d’accueil.",
+        add_authors: "Ajouter des contributeur·rice·s",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
@@ -172,22 +169,29 @@ export default function () {
         more_infos: "Plus d’informations",
         informations: "Informations",
 
+        duplicate: "Dupliquer",
         remove: "Supprimer",
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",
 
+        current: "Actuel",
         save_on_this_device: "Sauvegarder pour cet appareil",
         will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
         "module.label.text": "Bloc de texte",
         "module.label.mosaic": "Mosaïque de médias",
         "module.label.carousel": "Caroussel",
+        object_fit_cover: "Remplir le cadre",
+        object_fit_contain: "Remplir sans dépasser",
 
         disconnect_warning:
           "Vous avez été déconnectés. Veuillez recharger la page pour vous reconnecter à do•doc.",
         reload_page: "Recharger cette page",
-        type_of_module: "Type de module",
+
+        create_a_module: "Créer un module",
+        list_of_archives: "Liste des archives",
+        restore_this_version: "Restaurer cette version",
 
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
@@ -211,7 +215,12 @@ export default function () {
         description: "description",
         keywords: "keywords",
         template: "Template",
+
+        ui_lang_select: "Interface language",
       },
+      de: {},
+      nl: {},
+      oc: {},
     }, // set locale messages
   });
 

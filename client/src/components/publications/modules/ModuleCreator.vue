@@ -1,107 +1,132 @@
 <template>
-  <div>
-    <!-- // TODO : add module or add media -->
-
-    <sl-button
-      variant="edit"
-      class="default"
-      circle
-      v-if="!show_media_picker"
-      @click="show_media_picker = true"
-    >
-      <sl-icon name="plus-circle-fill" :label="$t('edit')" />
-    </sl-button>
-
-    <template v-if="show_media_picker">
-      <DLabel :str="$t('type_of_module')" />
-      <select v-model="type_selected">
-        <option
-          v-for="option in options"
-          :key="option.key"
-          :value="option.key"
-          v-text="$t(option.label)"
+  <div class="_moduleCreator">
+    <div v-if="show_module_selector" class="_typePicker">
+      <!-- <div class="">
+        <DLabel :str="$t('add_media')" />
+        <MediaPicker
+          :publication_path="publication_path"
+          @selectMedia="selectMedia"
         />
-      </select>
-
-      <div v-if="selected_option && selected_option.instructions">
-        <small v-html="$t(selected_option.instructions)" />
-      </div>
-
-      <br />
-
-      <SaveCancelButtons
-        class="_scb"
-        :is_saving="is_saving"
-        :save_text="'create'"
-        @save="createModule"
-        @cancel="show_media_picker = false"
+      </div> -->
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="createText"
+      >
+        {{ $t("add_text") }}
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        v-if="!show_media_picker"
+        @click="show_media_picker = true"
+      >
+        {{ $t("add_medias") }}
+      </button>
+      <MediaPicker
+        v-else
+        :publication_path="publication_path"
+        @selectMedia="createMosaic"
+        @close="show_media_picker = false"
       />
-    </template>
+    </div>
+    <sl-icon-button
+      v-if="!show_module_selector"
+      name="plus-circle-fill"
+      :label="$t('add')"
+      @click="show_module_selector = true"
+    />
+    <sl-icon-button
+      v-else
+      name="x-circle-fill"
+      :label="$t('close')"
+      @click="show_module_selector = false"
+    />
+
+    <transition name="dropzone" :duration="150">
+      <DropZone v-if="show_dropzone" @mediaDropped="createMosaic" />
+    </transition>
   </div>
 </template>
 <script>
+import MediaPicker from "@/components/publications/MediaPicker.vue";
 export default {
   props: {
     publication_path: String,
   },
-  components: {},
+  components: {
+    MediaPicker,
+  },
   data() {
     return {
+      show_module_selector: false,
       show_media_picker: false,
 
-      type_selected: "",
-      options: [
-        {
-          key: "text",
-          label: "module.label.text",
-          instructions: "module.instructions.text",
-        },
-        {
-          key: "mosaic",
-          label: "module.label.mosaic",
-          instructions: "module.instructions.mosaic",
-        },
-        {
-          key: "carousel",
-          label: "module.label.carousel",
-          instructions: "module.instructions.carousel",
-        },
-      ],
+      show_dropzone: false,
+
+      // options: [
+      //   {
+      //     key: "mosaic",
+      //     label: "module.label.mosaic",
+      //     instructions: "module.instructions.mosaic",
+      //   },
+      //   {
+      //     key: "carousel",
+      //     label: "module.label.carousel",
+      //     instructions: "module.instructions.carousel",
+      //   },
+      // ],
 
       is_saving: false,
     };
   },
-  created() {
-    this.type_selected = this.options[0].key;
+  created() {},
+  mounted() {
+    this.$eventHub.$on(`mediadrag.start`, this.showDropzone);
+    this.$eventHub.$on(`mediadrag.end`, this.hideDropzone);
   },
-  mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off(`mediadrag.start`, this.showDropzone);
+    this.$eventHub.$off(`mediadrag.end`, this.hideDropzone);
+  },
   watch: {},
-  computed: {
-    selected_option() {
-      return this.options.find((o) => o.key === this.type_selected);
-    },
-  },
+  computed: {},
   methods: {
-    async createModule() {
+    async createMosaic({ path_to_source_media }) {
+      await this.createModule({
+        module_type: "mosaic",
+        source_medias: [{ path: path_to_source_media }],
+      });
+      this.show_media_picker = false;
+    },
+
+    async createText() {
       this.is_saving = true;
 
-      let meta = {
-        module_type: this.type_selected,
-        source_medias: [],
-      };
-
-      if (this.type_selected === "text") {
-        const text_meta_filename = await this.createText();
-        const text_meta_path = this.publication_path + "/" + text_meta_filename;
-        meta.source_medias = [{ path: text_meta_path }];
-      }
-
-      const meta_filename = await this.createMetaForModule({
-        module_type: meta.module_type,
-        source_medias: meta.source_medias,
+      const text_meta_filename = await this.$api.uploadText({
+        path: this.publication_path,
+        filename: "text.txt",
+        content: "",
+        additional_meta: {
+          caption: "plip",
+          module_type: this.module_type,
+        },
       });
-      this.$emit("appendModuleMetaFilenameToList", { meta_filename });
+      const text_meta_path = this.publication_path + "/" + text_meta_filename;
+      const source_medias = [{ path: text_meta_path }];
+
+      await this.createModule({
+        module_type: "text",
+        source_medias,
+      });
+    },
+
+    async createModule({ module_type, source_medias = [] }) {
+      const meta_filename = await this.createMetaForModule({
+        module_type,
+        source_medias,
+      });
+      this.$emit("addModule", { meta_filename });
 
       this.is_saving = false;
     },
@@ -121,18 +146,40 @@ export default {
           throw err;
         });
     },
-    async createText() {
-      return await this.$api.uploadText({
-        path: this.publication_path,
-        filename: "text.txt",
-        content: "",
-        additional_meta: {
-          caption: "plip",
-          module_type: this.module_type,
-        },
-      });
+
+    showDropzone() {
+      this.show_dropzone = true;
+    },
+    hideDropzone() {
+      this.show_dropzone = false;
     },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._moduleCreator {
+  position: relative;
+  display: flex;
+  place-content: center;
+  align-items: center;
+  width: 100%;
+
+  // color: var(--c-bleuvert_clair);
+  border-radius: 1rem;
+}
+
+._typePicker {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
+
+  > * {
+    // padding: calc(var(--spacing) / 2);
+    // background: var(--c-gris_clair);
+  }
+}
+
+._dropNotice {
+  pointer-events: none;
+}
+</style>

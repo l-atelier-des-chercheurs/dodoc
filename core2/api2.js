@@ -28,7 +28,6 @@ module.exports = (function () {
     // app.options("/_api2/*", cors());
 
     app.get("/_api2/_ip", _generalPasswordCheck, _getLocalNetworkInfos);
-    app.get("/_api2/_checkGeneralPassword", _checkGeneralPassword);
     app.get("/_api2/_authCheck", _checkGeneralPasswordAndToken);
     app.get("/_api2/_admin", _getAdminInfos);
     app.patch("/_api2/_admin", _setAdminInfos);
@@ -49,6 +48,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/_upload",
       ],
       _generalPasswordCheck,
+      _authenticateToken,
       _uploadFile
     );
     app.patch(
@@ -57,6 +57,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
+      _authenticateToken,
       _updateFile
     );
     app.delete(
@@ -65,6 +66,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename",
       ],
       _generalPasswordCheck,
+      _authenticateToken,
       _removeFile
     );
 
@@ -134,64 +136,57 @@ module.exports = (function () {
     callback(null, { origin: true });
   }
 
-  // the only route available is index,
   async function _generalPasswordCheck(req, res, next) {
     dev.logapi();
+
     const { general_password } = await settings.get();
-    // no general password, do not interfere
-    if (!general_password) return next();
+    if (!general_password) return next ? next() : undefined;
+
+    if (!req.headers || !req.headers.authorization)
+      throw new Error(`no_general_password_submitted`);
 
     try {
-      // if there is a general password and no authorization header
-      if (!req.headers || !req.headers.authorization)
-        throw new Error(`no_general_password_submitted`);
-
       const { general_password: submitted_general_password } = JSON.parse(
         req.headers.authorization
       );
       if (!submitted_general_password)
         throw new Error(`no_general_password_submitted`);
+
       if (submitted_general_password !== general_password)
         throw new Error(`wrong_general_password`);
 
-      if (next) return next();
+      return next ? next() : undefined;
     } catch (err) {
       dev.error(err.message);
-      return res.status(401).send({ message: err.message });
+      if (res) return res.status(401).send({ message: err.message });
+      throw err;
     }
   }
-  async function _checkGeneralPassword(req, res, next) {
-    dev.logapi();
-    const { general_password } = await settings.get();
-    if (!general_password) throw new Error(`no_general_password_set`);
 
-    try {
-      try {
-        await _generalPasswordCheck(req, res);
-        res.status(200).json({ status: "ok" });
-      } catch (err) {}
-    } catch (err) {}
-  }
   async function _checkGeneralPasswordAndToken(req, res, next) {
     dev.logapi();
     let response = {};
     try {
-      await _generalPasswordCheck(req, res);
+      await _generalPasswordCheck(req);
       response.general_password_is_valid = true;
-    } catch (err) {}
+    } catch (err) {
+      response.general_password_is_wrong = err.message;
+    }
 
     try {
-      const { token, token_path } = JSON.parse(req.headers.authorization);
-      auth.checkToken({ token, token_path });
+      await _authenticateToken(req);
       response.token_is_valid = true;
-    } catch (err) {}
+    } catch (err) {
+      response.token_is_wrong = err.message;
+    }
 
     return res.json(response);
   }
 
   async function _authenticateToken(req, res, next) {
-    const { path_to_folder } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder });
+    const { path_to_folder, path_to_parent_folder } =
+      utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, path_to_parent_folder });
 
     // check if path and token match,
     // and either :
@@ -200,29 +195,46 @@ module.exports = (function () {
     // if so, then next(), otherwise return 403
     // ref = https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 
-    try {
-      if (!req.headers || !req.headers.authorization)
-        throw new Error(`no_token_set`);
+    if (!req.headers || !req.headers.authorization)
+      throw new Error(`no_token_set`);
 
+    try {
       const { token, token_path } = JSON.parse(req.headers.authorization);
       if (!token || !token_path) throw new Error(`no_token_set`);
 
       auth.checkToken({ token, token_path });
+
+      if (!path_to_folder) {
+        // means we're just checking the validity of the token
+        return next ? next() : undefined;
+      }
       if (await auth.isAuthorAdmin({ author_path: token_path })) {
         dev.logapi("Author is admin, next");
-        return next();
+        return next ? next() : undefined;
       }
       if (path_to_folder === token_path) {
         dev.logapi("Token path and folder path are identical, next");
-        return next();
+        return next ? next() : undefined;
       }
-      await auth.isAuthorIncluded({ path_to_folder, author_path: token_path });
+
+      // if folder is child/has parent, the parent's authors will determine who can edit this child
+      if (path_to_parent_folder)
+        await auth.isAuthorIncluded({
+          path_to_folder: path_to_parent_folder,
+          author_path: token_path,
+        });
+      else
+        await auth.isAuthorIncluded({
+          path_to_folder,
+          author_path: token_path,
+        });
 
       dev.logapi("Author allowed, next");
-      return next();
+      return next ? next() : undefined;
     } catch (err) {
       dev.error(err.message);
-      return res.status(403).send({ message: err.message });
+      if (res) return res.status(403).send({ message: err.message });
+      throw err;
     }
   }
 

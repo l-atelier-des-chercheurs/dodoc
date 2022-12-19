@@ -6,23 +6,27 @@
     }"
   >
     <BreadCrumbs :style="$route.path === '/' ? 'visibility: hidden' : ''" />
-    <button type="button" class="_subscribeBtn" @click="showAuthorModal">
-      <template v-if="connected_as">
-        {{ connected_as.name }}
-      </template>
-      <template v-else>Inscription</template>
-    </button>
+    <div class="_subscribeBtn">
+      <button type="button" class="_authorBtn" @click="showAuthorModal">
+        <template v-if="connected_as">
+          {{ connected_as.name }}
+        </template>
+        <template v-else>Inscription</template>
+      </button>
+    </div>
+
     <AuthorList v-if="show_authors_modal" @close="show_authors_modal = false" />
 
     <div class="_topRightButtons">
       <button
         type="button"
         class="u-button"
-        disabled
         @click="show_lang_modal = !show_lang_modal"
       >
         {{ current_lang_code }}
       </button>
+
+      <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
 
       <!-- <button type="button" @click="show_settings = !show_settings">
         <svg
@@ -42,12 +46,14 @@
 </template>
 <script>
 import AuthorList from "@/adc-core/author/AuthorList.vue";
+import LangModal from "@/adc-core/lang/LangModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
 
 export default {
   props: {},
   components: {
     AuthorList,
+    LangModal,
     BreadCrumbs,
   },
   data() {
@@ -59,8 +65,12 @@ export default {
   },
   created() {},
   async mounted() {
-    this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
+    await this.$api.getFolders({
+      path: `authors`,
+    });
+    this.$api.join({ room: "authors" });
 
+    this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
     await this.getCurrentAuthor();
   },
   beforeDestroy() {
@@ -122,14 +132,17 @@ export default {
 }
 
 ._subscribeBtn {
-  background: var(--c-bleumarine_clair);
-  padding: calc(var(--spacing) / 2);
-  border-radius: 4px;
+  ._authorBtn {
+    background: var(--c-bleumarine_clair);
+    padding: calc(var(--spacing) / 2);
+    border-radius: 4px;
+  }
 }
 
 ._topRightButtons {
   display: flex;
   justify-content: flex-end;
+  padding: 0 calc(var(--spacing) / 4);
 
   button {
     width: 3rem;

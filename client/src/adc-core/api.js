@@ -13,6 +13,8 @@ export default function () {
       },
       general_password: "",
 
+      rooms_joined: [],
+
       // todo replace is_identified, create route to test
       is_correctly_logged_in: false,
     },
@@ -22,11 +24,6 @@ export default function () {
       async init({ debug_mode }) {
         this.debug_mode = debug_mode;
         await this.initSocketio();
-
-        await this.$api.getFolders({
-          path: `authors`,
-        });
-        this.$api.join({ room: "authors" });
       },
       async initSocketio() {
         console.log("initSocketio");
@@ -45,24 +42,19 @@ export default function () {
 
         // client-side
         this.socket.on("connect", () => {
-          console.log(this.socket.id);
+          console.log("connect " + this.socket.id);
           this.$eventHub.$emit("socketio.connect", {
             socketid: this.socket.id,
           });
+          this.rejoinRooms();
         });
-        this.socket.on("reconnect", () => {
-          console.log(this.socket.id);
-          this.$eventHub.$emit("socketio.reconnect", {
-            socketid: this.socket.id,
-          });
-        });
+
         this.socket.on("session", ({ sessionID, userID }) => {
           // attach the session ID to the next reconnection attempts
           this.socket.auth = { sessionID };
           localStorage.setItem("sessionID", sessionID);
           this.socket.userID = userID;
         });
-
         this.socket.on("connect_error", (reason) => {
           this.$eventHub.$emit("socketio.connect_error", reason);
         });
@@ -94,6 +86,28 @@ export default function () {
 
         this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
       },
+      disconnectSocket() {
+        this.socket.disconnect();
+      },
+      reconnectSocket() {
+        this.socket.connect();
+      },
+      join({ room }) {
+        this.socket.emit("joinRoom", { room });
+        this.rooms_joined.push(room);
+      },
+      leave({ room }) {
+        this.socket.emit("leaveRoom", { room });
+        this.rooms_joined = this.rooms_joined.filter((rj) => rj !== room);
+      },
+      rejoinRooms() {
+        console.log("rejoinRooms" + this.rooms_joined.join(", "));
+
+        this.rooms_joined.map((rj) =>
+          this.socket.emit("joinRoom", { room: rj })
+        );
+      },
+
       async _setAuthFromStorage() {
         let auth = {};
 
@@ -118,13 +132,20 @@ export default function () {
           },
         });
 
-        if (auth.general_password && response.data.general_password_is_valid)
-          this.general_password = auth.general_password;
+        if (auth.general_password)
+          if (response.data.general_password_is_valid)
+            this.general_password = auth.general_password;
+          else if (response.data.general_password_is_wrong)
+            this.$alertify
+              .delay(4000)
+              .error(response.data.general_password_is_wrong);
 
-        if (auth.token && auth.token_path && response.data.token_is_valid) {
-          this.tokenpath.token = auth.token;
-          this.tokenpath.token_path = auth.token_path;
-        }
+        if (auth.token && auth.token_path)
+          if (response.data.token_is_valid) {
+            this.tokenpath.token = auth.token;
+            this.tokenpath.token_path = auth.token_path;
+          } else if (response.data.token_is_wrong)
+            this.$alertify.delay(4000).error(response.data.token_is_wrong);
 
         // Todo change all this? if a user has a valid token and token_path,
         // then they must also have access
@@ -140,12 +161,7 @@ export default function () {
           general_password: this.general_password,
         });
       },
-      disconnectSocket() {
-        this.socket.disconnect();
-      },
-      reconnectSocket() {
-        this.socket.connect();
-      },
+
       folderCreated({ path, meta }) {
         if (!this.store[path]) this.store[path] = new Array();
         this.store[path].push(meta);
@@ -212,15 +228,6 @@ export default function () {
         folder.$files = folder.$files.filter(
           (file) => file.$path !== path_to_meta
         );
-      },
-
-      join({ room }) {
-        this.socket.emit("joinRoom", { room });
-        // todo rejoin room after disconnect
-      },
-      leave({ room }) {
-        this.socket.emit("leaveRoom", { room });
-        // todo rejoin room after disconnect
       },
 
       async getSettings() {
@@ -327,7 +334,7 @@ export default function () {
       }) {
         // TODO
         await this.$axios
-          .get(`_checkGeneralPassword`, {
+          .get(`_authCheck`, {
             headers: {
               Authorization: JSON.stringify({ general_password: password }),
             },
@@ -335,7 +342,6 @@ export default function () {
           .catch((err) => {
             this.onError(err);
             throw err;
-            // expected error, no _ can exist
           });
 
         if (remember_on_this_device)
@@ -462,6 +468,8 @@ export default function () {
           //   .delay(4000)
           //   .error(this.$t("notifications.author_not_allowed"));
         }
+
+        debugger;
 
         this.setAuthorizationHeader();
         this.$alertify.delay(4000).error(err);

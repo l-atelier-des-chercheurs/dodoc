@@ -6,20 +6,21 @@
     </div>
 
     <template v-else>
-      <TopBar />
-
       <GeneralPasswordModal
         v-if="show_general_password_modal"
         @close="show_general_password_modal = false"
       />
 
-      <div class="" v-else>
-        <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" :key="$route.path" />
-          </transition>
-        </router-view>
-      </div>
+      <template v-else>
+        <TopBar />
+        <div class="">
+          <router-view v-slot="{ Component }">
+            <transition name="fade" mode="out-in">
+              <component :is="Component" :key="$route.path" />
+            </transition>
+          </router-view>
+        </div>
+      </template>
     </template>
   </div>
 </template>
@@ -98,7 +99,7 @@ export default {
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
   --label-color: var(--c-gris_fonce);
-  --border-radius: 18px;
+  --border-radius: 12px;
 
   --input-font-family: inherit;
   --input-font-size: 1rem;
@@ -177,7 +178,7 @@ html,
 body {
   // background: white;
   background-color: var(--c-bodybg);
-
+  scroll-behavior: smooth;
   // diagonal lines
   // background-size: 6px 6px;
   // background-image: repeating-linear-gradient(
@@ -487,7 +488,20 @@ img {
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
-
+.dropzone {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    // transform: translateY(0);
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
 .StoryModules {
   &-enter-active,
   &-leave-active,

@@ -3,6 +3,7 @@
     <DLabel
       v-if="label && (new_authors_paths.length > 0 || can_edit)"
       :str="label"
+      :show_instructions.sync="show_instructions"
     />
 
     <div class="_authors">
@@ -31,6 +32,12 @@
       </template>
     </div>
 
+    <div class="u-instructions">
+      <template v-if="show_instructions">
+        <small v-html="instructions" />
+      </template>
+    </div>
+
     <div class="_footer" v-if="edit_mode">
       <!-- <TextInput
           :content.sync="new_tag_name"
@@ -39,8 +46,7 @@
           @toggleValidity="($event) => (allow_save_newkeyword = $event)"
           @onEnter="onEnter"
         /> -->
-
-      <div class="u-wips" />
+      <!-- <div class="u-wips" /> -->
 
       <DLabel :str="$t('add_authors')" />
       <AuthorPicker
@@ -72,6 +78,11 @@ export default {
       default: () => [],
     },
     path: String,
+    instructions: {
+      type: String,
+      default: "",
+    },
+
     can_edit: {
       type: Boolean,
     },
@@ -83,6 +94,8 @@ export default {
       is_saving: false,
       new_authors_paths: JSON.parse(JSON.stringify(this.authors_paths)),
       // new_authors_paths: ["pauline", "louis"],
+
+      show_instructions: this.instructions ? false : undefined,
     };
   },
   created() {},

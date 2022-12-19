@@ -17,14 +17,14 @@
         @toggleValidity="($event) => (allow_send = $event)"
       />
 
-      <ToggleInput
+      <!-- <ToggleInput
         :content.sync="remember_on_this_device"
         :label="$t('save_on_this_device')"
         :options="{
           true: $t('will_use_cookies'),
           false: $t('will_use_cookies'),
         }"
-      />
+      /> -->
 
       <br />
 

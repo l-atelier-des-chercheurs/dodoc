@@ -26,15 +26,6 @@
       </button>
       | -->
 
-      <span class="">
-        <input
-          type="checkbox"
-          id="debug_mode"
-          name="debug_mode"
-          v-model="$api.debug_mode"
-        />
-        <label for="debug_mode">debugger</label>
-      </span>
       <!-- <span class="">
         <input
           type="checkbox"

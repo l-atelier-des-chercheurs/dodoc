@@ -12,7 +12,7 @@
           :tag="'h2'"
           :content="publication.title"
           :path="publication.$path"
-          :can_edit="can_edit"
+          :can_edit="can_edit_publication"
         />
         <TitleField
           :label="$t('template')"
@@ -21,11 +21,18 @@
           :path="publication.$path"
           :can_edit="false"
         />
+        <AuthorField
+          :label="$t('contributors')"
+          :authors_paths="publication.$authors"
+          :path="publication.$path"
+          :can_edit="can_edit_publication"
+        />
+
         <div class="_buttonRow">
           <button
             type="button"
             class="u-buttonLink"
-            v-if="can_edit"
+            v-if="can_edit_publication"
             @click="removePublication()"
           >
             Supprimer
@@ -38,7 +45,7 @@
       <StoryTemplate
         v-if="publication.template === 'story'"
         :publication="publication"
-        :can_edit="can_edit"
+        :can_edit="can_edit_publication"
       />
     </template>
   </div>
@@ -71,7 +78,11 @@ export default {
     this.$api.leave({ room: this.publication.$path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    can_edit_publication() {
+      return this.can_edit;
+    },
+  },
   methods: {
     async listPublication() {
       const publication = await this.$api

@@ -6,7 +6,9 @@
     <div class="_content">
       <slot />
     </div>
-    <div class="_footer"></div>
+    <div class="_footer">
+      <slot name="footer" />
+    </div>
   </dialog>
 </template>
 <script>
@@ -86,6 +88,9 @@ header {
   > *:first-child {
     margin-top: 0;
   }
+}
+._footer {
+  text-align: center;
 }
 
 @keyframes reveal {
