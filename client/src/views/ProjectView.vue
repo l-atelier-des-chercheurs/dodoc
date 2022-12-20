@@ -79,6 +79,16 @@ export default {
   created() {},
   async mounted() {
     await this.listProject();
+
+    if (!this.can_edit_project)
+      this.projectpanes = [
+        {
+          type: "Publier",
+          pad: {},
+          size: 100,
+        },
+      ];
+
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
     this.$api.join({ room: this.project.$path });
@@ -94,14 +104,6 @@ export default {
       handler() {
         let projectpanes = this.$route.query?.projectpanes;
         if (projectpanes) this.projectpanes = JSON.parse(projectpanes);
-        else if (!this.can_edit_project)
-          this.projectpanes = [
-            {
-              type: "Publier",
-              pad: {},
-              size: 100,
-            },
-          ];
       },
       immediate: true,
     },
@@ -143,13 +145,13 @@ export default {
       return this.project.$files.filter((f) => f.is_journal === true) || [];
     },
     can_edit_project() {
-      if (!this.connected_as) return false;
-      if (this.connected_as.role === "admin") return true;
-      if (
-        Array.isArray(this.project.$authors) &&
-        this.project.$authors.includes(this.connected_as.$path)
-      )
-        return true;
+      // if (!this.connected_as) return false;
+      if (this.connected_as?.role === "admin") return true;
+      if (!this.project.$authors) return true;
+      if (Array.isArray(this.project.$authors))
+        if (this.project.$authors.length === 0) return true;
+        else if (this.project.$authors.includes(this.connected_as?.$path))
+          return true;
       return false;
     },
   },

@@ -51,7 +51,9 @@ module.exports = (function () {
     },
     async isAuthorIncluded({ path_to_folder, author_path }) {
       const folder_meta = await folder.getFolder({ path_to_folder });
-      if (!folder_meta.$authors) throw new Error(`no_author_listed`);
+      // if (!folder_meta.$authors) throw new Error(`no_author_listed`);
+      if (!folder_meta.$authors || folder_meta.$authors.length === 0)
+        return true;
       if (
         folder_meta.$authors.length > 0 &&
         !folder_meta.$authors.includes(author_path)

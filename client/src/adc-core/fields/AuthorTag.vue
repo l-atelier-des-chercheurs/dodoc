@@ -23,17 +23,17 @@ export default {
   },
   components: {},
   data() {
-    return {
-      author: false,
-    };
+    return {};
   },
   created() {},
-  mounted() {
-    this.author = this.getAuthor(this.path);
-  },
+  mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    author() {
+      return this.getAuthor(this.path);
+    },
+  },
   methods: {},
 };
 </script>
