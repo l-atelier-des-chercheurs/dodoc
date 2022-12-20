@@ -145,13 +145,13 @@ export default {
       return this.project.$files.filter((f) => f.is_journal === true) || [];
     },
     can_edit_project() {
-      if (!this.connected_as) return false;
-      if (this.connected_as.role === "admin") return true;
-      if (
-        Array.isArray(this.project.$authors) &&
-        this.project.$authors.includes(this.connected_as.$path)
-      )
-        return true;
+      // if (!this.connected_as) return false;
+      if (this.connected_as?.role === "admin") return true;
+      if (!this.project.$authors) return true;
+      if (Array.isArray(this.project.$authors))
+        if (this.project.$authors.length === 0) return true;
+        else if (this.project.$authors.includes(this.connected_as?.$path))
+          return true;
       return false;
     },
   },

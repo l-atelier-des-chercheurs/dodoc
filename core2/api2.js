@@ -195,6 +195,11 @@ module.exports = (function () {
     // if so, then next(), otherwise return 403
     // ref = https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
 
+    // todo not very clean, merge with auth.isAuthorIncluded
+    const folder_meta = await folder.getFolder({ path_to_folder });
+    if (!folder_meta.$authors || folder_meta.$authors.length === 0)
+      return next ? next() : undefined;
+
     if (!req.headers || !req.headers.authorization)
       throw new Error(`no_token_set`);
 
