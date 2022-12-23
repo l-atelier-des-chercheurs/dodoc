@@ -90,7 +90,14 @@ export default function () {
         list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
         import_instructions: "Importer depuis un autre appareil",
-        progress: "État d’avancement",
+
+        visibility_progress: "Visibilité et état d’avancement",
+        visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
+        progress: "Avancement",
+        progress_instr:
+          "Indiquez le degré d’avancement du projet, de 0 à 100%.",
+
+        status: "État",
         draft: "Brouillon",
         draft_status_explanations:
           "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
@@ -105,6 +112,7 @@ export default function () {
         no_finalized_proejcts: "Aucun projet finalisé pour le moment",
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d’accueil.",
+
         show_projects: "Afficher les projets",
         no_accounts_yet: "Aucun compte de contributueur créé pour le moment",
         restart_to_apply: "Relancez do•doc pour appliquer",
@@ -157,9 +165,9 @@ export default function () {
         project_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer ce projet et ses contenus.",
         project_title_instructions:
-          "Le titre est aussi utilisé sur la page d’accueil.",
+          "Le titre est affiché ici et sur la page d’accueil.",
         project_desc_instructions:
-          "La description est aussi affichée sur la page d’accueil.",
+          "La description est affichée ici et sur la page d’accueil.",
         add_authors: "Ajouter des contributeur·rice·s",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
