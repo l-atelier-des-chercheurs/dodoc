@@ -4,7 +4,7 @@
       {{ $api.store }}
     </pre> -->
     <transition name="fade_fast" mode="out-in">
-      <div class="_spinner" v-if="!project" key="loader">
+      <div class="u-divCentered" v-if="!project" key="loader">
         <LoaderSpinner />
       </div>
       <div v-else-if="fetch_project_error" key="err">
@@ -16,11 +16,10 @@
       </pre> -->
 
         <div class="_topContent">
-          <div class="_displayAsPublic">
+          <div class="_displayAsPublic" v-if="can_edit_project">
             <div class="_displayAsPublic--content">
               <ToggleInput
                 class="u-button u-button_bleuvert"
-                v-if="can_edit_project"
                 :content.sync="display_as_public"
                 :label="$t('display_as_public')"
               />
@@ -146,14 +145,9 @@ export default {
       return this.project.$files.filter((f) => f.is_journal === true) || [];
     },
     can_edit_project() {
-      // if (!this.connected_as) return false;
-      if (this.connected_as?.role === "admin") return true;
-      if (!this.project.$authors) return true;
-      if (Array.isArray(this.project.$authors))
-        if (this.project.$authors.length === 0) return true;
-        else if (this.project.$authors.includes(this.connected_as?.$path))
-          return true;
-      return false;
+      return this.canLoggedinEditProject({
+        project_authors: this.project.$authors,
+      });
     },
   },
   methods: {
@@ -166,6 +160,18 @@ export default {
           this.fetch_project_error = err.response;
           this.is_loading = false;
         });
+
+      // check here if allowed to see project : if project has authors, is not public, and we are not logged in
+      // todo remove this, since this will be answered by getfolder
+
+      // if (
+      //   project.$public === false &&
+      //   !this.connected_as &&
+      //   Array.isArray(project.$authors) &&
+      //   project.$authors.length > 0
+      // )
+      //   this.$router.go("/projects");
+
       this.project = project;
     },
     updateQueryPanes() {
@@ -198,15 +204,6 @@ export default {
   position: relative;
   min-height: calc(100vh - 60px);
 }
-._spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
 ._projectPanesAndList {
   position: relative;
   // height: 100vh;
@@ -247,7 +244,7 @@ export default {
 }
 
 ._displayAsPublic {
-  position: sticky;
+  position: absolute;
   z-index: 100;
   top: 0;
   left: 0;
