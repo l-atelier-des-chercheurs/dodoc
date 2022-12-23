@@ -8,7 +8,7 @@
     <DateField :title="'date_modified'" :date="project.$date_modified" />
     <br />
 
-    <DLabel :str="$t('license')" :show_instructions.sync="show_licence_help" />
+    <DLabel :str="$t('license')" :instructions="$t('licence_instructions')" />
     <div class="">
       <RadioField
         :field_name="'license'"
@@ -17,9 +17,6 @@
         :can_edit="can_edit"
         :options="license_options"
       />
-    </div>
-    <div v-if="show_licence_help" class="u-instructions">
-      <small v-html="$t('licence_instructions')" />
     </div>
     <br />
 
@@ -58,8 +55,6 @@ export default {
     return {
       edit_mode: false,
       show_confirm_delete: false,
-
-      show_licence_help: false,
 
       license_options: [
         {

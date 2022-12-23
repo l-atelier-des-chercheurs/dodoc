@@ -1,10 +1,6 @@
 <template>
   <div>
-    <DLabel
-      v-if="label_str"
-      :for_attr="'_input_' + label_str"
-      :str="$t(label_str)"
-    />
+    <DLabel v-if="label_str" :str="$t(label_str)" />
 
     <template v-if="tag === 'input'">
       <input

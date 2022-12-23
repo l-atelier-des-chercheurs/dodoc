@@ -4,7 +4,7 @@
       v-if="label"
       class="_label"
       :str="label"
-      :show_instructions.sync="show_instructions"
+      :instructions="instructions"
     />
 
     <component :is="tag" class="_container">
@@ -27,12 +27,6 @@
       />
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
     </component>
-
-    <div class="u-instructions">
-      <template v-if="show_instructions">
-        <small v-html="instructions" />
-      </template>
-    </div>
 
     <template v-if="can_edit">
       <div class="_footer" v-if="edit_mode">
@@ -93,7 +87,6 @@ export default {
 
       current_character_count: undefined,
       allow_save: false,
-      show_instructions: this.instructions ? false : undefined,
     };
   },
   created() {},

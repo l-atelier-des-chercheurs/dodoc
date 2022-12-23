@@ -3,7 +3,7 @@
     <DLabel
       v-if="label && (new_authors_paths.length > 0 || can_edit)"
       :str="label"
-      :show_instructions.sync="show_instructions"
+      :instructions="instructions"
     />
 
     <div class="_authors">
@@ -29,12 +29,6 @@
 
       <template v-if="can_edit">
         <EditBtn v-if="!edit_mode" @click="enableEditMode" />
-      </template>
-    </div>
-
-    <div class="u-instructions">
-      <template v-if="show_instructions">
-        <small v-html="instructions" />
       </template>
     </div>
 
