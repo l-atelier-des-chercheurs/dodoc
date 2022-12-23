@@ -246,7 +246,7 @@ export default {
   place-content: center;
 
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) / 1);
 
   transition: all 0.4s;
 
@@ -342,17 +342,14 @@ export default {
   }
 
   > * {
-    flex: 1 0 260px;
+    flex: 1 1 260px;
 
     background: white;
     box-shadow: 0 1px 6px rgb(0 0 0 / 20%);
     border-radius: 8px;
 
-    &:first-child {
-      // border-top: 0 solid #000;
-    }
-    &:not(:last-child) {
-      // border-bottom: 0 solid #000;
+    @media only screen and (max-width: 980px) {
+      flex: 1 0 260px;
     }
   }
 }
