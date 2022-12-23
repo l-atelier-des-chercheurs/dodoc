@@ -90,7 +90,7 @@ z
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
       <CardKeywords :project="project" :can_edit_project="can_edit_project" />
       <CardMachines :project="project" :can_edit_project="can_edit_project" />
-      <CardLicense :project="project" :can_edit_project="can_edit_project" />
+      <!-- <CardLicense :project="project" :can_edit_project="can_edit_project" /> -->
       <!-- <CardFiles :project="project" :can_edit_project="can_edit_project" /> -->
     </div>
 

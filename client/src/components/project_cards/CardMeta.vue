@@ -7,24 +7,42 @@
     <br />
     <DateField :title="'date_modified'" :date="project.$date_modified" />
     <br />
-    <button
-      type="button"
-      class="u-button u-button_red"
-      v-if="can_edit"
-      @click="show_confirm_delete = !show_confirm_delete"
-    >
-      {{ $t("remove") }}
-    </button>
+
+    <DLabel :str="$t('license')" :show_instructions.sync="show_licence_help" />
+    <div class="">
+      <RadioField
+        :field_name="'license'"
+        :content="project.license"
+        :path="project.$path"
+        :can_edit="can_edit"
+        :options="license_options"
+      />
+    </div>
+    <div v-if="show_licence_help" class="u-instructions">
+      <small v-html="$t('licence_instructions')" />
+    </div>
     <br />
-    <br />
-    <button
-      class="u-buttonLink"
-      type="button"
-      v-if="show_confirm_delete"
-      @click="removeProject"
-    >
-      {{ $t("confirm_removal") }}
-    </button>
+
+    <div class="">
+      <button
+        type="button"
+        class="u-buttonLink"
+        v-if="can_edit"
+        @click="show_confirm_delete = !show_confirm_delete"
+      >
+        {{ $t("remove") }}
+      </button>
+      <br />
+      <br />
+      <button
+        class="u-button u-button_red"
+        type="button"
+        v-if="show_confirm_delete"
+        @click="removeProject"
+      >
+        {{ $t("confirm_removal") }}
+      </button>
+    </div>
   </ProjectCard>
 </template>
 <script>
@@ -40,6 +58,27 @@ export default {
     return {
       edit_mode: false,
       show_confirm_delete: false,
+
+      show_licence_help: false,
+
+      license_options: [
+        {
+          key: "creativecommons_by_nc_sa",
+          text: "creativecommons_by_nc_sa_explanations",
+        },
+        {
+          key: "all_rights_reserved",
+          text: "all_rights_reserved_explanations",
+        },
+        {
+          key: "copyleft",
+          text: "copyleft_explanations",
+        },
+        {
+          key: "custom_license",
+          text: "custom_license_explanations",
+        },
+      ],
     };
   },
   created() {},
