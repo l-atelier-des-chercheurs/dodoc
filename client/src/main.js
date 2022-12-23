@@ -91,7 +91,7 @@ Vue.component("SectionLabel", {
 });
 Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
-  template: `<sl-spinner style="--indicator-color: currentColor" />`,
+  template: `<sl-spinner style="font-size: 2rem; --indicator-color: currentColor" />`,
 });
 
 import FormatDates from "@/mixins/FormatDates";
