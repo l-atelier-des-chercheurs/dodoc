@@ -224,7 +224,7 @@ export default {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: 980px) {
     flex-flow: row wrap;
   }
 
@@ -236,6 +236,10 @@ export default {
     }
     &._projectInfos--meta {
       flex: 1 0 260px;
+
+      @media only screen and (max-width: 980px) {
+        flex: 0 0 100%;
+      }
     }
   }
 }
