@@ -14,23 +14,24 @@
         <!-- <pre>
        {{ project }}
       </pre> -->
+
         <div class="_topContent">
+          <div class="_displayAsPublic">
+            <div class="_displayAsPublic--content">
+              <ToggleInput
+                class="u-button u-button_bleuvert"
+                v-if="can_edit_project"
+                :content.sync="display_as_public"
+                :label="$t('display_as_public')"
+              />
+            </div>
+          </div>
+
           <ProjectPresentation
             :project="project"
             context="full"
             :can_edit_project="can_edit_project && !display_as_public"
           />
-        </div>
-
-        <div class="_displayAsPublic">
-          <div class="_displayAsPublic--content">
-            <ToggleInput
-              class="u-button u-button_bleuvert"
-              v-if="can_edit_project"
-              :content.sync="display_as_public"
-              :label="$t('display_as_public')"
-            />
-          </div>
         </div>
 
         <div class="_projectPanesAndList">
@@ -246,9 +247,9 @@ export default {
 }
 
 ._displayAsPublic {
-  position: fixed;
+  position: sticky;
   z-index: 100;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
   padding: calc(var(--spacing) / 1);
@@ -256,7 +257,6 @@ export default {
   display: flex;
   justify-content: center;
 
-  width: 100%;
   pointer-events: none;
 
   > ._displayAsPublic--content {
