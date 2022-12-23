@@ -6,108 +6,130 @@
     <!-- <div class="_title">
       <h1>Les projets</h1>
     </div> -->
-    <div class="">
-      <button
-        type="button"
-        class="u-button u-button_red u-button_big"
-        v-if="connected_as"
-        @click="show_create_modal = true"
-      >
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          viewBox="0 0 168 168"
-          style="enable-background: new 0 0 168 168"
-          xml:space="preserve"
-        >
-          <path
-            style="fill: #fc4b60"
-            d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
+    <transition name="fade_fast" mode="out-in">
+      <div class="u-divCentered" v-if="!projects" key="loader">
+        <LoaderSpinner />
+      </div>
+      <div v-else-if="fetch_projects_error" key="err">
+        {{ fetch_projects_error }}
+      </div>
+
+      <div v-else key="projects">
+        <div class="">
+          <router-link class="u-buttonLink" :to="`/`">
+            <sl-icon name="arrow-left-short" />{{ $t("general_informations") }}
+          </router-link>
+
+          <br />
+          <br />
+
+          <button
+            type="button"
+            class="u-button u-button_red u-button_big"
+            v-if="connected_as"
+            @click="show_create_modal = true"
+          >
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              viewBox="0 0 168 168"
+              style="enable-background: new 0 0 168 168"
+              xml:space="preserve"
+            >
+              <path
+                style="fill: #fc4b60"
+                d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
 		C110.5-8.2,57.5-8.2,24.6,24.4z"
-          />
-          <polygon
-            style="fill: #ffbe32"
-            points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+              />
+              <polygon
+                style="fill: #ffbe32"
+                points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
+              />
+            </svg>
+            {{ $t("create_a_project") }}
+          </button>
+
+          <template v-else>
+            Vous devez
+            <button
+              type="button"
+              class="u-button u-button_bleumarine u-button_small"
+              @click="$eventHub.$emit(`toolbar.openAuthor`)"
+            >
+              vous inscrire
+            </button>
+            pour pouvoir créer ou rejoindre un projet.
+          </template>
+
+          <CreateProject
+            v-if="show_create_modal"
+            @close="show_create_modal = false"
+            @openNewProject="openNewProject"
           />
-        </svg>
-        {{ $t("create_a_project") }}
-      </button>
-
-      <template v-else>
-        Vous devez
-        <button
-          type="button"
-          class="u-button u-button_bleumarine u-button_small"
-          @click="$eventHub.$emit(`toolbar.openAuthor`)"
-        >
-          vous inscrire
-        </button>
-        pour pouvoir créer ou rejoindre un projet.
-      </template>
-
-      <CreateProject
-        v-if="show_create_modal"
-        @close="show_create_modal = false"
-        @openNewProject="openNewProject"
-      />
-    </div>
-
-    <ProjectsTester v-if="is_admin" />
-
-    <div class="">
-      <h3>Projets finalisés</h3>
-      <transition-group
-        class="_projectsList"
-        tag="div"
-        name="StoryModules"
-        appear
-        :duration="700"
-      >
-        <div
-          v-if="finalized_projects.length === 0"
-          class="u-instructions"
-          key="no_content"
-        >
-          {{ $t("no_finalized_proejcts") }}
         </div>
 
-        <ProjectPresentation
-          v-for="project in finalized_projects"
-          :project="project"
-          context="list"
-          :key="project.$path"
-        />
-      </transition-group>
-    </div>
+        <ProjectsTester v-if="is_admin && false" />
 
-    <div class="">
-      <h3>Projets en cours</h3>
-      <transition-group
-        class="_projectsList"
-        tag="div"
-        name="StoryModules"
-        appear
-        :duration="700"
-      >
-        <div
-          v-if="draft_projects.length === 0"
-          class="u-instructions"
-          key="no_content"
-        >
-          {{ $t("no_draft_proejcts") }}
+        <br />
+
+        <div class="">
+          <h3>Projets finalisés</h3>
+          <transition-group
+            class="_projectsList"
+            tag="div"
+            name="StoryModules"
+            appear
+            :duration="700"
+          >
+            <div
+              v-if="finalized_projects.length === 0"
+              class="u-instructions"
+              key="no_content"
+            >
+              {{ $t("no_finalized_proejcts") }}
+            </div>
+
+            <ProjectPresentation
+              v-for="project in finalized_projects"
+              :project="project"
+              context="list"
+              :key="project.$path"
+            />
+          </transition-group>
         </div>
-        <ProjectPresentation
-          v-for="project in draft_projects"
-          :project="project"
-          context="list"
-          :key="project.$path"
-        />
-      </transition-group>
-    </div>
+
+        <br />
+
+        <div class="">
+          <h3>Projets en cours</h3>
+          <transition-group
+            class="_projectsList"
+            tag="div"
+            name="StoryModules"
+            appear
+            :duration="700"
+          >
+            <div
+              v-if="draft_projects.length === 0"
+              class="u-instructions"
+              key="no_content"
+            >
+              {{ $t("no_draft_proejcts") }}
+            </div>
+            <ProjectPresentation
+              v-for="project in draft_projects"
+              :project="project"
+              context="list"
+              :key="project.$path"
+            />
+          </transition-group>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -126,6 +148,8 @@ export default {
     return {
       path: `projects`,
       projects: [],
+      fetch_projects_error: null,
+
       show_create_modal: false,
     };
   },
@@ -135,8 +159,9 @@ export default {
       .getFolders({
         path: this.path,
       })
-      .catch((err_msg) => {
-        err_msg;
+      .catch((err) => {
+        this.fetch_project_error = err.response;
+        this.is_loading = false;
         return;
       });
     this.$api.join({ room: this.path });
@@ -147,7 +172,13 @@ export default {
   watch: {},
   computed: {
     sorted_projects() {
-      const _projects = this.projects.slice();
+      let _projects = this.projects.slice();
+      _projects = _projects.filter((p) =>
+        this.canLoggedinSeeProject({
+          project: p,
+        })
+      );
+
       return _projects.sort(
         (a, b) => +new Date(b.$date_created) - +new Date(a.$date_created)
       );
