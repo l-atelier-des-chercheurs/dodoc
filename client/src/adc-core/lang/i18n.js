@@ -195,6 +195,9 @@ export default function () {
         list_of_archives: "Liste des archives",
         restore_this_version: "Restaurer cette version",
 
+        general_informations: "Informations sur l’instance",
+        unlisted: "Non-listé",
+
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
         "instructions.pane.Collecter": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
