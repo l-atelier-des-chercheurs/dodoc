@@ -40,6 +40,10 @@ z
     </div>
 
     <div class="_projectInfos--infos">
+      <sl-badge variant="neutral" v-if="!project.$public">
+        {{ $t("unlisted") }}
+      </sl-badge>
+
       <AuthorField
         :label="context === 'full' ? $t('contributors') : ''"
         :authors_paths="project.$authors"
