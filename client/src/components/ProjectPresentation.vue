@@ -110,7 +110,7 @@ import CardMeta from "@/components/project_cards/CardMeta.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
 import CardStatus from "@/components/project_cards/CardStatus.vue";
-import CardLicense from "@/components/project_cards/CardLicense.vue";
+// import CardLicense from "@/components/project_cards/CardLicense.vue";
 // import CardFiles from "@/components/project_cards/CardFiles.vue";
 
 export default {
@@ -126,7 +126,7 @@ export default {
     CardKeywords,
     CardMachines,
     CardStatus,
-    CardLicense,
+    // CardLicense,
     // CardFiles,
   },
   data() {
