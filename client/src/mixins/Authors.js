@@ -2,7 +2,7 @@ export default {
   computed: {
     connected_as() {
       if (this.$api.tokenpath.token_path)
-        return this.getAuthor(this.$api.tokenpath.token_path);
+        return this.$api.store[this.$api.tokenpath.token_path];
       return false;
     },
     is_admin() {

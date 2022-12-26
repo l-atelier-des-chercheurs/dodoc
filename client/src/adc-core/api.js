@@ -37,6 +37,8 @@ export default function () {
         await this._setAuthFromStorage();
         this.setAuthorizationHeader();
 
+        if (this.tokenpath.token_path) await this.getCurrentAuthor();
+
         // todo also use token for socketio connection
         this.socket.connect();
 
@@ -123,6 +125,8 @@ export default function () {
         const general_password = localStorage.getItem("general_password");
         if (general_password) auth.general_password = general_password;
 
+        if (Object.keys(auth).length === 0) return;
+
         const Authorization = JSON.stringify(auth);
 
         // check with route
@@ -144,6 +148,7 @@ export default function () {
           if (response.data.token_is_valid) {
             this.tokenpath.token = auth.token;
             this.tokenpath.token_path = auth.token_path;
+            // token is valid, get author info
           } else if (response.data.token_is_wrong)
             this.$alertify.delay(4000).error(response.data.token_is_wrong);
 
@@ -159,6 +164,11 @@ export default function () {
           token: this.tokenpath.token,
           token_path: this.tokenpath.token_path,
           general_password: this.general_password,
+        });
+      },
+      async getCurrentAuthor() {
+        await this.getFolder({
+          path: this.tokenpath.token_path,
         });
       },
 
@@ -296,13 +306,13 @@ export default function () {
           this.tokenpath.token = token;
           this.tokenpath.token_path = path;
 
-          // TODO : bug after login, no storage in local ?
-
           localStorage.setItem(
             "tokenpath",
             JSON.stringify({ token, token_path: path })
           );
           this.setAuthorizationHeader();
+          await this.getCurrentAuthor();
+
           return;
         } catch (e) {
           if (e.response.data.code)
