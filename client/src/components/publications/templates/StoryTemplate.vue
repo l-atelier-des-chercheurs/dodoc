@@ -20,6 +20,7 @@
             @resize="resize({ meta_filename, new_size: $event })"
             @moveUp="moveTo({ meta_filename, dir: -1 })"
             @moveDown="moveTo({ meta_filename, dir: +1 })"
+            @duplicate="duplicatePublicationMedia(meta_filename)"
             @remove="removePublicationMedia(meta_filename)"
           />
           <div class="_spacer" :key="'mc_' + index">
@@ -156,6 +157,21 @@ export default {
       });
 
       const file = this.findFileFromMetaFilename(meta_filename);
+
+      try {
+        for (let sm of file.source_medias) {
+          if (sm.path.includes("/publications/")) {
+            // this media is specific to publications, lets remove it
+            await this.$api.deleteItem({
+              path: sm.path,
+            });
+          }
+        }
+      } catch (err) {
+        this.$alertify.delay(4000).error(err);
+        throw err;
+      }
+
       await this.$api
         .deleteItem({
           path: file.$path,
