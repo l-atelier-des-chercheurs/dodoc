@@ -187,12 +187,6 @@ export default {
         new_meta,
       });
     },
-    async updateMediaMeta(new_meta) {
-      return await this.$api.updateMeta({
-        path: this.publication.$path,
-        new_meta,
-      });
-    },
     toggleNewModuleEdit({ meta_filename }) {
       setTimeout(() => {
         console.log(`emit module.enable_edit.${meta_filename}`);
