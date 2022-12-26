@@ -102,12 +102,15 @@ export default function () {
         draft: "Brouillon",
         draft_status_explanations:
           "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
-        invisible: "Invisible",
-        public: "Public",
-        public_status_explanations:
-          "Le projet sera visible et accessible à tous.",
-        not_public_status_explanations:
-          "Le projet ne sera visible qu’à ses contributeurs.",
+        listed: "Listé",
+        listed_status_explanations_projects:
+          "Le projet sera listé sur la page des projets.",
+        unlisted_status_explanations_projects:
+          "Le projet ne sera pas listé sur la page des projets.",
+        listed_status_explanations_publis:
+          "La publication sera visible par tous ceux qui accèdent au projet.",
+        unlisted_status_explanations_publis:
+          "La publication ne sera visible qu’aux auteurs du projet.",
         finished: "Finalisé",
         no_draft_proejcts: "Aucun projet en brouillon pour le moment",
         no_finalized_proejcts: "Aucun projet finalisé pour le moment",
@@ -205,7 +208,6 @@ export default function () {
         restore_this_version: "Restaurer cette version",
 
         general_informations: "Informations sur l’instance",
-        unlisted: "Non-listé",
 
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",

@@ -167,7 +167,7 @@ export default {
       // todo remove this, since this will be answered by getfolder
 
       // if (
-      //   project.$public === false &&
+      //   project.$listed === false &&
       //   !this.connected_as &&
       //   Array.isArray(project.$authors) &&
       //   project.$authors.length > 0

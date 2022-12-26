@@ -35,7 +35,7 @@ export default {
     canLoggedinSeeProject({ project }) {
       // if public, if author admin, if author part of $authors
       // todo do this API side
-      if (project.$public) return true;
+      if (project.$listed) return true;
       if (this.connected_as?.role === "admin") return true;
 
       if (

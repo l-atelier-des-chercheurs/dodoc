@@ -365,8 +365,8 @@ module.exports = (function () {
     if (filename) new_meta.$media_filename = filename;
 
     // set status (see readme)
-    new_meta.$public = additional_meta.$public
-      ? additional_meta.$public
+    new_meta.$listed = additional_meta.$listed
+      ? additional_meta.$listed
       : false;
 
     if (additional_meta.$type) {

@@ -167,10 +167,10 @@ Default values are:
 - $cover (object) = if a meta_cover.jpeg is present in the root of the folder, can be edited by authors
 - $date_created (date) = when the folder was created
 - $date_modified (date) = when the folder was last edited
-- $files (Array) = list of all the files in this folder
-- $public (Boolean) = if the folder is visible to everyone or just its authors, can be edited by authors
-- $password (string, stored as hash) = limit editing or viewing (depending on $public) to users with password
-- $path (string) = path to folder, matches filesystem structure and URL, can’t be changed
+- $files (Array) = list of all the files in this folder (see Files below)
+- $listed (Boolean) = if the folder is listed when getFolders is called by non-authors, can be edited by authors
+- $password (string, stored as hash) = limit editing to users with password, can be edited by authors
+- $path (string) = path to folder, matches filesystem structure and URL
 - $infos (object) = data gathered from the folder itself
   - size (Number) = size in bytes
 
@@ -188,7 +188,7 @@ Default values are:
 - $media_filename (string) = name of the file
 - $type (string) = type of media file among the following: _image, video, audio, stl, text, pdf, other_
 - $authors (Array) = list of authors paths, can be edited by users
-- $public (Boolean) = if the folder is visible to everyone or just its authors, can be edited by authors
+- $listed (Boolean) = if the file is listed when getFiles is called by non-authors, can be edited by authors
 - $thumbs (object) = list of possible media image thumbs
 - $content (string) = text content of a file
 - $infos (object) = data gathered from the file itself

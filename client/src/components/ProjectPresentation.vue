@@ -40,7 +40,7 @@ z
     </div>
 
     <div class="_projectInfos--infos">
-      <sl-badge variant="neutral" v-if="!project.$public">
+      <sl-badge variant="neutral" v-if="!project.$listed">
         {{ $t("unlisted") }}
       </sl-badge>
 
