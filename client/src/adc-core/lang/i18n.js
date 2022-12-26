@@ -48,6 +48,7 @@ export default function () {
         date_modified: "dernière modification",
         date_uploaded: "date d’envoi",
         cancel: "annuler",
+        select: "Sélectionner",
         back: "retour",
         save: "enregistrer",
         description: "description",
