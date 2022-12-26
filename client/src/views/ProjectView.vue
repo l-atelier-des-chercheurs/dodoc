@@ -17,12 +17,14 @@
 
         <div class="_topContent">
           <div class="_displayAsPublic" v-if="can_edit_project">
-            <div class="_displayAsPublic--content">
-              <ToggleInput
-                class="u-button u-button_bleuvert"
-                :content.sync="display_as_public"
-                :label="$t('display_as_public')"
-              />
+            <div class="_sticky">
+              <div class="_content">
+                <ToggleInput
+                  class="u-button u-button_bleuvert"
+                  :content.sync="display_as_public"
+                  :label="$t('display_as_public')"
+                />
+              </div>
             </div>
           </div>
 
@@ -230,6 +232,7 @@ export default {
 }
 
 ._topContent {
+  position: relative;
 }
 
 ._tabButton {
@@ -245,18 +248,24 @@ export default {
 
 ._displayAsPublic {
   position: absolute;
-  z-index: 100;
-  top: 0;
-  left: 0;
+  height: 100%;
   width: 100%;
-  padding: calc(var(--spacing) / 1);
+  z-index: 1000;
 
   display: flex;
   justify-content: center;
+  align-items: flex-start;
 
   pointer-events: none;
 
-  > ._displayAsPublic--content {
+  ._sticky {
+    position: sticky;
+    top: 0;
+    left: 0;
+    padding: calc(var(--spacing) / 1);
+  }
+
+  ._content {
     pointer-events: auto;
     background: var(--c-bleuvert);
     border: 2px solid var(--c-bleuvert_fonce);
