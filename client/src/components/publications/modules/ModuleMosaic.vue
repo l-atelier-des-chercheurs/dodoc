@@ -53,9 +53,11 @@
           <button
             type="button"
             class="u-buttonLink"
-            :disabled="
-              !media_with_linked.objectFit ||
-              media_with_linked.objectFit === 'cover'
+            v-if="
+              !(
+                !media_with_linked.objectFit ||
+                media_with_linked.objectFit === 'cover'
+              )
             "
             @click="frameFit({ index, opt: { objectFit: 'cover' } })"
           >
@@ -64,7 +66,7 @@
           <button
             type="button"
             class="u-buttonLink"
-            :disabled="media_with_linked.objectFit === 'contain'"
+            v-if="media_with_linked.objectFit !== 'contain'"
             @click="frameFit({ index, opt: { objectFit: 'contain' } })"
           >
             <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
@@ -228,6 +230,12 @@ export default {
   place-content: center;
   height: 100%;
   align-items: center;
+
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 ._btnRow {
   position: absolute;

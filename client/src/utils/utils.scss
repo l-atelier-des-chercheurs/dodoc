@@ -121,6 +121,10 @@
   text-decoration: underline;
   text-underline-offset: 0.2em;
 
+  &[disabled] {
+    cursor: not-allowed;
+  }
+
   &.is--active {
     color: var(--c-bleuvert);
   }
