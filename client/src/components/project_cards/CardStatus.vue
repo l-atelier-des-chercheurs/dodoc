@@ -11,18 +11,6 @@
     <br />
 
     <div class="">
-      <!-- <ToggleField
-        :label="$t('public')"
-        :field_name="'$public'"
-        :content="project.$public"
-        :path="project.$path"
-        :options="{
-          true: $t('public_status_explanations'),
-          false: $t('not_public_status_explanations'),
-        }"
-        :can_edit="can_edit_project"
-      />
-      <br /> -->
       <DLabel :str="$t('status')" />
       <SelectField
         :field_name="'status'"
