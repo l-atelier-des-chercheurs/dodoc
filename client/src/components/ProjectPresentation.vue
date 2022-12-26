@@ -203,6 +203,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import "@/utils/mixins.scss";
+
 ._project {
   position: relative;
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
@@ -334,11 +336,13 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   font-size: 90%;
-  overflow: auto;
+  overflow: scroll;
 
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   max-height: calc((100vw - 260px) / 2);
+
+  @include scrollbar(8px, 5px, 6px);
 
   @media only screen and (max-width: 980px) {
     flex-flow: row nowrap;
