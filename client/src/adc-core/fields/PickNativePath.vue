@@ -69,8 +69,6 @@ export default {
 
       current_character_count: undefined,
       allow_save: false,
-
-      show_instructions: false,
     };
   },
   created() {},

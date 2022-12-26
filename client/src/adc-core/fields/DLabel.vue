@@ -5,7 +5,7 @@
       <span v-if="instructions">
         <!-- <sl-button size="small" circle @click="$emit('toggleHelp')">
         <sl-icon name="info-circle" :label="$t('edit')" />
-      </sl-button> -->
+        </sl-button> -->
         <sl-icon-button
           :name="!show_instructions ? 'info-circle' : 'info-circle-fill'"
           :class="{

@@ -88,8 +88,6 @@ export default {
       is_saving: false,
       new_authors_paths: JSON.parse(JSON.stringify(this.authors_paths)),
       // new_authors_paths: ["pauline", "louis"],
-
-      show_instructions: this.instructions ? false : undefined,
     };
   },
   created() {},
