@@ -73,6 +73,14 @@
             <button
               type="button"
               class="u-button"
+              :disabled="publimodule.size === 50"
+              @click="updateMeta({ size: 50 })"
+            >
+              50%
+            </button>
+            <button
+              type="button"
+              class="u-button"
               :disabled="publimodule.size === 33.3"
               @click="updateMeta({ size: 33.3 })"
             >
@@ -143,6 +151,7 @@
         :publimodule="publimodule"
         :can_edit="can_edit"
         @updateMeta="updateMeta"
+        @remove="$emit('remove')"
       />
       <ModuleCarousel
         v-else-if="publimodule.module_type === 'carousel'"
@@ -211,9 +220,11 @@ export default {
       let margin_left = 0;
       if (this.publimodule.align === "center")
         if (this.publimodule.size === 66.6) margin_left = 16.6;
+        else if (this.publimodule.size === 50) margin_left = 25;
         else if (this.publimodule.size === 33.3) margin_left = 33.3;
       if (this.publimodule.align === "right")
         if (this.publimodule.size === 66.6) margin_left = 33.3;
+        else if (this.publimodule.size === 50) margin_left = 50;
         else if (this.publimodule.size === 33.3) margin_left = 66.6;
       return {
         "--module-width": this.publimodule.size || 100,
