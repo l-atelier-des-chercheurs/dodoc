@@ -20,6 +20,7 @@
             @resize="resize({ meta_filename, new_size: $event })"
             @moveUp="moveTo({ meta_filename, dir: -1 })"
             @moveDown="moveTo({ meta_filename, dir: +1 })"
+            @duplicate="duplicatePublicationMedia(meta_filename)"
             @remove="removePublicationMedia(meta_filename)"
           />
           <div class="_spacer" :key="'mc_' + index">
@@ -145,6 +146,11 @@ export default {
       modules_list.move(target_meta_index, target_meta_index + dir);
       this.response = await this.updatePubliMeta({ modules_list });
     },
+    async duplicatePublicationMedia(meta_filename) {
+      // create a copy of the module
+      // if its source_medias include text modules, copy these medias as well
+      meta_filename;
+    },
     async removePublicationMedia(meta_filename) {
       let modules_list = this.modules_list.slice();
       modules_list = modules_list.filter((_mf) => _mf !== meta_filename);
@@ -156,6 +162,21 @@ export default {
       });
 
       const file = this.findFileFromMetaFilename(meta_filename);
+
+      try {
+        for (let sm of file.source_medias) {
+          if (sm.path.includes("/publications/")) {
+            // this media is specific to publications, lets remove it
+            await this.$api.deleteItem({
+              path: sm.path,
+            });
+          }
+        }
+      } catch (err) {
+        this.$alertify.delay(4000).error(err);
+        throw err;
+      }
+
       await this.$api
         .deleteItem({
           path: file.$path,
@@ -166,12 +187,6 @@ export default {
         });
     },
     async updatePubliMeta(new_meta) {
-      return await this.$api.updateMeta({
-        path: this.publication.$path,
-        new_meta,
-      });
-    },
-    async updateMediaMeta(new_meta) {
       return await this.$api.updateMeta({
         path: this.publication.$path,
         new_meta,

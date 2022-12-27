@@ -48,7 +48,7 @@ z
         :instructions="$t('project_author_instructions')"
       />
 
-      <br />
+      <br v-if="context === 'full'" />
 
       <TitleField
         :field_name="'title'"
@@ -62,10 +62,11 @@ z
         :instructions="$t('project_title_instructions')"
       />
 
-      <br />
+      <br v-if="context === 'full'" />
 
       <TitleField
         :field_name="'description'"
+        class="_description"
         :label="
           context === 'full' && (project.description || can_edit_project)
             ? $t('description')
@@ -80,13 +81,21 @@ z
       <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
     </div>
 
-    <div class="_projectInfos--meta" v-if="context === 'full'">
+    <button
+      class="u-buttonLink _showMeta"
+      type="button"
+      @click="show_meta = !show_meta"
+    >
+      {{ $t("show_meta") }}
+    </button>
+
+    <div class="_projectInfos--meta" v-if="context === 'full' && show_meta">
       <CardMeta :project="project" :can_edit="can_edit_project" />
       <CardStatus :project="project" :can_edit_project="can_edit_project" />
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
       <CardKeywords :project="project" :can_edit_project="can_edit_project" />
       <CardMachines :project="project" :can_edit_project="can_edit_project" />
-      <CardLicense :project="project" :can_edit_project="can_edit_project" />
+      <!-- <CardLicense :project="project" :can_edit_project="can_edit_project" /> -->
       <!-- <CardFiles :project="project" :can_edit_project="can_edit_project" /> -->
     </div>
 
@@ -106,7 +115,7 @@ import CardMeta from "@/components/project_cards/CardMeta.vue";
 import CardKeywords from "@/components/project_cards/CardKeywords.vue";
 import CardMachines from "@/components/project_cards/CardMachines.vue";
 import CardStatus from "@/components/project_cards/CardStatus.vue";
-import CardLicense from "@/components/project_cards/CardLicense.vue";
+// import CardLicense from "@/components/project_cards/CardLicense.vue";
 // import CardFiles from "@/components/project_cards/CardFiles.vue";
 
 export default {
@@ -122,7 +131,7 @@ export default {
     CardKeywords,
     CardMachines,
     CardStatus,
-    CardLicense,
+    // CardLicense,
     // CardFiles,
   },
   data() {
@@ -133,12 +142,7 @@ export default {
       fetch_error: null,
       response: null,
 
-      confirm_remove: false,
-
-      preview_rawdata: null,
-      show_lib: false,
-      select_cover_image: false,
-
+      show_meta: true,
       is_fullscreen: false,
     };
   },
@@ -199,6 +203,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import "@/utils/mixins.scss";
+
 ._project {
   position: relative;
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
@@ -214,24 +220,35 @@ export default {
   background: white;
 
   // width: 100%;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--preview {
     border-bottom: 2px solid #b9b9b9;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+
+    ._description {
+      font-size: 90%;
+    }
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: 980px) {
     flex-flow: row wrap;
   }
 
   > * {
     flex: 10 1 320px;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     &._projectInfos--cover {
       // flex: 1 1 40vmin;
     }
     &._projectInfos--meta {
       flex: 1 0 260px;
+
+      @media only screen and (max-width: 980px) {
+        flex: 0 0 100%;
+      }
     }
   }
 }
@@ -260,8 +277,8 @@ export default {
   position: relative;
   overflow: hidden;
   // max-height: 40vmin;
-  min-width: 280px;
-  min-height: 280px;
+  // min-width: 280px;
+  // min-height: 280px;
   aspect-ratio: 1/1;
 
   --color1: var(--c-gris);
@@ -327,10 +344,13 @@ export default {
   flex-flow: column nowrap;
   font-size: 90%;
   overflow: auto;
+  background: var(--c-gris_clair);
 
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   max-height: calc((100vw - 260px) / 2);
+
+  @include scrollbar(8px, 5px, 6px);
 
   @media only screen and (max-width: 980px) {
     flex-flow: row nowrap;
@@ -338,17 +358,14 @@ export default {
   }
 
   > * {
-    flex: 1 0 260px;
+    flex: 1 1 260px;
 
     background: white;
     box-shadow: 0 1px 6px rgb(0 0 0 / 20%);
     border-radius: 8px;
 
-    &:first-child {
-      // border-top: 0 solid #000;
-    }
-    &:not(:last-child) {
-      // border-bottom: 0 solid #000;
+    @media only screen and (max-width: 980px) {
+      flex: 1 0 260px;
     }
   }
 }
@@ -373,5 +390,13 @@ export default {
   bottom: 0;
   right: 0;
   padding: calc(var(--spacing) / 1);
+}
+
+._showMeta {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: white;
+  margin: calc(var(--spacing) / 4);
 }
 </style>

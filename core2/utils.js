@@ -79,7 +79,7 @@ module.exports = (function () {
       let meta = {};
 
       const predefined_fields = {
-        $public: { type: "boolean" },
+        $listed: { type: "boolean" },
         $authors: { type: "array" },
         $password: { type: "string" },
       };

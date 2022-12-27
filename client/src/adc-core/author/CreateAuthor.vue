@@ -97,7 +97,7 @@ export default {
             name: this.new_author_name,
             requested_slug: this.new_author_name,
             role: this.new_author_role,
-            $public: true,
+            $listed: true,
             $password: this.new_author_password,
           },
         });

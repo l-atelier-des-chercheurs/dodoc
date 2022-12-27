@@ -96,6 +96,7 @@ export default {
   --scrollbar-height: 1px;
   --scrollbar-padding: 3px;
   --scrollbar-border: 2px;
+  --scrollbar-color: 2px;
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
   --label-color: var(--c-gris_fonce);

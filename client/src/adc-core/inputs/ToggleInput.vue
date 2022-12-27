@@ -12,8 +12,9 @@
       />
       <label :for="id">{{ label }}</label>
     </div>
-    <div v-if="current_instruction" class="fieldCaption">
-      {{ current_instruction }}
+
+    <div class="u-instructions" v-if="current_instruction">
+      <small>{{ current_instruction }}</small>
     </div>
   </div>
 </template>

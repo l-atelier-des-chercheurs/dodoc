@@ -1,9 +1,14 @@
 <template>
-  <div
-    class="_moduleMosaic"
-    :style="`--number_of_medias: ${medias_with_linked.length}`"
-  >
-    <!-- <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
+  <transition name="fade_fast" mode="out-in">
+    <div
+      class="_moduleMosaic"
+      :style="`--number_of_medias: ${medias_with_linked.length}`"
+      :key="is_multiple_medias ? 'multiple' : 'single'"
+      :class="{
+        'is--multipleMedias': is_multiple_medias,
+      }"
+    >
+      <!-- <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
       <pane
         v-for="(slot, index) in source_medias.length"
         class="_pane"
@@ -37,71 +42,77 @@
       </div>
     </splitpanes> -->
 
-    <div class="_mediaGrid">
-      <div
-        class="_mediaGrid--item"
-        v-for="(media_with_linked, index) in medias_with_linked"
-        :key="media_with_linked._linked_media.$path"
-        :style="itemStyle({ media_with_linked })"
-      >
-        <MediaContent
-          :file="media_with_linked._linked_media"
-          :resolution="1600"
-          :context="'full'"
-        />
-        <div class="_btnRow" v-if="can_edit">
-          <button
-            type="button"
-            class="u-buttonLink"
-            :disabled="
-              !media_with_linked.objectFit ||
-              media_with_linked.objectFit === 'cover'
-            "
-            @click="frameFit({ index, opt: { objectFit: 'cover' } })"
-          >
-            {{ $t("object_fit_cover") }}
-          </button>
-          <button
-            type="button"
-            class="u-buttonLink"
-            :disabled="media_with_linked.objectFit === 'contain'"
-            @click="frameFit({ index, opt: { objectFit: 'contain' } })"
-          >
-            <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
-            {{ $t("object_fit_contain") }}
-          </button>
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="removeMediaAtIndex(index)"
-          >
-            {{ $t("remove") }}
-          </button>
+      <div class="_mediaGrid">
+        <div
+          class="_mediaGrid--item"
+          v-for="(media_with_linked, index) in medias_with_linked"
+          :key="media_with_linked._linked_media.$path"
+          :style="itemStyle({ media_with_linked })"
+        >
+          <MediaContent
+            :file="media_with_linked._linked_media"
+            :resolution="1600"
+            :context="'full'"
+          />
+          <div class="_btnRow" v-if="can_edit">
+            <button
+              type="button"
+              class="u-buttonLink"
+              v-if="
+                is_multiple_medias &&
+                !(
+                  !media_with_linked.objectFit ||
+                  media_with_linked.objectFit === 'cover'
+                )
+              "
+              @click="frameFit({ index, opt: { objectFit: 'cover' } })"
+            >
+              {{ $t("object_fit_cover") }}
+            </button>
+            <button
+              type="button"
+              class="u-buttonLink"
+              v-if="
+                is_multiple_medias && media_with_linked.objectFit !== 'contain'
+              "
+              @click="frameFit({ index, opt: { objectFit: 'contain' } })"
+            >
+              <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
+              {{ $t("object_fit_contain") }}
+            </button>
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="removeMediaAtIndex(index)"
+            >
+              {{ $t("remove") }}
+            </button>
+          </div>
+        </div>
+        <div class="_mediaPickerTile" v-if="can_edit">
+          <sl-icon-button
+            name="plus-circle-fill"
+            class="u-colorBleuvert"
+            :label="$t('add_media')"
+            v-if="!show_media_picker"
+            @click="show_media_picker = true"
+          />
+          <MediaPicker
+            v-else
+            :publication_path="publication_path"
+            @selectMedia="selectMedia"
+            @close="show_media_picker = false"
+          />
+
+          <transition name="dropzone" :duration="150">
+            <div class="_dropzone" v-if="show_dropzone">
+              <DropZone @mediaDropped="selectMedia" />
+            </div>
+          </transition>
         </div>
       </div>
-      <div class="_mediaPickerTile" v-if="can_edit">
-        <sl-icon-button
-          name="plus-circle-fill"
-          class="u-colorBleuvert"
-          :label="$t('add_media')"
-          v-if="!show_media_picker"
-          @click="show_media_picker = true"
-        />
-        <MediaPicker
-          v-else
-          :publication_path="publication_path"
-          @selectMedia="selectMedia"
-          @close="show_media_picker = false"
-        />
-
-        <transition name="dropzone" :duration="150">
-          <div class="_dropzone" v-if="show_dropzone">
-            <DropZone @mediaDropped="selectMedia" />
-          </div>
-        </transition>
-      </div>
     </div>
-  </div>
+  </transition>
 </template>
 <script>
 // import { Splitpanes, Pane } from "splitpanes";
@@ -150,6 +161,9 @@ export default {
         return media_with_linked;
       });
     },
+    is_multiple_medias() {
+      return this.medias_with_linked.length > 1;
+    },
   },
   methods: {
     selectMedia({ path_to_source_media }) {
@@ -161,7 +175,9 @@ export default {
     removeMediaAtIndex(index) {
       const source_medias = this.publimodule.source_medias.slice();
       source_medias.splice(index, 1);
-      this.$emit("updateMeta", { source_medias });
+
+      if (source_medias.length === 0) this.$emit("remove");
+      else this.$emit("updateMeta", { source_medias });
     },
     frameFit({ index, opt }) {
       const source_medias = this.publimodule.source_medias.slice();
@@ -187,32 +203,40 @@ export default {
   --number_of_medias: 1;
   position: relative;
 }
+
 ._mediaGrid {
   position: relative;
-  display: flex;
-  flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 4);
   width: 100%;
-  transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+  ._moduleMosaic.is--multipleMedias & {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: calc(var(--spacing) / 4);
+    transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  }
 
   > ._mediaGrid--item {
     position: relative;
-    aspect-ratio: 1/1;
-    overflow: hidden;
-    background: var(--c-gris_clair);
 
-    flex: 1 1 calc(100% / var(--number_of_medias));
+    ._moduleMosaic.is--multipleMedias & {
+      aspect-ratio: 1/1;
+      overflow: hidden;
+      background: var(--c-gris_clair);
+      flex: 1 1 calc(100% / var(--number_of_medias));
+    }
 
     transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     ::v-deep ._mediaContent {
       img,
       video {
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-        object-fit: var(--object-fit);
+        ._moduleMosaic.is--multipleMedias & {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+          object-fit: var(--object-fit);
+        }
       }
     }
   }
@@ -220,6 +244,7 @@ export default {
 
 ._mediaPickerTile {
   position: absolute;
+  top: 0;
   left: auto;
   right: 0;
   // background: var(--c-gris);
@@ -228,6 +253,12 @@ export default {
   place-content: center;
   height: 100%;
   align-items: center;
+
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 ._btnRow {
   position: absolute;

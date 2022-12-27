@@ -13,23 +13,12 @@
       <br />
 
       <div class="">
-        <!-- <input
-          type="checkbox"
-          id="new_project_is_public"
-          name="new_project_is_public"
-          v-model="new_project_is_public"
-        />
-        <label for="new_project_is_public">{{ $t("public") }}</label>
-        <div>
-          <small>{{ $t("public_status_explanations") }}</small>
-        </div> -->
-
         <ToggleInput
-          :content.sync="new_project_is_public"
-          :label="$t('public')"
+          :content.sync="new_project_is_listed"
+          :label="$t('listed')"
           :options="{
-            true: $t('public_status_explanations'),
-            false: $t('not_public_status_explanations'),
+            true: $t('listed_status_explanations_projects'),
+            false: $t('unlisted_status_explanations_projects'),
           }"
         />
       </div>
@@ -60,7 +49,7 @@ export default {
   data() {
     return {
       new_project_title: "",
-      new_project_is_public: true,
+      new_project_is_listed: true,
 
       is_creating_project: false,
 
@@ -87,7 +76,7 @@ export default {
             requested_slug: this.new_project_title,
             status: "draft",
             license: "CC",
-            $public: this.new_project_is_public,
+            $listed: this.new_project_is_listed,
             $authors: [this.$api.tokenpath.token_path],
           },
         });

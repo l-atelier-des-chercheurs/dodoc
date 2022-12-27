@@ -1,33 +1,36 @@
 <template>
-  <div class="_labelLine">
-    <label :for="for_attr" class="u-label">{{ str }}</label>
-    <span v-if="show_instructions !== undefined">
-      <!-- <sl-button size="small" circle @click="$emit('toggleHelp')">
+  <div class="">
+    <div class="_labelLine">
+      <label class="u-label">{{ str }}</label>
+      <span v-if="instructions">
+        <!-- <sl-button size="small" circle @click="$emit('toggleHelp')">
         <sl-icon name="info-circle" :label="$t('edit')" />
-      </sl-button> -->
-      <sl-icon-button
-        name="info-circle-fill"
-        :class="{
-          'is--active': show_instructions,
-        }"
-        @click="$emit('update:show_instructions', !show_instructions)"
-      />
-    </span>
+        </sl-button> -->
+        <sl-icon-button
+          :name="!show_instructions ? 'info-circle' : 'info-circle-fill'"
+          :class="{
+            'is--active': show_instructions,
+          }"
+          @click="show_instructions = !show_instructions"
+        />
+      </span>
+    </div>
+    <div class="u-instructions" v-if="show_instructions">
+      <small>{{ instructions }}</small>
+    </div>
   </div>
 </template>
 <script>
 export default {
   props: {
-    for_attr: String,
     str: String,
-    show_instructions: {
-      type: Boolean,
-      default: undefined,
-    },
+    instructions: String,
   },
   components: {},
   data() {
-    return {};
+    return {
+      show_instructions: false,
+    };
   },
   created() {},
   mounted() {},

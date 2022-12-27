@@ -15,6 +15,26 @@
       {{ author.$path }}
     </small>
     <br />
+
+    <SelectField
+      :field_name="'role'"
+      :content="author.role"
+      :path="author.$path"
+      :can_edit="is_self"
+      :options="[
+        {
+          key: 'contributor',
+          text: $t('contributor'),
+          instruction: 'contributor_instructions',
+        },
+        {
+          key: 'admin',
+          text: $t('admin'),
+          instruction: 'admin_instructions',
+        },
+      ]"
+    />
+
     {{ author.role }}
     <br />
     {{ author.email }}

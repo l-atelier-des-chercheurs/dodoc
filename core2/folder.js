@@ -101,7 +101,7 @@ module.exports = (function () {
         utils.getCurrentDate();
 
       // set status (see readme)
-      valid_meta.$public = valid_meta.$public ? valid_meta.$public : false;
+      valid_meta.$listed = valid_meta.$listed ? valid_meta.$listed : false;
 
       if (valid_meta.$password) {
         // encrypt before store

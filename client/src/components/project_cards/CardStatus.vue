@@ -1,22 +1,17 @@
 <template>
   <ProjectCard>
     <div slot="header">
-      {{ $t("progress") }}
+      {{ $t("visibility_progress") }}
       <sl-icon name="globe" />
     </div>
+    <div>
+      {{ $t("visibility_progress_text") }}
+    </div>
+
+    <br />
+
     <div class="">
-      <ToggleField
-        :label="$t('public')"
-        :field_name="'$public'"
-        :content="project.$public"
-        :path="project.$path"
-        :options="{
-          true: $t('public_status_explanations'),
-          false: $t('not_public_status_explanations'),
-        }"
-        :can_edit="can_edit_project"
-      />
-      <br />
+      <DLabel :str="$t('status')" />
       <SelectField
         :field_name="'status'"
         :content="project.status"
@@ -24,6 +19,13 @@
         :can_edit="can_edit_project"
         :options="status_options"
       />
+
+      <br />
+
+      <DLabel :str="$t('progress')" :instructions="$t('progress_instr')" />
+      <sl-progress-bar value="50" class="progress-bar-values">
+        50%
+      </sl-progress-bar>
     </div>
   </ProjectCard>
 </template>

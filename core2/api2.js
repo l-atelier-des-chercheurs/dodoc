@@ -174,7 +174,9 @@ module.exports = (function () {
     }
 
     try {
-      await _authenticateToken(req);
+      const { token, token_path } = JSON.parse(req.headers.authorization);
+      if (!token || !token_path) throw new Error(`no_token_set`);
+      auth.checkToken({ token, token_path });
       response.token_is_valid = true;
     } catch (err) {
       response.token_is_wrong = err.message;
@@ -282,6 +284,9 @@ module.exports = (function () {
 
     try {
       let d = await folder.getFolders({ path_to_type });
+
+      // todo : filter depending on $listed, only authors see folders
+
       res.setHeader("Access-Control-Allow-Origin", "*");
       dev.logpackets({ d });
       res.json(d);
