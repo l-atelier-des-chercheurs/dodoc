@@ -81,7 +81,15 @@ z
       <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
     </div>
 
-    <div class="_projectInfos--meta" v-if="context === 'full'">
+    <button
+      class="u-buttonLink _showMeta"
+      type="button"
+      @click="show_meta = !show_meta"
+    >
+      {{ $t("show_meta") }}
+    </button>
+
+    <div class="_projectInfos--meta" v-if="context === 'full' && show_meta">
       <CardMeta :project="project" :can_edit="can_edit_project" />
       <CardStatus :project="project" :can_edit_project="can_edit_project" />
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
@@ -134,12 +142,7 @@ export default {
       fetch_error: null,
       response: null,
 
-      confirm_remove: false,
-
-      preview_rawdata: null,
-      show_lib: false,
-      select_cover_image: false,
-
+      show_meta: true,
       is_fullscreen: false,
     };
   },
@@ -217,6 +220,7 @@ export default {
   background: white;
 
   // width: 100%;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--preview {
     border-bottom: 2px solid #b9b9b9;
@@ -234,6 +238,7 @@ export default {
 
   > * {
     flex: 10 1 320px;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
     &._projectInfos--cover {
       // flex: 1 1 40vmin;
@@ -385,5 +390,13 @@ export default {
   bottom: 0;
   right: 0;
   padding: calc(var(--spacing) / 1);
+}
+
+._showMeta {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: white;
+  margin: calc(var(--spacing) / 4);
 }
 </style>

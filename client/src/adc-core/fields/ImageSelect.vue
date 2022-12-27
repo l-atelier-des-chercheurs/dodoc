@@ -120,7 +120,7 @@
         :src="getPreviewFromMedias(image)"
         draggable="false"
       />
-      <button class="buttonLink" type="button" @click="removeImage">
+      <button class="u-buttonLink" type="button" @click="removeImage">
         {{ $t("remove_image") }}
       </button>
     </div>

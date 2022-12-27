@@ -91,6 +91,7 @@ export default function () {
         list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
         import_instructions: "Importer depuis un autre appareil",
+        show_meta: "Afficher les métadonnées",
 
         visibility_progress: "Visibilité et état d’avancement",
         visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
