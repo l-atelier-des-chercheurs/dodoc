@@ -52,7 +52,7 @@ export default function () {
         back: "retour",
         save: "enregistrer",
         description: "description",
-        keywords: "mots-clés",
+        keywords: "Mots-clés",
         add: "ajouter",
         access: "accéder",
         title: "titre",
@@ -103,6 +103,7 @@ export default function () {
         draft_status_explanations:
           "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
         listed: "Listé",
+        unlisted: "Non-listé",
         listed_status_explanations_projects:
           "Le projet sera listé sur la page des projets.",
         unlisted_status_explanations_projects:
@@ -112,8 +113,12 @@ export default function () {
         unlisted_status_explanations_publis:
           "La publication ne sera visible qu’aux auteurs du projet.",
         finished: "Finalisé",
-        no_draft_proejcts: "Aucun projet en brouillon pour le moment",
-        no_finalized_proejcts: "Aucun projet finalisé pour le moment",
+
+        finished_projects: "Projets finalisés",
+        projects_in_progress: "Projets en cours",
+
+        no_draft_projects: "Aucun projet en brouillon pour le moment",
+        no_finalized_projects: "Aucun projet finalisé pour le moment",
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d’accueil.",
 

@@ -131,7 +131,6 @@ export default {
   height: 100%;
   display: flex;
   place-content: center;
-  background: #eee;
 
   padding: calc(var(--spacing) * 1);
 }

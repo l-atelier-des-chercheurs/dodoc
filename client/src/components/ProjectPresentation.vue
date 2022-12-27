@@ -40,10 +40,6 @@ z
     </div>
 
     <div class="_projectInfos--infos">
-      <sl-badge variant="neutral" v-if="!project.$listed">
-        {{ $t("unlisted") }}
-      </sl-badge>
-
       <AuthorField
         :label="context === 'full' ? $t('contributors') : ''"
         :authors_paths="project.$authors"
@@ -52,7 +48,7 @@ z
         :instructions="$t('project_author_instructions')"
       />
 
-      <br />
+      <br v-if="context === 'full'" />
 
       <TitleField
         :field_name="'title'"
@@ -66,10 +62,11 @@ z
         :instructions="$t('project_title_instructions')"
       />
 
-      <br />
+      <br v-if="context === 'full'" />
 
       <TitleField
         :field_name="'description'"
+        class="_description"
         :label="
           context === 'full' && (project.description || can_edit_project)
             ? $t('description')
@@ -224,6 +221,11 @@ export default {
   &.is--preview {
     border-bottom: 2px solid #b9b9b9;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+
+    ._description {
+      font-size: 90%;
+    }
   }
 
   @media only screen and (max-width: 980px) {
@@ -252,7 +254,7 @@ export default {
   place-content: center;
 
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) * 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 1);
 
   transition: all 0.4s;
 
@@ -270,8 +272,8 @@ export default {
   position: relative;
   overflow: hidden;
   // max-height: 40vmin;
-  min-width: 280px;
-  min-height: 280px;
+  // min-width: 280px;
+  // min-height: 280px;
   aspect-ratio: 1/1;
 
   --color1: var(--c-gris);
@@ -336,7 +338,8 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   font-size: 90%;
-  overflow: scroll;
+  overflow: auto;
+  background: var(--c-gris_clair);
 
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);

@@ -77,7 +77,7 @@
         <br />
 
         <div class="">
-          <h3>Projets finalisés</h3>
+          <h3>{{ $t("finished_projects") }}</h3>
           <transition-group
             class="_projectsList"
             tag="div"
@@ -90,7 +90,7 @@
               class="u-instructions"
               key="no_content"
             >
-              {{ $t("no_finalized_proejcts") }}
+              {{ $t("no_finalized_projects") }}
             </div>
 
             <ProjectPresentation
@@ -105,7 +105,7 @@
         <br />
 
         <div class="">
-          <h3>Projets en cours</h3>
+          <h3>{{ $t("projects_in_progress") }}</h3>
           <transition-group
             class="_projectsList"
             tag="div"
@@ -118,7 +118,7 @@
               class="u-instructions"
               key="no_content"
             >
-              {{ $t("no_draft_proejcts") }}
+              {{ $t("no_draft_projects") }}
             </div>
             <ProjectPresentation
               v-for="project in draft_projects"
@@ -211,7 +211,7 @@ export default {
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
   align-items: flex-start;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 
   border-radius: 6px;
   overflow: hidden;

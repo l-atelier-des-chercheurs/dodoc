@@ -168,7 +168,7 @@ Default values are:
 - $date_created (date) = when the folder was created
 - $date_modified (date) = when the folder was last edited
 - $files (Array) = list of all the files in this folder (see Files below)
-- $listed (Boolean) = if the folder is listed when getFolders is called by non-authors, can be edited by authors
+- $listed (Boolean) = determines whether the folder gets listed when getFolders is called by non-authors, can be edited by authors
 - $password (string, stored as hash) = limit editing to users with password, can be edited by authors
 - $path (string) = path to folder, matches filesystem structure and URL
 - $infos (object) = data gathered from the folder itself
@@ -188,7 +188,7 @@ Default values are:
 - $media_filename (string) = name of the file
 - $type (string) = type of media file among the following: _image, video, audio, stl, text, pdf, other_
 - $authors (Array) = list of authors paths, can be edited by users
-- $listed (Boolean) = if the file is listed when getFiles is called by non-authors, can be edited by authors
+- $listed (Boolean) = determines whether the file gets listed when getFiles is called by non-authors, can be edited by authors
 - $thumbs (object) = list of possible media image thumbs
 - $content (string) = text content of a file
 - $infos (object) = data gathered from the file itself

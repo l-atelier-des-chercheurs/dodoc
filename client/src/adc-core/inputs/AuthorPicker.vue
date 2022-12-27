@@ -48,6 +48,7 @@ export default {
 ._authorPicker {
   // border: 2px solid var(--c-bleumarine);
   padding: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 4);
 
   display: flex;
   flex-flow: row wrap;
