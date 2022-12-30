@@ -14,11 +14,11 @@
 
       <div class="">
         <ToggleInput
-          :content.sync="new_project_is_listed"
-          :label="$t('listed')"
+          :content.sync="new_project_is_visible"
+          :label="$t('invisible')"
           :options="{
-            true: $t('listed_status_explanations_projects'),
-            false: $t('unlisted_status_explanations_projects'),
+            true: $t('visible_status_explanations_projects'),
+            false: $t('invisible_status_explanations_projects'),
           }"
         />
       </div>
@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       new_project_title: "",
-      new_project_is_listed: true,
+      new_project_is_visible: true,
 
       is_creating_project: false,
 
@@ -76,7 +76,8 @@ export default {
             requested_slug: this.new_project_title,
             status: "draft",
             license: "CC",
-            $listed: this.new_project_is_listed,
+            $status:
+              this.new_project_is_visible === true ? "draft" : "invisible",
             $authors: [this.$api.tokenpath.token_path],
           },
         });

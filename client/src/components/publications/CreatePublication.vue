@@ -34,8 +34,8 @@
           :content.sync="new_publication_is_listed"
           :label="$t('listed')"
           :options="{
-            true: $t('listed_status_explanations_publis'),
-            false: $t('unlisted_status_explanations_publis'),
+            true: $t('visible_status_explanations_publis'),
+            false: $t('invisible_status_explanations_publis'),
           }"
         />
       </div>
@@ -107,7 +107,8 @@ export default {
             title: this.new_publication_title,
             template: this.new_publication_template,
             requested_slug: this.new_publication_title,
-            $listed: this.new_publication_is_listed,
+            $status:
+              this.new_publication_is_listed === true ? "draft" : "invisible",
             $authors: [this.$api.tokenpath.token_path],
           },
         });

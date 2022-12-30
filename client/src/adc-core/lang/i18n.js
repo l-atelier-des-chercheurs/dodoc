@@ -104,16 +104,17 @@ export default function () {
         draft_status_explanations:
           "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
         listed: "Listé",
-        unlisted: "Non-listé",
-        listed_status_explanations_projects:
-          "Le projet sera listé sur la page des projets.",
-        unlisted_status_explanations_projects:
-          "Le projet ne sera pas listé sur la page des projets.",
-        listed_status_explanations_publis:
+        invisible: "Invisible",
+        visible_status_explanations_projects:
+          "Le projet sera affiché avec les autres projets.",
+        invisible_status_explanations_projects:
+          "Le projet ne sera pas affiché avec les autres projets, il sera .",
+        visible_status_explanations_publis:
           "La publication sera visible par tous ceux qui accèdent au projet.",
-        unlisted_status_explanations_publis:
+        invisible_status_explanations_publis:
           "La publication ne sera visible qu’aux auteurs du projet.",
         finished: "Finalisé",
+        my_projects: "Mes projets",
 
         finished_projects: "Projets finalisés",
         projects_in_progress: "Projets en cours",

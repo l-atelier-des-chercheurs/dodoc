@@ -40,6 +40,10 @@ z
     </div>
 
     <div class="_projectInfos--infos">
+      <sl-badge variant="neutral" v-if="project.$status === 'invisible'">
+        {{ $t("invisible") }}
+      </sl-badge>
+
       <AuthorField
         :label="context === 'full' ? $t('contributors') : ''"
         :authors_paths="project.$authors"

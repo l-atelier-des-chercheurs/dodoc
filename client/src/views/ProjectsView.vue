@@ -184,10 +184,12 @@ export default {
       );
     },
     finalized_projects() {
-      return this.sorted_projects.filter((p) => p.status === "finished");
+      return this.sorted_projects.filter((p) => p.$status === "finished");
     },
     draft_projects() {
-      return this.sorted_projects.filter((p) => p.status !== "finished");
+      return this.sorted_projects.filter(
+        (p) => p.$status !== "finised" && p.$status !== "invisible"
+      );
     },
   },
   methods: {
