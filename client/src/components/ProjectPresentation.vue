@@ -3,8 +3,10 @@ z
   <div
     class="_projectInfos"
     :class="{
-      'is--preview': context === 'list',
+      'is--list': context === 'list',
+      'is--tiny': context === 'tiny',
       'u-card': context === 'list',
+      'is--linkToProject': context !== 'full',
     }"
   >
     <div
@@ -45,6 +47,7 @@ z
       </sl-badge>
 
       <AuthorField
+        v-if="context !== 'tiny'"
         :label="context === 'full' ? $t('contributors') : ''"
         :authors_paths="project.$authors"
         :path="project.$path"
@@ -69,6 +72,7 @@ z
       <br v-if="context === 'full'" />
 
       <TitleField
+        v-if="context !== 'tiny'"
         :field_name="'description'"
         class="_description"
         :label="
@@ -86,6 +90,7 @@ z
     </div>
 
     <button
+      v-if="context === 'full'"
       class="u-buttonLink _showMeta"
       type="button"
       @click="show_meta = !show_meta"
@@ -103,12 +108,15 @@ z
       <!-- <CardFiles :project="project" :can_edit_project="can_edit_project" /> -->
     </div>
 
-    <div class="_projectInfos--open" v-if="context === 'list'">
-      <router-link
-        :to="{ path: '/' + project.$path }"
-        class="u-button u-button_red"
-      >
-        {{ $t("open") }}&nbsp;<sl-icon name="arrow-up-right" />
+    <div
+      class="_projectInfos--open"
+      v-if="context === 'list' || context === 'tiny'"
+    >
+      <router-link :to="{ path: '/' + project.$path }">
+        <div class="_clickZone" />
+        <div class="u-button u-button_red _openBtn" v-if="context === 'list'">
+          {{ $t("open") }}&nbsp;<sl-icon name="arrow-up-right" />
+        </div>
       </router-link>
     </div>
   </div>
@@ -215,6 +223,7 @@ export default {
 }
 
 ._projectInfos {
+  position: relative;
   display: flex;
   flex-flow: row nowrap;
   align-items: stretch;
@@ -226,7 +235,15 @@ export default {
   // width: 100%;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
-  &.is--preview {
+  &.is--linkToProject {
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    }
+  }
+
+  &.is--list,
+  &.is--tiny {
     border-bottom: 2px solid #b9b9b9;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
@@ -234,6 +251,13 @@ export default {
     ._description {
       font-size: 90%;
     }
+  }
+
+  &.is--list {
+    display: block;
+  }
+  &.is--tiny {
+    flex-flow: row nowrap;
   }
 
   @media only screen and (max-width: 980px) {
@@ -376,11 +400,23 @@ export default {
 
 ._projectInfos--open {
   display: flex;
+
   justify-content: center;
   margin: calc(var(--spacing) * 1);
 
-  a {
+  ._clickZone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  ._openBtn {
+    text-decoration: underline;
+    position: relative;
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
     &:hover,
     &:focus {
       transform: translateY(-4px) rotate(-2deg);

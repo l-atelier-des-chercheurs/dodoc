@@ -76,23 +76,57 @@
 
         <br />
 
-        <div class="">
-          <h3>{{ $t("finished_projects") }}</h3>
+        <div class="" v-if="connected_as">
+          <h3>
+            {{ $t("my_projects") }}
+            <small>({{ my_projects.length }})</small>
+          </h3>
+          <div
+            v-if="my_projects.length === 0"
+            class="u-instructions"
+            key="no_content"
+          >
+            {{ $t("no_projects") }}
+          </div>
           <transition-group
+            v-else
             class="_projectsList"
             tag="div"
             name="StoryModules"
             appear
             :duration="700"
           >
-            <div
-              v-if="finalized_projects.length === 0"
-              class="u-instructions"
-              key="no_content"
-            >
-              {{ $t("no_finalized_projects") }}
-            </div>
+            <ProjectPresentation
+              v-for="project in my_projects"
+              :project="project"
+              context="tiny"
+              :key="project.$path"
+            />
+          </transition-group>
+        </div>
 
+        <br />
+
+        <div class="">
+          <h3>
+            {{ $t("finished_projects") }}
+            <small>({{ finalized_projects.length }})</small>
+          </h3>
+          <div
+            v-if="finalized_projects.length === 0"
+            class="u-instructions"
+            key="no_content"
+          >
+            {{ $t("no_finalized_projects") }}
+          </div>
+          <transition-group
+            v-else
+            class="_projectsList"
+            tag="div"
+            name="StoryModules"
+            appear
+            :duration="700"
+          >
             <ProjectPresentation
               v-for="project in finalized_projects"
               :project="project"
@@ -105,7 +139,10 @@
         <br />
 
         <div class="">
-          <h3>{{ $t("projects_in_progress") }}</h3>
+          <h3>
+            {{ $t("projects_in_progress") }}
+            <small>({{ draft_projects.length }})</small>
+          </h3>
           <transition-group
             class="_projectsList"
             tag="div"
@@ -191,6 +228,13 @@ export default {
         (p) => p.$status !== "finised" && p.$status !== "invisible"
       );
     },
+    my_projects() {
+      return this.sorted_projects.filter(
+        (p) =>
+          Array.isArray(p.$authors) &&
+          p.$authors.includes(this.connected_as.$path)
+      );
+    },
   },
   methods: {
     openNewProject(new_folder_slug) {
@@ -215,18 +259,18 @@ export default {
   align-items: flex-start;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 
-  border-radius: 6px;
-  overflow: hidden;
+  // border-radius: 6px;
+  // overflow: hidden;
   margin-top: calc(var(--spacing) / 4);
 
   > * {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     width: 100%;
+    cursor: pointer;
   }
 
   ::v-deep ._projectInfos {
     min-height: 100%;
-    display: block;
   }
 }
 
