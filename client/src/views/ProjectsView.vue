@@ -76,36 +76,38 @@
 
         <br />
 
-        <div class="" v-if="connected_as">
-          <h3>
-            {{ $t("my_projects") }}
-            <small>({{ my_projects.length }})</small>
-          </h3>
-          <div
-            v-if="my_projects.length === 0"
-            class="u-instructions"
-            key="no_content"
-          >
-            {{ $t("no_projects") }}
+        <template v-if="connected_as">
+          <div class="_myProjects">
+            <h3>
+              {{ $t("my_projects") }}
+              <small>({{ my_projects.length }})</small>
+            </h3>
+            <div
+              v-if="my_projects.length === 0"
+              class="u-instructions"
+              key="no_content"
+            >
+              {{ $t("no_projects") }}
+            </div>
+            <transition-group
+              v-else
+              class="_projectsList"
+              tag="div"
+              name="StoryModules"
+              appear
+              :duration="700"
+            >
+              <ProjectPresentation
+                v-for="project in my_projects"
+                :project="project"
+                context="tiny"
+                :key="project.$path"
+              />
+            </transition-group>
           </div>
-          <transition-group
-            v-else
-            class="_projectsList"
-            tag="div"
-            name="StoryModules"
-            appear
-            :duration="700"
-          >
-            <ProjectPresentation
-              v-for="project in my_projects"
-              :project="project"
-              context="tiny"
-              :key="project.$path"
-            />
-          </transition-group>
-        </div>
 
-        <br />
+          <br />
+        </template>
 
         <div class="">
           <h3>
@@ -276,5 +278,10 @@ export default {
 
 ._title {
   text-align: center;
+}
+
+._myProjects {
+  background: var(--c-bleumarine_clair);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 }
 </style>
