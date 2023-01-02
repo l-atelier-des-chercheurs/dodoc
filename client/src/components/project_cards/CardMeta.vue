@@ -27,7 +27,7 @@
         v-if="can_edit"
         @click="show_confirm_delete = !show_confirm_delete"
       >
-        {{ $t("remove") }}
+        {{ $t("remove_project") }}
       </button>
       <br />
       <br />

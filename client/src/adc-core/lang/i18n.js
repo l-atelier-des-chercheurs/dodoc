@@ -192,6 +192,7 @@ export default function () {
 
         duplicate: "Dupliquer",
         remove: "Supprimer",
+        remove_project: "Supprimer le projet",
         confirm_removal: "Confirmer la suppression",
         move_up: "Remonter",
         move_down: "Descendre",
