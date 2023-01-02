@@ -19,7 +19,6 @@
         :can_edit="can_edit_project"
         :options="status_options"
       />
-      {{ project.$status }}
 
       <br />
 
@@ -55,7 +54,7 @@ export default {
         {
           key: "invisible",
           text: this.$t("invisible"),
-          instruction: "invisible_status_explanations",
+          instruction: "invisible_status_explanations_projects",
         },
       ],
       // temp value, that uses

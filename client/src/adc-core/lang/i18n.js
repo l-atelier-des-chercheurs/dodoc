@@ -92,6 +92,7 @@ export default function () {
         upload_from_device: "Importer une image",
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
+        hide_meta: "Masquer les métadonnées",
 
         visibility_progress: "Visibilité et état d’avancement",
         visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
@@ -108,7 +109,7 @@ export default function () {
         visible_status_explanations_projects:
           "Le projet sera affiché avec les autres projets.",
         invisible_status_explanations_projects:
-          "Le projet ne sera pas affiché avec les autres projets, il sera .",
+          "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses auteurs et aux personnes qui possèdent le lien.",
         visible_status_explanations_publis:
           "La publication sera visible par tous ceux qui accèdent au projet.",
         invisible_status_explanations_publis:
