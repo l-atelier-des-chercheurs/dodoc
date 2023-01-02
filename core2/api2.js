@@ -285,7 +285,7 @@ module.exports = (function () {
     try {
       let d = await folder.getFolders({ path_to_type });
 
-      // todo : filter depending on $listed, only authors see folders
+      // todo : filter depending on $status, only authors see folders
 
       res.setHeader("Access-Control-Allow-Origin", "*");
       dev.logpackets({ d });

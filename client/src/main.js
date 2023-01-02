@@ -166,8 +166,8 @@ new Vue({
   },
   computed: {
     is_mobile_view() {
-      return false;
-      // return this.window.innerWidth < 700;
+      // return false;
+      return this.window.innerWidth < 900;
     },
   },
   methods: {

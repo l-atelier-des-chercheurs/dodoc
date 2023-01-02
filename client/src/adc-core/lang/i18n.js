@@ -92,6 +92,7 @@ export default function () {
         upload_from_device: "Importer une image",
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
+        hide_meta: "Masquer les métadonnées",
 
         visibility_progress: "Visibilité et état d’avancement",
         visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
@@ -104,16 +105,17 @@ export default function () {
         draft_status_explanations:
           "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
         listed: "Listé",
-        unlisted: "Non-listé",
-        listed_status_explanations_projects:
-          "Le projet sera listé sur la page des projets.",
-        unlisted_status_explanations_projects:
-          "Le projet ne sera pas listé sur la page des projets.",
-        listed_status_explanations_publis:
+        invisible: "Invisible",
+        visible_status_explanations_projects:
+          "Le projet sera affiché avec les autres projets.",
+        invisible_status_explanations_projects:
+          "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses auteurs et aux personnes qui possèdent le lien.",
+        visible_status_explanations_publis:
           "La publication sera visible par tous ceux qui accèdent au projet.",
-        unlisted_status_explanations_publis:
+        invisible_status_explanations_publis:
           "La publication ne sera visible qu’aux auteurs du projet.",
         finished: "Finalisé",
+        my_projects: "Mes projets",
 
         finished_projects: "Projets finalisés",
         projects_in_progress: "Projets en cours",
@@ -190,6 +192,7 @@ export default function () {
 
         duplicate: "Dupliquer",
         remove: "Supprimer",
+        remove_project: "Supprimer le projet",
         confirm_removal: "Confirmer la suppression",
         move_up: "Remonter",
         move_down: "Descendre",

@@ -101,7 +101,9 @@ module.exports = (function () {
         utils.getCurrentDate();
 
       // set status (see readme)
-      valid_meta.$listed = valid_meta.$listed ? valid_meta.$listed : false;
+      valid_meta.$status = valid_meta.$status
+        ? valid_meta.$status
+        : "invisible";
 
       if (valid_meta.$password) {
         // encrypt before store
@@ -134,7 +136,7 @@ module.exports = (function () {
 
       let { ...new_meta } = data;
 
-      // filter new_meta with schema – only keep props listed in schema, not read_only, and respecing the type
+      // filter new_meta with schema – only keep props present in the schema, not read_only, and respecing the type
       if (new_meta) {
         const clean_meta = await utils.cleanNewMeta({
           relative_path: path_to_folder,

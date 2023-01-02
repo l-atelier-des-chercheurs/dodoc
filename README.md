@@ -164,14 +164,14 @@ Folders contain a meta.txt file and media files (images, videos, audios, 3D/stl,
 Default values are:
 
 - $authors (Array) = list of authors paths, can be edited by users
-- $cover (object) = if a meta_cover.jpeg is present in the root of the folder, can be edited by authors
-- $date_created (date) = when the folder was created
-- $date_modified (date) = when the folder was last edited
+- $cover (Object) = if a meta_cover.jpeg is present in the root of the folder, can be edited by authors
+- $date_created (Date) = when the folder was created
+- $date_modified (Date) = when the folder was last edited
 - $files (Array) = list of all the files in this folder (see Files below)
-- $listed (Boolean) = determines whether the folder gets listed when getFolders is called by non-authors, can be edited by authors
-- $password (string, stored as hash) = limit editing to users with password, can be edited by authors
-- $path (string) = path to folder, matches filesystem structure and URL
-- $infos (object) = data gathered from the folder itself
+- $status (String) = determines whether the folder gets listed when getFolders is called by non-authors (invisible means not listed, anything else means listed), can be edited by authors
+- $password (String, stored as hash) = limit editing to users with password, can be edited by authors
+- $path (String) = path to folder, matches filesystem structure and URL
+- $infos (Object) = data gathered from the folder itself
   - size (Number) = size in bytes
 
 Custom values can be defined in the schema property in settings_base.json.
@@ -181,18 +181,18 @@ Custom values can be defined in the schema property in settings_base.json.
 Each file has default values and custom values as well.
 Default values are:
 
-- $path (string) = path to meta text file, matches filesystem structure and URL, can’t be changed
-- $date_created (date) = when the file was created
-- $date_uploaded (date) = when the file was uploaded
-- $date_modified (date) = when the file was last edited
-- $media_filename (string) = name of the file
-- $type (string) = type of media file among the following: _image, video, audio, stl, text, pdf, other_
+- $path (String) = path to meta text file, matches filesystem structure and URL, can’t be changed
+- $date_created (Date) = when the file was created
+- $date_uploaded (Date) = when the file was uploaded
+- $date_modified (Date) = when the file was last edited
+- $media_filename (String) = name of the file
+- $type (String) = type of media file among the following: _image, video, audio, stl, text, pdf, other_
 - $authors (Array) = list of authors paths, can be edited by users
-- $listed (Boolean) = determines whether the file gets listed when getFiles is called by non-authors, can be edited by authors
+- $status (String) = determines whether the file gets listed when getFiles is called by non-authors (invisible means not listed, anything else means listed), can be edited by authors
 - $thumbs (object) = list of possible media image thumbs
-- $content (string) = text content of a file
+- $content (String) = text content of a file
 - $infos (object) = data gathered from the file itself
-  - mtimems (date) = last modified time for media file
+  - mtimems (Date) = last modified time for media file
   - width (Number) = for images
   - height (Number) = for images
   - ratio (Number) = for images
@@ -203,15 +203,13 @@ Custom values can be defined in the schema property in settings_base.json.
 
 ## Status and visibility
 
-Each folder and each file have a "public" property, which defines who can see them:
+Each folder and each file have a "$status" property, which defines who can list them using getFolders or getFiles:
 
-- by default, it is set to **false** (if it doesnt exist it is considered false as well). In this situation, only authors of the ressource can see it.
-- if set to true, anyone can see it
+- by default, it is set to **invisible**. This folder will only be listed by their respective authors and instance admins.
+- if set to anything else, all calls will list this folder publicly (editing is still restricted to authors)
 
-If a folder has a password, then it protects this ressource and its content in the following way:
-
-- if public, only those with the password or corresponding token can edit it
-- if not public, only those with the password or token can see and edit it
+If a folder has a $password, then this ressource and its content can only be edited by persons that are logged in to this folder using its password.
+If a folder has $authors, only persons logged in to authors with this path can edit this ressource and its content.
 
 ## Recursivity
 

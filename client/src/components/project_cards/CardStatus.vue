@@ -13,8 +13,8 @@
     <div class="">
       <DLabel :str="$t('status')" />
       <SelectField
-        :field_name="'status'"
-        :content="project.status"
+        :field_name="'$status'"
+        :content="project.$status"
         :path="project.$path"
         :can_edit="can_edit_project"
         :options="status_options"
@@ -50,6 +50,11 @@ export default {
           key: "finished",
           text: this.$t("finished"),
           instruction: "finished_status_explanations",
+        },
+        {
+          key: "invisible",
+          text: this.$t("invisible"),
+          instruction: "invisible_status_explanations_projects",
         },
       ],
       // temp value, that uses

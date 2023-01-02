@@ -365,9 +365,9 @@ module.exports = (function () {
     if (filename) new_meta.$media_filename = filename;
 
     // set status (see readme)
-    new_meta.$listed = additional_meta.$listed
-      ? additional_meta.$listed
-      : false;
+    new_meta.$status = additional_meta.$status
+      ? additional_meta.$status
+      : "invisible";
 
     if (additional_meta.$type) {
       new_meta.$type = additional_meta.$type;

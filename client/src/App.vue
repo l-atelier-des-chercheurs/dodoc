@@ -12,14 +12,17 @@
       />
 
       <template v-else>
-        <TopBar v-if="$route.path !== '/'" />
-        <div class="">
-          <router-view v-slot="{ Component }">
-            <transition name="fade" mode="out-in">
-              <component :is="Component" :key="$route.path" />
+        <transition name="fade" mode="out-in">
+          <div class="" :key="$route.path === '/'">
+            <TopBar v-show="$route.path !== '/'" />
+
+            <transition name="fade_fast" mode="out-in">
+              <router-view v-slot="{ Component }" :key="$route.path">
+                <component :is="Component" />
+              </router-view>
             </transition>
-          </router-view>
-        </div>
+          </div>
+        </transition>
       </template>
     </template>
   </div>
@@ -444,24 +447,24 @@ img {
   &-enter-active,
   &-leave-active {
     opacity: 1;
-    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter,
   &-leave-to {
     opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 .fade_fast {
   &-enter-active,
   &-leave-active {
     opacity: 1;
-    transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: opacity 0.125s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter,
   &-leave-to {
     opacity: 0;
-    transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: opacity 0.125s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 

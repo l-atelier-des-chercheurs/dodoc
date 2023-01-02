@@ -323,9 +323,6 @@
         "folder": {
           "type": "string"
         },
-        "status": {
-          "type": "string"
-        },
         "license": {
           "type": "string",
           "options": ["CC", "all_rights_reserved", "copyleft"],
