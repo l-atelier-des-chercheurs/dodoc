@@ -7,6 +7,7 @@ z
       'is--tiny': context === 'tiny',
       'u-card': context === 'list',
       'is--linkToProject': context !== 'full',
+      'is--mobileView': $root.is_mobile_view,
     }"
   >
     <div
@@ -60,11 +61,12 @@ z
       <TitleField
         :field_name="'title'"
         :label="context === 'full' ? $t('title') : ''"
+        class="_title"
         :content="project.title"
         :path="project.$path"
         :required="true"
         :maxlength="40"
-        :tag="context === 'full' ? 'h1' : 'h2'"
+        :tag="context === 'full' ? 'h1' : context !== 'tiny' ? 'h2' : 'h3'"
         :can_edit="can_edit_project"
         :instructions="$t('project_title_instructions')"
       />
@@ -89,16 +91,31 @@ z
       <!-- <DebugBtn v-if="context === 'full'" :content="project" /> -->
     </div>
 
-    <button
-      v-if="context === 'full'"
-      class="u-buttonLink _showMeta"
-      type="button"
-      @click="show_meta = !show_meta"
-    >
-      {{ $t("show_meta") }}
-    </button>
+    <transition name="fade">
+      <button
+        v-if="context === 'full'"
+        v-show="!$root.is_mobile_view"
+        :key="'show_meta-' + show_meta"
+        class="u-buttonLink _showMeta"
+        type="button"
+        @click="show_meta = !show_meta"
+      >
+        <template v-if="!show_meta">
+          {{ $t("show_meta") }}
+        </template>
+        <template v-else>
+          {{ $t("hide_meta") }}
+        </template>
+      </button>
+    </transition>
 
-    <div class="_projectInfos--meta" v-if="context === 'full' && show_meta">
+    <div
+      class="_projectInfos--meta"
+      :class="{
+        'is--hidden': !show_meta,
+      }"
+      v-if="context === 'full'"
+    >
       <CardMeta :project="project" :can_edit="can_edit_project" />
       <CardStatus :project="project" :can_edit_project="can_edit_project" />
       <!-- <CardAuthor :project="project" :can_edit_project="can_edit_project" /> -->
@@ -165,7 +182,11 @@ export default {
   beforeDestroy() {
     document.removeEventListener("fullscreenchange", this.detectFullScreen);
   },
-  watch: {},
+  watch: {
+    "$root.is_mobile_view"() {
+      if (this.$root.is_mobile_view) this.show_meta = true;
+    },
+  },
   computed: {
     cover_thumb() {
       return this.makeRelativeURLFromThumbs({
@@ -248,6 +269,9 @@ export default {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
 
+    ._title {
+      font-size: 90%;
+    }
     ._description {
       font-size: 90%;
     }
@@ -258,9 +282,14 @@ export default {
   }
   &.is--tiny {
     flex-flow: row nowrap;
+
+    ._projectInfos--open {
+      position: absolute;
+      inset: 0;
+    }
   }
 
-  @media only screen and (max-width: 980px) {
+  &.is--mobileView {
     flex-flow: row wrap;
   }
 
@@ -274,10 +303,15 @@ export default {
     &._projectInfos--meta {
       flex: 1 0 260px;
 
-      @media only screen and (max-width: 980px) {
-        flex: 0 0 100%;
+      &.is--hidden {
+        flex: 0 0 0;
+        opacity: 0;
       }
     }
+  }
+
+  &.is--mobileView ._projectInfos--meta {
+    flex: 0 0 100%;
   }
 }
 
@@ -371,7 +405,8 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   font-size: 90%;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: var(--c-gris_clair);
 
   gap: calc(var(--spacing) / 2);
@@ -380,20 +415,23 @@ export default {
 
   @include scrollbar(8px, 5px, 6px);
 
-  @media only screen and (max-width: 980px) {
+  .is--mobileView & {
     flex-flow: row nowrap;
     max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   > * {
-    flex: 1 1 260px;
+    flex: 1 0 auto;
+    min-width: 220px;
 
     background: white;
     box-shadow: 0 1px 6px rgb(0 0 0 / 20%);
     border-radius: 8px;
 
-    @media only screen and (max-width: 980px) {
-      flex: 1 0 260px;
+    .is--mobileView & {
+      flex: 1 0 220px;
     }
   }
 }
@@ -436,6 +474,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 100;
   background: white;
   margin: calc(var(--spacing) / 4);
 }
