@@ -167,6 +167,35 @@
             />
           </transition-group>
         </div>
+
+        <template v-if="is_admin">
+          <br />
+          <h3>
+            {{ $t("invisible_nonauthor_projects") }}
+            <small>({{ invisible_nonauthor_projects.length }})</small>
+          </h3>
+          <transition-group
+            class="_projectsList"
+            tag="div"
+            name="StoryModules"
+            appear
+            :duration="700"
+          >
+            <div
+              v-if="invisible_nonauthor_projects.length === 0"
+              class="u-instructions"
+              key="no_content"
+            >
+              {{ $t("no_projects") }}
+            </div>
+            <ProjectPresentation
+              v-for="project in invisible_nonauthor_projects"
+              :project="project"
+              context="list"
+              :key="project.$path"
+            />
+          </transition-group>
+        </template>
       </div>
     </transition>
   </div>
@@ -235,6 +264,14 @@ export default {
         (p) =>
           Array.isArray(p.$authors) &&
           p.$authors.includes(this.connected_as.$path)
+      );
+    },
+    invisible_nonauthor_projects() {
+      return this.sorted_projects.filter(
+        (p) =>
+          p.$status === "invisible" &&
+          (!Array.isArray(p.$authors) ||
+            !p.$authors.includes(this.connected_as.$path))
       );
     },
   },

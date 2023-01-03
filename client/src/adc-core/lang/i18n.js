@@ -114,6 +114,8 @@ export default function () {
           "La publication sera visible par tous ceux qui accèdent au projet.",
         invisible_status_explanations_publis:
           "La publication ne sera visible qu’aux auteurs du projet.",
+
+        invisible_nonauthor_projects: "Projets invisibles d’autres comptes",
         finished: "Finalisé",
         my_projects: "Mes projets",
 
