@@ -439,7 +439,7 @@ export default {
   }
 
   > * {
-    flex: 1 0 auto;
+    flex: 0 0 auto;
     min-width: 220px;
 
     background: white;
