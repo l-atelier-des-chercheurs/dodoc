@@ -93,6 +93,8 @@ export default function () {
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
         hide_meta: "Masquer les métadonnées",
+        show_description: "Afficher la description",
+        hide_description: "Masquer la description",
 
         visibility_progress: "Visibilité et état d’avancement",
         visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
