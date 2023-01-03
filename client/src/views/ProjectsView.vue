@@ -83,11 +83,7 @@
               {{ $t("my_projects") }}
               <small>({{ my_projects.length }})</small>
             </h3>
-            <div
-              v-if="my_projects.length === 0"
-              class="u-instructions"
-              key="no_content"
-            >
+            <div v-if="my_projects.length === 0" class="u-instructions">
               {{ $t("no_projects") }}
             </div>
             <transition-group
@@ -115,11 +111,7 @@
             {{ $t("finished_projects") }}
             <small>({{ finalized_projects.length }})</small>
           </h3>
-          <div
-            v-if="finalized_projects.length === 0"
-            class="u-instructions"
-            key="no_content"
-          >
+          <div v-if="finalized_projects.length === 0" class="u-instructions">
             {{ $t("no_finalized_projects") }}
           </div>
           <transition-group
@@ -146,20 +138,17 @@
             {{ $t("projects_in_progress") }}
             <small>({{ draft_projects.length }})</small>
           </h3>
+          <div v-if="draft_projects.length === 0" class="u-instructions">
+            {{ $t("no_draft_projects") }}
+          </div>
           <transition-group
+            v-else
             class="_projectsList"
             tag="div"
             name="StoryModules"
             appear
             :duration="700"
           >
-            <div
-              v-if="draft_projects.length === 0"
-              class="u-instructions"
-              key="no_content"
-            >
-              {{ $t("no_draft_projects") }}
-            </div>
             <ProjectPresentation
               v-for="project in draft_projects"
               :project="project"
@@ -175,20 +164,20 @@
             {{ $t("invisible_nonauthor_projects") }}
             <small>({{ invisible_nonauthor_projects.length }})</small>
           </h3>
+          <div
+            v-if="invisible_nonauthor_projects.length === 0"
+            class="u-instructions"
+          >
+            {{ $t("no_projects") }}
+          </div>
           <transition-group
+            v-else
             class="_projectsList"
             tag="div"
             name="StoryModules"
             appear
             :duration="700"
           >
-            <div
-              v-if="invisible_nonauthor_projects.length === 0"
-              class="u-instructions"
-              key="no_content"
-            >
-              {{ $t("no_projects") }}
-            </div>
             <ProjectPresentation
               v-for="project in invisible_nonauthor_projects"
               :project="project"
