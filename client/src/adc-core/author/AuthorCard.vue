@@ -35,9 +35,9 @@
       ]"
     />
 
-    {{ author.role }}
-    <br />
-    {{ author.email }}
+    <!-- {{ author.role }} -->
+    <!-- <br /> -->
+    <!-- {{ author.email }} -->
     <br />
     <button
       type="button"

@@ -1,61 +1,65 @@
 <template>
   <div class="_createAuthor">
     <form class="input-validation-required" @submit.prevent="createAuthor">
-      <TextInput
-        :content.sync="new_author_email"
-        :label_str="'email'"
-        :required="true"
-        :input_type="'email'"
-        :autocomplete="'email'"
-        @toggleValidity="($event) => (allow_save = $event)"
-      />
+      <fieldset>
+        <legend class="u-label">{{ $t("new_account") }}</legend>
 
-      <br />
-
-      <TextInput
-        :content.sync="new_author_name"
-        :label_str="'name_or_pseudonym'"
-        :required="true"
-        :maxlength="40"
-        :autocomplete="'username'"
-        @toggleValidity="($event) => (allow_save = $event)"
-      />
-
-      <br />
-
-      <TextInput
-        :content.sync="new_author_password"
-        :label_str="$t('password')"
-        :minlength="3"
-        :maxlength="20"
-        :required="true"
-        :input_type="'password'"
-        :autocomplete="'new-password'"
-        @toggleValidity="($event) => (allow_save = $event)"
-      />
-
-      <br />
-
-      <DLabel :str="$t('role')" />
-      <select v-model="new_author_role">
-        <option
-          v-for="option in author_roles"
-          :key="option"
-          :value="option"
-          v-text="$t(option)"
+        <TextInput
+          :content.sync="new_author_email"
+          :label_str="'email'"
+          :required="true"
+          :input_type="'email'"
+          :autocomplete="'email'"
+          @toggleValidity="($event) => (allow_save = $event)"
         />
-      </select>
 
-      <br />
+        <br />
 
-      <button
-        slot="footer"
-        :loading="is_creating_author"
-        class="u-button"
-        type="submit"
-      >
-        {{ $t("create") }}
-      </button>
+        <TextInput
+          :content.sync="new_author_name"
+          :label_str="'name_or_pseudonym'"
+          :required="true"
+          :maxlength="40"
+          :autocomplete="'username'"
+          @toggleValidity="($event) => (allow_save = $event)"
+        />
+
+        <br />
+
+        <TextInput
+          :content.sync="new_author_password"
+          :label_str="$t('password')"
+          :minlength="3"
+          :maxlength="20"
+          :required="true"
+          :input_type="'password'"
+          :autocomplete="'new-password'"
+          @toggleValidity="($event) => (allow_save = $event)"
+        />
+
+        <br />
+
+        <DLabel :str="$t('role')" />
+        <select v-model="new_author_role">
+          <option
+            v-for="option in author_roles"
+            :key="option"
+            :value="option"
+            v-text="$t(option)"
+          />
+        </select>
+
+        <br />
+
+        <button
+          slot="footer"
+          :loading="is_creating_author"
+          class="u-button"
+          type="submit"
+        >
+          {{ $t("create") }}
+        </button>
+      </fieldset>
 
       <template v-if="error_msg">
         <div class="u-errorMsg" v-text="error_msg" />

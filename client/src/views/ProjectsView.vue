@@ -246,7 +246,7 @@ export default {
     },
     draft_projects() {
       return this.sorted_projects.filter(
-        (p) => p.$status !== "finised" && p.$status !== "invisible"
+        (p) => p.$status !== "finished" && p.$status !== "invisible"
       );
     },
     my_projects() {

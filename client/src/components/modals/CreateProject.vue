@@ -49,12 +49,10 @@ export default {
   data() {
     return {
       new_project_title: "",
-      new_project_is_invisible: true,
+      new_project_is_invisible: false,
 
       is_creating_project: false,
-
       allow_save: false,
-
       error_msg: "",
     };
   },
