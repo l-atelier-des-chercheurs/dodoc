@@ -82,9 +82,9 @@ z
         >
           {{ $t("show_description") }}
         </button>
-        <span v-else>
+        <small v-else class="u-instructions">
           {{ $t("no_description") }}
-        </span>
+        </small>
       </template>
       <TitleField
         v-if="context !== 'tiny' && show_description"
@@ -498,6 +498,7 @@ export default {
 ._showDescription {
   position: relative;
   z-index: 100;
+  padding: 0;
   text-align: left;
 }
 </style>

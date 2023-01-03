@@ -52,6 +52,7 @@ export default function () {
         back: "retour",
         save: "enregistrer",
         description: "description",
+        no_description: "Pas de description",
         keywords: "Mots-clés",
         add: "ajouter",
         access: "accéder",
