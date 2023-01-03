@@ -12,6 +12,9 @@ import i18n from "@/adc-core/lang/i18n.js";
 import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
 
+import PortalVue from "portal-vue";
+Vue.use(PortalVue);
+
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 

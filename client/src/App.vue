@@ -25,6 +25,8 @@
         </transition>
       </template>
     </template>
+
+    <portal-target name="destination" />
   </div>
 </template>
 <script>
@@ -103,7 +105,7 @@ export default {
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
   --label-color: var(--c-gris_fonce);
-  --border-radius: 12px;
+  --border-radius: 6px;
 
   --input-font-family: inherit;
   --input-font-size: 1rem;
