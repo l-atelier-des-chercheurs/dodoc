@@ -3,6 +3,7 @@
     class="_paneList"
     :class="{
       'is--mobile': $root.is_mobile_view,
+      'has--noPanes': project_panes.length === 0,
     }"
   >
     <component
@@ -227,10 +228,12 @@ export default {
     addPane($event, pane) {
       console.log(`PaneList2 / addPane`);
 
-      $event.target.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
+      this.$nextTick(() => {
+        $event.target.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
       });
 
       let pp = JSON.parse(JSON.stringify(this.project_panes));
@@ -314,8 +317,11 @@ export default {
   background-color: #fff;
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   border-top: 1px solid var(--c-gris);
-  // border-bottom: 1px solid var(--c-gris);
   // border-bottom: 0;
+
+  &.has--noPanes {
+    border-bottom: 1px solid var(--c-gris);
+  }
 }
 
 ._paneList2 {
