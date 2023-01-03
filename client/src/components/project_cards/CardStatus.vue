@@ -20,12 +20,12 @@
         :options="status_options"
       />
 
-      <br />
+      <!-- <br /> -->
 
-      <DLabel :str="$t('progress')" :instructions="$t('progress_instr')" />
+      <!-- <DLabel :str="$t('progress')" :instructions="$t('progress_instr')" />
       <sl-progress-bar value="50" class="progress-bar-values">
         50%
-      </sl-progress-bar>
+      </sl-progress-bar> -->
     </div>
   </ProjectCard>
 </template>
