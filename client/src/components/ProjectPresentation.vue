@@ -48,7 +48,7 @@ z
       </sl-badge>
 
       <AuthorField
-        v-if="context !== 'tiny'"
+        v-if="context !== 'tiny' && context !== 'list'"
         :label="context === 'full' ? $t('contributors') : ''"
         :authors_paths="project.$authors"
         :path="project.$path"
@@ -73,8 +73,21 @@ z
 
       <br v-if="context === 'full'" />
 
+      <template v-if="context === 'list'">
+        <button
+          v-if="project.description"
+          class="u-buttonLink _showDescription"
+          type="button"
+          @click="show_description = !show_description"
+        >
+          {{ $t("show_description") }}
+        </button>
+        <small v-else class="u-instructions">
+          {{ $t("no_description") }}
+        </small>
+      </template>
       <TitleField
-        v-if="context !== 'tiny'"
+        v-if="context !== 'tiny' && show_description"
         :field_name="'description'"
         class="_description"
         :label="
@@ -131,9 +144,9 @@ z
     >
       <router-link :to="{ path: '/' + project.$path }">
         <div class="_clickZone" />
-        <div class="u-button u-button_red _openBtn" v-if="context === 'list'">
+        <!-- <div class="u-button u-button_red _openBtn" v-if="context === 'list'">
           {{ $t("open") }}&nbsp;<sl-icon name="arrow-up-right" />
-        </div>
+        </div> -->
       </router-link>
     </div>
   </div>
@@ -172,10 +185,13 @@ export default {
       response: null,
 
       show_meta: true,
+      show_description: true,
       is_fullscreen: false,
     };
   },
-  created() {},
+  created() {
+    if (this.context === "list") this.show_description = false;
+  },
   mounted() {
     document.addEventListener("fullscreenchange", this.detectFullScreen);
   },
@@ -440,7 +456,7 @@ export default {
   display: flex;
 
   justify-content: center;
-  margin: calc(var(--spacing) * 1);
+  // margin: calc(var(--spacing) * 1);
 
   ._clickZone {
     position: absolute;
@@ -453,6 +469,7 @@ export default {
   ._openBtn {
     text-decoration: underline;
     position: relative;
+    margin: calc(var(--spacing) / 2);
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     &:hover,
@@ -477,5 +494,11 @@ export default {
   z-index: 100;
   background: white;
   margin: calc(var(--spacing) / 4);
+}
+._showDescription {
+  position: relative;
+  z-index: 100;
+  padding: 0;
+  text-align: left;
 }
 </style>

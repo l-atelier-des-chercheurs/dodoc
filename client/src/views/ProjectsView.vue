@@ -7,15 +7,15 @@
       <h1>Les projets</h1>
     </div> -->
     <transition name="fade_fast" mode="out-in">
-      <div class="u-divCentered" v-if="!projects" key="loader">
+      <div class="u-divCentered _u-sidepadding" v-if="!projects" key="loader">
         <LoaderSpinner />
       </div>
-      <div v-else-if="fetch_projects_error" key="err">
+      <div v-else-if="fetch_projects_error" class="_u-sidepadding" key="err">
         {{ fetch_projects_error }}
       </div>
 
       <div v-else key="projects">
-        <div class="">
+        <div class="_u-sidepadding">
           <router-link class="u-buttonLink" :to="`/`">
             <sl-icon name="arrow-left-short" />{{ $t("general_informations") }}
           </router-link>
@@ -53,6 +53,7 @@
             {{ $t("create_a_project") }}
           </button>
 
+          <!-- todo : translate -->
           <template v-else>
             Vous devez
             <button
@@ -70,14 +71,14 @@
             @close="show_create_modal = false"
             @openNewProject="openNewProject"
           />
-        </div>
 
-        <ProjectsTester v-if="is_admin && false" />
+          <ProjectsTester v-if="is_admin && false" />
+        </div>
 
         <br />
 
         <template v-if="connected_as">
-          <div class="_myProjects">
+          <div class="_myProjects _u-sidepadding">
             <h3>
               {{ $t("my_projects") }}
               <small>({{ my_projects.length }})</small>
@@ -109,7 +110,7 @@
           <br />
         </template>
 
-        <div class="">
+        <div class="_u-sidepadding">
           <h3>
             {{ $t("finished_projects") }}
             <small>({{ finalized_projects.length }})</small>
@@ -140,7 +141,7 @@
 
         <br />
 
-        <div class="">
+        <div class="_u-sidepadding">
           <h3>
             {{ $t("projects_in_progress") }}
             <small>({{ draft_projects.length }})</small>
@@ -161,6 +162,35 @@
             </div>
             <ProjectPresentation
               v-for="project in draft_projects"
+              :project="project"
+              context="list"
+              :key="project.$path"
+            />
+          </transition-group>
+        </div>
+
+        <div v-if="is_admin" class="_u-sidepadding">
+          <br />
+          <h3>
+            {{ $t("invisible_nonauthor_projects") }}
+            <small>({{ invisible_nonauthor_projects.length }})</small>
+          </h3>
+          <transition-group
+            class="_projectsList"
+            tag="div"
+            name="StoryModules"
+            appear
+            :duration="700"
+          >
+            <div
+              v-if="invisible_nonauthor_projects.length === 0"
+              class="u-instructions"
+              key="no_content"
+            >
+              {{ $t("no_projects") }}
+            </div>
+            <ProjectPresentation
+              v-for="project in invisible_nonauthor_projects"
               :project="project"
               context="list"
               :key="project.$path"
@@ -237,6 +267,14 @@ export default {
           p.$authors.includes(this.connected_as.$path)
       );
     },
+    invisible_nonauthor_projects() {
+      return this.sorted_projects.filter(
+        (p) =>
+          p.$status === "invisible" &&
+          (!Array.isArray(p.$authors) ||
+            !p.$authors.includes(this.connected_as.$path))
+      );
+    },
   },
   methods: {
     openNewProject(new_folder_slug) {
@@ -248,12 +286,17 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projectsView {
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 2) 0;
 
   > * {
     margin-bottom: var(--spacing);
   }
 }
+._u-sidepadding {
+  padding-left: calc(var(--spacing) * 2);
+  padding-right: calc(var(--spacing) * 2);
+}
+
 ._projectsList {
   display: grid;
   grid-auto-rows: max-content;
@@ -282,6 +325,7 @@ export default {
 
 ._myProjects {
   background: var(--c-bleumarine_clair);
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  padding-top: calc(var(--spacing) / 2);
+  padding-bottom: calc(var(--spacing) / 2);
 }
 </style>

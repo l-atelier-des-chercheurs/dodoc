@@ -31,11 +31,11 @@
 
       <div class="">
         <ToggleInput
-          :content.sync="new_publication_is_listed"
-          :label="$t('listed')"
+          :content.sync="new_publication_is_invisible"
+          :label="$t('invisible')"
           :options="{
-            true: $t('visible_status_explanations_publis'),
-            false: $t('invisible_status_explanations_publis'),
+            true: $t('invisible_status_explanations_publis'),
+            false: $t('visible_status_explanations_publis'),
           }"
         />
       </div>
@@ -68,7 +68,7 @@ export default {
   data() {
     return {
       new_publication_title: "",
-      new_publication_is_listed: true,
+      new_publication_is_invisible: true,
       new_publication_template: "story",
 
       is_creating_publication: false,
@@ -108,7 +108,9 @@ export default {
             template: this.new_publication_template,
             requested_slug: this.new_publication_title,
             $status:
-              this.new_publication_is_listed === true ? "draft" : "invisible",
+              this.new_publication_is_invisible === true
+                ? "invisible"
+                : "draft",
             $authors: [this.$api.tokenpath.token_path],
           },
         });

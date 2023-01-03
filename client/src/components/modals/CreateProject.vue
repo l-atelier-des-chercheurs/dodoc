@@ -14,11 +14,11 @@
 
       <div class="">
         <ToggleInput
-          :content.sync="new_project_is_visible"
+          :content.sync="new_project_is_invisible"
           :label="$t('invisible')"
           :options="{
-            true: $t('visible_status_explanations_projects'),
-            false: $t('invisible_status_explanations_projects'),
+            true: $t('invisible_status_explanations_projects'),
+            false: $t('visible_status_explanations_projects'),
           }"
         />
       </div>
@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       new_project_title: "",
-      new_project_is_visible: true,
+      new_project_is_invisible: true,
 
       is_creating_project: false,
 
@@ -77,7 +77,7 @@ export default {
             status: "draft",
             license: "CC",
             $status:
-              this.new_project_is_visible === true ? "draft" : "invisible",
+              this.new_project_is_invisible === true ? "invisible" : "draft",
             $authors: [this.$api.tokenpath.token_path],
           },
         });
