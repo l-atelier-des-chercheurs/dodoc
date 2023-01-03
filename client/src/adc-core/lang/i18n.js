@@ -80,7 +80,7 @@ export default function () {
         signup_password_instructions:
           "Limiter la création de compte (et donc de projets) aux personnes munis de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent se créer un compte et publier des contenus.",
 
-        login: "s’identifier",
+        login: "se connecter",
         logout: "se déconnecter",
         name_or_pseudonym: "nom ou pseudonyme",
         contributors: "Contributeur·rice·s",
@@ -88,6 +88,8 @@ export default function () {
         admin: "Administrateur·rice",
         create: "créer",
         create_account: "créer un compte",
+        your_account: "votre compte",
+        new_account: "nouveau compte",
         show_list: "Afficher la liste",
         list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
@@ -96,6 +98,7 @@ export default function () {
         hide_meta: "Masquer les métadonnées",
         show_description: "Afficher la description",
         hide_description: "Masquer la description",
+        recover_password: "Récupérer mon mon de passe",
 
         visibility_progress: "Visibilité et état d’avancement",
         visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,

@@ -269,6 +269,19 @@ button {
   min-height: 100%;
 }
 
+fieldset {
+  border: 2px solid var(--c-gris);
+  background: #f9f9f9;
+  margin: 0;
+
+  legend {
+    color: var(--c-noir);
+    background: white;
+    border-radius: 4px;
+    text-align: center;
+  }
+}
+
 hr {
   border-top: 1px solid var(--c-noir);
   border-bottom: 0 solid #000;
@@ -322,11 +335,12 @@ h3 {
 
 ul,
 ol {
-  margin: calc(var(--spacing) / 1);
+  // margin: calc(var(--spacing) / 1);
   padding: 0;
+  margin: 0;
 
   li {
-    margin: calc(var(--spacing) / 4);
+    // margin: calc(var(--spacing) / 4);
   }
 }
 

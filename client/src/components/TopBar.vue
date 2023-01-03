@@ -11,7 +11,7 @@
         <template v-if="connected_as">
           {{ connected_as.name }}
         </template>
-        <template v-else>Inscription</template>
+        <template v-else>{{ $t("login") }}</template>
       </button>
     </div>
 
@@ -123,6 +123,7 @@ export default {
 
   > ._subscribeBtn {
     flex-grow: 0;
+    white-space: nowrap;
   }
 }
 
@@ -131,6 +132,8 @@ export default {
     background: var(--c-bleumarine_clair);
     padding: calc(var(--spacing) / 2);
     border-radius: 4px;
+    font-weight: 300;
+    font-size: var(--sl-font-size-large);
   }
 }
 
