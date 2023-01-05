@@ -68,6 +68,11 @@ export default {
 
   transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
+  @supports not (aspect-ratio: 1/1) {
+    width: 110px;
+    height: 110px;
+  }
+
   &.was--focused {
     transform: translate3d(0, -5px, 0);
     // border: 2px solid var(--c-noit);

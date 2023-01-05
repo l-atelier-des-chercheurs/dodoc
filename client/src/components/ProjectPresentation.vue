@@ -383,6 +383,11 @@ export default {
   max-width: 70vh;
   max-height: 70vh;
 
+  @supports not (aspect-ratio: 1/1) {
+    width: 500px;
+    height: 500px;
+  }
+
   --color1: var(--c-gris);
   --color2: var(--c-gris_clair);
 
