@@ -334,10 +334,10 @@ export default {
   align-items: center;
 
   > * {
-    flex: 1 1 100px;
+    flex: 1 1 0;
 
     &._projectPanes {
-      flex: 5 1 auto;
+      flex: 5 0 auto;
     }
   }
 }

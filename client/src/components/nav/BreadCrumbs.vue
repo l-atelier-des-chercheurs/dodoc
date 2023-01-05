@@ -9,21 +9,26 @@
       <template v-if="$route.path !== '/'">
         <sl-icon-button name="arrow-right-short" label="" />
         <li>
-          <router-link :to="`/projects`">Les projets</router-link>
+          <router-link
+            class="u-buttonLink"
+            :to="`/projects`"
+            :disabled="$route.name === 'Projets'"
+          >
+            {{ $t("list_of_projects") }}
+          </router-link>
         </li>
-        <template v-if="$route.name === 'projet'">
+        <template v-if="$route.name === 'Projet'">
           <sl-icon-button name="arrow-right-short" label="" />
           <li>
-            <router-link :to="$route.path" replace>
-              <!-- {{ project.title }} -->
-              <sl-spinner
-                style="--indicator-color: currentColor"
-                v-if="!project"
-              />
-              <span v-else>
-                {{ project.title }}
-              </span>
-            </router-link>
+            <!-- <router-link class="u-buttonLink" :to="$route.path" replace> -->
+            <sl-spinner
+              style="--indicator-color: currentColor"
+              v-if="!project"
+            />
+            <span v-else>
+              {{ project.title }}
+            </span>
+            <!-- </router-link> -->
           </li>
         </template>
       </template>
