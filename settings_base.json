@@ -401,7 +401,7 @@
       "fields": {
         "email": {
           "type": "string",
-          "required": true,
+          "required": false,
           "unique": true
         },
         "name": {
