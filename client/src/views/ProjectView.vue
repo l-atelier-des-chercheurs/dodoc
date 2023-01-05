@@ -38,7 +38,7 @@
         <div class="_projectPanesAndList">
           <PaneList2
             class="_paneList"
-            v-if="can_edit_project && !display_as_public"
+            :can_edit="can_edit_project && !display_as_public"
             :project="project"
             :panes.sync="projectpanes"
           />

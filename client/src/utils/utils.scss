@@ -128,6 +128,11 @@
   &.is--active {
     color: var(--c-bleuvert);
   }
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
 }
 
 .u-button {

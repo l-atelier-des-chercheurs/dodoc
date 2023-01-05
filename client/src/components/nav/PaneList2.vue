@@ -23,6 +23,7 @@
         {{ project.title }}
       </span>
       <SlickList
+        v-if="can_edit"
         class="_paneList--list"
         axis="x"
         v-model="project_panes"
@@ -119,6 +120,7 @@ export default {
   props: {
     panes: Array,
     project: Object,
+    can_edit: Boolean,
   },
   components: {
     SlickItem,

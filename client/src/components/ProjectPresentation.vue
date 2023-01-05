@@ -79,9 +79,10 @@ z
           class="u-buttonLink _showDescription"
           type="button"
           @click="show_description = !show_description"
-        >
-          {{ $t("show_description") }}
-        </button>
+          v-html="
+            !show_description ? $t('show_description') : $t('hide_description')
+          "
+        />
         <small v-else class="u-instructions">
           {{ $t("no_description") }}
         </small>
@@ -281,8 +282,8 @@ export default {
 
   &.is--list,
   &.is--tiny {
-    border-bottom: 2px solid #b9b9b9;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    // border-bottom: 2px solid #b9b9b9;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
 
     ._title {
@@ -297,12 +298,12 @@ export default {
     display: block;
   }
   &.is--tiny {
-    flex-flow: row nowrap;
+    // flex-flow: row nowrap;
 
-    ._projectInfos--open {
-      position: absolute;
-      inset: 0;
-    }
+    // ._projectInfos--open {
+    //   position: absolute;
+    //   inset: 0;
+    // }
   }
 
   &.is--mobileView {
@@ -341,8 +342,23 @@ export default {
 
   transition: all 0.4s;
 
+  .is--list &,
+  .is--tiny & {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.6) 1em,
+      rgba(255, 255, 255, 0.9) 100%
+    );
+    backdrop-filter: blur(12px);
+  }
+
   > * {
-    max-width: 66ch;
+    max-width: 56ch;
   }
 }
 
@@ -358,6 +374,8 @@ export default {
   // min-width: 280px;
   // min-height: 280px;
   aspect-ratio: 1/1;
+  max-width: 70vh;
+  max-height: 70vh;
 
   --color1: var(--c-gris);
   --color2: var(--c-gris_clair);
@@ -443,7 +461,7 @@ export default {
     min-width: 220px;
 
     background: white;
-    box-shadow: 0 1px 6px rgb(0 0 0 / 20%);
+    box-shadow: 0 1px 6px var(--c-gris);
     border-radius: 8px;
 
     .is--mobileView & {
