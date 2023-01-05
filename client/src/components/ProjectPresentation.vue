@@ -355,6 +355,12 @@ export default {
       rgba(255, 255, 255, 0.9) 100%
     );
     backdrop-filter: blur(12px);
+
+    pointer-events: none;
+
+    ._showDescription {
+      pointer-events: auto;
+    }
   }
 
   > * {

@@ -3,7 +3,7 @@
     <DLabel
       v-if="label && (new_authors_paths.length > 0 || can_edit)"
       :str="label"
-      :instructions="instructions"
+      :instructions="can_edit ? instructions : ''"
     />
 
     <div class="_authors">

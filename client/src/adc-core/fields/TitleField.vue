@@ -4,7 +4,7 @@
       v-if="label"
       class="_label"
       :str="label"
-      :instructions="instructions"
+      :instructions="can_edit ? instructions : ''"
     />
 
     <component :is="tag" class="_container">
