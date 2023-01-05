@@ -5,22 +5,22 @@
         <legend class="u-label">{{ $t("new_account") }}</legend>
 
         <TextInput
-          :content.sync="new_author_email"
-          :label_str="'email'"
+          :content.sync="new_author_name"
+          :label_str="'name_or_pseudonym'"
           :required="true"
-          :input_type="'email'"
-          :autocomplete="'email'"
+          :maxlength="40"
+          :autocomplete="'username'"
           @toggleValidity="($event) => (allow_save = $event)"
         />
 
         <br />
 
         <TextInput
-          :content.sync="new_author_name"
-          :label_str="'name_or_pseudonym'"
-          :required="true"
-          :maxlength="40"
-          :autocomplete="'username'"
+          :content.sync="new_author_email"
+          :label_str="'email'"
+          :required="false"
+          :input_type="'email'"
+          :autocomplete="'email'"
           @toggleValidity="($event) => (allow_save = $event)"
         />
 
@@ -92,7 +92,6 @@ export default {
     async createAuthor() {
       this.is_creating_author = true;
 
-      // TODO replace with $api
       try {
         const author_slug = await this.$api.createFolder({
           path: "/authors",

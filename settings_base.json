@@ -300,10 +300,10 @@
   "schema": {
     "projects": {
       "$cover": {
-        "width": 1200,
-        "height": 1200,
+        "width": 2000,
+        "height": 2000,
         "thumbs": {
-          "resolutions": [50, 320, 640, 1200]
+          "resolutions": [50, 320, 640, 2000]
         }
       },
       "fields": {
@@ -401,7 +401,7 @@
       "fields": {
         "email": {
           "type": "string",
-          "required": true,
+          "required": false,
           "unique": true
         },
         "name": {

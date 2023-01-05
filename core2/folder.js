@@ -96,11 +96,12 @@ module.exports = (function () {
           })
         : {};
 
-      // set date_created field
+      // todo check for uniqueness (for example project's title, or author's name and email)
+      // throw if already exists
+
       valid_meta.$date_created = valid_meta.$date_modified =
         utils.getCurrentDate();
 
-      // set status (see readme)
       valid_meta.$status = valid_meta.$status
         ? valid_meta.$status
         : "invisible";

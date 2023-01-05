@@ -1,6 +1,6 @@
 <template>
   <span class="_pickNativePath">
-    <DLabel :str="label" :instructions="instructions" />
+    <DLabel :str="label" :instructions="can_edit ? instructions : ''" />
 
     <div class="_sameLine">
       <input type="text" required readonly v-model="new_content" />

@@ -97,7 +97,7 @@
               <ProjectPresentation
                 v-for="project in my_projects"
                 :project="project"
-                context="tiny"
+                context="list"
                 :key="project.$path"
               />
             </transition-group>

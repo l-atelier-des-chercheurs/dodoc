@@ -107,6 +107,7 @@ export default function () {
           "Indiquez le degré d’avancement du projet, de 0 à 100%.",
 
         status: "État",
+        list_of_projects: "Liste des projets",
         draft: "Brouillon",
         draft_status_explanations:
           "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
@@ -226,6 +227,7 @@ export default function () {
 
         general_informations: "Informations sur l’instance",
 
+        panes: "Panneaux",
         "instructions.pane.Capturer":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
         "instructions.pane.Collecter": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.

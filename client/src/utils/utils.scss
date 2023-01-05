@@ -123,10 +123,16 @@
 
   &[disabled] {
     cursor: not-allowed;
+    text-decoration: none;
   }
 
   &.is--active {
     color: var(--c-bleuvert);
+  }
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
   }
 }
 

@@ -20,7 +20,7 @@ const routes = [
   },
   {
     path: "/projects/:slug",
-    name: "projet",
+    name: "Projet",
     component: () =>
       import(/* webpackChunkName: "ProjectView" */ "../views/ProjectView.vue"),
   },

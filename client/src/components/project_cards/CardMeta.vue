@@ -8,7 +8,10 @@
     <DateField :title="'date_modified'" :date="project.$date_modified" />
     <br />
 
-    <DLabel :str="$t('license')" :instructions="$t('licence_instructions')" />
+    <DLabel
+      :str="$t('license')"
+      :instructions="can_edit ? $t('licence_instructions') : ''"
+    />
     <div class="">
       <RadioField
         :field_name="'license'"

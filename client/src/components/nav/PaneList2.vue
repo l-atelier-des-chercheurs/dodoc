@@ -3,15 +3,10 @@
     class="_paneList"
     :class="{
       'is--mobile': $root.is_mobile_view,
+      'has--noPanes': project_panes.length === 0,
     }"
   >
-    <component
-      :is="$root.is_mobile_view ? 'sl-drawer' : 'span'"
-      label="Panneaux"
-      class="_paneList2"
-      placement="top"
-      ref="drawer"
-    >
+    <span label="Panneaux" class="_paneList2">
       <span
         class="_projectTitle"
         :class="{
@@ -19,70 +14,90 @@
         }"
       >
         <img v-if="cover_thumb" :src="cover_thumb" />
-        {{ project.title }}
+        <span>
+          {{ project.title }}
+        </span>
       </span>
-      <SlickList
-        class="_paneList--list"
-        axis="x"
-        v-model="project_panes"
-        :useDragHandle="true"
+      <component
+        :is="$root.is_mobile_view ? 'sl-drawer' : 'span'"
+        placement="top"
+        class="_projectPanes"
+        ref="drawer"
       >
-        <SlickItem
-          v-for="(pane, index) in possible_project_panes"
-          :index="index"
-          class="_paneItem"
-          :class="{
-            'is--enabled': project_panes.some((p) => p.type === pane.type),
-          }"
-          :style="`--color-active: var(--color-${pane.type});`"
-          :key="pane.type"
+        <SlickList
+          v-if="can_edit"
+          class="_paneList--list"
+          axis="x"
+          v-model="project_panes"
+          :useDragHandle="true"
         >
-          <div
-            class="_btn"
-            :ref="`pane_${pane.type}`"
-            @click="replacePane($event, pane)"
+          <SlickItem
+            v-for="(pane, index) in possible_project_panes"
+            :index="index"
+            class="_paneItem"
+            :class="{
+              'is--enabled': project_panes.some((p) => p.type === pane.type),
+            }"
+            :style="`--color-active: var(--color-${pane.type});`"
+            :key="pane.type"
           >
-            <!-- <div v-handle class="_inlineBtn">
+            <div
+              class="_btn"
+              :ref="`pane_${pane.type}`"
+              @click="replacePane($event, pane)"
+            >
+              <!-- <div v-handle class="_inlineBtn">
               <sl-icon-button
                 name="grip-vertical"
                 label="Déplacer"
               />
             </div> -->
-            <span
-              class="_icon"
-              v-if="getIcon(pane.type)"
-              v-html="getIcon(pane.type)"
-            />
-            <!-- <span>{{ $t(pane.type) }}</span> -->
-            <span>{{ index + 1 }} • {{ $t(pane.type) }}</span>
-            <div
-              v-if="project_panes.some((p) => p.type === pane.type)"
-              class="_inlineBtn _removePaneBtn"
-            >
-              <!-- name="x-lg" -->
-              <sl-icon-button
-                name="x-circle-fill"
-                label="Fermer"
-                @click.stop="removePane(pane.type)"
+              <span
+                class="_icon"
+                v-if="getIcon(pane.type)"
+                v-html="getIcon(pane.type)"
               />
+              <!-- <span>{{ $t(pane.type) }}</span> -->
+              <span>{{ index + 1 }} • {{ $t(pane.type) }}</span>
+              <div
+                v-if="project_panes.some((p) => p.type === pane.type)"
+                class="_inlineBtn _removePaneBtn"
+              >
+                <!-- name="x-lg" -->
+                <sl-icon-button
+                  name="x-circle-fill"
+                  label="Fermer"
+                  @click.stop="removePane(pane.type)"
+                />
+              </div>
+              <div
+                v-else-if="project_panes.length > 0"
+                class="_inlineBtn _addPaneBtn"
+              >
+                <sl-icon-button
+                  name="plus-circle-fill"
+                  label="Ajouter"
+                  @click.stop="addPane($event, pane)"
+                />
+              </div>
             </div>
-            <div
-              v-else-if="project_panes.length > 0"
-              class="_inlineBtn _addPaneBtn"
-            >
-              <sl-icon-button
-                name="plus-circle-fill"
-                label="Ajouter"
-                @click.stop="addPane($event, pane)"
-              />
-            </div>
-          </div>
-        </SlickItem>
-      </SlickList>
+          </SlickItem>
+        </SlickList>
+      </component>
       <span />
-      <!-- <sl-icon name="plus-square-fill" label="Panneaux" />
+      <button
+        type="button"
+        class="u-button"
+        v-if="$root.is_mobile_view && can_edit"
+        @click="$refs.drawer.show()"
+      >
+        {{ $t("panes") }}
+        <sl-icon name="layout-three-columns" label="Panneaux" />
+      </button>
+    </span>
+    <!-- <sl-icon name="plus-square-fill" label="Panneaux" />
       <sl-icon name="plus" label="Panneaux" /> -->
-      <!-- <sl-dropdown>
+    <!-- <sl-dropdown>
         <sl-button slot="trigger" variant="primary" circle>
           <sl-icon name="plus" label="Panneaux" />
         </sl-button>
@@ -96,19 +111,8 @@
           />
         </sl-menu>
       </sl-dropdown> -->
-    </component>
 
     <!-- // TODO -->
-
-    <sl-button
-      v-if="$root.is_mobile_view"
-      @click="$refs.drawer.show()"
-      pill
-      type="primary"
-      size="small"
-    >
-      <sl-icon name="layout-three-columns" label="Panneaux" />
-    </sl-button>
   </div>
 </template>
 <script>
@@ -118,6 +122,7 @@ export default {
   props: {
     panes: Array,
     project: Object,
+    can_edit: Boolean,
   },
   components: {
     SlickItem,
@@ -227,10 +232,12 @@ export default {
     addPane($event, pane) {
       console.log(`PaneList2 / addPane`);
 
-      $event.target.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
+      this.$nextTick(() => {
+        $event.target.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
       });
 
       let pp = JSON.parse(JSON.stringify(this.project_panes));
@@ -314,20 +321,23 @@ export default {
   background-color: #fff;
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   border-top: 1px solid var(--c-gris);
-  // border-bottom: 1px solid var(--c-gris);
   // border-bottom: 0;
+
+  &.has--noPanes {
+    border-bottom: 1px solid var(--c-gris);
+  }
 }
 
 ._paneList2 {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   align-items: center;
 
   > * {
-    flex: 0 0 auto;
+    flex: 1 1 0;
 
-    &._paneList--list {
-      flex: 1 1 auto;
+    &._projectPanes {
+      flex: 5 0 auto;
     }
   }
 }
@@ -452,6 +462,11 @@ export default {
     width: 2rem;
     height: 2rem;
     object-fit: cover;
+  }
+  span {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 }
 </style>
