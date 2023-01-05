@@ -210,7 +210,7 @@ export default {
         $thumbs: this.project.$cover,
         $type: "image",
         $path: this.project.$path,
-        resolution: 1200,
+        resolution: 2000,
       });
     },
   },
