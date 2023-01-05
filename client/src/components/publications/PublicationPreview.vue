@@ -1,19 +1,28 @@
 <template>
-  <sl-card class="u-card">
-    <img :src="`${$root.publicPath}${image_name}`" class="" />
+  <sl-card class="u-card _publicationPreview" @click="$emit('open')">
+    <!-- <img :src="`${$root.publicPath}${image_name}`" class="" /> -->
+    <div class="u-instructions">
+      à venir : image d’aperçu prise directement sur le contenu de la
+      publication, générée automatiquement
+    </div>
+
+    <br />
+
     <header class="">
-      {{ publication.title }}<br />
-      <small v-if="publication.template" v-html="publication.template" />
+      <h2>
+        {{ publication.title }}
+      </h2>
+      <!-- <small v-if="publication.template" v-html="publication.template" /> -->
     </header>
     <div class="">
-      <button
+      <!-- <button
         type="button"
         class="u-button u-button_red"
         @click="$emit('open')"
       >
         ouvrir&nbsp;
         <sl-icon name="arrow-up-right" />
-      </button>
+      </button> -->
     </div>
 
     <!-- {{ publication.title }} -->
@@ -44,4 +53,8 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._publicationPreview {
+  cursor: pointer;
+}
+</style>
