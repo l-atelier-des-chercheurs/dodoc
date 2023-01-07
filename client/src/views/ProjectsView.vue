@@ -3,9 +3,21 @@
     <!-- <pre>
        {{ projects }}
     </pre> -->
-    <!-- <div class="_title">
-      <h1>Les projets</h1>
-    </div> -->
+
+    <div class="_u-sidepadding">
+      <div class="">
+        <router-link class="u-buttonLink" :to="`/`">
+          <sl-icon name="arrow-left-short" />
+          {{ $root.app_infos.name_of_instance }}
+          <!-- <sl-icon name="arrow-left-short" />{{ $t("general_informations") }} -->
+        </router-link>
+      </div>
+      <br />
+      <div class="_title">
+        <h1>{{ $t("list_of_projects") }}</h1>
+      </div>
+    </div>
+
     <transition name="fade_fast" mode="out-in">
       <div class="u-divCentered _u-sidepadding" v-if="!projects" key="loader">
         <LoaderSpinner />
@@ -16,45 +28,8 @@
 
       <div v-else key="projects">
         <div class="_u-sidepadding">
-          <router-link class="u-buttonLink" :to="`/`">
-            <sl-icon name="arrow-left-short" />{{ $t("general_informations") }}
-          </router-link>
-
-          <br />
-          <br />
-
-          <button
-            type="button"
-            class="u-button u-button_red u-button_big"
-            v-if="connected_as"
-            @click="show_create_modal = true"
-          >
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              viewBox="0 0 168 168"
-              style="enable-background: new 0 0 168 168"
-              xml:space="preserve"
-            >
-              <path
-                style="fill: #fc4b60"
-                d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
-		C110.5-8.2,57.5-8.2,24.6,24.4z"
-              />
-              <polygon
-                style="fill: #ffbe32"
-                points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
-		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
-              />
-            </svg>
-            {{ $t("create_a_project") }}
-          </button>
-
           <!-- todo : translate -->
-          <template v-else>
+          <template v-if="!connected_as">
             Vous devez
             <button
               type="button"
@@ -77,130 +52,99 @@
 
         <br />
 
-        <template v-if="connected_as">
-          <div class="_myProjects _u-sidepadding">
-            <h3>
-              {{ $t("my_projects") }}
-              <small>({{ my_projects.length }})</small>
-            </h3>
-            <div v-if="my_projects.length === 0" class="u-instructions">
-              {{ $t("no_projects") }}
+        <div v-if="connected_as" class="_myProjects">
+          <div class="_u-sidepadding _projectsSection">
+            <div class="_sectionLabel" :key="'label'">
+              <h3>
+                {{ $t("my_projects") }}&nbsp;
+                <small>({{ my_projects.length }})</small>
+              </h3>
+              <button
+                type="button"
+                class="u-button u-button_red"
+                v-if="connected_as"
+                @click="show_create_modal = true"
+              >
+                <svg
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 168 168"
+                  style="enable-background: new 0 0 168 168"
+                  xml:space="preserve"
+                >
+                  <path
+                    style="fill: #fc4b60"
+                    d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
+		C110.5-8.2,57.5-8.2,24.6,24.4z"
+                  />
+                  <polygon
+                    style="fill: #ffbe32"
+                    points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
+                  />
+                </svg>
+                {{ $t("create_a_project") }}
+              </button>
             </div>
-            <transition-group
-              v-else
-              class="_projectsList"
-              tag="div"
-              name="StoryModules"
-              appear
-              :duration="700"
-            >
-              <ProjectPresentation
-                v-for="project in my_projects"
-                :project="project"
-                context="list"
-                :key="project.$path"
-              />
-            </transition-group>
+
+            <ProjectsList :projects="my_projects" />
           </div>
 
           <br />
-        </template>
+        </div>
 
-        <div class="_u-sidepadding">
-          <h3>
-            {{ $t("finished_projects") }}
-            <small>({{ finalized_projects.length }})</small>
-          </h3>
-          <div v-if="finalized_projects.length === 0" class="u-instructions">
-            {{ $t("no_finalized_projects") }}
+        <div class="_u-sidepadding _projectsSection _otherProjects">
+          <div class="_sectionLabel" :key="'label'">
+            <h3>
+              <sl-icon name="check-lg" />
+              {{ $t("finished_projects") }}&nbsp;
+              <small>({{ finalized_projects.length }})</small>
+            </h3>
           </div>
-          <transition-group
-            v-else
-            class="_projectsList"
-            tag="div"
-            name="StoryModules"
-            appear
-            :duration="700"
-          >
-            <ProjectPresentation
-              v-for="project in finalized_projects"
-              :project="project"
-              context="list"
-              :key="project.$path"
-            />
-          </transition-group>
+          <ProjectsList :projects="finalized_projects" />
         </div>
 
         <br />
 
-        <div class="_u-sidepadding">
-          <h3>
-            {{ $t("projects_in_progress") }}
-            <small>({{ draft_projects.length }})</small>
-          </h3>
-          <div v-if="draft_projects.length === 0" class="u-instructions">
-            {{ $t("no_draft_projects") }}
+        <div class="_u-sidepadding _projectsSection _otherProjects">
+          <div class="_sectionLabel" :key="'label'">
+            <h3>
+              <sl-icon name="cone-striped" />
+              {{ $t("projects_in_progress") }}&nbsp;
+              <small>({{ draft_projects.length }})</small>
+            </h3>
           </div>
-          <transition-group
-            v-else
-            class="_projectsList"
-            tag="div"
-            name="StoryModules"
-            appear
-            :duration="700"
-          >
-            <ProjectPresentation
-              v-for="project in draft_projects"
-              :project="project"
-              context="list"
-              :key="project.$path"
-            />
-          </transition-group>
+          <ProjectsList :projects="draft_projects" />
         </div>
 
-        <div v-if="is_admin" class="_u-sidepadding">
+        <template v-if="is_admin">
           <br />
-          <h3>
-            {{ $t("invisible_nonauthor_projects") }}
-            <small>({{ invisible_nonauthor_projects.length }})</small>
-          </h3>
-          <div
-            v-if="invisible_nonauthor_projects.length === 0"
-            class="u-instructions"
-          >
-            {{ $t("no_projects") }}
-          </div>
-          <transition-group
-            v-else
-            class="_projectsList"
-            tag="div"
-            name="StoryModules"
-            appear
-            :duration="700"
-          >
-            <ProjectPresentation
-              v-for="project in invisible_nonauthor_projects"
-              :project="project"
-              context="list"
-              :key="project.$path"
+
+          <div class="_u-sidepadding _projectsSection _otherProjects">
+            <ProjectsList
+              :label="$t('invisible_nonauthor_projects')"
+              :projects="invisible_nonauthor_projects"
             />
-          </transition-group>
-        </div>
+          </div>
+        </template>
       </div>
     </transition>
   </div>
 </template>
 <script>
-import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import CreateProject from "@/components/modals/CreateProject.vue";
+import ProjectsList from "@/components/ProjectsList.vue";
 import ProjectsTester from "@/adc-core/tests/ProjectsTester.vue";
 
 export default {
   props: {},
   components: {
-    ProjectPresentation,
     CreateProject,
     ProjectsTester,
+    ProjectsList,
   },
   data() {
     return {
@@ -281,40 +225,67 @@ export default {
     margin-bottom: var(--spacing);
   }
 }
+._title {
+  // text-align: center;
+}
+
+._otherProjects {
+  // background: white;
+  padding-top: calc(var(--spacing) / 2);
+  padding-bottom: calc(var(--spacing) / 2);
+}
+
+._myProjects {
+  background: var(--c-bleumarine_clair);
+  // padding-top: calc(var(--spacing) / 2);
+  padding-bottom: calc(var(--spacing) / 2);
+
+  ._sectionLabel {
+    // background: var(--c-bleumarine_clair);
+  }
+}
+
 ._u-sidepadding {
   padding-left: calc(var(--spacing) * 2);
   padding-right: calc(var(--spacing) * 2);
 }
 
-._projectsList {
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 1);
-  align-items: flex-start;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-
-  // border-radius: 6px;
-  // overflow: hidden;
-  margin-top: calc(var(--spacing) / 4);
-
-  > * {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    cursor: pointer;
-  }
-
-  ::v-deep ._projectInfos {
-    min-height: 100%;
-  }
+._projectsSection {
+  // border-top: 12px solid white;
+  // margin-top: calc(var(--spacing) * 1);
 }
-
-._title {
+._sectionLabel {
+  width: 100%;
+  height: 100%;
+  box-shadow: none;
   text-align: center;
-}
 
-._myProjects {
-  background: var(--c-bleumarine_clair);
-  padding-top: calc(var(--spacing) / 2);
-  padding-bottom: calc(var(--spacing) / 2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: calc(var(--spacing) / 1);
+
+  // background: rgba(255, 255, 255, 0.1);
+
+  // background: var(--c-bodybg);
+  backdrop-filter: blur(12px);
+  mask: linear-gradient(black 60%, transparent);
+
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2)
+    calc(var(--spacing) * 2);
+  // margin-left: calc(var(--spacing) * -1);
+  font-size: var(--sl-font-size-x-large);
+
+  h3 {
+    font-size: inherit;
+    text-align: center;
+    // margin-right: calc(var(--spacing) * -1);
+    // padding-top: calc(var(--spacing) * 2);
+    // padding-bottom: calc(var(--spacing) * 2);
+  }
 }
 </style>
