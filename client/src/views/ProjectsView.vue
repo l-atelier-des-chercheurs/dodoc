@@ -3,9 +3,21 @@
     <!-- <pre>
        {{ projects }}
     </pre> -->
-    <!-- <div class="_title">
-      <h1>Les projets</h1>
-    </div> -->
+
+    <div class="_u-sidepadding">
+      <div class="">
+        <router-link class="u-buttonLink" :to="`/`">
+          <!-- <sl-icon name="arrow-left-short" /> -->
+          {{ $root.app_infos.name_of_instance }}
+          <!-- <sl-icon name="arrow-left-short" />{{ $t("general_informations") }} -->
+        </router-link>
+      </div>
+      <br />
+      <div class="_title">
+        <h1>{{ $t("list_of_projects") }}</h1>
+      </div>
+    </div>
+
     <transition name="fade_fast" mode="out-in">
       <div class="u-divCentered _u-sidepadding" v-if="!projects" key="loader">
         <LoaderSpinner />
@@ -16,13 +28,31 @@
 
       <div v-else key="projects">
         <div class="_u-sidepadding">
-          <router-link class="u-buttonLink" :to="`/`">
-            <sl-icon name="arrow-left-short" />{{ $t("general_informations") }}
-          </router-link>
+          <!-- todo : translate -->
+          <template v-if="!connected_as">
+            Vous devez
+            <button
+              type="button"
+              class="u-button u-button_bleumarine u-button_small"
+              @click="$eventHub.$emit(`toolbar.openAuthor`)"
+            >
+              vous inscrire
+            </button>
+            pour pouvoir créer ou rejoindre un projet.
+          </template>
 
-          <br />
-          <br />
+          <CreateProject
+            v-if="show_create_modal"
+            @close="show_create_modal = false"
+            @openNewProject="openNewProject"
+          />
 
+          <ProjectsTester v-if="is_admin && false" />
+        </div>
+
+        <br />
+
+        <div v-if="connected_as" class="_myProjects">
           <button
             type="button"
             class="u-button u-button_red u-button_big"
@@ -53,154 +83,54 @@
             {{ $t("create_a_project") }}
           </button>
 
-          <!-- todo : translate -->
-          <template v-else>
-            Vous devez
-            <button
-              type="button"
-              class="u-button u-button_bleumarine u-button_small"
-              @click="$eventHub.$emit(`toolbar.openAuthor`)"
-            >
-              vous inscrire
-            </button>
-            pour pouvoir créer ou rejoindre un projet.
-          </template>
+          <div class="_u-sidepadding _projectsSection">
+            <ProjectsList :label="$t('my_projects')" :projects="my_projects" />
+          </div>
 
-          <CreateProject
-            v-if="show_create_modal"
-            @close="show_create_modal = false"
-            @openNewProject="openNewProject"
+          <br />
+        </div>
+
+        <div class="_u-sidepadding _projectsSection _otherProjects">
+          <ProjectsList
+            :label="$t('finished_projects')"
+            :projects="finalized_projects"
           />
-
-          <ProjectsTester v-if="is_admin && false" />
         </div>
 
         <br />
 
-        <template v-if="connected_as">
-          <div class="_myProjects _u-sidepadding">
-            <h3>
-              {{ $t("my_projects") }}
-              <small>({{ my_projects.length }})</small>
-            </h3>
-            <div v-if="my_projects.length === 0" class="u-instructions">
-              {{ $t("no_projects") }}
-            </div>
-            <transition-group
-              v-else
-              class="_projectsList"
-              tag="div"
-              name="StoryModules"
-              appear
-              :duration="700"
-            >
-              <ProjectPresentation
-                v-for="project in my_projects"
-                :project="project"
-                context="list"
-                :key="project.$path"
-              />
-            </transition-group>
-          </div>
+        <div class="_u-sidepadding _projectsSection _otherProjects">
+          <ProjectsList
+            :label="$t('projects_in_progress')"
+            :projects="draft_projects"
+          />
+        </div>
 
+        <template v-if="is_admin">
           <br />
+
+          <div class="_u-sidepadding _projectsSection _otherProjects">
+            <ProjectsList
+              :label="$t('invisible_nonauthor_projects')"
+              :projects="invisible_nonauthor_projects"
+            />
+          </div>
         </template>
-
-        <div class="_u-sidepadding">
-          <h3>
-            {{ $t("finished_projects") }}
-            <small>({{ finalized_projects.length }})</small>
-          </h3>
-          <div v-if="finalized_projects.length === 0" class="u-instructions">
-            {{ $t("no_finalized_projects") }}
-          </div>
-          <transition-group
-            v-else
-            class="_projectsList"
-            tag="div"
-            name="StoryModules"
-            appear
-            :duration="700"
-          >
-            <ProjectPresentation
-              v-for="project in finalized_projects"
-              :project="project"
-              context="list"
-              :key="project.$path"
-            />
-          </transition-group>
-        </div>
-
-        <br />
-
-        <div class="_u-sidepadding">
-          <h3>
-            {{ $t("projects_in_progress") }}
-            <small>({{ draft_projects.length }})</small>
-          </h3>
-          <div v-if="draft_projects.length === 0" class="u-instructions">
-            {{ $t("no_draft_projects") }}
-          </div>
-          <transition-group
-            v-else
-            class="_projectsList"
-            tag="div"
-            name="StoryModules"
-            appear
-            :duration="700"
-          >
-            <ProjectPresentation
-              v-for="project in draft_projects"
-              :project="project"
-              context="list"
-              :key="project.$path"
-            />
-          </transition-group>
-        </div>
-
-        <div v-if="is_admin" class="_u-sidepadding">
-          <br />
-          <h3>
-            {{ $t("invisible_nonauthor_projects") }}
-            <small>({{ invisible_nonauthor_projects.length }})</small>
-          </h3>
-          <div
-            v-if="invisible_nonauthor_projects.length === 0"
-            class="u-instructions"
-          >
-            {{ $t("no_projects") }}
-          </div>
-          <transition-group
-            v-else
-            class="_projectsList"
-            tag="div"
-            name="StoryModules"
-            appear
-            :duration="700"
-          >
-            <ProjectPresentation
-              v-for="project in invisible_nonauthor_projects"
-              :project="project"
-              context="list"
-              :key="project.$path"
-            />
-          </transition-group>
-        </div>
       </div>
     </transition>
   </div>
 </template>
 <script>
-import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import CreateProject from "@/components/modals/CreateProject.vue";
+import ProjectsList from "@/components/ProjectsList.vue";
 import ProjectsTester from "@/adc-core/tests/ProjectsTester.vue";
 
 export default {
   props: {},
   components: {
-    ProjectPresentation,
     CreateProject,
     ProjectsTester,
+    ProjectsList,
   },
   data() {
     return {
@@ -281,40 +211,28 @@ export default {
     margin-bottom: var(--spacing);
   }
 }
-._u-sidepadding {
-  padding-left: calc(var(--spacing) * 2);
-  padding-right: calc(var(--spacing) * 2);
-}
-
-._projectsList {
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 1);
-  align-items: flex-start;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-
-  // border-radius: 6px;
-  // overflow: hidden;
-  margin-top: calc(var(--spacing) / 4);
-
-  > * {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    cursor: pointer;
-  }
-
-  ::v-deep ._projectInfos {
-    min-height: 100%;
-  }
-}
-
 ._title {
-  text-align: center;
+  // text-align: center;
+}
+
+._otherProjects {
+  // background: white;
+  padding-top: calc(var(--spacing) / 2);
+  padding-bottom: calc(var(--spacing) / 2);
 }
 
 ._myProjects {
   background: var(--c-bleumarine_clair);
   padding-top: calc(var(--spacing) / 2);
   padding-bottom: calc(var(--spacing) / 2);
+}
+
+._u-sidepadding {
+  padding-left: calc(var(--spacing) * 2);
+  padding-right: calc(var(--spacing) * 2);
+}
+
+._projectsSection {
+  // border-top: 12px solid white;
 }
 </style>

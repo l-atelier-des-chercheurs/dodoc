@@ -129,8 +129,6 @@ export default function () {
         finished_projects: "Projets finalisés",
         projects_in_progress: "Projets en cours",
 
-        no_draft_projects: "Aucun projet en brouillon pour le moment",
-        no_finalized_projects: "Aucun projet finalisé pour le moment",
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d’accueil.",
 

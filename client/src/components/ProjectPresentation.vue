@@ -46,6 +46,15 @@ z
       <sl-badge variant="neutral" v-if="project.$status === 'invisible'">
         {{ $t("invisible") }}
       </sl-badge>
+      <!-- <sl-badge variant="success" v-if="project.$status === 'finished'">
+        {{ $t("finished") }}
+      </sl-badge>
+      <sl-badge
+        variant="warning"
+        v-if="project.$status !== 'finished' && project.$status !== 'invisible'"
+      >
+        {{ $t("draft") }}
+      </sl-badge> -->
 
       <AuthorField
         v-if="context !== 'tiny' && context !== 'list'"
@@ -66,7 +75,7 @@ z
         :path="project.$path"
         :required="true"
         :maxlength="40"
-        :tag="context === 'full' ? 'h1' : context !== 'tiny' ? 'h2' : 'h3'"
+        :tag="context === 'full' ? 'h1' : 'h3'"
         :can_edit="can_edit_project"
         :instructions="$t('project_title_instructions')"
       />
