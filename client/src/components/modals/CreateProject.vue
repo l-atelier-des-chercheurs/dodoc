@@ -25,14 +25,14 @@
 
       <br />
       <!-- todo : validate properly -->
-      <sl-button
-        variant="primary"
+      <button
+        class="u-button u-button_bleuvert"
+        type="submit"
         slot="footer"
         :loading="is_creating_project"
-        type="submit"
       >
         {{ $t("create_and_open") }}
-      </sl-button>
+      </button>
 
       <template v-if="error_msg">
         <br />

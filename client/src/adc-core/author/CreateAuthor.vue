@@ -54,7 +54,7 @@
         <button
           slot="footer"
           :loading="is_creating_author"
-          class="u-button"
+          class="u-button u-button_bleuvert"
           type="submit"
         >
           {{ $t("create") }}
