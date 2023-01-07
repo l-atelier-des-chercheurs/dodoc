@@ -241,7 +241,7 @@ export default {
   padding-bottom: calc(var(--spacing) / 2);
 
   ._sectionLabel {
-    background: var(--c-bleumarine_clair);
+    // background: var(--c-bleumarine_clair);
   }
 }
 
@@ -270,8 +270,11 @@ export default {
 
   // background: rgba(255, 255, 255, 0.1);
 
-  background: var(--c-bodybg);
-  padding: calc(var(--spacing) * 2);
+  // background: var(--c-bodybg);
+  backdrop-filter: blur(5px);
+
+  margin: calc(var(--spacing) * 1) 0;
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
   // margin-left: calc(var(--spacing) * -1);
   font-size: var(--sl-font-size-x-large);
 

@@ -284,7 +284,7 @@ export default {
 
   &.is--linkToProject {
     &:hover {
-      transform: translateY(-4px);
+      transform: translateY(-12px);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
   }
@@ -353,18 +353,19 @@ export default {
 
   .is--list &,
   .is--tiny & {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-    width: 100%;
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.6) 1em,
-      rgba(255, 255, 255, 0.9) 100%
-    );
-    backdrop-filter: blur(12px);
-
+    order: 0;
+    // position: absolute;
+    // bottom: 0;
+    // left: 0;
+    // z-index: 1;
+    // width: 100%;
+    // background: linear-gradient(
+    //   to bottom,
+    //   rgba(255, 255, 255, 0.6) 1em,
+    //   rgba(255, 255, 255, 0.9) 100%
+    // );
+    // backdrop-filter: blur(12px);
+    padding-top: 0;
     pointer-events: none;
 
     ._showDescription {
@@ -388,6 +389,9 @@ export default {
   // max-height: 40vmin;
   // min-width: 280px;
   // min-height: 280px;
+  margin: calc(var(--spacing) * 1);
+  border-radius: 6px;
+
   aspect-ratio: 1/1;
   max-width: 70vh;
   max-height: 70vh;
@@ -399,6 +403,10 @@ export default {
 
   --color1: var(--c-gris);
   --color2: var(--c-gris_clair);
+
+  .is--list & {
+    // margin: calc(var(--spacing) / 2);
+  }
 
   &.is--empty {
     background: radial-gradient(

@@ -48,7 +48,7 @@ export default {
   display: grid;
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
-  align-items: center;
+  align-items: stretch;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 
   // margin-top: calc(var(--spacing) / 4);
