@@ -1,11 +1,5 @@
 <template>
   <section>
-    <div class="_sectionLabel" :key="'label'">
-      <h3>
-        {{ label }}&nbsp;
-        <small>({{ projects.length }})</small>
-      </h3>
-    </div>
     <transition-group
       tag="div"
       class="_projectsList"
@@ -35,7 +29,6 @@ import ProjectPresentation from "@/components/ProjectPresentation.vue";
 
 export default {
   props: {
-    label: String,
     projects: Array,
   },
   components: { ProjectPresentation },
@@ -80,30 +73,6 @@ export default {
 
   ::v-deep ._projectInfos {
     min-height: 100%;
-  }
-}
-
-._sectionLabel {
-  width: 100%;
-  height: 100%;
-  box-shadow: none;
-  text-align: center;
-
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  // background: rgba(255, 255, 255, 0.1);
-  padding: calc(var(--spacing) * 2);
-
-  background: var(--c-bodybg);
-
-  font-size: var(--sl-font-size-xx-large);
-
-  ::v-deep h3 {
-    font-size: inherit;
   }
 }
 </style>
