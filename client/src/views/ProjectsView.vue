@@ -237,7 +237,7 @@ export default {
 
 ._myProjects {
   background: var(--c-bleumarine_clair);
-  padding-top: calc(var(--spacing) / 2);
+  // padding-top: calc(var(--spacing) / 2);
   padding-bottom: calc(var(--spacing) / 2);
 
   ._sectionLabel {
@@ -252,6 +252,7 @@ export default {
 
 ._projectsSection {
   // border-top: 12px solid white;
+  // margin-top: calc(var(--spacing) * 1);
 }
 ._sectionLabel {
   width: 100%;
@@ -261,7 +262,7 @@ export default {
 
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -271,10 +272,11 @@ export default {
   // background: rgba(255, 255, 255, 0.1);
 
   // background: var(--c-bodybg);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(12px);
+  mask: linear-gradient(black 60%, transparent);
 
-  margin: calc(var(--spacing) * 1) 0;
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2)
+    calc(var(--spacing) * 2);
   // margin-left: calc(var(--spacing) * -1);
   font-size: var(--sl-font-size-x-large);
 
