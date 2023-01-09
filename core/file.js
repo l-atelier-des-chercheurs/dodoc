@@ -871,6 +871,7 @@ module.exports = (function () {
                   meta.type === "marker" ||
                   meta.type === "planning" ||
                   meta.type === "composition" ||
+                  meta.type === "writeup" ||
                   meta.type === "embed" ||
                   meta.type === "link" ||
                   meta.type === "code") &&
@@ -1081,6 +1082,7 @@ module.exports = (function () {
           additionalMeta.type === "marker" ||
           additionalMeta.type === "planning" ||
           additionalMeta.type === "composition" ||
+          additionalMeta.type === "writeup" ||
           additionalMeta.type === "embed" ||
           additionalMeta.type === "link" ||
           additionalMeta.type === "code"
@@ -1416,6 +1418,7 @@ module.exports = (function () {
                 mediaData.type === "marker" ||
                 mediaData.type === "planning" ||
                 mediaData.type === "composition" ||
+                mediaData.type === "writeup" ||
                 mediaData.type === "embed" ||
                 mediaData.type === "link" ||
                 mediaData.type === "code") &&
