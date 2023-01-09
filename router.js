@@ -148,7 +148,7 @@ module.exports = function (app) {
     );
 
     // only allow for localhost: with electron/puppeteer to export PDF and if local dev
-    if (req.hostname !== "localhost")
+    if (!dev.isDebug() && req.hostname !== "localhost")
       res.status(403).send(`Only allowed for localhost`);
 
     const foldersData = await file.getFolder({
