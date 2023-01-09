@@ -309,7 +309,7 @@ module.exports = (function () {
         );
         if (slugFolderName === undefined) {
           dev.error(`Missing slugFolderName to read medias from.`);
-          reject();
+          return reject();
         }
         if (metaFileName === undefined) {
           dev.logverbose(

@@ -1083,7 +1083,7 @@ module.exports = (function () {
       })
       .catch((err) => {
         dev.error(`No folder found: ${err}`);
-        throw err;
+        // throw err;
       });
 
     let medias_list = list_metaFileName.map((_metaFileName) => {
