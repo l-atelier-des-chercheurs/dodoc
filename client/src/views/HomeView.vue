@@ -10,7 +10,7 @@
     </div>
 
     <div class="_homeView--content">
-      <img :src="`${$root.publicPath}i_logo.svg`" class="_dodoclogo" />
+      <!-- <img :src="`${$root.publicPath}i_logo.svg`" class="_dodoclogo" /> -->
 
       <AdminSettings
         v-if="show_settings_modal"

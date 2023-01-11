@@ -62,7 +62,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._breadcrumb {
-  padding: 0 calc(var(--spacing) / 4);
+  // padding: 0 calc(var(--spacing) / 4);
   ul {
     display: flex;
     flex-flow: row nowrap;

@@ -13,8 +13,8 @@
 
       <template v-else>
         <transition name="fade" mode="out-in">
-          <div class="" :key="$route.path === '/'">
-            <TopBar v-show="$route.path !== '/'" />
+          <div class="">
+            <TopBar />
 
             <transition name="fade_fast" mode="out-in">
               <router-view v-slot="{ Component }" :key="$route.path">
