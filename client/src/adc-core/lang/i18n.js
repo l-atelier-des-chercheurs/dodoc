@@ -66,7 +66,7 @@ export default function () {
           Apparaîtra sur la page d’accueil uniquement.
           `,
         general_password: "mot de passe général",
-        general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
+        general_password_instructions: `Limiter l’accès aux projets aux visiteurs munies de ce mot de passe. La page d’accueil restera cependant accessible et 
         peut afficher un email de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
         general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
         Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
@@ -98,7 +98,7 @@ export default function () {
         hide_meta: "Masquer les métadonnées",
         show_description: "Afficher la description",
         hide_description: "Masquer la description",
-        recover_password: "Récupérer mon mon de passe",
+        recover_password: "Récupérer mon de passe",
 
         visibility_progress: "Visibilité et état d’avancement",
         visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
