@@ -28,8 +28,33 @@
         <DateField :title="'date_modified'" :date="file.$date_modified" />
         <br />
         <sl-button-group class="_focusBtns">
-          <sl-button size="small" @click="$emit('close')">Fermer</sl-button>
-          <sl-button size="small" @click="$emit('remove')">Supprimer</sl-button>
+          <button type="button" class="u-buttonLink" @click="$emit('close')">
+            {{ $t("close") }}
+          </button>
+          <RemoveMenu
+            :remove_text="$t('remove_media')"
+            @remove="$emit('remove')"
+          />
+
+          <fieldset v-if="show_confirm_delete">
+            <legend class="u-label">{{ $t("remove_project") }}</legend>
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_confirm_delete = false"
+            >
+              {{ $t("cancel") }}
+            </button>
+            <br />
+            <br />
+            <button
+              class="u-button u-button_red"
+              type="button"
+              @click="removeProject"
+            >
+              {{ $t("confirm_removal") }}
+            </button>
+          </fieldset>
         </sl-button-group>
       </div>
       <div class="_selectBtn" v-else>

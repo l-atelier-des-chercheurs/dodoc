@@ -40,6 +40,8 @@ import RadioField from "@/adc-core/fields/RadioField.vue";
 Vue.component("RadioField", RadioField);
 import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
+import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
+Vue.component("RemoveMenu", RemoveMenu);
 //
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);

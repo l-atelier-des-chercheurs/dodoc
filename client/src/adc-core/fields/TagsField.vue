@@ -47,7 +47,7 @@
           class="_scb"
           :is_saving="is_saving"
           :allow_save="allow_save_newkeyword && !new_tag_name_already_exists"
-          :save_text="'create'"
+          :save_text="$t('create')"
           @save="newTag"
           @cancel="cancelNewTag"
         />

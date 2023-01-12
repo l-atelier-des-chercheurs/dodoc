@@ -18,17 +18,14 @@
       @click="$emit('save')"
     >
       <sl-icon name="check-circle-fill" />
-      {{ $t(save_text) }}
+      {{ save_text ? save_text : $t("save") }}
     </sl-button>
   </div>
 </template>
 <script>
 export default {
   props: {
-    save_text: {
-      type: String,
-      default: "save",
-    },
+    save_text: String,
     is_saving: Boolean,
     autofocus_save: {
       type: Boolean,

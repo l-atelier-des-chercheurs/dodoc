@@ -24,24 +24,11 @@
     <br />
 
     <div class="">
-      <button
-        type="button"
-        class="u-buttonLink"
+      <RemoveMenu
         v-if="can_edit"
-        @click="show_confirm_delete = !show_confirm_delete"
-      >
-        {{ $t("remove_project") }}
-      </button>
-      <br />
-      <br />
-      <button
-        class="u-button u-button_red"
-        type="button"
-        v-if="show_confirm_delete"
-        @click="removeProject"
-      >
-        {{ $t("confirm_removal") }}
-      </button>
+        :remove_text="$t('remove_project')"
+        @remove="removeProject"
+      />
     </div>
   </ProjectCard>
 </template>
@@ -57,7 +44,6 @@ export default {
   data() {
     return {
       edit_mode: false,
-      show_confirm_delete: false,
 
       license_options: [
         {
