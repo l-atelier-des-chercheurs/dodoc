@@ -1,7 +1,9 @@
 -
 <template>
   <div id="app" class="">
-    <div class="_spinner" v-if="$root.is_loading" key="loader">
+    <DisconnectModal v-if="show_disconnect_modal" />
+
+    <div class="_spinner" v-else-if="$root.is_loading" key="loader">
       <LoaderSpinner />
     </div>
 
@@ -32,16 +34,19 @@
 <script>
 import TopBar from "@/components/TopBar.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
+import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
 
 export default {
   props: {},
   components: {
     TopBar,
     GeneralPasswordModal,
+    DisconnectModal,
   },
   data() {
     return {
       show_general_password_modal: false,
+      show_disconnect_modal: false,
     };
   },
   created() {
@@ -49,6 +54,7 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
   },
   mounted() {},
   beforeDestroy() {
@@ -60,6 +66,9 @@ export default {
   watch: {},
   computed: {},
   methods: {
+    showDisconnectModal() {
+      this.show_disconnect_modal = true;
+    },
     promptGeneralPassword() {
       this.show_general_password_modal = true;
     },
@@ -273,7 +282,7 @@ button {
 
 fieldset {
   border: 2px solid var(--c-gris);
-  background: #f9f9f9;
+  // background: #f9f9f9;
   margin: 0;
 
   legend {

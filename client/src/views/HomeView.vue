@@ -23,8 +23,11 @@
 
       <p>
         {{ $t("contactmail_of_instance") }}
-        <a :href="'mailto:' + contact_email" target="_blank">
-          {{ contact_email }}
+        <a
+          :href="'mailto:' + $root.app_infos.contactmail_of_instance"
+          target="_blank"
+        >
+          {{ $root.app_infos.contactmail_of_instance }}
         </a>
       </p>
 
@@ -68,9 +71,6 @@ export default {
         /(?:\r\n|\r|\n)/g,
         "<br />"
       );
-    },
-    contact_email() {
-      return this.$root.app_infos.contactmail_of_instance;
     },
   },
 };

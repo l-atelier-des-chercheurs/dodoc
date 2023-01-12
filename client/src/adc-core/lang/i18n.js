@@ -70,6 +70,8 @@ export default function () {
         peut afficher un email de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
         general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
         Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
+        connection_lost: `Connection perdue`,
+        connection_lost_reload_to_reconnect: `La connection s’est interrompue… Veuillez recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, veuillez contacter `,
 
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
@@ -106,9 +108,11 @@ export default function () {
         progress: "Avancement",
         progress_instr:
           "Indiquez le degré d’avancement du projet, de 0 à 100%.",
+        back_to_publications: "Retour aux publications",
 
         status: "État",
         list_of_projects: "Liste des projets",
+        no_projects: "Aucun projet à afficher",
         draft: "Brouillon",
         draft_status_explanations:
           "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
