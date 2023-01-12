@@ -164,8 +164,19 @@
     background: var(--c-bleuvert);
   }
 }
+
+.u-button-inline {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+}
 .u-button_floating {
   box-shadow: 0px 5px 24px currentColor;
+}
+.u-button_orange {
+  background-color: var(--c-orange);
+  color: white;
 }
 .u-button_red {
   background-color: var(--c-rouge);

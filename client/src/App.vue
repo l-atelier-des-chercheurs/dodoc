@@ -550,4 +550,19 @@ img {
     position: absolute;
   }
 }
+
+.scaleInFade {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: center center !important;
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
 </style>

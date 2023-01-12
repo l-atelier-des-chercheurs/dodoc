@@ -143,10 +143,17 @@ new Vue({
     dev_mode: true,
     publicPath: process.env.BASE_URL,
 
+    current_time: "",
+
     window: {
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
     },
+  },
+  created() {
+    const getTime = () => new Date().getTime();
+    this.current_time = getTime();
+    setInterval(() => (this.current_time = getTime()), 1000);
   },
   async mounted() {
     await this.$api.init({ debug_mode });

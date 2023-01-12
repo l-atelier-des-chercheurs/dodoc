@@ -53,7 +53,7 @@ export default {
   // height: 100%;
 
   &.is--editable {
-    background: var(--color-Publier);
+    // background: var(--color-Publier);
   }
 }
 </style>
