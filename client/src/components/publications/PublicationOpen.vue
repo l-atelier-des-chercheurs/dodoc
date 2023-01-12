@@ -6,7 +6,8 @@
     </div>
     <template v-else>
       <button type="button" class="u-buttonLink" @click="$emit('close')">
-        {{ $t("close") }}
+        <sl-icon name="arrow-left-short" />
+        {{ $t("back_to_publications") }}
       </button>
 
       <div class="_topbar">
