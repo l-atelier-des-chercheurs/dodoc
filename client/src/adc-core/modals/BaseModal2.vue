@@ -13,6 +13,11 @@
             <slot name="footer" />
           </div>
         </div>
+        <div class="_baseModal--closeBtn" v-if="is_closable">
+          <sl-button variant="default" size="medium" circle @click="closeModal">
+            <sl-icon name="x-lg" :label="$t('close')"></sl-icon>
+          </sl-button>
+        </div>
       </div>
     </transition>
   </portal>
@@ -21,6 +26,10 @@
 export default {
   props: {
     title: String,
+    is_closable: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {},
   data() {
@@ -37,6 +46,8 @@ export default {
   computed: {},
   methods: {
     closeModal() {
+      if (!this.is_closable) return false;
+
       this.show_modal = false;
       setTimeout(() => {
         this.$emit("close");
@@ -67,6 +78,12 @@ export default {
     max-width: 480px;
     width: 100%;
   }
+}
+
+._baseModal--closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 header {
