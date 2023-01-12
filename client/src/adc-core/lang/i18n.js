@@ -75,6 +75,7 @@ export default function () {
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
 
         ui_lang_select: "Langue de l’interface",
+        lang_updated: "La langue a été mise à jour",
 
         signup_password: "mot de passe pour la création d’un compte",
         signup_password_instructions:
@@ -250,6 +251,7 @@ export default function () {
         template: "Template",
 
         ui_lang_select: "Interface language",
+        lang_updated: "The lang has been updated",
       },
       de: {},
       nl: {},

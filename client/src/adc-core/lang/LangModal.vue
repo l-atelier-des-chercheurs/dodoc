@@ -1,6 +1,6 @@
 <template>
   <BaseModal2 :title="$t('ui_lang_select')" @close="$emit('close')">
-    <div class="">
+    <div class="" :key="$i18n.locale">
       <SelectField
         :field_name="'status'"
         :content="current_lang"
@@ -17,7 +17,7 @@ export default {
   components: {},
   data() {
     return {
-      current_lang: "fr",
+      current_lang: this.$i18n.locale,
       lang_options: [
         {
           key: "fr",
@@ -50,6 +50,13 @@ export default {
   methods: {
     updateLang(new_lang) {
       this.$i18n.locale = new_lang;
+
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t("lang_updated"));
+
+      this.$emit("close");
     },
   },
 };
