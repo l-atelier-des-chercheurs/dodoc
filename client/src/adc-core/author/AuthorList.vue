@@ -30,15 +30,12 @@
           @close="$emit('close')"
         />
         <br />
-        <hr />
-        <br />
       </template>
 
-      <AuthorCard
-        v-else-if="connected_as"
-        :key="connected_as.$path"
-        :author="connected_as"
-      />
+      <fieldset v-else-if="connected_as">
+        <legend class="u-label">{{ $t("your_account") }}</legend>
+        <AuthorCard :key="connected_as.$path" :author="connected_as" />
+      </fieldset>
 
       <br />
 
@@ -54,6 +51,7 @@
       <small v-if="authors.length === 0">
         {{ $t("no_accounts_yet") }}
       </small>
+
       <button
         type="button"
         v-else
