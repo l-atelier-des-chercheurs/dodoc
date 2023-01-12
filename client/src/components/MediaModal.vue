@@ -22,10 +22,7 @@
         <br />
         <DateField :title="'date_modified'" :date="file.$date_modified" />
         <br />
-        <sl-button-group class="_focusBtns">
-          <button type="button" class="u-buttonLink" @click="$emit('close')">
-            {{ $t("close") }}
-          </button>
+        <div class="">
           <RemoveMenu
             :remove_text="$t('remove_media')"
             @remove="$emit('remove')"
@@ -50,7 +47,15 @@
               {{ $t("confirm_removal") }}
             </button>
           </fieldset>
-        </sl-button-group>
+        </div>
+
+        <br />
+
+        <div class="">
+          <button type="button" class="u-buttonLink" @click="$emit('close')">
+            {{ $t("close") }}
+          </button>
+        </div>
       </div>
       <div class="_selectBtn" v-else>
         <button type="button" class="u-buttonLink" @click="$emit('close')">
