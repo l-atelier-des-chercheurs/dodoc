@@ -1,5 +1,10 @@
 <template>
-  <div class="_mediaContent">
+  <div
+    class="_mediaContent"
+    :draggable="is_draggable"
+    @dragstart="startMediaDrag($event)"
+    @dragend="endMediaDrag()"
+  >
     <template v-if="file.$type === 'image'">
       <img :src="thumb" />
     </template>
@@ -36,10 +41,16 @@ export default {
       default: "preview",
       // preview, full
     },
+    is_draggable: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {},
   data() {
-    return {};
+    return {
+      is_dragged: false,
+    };
   },
   created() {},
   mounted() {},
@@ -71,6 +82,20 @@ export default {
     },
   },
   methods: {
+    startMediaDrag($event) {
+      console.log(`MediaContent / startMediaDrag`);
+
+      this.is_dragged = true;
+      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
+      $event.dataTransfer.effectAllowed = "move";
+      this.$eventHub.$emit(`mediadrag.start`);
+    },
+    endMediaDrag() {
+      this.is_dragged = false;
+      console.log(`MediaContent / endMediaDrag`);
+      this.$eventHub.$emit(`mediadrag.end`);
+    },
+
     // async updateCaption() {
     //   this.fetch_status = "pending";
     //   this.fetch_error = null;

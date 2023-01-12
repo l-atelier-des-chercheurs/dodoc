@@ -2,12 +2,7 @@
   <div class="_mediaModal">
     <div class="_mediaModal--overlay" @click="$emit('close')" />
     <div class="_mediaModal--content">
-      <div
-        class="_preview"
-        :draggable="true"
-        @dragstart="startMediaDrag($event)"
-        @dragend="endMediaDrag()"
-      >
+      <div class="_preview">
         <!-- <DebugBtn :content="file" /> -->
         <MediaContent :file="file" :resolution="1600" :context="'full'" />
       </div>
@@ -81,9 +76,7 @@ export default {
   },
   components: {},
   data() {
-    return {
-      is_dragged: false,
-    };
+    return {};
   },
   created() {},
   mounted() {
@@ -97,20 +90,6 @@ export default {
   methods: {
     handleKeyPress($event) {
       if ($event.key === "Escape") this.$emit("close");
-    },
-    startMediaDrag($event) {
-      console.log(`MediaFocus / startMediaDrag`);
-
-      this.is_dragged = true;
-
-      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
-      $event.dataTransfer.effectAllowed = "move";
-      this.$eventHub.$emit(`mediadrag.start`);
-    },
-    endMediaDrag() {
-      this.is_dragged = false;
-      console.log(`MediaFocus / endMediaDrag`);
-      this.$eventHub.$emit(`mediadrag.end`);
     },
   },
 };

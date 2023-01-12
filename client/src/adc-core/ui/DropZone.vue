@@ -98,7 +98,8 @@ export default {
         var(--color-2) 1.2000000000000002px,
         var(--color-1) 1.2000000000000002px
       ) -0.6000000000000001px 0;
-  background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+  // background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
+  background-size: 4px;
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 

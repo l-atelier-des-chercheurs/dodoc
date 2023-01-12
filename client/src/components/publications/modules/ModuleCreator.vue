@@ -63,7 +63,7 @@ export default {
       show_module_selector: false,
       show_media_picker: false,
 
-      show_dropzone: false,
+      show_dropzone: true,
 
       // options: [
       //   {
