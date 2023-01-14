@@ -77,7 +77,7 @@ To know the version you are running, write `node -v` in a terminal window.**
 
 The reason you have to use this version of node.js is because this app uses Electron, a tool to package node.js and a webbrowser as native apps. The version of Electron this app is using is version 19.0.4, and it uses node version 16.14.2. However, when native modules are built, they are built using the local node version and not Electron’s. Hence, you have to run the exact same version as Electron to prevent this type of error to happen.
 
-Because switching between node version is annoying, it is recommended to use [nvm](https://github.com/creationix/nvm) to do so ([nvm windows](https://github.com/coreybutler/nvm-windows) for Windows).
+Because switching between node version is tedious, it is recommended to use [nvm](https://github.com/creationix/nvm) to do so ([nvm windows](https://github.com/coreybutler/nvm-windows) for Windows).
 
 Here are a few other things you can try (but only after making sure you run the right node version):
 
