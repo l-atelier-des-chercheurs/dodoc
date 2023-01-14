@@ -1,13 +1,8 @@
 <template>
   <div class="m_captureEffects">
     <div class="">
-      <div class="switch switch-xs">
-        <input
-          class="switch"
-          id="enable_effects"
-          type="checkbox"
-          v-model="enable"
-        />
+      <div class="u-switch u-switch-xs">
+        <input id="enable_effects" type="checkbox" v-model="enable" />
         <label for="enable_effects">{{ $t("enable_effects") }}</label>
       </div>
 
@@ -16,18 +11,16 @@
           'is--disabled': !enable_effects,
         }"
       >
-        <div class="switch switch-xs">
+        <div class="u-switch u-switch-xs">
           <input
-            class="switch"
             id="flip_horizontally"
             type="checkbox"
             v-model="flip_horizontally"
           />
           <label for="flip_horizontally">{{ $t("flip_horizontally") }}</label>
         </div>
-        <div class="switch switch-xs">
+        <div class="u-switch u-switch-xs">
           <input
-            class="switch"
             id="flip_vertically"
             type="checkbox"
             v-model="flip_vertically"
@@ -36,9 +29,8 @@
         </div>
 
         <div>
-          <div class="switch switch-xs">
+          <div class="u-switch u-switch-xs">
             <input
-              class="switch"
               id="chroma_key"
               type="checkbox"
               v-model="chroma_key_settings.enable"
@@ -108,7 +100,7 @@
 
             <label>{{ $t("replace_color_with") }}</label>
 
-            <div class="switch switch-xs switch_twoway padding-verysmall">
+            <div class="u-switch u-switch-xs u-switch_twoway padding-verysmall">
               <label
                 for="chroma_key_use_image"
                 class="cursor-pointer"
@@ -159,9 +151,8 @@
           v-for="[name, props] in Object.entries(image_filters_settings)"
           :key="name"
         >
-          <div class="switch switch-xs">
+          <div class="u-switch u-switch-xs">
             <input
-              class="switch"
               :id="`${name}_slider`"
               type="checkbox"
               v-model="image_filters_settings[name].enable"

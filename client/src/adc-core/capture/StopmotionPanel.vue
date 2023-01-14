@@ -26,7 +26,7 @@
         >
           ←
         </button>
-        <label class="c-blanc"
+        <label class="c-blanc" class="u-label"
           >{{ $t("image") }} {{ image_index_currently_shown + 1 }}/{{
             medias.length
           }}</label
@@ -83,7 +83,7 @@
       </transition-group>
       <div class="m_stopmotionpanel--medias--validation">
         <div class="m_stopmotionpanel--medias--validation--fpscounter">
-          <label class>{{ $t("img_per_second") }}</label>
+          <label class="u-label">{{ $t("img_per_second") }}</label>
           <select step="1" v-model.number="frameRate">
             <option>2</option>
             <option>4</option>

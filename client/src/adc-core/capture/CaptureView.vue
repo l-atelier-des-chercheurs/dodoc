@@ -179,6 +179,7 @@
             mode="out-in"
           >
             <label
+              class="u-label"
               v-if="
                 selected_mode !== 'stopmotion' &&
                 is_recording &&
@@ -197,7 +198,7 @@
               :key="'timelapse_interval'"
               class="record_options"
             >
-              <label>
+              <label class="u-label">
                 <span>{{ $t("interval_between_pictures") }}</span>
                 <input type="number" v-model.number="timelapse_interval" />
                 <span>{{ $t("seconds") }}</span>
@@ -214,7 +215,7 @@
                 'stream_share_name-' + stream_sharing_informations_status.name
               "
             >
-              <label>
+              <label class="u-label">
                 <span v-html="$t('stream_currently_shared_with_name:')" />
                 <span>
                   <strong>{{ stream_sharing_informations_status.name }}</strong>
@@ -245,7 +246,7 @@
                 'stream_share_name-' + stream_access_informations_status.callee
               "
             >
-              <label>
+              <label class="u-label">
                 <span v-html="$t('stream_shown:')" />
                 <span>
                   <strong>{{
@@ -265,7 +266,7 @@
               :key="'delay_interval'"
               class="record_options"
             >
-              <label>
+              <label class="u-label">
                 <span>{{ $t("delay").toLowerCase() }}</span>
                 <input
                   type="number"
@@ -870,7 +871,7 @@
                       v-model="enable_audio_recording_in_video"
                       :disabled="is_recording"
                     />
-                    <label for="recordVideoWithAudio">{{
+                    <label for="recordVideoWithAudio" class="u-label">{{
                       $t("with_sound")
                     }}</label>
                   </span>
@@ -885,7 +886,7 @@
                   "
                   class="_mode_accessory_range"
                 >
-                  <label>{{ $t("onion_skin") }} </label>
+                  <label class="u-label">{{ $t("onion_skin") }} </label>
                   <input
                     class="_rtl"
                     type="range"
@@ -911,7 +912,7 @@
                   v-if="selected_mode === 'vecto'"
                   class="_mode_accessory_range"
                 >
-                  <label
+                  <label class="u-label"
                     >{{ $t("number_of_colors") }} =
                     {{ vecto_number_of_colors }}</label
                   >
@@ -940,7 +941,9 @@
                     v-if="selected_mode === 'lines'"
                     class="_mode_accessory_range"
                   >
-                    <label>{{ $t("lines_angle") }} = {{ lines_angle }}</label>
+                    <label class="u-label"
+                      >{{ $t("lines_angle") }} = {{ lines_angle }}</label
+                    >
                     <input
                       class=""
                       type="range"
@@ -954,7 +957,7 @@
                     v-if="selected_mode === 'lines'"
                     class="_mode_accessory_range"
                   >
-                    <label
+                    <label class="u-label"
                       >{{ $t("brightness") }} = {{ lines_brightness }}</label
                     >
                     <input
@@ -970,7 +973,9 @@
                     v-if="selected_mode === 'lines'"
                     class="_mode_accessory_range"
                   >
-                    <label>{{ $t("contrast") }} = {{ lines_contrast }}</label>
+                    <label class="u-label"
+                      >{{ $t("contrast") }} = {{ lines_contrast }}</label
+                    >
                     <input
                       class="margin-none"
                       type="range"
@@ -984,7 +989,7 @@
                     v-if="selected_mode === 'lines'"
                     class="_mode_accessory_range"
                   >
-                    <label
+                    <label class="u-label"
                       >{{ $t("lines_density") }} = {{ lines_density }}</label
                     >
                     <input

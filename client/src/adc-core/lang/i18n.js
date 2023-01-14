@@ -179,6 +179,18 @@ export default function () {
         machines_and_materials: "Machines et matériaux",
 
         take_picture: "Prendre une photo",
+        delay: "Retardateur",
+        seconds: "secondes",
+        no_video_input_available: "Aucune source vidéo disponible",
+        no_audio_input_available: "Aucune source audio disponible",
+        no_audio_output_available: "Aucune sortie audio disponible",
+        echoCancellation: "Suppression de l'écho",
+        noiseSuppression: "Réduction du bruit",
+        grid: "Grille",
+        halfs: "Moitiés",
+        thirds: "Tiers",
+        fourths: "Quarts",
+        reload: "Recharger",
 
         already_added: "Déjà ajouté",
         open: "ouvrir",

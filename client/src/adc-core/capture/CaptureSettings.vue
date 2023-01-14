@@ -18,7 +18,7 @@
     </div>
     <div>
       <div class="m_sideBySideSwitches">
-        <label for="LocalSources">
+        <label class="u-label" for="LocalSources">
           <div>
             <input
               type="radio"
@@ -31,7 +31,7 @@
             </span>
           </div>
         </label>
-        <label for="RemoteSources">
+        <label class="u-label" for="RemoteSources">
           <div>
             <input
               type="radio"
@@ -53,7 +53,7 @@
           </div>
         </div>
 
-        <label>{{ $t("sources") }}</label>
+        <label class="u-label">{{ $t("sources") }}</label>
         <button
           type="button"
           class="u-buttonLink margin-none margin-left padding-bottom-none"
@@ -64,7 +64,7 @@
 
         <div class="">
           <div class="">
-            <label>{{ $t("camera") }}</label>
+            <label class="u-label">{{ $t("camera") }}</label>
 
             <div>
               <small v-if="all_video_input_devices.length === 0">
@@ -75,6 +75,7 @@
                 id="devices"
                 name="Video devices"
                 title="devices"
+                class="u-select-large"
                 v-model="selected_devices.video_input_device"
               >
                 <option
@@ -95,9 +96,8 @@
               "
               class="margin-top-veryverysmall"
             >
-              <span class="switch switch-xs">
+              <span class="u-switch u-switch-xs">
                 <input
-                  class="switch"
                   id="show_cursor"
                   type="checkbox"
                   v-model="advanced_capture_options.cursor.enabled"
@@ -105,7 +105,9 @@
                   true-value="always"
                   false-value="never"
                 />
-                <label for="show_cursor">{{ $t("show_cursor") }}</label>
+                <label class="u-label" for="show_cursor">{{
+                  $t("show_cursor")
+                }}</label>
                 <small v-if="!advanced_capture_options.cursor.supported">
                   {{ $t("not_supported_on_this_device") }}
                 </small>
@@ -113,7 +115,7 @@
             </div>
           </div>
           <div>
-            <label>{{ $t("audioinput") }}</label>
+            <label class="u-label">{{ $t("audioinput") }}</label>
             <div>
               <small v-if="all_audio_input_devices.length === 0">
                 {{ $t("no_audio_input_available") }}
@@ -123,6 +125,7 @@
                 id="devices"
                 name="Video devices"
                 title="devices"
+                class="u-select-large"
                 v-model="selected_devices.audio_input_device"
               >
                 <option
@@ -139,9 +142,8 @@
               v-if="selected_devices.audio_input_device"
               class="margin-top-veryverysmall"
             >
-              <span class="switch switch-xs">
+              <span class="u-switch u-switch-xs">
                 <input
-                  class="switch"
                   id="echoCancellation"
                   type="checkbox"
                   :disabled="
@@ -149,7 +151,7 @@
                   "
                   v-model="advanced_capture_options.echoCancellation.enabled"
                 />
-                <label for="echoCancellation">{{
+                <label class="u-label" for="echoCancellation">{{
                   $t("echoCancellation")
                 }}</label>
                 <small
@@ -163,9 +165,8 @@
               v-if="selected_devices.audio_input_device"
               class="margin-top-veryverysmall"
             >
-              <span class="switch switch-xs">
+              <span class="u-switch u-switch-xs">
                 <input
-                  class="switch"
                   id="noiseSuppression"
                   type="checkbox"
                   :disabled="
@@ -173,7 +174,7 @@
                   "
                   v-model="advanced_capture_options.noiseSuppression.enabled"
                 />
-                <label for="noiseSuppression">{{
+                <label class="u-label" for="noiseSuppression">{{
                   $t("noiseSuppression")
                 }}</label>
                 <small
@@ -185,7 +186,7 @@
             </div>
           </div>
           <div>
-            <label>{{ $t("audiooutput") }}</label>
+            <label class="u-label">{{ $t("audiooutput") }}</label>
 
             <div>
               <small v-if="all_audio_output_devices.length === 0">
@@ -196,6 +197,7 @@
                 id="devices"
                 name="Video devices"
                 title="devices"
+                class="u-select-large"
                 v-model="selected_devices.audio_output_device"
               >
                 <option
@@ -209,7 +211,7 @@
             </div>
           </div>
         </div>
-        <label>{{ $t("resolutions") }}</label>
+        <label class="u-label">{{ $t("resolutions") }}</label>
         <div>
           <div
             v-if="
@@ -240,7 +242,7 @@
               )"
               :key="res.name"
             >
-              <label :for="res.label">
+              <label :for="res.label" class="u-label">
                 <input
                   type="radio"
                   :id="res.label"
@@ -290,7 +292,7 @@
           <!-- <label>{{ $t("remote_access") }}</label> -->
           <small>{{ $t("connect_to_other_users") }}</small>
           <div class="padding-vert-small padding-bottom-small">
-            <label v-html="$t('name_of_stream')" />
+            <label class="u-label" v-html="$t('name_of_stream')" />
             <input
               type="text"
               v-model.trim="access_distant_stream.callee"
@@ -317,21 +319,22 @@
           <LoaderSpinner v-if="share_this_stream.status.loading" />
         </transition>
 
-        <div class="switch switch-xs">
+        <div class="u-switch u-switch-xs">
           <input
-            class="switch"
             id="shareStream"
             type="checkbox"
             v-model="share_this_stream.enabled"
           />
-          <label for="shareStream">{{ $t("share_stream") }}</label>
+          <label class="u-label" for="shareStream">{{
+            $t("share_stream")
+          }}</label>
         </div>
 
         <div
           v-if="share_this_stream.enabled"
           class="padding-sides-small padding-bottom-small"
         >
-          <label v-html="$t('name_of_stream')" />
+          <label class="u-label" v-html="$t('name_of_stream')" />
           <input
             type="text"
             v-model.trim="share_this_stream.name"
@@ -698,20 +701,20 @@ export default {
         navigator.mediaDevices
           .enumerateDevices()
           .then((devices) => {
-            if (!this.$root.is_electron) {
-              return resolve(devices);
-            } else return devices;
+            // if (!this.$root.is_electron) {
+            return resolve(devices);
+            // } else return devices;
           })
-          .then((devices) => {
-            this.getDesktopCapturer()
-              .then((sources) => {
-                devices = devices.concat(sources);
-              })
-              .catch(() => {})
-              .then(() => {
-                return resolve(devices);
-              });
-          })
+          // .then((devices) => {
+          //   this.getDesktopCapturer()
+          //     .then((sources) => {
+          //       devices = devices.concat(sources);
+          //     })
+          //     .catch(() => {})
+          //     .then(() => {
+          //       return resolve(devices);
+          //     });
+          // })
           .catch((err) => {
             return reject(err);
           });
@@ -951,13 +954,13 @@ export default {
               };
             });
 
-            if (!this.$root.is_electron) {
-              this.connected_devices.push({
-                deviceId: "screen_capture",
-                kind: "videoinput",
-                label: "🖥️ " + this.$t("screen_capture"),
-              });
-            }
+            // if (!this.$root.is_electron) {
+            this.connected_devices.push({
+              deviceId: "screen_capture",
+              kind: "videoinput",
+              label: "🖥️ " + this.$t("screen_capture"),
+            });
+            // }
 
             this.is_loading_available_devices = false;
             return resolve();
@@ -1382,6 +1385,10 @@ export default {
   small,
   .u-buttonLink {
     color: inherit;
+  }
+
+  select {
+    color: var(--c-noir);
   }
 }
 

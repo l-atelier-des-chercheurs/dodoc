@@ -23,7 +23,9 @@
             /> -->
           </div>
 
-          <label class=""> {{ $t("stopmotion") }} {{ index + 1 }} </label>
+          <label class="u-label">
+            {{ $t("stopmotion") }} {{ index + 1 }}
+          </label>
           <DateField
             :title="'created'"
             :date="stopmotion.date_created"

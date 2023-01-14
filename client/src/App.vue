@@ -122,6 +122,7 @@ export default {
   --input-font-size-big: 1.2rem;
   --input-font-weight: inherit;
   --input-height: 2.5em;
+  --input-height-large: 3em;
   // --input-height-big: 3em;
   // --input-height-small: 1.5em;
   --sl-input-height-small: 1.5rem;
@@ -130,7 +131,7 @@ export default {
   --input-border-color: var(--c-gris_fonce);
   --input-border-color-focus: var(--active-color);
   --input-border-width: 3px;
-  --input-border-radius: 6px;
+  --input-border-radius: 3px;
   --input-bg-color: var(--color-white);
   --input-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
   --input-readonly-bg-color: var(--component-bg-color);
@@ -180,6 +181,8 @@ export default {
   --sl-input-color: black;
   --sl-font-size-x-large: 1.66rem;
   --sl-font-size-xx-large: 2rem;
+
+  accent-color: var(--c-orange);
 }
 
 * {
@@ -233,8 +236,6 @@ body {
         var(--c-bodybg) 1.2000000000000002px
       ) -0.6000000000000001px 0;
   background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
-
-  accent-color: var(--c-vert);
 }
 
 ::selection {
