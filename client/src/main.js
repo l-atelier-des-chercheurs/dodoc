@@ -60,21 +60,18 @@ Vue.component("AuthorPicker", AuthorPicker);
 
 import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
-
 import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);
-
 import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
 Vue.component("UploadFiles", UploadFiles);
-
 import MediaContent from "@/adc-core/fields/MediaContent.vue";
 Vue.component("MediaContent", MediaContent);
-
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
 Vue.component("AuthorTag", AuthorTag);
-
 import DLabel from "@/adc-core/fields/DLabel.vue";
 Vue.component("DLabel", DLabel);
+import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
+Vue.component("DownloadFile", DownloadFile);
 
 Vue.component("EditBtn", {
   name: "EditBtn",

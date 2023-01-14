@@ -1,7 +1,13 @@
 <template>
   <div class="_mediaModal">
     <div class="_mediaModal--overlay" @click="$emit('close')" />
+
     <div class="_mediaModal--content">
+      <sl-icon-button
+        name="x-circle-fill"
+        class="_mediaModal--closeButton"
+        @click="$emit('close')"
+      />
       <div class="_preview">
         <!-- <DebugBtn :content="file" /> -->
         <MediaContent :file="file" :resolution="1600" :context="'full'" />
@@ -23,6 +29,13 @@
         <DateField :title="'date_modified'" :date="file.$date_modified" />
         <br />
         <div class="">
+          <div>
+            <DownloadFile
+              :filename="file.$media_filename"
+              :fileURL="file.$path"
+            />
+          </div>
+
           <RemoveMenu
             :remove_text="$t('remove_media')"
             @remove="$emit('remove')"
@@ -47,14 +60,6 @@
               {{ $t("confirm_removal") }}
             </button>
           </fieldset>
-        </div>
-
-        <br />
-
-        <div class="">
-          <button type="button" class="u-buttonLink" @click="$emit('close')">
-            {{ $t("close") }}
-          </button>
         </div>
       </div>
       <div class="_selectBtn" v-else>
@@ -81,7 +86,9 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      show_confirm_delete: false,
+    };
   },
   created() {},
   mounted() {
@@ -171,6 +178,18 @@ export default {
       background: white;
       flex: 1 0 240px;
     }
+  }
+}
+
+._mediaModal--closeButton {
+  position: absolute;
+  top: -1em;
+  right: -1em;
+  color: currentColor;
+  font-size: 200%;
+
+  &::part(base) {
+    color: currentColor;
   }
 }
 </style>
