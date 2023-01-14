@@ -11,7 +11,9 @@
       </a>
     </p>
 
-    is_connected = {{ this.$root.is_connected }}
+    <button type="button" @click="$router.go()">
+      {{ $t("reload_page") }}
+    </button>
   </BaseModal2>
 </template>
 <script>

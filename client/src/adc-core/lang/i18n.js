@@ -70,8 +70,10 @@ export default function () {
         peut afficher un email de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
         general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
         Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
+
         connection_lost: `Connection perdue`,
-        connection_lost_reload_to_reconnect: `La connection s’est interrompue… Veuillez recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, veuillez contacter `,
+        connection_lost_reload_to_reconnect: `La connection s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
+        reload_page: "Recharger cette page",
 
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
@@ -142,6 +144,7 @@ export default function () {
         restart_to_apply: "Relancez do•doc pour appliquer",
         restart: "Relancer do•doc",
         reveal: "Révéler",
+        choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
 
         medias: "Médias",
         license: "Licence",
@@ -220,10 +223,6 @@ export default function () {
         "module.label.carousel": "Caroussel",
         object_fit_cover: "Remplir le cadre",
         object_fit_contain: "Remplir sans dépasser",
-
-        disconnect_warning:
-          "Vous avez été déconnectés. Veuillez recharger la page pour vous reconnecter à do•doc.",
-        reload_page: "Recharger cette page",
 
         create_a_module: "Créer un module",
         list_of_archives: "Liste des archives",
