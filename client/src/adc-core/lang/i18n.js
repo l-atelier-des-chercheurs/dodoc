@@ -107,9 +107,6 @@ export default function () {
 
         visibility_progress: "Visibilité et état d’avancement",
         visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
-        progress: "Avancement",
-        progress_instr:
-          "Indiquez le degré d’avancement du projet, de 0 à 100%.",
         back_to_publications: "Retour aux publications",
 
         status: "État",
