@@ -9,7 +9,7 @@
       <template v-if="projectpanes.length === 0">
         <pane>
           <span class="_msg u-instructions">
-            Choisissez un panneau ci-dessus pour démarrer !
+            {{ $t("choose_a_pane") }}
           </span>
         </pane>
       </template>
