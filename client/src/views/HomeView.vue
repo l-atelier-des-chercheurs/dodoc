@@ -83,11 +83,13 @@ export default {
 ._homeView {
   padding: var(--spacing);
 
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
   max-height: -webkit-fill-available;
 
   display: flex;
   align-items: center;
+
+  padding-bottom: 150px;
 }
 
 ._homeView--content {
