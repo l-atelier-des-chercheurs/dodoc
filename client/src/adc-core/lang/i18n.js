@@ -145,6 +145,7 @@ export default function () {
         restart: "Relancer do•doc",
         reveal: "Révéler",
         choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
+        download: "Télécharger",
 
         medias: "Médias",
         license: "Licence",
@@ -176,6 +177,8 @@ export default function () {
         copyleft_explanations: "<i>Explications à ajouter</i>",
 
         machines_and_materials: "Machines et matériaux",
+
+        take_picture: "Prendre une photo",
 
         already_added: "Déjà ajouté",
         open: "ouvrir",
