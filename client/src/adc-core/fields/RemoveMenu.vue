@@ -6,6 +6,7 @@
       v-if="!show_confirm_delete"
       @click="show_confirm_delete = true"
     >
+      <sl-icon name="trash3" />
       {{ remove_text }}
     </button>
 
