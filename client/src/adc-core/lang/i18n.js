@@ -107,7 +107,17 @@ export default function () {
 
         visibility_progress: "Visibilité et état d’avancement",
         visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
+
+        publications: "Publications",
         back_to_publications: "Retour aux publications",
+
+        story: "Récit",
+        page_by_page: "Document page à page",
+        A4_portrait: "A4 en portrait",
+        A4_landscape: "A4 en paysage",
+        A5_portrait: "A5 en portrait",
+        A5_landscape: "A5 en paysage",
+        custom: "Personnalisé",
 
         status: "État",
         list_of_projects: "Liste des projets",
@@ -151,6 +161,7 @@ export default function () {
 
         close: "Fermer",
         settings: "Réglages",
+        pages: "Liste des pages",
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
           Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,

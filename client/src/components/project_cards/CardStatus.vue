@@ -37,17 +37,17 @@ export default {
         {
           key: "draft",
           text: this.$t("draft"),
-          instruction: "draft_status_explanations",
+          instruction: this.$t("draft_status_explanations"),
         },
         {
           key: "finished",
           text: this.$t("finished"),
-          instruction: "finished_status_explanations",
+          instruction: this.$t("finished_status_explanations"),
         },
         {
           key: "invisible",
           text: this.$t("invisible"),
-          instruction: "invisible_status_explanations_projects",
+          instruction: this.$t("invisible_status_explanations_projects"),
         },
       ],
       // temp value, that uses

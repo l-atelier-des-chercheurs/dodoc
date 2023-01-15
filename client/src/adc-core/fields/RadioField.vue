@@ -138,7 +138,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._selectField {
+._radioField {
 }
 
 ._footer {

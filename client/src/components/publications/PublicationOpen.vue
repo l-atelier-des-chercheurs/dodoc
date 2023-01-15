@@ -49,11 +49,17 @@
         :publication="publication"
         :can_edit="can_edit_publication"
       />
+      <PageTemplate
+        v-else-if="publication.template === 'page_by_page'"
+        :publication="publication"
+        :can_edit="can_edit_publication"
+      />
     </template>
   </div>
 </template>
 <script>
 import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
+import PageTemplate from "@/components/publications/templates/PageTemplate.vue";
 
 export default {
   props: {
@@ -63,6 +69,7 @@ export default {
   },
   components: {
     StoryTemplate,
+    PageTemplate,
   },
   data() {
     return {
@@ -125,9 +132,8 @@ export default {
   width: 100%;
   background: white;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
-  margin: calc(var(--spacing) / 1) auto 0;
-
-  border-bottom: 2px solid var(--c-gris_fonce);
+  margin: calc(var(--spacing) / 1) auto;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   max-width: 800px;
 }
 

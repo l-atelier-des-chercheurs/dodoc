@@ -14,7 +14,7 @@
     </div>
 
     <div class="u-instructions" v-if="instructions">
-      <small v-html="$t(instructions)" />
+      <small v-html="instructions" />
     </div>
 
     <div class="_footer" v-if="edit_mode">

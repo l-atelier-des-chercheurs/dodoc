@@ -25,12 +25,12 @@
         {
           key: 'contributor',
           text: $t('contributor'),
-          instruction: 'contributor_instructions',
+          instruction: $t('contributor_instructions'),
         },
         {
           key: 'admin',
           text: $t('admin'),
-          instruction: 'admin_instructions',
+          instruction: $t('admin_instructions'),
         },
       ]"
     />

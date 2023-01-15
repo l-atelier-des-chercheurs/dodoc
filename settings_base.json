@@ -369,6 +369,9 @@
             },
             "modules_list": {
               "type": "array"
+            },
+            "format": {
+              "type": "string"
             }
           },
           "$files": {
