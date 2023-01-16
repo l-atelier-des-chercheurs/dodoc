@@ -358,6 +358,12 @@ sl-tag[size="small"] {
   }
 }
 
+sl-card {
+  &::part(header) {
+    padding: calc(var(--spacing) / 2) var(--spacing);
+  }
+}
+
 sl-button[variant="semitransparent"] {
   &::part(base) {
     background: rgba(255, 255, 255, 0.7);
