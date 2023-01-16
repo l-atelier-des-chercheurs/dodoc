@@ -1,11 +1,11 @@
 <template>
   <ProjectCard>
     <div slot="header">
-      {{ $t("visibility_progress") }}
+      {{ $t("visibility") }}
       <sl-icon name="globe" />
     </div>
     <div>
-      {{ $t("visibility_progress_text") }}
+      {{ $t("visibility_text") }}
     </div>
 
     <br />
