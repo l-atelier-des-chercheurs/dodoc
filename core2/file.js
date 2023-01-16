@@ -505,7 +505,8 @@ module.exports = (function () {
     );
     paths.push(full_media_path);
 
-    const archive_folder_name = path.parse(media_filename).name + "_archives";
+    const archive_folder_name = _getArchivePath(media_filename);
+
     const full_archive_path = utils.getPathToUserContent(
       path_to_folder,
       archive_folder_name
@@ -524,7 +525,8 @@ module.exports = (function () {
       media_filename
     );
 
-    const archive_folder_name = path.parse(media_filename).name + "_archives";
+    const archive_folder_name = _getArchivePath(media_filename);
+
     const full_archived_folder_path = utils.getPathToUserContent(
       path_to_folder,
       archive_folder_name
@@ -560,8 +562,7 @@ module.exports = (function () {
 
     let meta = await utils.readMetaFile(path_to_folder, meta_filename);
 
-    const archive_folder_name =
-      path.parse(meta.$media_filename).name + "_archives";
+    const archive_folder_name = _getArchivePath(meta.$media_filename);
     const full_archived_folder_path = utils.getPathToUserContent(
       path_to_folder,
       archive_folder_name
@@ -593,6 +594,10 @@ module.exports = (function () {
     } catch (err) {
       throw err;
     }
+  }
+
+  function _getArchivePath(media_filename) {
+    return "_archives" + path.parse(media_filename).name;
   }
 
   return API;
