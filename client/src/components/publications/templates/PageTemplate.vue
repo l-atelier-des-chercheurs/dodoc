@@ -39,7 +39,7 @@ export default {
   },
   data() {
     return {
-      current_view: "settings",
+      current_view: "pages",
     };
   },
   created() {},
