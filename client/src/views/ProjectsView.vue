@@ -123,11 +123,15 @@
         <template v-if="is_admin">
           <br />
 
-          <div class="_u-sidepadding _projectsSection _otherProjects">
-            <ProjectsList
-              :label="$t('invisible_nonauthor_projects')"
-              :projects="invisible_nonauthor_projects"
-            />
+          <div class="_u-sidepadding _projectsSection _invisibleProjects">
+            <div class="_sectionLabel" :key="'label'">
+              <h3>
+                <sl-icon name="incognito" />
+                {{ $t("invisible_nonauthor_projects") }}&nbsp;
+                <small>({{ invisible_nonauthor_projects.length }})</small>
+              </h3>
+            </div>
+            <ProjectsList :projects="invisible_nonauthor_projects" />
           </div>
         </template>
       </div>
