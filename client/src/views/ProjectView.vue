@@ -20,7 +20,7 @@
             <div class="_sticky">
               <div class="_content">
                 <ToggleInput
-                  class="u-button u-button_bleuvert"
+                  class="u-button"
                   :content.sync="display_as_public"
                   :label="$t('display_as_public')"
                 />
@@ -270,6 +270,7 @@ export default {
     background: var(--c-bleuvert);
     border: 2px solid var(--c-bleuvert_fonce);
     border-radius: 8px;
+    color: white;
 
     > * {
       padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
