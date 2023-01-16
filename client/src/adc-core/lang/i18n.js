@@ -113,11 +113,18 @@ export default function () {
 
         story: "Récit",
         page_by_page: "Document page à page",
+
+        format: "Format",
+        format_instructions:
+          "Sélectionnez un format ou définissez les dimensions de la page, en centimètres.",
         A4_portrait: "A4 en portrait",
         A4_landscape: "A4 en paysage",
         A5_portrait: "A5 en portrait",
         A5_landscape: "A5 en paysage",
         custom: "Personnalisé",
+        width: "Largeur",
+        height: "Hauteur",
+        pages_spreads: "Aperçu des pages en vis-à-vis",
 
         status: "État",
         list_of_projects: "Liste des projets",
@@ -156,6 +163,8 @@ export default function () {
 
         medias: "Médias",
         license: "Licence",
+        licence_instructions:
+          "Indiquez ici les conditions de réutilisation de votre contenu.",
         files: "Fichiers",
         template: "Gabarit",
 

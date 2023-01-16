@@ -108,8 +108,10 @@ export default {
         $authors: [this.$api.tokenpath.token_path],
       };
 
-      if (this.new_publication_template === "page_by_page")
-        additional_meta.format = "A4_portrait";
+      if (this.new_publication_template === "page_by_page") {
+        additional_meta.page_width = 21;
+        additional_meta.page_height = 29.7;
+      }
 
       // TODO replace with $api
       try {

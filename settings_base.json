@@ -336,9 +336,6 @@
         "fields": {
           "caption": {
             "type": "string"
-          },
-          "is_publication": {
-            "type": "boolean"
           }
         }
       },
@@ -370,8 +367,17 @@
             "modules_list": {
               "type": "array"
             },
-            "format": {
-              "type": "string"
+            "pages": {
+              "type": "array"
+            },
+            "page_width": {
+              "type": "number"
+            },
+            "page_height": {
+              "type": "number"
+            },
+            "pages_spreads": {
+              "type": "boolean"
             }
           },
           "$files": {

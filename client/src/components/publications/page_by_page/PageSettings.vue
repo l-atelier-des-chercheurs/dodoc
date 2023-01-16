@@ -1,51 +1,30 @@
 <template>
   <div class="_pageSettings">
-    <DLabel :str="$t('format')" />
-    <SelectField
-      :field_name="'format'"
-      :content="publication.format"
+    <WidthHeightField :publication="publication" />
+
+    <br />
+
+    <ToggleField
+      :label="$t('pages_spreads')"
+      :field_name="'pages_spreads'"
+      :content="publication.pages_spreads"
       :path="publication.$path"
       :can_edit="true"
-      :options="format_options"
     />
   </div>
 </template>
 <script>
+import WidthHeightField from "@/components/publications/page_by_page/WidthHeightField.vue";
+
 export default {
   props: {
     publication: Object,
   },
-  components: {},
+  components: {
+    WidthHeightField,
+  },
   data() {
-    return {
-      format_options: [
-        {
-          key: "A4_portrait",
-          text: this.$t("A4_portrait"),
-          instruction: this.$t("A4_portrait_explanations"),
-        },
-        {
-          key: "A4_landscape",
-          text: this.$t("A4_landscape"),
-          instruction: this.$t("A4_landscape_explanations"),
-        },
-        {
-          key: "A5_portrait",
-          text: this.$t("A5_portrait"),
-          instruction: this.$t("A5_portrait_explanations"),
-        },
-        {
-          key: "A5_landscape",
-          text: this.$t("A5_landscape"),
-          instruction: this.$t("A5_landscape_explanations"),
-        },
-        {
-          key: "custom",
-          text: this.$t("custom"),
-          instruction: this.$t("custom_format_explanations"),
-        },
-      ],
-    };
+    return {};
   },
   created() {},
   mounted() {},
@@ -59,7 +38,7 @@ export default {
 ._pageSettings {
   background: white;
 
-  max-width: 400px;
+  max-width: 380px;
   padding: calc(var(--spacing) * 1);
   margin: calc(var(--spacing) * 1) auto;
 }
