@@ -2,12 +2,17 @@
   <div>
     <div class="_allPages">
       <SinglePage
+        :id="publication.pages[0].id"
+        :width="publication.page_width"
+        :height="publication.page_height"
+      />
+      <!-- <SinglePage
         v-for="page in publication.pages"
         :key="page.id"
         :id="page.id"
         :width="publication.page_width"
         :height="publication.page_height"
-      />
+      /> -->
     </div>
 
     <button type="button" class="u-button" @click="createPage">
