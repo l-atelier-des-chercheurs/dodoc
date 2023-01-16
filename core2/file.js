@@ -597,7 +597,7 @@ module.exports = (function () {
   }
 
   function _getArchivePath(media_filename) {
-    return "_archives" + path.parse(media_filename).name;
+    return "_archives_" + path.parse(media_filename).name;
   }
 
   return API;
