@@ -557,3 +557,10 @@ input[type="file"] {
 .u-switch-xs {
   --switch-size: 0.9rem;
 }
+.u-sameRow {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+}

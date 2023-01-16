@@ -1,6 +1,6 @@
 <template>
   <div class="_selectField">
-    <div class="_sameRow">
+    <div class="u-sameRow">
       <select v-model="new_content" :disabled="!edit_mode">
         <option
           v-for="option in options"
@@ -119,14 +119,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._selectField {
-}
-
-._sameRow {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
 }
 
 ._footer {
