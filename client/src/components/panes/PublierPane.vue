@@ -55,8 +55,8 @@ export default {
   background: white;
 
   &.is--editable {
-    background: var(--body-color);
-    // background: var(--color-Publier);
+    // background: var(--body-color);
+    background: var(--color-publish);
   }
 }
 </style>

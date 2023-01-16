@@ -183,7 +183,7 @@ export default {
 <style lang="scss" scoped>
 ._mediaLibrary {
   position: relative;
-  background: var(--color-Collecter);
+  background: var(--color-collect);
   height: 100%;
 
   --active-color: var(--c-vert);

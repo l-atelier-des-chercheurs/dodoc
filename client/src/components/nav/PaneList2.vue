@@ -126,19 +126,19 @@ export default {
       project_panes: [],
       possible_project_panes: [
         {
-          type: "Capturer",
+          type: "capture",
           mode: false,
         },
         {
-          type: "Collecter",
+          type: "collect",
           focus: false,
         },
         {
-          type: "Remixer",
+          type: "remix",
           pad: {},
         },
         {
-          type: "Publier",
+          type: "publish",
           pad: {},
         },
       ],
@@ -151,7 +151,7 @@ export default {
   mounted() {
     // this.$nextTick(() => {
     //   const lib = this.possible_project_panes.find(
-    //     (pp) => pp.type === "Collecter"
+    //     (pp) => pp.type === "collect"
     //   );
     //   this.project_panes.push(lib);
     // });
@@ -242,7 +242,7 @@ export default {
       this.project_panes = pp;
     },
     getIcon(type) {
-      if (type === "Capturer")
+      if (type === "capture")
         return `
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
@@ -252,7 +252,7 @@ export default {
             c23.6,0,42.7-19.1,42.7-42.7C126.7,60.4,107.6,41.3,84,41.3z"/>
         </svg>
         `;
-      else if (type === "Collecter")
+      else if (type === "collect")
         return `
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
        viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
@@ -268,7 +268,7 @@ export default {
             <path style="fill:var(--c-orange);" d="m104.4 105h21.6v21h-21.6z"/>
           </svg>
         `;
-      else if (type === "Remixer")
+      else if (type === "remix")
         return `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
             <circle cx="84.13" cy="84" r="84" style="fill: var(--c-bleuvert)"/>
@@ -276,7 +276,7 @@ export default {
               style="fill: var(--c-bleumarine)"/>
           </svg>
         `;
-      else if (type === "Publier")
+      else if (type === "publish")
         return `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
             <circle cx="84" cy="84" r="84" style="fill: var(--c-bleumarine)"/>

@@ -264,6 +264,11 @@ export default function () {
         general_informations: "Informations sur l’instance",
 
         panes: "Panneaux",
+        capture: "Capturer",
+        collect: "Collecter",
+        remix: "Remixer",
+        publish: "Publier",
+
         "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
         "instructions.pane.collect": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.

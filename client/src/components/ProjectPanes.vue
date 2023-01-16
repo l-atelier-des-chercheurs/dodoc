@@ -39,17 +39,17 @@
             </div>
           </div>
         </transition>
-        <CapturePane v-if="pane.type === 'Capturer'" :project="project" />
+        <CapturePane v-if="pane.type === 'capture'" :project="project" />
         <MediaLibrary
-          v-else-if="pane.type === 'Collecter'"
+          v-else-if="pane.type === 'collect'"
           :key="pane.key"
           :project="project"
           :media_focused="pane.focus"
           @update:media_focused="pane.focus = $event"
         />
-        <RemixPane v-if="pane.type === 'Remixer'" :project="project" />
+        <RemixPane v-if="pane.type === 'remix'" :project="project" />
         <PublierPane
-          v-if="pane.type === 'Publier'"
+          v-if="pane.type === 'publish'"
           :project="project"
           :publication_opened="pane.pad"
           :can_edit="can_edit_project"

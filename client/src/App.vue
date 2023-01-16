@@ -145,10 +145,10 @@ export default {
   --input-valid-color: var(--state-success);
   --input-valid-border-color: var(--state-success);
 
-  --color-Capturer: var(--c-rouge);
-  --color-Collecter: var(--c-orange);
-  --color-Remixer: var(--c-bleumarine);
-  --color-Publier: var(--c-bleuvert);
+  --color-capture: var(--c-rouge);
+  --color-collect: var(--c-orange);
+  --color-remix: var(--c-bleumarine);
+  --color-publish: var(--c-bleuvert);
 
   --indicator-color: var(--c-vert) !important;
   --active-color: var(--c-bleuvert);
