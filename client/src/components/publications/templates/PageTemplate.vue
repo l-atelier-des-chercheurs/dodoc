@@ -15,6 +15,8 @@
       ]"
     />
 
+    <br />
+
     <PageSettings
       v-if="current_view === 'settings' && can_edit"
       :publication="publication"

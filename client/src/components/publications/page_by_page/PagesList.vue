@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="">
+    <div class="_allPages">
       <SinglePage
         v-for="page in publication.pages"
         :key="page.id"
@@ -58,4 +58,10 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._allPages {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 1);
+}
+</style>

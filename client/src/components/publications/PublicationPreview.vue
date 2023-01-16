@@ -12,7 +12,7 @@
       <h2>
         {{ publication.title }}
       </h2>
-      <!-- <small v-if="publication.template" v-html="publication.template" /> -->
+      <small v-if="publication.template" v-html="$t(publication.template)" />
     </header>
     <div class="">
       <!-- <button

@@ -40,6 +40,6 @@ export default {
 
   max-width: 380px;
   padding: calc(var(--spacing) * 1);
-  margin: calc(var(--spacing) * 1) auto;
+  margin: 0 auto calc(var(--spacing) * 1);
 }
 </style>
