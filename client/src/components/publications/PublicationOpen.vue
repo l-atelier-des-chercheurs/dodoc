@@ -34,14 +34,11 @@
         /> -->
 
         <div class="_buttonRow">
-          <button
-            type="button"
-            class="u-buttonLink"
+          <RemoveMenu
             v-if="can_edit_publication"
-            @click="removePublication()"
-          >
-            {{ $t("remove") }}
-          </button>
+            :remove_text="$t('remove')"
+            @click="removePublication"
+          />
         </div>
       </div>
       <StoryTemplate
@@ -84,6 +81,7 @@ export default {
     this.$api.join({ room: this.publication.$path });
   },
   beforeDestroy() {
+    this.$eventHub.$off("folder.removed", this.closeOnRemove);
     this.$api.leave({ room: this.publication.$path });
   },
   watch: {},
@@ -114,14 +112,20 @@ export default {
       }
     },
     async removePublication() {
-      await this.$api
-        .deleteItem({
+      this.fetch_status = "pending";
+      this.fetch_error = null;
+
+      try {
+        const response = await this.$api.deleteItem({
           path: this.publication.$path,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
         });
+        this.response = response.data;
+        this.fetch_status = "success";
+      } catch (e) {
+        this.fetch_status = "error";
+        this.fetch_error = e.response.data;
+        // this.$alertify.delay(4000).error(err);
+      }
     },
   },
 };
