@@ -3,7 +3,7 @@
   <div id="app" class="">
     <DisconnectModal v-if="show_disconnect_modal" />
 
-    <div class="_spinner" v-else-if="$root.is_loading" key="loader">
+    <div class="_spinner" v-if="$root.is_loading" key="loader">
       <LoaderSpinner />
     </div>
 
