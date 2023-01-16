@@ -74,6 +74,7 @@ export default function () {
         connection_lost: `Connexion perdue`,
         connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
         reload_page: "Recharger cette page",
+        create_page: "Créer une page",
 
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
@@ -105,8 +106,8 @@ export default function () {
         hide_description: "Masquer la description",
         recover_password: "Récupérer mon de passe",
 
-        visibility_progress: "Visibilité et état d’avancement",
-        visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
+        visibility: "Visibilité",
+        visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
 
         publications: "Publications",
         back_to_publications: "Retour aux publications",
@@ -263,14 +264,14 @@ export default function () {
         general_informations: "Informations sur l’instance",
 
         panes: "Panneaux",
-        "instructions.pane.Capturer":
+        "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
-        "instructions.pane.Collecter": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
+        "instructions.pane.collect": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
           <br />
           Vous pouvez aussi importer des fichiers (photos, vidéos, audios, 3D, PDF ou autre) depuis vos appareils.`,
-        "instructions.pane.Remixer":
+        "instructions.pane.remix":
           "Recadrez, raccourcissez, assemblez et annotez vos médias.",
-        "instructions.pane.Publier": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
+        "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
           <br />
           Elles contiendront du texte et des éléments que vous avez collecté.`,
       },
