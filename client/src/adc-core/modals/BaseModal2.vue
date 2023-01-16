@@ -70,9 +70,9 @@ export default {
   padding: 0;
 
   backdrop-filter: blur(5px);
-  background: rgba(53, 53, 53, 0.7);
+  // background: rgba(53, 53, 53, 0.7);
   // background: rgba(255, 255, 255, 0.7);
-  // background: rgba(211, 211, 211, 0.7);
+  background: rgba(231, 231, 231, 0.7);
 
   ._baseModal--content {
     background-color: #fff;
