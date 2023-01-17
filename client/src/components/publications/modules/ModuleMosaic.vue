@@ -8,40 +8,6 @@
         'is--multipleMedias': is_multiple_medias,
       }"
     >
-      <!-- <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
-      <pane
-        v-for="(slot, index) in source_medias.length"
-        class="_pane"
-        :key="index"
-        min-size="5"
-      >
-        <template v-if="source_medias[index]">
-          <MediaContent
-            :file="source_medias[index]"
-            :resolution="1600"
-            :context="'full'"
-          />
-          <div class="_removeMedia" v-if="can_edit">
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="removeMediaAtIndex(index)"
-            >
-              {{ $t("remove") }}
-            </button>
-          </div>
-        </template>
-      </pane>
-      <div class="_mediaPickerTile">
-        <MediaPicker
-          class=""
-          v-if="can_edit"
-          :publication_path="publication_path"
-          @selectMedia="selectMedia"
-        />
-      </div>
-    </splitpanes> -->
-
       <div class="_mediaGrid">
         <div
           class="_mediaGrid--item"

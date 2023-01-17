@@ -3,178 +3,143 @@
   <!-- <div class="" style="position: absolute">
       {{ transform }}
     </div> -->
-  <div class="_moveableItem">
+  <!-- <div class="_moveableItem">
     <img class="" :src="src" />
-  </div>
-  <!-- </div> -->
+  </div> -->
+  <DDR
+    class="_moveableItem"
+    :key="component_key"
+    :value="transform"
+    :parent="true"
+    :acceptRatio="false"
+    @dragend="dragEnd"
+    @resizeend="resizeEnd"
+    @rotateend="rotateEnd"
+  >
+    <!-- <div class="_moveableItem--content"> -->
+    <!-- style="background: red; width: 100%; height: 100%" -->
+    <PublicationModule
+      class="_mediaPublication"
+      :publimodule="publimodule"
+      :can_edit="can_edit"
+      :context="'page_by_page'"
+      @duplicate="duplicateModule"
+      @remove="removeModule"
+    />
+    <!-- </div> -->
+  </DDR>
 </template>
 <script>
-// import Moveable from "vue-moveable";
-import Moveable from "moveable";
+// import DDR from "yoyoo-ddr";
+import "yoyoo-ddr/dist/yoyoo-ddr.css";
+import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
 
+/* eslint-disable no-unused-vars */
 export default {
   name: "app",
   props: {
-    src: String,
+    publimodule: Object,
+    can_edit: Boolean,
   },
-  components: {},
+  components: {
+    DDR,
+    PublicationModule,
+  },
   data() {
     return {
-      transform: undefined,
-      is_loaded: false,
+      transform: { x: 100, y: 100, width: 300, height: 300, rotation: 0 },
+      component_key: 1,
     };
   },
-  created() {},
-  mounted() {
-    this.is_loaded = true;
+  created() {
+    if (this.publimodule.x) this.updateTransformFromPubli();
+    // else debugger;
+    // todo get ratio from linked image, set initial transform based on that
 
-    const moveable = new Moveable(this.$el.parentElement, {
-      target: this.$el,
-      // If the container is null, the position is fixed. (default: parentElement(document.body))
-      container: this.$el.parentElement,
-      snapContainer: this.$el.parentElement,
-      bounds: { left: 0, right: 1000, top: 0, bottom: 1000 },
-      draggable: true,
-      resizable: true,
-      scalable: true,
-      rotatable: true,
-      warpable: true,
-      // Enabling pinchable lets you use events that
-      // can be used in draggable, resizable, scalable, and rotateable.
-      pinchable: true, // ["resizable", "scalable", "rotatable"]
-      origin: true,
-      keepRatio: true,
-      // Resize, Scale Events at edges.
-      edge: false,
-      throttleDrag: 0,
-      throttleResize: 0,
-      throttleScale: 0.1,
-      throttleRotate: 1,
-    });
-    /* draggable */
-
-    /* eslint-disable no-unused-vars */
-    moveable
-      .on("dragStart", ({ target, clientX, clientY }) => {
-        console.log("onDragStart", target);
-      })
-      .on(
-        "drag",
-        ({
-          target,
-          transform,
-          left,
-          top,
-          right,
-          bottom,
-          beforeDelta,
-          beforeDist,
-          delta,
-          dist,
-          clientX,
-          clientY,
-        }) => {
-          console.log("onDrag left, top", left, top);
-          // target.style.left = `${left}px`;
-          // target.style.top = `${top}px`;
-          // console.log("onDrag translate", dist);
-          target.style.transform = transform;
-        }
-      )
-      .on("dragEnd", ({ target, isDrag, clientX, clientY }) => {
-        console.log("onDragEnd", target, isDrag);
-      });
-
-    /* resizable */
-    moveable
-      .on("resizeStart", ({ target, clientX, clientY }) => {
-        console.log("onResizeStart", target);
-      })
-      .on(
-        "resize",
-        ({ target, width, height, dist, delta, clientX, clientY }) => {
-          console.log("onResize", target);
-          delta[0] && (target.style.width = `${width}px`);
-          delta[1] && (target.style.height = `${height}px`);
-        }
-      )
-      .on("resizeEnd", ({ target, isDrag, clientX, clientY }) => {
-        console.log("onResizeEnd", target, isDrag);
-      });
-
-    /* scalable */
-    moveable
-      .on("scaleStart", ({ target, clientX, clientY }) => {
-        console.log("onScaleStart", target);
-      })
-      .on(
-        "scale",
-        ({ target, scale, dist, delta, transform, clientX, clientY }) => {
-          console.log("onScale scale", scale);
-          target.style.transform = transform;
-        }
-      )
-      .on("scaleEnd", ({ target, isDrag, clientX, clientY }) => {
-        console.log("onScaleEnd", target, isDrag);
-      });
-
-    /* rotatable */
-    moveable
-      .on("rotateStart", ({ target, clientX, clientY }) => {
-        console.log("onRotateStart", target);
-      })
-      .on(
-        "rotate",
-        ({ target, beforeDelta, delta, dist, transform, clientX, clientY }) => {
-          console.log("onRotate", dist);
-          target.style.transform = transform;
-        }
-      )
-      .on("rotateEnd", ({ target, isDrag }) => {
-        console.log("rotateEnd", target, isDrag);
-        // this.transform = transform;
-      });
-
-    /* pinchable */
-    // Enabling pinchable lets you use events that
-    // can be used in draggable, resizable, scalable, and rotateable.
-    moveable
-      .on("pinchStart", ({ target, clientX, clientY }) => {
-        // pinchStart event occur before dragStart, rotateStart, scaleStart, resizeStart
-        console.log("onPinchStart");
-      })
-      .on("pinch", ({ target, clientX, clientY, datas }) => {
-        // pinch event occur before drag, rotate, scale, resize
-        console.log("onPinch");
-      })
-      .on("pinchEnd", ({ isDrag, target, clientX, clientY, datas }) => {
-        // pinchEnd event occur before dragEnd, rotateEnd, scaleEnd, resizeEnd
-        console.log("onPinchEnd");
-      });
+    this.setNewComponentKey();
   },
+  mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    publimodule: {
+      handler() {
+        // todo change key to re-render component if coordinates were changed and diff from transform (means it was changed on another client)
+        const was_updated = this.updateTransformFromPubli();
+        if (was_updated) this.setNewComponentKey();
+      },
+      deep: true,
+    },
+  },
   computed: {},
   methods: {
-    /* eslint-disable no-unused-vars */
-    // onDrag({ target, transform }) {
-    //   // this.transform = transform;
-    //   debugger;
-    //   target.style.transform = transform;
-    // },
-    // onScale({ target, drag }) {
-    //   // this.transform = drag.transform;
-    //   target.style.transform = drag.transform;
-    // },
-    // onRotate({ target, drag }) {
-    //   // this.transform = drag.transform;
-    //   target.style.transform = drag.transform;
-    // },
+    setNewComponentKey() {
+      this.component_key = new Date().getTime();
+    },
+    updateTransformFromPubli() {
+      let was_updated = false;
+      Object.keys(this.transform).map((k) => {
+        if (typeof this.publimodule[k] === "number")
+          if (this.transform[k] !== this.publimodule[k]) {
+            this.transform[k] = this.publimodule[k];
+            was_updated = true;
+          }
+      });
+      return was_updated;
+      // this.$set(this.transform, k, this.publimodule[k]);
+    },
+    dragEnd(event, transform) {
+      if (JSON.stringify(transform) === JSON.stringify(this.transform))
+        return false;
+
+      this.transform = transform;
+      this.updateMeta(transform);
+    },
+    resizeEnd(event, transform) {
+      if (JSON.stringify(transform) === JSON.stringify(this.transform))
+        return false;
+
+      this.transform = transform;
+      this.updateMeta(transform);
+    },
+    rotateEnd(event, transform) {
+      if (JSON.stringify(transform) === JSON.stringify(this.transform))
+        return false;
+
+      this.transform = transform;
+      this.updateMeta(transform);
+    },
+    async updateMeta(new_meta) {
+      // transform to x, y, width, height, rotation
+      await this.$api
+        .updateMeta({
+          path: this.publimodule.$path,
+          new_meta,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
+    },
+
+    duplicateModule() {},
+    removeModule() {},
   },
 };
 </script>
 <style lang="scss" scoped>
 ._moveableItem {
   width: 50px;
+}
+
+._moveableItem--content {
+  overflow: hidden;
+
+  ::v-deep ._publicationModule {
+    padding: 0;
+  }
+}
+
+._mediaPublication {
+  padding: 0;
 }
 </style>

@@ -51,9 +51,11 @@
 </template>
 <script>
 import MediaPicker from "@/components/publications/MediaPicker.vue";
+
 export default {
   props: {
     publication_path: String,
+    page_id: String,
   },
   components: {
     MediaPicker,
@@ -100,7 +102,6 @@ export default {
       });
       this.show_media_picker = false;
     },
-
     async createText() {
       const text_meta_filename = await this.$api.uploadText({
         path: this.publication_path,
@@ -130,14 +131,18 @@ export default {
     },
 
     async createMetaForModule({ module_type, source_medias }) {
+      let additional_meta = {
+        module_type,
+        source_medias,
+        requested_slug: "module",
+      };
+
+      if (this.page_id) additional_meta.page_id = this.page_id;
+
       return await this.$api
         .uploadFile({
           path: this.publication_path,
-          additional_meta: {
-            module_type,
-            source_medias,
-            requested_slug: "module",
-          },
+          additional_meta,
         })
         .catch((err) => {
           this.$alertify.delay(4000).error(err);

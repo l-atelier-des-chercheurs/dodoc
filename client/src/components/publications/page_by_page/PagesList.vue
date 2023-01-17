@@ -1,18 +1,23 @@
 <template>
   <div>
+    {{ publication.$path }}
     <div class="_allPages">
+      <div class="" v-for="(page, index) in pages" :key="page.id">
+        {{ $t("page") }} {{ index + 1 }}
+      </div>
+    </div>
+
+    <div class="_singlePage">
       <SinglePage
-        :id="publication.pages[0].id"
-        :width="publication.page_width"
-        :height="publication.page_height"
-      />
-      <!-- <SinglePage
-        v-for="page in publication.pages"
+        v-for="page in pages"
         :key="page.id"
-        :id="page.id"
+        :publication_path="publication.$path"
+        :page_modules="getModulesForPage(page.id)"
+        :page_id="page.id"
         :width="publication.page_width"
         :height="publication.page_height"
-      /> -->
+        :can_edit="can_edit"
+      />
     </div>
 
     <button type="button" class="u-button" @click="createPage">
@@ -26,6 +31,7 @@ import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
 export default {
   props: {
     publication: Object,
+    can_edit: Boolean,
   },
   components: {
     SinglePage,
@@ -37,7 +43,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    pages() {
+      return this.publication.pages;
+    },
+  },
   methods: {
     createPage() {
       const new_page_id = (
@@ -59,6 +69,9 @@ export default {
         path: this.publication.$path,
         new_meta,
       });
+    },
+    getModulesForPage(id) {
+      return this.publication.$files.filter((f) => f.page_id === id) || [];
     },
   },
 };

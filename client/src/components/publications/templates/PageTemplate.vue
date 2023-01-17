@@ -21,7 +21,7 @@
       v-if="current_view === 'settings' && can_edit"
       :publication="publication"
     />
-    <PagesList v-else :publication="publication" />
+    <PagesList v-else :publication="publication" :can_edit="can_edit" />
   </div>
 </template>
 <script>
