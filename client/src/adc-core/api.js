@@ -479,8 +479,6 @@ export default function () {
           //   .error(this.$t("notifications.author_not_allowed"));
         }
 
-        debugger;
-
         this.setAuthorizationHeader();
         this.$alertify.delay(4000).error(err);
       },

@@ -1,8 +1,15 @@
 <template>
   <div class="_publicationModule">
-    <div class="_sideOptions" v-if="can_edit">
+    <div
+      class="_sideOptions"
+      :class="{
+        'is--pageByPage': context === 'page_by_page',
+      }"
+      v-if="can_edit"
+    >
       <button
         type="button"
+        v-if="$listeners.hasOwnProperty('moveUp')"
         class="_sideBtns _moveBefore"
         :disabled="module_position === 'first' || module_position === 'alone'"
         @click="$emit('moveUp')"
@@ -129,6 +136,7 @@
       <button
         type="button"
         class="_sideBtns _moveAfter"
+        v-if="$listeners.hasOwnProperty('moveDown')"
         :disabled="module_position === 'last' || module_position === 'alone'"
         @click="$emit('moveDown')"
       >
@@ -150,6 +158,7 @@
         v-if="publimodule.module_type === 'mosaic'"
         :publimodule="publimodule"
         :can_edit="can_edit"
+        :context="context"
         @updateMeta="updateMeta"
         @remove="$emit('remove')"
       />
@@ -184,6 +193,7 @@ export default {
     publimodule: Object,
     module_position: String,
     can_edit: Boolean,
+    context: String,
   },
   components: {
     ModuleMosaic,
@@ -277,6 +287,8 @@ export default {
   right: 100%;
   background: rgba(0, 0, 0, 0.05);
 
+  z-index: 100;
+
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
@@ -284,6 +296,17 @@ export default {
   --side-width: 24px;
   width: var(--side-width);
   border-radius: calc(var(--side-width) / 2);
+
+  &.is--pageByPage {
+    position: absolute;
+    right: 0;
+    background: transparent;
+    top: 0;
+
+    ._sideBtns {
+      background: white;
+    }
+  }
 }
 
 ._sideBtns {

@@ -40,6 +40,8 @@ import RadioField from "@/adc-core/fields/RadioField.vue";
 Vue.component("RadioField", RadioField);
 import DebugBtn from "@/adc-core/DebugBtn.vue";
 Vue.component("DebugBtn", DebugBtn);
+import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
+Vue.component("RemoveMenu", RemoveMenu);
 //
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 Vue.component("BaseModal2", BaseModal2);
@@ -58,21 +60,18 @@ Vue.component("AuthorPicker", AuthorPicker);
 
 import SaveCancelButtons from "@/adc-core/fields/SaveCancelButtons.vue";
 Vue.component("SaveCancelButtons", SaveCancelButtons);
-
 import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);
-
 import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
 Vue.component("UploadFiles", UploadFiles);
-
 import MediaContent from "@/adc-core/fields/MediaContent.vue";
 Vue.component("MediaContent", MediaContent);
-
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
 Vue.component("AuthorTag", AuthorTag);
-
 import DLabel from "@/adc-core/fields/DLabel.vue";
 Vue.component("DLabel", DLabel);
+import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
+Vue.component("DownloadFile", DownloadFile);
 
 Vue.component("EditBtn", {
   name: "EditBtn",
@@ -141,10 +140,17 @@ new Vue({
     dev_mode: true,
     publicPath: process.env.BASE_URL,
 
+    current_time: "",
+
     window: {
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
     },
+  },
+  created() {
+    const getTime = () => new Date().getTime();
+    this.current_time = getTime();
+    setInterval(() => (this.current_time = getTime()), 1000);
   },
   async mounted() {
     await this.$api.init({ debug_mode });

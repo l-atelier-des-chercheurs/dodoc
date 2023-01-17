@@ -8,6 +8,7 @@
   >
     <span label="Panneaux" class="_paneList2">
       <span
+        v-if="!$root.is_mobile_view"
         class="_projectTitle"
         :class="{
           'is--shown': is_stickied_to_top,
@@ -18,12 +19,7 @@
           {{ project.title }}
         </span>
       </span>
-      <component
-        :is="$root.is_mobile_view ? 'sl-drawer' : 'span'"
-        placement="top"
-        class="_projectPanes"
-        ref="drawer"
-      >
+      <span placement="top" class="_projectPanes" ref="drawer">
         <SlickList
           v-if="can_edit"
           class="_paneList--list"
@@ -36,7 +32,7 @@
             :index="index"
             class="_paneItem"
             :class="{
-              'is--enabled': project_panes.some((p) => p.type === pane.type),
+              'is--enabled': paneIsEnabled(pane.type),
             }"
             :style="`--color-active: var(--color-${pane.type});`"
             :key="pane.type"
@@ -58,7 +54,9 @@
                 v-html="getIcon(pane.type)"
               />
               <!-- <span>{{ $t(pane.type) }}</span> -->
-              <span>{{ index + 1 }} • {{ $t(pane.type) }}</span>
+              <span v-if="paneIsEnabled(pane.type) || !$root.is_mobile_view">
+                {{ index + 1 }} • {{ $t(pane.type) }}
+              </span>
               <div
                 v-if="project_panes.some((p) => p.type === pane.type)"
                 class="_inlineBtn _removePaneBtn"
@@ -71,7 +69,7 @@
                 />
               </div>
               <div
-                v-else-if="project_panes.length > 0"
+                v-else-if="project_panes.length > 0 && !$root.is_mobile_view"
                 class="_inlineBtn _addPaneBtn"
               >
                 <sl-icon-button
@@ -83,17 +81,8 @@
             </div>
           </SlickItem>
         </SlickList>
-      </component>
-      <span />
-      <button
-        type="button"
-        class="u-button"
-        v-if="$root.is_mobile_view && can_edit"
-        @click="$refs.drawer.show()"
-      >
-        {{ $t("panes") }}
-        <sl-icon name="layout-three-columns" label="Panneaux" />
-      </button>
+      </span>
+      <span v-if="!$root.is_mobile_view" />
     </span>
     <!-- <sl-icon name="plus-square-fill" label="Panneaux" />
       <sl-icon name="plus" label="Panneaux" /> -->
@@ -137,20 +126,16 @@ export default {
       project_panes: [],
       possible_project_panes: [
         {
-          type: "Capturer",
-          mode: false,
+          type: "capture",
         },
         {
-          type: "Collecter",
-          focus: false,
+          type: "collect",
         },
         {
-          type: "Remixer",
-          pad: {},
+          type: "remix",
         },
         {
-          type: "Publier",
-          pad: {},
+          type: "publish",
         },
       ],
     };
@@ -162,7 +147,7 @@ export default {
   mounted() {
     // this.$nextTick(() => {
     //   const lib = this.possible_project_panes.find(
-    //     (pp) => pp.type === "Collecter"
+    //     (pp) => pp.type === "collect"
     //   );
     //   this.project_panes.push(lib);
     // });
@@ -194,11 +179,6 @@ export default {
       },
       deep: true,
     },
-    "$root.is_mobile_view"() {
-      if (this.$root.is_mobile_view) {
-        // this.project_panes.map()
-      }
-    },
   },
   computed: {
     cover_thumb() {
@@ -218,6 +198,9 @@ export default {
     },
     removePane(type) {
       this.project_panes = this.project_panes.filter((pp) => pp.type !== type);
+    },
+    paneIsEnabled(type) {
+      return this.project_panes.some((p) => p.type === type);
     },
     replacePane($event, pane) {
       this.project_panes = [];
@@ -255,7 +238,7 @@ export default {
       this.project_panes = pp;
     },
     getIcon(type) {
-      if (type === "Capturer")
+      if (type === "capture")
         return `
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
@@ -265,7 +248,7 @@ export default {
             c23.6,0,42.7-19.1,42.7-42.7C126.7,60.4,107.6,41.3,84,41.3z"/>
         </svg>
         `;
-      else if (type === "Collecter")
+      else if (type === "collect")
         return `
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
        viewBox="0 0 168 168" style="enable-background:new 0 0 168 168;" xml:space="preserve">
@@ -281,7 +264,7 @@ export default {
             <path style="fill:var(--c-orange);" d="m104.4 105h21.6v21h-21.6z"/>
           </svg>
         `;
-      else if (type === "Remixer")
+      else if (type === "remix")
         return `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
             <circle cx="84.13" cy="84" r="84" style="fill: var(--c-bleuvert)"/>
@@ -289,7 +272,7 @@ export default {
               style="fill: var(--c-bleumarine)"/>
           </svg>
         `;
-      else if (type === "Publier")
+      else if (type === "publish")
         return `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168">
             <circle cx="84" cy="84" r="84" style="fill: var(--c-bleumarine)"/>

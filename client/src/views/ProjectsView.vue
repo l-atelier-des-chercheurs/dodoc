@@ -55,39 +55,42 @@
         <div v-if="connected_as" class="_myProjects">
           <div class="_u-sidepadding _projectsSection">
             <div class="_sectionLabel" :key="'label'">
+              <sl-icon name="person-circle" />
               <h3>
                 {{ $t("my_projects") }}&nbsp;
                 <small>({{ my_projects.length }})</small>
               </h3>
-              <button
-                type="button"
-                class="u-button u-button_red"
-                v-if="connected_as"
-                @click="show_create_modal = true"
-              >
-                <svg
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  x="0px"
-                  y="0px"
-                  viewBox="0 0 168 168"
-                  style="enable-background: new 0 0 168 168"
-                  xml:space="preserve"
+              <div>
+                <button
+                  type="button"
+                  class="u-button u-button_red u-button_small"
+                  v-if="connected_as"
+                  @click="show_create_modal = true"
                 >
-                  <path
-                    style="fill: #fc4b60"
-                    d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
+                  <svg
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 168 168"
+                    style="enable-background: new 0 0 168 168"
+                    xml:space="preserve"
+                  >
+                    <path
+                      style="fill: #fc4b60"
+                      d="M24.6,24.4c-32.8,32.8-32.8,86.1,0,119c32.8,32.8,85.9,32.8,118.7,0c32.8-32.8,32.8-85.9,0-118.7
 		C110.5-8.2,57.5-8.2,24.6,24.4z"
-                  />
-                  <polygon
-                    style="fill: #ffbe32"
-                    points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+                    />
+                    <polygon
+                      style="fill: #ffbe32"
+                      points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
-                  />
-                </svg>
-                {{ $t("create_a_project") }}
-              </button>
+                    />
+                  </svg>
+                  {{ $t("create_a_project") }}
+                </button>
+              </div>
             </div>
 
             <ProjectsList :projects="my_projects" />
@@ -98,8 +101,8 @@
 
         <div class="_u-sidepadding _projectsSection _otherProjects">
           <div class="_sectionLabel" :key="'label'">
+            <sl-icon name="star-fill" />
             <h3>
-              <sl-icon name="check-lg" />
               {{ $t("finished_projects") }}&nbsp;
               <small>({{ finalized_projects.length }})</small>
             </h3>
@@ -111,8 +114,8 @@
 
         <div class="_u-sidepadding _projectsSection _otherProjects">
           <div class="_sectionLabel" :key="'label'">
+            <sl-icon name="cone-striped" />
             <h3>
-              <sl-icon name="cone-striped" />
               {{ $t("projects_in_progress") }}&nbsp;
               <small>({{ draft_projects.length }})</small>
             </h3>
@@ -123,11 +126,15 @@
         <template v-if="is_admin">
           <br />
 
-          <div class="_u-sidepadding _projectsSection _otherProjects">
-            <ProjectsList
-              :label="$t('invisible_nonauthor_projects')"
-              :projects="invisible_nonauthor_projects"
-            />
+          <div class="_u-sidepadding _projectsSection _invisibleProjects">
+            <div class="_sectionLabel" :key="'label'">
+              <sl-icon name="incognito" />
+              <h3>
+                {{ $t("invisible_nonauthor_projects") }}&nbsp;
+                <small>({{ invisible_nonauthor_projects.length }})</small>
+              </h3>
+            </div>
+            <ProjectsList :projects="invisible_nonauthor_projects" />
           </div>
         </template>
       </div>
@@ -269,11 +276,11 @@ export default {
 
   gap: calc(var(--spacing) / 1);
 
-  // background: rgba(255, 255, 255, 0.1);
+  // background: rgba(141, 141, 141, 0.1);
 
   // background: var(--c-bodybg);
   backdrop-filter: blur(12px);
-  mask: linear-gradient(black 60%, transparent);
+  mask: linear-gradient(black 55%, transparent);
 
   padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2)
     calc(var(--spacing) * 2);

@@ -1,11 +1,11 @@
 <template>
   <ProjectCard>
     <div slot="header">
-      {{ $t("visibility_progress") }}
+      {{ $t("visibility") }}
       <sl-icon name="globe" />
     </div>
     <div>
-      {{ $t("visibility_progress_text") }}
+      {{ $t("visibility_text") }}
     </div>
 
     <br />
@@ -19,13 +19,6 @@
         :can_edit="can_edit_project"
         :options="status_options"
       />
-
-      <!-- <br /> -->
-
-      <!-- <DLabel :str="$t('progress')" :instructions="$t('progress_instr')" />
-      <sl-progress-bar value="50" class="progress-bar-values">
-        50%
-      </sl-progress-bar> -->
     </div>
   </ProjectCard>
 </template>
@@ -44,17 +37,17 @@ export default {
         {
           key: "draft",
           text: this.$t("draft"),
-          instruction: "draft_status_explanations",
+          instruction: this.$t("draft_status_explanations"),
         },
         {
           key: "finished",
           text: this.$t("finished"),
-          instruction: "finished_status_explanations",
+          instruction: this.$t("finished_status_explanations"),
         },
         {
           key: "invisible",
           text: this.$t("invisible"),
-          instruction: "invisible_status_explanations_projects",
+          instruction: this.$t("invisible_status_explanations_projects"),
         },
       ],
       // temp value, that uses

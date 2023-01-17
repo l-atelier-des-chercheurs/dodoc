@@ -3,8 +3,11 @@
     <p>
       {{ $t("general_password_modal_text") }}
       <br />
-      <a :href="'mailto:' + contact_email" target="_blank">
-        {{ contact_email }}
+      <a
+        :href="'mailto:' + $root.app_infos.contactmail_of_instance"
+        target="_blank"
+      >
+        {{ $root.app_infos.contactmail_of_instance }}
       </a>
     </p>
 
@@ -53,11 +56,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    contact_email() {
-      return this.$root.app_infos.contactmail_of_instance;
-    },
-  },
+  computed: {},
   methods: {
     async submitGeneralPassword() {
       try {

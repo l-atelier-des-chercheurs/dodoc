@@ -25,12 +25,12 @@
         {
           key: 'contributor',
           text: $t('contributor'),
-          instruction: 'contributor_instructions',
+          instruction: $t('contributor_instructions'),
         },
         {
           key: 'admin',
           text: $t('admin'),
-          instruction: 'admin_instructions',
+          instruction: $t('admin_instructions'),
         },
       ]"
     />
@@ -39,14 +39,12 @@
     <!-- <br /> -->
     <!-- {{ author.email }} -->
     <br />
-    <button
-      type="button"
-      class="u-button"
+
+    <RemoveMenu
       v-if="is_self || is_admin"
-      @click="removeAuthor"
-    >
-      {{ $t("remove") }}
-    </button>
+      :remove_text="$t('remove')"
+      @remove="removeAuthor"
+    />
   </div>
 </template>
 <script>
@@ -81,7 +79,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._authorCard {
-  background: var(--c-gris);
+  // background: var(--c-bleumarine_clair);
+  // border-left: 2px solid var(--c-bleumarine);
   padding: calc(var(--spacing) / 2);
 }
 </style>

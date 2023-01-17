@@ -17,6 +17,7 @@ module.exports = defineConfig({
     // proxy: "https://localhost:8080",
     port: 35500,
     allowedHosts: "all",
+    host: "0.0.0.0",
     headers: { "Access-Control-Allow-Origin": "*" },
     // proxy: {
     //   "^/": {

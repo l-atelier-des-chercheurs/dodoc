@@ -382,7 +382,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._remixPane {
-  background: var(--color-Remixer);
+  background: var(--color-remix);
   height: 100%;
   overflow: auto;
   --active-color: var(--c-vert);

@@ -20,7 +20,7 @@
             <div class="_sticky">
               <div class="_content">
                 <ToggleInput
-                  class="u-button u-button_bleuvert"
+                  class="u-button"
                   :content.sync="display_as_public"
                   :label="$t('display_as_public')"
                 />
@@ -85,8 +85,7 @@ export default {
     if (!this.can_edit_project)
       this.projectpanes = [
         {
-          type: "Publier",
-          pad: {},
+          type: "publish",
           size: 100,
         },
       ];
@@ -120,8 +119,7 @@ export default {
         if (this.display_as_public)
           this.projectpanes = [
             {
-              type: "Publier",
-              pad: {},
+              type: "publish",
               size: 100,
             },
           ];
@@ -143,9 +141,6 @@ export default {
     // },
   },
   computed: {
-    articles() {
-      return this.project.$files.filter((f) => f.is_journal === true) || [];
-    },
     can_edit_project() {
       return this.canLoggedinEditProject({
         project_authors: this.project.$authors,
@@ -270,6 +265,7 @@ export default {
     background: var(--c-bleuvert);
     border: 2px solid var(--c-bleuvert_fonce);
     border-radius: 8px;
+    color: white;
 
     > * {
       padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);

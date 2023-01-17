@@ -1,19 +1,20 @@
 <template>
   <section>
+    <div
+      v-if="projects.length === 0"
+      class="u-instructions _projectsNotice"
+      :key="'noprojects'"
+    >
+      {{ $t("no_projects") }}
+    </div>
     <transition-group
+      v-else
       tag="div"
       class="_projectsList"
       name="StoryModules"
       appear
       :duration="700"
     >
-      <div
-        v-if="projects.length === 0"
-        class="u-instructions"
-        :key="'noprojects'"
-      >
-        {{ $t("no_projects") }}
-      </div>
       <ProjectPresentation
         v-for="project in projects"
         class="_project"
@@ -44,6 +45,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._projectsNotice {
+  width: 100%;
+  text-align: center;
+}
 ._projectsList {
   display: grid;
   grid-auto-rows: max-content;

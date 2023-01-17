@@ -219,7 +219,7 @@ export default {
         $thumbs: this.project.$cover,
         $type: "image",
         $path: this.project.$path,
-        resolution: 2000,
+        resolution: this.context === "full" ? 2000 : 640,
       });
     },
   },
@@ -473,7 +473,8 @@ export default {
 
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-  max-height: calc((100vw - 260px) / 2);
+
+  max-height: calc((100vw - 260px) / 2 + var(--spacing));
 
   @include scrollbar(8px, 5px, 6px);
 

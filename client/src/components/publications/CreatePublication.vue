@@ -17,7 +17,7 @@
             v-for="option in template_options"
             :key="option.key"
             :value="option.key"
-            v-text="$t(option.key)"
+            v-text="option.label"
             :disabled="option.disabled"
           />
         </select>
@@ -78,12 +78,12 @@ export default {
       template_options: [
         {
           key: "story",
-          text: "story",
+          label: this.$t("story"),
         },
         {
           key: "page_by_page",
-          text: "page_by_page",
-          disabled: true,
+          label: this.$t("page_by_page"),
+          // disabled: true,
         },
       ],
 
@@ -99,20 +99,25 @@ export default {
     async createPublication() {
       this.is_creating_publication = true;
 
+      let additional_meta = {
+        title: this.new_publication_title,
+        template: this.new_publication_template,
+        requested_slug: this.new_publication_title,
+        $status:
+          this.new_publication_is_invisible === true ? "invisible" : "draft",
+        $authors: [this.$api.tokenpath.token_path],
+      };
+
+      if (this.new_publication_template === "page_by_page") {
+        additional_meta.page_width = 21;
+        additional_meta.page_height = 29.7;
+      }
+
       // TODO replace with $api
       try {
         const new_folder_slug = await this.$api.createFolder({
           path: `${this.project_path}/publications`,
-          additional_meta: {
-            title: this.new_publication_title,
-            template: this.new_publication_template,
-            requested_slug: this.new_publication_title,
-            $status:
-              this.new_publication_is_invisible === true
-                ? "invisible"
-                : "draft",
-            $authors: [this.$api.tokenpath.token_path],
-          },
+          additional_meta,
         });
         this.$emit("openPubli", new_folder_slug);
       } catch (err) {

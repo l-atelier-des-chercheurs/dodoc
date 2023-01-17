@@ -6,7 +6,8 @@
     </div>
     <template v-else>
       <button type="button" class="u-buttonLink" @click="$emit('close')">
-        {{ $t("close") }}
+        <sl-icon name="arrow-left-short" />
+        {{ $t("back_to_publications") }}
       </button>
 
       <div class="_topbar">
@@ -33,14 +34,11 @@
         /> -->
 
         <div class="_buttonRow">
-          <button
-            type="button"
-            class="u-buttonLink"
+          <RemoveMenu
             v-if="can_edit_publication"
-            @click="removePublication()"
-          >
-            {{ $t("remove") }}
-          </button>
+            :remove_text="$t('remove')"
+            @click="removePublication"
+          />
         </div>
       </div>
       <StoryTemplate
@@ -48,20 +46,29 @@
         :publication="publication"
         :can_edit="can_edit_publication"
       />
+      <PageTemplate
+        v-else-if="publication.template === 'page_by_page'"
+        :publication="publication"
+        :can_edit="can_edit_publication"
+        :page_opened="page_opened"
+        @togglePage="$emit('togglePage', $event)"
+      />
     </template>
   </div>
 </template>
 <script>
-import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
-
 export default {
   props: {
     project_path: String,
     publication_slug: String,
+    page_opened: String,
     can_edit: Boolean,
   },
   components: {
-    StoryTemplate,
+    StoryTemplate: () =>
+      import("@/components/publications/templates/StoryTemplate.vue"),
+    PageTemplate: () =>
+      import("@/components/publications/templates/PageTemplate.vue"),
   },
   data() {
     return {
@@ -76,6 +83,7 @@ export default {
     this.$api.join({ room: this.publication.$path });
   },
   beforeDestroy() {
+    this.$eventHub.$off("folder.removed", this.closeOnRemove);
     this.$api.leave({ room: this.publication.$path });
   },
   watch: {},
@@ -106,14 +114,20 @@ export default {
       }
     },
     async removePublication() {
-      await this.$api
-        .deleteItem({
+      this.fetch_status = "pending";
+      this.fetch_error = null;
+
+      try {
+        const response = await this.$api.deleteItem({
           path: this.publication.$path,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
         });
+        this.response = response.data;
+        this.fetch_status = "success";
+      } catch (e) {
+        this.fetch_status = "error";
+        this.fetch_error = e.response.data;
+        // this.$alertify.delay(4000).error(err);
+      }
     },
   },
 };
@@ -124,9 +138,8 @@ export default {
   width: 100%;
   background: white;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
-  margin: calc(var(--spacing) / 1) auto 0;
-
-  border-bottom: 2px solid var(--c-gris_fonce);
+  margin: calc(var(--spacing) / 1) auto;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   max-width: 800px;
 }
 

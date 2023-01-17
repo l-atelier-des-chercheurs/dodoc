@@ -9,7 +9,7 @@
       <template v-if="projectpanes.length === 0">
         <pane>
           <span class="_msg u-instructions">
-            Choisissez un panneau ci-dessus pour démarrer !
+            {{ $t("choose_a_pane") }}
           </span>
         </pane>
       </template>
@@ -39,21 +39,23 @@
             </div>
           </div>
         </transition>
-        <CapturePane v-if="pane.type === 'Capturer'" :project="project" />
+        <CapturePane v-if="pane.type === 'capture'" :project="project" />
         <MediaLibrary
-          v-else-if="pane.type === 'Collecter'"
+          v-else-if="pane.type === 'collect'"
           :key="pane.key"
           :project="project"
           :media_focused="pane.focus"
-          @update:media_focused="pane.focus = $event"
+          @update:media_focused="setItem(pane, 'focus', $event)"
         />
-        <RemixPane v-if="pane.type === 'Remixer'" :project="project" />
+        <RemixPane v-if="pane.type === 'remix'" :project="project" />
         <PublierPane
-          v-if="pane.type === 'Publier'"
+          v-if="pane.type === 'publish'"
           :project="project"
-          :publication_opened="pane.pad"
+          :publication_opened="pane.folder"
+          :page_opened="pane.page_id"
           :can_edit="can_edit_project"
-          @update:publication_opened="pane.pad = $event"
+          @update:publication_opened="setItem(pane, 'folder', $event)"
+          @update:page_opened="setItem(pane, 'page_id', $event)"
         />
       </pane>
     </splitpanes>
@@ -100,6 +102,15 @@ export default {
     },
   },
   methods: {
+    setItem(pane, prop, $event) {
+      if (
+        (Object.prototype.hasOwnProperty.call(pane, prop) &&
+          pane[prop] === $event) ||
+        !$event
+      )
+        this.$delete(pane, prop);
+      else this.$set(pane, prop, $event);
+    },
     resized(_projectpanessizes) {
       console.log(`Project / methods: resized`);
       let _projectpanes = this.projectpanes.slice();

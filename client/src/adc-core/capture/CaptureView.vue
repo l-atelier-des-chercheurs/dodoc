@@ -179,6 +179,7 @@
             mode="out-in"
           >
             <label
+              class="u-label"
               v-if="
                 selected_mode !== 'stopmotion' &&
                 is_recording &&
@@ -197,7 +198,7 @@
               :key="'timelapse_interval'"
               class="record_options"
             >
-              <label>
+              <label class="u-label">
                 <span>{{ $t("interval_between_pictures") }}</span>
                 <input type="number" v-model.number="timelapse_interval" />
                 <span>{{ $t("seconds") }}</span>
@@ -214,7 +215,7 @@
                 'stream_share_name-' + stream_sharing_informations_status.name
               "
             >
-              <label>
+              <label class="u-label">
                 <span v-html="$t('stream_currently_shared_with_name:')" />
                 <span>
                   <strong>{{ stream_sharing_informations_status.name }}</strong>
@@ -245,7 +246,7 @@
                 'stream_share_name-' + stream_access_informations_status.callee
               "
             >
-              <label>
+              <label class="u-label">
                 <span v-html="$t('stream_shown:')" />
                 <span>
                   <strong>{{
@@ -265,7 +266,7 @@
               :key="'delay_interval'"
               class="record_options"
             >
-              <label>
+              <label class="u-label">
                 <span>{{ $t("delay").toLowerCase() }}</span>
                 <input
                   type="number"
@@ -280,14 +281,14 @@
 
           <transition name="scaleInFade" mode="out-in" duration="100">
             <label
-              v-if="!!delay_before_picture || !!time_before_next_picture"
-              :key="'time_before_' + delay_before_picture"
+              v-if="!!delay_remaining_time || !!time_before_next_picture"
+              :key="'time_before_' + delay_remaining_time"
               mode="out-in"
               class="_delay_timer"
               :class="{ 'is--timelapse': !!time_before_next_picture }"
             >
-              <template v-if="!!delay_before_picture">
-                {{ delay_before_picture }}
+              <template v-if="!!delay_remaining_time">
+                {{ delay_remaining_time }}
               </template>
               <template v-else-if="!!time_before_next_picture">
                 {{ time_before_next_picture }}
@@ -687,7 +688,7 @@
                   <button
                     type="button"
                     v-if="!is_recording"
-                    class="bg-orange button-inline _captureButton"
+                    class="u-button u-button_orange _captureButton"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="setCaptureInit()"
@@ -870,7 +871,7 @@
                       v-model="enable_audio_recording_in_video"
                       :disabled="is_recording"
                     />
-                    <label for="recordVideoWithAudio">{{
+                    <label for="recordVideoWithAudio" class="u-label">{{
                       $t("with_sound")
                     }}</label>
                   </span>
@@ -885,7 +886,7 @@
                   "
                   class="_mode_accessory_range"
                 >
-                  <label>{{ $t("onion_skin") }} </label>
+                  <label class="u-label">{{ $t("onion_skin") }} </label>
                   <input
                     class="_rtl"
                     type="range"
@@ -911,7 +912,7 @@
                   v-if="selected_mode === 'vecto'"
                   class="_mode_accessory_range"
                 >
-                  <label
+                  <label class="u-label"
                     >{{ $t("number_of_colors") }} =
                     {{ vecto_number_of_colors }}</label
                   >
@@ -940,7 +941,9 @@
                     v-if="selected_mode === 'lines'"
                     class="_mode_accessory_range"
                   >
-                    <label>{{ $t("lines_angle") }} = {{ lines_angle }}</label>
+                    <label class="u-label"
+                      >{{ $t("lines_angle") }} = {{ lines_angle }}</label
+                    >
                     <input
                       class=""
                       type="range"
@@ -954,7 +957,7 @@
                     v-if="selected_mode === 'lines'"
                     class="_mode_accessory_range"
                   >
-                    <label
+                    <label class="u-label"
                       >{{ $t("brightness") }} = {{ lines_brightness }}</label
                     >
                     <input
@@ -970,7 +973,9 @@
                     v-if="selected_mode === 'lines'"
                     class="_mode_accessory_range"
                   >
-                    <label>{{ $t("contrast") }} = {{ lines_contrast }}</label>
+                    <label class="u-label"
+                      >{{ $t("contrast") }} = {{ lines_contrast }}</label
+                    >
                     <input
                       class="margin-none"
                       type="range"
@@ -984,7 +989,7 @@
                     v-if="selected_mode === 'lines'"
                     class="_mode_accessory_range"
                   >
-                    <label
+                    <label class="u-label"
                       >{{ $t("lines_density") }} = {{ lines_density }}</label
                     >
                     <input
@@ -1183,7 +1188,7 @@ export default {
       delay_mode_enabled: false,
       delay_seconds: 5,
       delay_event: false,
-      delay_start_time: false,
+      delay_remaining_time: false,
 
       recorder: null,
 
@@ -1357,22 +1362,11 @@ export default {
     time_before_next_picture: function () {
       if (!this.timelapse_start_time) return false;
 
-      const time_since_start = +this.$moment(
-        this.$root.currentTime_millis - this.timelapse_start_time
-      );
+      const time_since_start =
+        this.$root.current_time - this.timelapse_start_time;
       const time_remaining =
         (this.timelapse_interval * 1000 - time_since_start) / 1000;
       return Math.floor(time_remaining + 0.99);
-    },
-    delay_before_picture() {
-      if (!this.delay_start_time) return false;
-      const time_since_start = +this.$moment(
-        this.$root.currentTime_millis - this.delay_start_time
-      );
-      const time_remaining =
-        (this.delay_seconds * 1000 - time_since_start) / 1000;
-      return Math.floor(time_remaining + 0.99);
-      // return this.delay_seconds - seconds_ellapsed_since_click;
     },
     show_videos() {
       return (
@@ -1596,8 +1590,7 @@ export default {
     },
     addStopmotionImage() {
       const smdata = {
-        name:
-          this.slugFolderName + "-" + this.$moment().format("YYYYMMDD_HHmmss"),
+        name: this.slugFolderName + "-" + new Date().getTime(),
         linked_project: this.slugFolderName,
         linked_type: this.type,
         authors: this.$root.current_author
@@ -1713,23 +1706,30 @@ export default {
       }
     },
     startDelay() {
-      this.delay_start_time = this.$root.currentTime_millis;
-      this.delay_event = window.setTimeout(() => {
-        this.setCapture();
-        this.delay_start_time = false;
-        this.delay_event = false;
-      }, this.delay_seconds * 1000);
+      let time_passed = 0;
+      this.delay_remaining_time = this.delay_seconds;
+
+      this.delay_event = window.setInterval(() => {
+        time_passed += 1;
+
+        if (time_passed === this.delay_seconds) {
+          this.setCapture();
+          this.cancelDelay();
+        } else {
+          this.delay_remaining_time = this.delay_seconds - time_passed;
+        }
+      }, 1000);
     },
     cancelDelay() {
-      window.clearTimeout(this.delay_event);
-      this.delay_start_time = false;
+      this.delay_remaining_time = false;
+      window.clearInterval(this.delay_event);
       this.delay_event = false;
     },
     startTimelapseInterval() {
-      this.timelapse_start_time = this.$root.currentTime_millis;
+      this.timelapse_start_time = this.$root.current_time;
       this.timelapse_event = window.setInterval(() => {
         this.setCapture();
-        this.timelapse_start_time = this.$root.currentTime_millis;
+        this.timelapse_start_time = this.$root.current_time;
       }, this.timelapse_interval * 1000);
     },
     stopTimelapseInterval() {
@@ -2136,9 +2136,11 @@ export default {
       justify-content: space-between;
       align-items: center;
 
-      button {
+      button img,
+      button svg {
         width: 3em;
         height: 3em;
+        padding: 0;
       }
 
       > * {
@@ -2226,6 +2228,9 @@ export default {
 ._captureButton {
   position: relative;
   // margin: 0 auto;
+  width: auto;
+  height: auto;
+  flex: 0 0 auto;
   margin: 0 calc(var(--spacing) / 4);
 
   > img {
@@ -2572,8 +2577,8 @@ export default {
   margin: calc(var(--spacing) / 4);
 
   svg {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
   }
 
   &.is--active {

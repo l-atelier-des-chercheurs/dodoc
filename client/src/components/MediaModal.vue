@@ -1,13 +1,14 @@
 <template>
   <div class="_mediaModal">
     <div class="_mediaModal--overlay" @click="$emit('close')" />
+
     <div class="_mediaModal--content">
-      <div
-        class="_preview"
-        :draggable="true"
-        @dragstart="startMediaDrag($event)"
-        @dragend="endMediaDrag()"
-      >
+      <sl-icon-button
+        name="x-circle-fill"
+        class="_mediaModal--closeButton"
+        @click="$emit('close')"
+      />
+      <div class="_preview">
         <!-- <DebugBtn :content="file" /> -->
         <MediaContent :file="file" :resolution="1600" :context="'full'" />
       </div>
@@ -27,10 +28,39 @@
         <br />
         <DateField :title="'date_modified'" :date="file.$date_modified" />
         <br />
-        <sl-button-group class="_focusBtns">
-          <sl-button size="small" @click="$emit('close')">Fermer</sl-button>
-          <sl-button size="small" @click="$emit('remove')">Supprimer</sl-button>
-        </sl-button-group>
+        <div class="">
+          <div>
+            <DownloadFile
+              :filename="file.$media_filename"
+              :fileURL="file.$path"
+            />
+          </div>
+
+          <RemoveMenu
+            :remove_text="$t('remove_media')"
+            @remove="$emit('remove')"
+          />
+
+          <fieldset v-if="show_confirm_delete">
+            <legend class="u-label">{{ $t("remove_project") }}</legend>
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_confirm_delete = false"
+            >
+              {{ $t("cancel") }}
+            </button>
+            <br />
+            <br />
+            <button
+              class="u-button u-button_red"
+              type="button"
+              @click="removeProject"
+            >
+              {{ $t("confirm_removal") }}
+            </button>
+          </fieldset>
+        </div>
       </div>
       <div class="_selectBtn" v-else>
         <button type="button" class="u-buttonLink" @click="$emit('close')">
@@ -57,7 +87,7 @@ export default {
   components: {},
   data() {
     return {
-      is_dragged: false,
+      show_confirm_delete: false,
     };
   },
   created() {},
@@ -72,20 +102,6 @@ export default {
   methods: {
     handleKeyPress($event) {
       if ($event.key === "Escape") this.$emit("close");
-    },
-    startMediaDrag($event) {
-      console.log(`MediaFocus / startMediaDrag`);
-
-      this.is_dragged = true;
-
-      $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
-      $event.dataTransfer.effectAllowed = "move";
-      this.$eventHub.$emit(`mediadrag.start`);
-    },
-    endMediaDrag() {
-      this.is_dragged = false;
-      console.log(`MediaFocus / endMediaDrag`);
-      this.$eventHub.$emit(`mediadrag.end`);
     },
   },
 };
@@ -162,6 +178,18 @@ export default {
       background: white;
       flex: 1 0 240px;
     }
+  }
+}
+
+._mediaModal--closeButton {
+  position: absolute;
+  top: -1em;
+  right: -1em;
+  color: currentColor;
+  font-size: 200%;
+
+  &::part(base) {
+    color: currentColor;
   }
 }
 </style>

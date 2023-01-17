@@ -10,7 +10,7 @@
     </div>
 
     <div class="_homeView--content">
-      <img :src="`${$root.publicPath}i_logo.svg`" class="_dodoclogo" />
+      <!-- <img :src="`${$root.publicPath}i_logo.svg`" class="_dodoclogo" /> -->
 
       <AdminSettings
         v-if="show_settings_modal"
@@ -23,8 +23,11 @@
 
       <p>
         {{ $t("contactmail_of_instance") }}
-        <a :href="'mailto:' + contact_email" target="_blank">
-          {{ contact_email }}
+        <a
+          :href="'mailto:' + $root.app_infos.contactmail_of_instance"
+          target="_blank"
+        >
+          {{ $root.app_infos.contactmail_of_instance }}
         </a>
       </p>
 
@@ -69,9 +72,6 @@ export default {
         "<br />"
       );
     },
-    contact_email() {
-      return this.$root.app_infos.contactmail_of_instance;
-    },
   },
 };
 </script>
@@ -83,11 +83,13 @@ export default {
 ._homeView {
   padding: var(--spacing);
 
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
   max-height: -webkit-fill-available;
 
   display: flex;
   align-items: center;
+
+  padding-bottom: 150px;
 }
 
 ._homeView--content {

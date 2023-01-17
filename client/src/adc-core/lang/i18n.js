@@ -66,15 +66,21 @@ export default function () {
           Apparaîtra sur la page d’accueil uniquement.
           `,
         general_password: "mot de passe général",
-        general_password_instructions: `Limiter l’accès aux projets aux visiteurs munis de ce mot de passe. La page d’accueil restera cependant accessible et 
+        general_password_instructions: `Limiter l’accès aux projets aux visiteurs munies de ce mot de passe. La page d’accueil restera cependant accessible et 
         peut afficher un email de contact pour faire une demande d’accès, si besoin. Laisser le champ vide pour que l’accès soit ouvert à tou·te·s.`,
         general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
         Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
+
+        connection_lost: `Connexion perdue`,
+        connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
+        reload_page: "Recharger cette page",
+        create_page: "Créer une page",
 
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
 
         ui_lang_select: "Langue de l’interface",
+        lang_updated: "La langue a été mise à jour",
 
         signup_password: "mot de passe pour la création d’un compte",
         signup_password_instructions:
@@ -98,16 +104,32 @@ export default function () {
         hide_meta: "Masquer les métadonnées",
         show_description: "Afficher la description",
         hide_description: "Masquer la description",
-        recover_password: "Récupérer mon mon de passe",
+        recover_password: "Récupérer mon de passe",
 
-        visibility_progress: "Visibilité et état d’avancement",
-        visibility_progress_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
-        progress: "Avancement",
-        progress_instr:
-          "Indiquez le degré d’avancement du projet, de 0 à 100%.",
+        visibility: "Visibilité",
+        visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
+
+        publications: "Publications",
+        back_to_publications: "Retour aux publications",
+
+        story: "Récit",
+        page_by_page: "Document page à page",
+
+        format: "Format",
+        format_instructions:
+          "Sélectionnez un format ou définissez les dimensions de la page, en centimètres.",
+        A4_portrait: "A4 en portrait",
+        A4_landscape: "A4 en paysage",
+        A5_portrait: "A5 en portrait",
+        A5_landscape: "A5 en paysage",
+        custom: "Personnalisé",
+        width: "Largeur",
+        height: "Hauteur",
+        pages_spreads: "Aperçu des pages en vis-à-vis",
 
         status: "État",
         list_of_projects: "Liste des projets",
+        no_projects: "Aucun projet à afficher",
         draft: "Brouillon",
         draft_status_explanations:
           "Le projet apparaîtra dans la section <i>brouillon</i> sur la page d’accueil.",
@@ -137,14 +159,19 @@ export default function () {
         restart_to_apply: "Relancez do•doc pour appliquer",
         restart: "Relancer do•doc",
         reveal: "Révéler",
+        choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
+        download: "Télécharger",
 
         medias: "Médias",
         license: "Licence",
+        licence_instructions:
+          "Indiquez ici les conditions de réutilisation de votre contenu.",
         files: "Fichiers",
         template: "Gabarit",
 
         close: "Fermer",
         settings: "Réglages",
+        pages: "Liste des pages",
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
           Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,
@@ -168,6 +195,20 @@ export default function () {
         copyleft_explanations: "<i>Explications à ajouter</i>",
 
         machines_and_materials: "Machines et matériaux",
+
+        take_picture: "Prendre une photo",
+        delay: "Retardateur",
+        seconds: "secondes",
+        no_video_input_available: "Aucune source vidéo disponible",
+        no_audio_input_available: "Aucune source audio disponible",
+        no_audio_output_available: "Aucune sortie audio disponible",
+        echoCancellation: "Suppression de l'écho",
+        noiseSuppression: "Réduction du bruit",
+        grid: "Grille",
+        halfs: "Moitiés",
+        thirds: "Tiers",
+        fourths: "Quarts",
+        reload: "Recharger",
 
         already_added: "Déjà ajouté",
         open: "ouvrir",
@@ -200,6 +241,7 @@ export default function () {
         duplicate: "Dupliquer",
         remove: "Supprimer",
         remove_project: "Supprimer le projet",
+        remove_media: "Supprimer le média",
         confirm_removal: "Confirmer la suppression",
         move_up: "Remonter",
         move_down: "Descendre",
@@ -215,10 +257,6 @@ export default function () {
         object_fit_cover: "Remplir le cadre",
         object_fit_contain: "Remplir sans dépasser",
 
-        disconnect_warning:
-          "Vous avez été déconnectés. Veuillez recharger la page pour vous reconnecter à do•doc.",
-        reload_page: "Recharger cette page",
-
         create_a_module: "Créer un module",
         list_of_archives: "Liste des archives",
         restore_this_version: "Restaurer cette version",
@@ -226,14 +264,19 @@ export default function () {
         general_informations: "Informations sur l’instance",
 
         panes: "Panneaux",
-        "instructions.pane.Capturer":
+        capture: "Capturer",
+        collect: "Collecter",
+        remix: "Remixer",
+        publish: "Publier",
+
+        "instructions.pane.capture":
           "Capturez des images, des vidéos et du sons puis retrouvez les dans le panneau <i>Collecter</i>.",
-        "instructions.pane.Collecter": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
+        "instructions.pane.collect": `Retrouvez ici toutes vos captures. Vous pouvez les légender, les supprimer et les organiser dans des groupes.
           <br />
           Vous pouvez aussi importer des fichiers (photos, vidéos, audios, 3D, PDF ou autre) depuis vos appareils.`,
-        "instructions.pane.Remixer":
+        "instructions.pane.remix":
           "Recadrez, raccourcissez, assemblez et annotez vos médias.",
-        "instructions.pane.Publier": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
+        "instructions.pane.publish": `Créez ici des publications : journal du projet, tutoriel, livret, etc.
           <br />
           Elles contiendront du texte et des éléments que vous avez collecté.`,
       },
@@ -250,6 +293,7 @@ export default function () {
         template: "Template",
 
         ui_lang_select: "Interface language",
+        lang_updated: "The lang has been updated",
       },
       de: {},
       nl: {},

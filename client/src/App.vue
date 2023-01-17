@@ -1,6 +1,8 @@
 -
 <template>
   <div id="app" class="">
+    <DisconnectModal v-if="show_disconnect_modal" />
+
     <div class="_spinner" v-if="$root.is_loading" key="loader">
       <LoaderSpinner />
     </div>
@@ -13,8 +15,8 @@
 
       <template v-else>
         <transition name="fade" mode="out-in">
-          <div class="" :key="$route.path === '/'">
-            <TopBar v-show="$route.path !== '/'" />
+          <div class="">
+            <TopBar />
 
             <transition name="fade_fast" mode="out-in">
               <router-view v-slot="{ Component }" :key="$route.path">
@@ -32,16 +34,19 @@
 <script>
 import TopBar from "@/components/TopBar.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
+import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
 
 export default {
   props: {},
   components: {
     TopBar,
     GeneralPasswordModal,
+    DisconnectModal,
   },
   data() {
     return {
       show_general_password_modal: false,
+      show_disconnect_modal: false,
     };
   },
   created() {
@@ -49,6 +54,7 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
   },
   mounted() {},
   beforeDestroy() {
@@ -60,6 +66,9 @@ export default {
   watch: {},
   computed: {},
   methods: {
+    showDisconnectModal() {
+      this.show_disconnect_modal = true;
+    },
     promptGeneralPassword() {
       this.show_general_password_modal = true;
     },
@@ -113,6 +122,7 @@ export default {
   --input-font-size-big: 1.2rem;
   --input-font-weight: inherit;
   --input-height: 2.5em;
+  --input-height-large: 3em;
   // --input-height-big: 3em;
   // --input-height-small: 1.5em;
   --sl-input-height-small: 1.5rem;
@@ -121,7 +131,7 @@ export default {
   --input-border-color: var(--c-gris_fonce);
   --input-border-color-focus: var(--active-color);
   --input-border-width: 3px;
-  --input-border-radius: 6px;
+  --input-border-radius: 3px;
   --input-bg-color: var(--color-white);
   --input-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
   --input-readonly-bg-color: var(--component-bg-color);
@@ -135,10 +145,10 @@ export default {
   --input-valid-color: var(--state-success);
   --input-valid-border-color: var(--state-success);
 
-  --color-Capturer: var(--c-rouge);
-  --color-Collecter: var(--c-orange);
-  --color-Remixer: var(--c-bleumarine);
-  --color-Publier: var(--c-bleuvert);
+  --color-capture: var(--c-rouge);
+  --color-collect: var(--c-orange);
+  --color-remix: var(--c-bleumarine);
+  --color-publish: var(--c-bleuvert);
 
   --indicator-color: var(--c-vert) !important;
   --active-color: var(--c-bleuvert);
@@ -171,6 +181,8 @@ export default {
   --sl-input-color: black;
   --sl-font-size-x-large: 1.66rem;
   --sl-font-size-xx-large: 2rem;
+
+  accent-color: var(--c-orange);
 }
 
 * {
@@ -224,8 +236,6 @@ body {
         var(--c-bodybg) 1.2000000000000002px
       ) -0.6000000000000001px 0;
   background-size: 30px 30px, 30px 30px, 15px 15px, 15px 15px;
-
-  accent-color: var(--c-vert);
 }
 
 ::selection {
@@ -273,7 +283,7 @@ button {
 
 fieldset {
   border: 2px solid var(--c-gris);
-  background: #f9f9f9;
+  // background: #f9f9f9;
   margin: 0;
 
   legend {
@@ -539,6 +549,21 @@ img {
   }
   &-leave-active {
     position: absolute;
+  }
+}
+
+.scaleInFade {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: center center !important;
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: scale(0.95);
+    opacity: 0;
   }
 }
 </style>
