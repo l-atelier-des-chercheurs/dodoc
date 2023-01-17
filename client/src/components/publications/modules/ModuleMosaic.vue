@@ -20,7 +20,7 @@
             :resolution="1600"
             :context="'full'"
           />
-          <div class="_btnRow" v-if="can_edit">
+          <div class="_btnRow" v-if="can_edit && context !== 'page_by_page'">
             <button
               type="button"
               class="u-buttonLink"
@@ -88,6 +88,7 @@ export default {
   props: {
     publimodule: Object,
     can_edit: Boolean,
+    context: String,
   },
   components: {
     // Splitpanes,

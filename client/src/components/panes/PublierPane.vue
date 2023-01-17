@@ -6,7 +6,7 @@
     }"
   >
     <PublicationsList
-      v-if="!publication_opened || !publication_opened.slug"
+      v-if="!publication_opened"
       :project_path="project.$path"
       :can_edit="can_edit"
       @togglePubli="$emit('update:publication_opened', $event)"
@@ -14,9 +14,14 @@
     <PublicationOpen
       v-else
       :project_path="project.$path"
-      :publication_slug="publication_opened.slug"
+      :publication_slug="publication_opened"
+      :page_opened="page_opened"
       :can_edit="can_edit"
-      @close="$emit('update:publication_opened', {})"
+      @togglePage="$emit('update:page_opened', $event)"
+      @close="
+        $emit('update:publication_opened', false);
+        $emit('update:page_opened', false);
+      "
     />
   </div>
 </template>
@@ -27,7 +32,8 @@ import PublicationOpen from "@/components/publications/PublicationOpen.vue";
 export default {
   props: {
     project: Object,
-    publication_opened: Object,
+    publication_opened: String,
+    page_opened: String,
     can_edit: Boolean,
   },
   components: {

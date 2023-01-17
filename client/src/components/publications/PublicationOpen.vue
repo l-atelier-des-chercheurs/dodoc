@@ -50,6 +50,8 @@
         v-else-if="publication.template === 'page_by_page'"
         :publication="publication"
         :can_edit="can_edit_publication"
+        :page_opened="page_opened"
+        @togglePage="$emit('togglePage', $event)"
       />
     </template>
   </div>
@@ -59,6 +61,7 @@ export default {
   props: {
     project_path: String,
     publication_slug: String,
+    page_opened: String,
     can_edit: Boolean,
   },
   components: {

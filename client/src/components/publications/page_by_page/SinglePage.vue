@@ -1,17 +1,27 @@
 <template>
-  <div class="_singlePage" :style="page_styles">
-    <MoveableItem
-      class="_item"
-      v-for="publimodule in page_modules"
-      :key="publimodule.$path"
-      :publimodule="publimodule"
-      :can_edit="can_edit"
-    />
-    <ModuleCreator
-      v-if="can_edit"
-      :publication_path="publication_path"
-      :page_id="page_id"
-    />
+  <div class="_singlePage">
+    <button type="button" class="u-buttonLink" @click="$emit('close')">
+      <sl-icon name="arrow-left-short" />
+      {{ $t("pages") }}
+    </button>
+
+    <br />
+    <br />
+
+    <div class="_singlePage--pageContent" :style="page_styles">
+      <MoveableItem
+        class="_item"
+        v-for="publimodule in page_modules"
+        :key="publimodule.$path"
+        :publimodule="publimodule"
+        :can_edit="can_edit"
+      />
+      <ModuleCreator
+        v-if="can_edit"
+        :publication_path="publication_path"
+        :page_id="page_id"
+      />
+    </div>
   </div>
 </template>
 <script>
@@ -68,9 +78,14 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._singlePage {
+  padding: calc(var(--spacing) * 1);
+}
+
+._singlePage--pageContent {
   display: block;
   position: relative;
 
+  margin: calc(var(--spacing) * 1) auto;
   width: var(--page-width, 10cm);
   height: var(--page-height, 10cm);
   // transform: scale(0.3);

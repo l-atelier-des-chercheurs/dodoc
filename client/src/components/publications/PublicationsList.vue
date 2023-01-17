@@ -31,7 +31,7 @@
       v-if="show_create_publication"
       :project_path="project_path"
       @close="show_create_publication = false"
-      @openPubli="$emit('togglePubli', { slug: $event })"
+      @openPubli="$emit('togglePubli', $event)"
     />
     <br />
 
@@ -109,10 +109,10 @@ export default {
   methods: {
     openEntry(path) {
       const publication_slug = path.split("/").at(-1);
-      this.$emit("togglePubli", { slug: publication_slug });
+      this.$emit("togglePubli", publication_slug);
     },
     closeEntry() {
-      this.$emit("togglePubli", {});
+      this.$emit("togglePubli", false);
     },
   },
 };

@@ -166,9 +166,14 @@ export default {
   place-content: center;
   align-items: center;
   width: 100%;
+  pointer-events: none;
 
   color: var(--c-bleuvert);
   border-radius: 1rem;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 
 ._typePicker {

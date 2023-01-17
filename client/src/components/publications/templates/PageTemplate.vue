@@ -21,7 +21,13 @@
       v-if="current_view === 'settings' && can_edit"
       :publication="publication"
     />
-    <PagesList v-else :publication="publication" :can_edit="can_edit" />
+    <PagesList
+      v-else
+      :publication="publication"
+      :page_opened="page_opened"
+      :can_edit="can_edit"
+      @togglePage="$emit('togglePage', $event)"
+    />
   </div>
 </template>
 <script>
@@ -31,6 +37,7 @@ import PagesList from "@/components/publications/page_by_page/PagesList.vue";
 export default {
   props: {
     publication: Object,
+    page_opened: String,
     can_edit: Boolean,
   },
   components: {

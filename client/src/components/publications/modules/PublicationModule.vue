@@ -3,7 +3,7 @@
     <div
       class="_sideOptions"
       :class="{
-        'is--floating': context === 'page_by_page',
+        'is--pageByPage': context === 'page_by_page',
       }"
       v-if="can_edit"
     >
@@ -158,6 +158,7 @@
         v-if="publimodule.module_type === 'mosaic'"
         :publimodule="publimodule"
         :can_edit="can_edit"
+        :context="context"
         @updateMeta="updateMeta"
         @remove="$emit('remove')"
       />
@@ -296,10 +297,15 @@ export default {
   width: var(--side-width);
   border-radius: calc(var(--side-width) / 2);
 
-  &.is--floating {
+  &.is--pageByPage {
     position: absolute;
     right: 0;
+    background: transparent;
     top: 0;
+
+    ._sideBtns {
+      background: white;
+    }
   }
 }
 

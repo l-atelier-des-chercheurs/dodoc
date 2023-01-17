@@ -114,7 +114,7 @@ export default {
   watch: {},
   computed: {
     medias() {
-      return this.project.$files.filter((f) => !f.is_journal) || [];
+      return this.project.$files || [];
     },
     sorted_medias() {
       const _medias = JSON.parse(JSON.stringify(this.medias));

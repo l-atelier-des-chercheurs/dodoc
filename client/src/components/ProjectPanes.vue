@@ -52,8 +52,10 @@
           v-if="pane.type === 'publish'"
           :project="project"
           :publication_opened="pane.folder"
+          :page_opened="pane.page_id"
           :can_edit="can_edit_project"
           @update:publication_opened="setItem(pane, 'folder', $event)"
+          @update:page_opened="setItem(pane, 'page_id', $event)"
         />
       </pane>
     </splitpanes>
@@ -102,10 +104,11 @@ export default {
   methods: {
     setItem(pane, prop, $event) {
       if (
-        Object.prototype.hasOwnProperty.call(pane, prop) &&
-        pane[prop] === $event
+        (Object.prototype.hasOwnProperty.call(pane, prop) &&
+          pane[prop] === $event) ||
+        !$event
       )
-        delete pane[prop];
+        this.$delete(pane, prop);
       else this.$set(pane, prop, $event);
     },
     resized(_projectpanessizes) {

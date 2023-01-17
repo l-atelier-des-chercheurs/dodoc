@@ -85,7 +85,7 @@ export default {
     if (!this.can_edit_project)
       this.projectpanes = [
         {
-          type: "Publier",
+          type: "publish",
           size: 100,
         },
       ];
@@ -119,7 +119,7 @@ export default {
         if (this.display_as_public)
           this.projectpanes = [
             {
-              type: "Publier",
+              type: "publish",
               size: 100,
             },
           ];

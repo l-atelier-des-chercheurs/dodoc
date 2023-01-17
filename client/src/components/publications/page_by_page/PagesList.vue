@@ -1,28 +1,33 @@
 <template>
   <div>
-    {{ publication.$path }}
     <div class="_allPages">
-      <div class="" v-for="(page, index) in pages" :key="page.id">
-        {{ $t("page") }} {{ index + 1 }}
+      <div class="_page" v-for="(page, index) in pages" :key="page.id">
+        {{ $t("page") }} {{ index + 1 }} <br />
+        <small> à venir : petit aperçu de la page </small>
+
+        <button
+          type="button"
+          class="_openPage"
+          @click="$emit('togglePage', page.id)"
+        />
       </div>
+
+      <button type="button" class="u-button" @click="createPage">
+        {{ $t("create_page") }}
+      </button>
     </div>
 
-    <div class="_singlePage">
+    <div class="_openedPage" v-if="page_opened">
       <SinglePage
-        v-for="page in pages"
-        :key="page.id"
         :publication_path="publication.$path"
-        :page_modules="getModulesForPage(page.id)"
-        :page_id="page.id"
+        :page_modules="getModulesForPage(page_opened)"
+        :page_id="page_opened"
         :width="publication.page_width"
         :height="publication.page_height"
         :can_edit="can_edit"
+        @close="$emit('togglePage', false)"
       />
     </div>
-
-    <button type="button" class="u-button" @click="createPage">
-      {{ $t("create_page") }}
-    </button>
   </div>
 </template>
 <script>
@@ -31,6 +36,7 @@ import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
 export default {
   props: {
     publication: Object,
+    page_opened: String,
     can_edit: Boolean,
   },
   components: {
@@ -80,6 +86,41 @@ export default {
 ._allPages {
   display: flex;
   flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
   gap: calc(var(--spacing) / 1);
+}
+
+._page {
+  position: relative;
+  background: white;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  width: 210px;
+  height: 297px;
+}
+
+._openedPage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+
+  background: var(--color-publish);
+
+  text-align: center;
+  overflow: auto;
+
+  padding: calc(var(--spacing) * 2);
+}
+
+._openPage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
 }
 </style>

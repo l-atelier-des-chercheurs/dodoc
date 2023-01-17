@@ -8,10 +8,12 @@
   </div> -->
   <DDR
     class="_moveableItem"
+    :active="can_edit"
     :key="component_key"
     :value="transform"
     :parent="true"
     :acceptRatio="false"
+    :handlerSize="15"
     @dragend="dragEnd"
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
@@ -19,7 +21,7 @@
     <!-- <div class="_moveableItem--content"> -->
     <!-- style="background: red; width: 100%; height: 100%" -->
     <PublicationModule
-      class="_mediaPublication"
+      class="_moveableItem--content"
       :publimodule="publimodule"
       :can_edit="can_edit"
       :context="'page_by_page'"
@@ -30,6 +32,8 @@
   </DDR>
 </template>
 <script>
+/* eslint-disable */
+import DDR from "@/ddr/index.vue"; // eslint-disable-line
 // import DDR from "yoyoo-ddr";
 import "yoyoo-ddr/dist/yoyoo-ddr.css";
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
@@ -127,19 +131,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._moveableItem {
-  width: 50px;
-}
-
 ._moveableItem--content {
   overflow: hidden;
-
-  ::v-deep ._publicationModule {
-    padding: 0;
-  }
-}
-
-._mediaPublication {
+  height: 100%;
   padding: 0;
 }
 </style>

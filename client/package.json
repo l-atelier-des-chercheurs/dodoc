@@ -19,6 +19,7 @@
     "core-js": "^3.26.1",
     "debounce": "^1.2.1",
     "imagetracerjs": "^1.2.6",
+    "less-loader": "^11.1.0",
     "moment": "^2.29.4",
     "moveable": "^0.42.2",
     "portal-vue": "^2.1.7",
