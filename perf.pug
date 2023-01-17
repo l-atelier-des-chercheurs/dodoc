@@ -9,8 +9,9 @@ html
     <div id="app">
       <input type="url" v-model="url" /><br>
       <input type="number" v-model.number="count" /><br>
+      <input type="range" v-model.number="width" min="100" max="800" /><br>
       <div class="iframes">
-        <iframe v-for="i in Array(count).fill(undefined)" :key="i" :src="url" width="500" height="700">
+        <iframe v-for="i in Array(count).fill(undefined)" :key="i" :src="url" :width="width" height="700">
         </iframe>
       </div>
     </div>
@@ -26,6 +27,7 @@ html
       el: '#app',
       data: {
         count: 4,
+        width: 500,
         url: `${window.location.origin}/projects`,
         local_ips
       }
