@@ -55,9 +55,6 @@
   </div>
 </template>
 <script>
-import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
-import PageTemplate from "@/components/publications/templates/PageTemplate.vue";
-
 export default {
   props: {
     project_path: String,
@@ -65,8 +62,10 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    StoryTemplate,
-    PageTemplate,
+    StoryTemplate: () =>
+      import("@/components/publications/templates/StoryTemplate.vue"),
+    PageTemplate: () =>
+      import("@/components/publications/templates/PageTemplate.vue"),
   },
   data() {
     return {
