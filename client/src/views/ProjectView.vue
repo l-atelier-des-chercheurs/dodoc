@@ -86,7 +86,6 @@ export default {
       this.projectpanes = [
         {
           type: "Publier",
-          pad: {},
           size: 100,
         },
       ];
@@ -121,7 +120,6 @@ export default {
           this.projectpanes = [
             {
               type: "Publier",
-              pad: {},
               size: 100,
             },
           ];
@@ -143,9 +141,6 @@ export default {
     // },
   },
   computed: {
-    articles() {
-      return this.project.$files.filter((f) => f.is_journal === true) || [];
-    },
     can_edit_project() {
       return this.canLoggedinEditProject({
         project_authors: this.project.$authors,

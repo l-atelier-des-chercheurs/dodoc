@@ -127,19 +127,15 @@ export default {
       possible_project_panes: [
         {
           type: "capture",
-          mode: false,
         },
         {
           type: "collect",
-          focus: false,
         },
         {
           type: "remix",
-          pad: {},
         },
         {
           type: "publish",
-          pad: {},
         },
       ],
     };

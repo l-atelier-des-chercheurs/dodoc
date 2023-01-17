@@ -45,15 +45,15 @@
           :key="pane.key"
           :project="project"
           :media_focused="pane.focus"
-          @update:media_focused="pane.focus = $event"
+          @update:media_focused="setItem(pane, 'focus', $event)"
         />
         <RemixPane v-if="pane.type === 'remix'" :project="project" />
         <PublierPane
           v-if="pane.type === 'publish'"
           :project="project"
-          :publication_opened="pane.pad"
+          :publication_opened="pane.folder"
           :can_edit="can_edit_project"
-          @update:publication_opened="pane.pad = $event"
+          @update:publication_opened="setItem(pane, 'folder', $event)"
         />
       </pane>
     </splitpanes>
@@ -100,6 +100,14 @@ export default {
     },
   },
   methods: {
+    setItem(pane, prop, $event) {
+      if (
+        Object.prototype.hasOwnProperty.call(pane, prop) &&
+        pane[prop] === $event
+      )
+        delete pane[prop];
+      else this.$set(pane, prop, $event);
+    },
     resized(_projectpanessizes) {
       console.log(`Project / methods: resized`);
       let _projectpanes = this.projectpanes.slice();
