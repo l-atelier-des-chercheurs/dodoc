@@ -219,7 +219,7 @@ export default {
         $thumbs: this.project.$cover,
         $type: "image",
         $path: this.project.$path,
-        resolution: 2000,
+        resolution: this.context === "full" ? 2000 : 640,
       });
     },
   },
