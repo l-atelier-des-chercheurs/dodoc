@@ -286,6 +286,7 @@ export default {
   height: 100%;
   right: 100%;
   background: rgba(0, 0, 0, 0.05);
+  pointer-events: none;
 
   z-index: 100;
 
@@ -302,10 +303,13 @@ export default {
     right: 0;
     background: transparent;
     top: 0;
-
     ._sideBtns {
       background: white;
     }
+  }
+
+  > * {
+    pointer-events: auto;
   }
 }
 

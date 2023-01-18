@@ -18,6 +18,11 @@
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
+    <!-- x={{ transform.x }}; y={{ transform.y }}; width={{ transform.width }};
+    height={{ transform.height }}<br />
+    x={{ publimodule.x }}; y={{ publimodule.y }}; width={{ publimodule.width }};
+    height={{ publimodule.height }} -->
+
     <!-- <div class="_moveableItem--content"> -->
     <!-- style="background: red; width: 100%; height: 100%" -->
     <PublicationModule
@@ -52,11 +57,13 @@ export default {
   data() {
     return {
       transform: { x: 100, y: 100, width: 300, height: 300, rotation: 0 },
+
       component_key: 1,
     };
   },
   created() {
-    if (this.publimodule.x) this.updateTransformFromPubli();
+    // if (this.publimodule.x)
+    this.setTransformFromPubli();
     // else debugger;
     // todo get ratio from linked image, set initial transform based on that
 
@@ -68,7 +75,7 @@ export default {
     publimodule: {
       handler() {
         // todo change key to re-render component if coordinates were changed and diff from transform (means it was changed on another client)
-        const was_updated = this.updateTransformFromPubli();
+        const was_updated = this.setTransformFromPubli();
         if (was_updated) this.setNewComponentKey();
       },
       deep: true,
@@ -79,41 +86,68 @@ export default {
     setNewComponentKey() {
       this.component_key = new Date().getTime();
     },
-    updateTransformFromPubli() {
+    setTransformFromPubli() {
       let was_updated = false;
+
       Object.keys(this.transform).map((k) => {
-        if (typeof this.publimodule[k] === "number")
-          if (this.transform[k] !== this.publimodule[k]) {
-            this.transform[k] = this.publimodule[k];
-            was_updated = true;
+        if (typeof this.publimodule[k] === "number") {
+          if (["x", "y", "width", "height"].includes(k)) {
+            const px = this.turnCMtoPX(this.publimodule[k]);
+            if (this.transform[k] !== px) {
+              this.transform[k] = px;
+              was_updated = true;
+            }
+          } else if (k === "rotation") {
+            if (this.transform[k] !== this.publimodule[k]) {
+              this.transform[k] = this.publimodule[k];
+              was_updated = true;
+            }
           }
+        }
       });
       return was_updated;
       // this.$set(this.transform, k, this.publimodule[k]);
+    },
+    turnCMtoPX(num) {
+      return this.roundToDec(num * 37.8);
+    },
+    turnPXtoCM(num) {
+      return this.roundToDec(num / 37.8);
+    },
+    roundToDec(num) {
+      return Math.round((num + Number.EPSILON) * 100) / 100;
     },
     dragEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 
       this.transform = transform;
-      this.updateMeta(transform);
+      this.updateTransform(transform);
     },
     resizeEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 
       this.transform = transform;
-      this.updateMeta(transform);
+      this.updateTransform(transform);
     },
     rotateEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 
       this.transform = transform;
-      this.updateMeta(transform);
+      this.updateTransform(transform);
     },
-    async updateMeta(new_meta) {
-      // transform to x, y, width, height, rotation
+    async updateTransform(transform) {
+      let new_meta = JSON.parse(JSON.stringify(transform));
+      Object.keys(new_meta).map((k) => {
+        if (["x", "y", "width", "height"].includes(k)) {
+          new_meta[k] = this.turnPXtoCM(new_meta[k]);
+          // update transform with this value
+          this.transform[k] = this.turnCMtoPX(new_meta[k]);
+        }
+      });
+
       await this.$api
         .updateMeta({
           path: this.publimodule.$path,
@@ -132,8 +166,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._moveableItem--content {
-  overflow: hidden;
   height: 100%;
   padding: 0;
+
+  ::v-deep ._content {
+    height: 100%;
+    overflow: hidden;
+  }
 }
 </style>

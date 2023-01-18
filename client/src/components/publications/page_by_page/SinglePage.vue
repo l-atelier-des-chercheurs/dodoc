@@ -88,6 +88,8 @@ export default {
   margin: calc(var(--spacing) * 1) auto;
   width: var(--page-width, 10cm);
   height: var(--page-height, 10cm);
+
+  overflow: hidden;
   // transform: scale(0.3);
 
   background: white;
