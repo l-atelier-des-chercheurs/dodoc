@@ -14,14 +14,16 @@
     :parent="true"
     :acceptRatio="false"
     :handlerSize="15"
+    :grid="[10, 10]"
+    :id="publimodule.$path"
     @dragend="dragEnd"
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
     <!-- x={{ transform.x }}; y={{ transform.y }}; width={{ transform.width }};
-    height={{ transform.height }}<br />
+    height={{ transform.height }}<br /> -->
     x={{ publimodule.x }}; y={{ publimodule.y }}; width={{ publimodule.width }};
-    height={{ publimodule.height }} -->
+    height={{ publimodule.height }}
 
     <!-- <div class="_moveableItem--content"> -->
     <!-- style="background: red; width: 100%; height: 100%" -->
@@ -49,6 +51,7 @@ export default {
   props: {
     publimodule: Object,
     can_edit: Boolean,
+    magnification: Number,
   },
   components: {
     DDR,
@@ -80,6 +83,10 @@ export default {
       },
       deep: true,
     },
+    magnification() {
+      const was_updated = this.setTransformFromPubli();
+      if (was_updated) this.setNewComponentKey();
+    },
   },
   computed: {},
   methods: {
@@ -109,10 +116,10 @@ export default {
       // this.$set(this.transform, k, this.publimodule[k]);
     },
     turnCMtoPX(num) {
-      return this.roundToDec(num * 37.8);
+      return this.roundToDec(num * this.magnification);
     },
     turnPXtoCM(num) {
-      return this.roundToDec(num / 37.8);
+      return this.roundToDec(num / this.magnification);
     },
     roundToDec(num) {
       return Math.round((num + Number.EPSILON) * 100) / 100;

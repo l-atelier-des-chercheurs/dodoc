@@ -8,13 +8,53 @@
     <br />
     <br />
 
+    <input type="range" v-model.number="magnification" />
+
     <div class="_singlePage--pageContent" :style="page_styles">
+      <svg
+        class="_grid"
+        width="100%"
+        height="100%"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <pattern
+            id="gridSmall"
+            width="10"
+            height="10"
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d="M 10 0 L 0 0 0 10"
+              fill="none"
+              stroke="rgba(207, 207, 207, 0.2)"
+              strokeWidth="1"
+            ></path>
+          </pattern>
+          <pattern
+            id="grid"
+            width="100"
+            height="100"
+            patternUnits="userSpaceOnUse"
+          >
+            <rect width="100" height="100" fill="url(#gridSmall)"></rect>
+            <path
+              d="M 100 0 L 0 0 0 100"
+              fill="none"
+              stroke="rgba(186, 186, 186, 0.1)"
+              strokeWidth="1"
+            ></path>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid)"></rect>
+      </svg>
       <MoveableItem
         class="_item"
         v-for="publimodule in page_modules"
         :key="publimodule.$path"
         :publimodule="publimodule"
         :can_edit="can_edit"
+        :magnification="magnification"
       />
       <ModuleCreator
         v-if="can_edit"
@@ -44,6 +84,7 @@ export default {
   data() {
     return {
       items: [{ src: "images/i_add_publi.svg" }, { src: "images/i_add.svg" }],
+      magnification: 30,
     };
   },
   created() {},
@@ -53,8 +94,8 @@ export default {
   computed: {
     page_styles() {
       return `
-        --page-width: ${this.width}cm;
-        --page-height: ${this.height}cm;
+        --page-width: ${this.width * this.magnification}px;
+        --page-height: ${this.height * this.magnification}px;
       `;
     },
   },
@@ -98,5 +139,10 @@ export default {
 
 ._item {
   // position: absolute;
+}
+
+._grid {
+  width: 100%;
+  height: 100%;
 }
 </style>
