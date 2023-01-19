@@ -16,17 +16,11 @@
     :handlerSize="15"
     :grid="[10, 10]"
     :id="publimodule.$path"
+    :zoom="zoom"
     @dragend="dragEnd"
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
-    <!-- x={{ transform.x }}; y={{ transform.y }}; width={{ transform.width }};
-    height={{ transform.height }}<br /> -->
-    x={{ publimodule.x }}; y={{ publimodule.y }}; width={{ publimodule.width }};
-    height={{ publimodule.height }}
-
-    <!-- <div class="_moveableItem--content"> -->
-    <!-- style="background: red; width: 100%; height: 100%" -->
     <PublicationModule
       class="_moveableItem--content"
       :publimodule="publimodule"
@@ -35,7 +29,11 @@
       @duplicate="duplicateModule"
       @remove="removeModule"
     />
-    <!-- </div> -->
+    <small class="_coords">
+      x={{ publimodule.x }}; y={{ publimodule.y }}; width={{
+        publimodule.width
+      }}; height={{ publimodule.height }}
+    </small>
   </DDR>
 </template>
 <script>
@@ -52,6 +50,7 @@ export default {
     publimodule: Object,
     can_edit: Boolean,
     magnification: Number,
+    zoom: Number,
   },
   components: {
     DDR,
@@ -180,5 +179,13 @@ export default {
     height: 100%;
     overflow: hidden;
   }
+}
+._coords {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: white;
+  margin: calc(var(--spacing) * 1);
+  // padding: calc(var(--spacing) * 1);
 }
 </style>

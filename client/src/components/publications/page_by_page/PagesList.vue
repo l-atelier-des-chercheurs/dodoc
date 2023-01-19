@@ -2,8 +2,15 @@
   <div>
     <div class="_allPages">
       <div class="_page" v-for="(page, index) in pages" :key="page.id">
+        <SinglePage
+          :context="'list'"
+          :initial_zoom="0.2"
+          :page_modules="getModulesForPage(page.id)"
+          :width="publication.page_width"
+          :height="publication.page_height"
+          :can_edit="false"
+        />
         {{ $t("page") }} {{ index + 1 }} <br />
-        <small> à venir : petit aperçu de la page </small>
 
         <button
           type="button"
@@ -19,6 +26,7 @@
 
     <div class="_openedPage" v-if="page_opened">
       <SinglePage
+        :context="'full'"
         :publication_path="publication.$path"
         :page_modules="getModulesForPage(page_opened)"
         :page_id="page_opened"
@@ -93,10 +101,10 @@ export default {
 
 ._page {
   position: relative;
-  background: white;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-  width: 210px;
-  height: 297px;
+  // background: white;
+  // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  // width: 210px;
+  // height: 297px;
 }
 
 ._openedPage {
