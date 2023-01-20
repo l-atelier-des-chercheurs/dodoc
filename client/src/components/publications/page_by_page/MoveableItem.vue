@@ -184,7 +184,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._moveableItem {
-  transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  transition-property: left, top, right, bottom;
+  transition-duration: 0.15s;
+  transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  // transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 ._moveableItem--content {
