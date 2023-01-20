@@ -26,7 +26,14 @@
           {{ $t("create_page") }}
         </button>
       </div>
-      <div class="_openedPage" v-else key="openedpage">
+      <div
+        class="_openedPage"
+        v-else
+        key="openedpage"
+        :class="{
+          'is--editable': can_edit,
+        }"
+      >
         <SinglePage
           :context="'full'"
           :page_number="page_opened_index"
@@ -123,6 +130,8 @@ export default {
 }
 ._pagePreview {
   position: relative;
+  overflow: hidden;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
 }
 
 ._openPage {
@@ -141,11 +150,14 @@ export default {
   height: 100%;
   z-index: 10;
 
-  background: var(--color-publish);
-
   text-align: center;
   overflow: auto;
 
   padding: calc(var(--spacing) * 2);
+  background: var(--c-bodybg);
+
+  &.is--editable {
+    background: var(--color-publish);
+  }
 }
 </style>
