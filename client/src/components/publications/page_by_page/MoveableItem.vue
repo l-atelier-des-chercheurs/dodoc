@@ -11,7 +11,7 @@
     :active="can_edit && is_active === publimodule.$path"
     :key="component_key"
     :value="transform"
-    :parent="true"
+    :parent="false /* bind to container */"
     :acceptRatio="false"
     :handlerSize="15"
     :grid="grid"
