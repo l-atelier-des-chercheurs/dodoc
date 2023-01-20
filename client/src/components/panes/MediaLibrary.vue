@@ -1,5 +1,5 @@
 <template>
-  <div class="_mediaLibrary">
+  <div class="_mediaLibrary" @dragover="onDragover">
     <section class="_scrollBox">
       <div class="_topSection">
         <input
@@ -69,6 +69,12 @@
         @select="selectMedia(focused_media.$path)"
       />
     </transition>
+
+    <transition name="dropzone" :duration="150">
+      <div class="_dropzone" v-if="show_dropzone">
+        <DropZone @mediaDropped="mediaDropped" />
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -99,6 +105,9 @@ export default {
       url_to: "https://latelier-des-chercheurs.fr/",
 
       media_just_focused: undefined,
+
+      show_dropzone: false,
+      hide_dropzone_timeout: undefined,
     };
   },
   created() {},
@@ -136,6 +145,14 @@ export default {
     },
   },
   methods: {
+    onDragover() {
+      this.show_dropzone = true;
+
+      clearTimeout(this.hide_dropzone_timeout);
+      this.hide_dropzone_timeout = setTimeout(() => {
+        this.show_dropzone = false;
+      }, 500);
+    },
     scrollToMediaTile(path) {
       path;
       // const focused_tile = this.$refs.mediaTiles.querySelector(
@@ -151,6 +168,11 @@ export default {
     updateInputFiles($event) {
       this.selected_files = Array.from($event.target.files);
       $event.target.value = "";
+    },
+    mediaDropped(files) {
+      this.selected_files = Array.from(files);
+      this.show_dropzone = false;
+      // debugger;
     },
     mediaJustImported(list_of_added_metas) {
       list_of_added_metas;

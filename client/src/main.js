@@ -96,6 +96,23 @@ Vue.component("LoaderSpinner", {
   template: `<sl-spinner style="font-size: 2rem; --indicator-color: currentColor" />`,
 });
 
+document.addEventListener(
+  "dragover",
+  function (event) {
+    event.preventDefault();
+    return false;
+  },
+  false
+);
+document.addEventListener(
+  "drop",
+  function (event) {
+    event.preventDefault();
+    return false;
+  },
+  false
+);
+
 import FormatDates from "@/mixins/FormatDates";
 Vue.mixin(FormatDates);
 import Medias from "@/mixins/Medias";

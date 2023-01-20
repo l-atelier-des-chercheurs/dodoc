@@ -37,7 +37,7 @@
           <RemoveMenu
             v-if="can_edit_publication"
             :remove_text="$t('remove')"
-            @click="removePublication"
+            @remove="removePublication"
           />
         </div>
       </div>
@@ -116,6 +116,8 @@ export default {
     async removePublication() {
       this.fetch_status = "pending";
       this.fetch_error = null;
+
+      debugger;
 
       try {
         const response = await this.$api.deleteItem({

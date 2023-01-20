@@ -44,6 +44,9 @@ export default {
       $event.preventDefault();
       $event.dataTransfer.dropEffect = "link";
 
+      if ($event.dataTransfer.files?.length > 0)
+        this.$emit("mediaDropped", $event.dataTransfer.files);
+
       if (!$event.dataTransfer.getData("text/plain")) return false;
 
       const file = JSON.parse($event.dataTransfer.getData("text/plain"));

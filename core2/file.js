@@ -268,8 +268,9 @@ module.exports = (function () {
       dev.logfunction({ path_to_folder, meta_filename });
 
       try {
-        // todo remove file thumbs
         await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
+        // todo check if file exists in sharedb collection, remove
+        // await serverRTC.removeDoc({});
 
         if (global.settings.removePermanently === true)
           await _removeFileForGood({ path_to_folder, meta_filename });

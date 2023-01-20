@@ -6,7 +6,7 @@
           <PublicationModule
             class="_mediaPublication"
             :key="meta_filename"
-            :publimodule="findFileFromMetaFilename(meta_filename)"
+            :publimodule="findModuleFromMetaFilename(meta_filename)"
             :module_position="
               modules_list.length === 1
                 ? 'alone'
@@ -21,7 +21,7 @@
             @moveUp="moveTo({ meta_filename, dir: -1 })"
             @moveDown="moveTo({ meta_filename, dir: +1 })"
             @duplicate="duplicatePublicationMedia(meta_filename)"
-            @remove="removePublicationMedia(meta_filename)"
+            @remove="removeModuleFromList(meta_filename)"
           />
           <div class="_spacer" :key="'mc_' + index">
             <ModuleCreator
@@ -78,7 +78,7 @@ export default {
       ) {
         const modules_list = this.publication.modules_list.reduce(
           (acc, meta_filename) => {
-            const _module = this.findFileFromMetaFilename(meta_filename);
+            const _module = this.findModuleFromMetaFilename(meta_filename);
             if (_module) {
               acc.push(meta_filename);
             }
@@ -129,7 +129,7 @@ export default {
         this.fetch_error = e.response.data;
       }
     },
-    findFileFromMetaFilename(meta_filename) {
+    findModuleFromMetaFilename(meta_filename) {
       return this.publication.$files.find((f) => {
         const _meta_name = f.$path.substring(f.$path.lastIndexOf("/") + 1);
         return _meta_name === meta_filename;
@@ -151,7 +151,7 @@ export default {
       // if its source_medias include text modules, copy these medias as well
       meta_filename;
     },
-    async removePublicationMedia(meta_filename) {
+    async removeModuleFromList(meta_filename) {
       let modules_list = this.modules_list.slice();
       modules_list = modules_list.filter((_mf) => _mf !== meta_filename);
       this.response = await this.$api.updateMeta({
@@ -160,31 +160,6 @@ export default {
           modules_list,
         },
       });
-
-      const file = this.findFileFromMetaFilename(meta_filename);
-
-      try {
-        for (let sm of file.source_medias) {
-          if (sm.path.includes("/publications/")) {
-            // this media is specific to publications, lets remove it
-            await this.$api.deleteItem({
-              path: sm.path,
-            });
-          }
-        }
-      } catch (err) {
-        this.$alertify.delay(4000).error(err);
-        throw err;
-      }
-
-      await this.$api
-        .deleteItem({
-          path: file.$path,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
     },
     async updatePubliMeta(new_meta) {
       return await this.$api.updateMeta({
@@ -224,6 +199,10 @@ export default {
 
   ::v-deep > * {
     // height: 100%;
+
+    ._content {
+      min-height: calc(24px * 3);
+    }
   }
 }
 ._spacer {

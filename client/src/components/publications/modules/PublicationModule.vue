@@ -126,7 +126,7 @@
             <button type="button" class="u-button" disabled>
               {{ $t("duplicate") }}
             </button>
-            <button type="button" class="u-button" @click="$emit('remove')">
+            <button type="button" class="u-button" @click="removeModule">
               {{ $t("remove") }}
             </button>
           </div>
@@ -160,7 +160,7 @@
         :can_edit="can_edit"
         :context="context"
         @updateMeta="updateMeta"
-        @remove="$emit('remove')"
+        @remove="removeModule"
       />
       <ModuleCarousel
         v-else-if="publimodule.module_type === 'carousel'"
@@ -264,6 +264,35 @@ export default {
         if (this.$refs.textBloc) this.$refs.textBloc.enableEditor();
       });
     },
+    async removeModule() {
+      // todo  remove source medias that are part publications
+      // todo also empty sharedb path, since $path can be retaken
+      //       try {
+      //   for (let sm of file.source_medias) {
+      //     if (sm.path.includes("/publications/")) {
+      //       // this media is specific to publications, lets remove it
+      //       await this.$api.deleteItem({
+      //         path: sm.path,
+      //       });
+      //     }
+      //   }
+      // } catch (err) {
+      //   this.$alertify.delay(4000).error(err);
+      //   throw err;
+      // }
+
+      // remove module,
+      await this.$api
+        .deleteItem({
+          path: this.publimodule.$path,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
+
+      this.$emit("remove");
+    },
   },
 };
 </script>
@@ -273,7 +302,6 @@ export default {
   padding: 0 calc(var(--spacing) * 1);
 
   ._content {
-    min-height: calc(24px * 3);
     width: calc(var(--module-width) * 1%);
     margin-left: calc(var(--module-margin-left) * 1%);
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -286,6 +314,7 @@ export default {
   height: 100%;
   right: 100%;
   background: rgba(0, 0, 0, 0.05);
+  pointer-events: none;
 
   z-index: 100;
 
@@ -302,10 +331,13 @@ export default {
     right: 0;
     background: transparent;
     top: 0;
-
     ._sideBtns {
       background: white;
     }
+  }
+
+  > * {
+    pointer-events: auto;
   }
 }
 

@@ -1,33 +1,45 @@
 <template>
   <div>
-    <div class="_allPages">
-      <div class="_page" v-for="(page, index) in pages" :key="page.id">
-        {{ $t("page") }} {{ index + 1 }} <br />
-        <small> à venir : petit aperçu de la page </small>
+    <transition name="slideup">
+      <div v-if="!page_opened" class="_allPages" key="allpages">
+        <div class="_page" v-for="(page, index) in pages" :key="page.id">
+          <div class="_pagePreview">
+            <SinglePage
+              :context="'list'"
+              :initial_zoom="0.2"
+              :page_modules="getModulesForPage(page.id)"
+              :width="publication.page_width"
+              :height="publication.page_height"
+              :can_edit="false"
+            />
+            <button
+              type="button"
+              class="_openPage"
+              @click="$emit('togglePage', page.id)"
+            />
+          </div>
+          <b>{{ $t("page") }} {{ index + 1 }}</b>
+          <RemoveMenu v-if="can_edit" @remove="removePage(page.id)" />
+        </div>
 
-        <button
-          type="button"
-          class="_openPage"
-          @click="$emit('togglePage', page.id)"
+        <button type="button" class="u-button" @click="createPage">
+          {{ $t("create_page") }}
+        </button>
+      </div>
+      <div class="_openedPage" v-else key="openedpage">
+        <SinglePage
+          :context="'full'"
+          :page_number="page_opened_index"
+          :publication_path="publication.$path"
+          :page_modules="getModulesForPage(page_opened)"
+          :page_id="page_opened"
+          :width="publication.page_width"
+          :height="publication.page_height"
+          :can_edit="can_edit"
+          @close="$emit('togglePage', false)"
         />
       </div>
-
-      <button type="button" class="u-button" @click="createPage">
-        {{ $t("create_page") }}
-      </button>
-    </div>
-
-    <div class="_openedPage" v-if="page_opened">
-      <SinglePage
-        :publication_path="publication.$path"
-        :page_modules="getModulesForPage(page_opened)"
-        :page_id="page_opened"
-        :width="publication.page_width"
-        :height="publication.page_height"
-        :can_edit="can_edit"
-        @close="$emit('togglePage', false)"
-      />
-    </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -53,6 +65,9 @@ export default {
     pages() {
       return this.publication.pages;
     },
+    page_opened_index() {
+      return this.pages.findIndex((p) => p.id === this.page_opened);
+    },
   },
   methods: {
     createPage() {
@@ -65,6 +80,14 @@ export default {
       pages.push({
         id: new_page_id,
       });
+
+      this.updatePubliMeta({
+        pages,
+      });
+    },
+    removePage(id) {
+      let pages = this.publication.pages.slice();
+      pages = pages.filter((p) => p.id !== id);
 
       this.updatePubliMeta({
         pages,
@@ -93,12 +116,23 @@ export default {
 
 ._page {
   position: relative;
-  background: white;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-  width: 210px;
-  height: 297px;
+  // background: white;
+  // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  // width: 210px;
+  // height: 297px;
+}
+._pagePreview {
+  position: relative;
 }
 
+._openPage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
 ._openedPage {
   position: absolute;
   top: 0;
@@ -113,14 +147,5 @@ export default {
   overflow: auto;
 
   padding: calc(var(--spacing) * 2);
-}
-
-._openPage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent;
 }
 </style>

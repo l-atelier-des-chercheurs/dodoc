@@ -1,5 +1,10 @@
 <template>
-  <a :download="filename" :href="fileURL" target="_blank" class="u-buttonLink">
+  <a
+    :download="file.$media_filename"
+    :href="file_url"
+    target="_blank"
+    class="u-buttonLink"
+  >
     <sl-icon name="file-earmark-arrow-down" />
     {{ $t("download") }}
   </a>
@@ -7,8 +12,7 @@
 <script>
 export default {
   props: {
-    filename: String,
-    fileURL: String,
+    file: Object,
   },
   components: {},
   data() {
@@ -18,7 +22,14 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    file_url() {
+      return this.makeMediaFileURL({
+        $path: this.file.$path,
+        $media_filename: this.file.$media_filename,
+      });
+    },
+  },
   methods: {},
 };
 </script>
