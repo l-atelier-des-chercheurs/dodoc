@@ -30,10 +30,7 @@
         <br />
         <div class="">
           <div>
-            <DownloadFile
-              :filename="file.$media_filename"
-              :fileURL="file.$path"
-            />
+            <DownloadFile :file="file" />
           </div>
 
           <RemoveMenu
