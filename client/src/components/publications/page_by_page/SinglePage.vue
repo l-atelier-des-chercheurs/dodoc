@@ -38,6 +38,7 @@
     <div class="_container" :style="page_styles">
       <div class="_content">
         <svg
+          v-if="context === 'full'"
           class="_grid"
           width="100%"
           height="100%"

@@ -3,22 +3,23 @@
     <transition name="slideup">
       <div v-if="!page_opened" class="_allPages" key="allpages">
         <div class="_page" v-for="(page, index) in pages" :key="page.id">
-          <SinglePage
-            :context="'list'"
-            :initial_zoom="0.2"
-            :page_modules="getModulesForPage(page.id)"
-            :width="publication.page_width"
-            :height="publication.page_height"
-            :can_edit="false"
-          />
+          <div class="_pagePreview">
+            <SinglePage
+              :context="'list'"
+              :initial_zoom="0.2"
+              :page_modules="getModulesForPage(page.id)"
+              :width="publication.page_width"
+              :height="publication.page_height"
+              :can_edit="false"
+            />
+            <button
+              type="button"
+              class="_openPage"
+              @click="$emit('togglePage', page.id)"
+            />
+          </div>
           <b>{{ $t("page") }} {{ index + 1 }}</b>
-          <br />
-
-          <button
-            type="button"
-            class="_openPage"
-            @click="$emit('togglePage', page.id)"
-          />
+          <RemoveMenu v-if="can_edit" @remove="removePage(page.id)" />
         </div>
 
         <button type="button" class="u-button" @click="createPage">
@@ -84,6 +85,14 @@ export default {
         pages,
       });
     },
+    removePage(id) {
+      let pages = this.publication.pages.slice();
+      pages = pages.filter((p) => p.id !== id);
+
+      this.updatePubliMeta({
+        pages,
+      });
+    },
     async updatePubliMeta(new_meta) {
       return await this.$api.updateMeta({
         path: this.publication.$path,
@@ -111,6 +120,9 @@ export default {
   // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   // width: 210px;
   // height: 297px;
+}
+._pagePreview {
+  position: relative;
 }
 
 ._openPage {
