@@ -26,8 +26,6 @@
       :publimodule="publimodule"
       :can_edit="can_edit"
       :context="'page_by_page'"
-      @duplicate="duplicateModule"
-      @remove="removeModule"
     />
     <!-- <small class="_coords">
       x={{ publimodule.x }}; y={{ publimodule.y }}; width={{
