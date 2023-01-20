@@ -153,7 +153,7 @@ export default {
   text-align: center;
   overflow: auto;
 
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
   background: var(--c-bodybg);
 
   &.is--editable {

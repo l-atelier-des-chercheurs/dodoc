@@ -186,6 +186,7 @@ export default {
   position: relative;
   background: white;
   z-index: 1;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
 
   display: flex;
   flex-flow: row wrap;
