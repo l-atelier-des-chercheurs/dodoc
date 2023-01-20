@@ -262,7 +262,8 @@ export default {
   // margin-top: calc(var(--spacing) * 1);
 }
 ._sectionLabel {
-  width: 100%;
+  margin-left: calc(var(--spacing) * -2);
+  width: calc(100% + calc(var(--spacing) * 4));
   height: 100%;
   box-shadow: none;
   text-align: center;
