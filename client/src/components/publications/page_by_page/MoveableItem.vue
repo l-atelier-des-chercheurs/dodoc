@@ -29,11 +29,11 @@
       @duplicate="duplicateModule"
       @remove="removeModule"
     />
-    <small class="_coords">
+    <!-- <small class="_coords">
       x={{ publimodule.x }}; y={{ publimodule.y }}; width={{
         publimodule.width
       }}; height={{ publimodule.height }}
-    </small>
+    </small> -->
   </DDR>
 </template>
 <script>
@@ -166,7 +166,6 @@ export default {
     },
 
     duplicateModule() {},
-    removeModule() {},
   },
 };
 </script>

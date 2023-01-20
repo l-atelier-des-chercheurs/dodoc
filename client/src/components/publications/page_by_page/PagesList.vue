@@ -1,41 +1,44 @@
 <template>
   <div>
-    <div class="_allPages">
-      <div class="_page" v-for="(page, index) in pages" :key="page.id">
+    <transition name="slideup">
+      <div v-if="!page_opened" class="_allPages" key="allpages">
+        <div class="_page" v-for="(page, index) in pages" :key="page.id">
+          <SinglePage
+            :context="'list'"
+            :initial_zoom="0.2"
+            :page_modules="getModulesForPage(page.id)"
+            :width="publication.page_width"
+            :height="publication.page_height"
+            :can_edit="false"
+          />
+          <b>{{ $t("page") }} {{ index + 1 }}</b>
+          <br />
+
+          <button
+            type="button"
+            class="_openPage"
+            @click="$emit('togglePage', page.id)"
+          />
+        </div>
+
+        <button type="button" class="u-button" @click="createPage">
+          {{ $t("create_page") }}
+        </button>
+      </div>
+      <div class="_openedPage" v-else key="openedpage">
         <SinglePage
-          :context="'list'"
-          :initial_zoom="0.2"
-          :page_modules="getModulesForPage(page.id)"
+          :context="'full'"
+          :page_number="page_opened_index"
+          :publication_path="publication.$path"
+          :page_modules="getModulesForPage(page_opened)"
+          :page_id="page_opened"
           :width="publication.page_width"
           :height="publication.page_height"
-          :can_edit="false"
-        />
-        {{ $t("page") }} {{ index + 1 }} <br />
-
-        <button
-          type="button"
-          class="_openPage"
-          @click="$emit('togglePage', page.id)"
+          :can_edit="can_edit"
+          @close="$emit('togglePage', false)"
         />
       </div>
-
-      <button type="button" class="u-button" @click="createPage">
-        {{ $t("create_page") }}
-      </button>
-    </div>
-
-    <div class="_openedPage" v-if="page_opened">
-      <SinglePage
-        :context="'full'"
-        :publication_path="publication.$path"
-        :page_modules="getModulesForPage(page_opened)"
-        :page_id="page_opened"
-        :width="publication.page_width"
-        :height="publication.page_height"
-        :can_edit="can_edit"
-        @close="$emit('togglePage', false)"
-      />
-    </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -60,6 +63,9 @@ export default {
   computed: {
     pages() {
       return this.publication.pages;
+    },
+    page_opened_index() {
+      return this.pages.findIndex((p) => p.id === this.page_opened);
     },
   },
   methods: {
@@ -107,6 +113,14 @@ export default {
   // height: 297px;
 }
 
+._openPage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
 ._openedPage {
   position: absolute;
   top: 0;
@@ -121,14 +135,5 @@ export default {
   overflow: auto;
 
   padding: calc(var(--spacing) * 2);
-}
-
-._openPage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent;
 }
 </style>

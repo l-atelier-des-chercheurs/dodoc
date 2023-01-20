@@ -6,17 +6,33 @@
     }"
   >
     <div class="_topMenu" v-if="context === 'full'">
-      <button type="button" class="u-buttonLink" @click="$emit('close')">
-        <sl-icon name="arrow-left-short" />
-        {{ $t("pages") }}
-      </button>
-      <br />
-      <input type="range" v-model.number="zoom" min="0.1" max="2" step="0.1" />
-      <ModuleCreator
-        v-if="can_edit"
-        :publication_path="publication_path"
-        :page_id="page_id"
-      />
+      <div class="">
+        <button type="button" class="u-buttonLink" @click="$emit('close')">
+          <sl-icon name="arrow-left-short" />
+          {{ $t("pages") }}
+        </button>
+        &nbsp;
+        <b>{{ $t("page") }} {{ page_number + 1 }}</b>
+      </div>
+      <div class="">
+        <label class="u-label">
+          {{ $t("zoom") }}
+        </label>
+        <input
+          type="range"
+          v-model.number="zoom"
+          min="0.1"
+          max="2"
+          step="0.1"
+        />
+      </div>
+      <div class="">
+        <ModuleCreator
+          v-if="can_edit"
+          :publication_path="publication_path"
+          :page_id="page_id"
+        />
+      </div>
     </div>
 
     <div class="_container" :style="page_styles">
@@ -77,6 +93,7 @@ import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 
 export default {
   props: {
+    page_number: Number,
     context: String,
     publication_path: String,
     page_modules: Array,
@@ -140,6 +157,11 @@ export default {
   position: relative;
   background: white;
   z-index: 1;
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
 }
 
 ._container {
@@ -163,7 +185,7 @@ export default {
   height: var(--page-height, 10cm);
 
   transform: scale(var(--zoom));
-  transform-origin: center center;
+  transform-origin: top center;
 
   overflow: visible;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
