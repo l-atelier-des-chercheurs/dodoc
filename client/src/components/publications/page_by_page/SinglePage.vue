@@ -80,9 +80,10 @@
           v-for="publimodule in page_modules"
           :key="publimodule.$path"
           :publimodule="publimodule"
-          :can_edit="can_edit"
           :magnification="magnification"
           :zoom="zoom"
+          :can_edit="can_edit"
+          :is_active.sync="active_module"
         />
       </div>
     </div>
@@ -116,6 +117,8 @@ export default {
       items: [{ src: "images/i_add_publi.svg" }, { src: "images/i_add.svg" }],
       magnification: 30,
       zoom: this.initial_zoom,
+
+      active_module: false,
     };
   },
   created() {},

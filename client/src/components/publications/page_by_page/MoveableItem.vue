@@ -8,7 +8,7 @@
   </div> -->
   <DDR
     class="_moveableItem"
-    :active="can_edit"
+    :active="can_edit && is_active === publimodule.$path"
     :key="component_key"
     :value="transform"
     :parent="true"
@@ -21,12 +21,14 @@
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
-    <PublicationModule
-      class="_moveableItem--content"
-      :publimodule="publimodule"
-      :can_edit="can_edit"
-      :context="'page_by_page'"
-    />
+    <span @mousedown="setActive">
+      <PublicationModule
+        class="_moveableItem--content"
+        :publimodule="publimodule"
+        :can_edit="can_edit && is_active === publimodule.$path"
+        :context="'page_by_page'"
+      />
+    </span>
     <!-- <small class="_coords">
       x={{ publimodule.x }}; y={{ publimodule.y }}; width={{
         publimodule.width
@@ -49,6 +51,7 @@ export default {
     can_edit: Boolean,
     magnification: Number,
     zoom: Number,
+    is_active: [Boolean, String],
   },
   components: {
     DDR,
@@ -162,7 +165,10 @@ export default {
           throw err;
         });
     },
-
+    setActive() {
+      debugger;
+      this.$emit("update:is_active", this.publimodule.$path);
+    },
     duplicateModule() {},
   },
 };
