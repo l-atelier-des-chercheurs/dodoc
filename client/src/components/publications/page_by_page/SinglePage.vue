@@ -36,7 +36,7 @@
     </div>
 
     <div class="_container" :style="page_styles">
-      <div class="_content">
+      <div class="_content" @click.self="active_module = false">
         <svg
           v-if="context === 'full'"
           class="_grid"
@@ -84,6 +84,12 @@
           :zoom="zoom"
           :can_edit="can_edit"
           :is_active.sync="active_module"
+        />
+
+        <ModuleCreator
+          v-if="can_edit"
+          :publication_path="publication_path"
+          :page_id="page_id"
         />
       </div>
     </div>
@@ -209,5 +215,6 @@ export default {
 ._grid {
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
 </style>
