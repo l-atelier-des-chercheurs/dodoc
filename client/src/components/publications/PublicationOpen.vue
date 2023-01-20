@@ -116,9 +116,6 @@ export default {
     async removePublication() {
       this.fetch_status = "pending";
       this.fetch_error = null;
-
-      debugger;
-
       try {
         const response = await this.$api.deleteItem({
           path: this.publication.$path,

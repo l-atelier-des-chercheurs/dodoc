@@ -15,15 +15,25 @@
         <b>{{ $t("page") }} {{ page_number + 1 }}</b>
       </div>
       <div class="">
-        <label class="u-label">
-          {{ $t("zoom") }}
-        </label>
+        <label class="u-label">{{ $t("zoom") }} ({{ zoom }})</label>
         <input
           type="range"
           v-model.number="zoom"
           min="0.1"
           max="2"
           step="0.1"
+        />
+      </div>
+      <div class="">
+        <label class="u-label"
+          >{{ $t("gridstep") }} ({{ gridstep_in_cm }})</label
+        >
+        <input
+          type="range"
+          v-model.number="gridstep_in_cm"
+          min="0.25"
+          max="4"
+          step=".25"
         />
       </div>
       <div class="">
@@ -47,30 +57,34 @@
           <defs>
             <pattern
               id="gridSmall"
-              width="10"
-              height="10"
+              :width="gridstep"
+              :height="gridstep"
               patternUnits="userSpaceOnUse"
             >
               <path
-                d="M 10 0 L 0 0 0 10"
+                :d="`M ${gridstep} 0 L 0 0 0 ${gridstep}`"
                 fill="none"
-                stroke="rgba(207, 207, 207, 0.2)"
+                stroke="rgba(207, 207, 207, 0.5)"
                 strokeWidth="1"
-              ></path>
+              />
             </pattern>
             <pattern
               id="grid"
-              width="100"
-              height="100"
+              :width="gridstep * 5"
+              :height="gridstep * 5"
               patternUnits="userSpaceOnUse"
             >
-              <rect width="100" height="100" fill="url(#gridSmall)"></rect>
+              <rect
+                :width="gridstep * 5"
+                :height="gridstep * 5"
+                fill="url(#gridSmall)"
+              ></rect>
               <path
-                d="M 100 0 L 0 0 0 100"
+                :d="`M ${gridstep * 5} 0 L 0 0 0 ${gridstep * 5}`"
                 fill="none"
-                stroke="rgba(186, 186, 186, 0.1)"
+                stroke="rgba(186, 186, 186, 0.5)"
                 strokeWidth="1"
-              ></path>
+              />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)"></rect>
@@ -81,6 +95,7 @@
           :key="publimodule.$path"
           :publimodule="publimodule"
           :magnification="magnification"
+          :gridstep="gridstep"
           :zoom="zoom"
           :can_edit="can_edit"
           :is_active.sync="active_module"
@@ -122,6 +137,7 @@ export default {
     return {
       items: [{ src: "images/i_add_publi.svg" }, { src: "images/i_add.svg" }],
       magnification: 30,
+      gridstep_in_cm: 1,
       zoom: this.initial_zoom,
 
       active_module: false,
@@ -138,6 +154,9 @@ export default {
         --page-height: ${this.height * this.magnification}px;
         --zoom: ${this.zoom};
       `;
+    },
+    gridstep() {
+      return this.gridstep_in_cm * this.magnification;
     },
   },
   methods: {
@@ -167,6 +186,7 @@ export default {
   position: relative;
   background: white;
   z-index: 1;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
 
   display: flex;
   flex-flow: row wrap;

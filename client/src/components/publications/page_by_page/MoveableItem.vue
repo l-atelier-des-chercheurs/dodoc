@@ -11,10 +11,10 @@
     :active="can_edit && is_active === publimodule.$path"
     :key="component_key"
     :value="transform"
-    :parent="true"
+    :parent="false /* bind to container */"
     :acceptRatio="false"
     :handlerSize="15"
-    :grid="[10, 10]"
+    :grid="grid"
     :id="publimodule.$path"
     :zoom="zoom"
     @dragend="dragEnd"
@@ -29,11 +29,11 @@
         :context="'page_by_page'"
       />
     </span>
-    <!-- <small class="_coords">
+    <small class="_coords">
       x={{ publimodule.x }}; y={{ publimodule.y }}; width={{
         publimodule.width
       }}; height={{ publimodule.height }}
-    </small> -->
+    </small>
   </DDR>
 </template>
 <script>
@@ -50,6 +50,7 @@ export default {
     publimodule: Object,
     can_edit: Boolean,
     magnification: Number,
+    gridstep: Number,
     zoom: Number,
     is_active: [Boolean, String],
   },
@@ -88,7 +89,16 @@ export default {
       if (was_updated) this.setNewComponentKey();
     },
   },
-  computed: {},
+  computed: {
+    grid() {
+      return [
+        // 1 * this.gridstep,
+        // 1 * this.gridstep,
+        this.gridstep,
+        this.gridstep,
+      ];
+    },
+  },
   methods: {
     setNewComponentKey() {
       this.component_key = new Date().getTime();
@@ -166,7 +176,6 @@ export default {
         });
     },
     setActive() {
-      debugger;
       this.$emit("update:is_active", this.publimodule.$path);
     },
     duplicateModule() {},
@@ -174,6 +183,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._moveableItem {
+  transition-property: left, top, right, bottom;
+  transition-duration: 0.15s;
+  transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  // transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
 ._moveableItem--content {
   height: 100%;
   padding: 0;
