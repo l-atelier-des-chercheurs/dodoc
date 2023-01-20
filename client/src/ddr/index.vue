@@ -509,7 +509,16 @@ export default {
       let r = rotation + currentAngle;
       r = r % 360;
       r = r < 0 ? r + 360 : r;
+      r = this.roundRotate(r);
       this.transform.rotation = Math.floor(r);
+    },
+    roundRotate(r) {
+      const round = 5;
+      if (r > 360 - round || r < 0 + round) return 0;
+      if (r > 90 - round && r < 90 + round) return 90;
+      if (r > 180 - round && r < 180 + round) return 180;
+      if (r > 270 - round && r < 270 + round) return 270;
+      return r;
     },
     getClassNames() {
       const ddrClassNames = ["yoyoo-ddr"];
