@@ -376,7 +376,7 @@
             "page_height": {
               "type": "number"
             },
-            "pages_spreads": {
+            "page_spreads": {
               "type": "boolean"
             }
           },

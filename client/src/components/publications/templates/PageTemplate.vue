@@ -24,7 +24,7 @@
     <PagesList
       v-else
       :publication="publication"
-      :page_opened="page_opened"
+      :page_opened_id="page_opened_id"
       :can_edit="can_edit"
       @togglePage="$emit('togglePage', $event)"
     />
@@ -37,7 +37,7 @@ import PagesList from "@/components/publications/page_by_page/PagesList.vue";
 export default {
   props: {
     publication: Object,
-    page_opened: String,
+    page_opened_id: String,
     can_edit: Boolean,
   },
   components: {

@@ -5,9 +5,9 @@
     <br />
 
     <ToggleField
-      :label="$t('pages_spreads')"
-      :field_name="'pages_spreads'"
-      :content="publication.pages_spreads"
+      :label="$t('page_spreads')"
+      :field_name="'page_spreads'"
+      :content="publication.page_spreads"
       :path="publication.$path"
       :can_edit="true"
     />

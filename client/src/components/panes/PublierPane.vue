@@ -15,12 +15,12 @@
       v-else
       :project_path="project.$path"
       :publication_slug="publication_opened"
-      :page_opened="page_opened"
+      :page_opened_id="page_opened_id"
       :can_edit="can_edit"
-      @togglePage="$emit('update:page_opened', $event)"
+      @togglePage="$emit('update:page_opened_id', $event)"
       @close="
         $emit('update:publication_opened', false);
-        $emit('update:page_opened', false);
+        $emit('update:page_opened_id', false);
       "
     />
   </div>
@@ -33,7 +33,7 @@ export default {
   props: {
     project: Object,
     publication_opened: String,
-    page_opened: String,
+    page_opened_id: String,
     can_edit: Boolean,
   },
   components: {

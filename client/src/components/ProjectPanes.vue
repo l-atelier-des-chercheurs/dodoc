@@ -52,10 +52,10 @@
           v-if="pane.type === 'publish'"
           :project="project"
           :publication_opened="pane.folder"
-          :page_opened="pane.page_id"
+          :page_opened_id="pane.page_id"
           :can_edit="can_edit_project"
           @update:publication_opened="setItem(pane, 'folder', $event)"
-          @update:page_opened="setItem(pane, 'page_id', $event)"
+          @update:page_opened_id="setItem(pane, 'page_id', $event)"
         />
       </pane>
     </splitpanes>

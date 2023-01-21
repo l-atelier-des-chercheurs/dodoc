@@ -29,11 +29,11 @@
         :context="'page_by_page'"
       />
     </span>
-    <small class="_coords">
+    <!-- <small class="_coords">
       x={{ publimodule.x }}; y={{ publimodule.y }}; width={{
         publimodule.width
       }}; height={{ publimodule.height }}
-    </small>
+    </small> -->
   </DDR>
 </template>
 <script>
