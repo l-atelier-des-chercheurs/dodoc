@@ -12,34 +12,40 @@ z
   >
     <div
       class="_projectInfos--cover"
-      ref="coverImage"
       :class="{
         'is--fullscreen': is_fullscreen,
-        'is--empty': !cover_thumb,
       }"
     >
-      <template v-if="cover_thumb">
-        <img :src="cover_thumb" />
-        <sl-button
-          v-if="context === 'full'"
-          size="small"
-          variant="neutral"
-          class="_fsButton u-buttonLink"
-          @click="toggleFs"
-        >
-          <sl-icon
-            :name="!is_fullscreen ? 'arrows-fullscreen' : 'fullscreen-exit'"
-          />
-        </sl-button>
-      </template>
-      <div v-else class="_noImage" />
+      <div
+        class="_projectInfos--cover--content"
+        ref="coverImage"
+        :class="{
+          'is--empty': !cover_thumb,
+        }"
+      >
+        <template v-if="cover_thumb">
+          <img :src="cover_thumb" />
+          <sl-button
+            v-if="context === 'full'"
+            size="small"
+            variant="neutral"
+            class="_fsButton u-buttonLink"
+            @click="toggleFs"
+          >
+            <sl-icon
+              :name="!is_fullscreen ? 'arrows-fullscreen' : 'fullscreen-exit'"
+            />
+          </sl-button>
+        </template>
+        <div v-else class="_noImage" />
 
-      <CoverField
-        v-if="context === 'full' && can_edit_project"
-        class="_coverPicker"
-        :cover="project.$cover"
-        :path="project.$path"
-      />
+        <CoverField
+          v-if="context === 'full' && can_edit_project"
+          class="_coverPicker"
+          :cover="project.$cover"
+          :path="project.$path"
+        />
+      </div>
     </div>
 
     <div class="_projectInfos--infos">
@@ -65,7 +71,7 @@ z
         :instructions="$t('project_author_instructions')"
       />
 
-      <br v-if="context === 'full'" />
+      <!-- <br v-if="context === 'full'" /> -->
 
       <TitleField
         :field_name="'title'"
@@ -80,7 +86,7 @@ z
         :instructions="$t('project_title_instructions')"
       />
 
-      <br v-if="context === 'full'" />
+      <!-- <br v-if="context === 'full'" /> -->
 
       <template v-if="context === 'list'">
         <button
@@ -346,13 +352,14 @@ export default {
   flex-flow: column nowrap;
   place-content: center;
 
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
   padding: calc(var(--spacing) / 1);
 
   transition: all 0.4s;
 
   .is--list &,
   .is--tiny & {
+    gap: calc(var(--spacing) / 2);
     order: 0;
     // position: absolute;
     // bottom: 0;
@@ -385,30 +392,41 @@ export default {
 
 ._projectInfos--cover {
   position: relative;
-  overflow: hidden;
-  // max-height: 40vmin;
-  // min-width: 280px;
-  // min-height: 280px;
-  margin: calc(var(--spacing) * 1);
-  border-radius: 6px;
-
   aspect-ratio: 1/1;
-  max-width: 70vh;
-  max-height: 70vh;
+  width: 40vh;
+  height: 40vh;
+  flex: 0 0 40vh;
 
   @supports not (aspect-ratio: 1/1) {
     width: 500px;
     height: 500px;
   }
 
-  --color1: var(--c-gris);
-  --color2: var(--c-gris_clair);
-
   .is--list & {
     // margin: calc(var(--spacing) / 2);
+    width: 100%;
+    height: auto;
   }
 
-  &.is--empty {
+  .is--mobileView & {
+    flex: 1 1 auto;
+    max-height: 40vh;
+    max-width: 40vh;
+    height: auto;
+  }
+
+  ._projectInfos--cover--content {
+    position: absolute;
+    inset: 0;
+    margin: calc(var(--spacing) * 1);
+    overflow: hidden;
+    border-radius: 6px;
+
+    --color1: var(--c-gris);
+    --color2: var(--c-gris_clair);
+  }
+
+  ._projectInfos--cover--content.is--empty {
     background: radial-gradient(
         circle,
         transparent 20%,
@@ -474,7 +492,7 @@ export default {
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
-  max-height: calc((100vw - 260px) / 2 + var(--spacing));
+  height: 40vh;
 
   @include scrollbar(8px, 5px, 6px);
 
@@ -483,6 +501,7 @@ export default {
     max-height: none;
     overflow-x: auto;
     overflow-y: hidden;
+    height: auto;
   }
 
   > * {
