@@ -13,6 +13,7 @@
             :key="project.$path"
             :value="project.$path"
             v-text="project.title"
+            disabled
           />
         </select>
 
