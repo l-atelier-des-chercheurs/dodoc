@@ -141,7 +141,6 @@
               @click="nextPage"
               v-if="page_number < pages.length - 1"
             >
-              <sl-icon name="arrow-right" />
               <SinglePage
                 :context="'list'"
                 :zoom="0.1"
@@ -150,6 +149,7 @@
                 :page_height="page_height"
                 :can_edit="false"
               />
+              <sl-icon name="arrow-right" />
             </button>
           </div>
         </template>
