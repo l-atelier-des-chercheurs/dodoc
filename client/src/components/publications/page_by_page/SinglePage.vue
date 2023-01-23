@@ -8,7 +8,7 @@
     <div class="_container" :style="page_styles">
       <div class="_content" @click.self="active_module = false">
         <svg
-          v-if="context === 'full'"
+          v-if="context === 'full' && gridstep"
           class="_grid"
           width="100%"
           height="100%"
@@ -72,7 +72,6 @@ export default {
     context: String,
     publication_path: String,
     page_modules: Array,
-    page_id: String,
     page_width: Number,
     page_height: Number,
     zoom: { type: Number, default: 1 },
@@ -96,6 +95,7 @@ export default {
   watch: {},
   computed: {
     gridstep() {
+      if (!this.gridstep_in_cm) return 0;
       return this.gridstep_in_cm * this.magnification;
     },
     page_styles() {
@@ -131,7 +131,7 @@ export default {
 
 ._container {
   width: 100%;
-  height: calc(var(--page-height) * var(--zoom) + 100px);
+  height: calc(var(--page-height) * var(--zoom));
   margin: calc(var(--spacing) * 2) auto;
 
   .is--preview & {
@@ -160,6 +160,7 @@ export default {
 
   .is--preview & {
     transform-origin: top left;
+    overflow: hidden;
   }
 }
 

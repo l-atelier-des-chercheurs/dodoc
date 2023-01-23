@@ -40,7 +40,7 @@
     <div class="m_stopmotionpanel--medias" v-if="!validating_video_preview">
       <transition-group
         class="m_stopmotionpanel--medias--list"
-        name="list-complete"
+        name="listComplete"
         ref="mediaPreviews"
       >
         <div

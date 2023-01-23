@@ -99,6 +99,13 @@ export default function () {
         show_list: "Afficher la liste",
         list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
+
+        import: "Importer",
+        waiting: "À venir",
+        sending: "En cours",
+        sent: "Envoyé",
+        retry: "Réessayer",
+
         import_instructions: "Importer depuis un autre appareil",
         show_meta: "Afficher les métadonnées",
         hide_meta: "Masquer les métadonnées",
@@ -126,6 +133,8 @@ export default function () {
         width: "Largeur",
         height: "Hauteur",
         page_spreads: "Pages en vis-à-vis",
+        page: "Page",
+        spread: "Planche",
 
         status: "État",
         list_of_projects: "Liste des projets",

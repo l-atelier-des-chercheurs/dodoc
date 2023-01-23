@@ -1,9 +1,19 @@
 <template>
   <div>
     <transition name="slideup">
-      <div v-if="!page_opened_id" class="_allPages" key="allpages">
+      <transition-group
+        v-if="!page_opened_id"
+        tag="div"
+        name="listComplete"
+        class="_allPages"
+        key="allpages"
+      >
         <template v-if="!is_spread">
-          <div class="_page" v-for="(page, index) in pages" :key="page.id">
+          <div
+            class="_page"
+            v-for="(page, index) in pages"
+            :key="'page-' + page.id"
+          >
             <div class="_preview">
               <SinglePage
                 :context="'list'"
@@ -26,8 +36,16 @@
           </div>
         </template>
         <template v-else>
-          <div class="_spread" v-for="(spread, index) in spreads" :key="index">
-            <div class="" v-for="(page, iindex) in spread" :key="iindex">
+          <div
+            class="_spread"
+            v-for="(spread, index) in spreads"
+            :key="'spread-' + index"
+          >
+            <div
+              class=""
+              v-for="(page, iindex) in spread"
+              :key="page ? page.id : iindex"
+            >
               <template v-if="page && page.id">
                 <div class="_preview">
                   <SinglePage
@@ -53,11 +71,16 @@
             </div>
           </div>
         </template>
-
-        <button type="button" class="u-button" @click="createPage">
+        <button
+          type="button"
+          class="u-button"
+          @click="createPage"
+          key="createPage"
+        >
           {{ $t("create_page") }}
         </button>
-      </div>
+      </transition-group>
+
       <OpenedPageOrSpread
         v-else
         key="openedpage"
@@ -187,6 +210,13 @@ export default {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
 }
 ._label {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4) 0;
+  margin: calc(var(--spacing) / 8);
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
 }
 
 ._openPage {
