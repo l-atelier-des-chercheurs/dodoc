@@ -121,8 +121,8 @@ export default {
     publication_path: String,
     page_modules: Array,
     page_id: String,
-    width: Number,
-    height: Number,
+    page_width: Number,
+    page_height: Number,
     initial_zoom: {
       type: Number,
       default: 1,
@@ -150,8 +150,8 @@ export default {
   computed: {
     page_styles() {
       return `
-        --page-width: ${this.width * this.magnification}px;
-        --page-height: ${this.height * this.magnification}px;
+        --page-width: ${this.page_width * this.magnification}px;
+        --page-height: ${this.page_height * this.magnification}px;
         --zoom: ${this.zoom};
       `;
     },
