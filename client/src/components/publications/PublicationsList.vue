@@ -36,7 +36,11 @@
     <br />
 
     <div class="_publications">
-      <div class="_publications--list">
+      <transition-group
+        tag="div"
+        class="_publications--list"
+        name="listComplete"
+      >
         <div
           v-for="publication in sorted_publications"
           :key="publication.$path"
@@ -47,23 +51,7 @@
             @open="openEntry(publication.$path)"
           />
         </div>
-        <!-- 
-        <PublicationPreview
-          title="Pyramide Etalans"
-          type="Page à page"
-        />
-        <PublicationPreview
-          image_name="publi_apercu-2.png"
-          title="Séminaire Mandela"
-          type="Page à page"
-        /> 
-        <PublicationPreview
-          image_name="publi_nunicons.png"
-          title="Nunicons 3D"
-          type="Fiche projet <i>Je Fabrique mon Matériel Pédagogique</i>"
-        />
-        -->
-      </div>
+      </transition-group>
     </div>
   </div>
 </template>

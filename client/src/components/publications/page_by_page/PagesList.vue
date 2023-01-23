@@ -1,16 +1,26 @@
 <template>
   <div>
     <transition name="slideup">
-      <div v-if="!page_opened_id" class="_allPages" key="allpages">
-        <template v-if="!publication.page_spreads">
-          <div class="_page" v-for="(page, index) in pages" :key="page.id">
+      <transition-group
+        v-if="!page_opened_id"
+        tag="div"
+        name="listComplete"
+        class="_allPages"
+        key="allpages"
+      >
+        <template v-if="!is_spread">
+          <div
+            class="_page"
+            v-for="(page, index) in pages"
+            :key="'page-' + page.id"
+          >
             <div class="_preview">
               <SinglePage
                 :context="'list'"
-                :initial_zoom="0.2"
+                :zoom="0.2"
                 :page_modules="getModulesForPage(page.id)"
-                :width="publication.page_width"
-                :height="publication.page_height"
+                :page_width="publication.page_width"
+                :page_height="publication.page_height"
                 :can_edit="false"
               />
               <button
@@ -26,16 +36,24 @@
           </div>
         </template>
         <template v-else>
-          <div class="_spread" v-for="(spread, index) in spreads" :key="index">
-            <div class="" v-for="(page, iindex) in spread" :key="iindex">
+          <div
+            class="_spread"
+            v-for="(spread, index) in spreads"
+            :key="'spread-' + index"
+          >
+            <div
+              class=""
+              v-for="(page, iindex) in spread"
+              :key="page ? page.id : iindex"
+            >
               <template v-if="page && page.id">
                 <div class="_preview">
                   <SinglePage
                     :context="'list'"
-                    :initial_zoom="0.2"
+                    :zoom="0.2"
                     :page_modules="getModulesForPage(page.id)"
-                    :width="publication.page_width"
-                    :height="publication.page_height"
+                    :page_width="publication.page_width"
+                    :page_height="publication.page_height"
                     :can_edit="false"
                   />
                   <button
@@ -53,78 +71,36 @@
             </div>
           </div>
         </template>
-
-        <button type="button" class="u-button" @click="createPage">
+        <button
+          type="button"
+          class="u-button"
+          @click="createPage"
+          key="createPage"
+        >
           {{ $t("create_page") }}
         </button>
-      </div>
-      <div
-        class="_openedPage"
+      </transition-group>
+
+      <OpenedPageOrSpread
         v-else
         key="openedpage"
-        :class="{
-          'is--editable': can_edit,
-        }"
-      >
-        <transition name="fade_fast" mode="out-in">
-          <div :key="'page-' + page_opened_id">
-            <SinglePage
-              :context="'full'"
-              :page_number="page_opened_index"
-              :publication_path="publication.$path"
-              :page_modules="getModulesForPage(page_opened_id)"
-              :page_id="page_opened_id"
-              :width="publication.page_width"
-              :height="publication.page_height"
-              :can_edit="can_edit"
-              @close="$emit('togglePage', false)"
-            />
-            <div class="_navBar">
-              <div>
-                <button
-                  type="button"
-                  @click="prevPage"
-                  :disabled="page_opened_index === 0"
-                  v-if="page_opened_index !== 0"
-                >
-                  <sl-icon name="arrow-left" />
-                  <SinglePage
-                    :context="'list'"
-                    :initial_zoom="0.1"
-                    :page_modules="getModulesForPage(previous_page_id)"
-                    :width="publication.page_width"
-                    :height="publication.page_height"
-                    :can_edit="false"
-                  />
-                </button>
-              </div>
-              <div>
-                <button
-                  type="button"
-                  @click="nextPage"
-                  v-if="page_opened_index < pages.length - 1"
-                  :disabled="page_opened_index === pages.length - 1"
-                >
-                  <sl-icon name="arrow-right" />
-                  <SinglePage
-                    :context="'list'"
-                    :initial_zoom="0.1"
-                    :page_modules="getModulesForPage(next_page_id)"
-                    :width="publication.page_width"
-                    :height="publication.page_height"
-                    :can_edit="false"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-        </transition>
-      </div>
+        :page_opened_id="page_opened_id"
+        :publication_path="publication.$path"
+        :pages="pages"
+        :spreads="spreads"
+        :modules="modules"
+        :is_spread="is_spread"
+        :page_width="publication.page_width"
+        :page_height="publication.page_height"
+        :can_edit="can_edit"
+        @togglePage="$emit('togglePage', $event)"
+      />
     </transition>
   </div>
 </template>
 <script>
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
+import OpenedPageOrSpread from "@/components/publications/page_by_page/OpenedPageOrSpread.vue";
 
 export default {
   props: {
@@ -134,6 +110,7 @@ export default {
   },
   components: {
     SinglePage,
+    OpenedPageOrSpread,
   },
   data() {
     return {};
@@ -145,6 +122,12 @@ export default {
   computed: {
     pages() {
       return this.publication.pages;
+    },
+    modules() {
+      return this.publication.$files;
+    },
+    is_spread() {
+      return this.publication.page_spreads === true;
     },
     spreads() {
       // turn pages array into [[{id:""}, {id:""}], [{id:""}, {id:""}], [{id:""}, {id:""}], …]
@@ -163,15 +146,6 @@ export default {
         }
       }
       return spreads;
-    },
-    page_opened_index() {
-      return this.pages.findIndex((p) => p.id === this.page_opened_id);
-    },
-    previous_page_id() {
-      return this.pages[this.page_opened_index - 1].id;
-    },
-    next_page_id() {
-      return this.pages[this.page_opened_index + 1].id;
     },
   },
   methods: {
@@ -205,15 +179,7 @@ export default {
       });
     },
     getModulesForPage(id) {
-      return this.publication.$files.filter((f) => f.page_id === id) || [];
-    },
-    prevPage() {
-      const new_index = this.page_opened_index - 1;
-      this.$emit("togglePage", this.pages[new_index].id);
-    },
-    nextPage() {
-      const new_index = this.page_opened_index + 1;
-      this.$emit("togglePage", this.pages[new_index].id);
+      return this.modules.filter((f) => f.page_id === id) || [];
     },
   },
 };
@@ -244,6 +210,13 @@ export default {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
 }
 ._label {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4) 0;
+  margin: calc(var(--spacing) / 8);
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
 }
 
 ._openPage {
@@ -253,41 +226,5 @@ export default {
   width: 100%;
   height: 100%;
   background: transparent;
-}
-._openedPage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-
-  text-align: center;
-  overflow: auto;
-
-  padding: calc(var(--spacing) * 1);
-  background: var(--c-bodybg);
-
-  &.is--editable {
-    background: var(--color-publish);
-  }
-}
-
-._navBar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: auto;
-  width: 100%;
-
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  pointer-events: none;
-
-  > * {
-    pointer-events: auto;
-    // width: 50px;
-  }
 }
 </style>

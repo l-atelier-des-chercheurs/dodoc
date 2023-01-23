@@ -566,4 +566,36 @@ img {
     opacity: 0;
   }
 }
+
+.listComplete {
+  &-move {
+    position: relative;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
+      opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1) !important;
+  }
+
+  &-leave-active {
+    position: absolute;
+    z-index: 0 !important;
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+  }
+}
+
+.scaleInFade {
+  &-move {
+    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  &-leave-active {
+    position: absolute;
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
 </style>

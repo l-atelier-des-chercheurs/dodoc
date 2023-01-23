@@ -5,50 +5,10 @@
       'is--preview': context === 'list',
     }"
   >
-    <div class="_topMenu" v-if="context === 'full'">
-      <div class="">
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
-          <sl-icon name="arrow-left-short" />
-          {{ $t("pages") }}
-        </button>
-        &nbsp;
-        <b>{{ $t("page") }} {{ page_number + 1 }}</b>
-      </div>
-      <div class="">
-        <label class="u-label">{{ $t("zoom") }} ({{ zoom }})</label>
-        <input
-          type="range"
-          v-model.number="zoom"
-          min="0.1"
-          max="2"
-          step="0.1"
-        />
-      </div>
-      <div class="">
-        <label class="u-label"
-          >{{ $t("gridstep") }} ({{ gridstep_in_cm }})</label
-        >
-        <input
-          type="range"
-          v-model.number="gridstep_in_cm"
-          min="0.25"
-          max="4"
-          step=".25"
-        />
-      </div>
-      <div class="">
-        <ModuleCreator
-          v-if="can_edit"
-          :publication_path="publication_path"
-          :page_id="page_id"
-        />
-      </div>
-    </div>
-
     <div class="_container" :style="page_styles">
       <div class="_content" @click.self="active_module = false">
         <svg
-          v-if="context === 'full'"
+          v-if="context === 'full' && gridstep"
           class="_grid"
           width="100%"
           height="100%"
@@ -100,45 +60,31 @@
           :can_edit="can_edit"
           :is_active.sync="active_module"
         />
-
-        <ModuleCreator
-          v-if="can_edit"
-          :publication_path="publication_path"
-          :page_id="page_id"
-        />
       </div>
     </div>
   </div>
 </template>
 <script>
 import MoveableItem from "@/components/publications/page_by_page/MoveableItem.vue";
-import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 
 export default {
   props: {
-    page_number: Number,
     context: String,
     publication_path: String,
     page_modules: Array,
-    page_id: String,
-    width: Number,
-    height: Number,
-    initial_zoom: {
-      type: Number,
-      default: 1,
-    },
+    page_width: Number,
+    page_height: Number,
+    zoom: { type: Number, default: 1 },
+    gridstep_in_cm: Number,
+    magnification: { type: Number, default: 30 },
     can_edit: Boolean,
   },
   components: {
     MoveableItem,
-    ModuleCreator,
   },
   data() {
     return {
       items: [{ src: "images/i_add_publi.svg" }, { src: "images/i_add.svg" }],
-      magnification: 30,
-      gridstep_in_cm: 1,
-      zoom: this.initial_zoom,
 
       active_module: false,
     };
@@ -148,15 +94,16 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    gridstep() {
+      if (!this.gridstep_in_cm) return 0;
+      return this.gridstep_in_cm * this.magnification;
+    },
     page_styles() {
       return `
-        --page-width: ${this.width * this.magnification}px;
-        --page-height: ${this.height * this.magnification}px;
+        --page-width: ${this.page_width * this.magnification}px;
+        --page-height: ${this.page_height * this.magnification}px;
         --zoom: ${this.zoom};
       `;
-    },
-    gridstep() {
-      return this.gridstep_in_cm * this.magnification;
     },
   },
   methods: {
@@ -180,18 +127,6 @@ export default {
 <style lang="scss" scoped>
 ._singlePage {
   // padding: calc(var(--spacing) * 1);
-}
-
-._topMenu {
-  position: relative;
-  background: white;
-  z-index: 1;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
-
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: center;
 }
 
 ._container {
@@ -225,6 +160,7 @@ export default {
 
   .is--preview & {
     transform-origin: top left;
+    overflow: hidden;
   }
 }
 
