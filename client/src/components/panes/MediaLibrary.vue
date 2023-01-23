@@ -145,7 +145,9 @@ export default {
     },
   },
   methods: {
-    onDragover() {
+    onDragover($event) {
+      if ($event.dataTransfer.files?.length === 0) return false;
+
       this.show_dropzone = true;
 
       clearTimeout(this.hide_dropzone_timeout);
