@@ -315,6 +315,7 @@ export default {
   height: auto;
   width: 100%;
   z-index: 2;
+  overflow: hidden;
 
   display: flex;
   flex-flow: row nowrap;
