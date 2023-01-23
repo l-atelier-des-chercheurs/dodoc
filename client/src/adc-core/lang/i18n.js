@@ -163,6 +163,7 @@ export default function () {
         download: "Télécharger",
 
         medias: "Médias",
+        CC: "Creative Commons",
         license: "Licence",
         licence_instructions:
           "Indiquez ici les conditions de réutilisation de votre contenu.",
@@ -205,6 +206,8 @@ export default function () {
         echoCancellation: "Suppression de l'écho",
         noiseSuppression: "Réduction du bruit",
         grid: "Grille",
+        gridstep: "Pas de la grille",
+        zoom: "Zoom",
         halfs: "Moitiés",
         thirds: "Tiers",
         fourths: "Quarts",

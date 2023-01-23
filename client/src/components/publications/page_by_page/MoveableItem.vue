@@ -61,7 +61,6 @@ export default {
   data() {
     return {
       transform: { x: 100, y: 100, width: 300, height: 300, rotation: 0 },
-
       component_key: 1,
     };
   },

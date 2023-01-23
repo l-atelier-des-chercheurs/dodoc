@@ -7,7 +7,7 @@
             <div class="_preview">
               <SinglePage
                 :context="'list'"
-                :initial_zoom="0.2"
+                :zoom="0.2"
                 :page_modules="getModulesForPage(page.id)"
                 :page_width="publication.page_width"
                 :page_height="publication.page_height"
@@ -32,7 +32,7 @@
                 <div class="_preview">
                   <SinglePage
                     :context="'list'"
-                    :initial_zoom="0.2"
+                    :zoom="0.2"
                     :page_modules="getModulesForPage(page.id)"
                     :page_width="publication.page_width"
                     :page_height="publication.page_height"
