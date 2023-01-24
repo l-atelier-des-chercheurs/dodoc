@@ -11,10 +11,15 @@
       :path="publication.$path"
       :can_edit="true"
     />
+
+    <br />
+
+    <SetMargins :publication="publication" />
   </div>
 </template>
 <script>
 import WidthHeightField from "@/components/publications/page_by_page/WidthHeightField.vue";
+import SetMargins from "@/components/publications/page_by_page/SetMargins.vue";
 
 export default {
   props: {
@@ -22,6 +27,7 @@ export default {
   },
   components: {
     WidthHeightField,
+    SetMargins,
   },
   data() {
     return {};

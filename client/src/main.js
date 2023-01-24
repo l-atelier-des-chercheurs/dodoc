@@ -54,6 +54,8 @@ import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);
 import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
 Vue.component("ToggleInput", ToggleInput);
+import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
+Vue.component("RangeValueInput", RangeValueInput);
 import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
 //
