@@ -22,7 +22,7 @@
         :data-size="pane.size"
         :style="`--color-type: var(--color-${pane.type});`"
       >
-        <transition name="fade_fast">
+        <transition name="fade">
           <div
             class="_floatingMsg"
             :key="`instructions.pane_${pane.type}`"
