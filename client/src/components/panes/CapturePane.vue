@@ -29,7 +29,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._capturePane {
-  background: var(--color-capture);
+  // background: var(--color-capture);
   height: 100%;
   overflow: auto;
 }
