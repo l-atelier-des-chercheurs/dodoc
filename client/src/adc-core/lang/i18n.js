@@ -219,6 +219,22 @@ export default function () {
 
         take_picture: "Prendre une photo",
         delay: "Retardateur",
+        timelapse: "time-lapse",
+        framerate: "images par seconde",
+        stop_recording: "Arrêter la capture",
+        pause_recording: "Mettre en pause",
+        unpause_recording: "Relancer l’enregistrement",
+        record_audio: "Capturer un son",
+        record_video: "Capturer une vidéo",
+        stopmotion: "animation",
+
+        interval_between_pictures: "Intervalle entre chaque photo",
+        start_timelapse: "Démarrer le time-lapse",
+        stop_timelapse: "Interrompre le time-lapse",
+        seconds_per_image: "secondes par image",
+        quality: "qualité",
+        duration: "Durée",
+
         seconds: "secondes",
         no_video_input_available: "Aucune source vidéo disponible",
         no_audio_input_available: "Aucune source audio disponible",
