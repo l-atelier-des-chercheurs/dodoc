@@ -320,7 +320,7 @@ export default {
     flex: 1 1 0;
 
     &._projectPanes {
-      flex: 5 0 auto;
+      flex: 3 0 auto;
     }
   }
 }
@@ -425,7 +425,7 @@ export default {
 
 ._projectTitle {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
