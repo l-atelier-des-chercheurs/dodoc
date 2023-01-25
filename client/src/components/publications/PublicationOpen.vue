@@ -52,6 +52,7 @@
         :can_edit="can_edit_publication"
         :page_opened_id="page_opened_id"
         @togglePage="$emit('togglePage', $event)"
+        @closePublication="$emit('close')"
       />
     </template>
   </div>

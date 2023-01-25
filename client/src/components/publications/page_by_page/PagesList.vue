@@ -75,6 +75,7 @@
           type="button"
           class="u-button"
           @click="createPage"
+          v-if="can_edit"
           key="createPage"
         >
           {{ $t("create_page") }}
@@ -95,6 +96,7 @@
         :margins="margins"
         :can_edit="can_edit"
         @togglePage="$emit('togglePage', $event)"
+        @closePublication="$emit('closePublication')"
       />
     </transition>
   </div>

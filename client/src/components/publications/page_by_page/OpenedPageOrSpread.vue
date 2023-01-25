@@ -40,7 +40,7 @@
             step="0.1"
           />
         </div>
-        <div class="">
+        <div class="" v-if="can_edit">
           <label class="u-label"
             >{{ $t("gridstep") }} ({{ gridstep_in_cm }})</label
           >
@@ -52,9 +52,8 @@
             step=".25"
           />
         </div>
-        <div class="">
+        <div class="" v-if="can_edit">
           <ModuleCreator
-            v-if="can_edit"
             :publication_path="publication_path"
             :page_id="page_opened_id"
           />
@@ -303,6 +302,7 @@ export default {
   }
 
   > ._topMenu {
+    padding: calc(var(--spacing) * 1);
     flex: 0 0 auto;
   }
 
@@ -341,7 +341,6 @@ export default {
 ._topMenu {
   position: relative;
   z-index: 1;
-  padding: calc(var(--spacing) * 1);
 }
 ._topMenu--content {
   background: white;

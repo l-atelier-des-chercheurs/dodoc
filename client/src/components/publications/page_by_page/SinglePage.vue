@@ -3,6 +3,7 @@
     class="_singlePage"
     :class="{
       'is--preview': context === 'list',
+      'is--editable': can_edit,
     }"
   >
     <div class="_container" :style="page_styles">
@@ -197,7 +198,7 @@ export default {
   transform: scale(var(--zoom));
   transform-origin: center center;
 
-  overflow: visible;
+  overflow: hidden;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   background: white;
@@ -205,7 +206,9 @@ export default {
 
   .is--preview & {
     transform-origin: top left;
-    overflow: hidden;
+  }
+  .is--editable & {
+    overflow: visible;
   }
 }
 
