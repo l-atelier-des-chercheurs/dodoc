@@ -12,15 +12,14 @@
         @click="$emit('closePublication')"
       >
         {{ $t("publications") }}
-        <sl-icon-button name="arrow-right-short" label="" />
       </button>
+      <sl-icon name="arrow-right-short" label="" />
       <button
         type="button"
         class="u-buttonLink"
         @click="$emit('togglePage', false)"
       >
         {{ $t("pages") }}
-        <sl-icon-button name="arrow-right-short" label="" />
       </button>
     </div>
     <div class="_topMenu">
@@ -310,7 +309,6 @@ export default {
   }
 
   > ._topMenu {
-    padding: calc(var(--spacing) * 1);
     flex: 0 0 auto;
   }
 
@@ -348,13 +346,13 @@ export default {
 }
 
 ._breadcrumb {
-  text-align: left;
   padding: calc(var(--spacing) / 1);
-  padding-bottom: 0;
+  display: flex;
 }
 ._topMenu {
   position: relative;
   z-index: 1;
+  padding: 0 calc(var(--spacing) * 1);
 }
 ._topMenu--content {
   background: white;
