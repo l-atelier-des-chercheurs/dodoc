@@ -5,18 +5,26 @@
       'is--editable': can_edit,
     }"
   >
+    <div class="_breadcrumb">
+      <button
+        type="button"
+        class="u-buttonLink"
+        @click="$emit('closePublication')"
+      >
+        {{ $t("publications") }}
+        <sl-icon-button name="arrow-right-short" label="" />
+      </button>
+      <button
+        type="button"
+        class="u-buttonLink"
+        @click="$emit('togglePage', false)"
+      >
+        {{ $t("pages") }}
+        <sl-icon-button name="arrow-right-short" label="" />
+      </button>
+    </div>
     <div class="_topMenu">
       <div class="_topMenu--content">
-        <div class="">
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="$emit('togglePage', false)"
-          >
-            <sl-icon name="arrow-left-short" />
-            {{ $t("pages") }}
-          </button>
-        </div>
         <div class="">
           <transition name="fade_fast" mode="out-in">
             <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
@@ -337,6 +345,12 @@ export default {
     backdrop-filter: blur(12px);
     border-radius: 4px;
   }
+}
+
+._breadcrumb {
+  text-align: left;
+  padding: calc(var(--spacing) / 1);
+  padding-bottom: 0;
 }
 ._topMenu {
   position: relative;
