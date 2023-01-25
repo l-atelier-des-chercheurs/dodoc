@@ -806,7 +806,7 @@
                   <button
                     type="button"
                     class="_enable_timelapse_button"
-                    v-if="!is_recording"
+                    v-if="!is_recording && !delay_event"
                     :class="{ 'is--active': delay_mode_enabled }"
                     :content="$t('delay')"
                     @click="delay_mode_enabled = !delay_mode_enabled"
@@ -848,10 +848,7 @@
                 </transition>
               </div>
               <div>
-                <div
-                  v-if="selected_mode === 'video'"
-                  class="flex-wrap flex-vertically-centered"
-                >
+                <div v-if="selected_mode === 'video'" class="_videoEq">
                   <div
                     v-if="enable_audio_recording_in_video"
                     class="_tiny_equalizer"
@@ -2166,7 +2163,7 @@ export default {
       }
 
       &.is--recording {
-        background-color: var(--c-orange);
+        background-color: var(--c-rouge);
       }
     }
   }
@@ -2516,6 +2513,14 @@ export default {
     opacity: 0.2;
     opacity: var(--onionskin-opacity);
   }
+
+  ::v-deep {
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
 }
 ._mode_accessory_range {
   max-width: 200px;
@@ -2609,11 +2614,9 @@ export default {
     color: var(--c-gris);
   }
 }
-</style>
-<style lang="scss">
-._onion_skin img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+._videoEq {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
 }
 </style>
