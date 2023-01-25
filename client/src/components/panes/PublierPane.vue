@@ -53,7 +53,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publierPane {
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
 
   // padding-bottom: calc(var(--spacing) * 4);
   // overflow: auto;
