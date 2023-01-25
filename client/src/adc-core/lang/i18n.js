@@ -135,6 +135,17 @@ export default function () {
         page_spreads: "Pages en vis-à-vis",
         page: "Page",
         spread: "Planche",
+        cover: "Couverture",
+        backcover: "Quatrième de couverture",
+        margins: "Marges",
+        margins_instructions:
+          "Renseignez ici les repères de marge souhaitez. Les marges seront dessinées avec un trait violet.",
+        left: "Gauche",
+        right: "Droite",
+        top: "En haut",
+        bottom: "En bas",
+        margins_inside: "Petit fond",
+        margins_outside: "Grand fond",
 
         status: "État",
         list_of_projects: "Liste des projets",

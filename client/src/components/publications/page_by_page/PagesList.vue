@@ -92,6 +92,7 @@
         :is_spread="is_spread"
         :page_width="publication.page_width"
         :page_height="publication.page_height"
+        :margins="margins"
         :can_edit="can_edit"
         @togglePage="$emit('togglePage', $event)"
       />
@@ -146,6 +147,14 @@ export default {
         }
       }
       return spreads;
+    },
+    margins() {
+      return {
+        left: this.publication.page_margin_left,
+        right: this.publication.page_margin_right,
+        top: this.publication.page_margin_top,
+        bottom: this.publication.page_margin_bottom,
+      };
     },
   },
   methods: {

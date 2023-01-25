@@ -378,6 +378,18 @@
             },
             "page_spreads": {
               "type": "boolean"
+            },
+            "page_margin_top": {
+              "type": "number"
+            },
+            "page_margin_bottom": {
+              "type": "number"
+            },
+            "page_margin_left": {
+              "type": "number"
+            },
+            "page_margin_right": {
+              "type": "number"
             }
           },
           "$files": {

@@ -70,7 +70,7 @@ Usage: codyhouse.co/license
   --ri5-color-primary-hsl: 227, 63%, 31%;
   --ri5-color-contrast-high-hsl: 230, 7%, 23%;
   --ri5-color-contrast-higher-hsl: 230, 13%, 9%;
-  --ri5-color-bg-darker-hsl: 240, 4%, 90%;
+  --ri5-color-bg-darker-hsl: 255, 4%, 100%;
   --ri5-color-white-hsl: 0, 0%, 100%;
 
   --radio-switch-width: 276px;

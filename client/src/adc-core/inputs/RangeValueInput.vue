@@ -13,10 +13,15 @@
         </button>
       </label>
       <div>
-        <input type="range" min="0" max="1" step="0.1" v-model="new_value" />
+        <input type="range" :min="0" step="0.1" v-model.number="new_value" />
       </div>
       <div class="input-group">
-        <input type="number" :id="id" class="input-small" v-model="new_value" />
+        <input
+          type="number"
+          :id="id"
+          class="input-small"
+          v-model.number="new_value"
+        />
       </div>
     </div>
   </div>

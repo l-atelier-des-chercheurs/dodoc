@@ -21,13 +21,14 @@
           <transition name="fade_fast" mode="out-in">
             <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
           </transition>
-          <template v-if="spreads && page_number !== 0">
-            <transition name="fade_fast" mode="out-in">
-              <span :key="active_spread_index">
+          <transition v-if="spreads" name="fade_fast" mode="out-in">
+            <span :key="active_spread_index">
+              <template v-if="page_number !== 0">
                 ({{ $t("spread") }} {{ active_spread_index }})
-              </span>
-            </transition>
-          </template>
+              </template>
+              <template v-else> ({{ $t("cover") }}) </template>
+            </span>
+          </transition>
         </div>
         <div class="">
           <label class="u-label">{{ $t("zoom") }} ({{ zoom }})</label>
@@ -35,7 +36,7 @@
             type="range"
             v-model.number="zoom"
             min="0.1"
-            max="2"
+            max="1"
             step="0.1"
           />
         </div>
@@ -74,6 +75,7 @@
           :page_height="page_height"
           :zoom="zoom"
           :gridstep_in_cm="gridstep_in_cm"
+          :margins="margins"
           :can_edit="can_edit"
           @close="$emit('togglePage', false)"
         />
@@ -103,6 +105,7 @@
               :page_height="page_height"
               :zoom="zoom"
               :gridstep_in_cm="page.id === page_opened_id ? gridstep_in_cm : 0"
+              :margins="margins"
               :can_edit="can_edit && page.id === page_opened_id"
               @close="$emit('togglePage', false)"
             />
@@ -215,6 +218,7 @@ export default {
     is_spread: Boolean,
     page_width: Number,
     page_height: Number,
+    margins: Object,
     can_edit: Boolean,
   },
   components: {
@@ -360,16 +364,19 @@ export default {
   &.is--left {
     ::v-deep {
       ._content {
-        transform-origin: top right;
+        transform-origin: center right;
         margin-left: auto;
         margin-right: 0;
+      }
+      ._margins {
+        transform: scale(-1, 1);
       }
     }
   }
   &.is--right {
     ::v-deep {
       ._content {
-        transform-origin: top left;
+        transform-origin: center left;
         margin-left: 0;
         margin-right: auto;
       }

@@ -14,7 +14,10 @@
 
     <br />
 
-    <SetMargins :publication="publication" />
+    <SetMargins
+      :publication="publication"
+      :is_spread="publication.page_spreads === true"
+    />
   </div>
 </template>
 <script>
