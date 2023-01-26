@@ -35,7 +35,7 @@
           <div class="_arrows" v-if="available_modes.length > 1">
             <button
               type="button"
-              class="bg-transparent"
+              class="u-button u-button_transparent"
               @mousedown.stop.prevent="previousMode()"
               @touchstart.stop.prevent="previousMode()"
             >
@@ -67,6 +67,7 @@
               type="radio"
               :id="id + '_' + mode"
               :value="mode"
+              :checked="selected_mode === mode"
               @click="$emit('changeMode', mode)"
             />
             <label :for="id + '_' + mode">
@@ -88,7 +89,7 @@
           <div class="_arrows" v-if="available_modes.length > 1">
             <button
               type="button"
-              class="bg-transparent"
+              class="u-button u-button_transparent"
               @mousedown.stop.prevent="nextMode()"
               @touchstart.stop.prevent="nextMode()"
             >
@@ -589,7 +590,7 @@
 
                 <button
                   type="button"
-                  class="bg-orange button-inline _captureButton"
+                  class="u-button u-button_orange u-button-inline _captureButton"
                   :key="selected_mode + '_pause'"
                   v-if="selected_mode === 'video' && is_recording"
                   @mousedown.stop.prevent="pauseOrResumeCapture()"
@@ -667,7 +668,7 @@
 
                 <button
                   type="button"
-                  class="bg-orange button-inline _captureButton"
+                  class="u-button u-button_orange u-button-inline _captureButton"
                   :key="selected_mode + '_pause'"
                   v-if="
                     selected_mode === 'stopmotion' &&
@@ -728,7 +729,7 @@
                   <button
                     type="button"
                     v-else-if="is_recording"
-                    class="bg-orange button-inline _captureButton"
+                    class="u-button u-button_orange u-button-inline _captureButton"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="stopRecording()"
@@ -741,8 +742,9 @@
                     <template v-else>
                       <img
                         class="inline-svg inline-svg_larger"
-                        src="/images/i_stop.svg"
+                        :src="`${$root.publicPath}images/i_stop.svg`"
                       />
+
                       &nbsp;
                       <span v-if="['video', 'audio'].includes(selected_mode)">
                         {{ $t("stop_recording") }}

@@ -2,7 +2,7 @@
   <div class="m_mediaValidationButtons">
     <button
       type="button"
-      class="bg-transparent button-arrow"
+      class="u-button u-button_transparent button-arrow"
       @click="selectedMoveLeft"
     >
       <svg
@@ -127,7 +127,7 @@
 
     <button
       type="button"
-      class="bg-transparent button-arrow"
+      class="u-button u-button_transparent button-arrow"
       @click="selectedMoveRight"
     >
       <svg

@@ -16,7 +16,7 @@
     <button
       v-if="has_reset_button && has_valid_date"
       type="button"
-      class="bg-transparent button-small"
+      class="u-button u-button_transparent button-small"
       @click="removeDate()"
     >
       x

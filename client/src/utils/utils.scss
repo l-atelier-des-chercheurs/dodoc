@@ -178,6 +178,14 @@
 .u-button_wide {
   min-width: 3.5em;
 }
+.u-button_transparent {
+  &,
+  &:hover,
+  &:focus,
+  &.is--active {
+    background-color: transparent;
+  }
+}
 .u-button_orange {
   background-color: var(--c-orange);
   color: white;
