@@ -238,7 +238,7 @@
               )"
               :key="res.name"
             >
-              <span :for="res.label" class="u-label">
+              <label :for="res.label" class="u-label">
                 <input
                   type="radio"
                   :id="res.label"
@@ -254,7 +254,7 @@
                     • {{ res.width }}/{{ res.height }}
                   </template>
                 </span>
-              </span>
+              </label>
             </div>
 
             <div
@@ -262,7 +262,7 @@
                 desired_camera_resolution &&
                 desired_camera_resolution.type === 'custom'
               "
-              class="margin-bottom-small input-group"
+              class="u-sameRow"
             >
               <input
                 type="number"
@@ -293,6 +293,7 @@
               type="text"
               v-model.trim="access_distant_stream.callee"
               required
+              v-uppercase
               :disabled="access_distant_stream.status.enabled"
               autofocus="autofocus"
               onfocus="this.select()"
@@ -335,6 +336,7 @@
             type="text"
             v-model.trim="share_this_stream.name"
             required
+            v-uppercase
             autofocus="autofocus"
             onfocus="this.select()"
             @keydown.enter.prevent="setCameraStreamFromDefaults"
@@ -485,7 +487,7 @@ export default {
 
       share_this_stream: {
         enabled: false,
-        name: `dodoc-${(Math.random().toString(36) + "00000000000000000").slice(
+        name: `DODOC-${(Math.random().toString(36) + "00000000000000000").slice(
           2,
           3 + 2
         )}`,

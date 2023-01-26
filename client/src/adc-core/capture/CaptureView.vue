@@ -1232,7 +1232,6 @@ export default {
     //   this.selected_mode = this.$root.settings.capture_options.selected_mode;
     // else
 
-    debugger;
     if (!this.selected_mode) this.$emit("changeMode", this.available_modes[0]);
 
     // document.addEventListener("keyup", this.captureKeyListener);

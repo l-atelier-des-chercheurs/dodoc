@@ -272,6 +272,12 @@ export default function () {
         "stream_currently_shared_with_name:":
           "Flux vidéo/audio partagé sous le nom&nbsp;:",
 
+        remote_access: "Sources distantes",
+        hangup: "raccrocher",
+        connect: "Se connecter",
+        connect_to_other_users:
+          "Accéder à des sources provenant d’autres appareils connectés actuellement à ce do•doc",
+
         seconds: "secondes",
         no_video_input_available: "Aucune source vidéo disponible",
         no_audio_input_available: "Aucune source audio disponible",

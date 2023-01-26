@@ -7,7 +7,6 @@
     <vue-plyr
       class="m_previewValidation--video"
       v-else-if="media_to_validate.type === 'video'"
-      :options="plyr_options"
     >
       <video
         ref="videoElement"
@@ -21,7 +20,7 @@
       class="m_previewValidation--audio"
     >
       <img :src="media_to_validate.preview" />
-      <vue-plyr :options="plyr_options">
+      <vue-plyr>
         <audio
           ref="audioElement"
           :src="media_to_validate.objectURL"
@@ -68,19 +67,6 @@ export default {
   data() {
     return {
       is_paused: false,
-
-      plyr_options: {
-        controls: [
-          "play-large",
-          "play",
-          "progress",
-          "current-time",
-          "mute",
-          "volume",
-          "fullscreen",
-        ],
-        iconUrl: "/images/plyr.svg",
-      },
     };
   },
   created() {},
