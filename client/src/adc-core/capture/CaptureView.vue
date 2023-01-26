@@ -483,15 +483,11 @@
                 >
                   <button
                     type="button"
-                    class="bg-rouge button-inline"
+                    class="u-button u-button_red"
                     :class="{ 'is--active': show_capture_settings }"
                     @click="show_capture_settings = !show_capture_settings"
                     :content="$t('settings')"
                   >
-                    <!-- v-tippy="{
-                      placement: 'right',
-                      delay: [600, 0],
-                    }" -->
                     <svg
                       class="inline-svg inline-svg_larger"
                       version="1.1"
@@ -518,7 +514,7 @@
 
                   <button
                     type="button"
-                    class="button-inline bg-bleumarine"
+                    class="u-button u-button_bleumarine"
                     :class="{ 'is--active': show_effects_pane }"
                     @click="show_effects_pane = !show_effects_pane"
                     :content="$t('effects')"
@@ -2135,8 +2131,8 @@ export default {
 
       button img,
       button svg {
-        width: 3em;
-        height: 3em;
+        width: 2rem;
+        height: 2rem;
         padding: 0;
       }
 

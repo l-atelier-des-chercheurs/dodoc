@@ -212,6 +212,27 @@ export default function () {
 
         drop_here: "Déposer ici",
 
+        // effets
+        effects: "Effets",
+        enable_effects: "Activer les effets",
+        pick_color_in_video: "Choisir la couleur dans la vidéo",
+        "click_in_video…": "Cliquez dans la vidéo…",
+        similarity: "Similarité",
+        smoothness: "Lissage",
+        spill: "Débord",
+        replace_color_with: "Remplacer par",
+        use_own_risk:
+          "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
+        chroma_key: "Incrustation (fond vert)",
+        flip_horizontally: "Retourner horizontalement",
+        flip_vertically: "Retourner verticalement",
+        brightness: "Luminosité",
+        contrast: "Contraste",
+        hue: "Teinte",
+        saturation: "Saturation",
+        lightness: "Clarté",
+        dotscreen: "Noir et blanc (tramé)",
+
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
 
@@ -234,6 +255,17 @@ export default function () {
         seconds_per_image: "secondes par image",
         quality: "qualité",
         duration: "Durée",
+
+        name_of_stream: "Nom du flux",
+        failed_to_start_streams_change_source_or_res:
+          "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
+        failed_to_share_stream: "Le partage du flux n’a pas pu avoir lieu",
+        stream_local_mode: "sur cet appareil",
+        stream_remote_mode: "do•doc distant",
+        "stream_shown:": "Flux utilisé&nbsp;:",
+        share_stream: "Partager ce flux",
+        "stream_currently_shared_with_name:":
+          "Flux vidéo/audio partagé sous le nom&nbsp;:",
 
         seconds: "secondes",
         no_video_input_available: "Aucune source vidéo disponible",

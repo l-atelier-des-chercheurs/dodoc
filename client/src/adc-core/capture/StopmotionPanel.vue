@@ -116,7 +116,7 @@
 
         <!-- <button
           type="button"
-          class="u-buttonLink padding-verysmall margin-none"
+          class="u-buttonLink u-padding_verysmall margin-none"
           :class="{ 'is--active': show_advanced_menu }"
           @mousedown.stop.prevent="
             show_advanced_menu = !show_advanced_menu;
