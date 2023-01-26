@@ -67,7 +67,7 @@
               type="radio"
               :id="id + '_' + mode"
               :value="mode"
-              v-model="selected_mode"
+              @click="$emit('changeMode', mode)"
             />
             <label :for="id + '_' + mode">
               <div class="_picto" :content="$t(mode)">
@@ -1063,6 +1063,7 @@ export default {
     type: String,
     read_only: Boolean,
     path: String,
+    selected_mode: String,
     available_modes: {
       type: Array,
       default: () => [
@@ -1101,7 +1102,6 @@ export default {
   },
   data() {
     return {
-      selected_mode: "",
       is_sending_image: false,
 
       id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
@@ -1229,7 +1229,9 @@ export default {
     // )
     //   this.selected_mode = this.$root.settings.capture_options.selected_mode;
     // else
-    this.selected_mode = this.available_modes[0];
+
+    debugger;
+    if (!this.selected_mode) this.$emit("changeMode", this.available_modes[0]);
 
     // document.addEventListener("keyup", this.captureKeyListener);
 
@@ -1398,10 +1400,12 @@ export default {
       let current_mode_index = this.available_modes.indexOf(this.selected_mode);
 
       if (current_mode_index > 0) {
-        this.selected_mode = this.available_modes[current_mode_index - 1];
+        this.$emit("changeMode", this.available_modes[current_mode_index - 1]);
       } else {
-        this.selected_mode =
-          this.available_modes[this.available_modes.length - 1];
+        this.$emit(
+          "changeMode",
+          this.available_modes[this.available_modes.length - 1]
+        );
       }
     },
     updateSelectedColor({ e, type }) {
@@ -1472,9 +1476,9 @@ export default {
 
       let current_mode_index = this.available_modes.indexOf(this.selected_mode);
       if (current_mode_index < this.available_modes.length - 1) {
-        this.selected_mode = this.available_modes[current_mode_index + 1];
+        this.$emit("changeMode", this.available_modes[current_mode_index + 1]);
       } else {
-        this.selected_mode = this.available_modes[0];
+        this.$emit("changeMode", this.available_modes[0]);
       }
     },
     updateStreamSharing(val) {

@@ -39,7 +39,12 @@
             </div>
           </div>
         </transition>
-        <CapturePane v-if="pane.type === 'capture'" :project="project" />
+        <CapturePane
+          v-if="pane.type === 'capture'"
+          :project="project"
+          :selected_mode="pane.selected_mode"
+          @update:selected_mode="setItem(pane, 'selected_mode', $event)"
+        />
         <MediaLibrary
           v-else-if="pane.type === 'collect'"
           :key="pane.key"

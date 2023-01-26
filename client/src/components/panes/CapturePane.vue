@@ -5,6 +5,8 @@
       :type="'projects'"
       :path="project.$path"
       :read_only="false"
+      :selected_mode="selected_mode"
+      @changeMode="$emit('update:selected_mode', $event)"
     />
   </div>
 </template>
@@ -12,6 +14,7 @@
 export default {
   props: {
     project: Object,
+    selected_mode: String,
   },
   components: {
     CaptureView: () => import("@/adc-core/capture/CaptureView.vue"),

@@ -21,7 +21,6 @@
     </div>
 
     <RadioSwitch
-      v-if="can_edit"
       :content.sync="current_mode"
       :options="[
         {
