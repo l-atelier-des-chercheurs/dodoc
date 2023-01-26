@@ -311,7 +311,7 @@
               v-if="
                 selected_mode === 'stopmotion' &&
                 stopmotion.onion_skin_img &&
-                current_stopmotion &&
+                current_stopmotion_path &&
                 !is_validating_stopmotion_video &&
                 !(show_live_feed && stopmotion.onion_skin_opacity === 0)
               "
@@ -321,7 +321,7 @@
               class="_onion_skin"
               :class="{ 'is--onionskin': show_live_feed }"
               :context="'edit'"
-              :slugFolderName="current_stopmotion"
+              :slugFolderName="current_stopmotion_path"
               :media="stopmotion.onion_skin_img"
               :folderType="'stopmotions'"
               :style="
@@ -330,6 +330,7 @@
                   : ''
               "
             /> -->
+            <!-- todo onionskin -->
           </transition>
 
           <div
@@ -430,17 +431,17 @@
           </transition>
         </div>
       </div>
-      <!-- <transition name="slideup" :duration="150" mode="out-in">
-        <StopmotionPanel
+      <transition name="slideup" :duration="150" mode="out-in">
+        <!-- <StopmotionPanel
           v-if="
             false ||
             ($root.store.stopmotions &&
               Object.prototype.hasOwnProperty.call(
                 $root.store.stopmotions,
-                current_stopmotion
+                current_stopmotion_path
               ))
           "
-          :stopmotiondata="$root.store.stopmotions[current_stopmotion]"
+          :stopmotiondata="$root.store.stopmotions[current_stopmotion_path]"
           :type="type"
           :slugFolderName="slugFolderName"
           :read_only="read_only"
@@ -451,8 +452,8 @@
           @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
           @close="closeStopmotionPanel"
           @new_single_image="updateSingleImage"
-        />
-      </transition> -->
+        /> -->
+      </transition>
 
       <transition name="slideup" :duration="150" mode="out-in">
         <div class="m_captureview--videoPane--bottom">
@@ -1125,7 +1126,7 @@ export default {
       is_validating_stopmotion_video: false,
       video_recording_is_paused: false,
 
-      current_stopmotion: false,
+      current_stopmotion_path: false,
 
       collapse_capture_pane: false,
 
@@ -1341,7 +1342,7 @@ export default {
   },
   computed: {
     is_making_stopmotion() {
-      const is_making_stopmotion = this.current_stopmotion ? true : false;
+      const is_making_stopmotion = this.current_stopmotion_path ? true : false;
       if (is_making_stopmotion) {
         // eslint-disable-next-line
         this.show_capture_settings = false;
@@ -1530,7 +1531,7 @@ export default {
       });
     },
     loadStopmotion(slugFolderName) {
-      this.current_stopmotion = slugFolderName;
+      this.current_stopmotion_path = slugFolderName;
       this.ask_before_leaving_capture = true;
     },
     checkCapturePanelSize() {
@@ -1584,25 +1585,20 @@ export default {
     addStopmotionImage() {
       const smdata = {
         name: this.slugFolderName + "-" + new Date().getTime(),
-        linked_project: this.slugFolderName,
-        linked_type: this.type,
-        authors: this.$root.current_author
-          ? [{ slugFolderName: this.$root.current_author.slugFolderName }]
-          : "",
       };
 
       this.$refs.videoElement.pause();
       this.getImageDataFromFeed().then((imageData) => {
-        if (!this.current_stopmotion) {
+        if (!this.current_stopmotion_path) {
           this.ask_before_leaving_capture = true;
           // create stopmotion
-          this.$root
+          this.$api
             .createFolder({
-              type: "stopmotions",
-              data: smdata,
+              path: `${this.slugFolderName}/stopmotions`,
+              additional_meta: smdata,
             })
-            .then((fdata) => {
-              this.current_stopmotion = fdata.slugFolderName;
+            .then((new_folder_path) => {
+              this.current_stopmotion_path = new_folder_path;
               this.addImageToStopmotion(imageData);
             });
         } else {
@@ -1611,33 +1607,30 @@ export default {
         }
       });
     },
-    addImageToStopmotion(imageData) {
+    async addImageToStopmotion(imageData) {
       console.log("METHODS • CaptureView: addImageToStopmotion");
       this.is_sending_image = true;
 
-      this.$root
-        .createMedia({
-          slugFolderName: this.current_stopmotion,
-          type: "stopmotions",
-          rawData: imageData,
-          additionalMeta: {
-            type: "image",
-          },
-        })
-        .then(() => {
-          this.is_sending_image = false;
-          this.$refs.videoElement.play();
+      const additional_meta = {
+        rawData: imageData,
+      };
+
+      await this.$api
+        .uploadFile({
+          path: this.current_stopmotion_path,
+          additional_meta,
         })
         .catch(() => {
           if (this.is_sending_image && this.$refs.videoElement) {
-            this.is_sending_image = false;
-            this.$refs.videoElement.play();
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
               .error(this.$t("notifications.failed_to_save_media"));
           }
         });
+
+      this.is_sending_image = false;
+      this.$refs.videoElement.play();
     },
     closeStopmotionPanel() {
       this.current_stopmotion = false;
