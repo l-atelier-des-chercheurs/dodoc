@@ -181,6 +181,12 @@
 .u-button_orange {
   background-color: var(--c-orange);
   color: white;
+
+  &:hover,
+  &:focus,
+  &.is--active {
+    background-color: var(--c-orange_fonce);
+  }
 }
 .u-button_red {
   background-color: var(--c-rouge);
@@ -191,7 +197,8 @@
   }
 
   &:hover,
-  &:focus {
+  &:focus,
+  &.is--active {
     background-color: var(--c-rouge_fonce);
   }
 }
@@ -200,7 +207,8 @@
   color: white;
 
   &:hover,
-  &:focus {
+  &:focus,
+  &.is--active {
     background-color: var(--c-bleuvert_fonce);
   }
 }
@@ -209,7 +217,8 @@
   color: white;
 
   &:hover,
-  &:focus {
+  &:focus,
+  &.is--active {
     background-color: var(--c-orange_fonce);
   }
 }
@@ -218,7 +227,8 @@
   color: white;
 
   &:hover,
-  &:focus {
+  &:focus,
+  &.is--active {
     background-color: var(--c-bleumarine_fonce);
   }
 }

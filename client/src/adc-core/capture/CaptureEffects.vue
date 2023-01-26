@@ -7,6 +7,8 @@
         <input id="enable_effects" type="checkbox" v-model="enable" />
         <label for="enable_effects">{{ $t("enable_effects") }}</label>
       </div>
+
+      <br />
       <!-- <ToggleInput
         :content.sync="enable"
         :label="$t('enable_effects')"

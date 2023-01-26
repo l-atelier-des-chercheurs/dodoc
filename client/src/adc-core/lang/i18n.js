@@ -248,6 +248,11 @@ export default function () {
         record_audio: "Capturer un son",
         record_video: "Capturer une vidéo",
         stopmotion: "animation",
+        with_sound: "avec le son",
+        update: "Mettre à jour",
+        audio: "son",
+        lines: "lignes",
+        vecto: "formes",
 
         interval_between_pictures: "Intervalle entre chaque photo",
         start_timelapse: "Démarrer le time-lapse",
