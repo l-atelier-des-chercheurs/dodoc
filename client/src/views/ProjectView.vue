@@ -276,6 +276,12 @@ export default {
     > * {
       padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
     }
+
+    ::v-deep {
+      .u-label {
+        color: white;
+      }
+    }
   }
 }
 </style>
