@@ -1,7 +1,11 @@
 import Quill from "quill";
 
 export const fonts = [
-  "IBM Plex Sans",
+  "Fira Sans",
+  "Luciole",
+  "Belle Allure CE",
+  "Belle Allure CM",
+  "OpenDyslexic",
   "Alegreya",
   "Roboto Mono",
   "Roboto",
@@ -11,9 +15,11 @@ export const fonts = [
   "Work Sans",
   "Karla",
   "IBM Plex Serif",
+  "IBM Plex Sans",
   "Volkhov",
-  "Archivo Black",
+  "Archivo",
   "Spectral",
+  "Krub",
 ];
 
 export const toolbar = {
