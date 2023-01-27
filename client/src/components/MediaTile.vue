@@ -76,8 +76,8 @@ export default {
   }
 
   &.was--focused {
-    transform: translate3d(0, -5px, 0);
-    // border: 2px solid var(--c-noit);
+    // transform: translate3d(0, -5px, 0);
+    border: 2px solid white;
     // background: rgba(51, 51, 51, 0.8);
   }
   &.is--dragged {
