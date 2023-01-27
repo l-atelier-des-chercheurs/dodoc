@@ -107,6 +107,8 @@ export default {
 
   --c-bodybg: hsl(48, 19%, 95%);
   --body-bg-pattern-color: hsl(48, 19%, 93%);
+  --plyr-color-main: var(--c-bleumarine);
+  // --plyr-color-main: var(--c-orange);
 
   --scrollbar-height: 1px;
   --scrollbar-padding: 3px;

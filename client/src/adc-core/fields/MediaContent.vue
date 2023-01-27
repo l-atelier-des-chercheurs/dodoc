@@ -13,7 +13,15 @@
         <img :src="thumb" />
       </template>
       <template v-else>
-        <video :src="file_full_path" controls />
+        <vue-plyr
+          :key="file_full_path"
+          ref="plyr"
+          :emit="['volumechange', 'timeupdate']"
+          @volumechange="volumeChanged"
+          @timeupdate="videoTimeUpdated"
+        >
+          <video :poster="thumb" :src="file_full_path" preload="none" />
+        </vue-plyr>
       </template>
     </template>
     <template v-else-if="file.$type === 'pdf'">
@@ -94,6 +102,14 @@ export default {
       this.is_dragged = false;
       console.log(`MediaContent / endMediaDrag`);
       this.$eventHub.$emit(`mediadrag.end`);
+    },
+
+    volumeChanged(event) {
+      const vol = Math.round(Number(event.detail.plyr.volume) * 100);
+      this.$emit("media.volumeChanged", vol);
+    },
+    videoTimeUpdated(event) {
+      this.$emit("media.videoTimeUpdated", event.detail.plyr.media.currentTime);
     },
 
     // async updateCaption() {
