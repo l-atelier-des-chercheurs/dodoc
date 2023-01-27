@@ -201,12 +201,17 @@ module.exports = (function () {
           dev.logverbose(`Missing screenshot at`, full_path_to_thumb);
 
           if (media_type === "video")
-            await _makeVideoScreenshotFromPath({
-              thumb_name,
-              thumb_folder,
-              full_media_path,
-              timemark_key: setting.timemark,
-            });
+            try {
+              await _makeVideoScreenshotFromPath({
+                thumb_name,
+                thumb_folder,
+                full_media_path,
+                timemark_key: setting.timemark,
+              });
+            } catch (err) {
+              dev.error(err);
+              continue;
+            }
           else if (media_type === "audio")
             await _makeAudioWaveforms({
               full_media_path,
@@ -550,14 +555,14 @@ module.exports = (function () {
   }
 
   async function _readVideoAudioExif({ full_media_path }) {
-    try {
-      dev.logfunction({ full_media_path });
+    dev.logfunction({ full_media_path });
+    let extracted_metadata = {};
 
+    try {
       const metadata = await _ffprobeVideoAudio({ full_media_path });
 
-      dev.log({ metadata });
+      dev.logverbose({ metadata });
 
-      let extracted_metadata = {};
       if (metadata.format?.duration)
         extracted_metadata.duration = +metadata.format.duration.toPrecision(3);
       if (metadata.format?.tags?.location)
@@ -574,12 +579,10 @@ module.exports = (function () {
           h: extracted_metadata.height,
         });
       }
-
-      return extracted_metadata;
     } catch (err) {
       dev.error(err);
-      return;
     }
+    return extracted_metadata;
   }
 
   function _ffprobeVideoAudio({ full_media_path }) {
@@ -600,13 +603,19 @@ module.exports = (function () {
     const props = {};
     try {
       const { size, mtimeMs } = await fs.stat(full_media_path);
+
       props.size = size;
       props.mtimems = Math.floor(mtimeMs);
-    } catch (e) {}
+    } catch (e) {
+      dev.error(e);
+    }
     try {
       const hash = await utils.md5FromFile({ full_media_path });
+
       props.hash = hash;
-    } catch (e) {}
+    } catch (e) {
+      dev.error(e);
+    }
 
     return props;
   }

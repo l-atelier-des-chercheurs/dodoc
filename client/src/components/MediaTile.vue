@@ -35,10 +35,12 @@ export default {
   watch: {},
   computed: {
     duration() {
-      if (this.file.$infos?.duration)
-        return this.formatDurationToHoursMinutesSeconds(
-          this.file.$infos.duration
-        );
+      if (this.file.$type === "video")
+        if (this.file.$infos.duration)
+          return this.formatDurationToHoursMinutesSeconds(
+            this.file.$infos.duration
+          );
+        else return "•:••";
       return false;
     },
   },
@@ -124,5 +126,6 @@ export default {
   right: 0;
   background: rgba(255, 255, 255, 0.7);
   padding: 0 calc(var(--spacing) / 4);
+  font-family: "Fira Code";
 }
 </style>
