@@ -26,7 +26,7 @@
         >
           ←
         </button>
-        <label class="c-blanc" class="u-label"
+        <label class="c-blanc u-label"
           >{{ $t("image") }} {{ image_index_currently_shown + 1 }}/{{
             medias.length
           }}</label

@@ -99,6 +99,9 @@ export default function () {
         show_list: "Afficher la liste",
         list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
+        device: "Appareil",
+        audioinput: "Entrée audio",
+        audiooutput: "Sortie audio",
 
         import: "Importer",
         waiting: "À venir",
@@ -240,6 +243,14 @@ export default function () {
         copyleft_explanations: "<i>Explications à ajouter</i>",
 
         machines_and_materials: "Machines et matériaux",
+
+        camera: "Camera",
+        sources: "Sources",
+        "Entire screen": "Écran de l’ordinateur",
+        no_stopmotion_created_yet:
+          "Les animations créées apparaîtront dans ce panneau.",
+
+        pick_a_camera: "Sélectionnez une caméra",
 
         take_picture: "Prendre une photo",
         delay: "Retardateur",

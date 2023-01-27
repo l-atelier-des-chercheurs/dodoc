@@ -433,15 +433,8 @@
         </div>
       </div>
       <transition name="slideup" :duration="150" mode="out-in">
-        <!-- <StopmotionPanel
-          v-if="
-            false ||
-            ($root.store.stopmotions &&
-              Object.prototype.hasOwnProperty.call(
-                $root.store.stopmotions,
-                current_stopmotion_path
-              ))
-          "
+        <StopmotionPanel
+          v-if="current_stopmotion_path"
           :stopmotiondata="$root.store.stopmotions[current_stopmotion_path]"
           :type="type"
           :slugFolderName="slugFolderName"
@@ -453,7 +446,7 @@
           @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
           @close="closeStopmotionPanel"
           @new_single_image="updateSingleImage"
-        /> -->
+        />
       </transition>
 
       <transition name="slideup" :duration="150" mode="out-in">
@@ -898,6 +891,7 @@
                 <button
                   type="button"
                   v-if="selected_mode === 'stopmotion' && !is_making_stopmotion"
+                  disabled
                   @click="show_stopmotion_list = !show_stopmotion_list"
                   class="bg-bleumarine font-small"
                 >
@@ -1045,7 +1039,7 @@
 <script>
 import MediaPreviewBeforeValidation from "./MediaPreviewBeforeValidation.vue";
 import MediaValidationButtons from "./MediaValidationButtons.vue";
-// import StopmotionPanel from "./StopmotionPanel.vue";
+import StopmotionPanel from "./StopmotionPanel.vue";
 // import MediaContent from "../subcomponents/MediaContent.vue";
 
 import CaptureSettings from "./CaptureSettings.vue";
@@ -1093,7 +1087,7 @@ export default {
   components: {
     MediaPreviewBeforeValidation,
     MediaValidationButtons,
-    // StopmotionPanel,
+    StopmotionPanel,
     // MediaContent,
     CaptureSettings,
     CaptureEffects,
@@ -1600,7 +1594,7 @@ export default {
               additional_meta: smdata,
             })
             .then((new_folder_path) => {
-              this.current_stopmotion_path = new_folder_path;
+              this.current_stopmotion_path = `${this.slugFolderName}/stopmotions/${new_folder_path}`;
               this.addImageToStopmotion(imageData);
             });
         } else {
@@ -1613,29 +1607,39 @@ export default {
       console.log("METHODS • CaptureView: addImageToStopmotion");
       this.is_sending_image = true;
 
-      const additional_meta = {
-        rawData: imageData,
-      };
+      const additional_meta = {};
 
       await this.$api
         .uploadFile({
           path: this.current_stopmotion_path,
+          filename: +new Date() + ".jpeg",
+          file: imageData,
           additional_meta,
         })
-        .catch(() => {
-          if (this.is_sending_image && this.$refs.videoElement) {
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error(this.$t("notifications.failed_to_save_media"));
-          }
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
         });
+
+      // await this.$api
+      //   .uploadFile({
+      //     path: this.current_stopmotion_path,
+      //     additional_meta,
+      //   })
+      //   .catch(() => {
+      //     if (this.is_sending_image && this.$refs.videoElement) {
+      //       this.$alertify
+      //         .closeLogOnClick(true)
+      //         .delay(4000)
+      //         .error(this.$t("notifications.failed_to_save_media"));
+      //     }
+      //   });
 
       this.is_sending_image = false;
       this.$refs.videoElement.play();
     },
     closeStopmotionPanel() {
-      this.current_stopmotion = false;
+      this.current_stopmotion_path = false;
       this.is_recording = false;
       this.ask_before_leaving_capture = false;
       this.show_live_feed = true;
@@ -1999,7 +2003,7 @@ export default {
       this.media_is_being_sent = true;
       this.media_being_sent_percent = 0;
 
-      // TODO : possibilité de cancel
+      // TODO : possibilité de cancel, merge with uploadFile
       let res = await this.$axios
         .post(`${this.path}/_upload`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
