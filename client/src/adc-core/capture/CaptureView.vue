@@ -1223,15 +1223,6 @@ export default {
   },
   created() {},
   mounted() {
-    // if (
-    //   this.$root.settings.capture_options.selected_mode !== "" &&
-    //   this.available_modes.includes(
-    //     this.$root.settings.capture_options.selected_mode
-    //   )
-    // )
-    //   this.selected_mode = this.$root.settings.capture_options.selected_mode;
-    // else
-
     if (!this.selected_mode) this.$emit("changeMode", this.available_modes[0]);
 
     // document.addEventListener("keyup", this.captureKeyListener);
@@ -1284,7 +1275,13 @@ export default {
     ); //turn off the event handler
   },
   watch: {
-    selected_mode: function () {
+    selected_mode: function (val, oldVal) {
+      // prevent starting nomode (when reclicking tab bar)
+      if (!val) {
+        this.$emit("changeMode", oldVal);
+        return;
+      }
+
       this.mode_just_changed = true;
       window.setTimeout(() => {
         this.mode_just_changed = false;
