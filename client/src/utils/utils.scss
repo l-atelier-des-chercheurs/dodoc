@@ -249,6 +249,13 @@
   min-height: 2.9em;
 }
 
+.u-colorOrange {
+  color: var(--c-orange);
+}
+.u-colorWhite {
+  color: white;
+}
+
 input[type="color"],
 input[type="date"],
 input[type="datetime-local"],
