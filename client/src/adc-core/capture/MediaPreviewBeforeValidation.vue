@@ -8,12 +8,7 @@
       class="m_previewValidation--video"
       v-else-if="media_to_validate.type === 'video'"
     >
-      <video
-        ref="videoElement"
-        :poster="linkToVideoThumb"
-        :src="media_to_validate.objectURL"
-        preload="none"
-      />
+      <video ref="videoElement" :src="media_to_validate.objectURL" />
     </vue-plyr>
     <div
       v-else-if="media_to_validate.type === 'audio'"
