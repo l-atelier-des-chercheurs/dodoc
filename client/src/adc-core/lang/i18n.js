@@ -183,6 +183,9 @@ export default function () {
         download: "Télécharger",
 
         medias: "Médias",
+        no_media_in_project: "Aucun média dans ce projet",
+        number_of_media: "Nombre de médias",
+
         CC: "Creative Commons",
         license: "Licence",
         licence_instructions:
@@ -253,6 +256,8 @@ export default function () {
         audio: "son",
         lines: "lignes",
         vecto: "formes",
+        or_download_media_on_device:
+          "ou télécharger ce média sur votre appareil",
 
         interval_between_pictures: "Intervalle entre chaque photo",
         start_timelapse: "Démarrer le time-lapse",

@@ -39,10 +39,12 @@
           <input type="submit" />
         </form>
 
-        <small v-if="medias.length === 0"> Aucun média dans ce projet </small>
-        <small v-if="medias.length">
-          Nombre de médias = {{ medias.length }}
+        <small v-if="medias.length === 0">
+          {{ $t("no_media_in_project") }}
         </small>
+        <div v-if="medias.length" class="u-label _mediaCount">
+          {{ $t("number_of_media") }} = {{ medias.length }}
+        </div>
       </div>
 
       <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
@@ -245,5 +247,10 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 2);
+}
+
+._mediaCount {
+  color: black;
+  margin-bottom: 0;
 }
 </style>
