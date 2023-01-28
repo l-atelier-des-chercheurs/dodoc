@@ -201,7 +201,11 @@
             >
               <label class="u-label">
                 <span>{{ $t("interval_between_pictures") }}</span>
-                <input type="number" v-model.number="timelapse_interval" />
+                <input
+                  type="number"
+                  min="1"
+                  v-model.number="timelapse_interval"
+                />
                 <span>{{ $t("seconds") }}</span>
               </label>
             </div>
@@ -2459,7 +2463,7 @@ export default {
     input {
       display: inline-block;
       min-width: 2em;
-      max-width: 3em;
+      max-width: 4em;
       height: 1.4em;
       margin: 2px;
       padding: 0 2px;
