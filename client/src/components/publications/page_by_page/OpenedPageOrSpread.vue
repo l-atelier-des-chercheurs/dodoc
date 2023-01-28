@@ -440,9 +440,15 @@ export default {
   ._openAdjacentPageBtn {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
     background: transparent;
     padding: 0;
-    // background: rgba(255, 255, 255, 0.5);
+
+    &:hover,
+    &:focus {
+      // background: rgba(255, 255, 255, 0.2);
+    }
   }
 }
 </style>
