@@ -6,7 +6,11 @@
       'is--editable': can_edit,
     }"
   >
-    <div class="_container" :style="page_styles">
+    <div
+      class="_container"
+      :style="page_styles"
+      @click.self="active_module = false"
+    >
       <div class="_content" @click.self="active_module = false">
         <svg
           v-if="context === 'full' && gridstep"
@@ -128,7 +132,6 @@ export default {
   data() {
     return {
       items: [{ src: "images/i_add_publi.svg" }, { src: "images/i_add.svg" }],
-
       active_module: false,
     };
   },

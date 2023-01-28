@@ -63,6 +63,7 @@
           <ModuleCreator
             :publication_path="publication_path"
             :page_id="page_opened_id"
+            @addModule="enableModuleEdit"
           />
         </div>
       </div>
@@ -284,6 +285,11 @@ export default {
       const next_spread = this.spreads[this.active_spread_index + 1];
       const next_spread_first_page = next_spread[0].id;
       this.$emit("togglePage", next_spread_first_page);
+    },
+    enableModuleEdit({ meta_filename }) {
+      setTimeout(() => {
+        this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
+      }, 150);
     },
   },
 };
