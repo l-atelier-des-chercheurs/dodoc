@@ -120,6 +120,13 @@ export default {
         </svg>
                   `,
         },
+        {
+          key: "cartography",
+          label: this.$t("cartography"),
+          disabled: true,
+          icon: `
+                  `,
+        },
       ],
 
       error_msg: "",
