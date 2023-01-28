@@ -8,7 +8,6 @@
   >
     <span label="Panneaux" class="_paneList2">
       <span
-        v-if="!$root.is_mobile_view"
         class="_projectTitle"
         :class="{
           'is--shown': is_stickied_to_top,
@@ -321,6 +320,14 @@ export default {
 
     &._projectPanes {
       flex: 3 0 auto;
+    }
+  }
+
+  ._paneList.is--mobile & {
+    > * {
+      &._projectPanes {
+        flex: 1 0 auto;
+      }
     }
   }
 }

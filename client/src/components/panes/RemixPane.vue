@@ -1,79 +1,116 @@
 <template>
   <div class="_remixPane">
-    <div
-      class="m_recipes--type"
-      v-for="recipe_type in recipe_types"
-      :key="recipe_type.key"
-    >
-      <div class="u-label u-colorWhite">
-        {{ $t(recipe_type.label) }}
-      </div>
-      <div class="m_recipes--type--grid">
-        <div
-          v-for="recipe in recipe_type.recipes"
-          :key="recipe.key"
-          class="m_recipe"
-        >
-          <div class="m_recipe--icon" v-html="recipe.icon"></div>
+    <RadioSwitch
+      v-if="can_edit"
+      :content.sync="current_view"
+      :options="[
+        {
+          label: $t('create'),
+          value: 'create',
+        },
+        {
+          label: $t('existing'),
+          value: 'existing',
+        },
+      ]"
+    />
 
-          <div class="m_recipe--text">
-            <h2 class>{{ $t(recipe.key) }}</h2>
-            <button
-              v-if="recipe.instructions"
-              type="button"
-              class="u-buttonLink"
-              :class="{
-                'is--active': recipe.show_instructions,
-              }"
-              @click="recipe.show_instructions = !recipe.show_instructions"
-            >
-              {{ $t("more_informations") }}
-            </button>
+    <br />
 
-            <p class="margin-vert-small" v-if="false">
-              <span v-html="$t(recipe.summary)" class="margin-vert-verysmall" />
-              <br />
-            </p>
-            <template v-if="recipe.show_instructions">
-              <p>
-                <span v-html="$t(recipe.instructions)" />
-              </p>
-            </template>
-          </div>
-          <br />
-          <div class="m_recipe--buttons">
-            <button class="u-button u-button_bleumarine" type="button">
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="0px"
-                viewBox="0 0 168 168"
-                style="enable-background: new 0 0 168 168"
-                xml:space="preserve"
+    <section v-if="current_view === 'create'">
+      <div
+        class="m_recipes--type"
+        v-for="recipe_type in recipe_types"
+        :key="recipe_type.key"
+      >
+        <div class="u-label u-colorWhite">
+          {{ $t(recipe_type.label) }}
+        </div>
+        <div class="m_recipes--type--grid">
+          <div
+            v-for="recipe in recipe_type.recipes"
+            :key="recipe.key"
+            class="m_recipe"
+          >
+            <div class="m_recipe--icon" v-html="recipe.icon"></div>
+
+            <div class="m_recipe--text">
+              <h2 class>{{ $t(recipe.key) }}</h2>
+              <button
+                v-if="recipe.instructions"
+                type="button"
+                class="u-buttonLink"
+                :class="{
+                  'is--active': recipe.show_instructions,
+                }"
+                @click="recipe.show_instructions = !recipe.show_instructions"
               >
-                <polygon
-                  style="fill: white"
-                  points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
-		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
-                />
-              </svg>
+                {{ $t("more_informations") }}
+              </button>
 
-              <span>{{ $t("create") }}</span>
-            </button>
+              <p class="margin-vert-small" v-if="false">
+                <span
+                  v-html="$t(recipe.summary)"
+                  class="margin-vert-verysmall"
+                />
+                <br />
+              </p>
+              <template v-if="recipe.show_instructions">
+                <p>
+                  <span v-html="$t(recipe.instructions)" />
+                </p>
+              </template>
+            </div>
+            <br />
+            <div class="m_recipe--buttons">
+              <button
+                class="u-button u-button_bleumarine"
+                type="button"
+                @click="createRemix(recipe.key)"
+              >
+                <svg
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 168 168"
+                  style="enable-background: new 0 0 168 168"
+                  xml:space="preserve"
+                >
+                  <polygon
+                    style="fill: white"
+                    points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
+                  />
+                </svg>
+
+                <span>{{ $t("create") }}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+    <section v-else-if="current_view === 'existing'">
+      <RemixesList :project_path="project.$path" :can_edit="can_edit" />
+    </section>
   </div>
 </template>
 <script>
+import RemixesList from "@/components/remixes/RemixesList.vue";
+
 export default {
-  props: {},
-  components: {},
+  props: {
+    can_edit: Boolean,
+    project: Object,
+  },
+  components: {
+    RemixesList,
+  },
   data() {
     return {
+      current_view: "create",
       recipe_types: [
         // {
         //   key: "document",
@@ -421,7 +458,23 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    async createRemix(type) {
+      const new_folder_slug = await this.$api.createFolder({
+        path: `${this.project.$path}/remixes`,
+        additional_meta: {
+          type,
+        },
+      });
+
+      const path = `${this.project.$path}/remixes/${new_folder_slug}`;
+      this.openRemix({ path });
+    },
+    openRemix({ path }) {
+      path;
+      debugger;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

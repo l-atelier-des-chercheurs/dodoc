@@ -93,6 +93,7 @@ export default function () {
         contributor: "Contributeur·rice",
         admin: "Administrateur·rice",
         create: "créer",
+        existing: "Existant",
         create_account: "créer un compte",
         your_account: "votre compte",
         new_account: "nouveau compte",

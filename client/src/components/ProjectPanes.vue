@@ -52,7 +52,11 @@
           :media_focused="pane.focus"
           @update:media_focused="setItem(pane, 'focus', $event)"
         />
-        <RemixPane v-if="pane.type === 'remix'" :project="project" />
+        <RemixPane
+          v-if="pane.type === 'remix'"
+          :project="project"
+          :can_edit="can_edit_project"
+        />
         <PublierPane
           v-if="pane.type === 'publish'"
           :project="project"

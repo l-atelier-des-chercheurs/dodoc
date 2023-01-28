@@ -348,6 +348,13 @@
             }
           }
         },
+        "remixes": {
+          "fields": {
+            "type": {
+              "type": "string"
+            }
+          }
+        },
         "publications": {
           "$cover": {
             "width": 1200,
