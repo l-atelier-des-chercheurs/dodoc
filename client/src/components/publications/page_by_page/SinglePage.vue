@@ -123,7 +123,7 @@ export default {
     zoom: { type: Number, default: 1 },
     gridstep_in_cm: Number,
     margins: Object,
-    magnification: { type: Number, default: 30 },
+    magnification: { type: Number, default: 38 },
     can_edit: Boolean,
   },
   components: {
