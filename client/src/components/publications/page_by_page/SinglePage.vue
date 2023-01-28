@@ -13,7 +13,7 @@
     >
       <div class="_content" @click.self="active_module = false">
         <svg
-          v-if="context === 'full' && gridstep"
+          v-if="can_edit && gridstep"
           class="_grid"
           width="100%"
           height="100%"
@@ -67,7 +67,7 @@
         />
 
         <svg
-          v-if="context === 'full' && margins"
+          v-if="can_edit && margins"
           class="_margins"
           width="100%"
           height="100%"
