@@ -93,38 +93,42 @@
         class="_spreadNavigator"
         :style="`min-width: ;`"
       >
-        <div
-          v-for="(page, index) in active_spread"
-          :key="page.id"
-          class="_spreadNavigator--page"
-          :class="{
-            'is--active': page.id === page_opened_id,
-            'is--left': index === 0,
-            'is--right': index === 1,
-          }"
-        >
-          <template v-if="page">
-            <SinglePage
-              :context="'full'"
-              :publication_path="publication_path"
-              :page_modules="getModulesForPage(page.id)"
-              :page_width="page_width"
-              :page_height="page_height"
-              :zoom="zoom"
-              :gridstep_in_cm="page.id === page_opened_id ? gridstep_in_cm : 0"
-              :margins="margins"
-              :can_edit="can_edit && page.id === page_opened_id"
-              @close="$emit('togglePage', false)"
-            />
-            <template v-if="page.id !== page_opened_id">
-              <button
-                type="button"
-                class="_openAdjacentPageBtn"
-                @click="setPageActive(page.id)"
+        <div class="_spreadNavigator--content">
+          <div
+            v-for="(page, index) in active_spread"
+            :key="page.id"
+            class="_spreadNavigator--page"
+            :class="{
+              'is--active': page.id === page_opened_id,
+              'is--left': index === 0,
+              'is--right': index === 1,
+            }"
+          >
+            <template v-if="page">
+              <SinglePage
+                :context="'full'"
+                :publication_path="publication_path"
+                :page_modules="getModulesForPage(page.id)"
+                :page_width="page_width"
+                :page_height="page_height"
+                :zoom="zoom"
+                :gridstep_in_cm="
+                  page.id === page_opened_id ? gridstep_in_cm : 0
+                "
+                :margins="margins"
+                :can_edit="can_edit && page.id === page_opened_id"
+                @close="$emit('togglePage', false)"
               />
+              <template v-if="page.id !== page_opened_id">
+                <button
+                  type="button"
+                  class="_openAdjacentPageBtn"
+                  @click="setPageActive(page.id)"
+                />
+              </template>
             </template>
-          </template>
-          <div v-else />
+            <div v-else />
+          </div>
         </div>
       </div>
     </transition>
@@ -370,9 +374,14 @@ export default {
 }
 
 ._spreadNavigator {
+  overflow: auto;
+}
+._spreadNavigator--content {
   display: flex;
   flex-flow: row nowrap;
+  padding: calc(var(--spacing) * 1);
 }
+
 ._spreadNavigator--page {
   position: relative;
   flex: 1 1 50%;
@@ -381,7 +390,7 @@ export default {
   &.is--left {
     ::v-deep {
       ._content {
-        transform-origin: center right;
+        transform-origin: 100% 25%;
         margin-left: auto;
         margin-right: 0;
       }
@@ -393,7 +402,7 @@ export default {
   &.is--right {
     ::v-deep {
       ._content {
-        transform-origin: center left;
+        transform-origin: 0% 25%;
         margin-left: 0;
         margin-right: auto;
       }

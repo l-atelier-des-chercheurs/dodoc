@@ -199,7 +199,7 @@ export default {
   height: var(--page-height, 10cm);
 
   transform: scale(var(--zoom));
-  transform-origin: center center;
+  transform-origin: 50% 25%;
 
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -207,10 +207,10 @@ export default {
   background: white;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 
-  .is--preview & {
+  ._singlePage.is--preview & {
     transform-origin: top left;
   }
-  .is--editable & {
+  ._singlePage.is--editable & {
     overflow: visible;
   }
 }
