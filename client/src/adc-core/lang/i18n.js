@@ -142,7 +142,7 @@ export default function () {
         backcover: "Quatrième de couverture",
         margins: "Marges",
         margins_instructions:
-          "Renseignez ici les repères de marge souhaitez. Les marges seront dessinées avec un trait violet.",
+          "Renseignez ici les repères de marge souhaitez, en centimètres. Les marges seront dessinées avec un trait violet.",
         left: "Gauche",
         right: "Droite",
         top: "En haut",
