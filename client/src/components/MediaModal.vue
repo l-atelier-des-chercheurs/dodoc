@@ -65,7 +65,7 @@
         </button>
         <button
           type="button"
-          class="u-button u-button_bleuvert u-button_big"
+          class="u-button u-button_bleuvert"
           @click="$emit('select')"
         >
           {{ $t("select") }}

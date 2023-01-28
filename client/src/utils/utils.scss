@@ -220,6 +220,16 @@
     background-color: var(--c-bleuvert_fonce);
   }
 }
+.u-button_bleumarine {
+  background-color: var(--c-bleumarine);
+  color: white;
+
+  &:hover,
+  &:focus,
+  &.is--active {
+    background-color: var(--c-bleumarine_fonce);
+  }
+}
 .u-button_orange {
   background-color: var(--c-orange);
   color: white;
