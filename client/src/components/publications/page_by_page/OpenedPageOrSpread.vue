@@ -28,7 +28,7 @@
           <transition name="fade_fast" mode="out-in">
             <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
           </transition>
-          <transition v-if="spreads" name="fade_fast" mode="out-in">
+          <transition v-if="is_spread" name="fade_fast" mode="out-in">
             <span :key="active_spread_index">
               <template v-if="page_number !== 0">
                 ({{ $t("spread") }} {{ active_spread_index }})
