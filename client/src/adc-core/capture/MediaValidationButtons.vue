@@ -2,7 +2,7 @@
   <div class="m_mediaValidationButtons">
     <button
       type="button"
-      class="bg-transparent button-arrow"
+      class="u-button u-button_transparent u-colorOrange"
       @click="selectedMoveLeft"
     >
       <svg
@@ -23,7 +23,7 @@
 
     <button
       type="button"
-      class="button button-bg_rounded button-outline c-blanc"
+      class="u-button u-button_red u-colorWhite"
       @mousedown.stop.prevent="validateButton(0)"
       @touchstart.stop.prevent="validateButton(0)"
       :class="{ 'is--selected': selected_button === 0 }"
@@ -44,8 +44,9 @@
           xml:space="preserve"
         >
           <polygon
+            fill="currentColor"
             points="42.6,57.2 57.5,42.4 84.1,69 110.8,42.4 125.6,57.2 99,83.9 125.6,110.5 110.8,125.4 
-        84.1,98.7 57.5,125.4 42.6,110.5 69.3,83.9 			"
+        84.1,98.7 57.5,125.4 42.6,110.5 69.3,83.9"
           />
         </svg>
         <span class>{{ $t("cancel") }}</span>
@@ -56,7 +57,7 @@
       type="button"
       :disabled="read_only"
       @click="validateButton(1)"
-      class="button button-bg_rounded button-outline c-rouge"
+      class="u-button u-button_red u-colorOrange"
       :class="{ 'is--selected': selected_button === 1 }"
       @mouseover="selected_button = 1"
     >
@@ -77,6 +78,7 @@
           transform="matrix(0.7071 -0.7071 0.7071 0.7071 -53.857 72.9892)"
           width="19.5"
           height="56.8"
+          fill="currentColor"
         />
         <rect
           x="53.2"
@@ -84,6 +86,7 @@
           transform="matrix(0.7071 -0.7071 0.7071 0.7071 -31.6875 97.6563)"
           width="97.6"
           height="19.5"
+          fill="currentColor"
         />
       </svg>
       <span class="c-rouge">{{ $t("save") }}</span>
@@ -94,13 +97,13 @@
       v-if="can_add_to_fav"
       :disabled="read_only"
       @click="validateButton(2)"
-      class="button button-bg_rounded button-outline c-rouge"
+      class="u-button u-button_red u-colorOrange"
       :class="{ 'is--selected': selected_button === 2 }"
       @mouseover="selected_button = 2"
     >
       <svg
         version="1.1"
-        class="padding-verysmall"
+        class="u-padding_verysmall"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
@@ -113,10 +116,10 @@
         xml:space="preserve"
       >
         <polygon
-          class="st0"
+          fill="currentColor"
           points="60.4,29.7 78.5,7.3 78.5,7.3 12.7,7.3 12.7,52 78.5,52 78.5,52 	"
         />
-        <polygon class="st0" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
+        <polygon fill="currentColor" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
       </svg>
       <span class>
         {{ $t("save") }}
@@ -127,7 +130,7 @@
 
     <button
       type="button"
-      class="bg-transparent button-arrow"
+      class="u-button u-button_transparent u-colorOrange"
       @click="selectedMoveRight"
     >
       <svg

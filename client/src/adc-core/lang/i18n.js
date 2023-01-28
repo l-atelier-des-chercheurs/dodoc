@@ -99,6 +99,9 @@ export default function () {
         show_list: "Afficher la liste",
         list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
+        device: "Appareil",
+        audioinput: "Entrée audio",
+        audiooutput: "Sortie audio",
 
         import: "Importer",
         waiting: "À venir",
@@ -135,6 +138,17 @@ export default function () {
         page_spreads: "Pages en vis-à-vis",
         page: "Page",
         spread: "Planche",
+        cover: "Couverture",
+        backcover: "Quatrième de couverture",
+        margins: "Marges",
+        margins_instructions:
+          "Renseignez ici les repères de marge souhaitez, en centimètres. Les marges seront dessinées avec un trait violet.",
+        left: "Gauche",
+        right: "Droite",
+        top: "En haut",
+        bottom: "En bas",
+        margins_inside: "Petit fond",
+        margins_outside: "Grand fond",
 
         status: "État",
         list_of_projects: "Liste des projets",
@@ -172,6 +186,9 @@ export default function () {
         download: "Télécharger",
 
         medias: "Médias",
+        no_media_in_project: "Aucun média dans ce projet",
+        number_of_media: "Nombre de médias",
+
         CC: "Creative Commons",
         license: "Licence",
         licence_instructions:
@@ -201,13 +218,84 @@ export default function () {
 
         drop_here: "Déposer ici",
 
+        // effets
+        effects: "Effets",
+        enable_effects: "Activer les effets",
+        pick_color_in_video: "Choisir la couleur dans la vidéo",
+        "click_in_video…": "Cliquez dans la vidéo…",
+        similarity: "Similarité",
+        smoothness: "Lissage",
+        spill: "Débord",
+        replace_color_with: "Remplacer par",
+        use_own_risk:
+          "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
+        chroma_key: "Incrustation (fond vert)",
+        flip_horizontally: "Retourner horizontalement",
+        flip_vertically: "Retourner verticalement",
+        brightness: "Luminosité",
+        contrast: "Contraste",
+        hue: "Teinte",
+        saturation: "Saturation",
+        lightness: "Clarté",
+        dotscreen: "Noir et blanc (tramé)",
+
         copyleft: "Art Libre / Copyleft",
         copyleft_explanations: "<i>Explications à ajouter</i>",
 
         machines_and_materials: "Machines et matériaux",
 
+        camera: "Camera",
+        sources: "Sources",
+        "Entire screen": "Écran de l’ordinateur",
+        no_stopmotion_created_yet:
+          "Les animations créées apparaîtront dans ce panneau.",
+
+        pick_a_camera: "Sélectionnez une caméra",
+
         take_picture: "Prendre une photo",
         delay: "Retardateur",
+        timelapse: "time-lapse",
+        framerate: "images par seconde",
+        stop_recording: "Arrêter la capture",
+        pause_recording: "Mettre en pause",
+        unpause_recording: "Relancer l’enregistrement",
+        record_audio: "Capturer un son",
+        record_video: "Capturer une vidéo",
+        stopmotion: "animation",
+        stopmotion_list: "Liste des animations",
+        with_sound: "avec le son",
+        update: "Mettre à jour",
+        video: "vidéo",
+        audio: "son",
+        lines: "lignes",
+        vecto: "formes",
+        or_download_media_on_device:
+          "ou télécharger ce média sur votre appareil",
+
+        interval_between_pictures: "Intervalle entre chaque photo",
+        start_timelapse: "Démarrer le time-lapse",
+        stop_timelapse: "Interrompre le time-lapse",
+        seconds_per_image: "secondes par image",
+        quality: "qualité",
+        duration: "Durée",
+
+        name_of_stream: "Nom du flux",
+        failed_to_start_streams_change_source_or_res:
+          "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
+        failed_to_share_stream: "Le partage du flux n’a pas pu avoir lieu",
+        stream_local_mode: "sur cet appareil",
+        stream_remote_mode: "do•doc distant",
+        "stream_shown:": "Flux utilisé&nbsp;:",
+        share_stream: "Partager ce flux",
+        "stream_currently_shared_with_name:":
+          "Flux vidéo/audio partagé sous le nom&nbsp;:",
+
+        remote_access: "Sources distantes",
+        hangup: "raccrocher",
+        connect: "Se connecter",
+        connect_to_other_users:
+          "Accéder à des sources provenant d’autres appareils connectés actuellement à ce do•doc",
+
         seconds: "secondes",
         no_video_input_available: "Aucune source vidéo disponible",
         no_audio_input_available: "Aucune source audio disponible",

@@ -116,13 +116,19 @@ export default {
     },
     display_as_public: {
       handler() {
-        if (this.display_as_public)
-          this.projectpanes = [
-            {
-              type: "publish",
-              size: 100,
-            },
-          ];
+        if (this.display_as_public) {
+          // if one pane enabled and it is publish, dont change anything
+          if (
+            this.projectpanes.length !== 1 ||
+            this.projectpanes.some((pp) => pp.type !== "publish")
+          )
+            this.projectpanes = [
+              {
+                type: "publish",
+                size: 100,
+              },
+            ];
+        }
       },
     },
     // is_identified: {
@@ -269,6 +275,12 @@ export default {
 
     > * {
       padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+    }
+
+    ::v-deep {
+      .u-label {
+        color: white;
+      }
     }
   }
 }

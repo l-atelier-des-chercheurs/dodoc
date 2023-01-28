@@ -5,29 +5,37 @@
       'is--editable': can_edit,
     }"
   >
+    <div class="_breadcrumb">
+      <button
+        type="button"
+        class="u-buttonLink"
+        @click="$emit('closePublication')"
+      >
+        {{ $t("publications") }}
+      </button>
+      <sl-icon name="arrow-right-short" label="" />
+      <button
+        type="button"
+        class="u-buttonLink"
+        @click="$emit('togglePage', false)"
+      >
+        {{ $t("pages") }}
+      </button>
+    </div>
     <div class="_topMenu">
       <div class="_topMenu--content">
-        <div class="">
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="$emit('togglePage', false)"
-          >
-            <sl-icon name="arrow-left-short" />
-            {{ $t("pages") }}
-          </button>
-        </div>
         <div class="">
           <transition name="fade_fast" mode="out-in">
             <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
           </transition>
-          <template v-if="spreads && page_number !== 0">
-            <transition name="fade_fast" mode="out-in">
-              <span :key="active_spread_index">
+          <transition v-if="is_spread" name="fade_fast" mode="out-in">
+            <span :key="active_spread_index">
+              <template v-if="page_number !== 0">
                 ({{ $t("spread") }} {{ active_spread_index }})
-              </span>
-            </transition>
-          </template>
+              </template>
+              <template v-else> ({{ $t("cover") }}) </template>
+            </span>
+          </transition>
         </div>
         <div class="">
           <label class="u-label">{{ $t("zoom") }} ({{ zoom }})</label>
@@ -35,11 +43,11 @@
             type="range"
             v-model.number="zoom"
             min="0.1"
-            max="2"
+            max="1"
             step="0.1"
           />
         </div>
-        <div class="">
+        <div class="" v-if="can_edit">
           <label class="u-label"
             >{{ $t("gridstep") }} ({{ gridstep_in_cm }})</label
           >
@@ -51,11 +59,11 @@
             step=".25"
           />
         </div>
-        <div class="">
+        <div class="" v-if="can_edit">
           <ModuleCreator
-            v-if="can_edit"
             :publication_path="publication_path"
             :page_id="page_opened_id"
+            @addModule="enableModuleEdit"
           />
         </div>
       </div>
@@ -74,6 +82,7 @@
           :page_height="page_height"
           :zoom="zoom"
           :gridstep_in_cm="gridstep_in_cm"
+          :margins="margins"
           :can_edit="can_edit"
           @close="$emit('togglePage', false)"
         />
@@ -84,37 +93,42 @@
         class="_spreadNavigator"
         :style="`min-width: ;`"
       >
-        <div
-          v-for="(page, index) in active_spread"
-          :key="page.id"
-          class="_spreadNavigator--page"
-          :class="{
-            'is--active': page.id === page_opened_id,
-            'is--left': index === 0,
-            'is--right': index === 1,
-          }"
-        >
-          <template v-if="page">
-            <SinglePage
-              :context="'full'"
-              :publication_path="publication_path"
-              :page_modules="getModulesForPage(page.id)"
-              :page_width="page_width"
-              :page_height="page_height"
-              :zoom="zoom"
-              :gridstep_in_cm="page.id === page_opened_id ? gridstep_in_cm : 0"
-              :can_edit="can_edit && page.id === page_opened_id"
-              @close="$emit('togglePage', false)"
-            />
-            <template v-if="page.id !== page_opened_id">
-              <button
-                type="button"
-                class="_openAdjacentPageBtn"
-                @click="setPageActive(page.id)"
+        <div class="_spreadNavigator--content">
+          <div
+            v-for="(page, index) in active_spread"
+            :key="page.id"
+            class="_spreadNavigator--page"
+            :class="{
+              'is--active': page.id === page_opened_id,
+              'is--left': index === 0,
+              'is--right': index === 1,
+            }"
+          >
+            <template v-if="page">
+              <SinglePage
+                :context="'full'"
+                :publication_path="publication_path"
+                :page_modules="getModulesForPage(page.id)"
+                :page_width="page_width"
+                :page_height="page_height"
+                :zoom="zoom"
+                :gridstep_in_cm="
+                  page.id === page_opened_id ? gridstep_in_cm : 0
+                "
+                :margins="margins"
+                :can_edit="can_edit && page.id === page_opened_id"
+                @close="$emit('togglePage', false)"
               />
+              <template v-if="page.id !== page_opened_id">
+                <button
+                  type="button"
+                  class="_openAdjacentPageBtn"
+                  @click="setPageActive(page.id)"
+                />
+              </template>
             </template>
-          </template>
-          <div v-else />
+            <div v-else />
+          </div>
         </div>
       </div>
     </transition>
@@ -141,7 +155,6 @@
               @click="nextPage"
               v-if="page_number < pages.length - 1"
             >
-              <sl-icon name="arrow-right" />
               <SinglePage
                 :context="'list'"
                 :zoom="0.1"
@@ -150,6 +163,7 @@
                 :page_height="page_height"
                 :can_edit="false"
               />
+              <sl-icon name="arrow-right" />
             </button>
           </div>
         </template>
@@ -215,6 +229,7 @@ export default {
     is_spread: Boolean,
     page_width: Number,
     page_height: Number,
+    margins: Object,
     can_edit: Boolean,
   },
   components: {
@@ -275,6 +290,11 @@ export default {
       const next_spread_first_page = next_spread[0].id;
       this.$emit("togglePage", next_spread_first_page);
     },
+    enableModuleEdit({ meta_filename }) {
+      setTimeout(() => {
+        this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
+      }, 150);
+    },
   },
 };
 </script>
@@ -334,10 +354,15 @@ export default {
     border-radius: 4px;
   }
 }
+
+._breadcrumb {
+  padding: calc(var(--spacing) / 1);
+  display: flex;
+}
 ._topMenu {
   position: relative;
   z-index: 1;
-  padding: calc(var(--spacing) * 1);
+  padding: 0 calc(var(--spacing) * 1);
 }
 ._topMenu--content {
   background: white;
@@ -349,9 +374,14 @@ export default {
 }
 
 ._spreadNavigator {
+  overflow: auto;
+}
+._spreadNavigator--content {
   display: flex;
   flex-flow: row nowrap;
+  padding: calc(var(--spacing) * 1);
 }
+
 ._spreadNavigator--page {
   position: relative;
   flex: 1 1 50%;
@@ -360,16 +390,19 @@ export default {
   &.is--left {
     ::v-deep {
       ._content {
-        transform-origin: top right;
+        transform-origin: 100% 25%;
         margin-left: auto;
         margin-right: 0;
+      }
+      ._margins {
+        transform: scale(-1, 1);
       }
     }
   }
   &.is--right {
     ::v-deep {
       ._content {
-        transform-origin: top left;
+        transform-origin: 0% 25%;
         margin-left: 0;
         margin-right: auto;
       }
@@ -416,9 +449,15 @@ export default {
   ._openAdjacentPageBtn {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
     background: transparent;
     padding: 0;
-    // background: rgba(255, 255, 255, 0.5);
+
+    &:hover,
+    &:focus {
+      // background: rgba(255, 255, 255, 0.2);
+    }
   }
 }
 </style>

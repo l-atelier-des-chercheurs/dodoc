@@ -69,7 +69,7 @@
             <td colspan="2">
               <button
                 type="submit"
-                class="button-small border-circled button-thin button-wide padding-verysmall margin-none bg-transparent"
+                class="button-small border-circled button-thin button-wide u-padding_verysmall margin-none bg-transparent"
               >
                 {{ $t("create") }}
               </button>

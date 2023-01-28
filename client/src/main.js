@@ -15,6 +15,30 @@ Vue.prototype.$alertify = alertify;
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
 
+import VuePlyr from "vue-plyr";
+Vue.use(VuePlyr, {
+  plyr: {
+    controls: [
+      "play-large",
+      "play",
+      "progress",
+      "current-time",
+      "mute",
+      "volume",
+      "fullscreen",
+    ],
+    iconUrl: `${process.env.BASE_URL}plyr.svg`,
+  },
+});
+Vue.directive("uppercase", {
+  bind(el, _, vnode) {
+    el.addEventListener("input", (e) => {
+      e.target.value = e.target.value.toUpperCase();
+      vnode.componentInstance.$emit("input", e.target.value.toUpperCase());
+    });
+  },
+});
+
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
@@ -54,6 +78,8 @@ import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);
 import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
 Vue.component("ToggleInput", ToggleInput);
+import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
+Vue.component("RangeValueInput", RangeValueInput);
 import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
 //

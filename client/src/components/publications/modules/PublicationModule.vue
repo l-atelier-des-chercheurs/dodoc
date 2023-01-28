@@ -207,15 +207,22 @@ export default {
   },
   created() {},
   mounted() {
-    const meta_filename = this.publimodule.$path.split("/").at(-1);
     this.$eventHub.$on(
-      `module.enable_edit.${meta_filename}`,
+      `module.enable_edit.${this.module_meta_filename}`,
       this.enableEditForText
     );
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off(
+      `module.enable_edit.${this.module_meta_filename}`,
+      this.enableEditForText
+    );
+  },
   watch: {},
   computed: {
+    module_meta_filename() {
+      return this.publimodule.$path.split("/").at(-1);
+    },
     first_media() {
       if (
         !this.publimodule.source_medias ||

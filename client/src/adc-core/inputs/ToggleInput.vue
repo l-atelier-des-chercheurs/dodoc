@@ -10,7 +10,7 @@
         :checked="content"
         @change="$emit('update:content', $event.target.checked)"
       />
-      <label :for="id">{{ label }}</label>
+      <label :for="id" class="u-label">{{ label }}</label>
     </div>
 
     <div class="u-instructions" v-if="current_instruction">
@@ -65,5 +65,8 @@ export default {
 ._maxlength {
   flex: 0 0 auto;
   padding: calc(var(--spacing) / 4) 0;
+}
+.u-label {
+  margin-bottom: 0;
 }
 </style>

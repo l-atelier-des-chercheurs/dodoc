@@ -12,38 +12,27 @@
           class="button-nostyle bg-rouge _close_button"
           @click="$emit('close')"
         >
-          <img src="/images/i_close_sansfond.svg" draggable="false" />
+          <img
+            :src="`${$root.publicPath}images/i_close_sansfond.svg`"
+            class=""
+          />
         </button>
       </div>
     </div>
-    <div>
-      <div class="m_sideBySideSwitches">
-        <label class="u-label" for="LocalSources">
-          <div>
-            <input
-              type="radio"
-              id="LocalSources"
-              value="LocalSources"
-              v-model="current_mode"
-            />
-            <span>
-              {{ $t("stream_local_mode") }}
-            </span>
-          </div>
-        </label>
-        <label class="u-label" for="RemoteSources">
-          <div>
-            <input
-              type="radio"
-              id="RemoteSources"
-              value="RemoteSources"
-              v-model="current_mode"
-            />
-            <span> {{ $t("stream_remote_mode") }} </span>
-          </div>
-        </label>
-      </div>
-    </div>
+
+    <RadioSwitch
+      :content.sync="current_mode"
+      :options="[
+        {
+          label: $t('stream_local_mode'),
+          value: 'LocalSources',
+        },
+        {
+          label: $t('stream_remote_mode'),
+          value: 'RemoteSources',
+        },
+      ]"
+    />
 
     <div class="m_captureSettings--settings">
       <div v-if="current_mode === 'LocalSources'" class>
@@ -53,14 +42,18 @@
           </div>
         </div>
 
-        <label class="u-label">{{ $t("sources") }}</label>
-        <button
-          type="button"
-          class="u-buttonLink margin-none margin-left padding-bottom-none"
-          @click="refreshAvailableDevices"
-        >
-          {{ $t("reload") }}
-        </button>
+        <br />
+
+        <label class="u-label">
+          {{ $t("sources") }}
+          <button
+            type="button"
+            class="u-buttonLink margin-none margin-left padding-bottom-none"
+            @click="refreshAvailableDevices"
+          >
+            {{ $t("reload") }}
+          </button>
+        </label>
 
         <div class="">
           <div class="">
@@ -211,6 +204,9 @@
             </div>
           </div>
         </div>
+
+        <br />
+
         <label class="u-label">{{ $t("resolutions") }}</label>
         <div>
           <div
@@ -255,7 +251,7 @@
                   <template v-if="res.type !== 'custom'">
                     •
                     <template v-if="res.ratio">{{ res.ratio }}</template>
-                    • {{ res.width }}/{{ res.height }})
+                    • {{ res.width }}/{{ res.height }}
                   </template>
                 </span>
               </label>
@@ -266,7 +262,7 @@
                 desired_camera_resolution &&
                 desired_camera_resolution.type === 'custom'
               "
-              class="margin-bottom-small input-group"
+              class="u-sameRow"
             >
               <input
                 type="number"
@@ -275,7 +271,7 @@
                 step="2"
                 v-model.number="desired_camera_resolution.width"
               />
-              <span class="font-large padding-verysmall">×</span>
+              <span class="font-large u-padding_verysmall">×</span>
               <input
                 type="number"
                 min="2"
@@ -297,6 +293,7 @@
               type="text"
               v-model.trim="access_distant_stream.callee"
               required
+              v-uppercase
               :disabled="access_distant_stream.status.enabled"
               autofocus="autofocus"
               onfocus="this.select()"
@@ -339,6 +336,7 @@
             type="text"
             v-model.trim="share_this_stream.name"
             required
+            v-uppercase
             autofocus="autofocus"
             onfocus="this.select()"
             @keydown.enter.prevent="setCameraStreamFromDefaults"
@@ -350,7 +348,7 @@
         <template v-if="current_mode === 'LocalSources'">
           <button
             type="button"
-            class="bg-rouge button-wide"
+            class="u-button u-button_red u-button_wide"
             @click="setCameraStreamFromDefaults"
           >
             {{ $t("update") }}
@@ -362,7 +360,7 @@
           </transition>
           <button
             type="button"
-            class="bg-rouge button-wide"
+            class="u-button u-button_red u-button_wide"
             v-if="!access_distant_stream.status.enabled"
             :disabled="
               access_distant_stream.callee.length === 0 ||
@@ -374,7 +372,7 @@
           </button>
           <button
             type="button"
-            class="bg-rouge button-wide"
+            class="u-button u-button_red u-button_wide"
             v-if="access_distant_stream.status.enabled"
             :disabled="
               access_distant_stream.callee.length === 0 ||
@@ -489,7 +487,7 @@ export default {
 
       share_this_stream: {
         enabled: false,
-        name: `dodoc-${(Math.random().toString(36) + "00000000000000000").slice(
+        name: `DODOC-${(Math.random().toString(36) + "00000000000000000").slice(
           2,
           3 + 2
         )}`,
@@ -1383,6 +1381,7 @@ export default {
 
   label,
   small,
+  .u-label,
   .u-buttonLink {
     color: inherit;
   }

@@ -52,6 +52,7 @@
         :can_edit="can_edit_publication"
         :page_opened_id="page_opened_id"
         @togglePage="$emit('togglePage', $event)"
+        @closePublication="$emit('close')"
       />
     </template>
   </div>
@@ -139,7 +140,7 @@ export default {
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
   margin: calc(var(--spacing) / 1) auto;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
+  // max-width: 800px;
 }
 
 ._buttonRow {

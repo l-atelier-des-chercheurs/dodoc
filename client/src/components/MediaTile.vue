@@ -35,10 +35,12 @@ export default {
   watch: {},
   computed: {
     duration() {
-      if (this.file.$infos?.duration)
-        return this.formatDurationToHoursMinutesSeconds(
-          this.file.$infos.duration
-        );
+      if (this.file.$type === "video")
+        if (this.file.$infos.duration)
+          return this.formatDurationToHoursMinutesSeconds(
+            this.file.$infos.duration
+          );
+        else return "•:••";
       return false;
     },
   },
@@ -74,8 +76,8 @@ export default {
   }
 
   &.was--focused {
-    transform: translate3d(0, -5px, 0);
-    // border: 2px solid var(--c-noit);
+    // transform: translate3d(0, -5px, 0);
+    border: 2px solid white;
     // background: rgba(51, 51, 51, 0.8);
   }
   &.is--dragged {
@@ -124,5 +126,6 @@ export default {
   right: 0;
   background: rgba(255, 255, 255, 0.7);
   padding: 0 calc(var(--spacing) / 4);
+  font-family: "Fira Code";
 }
 </style>

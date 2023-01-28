@@ -51,7 +51,7 @@ module.exports = dev = (function () {
     if (!logToFile && !isVerboseMode) return;
 
     if (logToFile) _sendToLogFile(``);
-    if (isDebugMode) _sendToConsole(``);
+    _sendToConsole(``);
   }
 
   function log() {

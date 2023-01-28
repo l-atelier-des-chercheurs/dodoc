@@ -7,13 +7,11 @@
     <vue-plyr
       class="m_previewValidation--video"
       v-else-if="media_to_validate.type === 'video'"
-      :options="plyr_options"
     >
       <video
         ref="videoElement"
-        :poster="linkToVideoThumb"
         :src="media_to_validate.objectURL"
-        preload="none"
+        preload="auto"
       />
     </vue-plyr>
     <div
@@ -21,7 +19,7 @@
       class="m_previewValidation--audio"
     >
       <img :src="media_to_validate.preview" />
-      <vue-plyr :options="plyr_options">
+      <vue-plyr>
         <audio
           ref="audioElement"
           :src="media_to_validate.objectURL"
@@ -30,25 +28,6 @@
           @playing="updatePaused"
           @pause="updatePaused"
         />
-        <div class="play_picto" @click="play" v-if="is_paused">
-          <svg
-            class
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            width="169px"
-            height="169px"
-            viewBox="0 0 169 169"
-            style="enable-background: new 0 0 169 169"
-            xml:space="preserve"
-          >
-            <path
-              d="M53.2,138.4c-4.6,3-8.4,0.9-8.4-4.6V30.4c0-5.5,3.8-7.6,8.4-4.6l78.5,50.9c4.6,3,4.6,7.9,0,10.9L53.2,138.4z"
-            />
-          </svg>
-        </div>
       </vue-plyr>
     </div>
     <div
@@ -68,19 +47,6 @@ export default {
   data() {
     return {
       is_paused: false,
-
-      plyr_options: {
-        controls: [
-          "play-large",
-          "play",
-          "progress",
-          "current-time",
-          "mute",
-          "volume",
-          "fullscreen",
-        ],
-        iconUrl: "/images/plyr.svg",
-      },
     };
   },
   created() {},
@@ -110,7 +76,7 @@ export default {
       this.$refs.audioElement.play();
     },
     updatePaused(event) {
-      this.videoElement = event.target;
+      // this.videoElement = event.target;
       this.is_paused = event.target.paused;
     },
   },

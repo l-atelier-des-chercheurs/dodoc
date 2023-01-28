@@ -89,15 +89,15 @@ export default {
         {
           key: "A5_portrait",
           text: this.$t("A5_portrait"),
-          width: 21,
-          height: 14.8,
+          width: 14.8,
+          height: 21,
           // instruction: this.$t("A5_portrait_explanations"),
         },
         {
           key: "A5_landscape",
           text: this.$t("A5_landscape"),
-          width: 14.8,
-          height: 21,
+          width: 21,
+          height: 14.8,
           // instruction: this.$t("A5_landscape_explanations"),
         },
         {

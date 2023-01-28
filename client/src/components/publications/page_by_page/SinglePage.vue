@@ -3,12 +3,17 @@
     class="_singlePage"
     :class="{
       'is--preview': context === 'list',
+      'is--editable': can_edit,
     }"
   >
-    <div class="_container" :style="page_styles">
+    <div
+      class="_container"
+      :style="page_styles"
+      @click.self="active_module = false"
+    >
       <div class="_content" @click.self="active_module = false">
         <svg
-          v-if="context === 'full' && gridstep"
+          v-if="can_edit && gridstep"
           class="_grid"
           width="100%"
           height="100%"
@@ -60,6 +65,47 @@
           :can_edit="can_edit"
           :is_active.sync="active_module"
         />
+
+        <svg
+          v-if="can_edit && margins"
+          class="_margins"
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- top -->
+          <line
+            :x1="transformMargins(margins.left)"
+            :y1="transformMargins(margins.top)"
+            :x2="transformMargins(page_width - margins.right)"
+            :y2="transformMargins(margins.top)"
+            stroke="rebeccapurple"
+          />
+          <!-- bottom -->
+          <line
+            :x1="transformMargins(margins.left)"
+            :y1="transformMargins(page_height - margins.bottom)"
+            :x2="transformMargins(page_width - margins.right)"
+            :y2="transformMargins(page_height - margins.bottom)"
+            stroke="rebeccapurple"
+          />
+          <!-- left -->
+          <line
+            :x1="transformMargins(margins.left)"
+            :y1="transformMargins(margins.top)"
+            :x2="transformMargins(margins.left)"
+            :y2="transformMargins(page_height - margins.bottom)"
+            stroke="rebeccapurple"
+          />
+          <!-- right -->
+          <line
+            :x1="transformMargins(page_width - margins.right)"
+            :y1="transformMargins(margins.top)"
+            :x2="transformMargins(page_width - margins.right)"
+            :y2="transformMargins(page_height - margins.bottom)"
+            stroke="rebeccapurple"
+          />
+        </svg>
       </div>
     </div>
   </div>
@@ -76,7 +122,8 @@ export default {
     page_height: Number,
     zoom: { type: Number, default: 1 },
     gridstep_in_cm: Number,
-    magnification: { type: Number, default: 30 },
+    margins: Object,
+    magnification: { type: Number, default: 38 },
     can_edit: Boolean,
   },
   components: {
@@ -85,7 +132,6 @@ export default {
   data() {
     return {
       items: [{ src: "images/i_add_publi.svg" }, { src: "images/i_add.svg" }],
-
       active_module: false,
     };
   },
@@ -107,6 +153,9 @@ export default {
     },
   },
   methods: {
+    transformMargins(m) {
+      return m * this.magnification;
+    },
     // async updateMeta({ new_meta }) {
     //   this.fetch_status = "pending";
     //   this.fetch_error = null;
@@ -150,17 +199,19 @@ export default {
   height: var(--page-height, 10cm);
 
   transform: scale(var(--zoom));
-  transform-origin: top center;
+  transform-origin: 50% 25%;
 
-  overflow: visible;
+  overflow: hidden;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   background: white;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 
-  .is--preview & {
+  ._singlePage.is--preview & {
     transform-origin: top left;
-    overflow: hidden;
+  }
+  ._singlePage.is--editable & {
+    overflow: visible;
   }
 }
 
@@ -169,6 +220,15 @@ export default {
 }
 
 ._grid {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+._margins {
+  position: absolute;
+  top: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;

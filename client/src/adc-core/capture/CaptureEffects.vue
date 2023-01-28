@@ -1,12 +1,22 @@
 <template>
   <div class="m_captureEffects">
-    <div class="">
+    <div class="_content">
+      <label class="u-label">{{ $t("effects") }}</label>
+
       <div class="u-switch u-switch-xs">
         <input id="enable_effects" type="checkbox" v-model="enable" />
         <label for="enable_effects">{{ $t("enable_effects") }}</label>
       </div>
 
+      <br />
+      <!-- <ToggleInput
+        :content.sync="enable"
+        :label="$t('enable_effects')"
+        class="u-switch u-switch-xs"
+      /> -->
+
       <div
+        class="_options"
         :class="{
           'is--disabled': !enable_effects,
         }"
@@ -100,7 +110,9 @@
 
             <label>{{ $t("replace_color_with") }}</label>
 
-            <div class="u-switch u-switch-xs u-switch_twoway padding-verysmall">
+            <div
+              class="u-switch u-switch-xs u-switch_twoway u-padding_verysmall"
+            >
               <label
                 for="chroma_key_use_image"
                 class="cursor-pointer"
@@ -875,28 +887,28 @@ void main(void) {
   flex: 1 0 200px;
   max-width: 280px;
   background-color: var(--c-bleumarine);
-  padding: calc(var(--spacing) / 8);
+  padding: calc(var(--spacing) / 4);
   overflow: auto;
 
   label {
-    display: block;
+    // display: block;
   }
 
-  > * {
+  ._content {
     background-color: #fff;
     border-radius: 4px;
     margin: calc(var(--spacing) / 2);
-    padding: calc(var(--spacing) / 8);
+    padding: calc(var(--spacing) / 2);
 
-    > * {
+    ._options {
       &:first-child {
-        padding: calc(var(--spacing) / 4);
+        // padding: calc(var(--spacing) / 4);
       }
       &:not(:first-child) {
         > * {
-          padding: calc(var(--spacing) / 4);
+          padding: calc(var(--spacing) / 2);
           margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-          background-color: var(--c-gris-clair);
+          background-color: var(--c-gris_clair);
           border-radius: 4px;
         }
       }

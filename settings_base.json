@@ -340,6 +340,14 @@
         }
       },
       "$folders": {
+        "stopmotions": {
+          "fields": {},
+          "$files": {
+            "thumbs": {
+              "resolutions": [180, 360, 1600]
+            }
+          }
+        },
         "publications": {
           "$cover": {
             "width": 1200,
@@ -378,6 +386,18 @@
             },
             "page_spreads": {
               "type": "boolean"
+            },
+            "page_margin_top": {
+              "type": "number"
+            },
+            "page_margin_bottom": {
+              "type": "number"
+            },
+            "page_margin_left": {
+              "type": "number"
+            },
+            "page_margin_right": {
+              "type": "number"
             }
           },
           "$files": {

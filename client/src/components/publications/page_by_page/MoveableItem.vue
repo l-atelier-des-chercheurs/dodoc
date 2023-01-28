@@ -72,8 +72,18 @@ export default {
 
     this.setNewComponentKey();
   },
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    this.$eventHub.$on(
+      `module.enable_edit.${this.module_meta_filename}`,
+      this.setActive
+    );
+  },
+  beforeDestroy() {
+    this.$eventHub.$on(
+      `module.enable_edit.${this.module_meta_filename}`,
+      this.setActive
+    );
+  },
   watch: {
     publimodule: {
       handler() {
@@ -89,6 +99,9 @@ export default {
     },
   },
   computed: {
+    module_meta_filename() {
+      return this.publimodule.$path.split("/").at(-1);
+    },
     grid() {
       return [
         // 1 * this.gridstep,
