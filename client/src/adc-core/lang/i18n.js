@@ -124,6 +124,7 @@ export default function () {
 
         story: "Récit",
         page_by_page: "Document page à page",
+        cartography: "Cartographie",
 
         format: "Format",
         format_instructions:
@@ -205,6 +206,82 @@ export default function () {
 
         access_control: "Contrôle des accès",
         storage: "Stockage",
+
+        make_a_video: "Fabriquer une vidéo",
+        video_assemblage: "Montage vidéo",
+        video_assemblage_summary:
+          "Créer un montage vidéo à partir d’images et de vidéos.",
+        video_assemblage_instructions:
+          "Cette recette propose de créer un montage vidéo en mettant plusieurs vidéos ou images bout à bout.<br> Médias acceptés : des vidéos et des images.<br>Créera une nouvelle vidéo.",
+
+        video_effects: "Effets vidéo",
+        video_effects_summary: "Appliquer des effets et filtres sur une vidéo.",
+        video_effects_instructions:
+          "Liste des effets et filtres disponibles : noir et blanc, ralenti, accéléré, inversion de la lecture, rotation et miroir.<br>Média accepté : une seule vidéo.",
+        effect: "Effet",
+        black_and_white: "Noir et blanc",
+        watermark: "Habillage",
+        watermark_instructions:
+          "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
+        colored_filter: "Filtre coloré",
+        filters_color: "Couleur du filtre",
+        slow_down: "Ralentir",
+        slowing_video_down_limit:
+          "Attention ! La piste audio sera supprimée (si elle existe) car la vitesse souhaitée est trop lente. Pour garder et convertir le son choisissez une vitesse entre 0,5 et 1.",
+        speed_up: "Accélérer",
+        a_little: "Un peu",
+        a_lot: "Beaucoup",
+        clockwise: "Dans le sens des aiguilles d’une montre",
+        counterclockwise: "Dans le sens inverse des aiguilles d’une montre",
+        reverse: "Inverser le début et la fin",
+        rotate: "Pivoter",
+        "error:": "Erreur&nbsp;:",
+        mirror: "Miroir",
+        horizontal_flip: "Retournement horizontal",
+        vertical_flip: "Retournement vertical",
+        both: "Les deux",
+
+        mix_audio_and_image: "Son sur une image",
+        mix_audio_and_image_summary: "Ajouter du son sur une image.",
+        mix_audio_and_image_instructions:
+          "Cette recette prend une image et une piste audio. Elle permet de créer des <i>images parlantes</i>.<br> Médias acceptés : une image et une piste sonore.<br>Créera une vidéo de la durée de la piste sonore.",
+        stopmotion_animation: "Animation image par image",
+        stopmotion_animation_summary:
+          "Assembler des images pour créer une vidéo.",
+        stopmotion_animation_instructions:
+          "Cette recette permet l’assemblage d’un nombre illimité d’images pour créer une séquence vidéo dans laquelle elles défilent à une vitesse réglable.<br> Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.<br>Créera une nouvelle vidéo.",
+        mix_audio_and_video: "Son sur une vidéo",
+        mix_audio_and_video_summary:
+          "Ajouter ou remplacer du son sur une vidéo.",
+        mix_audio_and_video_instructions:
+          "Cette recette prend une vidéo et une piste audio. Elle ajoute ou remplace la bande sonore de la vidéo avec celle qui est sélectionnée.<br> Médias acceptés : une vidéo et une piste sonore.<br>Créera une nouvelle vidéo de la durée du plus long média.",
+
+        add_sound_video_file:
+          "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une vidéo et une piste sonore.",
+        add_sound_image_file:
+          "Ouvrez un projet et ajoutez un média <b>son</b> et un média <b>image</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : une image et une piste sonore.",
+        add_multiple_videos_files:
+          "Ouvrez un projet et ajoutez plusieurs médias <b>vidéo</b> en cliquant sur la flèche verte. Les vidéos seront mises bout à bout dans l’ordre d’ajout.<br>L’exportation créera une nouvelle vidéo.<br>Médias acceptés : uniquement des vidéos de même taille.",
+        add_one_video_file:
+          "Ouvrez un projet et ajoutez un média <b>vidéo</b> en cliquant sur la flèche verte.<br>L’exportation créera une nouvelle vidéo.",
+        add_multiple_images:
+          "Ouvrez un projet et ajoutez plusieurs médias <b>image</b> en cliquant sur la flèche verte. Les images seront mises bout à bout dans l’ordre d’ajout. Exportez la séquence et réglez la vitesse de défilement des images.<br>L’exportation créera una video.<br>Médias acceptés : uniquement des images. Les dimensions de la première image détermine si la vidéo finale est en portrait ou paysage.",
+        more_informations: "Plus d’informations",
+
+        make_an_exhibition: "Créer une exposition",
+
+        image_tracking: "Réalité augmentée",
+        create_block: "Créer un groupe",
+        image_tracking_summary: "",
+        image_tracking_instructions: ``,
+        target_image: "Image cible",
+        create_target: "Compiler les images cibles",
+        image_shown: "Image affichée",
+        face_masks: "Les masques",
+        face_masks_summary: "Créer une galerie de masques interactifs !",
+        face_masks_instructions: `Cette recette utilise un gabarit spécifique à imprimer, puis à dessiner et à prendre en photo. 
+          Ces dessins seront ensuite projetés sur le visage à l’aide de la caméra frontale d’un smartphone, d’une tablette ou d’un ordinateur.
+          <br>Média accepté : des images avec ou sans légende.`,
 
         saving: "Enregistrement…",
         saved: "OK !",
