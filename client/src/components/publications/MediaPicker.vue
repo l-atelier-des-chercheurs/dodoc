@@ -7,7 +7,7 @@
       </button> -->
     <!-- select from this or another project library -->
     <PickMediaFromProjects
-      :publication_path="publication_path"
+      :subfolder_path="publication_path"
       @selectMedia="$emit('selectMedia', $event)"
       @close="$emit('close')"
     />

@@ -43,7 +43,7 @@ import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 
 export default {
   props: {
-    publication_path: String,
+    subfolder_path: String,
   },
   components: {
     MediaLibrary,
@@ -79,7 +79,7 @@ export default {
       this.$emit("close");
     },
     async loadProjects() {
-      this.source_project_path = this.publication_path
+      this.source_project_path = this.subfolder_path
         .split("/")
         .splice(0, 2)
         .join("/");

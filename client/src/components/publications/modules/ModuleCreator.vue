@@ -1,13 +1,6 @@
 <template>
   <div class="_moduleCreator">
     <div v-if="show_module_selector" class="_typePicker">
-      <!-- <div class="">
-        <DLabel :str="$t('add_media')" />
-        <MediaPicker
-          :publication_path="publication_path"
-          @selectMedia="selectMedia"
-        />
-      </div> -->
       <button
         type="button"
         class="u-button u-button_bleuvert"
