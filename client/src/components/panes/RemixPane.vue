@@ -1,6 +1,7 @@
 <template>
   <div class="_remixPane">
     <div v-if="!opened_remix_slug">
+      <br />
       <RadioSwitch
         v-if="can_edit"
         :content.sync="current_view"

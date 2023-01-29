@@ -23,19 +23,25 @@
         @close="show_media_picker = false"
       />
     </div>
-    <sl-icon-button
-      v-if="!show_module_selector"
-      name="plus-circle-fill"
-      :label="$t('add')"
-      @click="show_module_selector = true"
-    />
 
-    <sl-icon-button
-      v-else
-      name="x-circle-fill"
-      :label="$t('close')"
-      @click="show_module_selector = false"
-    />
+    <button
+      type="button"
+      class="u-button _showModuleSelector _sideBtns"
+      :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
+      @click="show_module_selector = !show_module_selector"
+    >
+      <svg
+        version="1.1"
+        viewBox="0 0 670 670"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        style="fill: currentColor"
+      >
+        <path
+          d="m350 528.89c137.33 0 248.89-111.56 248.89-248.89s-111.56-248.89-248.89-248.89-248.89 111.56-248.89 248.89 111.56 248.89 248.89 248.89zm-161.05-279h130.94v-130.94h60.215v130.94h130.94v60.211h-130.94v130.94h-60.215l0.003906-130.94h-130.94z"
+        />
+      </svg>
+    </button>
 
     <transition name="dropzone" :duration="150">
       <DropZone v-if="show_dropzone" @mediaDropped="createMosaic" />
@@ -156,10 +162,12 @@ export default {
 ._moduleCreator {
   position: relative;
   display: flex;
+  justify-content: flex-start;
   place-content: center;
   align-items: center;
   width: 100%;
   pointer-events: none;
+  padding: 0 calc(var(--spacing) * 1);
 
   color: var(--c-bleuvert);
   border-radius: 1rem;
@@ -187,5 +195,27 @@ export default {
 sl-icon-button::part(base) {
   font-size: 1.5em;
   color: var(--c-bleuvert);
+}
+
+._showModuleSelector {
+  position: absolute;
+  right: 100%;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+._sideBtns {
+  --side-width: 24px;
+  display: block;
+  width: var(--side-width);
+  height: var(--side-width);
+  padding: 0;
+  border-radius: calc(var(--side-width) / 2);
+  background: transparent;
+  color: var(--c-noir);
+
+  &:hover,
+  &:focus {
+    background: rgba(0, 0, 0, 0.1);
+  }
 }
 </style>

@@ -210,6 +210,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4) 0;
 }
 </style>

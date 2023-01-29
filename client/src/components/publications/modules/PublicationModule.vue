@@ -330,10 +330,12 @@ export default {
   top: 0;
   height: 100%;
   right: 100%;
-  background: rgba(0, 0, 0, 0.05);
+  // background: rgba(0, 0, 0, 0.05);
+  background: var(--active-color);
+
   pointer-events: none;
 
-  z-index: 100;
+  // z-index: 100;
 
   display: flex;
   flex-flow: column nowrap;
@@ -380,7 +382,7 @@ export default {
   transform: translate(0, -50%);
 
   background: white;
-  background: var(--c-bleuvert_fonce);
+  background: var(--active-color);
   padding: calc(var(--spacing) / 2);
 
   display: flex;
