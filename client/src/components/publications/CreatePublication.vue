@@ -120,6 +120,13 @@ export default {
         </svg>
                   `,
         },
+        {
+          key: "cartography",
+          label: this.$t("cartography"),
+          disabled: true,
+          icon: `
+                  `,
+        },
       ],
 
       error_msg: "",
@@ -148,7 +155,6 @@ export default {
         additional_meta.page_height = 29.7;
       }
 
-      // TODO replace with $api
       try {
         const new_folder_slug = await this.$api.createFolder({
           path: `${this.project_path}/publications`,

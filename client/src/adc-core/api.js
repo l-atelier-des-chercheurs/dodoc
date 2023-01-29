@@ -279,7 +279,12 @@ export default function () {
         return this.store[path];
       },
       async getFolder({ path }) {
-        const response = await this.$axios.get(path);
+        if (this.store[path]) return this.store[path];
+
+        const response = await this.$axios.get(path).catch((err) => {
+          this.onError(err);
+          throw err;
+        });
         const folder = response.data;
         this.$set(this.store, folder.$path, folder);
         return this.store[folder.$path];

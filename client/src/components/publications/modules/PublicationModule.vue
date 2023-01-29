@@ -7,24 +7,29 @@
       }"
       v-if="can_edit"
     >
-      <button
-        type="button"
-        v-if="$listeners.hasOwnProperty('moveUp')"
-        class="_sideBtns _moveBefore"
-        :disabled="module_position === 'first' || module_position === 'alone'"
-        @click="$emit('moveUp')"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 168 168"
-          style="transform: rotate(90deg)"
+      <span>
+        <button
+          v-if="
+            $listeners.hasOwnProperty('moveUp') &&
+            module_position !== 'first' &&
+            module_position !== 'alone'
+          "
+          type="button"
+          class="_sideBtns _moveBefore"
+          @click="$emit('moveUp')"
         >
-          <path
-            d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
-            style="fill: currentColor"
-          />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 168 168"
+            style="transform: rotate(90deg)"
+          >
+            <path
+              d="M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z"
+              style="fill: currentColor"
+            />
+          </svg>
+        </button>
+      </span>
 
       <div class="_options">
         <button
@@ -133,24 +138,29 @@
         </div>
       </div>
 
-      <button
-        type="button"
-        class="_sideBtns _moveAfter"
-        v-if="$listeners.hasOwnProperty('moveDown')"
-        :disabled="module_position === 'last' || module_position === 'alone'"
-        @click="$emit('moveDown')"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 168 168"
-          style="transform: rotate(90deg)"
+      <span>
+        <button
+          v-if="
+            $listeners.hasOwnProperty('moveDown') &&
+            module_position !== 'last' &&
+            module_position !== 'alone'
+          "
+          type="button"
+          class="_sideBtns _moveAfter"
+          @click="$emit('moveDown')"
         >
-          <path
-            d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
-            style="fill: currentColor"
-          />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 168 168"
+            style="transform: rotate(90deg)"
+          >
+            <path
+              d="M78.31,117l14.07-15.31a65.3,65.3,0,0,1,6.15-6.15,47.52,47.52,0,0,1,6.29-4.37H34.17V75.29h70.65a39.1,39.1,0,0,1-6.08-4.37q-2.8-2.46-6.36-6.15L78.31,49.46l13-11.07L131.6,83.21,91.29,128Z"
+              style="fill: currentColor"
+            />
+          </svg>
+        </button>
+      </span>
     </div>
 
     <div class="_content" :style="media_styles">
@@ -320,10 +330,12 @@ export default {
   top: 0;
   height: 100%;
   right: 100%;
-  background: rgba(0, 0, 0, 0.05);
+  // background: rgba(0, 0, 0, 0.05);
+  background: var(--active-color);
+
   pointer-events: none;
 
-  z-index: 100;
+  // z-index: 100;
 
   display: flex;
   flex-flow: column nowrap;
@@ -370,7 +382,7 @@ export default {
   transform: translate(0, -50%);
 
   background: white;
-  background: var(--c-bleuvert_fonce);
+  background: var(--active-color);
   padding: calc(var(--spacing) / 2);
 
   display: flex;

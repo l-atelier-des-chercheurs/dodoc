@@ -195,6 +195,11 @@ export default {
     transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     ::v-deep ._mediaContent {
+      ._moduleMosaic.is--multipleMedias & {
+        width: 100%;
+        height: 100%;
+      }
+
       img,
       video {
         ._moduleMosaic.is--multipleMedias & {

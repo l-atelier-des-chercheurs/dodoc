@@ -665,6 +665,7 @@ export default {
   --editor-bg: #eee;
   --button-size: 32px;
   --border-size: 4px;
+  --quill-buttons-size: 2.2rem;
   --quill-options-size: 2.2rem;
 
   &:not(.is--editable) {
@@ -744,6 +745,7 @@ export default {
         svg {
           width: var(--quill-buttons-size);
           height: var(--quill-buttons-size);
+          flex: 0 0 auto;
         }
       }
 

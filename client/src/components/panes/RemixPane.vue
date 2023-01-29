@@ -1,63 +1,135 @@
 <template>
   <div class="_remixPane">
-    <div
-      class="m_recipes--type"
-      v-for="recipe_type in recipe_types"
-      :key="recipe_type.key"
-    >
-      <div class="u-instructions u-padding-small"></div>
-      <div class="">
-        {{ $t(recipe_type.label) }}
-      </div>
-      <div class="m_recipes--type--grid">
+    <div v-if="!opened_remix_slug">
+      <br />
+      <RadioSwitch
+        v-if="can_edit"
+        :content.sync="current_view"
+        :options="[
+          {
+            label: $t('create'),
+            value: 'create',
+          },
+          {
+            label: $t('existing'),
+            value: 'existing',
+          },
+        ]"
+      />
+
+      <br />
+
+      <section v-if="current_view === 'create'">
         <div
-          v-for="recipe in recipe_type.recipes"
-          :key="recipe.key"
-          class="m_recipe"
+          class="m_recipes--type"
+          v-for="recipe_type in recipe_types"
+          :key="recipe_type.key"
         >
-          <div class="m_recipe--icon" v-html="recipe.icon"></div>
-
-          <div class="m_recipe--text">
-            <h2 class>{{ $t(recipe.key) }}</h2>
-            <button
-              v-if="recipe.instructions"
-              type="button"
-              class="u-buttonLink c-noir margin-none"
-              :class="{
-                'is--active': recipe.show_instructions,
-              }"
-              @click="recipe.show_instructions = !recipe.show_instructions"
-            >
-              {{ $t("more_informations") }}
-            </button>
-
-            <p class="margin-vert-small" v-if="false">
-              <span v-html="$t(recipe.summary)" class="margin-vert-verysmall" />
-              <br />
-            </p>
-            <template v-if="recipe.show_instructions">
-              <hr />
-              <p>
-                <span v-html="$t(recipe.instructions)" />
-              </p>
-            </template>
+          <div class="u-label u-colorWhite">
+            {{ $t(recipe_type.label) }}
           </div>
-          <div class="m_recipe--buttons">
-            <button class="barButton barButton_createPubli" type="button">
-              <span>{{ $t("create") }}</span>
-            </button>
+          <div class="m_recipes--type--grid">
+            <div
+              v-for="recipe in recipe_type.recipes"
+              :key="recipe.key"
+              class="m_recipe"
+            >
+              <div class="m_recipe--icon" v-html="recipe.icon"></div>
+
+              <div class="m_recipe--text">
+                <h2 class>{{ $t(recipe.key) }}</h2>
+                <button
+                  v-if="recipe.instructions"
+                  type="button"
+                  class="u-buttonLink"
+                  :class="{
+                    'is--active': recipe.show_instructions,
+                  }"
+                  @click="recipe.show_instructions = !recipe.show_instructions"
+                >
+                  {{ $t("more_informations") }}
+                </button>
+
+                <p class="margin-vert-small" v-if="false">
+                  <span
+                    v-html="$t(recipe.summary)"
+                    class="margin-vert-verysmall"
+                  />
+                  <br />
+                </p>
+                <template v-if="recipe.show_instructions">
+                  <p>
+                    <span v-html="$t(recipe.instructions)" />
+                  </p>
+                </template>
+              </div>
+              <br />
+              <div class="m_recipe--buttons">
+                <button
+                  class="u-button u-button_bleumarine"
+                  type="button"
+                  @click="createRemix(recipe.key)"
+                >
+                  <svg
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 168 168"
+                    style="enable-background: new 0 0 168 168"
+                    xml:space="preserve"
+                  >
+                    <polygon
+                      style="fill: white"
+                      points="132.3,73.4 132.3,94.4 94.6,94.4 94.6,132.1 73.6,132.1 73.6,94.4 35.9,94.4 35.9,73.4 
+		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
+                    />
+                  </svg>
+
+                  <span>{{ $t("create") }}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+      <section v-else-if="current_view === 'existing'">
+        <RemixesList
+          :project_path="project.$path"
+          :can_edit="can_edit"
+          @open="openRemix"
+        />
+      </section>
+    </div>
+    <div v-else>
+      <RemixOpen
+        :project_path="project.$path"
+        :remix_slug="opened_remix_slug"
+        @remove="removeRemix"
+        @close="$emit('update:opened_remix_slug', false)"
+      />
     </div>
   </div>
 </template>
 <script>
+import RemixesList from "@/components/remixes/RemixesList.vue";
+import RemixOpen from "@/components/remixes/RemixOpen.vue";
+
 export default {
-  props: {},
-  components: {},
+  props: {
+    can_edit: Boolean,
+    opened_remix_slug: String,
+    project: Object,
+  },
+  components: {
+    RemixesList,
+    RemixOpen,
+  },
   data() {
     return {
+      current_view: "create",
+
       recipe_types: [
         // {
         //   key: "document",
@@ -369,6 +441,34 @@ export default {
             // }
           ],
         },
+        {
+          key: "exhibition",
+          label: "make_an_exhibition",
+          recipes: [
+            {
+              key: "face_masks",
+              summary: "face_masks_summary",
+              show_instructions: false,
+              instructions: "face_masks_instructions",
+              icon: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+  <rect x="67" y="67" width="67" height="67" style="fill: #fff"/>
+</svg>
+              `,
+            },
+            {
+              key: "image_tracking",
+              summary: "image_tracking_summary",
+              show_instructions: false,
+              instructions: "image_tracking_instructions",
+              icon: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 201">
+  <rect x="67" y="67" width="67" height="67" style="fill: #fff"/>
+</svg>
+              `,
+            },
+          ],
+        },
       ],
     };
   },
@@ -377,7 +477,32 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    async createRemix(type) {
+      const rnd_suffix = (
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 2 + 3);
+      const title = this.$t(type) + "-" + rnd_suffix;
+      const additional_meta = {
+        type,
+        title,
+        requested_slug: title,
+      };
+      const new_folder_slug = await this.$api.createFolder({
+        path: `${this.project.$path}/remixes`,
+        additional_meta,
+      });
+
+      // const path = `${this.project.$path}/remixes/${new_folder_slug}`;
+      this.openRemix(new_folder_slug);
+    },
+    openRemix(new_folder_slug) {
+      this.$emit("update:opened_remix_slug", new_folder_slug);
+    },
+    removeRemix(path) {
+      path;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -385,16 +510,13 @@ export default {
   background: var(--color-remix);
   height: 100%;
   overflow: auto;
-  --active-color: var(--c-vert);
+  padding: calc(var(--spacing) * 1);
+  --active-color: var(--c-bleumarine);
 }
-
-.m_recipe {
-  background: var(--c-bleumarine);
-}
-
 .m_recipes--type {
   // background-color: rgba(51, 51, 51, 0.2);
-  border-radius: 4px;
+  // border-radius: 8px;
+  margin-bottom: calc(var(--spacing) * 2);
 
   > label {
     // .padding-vert-verysmall;
@@ -408,12 +530,23 @@ export default {
   // background-color: rgba(255, 255, 255, 0.1);
 
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 2);
+  align-items: stretch;
+}
+
+.m_recipe {
+  // background: var(--c-bleumarine);
+  border-radius: 8px;
+  background: white;
+  padding: calc(var(--spacing) / 2);
+  border-radius: var(--button-radius);
 }
 
 .m_recipe--icon {
+  border-radius: 4px;
+  background: var(--c-bleumarine);
   flex: 0 1 160px;
   min-width: 120px;
   // .margin-top-small;
@@ -463,6 +596,12 @@ export default {
     &:last-child {
       // justify-self: flex-end;
     }
+  }
+}
+
+.u-buttonLink {
+  &.is--active {
+    color: var(--c-bleumarine);
   }
 }
 </style>
