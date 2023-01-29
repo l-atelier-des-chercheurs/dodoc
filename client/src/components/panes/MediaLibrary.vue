@@ -66,9 +66,12 @@
         :file="focused_media"
         :project_path="project.$path"
         :select_mode="select_mode"
+        :position_in_list="focused_media_position_in_list"
         @remove="removeMedia(focused_media.$path)"
         @close="toggleMediaFocus(focused_media.$path)"
         @select="selectMedia(focused_media.$path)"
+        @prevMedia="prevMedia"
+        @nextMedia="nextMedia"
       />
     </transition>
 
@@ -145,6 +148,18 @@ export default {
 
       return _focused_media;
     },
+    focused_media_index() {
+      return this.sorted_medias.findIndex(
+        (m) => m.$path === this.focused_media.$path
+      );
+    },
+    focused_media_position_in_list() {
+      if (this.focused_media_index === 0) return "first";
+      if (this.focused_media_index === this.sorted_medias.length - 1)
+        return "last";
+      if (this.sorted_medias.length === 1) return "alone";
+      return "none";
+    },
   },
   methods: {
     onDragover($event) {
@@ -202,6 +217,16 @@ export default {
         path,
       });
       this.toggleMediaFocus(path);
+    },
+    prevMedia() {
+      this.toggleMediaFocus(
+        this.sorted_medias[this.focused_media_index - 1].$path
+      );
+    },
+    nextMedia() {
+      this.toggleMediaFocus(
+        this.sorted_medias[this.focused_media_index + 1].$path
+      );
     },
   },
 };

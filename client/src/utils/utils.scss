@@ -179,11 +179,12 @@
   min-width: 3.5em;
 }
 .u-button_transparent {
-  &,
+  background-color: transparent;
+
   &:hover,
   &:focus,
   &.is--active {
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.1);
   }
 }
 .u-button_orange {
