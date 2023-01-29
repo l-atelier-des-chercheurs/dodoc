@@ -1,10 +1,8 @@
 <template>
   <div class="_videoAssemblage">
-    VideoAssemblage
-    <div class="">
-      {{ remix }}
+    <StoryTemplate :publication="remix" :can_edit="true" />
 
-      <button
+    <!-- <button
         type="button"
         class="u-button u-button_bleuvert"
         v-if="!show_media_picker"
@@ -17,19 +15,20 @@
         :subfolder_path="remix.$path"
         @selectMedia="$emit('selectMedia', $event)"
         @close="$emit('close')"
-      />
-    </div>
+      /> -->
   </div>
 </template>
 <script>
-import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
+// import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
+import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
 
 export default {
   props: {
     remix: Object,
   },
   components: {
-    PickMediaFromProjects,
+    // PickMediaFromProjects,
+    StoryTemplate,
   },
   data() {
     return {
@@ -46,8 +45,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._videoAssemblage {
-  border: 2px solid var(--c-bleumarine);
-  margin: calc(var(--spacing) * 1);
   padding: calc(var(--spacing) * 1);
 }
 </style>

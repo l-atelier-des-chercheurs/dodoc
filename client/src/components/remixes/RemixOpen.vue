@@ -5,6 +5,8 @@
     </div>
     <div v-if="remix">
       <div class="_topbar">
+        {{ remix.title }}
+        {{ remix.$path }}
         {{ remix.type }}
         <DateField :date="remix.$date_created" />
         <button type="button" class="u-button" @click="$emit('close')">
@@ -92,7 +94,8 @@ export default {
 <style lang="scss" scoped>
 ._remix {
   background: white;
-  margin: calc(var(--spacing) * 1);
+  margin: calc(var(--spacing) * 1) auto;
+  max-width: 600px;
   padding: calc(var(--spacing) * 1);
 }
 </style>

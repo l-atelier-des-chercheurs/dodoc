@@ -478,11 +478,18 @@ export default {
   computed: {},
   methods: {
     async createRemix(type) {
+      const rnd_suffix = (
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 2 + 3);
+      const title = this.$t(type) + "-" + rnd_suffix;
+      const additional_meta = {
+        type,
+        title,
+        requested_slug: title,
+      };
       const new_folder_slug = await this.$api.createFolder({
         path: `${this.project.$path}/remixes`,
-        additional_meta: {
-          type,
-        },
+        additional_meta,
       });
 
       // const path = `${this.project.$path}/remixes/${new_folder_slug}`;

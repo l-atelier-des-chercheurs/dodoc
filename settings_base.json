@@ -350,8 +350,25 @@
         },
         "remixes": {
           "fields": {
+            "title": {
+              "type": "string",
+              "unique": true
+            },
             "type": {
               "type": "string"
+            },
+            "modules_list": {
+              "type": "array"
+            }
+          },
+          "$files": {
+            "fields": {
+              "module_type": {
+                "type": "string"
+              },
+              "source_medias": {
+                "type": "array"
+              }
             }
           }
         },
