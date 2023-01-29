@@ -101,7 +101,6 @@ export default {
         })
         .catch((err) => {
           this.fetch_publication_error = err.response;
-          this.is_loading = false;
         });
       this.publication = publication;
     },

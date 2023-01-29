@@ -55,7 +55,9 @@
         <RemixPane
           v-if="pane.type === 'remix'"
           :project="project"
+          :opened_remix_slug="pane.remix"
           :can_edit="can_edit_project"
+          @update:opened_remix_slug="setItem(pane, 'remix', $event)"
         />
         <PublierPane
           v-if="pane.type === 'publish'"
