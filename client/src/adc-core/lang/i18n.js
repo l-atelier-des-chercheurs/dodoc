@@ -329,6 +329,7 @@ export default function () {
           "Les animations créées apparaîtront dans ce panneau.",
 
         pick_a_camera: "Sélectionnez une caméra",
+        resolutions: "Résolutions",
 
         take_picture: "Prendre une photo",
         delay: "Retardateur",

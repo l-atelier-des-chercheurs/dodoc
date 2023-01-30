@@ -23,99 +23,18 @@
 
     <div class="m_captureview--videoPane">
       <transition name="slidedown" :duration="500">
-        <div
-          class="_modeSelector"
-          v-if="
-            !media_to_validate &&
-            !is_recording &&
-            !is_making_stopmotion &&
-            !delay_event
+        <ModeSelector
+          v-if="show_mode_selector"
+          :available_modes="available_modes"
+          :selected_mode="selected_mode"
+          :disable_change_mode="
+            is_recording ||
+            media_to_validate ||
+            mode_just_changed ||
+            is_making_stopmotion
           "
-        >
-          <div class="_arrows" v-if="available_modes.length > 1">
-            <button
-              type="button"
-              class="u-button u-button_transparent"
-              @mousedown.stop.prevent="previousMode()"
-              @touchstart.stop.prevent="previousMode()"
-            >
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="0px"
-                width="169px"
-                height="169px"
-                viewBox="0 0 169 169"
-                style="enable-background: new 0 0 169 169"
-                xml:space="preserve"
-              >
-                <path
-                  fill="currentColor"
-                  stroke="currentColor"
-                  stroke-width="10"
-                  stroke-linejoin="round"
-                  d="M60.2,84.5l48.6-24.3l0,48.6L60.2,84.5z"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div v-for="mode in available_modes" :key="mode">
-            <input
-              type="radio"
-              :id="id + '_' + mode"
-              :value="mode"
-              :checked="selected_mode === mode"
-              @click="$emit('changeMode', mode)"
-            />
-            <label :for="id + '_' + mode">
-              <div class="_picto" :content="$t(mode)">
-                <!-- v-tippy="
-                  mode !== selected_mode
-                    ? {
-                        placement: 'bottom',
-                        delay: [600, 0],
-                      }
-                    : ''
-                " -->
-                <img :src="available_mode_picto[mode]" />
-              </div>
-              <span v-if="selected_mode === mode">{{ $t(mode) }}</span>
-            </label>
-          </div>
-
-          <div class="_arrows" v-if="available_modes.length > 1">
-            <button
-              type="button"
-              class="u-button u-button_transparent"
-              @mousedown.stop.prevent="nextMode()"
-              @touchstart.stop.prevent="nextMode()"
-            >
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="0px"
-                width="169px"
-                height="169px"
-                viewBox="0 0 169 169"
-                style="enable-background: new 0 0 169 169"
-                xml:space="preserve"
-              >
-                <path
-                  fill="currentColor"
-                  stroke="currentColor"
-                  stroke-width="10"
-                  stroke-linejoin="round"
-                  d="M108.8,84.5l-48.6,24.3V60.2L108.8,84.5z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
+          @changeMode="$emit('changeMode', $event)"
+        />
       </transition>
       <div
         class="m_captureview--videoPane--top"
@@ -1041,6 +960,7 @@
   </div>
 </template>
 <script>
+import ModeSelector from "./ModeSelector.vue";
 import MediaPreviewBeforeValidation from "./MediaPreviewBeforeValidation.vue";
 import MediaValidationButtons from "./MediaValidationButtons.vue";
 import StopmotionPanel from "./StopmotionPanel.vue";
@@ -1089,6 +1009,7 @@ export default {
     },
   },
   components: {
+    ModeSelector,
     MediaPreviewBeforeValidation,
     MediaValidationButtons,
     StopmotionPanel,
@@ -1104,19 +1025,9 @@ export default {
     return {
       is_sending_image: false,
 
-      id: (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 5),
       invisible_canvas: undefined,
 
       ask_before_leaving_capture: false,
-
-      available_mode_picto: {
-        photo: this.$root.publicPath + "images/i_icone-dodoc_image.svg",
-        video: this.$root.publicPath + "images/i_icone-dodoc_video.svg",
-        stopmotion: this.$root.publicPath + "images/i_icone-dodoc_anim.svg",
-        audio: this.$root.publicPath + "images/i_icone-dodoc_audio.svg",
-        vecto: this.$root.publicPath + "images/i_icone-dodoc_vecto.svg",
-        lines: this.$root.publicPath + "images/i_icone-dodoc_lines.svg",
-      },
 
       media_to_validate: false,
       media_is_being_sent: false,
@@ -1339,6 +1250,14 @@ export default {
     },
   },
   computed: {
+    show_mode_selector() {
+      return (
+        !this.media_to_validate &&
+        !this.is_recording &&
+        !this.is_making_stopmotion &&
+        !this.delay_event
+      );
+    },
     is_making_stopmotion() {
       const is_making_stopmotion = this.current_stopmotion_path ? true : false;
       if (is_making_stopmotion) {
@@ -1382,27 +1301,6 @@ export default {
     setImageData(imageData) {
       if (!this.$refs.canvasElement) return;
       this.$refs.canvasElement.getContext("2d").putImageData(imageData, 0, 0);
-    },
-    previousMode() {
-      console.log("METHODS • CaptureView: previousMode");
-      if (
-        this.is_recording ||
-        this.media_to_validate ||
-        this.mode_just_changed ||
-        this.is_making_stopmotion
-      )
-        return;
-
-      let current_mode_index = this.available_modes.indexOf(this.selected_mode);
-
-      if (current_mode_index > 0) {
-        this.$emit("changeMode", this.available_modes[current_mode_index - 1]);
-      } else {
-        this.$emit(
-          "changeMode",
-          this.available_modes[this.available_modes.length - 1]
-        );
-      }
     },
     updateSelectedColor({ e, type }) {
       if (!this.$refs.canvasElement) return;
@@ -1458,24 +1356,6 @@ export default {
         g: frame.data[1],
         b: frame.data[2],
       };
-    },
-    nextMode() {
-      console.log("CaptureView: METHODS • nextMode");
-
-      if (
-        this.is_recording ||
-        this.media_to_validate ||
-        this.mode_just_changed ||
-        this.is_making_stopmotion
-      )
-        return;
-
-      let current_mode_index = this.available_modes.indexOf(this.selected_mode);
-      if (current_mode_index < this.available_modes.length - 1) {
-        this.$emit("changeMode", this.available_modes[current_mode_index + 1]);
-      } else {
-        this.$emit("changeMode", this.available_modes[0]);
-      }
     },
     updateStreamSharing(val) {
       this.stream_sharing_informations_status = val;
@@ -1671,11 +1551,11 @@ export default {
         case "w":
         case "z":
         case "ArrowLeft":
-          this.previousMode();
+          // this.previousMode();
           break;
         case "s":
         case "ArrowRight":
-          this.nextMode();
+          // this.nextMode();
           break;
         case "a":
         case "q":
@@ -2231,139 +2111,6 @@ export default {
 
   > img {
     flex: 0 0 auto;
-  }
-}
-
-._modeSelector {
-  position: absolute;
-  z-index: 1;
-  display: flex;
-  left: 0;
-  right: 0;
-  // width: 100%;
-  flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
-  padding: calc(var(--spacing) / 2) 0 0;
-  user-select: none;
-  pointer-events: none;
-
-  font-family: "Fira Code";
-  color: var(--c-orange);
-
-  input[disabled] + label {
-    filter: grayscale(100%);
-    // opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  > * {
-    flex: 0 0 auto;
-    display: flex;
-    flex-flow: row wrap;
-    font-family: inherit;
-    pointer-events: auto;
-    // background-color: white;
-  }
-  > ._arrows {
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
-
-    button {
-      padding-left: 0;
-      padding-right: 0;
-      min-height: 0;
-    }
-
-    svg {
-      width: 36px;
-      height: 36px;
-      padding: 4px;
-      // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
-    }
-
-    &:hover,
-    &:focus {
-      // background-color: var(--c-gris-fonce);
-    }
-  }
-
-  input {
-    width: 0px;
-    height: 0;
-    visibility: hidden;
-
-    &:not(:checked) + label:not(:hover) {
-      // opacity: 0.3;
-      // background: transparent;
-    }
-  }
-
-  input:checked + label {
-    background-color: var(--c-orange);
-    span {
-      color: white;
-    }
-  }
-
-  input[disabled] + label {
-    filter: grayscale(100%);
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  label {
-    font-size: inherit;
-    font-family: inherit;
-    display: inline-block;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    flex-shrink: 0;
-    margin: 0;
-    cursor: pointer;
-    // min-height: 2.43rem;
-    border-radius: 6px;
-    transition: color 0.25s ease-out, opacity 0.5s;
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff;
-    letter-spacing: 0;
-    // padding: 0 0.405rem;
-    margin: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
-    text-align: center;
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-
-  ._picto {
-    border-radius: 50%;
-    overflow: hidden;
-    display: block;
-    width: 36px;
-    height: 36px;
-
-    // margin: calc(var(--spacing) / 8);
-
-    padding: 4px;
-    color: #fff;
-
-    margin-right: 0;
-  }
-
-  span {
-    display: block;
-    font-weight: 400;
-    text-transform: lowercase;
-    margin: 0.405rem;
-    font-size: 0.8rem;
-    font-family: Fira Mono;
-    text-transform: uppercase;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    color: #666;
-    font-weight: 600;
   }
 }
 
