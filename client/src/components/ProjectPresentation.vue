@@ -282,6 +282,8 @@ export default {
   align-items: stretch;
 
   margin: 0 auto;
+  max-width: 180ch;
+
   overflow: hidden;
   background: white;
 

@@ -234,6 +234,7 @@ export default {
 
 ._topContent {
   position: relative;
+  background: white;
 }
 
 ._tabButton {
