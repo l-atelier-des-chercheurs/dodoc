@@ -3,118 +3,117 @@
     class="m_stopmotionpanel"
     :class="{ 'is--showing_video_validation': validating_video_preview }"
   >
-    <div class="m_stopmotionpanel--toprowbuttons">
-      <button
-        v-if="!show_live_feed"
-        type="button"
-        :disabled="read_only"
-        @click="removeMedia(show_previous_photo.metaFileName)"
-        class="u-buttonLink bg-noir"
-      >
-        <span class>{{ $t("remove_this_image") }}</span>
-      </button>
+    <sl-spinner style="--indicator-color: currentColor" v-if="!stopmotion" />
+    <div v-else-if="fetch_stopmotion_error">
+      {{ fetch_stopmotion_error }}
+    </div>
+    <template v-else>
+      <div class="m_stopmotionpanel--toprowbuttons">
+        <div
+          class="m_stopmotionpanel--toprowbuttons--counter"
+          v-if="!show_live_feed"
+        >
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="prevImage"
+            :disabled="image_index_currently_shown === 0"
+          >
+            ←
+          </button>
+          <label class="c-blanc u-label">
+            {{ $t("image") }} {{ image_index_currently_shown + 1 }}/{{
+              medias.length
+            }}
+          </label>
+          <button type="button" class="u-buttonLink" @click="nextImage">
+            →
+          </button>
+        </div>
 
-      <div
-        class="m_stopmotionpanel--toprowbuttons--counter"
-        v-if="!show_live_feed"
-      >
         <button
+          v-if="!show_live_feed"
           type="button"
+          @click="removeMedia(show_previous_photo.$path)"
           class="u-buttonLink bg-noir"
-          @click="prevImage"
-          :disabled="image_index_currently_shown === 0"
         >
-          ←
-        </button>
-        <label class="c-blanc u-label"
-          >{{ $t("image") }} {{ image_index_currently_shown + 1 }}/{{
-            medias.length
-          }}</label
-        >
-        <button type="button" class="u-buttonLink bg-noir" @click="nextImage">
-          →
+          <span class>{{ $t("remove_this_image") }}</span>
         </button>
       </div>
-    </div>
 
-    <div class="m_stopmotionpanel--medias" v-if="!validating_video_preview">
-      <transition-group
-        class="m_stopmotionpanel--medias--list"
-        name="listComplete"
-        ref="mediaPreviews"
-      >
-        <div
-          v-for="media in medias"
-          :key="media.metaFileName"
-          @click="
-            show_previous_photo = media;
-            $emit('update:show_live_feed', false);
-          "
-          class="m_stopmotionpanel--medias--list--items"
-          :class="{
-            'is--current_single':
-              show_previous_photo.metaFileName === media.metaFileName &&
-              !show_live_feed,
-          }"
+      <div class="m_stopmotionpanel--medias" v-if="!validating_video_preview">
+        <transition-group
+          class="m_stopmotionpanel--medias--list"
+          name="listComplete"
+          ref="mediaPreviews"
         >
-          <!-- <MediaContent
-            :context="'preview'"
-            :slugFolderName="stopmotiondata.slugFolderName"
-            :media="media"
-            :folderType="'stopmotions'"
-            :preview_size="150"
-          /> -->
-        </div>
-        <div
-          class="m_stopmotionpanel--medias--list--items"
-          :class="{ 'is--current_single': show_live_feed }"
-          @click="showVideoFeed"
-          :key="'live_feed'"
-          :data-content="$t('live')"
-        >
-          <video
-            ref="videoElement"
-            autoplay
-            playsinline
-            muted
-            :srcObject.prop="stream"
-          />
-        </div>
-      </transition-group>
-      <div class="m_stopmotionpanel--medias--validation">
-        <div class="m_stopmotionpanel--medias--validation--fpscounter">
-          <label class="u-label">{{ $t("img_per_second") }}</label>
-          <select step="1" v-model.number="frameRate">
-            <option>2</option>
-            <option>4</option>
-            <option>8</option>
-            <option>15</option>
-            <option>24</option>
-            <option>30</option>
-          </select>
-        </div>
+          <div
+            v-for="media in medias"
+            :key="media.$path"
+            @click="
+              show_previous_photo = media;
+              $emit('update:show_live_feed', false);
+            "
+            class="m_stopmotionpanel--medias--list--items"
+            :class="{
+              'is--current_single':
+                show_previous_photo &&
+                show_previous_photo.$path === media.$path &&
+                !show_live_feed,
+            }"
+          >
+            <MediaContent :file="media" />
+          </div>
+          <div
+            class="m_stopmotionpanel--medias--list--items"
+            :class="{ 'is--current_single': show_live_feed }"
+            @click="showVideoFeed"
+            :key="'live_feed'"
+            :data-content="$t('live')"
+          >
+            <video
+              ref="videoElement"
+              autoplay
+              playsinline
+              muted
+              :srcObject.prop="stream"
+            />
+          </div>
+        </transition-group>
+        <div class="m_stopmotionpanel--medias--validation">
+          <div class="m_stopmotionpanel--medias--validation--fpscounter">
+            <label class="u-label">{{ $t("img_per_second") }}</label>
+            <select step="1" v-model.number="frameRate">
+              <option>2</option>
+              <option>4</option>
+              <option>8</option>
+              <option>15</option>
+              <option>24</option>
+              <option>30</option>
+            </select>
+          </div>
 
-        <button
-          type="button"
-          class="button button-bg_rounded bg-bleuvert"
-          v-if="medias.length > 0"
-          @click="assembleStopmotionMedias"
-          :disabled="
-            validating_video_preview && frameRate === previousFrameRate
-          "
-        >
-          <span class="text-cap padding-left-small font-verysmall">{{
-            $t("create")
-          }}</span>
-          <img
-            src="/images/i_play.svg"
-            width="48"
-            height="48"
-            draggable="false"
-          />
-        </button>
+          <button
+            type="button"
+            class="button button-bg_rounded bg-bleuvert"
+            v-if="medias.length > 0"
+            @click="assembleStopmotionMedias"
+            :disabled="
+              validating_video_preview && frameRate === previousFrameRate
+            "
+          >
+            <span class="text-cap padding-left-small font-verysmall">{{
+              $t("create")
+            }}</span>
+            <img
+              src="/images/i_play.svg"
+              width="48"
+              height="48"
+              draggable="false"
+            />
+          </button>
 
-        <!-- <button
+          <!-- <button
           type="button"
           class="u-buttonLink u-padding_verysmall margin-none"
           :class="{ 'is--active': show_advanced_menu }"
@@ -125,30 +124,33 @@
             show_advanced_menu = !show_advanced_menu;
           "
         >{{ $t('advanced_options') }}</button>-->
+        </div>
       </div>
-    </div>
 
-    <div v-else class="m_stopmotionpanel--videopreview" ref="videoPreview">
-      <!-- <MediaContent
+      <div v-else class="m_stopmotionpanel--videopreview" ref="videoPreview">
+        <!-- <MediaContent
         :context="'full'"
         :slugFolderName="slugFolderName"
         :folderType="type"
         :media="validating_video_preview"
       /> -->
-    </div>
+        <!-- // TODO  -->
+      </div>
 
-    <MediaValidationButtons
-      v-if="validating_video_preview"
-      :read_only="read_only"
-      :media_is_being_sent="media_is_being_sent"
-      :cancelButtonIsBackButton="true"
-      :can_add_to_fav="can_add_to_fav"
-      @cancel="backToStopmotion"
-      @save="save()"
-      @save_and_fav="saveAndFav()"
-    />
+      <MediaValidationButtons
+        v-if="validating_video_preview"
+        :media_is_being_sent="media_is_being_sent"
+        :cancelButtonIsBackButton="true"
+        :can_add_to_fav="can_add_to_fav"
+        @cancel="backToStopmotion"
+        @save="save()"
+        @save_and_fav="saveAndFav()"
+      />
 
-    <LoaderSpinner v-if="media_is_being_sent" />
+      <div class="_loader" v-if="media_is_being_sent">
+        <LoaderSpinner />
+      </div>
+    </template>
   </div>
 </template>
 <script>
@@ -157,9 +159,7 @@ import MediaValidationButtons from "./MediaValidationButtons.vue";
 
 export default {
   props: {
-    stopmotiondata: Object,
-    slugFolderName: String,
-    type: String,
+    current_stopmotion_path: String,
     stream: MediaStream,
     can_add_to_fav: Boolean,
     show_live_feed: Boolean,
@@ -171,6 +171,10 @@ export default {
   },
   data() {
     return {
+      stopmotion: null,
+
+      fetch_stopmotion_error: undefined,
+
       frameRate: 4,
       previousFrameRate: 4,
       validating_video_preview: false,
@@ -181,12 +185,22 @@ export default {
   },
 
   created() {},
-  mounted() {
-    if (Object.values(this.stopmotiondata.medias).length > 0) {
-      // this.show_previous_photo = Object.values(this.stopmotiondata.medias).slice(-1)[0];
-    }
+  async mounted() {
+    this.$eventHub.$on("stopmotion.addImage", this.appendToStopMotion);
+
+    const stopmotion = await this.$api
+      .getFolder({
+        path: this.current_stopmotion_path,
+      })
+      .catch((err) => {
+        this.fetch_stopmotion_error = err.response;
+      });
+    this.stopmotion = stopmotion;
+    this.$api.join({ room: this.current_stopmotion_path });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off("stopmotion.addImage", this.appendToStopMotion);
+  },
 
   watch: {
     medias: function () {
@@ -217,7 +231,7 @@ export default {
       immediate: true,
     },
     show_previous_photo: function () {
-      this.$emit("new_single_image", this.show_previous_photo);
+      this.$emit("showPreviousImage", this.show_previous_photo);
     },
     validating_video_preview: function () {
       this.$emit(
@@ -227,46 +241,79 @@ export default {
     },
   },
   computed: {
-    medias: function () {
-      if (Object.prototype.hasOwnProperty.call(this.stopmotiondata, "medias")) {
-        return Object.values(this.stopmotiondata.medias);
-      } else {
-        return [];
+    medias() {
+      if (this.stopmotion?.images_list && this.stopmotion?.$files?.length > 0) {
+        const medias = this.stopmotion.images_list.map((meta_filename) => {
+          return this.stopmotion.$files.find((f) =>
+            f.$path.endsWith(meta_filename)
+          );
+        });
+
+        return medias;
       }
+      return [];
     },
     image_index_currently_shown() {
       if (!this.show_previous_photo) return false;
       return this.medias.findIndex(
-        (m) => m.metaFileName === this.show_previous_photo.metaFileName
+        (m) => m.$path === this.show_previous_photo.$path
       );
     },
   },
   methods: {
+    async appendToStopMotion({ imageData }) {
+      const additional_meta = {};
+      const meta_filename = await this.$api
+        .uploadFile({
+          path: this.current_stopmotion_path,
+          filename: +new Date() + ".jpeg",
+          file: imageData,
+          additional_meta,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
+
+      let images_list = this.stopmotion.images_list
+        ? this.stopmotion.images_list.slice()
+        : [];
+      images_list.push(meta_filename);
+
+      await this.$api.updateMeta({
+        path: this.current_stopmotion_path,
+        new_meta: {
+          images_list,
+        },
+      });
+    },
     assembleStopmotionMedias: function () {
       console.log("METHODS • StopmotionPanel: assembleStopmotionMedias");
 
-      const list_media_names = this.medias.map((x) => x.media_filename);
+      // const list_media_names = this.medias.map((x) => x.media_filename);
 
-      this.$root
-        .createMedia({
-          slugFolderName: this.slugFolderName,
-          type: this.type,
-          rawData: list_media_names,
-          additionalMeta: {
-            type: "stopmotion",
-            slugStopmotionName: this.stopmotiondata.slugFolderName,
-            frameRate: this.frameRate,
-          },
-        })
-        .then((mdata) => {
-          console.log("METHODS • StopmotionPanel: newStopmotionVideo");
-          this.validating_video_preview = mdata;
-          this.media_is_being_sent = false;
-        });
-      this.previousFrameRate = this.frameRate;
-      this.validating_video_preview = false;
-      this.media_is_being_sent = true;
-      this.$emit("update:show_live_feed", false);
+      // todo assemble to video
+
+      // this.$root
+      //   .createMedia({
+      //     slugFolderName: this.slugFolderName,
+      //     type: this.type,
+      //     rawData: list_media_names,
+      //     additionalMeta: {
+      //       type: "stopmotion",
+      //       slugStopmotionName: this.stopmotiondata.slugFolderName,
+      //       frameRate: this.frameRate,
+      //     },
+      //   })
+      //   .then((mdata) => {
+      //     console.log("METHODS • StopmotionPanel: newStopmotionVideo");
+      //     this.validating_video_preview = mdata;
+      //     this.media_is_being_sent = false;
+      //   });
+      // this.previousFrameRate = this.frameRate;
+      // this.validating_video_preview = false;
+      // this.media_is_being_sent = true;
+      // this.$emit("update:show_live_feed", false);
     },
     showVideoFeed() {
       this.show_previous_photo = this.medias[this.medias.length - 1];
@@ -291,16 +338,15 @@ export default {
     },
     backToStopmotion: function () {
       console.log("METHODS • StopmotionPanel: backToStopmotion");
-      this.$root.removeMedia({
-        type: this.type,
-        slugFolderName: this.slugFolderName,
-        slugMediaName: this.validating_video_preview.metaFileName,
-      });
+
+      // todo remove temp video file
+
       this.validating_video_preview = false;
       this.$emit("update:show_live_feed", true);
     },
     save: function () {
-      this.$emit("saveMedia", this.validating_video_preview.metaFileName);
+      // this.$emit("saveMedia", this.validating_video_preview.metaFileName);
+
       this.show_previous_photo = false;
       this.validating_video_preview = false;
 
@@ -309,15 +355,14 @@ export default {
       });
     },
     saveAndFav: function () {
-      this.$root.editMedia({
-        type: this.type,
-        slugFolderName: this.slugFolderName,
-        slugMediaName: this.validating_video_preview.metaFileName,
-        data: {
-          fav: true,
-        },
-      });
-      this.$emit("saveMedia", this.validating_video_preview.metaFileName);
+      // this.$root.editMedia({
+      //   slugFolderName: this.slugFolderName,
+      //   slugMediaName: this.validating_video_preview.metaFileName,
+      //   data: {
+      //     fav: true,
+      //   },
+      // });
+      // this.$emit("saveMedia", this.validating_video_preview.metaFileName);
 
       this.show_previous_photo = false;
       this.validating_video_preview = false;
@@ -326,26 +371,43 @@ export default {
         this.$emit("close");
       });
     },
-    removeMedia: function (slugMediaName) {
-      console.log("METHODS • StopmotionPanel: removeMedia");
+    async removeMedia(path) {
+      // remove from stopmotion list
+      let images_list = this.stopmotion.images_list.slice();
+      images_list = images_list.filter((i) => !path.endsWith(i));
 
-      // get index
-      const index = this.medias.findIndex(
-        (m) => m.metaFileName === slugMediaName
-      );
-      if (index < this.medias.length - 1) {
-        this.show_previous_photo = this.medias[index + 1];
-      } else {
-        this.show_previous_photo = false;
-        this.$emit("update:show_live_feed", true);
-      }
-      this.validating_video_preview = false;
+      this.nextImage();
 
-      this.$root.removeMedia({
-        type: "stopmotions",
-        slugFolderName: this.stopmotiondata.slugFolderName,
-        slugMediaName,
+      debugger;
+
+      await this.$api.updateMeta({
+        path: this.current_stopmotion_path,
+        new_meta: {
+          images_list,
+        },
       });
+
+      await this.$api.deleteItem({
+        path,
+      });
+
+      // const index = this.medias.findIndex((m) => m.$path === slugMediaName);
+      // if (index < this.medias.length - 1) {
+      //   this.show_previous_photo = this.medias[index + 1];
+      // } else {
+      //   this.show_previous_photo = false;
+      //   this.$emit("update:show_live_feed", true);
+      // }
+      // this.validating_video_preview = false;
+
+      // remove own media
+
+      // todo remove media
+      // this.$root.removeMedia({
+      //   type: "stopmotions",
+      //   slugFolderName: this.stopmotiondata.slugFolderName,
+      //   slugMediaName,
+      // });
     },
   },
 };
@@ -390,14 +452,16 @@ export default {
   }
 
   > .m_stopmotionpanel--toprowbuttons--counter {
+    display: flex;
     margin: 0;
     padding: 0;
+  }
+
+  button,
+  label {
     background-color: var(--c-noir);
     color: white;
     border-radius: var(--button-radius);
-
-    button {
-    }
   }
 }
 
@@ -455,7 +519,8 @@ export default {
     // .padding-verysmall;
 
     padding: 0 calc(var(--spacing) / 4);
-    margin-bottom: calc(var(--spacing) / 8);
+    gap: calc(var(--spacing) / 4);
+    // margin-bottom: calc(var(--spacing) / 8);
 
     // .margin-verysmall;
     scroll-behavior: smooth;
@@ -513,14 +578,10 @@ export default {
   .m_stopmotionpanel--medias--list--items {
     position: relative;
     overflow: hidden;
-    // border-radius: 10px;
-    // height: 100px;
     width: auto;
-    max-height: 100%;
     flex: 0 0 auto;
     width: 100px;
-    height: 66px;
-    padding: 0 calc(var(--spacing) / 8);
+    height: auto;
 
     cursor: pointer;
 
@@ -551,6 +612,8 @@ export default {
       flex-basis: auto;
       padding-right: 100px;
       width: auto;
+      border-radius: 4px;
+      overflow: hidden;
 
       video {
         width: 100px;
@@ -718,5 +781,10 @@ export default {
     width: 100%;
     background-color: var(--c-noir);
   }
+}
+
+._loader {
+  background: rgba(0, 0, 0, 0.95);
+  color: var(--color-capture);
 }
 </style>

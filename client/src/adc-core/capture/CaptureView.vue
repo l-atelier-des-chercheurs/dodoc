@@ -36,6 +36,7 @@
           @changeMode="$emit('changeMode', $event)"
         />
       </transition>
+
       <div
         class="m_captureview--videoPane--top"
         v-show="!is_validating_stopmotion_video"
@@ -217,44 +218,29 @@
               <template v-else-if="!!time_before_next_picture">
                 {{ time_before_next_picture }}
               </template>
-              <!-- <template v-else>
-                {{ $t("now!") }}
-              </template> -->
             </label>
           </transition>
 
-          <!-- <transition name="justCaptured" duration="400">
-            <div
-              v-if="capture_button_pressed"
-              class="_just_captured_overlay"
-            ></div>
-          </transition> -->
-
           <transition name="scaleInFade" mode="in-out" duration="100">
-            <!-- <MediaContent
+            <MediaContent
               v-if="
                 selected_mode === 'stopmotion' &&
-                stopmotion.onion_skin_img &&
+                onion_skin_img &&
                 current_stopmotion_path &&
                 !is_validating_stopmotion_video &&
-                !(show_live_feed && stopmotion.onion_skin_opacity === 0)
-              "
-              :key="
-                show_live_feed ? false : stopmotion.onion_skin_img.metaFileName
+                !(show_live_feed && onion_skin_opacity === 0)
               "
               class="_onion_skin"
               :class="{ 'is--onionskin': show_live_feed }"
-              :context="'edit'"
-              :slugFolderName="current_stopmotion_path"
-              :media="stopmotion.onion_skin_img"
-              :folderType="'stopmotions'"
+              :key="show_live_feed ? false : onion_skin_img.$path"
+              :file="onion_skin_img"
+              :resolution="1600"
               :style="
                 show_live_feed
-                  ? `--onionskin-opacity: ${stopmotion.onion_skin_opacity}`
+                  ? `--onionskin-opacity: ${onion_skin_opacity}`
                   : ''
               "
-            /> -->
-            <!-- todo onionskin -->
+            />
           </transition>
 
           <div
@@ -275,22 +261,7 @@
                 :y2="y2 + '%'"
                 vector-effect="non-scaling-stroke"
               />
-              <!-- <rect
-                x="0"
-                y="0"
-                width="100%"
-                height="100%"
-                vector-effect="non-scaling-stroke"
-              /> -->
             </svg>
-
-            <!-- <svg
-              xmlns="http://www.w3.org/2000/svg"
-              version="1.1"
-              :width="actual_camera_resolution.width"
-              :height="actual_camera_resolution.height"
-              :viewBox="`0 0 ${actual_camera_resolution.width} ${actual_camera_resolution.height}`"
-            /> -->
           </div>
 
           <transition name="fade_fast">
@@ -308,12 +279,6 @@
                   actual_camera_resolution.height
                 }}
               </button>
-              <!-- <div v-if="selected_devices.video_input_device">
-                {{ selected_devices.video_input_device.label }}
-              </div>
-              <div v-if="selected_devices.audio_input_device">
-                {{ selected_devices.audio_input_device.label }}
-              </div> -->
               <button
                 type="button"
                 class="button-nostyle"
@@ -358,17 +323,14 @@
       <transition name="slideup" :duration="150" mode="out-in">
         <StopmotionPanel
           v-if="current_stopmotion_path"
-          :stopmotiondata="$root.store.stopmotions[current_stopmotion_path]"
-          :type="type"
-          :slugFolderName="slugFolderName"
-          :read_only="read_only"
+          :current_stopmotion_path="current_stopmotion_path"
           :stream="stream"
           :can_add_to_fav="can_add_to_fav"
           :show_live_feed.sync="show_live_feed"
           :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
-          @saveMedia="(metaFileName) => $emit('insertMedias', [metaFileName])"
+          @saveMedia="($path) => $emit('insertMedias', [$path])"
           @close="closeStopmotionPanel"
-          @new_single_image="updateSingleImage"
+          @showPreviousImage="onion_skin_img = $event"
         />
       </transition>
 
@@ -791,7 +753,7 @@
                 <div
                   v-if="
                     selected_mode === 'stopmotion' &&
-                    stopmotion.onion_skin_img &&
+                    onion_skin_img &&
                     show_live_feed &&
                     is_making_stopmotion &&
                     !timelapse_event
@@ -802,11 +764,11 @@
                   <input
                     class="_rtl"
                     type="range"
-                    v-model.number="stopmotion.onion_skin_opacity"
+                    v-model.number="onion_skin_opacity"
                     min="0"
                     max=".9"
                     step="0.01"
-                    :title="stopmotion.onion_skin_opacity"
+                    :title="onion_skin_opacity"
                     data-use="onionskin"
                   />
                 </div>
@@ -938,7 +900,6 @@
               </div>
 
               <MediaValidationButtons
-                :read_only="read_only"
                 :can_add_to_fav="can_add_to_fav"
                 :media_is_being_sent="media_is_being_sent"
                 :media_being_sent_percent="media_being_sent_percent"
@@ -964,7 +925,6 @@ import ModeSelector from "./ModeSelector.vue";
 import MediaPreviewBeforeValidation from "./MediaPreviewBeforeValidation.vue";
 import MediaValidationButtons from "./MediaValidationButtons.vue";
 import StopmotionPanel from "./StopmotionPanel.vue";
-// import MediaContent from "../subcomponents/MediaContent.vue";
 
 import CaptureSettings from "./CaptureSettings.vue";
 import CaptureEffects from "./CaptureEffects.vue";
@@ -981,7 +941,6 @@ export default {
   props: {
     slugFolderName: String,
     type: String,
-    read_only: Boolean,
     path: String,
     selected_mode: String,
     available_modes: {
@@ -1013,7 +972,6 @@ export default {
     MediaPreviewBeforeValidation,
     MediaValidationButtons,
     StopmotionPanel,
-    // MediaContent,
     CaptureSettings,
     CaptureEffects,
     StopmotionList,
@@ -1108,10 +1066,8 @@ export default {
 
       show_live_feed: false,
       show_stopmotion_list: false,
-      stopmotion: {
-        onion_skin_img: false,
-        onion_skin_opacity: 0,
-      },
+      onion_skin_img: false,
+      onion_skin_opacity: 0,
 
       last_frame_from_video: undefined,
       frameGrabber: undefined,
@@ -1223,6 +1179,9 @@ export default {
         this.show_live_feed = true;
       }
     },
+    is_making_stopmotion() {
+      if (this.is_making_stopmotion) this.show_capture_settings = false;
+    },
     audio_output_deviceId: function () {
       // const audio = document.createElement('audio');
       // await audio.setSinkId(audioDevices[0].deviceId);
@@ -1260,10 +1219,6 @@ export default {
     },
     is_making_stopmotion() {
       const is_making_stopmotion = this.current_stopmotion_path ? true : false;
-      if (is_making_stopmotion) {
-        // eslint-disable-next-line
-        this.show_capture_settings = false;
-      }
       return is_making_stopmotion;
     },
     validated_media_href_blob() {
@@ -1462,62 +1417,26 @@ export default {
       if (this.frameGrabber) window.clearInterval(this.frameGrabber);
       this.last_frame_from_video = undefined;
     },
-    addStopmotionImage() {
+    async addStopmotionImage() {
       const smdata = {
         name: this.slugFolderName + "-" + new Date().getTime(),
       };
 
       this.$refs.videoElement.pause();
-      this.getImageDataFromFeed().then((imageData) => {
-        if (!this.current_stopmotion_path) {
-          this.ask_before_leaving_capture = true;
-          // create stopmotion
-          this.$api
-            .createFolder({
-              path: `${this.slugFolderName}/stopmotions`,
-              additional_meta: smdata,
-            })
-            .then((new_folder_path) => {
-              this.current_stopmotion_path = `${this.slugFolderName}/stopmotions/${new_folder_path}`;
-              this.addImageToStopmotion(imageData);
-            });
-        } else {
-          // append to stopmotion
-          this.addImageToStopmotion(imageData);
-        }
-      });
-    },
-    async addImageToStopmotion(imageData) {
-      console.log("METHODS • CaptureView: addImageToStopmotion");
       this.is_sending_image = true;
 
-      const additional_meta = {};
-
-      await this.$api
-        .uploadFile({
-          path: this.current_stopmotion_path,
-          filename: +new Date() + ".jpeg",
-          file: imageData,
-          additional_meta,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
+      if (!this.current_stopmotion_path) {
+        this.ask_before_leaving_capture = true;
+        // create stopmotion
+        const new_folder_path = await this.$api.createFolder({
+          path: `${this.slugFolderName}/stopmotions`,
+          additional_meta: smdata,
         });
+        this.current_stopmotion_path = `${this.slugFolderName}/stopmotions/${new_folder_path}`;
+      }
 
-      // await this.$api
-      //   .uploadFile({
-      //     path: this.current_stopmotion_path,
-      //     additional_meta,
-      //   })
-      //   .catch(() => {
-      //     if (this.is_sending_image && this.$refs.videoElement) {
-      //       this.$alertify
-      //         .closeLogOnClick(true)
-      //         .delay(4000)
-      //         .error(this.$t("notifications.failed_to_save_media"));
-      //     }
-      //   });
+      const imageData = await this.getImageDataFromFeed();
+      this.$eventHub.$emit("stopmotion.addImage", { imageData });
 
       this.is_sending_image = false;
       this.$refs.videoElement.play();
@@ -1928,9 +1847,6 @@ export default {
     },
     cancelValidation() {
       this.media_to_validate = false;
-    },
-    updateSingleImage($event) {
-      this.stopmotion.onion_skin_img = $event;
     },
   },
 };

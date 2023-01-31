@@ -151,6 +151,8 @@ export default function () {
         bottom: "En bas",
         margins_inside: "Petit fond",
         margins_outside: "Grand fond",
+        photo: "Photo",
+        remove_this_image: "Supprimer cette image",
 
         status: "État",
         list_of_projects: "Liste des projets",
@@ -327,6 +329,8 @@ export default function () {
         "Entire screen": "Écran de l’ordinateur",
         no_stopmotion_created_yet:
           "Les animations créées apparaîtront dans ce panneau.",
+        stop_stopmotion: "Arrêter cette animation",
+        onion_skin: "Pelure d’oignon",
 
         pick_a_camera: "Sélectionnez une caméra",
         resolutions: "Résolutions",
@@ -335,6 +339,9 @@ export default function () {
         delay: "Retardateur",
         timelapse: "time-lapse",
         framerate: "images par seconde",
+        live: "Direct",
+        img_per_second: "Images par seconde",
+
         stop_recording: "Arrêter la capture",
         pause_recording: "Mettre en pause",
         unpause_recording: "Relancer l’enregistrement",
