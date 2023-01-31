@@ -79,6 +79,10 @@
           </div>
         </transition-group>
         <div class="m_stopmotionpanel--medias--validation">
+          <label class="u-label">
+            {{ $t("create") }}
+          </label>
+
           <div class="m_stopmotionpanel--medias--validation--fpscounter">
             <label class="u-label">{{ $t("img_per_second") }}</label>
             <select step="1" v-model.number="frameRate">
@@ -93,7 +97,7 @@
 
           <button
             type="button"
-            class="button button-bg_rounded bg-bleuvert"
+            class="u-button u-button_bleuvert"
             v-if="medias.length > 0"
             @click="assembleStopmotionMedias"
             :disabled="
@@ -104,7 +108,7 @@
               $t("create")
             }}</span>
             <img
-              src="/images/i_play.svg"
+              :src="`${$root.publicPath}images/i_play.svg`"
               width="48"
               height="48"
               draggable="false"
