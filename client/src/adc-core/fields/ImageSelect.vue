@@ -19,6 +19,18 @@
         </label>
       </div>
 
+      <div class="_imageselect--fromLib">
+        <button type="button" class="u-button" @click="show_picker = true">
+          {{ $t("from_project") }}
+        </button>
+        <PickMediaFromProjects
+          v-if="show_picker"
+          :folder_path="folder_path"
+          @selectMedia="selectMediaFromLib()"
+          @close="show_picker = false"
+        />
+      </div>
+
       <div class="_imageselect--takePhoto">
         <button
           type="button"
@@ -54,72 +66,10 @@
       </div>
 
       <small>{{ $t("or_paste_an_image") }}</small>
-
-      <!-- <div
-        class="_imageselect--selectFromMedias"
-        v-if="load_from_projects_medias"
-      >
-        <label>{{ $t("or_choose_from_image_medias") }}</label>
-        <select v-model="show_medias_from_project">
-          <option key="''" :value="''">—</option>
-          <option
-            v-for="project in $root.projects_that_are_accessible"
-            :key="project.slugFolderName"
-            :value="project.slugFolderName"
-          >
-            {{ project.name }}
-          </option>
-        </select>
-        <div
-          class="_imageselect--selectFromMedias--imageList"
-          v-if="!!show_medias_from_project"
-        >
-          <template
-            v-if="
-              getProjectsImages({
-                project_slug: show_medias_from_project,
-              }) === false
-            "
-          >
-            <small>
-              <i>{{ $t("loading") }}</i>
-            </small>
-          </template>
-          <template
-            v-else-if="
-              getProjectsImages({
-                project_slug: this.show_medias_from_project,
-              }).length === 0
-            "
-          >
-            <small>
-              <i>{{ $t("no_images_to_show") }}</i>
-            </small>
-          </template>
-          <button
-            v-else
-            type="button"
-            v-for="image in getProjectsImages({
-              project_slug: this.show_medias_from_project,
-            })"
-            :key="image.metaFileName"
-            @click="selectThisImageForPreview({ image })"
-          >
-            <img
-              :src="mediasImagesPreviewURL({ thumbs: image.thumbs, size: 360 })"
-            />
-          </button>
-        </div>
-      </div> -->
     </template>
 
     <div class="_imageselect--image" v-else>
       <img v-if="typeof image === 'string'" :src="image" draggable="false" />
-      <img
-        v-if="typeof image === 'object'"
-        :src="getPreviewFromMedias(image)"
-        draggable="false"
-      />
       <button class="u-buttonLink" type="button" @click="removeImage">
         {{ $t("remove_image") }}
       </button>
@@ -130,17 +80,8 @@
 export default {
   props: {
     existing_preview: [Boolean, String],
-
+    folder_path: String,
     instructions: String,
-
-    project_slug: {
-      type: String,
-      default: "",
-    },
-    load_from_projects_medias: {
-      type: Boolean,
-      default: false,
-    },
   },
   components: {
     CaptureView: () => import("@/adc-core/capture/CaptureView.vue"),
@@ -152,6 +93,7 @@ export default {
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 2)}`,
 
+      show_picker: false,
       show_medias_from_project: "",
       enable_capture_mode: false,
     };
@@ -160,7 +102,6 @@ export default {
   created() {},
   mounted() {
     window.addEventListener("paste", this.handlePaste);
-    this.show_medias_from_project = this.project_slug ? this.project_slug : "";
   },
   beforeDestroy() {
     window.removeEventListener("paste", this.handlePaste);
@@ -180,29 +121,8 @@ export default {
         ? this.instructions
         : this.$t("upload_from_device");
     },
-    // first_project_slug() {
-    //   if (Object.keys(this.$root.store.projects).length === 0) return "";
-    //   return Object.keys(this.$root.store.projects)[0];
-    // },
   },
   methods: {
-    // getProjectsImages({ project_slug }) {
-    //   if (
-    //     !project_slug ||
-    //     !this.$root.store.projects.hasOwnProperty(project_slug)
-    //   ) {
-    //     return [];
-    //   }
-
-    //   const medias = this.$root.store.projects[project_slug].medias;
-    //   if (medias.length === 0) return false;
-
-    //   const images = Object.values(
-    //     this.$root.store.projects[project_slug].medias
-    //   ).filter((m) => m.type === "image");
-
-    //   return images;
-    // },
     handlePaste(e) {
       if (e.clipboardData.files && e.clipboardData.files.length > 0) {
         console.log(
@@ -238,6 +158,9 @@ export default {
           this.image = res;
         }, 20);
       });
+    },
+    selectMediaFromLib() {
+      // todo
     },
     createImage(blob) {
       return new Promise((resolve, reject) => {
@@ -292,6 +215,7 @@ export default {
     },
     getPreviewFromMedias(image) {
       const slugFolderName = image.slugFolderName;
+      debugger;
       const media = this.getProjectsImages({
         project_slug: slugFolderName,
       }).find((m) => m.metaFileName === image.metaFileName);

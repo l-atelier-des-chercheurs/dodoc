@@ -17,6 +17,7 @@
       :enable_effects.sync="enable_effects"
       :videoElement="$refs.videoElement"
       :canvasElement="$refs.canvasElement"
+      :project_path="path"
       @updateImageData="setImageData"
       @close="show_effects_pane = false"
     />

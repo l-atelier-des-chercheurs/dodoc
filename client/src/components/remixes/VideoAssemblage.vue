@@ -19,7 +19,6 @@
   </div>
 </template>
 <script>
-// import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
 import StoryTemplate from "@/components/publications/templates/StoryTemplate.vue";
 
 export default {
@@ -27,7 +26,6 @@ export default {
     remix: Object,
   },
   components: {
-    // PickMediaFromProjects,
     StoryTemplate,
   },
   data() {
