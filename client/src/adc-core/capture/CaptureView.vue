@@ -318,19 +318,19 @@
           </transition>
         </div>
       </div>
-      <transition name="slideup" :duration="150" mode="out-in">
-        <StopmotionPanel
-          v-if="current_stopmotion_path"
-          :current_stopmotion_path="current_stopmotion_path"
-          :stream="stream"
-          :can_add_to_fav="can_add_to_fav"
-          :show_live_feed.sync="show_live_feed"
-          :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
-          @saveMedia="($path) => $emit('insertMedias', [$path])"
-          @close="closeStopmotionPanel"
-          @showPreviousImage="onion_skin_img = $event"
-        />
-      </transition>
+      <!-- <transition name="slideup" :duration="150" mode="out-in"> -->
+      <StopmotionPanel
+        v-if="current_stopmotion_path"
+        :current_stopmotion_path="current_stopmotion_path"
+        :stream="stream"
+        :can_add_to_fav="can_add_to_fav"
+        :show_live_feed.sync="show_live_feed"
+        :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
+        @saveMedia="($path) => $emit('insertMedias', [$path])"
+        @close="closeStopmotionPanel"
+        @showPreviousImage="onion_skin_img = $event"
+      />
+      <!-- </transition> -->
 
       <transition name="slideup" :duration="150" mode="out-in">
         <div class="m_captureview--videoPane--bottom">

@@ -15,7 +15,7 @@
         >
           <button
             type="button"
-            class="u-buttonLink"
+            class=""
             @click="prevImage"
             :disabled="image_index_currently_shown === 0"
           >
@@ -26,9 +26,7 @@
               medias.length
             }}
           </label>
-          <button type="button" class="u-buttonLink" @click="nextImage">
-            →
-          </button>
+          <button type="button" class="" @click="nextImage">→</button>
         </div>
 
         <button
@@ -437,11 +435,16 @@ export default {
   bottom: 100%;
   width: 100%;
 
+  pointer-events: none;
+
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  padding: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
 
   > * {
+    pointer-events: auto;
     // background-color: var(--c-noir);
     // color: white;
     margin: calc(var(--spacing) / 4);
@@ -453,8 +456,17 @@ export default {
 
   > .m_stopmotionpanel--toprowbuttons--counter {
     display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) / 2);
+
+    background-color: var(--c-noir);
+
     margin: 0;
     padding: 0;
+
+    label {
+      margin-bottom: 0;
+    }
   }
 
   button,
