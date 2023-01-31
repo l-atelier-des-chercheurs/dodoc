@@ -206,17 +206,19 @@
 
           <transition name="scaleInFade" mode="out-in" duration="100">
             <label
-              v-if="!!delay_remaining_time || !!time_before_next_picture"
+              v-if="
+                !!delay_remaining_time || !!timelapse_time_before_next_picture
+              "
               :key="'time_before_' + delay_remaining_time"
               mode="out-in"
               class="_delay_timer"
-              :class="{ 'is--timelapse': !!time_before_next_picture }"
+              :class="{ 'is--timelapse': !!timelapse_time_before_next_picture }"
             >
               <template v-if="!!delay_remaining_time">
                 {{ delay_remaining_time }}
               </template>
-              <template v-else-if="!!time_before_next_picture">
-                {{ time_before_next_picture }}
+              <template v-else-if="!!timelapse_time_before_next_picture">
+                {{ timelapse_time_before_next_picture }}
               </template>
             </label>
           </transition>
@@ -1046,7 +1048,7 @@ export default {
       timelapse_mode_enabled: false,
       timelapse_interval: 2,
       timelapse_event: false,
-      timelapse_start_time: false,
+      timelapse_time_before_next_picture: false,
 
       delay_mode_enabled: false,
       delay_seconds: 5,
@@ -1224,15 +1226,6 @@ export default {
     validated_media_href_blob() {
       if (!this.media_to_validate) return false;
       return window.URL.createObjectURL(this.media_to_validate.rawData);
-    },
-    time_before_next_picture: function () {
-      if (!this.timelapse_start_time) return false;
-
-      const time_since_start =
-        this.$root.current_time - this.timelapse_start_time;
-      const time_remaining =
-        (this.timelapse_interval * 1000 - time_since_start) / 1000;
-      return Math.floor(time_remaining + 0.99);
     },
     show_videos() {
       return (
@@ -1521,16 +1514,26 @@ export default {
       this.delay_event = false;
     },
     startTimelapseInterval() {
-      this.timelapse_start_time = this.$root.current_time;
+      let time_passed = 0;
+      this.timelapse_time_before_next_picture = this.timelapse_interval;
+
       this.timelapse_event = window.setInterval(() => {
-        this.setCapture();
-        this.timelapse_start_time = this.$root.current_time;
-      }, this.timelapse_interval * 1000);
+        time_passed += 1;
+
+        if (time_passed === this.timelapse_interval) {
+          this.setCapture();
+          this.stopTimelapseInterval();
+          this.startTimelapseInterval();
+        } else {
+          this.timelapse_time_before_next_picture =
+            this.timelapse_interval - time_passed;
+        }
+      }, 1000);
     },
     stopTimelapseInterval() {
       window.clearInterval(this.timelapse_event);
       this.timelapse_event = false;
-      this.timelapse_start_time = false;
+      this.timelapse_time_before_next_picture = false;
     },
     setCapture() {
       this.capture_button_pressed = true;
