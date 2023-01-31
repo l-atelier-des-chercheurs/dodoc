@@ -206,21 +206,17 @@
 
           <transition name="scaleInFade" mode="out-in" duration="100">
             <label
-              v-if="
-                !!delay_remaining_time || !!timelapse_time_before_next_picture
-              "
-              :key="'time_before_' + delay_remaining_time"
-              mode="out-in"
+              v-if="delay_remaining_time"
+              :key="'delay_before_' + delay_remaining_time"
               class="_delay_timer"
-              :class="{ 'is--timelapse': !!timelapse_time_before_next_picture }"
-            >
-              <template v-if="!!delay_remaining_time">
-                {{ delay_remaining_time }}
-              </template>
-              <template v-else-if="!!timelapse_time_before_next_picture">
-                {{ timelapse_time_before_next_picture }}
-              </template>
-            </label>
+              v-html="delay_remaining_time"
+            />
+            <label
+              v-else-if="timelapse_time_before_next_picture"
+              :key="'timelapse_before_' + timelapse_time_before_next_picture"
+              class="_delay_timer is--timelapse"
+              v-html="timelapse_time_before_next_picture"
+            />
           </transition>
 
           <transition name="scaleInFade" mode="in-out" duration="100">
