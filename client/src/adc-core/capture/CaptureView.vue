@@ -1411,6 +1411,7 @@ export default {
         name: this.slugFolderName + "-" + new Date().getTime(),
       };
 
+      this.show_live_feed = true;
       this.$refs.videoElement.pause();
       this.is_sending_image = true;
 
