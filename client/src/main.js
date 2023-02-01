@@ -99,6 +99,9 @@ Vue.component("DLabel", DLabel);
 import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
 
+import PickMediaFromProjects from "@/components/publications/PickMediaFromProjects.vue";
+Vue.component("PickMediaFromProjects", PickMediaFromProjects);
+
 Vue.component("EditBtn", {
   name: "EditBtn",
   template: `
@@ -119,7 +122,11 @@ Vue.component("SectionLabel", {
 });
 Vue.component("LoaderSpinner", {
   name: "LoaderSpinner",
-  template: `<sl-spinner style="font-size: 2rem; --indicator-color: currentColor" />`,
+  template: `
+  <div class="u-loader">
+    <sl-spinner style="font-size: 2rem; --indicator-color: currentColor" />
+  </div>
+  `,
 });
 
 document.addEventListener(
@@ -145,6 +152,8 @@ import Medias from "@/mixins/Medias";
 Vue.mixin(Medias);
 import Authors from "@/mixins/Authors";
 Vue.mixin(Authors);
+import Capture from "@/mixins/Capture";
+Vue.mixin(Capture);
 
 Array.prototype.move = function (from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);

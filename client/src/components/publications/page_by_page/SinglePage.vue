@@ -68,41 +68,64 @@
 
         <svg
           v-if="can_edit && margins"
+          class="_pageBorders"
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="transparent"
+        >
+          <rect
+            x="0"
+            y="0"
+            :width="magnify(page_width)"
+            :height="magnify(page_height)"
+            stroke="black"
+          />
+
+          <!-- white overlay on everything outside the page -->
+          <!-- <rect
+            :x="-1000"
+            :y="-1000"
+            :width="magnify(page_width) / zoom"
+            :height="magnify(page_height) / zoom"
+            stroke="black"
+            fill="rgba(255,255,255,.7)"
+            mask="url(#globeOuterOnly)"
+          /> -->
+
+          <!-- <defs>
+            <mask id="globeOuterOnly">
+              <rect
+                :x="(-1 * magnify(page_width)) / zoom"
+                :y="(-1 * magnify(page_height)) / zoom"
+                :width="magnify(page_width) / zoom"
+                :height="magnify(page_height) / zoom"
+                fill="white"
+              />
+              <rect
+                x="0"
+                y="0"
+                :width="magnify(page_width)"
+                :height="magnify(page_height)"
+                fill="black"
+              />
+            </mask>
+          </defs> -->
+        </svg>
+
+        <svg
+          v-if="can_edit && margins"
           class="_margins"
           width="100%"
           height="100%"
           xmlns="http://www.w3.org/2000/svg"
+          fill="transparent"
         >
-          <!-- top -->
-          <line
-            :x1="transformMargins(margins.left)"
-            :y1="transformMargins(margins.top)"
-            :x2="transformMargins(page_width - margins.right)"
-            :y2="transformMargins(margins.top)"
-            stroke="rebeccapurple"
-          />
-          <!-- bottom -->
-          <line
-            :x1="transformMargins(margins.left)"
-            :y1="transformMargins(page_height - margins.bottom)"
-            :x2="transformMargins(page_width - margins.right)"
-            :y2="transformMargins(page_height - margins.bottom)"
-            stroke="rebeccapurple"
-          />
-          <!-- left -->
-          <line
-            :x1="transformMargins(margins.left)"
-            :y1="transformMargins(margins.top)"
-            :x2="transformMargins(margins.left)"
-            :y2="transformMargins(page_height - margins.bottom)"
-            stroke="rebeccapurple"
-          />
-          <!-- right -->
-          <line
-            :x1="transformMargins(page_width - margins.right)"
-            :y1="transformMargins(margins.top)"
-            :x2="transformMargins(page_width - margins.right)"
-            :y2="transformMargins(page_height - margins.bottom)"
+          <rect
+            :x="magnify(margins.left)"
+            :y="magnify(margins.top)"
+            :width="magnify(page_width - margins.left - margins.right)"
+            :height="magnify(page_height - margins.top - margins.bottom)"
             stroke="rebeccapurple"
           />
         </svg>
@@ -142,18 +165,18 @@ export default {
   computed: {
     gridstep() {
       if (!this.gridstep_in_cm) return 0;
-      return this.gridstep_in_cm * this.magnification;
+      return this.magnify(this.gridstep_in_cm);
     },
     page_styles() {
       return `
-        --page-width: ${this.page_width * this.magnification}px;
-        --page-height: ${this.page_height * this.magnification}px;
+        --page-width: ${this.magnify(this.page_width)}px;
+        --page-height: ${this.magnify(this.page_height)}px;
         --zoom: ${this.zoom};
       `;
     },
   },
   methods: {
-    transformMargins(m) {
+    magnify(m) {
       return m * this.magnification;
     },
     // async updateMeta({ new_meta }) {
@@ -225,6 +248,14 @@ export default {
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+._pageBorders {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  stroke-width: 2px;
 }
 ._margins {
   position: absolute;

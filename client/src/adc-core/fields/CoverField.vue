@@ -4,7 +4,7 @@
     <div v-else class="_cover--picker">
       <ImageSelect
         v-if="edit_mode"
-        :project_slug="project_slug"
+        :folder_path="path"
         :existing_preview="existing_preview"
         @newPreview="
           (value) => {
@@ -31,7 +31,6 @@ export default {
   props: {
     cover: [Boolean, Object],
     path: String,
-    project_slug: String,
   },
   components: {
     ImageSelect,

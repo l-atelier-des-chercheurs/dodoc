@@ -586,19 +586,4 @@ img {
     opacity: 0;
   }
 }
-
-.scaleInFade {
-  &-move {
-    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-
-  &-leave-active {
-    position: absolute;
-  }
-  &-enter,
-  &-leave-to {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-}
 </style>

@@ -144,8 +144,7 @@
 
             <div v-if="chroma_key_settings.replacement_mode === 'image'">
               <ImageSelect
-                :load_from_projects_medias="true"
-                :project_slug="project_slug"
+                :folder_path="project_path"
                 @newPreview="newChromaKeyImage"
               />
               <!-- {{ chroma_key_settings.replacement_image }} -->
@@ -202,6 +201,7 @@ export default {
     enable_effects: Boolean,
     videoElement: HTMLVideoElement,
     canvasElement: HTMLCanvasElement,
+    project_path: String,
   },
   components: {
     ImageSelect,
@@ -236,8 +236,6 @@ export default {
         replacement_mode: "color",
         replacement_image: undefined,
       },
-
-      project_slug: "",
 
       image_filters_settings: {
         brightness: {
@@ -512,11 +510,7 @@ void main(void) {
       `,
     };
   },
-  created() {
-    // if (this.$root.do_navigation.current_project_slug) {
-    //   this.project_slug = this.$root.do_navigation.current_project_slug;
-    // }
-  },
+  created() {},
   updated() {},
   mounted() {
     this.$eventHub.$on(

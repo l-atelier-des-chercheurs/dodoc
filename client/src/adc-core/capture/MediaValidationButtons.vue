@@ -55,7 +55,6 @@
 
     <button
       type="button"
-      :disabled="read_only"
       @click="validateButton(1)"
       class="u-button u-button_red u-colorOrange"
       :class="{ 'is--selected': selected_button === 1 }"
@@ -95,7 +94,6 @@
     <button
       type="button"
       v-if="can_add_to_fav"
-      :disabled="read_only"
       @click="validateButton(2)"
       class="u-button u-button_red u-colorOrange"
       :class="{ 'is--selected': selected_button === 2 }"
@@ -163,7 +161,6 @@
 <script>
 export default {
   props: {
-    read_only: Boolean,
     media_is_being_sent: Boolean,
     media_being_sent_percent: Number,
     cancelButtonIsBackButton: {

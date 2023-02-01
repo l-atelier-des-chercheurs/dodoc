@@ -341,7 +341,11 @@
       },
       "$folders": {
         "stopmotions": {
-          "fields": {},
+          "fields": {
+            "images_list": {
+              "type": "array"
+            }
+          },
           "$files": {
             "thumbs": {
               "resolutions": [180, 360, 1600]
