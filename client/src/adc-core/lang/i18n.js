@@ -51,6 +51,8 @@ export default function () {
         select: "Sélectionner",
         back: "retour",
         save: "enregistrer",
+        save_as_favorite: "Enregistrer en favori",
+
         description: "description",
         no_description: "Pas de description",
         keywords: "Mots-clés",
@@ -349,6 +351,10 @@ export default function () {
         record_video: "Capturer une vidéo",
         stopmotion: "animation",
         stopmotion_list: "Liste des animations",
+        sure_to_cancel_stopmotion:
+          "Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu <i>Liste des animations</i>",
+        play: "Lire",
+
         with_sound: "avec le son",
         update: "Mettre à jour",
         video: "vidéo",

@@ -68,7 +68,7 @@
                 id="devices"
                 name="Video devices"
                 title="devices"
-                class="u-select-large"
+                class=""
                 v-model="selected_devices.video_input_device"
               >
                 <option
@@ -118,7 +118,7 @@
                 id="devices"
                 name="Video devices"
                 title="devices"
-                class="u-select-large"
+                class=""
                 v-model="selected_devices.audio_input_device"
               >
                 <option
@@ -190,7 +190,7 @@
                 id="devices"
                 name="Video devices"
                 title="devices"
-                class="u-select-large"
+                class=""
                 v-model="selected_devices.audio_output_device"
               >
                 <option

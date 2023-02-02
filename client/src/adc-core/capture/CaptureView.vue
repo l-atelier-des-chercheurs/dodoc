@@ -205,7 +205,7 @@
             </div>
           </transition-group>
 
-          <transition name="scaleInFade" mode="out-in" duration="100">
+          <transition name="scaleInFade" mode="out-in">
             <label
               v-if="delay_remaining_time"
               :key="'delay_before_' + delay_remaining_time"
@@ -220,7 +220,7 @@
             />
           </transition>
 
-          <transition name="scaleInFade" mode="in-out" duration="100">
+          <transition name="scaleInFade" mode="in-out" class="scaleInFade_fast">
             <MediaContent
               v-if="
                 selected_mode === 'stopmotion' &&

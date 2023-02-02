@@ -120,9 +120,7 @@
         <polygon fill="currentColor" points="9.6,106.4 0,106.4 0,2 9.6,0 " />
       </svg>
       <span class>
-        {{ $t("save") }}
-        <br />
-        {{ $t("as_favorite") }}
+        {{ $t("save_as_favorite") }}
       </span>
     </button>
 

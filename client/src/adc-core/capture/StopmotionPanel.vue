@@ -9,10 +9,63 @@
     </div>
     <template v-else>
       <div class="m_stopmotionpanel--toprowbuttons">
-        <div
-          class="m_stopmotionpanel--toprowbuttons--counter"
-          v-if="!show_live_feed"
+        <button
+          type="button"
+          class="u-button u-button_black"
+          @click="firstImage"
+          :disabled="image_index_currently_shown === 0 && !show_live_feed"
         >
+          <sl-icon name="chevron-double-left" :label="$t('start')" />
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_black"
+          @click="prevImage"
+          :disabled="image_index_currently_shown === 0 && !show_live_feed"
+        >
+          <sl-icon name="chevron-left" :label="$t('previous_image')" />
+        </button>
+
+        <div class="">
+          <button
+            v-if="!preview_playing_event"
+            type="button"
+            class="u-button u-button_black"
+            :disabled="show_live_feed"
+            @click="previewPlay"
+          >
+            <sl-icon name="play-fill" :label="$t('play')" />
+            &nbsp;
+            {{ $t("play") }}
+          </button>
+          <button
+            v-else
+            type="button"
+            class="u-button u-button_black"
+            :disabled="show_live_feed"
+            @click="stopPreview"
+          >
+            {{ $t("stop") }}
+          </button>
+        </div>
+        <button
+          type="button"
+          class="u-button u-button_black"
+          @click="nextImage"
+          :disabled="show_live_feed"
+        >
+          <sl-icon name="chevron-right" :label="$t('next_image')" />
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_black"
+          @click="lastImage"
+          :disabled="show_live_feed"
+        >
+          <sl-icon name="chevron-double-right" :label="$t('end')" />
+        </button>
+
+        <!-- <div class="m_stopmotionpanel--toprowbuttons--counter">
           <button
             type="button"
             class=""
@@ -28,15 +81,7 @@
           </label>
           <button type="button" class="" @click="nextImage">→</button>
         </div>
-
-        <button
-          v-if="!show_live_feed"
-          type="button"
-          @click="removeMedia(show_previous_photo.$path)"
-          class="u-buttonLink bg-noir"
-        >
-          <span class>{{ $t("remove_this_image") }}</span>
-        </button>
+ -->
       </div>
 
       <div class="m_stopmotionpanel--medias" v-if="!validating_video_preview">
@@ -61,6 +106,19 @@
             }"
           >
             <MediaContent :file="media" />
+
+            <button
+              type="button"
+              v-if="
+                show_previous_photo &&
+                show_previous_photo.$path === media.$path &&
+                !show_live_feed
+              "
+              @click="removeMedia(show_previous_photo.$path)"
+              class="u-button u-button_black _removeMedia"
+            >
+              <sl-icon name="trash3" />
+            </button>
           </div>
           <div
             class="m_stopmotionpanel--medias--list--items"
@@ -79,13 +137,9 @@
           </div>
         </transition-group>
         <div class="m_stopmotionpanel--medias--validation">
-          <label class="u-label">
-            {{ $t("create") }}
-          </label>
-
           <div class="m_stopmotionpanel--medias--validation--fpscounter">
             <label class="u-label">{{ $t("img_per_second") }}</label>
-            <select step="1" v-model.number="frameRate">
+            <select step="1" v-model.number="frame_rate">
               <option>2</option>
               <option>4</option>
               <option>8</option>
@@ -95,25 +149,23 @@
             </select>
           </div>
 
-          <button
-            type="button"
-            class="u-button u-button_bleuvert"
-            v-if="medias.length > 0"
-            @click="assembleStopmotionMedias"
-            :disabled="
-              validating_video_preview && frameRate === previousFrameRate
-            "
-          >
-            <span class="text-cap padding-left-small font-verysmall">{{
-              $t("create")
-            }}</span>
-            <img
-              :src="`${$root.publicPath}images/i_play.svg`"
-              width="48"
-              height="48"
-              draggable="false"
-            />
-          </button>
+          <div class="">
+            <button
+              type="button"
+              class="u-button u-button_bleuvert u-button_small"
+              disabled
+              v-if="medias.length > 0"
+            >
+              <!-- @click="testStopmotion" -->
+              <img
+                :src="`${$root.publicPath}images/i_play.svg`"
+                width="48"
+                height="48"
+                draggable="false"
+              />
+              {{ $t("play") }}
+            </button>
+          </div>
 
           <!-- <button
           type="button"
@@ -130,13 +182,7 @@
       </div>
 
       <div v-else class="m_stopmotionpanel--videopreview" ref="videoPreview">
-        <!-- <MediaContent
-        :context="'full'"
-        :slugFolderName="slugFolderName"
-        :folderType="type"
-        :media="validating_video_preview"
-      /> -->
-        <!-- // TODO  -->
+        <!-- <PreviewStopmotion :medias="medias" :frame_rate="frame_rate" /> -->
       </div>
 
       <MediaValidationButtons
@@ -156,7 +202,6 @@
   </div>
 </template>
 <script>
-// import MediaContent from "../subcomponents/MediaContent.vue";
 import MediaValidationButtons from "./MediaValidationButtons.vue";
 
 export default {
@@ -168,7 +213,6 @@ export default {
     is_validating_stopmotion_video: Boolean,
   },
   components: {
-    // MediaContent,
     MediaValidationButtons,
   },
   data() {
@@ -177,12 +221,13 @@ export default {
 
       fetch_stopmotion_error: undefined,
 
-      frameRate: 4,
-      previousFrameRate: 4,
+      frame_rate: 4,
       validating_video_preview: false,
       show_previous_photo: false,
       media_is_being_sent: false,
       show_advanced_menu: false,
+
+      preview_playing_event: undefined,
     };
   },
 
@@ -245,12 +290,16 @@ export default {
   computed: {
     medias() {
       if (this.stopmotion?.images_list && this.stopmotion?.$files?.length > 0) {
-        const medias = this.stopmotion.images_list.map((meta_filename) => {
-          return this.stopmotion.$files.find((f) =>
-            f.$path.endsWith(meta_filename)
-          );
-        });
-
+        const medias = this.stopmotion.images_list.reduce(
+          (acc, meta_filename) => {
+            const m = this.stopmotion.$files.find((f) =>
+              f.$path.endsWith(meta_filename)
+            );
+            if (m) acc.push(m);
+            return acc;
+          },
+          []
+        );
         return medias;
       }
       return [];
@@ -289,6 +338,18 @@ export default {
         },
       });
     },
+    previewPlay() {
+      this.nextImage();
+
+      this.preview_playing_event = window.setInterval(() => {
+        // change currently shown image
+        if (this.nextImage() === "feed") this.stopPreview();
+      }, 1000 / this.frame_rate);
+    },
+    stopPreview() {
+      window.clearInterval(this.preview_playing_event);
+      this.preview_playing_event = undefined;
+    },
     assembleStopmotionMedias: function () {
       console.log("METHODS • StopmotionPanel: assembleStopmotionMedias");
 
@@ -321,57 +382,52 @@ export default {
       this.show_previous_photo = this.medias[this.medias.length - 1];
       this.$emit("update:show_live_feed", true);
     },
+    firstImage() {
+      this.show_previous_photo = this.medias[0];
+      this.$emit("update:show_live_feed", false);
+    },
     prevImage() {
-      if (this.image_index_currently_shown === false) return false;
+      if (this.show_live_feed) {
+        this.show_previous_photo = this.medias.at(-1);
+        this.$emit("update:show_live_feed", false);
+        return;
+      }
       this.show_previous_photo =
         this.medias[this.image_index_currently_shown - 1];
     },
     nextImage() {
-      if (this.image_index_currently_shown === false) return false;
-
-      // already at latest photo
       if (this.image_index_currently_shown === this.medias.length - 1) {
         this.showVideoFeed();
-        return;
+        return "feed";
       }
 
       this.show_previous_photo =
         this.medias[this.image_index_currently_shown + 1];
+      return "image";
+    },
+    lastImage() {
+      this.showVideoFeed();
     },
     backToStopmotion: function () {
       console.log("METHODS • StopmotionPanel: backToStopmotion");
-
-      // todo remove temp video file
-
       this.validating_video_preview = false;
       this.$emit("update:show_live_feed", true);
     },
     save: function () {
       // this.$emit("saveMedia", this.validating_video_preview.metaFileName);
-
-      this.show_previous_photo = false;
-      this.validating_video_preview = false;
-
-      this.$nextTick(() => {
-        this.$emit("close");
-      });
+      // this.show_previous_photo = false;
+      // this.validating_video_preview = false;
+      // this.$nextTick(() => {
+      //   this.$emit("close");
+      // });
     },
     saveAndFav: function () {
-      // this.$root.editMedia({
-      //   slugFolderName: this.slugFolderName,
-      //   slugMediaName: this.validating_video_preview.metaFileName,
-      //   data: {
-      //     fav: true,
-      //   },
-      // });
       // this.$emit("saveMedia", this.validating_video_preview.metaFileName);
-
-      this.show_previous_photo = false;
-      this.validating_video_preview = false;
-
-      this.$nextTick(() => {
-        this.$emit("close");
-      });
+      // this.show_previous_photo = false;
+      // this.validating_video_preview = false;
+      // this.$nextTick(() => {
+      //   this.$emit("close");
+      // });
     },
     async removeMedia(path) {
       // remove from stopmotion list
@@ -379,8 +435,6 @@ export default {
       images_list = images_list.filter((i) => !path.endsWith(i));
 
       this.nextImage();
-
-      debugger;
 
       await this.$api.updateMeta({
         path: this.current_stopmotion_path,
@@ -392,24 +446,6 @@ export default {
       await this.$api.deleteItem({
         path,
       });
-
-      // const index = this.medias.findIndex((m) => m.$path === slugMediaName);
-      // if (index < this.medias.length - 1) {
-      //   this.show_previous_photo = this.medias[index + 1];
-      // } else {
-      //   this.show_previous_photo = false;
-      //   this.$emit("update:show_live_feed", true);
-      // }
-      // this.validating_video_preview = false;
-
-      // remove own media
-
-      // todo remove media
-      // this.$root.removeMedia({
-      //   type: "stopmotions",
-      //   slugFolderName: this.stopmotiondata.slugFolderName,
-      //   slugMediaName,
-      // });
     },
   },
 };
@@ -442,20 +478,14 @@ export default {
   pointer-events: none;
 
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  padding: calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 4);
 
   > * {
     pointer-events: auto;
-    // background-color: var(--c-noir);
-    // color: white;
     margin: calc(var(--spacing) / 4);
-
-    > button {
-      margin: 0;
-    }
   }
 
   > .m_stopmotionpanel--toprowbuttons--counter {
@@ -471,13 +501,6 @@ export default {
     label {
       margin-bottom: 0;
     }
-  }
-
-  button,
-  label {
-    background-color: var(--c-noir);
-    color: white;
-    border-radius: var(--button-radius);
   }
 }
 
@@ -625,6 +648,17 @@ export default {
       z-index: 1;
     }
 
+    ::v-deep {
+      img,
+      video {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        object-fit: contain;
+      }
+    }
+
     &:last-child {
       flex-basis: auto;
       padding-right: 100px;
@@ -674,11 +708,17 @@ export default {
   border-radius: calc(var(--spacing) / 4);
 
   display: flex;
-  flex: row nowrap;
+  flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
 
+  gap: calc(var(--spacing) / 2);
+
   --input-height: 2em;
+
+  > * {
+    flex: 0 0 auto;
+  }
 
   .m_stopmotionpanel--medias--validation--fpscounter {
     // .padding-sides-small;
@@ -686,33 +726,22 @@ export default {
     flex-flow: column nowrap;
     align-items: center;
 
-    select {
-      margin-left: calc(var(--spacing) / 8);
-      margin-right: calc(var(--spacing) / 8);
+    // select {
+    //   margin-left: calc(var(--spacing) / 8);
+    //   margin-right: calc(var(--spacing) / 8);
 
-      flex: 0 0 auto;
-      max-width: 50px;
-      font-size: var(--font-small);
+    //   flex: 0 0 auto;
+    //   max-width: 50px;
+    //   font-size: var(--font-small);
 
-      // .bg-noir;
-    }
-    label {
-      margin-left: calc(var(--spacing) / 8);
-      margin-right: calc(var(--spacing) / 8);
-      // display: none;
-
-      // max-width: 80px;
-      font-size: 0.6em;
-      white-space: nowrap;
-    }
-  }
-
-  button {
-    // width: 100%;
-    // height: 100%;
-    padding: 0;
-    // .margin-small;
-    // min-height: 0;
+    //   // .bg-noir;
+    // }
+    // label {
+    //   margin-left: calc(var(--spacing) / 8);
+    //   margin-right: calc(var(--spacing) / 8);
+    //   font-size: 0.6em;
+    //   white-space: nowrap;
+    // }
   }
 }
 
@@ -725,6 +754,19 @@ export default {
     position: absolute;
     height: 100%;
     width: 100%;
+
+    ::v-deep {
+      > * {
+        width: 100%;
+        height: 100%;
+      }
+
+      video {
+        height: 100%;
+        width: 100%;
+        background-color: var(--c-noir);
+      }
+    }
   }
 }
 
@@ -760,6 +802,14 @@ export default {
   }
 }
 
+._removeMedia {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 4);
+}
+
 .m_stopmotionpanel--loader {
   position: absolute;
   z-index: 2;
@@ -772,34 +822,6 @@ export default {
   justify-content: center;
   align-items: center;
 }
-</style>
-<style lang="scss">
-.m_stopmotionpanel--medias--list--items {
-  img,
-  video {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    object-fit: contain;
-
-    // .bg-noir;
-  }
-}
-
-.m_stopmotionpanel--videopreview .mediaContainer {
-  > * {
-    width: 100%;
-    height: 100%;
-  }
-
-  video {
-    height: 100%;
-    width: 100%;
-    background-color: var(--c-noir);
-  }
-}
-
 ._loader {
   background: rgba(0, 0, 0, 0.95);
   color: var(--color-capture);

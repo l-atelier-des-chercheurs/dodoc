@@ -569,6 +569,12 @@ img {
     opacity: 0;
   }
 }
+.scaleInFade_fast {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.02s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
 
 .listComplete {
   &-move {
