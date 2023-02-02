@@ -11,7 +11,7 @@
       </a>
     </p>
 
-    <button type="button" @click="$router.go()">
+    <button type="button" class="u-button" @click="$router.go()">
       {{ $t("reload_page") }}
     </button>
   </BaseModal2>
