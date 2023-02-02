@@ -319,7 +319,7 @@ export default {
     flex: 1 1 0;
 
     &._projectPanes {
-      flex: 3 0 auto;
+      flex: 0 0 auto;
     }
   }
 
