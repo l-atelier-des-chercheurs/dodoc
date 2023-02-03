@@ -153,7 +153,6 @@
             <button
               type="button"
               class="u-button u-button_bleuvert u-button_small"
-              disabled
               v-if="medias.length > 0"
             >
               <!-- @click="testStopmotion" -->
@@ -519,7 +518,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
 
-  border-top: 2px solid black;
+  // border-top: 2px solid black;
   background-color: var(--c-noir);
   color: white;
 
@@ -565,7 +564,7 @@ export default {
     overscroll-behavior-y: contain;
     // .padding-verysmall;
 
-    padding: 0 calc(var(--spacing) / 4);
+    padding: 0 calc(var(--spacing) / 2);
     gap: calc(var(--spacing) / 4);
     // margin-bottom: calc(var(--spacing) / 8);
 

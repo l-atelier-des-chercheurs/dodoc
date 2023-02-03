@@ -7,6 +7,8 @@
       :read_only="false"
       :selected_mode="selected_mode"
       @changeMode="$emit('update:selected_mode', $event)"
+      :stopmotion_slug="stopmotion_slug"
+      @openStopmotion="$emit('update:stopmotion_slug', $event)"
     />
   </div>
 </template>
@@ -15,6 +17,7 @@ export default {
   props: {
     project: Object,
     selected_mode: String,
+    stopmotion_slug: String,
   },
   components: {
     CaptureView: () => import("@/adc-core/capture/CaptureView.vue"),

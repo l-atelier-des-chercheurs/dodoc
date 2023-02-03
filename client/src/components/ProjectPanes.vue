@@ -42,8 +42,10 @@
         <CapturePane
           v-if="pane.type === 'capture'"
           :project="project"
-          :selected_mode="pane.selected_mode"
-          @update:selected_mode="setItem(pane, 'selected_mode', $event)"
+          :selected_mode="pane.mode"
+          @update:selected_mode="setItem(pane, 'mode', $event)"
+          :stopmotion_slug="pane.stopmotion"
+          @update:stopmotion_slug="setItem(pane, 'stopmotion', $event)"
         />
         <MediaLibrary
           v-else-if="pane.type === 'collect'"
