@@ -163,7 +163,7 @@
                 height="48"
                 draggable="false"
               />
-              {{ $t("play") }}
+              {{ $t("assemble") }}
             </button>
           </div>
 
@@ -182,7 +182,7 @@
       </div>
 
       <div v-else class="m_stopmotionpanel--videopreview" ref="videoPreview">
-        <!-- <PreviewStopmotion :medias="medias" :frame_rate="frame_rate" /> -->
+        <PreviewStopmotion :medias="medias" :frame_rate="frame_rate" />
       </div>
 
       <MediaValidationButtons
@@ -203,6 +203,7 @@
 </template>
 <script>
 import MediaValidationButtons from "./MediaValidationButtons.vue";
+import PreviewStopmotion from "./PreviewStopmotion.vue";
 
 export default {
   props: {
@@ -214,6 +215,7 @@ export default {
   },
   components: {
     MediaValidationButtons,
+    PreviewStopmotion,
   },
   data() {
     return {
@@ -476,18 +478,17 @@ export default {
 }
 
 .m_stopmotionpanel--toprowbuttons {
-  position: absolute;
-  left: 0;
-  z-index: 10;
-  bottom: 100%;
+  position: relative;
   width: 100%;
+
+  background-color: var(--c-noir);
 
   pointer-events: none;
 
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: calc(var(--spacing) / 4);
+  // padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 4);
 
   > * {

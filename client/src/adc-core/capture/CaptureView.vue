@@ -50,6 +50,10 @@
         }"
       >
         <div class="m_captureview--videoPane--top--videoContainer">
+          <transition name="fade_fast" :duration="150">
+            <LoaderSpinner class="_loader" v-if="is_loading_stream" />
+          </transition>
+
           <div :style="`opacity: ${show_videos ? 1 : 0}`">
             <video
               ref="videoElement"
@@ -220,7 +224,7 @@
             />
           </transition>
 
-          <transition name="scaleInFade" mode="in-out" class="scaleInFade_fast">
+          <transition name="onionSkin" mode="in-out" class="scaleInFade_fast">
             <MediaContent
               v-if="
                 selected_mode === 'stopmotion' &&
@@ -981,6 +985,7 @@ export default {
   data() {
     return {
       is_sending_image: false,
+      is_loading_stream: true,
 
       invisible_canvas: undefined,
 
@@ -1235,6 +1240,7 @@ export default {
   },
   methods: {
     hasFinishedLoading() {
+      this.is_loading_stream = false;
       this.show_live_feed = true;
     },
     setStream({ stream, type }) {
@@ -2003,6 +2009,10 @@ export default {
     width: 100%;
     height: 100%;
 
+    > * {
+      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
     video,
     canvas,
     .mediaContainer img,
@@ -2281,5 +2291,11 @@ export default {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+}
+
+._loader {
+  background: transparent;
+  color: white;
+  color: var(--c-rouge);
 }
 </style>

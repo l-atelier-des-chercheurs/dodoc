@@ -569,10 +569,15 @@ img {
     opacity: 0;
   }
 }
-.scaleInFade_fast {
+.onionSkin {
   &-enter-active,
   &-leave-active {
-    transition: all 0.02s cubic-bezier(0.19, 1, 0.22, 1);
+    opacity: 1;
+    transition: all 0.02s linear;
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
   }
 }
 
