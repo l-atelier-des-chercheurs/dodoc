@@ -31,7 +31,7 @@
             v-if="!preview_playing_event"
             type="button"
             class="u-button u-button_black"
-            :disabled="show_live_feed"
+            :disabled="medias.length <= 1"
             @click="previewPlay"
           >
             <sl-icon name="play-fill" :label="$t('play')" />
@@ -43,9 +43,9 @@
             type="button"
             class="u-button u-button_black"
             :disabled="show_live_feed"
-            @click="stopPreview"
+            @click="pausePreview"
           >
-            {{ $t("stop") }}
+            {{ $t("pause") }}
           </button>
         </div>
         <button
@@ -339,14 +339,24 @@ export default {
       });
     },
     previewPlay() {
-      this.nextImage();
+      if (
+        this.show_live_feed ||
+        this.image_index_currently_shown === this.medias.length - 1
+      )
+        this.firstImage();
 
       this.preview_playing_event = window.setInterval(() => {
         // change currently shown image
-        if (this.nextImage() === "feed") this.stopPreview();
+        this.show_previous_photo =
+          this.medias[this.image_index_currently_shown + 1];
+
+        this.$nextTick(() => {
+          if (this.image_index_currently_shown === this.medias.length - 1)
+            this.pausePreview();
+        });
       }, 1000 / this.frame_rate);
     },
-    stopPreview() {
+    pausePreview() {
       window.clearInterval(this.preview_playing_event);
       this.preview_playing_event = undefined;
     },
@@ -396,14 +406,11 @@ export default {
         this.medias[this.image_index_currently_shown - 1];
     },
     nextImage() {
-      if (this.image_index_currently_shown === this.medias.length - 1) {
-        this.showVideoFeed();
-        return "feed";
-      }
+      if (this.image_index_currently_shown === this.medias.length - 1)
+        return this.showVideoFeed();
 
       this.show_previous_photo =
         this.medias[this.image_index_currently_shown + 1];
-      return "image";
     },
     lastImage() {
       this.showVideoFeed();

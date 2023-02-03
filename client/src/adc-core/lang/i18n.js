@@ -354,6 +354,8 @@ export default function () {
         sure_to_cancel_stopmotion:
           "Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu <i>Liste des animations</i>",
         play: "Lire",
+        stop: "Stop",
+        pause: "Pause",
 
         with_sound: "avec le son",
         update: "Mettre à jour",
