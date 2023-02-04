@@ -2,27 +2,37 @@
   <div>
     <div class="_player">
       <MediaContent :file="current_media" :resolution="1600" />
-      <div class="_playBtn">
-        <button
-          type="button"
-          class="u-button"
-          @click="playPreview"
-          v-if="!is_playing"
-        >
-          {{ $t("play") }}
-        </button>
-      </div>
-      <div class="_fps">
-        <label class="u-label">{{ $t("img_per_second") }}</label>
-        <select v-model.number="new_frame_rate">
-          <option>2</option>
-          <option>4</option>
-          <option>8</option>
-          <option>15</option>
-          <option>24</option>
-          <option>30</option>
-        </select>
-      </div>
+
+      <button
+        type="button"
+        class="_playBtn"
+        @click="playPreview"
+        v-if="!is_playing"
+      >
+        <img
+          :src="`${$root.publicPath}images/i_play.svg`"
+          width="48"
+          height="48"
+          draggable="false"
+        />
+        <!-- {{ $t("play") }} -->
+      </button>
+
+      <transition name="fade">
+        <div class="_fps" v-if="!is_playing">
+          <div class="">
+            <label class="u-label">{{ $t("img_per_second") }}</label>
+            <select v-model.number="new_frame_rate">
+              <option>2</option>
+              <option>4</option>
+              <option>8</option>
+              <option>15</option>
+              <option>24</option>
+              <option>30</option>
+            </select>
+          </div>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -97,13 +107,27 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
+
+  background: transparent;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
 
   padding: calc(var(--spacing) / 1);
+
+  button {
+    border-radius: 50%;
+    padding: calc(var(--spacing) / 2);
+  }
 }
 
 ._fps {
+  position: absolute;
+
+  display: flex;
+  justify-content: center;
+  bottom: 0;
+  width: 100%;
+  padding: calc(var(--spacing) / 1);
 }
 </style>

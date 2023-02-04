@@ -377,6 +377,11 @@ export default {
     },
     testStopmotion() {
       this.validating_video_preview = true;
+      this.$nextTick(() => {
+        this.$nextTick(() => {
+          this.$el.scrollIntoView({ behavior: "auto", block: "end" });
+        });
+      });
     },
     assembleStopmotionMedias: function () {
       console.log("METHODS • StopmotionPanel: assembleStopmotionMedias");
