@@ -18,7 +18,6 @@
       :videoElement="$refs.videoElement"
       :canvasElement="$refs.canvasElement"
       :project_path="path"
-      @updateImageData="setImageData"
       @close="show_effects_pane = false"
     />
 
@@ -1282,10 +1281,6 @@ export default {
       this.stream_type = type;
       this.$refs.videoElement.volume = 0;
       this.enable_effects = false;
-    },
-    setImageData(imageData) {
-      if (!this.$refs.canvasElement) return;
-      this.$refs.canvasElement.getContext("2d").putImageData(imageData, 0, 0);
     },
     updateSelectedColor({ e, type }) {
       if (!this.$refs.canvasElement) return;
