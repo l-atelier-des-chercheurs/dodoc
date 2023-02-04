@@ -560,7 +560,7 @@ img {
   &-leave-active {
     opacity: 1;
     transform: scale(1);
-    transform-origin: center center !important;
+    transform-origin: center center;
     transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter,
@@ -574,7 +574,7 @@ img {
   &-leave-active {
     opacity: 1;
     transform: scale(1);
-    transform-origin: center center !important;
+    transform-origin: center center;
     transition: all 0.05s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter,

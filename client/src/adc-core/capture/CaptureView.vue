@@ -50,11 +50,11 @@
         }"
       >
         <div class="m_captureview--videoPane--top--videoContainer">
-          <transition name="fade_fast" :duration="150">
+          <transition name="fade_fast">
             <LoaderSpinner class="_loader" v-if="is_loading_stream" />
           </transition>
 
-          <div :style="`opacity: ${show_videos ? 1 : 0}`">
+          <div class="_videoEl" :style="`opacity: ${show_videos ? 1 : 0}`">
             <video
               ref="videoElement"
               autoplay
@@ -222,9 +222,11 @@
               class="_delay_timer is--timelapse"
               v-html="timelapse_time_before_next_picture"
             />
+            <!-- necessary to handle timely out-in transition -->
+            <!-- <span v-else /> -->
           </transition>
 
-          <transition name="onionSkin" mode="in-out" class="scaleInFade_fast">
+          <transition name="onionSkin" mode="in-out">
             <MediaContent
               v-if="
                 selected_mode === 'stopmotion' &&
@@ -1492,7 +1494,6 @@ export default {
 
       if (this.delay_mode_enabled && this.delay_event) {
         // cancel delay
-
         this.cancelDelay();
       } else if (this.delay_mode_enabled) {
         this.startDelay();
@@ -2012,8 +2013,8 @@ export default {
     width: 100%;
     height: 100%;
 
-    > * {
-      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    ._videoEl {
+      transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
     video,
