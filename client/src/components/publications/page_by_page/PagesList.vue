@@ -127,7 +127,7 @@ export default {
       return this.publication.pages;
     },
     modules() {
-      return this.publication.$files;
+      return this.publication.$files || [];
     },
     is_spread() {
       return this.publication.page_spreads === true;

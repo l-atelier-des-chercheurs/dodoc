@@ -130,6 +130,7 @@ export default {
       }
     },
     findModuleFromMetaFilename(meta_filename) {
+      if (!this.publication.$files) return [];
       return this.publication.$files.find((f) => {
         const _meta_name = f.$path.substring(f.$path.lastIndexOf("/") + 1);
         return _meta_name === meta_filename;
