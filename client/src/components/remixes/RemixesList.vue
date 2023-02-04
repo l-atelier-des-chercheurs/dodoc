@@ -6,7 +6,10 @@
 
     <div class="_remixes">
       <div class="_remixes--item" v-for="remix in remixes" :key="remix.$path">
-        <DateField :date="remix.$date_created" /> {{ remix.type }}
+        <DateField :date="remix.$date_created" />
+        <span>
+          {{ $t(remix.type) }}
+        </span>
         <button
           type="button"
           class="u-button"
@@ -59,6 +62,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+  align-items: center;
   background: white;
   margin-bottom: 2px;
   padding: calc(var(--spacing) * 1);

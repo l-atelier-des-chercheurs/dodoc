@@ -50,7 +50,11 @@
         }"
       >
         <div class="m_captureview--videoPane--top--videoContainer">
-          <div :style="`opacity: ${show_videos ? 1 : 0}`">
+          <transition name="fade_fast">
+            <LoaderSpinner class="_loader" v-if="is_loading_stream" />
+          </transition>
+
+          <div class="_videoEl" :style="`opacity: ${show_videos ? 1 : 0}`">
             <video
               ref="videoElement"
               autoplay
@@ -218,14 +222,16 @@
               class="_delay_timer is--timelapse"
               v-html="timelapse_time_before_next_picture"
             />
+            <!-- necessary to handle timely out-in transition -->
+            <!-- <span v-else /> -->
           </transition>
 
-          <transition name="scaleInFade" mode="in-out" class="scaleInFade_fast">
+          <transition name="onionSkin" mode="in-out">
             <MediaContent
               v-if="
                 selected_mode === 'stopmotion' &&
                 onion_skin_img &&
-                current_stopmotion_path &&
+                stopmotion_slug &&
                 !is_validating_stopmotion_video &&
                 !(show_live_feed && onion_skin_opacity === 0)
               "
@@ -321,8 +327,8 @@
       </div>
       <!-- <transition name="slideup" :duration="150" mode="out-in"> -->
       <StopmotionPanel
-        v-if="current_stopmotion_path"
-        :current_stopmotion_path="current_stopmotion_path"
+        v-if="stopmotion_slug"
+        :current_stopmotion_path="`${slugFolderName}/stopmotions/${stopmotion_slug}`"
         :stream="stream"
         :can_add_to_fav="can_add_to_fav"
         :show_live_feed.sync="show_live_feed"
@@ -545,7 +551,7 @@
 
                 <button
                   type="button"
-                  class="u-button u-button_red u-button-inline _captureButton"
+                  class="u-button u-button_transparent u-button-inline _captureButton"
                   :key="selected_mode + '_pause'"
                   v-if="
                     selected_mode === 'stopmotion' &&
@@ -555,7 +561,7 @@
                   @mousedown.stop.prevent="stopStopmotion()"
                   @touchstart.stop.prevent="stopStopmotion()"
                 >
-                  {{ $t("stop_stopmotion") }}
+                  {{ $t("back") }}
                 </button>
               </div>
               <div>
@@ -942,6 +948,8 @@ export default {
     type: String,
     path: String,
     selected_mode: String,
+    stopmotion_slug: String,
+
     available_modes: {
       type: Array,
       default: () => [
@@ -981,6 +989,7 @@ export default {
   data() {
     return {
       is_sending_image: false,
+      is_loading_stream: true,
 
       invisible_canvas: undefined,
 
@@ -993,8 +1002,6 @@ export default {
       mode_just_changed: false,
       is_validating_stopmotion_video: false,
       video_recording_is_paused: false,
-
-      current_stopmotion_path: false,
 
       collapse_capture_pane: false,
 
@@ -1217,7 +1224,7 @@ export default {
       );
     },
     is_making_stopmotion() {
-      const is_making_stopmotion = this.current_stopmotion_path ? true : false;
+      const is_making_stopmotion = this.stopmotion_slug ? true : false;
       return is_making_stopmotion;
     },
     validated_media_href_blob() {
@@ -1235,6 +1242,7 @@ export default {
   },
   methods: {
     hasFinishedLoading() {
+      this.is_loading_stream = false;
       this.show_live_feed = true;
     },
     setStream({ stream, type }) {
@@ -1355,9 +1363,10 @@ export default {
         });
       });
     },
-    loadStopmotion(slugFolderName) {
-      this.current_stopmotion_path = slugFolderName;
-      this.ask_before_leaving_capture = true;
+    loadStopmotion(stopmotion_slug) {
+      this.$emit("openStopmotion", stopmotion_slug);
+      // this.current_stopmotion_path = slugFolderName;
+      // this.ask_before_leaving_capture = true;
     },
     checkCapturePanelSize() {
       if (this.$el && this.$el.offsetWidth && this.$el.offsetWidth <= 600)
@@ -1368,6 +1377,8 @@ export default {
     },
 
     stopStopmotion() {
+      // two options : remove or save
+
       this.$alertify
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))
@@ -1416,14 +1427,14 @@ export default {
       this.$refs.videoElement.pause();
       this.is_sending_image = true;
 
-      if (!this.current_stopmotion_path) {
+      if (!this.stopmotion_slug) {
         this.ask_before_leaving_capture = true;
         // create stopmotion
-        const new_folder_path = await this.$api.createFolder({
+        const new_stopmotion_slug = await this.$api.createFolder({
           path: `${this.slugFolderName}/stopmotions`,
           additional_meta: smdata,
         });
-        this.current_stopmotion_path = `${this.slugFolderName}/stopmotions/${new_folder_path}`;
+        this.$emit("openStopmotion", new_stopmotion_slug);
       }
 
       const imageData = await this.getImageDataFromFeed();
@@ -1433,7 +1444,7 @@ export default {
       this.$refs.videoElement.play();
     },
     closeStopmotionPanel() {
-      this.current_stopmotion_path = false;
+      this.$emit("openStopmotion", "");
       this.is_recording = false;
       this.ask_before_leaving_capture = false;
       this.show_live_feed = true;
@@ -1483,7 +1494,6 @@ export default {
 
       if (this.delay_mode_enabled && this.delay_event) {
         // cancel delay
-
         this.cancelDelay();
       } else if (this.delay_mode_enabled) {
         this.startDelay();
@@ -2003,6 +2013,10 @@ export default {
     width: 100%;
     height: 100%;
 
+    ._videoEl {
+      transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
     video,
     canvas,
     .mediaContainer img,
@@ -2281,5 +2295,11 @@ export default {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+}
+
+._loader {
+  background: transparent;
+  color: white;
+  color: var(--c-rouge);
 }
 </style>

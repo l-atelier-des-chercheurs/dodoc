@@ -354,6 +354,13 @@ export default function () {
         sure_to_cancel_stopmotion:
           "Êtes-vous sûr de vouloir arrêter cette animation ? Vous pourrez la retrouver dans le menu <i>Liste des animations</i>",
         play: "Lire",
+        stop: "Stop",
+        pause: "Pause",
+        first_image: "Première image",
+        previous_image: "Image précédente",
+        next_image: "Image suivante",
+        last_image: "Dernière image",
+        assemble: "Assembler",
 
         with_sound: "avec le son",
         update: "Mettre à jour",

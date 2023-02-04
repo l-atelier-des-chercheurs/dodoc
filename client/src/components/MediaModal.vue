@@ -77,7 +77,7 @@
       <span>
         <button
           type="button"
-          class="u-button u-button_transparent"
+          class="u-button"
           v-if="position_in_list !== 'first'"
           @click="$emit('prevMedia')"
         >
@@ -142,7 +142,7 @@ export default {
   position: absolute;
   // padding: 1px;
   inset: 0;
-  padding: 4%;
+  padding: calc(var(--spacing) / 2);
   // background: rgba(253, 253, 253, 0.7);
 
   ._mediaModal--overlay {
@@ -157,6 +157,7 @@ export default {
     background: var(--c-noir);
     border-radius: var(--border-radius);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
   }
 
   ::v-deep {
@@ -220,8 +221,8 @@ export default {
 
 ._mediaModal--closeButton {
   position: absolute;
-  top: -1em;
-  right: -1em;
+  top: 0em;
+  right: 0em;
   color: currentColor;
   font-size: 200%;
 
@@ -242,6 +243,7 @@ export default {
 
   button {
     padding: calc(var(--spacing) / 2);
+    background: rgba(255, 255, 255, 0.6);
   }
 }
 </style>

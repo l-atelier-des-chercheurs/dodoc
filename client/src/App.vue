@@ -560,7 +560,7 @@ img {
   &-leave-active {
     opacity: 1;
     transform: scale(1);
-    transform-origin: center center !important;
+    transform-origin: center center;
     transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter,
@@ -572,7 +572,26 @@ img {
 .scaleInFade_fast {
   &-enter-active,
   &-leave-active {
-    transition: all 0.02s cubic-bezier(0.19, 1, 0.22, 1);
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: center center;
+    transition: all 0.05s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+.onionSkin {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transition: all 0.02s linear;
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
   }
 }
 
