@@ -312,6 +312,7 @@ export default function () {
         use_own_risk:
           "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
         chroma_key: "Incrustation (fond vert)",
+        color: "couleur",
         flip_horizontally: "Retourner horizontalement",
         flip_vertically: "Retourner verticalement",
         brightness: "Luminosité",
