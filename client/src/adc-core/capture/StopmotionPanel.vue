@@ -281,6 +281,19 @@ export default {
     },
     show_previous_photo: function () {
       this.$emit("showPreviousImage", this.show_previous_photo);
+
+      // scroll to
+
+      this.$nextTick(() => {
+        const active = document.querySelector(
+          ".m_stopmotionpanel--medias--list--items.is--current_single"
+        );
+        if (active)
+          active.scrollIntoView({
+            behavior: "smooth",
+            inline: "nearest",
+          });
+      });
     },
     validating_video_preview: function () {
       this.$emit(
@@ -584,7 +597,7 @@ export default {
     --c-thumbcolor: var(--c-noir);
     --scrollbar-height: 4px;
     --scrollbar-padding: 4px;
-    --scrollbar-border: 2px;
+    --scrollbar-border: 4px;
     --c-barbgcolor: rgba(255, 255, 255, 0);
     --c-thumbcolor: white;
 
