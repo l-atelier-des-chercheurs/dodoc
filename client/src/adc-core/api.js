@@ -222,7 +222,7 @@ export default function () {
 
       fileCreated({ path_to_folder, meta }) {
         const folder = this.store[path_to_folder];
-        if (!folder.$files) this.$set(folder, "files", new Array());
+        if (!folder.$files) this.$set(folder, "$files", new Array());
         folder.$files.push(meta);
       },
       fileUpdated({ path_to_folder, path_to_meta, changed_data }) {
