@@ -8,64 +8,65 @@
       {{ fetch_stopmotion_error }}
     </div>
     <template v-else>
-      <div class="m_stopmotionpanel--toprowbuttons">
-        <button
-          type="button"
-          class="u-button u-button_black"
-          @click="firstImage"
-          :disabled="image_index_currently_shown === 0 && !show_live_feed"
-        >
-          <sl-icon name="chevron-double-left" :label="$t('start')" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_black"
-          @click="prevImage"
-          :disabled="image_index_currently_shown === 0 && !show_live_feed"
-        >
-          <sl-icon name="chevron-left" :label="$t('previous_image')" />
-        </button>
-
-        <div class="">
+      <template v-if="!validating_video_preview">
+        <div class="m_stopmotionpanel--toprowbuttons">
           <button
-            v-if="!preview_playing_event"
             type="button"
             class="u-button u-button_black"
-            :disabled="medias.length <= 1"
-            @click="previewPlay"
+            @click="firstImage"
+            :disabled="image_index_currently_shown === 0 && !show_live_feed"
           >
-            <sl-icon name="play-fill" :label="$t('play')" />
-            &nbsp;
-            {{ $t("play") }}
+            <sl-icon name="chevron-double-left" :label="$t('first_image')" />
           </button>
           <button
-            v-else
             type="button"
             class="u-button u-button_black"
+            @click="prevImage"
+            :disabled="image_index_currently_shown === 0 && !show_live_feed"
+          >
+            <sl-icon name="chevron-left" :label="$t('previous_image')" />
+          </button>
+
+          <div class="">
+            <button
+              v-if="!preview_playing_event"
+              type="button"
+              class="u-button u-button_black"
+              :disabled="medias.length <= 1"
+              @click="previewPlay"
+            >
+              <sl-icon name="play-fill" :label="$t('play')" />
+              &nbsp;
+              {{ $t("play") }}
+            </button>
+            <button
+              v-else
+              type="button"
+              class="u-button u-button_black"
+              :disabled="show_live_feed"
+              @click="pausePreview"
+            >
+              {{ $t("pause") }}
+            </button>
+          </div>
+          <button
+            type="button"
+            class="u-button u-button_black"
+            @click="nextImage"
             :disabled="show_live_feed"
-            @click="pausePreview"
           >
-            {{ $t("pause") }}
+            <sl-icon name="chevron-right" :label="$t('next_image')" />
           </button>
-        </div>
-        <button
-          type="button"
-          class="u-button u-button_black"
-          @click="nextImage"
-          :disabled="show_live_feed"
-        >
-          <sl-icon name="chevron-right" :label="$t('next_image')" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_black"
-          @click="lastImage"
-          :disabled="show_live_feed"
-        >
-          <sl-icon name="chevron-double-right" :label="$t('end')" />
-        </button>
+          <button
+            type="button"
+            class="u-button u-button_black"
+            @click="lastImage"
+            :disabled="show_live_feed"
+          >
+            <sl-icon name="chevron-double-right" :label="$t('last_image')" />
+          </button>
 
-        <!-- <div class="m_stopmotionpanel--toprowbuttons--counter">
+          <!-- <div class="m_stopmotionpanel--toprowbuttons--counter">
           <button
             type="button"
             class=""
@@ -82,91 +83,90 @@
           <button type="button" class="" @click="nextImage">→</button>
         </div>
  -->
-      </div>
-
-      <div class="m_stopmotionpanel--medias" v-if="!validating_video_preview">
-        <transition-group
-          class="m_stopmotionpanel--medias--list"
-          name="listComplete"
-          ref="mediaPreviews"
-        >
-          <div
-            v-for="media in medias"
-            :key="media.$path"
-            @click="
-              show_previous_photo = media;
-              $emit('update:show_live_feed', false);
-            "
-            class="m_stopmotionpanel--medias--list--items"
-            :class="{
-              'is--current_single':
-                show_previous_photo &&
-                show_previous_photo.$path === media.$path &&
-                !show_live_feed,
-            }"
+        </div>
+        <div class="m_stopmotionpanel--medias">
+          <transition-group
+            class="m_stopmotionpanel--medias--list"
+            name="listComplete"
+            ref="mediaPreviews"
           >
-            <MediaContent :file="media" />
-
-            <button
-              type="button"
-              v-if="
-                show_previous_photo &&
-                show_previous_photo.$path === media.$path &&
-                !show_live_feed
+            <div
+              v-for="media in medias"
+              :key="media.$path"
+              @click="
+                show_previous_photo = media;
+                $emit('update:show_live_feed', false);
               "
-              @click="removeMedia(show_previous_photo.$path)"
-              class="u-button u-button_black _removeMedia"
+              class="m_stopmotionpanel--medias--list--items"
+              :class="{
+                'is--current_single':
+                  show_previous_photo &&
+                  show_previous_photo.$path === media.$path &&
+                  !show_live_feed,
+              }"
             >
-              <sl-icon name="trash3" />
-            </button>
-          </div>
-          <div
-            class="m_stopmotionpanel--medias--list--items"
-            :class="{ 'is--current_single': show_live_feed }"
-            @click="showVideoFeed"
-            :key="'live_feed'"
-            :data-content="$t('live')"
-          >
-            <video
-              ref="videoElement"
-              autoplay
-              playsinline
-              muted
-              :srcObject.prop="stream"
-            />
-          </div>
-        </transition-group>
-        <div class="m_stopmotionpanel--medias--validation">
-          <div class="m_stopmotionpanel--medias--validation--fpscounter">
-            <label class="u-label">{{ $t("img_per_second") }}</label>
-            <select step="1" v-model.number="frame_rate">
-              <option>2</option>
-              <option>4</option>
-              <option>8</option>
-              <option>15</option>
-              <option>24</option>
-              <option>30</option>
-            </select>
-          </div>
+              <MediaContent :file="media" :resolution="180" />
 
-          <div class="">
-            <button
-              type="button"
-              class="u-button u-button_bleuvert u-button_small"
-              v-if="medias.length > 0"
+              <button
+                type="button"
+                v-if="
+                  show_previous_photo &&
+                  show_previous_photo.$path === media.$path &&
+                  !show_live_feed
+                "
+                @click="removeMedia(show_previous_photo.$path)"
+                class="u-button u-button_black _removeMedia"
+              >
+                <sl-icon name="trash3" />
+              </button>
+            </div>
+            <div
+              class="m_stopmotionpanel--medias--list--items"
+              :class="{ 'is--current_single': show_live_feed }"
+              @click="showVideoFeed"
+              :key="'live_feed'"
+              :data-content="$t('live')"
             >
-              <!-- @click="testStopmotion" -->
-              <img
-                :src="`${$root.publicPath}images/i_play.svg`"
-                width="48"
-                height="48"
-                draggable="false"
+              <video
+                ref="videoElement"
+                autoplay
+                playsinline
+                muted
+                :srcObject.prop="stream"
               />
-              {{ $t("assemble") }}
-            </button>
-          </div>
+            </div>
+          </transition-group>
+          <div class="m_stopmotionpanel--medias--validation">
+            <div class="m_stopmotionpanel--medias--validation--fpscounter">
+              <label class="u-label">{{ $t("img_per_second") }}</label>
+              <select v-model.number="frame_rate">
+                <option>2</option>
+                <option>4</option>
+                <option>8</option>
+                <option>15</option>
+                <option>24</option>
+                <option>30</option>
+              </select>
+            </div>
 
-          <!-- <button
+            <div class="">
+              <button
+                type="button"
+                class="u-button u-button_bleuvert u-button_small"
+                v-if="medias.length > 0"
+                @click="testStopmotion"
+              >
+                <img
+                  :src="`${$root.publicPath}images/i_play.svg`"
+                  width="48"
+                  height="48"
+                  draggable="false"
+                />
+                {{ $t("assemble") }}
+              </button>
+            </div>
+
+            <!-- <button
           type="button"
           class="u-buttonLink u-padding_verysmall margin-none"
           :class="{ 'is--active': show_advanced_menu }"
@@ -177,11 +177,12 @@
             show_advanced_menu = !show_advanced_menu;
           "
         >{{ $t('advanced_options') }}</button>-->
+          </div>
         </div>
-      </div>
+      </template>
 
       <div v-else class="m_stopmotionpanel--videopreview" ref="videoPreview">
-        <PreviewStopmotion :medias="medias" :frame_rate="frame_rate" />
+        <PreviewStopmotion :medias="medias" :frame_rate.sync="frame_rate" />
       </div>
 
       <MediaValidationButtons
@@ -361,6 +362,9 @@ export default {
       window.clearInterval(this.preview_playing_event);
       this.preview_playing_event = undefined;
     },
+    testStopmotion() {
+      this.validating_video_preview = true;
+    },
     assembleStopmotionMedias: function () {
       console.log("METHODS • StopmotionPanel: assembleStopmotionMedias");
 
@@ -472,7 +476,7 @@ export default {
   }
 
   > * {
-    transition: all 0.4s;
+    // transition: all 0.4s;
   }
 }
 
@@ -668,7 +672,7 @@ export default {
 
     &:last-child {
       flex-basis: auto;
-      padding-right: 100px;
+      // padding-right: 50px;
       width: auto;
       border-radius: 4px;
       overflow: hidden;

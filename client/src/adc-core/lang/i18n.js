@@ -356,6 +356,11 @@ export default function () {
         play: "Lire",
         stop: "Stop",
         pause: "Pause",
+        first_image: "Première image",
+        previous_image: "Image précédente",
+        next_image: "Image suivante",
+        last_image: "Dernière image",
+        assemble: "Assembler",
 
         with_sound: "avec le son",
         update: "Mettre à jour",

@@ -549,7 +549,7 @@
 
                 <button
                   type="button"
-                  class="u-button u-button_red u-button-inline _captureButton"
+                  class="u-button u-button_transparent u-button-inline _captureButton"
                   :key="selected_mode + '_pause'"
                   v-if="
                     selected_mode === 'stopmotion' &&
@@ -559,7 +559,7 @@
                   @mousedown.stop.prevent="stopStopmotion()"
                   @touchstart.stop.prevent="stopStopmotion()"
                 >
-                  {{ $t("stop_stopmotion") }}
+                  {{ $t("back") }}
                 </button>
               </div>
               <div>

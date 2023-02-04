@@ -23,7 +23,7 @@
 
     <button
       type="button"
-      class="u-button u-button_red u-colorWhite"
+      class="u-button u-button_transparent u-colorWhite"
       @mousedown.stop.prevent="validateButton(0)"
       @touchstart.stop.prevent="validateButton(0)"
       :class="{ 'is--selected': selected_button === 0 }"
