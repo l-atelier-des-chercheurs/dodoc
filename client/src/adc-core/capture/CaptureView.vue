@@ -207,6 +207,32 @@
                 <span>{{ $t("seconds") }}</span>
               </label>
             </div>
+
+            <div
+              v-if="
+                onion_skin_enabled &&
+                selected_mode === 'stopmotion' &&
+                onion_skin_img &&
+                stopmotion_slug &&
+                !is_validating_stopmotion_video
+              "
+              :key="'onion_skin'"
+              class="record_options"
+            >
+              <label class="u-label">
+                <span>{{ $t("onion_skin").toLowerCase() }}</span>
+                <input
+                  class="_rtl"
+                  type="range"
+                  v-model.number="onion_skin_opacity"
+                  min="0"
+                  max=".9"
+                  step="0.01"
+                  :title="onion_skin_opacity"
+                  data-use="onionskin"
+                />
+              </label>
+            </div>
           </transition-group>
 
           <transition name="scaleInFade" mode="out-in">
@@ -653,10 +679,6 @@
                     :content="$t('timelapse')"
                     @click="timelapse_mode_enabled = !timelapse_mode_enabled"
                   >
-                    <!-- v-tippy="{
-                      placement: 'top',
-                      delay: [600, 0],
-                    }" -->
                     <svg
                       version="1.1"
                       class="inline-svg margin-right-verysmall"
@@ -693,10 +715,6 @@
                     :content="$t('delay')"
                     @click="delay_mode_enabled = !delay_mode_enabled"
                   >
-                    <!-- v-tippy="{
-                      placement: 'top',
-                      delay: [600, 0],
-                    }" -->
                     <svg
                       version="1.1"
                       class="inline-svg margin-right-verysmall"
@@ -728,6 +746,40 @@
                     </svg>
                   </button>
                 </transition>
+
+                <transition name="fade_fast" mode="out-in">
+                  <button
+                    type="button"
+                    class="_enable_timelapse_button"
+                    v-if="
+                      selected_mode === 'stopmotion' &&
+                      onion_skin_img &&
+                      show_live_feed &&
+                      is_making_stopmotion &&
+                      !timelapse_event
+                    "
+                    :class="{ 'is--active': onion_skin_enabled }"
+                    :content="$t('onion_skin')"
+                    @click="onion_skin_enabled = !onion_skin_enabled"
+                  >
+                    <svg
+                      version="1.1"
+                      class="inline-svg margin-right-verysmall"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      x="0px"
+                      y="0px"
+                      width="81px"
+                      height="81px"
+                      viewBox="0 0 81 81"
+                      style="enable-background: new 0 0 81 81"
+                      xml:space="preserve"
+                    >
+                      <rect x="20" y="20" width="30" height="30" />
+                      <rect x="30" y="30" width="30" height="30" />
+                    </svg>
+                  </button>
+                </transition>
               </div>
               <div>
                 <div v-if="selected_mode === 'video'" class="_videoEq">
@@ -754,28 +806,6 @@
                       $t("with_sound")
                     }}</label>
                   </span>
-                </div>
-                <div
-                  v-if="
-                    selected_mode === 'stopmotion' &&
-                    onion_skin_img &&
-                    show_live_feed &&
-                    is_making_stopmotion &&
-                    !timelapse_event
-                  "
-                  class="_mode_accessory_range"
-                >
-                  <label class="u-label">{{ $t("onion_skin") }} </label>
-                  <input
-                    class="_rtl"
-                    type="range"
-                    v-model.number="onion_skin_opacity"
-                    min="0"
-                    max=".9"
-                    step="0.01"
-                    :title="onion_skin_opacity"
-                    data-use="onionskin"
-                  />
                 </div>
 
                 <button
@@ -1072,6 +1102,8 @@ export default {
 
       show_live_feed: false,
       show_stopmotion_list: false,
+
+      onion_skin_enabled: false,
       onion_skin_img: false,
       onion_skin_opacity: 0,
 
@@ -1956,7 +1988,7 @@ export default {
         }
 
         &:nth-child(2) {
-          flex: 1 1 200px;
+          flex: 5 1 220px;
           text-align: center;
           display: flex;
           flex-flow: row wrap;
@@ -2130,16 +2162,19 @@ export default {
     // .font-small;
 
     > * {
+      margin-bottom: 0;
       background-color: var(--c-rouge);
 
       color: white;
       padding: 0 calc(var(--spacing) / 4);
       border-radius: 4px;
       width: auto;
+
+      display: flex;
+      align-items: center;
     }
 
     input {
-      display: inline-block;
       min-width: 2em;
       max-width: 4em;
       height: 1.4em;

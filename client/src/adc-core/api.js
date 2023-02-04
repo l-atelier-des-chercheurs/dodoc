@@ -69,6 +69,8 @@ export default function () {
           const _args = JSON.parse(JSON.stringify(args));
           if (_args[0].changed_data?.$content)
             _args[0].changed_data.$content = "…";
+          if (_args[0].changed_data?.$thumbs)
+            _args[0].changed_data.$thumbs = "…";
           // if (_args[0].changed_data?.$content)
           //   _args[0].changed_data.$content =
           //     _args[0].changed_data?.$content.slice(0, 15) +
