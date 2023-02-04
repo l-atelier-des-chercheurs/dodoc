@@ -77,7 +77,7 @@
       <span>
         <button
           type="button"
-          class="u-button u-button_transparent"
+          class="u-button"
           v-if="position_in_list !== 'first'"
           @click="$emit('prevMedia')"
         >
@@ -157,6 +157,7 @@ export default {
     background: var(--c-noir);
     border-radius: var(--border-radius);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
   }
 
   ::v-deep {
@@ -242,6 +243,7 @@ export default {
 
   button {
     padding: calc(var(--spacing) / 2);
+    background: rgba(255, 255, 255, 0.6);
   }
 }
 </style>
