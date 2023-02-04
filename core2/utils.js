@@ -24,7 +24,9 @@ module.exports = (function () {
 
     slug(term) {
       dev.logfunction({ term });
-      return slugg(term);
+      const slugged = slugg(term);
+      if (slugged.length === 0) return "untitled";
+      return slugged;
     },
 
     async storeContent({ full_path, meta }) {
