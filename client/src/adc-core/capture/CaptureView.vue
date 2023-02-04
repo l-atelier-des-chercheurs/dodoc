@@ -394,7 +394,7 @@
                 >
                   <button
                     type="button"
-                    class="u-button u-button_red"
+                    class="u-button u-button_red _settingsBtn"
                     :class="{ 'is--active': show_capture_settings }"
                     @click="show_capture_settings = !show_capture_settings"
                     :content="$t('settings')"
@@ -425,7 +425,7 @@
 
                   <button
                     type="button"
-                    class="u-button u-button_bleumarine"
+                    class="u-button u-button_bleumarine _settingsBtn"
                     :class="{ 'is--active': show_effects_pane }"
                     @click="show_effects_pane = !show_effects_pane"
                     :content="$t('effects')"
@@ -1987,6 +1987,10 @@ export default {
           margin-right: calc(var(--spacing) / 2);
         }
 
+        ._settingsBtn {
+          flex-shrink: 0;
+          padding: calc(var(--spacing) / 2);
+        }
         &:nth-child(2) {
           flex: 5 1 220px;
           text-align: center;

@@ -4,16 +4,18 @@
       <LoaderSpinner v-if="is_loading_available_devices || is_loading_feed" />
     </transition>
 
-    <div class="m_captureSettings--topbar">
-      <div class="m_captureSettings--topbar--title">
+    <div class="_topbar">
+      <div class="_topbar--title">
         <span class>{{ $t("settings") }}</span>
         <button
           type="button"
-          class="button-nostyle bg-rouge _close_button"
+          class="u-button u-button_transparent _close_button"
           @click="$emit('close')"
         >
           <img
             :src="`${$root.publicPath}images/i_close_sansfond.svg`"
+            width="2rem"
+            height="2rem"
             class=""
           />
         </button>
@@ -1391,7 +1393,7 @@ export default {
   }
 }
 
-.m_captureSettings--topbar {
+._topbar {
   flex: 0 0 auto;
   border-bottom: 2px solid var(--c-rouge_fonce);
   // padding: calc(var(--spacing) / 2);
@@ -1402,7 +1404,7 @@ export default {
   justify-content: center;
 }
 
-.m_captureSettings--topbar--title {
+._topbar--title {
   padding: calc(var(--spacing) / 2) var(--spacing);
   font-weight: 700;
   font-size: var(--font-large);
@@ -1521,5 +1523,10 @@ export default {
   min-height: 0;
   padding: 0;
   margin: calc(var(--spacing) / 4);
+
+  img {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 </style>
