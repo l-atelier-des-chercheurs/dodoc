@@ -19,24 +19,10 @@
     </div>
 
     <div class="_content">
-      <div class="u-switch u-switch-xs">
-        <input id="enable_effects" type="checkbox" v-model="enable" />
-        <label for="enable_effects">{{ $t("enable_effects") }}</label>
-      </div>
-
-      <br />
-      <!-- <ToggleInput
-        :content.sync="enable"
-        :label="$t('enable_effects')"
-        class="u-switch u-switch-xs"
-      /> -->
-
-      <div
-        class="_options"
-        :class="{
+      <div class="_options">
+        <!-- :class="{
           'is--disabled': !enable_effects,
-        }"
-      >
+        }" -->
         <div class="u-switch u-switch-xs">
           <input
             id="flip_horizontally"
@@ -224,8 +210,6 @@ export default {
   },
   data() {
     return {
-      enable: this.enable_effects,
-
       source_stream_resolution: {
         width: undefined,
         height: undefined,
@@ -543,13 +527,15 @@ void main(void) {
   },
   watch: {
     enable_effects() {
-      if (this.enable !== this.enable_effects) {
-        this.enable = this.enable_effects;
-      }
+      if (!this.enable_effects) this.disableAllEffects();
+
+      // if (this.enable__ !== this.enable_effects) {
+      //   this.enable__ = this.enable_effects;
+      // }
     },
-    enable() {
-      this.$emit("update:enable_effects", this.enable);
-      if (this.enable) {
+    enable__() {
+      this.$emit("update:enable_effects", this.enable__);
+      if (this.enable__) {
         this.$nextTick(() => {
           this.startWebGL();
         });
@@ -557,6 +543,16 @@ void main(void) {
     },
   },
   computed: {
+    enable__() {
+      return (
+        this.flip_vertically === true ||
+        this.flip_horizontally === true ||
+        this.chroma_key_settings.enable === true ||
+        Object.keys(this.image_filters_settings).find(
+          (ifs) => this.image_filters_settings[ifs].enable === true
+        )
+      );
+    },
     chroma_key_color_hex: {
       get() {
         return this.rgbToHex(this.chroma_key_settings.key_color);
@@ -575,6 +571,15 @@ void main(void) {
     },
   },
   methods: {
+    disableAllEffects() {
+      this.flip_vertically = false;
+      this.flip_horizontally = false;
+      this.chroma_key_settings.enable = false;
+
+      Object.keys(this.image_filters_settings).map((ifs) => {
+        this.image_filters_settings[ifs].enable = false;
+      });
+    },
     hexToRgb(hex) {
       var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return result
@@ -599,7 +604,7 @@ void main(void) {
     setTogglePickColorFromVideo() {
       if (!this.enable_pick_color_from_video) {
         this.chroma_key_settings.enable = false;
-        this.enable = true;
+        // this.enable__ = true;
         this.enable_pick_color_from_video = true;
       } else {
         this.chroma_key_settings.enable = true;
@@ -709,7 +714,7 @@ void main(void) {
       this.loadReplacementImageInShader();
 
       const processFrame = () => {
-        if (!this.offscreen_canvas || !this.enable) return;
+        if (!this.offscreen_canvas || !this.enable__) return;
 
         console.log(`CaptureEffects • METHODS : startWebGL • processFrame`);
 
@@ -906,19 +911,25 @@ void main(void) {
   ._content {
     // background-color: #fff;
     // border-radius: 4px;
-    margin: calc(var(--spacing) / 2);
-    padding: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
     ._options {
-      &:first-child {
-        // padding: calc(var(--spacing) / 4);
-      }
-      &:not(:first-child) {
-        > * {
-          padding: calc(var(--spacing) / 2);
-          margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-          background-color: var(--c-gris_clair);
-          border-radius: 4px;
+      background: rgba(0, 0, 0, 0.1);
+      padding: calc(var(--spacing) / 2);
+      border-radius: 6px;
+
+      > * {
+        // margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+        margin: calc(var(--spacing) / 2) 0;
+        padding: calc(var(--spacing) / 2);
+        background-color: var(--c-gris_clair);
+        border-radius: 4px;
+
+        &:first-child {
+          margin-top: 0;
+        }
+        &:last-child {
+          margin-bottom: 0;
         }
       }
     }

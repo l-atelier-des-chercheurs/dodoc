@@ -1396,7 +1396,7 @@ export default {
 ._topbar {
   flex: 0 0 auto;
   border-bottom: 2px solid var(--c-rouge_fonce);
-  // padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
   color: white;
 
   display: flex;
