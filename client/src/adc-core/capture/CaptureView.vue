@@ -1772,15 +1772,22 @@ export default {
 
         // ajouter la vidéo au stream
 
-        const video_source =
-          this.enable_effects && this.$refs.canvasElement
-            ? this.$refs.canvasElement.captureStream()
-            : this.stream;
-        video_source.getVideoTracks().forEach(function (track) {
-          finalStream.addTrack(track);
-        });
+        debugger;
 
-        if (options?.enable_audio_recording_in_video === true)
+        if (options.type === "video") {
+          const video_source =
+            this.enable_effects && this.$refs.canvasElement
+              ? this.$refs.canvasElement.captureStream()
+              : this.stream;
+          video_source.getVideoTracks().forEach(function (track) {
+            finalStream.addTrack(track);
+          });
+        }
+
+        if (
+          options?.enable_audio_recording_in_video === true ||
+          options.type === "audio"
+        )
           this.stream
             .getAudioTracks()
             .forEach((track) => finalStream.addTrack(track));
