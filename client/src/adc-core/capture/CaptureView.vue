@@ -1375,6 +1375,8 @@ export default {
     },
 
     stopStopmotion() {
+      // two options : remove or save
+
       this.$alertify
         .okBtn(this.$t("yes"))
         .cancelBtn(this.$t("cancel"))

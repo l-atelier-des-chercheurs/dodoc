@@ -2,7 +2,7 @@
   <div class="m_mediaValidationButtons">
     <button
       type="button"
-      class="u-button u-button_transparent u-colorOrange"
+      class="u-button u-button_transparent u-colorOrange _arrows"
       @click="selectedMoveLeft"
     >
       <svg
@@ -126,7 +126,7 @@
 
     <button
       type="button"
-      class="u-button u-button_transparent u-colorOrange"
+      class="u-button u-button_transparent u-colorOrange _arrows"
       @click="selectedMoveRight"
     >
       <svg
@@ -289,5 +289,9 @@ export default {
       height: 36px;
     }
   }
+}
+
+._arrows {
+  display: none;
 }
 </style>
