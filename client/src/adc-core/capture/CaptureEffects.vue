@@ -77,39 +77,48 @@
               </button>
             </div>
 
+            <br />
+
             <div>
-              <label>{{ $t("similarity") }}</label>
-              <input
-                class="margin-none"
-                type="range"
-                v-model.number="chroma_key_settings.similarity"
-                min="0"
-                max="1"
-                step="0.001"
-              />
+              <div class="">
+                <label>{{ $t("similarity") }}</label>
+                <input
+                  class="margin-none"
+                  type="range"
+                  v-model.number="chroma_key_settings.similarity"
+                  min="0"
+                  max="1"
+                  step="0.001"
+                />
+              </div>
 
-              <label>{{ $t("smoothness") }}</label>
-              <input
-                class="margin-none"
-                type="range"
-                v-model.number="chroma_key_settings.smoothness"
-                min="0"
-                max="1"
-                step="0.001"
-              />
+              <div class="">
+                <label>{{ $t("smoothness") }}</label>
+                <input
+                  class="margin-none"
+                  type="range"
+                  v-model.number="chroma_key_settings.smoothness"
+                  min="0"
+                  max="1"
+                  step="0.001"
+                />
+              </div>
 
-              <label>{{ $t("spill") }}</label>
-              <input
-                class="margin-none"
-                type="range"
-                v-model.number="chroma_key_settings.spill"
-                min="0"
-                max="1"
-                step="0.001"
-                value="0.1"
-              />
+              <div class="">
+                <label>{{ $t("spill") }}</label>
+                <input
+                  class="margin-none"
+                  type="range"
+                  v-model.number="chroma_key_settings.spill"
+                  min="0"
+                  max="1"
+                  step="0.001"
+                  value="0.1"
+                />
+              </div>
             </div>
 
+            <br />
             <label>{{ $t("replace_color_with") }}</label>
 
             <div
