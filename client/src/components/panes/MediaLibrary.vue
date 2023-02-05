@@ -59,7 +59,7 @@
         />
       </div>
     </section>
-    <transition name="fade_fast" mode="out-in">
+    <transition name="mediaModal" mode="in-out">
       <MediaModal
         v-if="focused_media"
         :key="focused_media.$path"

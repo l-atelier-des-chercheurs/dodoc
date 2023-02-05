@@ -612,6 +612,20 @@ img {
   }
 }
 
+.mediaModal {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  &-leave-to {
+    opacity: 0;
+  }
+}
 .justCaptured {
   &-enter-active {
     // &-leave-active {
