@@ -69,6 +69,15 @@ module.exports = (function () {
       _authenticateToken,
       _removeFile
     );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/:meta_filename/_duplicate",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/:meta_filename/_duplicate",
+      ],
+      _generalPasswordCheck,
+      _authenticateToken,
+      _duplicateFile
+    );
 
     /* FOLDERS */
     app.get(
@@ -546,6 +555,35 @@ module.exports = (function () {
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
       res.status(404).send(err);
+    }
+  }
+
+  async function _duplicateFile(req, res, next) {
+    const { path_to_folder, meta_filename, path_to_meta } =
+      utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, path_to_meta });
+
+    try {
+      const dup_meta_filename = await file.duplicateFile({
+        path_to_folder,
+        meta_filename,
+        path_to_meta,
+      });
+      dev.logpackets({
+        status: `duplicated file`,
+        path_to_folder,
+        dup_meta_filename,
+      });
+      res.status(200).json({ meta_filename: dup_meta_filename });
+
+      const meta = await file.getFile({
+        path_to_folder,
+        path_to_meta: path.join(path_to_folder, dup_meta_filename),
+      });
+      notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
+    } catch (err) {
+      dev.error("Failed to duplicate expected content: " + err);
+      res.status(500).send(err);
     }
   }
 

@@ -285,6 +285,45 @@ module.exports = (function () {
         throw err;
       }
     },
+
+    duplicateFile: async ({ path_to_folder, meta_filename, path_to_meta }) => {
+      // get file
+      let meta = await utils.readMetaFile(path_to_meta);
+
+      if (meta.hasOwnProperty("$media_filename")) {
+        // copy media
+        let new_filename = await _preventFileOverride({
+          path_to_folder,
+          original_filename: meta.$media_filename,
+        });
+
+        const og_path = utils.getPathToUserContent(
+          path_to_folder,
+          meta.$media_filename
+        );
+        const copy_path = utils.getPathToUserContent(
+          path_to_folder,
+          new_filename
+        );
+        await fs.copy(og_path, copy_path);
+
+        meta.$media_filename = new_filename;
+      }
+      meta.$date_uploaded = meta.$date_modified = utils.getCurrentDate();
+
+      const new_meta_filename = await _preventFileOverride({
+        path_to_folder,
+        original_filename: meta_filename,
+      });
+
+      await utils.saveMetaAtPath({
+        relative_path: path_to_folder,
+        file_slug: new_meta_filename,
+        meta,
+      });
+
+      return new_meta_filename;
+    },
   };
 
   async function _renameUploadedFile({
