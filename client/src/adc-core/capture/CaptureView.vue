@@ -217,7 +217,7 @@
               <label class="u-label">
                 <span>{{ $t("onion_skin").toLowerCase() }}</span>
                 <input
-                  class="_rtl"
+                  class="_onion_skin_range"
                   type="range"
                   v-model.number="onion_skin_opacity"
                   min="0"
@@ -2249,13 +2249,11 @@ export default {
   label {
     margin: 0;
   }
-  input._rtl {
-    direction: rtl;
-  }
   input {
     margin: 0;
   }
 }
+
 ._video_grid_overlay {
   position: absolute;
   display: block;
@@ -2349,5 +2347,10 @@ export default {
   background: transparent;
   color: white;
   color: var(--c-rouge);
+}
+
+._onion_skin_range {
+  direction: rtl;
+  min-width: 6rem !important;
 }
 </style>

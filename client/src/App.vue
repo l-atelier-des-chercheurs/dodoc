@@ -620,7 +620,7 @@ img {
   }
   &-enter,
   &-leave-to {
-    transform: scale(0.99) translateY(2rem);
+    transform: scale(1.05) translateY(2rem);
     opacity: 0;
   }
 }
