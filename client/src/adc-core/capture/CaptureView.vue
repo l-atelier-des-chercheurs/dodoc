@@ -1782,10 +1782,6 @@ export default {
       return new Promise(() => {
         const finalStream = new MediaStream();
 
-        // ajouter la vidéo au stream
-
-        debugger;
-
         if (options.type === "video") {
           const video_source =
             this.enable_effects && this.$refs.canvasElement
