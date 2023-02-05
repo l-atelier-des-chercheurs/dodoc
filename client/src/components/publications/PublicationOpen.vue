@@ -134,6 +134,7 @@ export default {
 <style lang="scss" scoped>
 ._topbar {
   display: flex;
+  align-items: center;
   width: 100%;
   background: white;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
