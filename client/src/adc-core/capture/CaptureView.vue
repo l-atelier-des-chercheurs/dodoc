@@ -49,10 +49,6 @@
         }"
       >
         <div class="m_captureview--videoPane--top--videoContainer">
-          <transition name="fade_fast">
-            <LoaderSpinner class="_loader" v-if="is_loading_stream" />
-          </transition>
-
           <div class="_videoEl" :style="`opacity: ${show_videos ? 1 : 0}`">
             <video
               ref="videoElement"
@@ -347,6 +343,10 @@
               :media_to_validate="media_to_validate"
               :audio_output_deviceId="audio_output_deviceId"
             />
+          </transition>
+
+          <transition name="fade_fast">
+            <LoaderSpinner class="_loader" v-if="is_loading_stream" />
           </transition>
         </div>
       </div>
