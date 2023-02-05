@@ -2030,8 +2030,12 @@ export default {
     right: 0;
     color: var(--c-noir);
     font-size: var(--font-verysmall);
-    margin: 15px;
+    margin: calc(var(--spacing) / 2);
     pointer-events: none;
+
+    display: flex;
+    flex-flow: row wrap;
+    gap: calc(var(--spacing) / 4);
 
     text-align: right;
 
@@ -2041,7 +2045,7 @@ export default {
       // border: 2px solid #fff;
       border-radius: 4px;
       line-height: 1;
-      margin: 2px;
+      margin: 0;
       padding: 2px 4px;
       font-weight: 500;
       pointer-events: auto;
@@ -2064,7 +2068,7 @@ export default {
     height: 100%;
 
     ._videoEl {
-      transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+      // transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
     video,
@@ -2158,7 +2162,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  margin: calc(var(--spacing) / 4) auto;
+  margin: 0 auto;
 
   label {
     display: inline-block;
@@ -2174,7 +2178,7 @@ export default {
 
   .record_options {
     max-width: 450px;
-    margin: calc(var(--spacing) / 4) auto;
+    margin: calc(var(--spacing) / 2) auto;
     // .padding-verysmall;
     pointer-events: auto;
     // .font-small;

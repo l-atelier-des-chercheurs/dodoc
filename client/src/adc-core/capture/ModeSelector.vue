@@ -150,6 +150,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: calc(var(--spacing) / 2) 0 0;
+  gap: calc(var(--spacing) / 2);
   user-select: none;
   pointer-events: none;
 
@@ -171,11 +172,10 @@ export default {
     // background-color: white;
   }
   > ._arrows {
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+    padding: 0;
 
     button {
-      padding-left: 0;
-      padding-right: 0;
+      padding: 0;
       min-height: 0;
     }
 
@@ -194,8 +194,8 @@ export default {
 
   input {
     width: 0px;
-    height: 0;
-    visibility: hidden;
+    height: 0px;
+    display: none;
 
     &:not(:checked) + label:not(:hover) {
       // opacity: 0.3;
@@ -237,7 +237,8 @@ export default {
     background-color: #fff;
     letter-spacing: 0;
     // padding: 0 0.405rem;
-    margin: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+    // margin: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+    margin: 0;
     text-align: center;
     transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
