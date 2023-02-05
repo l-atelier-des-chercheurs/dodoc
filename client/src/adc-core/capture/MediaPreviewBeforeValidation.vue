@@ -87,7 +87,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  // background-color: var(--c-noir);
+  background-color: #000;
 
   // border: 10px solid var(--c-rouge);
   padding: calc(var(--spacing) / 1);

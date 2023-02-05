@@ -381,7 +381,7 @@
                 'is--sending_image': is_sending_image,
               }"
               v-if="
-                !(media_to_validate && must_validate_media) &&
+                !(media_to_validate.temp_name && must_validate_media) &&
                 !is_validating_stopmotion_video
               "
             >
@@ -1469,6 +1469,15 @@ export default {
 
       const imageData = await this.getImageDataFromFeed();
       this.$eventHub.$emit("stopmotion.addImage", { imageData });
+
+      this.media_to_validate = {
+        rawData: imageData,
+        objectURL: URL.createObjectURL(imageData),
+        type: "image",
+      };
+      setTimeout(() => {
+        this.media_to_validate = false;
+      }, 500);
 
       this.is_sending_image = false;
       this.$refs.videoElement.play();
