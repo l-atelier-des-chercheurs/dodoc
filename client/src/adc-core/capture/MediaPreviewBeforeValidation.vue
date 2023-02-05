@@ -89,6 +89,9 @@ export default {
   left: 0;
   // background-color: var(--c-noir);
 
+  // border: 10px solid var(--c-rouge);
+  padding: calc(var(--spacing) / 1);
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,14 +146,15 @@ export default {
     border-radius: 50%;
   }
 }
-</style>
-<style lang="scss">
+
 .m_previewValidation--svg {
-  svg {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    margin: auto;
+  ::v-deep {
+    svg {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      margin: auto;
+    }
   }
 }
 </style>

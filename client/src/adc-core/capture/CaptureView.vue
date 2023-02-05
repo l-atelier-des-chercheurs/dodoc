@@ -337,7 +337,7 @@
             />
           </transition>
 
-          <transition name="justCaptured" :duration="200">
+          <transition name="justCaptured">
             <MediaPreviewBeforeValidation
               v-if="media_to_validate && must_validate_media"
               :media_to_validate="media_to_validate"
@@ -348,6 +348,9 @@
           <transition name="fade_fast">
             <LoaderSpinner class="_loader" v-if="is_loading_stream" />
           </transition>
+          <!-- <transition name="scaleInFade_fast">
+            <div class="_capture_flash" v-if="capture_button_pressed" />
+          </transition> -->
         </div>
       </div>
       <!-- <transition name="slideup" :duration="150" mode="out-in"> -->
@@ -793,7 +796,7 @@
                     />
                   </div>
 
-                  <span class="switch switch-xs" v-if="!is_recording">
+                  <span class="u-switch u-switch-xs" v-if="!is_recording">
                     <input
                       class="switch"
                       id="recordVideoWithAudio"
@@ -2309,14 +2312,18 @@ export default {
     color: white;
   }
 }
-._just_captured_overlay {
+._capture_flash {
   background-color: var(--c-rouge);
   position: absolute;
   width: 100%;
   height: 100%;
   z-index: 100;
 }
+
 ._download_media_without_validation {
+  position: absolute;
+  bottom: 0;
+  right: 0;
   background-color: var(--c-noir);
   padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 4);
   // margin-top: calc(-0.5 * var(--spacing));
