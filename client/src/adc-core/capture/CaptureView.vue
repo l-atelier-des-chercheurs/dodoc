@@ -61,7 +61,7 @@
               :src-object.prop.camel="stream"
               :controls="stream_type === 'RemoteSources'"
               muted
-              v-show="!enable_effects"
+              :style="`visibility: ${enable_effects ? 'hidden' : ''}`"
             />
             <canvas
               ref="canvasElement"
