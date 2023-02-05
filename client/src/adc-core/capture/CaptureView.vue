@@ -49,10 +49,6 @@
         }"
       >
         <div class="m_captureview--videoPane--top--videoContainer">
-          <transition name="fade_fast">
-            <LoaderSpinner class="_loader" v-if="is_loading_stream" />
-          </transition>
-
           <div class="_videoEl" :style="`opacity: ${show_videos ? 1 : 0}`">
             <video
               ref="videoElement"
@@ -61,7 +57,7 @@
               :src-object.prop.camel="stream"
               :controls="stream_type === 'RemoteSources'"
               muted
-              v-show="!enable_effects"
+              :style="`visibility: ${enable_effects ? 'hidden' : ''}`"
             />
             <canvas
               ref="canvasElement"
@@ -221,7 +217,7 @@
               <label class="u-label">
                 <span>{{ $t("onion_skin").toLowerCase() }}</span>
                 <input
-                  class="_rtl"
+                  class="_onion_skin_range"
                   type="range"
                   v-model.number="onion_skin_opacity"
                   min="0"
@@ -341,13 +337,20 @@
             />
           </transition>
 
-          <transition name="justCaptured" :duration="200">
+          <transition name="justCaptured">
             <MediaPreviewBeforeValidation
               v-if="media_to_validate && must_validate_media"
               :media_to_validate="media_to_validate"
               :audio_output_deviceId="audio_output_deviceId"
             />
           </transition>
+
+          <transition name="fade_fast">
+            <LoaderSpinner class="_loader" v-if="is_loading_stream" />
+          </transition>
+          <!-- <transition name="scaleInFade_fast">
+            <div class="_capture_flash" v-if="capture_button_pressed" />
+          </transition> -->
         </div>
       </div>
       <!-- <transition name="slideup" :duration="150" mode="out-in"> -->
@@ -378,7 +381,7 @@
                 'is--sending_image': is_sending_image,
               }"
               v-if="
-                !(media_to_validate && must_validate_media) &&
+                !(media_to_validate.temp_name && must_validate_media) &&
                 !is_validating_stopmotion_video
               "
             >
@@ -793,7 +796,7 @@
                     />
                   </div>
 
-                  <span class="switch switch-xs" v-if="!is_recording">
+                  <span class="u-switch u-switch-xs" v-if="!is_recording">
                     <input
                       class="switch"
                       id="recordVideoWithAudio"
@@ -1467,6 +1470,15 @@ export default {
       const imageData = await this.getImageDataFromFeed();
       this.$eventHub.$emit("stopmotion.addImage", { imageData });
 
+      this.media_to_validate = {
+        rawData: imageData,
+        objectURL: URL.createObjectURL(imageData),
+        type: "image",
+      };
+      setTimeout(() => {
+        this.media_to_validate = false;
+      }, 500);
+
       this.is_sending_image = false;
       this.$refs.videoElement.play();
     },
@@ -1770,10 +1782,6 @@ export default {
       return new Promise(() => {
         const finalStream = new MediaStream();
 
-        // ajouter la vidéo au stream
-
-        debugger;
-
         if (options.type === "video") {
           const video_source =
             this.enable_effects && this.$refs.canvasElement
@@ -2018,8 +2026,12 @@ export default {
     right: 0;
     color: var(--c-noir);
     font-size: var(--font-verysmall);
-    margin: 15px;
+    margin: calc(var(--spacing) / 2);
     pointer-events: none;
+
+    display: flex;
+    flex-flow: row wrap;
+    gap: calc(var(--spacing) / 4);
 
     text-align: right;
 
@@ -2029,7 +2041,7 @@ export default {
       // border: 2px solid #fff;
       border-radius: 4px;
       line-height: 1;
-      margin: 2px;
+      margin: 0;
       padding: 2px 4px;
       font-weight: 500;
       pointer-events: auto;
@@ -2052,7 +2064,7 @@ export default {
     height: 100%;
 
     ._videoEl {
-      transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+      // transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
     video,
@@ -2146,7 +2158,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  margin: calc(var(--spacing) / 4) auto;
+  margin: 0 auto;
 
   label {
     display: inline-block;
@@ -2162,7 +2174,7 @@ export default {
 
   .record_options {
     max-width: 450px;
-    margin: calc(var(--spacing) / 4) auto;
+    margin: calc(var(--spacing) / 2) auto;
     // .padding-verysmall;
     pointer-events: auto;
     // .font-small;
@@ -2246,13 +2258,11 @@ export default {
   label {
     margin: 0;
   }
-  input._rtl {
-    direction: rtl;
-  }
   input {
     margin: 0;
   }
 }
+
 ._video_grid_overlay {
   position: absolute;
   display: block;
@@ -2309,14 +2319,18 @@ export default {
     color: white;
   }
 }
-._just_captured_overlay {
+._capture_flash {
   background-color: var(--c-rouge);
   position: absolute;
   width: 100%;
   height: 100%;
   z-index: 100;
 }
+
 ._download_media_without_validation {
+  position: absolute;
+  bottom: 0;
+  right: 0;
   background-color: var(--c-noir);
   padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 4);
   // margin-top: calc(-0.5 * var(--spacing));
@@ -2342,5 +2356,10 @@ export default {
   background: transparent;
   color: white;
   color: var(--c-rouge);
+}
+
+._onion_skin_range {
+  direction: rtl;
+  min-width: 6rem !important;
 }
 </style>

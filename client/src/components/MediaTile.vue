@@ -68,7 +68,7 @@ export default {
   overflow: hidden;
   border-radius: 3px;
 
-  transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+  // transition: all 1s 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   @supports not (aspect-ratio: 1/1) {
     width: 110px;
@@ -77,7 +77,7 @@ export default {
 
   &.was--focused {
     // transform: translate3d(0, -5px, 0);
-    border: 2px solid white;
+    border: 3px solid var(--c-noir);
     // background: rgba(51, 51, 51, 0.8);
   }
   &.is--dragged {

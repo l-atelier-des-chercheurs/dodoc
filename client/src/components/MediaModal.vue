@@ -38,25 +38,10 @@
             @remove="$emit('remove')"
           />
 
-          <fieldset v-if="show_confirm_delete">
-            <legend class="u-label">{{ $t("remove_project") }}</legend>
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="show_confirm_delete = false"
-            >
-              {{ $t("cancel") }}
-            </button>
-            <br />
-            <br />
-            <button
-              class="u-button u-button_red"
-              type="button"
-              @click="removeProject"
-            >
-              {{ $t("confirm_removal") }}
-            </button>
-          </fieldset>
+          <button type="button" class="u-buttonLink" @click="duplicateMedia">
+            <sl-icon name="file-plus" />
+            {{ $t("duplicate") }}
+          </button>
         </div>
       </div>
       <div class="_selectBtn" v-else>
@@ -117,9 +102,7 @@ export default {
   },
   components: {},
   data() {
-    return {
-      show_confirm_delete: false,
-    };
+    return {};
   },
   created() {},
   mounted() {
@@ -133,6 +116,9 @@ export default {
   methods: {
     handleKeyPress($event) {
       if ($event.key === "Escape") this.$emit("close");
+    },
+    duplicateMedia() {
+      this.$emit("duplicate");
     },
   },
 };

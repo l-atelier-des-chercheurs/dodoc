@@ -59,7 +59,7 @@
         />
       </div>
     </section>
-    <transition name="fade_fast" mode="out-in">
+    <transition name="mediaModal" mode="in-out">
       <MediaModal
         v-if="focused_media"
         :key="focused_media.$path"
@@ -67,6 +67,7 @@
         :project_path="project.$path"
         :select_mode="select_mode"
         :position_in_list="focused_media_position_in_list"
+        @duplicate="duplicateMedia(focused_media.$path)"
         @remove="removeMedia(focused_media.$path)"
         @close="toggleMediaFocus(focused_media.$path)"
         @select="selectMedia(focused_media.$path)"
@@ -217,6 +218,12 @@ export default {
         path,
       });
       this.toggleMediaFocus(path);
+    },
+    async duplicateMedia(path) {
+      const new_media_path = await this.$api.duplicateFile({
+        path,
+      });
+      new_media_path;
     },
     prevMedia() {
       this.toggleMediaFocus(

@@ -285,8 +285,8 @@ export default {
 
   button {
     svg {
-      width: 36px;
-      height: 36px;
+      width: 2rem;
+      height: 2rem;
     }
   }
 }
