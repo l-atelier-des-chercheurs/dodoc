@@ -16,6 +16,25 @@
         <h3>{{ $t("informations") }}</h3>
         <small>{{ file.$media_filename }}</small>
         <hr />
+
+        <div class="_options">
+          <div>
+            <DownloadFile :file="file" />
+          </div>
+          <div class="">
+            <button type="button" class="u-buttonLink" @click="duplicateMedia">
+              <sl-icon name="file-plus" />
+              {{ $t("duplicate") }}
+            </button>
+          </div>
+
+          <RemoveMenu
+            :remove_text="$t('remove_media')"
+            @remove="$emit('remove')"
+          />
+        </div>
+        <br />
+
         <TitleField
           :label="$t('caption')"
           :field_name="'caption'"
@@ -27,22 +46,6 @@
         <DateField :title="'date_uploaded'" :date="file.$date_uploaded" />
         <br />
         <DateField :title="'date_modified'" :date="file.$date_modified" />
-        <br />
-        <div class="">
-          <div>
-            <DownloadFile :file="file" />
-          </div>
-
-          <RemoveMenu
-            :remove_text="$t('remove_media')"
-            @remove="$emit('remove')"
-          />
-
-          <button type="button" class="u-buttonLink" @click="duplicateMedia">
-            <sl-icon name="file-plus" />
-            {{ $t("duplicate") }}
-          </button>
-        </div>
       </div>
       <div class="_selectBtn" v-else>
         <button type="button" class="u-buttonLink" @click="$emit('close')">
@@ -231,5 +234,17 @@ export default {
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.6);
   }
+}
+
+._options {
+  display: flex;
+  flex-flow: column nowrap;
+  // justify-content: center;
+  // background: var(--c-gris);
+  border: 2px solid var(--c-gris);
+
+  margin: calc(var(--spacing) / 1) 0;
+  padding: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 2);
 }
 </style>
