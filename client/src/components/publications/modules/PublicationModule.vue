@@ -292,7 +292,9 @@ export default {
           const new_file_path = await this.$api.duplicateFile({
             path,
           });
-          new_source_medias.push({ path: new_file_path });
+          const source_path =
+            path.substring(0, path.lastIndexOf("/") + 1) + new_file_path;
+          new_source_medias.push({ path: source_path });
         } else {
           new_source_medias.push({ path });
         }
