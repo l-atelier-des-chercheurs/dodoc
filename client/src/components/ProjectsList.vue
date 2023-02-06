@@ -13,7 +13,6 @@
       class="_projectsList"
       name="StoryModules"
       appear
-      :duration="700"
     >
       <ProjectPresentation
         v-for="project in projects"

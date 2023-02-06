@@ -132,7 +132,6 @@ export default {
   // padding: 1px;
   inset: 0;
   padding: calc(var(--spacing) / 2);
-  // background: rgba(253, 253, 253, 0.7);
 
   ._mediaModal--overlay {
     background: var(--c-orange);

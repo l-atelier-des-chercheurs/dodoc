@@ -48,9 +48,11 @@
       </div>
 
       <transition-group
+        tag="div"
         class="_mediaLibrary--lib--grid"
-        name="listComplete"
+        name="StoryModules"
         ref="mediaTiles"
+        appear
       >
         <MediaTile
           v-for="file of sorted_medias"
