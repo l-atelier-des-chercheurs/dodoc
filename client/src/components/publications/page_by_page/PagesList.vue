@@ -152,10 +152,10 @@ export default {
     },
     margins() {
       return {
-        left: this.publication.page_margin_left,
-        right: this.publication.page_margin_right,
-        top: this.publication.page_margin_top,
-        bottom: this.publication.page_margin_bottom,
+        left: this.publication.page_margin_left || 0,
+        right: this.publication.page_margin_right || 0,
+        top: this.publication.page_margin_top || 0,
+        bottom: this.publication.page_margin_bottom || 0,
       };
     },
   },
@@ -190,7 +190,13 @@ export default {
       });
     },
     getModulesForPage(id) {
-      return this.modules.filter((f) => f.page_id === id) || [];
+      return (
+        this.modules
+          .filter((f) => f.page_id === id)
+          .sort(
+            (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
+          ) || []
+      ).reverse();
     },
   },
 };

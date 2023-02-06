@@ -267,7 +267,13 @@ export default {
   },
   methods: {
     getModulesForPage(id) {
-      return this.modules.filter((f) => f.page_id === id) || [];
+      return (
+        this.modules
+          .filter((f) => f.page_id === id)
+          .sort(
+            (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
+          ) || []
+      ).reverse();
     },
     prevPage() {
       const new_index = this.page_number - 1;

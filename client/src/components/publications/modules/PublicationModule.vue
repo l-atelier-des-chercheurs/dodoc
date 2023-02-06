@@ -301,10 +301,9 @@ export default {
       }
       new_meta.source_medias = new_source_medias;
 
-      debugger;
-
       if (this.context === "page_by_page") {
-        // change x and y a bit
+        new_meta.x = this.publimodule.x + 1;
+        new_meta.y = this.publimodule.y + 1;
       }
 
       const meta_filename = await this.$api
@@ -391,7 +390,7 @@ export default {
 
     margin: calc(var(--spacing) / 2);
 
-    z-index: 1;
+    z-index: 10;
 
     ._sideBtns {
       background: white;

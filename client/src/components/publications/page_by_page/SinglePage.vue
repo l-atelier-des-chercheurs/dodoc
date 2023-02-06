@@ -67,6 +67,23 @@
         />
 
         <svg
+          v-if="can_edit && Object.keys(margins)"
+          class="_margins"
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="transparent"
+        >
+          <rect
+            :x="magnify(margins.left)"
+            :y="magnify(margins.top)"
+            :width="magnify(page_width - margins.left - margins.right)"
+            :height="magnify(page_height - margins.top - margins.bottom)"
+            stroke="rebeccapurple"
+          />
+        </svg>
+
+        <svg
           v-if="can_edit && margins"
           class="_pageBorders"
           width="100%"
@@ -111,23 +128,6 @@
               />
             </mask>
           </defs> -->
-        </svg>
-
-        <svg
-          v-if="can_edit && margins"
-          class="_margins"
-          width="100%"
-          height="100%"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="transparent"
-        >
-          <rect
-            :x="magnify(margins.left)"
-            :y="magnify(margins.top)"
-            :width="magnify(page_width - margins.left - margins.right)"
-            :height="magnify(page_height - margins.top - margins.bottom)"
-            stroke="rebeccapurple"
-          />
         </svg>
       </div>
     </div>
