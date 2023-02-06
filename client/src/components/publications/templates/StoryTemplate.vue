@@ -214,9 +214,7 @@ export default {
   // margin-bottom: calc(var(--spacing) * 2);
   margin-bottom: 0;
 
-  ::v-deep > * {
-    // height: 100%;
-
+  ::v-deep {
     ._content {
       min-height: calc(24px * 3);
     }

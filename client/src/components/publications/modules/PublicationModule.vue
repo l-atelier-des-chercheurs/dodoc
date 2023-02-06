@@ -290,7 +290,7 @@ export default {
         if (path.includes("/publications/")) {
           // this media is specific to publications, lets remove it
           const new_file_path = await this.$api.duplicateFile({
-            path: this.publimodule.$path,
+            path,
           });
           new_source_medias.push({ path: new_file_path });
         } else {
