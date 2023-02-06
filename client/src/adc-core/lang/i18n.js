@@ -194,6 +194,8 @@ export default function () {
         medias: "Médias",
         no_media_in_project: "Aucun média dans ce projet",
         number_of_media: "Nombre de médias",
+        media_removed: "Média supprimé",
+        media_duplicated: "Média dupliqué",
 
         CC: "Creative Commons",
         license: "Licence",

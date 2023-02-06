@@ -20,7 +20,12 @@
             @resize="resize({ meta_filename, new_size: $event })"
             @moveUp="moveTo({ meta_filename, dir: -1 })"
             @moveDown="moveTo({ meta_filename, dir: +1 })"
-            @duplicate="duplicatePublicationMedia(meta_filename)"
+            @duplicate="
+              duplicatePublicationMedia({
+                source_meta_filename: meta_filename,
+                copy_meta_filename: $event,
+              })
+            "
             @remove="removeModuleFromList(meta_filename)"
           />
           <div class="_spacer" :key="'mc_' + index">
@@ -147,20 +152,31 @@ export default {
       modules_list.move(target_meta_index, target_meta_index + dir);
       this.response = await this.updatePubliMeta({ modules_list });
     },
-    async duplicatePublicationMedia(meta_filename) {
-      // create a copy of the module
-      // if its source_medias include text modules, copy these medias as well
-      meta_filename;
+    async duplicatePublicationMedia({
+      source_meta_filename,
+      copy_meta_filename,
+    }) {
+      source_meta_filename;
+      copy_meta_filename;
+
+      let modules_list = this.modules_list.slice();
+      const position_of_original_media = modules_list.findIndex(
+        (_mf) => _mf === source_meta_filename
+      );
+
+      modules_list.splice(
+        position_of_original_media + 1,
+        0,
+        copy_meta_filename
+      );
+
+      this.response = await this.updatePubliMeta({ modules_list });
     },
     async removeModuleFromList(meta_filename) {
       let modules_list = this.modules_list.slice();
       modules_list = modules_list.filter((_mf) => _mf !== meta_filename);
-      this.response = await this.$api.updateMeta({
-        path: this.publication.$path,
-        new_meta: {
-          modules_list,
-        },
-      });
+
+      this.response = await this.updatePubliMeta({ modules_list });
     },
     async updatePubliMeta(new_meta) {
       return await this.$api.updateMeta({
@@ -198,9 +214,7 @@ export default {
   // margin-bottom: calc(var(--spacing) * 2);
   margin-bottom: 0;
 
-  ::v-deep > * {
-    // height: 100%;
-
+  ::v-deep {
     ._content {
       min-height: calc(24px * 3);
     }

@@ -47,7 +47,13 @@
         </div>
       </div>
 
-      <div class="_mediaLibrary--lib--grid" ref="mediaTiles">
+      <transition-group
+        tag="div"
+        class="_mediaLibrary--lib--grid"
+        name="StoryModules"
+        ref="mediaTiles"
+        appear
+      >
         <MediaTile
           v-for="file of sorted_medias"
           :key="file.$path"
@@ -57,7 +63,7 @@
           :data-filepath="file.$path"
           @toggleMediaFocus="(path) => toggleMediaFocus(path)"
         />
-      </div>
+      </transition-group>
     </section>
     <transition name="mediaModal" mode="in-out">
       <MediaModal
@@ -133,11 +139,9 @@ export default {
     },
     sorted_medias() {
       const _medias = JSON.parse(JSON.stringify(this.medias));
-
       _medias.sort(
         (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
       );
-
       return _medias;
     },
     focused_media() {
@@ -218,12 +222,20 @@ export default {
         path,
       });
       this.toggleMediaFocus(path);
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t("media_removed"));
     },
     async duplicateMedia(path) {
       const new_media_path = await this.$api.duplicateFile({
         path,
       });
       new_media_path;
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t("media_duplicated"));
     },
     prevMedia() {
       this.toggleMediaFocus(

@@ -559,15 +559,16 @@ module.exports = (function () {
   }
 
   async function _duplicateFile(req, res, next) {
-    const { path_to_folder, meta_filename, path_to_meta } =
+    const { path_to_folder, meta_filename, path_to_meta, data } =
       utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder, path_to_meta });
+    dev.logapi({ path_to_folder, path_to_meta, data });
 
     try {
       const dup_meta_filename = await file.duplicateFile({
         path_to_folder,
         meta_filename,
         path_to_meta,
+        data,
       });
       dev.logpackets({
         status: `duplicated file`,

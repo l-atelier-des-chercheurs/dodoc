@@ -418,15 +418,15 @@ export default function () {
 
         return res.data.meta_filename;
       },
-      async duplicateFile({ path }) {
+      async duplicateFile({ path, new_meta }) {
         path = `${path}/_duplicate`;
 
-        const response = await this.$axios.post(path).catch((err) => {
+        const response = await this.$axios.post(path, new_meta).catch((err) => {
           this.onError(err);
           throw err;
         });
 
-        return response.data;
+        return response.data.meta_filename;
       },
       async updateMeta({ path, new_meta }) {
         const response = await this.$axios
