@@ -286,7 +286,12 @@ module.exports = (function () {
       }
     },
 
-    duplicateFile: async ({ path_to_folder, meta_filename, path_to_meta }) => {
+    duplicateFile: async ({
+      path_to_folder,
+      meta_filename,
+      path_to_meta,
+      data,
+    }) => {
       // get file
       let meta = await utils.readMetaFile(path_to_meta);
 
@@ -309,7 +314,7 @@ module.exports = (function () {
 
         meta.$media_filename = new_filename;
       }
-      meta.$date_uploaded = meta.$date_modified = utils.getCurrentDate();
+      meta.$date_uploaded = utils.getCurrentDate();
 
       const new_meta_filename = await _preventFileOverride({
         path_to_folder,
@@ -320,6 +325,12 @@ module.exports = (function () {
         relative_path: path_to_folder,
         file_slug: new_meta_filename,
         meta,
+      });
+
+      await API.updateFile({
+        path_to_folder,
+        path_to_meta: path.join(path_to_folder, new_meta_filename),
+        data,
       });
 
       return new_meta_filename;

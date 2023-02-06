@@ -128,7 +128,7 @@
           </div>
 
           <div class="_buttonRow">
-            <button type="button" class="u-button" disabled>
+            <button type="button" class="u-button" @click="duplicateModule">
               {{ $t("duplicate") }}
             </button>
             <button type="button" class="u-button" @click="removeModule">
@@ -281,6 +281,42 @@ export default {
         if (this.$refs.textBloc) this.$refs.textBloc.enableEditor();
       });
     },
+    async duplicateModule() {
+      let new_meta = {};
+      // TODO if its source_medias include text modules, copy these medias as well
+
+      const new_source_medias = [];
+      for (let { path } of this.publimodule.source_medias) {
+        if (path.includes("/publications/")) {
+          // this media is specific to publications, lets remove it
+          const new_file_path = await this.$api.duplicateFile({
+            path: this.publimodule.$path,
+          });
+          new_source_medias.push({ path: new_file_path });
+        } else {
+          new_source_medias.push({ path });
+        }
+      }
+      new_meta.source_medias = new_source_medias;
+
+      debugger;
+
+      if (this.context === "page_by_page") {
+        // change x and y a bit
+      }
+
+      const meta_filename = await this.$api
+        .duplicateFile({
+          path: this.publimodule.$path,
+          new_meta,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
+
+      this.$emit("duplicate", meta_filename);
+    },
     async removeModule() {
       // todo  remove source medias that are part publications
       // todo also empty sharedb path, since $path can be retaken
@@ -298,7 +334,6 @@ export default {
       //   throw err;
       // }
 
-      // remove module,
       await this.$api
         .deleteItem({
           path: this.publimodule.$path,
@@ -350,6 +385,12 @@ export default {
     right: 0;
     background: transparent;
     top: 0;
+    height: auto;
+
+    margin: calc(var(--spacing) / 2);
+
+    z-index: 1;
+
     ._sideBtns {
       background: white;
     }
