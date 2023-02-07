@@ -121,6 +121,8 @@
               </button>
             </div>
 
+            <div key="separator" class="_separator" />
+
             <div
               class="m_stopmotionpanel--medias--list--items"
               :class="{ 'is--current_single': show_live_feed }"
@@ -159,48 +161,6 @@
               </div>
             </div>
           </transition-group>
-          <div class="m_stopmotionpanel--medias--validation">
-            <div class="m_stopmotionpanel--medias--validation--fpscounter">
-              <label class="u-label">{{ $t("img_per_second") }}</label>
-              <select v-model.number="frame_rate">
-                <option>2</option>
-                <option>4</option>
-                <option>8</option>
-                <option>15</option>
-                <option>24</option>
-                <option>30</option>
-              </select>
-            </div>
-
-            <div class="">
-              <button
-                type="button"
-                class="u-button u-button_bleuvert u-button_small"
-                v-if="medias.length > 0"
-                @click="testStopmotion"
-              >
-                <img
-                  :src="`${$root.publicPath}images/i_play.svg`"
-                  width="48"
-                  height="48"
-                  draggable="false"
-                />
-                {{ $t("assemble") }}
-              </button>
-            </div>
-
-            <!-- <button
-          type="button"
-          class="u-buttonLink u-padding_verysmall margin-none"
-          :class="{ 'is--active': show_advanced_menu }"
-          @mousedown.stop.prevent="
-            show_advanced_menu = !show_advanced_menu;
-          "
-          @touchstart.stop.prevent="
-            show_advanced_menu = !show_advanced_menu;
-          "
-        >{{ $t('advanced_options') }}</button>-->
-          </div>
         </div>
       </template>
 
@@ -567,7 +527,8 @@ export default {
   justify-content: center;
 
   // border-top: 2px solid black;
-  background-color: var(--c-noir);
+  background-color: black;
+  padding: 1px;
   color: white;
 
   // max-height: 120px;
@@ -612,7 +573,7 @@ export default {
     overscroll-behavior-y: contain;
     // .padding-verysmall;
 
-    padding: 0 calc(var(--spacing) / 2);
+    padding: 0 calc(var(--spacing) / 4);
     gap: calc(var(--spacing) / 4);
     // margin-bottom: calc(var(--spacing) / 8);
 
@@ -880,6 +841,14 @@ export default {
 ._loader {
   background: rgba(0, 0, 0, 0.95);
   color: var(--color-capture);
+}
+
+._separator {
+  position: relative;
+  flex: 0 0 2px;
+  height: 100%;
+  background: var(--c-noir);
+  // margin: calc(var(--spacing) / 4);
 }
 
 ._onion_skin {
