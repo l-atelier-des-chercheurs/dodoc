@@ -202,32 +202,6 @@
                 <span>{{ $t("seconds") }}</span>
               </label>
             </div>
-
-            <div
-              v-if="
-                onion_skin_enabled &&
-                selected_mode === 'stopmotion' &&
-                onion_skin_img &&
-                stopmotion_slug &&
-                !is_validating_stopmotion_video
-              "
-              :key="'onion_skin'"
-              class="record_options"
-            >
-              <label class="u-label">
-                <span>{{ $t("onion_skin").toLowerCase() }}</span>
-                <input
-                  class="_onion_skin_range"
-                  type="range"
-                  v-model.number="onion_skin_opacity"
-                  min="0"
-                  max=".9"
-                  step="0.01"
-                  :title="onion_skin_opacity"
-                  data-use="onionskin"
-                />
-              </label>
-            </div>
           </transition-group>
 
           <transition name="scaleInFade" mode="out-in">
@@ -361,6 +335,7 @@
         :can_add_to_fav="can_add_to_fav"
         :show_live_feed.sync="show_live_feed"
         :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
+        :onion_skin_opacity.sync="onion_skin_opacity"
         @saveMedia="($path) => $emit('insertMedias', [$path])"
         @close="closeStopmotionPanel"
         @showPreviousImage="onion_skin_img = $event"
@@ -748,40 +723,6 @@
                     </svg>
                   </button>
                 </transition>
-
-                <transition name="fade_fast" mode="out-in">
-                  <button
-                    type="button"
-                    class="_enable_timelapse_button"
-                    v-if="
-                      selected_mode === 'stopmotion' &&
-                      onion_skin_img &&
-                      show_live_feed &&
-                      is_making_stopmotion &&
-                      !timelapse_event
-                    "
-                    :class="{ 'is--active': onion_skin_enabled }"
-                    :content="$t('onion_skin')"
-                    @click="onion_skin_enabled = !onion_skin_enabled"
-                  >
-                    <svg
-                      version="1.1"
-                      class="inline-svg margin-right-verysmall"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                      x="0px"
-                      y="0px"
-                      width="81px"
-                      height="81px"
-                      viewBox="0 0 81 81"
-                      style="enable-background: new 0 0 81 81"
-                      xml:space="preserve"
-                    >
-                      <rect x="20" y="20" width="30" height="30" />
-                      <rect x="30" y="30" width="30" height="30" />
-                    </svg>
-                  </button>
-                </transition>
               </div>
               <div>
                 <div v-if="selected_mode === 'video'" class="_videoEq">
@@ -1105,7 +1046,6 @@ export default {
       show_live_feed: false,
       show_stopmotion_list: false,
 
-      onion_skin_enabled: false,
       onion_skin_img: false,
       onion_skin_opacity: 0,
 
@@ -2356,10 +2296,5 @@ export default {
   background: transparent;
   color: white;
   color: var(--c-rouge);
-}
-
-._onion_skin_range {
-  direction: rtl;
-  min-width: 6rem !important;
 }
 </style>

@@ -120,6 +120,30 @@
                 <sl-icon name="trash3" />
               </button>
             </div>
+
+            <div
+              class="m_stopmotionpanel--medias--list--items _onion_skin"
+              :key="'_onion_skin'"
+              :class="{ 'is--disabled': !show_live_feed }"
+              @click="!show_live_feed ? showVideoFeed() : ''"
+            >
+              <label class="u-label">
+                <span>{{ $t("onion_skin").toLowerCase() }}</span>
+                <input
+                  class="_onion_skin_range"
+                  type="range"
+                  min="0"
+                  max=".9"
+                  step="0.01"
+                  :value="onion_skin_opacity"
+                  @change="
+                    $emit('update:onion_skin_opacity', +$event.target.value)
+                  "
+                  data-use="onionskin"
+                />
+              </label>
+            </div>
+
             <div
               class="m_stopmotionpanel--medias--list--items"
               :class="{ 'is--current_single': show_live_feed }"
@@ -212,6 +236,7 @@ export default {
     can_add_to_fav: Boolean,
     show_live_feed: Boolean,
     is_validating_stopmotion_video: Boolean,
+    onion_skin_opacity: Number,
   },
   components: {
     MediaValidationButtons,
@@ -482,6 +507,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .m_stopmotionpanel {
+  --img-width: 120px;
+
   position: relative;
   // height: 100%;
   display: flex;
@@ -648,7 +675,7 @@ export default {
     overflow: hidden;
     width: auto;
     flex: 0 0 auto;
-    width: 100px;
+    width: var(--img-width);
     height: auto;
 
     cursor: pointer;
@@ -692,12 +719,12 @@ export default {
       flex-basis: auto;
       // padding-right: 50px;
       width: auto;
-      border-radius: 4px;
+      // border-radius: 4px;
       overflow: hidden;
 
       video {
-        width: 100px;
-        height: 66px;
+        width: var(--img-width);
+        height: auto;
       }
       &::before {
         content: attr(data-content);
@@ -854,5 +881,42 @@ export default {
 ._loader {
   background: rgba(0, 0, 0, 0.95);
   color: var(--color-capture);
+}
+
+._onion_skin {
+  // position: absolute;
+  // inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // background: rgba(255, 255, 255, 0.85);
+
+  padding: calc(var(--spacing) / 4);
+  text-align: center;
+
+  &.is--disabled {
+    filter: grayscale(100%);
+    cursor: pointer;
+
+    > * {
+      pointer-events: none;
+    }
+  }
+
+  .u-label {
+    color: white;
+  }
+
+  input {
+    width: 100%;
+    margin: 0;
+  }
+
+  &::before {
+    display: none;
+  }
+}
+._onion_skin_range {
+  direction: rtl;
 }
 </style>
