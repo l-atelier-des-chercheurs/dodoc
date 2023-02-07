@@ -96,7 +96,7 @@
         <div class="_spreadNavigator--content">
           <div
             v-for="(page, index) in active_spread"
-            :key="page.id"
+            :key="page.id ? page.id : index"
             class="_spreadNavigator--page"
             :class="{
               'is--active': page.id === page_opened_id,
