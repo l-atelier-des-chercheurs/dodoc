@@ -35,7 +35,7 @@
               :disabled="medias.length <= 1"
               @click="previewPlay"
             >
-              <sl-icon name="play-fill" :label="$t('play')" />
+              <sl-icon name="play-fill" />
               &nbsp;
               {{ $t("play") }}
             </button>
@@ -46,6 +46,8 @@
               :disabled="show_live_feed"
               @click="pausePreview"
             >
+              <sl-icon name="pause-fill" />
+              &nbsp;
               {{ $t("pause") }}
             </button>
           </div>
@@ -120,6 +122,9 @@
                 <sl-icon name="trash3" />
               </button>
             </div>
+
+            <div key="separator" class="_separator" />
+
             <div
               class="m_stopmotionpanel--medias--list--items"
               :class="{ 'is--current_single': show_live_feed }"
@@ -134,50 +139,30 @@
                 muted
                 :srcObject.prop="stream"
               />
+
+              <div
+                class="_onion_skin"
+                :key="'_onion_skin'"
+                v-if="show_live_feed"
+              >
+                <label class="u-label">
+                  <span>{{ $t("onion_skin").toLowerCase() }}</span>
+                  <input
+                    class="_onion_skin_range"
+                    type="range"
+                    min="0"
+                    max=".9"
+                    step="0.01"
+                    :value="onion_skin_opacity"
+                    @input="
+                      $emit('update:onion_skin_opacity', +$event.target.value)
+                    "
+                    data-use="onionskin"
+                  />
+                </label>
+              </div>
             </div>
           </transition-group>
-          <div class="m_stopmotionpanel--medias--validation">
-            <div class="m_stopmotionpanel--medias--validation--fpscounter">
-              <label class="u-label">{{ $t("img_per_second") }}</label>
-              <select v-model.number="frame_rate">
-                <option>2</option>
-                <option>4</option>
-                <option>8</option>
-                <option>15</option>
-                <option>24</option>
-                <option>30</option>
-              </select>
-            </div>
-
-            <div class="">
-              <button
-                type="button"
-                class="u-button u-button_bleuvert u-button_small"
-                v-if="medias.length > 0"
-                @click="testStopmotion"
-              >
-                <img
-                  :src="`${$root.publicPath}images/i_play.svg`"
-                  width="48"
-                  height="48"
-                  draggable="false"
-                />
-                {{ $t("assemble") }}
-              </button>
-            </div>
-
-            <!-- <button
-          type="button"
-          class="u-buttonLink u-padding_verysmall margin-none"
-          :class="{ 'is--active': show_advanced_menu }"
-          @mousedown.stop.prevent="
-            show_advanced_menu = !show_advanced_menu;
-          "
-          @touchstart.stop.prevent="
-            show_advanced_menu = !show_advanced_menu;
-          "
-        >{{ $t('advanced_options') }}</button>-->
-          </div>
         </div>
       </template>
 
@@ -212,6 +197,8 @@ export default {
     can_add_to_fav: Boolean,
     show_live_feed: Boolean,
     is_validating_stopmotion_video: Boolean,
+    onion_skin_opacity: Number,
+    stopmotion_frame_rate: Number,
   },
   components: {
     MediaValidationButtons,
@@ -223,7 +210,7 @@ export default {
 
       fetch_stopmotion_error: undefined,
 
-      frame_rate: 4,
+      frame_rate: this.stopmotion_frame_rate,
       validating_video_preview: false,
       show_previous_photo: false,
       media_is_being_sent: false,
@@ -236,6 +223,7 @@ export default {
   created() {},
   async mounted() {
     this.$eventHub.$on("stopmotion.addImage", this.appendToStopMotion);
+    this.$eventHub.$on("stopmotion.test", this.testStopmotion);
 
     const stopmotion = await this.$api
       .getFolder({
@@ -252,6 +240,12 @@ export default {
   },
 
   watch: {
+    frame_rate() {
+      this.$emit("update:stopmotion_frame_rate", this.frame_rate);
+    },
+    stopmotion_frame_rate() {
+      this.frame_rate = this.stopmotion_frame_rate;
+    },
     medias: function () {
       if (this.medias.length > 0) {
         if (this.show_live_feed) {
@@ -379,6 +373,7 @@ export default {
       this.validating_video_preview = true;
       this.$nextTick(() => {
         this.$nextTick(() => {
+          // strange bug where the window would scroll halfway up on click
           this.$el.scrollIntoView({ behavior: "auto", block: "end" });
         });
       });
@@ -482,6 +477,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .m_stopmotionpanel {
+  --img-width: 120px;
+
   position: relative;
   // height: 100%;
   display: flex;
@@ -541,7 +538,8 @@ export default {
   justify-content: center;
 
   // border-top: 2px solid black;
-  background-color: var(--c-noir);
+  background-color: black;
+  padding: 1px;
   color: white;
 
   // max-height: 120px;
@@ -586,8 +584,8 @@ export default {
     overscroll-behavior-y: contain;
     // .padding-verysmall;
 
-    padding: 0 calc(var(--spacing) / 2);
-    gap: calc(var(--spacing) / 4);
+    padding: 0;
+    gap: 1px;
     // margin-bottom: calc(var(--spacing) / 8);
 
     // .margin-verysmall;
@@ -648,7 +646,7 @@ export default {
     overflow: hidden;
     width: auto;
     flex: 0 0 auto;
-    width: 100px;
+    width: var(--img-width);
     height: auto;
 
     cursor: pointer;
@@ -692,12 +690,12 @@ export default {
       flex-basis: auto;
       // padding-right: 50px;
       width: auto;
-      border-radius: 4px;
+      // border-radius: 4px;
       overflow: hidden;
 
       video {
-        width: 100px;
-        height: 66px;
+        width: var(--img-width);
+        height: auto;
       }
       &::before {
         content: attr(data-content);
@@ -722,55 +720,6 @@ export default {
       height: 100%;
       width: auto;
     }
-  }
-}
-
-.m_stopmotionpanel--medias--validation {
-  // .bg-rouge;
-  flex: 0 0 auto;
-  padding: calc(var(--spacing) / 4);
-  margin: calc(var(--spacing) / 4);
-
-  background-color: white;
-
-  // border: calc(var(--spacing) / 4) solid var(--c-noir);
-  border-radius: calc(var(--spacing) / 4);
-
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-
-  gap: calc(var(--spacing) / 2);
-
-  --input-height: 2em;
-
-  > * {
-    flex: 0 0 auto;
-  }
-
-  .m_stopmotionpanel--medias--validation--fpscounter {
-    // .padding-sides-small;
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-
-    // select {
-    //   margin-left: calc(var(--spacing) / 8);
-    //   margin-right: calc(var(--spacing) / 8);
-
-    //   flex: 0 0 auto;
-    //   max-width: 50px;
-    //   font-size: var(--font-small);
-
-    //   // .bg-noir;
-    // }
-    // label {
-    //   margin-left: calc(var(--spacing) / 8);
-    //   margin-right: calc(var(--spacing) / 8);
-    //   font-size: 0.6em;
-    //   white-space: nowrap;
-    // }
   }
 }
 
@@ -854,5 +803,40 @@ export default {
 ._loader {
   background: rgba(0, 0, 0, 0.95);
   color: var(--color-capture);
+}
+
+._separator {
+  position: relative;
+  flex: 0 0 1px;
+  height: 100%;
+  // background: var(--c-noir);
+  // margin: calc(var(--spacing) / 4);
+}
+
+._onion_skin {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.05);
+
+  padding: calc(var(--spacing) / 4);
+  text-align: center;
+
+  .u-label {
+    color: white;
+  }
+
+  input {
+    width: 100%;
+    margin: 0;
+  }
+}
+._onion_skin_range {
+  direction: rtl;
 }
 </style>

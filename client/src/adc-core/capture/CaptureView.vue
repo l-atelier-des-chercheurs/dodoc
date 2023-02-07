@@ -202,32 +202,6 @@
                 <span>{{ $t("seconds") }}</span>
               </label>
             </div>
-
-            <div
-              v-if="
-                onion_skin_enabled &&
-                selected_mode === 'stopmotion' &&
-                onion_skin_img &&
-                stopmotion_slug &&
-                !is_validating_stopmotion_video
-              "
-              :key="'onion_skin'"
-              class="record_options"
-            >
-              <label class="u-label">
-                <span>{{ $t("onion_skin").toLowerCase() }}</span>
-                <input
-                  class="_onion_skin_range"
-                  type="range"
-                  v-model.number="onion_skin_opacity"
-                  min="0"
-                  max=".9"
-                  step="0.01"
-                  :title="onion_skin_opacity"
-                  data-use="onionskin"
-                />
-              </label>
-            </div>
           </transition-group>
 
           <transition name="scaleInFade" mode="out-in">
@@ -361,6 +335,8 @@
         :can_add_to_fav="can_add_to_fav"
         :show_live_feed.sync="show_live_feed"
         :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
+        :onion_skin_opacity.sync="onion_skin_opacity"
+        :stopmotion_frame_rate.sync="stopmotion_frame_rate"
         @saveMedia="($path) => $emit('insertMedias', [$path])"
         @close="closeStopmotionPanel"
         @showPreviousImage="onion_skin_img = $event"
@@ -677,7 +653,11 @@
                     type="button"
                     class="_enable_timelapse_button"
                     :class="{ 'is--active': timelapse_mode_enabled }"
-                    v-if="selected_mode === 'stopmotion' && !timelapse_event"
+                    v-if="
+                      selected_mode === 'stopmotion' &&
+                      !timelapse_event &&
+                      !delay_event
+                    "
                     :content="$t('timelapse')"
                     @click="timelapse_mode_enabled = !timelapse_mode_enabled"
                   >
@@ -748,40 +728,6 @@
                     </svg>
                   </button>
                 </transition>
-
-                <transition name="fade_fast" mode="out-in">
-                  <button
-                    type="button"
-                    class="_enable_timelapse_button"
-                    v-if="
-                      selected_mode === 'stopmotion' &&
-                      onion_skin_img &&
-                      show_live_feed &&
-                      is_making_stopmotion &&
-                      !timelapse_event
-                    "
-                    :class="{ 'is--active': onion_skin_enabled }"
-                    :content="$t('onion_skin')"
-                    @click="onion_skin_enabled = !onion_skin_enabled"
-                  >
-                    <svg
-                      version="1.1"
-                      class="inline-svg margin-right-verysmall"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                      x="0px"
-                      y="0px"
-                      width="81px"
-                      height="81px"
-                      viewBox="0 0 81 81"
-                      style="enable-background: new 0 0 81 81"
-                      xml:space="preserve"
-                    >
-                      <rect x="20" y="20" width="30" height="30" />
-                      <rect x="30" y="30" width="30" height="30" />
-                    </svg>
-                  </button>
-                </transition>
               </div>
               <div>
                 <div v-if="selected_mode === 'video'" class="_videoEq">
@@ -810,15 +756,47 @@
                   </span>
                 </div>
 
-                <button
-                  type="button"
-                  v-if="selected_mode === 'stopmotion' && !is_making_stopmotion"
-                  disabled
-                  @click="show_stopmotion_list = !show_stopmotion_list"
-                  class="bg-bleumarine font-small"
-                >
-                  <span class>{{ $t("stopmotion_list") }}</span>
-                </button>
+                <template v-if="selected_mode === 'stopmotion'">
+                  <button
+                    type="button"
+                    v-if="!is_making_stopmotion"
+                    disabled
+                    @click="show_stopmotion_list = !show_stopmotion_list"
+                    class="bg-bleumarine font-small"
+                  >
+                    <span class>{{ $t("stopmotion_list") }}</span>
+                  </button>
+
+                  <div v-else class="_stopmotionValidation">
+                    <div class="_stopmotionValidation--fpscounter">
+                      <label class="u-label">{{ $t("img_per_second") }}</label>
+                      <select v-model.number="stopmotion_frame_rate">
+                        <option>2</option>
+                        <option>4</option>
+                        <option>8</option>
+                        <option>15</option>
+                        <option>24</option>
+                        <option>30</option>
+                      </select>
+                    </div>
+
+                    <div class="">
+                      <button
+                        type="button"
+                        class="u-button u-button_bleuvert u-button_small"
+                        @click="testStopmotion"
+                      >
+                        <img
+                          :src="`${$root.publicPath}images/i_play.svg`"
+                          width="48"
+                          height="48"
+                          draggable="false"
+                        />
+                        {{ $t("assemble") }}
+                      </button>
+                    </div>
+                  </div>
+                </template>
 
                 <div
                   v-if="selected_mode === 'vecto'"
@@ -1081,6 +1059,7 @@ export default {
       timer_recording_in_seconds: false,
       recording_timer_interval: undefined,
 
+      stopmotion_frame_rate: 4,
       timelapse_mode_enabled: false,
       timelapse_interval: 2,
       timelapse_event: false,
@@ -1105,7 +1084,6 @@ export default {
       show_live_feed: false,
       show_stopmotion_list: false,
 
-      onion_skin_enabled: false,
       onion_skin_img: false,
       onion_skin_opacity: 0,
 
@@ -1364,7 +1342,9 @@ export default {
           //   .error("DEBUG error : failed to get video actual size");
         });
     },
-
+    testStopmotion() {
+      this.$eventHub.$emit("stopmotion.test");
+    },
     getVideoActualSize() {
       return new Promise((resolve, reject) => {
         //Wait for dimensions if they don't show right away
@@ -2358,8 +2338,53 @@ export default {
   color: var(--c-rouge);
 }
 
-._onion_skin_range {
-  direction: rtl;
-  min-width: 6rem !important;
+._stopmotionValidation {
+  // .bg-rouge;
+  flex: 0 0 auto;
+  padding: calc(var(--spacing) / 4);
+  margin: 0;
+  // margin: calc(var(--spacing) / 4);
+
+  // background-color: white;
+
+  // border: calc(var(--spacing) / 4) solid var(--c-noir);
+  border-radius: calc(var(--spacing) / 4);
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+
+  gap: calc(var(--spacing) / 2);
+
+  --input-height: 2em;
+
+  > * {
+    flex: 0 0 auto;
+  }
+
+  ._stopmotionValidation--fpscounter {
+    // .padding-sides-small;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+
+    // select {
+    //   margin-left: calc(var(--spacing) / 8);
+    //   margin-right: calc(var(--spacing) / 8);
+
+    //   flex: 0 0 auto;
+    //   max-width: 50px;
+    //   font-size: var(--font-small);
+
+    //   // .bg-noir;
+    // }
+    // label {
+    //   margin-left: calc(var(--spacing) / 8);
+    //   margin-right: calc(var(--spacing) / 8);
+    //   font-size: 0.6em;
+    //   white-space: nowrap;
+    // }
+  }
 }
 </style>

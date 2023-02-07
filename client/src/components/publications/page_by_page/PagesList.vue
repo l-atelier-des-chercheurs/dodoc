@@ -144,7 +144,11 @@ export default {
           spreads.push([false, this.pages[index]]);
           index += 1;
         } else {
-          spreads.push([this.pages[index], this.pages[index + 1]]);
+          const left_page = this.pages[index];
+          const right_page =
+            index + 1 < this.pages.length ? this.pages[index + 1] : false;
+
+          spreads.push([left_page, right_page]);
           index += 2;
         }
       }
