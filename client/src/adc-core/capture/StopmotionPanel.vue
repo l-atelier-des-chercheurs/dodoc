@@ -122,29 +122,6 @@
             </div>
 
             <div
-              class="m_stopmotionpanel--medias--list--items _onion_skin"
-              :key="'_onion_skin'"
-              :class="{ 'is--disabled': !show_live_feed }"
-              @click="!show_live_feed ? showVideoFeed() : ''"
-            >
-              <label class="u-label">
-                <span>{{ $t("onion_skin").toLowerCase() }}</span>
-                <input
-                  class="_onion_skin_range"
-                  type="range"
-                  min="0"
-                  max=".9"
-                  step="0.01"
-                  :value="onion_skin_opacity"
-                  @change="
-                    $emit('update:onion_skin_opacity', +$event.target.value)
-                  "
-                  data-use="onionskin"
-                />
-              </label>
-            </div>
-
-            <div
               class="m_stopmotionpanel--medias--list--items"
               :class="{ 'is--current_single': show_live_feed }"
               @click="showVideoFeed"
@@ -158,6 +135,28 @@
                 muted
                 :srcObject.prop="stream"
               />
+
+              <div
+                class="_onion_skin"
+                :key="'_onion_skin'"
+                v-if="show_live_feed"
+              >
+                <label class="u-label">
+                  <span>{{ $t("onion_skin").toLowerCase() }}</span>
+                  <input
+                    class="_onion_skin_range"
+                    type="range"
+                    min="0"
+                    max=".9"
+                    step="0.01"
+                    :value="onion_skin_opacity"
+                    @input="
+                      $emit('update:onion_skin_opacity', +$event.target.value)
+                    "
+                    data-use="onionskin"
+                  />
+                </label>
+              </div>
             </div>
           </transition-group>
           <div class="m_stopmotionpanel--medias--validation">
@@ -884,24 +883,17 @@ export default {
 }
 
 ._onion_skin {
-  // position: absolute;
-  // inset: 0;
+  position: absolute;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  // background: rgba(255, 255, 255, 0.85);
+
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.25);
 
   padding: calc(var(--spacing) / 4);
   text-align: center;
-
-  &.is--disabled {
-    filter: grayscale(100%);
-    cursor: pointer;
-
-    > * {
-      pointer-events: none;
-    }
-  }
 
   .u-label {
     color: white;
@@ -910,10 +902,6 @@ export default {
   input {
     width: 100%;
     margin: 0;
-  }
-
-  &::before {
-    display: none;
   }
 }
 ._onion_skin_range {
