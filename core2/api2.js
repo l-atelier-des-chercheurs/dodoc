@@ -59,7 +59,7 @@ module.exports = (function () {
       ],
       _generalPasswordCheck,
       _authenticateToken,
-      _exportFile
+      _exportRecipeToParent
     );
     app.patch(
       [
@@ -491,21 +491,39 @@ module.exports = (function () {
       res.status(500).send(err);
     }
   }
-  async function _exportFile(req, res, next) {
-    const { path_to_folder, data } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder, data });
+  async function _exportRecipeToParent(req, res, next) {
+    const { path_to_folder, path_to_parent_folder, data } =
+      utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, path_to_parent_folder, data });
 
     const instructions = data;
 
     try {
       // DISPATCH TASKS
-      exporter.createTask({ path_to_folder, instructions });
+      const exported_meta_filename_in_parent = await exporter.createTask({
+        path_to_folder,
+        path_to_parent_folder,
+        instructions,
+      });
 
-      // BROADCAST PROGRESS
+      dev.logpackets({
+        status: `exported file`,
+        path_to_parent_folder,
+        exported_meta_filename_in_parent,
+      });
+      res.status(200).json({ meta_filename: exported_meta_filename_in_parent });
 
-      // RETURN WHEN FINISHED
-
-      // notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
+      const meta = await file.getFile({
+        path_to_folder: path_to_parent_folder,
+        path_to_meta: path.join(
+          path_to_parent_folder,
+          exported_meta_filename_in_parent
+        ),
+      });
+      notifier.emit("fileCreated", path_to_parent_folder, {
+        path_to_folder: path_to_parent_folder,
+        meta,
+      });
     } catch (err) {
       dev.error("Failed to export file: " + err);
       res.status(500).send(err);

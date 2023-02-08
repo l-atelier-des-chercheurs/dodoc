@@ -168,11 +168,11 @@ module.exports = (function () {
         });
 
         let file = null;
-        let additional_meta = {};
+        let user_additional_meta = {};
 
         form.on("field", (name, value) => {
           dev.logverbose(`Field gotten`, name, value);
-          additional_meta = JSON.parse(value);
+          user_additional_meta = JSON.parse(value);
         });
 
         // every time a file has been uploaded successfully,
@@ -203,7 +203,7 @@ module.exports = (function () {
           return resolve({
             originalFilename: file.originalFilename,
             path_to_temp_file: file.filepath,
-            additional_meta,
+            user_additional_meta,
           });
         });
 

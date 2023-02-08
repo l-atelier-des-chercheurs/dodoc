@@ -10,8 +10,14 @@ const utils = require("./utils"),
   file = require("./file");
 
 module.exports = (function () {
+  let all_tasks = [];
+
   const API = {
-    createTask: async ({ path_to_folder, instructions }) => {
+    createTask: async ({
+      path_to_folder,
+      path_to_parent_folder,
+      instructions,
+    }) => {
       dev.logfunction({ path_to_folder });
 
       const folder_meta = await folder.getFolder({ path_to_folder });
@@ -27,24 +33,38 @@ module.exports = (function () {
         );
         const frame_rate = instructions.frame_rate || 4;
 
-        // todo start task
-
-        const new_video_name = await _createStopmotionFromImages({
-          path_to_folder,
+        const { full_path_to_new_video } = await _createStopmotionFromImages({
           images,
           frame_rate,
         });
-        debugger;
+
+        const desired_filename = "stopmotion.mp4";
+        const meta_filename = await file.addFileToFolder({
+          full_path_to_file: full_path_to_new_video,
+          desired_filename,
+          path_to_folder: path_to_parent_folder,
+        });
+
+        // empty cache
+
+        return meta_filename;
+      } else {
+        throw new Error(`missing_recipe`);
       }
     },
   };
 
-  function _createStopmotionFromImages({ path_to_folder, images, frame_rate }) {
+  function _createStopmotionFromImages({ images, frame_rate }) {
     return new Promise(async function (resolve, reject) {
       // we need to copy all images to a temp folder with the right naming
-      const full_path_to_folder_in_cache = await copyToCacheAndRenameImages({
+
+      let progress_pc = 0;
+
+      const full_path_to_folder_in_cache = await _copyToCacheAndRenameImages({
         images,
       });
+
+      progress_pc = 10;
 
       const width = images[0].$infos.width || 1280;
       const height = images[0].$infos.height || 720;
@@ -54,10 +74,14 @@ module.exports = (function () {
         +new Date() +
         (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2) +
         ".mp4";
-      const full_path_to_new_video = utils.getPathToUserContent(
-        path_to_folder,
+      const full_path_to_new_video = path.join(
+        full_path_to_folder_in_cache,
         new_video_name
       );
+
+      const _removeAllImages = async () => {
+        await fs.remove(path.join(full_path_to_folder_in_cache, "*.jpeg"));
+      };
 
       const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
         .input(path.join(full_path_to_folder_in_cache, "img-%05d.jpeg"))
@@ -76,22 +100,35 @@ module.exports = (function () {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
         })
         .on("progress", (progress) => {
+          progress_pc = Math.round(
+            10 +
+              Math.min(1, progress.frames / (images.length / frame_rate)) *
+                30 *
+                0.85
+          );
+
+          dev.logverbose("Video progress: " + progress_pc);
           // _notifyFfmpegProgress({ socket, progress });
         })
-        .on("end", () => {
-          return resolve(new_video_name);
+        .on("end", async () => {
+          dev.logverbose("Video ended");
+          progress_pc = 100;
+
+          await _removeAllImages();
+          return resolve({ full_path_to_new_video });
         })
-        .on("error", function (err, stdout, stderr) {
+        .on("error", async (err, stdout, stderr) => {
           dev.error("An error happened: " + err.message);
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
+          await _removeAllImages();
           return reject(error);
         })
         .save(full_path_to_new_video);
     });
   }
 
-  async function copyToCacheAndRenameImages({ images }) {
+  async function _copyToCacheAndRenameImages({ images }) {
     // generate random folder name
     let folder_name =
       "stopmotion_" +

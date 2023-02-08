@@ -637,13 +637,17 @@ img {
 }
 .justCaptured {
   &-enter-active {
-    // &-leave-active {
-    opacity: 1;
-    transition: all 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
   }
-  &-enter,
+  &-enter {
+    transform: scale(1.03);
+    // transform: scale(1.03) translateY(2rem);
+  }
+
+  &-leave-active {
+    transition: opacity 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
   &-leave-to {
-    transform: scale(1.05) translateY(2rem);
     opacity: 0;
   }
 }

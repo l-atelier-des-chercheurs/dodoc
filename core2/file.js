@@ -22,7 +22,7 @@ module.exports = (function () {
       // if req.body has content, this means there is no files to process
       if (Object.keys(req.body) && Object.keys(req.body).length) {
         additional_meta = req.body;
-        extracted_meta = await _extractAdditionalMetaFromFile({
+        extracted_meta = await _initMeta({
           additional_meta,
         });
 
@@ -35,7 +35,7 @@ module.exports = (function () {
         const {
           originalFilename,
           path_to_temp_file,
-          additional_meta: _additional_meta,
+          user_additional_meta: _additional_meta,
         } = await utils
           .handleForm({
             path_to_folder,
@@ -47,7 +47,13 @@ module.exports = (function () {
 
         additional_meta = _additional_meta;
 
-        // filename, filepath, additional_meta
+        // await this.copyFileToFolderAndCreate({
+        //   additional_meta,
+        //   originalFilename,
+        //   path_to_folder,
+        //   path_to_temp_file,
+        // });
+
         // make url-compatible media filenames
         const { name, ext } = path.parse(originalFilename);
         const slugged_original_filename = utils.slug(name) + ext;
@@ -60,10 +66,9 @@ module.exports = (function () {
           throw err;
         });
 
-        extracted_meta = await _extractAdditionalMetaFromFile({
+        extracted_meta = await _initMeta({
           additional_meta,
           filename: new_filename,
-          filepath: new_path,
         });
 
         meta_filename = new_filename + ".meta.txt";
@@ -286,13 +291,50 @@ module.exports = (function () {
       }
     },
 
+    addFileToFolder: async ({
+      full_path_to_file,
+      desired_filename,
+      path_to_folder,
+    }) => {
+      dev.logfunction({ full_path_to_file, path_to_folder });
+
+      let new_filename = await _preventFileOverride({
+        path_to_folder,
+        original_filename: desired_filename,
+      });
+
+      const destination_path = utils.getPathToUserContent(
+        path_to_folder,
+        new_filename
+      );
+      await fs.copy(full_path_to_file, destination_path);
+
+      const meta = await _initMeta({
+        additional_meta: {
+          $date_created: +new Date(),
+        },
+        filename: new_filename,
+      });
+
+      const meta_filename = new_filename + ".meta.txt";
+
+      await utils.saveMetaAtPath({
+        relative_path: path_to_folder,
+        file_slug: meta_filename,
+        meta,
+      });
+
+      return meta_filename;
+    },
+
     duplicateFile: async ({
       path_to_folder,
       meta_filename,
       path_to_meta,
       data,
     }) => {
-      // get file
+      dev.logfunction({ path_to_folder, meta_filename, path_to_meta, data });
+
       let meta = await utils.readMetaFile(path_to_meta);
 
       if (meta.hasOwnProperty("$media_filename")) {
@@ -396,11 +438,7 @@ module.exports = (function () {
     return new_filename_without_ext + ext;
   }
 
-  async function _extractAdditionalMetaFromFile({
-    additional_meta,
-    filename,
-    filepath,
-  }) {
+  async function _initMeta({ additional_meta = {}, filename }) {
     dev.logfunction();
 
     let new_meta = {};

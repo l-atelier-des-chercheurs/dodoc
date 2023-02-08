@@ -407,8 +407,8 @@ export default {
       this.validating_video_preview = false;
       this.$emit("update:show_live_feed", true);
     },
-    exportStopmotion: function () {
-      this.$api.exportFolder({
+    exportStopmotion: async function () {
+      await this.$api.exportFolder({
         path: this.current_stopmotion_path,
         instructions: {
           recipe: "stopmotion",
