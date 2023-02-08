@@ -90,7 +90,7 @@ export default {
   background-color: #000;
 
   // border: 10px solid var(--c-rouge);
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
 
   display: flex;
   justify-content: center;
