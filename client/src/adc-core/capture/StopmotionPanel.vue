@@ -107,7 +107,7 @@
                   !show_live_feed,
               }"
             >
-              <MediaContent :file="media" :resolution="180" />
+              <MediaContent :file="media" :resolution="240" />
 
               <button
                 type="button"
