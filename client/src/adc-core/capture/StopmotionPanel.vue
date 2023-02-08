@@ -174,10 +174,8 @@
         v-if="validating_video_preview"
         :media_is_being_sent="media_is_being_sent"
         :cancelButtonIsBackButton="true"
-        :can_add_to_fav="can_add_to_fav"
         @cancel="backToStopmotion"
-        @save="save()"
-        @save_and_fav="saveAndFav()"
+        @save="exportStopmotion()"
       />
 
       <div class="_loader" v-if="media_is_being_sent">
@@ -194,7 +192,6 @@ export default {
   props: {
     current_stopmotion_path: String,
     stream: MediaStream,
-    can_add_to_fav: Boolean,
     show_live_feed: Boolean,
     is_validating_stopmotion_video: Boolean,
     onion_skin_opacity: Number,
@@ -378,34 +375,6 @@ export default {
         });
       });
     },
-    assembleStopmotionMedias: function () {
-      console.log("METHODS • StopmotionPanel: assembleStopmotionMedias");
-
-      // const list_media_names = this.medias.map((x) => x.media_filename);
-
-      // todo assemble to video
-
-      // this.$root
-      //   .createMedia({
-      //     slugFolderName: this.slugFolderName,
-      //     type: this.type,
-      //     rawData: list_media_names,
-      //     additionalMeta: {
-      //       type: "stopmotion",
-      //       slugStopmotionName: this.stopmotiondata.slugFolderName,
-      //       frameRate: this.frameRate,
-      //     },
-      //   })
-      //   .then((mdata) => {
-      //     console.log("METHODS • StopmotionPanel: newStopmotionVideo");
-      //     this.validating_video_preview = mdata;
-      //     this.media_is_being_sent = false;
-      //   });
-      // this.previousFrameRate = this.frameRate;
-      // this.validating_video_preview = false;
-      // this.media_is_being_sent = true;
-      // this.$emit("update:show_live_feed", false);
-    },
     showVideoFeed() {
       this.show_previous_photo = this.medias[this.medias.length - 1];
       this.$emit("update:show_live_feed", true);
@@ -438,21 +407,12 @@ export default {
       this.validating_video_preview = false;
       this.$emit("update:show_live_feed", true);
     },
-    save: function () {
-      // this.$emit("saveMedia", this.validating_video_preview.metaFileName);
-      // this.show_previous_photo = false;
-      // this.validating_video_preview = false;
-      // this.$nextTick(() => {
-      //   this.$emit("close");
-      // });
-    },
-    saveAndFav: function () {
-      // this.$emit("saveMedia", this.validating_video_preview.metaFileName);
-      // this.show_previous_photo = false;
-      // this.validating_video_preview = false;
-      // this.$nextTick(() => {
-      //   this.$emit("close");
-      // });
+    exportStopmotion: function () {
+      this.show_previous_photo = false;
+      this.validating_video_preview = false;
+      this.$nextTick(() => {
+        this.$emit("close");
+      });
     },
     async removeMedia(path) {
       // remove from stopmotion list
@@ -809,6 +769,7 @@ export default {
   position: relative;
   flex: 0 0 1px;
   height: 100%;
+  z-index: -1;
   // background: var(--c-noir);
   // margin: calc(var(--spacing) / 4);
 }
@@ -821,8 +782,8 @@ export default {
   align-items: center;
 
   backdrop-filter: blur(2px);
-  background: rgba(0, 0, 0, 0.05);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.25);
+  // background: rgba(255, 255, 255, 0.05);
 
   padding: calc(var(--spacing) / 4);
   text-align: center;

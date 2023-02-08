@@ -49,7 +49,6 @@
 
         <CaptureView
           v-if="enable_capture_mode"
-          :can_add_to_fav="false"
           :available_modes="['photo']"
           :return_temp_media="true"
           :must_validate_media="false"
