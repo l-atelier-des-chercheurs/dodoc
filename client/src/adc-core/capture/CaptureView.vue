@@ -573,6 +573,9 @@
                     type="button"
                     v-if="!is_recording"
                     class="u-button u-button_orange _captureButton"
+                    :class="{
+                      'is--active': capture_button_pressed,
+                    }"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="setCaptureInit()"
@@ -2063,6 +2066,10 @@ export default {
   height: auto;
   flex: 0 0 auto;
   margin: 0 calc(var(--spacing) / 4);
+
+  &.is--active {
+    background: var(--c-rouge);
+  }
 
   > img {
     flex: 0 0 auto;
