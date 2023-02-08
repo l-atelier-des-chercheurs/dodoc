@@ -8,6 +8,7 @@ const folder = require("./folder"),
   notifier = require("./notifier"),
   utils = require("./utils"),
   cache = require("./cache"),
+  exporter = require("./exporter"),
   auth = require("./auth");
 
 module.exports = (function () {
@@ -50,6 +51,15 @@ module.exports = (function () {
       _generalPasswordCheck,
       _authenticateToken,
       _uploadFile
+    );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/_export",
+        "/_api2/:folder_type/:folder_slug/:subfolder_type/:subfolder_slug/_export",
+      ],
+      _generalPasswordCheck,
+      _authenticateToken,
+      _exportFile
     );
     app.patch(
       [
@@ -115,6 +125,7 @@ module.exports = (function () {
       _generalPasswordCheck,
       _getFolder
     );
+
     app.patch(
       [
         "/_api2/:folder_type/:folder_slug",
@@ -477,6 +488,26 @@ module.exports = (function () {
       notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
     } catch (err) {
       dev.error("Failed to upload file: " + err);
+      res.status(500).send(err);
+    }
+  }
+  async function _exportFile(req, res, next) {
+    const { path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, data });
+
+    const instructions = data;
+
+    try {
+      // DISPATCH TASKS
+      exporter.createTask({ path_to_folder, instructions });
+
+      // BROADCAST PROGRESS
+
+      // RETURN WHEN FINISHED
+
+      // notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
+    } catch (err) {
+      dev.error("Failed to export file: " + err);
       res.status(500).send(err);
     }
   }

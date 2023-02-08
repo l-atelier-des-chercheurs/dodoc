@@ -21,6 +21,9 @@ module.exports = (function () {
     getPathToUserContent(...paths) {
       return path.join(global.pathToUserContent, ...paths);
     },
+    getPathToCache(...paths) {
+      return path.join(global.pathToCache, ...paths);
+    },
 
     slug(term) {
       dev.logfunction({ term });
@@ -164,18 +167,12 @@ module.exports = (function () {
           maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
         });
 
-        let socketid = "";
         let file = null;
         let additional_meta = {};
 
         form.on("field", (name, value) => {
           dev.logverbose(`Field gotten`, name, value);
           additional_meta = JSON.parse(value);
-
-          // if (name === "socketid") socketid = value;
-          // try {
-          //   field_values[name] = JSON.parse(value);
-          // } catch (e) {}
         });
 
         // every time a file has been uploaded successfully,

@@ -308,6 +308,15 @@ hr {
   // gap: calc(var(--spacing) / 2);
 }
 
+body ::v-deep {
+  .alertify-logs {
+    pointer-events: none !important;
+    > * {
+      pointer-events: none !important;
+    }
+  }
+}
+
 .authorLabel {
   flex-basis: auto;
   display: flex;

@@ -408,6 +408,15 @@ export default {
       this.$emit("update:show_live_feed", true);
     },
     exportStopmotion: function () {
+      this.$api.exportFolder({
+        path: this.current_stopmotion_path,
+        instructions: {
+          recipe: "stopmotion",
+          field: "images_list",
+          frame_rate: this.frame_rate,
+        },
+      });
+
       this.show_previous_photo = false;
       this.validating_video_preview = false;
       this.$nextTick(() => {

@@ -76,9 +76,10 @@ export default function () {
           //     _args[0].changed_data?.$content.slice(0, 15) +
           //     "[…] (truncated content)";
           if (this.debug_mode)
-            this.$alertify
-              .delay(4000)
-              .log(`⤓ ` + eventName + JSON.stringify(_args));
+            this.$alertify.delay(4000).log(
+              `⤓ ` + eventName
+              // + JSON.stringify(_args)
+            );
         });
         this.socket.on("folderCreated", this.folderCreated);
         this.socket.on("folderUpdated", this.folderUpdated);
@@ -425,6 +426,18 @@ export default function () {
           this.onError(err);
           throw err;
         });
+
+        return response.data.meta_filename;
+      },
+      async exportFolder({ path, instructions }) {
+        path = `${path}/_export`;
+
+        const response = await this.$axios
+          .post(path, instructions)
+          .catch((err) => {
+            this.onError(err);
+            throw err;
+          });
 
         return response.data.meta_filename;
       },

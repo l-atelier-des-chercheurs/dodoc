@@ -72,7 +72,10 @@ async function setupApp() {
   // dev.logfunction(`une chaine et un`, { objet: "à la suite" });
   // dev.logfunction(["un", "array", "de", "valeurs"]);
 
-  global.tempStorage = getPath.getCacheFolder();
+  global.pathToCache = path.join(
+    getPath.getCacheFolder(),
+    global.settings.cacheDirname
+  );
   global.ffmpeg_processes = [];
 
   if (global.settings.cache_content === true) cache.init();
@@ -170,7 +173,7 @@ async function contentFolderIsValid(full_path) {
 }
 
 async function cleanCacheFolder() {
-  let cachePath = path.join(global.tempStorage, global.settings.cacheDirname);
+  let cachePath = utils.getPathToCache();
   dev.log(`Emptying temp folder ${cachePath}`);
   await fs.emptyDir(cachePath).catch((err) => {
     throw err;
