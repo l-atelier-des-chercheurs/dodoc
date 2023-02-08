@@ -57,7 +57,7 @@ module.exports = (function () {
           originalFilename: slugged_original_filename,
           path_to_temp_file,
         }).catch((err) => {
-          return reject(err);
+          throw err;
         });
 
         extracted_meta = await _extractAdditionalMetaFromFile({
