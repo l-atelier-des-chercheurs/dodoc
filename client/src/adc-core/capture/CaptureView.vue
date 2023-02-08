@@ -332,7 +332,6 @@
         v-if="stopmotion_slug"
         :current_stopmotion_path="`${slugFolderName}/stopmotions/${stopmotion_slug}`"
         :stream="stream"
-        :can_add_to_fav="can_add_to_fav"
         :show_live_feed.sync="show_live_feed"
         :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
         :onion_skin_opacity.sync="onion_skin_opacity"
@@ -915,7 +914,6 @@
               </div>
 
               <MediaValidationButtons
-                :can_add_to_fav="can_add_to_fav"
                 :media_is_being_sent="media_is_being_sent"
                 :media_being_sent_percent="media_being_sent_percent"
                 @cancel="cancelValidation()"
@@ -974,10 +972,6 @@ export default {
     return_temp_media: {
       type: Boolean,
       default: false,
-    },
-    can_add_to_fav: {
-      type: Boolean,
-      default: true,
     },
     must_validate_media: {
       type: Boolean,
