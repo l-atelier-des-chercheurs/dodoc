@@ -762,9 +762,8 @@
                   <button
                     type="button"
                     v-if="!is_making_stopmotion"
-                    disabled
                     @click="show_stopmotion_list = !show_stopmotion_list"
-                    class="bg-bleumarine font-small"
+                    class="u-button u-button_bleumarine u-button_small"
                   >
                     <span class>{{ $t("stopmotion_list") }}</span>
                   </button>
@@ -931,7 +930,7 @@
 
     <StopmotionList
       v-if="show_stopmotion_list && !is_making_stopmotion"
-      :slugFolderName="slugFolderName"
+      :project_path="path"
       @loadStopmotion="loadStopmotion"
     />
   </div>
@@ -1370,7 +1369,12 @@ export default {
         });
       });
     },
-    loadStopmotion(stopmotion_slug) {
+    loadStopmotion(stopmotion_path) {
+      const stopmotion_slug = stopmotion_path.substring(
+        stopmotion_path.lastIndexOf("/") + 1
+      );
+      debugger;
+
       this.$emit("openStopmotion", stopmotion_slug);
       // this.current_stopmotion_path = slugFolderName;
       // this.ask_before_leaving_capture = true;

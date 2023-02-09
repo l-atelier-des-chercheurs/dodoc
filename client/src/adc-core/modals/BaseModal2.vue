@@ -40,8 +40,11 @@ export default {
   created() {},
   mounted() {
     this.show_modal = true;
+    document.body.style.overflow = "hidden";
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    document.body.style.overflow = "";
+  },
   watch: {},
   computed: {},
   methods: {
@@ -83,6 +86,9 @@ export default {
     margin: 0 auto;
     max-width: 480px;
     width: 100%;
+
+    max-height: calc(100vh - calc(var(--spacing) * 2));
+    overflow: auto;
   }
 }
 
