@@ -59,7 +59,7 @@ module.exports = (function () {
       ],
       _generalPasswordCheck,
       _authenticateToken,
-      _exportRecipeToParent
+      _exportToParent
     );
     app.patch(
       [
@@ -491,7 +491,7 @@ module.exports = (function () {
       res.status(500).send(err);
     }
   }
-  async function _exportRecipeToParent(req, res, next) {
+  async function _exportToParent(req, res, next) {
     const { path_to_folder, path_to_parent_folder, data } =
       utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, path_to_parent_folder, data });
@@ -505,6 +505,12 @@ module.exports = (function () {
         path_to_parent_folder,
         instructions,
       });
+
+      // TODO
+      // 1. create a task with parameters: settings / author that started it / source folder path / destination slug path  / time created / etc.
+      // 2. return ID of task to client
+      // 3. using this ID, client can join a room to get progress on task
+      // 4. when task finishes, it notifies client with notifier and also triggers a fileCreated
 
       dev.logpackets({
         status: `exported file`,

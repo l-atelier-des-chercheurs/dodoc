@@ -20,39 +20,52 @@ module.exports = (function () {
     }) => {
       dev.logfunction({ path_to_folder });
 
-      const folder_meta = await folder.getFolder({ path_to_folder });
-      const files = await file.getFiles({ path_to_folder });
-
-      const recipe = instructions.recipe;
-
-      if (recipe === "stopmotion") {
-        const field = instructions.field;
-        const list_of_metas_in_order = folder_meta[field];
-        const images = list_of_metas_in_order.map((lf) =>
-          files.find((f) => f.$path.endsWith("/" + lf))
-        );
-        const frame_rate = instructions.frame_rate || 4;
-
-        const { full_path_to_new_video } = await _createStopmotionFromImages({
-          images,
-          frame_rate,
+      if (instructions.recipe === "stopmotion") {
+        const meta_filename = await _makeAndSaveStopmotionFrom({
+          path_to_folder,
+          path_to_parent_folder,
+          field: instructions.field,
+          frame_rate: instructions.frame_rate,
         });
-
-        const desired_filename = "stopmotion.mp4";
-        const meta_filename = await file.addFileToFolder({
-          full_path_to_file: full_path_to_new_video,
-          desired_filename,
-          path_to_folder: path_to_parent_folder,
-        });
-
-        // empty cache
-
         return meta_filename;
       } else {
         throw new Error(`missing_recipe`);
       }
     },
   };
+
+  async function _makeAndSaveStopmotionFrom({
+    path_to_folder,
+    path_to_parent_folder,
+    field,
+    frame_rate = 4,
+  }) {
+    const images = await _loadFilesInOrder({ path_to_folder, field });
+    const { full_path_to_new_video } = await _createStopmotionFromImages({
+      images,
+      frame_rate,
+    });
+
+    const desired_filename = "stopmotion.mp4";
+    const meta_filename = await file.addFileToFolder({
+      full_path_to_file: full_path_to_new_video,
+      desired_filename,
+      path_to_folder: path_to_parent_folder,
+    });
+
+    return meta_filename;
+  }
+
+  async function _loadFilesInOrder({ path_to_folder, field }) {
+    const folder_meta = await folder.getFolder({ path_to_folder });
+    const files = await file.getFiles({ path_to_folder });
+
+    const list_of_metas_in_order = folder_meta[field];
+    const selected_files = list_of_metas_in_order.map((lf) =>
+      files.find((f) => f.$path.endsWith("/" + lf))
+    );
+    return selected_files;
+  }
 
   function _createStopmotionFromImages({ images, frame_rate }) {
     return new Promise(async function (resolve, reject) {
@@ -106,9 +119,10 @@ module.exports = (function () {
                 30 *
                 0.85
           );
-
-          dev.logverbose("Video progress: " + progress_pc);
-          // _notifyFfmpegProgress({ socket, progress });
+          // notifier.emit("fileCreated", path_to_parent_folder, {
+          //   path_to_folder: path_to_parent_folder,
+          //   meta,
+          // });
         })
         .on("end", async () => {
           dev.logverbose("Video ended");
