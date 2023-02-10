@@ -90,6 +90,7 @@ export default function () {
         this.socket.on("fileRemoved", this.fileRemoved);
 
         this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
+        this.socket.on("taskStatus", this.taskStatus);
       },
       disconnectSocket() {
         this.socket.disconnect();
@@ -254,6 +255,9 @@ export default function () {
           Object.entries(changed_data).map(([key, value]) => {
             this.$set(this.store["_admin"], key, value);
           });
+      },
+      taskStatus({ task_id, message }) {
+        this.$eventHub.$emit("task.status", { task_id, message });
       },
       async restartDodoc() {
         return await this.$axios.post(`_admin`);
@@ -439,7 +443,7 @@ export default function () {
             throw err;
           });
 
-        return response.data.meta_filename;
+        return response.data.task_id;
       },
       async updateMeta({ path, new_meta }) {
         const response = await this.$axios

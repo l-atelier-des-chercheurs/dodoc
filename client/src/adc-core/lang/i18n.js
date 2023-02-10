@@ -339,6 +339,9 @@ export default function () {
 
         pick_a_camera: "Sélectionnez une caméra",
         resolutions: "Résolutions",
+        screen_capture: "Capture d’écran",
+        cant_pick_resolution_when_screen_capture:
+          "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
 
         take_picture: "Prendre une photo",
         delay: "Retardateur",

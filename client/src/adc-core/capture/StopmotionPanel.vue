@@ -408,7 +408,7 @@ export default {
       this.$emit("update:show_live_feed", true);
     },
     exportStopmotion: async function () {
-      await this.$api.exportFolder({
+      const task_id = await this.$api.exportFolder({
         path: this.current_stopmotion_path,
         instructions: {
           recipe: "stopmotion",
@@ -417,11 +417,14 @@ export default {
         },
       });
 
-      this.show_previous_photo = false;
-      this.validating_video_preview = false;
-      this.$nextTick(() => {
-        this.$emit("close");
-      });
+      // track progress
+      this.$api.join({ room: "task_" + task_id });
+
+      // this.show_previous_photo = false;
+      // this.validating_video_preview = false;
+      // this.$nextTick(() => {
+      //   this.$emit("close");
+      // });
     },
     async removeMedia(path) {
       // remove from stopmotion list

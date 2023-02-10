@@ -131,8 +131,6 @@ module.exports = (function () {
       socket.on("leaveRoom", ({ room }) => {
         dev.logsockets(`ROOMS — socket ${socket.id} is leaving ${room}`);
         socket.leave("content/" + room);
-
-        // roomStatus(socket);
       });
       socket.on("disconnect", () => {
         dev.logsockets(`ROOMS — socket ${socket.id} disconnected`);
@@ -163,6 +161,10 @@ module.exports = (function () {
 
     notifier.on("adminSettingsUpdated", (room, content) => {
       io.to("content/" + room).emit("adminSettingsUpdated", content);
+    });
+
+    notifier.on("taskStatus", (room, content) => {
+      io.to("content/" + room).emit("taskStatus", content);
     });
   }
 

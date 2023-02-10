@@ -1373,8 +1373,6 @@ export default {
       const stopmotion_slug = stopmotion_path.substring(
         stopmotion_path.lastIndexOf("/") + 1
       );
-      debugger;
-
       this.$emit("openStopmotion", stopmotion_slug);
       // this.current_stopmotion_path = slugFolderName;
       // this.ask_before_leaving_capture = true;

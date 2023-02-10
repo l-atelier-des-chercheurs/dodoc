@@ -3,81 +3,78 @@ const path = require("path"),
   ffmpegPath = require("ffmpeg-static"),
   { path: ffprobePath } = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
-  pad = require("pad-left");
+  pad = require("pad-left"),
+  { v4: uuidv4 } = require("uuid");
 
 const utils = require("./utils"),
   folder = require("./folder"),
-  file = require("./file");
+  file = require("./file"),
+  notifier = require("./notifier");
 
-module.exports = (function () {
-  let all_tasks = [];
+class Exporter {
+  constructor({ path_to_folder, path_to_parent_folder, instructions }) {
+    this.id = uuidv4();
+    this.path_to_folder = path_to_folder;
+    this.path_to_parent_folder = path_to_parent_folder;
 
-  const API = {
-    createTask: async ({
-      path_to_folder,
-      path_to_parent_folder,
-      instructions,
-    }) => {
-      dev.logfunction({ path_to_folder });
+    this.field = instructions.field;
+    this.frame_rate = instructions.frame_rate || 4;
+    this.status = "ready";
+  }
 
-      if (instructions.recipe === "stopmotion") {
-        const meta_filename = await _makeAndSaveStopmotionFrom({
-          path_to_folder,
-          path_to_parent_folder,
-          field: instructions.field,
-          frame_rate: instructions.frame_rate,
-        });
-        return meta_filename;
-      } else {
-        throw new Error(`missing_recipe`);
-      }
-    },
-  };
+  async start() {
+    this.status = "started";
+    return await this._makeAndSaveStopmotionFrom();
+  }
+  abort() {
+    if (this.ffmpeg_cmd) this.ffmpeg_cmd.kill();
+    this.status = "aborted";
+  }
 
-  async function _makeAndSaveStopmotionFrom({
-    path_to_folder,
-    path_to_parent_folder,
-    field,
-    frame_rate = 4,
-  }) {
-    const images = await _loadFilesInOrder({ path_to_folder, field });
-    const { full_path_to_new_video } = await _createStopmotionFromImages({
+  async _makeAndSaveStopmotionFrom() {
+    const images = await this._loadFilesInOrder();
+    const { full_path_to_new_video } = await this._createStopmotionFromImages({
       images,
-      frame_rate,
     });
+
+    if (this.status === "aborted") throw new Error(`aborted`);
 
     const desired_filename = "stopmotion.mp4";
     const meta_filename = await file.addFileToFolder({
       full_path_to_file: full_path_to_new_video,
       desired_filename,
-      path_to_folder: path_to_parent_folder,
+      path_to_folder: this.path_to_parent_folder,
     });
 
     return meta_filename;
   }
 
-  async function _loadFilesInOrder({ path_to_folder, field }) {
-    const folder_meta = await folder.getFolder({ path_to_folder });
-    const files = await file.getFiles({ path_to_folder });
+  async _loadFilesInOrder() {
+    const folder_meta = await folder.getFolder({
+      path_to_folder: this.path_to_folder,
+    });
+    const files = await file.getFiles({ path_to_folder: this.path_to_folder });
 
-    const list_of_metas_in_order = folder_meta[field];
+    const list_of_metas_in_order = folder_meta[this.field];
     const selected_files = list_of_metas_in_order.map((lf) =>
       files.find((f) => f.$path.endsWith("/" + lf))
     );
     return selected_files;
   }
 
-  function _createStopmotionFromImages({ images, frame_rate }) {
-    return new Promise(async function (resolve, reject) {
+  _createStopmotionFromImages({ images }) {
+    return new Promise(async (resolve, reject) => {
       // we need to copy all images to a temp folder with the right naming
 
-      let progress_pc = 0;
-
-      const full_path_to_folder_in_cache = await _copyToCacheAndRenameImages({
-        images,
+      this._notify({
+        event: "ffmpeg_compilation_in_progress",
+        progress_percent: 0,
       });
 
-      progress_pc = 10;
+      const full_path_to_folder_in_cache =
+        await this._copyToCacheAndRenameImages({
+          images,
+        });
 
       const width = images[0].$infos.width || 1280;
       const height = images[0].$infos.height || 720;
@@ -93,17 +90,23 @@ module.exports = (function () {
       );
 
       const _removeAllImages = async () => {
-        await fs.remove(path.join(full_path_to_folder_in_cache, "*.jpeg"));
+        // todo implement this
+        // await fs.remove(path.join(full_path_to_folder_in_cache, "*.jpeg"));
       };
 
-      const ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+      this._notify({
+        event: "ffmpeg_compilation_in_progress",
+        progress_percent: 10,
+      });
+
+      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
         .input(path.join(full_path_to_folder_in_cache, "img-%05d.jpeg"))
-        .inputFPS(frame_rate)
+        .inputFPS(this.frame_rate)
         .withVideoCodec("libx264")
         .withVideoBitrate("4000k")
         .input("anullsrc")
         .inputFormat("lavfi")
-        .duration(images.length / frame_rate)
+        .duration(images.length / this.frame_rate)
         .size(`${width}x${height}`)
         .outputFPS(30)
         .autopad()
@@ -113,20 +116,23 @@ module.exports = (function () {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
         })
         .on("progress", (progress) => {
-          progress_pc = Math.round(
-            10 +
-              Math.min(1, progress.frames / (images.length / frame_rate)) *
-                30 *
-                0.85
-          );
-          // notifier.emit("fileCreated", path_to_parent_folder, {
-          //   path_to_folder: path_to_parent_folder,
-          //   meta,
-          // });
+          // value from 0 to 100
+          const adv =
+            (progress.frames / ((images.length / this.frame_rate) * 30)) * 100;
+          const progress_percent = Math.round(10 + adv * 0.85);
+
+          this._notify({
+            event: "ffmpeg_compilation_in_progress",
+            progress_percent,
+          });
         })
         .on("end", async () => {
           dev.logverbose("Video ended");
-          progress_pc = 100;
+
+          this._notify({
+            event: "ffmpeg_compilation_in_progress",
+            progress_percent: 95,
+          });
 
           await _removeAllImages();
           return resolve({ full_path_to_new_video });
@@ -136,13 +142,25 @@ module.exports = (function () {
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
           await _removeAllImages();
-          return reject(error);
+          _notify({
+            event: "ffmpeg_compilation_failed",
+            info: err.message,
+          });
+
+          return reject(err);
         })
         .save(full_path_to_new_video);
     });
   }
+  _notify(message) {
+    const task_id = "task_" + this.id;
+    notifier.emit("taskStatus", task_id, {
+      task_id,
+      message,
+    });
+  }
 
-  async function _copyToCacheAndRenameImages({ images }) {
+  async _copyToCacheAndRenameImages({ images }) {
     // generate random folder name
     let folder_name =
       "stopmotion_" +
@@ -168,6 +186,6 @@ module.exports = (function () {
 
     return full_path_to_folder_in_cache;
   }
+}
 
-  return API;
-})();
+module.exports = Exporter;

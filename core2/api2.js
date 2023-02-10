@@ -8,7 +8,7 @@ const folder = require("./folder"),
   notifier = require("./notifier"),
   utils = require("./utils"),
   cache = require("./cache"),
-  exporter = require("./exporter"),
+  Exporter = require("./Exporter"),
   auth = require("./auth");
 
 module.exports = (function () {
@@ -500,11 +500,12 @@ module.exports = (function () {
 
     try {
       // DISPATCH TASKS
-      const exported_meta_filename_in_parent = await exporter.createTask({
+      const task = new Exporter({
         path_to_folder,
         path_to_parent_folder,
         instructions,
       });
+      const task_id = task.id;
 
       // TODO
       // 1. create a task with parameters: settings / author that started it / source folder path / destination slug path  / time created / etc.
@@ -513,23 +514,32 @@ module.exports = (function () {
       // 4. when task finishes, it notifies client with notifier and also triggers a fileCreated
 
       dev.logpackets({
-        status: `exported file`,
+        status: `task in progress`,
         path_to_parent_folder,
-        exported_meta_filename_in_parent,
+        task_id,
       });
-      res.status(200).json({ meta_filename: exported_meta_filename_in_parent });
+      res.status(200).json({ task_id });
 
-      const meta = await file.getFile({
-        path_to_folder: path_to_parent_folder,
-        path_to_meta: path.join(
-          path_to_parent_folder,
-          exported_meta_filename_in_parent
-        ),
-      });
-      notifier.emit("fileCreated", path_to_parent_folder, {
-        path_to_folder: path_to_parent_folder,
-        meta,
-      });
+      task
+        .start()
+        .then((exported_meta_filename_in_parent) =>
+          file.getFile({
+            path_to_folder: path_to_parent_folder,
+            path_to_meta: path.join(
+              path_to_parent_folder,
+              exported_meta_filename_in_parent
+            ),
+          })
+        )
+        .then((meta) =>
+          notifier.emit("fileCreated", path_to_parent_folder, {
+            path_to_folder: path_to_parent_folder,
+            meta,
+          })
+        )
+        .catch((err) => {
+          err;
+        });
     } catch (err) {
       dev.error("Failed to export file: " + err);
       res.status(500).send(err);

@@ -55,6 +55,7 @@ export default {
       this.promptGeneralPassword
     );
     this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
+    this.$eventHub.$on("task.status", this.taskStatus);
   },
   mounted() {},
   beforeDestroy() {
@@ -62,6 +63,7 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$off("task.status", this.taskStatus);
   },
   watch: {},
   computed: {},
@@ -71,6 +73,18 @@ export default {
     },
     promptGeneralPassword() {
       this.show_general_password_modal = true;
+    },
+    taskStatus(args) {
+      if (args.message.event === "ffmpeg_compilation_in_progress")
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .log(
+            this.$t(args.message.event) +
+              " = " +
+              args.message.progress_percent +
+              "%"
+          );
     },
   },
 };

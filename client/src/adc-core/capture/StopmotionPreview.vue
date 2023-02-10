@@ -4,6 +4,8 @@
       <DateField :date="stopmotion.$date_created" />
       <DateField :date="stopmotion.$date_modified" />
 
+      <div class="">{{ $t("images") }} = {{ images.length }}</div>
+
       <div class="_images">
         <div v-for="image in images" :key="image.$path">
           <MediaContent :file="image" :resolution="240" />
