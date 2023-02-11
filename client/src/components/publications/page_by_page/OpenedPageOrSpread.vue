@@ -74,6 +74,7 @@
         :key="'page-' + page_opened_id"
         class="_pageNavigator"
       >
+        <PageMenu />
         <SinglePage
           :context="'full'"
           :publication_path="publication_path"
@@ -94,6 +95,7 @@
         :style="`min-width: ;`"
       >
         <div class="_spreadNavigator--content">
+          <PageMenu />
           <div
             v-for="(page, index) in active_spread"
             :key="page.id ? page.id : index"
@@ -216,6 +218,7 @@
   </div>
 </template>
 <script>
+import PageMenu from "@/components/publications/page_by_page/PageMenu.vue";
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 
@@ -233,6 +236,7 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    PageMenu,
     SinglePage,
     ModuleCreator,
   },
@@ -382,10 +386,14 @@ export default {
 ._spreadNavigator {
   overflow: auto;
 }
+
+._spreadNavigator--menu {
+}
+
 ._spreadNavigator--content {
   display: flex;
   flex-flow: row nowrap;
-  padding: calc(var(--spacing) * 1);
+  // padding: calc(var(--spacing) * 1);
 }
 
 ._spreadNavigator--page {

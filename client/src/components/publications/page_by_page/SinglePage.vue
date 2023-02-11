@@ -202,13 +202,17 @@ export default {
 }
 
 ._container {
-  width: 100%;
-  height: calc(var(--page-height) * var(--zoom));
-  margin: calc(var(--spacing) * 2) auto;
+  width: calc(var(--page-width) * var(--zoom) + calc(var(--spacing) * 8));
+  height: calc(var(--page-height) * var(--zoom) + calc(var(--spacing) * 8));
+  margin: 0 auto;
+  padding: calc(var(--spacing) * 4) 0;
 
   .is--preview & {
     width: calc(var(--page-width) * var(--zoom));
+    height: calc(var(--page-height) * var(--zoom));
+
     margin: 0 auto;
+    padding: 0;
   }
 }
 
