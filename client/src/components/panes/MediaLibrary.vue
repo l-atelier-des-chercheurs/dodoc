@@ -145,6 +145,8 @@ export default {
       return _medias;
     },
     focused_media() {
+      if (!this.media_focused) return false;
+
       const _focused_media =
         this.project.$files.find((f) => f.$path === this.media_focused) ||
         false;
@@ -208,7 +210,7 @@ export default {
     },
     toggleMediaFocus(path) {
       if (!path || this.media_focused === path) {
-        this.$emit("update:media_focused", null);
+        this.$emit("update:media_focused", undefined);
       } else {
         this.$emit("update:media_focused", path);
         this.media_just_focused = path;
