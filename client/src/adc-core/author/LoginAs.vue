@@ -5,6 +5,7 @@
         <legend class="u-label">{{ $t("your_account") }}</legend>
         <TextInput
           :content.sync="name_of_account"
+          ref="nameField"
           :label_str="'name_or_pseudonym'"
           :required="true"
           :input_type="'text'"
@@ -15,6 +16,7 @@
 
         <TextInput
           :label_str="$t('password')"
+          ref="passwordField"
           :content.sync="input_password"
           :required="true"
           :input_type="'password'"
@@ -46,7 +48,6 @@ export default {
     return {
       name_of_account: "",
       input_password: "",
-      response: "",
     };
   },
   created() {},
@@ -56,26 +57,31 @@ export default {
   computed: {},
   methods: {
     async login() {
-      this.response = "";
+      const author = this.authors.find((a) => a.name === this.name_of_account);
+      if (!author) {
+        this.$refs.nameField.$el.querySelector("input").select();
+        this.$alertify.delay(4000).error(this.$t("account_doesnt_exist"));
+        return;
+      }
+      const path = author.$path;
 
-      try {
-        const author = this.authors.find(
-          (a) => a.name === this.name_of_account
-        );
-        const path = author.$path;
-
-        this.response = await this.$api.loginToFolder({
+      await this.$api
+        .loginToFolder({
           path,
           auth_infos: {
             $password: this.input_password,
           },
+        })
+        .catch((err) => {
+          if (err === "submitted_password_is_wrong") {
+            this.$refs.passwordField.$el.querySelector("input").select();
+            this.$alertify
+              .delay(4000)
+              .error(this.$t("submitted_password_is_wrong"));
+          }
         });
-        this.$emit("close");
-      } catch (err) {
-        this.response = err;
-        this.$alertify.delay(4000).error(err);
-        return false;
-      }
+
+      this.$emit("close");
     },
   },
 };

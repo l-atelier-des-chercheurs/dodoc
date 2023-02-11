@@ -73,6 +73,9 @@ export default function () {
         general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
         Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
 
+        submitted_password_is_wrong: "Mot de passe erroné",
+        account_doesnt_exist: "Ce compte n’existe pas",
+
         connection_lost: `Connexion perdue`,
         connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
         reload_page: "Recharger cette page",

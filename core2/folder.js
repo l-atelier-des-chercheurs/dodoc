@@ -253,15 +253,20 @@ module.exports = (function () {
       if (
         !folder_meta.hasOwnProperty("$password") ||
         folder_meta.$password === ""
-      )
-        throw new Error("Folder doesn’t have any password");
+      ) {
+        const err = new Error("Folder doesn’t have password");
+        err.code = "no_password_for_folder";
+        throw err;
+      }
 
       const submitted_password_matches = await utils.checkPassword({
         submitted_password,
         stored_password_with_salt: folder_meta.$password,
       });
       if (!submitted_password_matches) {
-        throw new Error("Submitted password doesn’t match");
+        const err = new Error("Submitted password doesn’t match");
+        err.code = "submitted_password_is_wrong";
+        throw err;
       }
       return;
     },

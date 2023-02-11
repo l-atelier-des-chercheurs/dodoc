@@ -327,9 +327,7 @@ export default function () {
 
           return;
         } catch (e) {
-          if (e.response.data.code)
-            throw _getErrorMsgFromCode(e.response.data.code);
-          else throw e.response.data;
+          throw _getErrorMsgFromCode(e.response.data.code);
         }
       },
       async logoutFromFolder() {
@@ -523,5 +521,5 @@ export default function () {
 function _getErrorMsgFromCode(code) {
   if (code === "ENOENT") return "folder_is_missing";
 
-  return "missing error message, code = " + code;
+  return code;
 }

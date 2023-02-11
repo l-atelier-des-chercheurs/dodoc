@@ -322,15 +322,6 @@ hr {
   // gap: calc(var(--spacing) / 2);
 }
 
-body ::v-deep {
-  .alertify-logs {
-    pointer-events: none !important;
-    > * {
-      pointer-events: none !important;
-    }
-  }
-}
-
 .authorLabel {
   flex-basis: auto;
   display: flex;
@@ -396,6 +387,14 @@ img {
 }
 </style>
 <style lang="scss">
+.alertify-logs {
+  z-index: 100000;
+  pointer-events: none !important;
+  > * {
+    pointer-events: none !important;
+  }
+}
+
 .splitpanes__pane {
   // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
   // border-radius: 4px;

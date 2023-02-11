@@ -163,17 +163,26 @@ module.exports = (function () {
     if (!general_password) return next ? next() : undefined;
 
     try {
-      if (!req.headers || !req.headers.authorization)
-        throw new Error(`no_general_password_submitted`);
+      if (!req.headers || !req.headers.authorization) {
+        const err = new Error("Headers and general password missing");
+        err.code = "no_headers_with_general_password_submitted";
+        throw err;
+      }
 
       const { general_password: submitted_general_password } = JSON.parse(
         req.headers.authorization
       );
-      if (!submitted_general_password)
-        throw new Error(`no_general_password_submitted`);
+      if (!submitted_general_password) {
+        const err = new Error("General password missing");
+        err.code = "no_general_password_submitted";
+        throw err;
+      }
 
-      if (submitted_general_password !== general_password)
-        throw new Error(`wrong_general_password`);
+      if (submitted_general_password !== general_password) {
+        const err = new Error("Submitted general password is wrong");
+        err.code = "submitted_general_password_is_wrong";
+        throw err;
+      }
 
       return next ? next() : undefined;
     } catch (err) {
@@ -195,7 +204,11 @@ module.exports = (function () {
 
     try {
       const { token, token_path } = JSON.parse(req.headers.authorization);
-      if (!token || !token_path) throw new Error(`no_token_set`);
+      if (!token || !token_path) {
+        const err = new Error("Token and/or token_path missing in headers");
+        err.code = "no_token_submitted";
+        throw err;
+      }
       auth.checkToken({ token, token_path });
       response.token_is_valid = true;
     } catch (err) {
@@ -222,12 +235,19 @@ module.exports = (function () {
     if (!folder_meta.$authors || folder_meta.$authors.length === 0)
       return next ? next() : undefined;
 
-    if (!req.headers || !req.headers.authorization)
-      throw new Error(`no_token_set`);
+    if (!req.headers || !req.headers.authorization) {
+      const err = new Error("Headers and token missing");
+      err.code = "no_headers_with_token_submitted";
+      throw err;
+    }
 
     try {
       const { token, token_path } = JSON.parse(req.headers.authorization);
-      if (!token || !token_path) throw new Error(`no_token_set`);
+      if (!token || !token_path) {
+        const err = new Error("Token and/or token_path missing in headers");
+        err.code = "no_token_submitted";
+        throw err;
+      }
 
       auth.checkToken({ token, token_path });
 
@@ -260,7 +280,7 @@ module.exports = (function () {
       return next ? next() : undefined;
     } catch (err) {
       dev.error(err.message);
-      if (res) return res.status(403).send({ message: err.message });
+      if (res) return res.status(403).send({ code: err.code });
       throw err;
     }
   }
@@ -343,7 +363,7 @@ module.exports = (function () {
       });
     } catch (err) {
       dev.error("Failed to create folder: " + err.message);
-      res.status(500).send({ message: err.message, error: err });
+      res.status(500).send({ code: err.code });
     }
   }
 
@@ -393,7 +413,7 @@ module.exports = (function () {
       });
     } catch (err) {
       dev.error("Failed to update folder: " + err.message);
-      res.status(500).send({ message: err.message });
+      res.status(500).send({ code: err.code });
     }
   }
   async function _loginToFolder(req, res, next) {
@@ -459,7 +479,7 @@ module.exports = (function () {
       notifier.emit("folderRemoved", path_to_type, { path: path_to_folder });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
-      res.status(404).send(err);
+      res.status(404).send({ code: err.code });
     }
   }
 
@@ -488,7 +508,7 @@ module.exports = (function () {
       notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
     } catch (err) {
       dev.error("Failed to upload file: " + err);
-      res.status(500).send(err);
+      res.status(500).send({ code: err.code });
     }
   }
   async function _exportToParent(req, res, next) {
@@ -542,7 +562,7 @@ module.exports = (function () {
         });
     } catch (err) {
       dev.error("Failed to export file: " + err);
-      res.status(500).send(err);
+      res.status(500).send({ code: err.code });
     }
   }
 
@@ -572,7 +592,7 @@ module.exports = (function () {
       res.json(meta);
     } catch (err) {
       dev.error("Failed to upload file: " + err);
-      res.status(500).send(err);
+      res.status(500).send({ code: err.code });
     }
   }
 
@@ -596,7 +616,7 @@ module.exports = (function () {
       });
     } catch (err) {
       dev.error("Failed to update content: " + err.message);
-      res.status(500).send(err);
+      res.status(500).send({ code: err.code });
     }
   }
 
@@ -619,7 +639,7 @@ module.exports = (function () {
       });
     } catch (err) {
       dev.error("Failed to remove expected content: " + err);
-      res.status(404).send(err);
+      res.status(404).send({ code: err.code });
     }
   }
 
@@ -649,7 +669,7 @@ module.exports = (function () {
       notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
     } catch (err) {
       dev.error("Failed to duplicate expected content: " + err);
-      res.status(500).send(err);
+      res.status(500).send({ code: err.code });
     }
   }
 
@@ -682,7 +702,7 @@ module.exports = (function () {
 
       notifier.emit("adminSettingsUpdated", "_admin", { changed_data });
     } catch (err) {
-      res.status(500).send(err);
+      res.status(500).send({ code: err.code });
     }
   }
   async function _restart(req, res, next) {
