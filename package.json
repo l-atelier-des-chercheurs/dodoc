@@ -33,7 +33,14 @@
     "appId": "dodoc",
     "productName": "do•doc",
     "mac": {
-      "category": "public.app-category.education"
+      "category": "public.app-category.education",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Merci d’accorder l’accès au micro pour réaliser des enregistrements",
+        "NSCameraUsageDescription": "Merci d’accorder l’accès à la caméra pour réaliser des enregistrements",
+        "com.apple.security.device.audio-input": true,
+        "com.apple.security.device.camera": true
+      },
+      "hardenedRuntime": false
     },
     "linux": {
       "target": "AppImage"
