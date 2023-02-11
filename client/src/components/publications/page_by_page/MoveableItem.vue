@@ -200,6 +200,20 @@ export default {
   transition-duration: 0.15s;
   transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
   // transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.yoyoo-ddr.active {
+    border: none;
+    outline: 2px dashed var(--c-orange);
+
+    ::v-deep {
+      .bl,
+      .br,
+      .tl,
+      .tr {
+        background: var(--c-orange);
+      }
+    }
+  }
 }
 
 ._moveableItem--content {
