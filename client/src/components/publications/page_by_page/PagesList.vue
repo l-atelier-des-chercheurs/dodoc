@@ -25,8 +25,9 @@
               />
               <button
                 type="button"
-                class="_openPage"
+                class="u-button _openPage"
                 @click="$emit('togglePage', page.id)"
+                v-html="$t('open')"
               />
             </div>
             <div class="_label">
@@ -58,8 +59,9 @@
                   />
                   <button
                     type="button"
-                    class="_openPage"
+                    class="u-button _openPage"
                     @click="$emit('togglePage', page.id)"
+                    v-html="$t('open')"
                   />
                   <!-- <div v-else>No preview</div> -->
                 </div>
@@ -246,6 +248,16 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.6);
+  color: black;
+  opacity: 0;
+
+  transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:hover,
+  &:focus,
+  &:active {
+    opacity: 1;
+  }
 }
 </style>
