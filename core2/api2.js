@@ -516,53 +516,53 @@ module.exports = (function () {
       utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, path_to_parent_folder, data });
 
-    const instructions = data;
+    // DISPATCH TASKS
+    const task = new Exporter({
+      path_to_folder,
+      path_to_parent_folder,
+      instructions: data,
+    });
+    const task_id = task.id;
+
+    // TODO
+    // 1. create a task with parameters: settings / author that started it / source folder path / destination slug path  / time created / etc.
+    // 2. return ID of task to client
+    // 3. using this ID, client can join a room to get progress on task
+    // 4. when task finishes, it notifies client with notifier and also triggers a fileCreated
+
+    dev.logpackets({
+      status: `task in progress`,
+      path_to_parent_folder,
+      task_id,
+    });
+    res.status(200).json({ task_id });
+
+    // } catch (err) {
+    //   dev.error("Failed to export file: " + err);
+    //   res.status(500).send({ code: err.code });
+    // }
 
     try {
-      // DISPATCH TASKS
-      const task = new Exporter({
-        path_to_folder,
-        path_to_parent_folder,
-        instructions,
+      const exported_meta_filename_in_parent = await task.start();
+      const meta = await file.getFile({
+        path_to_folder: path_to_parent_folder,
+        path_to_meta: path.join(
+          path_to_parent_folder,
+          exported_meta_filename_in_parent
+        ),
       });
-      const task_id = task.id;
 
-      // TODO
-      // 1. create a task with parameters: settings / author that started it / source folder path / destination slug path  / time created / etc.
-      // 2. return ID of task to client
-      // 3. using this ID, client can join a room to get progress on task
-      // 4. when task finishes, it notifies client with notifier and also triggers a fileCreated
-
-      dev.logpackets({
-        status: `task in progress`,
-        path_to_parent_folder,
-        task_id,
+      notifier.emit("fileCreated", path_to_parent_folder, {
+        path_to_folder: path_to_parent_folder,
+        meta,
       });
-      res.status(200).json({ task_id });
-
-      task
-        .start()
-        .then((exported_meta_filename_in_parent) =>
-          file.getFile({
-            path_to_folder: path_to_parent_folder,
-            path_to_meta: path.join(
-              path_to_parent_folder,
-              exported_meta_filename_in_parent
-            ),
-          })
-        )
-        .then((meta) =>
-          notifier.emit("fileCreated", path_to_parent_folder, {
-            path_to_folder: path_to_parent_folder,
-            meta,
-          })
-        )
-        .catch((err) => {
-          err;
-        });
     } catch (err) {
       dev.error("Failed to export file: " + err);
-      res.status(500).send({ code: err.code });
+
+      notifier.emit("taskStatus", task_id, {
+        task_id,
+        message,
+      });
     }
   }
 
