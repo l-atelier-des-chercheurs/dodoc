@@ -268,8 +268,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "@/utils/mixins.scss";
-
 ._project {
   position: relative;
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);

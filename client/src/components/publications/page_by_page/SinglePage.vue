@@ -9,9 +9,9 @@
     <div
       class="_container"
       :style="page_styles"
-      @click.self="active_module = false"
+      @click.self="$emit('update:active_module', false)"
     >
-      <div class="_content" @click.self="active_module = false">
+      <div class="_content" @click.self="$emit('update:active_module', false)">
         <svg
           v-if="can_edit && gridstep"
           class="_grid"
@@ -63,7 +63,8 @@
           :gridstep="gridstep"
           :zoom="zoom"
           :can_edit="can_edit"
-          :is_active.sync="active_module"
+          :is_active="active_module"
+          @update:is_active="$emit('update:active_module', $event)"
         />
 
         <svg
@@ -148,6 +149,7 @@ export default {
     margins: Object,
     magnification: { type: Number, default: 38 },
     can_edit: Boolean,
+    active_module: [Boolean, String],
   },
   components: {
     MoveableItem,
@@ -155,7 +157,6 @@ export default {
   data() {
     return {
       items: [{ src: "images/i_add_publi.svg" }, { src: "images/i_add.svg" }],
-      active_module: false,
     };
   },
   created() {},
@@ -202,15 +203,17 @@ export default {
 }
 
 ._container {
-  width: calc(var(--page-width) * var(--zoom) + calc(var(--spacing) * 8));
-  height: calc(var(--page-height) * var(--zoom) + calc(var(--spacing) * 8));
-  margin: 0 auto;
-  padding: calc(var(--spacing) * 4) 0;
+  width: calc(var(--page-width));
+  height: calc(var(--page-height));
+  padding: 0;
+  transform: scale(var(--zoom));
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   .is--preview & {
     width: calc(var(--page-width) * var(--zoom));
     height: calc(var(--page-height) * var(--zoom));
 
+    transform-origin: top left;
     margin: 0 auto;
     padding: 0;
   }
@@ -225,18 +228,11 @@ export default {
   width: var(--page-width, 10cm);
   height: var(--page-height, 10cm);
 
-  transform: scale(var(--zoom));
-  transform-origin: 50% 25%;
-
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   background: white;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 
-  ._singlePage.is--preview & {
-    transform-origin: top left;
-  }
   ._singlePage.is--editable & {
     overflow: visible;
   }

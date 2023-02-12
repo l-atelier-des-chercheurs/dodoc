@@ -11,6 +11,11 @@ module.exports = defineConfig({
   runtimeCompiler: true,
   css: {
     extract: false,
+    loaderOptions: {
+      sass: {
+        additionalData: `@import '@/utils/mixins.scss';`,
+      },
+    },
   },
   devServer: {
     https: true,

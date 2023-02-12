@@ -209,7 +209,9 @@ export default function () {
 
         close: "Fermer",
         settings: "Réglages",
-        pages: "Liste des pages",
+        list_of_pages: "Liste des pages",
+        list_of_spreads: "Liste des planches",
+
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
           Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,

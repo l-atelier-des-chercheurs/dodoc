@@ -5,76 +5,23 @@
       'is--editable': can_edit,
     }"
   >
-    <div class="_breadcrumb">
-      <button
-        type="button"
-        class="u-buttonLink"
-        @click="$emit('closePublication')"
-      >
-        {{ $t("publications") }}
-      </button>
-      <sl-icon name="arrow-right-short" label="" />
-      <button
-        type="button"
-        class="u-buttonLink"
-        @click="$emit('togglePage', false)"
-      >
-        {{ $t("pages") }}
-      </button>
-    </div>
-    <div class="_topMenu">
-      <div class="_topMenu--content">
-        <div class="">
-          <transition name="fade_fast" mode="out-in">
-            <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
-          </transition>
-          <transition v-if="is_spread" name="fade_fast" mode="out-in">
-            <span :key="active_spread_index">
-              <template v-if="page_number !== 0">
-                ({{ $t("spread") }} {{ active_spread_index }})
-              </template>
-              <template v-else> ({{ $t("cover") }}) </template>
-            </span>
-          </transition>
-        </div>
-        <div class="">
-          <label class="u-label">{{ $t("zoom") }} ({{ zoom }})</label>
-          <input
-            type="range"
-            v-model.number="zoom"
-            min="0.1"
-            max="1"
-            step="0.1"
-          />
-        </div>
-        <div class="" v-if="can_edit">
-          <label class="u-label"
-            >{{ $t("gridstep") }} ({{ gridstep_in_cm }})</label
-          >
-          <input
-            type="range"
-            v-model.number="gridstep_in_cm"
-            min="0.25"
-            max="4"
-            step=".25"
-          />
-        </div>
-        <div class="" v-if="can_edit">
-          <ModuleCreator
-            :publication_path="publication_path"
-            :page_id="page_opened_id"
-            @addModule="enableModuleEdit"
-          />
-        </div>
-      </div>
-    </div>
     <transition name="fade_fast" mode="out-in">
       <div
         v-if="!is_spread"
         :key="'page-' + page_opened_id"
         class="_pageNavigator"
       >
-        <PageMenu />
+        <PageMenu
+          :can_edit="can_edit"
+          :page_number="page_number"
+          :active_spread_index="active_spread_index"
+          :zoom.sync="zoom"
+          :gridstep_in_cm.sync="gridstep_in_cm"
+          :publication_path="publication_path"
+          :page_opened_id="page_opened_id"
+          :active_module="active_module"
+        />
+
         <SinglePage
           :context="'full'"
           :publication_path="publication_path"
@@ -85,6 +32,7 @@
           :gridstep_in_cm="gridstep_in_cm"
           :margins="margins"
           :can_edit="can_edit"
+          :active_module.sync="active_module"
           @close="$emit('togglePage', false)"
         />
       </div>
@@ -95,7 +43,37 @@
         :style="`min-width: ;`"
       >
         <div class="_spreadNavigator--content">
-          <PageMenu />
+          <div class="_pageMenu">
+            <div class="_breadcrumb">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="$emit('closePublication')"
+              >
+                {{ $t("publications") }}
+              </button>
+              <sl-icon name="arrow-right-short" label="" />
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="$emit('togglePage', false)"
+                v-html="is_spread ? $t('list_of_spreads') : $t('list_of_pages')"
+              />
+            </div>
+            <div class="_content">
+              <PageMenu
+                :can_edit="can_edit"
+                :page_number="page_number"
+                :active_spread_index="active_spread_index"
+                :zoom.sync="zoom"
+                :gridstep_in_cm.sync="gridstep_in_cm"
+                :publication_path="publication_path"
+                :page_opened_id="page_opened_id"
+                :active_module="active_module"
+              />
+            </div>
+          </div>
+
           <div
             v-for="(page, index) in active_spread"
             :key="page.id ? page.id : index"
@@ -118,6 +96,7 @@
                   page.id === page_opened_id ? gridstep_in_cm : 0
                 "
                 :margins="margins"
+                :active_module.sync="active_module"
                 :can_edit="can_edit && page.id === page_opened_id"
                 @close="$emit('togglePage', false)"
               />
@@ -129,7 +108,7 @@
                 />
               </template>
             </template>
-            <div v-else />
+            <div v-else class="_noPage" />
           </div>
         </div>
       </div>
@@ -220,7 +199,6 @@
 <script>
 import PageMenu from "@/components/publications/page_by_page/PageMenu.vue";
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
-import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 
 export default {
   props: {
@@ -238,12 +216,12 @@ export default {
   components: {
     PageMenu,
     SinglePage,
-    ModuleCreator,
   },
   data() {
     return {
       zoom: 1,
       gridstep_in_cm: 0.5,
+      active_module: false,
     };
   },
   created() {},
@@ -264,8 +242,11 @@ export default {
       return this.spreads[this.active_spread_index];
     },
     active_spread_index() {
-      return this.spreads.findIndex((pages) =>
-        pages.find((p) => p && p.id === this.page_opened_id)
+      return (
+        this.is_spread &&
+        this.spreads.findIndex((pages) =>
+          pages.find((p) => p && p.id === this.page_opened_id)
+        )
       );
     },
   },
@@ -300,11 +281,6 @@ export default {
       const next_spread_first_page = next_spread[0].id;
       this.$emit("togglePage", next_spread_first_page);
     },
-    enableModuleEdit({ meta_filename }) {
-      setTimeout(() => {
-        this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
-      }, 150);
-    },
   },
 };
 </script>
@@ -323,6 +299,7 @@ export default {
   flex-flow: column nowrap;
 
   background: var(--c-bodybg);
+  --pagemenu-width: 260px;
 
   &.is--editable {
     background: var(--color-publish);
@@ -371,11 +348,13 @@ export default {
 }
 ._topMenu {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   padding: 0 calc(var(--spacing) * 1);
 }
 ._topMenu--content {
   background: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+
   padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
   display: flex;
   flex-flow: row wrap;
@@ -385,6 +364,7 @@ export default {
 
 ._spreadNavigator {
   overflow: auto;
+  @include scrollbar(8px, 5px, 6px);
 }
 
 ._spreadNavigator--menu {
@@ -393,20 +373,22 @@ export default {
 ._spreadNavigator--content {
   display: flex;
   flex-flow: row nowrap;
+
+  padding-left: var(--pagemenu-width);
   // padding: calc(var(--spacing) * 1);
 }
 
 ._spreadNavigator--page {
   position: relative;
   flex: 1 1 50%;
-  // overflow: hidden;
+  padding: calc(var(--spacing) * 2);
 
   &.is--left {
+    padding-right: 0;
+
     ::v-deep {
-      ._content {
-        transform-origin: 100% 25%;
-        margin-left: auto;
-        margin-right: 0;
+      ._container {
+        transform-origin: 100% 50%;
       }
       ._margins {
         transform: scale(-1, 1);
@@ -414,11 +396,10 @@ export default {
     }
   }
   &.is--right {
+    padding-left: 0;
     ::v-deep {
-      ._content {
-        transform-origin: 0% 25%;
-        margin-left: 0;
-        margin-right: auto;
+      ._container {
+        transform-origin: 0% 50%;
       }
     }
   }
@@ -472,6 +453,22 @@ export default {
     &:focus {
       // background: rgba(255, 255, 255, 0.2);
     }
+  }
+}
+
+._noPage {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+._pageMenu {
+  width: var(--pagemenu-width);
+  // height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10;
+
+  ._content {
   }
 }
 </style>

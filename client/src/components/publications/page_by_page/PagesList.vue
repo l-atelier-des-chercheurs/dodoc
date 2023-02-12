@@ -135,6 +135,7 @@ export default {
       return this.publication.page_spreads === true;
     },
     spreads() {
+      if (!this.is_spread) return false;
       // turn pages array into [[{id:""}, {id:""}], [{id:""}, {id:""}], [{id:""}, {id:""}], …]
       //
       const number_of_spreads = Math.floor(this.pages.length / 2 + 1);
