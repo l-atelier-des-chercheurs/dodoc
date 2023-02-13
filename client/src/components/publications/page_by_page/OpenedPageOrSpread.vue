@@ -36,7 +36,7 @@
           :margins="margins"
           :can_edit="can_edit"
           :active_module="active_module"
-          @close="$emit('togglePage', false)"
+          @close="setPageActive(false)"
         />
       </div>
       <div
@@ -59,7 +59,7 @@
               <button
                 type="button"
                 class="u-buttonLink"
-                @click="$emit('togglePage', false)"
+                @click="setPageActive(false)"
                 v-html="is_spread ? $t('list_of_spreads') : $t('list_of_pages')"
               />
             </div>
@@ -104,7 +104,7 @@
                 :margins="margins"
                 :active_module="active_module"
                 :can_edit="can_edit && page.id === page_opened_id"
-                @close="$emit('togglePage', false)"
+                @close="setPageActive(false)"
               />
               <template v-if="page.id !== page_opened_id">
                 <button
@@ -291,24 +291,25 @@ export default {
     },
     prevPage() {
       const new_index = this.page_number - 1;
-      this.$emit("togglePage", this.pages[new_index].id);
+      this.setPageActive(this.pages[new_index].id);
     },
     nextPage() {
       const new_index = this.page_number + 1;
-      this.$emit("togglePage", this.pages[new_index].id);
+      this.setPageActive(this.pages[new_index].id);
     },
     setPageActive(id) {
+      this.setActiveModule(false);
       this.$emit("togglePage", id);
     },
     prevSpread() {
       const prev_spread = this.spreads[this.active_spread_index - 1];
       const prev_spread_first_page = prev_spread[1].id;
-      this.$emit("togglePage", prev_spread_first_page);
+      this.setPageActive(prev_spread_first_page);
     },
     nextSpread() {
       const next_spread = this.spreads[this.active_spread_index + 1];
       const next_spread_first_page = next_spread[0].id;
-      this.$emit("togglePage", next_spread_first_page);
+      this.setPageActive(next_spread_first_page);
     },
   },
 };
