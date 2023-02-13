@@ -21,6 +21,7 @@
                 :page_modules="getModulesForPage(page.id)"
                 :page_width="publication.page_width"
                 :page_height="publication.page_height"
+                :page_color="page.page_color"
                 :can_edit="false"
               />
               <button
@@ -55,6 +56,7 @@
                     :page_modules="getModulesForPage(page.id)"
                     :page_width="publication.page_width"
                     :page_height="publication.page_height"
+                    :page_color="page.page_color"
                     :can_edit="false"
                   />
                   <button
@@ -98,6 +100,7 @@
         :margins="margins"
         :can_edit="can_edit"
         @togglePage="$emit('togglePage', $event)"
+        @updatePageOptions="updatePageOptions"
         @closePublication="$emit('closePublication')"
       />
     </transition>
@@ -185,7 +188,13 @@ export default {
     removePage(id) {
       let pages = this.publication.pages.slice();
       pages = pages.filter((p) => p.id !== id);
-
+      this.updatePubliMeta({
+        pages,
+      });
+    },
+    async updatePageOptions({ page_number, value }) {
+      let pages = this.publication.pages.slice();
+      Object.assign(pages[page_number], value);
       this.updatePubliMeta({
         pages,
       });

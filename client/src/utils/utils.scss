@@ -418,7 +418,7 @@ select {
 
 sl-tag[size="small"] {
   &::part(base) {
-    height: calc(var(--sl-input-height-small) * 1);
+    height: calc(var(--input-height-small) * 1);
   }
 }
 

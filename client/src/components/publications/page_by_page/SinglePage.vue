@@ -5,13 +5,17 @@
       'is--preview': context === 'list',
       'is--editable': can_edit,
     }"
+    @click.self="$eventHub.$emit('module.setActive', false)"
   >
     <div
       class="_container"
       :style="page_styles"
-      @click.self="$emit('update:active_module', false)"
+      @click.self="$eventHub.$emit('module.setActive', false)"
     >
-      <div class="_content" @click.self="$emit('update:active_module', false)">
+      <div
+        class="_content"
+        @click.self="$eventHub.$emit('module.setActive', false)"
+      >
         <svg
           v-if="can_edit && gridstep"
           class="_grid"
@@ -63,8 +67,7 @@
           :gridstep="gridstep"
           :zoom="zoom"
           :can_edit="can_edit"
-          :is_active="active_module"
-          @update:is_active="$emit('update:active_module', $event)"
+          :is_active="active_module.$path === publimodule.$path"
         />
 
         <svg
@@ -144,12 +147,13 @@ export default {
     page_modules: Array,
     page_width: Number,
     page_height: Number,
+    page_color: String,
     zoom: { type: Number, default: 1 },
     gridstep_in_cm: Number,
     margins: Object,
     magnification: { type: Number, default: 38 },
     can_edit: Boolean,
-    active_module: [Boolean, String],
+    active_module: [Boolean, Object],
   },
   components: {
     MoveableItem,
@@ -173,6 +177,7 @@ export default {
         --page-width: ${this.magnify(this.page_width)}px;
         --page-height: ${this.magnify(this.page_height)}px;
         --zoom: ${this.zoom};
+        --page-color: ${this.page_color || ""};
       `;
     },
   },
@@ -227,10 +232,9 @@ export default {
   margin: 0 auto;
   width: var(--page-width, 10cm);
   height: var(--page-height, 10cm);
+  background: var(--page-color, white);
 
   overflow: hidden;
-
-  background: white;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 
   ._singlePage.is--editable & {

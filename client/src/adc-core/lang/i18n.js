@@ -144,6 +144,7 @@ export default function () {
         height: "Hauteur",
         page_spreads: "Pages en vis-à-vis",
         page: "Page",
+        show_page_options: "Options de page",
         spread: "Planche",
         cover: "Couverture",
         backcover: "Quatrième de couverture",

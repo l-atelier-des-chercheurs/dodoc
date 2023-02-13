@@ -8,7 +8,7 @@
   </div> -->
   <DDR
     class="_moveableItem"
-    :active="can_edit && is_active === publimodule.$path"
+    :active="can_edit && is_active"
     :key="component_key"
     :value="transform"
     :parent="false /* bind to container */"
@@ -25,7 +25,7 @@
       <PublicationModule
         class="_moveableItem--content"
         :publimodule="publimodule"
-        :can_edit="can_edit && is_active === publimodule.$path"
+        :can_edit="can_edit && is_active"
         :context="'page_by_page'"
       />
     </span>
@@ -52,7 +52,7 @@ export default {
     magnification: Number,
     gridstep: Number,
     zoom: Number,
-    is_active: [Boolean, String],
+    is_active: Boolean,
   },
   components: {
     DDR,
@@ -188,7 +188,7 @@ export default {
         });
     },
     setActive() {
-      this.$emit("update:is_active", this.publimodule.$path);
+      this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
     },
     duplicateModule() {},
   },

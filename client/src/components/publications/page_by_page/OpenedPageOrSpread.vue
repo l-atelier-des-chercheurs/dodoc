@@ -17,9 +17,11 @@
           :active_spread_index="active_spread_index"
           :zoom.sync="zoom"
           :gridstep_in_cm.sync="gridstep_in_cm"
+          :page_color="current_page_color"
           :publication_path="publication_path"
           :page_opened_id="page_opened_id"
           :active_module="active_module"
+          @updatePageOptions="$emit('updatePageOptions', $event)"
         />
 
         <SinglePage
@@ -28,11 +30,12 @@
           :page_modules="getModulesForPage(page_opened_id)"
           :page_width="page_width"
           :page_height="page_height"
+          :page_color="current_page_color"
           :zoom="zoom"
           :gridstep_in_cm="gridstep_in_cm"
           :margins="margins"
           :can_edit="can_edit"
-          :active_module.sync="active_module"
+          :active_module="active_module"
           @close="$emit('togglePage', false)"
         />
       </div>
@@ -43,7 +46,7 @@
         :style="`min-width: ;`"
       >
         <div class="_spreadNavigator--content">
-          <div class="_pageMenu">
+          <div class="_sideCont">
             <div class="_breadcrumb">
               <button
                 type="button"
@@ -67,9 +70,11 @@
                 :active_spread_index="active_spread_index"
                 :zoom.sync="zoom"
                 :gridstep_in_cm.sync="gridstep_in_cm"
+                :page_color="current_page_color"
                 :publication_path="publication_path"
                 :page_opened_id="page_opened_id"
                 :active_module="active_module"
+                @updatePageOptions="$emit('updatePageOptions', $event)"
               />
             </div>
           </div>
@@ -91,12 +96,13 @@
                 :page_modules="getModulesForPage(page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
+                :page_color="page.page_color || ''"
                 :zoom="zoom"
                 :gridstep_in_cm="
                   page.id === page_opened_id ? gridstep_in_cm : 0
                 "
                 :margins="margins"
-                :active_module.sync="active_module"
+                :active_module="active_module"
                 :can_edit="can_edit && page.id === page_opened_id"
                 @close="$emit('togglePage', false)"
               />
@@ -122,10 +128,11 @@
               <sl-icon name="arrow-left" />
               <SinglePage
                 :context="'list'"
-                :zoom="0.1"
-                :page_modules="getModulesForPage(previous_page_id)"
+                :zoom="preview_zoom"
+                :page_modules="getModulesForPage(previous_page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
+                :page_color="page.page_color || ''"
                 :can_edit="false"
               />
             </button>
@@ -138,10 +145,11 @@
             >
               <SinglePage
                 :context="'list'"
-                :zoom="0.1"
-                :page_modules="getModulesForPage(next_page_id)"
+                :zoom="preview_zoom"
+                :page_modules="getModulesForPage(next_page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
+                :page_color="page.page_color || ''"
                 :can_edit="false"
               />
               <sl-icon name="arrow-right" />
@@ -161,10 +169,11 @@
                   v-if="page"
                   :key="page.id"
                   :context="'list'"
-                  :zoom="0.1"
+                  :zoom="preview_zoom"
                   :page_modules="getModulesForPage(page.id)"
                   :page_width="page_width"
                   :page_height="page_height"
+                  :page_color="page.page_color || ''"
                   :can_edit="false"
                 />
               </template>
@@ -181,10 +190,11 @@
                   v-if="page"
                   :key="page.id"
                   :context="'list'"
-                  :zoom="0.1"
+                  :zoom="preview_zoom"
                   :page_modules="getModulesForPage(page.id)"
                   :page_width="page_width"
                   :page_height="page_height"
+                  :page_color="page.page_color || ''"
                   :can_edit="false"
                 />
               </template>
@@ -221,22 +231,38 @@ export default {
     return {
       zoom: 1,
       gridstep_in_cm: 0.5,
-      active_module: false,
+      preview_zoom: 0.05,
+      active_module_path: false,
     };
   },
-  created() {},
+  created() {
+    this.$eventHub.$on(`module.setActive`, this.setActiveModule);
+  },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off(`module.setActive`, this.setActiveModule);
+  },
   watch: {},
   computed: {
+    active_module() {
+      if (!this.active_module_path) return false;
+
+      return this.modules.find((m) => m.$path === this.active_module_path);
+    },
     page_number() {
       return this.pages.findIndex((p) => p.id === this.page_opened_id);
     },
-    previous_page_id() {
-      return this.pages[this.page_number - 1].id;
+    current_page() {
+      return this.pages.find((p) => p.id === this.page_opened_id);
     },
-    next_page_id() {
-      return this.pages[this.page_number + 1].id;
+    current_page_color() {
+      return this.current_page.page_color || "";
+    },
+    previous_page() {
+      return this.pages[this.page_number - 1];
+    },
+    next_page() {
+      return this.pages[this.page_number + 1];
     },
     active_spread() {
       return this.spreads[this.active_spread_index];
@@ -251,6 +277,9 @@ export default {
     },
   },
   methods: {
+    setActiveModule(path) {
+      this.active_module_path = path;
+    },
     getModulesForPage(id) {
       return (
         this.modules
@@ -460,7 +489,7 @@ export default {
   background: rgba(0, 0, 0, 0.1);
 }
 
-._pageMenu {
+._sideCont {
   width: var(--pagemenu-width);
   // height: 100%;
   position: absolute;
