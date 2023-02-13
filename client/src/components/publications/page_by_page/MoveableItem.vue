@@ -152,6 +152,8 @@ export default {
 
       this.transform = transform;
       this.updateTransform(transform);
+
+      event.stopPropagation();
     },
     resizeEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
@@ -159,6 +161,8 @@ export default {
 
       this.transform = transform;
       this.updateTransform(transform);
+
+      event.stopPropagation();
     },
     rotateEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
@@ -166,6 +170,8 @@ export default {
 
       this.transform = transform;
       this.updateTransform(transform);
+
+      event.stopPropagation();
     },
     async updateTransform(transform) {
       let new_meta = JSON.parse(JSON.stringify(transform));

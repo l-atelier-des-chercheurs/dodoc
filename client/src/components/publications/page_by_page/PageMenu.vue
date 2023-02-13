@@ -18,31 +18,18 @@
       </transition>
     </div>
 
-    <!-- <hr /> -->
     <br />
+    <div class="" :key="page_number">
+      <div class="" v-if="can_edit">
+        <ModuleCreator
+          :publication_path="publication_path"
+          :page_id="page_opened_id"
+          :is_collapsed="false"
+          @addModule="enableModuleEdit"
+        />
+      </div>
 
-    <div class="" v-if="can_edit">
-      <ModuleCreator
-        :publication_path="publication_path"
-        :page_id="page_opened_id"
-        :is_collapsed="false"
-        @addModule="enableModuleEdit"
-      />
-    </div>
-
-    <br />
-
-    <button
-      type="button"
-      class="u-buttonLink"
-      @click="show_page_options = !show_page_options"
-    >
-      <sl-icon name="sliders" />
-      {{ $t("show_page_options") }}
-    </button>
-
-    <fieldset v-if="show_page_options">
-      <legend class="u-label">{{ $t("page_options") }}</legend>
+      <br />
       <div class="">
         <label class="u-label">{{ $t("zoom") }} ({{ zoom }})</label>
         <input
@@ -54,79 +41,91 @@
           step="0.1"
         />
       </div>
+
+      <button
+        type="button"
+        class="u-buttonLink"
+        @click="show_page_options = !show_page_options"
+      >
+        <sl-icon name="sliders" />
+        {{ $t("show_page_options") }}
+      </button>
+
+      <fieldset v-if="show_page_options">
+        <legend class="u-label">{{ $t("page_options") }}</legend>
+        <br />
+        <div class="" v-if="can_edit">
+          <label class="u-label">
+            {{ $t("gridstep") }} ({{ gridstep_in_cm }})
+          </label>
+          <input
+            type="range"
+            @input="$emit('update:gridstep_in_cm', +$event.target.value)"
+            min="0.25"
+            max="4"
+            step=".25"
+          />
+        </div>
+        <div class="" v-if="can_edit">
+          <label class="u-label">
+            {{ $t("page_color") }}
+          </label>
+          <input
+            type="color"
+            :value="page_color"
+            @input="
+              $emit('updatePageOptions', {
+                page_number,
+                value: { page_color: $event.target.value },
+              })
+            "
+            :novalue="page_color === ''"
+          />
+        </div>
+      </fieldset>
+
       <br />
-      <div class="" v-if="can_edit">
-        <label class="u-label">
-          {{ $t("gridstep") }} ({{ gridstep_in_cm }})
-        </label>
-        <input
-          type="range"
-          @input="$emit('update:gridstep_in_cm', +$event.target.value)"
-          min="0.25"
-          max="4"
-          step=".25"
+
+      <fieldset v-if="active_module">
+        <legend class="u-label">{{ $t("media") }}</legend>
+
+        <MediaContent
+          class="_activeModulePreview"
+          :file="first_source_media"
+          :resolution="180"
+          :context="'preview'"
         />
-      </div>
-      <div class="" v-if="can_edit">
-        <label class="u-label">
-          {{ $t("page_color") }}
-        </label>
-        <input
-          type="color"
-          :value="page_color"
-          @input="
-            $emit('updatePageOptions', {
-              page_number,
-              value: { page_color: $event.target.value },
-            })
-          "
-          :novalue="page_color === ''"
+
+        <br />
+        <NumberInput
+          :label="$t('position') + '↔'"
+          :value="active_module.x"
+          :min="0"
+          @save="updateMediaPubliMeta({ x: $event })"
         />
-        {{ page_color }}
-      </div>
-    </fieldset>
-
-    <br />
-
-    <fieldset v-if="active_module">
-      <legend class="u-label">{{ $t("media") }}</legend>
-
-      <MediaContent
-        class="_activeModulePreview"
-        :file="first_source_media"
-        :resolution="180"
-        :context="'preview'"
-      />
-
-      <br />
-      <NumberInput
-        :label="$t('position') + '↔'"
-        :value="active_module.x"
-        :min="0"
-        @save="updateMediaPubliMeta({ x: $event })"
-      />
-      <br />
-      <NumberInput
-        :label="$t('position') + '↕'"
-        :value="active_module.y"
-        :min="0"
-        @save="updateMediaPubliMeta({ y: $event })"
-      />
-      <br />
-      <NumberInput
-        :label="$t('width')"
-        :value="active_module.width"
-        :min="0"
-        @save="updateMediaPubliMeta({ width: $event })"
-      />
-      <br />
-      <NumberInput
-        :label="$t('height')"
-        :value="active_module.height"
-        :min="0"
-        @save="updateMediaPubliMeta({ height: $event })"
-      />
-    </fieldset>
+        <br />
+        <NumberInput
+          :label="$t('position') + '↕'"
+          :value="active_module.y"
+          :min="0"
+          @save="updateMediaPubliMeta({ y: $event })"
+        />
+        <br />
+        <NumberInput
+          :label="$t('width')"
+          :value="active_module.width"
+          :min="0"
+          @save="updateMediaPubliMeta({ width: $event })"
+        />
+        <br />
+        <NumberInput
+          :label="$t('height')"
+          :value="active_module.height"
+          :min="0"
+          @save="updateMediaPubliMeta({ height: $event })"
+        />
+      </fieldset>
+    </div>
   </div>
 </template>
 <script>
