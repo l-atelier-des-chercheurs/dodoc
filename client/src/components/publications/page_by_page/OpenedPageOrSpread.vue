@@ -41,7 +41,7 @@
       </div>
       <div
         v-else
-        :key="'spread-' + JSON.stringify(active_spread)"
+        :key="'spread-' + JSON.stringify(active_spread.map((s) => s.id))"
         class="_spreadNavigator"
         :style="`min-width: ;`"
       >
