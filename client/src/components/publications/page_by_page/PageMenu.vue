@@ -43,31 +43,54 @@
         />
       </div>
 
+      <br />
+
       <button
         type="button"
         class="u-buttonLink"
+        v-if="can_edit"
         @click="show_page_options = !show_page_options"
       >
         <sl-icon name="sliders" />
         {{ $t("show_page_options") }}
       </button>
+      <br />
 
-      <fieldset v-if="show_page_options">
+      <fieldset v-if="can_edit && show_page_options">
         <legend class="u-label">{{ $t("page_options") }}</legend>
 
         <div class="" v-if="can_edit">
-          <label class="u-label">
-            {{ $t("gridstep") }} ({{ gridstep_in_cm }})
-          </label>
-          <input
-            type="range"
-            @input="$emit('update:gridstep_in_cm', +$event.target.value)"
-            min="0.1"
-            max="4"
-            step=".1"
+          <ToggleInput
+            :content="show_grid"
+            :label="$t('show_grid')"
+            @update:content="$emit('update:show_grid', $event)"
           />
-
           <br />
+
+          <div v-if="show_grid && can_edit">
+            <div class="">
+              <label class="u-label">
+                {{ $t("gridstep") }} ({{ gridstep_in_cm }})
+              </label>
+              <input
+                type="range"
+                @input="$emit('update:gridstep_in_cm', +$event.target.value)"
+                min="0.1"
+                max="4"
+                step=".1"
+                :value="gridstep_in_cm"
+              />
+              <br />
+            </div>
+            <div>
+              <ToggleInput
+                :content="snap_to_grid"
+                :label="$t('snap_to_grid')"
+                @update:content="$emit('update:snap_to_grid', $event)"
+              />
+              <br />
+            </div>
+          </div>
         </div>
         <div class="" v-if="can_edit">
           <label class="u-label">
@@ -90,25 +113,94 @@
       <br />
 
       <transition name="fade_fast" mode="out-in">
-        <fieldset v-if="active_module" :key="active_module.$path">
+        <div v-if="!active_module">
+          <button
+            type="button"
+            class="u-buttonLink"
+            v-if="can_edit"
+            @click="show_all_medias = !show_all_medias"
+          >
+            <sl-icon name="collection" />
+            {{ $t("list_of_medias") }}
+          </button>
+          <br />
+
+          <fieldset v-if="show_all_medias" class="_mediaList">
+            <div
+              v-for="page_module in page_modules"
+              :key="page_module.$path"
+              @click="setActive(page_module.$path)"
+            >
+              <MediaContent
+                class="_preview"
+                :file="firstMedia(page_module)"
+                :resolution="180"
+                :context="'preview'"
+              />
+
+              <DateField
+                class=""
+                :title="$t('date_uploaded')"
+                :date="page_module.$date_uploaded"
+              />
+            </div>
+          </fieldset>
+        </div>
+
+        <fieldset v-else :key="active_module.$path">
           <legend class="u-label">{{ $t("media") }}</legend>
 
           <MediaContent
             class="_activeModulePreview"
-            :file="first_source_media"
+            :file="firstMedia(active_module)"
             :resolution="180"
             :context="'preview'"
           />
 
           <div class="u-mediaOptions">
             <RemoveMenu :remove_text="$t('remove')" @remove="removeModule" />
-            <button type="button" class="u-buttonLink" @click="duplicateModule">
-              <sl-icon name="file-plus" />
-              {{ $t("duplicate") }}
-            </button>
 
-            {{ $t("lock") }}
-            {{ $t("unlock") }}
+            <div class="">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="duplicateModule"
+              >
+                <sl-icon name="file-plus" />
+
+                {{ $t("duplicate") }}
+              </button>
+            </div>
+            <div class="">
+              <button
+                type="button"
+                class="u-buttonLink"
+                v-if="active_module.locked === true"
+                @click="updateMediaPubliMeta({ locked: false })"
+              >
+                <sl-icon name="unlock" />
+                {{ $t("unlock") }}
+              </button>
+              <button
+                type="button"
+                class="u-buttonLink"
+                v-else
+                @click="updateMediaPubliMeta({ locked: true })"
+              >
+                <sl-icon name="lock" />
+                {{ $t("lock") }}
+              </button>
+            </div>
+            <div class="">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="setActive(false)"
+              >
+                <sl-icon name="dash-square-dotted" />
+                {{ $t("unselect") }}
+              </button>
+            </div>
           </div>
 
           <br />
@@ -165,9 +257,12 @@ export default {
     page_number: Number,
     active_spread_index: [Boolean, Number],
     zoom: Number,
+    show_grid: Boolean,
+    snap_to_grid: Boolean,
     gridstep_in_cm: Number,
     page_color: String,
     publication_path: String,
+    page_modules: Array,
     page_opened_id: String,
     active_module: [Boolean, Object],
   },
@@ -177,6 +272,7 @@ export default {
   data() {
     return {
       show_page_options: false,
+      show_all_medias: false,
     };
   },
   created() {},
@@ -184,17 +280,6 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    first_source_media() {
-      if (!this.active_module) return false;
-      try {
-        const media_path = this.active_module.source_medias[0].path;
-        return this.getSourceMedia({
-          source_media_path: media_path,
-        });
-      } catch (err) {
-        return false;
-      }
-    },
     module_meta_filename() {
       return this.active_module.$path.substring(
         this.active_module.$path.lastIndexOf("/") + 1
@@ -202,6 +287,18 @@ export default {
     },
   },
   methods: {
+    firstMedia(page_module) {
+      if (!page_module) return false;
+      try {
+        const media_path = page_module.source_medias[0].path;
+        return this.getSourceMedia({
+          source_media_path: media_path,
+        });
+      } catch (err) {
+        return false;
+      }
+    },
+
     enableModuleEdit({ meta_filename }) {
       setTimeout(() => {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
@@ -213,6 +310,9 @@ export default {
     removeModule() {
       this.$eventHub.$emit(`module.remove.${this.module_meta_filename}`);
       this.$eventHub.$emit(`module.setActive`, false);
+    },
+    setActive(path) {
+      this.$eventHub.$emit(`module.setActive`, path);
     },
     async updateMediaPubliMeta(val) {
       if (!this.active_module) return;
@@ -232,20 +332,53 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pageMenu {
-  padding: calc(var(--spacing) * 1);
-  margin: 0 calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 1);
+  margin: 0;
 
   background: white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
   text-align: left;
+
+  ::v-deep ._moduleCreator {
+    margin: 0;
+  }
 }
 ._activeModulePreview {
   width: 50px;
   height: auto;
   overflow: hidden;
   margin: 0 auto;
-  background: var(--c-noir);
+  background: var(--c-gris_clair);
   width: 100%;
+}
+
+._mediaList {
+  font-size: var(--sl-font-size-x-small);
+
+  > * {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: calc(var(--spacing) / 2);
+
+    &:not(:last-child) {
+      border-bottom: 2px solid var(--c-gris);
+    }
+
+    ._preview {
+      position: relative;
+      width: 50px;
+      height: 50px;
+      flex: 0 0 50px;
+
+      ::v-deep img {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        object-fit: contain;
+      }
+    }
+  }
 }
 </style>

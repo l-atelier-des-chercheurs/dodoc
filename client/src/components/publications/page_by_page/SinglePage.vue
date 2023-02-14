@@ -17,7 +17,7 @@
         @mousedown.self="$eventHub.$emit('module.setActive', false)"
       >
         <svg
-          v-if="can_edit && gridstep"
+          v-if="can_edit && show_grid"
           class="_grid"
           width="100%"
           height="100%"
@@ -64,7 +64,7 @@
           :key="publimodule.$path"
           :publimodule="publimodule"
           :magnification="magnification"
-          :gridstep="gridstep"
+          :gridstep="show_grid && snap_to_grid ? gridstep : 1"
           :zoom="zoom"
           :can_edit="can_edit"
           :is_active="active_module.$path === publimodule.$path"
@@ -149,6 +149,8 @@ export default {
     page_height: Number,
     page_color: String,
     zoom: { type: Number, default: 1 },
+    show_grid: Boolean,
+    snap_to_grid: Boolean,
     gridstep_in_cm: Number,
     margins: Object,
     magnification: { type: Number, default: 38 },
@@ -211,6 +213,8 @@ export default {
   width: calc(var(--page-width));
   height: calc(var(--page-height));
   padding: 0;
+  margin: calc(var(--spacing) * 4);
+
   transform: scale(var(--zoom));
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 

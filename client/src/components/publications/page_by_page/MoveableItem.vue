@@ -8,7 +8,10 @@
   </div> -->
   <DDR
     class="_moveableItem"
-    :active="can_edit && is_active"
+    :class="{
+      'is--locked': publimodule.locked === true,
+    }"
+    :active="can_edit && is_active && publimodule.locked !== true"
     :key="component_key"
     :value="transform"
     :parent="false /* bind to container */"
@@ -32,6 +35,18 @@
         @duplicate="onDuplicateModule"
       />
     </span>
+    <div class="_unlockBtn" v-if="can_edit">
+      <button
+        type="button"
+        class="u-buttonLink"
+        v-if="publimodule.locked === true"
+        @click="unlock()"
+      >
+        <sl-icon name="unlock" />
+        {{ $t("unlock") }}
+      </button>
+    </div>
+
     <!-- <small class="_coords">
       x={{ publimodule.x }}; y={{ publimodule.y }}; width={{
         publimodule.width
@@ -107,12 +122,7 @@ export default {
       return this.publimodule.$path.split("/").at(-1);
     },
     grid() {
-      return [
-        // 1 * this.gridstep,
-        // 1 * this.gridstep,
-        this.gridstep,
-        this.gridstep,
-      ];
+      return [this.gridstep, this.gridstep];
     },
   },
   methods: {
@@ -197,6 +207,23 @@ export default {
         }
       });
 
+      await this.updateModuleMeta({
+        new_meta,
+      });
+    },
+    setActive() {
+      this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
+    },
+    async unlock() {
+      const new_meta = {
+        locked: false,
+      };
+      await this.updateModuleMeta({
+        new_meta,
+      });
+      this.setActive();
+    },
+    async updateModuleMeta({ new_meta }) {
       await this.$api
         .updateMeta({
           path: this.publimodule.$path,
@@ -206,9 +233,6 @@ export default {
           this.$alertify.delay(4000).error(err);
           throw err;
         });
-    },
-    setActive() {
-      this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
     },
     onDuplicateModule(meta_filename) {
       const path =
@@ -228,7 +252,7 @@ export default {
   transition-duration: 0.15s;
   transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 
-  &:hover {
+  &:hover:not(.is--locked) {
     outline: 2px dotted var(--c-noir);
   }
 
@@ -281,5 +305,18 @@ export default {
   background: white;
   margin: calc(var(--spacing) * 1);
   // padding: calc(var(--spacing) * 1);
+}
+
+._unlockBtn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  margin: calc(var(--spacing) * 1);
+
+  > * {
+    background: white;
+    pointer-events: auto;
+  }
 }
 </style>

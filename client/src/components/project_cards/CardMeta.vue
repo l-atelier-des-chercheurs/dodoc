@@ -3,9 +3,9 @@
     <div slot="header">
       {{ $t("informations") }}
     </div>
-    <DateField :title="'date_created'" :date="project.$date_created" />
+    <DateField :title="$t('date_created')" :date="project.$date_created" />
     <br />
-    <DateField :title="'date_modified'" :date="project.$date_modified" />
+    <DateField :title="$t('date_modified')" :date="project.$date_modified" />
     <br />
 
     <DLabel

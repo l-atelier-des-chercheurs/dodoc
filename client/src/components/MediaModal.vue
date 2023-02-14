@@ -43,9 +43,9 @@
           :can_edit="true"
         />
         <br />
-        <DateField :title="'date_uploaded'" :date="file.$date_uploaded" />
+        <DateField :title="$t('date_uploaded')" :date="file.$date_uploaded" />
         <br />
-        <DateField :title="'date_modified'" :date="file.$date_modified" />
+        <DateField :title="$t('date_modified')" :date="file.$date_modified" />
       </div>
       <div class="_selectBtn" v-else>
         <button type="button" class="u-buttonLink" @click="$emit('close')">

@@ -171,6 +171,12 @@
   &.is--active {
     background: var(--c-bleuvert);
   }
+
+  &:hover,
+  &:active,
+  &.is--active {
+    background: var(--active-color);
+  }
 }
 
 .u-button-inline {

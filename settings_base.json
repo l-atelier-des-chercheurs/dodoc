@@ -451,6 +451,9 @@
               "y": {
                 "type": "number"
               },
+              "locked": {
+                "type": "boolean"
+              },
               "width": {
                 "type": "number"
               },

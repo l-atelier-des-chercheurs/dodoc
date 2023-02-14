@@ -261,6 +261,7 @@ export default {
   background: rgba(255, 255, 255, 0.6);
   color: black;
   opacity: 0;
+  backdrop-filter: blur(5px);
 
   transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 

@@ -10,16 +10,20 @@
         v-if="!is_spread"
         :key="'page-' + page_opened_id"
         class="_pageNavigator"
+        @click="setActiveModule(false)"
       >
         <PageMenu
           :can_edit="can_edit"
           :page_number="page_number"
           :active_spread_index="active_spread_index"
           :zoom.sync="zoom"
+          :show_grid.sync="show_grid"
+          :snap_to_grid.sync="snap_to_grid"
           :gridstep_in_cm.sync="gridstep_in_cm"
           :page_color="current_page_color"
           :publication_path="publication_path"
           :page_opened_id="page_opened_id"
+          :page_modules="getModulesForPage(page_opened_id)"
           :active_module="active_module"
           @updatePageOptions="$emit('updatePageOptions', $event)"
         />
@@ -69,10 +73,13 @@
                 :page_number="page_number"
                 :active_spread_index="active_spread_index"
                 :zoom.sync="zoom"
+                :show_grid.sync="show_grid"
+                :snap_to_grid.sync="snap_to_grid"
                 :gridstep_in_cm.sync="gridstep_in_cm"
                 :page_color="current_page_color"
                 :publication_path="publication_path"
                 :page_opened_id="page_opened_id"
+                :page_modules="getModulesForPage(page_opened_id)"
                 :active_module="active_module"
                 @updatePageOptions="$emit('updatePageOptions', $event)"
               />
@@ -88,6 +95,7 @@
               'is--left': index === 0,
               'is--right': index === 1,
             }"
+            @click.self="setActiveModule(false)"
           >
             <template v-if="page">
               <SinglePage
@@ -98,6 +106,8 @@
                 :page_height="page_height"
                 :page_color="page.page_color || ''"
                 :zoom="zoom"
+                :show_grid="show_grid"
+                :snap_to_grid="snap_to_grid"
                 :gridstep_in_cm="
                   page.id === page_opened_id ? gridstep_in_cm : 0
                 "
@@ -230,7 +240,11 @@ export default {
   data() {
     return {
       zoom: 1,
+
+      show_grid: true,
+      snap_to_grid: false,
       gridstep_in_cm: 0.5,
+
       preview_zoom: 0.05,
       active_module_path: false,
     };
@@ -419,6 +433,7 @@ export default {
     ::v-deep {
       ._container {
         transform-origin: 100% 50%;
+        margin-right: 0;
       }
       ._margins {
         transform: scale(-1, 1);
@@ -430,6 +445,7 @@ export default {
     ::v-deep {
       ._container {
         transform-origin: 0% 50%;
+        margin-left: 0;
       }
     }
   }
@@ -492,11 +508,14 @@ export default {
 
 ._sideCont {
   width: var(--pagemenu-width);
-  // height: 100%;
+
   position: absolute;
   left: 0;
   top: 0;
   z-index: 10;
+  height: 100%;
+  overflow: auto;
+  @include scrollbar(8px, 5px, 6px);
 
   ._content {
   }

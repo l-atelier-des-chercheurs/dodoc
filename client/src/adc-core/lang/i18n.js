@@ -212,6 +212,11 @@ export default function () {
         settings: "Réglages",
         list_of_pages: "Liste des pages",
         list_of_spreads: "Liste des planches",
+        show_grid: "Afficher la grille",
+        snap_to_grid: "Magnétisme de la grille",
+        gridstep: "Pas de la grille",
+        zoom: "Zoom",
+        list_of_medias: "Liste des médias",
 
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
@@ -413,9 +418,6 @@ export default function () {
         no_audio_output_available: "Aucune sortie audio disponible",
         echoCancellation: "Suppression de l'écho",
         noiseSuppression: "Réduction du bruit",
-        grid: "Grille",
-        gridstep: "Pas de la grille",
-        zoom: "Zoom",
         halfs: "Moitiés",
         thirds: "Tiers",
         fourths: "Quarts",
