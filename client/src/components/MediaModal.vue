@@ -17,7 +17,7 @@
         <small>{{ file.$media_filename }}</small>
         <hr />
 
-        <div class="_options">
+        <div class="u-mediaOptions">
           <div>
             <DownloadFile :file="file" />
           </div>
@@ -233,17 +233,5 @@ export default {
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.6);
   }
-}
-
-._options {
-  display: flex;
-  flex-flow: column nowrap;
-  // justify-content: center;
-  // background: var(--c-gris);
-  border: 2px solid var(--c-gris);
-
-  margin: calc(var(--spacing) / 1) 0;
-  padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 2);
 }
 </style>

@@ -229,7 +229,7 @@ export default {
   transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover {
-    outline: 1px dotted var(--c-noir);
+    outline: 2px dotted var(--c-noir);
   }
 
   &.yoyoo-ddr.active {

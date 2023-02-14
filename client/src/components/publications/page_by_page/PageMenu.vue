@@ -100,14 +100,16 @@
             :context="'preview'"
           />
 
-          <RemoveMenu :remove_text="$t('remove')" @remove="removeModule" />
-          <button type="button" class="u-buttonLink" @click="duplicateModule">
-            <sl-icon name="file-plus" />
-            {{ $t("duplicate") }}
-          </button>
+          <div class="u-mediaOptions">
+            <RemoveMenu :remove_text="$t('remove')" @remove="removeModule" />
+            <button type="button" class="u-buttonLink" @click="duplicateModule">
+              <sl-icon name="file-plus" />
+              {{ $t("duplicate") }}
+            </button>
 
-          {{ $t("lock") }}
-          {{ $t("unlock") }}
+            {{ $t("lock") }}
+            {{ $t("unlock") }}
+          </div>
 
           <br />
           <NumberInput

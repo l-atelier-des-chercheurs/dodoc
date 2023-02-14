@@ -665,3 +665,14 @@ input[type="file"] {
   justify-content: center;
   align-items: center;
 }
+.u-mediaOptions {
+  display: flex;
+  flex-flow: column nowrap;
+  // justify-content: center;
+  // background: var(--c-gris);
+  border: 2px solid var(--c-gris);
+
+  margin: calc(var(--spacing) / 1) 0;
+  padding: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 2);
+}
