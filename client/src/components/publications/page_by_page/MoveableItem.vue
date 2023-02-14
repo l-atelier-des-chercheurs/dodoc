@@ -248,9 +248,9 @@ export default {
 <style lang="scss" scoped>
 ._moveableItem {
   // not all because of rotate
-  transition-property: left, top, right, bottom;
-  transition-duration: 0.15s;
-  transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  // transition-property: left, top, right, bottom;
+  // transition-duration: 0.15s;
+  // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover:not(.is--locked) {
     outline: 2px dotted var(--c-noir);
