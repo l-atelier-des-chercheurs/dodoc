@@ -9,7 +9,10 @@
           value: 'settings',
         },
         {
-          label: $t('pages'),
+          label:
+            publication.page_spreads === true
+              ? $t('list_of_spreads')
+              : $t('list_of_pages'),
           value: 'pages',
         },
       ]"

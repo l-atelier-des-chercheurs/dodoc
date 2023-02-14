@@ -3,13 +3,9 @@
     <div class="_player">
       <MediaContent :file="current_media" :resolution="1600" />
 
-      <button
-        type="button"
-        class="_playBtn"
-        @click="playPreview"
-        v-if="!is_playing"
-      >
+      <button type="button" class="_playPauseBtn" @click="playPausePreview">
         <img
+          v-if="!is_playing"
           :src="`${$root.publicPath}images/i_play.svg`"
           width="48"
           height="48"
@@ -67,6 +63,10 @@ export default {
     },
   },
   methods: {
+    playPausePreview() {
+      if (!this.is_playing) this.playPreview();
+      else this.stopPreview();
+    },
     playPreview() {
       this.is_playing = true;
 
@@ -101,7 +101,7 @@ export default {
   background: black;
 }
 
-._playBtn {
+._playPauseBtn {
   position: absolute;
   top: 0;
   bottom: 0;

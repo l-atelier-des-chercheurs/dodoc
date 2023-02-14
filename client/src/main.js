@@ -76,6 +76,8 @@ Vue.component("DropZone", DropZone);
 //
 import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);
+import NumberInput from "@/adc-core/inputs/NumberInput.vue";
+Vue.component("NumberInput", NumberInput);
 import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
 Vue.component("ToggleInput", ToggleInput);
 import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";

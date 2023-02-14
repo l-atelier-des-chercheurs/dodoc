@@ -73,6 +73,9 @@ export default function () {
         general_password_modal_text: `Un mot de passe est nécessaire pour accéder aux projets créés sur cette plate-forme. 
         Si vous ne possédez pas de mot de passe, contactez-nous ici :`,
 
+        submitted_password_is_wrong: "Mot de passe erroné",
+        account_doesnt_exist: "Ce compte n’existe pas",
+
         connection_lost: `Connexion perdue`,
         connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
         reload_page: "Recharger cette page",
@@ -141,6 +144,7 @@ export default function () {
         height: "Hauteur",
         page_spreads: "Pages en vis-à-vis",
         page: "Page",
+        show_page_options: "Options de page",
         spread: "Planche",
         cover: "Couverture",
         backcover: "Quatrième de couverture",
@@ -206,7 +210,14 @@ export default function () {
 
         close: "Fermer",
         settings: "Réglages",
-        pages: "Liste des pages",
+        list_of_pages: "Liste des pages",
+        list_of_spreads: "Liste des planches",
+        show_grid: "Afficher la grille",
+        snap_to_grid: "Magnétisme de la grille",
+        gridstep: "Pas de la grille",
+        zoom: "Zoom",
+        list_of_medias: "Liste des médias",
+
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
           Le chemin ci-dessus indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc. Redémarrez do•doc pour que ce règlage prenne effet.`,
@@ -339,6 +350,9 @@ export default function () {
 
         pick_a_camera: "Sélectionnez une caméra",
         resolutions: "Résolutions",
+        screen_capture: "Capture d’écran",
+        cant_pick_resolution_when_screen_capture:
+          "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
 
         take_picture: "Prendre une photo",
         delay: "Retardateur",
@@ -404,9 +418,6 @@ export default function () {
         no_audio_output_available: "Aucune sortie audio disponible",
         echoCancellation: "Suppression de l'écho",
         noiseSuppression: "Réduction du bruit",
-        grid: "Grille",
-        gridstep: "Pas de la grille",
-        zoom: "Zoom",
         halfs: "Moitiés",
         thirds: "Tiers",
         fourths: "Quarts",

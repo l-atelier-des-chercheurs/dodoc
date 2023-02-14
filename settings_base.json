@@ -348,7 +348,7 @@
           },
           "$files": {
             "thumbs": {
-              "resolutions": [180, 360, 1600]
+              "resolutions": [240, 1600]
             }
           }
         },
@@ -450,6 +450,9 @@
               },
               "y": {
                 "type": "number"
+              },
+              "locked": {
+                "type": "boolean"
               },
               "width": {
                 "type": "number"

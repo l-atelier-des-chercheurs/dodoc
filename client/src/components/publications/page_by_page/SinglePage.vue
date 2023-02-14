@@ -5,15 +5,19 @@
       'is--preview': context === 'list',
       'is--editable': can_edit,
     }"
+    @click.self="$eventHub.$emit('module.setActive', false)"
   >
     <div
       class="_container"
       :style="page_styles"
-      @click.self="active_module = false"
+      @click.self="$eventHub.$emit('module.setActive', false)"
     >
-      <div class="_content" @click.self="active_module = false">
+      <div
+        class="_content"
+        @mousedown.self="$eventHub.$emit('module.setActive', false)"
+      >
         <svg
-          v-if="can_edit && gridstep"
+          v-if="can_edit && show_grid"
           class="_grid"
           width="100%"
           height="100%"
@@ -60,10 +64,10 @@
           :key="publimodule.$path"
           :publimodule="publimodule"
           :magnification="magnification"
-          :gridstep="gridstep"
+          :gridstep="show_grid && snap_to_grid ? gridstep : 1"
           :zoom="zoom"
           :can_edit="can_edit"
-          :is_active.sync="active_module"
+          :is_active="active_module.$path === publimodule.$path"
         />
 
         <svg
@@ -143,11 +147,15 @@ export default {
     page_modules: Array,
     page_width: Number,
     page_height: Number,
+    page_color: String,
     zoom: { type: Number, default: 1 },
+    show_grid: Boolean,
+    snap_to_grid: Boolean,
     gridstep_in_cm: Number,
     margins: Object,
     magnification: { type: Number, default: 38 },
     can_edit: Boolean,
+    active_module: [Boolean, Object],
   },
   components: {
     MoveableItem,
@@ -155,7 +163,6 @@ export default {
   data() {
     return {
       items: [{ src: "images/i_add_publi.svg" }, { src: "images/i_add.svg" }],
-      active_module: false,
     };
   },
   created() {},
@@ -172,6 +179,7 @@ export default {
         --page-width: ${this.magnify(this.page_width)}px;
         --page-height: ${this.magnify(this.page_height)}px;
         --zoom: ${this.zoom};
+        --page-color: ${this.page_color || ""};
       `;
     },
   },
@@ -202,13 +210,21 @@ export default {
 }
 
 ._container {
-  width: 100%;
-  height: calc(var(--page-height) * var(--zoom));
-  margin: calc(var(--spacing) * 2) auto;
+  width: calc(var(--page-width));
+  height: calc(var(--page-height));
+  padding: 0;
+  margin: calc(var(--spacing) * 4);
+
+  transform: scale(var(--zoom));
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   .is--preview & {
     width: calc(var(--page-width) * var(--zoom));
+    height: calc(var(--page-height) * var(--zoom));
+
+    transform-origin: top left;
     margin: 0 auto;
+    padding: 0;
   }
 }
 
@@ -220,19 +236,11 @@ export default {
   margin: 0 auto;
   width: var(--page-width, 10cm);
   height: var(--page-height, 10cm);
-
-  transform: scale(var(--zoom));
-  transform-origin: 50% 25%;
+  background: var(--page-color, white);
 
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-
-  background: white;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 
-  ._singlePage.is--preview & {
-    transform-origin: top left;
-  }
   ._singlePage.is--editable & {
     overflow: visible;
   }

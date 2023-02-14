@@ -91,7 +91,7 @@
       <span class="c-rouge">{{ $t("save") }}</span>
     </button>
 
-    <button
+    <!-- <button
       type="button"
       v-if="can_add_to_fav"
       @click="validateButton(2)"
@@ -122,7 +122,7 @@
       <span class>
         {{ $t("save_as_favorite") }}
       </span>
-    </button>
+    </button> -->
 
     <button
       type="button"
@@ -165,7 +165,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    can_add_to_fav: Boolean,
   },
   components: {},
   data() {
@@ -237,7 +236,7 @@ export default {
   position: relative;
   z-index: 105;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   padding: calc(var(--spacing) / 2);
   flex: 0 0 auto;

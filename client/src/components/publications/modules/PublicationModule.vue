@@ -169,6 +169,7 @@
         :publimodule="publimodule"
         :can_edit="can_edit"
         :context="context"
+        :number_of_max_medias="number_of_max_medias"
         @updateMeta="updateMeta"
         @remove="removeModule"
       />
@@ -204,6 +205,10 @@ export default {
     module_position: String,
     can_edit: Boolean,
     context: String,
+    number_of_max_medias: {
+      type: [Boolean, Number],
+      default: false,
+    },
   },
   components: {
     ModuleMosaic,
@@ -221,11 +226,27 @@ export default {
       `module.enable_edit.${this.module_meta_filename}`,
       this.enableEditForText
     );
+    this.$eventHub.$on(
+      `module.duplicate.${this.module_meta_filename}`,
+      this.duplicateModule
+    );
+    this.$eventHub.$on(
+      `module.remove.${this.module_meta_filename}`,
+      this.removeModule
+    );
   },
   beforeDestroy() {
     this.$eventHub.$off(
       `module.enable_edit.${this.module_meta_filename}`,
       this.enableEditForText
+    );
+    this.$eventHub.$off(
+      `module.duplicate.${this.module_meta_filename}`,
+      this.duplicateModule
+    );
+    this.$eventHub.$off(
+      `module.remove.${this.module_meta_filename}`,
+      this.removeModule
     );
   },
   watch: {},
@@ -382,19 +403,20 @@ export default {
   border-radius: calc(var(--side-width) / 2);
 
   &.is--pageByPage {
-    position: absolute;
-    right: 0;
-    background: transparent;
-    top: 0;
-    height: auto;
+    display: none;
+    // position: absolute;
+    // right: 0;
+    // background: transparent;
+    // top: 0;
+    // height: auto;
 
-    margin: calc(var(--spacing) / 2);
+    // margin: calc(var(--spacing) / 2);
 
-    z-index: 10;
+    // z-index: 10;
 
-    ._sideBtns {
-      background: white;
-    }
+    // ._sideBtns {
+    //   background: white;
+    // }
   }
 
   > * {

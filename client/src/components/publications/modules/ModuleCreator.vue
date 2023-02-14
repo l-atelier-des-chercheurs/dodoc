@@ -1,6 +1,6 @@
 <template>
   <div class="_moduleCreator">
-    <div v-if="show_module_selector" class="_typePicker">
+    <div v-if="show_module_selector || !is_collapsed" class="_typePicker">
       <button
         type="button"
         class="u-button u-button_bleuvert"
@@ -27,6 +27,7 @@
     <button
       type="button"
       class="u-button _showModuleSelector _sideBtns"
+      v-if="is_collapsed"
       :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
       @click="show_module_selector = !show_module_selector"
     >
@@ -55,6 +56,10 @@ export default {
   props: {
     publication_path: String,
     page_id: String,
+    is_collapsed: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {
     MediaPicker,

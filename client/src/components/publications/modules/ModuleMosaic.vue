@@ -55,7 +55,14 @@
             </button>
           </div>
         </div>
-        <div class="_mediaPickerTile" v-if="can_edit">
+        <div
+          class="_mediaPickerTile"
+          v-if="
+            can_edit &&
+            (!number_of_max_medias ||
+              medias_with_linked.length < number_of_max_medias)
+          "
+        >
           <sl-icon-button
             name="plus-circle-fill"
             class="u-colorBleuvert"
@@ -71,7 +78,13 @@
           />
 
           <transition name="dropzone" :duration="150">
-            <div class="_dropzone" v-if="show_dropzone">
+            <div
+              class="_dropzone"
+              v-if="
+                show_dropzone &&
+                medias_with_linked.length < number_of_max_medias
+              "
+            >
               <DropZone @mediaDropped="selectMedia" />
             </div>
           </transition>
@@ -89,6 +102,7 @@ export default {
     publimodule: Object,
     can_edit: Boolean,
     context: String,
+    number_of_max_medias: [Boolean, Number],
   },
   components: {
     // Splitpanes,

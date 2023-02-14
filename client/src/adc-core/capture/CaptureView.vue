@@ -332,7 +332,6 @@
         v-if="stopmotion_slug"
         :current_stopmotion_path="`${slugFolderName}/stopmotions/${stopmotion_slug}`"
         :stream="stream"
-        :can_add_to_fav="can_add_to_fav"
         :show_live_feed.sync="show_live_feed"
         :is_validating_stopmotion_video.sync="is_validating_stopmotion_video"
         :onion_skin_opacity.sync="onion_skin_opacity"
@@ -574,6 +573,9 @@
                     type="button"
                     v-if="!is_recording"
                     class="u-button u-button_orange _captureButton"
+                    :class="{
+                      'is--active': capture_button_pressed,
+                    }"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="setCaptureInit()"
@@ -760,9 +762,8 @@
                   <button
                     type="button"
                     v-if="!is_making_stopmotion"
-                    disabled
                     @click="show_stopmotion_list = !show_stopmotion_list"
-                    class="bg-bleumarine font-small"
+                    class="u-button u-button_bleumarine u-button_small"
                   >
                     <span class>{{ $t("stopmotion_list") }}</span>
                   </button>
@@ -915,7 +916,6 @@
               </div>
 
               <MediaValidationButtons
-                :can_add_to_fav="can_add_to_fav"
                 :media_is_being_sent="media_is_being_sent"
                 :media_being_sent_percent="media_being_sent_percent"
                 @cancel="cancelValidation()"
@@ -930,7 +930,7 @@
 
     <StopmotionList
       v-if="show_stopmotion_list && !is_making_stopmotion"
-      :slugFolderName="slugFolderName"
+      :project_path="path"
       @loadStopmotion="loadStopmotion"
     />
   </div>
@@ -974,10 +974,6 @@ export default {
     return_temp_media: {
       type: Boolean,
       default: false,
-    },
-    can_add_to_fav: {
-      type: Boolean,
-      default: true,
     },
     must_validate_media: {
       type: Boolean,
@@ -1373,7 +1369,10 @@ export default {
         });
       });
     },
-    loadStopmotion(stopmotion_slug) {
+    loadStopmotion(stopmotion_path) {
+      const stopmotion_slug = stopmotion_path.substring(
+        stopmotion_path.lastIndexOf("/") + 1
+      );
       this.$emit("openStopmotion", stopmotion_slug);
       // this.current_stopmotion_path = slugFolderName;
       // this.ask_before_leaving_capture = true;
@@ -2069,6 +2068,10 @@ export default {
   height: auto;
   flex: 0 0 auto;
   margin: 0 calc(var(--spacing) / 4);
+
+  &.is--active {
+    background: var(--c-rouge);
+  }
 
   > img {
     flex: 0 0 auto;

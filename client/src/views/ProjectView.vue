@@ -93,7 +93,6 @@ export default {
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
     this.$api.join({ room: this.project.$path });
-
     //
   },
   beforeDestroy() {

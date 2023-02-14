@@ -21,12 +21,14 @@
                 :page_modules="getModulesForPage(page.id)"
                 :page_width="publication.page_width"
                 :page_height="publication.page_height"
+                :page_color="page.page_color"
                 :can_edit="false"
               />
               <button
                 type="button"
-                class="_openPage"
+                class="u-button _openPage"
                 @click="$emit('togglePage', page.id)"
+                v-html="$t('open')"
               />
             </div>
             <div class="_label">
@@ -54,12 +56,14 @@
                     :page_modules="getModulesForPage(page.id)"
                     :page_width="publication.page_width"
                     :page_height="publication.page_height"
+                    :page_color="page.page_color"
                     :can_edit="false"
                   />
                   <button
                     type="button"
-                    class="_openPage"
+                    class="u-button _openPage"
                     @click="$emit('togglePage', page.id)"
+                    v-html="$t('open')"
                   />
                   <!-- <div v-else>No preview</div> -->
                 </div>
@@ -96,6 +100,7 @@
         :margins="margins"
         :can_edit="can_edit"
         @togglePage="$emit('togglePage', $event)"
+        @updatePageOptions="updatePageOptions"
         @closePublication="$emit('closePublication')"
       />
     </transition>
@@ -133,6 +138,7 @@ export default {
       return this.publication.page_spreads === true;
     },
     spreads() {
+      if (!this.is_spread) return false;
       // turn pages array into [[{id:""}, {id:""}], [{id:""}, {id:""}], [{id:""}, {id:""}], …]
       //
       const number_of_spreads = Math.floor(this.pages.length / 2 + 1);
@@ -182,7 +188,13 @@ export default {
     removePage(id) {
       let pages = this.publication.pages.slice();
       pages = pages.filter((p) => p.id !== id);
-
+      this.updatePubliMeta({
+        pages,
+      });
+    },
+    async updatePageOptions({ page_number, value }) {
+      let pages = this.publication.pages.slice();
+      Object.assign(pages[page_number], value);
       this.updatePubliMeta({
         pages,
       });
@@ -246,6 +258,17 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.6);
+  color: black;
+  opacity: 0;
+  backdrop-filter: blur(5px);
+
+  transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:hover,
+  &:focus,
+  &:active {
+    opacity: 1;
+  }
 }
 </style>

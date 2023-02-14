@@ -8,16 +8,20 @@
   </div> -->
   <DDR
     class="_moveableItem"
-    :active="can_edit && is_active === publimodule.$path"
+    :class="{
+      'is--locked': publimodule.locked === true,
+    }"
+    :active="can_edit && is_active && publimodule.locked !== true"
     :key="component_key"
     :value="transform"
     :parent="false /* bind to container */"
-    :acceptRatio="false"
+    :acceptRatio="aspect_ratio"
     :handlerSize="15"
     :grid="grid"
     :id="publimodule.$path"
     :zoom="zoom"
     @dragend="dragEnd"
+    @resizestart="resizeStart"
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
@@ -25,10 +29,24 @@
       <PublicationModule
         class="_moveableItem--content"
         :publimodule="publimodule"
-        :can_edit="can_edit && is_active === publimodule.$path"
+        :can_edit="can_edit && is_active"
         :context="'page_by_page'"
+        :number_of_max_medias="1"
+        @duplicate="onDuplicateModule"
       />
     </span>
+    <div class="_unlockBtn" v-if="can_edit">
+      <button
+        type="button"
+        class="u-buttonLink"
+        v-if="publimodule.locked === true"
+        @click="unlock()"
+      >
+        <sl-icon name="unlock" />
+        {{ $t("unlock") }}
+      </button>
+    </div>
+
     <!-- <small class="_coords">
       x={{ publimodule.x }}; y={{ publimodule.y }}; width={{
         publimodule.width
@@ -52,7 +70,7 @@ export default {
     magnification: Number,
     gridstep: Number,
     zoom: Number,
-    is_active: [Boolean, String],
+    is_active: Boolean,
   },
   components: {
     DDR,
@@ -62,6 +80,7 @@ export default {
     return {
       transform: { x: 100, y: 100, width: 300, height: 300, rotation: 0 },
       component_key: 1,
+      aspect_ratio: true,
     };
   },
   created() {
@@ -103,12 +122,7 @@ export default {
       return this.publimodule.$path.split("/").at(-1);
     },
     grid() {
-      return [
-        // 1 * this.gridstep,
-        // 1 * this.gridstep,
-        this.gridstep,
-        this.gridstep,
-      ];
+      return [this.gridstep, this.gridstep];
     },
   },
   methods: {
@@ -152,6 +166,18 @@ export default {
 
       this.transform = transform;
       this.updateTransform(transform);
+
+      event.stopPropagation();
+    },
+    resizeStart(event, transform) {
+      if (
+        event.target.classList.contains("br") ||
+        event.target.classList.contains("bl") ||
+        event.target.classList.contains("tl") ||
+        event.target.classList.contains("tr")
+      )
+        return (this.aspect_ratio = true);
+      return (this.aspect_ratio = false);
     },
     resizeEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
@@ -159,6 +185,8 @@ export default {
 
       this.transform = transform;
       this.updateTransform(transform);
+
+      event.stopPropagation();
     },
     rotateEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
@@ -166,6 +194,8 @@ export default {
 
       this.transform = transform;
       this.updateTransform(transform);
+
+      event.stopPropagation();
     },
     async updateTransform(transform) {
       let new_meta = JSON.parse(JSON.stringify(transform));
@@ -177,6 +207,23 @@ export default {
         }
       });
 
+      await this.updateModuleMeta({
+        new_meta,
+      });
+    },
+    setActive() {
+      this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
+    },
+    async unlock() {
+      const new_meta = {
+        locked: false,
+      };
+      await this.updateModuleMeta({
+        new_meta,
+      });
+      this.setActive();
+    },
+    async updateModuleMeta({ new_meta }) {
       await this.$api
         .updateMeta({
           path: this.publimodule.$path,
@@ -187,19 +234,41 @@ export default {
           throw err;
         });
     },
-    setActive() {
-      this.$emit("update:is_active", this.publimodule.$path);
+    onDuplicateModule(meta_filename) {
+      const path =
+        this.publimodule.$path.substring(
+          0,
+          this.publimodule.$path.lastIndexOf("/") + 1
+        ) + meta_filename;
+      this.$eventHub.$emit(`module.setActive`, path);
     },
-    duplicateModule() {},
   },
 };
 </script>
 <style lang="scss" scoped>
 ._moveableItem {
-  transition-property: left, top, right, bottom;
-  transition-duration: 0.15s;
-  transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  // transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  // not all because of rotate
+  // transition-property: left, top, right, bottom;
+  // transition-duration: 0.15s;
+  // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:hover:not(.is--locked) {
+    outline: 2px dotted var(--c-noir);
+  }
+
+  &.yoyoo-ddr.active {
+    border: none;
+    outline: 2px dotted var(--c-orange);
+
+    ::v-deep {
+      .bl,
+      .br,
+      .tl,
+      .tr {
+        background: var(--c-orange);
+      }
+    }
+  }
 }
 
 ._moveableItem--content {
@@ -209,6 +278,24 @@ export default {
   ::v-deep ._content {
     height: 100%;
     overflow: hidden;
+
+    ._moduleMosaic,
+    ._mediaGrid,
+    ._mediaGrid--item,
+    ._mediaContent {
+      height: 100%;
+    }
+    img,
+    .plyr--video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+
+      // plyr
+      min-width: 50px;
+    }
   }
 }
 ._coords {
@@ -218,5 +305,18 @@ export default {
   background: white;
   margin: calc(var(--spacing) * 1);
   // padding: calc(var(--spacing) * 1);
+}
+
+._unlockBtn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  margin: calc(var(--spacing) * 1);
+
+  > * {
+    background: white;
+    pointer-events: auto;
+  }
 }
 </style>

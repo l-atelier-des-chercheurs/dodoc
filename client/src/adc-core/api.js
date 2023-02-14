@@ -76,9 +76,10 @@ export default function () {
           //     _args[0].changed_data?.$content.slice(0, 15) +
           //     "[…] (truncated content)";
           if (this.debug_mode)
-            this.$alertify
-              .delay(4000)
-              .log(`⤓ ` + eventName + JSON.stringify(_args));
+            this.$alertify.delay(4000).log(
+              `⤓ ` + eventName
+              // + JSON.stringify(_args)
+            );
         });
         this.socket.on("folderCreated", this.folderCreated);
         this.socket.on("folderUpdated", this.folderUpdated);
@@ -89,6 +90,7 @@ export default function () {
         this.socket.on("fileRemoved", this.fileRemoved);
 
         this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
+        this.socket.on("taskStatus", this.taskStatus);
       },
       disconnectSocket() {
         this.socket.disconnect();
@@ -254,6 +256,9 @@ export default function () {
             this.$set(this.store["_admin"], key, value);
           });
       },
+      taskStatus({ task_id, message }) {
+        this.$eventHub.$emit("task.status", { task_id, message });
+      },
       async restartDodoc() {
         return await this.$axios.post(`_admin`);
       },
@@ -322,9 +327,7 @@ export default function () {
 
           return;
         } catch (e) {
-          if (e.response.data.code)
-            throw _getErrorMsgFromCode(e.response.data.code);
-          else throw e.response.data;
+          throw _getErrorMsgFromCode(e.response.data.code);
         }
       },
       async logoutFromFolder() {
@@ -428,6 +431,18 @@ export default function () {
 
         return response.data.meta_filename;
       },
+      async exportFolder({ path, instructions }) {
+        path = `${path}/_export`;
+
+        const response = await this.$axios
+          .post(path, instructions)
+          .catch((err) => {
+            this.onError(err);
+            throw err;
+          });
+
+        return response.data.task_id;
+      },
       async updateMeta({ path, new_meta }) {
         const response = await this.$axios
           .patch(path, new_meta)
@@ -506,5 +521,5 @@ export default function () {
 function _getErrorMsgFromCode(code) {
   if (code === "ENOENT") return "folder_is_missing";
 
-  return "missing error message, code = " + code;
+  return code;
 }
