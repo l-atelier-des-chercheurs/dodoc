@@ -30,6 +30,7 @@
       </div>
 
       <br />
+
       <div class="">
         <label class="u-label">{{ $t("zoom") }} ({{ zoom }})</label>
         <input
@@ -53,7 +54,7 @@
 
       <fieldset v-if="show_page_options">
         <legend class="u-label">{{ $t("page_options") }}</legend>
-        <br />
+
         <div class="" v-if="can_edit">
           <label class="u-label">
             {{ $t("gridstep") }} ({{ gridstep_in_cm }})
@@ -61,10 +62,12 @@
           <input
             type="range"
             @input="$emit('update:gridstep_in_cm', +$event.target.value)"
-            min="0.25"
+            min="0.1"
             max="4"
-            step=".25"
+            step=".1"
           />
+
+          <br />
         </div>
         <div class="" v-if="can_edit">
           <label class="u-label">
@@ -86,45 +89,56 @@
 
       <br />
 
-      <fieldset v-if="active_module">
-        <legend class="u-label">{{ $t("media") }}</legend>
+      <transition name="fade_fast" mode="out-in">
+        <fieldset v-if="active_module" :key="active_module.$path">
+          <legend class="u-label">{{ $t("media") }}</legend>
 
-        <MediaContent
-          class="_activeModulePreview"
-          :file="first_source_media"
-          :resolution="180"
-          :context="'preview'"
-        />
+          <MediaContent
+            class="_activeModulePreview"
+            :file="first_source_media"
+            :resolution="180"
+            :context="'preview'"
+          />
 
-        <br />
-        <NumberInput
-          :label="$t('position') + '↔'"
-          :value="active_module.x"
-          :min="0"
-          @save="updateMediaPubliMeta({ x: $event })"
-        />
-        <br />
-        <NumberInput
-          :label="$t('position') + '↕'"
-          :value="active_module.y"
-          :min="0"
-          @save="updateMediaPubliMeta({ y: $event })"
-        />
-        <br />
-        <NumberInput
-          :label="$t('width')"
-          :value="active_module.width"
-          :min="0"
-          @save="updateMediaPubliMeta({ width: $event })"
-        />
-        <br />
-        <NumberInput
-          :label="$t('height')"
-          :value="active_module.height"
-          :min="0"
-          @save="updateMediaPubliMeta({ height: $event })"
-        />
-      </fieldset>
+          <RemoveMenu :remove_text="$t('remove')" @remove="removeModule" />
+          <button type="button" class="u-buttonLink" @click="duplicateModule">
+            <sl-icon name="file-plus" />
+            {{ $t("duplicate") }}
+          </button>
+
+          {{ $t("lock") }}
+          {{ $t("unlock") }}
+
+          <br />
+          <NumberInput
+            :label="$t('position') + '↔'"
+            :value="active_module.x"
+            :min="0"
+            @save="updateMediaPubliMeta({ x: $event })"
+          />
+          <br />
+          <NumberInput
+            :label="$t('position') + '↕'"
+            :value="active_module.y"
+            :min="0"
+            @save="updateMediaPubliMeta({ y: $event })"
+          />
+          <br />
+          <NumberInput
+            :label="$t('width')"
+            :value="active_module.width"
+            :min="0"
+            @save="updateMediaPubliMeta({ width: $event })"
+          />
+          <br />
+          <NumberInput
+            :label="$t('height')"
+            :value="active_module.height"
+            :min="0"
+            @save="updateMediaPubliMeta({ height: $event })"
+          />
+        </fieldset>
+      </transition>
     </div>
   </div>
 </template>
@@ -179,12 +193,24 @@ export default {
         return false;
       }
     },
+    module_meta_filename() {
+      return this.active_module.$path.substring(
+        this.active_module.$path.lastIndexOf("/") + 1
+      );
+    },
   },
   methods: {
     enableModuleEdit({ meta_filename }) {
       setTimeout(() => {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 150);
+    },
+    duplicateModule() {
+      this.$eventHub.$emit(`module.duplicate.${this.module_meta_filename}`);
+    },
+    removeModule() {
+      this.$eventHub.$emit(`module.remove.${this.module_meta_filename}`);
+      this.$eventHub.$emit(`module.setActive`, false);
     },
     async updateMediaPubliMeta(val) {
       if (!this.active_module) return;
@@ -217,5 +243,7 @@ export default {
   height: auto;
   overflow: hidden;
   margin: 0 auto;
+  background: var(--c-noir);
+  width: 100%;
 }
 </style>

@@ -12,12 +12,13 @@
     :key="component_key"
     :value="transform"
     :parent="false /* bind to container */"
-    :acceptRatio="false"
+    :acceptRatio="aspect_ratio"
     :handlerSize="15"
     :grid="grid"
     :id="publimodule.$path"
     :zoom="zoom"
     @dragend="dragEnd"
+    @resizestart="resizeStart"
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
@@ -27,6 +28,8 @@
         :publimodule="publimodule"
         :can_edit="can_edit && is_active"
         :context="'page_by_page'"
+        :number_of_max_medias="1"
+        @duplicate="onDuplicateModule"
       />
     </span>
     <!-- <small class="_coords">
@@ -62,6 +65,7 @@ export default {
     return {
       transform: { x: 100, y: 100, width: 300, height: 300, rotation: 0 },
       component_key: 1,
+      aspect_ratio: true,
     };
   },
   created() {
@@ -155,6 +159,16 @@ export default {
 
       event.stopPropagation();
     },
+    resizeStart(event, transform) {
+      if (
+        event.target.classList.contains("br") ||
+        event.target.classList.contains("bl") ||
+        event.target.classList.contains("tl") ||
+        event.target.classList.contains("tr")
+      )
+        return (this.aspect_ratio = true);
+      return (this.aspect_ratio = false);
+    },
     resizeEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
@@ -196,20 +210,31 @@ export default {
     setActive() {
       this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
     },
-    duplicateModule() {},
+    onDuplicateModule(meta_filename) {
+      const path =
+        this.publimodule.$path.substring(
+          0,
+          this.publimodule.$path.lastIndexOf("/") + 1
+        ) + meta_filename;
+      this.$eventHub.$emit(`module.setActive`, path);
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._moveableItem {
+  // not all because of rotate
   transition-property: left, top, right, bottom;
   transition-duration: 0.15s;
   transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  // transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:hover {
+    outline: 1px dotted var(--c-noir);
+  }
 
   &.yoyoo-ddr.active {
     border: none;
-    outline: 2px dashed var(--c-orange);
+    outline: 2px dotted var(--c-orange);
 
     ::v-deep {
       .bl,
@@ -229,6 +254,24 @@ export default {
   ::v-deep ._content {
     height: 100%;
     overflow: hidden;
+
+    ._moduleMosaic,
+    ._mediaGrid,
+    ._mediaGrid--item,
+    ._mediaContent {
+      height: 100%;
+    }
+    img,
+    .plyr--video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+
+      // plyr
+      min-width: 50px;
+    }
   }
 }
 ._coords {
