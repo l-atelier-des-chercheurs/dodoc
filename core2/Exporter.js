@@ -49,6 +49,11 @@ class Exporter {
       path_to_folder: this.path_to_parent_folder,
     });
 
+    this._notify({
+      event: "ffmpeg_compilation_in_progress",
+      progress_percent: 100,
+    });
+
     return meta_filename;
   }
 
