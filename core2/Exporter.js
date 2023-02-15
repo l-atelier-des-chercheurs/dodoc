@@ -11,6 +11,9 @@ const utils = require("./utils"),
   file = require("./file"),
   notifier = require("./notifier");
 
+ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
+
 class Exporter {
   constructor({ path_to_folder, path_to_parent_folder, instructions }) {
     this.id = uuidv4();
@@ -71,13 +74,15 @@ class Exporter {
         progress_percent: 0,
       });
 
+      const width = images[0].$infos.width || 1280;
+      const height = images[0].$infos.height || 720;
+      const resolution = { width, height };
+
       const full_path_to_folder_in_cache =
         await this._copyToCacheAndRenameImages({
           images,
+          resolution,
         });
-
-      const width = images[0].$infos.width || 1280;
-      const height = images[0].$infos.height || 720;
 
       const new_video_name =
         "stopmotion_" +
@@ -160,7 +165,7 @@ class Exporter {
     });
   }
 
-  async _copyToCacheAndRenameImages({ images }) {
+  async _copyToCacheAndRenameImages({ images, resolution }) {
     // generate random folder name
     let folder_name =
       "stopmotion_" +
@@ -171,6 +176,7 @@ class Exporter {
     await fs.ensureDir(full_path_to_folder_in_cache);
 
     let index = 0;
+
     for (const image of images) {
       const path_to_image =
         image.$path.substring(0, image.$path.lastIndexOf("/") + 1) +
@@ -180,7 +186,9 @@ class Exporter {
         full_path_to_folder_in_cache,
         "img-" + pad(index, 4, "0") + ".jpeg"
       );
-      await fs.copy(source, destination);
+
+      await utils.convertAndCopyImage({ source, destination, resolution });
+      // await fs.copy(source, destination);
       index++;
     }
 
