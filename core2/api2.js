@@ -561,7 +561,7 @@ module.exports = (function () {
 
       notifier.emit("taskStatus", task_id, {
         task_id,
-        message,
+        message: err,
       });
     }
   }
