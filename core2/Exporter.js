@@ -100,7 +100,7 @@ class Exporter {
       });
 
       this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
-        .input(path.join(full_path_to_folder_in_cache, "img-%05d.jpeg"))
+        .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
         .inputFPS(this.frame_rate)
         .withVideoCodec("libx264")
         .withVideoBitrate("4000k")
@@ -142,7 +142,7 @@ class Exporter {
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
           await _removeAllImages();
-          _notify({
+          this._notify({
             event: "ffmpeg_compilation_failed",
             info: err.message,
           });
@@ -178,7 +178,7 @@ class Exporter {
       const source = utils.getPathToUserContent(path_to_image);
       const destination = path.join(
         full_path_to_folder_in_cache,
-        "img-" + pad(index, 5, "0") + ".jpeg"
+        "img-" + pad(index, 4, "0") + ".jpeg"
       );
       await fs.copy(source, destination);
       index++;
