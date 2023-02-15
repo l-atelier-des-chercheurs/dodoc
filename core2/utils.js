@@ -228,6 +228,22 @@ module.exports = (function () {
           throw err;
         });
     },
+    async convertAndCopyImage({ source, destination, resolution }) {
+      await sharp(source)
+        .rotate()
+        .flatten({ background: "white" })
+        .resize(resolution.width, resolution.height, {
+          fit: "contain",
+          withoutEnlargement: false,
+          background: "black",
+        })
+        .withMetadata()
+        .toFile(destination)
+        .catch((err) => {
+          dev.error(`Failed to sharp create image to destination.`);
+          throw err;
+        });
+    },
 
     async getImageMetadata({ full_media_path }) {
       return await sharp(full_media_path).metadata();
