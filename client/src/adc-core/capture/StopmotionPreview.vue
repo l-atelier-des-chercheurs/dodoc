@@ -1,34 +1,44 @@
 <template>
-  <div>
-    <div class="_preview" v-if="stopmotion">
-      <DateField :date="stopmotion.$date_created" />
-      <DateField :date="stopmotion.$date_modified" />
+  <div class="_preview" v-if="stopmotion">
+    <div class="_topRow">
+      <DateField
+        :title="$t('date_created')"
+        :date="stopmotion.$date_created"
+        :show_detail_initially="true"
+      />
 
-      <div class="">{{ $t("images") }} = {{ images.length }}</div>
+      <div class="_btns">
+        <button
+          type="button"
+          class="u-button u-button_bleumarine"
+          @click="$emit('load')"
+        >
+          {{ $t("open") }}
+        </button>
+        <RemoveMenu :remove_text="$t('remove')" @remove="$emit('remove')" />
+      </div>
+    </div>
 
-      <div class="_images">
+    <br />
+    <div class="_images">
+      <label class="u-label">
+        {{ $t("images").toUpperCase() }} = {{ images.length }}
+      </label>
+      <div class="_imagesCont">
         <div v-for="image in images" :key="image.$path">
           <MediaContent :file="image" :resolution="240" />
         </div>
       </div>
-
-      <button
-        type="button"
-        class="u-button u-button_bleumarine"
-        @click="$emit('load')"
-      >
-        {{ $t("load") }}
-      </button>
     </div>
-    <hr />
   </div>
 </template>
 <script>
+import RemoveMenu from "../fields/RemoveMenu.vue";
 export default {
   props: {
     stopmotion_path: String,
   },
-  components: {},
+  components: { RemoveMenu },
   data() {
     return {
       stopmotion: undefined,
@@ -71,12 +81,27 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._preview {
+  padding: calc(var(--spacing) / 1);
+  border-bottom: 2px solid var(--c-gris);
 }
 
-._images {
+._topRow {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: calc(var(--spacing) / 2);
+}
+
+._imagesCont {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+
+  background: var(--c-noir);
+  padding: 1px;
+  gap: 1px;
 
   overflow-x: auto;
   overflow-y: hidden;
@@ -87,5 +112,12 @@ export default {
   > * {
     flex: 0 0 100px;
   }
+}
+
+._btns {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
 }
 </style>

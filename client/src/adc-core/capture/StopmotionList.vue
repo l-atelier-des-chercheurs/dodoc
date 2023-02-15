@@ -7,16 +7,19 @@
           {{ $t("no_stopmotion_created_yet") }}
         </div>
         <div v-else>
-          <div
-            v-for="stopmotion in sorted_stopmotions"
-            class=""
-            :key="stopmotion.$path"
-          >
-            <StopmotionPreview
-              :stopmotion_path="stopmotion.$path"
-              @load="$emit('loadStopmotion', stopmotion.$path)"
-            />
-          </div>
+          <transition-group tag="div" name="listComplete">
+            <div
+              v-for="stopmotion in sorted_stopmotions"
+              class=""
+              :key="stopmotion.$path"
+            >
+              <StopmotionPreview
+                :stopmotion_path="stopmotion.$path"
+                @load="$emit('loadStopmotion', stopmotion.$path)"
+                @remove="removeStopmotion(stopmotion.$path)"
+              />
+            </div>
+          </transition-group>
         </div>
       </div>
     </transition>
@@ -60,7 +63,24 @@ export default {
       );
     },
   },
-  methods: {},
+  methods: {
+    async removeStopmotion(path) {
+      // this.fetch_status = "pending";
+      // this.fetch_error = null;
+
+      try {
+        await this.$api.deleteItem({
+          path,
+        });
+        // this.response = response.data;
+        // this.fetch_status = "success";
+        // this.$router.push("/projects");
+      } catch (e) {
+        // this.fetch_status = "error";
+        // this.fetch_error = e.response.data;
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
