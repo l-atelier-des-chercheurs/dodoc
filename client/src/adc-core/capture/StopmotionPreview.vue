@@ -82,7 +82,8 @@ export default {
 <style lang="scss" scoped>
 ._preview {
   padding: calc(var(--spacing) / 1);
-  border-bottom: 2px solid var(--c-gris);
+  background: var(--c-gris);
+  margin: 0 0 calc(var(--spacing) / 1) 0;
 }
 
 ._topRow {
