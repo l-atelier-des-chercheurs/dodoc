@@ -1,7 +1,19 @@
 <template>
   <div>
     <div class="_player">
-      <MediaContent :file="current_media" :resolution="1600" />
+      <MediaContent
+        v-if="is_playing"
+        :file="current_media"
+        :resolution="1600"
+      />
+      <div v-else class="_miniListPreview">
+        <MediaContent
+          v-for="media in medias"
+          :key="media.$path"
+          :file="current_media"
+          :resolution="1600"
+        />
+      </div>
 
       <button type="button" class="_playPauseBtn" @click="playPausePreview">
         <img
@@ -49,7 +61,7 @@ export default {
   },
   created() {},
   mounted() {
-    this.playPreview();
+    // this.playPreview();
   },
   beforeDestroy() {},
   watch: {
@@ -129,5 +141,24 @@ export default {
   bottom: 0;
   width: 100%;
   padding: calc(var(--spacing) / 1);
+}
+
+._miniListPreview {
+  display: flex;
+  flex-flow: row wrap;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  gap: 1px;
+
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  padding: calc(var(--spacing) * 2);
+
+  > * {
+    width: 50px;
+    height: 50px;
+  }
 }
 </style>
