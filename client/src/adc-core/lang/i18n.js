@@ -43,6 +43,7 @@ export default function () {
       fr: {
         hello: "bonjour monde",
         edit: "modifier",
+        stop_edit: "Arrêter les modifications",
         caption: "légende",
         date_created: "date de création",
         date_modified: "dernière modification",
@@ -306,6 +307,7 @@ export default function () {
         saving: "Enregistrement…",
         saved: "OK !",
         connected: "Connecté",
+        archives: "Archives",
 
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",

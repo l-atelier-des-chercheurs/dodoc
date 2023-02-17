@@ -26,8 +26,8 @@
           @click="toggleEdit"
         >
           <sl-icon name="pencil-fill" :label="$t('edit')" />
-          <template v-if="!editor_is_enabled"> Modifier </template>
-          <template v-else> Arrêter les modifications </template>
+          <template v-if="!editor_is_enabled">{{ $t("edit") }}</template>
+          <template v-else>{{ $t("stop_edit") }}</template>
         </sl-button>
 
         <sl-button
@@ -36,7 +36,7 @@
           size="small"
         >
           <sl-icon slot="prefix" name="archive" />
-          Archives
+          {{ $t("archives") }}
         </sl-button>
 
         <div class="_collabEditorStatus" v-if="editor_is_enabled">
