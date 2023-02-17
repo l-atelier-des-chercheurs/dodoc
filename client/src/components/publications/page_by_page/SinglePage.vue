@@ -153,7 +153,7 @@ export default {
     snap_to_grid: Boolean,
     gridstep_in_cm: Number,
     margins: Object,
-    magnification: { type: Number, default: 38 },
+    magnification: { type: Number, default: /*38*/ 50 },
     can_edit: Boolean,
     active_module: [Boolean, Object],
   },
