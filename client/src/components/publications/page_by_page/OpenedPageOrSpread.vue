@@ -365,7 +365,7 @@ export default {
   left: 0;
   height: auto;
   width: 100%;
-  z-index: 2;
+  z-index: 12;
   overflow: hidden;
 
   display: flex;

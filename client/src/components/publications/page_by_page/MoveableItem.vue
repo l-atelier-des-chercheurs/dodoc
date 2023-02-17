@@ -212,6 +212,8 @@ export default {
       });
     },
     setActive() {
+      if (!this.can_edit) return;
+
       this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
     },
     async unlock() {

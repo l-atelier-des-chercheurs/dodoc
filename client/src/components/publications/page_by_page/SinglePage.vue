@@ -33,7 +33,7 @@
               <path
                 :d="`M ${gridstep} 0 L 0 0 0 ${gridstep}`"
                 fill="none"
-                stroke="rgba(207, 207, 207, 0.5)"
+                stroke="var(--c-gridlines)"
                 strokeWidth="1"
               />
             </pattern>
@@ -51,7 +51,7 @@
               <path
                 :d="`M ${gridstep * 5} 0 L 0 0 0 ${gridstep * 5}`"
                 fill="none"
-                stroke="rgba(186, 186, 186, 0.5)"
+                stroke="var(--c-gridfiveslines)"
                 strokeWidth="1"
               />
             </pattern>
@@ -256,6 +256,10 @@ export default {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  opacity: 0.6;
+
+  --c-gridlines: #777;
+  --c-gridfiveslines: #111;
 }
 ._pageBorders {
   position: absolute;
