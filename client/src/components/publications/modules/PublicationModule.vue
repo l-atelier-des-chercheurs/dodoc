@@ -188,7 +188,7 @@
         :can_edit="can_edit"
         @lineClicked="$emit('lineClicked', $event)"
       />
-      <small v-else>Nothing to display</small>
+      <small v-else>{{ $t("nothing_to_show") }}</small>
     </div>
   </div>
 </template>

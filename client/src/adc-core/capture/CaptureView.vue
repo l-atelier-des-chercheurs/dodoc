@@ -763,7 +763,7 @@
                     type="button"
                     v-if="!is_making_stopmotion"
                     @click="show_stopmotion_list = !show_stopmotion_list"
-                    class="u-button u-button_bleumarine u-button_small"
+                    class="u-button u-button_bleumarine"
                   >
                     <span class>{{ $t("stopmotion_list") }}</span>
                   </button>

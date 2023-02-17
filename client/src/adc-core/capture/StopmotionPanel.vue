@@ -123,7 +123,7 @@
               </button>
             </div>
 
-            <div key="separator" class="_separator" />
+            <!-- <div key="separator" class="_separator" /> -->
 
             <div
               class="m_stopmotionpanel--medias--list--items"
@@ -418,13 +418,17 @@ export default {
       });
 
       // track progress
+      this.$alertify.delay(4000).log(this.$t("stopmotion_compilation_started"));
+
       this.$api.join({ room: "task_" + task_id });
 
-      // this.show_previous_photo = false;
-      // this.validating_video_preview = false;
-      // this.$nextTick(() => {
-      //   this.$emit("close");
-      // });
+      // todo leave room when task ends
+
+      this.show_previous_photo = false;
+      this.validating_video_preview = false;
+      this.$nextTick(() => {
+        this.$emit("close");
+      });
     },
     async removeMedia(path) {
       // remove from stopmotion list

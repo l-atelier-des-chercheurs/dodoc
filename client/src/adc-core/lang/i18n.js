@@ -43,6 +43,7 @@ export default function () {
       fr: {
         hello: "bonjour monde",
         edit: "modifier",
+        stop_edit: "Arrêter les modifications",
         caption: "légende",
         date_created: "date de création",
         date_modified: "dernière modification",
@@ -144,7 +145,9 @@ export default function () {
         height: "Hauteur",
         page_spreads: "Pages en vis-à-vis",
         page: "Page",
-        show_page_options: "Options de page",
+        lock: "Verrouiller",
+        unlock: "Déverrouiller",
+        page_options: "Options de page",
         spread: "Planche",
         cover: "Couverture",
         backcover: "Quatrième de couverture",
@@ -304,6 +307,7 @@ export default function () {
         saving: "Enregistrement…",
         saved: "OK !",
         connected: "Connecté",
+        archives: "Archives",
 
         creativecommons_by_nc_sa: "Creative Commons BY NC SA",
         creativecommons_by_nc_sa_explanations: "<i>Explications à ajouter</i>",

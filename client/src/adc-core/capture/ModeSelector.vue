@@ -149,7 +149,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  padding: calc(var(--spacing) / 2) 0 0;
+  padding: calc(var(--spacing) / 1);
   gap: calc(var(--spacing) / 2);
   user-select: none;
   pointer-events: none;
