@@ -303,7 +303,7 @@ export default {
       cursor: dragging;
 
       transition-property: left, top, right, bottom;
-      transition-duration: 0.15s;
+      transition-duration: 0.05s;
       transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
     }
   }
