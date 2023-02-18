@@ -213,7 +213,7 @@ module.exports = (function () {
           meta.$media_filename
         );
         if (previous_content === $content)
-          throw new Error("content not changed");
+          throw new Error("content_not_changed");
 
         dev.logfunction(
           `Content is supposed to be updated`,

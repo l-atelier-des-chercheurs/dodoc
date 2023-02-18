@@ -10,6 +10,7 @@
     class="_moveableItem"
     :class="{
       'is--locked': publimodule.locked === true,
+      'is--editable': can_edit,
     }"
     :active="can_edit && is_active && publimodule.locked !== true"
     :key="component_key"
@@ -34,7 +35,7 @@
         :number_of_max_medias="1"
         @duplicate="onDuplicateModule"
         @contentIsEdited="contentIsEdited"
-        @isNotEdited="contentNotEdited"
+        @contentIsNotEdited="contentIsNotEdited"
       />
     </span>
     <div class="_unlockBtn" v-if="can_edit">
@@ -121,7 +122,7 @@ export default {
     },
     is_active() {
       if (!this.is_active) {
-        this.contentNotEdited();
+        this.contentIsNotEdited();
       }
     },
   },
@@ -169,7 +170,7 @@ export default {
       this.$eventHub.$emit(`module.text_editing_enabled`, $toolbar);
       this.content_is_edited = true;
     },
-    contentNotEdited() {
+    contentIsNotEdited() {
       this.$eventHub.$emit(`module.text_editing_disabled`);
       this.content_is_edited = false;
     },
@@ -271,7 +272,7 @@ export default {
   // transition-duration: 0.15s;
   // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 
-  &:hover:not(.is--locked) {
+  &:hover:not(.is--locked).is--editable {
     outline: 2px dotted var(--c-noir);
   }
 

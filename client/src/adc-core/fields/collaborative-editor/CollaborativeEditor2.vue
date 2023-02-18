@@ -66,6 +66,7 @@
       class="_floatingEditBtn"
       size="small"
       circle
+      v-if="can_edit"
       @click="toggleEdit"
     >
       <sl-icon
@@ -132,6 +133,7 @@ export default {
     return {
       editor: null,
       text_deltas: null,
+      toolbar_el: null,
 
       rtc: {
         socket: null,
@@ -159,8 +161,9 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    this.initEditor();
+  async mounted() {
+    await this.initEditor();
+    this.toolbar_el = this.$el.querySelector(".ql-toolbar");
     // this.enableEditor();
   },
   beforeDestroy() {
@@ -301,7 +304,7 @@ export default {
       // todo set focus
       this.editor.focus();
 
-      this.$emit(`contentIsEdited`, this.$el.querySelector(".ql-toolbar"));
+      this.$emit(`contentIsEdited`, this.toolbar_el);
       this.editor_is_enabled = true;
     },
     disableEditor() {
@@ -312,12 +315,26 @@ export default {
       if (this.is_collaborative) this.endCollaborative();
 
       this.$emit(`contentIsNotEdited`);
+      // check if toolbar is away, get it back if it is
+      this.getToolbarBack();
 
       this.$nextTick(() => {
         this.editor.disable();
         this.editor_is_enabled = false;
       });
     },
+
+    getToolbarBack() {
+      if (
+        !this.toolbar_el.parentElement.classList.contains(
+          "_toolbarAndEditorContainer"
+        )
+      )
+        this.$el
+          .querySelector("._toolbarAndEditorContainer")
+          .prepend(this.toolbar_el);
+    },
+
     restoreVersion(content) {
       // TODO : with delta to allow for undo
       // this.editor.root.innerHTML = content;

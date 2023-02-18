@@ -26,12 +26,12 @@
     3. text editor toolbar -->
     <div :key="page_number">
       <div
-        v-if="has_editor_toolbar"
+        v-show="has_editor_toolbar"
         ref="editor_toolbar"
         class="_editorToolbar"
       />
 
-      <template v-else>
+      <template v-if="!has_editor_toolbar">
         <br />
         <div class="">
           <div class="" v-if="can_edit">
@@ -332,11 +332,11 @@ export default {
     displayToolbar(node) {
       this.has_editor_toolbar = true;
       this.$nextTick(() => {
-        this.$refs.editor_toolbar.appendChild(node);
+        this.$refs.editor_toolbar.append(node);
       });
     },
     removeToolbar() {
-      if (this.$refs.editor_toolbar) this.$refs.editor_toolbar.innerHTML = "";
+      // if (this.$refs.editor_toolbar) this.$refs.editor_toolbar.innerHTML = "";
       this.has_editor_toolbar = false;
     },
     enableModuleEdit({ meta_filename }) {
