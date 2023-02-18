@@ -10,6 +10,7 @@
     class="_moveableItem"
     :class="{
       'is--locked': publimodule.locked === true,
+      'is--editable': can_edit,
     }"
     :active="can_edit && is_active && publimodule.locked !== true"
     :key="component_key"
@@ -33,6 +34,8 @@
         :context="'page_by_page'"
         :number_of_max_medias="1"
         @duplicate="onDuplicateModule"
+        @contentIsEdited="contentIsEdited"
+        @contentIsNotEdited="contentIsNotEdited"
       />
     </span>
     <div class="_unlockBtn" v-if="can_edit">
@@ -81,6 +84,7 @@ export default {
       transform: { x: 100, y: 100, width: 300, height: 300, rotation: 0 },
       component_key: 1,
       aspect_ratio: true,
+      content_is_edited: false,
     };
   },
   created() {
@@ -115,6 +119,11 @@ export default {
     magnification() {
       const was_updated = this.setTransformFromPubli();
       if (was_updated) this.setNewComponentKey();
+    },
+    is_active() {
+      if (!this.is_active) {
+        this.contentIsNotEdited();
+      }
     },
   },
   computed: {
@@ -156,6 +165,14 @@ export default {
     },
     turnPXtoCM(num) {
       return this.roundToDec(num / this.magnification);
+    },
+    contentIsEdited($toolbar) {
+      this.$eventHub.$emit(`module.text_editing_enabled`, $toolbar);
+      this.content_is_edited = true;
+    },
+    contentIsNotEdited() {
+      this.$eventHub.$emit(`module.text_editing_disabled`);
+      this.content_is_edited = false;
     },
     roundToDec(num) {
       return Math.round((num + Number.EPSILON) * 100) / 100;
@@ -211,8 +228,9 @@ export default {
         new_meta,
       });
     },
-    setActive() {
-      if (!this.can_edit) return;
+    setActive($event) {
+      if (this.content_is_edited) return $event.stopPropagation();
+      if (!this.can_edit || this.is_active) return;
 
       this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
     },
@@ -254,7 +272,7 @@ export default {
   // transition-duration: 0.15s;
   // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 
-  &:hover:not(.is--locked) {
+  &:hover:not(.is--locked).is--editable {
     outline: 2px dotted var(--c-noir);
   }
 

@@ -214,7 +214,6 @@ export default {
     },
     getPreviewFromMedias(image) {
       const slugFolderName = image.slugFolderName;
-      debugger;
       const media = this.getProjectsImages({
         project_slug: slugFolderName,
       }).find((m) => m.metaFileName === image.metaFileName);
