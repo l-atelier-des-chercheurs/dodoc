@@ -140,7 +140,6 @@ export default {
     spreads() {
       if (!this.is_spread) return false;
       // turn pages array into [[{id:""}, {id:""}], [{id:""}, {id:""}], [{id:""}, {id:""}], …]
-      //
       const number_of_spreads = Math.floor(this.pages.length / 2 + 1);
       let spreads = [];
       let index = 0;

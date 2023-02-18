@@ -3,8 +3,8 @@
     class="_collaborativeEditor"
     :class="{
       'is--editable': can_edit,
+      'is--editing_is_enabled': editor_is_enabled,
     }"
-    :data-editable="editor_is_enabled"
     @click="editorClick"
   >
     <TextVersioning
@@ -20,14 +20,14 @@
       <small class="_btnRow">
         <sl-button
           variant="edit"
-          class="editBtn"
+          class="_editBtn"
           size="small"
           pill
+          v-if="editor_is_enabled"
           @click="toggleEdit"
         >
-          <sl-icon name="pencil-fill" :label="$t('edit')" />
-          <template v-if="!editor_is_enabled">{{ $t("edit") }}</template>
-          <template v-else>{{ $t("stop_edit") }}</template>
+          <sl-icon name="check-circle-fill" :label="$t('stop_edit')" />
+          {{ $t("stop_edit") }}
         </sl-button>
 
         <sl-button
@@ -61,7 +61,22 @@
       </small>
     </div>
 
-    <div>
+    <sl-button
+      variant="edit"
+      class="_floatingEditBtn"
+      size="small"
+      circle
+      @click="toggleEdit"
+    >
+      <sl-icon
+        v-if="!editor_is_enabled"
+        name="pencil-fill"
+        :label="$t('edit')"
+      />
+      <sl-icon v-else name="check-circle-fill" />
+    </sl-button>
+
+    <div class="_toolbarAndEditorContainer">
       <div
         ref="editor"
         class="_mainText"
@@ -107,6 +122,8 @@ export default {
     scrollingContainer: HTMLElement,
     line_selected: [Boolean, Number],
     can_edit: Boolean,
+    // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
+    // and that the toolbar moves to the closest parent dedicated container after creation
   },
   components: {
     TextVersioning,
@@ -181,6 +198,9 @@ export default {
         this.currently_selected_eles = false;
       },
       immediate: true,
+    },
+    can_edit() {
+      if (!this.can_edit && this.editor_is_enabled) this.disableEditor();
     },
     currently_selected_eles(newEles) {
       this.editor.container
@@ -273,15 +293,15 @@ export default {
     toggleEdit() {
       if (!this.editor_is_enabled) this.enableEditor();
       else this.disableEditor();
-
-      this.setStatusButton();
     },
     async enableEditor() {
       if (this.is_collaborative) await this.startCollaborative();
+
       this.editor.enable();
       // todo set focus
       this.editor.focus();
 
+      this.$emit(`contentIsEdited`, this.$el.querySelector(".ql-toolbar"));
       this.editor_is_enabled = true;
     },
     disableEditor() {
@@ -291,12 +311,13 @@ export default {
 
       if (this.is_collaborative) this.endCollaborative();
 
+      this.$emit(`contentIsNotEdited`);
+
       this.$nextTick(() => {
         this.editor.disable();
         this.editor_is_enabled = false;
       });
     },
-
     restoreVersion(content) {
       // TODO : with delta to allow for undo
       // this.editor.root.innerHTML = content;
@@ -311,6 +332,7 @@ export default {
     editorClick($event) {
       $event.preventDefault();
       if (
+        $event.target.parentElement &&
         $event.target.parentElement.classList &&
         $event.target.parentElement.classList.contains("ql-editor")
       ) {
@@ -866,7 +888,7 @@ export default {
       font-size: 110%;
       font-family: inherit;
       font-weight: normal;
-      background-color: var(--toolbar-bg);
+      background-color: transparent;
       border: 0;
 
       &:not(.ql-disabled) {
@@ -885,20 +907,20 @@ export default {
       height: auto;
       overflow: visible;
 
-      padding: 0 0 0 calc(var(--spacing) * 2);
-      background-color: white;
+      // padding: 0 0 0 calc(var(--spacing) * 2);
+      padding: 0;
+      background-color: transparent;
 
       padding-bottom: calc(var(--spacing) * 1);
 
       @import "./imports/mainText.scss";
 
       > * {
-        counter-increment: listCounter;
+        // counter-increment: listCounter;
         position: relative;
-        // padding-left: calc(var(--spacing));
 
         &::before {
-          content: counter(listCounter);
+          // content: counter(listCounter);
           cursor: pointer;
 
           /* old way : pos abs */
@@ -963,9 +985,14 @@ export default {
   }
 }
 
-._collaborativeEditor:not([data-editable="true"]) {
-  ::v-deep .ql-formats {
-    display: none;
+._collaborativeEditor:not(.is--editing_is_enabled) {
+  ::v-deep {
+    .ql-toolbar {
+      padding: 0;
+    }
+    .ql-formats {
+      display: none;
+    }
   }
 }
 
@@ -981,5 +1008,13 @@ export default {
   background-color: var(--c-vert);
   border-radius: 2em;
   color: black;
+}
+
+._floatingEditBtn {
+  position: absolute;
+  z-index: 101;
+  top: 0;
+  right: 0;
+  margin: calc(var(--spacing) / 4);
 }
 </style>

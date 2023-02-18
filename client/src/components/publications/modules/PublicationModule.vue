@@ -187,6 +187,8 @@
         :line_selected="false"
         :can_edit="can_edit"
         @lineClicked="$emit('lineClicked', $event)"
+        @contentIsEdited="$emit('contentIsEdited', $event)"
+        @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
       />
       <small v-else>{{ $t("nothing_to_show") }}</small>
     </div>

@@ -7,47 +7,12 @@
   >
     <transition name="fade_fast" mode="out-in">
       <div
-        v-if="!is_spread"
-        :key="'page-' + page_opened_id"
-        class="_pageNavigator"
-        @click="setActiveModule(false)"
-      >
-        <PageMenu
-          :can_edit="can_edit"
-          :page_number="page_number"
-          :active_spread_index="active_spread_index"
-          :zoom.sync="zoom"
-          :show_grid.sync="show_grid"
-          :snap_to_grid.sync="snap_to_grid"
-          :gridstep_in_cm.sync="gridstep_in_cm"
-          :page_color="current_page_color"
-          :publication_path="publication_path"
-          :page_opened_id="page_opened_id"
-          :page_modules="getModulesForPage(page_opened_id)"
-          :active_module="active_module"
-          @updatePageOptions="$emit('updatePageOptions', $event)"
-        />
-
-        <SinglePage
-          :context="'full'"
-          :publication_path="publication_path"
-          :page_modules="getModulesForPage(page_opened_id)"
-          :page_width="page_width"
-          :page_height="page_height"
-          :page_color="current_page_color"
-          :zoom="zoom"
-          :gridstep_in_cm="gridstep_in_cm"
-          :margins="margins"
-          :can_edit="can_edit"
-          :active_module="active_module"
-          @close="setPageActive(false)"
-        />
-      </div>
-      <div
-        v-else
-        :key="'spread-' + JSON.stringify(active_spread.map((s) => s.id))"
+        :key="
+          is_spread
+            ? 'spread-' + JSON.stringify(active_spread.map((s) => s.id))
+            : 'page-' + page_opened_id
+        "
         class="_spreadNavigator"
-        :style="`min-width: ;`"
       >
         <div class="_spreadNavigator--content">
           <div class="_sideCont">
@@ -86,7 +51,27 @@
             </div>
           </div>
 
+          <SinglePage
+            v-if="!is_spread"
+            class="_spreadNavigator--page is--active"
+            :context="'full'"
+            :publication_path="publication_path"
+            :page_modules="getModulesForPage(page_opened_id)"
+            :page_width="page_width"
+            :page_height="page_height"
+            :page_color="current_page_color"
+            :zoom="zoom"
+            :show_grid="show_grid"
+            :snap_to_grid="snap_to_grid"
+            :gridstep_in_cm="gridstep_in_cm"
+            :margins="margins"
+            :active_module="active_module"
+            :can_edit="can_edit"
+            @close="setPageActive(false)"
+          />
+
           <div
+            v-else
             v-for="(page, index) in active_spread"
             :key="page.id ? page.id : index"
             class="_spreadNavigator--page"
@@ -108,9 +93,7 @@
                 :zoom="zoom"
                 :show_grid="show_grid"
                 :snap_to_grid="snap_to_grid"
-                :gridstep_in_cm="
-                  page.id === page_opened_id ? gridstep_in_cm : 0
-                "
+                :gridstep_in_cm="gridstep_in_cm"
                 :margins="margins"
                 :active_module="active_module"
                 :can_edit="can_edit && page.id === page_opened_id"
@@ -142,7 +125,7 @@
                 :page_modules="getModulesForPage(previous_page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
-                :page_color="page.page_color || ''"
+                :page_color="previous_page.page_color || ''"
                 :can_edit="false"
               />
             </button>
@@ -159,7 +142,7 @@
                 :page_modules="getModulesForPage(next_page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
-                :page_color="page.page_color || ''"
+                :page_color="next_page.page_color || ''"
                 :can_edit="false"
               />
               <sl-icon name="arrow-right" />
@@ -225,7 +208,7 @@ export default {
     page_opened_id: String,
     publication_path: String,
     pages: Array,
-    spreads: Array,
+    spreads: [Boolean, Array],
     modules: Array,
     is_spread: Boolean,
     page_width: Number,
@@ -406,6 +389,7 @@ export default {
   align-items: center;
 }
 
+._pageNavigator,
 ._spreadNavigator {
   overflow: auto;
   @include scrollbar(8px, 5px, 6px);
@@ -414,6 +398,7 @@ export default {
 ._spreadNavigator--menu {
 }
 
+._pageNavigator--content,
 ._spreadNavigator--content {
   display: flex;
   flex-flow: row nowrap;
