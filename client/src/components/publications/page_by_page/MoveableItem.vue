@@ -272,21 +272,39 @@ export default {
   // transition-duration: 0.15s;
   // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 
-  &:hover:not(.is--locked).is--editable {
+  &.is--editable {
+    cursor: pointer;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+  }
+
+  &.is--editable:hover:not(.is--locked) {
     outline: 2px dotted var(--c-noir);
   }
 
-  &.yoyoo-ddr.active {
-    border: none;
-    outline: 2px dotted var(--c-orange);
+  &.yoyoo-ddr {
+    &.active {
+      border: none;
+      outline: 2px dotted var(--c-orange) !important;
 
-    ::v-deep {
-      .bl,
-      .br,
-      .tl,
-      .tr {
-        background: var(--c-orange);
+      ::v-deep {
+        .bl,
+        .br,
+        .tl,
+        .tr {
+          background: var(--c-orange);
+        }
       }
+    }
+    &.ddr-dragging {
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+      cursor: dragging;
+
+      transition-property: left, top, right, bottom;
+      transition-duration: 0.15s;
+      transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
     }
   }
 }
