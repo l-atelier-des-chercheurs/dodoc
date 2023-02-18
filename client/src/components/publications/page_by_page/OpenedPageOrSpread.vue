@@ -499,10 +499,13 @@ export default {
   top: 0;
   z-index: 10;
   height: 100%;
+  padding-right: calc(var(--spacing) / 2);
   overflow: auto;
+  pointer-events: none;
   @include scrollbar(8px, 5px, 6px);
 
-  ._content {
+  > * {
+    pointer-events: auto;
   }
 }
 </style>

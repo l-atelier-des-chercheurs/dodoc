@@ -123,6 +123,15 @@ export default {
     is_active() {
       if (!this.is_active) {
         this.contentIsNotEdited();
+      } else {
+        // scroll into view
+        // if (this.$el.scrollIntoViewIfNeeded) this.$el.scrollIntoViewIfNeeded();
+        // else
+        this.$el.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
       }
     },
   },
