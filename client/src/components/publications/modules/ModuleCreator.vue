@@ -172,7 +172,7 @@ export default {
   align-items: center;
   width: 100%;
   pointer-events: none;
-  padding: 0 calc(var(--spacing) * 1);
+  // padding: 0 calc(var(--spacing) * 1);
 
   color: var(--c-bleuvert);
   border-radius: 1rem;

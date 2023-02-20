@@ -754,6 +754,7 @@ export default {
       > * {
         // counter-increment: listCounter;
         position: relative;
+        padding: 0;
 
         &::before {
           // content: counter(listCounter);
