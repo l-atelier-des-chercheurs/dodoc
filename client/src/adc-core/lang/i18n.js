@@ -81,6 +81,9 @@ export default function () {
         connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
         reload_page: "Recharger cette page",
         create_page: "Ajouter une page",
+        page_color: "Couleur de la page",
+        position: "Position",
+        media: "Média",
 
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
