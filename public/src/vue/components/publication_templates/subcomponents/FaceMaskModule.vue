@@ -209,13 +209,13 @@ export default {
 
         let result = {};
 
-        function endsWithAny(suffixes, string) {
+        function includesAny(suffixes, string) {
           return suffixes.some(function (suffix) {
-            return string.endsWith(suffix);
+            return string.includes(suffix);
           });
         }
         if (
-          endsWithAny(
+          includesAny(
             [".gif", ".svg", ".png"],
             image._linked_media.media_filename.toLowerCase()
           )

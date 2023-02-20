@@ -441,9 +441,9 @@ export default {
       if (
         // if image is gif and context is not 'preview', let’s show the original gif
         this.context !== "preview" &&
-        (this.mediaURL.toLowerCase().endsWith(".gif") ||
-          this.mediaURL.toLowerCase().endsWith(".svg") ||
-          this.mediaURL.toLowerCase().endsWith(".png"))
+        (this.mediaURL.toLowerCase().includes(".gif") ||
+          this.mediaURL.toLowerCase().includes(".svg") ||
+          this.mediaURL.toLowerCase().includes(".png"))
       ) {
         return this.mediaURL;
       }
@@ -466,7 +466,7 @@ export default {
     imageSrcSetAttr: function () {
       if (
         this.element_width_for_sizes === 0 ||
-        this.mediaURL.toLowerCase().endsWith(".gif")
+        this.mediaURL.toLowerCase().includes(".gif")
       ) {
         return;
       }
