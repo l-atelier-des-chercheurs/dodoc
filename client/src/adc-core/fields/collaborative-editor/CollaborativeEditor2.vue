@@ -317,9 +317,9 @@ export default {
 
       if (this.is_collaborative) this.endCollaborative();
 
-      this.$emit(`contentIsNotEdited`);
       // check if toolbar is away, get it back if it is
       this.getToolbarBack();
+      this.$emit(`contentIsNotEdited`);
 
       this.$nextTick(() => {
         this.editor.disable();
