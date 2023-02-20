@@ -145,6 +145,8 @@ export default {
       debounce_textUpdate: undefined,
 
       is_collaborative: true,
+      collaborative_is_loaded: false,
+
       autosave: true,
       editor_is_enabled: false,
       doc: undefined,
@@ -455,18 +457,8 @@ export default {
         }
 
         this.editor.history.clear();
-        this.editor.on("text-change", (delta, oldDelta, source) => {
-          console.log(`CollaborativeEditor / text-change w source ${source}`);
-          if (source === "user") {
-            this.doc.submitOp(delta, { source: this.editor_id });
-            console.log(
-              `CollaborativeEditor / submitted op to server ${JSON.stringify(
-                delta
-              )}`
-            );
-            this.updateTextMedia();
-          }
-        });
+
+        this.editor.on("text-change", this.submitOPAndSave);
         this.doc.on("op", (op, source) => {
           console.log(`CollaborativeEditor / op applied`);
           this.text_deltas = this.doc.data;
@@ -474,6 +466,8 @@ export default {
           console.log(`CollaborativeEditor / outside op applied`);
           this.editor.updateContents(op);
         });
+
+        this.collaborative_is_loaded = true;
       });
 
       this.doc.on("error", (err) => {
@@ -484,7 +478,25 @@ export default {
     },
     endCollaborative() {
       if (this.rtc.socket) this.rtc.socket.close();
-      if (this.doc) this.doc.unsubscribe();
+      if (this.doc) {
+        this.doc.unsubscribe();
+        this.doc = null;
+      }
+      this.editor.off("text-change", this.submitOPAndSave);
+
+      this.collaborative_is_loaded = false;
+    },
+    submitOPAndSave(delta, oldDelta, source) {
+      console.log(`CollaborativeEditor / text-change w source ${source}`);
+      if (source === "user") {
+        this.doc.submitOp(delta, { source: this.editor_id });
+        console.log(
+          `CollaborativeEditor / submitted op to server ${JSON.stringify(
+            delta
+          )}`
+        );
+        this.updateTextMedia();
+      }
     },
 
     updateTextMedia() {

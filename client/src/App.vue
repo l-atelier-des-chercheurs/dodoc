@@ -122,7 +122,14 @@ export default {
   --c-bodybg: hsl(48, 19%, 95%);
   --body-bg-pattern-color: hsl(48, 19%, 93%);
   --plyr-color-main: var(--c-bleumarine);
-  // --plyr-color-main: var(--c-orange);
+
+  // from tldraw
+  --panel-color: #fefefe;
+  --panel-borders: 1px solid white;
+  --panel-shadows: rgba(0, 0, 0, 0.05) 0px 0px 16px -1px,
+    rgba(0, 0, 0, 0.05) 0px 0px 16px -8px,
+    rgba(0, 0, 0, 0.12) 0px 0px 16px -12px, rgba(0, 0, 0, 0.08) 0px 0px 2px 0px;
+  --panel-radius: 12px;
 
   --scrollbar-height: 1px;
   --scrollbar-padding: 3px;

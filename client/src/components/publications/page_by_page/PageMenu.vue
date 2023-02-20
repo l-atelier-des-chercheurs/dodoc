@@ -375,8 +375,10 @@ export default {
   padding: calc(var(--spacing) / 1);
   margin: 0;
 
-  background: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  background: var(--panel-color);
+  border: var(--panel-borders);
+  box-shadow: var(--panel-shadows);
+  border-radius: var(--panel-radius);
 
   text-align: left;
 
@@ -395,12 +397,18 @@ export default {
 
 ._mediaList {
   font-size: var(--sl-font-size-x-small);
+  padding: 0;
 
   > * {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
     gap: calc(var(--spacing) / 2);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--c-gris_clair);
+    }
 
     &:not(:last-child) {
       border-bottom: 2px solid var(--c-gris);
