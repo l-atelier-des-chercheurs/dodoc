@@ -94,6 +94,11 @@ export default {
   }
 
   ::v-deep {
+    ._mediaContent {
+      width: 100%;
+      height: 100%;
+    }
+
     img {
       position: absolute;
       width: 100%;
