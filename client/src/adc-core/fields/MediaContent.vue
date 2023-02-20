@@ -31,8 +31,7 @@
       <img :src="thumb" />
     </template>
     <small v-else class="u-fontCode fieldCaption _fileName">
-      <sl-icon name="file-earmark" /><br />
-      {{ file.$media_filename }}
+      <sl-icon name="file-earmark" /> {{ file.$media_filename }}
     </small>
   </div>
 </template>
@@ -147,5 +146,11 @@ export default {
 <style lang="scss" scoped>
 ._fileName {
   padding: calc(var(--spacing) / 4);
+}
+
+._mediaContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
