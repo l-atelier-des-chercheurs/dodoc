@@ -1,6 +1,7 @@
 <template>
   <div
     class="_mediaContent"
+    :data-filetype="file.$type"
     :draggable="is_draggable"
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
@@ -8,7 +9,7 @@
     <template v-if="file.$type === 'image'">
       <img :src="thumb" />
     </template>
-    <template v-else-if="file.$type === 'video'">
+    <template v-else-if="file.$type === 'video' || file.$type === 'audio'">
       <template v-if="context === 'preview'">
         <img :src="thumb" />
       </template>
