@@ -711,205 +711,11 @@ export default {
 ._collaborativeEditor {
   position: relative;
   font-size: 100%;
-  // border-top: var(--border-size) solid var(--editor-bg);
-
-  --toolbar-bg: var(--editor-bg);
-  --editor-bg: #eee;
-  --button-size: 32px;
-  --border-size: 4px;
-  --quill-buttons-size: 2.2rem;
-  --quill-options-size: 2.2rem;
 
   &:not(.is--editable) {
     border: none;
     ::v-deep .ql-toolbar {
       display: none;
-    }
-  }
-
-  ::v-deep .ql-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    padding: calc(var(--spacing) / 2);
-
-    display: flex;
-    flex-flow: row wrap;
-    gap: calc(var(--spacing) / 2);
-    justify-content: flex-start;
-    align-items: center;
-
-    font-size: inherit;
-    font-family: inherit;
-    font-weight: normal;
-    background-color: var(--toolbar-bg);
-    color: #333 !important;
-
-    // border-radius: 0.5em;
-    border: none;
-    // border-bottom: var(--border-size) dotted var(--editor-bg);
-    // border-bottom-style: double;
-
-    &::after {
-      display: none;
-    }
-    button,
-    svg {
-      color: currentColor;
-    }
-
-    .ql-fill,
-    .ql-stroke.ql-fill {
-      fill: currentColor;
-    }
-
-    .ql-stroke {
-      stroke: currentColor;
-    }
-
-    .ql-picker {
-      color: currentColor;
-    }
-
-    .ql-picker.ql-font {
-      width: 140px;
-    }
-    .ql-color-picker,
-    .ql-icon-picker {
-      width: var(--quill-options-size);
-    }
-
-    .ql-formats {
-      // margin-right: calc(var(--spacing) / 2);
-      // margin-bottom: calc(var(--spacing) / 2);
-      margin: 0;
-      display: flex;
-      flex-flow: row nowrap;
-      border: 2px solid var(--c-gris_clair);
-      border-radius: 12px;
-      background: #fff;
-
-      button,
-      > *:not(.ql-size):not(.ql-header):not(.ql-font) .ql-picker-label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        svg {
-          width: var(--quill-buttons-size);
-          height: var(--quill-buttons-size);
-          flex: 0 0 auto;
-        }
-      }
-
-      .ql-font {
-        background: var(--editor-bg);
-      }
-      .ql-header {
-        background: var(--editor-bg);
-      }
-      .ql-picker {
-        height: var(--button-size);
-      }
-      .ql-picker-label {
-        text-align: left;
-        padding: 4px;
-        background: white;
-      }
-      .ql-picker-label::before {
-        // line-height: var(--button-size);
-      }
-    }
-
-    .ql-picker.ql-header {
-      width: 115px !important;
-    }
-    .ql-picker.ql-font {
-      width: 160px !important;
-
-      &::before {
-      }
-    }
-
-    html & .ql-picker.ql-header {
-      .ql-picker-label,
-      .ql-picker-item {
-        &::before {
-          content: "Regular text";
-        }
-      }
-    }
-    html[lang="fr"] & .ql-picker.ql-header {
-      .ql-picker-label,
-      .ql-picker-item {
-        &::before {
-          content: "Texte courant";
-        }
-
-        &[data-value="1"]::before {
-          content: "Titre 1";
-          font-weight: 700;
-        }
-        &[data-value="2"]::before {
-          content: "Titre 2";
-          font-weight: 700;
-        }
-        &[data-value="3"]::before {
-          content: "Titre 3";
-          font-weight: 700;
-        }
-        &[data-value="4"]::before {
-          content: "Titre 4";
-          font-weight: 700;
-        }
-      }
-    }
-
-    // .ql-picker.ql-size .ql-picker-label[data-value="75%"]::before,
-    // .ql-picker.ql-size .ql-picker-item[data-value="75%"]::before {
-    //   content: "Small";
-    //   font-size: 70% !important;
-
-    //   html[lang="fr"] & {
-    //     content: "Petit";
-    //   }
-    // }
-    // .ql-picker.ql-size .ql-picker-label:not([data-value])::before,
-    // .ql-picker.ql-size .ql-picker-item:not([data-value])::before {
-    //   content: "Regular";
-    //   font-size: 100% !important;
-
-    //   html[lang="fr"] & {
-    //     content: "Normal";
-    //   }
-    // }
-    // .ql-picker.ql-size .ql-picker-label[data-value="150%"]::before,
-    // .ql-picker.ql-size .ql-picker-item[data-value="150%"]::before {
-    //   content: "Large";
-    //   font-size: 150% !important;
-
-    //   html[lang="fr"] & {
-    //     content: "Grand";
-    //   }
-    // }
-    // .ql-picker.ql-size .ql-picker-label[data-value="300%"]::before,
-    // .ql-picker.ql-size .ql-picker-item[data-value="300%"]::before {
-    //   content: "Huge";
-    //   font-size: 300% !important;
-
-    //   html[lang="fr"] & {
-    //     content: "Énorme";
-    //   }
-    // }
-
-    .ql-picker.ql-size .ql-picker-label[data-value]::before {
-      font-size: 100% !important;
-    }
-    z ._btnContainer {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      // background-color: var(--editor-bg);
     }
   }
 
@@ -1014,7 +820,6 @@ export default {
     }
   }
 }
-
 ._collaborativeEditor:not(.is--editing_is_enabled) {
   ::v-deep {
     .ql-toolbar {
@@ -1046,5 +851,199 @@ export default {
   top: 0;
   right: 0;
   margin: calc(var(--spacing) / 4);
+}
+</style>
+<style lang="scss">
+.ql-toolbar.ql-toolbar {
+  --toolbar-bg: var(--editor-bg);
+  --editor-bg: #eee;
+  --button-size: 32px;
+  --border-size: 4px;
+  --quill-buttons-size: 2.2rem;
+  --quill-options-size: 2.2rem;
+
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: calc(var(--spacing) / 2);
+
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
+  justify-content: flex-start;
+  align-items: center;
+
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: normal;
+  background-color: var(--toolbar-bg);
+  color: #333 !important;
+
+  // border-radius: 0.5em;
+  border: none;
+  // border-bottom: var(--border-size) dotted var(--editor-bg);
+  // border-bottom-style: double;
+
+  &::after {
+    display: none;
+  }
+  button,
+  svg {
+    color: currentColor;
+  }
+
+  .ql-fill,
+  .ql-stroke.ql-fill {
+    fill: currentColor;
+  }
+
+  .ql-stroke {
+    stroke: currentColor;
+  }
+
+  .ql-picker {
+    color: currentColor;
+  }
+
+  .ql-picker.ql-font {
+    width: 140px;
+  }
+  .ql-color-picker,
+  .ql-icon-picker {
+    width: var(--quill-options-size);
+  }
+
+  .ql-formats {
+    // margin-right: calc(var(--spacing) / 2);
+    // margin-bottom: calc(var(--spacing) / 2);
+    margin: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    border: 2px solid var(--c-gris_clair);
+    border-radius: 12px;
+    background: #fff;
+
+    button,
+    > *:not(.ql-size):not(.ql-header):not(.ql-font) .ql-picker-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      svg {
+        width: var(--quill-buttons-size);
+        height: var(--quill-buttons-size);
+        flex: 0 0 auto;
+      }
+    }
+
+    .ql-font {
+      background: var(--editor-bg);
+    }
+    .ql-header {
+      background: var(--editor-bg);
+    }
+    .ql-picker {
+      height: var(--button-size);
+    }
+    .ql-picker-label {
+      text-align: left;
+      padding: 4px;
+      background: white;
+    }
+    .ql-picker-label::before {
+      // line-height: var(--button-size);
+    }
+  }
+
+  .ql-picker.ql-header {
+    width: 115px !important;
+  }
+  .ql-picker.ql-font {
+    width: 160px !important;
+
+    &::before {
+    }
+  }
+
+  html & .ql-picker.ql-header {
+    .ql-picker-label,
+    .ql-picker-item {
+      &::before {
+        content: "Regular text";
+      }
+    }
+  }
+  html[lang="fr"] & .ql-picker.ql-header {
+    .ql-picker-label,
+    .ql-picker-item {
+      &::before {
+        content: "Texte courant";
+      }
+
+      &[data-value="1"]::before {
+        content: "Titre 1";
+        font-weight: 700;
+      }
+      &[data-value="2"]::before {
+        content: "Titre 2";
+        font-weight: 700;
+      }
+      &[data-value="3"]::before {
+        content: "Titre 3";
+        font-weight: 700;
+      }
+      &[data-value="4"]::before {
+        content: "Titre 4";
+        font-weight: 700;
+      }
+    }
+  }
+
+  // .ql-picker.ql-size .ql-picker-label[data-value="75%"]::before,
+  // .ql-picker.ql-size .ql-picker-item[data-value="75%"]::before {
+  //   content: "Small";
+  //   font-size: 70% !important;
+
+  //   html[lang="fr"] & {
+  //     content: "Petit";
+  //   }
+  // }
+  // .ql-picker.ql-size .ql-picker-label:not([data-value])::before,
+  // .ql-picker.ql-size .ql-picker-item:not([data-value])::before {
+  //   content: "Regular";
+  //   font-size: 100% !important;
+
+  //   html[lang="fr"] & {
+  //     content: "Normal";
+  //   }
+  // }
+  // .ql-picker.ql-size .ql-picker-label[data-value="150%"]::before,
+  // .ql-picker.ql-size .ql-picker-item[data-value="150%"]::before {
+  //   content: "Large";
+  //   font-size: 150% !important;
+
+  //   html[lang="fr"] & {
+  //     content: "Grand";
+  //   }
+  // }
+  // .ql-picker.ql-size .ql-picker-label[data-value="300%"]::before,
+  // .ql-picker.ql-size .ql-picker-item[data-value="300%"]::before {
+  //   content: "Huge";
+  //   font-size: 300% !important;
+
+  //   html[lang="fr"] & {
+  //     content: "Énorme";
+  //   }
+  // }
+
+  .ql-picker.ql-size .ql-picker-label[data-value]::before {
+    font-size: 100% !important;
+  }
+  z ._btnContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // background-color: var(--editor-bg);
+  }
 }
 </style>
