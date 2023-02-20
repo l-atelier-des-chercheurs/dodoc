@@ -325,8 +325,8 @@ export default {
       new_meta.source_medias = new_source_medias;
 
       if (this.context === "page_by_page") {
-        new_meta.x = this.publimodule.x + 1;
-        new_meta.y = this.publimodule.y + 1;
+        new_meta.x = (this.publimodule.x || 0) + 1;
+        new_meta.y = (this.publimodule.y || 0) + 1;
       }
 
       const meta_filename = await this.$api

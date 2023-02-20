@@ -1,6 +1,7 @@
 <template>
   <div
     class="_mediaContent"
+    :data-filetype="file.$type"
     :draggable="is_draggable"
     @dragstart="startMediaDrag($event)"
     @dragend="endMediaDrag()"
@@ -8,7 +9,7 @@
     <template v-if="file.$type === 'image'">
       <img :src="thumb" />
     </template>
-    <template v-else-if="file.$type === 'video'">
+    <template v-else-if="file.$type === 'video' || file.$type === 'audio'">
       <template v-if="context === 'preview'">
         <img :src="thumb" />
       </template>
@@ -31,8 +32,7 @@
       <img :src="thumb" />
     </template>
     <small v-else class="u-fontCode fieldCaption _fileName">
-      <sl-icon name="file-earmark" /><br />
-      {{ file.$media_filename }}
+      <sl-icon name="file-earmark" /> {{ file.$media_filename }}
     </small>
   </div>
 </template>
@@ -147,5 +147,13 @@ export default {
 <style lang="scss" scoped>
 ._fileName {
   padding: calc(var(--spacing) / 4);
+}
+
+._mediaContent {
+  &[data-filetype="other"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>

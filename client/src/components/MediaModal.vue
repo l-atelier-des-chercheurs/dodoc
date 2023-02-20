@@ -198,6 +198,8 @@ export default {
     &._preview {
       position: relative;
       flex: 10 1 320px;
+      color: white;
+
       // height: 50%;
     }
     &._meta {

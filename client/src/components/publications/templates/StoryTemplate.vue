@@ -218,6 +218,9 @@ export default {
     ._content {
       min-height: calc(24px * 3);
     }
+    ._floatingEditBtn[data-action="disable"] {
+      display: none;
+    }
   }
 }
 ._spacer {

@@ -129,7 +129,7 @@ export default {
   --panel-shadows: rgba(0, 0, 0, 0.05) 0px 0px 16px -1px,
     rgba(0, 0, 0, 0.05) 0px 0px 16px -8px,
     rgba(0, 0, 0, 0.12) 0px 0px 16px -12px, rgba(0, 0, 0, 0.08) 0px 0px 2px 0px;
-  --panel-radius: 12px;
+  --panel-radius: 6px;
 
   --scrollbar-height: 1px;
   --scrollbar-padding: 3px;
