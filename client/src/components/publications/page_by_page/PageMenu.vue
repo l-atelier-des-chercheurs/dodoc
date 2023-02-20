@@ -231,21 +231,18 @@
                   :min="0"
                   @save="updateMediaPubliMeta({ x: $event })"
                 />
-                <br />
                 <NumberInput
                   :label="$t('position') + '↕'"
                   :value="active_module.y"
                   :min="0"
                   @save="updateMediaPubliMeta({ y: $event })"
                 />
-                <br />
                 <NumberInput
                   :label="$t('width')"
                   :value="active_module.width"
                   :min="0"
                   @save="updateMediaPubliMeta({ width: $event })"
                 />
-                <br />
                 <NumberInput
                   :label="$t('height')"
                   :value="active_module.height"
@@ -372,8 +369,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pageMenu {
-  padding: calc(var(--spacing) / 1);
-  margin: 0;
+  padding: calc(var(--spacing) / 2);
+  margin: 0 calc(var(--spacing) / 1);
 
   background: var(--panel-color);
   border: var(--panel-borders);

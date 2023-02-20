@@ -258,7 +258,7 @@ export default {
   pointer-events: none;
   opacity: 0.6;
 
-  --c-gridlines: #777;
+  --c-gridlines: #999;
   --c-gridfiveslines: #111;
 }
 ._pageBorders {

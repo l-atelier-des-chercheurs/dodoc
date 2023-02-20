@@ -96,6 +96,8 @@ export default {
     this.setNewComponentKey();
   },
   mounted() {
+    console.log(`MoveableItem / mounted ${this.publimodule.$path}`);
+
     this.$eventHub.$on(
       `module.enable_edit.${this.module_meta_filename}`,
       this.setActive
