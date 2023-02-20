@@ -125,13 +125,18 @@ export default {
         this.contentIsNotEdited();
       } else {
         // scroll into view
-        // if (this.$el.scrollIntoViewIfNeeded) this.$el.scrollIntoViewIfNeeded();
-        // else
-        this.$el.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "center",
-        });
+        if (this.$el.scrollIntoViewIfNeeded)
+          this.$el.scrollIntoViewIfNeeded({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center",
+          });
+        else
+          this.$el.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center",
+          });
       }
     },
   },
