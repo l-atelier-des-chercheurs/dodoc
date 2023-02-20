@@ -64,6 +64,7 @@
     <sl-button
       variant="edit"
       class="_floatingEditBtn"
+      :data-action="editor_is_enabled ? 'disable' : 'enable'"
       size="small"
       circle
       v-if="can_edit"
