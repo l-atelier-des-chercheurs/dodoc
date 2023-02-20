@@ -11,8 +11,14 @@
     :class="{
       'is--locked': publimodule.locked === true,
       'is--editable': can_edit,
+      'is--beingEdited': content_is_edited,
     }"
-    :active="can_edit && is_active && publimodule.locked !== true"
+    :active="
+      can_edit &&
+      is_active &&
+      publimodule.locked !== true &&
+      content_is_edited !== true
+    "
     :key="component_key"
     :value="transform"
     :parent="false /* bind to container */"
@@ -81,7 +87,7 @@ export default {
   },
   data() {
     return {
-      transform: { x: 100, y: 100, width: 300, height: 300, rotation: 0 },
+      transform: { x: 0, y: 0, width: 300, height: 300, rotation: 0 },
       component_key: 1,
       aspect_ratio: true,
       content_is_edited: false,
@@ -288,7 +294,7 @@ export default {
   // transition-duration: 0.15s;
   // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 
-  &.is--editable {
+  &.is--editable:not(.is--beingEdited) {
     cursor: pointer;
     cursor: -webkit-grab;
     cursor: -moz-grab;
@@ -299,7 +305,11 @@ export default {
     outline: 2px dotted var(--c-noir);
   }
 
-  &.yoyoo-ddr {
+  &.is--beingEdited {
+    outline: 2px dotted var(--c-orange) !important;
+  }
+
+  &.yoyoo-ddr:not(.is--beingEdited) {
     &.active {
       border: none;
       outline: 2px dotted var(--c-orange) !important;
@@ -318,9 +328,9 @@ export default {
       cursor: -moz-grabbing;
       cursor: dragging;
 
-      transition-property: left, top, right, bottom;
-      transition-duration: 0.05s;
-      transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+      // transition-property: left, top, right, bottom;
+      // transition-duration: 0.05s;
+      // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
     }
   }
 }
