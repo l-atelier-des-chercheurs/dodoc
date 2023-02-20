@@ -150,8 +150,10 @@ export default {
 }
 
 ._mediaContent {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  &[data-filetype="other"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>
