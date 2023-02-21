@@ -9,8 +9,7 @@
           type="color"
           :name="label"
           :id="'_input_' + label"
-          class="u-input-small"
-          v-model.number="local_value"
+          v-model="local_value"
         />
 
         <button
@@ -25,9 +24,9 @@
     </transition>
     <button
       type="button"
-      v-if="value !== ''"
+      v-if="value !== '#ffffff'"
       class="u-buttonLink"
-      @click="$emit('save', '')"
+      @click="$emit('save', '#ffffff')"
     >
       <sl-icon name="trash3" :label="$t('erase')" />
     </button>
@@ -39,12 +38,15 @@ export default {
     label: {
       type: String,
     },
-    value: String,
+    value: {
+      type: String,
+      default: "#ffffff",
+    },
   },
   components: {},
   data() {
     return {
-      local_value: this.value || "",
+      local_value: this.value,
     };
   },
   created() {},

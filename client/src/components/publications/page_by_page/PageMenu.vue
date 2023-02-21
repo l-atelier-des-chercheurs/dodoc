@@ -95,10 +95,13 @@
           </div>
         </fieldset>
 
+        <br />
+
         <div>
           <button
             type="button"
             class="u-buttonLink"
+            :disabled="page_modules.length === 0"
             v-if="can_edit"
             @click="show_all_medias = !show_all_medias"
           >

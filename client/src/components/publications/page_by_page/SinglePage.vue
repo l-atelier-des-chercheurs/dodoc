@@ -179,7 +179,7 @@ export default {
         --page-width: ${this.magnify(this.page_width)}px;
         --page-height: ${this.magnify(this.page_height)}px;
         --zoom: ${this.zoom};
-        --page-color: ${this.page_color || ""};
+        --page-color: ${this.page_color || "#fff"};
       `;
     },
   },
