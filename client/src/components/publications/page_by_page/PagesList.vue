@@ -21,7 +21,7 @@
                 :page_modules="getModulesForPage(page.id)"
                 :page_width="publication.page_width"
                 :page_height="publication.page_height"
-                :page_color="page.page_color"
+                :page_color="page.page_color || '#ffffff'"
                 :can_edit="false"
               />
               <button
@@ -56,7 +56,7 @@
                     :page_modules="getModulesForPage(page.id)"
                     :page_width="publication.page_width"
                     :page_height="publication.page_height"
-                    :page_color="page.page_color"
+                    :page_color="page.page_color || '#ffffff'"
                     :can_edit="false"
                   />
                   <button

@@ -165,6 +165,7 @@ export default function () {
         margins_outside: "Grand fond",
         photo: "Photo",
         remove_this_image: "Supprimer cette image",
+        erase: "Effacer",
 
         status: "État",
         list_of_projects: "Liste des projets",

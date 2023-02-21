@@ -79,19 +79,15 @@
             </div>
           </div>
           <div class="" v-if="can_edit">
-            <label class="u-label">
-              {{ $t("page_color") }}
-            </label>
-            <input
-              type="color"
+            <ColorInput
+              :label="$t('page_color')"
               :value="page_color"
-              @input="
+              @save="
                 $emit('updatePageOptions', {
                   page_number,
-                  value: { page_color: $event.target.value },
+                  value: { page_color: $event },
                 })
               "
-              :novalue="page_color === ''"
             />
           </div>
         </fieldset>

@@ -41,7 +41,7 @@
                 :show_grid.sync="show_grid"
                 :snap_to_grid.sync="snap_to_grid"
                 :gridstep_in_cm.sync="gridstep_in_cm"
-                :page_color="current_page_color"
+                :page_color="current_page.page_color || '#ffffff'"
                 :publication_path="publication_path"
                 :page_opened_id="page_opened_id"
                 :page_modules="getModulesForPage(page_opened_id)"
@@ -59,7 +59,7 @@
             :page_modules="getModulesForPage(page_opened_id)"
             :page_width="page_width"
             :page_height="page_height"
-            :page_color="current_page_color"
+            :page_color="current_page.page_color || '#ffffff'"
             :zoom="zoom"
             :show_grid="show_grid"
             :snap_to_grid="snap_to_grid"
@@ -89,7 +89,7 @@
                 :page_modules="getModulesForPage(page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
-                :page_color="page.page_color || ''"
+                :page_color="page.page_color || '#ffffff'"
                 :zoom="zoom"
                 :show_grid="show_grid"
                 :snap_to_grid="snap_to_grid"
@@ -125,7 +125,7 @@
                 :page_modules="getModulesForPage(previous_page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
-                :page_color="previous_page.page_color || ''"
+                :page_color="previous_page.page_color || '#ffffff'"
                 :can_edit="false"
               />
             </button>
@@ -142,7 +142,7 @@
                 :page_modules="getModulesForPage(next_page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
-                :page_color="next_page.page_color || ''"
+                :page_color="next_page.page_color || '#ffffff'"
                 :can_edit="false"
               />
               <sl-icon name="arrow-right" />
@@ -166,7 +166,7 @@
                   :page_modules="getModulesForPage(page.id)"
                   :page_width="page_width"
                   :page_height="page_height"
-                  :page_color="page.page_color || ''"
+                  :page_color="page.page_color || '#ffffff'"
                   :can_edit="false"
                 />
               </template>
@@ -187,7 +187,7 @@
                   :page_modules="getModulesForPage(page.id)"
                   :page_width="page_width"
                   :page_height="page_height"
-                  :page_color="page.page_color || ''"
+                  :page_color="page.page_color || '#ffffff'"
                   :can_edit="false"
                 />
               </template>
@@ -251,9 +251,6 @@ export default {
     },
     current_page() {
       return this.pages.find((p) => p.id === this.page_opened_id);
-    },
-    current_page_color() {
-      return this.current_page.page_color || "";
     },
     previous_page() {
       return this.pages[this.page_number - 1];
