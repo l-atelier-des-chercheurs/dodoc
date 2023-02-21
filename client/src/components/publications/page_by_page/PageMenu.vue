@@ -18,7 +18,9 @@
       </transition>
     </div>
 
-    <div class="">
+    <br />
+
+    <div class="u-sameRow">
       <label class="u-label">{{ $t("zoom") }} ({{ zoom }})</label>
       <input
         type="range"
@@ -29,6 +31,7 @@
         step="0.1"
       />
     </div>
+    <br />
 
     <div :key="'page-' + page_number" v-if="can_edit">
       <div v-if="!has_editor_toolbar && !active_module">

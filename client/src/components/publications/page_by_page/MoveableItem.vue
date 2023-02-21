@@ -363,7 +363,7 @@ export default {
   }
 }
 
-._activator {
+._moveableItem.is--editable:not(.is--beingEdited) ._activator {
   &::after {
     content: "";
     position: absolute;
@@ -379,7 +379,7 @@ export default {
 
   &:hover {
     &::after {
-      opacity: 0.2;
+      opacity: 0.15;
     }
   }
 }
