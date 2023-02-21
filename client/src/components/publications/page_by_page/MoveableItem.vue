@@ -32,7 +32,7 @@
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
-    <span @mousedown="setActive">
+    <span class="_activator" @mousedown="setActive">
       <PublicationModule
         class="_moveableItem--content"
         :publimodule="publimodule"
@@ -359,6 +359,27 @@ export default {
 
       // plyr
       min-width: 50px;
+    }
+  }
+}
+
+._activator {
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--c-orange_clair);
+    opacity: 0;
+
+    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  &:hover {
+    &::after {
+      opacity: 0.2;
     }
   }
 }
