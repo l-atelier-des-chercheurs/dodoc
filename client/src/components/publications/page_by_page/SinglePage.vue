@@ -274,5 +274,8 @@ export default {
   width: 100%;
   height: 100%;
   pointer-events: none;
+
+  stroke-width: 2px;
+  stroke: hsl(280, 97%, 70%);
 }
 </style>
