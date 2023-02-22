@@ -8,7 +8,7 @@
         class="_inputRange"
         :min="min"
         :max="max"
-        step="1"
+        :step="step"
         v-model.number="local_value"
         @change="$emit('save', +$event.target.value)"
       />
@@ -63,6 +63,10 @@ export default {
     },
     min: Number,
     max: Number,
+    step: {
+      type: Number,
+      default: 1,
+    },
     suffix: String,
   },
   components: {},
