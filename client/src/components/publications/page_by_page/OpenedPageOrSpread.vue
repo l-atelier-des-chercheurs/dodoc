@@ -414,7 +414,7 @@ export default {
 
     ::v-deep {
       ._container {
-        transform-origin: 100% 50%;
+        transform-origin: 100% 0%;
         margin-right: 0;
       }
       ._margins {
@@ -426,7 +426,7 @@ export default {
     padding-left: 0;
     ::v-deep {
       ._container {
-        transform-origin: 0% 50%;
+        transform-origin: 0% 0%;
         margin-left: 0;
       }
     }

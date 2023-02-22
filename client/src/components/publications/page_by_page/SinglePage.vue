@@ -83,7 +83,6 @@
             :y="magnify(margins.top)"
             :width="magnify(page_width - margins.left - margins.right)"
             :height="magnify(page_height - margins.top - margins.bottom)"
-            stroke="rebeccapurple"
           />
         </svg>
 
@@ -222,7 +221,7 @@ export default {
     width: calc(var(--page-width) * var(--zoom));
     height: calc(var(--page-height) * var(--zoom));
 
-    transform-origin: top left;
+    transform-origin: left top;
     margin: 0 auto;
     padding: 0;
   }
