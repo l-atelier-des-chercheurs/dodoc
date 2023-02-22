@@ -58,17 +58,20 @@
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)"></rect>
         </svg>
-        <MoveableItem
-          class="_item"
-          v-for="publimodule in page_modules"
-          :key="publimodule.$path"
-          :publimodule="publimodule"
-          :magnification="magnification"
-          :gridstep="show_grid && snap_to_grid ? gridstep : 1"
-          :zoom="zoom"
-          :can_edit="can_edit"
-          :is_active="active_module.$path === publimodule.$path"
-        />
+
+        <transition-group name="scaleInFade">
+          <MoveableItem
+            class="_item"
+            v-for="publimodule in page_modules"
+            :key="publimodule.$path"
+            :publimodule="publimodule"
+            :magnification="magnification"
+            :gridstep="show_grid && snap_to_grid ? gridstep : 1"
+            :zoom="zoom"
+            :can_edit="can_edit"
+            :is_active="active_module.$path === publimodule.$path"
+          />
+        </transition-group>
 
         <svg
           v-if="can_edit && Object.keys(margins)"

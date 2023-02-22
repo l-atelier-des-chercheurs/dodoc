@@ -39,7 +39,7 @@
           <div class="">
             <ModuleCreator
               :publication_path="publication_path"
-              :page_id="page_opened_id"
+              :addtl_meta="new_module_meta"
               :is_collapsed="false"
               @addModule="enableModuleEdit"
             />
@@ -290,6 +290,13 @@ export default {
       return this.active_module.$path.substring(
         this.active_module.$path.lastIndexOf("/") + 1
       );
+    },
+    new_module_meta() {
+      return {
+        page_id: this.page_opened_id,
+        x: this.gridstep_in_cm,
+        y: this.gridstep_in_cm,
+      };
     },
   },
   methods: {

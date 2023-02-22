@@ -55,7 +55,7 @@ import MediaPicker from "@/components/publications/MediaPicker.vue";
 export default {
   props: {
     publication_path: String,
-    page_id: String,
+    addtl_meta: Object,
     is_collapsed: {
       type: Boolean,
       default: true,
@@ -110,7 +110,7 @@ export default {
       const text_meta_filename = await this.$api.uploadText({
         path: this.publication_path,
         filename: "text.txt",
-        content: "",
+        content: "…",
         additional_meta: {
           caption: "plip",
           module_type: this.module_type,
@@ -141,7 +141,7 @@ export default {
         requested_slug: "module",
       };
 
-      if (this.page_id) additional_meta.page_id = this.page_id;
+      if (this.addtl_meta) Object.assign(additional_meta, this.addtl_meta);
 
       return await this.$api
         .uploadFile({
