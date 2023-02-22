@@ -146,6 +146,7 @@ export default function () {
         custom: "Personnalisé",
         width: "Largeur",
         height: "Hauteur",
+        text_size: "Taille du texte",
         page_spreads: "Pages en vis-à-vis",
         page: "Page",
         lock: "Verrouiller",
@@ -460,6 +461,7 @@ export default function () {
         informations: "Informations",
 
         duplicate: "Dupliquer",
+        unselect: "Déselectionner",
         remove: "Supprimer",
         remove_project: "Supprimer le projet",
         remove_media: "Supprimer le média",

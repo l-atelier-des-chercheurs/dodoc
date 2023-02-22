@@ -20,18 +20,16 @@
 
     <br />
 
-    <div class="u-sameRow">
-      <label class="u-label">{{ $t("zoom") }} ({{ zoom }})</label>
-      <input
-        type="range"
-        @input="$emit('update:zoom', +$event.target.value)"
-        min="0.1"
-        max="1"
-        :value="zoom"
-        step="0.1"
-      />
-    </div>
-    <br />
+    <RangeValueInput
+      class="u-spacingBottom"
+      :label="$t('zoom')"
+      :value="zoom * 100"
+      :min="1"
+      :max="200"
+      :default_value="100"
+      :suffix="'%'"
+      @save="$emit('update:zoom', $event / 100)"
+    />
 
     <div :key="'page-' + page_number" v-if="can_edit">
       <div v-if="!has_editor_toolbar && !active_module">
