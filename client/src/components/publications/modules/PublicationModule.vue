@@ -1,12 +1,6 @@
 <template>
   <div class="_publicationModule">
-    <div
-      class="_sideOptions"
-      :class="{
-        'is--pageByPage': context === 'page_by_page',
-      }"
-      v-if="can_edit"
-    >
+    <div class="_sideOptions" v-if="can_edit && context !== 'page_by_page'">
       <span>
         <button
           v-if="
@@ -30,7 +24,6 @@
           </svg>
         </button>
       </span>
-
       <div class="_options">
         <button
           type="button"
@@ -137,7 +130,6 @@
           </div>
         </div>
       </div>
-
       <span>
         <button
           v-if="
