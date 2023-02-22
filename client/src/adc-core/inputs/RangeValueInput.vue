@@ -1,29 +1,55 @@
 <template>
-  <div class="_rangeValueInput">
-    <div class="item">
-      <label :for="id">
-        {{ label }}
-        <button
-          type="button"
-          class="buttonLink"
-          v-if="value !== default_value"
-          @click="$emit('value', default_value)"
-        >
-          ×
-        </button>
-      </label>
-      <div>
-        <input type="range" :min="0" step="0.1" v-model.number="new_value" />
-      </div>
-      <div class="input-group">
-        <input
-          type="number"
-          :id="id"
-          class="input-small"
-          v-model.number="new_value"
+  <div class="_rangeInput">
+    <DLabel v-if="label" :str="label" :for="label" />
+
+    <div class="u-sameRow">
+      <input
+        type="range"
+        class="u-spacingBottom _inputRange"
+        :min="min"
+        :max="max"
+        step="1"
+        v-model.number="local_value"
+        @change="$emit('save', +$event.target.value)"
+      />
+      <!-- <div class="u-inputGroup">
+            <input
+              ref="field"
+              type="number"
+              :name="label"
+              :id="'_input_' + label"
+              class="u-input-small _numberField"
+              :min="min"
+              :max="max"
+              v-model.number="local_value"
+              @keyup.enter="$emit('save', local_value)"
+            />
+            <span class="u-suffix">
+              {{ suffix }}
+            </span>
+          </div> -->
+
+      <transition name="fade" mode="out-in">
+        <NumberInput
+          :key="'value-' + value"
+          :value="value"
+          :min="min"
+          :max="max"
+          :suffix="suffix"
+          class="_numberField"
+          @save="$emit('save', $event)"
         />
-      </div>
+      </transition>
     </div>
+
+    <button
+      type="button"
+      v-if="value !== default_value"
+      class="u-buttonLink"
+      @click="$emit('save', default_value)"
+    >
+      ×
+    </button>
   </div>
 </template>
 <script>
@@ -31,17 +57,18 @@ export default {
   props: {
     label: String,
     value: Number,
-    default_value: Number,
+    default_value: {
+      type: Number,
+      default: 0,
+    },
+    min: Number,
+    max: Number,
+    suffix: String,
   },
   components: {},
   data() {
     return {
-      id: `id_${(Math.random().toString(36) + "00000000000000000").slice(
-        2,
-        3 + 2
-      )}`,
-
-      new_value: this.value,
+      local_value: this.value || this.default_value,
     };
   },
   created() {},
@@ -49,32 +76,19 @@ export default {
   beforeDestroy() {},
   watch: {
     value() {
-      this.new_value = this.value;
-    },
-    new_value() {
-      if (this.new_value !== this.value)
-        this.$emit("update:value", this.new_value);
+      this.local_value = this.value;
     },
   },
-  computed: {
-    current_instruction() {
-      if (!this.options) return false;
-      return this.options[this.content.toString()];
-    },
-  },
+  computed: {},
   methods: {},
 };
 </script>
 <style lang="scss" scoped>
-._toggleInput {
+._inputRange {
+  flex: 1 1 60px;
+  min-width: 60px;
 }
-._inputLabel {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-}
-._maxlength {
-  flex: 0 0 auto;
-  padding: calc(var(--spacing) / 4) 0;
+._numberField {
+  flex: 2 0 60px;
 }
 </style>

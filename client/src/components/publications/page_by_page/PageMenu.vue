@@ -188,30 +188,51 @@
             </div>
           </div>
 
-          <br />
-          <NumberInput
-            :label="$t('position') + '↔'"
-            :value="active_module.x"
-            :min="0"
-            @save="updateMediaPubliMeta({ x: $event })"
-          />
-          <NumberInput
-            :label="$t('position') + '↕'"
-            :value="active_module.y"
-            :min="0"
-            @save="updateMediaPubliMeta({ y: $event })"
-          />
-          <NumberInput
-            :label="$t('width')"
-            :value="active_module.width"
-            :min="0"
-            @save="updateMediaPubliMeta({ width: $event })"
-          />
-          <NumberInput
-            :label="$t('height')"
-            :value="active_module.height"
-            :min="0"
-            @save="updateMediaPubliMeta({ height: $event })"
+          <div class="u-sameRow">
+            <NumberInput
+              class="u-spacingBottom"
+              :label="$t('position') + '↔'"
+              :value="active_module.x"
+              :suffix="'cm'"
+              @save="updateMediaPubliMeta({ x: $event })"
+            />
+            <NumberInput
+              class="u-spacingBottom"
+              :label="$t('position') + '↕'"
+              :value="active_module.y"
+              :suffix="'cm'"
+              @save="updateMediaPubliMeta({ y: $event })"
+            />
+          </div>
+
+          <div class="u-sameRow">
+            <NumberInput
+              class="u-spacingBottom"
+              :label="$t('width')"
+              :value="active_module.width"
+              :min="0"
+              :suffix="'cm'"
+              @save="updateMediaPubliMeta({ width: $event })"
+            />
+            <NumberInput
+              class="u-spacingBottom"
+              :label="$t('height')"
+              :value="active_module.height"
+              :min="0"
+              :suffix="'cm'"
+              @save="updateMediaPubliMeta({ height: $event })"
+            />
+          </div>
+          <RangeValueInput
+            v-if="firstMedia(active_module).$type === 'text'"
+            class="u-spacingBottom"
+            :label="$t('text_size')"
+            :value="active_module.scale"
+            :min="1"
+            :max="500"
+            :default_value="100"
+            :suffix="'%'"
+            @save="updateMediaPubliMeta({ scale: $event })"
           />
         </fieldset>
       </div>

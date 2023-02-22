@@ -42,6 +42,7 @@
         @duplicate="onDuplicateModule"
         @contentIsEdited="contentIsEdited"
         @contentIsNotEdited="contentIsNotEdited"
+        :style="text_styles"
       />
     </span>
     <div class="_unlockBtn" v-if="can_edit">
@@ -154,6 +155,15 @@ export default {
     },
     grid() {
       return [this.gridstep, this.gridstep];
+    },
+    text_styles() {
+      return `
+        font-size: ${
+          this.publimodule.hasOwnProperty("scale")
+            ? this.publimodule.scale
+            : 100
+        }%
+      `;
     },
   },
   methods: {
