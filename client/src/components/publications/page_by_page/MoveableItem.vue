@@ -48,12 +48,25 @@
     <div class="_unlockBtn" v-if="can_edit">
       <button
         type="button"
-        class="u-buttonLink"
+        class="u-button u-button_bleuvert u-button_small u-button_round"
         v-if="publimodule.locked === true"
         @click="unlock()"
       >
         <sl-icon name="unlock" />
-        {{ $t("unlock") }}
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_transparent u-button_small"
+        v-if="
+          can_edit &&
+          is_active &&
+          !content_is_edited &&
+          (!publimodule.locked || publimodule.locked === false)
+        "
+        @click="lock()"
+      >
+        <sl-icon name="lock" />
+        {{ $t("lock") }}
       </button>
     </div>
 
@@ -263,8 +276,18 @@ export default {
     setActive($event) {
       if (this.content_is_edited) return $event.stopPropagation();
       if (!this.can_edit || this.is_active) return;
+      if (this.publimodule.locked === true) return;
 
       this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
+    },
+    async lock() {
+      const new_meta = {
+        locked: true,
+      };
+      await this.updateModuleMeta({
+        new_meta,
+      });
+      this.$eventHub.$emit(`module.setActive`, false);
     },
     async unlock() {
       const new_meta = {
@@ -304,7 +327,11 @@ export default {
   // transition-duration: 0.15s;
   // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 
-  &.is--editable:not(.is--beingEdited) {
+  &.is--locked {
+    pointer-events: none;
+  }
+
+  &.is--editable:not(.is--beingEdited):not(.is--locked) {
     cursor: pointer;
     cursor: -webkit-grab;
     cursor: -moz-grab;
@@ -373,7 +400,7 @@ export default {
   }
 }
 
-._moveableItem.is--editable:not(.is--beingEdited) ._activator {
+._moveableItem.is--editable:not(.is--beingEdited):not(.is--locked) ._activator {
   &::after {
     content: "";
     position: absolute;
@@ -406,11 +433,15 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
   pointer-events: none;
-  margin: calc(var(--spacing) * 1);
+  margin: calc(var(--spacing) / 4);
+
+  display: flex;
+  justify-content: center;
 
   > * {
-    background: white;
+    // background: white;
     pointer-events: auto;
   }
 }
