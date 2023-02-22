@@ -296,14 +296,19 @@ export default {
   // max-width: 1024px;
   position: sticky;
   top: 0;
-  overflow: hidden;
-  z-index: 10;
+  overflow: visible;
+  z-index: 100;
   width: 100%;
   margin: 0 auto;
   background-color: #fff;
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   border-top: 1px solid var(--c-gris);
   // border-bottom: 0;
+
+  background: var(--panel-color);
+  // border: var(--panel-borders);
+  box-shadow: var(--panel-shadows);
+  border-radius: var(--panel-radius);
 
   &.has--noPanes {
     border-bottom: 1px solid var(--c-gris);

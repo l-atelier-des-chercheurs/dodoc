@@ -5,7 +5,7 @@
     <div class="u-sameRow">
       <input
         type="range"
-        class="u-spacingBottom _inputRange"
+        class="_inputRange"
         :min="min"
         :max="max"
         step="1"
@@ -89,6 +89,6 @@ export default {
   min-width: 60px;
 }
 ._numberField {
-  flex: 2 0 60px;
+  flex: 2 0 0px;
 }
 </style>
