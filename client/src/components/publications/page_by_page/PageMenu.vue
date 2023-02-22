@@ -55,28 +55,23 @@
             <br />
 
             <div v-if="show_grid && can_edit">
-              <div class="">
-                <label class="u-label">
-                  {{ $t("gridstep") }} ({{ gridstep_in_cm }})
-                </label>
-                <input
-                  type="range"
-                  @input="$emit('update:gridstep_in_cm', +$event.target.value)"
-                  min="0.1"
-                  max="4"
-                  step=".1"
-                  :value="gridstep_in_cm"
-                />
-                <br />
-              </div>
-              <div>
-                <ToggleInput
-                  :content="snap_to_grid"
-                  :label="$t('snap_to_grid')"
-                  @update:content="$emit('update:snap_to_grid', $event)"
-                />
-                <br />
-              </div>
+              <RangeValueInput
+                class="u-spacingBottom"
+                :label="$t('gridstep')"
+                :value="gridstep_in_cm"
+                :min="0.1"
+                :max="5"
+                :step="0.1"
+                :default_value="1"
+                :suffix="'cm'"
+                @save="$emit('update:gridstep_in_cm', $event)"
+              />
+
+              <ToggleInput
+                :content="snap_to_grid"
+                :label="$t('snap_to_grid')"
+                @update:content="$emit('update:snap_to_grid', $event)"
+              />
             </div>
           </div>
           <div class="" v-if="can_edit">
