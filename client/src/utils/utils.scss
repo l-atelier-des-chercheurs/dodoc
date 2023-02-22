@@ -178,8 +178,10 @@
     background: var(--active-color);
   }
 }
-
-.u-button-inline {
+// .u-button_round {
+//   border-radius: 50%;
+// }
+.u-button_inline {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
