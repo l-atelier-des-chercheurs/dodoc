@@ -227,7 +227,7 @@ export default {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 
-      this.transform = transform;
+      // this.transform = transform;
       this.updateTransform(transform);
 
       event.stopPropagation();
@@ -246,7 +246,7 @@ export default {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 
-      this.transform = transform;
+      // this.transform = transform;
       this.updateTransform(transform);
 
       event.stopPropagation();
@@ -255,7 +255,7 @@ export default {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 
-      this.transform = transform;
+      // this.transform = transform;
       this.updateTransform(transform);
 
       event.stopPropagation();
@@ -263,10 +263,15 @@ export default {
     async updateTransform(transform) {
       let new_meta = JSON.parse(JSON.stringify(transform));
       Object.keys(new_meta).map((k) => {
-        if (["x", "y", "width", "height"].includes(k)) {
-          new_meta[k] = this.turnPXtoCM(new_meta[k]);
-          // update transform with this value
-          this.transform[k] = this.turnCMtoPX(new_meta[k]);
+        if (new_meta[k] !== this.transform[k]) {
+          if (["x", "y", "width", "height"].includes(k)) {
+            new_meta[k] = this.turnPXtoCM(new_meta[k]);
+            this.transform[k] = this.turnCMtoPX(new_meta[k]);
+          } else {
+            this.transform[k] = this.turnCMtoPX(this.turnPXtoCM(new_meta[k]));
+          }
+        } else {
+          delete new_meta[k];
         }
       });
 
