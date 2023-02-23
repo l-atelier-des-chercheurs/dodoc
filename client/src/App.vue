@@ -262,7 +262,7 @@ body {
 }
 
 ::selection {
-  background: var(--c-bleu_clair);
+  background: hsla(211, 63%, 77%, 0.5);
 }
 
 html {
