@@ -463,6 +463,9 @@
               "scale": {
                 "type": "number"
               },
+              "margins": {
+                "type": "number"
+              },
               "locked": {
                 "type": "boolean"
               }

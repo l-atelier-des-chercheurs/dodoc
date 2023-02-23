@@ -244,6 +244,17 @@
             :suffix="'%'"
             @save="updateMediaPubliMeta({ scale: $event })"
           />
+          <RangeValueInput
+            class="u-spacingBottom"
+            :label="$t('margins')"
+            :value="active_module.margins"
+            :min="0"
+            :max="5"
+            :step="0.1"
+            :default_value="0"
+            :suffix="'cm'"
+            @save="updateMediaPubliMeta({ margins: $event })"
+          />
         </fieldset>
       </div>
       <div v-show="has_editor_toolbar">
