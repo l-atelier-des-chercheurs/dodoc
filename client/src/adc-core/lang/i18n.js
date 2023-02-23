@@ -147,6 +147,7 @@ export default function () {
         width: "Largeur",
         height: "Hauteur",
         text_size: "Taille du texte",
+        background_color: "Couleur du fond",
         page_spreads: "Pages en vis-à-vis",
         page: "Page",
         lock: "Verrouiller",
