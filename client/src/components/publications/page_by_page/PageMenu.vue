@@ -253,7 +253,18 @@
             :suffix="'cm'"
             @save="updateMediaPubliMeta({ margins: $event })"
           />
-
+          <RangeValueInput
+            class="u-spacingBottom"
+            :label="$t('opacity')"
+            :value="Math.round(active_module.opacity * 100)"
+            :min="0"
+            :max="100"
+            :step="1"
+            :ticks="[0, 100]"
+            :default_value="100"
+            :suffix="'%'"
+            @save="updateMediaPubliMeta({ opacity: $event / 100 })"
+          />
           <ColorInput
             :label="$t('background_color')"
             :value="active_module.background_color"

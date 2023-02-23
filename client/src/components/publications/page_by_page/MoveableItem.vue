@@ -182,6 +182,11 @@ export default {
             ? this.turnCMtoPX(this.publimodule.margins)
             : 0
         }px;
+        opacity: ${
+          this.publimodule.hasOwnProperty("opacity")
+            ? this.publimodule.opacity
+            : 1
+        };
         background-color: ${
           this.publimodule.hasOwnProperty("background_color")
             ? this.publimodule.background_color
