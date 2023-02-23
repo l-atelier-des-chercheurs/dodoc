@@ -23,7 +23,7 @@
     <RangeValueInput
       class="u-spacingBottom"
       :label="$t('zoom')"
-      :value="zoom * 100"
+      :value="Math.round(zoom * 100)"
       :min="25"
       :max="100"
       :step="1"
