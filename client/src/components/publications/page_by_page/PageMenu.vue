@@ -248,6 +248,19 @@
       </div>
       <div v-show="has_editor_toolbar">
         <div ref="editor_toolbar" class="_editorToolbar" />
+
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('text_size')"
+          :value="active_module.scale"
+          :min="1"
+          :max="400"
+          :step="1"
+          :ticks="[1, 100, 200, 300, 400]"
+          :default_value="100"
+          :suffix="'%'"
+          @save="updateMediaPubliMeta({ scale: $event })"
+        />
       </div>
     </div>
   </div>
