@@ -378,7 +378,13 @@ export default {
 
   &.is--beingEdited {
     outline: 2px dotted var(--c-orange) !important;
-    background: rgba(255, 255, 255, 0.6);
+
+    ::v-deep {
+      ._collaborativeEditor .ql-editor {
+        background: linear-gradient(rgba(255, 255, 255, 0.6) 55%, transparent);
+        padding-bottom: 250px;
+      }
+    }
   }
 
   &.yoyoo-ddr:not(.is--beingEdited) {
