@@ -233,14 +233,14 @@
             v-if="firstMedia(active_module).$type === 'text'"
             class="u-spacingBottom"
             :label="$t('text_size')"
-            :value="active_module.scale"
+            :value="active_module.text_size"
             :min="1"
             :max="400"
             :step="1"
             :ticks="[1, 100, 200, 300, 400]"
             :default_value="100"
             :suffix="'%'"
-            @save="updateMediaPubliMeta({ scale: $event })"
+            @save="updateMediaPubliMeta({ text_size: $event })"
           />
           <RangeValueInput
             class="u-spacingBottom"
