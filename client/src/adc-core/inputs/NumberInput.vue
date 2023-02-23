@@ -11,6 +11,8 @@
           :id="'_input_' + label"
           class="u-input-small _input"
           :min="min"
+          :max="max"
+          :step="step"
           v-model.number="local_value"
           @keyup.enter="$emit('save', local_value)"
         />
@@ -45,6 +47,8 @@ export default {
     value: Number,
     default_value: Number,
     min: Number,
+    max: Number,
+    step: Number,
     suffix: String,
   },
   components: {},

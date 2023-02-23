@@ -143,6 +143,10 @@
   }
 }
 
+button {
+  appearance: unset;
+}
+
 .u-button {
   display: inline-flex;
   align-items: center;
@@ -541,6 +545,11 @@ input[type="file"] {
 .fieldCaption {
   font-weight: 500;
   font-size: var(--sl-font-size-x-small);
+}
+
+.u-defaultValue {
+  font-size: var(--sl-font-size-x-small);
+  text-align: right;
 }
 
 .u-colorRed {

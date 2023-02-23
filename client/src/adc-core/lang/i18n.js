@@ -192,6 +192,8 @@ export default function () {
         finished_projects: "Projets finalisés",
         projects_in_progress: "Projets en cours",
 
+        default_value: "Par défaut",
+
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d’accueil.",
 

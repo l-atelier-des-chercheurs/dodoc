@@ -6,12 +6,16 @@
       <input
         type="range"
         class="_inputRange"
+        :list="steplist_id"
         :min="min"
         :max="max"
         :step="step"
         v-model.number="local_value"
         @change="$emit('save', +$event.target.value)"
       />
+      <datalist :id="steplist_id" v-if="ticks">
+        <option v-for="tick in ticks" :key="tick">{{ tick }}</option>
+      </datalist>
       <!-- <div class="u-inputGroup">
             <input
               ref="field"
@@ -34,7 +38,7 @@
           :key="'value-' + value"
           :value="local_value"
           :min="min"
-          :max="max"
+          :step="step"
           :suffix="suffix"
           class="_numberField"
           @save="$emit('save', $event)"
@@ -42,13 +46,9 @@
       </transition>
     </div>
 
-    <div class="u-instructions" v-if="value !== default_value">
-      {{ $t("default") }} =
-      <button
-        type="button"
-        class="u-buttonLink"
-        @click="$emit('save', default_value)"
-      >
+    <div class="u-defaultValue" v-if="value !== default_value">
+      {{ $t("default_value") }} =
+      <button type="button" @click="$emit('save', default_value)">
         {{ default_value }}
       </button>
     </div>
@@ -69,12 +69,16 @@ export default {
       type: Number,
       default: 1,
     },
+    ticks: Array,
     suffix: String,
   },
   components: {},
   data() {
     return {
       local_value: this.value || this.default_value,
+      steplist_id: `steplist_${(
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 3 + 5)}`,
     };
   },
   created() {},
