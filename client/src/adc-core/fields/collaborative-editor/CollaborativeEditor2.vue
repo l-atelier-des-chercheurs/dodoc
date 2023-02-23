@@ -301,6 +301,8 @@ export default {
       else this.disableEditor();
     },
     async enableEditor() {
+      if (this.editor_is_enabled) return false;
+
       if (this.is_collaborative) await this.startCollaborative();
 
       this.editor.enable();
@@ -313,6 +315,8 @@ export default {
       this.editor_is_enabled = true;
     },
     disableEditor() {
+      if (!this.editor_is_enabled) return false;
+
       this.editor.setSelection(null);
       this.editor.blur();
       this.updateSelectedLines();
