@@ -234,7 +234,7 @@
           />
         </fieldset>
       </div>
-      <div v-else-if="has_editor_toolbar">
+      <div v-show="has_editor_toolbar">
         <div ref="editor_toolbar" class="_editorToolbar" />
       </div>
     </div>
@@ -318,9 +318,9 @@ export default {
     },
     displayToolbar(node) {
       this.has_editor_toolbar = true;
-      this.$nextTick(() => {
-        this.$refs.editor_toolbar.append(node);
-      });
+      this.$refs.editor_toolbar.append(node);
+      // this.$nextTick(() => {
+      // });
     },
     removeToolbar() {
       // if (this.$refs.editor_toolbar) this.$refs.editor_toolbar.innerHTML = "";
