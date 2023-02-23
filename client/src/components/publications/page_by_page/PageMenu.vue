@@ -50,15 +50,14 @@
 
           <div class="" v-if="can_edit">
             <ToggleInput
+              class="u-spacingBottom"
               :content="show_grid"
               :label="$t('show_grid')"
               @update:content="$emit('update:show_grid', $event)"
             />
-            <br />
 
             <div v-if="show_grid && can_edit">
               <RangeValueInput
-                class="u-spacingBottom"
                 :label="$t('gridstep')"
                 :value="gridstep_in_cm"
                 :min="0.1"
@@ -71,6 +70,7 @@
               />
 
               <ToggleInput
+                class="u-spacingBottom"
                 :content="snap_to_grid"
                 :label="$t('snap_to_grid')"
                 @update:content="$emit('update:snap_to_grid', $event)"
@@ -90,8 +90,6 @@
             />
           </div>
         </fieldset>
-
-        <br />
 
         <div>
           <button
