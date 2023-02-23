@@ -35,7 +35,7 @@
 
     <div :key="'page-' + page_number" v-if="can_edit">
       <div v-if="!has_editor_toolbar && !active_module">
-        <fieldset>
+        <fieldset class="u-spacingBottom">
           <legend class="u-label">{{ $t("page_options") }}</legend>
 
           <div class="">
@@ -252,6 +252,12 @@
             :default_value="0"
             :suffix="'cm'"
             @save="updateMediaPubliMeta({ margins: $event })"
+          />
+
+          <ColorInput
+            :label="$t('background_color')"
+            :value="active_module.background_color"
+            @save="updateMediaPubliMeta({ background_color: $event })"
           />
         </fieldset>
       </div>

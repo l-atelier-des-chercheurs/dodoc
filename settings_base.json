@@ -466,6 +466,9 @@
               "margins": {
                 "type": "number"
               },
+              "background_color": {
+                "type": "string"
+              },
               "locked": {
                 "type": "boolean"
               }
