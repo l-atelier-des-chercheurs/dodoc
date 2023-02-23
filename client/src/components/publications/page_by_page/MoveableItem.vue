@@ -33,7 +33,7 @@
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
-    <span class="_activator" @mousedown="setActive">
+    <span class="_activator" @mousedown="setActive" @dblclick="editText">
       <PublicationModule
         class="_moveableItem--content"
         :publimodule="publimodule"
@@ -223,6 +223,18 @@ export default {
     roundToDec(num) {
       return Math.round((num + Number.EPSILON) * 100) / 100;
     },
+    firstMedia(page_module) {
+      if (!page_module) return false;
+      try {
+        const media_path = page_module.source_medias[0].path;
+        return this.getSourceMedia({
+          source_media_path: media_path,
+        });
+      } catch (err) {
+        return false;
+      }
+    },
+
     dragEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
@@ -285,6 +297,15 @@ export default {
       if (this.publimodule.locked === true) return;
 
       this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
+    },
+    editText() {
+      const first_media = this.firstMedia(this.publimodule);
+      if (!first_media || first_media.$type !== "text") return;
+
+      const meta_filename = this.publimodule.$path.substring(
+        this.publimodule.$path.lastIndexOf("/") + 1
+      );
+      this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
     },
     async lock() {
       const new_meta = {
