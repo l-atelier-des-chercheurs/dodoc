@@ -333,10 +333,8 @@ export default {
     flex: 0 0 auto;
   }
 
-  > ._pageNavigator,
   > ._spreadNavigator {
     flex: 1 1 auto;
-    overflow: auto;
   }
 }
 ._navBar {
@@ -386,7 +384,6 @@ export default {
   align-items: center;
 }
 
-._pageNavigator,
 ._spreadNavigator {
   overflow: auto;
   @include scrollbar(8px, 5px, 6px);
@@ -395,7 +392,6 @@ export default {
 ._spreadNavigator--menu {
 }
 
-._pageNavigator--content,
 ._spreadNavigator--content {
   display: flex;
   flex-flow: row nowrap;
