@@ -43,7 +43,7 @@
         @duplicate="onDuplicateModule"
         @contentIsEdited="contentIsEdited"
         @contentIsNotEdited="contentIsNotEdited"
-        :style="text_styles"
+        :style="module_styles"
       />
     </span>
     <div class="_unlockBtn" v-if="can_edit">
@@ -170,14 +170,14 @@ export default {
     grid() {
       return [this.gridstep, this.gridstep];
     },
-    text_styles() {
+    module_styles() {
       return `
         font-size: ${
           this.publimodule.hasOwnProperty("scale")
             ? this.publimodule.scale
             : 100
         }%;
-        margin: ${
+        padding: ${
           this.publimodule.hasOwnProperty("margins")
             ? this.turnCMtoPX(this.publimodule.margins)
             : 0
@@ -421,7 +421,7 @@ export default {
 ._moveableItem--content {
   height: 100%;
   padding: 0;
-  transition: margin 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: padding 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   ::v-deep ._content {
     height: 100%;
