@@ -173,8 +173,8 @@ export default {
     module_styles() {
       return `
         font-size: ${
-          this.publimodule.hasOwnProperty("scale")
-            ? this.publimodule.scale
+          this.publimodule.hasOwnProperty("text_size")
+            ? this.publimodule.text_size
             : 100
         }%;
         padding: ${
