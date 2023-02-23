@@ -2,37 +2,31 @@
   <div class="_numberInput">
     <DLabel v-if="label" :str="label" :for="label" />
 
-    <transition name="fade" mode="out-in">
-      <div class="u-sameRow" :key="'value-' + value">
-        <div class="u-inputGroup">
-          <input
-            ref="field"
-            type="number"
-            :name="label"
-            :id="'_input_' + label"
-            class="u-input-small _input"
-            :min="min"
-            v-model.number="local_value"
-            @keyup.enter="$emit('save', local_value)"
-          />
-          <span class="u-suffix">
-            {{ suffix }}
-          </span>
-        </div>
-        <button
-          type="button"
-          v-if="value !== local_value"
-          class="u-button u-button_bleuvert _submitBtn"
-          @click="$emit('save', local_value)"
-        >
-          <sl-icon
-            style="font-size: 1.5em"
-            name="check"
-            :label="$t('submit')"
-          />
-        </button>
+    <div class="u-sameRow" :key="'value-' + value">
+      <div class="u-inputGroup">
+        <input
+          ref="field"
+          type="number"
+          :name="label"
+          :id="'_input_' + label"
+          class="u-input-small _input"
+          :min="min"
+          v-model.number="local_value"
+          @keyup.enter="$emit('save', local_value)"
+        />
+        <span class="u-suffix">
+          {{ suffix }}
+        </span>
       </div>
-    </transition>
+      <button
+        type="button"
+        v-if="value !== local_value"
+        class="u-button u-button_bleuvert _submitBtn"
+        @click="$emit('save', local_value)"
+      >
+        <sl-icon style="font-size: 1.5em" name="check" :label="$t('submit')" />
+      </button>
+    </div>
 
     <button
       type="button"

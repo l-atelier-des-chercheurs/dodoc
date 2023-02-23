@@ -32,7 +32,7 @@
       <transition name="fade" mode="out-in">
         <NumberInput
           :key="'value-' + value"
-          :value="value"
+          :value="local_value"
           :min="min"
           :max="max"
           :suffix="suffix"
@@ -42,14 +42,16 @@
       </transition>
     </div>
 
-    <button
-      type="button"
-      v-if="value !== default_value"
-      class="u-buttonLink"
-      @click="$emit('save', default_value)"
-    >
-      ×
-    </button>
+    <div class="u-instructions" v-if="value !== default_value">
+      {{ $t("default") }} =
+      <button
+        type="button"
+        class="u-buttonLink"
+        @click="$emit('save', default_value)"
+      >
+        {{ default_value }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
