@@ -22,14 +22,13 @@
         </button>
       </div>
     </transition>
-    <button
-      type="button"
-      v-if="value !== '#ffffff'"
-      class="u-buttonLink"
-      @click="$emit('save', '#ffffff')"
-    >
-      <sl-icon name="trash3" :label="$t('erase')" />
-    </button>
+
+    <div class="u-defaultValue" v-if="value !== default_value">
+      {{ $t("default_value") }} =
+      <button type="button" @click="$emit('save', default_value)">
+        {{ default_value }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -38,7 +37,8 @@ export default {
     label: {
       type: String,
     },
-    value: {
+    value: String,
+    default_value: {
       type: String,
       default: "#ffffff",
     },
@@ -46,7 +46,7 @@ export default {
   components: {},
   data() {
     return {
-      local_value: this.value,
+      local_value: this.value || this.default_value,
     };
   },
   created() {},
