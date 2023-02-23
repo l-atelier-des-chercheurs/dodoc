@@ -302,7 +302,9 @@ export default {
       await this.updateModuleMeta({
         new_meta,
       });
-      this.setActive();
+      setTimeout(() => {
+        this.setActive();
+      }, 100);
     },
     async updateModuleMeta({ new_meta }) {
       await this.$api
