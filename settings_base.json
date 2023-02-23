@@ -451,17 +451,20 @@
               "y": {
                 "type": "number"
               },
-              "scale": {
-                "type": "number"
-              },
-              "locked": {
-                "type": "boolean"
-              },
               "width": {
                 "type": "number"
               },
               "height": {
                 "type": "number"
+              },
+              "rotation": {
+                "type": "number"
+              },
+              "scale": {
+                "type": "number"
+              },
+              "locked": {
+                "type": "boolean"
               }
             }
           }

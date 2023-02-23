@@ -220,6 +220,18 @@
             />
           </div>
           <RangeValueInput
+            class="u-spacingBottom"
+            :label="$t('rotate')"
+            :value="active_module.rotation"
+            :min="0"
+            :max="360"
+            :step="1"
+            :ticks="[0, 90, 180, 270, 360]"
+            :default_value="0"
+            :suffix="'°'"
+            @save="updateMediaPubliMeta({ rotation: $event })"
+          />
+          <RangeValueInput
             v-if="firstMedia(active_module).$type === 'text'"
             class="u-spacingBottom"
             :label="$t('text_size')"
