@@ -53,11 +53,11 @@
         v-if="publimodule.locked === true"
         @click="unlock()"
       >
-        <sl-icon name="unlock" />
+        <sl-icon name="lock" />
       </button>
       <button
         type="button"
-        class="u-button u-button_transparent u-button_small"
+        class="u-button u-button_orange u-button_small u-button_round"
         v-if="
           can_edit &&
           is_active &&
@@ -66,8 +66,8 @@
         "
         @click="lock()"
       >
-        <sl-icon name="lock" />
-        {{ $t("lock") }}
+        <sl-icon name="unlock" />
+        <!-- {{ $t("lock") }} -->
       </button>
     </div>
 
@@ -482,7 +482,7 @@ export default {
   left: 0;
   width: 100%;
   pointer-events: none;
-  margin: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2);
 
   display: flex;
   justify-content: center;
