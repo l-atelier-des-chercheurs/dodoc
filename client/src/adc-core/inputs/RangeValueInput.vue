@@ -1,28 +1,38 @@
 <template>
-  <div class="_rangeValueInput">
-    <div class="item">
-      <label :for="id">
-        {{ label }}
-        <button
-          type="button"
-          class="buttonLink"
-          v-if="value !== default_value"
-          @click="$emit('value', default_value)"
-        >
-          ×
-        </button>
-      </label>
-      <div>
-        <input type="range" :min="0" step="0.1" v-model.number="new_value" />
-      </div>
-      <div class="input-group">
-        <input
-          type="number"
-          :id="id"
-          class="input-small"
-          v-model.number="new_value"
-        />
-      </div>
+  <div class="_rangeInput">
+    <DLabel v-if="label" :str="label" :for="label" />
+
+    <div class="u-sameRow">
+      <input
+        type="range"
+        class="_inputRange"
+        :list="steplist_id"
+        :min="min"
+        :max="max"
+        :step="step"
+        v-model.number="local_value"
+        @change="$emit('save', +$event.target.value)"
+      />
+      <datalist :id="steplist_id" v-if="ticks">
+        <option v-for="tick in ticks" :key="tick">{{ tick }}</option>
+      </datalist>
+
+      <NumberInput
+        :key="'value-' + value"
+        :value="local_value"
+        :min="min"
+        :step="step"
+        :suffix="suffix"
+        class="_numberField"
+        @save="$emit('save', $event)"
+      />
+    </div>
+
+    <div class="u-defaultValue" v-if="value !== default_value">
+      {{ $t("default_value") }} =
+      <button type="button" @click="$emit('save', default_value)">
+        {{ default_value }}
+      </button>
     </div>
   </div>
 </template>
@@ -31,17 +41,26 @@ export default {
   props: {
     label: String,
     value: Number,
-    default_value: Number,
+    default_value: {
+      type: Number,
+      default: 0,
+    },
+    min: Number,
+    max: Number,
+    step: {
+      type: Number,
+      default: 1,
+    },
+    ticks: Array,
+    suffix: String,
   },
   components: {},
   data() {
     return {
-      id: `id_${(Math.random().toString(36) + "00000000000000000").slice(
-        2,
-        3 + 2
-      )}`,
-
-      new_value: this.value,
+      local_value: this.value || this.default_value,
+      steplist_id: `steplist_${(
+        Math.random().toString(36) + "00000000000000000"
+      ).slice(2, 3 + 5)}`,
     };
   },
   created() {},
@@ -49,32 +68,19 @@ export default {
   beforeDestroy() {},
   watch: {
     value() {
-      this.new_value = this.value;
-    },
-    new_value() {
-      if (this.new_value !== this.value)
-        this.$emit("update:value", this.new_value);
+      this.local_value = this.value;
     },
   },
-  computed: {
-    current_instruction() {
-      if (!this.options) return false;
-      return this.options[this.content.toString()];
-    },
-  },
+  computed: {},
   methods: {},
 };
 </script>
 <style lang="scss" scoped>
-._toggleInput {
+._inputRange {
+  flex: 1 1 60px;
+  min-width: 60px;
 }
-._inputLabel {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-}
-._maxlength {
-  flex: 0 0 auto;
-  padding: calc(var(--spacing) / 4) 0;
+._numberField {
+  flex: 2 0 0px;
 }
 </style>

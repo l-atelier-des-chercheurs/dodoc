@@ -143,6 +143,10 @@
   }
 }
 
+button {
+  appearance: unset;
+}
+
 .u-button {
   display: inline-flex;
   align-items: center;
@@ -178,8 +182,10 @@
     background: var(--active-color);
   }
 }
-
-.u-button-inline {
+// .u-button_round {
+//   border-radius: 50%;
+// }
+.u-button_inline {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -356,7 +362,7 @@ textarea,
   padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
-  transition: all 0.25s;
+  transition: all 0.05s;
 
   &:hover,
   &:focus {
@@ -377,6 +383,19 @@ textarea,
 
     transition: background-size 0.2s;
   }
+}
+
+.u-inputGroup {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.u-suffix {
+  font-family: "Fira Code";
+  padding: calc(var(--spacing) / 4);
+  font-size: var(--sl-font-size-x-small);
 }
 
 textarea,
@@ -526,6 +545,11 @@ input[type="file"] {
 .fieldCaption {
   font-weight: 500;
   font-size: var(--sl-font-size-x-small);
+}
+
+.u-defaultValue {
+  font-size: var(--sl-font-size-x-small);
+  text-align: right;
 }
 
 .u-colorRed {
@@ -681,4 +705,8 @@ input[type="file"] {
   margin: calc(var(--spacing) / 1) 0;
   padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
+}
+
+.u-spacingBottom {
+  margin-bottom: calc(var(--spacing) / 1);
 }

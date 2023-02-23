@@ -476,7 +476,7 @@
 
                 <button
                   type="button"
-                  class="u-button u-button_orange u-button-inline _captureButton"
+                  class="u-button u-button_orange u-button_inline _captureButton"
                   :key="selected_mode + '_pause'"
                   v-if="selected_mode === 'video' && is_recording"
                   @mousedown.stop.prevent="pauseOrResumeCapture()"
@@ -554,7 +554,7 @@
 
                 <button
                   type="button"
-                  class="u-button u-button_transparent u-button-inline _captureButton"
+                  class="u-button u-button_transparent u-button_inline _captureButton"
                   :key="selected_mode + '_pause'"
                   v-if="
                     selected_mode === 'stopmotion' &&
@@ -618,7 +618,7 @@
                   <button
                     type="button"
                     v-else-if="is_recording"
-                    class="u-button u-button_orange u-button-inline _captureButton"
+                    class="u-button u-button_orange u-button_inline _captureButton"
                     :disabled="is_sending_image"
                     :key="selected_mode + is_recording"
                     @mousedown.stop.prevent="stopRecording()"

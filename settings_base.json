@@ -451,14 +451,29 @@
               "y": {
                 "type": "number"
               },
-              "locked": {
-                "type": "boolean"
-              },
               "width": {
                 "type": "number"
               },
               "height": {
                 "type": "number"
+              },
+              "rotation": {
+                "type": "number"
+              },
+              "text_size": {
+                "type": "number"
+              },
+              "opacity": {
+                "type": "number"
+              },
+              "margins": {
+                "type": "number"
+              },
+              "background_color": {
+                "type": "string"
+              },
+              "locked": {
+                "type": "boolean"
               }
             }
           }

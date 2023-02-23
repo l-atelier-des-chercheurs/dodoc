@@ -11,6 +11,7 @@
     :class="{
       'is--locked': publimodule.locked === true,
       'is--editable': can_edit,
+      'is--active': can_edit && is_active,
       'is--beingEdited': content_is_edited,
     }"
     :active="
@@ -32,7 +33,7 @@
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
-    <span @mousedown="setActive">
+    <span class="_activator" @mousedown="setActive" @dblclick="editText">
       <PublicationModule
         class="_moveableItem--content"
         :publimodule="publimodule"
@@ -42,17 +43,31 @@
         @duplicate="onDuplicateModule"
         @contentIsEdited="contentIsEdited"
         @contentIsNotEdited="contentIsNotEdited"
+        :style="module_styles"
       />
     </span>
     <div class="_unlockBtn" v-if="can_edit">
       <button
         type="button"
-        class="u-buttonLink"
+        class="u-button u-button_orange u-button_small u-button_round"
         v-if="publimodule.locked === true"
         @click="unlock()"
       >
+        <sl-icon name="lock" />
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_orange u-button_small u-button_round"
+        v-if="
+          can_edit &&
+          is_active &&
+          !content_is_edited &&
+          (!publimodule.locked || publimodule.locked === false)
+        "
+        @click="lock()"
+      >
         <sl-icon name="unlock" />
-        {{ $t("unlock") }}
+        <!-- {{ $t("lock") }} -->
       </button>
     </div>
 
@@ -155,6 +170,30 @@ export default {
     grid() {
       return [this.gridstep, this.gridstep];
     },
+    module_styles() {
+      return `
+        font-size: ${
+          this.publimodule.hasOwnProperty("text_size")
+            ? this.publimodule.text_size
+            : 100
+        }%;
+        padding: ${
+          this.publimodule.hasOwnProperty("margins")
+            ? this.turnCMtoPX(this.publimodule.margins)
+            : 0
+        }px;
+        opacity: ${
+          this.publimodule.hasOwnProperty("opacity")
+            ? this.publimodule.opacity
+            : 1
+        };
+        background-color: ${
+          this.publimodule.hasOwnProperty("background_color")
+            ? this.publimodule.background_color
+            : "transparent"
+        };
+      `;
+    },
   },
   methods: {
     setNewComponentKey() {
@@ -199,11 +238,23 @@ export default {
     roundToDec(num) {
       return Math.round((num + Number.EPSILON) * 100) / 100;
     },
+    firstMedia(page_module) {
+      if (!page_module) return false;
+      try {
+        const media_path = page_module.source_medias[0].path;
+        return this.getSourceMedia({
+          source_media_path: media_path,
+        });
+      } catch (err) {
+        return false;
+      }
+    },
+
     dragEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 
-      this.transform = transform;
+      // this.transform = transform;
       this.updateTransform(transform);
 
       event.stopPropagation();
@@ -222,7 +273,7 @@ export default {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 
-      this.transform = transform;
+      // this.transform = transform;
       this.updateTransform(transform);
 
       event.stopPropagation();
@@ -231,7 +282,7 @@ export default {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 
-      this.transform = transform;
+      // this.transform = transform;
       this.updateTransform(transform);
 
       event.stopPropagation();
@@ -239,10 +290,15 @@ export default {
     async updateTransform(transform) {
       let new_meta = JSON.parse(JSON.stringify(transform));
       Object.keys(new_meta).map((k) => {
-        if (["x", "y", "width", "height"].includes(k)) {
-          new_meta[k] = this.turnPXtoCM(new_meta[k]);
-          // update transform with this value
-          this.transform[k] = this.turnCMtoPX(new_meta[k]);
+        if (new_meta[k] !== this.transform[k]) {
+          if (["x", "y", "width", "height"].includes(k)) {
+            new_meta[k] = this.turnPXtoCM(new_meta[k]);
+            this.transform[k] = this.turnCMtoPX(new_meta[k]);
+          } else {
+            this.transform[k] = this.turnCMtoPX(this.turnPXtoCM(new_meta[k]));
+          }
+        } else {
+          delete new_meta[k];
         }
       });
 
@@ -251,10 +307,31 @@ export default {
       });
     },
     setActive($event) {
+      if (this.is_active) return false;
+
       if (this.content_is_edited) return $event.stopPropagation();
       if (!this.can_edit || this.is_active) return;
+      if (this.publimodule.locked === true) return;
 
       this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
+    },
+    editText() {
+      const first_media = this.firstMedia(this.publimodule);
+      if (!first_media || first_media.$type !== "text") return;
+
+      const meta_filename = this.publimodule.$path.substring(
+        this.publimodule.$path.lastIndexOf("/") + 1
+      );
+      this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
+    },
+    async lock() {
+      const new_meta = {
+        locked: true,
+      };
+      await this.updateModuleMeta({
+        new_meta,
+      });
+      this.$eventHub.$emit(`module.setActive`, false);
     },
     async unlock() {
       const new_meta = {
@@ -263,7 +340,9 @@ export default {
       await this.updateModuleMeta({
         new_meta,
       });
-      this.setActive();
+      setTimeout(() => {
+        this.setActive();
+      }, 100);
     },
     async updateModuleMeta({ new_meta }) {
       await this.$api
@@ -294,7 +373,14 @@ export default {
   // transition-duration: 0.15s;
   // transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 
-  &.is--editable:not(.is--beingEdited) {
+  &.is--locked {
+    pointer-events: none;
+  }
+  &.is--active {
+    z-index: 1500;
+  }
+
+  &.is--editable:not(.is--beingEdited):not(.is--locked) {
     cursor: pointer;
     cursor: -webkit-grab;
     cursor: -moz-grab;
@@ -307,6 +393,13 @@ export default {
 
   &.is--beingEdited {
     outline: 2px dotted var(--c-orange) !important;
+
+    ::v-deep {
+      ._collaborativeEditor .ql-editor {
+        background: linear-gradient(rgba(255, 255, 255, 0.6) 55%, transparent);
+        padding-bottom: 250px;
+      }
+    }
   }
 
   &.yoyoo-ddr:not(.is--beingEdited) {
@@ -338,6 +431,7 @@ export default {
 ._moveableItem--content {
   height: 100%;
   padding: 0;
+  transition: padding 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   ::v-deep ._content {
     height: 100%;
@@ -362,6 +456,27 @@ export default {
     }
   }
 }
+
+._moveableItem.is--editable:not(.is--beingEdited):not(.is--locked) ._activator {
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--c-orange_clair);
+    opacity: 0;
+
+    transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  &:hover {
+    &::after {
+      opacity: 0.15;
+    }
+  }
+}
 ._coords {
   position: absolute;
   bottom: 0;
@@ -375,11 +490,15 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
   pointer-events: none;
-  margin: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2);
+
+  display: flex;
+  justify-content: center;
 
   > * {
-    background: white;
+    // background: white;
     pointer-events: auto;
   }
 }

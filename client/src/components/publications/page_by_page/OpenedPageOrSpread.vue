@@ -41,7 +41,7 @@
                 :show_grid.sync="show_grid"
                 :snap_to_grid.sync="snap_to_grid"
                 :gridstep_in_cm.sync="gridstep_in_cm"
-                :page_color="current_page_color"
+                :page_color="current_page.page_color"
                 :publication_path="publication_path"
                 :page_opened_id="page_opened_id"
                 :page_modules="getModulesForPage(page_opened_id)"
@@ -59,7 +59,7 @@
             :page_modules="getModulesForPage(page_opened_id)"
             :page_width="page_width"
             :page_height="page_height"
-            :page_color="current_page_color"
+            :page_color="current_page.page_color"
             :zoom="zoom"
             :show_grid="show_grid"
             :snap_to_grid="snap_to_grid"
@@ -89,7 +89,7 @@
                 :page_modules="getModulesForPage(page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
-                :page_color="page.page_color || ''"
+                :page_color="page.page_color"
                 :zoom="zoom"
                 :show_grid="show_grid"
                 :snap_to_grid="snap_to_grid"
@@ -125,7 +125,7 @@
                 :page_modules="getModulesForPage(previous_page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
-                :page_color="previous_page.page_color || ''"
+                :page_color="previous_page.page_color"
                 :can_edit="false"
               />
             </button>
@@ -142,7 +142,7 @@
                 :page_modules="getModulesForPage(next_page.id)"
                 :page_width="page_width"
                 :page_height="page_height"
-                :page_color="next_page.page_color || ''"
+                :page_color="next_page.page_color"
                 :can_edit="false"
               />
               <sl-icon name="arrow-right" />
@@ -166,7 +166,7 @@
                   :page_modules="getModulesForPage(page.id)"
                   :page_width="page_width"
                   :page_height="page_height"
-                  :page_color="page.page_color || ''"
+                  :page_color="page.page_color"
                   :can_edit="false"
                 />
               </template>
@@ -187,7 +187,7 @@
                   :page_modules="getModulesForPage(page.id)"
                   :page_width="page_width"
                   :page_height="page_height"
-                  :page_color="page.page_color || ''"
+                  :page_color="page.page_color"
                   :can_edit="false"
                 />
               </template>
@@ -251,9 +251,6 @@ export default {
     },
     current_page() {
       return this.pages.find((p) => p.id === this.page_opened_id);
-    },
-    current_page_color() {
-      return this.current_page.page_color || "";
     },
     previous_page() {
       return this.pages[this.page_number - 1];
@@ -336,10 +333,8 @@ export default {
     flex: 0 0 auto;
   }
 
-  > ._pageNavigator,
   > ._spreadNavigator {
     flex: 1 1 auto;
-    overflow: auto;
   }
 }
 ._navBar {
@@ -389,7 +384,6 @@ export default {
   align-items: center;
 }
 
-._pageNavigator,
 ._spreadNavigator {
   overflow: auto;
   @include scrollbar(8px, 5px, 6px);
@@ -398,7 +392,6 @@ export default {
 ._spreadNavigator--menu {
 }
 
-._pageNavigator--content,
 ._spreadNavigator--content {
   display: flex;
   flex-flow: row nowrap;
@@ -417,7 +410,7 @@ export default {
 
     ::v-deep {
       ._container {
-        transform-origin: 100% 50%;
+        transform-origin: 100% 0%;
         margin-right: 0;
       }
       ._margins {
@@ -429,7 +422,7 @@ export default {
     padding-left: 0;
     ::v-deep {
       ._container {
-        transform-origin: 0% 50%;
+        transform-origin: 0% 0%;
         margin-left: 0;
       }
     }

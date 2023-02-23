@@ -35,7 +35,7 @@ export default {
   watch: {},
   computed: {
     duration() {
-      if (this.file.$type === "video")
+      if (["video", "audio"].includes(this.file.$type))
         if (this.file.$infos.duration)
           return this.formatDurationToHoursMinutesSeconds(
             this.file.$infos.duration

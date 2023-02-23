@@ -301,16 +301,22 @@ export default {
       else this.disableEditor();
     },
     async enableEditor() {
+      if (this.editor_is_enabled) return false;
+
       if (this.is_collaborative) await this.startCollaborative();
 
       this.editor.enable();
       // todo set focus
       this.editor.focus();
 
+      this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
+
       this.$emit(`contentIsEdited`, this.toolbar_el);
       this.editor_is_enabled = true;
     },
     disableEditor() {
+      if (!this.editor_is_enabled) return false;
+
       this.editor.setSelection(null);
       this.editor.blur();
       this.updateSelectedLines();
@@ -413,68 +419,77 @@ export default {
     },
 
     async startCollaborative() {
-      // const params = new URLSearchParams({
-      //   folder_type: this.folder_type,
-      //   folder_slug: this.folder_slug,
-      //   meta_slug: this.meta_slug,
-      // });
+      return new Promise((resolve, reject) => {
+        // const params = new URLSearchParams({
+        //   folder_type: this.folder_type,
+        //   folder_slug: this.folder_slug,
+        //   meta_slug: this.meta_slug,
+        // });
 
-      // const requested_querystring = "?" + params.toString();
-      const path_to_meta = this.path.replaceAll("/", "*");
+        // const requested_querystring = "?" + params.toString();
+        const path_to_meta = this.path.replaceAll("/", "*");
 
-      const requested_resource_url =
-        (location.protocol === "https:" ? "wss" : "ws") +
-        "://" +
-        window.location.host +
-        "/isSharedb" +
-        `?path_to_meta=${path_to_meta}`;
+        const requested_resource_url =
+          (location.protocol === "https:" ? "wss" : "ws") +
+          "://" +
+          window.location.host +
+          "/isSharedb" +
+          `?path_to_meta=${path_to_meta}`;
 
-      console.log(
-        `CollaborativeEditor / startCollaborative : will connect to ws server with ${requested_resource_url}`
-      );
+        console.log(
+          `CollaborativeEditor / startCollaborative : will connect to ws server with ${requested_resource_url}`
+        );
 
-      this.rtc.socket = new ReconnectingWebSocket(requested_resource_url);
-      const connection = new ShareDB.Connection(this.rtc.socket);
-      connection.on("state", (state) => {
-        this.rtc.connection_state = state.toString();
-      });
-
-      console.log(`CollaborativeEditor / connecting to doc ${path_to_meta}`);
-      this.doc = connection.get("collaborative_texts", path_to_meta);
-
-      this.doc.subscribe((err) => {
-        if (err) console.error(`CollaborativeEditor / err ${err}`);
-        console.log(`CollaborativeEditor / doc subscribe`);
-
-        if (this.doc.type) {
-          console.log(
-            `CollaborativeEditor / doc already exists and doc.data = ${JSON.stringify(
-              this.doc.data
-            )}`
-          );
-          this.editor.setContents(this.doc.data, "init");
-        } else {
-          this.doc.create(this.editor.getContents(), "rich-text");
-        }
-
-        this.editor.history.clear();
-
-        this.editor.on("text-change", this.submitOPAndSave);
-        this.doc.on("op", (op, source) => {
-          console.log(`CollaborativeEditor / op applied`);
-          this.text_deltas = this.doc.data;
-          if (source === this.editor_id) return;
-          console.log(`CollaborativeEditor / outside op applied`);
-          this.editor.updateContents(op);
+        this.rtc.socket = new ReconnectingWebSocket(requested_resource_url);
+        const connection = new ShareDB.Connection(this.rtc.socket);
+        connection.on("state", (state) => {
+          this.rtc.connection_state = state.toString();
         });
 
-        this.collaborative_is_loaded = true;
-      });
+        console.log(`CollaborativeEditor / connecting to doc ${path_to_meta}`);
+        this.doc = connection.get("collaborative_texts", path_to_meta);
 
-      this.doc.on("error", (err) => {
-        // err;
-        // soucis : les situations ou le serveur a été fermé et en le rouvrant il ne possède plus d’instance du doc dans sharedb…
-        console.error(`CollaborativeEditor / doc err ${err}`);
+        this.doc.subscribe((err) => {
+          if (err) console.error(`CollaborativeEditor / err ${err}`);
+          console.log(`CollaborativeEditor / doc subscribe`);
+
+          if (this.doc.type) {
+            console.log(
+              `CollaborativeEditor / doc already exists and doc.data = ${JSON.stringify(
+                this.doc.data
+              )}`
+            );
+            this.editor.setContents(this.doc.data, "init");
+          } else {
+            this.doc.create(this.editor.getContents(), "rich-text");
+          }
+
+          this.editor.history.clear();
+
+          this.editor.on("text-change", this.submitOPAndSave);
+          this.doc.on("op", (op, source) => {
+            console.log(`CollaborativeEditor / op applied`);
+            this.text_deltas = this.doc.data;
+            if (source === this.editor_id) return;
+            console.log(`CollaborativeEditor / outside op applied`);
+            this.editor.updateContents(op);
+          });
+
+          this.collaborative_is_loaded = true;
+
+          return resolve();
+        });
+
+        this.doc.on("error", (err) => {
+          // err;
+          // soucis : les situations ou le serveur a été fermé et en le rouvrant il ne possède plus d’instance du doc dans sharedb…
+          console.error(`CollaborativeEditor / doc err ${err}`);
+          this.$alertify.delay(4000).error(err);
+
+          this.collaborative_is_loaded = true;
+
+          return reject(err);
+        });
       });
     },
     endCollaborative() {

@@ -58,17 +58,20 @@
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)"></rect>
         </svg>
-        <MoveableItem
-          class="_item"
-          v-for="publimodule in page_modules"
-          :key="publimodule.$path"
-          :publimodule="publimodule"
-          :magnification="magnification"
-          :gridstep="show_grid && snap_to_grid ? gridstep : 1"
-          :zoom="zoom"
-          :can_edit="can_edit"
-          :is_active="active_module.$path === publimodule.$path"
-        />
+
+        <transition-group name="scaleInFade">
+          <MoveableItem
+            class="_item"
+            v-for="publimodule in page_modules"
+            :key="publimodule.$path"
+            :publimodule="publimodule"
+            :magnification="magnification"
+            :gridstep="show_grid && snap_to_grid ? gridstep : 1"
+            :zoom="zoom"
+            :can_edit="can_edit"
+            :is_active="active_module.$path === publimodule.$path"
+          />
+        </transition-group>
 
         <svg
           v-if="can_edit && Object.keys(margins)"
@@ -83,7 +86,6 @@
             :y="magnify(margins.top)"
             :width="magnify(page_width - margins.left - margins.right)"
             :height="magnify(page_height - margins.top - margins.bottom)"
-            stroke="rebeccapurple"
           />
         </svg>
 
@@ -179,7 +181,7 @@ export default {
         --page-width: ${this.magnify(this.page_width)}px;
         --page-height: ${this.magnify(this.page_height)}px;
         --zoom: ${this.zoom};
-        --page-color: ${this.page_color || ""};
+        --page-color: ${this.page_color || "#fff"};
       `;
     },
   },
@@ -222,7 +224,7 @@ export default {
     width: calc(var(--page-width) * var(--zoom));
     height: calc(var(--page-height) * var(--zoom));
 
-    transform-origin: top left;
+    transform-origin: left top;
     margin: 0 auto;
     padding: 0;
   }
@@ -275,5 +277,8 @@ export default {
   width: 100%;
   height: 100%;
   pointer-events: none;
+
+  stroke-width: 2px;
+  stroke: hsl(280, 97%, 70%);
 }
 </style>

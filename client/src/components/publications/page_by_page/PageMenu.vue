@@ -18,27 +18,30 @@
       </transition>
     </div>
 
-    <div class="">
-      <label class="u-label">{{ $t("zoom") }} ({{ zoom }})</label>
-      <input
-        type="range"
-        @input="$emit('update:zoom', +$event.target.value)"
-        min="0.1"
-        max="1"
-        :value="zoom"
-        step="0.1"
-      />
-    </div>
+    <br />
+
+    <RangeValueInput
+      class="u-spacingBottom"
+      :label="$t('zoom')"
+      :value="Math.round(zoom * 100)"
+      :min="25"
+      :max="100"
+      :step="1"
+      :ticks="[25, 50, 75, 100]"
+      :default_value="100"
+      :suffix="'%'"
+      @save="$emit('update:zoom', $event / 100)"
+    />
 
     <div :key="'page-' + page_number" v-if="can_edit">
       <div v-if="!has_editor_toolbar && !active_module">
-        <fieldset>
+        <fieldset class="u-spacingBottom">
           <legend class="u-label">{{ $t("page_options") }}</legend>
 
           <div class="">
             <ModuleCreator
               :publication_path="publication_path"
-              :page_id="page_opened_id"
+              :addtl_meta="new_module_meta"
               :is_collapsed="false"
               @addModule="enableModuleEdit"
             />
@@ -47,51 +50,43 @@
 
           <div class="" v-if="can_edit">
             <ToggleInput
+              class="u-spacingBottom"
               :content="show_grid"
               :label="$t('show_grid')"
               @update:content="$emit('update:show_grid', $event)"
             />
-            <br />
 
             <div v-if="show_grid && can_edit">
-              <div class="">
-                <label class="u-label">
-                  {{ $t("gridstep") }} ({{ gridstep_in_cm }})
-                </label>
-                <input
-                  type="range"
-                  @input="$emit('update:gridstep_in_cm', +$event.target.value)"
-                  min="0.1"
-                  max="4"
-                  step=".1"
-                  :value="gridstep_in_cm"
-                />
-                <br />
-              </div>
-              <div>
-                <ToggleInput
-                  :content="snap_to_grid"
-                  :label="$t('snap_to_grid')"
-                  @update:content="$emit('update:snap_to_grid', $event)"
-                />
-                <br />
-              </div>
+              <RangeValueInput
+                :label="$t('gridstep')"
+                :value="gridstep_in_cm"
+                :min="0.1"
+                :max="2"
+                :step="0.1"
+                :ticks="[0.1, 0.5, 1, 1.5, 2]"
+                :default_value="1"
+                :suffix="'cm'"
+                @save="$emit('update:gridstep_in_cm', $event)"
+              />
+
+              <ToggleInput
+                class="u-spacingBottom"
+                :content="snap_to_grid"
+                :label="$t('snap_to_grid')"
+                @update:content="$emit('update:snap_to_grid', $event)"
+              />
             </div>
           </div>
           <div class="" v-if="can_edit">
-            <label class="u-label">
-              {{ $t("page_color") }}
-            </label>
-            <input
-              type="color"
+            <ColorInput
+              :label="$t('page_color')"
               :value="page_color"
-              @input="
+              @save="
                 $emit('updatePageOptions', {
                   page_number,
-                  value: { page_color: $event.target.value },
+                  value: { page_color: $event },
                 })
               "
-              :novalue="page_color === ''"
             />
           </div>
         </fieldset>
@@ -100,6 +95,7 @@
           <button
             type="button"
             class="u-buttonLink"
+            :disabled="page_modules.length === 0"
             v-if="can_edit"
             @click="show_all_medias = !show_all_medias"
           >
@@ -186,35 +182,111 @@
             </div>
           </div>
 
-          <br />
-          <NumberInput
-            :label="$t('position') + '↔'"
-            :value="active_module.x"
+          <div class="u-sameRow">
+            <NumberInput
+              class="u-spacingBottom"
+              :label="$t('position') + '↔'"
+              :value="active_module.x"
+              :suffix="'cm'"
+              @save="updateMediaPubliMeta({ x: $event })"
+            />
+            <NumberInput
+              class="u-spacingBottom"
+              :label="$t('position') + '↕'"
+              :value="active_module.y"
+              :suffix="'cm'"
+              @save="updateMediaPubliMeta({ y: $event })"
+            />
+          </div>
+
+          <div class="u-sameRow">
+            <NumberInput
+              class="u-spacingBottom"
+              :label="$t('width')"
+              :value="active_module.width"
+              :min="0"
+              :suffix="'cm'"
+              @save="updateMediaPubliMeta({ width: $event })"
+            />
+            <NumberInput
+              class="u-spacingBottom"
+              :label="$t('height')"
+              :value="active_module.height"
+              :min="0"
+              :suffix="'cm'"
+              @save="updateMediaPubliMeta({ height: $event })"
+            />
+          </div>
+          <RangeValueInput
+            class="u-spacingBottom"
+            :label="$t('rotate')"
+            :value="active_module.rotation"
             :min="0"
-            @save="updateMediaPubliMeta({ x: $event })"
+            :max="360"
+            :step="1"
+            :ticks="[0, 90, 180, 270, 360]"
+            :default_value="0"
+            :suffix="'°'"
+            @save="updateMediaPubliMeta({ rotation: $event })"
           />
-          <NumberInput
-            :label="$t('position') + '↕'"
-            :value="active_module.y"
-            :min="0"
-            @save="updateMediaPubliMeta({ y: $event })"
+          <RangeValueInput
+            v-if="firstMedia(active_module).$type === 'text'"
+            class="u-spacingBottom"
+            :label="$t('text_size')"
+            :value="active_module.scale"
+            :min="1"
+            :max="400"
+            :step="1"
+            :ticks="[1, 100, 200, 300, 400]"
+            :default_value="100"
+            :suffix="'%'"
+            @save="updateMediaPubliMeta({ scale: $event })"
           />
-          <NumberInput
-            :label="$t('width')"
-            :value="active_module.width"
+          <RangeValueInput
+            class="u-spacingBottom"
+            :label="$t('margins')"
+            :value="active_module.margins"
             :min="0"
-            @save="updateMediaPubliMeta({ width: $event })"
+            :max="5"
+            :step="0.1"
+            :default_value="0"
+            :suffix="'cm'"
+            @save="updateMediaPubliMeta({ margins: $event })"
           />
-          <NumberInput
-            :label="$t('height')"
-            :value="active_module.height"
+          <RangeValueInput
+            class="u-spacingBottom"
+            :label="$t('opacity')"
+            :value="Math.round(active_module.opacity * 100)"
             :min="0"
-            @save="updateMediaPubliMeta({ height: $event })"
+            :max="100"
+            :step="1"
+            :ticks="[0, 100]"
+            :default_value="100"
+            :suffix="'%'"
+            @save="updateMediaPubliMeta({ opacity: $event / 100 })"
+          />
+          <ColorInput
+            :label="$t('background_color')"
+            :value="active_module.background_color"
+            @save="updateMediaPubliMeta({ background_color: $event })"
           />
         </fieldset>
       </div>
-      <div v-else-if="has_editor_toolbar">
+      <div v-show="has_editor_toolbar">
         <div ref="editor_toolbar" class="_editorToolbar" />
+
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('text_size')"
+          :value="active_module.text_size"
+          :min="1"
+          :max="400"
+          :step="1"
+          :ticks="[1, 100, 200, 300, 400]"
+          :default_value="100"
+          :suffix="'%'"
+          @save="updateMediaPubliMeta({ text_size: $event })"
+        />
       </div>
     </div>
   </div>
@@ -275,6 +347,13 @@ export default {
         this.active_module.$path.lastIndexOf("/") + 1
       );
     },
+    new_module_meta() {
+      return {
+        page_id: this.page_opened_id,
+        x: this.gridstep_in_cm,
+        y: this.gridstep_in_cm,
+      };
+    },
   },
   methods: {
     firstMedia(page_module) {
@@ -290,9 +369,9 @@ export default {
     },
     displayToolbar(node) {
       this.has_editor_toolbar = true;
-      this.$nextTick(() => {
-        this.$refs.editor_toolbar.append(node);
-      });
+      this.$refs.editor_toolbar.append(node);
+      // this.$nextTick(() => {
+      // });
     },
     removeToolbar() {
       // if (this.$refs.editor_toolbar) this.$refs.editor_toolbar.innerHTML = "";

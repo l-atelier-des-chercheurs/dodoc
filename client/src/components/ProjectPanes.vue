@@ -27,14 +27,14 @@
             class="_floatingMsg"
             :key="`instructions.pane_${pane.type}`"
             v-if="show_instructions && can_edit_project"
-            @click.self="show_instructions = false"
+            @click.self="closeInstructions"
           >
             <div>
               <span v-html="$t(`instructions.pane.${pane.type}`)"></span>
               <sl-icon-button
                 name="x-circle-fill"
                 label="Fermer"
-                @click.stop="show_instructions = false"
+                @click.stop="closeInstructions"
               />
             </div>
           </div>
@@ -124,6 +124,14 @@ export default {
         this.$delete(pane, prop);
       else this.$set(pane, prop, $event);
     },
+    closeInstructions() {
+      this.show_instructions = false;
+      this.$el.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+    },
     resized(_projectpanessizes) {
       console.log(`Project / methods: resized`);
       let _projectpanes = this.projectpanes.slice();
@@ -167,7 +175,7 @@ export default {
   height: 100%;
   backdrop-filter: blur(5px);
 
-  z-index: 10;
+  z-index: 1000;
   text-align: center;
   padding: calc(var(--spacing) * 2);
 

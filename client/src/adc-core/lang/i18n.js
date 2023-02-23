@@ -146,6 +146,8 @@ export default function () {
         custom: "Personnalisé",
         width: "Largeur",
         height: "Hauteur",
+        text_size: "Taille du texte",
+        background_color: "Couleur du fond",
         page_spreads: "Pages en vis-à-vis",
         page: "Page",
         lock: "Verrouiller",
@@ -165,6 +167,7 @@ export default function () {
         margins_outside: "Grand fond",
         photo: "Photo",
         remove_this_image: "Supprimer cette image",
+        erase: "Effacer",
 
         status: "État",
         list_of_projects: "Liste des projets",
@@ -189,6 +192,8 @@ export default function () {
 
         finished_projects: "Projets finalisés",
         projects_in_progress: "Projets en cours",
+
+        default_value: "Par défaut",
 
         finished_status_explanations:
           "Ce projet sera affiché en haut de la page d’accueil.",
@@ -459,6 +464,7 @@ export default function () {
         informations: "Informations",
 
         duplicate: "Dupliquer",
+        unselect: "Déselectionner",
         remove: "Supprimer",
         remove_project: "Supprimer le projet",
         remove_media: "Supprimer le média",

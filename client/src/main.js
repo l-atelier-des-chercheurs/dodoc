@@ -78,6 +78,9 @@ import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);
 import NumberInput from "@/adc-core/inputs/NumberInput.vue";
 Vue.component("NumberInput", NumberInput);
+import ColorInput from "@/adc-core/inputs/ColorInput.vue";
+Vue.component("ColorInput", ColorInput);
+
 import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
 Vue.component("ToggleInput", ToggleInput);
 import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
@@ -174,7 +177,7 @@ instance.interceptors.request.use((request) => {
   if (debug_mode)
     alertify.delay(4000).log(
       `⤒ — ${request.method} + ${request.url}
-      ${request.data ? `+ ` + JSON.stringify(request.data).slice(0, 20) : ""}
+      ${request.data ? `+ ` + JSON.stringify(request.data).slice(0, 30) : ""}
       `
     );
   return request;
