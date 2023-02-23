@@ -292,6 +292,8 @@ export default {
       });
     },
     setActive($event) {
+      if (this.is_active) return false;
+
       if (this.content_is_edited) return $event.stopPropagation();
       if (!this.can_edit || this.is_active) return;
       if (this.publimodule.locked === true) return;
