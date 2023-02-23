@@ -11,6 +11,7 @@
     :class="{
       'is--locked': publimodule.locked === true,
       'is--editable': can_edit,
+      'is--active': can_edit && is_active,
       'is--beingEdited': content_is_edited,
     }"
     :active="
@@ -329,6 +330,9 @@ export default {
 
   &.is--locked {
     pointer-events: none;
+  }
+  &.is--active {
+    z-index: 1500;
   }
 
   &.is--editable:not(.is--beingEdited):not(.is--locked) {
