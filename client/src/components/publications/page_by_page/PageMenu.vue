@@ -266,9 +266,32 @@
             @save="updateMediaPubliMeta({ opacity: $event / 100 })"
           />
           <ColorInput
+            class="u-spacingBottom"
             :label="$t('background_color')"
             :value="active_module.background_color"
+            :default_value="{ label_untranslated: 'none_f', value: '' }"
             @save="updateMediaPubliMeta({ background_color: $event })"
+          />
+
+          <RangeValueInput
+            class="u-spacingBottom"
+            :label="$t('outline_width')"
+            :value="active_module.outline_width"
+            :min="0"
+            :max="2"
+            :step="0.1"
+            :ticks="[0, 1, 2]"
+            :default_value="0"
+            :suffix="'cm'"
+            @save="updateMediaPubliMeta({ outline_width: $event })"
+          />
+          <ColorInput
+            v-if="active_module.outline_width > 0"
+            class="u-spacingBottom"
+            :label="$t('outline_color')"
+            :value="active_module.outline_color"
+            :default_value="{ label_untranslated: 'black', value: '#000000' }"
+            @save="updateMediaPubliMeta({ outline_color: $event })"
           />
         </fieldset>
       </div>

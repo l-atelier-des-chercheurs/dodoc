@@ -49,7 +49,7 @@
     <div class="_unlockBtn" v-if="can_edit">
       <button
         type="button"
-        class="u-button u-button_orange u-button_small u-button_round"
+        class="u-button u-button_orange u-button_small u-button_round u-colorBlack"
         v-if="publimodule.locked === true"
         @click="unlock()"
       >
@@ -57,7 +57,7 @@
       </button>
       <button
         type="button"
-        class="u-button u-button_orange u-button_small u-button_round"
+        class="u-button u-button_orange u-button_small u-button_round u-colorBlack"
         v-if="
           can_edit &&
           is_active &&
@@ -173,25 +173,30 @@ export default {
     module_styles() {
       return `
         font-size: ${
-          this.publimodule.hasOwnProperty("text_size")
-            ? this.publimodule.text_size
-            : 100
+          this.publimodule.text_size ? this.publimodule.text_size : 100
         }%;
         padding: ${
-          this.publimodule.hasOwnProperty("margins")
+          this.publimodule.margins
             ? this.turnCMtoPX(this.publimodule.margins)
             : 0
         }px;
-        opacity: ${
-          this.publimodule.hasOwnProperty("opacity")
-            ? this.publimodule.opacity
-            : 1
-        };
+        opacity: ${this.publimodule.opacity ? this.publimodule.opacity : 1};
         background-color: ${
-          this.publimodule.hasOwnProperty("background_color")
+          this.publimodule.background_color
             ? this.publimodule.background_color
             : "transparent"
         };
+        outline-color: ${
+          this.publimodule.outline_color
+            ? this.publimodule.outline_color
+            : "black"
+        };
+        outline-width: ${
+          this.publimodule.outline_width
+            ? this.turnCMtoPX(this.publimodule.outline_width)
+            : 0
+        }px;
+        outline-style: solid;
       `;
     },
   },
@@ -431,7 +436,7 @@ export default {
 ._moveableItem--content {
   height: 100%;
   padding: 0;
-  transition: padding 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   ::v-deep ._content {
     height: 100%;

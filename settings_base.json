@@ -472,6 +472,12 @@
               "background_color": {
                 "type": "string"
               },
+              "outline_color": {
+                "type": "string"
+              },
+              "outline_width": {
+                "type": "number"
+              },
               "locked": {
                 "type": "boolean"
               }

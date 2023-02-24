@@ -23,10 +23,10 @@
       </div>
     </transition>
 
-    <div class="u-defaultValue" v-if="value !== default_value">
+    <div class="u-defaultValue" v-if="value !== default_value.value">
       {{ $t("default_value") }} =
-      <button type="button" @click="$emit('save', default_value)">
-        {{ default_value }}
+      <button type="button" @click="$emit('save', default_value.value)">
+        {{ $t(default_value.label_untranslated) }}
       </button>
     </div>
   </div>
@@ -39,14 +39,14 @@ export default {
     },
     value: String,
     default_value: {
-      type: String,
-      default: "#ffffff",
+      type: Object,
+      default: () => ({ label_untranslated: "white", value: "#ffffff" }),
     },
   },
   components: {},
   data() {
     return {
-      local_value: this.value || this.default_value,
+      local_value: this.value || this.default_value.value,
     };
   },
   created() {},

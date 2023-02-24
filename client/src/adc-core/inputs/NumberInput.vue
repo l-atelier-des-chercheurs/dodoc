@@ -1,5 +1,8 @@
 <template>
-  <div class="_numberInput">
+  <div
+    class="_numberInput"
+    :class="{ 'is--beingEdited': value !== local_value }"
+  >
     <DLabel v-if="label" :str="label" :for="label" />
 
     <div class="u-sameRow" :key="'value-' + value">

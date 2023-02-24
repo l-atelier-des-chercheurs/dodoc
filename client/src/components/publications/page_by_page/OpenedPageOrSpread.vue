@@ -14,7 +14,10 @@
         "
         class="_spreadNavigator"
       >
-        <div class="_spreadNavigator--content">
+        <div
+          class="_spreadNavigator--content"
+          @click.self="setActiveModule(false)"
+        >
           <div class="_sideCont">
             <div class="_breadcrumb">
               <button
@@ -323,7 +326,7 @@ export default {
   flex-flow: column nowrap;
 
   background: var(--c-bodybg);
-  --pagemenu-width: 260px;
+  --pagemenu-width: 280px;
 
   &.is--editable {
     background: var(--color-publish);
@@ -492,13 +495,17 @@ export default {
   top: 0;
   z-index: 10;
   height: 100%;
-  padding-right: calc(var(--spacing) / 2);
+  // padding-right: calc(var(--spacing) / 2);
   overflow: auto;
   pointer-events: none;
   @include scrollbar(8px, 5px, 6px);
 
   > * {
     pointer-events: auto;
+
+    &._content {
+      margin: 0 calc(var(--spacing) / 2) calc(var(--spacing) * 2);
+    }
   }
 }
 </style>
