@@ -323,7 +323,7 @@ export default {
   flex-flow: column nowrap;
 
   background: var(--c-bodybg);
-  --pagemenu-width: 260px;
+  --pagemenu-width: 280px;
 
   &.is--editable {
     background: var(--color-publish);
@@ -492,7 +492,7 @@ export default {
   top: 0;
   z-index: 10;
   height: 100%;
-  padding-right: calc(var(--spacing) / 2);
+  // padding-right: calc(var(--spacing) / 2);
   overflow: auto;
   pointer-events: none;
   @include scrollbar(8px, 5px, 6px);
