@@ -14,7 +14,10 @@
         "
         class="_spreadNavigator"
       >
-        <div class="_spreadNavigator--content">
+        <div
+          class="_spreadNavigator--content"
+          @click.self="setActiveModule(false)"
+        >
           <div class="_sideCont">
             <div class="_breadcrumb">
               <button
@@ -499,6 +502,10 @@ export default {
 
   > * {
     pointer-events: auto;
+
+    &._content {
+      margin: 0 calc(var(--spacing) / 2) calc(var(--spacing) * 2);
+    }
   }
 }
 </style>
