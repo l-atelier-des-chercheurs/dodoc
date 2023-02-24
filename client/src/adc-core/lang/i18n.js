@@ -148,6 +148,9 @@ export default function () {
         height: "Hauteur",
         text_size: "Taille du texte",
         background_color: "Couleur du fond",
+        outline_width: "Épaisseur du contour",
+        outline_color: "Couleur du contour",
+        opacity: "Opacité",
         page_spreads: "Pages en vis-à-vis",
         page: "Page",
         lock: "Verrouiller",
@@ -250,6 +253,10 @@ export default function () {
         effect: "Effet",
         black_and_white: "Noir et blanc",
         white: "Blanc",
+        black: "Noir",
+        transparent: "Transparent",
+        none_f: "Aucune",
+
         watermark: "Habillage",
         watermark_instructions:
           "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
