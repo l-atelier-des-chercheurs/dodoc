@@ -178,6 +178,7 @@ export default {
 
       pages.push({
         id: new_page_id,
+        page_color: "white",
       });
 
       this.updatePubliMeta({

@@ -76,11 +76,23 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._rangeInput {
+}
 ._inputRange {
   flex: 1 1 60px;
   min-width: 60px;
 }
 ._numberField {
   flex: 2 0 0px;
+}
+
+::v-deep {
+  ._numberInput {
+    // background: blue;
+    &.is--beingEdited {
+      // background: red;
+      flex: 6 0 0;
+    }
+  }
 }
 </style>

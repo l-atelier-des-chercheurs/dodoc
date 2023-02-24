@@ -268,6 +268,7 @@
           <ColorInput
             :label="$t('background_color')"
             :value="active_module.background_color"
+            :default_value="{ label_untranslated: 'transparent', value: '' }"
             @save="updateMediaPubliMeta({ background_color: $event })"
           />
         </fieldset>

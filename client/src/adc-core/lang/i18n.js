@@ -249,6 +249,7 @@ export default function () {
           "Liste des effets et filtres disponibles : noir et blanc, ralenti, accéléré, inversion de la lecture, rotation et miroir.<br>Média accepté : une seule vidéo.",
         effect: "Effet",
         black_and_white: "Noir et blanc",
+        white: "Blanc",
         watermark: "Habillage",
         watermark_instructions:
           "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
