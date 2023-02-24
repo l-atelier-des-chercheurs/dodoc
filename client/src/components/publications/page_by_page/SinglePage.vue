@@ -218,6 +218,8 @@ export default {
   margin: calc(var(--spacing) * 4);
 
   transform: scale(var(--zoom));
+  transform-origin: 0 0;
+
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   .is--preview & {
