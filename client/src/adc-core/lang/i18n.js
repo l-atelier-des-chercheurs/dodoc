@@ -81,6 +81,7 @@ export default function () {
         connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
         reload_page: "Recharger cette page",
         create_page: "Ajouter une page",
+        add_on_page: "Ajouter sur la page",
         page_color: "Couleur de la page",
         position: "Position",
         media: "Média",

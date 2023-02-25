@@ -1,5 +1,10 @@
 <template>
-  <div class="_publicationModule">
+  <div
+    class="_publicationModule"
+    :class="{
+      'is--shape': is_shape,
+    }"
+  >
     <div class="_sideOptions" v-if="can_edit && context !== 'page_by_page'">
       <span>
         <button
@@ -182,6 +187,76 @@
         @contentIsEdited="$emit('contentIsEdited', $event)"
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
       />
+      <template v-else-if="is_shape">
+        <!-- :width="`${mediaSize.width}mm`"
+          :height="`${mediaSize.height}mm`" -->
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            v-if="publimodule.module_type === 'ellipsis'"
+            cx="50"
+            cy="50"
+            r="50"
+            vector-effect="non-scaling-stroke"
+          />
+          <rect
+            v-else-if="publimodule.module_type === 'rectangle'"
+            width="100"
+            height="100"
+            vector-effect="non-scaling-stroke"
+          />
+          <line
+            v-else-if="publimodule.module_type === 'line'"
+            x1="0"
+            y1="50"
+            x2="100"
+            y2="50"
+            vector-effect="non-scaling-stroke"
+          />
+          <g v-else-if="publimodule.module_type === 'arrow'">
+            <line
+              x1="0"
+              y1="50"
+              x2="100"
+              y2="50"
+              vector-effect="non-scaling-stroke"
+            />
+            <g
+              transform="
+                translate(100, 50)"
+              preserveAspectRatio
+            >
+              <line
+                x1="0"
+                y1="0"
+                x2="-10"
+                y2="-10"
+                vector-effect="non-scaling-stroke"
+              />
+
+              <line
+                x1="0"
+                y1="0"
+                x2="-10"
+                y2="10"
+                vector-effect="non-scaling-stroke"
+              />
+            </g>
+          </g>
+        </svg>
+      </template>
+      <template v-else-if="publimodule.module_type === 'free_drawing'">
+        <!-- <MediaFreeDrawing
+          :inline_edit_mode="inline_edit_mode"
+          :slugPubliName="slugPubliName"
+          :media="media"
+          :mediaSize="mediaSize"
+        /> -->
+      </template>
+
       <small v-else>{{ $t("nothing_to_show") }}</small>
     </div>
   </div>
@@ -247,6 +322,11 @@ export default {
   computed: {
     module_meta_filename() {
       return this.publimodule.$path.split("/").at(-1);
+    },
+    is_shape() {
+      return ["ellipsis", "rectangle", "line", "arrow"].includes(
+        this.publimodule.module_type
+      );
     },
     first_media() {
       if (
@@ -369,6 +449,16 @@ export default {
   position: relative;
   padding: 0 calc(var(--spacing) * 1);
 
+  &.is--shape {
+    ._content,
+    svg {
+      overflow: visible;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
   ._content {
     width: calc(var(--module-width) * 1%);
     margin-left: calc(var(--module-margin-left) * 1%);
