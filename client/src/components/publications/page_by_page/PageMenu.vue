@@ -293,6 +293,14 @@
             :default_value="{ label_untranslated: 'black', value: '#000000' }"
             @save="updateMediaPubliMeta({ outline_color: $event })"
           />
+
+          <DepthInput
+            class="u-spacingBottom"
+            :label="$t('z_index')"
+            :value="active_module.z_index"
+            :page_modules="page_modules"
+            @save="updateMediaPubliMeta({ z_index: $event })"
+          />
         </fieldset>
       </div>
       <div v-show="has_editor_toolbar">
@@ -316,6 +324,7 @@
 </template>
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
+import DepthInput from "@/components/publications/page_by_page/DepthInput.vue";
 
 // const throttle = (fn, wait) => {
 //   let throttled = false;
@@ -345,6 +354,7 @@ export default {
     active_module: [Boolean, Object],
   },
   components: {
+    DepthInput,
     ModuleCreator,
   },
   data() {

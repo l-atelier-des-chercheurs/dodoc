@@ -262,6 +262,8 @@ export default {
   pointer-events: none;
   opacity: 0.6;
 
+  z-index: -10000;
+
   --c-gridlines: #aaa;
   --c-gridfiveslines: #111;
 }
