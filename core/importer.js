@@ -15,11 +15,11 @@ module.exports = (function () {
         );
 
         // create an incoming form object
-        var form = new formidable.IncomingForm();
+        const form = formidable({
+          multiples: false,
+          maxFileSize: global.settings.maxFileSizeForUpload * 1024 * 1024,
+        });
 
-        // specify that we want to allow the user to upload multiple files in a single request
-        form.multiples = false;
-        form.maxFileSize = global.settings.maxFileSizeForUpload * 1024 * 1024;
         let socketid = "";
 
         // store all uploads in the folder directory
@@ -81,7 +81,7 @@ module.exports = (function () {
           dev.logverbose(`All files downloaded ${allFilesMeta.length}`);
 
           if (allFilesMeta.length === 0)
-            return reject({ message: "No file meta to parse" });
+            return reject(new Error("No file meta to parse"));
 
           let metaFileNames = [];
 
@@ -94,7 +94,7 @@ module.exports = (function () {
               type,
             }).catch((err) => {
               dev.error(`Failed to rename/convert media: ${err}`);
-              reject(err);
+              return reject(err);
             });
             metaFileNames.push(metaFileName);
           }
