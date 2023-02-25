@@ -711,5 +711,19 @@ input[type="file"] {
 }
 
 .u-spacingBottom {
-  margin-bottom: calc(var(--spacing) / 1);
+  margin-bottom: calc(var(--spacing) / 2);
+}
+
+fieldset {
+  border: 2px solid var(--c-gris);
+  // background: #f9f9f9;
+  margin: 0;
+
+  legend {
+    color: var(--c-noir);
+    background: white;
+    border-radius: 4px;
+    text-align: center;
+    margin-bottom: 0;
+  }
 }

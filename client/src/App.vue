@@ -304,19 +304,6 @@ button {
   min-height: 100%;
 }
 
-fieldset {
-  border: 2px solid var(--c-gris);
-  // background: #f9f9f9;
-  margin: 0;
-
-  legend {
-    color: var(--c-noir);
-    background: white;
-    border-radius: 4px;
-    text-align: center;
-  }
-}
-
 hr {
   border-top: 1px solid var(--c-noir);
   border-bottom: 0 solid #000;
