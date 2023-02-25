@@ -434,7 +434,7 @@ export default {
 <style lang="scss" scoped>
 ._pageMenu {
   padding: calc(var(--spacing) / 2);
-  margin: 0 calc(var(--spacing) / 1);
+  // margin: 0 calc(var(--spacing) / 1);
 
   background: var(--panel-color);
   border: var(--panel-borders);
