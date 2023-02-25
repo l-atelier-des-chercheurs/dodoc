@@ -65,6 +65,9 @@ export default {
       }
       const path = author.$path;
 
+      // closing too soon but forced to do this since line 88 is not working as intended…
+      this.$emit("close");
+
       await this.$api
         .loginToFolder({
           path,
@@ -81,6 +84,7 @@ export default {
           }
         });
 
+      // not sure why this does nothing…
       this.$emit("close");
     },
   },
