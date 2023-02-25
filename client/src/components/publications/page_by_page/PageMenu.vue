@@ -375,6 +375,8 @@ export default {
         page_id: this.page_opened_id,
         x: this.gridstep_in_cm,
         y: this.gridstep_in_cm,
+        width: 5,
+        height: 5,
       };
     },
   },
