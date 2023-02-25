@@ -15,11 +15,11 @@ module.exports = (function () {
         );
 
         // create an incoming form object
-        var form = new formidable.IncomingForm();
+        const form = formidable({
+          multiples: false,
+          maxFileSize: global.settings.maxFileSizeForUpload * 1024 * 1024,
+        });
 
-        // specify that we want to allow the user to upload multiple files in a single request
-        form.multiples = false;
-        form.maxFileSize = global.settings.maxFileSizeForUpload * 1024 * 1024;
         let socketid = "";
 
         // store all uploads in the folder directory
