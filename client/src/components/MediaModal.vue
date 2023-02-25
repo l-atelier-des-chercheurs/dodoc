@@ -227,6 +227,7 @@ export default {
   left: 0;
   width: 100%;
   padding: calc(var(--spacing) / 4);
+  pointer-events: none;
 
   display: flex;
   justify-content: space-between;
@@ -234,6 +235,7 @@ export default {
   button {
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.6);
+    pointer-events: auto;
   }
 }
 </style>

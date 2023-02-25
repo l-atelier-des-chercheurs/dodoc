@@ -28,6 +28,7 @@
     :grid="grid"
     :id="publimodule.$path"
     :zoom="zoom"
+    :style="module_z_index"
     @dragend="dragEnd"
     @resizestart="resizeStart"
     @resizeend="resizeEnd"
@@ -169,6 +170,12 @@ export default {
     },
     grid() {
       return [this.gridstep, this.gridstep];
+    },
+
+    module_z_index() {
+      return `
+        z-index: ${this.publimodule.z_index ? this.publimodule.z_index : 0}
+      `;
     },
     module_styles() {
       return `
@@ -382,7 +389,7 @@ export default {
     pointer-events: none;
   }
   &.is--active {
-    z-index: 1500;
+    // z-index: 1500;
   }
 
   &.is--editable:not(.is--beingEdited):not(.is--locked) {

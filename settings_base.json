@@ -480,6 +480,9 @@
               },
               "locked": {
                 "type": "boolean"
+              },
+              "z_index": {
+                "type": "number"
               }
             }
           }
