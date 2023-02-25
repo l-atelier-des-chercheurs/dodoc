@@ -81,7 +81,7 @@ module.exports = (function () {
           dev.logverbose(`All files downloaded ${allFilesMeta.length}`);
 
           if (allFilesMeta.length === 0)
-            return reject({ message: "No file meta to parse" });
+            return reject(new Error("No file meta to parse"));
 
           let metaFileNames = [];
 
@@ -94,7 +94,7 @@ module.exports = (function () {
               type,
             }).catch((err) => {
               dev.error(`Failed to rename/convert media: ${err}`);
-              reject(err);
+              return reject(err);
             });
             metaFileNames.push(metaFileName);
           }

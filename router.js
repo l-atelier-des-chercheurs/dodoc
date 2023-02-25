@@ -527,14 +527,14 @@ module.exports = function (app) {
         });
         res.end(JSON.stringify(msg));
       })
-      .catch(({ err }) => {
+      .catch((err) => {
         sockets.notify({
           socketid: req.query.socketid,
           localized_string: `action_not_allowed`,
           not_localized_string: err.message,
           type: "error",
         });
-        res.end();
+        res.status(500).send({ message: err.message });
       });
   }
 
