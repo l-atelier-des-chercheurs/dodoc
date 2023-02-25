@@ -35,61 +35,62 @@
 
     <div :key="'page-' + page_number" v-if="can_edit">
       <div v-if="!has_editor_toolbar && !active_module">
-        <fieldset class="u-spacingBottom">
-          <legend class="u-label">{{ $t("page_options") }}</legend>
+        <!-- <fieldset class="u-spacingBottom"> -->
+        <!-- <legend class="u-label">{{ $t("page_options") }}</legend> -->
 
-          <div class="">
-            <ModuleCreator
-              :publication_path="publication_path"
-              :addtl_meta="new_module_meta"
-              :is_collapsed="false"
-              @addModule="enableModuleEdit"
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('add_on_page')" />
+          <ModuleCreator
+            :publication_path="publication_path"
+            :addtl_meta="new_module_meta"
+            :show_shapes="true"
+            :is_collapsed="false"
+            @addModule="enableModuleEdit"
+          />
+        </div>
+
+        <div class="" v-if="can_edit">
+          <ToggleInput
+            class="u-spacingBottom"
+            :content="show_grid"
+            :label="$t('show_grid')"
+            @update:content="$emit('update:show_grid', $event)"
+          />
+
+          <div v-if="show_grid && can_edit">
+            <RangeValueInput
+              :label="$t('gridstep')"
+              :value="gridstep_in_cm"
+              :min="0.1"
+              :max="2"
+              :step="0.1"
+              :ticks="[0.1, 0.5, 1, 1.5, 2]"
+              :default_value="1"
+              :suffix="'cm'"
+              @save="$emit('update:gridstep_in_cm', $event)"
             />
-            <br />
-          </div>
 
-          <div class="" v-if="can_edit">
             <ToggleInput
               class="u-spacingBottom"
-              :content="show_grid"
-              :label="$t('show_grid')"
-              @update:content="$emit('update:show_grid', $event)"
-            />
-
-            <div v-if="show_grid && can_edit">
-              <RangeValueInput
-                :label="$t('gridstep')"
-                :value="gridstep_in_cm"
-                :min="0.1"
-                :max="2"
-                :step="0.1"
-                :ticks="[0.1, 0.5, 1, 1.5, 2]"
-                :default_value="1"
-                :suffix="'cm'"
-                @save="$emit('update:gridstep_in_cm', $event)"
-              />
-
-              <ToggleInput
-                class="u-spacingBottom"
-                :content="snap_to_grid"
-                :label="$t('snap_to_grid')"
-                @update:content="$emit('update:snap_to_grid', $event)"
-              />
-            </div>
-          </div>
-          <div class="" v-if="can_edit">
-            <ColorInput
-              :label="$t('page_color')"
-              :value="page_color"
-              @save="
-                $emit('updatePageOptions', {
-                  page_number,
-                  value: { page_color: $event },
-                })
-              "
+              :content="snap_to_grid"
+              :label="$t('snap_to_grid')"
+              @update:content="$emit('update:snap_to_grid', $event)"
             />
           </div>
-        </fieldset>
+        </div>
+        <div class="" v-if="can_edit">
+          <ColorInput
+            :label="$t('page_color')"
+            :value="page_color"
+            @save="
+              $emit('updatePageOptions', {
+                page_number,
+                value: { page_color: $event },
+              })
+            "
+          />
+        </div>
+        <!-- </fieldset> -->
 
         <div>
           <button
@@ -112,6 +113,7 @@
           >
             <MediaContent
               class="_preview"
+              v-if="firstMedia(page_module)"
               :file="firstMedia(page_module)"
               :resolution="180"
               :context="'preview'"
@@ -131,6 +133,7 @@
 
           <MediaContent
             class="_activeModulePreview"
+            v-if="firstMedia(active_module)"
             :file="firstMedia(active_module)"
             :resolution="180"
             :context="'preview'"

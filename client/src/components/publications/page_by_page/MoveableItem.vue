@@ -178,33 +178,37 @@ export default {
       `;
     },
     module_styles() {
-      return `
-        font-size: ${
-          this.publimodule.text_size ? this.publimodule.text_size : 100
-        }%;
-        padding: ${
-          this.publimodule.margins
-            ? this.turnCMtoPX(this.publimodule.margins)
-            : 0
-        }px;
-        opacity: ${this.publimodule.opacity ? this.publimodule.opacity : 1};
-        background-color: ${
-          this.publimodule.background_color
-            ? this.publimodule.background_color
-            : "transparent"
-        };
-        outline-color: ${
-          this.publimodule.outline_color
-            ? this.publimodule.outline_color
-            : "black"
-        };
-        outline-width: ${
-          this.publimodule.outline_width
-            ? this.turnCMtoPX(this.publimodule.outline_width)
-            : 0
-        }px;
-        outline-style: solid;
-      `;
+      let styles = {};
+
+      styles.fontSize = (this.publimodule.text_size || 100) + "%";
+      styles.padding = (this.turnCMtoPX(this.publimodule.margins) || 0) + "px";
+      styles.opacity = this.publimodule.opacity || 1;
+      if (
+        ["ellipsis", "rectangle", "line", "arrow"].includes(
+          this.publimodule.module_type
+        )
+      )
+        styles.fill = this.publimodule.background_color || "transparent";
+      else
+        styles.backgroundColor =
+          this.publimodule.background_color || "transparent";
+
+      if (
+        ["ellipsis", "rectangle", "line", "arrow"].includes(
+          this.publimodule.module_type
+        )
+      ) {
+        styles.stroke = this.publimodule.outline_color || "black";
+        styles.strokeWidth =
+          (this.turnCMtoPX(this.publimodule.outline_width) || 0) + "px";
+      } else {
+        styles.outlineColor = this.publimodule.outline_color || "black";
+        styles.outlineWidth =
+          (this.turnCMtoPX(this.publimodule.outline_width) || 0) + "px";
+        styles.outlineStyle = "solid";
+      }
+
+      return styles;
     },
   },
   methods: {
@@ -234,6 +238,7 @@ export default {
       // this.$set(this.transform, k, this.publimodule[k]);
     },
     turnCMtoPX(num) {
+      if (!num) return false;
       return this.roundToDec(num * this.magnification);
     },
     turnPXtoCM(num) {

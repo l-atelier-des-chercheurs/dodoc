@@ -6,7 +6,8 @@
         class="u-button u-button_bleuvert"
         @click="createText"
       >
-        {{ $t("add_text") }}
+        <!-- {{ $t("add_text") }} -->
+        <sl-icon name="fonts" :label="$t('add_text')" />
       </button>
       <button
         type="button"
@@ -14,7 +15,8 @@
         v-if="!show_media_picker"
         @click="show_media_picker = true"
       >
-        {{ $t("add_medias") }}
+        <sl-icon name="image" :label="$t('add_medias')" />
+        <!-- {{ $t("add_medias") }} -->
       </button>
       <MediaPicker
         v-else
@@ -22,6 +24,23 @@
         @selectMedia="createMosaic"
         @close="show_media_picker = false"
       />
+      <template v-if="show_shapes === true">
+        <button
+          type="button"
+          v-for="shape in shapes"
+          :key="shape.type"
+          class="u-button u-button_bleuvert"
+          @click="
+            createModule({
+              module_type: shape.type,
+              addtl_meta: shape.addtl_meta,
+            })
+          "
+        >
+          <sl-icon :name="shape.icon" :label="$t(shape.type)" />
+          <!-- {{ $t("add_medias") }} -->
+        </button>
+      </template>
     </div>
 
     <button
@@ -56,6 +75,7 @@ export default {
   props: {
     publication_path: String,
     addtl_meta: Object,
+    show_shapes: Boolean,
     is_collapsed: {
       type: Boolean,
       default: true,
@@ -70,6 +90,39 @@ export default {
       show_media_picker: false,
 
       show_dropzone: false,
+
+      shapes: [
+        {
+          type: "ellipsis",
+          icon: "circle",
+          addtl_meta: {
+            background_color: "#1d327f",
+          },
+        },
+        {
+          type: "rectangle",
+          icon: "square",
+          addtl_meta: {
+            background_color: "#ff9c33",
+          },
+        },
+        {
+          type: "line",
+          icon: "dash-lg",
+          addtl_meta: {
+            outline_width: 0.1,
+            outline_color: "#000000",
+          },
+        },
+        {
+          type: "arrow",
+          icon: "arrow-right",
+          addtl_meta: {
+            outline_width: 0.1,
+            outline_color: "#000000",
+          },
+        },
+      ],
 
       // options: [
       //   {
@@ -125,23 +178,25 @@ export default {
       });
     },
 
-    async createModule({ module_type, source_medias = [] }) {
+    async createModule({ module_type, source_medias = [], addtl_meta = {} }) {
       const meta_filename = await this.createMetaForModule({
         module_type,
         source_medias,
+        addtl_meta,
       });
       this.$emit("addModule", { meta_filename });
       this.show_module_selector = false;
     },
 
-    async createMetaForModule({ module_type, source_medias }) {
+    async createMetaForModule({ module_type, source_medias, addtl_meta }) {
       let additional_meta = {
         module_type,
         source_medias,
         requested_slug: "module",
       };
 
-      if (this.addtl_meta) Object.assign(additional_meta, this.addtl_meta);
+      if (this.addtl_meta)
+        Object.assign(additional_meta, this.addtl_meta, addtl_meta);
 
       return await this.$api
         .uploadFile({
@@ -168,7 +223,6 @@ export default {
   position: relative;
   display: flex;
   justify-content: flex-start;
-  place-content: center;
   align-items: center;
   width: 100%;
   pointer-events: none;
@@ -185,6 +239,7 @@ export default {
 ._typePicker {
   display: flex;
   flex-flow: row wrap;
+  justify-content: flex-start;
   gap: calc(var(--spacing) / 2);
 
   > * {
