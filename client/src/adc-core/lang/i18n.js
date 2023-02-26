@@ -260,7 +260,6 @@ export default function () {
         white: "Blanc",
         black: "Noir",
         transparent: "Transparent",
-        none_f: "Aucune",
 
         watermark: "Habillage",
         watermark_instructions:
