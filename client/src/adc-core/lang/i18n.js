@@ -490,6 +490,7 @@ export default function () {
         remove: "Supprimer",
         remove_project: "Supprimer le projet",
         remove_media: "Supprimer le média",
+        withdraw_from_page: "Enlever de la page",
         confirm_removal: "Confirmer la suppression",
         move_up: "Remonter",
         move_down: "Descendre",

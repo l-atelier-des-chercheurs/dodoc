@@ -171,7 +171,6 @@ export default {
     grid() {
       return [this.gridstep, this.gridstep];
     },
-
     module_z_index() {
       return `
         z-index: ${this.publimodule.z_index ? this.publimodule.z_index : 0}

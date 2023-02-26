@@ -3,32 +3,35 @@
     <button
       type="button"
       class="u-buttonLink"
-      v-if="!show_confirm_delete"
       @click="show_confirm_delete = true"
     >
       <sl-icon name="trash3" />
       {{ remove_text }}
     </button>
 
-    <fieldset v-if="show_confirm_delete">
-      <legend class="u-label">{{ remove_text }}</legend>
-      <button
-        type="button"
-        class="u-buttonLink"
-        @click="show_confirm_delete = false"
-      >
-        {{ $t("cancel") }}
-      </button>
-      <br />
-      <br />
-      <button
-        class="u-button u-button_red"
-        type="button"
-        @click="$emit('remove')"
-      >
-        {{ $t("confirm_removal") }}
-      </button>
-    </fieldset>
+    <BaseModal2
+      v-if="show_confirm_delete"
+      :title="remove_text"
+      @close="show_confirm_delete = false"
+    >
+      <div class="u-sameRow" slot="footer">
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="show_confirm_delete = false"
+        >
+          {{ $t("cancel") }}
+        </button>
+        <button
+          class="u-button u-button_red"
+          type="button"
+          autofocus
+          @click="$emit('remove')"
+        >
+          {{ $t("confirm_removal") }}
+        </button>
+      </div>
+    </BaseModal2>
   </div>
 </template>
 <script>

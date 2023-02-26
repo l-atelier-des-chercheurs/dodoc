@@ -1,12 +1,17 @@
 <template>
   <portal to="destination">
     <transition name="fade">
-      <div class="_baseModal" v-if="show_modal" @click.self="closeModal">
+      <div
+        class="_baseModal"
+        v-if="show_modal"
+        @click.self="closeModal"
+        ref="modal"
+      >
         <div class="_baseModal--content">
           <header v-if="title">
             <h2>{{ title }}</h2>
           </header>
-          <div class="_content">
+          <div class="_content" v-if="$slots.hasOwnProperty('default')">
             <slot />
           </div>
           <div class="_footer">
@@ -40,10 +45,17 @@ export default {
   created() {},
   mounted() {
     this.show_modal = true;
-    document.body.style.overflow = "hidden";
+    this.$eventHub.$emit(`modal.is_opened`);
+
+    this.$nextTick(() => {
+      this.$nextTick(() => {
+        if (this.$refs.modal && this.$refs.modal.querySelector("[autofocus]"))
+          this.$refs.modal.querySelector("[autofocus]").focus();
+      });
+    });
   },
   beforeDestroy() {
-    document.body.style.overflow = "";
+    this.$eventHub.$emit(`modal.is_closed`);
   },
   watch: {},
   computed: {},
@@ -118,6 +130,7 @@ header {
 }
 ._footer {
   text-align: center;
+  padding: var(--spacing) calc(var(--spacing) * 1.5);
 }
 
 @keyframes reveal {

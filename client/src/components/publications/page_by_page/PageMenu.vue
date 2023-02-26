@@ -42,7 +42,6 @@
           :key="'page_options-' + page_number"
         >
           <div class="_pageMenu--pane">
-            <DLabel :str="$t('page_options')" />
             <div class="u-spacingBottom">
               <DLabel :str="$t('add_on_page')" />
               <ModuleCreator
@@ -174,7 +173,10 @@
           </span>
 
           <div class="u-mediaOptions">
-            <RemoveMenu :remove_text="$t('remove')" @remove="removeModule" />
+            <RemoveMenu
+              :remove_text="$t('withdraw_from_page')"
+              @remove="removeModule"
+            />
 
             <div class="">
               <button
