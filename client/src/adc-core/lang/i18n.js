@@ -467,6 +467,10 @@ export default function () {
         project_desc_instructions:
           "La description est affichée ici et sur la page d’accueil.",
         add_authors: "Ajouter des contributeur·rice·s",
+        ellipsis: "Ellipse",
+        rectangle: "Rectangle",
+        line: "ligne",
+        arrow: "Flèche",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
