@@ -276,7 +276,7 @@ export default function () {
         clockwise: "Dans le sens des aiguilles d’une montre",
         counterclockwise: "Dans le sens inverse des aiguilles d’une montre",
         reverse: "Inverser le début et la fin",
-        rotate: "Pivoter",
+        angle: "Angle",
         "error:": "Erreur&nbsp;:",
         mirror: "Miroir",
         horizontal_flip: "Retournement horizontal",

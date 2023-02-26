@@ -727,3 +727,10 @@ fieldset {
     margin-bottom: 0;
   }
 }
+
+.u-textEllipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}

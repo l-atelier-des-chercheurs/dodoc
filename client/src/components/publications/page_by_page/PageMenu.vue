@@ -1,143 +1,171 @@
 <template>
   <div class="_pageMenu">
-    <div>
-      <transition name="fade_fast" mode="out-in">
-        <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
-      </transition>
-      <transition
-        v-if="active_spread_index !== false"
-        name="fade_fast"
-        mode="out-in"
-      >
-        <span :key="active_spread_index">
-          <template v-if="page_number === 0"> ({{ $t("cover") }}) </template>
-          <template v-else>
-            ({{ $t("spread").toLowerCase() }} {{ active_spread_index }})
-          </template>
-        </span>
-      </transition>
+    <div class="_pageMenu--pane">
+      <div class="u-spacingBottom">
+        <transition name="fade_fast" mode="out-in">
+          <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
+        </transition>
+        <transition
+          v-if="active_spread_index !== false"
+          name="fade_fast"
+          mode="out-in"
+        >
+          <span :key="active_spread_index">
+            <template v-if="page_number === 0"> ({{ $t("cover") }}) </template>
+            <template v-else>
+              ({{ $t("spread").toLowerCase() }} {{ active_spread_index }})
+            </template>
+          </span>
+        </transition>
+      </div>
+
+      <div class="_zoom">
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('zoom')"
+          :value="Math.round(zoom * 100)"
+          :min="25"
+          :max="100"
+          :step="1"
+          :ticks="[25, 50, 75, 100]"
+          :default_value="100"
+          :suffix="'%'"
+          @save="$emit('update:zoom', $event / 100)"
+        />
+      </div>
     </div>
 
-    <br />
+    <transition name="fade" mode="out-in">
+      <div
+        v-if="!has_editor_toolbar && !active_module"
+        class="_pageMenu--pane"
+        :key="'page_options-' + page_number"
+      >
+        <div>
+          <!-- <fieldset class="u-spacingBottom"> -->
+          <!-- <legend class="u-label">{{ $t("page_options") }}</legend> -->
 
-    <RangeValueInput
-      class="u-spacingBottom"
-      :label="$t('zoom')"
-      :value="Math.round(zoom * 100)"
-      :min="25"
-      :max="100"
-      :step="1"
-      :ticks="[25, 50, 75, 100]"
-      :default_value="100"
-      :suffix="'%'"
-      @save="$emit('update:zoom', $event / 100)"
-    />
-
-    <div :key="'page-' + page_number" v-if="can_edit">
-      <div v-if="!has_editor_toolbar && !active_module">
-        <!-- <fieldset class="u-spacingBottom"> -->
-        <!-- <legend class="u-label">{{ $t("page_options") }}</legend> -->
-
-        <div class="u-spacingBottom">
-          <DLabel :str="$t('add_on_page')" />
-          <ModuleCreator
-            :publication_path="publication_path"
-            :addtl_meta="new_module_meta"
-            :show_shapes="true"
-            :is_collapsed="false"
-            @addModule="enableModuleEdit"
-          />
-        </div>
-
-        <div class="" v-if="can_edit">
-          <ToggleInput
-            class="u-spacingBottom"
-            :content="show_grid"
-            :label="$t('show_grid')"
-            @update:content="$emit('update:show_grid', $event)"
-          />
-
-          <div v-if="show_grid && can_edit">
-            <RangeValueInput
-              :label="$t('gridstep')"
-              :value="gridstep_in_cm"
-              :min="0.1"
-              :max="2"
-              :step="0.1"
-              :ticks="[0.1, 0.5, 1, 1.5, 2]"
-              :default_value="1"
-              :suffix="'cm'"
-              @save="$emit('update:gridstep_in_cm', $event)"
+          <div class="u-spacingBottom">
+            <DLabel :str="$t('add_on_page')" />
+            <ModuleCreator
+              :publication_path="publication_path"
+              :addtl_meta="new_module_meta"
+              :show_shapes="true"
+              :is_collapsed="false"
+              @addModule="enableModuleEdit"
             />
+          </div>
 
+          <div class="" v-if="can_edit">
             <ToggleInput
               class="u-spacingBottom"
-              :content="snap_to_grid"
-              :label="$t('snap_to_grid')"
-              @update:content="$emit('update:snap_to_grid', $event)"
+              :content="show_grid"
+              :label="$t('show_grid')"
+              @update:content="$emit('update:show_grid', $event)"
+            />
+
+            <div v-if="show_grid && can_edit">
+              <RangeValueInput
+                :label="$t('gridstep')"
+                :value="gridstep_in_cm"
+                :min="0.1"
+                :max="2"
+                :step="0.1"
+                :ticks="[0.1, 0.5, 1, 1.5, 2]"
+                :default_value="1"
+                :suffix="'cm'"
+                @save="$emit('update:gridstep_in_cm', $event)"
+              />
+
+              <ToggleInput
+                class="u-spacingBottom"
+                :content="snap_to_grid"
+                :label="$t('snap_to_grid')"
+                @update:content="$emit('update:snap_to_grid', $event)"
+              />
+            </div>
+          </div>
+          <div class="" v-if="can_edit">
+            <ColorInput
+              class="u-spacingBottom"
+              :label="$t('page_color')"
+              :value="page_color"
+              @save="
+                $emit('updatePageOptions', {
+                  page_number,
+                  value: { page_color: $event },
+                })
+              "
             />
           </div>
-        </div>
-        <div class="" v-if="can_edit">
-          <ColorInput
-            :label="$t('page_color')"
-            :value="page_color"
-            @save="
-              $emit('updatePageOptions', {
-                page_number,
-                value: { page_color: $event },
-              })
-            "
-          />
-        </div>
-        <!-- </fieldset> -->
+          <!-- </fieldset> -->
 
-        <div>
-          <button
-            type="button"
-            class="u-buttonLink"
-            :disabled="page_modules.length === 0"
-            v-if="can_edit"
-            @click="show_all_medias = !show_all_medias"
-          >
-            <sl-icon name="collection" />
-            {{ $t("list_of_medias") }}
-          </button>
-        </div>
-
-        <fieldset v-if="show_all_medias" class="_mediaList">
-          <div
-            v-for="page_module in page_modules"
-            :key="page_module.$path"
-            @click="setActive(page_module.$path)"
-          >
-            <MediaContent
-              class="_preview"
-              v-if="firstMedia(page_module)"
-              :file="firstMedia(page_module)"
-              :resolution="180"
-              :context="'preview'"
-            />
-
-            <DateField
-              class=""
-              :title="$t('date_uploaded')"
-              :date="page_module.$date_uploaded"
-            />
+          <div>
+            <button
+              type="button"
+              class="u-buttonLink"
+              :disabled="page_modules.length === 0"
+              v-if="can_edit"
+              @click="show_all_medias = !show_all_medias"
+            >
+              <sl-icon name="collection" />
+              {{ $t("list_of_medias") }}
+            </button>
           </div>
-        </fieldset>
+
+          <fieldset v-if="show_all_medias" class="_mediaList">
+            <div
+              v-for="page_module in page_modules"
+              :key="page_module.$path"
+              @click="setActive(page_module.$path)"
+            >
+              <MediaContent
+                class="_preview"
+                v-if="firstMedia(page_module)"
+                :file="firstMedia(page_module)"
+                :resolution="180"
+                :context="'preview'"
+              />
+
+              <DateField
+                class=""
+                :title="$t('date_uploaded')"
+                :date="page_module.$date_uploaded"
+              />
+            </div>
+          </fieldset>
+        </div>
       </div>
-      <div v-else-if="!has_editor_toolbar && active_module">
+
+      <div
+        v-else-if="!has_editor_toolbar && active_module"
+        class="_pageMenu--pane"
+        :key="'media-' + active_module.$path"
+      >
         <fieldset :key="active_module.$path">
           <legend class="u-label">{{ $t("media") }}</legend>
 
           <MediaContent
             class="_activeModulePreview"
-            v-if="firstMedia(active_module)"
+            v-if="active_module.module_type === 'mosaic'"
             :file="firstMedia(active_module)"
             :resolution="180"
             :context="'preview'"
           />
+          <span
+            v-else-if="active_module.module_type === 'text'"
+            class="u-textEllipsis _textExtract"
+          >
+            <CollaborativeEditor2
+              ref="textBloc"
+              :path="firstMedia(active_module).$path"
+              :content="firstMedia(active_module).$content"
+              :can_edit="false"
+            />
+          </span>
+          <span v-else>
+            {{ $t(active_module.module_type) }}
+          </span>
 
           <div class="u-mediaOptions">
             <RemoveMenu :remove_text="$t('remove')" @remove="removeModule" />
@@ -222,7 +250,7 @@
           </div>
           <RangeValueInput
             class="u-spacingBottom"
-            :label="$t('rotate')"
+            :label="$t('angle')"
             :value="active_module.rotation"
             :min="0"
             :max="360"
@@ -306,22 +334,26 @@
           />
         </fieldset>
       </div>
-      <div v-show="has_editor_toolbar">
-        <div ref="editor_toolbar" class="_editorToolbar" />
+    </transition>
+    <div
+      v-show="has_editor_toolbar"
+      class="_pageMenu--pane"
+      :key="'text-toolbar-' + page_number"
+    >
+      <div ref="editor_toolbar" class="_editorToolbar" />
 
-        <RangeValueInput
-          class="u-spacingBottom"
-          :label="$t('text_size')"
-          :value="active_module.text_size"
-          :min="1"
-          :max="400"
-          :step="1"
-          :ticks="[1, 100, 200, 300, 400]"
-          :default_value="100"
-          :suffix="'%'"
-          @save="updateMediaPubliMeta({ text_size: $event })"
-        />
-      </div>
+      <RangeValueInput
+        class="u-spacingBottom"
+        :label="$t('text_size')"
+        :value="active_module.text_size"
+        :min="1"
+        :max="400"
+        :step="1"
+        :ticks="[1, 100, 200, 300, 400]"
+        :default_value="100"
+        :suffix="'%'"
+        @save="updateMediaPubliMeta({ text_size: $event })"
+      />
     </div>
   </div>
 </template>
@@ -407,7 +439,10 @@ export default {
     },
     displayToolbar(node) {
       this.has_editor_toolbar = true;
-      this.$refs.editor_toolbar.append(node);
+      this.$nextTick(() => {
+        this.$refs.editor_toolbar.append(node);
+      });
+
       // this.$nextTick(() => {
       // });
     },
@@ -448,27 +483,30 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pageMenu {
+  text-align: left;
+}
+._pageMenu--pane {
   padding: calc(var(--spacing) / 2);
-  // margin: 0 calc(var(--spacing) / 1);
-
   background: var(--panel-color);
   border: var(--panel-borders);
   box-shadow: var(--panel-shadows);
   border-radius: var(--panel-radius);
 
-  text-align: left;
-
-  ::v-deep ._moduleCreator {
-    margin: 0;
-  }
+  margin-bottom: calc(var(--spacing) / 2);
 }
+
+// ::v-deep ._moduleCreator {
+//   margin: 0;
+// }
 ._activeModulePreview {
-  width: 50px;
-  height: auto;
   overflow: hidden;
   margin: 0 auto;
   background: var(--c-gris_clair);
   width: 100%;
+  height: 50px;
+
+  display: flex;
+  justify-content: center;
 }
 
 ._mediaList {
@@ -502,6 +540,20 @@ export default {
         position: absolute;
         object-fit: contain;
       }
+    }
+  }
+}
+
+._zoom {
+  // position: absolute;
+  // bottom: 0;
+  // left: 0;
+  // width: 100%;
+}
+._textExtract {
+  ::v-deep {
+    .ql-editor {
+      padding-bottom: 0;
     }
   }
 }
