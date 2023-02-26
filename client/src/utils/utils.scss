@@ -141,6 +141,9 @@
   &:focus {
     text-decoration: none;
   }
+  &:focus-visible {
+    background-color: var(--active-color);
+  }
 }
 
 button {
@@ -178,6 +181,7 @@ button {
 
   &:hover,
   &:active,
+  &:focus-visible,
   &.is--active {
     background: var(--active-color);
   }
