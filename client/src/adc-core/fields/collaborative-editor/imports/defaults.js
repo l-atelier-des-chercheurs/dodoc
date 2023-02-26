@@ -35,6 +35,7 @@ export const toolbar = {
     [
       {
         color: [
+          "#000000",
           "#353535",
           "#b9b9b9",
           "#fff",
