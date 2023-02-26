@@ -82,9 +82,11 @@ export default function () {
         reload_page: "Recharger cette page",
         create_page: "Ajouter une page",
         add_on_page: "Ajouter sur la page",
-        page_color: "Couleur de la page",
+        page_color: "Couleur de cette page",
         position: "Position",
         media: "Média",
+        active_media_instr:
+          "Retrouvez ici les informations sur le média sélectionné dans la page actuelle.",
 
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
@@ -108,6 +110,8 @@ export default function () {
         your_account: "votre compte",
         new_account: "nouveau compte",
         show_list: "Afficher la liste",
+        show: "Afficher",
+        hide: "Masquer",
         list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
         device: "Appareil",
@@ -236,6 +240,8 @@ export default function () {
         gridstep: "Pas de la grille",
         zoom: "Zoom",
         list_of_medias: "Liste des médias",
+        list_of_medias_instr:
+          "Cette liste recense tous les médias présents sur cette page. Cliquez sur l’un d’eux pour afficher son emplacement et ses propriétés.",
 
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
@@ -260,7 +266,6 @@ export default function () {
         white: "Blanc",
         black: "Noir",
         transparent: "Transparent",
-        none_f: "Aucune",
 
         watermark: "Habillage",
         watermark_instructions:
@@ -276,7 +281,7 @@ export default function () {
         clockwise: "Dans le sens des aiguilles d’une montre",
         counterclockwise: "Dans le sens inverse des aiguilles d’une montre",
         reverse: "Inverser le début et la fin",
-        rotate: "Pivoter",
+        angle: "Angle",
         "error:": "Erreur&nbsp;:",
         mirror: "Miroir",
         horizontal_flip: "Retournement horizontal",
@@ -467,6 +472,10 @@ export default function () {
         project_desc_instructions:
           "La description est affichée ici et sur la page d’accueil.",
         add_authors: "Ajouter des contributeur·rice·s",
+        ellipsis: "Ellipse",
+        rectangle: "Rectangle",
+        line: "ligne",
+        arrow: "Flèche",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
         "notifications.no_image_in_clipboard":
@@ -481,6 +490,7 @@ export default function () {
         remove: "Supprimer",
         remove_project: "Supprimer le projet",
         remove_media: "Supprimer le média",
+        withdraw_from_page: "Enlever de la page",
         confirm_removal: "Confirmer la suppression",
         move_up: "Remonter",
         move_down: "Descendre",

@@ -79,12 +79,7 @@
     </sl-button>
 
     <div class="_toolbarAndEditorContainer">
-      <div
-        ref="editor"
-        class="_mainText"
-        @dragover="onDragover"
-        @drop="onDrop"
-      />
+      <div ref="editor" @dragover="onDragover" @drop="onDrop" />
     </div>
   </div>
 </template>
@@ -301,7 +296,7 @@ export default {
       else this.disableEditor();
     },
     async enableEditor() {
-      if (this.editor_is_enabled) return false;
+      if (this.editor_is_enabled || !this.can_edit) return false;
 
       if (this.is_collaborative) await this.startCollaborative();
 
@@ -757,6 +752,7 @@ export default {
       counter-reset: listCounter;
       height: auto;
       overflow: visible;
+      color: #000000;
 
       // padding: 0 0 0 calc(var(--spacing) * 2);
       padding: 0;

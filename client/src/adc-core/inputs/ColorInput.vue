@@ -7,19 +7,25 @@
         <input
           ref="field"
           type="color"
+          class="_inputField"
+          :class="{
+            'has--novalue': local_value === '',
+          }"
           :name="label"
           :id="'_input_' + label"
           v-model="local_value"
         />
 
-        <button
-          type="button"
-          v-if="value !== local_value"
-          class="u-button u-button_bleuvert"
-          @click="$emit('save', local_value)"
-        >
-          <sl-icon name="check" :label="$t('submit')" />
-        </button>
+        <transition name="popUp_slow">
+          <button
+            type="button"
+            v-if="value !== local_value"
+            class="u-button u-button_bleuvert"
+            @click="$emit('save', local_value)"
+          >
+            <sl-icon name="check" :label="$t('submit')" />
+          </button>
+        </transition>
       </div>
     </transition>
 
@@ -61,4 +67,27 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._inputField {
+  position: relative;
+
+  &.has--novalue::after {
+    content: "";
+    position: absolute;
+    top: calc(var(--spacing) / 4);
+    right: calc(var(--spacing) / 4);
+    left: calc(var(--spacing) / 4);
+    bottom: calc(var(--spacing) / 4);
+
+    background-image: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.75),
+        rgba(255, 255, 255, 0.75)
+      ),
+      linear-gradient(to right, black 50%, white 50%),
+      linear-gradient(to bottom, black 50%, white 50%);
+    background-blend-mode: normal, difference, normal;
+    background-size: 2em 2em;
+  }
+}
+</style>

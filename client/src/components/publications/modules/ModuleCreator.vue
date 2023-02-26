@@ -7,7 +7,11 @@
         @click="createText"
       >
         <!-- {{ $t("add_text") }} -->
-        <sl-icon name="fonts" :label="$t('add_text')" />
+        <sl-icon
+          name="fonts"
+          style="font-size: var(--icon-size)"
+          :label="$t('add_text')"
+        />
       </button>
       <button
         type="button"
@@ -15,7 +19,11 @@
         v-if="!show_media_picker"
         @click="show_media_picker = true"
       >
-        <sl-icon name="image" :label="$t('add_medias')" />
+        <sl-icon
+          name="image"
+          style="font-size: var(--icon-size)"
+          :label="$t('add_medias')"
+        />
         <!-- {{ $t("add_medias") }} -->
       </button>
       <MediaPicker
@@ -37,7 +45,11 @@
             })
           "
         >
-          <sl-icon :name="shape.icon" :label="$t(shape.type)" />
+          <sl-icon
+            :name="shape.icon"
+            style="font-size: var(--icon-size)"
+            :label="$t(shape.type)"
+          />
           <!-- {{ $t("add_medias") }} -->
         </button>
       </template>
@@ -94,14 +106,14 @@ export default {
       shapes: [
         {
           type: "ellipsis",
-          icon: "circle",
+          icon: "circle-fill",
           addtl_meta: {
             background_color: "#1d327f",
           },
         },
         {
           type: "rectangle",
-          icon: "square",
+          icon: "square-fill",
           addtl_meta: {
             background_color: "#ff9c33",
           },
@@ -116,7 +128,7 @@ export default {
         },
         {
           type: "arrow",
-          icon: "arrow-right",
+          icon: "arrow-right-square",
           addtl_meta: {
             outline_width: 0.1,
             outline_color: "#000000",
@@ -231,6 +243,8 @@ export default {
   color: var(--c-bleuvert);
   border-radius: 1rem;
 
+  --icon-size: 1.2rem;
+
   > * {
     pointer-events: auto;
   }
@@ -240,7 +254,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
 
   > * {
     // padding: calc(var(--spacing) / 2);

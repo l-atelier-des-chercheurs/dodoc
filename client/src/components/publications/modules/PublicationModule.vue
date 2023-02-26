@@ -264,7 +264,6 @@
 <script>
 import ModuleMosaic from "@/components/publications/modules/ModuleMosaic.vue";
 import ModuleCarousel from "@/components/publications/modules/ModuleCarousel.vue";
-import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
 
 // a module is a block for a publication, listed in publication.modules_list
 
@@ -282,7 +281,6 @@ export default {
   components: {
     ModuleMosaic,
     ModuleCarousel,
-    CollaborativeEditor2,
   },
   data() {
     return {

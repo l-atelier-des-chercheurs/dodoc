@@ -584,6 +584,20 @@ img {
     opacity: 0;
   }
 }
+.popUp_slow {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: center center;
+    transition: all 0.55s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
 .scaleInFade_fast {
   &-enter-active,
   &-leave-active {

@@ -171,7 +171,6 @@ export default {
     grid() {
       return [this.gridstep, this.gridstep];
     },
-
     module_z_index() {
       return `
         z-index: ${this.publimodule.z_index ? this.publimodule.z_index : 0}
@@ -333,6 +332,8 @@ export default {
       this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
     },
     editText() {
+      if (!this.is_active) return;
+
       const first_media = this.firstMedia(this.publimodule);
       if (!first_media || first_media.$type !== "text") return;
 
@@ -378,7 +379,9 @@ export default {
           0,
           this.publimodule.$path.lastIndexOf("/") + 1
         ) + meta_filename;
-      this.$eventHub.$emit(`module.setActive`, path);
+      setTimeout(() => {
+        this.$eventHub.$emit(`module.setActive`, path);
+      }, 100);
     },
   },
 };
@@ -412,10 +415,10 @@ export default {
     outline: 2px dotted var(--c-orange) !important;
 
     ::v-deep {
-      ._collaborativeEditor .ql-editor {
-        background: linear-gradient(rgba(255, 255, 255, 0.6) 55%, transparent);
-        padding-bottom: 250px;
-      }
+      // ._collaborativeEditor .ql-editor {
+      //   background: linear-gradient(rgba(255, 255, 255, 0.6) 55%, transparent);
+      //   padding-bottom: 250px;
+      // }
     }
   }
 
