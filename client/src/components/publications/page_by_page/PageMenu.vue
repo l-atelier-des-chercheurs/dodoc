@@ -418,12 +418,16 @@ export default {
       );
     },
     new_module_meta() {
+      const z_index =
+        Math.max(...this.page_modules.map((pm) => pm.z_index || 0)) + 1;
+
       return {
         page_id: this.page_opened_id,
         x: this.gridstep_in_cm,
         y: this.gridstep_in_cm,
         width: 5,
         height: 5,
+        z_index,
       };
     },
   },
