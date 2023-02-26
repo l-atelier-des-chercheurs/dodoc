@@ -378,7 +378,9 @@ export default {
           0,
           this.publimodule.$path.lastIndexOf("/") + 1
         ) + meta_filename;
-      this.$eventHub.$emit(`module.setActive`, path);
+      setTimeout(() => {
+        this.$eventHub.$emit(`module.setActive`, path);
+      }, 100);
     },
   },
 };
