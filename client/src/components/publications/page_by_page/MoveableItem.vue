@@ -333,6 +333,8 @@ export default {
       this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
     },
     editText() {
+      if (!this.is_active) return;
+
       const first_media = this.firstMedia(this.publimodule);
       if (!first_media || first_media.$type !== "text") return;
 
