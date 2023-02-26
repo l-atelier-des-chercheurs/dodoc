@@ -15,14 +15,17 @@
           :id="'_input_' + label"
           v-model="local_value"
         />
-        <button
-          type="button"
-          v-if="value !== local_value"
-          class="u-button u-button_bleuvert"
-          @click="$emit('save', local_value)"
-        >
-          <sl-icon name="check" :label="$t('submit')" />
-        </button>
+
+        <transition name="popUp_slow">
+          <button
+            type="button"
+            v-if="value !== local_value"
+            class="u-button u-button_bleuvert"
+            @click="$emit('save', local_value)"
+          >
+            <sl-icon name="check" :label="$t('submit')" />
+          </button>
+        </transition>
       </div>
     </transition>
 

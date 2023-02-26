@@ -82,9 +82,11 @@ export default function () {
         reload_page: "Recharger cette page",
         create_page: "Ajouter une page",
         add_on_page: "Ajouter sur la page",
-        page_color: "Couleur de la page",
+        page_color: "Couleur de cette page",
         position: "Position",
         media: "Média",
+        active_media_instr:
+          "Retrouvez ici les informations sur le média sélectionné dans la page actuelle.",
 
         contactmail_of_instance: `Adresse e-mail de contact`,
         contactmail_of_instance_instructions: `Indiqué aux visiteurs comme adresse à utiliser pour obtenir plus d’informations, récupérer un compte dont le mot de passe a été oublié ou demander le mot de passe d’accès.`,
@@ -108,6 +110,8 @@ export default function () {
         your_account: "votre compte",
         new_account: "nouveau compte",
         show_list: "Afficher la liste",
+        show: "Afficher",
+        hide: "Masquer",
         list_of_contributors: "Liste des contributeur·rice·s",
         upload_from_device: "Importer une image",
         device: "Appareil",
@@ -236,6 +240,8 @@ export default function () {
         gridstep: "Pas de la grille",
         zoom: "Zoom",
         list_of_medias: "Liste des médias",
+        list_of_medias_instr:
+          "Cette liste recense tous les médias présents sur cette page. Cliquez sur l’un d’eux pour afficher son emplacement et ses propriétés.",
 
         path_to_content: "Chemin du stockage des contenus",
         path_to_content_instructions: `Attention, fonctionnalité avancée !
