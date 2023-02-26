@@ -199,6 +199,8 @@ new Vue({
     dev_mode: true,
     publicPath: process.env.BASE_URL,
 
+    modal_is_opened: false,
+
     current_time: "",
 
     window: {
@@ -219,6 +221,8 @@ new Vue({
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
     this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
+    this.$eventHub.$on("modal.is_opened", this.modalIsOpened);
+    this.$eventHub.$on("modal.is_closed", this.modalIsClosed);
     const html = document.documentElement; // returns the html tag
     html.setAttribute("lang", "fr");
 
@@ -257,6 +261,14 @@ new Vue({
         .closeLogOnClick(true)
         .delay(4000)
         .error(`Connect error ${reason}`);
+    },
+    modalIsOpened() {
+      document.body.style.overflow = "hidden";
+      this.modal_is_opened = true;
+    },
+    modalIsClosed() {
+      document.body.style.overflow = "";
+      this.modal_is_opened = false;
     },
     formatBytes(a, b) {
       if (0 == a) return `0 ${this.$t("bytes")}`;
