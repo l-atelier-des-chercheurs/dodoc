@@ -79,12 +79,7 @@
     </sl-button>
 
     <div class="_toolbarAndEditorContainer">
-      <div
-        ref="editor"
-        class="_mainText"
-        @dragover="onDragover"
-        @drop="onDrop"
-      />
+      <div ref="editor" @dragover="onDragover" @drop="onDrop" />
     </div>
   </div>
 </template>
@@ -757,6 +752,7 @@ export default {
       counter-reset: listCounter;
       height: auto;
       overflow: visible;
+      color: #000000;
 
       // padding: 0 0 0 calc(var(--spacing) * 2);
       padding: 0;
