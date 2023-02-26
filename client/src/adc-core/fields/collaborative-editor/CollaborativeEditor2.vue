@@ -296,7 +296,7 @@ export default {
       else this.disableEditor();
     },
     async enableEditor() {
-      if (this.editor_is_enabled) return false;
+      if (this.editor_is_enabled || !this.can_edit) return false;
 
       if (this.is_collaborative) await this.startCollaborative();
 
