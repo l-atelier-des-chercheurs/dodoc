@@ -296,10 +296,7 @@ export default {
 
       if (event.key === "Backspace" || event.key === "Delete") {
         action = "remove";
-        this.$eventHub.$emit(
-          `module.remove.${this.active_module_meta_filename}`
-        );
-        this.$eventHub.$emit(`module.setActive`, false);
+        this.$eventHub.$emit(`module.open_remove_modal`);
       }
       // else if (event.key === "ArrowUp") {
       //   action = "move";

@@ -174,6 +174,7 @@
 
           <div class="u-mediaOptions">
             <RemoveMenu
+              ref="removeMenu"
               :remove_text="$t('withdraw_from_page')"
               @remove="removeModule"
             />
@@ -411,10 +412,12 @@ export default {
   mounted() {
     this.$eventHub.$on(`module.text_editing_enabled`, this.displayToolbar);
     this.$eventHub.$on(`module.text_editing_disabled`, this.removeToolbar);
+    this.$eventHub.$on(`module.open_remove_modal`, this.openRemoveModal);
   },
   beforeDestroy() {
     this.$eventHub.$off(`module.moveToolbar`, this.displayToolbar);
     this.$eventHub.$off(`module.text_editing_disabled`, this.removeToolbar);
+    this.$eventHub.$off(`module.open_remove_modal`, this.openRemoveModal);
   },
   watch: {},
   computed: {
@@ -461,6 +464,9 @@ export default {
     removeToolbar() {
       // if (this.$refs.editor_toolbar) this.$refs.editor_toolbar.innerHTML = "";
       this.has_editor_toolbar = false;
+    },
+    openRemoveModal() {
+      this.$refs.removeMenu.show_confirm_delete = true;
     },
     enableModuleEdit({ meta_filename }) {
       setTimeout(() => {
