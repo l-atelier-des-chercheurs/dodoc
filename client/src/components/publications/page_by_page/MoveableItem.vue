@@ -416,10 +416,10 @@ export default {
     outline: 2px dotted var(--c-orange) !important;
 
     ::v-deep {
-      ._collaborativeEditor .ql-editor {
-        background: linear-gradient(rgba(255, 255, 255, 0.6) 55%, transparent);
-        padding-bottom: 250px;
-      }
+      // ._collaborativeEditor .ql-editor {
+      //   background: linear-gradient(rgba(255, 255, 255, 0.6) 55%, transparent);
+      //   padding-bottom: 250px;
+      // }
     }
   }
 
