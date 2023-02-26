@@ -237,10 +237,12 @@ export default {
   },
   created() {
     this.$eventHub.$on(`module.setActive`, this.setActiveModule);
+    document.addEventListener("keydown", this.keyPressed);
   },
   mounted() {},
   beforeDestroy() {
     this.$eventHub.$off(`module.setActive`, this.setActiveModule);
+    document.removeEventListener("keydown", this.keyPressed);
   },
   watch: {},
   computed: {
@@ -248,6 +250,11 @@ export default {
       if (!this.active_module_path) return false;
 
       return this.modules.find((m) => m.$path === this.active_module_path);
+    },
+    active_module_meta_filename() {
+      return this.active_module.$path.substring(
+        this.active_module.$path.lastIndexOf("/") + 1
+      );
     },
     page_number() {
       return this.pages.findIndex((p) => p.id === this.page_opened_id);
@@ -274,6 +281,47 @@ export default {
     },
   },
   methods: {
+    keyPressed(event) {
+      if (
+        this.$root.modal_is_opened ||
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor") ||
+        event.target.hasAttribute("contenteditable")
+      )
+        return;
+
+      let action = "";
+      // let detail = "";
+
+      if (event.key === "Backspace" || event.key === "Delete") {
+        action = "remove";
+        this.$eventHub.$emit(
+          `module.remove.${this.active_module_meta_filename}`
+        );
+        this.$eventHub.$emit(`module.setActive`, false);
+      }
+      // else if (event.key === "ArrowUp") {
+      //   action = "move";
+      //   detail = { x: 0, y: -1 };
+      // } else if (event.key === "ArrowDown") {
+      //   action = "move";
+      //   detail = { x: 0, y: 1 };
+      // } else if (event.key === "ArrowLeft") {
+      //   action = "move";
+      //   detail = { x: -1, y: 0 };
+      // } else if (event.key === "ArrowRight") {
+      //   action = "move";
+      //   detail = { x: 1, y: 0 };
+      // }
+
+      if (action) event.preventDefault();
+
+      // this.$eventHub.$emit("publication.selected.triggerAction", {
+      //   action,
+      //   detail,
+      // });
+    },
     setActiveModule(path) {
       this.active_module_path = path;
     },
