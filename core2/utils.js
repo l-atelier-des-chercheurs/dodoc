@@ -1,7 +1,6 @@
 const path = require("path"),
   TOML = require("@iarna/toml"),
   slugg = require("slugg"),
-  validator = require("validator"),
   fs = require("fs-extra"),
   writeFileAtomic = require("write-file-atomic"),
   { networkInterfaces } = require("os"),
