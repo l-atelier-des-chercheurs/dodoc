@@ -4,17 +4,20 @@
 
     <transition name="fade" mode="out-in">
       <div class="u-sameRow" :key="'value-' + value">
-        <input
-          ref="field"
-          type="color"
+        <div
           class="_inputField"
           :class="{
             'has--novalue': local_value === '',
           }"
-          :name="label"
-          :id="'_input_' + label"
-          v-model="local_value"
-        />
+        >
+          <input
+            ref="field"
+            type="color"
+            :name="label"
+            :id="'_input_' + label"
+            v-model="local_value"
+          />
+        </div>
 
         <transition name="popUp_slow">
           <button
@@ -70,14 +73,17 @@ export default {
 <style lang="scss" scoped>
 ._inputField {
   position: relative;
+  width: 100%;
 
   &.has--novalue::after {
     content: "";
     position: absolute;
-    top: calc(var(--spacing) / 4);
-    right: calc(var(--spacing) / 4);
-    left: calc(var(--spacing) / 4);
-    bottom: calc(var(--spacing) / 4);
+    inset: 0;
+    // top: calc(var(--spacing) / 4);
+    // right: calc(var(--spacing) / 4);
+    // left: calc(var(--spacing) / 4);
+    // bottom: calc(var(--spacing) / 4);
+    pointer-events: none;
 
     background-image: linear-gradient(
         to right,
