@@ -37,10 +37,14 @@
         <button
           type="button"
           v-if="value !== local_value"
-          class="u-button u-button_bleuvert"
+          class="u-button u-button_bleuvert _submitBtn"
           @click="$emit('save', local_value)"
         >
-          <sl-icon name="check" :label="$t('submit')" />
+          <sl-icon
+            style="font-size: 1.5em"
+            name="check"
+            :label="$t('submit')"
+          />
         </button>
       </transition>
     </div>
@@ -143,5 +147,9 @@ export default {
     background-blend-mode: normal, difference, normal;
     background-size: 2em 2em;
   }
+}
+
+._submitBtn {
+  padding: calc(var(--spacing) / 8);
 }
 </style>
