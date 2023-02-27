@@ -8,9 +8,23 @@
     <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
       <template v-if="projectpanes.length === 0">
         <pane>
-          <span class="_msg u-instructions">
-            {{ $t("choose_a_pane") }}
-          </span>
+          <div class="_msg">
+            <span class="u-instructions">
+              {{ $t("choose_a_pane") }}
+            </span>
+            <br />
+            <br />
+            <br />
+            <br />
+            <div class="_devNotes">
+              <div class="u-wips" />
+              <small>
+                todo: afficher un petit menu qui contient un encart pour chaque
+                panneau avec les derniers éléments créés ou modifiés, et un lien
+                pour les ouvrir
+              </small>
+            </div>
+          </div>
         </pane>
       </template>
       <pane
@@ -160,11 +174,18 @@ export default {
   }
 }
 ._msg {
-  height: 100%;
-  display: flex;
-  place-content: center;
+  // height: 100%;
+  // display: flex;
+  // place-content: center;
 
-  padding: calc(var(--spacing) * 1);
+  text-align: center;
+  max-width: 50ch;
+  margin: 0 auto;
+
+  padding: calc(var(--spacing) * 2);
+}
+._devNotes {
+  opacity: 0.4;
 }
 
 ._floatingMsg {
