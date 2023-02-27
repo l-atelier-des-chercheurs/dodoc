@@ -14,7 +14,7 @@
           <div class="_content" v-if="$slots.hasOwnProperty('default')">
             <slot />
           </div>
-          <div class="_footer">
+          <div class="_footer" v-if="$slots.hasOwnProperty('footer')">
             <slot name="footer" />
           </div>
         </div>
@@ -90,11 +90,12 @@ export default {
   background: rgba(231, 231, 231, 0.7);
 
   ._baseModal--content {
-    background-color: #fff;
-    border-radius: var(--border-radius);
-    border: 2px solid var(--c-gris);
-    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 1px 12px rgba(255, 255, 255, 0.5);
+    // padding: calc(var(--spacing) / 2);
+    background: var(--panel-color);
+    border: var(--panel-borders);
+    box-shadow: var(--panel-shadows);
+    border-radius: var(--panel-radius);
+
     margin: 0 auto;
     max-width: 480px;
     width: 100%;
@@ -111,7 +112,7 @@ export default {
 }
 
 header {
-  padding: calc(var(--spacing) * 1.5);
+  padding: calc(var(--spacing) * 1);
   border-bottom: 2px solid #e5e5e5;
   width: 100%;
   h2 {
@@ -122,7 +123,7 @@ header {
 }
 
 ._content {
-  padding: var(--spacing) calc(var(--spacing) * 1.5);
+  padding: var(--spacing) calc(var(--spacing) * 1);
 
   > *:first-child {
     margin-top: 0;
@@ -130,7 +131,7 @@ header {
 }
 ._footer {
   text-align: center;
-  padding: var(--spacing) calc(var(--spacing) * 1.5);
+  padding: var(--spacing) calc(var(--spacing) * 1);
 }
 
 @keyframes reveal {
