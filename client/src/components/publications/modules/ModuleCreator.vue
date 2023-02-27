@@ -3,7 +3,7 @@
     <div v-if="show_module_selector || !is_collapsed" class="_typePicker">
       <button
         type="button"
-        class="u-button u-button_bleuvert"
+        class="u-button u-button_bleumarine"
         @click="createText"
       >
         <!-- {{ $t("add_text") }} -->
@@ -15,7 +15,7 @@
       </button>
       <button
         type="button"
-        class="u-button u-button_bleuvert"
+        class="u-button u-button_bleumarine"
         v-if="!show_media_picker"
         @click="show_media_picker = true"
       >
@@ -37,7 +37,7 @@
           type="button"
           v-for="shape in shapes"
           :key="shape.type"
-          class="u-button u-button_bleuvert"
+          class="u-button u-button_bleumarine"
           @click="
             createModule({
               module_type: shape.type,

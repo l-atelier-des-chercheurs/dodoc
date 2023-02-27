@@ -36,7 +36,7 @@
     </div>
 
     <template v-if="can_edit">
-      <transition name="fade" mode="out-in">
+      <transition name="fade_fast" mode="out-in">
         <div
           v-if="!has_editor_toolbar && !active_module"
           :key="'page_options-' + page_number"
@@ -64,14 +64,14 @@
               <div v-if="show_grid && can_edit">
                 <RangeValueInput
                   :label="$t('gridstep')"
-                  :value="gridstep_in_cm"
-                  :min="0.1"
-                  :max="2"
-                  :step="0.1"
-                  :ticks="[0.1, 0.5, 1, 1.5, 2]"
-                  :default_value="1"
-                  :suffix="'cm'"
-                  @save="$emit('update:gridstep_in_cm', $event)"
+                  :value="gridstep_in_cm * 10"
+                  :min="1"
+                  :max="20"
+                  :step="1"
+                  :ticks="[1, 5, 10, 15, 20]"
+                  :default_value="10"
+                  :suffix="'mm'"
+                  @save="$emit('update:gridstep_in_cm', $event / 10)"
                 />
 
                 <ToggleInput
@@ -285,13 +285,13 @@
           <RangeValueInput
             class="u-spacingBottom"
             :label="$t('margins')"
-            :value="active_module.margins"
+            :value="active_module.margins * 10"
             :min="0"
-            :max="5"
-            :step="0.1"
+            :max="50"
+            :step="1"
             :default_value="0"
-            :suffix="'cm'"
-            @save="updateMediaPubliMeta({ margins: $event })"
+            :suffix="'mm'"
+            @save="updateMediaPubliMeta({ margins: $event / 10 })"
           />
           <RangeValueInput
             class="u-spacingBottom"
@@ -316,14 +316,14 @@
           <RangeValueInput
             class="u-spacingBottom"
             :label="$t('outline_width')"
-            :value="active_module.outline_width"
+            :value="active_module.outline_width * 10"
             :min="0"
-            :max="2"
-            :step="0.1"
-            :ticks="[0, 1, 2]"
+            :max="20"
+            :step="1"
+            :ticks="[0, 10, 20]"
             :default_value="0"
-            :suffix="'cm'"
-            @save="updateMediaPubliMeta({ outline_width: $event })"
+            :suffix="'mm'"
+            @save="updateMediaPubliMeta({ outline_width: $event / 10 })"
           />
           <ColorInput
             v-if="active_module.outline_width > 0"
