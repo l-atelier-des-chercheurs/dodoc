@@ -203,6 +203,9 @@ new Vue({
 
     current_time: "",
 
+    default_new_module_width: 5,
+    default_new_module_height: 5,
+
     window: {
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
