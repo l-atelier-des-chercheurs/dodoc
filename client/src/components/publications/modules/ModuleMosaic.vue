@@ -261,9 +261,11 @@ export default {
   gap: calc(var(--spacing) / 2);
 
   button {
-    background: white;
+    // background: white;
     border-radius: 4px;
-    // background: rgba(255, 255, 255, 0.7);
+    color: white;
+    text-shadow: 0px 0px 4px rgb(0 0 0 / 80%);
+    // background: rgba(0, 0, 0, 0.2);
   }
 }
 
