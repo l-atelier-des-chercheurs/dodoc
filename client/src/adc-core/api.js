@@ -173,6 +173,9 @@ export default function () {
       async getCurrentAuthor() {
         await this.getFolder({
           path: this.tokenpath.token_path,
+        }).catch((err) => {
+          err;
+          // TODO catch folder no existing: author was removed, for example
         });
       },
 
