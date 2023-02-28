@@ -17,7 +17,7 @@
             <div class="_preview">
               <SinglePage
                 :context="'list'"
-                :zoom="0.2"
+                :zoom="page_preview_zoom"
                 :page_modules="getModulesForPage(page.id)"
                 :page_width="publication.page_width"
                 :page_height="publication.page_height"
@@ -52,7 +52,7 @@
                 <div class="_preview">
                   <SinglePage
                     :context="'list'"
-                    :zoom="0.2"
+                    :zoom="page_preview_zoom"
                     :page_modules="getModulesForPage(page.id)"
                     :page_width="publication.page_width"
                     :page_height="publication.page_height"
@@ -77,7 +77,7 @@
         </template>
         <button
           type="button"
-          class="u-button"
+          class="u-button u-button_bleuvert"
           @click="createPage"
           v-if="can_edit"
           key="createPage"
@@ -136,6 +136,13 @@ export default {
     },
     is_spread() {
       return this.publication.page_spreads === true;
+    },
+    page_preview_zoom() {
+      return this.calculateZoomToFit({
+        width: this.publication.page_width,
+        height: this.publication.page_height,
+        desired_largest_dimension: 200,
+      });
     },
     spreads() {
       if (!this.is_spread) return false;
@@ -227,6 +234,9 @@ export default {
 }
 
 ._page {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
   // position: relative;
   // background: white;
   // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
@@ -241,6 +251,9 @@ export default {
   position: relative;
   overflow: hidden;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+  min-width: 2em;
+  min-height: 2em;
+  background: rgba(255, 255, 255, 0.2);
 }
 ._label {
   display: flex;

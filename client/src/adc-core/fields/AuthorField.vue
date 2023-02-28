@@ -87,7 +87,6 @@ export default {
       edit_mode: false,
       is_saving: false,
       new_authors_paths: JSON.parse(JSON.stringify(this.authors_paths)),
-      // new_authors_paths: ["pauline", "louis"],
     };
   },
   created() {},

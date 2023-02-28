@@ -87,6 +87,7 @@ export default {
   props: {
     publication_path: String,
     addtl_meta: Object,
+    context: String,
     show_shapes: Boolean,
     is_collapsed: {
       type: Boolean,
@@ -165,9 +166,27 @@ export default {
   computed: {},
   methods: {
     async createMosaic({ path_to_source_media }) {
+      //
+
+      let source_medias =
+        this.context === "page_by_page"
+          ? [{ path: path_to_source_media, objectFit: "contain" }]
+          : [{ path: path_to_source_media }];
+
+      let addtl_meta = {};
+      if (this.context === "page_by_page") {
+        const media = this.getSourceMedia({
+          source_media_path: path_to_source_media,
+        });
+        if (media.$infos?.ratio)
+          addtl_meta.height =
+            this.$root.default_new_module_width * media.$infos.ratio;
+      }
+
       await this.createModule({
         module_type: "mosaic",
-        source_medias: [{ path: path_to_source_media }],
+        source_medias,
+        addtl_meta,
       });
       this.show_media_picker = false;
     },

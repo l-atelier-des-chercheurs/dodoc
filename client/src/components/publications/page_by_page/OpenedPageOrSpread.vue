@@ -118,6 +118,7 @@
 
     <transition name="slideup" mode="out-in">
       <div class="_navBar" :key="active_spread_index">
+        <!-- // todo create actual navbar for pages + quick page switcher with previews -->
         <template v-if="!is_spread">
           <div>
             <button type="button" @click="prevPage" v-if="page_number > 0">
@@ -231,7 +232,6 @@ export default {
       snap_to_grid: false,
       gridstep_in_cm: 0.5,
 
-      preview_zoom: 0.05,
       active_module_path: false,
     };
   },
@@ -246,6 +246,13 @@ export default {
   },
   watch: {},
   computed: {
+    preview_zoom() {
+      return this.calculateZoomToFit({
+        width: this.page_width,
+        height: this.page_height,
+        desired_largest_dimension: 50,
+      });
+    },
     active_module() {
       if (!this.active_module_path) return false;
 

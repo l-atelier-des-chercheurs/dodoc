@@ -47,6 +47,7 @@
               <ModuleCreator
                 :publication_path="publication_path"
                 :addtl_meta="new_module_meta"
+                :context="'page_by_page'"
                 :show_shapes="true"
                 :is_collapsed="false"
                 @addModule="enableModuleEdit"
@@ -434,8 +435,12 @@ export default {
         page_id: this.page_opened_id,
         x: this.gridstep_in_cm,
         y: this.gridstep_in_cm,
-        width: 5,
-        height: 5,
+        width: this.$root.default_new_module_width,
+        height: this.$root.default_new_module_height,
+        rotation: 0,
+        margins: 0,
+        opacity: 1,
+        outline_width: 0,
         z_index,
       };
     },
