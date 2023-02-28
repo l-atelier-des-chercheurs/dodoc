@@ -437,6 +437,10 @@ export default {
         y: this.gridstep_in_cm,
         width: this.$root.default_new_module_width,
         height: this.$root.default_new_module_height,
+        rotation: 0,
+        margins: 0,
+        opacity: 1,
+        outline_width: 0,
         z_index,
       };
     },
