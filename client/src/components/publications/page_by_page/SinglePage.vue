@@ -155,7 +155,6 @@ export default {
     snap_to_grid: Boolean,
     gridstep_in_cm: Number,
     margins: Object,
-    magnification: { type: Number, default: /*38*/ 50 },
     can_edit: Boolean,
     active_module: [Boolean, Object],
   },
@@ -175,6 +174,9 @@ export default {
     gridstep() {
       if (!this.gridstep_in_cm) return 0;
       return this.magnify(this.gridstep_in_cm);
+    },
+    magnification() {
+      return this.$root.page_magnification;
     },
     page_styles() {
       return `

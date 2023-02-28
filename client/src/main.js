@@ -161,6 +161,8 @@ import Authors from "@/mixins/Authors";
 Vue.mixin(Authors);
 import Capture from "@/mixins/Capture";
 Vue.mixin(Capture);
+import Publications from "@/mixins/Publications";
+Vue.mixin(Publications);
 
 Array.prototype.move = function (from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);
@@ -205,6 +207,8 @@ new Vue({
 
     default_new_module_width: 5,
     default_new_module_height: 5,
+
+    page_magnification: 50,
 
     window: {
       innerWidth: window.innerWidth,
