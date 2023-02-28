@@ -463,15 +463,22 @@ export default {
     ._mediaContent {
       height: 100%;
     }
-    img,
-    .plyr--video {
+    img {
       position: absolute;
       width: 100%;
       height: 100%;
       object-fit: var(--object-fit, cover);
       object-position: center;
+    }
+    .plyr__poster {
+      background-size: var(--object-fit, cover);
+    }
 
-      // plyr
+    .plyr__video-wrapper video {
+      object-fit: var(--object-fit, cover);
+      object-position: center;
+    }
+    .plyr--video {
       min-width: 50px;
     }
   }
