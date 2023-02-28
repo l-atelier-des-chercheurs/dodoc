@@ -20,12 +20,12 @@
             :resolution="1600"
             :context="'full'"
           />
-          <div class="_btnRow" v-if="can_edit && context !== 'page_by_page'">
+          <div class="_btnRow" v-if="can_edit">
             <button
               type="button"
               class="u-buttonLink"
               v-if="
-                is_multiple_medias &&
+                (is_multiple_medias || context === 'page_by_page') &&
                 !(
                   !media_with_linked.objectFit ||
                   media_with_linked.objectFit === 'cover'
@@ -39,7 +39,8 @@
               type="button"
               class="u-buttonLink"
               v-if="
-                is_multiple_medias && media_with_linked.objectFit !== 'contain'
+                (is_multiple_medias || context === 'page_by_page') &&
+                media_with_linked.objectFit !== 'contain'
               "
               @click="frameFit({ index, opt: { objectFit: 'contain' } })"
             >
@@ -49,6 +50,7 @@
             <button
               type="button"
               class="u-buttonLink"
+              v-if="is_multiple_medias"
               @click="removeMediaAtIndex(index)"
             >
               {{ $t("remove") }}
@@ -252,6 +254,7 @@ export default {
   top: 0;
   right: 0;
   left: auto;
+  z-index: 100;
 
   display: flex;
   flex-flow: row wrap;
