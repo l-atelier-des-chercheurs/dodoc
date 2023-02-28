@@ -21,6 +21,7 @@
         :tag="input_type === 'text' ? 'span' : 'input'"
         :required="required"
         :input_type="input_type"
+        :minlength="minlength"
         :maxlength="maxlength"
         :key="edit_mode + content"
         @toggleValidity="($event) => (allow_save = $event)"
@@ -68,6 +69,10 @@ export default {
     },
     required: {
       type: Boolean,
+      default: false,
+    },
+    minlength: {
+      type: [Boolean, Number],
       default: false,
     },
     maxlength: {

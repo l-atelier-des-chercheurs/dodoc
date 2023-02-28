@@ -41,7 +41,9 @@ export default function () {
     fallbackLocale: "en",
     messages: {
       fr: {
-        hello: "bonjour monde",
+        welcome_to_dodoc: "Bienvenue sur do•doc !",
+        admins_edit_text_here:
+          'Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.',
         edit: "modifier",
         stop_edit: "Arrêter les modifications",
         caption: "légende",
@@ -62,7 +64,7 @@ export default function () {
         title: "titre",
         name: "nom",
         name_of_instance: "Nom de l’instance",
-        name_of_instance_instructions: `Par exemple, <i>Documentation du fablab</i>, <i>do•doc de la classe de C</i>, etc.
+        name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
           Apparaîtra dans l’onglet du navigateur sur la page d’accueil et dans la barre de navigation.`,
         presentation_of_instance: "Présentation de l’instance",
         presentation_of_instance_instructions: `

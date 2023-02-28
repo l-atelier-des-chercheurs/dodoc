@@ -16,7 +16,7 @@
       </span>
     </div>
     <div class="u-instructions" v-if="show_instructions">
-      <small>{{ instructions }}</small>
+      <small v-html="instructions" />
     </div>
   </div>
 </template>

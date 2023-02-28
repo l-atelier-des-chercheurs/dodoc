@@ -714,7 +714,7 @@ module.exports = (function () {
   function _sendErrorToClient({ res, err }) {
     // TODO handle all errors
     if (err.code === "ENOENT") {
-      res.status(404).send({ message: "no_such_file_or_folder" });
+      res.status(404).send({ code: err.code });
     } else if (err.message) {
       res.status(500).send({ message: err.message });
     } else {

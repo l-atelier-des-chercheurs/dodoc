@@ -21,6 +21,7 @@
             :path="'_admin'"
             tag="h1"
             :required="true"
+            :minlength="3"
             :maxlength="40"
             :can_edit="is_admin"
           />

@@ -185,7 +185,7 @@ export default {
   padding: calc(var(--spacing) * 2);
 }
 ._devNotes {
-  opacity: 0.4;
+  // opacity: 0.4;
 }
 
 ._floatingMsg {

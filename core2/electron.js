@@ -26,8 +26,12 @@ module.exports = (function () {
       return new Promise(function (resolve, reject) {
         // check if a custom storage path was set
         const custom_storage_path = store.get("custom_content_path");
-        if (custom_storage_path)
+        if (custom_storage_path) {
           global.settings.contentPath = custom_storage_path;
+          dev.log(
+            `ELECTRON — custom storage path is detected and will be used ${custom_storage_path}`
+          );
+        }
 
         // This method will be called when Electron has finished
         // initialization and is ready to create browser windows.
