@@ -349,9 +349,9 @@ textarea,
   transition: all 0.05s;
 
   &:hover,
-  &:focus {
-    outline: none;
-    border-color: var(--input-border-color-focus);
+  &:focus-visible {
+    // outline: 1px solid var(--input-border-color-focus);
+    border-bottom: 2px solid var(--input-border-color-focus);
     // background-color: var(--c-gris);
     // background-color: var(--c-bleu_clair);
   }

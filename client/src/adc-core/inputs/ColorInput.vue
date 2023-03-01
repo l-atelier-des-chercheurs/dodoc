@@ -109,6 +109,7 @@ export default {
   flex-flow: row wrap;
 }
 ._defaultColors--item {
+  cursor: pointer;
   padding: calc(var(--spacing) / 2);
 
   > span {
@@ -119,8 +120,15 @@ export default {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
     background-color: var(--default-color);
   }
+
+  &:hover,
+  &:focus-visible {
+    > span {
+      outline: 2px solid var(--c-gris_fonce) !important;
+    }
+  }
   &.is--active > span {
-    outline: 2px solid var(--c-orange) !important;
+    outline: 2px solid var(--c-noir) !important;
   }
 }
 ._inputField {

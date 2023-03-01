@@ -112,13 +112,22 @@ export default {
     window.addEventListener("keyup", this.handleKeyPress);
   },
   beforeDestroy() {
-    window.addEventListener("keyup", this.handleKeyPress);
+    window.removeEventListener("keyup", this.handleKeyPress);
   },
   watch: {},
   computed: {},
   methods: {
-    handleKeyPress($event) {
-      if ($event.key === "Escape") this.$emit("close");
+    handleKeyPress(event) {
+      if (
+        this.$root.modal_is_opened ||
+        event.target.tagName.toLowerCase() === "input" ||
+        event.target.tagName.toLowerCase() === "textarea" ||
+        event.target.className.includes("ql-editor") ||
+        event.target.hasAttribute("contenteditable")
+      )
+        return;
+
+      if (event.key === "Escape") this.$emit("close");
     },
     duplicateMedia() {
       this.$emit("duplicate");
