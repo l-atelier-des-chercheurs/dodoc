@@ -8,7 +8,20 @@
   >
     <template v-if="file.$type === 'image'">
       <img :src="thumb" />
-      <FullscreenView v-if="context === 'full'" :image_src="file_full_path" />
+
+      <template v-if="context === 'full'">
+        <FullscreenBtn
+          class="u-floatingFsButton"
+          :icon="'fullscreen'"
+          :label="$t('fullscreen')"
+          @click="show_fullscreen = true"
+        />
+        <FullscreenView
+          v-if="show_fullscreen"
+          :image_src="file_full_path"
+          @close="show_fullscreen = false"
+        />
+      </template>
     </template>
     <template v-else-if="file.$type === 'video' || file.$type === 'audio'">
       <template v-if="context === 'preview'">
@@ -59,6 +72,7 @@ export default {
   data() {
     return {
       is_dragged: false,
+      show_fullscreen: false,
     };
   },
   created() {},

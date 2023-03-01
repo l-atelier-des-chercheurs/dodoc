@@ -536,6 +536,8 @@ export default function () {
       en: {
         hello: "hello world",
         edit: "edit",
+        fullscreen: "Plein-écran",
+        exit_fullscreen: "Quitter le plein-écran",
         caption: "caption",
         date_created: "created date",
         date_modified: "last edited",

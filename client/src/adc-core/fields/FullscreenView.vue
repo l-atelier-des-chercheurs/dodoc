@@ -1,11 +1,14 @@
 <template>
   <div class="_fullscreenView">
-    <button type="button" class="u-button _fsButton" @click="toggleFs">
-      <sl-icon
-        :name="!is_fullscreen ? 'arrows-fullscreen' : 'fullscreen-exit'"
-      />
-    </button>
-    <img :src="image_src" v-if="is_fullscreen" />
+    <transition name="scaleInFade">
+      <img class="_fsImg" v-if="show_img" :src="image_src" />
+    </transition>
+    <FullscreenBtn
+      class="u-floatingFsButton"
+      :icon="'fullscreen-exit'"
+      :label="$t('exit_fullscreen')"
+      @click="closeFs"
+    />
   </div>
 </template>
 <script>
@@ -16,12 +19,17 @@ export default {
   components: {},
   data() {
     return {
-      is_fullscreen: false,
+      show_img: false,
     };
   },
-  created() {},
-  mounted() {
+  created() {
     document.addEventListener("fullscreenchange", this.detectFullScreen);
+  },
+  mounted() {
+    this.openFs();
+    this.$nextTick(() => {
+      this.show_img = true;
+    });
   },
   beforeDestroy() {
     document.removeEventListener("fullscreenchange", this.detectFullScreen);
@@ -30,20 +38,17 @@ export default {
   computed: {},
   methods: {
     detectFullScreen() {
-      if (document.fullscreenElement) {
-        this.is_fullscreen = true;
-        // window.addEventListener("popstate", this.quitFSOnBack);
-      } else {
-        this.is_fullscreen = false;
-        this.$nextTick(() => {
-          // window.removeEventListener("popstate", this.quitFSOnBack);
-        });
-      }
+      // if (document.fullscreenElement) this.is_fullscreen = true;
+      // else this.is_fullscreen = false;
+      if (!document.fullscreenElement) this.$emit("close");
     },
-    toggleFs() {
-      const elem = this.$el;
-      if (!this.is_fullscreen) elem.requestFullscreen().catch((err) => err);
-      else document.exitFullscreen();
+
+    openFs() {
+      this.$el.requestFullscreen().catch((err) => err);
+    },
+    closeFs() {
+      document.exitFullscreen();
+      this.$emit("close");
     },
   },
 };
@@ -55,5 +60,16 @@ export default {
 
   width: 100%;
   height: 100%;
+}
+
+._fsImg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+
+  object-fit: contain;
+  object-position: center;
 }
 </style>

@@ -119,6 +119,15 @@ Vue.component("EditBtn", {
   </sl-button>
 `,
 });
+Vue.component("FullscreenBtn", {
+  name: "FullscreenBtn",
+  props: ["icon", "label"],
+  template: `
+    <sl-button variant="neutral" size="small" circle @click="$emit('click')">
+      <sl-icon :name="icon" :label="label" />
+    </sl-button>
+  `,
+});
 
 Vue.component("SectionLabel", {
   name: "SectionLabel",

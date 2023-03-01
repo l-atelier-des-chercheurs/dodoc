@@ -19,7 +19,20 @@ z
       >
         <template v-if="cover_thumb">
           <img :src="cover_thumb" />
-          <FullscreenView v-if="context === 'full'" :image_src="cover_thumb" />
+
+          <template v-if="context === 'full'">
+            <FullscreenBtn
+              class="u-floatingFsButton"
+              :icon="'fullscreen'"
+              :label="$t('fullscreen')"
+              @click="show_cover_fullscreen = true"
+            />
+            <FullscreenView
+              v-if="show_cover_fullscreen"
+              :image_src="cover_thumb"
+              @close="show_cover_fullscreen = false"
+            />
+          </template>
         </template>
         <div v-else class="_noImage" />
 
@@ -186,6 +199,7 @@ export default {
 
       show_meta: true,
       show_description: true,
+      show_cover_fullscreen: false,
     };
   },
   created() {
