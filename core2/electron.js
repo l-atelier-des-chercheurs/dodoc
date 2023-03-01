@@ -110,7 +110,7 @@ module.exports = (function () {
           contextIsolation: true,
           enableRemoteModule: false, // turn off remote
           plugins: true,
-          preload: path.join(__dirname, "preload.js"),
+          preload: path.join(global.appRoot, "preload.js"),
         },
       });
 
