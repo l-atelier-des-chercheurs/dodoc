@@ -320,6 +320,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  overflow: hidden;
 
   > * {
     flex: 1 1 0;
@@ -344,6 +345,8 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  gap: calc(var(--spacing) / 4);
+
   white-space: nowrap;
   height: auto;
 
@@ -369,7 +372,10 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   text-decoration: none;
-  padding: 0;
+
+  padding: calc(var(--spacing) / 4);
+  border-radius: 44px;
+
   text-decoration: none;
 
   text-transform: uppercase;
@@ -421,7 +427,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   cursor: pointer;

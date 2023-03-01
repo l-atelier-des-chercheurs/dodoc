@@ -524,7 +524,7 @@ export default {
 ._activeModulePreview {
   overflow: hidden;
   margin: 0 auto;
-  background: var(--c-gris_clair);
+  background: var(--c-noir);
   width: 100%;
   height: 50px;
 

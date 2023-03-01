@@ -7,7 +7,7 @@
     @dragend="endMediaDrag()"
   >
     <template v-if="file.$type === 'image'">
-      <img :src="thumb" />
+      <img :src="thumb" class="_mediaContent--image" />
 
       <template v-if="context === 'full'">
         <FullscreenBtn

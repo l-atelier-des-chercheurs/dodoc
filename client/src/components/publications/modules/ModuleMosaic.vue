@@ -216,8 +216,8 @@ export default {
         height: 100%;
       }
 
-      img,
-      video {
+      ._mediaContent--image,
+      .plyr--video {
         ._moduleMosaic.is--multipleMedias & {
           position: absolute;
           height: 100%;

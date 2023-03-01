@@ -463,7 +463,7 @@ export default {
     ._mediaContent {
       height: 100%;
     }
-    img {
+    ._mediaContent--image {
       position: absolute;
       width: 100%;
       height: 100%;
