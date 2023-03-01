@@ -119,6 +119,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100%;
 
   background: transparent;
   display: flex;
