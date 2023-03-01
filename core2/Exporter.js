@@ -1,7 +1,5 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  ffmpegPath = require("ffmpeg-static"),
-  { path: ffprobePath } = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   pad = require("pad-left"),
   { v4: uuidv4 } = require("uuid");
@@ -10,6 +8,15 @@ const utils = require("./utils"),
   folder = require("./folder"),
   file = require("./file"),
   notifier = require("./notifier");
+
+const ffmpegPath = require("ffmpeg-static").replace(
+  "app.asar",
+  "app.asar.unpacked"
+);
+const ffprobePath = require("ffprobe-static").path.replace(
+  "app.asar",
+  "app.asar.unpacked"
+);
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);

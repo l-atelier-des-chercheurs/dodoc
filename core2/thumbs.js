@@ -1,7 +1,5 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  ffmpegPath = require("ffmpeg-static"),
-  { path: ffprobePath } = require("ffprobe-static"),
   ffmpeg = require("fluent-ffmpeg"),
   exifReader = require("exif-reader"),
   cheerio = require("cheerio"),
@@ -9,6 +7,15 @@ const path = require("path"),
   https = require("https");
 
 const utils = require("./utils");
+
+const ffmpegPath = require("ffmpeg-static").replace(
+  "app.asar",
+  "app.asar.unpacked"
+);
+const ffprobePath = require("ffprobe-static").path.replace(
+  "app.asar",
+  "app.asar.unpacked"
+);
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
