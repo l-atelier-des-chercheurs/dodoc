@@ -97,6 +97,8 @@ import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
 Vue.component("UploadFiles", UploadFiles);
 import MediaContent from "@/adc-core/fields/MediaContent.vue";
 Vue.component("MediaContent", MediaContent);
+import FullscreenView from "@/adc-core/fields/FullscreenView.vue";
+Vue.component("FullscreenView", FullscreenView);
 import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
 Vue.component("CollaborativeEditor2", CollaborativeEditor2);
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";

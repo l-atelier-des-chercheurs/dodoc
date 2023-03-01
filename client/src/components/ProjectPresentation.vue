@@ -10,32 +10,16 @@ z
       'is--mobileView': $root.is_mobile_view,
     }"
   >
-    <div
-      class="_projectInfos--cover"
-      :class="{
-        'is--fullscreen': is_fullscreen,
-      }"
-    >
+    <div class="_projectInfos--cover">
       <div
         class="_projectInfos--cover--content"
-        ref="coverImage"
         :class="{
           'is--empty': !cover_thumb,
         }"
       >
         <template v-if="cover_thumb">
           <img :src="cover_thumb" />
-          <sl-button
-            v-if="context === 'full'"
-            size="small"
-            variant="neutral"
-            class="_fsButton u-buttonLink"
-            @click="toggleFs"
-          >
-            <sl-icon
-              :name="!is_fullscreen ? 'arrows-fullscreen' : 'fullscreen-exit'"
-            />
-          </sl-button>
+          <FullscreenView v-if="context === 'full'" :image_src="cover_thumb" />
         </template>
         <div v-else class="_noImage" />
 
@@ -202,18 +186,13 @@ export default {
 
       show_meta: true,
       show_description: true,
-      is_fullscreen: false,
     };
   },
   created() {
     if (this.context === "list") this.show_description = false;
   },
-  mounted() {
-    document.addEventListener("fullscreenchange", this.detectFullScreen);
-  },
-  beforeDestroy() {
-    document.removeEventListener("fullscreenchange", this.detectFullScreen);
-  },
+  mounted() {},
+  beforeDestroy() {},
   watch: {
     "$root.is_mobile_view"() {
       if (this.$root.is_mobile_view) this.show_meta = true;
@@ -230,23 +209,6 @@ export default {
     },
   },
   methods: {
-    detectFullScreen() {
-      if (document.fullscreenElement) {
-        this.is_fullscreen = true;
-        // window.addEventListener("popstate", this.quitFSOnBack);
-      } else {
-        this.is_fullscreen = false;
-        this.$nextTick(() => {
-          // window.removeEventListener("popstate", this.quitFSOnBack);
-        });
-      }
-    },
-    toggleFs() {
-      const elem = this.$refs.coverImage;
-      if (!this.is_fullscreen) elem.requestFullscreen().catch((err) => err);
-      else document.exitFullscreen();
-    },
-
     async updateProject() {
       this.fetch_status = "pending";
       this.fetch_error = null;
@@ -463,9 +425,6 @@ export default {
     height: 100%;
     object-fit: cover;
   }
-  &.is--fullscreen img {
-    object-fit: contain;
-  }
 
   ::v-deep ._noImage {
     position: absolute;
@@ -473,11 +432,6 @@ export default {
     width: 100%;
     height: 100%;
     background-color: var(--c-gris_fonce);
-  }
-  ::v-deep ._fsButton {
-    position: absolute;
-    bottom: 0;
-    margin: calc(var(--spacing) / 1);
   }
 }
 

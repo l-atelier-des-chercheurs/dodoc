@@ -8,6 +8,7 @@
   >
     <template v-if="file.$type === 'image'">
       <img :src="thumb" />
+      <FullscreenView v-if="context === 'full'" :image_src="file_full_path" />
     </template>
     <template v-else-if="file.$type === 'video' || file.$type === 'audio'">
       <template v-if="context === 'preview'">
