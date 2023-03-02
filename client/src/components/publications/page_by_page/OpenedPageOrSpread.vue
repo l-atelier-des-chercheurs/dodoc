@@ -128,7 +128,7 @@
                 :can_edit="can_edit"
                 :page_number="page_number"
                 :active_spread_index="active_spread_index"
-                :zoom.sync="zoom"
+                :zoom="scale"
                 :show_grid.sync="show_grid"
                 :snap_to_grid.sync="snap_to_grid"
                 :gridstep_in_cm.sync="gridstep_in_cm"
@@ -138,11 +138,12 @@
                 :page_modules="getModulesForPage(page_opened_id)"
                 :active_module="active_module"
                 @updatePageOptions="$emit('updatePageOptions', $event)"
+                @update:zoom="updateScale($event)"
               />
             </div>
           </div>
 
-          <div class="zoomable">
+          <div class="zoomable" @panzoomzoom="panzoomzoom">
             <SinglePage
               v-if="!is_spread"
               class="_spreadNavigator--page is--active"
@@ -152,7 +153,7 @@
               :page_width="page_width"
               :page_height="page_height"
               :page_color="current_page.page_color"
-              :zoom="zoom"
+              :zoom="scale"
               :show_grid="show_grid"
               :snap_to_grid="snap_to_grid"
               :gridstep_in_cm="gridstep_in_cm"
@@ -182,7 +183,7 @@
                   :page_width="page_width"
                   :page_height="page_height"
                   :page_color="page.page_color"
-                  :zoom="zoom"
+                  :zoom="scale"
                   :show_grid="show_grid"
                   :snap_to_grid="snap_to_grid"
                   :gridstep_in_cm="gridstep_in_cm"
@@ -230,13 +231,15 @@ export default {
   },
   data() {
     return {
-      zoom: 1,
+      scale: 1,
 
       show_grid: true,
       snap_to_grid: false,
       gridstep_in_cm: 0.5,
 
       active_module_path: false,
+
+      panzoom: undefined,
     };
   },
   created() {
@@ -246,7 +249,7 @@ export default {
   mounted() {
     const elem = this.$el.querySelector(".zoomable");
     /* eslint-disable */
-    const panzoom = Panzoom(elem, {
+    this.panzoom = Panzoom(elem, {
       maxScale: 5,
       step: 0.05,
       handleStartEvent: () => {
@@ -254,9 +257,9 @@ export default {
       },
     });
 
-    elem.parentElement.addEventListener("wheel", function (e) {
+    elem.parentElement.addEventListener("wheel", (e) => {
       if (!e.ctrlKey) return;
-      panzoom.zoomWithWheel(e);
+      this.panzoom.zoomWithWheel(e);
     });
   },
   beforeDestroy() {
@@ -347,6 +350,12 @@ export default {
     },
     setActiveModule(path) {
       this.active_module_path = path;
+    },
+    panzoomzoom($event) {
+      this.scale = $event.detail.scale;
+    },
+    updateScale(scale) {
+      this.panzoom.zoom(scale, { animate: true });
     },
     getModulesForPage(id) {
       return (

@@ -78,6 +78,7 @@ export default function () {
 
         submitted_password_is_wrong: "Mot de passe erroné",
         account_doesnt_exist: "Ce compte n’existe pas",
+        submit: "Valider",
 
         connection_lost: `Connexion perdue`,
         connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,

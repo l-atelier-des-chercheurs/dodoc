@@ -25,7 +25,7 @@
           :label="$t('zoom')"
           :value="Math.round(zoom * 100)"
           :min="25"
-          :max="100"
+          :max="400"
           :step="1"
           :ticks="[25, 50, 75, 100]"
           :default_value="100"
