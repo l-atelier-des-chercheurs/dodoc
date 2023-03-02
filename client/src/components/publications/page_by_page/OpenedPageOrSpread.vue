@@ -5,6 +5,94 @@
       'is--editable': can_edit,
     }"
   >
+    <transition name="slideup" mode="out-in">
+      <div class="_navBar" :key="active_spread_index">
+        <!-- // todo create actual navbar for pages without preview + quick page switcher with previews if unfolded, for example
+          (performance reasons, and use of space)
+         -->
+        <template v-if="!is_spread">
+          <div>
+            <button type="button" @click="prevPage" v-if="page_number > 0">
+              <sl-icon name="arrow-left" />
+              <!-- <SinglePage
+                :context="'list'"
+                :zoom="preview_zoom"
+                :page_modules="getModulesForPage(previous_page.id)"
+                :page_width="page_width"
+                :page_height="page_height"
+                :page_color="previous_page.page_color"
+                :can_edit="false"
+              /> -->
+            </button>
+          </div>
+          <div>
+            <button
+              type="button"
+              @click="nextPage"
+              v-if="page_number < pages.length - 1"
+            >
+              <!-- <SinglePage
+                :context="'list'"
+                :zoom="preview_zoom"
+                :page_modules="getModulesForPage(next_page.id)"
+                :page_width="page_width"
+                :page_height="page_height"
+                :page_color="next_page.page_color"
+                :can_edit="false"
+              /> -->
+              <sl-icon name="arrow-right" />
+            </button>
+          </div>
+        </template>
+        <template v-else>
+          <div class="">
+            <button
+              type="button"
+              @click="prevSpread"
+              v-if="active_spread_index > 0"
+            >
+              <sl-icon name="arrow-left" />
+              <!-- <template v-for="page in spreads[active_spread_index - 1]">
+                <SinglePage
+                  v-if="page"
+                  :key="page.id"
+                  :context="'list'"
+                  :zoom="preview_zoom"
+                  :page_modules="getModulesForPage(page.id)"
+                  :page_width="page_width"
+                  :page_height="page_height"
+                  :page_color="page.page_color"
+                  :can_edit="false"
+                />
+              </template> -->
+            </button>
+          </div>
+          <div class="">
+            <button
+              type="button"
+              @click="nextSpread"
+              v-if="active_spread_index < spreads.length - 1"
+            >
+              <!-- <template v-for="page in spreads[active_spread_index + 1]">
+                <SinglePage
+                  v-if="page"
+                  :key="page.id"
+                  :context="'list'"
+                  :zoom="preview_zoom"
+                  :page_modules="getModulesForPage(page.id)"
+                  :page_width="page_width"
+                  :page_height="page_height"
+                  :page_color="page.page_color"
+                  :can_edit="false"
+                />
+              </template> -->
+              <sl-icon name="arrow-right" />
+            </button>
+          </div>
+        </template>
+      </div>
+    </transition>
+
     <transition name="fade_fast" mode="out-in">
       <div
         :key="
@@ -113,92 +201,6 @@
             <div v-else class="_noPage" />
           </div>
         </div>
-      </div>
-    </transition>
-
-    <transition name="slideup" mode="out-in">
-      <div class="_navBar" :key="active_spread_index">
-        <!-- // todo create actual navbar for pages + quick page switcher with previews -->
-        <template v-if="!is_spread">
-          <div>
-            <button type="button" @click="prevPage" v-if="page_number > 0">
-              <sl-icon name="arrow-left" />
-              <SinglePage
-                :context="'list'"
-                :zoom="preview_zoom"
-                :page_modules="getModulesForPage(previous_page.id)"
-                :page_width="page_width"
-                :page_height="page_height"
-                :page_color="previous_page.page_color"
-                :can_edit="false"
-              />
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              @click="nextPage"
-              v-if="page_number < pages.length - 1"
-            >
-              <SinglePage
-                :context="'list'"
-                :zoom="preview_zoom"
-                :page_modules="getModulesForPage(next_page.id)"
-                :page_width="page_width"
-                :page_height="page_height"
-                :page_color="next_page.page_color"
-                :can_edit="false"
-              />
-              <sl-icon name="arrow-right" />
-            </button>
-          </div>
-        </template>
-        <template v-else>
-          <div class="">
-            <button
-              type="button"
-              @click="prevSpread"
-              v-if="active_spread_index > 0"
-            >
-              <sl-icon name="arrow-left" />
-              <template v-for="page in spreads[active_spread_index - 1]">
-                <SinglePage
-                  v-if="page"
-                  :key="page.id"
-                  :context="'list'"
-                  :zoom="preview_zoom"
-                  :page_modules="getModulesForPage(page.id)"
-                  :page_width="page_width"
-                  :page_height="page_height"
-                  :page_color="page.page_color"
-                  :can_edit="false"
-                />
-              </template>
-            </button>
-          </div>
-          <div class="">
-            <button
-              type="button"
-              @click="nextSpread"
-              v-if="active_spread_index < spreads.length - 1"
-            >
-              <template v-for="page in spreads[active_spread_index + 1]">
-                <SinglePage
-                  v-if="page"
-                  :key="page.id"
-                  :context="'list'"
-                  :zoom="preview_zoom"
-                  :page_modules="getModulesForPage(page.id)"
-                  :page_width="page_width"
-                  :page_height="page_height"
-                  :page_color="page.page_color"
-                  :can_edit="false"
-                />
-              </template>
-              <sl-icon name="arrow-right" />
-            </button>
-          </div>
-        </template>
       </div>
     </transition>
   </div>
