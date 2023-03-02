@@ -346,14 +346,17 @@ textarea,
   padding-right: calc(var(--spacing) * 0.5);
   margin: 0;
 
+  border-bottom: 2px solid transparent;
+
   transition: all 0.05s;
 
-  &:hover,
+  &:hover {
+    outline: 0;
+    border-bottom: 2px solid var(--input-border-color);
+  }
   &:focus-visible {
-    // outline: 1px solid var(--input-border-color-focus);
+    outline: 0;
     border-bottom: 2px solid var(--input-border-color-focus);
-    // background-color: var(--c-gris);
-    // background-color: var(--c-bleu_clair);
   }
 
   &.bg-blanc {
@@ -532,6 +535,7 @@ input[type="file"] {
 }
 
 .u-defaultValue {
+  margin: calc(var(--spacing) / 8);
   font-size: var(--sl-font-size-x-small);
   text-align: right;
 }
