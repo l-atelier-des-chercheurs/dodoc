@@ -142,63 +142,65 @@
             </div>
           </div>
 
-          <SinglePage
-            v-if="!is_spread"
-            class="_spreadNavigator--page is--active"
-            :context="'full'"
-            :publication_path="publication_path"
-            :page_modules="getModulesForPage(page_opened_id)"
-            :page_width="page_width"
-            :page_height="page_height"
-            :page_color="current_page.page_color"
-            :zoom="zoom"
-            :show_grid="show_grid"
-            :snap_to_grid="snap_to_grid"
-            :gridstep_in_cm="gridstep_in_cm"
-            :margins="margins"
-            :active_module="active_module"
-            :can_edit="can_edit"
-            @close="setPageActive(false)"
-          />
+          <div class="zoomable">
+            <SinglePage
+              v-if="!is_spread"
+              class="_spreadNavigator--page is--active"
+              :context="'full'"
+              :publication_path="publication_path"
+              :page_modules="getModulesForPage(page_opened_id)"
+              :page_width="page_width"
+              :page_height="page_height"
+              :page_color="current_page.page_color"
+              :zoom="zoom"
+              :show_grid="show_grid"
+              :snap_to_grid="snap_to_grid"
+              :gridstep_in_cm="gridstep_in_cm"
+              :margins="margins"
+              :active_module="active_module"
+              :can_edit="can_edit"
+              @close="setPageActive(false)"
+            />
 
-          <div
-            v-else
-            v-for="(page, index) in active_spread"
-            :key="page.id ? page.id : index"
-            class="_spreadNavigator--page"
-            :class="{
-              'is--active': page.id === page_opened_id,
-              'is--left': index === 0,
-              'is--right': index === 1,
-            }"
-            @click.self="setActiveModule(false)"
-          >
-            <template v-if="page">
-              <SinglePage
-                :context="'full'"
-                :publication_path="publication_path"
-                :page_modules="getModulesForPage(page.id)"
-                :page_width="page_width"
-                :page_height="page_height"
-                :page_color="page.page_color"
-                :zoom="zoom"
-                :show_grid="show_grid"
-                :snap_to_grid="snap_to_grid"
-                :gridstep_in_cm="gridstep_in_cm"
-                :margins="margins"
-                :active_module="active_module"
-                :can_edit="can_edit && page.id === page_opened_id"
-                @close="setPageActive(false)"
-              />
-              <template v-if="page.id !== page_opened_id">
-                <button
-                  type="button"
-                  class="_openAdjacentPageBtn"
-                  @click="setPageActive(page.id)"
+            <div
+              v-else
+              v-for="(page, index) in active_spread"
+              :key="page.id ? page.id : index"
+              class="_spreadNavigator--page"
+              :class="{
+                'is--active': page.id === page_opened_id,
+                'is--left': index === 0,
+                'is--right': index === 1,
+              }"
+              @click.self="setActiveModule(false)"
+            >
+              <template v-if="page">
+                <SinglePage
+                  :context="'full'"
+                  :publication_path="publication_path"
+                  :page_modules="getModulesForPage(page.id)"
+                  :page_width="page_width"
+                  :page_height="page_height"
+                  :page_color="page.page_color"
+                  :zoom="zoom"
+                  :show_grid="show_grid"
+                  :snap_to_grid="snap_to_grid"
+                  :gridstep_in_cm="gridstep_in_cm"
+                  :margins="margins"
+                  :active_module="active_module"
+                  :can_edit="can_edit && page.id === page_opened_id"
+                  @close="setPageActive(false)"
                 />
+                <template v-if="page.id !== page_opened_id">
+                  <button
+                    type="button"
+                    class="_openAdjacentPageBtn"
+                    @click="setPageActive(page.id)"
+                  />
+                </template>
               </template>
-            </template>
-            <div v-else class="_noPage" />
+              <div v-else class="_noPage" />
+            </div>
           </div>
         </div>
       </div>
@@ -241,7 +243,22 @@ export default {
     this.$eventHub.$on(`module.setActive`, this.setActiveModule);
     document.addEventListener("keydown", this.keyPressed);
   },
-  mounted() {},
+  mounted() {
+    const elem = this.$el.querySelector(".zoomable");
+    /* eslint-disable */
+    const panzoom = Panzoom(elem, {
+      maxScale: 5,
+      step: 0.1,
+      handleStartEvent: () => {
+        this.setActiveModule(false);
+      },
+    });
+
+    elem.parentElement.addEventListener("wheel", function (e) {
+      if (!e.ctrlKey) return;
+      panzoom.zoomWithWheel(e);
+    });
+  },
   beforeDestroy() {
     this.$eventHub.$off(`module.setActive`, this.setActiveModule);
     document.removeEventListener("keydown", this.keyPressed);
@@ -442,7 +459,10 @@ export default {
 }
 
 ._spreadNavigator {
-  overflow: auto;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+
   @include scrollbar(8px, 5px, 6px);
 }
 
@@ -452,8 +472,10 @@ export default {
 ._spreadNavigator--content {
   display: flex;
   flex-flow: row nowrap;
-
   padding-left: var(--pagemenu-width);
+
+  width: 100%;
+  height: 100%;
   // padding: calc(var(--spacing) * 1);
 }
 
