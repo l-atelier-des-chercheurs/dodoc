@@ -248,7 +248,7 @@ export default {
     /* eslint-disable */
     const panzoom = Panzoom(elem, {
       maxScale: 5,
-      step: 0.1,
+      step: 0.05,
       handleStartEvent: () => {
         this.setActiveModule(false);
       },
