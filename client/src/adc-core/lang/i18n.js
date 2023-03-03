@@ -158,6 +158,7 @@ export default function () {
         background_color: "Couleur du fond",
         outline_width: "Épaisseur du contour",
         outline_color: "Couleur du contour",
+        custom_color: "Couleur personnalisée",
         z_index: "Ordre d’empilement",
         move_to_front: "Premier-plan",
         move_to_back: "Arrière-plan",

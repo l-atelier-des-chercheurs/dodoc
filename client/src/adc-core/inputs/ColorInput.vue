@@ -7,14 +7,16 @@
       <div
         v-for="color in default_colors"
         class="_defaultColors--item"
-        :class="{
-          'is--active': color === local_value,
-        }"
         :key="color"
         :style="`--default-color: ${color}`"
         @click="$emit('save', color)"
       >
-        <span />
+        <span
+          class="_colorPatch"
+          :class="{
+            'is--active': color === local_value,
+          }"
+        />
       </div>
     </div>
     <div class="u-sameRow" :key="'value-' + value">
@@ -24,7 +26,16 @@
           'has--novalue': local_value === '',
         }"
       >
+        <label
+          :for="'_input_' + label"
+          class="u-sameRow _inputField--label"
+          :style="`--current-color: ${local_value}`"
+        >
+          <small>{{ $t("custom_color") }}</small>
+          <span class="_colorPatch" />
+        </label>
         <input
+          visi
           ref="field"
           type="color"
           :name="label"
@@ -111,29 +122,43 @@ export default {
 ._defaultColors--item {
   cursor: pointer;
   padding: calc(var(--spacing) / 2);
+}
 
-  > span {
-    display: block;
-    width: 1rem;
-    height: 1rem;
-    border-radius: 50%;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
-    background-color: var(--default-color);
-  }
+._colorPatch {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+  background-color: var(--default-color);
 
   &:hover,
   &:focus-visible {
-    > span {
-      outline: 2px solid var(--c-gris_fonce) !important;
-    }
+    outline: 2px solid var(--c-gris_fonce) !important;
   }
-  &.is--active > span {
+
+  &.is--active {
     outline: 2px solid var(--c-noir) !important;
   }
 }
+
 ._inputField {
   position: relative;
-  width: 100%;
+
+  ._inputField--label {
+    ._colorPatch {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 4px;
+      background: var(--current-color);
+    }
+  }
+
+  input {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
 
   &.has--novalue::after {
     content: "";
