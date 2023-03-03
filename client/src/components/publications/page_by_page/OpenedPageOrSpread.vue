@@ -138,12 +138,15 @@
                 :page_modules="getModulesForPage(page_opened_id)"
                 :active_module="active_module"
                 @updatePageOptions="$emit('updatePageOptions', $event)"
-                @update:scale="updateScale($event)"
+                @update:scale="scale = $event"
               />
             </div>
           </div>
-
-          <div class="zoomable" @panzoomzoom="panzoomzoom">
+          <PanZoom
+            :scale.sync="scale"
+            class="_pageCont"
+            @startPan="setActiveModule(false)"
+          >
             <SinglePage
               v-if="!is_spread"
               class="_spreadNavigator--page is--active"
@@ -196,13 +199,13 @@
                   <button
                     type="button"
                     class="_openAdjacentPageBtn"
-                    @click="setPageActive(page.id)"
+                    @mousedown="setPageActive(page.id)"
                   />
                 </template>
               </template>
               <div v-else class="_noPage" />
             </div>
-          </div>
+          </PanZoom>
         </div>
       </div>
     </transition>
@@ -211,6 +214,7 @@
 <script>
 import PageMenu from "@/components/publications/page_by_page/PageMenu.vue";
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
+import PanZoom from "@/components/publications/page_by_page/PanZoom.vue";
 
 export default {
   props: {
@@ -228,6 +232,7 @@ export default {
   components: {
     PageMenu,
     SinglePage,
+    PanZoom,
   },
   data() {
     return {
@@ -238,35 +243,39 @@ export default {
       gridstep_in_cm: 0.5,
 
       active_module_path: false,
-
-      panzoom: undefined,
     };
   },
   created() {
     this.$eventHub.$on(`module.setActive`, this.setActiveModule);
     document.addEventListener("keydown", this.keyPressed);
   },
-  mounted() {
-    const elem = this.$el.querySelector(".zoomable");
-    /* eslint-disable */
-    this.panzoom = Panzoom(elem, {
-      maxScale: 5,
-      step: 0.05,
-      handleStartEvent: () => {
-        this.setActiveModule(false);
-      },
-    });
-
-    elem.parentElement.addEventListener("wheel", (e) => {
-      if (!e.ctrlKey) return;
-      this.panzoom.zoomWithWheel(e);
-    });
-  },
+  mounted() {},
   beforeDestroy() {
     this.$eventHub.$off(`module.setActive`, this.setActiveModule);
     document.removeEventListener("keydown", this.keyPressed);
   },
-  watch: {},
+  watch: {
+    page_opened_id() {
+      this.$nextTick(() => {
+        const active_page = this.$el.querySelector(
+          "._spreadNavigator--page.is--active"
+        );
+        if (active_page)
+          if (this.$el.scrollIntoViewIfNeeded)
+            active_page.scrollIntoViewIfNeeded({
+              behavior: "smooth",
+              block: "nearest",
+              inline: "center",
+            });
+          else
+            active_page.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+              inline: "center",
+            });
+      });
+    },
+  },
   computed: {
     preview_zoom() {
       return this.calculateZoomToFit({
@@ -350,12 +359,6 @@ export default {
     },
     setActiveModule(path) {
       this.active_module_path = path;
-    },
-    panzoomzoom($event) {
-      this.scale = $event.detail.scale;
-    },
-    updateScale(scale) {
-      this.panzoom.zoom(scale, { animate: true });
     },
     getModulesForPage(id) {
       return (
@@ -479,13 +482,15 @@ export default {
 }
 
 ._spreadNavigator--content {
-  display: flex;
-  flex-flow: row nowrap;
   padding-left: var(--pagemenu-width);
 
   width: 100%;
   height: 100%;
   // padding: calc(var(--spacing) * 1);
+}
+._pageCont {
+  display: flex;
+  flex-flow: row nowrap;
 }
 
 ._spreadNavigator--page {
