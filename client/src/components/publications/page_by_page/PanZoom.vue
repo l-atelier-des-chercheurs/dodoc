@@ -1,5 +1,5 @@
 <template>
-  <div class="" @panzoomzoom="panzoomzoom">
+  <div class="">
     <slot />
   </div>
 </template>
@@ -16,9 +16,8 @@ export default {
   },
   created() {},
   mounted() {
-    const elem = this.$el;
     /* eslint-disable */
-    this.panzoom = Panzoom(elem, {
+    this.panzoom = Panzoom(this.$el, {
       maxScale: 5,
       step: 0.05,
       handleStartEvent: () => {
@@ -26,10 +25,11 @@ export default {
       },
     });
 
-    elem.parentElement.addEventListener("wheel", (e) => {
+    this.$el.addEventListener("wheel", (e) => {
       if (!e.ctrlKey) return;
       this.panzoom.zoomWithWheel(e);
     });
+    this.$el.addEventListener("panzoomzoom", this.panzoomend);
   },
   beforeDestroy() {},
   watch: {
@@ -39,12 +39,15 @@ export default {
   },
   computed: {},
   methods: {
-    panzoomzoom($event) {
+    panzoomend($event) {
       if ($event.detail.scale !== this.scale)
         this.$emit("update:scale", $event.detail.scale);
     },
     updateScale(scale) {
-      this.panzoom.zoom(scale, { animate: true });
+      debugger;
+      if (scale !== this.panzoom.getScale()) {
+        this.panzoom.zoom(scale, { animate: true });
+      }
     },
   },
 };
