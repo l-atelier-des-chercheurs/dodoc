@@ -6,7 +6,11 @@
         v-if="projects.length === 0"
       />
       <template v-else>
-        <DLabel :str="$t('source_project')" />
+        <DLabel
+          :str="$t('source_project')"
+          :instructions="$t('media_pickers_instr')"
+        />
+
         <select v-model="source_project_path">
           <option
             v-for="project in projects"
@@ -18,6 +22,7 @@
         </select>
 
         <template v-if="source_project_path">
+          <br />
           <DLabel :str="$t('medias')" />
           <sl-spinner
             style="--indicator-color: currentColor"
