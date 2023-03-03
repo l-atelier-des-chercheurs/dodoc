@@ -748,16 +748,14 @@ export default {
     }
 
     .ql-editor {
-      padding: 0;
       counter-reset: listCounter;
       height: auto;
       overflow: visible;
       color: #000000;
 
-      // padding: 0 0 0 calc(var(--spacing) * 2);
-      padding: 0;
       background-color: transparent;
 
+      padding: 2px;
       padding-bottom: calc(var(--spacing) * 1);
 
       @import "./imports/mainText.scss";

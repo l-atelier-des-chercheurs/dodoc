@@ -379,18 +379,23 @@ export default {
       // TODO if its source_medias include text modules, copy these medias as well
 
       const new_source_medias = [];
-      for (let { path } of this.publimodule.source_medias) {
+      for (let { path, ...props } of this.publimodule.source_medias) {
+        let source_path;
         if (path.includes("/publications/")) {
           // this media is specific to publications, lets remove it
           const new_file_path = await this.$api.duplicateFile({
             path,
           });
-          const source_path =
+          source_path =
             path.substring(0, path.lastIndexOf("/") + 1) + new_file_path;
-          new_source_medias.push({ path: source_path });
         } else {
-          new_source_medias.push({ path });
+          source_path = path;
         }
+
+        let new_media_obj = {};
+        new_media_obj = Object.assign({}, props, { path: source_path });
+
+        new_source_medias.push(new_media_obj);
       }
       new_meta.source_medias = new_source_medias;
 

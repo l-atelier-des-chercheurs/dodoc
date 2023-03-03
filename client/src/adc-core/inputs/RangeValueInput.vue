@@ -85,6 +85,7 @@ export default {
 ._inputRange {
   flex: 1 1 60px;
   min-width: 60px;
+  margin: 0;
 }
 ._numberField {
   flex: 2 0 0px;

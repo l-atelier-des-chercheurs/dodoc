@@ -78,6 +78,7 @@ export default function () {
 
         submitted_password_is_wrong: "Mot de passe erroné",
         account_doesnt_exist: "Ce compte n’existe pas",
+        submit: "Valider",
 
         connection_lost: `Connexion perdue`,
         connection_lost_reload_to_reconnect: `La connexion s’est interrompue… Vous pouvez tenter de recharger la page pour vous reconnecter.<br>Si vous rencontrez souvent cette erreur, contactez `,
@@ -157,6 +158,7 @@ export default function () {
         background_color: "Couleur du fond",
         outline_width: "Épaisseur du contour",
         outline_color: "Couleur du contour",
+        custom_color: "Couleur personnalisée",
         z_index: "Ordre d’empilement",
         move_to_front: "Premier-plan",
         move_to_back: "Arrière-plan",
@@ -240,7 +242,7 @@ export default function () {
         show_grid: "Afficher la grille",
         snap_to_grid: "Magnétisme de la grille",
         gridstep: "Pas de la grille",
-        zoom: "Zoom",
+        scale: "Échelle",
         list_of_medias: "Liste des médias",
         list_of_medias_instr:
           "Cette liste recense tous les médias présents sur cette page. Cliquez sur l’un d’eux pour afficher son emplacement et ses propriétés.",
@@ -497,6 +499,8 @@ export default function () {
         move_up: "Remonter",
         move_down: "Descendre",
         source_project: "Projet source",
+        media_pickers_instr:
+          "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennet à un autre projet, ils seront d’abord importés dans le projet actuel.",
 
         current: "Actuel",
         save_on_this_device: "Sauvegarder pour cet appareil",
@@ -536,6 +540,8 @@ export default function () {
       en: {
         hello: "hello world",
         edit: "edit",
+        fullscreen: "Plein-écran",
+        exit_fullscreen: "Quitter le plein-écran",
         caption: "caption",
         date_created: "created date",
         date_modified: "last edited",

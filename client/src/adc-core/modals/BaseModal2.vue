@@ -45,6 +45,8 @@ export default {
   created() {},
   mounted() {
     this.show_modal = true;
+    window.addEventListener("keyup", this.handleKeyPress);
+
     this.$eventHub.$emit(`modal.is_opened`);
 
     this.$nextTick(() => {
@@ -55,11 +57,15 @@ export default {
     });
   },
   beforeDestroy() {
+    window.removeEventListener("keyup", this.handleKeyPress);
     this.$eventHub.$emit(`modal.is_closed`);
   },
   watch: {},
   computed: {},
   methods: {
+    handleKeyPress($event) {
+      if ($event.key === "Escape") this.$emit("close");
+    },
     closeModal() {
       if (!this.is_closable) return false;
 

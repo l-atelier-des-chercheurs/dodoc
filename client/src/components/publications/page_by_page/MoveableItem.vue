@@ -13,6 +13,7 @@
       'is--editable': can_edit,
       'is--active': can_edit && is_active,
       'is--beingEdited': content_is_edited,
+      'panzoom-exclude': can_edit,
     }"
     :active="
       can_edit &&
@@ -27,7 +28,7 @@
     :handlerSize="15"
     :grid="grid"
     :id="publimodule.$path"
-    :zoom="zoom"
+    :zoom="scale"
     :style="module_z_index"
     @dragend="dragEnd"
     @resizestart="resizeStart"
@@ -94,7 +95,7 @@ export default {
     can_edit: Boolean,
     magnification: Number,
     gridstep: Number,
-    zoom: Number,
+    scale: Number,
     is_active: Boolean,
   },
   components: {
@@ -463,7 +464,7 @@ export default {
     ._mediaContent {
       height: 100%;
     }
-    img {
+    ._mediaContent--image {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -472,6 +473,12 @@ export default {
     }
     .plyr__poster {
       background-size: var(--object-fit, cover);
+      background-position: center;
+      background-color: transparent;
+    }
+    .plyr--video,
+    .plyr__video-wrapper {
+      background-color: transparent;
     }
 
     .plyr__video-wrapper video {
@@ -522,7 +529,7 @@ export default {
   padding: calc(var(--spacing) / 2);
 
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 
   > * {
     // background: white;

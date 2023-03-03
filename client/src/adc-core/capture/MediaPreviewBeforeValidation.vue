@@ -6,30 +6,17 @@
     />
     <vue-plyr
       class="m_previewValidation--video"
-      v-else-if="media_to_validate.type === 'video'"
+      v-else-if="
+        media_to_validate.type === 'video' || media_to_validate.type === 'audio'
+      "
     >
       <video
         ref="videoElement"
         :src="media_to_validate.objectURL"
+        :poster="media_to_validate.preview"
         preload="auto"
       />
     </vue-plyr>
-    <div
-      v-else-if="media_to_validate.type === 'audio'"
-      class="m_previewValidation--audio"
-    >
-      <img :src="media_to_validate.preview" />
-      <vue-plyr>
-        <audio
-          ref="audioElement"
-          :src="media_to_validate.objectURL"
-          preload="none"
-          @canplay="updatePaused"
-          @playing="updatePaused"
-          @pause="updatePaused"
-        />
-      </vue-plyr>
-    </div>
     <div
       v-else-if="media_to_validate.type === 'svg'"
       v-html="media_to_validate.preview"
@@ -45,9 +32,7 @@ export default {
   },
   components: {},
   data() {
-    return {
-      is_paused: false,
-    };
+    return {};
   },
   created() {},
   mounted() {
@@ -66,18 +51,15 @@ export default {
     setSinkId() {
       if (!this.audio_output_deviceId) return;
 
-      if (this.media_to_validate.type === "video") {
+      if (
+        this.media_to_validate.type === "video" ||
+        this.media_to_validate.type === "audio"
+      ) {
         this.$refs.videoElement.setSinkId(this.audio_output_deviceId);
-      } else if (this.media_to_validate.type === "audio") {
-        this.$refs.audioElement.setSinkId(this.audio_output_deviceId);
       }
-    },
-    play() {
-      this.$refs.audioElement.play();
-    },
-    updatePaused(event) {
-      // this.videoElement = event.target;
-      this.is_paused = event.target.paused;
+      // else if (this.media_to_validate.type === "audio") {
+      //   this.$refs.audioElement.setSinkId(this.audio_output_deviceId);
+      // }
     },
   },
 };
@@ -116,6 +98,10 @@ export default {
 
     .plyr .plyr__controls {
       color: white;
+    }
+
+    ::v-deep .plyr--audio {
+      flex: 0 0 0;
     }
 
     img {

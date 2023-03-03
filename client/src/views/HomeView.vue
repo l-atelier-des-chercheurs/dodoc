@@ -20,7 +20,7 @@
       <h1 v-html="name || $t('welcome_to_dodoc')" />
       <p v-html="description || $t('admins_edit_text_here')" />
 
-      <p v-if="contactmail_of_instance">
+      <p v-if="$root.app_infos.contactmail_of_instance">
         {{ $t("contactmail_of_instance") }}
         <a
           :href="'mailto:' + $root.app_infos.contactmail_of_instance"

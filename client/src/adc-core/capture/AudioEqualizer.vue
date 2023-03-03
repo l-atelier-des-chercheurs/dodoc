@@ -37,12 +37,16 @@ export default {
       this.startEqualizer();
     },
     current_audio_level() {
+      // if (this.current_audio_level > this.current_audio_level_smoothed)
+      const current_audio_level = Math.max(0, this.current_audio_level - 10);
+
       this.current_audio_level_smoothed = Math.round(
-        (this.current_audio_level_smoothed * 9 + this.current_audio_level) / 10
+        (this.current_audio_level_smoothed + current_audio_level) / 2
       );
+      // else
     },
     is_recording() {
-      this.clearCanvas();
+      // this.clearCanvas();
     },
   },
   computed: {},
@@ -60,49 +64,44 @@ export default {
     },
     drawVolume() {
       const canvas = this.$refs.canvas;
-      if (canvas) window.requestAnimationFrame(this.drawVolume);
-      else return;
+      if (!canvas) return;
 
       const ctx = canvas.getContext("2d");
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(255,255,255,.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       if (!this.is_recording) ctx.fillStyle = "#333";
       else ctx.fillStyle = "#fc4b60";
 
-      // draw at pos
-      let number_of_bars = canvas.width / 4;
+      const diam = Math.min(canvas.width, canvas.height);
+      const volume = ((diam / 2) * this.current_audio_level_smoothed) / 20;
 
-      if (this.type === "Tiny") number_of_bars = canvas.width / 20;
-
-      const bar_pos =
-        canvas.width * (this.current_draw_percentage / number_of_bars);
-
-      let bar_width = canvas.width / number_of_bars / 2;
-
-      if (this.type === "Tiny") bar_width = canvas.width / number_of_bars;
-
-      let bar_height = (this.current_audio_level / 100) * canvas.height;
-      bar_height = Math.max(bar_width, bar_height);
-
-      ctx.fillRect(
-        bar_pos,
-        canvas.height / 2 - bar_height / 2,
-        bar_width,
-        bar_height
+      ctx.beginPath();
+      ctx.ellipse(
+        canvas.width / 2,
+        canvas.height / 2,
+        volume,
+        volume,
+        0,
+        2 * Math.PI,
+        false
       );
+      ctx.fill();
 
-      this.current_draw_percentage++;
-      if (this.current_draw_percentage >= number_of_bars) {
-        this.clearCanvas();
-      }
-    },
-    clearCanvas() {
-      const canvas = this.$refs.canvas;
-      const ctx = canvas.getContext("2d");
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // ctx.fillStyle = "#000000";
+      // ctx.fillRect(20, Math.random() * 200, 10, 10);
+      // ctx.ellipse(
+      //   Math.random() * 200 + canvas.width / 2,
+      //   Math.random() * 200 + canvas.height / 2,
+      //   volume,
+      //   volume,
+      //   0,
+      //   2 * Math.PI,
+      //   false
+      // );
 
-      // ctx.clearRect(0, 0, canvas.width, canvas.height);
-      this.current_draw_percentage = 0;
+      window.requestAnimationFrame(this.drawVolume);
     },
   },
 };

@@ -97,6 +97,8 @@ import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
 Vue.component("UploadFiles", UploadFiles);
 import MediaContent from "@/adc-core/fields/MediaContent.vue";
 Vue.component("MediaContent", MediaContent);
+import FullscreenView from "@/adc-core/fields/FullscreenView.vue";
+Vue.component("FullscreenView", FullscreenView);
 import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
 Vue.component("CollaborativeEditor2", CollaborativeEditor2);
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
@@ -116,6 +118,15 @@ Vue.component("EditBtn", {
     <sl-icon name="pencil-fill" :label="$t('edit')" />
   </sl-button>
 `,
+});
+Vue.component("FullscreenBtn", {
+  name: "FullscreenBtn",
+  props: ["icon", "label"],
+  template: `
+    <sl-button variant="neutral" size="small" circle @click="$emit('click')">
+      <sl-icon :name="icon" :label="label" />
+    </sl-button>
+  `,
 });
 
 Vue.component("SectionLabel", {
@@ -208,7 +219,7 @@ new Vue({
     default_new_module_width: 5,
     default_new_module_height: 5,
 
-    page_magnification: 50,
+    page_magnification: 35,
 
     window: {
       innerWidth: window.innerWidth,

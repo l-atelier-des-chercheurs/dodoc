@@ -19,18 +19,18 @@
         </transition>
       </div>
 
-      <div class="_zoom">
+      <div class="_scale">
         <RangeValueInput
           class="u-spacingBottom"
-          :label="$t('zoom')"
-          :value="Math.round(zoom * 100)"
+          :label="$t('scale')"
+          :value="Math.round(scale * 100)"
           :min="25"
-          :max="100"
+          :max="200"
           :step="1"
-          :ticks="[25, 50, 75, 100]"
+          :ticks="[25, 50, 100, 200]"
           :default_value="100"
           :suffix="'%'"
-          @save="$emit('update:zoom', $event / 100)"
+          @save="$emit('update:scale', $event / 100)"
         />
       </div>
     </div>
@@ -388,7 +388,7 @@ export default {
     can_edit: Boolean,
     page_number: Number,
     active_spread_index: [Boolean, Number],
-    zoom: Number,
+    scale: Number,
     show_grid: Boolean,
     snap_to_grid: Boolean,
     gridstep_in_cm: Number,
@@ -524,7 +524,7 @@ export default {
 ._activeModulePreview {
   overflow: hidden;
   margin: 0 auto;
-  background: var(--c-gris_clair);
+  background: var(--c-noir);
   width: 100%;
   height: 50px;
 
@@ -567,7 +567,7 @@ export default {
   }
 }
 
-._zoom {
+._scale {
   // position: absolute;
   // bottom: 0;
   // left: 0;

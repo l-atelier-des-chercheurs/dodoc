@@ -5,6 +5,94 @@
       'is--editable': can_edit,
     }"
   >
+    <transition name="slideup" mode="out-in">
+      <div class="_navBar" :key="active_spread_index">
+        <!-- // todo create actual navbar for pages without preview + quick page switcher with previews if unfolded, for example
+          (performance reasons, and use of space)
+         -->
+        <template v-if="!is_spread">
+          <div>
+            <button type="button" @click="prevPage" v-if="page_number > 0">
+              <sl-icon name="arrow-left" />
+              <!-- <SinglePage
+                :context="'list'"
+                :zoom="preview_zoom"
+                :page_modules="getModulesForPage(previous_page.id)"
+                :page_width="page_width"
+                :page_height="page_height"
+                :page_color="previous_page.page_color"
+                :can_edit="false"
+              /> -->
+            </button>
+          </div>
+          <div>
+            <button
+              type="button"
+              @click="nextPage"
+              v-if="page_number < pages.length - 1"
+            >
+              <!-- <SinglePage
+                :context="'list'"
+                :zoom="preview_zoom"
+                :page_modules="getModulesForPage(next_page.id)"
+                :page_width="page_width"
+                :page_height="page_height"
+                :page_color="next_page.page_color"
+                :can_edit="false"
+              /> -->
+              <sl-icon name="arrow-right" />
+            </button>
+          </div>
+        </template>
+        <template v-else>
+          <div class="">
+            <button
+              type="button"
+              @click="prevSpread"
+              v-if="active_spread_index > 0"
+            >
+              <sl-icon name="arrow-left" />
+              <!-- <template v-for="page in spreads[active_spread_index - 1]">
+                <SinglePage
+                  v-if="page"
+                  :key="page.id"
+                  :context="'list'"
+                  :zoom="preview_zoom"
+                  :page_modules="getModulesForPage(page.id)"
+                  :page_width="page_width"
+                  :page_height="page_height"
+                  :page_color="page.page_color"
+                  :can_edit="false"
+                />
+              </template> -->
+            </button>
+          </div>
+          <div class="">
+            <button
+              type="button"
+              @click="nextSpread"
+              v-if="active_spread_index < spreads.length - 1"
+            >
+              <!-- <template v-for="page in spreads[active_spread_index + 1]">
+                <SinglePage
+                  v-if="page"
+                  :key="page.id"
+                  :context="'list'"
+                  :zoom="preview_zoom"
+                  :page_modules="getModulesForPage(page.id)"
+                  :page_width="page_width"
+                  :page_height="page_height"
+                  :page_color="page.page_color"
+                  :can_edit="false"
+                />
+              </template> -->
+              <sl-icon name="arrow-right" />
+            </button>
+          </div>
+        </template>
+      </div>
+    </transition>
+
     <transition name="fade_fast" mode="out-in">
       <div
         :key="
@@ -40,7 +128,7 @@
                 :can_edit="can_edit"
                 :page_number="page_number"
                 :active_spread_index="active_spread_index"
-                :zoom.sync="zoom"
+                :scale="scale"
                 :show_grid.sync="show_grid"
                 :snap_to_grid.sync="snap_to_grid"
                 :gridstep_in_cm.sync="gridstep_in_cm"
@@ -50,155 +138,75 @@
                 :page_modules="getModulesForPage(page_opened_id)"
                 :active_module="active_module"
                 @updatePageOptions="$emit('updatePageOptions', $event)"
+                @update:scale="scale = $event"
               />
             </div>
           </div>
-
-          <SinglePage
-            v-if="!is_spread"
-            class="_spreadNavigator--page is--active"
-            :context="'full'"
-            :publication_path="publication_path"
-            :page_modules="getModulesForPage(page_opened_id)"
-            :page_width="page_width"
-            :page_height="page_height"
-            :page_color="current_page.page_color"
-            :zoom="zoom"
-            :show_grid="show_grid"
-            :snap_to_grid="snap_to_grid"
-            :gridstep_in_cm="gridstep_in_cm"
-            :margins="margins"
-            :active_module="active_module"
-            :can_edit="can_edit"
-            @close="setPageActive(false)"
-          />
-
-          <div
-            v-else
-            v-for="(page, index) in active_spread"
-            :key="page.id ? page.id : index"
-            class="_spreadNavigator--page"
-            :class="{
-              'is--active': page.id === page_opened_id,
-              'is--left': index === 0,
-              'is--right': index === 1,
-            }"
-            @click.self="setActiveModule(false)"
+          <PanZoom
+            :scale.sync="scale"
+            class="_pageCont"
+            @startPan="setActiveModule(false)"
           >
-            <template v-if="page">
-              <SinglePage
-                :context="'full'"
-                :publication_path="publication_path"
-                :page_modules="getModulesForPage(page.id)"
-                :page_width="page_width"
-                :page_height="page_height"
-                :page_color="page.page_color"
-                :zoom="zoom"
-                :show_grid="show_grid"
-                :snap_to_grid="snap_to_grid"
-                :gridstep_in_cm="gridstep_in_cm"
-                :margins="margins"
-                :active_module="active_module"
-                :can_edit="can_edit && page.id === page_opened_id"
-                @close="setPageActive(false)"
-              />
-              <template v-if="page.id !== page_opened_id">
-                <button
-                  type="button"
-                  class="_openAdjacentPageBtn"
-                  @click="setPageActive(page.id)"
-                />
-              </template>
-            </template>
-            <div v-else class="_noPage" />
-          </div>
-        </div>
-      </div>
-    </transition>
+            <SinglePage
+              v-if="!is_spread"
+              class="_spreadNavigator--page is--active"
+              :context="'full'"
+              :publication_path="publication_path"
+              :page_modules="getModulesForPage(page_opened_id)"
+              :page_width="page_width"
+              :page_height="page_height"
+              :page_color="current_page.page_color"
+              :scale="scale"
+              :show_grid="show_grid"
+              :snap_to_grid="snap_to_grid"
+              :gridstep_in_cm="gridstep_in_cm"
+              :margins="margins"
+              :active_module="active_module"
+              :can_edit="can_edit"
+              @close="setPageActive(false)"
+            />
 
-    <transition name="slideup" mode="out-in">
-      <div class="_navBar" :key="active_spread_index">
-        <!-- // todo create actual navbar for pages + quick page switcher with previews -->
-        <template v-if="!is_spread">
-          <div>
-            <button type="button" @click="prevPage" v-if="page_number > 0">
-              <sl-icon name="arrow-left" />
-              <SinglePage
-                :context="'list'"
-                :zoom="preview_zoom"
-                :page_modules="getModulesForPage(previous_page.id)"
-                :page_width="page_width"
-                :page_height="page_height"
-                :page_color="previous_page.page_color"
-                :can_edit="false"
-              />
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              @click="nextPage"
-              v-if="page_number < pages.length - 1"
+            <div
+              v-else
+              v-for="(page, index) in active_spread"
+              :key="page.id ? page.id : index"
+              class="_spreadNavigator--page"
+              :class="{
+                'is--active': page.id === page_opened_id,
+                'is--left': index === 0,
+                'is--right': index === 1,
+              }"
+              @click.self="setActiveModule(false)"
             >
-              <SinglePage
-                :context="'list'"
-                :zoom="preview_zoom"
-                :page_modules="getModulesForPage(next_page.id)"
-                :page_width="page_width"
-                :page_height="page_height"
-                :page_color="next_page.page_color"
-                :can_edit="false"
-              />
-              <sl-icon name="arrow-right" />
-            </button>
-          </div>
-        </template>
-        <template v-else>
-          <div class="">
-            <button
-              type="button"
-              @click="prevSpread"
-              v-if="active_spread_index > 0"
-            >
-              <sl-icon name="arrow-left" />
-              <template v-for="page in spreads[active_spread_index - 1]">
+              <template v-if="page">
                 <SinglePage
-                  v-if="page"
-                  :key="page.id"
-                  :context="'list'"
-                  :zoom="preview_zoom"
+                  :context="'full'"
+                  :publication_path="publication_path"
                   :page_modules="getModulesForPage(page.id)"
                   :page_width="page_width"
                   :page_height="page_height"
                   :page_color="page.page_color"
-                  :can_edit="false"
+                  :scale="scale"
+                  :show_grid="show_grid"
+                  :snap_to_grid="snap_to_grid"
+                  :gridstep_in_cm="gridstep_in_cm"
+                  :margins="margins"
+                  :active_module="active_module"
+                  :can_edit="can_edit && page.id === page_opened_id"
+                  @close="setPageActive(false)"
                 />
+                <template v-if="page.id !== page_opened_id">
+                  <button
+                    type="button"
+                    class="_openAdjacentPageBtn"
+                    @mousedown="setPageActive(page.id)"
+                  />
+                </template>
               </template>
-            </button>
-          </div>
-          <div class="">
-            <button
-              type="button"
-              @click="nextSpread"
-              v-if="active_spread_index < spreads.length - 1"
-            >
-              <template v-for="page in spreads[active_spread_index + 1]">
-                <SinglePage
-                  v-if="page"
-                  :key="page.id"
-                  :context="'list'"
-                  :zoom="preview_zoom"
-                  :page_modules="getModulesForPage(page.id)"
-                  :page_width="page_width"
-                  :page_height="page_height"
-                  :page_color="page.page_color"
-                  :can_edit="false"
-                />
-              </template>
-              <sl-icon name="arrow-right" />
-            </button>
-          </div>
-        </template>
+              <div v-else class="_noPage" />
+            </div>
+          </PanZoom>
+        </div>
       </div>
     </transition>
   </div>
@@ -206,6 +214,7 @@
 <script>
 import PageMenu from "@/components/publications/page_by_page/PageMenu.vue";
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
+import PanZoom from "@/components/publications/page_by_page/PanZoom.vue";
 
 export default {
   props: {
@@ -223,10 +232,11 @@ export default {
   components: {
     PageMenu,
     SinglePage,
+    PanZoom,
   },
   data() {
     return {
-      zoom: 1,
+      scale: 1,
 
       show_grid: true,
       snap_to_grid: false,
@@ -244,7 +254,28 @@ export default {
     this.$eventHub.$off(`module.setActive`, this.setActiveModule);
     document.removeEventListener("keydown", this.keyPressed);
   },
-  watch: {},
+  watch: {
+    page_opened_id() {
+      this.$nextTick(() => {
+        const active_page = this.$el.querySelector(
+          "._spreadNavigator--page.is--active"
+        );
+        if (active_page)
+          if (this.$el.scrollIntoViewIfNeeded)
+            active_page.scrollIntoViewIfNeeded({
+              behavior: "smooth",
+              block: "nearest",
+              inline: "center",
+            });
+          else
+            active_page.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+              inline: "center",
+            });
+      });
+    },
+  },
   computed: {
     preview_zoom() {
       return this.calculateZoomToFit({
@@ -440,7 +471,10 @@ export default {
 }
 
 ._spreadNavigator {
-  overflow: auto;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+
   @include scrollbar(8px, 5px, 6px);
 }
 
@@ -448,11 +482,15 @@ export default {
 }
 
 ._spreadNavigator--content {
+  padding-left: var(--pagemenu-width);
+
+  width: 100%;
+  height: 100%;
+  // padding: calc(var(--spacing) * 1);
+}
+._pageCont {
   display: flex;
   flex-flow: row nowrap;
-
-  padding-left: var(--pagemenu-width);
-  // padding: calc(var(--spacing) * 1);
 }
 
 ._spreadNavigator--page {
@@ -546,7 +584,7 @@ export default {
   left: 0;
   top: 0;
   z-index: 10;
-  height: 100%;
+  max-height: 100%;
   // padding-right: calc(var(--spacing) / 2);
   overflow: auto;
   // pointer-events: none;

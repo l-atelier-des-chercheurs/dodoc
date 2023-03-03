@@ -4,6 +4,7 @@
     :class="{
       'has--multiplePanes': can_edit_project,
     }"
+    @click="scrollToPanes"
   >
     <splitpanes watch-slots :dbl-click-splitter="false" @resized="resized">
       <template v-if="projectpanes.length === 0">
@@ -129,6 +130,13 @@ export default {
     },
   },
   methods: {
+    scrollToPanes() {
+      this.$el.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+    },
     setItem(pane, prop, $event) {
       if (
         (Object.prototype.hasOwnProperty.call(pane, prop) &&
@@ -140,11 +148,7 @@ export default {
     },
     closeInstructions() {
       this.show_instructions = false;
-      this.$el.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
-      });
+      this.scrollToPanes();
     },
     resized(_projectpanessizes) {
       console.log(`Project / methods: resized`);
