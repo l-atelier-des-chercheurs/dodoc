@@ -529,7 +529,7 @@ export default {
   padding: calc(var(--spacing) / 2);
 
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 
   > * {
     // background: white;
