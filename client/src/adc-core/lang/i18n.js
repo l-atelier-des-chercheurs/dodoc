@@ -241,7 +241,7 @@ export default function () {
         show_grid: "Afficher la grille",
         snap_to_grid: "Magnétisme de la grille",
         gridstep: "Pas de la grille",
-        zoom: "Zoom",
+        scale: "Échelle",
         list_of_medias: "Liste des médias",
         list_of_medias_instr:
           "Cette liste recense tous les médias présents sur cette page. Cliquez sur l’un d’eux pour afficher son emplacement et ses propriétés.",

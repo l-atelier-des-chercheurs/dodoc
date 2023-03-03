@@ -67,7 +67,7 @@
             :publimodule="publimodule"
             :magnification="magnification"
             :gridstep="show_grid && snap_to_grid ? gridstep : 1"
-            :zoom="zoom"
+            :scale="scale"
             :can_edit="can_edit"
             :is_active="active_module.$path === publimodule.$path"
           />
@@ -151,6 +151,7 @@ export default {
     page_height: Number,
     page_color: String,
     zoom: { type: Number, default: 1 },
+    scale: { type: Number, default: 1 },
     show_grid: Boolean,
     snap_to_grid: Boolean,
     gridstep_in_cm: Number,

@@ -219,7 +219,7 @@ new Vue({
     default_new_module_width: 5,
     default_new_module_height: 5,
 
-    page_magnification: 50,
+    page_magnification: 35,
 
     window: {
       innerWidth: window.innerWidth,

@@ -28,7 +28,7 @@
     :handlerSize="15"
     :grid="grid"
     :id="publimodule.$path"
-    :zoom="zoom"
+    :zoom="scale"
     :style="module_z_index"
     @dragend="dragEnd"
     @resizestart="resizeStart"
@@ -95,7 +95,7 @@ export default {
     can_edit: Boolean,
     magnification: Number,
     gridstep: Number,
-    zoom: Number,
+    scale: Number,
     is_active: Boolean,
   },
   components: {
@@ -473,6 +473,12 @@ export default {
     }
     .plyr__poster {
       background-size: var(--object-fit, cover);
+      background-position: center;
+      background-color: transparent;
+    }
+    .plyr--video,
+    .plyr__video-wrapper {
+      background-color: transparent;
     }
 
     .plyr__video-wrapper video {

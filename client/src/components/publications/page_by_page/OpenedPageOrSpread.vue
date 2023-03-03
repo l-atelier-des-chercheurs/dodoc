@@ -128,7 +128,7 @@
                 :can_edit="can_edit"
                 :page_number="page_number"
                 :active_spread_index="active_spread_index"
-                :zoom="scale"
+                :scale="scale"
                 :show_grid.sync="show_grid"
                 :snap_to_grid.sync="snap_to_grid"
                 :gridstep_in_cm.sync="gridstep_in_cm"
@@ -138,7 +138,7 @@
                 :page_modules="getModulesForPage(page_opened_id)"
                 :active_module="active_module"
                 @updatePageOptions="$emit('updatePageOptions', $event)"
-                @update:zoom="updateScale($event)"
+                @update:scale="updateScale($event)"
               />
             </div>
           </div>
@@ -153,7 +153,7 @@
               :page_width="page_width"
               :page_height="page_height"
               :page_color="current_page.page_color"
-              :zoom="scale"
+              :scale="scale"
               :show_grid="show_grid"
               :snap_to_grid="snap_to_grid"
               :gridstep_in_cm="gridstep_in_cm"
@@ -183,7 +183,7 @@
                   :page_width="page_width"
                   :page_height="page_height"
                   :page_color="page.page_color"
-                  :zoom="scale"
+                  :scale="scale"
                   :show_grid="show_grid"
                   :snap_to_grid="snap_to_grid"
                   :gridstep_in_cm="gridstep_in_cm"
