@@ -491,6 +491,9 @@ export default {
 ._pageCont {
   display: flex;
   flex-flow: row nowrap;
+  width: max-content;
+
+  border: 1px solid black;
 }
 
 ._spreadNavigator--page {
