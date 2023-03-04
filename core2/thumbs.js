@@ -362,10 +362,13 @@ module.exports = (function () {
       resolutions,
     });
 
+    const format =
+      path.parse(media_filename).ext?.toLowerCase() === ".png" ? "png" : "jpeg";
+
     let thumb_paths = {};
 
     for (const resolution of resolutions) {
-      let thumb_name = `${media_filename}.${resolution}.jpeg`;
+      let thumb_name = `${media_filename}.${resolution}.${format}`;
       const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
       const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
 
@@ -375,6 +378,7 @@ module.exports = (function () {
           full_path: full_media_path,
           new_path: full_path_to_thumb,
           resolution,
+          format,
         });
         dev.log(`--> made thumb`);
       }
