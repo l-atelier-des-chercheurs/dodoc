@@ -478,6 +478,9 @@
               "outline_width": {
                 "type": "number"
               },
+              "border_radius": {
+                "type": "number"
+              },
               "locked": {
                 "type": "boolean"
               },

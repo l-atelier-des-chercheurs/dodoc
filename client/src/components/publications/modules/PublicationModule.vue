@@ -207,6 +207,8 @@
             width="100"
             height="100"
             vector-effect="non-scaling-stroke"
+            :rx="publimodule.border_radius || 0"
+            :ry="publimodule.border_radius || 0"
           />
           <line
             v-else-if="publimodule.module_type === 'line'"
@@ -456,6 +458,8 @@ export default {
     ._content,
     svg {
       overflow: visible;
+      stroke-linejoin: bevel;
+      stroke-linecap: round;
     }
     svg {
       width: 100%;
