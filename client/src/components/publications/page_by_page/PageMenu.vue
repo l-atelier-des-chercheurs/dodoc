@@ -294,6 +294,19 @@
             :suffix="'mm'"
             @save="updateMediaPubliMeta({ margins: $event / 10 })"
           />
+
+          <RangeValueInput
+            class="u-spacingBottom"
+            :label="$t('border_radius')"
+            :value="active_module.border_radius * 10"
+            :min="0"
+            :max="50"
+            :step="1"
+            :default_value="0"
+            :suffix="'mm'"
+            @save="updateMediaPubliMeta({ border_radius: $event / 10 })"
+          />
+
           <RangeValueInput
             class="u-spacingBottom"
             :label="$t('opacity')"

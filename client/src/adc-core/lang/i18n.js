@@ -181,6 +181,7 @@ export default function () {
         bottom: "En bas",
         margins_inside: "Petit fond",
         margins_outside: "Grand fond",
+        border_radius: "Coins arrondis",
         photo: "Photo",
         remove_this_image: "Supprimer cette image",
         erase: "Effacer",

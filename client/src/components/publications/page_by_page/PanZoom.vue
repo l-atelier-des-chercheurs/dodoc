@@ -4,6 +4,8 @@
   </div>
 </template>
 <script>
+import Panzoom from "@panzoom/panzoom";
+
 export default {
   props: {
     scale: Number,
@@ -12,6 +14,8 @@ export default {
   data() {
     return {
       panzoom: undefined,
+
+      debounce_zoom: undefined,
     };
   },
   created() {},
@@ -29,7 +33,7 @@ export default {
       if (!e.ctrlKey) return;
       this.panzoom.zoomWithWheel(e);
     });
-    this.$el.addEventListener("panzoomzoom", this.panzoomend);
+    this.$el.addEventListener("panzoomzoom", this.panzoomzoom);
   },
   beforeDestroy() {},
   watch: {
@@ -39,12 +43,15 @@ export default {
   },
   computed: {},
   methods: {
-    panzoomend($event) {
-      if ($event.detail.scale !== this.scale)
-        this.$emit("update:scale", $event.detail.scale);
+    panzoomzoom($event) {
+      if (this.debounce_zoom) clearTimeout(this.debounce_zoom);
+
+      this.debounce_zoom = setTimeout(async () => {
+        if ($event.detail.scale !== this.scale)
+          this.$emit("update:scale", $event.detail.scale);
+      }, 500);
     },
     updateScale(scale) {
-      debugger;
       if (scale !== this.panzoom.getScale()) {
         this.panzoom.zoom(scale, { animate: true });
       }

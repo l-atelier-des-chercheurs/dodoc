@@ -178,37 +178,19 @@ export default {
       `;
     },
     module_styles() {
-      let styles = {};
-
-      styles.fontSize = (this.publimodule.text_size || 100) + "%";
-      styles.padding = (this.turnCMtoPX(this.publimodule.margins) || 0) + "px";
-      styles.opacity = this.publimodule.opacity || 1;
-      if (
-        ["ellipsis", "rectangle", "line", "arrow"].includes(
-          this.publimodule.module_type
-        )
-      )
-        styles.fill = this.publimodule.background_color || "transparent";
-      else
-        styles.backgroundColor =
-          this.publimodule.background_color || "transparent";
-
-      if (
-        ["ellipsis", "rectangle", "line", "arrow"].includes(
-          this.publimodule.module_type
-        )
-      ) {
-        styles.stroke = this.publimodule.outline_color || "black";
-        styles.strokeWidth =
-          (this.turnCMtoPX(this.publimodule.outline_width) || 0) + "px";
-      } else {
-        styles.outlineColor = this.publimodule.outline_color || "black";
-        styles.outlineWidth =
-          (this.turnCMtoPX(this.publimodule.outline_width) || 0) + "px";
-        styles.outlineStyle = "solid";
-      }
-
-      return styles;
+      return {
+        "--set-fontSize": (this.publimodule.text_size || 100) + "%",
+        "--set-margins":
+          (this.turnCMtoPX(this.publimodule.margins) || 0) + "px",
+        "--set-opacity": this.publimodule.opacity || 1,
+        "--set-borderRadius":
+          (this.turnCMtoPX(this.publimodule.border_radius) || 0) + "px",
+        "--set-backgroundColor":
+          this.publimodule.background_color || "transparent",
+        "--set-outlineColor": this.publimodule.outline_color || "black",
+        "--set-outlineWidth":
+          (this.turnCMtoPX(this.publimodule.outline_width) || 0) + "px",
+      };
     },
   },
   methods: {
@@ -488,6 +470,42 @@ export default {
     .plyr--video {
       min-width: 50px;
     }
+  }
+}
+
+// custom props
+._moveableItem ::v-deep {
+  ._publicationModule:not(.is--shape) {
+    // border-radius: var(--set-borderRadius);
+    // overflow: hidden;
+    // outline-color: var(--set-outlineColor);
+    // outline-width: var(--set-outlineWidth);
+    // outline-style: solid;
+
+    .ql-editor {
+      font-size: var(--set-fontSize);
+    }
+    .ql-editor,
+    ._mediaContent--image,
+    ._mediaContent[data-filetype="video"],
+    ._mediaContent[data-filetype="audio"] {
+      padding: var(--set-margins);
+      opacity: var(--set-opacity);
+      background: var(--set-backgroundColor);
+
+      border-radius: var(--set-borderRadius);
+      overflow: hidden;
+
+      border-color: var(--set-outlineColor);
+      border-width: var(--set-outlineWidth);
+      border-style: solid;
+    }
+  }
+
+  ._publicationModule.is--shape {
+    fill: var(--set-backgroundColor);
+    stroke: var(--set-outlineColor);
+    stroke-width: var(--set-outlineWidth);
   }
 }
 

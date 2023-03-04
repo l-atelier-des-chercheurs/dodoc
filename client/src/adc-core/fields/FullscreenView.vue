@@ -12,6 +12,8 @@
   </div>
 </template>
 <script>
+import screenfull from "screenfull";
+
 export default {
   props: {
     image_src: String,
@@ -22,33 +24,25 @@ export default {
       show_img: false,
     };
   },
-  created() {
-    document.addEventListener("fullscreenchange", this.detectFullScreen);
-  },
+  created() {},
   mounted() {
     this.openFs();
     this.$nextTick(() => {
       this.show_img = true;
     });
   },
-  beforeDestroy() {
-    document.removeEventListener("fullscreenchange", this.detectFullScreen);
-  },
+  beforeDestroy() {},
   watch: {},
   computed: {},
   methods: {
-    detectFullScreen() {
-      // if (document.fullscreenElement) this.is_fullscreen = true;
-      // else this.is_fullscreen = false;
-      if (!document.fullscreenElement) this.$emit("close");
+    async openFs() {
+      await screenfull.request(this.$el);
+      screenfull.onchange(() => {
+        if (!screenfull.isFullscreen) this.$emit("close");
+      });
     },
-
-    openFs() {
-      this.$el.requestFullscreen().catch((err) => err);
-    },
-    closeFs() {
-      document.exitFullscreen();
-      this.$emit("close");
+    async closeFs() {
+      await screenfull.exit();
     },
   },
 };
