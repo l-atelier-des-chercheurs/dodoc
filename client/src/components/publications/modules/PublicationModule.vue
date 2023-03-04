@@ -207,8 +207,8 @@
             width="100"
             height="100"
             vector-effect="non-scaling-stroke"
-            :rx="publimodule.border_radius || 0"
-            :ry="publimodule.border_radius || 0"
+            :rx="borderRadius / 2 || 0"
+            :ry="borderRadius / 2 || 0"
           />
           <line
             v-else-if="publimodule.module_type === 'line'"
@@ -274,6 +274,7 @@ export default {
     publimodule: Object,
     module_position: String,
     can_edit: Boolean,
+    borderRadius: Number,
     context: String,
     number_of_max_medias: {
       type: [Boolean, Number],

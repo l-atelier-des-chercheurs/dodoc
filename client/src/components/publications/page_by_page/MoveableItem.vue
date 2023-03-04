@@ -40,6 +40,7 @@
         class="_moveableItem--content"
         :publimodule="publimodule"
         :can_edit="can_edit && is_active"
+        :borderRadius="turnCMtoPX(publimodule.border_radius) || 0"
         :context="'page_by_page'"
         :number_of_max_medias="1"
         @duplicate="onDuplicateModule"
