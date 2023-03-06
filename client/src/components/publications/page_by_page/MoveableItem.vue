@@ -486,11 +486,11 @@ export default {
     ._mediaContent[data-filetype="audio"] {
       padding: var(--set-margins);
       opacity: var(--set-opacity);
-      background: var(--set-backgroundColor);
 
       border-radius: var(--set-borderRadius);
       overflow: hidden;
 
+      background: var(--set-backgroundColor);
       border-color: var(--set-outlineColor);
       border-width: var(--set-outlineWidth);
       border-style: solid;
@@ -498,6 +498,9 @@ export default {
   }
 
   ._publicationModule.is--shape {
+    padding: var(--set-margins);
+    opacity: var(--set-opacity);
+
     fill: var(--set-backgroundColor);
     stroke: var(--set-outlineColor);
     stroke-width: var(--set-outlineWidth);
