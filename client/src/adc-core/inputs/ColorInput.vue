@@ -1,76 +1,78 @@
 <template>
-  <div class="_numberInput">
-    <DLabel v-if="label" :str="label" :for="label" />
-
-    <!-- <transition name="fade" mode="out-in"> -->
-    <div class="_defaultColors">
-      <div
-        v-for="color in default_colors"
-        class="_defaultColors--item"
-        :key="color"
-        :style="`--default-color: ${color}`"
-        @click="$emit('save', color)"
-      >
-        <span
-          class="_colorPatch"
-          :class="{
-            'is--active': color === local_value,
-          }"
-        />
-      </div>
-    </div>
-    <div class="u-sameRow" :key="'value-' + value">
-      <div
-        class="_inputField"
-        :class="{
-          'has--novalue': local_value === '',
-        }"
-      >
-        <label
-          :for="'_input_' + label"
-          class="u-sameRow _inputField--label"
-          :style="`--current-color: ${local_value}`"
+  <div class="_colorInput">
+    <ToggledSection
+      class="u-spacingBottom"
+      :label="label"
+      :content.sync="show_color_input"
+    >
+      <div class="_defaultColors">
+        <div
+          v-for="color in default_colors"
+          class="_defaultColors--item"
+          :key="color"
+          :style="`--default-color: ${color}`"
+          @click="$emit('save', color)"
         >
-          <small>{{ $t("custom_color") }}</small>
-          <span class="_colorPatch" />
-        </label>
-        <input
-          visi
-          ref="field"
-          type="color"
-          :name="label"
-          :id="'_input_' + label"
-          v-model="local_value"
-        />
+          <span
+            class="_colorPatch"
+            :class="{
+              'is--active': color === local_value,
+            }"
+          />
+        </div>
+      </div>
+      <div class="u-sameRow" :key="'value-' + value">
+        <div
+          class="_inputField"
+          :class="{
+            'has--novalue': local_value === '',
+          }"
+        >
+          <label
+            :for="'_input_' + label"
+            class="u-sameRow _inputField--label"
+            :style="`--current-color: ${local_value}`"
+          >
+            <small>{{ $t("custom_color") }}</small>
+            <span class="_colorPatch" />
+          </label>
+          <input
+            visi
+            ref="field"
+            type="color"
+            :name="label"
+            :id="'_input_' + label"
+            v-model="local_value"
+          />
+        </div>
+
+        <transition name="popUp_slow">
+          <button
+            type="button"
+            v-if="value !== local_value"
+            class="u-button u-button_bleuvert _submitBtn"
+            @click="$emit('save', local_value)"
+          >
+            <sl-icon
+              style="font-size: 1.5em"
+              name="check"
+              :label="$t('submit')"
+            />
+          </button>
+        </transition>
       </div>
 
-      <transition name="popUp_slow">
+      <!-- <div class="u-defaultValue" v-if="value !== default_value.value">
+        {{ $t("default_value") }} =
         <button
           type="button"
-          v-if="value !== local_value"
-          class="u-button u-button_bleuvert _submitBtn"
-          @click="$emit('save', local_value)"
+          class="u-button u-button_bleumarine u-button_small"
+          @click="$emit('save', default_value.value)"
         >
-          <sl-icon
-            style="font-size: 1.5em"
-            name="check"
-            :label="$t('submit')"
-          />
+          {{ $t(default_value.label_untranslated) }}
         </button>
-      </transition>
-    </div>
-    <!-- </transition> -->
-
-    <div class="u-defaultValue" v-if="value !== default_value.value">
-      {{ $t("default_value") }} =
-      <button
-        type="button"
-        class="u-button u-button_bleumarine u-button_small"
-        @click="$emit('save', default_value.value)"
-      >
-        {{ $t(default_value.label_untranslated) }}
-      </button>
-    </div>
+      </div> -->
+    </ToggledSection>
   </div>
 </template>
 <script>
@@ -88,6 +90,8 @@ export default {
   components: {},
   data() {
     return {
+      show_color_input: this.value ? true : false,
+
       local_value: this.value || this.default_value.value,
 
       default_colors: [
@@ -108,6 +112,9 @@ export default {
   watch: {
     value() {
       this.local_value = this.value;
+    },
+    show_color_input() {
+      if (!this.show_color_input) this.$emit("save", this.default_value.value);
     },
   },
   computed: {},

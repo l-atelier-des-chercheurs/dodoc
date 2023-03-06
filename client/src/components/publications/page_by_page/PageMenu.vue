@@ -55,14 +55,13 @@
             </div>
 
             <div class="" v-if="can_edit">
-              <ToggleInput
+              <ToggledSection
+                v-if="can_edit"
                 class="u-spacingBottom"
-                :content="show_grid"
                 :label="$t('show_grid')"
+                :content="show_grid"
                 @update:content="$emit('update:show_grid', $event)"
-              />
-
-              <div v-if="show_grid && can_edit">
+              >
                 <RangeValueInput
                   :label="$t('gridstep')"
                   :value="gridstep_in_cm * 10"
@@ -81,7 +80,7 @@
                   :label="$t('snap_to_grid')"
                   @update:content="$emit('update:snap_to_grid', $event)"
                 />
-              </div>
+              </ToggledSection>
             </div>
             <div class="" v-if="can_edit">
               <ColorInput
@@ -226,14 +225,14 @@
           <div class="u-sameRow">
             <NumberInput
               class="u-spacingBottom"
-              :label="$t('position') + '↔'"
+              :label="$t('position') + '→'"
               :value="active_module.x"
               :suffix="'cm'"
               @save="updateMediaPubliMeta({ x: $event })"
             />
             <NumberInput
               class="u-spacingBottom"
-              :label="$t('position') + '↕'"
+              :label="$t('position') + '↓'"
               :value="active_module.y"
               :suffix="'cm'"
               @save="updateMediaPubliMeta({ y: $event })"
@@ -243,7 +242,7 @@
           <div class="u-sameRow">
             <NumberInput
               class="u-spacingBottom"
-              :label="$t('width')"
+              :label="$t('width') + '↔'"
               :value="active_module.width"
               :min="0"
               :suffix="'cm'"
@@ -251,7 +250,7 @@
             />
             <NumberInput
               class="u-spacingBottom"
-              :label="$t('height')"
+              :label="$t('height') + '↕'"
               :value="active_module.height"
               :min="0"
               :suffix="'cm'"
