@@ -368,11 +368,11 @@ export default {
         });
     },
     enableEditForText() {
-      this.$el.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "nearest",
-      });
+      // this.$el.scrollIntoView({
+      //   behavior: "smooth",
+      //   block: "center",
+      //   inline: "nearest",
+      // });
       this.$nextTick(() => {
         if (this.$refs.textBloc) this.$refs.textBloc.enableEditor();
       });

@@ -500,6 +500,9 @@ export default {
     },
     setActive(path) {
       this.$eventHub.$emit(`module.setActive`, path);
+      this.$nextTick(() => {
+        this.$eventHub.$emit(`module.panTo.${path}`);
+      });
     },
     async updateMediaPubliMeta(val) {
       if (!this.active_module) return;

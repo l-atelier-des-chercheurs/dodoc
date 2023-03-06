@@ -14,7 +14,7 @@
     >
       <div
         class="_content"
-        @mousedown.self="$eventHub.$emit('module.setActive', false)"
+        @click.self="$eventHub.$emit('module.setActive', false)"
       >
         <svg
           v-if="can_edit && show_grid"

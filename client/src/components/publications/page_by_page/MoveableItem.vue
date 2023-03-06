@@ -122,13 +122,15 @@ export default {
   mounted() {
     console.log(`MoveableItem / mounted ${this.publimodule.$path}`);
 
+    this.$eventHub.$on(`module.panTo.${this.publimodule.$path}`, this.panTo);
     this.$eventHub.$on(
       `module.enable_edit.${this.module_meta_filename}`,
       this.setActive
     );
   },
   beforeDestroy() {
-    this.$eventHub.$on(
+    this.$eventHub.$off(`module.panTo.${this.publimodule.$path}`, this.panTo);
+    this.$eventHub.$off(
       `module.enable_edit.${this.module_meta_filename}`,
       this.setActive
     );
@@ -149,20 +151,6 @@ export default {
     is_active() {
       if (!this.is_active) {
         this.contentIsNotEdited();
-      } else {
-        // scroll into view
-        if (this.$el.scrollIntoViewIfNeeded)
-          this.$el.scrollIntoViewIfNeeded({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "center",
-          });
-        else
-          this.$el.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "center",
-          });
       }
     },
   },
@@ -304,6 +292,12 @@ export default {
 
       await this.updateModuleMeta({
         new_meta,
+      });
+    },
+    panTo() {
+      this.$eventHub.$emit(`panzoom.panTo`, {
+        x: this.transform.x,
+        y: this.transform.y,
       });
     },
     setActive($event) {

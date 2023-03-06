@@ -142,70 +142,70 @@
               />
             </div>
           </div>
-          <PanZoom
-            :scale.sync="scale"
-            class="_pageCont"
-            @startPan="setActiveModule(false)"
-          >
-            <SinglePage
-              v-if="!is_spread"
-              class="_spreadNavigator--page is--active"
-              :context="'full'"
-              :publication_path="publication_path"
-              :page_modules="getModulesForPage(page_opened_id)"
-              :page_width="page_width"
-              :page_height="page_height"
-              :page_color="current_page.page_color"
-              :scale="scale"
-              :show_grid="show_grid"
-              :snap_to_grid="snap_to_grid"
-              :gridstep_in_cm="gridstep_in_cm"
-              :margins="margins"
-              :active_module="active_module"
-              :can_edit="can_edit"
-              @close="setPageActive(false)"
-            />
-
-            <div
-              v-else
-              v-for="(page, index) in active_spread"
-              :key="page.id ? page.id : index"
-              class="_spreadNavigator--page"
-              :class="{
-                'is--active': page.id === page_opened_id,
-                'is--left': index === 0,
-                'is--right': index === 1,
-              }"
-              @click.self="setActiveModule(false)"
-            >
-              <template v-if="page">
+          <div class="">
+            <PanZoom :scale.sync="scale">
+              <div class="_pageCont">
                 <SinglePage
+                  v-if="!is_spread"
+                  class="_spreadNavigator--page is--active"
                   :context="'full'"
                   :publication_path="publication_path"
-                  :page_modules="getModulesForPage(page.id)"
+                  :page_modules="getModulesForPage(page_opened_id)"
                   :page_width="page_width"
                   :page_height="page_height"
-                  :page_color="page.page_color"
+                  :page_color="current_page.page_color"
                   :scale="scale"
                   :show_grid="show_grid"
                   :snap_to_grid="snap_to_grid"
                   :gridstep_in_cm="gridstep_in_cm"
                   :margins="margins"
                   :active_module="active_module"
-                  :can_edit="can_edit && page.id === page_opened_id"
+                  :can_edit="can_edit"
                   @close="setPageActive(false)"
                 />
-                <template v-if="page.id !== page_opened_id">
-                  <button
-                    type="button"
-                    class="_openAdjacentPageBtn"
-                    @mousedown="setPageActive(page.id)"
-                  />
-                </template>
-              </template>
-              <div v-else class="_noPage" />
-            </div>
-          </PanZoom>
+
+                <div
+                  v-else
+                  v-for="(page, index) in active_spread"
+                  :key="page.id ? page.id : index"
+                  class="_spreadNavigator--page"
+                  :class="{
+                    'is--active': page.id === page_opened_id,
+                    'is--left': index === 0,
+                    'is--right': index === 1,
+                  }"
+                  @click.self="setActiveModule(false)"
+                >
+                  <template v-if="page">
+                    <SinglePage
+                      :context="'full'"
+                      :publication_path="publication_path"
+                      :page_modules="getModulesForPage(page.id)"
+                      :page_width="page_width"
+                      :page_height="page_height"
+                      :page_color="page.page_color"
+                      :scale="scale"
+                      :show_grid="show_grid"
+                      :snap_to_grid="snap_to_grid"
+                      :gridstep_in_cm="gridstep_in_cm"
+                      :margins="margins"
+                      :active_module="active_module"
+                      :can_edit="can_edit && page.id === page_opened_id"
+                      @close="setPageActive(false)"
+                    />
+                    <template v-if="page.id !== page_opened_id">
+                      <button
+                        type="button"
+                        class="_openAdjacentPageBtn"
+                        @mousedown="setPageActive(page.id)"
+                      />
+                    </template>
+                  </template>
+                  <div v-else class="_noPage" />
+                </div>
+              </div>
+            </PanZoom>
+          </div>
         </div>
       </div>
     </transition>
@@ -260,6 +260,8 @@ export default {
         const active_page = this.$el.querySelector(
           "._spreadNavigator--page.is--active"
         );
+
+        // todo replace with panzoom
         if (active_page)
           if (this.$el.scrollIntoViewIfNeeded)
             active_page.scrollIntoViewIfNeeded({
@@ -482,7 +484,7 @@ export default {
 }
 
 ._spreadNavigator--content {
-  padding-left: var(--pagemenu-width);
+  // padding-left: var(--pagemenu-width);
 
   width: 100%;
   height: 100%;
@@ -493,7 +495,7 @@ export default {
   flex-flow: row nowrap;
   width: max-content;
 
-  border: 1px solid black;
+  // border: 1px solid black;
 }
 
 ._spreadNavigator--page {
