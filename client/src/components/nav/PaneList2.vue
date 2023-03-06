@@ -300,6 +300,7 @@ export default {
   z-index: 100;
   width: 100%;
   min-height: 44px;
+  padding: calc(var(--spacing) / 4) 0;
   margin: 0 auto;
   background-color: #fff;
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
