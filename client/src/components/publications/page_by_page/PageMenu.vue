@@ -296,6 +296,12 @@
           />
 
           <RangeValueInput
+            v-if="
+              active_module.module_type !== 'ellipsis' &&
+              active_module.module_type !== 'line' &&
+              active_module.module_type !== 'arrow' &&
+              active_module.module_type !== 'text'
+            "
             class="u-spacingBottom"
             :label="$t('border_radius')"
             :value="active_module.border_radius * 10"
