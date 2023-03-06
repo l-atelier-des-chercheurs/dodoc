@@ -378,6 +378,11 @@ export default {
     // z-index: 1500;
   }
 
+  &.is--editable {
+    ::v-deep .u-floatingFsButton {
+      display: none;
+    }
+  }
   &.is--editable:not(.is--beingEdited):not(.is--locked) {
     cursor: pointer;
     cursor: -webkit-grab;
