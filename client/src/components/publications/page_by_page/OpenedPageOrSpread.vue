@@ -501,7 +501,7 @@ export default {
 ._spreadNavigator--page {
   position: relative;
   flex: 1 1 50%;
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 4);
 
   &.is--left {
     padding-right: 0;
