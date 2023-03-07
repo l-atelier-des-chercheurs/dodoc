@@ -196,8 +196,8 @@
                     <template v-if="page.id !== page_opened_id">
                       <button
                         type="button"
-                        class="_openAdjacentPageBtn"
-                        @mousedown="setPageActive(page.id)"
+                        class="_openAdjacentPageBtn panzoom-exclude"
+                        @mousedown.self="setPageActive(page.id)"
                       />
                     </template>
                   </template>
