@@ -5,17 +5,9 @@
       'is--preview': context === 'list',
       'is--editable': can_edit,
     }"
-    @click.self="$eventHub.$emit('module.setActive', false)"
   >
-    <div
-      class="_container"
-      :style="page_styles"
-      @click.self="$eventHub.$emit('module.setActive', false)"
-    >
-      <div
-        class="_content"
-        @click.self="$eventHub.$emit('module.setActive', false)"
-      >
+    <div class="_container" :style="page_styles">
+      <div class="_content">
         <svg
           v-if="can_edit && show_grid"
           class="_grid"
@@ -192,20 +184,6 @@ export default {
     magnify(m) {
       return m * this.magnification;
     },
-    // async updateMeta({ new_meta }) {
-    //   this.fetch_status = "pending";
-    //   this.fetch_error = null;
-    //   try {
-    //     this.response = await this.$api.updateMeta({
-    //       path: this.publication_path,
-    //       new_meta,
-    //     });
-    //     this.fetch_status = "success";
-    //   } catch (e) {
-    //     this.fetch_status = "error";
-    //     this.fetch_error = e.response.data;
-    //   }
-    // },
   },
 };
 </script>

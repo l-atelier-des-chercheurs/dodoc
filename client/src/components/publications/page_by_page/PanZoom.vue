@@ -37,6 +37,7 @@ export default {
       this.panzoom.zoomWithWheel(e);
     });
     this.$el.addEventListener("panzoomzoom", this.panzoomzoom);
+    this.$el.addEventListener("panzoomstart", this.panzoomstart);
     this.$el.addEventListener("panzoomend", this.panzoomend);
 
     this.$eventHub.$on(`panzoom.panTo`, this.panTo);
@@ -63,13 +64,29 @@ export default {
           this.$emit("update:scale", $event.detail.scale);
       }, 500);
     },
+    panzoomstart($event) {
+      this.start_pan_x = $event.detail.x;
+      this.start_pan_y = $event.detail.y;
+    },
     panzoomend($event) {
       $event.stopPropagation();
+
+      const min_pan_distance = 10;
+      const calcPanDist = (a, b) => Math.abs(a - b) < 10;
+
+      if (
+        calcPanDist(this.start_pan_x, $event.detail.x) &&
+        calcPanDist(this.start_pan_y, $event.detail.y)
+      )
+        this.disableActiveModule();
     },
     updateScale(scale) {
       if (scale !== this.panzoom.getScale()) {
         this.panzoom.zoom(scale, { animate: true });
       }
+    },
+    disableActiveModule() {
+      this.$eventHub.$emit("module.setActive", false);
     },
   },
 };
