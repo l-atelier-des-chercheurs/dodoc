@@ -241,6 +241,11 @@ export default {
     dragEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
+      if (
+        this.turnPXtoCM(transform.x) === this.turnPXtoCM(this.transform.x) &&
+        this.turnPXtoCM(transform.y) === this.turnPXtoCM(this.transform.y)
+      )
+        return false;
 
       // this.transform = transform;
       this.updateTransform(transform);
