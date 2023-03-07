@@ -32,7 +32,22 @@
               />
             </div>
             <div class="_label">
-              <b>{{ $t("page") }} {{ index + 1 }}</b>
+              <b class="">
+                {{ $t("page") }}
+              </b>
+              <NumberInput
+                :key="'page-' + index"
+                :value="index + 1"
+                :min="1"
+                :max="pages.length"
+                :step="1"
+                @save="
+                  movePage({
+                    old_position: index,
+                    new_position: $event - 1,
+                  })
+                "
+              />
               <RemoveMenu v-if="can_edit" @remove="removePage(page.id)" />
             </div>
           </div>
@@ -68,7 +83,20 @@
                   <!-- <div v-else>No preview</div> -->
                 </div>
                 <div class="_label">
-                  <b>{{ $t("page") }} {{ index * 2 + iindex }}</b>
+                  <b>{{ $t("page") }}</b>
+                  <NumberInput
+                    :key="'page-' + index * 2 + iindex"
+                    :value="index * 2 + iindex"
+                    :min="1"
+                    :max="spreads.length * 2"
+                    :step="1"
+                    @save="
+                      movePage({
+                        old_position: index * 2 + iindex - 1,
+                        new_position: $event - 1,
+                      })
+                    "
+                  />
                   <RemoveMenu v-if="can_edit" @remove="removePage(page.id)" />
                 </div>
               </template>
@@ -195,6 +223,31 @@ export default {
     removePage(id) {
       let pages = this.publication.pages.slice();
       pages = pages.filter((p) => p.id !== id);
+      this.updatePubliMeta({
+        pages,
+      });
+    },
+    movePage({ old_position, new_position }) {
+      old_position;
+      new_position;
+
+      let pages = this.publication.pages.slice();
+
+      function array_move(arr, old_index, new_index) {
+        if (new_index >= arr.length) {
+          var k = new_index - arr.length + 1;
+          while (k--) {
+            arr.push(undefined);
+          }
+        }
+        arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+        return arr; // for testing
+      }
+
+      debugger;
+
+      array_move(pages, old_position, new_position);
+
       this.updatePubliMeta({
         pages,
       });
