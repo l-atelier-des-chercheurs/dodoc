@@ -8,18 +8,14 @@
       <div class="_defaultColors">
         <div
           v-for="color in default_colors"
-          class="_defaultColors--item"
+          class="_colorPatch"
+          :class="{
+            'is--active': color === local_value,
+          }"
           :key="color"
-          :style="`--default-color: ${color}`"
+          :style="`--patch-color: ${color}`"
           @click="$emit('save', color)"
-        >
-          <span
-            class="_colorPatch"
-            :class="{
-              'is--active': color === local_value,
-            }"
-          />
-        </div>
+        ></div>
       </div>
       <div class="u-sameRow" :key="'value-' + value">
         <div
@@ -31,7 +27,7 @@
           <label
             :for="'_input_' + label"
             class="u-sameRow _inputField--label"
-            :style="`--current-color: ${local_value}`"
+            :style="`--patch-color: ${local_value}`"
           >
             <small>{{ $t("custom_color") }}</small>
             <span class="_colorPatch" />
@@ -136,18 +132,30 @@ export default {
 
 ._colorPatch {
   display: block;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
-  background-color: var(--default-color);
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0.3rem;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    display: block;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+    outline: 2px solid var(--c-gris) !important;
+    background-color: var(--patch-color);
+  }
 
   &:hover,
   &:focus-visible {
-    outline: 2px solid var(--c-gris_fonce) !important;
+    &::before {
+      outline: 2px solid var(--c-gris_fonce) !important;
+    }
   }
 
-  &.is--active {
+  &.is--active::before {
     outline: 2px solid var(--c-noir) !important;
   }
 }
@@ -157,10 +165,6 @@ export default {
 
   ._inputField--label {
     ._colorPatch {
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 4px;
-      background: var(--current-color);
     }
   }
 
