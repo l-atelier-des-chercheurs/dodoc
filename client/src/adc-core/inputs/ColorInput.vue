@@ -143,20 +143,23 @@ export default {
     border-radius: 50%;
     width: 100%;
     height: 100%;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
-    outline: 2px solid var(--c-gris) !important;
+    // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+    outline: 2px solid var(--c-gris);
     background-color: var(--patch-color);
   }
 
   &:hover,
   &:focus-visible {
     &::before {
-      outline: 2px solid var(--c-gris_fonce) !important;
+      outline-color: var(--active-color);
     }
   }
 
-  &.is--active::before {
-    outline: 2px solid var(--c-noir) !important;
+  &.is--active {
+    pointer-events: none;
+    &::before {
+      outline-color: var(--c-noir);
+    }
   }
 }
 
