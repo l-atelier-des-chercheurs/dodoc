@@ -72,7 +72,7 @@ export default {
   border-left: 2px solid var(--c-orange);
   margin-top: calc(var(--spacing) / 2 * -1);
   padding-top: calc(var(--spacing) / 2);
-  padding-left: calc(var(--spacing) / 1.5);
+  padding-left: calc(var(--spacing) / 2);
   margin-left: calc(var(--spacing) / 1.5);
 }
 </style>
