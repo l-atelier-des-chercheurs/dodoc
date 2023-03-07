@@ -93,6 +93,7 @@ export default {
       show_color_input: this.value ? true : false,
 
       local_value: this.value || this.default_value.value,
+      previous_value: undefined,
 
       default_colors: [
         "#000000",
@@ -111,10 +112,12 @@ export default {
   beforeDestroy() {},
   watch: {
     value() {
+      this.previous_value = this.local_value;
       this.local_value = this.value;
     },
     show_color_input() {
-      if (!this.show_color_input) this.$emit("save", this.default_value.value);
+      if (!this.show_color_input) this.$emit("save", this.default_value);
+      else this.$emit("save", this.previous_value);
     },
   },
   computed: {},

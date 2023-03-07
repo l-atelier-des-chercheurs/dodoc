@@ -67,6 +67,7 @@ export default {
     return {
       show_range_input: this.value ? true : false,
       local_value: this.value || this.default_value,
+      previous_value: undefined,
       steplist_id: `steplist_${(
         Math.random().toString(36) + "00000000000000000"
       ).slice(2, 3 + 5)}`,
@@ -77,10 +78,12 @@ export default {
   beforeDestroy() {},
   watch: {
     value() {
+      this.previous_value = this.local_value;
       this.local_value = this.value;
     },
     show_range_input() {
       if (!this.show_range_input) this.$emit("save", this.default_value);
+      else this.$emit("save", this.previous_value);
     },
   },
   computed: {},
