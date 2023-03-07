@@ -210,22 +210,43 @@ module.exports = (function () {
       });
     },
 
-    async makeImageFromPath({ full_path, new_path, resolution }) {
-      await sharp(full_path)
-        .rotate()
-        .resize(resolution, resolution, {
-          fit: "inside",
-          withoutEnlargement: true,
-        })
-        .flatten({ background: "white" })
-        .withMetadata()
-        .toFormat("jpeg", {
-          quality: global.settings.mediaThumbQuality,
-        })
-        .toFile(new_path)
-        .catch((err) => {
-          throw err;
-        });
+    async makeImageFromPath({
+      full_path,
+      new_path,
+      resolution,
+      format = "jpeg",
+    }) {
+      if (format === "png")
+        await sharp(full_path)
+          .rotate()
+          .resize(resolution, resolution, {
+            fit: "inside",
+            withoutEnlargement: true,
+          })
+          .withMetadata()
+          .toFormat("png", {
+            quality: global.settings.mediaThumbQuality,
+          })
+          .toFile(new_path)
+          .catch((err) => {
+            throw err;
+          });
+      else
+        await sharp(full_path)
+          .rotate()
+          .resize(resolution, resolution, {
+            fit: "inside",
+            withoutEnlargement: true,
+          })
+          .flatten({ background: "white" })
+          .withMetadata()
+          .toFormat("jpeg", {
+            quality: global.settings.mediaThumbQuality,
+          })
+          .toFile(new_path)
+          .catch((err) => {
+            throw err;
+          });
     },
     async convertAndCopyImage({ source, destination, resolution }) {
       await sharp(source)

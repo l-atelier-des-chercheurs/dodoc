@@ -55,14 +55,13 @@
             </div>
 
             <div class="" v-if="can_edit">
-              <ToggleInput
+              <ToggledSection
+                v-if="can_edit"
                 class="u-spacingBottom"
-                :content="show_grid"
                 :label="$t('show_grid')"
+                :content="show_grid"
                 @update:content="$emit('update:show_grid', $event)"
-              />
-
-              <div v-if="show_grid && can_edit">
+              >
                 <RangeValueInput
                   :label="$t('gridstep')"
                   :value="gridstep_in_cm * 10"
@@ -81,7 +80,7 @@
                   :label="$t('snap_to_grid')"
                   @update:content="$emit('update:snap_to_grid', $event)"
                 />
-              </div>
+              </ToggledSection>
             </div>
             <div class="" v-if="can_edit">
               <ColorInput
@@ -226,14 +225,14 @@
           <div class="u-sameRow">
             <NumberInput
               class="u-spacingBottom"
-              :label="$t('position') + '↔'"
+              :label="$t('position') + '→'"
               :value="active_module.x"
               :suffix="'cm'"
               @save="updateMediaPubliMeta({ x: $event })"
             />
             <NumberInput
               class="u-spacingBottom"
-              :label="$t('position') + '↕'"
+              :label="$t('position') + '↓'"
               :value="active_module.y"
               :suffix="'cm'"
               @save="updateMediaPubliMeta({ y: $event })"
@@ -243,7 +242,7 @@
           <div class="u-sameRow">
             <NumberInput
               class="u-spacingBottom"
-              :label="$t('width')"
+              :label="$t('width') + '↔'"
               :value="active_module.width"
               :min="0"
               :suffix="'cm'"
@@ -251,7 +250,7 @@
             />
             <NumberInput
               class="u-spacingBottom"
-              :label="$t('height')"
+              :label="$t('height') + '↕'"
               :value="active_module.height"
               :min="0"
               :suffix="'cm'"
@@ -296,6 +295,12 @@
           />
 
           <RangeValueInput
+            v-if="
+              active_module.module_type !== 'ellipsis' &&
+              active_module.module_type !== 'line' &&
+              active_module.module_type !== 'arrow' &&
+              active_module.module_type !== 'text'
+            "
             class="u-spacingBottom"
             :label="$t('border_radius')"
             :value="active_module.border_radius * 10"
@@ -311,10 +316,10 @@
             class="u-spacingBottom"
             :label="$t('opacity')"
             :value="Math.round(active_module.opacity * 100)"
-            :min="0"
+            :min="1"
             :max="100"
             :step="1"
-            :ticks="[0, 100]"
+            :ticks="[1, 100]"
             :default_value="100"
             :suffix="'%'"
             @save="updateMediaPubliMeta({ opacity: $event / 100 })"
@@ -323,7 +328,7 @@
             class="u-spacingBottom"
             :label="$t('background_color')"
             :value="active_module.background_color"
-            :default_value="{ label_untranslated: 'transparent', value: '' }"
+            :default_value="''"
             @save="updateMediaPubliMeta({ background_color: $event })"
           />
 
@@ -344,7 +349,7 @@
             class="u-spacingBottom"
             :label="$t('outline_color')"
             :value="active_module.outline_color"
-            :default_value="{ label_untranslated: 'black', value: '#000000' }"
+            :default_value="'#000000'"
             @save="updateMediaPubliMeta({ outline_color: $event })"
           />
 
@@ -500,6 +505,9 @@ export default {
     },
     setActive(path) {
       this.$eventHub.$emit(`module.setActive`, path);
+      this.$nextTick(() => {
+        this.$eventHub.$emit(`module.panTo.${path}`);
+      });
     },
     async updateMediaPubliMeta(val) {
       if (!this.active_module) return;

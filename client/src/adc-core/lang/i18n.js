@@ -162,6 +162,8 @@ export default function () {
         z_index: "Ordre d’empilement",
         move_to_front: "Premier-plan",
         move_to_back: "Arrière-plan",
+        fullscreen: "Plein-écran",
+        exit_fullscreen: "Quitter le plein-écran",
 
         opacity: "Opacité",
         page_spreads: "Pages en vis-à-vis",
@@ -541,8 +543,6 @@ export default function () {
       en: {
         hello: "hello world",
         edit: "edit",
-        fullscreen: "Plein-écran",
-        exit_fullscreen: "Quitter le plein-écran",
         caption: "caption",
         date_created: "created date",
         date_modified: "last edited",

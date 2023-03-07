@@ -14,28 +14,36 @@ export default {
   data() {
     return {
       panzoom: undefined,
-
       debounce_zoom: undefined,
     };
   },
   created() {},
-  mounted() {
+  async mounted() {
     /* eslint-disable */
     this.panzoom = Panzoom(this.$el, {
       maxScale: 5,
       step: 0.05,
-      handleStartEvent: () => {
-        this.$emit("startPan");
-      },
+      canvas: true,
+      // handleStartEvent: () => {
+      // this.$emit("startPan");
+      // },
     });
+    setTimeout(() => {
+      this.panzoom.pan(280, 50);
+    }, 100);
 
     this.$el.addEventListener("wheel", (e) => {
       if (!e.ctrlKey) return;
       this.panzoom.zoomWithWheel(e);
     });
     this.$el.addEventListener("panzoomzoom", this.panzoomzoom);
+    this.$el.addEventListener("panzoomend", this.panzoomend);
+
+    this.$eventHub.$on(`panzoom.panTo`, this.panTo);
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off(`panzoom.panTo`, this.panTo);
+  },
   watch: {
     scale() {
       this.updateScale(this.scale);
@@ -43,6 +51,10 @@ export default {
   },
   computed: {},
   methods: {
+    panTo({ x, y }) {
+      console.log(`panto ${x} - ${y}`);
+      this.panzoom.pan(-x + 280, -y, { animate: true });
+    },
     panzoomzoom($event) {
       if (this.debounce_zoom) clearTimeout(this.debounce_zoom);
 
@@ -50,6 +62,9 @@ export default {
         if ($event.detail.scale !== this.scale)
           this.$emit("update:scale", $event.detail.scale);
       }, 500);
+    },
+    panzoomend($event) {
+      $event.stopPropagation();
     },
     updateScale(scale) {
       if (scale !== this.panzoom.getScale()) {

@@ -83,6 +83,8 @@ Vue.component("ColorInput", ColorInput);
 
 import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
 Vue.component("ToggleInput", ToggleInput);
+import ToggledSection from "@/adc-core/inputs/ToggledSection.vue";
+Vue.component("ToggledSection", ToggledSection);
 import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
 Vue.component("RangeValueInput", RangeValueInput);
 import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";

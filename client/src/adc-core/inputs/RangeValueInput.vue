@@ -1,34 +1,37 @@
 <template>
   <div class="_rangeInput">
-    <DLabel v-if="label" :str="label" :for="label" />
+    <ToggledSection
+      class="u-spacingBottom"
+      :label="label"
+      :content.sync="show_range_input"
+    >
+      <div class="u-sameRow">
+        <input
+          type="range"
+          class="_inputRange"
+          :list="steplist_id"
+          :min="min"
+          :max="max"
+          :step="step"
+          v-model.number="local_value"
+          @change="$emit('save', +$event.target.value)"
+        />
+        <datalist :id="steplist_id" v-if="ticks">
+          <option v-for="tick in ticks" :key="tick">{{ tick }}</option>
+        </datalist>
 
-    <div class="u-sameRow">
-      <input
-        type="range"
-        class="_inputRange"
-        :list="steplist_id"
-        :min="min"
-        :max="max"
-        :step="step"
-        v-model.number="local_value"
-        @change="$emit('save', +$event.target.value)"
-      />
-      <datalist :id="steplist_id" v-if="ticks">
-        <option v-for="tick in ticks" :key="tick">{{ tick }}</option>
-      </datalist>
+        <NumberInput
+          :key="'value-' + value"
+          :value="local_value"
+          :min="min"
+          :step="step"
+          :suffix="suffix"
+          class="_numberField"
+          @save="$emit('save', $event)"
+        />
+      </div>
 
-      <NumberInput
-        :key="'value-' + value"
-        :value="local_value"
-        :min="min"
-        :step="step"
-        :suffix="suffix"
-        class="_numberField"
-        @save="$emit('save', $event)"
-      />
-    </div>
-
-    <div class="u-defaultValue" v-if="value !== default_value">
+      <!-- <div class="u-defaultValue" v-if="value !== default_value">
       {{ $t("default_value") }} =
       <button
         type="button"
@@ -37,7 +40,8 @@
       >
         {{ default_value }}
       </button>
-    </div>
+    </div> -->
+    </ToggledSection>
   </div>
 </template>
 <script>
@@ -61,6 +65,7 @@ export default {
   components: {},
   data() {
     return {
+      show_range_input: this.value ? true : false,
       local_value: this.value || this.default_value,
       steplist_id: `steplist_${(
         Math.random().toString(36) + "00000000000000000"
@@ -73,6 +78,9 @@ export default {
   watch: {
     value() {
       this.local_value = this.value;
+    },
+    show_range_input() {
+      if (!this.show_range_input) this.$emit("save", this.default_value);
     },
   },
   computed: {},

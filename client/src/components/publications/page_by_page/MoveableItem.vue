@@ -40,6 +40,7 @@
         class="_moveableItem--content"
         :publimodule="publimodule"
         :can_edit="can_edit && is_active"
+        :borderRadius="turnCMtoPX(publimodule.border_radius) || 0"
         :context="'page_by_page'"
         :number_of_max_medias="1"
         @duplicate="onDuplicateModule"
@@ -121,13 +122,15 @@ export default {
   mounted() {
     console.log(`MoveableItem / mounted ${this.publimodule.$path}`);
 
+    this.$eventHub.$on(`module.panTo.${this.publimodule.$path}`, this.panTo);
     this.$eventHub.$on(
       `module.enable_edit.${this.module_meta_filename}`,
       this.setActive
     );
   },
   beforeDestroy() {
-    this.$eventHub.$on(
+    this.$eventHub.$off(`module.panTo.${this.publimodule.$path}`, this.panTo);
+    this.$eventHub.$off(
       `module.enable_edit.${this.module_meta_filename}`,
       this.setActive
     );
@@ -148,20 +151,6 @@ export default {
     is_active() {
       if (!this.is_active) {
         this.contentIsNotEdited();
-      } else {
-        // scroll into view
-        if (this.$el.scrollIntoViewIfNeeded)
-          this.$el.scrollIntoViewIfNeeded({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "center",
-          });
-        else
-          this.$el.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "center",
-          });
       }
     },
   },
@@ -252,6 +241,11 @@ export default {
     dragEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
+      if (
+        this.turnPXtoCM(transform.x) === this.turnPXtoCM(this.transform.x) &&
+        this.turnPXtoCM(transform.y) === this.turnPXtoCM(this.transform.y)
+      )
+        return false;
 
       // this.transform = transform;
       this.updateTransform(transform);
@@ -303,6 +297,12 @@ export default {
 
       await this.updateModuleMeta({
         new_meta,
+      });
+    },
+    panTo() {
+      this.$eventHub.$emit(`panzoom.panTo`, {
+        x: this.transform.x,
+        y: this.transform.y,
       });
     },
     setActive($event) {
@@ -383,6 +383,11 @@ export default {
     // z-index: 1500;
   }
 
+  &.is--editable {
+    ::v-deep .u-floatingFsButton {
+      display: none;
+    }
+  }
   &.is--editable:not(.is--beingEdited):not(.is--locked) {
     cursor: pointer;
     cursor: -webkit-grab;
@@ -491,11 +496,11 @@ export default {
     ._mediaContent[data-filetype="audio"] {
       padding: var(--set-margins);
       opacity: var(--set-opacity);
-      background: var(--set-backgroundColor);
 
       border-radius: var(--set-borderRadius);
       overflow: hidden;
 
+      background: var(--set-backgroundColor);
       border-color: var(--set-outlineColor);
       border-width: var(--set-outlineWidth);
       border-style: solid;
@@ -503,6 +508,9 @@ export default {
   }
 
   ._publicationModule.is--shape {
+    padding: var(--set-margins);
+    opacity: var(--set-opacity);
+
     fill: var(--set-backgroundColor);
     stroke: var(--set-outlineColor);
     stroke-width: var(--set-outlineWidth);

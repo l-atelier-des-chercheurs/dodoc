@@ -14,8 +14,8 @@
       <label :for="id" class="u-label">{{ label }}</label>
     </div>
 
-    <div class="u-instructions" v-if="current_instruction">
-      <small>{{ current_instruction }}</small>
+    <div class="_toggled" v-if="content">
+      <slot />
     </div>
   </div>
 </template>
@@ -27,7 +27,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    options: Object,
     disabled: {
       type: Boolean,
       default: false,
@@ -46,12 +45,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    current_instruction() {
-      if (!this.options) return false;
-      return this.options[this.content.toString()];
-    },
-  },
+  computed: {},
   methods: {},
 };
 </script>
@@ -71,6 +65,14 @@ export default {
   margin-bottom: 0;
 }
 ._inputCb {
-  margin-right: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 4);
+}
+
+._toggled {
+  border-left: 2px solid var(--c-orange);
+  margin-top: calc(var(--spacing) / 2 * -1);
+  padding-top: calc(var(--spacing) / 2);
+  padding-left: calc(var(--spacing) / 2);
+  margin-left: calc(var(--spacing) / 1.5);
 }
 </style>
