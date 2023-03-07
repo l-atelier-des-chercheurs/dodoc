@@ -83,8 +83,8 @@ export default {
     },
     value: String,
     default_value: {
-      type: Object,
-      default: () => ({ label_untranslated: "white", value: "#ffffff" }),
+      type: String,
+      String: "#ffffff",
     },
   },
   components: {},

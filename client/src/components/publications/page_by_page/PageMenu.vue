@@ -328,7 +328,7 @@
             class="u-spacingBottom"
             :label="$t('background_color')"
             :value="active_module.background_color"
-            :default_value="{ label_untranslated: 'transparent', value: '' }"
+            :default_value="''"
             @save="updateMediaPubliMeta({ background_color: $event })"
           />
 
@@ -349,7 +349,7 @@
             class="u-spacingBottom"
             :label="$t('outline_color')"
             :value="active_module.outline_color"
-            :default_value="{ label_untranslated: 'black', value: '#000000' }"
+            :default_value="'#000000'"
             @save="updateMediaPubliMeta({ outline_color: $event })"
           />
 
