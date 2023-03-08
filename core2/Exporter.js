@@ -237,17 +237,21 @@ class Exporter {
         return reject(new Error(`page-timeout`));
       }, 10_000);
 
-      win.webContents.once("did-finish-load", () => {
+      win.webContents.once("did-finish-load", async () => {
         dev.logverbose("did-finish-load " + url);
+
+        await new Promise((r) => setTimeout(r, 1000));
 
         win.webContents
           .printToPDF({
+            // electron < 21
             marginsType: 1,
+            // electron >= 21
+            margins: { marginType: "none" },
             pageSize: {
-              width: (this.instructions.page_width || 21) * 1000,
-              height: (this.instructions.page_height || 29.7) * 1000,
+              width: (this.instructions.page_width * 10 || 210) * 1000,
+              height: (this.instructions.page_height * 10 || 297) * 1000,
             },
-            dpi: 300,
             printBackground: true,
             printSelectionOnly: false,
           })
