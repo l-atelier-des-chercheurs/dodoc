@@ -46,6 +46,7 @@
     "platform-folders": "^0.6.0",
     "portscanner": "^2.2.0",
     "pug": "^3.0.2",
+    "puppeteer": "^19.7.3",
     "rich-text": "^4.1.0",
     "sharedb": "^3.3.0",
     "sharedb-logger": "^0.1.4",

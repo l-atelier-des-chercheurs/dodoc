@@ -212,92 +212,57 @@ class Exporter {
     return full_path_to_folder_in_cache;
   }
 
-  _loadPageAndPrint() {
-    return new Promise(async (resolve, reject) => {
-      const url = global.appInfos.homeURL + "/" + this.path_to_folder;
+  async _loadPageAndPrint() {
+    const url = global.appInfos.homeURL + "/" + this.path_to_folder;
 
-      // open page https://localhost:8080/projects/hehe/publications/test-pages/
-      const { BrowserWindow } = require("electron");
+    const puppeteer = require("puppeteer");
 
-      const document_size = {
-        width: this.instructions.page_width * 10 || 210,
-        height: this.instructions.page_height * 10 || 297,
-      };
+    const document_size = {
+      width: this.instructions.page_width * 10 || 210,
+      height: this.instructions.page_height * 10 || 297,
+    };
 
-      let win = new BrowserWindow({
-        // width: 800,
-        // height: 800,
-        width: Math.floor(document_size.width * 3.78),
-        height: Math.floor(document_size.height * 3.78) + 25,
-        show: false,
-        webPreferences: {
-          contextIsolation: true,
-          allowRunningInsecureContent: true,
-        },
-      });
-      win.loadURL(url);
-      win.webContents.setAudioMuted(true);
+    // let page_timeout = setTimeout(() => {
+    //   clearTimeout(page_timeout);
+    //   dev.error(`page timeout for ${url}`);
+    //   win.close();
+    //   return reject(new Error(`page-timeout`));
+    // }, 10_000);
 
-      let page_timeout = setTimeout(() => {
-        clearTimeout(page_timeout);
-        dev.error(`page timeout for ${url}`);
-        win.close();
-        return reject(new Error(`page-timeout`));
-      }, 10_000);
-
-      win.webContents.once("did-finish-load", async () => {
-        dev.logverbose("did-finish-load " + url);
-
-        await new Promise((r) => setTimeout(r, 1000));
-
-        win.webContents
-          .printToPDF({
-            // electron < 21
-            marginsType: 1,
-            // electron >= 21
-            margins: { marginType: "none" },
-            pageSize: {
-              width: document_size.width * 1000,
-              height: document_size.height * 1000,
-            },
-            printBackground: true,
-            printSelectionOnly: false,
-          })
-          .then(async (data) => {
-            dev.logverbose("printed-to-pdf " + url);
-
-            win.close();
-
-            clearTimeout(page_timeout);
-
-            const full_path_to_folder_in_cache =
-              await utils.createFolderInCache("pdf");
-
-            const full_path_to_pdf = path.join(
-              full_path_to_folder_in_cache,
-              "temp.pdf"
-            );
-
-            await writeFileAtomic(full_path_to_pdf, data);
-            return resolve(full_path_to_pdf);
-          })
-          .catch((error) => {
-            win.close();
-            return reject(error);
-          });
-      });
-
-      win.webContents.once(
-        "did-fail-load",
-        (event, code, desc, url, isMainFrame) => {
-          dev.error(`Failed to load print pdf page ${url}`);
-          clearTimeout(page_timeout);
-          dev.error("did-fail-load: ", event, code, desc, url, isMainFrame);
-          win.close();
-          return reject(new Error(`did-fail-load`));
-        }
-      );
+    const browser = await puppeteer.launch({
+      headless: true,
+      ignoreHTTPSErrors: true,
+      args: ["--no-sandbox", "--font-render-hinting=none"],
     });
+    const page = await browser.newPage();
+    await page.goto(url);
+
+    // Set screen size
+    await page.setViewport({
+      width: Math.floor(document_size.width * 3.7795),
+      height: Math.floor(document_size.height * 3.7795), // totally arbitrary value… will have to find better
+      deviceScaleFactor: 2,
+    });
+
+    page.emulateMediaType("print");
+
+    await new Promise((r) => setTimeout(r, 1000));
+
+    const full_path_to_folder_in_cache = await utils.createFolderInCache("pdf");
+    const full_path_to_pdf = path.join(
+      full_path_to_folder_in_cache,
+      "temp.pdf"
+    );
+
+    await page.pdf({
+      path: full_path_to_pdf,
+      printBackground: true,
+      width: `${document_size.width}mm`,
+      height: `${document_size.height}mm`,
+    });
+    await browser.close();
+
+    return full_path_to_pdf;
     // print to pdf
   }
 }
