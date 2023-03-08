@@ -80,6 +80,11 @@ export default {
     value() {
       this.previous_value = this.local_value;
       this.local_value = this.value;
+
+      if (this.local_value !== this.default_value && !this.show_range_input) {
+        this.previous_value = this.local_value;
+        this.show_range_input = true;
+      }
     },
     show_range_input() {
       if (!this.show_range_input) this.$emit("save", this.default_value);
