@@ -445,7 +445,6 @@ export default function () {
           });
 
         const task_id = response.data.task_id;
-        this.$alertify.delay(4000).log(this.$t("compilation_started"));
         this.$api.join({ room: "task_" + task_id });
         // todo leave room when task ends
       },

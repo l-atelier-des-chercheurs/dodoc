@@ -10,7 +10,7 @@
       <div v-else-if="fetch_project_error" key="err">
         {{ fetch_project_error }}
       </div>
-      <div v-else key="project">
+      <div v-else key="publication" :style="page_size">
         <!-- Publication view project = {{ project }} <br />
         publication = {{ publication }} -->
         <div v-if="publication.template === 'page_by_page'" class="_pages">
@@ -18,8 +18,6 @@
             <SinglePage
               :context="'full'"
               :page_modules="getModulesForPage({ modules, page_id: page.id })"
-              :page_width="publication.page_width"
-              :page_height="publication.page_height"
               :page_color="page.page_color"
               :can_edit="false"
             />
@@ -51,6 +49,12 @@ export default {
     this.$eventHub.$emit("received.project", this.project);
 
     await this.listPublication();
+
+    document.body.style = `
+      --page-width: ${this.publication.page_width}cm;
+      --page-height: ${this.publication.page_height}cm;
+    `;
+
     // this.$api.join({ room: this.project.$path });
   },
   beforeDestroy() {
@@ -58,6 +62,16 @@ export default {
   },
   watch: {},
   computed: {
+    page_size() {
+      return `
+        --page-width: ${this.publication.page_width}cm;
+        --page-height: ${this.publication.page_height}cm;
+      `;
+      // return `
+      //   --page-width: ${this.publication.page_width}cm;
+      //   --page-height: ${this.publication.page_height}cm;
+      // `;
+    },
     project_path() {
       return `/projects/${this.$route.params.project_slug}`;
     },
@@ -98,18 +112,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._pages {
-  display: flex;
-  justify-content: center;
-  flex-flow: column nowrap;
-  align-items: center;
-  gap: calc(var(--spacing) * 2);
-
   @media screen {
+    display: flex;
+    justify-content: center;
+    flex-flow: column nowrap;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
     padding: calc(var(--spacing) * 2);
   }
 }
 ._page {
-  page-break-before: always;
   page-break-after: always;
   page-break-inside: avoid;
   -webkit-region-break-inside: avoid;
@@ -121,5 +133,16 @@ export default {
       margin: 0;
     }
   }
+}
+</style>
+<style lang="scss">
+body {
+  width: var(--page-width);
+  height: calc(var(--page-height) - 0.3mm);
+  overflow: hidden;
+  background-color: transparent;
+}
+@page {
+  size: var(--page-width) var(--page-height);
 }
 </style>

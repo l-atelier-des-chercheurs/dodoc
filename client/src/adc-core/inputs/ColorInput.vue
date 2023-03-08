@@ -88,7 +88,7 @@ export default {
     return {
       show_color_input: this.value ? true : false,
 
-      local_value: this.value || this.default_value.value,
+      local_value: this.value || this.default_value,
       previous_value: undefined,
 
       default_colors: [

@@ -171,12 +171,17 @@ export default {
       return this.$root.page_magnification;
     },
     page_styles() {
-      return `
-        --page-width: ${this.magnify(this.page_width)}px;
-        --page-height: ${this.magnify(this.page_height)}px;
-        --zoom: ${this.zoom};
-        --page-color: ${this.page_color || "#fff"};
-      `;
+      const props = {};
+
+      if (this.page_width && this.page_height) {
+        props["--page-width"] = `${this.magnify(this.page_width)}px`;
+        props["--page-height"] = `${this.magnify(this.page_height)}px`;
+      }
+
+      props["--zoom"] = this.zoom;
+      props["--page-color"] = this.page_color || "#fff";
+
+      return props;
     },
   },
   methods: {

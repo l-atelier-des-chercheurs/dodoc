@@ -112,6 +112,7 @@ export default {
           page_height: this.publication.page_height,
         },
       });
+      this.$alertify.delay(4000).log(this.$t("compilation_started"));
     },
     closeOnRemove({ path }) {
       if (path === this.publication.$path) {

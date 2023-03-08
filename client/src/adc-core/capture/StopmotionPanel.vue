@@ -416,6 +416,7 @@ export default {
           frame_rate: this.frame_rate,
         },
       });
+      this.$alertify.delay(4000).log(this.$t("compilation_started"));
 
       this.show_previous_photo = false;
       this.validating_video_preview = false;

@@ -218,9 +218,17 @@ class Exporter {
 
       // open page https://localhost:8080/projects/hehe/publications/test-pages/
       const { BrowserWindow } = require("electron");
+
+      const document_size = {
+        width: this.instructions.page_width * 10 || 210,
+        height: this.instructions.page_height * 10 || 297,
+      };
+
       let win = new BrowserWindow({
-        width: 800,
-        height: 800,
+        // width: 800,
+        // height: 800,
+        width: Math.floor(document_size.width * 3.78),
+        height: Math.floor(document_size.height * 3.78) + 25,
         show: false,
         webPreferences: {
           contextIsolation: true,
@@ -249,8 +257,8 @@ class Exporter {
             // electron >= 21
             margins: { marginType: "none" },
             pageSize: {
-              width: (this.instructions.page_width * 10 || 210) * 1000,
-              height: (this.instructions.page_height * 10 || 297) * 1000,
+              width: document_size.width * 1000,
+              height: document_size.height * 1000,
             },
             printBackground: true,
             printSelectionOnly: false,
