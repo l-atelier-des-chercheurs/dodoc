@@ -328,7 +328,7 @@
             class="u-spacingBottom"
             :label="$t('background_color')"
             :value="active_module.background_color"
-            :default_value="''"
+            :default_value="is_shape ? '#000000' : ''"
             @save="updateMediaPubliMeta({ background_color: $event })"
           />
 
@@ -443,6 +443,14 @@ export default {
     module_meta_filename() {
       return this.active_module.$path.substring(
         this.active_module.$path.lastIndexOf("/") + 1
+      );
+    },
+    is_shape() {
+      return (
+        this.active_module &&
+        ["ellipsis", "line", "arrow", "rectangle"].includes(
+          this.active_module.module_type
+        )
       );
     },
     new_module_meta() {

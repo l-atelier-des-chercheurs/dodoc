@@ -2,6 +2,7 @@ const path = require("path"),
   fs = require("fs-extra"),
   ffmpeg = require("fluent-ffmpeg"),
   pad = require("pad-left"),
+  writeFileAtomic = require("write-file-atomic"),
   { v4: uuidv4 } = require("uuid");
 
 const utils = require("./utils"),
@@ -27,31 +28,33 @@ class Exporter {
     this.path_to_folder = path_to_folder;
     this.path_to_parent_folder = path_to_parent_folder;
 
-    this.field = instructions.field;
-    this.frame_rate = instructions.frame_rate || 4;
+    this.instructions = instructions;
     this.status = "ready";
   }
 
   async start() {
     this.status = "started";
-    return await this._makeAndSaveStopmotionFrom();
-  }
-  abort() {
-    if (this.ffmpeg_cmd) this.ffmpeg_cmd.kill();
-    this.status = "aborted";
-  }
 
-  async _makeAndSaveStopmotionFrom() {
-    const images = await this._loadFilesInOrder();
-    const { full_path_to_new_video } = await this._createStopmotionFromImages({
-      images,
-    });
+    let full_path_to_file;
+    let desired_filename;
 
-    if (this.status === "aborted") throw new Error(`aborted`);
+    if (this.instructions.recipe === "stopmotion") {
+      full_path_to_file = await this._createStopmotionFromImages();
+      desired_filename = "stopmotion.mp4";
+    } else if (this.instructions.recipe === "pdf") {
+      full_path_to_file = await this._loadPageAndPrint();
+      desired_filename = "publication.pdf";
+    } else {
+      throw new Error(`recipe_handling_missing`);
+    }
 
-    const desired_filename = "stopmotion.mp4";
+    if (this.status === "aborted") {
+      // todo remove full_path_to_file
+      throw new Error(`aborted`);
+    }
+
     const meta_filename = await file.addFileToFolder({
-      full_path_to_file: full_path_to_new_video,
+      full_path_to_file,
       desired_filename,
       path_to_folder: this.path_to_parent_folder,
     });
@@ -63,6 +66,10 @@ class Exporter {
 
     return meta_filename;
   }
+  abort() {
+    if (this.ffmpeg_cmd) this.ffmpeg_cmd.kill();
+    this.status = "aborted";
+  }
 
   async _loadFilesInOrder() {
     const folder_meta = await folder.getFolder({
@@ -70,16 +77,17 @@ class Exporter {
     });
     const files = await file.getFiles({ path_to_folder: this.path_to_folder });
 
-    const list_of_metas_in_order = folder_meta[this.field];
+    const list_of_metas_in_order = folder_meta[this.instructions.field];
     const selected_files = list_of_metas_in_order.map((lf) =>
       files.find((f) => f.$path.endsWith("/" + lf))
     );
     return selected_files;
   }
 
-  _createStopmotionFromImages({ images }) {
+  _createStopmotionFromImages() {
     return new Promise(async (resolve, reject) => {
       // we need to copy all images to a temp folder with the right naming
+      const images = await this._loadFilesInOrder();
 
       this._notify({
         event: "ffmpeg_compilation_in_progress",
@@ -116,14 +124,16 @@ class Exporter {
         progress_percent: 10,
       });
 
+      const frame_rate = this.instructions.frame_rate || 4;
+
       this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
         .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
-        .inputFPS(this.frame_rate)
+        .inputFPS(frame_rate)
         .withVideoCodec("libx264")
         .withVideoBitrate("4000k")
         .input("anullsrc")
         .inputFormat("lavfi")
-        .duration(images.length / this.frame_rate)
+        .duration(images.length / frame_rate)
         .size(`${width}x${height}`)
         .outputFPS(30)
         .autopad()
@@ -135,7 +145,7 @@ class Exporter {
         .on("progress", (progress) => {
           // value from 0 to 100
           const adv =
-            (progress.frames / ((images.length / this.frame_rate) * 30)) * 100;
+            (progress.frames / ((images.length / frame_rate) * 30)) * 100;
           const progress_percent = Math.round(10 + adv * 0.85);
 
           this._notify({
@@ -152,7 +162,7 @@ class Exporter {
           });
 
           await _removeAllImages();
-          return resolve({ full_path_to_new_video });
+          return resolve(full_path_to_new_video);
         })
         .on("error", async (err, stdout, stderr) => {
           dev.error("An error happened: " + err.message);
@@ -178,14 +188,9 @@ class Exporter {
   }
 
   async _copyToCacheAndRenameImages({ images, resolution }) {
-    // generate random folder name
-    let folder_name =
-      "stopmotion_" +
-      +utils.getCurrentDate() +
-      "-" +
-      (Math.random().toString(36) + "00000000000000000").slice(2, 3 + 2);
-    let full_path_to_folder_in_cache = utils.getPathToCache(folder_name);
-    await fs.ensureDir(full_path_to_folder_in_cache);
+    let full_path_to_folder_in_cache = await utils.createFolderInCache(
+      "stopmotion"
+    );
 
     let index = 0;
 
@@ -205,6 +210,95 @@ class Exporter {
     }
 
     return full_path_to_folder_in_cache;
+  }
+
+  _loadPageAndPrint() {
+    return new Promise(async (resolve, reject) => {
+      const url = global.appInfos.homeURL + "/" + this.path_to_folder;
+
+      // open page https://localhost:8080/projects/hehe/publications/test-pages/
+      const { BrowserWindow } = require("electron");
+
+      const document_size = {
+        width: this.instructions.page_width * 10 || 210,
+        height: this.instructions.page_height * 10 || 297,
+      };
+
+      let win = new BrowserWindow({
+        // width: 800,
+        // height: 800,
+        width: Math.floor(document_size.width * 3.78),
+        height: Math.floor(document_size.height * 3.78) + 25,
+        show: false,
+        webPreferences: {
+          contextIsolation: true,
+          allowRunningInsecureContent: true,
+        },
+      });
+      win.loadURL(url);
+      win.webContents.setAudioMuted(true);
+
+      let page_timeout = setTimeout(() => {
+        clearTimeout(page_timeout);
+        dev.error(`page timeout for ${url}`);
+        win.close();
+        return reject(new Error(`page-timeout`));
+      }, 10_000);
+
+      win.webContents.once("did-finish-load", async () => {
+        dev.logverbose("did-finish-load " + url);
+
+        await new Promise((r) => setTimeout(r, 1000));
+
+        win.webContents
+          .printToPDF({
+            // electron < 21
+            marginsType: 1,
+            // electron >= 21
+            margins: { marginType: "none" },
+            pageSize: {
+              width: document_size.width * 1000,
+              height: document_size.height * 1000,
+            },
+            printBackground: true,
+            printSelectionOnly: false,
+          })
+          .then(async (data) => {
+            dev.logverbose("printed-to-pdf " + url);
+
+            win.close();
+
+            clearTimeout(page_timeout);
+
+            const full_path_to_folder_in_cache =
+              await utils.createFolderInCache("pdf");
+
+            const full_path_to_pdf = path.join(
+              full_path_to_folder_in_cache,
+              "temp.pdf"
+            );
+
+            await writeFileAtomic(full_path_to_pdf, data);
+            return resolve(full_path_to_pdf);
+          })
+          .catch((error) => {
+            win.close();
+            return reject(error);
+          });
+      });
+
+      win.webContents.once(
+        "did-fail-load",
+        (event, code, desc, url, isMainFrame) => {
+          dev.error(`Failed to load print pdf page ${url}`);
+          clearTimeout(page_timeout);
+          dev.error("did-fail-load: ", event, code, desc, url, isMainFrame);
+          win.close();
+          return reject(new Error(`did-fail-load`));
+        }
+      );
+    });
+    // print to pdf
   }
 }
 

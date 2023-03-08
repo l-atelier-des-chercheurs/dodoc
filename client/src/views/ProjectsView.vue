@@ -8,7 +8,7 @@
       <div class="">
         <router-link class="u-buttonLink" :to="`/`">
           <sl-icon name="arrow-left-short" />
-          {{ $root.app_infos.name_of_instance }}
+          {{ $root.app_infos.name_of_instance || $t("home") }}
           <!-- <sl-icon name="arrow-left-short" />{{ $t("general_informations") }} -->
         </router-link>
       </div>

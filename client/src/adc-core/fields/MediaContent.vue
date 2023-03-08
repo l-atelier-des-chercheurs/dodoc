@@ -39,7 +39,12 @@
       </template>
     </template>
     <template v-else-if="file.$type === 'pdf'">
-      <img :src="thumb" class="_mediaContent--image" />
+      <template v-if="context === 'preview'">
+        <img :src="thumb" class="_mediaContent--image" />
+      </template>
+      <template v-else>
+        <iframe class="_mediaContent--pdfIframe" :src="file_full_path" />
+      </template>
     </template>
     <template v-else-if="file.$type === 'stl'">
       <img :src="thumb" class="_mediaContent--image" />
@@ -169,5 +174,11 @@ export default {
     align-items: center;
     justify-content: center;
   }
+}
+
+._mediaContent--pdfIframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 </style>

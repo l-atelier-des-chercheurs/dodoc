@@ -8,5 +8,14 @@ export default {
         (largest_dimension * this.$root.page_magnification)
       );
     },
+    getModulesForPage({ modules, page_id }) {
+      return (
+        modules
+          .filter((f) => f.page_id === page_id)
+          .sort(
+            (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
+          ) || []
+      ).reverse();
+    },
   },
 };

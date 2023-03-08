@@ -18,7 +18,7 @@
               <SinglePage
                 :context="'list'"
                 :zoom="page_preview_zoom"
-                :page_modules="getModulesForPage(page.id)"
+                :page_modules="getModulesForPage({ modules, page_id: page.id })"
                 :page_width="publication.page_width"
                 :page_height="publication.page_height"
                 :page_color="page.page_color"
@@ -68,7 +68,9 @@
                   <SinglePage
                     :context="'list'"
                     :zoom="page_preview_zoom"
-                    :page_modules="getModulesForPage(page.id)"
+                    :page_modules="
+                      getModulesForPage({ modules, page_id: page.id })
+                    "
                     :page_width="publication.page_width"
                     :page_height="publication.page_height"
                     :page_color="page.page_color"
@@ -264,15 +266,6 @@ export default {
         path: this.publication.$path,
         new_meta,
       });
-    },
-    getModulesForPage(id) {
-      return (
-        this.modules
-          .filter((f) => f.page_id === id)
-          .sort(
-            (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
-          ) || []
-      ).reverse();
     },
   },
 };

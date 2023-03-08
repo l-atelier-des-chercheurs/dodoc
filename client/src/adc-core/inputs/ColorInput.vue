@@ -8,18 +8,14 @@
       <div class="_defaultColors">
         <div
           v-for="color in default_colors"
-          class="_defaultColors--item"
+          class="_colorPatch"
+          :class="{
+            'is--active': color === local_value,
+          }"
           :key="color"
-          :style="`--default-color: ${color}`"
+          :style="`--patch-color: ${color}`"
           @click="$emit('save', color)"
-        >
-          <span
-            class="_colorPatch"
-            :class="{
-              'is--active': color === local_value,
-            }"
-          />
-        </div>
+        ></div>
       </div>
       <div class="u-sameRow" :key="'value-' + value">
         <div
@@ -31,7 +27,7 @@
           <label
             :for="'_input_' + label"
             class="u-sameRow _inputField--label"
-            :style="`--current-color: ${local_value}`"
+            :style="`--patch-color: ${local_value}`"
           >
             <small>{{ $t("custom_color") }}</small>
             <span class="_colorPatch" />
@@ -92,7 +88,8 @@ export default {
     return {
       show_color_input: this.value ? true : false,
 
-      local_value: this.value || this.default_value.value,
+      local_value: this.value || this.default_value,
+      previous_value: undefined,
 
       default_colors: [
         "#000000",
@@ -111,10 +108,12 @@ export default {
   beforeDestroy() {},
   watch: {
     value() {
+      this.previous_value = this.local_value;
       this.local_value = this.value;
     },
     show_color_input() {
-      if (!this.show_color_input) this.$emit("save", this.default_value.value);
+      if (!this.show_color_input) this.$emit("save", this.default_value);
+      else this.$emit("save", this.previous_value);
     },
   },
   computed: {},
@@ -133,19 +132,34 @@ export default {
 
 ._colorPatch {
   display: block;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
-  background-color: var(--default-color);
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0.3rem;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    display: block;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+    outline: 2px solid var(--c-gris);
+    background-color: var(--patch-color);
+  }
 
   &:hover,
   &:focus-visible {
-    outline: 2px solid var(--c-gris_fonce) !important;
+    &::before {
+      outline-color: var(--active-color);
+    }
   }
 
   &.is--active {
-    outline: 2px solid var(--c-noir) !important;
+    pointer-events: none;
+    &::before {
+      outline-color: var(--c-noir);
+    }
   }
 }
 
@@ -154,10 +168,6 @@ export default {
 
   ._inputField--label {
     ._colorPatch {
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 4px;
-      background: var(--current-color);
     }
   }
 

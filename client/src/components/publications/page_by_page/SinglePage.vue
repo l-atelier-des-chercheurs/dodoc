@@ -5,17 +5,9 @@
       'is--preview': context === 'list',
       'is--editable': can_edit,
     }"
-    @click.self="$eventHub.$emit('module.setActive', false)"
   >
-    <div
-      class="_container"
-      :style="page_styles"
-      @click.self="$eventHub.$emit('module.setActive', false)"
-    >
-      <div
-        class="_content"
-        @click.self="$eventHub.$emit('module.setActive', false)"
-      >
+    <div class="_container" :style="page_styles">
+      <div class="_content">
         <svg
           v-if="can_edit && show_grid"
           class="_grid"
@@ -145,15 +137,14 @@ import MoveableItem from "@/components/publications/page_by_page/MoveableItem.vu
 export default {
   props: {
     context: String,
-    publication_path: String,
     page_modules: Array,
     page_width: Number,
     page_height: Number,
     page_color: String,
     zoom: { type: Number, default: 1 },
     scale: { type: Number, default: 1 },
-    show_grid: Boolean,
-    snap_to_grid: Boolean,
+    show_grid: { type: Boolean, default: false },
+    snap_to_grid: { type: Boolean, default: false },
     gridstep_in_cm: Number,
     margins: Object,
     can_edit: Boolean,
@@ -180,32 +171,23 @@ export default {
       return this.$root.page_magnification;
     },
     page_styles() {
-      return `
-        --page-width: ${this.magnify(this.page_width)}px;
-        --page-height: ${this.magnify(this.page_height)}px;
-        --zoom: ${this.zoom};
-        --page-color: ${this.page_color || "#fff"};
-      `;
+      const props = {};
+
+      if (this.page_width && this.page_height) {
+        props["--page-width"] = `${this.magnify(this.page_width)}px`;
+        props["--page-height"] = `${this.magnify(this.page_height)}px`;
+      }
+
+      props["--zoom"] = this.zoom;
+      props["--page-color"] = this.page_color || "#fff";
+
+      return props;
     },
   },
   methods: {
     magnify(m) {
       return m * this.magnification;
     },
-    // async updateMeta({ new_meta }) {
-    //   this.fetch_status = "pending";
-    //   this.fetch_error = null;
-    //   try {
-    //     this.response = await this.$api.updateMeta({
-    //       path: this.publication_path,
-    //       new_meta,
-    //     });
-    //     this.fetch_status = "success";
-    //   } catch (e) {
-    //     this.fetch_status = "error";
-    //     this.fetch_error = e.response.data;
-    //   }
-    // },
   },
 };
 </script>

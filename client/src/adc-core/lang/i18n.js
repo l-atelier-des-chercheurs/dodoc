@@ -42,6 +42,7 @@ export default function () {
     messages: {
       fr: {
         welcome_to_dodoc: "Bienvenue sur do•doc !",
+        home: "Accueil",
         admins_edit_text_here:
           'Pour commencer, créez un compte admin en cliquant sur "se connecter" en haut à droite, puis cliquez sur le boutton "Réglages" ci-dessous.',
         edit: "modifier",

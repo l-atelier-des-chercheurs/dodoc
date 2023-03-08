@@ -467,9 +467,12 @@ export default {
     object-fit: cover;
   }
   span {
+    min-height: 2rem;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    display: flex;
+    align-items: center;
   }
 }
 </style>

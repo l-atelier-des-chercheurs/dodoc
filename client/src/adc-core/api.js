@@ -444,7 +444,9 @@ export default function () {
             throw err;
           });
 
-        return response.data.task_id;
+        const task_id = response.data.task_id;
+        this.$api.join({ room: "task_" + task_id });
+        // todo leave room when task ends
       },
       async updateMeta({ path, new_meta }) {
         const response = await this.$axios

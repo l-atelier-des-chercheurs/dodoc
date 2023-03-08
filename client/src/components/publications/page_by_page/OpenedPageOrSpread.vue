@@ -135,7 +135,9 @@
                 :page_color="current_page.page_color"
                 :publication_path="publication_path"
                 :page_opened_id="page_opened_id"
-                :page_modules="getModulesForPage(page_opened_id)"
+                :page_modules="
+                  getModulesForPage({ modules, page_id: page_opened_id })
+                "
                 :active_module="active_module"
                 @updatePageOptions="$emit('updatePageOptions', $event)"
                 @update:scale="scale = $event"
@@ -149,8 +151,9 @@
                   v-if="!is_spread"
                   class="_spreadNavigator--page is--active"
                   :context="'full'"
-                  :publication_path="publication_path"
-                  :page_modules="getModulesForPage(page_opened_id)"
+                  :page_modules="
+                    getModulesForPage({ modules, page_id: page_opened_id })
+                  "
                   :page_width="page_width"
                   :page_height="page_height"
                   :page_color="current_page.page_color"
@@ -179,8 +182,9 @@
                   <template v-if="page">
                     <SinglePage
                       :context="'full'"
-                      :publication_path="publication_path"
-                      :page_modules="getModulesForPage(page.id)"
+                      :page_modules="
+                        getModulesForPage({ modules, page_id: page.id })
+                      "
                       :page_width="page_width"
                       :page_height="page_height"
                       :page_color="page.page_color"
@@ -362,15 +366,6 @@ export default {
     setActiveModule(path) {
       this.active_module_path = path;
     },
-    getModulesForPage(id) {
-      return (
-        this.modules
-          .filter((f) => f.page_id === id)
-          .sort(
-            (a, b) => +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded)
-          ) || []
-      ).reverse();
-    },
     prevPage() {
       const new_index = this.page_number - 1;
       this.setPageActive(this.pages[new_index].id);
@@ -501,7 +496,7 @@ export default {
 ._spreadNavigator--page {
   position: relative;
   flex: 1 1 50%;
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 4);
 
   &.is--left {
     padding-right: 0;

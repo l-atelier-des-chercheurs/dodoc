@@ -33,12 +33,11 @@
           :can_edit="can_edit_publication"
         /> -->
 
-        <div class="_buttonRow">
-          <RemoveMenu
-            v-if="can_edit_publication"
-            :remove_text="$t('remove')"
-            @remove="removePublication"
-          />
+        <div class="_buttonRow" v-if="can_edit_publication">
+          <RemoveMenu :remove_text="$t('remove')" @remove="removePublication" />
+          <button type="button" @click="exportPublication">
+            {{ $t("export") }}
+          </button>
         </div>
       </div>
       <StoryTemplate
@@ -103,6 +102,17 @@ export default {
           this.fetch_publication_error = err.response;
         });
       this.publication = publication;
+    },
+    async exportPublication() {
+      await this.$api.exportFolder({
+        path: this.publication.$path,
+        instructions: {
+          recipe: "pdf",
+          page_width: this.publication.page_width,
+          page_height: this.publication.page_height,
+        },
+      });
+      this.$alertify.delay(4000).log(this.$t("compilation_started"));
     },
     closeOnRemove({ path }) {
       if (path === this.publication.$path) {
