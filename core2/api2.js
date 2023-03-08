@@ -531,7 +531,7 @@ module.exports = (function () {
     // 4. when task finishes, it notifies client with notifier and also triggers a fileCreated
 
     dev.logpackets({
-      status: `task in progress`,
+      status: `task_started`,
       path_to_parent_folder,
       task_id,
     });

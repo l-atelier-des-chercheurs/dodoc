@@ -137,15 +137,14 @@ import MoveableItem from "@/components/publications/page_by_page/MoveableItem.vu
 export default {
   props: {
     context: String,
-    publication_path: String,
     page_modules: Array,
     page_width: Number,
     page_height: Number,
     page_color: String,
     zoom: { type: Number, default: 1 },
     scale: { type: Number, default: 1 },
-    show_grid: Boolean,
-    snap_to_grid: Boolean,
+    show_grid: { type: Boolean, default: false },
+    snap_to_grid: { type: Boolean, default: false },
     gridstep_in_cm: Number,
     margins: Object,
     can_edit: Boolean,

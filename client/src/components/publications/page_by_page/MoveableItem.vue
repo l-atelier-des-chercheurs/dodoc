@@ -120,7 +120,7 @@ export default {
     this.setNewComponentKey();
   },
   mounted() {
-    console.log(`MoveableItem / mounted ${this.publimodule.$path}`);
+    // console.log(`MoveableItem / mounted ${this.publimodule.$path}`);
 
     this.$eventHub.$on(`module.panTo.${this.publimodule.$path}`, this.panTo);
     this.$eventHub.$on(
