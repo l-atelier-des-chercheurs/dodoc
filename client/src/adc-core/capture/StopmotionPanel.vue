@@ -408,7 +408,7 @@ export default {
       this.$emit("update:show_live_feed", true);
     },
     exportStopmotion: async function () {
-      const task_id = await this.$api.exportFolder({
+      await this.$api.exportFolder({
         path: this.current_stopmotion_path,
         instructions: {
           recipe: "stopmotion",
@@ -416,13 +416,6 @@ export default {
           frame_rate: this.frame_rate,
         },
       });
-
-      // track progress
-      this.$alertify.delay(4000).log(this.$t("stopmotion_compilation_started"));
-
-      this.$api.join({ room: "task_" + task_id });
-
-      // todo leave room when task ends
 
       this.show_previous_photo = false;
       this.validating_video_preview = false;
