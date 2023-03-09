@@ -502,7 +502,7 @@ export default {
     padding-right: 0;
 
     ::v-deep {
-      ._container {
+      ._pagecontainer {
         transform-origin: 100% 0%;
         margin-right: 0;
       }
@@ -514,7 +514,7 @@ export default {
   &.is--right {
     padding-left: 0;
     ::v-deep {
-      ._container {
+      ._pagecontainer {
         transform-origin: 0% 0%;
         margin-left: 0;
       }
@@ -522,7 +522,7 @@ export default {
   }
 
   ::v-deep {
-    ._content {
+    ._pagecontent {
       &::after {
         content: "";
         position: absolute;
@@ -537,7 +537,7 @@ export default {
     z-index: 1;
 
     ::v-deep {
-      ._content {
+      ._pagecontent {
         &::after {
           opacity: 0;
         }
@@ -548,7 +548,7 @@ export default {
     // opacity: 0.8;
 
     ::v-deep {
-      ._content {
+      ._pagecontent {
         // overflow: hidden;
         &::after {
           pointer-events: auto;
