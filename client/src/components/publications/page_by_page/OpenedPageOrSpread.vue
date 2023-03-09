@@ -527,9 +527,11 @@ export default {
         content: "";
         position: absolute;
         inset: 0;
-        background: rgba(255, 255, 255, 0.5);
+        z-index: 1000000;
+        background: rgba(255, 255, 255, 0.6);
         transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         pointer-events: none;
+        // backdrop-filter: blur(2px);
       }
     }
   }
