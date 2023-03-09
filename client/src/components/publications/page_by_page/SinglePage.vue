@@ -6,8 +6,8 @@
       'is--editable': can_edit,
     }"
   >
-    <div class="_container" :style="page_styles">
-      <div class="_content">
+    <div class="_pagecontainer" :style="page_styles">
+      <div class="_pagecontent">
         <svg
           v-if="can_edit && show_grid"
           class="_grid"
@@ -51,19 +51,19 @@
           <rect width="100%" height="100%" fill="url(#grid)"></rect>
         </svg>
 
-        <transition-group name="scaleInFade">
-          <MoveableItem
-            class="_item"
-            v-for="publimodule in page_modules"
-            :key="publimodule.$path"
-            :publimodule="publimodule"
-            :magnification="magnification"
-            :gridstep="show_grid && snap_to_grid ? gridstep : 1"
-            :scale="scale"
-            :can_edit="can_edit"
-            :is_active="active_module.$path === publimodule.$path"
-          />
-        </transition-group>
+        <!-- <transition-group name="scaleInFade"> -->
+        <MoveableItem
+          class="_item"
+          v-for="publimodule in page_modules"
+          :key="publimodule.$path"
+          :publimodule="publimodule"
+          :magnification="magnification"
+          :gridstep="show_grid && snap_to_grid ? gridstep : 1"
+          :scale="scale"
+          :can_edit="can_edit"
+          :is_active="active_module.$path === publimodule.$path"
+        />
+        <!-- </transition-group> -->
 
         <svg
           v-if="can_edit && Object.keys(margins)"
@@ -196,7 +196,7 @@ export default {
   // padding: calc(var(--spacing) * 1);
 }
 
-._container {
+._pagecontainer {
   width: calc(var(--page-width));
   height: calc(var(--page-height));
   padding: 0;
@@ -217,7 +217,7 @@ export default {
   }
 }
 
-._content {
+._pagecontent {
   display: block;
   position: relative;
   z-index: 0;
