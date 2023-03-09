@@ -52,7 +52,7 @@ export default {
 
     document.body.style = `
       --page-width: ${this.publication.page_width}cm;
-      --page-height: ${this.publication.page_height}cm;
+      --page-height: calc(${this.publication.page_height}cm - 0.2mm);
     `;
 
     // this.$api.join({ room: this.project.$path });
@@ -62,16 +62,6 @@ export default {
   },
   watch: {},
   computed: {
-    page_size() {
-      return `
-        --page-width: ${this.publication.page_width}cm;
-        --page-height: ${this.publication.page_height}cm;
-      `;
-      // return `
-      //   --page-width: ${this.publication.page_width}cm;
-      //   --page-height: ${this.publication.page_height}cm;
-      // `;
-    },
     project_path() {
       return `/projects/${this.$route.params.project_slug}`;
     },
@@ -122,9 +112,12 @@ export default {
   }
 }
 ._page {
-  page-break-after: always;
   page-break-inside: avoid;
   -webkit-region-break-inside: avoid;
+
+  &:not(:last-child) {
+    page-break-after: always;
+  }
 }
 
 ._publicationView ::v-deep {
@@ -145,7 +138,7 @@ body {
 body {
   @media print {
     width: var(--page-width);
-    height: calc(var(--page-height) - 0.3mm);
+    height: calc(var(--page-height));
   }
 }
 @page {
