@@ -154,7 +154,9 @@ body {
 
 ._singlePage ._pagecontent {
   @media print {
-    overflow: visible;
+    box-shadow: none;
+    // fixes in Firefox, but bugs in chrome/puppeteer
+    // overflow: visible;
   }
 }
 </style>
