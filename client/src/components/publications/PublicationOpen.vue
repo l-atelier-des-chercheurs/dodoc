@@ -34,10 +34,27 @@
         /> -->
 
         <div class="_buttonRow" v-if="can_edit_publication">
+          <div class="">
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="exportPublication"
+            >
+              <sl-icon name="filetype-pdf" />
+              {{ $t("export") }}
+            </button>
+          </div>
+          <div class="">
+            <router-link
+              :to="{ path: '/' + publication.$path }"
+              target="_blank"
+              class="u-buttonLink"
+            >
+              <sl-icon name="share" />
+              {{ $t("share") }}
+            </router-link>
+          </div>
           <RemoveMenu :remove_text="$t('remove')" @remove="removePublication" />
-          <button type="button" @click="exportPublication">
-            {{ $t("export") }}
-          </button>
         </div>
       </div>
       <StoryTemplate
@@ -147,7 +164,7 @@ export default {
   align-items: center;
   width: 100%;
   background: white;
-  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 1);
   margin: calc(var(--spacing) / 1) auto;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   // max-width: 800px;
@@ -156,5 +173,6 @@ export default {
 ._buttonRow {
   display: flex;
   justify-content: flex-end;
+  gap: calc(var(--spacing) / 2);
 }
 </style>

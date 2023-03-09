@@ -144,6 +144,8 @@ export default function () {
         story: "Récit",
         page_by_page: "Document page à page",
         cartography: "Cartographie",
+        export: "Exporter",
+        share: "Partager",
 
         format: "Format",
         format_instructions:

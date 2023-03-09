@@ -129,20 +129,32 @@ export default {
 
 ._publicationView ::v-deep {
   ._singlePage {
-    > ._container {
+    > ._pagecontainer {
       margin: 0;
     }
   }
 }
 </style>
 <style lang="scss">
+html,
 body {
-  width: var(--page-width);
-  height: calc(var(--page-height) - 0.3mm);
-  overflow: hidden;
-  background-color: transparent;
+  @media print {
+    background: white !important;
+  }
+}
+body {
+  @media print {
+    width: var(--page-width);
+    height: calc(var(--page-height) - 0.3mm);
+  }
 }
 @page {
   size: var(--page-width) var(--page-height);
+}
+
+._singlePage ._pagecontent {
+  @media print {
+    overflow: visible;
+  }
 }
 </style>
