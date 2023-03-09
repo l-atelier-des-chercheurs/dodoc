@@ -502,7 +502,7 @@ export default {
     padding-right: 0;
 
     ::v-deep {
-      ._container {
+      ._pagecontainer {
         transform-origin: 100% 0%;
         margin-right: 0;
       }
@@ -514,7 +514,7 @@ export default {
   &.is--right {
     padding-left: 0;
     ::v-deep {
-      ._container {
+      ._pagecontainer {
         transform-origin: 0% 0%;
         margin-left: 0;
       }
@@ -522,14 +522,16 @@ export default {
   }
 
   ::v-deep {
-    ._content {
+    ._pagecontent {
       &::after {
         content: "";
         position: absolute;
         inset: 0;
-        background: rgba(255, 255, 255, 0.5);
+        z-index: 1000000;
+        background: rgba(255, 255, 255, 0.6);
         transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         pointer-events: none;
+        // backdrop-filter: blur(2px);
       }
     }
   }
@@ -537,7 +539,7 @@ export default {
     z-index: 1;
 
     ::v-deep {
-      ._content {
+      ._pagecontent {
         &::after {
           opacity: 0;
         }
@@ -548,7 +550,7 @@ export default {
     // opacity: 0.8;
 
     ::v-deep {
-      ._content {
+      ._pagecontent {
         // overflow: hidden;
         &::after {
           pointer-events: auto;
