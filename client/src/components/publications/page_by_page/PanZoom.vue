@@ -24,13 +24,12 @@ export default {
       maxScale: 5,
       step: 0.05,
       canvas: true,
-      // handleStartEvent: () => {
-      // this.$emit("startPan");
-      // },
+      startX: 280,
+      startY: 50,
     });
-    setTimeout(() => {
-      this.panzoom.pan(280, 50);
-    }, 100);
+    // setTimeout(() => {
+    //   this.panzoom.pan(280, 50);
+    // }, 100);
 
     this.$el.addEventListener("wheel", (e) => {
       if (!e.ctrlKey) return;
