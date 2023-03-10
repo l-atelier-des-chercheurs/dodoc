@@ -146,6 +146,7 @@ export default function () {
         cartography: "Cartographie",
         export: "Exporter",
         share: "Partager",
+        exports_in_progress: "Exportation(s) en cours",
 
         format: "Format",
         format_instructions:

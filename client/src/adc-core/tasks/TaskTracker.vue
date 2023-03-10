@@ -2,27 +2,32 @@
   <div class="_taskTracker" v-if="tasks_tracked.length > 0">
     <DLabel class="u-colorWhite" :str="$t('exports_in_progress')" />
     <div v-for="task in tasks_tracked" class="_task" :key="task.id">
-      <div>{{ task.date_started }}</div>
-      <div>{{ task.event }}</div>
-      <div>
-        <b>{{ task.progress }}%</b>
+      <div class="u-sameRow">
+        <div>{{ formatDateToHuman(task.date_started) }}</div>
+        <div>{{ task.event }}</div>
+        <div>
+          <b>{{ task.progress }}%</b>
+        </div>
+        <button
+          type="button"
+          v-if="task.progress < 100"
+          @click="abortTask(task.id)"
+          class="u-button u-button_black"
+        >
+          <sl-icon name="x-octagon" />
+        </button>
+        <button
+          type="button"
+          v-else-if="task.progress === 100"
+          @click="removeTask(task.id)"
+          class="u-button u-button_black"
+        >
+          <sl-icon name="x-octagon" />
+        </button>
       </div>
-      <button
-        type="button"
-        v-if="task.progress < 100"
-        @click="abortTask(task.id)"
-        class="u-button u-button_black"
-      >
-        <sl-icon name="x-octagon" />
-      </button>
-      <button
-        type="button"
-        v-else-if="task.progress === 100"
-        @click="removeTask(task.id)"
-        class="u-button u-button_black"
-      >
-        <sl-icon name="x-octagon" />
-      </button>
+      <div v-if="task.path">
+        {{ task.path }}
+      </div>
     </div>
   </div>
 </template>
@@ -103,10 +108,10 @@ export default {
   color: white;
 }
 ._task {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
+  // display: flex;
+  // flex-flow: row nowrap;
+  // justify-content: space-between;
+  // align-items: center;
   background: white;
   margin: calc(var(--spacing) / 2) 0;
   padding: calc(var(--spacing) / 2);
