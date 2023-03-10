@@ -200,7 +200,7 @@ export default {
   width: calc(var(--page-width));
   height: calc(var(--page-height));
   padding: 0;
-  margin: calc(var(--spacing) * 4);
+  // margin: calc(var(--spacing) * 4);
 
   transform: scale(var(--zoom));
   transform-origin: 0 0;

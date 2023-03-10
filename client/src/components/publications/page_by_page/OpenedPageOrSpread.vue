@@ -5,94 +5,6 @@
       'is--editable': can_edit,
     }"
   >
-    <transition name="slideup" mode="out-in">
-      <div class="_navBar" :key="active_spread_index">
-        <!-- // todo create actual navbar for pages without preview + quick page switcher with previews if unfolded, for example
-          (performance reasons, and use of space)
-         -->
-        <template v-if="!is_spread">
-          <div>
-            <button type="button" @click="prevPage" v-if="page_number > 0">
-              <sl-icon name="arrow-left" />
-              <!-- <SinglePage
-                :context="'list'"
-                :zoom="preview_zoom"
-                :page_modules="getModulesForPage(previous_page.id)"
-                :page_width="page_width"
-                :page_height="page_height"
-                :page_color="previous_page.page_color"
-                :can_edit="false"
-              /> -->
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              @click="nextPage"
-              v-if="page_number < pages.length - 1"
-            >
-              <!-- <SinglePage
-                :context="'list'"
-                :zoom="preview_zoom"
-                :page_modules="getModulesForPage(next_page.id)"
-                :page_width="page_width"
-                :page_height="page_height"
-                :page_color="next_page.page_color"
-                :can_edit="false"
-              /> -->
-              <sl-icon name="arrow-right" />
-            </button>
-          </div>
-        </template>
-        <template v-else>
-          <div class="">
-            <button
-              type="button"
-              @click="prevSpread"
-              v-if="active_spread_index > 0"
-            >
-              <sl-icon name="arrow-left" />
-              <!-- <template v-for="page in spreads[active_spread_index - 1]">
-                <SinglePage
-                  v-if="page"
-                  :key="page.id"
-                  :context="'list'"
-                  :zoom="preview_zoom"
-                  :page_modules="getModulesForPage(page.id)"
-                  :page_width="page_width"
-                  :page_height="page_height"
-                  :page_color="page.page_color"
-                  :can_edit="false"
-                />
-              </template> -->
-            </button>
-          </div>
-          <div class="">
-            <button
-              type="button"
-              @click="nextSpread"
-              v-if="active_spread_index < spreads.length - 1"
-            >
-              <!-- <template v-for="page in spreads[active_spread_index + 1]">
-                <SinglePage
-                  v-if="page"
-                  :key="page.id"
-                  :context="'list'"
-                  :zoom="preview_zoom"
-                  :page_modules="getModulesForPage(page.id)"
-                  :page_width="page_width"
-                  :page_height="page_height"
-                  :page_color="page.page_color"
-                  :can_edit="false"
-                />
-              </template> -->
-              <sl-icon name="arrow-right" />
-            </button>
-          </div>
-        </template>
-      </div>
-    </transition>
-
     <transition name="fade_fast" mode="out-in">
       <div
         :key="
@@ -126,6 +38,7 @@
             <div class="_content">
               <PageMenu
                 :can_edit="can_edit"
+                :pages="pages"
                 :page_number="page_number"
                 :active_spread_index="active_spread_index"
                 :scale="scale"
@@ -141,11 +54,13 @@
                 :active_module="active_module"
                 @updatePageOptions="$emit('updatePageOptions', $event)"
                 @update:scale="scale = $event"
+                @prevPage="prevPage()"
+                @nextPage="nextPage()"
               />
             </div>
           </div>
           <div class="">
-            <PanZoom :scale.sync="scale">
+            <PanZoom :scale.sync="scale" :page_opened_id="page_opened_id">
               <div class="_pageCont">
                 <SinglePage
                   v-if="!is_spread"
@@ -261,24 +176,23 @@ export default {
   watch: {
     page_opened_id() {
       this.$nextTick(() => {
-        const active_page = this.$el.querySelector(
-          "._spreadNavigator--page.is--active"
-        );
-
+        // const active_page = this.$el.querySelector(
+        //   "._spreadNavigator--page.is--active"
+        // );
         // todo replace with panzoom
-        if (active_page)
-          if (this.$el.scrollIntoViewIfNeeded)
-            active_page.scrollIntoViewIfNeeded({
-              behavior: "smooth",
-              block: "nearest",
-              inline: "center",
-            });
-          else
-            active_page.scrollIntoView({
-              behavior: "smooth",
-              block: "nearest",
-              inline: "center",
-            });
+        // if (active_page)
+        // if (this.$el.scrollIntoViewIfNeeded)
+        //   active_page.scrollIntoViewIfNeeded({
+        //     behavior: "smooth",
+        //     block: "nearest",
+        //     inline: "center",
+        //   });
+        // else
+        //   active_page.scrollIntoView({
+        //     behavior: "smooth",
+        //     block: "nearest",
+        //     inline: "center",
+        //   });
       });
     },
   },
@@ -496,28 +410,27 @@ export default {
 ._spreadNavigator--page {
   position: relative;
   flex: 1 1 50%;
-  padding: calc(var(--spacing) * 4);
+  // padding: calc(var(--spacing) * 4);
 
   &.is--left {
-    padding-right: 0;
-
+    // padding-right: 0;
     ::v-deep {
-      ._pagecontainer {
-        transform-origin: 100% 0%;
-        margin-right: 0;
-      }
+      // ._pagecontainer {
+      //   transform-origin: 100% 0%;
+      //   margin-right: 0;
+      // }
       ._margins {
         transform: scale(-1, 1);
       }
     }
   }
   &.is--right {
-    padding-left: 0;
+    // padding-left: 0;
     ::v-deep {
-      ._pagecontainer {
-        transform-origin: 0% 0%;
-        margin-left: 0;
-      }
+      // ._pagecontainer {
+      //   transform-origin: 0% 0%;
+      //   margin-left: 0;
+      // }
     }
   }
 

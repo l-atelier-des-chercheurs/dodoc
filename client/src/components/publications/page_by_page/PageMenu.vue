@@ -1,22 +1,46 @@
 <template>
   <div class="_pageMenu">
     <div class="_pageMenu--pane">
-      <div class="u-spacingBottom">
-        <transition name="fade_fast" mode="out-in">
-          <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
-        </transition>
-        <transition
-          v-if="active_spread_index !== false"
-          name="fade_fast"
-          mode="out-in"
-        >
-          <span :key="active_spread_index">
-            <template v-if="page_number === 0"> ({{ $t("cover") }}) </template>
-            <template v-else>
-              ({{ $t("spread").toLowerCase() }} {{ active_spread_index }})
-            </template>
-          </span>
-        </transition>
+      <div class="u-spacingBottom _titleRow">
+        <div>
+          <button
+            type="button"
+            class="u-button u-button_transparent"
+            @click="$emit('prevPage')"
+            :disabled="page_number <= 0"
+          >
+            <sl-icon name="arrow-left-circle" />
+          </button>
+        </div>
+        <div>
+          <transition name="fade_fast" mode="out-in">
+            <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
+          </transition>
+          <transition
+            v-if="active_spread_index !== false"
+            name="fade_fast"
+            mode="out-in"
+          >
+            <span :key="active_spread_index">
+              <template v-if="page_number === 0">
+                ({{ $t("cover") }})
+              </template>
+              <template v-else>
+                ({{ $t("spread").toLowerCase() }} {{ active_spread_index }})
+              </template>
+            </span>
+          </transition>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="u-button u-button_transparent"
+            @click="$emit('nextPage')"
+            :disabled="page_number >= pages.length - 1"
+          >
+            <sl-icon name="arrow-right-circle" />
+          </button>
+        </div>
       </div>
 
       <div class="_scale">
@@ -404,6 +428,7 @@ import DepthInput from "@/components/publications/page_by_page/DepthInput.vue";
 export default {
   props: {
     can_edit: Boolean,
+    pages: Array,
     page_number: Number,
     active_spread_index: [Boolean, Number],
     scale: Number,
@@ -607,6 +632,17 @@ export default {
     .ql-editor {
       padding-bottom: 0;
     }
+  }
+}
+
+._titleRow {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+
+  button {
+    font-size: var(--sl-font-size-large);
   }
 }
 </style>

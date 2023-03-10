@@ -9,6 +9,7 @@ import Panzoom from "@panzoom/panzoom";
 export default {
   props: {
     scale: Number,
+    page_opened_id: String,
   },
   components: {},
   data() {
@@ -20,26 +21,9 @@ export default {
   created() {},
   async mounted() {
     /* eslint-disable */
-    this.panzoom = Panzoom(this.$el, {
-      maxScale: 5,
-      step: 0.05,
-      canvas: true,
-      startX: 280,
-      startY: 50,
+    this.$nextTick(() => {
+      this.init();
     });
-    // setTimeout(() => {
-    //   this.panzoom.pan(280, 50);
-    // }, 100);
-
-    this.$el.addEventListener("wheel", (e) => {
-      if (!e.ctrlKey) return;
-      this.panzoom.zoomWithWheel(e);
-    });
-    this.$el.addEventListener("panzoomzoom", this.panzoomzoom);
-    this.$el.addEventListener("panzoomstart", this.panzoomstart);
-    this.$el.addEventListener("panzoomend", this.panzoomend);
-
-    this.$eventHub.$on(`panzoom.panTo`, this.panTo);
   },
   beforeDestroy() {
     this.$eventHub.$off(`panzoom.panTo`, this.panTo);
@@ -48,9 +32,57 @@ export default {
     scale() {
       this.updateScale(this.scale);
     },
+    page_opened_id: {
+      handler() {
+        this.$nextTick(() => {
+          const { left, top } = this.getActivePagePos();
+          this.panzoom.pan(left, top, { animate: true });
+        });
+      },
+    },
   },
   computed: {},
   methods: {
+    init() {
+      const { left, top } = this.getActivePagePos();
+
+      this.panzoom = Panzoom(this.$el, {
+        maxScale: 5,
+        step: 0.05,
+        canvas: true,
+        startX: left,
+        startY: top,
+      });
+
+      this.$el.addEventListener("wheel", (e) => {
+        if (!e.ctrlKey) return;
+        this.panzoom.zoomWithWheel(e);
+      });
+      this.$el.addEventListener("panzoomzoom", this.panzoomzoom);
+      this.$el.addEventListener("panzoomstart", this.panzoomstart);
+      this.$el.addEventListener("panzoomend", this.panzoomend);
+
+      this.$eventHub.$on(`panzoom.panTo`, this.panTo);
+    },
+    getActivePagePos() {
+      // const top = this.$el.querySelector(
+      //   "._spreadNavigator--page.is--active"
+      // ).offsetTop;
+      const el_left = this.$el.querySelector(
+        "._spreadNavigator--page.is--active"
+      ).offsetLeft;
+      const menu_width = document.querySelector("._sideCont").offsetWidth;
+
+      // 43 is height of sidecont breadcrumb
+      const distance_to_corner = 43 * 2;
+
+      const left = -el_left + menu_width + distance_to_corner;
+      const top = distance_to_corner;
+
+      console.log("pan_left " + left + "- pan_top " + top);
+
+      return { left, top };
+    },
     panTo({ x, y }) {
       console.log(`panto ${x} - ${y}`);
       this.panzoom.pan(-x + 280, -y, { animate: true });
