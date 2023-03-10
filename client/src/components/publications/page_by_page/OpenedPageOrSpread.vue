@@ -19,27 +19,30 @@
           @click.self="setActiveModule(false)"
         >
           <div class="_sideCont">
-            <div class="_breadcrumb">
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="$emit('closePublication')"
-              >
-                {{ $t("publications") }}
-              </button>
+            <div class="u-breadcrumb _breadcrumb">
+              <div>
+                <button
+                  type="button"
+                  class="u-buttonLink"
+                  @click="setPageActive(false)"
+                  v-text="publication_title"
+                />
+              </div>
               <sl-icon name="arrow-right-short" label="" />
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="setPageActive(false)"
-                v-html="is_spread ? $t('list_of_spreads') : $t('list_of_pages')"
-              />
+              <div>
+                <span v-if="is_spread">
+                  {{ $t("spread") }} {{ active_spread_index + 1 }}
+                </span>
+                <span v-else>
+                  {{ $t("page") }} {{ active_page_number + 1 }}
+                </span>
+              </div>
             </div>
             <div class="_content">
               <PageMenu
                 :can_edit="can_edit"
                 :pages="pages"
-                :page_number="page_number"
+                :active_page_number="active_page_number"
                 :active_spread_index="active_spread_index"
                 :scale="scale"
                 :show_grid.sync="show_grid"
@@ -139,6 +142,7 @@ export default {
   props: {
     page_opened_id: String,
     publication_path: String,
+    publication_title: String,
     pages: Array,
     spreads: [Boolean, Array],
     modules: Array,
@@ -214,17 +218,17 @@ export default {
         this.active_module.$path.lastIndexOf("/") + 1
       );
     },
-    page_number() {
+    active_page_number() {
       return this.pages.findIndex((p) => p.id === this.page_opened_id);
     },
     current_page() {
       return this.pages.find((p) => p.id === this.page_opened_id);
     },
     previous_page() {
-      return this.pages[this.page_number - 1];
+      return this.pages[this.active_page_number - 1];
     },
     next_page() {
-      return this.pages[this.page_number + 1];
+      return this.pages[this.active_page_number + 1];
     },
     active_spread() {
       return this.spreads[this.active_spread_index];
@@ -281,11 +285,11 @@ export default {
       this.active_module_path = path;
     },
     prevPage() {
-      const new_index = this.page_number - 1;
+      const new_index = this.active_page_number - 1;
       this.setPageActive(this.pages[new_index].id);
     },
     nextPage() {
-      const new_index = this.page_number + 1;
+      const new_index = this.active_page_number + 1;
       this.setPageActive(this.pages[new_index].id);
     },
     setPageActive(id) {
@@ -363,7 +367,6 @@ export default {
 
 ._breadcrumb {
   padding: calc(var(--spacing) / 1);
-  display: flex;
 }
 ._topMenu {
   position: relative;

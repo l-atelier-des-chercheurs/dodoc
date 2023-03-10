@@ -7,14 +7,16 @@
             type="button"
             class="u-button u-button_transparent"
             @click="$emit('prevPage')"
-            :disabled="page_number <= 0"
+            :disabled="active_page_number <= 0"
           >
             <sl-icon name="arrow-left-circle" />
           </button>
         </div>
         <div>
           <transition name="fade_fast" mode="out-in">
-            <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
+            <b :key="active_page_number"
+              >{{ $t("page") }} {{ active_page_number + 1 }}</b
+            >
           </transition>
           <transition
             v-if="active_spread_index !== false"
@@ -22,7 +24,7 @@
             mode="out-in"
           >
             <span :key="active_spread_index">
-              <template v-if="page_number === 0">
+              <template v-if="active_page_number === 0">
                 ({{ $t("cover") }})
               </template>
               <template v-else>
@@ -36,7 +38,7 @@
             type="button"
             class="u-button u-button_transparent"
             @click="$emit('nextPage')"
-            :disabled="page_number >= pages.length - 1"
+            :disabled="active_page_number >= pages.length - 1"
           >
             <sl-icon name="arrow-right-circle" />
           </button>
@@ -63,7 +65,7 @@
       <transition name="fade_fast" mode="out-in">
         <div
           v-if="!has_editor_toolbar && !active_module"
-          :key="'page_options-' + page_number"
+          :key="'page_options-' + active_page_number"
         >
           <div class="_pageMenu--pane">
             <div class="u-spacingBottom">
@@ -113,7 +115,7 @@
                 :value="page_color"
                 @save="
                   $emit('updatePageOptions', {
-                    page_number,
+                    active_page_number,
                     value: { page_color: $event },
                   })
                 "
@@ -389,7 +391,7 @@
       <div
         v-show="has_editor_toolbar"
         class="_pageMenu--pane"
-        :key="'text-toolbar-' + page_number"
+        :key="'text-toolbar-' + active_page_number"
       >
         <div ref="editor_toolbar" class="_editorToolbar" />
 
@@ -429,7 +431,7 @@ export default {
   props: {
     can_edit: Boolean,
     pages: Array,
-    page_number: Number,
+    active_page_number: Number,
     active_spread_index: [Boolean, Number],
     scale: Number,
     show_grid: Boolean,

@@ -120,6 +120,7 @@
         v-else
         key="openedpage"
         :page_opened_id="page_opened_id"
+        :publication_title="publication.title"
         :publication_path="publication.$path"
         :pages="pages"
         :spreads="spreads"
