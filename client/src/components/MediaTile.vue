@@ -10,7 +10,8 @@
     @dragend="endMediaDrag()"
   >
     <MediaContent :file="file" />
-    <span v-if="duration" class="_duration">{{ duration }}</span>
+    <span v-if="duration" class="u-meta">{{ duration }}</span>
+    <span v-if="file.$type === 'pdf'" class="u-meta">{{ "pdf" }}</span>
     <button
       type="button"
       class="_focusMediaBtn"
@@ -125,12 +126,11 @@ export default {
   }
 }
 
-._duration {
+.u-meta {
   position: absolute;
   bottom: 0;
   right: 0;
   background: rgba(255, 255, 255, 0.7);
   padding: 0 calc(var(--spacing) / 4);
-  font-family: "Fira Code";
 }
 </style>

@@ -20,6 +20,13 @@
     color: currentColor;
   }
 }
+.u-meta {
+  text-transform: uppercase;
+  // font-weight: 500;
+
+  font-size: var(--sl-font-size-small);
+  letter-spacing: 0.02em;
+}
 
 .u-sectionLabel {
   display: block;
