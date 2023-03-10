@@ -50,6 +50,9 @@ class Exporter {
 
     if (this.status === "aborted") {
       // todo remove full_path_to_file
+      this._notifyEnded({
+        event: "aborted",
+      });
       throw new Error(`aborted`);
     }
 
@@ -59,9 +62,9 @@ class Exporter {
       path_to_folder: this.path_to_parent_folder,
     });
 
-    this._notify({
-      event: "ffmpeg_compilation_in_progress",
-      progress_percent: 100,
+    this._notifyEnded({
+      event: "finished",
+      path: path.join(this.path_to_parent_folder, meta_filename),
     });
 
     return meta_filename;
@@ -89,9 +92,9 @@ class Exporter {
       // we need to copy all images to a temp folder with the right naming
       const images = await this._loadFilesInOrder();
 
-      this._notify({
-        event: "ffmpeg_compilation_in_progress",
-        progress_percent: 0,
+      this._notifyInProgress({
+        event: "compilation_in_progress",
+        progress_percent: 5,
       });
 
       const width = images[0].$infos.width || 1280;
@@ -119,12 +122,13 @@ class Exporter {
         // await fs.remove(path.join(full_path_to_folder_in_cache, "*.jpeg"));
       };
 
-      this._notify({
+      this._notifyInProgress({
         event: "ffmpeg_compilation_in_progress",
         progress_percent: 10,
       });
 
       const frame_rate = this.instructions.frame_rate || 4;
+      const output_frame_rate = 30;
 
       this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
         .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
@@ -135,7 +139,7 @@ class Exporter {
         .inputFormat("lavfi")
         .duration(images.length / frame_rate)
         .size(`${width}x${height}`)
-        .outputFPS(30)
+        .outputFPS(output_frame_rate)
         .autopad()
         .addOptions(["-preset slow", "-tune animation"])
         .toFormat("mp4")
@@ -145,10 +149,20 @@ class Exporter {
         .on("progress", (progress) => {
           // value from 0 to 100
           const adv =
-            (progress.frames / ((images.length / frame_rate) * 30)) * 100;
-          const progress_percent = Math.round(10 + adv * 0.85);
+            (progress.frames /
+              ((images.length / frame_rate) * output_frame_rate)) *
+            100;
 
-          this._notify({
+          const remap = function (val, in_min, in_max, out_min, out_max) {
+            return (
+              ((val - in_min) * (out_max - out_min)) / (in_max - in_min) +
+              out_min
+            );
+          };
+
+          const progress_percent = Math.round(remap(adv, 0, 100, 10, 90));
+
+          this._notifyInProgress({
             event: "ffmpeg_compilation_in_progress",
             progress_percent,
           });
@@ -156,7 +170,7 @@ class Exporter {
         .on("end", async () => {
           dev.logverbose("Video ended");
 
-          this._notify({
+          this._notifyInProgress({
             event: "ffmpeg_compilation_in_progress",
             progress_percent: 95,
           });
@@ -169,8 +183,8 @@ class Exporter {
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
           await _removeAllImages();
-          this._notify({
-            event: "ffmpeg_compilation_failed",
+          this._notifyEnded({
+            event: "failed",
             info: err.message,
           });
 
@@ -179,10 +193,15 @@ class Exporter {
         .save(full_path_to_new_video);
     });
   }
-  _notify(message) {
-    const task_id = "task_" + this.id;
-    notifier.emit("taskStatus", task_id, {
-      task_id,
+  _notifyInProgress(message) {
+    notifier.emit("taskStatus", "task_" + this.id, {
+      task_id: this.id,
+      message,
+    });
+  }
+  _notifyEnded(message) {
+    notifier.emit("taskEnded", "task_" + this.id, {
+      task_id: this.id,
       message,
     });
   }

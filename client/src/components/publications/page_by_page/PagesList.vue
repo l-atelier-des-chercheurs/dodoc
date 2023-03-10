@@ -246,8 +246,6 @@ export default {
         return arr; // for testing
       }
 
-      debugger;
-
       array_move(pages, old_position, new_position);
 
       this.updatePubliMeta({

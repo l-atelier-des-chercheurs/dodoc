@@ -559,7 +559,7 @@ module.exports = (function () {
     } catch (err) {
       dev.error("Failed to export file: " + err);
 
-      notifier.emit("taskStatus", task_id, {
+      notifier.emit("taskEnded", task_id, {
         task_id,
         message: err,
       });
