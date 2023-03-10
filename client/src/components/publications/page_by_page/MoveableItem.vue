@@ -35,7 +35,7 @@
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
-    <span class="_activator" @mousedown="setActive" @dblclick="editText">
+    <span class="_activator" @mousedown="setActive" @dblclick="dblClick">
       <PublicationModule
         class="_moveableItem--content"
         :publimodule="publimodule"
@@ -314,12 +314,23 @@ export default {
 
       this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
     },
-    editText() {
+    async dblClick() {
       if (!this.is_active) return;
 
       const first_media = this.firstMedia(this.publimodule);
-      if (!first_media || first_media.$type !== "text") return;
+      if (!first_media) return;
 
+      if (first_media.$type === "text") this.editText();
+      else {
+        // resize height to match ratio
+        const media_ratio = first_media.$infos?.ratio;
+        const height = this.publimodule.width * media_ratio;
+        await this.updateModuleMeta({
+          new_meta: { height },
+        });
+      }
+    },
+    editText() {
       const meta_filename = this.publimodule.$path.substring(
         this.publimodule.$path.lastIndexOf("/") + 1
       );

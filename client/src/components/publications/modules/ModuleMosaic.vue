@@ -142,7 +142,6 @@ export default {
     single_media_displayed_at_full_ratio() {
       if (this.medias_with_linked.length > 1) return false;
 
-      debugger;
       const ratio = this.medias_with_linked[0]._linked_media.$infos?.ratio;
       return (
         Math.round(ratio * 10) ===
