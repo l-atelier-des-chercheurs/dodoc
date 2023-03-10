@@ -4,6 +4,7 @@
     <div v-for="task in tasks_tracked" class="_task" :key="task.id">
       <div class="u-sameRow">
         <div>{{ formatDateToHuman(task.date_started) }}</div>
+        <div>{{ task.instructions }}</div>
         <div>{{ task.event }}</div>
         <div>
           <b>{{ task.progress }}%</b>
@@ -54,21 +55,21 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    started(task_id) {
+    started({ task_id, instructions }) {
       this.tasks_tracked.push({
         date_started: +new Date(),
         id: task_id,
         event: undefined,
+        instructions,
         progress: 0,
         path: undefined,
       });
 
       this.$api.join({ room: "task_" + task_id });
     },
-    status({ task_id, message }) {
+    status({ task_id, progress }) {
       const task_index = this.tasks_tracked.findIndex((t) => t.id === task_id);
-      this.tasks_tracked[task_index].event = message.event;
-      this.tasks_tracked[task_index].progress = message.progress_percent;
+      this.tasks_tracked[task_index].progress = progress;
     },
     ended({ task_id, message }) {
       const task_index = this.tasks_tracked.findIndex((t) => t.id === task_id);

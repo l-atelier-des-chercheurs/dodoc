@@ -260,8 +260,8 @@ export default function () {
             this.$set(this.store["_admin"], key, value);
           });
       },
-      taskStatus({ task_id, message }) {
-        this.$eventHub.$emit("task.status", { task_id, message });
+      taskStatus({ task_id, progress }) {
+        this.$eventHub.$emit("task.status", { task_id, progress });
       },
       taskEnded({ task_id, message }) {
         this.$eventHub.$emit("task.ended", { task_id, message });
@@ -449,7 +449,7 @@ export default function () {
           });
 
         const task_id = response.data.task_id;
-        this.$eventHub.$emit("task.started", task_id);
+        this.$eventHub.$emit("task.started", { task_id, instructions });
       },
       async updateMeta({ path, new_meta }) {
         const response = await this.$axios

@@ -92,10 +92,7 @@ class Exporter {
       // we need to copy all images to a temp folder with the right naming
       const images = await this._loadFilesInOrder();
 
-      this._notifyInProgress({
-        event: "compilation_in_progress",
-        progress_percent: 5,
-      });
+      this._notifyProgress(5);
 
       const width = images[0].$infos.width || 1280;
       const height = images[0].$infos.height || 720;
@@ -122,10 +119,7 @@ class Exporter {
         // await fs.remove(path.join(full_path_to_folder_in_cache, "*.jpeg"));
       };
 
-      this._notifyInProgress({
-        event: "ffmpeg_compilation_in_progress",
-        progress_percent: 10,
-      });
+      this._notifyProgress(10);
 
       const frame_rate = this.instructions.frame_rate || 4;
       const output_frame_rate = 30;
@@ -160,20 +154,14 @@ class Exporter {
             );
           };
 
-          const progress_percent = Math.round(remap(adv, 0, 100, 10, 90));
+          const progress_percent = Math.round(remap(adv, 0, 100, 15, 90));
 
-          this._notifyInProgress({
-            event: "ffmpeg_compilation_in_progress",
-            progress_percent,
-          });
+          this._notifyProgress(progress_percent);
         })
         .on("end", async () => {
           dev.logverbose("Video ended");
 
-          this._notifyInProgress({
-            event: "ffmpeg_compilation_in_progress",
-            progress_percent: 95,
-          });
+          this._notifyProgress(95);
 
           await _removeAllImages();
           return resolve(full_path_to_new_video);
@@ -193,10 +181,10 @@ class Exporter {
         .save(full_path_to_new_video);
     });
   }
-  _notifyInProgress(message) {
+  _notifyProgress(progress) {
     notifier.emit("taskStatus", "task_" + this.id, {
       task_id: this.id,
-      message,
+      progress,
     });
   }
   _notifyEnded(message) {
@@ -257,6 +245,8 @@ class Exporter {
       win.loadURL(url);
       win.webContents.setAudioMuted(true);
 
+      this._notifyProgress(5);
+
       let page_timeout = setTimeout(() => {
         clearTimeout(page_timeout);
         dev.error(`page timeout for ${url}`);
@@ -266,6 +256,7 @@ class Exporter {
 
       win.webContents.once("did-finish-load", async () => {
         dev.logverbose("did-finish-load " + url);
+        this._notifyProgress(40);
 
         await new Promise((r) => setTimeout(r, 1000));
 
@@ -284,6 +275,7 @@ class Exporter {
           })
           .then(async (data) => {
             dev.logverbose("printed-to-pdf " + url);
+            this._notifyProgress(80);
 
             win.close();
 
@@ -298,6 +290,9 @@ class Exporter {
             );
 
             await writeFileAtomic(full_path_to_pdf, data);
+
+            this._notifyProgress(95);
+
             return resolve(full_path_to_pdf);
           })
           .catch((error) => {
