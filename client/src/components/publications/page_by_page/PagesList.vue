@@ -207,11 +207,7 @@ export default {
       };
     },
     pagination() {
-      if (!this.publication.enable_pagination) return false;
-      return {
-        right: 2,
-        bottom: 3,
-      };
+      return this.setPaginationFromPublication(this.publication);
     },
   },
   methods: {

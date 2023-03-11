@@ -429,6 +429,15 @@
             },
             "enable_pagination": {
               "type": "boolean"
+            },
+            "pagn_starts_on_page": {
+              "type": "number"
+            },
+            "pagn_right": {
+              "type": "number"
+            },
+            "pagn_bottom": {
+              "type": "number"
             }
           },
           "$files": {

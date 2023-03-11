@@ -69,11 +69,7 @@ export default {
   watch: {},
   computed: {
     pagination() {
-      if (!this.publication.enable_pagination) return false;
-      return {
-        right: 2,
-        bottom: 2,
-      };
+      return this.setPaginationFromPublication(this.publication);
     },
     project_path() {
       return `/projects/${this.$route.params.project_slug}`;

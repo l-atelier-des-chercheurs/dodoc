@@ -180,14 +180,23 @@ export default function () {
         backcover: "Quatrième de couverture",
         margins: "Marges",
         margins_instructions:
-          "Renseignez ici les repères de marge souhaitez, en centimètres. Les marges seront dessinées avec un trait violet.",
+          "Renseignez ici les repères de marge souhaités, en centimètres. Les marges seront dessinées avec un trait violet.",
+        pagination_instructions:
+          "Indiquez ici les règlages souhaités pour l’affichage du numéro de la page.",
+        pagination_instructions_spread:
+          "Habituellement, les pages de gauche d'un livre sont les pages pairs et les pages de droit sont impairs.",
+        distance_to_right: "Distance au bord droit",
+        distance_to_bottom: "Distance au bord du bas",
+        distance_to_outside: "Distance au bord extérieur",
+
         left: "Gauche",
         right: "Droite",
         top: "En haut",
         bottom: "En bas",
-        margins_inside: "Petit fond",
-        margins_outside: "Grand fond",
+        margins_inside: "Petit fond (intérieur)",
+        margins_outside: "Grand fond (extérieur)",
         pagination: "Pagination",
+        pagn_starts_on_page: "Le décompte de page démarre à la page",
         border_radius: "Coins arrondis",
         photo: "Photo",
         remove_this_image: "Supprimer cette image",

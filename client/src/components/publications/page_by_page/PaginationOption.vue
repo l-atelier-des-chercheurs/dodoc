@@ -2,8 +2,12 @@
   <div>
     <fieldset>
       <legend class="u-label">{{ $t("pagination") }}</legend>
-
-      <br />
+      <div class="u-instructions">
+        <small>{{ $t("pagination_instructions") }}</small>
+        <small v-if="is_spread"
+          >&#32;{{ $t("pagination_instructions_spread") }}</small
+        >
+      </div>
 
       <div class="u-sameRow">
         <ToggleInput
@@ -12,6 +16,33 @@
           :disabled="!edit_mode"
         />
       </div>
+      <br />
+
+      <div class="">
+        <DLabel :str="$t('pagn_starts_on_page')" />
+        <input
+          type="number"
+          v-model.number="pagn_starts_on_page"
+          :disabled="!edit_mode"
+        />
+      </div>
+
+      <br />
+      <div class="u-sameRow">
+        <div class="">
+          <DLabel
+            :str="
+              is_spread ? $t('distance_to_outside') : $t('distance_to_right')
+            "
+          />
+          <input type="number" v-model.number="right" :disabled="!edit_mode" />
+        </div>
+        <div class="">
+          <DLabel :str="$t('distance_to_bottom')" />
+          <input type="number" v-model.number="bottom" :disabled="!edit_mode" />
+        </div>
+      </div>
+
       <br />
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
@@ -30,6 +61,7 @@
 export default {
   props: {
     publication: Object,
+    is_spread: Boolean,
   },
   components: {},
   data() {
@@ -39,6 +71,9 @@ export default {
       can_edit: true,
 
       enable_pagination: this.publication.enable_pagination || false,
+      pagn_starts_on_page: this.publication.pagn_starts_on_page || 1,
+      right: this.publication.pagn_right || 2,
+      bottom: this.publication.pagn_bottom || 2,
     };
   },
   created() {},
@@ -54,6 +89,9 @@ export default {
       this.edit_mode = false;
       this.is_saving = false;
       this.enable_pagination = this.publication.enable_pagination;
+      this.pagn_starts_on_page = this.publication.pagn_starts_on_page;
+      this.right = this.publication.pagn_right || 2;
+      this.bottom = this.publication.pagn_bottom || 2;
     },
     async updatePagination() {
       this.is_saving = true;
@@ -61,6 +99,9 @@ export default {
       try {
         const new_meta = {
           enable_pagination: this.enable_pagination,
+          pagn_starts_on_page: this.pagn_starts_on_page,
+          pagn_right: this.right,
+          pagn_bottom: this.bottom,
         };
         await this.$api.updateMeta({
           path: this.publication.$path,

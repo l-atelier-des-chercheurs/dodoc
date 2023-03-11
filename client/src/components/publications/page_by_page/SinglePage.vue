@@ -79,8 +79,12 @@
           />
         </svg>
 
-        <div class="_pagination" v-if="pagination" :style="pagination_styles">
-          {{ page_number }}
+        <div
+          class="_pagination"
+          v-if="pagination && page_number_corrected > 0"
+          :style="pagination_styles"
+        >
+          {{ page_number_corrected }}
         </div>
 
         <svg
@@ -197,6 +201,9 @@ export default {
 
       return props;
     },
+    page_number_corrected() {
+      return this.page_number - this.pagination.pagination_start_on_page;
+    },
     pagination_styles() {
       const props = {};
 
@@ -311,6 +318,6 @@ export default {
   bottom: var(--pagination-bottom);
   font-weight: 500;
   line-height: 0.5;
-  font-size: var(--sl-font-size-x-large);
+  font-size: var(--sl-font-size-large);
 }
 </style>
