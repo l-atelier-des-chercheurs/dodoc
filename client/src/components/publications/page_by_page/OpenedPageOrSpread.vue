@@ -30,12 +30,12 @@
               </div>
               <sl-icon name="arrow-right-short" label="" />
               <div>
-                <span v-if="is_spread">
-                  {{ $t("spread") }} {{ active_spread_index + 1 }}
+                <!-- <span v-if="is_spread">
+                  {{ $t("spread") }} {{ active_spread_index }}
                 </span>
-                <span v-else>
-                  {{ $t("page") }} {{ active_page_number + 1 }}
-                </span>
+                <span v-else> -->
+                {{ $t("page") }} {{ active_page_number + 1 }}
+                <!-- </span> -->
               </div>
             </div>
             <div class="_content">
@@ -80,6 +80,8 @@
                   :snap_to_grid="snap_to_grid"
                   :gridstep_in_cm="gridstep_in_cm"
                   :margins="margins"
+                  :page_number="active_page_number"
+                  :pagination="pagination"
                   :active_module="active_module"
                   :can_edit="can_edit"
                   @close="setPageActive(false)"
@@ -92,8 +94,6 @@
                   class="_spreadNavigator--page"
                   :class="{
                     'is--active': page.id === page_opened_id,
-                    'is--left': index === 0,
-                    'is--right': index === 1,
                   }"
                   @click.self="setActiveModule(false)"
                 >
@@ -111,7 +111,10 @@
                       :snap_to_grid="snap_to_grid"
                       :gridstep_in_cm="gridstep_in_cm"
                       :margins="margins"
+                      :page_number="active_spread_index * 2 + index"
+                      :pagination="pagination"
                       :active_module="active_module"
+                      :page_is_left="index === 0"
                       :can_edit="can_edit && page.id === page_opened_id"
                       @close="setPageActive(false)"
                     />
@@ -150,6 +153,7 @@ export default {
     page_width: Number,
     page_height: Number,
     margins: Object,
+    pagination: [Boolean, Object],
     can_edit: Boolean,
   },
   components: {
@@ -201,13 +205,6 @@ export default {
     },
   },
   computed: {
-    preview_zoom() {
-      return this.calculateZoomToFit({
-        width: this.page_width,
-        height: this.page_height,
-        desired_largest_dimension: 50,
-      });
-    },
     active_module() {
       if (!this.active_module_path) return false;
 
@@ -414,28 +411,6 @@ export default {
   position: relative;
   flex: 1 1 50%;
   // padding: calc(var(--spacing) * 4);
-
-  &.is--left {
-    // padding-right: 0;
-    ::v-deep {
-      // ._pagecontainer {
-      //   transform-origin: 100% 0%;
-      //   margin-right: 0;
-      // }
-      ._margins {
-        transform: scale(-1, 1);
-      }
-    }
-  }
-  &.is--right {
-    // padding-left: 0;
-    ::v-deep {
-      // ._pagecontainer {
-      //   transform-origin: 0% 0%;
-      //   margin-left: 0;
-      // }
-    }
-  }
 
   ::v-deep {
     ._pagecontent {

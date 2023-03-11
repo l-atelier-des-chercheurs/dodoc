@@ -129,6 +129,7 @@
         :page_width="publication.page_width"
         :page_height="publication.page_height"
         :margins="margins"
+        :pagination="pagination"
         :can_edit="can_edit"
         @togglePage="$emit('togglePage', $event)"
         @updatePageOptions="updatePageOptions"
@@ -203,6 +204,13 @@ export default {
         right: this.publication.page_margin_right || 0,
         top: this.publication.page_margin_top || 0,
         bottom: this.publication.page_margin_bottom || 0,
+      };
+    },
+    pagination() {
+      if (!this.publication.enable_pagination) return false;
+      return {
+        right: 2,
+        bottom: 3,
       };
     },
   },

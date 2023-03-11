@@ -1,36 +1,17 @@
 <template>
   <div>
     <fieldset>
-      <legend class="u-label">{{ $t("margins") }}</legend>
-      <div class="u-instructions">
-        <small>{{ $t("margins_instructions") }}</small>
-      </div>
+      <legend class="u-label">{{ $t("pagination") }}</legend>
 
       <br />
 
       <div class="u-sameRow">
-        <div class="">
-          <DLabel :str="$t('top')" />
-          <input type="number" v-model.number="top" :disabled="!edit_mode" />
-        </div>
-        <div class="">
-          <DLabel :str="$t('bottom')" />
-          <input type="number" v-model.number="bottom" :disabled="!edit_mode" />
-        </div>
+        <ToggleInput
+          :content.sync="enable_pagination"
+          :label="$t('enable')"
+          :disabled="!edit_mode"
+        />
       </div>
-      <br />
-      <div class="u-sameRow">
-        <div class="">
-          <DLabel :str="is_spread ? $t('margins_inside') : $t('left')" />
-          <input type="number" v-model.number="left" :disabled="!edit_mode" />
-        </div>
-        <br />
-        <div class="">
-          <DLabel :str="is_spread ? $t('margins_outside') : $t('right')" />
-          <input type="number" v-model.number="right" :disabled="!edit_mode" />
-        </div>
-      </div>
-
       <br />
       <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
@@ -38,7 +19,7 @@
         <SaveCancelButtons
           class="_scb"
           :is_saving="is_saving"
-          @save="updateMargins"
+          @save="updatePagination"
           @cancel="cancel"
         />
       </div>
@@ -49,7 +30,6 @@
 export default {
   props: {
     publication: Object,
-    is_spread: Boolean,
   },
   components: {},
   data() {
@@ -58,10 +38,7 @@ export default {
       is_saving: false,
       can_edit: true,
 
-      top: this.publication.page_margin_top || 0,
-      bottom: this.publication.page_margin_bottom || 0,
-      left: this.publication.page_margin_left || 0,
-      right: this.publication.page_margin_right || 0,
+      enable_pagination: this.publication.enable_pagination || false,
     };
   },
   created() {},
@@ -76,17 +53,14 @@ export default {
     cancel() {
       this.edit_mode = false;
       this.is_saving = false;
-      // todo interrupt updateMeta
+      this.enable_pagination = this.publication.enable_pagination;
     },
-    async updateMargins() {
+    async updatePagination() {
       this.is_saving = true;
 
       try {
         const new_meta = {
-          page_margin_top: this.top,
-          page_margin_bottom: this.bottom,
-          page_margin_left: this.left,
-          page_margin_right: this.right,
+          enable_pagination: this.enable_pagination,
         };
         await this.$api.updateMeta({
           path: this.publication.$path,

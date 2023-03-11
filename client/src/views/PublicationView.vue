@@ -14,12 +14,18 @@
         <!-- Publication view project = {{ project }} <br />
         publication = {{ publication }} -->
         <div v-if="publication.template === 'page_by_page'" class="_pages">
-          <div class="_page" v-for="page in pages" :key="'page-' + page.id">
+          <div
+            class="_page"
+            v-for="(page, page_number) in pages"
+            :key="'page-' + page.id"
+          >
             <SinglePage
               :context="'full'"
               :page_modules="getModulesForPage({ modules, page_id: page.id })"
               :page_color="page.page_color"
               :can_edit="false"
+              :page_number="page_number"
+              :pagination="pagination"
             />
           </div>
         </div>
@@ -62,6 +68,13 @@ export default {
   },
   watch: {},
   computed: {
+    pagination() {
+      if (!this.publication.enable_pagination) return false;
+      return {
+        right: 2,
+        bottom: 2,
+      };
+    },
     project_path() {
       return `/projects/${this.$route.params.project_slug}`;
     },

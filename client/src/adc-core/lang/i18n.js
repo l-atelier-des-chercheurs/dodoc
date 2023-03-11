@@ -187,6 +187,7 @@ export default function () {
         bottom: "En bas",
         margins_inside: "Petit fond",
         margins_outside: "Grand fond",
+        pagination: "Pagination",
         border_radius: "Coins arrondis",
         photo: "Photo",
         remove_this_image: "Supprimer cette image",
@@ -353,6 +354,7 @@ export default function () {
         all_rights_reserved_explanations: "<i>Explications à ajouter</i>",
 
         drop_here: "Déposer ici",
+        enable: "Activer",
 
         // effets
         effects: "Effets",

@@ -426,6 +426,9 @@
             },
             "page_margin_right": {
               "type": "number"
+            },
+            "enable_pagination": {
+              "type": "boolean"
             }
           },
           "$files": {
