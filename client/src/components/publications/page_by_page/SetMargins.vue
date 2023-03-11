@@ -11,23 +11,43 @@
       <div class="u-sameRow">
         <div class="">
           <DLabel :str="$t('top')" />
-          <input type="number" v-model.number="top" :disabled="!edit_mode" />
+          <div class="u-inputGroup">
+            <input type="number" v-model.number="top" :disabled="!edit_mode" />
+            <span class="u-suffix">cm</span>
+          </div>
         </div>
         <div class="">
           <DLabel :str="$t('bottom')" />
-          <input type="number" v-model.number="bottom" :disabled="!edit_mode" />
+          <div class="u-inputGroup">
+            <input
+              type="number"
+              v-model.number="bottom"
+              :disabled="!edit_mode"
+            />
+            <span class="u-suffix">cm</span>
+          </div>
         </div>
       </div>
       <br />
       <div class="u-sameRow">
         <div class="">
           <DLabel :str="is_spread ? $t('margins_inside') : $t('left')" />
-          <input type="number" v-model.number="left" :disabled="!edit_mode" />
+          <div class="u-inputGroup">
+            <input type="number" v-model.number="left" :disabled="!edit_mode" />
+            <span class="u-suffix">cm</span>
+          </div>
         </div>
         <br />
         <div class="">
           <DLabel :str="is_spread ? $t('margins_outside') : $t('right')" />
-          <input type="number" v-model.number="right" :disabled="!edit_mode" />
+          <div class="u-inputGroup">
+            <input
+              type="number"
+              v-model.number="right"
+              :disabled="!edit_mode"
+            />
+            <span class="u-suffix">cm</span>
+          </div>
         </div>
       </div>
 

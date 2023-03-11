@@ -21,19 +21,25 @@
       <div class="u-sameRow">
         <div class="">
           <DLabel :str="$t('width')" />
-          <input
-            type="number"
-            :disabled="!edit_mode"
-            v-model.number="new_page_width"
-          />
+          <div class="u-inputGroup">
+            <input
+              type="number"
+              :disabled="!edit_mode"
+              v-model.number="new_page_width"
+            />
+            <span class="u-suffix">cm</span>
+          </div>
         </div>
         <div class="">
           <DLabel :str="$t('height')" />
-          <input
-            type="number"
-            :disabled="!edit_mode"
-            v-model.number="new_page_height"
-          />
+          <div class="u-inputGroup">
+            <input
+              type="number"
+              :disabled="!edit_mode"
+              v-model.number="new_page_height"
+            />
+            <span class="u-suffix">cm</span>
+          </div>
         </div>
       </div>
 

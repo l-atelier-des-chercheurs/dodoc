@@ -35,11 +35,25 @@
               is_spread ? $t('distance_to_outside') : $t('distance_to_right')
             "
           />
-          <input type="number" v-model.number="right" :disabled="!edit_mode" />
+          <div class="u-inputGroup">
+            <input
+              type="number"
+              v-model.number="right"
+              :disabled="!edit_mode"
+            />
+            <span class="u-suffix">cm</span>
+          </div>
         </div>
         <div class="">
           <DLabel :str="$t('distance_to_bottom')" />
-          <input type="number" v-model.number="bottom" :disabled="!edit_mode" />
+          <div class="u-inputGroup">
+            <input
+              type="number"
+              v-model.number="bottom"
+              :disabled="!edit_mode"
+            />
+            <span class="u-suffix">cm</span>
+          </div>
         </div>
       </div>
 
