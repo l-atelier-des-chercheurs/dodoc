@@ -35,13 +35,12 @@
               <b class="">
                 {{ $t("page") }}
               </b>
-              <NumberInput
+              <SelectField
                 :key="'page-' + index"
-                :value="index + 1"
-                :min="1"
-                :max="pages.length"
-                :step="1"
-                @save="
+                :content="index"
+                :can_edit="can_edit"
+                :options="all_pages_in_select"
+                @update="
                   movePage({
                     old_position: index,
                     new_position: $event - 1,
@@ -86,13 +85,12 @@
                 </div>
                 <div class="_label">
                   <b>{{ $t("page") }}</b>
-                  <NumberInput
+                  <SelectField
                     :key="'page-' + index * 2 + iindex"
-                    :value="index * 2 + iindex"
-                    :min="1"
-                    :max="spreads.length * 2"
-                    :step="1"
-                    @save="
+                    :content="index * 2 + iindex"
+                    :can_edit="can_edit"
+                    :options="all_pages_in_select"
+                    @update="
                       movePage({
                         old_position: index * 2 + iindex - 1,
                         new_position: $event - 1,
@@ -168,6 +166,11 @@ export default {
     },
     is_spread() {
       return this.publication.page_spreads === true;
+    },
+    all_pages_in_select() {
+      return new Array(this.pages.length)
+        .fill(null)
+        .map((i, index) => ({ key: index + 1, text: index + 1 }));
     },
     page_preview_zoom() {
       return this.calculateZoomToFit({
@@ -307,8 +310,9 @@ export default {
 ._label {
   display: flex;
   justify-content: center;
-  gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 4) 0;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 8);
   margin: calc(var(--spacing) / 8);
   background: rgba(0, 0, 0, 0.06);
   border-radius: 4px;

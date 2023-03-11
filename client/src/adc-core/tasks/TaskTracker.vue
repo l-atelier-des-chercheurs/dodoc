@@ -4,7 +4,7 @@
     <div v-for="task in tasks_tracked" class="_task" :key="task.id">
       <div class="u-sameRow">
         <div>{{ formatDateToHuman(task.date_started) }}</div>
-        <div>{{ task.instructions }}</div>
+        <div>{{ task.instructions.recipe }}</div>
         <div>{{ task.event }}</div>
         <div>
           <b>{{ task.progress }}%</b>
