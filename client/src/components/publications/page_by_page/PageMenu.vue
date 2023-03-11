@@ -115,7 +115,7 @@
                 :value="page_color"
                 @save="
                   $emit('updatePageOptions', {
-                    active_page_number,
+                    page_number: active_page_number,
                     value: { page_color: $event },
                   })
                 "
