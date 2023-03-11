@@ -100,7 +100,7 @@ export default function () {
 
         signup_password: "mot de passe pour la création d’un compte",
         signup_password_instructions:
-          "Limiter la création de compte (et donc de projets) aux personnes munis de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent se créer un compte et publier des contenus.",
+          "Limiter la création de compte (et donc de projets) aux personnes munies de ce mot de passe. Laisser le champ vide pour que toutes les personnes qui accèdent puissent se créer un compte et publier des contenus.",
 
         login: "se connecter",
         logout: "se déconnecter",
@@ -184,7 +184,7 @@ export default function () {
         pagination_instructions:
           "Indiquez ici les règlages souhaités pour l’affichage du numéro de la page.",
         pagination_instructions_spread:
-          "Habituellement, les pages de gauche d'un livre sont les pages pairs et les pages de droit sont impairs.",
+          "Habituellement, les pages de gauche d'un livre sont les pages paires et les pages de droite sont impaires.",
         distance_to_right: "Distance au bord droit",
         distance_to_bottom: "Distance au bord du bas",
         distance_to_outside: "Distance au bord extérieur",
@@ -498,7 +498,7 @@ export default function () {
         add_authors: "Ajouter des contributeur·rice·s",
         ellipsis: "Ellipse",
         rectangle: "Rectangle",
-        line: "ligne",
+        line: "Ligne",
         arrow: "Flèche",
 
         or_paste_an_image: "Ou coller une image depuis le presse-papier",
@@ -520,7 +520,7 @@ export default function () {
         move_down: "Descendre",
         source_project: "Projet source",
         media_pickers_instr:
-          "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennet à un autre projet, ils seront d’abord importés dans le projet actuel.",
+          "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",
 
         current: "Actuel",
         save_on_this_device: "Sauvegarder pour cet appareil",
@@ -528,7 +528,7 @@ export default function () {
 
         "module.label.text": "Bloc de texte",
         "module.label.mosaic": "Mosaïque de médias",
-        "module.label.carousel": "Caroussel",
+        "module.label.carousel": "Carrousel",
         object_fit_cover: "Remplir le cadre",
         object_fit_contain: "Remplir sans dépasser",
 
