@@ -197,6 +197,8 @@ export default function () {
         margins_outside: "Grand fond (extérieur)",
         pagination: "Pagination",
         pagn_starts_on_page: "Le décompte de page démarre à la page",
+        hide_pagination: "Masquer la pagination",
+        hide_pagination_instr: "Concerne uniquement cette page",
         border_radius: "Coins arrondis",
         photo: "Photo",
         remove_this_image: "Supprimer cette image",

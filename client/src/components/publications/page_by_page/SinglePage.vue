@@ -81,7 +81,7 @@
 
         <div
           class="_pagination"
-          v-if="pagination && page_number_corrected > 0"
+          v-if="pagination && !hide_pagination && page_number_corrected > 0"
           :style="pagination_styles"
         >
           {{ page_number_corrected }}
@@ -147,6 +147,7 @@ export default {
     page_width: Number,
     page_height: Number,
     page_color: String,
+    hide_pagination: Boolean,
     zoom: { type: Number, default: 1 },
     scale: { type: Number, default: 1 },
     show_grid: { type: Boolean, default: false },

@@ -23,6 +23,7 @@
               :context="'full'"
               :page_modules="getModulesForPage({ modules, page_id: page.id })"
               :page_color="page.page_color"
+              :hide_pagination="page.hide_pagination === true"
               :can_edit="false"
               :page_number="page_number"
               :pagination="pagination"

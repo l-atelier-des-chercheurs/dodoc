@@ -120,6 +120,19 @@
                   })
                 "
               />
+
+              <ToggleInput
+                v-if="has_pagination"
+                class="u-spacingBottom"
+                :content="hide_pagination"
+                :label="$t('hide_pagination')"
+                @update:content="
+                  $emit('updatePageOptions', {
+                    page_number: active_page_number,
+                    value: { hide_pagination: $event },
+                  })
+                "
+              />
             </div>
           </div>
 
@@ -438,6 +451,7 @@ export default {
     snap_to_grid: Boolean,
     gridstep_in_cm: Number,
     page_color: String,
+    pagination: [Boolean, Object],
     publication_path: String,
     page_modules: Array,
     page_opened_id: String,
@@ -479,6 +493,14 @@ export default {
           this.active_module.module_type
         )
       );
+    },
+    has_pagination() {
+      return (
+        this.active_page_number - this.pagination.pagination_start_on_page >= 0
+      );
+    },
+    hide_pagination() {
+      return this.pages[this.active_page_number].hide_pagination === true;
     },
     new_module_meta() {
       const z_index =
