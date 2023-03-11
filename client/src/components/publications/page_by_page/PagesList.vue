@@ -73,6 +73,10 @@
                     :page_width="publication.page_width"
                     :page_height="publication.page_height"
                     :page_color="page.page_color"
+                    :page_number="index * 2 + iindex"
+                    :pagination="pagination"
+                    :hide_pagination="page.hide_pagination === true"
+                    :page_is_left="iindex === 0"
                     :can_edit="false"
                   />
                   <button
@@ -181,25 +185,9 @@ export default {
     },
     spreads() {
       if (!this.is_spread) return false;
-      // turn pages array into [[{id:""}, {id:""}], [{id:""}, {id:""}], [{id:""}, {id:""}], …]
-      const number_of_spreads = Math.floor(this.pages.length / 2 + 1);
-      let spreads = [];
-      let index = 0;
-
-      for (let i = 0; i < number_of_spreads; i++) {
-        if (spreads.length === 0) {
-          spreads.push([false, this.pages[index]]);
-          index += 1;
-        } else {
-          const left_page = this.pages[index];
-          const right_page =
-            index + 1 < this.pages.length ? this.pages[index + 1] : false;
-
-          spreads.push([left_page, right_page]);
-          index += 2;
-        }
-      }
-      return spreads;
+      return this.makeSpread({
+        pages: this.pages,
+      });
     },
     margins() {
       return {

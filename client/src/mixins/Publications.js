@@ -25,5 +25,26 @@ export default {
         pagination_start_on_page: publication.pagn_starts_on_page - 1 || 1,
       };
     },
+    makeSpread({ pages }) {
+      // turn pages array into [[{id:""}, {id:""}], [{id:""}, {id:""}], [{id:""}, {id:""}], …]
+      const number_of_spreads = Math.floor(pages.length / 2 + 1);
+      let spreads = [];
+      let index = 0;
+
+      for (let i = 0; i < number_of_spreads; i++) {
+        if (spreads.length === 0) {
+          spreads.push([false, pages[index]]);
+          index += 1;
+        } else {
+          const left_page = pages[index];
+          const right_page =
+            index + 1 < pages.length ? pages[index + 1] : false;
+
+          spreads.push([left_page, right_page]);
+          index += 2;
+        }
+      }
+      return spreads;
+    },
   },
 };
