@@ -63,7 +63,7 @@
               />
             </div>
           </div>
-          <div class="">
+          <div class="_pagePan">
             <PanZoom :scale.sync="scale" :page_opened_id="page_opened_id">
               <div class="_pageCont">
                 <SinglePage
@@ -493,5 +493,9 @@ export default {
       margin: 0 calc(var(--spacing) / 2) calc(var(--spacing) * 2);
     }
   }
+}
+._pagePan {
+  width: 100%;
+  height: 100%;
 }
 </style>
