@@ -10,18 +10,55 @@
       <div v-else-if="fetch_project_error" key="err">
         {{ fetch_project_error }}
       </div>
-      <div v-else key="publication" :style="page_size">
+      <div v-else key="publication">
         <!-- Publication view project = {{ project }} <br />
         publication = {{ publication }} -->
         <div v-if="publication.template === 'page_by_page'" class="_pages">
-          <div class="_page" v-for="page in pages" :key="'page-' + page.id">
-            <SinglePage
-              :context="'full'"
-              :page_modules="getModulesForPage({ modules, page_id: page.id })"
-              :page_color="page.page_color"
-              :can_edit="false"
-            />
-          </div>
+          <template v-if="!is_spread">
+            <div
+              class="_page"
+              v-for="(page, page_number) in pages"
+              :key="'page-' + page.id"
+            >
+              <SinglePage
+                :context="'full'"
+                :page_modules="getModulesForPage({ modules, page_id: page.id })"
+                :page_color="page.page_color"
+                :hide_pagination="page.hide_pagination === true"
+                :can_edit="false"
+                :page_number="page_number"
+                :pagination="pagination"
+              />
+            </div>
+          </template>
+          <template v-else>
+            <div
+              class="_spread"
+              v-for="(spread, s_index) in spreads"
+              :key="s_index"
+            >
+              <div
+                v-for="(page, index) in spread"
+                :key="page.id ? page.id : index"
+                class="_spread--page"
+              >
+                <template v-if="page">
+                  <SinglePage
+                    :context="'full'"
+                    :page_modules="
+                      getModulesForPage({ modules, page_id: page.id })
+                    "
+                    :page_color="page.page_color"
+                    :hide_pagination="page.hide_pagination === true"
+                    :page_number="s_index * 2 + index"
+                    :pagination="pagination"
+                    :can_edit="false"
+                  />
+                </template>
+                <div v-else class="_noPage" />
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </transition>
@@ -62,6 +99,9 @@ export default {
   },
   watch: {},
   computed: {
+    pagination() {
+      return this.setPaginationFromPublication(this.publication);
+    },
     project_path() {
       return `/projects/${this.$route.params.project_slug}`;
     },
@@ -73,6 +113,15 @@ export default {
     },
     modules() {
       return this.publication.$files || [];
+    },
+    is_spread() {
+      return this.publication.page_spreads === true;
+    },
+    spreads() {
+      if (!this.is_spread) return false;
+      return this.makeSpread({
+        pages: this.pages,
+      });
     },
   },
   methods: {
@@ -111,7 +160,8 @@ export default {
     padding: calc(var(--spacing) * 2);
   }
 }
-._page {
+._page,
+._spread {
   page-break-inside: avoid;
   -webkit-region-break-inside: avoid;
 
@@ -151,5 +201,21 @@ body {
     // fixes in Firefox, but bugs in chrome/puppeteer
     // overflow: visible;
   }
+}
+
+._spread {
+  display: flex;
+  flex-flow: row nowrap;
+  width: max-content;
+
+  > * {
+    position: relative;
+    flex: 1 1 50%;
+  }
+}
+
+._noPage {
+  width: calc(var(--page-width));
+  height: calc(var(--page-height));
 }
 </style>

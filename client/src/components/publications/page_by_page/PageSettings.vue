@@ -18,11 +18,19 @@
       :publication="publication"
       :is_spread="publication.page_spreads === true"
     />
+
+    <br />
+
+    <PaginationOption
+      :publication="publication"
+      :is_spread="publication.page_spreads === true"
+    />
   </div>
 </template>
 <script>
 import WidthHeightField from "@/components/publications/page_by_page/WidthHeightField.vue";
 import SetMargins from "@/components/publications/page_by_page/SetMargins.vue";
+import PaginationOption from "@/components/publications/page_by_page/PaginationOption.vue";
 
 export default {
   props: {
@@ -31,6 +39,7 @@ export default {
   components: {
     WidthHeightField,
     SetMargins,
+    PaginationOption,
   },
   data() {
     return {};

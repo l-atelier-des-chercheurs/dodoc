@@ -20,12 +20,15 @@
             :resolution="1600"
             :context="'full'"
           />
+
           <div class="_btnRow" v-if="can_edit">
             <button
               type="button"
               class="u-buttonLink"
               v-if="
-                (is_multiple_medias || context === 'page_by_page') &&
+                (is_multiple_medias ||
+                  (context === 'page_by_page' &&
+                    !single_media_displayed_at_full_ratio)) &&
                 !(
                   !media_with_linked.objectFit ||
                   media_with_linked.objectFit === 'cover'
@@ -39,7 +42,9 @@
               type="button"
               class="u-buttonLink"
               v-if="
-                (is_multiple_medias || context === 'page_by_page') &&
+                (is_multiple_medias ||
+                  (context === 'page_by_page' &&
+                    !single_media_displayed_at_full_ratio)) &&
                 media_with_linked.objectFit !== 'contain'
               "
               @click="frameFit({ index, opt: { objectFit: 'contain' } })"
@@ -132,6 +137,15 @@ export default {
       return this.publimodule.$path.substring(
         0,
         this.publimodule.$path.lastIndexOf("/")
+      );
+    },
+    single_media_displayed_at_full_ratio() {
+      if (this.medias_with_linked.length > 1) return false;
+
+      const ratio = this.medias_with_linked[0]._linked_media.$infos?.ratio;
+      return (
+        Math.round(ratio * 10) ===
+        Math.round((this.publimodule.height / this.publimodule.width) * 10)
       );
     },
     medias_with_linked() {

@@ -51,7 +51,6 @@
           <rect width="100%" height="100%" fill="url(#grid)"></rect>
         </svg>
 
-        <!-- <transition-group name="scaleInFade"> -->
         <MoveableItem
           class="_item"
           v-for="publimodule in page_modules"
@@ -63,10 +62,9 @@
           :can_edit="can_edit"
           :is_active="active_module.$path === publimodule.$path"
         />
-        <!-- </transition-group> -->
 
         <svg
-          v-if="can_edit && Object.keys(margins)"
+          v-if="can_edit && l_margins"
           class="_margins"
           width="100%"
           height="100%"
@@ -74,15 +72,23 @@
           fill="transparent"
         >
           <rect
-            :x="magnify(margins.left)"
-            :y="magnify(margins.top)"
-            :width="magnify(page_width - margins.left - margins.right)"
-            :height="magnify(page_height - margins.top - margins.bottom)"
+            :x="magnify(l_margins.left)"
+            :y="magnify(l_margins.top)"
+            :width="magnify(page_width - l_margins.left - l_margins.right)"
+            :height="magnify(page_height - l_margins.top - l_margins.bottom)"
           />
         </svg>
 
+        <div
+          class="_pagination"
+          v-if="pagination && !hide_pagination && page_number_corrected > 0"
+          :style="pagination_styles"
+        >
+          {{ page_number_corrected }}
+        </div>
+
         <svg
-          v-if="can_edit && margins"
+          v-if="can_edit && l_margins"
           class="_pageBorders"
           width="100%"
           height="100%"
@@ -141,28 +147,41 @@ export default {
     page_width: Number,
     page_height: Number,
     page_color: String,
+    hide_pagination: Boolean,
     zoom: { type: Number, default: 1 },
     scale: { type: Number, default: 1 },
     show_grid: { type: Boolean, default: false },
     snap_to_grid: { type: Boolean, default: false },
     gridstep_in_cm: Number,
     margins: Object,
-    can_edit: Boolean,
+    page_number: Number,
+    pagination: [Boolean, Object],
     active_module: [Boolean, Object],
+    page_is_left: Boolean,
+    can_edit: Boolean,
   },
   components: {
     MoveableItem,
   },
   data() {
-    return {
-      items: [{ src: "images/i_add_publi.svg" }, { src: "images/i_add.svg" }],
-    };
+    return {};
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
+    l_margins() {
+      if (Object.keys(this.margins).length === 0) return false;
+      if (this.page_is_left === true)
+        return {
+          left: this.margins.right,
+          right: this.margins.left,
+          top: this.margins.top,
+          bottom: this.margins.bottom,
+        };
+      else return this.margins;
+    },
     gridstep() {
       if (!this.gridstep_in_cm) return 0;
       return this.magnify(this.gridstep_in_cm);
@@ -183,6 +202,26 @@ export default {
 
       return props;
     },
+    page_number_corrected() {
+      return this.page_number - this.pagination.pagination_start_on_page;
+    },
+    pagination_styles() {
+      const props = {};
+
+      if (this.page_is_left === true) {
+        props["--pagination-left"] = `${this.magnify(this.pagination.right)}px`;
+      } else {
+        props["--pagination-right"] = `${this.magnify(
+          this.pagination.right
+        )}px`;
+      }
+
+      props["--pagination-bottom"] = `${this.magnify(
+        this.pagination.bottom
+      )}px`;
+
+      return props;
+    },
   },
   methods: {
     magnify(m) {
@@ -200,7 +239,7 @@ export default {
   width: calc(var(--page-width));
   height: calc(var(--page-height));
   padding: 0;
-  margin: calc(var(--spacing) * 4);
+  // margin: calc(var(--spacing) * 4);
 
   transform: scale(var(--zoom));
   transform-origin: 0 0;
@@ -271,5 +310,15 @@ export default {
 
   stroke-width: 2px;
   stroke: hsl(280, 97%, 70%);
+}
+
+._pagination {
+  position: absolute;
+  right: var(--pagination-right);
+  left: var(--pagination-left);
+  bottom: var(--pagination-bottom);
+  font-weight: 500;
+  line-height: 0.5;
+  font-size: var(--sl-font-size-large);
 }
 </style>

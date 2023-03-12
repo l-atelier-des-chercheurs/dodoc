@@ -91,6 +91,7 @@ export default function () {
 
         this.socket.on("adminSettingsUpdated", this.adminSettingsUpdated);
         this.socket.on("taskStatus", this.taskStatus);
+        this.socket.on("taskEnded", this.taskEnded);
       },
       disconnectSocket() {
         this.socket.disconnect();
@@ -259,8 +260,11 @@ export default function () {
             this.$set(this.store["_admin"], key, value);
           });
       },
-      taskStatus({ task_id, message }) {
-        this.$eventHub.$emit("task.status", { task_id, message });
+      taskStatus({ task_id, progress }) {
+        this.$eventHub.$emit("task.status", { task_id, progress });
+      },
+      taskEnded({ task_id, message }) {
+        this.$eventHub.$emit("task.ended", { task_id, message });
       },
       async restartDodoc() {
         return await this.$axios.post(`_admin`);
@@ -445,8 +449,7 @@ export default function () {
           });
 
         const task_id = response.data.task_id;
-        this.$api.join({ room: "task_" + task_id });
-        // todo leave room when task ends
+        this.$eventHub.$emit("task.started", { task_id, instructions });
       },
       async updateMeta({ path, new_meta }) {
         const response = await this.$axios
@@ -525,6 +528,7 @@ export default function () {
 
 function _getErrorMsgFromCode(code) {
   if (code === "ENOENT") return "folder_is_missing";
+  // submitted_password_is_wrong
 
   return code;
 }

@@ -1,16 +1,12 @@
 <template>
   <div>
     <div class="_player">
-      <MediaContent
-        v-if="is_playing"
-        :file="current_media"
-        :resolution="1600"
-      />
-      <div v-else class="_miniListPreview">
+      <MediaContent :file="current_media" :resolution="1600" />
+      <div v-if="!is_playing" class="_miniListPreview">
         <MediaContent
           v-for="media in medias"
-          :key="media.$path"
-          :file="current_media"
+          :key="'previews-' + media.$path"
+          :file="media"
           :resolution="1600"
         />
       </div>
@@ -108,6 +104,8 @@ export default {
   height: 100%;
 
   display: flex;
+  flex-flow: column nowrap;
+
   justify-content: center;
   align-items: center;
   background: black;
@@ -147,8 +145,8 @@ export default {
 ._miniListPreview {
   display: flex;
   flex-flow: row wrap;
-  height: 100%;
-  width: 100%;
+  // height: 100%;
+  // width: 100%;
   position: relative;
   gap: 1px;
 

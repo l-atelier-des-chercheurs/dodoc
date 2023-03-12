@@ -7,17 +7,19 @@
     }"
   >
     <span label="Panneaux" class="_paneList2">
-      <span
-        class="_projectTitle"
+      <button
+        type="button"
+        class="u-button u-button_transparent _projectTitle"
         :class="{
           'is--shown': is_stickied_to_top,
         }"
+        @click="scrollToTop"
       >
         <img v-if="cover_thumb" :src="cover_thumb" />
         <span>
           {{ project.title }}
         </span>
-      </span>
+      </button>
       <span placement="top" class="_projectPanes" ref="drawer">
         <SlickList
           v-if="can_edit"
@@ -194,6 +196,13 @@ export default {
       if (this.$el.getBoundingClientRect().y <= 10)
         this.is_stickied_to_top = true;
       else this.is_stickied_to_top = false;
+    },
+    scrollToTop() {
+      document.body.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
     },
     removePane(type) {
       this.project_panes = this.project_panes.filter((pp) => pp.type !== type);
@@ -449,7 +458,8 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  padding: 0;
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   font-weight: 700;
   opacity: 0;
   transform: translateY(-100%);

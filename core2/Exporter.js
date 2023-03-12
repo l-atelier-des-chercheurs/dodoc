@@ -50,6 +50,9 @@ class Exporter {
 
     if (this.status === "aborted") {
       // todo remove full_path_to_file
+      this._notifyEnded({
+        event: "aborted",
+      });
       throw new Error(`aborted`);
     }
 
@@ -59,9 +62,9 @@ class Exporter {
       path_to_folder: this.path_to_parent_folder,
     });
 
-    this._notify({
-      event: "ffmpeg_compilation_in_progress",
-      progress_percent: 100,
+    this._notifyEnded({
+      event: "finished",
+      path: path.join(this.path_to_parent_folder, meta_filename),
     });
 
     return meta_filename;
@@ -89,10 +92,7 @@ class Exporter {
       // we need to copy all images to a temp folder with the right naming
       const images = await this._loadFilesInOrder();
 
-      this._notify({
-        event: "ffmpeg_compilation_in_progress",
-        progress_percent: 0,
-      });
+      this._notifyProgress(5);
 
       const width = images[0].$infos.width || 1280;
       const height = images[0].$infos.height || 720;
@@ -119,12 +119,10 @@ class Exporter {
         // await fs.remove(path.join(full_path_to_folder_in_cache, "*.jpeg"));
       };
 
-      this._notify({
-        event: "ffmpeg_compilation_in_progress",
-        progress_percent: 10,
-      });
+      this._notifyProgress(10);
 
       const frame_rate = this.instructions.frame_rate || 4;
+      const output_frame_rate = 30;
 
       this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
         .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
@@ -135,7 +133,7 @@ class Exporter {
         .inputFormat("lavfi")
         .duration(images.length / frame_rate)
         .size(`${width}x${height}`)
-        .outputFPS(30)
+        .outputFPS(output_frame_rate)
         .autopad()
         .addOptions(["-preset slow", "-tune animation"])
         .toFormat("mp4")
@@ -145,21 +143,25 @@ class Exporter {
         .on("progress", (progress) => {
           // value from 0 to 100
           const adv =
-            (progress.frames / ((images.length / frame_rate) * 30)) * 100;
-          const progress_percent = Math.round(10 + adv * 0.85);
+            (progress.frames /
+              ((images.length / frame_rate) * output_frame_rate)) *
+            100;
 
-          this._notify({
-            event: "ffmpeg_compilation_in_progress",
-            progress_percent,
-          });
+          const remap = function (val, in_min, in_max, out_min, out_max) {
+            return (
+              ((val - in_min) * (out_max - out_min)) / (in_max - in_min) +
+              out_min
+            );
+          };
+
+          const progress_percent = Math.round(remap(adv, 0, 100, 15, 90));
+
+          this._notifyProgress(progress_percent);
         })
         .on("end", async () => {
           dev.logverbose("Video ended");
 
-          this._notify({
-            event: "ffmpeg_compilation_in_progress",
-            progress_percent: 95,
-          });
+          this._notifyProgress(95);
 
           await _removeAllImages();
           return resolve(full_path_to_new_video);
@@ -169,8 +171,8 @@ class Exporter {
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
           await _removeAllImages();
-          this._notify({
-            event: "ffmpeg_compilation_failed",
+          this._notifyEnded({
+            event: "failed",
             info: err.message,
           });
 
@@ -179,10 +181,15 @@ class Exporter {
         .save(full_path_to_new_video);
     });
   }
-  _notify(message) {
-    const task_id = "task_" + this.id;
-    notifier.emit("taskStatus", task_id, {
-      task_id,
+  _notifyProgress(progress) {
+    notifier.emit("taskStatus", "task_" + this.id, {
+      task_id: this.id,
+      progress,
+    });
+  }
+  _notifyEnded(message) {
+    notifier.emit("taskEnded", "task_" + this.id, {
+      task_id: this.id,
       message,
     });
   }
@@ -222,20 +229,24 @@ class Exporter {
       height: this.instructions.page_height * 10 || 297,
     };
 
-    // let page_timeout = setTimeout(() => {
-    //   clearTimeout(page_timeout);
-    //   dev.error(`page timeout for ${url}`);
-    //   win.close();
-    //   return reject(new Error(`page-timeout`));
-    // }, 10_000);
+    let page_timeout = setTimeout(async () => {
+      clearTimeout(page_timeout);
+      dev.error(`page timeout for ${url}`);
+      if (browser) await browser.close();
+      return reject(new Error(`page-timeout`));
+    }, 10_000);
 
     const browser = await puppeteer.launch({
       headless: true,
       ignoreHTTPSErrors: true,
       args: ["--no-sandbox", "--font-render-hinting=none"],
     });
+
+    this._notifyProgress(15);
     const page = await browser.newPage();
+    this._notifyProgress(30);
     await page.goto(url);
+    this._notifyProgress(50);
 
     // Set screen size
     await page.setViewport({
@@ -247,6 +258,7 @@ class Exporter {
     page.emulateMediaType("print");
 
     await new Promise((r) => setTimeout(r, 1000));
+    this._notifyProgress(70);
 
     const full_path_to_folder_in_cache = await utils.createFolderInCache("pdf");
     const full_path_to_pdf = path.join(
@@ -260,6 +272,10 @@ class Exporter {
       width: `${document_size.width}mm`,
       height: `${document_size.height}mm`,
     });
+
+    this._notifyProgress(95);
+    clearTimeout(page_timeout);
+
     await browser.close();
 
     return full_path_to_pdf;

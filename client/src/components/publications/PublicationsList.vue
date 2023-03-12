@@ -4,7 +4,7 @@
       <h2>{{ $t("publications") }}</h2>
       <button
         type="button"
-        class="u-button u-button_bleuvert"
+        class="u-button u-button_bleuvert_fonce"
         v-if="can_edit"
         @click="show_create_publication = true"
       >

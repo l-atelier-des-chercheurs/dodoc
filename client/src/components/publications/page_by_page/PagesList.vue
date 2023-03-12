@@ -35,13 +35,12 @@
               <b class="">
                 {{ $t("page") }}
               </b>
-              <NumberInput
+              <SelectField
                 :key="'page-' + index"
-                :value="index + 1"
-                :min="1"
-                :max="pages.length"
-                :step="1"
-                @save="
+                :content="index"
+                :can_edit="can_edit"
+                :options="all_pages_in_select"
+                @update="
                   movePage({
                     old_position: index,
                     new_position: $event - 1,
@@ -74,6 +73,10 @@
                     :page_width="publication.page_width"
                     :page_height="publication.page_height"
                     :page_color="page.page_color"
+                    :page_number="index * 2 + iindex"
+                    :pagination="pagination"
+                    :hide_pagination="page.hide_pagination === true"
+                    :page_is_left="iindex === 0"
                     :can_edit="false"
                   />
                   <button
@@ -86,13 +89,12 @@
                 </div>
                 <div class="_label">
                   <b>{{ $t("page") }}</b>
-                  <NumberInput
+                  <SelectField
                     :key="'page-' + index * 2 + iindex"
-                    :value="index * 2 + iindex"
-                    :min="1"
-                    :max="spreads.length * 2"
-                    :step="1"
-                    @save="
+                    :content="index * 2 + iindex"
+                    :can_edit="can_edit"
+                    :options="all_pages_in_select"
+                    @update="
                       movePage({
                         old_position: index * 2 + iindex - 1,
                         new_position: $event - 1,
@@ -120,6 +122,7 @@
         v-else
         key="openedpage"
         :page_opened_id="page_opened_id"
+        :publication_title="publication.title"
         :publication_path="publication.$path"
         :pages="pages"
         :spreads="spreads"
@@ -128,6 +131,7 @@
         :page_width="publication.page_width"
         :page_height="publication.page_height"
         :margins="margins"
+        :pagination="pagination"
         :can_edit="can_edit"
         @togglePage="$emit('togglePage', $event)"
         @updatePageOptions="updatePageOptions"
@@ -167,6 +171,11 @@ export default {
     is_spread() {
       return this.publication.page_spreads === true;
     },
+    all_pages_in_select() {
+      return new Array(this.pages.length)
+        .fill(null)
+        .map((i, index) => ({ key: index + 1, text: index + 1 }));
+    },
     page_preview_zoom() {
       return this.calculateZoomToFit({
         width: this.publication.page_width,
@@ -176,25 +185,9 @@ export default {
     },
     spreads() {
       if (!this.is_spread) return false;
-      // turn pages array into [[{id:""}, {id:""}], [{id:""}, {id:""}], [{id:""}, {id:""}], …]
-      const number_of_spreads = Math.floor(this.pages.length / 2 + 1);
-      let spreads = [];
-      let index = 0;
-
-      for (let i = 0; i < number_of_spreads; i++) {
-        if (spreads.length === 0) {
-          spreads.push([false, this.pages[index]]);
-          index += 1;
-        } else {
-          const left_page = this.pages[index];
-          const right_page =
-            index + 1 < this.pages.length ? this.pages[index + 1] : false;
-
-          spreads.push([left_page, right_page]);
-          index += 2;
-        }
-      }
-      return spreads;
+      return this.makeSpread({
+        pages: this.pages,
+      });
     },
     margins() {
       return {
@@ -203,6 +196,9 @@ export default {
         top: this.publication.page_margin_top || 0,
         bottom: this.publication.page_margin_bottom || 0,
       };
+    },
+    pagination() {
+      return this.setPaginationFromPublication(this.publication);
     },
   },
   methods: {
@@ -245,8 +241,6 @@ export default {
         arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
         return arr; // for testing
       }
-
-      debugger;
 
       array_move(pages, old_position, new_position);
 
@@ -304,8 +298,9 @@ export default {
 ._label {
   display: flex;
   justify-content: center;
-  gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 4) 0;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 8);
   margin: calc(var(--spacing) / 8);
   background: rgba(0, 0, 0, 0.06);
   border-radius: 4px;

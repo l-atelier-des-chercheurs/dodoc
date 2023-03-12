@@ -208,6 +208,7 @@ export default {
       position: relative;
       flex: 10 1 320px;
       color: white;
+      min-height: 50vh;
 
       // height: 50%;
     }
@@ -224,6 +225,8 @@ export default {
   right: 0em;
   color: currentColor;
   font-size: 200%;
+  background: white;
+  border-radius: 50%;
 
   &::part(base) {
     color: currentColor;

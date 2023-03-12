@@ -166,6 +166,9 @@ module.exports = (function () {
     notifier.on("taskStatus", (room, content) => {
       io.to("content/" + room).emit("taskStatus", content);
     });
+    notifier.on("taskEnded", (room, content) => {
+      io.to("content/" + room).emit("taskEnded", content);
+    });
   }
 
   function roomStatus(socket) {

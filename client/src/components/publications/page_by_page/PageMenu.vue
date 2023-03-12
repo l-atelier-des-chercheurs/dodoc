@@ -1,22 +1,48 @@
 <template>
   <div class="_pageMenu">
     <div class="_pageMenu--pane">
-      <div class="u-spacingBottom">
-        <transition name="fade_fast" mode="out-in">
-          <b :key="page_number">{{ $t("page") }} {{ page_number + 1 }}</b>
-        </transition>
-        <transition
-          v-if="active_spread_index !== false"
-          name="fade_fast"
-          mode="out-in"
-        >
-          <span :key="active_spread_index">
-            <template v-if="page_number === 0"> ({{ $t("cover") }}) </template>
-            <template v-else>
-              ({{ $t("spread").toLowerCase() }} {{ active_spread_index }})
-            </template>
-          </span>
-        </transition>
+      <div class="u-spacingBottom _titleRow">
+        <div>
+          <button
+            type="button"
+            class="u-button u-button_transparent"
+            @click="$emit('prevPage')"
+            :disabled="active_page_number <= 0"
+          >
+            <sl-icon name="arrow-left-circle" />
+          </button>
+        </div>
+        <div>
+          <transition name="fade_fast" mode="out-in">
+            <b :key="active_page_number"
+              >{{ $t("page") }} {{ active_page_number + 1 }}</b
+            >
+          </transition>
+          <transition
+            v-if="active_spread_index !== false"
+            name="fade_fast"
+            mode="out-in"
+          >
+            <span :key="active_spread_index">
+              <template v-if="active_page_number === 0">
+                ({{ $t("cover") }})
+              </template>
+              <template v-else>
+                ({{ $t("spread").toLowerCase() }} {{ active_spread_index }})
+              </template>
+            </span>
+          </transition>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="u-button u-button_transparent"
+            @click="$emit('nextPage')"
+            :disabled="active_page_number >= pages.length - 1"
+          >
+            <sl-icon name="arrow-right-circle" />
+          </button>
+        </div>
       </div>
 
       <div class="_scale">
@@ -39,7 +65,7 @@
       <transition name="fade_fast" mode="out-in">
         <div
           v-if="!has_editor_toolbar && !active_module"
-          :key="'page_options-' + page_number"
+          :key="'page_options-' + active_page_number"
         >
           <div class="_pageMenu--pane">
             <div class="u-spacingBottom">
@@ -89,8 +115,21 @@
                 :value="page_color"
                 @save="
                   $emit('updatePageOptions', {
-                    page_number,
+                    page_number: active_page_number,
                     value: { page_color: $event },
+                  })
+                "
+              />
+
+              <ToggleInput
+                v-if="has_pagination"
+                class="u-spacingBottom"
+                :content="hide_pagination"
+                :label="$t('hide_pagination')"
+                @update:content="
+                  $emit('updatePageOptions', {
+                    page_number: active_page_number,
+                    value: { hide_pagination: $event },
                   })
                 "
               />
@@ -173,12 +212,14 @@
           </span>
 
           <div class="u-mediaOptions">
-            <RemoveMenu
-              ref="removeMenu"
-              :remove_text="$t('withdraw_from_page')"
-              @remove="removeModule"
+            <MoveToPage
+              :pages="pages"
+              :current_page_id="pages[active_page_number].id"
+              @submit="
+                updateMediaPubliMeta({ page_id: $event });
+                setActive(false);
+              "
             />
-
             <div class="">
               <button
                 type="button"
@@ -220,6 +261,11 @@
                 {{ $t("unselect") }}
               </button>
             </div>
+            <RemoveMenu
+              ref="removeMenu"
+              :remove_text="$t('withdraw_from_page')"
+              @remove="removeModule"
+            />
           </div>
 
           <div class="u-sameRow">
@@ -297,8 +343,6 @@
           <RangeValueInput
             v-if="
               active_module.module_type !== 'ellipsis' &&
-              active_module.module_type !== 'line' &&
-              active_module.module_type !== 'arrow' &&
               active_module.module_type !== 'text'
             "
             class="u-spacingBottom"
@@ -328,7 +372,7 @@
             class="u-spacingBottom"
             :label="$t('background_color')"
             :value="active_module.background_color"
-            :default_value="is_shape ? '#000000' : ''"
+            :default_value="is_shape ? 'transparent' : ''"
             @save="updateMediaPubliMeta({ background_color: $event })"
           />
 
@@ -365,7 +409,7 @@
       <div
         v-show="has_editor_toolbar"
         class="_pageMenu--pane"
-        :key="'text-toolbar-' + page_number"
+        :key="'text-toolbar-' + active_page_number"
       >
         <div ref="editor_toolbar" class="_editorToolbar" />
 
@@ -388,6 +432,7 @@
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 import DepthInput from "@/components/publications/page_by_page/DepthInput.vue";
+import MoveToPage from "@/components/publications/page_by_page/MoveToPage.vue";
 
 // const throttle = (fn, wait) => {
 //   let throttled = false;
@@ -404,13 +449,15 @@ import DepthInput from "@/components/publications/page_by_page/DepthInput.vue";
 export default {
   props: {
     can_edit: Boolean,
-    page_number: Number,
+    pages: Array,
+    active_page_number: Number,
     active_spread_index: [Boolean, Number],
     scale: Number,
     show_grid: Boolean,
     snap_to_grid: Boolean,
     gridstep_in_cm: Number,
     page_color: String,
+    pagination: [Boolean, Object],
     publication_path: String,
     page_modules: Array,
     page_opened_id: String,
@@ -419,6 +466,7 @@ export default {
   components: {
     DepthInput,
     ModuleCreator,
+    MoveToPage,
   },
   data() {
     return {
@@ -453,6 +501,14 @@ export default {
         )
       );
     },
+    has_pagination() {
+      return (
+        this.active_page_number - this.pagination.pagination_start_on_page >= 0
+      );
+    },
+    hide_pagination() {
+      return this.pages[this.active_page_number].hide_pagination === true;
+    },
     new_module_meta() {
       const z_index =
         Math.max(...this.page_modules.map((pm) => pm.z_index || 0)) + 1;
@@ -486,7 +542,7 @@ export default {
     displayToolbar(node) {
       this.has_editor_toolbar = true;
       this.$nextTick(() => {
-        this.$refs.editor_toolbar.append(node);
+        if (this.$refs.editor_toolbar) this.$refs.editor_toolbar.append(node);
       });
 
       // this.$nextTick(() => {
@@ -503,6 +559,9 @@ export default {
       setTimeout(() => {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 150);
+    },
+    changeModulePage() {
+      this.$eventHub.$emit(`module.move.${this.module_meta_filename}`);
     },
     duplicateModule() {
       this.$eventHub.$emit(`module.duplicate.${this.module_meta_filename}`);
@@ -607,6 +666,17 @@ export default {
     .ql-editor {
       padding-bottom: 0;
     }
+  }
+}
+
+._titleRow {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+
+  button {
+    font-size: var(--sl-font-size-large);
   }
 }
 </style>

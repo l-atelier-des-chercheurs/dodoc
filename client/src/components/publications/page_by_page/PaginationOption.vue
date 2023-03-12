@@ -1,49 +1,55 @@
 <template>
   <div>
     <fieldset>
-      <legend class="u-label">{{ $t("margins") }}</legend>
+      <legend class="u-label">{{ $t("pagination") }}</legend>
       <div class="u-instructions">
-        <small>{{ $t("margins_instructions") }}</small>
+        <small>{{ $t("pagination_instructions") }}</small>
+        <small v-if="is_spread"
+          >&#32;{{ $t("pagination_instructions_spread") }}</small
+        >
+      </div>
+
+      <div class="u-sameRow">
+        <ToggleInput
+          :content.sync="enable_pagination"
+          :label="$t('enable')"
+          :disabled="!edit_mode"
+        />
+      </div>
+      <br />
+
+      <div class="">
+        <DLabel :str="$t('pagn_starts_on_page')" />
+        <input
+          type="number"
+          v-model.number="pagn_starts_on_page"
+          :disabled="!edit_mode"
+        />
       </div>
 
       <br />
-
       <div class="u-sameRow">
         <div class="">
-          <DLabel :str="$t('top')" />
-          <div class="u-inputGroup">
-            <input type="number" v-model.number="top" :disabled="!edit_mode" />
-            <span class="u-suffix">cm</span>
-          </div>
-        </div>
-        <div class="">
-          <DLabel :str="$t('bottom')" />
+          <DLabel
+            :str="
+              is_spread ? $t('distance_to_outside') : $t('distance_to_right')
+            "
+          />
           <div class="u-inputGroup">
             <input
               type="number"
-              v-model.number="bottom"
+              v-model.number="right"
               :disabled="!edit_mode"
             />
             <span class="u-suffix">cm</span>
           </div>
         </div>
-      </div>
-      <br />
-      <div class="u-sameRow">
         <div class="">
-          <DLabel :str="is_spread ? $t('margins_inside') : $t('left')" />
-          <div class="u-inputGroup">
-            <input type="number" v-model.number="left" :disabled="!edit_mode" />
-            <span class="u-suffix">cm</span>
-          </div>
-        </div>
-        <br />
-        <div class="">
-          <DLabel :str="is_spread ? $t('margins_outside') : $t('right')" />
+          <DLabel :str="$t('distance_to_bottom')" />
           <div class="u-inputGroup">
             <input
               type="number"
-              v-model.number="right"
+              v-model.number="bottom"
               :disabled="!edit_mode"
             />
             <span class="u-suffix">cm</span>
@@ -58,7 +64,7 @@
         <SaveCancelButtons
           class="_scb"
           :is_saving="is_saving"
-          @save="updateMargins"
+          @save="updatePagination"
           @cancel="cancel"
         />
       </div>
@@ -78,10 +84,10 @@ export default {
       is_saving: false,
       can_edit: true,
 
-      top: this.publication.page_margin_top || 0,
-      bottom: this.publication.page_margin_bottom || 0,
-      left: this.publication.page_margin_left || 0,
-      right: this.publication.page_margin_right || 0,
+      enable_pagination: this.publication.enable_pagination || false,
+      pagn_starts_on_page: this.publication.pagn_starts_on_page || 1,
+      right: this.publication.pagn_right || 2,
+      bottom: this.publication.pagn_bottom || 2,
     };
   },
   created() {},
@@ -96,17 +102,20 @@ export default {
     cancel() {
       this.edit_mode = false;
       this.is_saving = false;
-      // todo interrupt updateMeta
+      this.enable_pagination = this.publication.enable_pagination;
+      this.pagn_starts_on_page = this.publication.pagn_starts_on_page;
+      this.right = this.publication.pagn_right || 2;
+      this.bottom = this.publication.pagn_bottom || 2;
     },
-    async updateMargins() {
+    async updatePagination() {
       this.is_saving = true;
 
       try {
         const new_meta = {
-          page_margin_top: this.top,
-          page_margin_bottom: this.bottom,
-          page_margin_left: this.left,
-          page_margin_right: this.right,
+          enable_pagination: this.enable_pagination,
+          pagn_starts_on_page: this.pagn_starts_on_page,
+          pagn_right: this.right,
+          pagn_bottom: this.bottom,
         };
         await this.$api.updateMeta({
           path: this.publication.$path,

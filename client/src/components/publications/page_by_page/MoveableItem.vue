@@ -30,12 +30,14 @@
     :id="publimodule.$path"
     :zoom="scale"
     :style="module_z_index"
+    @dragstart="dragStart"
+    @drag="onDrag"
     @dragend="dragEnd"
     @resizestart="resizeStart"
     @resizeend="resizeEnd"
     @rotateend="rotateEnd"
   >
-    <span class="_activator" @mousedown="setActive" @dblclick="editText">
+    <span class="_activator" @mousedown="setActive" @dblclick="dblClick">
       <PublicationModule
         class="_moveableItem--content"
         :publimodule="publimodule"
@@ -238,6 +240,16 @@ export default {
       }
     },
 
+    dragStart() {
+      // console.log("dragStart");
+      // this.$eventHub.$emit(`module.dragStart`);
+    },
+    onDrag(event) {
+      // console.log("ondrag");
+      // todo calculate deltaX with start, propagate to other active modules
+      // see https://github.com/zuimeiaj/yoyoo-ddr/blob/edf46aafd86654ab315cfa5b3fc41d68bb7c0273/src/examples/vseditor/plugins/plugin-selection.vue#L120
+      // this.$eventHub.$emit(`module.onDrag`);
+    },
     dragEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
@@ -314,12 +326,23 @@ export default {
 
       this.$eventHub.$emit(`module.setActive`, this.publimodule.$path);
     },
-    editText() {
+    async dblClick() {
       if (!this.is_active) return;
 
       const first_media = this.firstMedia(this.publimodule);
-      if (!first_media || first_media.$type !== "text") return;
+      if (!first_media) return;
 
+      if (first_media.$type === "text") this.editText();
+      else {
+        // resize height to match ratio
+        const media_ratio = first_media.$infos?.ratio;
+        const height = this.publimodule.width * media_ratio;
+        await this.updateModuleMeta({
+          new_meta: { height },
+        });
+      }
+    },
+    editText() {
       const meta_filename = this.publimodule.$path.substring(
         this.publimodule.$path.lastIndexOf("/") + 1
       );

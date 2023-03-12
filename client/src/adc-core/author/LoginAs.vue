@@ -66,26 +66,30 @@ export default {
       const path = author.$path;
 
       // closing too soon but forced to do this since line 88 is not working as intended…
-      this.$emit("close");
+      // this.$emit("close");
 
-      await this.$api
+      this.$api
         .loginToFolder({
           path,
           auth_infos: {
             $password: this.input_password,
           },
         })
+        .then(() => {
+          this.$alertify.delay(4000).success(this.$t("logged_in"));
+
+          this.$emit("close");
+        })
         .catch((err) => {
+          debugger;
           if (err === "submitted_password_is_wrong") {
             this.$refs.passwordField.$el.querySelector("input").select();
             this.$alertify
-              .delay(4000)
+              .delay(40000)
               .error(this.$t("submitted_password_is_wrong"));
           }
+          return;
         });
-
-      // not sure why this does nothing…
-      this.$emit("close");
     },
   },
 };
