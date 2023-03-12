@@ -229,7 +229,8 @@ export default {
   padding: calc(var(--spacing) / 2);
 
   &.is--active {
-    border: 2px solid var(--c-bleuvert_fonce);
+    border: 2px solid white;
+    outline: 2px solid var(--c-bleuvert_fonce);
   }
 }
 ._label ::v-deep label {
