@@ -542,7 +542,7 @@ export default {
     displayToolbar(node) {
       this.has_editor_toolbar = true;
       this.$nextTick(() => {
-        this.$refs.editor_toolbar.append(node);
+        if (this.$refs.editor_toolbar) this.$refs.editor_toolbar.append(node);
       });
 
       // this.$nextTick(() => {
