@@ -249,12 +249,12 @@ export default {
       this.setStatusButton();
 
       this.editor.on("selection-change", () => {
-        // console.log(`CollaborativeEditor / selection-change`);
+        console.log(`CollaborativeEditor / selection-change`);
         this.updateSelectedLines();
       });
       this.editor.on("text-change", (delta, oldDelta, source) => {
         delta, oldDelta, source;
-
+        console.log(`CollaborativeEditor / text-change w source ${source}`);
         this.$nextTick(() => {
           // todo : only update if possibly changing line (backspace and enter)
           this.updateSelectedLines();
@@ -498,7 +498,7 @@ export default {
       this.collaborative_is_loaded = false;
     },
     submitOPAndSave(delta, oldDelta, source) {
-      console.log(`CollaborativeEditor / text-change w source ${source}`);
+      console.log(`CollaborativeEditor / submitOPAndSave w source ${source}`);
       if (source === "user") {
         this.doc.submitOp(delta, { source: this.editor_id });
         console.log(
