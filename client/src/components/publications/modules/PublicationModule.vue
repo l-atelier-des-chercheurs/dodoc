@@ -210,25 +210,59 @@
             :rx="borderRadius / 2 || 0"
             :ry="borderRadius / 2 || 0"
           />
-          <line
-            v-else-if="publimodule.module_type === 'line'"
-            x1="0"
-            y1="50"
-            x2="100"
-            y2="50"
-            vector-effect="non-scaling-stroke"
-          />
-          <g v-else-if="publimodule.module_type === 'arrow'">
+          <g v-else-if="publimodule.module_type === 'line'">
+            <rect
+              width="100"
+              height="100"
+              vector-effect="non-scaling-stroke"
+              stroke="none"
+              :rx="borderRadius / 2 || 0"
+              :ry="borderRadius / 2 || 0"
+            />
             <line
-              x1="0"
+              :x1="
+                (publimodule.outline_width * $root.page_magnification) / 4 || 0
+              "
               y1="50"
-              x2="100"
+              :x2="
+                100 -
+                ((publimodule.outline_width * $root.page_magnification) / 4 ||
+                  0)
+              "
               y2="50"
               vector-effect="non-scaling-stroke"
             />
+          </g>
+          <g v-else-if="publimodule.module_type === 'arrow'">
+            <rect
+              width="100"
+              height="100"
+              vector-effect="non-scaling-stroke"
+              stroke="none"
+              :rx="borderRadius / 2 || 0"
+              :ry="borderRadius / 2 || 0"
+            />
+            <line
+              :x1="
+                (publimodule.outline_width * $root.page_magnification) / 4 || 0
+              "
+              y1="50"
+              :x2="
+                100 -
+                ((publimodule.outline_width * $root.page_magnification) / 4 ||
+                  0)
+              "
+              y2="50"
+              vector-effect="non-scaling-stroke"
+            />
+
             <g
-              transform="
-                translate(100, 50)"
+              :transform="`
+                translate(${
+                  100 -
+                  ((publimodule.outline_width * $root.page_magnification) / 4 ||
+                    0)
+                }, 50)`"
               preserveAspectRatio
             >
               <line
