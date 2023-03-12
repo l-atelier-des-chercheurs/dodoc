@@ -160,7 +160,8 @@ export default {
     padding: calc(var(--spacing) * 2);
   }
 }
-._page {
+._page,
+._spread {
   page-break-inside: avoid;
   -webkit-region-break-inside: avoid;
 

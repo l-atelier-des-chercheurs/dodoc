@@ -121,13 +121,17 @@ export default {
       this.publication = publication;
     },
     async exportPublication() {
+      let instructions = {
+        recipe: "pdf",
+        page_width: this.publication.page_width,
+        page_height: this.publication.page_height,
+      };
+
+      if (this.publication.page_spreads === true) instructions.page_width *= 2;
+
       await this.$api.exportFolder({
         path: this.publication.$path,
-        instructions: {
-          recipe: "pdf",
-          page_width: this.publication.page_width,
-          page_height: this.publication.page_height,
-        },
+        instructions,
       });
       this.$alertify.delay(4000).log(this.$t("compilation_started"));
     },
