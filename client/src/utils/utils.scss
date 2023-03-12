@@ -260,6 +260,16 @@ button {
     background-color: var(--c-bleuvert_fonce);
   }
 }
+.u-button_bleuvert_fonce {
+  background-color: var(--c-bleuvert_fonce);
+  color: white;
+
+  &:hover,
+  &:focus,
+  &.is--active {
+    background-color: var(--c-bleuvert);
+  }
+}
 .u-button_orange {
   background-color: var(--c-orange);
   color: white;
