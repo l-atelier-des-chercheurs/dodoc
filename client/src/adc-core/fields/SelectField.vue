@@ -32,7 +32,7 @@ export default {
   props: {
     field_name: String,
     content: {
-      type: String,
+      type: [Number, String],
       default: "",
     },
     options: {
