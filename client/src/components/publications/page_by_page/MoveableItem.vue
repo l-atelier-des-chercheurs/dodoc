@@ -30,6 +30,8 @@
     :id="publimodule.$path"
     :zoom="scale"
     :style="module_z_index"
+    @dragstart="dragStart"
+    @drag="onDrag"
     @dragend="dragEnd"
     @resizestart="resizeStart"
     @resizeend="resizeEnd"
@@ -238,6 +240,16 @@ export default {
       }
     },
 
+    dragStart() {
+      // console.log("dragStart");
+      // this.$eventHub.$emit(`module.dragStart`);
+    },
+    onDrag(event) {
+      // console.log("ondrag");
+      // todo calculate deltaX with start, propagate to other active modules
+      // see https://github.com/zuimeiaj/yoyoo-ddr/blob/edf46aafd86654ab315cfa5b3fc41d68bb7c0273/src/examples/vseditor/plugins/plugin-selection.vue#L120
+      // this.$eventHub.$emit(`module.onDrag`);
+    },
     dragEnd(event, transform) {
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
