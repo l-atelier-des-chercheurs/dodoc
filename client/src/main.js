@@ -58,6 +58,8 @@ import CoverField from "@/adc-core/fields/CoverField.vue";
 Vue.component("CoverField", CoverField);
 import SelectField from "@/adc-core/fields/SelectField.vue";
 Vue.component("SelectField", SelectField);
+import SelectField2 from "@/adc-core/fields/SelectField2.vue";
+Vue.component("SelectField2", SelectField2);
 import ToggleField from "@/adc-core/fields/ToggleField.vue";
 Vue.component("ToggleField", ToggleField);
 import RadioField from "@/adc-core/fields/RadioField.vue";

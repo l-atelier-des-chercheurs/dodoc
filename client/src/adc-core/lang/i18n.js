@@ -510,6 +510,8 @@ export default function () {
         informations: "Informations",
 
         duplicate: "Dupliquer",
+        move_to_page: "Déplacer vers une autre page",
+        move: "Déplacer",
         unselect: "Déselectionner",
         remove: "Supprimer",
         remove_project: "Supprimer le projet",

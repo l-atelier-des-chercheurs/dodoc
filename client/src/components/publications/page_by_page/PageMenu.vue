@@ -212,12 +212,14 @@
           </span>
 
           <div class="u-mediaOptions">
-            <RemoveMenu
-              ref="removeMenu"
-              :remove_text="$t('withdraw_from_page')"
-              @remove="removeModule"
+            <MoveToPage
+              :pages="pages"
+              :current_page_id="pages[active_page_number].id"
+              @submit="
+                updateMediaPubliMeta({ page_id: $event });
+                setActive(false);
+              "
             />
-
             <div class="">
               <button
                 type="button"
@@ -259,6 +261,11 @@
                 {{ $t("unselect") }}
               </button>
             </div>
+            <RemoveMenu
+              ref="removeMenu"
+              :remove_text="$t('withdraw_from_page')"
+              @remove="removeModule"
+            />
           </div>
 
           <div class="u-sameRow">
@@ -427,6 +434,7 @@
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 import DepthInput from "@/components/publications/page_by_page/DepthInput.vue";
+import MoveToPage from "@/components/publications/page_by_page/MoveToPage.vue";
 
 // const throttle = (fn, wait) => {
 //   let throttled = false;
@@ -460,6 +468,7 @@ export default {
   components: {
     DepthInput,
     ModuleCreator,
+    MoveToPage,
   },
   data() {
     return {
@@ -552,6 +561,9 @@ export default {
       setTimeout(() => {
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 150);
+    },
+    changeModulePage() {
+      this.$eventHub.$emit(`module.move.${this.module_meta_filename}`);
     },
     duplicateModule() {
       this.$eventHub.$emit(`module.duplicate.${this.module_meta_filename}`);
