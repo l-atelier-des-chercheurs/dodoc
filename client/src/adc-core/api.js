@@ -528,6 +528,7 @@ export default function () {
 
 function _getErrorMsgFromCode(code) {
   if (code === "ENOENT") return "folder_is_missing";
+  // submitted_password_is_wrong
 
   return code;
 }
