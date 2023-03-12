@@ -132,8 +132,8 @@ export default {
 
 ._colorPatch {
   display: block;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.7rem;
+  height: 1.7rem;
   padding: 0.3rem;
   cursor: pointer;
 
@@ -143,8 +143,8 @@ export default {
     border-radius: 50%;
     width: 100%;
     height: 100%;
-    // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
     outline: 2px solid var(--c-gris);
+    border: 1px solid white;
     background-color: var(--patch-color);
   }
 
@@ -165,11 +165,6 @@ export default {
 
 ._inputField {
   position: relative;
-
-  ._inputField--label {
-    ._colorPatch {
-    }
-  }
 
   input {
     width: 1px;
