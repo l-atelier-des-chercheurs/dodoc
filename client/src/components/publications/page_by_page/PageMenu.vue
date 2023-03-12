@@ -343,8 +343,6 @@
           <RangeValueInput
             v-if="
               active_module.module_type !== 'ellipsis' &&
-              active_module.module_type !== 'line' &&
-              active_module.module_type !== 'arrow' &&
               active_module.module_type !== 'text'
             "
             class="u-spacingBottom"
@@ -374,7 +372,7 @@
             class="u-spacingBottom"
             :label="$t('background_color')"
             :value="active_module.background_color"
-            :default_value="is_shape ? '#000000' : ''"
+            :default_value="is_shape ? 'transparent' : ''"
             @save="updateMediaPubliMeta({ background_color: $event })"
           />
 
