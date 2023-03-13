@@ -104,7 +104,10 @@ export default function () {
 
         login: "se connecter",
         logout: "se déconnecter",
-        name_or_pseudonym: "nom ou pseudonyme",
+        name_or_pseudonym: "Nom ou pseudonyme",
+        email: "Courriel",
+        password: "Mot de passe",
+        role: "Rôle",
         contributors: "Contributeur·rice·s",
         contributor: "Contributeur·rice",
         admin: "Administrateur·rice",
