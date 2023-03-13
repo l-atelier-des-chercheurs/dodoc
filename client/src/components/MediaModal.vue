@@ -172,7 +172,7 @@ export default {
 
     &:hover,
     &:focus {
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 1);
     }
   }
 
@@ -202,7 +202,12 @@ export default {
 }
 
 ._meta {
-  padding: calc(var(--spacing) / 1);
+  // margin: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  background: var(--panel-color);
+  border: var(--panel-borders);
+  box-shadow: var(--panel-shadows);
+  // border-radius: var(--panel-radius);
 }
 
 ._selectBtn {
