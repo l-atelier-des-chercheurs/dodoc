@@ -22,7 +22,7 @@ export default {
       return {
         right: publication.pagn_right || 2,
         bottom: publication.pagn_bottom || 2,
-        pagination_start_on_page: publication.pagn_starts_on_page - 1 || 1,
+        pagination_start_on_page: publication.pagn_starts_on_page - 1 || 0,
       };
     },
     makeSpread({ pages }) {
