@@ -105,7 +105,7 @@ export default {
     margin: 0 auto;
     max-width: 480px;
     width: 100%;
-
+    // height: 100%;
     max-height: calc(100vh - calc(var(--spacing) * 2));
     overflow: auto;
   }
@@ -129,6 +129,7 @@ header {
 }
 
 ._content {
+  height: 100%;
   padding: var(--spacing) calc(var(--spacing) * 1);
 
   > *:first-child {
