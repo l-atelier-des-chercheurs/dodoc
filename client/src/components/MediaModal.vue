@@ -4,7 +4,7 @@
 
     <button
       type="button"
-      class="u-button u-button_transparent _mediaModal--closeButton"
+      class="u-button u-button_transparent _navBtn _closeButton"
       @click="$emit('close')"
     >
       <img
@@ -72,7 +72,7 @@
       <span>
         <button
           type="button"
-          class="u-button u-button_transparent _leftArrow"
+          class="u-button u-button_transparent _navBtn _leftArrow"
           v-if="position_in_list !== 'first'"
           @click="$emit('prevMedia')"
         >
@@ -87,7 +87,7 @@
       <span>
         <button
           type="button"
-          class="u-button u-button_transparent _rightArrow"
+          class="u-button u-button_transparent _navBtn _rightArrow"
           v-show="position_in_list !== 'last'"
           @click="$emit('nextMedia')"
         >
@@ -164,7 +164,7 @@ export default {
     overflow: hidden;
   }
 
-  button {
+  ._navBtn {
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.25);
     pointer-events: auto;
@@ -238,7 +238,7 @@ export default {
   }
 }
 
-._mediaModal--closeButton {
+._closeButton {
   position: absolute;
   z-index: 10000;
   top: 0em;
