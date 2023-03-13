@@ -37,7 +37,7 @@
               </b>
               <SelectField
                 :key="'page-' + index"
-                :content="index"
+                :content="index + 1"
                 :can_edit="can_edit"
                 :options="all_pages_in_select"
                 @update="
