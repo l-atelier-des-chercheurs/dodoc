@@ -2,12 +2,19 @@
   <div class="_mediaModal">
     <div class="_mediaModal--overlay" @click="$emit('close')" />
 
-    <div class="_mediaModal--content">
-      <sl-icon-button
-        name="x-circle-fill"
-        class="_mediaModal--closeButton"
-        @click="$emit('close')"
+    <button
+      type="button"
+      class="u-button u-button_transparent _mediaModal--closeButton"
+      @click="$emit('close')"
+    >
+      <img
+        :src="`${$root.publicPath}images/i_close_sansfond.svg`"
+        width="2rem"
+        height="2rem"
+        class=""
       />
+    </button>
+    <div class="_mediaModal--content">
       <div class="_preview">
         <!-- <DebugBtn :content="file" /> -->
         <MediaContent :file="file" :resolution="1600" :context="'full'" />
@@ -65,7 +72,7 @@
       <span>
         <button
           type="button"
-          class="u-button"
+          class="u-button u-button_transparent _leftArrow"
           v-if="position_in_list !== 'first'"
           @click="$emit('prevMedia')"
         >
@@ -80,7 +87,7 @@
       <span>
         <button
           type="button"
-          class="u-button u-button_transparent"
+          class="u-button u-button_transparent _rightArrow"
           v-show="position_in_list !== 'last'"
           @click="$emit('nextMedia')"
         >
@@ -157,6 +164,18 @@ export default {
     overflow: hidden;
   }
 
+  button {
+    padding: calc(var(--spacing) / 2);
+    background: rgba(255, 255, 255, 0.25);
+    pointer-events: auto;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &:hover,
+    &:focus {
+      background: rgba(255, 255, 255, 0.75);
+    }
+  }
+
   ::v-deep {
     ._mediaContent {
       // position: absolute;
@@ -221,15 +240,29 @@ export default {
 
 ._mediaModal--closeButton {
   position: absolute;
+  z-index: 10000;
   top: 0em;
   right: 0em;
-  color: currentColor;
-  font-size: 200%;
-  background: white;
-  border-radius: 50%;
+  // color: currentColor;
+  // font-size: 200%;
+  // background: rgba(255, 255, 255, 0.25);
+  // border-radius: 50%;
+
+  padding: calc(var(--spacing) / 4);
+  margin: 0;
+
+  img {
+    width: 2rem;
+    height: 2rem;
+  }
 
   &::part(base) {
     color: currentColor;
+  }
+
+  &:not(:hover) {
+    margin-top: -10px;
+    margin-right: -10px;
   }
 }
 
@@ -238,16 +271,24 @@ export default {
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: calc(var(--spacing) / 4);
+  height: 100%;
+  padding-bottom: calc(var(--spacing) * 5);
   pointer-events: none;
 
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
-  button {
-    padding: calc(var(--spacing) / 2);
-    background: rgba(255, 255, 255, 0.6);
-    pointer-events: auto;
+  ._leftArrow {
+    &:not(:hover) {
+      margin-left: -10px;
+    }
+  }
+
+  ._rightArrow {
+    &:not(:hover) {
+      margin-right: -10px;
+    }
   }
 }
 </style>

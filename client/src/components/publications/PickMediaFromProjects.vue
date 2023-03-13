@@ -126,7 +126,7 @@ export default {
 
     &._mediaLib {
       overflow: hidden;
-      flex: 1 1 50vh;
+      flex: 1 1 70vh;
     }
   }
 }
