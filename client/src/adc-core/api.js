@@ -141,7 +141,7 @@ export default function () {
           },
         });
 
-        if (auth.general_password)
+        if (auth.general_password) {
           if (response.data.general_password_is_valid)
             this.general_password = auth.general_password;
           else if (response.data.general_password_is_wrong) {
@@ -150,6 +150,9 @@ export default function () {
               .error(response.data.general_password_is_wrong);
             this.$eventHub.$emit("app.prompt_general_password");
           }
+        } else if (response.data.general_password_is_wrong) {
+          this.$eventHub.$emit("app.prompt_general_password");
+        }
 
         if (auth.token && auth.token_path)
           if (response.data.token_is_valid) {
@@ -501,18 +504,19 @@ export default function () {
       },
 
       onError(err) {
-        console.error(err.response.data?.message);
-        if (err.response.data?.message === "token_does_not_exist") {
+        const code = err.response.data?.code;
+        if (!code) console.error("onError – NO ERROR CODES");
+        else console.error("onError – " + code);
+
+        if (code === "token_does_not_exist") {
           this.resetToken();
-        } else if (err.response.data?.message === "token_expired") {
+        } else if (code === "token_expired") {
           this.resetToken();
-        } else if (err.response.data?.message === "wrong_general_password") {
+        } else if (code === "wrong_general_password") {
           this.$eventHub.$emit("app.prompt_general_password");
-        } else if (
-          err.response.data?.message === "no_general_password_submitted"
-        ) {
+        } else if (code === "no_general_password_submitted") {
           this.$eventHub.$emit("app.prompt_general_password");
-        } else if (err.response.data?.message === "author_not_allowed") {
+        } else if (code === "author_not_allowed") {
           // invalidate token
           // this.resetToken();
           // this.$alertify

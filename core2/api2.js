@@ -187,7 +187,7 @@ module.exports = (function () {
       return next ? next() : undefined;
     } catch (err) {
       dev.error(err.message);
-      if (res) return res.status(401).send({ message: err.message });
+      if (res) return res.status(401).send({ code: err.code });
       throw err;
     }
   }
@@ -199,7 +199,7 @@ module.exports = (function () {
       await _generalPasswordCheck(req);
       response.general_password_is_valid = true;
     } catch (err) {
-      response.general_password_is_wrong = err.message;
+      response.general_password_is_wrong = err.code;
     }
 
     try {
@@ -212,7 +212,7 @@ module.exports = (function () {
       auth.checkToken({ token, token_path });
       response.token_is_valid = true;
     } catch (err) {
-      response.token_is_wrong = err.message;
+      response.token_is_wrong = err.code;
     }
 
     return res.json(response);
@@ -332,7 +332,7 @@ module.exports = (function () {
       res.json(d);
     } catch (err) {
       dev.error("Failed to get expected content: " + err);
-      _sendErrorToClient({ res, err });
+      res.status(404).send({ code: err.code });
     }
 
     cache.printStatus();
@@ -382,7 +382,7 @@ module.exports = (function () {
       res.json(d);
     } catch (err) {
       dev.error("Failed to get expected content: " + err);
-      _sendErrorToClient({ res, err });
+      res.status(404).send({ code: err.code });
     }
     cache.printStatus();
   }
@@ -709,17 +709,6 @@ module.exports = (function () {
     dev.logapi({ data });
     // TODO only available to admins
     notifier.emit("restart");
-  }
-
-  function _sendErrorToClient({ res, err }) {
-    // TODO handle all errors
-    if (err.code === "ENOENT") {
-      res.status(404).send({ code: err.code });
-    } else if (err.message) {
-      res.status(500).send({ message: err.message });
-    } else {
-      debugger;
-    }
   }
 
   return API;
