@@ -512,7 +512,7 @@ export default function () {
           this.resetToken();
         } else if (code === "token_expired") {
           this.resetToken();
-        } else if (code === "wrong_general_password") {
+        } else if (code === "submitted_general_password_is_wrong") {
           this.$eventHub.$emit("app.prompt_general_password");
         } else if (code === "no_general_password_submitted") {
           this.$eventHub.$emit("app.prompt_general_password");
