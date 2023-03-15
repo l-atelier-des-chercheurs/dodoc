@@ -1,5 +1,8 @@
 <template>
-  <BaseModal2 :title="$root.app_infos.name_of_instance" @close="$emit('close')">
+  <BaseModal2
+    :title="$root.app_infos.name_of_instance || $t('home')"
+    @close="$emit('close')"
+  >
     <p>
       {{ $t("general_password_modal_text") }}
       <br />

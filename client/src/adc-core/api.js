@@ -144,10 +144,12 @@ export default function () {
         if (auth.general_password)
           if (response.data.general_password_is_valid)
             this.general_password = auth.general_password;
-          else if (response.data.general_password_is_wrong)
+          else if (response.data.general_password_is_wrong) {
             this.$alertify
               .delay(4000)
               .error(response.data.general_password_is_wrong);
+            this.$eventHub.$emit("app.prompt_general_password");
+          }
 
         if (auth.token && auth.token_path)
           if (response.data.token_is_valid) {
