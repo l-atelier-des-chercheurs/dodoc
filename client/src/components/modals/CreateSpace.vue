@@ -44,9 +44,7 @@
 </template>
 <script>
 export default {
-  props: {
-    path: String,
-  },
+  props: {},
   components: {},
   data() {
     return {
@@ -70,7 +68,7 @@ export default {
       // TODO replace with $api
       try {
         const new_folder_slug = await this.$api.createFolder({
-          path: this.path,
+          path: this.createPath(),
           additional_meta: {
             title: this.new_space_title,
             requested_slug: this.new_space_title,

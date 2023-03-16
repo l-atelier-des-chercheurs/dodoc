@@ -19,8 +19,9 @@ export default {
     createURLToSpace(path) {
       return path.split("/").splice(0, 1).join("/");
     },
-    pathToProject({ space_slug, project_slug }) {
-      let path = `spaces/${space_slug}`;
+    createPath({ space_slug, project_slug } = {}) {
+      let path = `spaces`;
+      if (space_slug) path += `/${space_slug}`;
       if (project_slug) path += `/projects/${project_slug}`;
       return path;
     },

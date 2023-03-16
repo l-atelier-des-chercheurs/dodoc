@@ -154,7 +154,7 @@ export default {
   },
   methods: {
     async listProject() {
-      const path = this.pathToProject({
+      const path = this.createPath({
         space_slug: this.$route.params.space_slug,
         project_slug: this.$route.params.project_slug,
       });
