@@ -155,7 +155,7 @@ z
       class="_projectInfos--open"
       v-if="context === 'list' || context === 'tiny'"
     >
-      <router-link :to="{ path: '/' + project.$path }">
+      <router-link :to="{ path: createURLFromPath(project.$path) }">
         <div class="_clickZone" />
         <!-- <div class="u-button u-button_red _openBtn" v-if="context === 'list'">
           {{ $t("open") }}&nbsp;<sl-icon name="arrow-up-right" />
@@ -257,6 +257,7 @@ export default {
 
   margin: 0 auto;
   max-width: 180ch;
+  max-width: var(--max-column-width);
 
   overflow: hidden;
   background: white;
@@ -395,8 +396,9 @@ export default {
     position: absolute;
     inset: 0;
     margin: calc(var(--spacing) * 1);
+    margin: 2px;
     overflow: hidden;
-    border-radius: 6px;
+    border-radius: 3px;
 
     --color1: var(--c-gris);
     --color2: var(--c-gris_clair);

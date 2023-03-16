@@ -293,6 +293,8 @@ export default function () {
         black: "Noir",
         transparent: "Transparent",
 
+        space: "Espace",
+
         watermark: "Habillage",
         watermark_instructions:
           "Sélectionnez une image à placer dans le coin supérieur droit de la vidéo.",
@@ -494,6 +496,8 @@ export default function () {
 
         project_author_instructions:
           "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer ce projet et ses contenus.",
+        space_author_instructions:
+          "Ils et elles sont les seuls à pouvoir ajouter, modifier ou supprimer cet espace et ses contenus.",
         project_title_instructions:
           "Le titre est affiché ici et sur la page d’accueil.",
         project_desc_instructions:

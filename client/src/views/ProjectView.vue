@@ -154,9 +154,13 @@ export default {
   },
   methods: {
     async listProject() {
+      const path = this.pathToProject({
+        space_slug: this.$route.params.space_slug,
+        project_slug: this.$route.params.project_slug,
+      });
       const project = await this.$api
         .getFolder({
-          path: this.$route.path,
+          path,
         })
         .catch((err) => {
           this.fetch_project_error = err.response;
@@ -195,7 +199,7 @@ export default {
           .closeLogOnClick(true)
           .delay(4000)
           .log(this.$t("notifications.project_was_removed"));
-        this.$router.push("/projects");
+        this.$router.push(this.createURLToSpace(this.$route.path));
       }
     },
   },

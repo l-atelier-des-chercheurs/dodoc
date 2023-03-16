@@ -48,7 +48,7 @@ export default {
 
   .u-label {
     // color: currentColor;
-    margin-bottom: 0;
+    // margin-bottom: 0;
     // color: currentColor;
   }
 

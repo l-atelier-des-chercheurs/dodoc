@@ -7,7 +7,7 @@
       </button> -->
     <!-- select from this or another project library -->
     <PickMediaFromProjects
-      :subfolder_path="publication_path"
+      :current_project_path="current_project_path"
       @selectMedia="$emit('selectMedia', $event)"
       @close="$emit('close')"
     />
@@ -25,7 +25,12 @@ export default {
   async created() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    current_project_path() {
+      const all_publications_path = this.getParent(this.publication_path);
+      return this.getParent(all_publications_path);
+    },
+  },
   methods: {},
 };
 </script>

@@ -11,7 +11,7 @@ module.exports = (function () {
       dev.logfunction({ path_to_type });
       // TODO cache get all folders
 
-      const { schema } = await utils.parseAndCheckSchema({
+      await utils.parseAndCheckSchema({
         relative_path: path_to_type,
       });
 
@@ -36,7 +36,7 @@ module.exports = (function () {
     getFolder: async ({ path_to_folder }) => {
       dev.logfunction({ path_to_folder });
 
-      const { schema } = await utils.parseAndCheckSchema({
+      const schema = await utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
 
@@ -85,7 +85,7 @@ module.exports = (function () {
         folder_slug,
       });
 
-      const { schema } = await utils.parseAndCheckSchema({
+      const schema = await utils.parseAndCheckSchema({
         relative_path: path_to_type,
       });
 
@@ -204,7 +204,7 @@ module.exports = (function () {
     saveCover: async ({ req, path_to_folder }) => {
       dev.logfunction({ path_to_folder });
 
-      const { schema } = await utils.parseAndCheckSchema({
+      const schema = await utils.parseAndCheckSchema({
         relative_path: path_to_folder,
       });
 

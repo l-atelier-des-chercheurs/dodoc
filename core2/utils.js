@@ -132,10 +132,9 @@ module.exports = (function () {
     },
     async cleanNewMeta({ relative_path, new_meta }) {
       dev.logfunction({ relative_path, new_meta });
-      // check fields in schema, make sure user added fields are allowed and with the right formatting
+      // todo check fields in schema, make sure user added fields are allowed and with the right formatting
       // merge with validateMeta ?
-
-      const { schema } = await API.parseAndCheckSchema({
+      const schema = await API.parseAndCheckSchema({
         relative_path,
       });
       schema;
@@ -288,33 +287,53 @@ module.exports = (function () {
     async parseAndCheckSchema({ relative_path }) {
       dev.logfunction({ relative_path });
 
+      const schema = global.settings.schema;
+
       let items_in_path = relative_path.split("/");
       items_in_path = items_in_path.filter((i) => i !== "_upload");
 
       let obj = {};
 
-      if (items_in_path.length > 0) obj.folder_type = items_in_path[0];
-      if (items_in_path.length > 1) obj.folder_slug = items_in_path[1];
-      if (items_in_path.length > 2)
-        if (items_in_path[2].includes("."))
-          obj.meta_filename = items_in_path[2];
-        else obj.subfolder_type = items_in_path[2];
-      if (items_in_path.length > 3) obj.subfolder_slug = items_in_path[3];
-      if (items_in_path.length > 4) obj.submeta_filename = items_in_path[4];
+      // –––   /spaces => schema.spaces
+      // –––   /spaces/tle => schema.spaces
+      // –––   /spaces/tle/image.jpg.meta.txt => schema.spaces
 
-      if (!global.settings.schema[obj.folder_type])
-        throw new Error(`no_schema_for_folder`);
-      if (
-        obj.subfolder_type &&
-        !global.settings.schema[obj.folder_type].$folders[obj.subfolder_type]
+      // –––   /spaces/tle/projects => schema.spaces.$folders.projects
+      // –––   /spaces/tle/projects/mon-projet => schema.spaces.$folders.projects
+      // –––   /spaces/tle/projects/mon-projet/image.jpg.meta.txt => schema.spaces.$folders.projects
+
+      // –––   /spaces/tle/projects/mon-projet/publications => schema.spaces.$folders.projects.$folders.publications
+
+      // –––   /spaces/tle/projects/mon-projet/remixes => schema.spaces.$folders.projects.$folders.remixes
+      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video => schema.spaces.$folders.projects.$folders.remixes
+      // –––   /spaces/tle/projects/mon-projet/remixes/montage-video/media.meta.txt => schema.spaces.$folders.projects.$folders.remixes
+
+      const checkIfFileOrAction = (str) =>
+        str.includes(".") || str.startsWith("_");
+
+      if (items_in_path.length === 0) return false;
+      else if (
+        items_in_path.length === 1 ||
+        items_in_path.length === 2 ||
+        (items_in_path.length === 3 && checkIfFileOrAction(items_in_path[2]))
       )
-        throw new Error(`no_schema_for_subfolder`);
+        return schema[items_in_path[0]];
+      else if (
+        items_in_path.length === 3 ||
+        items_in_path.length === 4 ||
+        (items_in_path.length === 5 && checkIfFileOrAction(items_in_path[4]))
+      )
+        return schema[items_in_path[0]].$folders[items_in_path[2]];
+      else if (
+        items_in_path.length === 5 ||
+        items_in_path.length === 6 ||
+        (items_in_path.length === 7 && checkIfFileOrAction(items_in_path[6]))
+      )
+        return schema[items_in_path[0]].$folders[items_in_path[2]].$folders[
+          items_in_path[4]
+        ];
 
-      obj.schema = obj.subfolder_type
-        ? global.settings.schema[obj.folder_type].$folders[obj.subfolder_type]
-        : global.settings.schema[obj.folder_type];
-
-      return obj;
+      throw new Error(`no_schema_for_folder`);
     },
 
     cleanReqPath(path) {
@@ -327,30 +346,38 @@ module.exports = (function () {
       let {
         folder_type,
         folder_slug,
-        subfolder_type,
-        subfolder_slug,
+        sub_folder_type,
+        sub_folder_slug,
+        subsub_folder_type,
+        subsub_folder_slug,
         meta_filename,
       } = req.params;
 
       const obj = {};
-      obj.path_to_type = !subfolder_type
-        ? `${folder_type}`
-        : `${folder_type}/${folder_slug}/${subfolder_type}`;
 
-      if (folder_slug)
-        obj.path_to_folder = !subfolder_slug
-          ? `${folder_type}/${folder_slug}`
-          : `${folder_type}/${folder_slug}/${subfolder_type}/${subfolder_slug}`;
+      if (subsub_folder_type)
+        obj.path_to_type = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}/${subsub_folder_type}`;
+      else if (sub_folder_type)
+        obj.path_to_type = `${folder_type}/${folder_slug}/${sub_folder_type}`;
+      else if (folder_type) obj.path_to_type = `${folder_type}`;
 
-      if (folder_slug && subfolder_slug)
+      if (subsub_folder_slug)
+        obj.path_to_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}/${subsub_folder_type}/${subsub_folder_slug}`;
+      else if (sub_folder_slug)
+        obj.path_to_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}`;
+      else if (folder_slug)
+        obj.path_to_folder = `${folder_type}/${folder_slug}`;
+
+      if (subsub_folder_slug)
+        obj.path_to_parent_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}`;
+      else if (sub_folder_slug)
         obj.path_to_parent_folder = `${folder_type}/${folder_slug}`;
 
       if (meta_filename && meta_filename.includes(".")) {
         obj.meta_filename = meta_filename;
-        obj.path_to_meta = !subfolder_slug
-          ? `${folder_type}/${folder_slug}/${meta_filename}`
-          : `${folder_type}/${folder_slug}/${subfolder_type}/${subfolder_slug}/${meta_filename}`;
+        obj.path_to_meta = `${obj.path_to_folder}/${meta_filename}`;
       }
+
       if (req.body) obj.data = req.body;
 
       return obj;

@@ -203,6 +203,8 @@ export default {
   margin: 0 auto calc(var(--spacing) * 8);
   padding: calc(var(--spacing) / 1) 0;
   max-width: 800px;
+
+  max-width: var(--max-column-width);
 }
 
 ._mediasList {
